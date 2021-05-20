@@ -2,301 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72694389CF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:11:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8891C389CF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhETFNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:13:02 -0400
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:35853 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhETFNA (ORCPT
+        id S230270AbhETFNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:13:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhETFN2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:13:00 -0400
-Received: (Authenticated sender: alex@ghiti.fr)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 21422240006;
-        Thu, 20 May 2021 05:11:34 +0000 (UTC)
-Subject: Re: [PATCH RFC] riscv: Map the kernel with correct permissions the
- first time
-To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
-Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210518152134.1772653-1-alex@ghiti.fr>
- <20210520002909.0b699b2b@xhacker>
-From:   Alex Ghiti <alex@ghiti.fr>
-Message-ID: <8d60a600-9f01-e913-fe2c-da0e0a363f82@ghiti.fr>
-Date:   Thu, 20 May 2021 07:11:34 +0200
+        Thu, 20 May 2021 01:13:28 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C323AC061574;
+        Wed, 19 May 2021 22:12:06 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id c20so15060245qkm.3;
+        Wed, 19 May 2021 22:12:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=iGt6GNjsfcEFc3c4nOlUAk3fFQaMQQwdP1dl8p3iAGA=;
+        b=XsbtYwLM8yDhrIKnU1IPeW+OBWK+iRII6f3dhXjBfqmI/dkveyf/Lh6LrsoNFbqXJE
+         iPl+z2Utn/HJQ9tSnambS4e4WLzwuk+nhT5GNp0KcEFYX/UczmDtmeBX0zKu3XmDuMaT
+         RqE24wTrcjJ/uO9UjdeD+t06Nl9qAqZ4KJ0kXilDdjSGL2y4Ez9CfhxivE8hp3B5lxV0
+         oj04bJF7d/EfJd3vIWpp6fTCY/EizQdHR8uFUL6hWqqOt/3S/Q3Rca8xuDHkkXZjGwvn
+         IYU20X9+cLIW49Wn/XZj1jsVdhHeS4OUd6sX4yxZIuDIVrMGqRZ4VI6reY4Y0kfPKAtQ
+         mItw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=iGt6GNjsfcEFc3c4nOlUAk3fFQaMQQwdP1dl8p3iAGA=;
+        b=jRoU+mZQnvG6EHBN672RVFQXmROhFj1zeO5hW5SZLf496IUNEApPBB3klzHHJ4HE9F
+         pVrqH60uID7YP6j+MMsqzn7HU3erRXu5u8EBp9ypno9PxX/a7Pn20+LEULbu2TWpWNqR
+         y3bqhr+d8nuo+pfU3jDF6A8CvxOGN7nVuSedUF+uif9jfdhtolmChIEM4UURL7nDDkHm
+         ZMMGJNBHoZRSnxeReRoTLu1kSX9zvQkPgCsb9zJyXkqYo4fizO6j+aBziau85mCckpvp
+         uFIfj6xjgiC1ZEaya5uKQxbSl62QbdM/v937J2Z2Cn4XCMZlhJUBRvdU29Mgy4niiQR5
+         wwew==
+X-Gm-Message-State: AOAM533/PY810cMkdE7UcWRCMpWjUKfRYswEvSt7k4KEC42z+oO8lI5i
+        obt+rMeBu+DHQ1iagm4JXaoVvemVCso=
+X-Google-Smtp-Source: ABdhPJwLeGsPMKAx/rwckCUPjNK7U9lKL0vV5aAiUFFz5sL8F2Il7TrcEncxfg+Z9fG/nkuFDjFh7g==
+X-Received: by 2002:a05:620a:24cf:: with SMTP id m15mr3002581qkn.435.1621487525665;
+        Wed, 19 May 2021 22:12:05 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p19sm1328845qki.119.2021.05.19.22.12.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 22:12:05 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v5 1/5] hwmon: (max31790) Rework to use regmap
+To:     =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210512013052.903297-1-kubernat@cesnet.cz>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <f8ed6593-f120-959c-cc5c-481df11e38b6@roeck-us.net>
+Date:   Wed, 19 May 2021 22:12:03 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210520002909.0b699b2b@xhacker>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+In-Reply-To: <20210512013052.903297-1-kubernat@cesnet.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jisheng,
+On 5/11/21 6:30 PM, Václav Kubernát wrote:
+> Converting the driver to use regmap makes it more generic. It also makes
+> it a lot easier to debug through debugfs.
+> 
+> Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
+> ---
+>   drivers/hwmon/Kconfig    |   1 +
+>   drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
+>   2 files changed, 133 insertions(+), 122 deletions(-)
+> 
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 54f04e61fb83..c2ec57672c4e 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1092,6 +1092,7 @@ config SENSORS_MAX6697
+>   config SENSORS_MAX31790
+>   	tristate "Maxim MAX31790 sensor chip"
+>   	depends on I2C
+> +	select REGMAP_I2C
+>   	help
+>   	  If you say yes here you get support for 6-Channel PWM-Output
+>   	  Fan RPM Controller.
+> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
+> index 2c6b333a28e9..e3765ce4444a 100644
+> --- a/drivers/hwmon/max31790.c
+> +++ b/drivers/hwmon/max31790.c
+> @@ -12,6 +12,7 @@
+>   #include <linux/init.h>
+>   #include <linux/jiffies.h>
+>   #include <linux/module.h>
+> +#include <linux/regmap.h>
+>   #include <linux/slab.h>
+>   
+>   /* MAX31790 registers */
+> @@ -46,92 +47,53 @@
+>   
+>   #define NR_CHANNEL			6
+>   
+> +#define MAX31790_REG_USER_BYTE_67	0x67
+> +
+> +#define BULK_TO_U16(msb, lsb)		(((msb) << 8) + (lsb))
+> +#define U16_MSB(num)			(((num) & 0xFF00) >> 8)
+> +#define U16_LSB(num)			((num) & 0x00FF)
+> +
+> +static const struct regmap_range max31790_ro_range = {
+> +	.range_min = MAX31790_REG_TACH_COUNT(0),
+> +	.range_max = MAX31790_REG_PWMOUT(0) - 1,
+> +};
+> +
+> +static const struct regmap_access_table max31790_wr_table = {
+> +	.no_ranges = &max31790_ro_range,
+> +	.n_no_ranges = 1,
+> +};
+> +
+> +static const struct regmap_range max31790_volatile_ranges[] = {
+> +	regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_COUNT(12)),
+> +	regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN_FAULT_STATUS1),
+> +};
+> +
+> +static const struct regmap_access_table max31790_volatile_table = {
+> +	.no_ranges = max31790_volatile_ranges,
+> +	.n_no_ranges = 2,
+> +	.n_yes_ranges = 0
+> +};
+> +
+> +static const struct regmap_config max31790_regmap_config = {
+> +	.reg_bits = 8,
+> +	.val_bits = 8,
+> +	.reg_stride = 1,
+> +	.max_register = MAX31790_REG_USER_BYTE_67,
+> +	.wr_table = &max31790_wr_table,
+> +	.volatile_table = &max31790_volatile_table
+> +};
+> +
+>   /*
+>    * Client data (each client gets its own)
+>    */
+>   struct max31790_data {
+> -	struct i2c_client *client;
+> +	struct regmap *regmap;
+> +
+>   	struct mutex update_lock;
+> -	bool valid; /* zero until following fields are valid */
+> -	unsigned long last_updated; /* in jiffies */
+> -
+> -	/* register values */
+>   	u8 fan_config[NR_CHANNEL];
+>   	u8 fan_dynamics[NR_CHANNEL];
+> -	u16 fault_status;
+> -	u16 tach[NR_CHANNEL * 2];
+> -	u16 pwm[NR_CHANNEL];
+> -	u16 target_count[NR_CHANNEL];
+>   };
+>   
+> -static struct max31790_data *max31790_update_device(struct device *dev)
+> -{
+> -	struct max31790_data *data = dev_get_drvdata(dev);
+> -	struct i2c_client *client = data->client;
+> -	struct max31790_data *ret = data;
+> -	int i;
+> -	int rv;
+> -
+> -	mutex_lock(&data->update_lock);
+> -
+> -	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
+> -		rv = i2c_smbus_read_byte_data(client,
+> -				MAX31790_REG_FAN_FAULT_STATUS1);
+> -		if (rv < 0)
+> -			goto abort;
+> -		data->fault_status = rv & 0x3F;
+> -
+> -		rv = i2c_smbus_read_byte_data(client,
+> -				MAX31790_REG_FAN_FAULT_STATUS2);
+> -		if (rv < 0)
+> -			goto abort;
+> -		data->fault_status |= (rv & 0x3F) << 6;
+> -
+> -		for (i = 0; i < NR_CHANNEL; i++) {
+> -			rv = i2c_smbus_read_word_swapped(client,
+> -					MAX31790_REG_TACH_COUNT(i));
+> -			if (rv < 0)
+> -				goto abort;
+> -			data->tach[i] = rv;
+> -
+> -			if (data->fan_config[i]
+> -			    & MAX31790_FAN_CFG_TACH_INPUT) {
+> -				rv = i2c_smbus_read_word_swapped(client,
+> -					MAX31790_REG_TACH_COUNT(NR_CHANNEL
+> -								+ i));
+> -				if (rv < 0)
+> -					goto abort;
+> -				data->tach[NR_CHANNEL + i] = rv;
+> -			} else {
+> -				rv = i2c_smbus_read_word_swapped(client,
+> -						MAX31790_REG_PWMOUT(i));
+> -				if (rv < 0)
+> -					goto abort;
+> -				data->pwm[i] = rv;
+> -
+> -				rv = i2c_smbus_read_word_swapped(client,
+> -						MAX31790_REG_TARGET_COUNT(i));
+> -				if (rv < 0)
+> -					goto abort;
+> -				data->target_count[i] = rv;
+> -			}
+> -		}
+> -
+> -		data->last_updated = jiffies;
+> -		data->valid = true;
+> -	}
+> -	goto done;
+> -
+> -abort:
+> -	data->valid = false;
+> -	ret = ERR_PTR(rv);
+> -
+> -done:
+> -	mutex_unlock(&data->update_lock);
+> -
+> -	return ret;
+> -}
+> -
+>   static const u8 tach_period[8] = { 1, 2, 4, 8, 16, 32, 32, 32 };
+>   
+>   static u8 get_tach_period(u8 fan_dynamics)
+> @@ -159,28 +121,75 @@ static u8 bits_for_tach_period(int rpm)
+>   	return bits;
+>   }
+>   
+> +static int read_reg_byte(struct regmap *regmap, u8 reg)
+> +{
+> +	int rv;
+> +	int val;
+> +
+> +	rv = regmap_read(regmap, reg, &val);
+> +	if (rv < 0)
+> +		return rv;
+> +
+> +	return val;
+> +}
+> +
+> +static int read_reg_word(struct regmap *regmap, u8 reg)
+> +{
+> +	int rv;
+> +	u8 val_bulk[2];
+> +
+> +	rv = regmap_bulk_read(regmap, reg, val_bulk, 2);
+> +	if (rv < 0)
+> +		return rv;
+> +
+> +	return BULK_TO_U16(val_bulk[0], val_bulk[1]);
+> +}
+> +
+> +static int write_reg_word(struct regmap *regmap, u8 reg, u16 val)
+> +{
+> +	u8 bulk_val[2];
+> +
+> +	bulk_val[0] = U16_MSB(val);
+> +	bulk_val[1] = U16_LSB(val);
+> +
+> +	return regmap_bulk_write(regmap, reg, bulk_val, 2);
+> +}
+> +
+>   static int max31790_read_fan(struct device *dev, u32 attr, int channel,
+>   			     long *val)
+>   {
+> -	struct max31790_data *data = max31790_update_device(dev);
+> -	int sr, rpm;
+> -
+> -	if (IS_ERR(data))
+> -		return PTR_ERR(data);
+> +	struct max31790_data *data = dev_get_drvdata(dev);
+> +	struct regmap *regmap = data->regmap;
+> +	int tach, fault;
+>   
+>   	switch (attr) {
+>   	case hwmon_fan_input:
+> -		sr = get_tach_period(data->fan_dynamics[channel]);
+> -		rpm = RPM_FROM_REG(data->tach[channel], sr);
+> -		*val = rpm;
+> +		tach = read_reg_word(regmap, MAX31790_REG_TACH_COUNT(channel));
+> +		if (tach < 0)
+> +			return tach;
+> +
+> +		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
+>   		return 0;
+>   	case hwmon_fan_target:
+> -		sr = get_tach_period(data->fan_dynamics[channel]);
+> -		rpm = RPM_FROM_REG(data->target_count[channel], sr);
+> -		*val = rpm;
+> +		tach = read_reg_word(regmap, MAX31790_REG_TARGET_COUNT(channel));
+> +		if (tach < 0)
+> +			return tach;
+> +
+> +		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
+>   		return 0;
+>   	case hwmon_fan_fault:
+> -		*val = !!(data->fault_status & (1 << channel));
+> +		if (channel > 6)
 
-On 19/05/2021 18:29, Jisheng Zhang wrote:
-> On Tue, 18 May 2021 17:21:34 +0200
-> Alexandre Ghiti <alex@ghiti.fr> wrote:
-> 
->> For 64b kernels, we map all the kernel with write and execute permissions
->> and afterwards remove writability from text and executability from data.
->>
->> For 32b kernels, the kernel mapping resides in the linear mapping, so we
->> map all the linear mapping as writable and executable and afterwards we
->> remove those properties for unused memory and kernel mapping as
->> described above.
->>
->> Change this behavior to directly map the kernel with correct permissions
->> and avoid going through the whole mapping to fix the permissions.
->>
->> At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
->> ("riscv: Move kernel mapping outside of linear mapping") as reported
->> here https://github.com/starfive-tech/linux/issues/17.
->>
->> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
->> ---
->>
->> This patchset was tested on:
->>
->> * kernel:
->> - rv32 with CONFIG_STRICT_KERNEL_RWX: OK
->> - rv32 without CONFIG_STRICT_KERNEL_RWX: OK
->> - rv64 with CONFIG_STRICT_KERNEL_RWX: OK
->> - rv64 without CONFIG_STRICT_KERNEL_RWX: OK
->>
->> * xipkernel:
->> - rv32: build only
->> - rv64: OK
->>
->>   arch/riscv/include/asm/set_memory.h |  2 -
->>   arch/riscv/kernel/setup.c           |  1 -
->>   arch/riscv/mm/init.c                | 80 ++++++++++++++---------------
->>   3 files changed, 38 insertions(+), 45 deletions(-)
->>
->> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
->> index 086f757e8ba3..70154f012791 100644
->> --- a/arch/riscv/include/asm/set_memory.h
->> +++ b/arch/riscv/include/asm/set_memory.h
->> @@ -16,13 +16,11 @@ int set_memory_rw(unsigned long addr, int numpages);
->>   int set_memory_x(unsigned long addr, int numpages);
->>   int set_memory_nx(unsigned long addr, int numpages);
->>   int set_memory_rw_nx(unsigned long addr, int numpages);
->> -void protect_kernel_text_data(void);
->>   #else
->>   static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
->>   static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
->>   static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
->>   static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
->> -static inline void protect_kernel_text_data(void) {}
->>   static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
->>   #endif
->>   
->> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
->> index 03901d3a8b02..1eb50e512056 100644
->> --- a/arch/riscv/kernel/setup.c
->> +++ b/arch/riscv/kernel/setup.c
->> @@ -292,7 +292,6 @@ void __init setup_arch(char **cmdline_p)
->>   	sbi_init();
->>   
->>   	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
->> -		protect_kernel_text_data();
->>   		protect_kernel_linear_mapping_text_rodata();
-> 
-> If we extend the idea a bit, I.E create the correct permission for alias line
-> mapping at the first time, we can remove protect_kernel_linear_mapping_text_rodata()
-> 
+Please use the NR_CHANNEL constant.
 
-Yes, I agree, I will do that.
+> +			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS2);
+> +		else
+> +			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS1);
+> +
+> +		if (fault < 0)
+> +			return fault;
+> +
+> +		if (channel > 6)
+> +			*val = !!(fault & (1 << (channel - 6)));
+> +		else
+> +			*val = !!(fault & (1 << channel));
 
-> PS: No matter whether it's fine to extend, the set_memory_nx() calling in
-> protect_kernel_linear_mapping_text_rodata() is not necessary since the linear
-> mapping for 64bit is NX from the beginning.
+Better written without conditional as
+		*val = !!(fault & (1 << (channel % NR_CHANNEL)));
 
-You're totally right, that will be fixed when removing 
-protect_kernel_linear_mapping_text_rodata() entirely.
-
-> 
->>   	}
->>   
->> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
->> index 4faf8bd157ea..92b3184420a2 100644
->> --- a/arch/riscv/mm/init.c
->> +++ b/arch/riscv/mm/init.c
->> @@ -436,6 +436,36 @@ asmlinkage void __init __copy_data(void)
->>   }
->>   #endif
->>   
->> +#ifdef CONFIG_STRICT_KERNEL_RWX
->> +#define is_text_va(va)		({								\
->> +		unsigned long _va = va;								\
->> +		(_va < (unsigned long)__init_data_begin && _va >= (unsigned long)_start);	\
->> +	})
-> 
-> It's better if is_text_va() is a inline function
-> 
-
-Ok, will do.
-
->> +
->> +static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
-> 
-> I'm not sure whether it's necessary to put __init marker to inline functions
-> There are such issues in current riscv code, I planed to cook one patch
-> to remove __init from inline functions.
-> 
-> 
->> +{
->> +	return is_text_va(va) ? PAGE_KERNEL_READ_EXEC : PAGE_KERNEL;
-> 
-> if we extend the idea, then here we may return PAGE_KERNEL_READ, PAGE_KERNEL
-> and PAGE_KERNEL_READ_EXEC correspondingly.
-
-Again, I agree :)
-
-I will come up with an enhanced v2 soon,
-
-Thanks for your comments,
-
-Alex
-
-> 
-> Thanks
-> 
->> +}
->> +
->> +void mark_rodata_ro(void)
->> +{
->> +	unsigned long rodata_start = (unsigned long)__start_rodata;
->> +	unsigned long data_start = (unsigned long)_data;
->> +
->> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
->> +
->> +	debug_checkwx();
->> +}
->> +#else
->> +static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
->> +{
->> +	if (IS_ENABLED(CONFIG_32BIT))
->> +		return PAGE_KERNEL_EXEC;
->> +
->> +	return (va < kernel_virt_addr) ? PAGE_KERNEL : PAGE_KERNEL_EXEC;
->> +}
->> +#endif
->> +
->>   /*
->>    * setup_vm() is called from head.S with MMU-off.
->>    *
->> @@ -465,7 +495,8 @@ uintptr_t xiprom, xiprom_sz;
->>   #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
->>   #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
->>   
->> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
->> +					    __always_unused bool early)
->>   {
->>   	uintptr_t va, end_va;
->>   
->> @@ -484,7 +515,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->>   				   map_size, PAGE_KERNEL);
->>   }
->>   #else
->> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
->>   {
->>   	uintptr_t va, end_va;
->>   
->> @@ -492,7 +523,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
->>   	for (va = kernel_virt_addr; va < end_va; va += map_size)
->>   		create_pgd_mapping(pgdir, va,
->>   				   load_pa + (va - kernel_virt_addr),
->> -				   map_size, PAGE_KERNEL_EXEC);
->> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_kernel_va(va));
->>   }
->>   #endif
->>   
->> @@ -569,7 +600,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
->>   	 * us to reach paging_init(). We map all memory banks later
->>   	 * in setup_vm_final() below.
->>   	 */
->> -	create_kernel_page_table(early_pg_dir, map_size);
->> +	create_kernel_page_table(early_pg_dir, map_size, true);
->>   
->>   #ifndef __PAGETABLE_PMD_FOLDED
->>   	/* Setup early PMD for DTB */
->> @@ -693,21 +724,15 @@ static void __init setup_vm_final(void)
->>   		map_size = best_map_size(start, end - start);
->>   		for (pa = start; pa < end; pa += map_size) {
->>   			va = (uintptr_t)__va(pa);
->> -			create_pgd_mapping(swapper_pg_dir, va, pa,
->> -					   map_size,
->> -#ifdef CONFIG_64BIT
->> -					   PAGE_KERNEL
->> -#else
->> -					   PAGE_KERNEL_EXEC
->> -#endif
->> -					);
->>   
->> +			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
->> +					   pgprot_from_kernel_va(va));
->>   		}
->>   	}
->>   
->>   #ifdef CONFIG_64BIT
->>   	/* Map the kernel */
->> -	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
->> +	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
->>   #endif
->>   
->>   	/* Clear fixmap PTE and PMD mappings */
->> @@ -738,35 +763,6 @@ static inline void setup_vm_final(void)
->>   }
->>   #endif /* CONFIG_MMU */
->>   
->> -#ifdef CONFIG_STRICT_KERNEL_RWX
->> -void __init protect_kernel_text_data(void)
->> -{
->> -	unsigned long text_start = (unsigned long)_start;
->> -	unsigned long init_text_start = (unsigned long)__init_text_begin;
->> -	unsigned long init_data_start = (unsigned long)__init_data_begin;
->> -	unsigned long rodata_start = (unsigned long)__start_rodata;
->> -	unsigned long data_start = (unsigned long)_data;
->> -	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
->> -
->> -	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
->> -	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
->> -	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
->> -	/* rodata section is marked readonly in mark_rodata_ro */
->> -	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
->> -	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
->> -}
->> -
->> -void mark_rodata_ro(void)
->> -{
->> -	unsigned long rodata_start = (unsigned long)__start_rodata;
->> -	unsigned long data_start = (unsigned long)_data;
->> -
->> -	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
->> -
->> -	debug_checkwx();
->> -}
->> -#endif
->> -
->>   #ifdef CONFIG_KEXEC_CORE
->>   /*
->>    * reserve_crashkernel() - reserves memory for crash kernel
-> 
-> 
-> 
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-> 
+Guenter
