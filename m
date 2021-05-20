@@ -2,34 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 361B838AAAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:16:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4920238AAA7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239905AbhETLP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:15:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54402 "EHLO mail.kernel.org"
+        id S240108AbhETLPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:15:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239343AbhETKyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:54:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 11308616EB;
-        Thu, 20 May 2021 10:01:16 +0000 (UTC)
+        id S239347AbhETKyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:54:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA2F61CDF;
+        Thu, 20 May 2021 10:01:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504877;
-        bh=p58Su/mXEqlLZWGxN//FzrObBgFLeTTpue4aC2N+oE8=;
+        s=korg; t=1621504879;
+        bh=nLaZ4mPuYunB74JpKyPuKjcu8B0IQppJM1qCRYgeFOs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b236TGFT3F2NY+TDRYWnK23Ypo9A2k0erJ9OajzkAxZbWGDQEsAAeQgdM/jqdanaF
-         6XMgKcOgpFxMzlytUPCGBhl62TkfE2zs5tfB3XcFur8IUevsW8+hJV2PBO6EyCE26Z
-         7HGpa3bo7d5rrRnuLalGV4EySosKiN2M1hDdZ888=
+        b=RJhBk24FT6rbSEHz3co3Apc5HY8Q8DtJEbxqYquppFpYO/GHwLTfZOHDuKbVU5Erv
+         J19vTJLj+uOsVXV88tpOAHyzVBZ1jYyFkCPfv/86Pi5cZIsogQyQXN9pgD3ciG90xF
+         08b4onofejPi6AbKtkNFeYshiOGYyQ2tpQu9zCV8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 122/240] media: vivid: fix assignment of dev->fbuf_out_flags
-Date:   Thu, 20 May 2021 11:21:54 +0200
-Message-Id: <20210520092112.767381792@linuxfoundation.org>
+Subject: [PATCH 4.9 123/240] media: omap4iss: return error code when omap4iss_get() failed
+Date:   Thu, 20 May 2021 11:21:55 +0200
+Message-Id: <20210520092112.798567270@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,39 +42,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Yang Yingliang <yangyingliang@huawei.com>
 
-[ Upstream commit 5cde22fcc7271812a7944c47b40100df15908358 ]
+[ Upstream commit 8938c48fa25b491842ece9eb38f0bea0fcbaca44 ]
 
-Currently the chroma_flags and alpha_flags are being zero'd with a bit-wise
-mask and the following statement should be bit-wise or'ing in the new flag
-bits but instead is making a direct assignment.  Fix this by using the |=
-operator rather than an assignment.
+If omap4iss_get() failed, it need return error code in iss_probe().
 
-Addresses-Coverity: ("Unused value")
-
-Fixes: ef834f7836ec ("[media] vivid: add the video capture and output parts")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Fixes: 59f0ad807681 ("[media] v4l: omap4iss: Add support for OMAP4...")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/platform/vivid/vivid-vid-out.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/media/omap4iss/iss.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/media/platform/vivid/vivid-vid-out.c b/drivers/media/platform/vivid/vivid-vid-out.c
-index 8fed2fbe91a9..f78caf72cb3e 100644
---- a/drivers/media/platform/vivid/vivid-vid-out.c
-+++ b/drivers/media/platform/vivid/vivid-vid-out.c
-@@ -1003,7 +1003,7 @@ int vivid_vid_out_s_fbuf(struct file *file, void *fh,
- 		return -EINVAL;
- 	}
- 	dev->fbuf_out_flags &= ~(chroma_flags | alpha_flags);
--	dev->fbuf_out_flags = a->flags & (chroma_flags | alpha_flags);
-+	dev->fbuf_out_flags |= a->flags & (chroma_flags | alpha_flags);
- 	return 0;
- }
+diff --git a/drivers/staging/media/omap4iss/iss.c b/drivers/staging/media/omap4iss/iss.c
+index c26c99fd4a24..1e10fe204d3b 100644
+--- a/drivers/staging/media/omap4iss/iss.c
++++ b/drivers/staging/media/omap4iss/iss.c
+@@ -1244,8 +1244,10 @@ static int iss_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto error;
  
+-	if (!omap4iss_get(iss))
++	if (!omap4iss_get(iss)) {
++		ret = -EINVAL;
+ 		goto error;
++	}
+ 
+ 	ret = iss_reset(iss);
+ 	if (ret < 0)
 -- 
 2.30.2
 
