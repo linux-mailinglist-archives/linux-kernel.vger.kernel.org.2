@@ -2,190 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FF8438BA4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:09:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A5638BA03
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:08:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233613AbhETXKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:10:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60772 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233446AbhETXKQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:10:16 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC8ACC061763;
-        Thu, 20 May 2021 16:08:53 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id w15so21770755ljo.10;
-        Thu, 20 May 2021 16:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=r18WGOYqB7cDcwIrdUZr3c1RtFay90XOWzRkXpzbpZ0=;
-        b=kReZqq3TXkPaKnKM975AvfpkDJnQj1GfYVVP52VSnlgykMU5AgD7hicNxaX6UTHj5I
-         IOjZ8/7jDCaBCiT5pD5uc7+5ulqJs020y5drqrAy9qHGsxcDi5dJYc6mU/lPAMrb1Aq2
-         /1cLGWC+jVL6AQTy0hP3UGUscy55xVmQH9EJMPaNDbPvL5ktcEYJtQGm+YtB31o2ZRPm
-         kRra+eghLCI2Fw91fAC6GnuTk+8bVGOF56YtYFFzoSR4vs0Ot6sPl9Mmdhqd+Oqq3mee
-         cOr7G7Zdoqoqbg48x1s3MqD/Ocv8qT53nedF94XCHdEsE6hfNzXE6sMT2lw6AmoNnkne
-         8TVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=r18WGOYqB7cDcwIrdUZr3c1RtFay90XOWzRkXpzbpZ0=;
-        b=FEfOGLAKbNpHOmSdLK/7Xb7aNx07EZ/7ndB+zzSaUdtBKFbSTFK3obcsbUGvr+SE35
-         Asd1kgOImH3A9bCqCIvRTPllGsqvnSkFg+yISIClZFIIl/wQhXS7IFsrsJeBwfe3/ppE
-         5zvomG0LtcSs+wdMYabawAIuAWULs1uAUe/XWsI9Q9WrTutpST3yzM/peNK5UgtXk4z5
-         4316qy0KL0523anh9GNyZdtGMd7ukKJCFZmbQoKpEm2VaBU3ysknGVad++Lr9LyiXg4P
-         4f73o5ju/UfeOmSApaDEHVdq5scB/oKaBwtoq1crl7GbVsCNQVV75fbTXHHaXseqGIso
-         Rprg==
-X-Gm-Message-State: AOAM533kOK+p/8PCkms9IWQIfpGq1yGXsnj02S45WFcGNav+9BtGaM1b
-        IjGNLEpFWh7HrfmoXtALxH4=
-X-Google-Smtp-Source: ABdhPJy/cKgMCrnCONNJ8Nkz6EEFUfKHyuZjMVBO2ev1m+omQ/33+E6Mrpgkq9iflL3pXTCSb6m4Cw==
-X-Received: by 2002:a2e:2d11:: with SMTP id t17mr4582035ljt.56.1621552132132;
-        Thu, 20 May 2021 16:08:52 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-76.dynamic.spd-mgts.ru. [109.252.193.76])
-        by smtp.gmail.com with ESMTPSA id 4sm427821lfr.175.2021.05.20.16.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 16:08:51 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
-        =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Matt Merhar <mattmerhar@protonmail.com>,
-        Paul Fertser <fercerpav@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        linux-clk@vger.kernel.org
-Subject: [PATCH v1 13/13] soc/tegra: regulators: Support core domain state syncing
-Date:   Fri, 21 May 2021 02:07:51 +0300
-Message-Id: <20210520230751.26848-14-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210520230751.26848-1-digetx@gmail.com>
-References: <20210520230751.26848-1-digetx@gmail.com>
+        id S233032AbhETXJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 19:09:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231967AbhETXJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 19:09:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0B6E6135B;
+        Thu, 20 May 2021 23:08:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621552094;
+        bh=uLz83HVMPoowinqW6vDUYL3pAH/trQxHeIbSlfBCwP4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=DcZirm2IfgKDlXaXbw2UNcmPudyQwek09S0HonO/9IfmHX6tS6zJkdNCiQHYBD5Zw
+         5Y27MNoEzcLLUSiDDrZe2bheoSgQDatxgw4pYz8I9KCGrkfi61gLxg+UPYGHF6bssH
+         Ccb2nvCQq4qA8g2pN+Rj5rt78tH+CQ6CwnfeGh6ocXlHQ1UleVQ3b/8WyTChPeI/2t
+         jFxLs31h1csRpE4AhNbLXtly/e2pX5KdltwqyNdMZfcmESllPayCxW7E/mq9sal/Es
+         2P6e6BR/yDd7uYW3IMnoLXlKIRBUV5YqKpuwH1jtLA6WpHEECXtO8Laiohxb2EUJg8
+         3GKljCKGe0yoQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A1A605C023D; Thu, 20 May 2021 16:08:14 -0700 (PDT)
+Date:   Thu, 20 May 2021 16:08:14 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Suren Baghdasaryan <surenb@google.com>
+Cc:     Michel Lespinasse <michel@lespinasse.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux-Kernel <linux-kernel@vger.kernel.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Rik van Riel <riel@surriel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joel Fernandes <joelaf@google.com>,
+        Andy Lutomirski <luto@kernel.org>
+Subject: Re: [PATCH 00/29] Speculative page faults (anon vmas only)
+Message-ID: <20210520230814.GQ4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210430195232.30491-1-michel@lespinasse.org>
+ <20210430224649.GA29203@lespinasse.org>
+ <20210503181118.GA21048@lespinasse.org>
+ <20210517175750.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <CAJuCfpHD=GN2UMhbAhpp+UfvF0doBWcZDNx+u4RzcDezUW2+0g@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpHD=GN2UMhbAhpp+UfvF0doBWcZDNx+u4RzcDezUW2+0g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The core voltage shall not drop until state of core domain is synced,
-i.e. all device drivers that use core domain are loaded and ready.
+On Thu, May 20, 2021 at 03:10:24PM -0700, Suren Baghdasaryan wrote:
+> On Mon, May 17, 2021 at 10:57 AM Paul E. McKenney <paulmck@kernel.org> wrote:
+> >
+> > On Mon, May 03, 2021 at 11:11:18AM -0700, Michel Lespinasse wrote:
+> > > On Fri, Apr 30, 2021 at 03:46:49PM -0700, Michel Lespinasse wrote:
+> > > > I- Maple tree
+> > > >
+> > > > I do not think there is any fundamental conflict between the maple
+> > > > tree patches currently being considered, and this patchset.
+> > > > I actually have a (very lightly tested) tree merging the two together,
+> > > > which was a fairly easy merge. For those interested, I made this
+> > > > available at my github, as the v5.12-maple-spf branch.
+> > >
+> > > People were still confused about it, so the instructions to fetch this are:
+> > > git fetch https://github.com/lespinasse/linux.git v5.12-maple-spf
+> >
+> > Finally getting around to actually testing this, apologies for the
+> > delay!
+> >
+> > Just checking to see if I am in the right place.  The warning below is
+> > easily fixed, but I figured that I should check.
+> >
+> >                                                         Thanx, Paul
+> >
+> > ------------------------------------------------------------------------
+> >
+> >   CC      arch/x86/kernel/asm-offsets.s
+> > In file included from ./include/linux/mmap_lock.h:10,
+> >                  from ./include/linux/mm.h:18,
+> >                  from ./include/linux/kallsyms.h:12,
+> >                  from ./include/linux/bpf.h:20,
+> >                  from ./include/linux/bpf-cgroup.h:5,
+> >                  from ./include/linux/cgroup-defs.h:22,
+> >                  from ./include/linux/cgroup.h:28,
+> >                  from ./include/linux/memcontrol.h:13,
+> >                  from ./include/linux/swap.h:9,
+> >                  from ./include/linux/suspend.h:5,
+> >                  from arch/x86/kernel/asm-offsets.c:13:
+> > ./include/linux/vmstat.h: In function ‘__mod_lruvec_page_state’:
+> > ./include/linux/vmstat.h:504:24: error: implicit declaration of function ‘page_pgdat’; did you mean ‘page_private’? [-Werror=implicit-function-declaration]
+> >   __mod_node_page_state(page_pgdat(page), idx, val);
+> >                         ^~~~~~~~~~
+> >                         page_private
+> > ./include/linux/vmstat.h:504:24: warning: passing argument 1 of ‘__mod_node_page_state’ makes pointer from integer without a cast [-Wint-conversion]
+> >   __mod_node_page_state(page_pgdat(page), idx, val);
+> >                         ^~~~~~~~~~~~~~~~
+> > ./include/linux/vmstat.h:267:28: note: expected ‘struct pglist_data *’ but argument is of type ‘int’
+> >  void __mod_node_page_state(struct pglist_data *, enum node_stat_item item, long);
+> >                             ^~~~~~~~~~~~~~~~~~~~
+> > ./include/linux/vmstat.h: In function ‘mod_lruvec_page_state’:
+> > ./include/linux/vmstat.h:510:22: warning: passing argument 1 of ‘mod_node_page_state’ makes pointer from integer without a cast [-Wint-conversion]
+> >   mod_node_page_state(page_pgdat(page), idx, val);
+> >                       ^~~~~~~~~~~~~~~~
+> > ./include/linux/vmstat.h:275:26: note: expected ‘struct pglist_data *’ but argument is of type ‘int’
+> >  void mod_node_page_state(struct pglist_data *, enum node_stat_item, long);
+> >                           ^~~~~~~~~~~~~~~~~~~~
+> > In file included from ./include/linux/kallsyms.h:12,
+> >                  from ./include/linux/bpf.h:20,
+> >                  from ./include/linux/bpf-cgroup.h:5,
+> >                  from ./include/linux/cgroup-defs.h:22,
+> >                  from ./include/linux/cgroup.h:28,
+> >                  from ./include/linux/memcontrol.h:13,
+> >                  from ./include/linux/swap.h:9,
+> >                  from ./include/linux/suspend.h:5,
+> >                  from arch/x86/kernel/asm-offsets.c:13:
+> > ./include/linux/mm.h: At top level:
+> > ./include/linux/mm.h:1568:26: error: conflicting types for ‘page_pgdat’
+> >  static inline pg_data_t *page_pgdat(const struct page *page)
+> >                           ^~~~~~~~~~
+> > In file included from ./include/linux/mmap_lock.h:10,
+> >                  from ./include/linux/mm.h:18,
+> >                  from ./include/linux/kallsyms.h:12,
+> >                  from ./include/linux/bpf.h:20,
+> >                  from ./include/linux/bpf-cgroup.h:5,
+> >                  from ./include/linux/cgroup-defs.h:22,
+> >                  from ./include/linux/cgroup.h:28,
+> >                  from ./include/linux/memcontrol.h:13,
+> >                  from ./include/linux/swap.h:9,
+> >                  from ./include/linux/suspend.h:5,
+> >                  from arch/x86/kernel/asm-offsets.c:13:
+> > ./include/linux/vmstat.h:504:24: note: previous implicit declaration of ‘page_pgdat’ was here
+> >   __mod_node_page_state(page_pgdat(page), idx, val);
+> >                         ^~~~~~~~~~
+> > cc1: some warnings being treated as errors
+> 
+> Hi Paul,
+> I promised you to look into this but somehow forgot to reply, sorry
+> about that. The issue is the new "#include <linux/mm_types.h>" in mm.h
+> which causes page_pgdat() usage before it is defined:
+> 
+> mm.h includes mm_types.h
+> mm_types.h includes vmstat.h
+> vmstat.h uses page_pgdat()
+> mm.h defines page_pgdat()
+> 
+> Not sure if this is the best way to fix it but this worked fine for me:
 
-Support core domain state syncing. The core domain driver invokes the
-core-regulator voltage syncing once the state of domain is synced, at
-this point the core voltage is allowed to go lower than the level left
-after bootloader.
+OK, so I really am using the right tree, then.  I will try with your
+patch below, thank you!
 
-Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
-Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20 and TK1 T124
-Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/soc/tegra/regulators-tegra20.c | 19 ++++++++++++++++++-
- drivers/soc/tegra/regulators-tegra30.c | 18 +++++++++++++++++-
- 2 files changed, 35 insertions(+), 2 deletions(-)
+							Thanx, Paul
 
-diff --git a/drivers/soc/tegra/regulators-tegra20.c b/drivers/soc/tegra/regulators-tegra20.c
-index 3479be5ee494..81787ae3d03e 100644
---- a/drivers/soc/tegra/regulators-tegra20.c
-+++ b/drivers/soc/tegra/regulators-tegra20.c
-@@ -17,6 +17,8 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- 
-+#include <soc/tegra/common.h>
-+
- struct tegra_regulator_coupler {
- 	struct regulator_coupler coupler;
- 	struct regulator_dev *core_rdev;
-@@ -42,6 +44,21 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
- 	int core_cur_uV;
- 	int err;
- 
-+	/*
-+	 * Tegra20 SoC has critical DVFS-capable devices that are
-+	 * permanently-active or active at a boot time, like EMC
-+	 * (DRAM controller) or Display controller for example.
-+	 *
-+	 * The voltage of a CORE SoC power domain shall not be dropped below
-+	 * a minimum level, which is determined by device's clock rate.
-+	 * This means that we can't fully allow CORE voltage scaling until
-+	 * the state of all DVFS-critical CORE devices is synced.
-+	 */
-+	if (tegra_soc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
-+		pr_info_once("voltage state synced\n");
-+		return 0;
-+	}
-+
- 	if (tegra->core_min_uV > 0)
- 		return tegra->core_min_uV;
- 
-@@ -62,7 +79,7 @@ static int tegra20_core_limit(struct tegra_regulator_coupler *tegra,
- 	 */
- 	tegra->core_min_uV = core_max_uV;
- 
--	pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
-+	pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
- 
- 	return tegra->core_min_uV;
- }
-diff --git a/drivers/soc/tegra/regulators-tegra30.c b/drivers/soc/tegra/regulators-tegra30.c
-index 6e4f3d9e7be1..e0203f78b396 100644
---- a/drivers/soc/tegra/regulators-tegra30.c
-+++ b/drivers/soc/tegra/regulators-tegra30.c
-@@ -17,6 +17,7 @@
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- 
-+#include <soc/tegra/common.h>
- #include <soc/tegra/fuse.h>
- 
- struct tegra_regulator_coupler {
-@@ -43,6 +44,21 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
- 	int core_cur_uV;
- 	int err;
- 
-+	/*
-+	 * Tegra30 SoC has critical DVFS-capable devices that are
-+	 * permanently-active or active at a boot time, like EMC
-+	 * (DRAM controller) or Display controller for example.
-+	 *
-+	 * The voltage of a CORE SoC power domain shall not be dropped below
-+	 * a minimum level, which is determined by device's clock rate.
-+	 * This means that we can't fully allow CORE voltage scaling until
-+	 * the state of all DVFS-critical CORE devices is synced.
-+	 */
-+	if (tegra_soc_core_domain_state_synced() && !tegra->sys_reboot_mode) {
-+		pr_info_once("voltage state synced\n");
-+		return 0;
-+	}
-+
- 	if (tegra->core_min_uV > 0)
- 		return tegra->core_min_uV;
- 
-@@ -63,7 +79,7 @@ static int tegra30_core_limit(struct tegra_regulator_coupler *tegra,
- 	 */
- 	tegra->core_min_uV = core_max_uV;
- 
--	pr_info("core minimum voltage limited to %duV\n", tegra->core_min_uV);
-+	pr_info("core voltage initialized to %duV\n", tegra->core_min_uV);
- 
- 	return tegra->core_min_uV;
- }
--- 
-2.30.2
-
+> ---
+>  include/linux/mmap_lock.h | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/mmap_lock.h b/include/linux/mmap_lock.h
+> index 98f24a9910a9..13d4a706c0eb 100644
+> --- a/include/linux/mmap_lock.h
+> +++ b/include/linux/mmap_lock.h
+> @@ -7,7 +7,7 @@
+>  #include <linux/rwsem.h>
+>  #include <linux/tracepoint-defs.h>
+>  #include <linux/types.h>
+> -#include <linux/vmstat.h>
+> +#include <linux/vm_event_item.h>
+> 
+>  #ifdef CONFIG_SPECULATIVE_PAGE_FAULT
+>  #define MMAP_LOCK_SEQ_INITIALIZER(name) \
+> @@ -113,6 +113,8 @@ static inline bool __mmap_seq_read_check(struct
+> mm_struct *mm,
+>  }
+> 
+>  #ifdef CONFIG_SPECULATIVE_PAGE_FAULT_STATS
+> +static inline void count_vm_event(enum vm_event_item item);
+> +
+>  static inline bool mmap_seq_read_check(struct mm_struct *mm, unsigned long seq,
+>          enum vm_event_item fail_event)
+>  {
+> --
+> 
+> Thanks,
+> Suren.
