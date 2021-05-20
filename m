@@ -2,215 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB29389AD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:19:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 867F2389AD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230190AbhETBVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47954 "EHLO
+        id S230202AbhETBWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:22:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhETBVD (ORCPT
+        with ESMTP id S229498AbhETBWP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:21:03 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08726C061574;
-        Wed, 19 May 2021 18:19:42 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id i67so14698537qkc.4;
-        Wed, 19 May 2021 18:19:41 -0700 (PDT)
+        Wed, 19 May 2021 21:22:15 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9478AC061574;
+        Wed, 19 May 2021 18:20:54 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d16so11142063pfn.12;
+        Wed, 19 May 2021 18:20:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=1D3O+JRxyNjN7AfoZ/LrzEWFZxa2jRcbF0cobpLTwBI=;
-        b=eU7zw9r8Zd+1y+GyrlwfK44OtLvUENYjnu3QHCykZLnrIK1EN7Jd8yURoCh4abpebN
-         nXffVmA/P4XqKMZfZrpr7T1+Mmuk8i8PSzF4Cb83TFFmSc5OHyzLSo5Ss9zMgIXCFJIS
-         M4OMkrTj3I76GCuMk7ahIAtCJDLiY307C2iQihHpsIUhm7tYX+55tYEtD7P+Ezw9TNLh
-         TyounvSXxOTukIGHmFD9aU0uAXRo0LdKXYLUf6o5P1PO/wG2Li/5dFsHXjRf4TcdKziN
-         T3KUgTFP8G0AJmwUfsb1SCqALHzb1Da224QzqT7nGd2WB2UTOWV3leq8x6jdmO3evhnd
-         zo1Q==
+        bh=ouxxrOZoBlNY9/ZWpDy87EV/vidd2vtoBo+A+O7NdB4=;
+        b=twXbMCcL0FyP0DPrdrqQzik6nxjWebPnaD31f3kQMpfG9HrAakU+HC1YcMaJ+oMQxq
+         3GW6DnF398QPZRbEU9zHzegUViqlBwrxUOVPaYcs46HtGVZl0pkIYgasmK/MCRr0xHEu
+         SotZQTkgOb456yMu5VyFVFbt/yQdrscbnf/SVs6AG3sj5ByHxHoN5HWRKPwBJxbH3+PV
+         FCfZkle9yLUuL5zUd0Hi1VvT0xUXQoPolwqwWCkgghCmh8IjyLpjMYNPBuJdPqYXIFIS
+         l898j7Qn+FCHQu+NnwWfxicWFyHVVfuBIDXz4kwiWOz+SjJxr4pbxyaclAInY8Qd0ckV
+         Ipvw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=1D3O+JRxyNjN7AfoZ/LrzEWFZxa2jRcbF0cobpLTwBI=;
-        b=tamorkXvRqdweimgq26dqiUkrEjXPqH8gfjx+INX6g+Y4LdeRm9kblDerbzAPGWz/G
-         tNroHwGlVe3O5WU0vopgClHJENnbruqO/L3e9e697QEs1B1B4CGrKQzhtByIJPCYpYBV
-         +KE9ZPmK4QsKmCqh2JDwgOe1UZLMDOamnPR7Fj6btJek7EBOWM9TZAgDxDuemirssnRL
-         op8/0KMcE+2rNyW33VC7m7WO4oYZiAe+b4HxoDOmuygYFLtX0nOF8aBTN0a9D1hbKuEh
-         0fzB6JoJStAIl3peUULeXIIsNigFCIgW1Tb4cLaDidoxSUytf80buZ3EIToC0hiSrrut
-         aq5g==
-X-Gm-Message-State: AOAM533NXhU+OFVgjFAmZkET9bwQCeuvY9AJRaG4gxnF5RuYLMz85O8I
-        aax0xi4QtKsQo58ViB2UjSORgmsgVWw=
-X-Google-Smtp-Source: ABdhPJyFOg1bxkiIgR5UtafC5GzENVkl+n00XgA3bXG4idwEtbP07zX0Un68QH28aZ9fnkkoC860yg==
-X-Received: by 2002:ae9:e706:: with SMTP id m6mr2534629qka.74.1621473581138;
-        Wed, 19 May 2021 18:19:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u126sm1075725qkd.80.2021.05.19.18.19.38
+        bh=ouxxrOZoBlNY9/ZWpDy87EV/vidd2vtoBo+A+O7NdB4=;
+        b=sZHtMjxDrE6JNzRyd/sLQJsU7JWy2zqRedBqE1cHz5AodoArJKXBvS6hP2dhjhoIPM
+         +JNvemfOTC6BFVHjMyRo9yUA/1WGeqjbEBvgDeQe5xyNV4fEoXprA6jaG74EbQi4d/oW
+         c8T5y8pD7icV2U3sjLeVp1Gtzr8sF32bxS/lqwLRIBnX1iVDkaYkeuY2WFiDOSJS8Ze5
+         Du9r/9QIiAvzLqbnC5cGS+9/8X26J4/4zjILx5XSzS8Ek3ewlibgOwhEg4rTKK9GouEx
+         8OCSkvoTGyT2jUTXQiyyOINWBUDc45EhdLK/VTum+ELw/6M2P122HAMTqkdNhUjfAIQY
+         wB6A==
+X-Gm-Message-State: AOAM530PAhOSoNxlig7vwEwd7ScHwBjTKW4cTr74ggp25wPi4AZiZ68O
+        avJhaKn5BBfgHwaqHOYkf/QeWr0LY6CzKA==
+X-Google-Smtp-Source: ABdhPJyMzsFoRhTZ2KTiPbWEVzM9RGPwpMRrN+jZce6w/7Btyu4CihxiWd45icyxsz/aCBBJOORc0A==
+X-Received: by 2002:a63:6f8e:: with SMTP id k136mr2024214pgc.326.1621473654090;
+        Wed, 19 May 2021 18:20:54 -0700 (PDT)
+Received: from jianchwadeMacBook-Pro.local ([2402:5ec0:1fff:ffff:db93:56ad:e27f:2e1])
+        by smtp.gmail.com with ESMTPSA id 67sm447965pfw.83.2021.05.19.18.20.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 18:19:40 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Joel Stanley <joel@jms.id.au>,
-        Quan Nguyen <quan@os.amperecomputing.com>
-Cc:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Wolfram Sang <wsa@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        openipmi-developer@lists.sourceforge.net,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-i2c@vger.kernel.org,
-        Open Source Submission <patches@amperecomputing.com>,
-        Phong Vo <phong@os.amperecomputing.com>,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>
-References: <20210519074934.20712-1-quan@os.amperecomputing.com>
- <20210519074934.20712-5-quan@os.amperecomputing.com>
- <CACPK8XdyQT=cuSr9KBqC0PBkOLgBUBpyz3kZEA3JuOuZsQN_Rw@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v3 4/7] i2c: aspeed: Acknowledge Tx done w/wo ACK irq late
-Message-ID: <414a51e8-0973-0007-9ffc-2949f3c7b0f8@roeck-us.net>
-Date:   Wed, 19 May 2021 18:19:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 19 May 2021 18:20:53 -0700 (PDT)
+Subject: Re: [PATCH] ext4: get discard out of jbd2 commit kthread
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <53146e54-af36-0c32-cad8-433460461237@gmail.com>
+ <YKLXev4cjeRuGRqd@mit.edu> <c7c00420-ed5c-0f5d-23c1-1c64b1800778@gmail.com>
+ <YKPV6FZWfoUD3bgL@mit.edu> <1d43599f-fed1-b37e-a411-2b0f31583991@gmail.com>
+ <YKUp5BpAwaBREe6d@mit.edu>
+From:   Wang Jianchao <jianchao.wan9@gmail.com>
+Message-ID: <1e29444c-cbd4-8c5e-d4c3-deaa61592b19@gmail.com>
+Date:   Thu, 20 May 2021 09:20:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CACPK8XdyQT=cuSr9KBqC0PBkOLgBUBpyz3kZEA3JuOuZsQN_Rw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <YKUp5BpAwaBREe6d@mit.edu>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 4:43 PM, Joel Stanley wrote:
-> On Wed, 19 May 2021 at 07:50, Quan Nguyen <quan@os.amperecomputing.com> wrote:
->>
->> With Tx done w/wo ACK are ack'ed early at beginning of irq handler,
-> 
-> Is w/wo a typo? If not, please write the full words ("with and without")
-> 
->> it is observed that, usually, the Tx done with Ack irq raises in the
->> READ REQUESTED state. This is unexpected and complaint as below appear:
->> "Unexpected Ack on read request"
->>
->> Assumed that Tx done should only be ack'ed once it was truly processed,
->> switch to late ack'ed this two irqs and seen this issue go away through
->> test with AST2500..
-> 
-> Please read Guneter's commit message
-> 2be6b47211e17e6c90ead40d24d2a5cc815f2d5c to confirm that your changes
-> do not invalidate the fix that they made.  Add them to CC for review.
->  
 
-This might re-introduce a race condition if the code that is handling
-Tx done sends another byte without acknowledging the original interrupt,
-and another Tx done (or Tx nack) interrupt is received before the interrupt
-handler returns. If that happens, the second Tx done interrupt would be
-acknowledged but not be handled, and transmit would stall. That may well be
-what I had observed at the time but it is too long ago to remember, sorry.
 
-> Again, this is a fix that is independent of the ssif work. Please send
-> it separately with a Fixes line.
-> 
+On 2021/5/19 11:08 PM, Theodore Y. Ts'o wrote:
+> On Wed, May 19, 2021 at 09:27:56AM +0800, Wang Jianchao wrote:
 >>
->> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->> ---
->> v3:
->>    + First introduce in v3 [Quan]
+>> We're running ext4 with discard on a nbd device whose backend is storage
+>> cluster. The discard can help to free the unused space to storage pool.
 >>
->>   drivers/i2c/busses/i2c-aspeed.c | 26 ++++++++++++++++++--------
->>   1 file changed, 18 insertions(+), 8 deletions(-)
->>
->> diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
->> index 3fb37c3f23d4..b2e9c8f0ddf7 100644
->> --- a/drivers/i2c/busses/i2c-aspeed.c
->> +++ b/drivers/i2c/busses/i2c-aspeed.c
->> @@ -606,8 +606,12 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
->>
->>          spin_lock(&bus->lock);
->>          irq_received = readl(bus->base + ASPEED_I2C_INTR_STS_REG);
->> -       /* Ack all interrupts except for Rx done */
->> -       writel(irq_received & ~ASPEED_I2CD_INTR_RX_DONE,
->> +       /*
->> +        * Ack all interrupts except for Rx done and
->> +        * Tx done with/without ACK
+>> And sometimes application delete a lot of data and discard is flooding. 
+>> Then we see the jbd2 commit kthread is blocked for a long time. Even
+>> move the discard out of jbd2, we still see the write IO of jbd2 log
+>> could be blocked. blk-wbt could help to relieve this. Finally the delay
+>> is shift to allocation path. But this is better than blocking the page
+>> fault path which holds the read mm->mmap_sem.
 > 
-> Nit: this comment can be on one line.
-> 
-> 
->> +        */
->> +       writel(irq_received &
->> +              ~(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2CD_INTR_TX_NAK),
->>                 bus->base + ASPEED_I2C_INTR_STS_REG);
->>          readl(bus->base + ASPEED_I2C_INTR_STS_REG);
->>          irq_received &= ASPEED_I2CD_INTR_RECV_MASK;
->> @@ -652,12 +656,18 @@ static irqreturn_t aspeed_i2c_bus_irq(int irq, void *dev_id)
->>                          "irq handled != irq. expected 0x%08x, but was 0x%08x\n",
->>                          irq_received, irq_handled);
->>
->> -       /* Ack Rx done */
->> -       if (irq_received & ASPEED_I2CD_INTR_RX_DONE) {
->> -               writel(ASPEED_I2CD_INTR_RX_DONE,
->> -                      bus->base + ASPEED_I2C_INTR_STS_REG);
->> -               readl(bus->base + ASPEED_I2C_INTR_STS_REG);
->> -       }
->> +       /* Ack Rx done and Tx done with/without ACK */
->> +       /* Note: Re-use irq_handled variable */
-> 
-> I'm not sure what this note means.
-> 
->> +       irq_handled = 0;
->> +       if (irq_received & ASPEED_I2CD_INTR_RX_DONE)
->> +               irq_handled |= ASPEED_I2CD_INTR_RX_DONE;
->> +       if (irq_received & ASPEED_I2CD_INTR_TX_ACK)
->> +               irq_handled |= ASPEED_I2CD_INTR_TX_ACK;
->> +       if (irq_received & ASPEED_I2CD_INTR_TX_NAK)
->> +               irq_handled |= ASPEED_I2CD_INTR_TX_NAK;
->> +       writel(irq_handled, bus->base + ASPEED_I2C_INTR_STS_REG);
-> 
-> Are you intentionally only acking the bits that are set when we read
-> from STS_REG at the start of the handler? If not, we could write this
-> instead:
-> 
-> writel(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK |
-> ASPEED_I2CD_INTR_TX_NAK,
->          bus->base + ASPEED_I2C_INTR_STS_REG);
+> I'm assuming that the problem is when the application deletes a lot of
+> data, the discard flood is causing performance problems on your nbd
+> server.  Is that the high level problem that you are trying to solve?
 > 
 
-This would clear those bits unconditionally even if they were not handled.
+Yes, not only the discard sometimes could be very slow, but also it
+would degrade the performance of normal write IO
 
-> If you only want to ack the bits that are set, then do this:
+> So if that's the case, I'd suggest a different approach.  First, move
+> kmem_cache_free(ext4_free_data_cachep, entry) out of
+> ext4_free_data_in_buddy() to its caller, ext4_process_data.  Then if
+> discard is enabled, after calling ext4_free_data_in_buddy(), the
+> ext4_free_data struct will be detached from rbtree rooted in
+> ext4_group_info.bb_free_root, and then we can attach it to a new
+> rbtree rooted in ext4_group_info.bb_discard_root.
 > 
->    writel(irq_received &
->              (ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK |
-> ASPEED_I2CD_INTR_TX_NAK),
->           bus->base + ASPEED_I2C_INTR_STS_REG);
+> This allows the block to be reused as soon the commit is finished
+> (allowing for potentially more efficient block allocations), but we
+> can now keep track of which blocks would be useful for discarding and
+> decouple that from when we release the blocks to be reused.  We can
+> now use the pre-existing fstrim kernel thread infrastructure to lock a
+> block group, and we can now iterate over the rbtree, and take into
+> account which blocks have since become allocated --- since if a block
+> has been allocated, there's no need to send a discard for it.
 > 
-> That way, you can avoid all of the tests.
-> 
-Or
-	irq_handled = irq_received &
-		(ASPEED_I2CD_INTR_RX_DONE | ASPEED_I2CD_INTR_TX_ACK | ASPEED_I2CD_INTR_TX_NAK);
-	writel(irq_handled, bus->base + ASPEED_I2C_INTR_STS_REG);
+> I think this will be more efficient, and will allow us to share more
+> of the code for fstrim and the discard-at-runtime model used by "mount
+> -o discard".  We can also fine-tune how quickly we issue discards; it
+> might be that if user has executed "rm -rf" it might actually better
+> to wait until the deletes have completed, even if it takes several
+> commit intervals, since it might allow us to combine discards if the
+> blocks 100-199 and 400-500 are released in one commit, and blocks
+> 200-399 are released two or three commits later.
 
-if the idea was to avoid the long statement.
 
-Guenter
+Yes, this is more efficient and fair. I will cook the next version path
+based on the suggestion above.
 
->> +       readl(bus->base + ASPEED_I2C_INTR_STS_REG);
 > 
-> When you move this, please add a comment that reminds us why we do a
-> write-then-read (see commit c926c87b8e36dcc0ea5c2a0a0227ed4f32d0516a).
+> Something else I'd urge you to consider is whether it's possible to
+> enhance the nbd protocol to add some kind of back-channel notification
+> when the shared storage is getting low on space.  In that case, when
+> the nbd client code a request from the nbd server indicating, "please
+> issue discards if possible", it could either trigger an upcall to
+> userspace, which could then issue the fstrim ioctl, which in the case
+> where "mount -o discard" is enabled, would accelerate when discards
+> took place.
 > 
->> +
->>          spin_unlock(&bus->lock);
->>          return irq_remaining ? IRQ_NONE : IRQ_HANDLED;
->>   }
->> --
->> 2.28.0
->>
+> We could then make the fstrim thread normally work on a much slower
+> pace, but when there is a signal from the shared storage that space is
+> needed, clients could accelerate when they issue discards to free up
+> shared space.
 
+This sounds great !!!
+I will share this with my colleagues to see how to implement it.
+
+> 
+> Cheers,
+> 
+> 						- Ted
+> 
+> P.S.  One other potential thought; if we have established a new
+> bb_discard_root rbtree, it *might* actually be beneficial to consider
+> using that information in the block allocator.  One of the best way to
+> tell an SSD that block is no longer needed is to simply overwrite that
+> block.  If we do that, we don't need to send a discard to that block
+> any more.
+
+This seems also true for the storage server. If the nbd client reuse the
+blocks that's just freed, the server needn't to do new allocation.
+
+> 
+> Of course, we still want to keep blocks contiguous since even though
+> seeks are free for SSD's, we want to keep large reads contiguous as
+> much as possible, and we want to keep the extent tree as compact as
+> possible.  But if we have just released a 12k file, and we are writing
+> a new 12k file, and don't really care *where* in the block group we
+> are writing that file, reusing blocks that had just been freed might
+> actually be a good strategy.
+> 
+> That's not something you need to implement in this patch series, but
+> it might be an interesting optimization.
+> 
+
+And thanks a million for your suggestions
+
+Best Regards
+Jianchao 
