@@ -2,178 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EF4389DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:27:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21079389DE0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhETG2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:28:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56988 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhETG2r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:28:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 318C161001;
-        Thu, 20 May 2021 06:27:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621492045;
-        bh=PP1srx9J3a10k9bIiRLbPrXtjSHUyu1S98n8vAXVmgw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=O/Vnde5Qrs/39Y+V0ixtP7gjheq7c9e8zPl0OPoRdcscEd4j5J83XJ3sppRLcSw6h
-         E2c8/93Yguua103MoAjcTmPweqWE44OY15+8j8piCLJMDBnMDXIzIVBazzZ9xP2k94
-         m/23Mu41Bpx/2aRv3qxFh5hVaq7eJDT7R1QfMWBA=
-Date:   Thu, 20 May 2021 08:27:23 +0200
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "sashal@kernel.org" <sashal@kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Subject: Re: [PATCH 5.4 020/141] ip6_vti: proper dev_{hold|put} in
- ndo_[un]init methods
-Message-ID: <YKYBS0W1vh1949rK@kroah.com>
-References: <20210517140242.729269392@linuxfoundation.org>
- <20210517140243.443931506@linuxfoundation.org>
- <5520be7988fb894c0f4a7c9d7031410c51fcec1c.camel@nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+        id S230453AbhETG3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:29:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27764 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229534AbhETG3F (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 02:29:05 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14K6PDJT031782;
+        Wed, 19 May 2021 23:27:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=B+TfmFcoq/qai1+aSphZtuCC26LzcMAgAuGUuYptPVM=;
+ b=Suw8l/dBZMEIWbpKzFZJN7E5RbyspDdQnbM4TIV2FvF/3qbfVas9hory3TrqN/1gdfAV
+ qlv6j7Puu+kdX4LZlsgFCL4XtiMYyAg8L7pr1+m2lAQifohEQf3bR+CDP/pOeSu3piwg
+ H65EI/NvL9wYP4QxOyrt5/7hWrMOfPle2G8= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 38ndsw15tr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 19 May 2021 23:27:29 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 23:27:28 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NNL8ctiVefZRDgZvedTDjV6lxjNvalBRuVnCobB4SjNzcQu43DiqEfGrJm6LMEUzZa8tGo8RWQ7B/XJDrTqBwrGwZoZtxtbnh9mTWb54iNAIw3gnU8QNqN8vkIx15ODP0Sz0XWh+EvqKrmE6kMKGP1e36qq4I9cAE27HO9Y522TS+kKYx7Ij7zl/9mKB/DfRatZwhMvR5k3xCCmLcHtjP2ZYJOgCfciVyyh3B8DZv+/kG1R0xFbHF5qQFwsSTUQUVHIQWGtPOT8mrjpkeF7HKgTPxOQsUJS+nzm+62Q9zCmOwKDcu9kyS7CsNrzC6rTWHvq18gRf9n1nSMhXsig02A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B+TfmFcoq/qai1+aSphZtuCC26LzcMAgAuGUuYptPVM=;
+ b=CuxQ+ciFhseSseUoRAsE1r5rDIVZ6UU5ZBbFD4Y6p02xEXgQ9nh5Y4fGPAntzCIcJDfdWMkWmT1zWReWLcmwGxg7HGmeQiPogYRZO9/O74UZ7bAEklqRyX+YwqdHym6L64nv6nS77vNs0c6IDeqXSujiIL04AdizoQCVJlJomqmB5j5s+DLGt009/EzdmyPM6OU/p+rYWUeE/Sjf6TMvUy9q+8eMXp/C5go5IPfW3PjyQD3pHy9HCyBEyB5HX3RWnhIFhNU156ZBWEckQo/DoKDHPagDXT7AtlkMjMSXKfKAZLjEOLyjUgajg4hEMVmArJBRSLudDobHnoZfI4fKmg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+Authentication-Results: amazon.co.jp; dkim=none (message not signed)
+ header.d=none;amazon.co.jp; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2822.namprd15.prod.outlook.com (2603:10b6:a03:15b::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 20 May
+ 2021 06:27:26 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4129.034; Thu, 20 May 2021
+ 06:27:26 +0000
+Date:   Wed, 19 May 2021 23:27:23 -0700
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+CC:     "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Benjamin Herrenschmidt <benh@amazon.com>,
+        Kuniyuki Iwashima <kuni1840@gmail.com>, <bpf@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 09/11] bpf: Support socket migration by eBPF.
+Message-ID: <20210520062723.nora2kagi46b47lr@kafai-mbp.dhcp.thefacebook.com>
+References: <20210517002258.75019-1-kuniyu@amazon.co.jp>
+ <20210517002258.75019-10-kuniyu@amazon.co.jp>
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <5520be7988fb894c0f4a7c9d7031410c51fcec1c.camel@nokia.com>
+In-Reply-To: <20210517002258.75019-10-kuniyu@amazon.co.jp>
+X-Originating-IP: [2620:10d:c090:400::5:1f3d]
+X-ClientProxiedBy: MW4PR04CA0211.namprd04.prod.outlook.com
+ (2603:10b6:303:87::6) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:1f3d) by MW4PR04CA0211.namprd04.prod.outlook.com (2603:10b6:303:87::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Thu, 20 May 2021 06:27:25 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d3035cda-7e49-4026-6c3c-08d91b585608
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2822:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2822FB497E73605A2FAB6D1BD52A9@BYAPR15MB2822.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: QLrtHHAh6CJ8HGQopsDhbiN3Ou0Z+NobsoEzIHWSh5RtefSnDiPoQlBJOrUxhi7nFZV4O/0RA8uFJRM0e//neKXpmu2oReXlMlu+2cyr4pbbBWeUrPjrAU1uPnGJ4WTbyme/s9Hcz6WKf9vM23xbBkXiwFjVh17fHSxgjJ48ZJsKghCRNCEmq/KkIbfY+W9kCduLUCDLpF2w5/M6W7yKspkdaOiL4f6eIpkLc1kUuXIhB9cLzNoI5OiLcWEgjAduCPgj5InQcZi7UpG7II5aIKUGMRcW2D2PMeR92AOUdXsoW8ZU/BGzKvFpqYnTdK71ttr8FHB5FtAIpLHDacQAIWnefnuDK4AXaeWeyYT9Dfd062v4HbVp0MMjsE5RMU+/ZosW6L0bMT0QVJVvXgGYyFSnh8GM0eiC/i4HdlhYRusIBlsbgjAnqs2ipc6yYsz8AzEJo/1e7Sp/oUYAbUHe5AMFaNhg6J4hHv6xh4OBFVIDHbOHjOgKZi/0dMiDVDODs6Hl9voJlcd7svFkGbVxit2FuSYcsPU5CY9pM2A5Vs+yq6naa3fIYq+DQE4H80kgUEBeR/rELyCU24F/Sh6c+LqYj/XEo5yhhjxkbbR14Og=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(39860400002)(396003)(346002)(86362001)(478600001)(5660300002)(16526019)(186003)(55016002)(38100700002)(8676002)(1076003)(54906003)(4744005)(7696005)(52116002)(316002)(6506007)(8936002)(9686003)(6916009)(66476007)(66946007)(7416002)(2906002)(4326008)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: DvzKCP5qnUDBOpbNHV/G5MmNOWObdeZXjdh09tWaR/MAf4yehdWkUV2NRDq6vNKtmoPiNR92jgCI1Et01d0HeWenfu9W7BDrr2aWhwskbxRVVJyMmBy8Hfzg+CbRU4p2QQYaVj+gkVFyeQ1O9tEoXwMHWExWTl/60kI3UXQXFGD2IdG4oGw3iJV+W5wG6tLXrmdTiwl6GyX4i2IHnTngMzLEwXbIsNbMm19jFUVxB6gPQnHpKmtGsiKeTfnPqENcIUWY6d8ehGzC3Vb6sexDZVhYCDDOn6+JillmCKR7b8nsQaHjIh3GySxZ8UZU8ZpRxNRroIYss44Yj5LxcekAl+tOTaJ+U0QfL4uyc4xXK6rS+yvgDqvQq22jswJQcMUVv6l0AUXPmNzSNMxw5PRBxWsHWXUqrqmWb/u8NCnYbncj5XbGqgiN6c06T046qfn7QB9NK1M1alTdrQSWy1Bwnj1Mo1ytiJNPK3lRBgKk8MYeRvB1czsJXJY+pzJYh7O8ZFm3Cf2sufAJaDrOvVnJrnCtV0zZ/MrttqfHp7mIfvqkSKgJz1NNjHN8x68A5putnM+lHxnvDZNrLlANw8/m+jvwO/sgew+XeX5ZCfQj8yW22ThCGcS66lMBdi9lFbnbAFdzN2YlhngGhROe76pRBZWbABcbM/r1JJy9zP4O/EnNiW3KU4+Q1OBpUhz8wnTlLF0fXdJqzF8P2Om2i4gxrUV9bOS1lwXpGcZnAbN8t+Ud0igrq8mw0o+ivXSb61uOyDGk3tu/lHHNve/rMKrlew==
+X-MS-Exchange-CrossTenant-Network-Message-Id: d3035cda-7e49-4026-6c3c-08d91b585608
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 06:27:26.6289
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dt8zYBgRMnkzO56pnoUS0Z1cqx9vJwAR+PJAcpIT7gH1Mhc4wEJv84uTUXj/y5v+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2822
+X-OriginatorOrg: fb.com
+X-Proofpoint-ORIG-GUID: sPRyZ5XDB1QmJdDkQPB5DdwtV-CQ2qpA
+X-Proofpoint-GUID: sPRyZ5XDB1QmJdDkQPB5DdwtV-CQ2qpA
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-19_10:2021-05-19,2021-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
+ spamscore=0 phishscore=0 priorityscore=1501 adultscore=0 bulkscore=0
+ impostorscore=0 clxscore=1015 malwarescore=0 mlxlogscore=658
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105200052
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 06:16:11AM +0000, Rantala, Tommi T. (Nokia - FI/Espoo) wrote:
-> On Mon, 2021-05-17 at 16:01 +0200, Greg Kroah-Hartman wrote:
-> From: Eric Dumazet <edumazet@google.com>
+On Mon, May 17, 2021 at 09:22:56AM +0900, Kuniyuki Iwashima wrote:
+> This patch introduces a new bpf_attach_type for BPF_PROG_TYPE_SK_REUSEPORT
+> to check if the attached eBPF program is capable of migrating sockets. When
+> the eBPF program is attached, we run it for socket migration if the
+> expected_attach_type is BPF_SK_REUSEPORT_SELECT_OR_MIGRATE or
+> net.ipv4.tcp_migrate_req is enabled.
 > 
-> [ Upstream commit 40cb881b5aaa0b69a7d93dec8440d5c62dae299f ]
-> 
-> Hi Greg,
-> 
-> There's fixup to this commit, hit the "unregister_netdevice" problems in 5.4.120
-> while running kernel selftests.
-> 
-> (also check the "Fixes:" tags, I think not all of them were yet included in 5.4.y)
-> 
-> 
->   commit 0d7a7b2014b1a499a0fe24c9f3063d7856b5aaaf
->   Author: Eric Dumazet <edumazet@google.com>
->   Date:   Wed Mar 31 14:38:11 2021 -0700
-> 
->     ipv6: remove extra dev_hold() for fallback tunnels
->     
->     My previous commits added a dev_hold() in tunnels ndo_init(),
->     but forgot to remove it from special functions setting up fallback tunnels.
->     
->     Fallback tunnels do call their respective ndo_init()
->     
->     This leads to various reports like :
->     
->     unregister_netdevice: waiting for ip6gre0 to become free. Usage count = 2
->     
->     Fixes: 48bb5697269a ("ip6_tunnel: sit: proper dev_{hold|put} in ndo_[un]init methods")
->     Fixes: 6289a98f0817 ("sit: proper dev_{hold|put} in ndo_[un]init methods")
->     Fixes: 40cb881b5aaa ("ip6_vti: proper dev_{hold|put} in ndo_[un]init methods")
->     Fixes: 7f700334be9a ("ip6_gre: proper dev_{hold|put} in ndo_[un]init methods")
->     Signed-off-by: Eric Dumazet <edumazet@google.com>
->     Reported-by: syzbot <syzkaller@googlegroups.com>
->     Signed-off-by: David S. Miller <davem@davemloft.net>
-> 
-> 
-> 
-> After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
-> a warning [1]
-> 
-> Issue here is that:
-> 
-> - all dev_put() should be paired with a corresponding prior dev_hold().
-> 
-> - A driver doing a dev_put() in its ndo_uninit() MUST also
->   do a dev_hold() in its ndo_init(), only when ndo_init()
->   is returning 0.
-> 
-> Otherwise, register_netdevice() would call ndo_uninit()
-> in its error path and release a refcount too soon.
-> 
-> Therefore, we need to move dev_hold() call from
-> vti6_tnl_create2() to vti6_dev_init_gen()
-> 
-> [1]
-> WARNING: CPU: 0 PID: 15951 at lib/refcount.c:31
-> refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
-> Modules linked in:
-> CPU: 0 PID: 15951 Comm: syz-executor.3 Not tainted 5.12.0-rc4-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS
-> Google 01/01/2011
-> RIP: 0010:refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
-> Code: 1d 6a 5a e8 09 31 ff 89 de e8 8d 1a ab fd 84 db 75 e0 e8 d4 13 ab fd
-> 48 c7 c7 a0 e1 c1 89 c6 05 4a 5a e8 09 01 e8 2e 36 fb 04 <0f> 0b eb c4 e8 b8
-> 13 ab fd 0f b6 1d 39 5a e8 09 31 ff 89 de e8 58
-> RSP: 0018:ffffc90001eaef28 EFLAGS: 00010282
-> RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-> RDX: 0000000000040000 RSI: ffffffff815c51f5 RDI: fffff520003d5dd7
-> RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-> R10: ffffffff815bdf8e R11: 0000000000000000 R12: ffff88801bb1c568
-> R13: ffff88801f69e800 R14: 00000000ffffffff R15: ffff888050889d40
-> FS:  00007fc79314e700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 00007f1c1ff47108 CR3: 0000000020fd5000 CR4: 00000000001506f0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> Call Trace:
->  __refcount_dec include/linux/refcount.h:344 [inline]
->  refcount_dec include/linux/refcount.h:359 [inline]
->  dev_put include/linux/netdevice.h:4135 [inline]
->  vti6_dev_uninit+0x31a/0x360 net/ipv6/ip6_vti.c:297
->  register_netdevice+0xadf/0x1500 net/core/dev.c:10308
->  vti6_tnl_create2+0x1b5/0x400 net/ipv6/ip6_vti.c:190
->  vti6_newlink+0x9d/0xd0 net/ipv6/ip6_vti.c:1020
->  __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3443
->  rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
->  rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
->  netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
->  netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
->  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
->  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
->  sock_sendmsg_nosec net/socket.c:654 [inline]
->  sock_sendmsg+0xcf/0x120 net/socket.c:674
->  ____sys_sendmsg+0x331/0x810 net/socket.c:2350
->  ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
->  __sys_sendmmsg+0x195/0x470 net/socket.c:2490
->  __do_sys_sendmmsg net/socket.c:2519 [inline]
->  __se_sys_sendmmsg net/socket.c:2516 [inline]
->  __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2516
-> 
-> Signed-off-by: Eric Dumazet <edumazet@google.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  net/ipv6/ip6_vti.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/ipv6/ip6_vti.c b/net/ipv6/ip6_vti.c
-> index cc6180e08a4f..01ddb0f70c57 100644
-> --- a/net/ipv6/ip6_vti.c
-> +++ b/net/ipv6/ip6_vti.c
-> @@ -192,7 +192,6 @@ static int vti6_tnl_create2(struct net_device *dev)
->  
->         strcpy(t->parms.name, dev->name);
->  
-> -       dev_hold(dev);
->         vti6_tnl_link(ip6n, t);
->  
->         return 0;
-> @@ -921,6 +920,7 @@ static inline int vti6_dev_init_gen(struct net_device
-> *dev)
->         dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
->         if (!dev->tstats)
->                 return -ENOMEM;
-> +       dev_hold(dev);
->         return 0;
->  }
->  
-
-I do not understand, what needs to be done here?
-
-greg k-h
+> Ccurrently, the expected_attach_type is not enforced for the
+nit. 'Currenctly,'
