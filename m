@@ -2,86 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53B7C38B583
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:51:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D648D38B585
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235593AbhETRxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:53:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:2204 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231680AbhETRxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:53:12 -0400
-IronPort-SDR: vVhR/DwApdYxvjNHZAvNwK53gUSupAjObUSJ26PC9wg0RH9ElJReMaye6o0djQsBUHQ42aHG5N
- 6/vrJ6GWv+uA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265205147"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="265205147"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 10:51:49 -0700
-IronPort-SDR: 8JNksvObprn0+tyfBq8A84G210WIVRliyNYxaJ3iN7nLYyaawky6DosNXGpWOzPzhSm+7a1qeV
- xZ169Yw7pVBQ==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="475295228"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.167.234]) ([10.209.167.234])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 10:51:48 -0700
-Subject: Re: [PATCH v26 26/30] ELF: Introduce arch_setup_elf_property()
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-27-yu-cheng.yu@intel.com> <YKVUgzJ0MVNBgjDd@zn.tnic>
- <c29348d8-caae-5226-d095-ae3992d88338@intel.com> <YKYrQQ6tKfifjNjW@zn.tnic>
- <d04259f1-a869-ec1c-aa74-93cd6c2c2d7b@intel.com> <YKad0e5VDNZhBw+4@zn.tnic>
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Message-ID: <3243001b-db72-3cd3-889f-6fe390276715@intel.com>
-Date:   Thu, 20 May 2021 10:51:48 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235698AbhETRx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:53:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231680AbhETRx2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:53:28 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3580C061574;
+        Thu, 20 May 2021 10:52:06 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0eb6009f35b1f88a592069.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b600:9f35:b1f8:8a59:2069])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6A16B1EC064C;
+        Thu, 20 May 2021 19:52:05 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621533125;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=QjVcZjqm5/10ZZQkty/TinnzjR8RRiru1ikOMqd1Ri0=;
+        b=owNuv2xMy04KYoWQbdhnDa1orkCnNBBR3QKPzPJ2pOrqn01FoO7lMw8hmu062zokqFRuc7
+        8TdPjT+CGeRmDT7p5b0WR9sMUH5u+dDXiq8x+dtBe2DtmKVrQcd+ztYo+ulXA5o8/e1U02
+        SkYYPhbroDaJlvbQu/UILWw0tvWkO+Y=
+Date:   Thu, 20 May 2021 19:51:57 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 10/20] x86/sev: Add a helper for the
+ PVALIDATE instruction
+Message-ID: <YKahvUZ3hAgWViqd@zn.tnic>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-11-brijesh.singh@amd.com>
+ <4ecbed35-aca4-9e30-22d0-f5c46b67b70a@amd.com>
+ <YKadOnfjaeffKwav@zn.tnic>
+ <8e7f0a86-55e3-2974-75d6-50228ea179b3@amd.com>
 MIME-Version: 1.0
-In-Reply-To: <YKad0e5VDNZhBw+4@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <8e7f0a86-55e3-2974-75d6-50228ea179b3@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/2021 10:35 AM, Borislav Petkov wrote:
-> On Thu, May 20, 2021 at 10:18:10AM -0700, Yu, Yu-cheng wrote:
->> The latest pdf's are posted here.
->>
->> https://gitlab.com/x86-psABIs/x86-64-ABI/-/wikis/x86-64-psABI
-> 
-> Ah, that document.
-> 
-> Please make sure it is specified over those defines from which document
-> they're coming from.
-> 
+On Thu, May 20, 2021 at 12:44:50PM -0500, Brijesh Singh wrote:
+> Hmm, I use the SIZEMISMATCH later in the patches.
 
-I will do that.
+You do, where? Maybe I don't see it.
+
+> Since I was introducing the pvalidate in separate patch so decided to
+> define all the return code.
+
+You can define them in a comment so that it is clear what PVALIDATE
+returns but not as defines when they're unused.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
