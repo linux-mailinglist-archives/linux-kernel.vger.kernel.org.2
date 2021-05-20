@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944B538AC59
+	by mail.lfdr.de (Postfix) with ESMTP id DE2F738AC5A
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241885AbhETLiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:38:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
+        id S242012AbhETLiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:38:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240534AbhETLRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:17:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA0061D70;
-        Thu, 20 May 2021 10:09:48 +0000 (UTC)
+        id S239786AbhETLRn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:17:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7707861953;
+        Thu, 20 May 2021 10:09:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505388;
-        bh=eSjBDezw5GUs86aXFJgox3tmd//r+gj6jkpjpTOlgWY=;
+        s=korg; t=1621505390;
+        bh=70Q2zUYevucvksNKB1LJtedxE0esBWEfuNKP45SGFWA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HEOrylqZuTWJfZlFZ4YoHpynp43HbgSxgoImySAfHysJgiKStexmhat+0er+9d50H
-         LfNH8JH2c7MUuDONTta25V284466fzdJj8k2WYjs4hzy1XOa3ltwTBXRZYs3niaUVL
-         34h3wnQ/H7d6+guoDqBvlK6fBWpcW90uTfV80NZM=
+        b=gSYpn8FKw4W/vxChinhlARKvw954L8Am0z/2rydVShNZnHDx6BLWTSfyRhplvwgLc
+         uZnFrjjOXSRzAAC6Eaiqz/joHQKgOoVhBwekbFGsHd+7/0TQ03ARFxEn5SmPTQVPAR
+         7QB5CFKzoEu/luPvI7H7juor7EnUrjx+413Z9dG8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 078/190] ARM: dts: exynos: correct PMIC interrupt trigger level on Snow
-Date:   Thu, 20 May 2021 11:22:22 +0200
-Message-Id: <20210520092104.771971015@linuxfoundation.org>
+Subject: [PATCH 4.4 079/190] usb: gadget: pch_udc: Replace cpu_to_le32() by lower_32_bits()
+Date:   Thu, 20 May 2021 11:22:23 +0200
+Message-Id: <20210520092104.809400111@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -39,39 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Krzysztof Kozlowski <krzk@kernel.org>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-[ Upstream commit 8987efbb17c2522be8615085df9a14da2ab53d34 ]
+[ Upstream commit 91356fed6afd1c83bf0d3df1fc336d54e38f0458 ]
 
-The Maxim PMIC datasheets describe the interrupt line as active low
-with a requirement of acknowledge from the CPU.  Without specifying the
-interrupt type in Devicetree, kernel might apply some fixed
-configuration, not necessarily working for this hardware.
+Either way ~0 will be in the correct byte order, hence
+replace cpu_to_le32() by lower_32_bits(). Moreover,
+it makes sparse happy, otherwise it complains:
 
-Additionally, the interrupt line is shared so using level sensitive
-interrupt is here especially important to avoid races.
+.../pch_udc.c:1813:27: warning: incorrect type in assignment (different base types)
+.../pch_udc.c:1813:27:    expected unsigned int [usertype] dataptr
+.../pch_udc.c:1813:27:    got restricted __le32 [usertype]
 
-Fixes: c61248afa819 ("ARM: dts: Add max77686 RTC interrupt to cros5250-common")
-Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201210212534.216197-9-krzk@kernel.org
+Fixes: f646cf94520e ("USB device driver of Topcliff PCH")
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210323153626.54908-1-andriy.shevchenko@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5250-snow-common.dtsi | 2 +-
+ drivers/usb/gadget/udc/pch_udc.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos5250-snow-common.dtsi b/arch/arm/boot/dts/exynos5250-snow-common.dtsi
-index 0a7f408824d8..b45ad99da8c5 100644
---- a/arch/arm/boot/dts/exynos5250-snow-common.dtsi
-+++ b/arch/arm/boot/dts/exynos5250-snow-common.dtsi
-@@ -281,7 +281,7 @@
- 	max77686: max77686@09 {
- 		compatible = "maxim,max77686";
- 		interrupt-parent = <&gpx3>;
--		interrupts = <2 IRQ_TYPE_NONE>;
-+		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&max77686_irq>;
- 		wakeup-source;
+diff --git a/drivers/usb/gadget/udc/pch_udc.c b/drivers/usb/gadget/udc/pch_udc.c
+index f4b81e8f2272..6e84b27c14dd 100644
+--- a/drivers/usb/gadget/udc/pch_udc.c
++++ b/drivers/usb/gadget/udc/pch_udc.c
+@@ -1797,7 +1797,7 @@ static struct usb_request *pch_udc_alloc_request(struct usb_ep *usbep,
+ 	}
+ 	/* prevent from using desc. - set HOST BUSY */
+ 	dma_desc->status |= PCH_UDC_BS_HST_BSY;
+-	dma_desc->dataptr = cpu_to_le32(DMA_ADDR_INVALID);
++	dma_desc->dataptr = lower_32_bits(DMA_ADDR_INVALID);
+ 	req->td_data = dma_desc;
+ 	req->td_data_last = dma_desc;
+ 	req->chain_len = 1;
 -- 
 2.30.2
 
