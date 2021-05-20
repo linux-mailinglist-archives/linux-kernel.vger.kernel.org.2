@@ -2,189 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51D3638B8A7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFA638B8B3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229755AbhETU66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:58:58 -0400
-Received: from mail-dm6nam10on2066.outbound.protection.outlook.com ([40.107.93.66]:2241
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229547AbhETU65 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:58:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=l1G8lBtknGgxDXCiK4x79SZ/lI45CccmCXc0yMVY2uA8aIOEBNsetWc58rpp5aijbGi3K+gZHKDPk0ybrxQuan287LQp5NBUklPQPr0uZbFxHksjd6XEMyfa1yzfBZs1EDmqnOi1JTdRu+UD0ecRzrTaE3VaCzrxrh/8f+o82DNGc2Om0X52ciKI5iqQ7QhwCJ+9hdeNfVQbd4/IM6Pb7R66HOne2Jo0Kj7SOU7doZyaUfQZ9LhrXzYfHBJTDDaVBJ7KjOHkJc+L2GaDoxY2xRGvoL4ikmAJrQNIUdARubpsJFyEn5bNiFBn1BOS4sVReOSkmthTtoNLF94U7bKykw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ruYoICjrffxarbYTI+a0bRBGz1I95bNjeyz6MyCvWrY=;
- b=CE9EQIXfzfUccK9jTzM0zZl/NcSAEv/8AjymtMM3Vw6+1ktsWBYuPDpjHbakUePoXhCZ+RjM91Fn20LN3Mn1dugTk1p2k25bE6gSAln7ynnxwlwCDjA6JIN1I1CEjPPrN7tTYmGcFNRtpVoZoyMw1sbnMrMdEShyM8pp/yXUpyfJ2XQFsqD1cn93VpWBKsya7NC2IIvXieKjosSmXKvs5q/Vadssa4lrmgdYv22HFKtOn0U35+WY2s63UoMlrkvgJWs8HKCQb1DcmqolygSIrS5p9M5abAXbyGK5Ri6bodTb3s0NEi6QDLpcKE/0jaWAujNdTy8wL3+9NS3+GvUdwQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ruYoICjrffxarbYTI+a0bRBGz1I95bNjeyz6MyCvWrY=;
- b=T77aDCBlFItcDBhhRq6zRQZpTllX4E7DqysL2uMlNStLAoC1K6JyRToXwEQhc8FbhbwBfdSoFJBjLUQ7JNnxc7i/QWsnoxgrrnSBILTUIig8XDw4i9B4IWYR6nL34+5L2t/WbLzaUwtZn7QjunRR7EbVKYsB/Q1trA+qurxmPVk=
-Authentication-Results: amd.com; dkim=none (message not signed)
- header.d=none;amd.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB4353.namprd12.prod.outlook.com (2603:10b6:5:2a6::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4129.26; Thu, 20 May 2021 20:57:34 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4129.033; Thu, 20 May
- 2021 20:57:34 +0000
-Subject: Re: [PATCH] KVM: SVM: Do not terminate SEV-ES guests on GHCB
- validation failure
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <f8811b3768c4306af7fb2732b6b3755489832c55.1621020158.git.thomas.lendacky@amd.com>
- <CAMkAt6qJqTvM0PX+ja3rLP3toY-Rr4pSUbiFKL1GwzYZPG6f8g@mail.gmail.com>
- <324d9228-03e9-0fe2-59c0-5e41e449211b@amd.com> <YKa1jduPK9JyjWbx@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <468cee77-aa0a-cf4a-39cf-71b5bfb3575e@amd.com>
-Date:   Thu, 20 May 2021 15:57:31 -0500
+        id S229808AbhETVFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:05:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35531 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229786AbhETVFV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 17:05:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621544613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XI1+ioIETrLNp2SjtWd5x0p8X2EPPhXZxf2J/PFrcfA=;
+        b=MS4imyqk4F60z1zyZIGDzuRKyNEEWYS1bZpaBiW6nCGhWF02Ei+8Xgqye2Sfrp/SBia9Sr
+        JkZQYaqHu/Ol0yQNzZV96j5yMPggTsDbRFTRl2wrRKTsMV+1zQjnA9E2nk6Ub/cnJ5gOlT
+        9Fb/O2aI7UmDL4lbcAHZrYUgmwmKVfQ=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-367-GiSDtXJEOHaCXvMh80Ioaw-1; Thu, 20 May 2021 17:03:32 -0400
+X-MC-Unique: GiSDtXJEOHaCXvMh80Ioaw-1
+Received: by mail-ed1-f72.google.com with SMTP id da10-20020a056402176ab029038f0fea1f51so1939898edb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:03:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XI1+ioIETrLNp2SjtWd5x0p8X2EPPhXZxf2J/PFrcfA=;
+        b=Y6au8K3oHGQrFGo6iy/jEeWCCJUtSI5SnaaVc5x7x6nXmj5HdDuCxnT808T9WA5KJ+
+         W5Hxo4ZAaUrSGIATQlY3h5YEMajdAhk68AF0Jdil9Jv3wagvP9KtULMB2wtoOO2hVAW0
+         y93ziOUjE9suDR05aaaaPi6VFxAknQNx0ohtRqfbZIKP2vY1S34mC55Z5ynsg3iwqrBY
+         JbzDVBIUnIjH+8kUsHWAj/UJFDPbkiy0UnV9bpwG7coVUFLX7mrdQDQSclJW7y1bToOb
+         h7tUaX7KvKlSix2/0muQxbZHR10GiZMYg42+4lekO55vwLRvHthsE/sotHmsbB6qMgCI
+         0bYg==
+X-Gm-Message-State: AOAM533u2W0DrVdq7ZfqhpPcSgaor40Ufcs/nBgQipqFokn9y+Cj7tSa
+        Gs2kAUR/8ZTzhqw0T6w2rk2KZdHzlK+L0ansnJ28VBZKt/BAtqrTWdr8Ke6thQmnioTtRB/c2jC
+        A7CrNyzO77PkgEbWS0xrH6CaD
+X-Received: by 2002:a17:907:2167:: with SMTP id rl7mr5146011ejb.171.1621544609816;
+        Thu, 20 May 2021 14:03:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzSKN6aQENotMx6MHh9Ta+x7pQ5H1oiUIuYHDMy+L3nexIHL26Xa8SPMVq68XG0FTTKEAjDvQ==
+X-Received: by 2002:a17:907:2167:: with SMTP id rl7mr5145897ejb.171.1621544608406;
+        Thu, 20 May 2021 14:03:28 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id i2sm2138826edc.96.2021.05.20.14.03.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 14:03:27 -0700 (PDT)
+Subject: Re: [PATCH v4 1/8] ACPI: scan: Extend acpi_walk_dep_device_list()
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-i2c <linux-i2c@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
+        Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>
+References: <20210520140928.3252671-1-djrscally@gmail.com>
+ <20210520140928.3252671-2-djrscally@gmail.com>
+ <CAJZ5v0hy=AmbBK72w+ZsVZ4x0haQerTxeDnBXKOU5bOosUHgPA@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <f4c23507-b717-8b18-8b90-0a8d68ac60df@redhat.com>
+Date:   Thu, 20 May 2021 23:03:26 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-In-Reply-To: <YKa1jduPK9JyjWbx@google.com>
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <CAJZ5v0hy=AmbBK72w+ZsVZ4x0haQerTxeDnBXKOU5bOosUHgPA@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA0PR11CA0185.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::10) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SA0PR11CA0185.namprd11.prod.outlook.com (2603:10b6:806:1bc::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 20:57:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: dcc28f46-ccd0-4fee-9b2d-08d91bd1e444
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4353:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB43536D079A0797B7C2BC10BBEC2A9@DM6PR12MB4353.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: krooWJEIyk4+dkDJGLw8ICui3aMlJd5HFkhOGRsIRik5Yb1I1m+L1ee2E/9NFoU+9ZvpUj9ZNGpY87kVDayWn3y9beSRG6rCqoNZM6Mx3OGYRNb+K2TPxAriMr3vcZt9kY1JdGO0oWAa2sy6OhJmatNhP4pTSzV94TMsUYZM6zutLQM2XpoPWYeCQye+RCTD2hqU+57aGXLL/aCvP1YjaDsx7iq6jBJoyoZ1hKw9u3fqPiCEpTA20C7h57/TFzoRO44yeAmlfInVgVNSFmx4QA5CIJL2dQEmlmIMij2wbNIS54xJtxR+qo7Nllgn/Goen6QHa6kwHV0Lp4XpzL1+LHzfp2jL8dl/4mw8A0+18Y/btx0Y1+S0fANVFJFr4OIQbOf65IRDoyBtkQonKFD8jwohLZDOVe8A7Wh+Plg0SnbVhiIyvpICC/PYcWzJ7LBdLEiUXSpUGijYK7++Wfq+oxom26v6gjA6GZ/axFoftxIBSd1mS/TLGwWw9hjdfPgKs0A/8++cm+QW54uEokcJHuKxbTdy+kJ6XejZSj4eDzoUMbV9r14ihsfUxu2KapFYLbQu2SJ5LeqDC2rdT1hveBtgnBDVMbrEcUt82bNNE+Gtt9JSw37o+Pi2ihHLrJj5An4Y0UpsacDYkDVnolQ92hcP/Dtohv8s0YmE5mAd7HMi4XjITlzdk3dKWjIvcHRv
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(396003)(39860400002)(346002)(376002)(16526019)(86362001)(186003)(6916009)(54906003)(66476007)(31686004)(66556008)(36756003)(478600001)(316002)(38100700002)(956004)(66946007)(2616005)(7416002)(4326008)(53546011)(5660300002)(83380400001)(8936002)(26005)(6512007)(6486002)(31696002)(8676002)(6506007)(2906002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?d1Uwa3VhUUYvTjdTMmFrQXFEUDVvQUxiOTlmOGlBQ3F2cXdSUW1wMnp4RkE1?=
- =?utf-8?B?SjFOck1uemsvREI4Vm5BVUYrMGhKdEhSSDcydWR0dEhIV2hpZUhsM041WENE?=
- =?utf-8?B?UUtNa25ybG4zS1NJcTdSU2VWYmkxaWNKS1pEUDMwZk5sQ0MrSmhZTHVPZFBl?=
- =?utf-8?B?Y01lSzQ3L2Z2OEJLN2ZvY3JMT0dveTQ1M01QOEw2Sm56NU1xK1kyWmQzRFF2?=
- =?utf-8?B?djRDQUhOZ2lsNHMwSUJtcWhuRCtUTGxEYzYwZ2NzaElnSDNaMFJTZ2QxL0ty?=
- =?utf-8?B?azY5MHhmZnpDcktQeGVJbk1wd210WkxNa2pWZ3QzUTlyZi83aXJabjVTK29B?=
- =?utf-8?B?bjVRbW5FbjlDWmZ1a1dRckExcnFaYXBrS2FiQnJDOTFYbzFzN2RDL3NyTzBU?=
- =?utf-8?B?Smxpa29PN1BJNUNlZnpSakFRTFdrbm85Q1lQWS9oQ1c1UVRhWk5OU1dac3R6?=
- =?utf-8?B?NncyaXJXUFU2MXZBcHdtcEs5ODQ1R2YzQ0FzSHkzaXU0eEEvNGlWOXZLdXZT?=
- =?utf-8?B?WEN5bWV6VHBQdVBaQzBNaXlKREd0bjJxK3BzZWV0bmxUTG5nb2lYN1VOT0RH?=
- =?utf-8?B?RC9BOWVEN2gvTU1zN09pb2Y3cHhtVXFTYm80Ky9RVk9KRnpwUzdaWlBXQmdk?=
- =?utf-8?B?MjJqbzJhV0hzQ2V5dExFVXRBS3l2ZHlWV1VUajhzRnRiNWl5MERnQk9WWTlE?=
- =?utf-8?B?OEY5UU5Ea2l4TDF4MEVBS0R6RnVqc1NRQzlJWmN4RXdrUlVHUE9yVWplaXdI?=
- =?utf-8?B?Umw1Rk9OVG01K0NXcFJqTWc3ZUQ4blRYaVEwRTVjL3ZGMzJWeC80ZkFwUkVR?=
- =?utf-8?B?RWhZVjc4Y21lVEdmNlRBSjMvNlU1elIwSndlRVlkcjIwZlZLWWo0eENNQ1NX?=
- =?utf-8?B?eVE1ckFEL1NMOE8ydGVvZks4WldSSmJhdXVybXA1b21CSlEyQStHNUlvT0lu?=
- =?utf-8?B?OExwL3lzMW5uMEltZWZRQ1EraFJ3WWt0WWF3bzFzOUVKTys3bXJjcGJZWjZQ?=
- =?utf-8?B?TkpqbWk5cEFKcTlOcmhOOXRpV1hydjEyM3hxNzlIczkwQWRDOGRzenp6ZVdz?=
- =?utf-8?B?aDZYeTJqZEZGUndmWXFtU2o5ck0zRWM1T00xZDE5Y292WnhsK3MzUXBpelUx?=
- =?utf-8?B?OU9DQmVUMi90MzVGT3ZTdnF5MkFFU2VJcC9ZY2RvV3NWYW9tZDZ3ZGNrMVNM?=
- =?utf-8?B?UHNkTU9ZN1k4VkJVbUZLRUllZFFXQ3pHYXBsaU5qSUYvTCtReXFmYWRqblhv?=
- =?utf-8?B?MVF5b0xZaHZRa21JRlBCU3lZY2lzN1pILzlNM2lhdnlqNU9TSkVQeCtSbWFw?=
- =?utf-8?B?cTdHSUY1K09ZbFhZSkFNUWQ4WkRQTi91bFdUVjYrVDNoa1FDeDBhUDdudUtS?=
- =?utf-8?B?RUVBMUQ1di85TWdSdjRmNHhLamdTL3RnOVRYRjU4NkZBdjlYUkFxNzhkQkVu?=
- =?utf-8?B?ZlNnUkU3QjhXbWJrakFOZzhQb04rK2RUUjFFNWJ3T1pxYkZCakowMm5FNnBZ?=
- =?utf-8?B?MmplTkc5SFc1RUhqa1A3clltVklubnZZeGFQb29FUWxOakNWTzUvUzhINWd3?=
- =?utf-8?B?UDdsc0tQdFpuaW16dXdiQVVGazVac09WbVNLMStTUHhtRVBpOWtWbmxPRFpQ?=
- =?utf-8?B?aisxZ21SQ2FOc1lIeTlGRGJpd0lQdFp3ZWNhN2lBb3Vrb0RWRFdGUVF2N1F5?=
- =?utf-8?B?T3VXZ3lYa0xuOWZ3NUY0SFFhdWxmQUVWSXB1NHV6S3RLaDhFWW1aYk0xYS85?=
- =?utf-8?Q?mi58JxzCJ6E2LKqpAgbeKk0QcE2070AS0o2k4uB?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dcc28f46-ccd0-4fee-9b2d-08d91bd1e444
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 20:57:34.2751
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CdcJ2evRLLj1efdNDjUDQRwCK4bBqVXevhHoS7U28rsudrWG83gFziNF08E6+hSddjMyowXmzsAb4WZHeK/YBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4353
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 2:16 PM, Sean Christopherson wrote:
-> On Mon, May 17, 2021, Tom Lendacky wrote:
->> On 5/14/21 6:06 PM, Peter Gonda wrote:
->>> On Fri, May 14, 2021 at 1:22 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
->>>>
->>>> Currently, an SEV-ES guest is terminated if the validation of the VMGEXIT
->>>> exit code and parameters fail. Since the VMGEXIT instruction can be issued
->>>> from userspace, even though userspace (likely) can't update the GHCB,
->>>> don't allow userspace to be able to kill the guest.
->>>>
->>>> Return a #GP request through the GHCB when validation fails, rather than
->>>> terminating the guest.
->>>
->>> Is this a gap in the spec? I don't see anything that details what
->>> should happen if the correct fields for NAE are not set in the first
->>> couple paragraphs of section 4 'GHCB Protocol'.
+Hi,
+
+On 5/20/21 8:22 PM, Rafael J. Wysocki wrote:
+> On Thu, May 20, 2021 at 4:11 PM Daniel Scally <djrscally@gmail.com> wrote:
 >>
->> No, I don't think the spec needs to spell out everything like this. The
->> hypervisor is free to determine its course of action in this case.
-> 
-> The hypervisor can decide whether to inject/return an error or kill the guest,
-> but what errors can be returned and how they're returned absolutely needs to be
-> ABI between guest and host, and to make the ABI vendor agnostic the GHCB spec
-> is the logical place to define said ABI.
-
-For now, that is all we have for versions 1 and 2 of the spec. We can
-certainly extend it in future versions if that is desired.
-
-I would suggest starting a thread on what we would like to see in the next
-version of the GHCB spec on the amd-sev-snp mailing list:
-
-	amd-sev-snp@lists.suse.com
-
-> 
-> For example, "injecting" #GP if the guest botched the GHCB on #VMGEXIT(CPUID) is
-> completely nonsensical.  As is, a Linux guest appears to blindly forward the #GP,
-> which means if something does go awry KVM has just made debugging the guest that
-> much harder, e.g. imagine the confusion that will ensue if the end result is a
-> SIGBUS to userspace on CPUID.
-
-I see the point you're making, but I would also say that we probably
-wouldn't even boot successfully if the kernel can't handle, e.g., a CPUID
-#VC properly. A lot of what could go wrong with required inputs, not the
-values, but the required state being communicated, should have already
-been ironed out during development of whichever OS is providing the SEV-ES
-support.
-
-> 
-> There needs to be an explicit error code for "you gave me bad data", otherwise
-> we're signing ourselves up for future pain.
-
-I'll make note of that for the next update to the spec and we can work on
-it further during the spec review.
-
-Thanks,
-Tom
-
-> 
->> I suppose the spec could suggest a course of action, but I don't think the
->> spec should require a specific course of action.
+>> The acpi_walk_dep_device_list() is not as generalisable as its name
+>> implies, serving only to decrement the dependency count for each
+>> dependent device of the input. Extend the function to instead accept
+>> a callback which can be applied to all the dependencies in acpi_dep_list.
+>> Replace all existing calls to the function with calls to a wrapper, passing
+>> a callback that applies the same dependency reduction.
 >>
->> Thanks,
->> Tom
+>> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> 
+> LGTM, but I will have changes depending on it.
+> 
+> If that's fine by Hans, I'll take this one and expose it in a git
+> branch that won't be rebased.
+
+Yes that is fine by me, just send me a pull-req when the branch
+is ready and I'll merge that into pdx86/for-next.
+
+Regards,
+
+Hans
+
+
+> 
+>> ---
+>> changes since v3:
 >>
->>>
+>>         - Most of the functions got renamed
+>>         - acpi_dev_get_dependent_dev() was altered to take a struct acpi_device
+>>         This had some repurcussions in the other files, mostly switching from
+>>         ACPI_HANDLE() to ACPI_COMPANION().
+>>         - acpi_walk_dep_device_list() was altered to check the return value of
+>>         the callback on each iteration of the loop, to allow for error handling
+>>         of the callbacks or breaking the loop early to save time. Andy, Wolfram,
+>>         I thought this change was significant enough to drop your R-b and Ack.
+>>
+>>  drivers/acpi/ec.c                             |  2 +-
+>>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |  2 +-
+>>  drivers/acpi/scan.c                           | 69 ++++++++++++++-----
+>>  drivers/gpio/gpiolib-acpi.c                   | 10 +--
+>>  drivers/i2c/i2c-core-acpi.c                   |  8 +--
+>>  drivers/platform/surface/aggregator/core.c    |  6 +-
+>>  drivers/platform/surface/surface3_power.c     | 22 +++---
+>>  .../platform/surface/surface_acpi_notify.c    |  7 +-
+>>  include/acpi/acpi_bus.h                       |  7 ++
+>>  include/linux/acpi.h                          |  4 +-
+>>  10 files changed, 90 insertions(+), 47 deletions(-)
+>>
+>> diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+>> index 13565629ce0a..3f7680a007a3 100644
+>> --- a/drivers/acpi/ec.c
+>> +++ b/drivers/acpi/ec.c
+>> @@ -1627,7 +1627,7 @@ static int acpi_ec_add(struct acpi_device *device)
+>>         WARN(!ret, "Could not request EC cmd io port 0x%lx", ec->command_addr);
+>>
+>>         /* Reprobe devices depending on the EC */
+>> -       acpi_walk_dep_device_list(ec->handle);
+>> +       acpi_dev_clear_dependencies(device);
+>>
+>>         acpi_handle_debug(ec->handle, "enumerated.\n");
+>>         return 0;
+>> diff --git a/drivers/acpi/pmic/intel_pmic_chtdc_ti.c b/drivers/acpi/pmic/intel_pmic_chtdc_ti.c
+>> index a5101b07611a..fef7831d0d63 100644
+>> --- a/drivers/acpi/pmic/intel_pmic_chtdc_ti.c
+>> +++ b/drivers/acpi/pmic/intel_pmic_chtdc_ti.c
+>> @@ -117,7 +117,7 @@ static int chtdc_ti_pmic_opregion_probe(struct platform_device *pdev)
+>>                 return err;
+>>
+>>         /* Re-enumerate devices depending on PMIC */
+>> -       acpi_walk_dep_device_list(ACPI_HANDLE(pdev->dev.parent));
+>> +       acpi_dev_clear_dependencies(ACPI_COMPANION(pdev->dev.parent));
+>>         return 0;
+>>  }
+>>
+>> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+>> index 453eff8ec8c3..195635c3462b 100644
+>> --- a/drivers/acpi/scan.c
+>> +++ b/drivers/acpi/scan.c
+>> @@ -47,12 +47,6 @@ static DEFINE_MUTEX(acpi_hp_context_lock);
+>>   */
+>>  static u64 spcr_uart_addr;
+>>
+>> -struct acpi_dep_data {
+>> -       struct list_head node;
+>> -       acpi_handle supplier;
+>> -       acpi_handle consumer;
+>> -};
+>> -
+>>  void acpi_scan_lock_acquire(void)
+>>  {
+>>         mutex_lock(&acpi_scan_lock);
+>> @@ -2111,30 +2105,69 @@ static void acpi_bus_attach(struct acpi_device *device, bool first_pass)
+>>                 device->handler->hotplug.notify_online(device);
+>>  }
+>>
+>> -void acpi_walk_dep_device_list(acpi_handle handle)
+>> +static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
+>>  {
+>> -       struct acpi_dep_data *dep, *tmp;
+>>         struct acpi_device *adev;
+>>
+>> +       acpi_bus_get_device(dep->consumer, &adev);
+>> +
+>> +       if (adev) {
+>> +               adev->dep_unmet--;
+>> +               if (!adev->dep_unmet)
+>> +                       acpi_bus_attach(adev, true);
+>> +       }
+>> +
+>> +       list_del(&dep->node);
+>> +       kfree(dep);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +/**
+>> + * acpi_walk_dep_device_list - Apply a callback to every entry in acpi_dep_list
+>> + * @handle:    The ACPI handle of the supplier device
+>> + * @callback:  Pointer to the callback function to apply
+>> + * @data:      Pointer to some data to pass to the callback
+>> + *
+>> + * The return value of the callback determines this function's behaviour. If 0
+>> + * is returned we continue to iterate over acpi_dep_list. If a positive value
+>> + * is returned then the loop is broken but this function returns 0. If a
+>> + * negative value is returned by the callback then the loop is broken and that
+>> + * value is returned as the final error.
+>> + */
+>> +int acpi_walk_dep_device_list(acpi_handle handle,
+>> +                             int (*callback)(struct acpi_dep_data *, void *),
+>> +                             void *data)
+>> +{
+>> +       struct acpi_dep_data *dep, *tmp;
+>> +       int ret;
+>> +
+>>         mutex_lock(&acpi_dep_list_lock);
+>>         list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
+>>                 if (dep->supplier == handle) {
+>> -                       acpi_bus_get_device(dep->consumer, &adev);
+>> -
+>> -                       if (adev) {
+>> -                               adev->dep_unmet--;
+>> -                               if (!adev->dep_unmet)
+>> -                                       acpi_bus_attach(adev, true);
+>> -                       }
+>> -
+>> -                       list_del(&dep->node);
+>> -                       kfree(dep);
+>> +                       ret = callback(dep, data);
+>> +                       if (ret)
+>> +                               break;
+>>                 }
+>>         }
+>>         mutex_unlock(&acpi_dep_list_lock);
+>> +
+>> +       return ret > 0 ? 0 : ret;
+>>  }
+>>  EXPORT_SYMBOL_GPL(acpi_walk_dep_device_list);
+>>
+>> +/**
+>> + * acpi_dev_clear_dependencies - Inform consumers that the device is now active
+>> + * @supplier: Pointer to the supplier &struct acpi_device
+>> + *
+>> + * Clear dependencies on the given device.
+>> + */
+>> +void acpi_dev_clear_dependencies(struct acpi_device *supplier)
+>> +{
+>> +       acpi_walk_dep_device_list(supplier->handle, acpi_scan_clear_dep, NULL);
+>> +}
+>> +EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
+>> +
+>>  /**
+>>   * acpi_bus_scan - Add ACPI device node objects in a given namespace scope.
+>>   * @handle: Root of the namespace scope to scan.
+>> diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+>> index 3ef22a3c104d..5b4111e4be3f 100644
+>> --- a/drivers/gpio/gpiolib-acpi.c
+>> +++ b/drivers/gpio/gpiolib-acpi.c
+>> @@ -1233,14 +1233,14 @@ static void acpi_gpiochip_scan_gpios(struct acpi_gpio_chip *achip)
+>>  void acpi_gpiochip_add(struct gpio_chip *chip)
+>>  {
+>>         struct acpi_gpio_chip *acpi_gpio;
+>> -       acpi_handle handle;
+>> +       struct acpi_device *adev;
+>>         acpi_status status;
+>>
+>>         if (!chip || !chip->parent)
+>>                 return;
+>>
+>> -       handle = ACPI_HANDLE(chip->parent);
+>> -       if (!handle)
+>> +       adev = ACPI_COMPANION(chip->parent);
+>> +       if (!adev)
+>>                 return;
+>>
+>>         acpi_gpio = kzalloc(sizeof(*acpi_gpio), GFP_KERNEL);
+>> @@ -1254,7 +1254,7 @@ void acpi_gpiochip_add(struct gpio_chip *chip)
+>>         INIT_LIST_HEAD(&acpi_gpio->events);
+>>         INIT_LIST_HEAD(&acpi_gpio->deferred_req_irqs_list_entry);
+>>
+>> -       status = acpi_attach_data(handle, acpi_gpio_chip_dh, acpi_gpio);
+>> +       status = acpi_attach_data(adev->handle, acpi_gpio_chip_dh, acpi_gpio);
+>>         if (ACPI_FAILURE(status)) {
+>>                 dev_err(chip->parent, "Failed to attach ACPI GPIO chip\n");
+>>                 kfree(acpi_gpio);
+>> @@ -1263,7 +1263,7 @@ void acpi_gpiochip_add(struct gpio_chip *chip)
+>>
+>>         acpi_gpiochip_request_regions(acpi_gpio);
+>>         acpi_gpiochip_scan_gpios(acpi_gpio);
+>> -       acpi_walk_dep_device_list(handle);
+>> +       acpi_dev_clear_dependencies(adev);
+>>  }
+>>
+>>  void acpi_gpiochip_remove(struct gpio_chip *chip)
+>> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
+>> index 8ceaa88dd78f..6f0aa0ed3241 100644
+>> --- a/drivers/i2c/i2c-core-acpi.c
+>> +++ b/drivers/i2c/i2c-core-acpi.c
+>> @@ -259,8 +259,8 @@ static acpi_status i2c_acpi_add_device(acpi_handle handle, u32 level,
+>>   */
+>>  void i2c_acpi_register_devices(struct i2c_adapter *adap)
+>>  {
+>> +       struct acpi_device *adev;
+>>         acpi_status status;
+>> -       acpi_handle handle;
+>>
+>>         if (!has_acpi_companion(&adap->dev))
+>>                 return;
+>> @@ -275,11 +275,11 @@ void i2c_acpi_register_devices(struct i2c_adapter *adap)
+>>         if (!adap->dev.parent)
+>>                 return;
+>>
+>> -       handle = ACPI_HANDLE(adap->dev.parent);
+>> -       if (!handle)
+>> +       adev = ACPI_COMPANION(adap->dev.parent);
+>> +       if (!adev)
+>>                 return;
+>>
+>> -       acpi_walk_dep_device_list(handle);
+>> +       acpi_dev_clear_dependencies(adev);
+>>  }
+>>
+>>  static const struct acpi_device_id i2c_acpi_force_400khz_device_ids[] = {
+>> diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
+>> index 8dc2c267bcd6..517f774a6e60 100644
+>> --- a/drivers/platform/surface/aggregator/core.c
+>> +++ b/drivers/platform/surface/aggregator/core.c
+>> @@ -621,8 +621,8 @@ static const struct acpi_gpio_mapping ssam_acpi_gpios[] = {
+>>
+>>  static int ssam_serial_hub_probe(struct serdev_device *serdev)
+>>  {
+>> +       struct acpi_device *ssh = ACPI_COMPANION(&serdev->dev);
+>>         struct ssam_controller *ctrl;
+>> -       acpi_handle *ssh = ACPI_HANDLE(&serdev->dev);
+>>         acpi_status astatus;
+>>         int status;
+>>
+>> @@ -652,7 +652,7 @@ static int ssam_serial_hub_probe(struct serdev_device *serdev)
+>>         if (status)
+>>                 goto err_devopen;
+>>
+>> -       astatus = ssam_serdev_setup_via_acpi(ssh, serdev);
+>> +       astatus = ssam_serdev_setup_via_acpi(ssh->handle, serdev);
+>>         if (ACPI_FAILURE(astatus)) {
+>>                 status = -ENXIO;
+>>                 goto err_devinit;
+>> @@ -706,7 +706,7 @@ static int ssam_serial_hub_probe(struct serdev_device *serdev)
+>>          *       For now let's thus default power/wakeup to false.
+>>          */
+>>         device_set_wakeup_capable(&serdev->dev, true);
+>> -       acpi_walk_dep_device_list(ssh);
+>> +       acpi_dev_clear_dependencies(ssh);
+>>
+>>         return 0;
+>>
+>> diff --git a/drivers/platform/surface/surface3_power.c b/drivers/platform/surface/surface3_power.c
+>> index cc4f9cba6856..dea82aa1abd4 100644
+>> --- a/drivers/platform/surface/surface3_power.c
+>> +++ b/drivers/platform/surface/surface3_power.c
+>> @@ -446,12 +446,12 @@ mshw0011_space_handler(u32 function, acpi_physical_address command,
+>>
+>>  static int mshw0011_install_space_handler(struct i2c_client *client)
+>>  {
+>> -       acpi_handle handle;
+>> +       struct acpi_device *adev;
+>>         struct mshw0011_handler_data *data;
+>>         acpi_status status;
+>>
+>> -       handle = ACPI_HANDLE(&client->dev);
+>> -       if (!handle)
+>> +       adev = ACPI_COMPANION(&client->dev);
+>> +       if (!adev)
+>>                 return -ENODEV;
+>>
+>>         data = kzalloc(sizeof(struct mshw0011_handler_data),
+>> @@ -460,25 +460,25 @@ static int mshw0011_install_space_handler(struct i2c_client *client)
+>>                 return -ENOMEM;
+>>
+>>         data->client = client;
+>> -       status = acpi_bus_attach_private_data(handle, (void *)data);
+>> +       status = acpi_bus_attach_private_data(adev->handle, (void *)data);
+>>         if (ACPI_FAILURE(status)) {
+>>                 kfree(data);
+>>                 return -ENOMEM;
+>>         }
+>>
+>> -       status = acpi_install_address_space_handler(handle,
+>> -                               ACPI_ADR_SPACE_GSBUS,
+>> -                               &mshw0011_space_handler,
+>> -                               NULL,
+>> -                               data);
+>> +       status = acpi_install_address_space_handler(adev->handle,
+>> +                                                   ACPI_ADR_SPACE_GSBUS,
+>> +                                                   &mshw0011_space_handler,
+>> +                                                   NULL,
+>> +                                                   data);
+>>         if (ACPI_FAILURE(status)) {
+>>                 dev_err(&client->dev, "Error installing i2c space handler\n");
+>> -               acpi_bus_detach_private_data(handle);
+>> +               acpi_bus_detach_private_data(adev->handle);
+>>                 kfree(data);
+>>                 return -ENOMEM;
+>>         }
+>>
+>> -       acpi_walk_dep_device_list(handle);
+>> +       acpi_dev_clear_dependencies(adev);
+>>         return 0;
+>>  }
+>>
+>> diff --git a/drivers/platform/surface/surface_acpi_notify.c b/drivers/platform/surface/surface_acpi_notify.c
+>> index ef9c1f8e8336..8339988d95c1 100644
+>> --- a/drivers/platform/surface/surface_acpi_notify.c
+>> +++ b/drivers/platform/surface/surface_acpi_notify.c
+>> @@ -798,7 +798,7 @@ static int san_consumer_links_setup(struct platform_device *pdev)
+>>
+>>  static int san_probe(struct platform_device *pdev)
+>>  {
+>> -       acpi_handle san = ACPI_HANDLE(&pdev->dev);
+>> +       struct acpi_device *san = ACPI_COMPANION(&pdev->dev);
+>>         struct ssam_controller *ctrl;
+>>         struct san_data *data;
+>>         acpi_status astatus;
+>> @@ -821,7 +821,8 @@ static int san_probe(struct platform_device *pdev)
+>>
+>>         platform_set_drvdata(pdev, data);
+>>
+>> -       astatus = acpi_install_address_space_handler(san, ACPI_ADR_SPACE_GSBUS,
+>> +       astatus = acpi_install_address_space_handler(san->handle,
+>> +                                                    ACPI_ADR_SPACE_GSBUS,
+>>                                                      &san_opreg_handler, NULL,
+>>                                                      &data->info);
+>>         if (ACPI_FAILURE(astatus))
+>> @@ -835,7 +836,7 @@ static int san_probe(struct platform_device *pdev)
+>>         if (status)
+>>                 goto err_install_dev;
+>>
+>> -       acpi_walk_dep_device_list(san);
+>> +       acpi_dev_clear_dependencies(san);
+>>         return 0;
+>>
+>>  err_install_dev:
+>> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+>> index 3a82faac5767..0b2c4f170f4d 100644
+>> --- a/include/acpi/acpi_bus.h
+>> +++ b/include/acpi/acpi_bus.h
+>> @@ -280,6 +280,12 @@ struct acpi_device_power {
+>>         struct acpi_device_power_state states[ACPI_D_STATE_COUNT];      /* Power states (D0-D3Cold) */
+>>  };
+>>
+>> +struct acpi_dep_data {
+>> +       struct list_head node;
+>> +       acpi_handle supplier;
+>> +       acpi_handle consumer;
+>> +};
+>> +
+>>  /* Performance Management */
+>>
+>>  struct acpi_device_perf_flags {
+>> @@ -685,6 +691,7 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+>>
+>>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+>>
+>> +void acpi_dev_clear_dependencies(struct acpi_device *supplier);
+>>  struct acpi_device *
+>>  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const char *uid, s64 hrv);
+>>  struct acpi_device *
+>> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+>> index c60745f657e9..170b9bebdb2b 100644
+>> --- a/include/linux/acpi.h
+>> +++ b/include/linux/acpi.h
+>> @@ -666,7 +666,9 @@ extern bool acpi_driver_match_device(struct device *dev,
+>>                                      const struct device_driver *drv);
+>>  int acpi_device_uevent_modalias(struct device *, struct kobj_uevent_env *);
+>>  int acpi_device_modalias(struct device *, char *, int);
+>> -void acpi_walk_dep_device_list(acpi_handle handle);
+>> +int acpi_walk_dep_device_list(acpi_handle handle,
+>> +                             int (*callback)(struct acpi_dep_data *, void *),
+>> +                             void *data);
+>>
+>>  struct platform_device *acpi_create_platform_device(struct acpi_device *,
+>>                                                     struct property_entry *);
+>> --
+>> 2.25.1
+>>
+> 
+
