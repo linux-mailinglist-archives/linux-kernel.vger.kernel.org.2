@@ -2,159 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCD138AFCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:18:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90E838AFCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235082AbhETNTz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:19:55 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:54948 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232048AbhETNTv (ORCPT
+        id S238683AbhETNVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:21:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235580AbhETNV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:19:51 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KDINWt024415;
-        Thu, 20 May 2021 08:18:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621516704;
-        bh=p8siWvPgn0JnO9HX8NwOfzd3HcBfDidAJFOIef3h5PQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=DFEUU/F5mgy2/kxC/e8YIJTt1QScZ8hXyXD+hga89s2lcfNYYCr9SXgVSFf02ItSW
-         iighND7gOlnnyYOIv+i7i1bVBaU+rN6+/ss8gEkJO3Uu2/lDEYkOTnfhsL45+DPBuL
-         6DVkXmEVbDUjeAX9fZGPhTo7A6bryd9bIJy/sGLg=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KDIN4u089905
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 20 May 2021 08:18:23 -0500
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
- May 2021 08:18:23 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 20 May 2021 08:18:23 -0500
-Received: from [10.250.234.58] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KDIKk5051020;
-        Thu, 20 May 2021 08:18:21 -0500
-Subject: Re: [PATCH 1/4] arm64: dts: ti: k3-j721e-main: Fix external refclk
- input to SERDES
-To:     Nishanth Menon <nm@ti.com>
-CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Lokesh Vutla <lokeshvutla@ti.com>
-References: <20210512151209.27560-1-kishon@ti.com>
- <20210512151209.27560-2-kishon@ti.com>
- <20210512185157.q5sr2xqf3w5igfte@imagines>
- <68c95cf1-84fa-2194-7bb1-e3c60e7f1fc0@ti.com>
- <20210513140137.5uvftgtsku3xfobz@engraving>
- <81b7dc76-0918-0a95-5715-cf701e638bbe@ti.com>
- <20210517140519.4ltzvw3k74z72urz@dingo>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <3529e35f-0bef-fd8c-515a-6d4552f2467d@ti.com>
-Date:   Thu, 20 May 2021 18:48:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 20 May 2021 09:21:28 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F487C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:20:06 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 65FD92224A;
+        Thu, 20 May 2021 15:20:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621516804;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eKWkuVNv4nYIg+Ne4mGRvrU/UdIiyd/DMY/yupUiDJI=;
+        b=Y4EbbWuoZvxxkDkSh9osznb1xqcb4MZ24dNcyoGbKvZNlLhJ5HhBfNI2BgQ1j9VoTTyJ+p
+        24qusOZnAS/E662uYLja1ppnszqVbwaiUfujwikXnxTu5dqwiXuYH739HwE6PUp5PQADXW
+        kvqd2+EAOKY6EUyTqL+iPHCo5SpLDGo=
 MIME-Version: 1.0
-In-Reply-To: <20210517140519.4ltzvw3k74z72urz@dingo>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Date:   Thu, 20 May 2021 15:20:04 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: implement OTP erase for Winbond and
+ similar flashes
+In-Reply-To: <20210520122256.fhkzpqmu7nxwjoqt@ti.com>
+References: <20210510202056.30000-1-michael@walle.cc>
+ <20210520122256.fhkzpqmu7nxwjoqt@ti.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <20a7e9725d54c9566ca06c062c15f015@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nishanth,
+Hi Pratyush,
 
-On 17/05/21 7:35 pm, Nishanth Menon wrote:
-> On 14:00-20210517, Kishon Vijay Abraham I wrote:
->> Hi Nishanth,
->>
->> On 13/05/21 7:31 pm, Nishanth Menon wrote:
->>> On 17:41-20210513, Kishon Vijay Abraham I wrote:
->>>> Hi Nishanth,
->>>>
->>>> On 13/05/21 12:21 am, Nishanth Menon wrote:
->>>>> On 20:42-20210512, Kishon Vijay Abraham I wrote:
->>>>>> Rename the external refclk inputs to the SERDES from
->>>>>> dummy_cmn_refclk/dummy_cmn_refclk1 to cmn_refclk/cmn_refclk1
->>>>>> respectively. Also move the external refclk DT nodes outside the
->>>>>> cbass_main DT node. Since in j721e common processor board, only the
->>>>>> cmn_refclk1 is connected to 100MHz clock, fix the clock frequency.
->>>>>>
->>>>>> Fixes: afd094ebe69f ("arm64: dts: ti: k3-j721e-main: Add WIZ and SERDES PHY nodes")
->>>>>
->>>>> Assume we want this part of 5.13 fixes?
->>>>
->>>> This doesn't fix any functionality. Okay for me to go in 5.14 along with
->>>> the rest of the series.
->>>
->>>
->>>>>
->>>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->>>>>> ---
->>>>>>  .../dts/ti/k3-j721e-common-proc-board.dts     |  4 ++
->>>>>>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 58 ++++++++++---------
->>>>>>  2 files changed, 34 insertions(+), 28 deletions(-)
->>>>>>
->>>>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
->>>>>> index 60764366e22b..86f7ab511ee8 100644
->>>>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
->>>>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
->>>>>> @@ -635,6 +635,10 @@
->>>>>>  	status = "disabled";
->>>>>>  };
->>>>>>  
->>>>>> +&cmn_refclk1 {
->>>>>> +	clock-frequency = <100000000>;
->>>>>> +};
->>>>>> +
->>>>>>  &serdes0 {
->>>>>>  	serdes0_pcie_link: link@0 {
->>>>>>  		reg = <0>;
->>>>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->>>>>> index c2aa45a3ac79..002a0c1520ee 100644
->>>>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->>>>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
->>>>>> @@ -8,6 +8,20 @@
->>>>>>  #include <dt-bindings/mux/mux.h>
->>>>>>  #include <dt-bindings/mux/ti-serdes.h>
->>>>>>  
->>>>>> +/ {
->>>>>> +	cmn_refclk: cmn-refclk {
->>>>>> +		#clock-cells = <0>;
->>>>>> +		compatible = "fixed-clock";
->>>>>> +		clock-frequency = <0>;
->>>>>> +	};
->>>>>> +
->>>>>> +	cmn_refclk1: cmn-refclk1 {
->>>>>
->>>>> Just curious: why cant we use the standard nodenames with clock?
->>>>
->>>> We can use standard names here. Is there any defined nodename for
->>>> clocks? clk or clock? Don't see $nodename defined for clocks in
->>>> dt-schema repository.
->>>
->>> Looking at the fixed-clock example, lets go with clock
->>
->> Since I have two clocks here adding clock@0 and clock@1 introduces the
->> following error.
->> /home/a0393678/repos/linux-wip/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
->> /: clock@0: 'anyOf' conditional failed, one must be fixed:
->>         'reg' is a required property
->>         'ranges' is a required property
->>
->> The current "fixed-clock" binding doesn't allow adding "reg" property.
->> We'll stick to non standard names? or do you think the binding has to be
->> fixed?
+Am 2021-05-20 14:22, schrieb Pratyush Yadav:
+> On 10/05/21 10:20PM, Michael Walle wrote:
+>> Winbond flashes with OTP support provide a command to erase the OTP
+>> data. This might come in handy during development.
 > 
-> Look at other fixed-clock examples in other arm64 examples
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/freescale/imx8mm.dtsi#n147
-> is a good one.. Binding is fine, IMHO.
+> I am not very familiar with the OTP feature. It is supposed to be "One
+> Time Programmable". So does erasing the OTP area make it programmable
+> again? Or it just erases the data and then the OTP region will forever
+> be 0xff?
 
-Ah Thanks. It only has to be prefixed with clock-.
+Its programmable and erasable until a lock bit is set, then you can't
+program or erase it anymore. So nowadays it isn't really OTP..
 
-Thanks
-Kishon
+> Because if you can erase and reprogram it, how is it OTP at all?
+
+Well, it isn't. Thus there wasn't an erase operation in the first
+place. But Tudor found it useful. Not sure if that applies to all
+SPI flashes, though.
+
+See also
+https://lore.kernel.org/linux-mtd/d4f74b1b-fa1b-97ec-858c-d807fe1f9e57@microchip.com/
+
+>> This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
+>> NXP FSPI controller.
+> 
+> I got the datasheet for this flash from
+> https://www.elinux.org/images/f/f5/Winbond-w25q32.pdf but it doesn't
+> seem to mention the erase OTP command (0x44).
+
+That seems to be an ancient flash, note it doesn't have any suffix.
+
+https://www.winbond.com/resource-files/W25Q32JW%20SPI%20RevH%2003172020%20Plus.pdf
+
+>> Signed-off-by: Michael Walle <michael@walle.cc>
+>> ---
+>> Changes since v1:
+>>  - fixed kernel doc
+>> 
+>> There is also a patch for mtd-utils to add a small tool to issue
+>> the erase:
+>> https://lore.kernel.org/linux-mtd/20210510201319.25975-1-michael@walle.cc/
+>> 
+>>  drivers/mtd/spi-nor/core.c    |  4 +-
+>>  drivers/mtd/spi-nor/core.h    |  4 ++
+>>  drivers/mtd/spi-nor/otp.c     | 73 
+>> ++++++++++++++++++++++++++++++++++-
+>>  drivers/mtd/spi-nor/winbond.c |  1 +
+>>  4 files changed, 78 insertions(+), 4 deletions(-)
+>> 
+>> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+>> index bd2c7717eb10..fac8717f651f 100644
+>> --- a/drivers/mtd/spi-nor/core.c
+>> +++ b/drivers/mtd/spi-nor/core.c
+>> @@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct 
+>> spi_nor *nor, u8 opcode,
+>>  	return nor->controller_ops->read_reg(nor, opcode, buf, len);
+>>  }
+>> 
+>> -static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 
+>> opcode,
+>> -					    const u8 *buf, size_t len)
+>> +int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+>> +				     const u8 *buf, size_t len)
+>>  {
+>>  	if (spi_nor_protocol_is_dtr(nor->reg_proto))
+>>  		return -EOPNOTSUPP;
+>> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+>> index 28a2e0be97a3..b410e4eec2fb 100644
+>> --- a/drivers/mtd/spi-nor/core.h
+>> +++ b/drivers/mtd/spi-nor/core.h
+>> @@ -214,6 +214,7 @@ struct spi_nor_otp_ops {
+>>  	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
+>>  		     const u8 *buf);
+>>  	int (*lock)(struct spi_nor *nor, unsigned int region);
+>> +	int (*erase)(struct spi_nor *nor, loff_t addr);
+> 
+> No doc update above?
+
+Missed that.
+
+>>  	int (*is_locked)(struct spi_nor *nor, unsigned int region);
+>>  };
+>> 
+>> @@ -481,6 +482,8 @@ extern const struct spi_nor_manufacturer 
+>> spi_nor_xmc;
+>>  void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>>  			     struct spi_mem_op *op,
+>>  			     const enum spi_nor_protocol proto);
+>> +int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+>> +				     const u8 *buf, size_t len);
+>>  int spi_nor_write_enable(struct spi_nor *nor);
+>>  int spi_nor_write_disable(struct spi_nor *nor);
+>>  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+>> @@ -507,6 +510,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, 
+>> loff_t to, size_t len,
+>>  int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t 
+>> len, u8 *buf);
+>>  int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t 
+>> len,
+>>  			   const u8 *buf);
+>> +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
+>>  int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+>>  int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int 
+>> region);
+>> 
+>> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+>> index 61036c716abb..d3ca73c8cc53 100644
+>> --- a/drivers/mtd/spi-nor/otp.c
+>> +++ b/drivers/mtd/spi-nor/otp.c
+>> @@ -8,6 +8,7 @@
+>>  #include <linux/log2.h>
+>>  #include <linux/mtd/mtd.h>
+>>  #include <linux/mtd/spi-nor.h>
+>> +#include <linux/spi/spi-mem.h>
+>> 
+>>  #include "core.h"
+>> 
+>> @@ -111,6 +112,48 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, 
+>> loff_t addr, size_t len,
+>>  	return ret ?: written;
+>>  }
+>> 
+>> +/**
+>> + * spi_nor_otp_erase_secr() - erase one OTP region
+> 
+> Nitpick: The function is called erase_secr() but the comment says erase
+> region. Please use consistent wording.
+
+Ok, will stick to the wording of the datasheet (which sounds quite odd, 
+because
+its "security register"). This also applies to the read, write and lock.
+
+> 
+>> + * @nor:        pointer to 'struct spi_nor'
+>> + * @addr:       offset of the OTP region to be erased
+>> + *
+>> + * Erase one OTP region by using the SPINOR_OP_ESECR commands. This 
+>> method is
+>> + * used on GigaDevice and Winbond flashes.
+>> + *
+>> + * Return: 0 on success, -errno otherwise
+>> + */
+>> +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret = spi_nor_write_enable(nor);
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	if (nor->spimem) {
+>> +		struct spi_mem_op op =
+>> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
+>> +				   SPI_MEM_OP_ADDR(3, addr, 0),
+> 
+> Only 3 address bytes needed? Can the OTP region ever require 4 byte
+> addressing? For example, say the flash is switched to 4 byte addressing
+> for the main region. Would it still expect 3 byte addressing for OTP
+> ops?
+
+It seems you're right. Looking at larger flashes there are sometimes
+4 bytes. See for example ch 8.2.44
+
+https://www.winbond.com/resource-files/w25m512jwxiq%20spi%20rev%20c%2012242018.pdf
+
+Thus it seems it should be fixed for the programming and reading,
+too. Unfortunately, I cannot test any of this.
+
+>> +				   SPI_MEM_OP_NO_DUMMY,
+>> +				   SPI_MEM_OP_NO_DATA);
+>> +
+>> +		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
+>> +
+>> +		ret = spi_mem_exec_op(nor->spimem, &op);
+>> +	} else {
+>> +		nor->bouncebuf[2] = addr & 0xff;
+>> +		nor->bouncebuf[1] = (addr >> 8) & 0xff;
+>> +		nor->bouncebuf[0] = (addr >> 16) & 0xff;
+>> +
+>> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
+>> +						       nor->bouncebuf, 3);
+> 
+> Huh, sending address in the "data" parameter of write_reg() is strange.
+> Wouldn't you be better off using spi_nor_controller_ops_erase()? It is
+> an erase operation anyway so it should be the natural choice.
+
+Its the same as in spi_nor_erase_sector() if there is no
+spi_nor_controller_ops_erase(). spi_nor_controller_ops_erase() is
+just for erasing a sector (thus I'd assume it implies SPINOR_OP_SE).
+
+Hm.. I should have read on.
+
+> This was my first thought anyway. Then I looked at
+> spi_nor_erase_sector(). It looks like controller_ops->erase is 
+> optional,
+> and the fallback is this same technique.
+> 
+> I see a lot of similarities between this function and
+> spi_nor_erase_sector(). So you can just swap out nor->erase_opcode and
+> nor->addr_width and call that. I am not the biggest fan of this 
+> approach
+> but it is widely used in the core so it should be fine. In fact, OTP
+> read and write also use this approach.
+
+Ok, agreed on both points. This should also solve the "4 byte mode"
+problem, that is, just don't set addr_width.
+
+>> +	}
+>> +	if (ret)
+>> +		return ret;
+>> +
+>> +	return spi_nor_wait_till_ready(nor);
+>> +}
+>> +
+>>  static int spi_nor_otp_lock_bit_cr(unsigned int region)
+>>  {
+>>  	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
+>> @@ -316,12 +359,14 @@ static int spi_nor_mtd_otp_write(struct mtd_info 
+>> *mtd, loff_t to, size_t len,
+>>  	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
+>>  }
+>> 
+>> -static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, 
+>> size_t len)
+>> +static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t 
+>> from,
+> 
+> spi_nor_mtd_otp_lock_or_erase()? Or would it make it too long?
+
+I'm fine with both, its just that the read/write doesn't have an
+"or" neither ;)
+
+> Anyway, maybe I am bikeshedding too much, but I don't like that you
+> combine two completely independent operations into the same function
+> because they have some common parts. You should make them two separate
+> functions and see how many of the common parts can be split into
+> independent subroutines.
+
+Given that the whole boilerplate before and after the erase/lock is
+exactly the same, even the while loop is the same, I don't see how
+it can easily be split. Well, you could rename the function to some
+generic spi_nor_mtd_walk() - which would imply it might also be
+used for read/write, which is not true - and provide a callback
+function. But I don't see how this is would make it easier to read.
+And this is just an implemention local to this module.
+
+>> +				      size_t len, bool is_erase)
+>>  {
+>>  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+>>  	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+>>  	const size_t rlen = spi_nor_otp_region_len(nor);
+>>  	unsigned int region;
+>> +	loff_t rstart;
+>>  	int ret;
+>> 
+>>  	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
+>> @@ -337,7 +382,13 @@ static int spi_nor_mtd_otp_lock(struct mtd_info 
+>> *mtd, loff_t from, size_t len)
+>> 
+>>  	while (len) {
+>>  		region = spi_nor_otp_offset_to_region(nor, from);
+>> -		ret = ops->lock(nor, region);
+>> +
+>> +		if (is_erase) {
+>> +			rstart = spi_nor_otp_region_start(nor, region);
+>> +			ret = ops->erase(nor, rstart);
+> 
+> This further highlights my point. There are subtle differences between
+> erase and lock and having them in the same function might not be the
+> best idea.
+> 
+>> +		} else {
+>> +			ret = ops->lock(nor, region);
+>> +		}
+>>  		if (ret)
+>>  			goto out;
+>> 
+>> @@ -351,6 +402,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info 
+>> *mtd, loff_t from, size_t len)
+>>  	return ret;
+>>  }
+>> 
+>> +static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, 
+>> size_t len)
+>> +{
+>> +	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
+>> +}
+>> +
+>> +static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, 
+>> size_t len)
+>> +{
+>> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+>> +	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+>> +
+>> +	/* OTP erase is optional */
+>> +	if (!ops->erase)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
+>> +}
+>> +
+>>  void spi_nor_otp_init(struct spi_nor *nor)
+>>  {
+>>  	struct mtd_info *mtd = &nor->mtd;
+>> @@ -374,4 +442,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
+>>  	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
+>>  	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
+>>  	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
+>> +	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
+>>  }
+>> diff --git a/drivers/mtd/spi-nor/winbond.c 
+>> b/drivers/mtd/spi-nor/winbond.c
+>> index 9a81c67a60c6..96573f61caf5 100644
+>> --- a/drivers/mtd/spi-nor/winbond.c
+>> +++ b/drivers/mtd/spi-nor/winbond.c
+>> @@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct 
+>> spi_nor *nor, bool enable)
+>>  static const struct spi_nor_otp_ops winbond_otp_ops = {
+>>  	.read = spi_nor_otp_read_secr,
+>>  	.write = spi_nor_otp_write_secr,
+>> +	.erase = spi_nor_otp_erase_secr,
+>>  	.lock = spi_nor_otp_lock_sr2,
+>>  	.is_locked = spi_nor_otp_is_locked_sr2,
+>>  };
+>> --
+>> 2.20.1
+>> 
+
+-- 
+-michael
