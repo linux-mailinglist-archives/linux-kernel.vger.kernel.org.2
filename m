@@ -2,34 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3D938A6A1
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFC838A6A2
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:28:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236978AbhETK3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:29:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46918 "EHLO mail.kernel.org"
+        id S237002AbhETK3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:29:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47008 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235235AbhETKPj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:15:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43921619B8;
-        Thu, 20 May 2021 09:45:54 +0000 (UTC)
+        id S234896AbhETKQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:16:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A47C461993;
+        Thu, 20 May 2021 09:45:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503954;
-        bh=hs+EqPyCDyqCDKC+REF6QbabERUgprgunsI+jUv/DwY=;
+        s=korg; t=1621503959;
+        bh=AOTqmLP8aL5U9MlZAQni2Y63nMN1LwdxJr41+d9ftns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RFqbHFEzFfR2CpGXKPUySFVyXqALPiwxqna4z9/xzMKRmEYhhBLxSf/XDtLhGoKxE
-         RTPR6SthhW8Kf4rJIupSA141KDpEoT0nAZBX/OZopCPlLPBJVeZroi+kQPTWlOQbAF
-         9ZHCLZmtVWyCPMKxREBtNCmDT/VBaqMhHUVBSIU4=
+        b=G02EcLMkV+SnptVCtWjzJuojjRYow6Z4+ZUDDr9ytgeGAB2Av2nNDjm5Ll3ID6q92
+         WnHV4Y96iqRoNQc9/NVjPkEphapdBnTWh6ExMf3+kmufNEnUGyLOsvDROz7VU6kS56
+         SiEQOvWX7vbSXjtAflBKvhpQPUF32zr5V0hvWviU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Phillip Potter <phil@philpotter.co.uk>
-Subject: [PATCH 4.14 029/323] fbdev: zero-fill colormap in fbcmap.c
-Date:   Thu, 20 May 2021 11:18:41 +0200
-Message-Id: <20210520092121.110014320@linuxfoundation.org>
+        syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com,
+        Eric Biggers <ebiggers@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 031/323] crypto: api - check for ERR pointers in crypto_destroy_tfm()
+Date:   Thu, 20 May 2021 11:18:43 +0200
+Message-Id: <20210520092121.184725861@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,51 +43,149 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Potter <phil@philpotter.co.uk>
+From: Ard Biesheuvel <ardb@kernel.org>
 
-commit 19ab233989d0f7ab1de19a036e247afa4a0a1e9c upstream.
+[ Upstream commit 83681f2bebb34dbb3f03fecd8f570308ab8b7c2c ]
 
-Use kzalloc() rather than kmalloc() for the dynamically allocated parts
-of the colormap in fb_alloc_cmap_gfp, to prevent a leak of random kernel
-data to userspace under certain circumstances.
+Given that crypto_alloc_tfm() may return ERR pointers, and to avoid
+crashes on obscure error paths where such pointers are presented to
+crypto_destroy_tfm() (such as [0]), add an ERR_PTR check there
+before dereferencing the second argument as a struct crypto_tfm
+pointer.
 
-Fixes a KMSAN-found infoleak bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=741578659feabd108ad9e06696f0c1f2e69c4b6e
+[0] https://lore.kernel.org/linux-crypto/000000000000de949705bc59e0f6@google.com/
 
-Reported-by: syzbot+47fa9c9c648b765305b9@syzkaller.appspotmail.com
-Cc: stable <stable@vger.kernel.org>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
-Link: https://lore.kernel.org/r/20210331220719.1499743-1-phil@philpotter.co.uk
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reported-by: syzbot+12cf5fbfdeba210a89dd@syzkaller.appspotmail.com
+Reviewed-by: Eric Biggers <ebiggers@google.com>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/core/fbcmap.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ crypto/api.c               | 2 +-
+ include/crypto/acompress.h | 2 ++
+ include/crypto/aead.h      | 2 ++
+ include/crypto/akcipher.h  | 2 ++
+ include/crypto/hash.h      | 4 ++++
+ include/crypto/kpp.h       | 2 ++
+ include/crypto/rng.h       | 2 ++
+ include/crypto/skcipher.h  | 2 ++
+ 8 files changed, 17 insertions(+), 1 deletion(-)
 
---- a/drivers/video/fbdev/core/fbcmap.c
-+++ b/drivers/video/fbdev/core/fbcmap.c
-@@ -101,17 +101,17 @@ int fb_alloc_cmap_gfp(struct fb_cmap *cm
- 		if (!len)
- 			return 0;
+diff --git a/crypto/api.c b/crypto/api.c
+index 187795a6687d..99bd438fa4a4 100644
+--- a/crypto/api.c
++++ b/crypto/api.c
+@@ -567,7 +567,7 @@ void crypto_destroy_tfm(void *mem, struct crypto_tfm *tfm)
+ {
+ 	struct crypto_alg *alg;
  
--		cmap->red = kmalloc(size, flags);
-+		cmap->red = kzalloc(size, flags);
- 		if (!cmap->red)
- 			goto fail;
--		cmap->green = kmalloc(size, flags);
-+		cmap->green = kzalloc(size, flags);
- 		if (!cmap->green)
- 			goto fail;
--		cmap->blue = kmalloc(size, flags);
-+		cmap->blue = kzalloc(size, flags);
- 		if (!cmap->blue)
- 			goto fail;
- 		if (transp) {
--			cmap->transp = kmalloc(size, flags);
-+			cmap->transp = kzalloc(size, flags);
- 			if (!cmap->transp)
- 				goto fail;
- 		} else {
+-	if (unlikely(!mem))
++	if (IS_ERR_OR_NULL(mem))
+ 		return;
+ 
+ 	alg = tfm->__crt_alg;
+diff --git a/include/crypto/acompress.h b/include/crypto/acompress.h
+index e328b52425a8..1ff78365607c 100644
+--- a/include/crypto/acompress.h
++++ b/include/crypto/acompress.h
+@@ -152,6 +152,8 @@ static inline struct crypto_acomp *crypto_acomp_reqtfm(struct acomp_req *req)
+  * crypto_free_acomp() -- free ACOMPRESS tfm handle
+  *
+  * @tfm:	ACOMPRESS tfm handle allocated with crypto_alloc_acomp()
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_acomp(struct crypto_acomp *tfm)
+ {
+diff --git a/include/crypto/aead.h b/include/crypto/aead.h
+index 03b97629442c..0e257ebf12cc 100644
+--- a/include/crypto/aead.h
++++ b/include/crypto/aead.h
+@@ -187,6 +187,8 @@ static inline struct crypto_tfm *crypto_aead_tfm(struct crypto_aead *tfm)
+ /**
+  * crypto_free_aead() - zeroize and free aead handle
+  * @tfm: cipher handle to be freed
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_aead(struct crypto_aead *tfm)
+ {
+diff --git a/include/crypto/akcipher.h b/include/crypto/akcipher.h
+index b5e11de4d497..9817f2e5bff8 100644
+--- a/include/crypto/akcipher.h
++++ b/include/crypto/akcipher.h
+@@ -174,6 +174,8 @@ static inline struct crypto_akcipher *crypto_akcipher_reqtfm(
+  * crypto_free_akcipher() - free AKCIPHER tfm handle
+  *
+  * @tfm: AKCIPHER tfm handle allocated with crypto_alloc_akcipher()
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_akcipher(struct crypto_akcipher *tfm)
+ {
+diff --git a/include/crypto/hash.h b/include/crypto/hash.h
+index 74827781593c..493ed025f0ca 100644
+--- a/include/crypto/hash.h
++++ b/include/crypto/hash.h
+@@ -253,6 +253,8 @@ static inline struct crypto_tfm *crypto_ahash_tfm(struct crypto_ahash *tfm)
+ /**
+  * crypto_free_ahash() - zeroize and free the ahash handle
+  * @tfm: cipher handle to be freed
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_ahash(struct crypto_ahash *tfm)
+ {
+@@ -689,6 +691,8 @@ static inline struct crypto_tfm *crypto_shash_tfm(struct crypto_shash *tfm)
+ /**
+  * crypto_free_shash() - zeroize and free the message digest handle
+  * @tfm: cipher handle to be freed
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_shash(struct crypto_shash *tfm)
+ {
+diff --git a/include/crypto/kpp.h b/include/crypto/kpp.h
+index 1bde0a6514fa..1a34630fc371 100644
+--- a/include/crypto/kpp.h
++++ b/include/crypto/kpp.h
+@@ -159,6 +159,8 @@ static inline void crypto_kpp_set_flags(struct crypto_kpp *tfm, u32 flags)
+  * crypto_free_kpp() - free KPP tfm handle
+  *
+  * @tfm: KPP tfm handle allocated with crypto_alloc_kpp()
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_kpp(struct crypto_kpp *tfm)
+ {
+diff --git a/include/crypto/rng.h b/include/crypto/rng.h
+index b95ede354a66..a788c1e5a121 100644
+--- a/include/crypto/rng.h
++++ b/include/crypto/rng.h
+@@ -116,6 +116,8 @@ static inline struct rng_alg *crypto_rng_alg(struct crypto_rng *tfm)
+ /**
+  * crypto_free_rng() - zeroize and free RNG handle
+  * @tfm: cipher handle to be freed
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_rng(struct crypto_rng *tfm)
+ {
+diff --git a/include/crypto/skcipher.h b/include/crypto/skcipher.h
+index 562001cb412b..32aca5f4e4f0 100644
+--- a/include/crypto/skcipher.h
++++ b/include/crypto/skcipher.h
+@@ -206,6 +206,8 @@ static inline struct crypto_tfm *crypto_skcipher_tfm(
+ /**
+  * crypto_free_skcipher() - zeroize and free cipher handle
+  * @tfm: cipher handle to be freed
++ *
++ * If @tfm is a NULL or error pointer, this function does nothing.
+  */
+ static inline void crypto_free_skcipher(struct crypto_skcipher *tfm)
+ {
+-- 
+2.30.2
+
 
 
