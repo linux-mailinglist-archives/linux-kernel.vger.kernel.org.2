@@ -2,89 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94F038B710
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F44738B71C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237378AbhETTR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:17:56 -0400
-Received: from mail-ed1-f45.google.com ([209.85.208.45]:46886 "EHLO
-        mail-ed1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237612AbhETTRv (ORCPT
+        id S238713AbhETTSQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:18:16 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:28644 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236921AbhETTSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:17:51 -0400
-Received: by mail-ed1-f45.google.com with SMTP id r11so20619335edt.13;
-        Thu, 20 May 2021 12:16:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HqMs01SwhIzac61wHIqbpImRVDJ7bAhjZqygW+SGW5k=;
-        b=lhRSKBUssk+/Zt+EfKfXtRgVQPw6l6JekPVo6nFAKKxaykCQJpEtRsevixmB0D9390
-         Ev2sW6y7l00FEA3pgo25ycb3IkvrRgQZT4btpu2ZjqywRZmGlpInW2Hj4tRGky0j91mr
-         sG/5kwa4RZc6oHOI/376xxs7IzCBiZL53uZD/C6owP0dzDVXNh+HVgJF6Q4FZL1es014
-         cTy34J4aMd2yrnezlpD/cgJSNY2pr91UaQLEUI0LvFjLCUAFkJoBmIWeO24FTTBHwqLT
-         TTGFo4P8G6QwLRlIzx2xjmhss/IrhpldyBVwP7EoyKWwRK/3XCPm28PCZ2+uGvqKorAp
-         2X2g==
-X-Gm-Message-State: AOAM532gaUH8jze/uhkrVyCrZm3CsjrdLYcsjlPXaAeqw67BE5gHXoXI
-        hhY23r6WfWxdhSPdIRTYRmCC26U6tcLOOSo0pYU=
-X-Google-Smtp-Source: ABdhPJyh43njdKBMqfGDgRouJG4tcrfxgxr8+9fee8ftTi2kkTl4QjUJ4jlGUE7IFuDfm/ed932lAGPXA1M5uOR40M4=
-X-Received: by 2002:a05:6402:2789:: with SMTP id b9mr6665889ede.122.1621538188915;
- Thu, 20 May 2021 12:16:28 -0700 (PDT)
+        Thu, 20 May 2021 15:18:00 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id CAAFD521411;
+        Thu, 20 May 2021 22:16:32 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1621538192;
+        bh=f5ALqfqOSpq2iJlaeWNv2YLTAY8xkZ6AN1IVBDljtUY=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=pVdkmUhlxVQpHHaYgs+0vC50EcPc2GSgizax9NGcZoutGBEUIrp8wPh97JFG5nFZV
+         ky26veyuIS5AKCX2w1J6bo2YrnmDaRDHp4+PXdVOkknk3/2YqHqeWraOXfZG6Kf7pW
+         aQipoXDKTFKt3gOtq3g5SBSF9dnKRsrH0rGBnwyc5V2OOzcFXRiih0qBtt/wH6Et9F
+         P1XZOBqvfMRWAtarG1LMZ0QRiyITXf88CCoMWiv5eQZqATAbG4Cd/o8/qTA21LXN3Z
+         1uU7kwUrRDLq1ui6xHd0B/12Xmq+CzNFsifpqB07A0cQ0Ku83pmXx8hH3I9kbI4tpK
+         F5/nrtsLYygpA==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 279AE52114E;
+        Thu, 20 May 2021 22:16:32 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
+ May 2021 22:16:31 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Andra Paraschiv <andraprs@amazon.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [PATCH v10 05/18] af_vsock: implement send logic for SEQPACKET
+Date:   Thu, 20 May 2021 22:16:23 +0300
+Message-ID: <20210520191626.1271315-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <8735uxmucw.ffs@nanos.tec.linutronix.de> <CAJvTdK=6B8fXasshqOoMknAt25vWPDW6LVLovOhnmY10ZEdL1Q@mail.gmail.com>
- <eebc971a-dc5f-6ae6-c5f7-d303e56212b2@kernel.org>
-In-Reply-To: <eebc971a-dc5f-6ae6-c5f7-d303e56212b2@kernel.org>
-From:   Len Brown <lenb@kernel.org>
-Date:   Thu, 20 May 2021 15:16:17 -0400
-Message-ID: <CAJvTdKk3JvKzvEb+x9H-zSGEz9iSDQ=WdFLaOA38f+GxCPVj0g@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-abi@vger.kernel.org,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 7:29 PM Andy Lutomirski <luto@kernel.org> wrote:
+Update current stream enqueue function for SEQPACKET
+support:
+1) Call transport's seqpacket enqueue callback.
+2) Return value from enqueue function is whole record length or error
+   for SOCK_SEQPACKET.
 
-> > It is established that there exists application code that counts on
-> > this opaque state being complete so that it can do a user-space
-> > XRESTORE instead of a sigreturn(2).
->
-> Is this established?
->
-> Note that the specific case of a user program doing XRSTOR will work
-> just fine if we omit the allocation of non-in-use states from the
-> buffer, at least by my reading of the pseudocode.
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
+---
+ include/net/af_vsock.h   |  2 ++
+ net/vmw_vsock/af_vsock.c | 20 +++++++++++++++-----
+ 2 files changed, 17 insertions(+), 5 deletions(-)
 
-Yes, your understanding is correct -- XRESTOR works as one would expect.
+diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
+index 5175f5a52ce1..5860027d5173 100644
+--- a/include/net/af_vsock.h
++++ b/include/net/af_vsock.h
+@@ -138,6 +138,8 @@ struct vsock_transport {
+ 	/* SEQ_PACKET. */
+ 	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
+ 				     int flags, bool *msg_ready);
++	int (*seqpacket_enqueue)(struct vsock_sock *vsk, struct msghdr *msg,
++				 size_t len);
+ 
+ 	/* Notification. */
+ 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index aede474343d1..c89f84af4744 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -1808,9 +1808,13 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+ 		 * responsibility to check how many bytes we were able to send.
+ 		 */
+ 
+-		written = transport->stream_enqueue(
+-				vsk, msg,
+-				len - total_written);
++		if (sk->sk_type == SOCK_SEQPACKET) {
++			written = transport->seqpacket_enqueue(vsk,
++						msg, len - total_written);
++		} else {
++			written = transport->stream_enqueue(vsk,
++					msg, len - total_written);
++		}
+ 		if (written < 0) {
+ 			err = -ENOMEM;
+ 			goto out_err;
+@@ -1826,8 +1830,14 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	}
+ 
+ out_err:
+-	if (total_written > 0)
+-		err = total_written;
++	if (total_written > 0) {
++		/* Return number of written bytes only if:
++		 * 1) SOCK_STREAM socket.
++		 * 2) SOCK_SEQPACKET socket when whole buffer is sent.
++		 */
++		if (sk->sk_type == SOCK_STREAM || total_written == len)
++			err = total_written;
++	}
+ out:
+ 	release_sock(sk);
+ 	return err;
+-- 
+2.25.1
 
-> The case that would
-> break is if user code then assumes that it can XSAVE back to the same
-> buffer.
-
-The other case that would break is if the concept of what features
-were supported
-(eg. XCR0) changed between when the context was saved and when it was
-subsequently restored.  Yes, if a feature appeared, you'd get INIT;
-but if a feature went away, you would fault.
-
-I've been told that user-space software exists that does this.  If I can find
-specific examples, I'll share that.
-
-thanks,
-Len Brown, Intel Open Source Technology Center
