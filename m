@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D663C38ACE0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44AC538ACE2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243703AbhETLuo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:50:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57162 "EHLO mail.kernel.org"
+        id S243760AbhETLvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:51:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241762AbhETLgx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:36:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5A6A6611AB;
-        Thu, 20 May 2021 11:35:32 +0000 (UTC)
+        id S241768AbhETLgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:36:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D29E6135A;
+        Thu, 20 May 2021 11:35:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621510532;
-        bh=X3jopxsX61QS+or7ehscRsDEihXrE0LQ/xHPv2/OfAY=;
+        s=k20201202; t=1621510533;
+        bh=24Nsl8oN56bAduw/YicAP/q9D+8TJgKDdu5gQxqytLk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kI1SIb7omMxdoGjWjB4B5Kty8kDjP2oWTMDvEjcj+fOeUHuES5d1b8flMxJoMPkQu
-         ELh2Afz1ugedNnCe9UqQIQvpoYfDYXCseC7ujLiPh5gqOszMwwzF3uYuKbgQ4hUYT6
-         7AX3h9AYLvi4lHV3IhCNFzHguwgnekTGSaFhUc27FQXIjSxW3XvsZaOjxY13rAZxvr
-         lQdWsgavCwvSvhT3W3ZGZ0qErfdCBAhrLnJRWGRYr886+nB+opva/9kgANkquoK9fp
-         rh5ToZbt72QyDNcdh5vlTCl4ai19UY+QXw73CEI8wDVyOPgoGpHZYfzpyRPkZ3mg8o
-         csBa5GMpSaGbA==
+        b=q4NN7oJFQNSbTFjFIJZRH0n2Umj69/HQJnIO4rJKrFojYNwYJq06LEzjUrr6CWmSd
+         2V+y+bUPJs293YpQCY/FNVPfECTrhSe0eF7V+VOJJgRSxtoxzQEsZsLhdMnIz0e6pE
+         c60Tb6Hj3zGmYVcVYRnEJKxPKDC4rdmHYF7Shsn7IbvGVHRrzyL2WVAxFpvCaKZH6k
+         j/Y6SS2mkmqygfkx0L5Nn1T7Y+PVTTXU+W4n/Greas/IzrjeX/fWK0MpsM+QfwYVH/
+         adW3BGzZtZtm6+uZaZoWWLbVUeXVAuQE0PLa7kPnHXfSf9MaV7WL9mtY7wb20rWaKA
+         P/228fWS34oYg==
 Received: by pali.im (Postfix)
-        id 787CC9D7; Thu, 20 May 2021 13:35:30 +0200 (CEST)
+        id 8C52F9E7; Thu, 20 May 2021 13:35:31 +0200 (CEST)
 From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
 To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
         Andrew Lunn <andrew@lunn.ch>
 Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 mvebu 1/4] firmware: turris-mox-rwtm: fix reply status decoding function
-Date:   Thu, 20 May 2021 13:35:17 +0200
-Message-Id: <20210520113520.32240-2-pali@kernel.org>
+Subject: [PATCH v4 mvebu 2/4] firmware: turris-mox-rwtm: report failures better
+Date:   Thu, 20 May 2021 13:35:18 +0200
+Message-Id: <20210520113520.32240-3-pali@kernel.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210520113520.32240-1-pali@kernel.org>
 References: <20210308153703.23097-1-kabel@kernel.org>
@@ -46,42 +46,58 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Marek Behún <kabel@kernel.org>
 
-The status decoding function mox_get_status() currently contains an
-incorrect check: if the error status is not MBOX_STS_SUCCESS, it always
-returns -EIO, so the comparison to MBOX_STS_FAIL is never executed and
-we don't get the actual error code sent by the firmware.
+Report a notice level message if a command is not supported by the rWTM
+firmware.
 
-Fix this.
+This should not be an error, merely a notice, because the firmware can
+be used on boards that do not have manufacturing information burned.
 
 Signed-off-by: Marek Behún <kabel@kernel.org>
 Reviewed-by: Pali Rohár <pali@kernel.org>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
 ---
- drivers/firmware/turris-mox-rwtm.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/firmware/turris-mox-rwtm.c | 18 ++++++++++++------
+ 1 file changed, 12 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/firmware/turris-mox-rwtm.c b/drivers/firmware/turris-mox-rwtm.c
-index 62f0d1a5dd32..f85acdb3130c 100644
+index f85acdb3130c..d7e3489e4bf2 100644
 --- a/drivers/firmware/turris-mox-rwtm.c
 +++ b/drivers/firmware/turris-mox-rwtm.c
-@@ -147,11 +147,14 @@ MOX_ATTR_RO(pubkey, "%s\n", pubkey);
+@@ -204,11 +204,14 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
+ 		return ret;
  
- static int mox_get_status(enum mbox_cmd cmd, u32 retval)
- {
--	if (MBOX_STS_CMD(retval) != cmd ||
--	    MBOX_STS_ERROR(retval) != MBOX_STS_SUCCESS)
-+	if (MBOX_STS_CMD(retval) != cmd)
- 		return -EIO;
- 	else if (MBOX_STS_ERROR(retval) == MBOX_STS_FAIL)
- 		return -(int)MBOX_STS_VALUE(retval);
-+	else if (MBOX_STS_ERROR(retval) == MBOX_STS_BADCMD)
-+		return -ENOSYS;
-+	else if (MBOX_STS_ERROR(retval) != MBOX_STS_SUCCESS)
-+		return -EIO;
- 	else
- 		return MBOX_STS_VALUE(retval);
- }
+ 	ret = mox_get_status(MBOX_CMD_BOARD_INFO, reply->retval);
+-	if (ret < 0 && ret != -ENODATA) {
+-		return ret;
+-	} else if (ret == -ENODATA) {
++	if (ret == -ENODATA) {
+ 		dev_warn(rwtm->dev,
+ 			 "Board does not have manufacturing information burned!\n");
++	} else if (ret == -ENOSYS) {
++		dev_notice(rwtm->dev,
++			   "Firmware does not support the BOARD_INFO command\n");
++	} else if (ret < 0) {
++		return ret;
+ 	} else {
+ 		rwtm->serial_number = reply->status[1];
+ 		rwtm->serial_number <<= 32;
+@@ -237,10 +240,13 @@ static int mox_get_board_info(struct mox_rwtm *rwtm)
+ 		return ret;
+ 
+ 	ret = mox_get_status(MBOX_CMD_ECDSA_PUB_KEY, reply->retval);
+-	if (ret < 0 && ret != -ENODATA) {
+-		return ret;
+-	} else if (ret == -ENODATA) {
++	if (ret == -ENODATA) {
+ 		dev_warn(rwtm->dev, "Board has no public key burned!\n");
++	} else if (ret == -ENOSYS) {
++		dev_notice(rwtm->dev,
++			   "Firmware does not support the ECDSA_PUB_KEY command\n");
++	} else if (ret < 0) {
++		return ret;
+ 	} else {
+ 		u32 *s = reply->status;
+ 
 -- 
 2.20.1
 
