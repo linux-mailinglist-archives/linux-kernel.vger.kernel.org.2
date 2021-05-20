@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1AA038A45B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F62A38A43F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:02:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhETKE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:04:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32852 "EHLO mail.kernel.org"
+        id S233944AbhETKCT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:02:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234770AbhETJ5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:57:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD0C2613AE;
-        Thu, 20 May 2021 09:37:57 +0000 (UTC)
+        id S235186AbhETJ5w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:57:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 86CC6613BE;
+        Thu, 20 May 2021 09:38:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503478;
-        bh=U6sti/vTkvS38BdljLHSF5iL//TmOPR5G5sRrW9yB7M=;
+        s=korg; t=1621503487;
+        bh=78gEKsbijpXic+wdjychEXMDO/H2HEqJvvQxTkarXXQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JYkBs7J2Rb7GKZEDKr4SKIfBAD0NPKjuX/o25ygnEA7hT3C1JhNQyGK1NZgcudRxa
-         9ToYYd7IuUwTVtEC5gFo1I8T7JE6e+MbaZ5PXNXuguVCZrhO16ObD3gAN6wvKsyT2I
-         49zBBXvpziIoQwRFFmuJcd7usTrQmiCFL2mW6KWM=
+        b=wpwjDUpORYpfnU/0P62pN4SFOzGDQhdy/7xEX5MV4isCYLFlu72yxkYYUdYptDRkM
+         BwZ2EOdwFM2/2dv4zcbBsc410tWTzFDBT9Xi0DwqPZ+3byAqAJC8bJYmK7zTtDlYUL
+         I1RYnkrkMGU/uZZAJQDuLER2zBj490Obv9RjYWgQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 239/425] scsi: jazz_esp: Add IRQ check
-Date:   Thu, 20 May 2021 11:20:08 +0200
-Message-Id: <20210520092139.281738467@linuxfoundation.org>
+Subject: [PATCH 4.19 243/425] mfd: stm32-timers: Avoid clearing auto reload register
+Date:   Thu, 20 May 2021 11:20:12 +0200
+Message-Id: <20210520092139.411304336@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -40,39 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
 
-[ Upstream commit 38fca15c29db6ed06e894ac194502633e2a7d1fb ]
+[ Upstream commit 4917e498c6894ba077867aff78f82cffd5ffbb5c ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to request_irq() (which takes
-*unsigned* IRQ #), causing it to fail with -EINVAL, overriding the real
-error code.  Stop calling request_irq() with the invalid IRQ #s.
+The ARR register is cleared unconditionally upon probing, after the maximum
+value has been read. This initial condition is rather not intuitive, when
+considering the counter child driver. It rather expects the maximum value
+by default:
+- The counter interface shows a zero value by default for 'ceiling'
+  attribute.
+- Enabling the counter without any prior configuration makes it doesn't
+  count.
 
-Link: https://lore.kernel.org/r/594aa9ae-2215-49f6-f73c-33bd38989912@omprussia.ru
-Fixes: 352e921f0dd4 ("[SCSI] jazz_esp: converted to use esp_core")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+The reset value of ARR register is the maximum. So Choice here
+is to backup it, and restore it then, instead of clearing its value.
+It also fixes the initial condition seen by the counter driver.
+
+Fixes: d0f949e220fd ("mfd: Add STM32 Timers driver")
+Signed-off-by: Fabrice Gasnier <fabrice.gasnier@foss.st.com>
+Acked-by: William Breathitt Gray <vilhelm.gray@gmail.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/jazz_esp.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/mfd/stm32-timers.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/jazz_esp.c b/drivers/scsi/jazz_esp.c
-index 6eb5ff3e2e61..7dfe4237e5e8 100644
---- a/drivers/scsi/jazz_esp.c
-+++ b/drivers/scsi/jazz_esp.c
-@@ -170,7 +170,9 @@ static int esp_jazz_probe(struct platform_device *dev)
- 	if (!esp->command_block)
- 		goto fail_unmap_regs;
+diff --git a/drivers/mfd/stm32-timers.c b/drivers/mfd/stm32-timers.c
+index efcd4b980c94..1adba6a46dcb 100644
+--- a/drivers/mfd/stm32-timers.c
++++ b/drivers/mfd/stm32-timers.c
+@@ -158,13 +158,18 @@ static const struct regmap_config stm32_timers_regmap_cfg = {
  
--	host->irq = platform_get_irq(dev, 0);
-+	host->irq = err = platform_get_irq(dev, 0);
-+	if (err < 0)
-+		goto fail_unmap_command_block;
- 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED, "ESP", esp);
- 	if (err < 0)
- 		goto fail_unmap_command_block;
+ static void stm32_timers_get_arr_size(struct stm32_timers *ddata)
+ {
++	u32 arr;
++
++	/* Backup ARR to restore it after getting the maximum value */
++	regmap_read(ddata->regmap, TIM_ARR, &arr);
++
+ 	/*
+ 	 * Only the available bits will be written so when readback
+ 	 * we get the maximum value of auto reload register
+ 	 */
+ 	regmap_write(ddata->regmap, TIM_ARR, ~0L);
+ 	regmap_read(ddata->regmap, TIM_ARR, &ddata->max_arr);
+-	regmap_write(ddata->regmap, TIM_ARR, 0x0);
++	regmap_write(ddata->regmap, TIM_ARR, arr);
+ }
+ 
+ static void stm32_timers_dma_probe(struct device *dev,
 -- 
 2.30.2
 
