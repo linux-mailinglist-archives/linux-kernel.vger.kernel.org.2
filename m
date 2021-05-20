@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C659D389A63
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4207389A67
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbhETAUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 20:20:18 -0400
-Received: from mga03.intel.com ([134.134.136.65]:46428 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229598AbhETAUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 20:20:16 -0400
-IronPort-SDR: 2kY2YYEwc6Atwmluj8vIhbh5MjvhwCRUg3lPlnkhVyTEqv/zas1mFOT2GigGU6WPs6TPR/DDXC
- 0mTyrZyQ7lag==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="201165398"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="201165398"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 17:18:56 -0700
-IronPort-SDR: qj58NiAbcEmWTXcMXiYlqnmWgBe2IyOSLo3brLbpWiHwJzDbexLYODcDCUZ05v8EeaF5//FeSe
- LFciUtsU1x0A==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="411959002"
-Received: from ccheung-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.97.108])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 17:18:54 -0700
-Subject: Re: [RFC v2-fix 1/1] x86/boot: Add a trampoline for APs booting in
- 64-bit mode
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
+        id S230142AbhETAUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 20:20:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhETAUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 20:20:45 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 943F9C061574;
+        Wed, 19 May 2021 17:19:16 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Flr2R3dkPz9sWF;
+        Thu, 20 May 2021 10:19:10 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621469952;
+        bh=CyvXAwtCsY9kS6t3E/YGwieNDin0H6EWJN+FUPoEw60=;
+        h=Date:From:To:Cc:Subject:From;
+        b=EPhm4xsDbtZWuJ4UutZHdBqVZhbjfJZcZlk75xXnoL/Ou5uIJligJUloaAXBF/UWR
+         pM+HJ0AL1/ec+sWbxYdQB0p9E/X34aPSZFLwygjPX9g3l+Ra/z02k/F1Exmhvr4Xph
+         ztjW7RacsU3XDSifXGEJsXJLAMxkZ29dnQzJxLzBauqX/rA5VqEBvC6X2rb1Ubrchs
+         eLesIt0H5j3w321piyPjjqEVJhRSYoIjBmi+R1clYBkqpdg/IN6Xw0RvdIKlfc/+nW
+         vMXq1V4ODfvPABf3/4YVVLbAcxeKkoBmD06TvyxQrCCv3TI6xaZl+QFVmwlUI0ctpP
+         xByRD7BF0G6cw==
+Date:   Thu, 20 May 2021 10:19:10 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     James Ausmus <james.ausmus@intel.com>,
+        =?UTF-8?B?Sm9zw6k=?= Roberto de Souza <jose.souza@intel.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Kai Huang <kai.huang@intel.com>
-References: <CAPcyv4ipWTv7yRyLHA0Un0KZDdXjpCZXMbrEn7SJXbdRhhn=jA@mail.gmail.com>
- <20210518005404.258660-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <CAPcyv4hvFe5v72zm5+4mpmsv1u4pEizXMCcjFysKZAEkkOSrGw@mail.gmail.com>
- <861a316c-09f6-5969-6238-e402fca917db@linux.intel.com>
- <CAPcyv4hv4brS7Vp4rjtnPvF5z7FDuEQkCp+sQ0q6FOxpnKCYCA@mail.gmail.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <a92f339b-3e37-0988-06b0-d290c656dc52@linux.intel.com>
-Date:   Wed, 19 May 2021 17:18:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the drm-intel tree with Linus' tree
+Message-ID: <20210520101910.26606a78@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <CAPcyv4hv4brS7Vp4rjtnPvF5z7FDuEQkCp+sQ0q6FOxpnKCYCA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_//x1luGM18fkh2=2Mp.I+b59";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+--Sig_//x1luGM18fkh2=2Mp.I+b59
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 5/17/21 9:08 PM, Dan Williams wrote:
->> SYM_DATA_START_LOCAL(tr_idt)
->>           .short  0
->>           .quad   0
->> SYM_DATA_END(tr_idt)
-> This format implies that tr_idt is reserving space for 2 distinct data
-> structure attributes of those sizes, can you just put those names here
-> as comments? Otherwise the .fill format is more compact.
+Hi all,
 
-Initially its 6 bytes (2 bytes for IDT limit, 4 bytes for 32 bit linear
-start address). This patch extends it by another 4 bytes for supporting
-64 bit mode.
+Today's linux-next merge of the drm-intel tree got a conflict in:
 
-2 bytes IDT limit (.short)
-8 bytes for 64 bit IDT start address (.quad)
+  drivers/gpu/drm/i915/i915_mm.c
 
-This info is included in commit log. But I will add comment here as you
-have mentioned.
+between commit:
 
-Will following comment log do ?
+  293837b9ac8d ("Revert "i915: fix remap_io_sg to verify the pgprot"")
 
-/* Use 10 bytes for IDT (in 64 bit mode), 8 bytes for IDT start address
-    2 bytes for IDT limit size */
+from Linus' tree and commit:
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+  ec279384c6a0 ("drm/i915: Initialize err in remap_io_sg()")
+
+from the drm-intel tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/i915/i915_mm.c
+index 9a777b0ff59b,25576fa73ff0..000000000000
+--- a/drivers/gpu/drm/i915/i915_mm.c
++++ b/drivers/gpu/drm/i915/i915_mm.c
+@@@ -82,13 -46,8 +82,13 @@@ int remap_io_sg(struct vm_area_struct *
+  		unsigned long addr, unsigned long size,
+  		struct scatterlist *sgl, resource_size_t iobase)
+  {
+ -	unsigned long pfn, len, remapped =3D 0;
+ +	struct remap_pfn r =3D {
+ +		.mm =3D vma->vm_mm,
+ +		.prot =3D vma->vm_page_prot,
+ +		.sgt =3D __sgt_iter(sgl, use_dma(iobase)),
+ +		.iobase =3D iobase,
+ +	};
+- 	int err;
++ 	int err =3D 0;
+ =20
+  	/* We rely on prevalidation of the io-mapping to skip track_pfn(). */
+  	GEM_BUG_ON((vma->vm_flags & EXPECTED_FLAGS) !=3D EXPECTED_FLAGS);
+
+--Sig_//x1luGM18fkh2=2Mp.I+b59
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmClqv4ACgkQAVBC80lX
+0Gx8rgf/fSYYr/Ro3uJFgGbnX2mFMuvsbi+Xj2mZk67meSrj/6/9Og9vGYkA3+IM
+dzt1XqDdBbzWjvzKmztfsOvV8wcbdiQEKxKekUt7DsWi3aOZX+fiBBseXn8UHLE7
+GTgRv9vvcahtF0AEaJ1D7kuOIFfDCHSSSc+Kqnq1TZ/t1TaIvAmLEziKqvK8mH22
+VNo4G0Dg5H0gDKj6LxNDtKjnt44Iq/2As4RYRUqbh+VW/CVNAwFwYcD/3Wdawpny
+ZaLMlfzisQuORMaA14xmTlqiWZf5+lIcjvzlYs1jByzcDFh01nekYlFUnG39QLnO
+kau0Md6k/yQvicUoe4o3CB7MtdcdEw==
+=kS7t
+-----END PGP SIGNATURE-----
+
+--Sig_//x1luGM18fkh2=2Mp.I+b59--
