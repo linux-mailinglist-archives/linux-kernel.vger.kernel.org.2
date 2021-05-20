@@ -2,139 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69E89389B46
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9010E389B4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:21:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhETCQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 22:16:14 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:42221 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230306AbhETCPu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 22:15:50 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1E6525808F3;
-        Wed, 19 May 2021 22:13:58 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Wed, 19 May 2021 22:13:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=xaOffRI6alJL3
-        rQhNQY1BObEReB1pRx0cFG8v7tgrSo=; b=seEJKdzPx3BjwzX0SXx8TYL4jg0Ph
-        +rHEdowVgjI85qIGwzLo1UQUfH2bRp31kd0jiMVh0wgPMk3qPEub2MoZ/mlFH5uY
-        d9VyCQg86Rt5SbVnco0RTOkvnhNiXvZth8h+eH01RrxAfjbyoEkGiD8N77DVcwxk
-        iJH4owW8y45z7dusmgfmpNscFN66D1dVdb1Cice+Gfl/hp6ZPv2PMxgXV/x9dnFn
-        Gl2oAzezRGrdQ6Z7kDOGFCYLtE174z9kB1X4PTUm/keE9RvRHuYRg73GZQ9P9Zvq
-        tP6nGUz89tF2aT6leSWWL6bekLUP01xn0voU1z/Yl+j0GD0orYIScKR9w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=xaOffRI6alJL3rQhNQY1BObEReB1pRx0cFG8v7tgrSo=; b=n5RY+O6i
-        NzDq/Z/wVHnQ5/iEGNsp/hqlsWSbU6cgrhix21FmNdx5BbiNLNON8D/pFrxyBGMd
-        e7gwciI2LdnTxdE5mioiQRuswovhCUznBg5S8Op7Z3YHiNhWAYcUEQ+xTP2y2k94
-        FzwTskJhFFPDGUGtNF1uvap2Y+bIbK7eEoYfaY4kXux1x6yE/UK3XkJEAXF/P6WD
-        M+/e4NtBrKJVCxDIYn+JbJNbyqvaDXdFHk3UnMbH7q8FZc6Hgcb2Mse+BUsWXWAp
-        Ww4yF0V2jPu8+0leYwZ5U4Ur/1X6igIA78PU3HuE+C4Q+/4OvvY+Hwb/T1DApvGE
-        5zZvIR7i0RCy0Q==
-X-ME-Sender: <xms:5sWlYIT_t5sZ7iR7dEo5wEp1vjkhGDFHPOX4hDkNiQlD73aRYTJbpA>
-    <xme:5sWlYFx_juqk00ghLOC6Hz4xLUjsdZkpYWBoBxR3lJLx7gQpTVRx6zDhEgei82JYW
-    _qoOS9-wAz5Y4aKxw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddgheeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekre
-    dtredttdenucfhrhhomheptehnughrvgifucflvghffhgvrhihuceorghnughrvgifsegr
-    jhdrihgurdgruheqnecuggftrfgrthhtvghrnhepjefgvdevheetkeevgeegleelgfelte
-    etjeffleffvdduudevieffgeetleevhfetnecukfhppedvtdefrdehjedrvdduhedrkeen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurh
-    gvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:5sWlYF06SQ2uPh8bUyTIQOICtLtxRs-SEMRZLuCJn1lfroAW9FNL1g>
-    <xmx:5sWlYMDTPCtd6khe_S0bg8nng-ltMXTCw1qLt1FMFcQXzRJ_HpS3ig>
-    <xmx:5sWlYBhtaAD6RAEvi_EmF_Ojuk3t3RopimUU5lmqRBdX6MQSQnRZWg>
-    <xmx:5sWlYCV033tKzJ8B-K8DA9PcsM6tQknu06ApnuRwFgAxt6YIUeG7Xg>
-Received: from mistburn.lan (203-57-215-8.dyn.iinet.net.au [203.57.215.8])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Wed, 19 May 2021 22:13:54 -0400 (EDT)
-From:   Andrew Jeffery <andrew@aj.id.au>
-To:     linux-serial@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org, joel@jms.id.au,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        jenmin_yuan@aspeedtech.com, ryan_chen@aspeedtech.com,
-        miltonm@us.ibm.com
-Subject: [PATCH v3 2/2] serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
-Date:   Thu, 20 May 2021 11:43:34 +0930
-Message-Id: <20210520021334.497341-3-andrew@aj.id.au>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210520021334.497341-1-andrew@aj.id.au>
-References: <20210520021334.497341-1-andrew@aj.id.au>
+        id S230137AbhETCWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 22:22:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40858 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229498AbhETCWp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 22:22:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4EA1600D4;
+        Thu, 20 May 2021 02:21:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621477284;
+        bh=X3koKCLC+avhcUq5LIhuIMwo5prbUOSv/lL4soFLiqg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JyDCftab3Al1BDq/C7BFslb3ybYS1rwz8HgS8gPkFrNg4j4al4QNBnl9eh+b1h6Zf
+         jDkZ18BWkYNp8/YmpuiLmtYtFfWweF4W1L65xPxkwH3MtLuUJS6AXO/mu17Yx0y85L
+         SEKmGhq3O+s1R8rM23dI03qVNVC+F+TR+pM7fgieQsdwwhfToa531Is9aH0GUaf/Jz
+         GUiRu7D+CQjSugQxxk3x07Sfu7fhh2UFqxUB/V3S+xZd/nRBSIoSirwyiD3cEm8cMA
+         dCGIA7D6azUN2hEkliyQQzD0g5YUMx7xLv/EI9wLkPTsy1KY+8QHnLNOH+AcoSgZJZ
+         p1UTLZMgJRnew==
+Date:   Wed, 19 May 2021 19:21:23 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org
+Subject: Re: [PATCH 1/2] f2fs: compress: fix to disallow wildcard extension
+ for hot/cold file
+Message-ID: <YKXHo0LAdE5fa77J@google.com>
+References: <20210518095458.99728-1-yuchao0@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518095458.99728-1-yuchao0@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BIT(x) improves readability and safety with respect to shifts.
+On 05/18, Chao Yu wrote:
+> If all files are hot or cold, hot/cold separation is not needed anymore,
+> so let's disallow configure wildcard extension.
 
-Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
----
- drivers/tty/serial/8250/8250.h | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+We need to be able to set hot/cold on the fly?
 
-diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
-index 34aa2714f3c9..6473361525d1 100644
---- a/drivers/tty/serial/8250/8250.h
-+++ b/drivers/tty/serial/8250/8250.h
-@@ -7,6 +7,7 @@
-  *  Copyright (C) 2001 Russell King.
-  */
- 
-+#include <linux/bits.h>
- #include <linux/serial_8250.h>
- #include <linux/serial_reg.h>
- #include <linux/dmaengine.h>
-@@ -70,25 +71,25 @@ struct serial8250_config {
- 	unsigned int	flags;
- };
- 
--#define UART_CAP_FIFO	(1 << 8)	/* UART has FIFO */
--#define UART_CAP_EFR	(1 << 9)	/* UART has EFR */
--#define UART_CAP_SLEEP	(1 << 10)	/* UART has IER sleep */
--#define UART_CAP_AFE	(1 << 11)	/* MCR-based hw flow control */
--#define UART_CAP_UUE	(1 << 12)	/* UART needs IER bit 6 set (Xscale) */
--#define UART_CAP_RTOIE	(1 << 13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
--#define UART_CAP_HFIFO	(1 << 14)	/* UART has a "hidden" FIFO */
--#define UART_CAP_RPM	(1 << 15)	/* Runtime PM is active while idle */
--#define UART_CAP_IRDA	(1 << 16)	/* UART supports IrDA line discipline */
--#define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
-+#define UART_CAP_FIFO	BIT(8)	/* UART has FIFO */
-+#define UART_CAP_EFR	BIT(9)	/* UART has EFR */
-+#define UART_CAP_SLEEP	BIT(10)	/* UART has IER sleep */
-+#define UART_CAP_AFE	BIT(11)	/* MCR-based hw flow control */
-+#define UART_CAP_UUE	BIT(12)	/* UART needs IER bit 6 set (Xscale) */
-+#define UART_CAP_RTOIE	BIT(13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
-+#define UART_CAP_HFIFO	BIT(14)	/* UART has a "hidden" FIFO */
-+#define UART_CAP_RPM	BIT(15)	/* Runtime PM is active while idle */
-+#define UART_CAP_IRDA	BIT(16)	/* UART supports IrDA line discipline */
-+#define UART_CAP_MINI	BIT(17)	/* Mini UART on BCM283X family lacks:
- 					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
- 					 */
- 
--#define UART_BUG_QUOT	(1 << 0)	/* UART has buggy quot LSB */
--#define UART_BUG_TXEN	(1 << 1)	/* UART has buggy TX IIR status */
--#define UART_BUG_NOMSR	(1 << 2)	/* UART has buggy MSR status bits (Au1x00) */
--#define UART_BUG_THRE	(1 << 3)	/* UART has buggy THRE reassertion */
--#define UART_BUG_PARITY	(1 << 4)	/* UART mishandles parity if FIFO enabled */
--#define UART_BUG_TXRACE	(1 << 5)	/* UART Tx fails to set remote DR */
-+#define UART_BUG_QUOT	BIT(0)	/* UART has buggy quot LSB */
-+#define UART_BUG_TXEN	BIT(1)	/* UART has buggy TX IIR status */
-+#define UART_BUG_NOMSR	BIT(2)	/* UART has buggy MSR status bits (Au1x00) */
-+#define UART_BUG_THRE	BIT(3)	/* UART has buggy THRE reassertion */
-+#define UART_BUG_PARITY	BIT(4)	/* UART mishandles parity if FIFO enabled */
-+#define UART_BUG_TXRACE	BIT(5)	/* UART Tx fails to set remote DR */
- 
- 
- #ifdef CONFIG_SERIAL_8250_SHARE_IRQ
--- 
-2.30.2
-
+> 
+> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> ---
+>  fs/f2fs/f2fs.h  |  1 +
+>  fs/f2fs/namei.c | 12 ++++++++----
+>  fs/f2fs/sysfs.c |  3 +++
+>  3 files changed, 12 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index b753cc88c77e..ecb13c3b458d 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -3322,6 +3322,7 @@ void f2fs_handle_failed_inode(struct inode *inode);
+>  /*
+>   * namei.c
+>   */
+> +bool f2fs_is_wildcard_char(const char *ext);
+>  int f2fs_update_extension_list(struct f2fs_sb_info *sbi, const char *name,
+>  							bool hot, bool set);
+>  struct dentry *f2fs_get_parent(struct dentry *child);
+> diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+> index a9cd9cf97229..8d78b96a8b3b 100644
+> --- a/fs/f2fs/namei.c
+> +++ b/fs/f2fs/namei.c
+> @@ -153,15 +153,17 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+>  	return ERR_PTR(err);
+>  }
+>  
+> +bool f2fs_is_wildcard_char(const char *ext)
+> +{
+> +	return *ext == '*' && strlen(ext) == 1;
+> +}
+> +
+>  static inline int is_extension_exist(const unsigned char *s, const char *sub)
+>  {
+>  	size_t slen = strlen(s);
+>  	size_t sublen = strlen(sub);
+>  	int i;
+>  
+> -	if (sublen == 1 && *sub == '*')
+> -		return 1;
+> -
+>  	/*
+>  	 * filename format of multimedia file should be defined as:
+>  	 * "filename + '.' + extension + (optional: '.' + temp extension)".
+> @@ -306,9 +308,11 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
+>  	ext = F2FS_OPTION(sbi).extensions;
+>  
+>  	for (i = 0; i < ext_cnt; i++) {
+> +		if (f2fs_is_wildcard_char(ext[i]))
+> +			goto set_compress;
+>  		if (!is_extension_exist(name, ext[i]))
+>  			continue;
+> -
+> +set_compress:
+>  		set_compress_context(inode);
+>  		return;
+>  	}
+> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+> index dc71bc968c72..ff5acb4de1b6 100644
+> --- a/fs/f2fs/sysfs.c
+> +++ b/fs/f2fs/sysfs.c
+> @@ -343,6 +343,9 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>  		if (strlen(name) >= F2FS_EXTENSION_LEN)
+>  			return -EINVAL;
+>  
+> +		if (f2fs_is_wildcard_char(name))
+> +			return -EINVAL;
+> +
+>  		down_write(&sbi->sb_lock);
+>  
+>  		ret = f2fs_update_extension_list(sbi, name, hot, set);
+> -- 
+> 2.29.2
