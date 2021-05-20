@@ -2,155 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9101B38B9DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D1E338B9E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhETXAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:00:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231967AbhETXAD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:00:03 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62E1EC061574;
-        Thu, 20 May 2021 15:58:40 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so4169783ood.2;
-        Thu, 20 May 2021 15:58:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZfJ8PjGEwmyXZ+gtGmQmPsOr3oK5zA8lOwS8dQZ4s+4=;
-        b=InMNdslEBanZLVTwjuSVme/8GSf9HWOfYnWP9xzR86lDZlMSrI31v+Uj3yE5+cOP7F
-         dBDpVGKGN5uVg393haBTZyt6EAAoYBAZ0UjTnDbt0ytvpAK2+1eezS/+iM4DdzpSBeUf
-         LlgYLiw1FmurJBzM7Lc/9czc+kXxR0ZvgJoQQQka40IlHerfZ4m5j99CV+OP5i27huG1
-         T6oDEMI/9qPug7RQxzvDlCPg+7JxfSXTQrp+0DcC4qgn3Z3S9gzI5s/G0J1dNFrjEiU3
-         Z8JIyAygB/MUgtVThi+8voMOTcB0j/qaNtqmtSTUZS+xDPZctfqGL+89szHypTrbeTq5
-         xVlw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ZfJ8PjGEwmyXZ+gtGmQmPsOr3oK5zA8lOwS8dQZ4s+4=;
-        b=CFMgN4rNB+rgYVBn7kLnAYtXEvOW9NRTXOvGOryJ+Et+aXseB6OyUbnZzSkzXhabKu
-         MF7nnLpws2JWEaqhOxnFxqBh//wkw3+eb9vf94xTs+0ETQQja8tkSFhM5x7Gu7VggMXG
-         d3hwywF4gJBlj7fNCkp9QVyvuE2nsq9I1RkuatMC0h7tFh2TiQWufzf+QXsrAzbtQN8Y
-         lxd/QXytH3nEEvebCUN6d2mDgRzqhwJc81XWx0hN4Fz8xz4VD5SwTROf0ApQGyEFWS0f
-         Zq+iUcwAAF7tgmSgxxQE3lV5/2DO3Fi5t8bbZzU7ogarnK5sOookvljj3JttBpxMPTlV
-         ji5Q==
-X-Gm-Message-State: AOAM533QWvUdQhLwg6feADmD2j9lCwRMbkrshwdBP2AhO6jaGH8rXFIr
-        BNB34Kj8kv5mM+tWdnp3rc+bEN337jw=
-X-Google-Smtp-Source: ABdhPJwCXYwWUGSb43Pz9O2g8L1e0uEldwwEoZ086R6Dx0S1L4d7W8WJrWOxSX4zL1PbLXP4pexHQw==
-X-Received: by 2002:a4a:db42:: with SMTP id 2mr5439817oot.47.1621551519819;
-        Thu, 20 May 2021 15:58:39 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b81sm826602oia.19.2021.05.20.15.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 15:58:39 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 20 May 2021 15:58:38 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Juerg Haefliger <juerg.haefliger@canonical.com>
-Cc:     joe@perches.com, Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Juerg Haefliger <juergh@canonical.com>
-Subject: Re: [PATCH] watchdog: ziirave_wdt: Remove VERSION_FMT defines and
- add sysfs newlines
-Message-ID: <20210520225838.GH2968078@roeck-us.net>
-References: <20210520072918.76482-1-juergh@canonical.com>
+        id S232709AbhETXBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 19:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231919AbhETXBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 19:01:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 600EB613AE;
+        Thu, 20 May 2021 23:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621551610;
+        bh=d3OAH1SWRvHEo0ZPbCi0Z6vsFyuPVS9WwpZ0HO2l2T8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=KjzhLn0pulgUajUesBp7AGBpChrD+gXv7ir7cJ7lCThbc3RhstNY9+tmyxTp40Lv5
+         5sVjFxN6CwEfke5AjFZx78T0feXLJ4YfPId9Noy8VhGTiISqsvJTIE0+1iuPQYd3X5
+         Huao7b1YonR1DGYFzkc2mBWpXhm8Mnv43odEmiz0yJzMM9tWeLnOhY78Tz/Fi68Urv
+         wXxLkpqwhQfDwIEfHdnYeL0doKK5JRZTjoY17OT0Ro7OfYvLiQYN6lCRl+WGZeDJ7L
+         lBbm2mvz4Nmsf222fsGNcq7lY+AyNZPOf0yLUT7Lq1KXLUKW/kpjsBr2zKeK2QoVdj
+         SfElfdUVsKwHQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 532F1609F6;
+        Thu, 20 May 2021 23:00:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520072918.76482-1-juergh@canonical.com>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net 0/2] net: fixes for stmmac
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162155161033.31527.4405992814200131855.git-patchwork-notify@kernel.org>
+Date:   Thu, 20 May 2021 23:00:10 +0000
+References: <20210520125117.1015-1-qiangqing.zhang@nxp.com>
+In-Reply-To: <20210520125117.1015-1-qiangqing.zhang@nxp.com>
+To:     Joakim Zhang <qiangqing.zhang@nxp.com>
+Cc:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
+        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
+        mcoquelin.stm32@gmail.com, andrew@lunn.ch, netdev@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 09:29:18AM +0200, Juerg Haefliger wrote:
-> Remove the ZIIRAVE_{BL,FW}_VERION_FMT defines since they're only used in
-> very few places. While at it, add newlines to sysfs outputs.
-> 
-> Suggested-By: Joe Perches <joe@perches.com>
-> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+Hello:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+This series was applied to netdev/net.git (refs/heads/master):
 
-> ---
+On Thu, 20 May 2021 20:51:15 +0800 you wrote:
+> Two clock fixes for stmmac driver.
 > 
->  Depends on: https://lore.kernel.org/lkml/20210511061812.480172-1-juergh@canonical.com/
+> Joakim Zhang (2):
+>   net: stmmac: correct clocks enabled in stmmac_vlan_rx_kill_vid()
+>   net: stmmac: fix system hang if change mac address after interface
+>     ifdown
 > 
->  drivers/watchdog/ziirave_wdt.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/watchdog/ziirave_wdt.c b/drivers/watchdog/ziirave_wdt.c
-> index 6c9414d09684..c5a9b820d43a 100644
-> --- a/drivers/watchdog/ziirave_wdt.c
-> +++ b/drivers/watchdog/ziirave_wdt.c
-> @@ -69,9 +69,6 @@ static char *ziirave_reasons[] = {"power cycle", "hw watchdog", NULL, NULL,
->  #define ZIIRAVE_CMD_JUMP_TO_BOOTLOADER_MAGIC	1
->  #define ZIIRAVE_CMD_RESET_PROCESSOR_MAGIC	1
->  
-> -#define ZIIRAVE_FW_VERSION_FMT	"02.%02u.%02u"
-> -#define ZIIRAVE_BL_VERSION_FMT	"01.%02u.%02u"
-> -
->  struct ziirave_wdt_rev {
->  	unsigned char major;
->  	unsigned char minor;
-> @@ -445,7 +442,7 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct device *dev,
->  	if (ret)
->  		return ret;
->  
-> -	ret = sysfs_emit(buf, ZIIRAVE_FW_VERSION_FMT,
-> +	ret = sysfs_emit(buf, "02.%02u.%02u\n",
->  			 w_priv->firmware_rev.major,
->  			 w_priv->firmware_rev.minor);
->  
-> @@ -469,7 +466,7 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev,
->  	if (ret)
->  		return ret;
->  
-> -	ret = sysfs_emit(buf, ZIIRAVE_BL_VERSION_FMT,
-> +	ret = sysfs_emit(buf, "01.%02u.%02u\n",
->  			 w_priv->bootloader_rev.major,
->  			 w_priv->bootloader_rev.minor);
->  
-> @@ -493,7 +490,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct device *dev,
->  	if (ret)
->  		return ret;
->  
-> -	ret = sysfs_emit(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
-> +	ret = sysfs_emit(buf, "%s\n", ziirave_reasons[w_priv->reset_reason]);
->  
->  	mutex_unlock(&w_priv->sysfs_mutex);
->  
-> @@ -538,7 +535,7 @@ static ssize_t ziirave_wdt_sysfs_store_firm(struct device *dev,
->  	}
->  
->  	dev_info(&client->dev,
-> -		 "Firmware updated to version " ZIIRAVE_FW_VERSION_FMT "\n",
-> +		 "Firmware updated to version 02.%02u.%02u\n",
->  		 w_priv->firmware_rev.major, w_priv->firmware_rev.minor);
->  
->  	/* Restore the watchdog timeout */
-> @@ -679,7 +676,7 @@ static int ziirave_wdt_probe(struct i2c_client *client,
->  	}
->  
->  	dev_info(&client->dev,
-> -		 "Firmware version: " ZIIRAVE_FW_VERSION_FMT "\n",
-> +		 "Firmware version: 02.%02u.%02u\n",
->  		 w_priv->firmware_rev.major, w_priv->firmware_rev.minor);
->  
->  	ret = ziirave_wdt_revision(client, &w_priv->bootloader_rev,
-> @@ -690,7 +687,7 @@ static int ziirave_wdt_probe(struct i2c_client *client,
->  	}
->  
->  	dev_info(&client->dev,
-> -		 "Bootloader version: " ZIIRAVE_BL_VERSION_FMT "\n",
-> +		 "Bootloader version: 01.%02u.%02u\n",
->  		 w_priv->bootloader_rev.major, w_priv->bootloader_rev.minor);
->  
->  	w_priv->reset_reason = i2c_smbus_read_byte_data(client,
-> -- 
-> 2.27.0
-> 
+> [...]
+
+Here is the summary with links:
+  - [net,1/2] net: stmmac: correct clocks enabled in stmmac_vlan_rx_kill_vid()
+    https://git.kernel.org/netdev/net/c/b3dcb3127786
+  - [net,2/2] net: stmmac: fix system hang if change mac address after interface ifdown
+    https://git.kernel.org/netdev/net/c/4691ffb18ac9
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
