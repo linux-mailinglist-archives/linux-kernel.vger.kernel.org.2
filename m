@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 300CF38AB80
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADAB38AB83
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241884AbhETLZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:25:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39632 "EHLO mail.kernel.org"
+        id S238419AbhETLZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:25:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239348AbhETLGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239355AbhETLGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 07:06:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A17A61D29;
-        Thu, 20 May 2021 10:05:23 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A74226192B;
+        Thu, 20 May 2021 10:05:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505123;
-        bh=q9p/jL1dxlKZfVTF1Fv6oBvpVsnuufUQ/yUS+MlceCQ=;
+        s=korg; t=1621505126;
+        bh=/NnEqLW81GmW6Y6kO6A9bBO78unID4AASUPq+dfkJxw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fEDOdQSKmLUxrqC46A55iWgZJEp5dxGhXJxD1nX3pgUsiNvR6fnWPy/Hyi1DAHE4b
-         aeZY0CZZaSd/vRdO1/+QifbWJHD4Rrd5CKojFUWZ+aBNaOzySARxlUEmltWh+AiLli
-         YYFiMEQT9bPzhmEK4HXyhfEvZlLp7tyXxeteQulc=
+        b=Vy+rznFiMFX/xsqDd11N4BXVbO6uekIbO+8M6i7O8T6GnioM3jw0MlfRCg4XRv67R
+         Y2wKKfg7ScvxBTs1ifC2WsWftSgBc8stW3Wi7D7r+D2aidYTot4ImHKb55kDMPBdoR
+         OWzfG2cRXYGZEnocN+1wYeB4TumDLor51z3jsl3Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 234/240] ceph: fix fscache invalidation
-Date:   Thu, 20 May 2021 11:23:46 +0200
-Message-Id: <20210520092116.551850574@linuxfoundation.org>
+        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 235/240] ALSA: hda: generic: change the DAC ctl name for LO+SPK or LO+HP
+Date:   Thu, 20 May 2021 11:23:47 +0200
+Message-Id: <20210520092116.581979142@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,45 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Hui Wang <hui.wang@canonical.com>
 
-[ Upstream commit 10a7052c7868bc7bc72d947f5aac6f768928db87 ]
+[ Upstream commit f48652bbe3ae62ba2835a396b7e01f063e51c4cd ]
 
-Ensure that we invalidate the fscache whenever we invalidate the
-pagecache.
+Without this change, the DAC ctl's name could be changed only when
+the machine has both Speaker and Headphone, but we met some machines
+which only has Lineout and Headhpone, and the Lineout and Headphone
+share the Audio Mixer0 and DAC0, the ctl's name is set to "Front".
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
+On most of machines, the "Front" is used for Speaker only or Lineout
+only, but on this machine it is shared by Lineout and Headphone,
+This introduces an issue in the pipewire and pulseaudio, suppose users
+want the Headphone to be on and the Speaker/Lineout to be off, they
+could turn off the "Front", this works on most of the machines, but on
+this machine, the "Front" couldn't be turned off otherwise the
+headphone will be off too. Here we do some change to let the ctl's
+name change to "Headphone+LO" on this machine, and pipewire and
+pulseaudio already could handle "Headphone+LO" and "Speaker+LO".
+(https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/747)
+
+BugLink: http://bugs.launchpad.net/bugs/804178
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20210504073917.22406-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ceph/caps.c  | 1 +
- fs/ceph/inode.c | 1 +
- 2 files changed, 2 insertions(+)
+ sound/pci/hda/hda_generic.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 2a351821d8f3..0eb2ada032c7 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -1577,6 +1577,7 @@ static int try_nonblocking_invalidate(struct inode *inode)
- 	u32 invalidating_gen = ci->i_rdcache_gen;
- 
- 	spin_unlock(&ci->i_ceph_lock);
-+	ceph_fscache_invalidate(inode);
- 	invalidate_mapping_pages(&inode->i_data, 0, -1);
- 	spin_lock(&ci->i_ceph_lock);
- 
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 049cff197d2a..5e12ea92f7cd 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -1762,6 +1762,7 @@ static void ceph_invalidate_work(struct work_struct *work)
- 	orig_gen = ci->i_rdcache_gen;
- 	spin_unlock(&ci->i_ceph_lock);
- 
-+	ceph_fscache_invalidate(inode);
- 	if (invalidate_inode_pages2(inode->i_mapping) < 0) {
- 		pr_err("invalidate_pages %p fails\n", inode);
- 	}
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 6089ed6efc8d..8d99ac931ff6 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -1165,11 +1165,17 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
+ 		*index = ch;
+ 		return "Headphone";
+ 	case AUTO_PIN_LINE_OUT:
+-		/* This deals with the case where we have two DACs and
+-		 * one LO, one HP and one Speaker */
+-		if (!ch && cfg->speaker_outs && cfg->hp_outs) {
+-			bool hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
+-			bool spk_lo_shared = !path_has_mixer(codec, spec->speaker_paths[0], ctl_type);
++		/* This deals with the case where one HP or one Speaker or
++		 * one HP + one Speaker need to share the DAC with LO
++		 */
++		if (!ch) {
++			bool hp_lo_shared = false, spk_lo_shared = false;
++
++			if (cfg->speaker_outs)
++				spk_lo_shared = !path_has_mixer(codec,
++								spec->speaker_paths[0],	ctl_type);
++			if (cfg->hp_outs)
++				hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
+ 			if (hp_lo_shared && spk_lo_shared)
+ 				return spec->vmaster_mute.hook ? "PCM" : "Master";
+ 			if (hp_lo_shared)
 -- 
 2.30.2
 
