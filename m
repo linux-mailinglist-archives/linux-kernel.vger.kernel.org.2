@@ -2,136 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2842638B57C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBEC338B590
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235435AbhETRwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:52:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232346AbhETRwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:52:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A56613E8;
-        Thu, 20 May 2021 17:50:40 +0000 (UTC)
-Date:   Thu, 20 May 2021 18:50:38 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v12 4/8] arm64: kvm: Introduce MTE VM feature
-Message-ID: <20210520175037.GG12251@arm.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-5-steven.price@arm.com>
- <20210520115426.GB12251@arm.com>
- <5f0996d6-0a6e-ebcd-afcd-8290faba6780@arm.com>
+        id S235379AbhETRzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:55:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233716AbhETRzq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:55:46 -0400
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F9FC061574;
+        Thu, 20 May 2021 10:54:25 -0700 (PDT)
+Received: by mail-lf1-x136.google.com with SMTP id i9so25756256lfe.13;
+        Thu, 20 May 2021 10:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MSeuamGnXAgkNNyC56B/8tNoyLHAJZahhkX5EWuZJAo=;
+        b=drigm3jWBw/husIrX7rD1YNqveBwT7xCa6uR5yJowZYmeRz0wH4XGX1ft/dZN2BDWU
+         TYMZOkQQ6uGSHWBUHnIWIApKvALY3W1e1EJCRzSmFtvz2sqeVMeUuuMDLFgITIPOth6U
+         k4UQl9UkvHCdFr1ONPpqYUXKwCAXjhMtmCGPKoOoaIqeV36VOVrCDGD+/+S9EERVt8sc
+         uV98A+1k29+A81Gp3CZRpPBkLLCAY3Vj5pK85SHWPIUP/BR7xX2nb+sk9JjZM4FJizd7
+         KQvFlS6/ZjjN5z2RW89Rewzi0xGntGpytqAxhSj65f6MAR7oTaS08CSbdPsd4sO306ZY
+         rqSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MSeuamGnXAgkNNyC56B/8tNoyLHAJZahhkX5EWuZJAo=;
+        b=B1r4A4nomcdCXLepIi4NzE6rI86KueRNR9DcYMIvF+ecBsVzAYoKPqErtS2AcfraaK
+         KBX6+cLZZ6lUePqaHlsjhbPgNgbqu6vCKYfGk3/x9no3ISvOdaia+vc2du4ndzx/MaTT
+         s/wnd9+cyOdnbKKFy3Gmhac7Jv5xckzwOXyvhwyAHYh5Ca5uxUdOL0uCTl7dFlPYbZ7B
+         B3tr0Mmaz7rbvIVkGiaOyVEDD/zq9CWHK4MS88AjDf+QIVjw45rpg2XAGwUB5uJLhrOg
+         WEjGd9jNA5yvWndlVmAPfneMhvhbFamogG1f3HkI0WWp7az6WZq1ytjaDcY6ngtM+Ytl
+         ev/w==
+X-Gm-Message-State: AOAM533x6W48mtFf/LwZZ51A/xDM+4CyJKoKr6Mzkc2Ou14U/McbGjKT
+        4kOnw/B4TcdUInKFlolRJk8=
+X-Google-Smtp-Source: ABdhPJxbKMKYuzk8/vJ36ofueZGlvEO2QTJoXhdsP3WRbp3iQCou97D6+YYJIEq8B4DG9UKviipyoQ==
+X-Received: by 2002:a05:6512:3d0b:: with SMTP id d11mr3816604lfv.405.1621533263322;
+        Thu, 20 May 2021 10:54:23 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-88.dynamic.spd-mgts.ru. [109.252.193.88])
+        by smtp.gmail.com with ESMTPSA id h16sm362972ljb.128.2021.05.20.10.54.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 10:54:22 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Unify NVIDIA Tegra ASoC machine drivers
+Date:   Thu, 20 May 2021 20:50:52 +0300
+Message-Id: <20210520175054.28308-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f0996d6-0a6e-ebcd-afcd-8290faba6780@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:05:46PM +0100, Steven Price wrote:
-> On 20/05/2021 12:54, Catalin Marinas wrote:
-> > On Mon, May 17, 2021 at 01:32:35PM +0100, Steven Price wrote:
-> >> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> >> index c5d1f3c87dbd..8660f6a03f51 100644
-> >> --- a/arch/arm64/kvm/mmu.c
-> >> +++ b/arch/arm64/kvm/mmu.c
-> >> @@ -822,6 +822,31 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
-> >>  	return PAGE_SIZE;
-> >>  }
-> >>  
-> >> +static int sanitise_mte_tags(struct kvm *kvm, unsigned long size,
-> >> +			     kvm_pfn_t pfn)
-> >> +{
-> >> +	if (kvm_has_mte(kvm)) {
-> >> +		/*
-> >> +		 * The page will be mapped in stage 2 as Normal Cacheable, so
-> >> +		 * the VM will be able to see the page's tags and therefore
-> >> +		 * they must be initialised first. If PG_mte_tagged is set,
-> >> +		 * tags have already been initialised.
-> >> +		 */
-> >> +		unsigned long i, nr_pages = size >> PAGE_SHIFT;
-> >> +		struct page *page = pfn_to_online_page(pfn);
-> >> +
-> >> +		if (!page)
-> >> +			return -EFAULT;
-> > 
-> > IIRC we ended up with pfn_to_online_page() to reject ZONE_DEVICE pages
-> > that may be mapped into a guest and we have no idea whether they support
-> > MTE. It may be worth adding a comment, otherwise, as Marc said, the page
-> > wouldn't disappear.
-> 
-> I'll add a comment.
-> 
-> >> +
-> >> +		for (i = 0; i < nr_pages; i++, page++) {
-> >> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
-> >> +				mte_clear_page_tags(page_address(page));
-> > 
-> > We started the page->flags thread and ended up fixing it for the host
-> > set_pte_at() as per the first patch:
-> > 
-> > https://lore.kernel.org/r/c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com
-> > 
-> > Now, can we have a race between the stage 2 kvm_set_spte_gfn() and a
-> > stage 1 set_pte_at()? Only the latter takes a lock. Or between two
-> > kvm_set_spte_gfn() in different VMs? I think in the above thread we
-> > concluded that there's only a problem if the page is shared between
-> > multiple VMMs (MAP_SHARED). How realistic is this and what's the
-> > workaround?
-> > 
-> > Either way, I think it's worth adding a comment here on the race on
-> > page->flags as it looks strange that here it's just a test_and_set_bit()
-> > while set_pte_at() uses a spinlock.
-> > 
-> 
-> Very good point! I should have thought about that. I think splitting the
-> test_and_set_bit() in two (as with the cache flush) is sufficient. While
-> there technically still is a race which could lead to user space tags
-> being clobbered:
-> 
-> a) It's very odd for a VMM to be doing an mprotect() after the fact to
-> add PROT_MTE, or to be sharing the memory with another process which
-> sets PROT_MTE.
-> 
-> b) The window for the race is incredibly small and the VMM (generally)
-> needs to be robust against the guest changing tags anyway.
-> 
-> But I'll add a comment here as well:
-> 
-> 	/*
-> 	 * There is a potential race between sanitising the
-> 	 * flags here and user space using mprotect() to add
-> 	 * PROT_MTE to access the tags, however by splitting
-> 	 * the test/set the only risk is user space tags
-> 	 * being overwritten by the mte_clear_page_tags() call.
-> 	 */
+During review of the RT5631 machine driver, Jon Hunter suggested that
+it will be better to squash all the current ASoC machine drivers into
+a single one. This suggestion is implemented by this patchset. The
+RT5631 support will come later with the ASUS Transformer changes.
 
-I think (well, I haven't re-checked), an mprotect() in the VMM ends up
-calling set_pte_at_notify() which would call kvm_set_spte_gfn() and that
-will map the page in the guest. So the problem only appears between
-different VMMs sharing the same page. In principle they can be
-MAP_PRIVATE but they'd be CoW so the race wouldn't matter. So it's left
-with MAP_SHARED between multiple VMMs.
+This series needs to be approved by Jaroslav Kysela before it can be
+merged.
 
-I think we should just state that this is unsafe and they can delete
-each-others tags. If we are really worried, we can export that lock you
-added in mte.c.
+Changelog:
+
+v2: - Dropped use of of_device_compatible_match(), like it was suggested
+      by Rob Herring in a review comment to v1.
+
+    - Added patch that sets card's driver_name of as Tegra ASoC drivers.
+      In a comment to v1 Jaroslav Kysela suggested that the Tegra drivers
+      don't set the card name properly and he was right.
+
+      I opened pull request with the new Tegra UCMs and updated lookup paths
+      for older UCMs [1].
+
+      [1] https://github.com/alsa-project/alsa-ucm-conf/pull/92
+
+Dmitry Osipenko (2):
+  ASoC: tegra: Set driver_name=tegra for all machine drivers
+  ASoC: tegra: Unify ASoC machine drivers
+
+ sound/soc/tegra/Kconfig              |  12 +
+ sound/soc/tegra/Makefile             |  18 +-
+ sound/soc/tegra/tegra_alc5632.c      | 259 ----------
+ sound/soc/tegra/tegra_asoc_machine.c | 732 +++++++++++++++++++++++++++
+ sound/soc/tegra/tegra_asoc_machine.h |  45 ++
+ sound/soc/tegra/tegra_max98090.c     | 276 ----------
+ sound/soc/tegra/tegra_rt5640.c       | 222 --------
+ sound/soc/tegra/tegra_rt5677.c       | 324 ------------
+ sound/soc/tegra/tegra_sgtl5000.c     | 211 --------
+ sound/soc/tegra/tegra_wm8753.c       | 185 -------
+ sound/soc/tegra/tegra_wm8903.c       | 357 +++----------
+ sound/soc/tegra/tegra_wm9712.c       | 166 ------
+ sound/soc/tegra/trimslice.c          | 172 -------
+ 13 files changed, 862 insertions(+), 2117 deletions(-)
+ delete mode 100644 sound/soc/tegra/tegra_alc5632.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_machine.c
+ create mode 100644 sound/soc/tegra/tegra_asoc_machine.h
+ delete mode 100644 sound/soc/tegra/tegra_max98090.c
+ delete mode 100644 sound/soc/tegra/tegra_rt5640.c
+ delete mode 100644 sound/soc/tegra/tegra_rt5677.c
+ delete mode 100644 sound/soc/tegra/tegra_sgtl5000.c
+ delete mode 100644 sound/soc/tegra/tegra_wm8753.c
+ delete mode 100644 sound/soc/tegra/tegra_wm9712.c
+ delete mode 100644 sound/soc/tegra/trimslice.c
 
 -- 
-Catalin
+2.30.2
+
