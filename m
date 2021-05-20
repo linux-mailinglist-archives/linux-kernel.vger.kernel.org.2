@@ -2,98 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC9238AF56
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6481838AF61
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:58:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243542AbhETM4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
+        id S242244AbhETNAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:00:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238873AbhETMzC (ORCPT
+        with ESMTP id S243254AbhETM5c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:55:02 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C3B0C068DA2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:19:22 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id p7so13712812wru.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UMwBlkKH755v/1m2nWKY3APVBr0BgGzoXf993Fsn6II=;
-        b=JTIx2A/bsLJLy18fPeENzF6c6eApV6eS/1Vl36cBuRZbyWN+EGQIqWAjQU42ugkFm+
-         CLPtPzjZtRTu5RXxBkdz3ulVB03Dbj85ayagJ9pAZ+UefzhpaI9xwKUywxK5m1ihnlAA
-         Z6QEeMNcCR2KAbdE+6+Bkit6JmJHPLZooUd2Hq+oxyBYrBTHTsS9fSR2MfWm7uc4LcF5
-         ID3Q5R+3FAqBcAI20dVQdifNYKcrjlGCZ8vrPHn6MCUuzv+U/wMYyWo7Pg7frmpf7M4r
-         ioxzNYC2/cnPjfEf5iAE270WlAfyk8V+6IGpM6JFsbC0pF1hSJ/bRrtj+s3M93Og1j9Y
-         VnYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UMwBlkKH755v/1m2nWKY3APVBr0BgGzoXf993Fsn6II=;
-        b=GEREJPv+hnuuf3g5LE3DOCSpOt1IypZT2mWF0e8YnjEU5cQApqxSK8BgIkM4oqp5ui
-         wlcjvoEmlElXvmwuoQ1nDvxg9GoNImuZAulgJyNQWBiI0240hs/jHW3xBnLfHblIFCw7
-         aSnGSgvYNlSwZ85sM9yTVYqY45mUAxdkKtnFVLFey8ZHO9YTNOI8Nhvr0Jj1ZnfAQ5FM
-         yt31JnZy68uLIY4VnktWa9kqLV2CnA6HM03d+2VWcKQLO5AbqYxtqoG2ye5aILSKoiT1
-         EC65x+hxTOX65cO7wTQkiPJMuz2BTPZVb64VkAZVjoY7oYVRb3VGlLIhX0sX+IisxGZC
-         dByg==
-X-Gm-Message-State: AOAM533IjBo0aawkdrSpyS5FMxh4427Qlm3GjaPbyFDZDFF7o3yNwdT3
-        u84oWnaRIwuYQ/Qn52oiEjXXLQTXZoOdHQ==
-X-Google-Smtp-Source: ABdhPJxReAdierdlJSRDKiO/TANsb5GUEywR3zRWcxSXFgAvZNUnEHBWT3JvQofiYWXlyT02WUpnvA==
-X-Received: by 2002:adf:f50f:: with SMTP id q15mr3861977wro.279.1621513160646;
-        Thu, 20 May 2021 05:19:20 -0700 (PDT)
-Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id f16sm3061161wrm.47.2021.05.20.05.19.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:19:20 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 11/11] tty: serial: xilinx_uartps: Fix documentation for cdns_uart_clk_notifier_cb()
-Date:   Thu, 20 May 2021 13:19:06 +0100
-Message-Id: <20210520121906.3468725-12-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520121906.3468725-1-lee.jones@linaro.org>
-References: <20210520121906.3468725-1-lee.jones@linaro.org>
+        Thu, 20 May 2021 08:57:32 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748D2C0612AC;
+        Thu, 20 May 2021 05:22:21 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 714FC2224A;
+        Thu, 20 May 2021 14:22:19 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621513339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mIfVSkJEirj47E9KJ0wuZ5dlcFpXTDZau4I97gIiTbE=;
+        b=s7yLCURY52qU1bLR4OljUp6wUU43vm13SVrHHidtRyEx2J/F8qWbmNVf1NEEPjtWtWIBWF
+        DqWjpxm/JkDXUScEQBDpqCDUCBgdf94IQ0N+gdMLfl+rqmLVbwZwiZYHW7ZzNfNguA2sGy
+        JEdIiB9jXXTTYwEthCKsVCjTUD5LJ8s=
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 20 May 2021 14:22:19 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     matti.vaittinen@fi.rohmeurope.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: Re: [PATCH 1/2] gpio: regmap: Support few IC specific operations
+In-Reply-To: <c6acc28e87d43973561a66bdb4d78905882f2940.camel@fi.rohmeurope.com>
+References: <09091e75157ea28dcad1605008532016304356a4.1621509932.git.matti.vaittinen@fi.rohmeurope.com>
+ <7d6f71e0a79e6ccd2a9f69be189993a9@walle.cc>
+ <c6acc28e87d43973561a66bdb4d78905882f2940.camel@fi.rohmeurope.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <689539b24f9dc57ec0bfc92fdd9d3464@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+Am 2021-05-20 14:00, schrieb Matti Vaittinen:
+> On Thu, 2021-05-20 at 13:42 +0200, Michael Walle wrote:
+>> Am 2021-05-20 13:28, schrieb Matti Vaittinen:
+>> > The set_config and init_valid_mask GPIO operations are usually very
+>> > IC
+>> > specific. Allow IC drivers to provide these custom operations at
+>> > gpio-regmap registration.
+>> >
+>> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+>> > ---
+>> >  drivers/gpio/gpio-regmap.c  | 49
+>> > +++++++++++++++++++++++++++++++++++++
+>> >  include/linux/gpio/regmap.h | 13 ++++++++++
+>> >  2 files changed, 62 insertions(+)
+>> >
+>> > diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-
+>> > regmap.c
+>> > index 134cedf151a7..315285cacd3f 100644
+>> > --- a/drivers/gpio/gpio-regmap.c
+>> > +++ b/drivers/gpio/gpio-regmap.c
+>> > @@ -27,6 +27,10 @@ struct gpio_regmap {
+>> >  	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int
+>> > base,
+>> >  			      unsigned int offset, unsigned int *reg,
+>> >  			      unsigned int *mask);
+>> > +	int (*set_config)(struct regmap *regmap, void *drvdata,
+>> > +			  unsigned int offset, unsigned long config);
+>> > +	int (*init_valid_mask)(struct regmap *regmap, void *drvdata,
+>> > +				unsigned long *valid_mask, unsigned int
+>> > ngpios);
+>> 
+>> Maybe we should also make the first argument a "struct gpio_regmap"
+>> and provide a new gpio_regmap_get_regmap(struct gpio_regmap). Thus
+>> having a similar api as for the reg_mask_xlate(). Andy?
+> 
+> I don't really see the reason of making this any more complicated for
+> IC drivers. If we don't open the struct gpio_regmap to IC drivers -
+> then they never need the struct gpio_regmap pointer itself but each IC
+> driver would need to do some unnecessary function call
+> (gpio_regmap_get_regmap() in this case). I'd say that would be
+> unnecessary bloat.
 
- drivers/tty/serial/xilinx_uartps.c:496: warning: expecting prototype for cdns_uart_clk_notitifer_cb(). Prototype was for cdns_uart_clk_notifier_cb() instead
+If there is ever the need of additional parameters, you'll have to
+modify that parameter list. Otherwise you'll just have to add a new
+function. Thus might be more future proof.
 
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jiri Slaby <jirislaby@kernel.org>
-Cc: Michal Simek <michal.simek@xilinx.com>
-Cc: linux-serial@vger.kernel.org
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/tty/serial/xilinx_uartps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+But I won't object to it.
 
-diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-index 67a2db621e2b7..2cdcfb8f034de 100644
---- a/drivers/tty/serial/xilinx_uartps.c
-+++ b/drivers/tty/serial/xilinx_uartps.c
-@@ -484,7 +484,7 @@ static unsigned int cdns_uart_set_baud_rate(struct uart_port *port,
- 
- #ifdef CONFIG_COMMON_CLK
- /**
-- * cdns_uart_clk_notitifer_cb - Clock notifier callback
-+ * cdns_uart_clk_notifier_cb - Clock notifier callback
-  * @nb:		Notifier block
-  * @event:	Notify event
-  * @data:	Notifier data
--- 
-2.31.1
+>> >  	void *driver_data;
+>> >  };
+>> > @@ -39,6 +43,43 @@ static unsigned int gpio_regmap_addr(unsigned
+>> > int
+>> > addr)
+>> >  	return addr;
+>> >  }
+>> >
+>> > +static int regmap_gpio_init_valid_mask(struct gpio_chip *gc,
+>> > +					unsigned long *valid_mask,
+>> > +					unsigned int ngpios)
+>> > +{
+>> > +	struct gpio_regmap *gpio;
+>> > +	void *drvdata;
+>> > +
+>> > +	gpio = gpiochip_get_data(gc);
+>> > +
+>> > +	if (!gpio->init_valid_mask) {
+>> > +		WARN_ON(!gpio->init_valid_mask);
+>> > +		return -EINVAL;
+>> > +	}
+>> 
+>> Why not the following?
+>> 
+>> if (!gpio->init_valid_mask)
+>>      return 0;
+> 
+> It just feels like an error if regmap_gpio_init_valid_mask() is ever
+> called by core without having the gpio->init_valid_mask set. Probably
+> this would mean that the someone has errorneously modified the gpio-
+>> init_valid_mask set after gpio_regmap registration - whih smells like
+> a problem. Thus the WARN() sounds like a correct course of action to
+> me. (I may be wrong though - see below)
+> 
+>> Thus copying the behavior of gpiolib.
+> 
+> I must admit I didn't check how this is implemented in gpiolib. But the
+> gpio_chip's init_valid_mask should not be set if regmap_gpio_config
+> does not have valid init_valid_mask pointer at registration. Thus it
+> smells like an error to me if the GPIO core calls the
+> regmap_gpio_init_valid_mask() and regmap_gpio has not set the
+> init_valid_mask pointer. But as I said, I haven't looked in gpiolib for
+> this so I may be wrong.
 
+Oh, I missed that you only set it when it is set in the
+gpio_regmap_config. Thus, I'd say drop it entirely? It is only within
+this module where things might go wrong.
+
+>> > +
+>> > +	drvdata = gpio_regmap_get_drvdata(gpio);
+>> > +
+>> > +	return gpio->init_valid_mask(gpio->regmap, drvdata,
+>> > valid_mask,
+>> > ngpios);
+>> > +}
+>> > +
+>> > +static int gpio_regmap_set_config(struct gpio_chip *gc, unsigned
+>> > int
+>> > offset,
+>> > +				  unsigned long config)
+>> > +{
+>> > +	struct gpio_regmap *gpio;
+>> > +	void *drvdata;
+>> > +
+>> > +	gpio = gpiochip_get_data(gc);
+>> > +
+>> > +	if (!gpio->set_config) {
+>> > +		WARN_ON(!gpio->set_config);
+>> > +		return -EINVAL;
+>> > +	}
+>> 
+>> same here, return -ENOTSUPP.
+> 
+> As above -
+> if (!gpio->set_config) {
+> 	the gpio-core should never call gpio_regmap_set_config() if the
+> }
+> 
+> Maybe I should add a comment to clarify the WARN() ?
+>> 
+>> > +
+>> > +	drvdata = gpio_regmap_get_drvdata(gpio);
+>> > +
+>> > +	return gpio->set_config(gpio->regmap, drvdata, offset, config);
+>> > +}
+>> > +
+>> >  static int gpio_regmap_simple_xlate(struct gpio_regmap *gpio,
+>> >  				    unsigned int base, unsigned int
+>> > offset,
+>> >  				    unsigned int *reg, unsigned int
+>> > *mask)
+>> > @@ -235,6 +276,8 @@ struct gpio_regmap *gpio_regmap_register(const
+>> > struct gpio_regmap_config *config
+>> >  	gpio->reg_clr_base = config->reg_clr_base;
+>> >  	gpio->reg_dir_in_base = config->reg_dir_in_base;
+>> >  	gpio->reg_dir_out_base = config->reg_dir_out_base;
+>> > +	gpio->set_config = config->set_config;
+>> > +	gpio->init_valid_mask = config->init_valid_mask;
+>> >
+>> >  	/* if not set, assume there is only one register */
+>> >  	if (!gpio->ngpio_per_reg)
+>> > @@ -253,6 +296,10 @@ struct gpio_regmap *gpio_regmap_register(const
+>> > struct gpio_regmap_config *config
+>> >  	chip->ngpio = config->ngpio;
+>> >  	chip->names = config->names;
+>> >  	chip->label = config->label ?: dev_name(config->parent);
+>> > +	if (gpio->set_config)
+>> > +		chip->set_config = gpio_regmap_set_config;
+>> > +	if (gpio->init_valid_mask)
+>> > +		chip->init_valid_mask = regmap_gpio_init_valid_mask;
+>> >
+>> >  #if defined(CONFIG_OF_GPIO)
+>> >  	/* gpiolib will use of_node of the parent if chip->of_node is
+>> > NULL */
+>> > @@ -280,6 +327,8 @@ struct gpio_regmap *gpio_regmap_register(const
+>> > struct gpio_regmap_config *config
+>> >  		chip->direction_output = gpio_regmap_direction_output;
+>> >  	}
+>> >
+>> > +	gpio_regmap_set_drvdata(gpio, config->drvdata);
+>> 
+>> I'm wondering if we need the gpio_regmap_set_drvdata() anymore or if
+>> we can just drop it entirely.
+> 
+> I wouldn't drop it. I think there _may_ be cases where the drvdata is
+> set only after the registration. (Just my gut-feeling, I may be wrong
+> though)
+
+Ok, but as you already mentioned on IRC, it could be a bit of a trap
+because it might already be used after gpiochip_add_data() and thus
+be NULL if not provided by gpio_regmap_config().
+
+-michael
