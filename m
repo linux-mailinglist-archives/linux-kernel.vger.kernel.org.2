@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D724C38AEAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:42:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CFD38AEBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:43:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242586AbhETMn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:43:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59116 "EHLO
+        id S242758AbhETMoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:44:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241464AbhETMnN (ORCPT
+        with ESMTP id S241501AbhETMnO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:43:13 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92BBDC056489
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:58 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so5059864wmq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:58 -0700 (PDT)
+        Thu, 20 May 2021 08:43:14 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88401C05648A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:59 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id r12so17402417wrp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=71fOhHlO0apSNak4OgEIaxdLa+/aWkYj9kGsKGdRvTY=;
-        b=yVNkE6LMgKRrm9L0PXzODtlbyrkJccI6tBlQKP5YfbFApvsFNWrsZlQrQUFfUwvQcH
-         O89HKrq3dcoAIZ3K/9+IBkK5k8wTEwbsLnZbG4BGSXV8MjBRV36AU5mBa6tXbSB4TsOX
-         Sink0gYtfRxJ5amdGUYoTJTqpdBFZ1A1RaJBuErq62rN+wWD6KPiOkK9SSTiBM3T6+yb
-         pPUn+fvRnwU/0QN4Bg6/AcKQMBGBh797AmO2z6uXHyghSAG3BEA19YG1XX3sgCUH9rrV
-         /lNhbYEunHaq4jQtRtzIwjb3olvNWsqGcTSWxf59i6Ef+ZnlVM1y73ZPKeWdGeMABZPV
-         fTgQ==
+        bh=78IZFmK5jsA34hqJO0M2qv8hujM84El09YurAWZwzJM=;
+        b=C3JKjuJQ/+v/Ste8TDqUSd4/bIawR7HpQPO4KJjFthaE/uBvkhh4qP6g2l5yuS0pwx
+         iNnrjxChg/Yt3beNIYy+LBnkLUHs8jePy9TlojGGjsFsL6sPzdc4J9ynGCM/tuFlIKNt
+         cs+xIFK5prHwgSpGNLUzj9B5hW40fM6R/psgmFycgziUAAExNQbKnRQR63SfqJIEB2Pn
+         eGljaSNS9P2K/kuxjjU9yGQNRx6BO9BpNKXCtjCvNJFM9LBGGQI4eHizABCNlimVW2Ix
+         hL028sHfiqtvLELAFZTHn6CowpRzuK/KmcqFE4aTjj0teNVZTlGDufkdnGo2jjusUFMn
+         EQHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=71fOhHlO0apSNak4OgEIaxdLa+/aWkYj9kGsKGdRvTY=;
-        b=gOepkazMFZTb61FSACBM3vmsAszOJswHAbv/xKpYitijovwGEUi0OVbZm3HoUuvjsy
-         cAbTzwD9V7ZBxp//2eDbMDLN2Z/AvovyAKon9TGgoPff1BqrDnpzM+VjKULw7hxCov3f
-         q6NmzQS6r3HlCpozTqkq7hVjAcoYOhzY8srg48xTKVYf33ySUzLlYXWahuLAYUzmk7LI
-         lc/E8zGMuBt8Toe+1j0cfmVduerhj1KC5bK1ygqcicypWUwC5fIgRhjRueASvGRoYb+G
-         0Q0XUEtU9DxV5FD32t5CKycvaMgWG8cgfJaK56XS9iXx/wQ8gaDh7jODoxUJ08LTNE4Z
-         9eNA==
-X-Gm-Message-State: AOAM530oFS+kbUxMSi8TMJ9cpTYvSOnkBF/2KoE65ltuvrunI9dN5nT5
-        LJhtXC+DDPKqmTBiW0TpSwWqJw==
-X-Google-Smtp-Source: ABdhPJzL+TBqXQbBCqdO0J1TpltSMujA87+5MzgL9bvbaSIHTDzj0jzbKDSNOe+5REQBbMAiOcQ72w==
-X-Received: by 2002:a1c:7c03:: with SMTP id x3mr3760475wmc.168.1621512177173;
-        Thu, 20 May 2021 05:02:57 -0700 (PDT)
+        bh=78IZFmK5jsA34hqJO0M2qv8hujM84El09YurAWZwzJM=;
+        b=EpP0IyZxNSTA6Y5P2VDxB3/olcyBy6LemovqEvAxTJ4fMLCd7/dzhzuS8ra18T4szf
+         0DlOufuP97g/x69AcXc53qUjjh6n4KDeuFNlrGj9LtnNWdDL5FigEqO+nNvnRMrv9MzT
+         yzbuRAr8+mi0bnvXwjOTFGUqQSxlR1VnyAULaCMZhF15VE7jHgbCDhmZ3EppJI+guLtV
+         dG5eA3k4cJoJg/GudEscwDbeyDdCevlEG5DNPgBp6eezStp7F5gRVP0cF/iSnlmItbY5
+         rbFQY+f1TAlWvWHqhdQnnxfOMoy3HeOxALFSZJbDsD1hX8G+NiUjOIQjW+nDE8MsLjg9
+         ZYKg==
+X-Gm-Message-State: AOAM53063Q/vWN0X3pRuzF6EXx+OJGQZKD8qEb68ghEdN40u8WZZ3XO7
+        UBHSodQ9G96UpAeFO/h9xjerww==
+X-Google-Smtp-Source: ABdhPJyjfJJwF+BNH0YP0v8lGpULEjGckiTSXpzTJVGakyu6jwlqugBIAGeCfvDjLTMGMM31/ZxzOw==
+X-Received: by 2002:adf:ed46:: with SMTP id u6mr3884135wro.295.1621512178168;
+        Thu, 20 May 2021 05:02:58 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.02.56
+        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.02.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:02:56 -0700 (PDT)
+        Thu, 20 May 2021 05:02:57 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 05/38] drm/mediatek/mtk_disp_rdma: Strip and demote non-conformant kernel-doc header
-Date:   Thu, 20 May 2021 13:02:15 +0100
-Message-Id: <20210520120248.3464013-6-lee.jones@linaro.org>
+        Vincent Abriou <vincent.abriou@st.com>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 06/38] drm/sti/sti_hdmi_tx3g4c28phy: Provide function names for kernel-doc headers
+Date:   Thu, 20 May 2021 13:02:16 +0100
+Message-Id: <20210520120248.3464013-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520120248.3464013-1-lee.jones@linaro.org>
 References: <20210520120248.3464013-1-lee.jones@linaro.org>
@@ -73,42 +70,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:72: warning: Function parameter or member 'clk' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:72: warning: Function parameter or member 'regs' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:72: warning: Function parameter or member 'cmdq_reg' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:72: warning: Function parameter or member 'vblank_cb' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:72: warning: Function parameter or member 'vblank_cb_data' not described in 'mtk_disp_rdma'
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c:72: warning: Function parameter or member 'fifo_size' not described in 'mtk_disp_rdma'
+ drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c:77: warning: expecting prototype for Start hdmi phy macro cell tx3g4c28(). Prototype was for sti_hdmi_tx3g4c28phy_start() instead
+ drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c:187: warning: expecting prototype for Stop hdmi phy macro cell tx3g4c28(). Prototype was for sti_hdmi_tx3g4c28phy_stop() instead
 
-Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Vincent Abriou <vincent.abriou@st.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-mediatek@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/mediatek/mtk_disp_rdma.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-index 728aaadfea8cf..705f28ceb4ddd 100644
---- a/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-+++ b/drivers/gpu/drm/mediatek/mtk_disp_rdma.c
-@@ -55,10 +55,8 @@ struct mtk_disp_rdma_data {
- 	unsigned int fifo_size;
+diff --git a/drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c b/drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c
+index d5f94dca0d323..d25ecd4f4b673 100644
+--- a/drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c
++++ b/drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c
+@@ -67,7 +67,7 @@ static struct hdmi_phy_config hdmiphy_config[NB_HDMI_PHY_CONFIG] = {
  };
  
--/**
-+/*
-  * struct mtk_disp_rdma - DISP_RDMA driver structure
-- * @ddp_comp: structure containing type enum and hardware resources
-- * @crtc: associated crtc to report irq events to
-  * @data: local driver data
+ /**
+- * Start hdmi phy macro cell tx3g4c28
++ * sti_hdmi_tx3g4c28phy_start - Start hdmi phy macro cell tx3g4c28
+  *
+  * @hdmi: pointer on the hdmi internal structure
+  *
+@@ -179,7 +179,7 @@ static bool sti_hdmi_tx3g4c28phy_start(struct sti_hdmi *hdmi)
+ }
+ 
+ /**
+- * Stop hdmi phy macro cell tx3g4c28
++ * sti_hdmi_tx3g4c28phy_stop - Stop hdmi phy macro cell tx3g4c28
+  *
+  * @hdmi: pointer on the hdmi internal structure
   */
- struct mtk_disp_rdma {
 -- 
 2.31.1
 
