@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D71538B4C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4CA38B4C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236006AbhETRAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:00:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56538 "EHLO mail.kernel.org"
+        id S234153AbhETRAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:00:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234406AbhETQ67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:58:59 -0400
+        id S237753AbhETQ7O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:59:14 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 91766613C1;
-        Thu, 20 May 2021 16:57:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E955861363;
+        Thu, 20 May 2021 16:57:52 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgn-002d7b-6l; Thu, 20 May 2021 17:38:25 +0100
+        id 1ljlgo-002d7b-Nt; Thu, 20 May 2021 17:38:26 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 25/39] genirq: Add generic_handle_domain_irq() helper
-Date:   Thu, 20 May 2021 17:37:37 +0100
-Message-Id: <20210520163751.27325-26-maz@kernel.org>
+Subject: [PATCH 26/39] genirq: Move non-irqdomain handle_domain_irq() handling into ARM's handle_IRQ()
+Date:   Thu, 20 May 2021 17:37:38 +0100
+Message-Id: <20210520163751.27325-27-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,58 +66,157 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Provide generic_handle_domain_irq() as a pendent to handle_domain_irq()
-for non-root interrupt controllers
+Despite the name, handle_domain_irq() deals with non-irqdomain
+handling for the sake of a handful of legacy ARM platforms.
+
+Move such handling into ARM's handle_IRQ(), allowing for better
+code generation for everyone else. This allows us get rid of
+some complexity, and to rearrange the guards on the various helpers
+in a more logical way.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/irqdesc.h |  2 ++
- kernel/irq/irqdesc.c    | 19 ++++++++++++++++++-
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ arch/arm/kernel/irq.c   | 22 +++++++++++++++++++++-
+ include/linux/irqdesc.h | 14 ++++----------
+ kernel/irq/irqdesc.c    | 30 ++++++++----------------------
+ 3 files changed, 33 insertions(+), 33 deletions(-)
 
+diff --git a/arch/arm/kernel/irq.c b/arch/arm/kernel/irq.c
+index 698b6f636156..20ab1e607522 100644
+--- a/arch/arm/kernel/irq.c
++++ b/arch/arm/kernel/irq.c
+@@ -63,7 +63,27 @@ int arch_show_interrupts(struct seq_file *p, int prec)
+  */
+ void handle_IRQ(unsigned int irq, struct pt_regs *regs)
+ {
+-	__handle_domain_irq(NULL, irq, false, regs);
++	struct pt_regs *old_regs = set_irq_regs(regs);
++	struct irq_desc *desc;
++
++	irq_enter();
++
++	/*
++	 * Some hardware gives randomly wrong interrupts.  Rather
++	 * than crashing, do something sensible.
++	 */
++	if (unlikely(!irq || irq >= nr_irqs))
++		desc = NULL;
++	else
++		desc = irq_to_desc(irq);
++
++	if (likely(desc))
++		handle_irq_desc(desc);
++	else
++		ack_bad_irq(irq);
++
++	irq_exit();
++	set_irq_regs(old_regs);
+ }
+ 
+ /*
 diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index 2971eb7e65f1..0f226c6b0c70 100644
+index 0f226c6b0c70..59aea39785bf 100644
 --- a/include/linux/irqdesc.h
 +++ b/include/linux/irqdesc.h
-@@ -170,6 +170,8 @@ int generic_handle_irq(unsigned int irq);
- int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
- 			bool lookup, struct pt_regs *regs);
+@@ -161,24 +161,18 @@ static inline void generic_handle_irq_desc(struct irq_desc *desc)
+ int handle_irq_desc(struct irq_desc *desc);
+ int generic_handle_irq(unsigned int irq);
  
-+int generic_handle_domain_irq(struct irq_domain *domain, unsigned int hwirq);
-+
- static inline int handle_domain_irq(struct irq_domain *domain,
- 				    unsigned int hwirq, struct pt_regs *regs)
- {
+-#ifdef CONFIG_HANDLE_DOMAIN_IRQ
++#ifdef CONFIG_IRQ_DOMAIN
+ /*
+  * Convert a HW interrupt number to a logical one using a IRQ domain,
+  * and handle the result interrupt number. Return -EINVAL if
+  * conversion failed.
+  */
+-int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
+-			bool lookup, struct pt_regs *regs);
+-
+ int generic_handle_domain_irq(struct irq_domain *domain, unsigned int hwirq);
+ 
+-static inline int handle_domain_irq(struct irq_domain *domain,
+-				    unsigned int hwirq, struct pt_regs *regs)
+-{
+-	return __handle_domain_irq(domain, hwirq, true, regs);
+-}
++#ifdef CONFIG_HANDLE_DOMAIN_IRQ
++int handle_domain_irq(struct irq_domain *domain,
++		      unsigned int hwirq, struct pt_regs *regs);
+ 
+-#ifdef CONFIG_IRQ_DOMAIN
+ int handle_domain_nmi(struct irq_domain *domain, unsigned int hwirq,
+ 		      struct pt_regs *regs);
+ #endif
 diff --git a/kernel/irq/irqdesc.c b/kernel/irq/irqdesc.c
-index 684c5b7b7832..6179d5bde88e 100644
+index 6179d5bde88e..f4dd5186858a 100644
 --- a/kernel/irq/irqdesc.c
 +++ b/kernel/irq/irqdesc.c
-@@ -661,7 +661,24 @@ EXPORT_SYMBOL_GPL(generic_handle_irq);
+@@ -659,7 +659,7 @@ int generic_handle_irq(unsigned int irq)
+ }
+ EXPORT_SYMBOL_GPL(generic_handle_irq);
  
- #ifdef CONFIG_HANDLE_DOMAIN_IRQ
+-#ifdef CONFIG_HANDLE_DOMAIN_IRQ
++#ifdef CONFIG_IRQ_DOMAIN
  /**
-- * __handle_domain_irq - Invoke the handler for a HW irq belonging to a domain
-+ * generic_handle_domain_irq - Invoke the handler for a HW irq belonging
-+ *                             to a domain, usually for a non-root interrupt
-+ *                             controller
-+ * @domain:	The domain where to perform the lookup
-+ * @hwirq:	The HW irq number to convert to a logical one
-+ *
-+ * Returns:	0 on success, or -EINVAL if conversion has failed
-+ *
-+ */
-+int generic_handle_domain_irq(struct irq_domain *domain, unsigned int hwirq)
-+{
-+	return handle_irq_desc(irq_resolve_mapping(domain, hwirq));
-+}
-+EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
-+
-+/**
-+ * __handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
-+ *                       usually for a root interrupt controller
+  * generic_handle_domain_irq - Invoke the handler for a HW irq belonging
+  *                             to a domain, usually for a non-root interrupt
+@@ -676,9 +676,10 @@ int generic_handle_domain_irq(struct irq_domain *domain, unsigned int hwirq)
+ }
+ EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
+ 
++#ifdef CONFIG_HANDLE_DOMAIN_IRQ
+ /**
+- * __handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
+- *                       usually for a root interrupt controller
++ * handle_domain_irq - Invoke the handler for a HW irq belonging to a domain,
++ *                     usually for a root interrupt controller
   * @domain:	The domain where to perform the lookup
   * @hwirq:	The HW irq number to convert to a logical one
   * @lookup:	Whether to perform the domain lookup or not
+@@ -686,8 +687,8 @@ EXPORT_SYMBOL_GPL(generic_handle_domain_irq);
+  *
+  * Returns:	0 on success, or -EINVAL if conversion has failed
+  */
+-int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
+-			bool lookup, struct pt_regs *regs)
++int handle_domain_irq(struct irq_domain *domain,
++		      unsigned int hwirq, struct pt_regs *regs)
+ {
+ 	struct pt_regs *old_regs = set_irq_regs(regs);
+ 	struct irq_desc *desc;
+@@ -695,22 +696,8 @@ int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
+ 
+ 	irq_enter();
+ 
+-	if (likely(IS_ENABLED(CONFIG_IRQ_DOMAIN) && lookup)) {
+-		/* The irqdomain code provides boundary checks */
+-		desc = irq_resolve_mapping(domain, hwirq);
+-	} else {
+-		/*
+-		 * Some hardware gives randomly wrong interrupts.  Rather
+-		 * than crashing, do something sensible.
+-		 */
+-		if (unlikely(!hwirq || hwirq >= nr_irqs)) {
+-			ack_bad_irq(hwirq);
+-			desc = NULL;
+-		} else {
+-			desc = irq_to_desc(hwirq);
+-		}
+-	}
+-
++	/* The irqdomain code provides boundary checks */
++	desc = irq_resolve_mapping(domain, hwirq);
+ 	if (likely(desc))
+ 		handle_irq_desc(desc);
+ 	else
+@@ -721,7 +708,6 @@ int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_IRQ_DOMAIN
+ /**
+  * handle_domain_nmi - Invoke the handler for a HW irq belonging to a domain
+  * @domain:	The domain where to perform the lookup
 -- 
 2.30.2
 
