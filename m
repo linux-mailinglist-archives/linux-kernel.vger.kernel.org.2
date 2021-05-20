@@ -2,98 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 636FB389FF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:36:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4D6389FF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhETIiP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:38:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhETIiP (ORCPT
+        id S231258AbhETIkC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:40:02 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48954 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230102AbhETIkA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:38:15 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B6A6C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:36:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=O/a63xiqDeyYRC1yN3wYA+KEtbRNfD4omfciwzXuNaU=; b=qyAt3mcPYd7lfjzSKLoVi3seD2
-        ZstdfrB7bqMAPPb/vM4r+rWJea6vkAKThMEqh7ULShsom4VNVB3qRfjveWeuf6kFibRjBQe/F7cvn
-        jDAv7dvZkLtXCDB5eoph9o27l4DVzIAbNqrFdInbZcgjnXDEYHwU+Cpcx95BLAnBb7R94RpMhwJIr
-        iN0GMJy2Q8ke3bympaPb76LgdjZoybK3iJCrQCAIaQYmH58SHRKdZbQZ6QsZ5Cfba45lTxfZtCpq9
-        A7EuGyNTrMpAtCsPTXgY9Yj0EiB7HcHVI6yVKqCOqcOoDbveC5bT/YQQttpiL7y9KbyQwRyLHMCZG
-        FDqN5JZQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljeAN-006FG0-Bl; Thu, 20 May 2021 08:36:27 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CFDE13001DB;
-        Thu, 20 May 2021 10:36:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 938B72D8C28CB; Thu, 20 May 2021 10:36:25 +0200 (CEST)
-Date:   Thu, 20 May 2021 10:36:25 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched: Optimize housekeeping_cpumask in for_each_cpu_and
-Message-ID: <YKYfiY1/OyQYRG8m@hirez.programming.kicks-ass.net>
-References: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
+        Thu, 20 May 2021 04:40:00 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14K8XDtV023760;
+        Thu, 20 May 2021 04:38:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=wpXekIV/UPMz8BLa3JAYJTIG7KK70tawDEsEuFrWSSk=;
+ b=g1OYC8XKsOEo7j+kpW/oyGeBcuBbFql9FbSDiGyZh3WrWF4nYoqK3ByVe1iDl5JegBAf
+ ueqr+owZXvou1A99SuULwIzItYizgDsO89bUc7rDU8dMWSrJcf7y7XJp7+dGYk0wuwmx
+ 2RfSk7hwz/mU46uSO4CJ0QCVKVMDS5UIRJBkXP9yKqM9tcTtnX+N2PSp0Sd+t9lGGBJy
+ T0XaCPtpG/Ml3DsS9IjrUHqGPSSPAzOCFyoHutfiMVmuH9j4p2rCs4LaM8hjO8XWI3HO
+ AaiRs0UkMDx0aiNCwIDVwPNCN50A31s5RnDnJ6n3m32eovyOspy99YqYjuYIhe/q+axM QQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38nm7j8byn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 04:38:38 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14K8XKtW024615;
+        Thu, 20 May 2021 04:38:37 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38nm7j8bxy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 04:38:37 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14K8cZ7n032593;
+        Thu, 20 May 2021 08:38:35 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 38j5x7th08-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 08:38:35 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14K8c4s536438360
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 May 2021 08:38:04 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 66F9811C04A;
+        Thu, 20 May 2021 08:38:32 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AAC6811C054;
+        Thu, 20 May 2021 08:38:31 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.68.61])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu, 20 May 2021 08:38:31 +0000 (GMT)
+Date:   Thu, 20 May 2021 10:38:29 +0200
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+Message-ID: <20210520103829.0913b6de.pasic@linux.ibm.com>
+In-Reply-To: <20210519232202.GV1002214@nvidia.com>
+References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
+        <20210519153921.804887-3-akrowiak@linux.ibm.com>
+        <20210519161610.GO1002214@nvidia.com>
+        <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
+        <20210519232202.GV1002214@nvidia.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: uN5TwIoE8WAWJl3BpyiCrLb-sSF85HyQ
+X-Proofpoint-ORIG-GUID: l7VL1aB6qaYmCVIVvGCjwbIvE7hxXZKb
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618671697-26098-1-git-send-email-yuanzhaoxiong@baidu.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-20_01:2021-05-20,2021-05-19 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ bulkscore=0 adultscore=0 phishscore=0 impostorscore=0 malwarescore=0
+ spamscore=0 mlxscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105200065
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 11:01:37PM +0800, Yuan ZhaoXiong wrote:
-> On a 128 cores AMD machine, there are 8 cores in nohz_full mode, and
-> the others are used for housekeeping. When many housekeeping cpus are
-> in idle state, we can observe huge time burn in the loop for searching
-> nearest busy housekeeper cpu by ftrace.
-> 
->    9)               |              get_nohz_timer_target() {
->    9)               |                housekeeping_test_cpu() {
->    9)   0.390 us    |                  housekeeping_get_mask.part.1();
->    9)   0.561 us    |                }
->    9)   0.090 us    |                __rcu_read_lock();
->    9)   0.090 us    |                housekeeping_cpumask();
->    9)   0.521 us    |                housekeeping_cpumask();
->    9)   0.140 us    |                housekeeping_cpumask();
-> 
->    ...
-> 
->    9)   0.500 us    |                housekeeping_cpumask();
->    9)               |                housekeeping_any_cpu() {
->    9)   0.090 us    |                  housekeeping_get_mask.part.1();
->    9)   0.100 us    |                  sched_numa_find_closest();
->    9)   0.491 us    |                }
->    9)   0.100 us    |                __rcu_read_unlock();
->    9) + 76.163 us   |              }
-> 
-> for_each_cpu_and() is a micro function, so in get_nohz_timer_target()
-> function the
->         for_each_cpu_and(i, sched_domain_span(sd),
->                 housekeeping_cpumask(HK_FLAG_TIMER))
-> equals to below:
->         for (i = -1; i = cpumask_next_and(i, sched_domain_span(sd),
->                 housekeeping_cpumask(HK_FLAG_TIMER)), i < nr_cpu_ids;)
-> That will cause that housekeeping_cpumask() will be invoked many times.
-> The housekeeping_cpumask() function returns a const value, so it is
-> unnecessary to invoke it every time. This patch can minimize the worst
-> searching time from ~76us to ~16us in my testing.
-> 
-> Similarly, the find_new_ilb() function has the same problem.
-> 
-> Signed-off-by: Yuan ZhaoXiong <yuanzhaoxiong@baidu.com>
-> Signed-off-by: Li RongQing <lirongqing@baidu.com>
+On Wed, 19 May 2021 20:22:02 -0300
+Jason Gunthorpe <jgg@nvidia.com> wrote:
 
-Thanks!
+> On Wed, May 19, 2021 at 07:04:46PM -0400, Tony Krowiak wrote:
+> > 
+> > 
+> > On 5/19/21 12:16 PM, Jason Gunthorpe wrote:  
+> > > On Wed, May 19, 2021 at 11:39:21AM -0400, Tony Krowiak wrote:
+> > >   
+> > > > @@ -287,13 +289,17 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
+> > > >   	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
+> > > >   		return -EOPNOTSUPP;
+> > > > -	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
+> > > > -	mutex_lock(&matrix_dev->lock);
+> > > > +	rcu_read_lock();
+> > > > +	pqap_module_hook = rcu_dereference(vcpu->kvm->arch.crypto.pqap_hook);
+> > > > +	if (!pqap_module_hook) {
+> > > > +		rcu_read_unlock();
+> > > > +		goto set_status;
+> > > > +	}
+> > > > -	if (!vcpu->kvm->arch.crypto.pqap_hook)
+> > > > -		goto out_unlock;
+> > > > -	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
+> > > > -				   struct ap_matrix_mdev, pqap_hook);
+> > > > +	matrix_mdev = pqap_module_hook->data;
+> > > > +	rcu_read_unlock();
+> > > > +	mutex_lock(&matrix_dev->lock);  
+> > > The matrix_mdev pointer was extracted from the pqap_module_hook,
+> > > but now there is nothing protecting it since the rcu was dropped and
+> > > it gets freed in vfio_ap_mdev_remove.  
+> > 
+> > Therein lies the rub. We can't hold the rcu_read_lock across the
+> > entire time that the interception is being processed because of
+> > wait conditions in the interception handler. Regardless of whether
+> > the pointer to the matrix_mdev is retrieved as the container of
+> > or extracted from the pqap_hook, there is nothing protecting it
+> > and there appears to be no way to do so using RCU.  
+> 
+> RCU is a lock that should only be used for highly performance
+> sensitive read work loads. 
+
+This is not a highly performance sensitive read workload.
+
+> It eliminates one atomic from a lock, but
+> if you go on to immediately do something like try_module_get, which
+> has an atomic inside, the whole thing is pointless (assuming
+> try_module_get was even the right thing to do)
+
+I'm not sure about this argument, or that RCU should be used only for
+highly performance sensitive read workloads. Can you please elaborate on
+the argument above and also put your statement in perspective with
+https://lwn.net/Articles/263130/?
+
+@Christian: Since you proposed RCU for this, I guess your opinion
+does not align with Jason's.
+
+> 
+> Use a simple sleepable rwsem around the whole thing and forget about
+> the module_get. Hold the write side when NULL'ing the pointer.
+> 
+
+Yes a simple sleepable lock would work, and we wouldn't need
+get_module(). Because before the vfio_ap module unloads, it
+sets all vcpu->kvm->arch.crypto.pqap_hook instances to NULL. So if
+we know that vcpu->kvm->arch.crypto.pqap_hook then we know
+that the still have valid references to the module.
+
+> > > And, again, module locking doesn't prevent vfio_ap_mdev_remove() from
+> > > being called. None of these patches should be combining module locking
+> > > with RCU.  
+> > 
+> > Is there any other way besides user interaction with the mdev's
+> > sysfs remove interface for the remove callback to get invoked?  
+> 
+> There are more options after my re-organizing series.
+> 
+> But I'm not sure why you ask in response to my point about module
+> locking? Module locking is not really related to sysfs.
+> 
+> > If I try to remove the mdev using the sysfs interface while the
+> > mdev fd is still open by the guest, the remove hangs until the
+> > fd is closed.  
+> 
+> Yes, it will wait when the vfio_device is being destroyed.
+> 
+> > That being the case, the mdev release callback will get invoked
+> > prior to the remove callback being invoked which renders this whole
+> > debate moot. What am I missing here?  
+> 
+> AFAICT the control flow is such that release can immediately move on
+> to remove on the same CPU without an additional synchronization. So
+> the kfree can still race with the above.
+> 
+> But the more I look at this the wonkier it is.. The real issue is not
+> the matrix_mdev, it is the whole vcpu->kvm->arch.crypto.pqap_hook
+> 
+> This is nonesense too:
+> 
+> 	if (vcpu->kvm->arch.crypto.pqap_hook) {
+> 		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
+> 			return -EOPNOTSUPP;
+> 		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
+
+
+> 
+> It should have a lock around it of some kind, not a
+> try_module_get. module_get is not la lock.
+
+I tend to agree. In fact I asked for a lock around it several times:
+https://www.lkml.org/lkml/2019/3/1/260
+https://lkml.org/lkml/2020/12/3/987
+https://lkml.org/lkml/2020/12/4/994
+
+But in my opinion RCU is also viable (not this patch). I think, I prefer
+a lock for simplicity, unless it is not (deadlocks) ;).
+
+Many thanks for bringing your perspective to this. I'm optimistic about
+getting this finally addressed properly.
+
+Regards,
+Halil
+
+
+
+
