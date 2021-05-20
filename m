@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D652A38B0BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:00:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2075538B0DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243074AbhETOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:01:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243499AbhETN7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:59:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C24D60FF3;
-        Thu, 20 May 2021 13:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621519107;
-        bh=9Z9KtTy2XJzfMy3Np+yfMnnpZx1rqHwlJ+eViM6aKGg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zzZKKHy8Rvb2U6+fIVhMVR4d5FQY3bliHouy3pSAQ81rdLSMQgPZMcZUsRyciMnB5
-         ZbBk+zb+O85Z8nqUfoyYz6XrYMRXjrvGIt6tKvhYx8g0KCsREhI4GBhbgxJ1HtDdSt
-         fCZrWgZP/7jZ9IhI2OGk+7Au4bnWZ387ujj8o7iI=
-Date:   Thu, 20 May 2021 15:58:25 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Anirudh Rayabharam <mail@anirudhrb.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        kernel test robot <oliver.sang@intel.com>,
-        stable <stable@vger.kernel.org>,
-        linux-nvidia@lists.surfsouth.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        igormtorrente@gmail.com, fero@drama.obuda.kando.hu
-Subject: Re: [PATCH] video: hgafb: correctly handle card detect failure
- during probe
-Message-ID: <YKZrAVk85IjNYVHs@kroah.com>
-References: <20210516192714.25823-1-mail@anirudhrb.com>
- <YKZm17dj4R1c2ns/@anirudhrb.com>
+        id S243858AbhETOCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243587AbhETOAT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:00:19 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA8B1C06138E
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:58:50 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9cc6:7165:bcc2:1e70])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 71yi2500H31btb9011yiMQ; Thu, 20 May 2021 15:58:46 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ljjCE-007Wn1-5o; Thu, 20 May 2021 15:58:42 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ljjCD-008zrO-GY; Thu, 20 May 2021 15:58:41 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     devicetree@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH 0/5] sms911x: DTS fixes and DT binding to json-schema conversion
+Date:   Thu, 20 May 2021 15:58:34 +0200
+Message-Id: <cover.1621518686.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKZm17dj4R1c2ns/@anirudhrb.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 07:10:39PM +0530, Anirudh Rayabharam wrote:
-> On Mon, May 17, 2021 at 12:57:14AM +0530, Anirudh Rayabharam wrote:
-> > The return value of hga_card_detect() is not properly handled causing
-> > the probe to succeed even though hga_card_detect() failed. Since probe
-> > succeeds, hgafb_open() can be called which will end up operating on an
-> > unmapped hga_vram. This results in an out-of-bounds access as reported
-> > by kernel test robot [1].
-> > 
-> > To fix this, correctly detect failure of hga_card_detect() by checking
-> > for a non-zero error code.
-> > 
-> > [1]: https://lore.kernel.org/lkml/20210516150019.GB25903@xsang-OptiPlex-9020/
-> > 
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Fixes: dc13cac4862c ("video: hgafb: fix potential NULL pointer dereference")
-> 
-> Greg, this is one of the UMN fixes we did. So, do you want to take this
-> patch into your tree?
+	Hi all,
 
-Yes, will queue it up in a few days after Linus takes the current pull
-request I sent him for this.
+This patch series converts the Smart Mixed-Signal Connectivity (SMSC)
+LAN911x/912x Controller Device Tree binding documentation to
+json-schema, after fixing a few issues in DTS files.
 
-thanks,
+Thanks for your comments!
 
-greg k-h
+Geert Uytterhoeven (5):
+  ARM: dts: i.MX51: digi-connectcore-som: Correct Ethernet node name
+  ARM: dts: imx53-ard: Correct Ethernet node name
+  ARM: dts: qcom-apq8060: Correct Ethernet node name and drop bogus irq
+    property
+  MIPS: SEAD3: Correct Ethernet node name
+  dt-bindings: net: sms911x: Convert to json-schema
+
+ .../devicetree/bindings/net/gpmc-eth.txt      |   2 +-
+ .../devicetree/bindings/net/smsc,lan9115.yaml | 107 ++++++++++++++++++
+ .../devicetree/bindings/net/smsc911x.txt      |  43 -------
+ .../boot/dts/imx51-digi-connectcore-som.dtsi  |   2 +-
+ arch/arm/boot/dts/imx53-ard.dts               |   2 +-
+ .../arm/boot/dts/qcom-apq8060-dragonboard.dts |   4 +-
+ arch/mips/boot/dts/mti/sead3.dts              |   2 +-
+ 7 files changed, 112 insertions(+), 50 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/smsc,lan9115.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/smsc911x.txt
+
+-- 
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
