@@ -2,260 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88CCD389E60
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2504389E63
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:55:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231251AbhETG4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhETGzq (ORCPT
+        id S231159AbhETG4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:56:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58944 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231237AbhETG4F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:55:46 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8635C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:23 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id x9-20020ac84a090000b0290203194f1f86so3499707qtq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=tmnYUMpAe2KoFw1JK5DEOLa6QKjWz+/jEuUps2TjE0M=;
-        b=DnoKJgXGcZrakGIsy2wdggTSzr8gNr5Cga30A6c8a6Hf9x2dffeKxupvvvPjuu1gFH
-         aGdEv0BQdUdQtd0c3PTB1yYrqJsJcPp5S6L8/JeU1mBsAkTgRAJC+WwYC2oJaN+K/+rh
-         m7SHkphIH6F6L72NTt2b96CmRop8AS7h70mGFoqBtxgJZEEG0JjTr93/mLmeGl1DrblN
-         ViY8g/jh939e21AJjULOIlpeBbxplek6u+fXKVxsYdCV2JKDsA0LwaCxMlx08fCc/j9n
-         pt2cBRltMZSTctDaJlkHWcEOuGP8bGJA/JzG0MeUfva0r9KcYGAVy5zcvXU4Mkz8AXA/
-         v3JQ==
+        Thu, 20 May 2021 02:56:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621493683;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9tEv83ZtFMHbXTaEtn+9i7YCHaEzdnQPBIaLpxqVr78=;
+        b=aNwwmVaOOt0LMpB+kdAX+Vl4pm7ZsABBOLww3gCG7isUZy60nqG+/YGU80k//OJ6Lm6mCp
+        80OkdJAzCNBLKfhSQtwmUsGF0NEEmVb0peY5aqQT6dOSLhkgoeqsu+yYHHpy1GaFIzpgI2
+        govukGnE4GKe/7rm3Axo+pFln26+Mlk=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-61-vKAB4UWmN6C0olnK9bgCSg-1; Thu, 20 May 2021 02:54:42 -0400
+X-MC-Unique: vKAB4UWmN6C0olnK9bgCSg-1
+Received: by mail-ej1-f70.google.com with SMTP id la2-20020a170906ad82b02903d4bcc8de3bso4578300ejb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=tmnYUMpAe2KoFw1JK5DEOLa6QKjWz+/jEuUps2TjE0M=;
-        b=eSQlkp99GhbOJbbfWHaqWXYyj8f2uV+mVQE23pf6QSUOoTukthTWydqV3fgiwXFIDZ
-         SDohHvXcyn6N5BbFXVm6CtNfXtb315OJsMSEplLbhXduGrLKjsp7Zfpa0MW/pBEJOfNH
-         /go5cnOUxmpFFo2+nAoIm8Xug3YYddsalK9BH0YMXpESvTCgOPpHU8wev9wLTU4zDG2s
-         NSpyxsj72ahnHDJFkm3eEio8zmWqdEa9MYXuSU+QTZ/HJ0OwLb4BOdRwaOx/GeFoWGTu
-         We7/PREhKWf+7tUeB8o2wbzSdGaKSWLh2SOQR0Ydr269QRIv3J4q6e/zT85DkE6XOcYE
-         ziTg==
-X-Gm-Message-State: AOAM530QSwtf5Kda/I2DOnicxCl9Xadwo6H9cConTRpJ9+gh6AP7aLlU
-        qfB+G5KAp3JrJXlL4Qf1Gmbl32aZCU0=
-X-Google-Smtp-Source: ABdhPJyfR8302KuxyD/mIOKCO+jxW1RXoZnlJejF8SLfwvo9YuRoFSL43tZzQ7DdKcZXlLzVckFytBbp+9s=
-X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:595d:62ee:f08:8e83])
- (user=yuzhao job=sendgmr) by 2002:ad4:5a52:: with SMTP id ej18mr3968319qvb.31.1621493662894;
- Wed, 19 May 2021 23:54:22 -0700 (PDT)
-Date:   Thu, 20 May 2021 00:53:55 -0600
-In-Reply-To: <20210520065355.2736558-1-yuzhao@google.com>
-Message-Id: <20210520065355.2736558-15-yuzhao@google.com>
-Mime-Version: 1.0
-References: <20210520065355.2736558-1-yuzhao@google.com>
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v3 14/14] mm: multigenerational lru: documentation
-From:   Yu Zhao <yuzhao@google.com>
-To:     linux-mm@kvack.org
-Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dave Chinner <david@fromorbit.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Donald Carr <sirspudd@gmail.com>,
-        Hillf Danton <hdanton@sina.com>, Jens Axboe <axboe@kernel.dk>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9tEv83ZtFMHbXTaEtn+9i7YCHaEzdnQPBIaLpxqVr78=;
+        b=rcF4n8tm6L2JLhryLrt+OZaCq94YbF1uTjqydWkYR3Zdr3DKW1rKW27WG9UDAX3xuQ
+         gxnwbSI/Jye7rOIq1lKTPkLJ4SrFEhmROW4r2DXveYF/UGuAlewXZXyc2DfskH9WCglL
+         dPiQAMpwnTVAyB7IB/bdOQ6ZKUqDe3ULt7b2cweIChe8lqB6S0JCxoc0hpvmII7mLGo6
+         7W0+8Nwgj43hdnPgyAwQvaBEkvvCIXT3TngrrrYFgHP7OvWgKASh8sDIkUaFaLjXnb4v
+         2thLn+Ke3VpRym/b0Xb5XW3OmUxfzjHXFs3pG22zW3VAmhU6fNPyf3FhUdSohe4/BEd4
+         htjQ==
+X-Gm-Message-State: AOAM530Ck85HO/Xwgpg5mKR/5QwqFUMT4SXirzedPJLK1+O/MfL0DtKD
+        8qto9zhKkTv+bQzd6k8uYjkLGYdRgId3YzrbrFEh4UM90n72Fvjn6iQe4H7Sxf/KViFM/ceCWO+
+        RH80t/B7PPuAbiWI+K1RLjzt0
+X-Received: by 2002:a17:906:fa93:: with SMTP id lt19mr3200253ejb.14.1621493681154;
+        Wed, 19 May 2021 23:54:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxf06tuHryELST2SZKhY8gB1gHwWH7k04TmUp1Y+F+oS5yedzBZh3TNtH22ORIqKZW/RO+wHQ==
+X-Received: by 2002:a17:906:fa93:: with SMTP id lt19mr3200227ejb.14.1621493680938;
+        Wed, 19 May 2021 23:54:40 -0700 (PDT)
+Received: from x1.bristot.me (host-87-19-51-73.retail.telecomitalia.it. [87.19.51.73])
+        by smtp.gmail.com with ESMTPSA id hz10sm909238ejc.40.2021.05.19.23.54.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 23:54:40 -0700 (PDT)
+Subject: Re: [RFC PATCH 01/16] rv: Add Runtime Verification (RV) interface
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Kate Carcia <kcarcia@redhat.com>,
         Jonathan Corbet <corbet@lwn.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Konstantin Kharlamov <hi-angel@yandex.ru>,
-        Marcus Seyfarth <m.seyfarth@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Michael Larabel <michael@michaellarabel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Michel Lespinasse <michel@lespinasse.org>,
-        Rik van Riel <riel@surriel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Yang Shi <shy828301@gmail.com>,
-        Ying Huang <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org,
-        page-reclaim@google.com, Yu Zhao <yuzhao@google.com>,
-        Konstantin Kharlamov <Hi-Angel@yandex.ru>
-Content-Type: text/plain; charset="UTF-8"
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Gabriele Paoloni <gabriele.paoloni@intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1621414942.git.bristot@redhat.com>
+ <ad69b06e9e3a5ec9ad2a49d290b719a96dcc471e.1621414942.git.bristot@redhat.com>
+ <90c917eb-f0a8-3ef5-b63d-d88c1f6919a1@infradead.org>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <f834d8e7-1027-9573-63ff-eedc49884b78@redhat.com>
+Date:   Thu, 20 May 2021 08:54:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <90c917eb-f0a8-3ef5-b63d-d88c1f6919a1@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Documentation/vm/multigen_lru.rst.
+On 5/19/21 8:10 PM, Randy Dunlap wrote:
+> On 5/19/21 4:36 AM, Daniel Bristot de Oliveira wrote:
+>> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+>> new file mode 100644
+>> index 000000000000..e8e65cfc7959
+>> --- /dev/null
+>> +++ b/kernel/trace/rv/Kconfig
+>> @@ -0,0 +1,13 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +#
+>> +menuconfig RV
+>> +	bool "Runtime Verification"
+>> +	depends on TRACING
+>> +	default y if DEBUG_KERNEL
+> 
+> No need for default y. There are other reasons to use DEBUG_KERNEL
+> without wanting RV turned on.
 
-Signed-off-by: Yu Zhao <yuzhao@google.com>
-Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
----
- Documentation/vm/index.rst        |   1 +
- Documentation/vm/multigen_lru.rst | 143 ++++++++++++++++++++++++++++++
- 2 files changed, 144 insertions(+)
- create mode 100644 Documentation/vm/multigen_lru.rst
+yes, you are right, I will remove it.
 
-diff --git a/Documentation/vm/index.rst b/Documentation/vm/index.rst
-index eff5fbd492d0..c353b3f55924 100644
---- a/Documentation/vm/index.rst
-+++ b/Documentation/vm/index.rst
-@@ -17,6 +17,7 @@ various features of the Linux memory management
- 
-    swap_numa
-    zswap
-+   multigen_lru
- 
- Kernel developers MM documentation
- ==================================
-diff --git a/Documentation/vm/multigen_lru.rst b/Documentation/vm/multigen_lru.rst
-new file mode 100644
-index 000000000000..a18416ed7e92
---- /dev/null
-+++ b/Documentation/vm/multigen_lru.rst
-@@ -0,0 +1,143 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Multigenerational LRU
-+=====================
-+
-+Quick Start
-+===========
-+Build Options
-+-------------
-+:Required: Set ``CONFIG_LRU_GEN=y``.
-+
-+:Optional: Set ``CONFIG_LRU_GEN_ENABLED=y`` to turn the feature on by
-+ default.
-+
-+:Optional: Change ``CONFIG_NR_LRU_GENS`` to a number ``X`` to support
-+ a maximum of ``X`` generations.
-+
-+:Optional: Change ``CONFIG_TIERS_PER_GEN`` to a number ``Y`` to
-+ support a maximum of ``Y`` tiers per generation.
-+
-+Runtime Options
-+---------------
-+:Required: Write ``1`` to ``/sys/kernel/mm/lru_gen/enable`` if the
-+ feature was not turned on by default.
-+
-+:Optional: Change ``/sys/kernel/mm/lru_gen/spread`` to a number ``N``
-+ to spread pages out across ``N+1`` generations. ``N`` should be less
-+ than ``X``. Larger values make the background aging more aggressive.
-+
-+:Optional: Read ``/sys/kernel/debug/lru_gen`` to verify the feature.
-+ This file has the following output:
-+
-+::
-+
-+  memcg  memcg_id  memcg_path
-+    node  node_id
-+      min_gen  birth_time  anon_size  file_size
-+      ...
-+      max_gen  birth_time  anon_size  file_size
-+
-+Given a memcg and a node, ``min_gen`` is the oldest generation
-+(number) and ``max_gen`` is the youngest. Birth time is in
-+milliseconds. The sizes of anon and file types are in pages.
-+
-+Recipes
-+-------
-+:Android on ARMv8.1+: ``X=4``, ``Y=3`` and ``N=0``.
-+
-+:Android on pre-ARMv8.1 CPUs: Not recommended due to the lack of
-+ ``ARM64_HW_AFDBM``.
-+
-+:Laptops and workstations running Chrome on x86_64: Use the default
-+ values.
-+
-+:Working set estimation: Write ``+ memcg_id node_id gen [swappiness]``
-+ to ``/sys/kernel/debug/lru_gen`` to account referenced pages to
-+ generation ``max_gen`` and create the next generation ``max_gen+1``.
-+ ``gen`` should be equal to ``max_gen``. A swap file and a non-zero
-+ ``swappiness`` are required to scan anon type. If swapping is not
-+ desired, set ``vm.swappiness`` to ``0``.
-+
-+:Proactive reclaim: Write ``- memcg_id node_id gen [swappiness]
-+ [nr_to_reclaim]`` to ``/sys/kernel/debug/lru_gen`` to evict
-+ generations less than or equal to ``gen``. ``gen`` should be less
-+ than ``max_gen-1`` as ``max_gen`` and ``max_gen-1`` are active
-+ generations and therefore protected from the eviction. Use
-+ ``nr_to_reclaim`` to limit the number of pages to evict. Multiple
-+ command lines are supported, so does concatenation with delimiters
-+ ``,`` and ``;``.
-+
-+Framework
-+=========
-+For each ``lruvec``, evictable pages are divided into multiple
-+generations. The youngest generation number is stored in ``max_seq``
-+for both anon and file types as they are aged on an equal footing. The
-+oldest generation numbers are stored in ``min_seq[2]`` separately for
-+anon and file types as clean file pages can be evicted regardless of
-+swap and write-back constraints. These three variables are
-+monotonically increasing. Generation numbers are truncated into
-+``order_base_2(CONFIG_NR_LRU_GENS+1)`` bits in order to fit into
-+``page->flags``. The sliding window technique is used to prevent
-+truncated generation numbers from overlapping. Each truncated
-+generation number is an index to an array of per-type and per-zone
-+lists. Evictable pages are added to the per-zone lists indexed by
-+``max_seq`` or ``min_seq[2]`` (modulo ``CONFIG_NR_LRU_GENS``),
-+depending on their types.
-+
-+Each generation is then divided into multiple tiers. Tiers represent
-+levels of usage from file descriptors only. Pages accessed N times via
-+file descriptors belong to tier order_base_2(N). Each generation
-+contains at most CONFIG_TIERS_PER_GEN tiers, and they require
-+additional CONFIG_TIERS_PER_GEN-2 bits in page->flags. In contrast to
-+moving across generations which requires the lru lock for the list
-+operations, moving across tiers only involves an atomic operation on
-+``page->flags`` and therefore has a negligible cost. A feedback loop
-+modeled after the PID controller monitors the refault rates across all
-+tiers and decides when to activate pages from which tiers in the
-+reclaim path.
-+
-+The framework comprises two conceptually independent components: the
-+aging and the eviction, which can be invoked separately from user
-+space for the purpose of working set estimation and proactive reclaim.
-+
-+Aging
-+-----
-+The aging produces young generations. Given an ``lruvec``, the aging
-+scans page tables for referenced pages of this ``lruvec``. Upon
-+finding one, the aging updates its generation number to ``max_seq``.
-+After each round of scan, the aging increments ``max_seq``.
-+
-+The aging maintains either a system-wide ``mm_struct`` list or
-+per-memcg ``mm_struct`` lists, and it only scans page tables of
-+processes that have been scheduled since the last scan.
-+
-+The aging is due when both of ``min_seq[2]`` reaches ``max_seq-1``,
-+assuming both anon and file types are reclaimable.
-+
-+Eviction
-+--------
-+The eviction consumes old generations. Given an ``lruvec``, the
-+eviction scans the pages on the per-zone lists indexed by either of
-+``min_seq[2]``. It first tries to select a type based on the values of
-+``min_seq[2]``. When anon and file types are both available from the
-+same generation, it selects the one that has a lower refault rate.
-+
-+During a scan, the eviction sorts pages according to their new
-+generation numbers, if the aging has found them referenced. It also
-+moves pages from the tiers that have higher refault rates than tier 0
-+to the next generation.
-+
-+When it finds all the per-zone lists of a selected type are empty, the
-+eviction increments ``min_seq[2]`` indexed by this selected type.
-+
-+To-do List
-+==========
-+KVM Optimization
-+----------------
-+Support shadow page table scanning.
-+
-+NUMA Optimization
-+-----------------
-+Optimize page table scan for NUMA.
--- 
-2.31.1.751.gd2f1c929bd-goog
+>> +	help
+>> +	  Enable the kernel runtime verification infrastructure. RV is a
+>> +	  lightweight (yet rigorous) method that complements classical
+>> +	  exhaustive verification techniques (such as model checking and
+>> +	  theorem proving). RV works by analyzing the trace of the system's
+>> +	  actual execution, comparing it against a formal specification of
+>> +	  the system behavior.
+> 
+> And in the cover/patch 00:
+> tlrd:
+> should be
+> tl;dr:
+> or at least
+> tldr:
+> :)
+
+Ack!
+
+Thanks!
+-- Daniel
 
