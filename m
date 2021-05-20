@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8964A38B09D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:55:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1649B38B0A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236047AbhETN5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:57:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240011AbhETN5B (ORCPT
+        id S237897AbhETN6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:58:24 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:37855 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232178AbhETN6J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:57:01 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267F8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:55:39 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id a4so17811840wrr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:55:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iWzw33PkspV7y4yyaFnbDMAVw/W4YT9sq/Y05RvYpbo=;
-        b=X9mlvAcF46/y2PCKyoQeXtctw2ARdhTu1su5ycYVMJp5rGCp45ujrZLreinTsXGGKq
-         e9V2clmjfdgj3CVEclGVLCgx2iVJp+JRrIEoUfHPfU4/jRkzg59tlXgjNDLZ7pezTlHa
-         nANuEju0hmFvkNwEul4yTfjvZJoxBE3j7xHfB6h/Aj5dAeuHKKe2Avye1hR7rynWNXv/
-         q2L2FzZHlv/ZsTRKUMuHhwhrAf/KTgKzgDNKDwOHxS/sd/vrPIqo3AOSu/NfPm+ML3XR
-         6Gh1DZaoTzpLOLrbom3YaHirJLTrkSYunLhznDaCeDpVD7BzzPwj59TtdOTn4qRGBquE
-         NuJw==
+        Thu, 20 May 2021 09:58:09 -0400
+Received: by mail-ej1-f44.google.com with SMTP id et19so18391830ejc.4;
+        Thu, 20 May 2021 06:56:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=iWzw33PkspV7y4yyaFnbDMAVw/W4YT9sq/Y05RvYpbo=;
-        b=YVcwOMop8C1Q7prasuS43yzeLcqTSwYuBFPVTHFA2Xzc8JTZUAEi/WLCfHSLGApfKT
-         oWtkkrXf6M1wEn8A4IJG9jiU6U8Y/5FmxTDTqFfkEV/ohEdiTjj4XsqSOTDQyUQhg1xN
-         fTUrMksWliMo/7ThbEsvPzdh/VciMAtSVFePXyFWZj7XQaSXpp9034Y6Jlxz8VlVgZxe
-         /OmyFa0B4ChbEsAdwb8WFAndrYkyR002BRL2BgTbf81mSiW3Agj7DViy+F45fIdBkvtz
-         kK9PoswO5qB9+ymIAcQKgdutA22KoNrGYDLq8BYjDuuIuzgGOVUBjmrBuWLh3KC+/rdr
-         7YXA==
-X-Gm-Message-State: AOAM533kmOY0BZ2pZ81ncAqNkxK+2EL3ZBEo09veQ/QbM1uVBNKPhqa7
-        40rLshJLaRGyD8Ga5RK3hQTnoA==
-X-Google-Smtp-Source: ABdhPJw2HGwGgozEkBz9pJr9jphqMHa+rt/tIRCmlyL5OLiPES8jbFSqi9biISOa/iKtTrQrMUJB3Q==
-X-Received: by 2002:adf:db42:: with SMTP id f2mr4467026wrj.5.1621518937629;
-        Thu, 20 May 2021 06:55:37 -0700 (PDT)
-Received: from ?IPv6:2a01:e0a:90c:e290:d88a:b479:b222:83bb? ([2a01:e0a:90c:e290:d88a:b479:b222:83bb])
-        by smtp.gmail.com with ESMTPSA id v20sm2910528wmj.15.2021.05.20.06.55.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 06:55:36 -0700 (PDT)
-Subject: Re: [PATCH 0/3] tty: serial: meson: add amlogic,uart-fifosize
- property
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        jirislaby@kernel.org
-References: <20210518075833.3736038-1-narmstrong@baylibre.com>
-From:   Neil Armstrong <narmstrong@baylibre.com>
-Organization: Baylibre
-Message-ID: <9c6ce679-1721-be40-c1b2-6ae90503d2cb@baylibre.com>
-Date:   Thu, 20 May 2021 15:55:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3cCjGAR1fwsHjmVjT+mJq9iT2Slj8TG7dawqGnOR4Jg=;
+        b=QcqnpNiJQVNSChWMYorJtidlN4+o15TpvmLpV6nkGXEmj7g18gKvtz6Qkgb938YXEk
+         NN53X1JNIOsn1Mi8yw3BE1N25+LkCic3GECgG2k/p+jzQVRZL23r+HvJAoFW0YS7X4vX
+         pQI79COzui6zym1juK2PW6k0jiRPLEAEwOvI7Cm5ygpSTg9cxZlttdZORREBkVu7w2TI
+         FiPVUUvgSbiGEMHcsPjx7+Y6RsOoHna0jPqNCgHRNfFDcpW156KIN1+LQd2Fk9LYrfNB
+         nMnPyjTP2L17jXKoIrd3p41BElrvhByqaY0oi4nIBkZZI5KLdaGgju/kMkNqQ/bqyQ+f
+         FrVw==
+X-Gm-Message-State: AOAM530DmeNzry3stKBxnyIDZbRl0zUEdygi8NVgrAASEXZZRLXmiChj
+        kDQUmRTvgS2N/3A1dOqsnuT860kYrmWgbFQn
+X-Google-Smtp-Source: ABdhPJxmRv/ruW/AF9XQ/nYomWyyla0gvlr1PVtMisWyjWr0B0e3h1c7stVRJKxVuk0CVve2IBx0HQ==
+X-Received: by 2002:a17:907:a06d:: with SMTP id ia13mr4935283ejc.484.1621519006413;
+        Thu, 20 May 2021 06:56:46 -0700 (PDT)
+Received: from msft-t490s.teknoraver.net (net-5-94-253-60.cust.vodafonedsl.it. [5.94.253.60])
+        by smtp.gmail.com with ESMTPSA id 9sm1434492ejv.73.2021.05.20.06.56.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 06:56:45 -0700 (PDT)
+From:   Matteo Croce <mcroce@linux.microsoft.com>
+To:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Lennart Poettering <lennart@poettering.net>,
+        Luca Boccassi <bluca@debian.org>, Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Tejun Heo <tj@kernel.org>,
+        =?UTF-8?q?Javier=20Gonz=C3=A1lez?= <javier@javigon.com>,
+        Niklas Cassel <niklas.cassel@wdc.com>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        JeffleXu <jefflexu@linux.alibaba.com>
+Subject: [PATCH v2 0/6] block: add a sequence number to disks
+Date:   Thu, 20 May 2021 15:56:16 +0200
+Message-Id: <20210520135622.44625-1-mcroce@linux.microsoft.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <20210518075833.3736038-1-narmstrong@baylibre.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+From: Matteo Croce <mcroce@microsoft.com>
 
-On 18/05/2021 09:58, Neil Armstrong wrote:
-> On most of the Amlogic SoCs, the first UART controller in the "Everything-Else"
-> power domain has 128bytes of RX & TX FIFO, so add an optional property to describe
-> a different FIFO size from the other ports (64bytes).
-> 
-> This adds a property in the bindings, reads the property from the driver and updates
-> the DT with the new property.
-> 
-> Changes since v2:
-> - removed spurious blank line from bindings
-> 
-> Changes since v1:
-> - switched to a more generic "fifo-size"
-> 
-> Neil Armstrong (3):
->   dt-bindings: serial: amlogic,meson-uart: add fifo-size property
->   tty: serial: meson: retrieve port FIFO size from DT
->   arm64: dts: meson: set 128bytes FIFO size on uart A
-> 
->  .../devicetree/bindings/serial/amlogic,meson-uart.yaml       | 5 +++++
->  arch/arm64/boot/dts/amlogic/meson-axg.dtsi                   | 1 +
->  arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi            | 1 +
->  arch/arm64/boot/dts/amlogic/meson-gx.dtsi                    | 1 +
->  drivers/tty/serial/meson_uart.c                              | 5 ++++-
->  5 files changed, 12 insertions(+), 1 deletion(-)
-> 
+With this series a monotonically increasing number is added to disks,
+precisely in the genhd struct, and it's exported in sysfs and uevent.
 
-Could you apply patches 1 & 2 ?
+This helps the userspace correlate events for devices that reuse the
+same device, like loop.
 
-Thanks,
-Neil
+The first patch is the core one, the 2..4 expose the information in
+different ways, the 5th increases the seqnum on media change and
+the last one increases the sequence number for loop devices upon
+attach, detach or reconfigure.
+
+If merged, this feature will immediately used by the userspace:
+https://github.com/systemd/systemd/issues/17469#issuecomment-762919781
+
+v1 -> v2:
+- increase seqnum on media change
+- increase on loop detach
+
+Matteo Croce (6):
+  block: add disk sequence number
+  block: add ioctl to read the disk sequence number
+  block: refactor sysfs code
+  block: export diskseq in sysfs
+  block: increment sequence number
+  loop: increment sequence number
+
+ Documentation/ABI/testing/sysfs-block | 12 +++++++
+ block/genhd.c                         | 46 ++++++++++++++++++++++++---
+ block/ioctl.c                         |  2 ++
+ drivers/block/loop.c                  |  5 +++
+ include/linux/genhd.h                 |  2 ++
+ include/uapi/linux/fs.h               |  1 +
+ 6 files changed, 64 insertions(+), 4 deletions(-)
+
+-- 
+2.31.1
+
