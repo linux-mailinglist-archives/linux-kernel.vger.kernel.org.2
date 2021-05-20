@@ -2,178 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCB038AE31
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:28:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70E5738AE34
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:29:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233152AbhETM3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:29:12 -0400
-Received: from mail-dm3nam07on2079.outbound.protection.outlook.com ([40.107.95.79]:9921
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233879AbhETM1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:27:53 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gfRQL5WknX6TOqsqxpGZAkaZlC+BNBF0DtntyN2QKQ0RHHHvYR0dTZCRa4A1T62Q2ytm3fPiHpOIohVqVj+bY75HiRR/DSB8yzkaI1QoSxywU5my4MYwZldN+ZLqPsv4fvkYUh71AozHSAk8WfID1zpoVCzl0TSmLckLpXV9IOkiDdTtPvctlSTk0XmBGr9DMhGrykwS0VnSpmS9fm3UJiSMwf8mzq3qTaYsF3Ae+DjH32DJSWV5p5vfH2mI33yQH0NsUtJxT4u3Of7Pd06xjU14nLCcIHI2UPg1DIJ+5xSYh9FJ3nldxFYJu/XdfdJV4mQDOGj8/DaCiveZ6faTtg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jQLGw+HoHm9byA0QymRKzwIvfuy00T6XNOWNlF/pd6c=;
- b=YWrs2FcHvD32Kx2pac9dd4qVDtYjHK90GyOAcvJP7MHm4WG0YVkisnImbBBJzuSaUA0X73j45/3X3RwWeq43G9hsKGDx5uQUailQQYIUrtjtWviokeqMx64AWH9UjZoezlUNm+6nXAdvnUMY3JG8kLZs4UrJldW2Pvs30rydF0FdtfnKP/KRJEynNjWsD7UJ9z0KiaS1SkQdyS3cD7/bjshRQFdc6gaEGjQb6fkFWhhBiGCKwZ15KdOAwvOZDRh8B+BevX1pALR1RenRYwlYXSmea+ynuiC4/TIIBSzfs9IN33njk1edj94hKHCbvZiXjaMFqlY+t6Z6IgMILi5MFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jQLGw+HoHm9byA0QymRKzwIvfuy00T6XNOWNlF/pd6c=;
- b=pmSILQSwObAJclst9i7FUqHELiDWxVkzslrxWWpVWcOvjTQyDM+IkD+ATaSG6MzVhDgp6KtqJUSWZ1yJhZjnBdRTzaO/8U+zrE3oz890xVzpXYrZwB002NbL/3zi/ax3zCHbXWcrsYEVYJHqXK2mCG+jQKszcO822EH8h4MlN/qotBvR0m91psDZJ6ZL+d/ndNxQ8Vf4hBZEXSyx5UYtKCOVcW21N79qCrIvSIqk1vLyItupaxUiLOks8zOcaKCbw531STJDOkktPAhLXrKkOpK+wsVI+qPQTYIvcxDn64J+QULqkLdtIKkEmnbM9y1cH8WO2Oy9eLc42Q0b2dTH0A==
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB3594.namprd12.prod.outlook.com (2603:10b6:5:11f::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25; Thu, 20 May
- 2021 12:26:28 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4150.023; Thu, 20 May 2021
- 12:26:28 +0000
-Date:   Thu, 20 May 2021 09:26:26 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com
-Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-Message-ID: <20210520122626.GW1002214@nvidia.com>
-References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
- <20210519153921.804887-3-akrowiak@linux.ibm.com>
- <20210519161610.GO1002214@nvidia.com>
- <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
- <20210519232202.GV1002214@nvidia.com>
- <330f099c-3d5e-c552-3047-4b462b1c9fa9@linux.ibm.com>
- <20210520104857.65d75858.pasic@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520104857.65d75858.pasic@linux.ibm.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BLAPR03CA0082.namprd03.prod.outlook.com
- (2603:10b6:208:329::27) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232649AbhETMal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:30:41 -0400
+Received: from mout.kundenserver.de ([212.227.126.187]:60903 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232298AbhETMae (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:30:34 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]) by
+ mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MOi1H-1m6Rk71cBb-00Q9Pb for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021
+ 14:29:12 +0200
+Received: by mail-wm1-f48.google.com with SMTP id o127so9070549wmo.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:29:12 -0700 (PDT)
+X-Gm-Message-State: AOAM532+SKCUV/FS9egs2qUw/O4z66BObdClzDp8uHmoVkaal85Sxl91
+        qPVdLDzQHSIQWvnjhyKQs7gWkyZFiwSbFkqjCGM=
+X-Google-Smtp-Source: ABdhPJxp7iBt7VFHla9U7M5IY7zxYj89+P8/DR9rTNgiDfB9Cejt9Flz+4djxDcTEo4F68l8U3U0vz2cjP+MgexhQYE=
+X-Received: by 2002:a1c:9895:: with SMTP id a143mr3362315wme.43.1621513752085;
+ Thu, 20 May 2021 05:29:12 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BLAPR03CA0082.namprd03.prod.outlook.com (2603:10b6:208:329::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.33 via Frontend Transport; Thu, 20 May 2021 12:26:27 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ljhkw-00B8Tk-BC; Thu, 20 May 2021 09:26:26 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1732564b-5ce9-4da9-ac1c-08d91b8a7dbd
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3594:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3594C0E47A9C28F829D1558CC22A9@DM6PR12MB3594.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XHN1OfNKhgX+GHYS5KzCBrrfNEFYPI+d36C1/9KWAGCqj8Lot2xVzYr8KZ+8uHDDiNcwDkDxuUKrhAEpV9ndAetHntBSX5TnHA3Y7HBkHBz3hn3OOdaCPxNMfbU4MKZhUregjEwWQMbK5WPWZgt/aHU3hZqYGcef72+TUs7Q7mvCp2Njm8HF2H8sMcW6cTEhOWK6FwvtY3kO1B3DAw8MiYGRtVMAEbQlx1zPamCd0f7DVyisqKvyQzhm7niX8Xk9f1ivl6t+H5VfR4a1s7tVqgwrzqvNt0cD7ygVpHqmlLOeQzlJs/m//hsPfTDQaQYV1dP5YY6HHHHtLjT+JbE/OkfwytFonKzlV4ucBJF7q+uSyukllCe6Qy5/ou8lnGg0Ub3q3aEflCi3bDydJBgoI+YgcWlQckRe6rk6BroOuFN1N3DFSa/cL0qhAYriH61sAZqICA3UpC6UZgLKZp5YxBrUNHr0b/aZgV0/2Pn79fX4KoPJfS5SqK5mr7eN8o60AUiHBEdKTx0HC1rcL/zjo3c9uvRPbuHwxoZb2an66NKj5UZIsTbMIZEISlStbWU3xQj5llCJJznPgna/NiPu9NfsmYV1yIxnok5/6HSMU7rBaBxXvhzgyMSivGP6UyNzGBakSa7wGVh7zv9g0RFEmWc2B9U4Sk6WV/b5BTHuX1bQxGg6jJQZYYpsFcNaAYyg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(366004)(346002)(376002)(39860400002)(426003)(478600001)(1076003)(8936002)(4326008)(2616005)(2906002)(316002)(8676002)(5660300002)(9786002)(66556008)(6916009)(9746002)(966005)(66946007)(66476007)(107886003)(36756003)(38100700002)(83380400001)(86362001)(26005)(33656002)(186003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YplZuB8KEWwDlsJSFjgJpacbbT8EhgFyV9VUzxY+HzCjWbu7XUffTp6X52Xi?=
- =?us-ascii?Q?LwJBH7V1YIDMoEdgcvlgovmcPn1cfmMn7HlmF/nLM6mj3XcfXSc+CjlCD+oH?=
- =?us-ascii?Q?kyDzT3N3qQW+8NIHWqazUxKE1TA7YvhsgT0SAn6fJ6fgzmWumTRRrxmYdFqk?=
- =?us-ascii?Q?1pKb02l86alGCsfHQSTnqdzJM+h6J5TqbY7qRsc08nNbUTH1TfPNrEip4ydH?=
- =?us-ascii?Q?z+A3qaD12F7Q6G6og941WCCGa7pqd6G+9+ceUmxHMbiZ2XkuFmzzAIbzJgSp?=
- =?us-ascii?Q?in0cYNOGrrriq50c+hWVPrBAifa/Xqfn31Seyk+33ZQspqKa07eQUZL0ejva?=
- =?us-ascii?Q?5dcH6B2EYbSpaUxDn5cg1KRy8XND+5WAX+6p53fIg9PfeNBar0nLvYEeJlsj?=
- =?us-ascii?Q?4dKiGmRsG2LhU2rKEu/UnvsNDmXSIQXiPNeJ6O1phQex3K4/agGmz/Vb5DrB?=
- =?us-ascii?Q?7ge2a3D6rMCEtyx+Qrbw9JnS55BIbTHUnyeeE68VIlCImkrD0LBTAvxQn6pD?=
- =?us-ascii?Q?UR3C4klouQkCV83e4OlkKbUyiNCOg8CCqQvL/oaagC5bVLT1nUGCLGqm3hPN?=
- =?us-ascii?Q?taTOgfyktbpPftqTvwOnyjTVTCBVtH8mv7JlzxK8LPjyC+YdQkI95HptICbg?=
- =?us-ascii?Q?os4EBYZFVLvno9qyDV8W5JueufJ2Sx255B7zWYW2vEAu+RxeWpa7d5zvyVjl?=
- =?us-ascii?Q?HIr+oTWJCLjD+7EPQFYDz0Q4MXraAzW3RluTpCrUzyfiKcKUNavCrNj+PtFw?=
- =?us-ascii?Q?9ARCsrO9TkmU9ffTHJ6AjOpBz9kegdt5/giELTAqwf52mpBThls9i3XzeEUQ?=
- =?us-ascii?Q?M5d5eVu9a5iFvOn4L+pZ8X9zQ3NwuHwDmhBMVUXcEQ8mUo7QiTHWYSt1cdSE?=
- =?us-ascii?Q?YSniYQpUG4/d8zTiHL1whkBr+hxcJlHro1cZ8uRXBcawkoNdrsi6MYWzIiha?=
- =?us-ascii?Q?icK1OxV48LEta1xk/LKqdJV7kGsoyrgQOVZSms6lInN+hN0/L9s27b33ulJJ?=
- =?us-ascii?Q?R+wGplk67GBhwbO9w7dBdwK5THXPUK1DflpLXG4plsbEtzKTTJQbeStFd33r?=
- =?us-ascii?Q?Dx+zocosFDPSEXHadvNslEf72CbfJER0gJIX/lA/oJgoLAHRIvXOj46/CEav?=
- =?us-ascii?Q?1RapYr5ChdpcA5aKUT/Ttmz35b7iCUzhmWE41a4Lr2bO2Te6NvH2YWxVt0S6?=
- =?us-ascii?Q?/FRBHfAkAoRyfzts7qXUbyhqnShzdIM+ToRmzs57xn/0IV38YVmCKaXA1o6O?=
- =?us-ascii?Q?fLXtCjy+AlF3fV523t1KoGULDfBksvZK948l0UBqsydhLoYIgVWjA4Caddby?=
- =?us-ascii?Q?5VutjzWqKspD7AzrtcXu81Ji?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1732564b-5ce9-4da9-ac1c-08d91b8a7dbd
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 12:26:28.5001
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8gcQJ4vMauvyXbadZKi8AkKK2CGjh44wB59LXsKu7st9fgZFQBLolRhBOOwNrYAx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3594
+References: <20210520121347.3467794-1-lee.jones@linaro.org> <20210520121347.3467794-7-lee.jones@linaro.org>
+In-Reply-To: <20210520121347.3467794-7-lee.jones@linaro.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 20 May 2021 14:27:57 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0Sej06iAj_F==o3sGfNNT4d98=+0MFQCi539wO+WB9oQ@mail.gmail.com>
+Message-ID: <CAK8P3a0Sej06iAj_F==o3sGfNNT4d98=+0MFQCi539wO+WB9oQ@mail.gmail.com>
+Subject: Re: [PATCH 06/16] char: applicom: Remove 3 unused variables 'ret' and
+ 2 instances of 'byte_reset_it'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:EnehY51Gaoh4FfHdeHUGrKw75wvJ7lgRoHCWWV/n3dxpGA6/Iy+
+ NNPWsvNjHKDcaNZO+8pRtXY411u0p3EcRi+8IFwGlxEUxF08sygKXIjJGyfUDQ4czg8s0e2
+ UttDTeN/uQk3tXtKP8dJ5IomwbR8KgQlCXxJJDk/0IQ9fShlkz2p20LWiyuK9sX2O/MBRLM
+ Jbof3A2TGda7QLCbX8Qbw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:a3BalCVdRVU=:jZElZ+gjxKQUytrvqx6JxE
+ QwKtwk2E9iTi9iVqy/8FvgcjXBfZtCxzPtPXUOPRbf+3f2Yt1DU77kVMV0pysoNQluzwRc9j3
+ MYfC0CtwdYySJLa1o74TidZhDNNlzQHZ6HK3VYS4H9XXUd74k/eej2sxbmkDEKciygcaDvhgB
+ lQjh8+hcLL8ol8Elci8/3pPIry4G7UJyAkLPNlu2uXxX7nh4Mimm0z/4aW7aAyJ06mDyyX0AN
+ Lu2QHIi2EPl1sTXM2Kw0oEM7Kt4N9XP/pQ2ICLA4PaGRuojMvOGFy3DVKH0Ez0sofgvp6Ggpj
+ tLHQWQDk938vcfoDUPuvA9KwAbQH2OSlz95hQraX7OVCNNubfK5xAcPm73xFzPHTrOJQwtsAs
+ +QkZbEiPmMQvuoWdTKuAJogm+kyzlQ4QJELAsw6bbZo0K6lfJOvYuGlT8icIod9L+DKbd8PJJ
+ ifGD30cAERXbbD/3lZplQomLD58uQC1KBm6EW4jPnyqUTwWWArsDVcTEz/KkpsCmjh8O8SZRG
+ f/QRvSeYvB6iiQjBDX0BGA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:48:57AM +0200, Halil Pasic wrote:
-> On Wed, 19 May 2021 21:08:15 -0400
-> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-> 
-> > >
-> > > This is nonesense too:
-> > >
-> > > 	if (vcpu->kvm->arch.crypto.pqap_hook) {
-> > > 		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> > > 			return -EOPNOTSUPP;
-> > > 		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> > >
-> > > It should have a lock around it of some kind, not a
-> > > try_module_get. module_get is not la lock.  
-> > 
-> > As I said earlier, I don't know why the author did this. 
-> 
-> Please have a look at these links from the archive to get some
-> perspective:
-> https://lkml.org/lkml/2020/12/4/994
-> https://lkml.org/lkml/2020/12/3/987
-> https://www.lkml.org/lkml/2019/3/1/260
-> 
-> We can ask the original author, but I don't think we have to. BTW the
-> patch that introduced it has your r-b.
-> 
-> > My best guess
-> > is that he wanted to ensure that the module was still loaded; otherwise,
-> > the data structures contained therein - for example, the pqap_hook
-> > and matrix_mdev that contains it - would be gonzo.
-> 
-> More precisely prevent the module from unloading while we execute code
-> from it. As I've pointed out in a previous email the module may be gone
-> by the time we call try_module_get().
+On Thu, May 20, 2021 at 2:13 PM Lee Jones <lee.jones@linaro.org> wrote:
 
-No, this is a common misconception.
+> @@ -568,7 +565,7 @@ static ssize_t ac_read (struct file *filp, char __user *buf, size_t count, loff_
+>
+>                                 /* Got a packet for us */
+>                                 memset(&st_loc, 0, sizeof(st_loc));
+> -                               ret = do_ac_read(i, buf, &st_loc, &mailbox);
+> +                               do_ac_read(i, buf, &st_loc, &mailbox);
+>                                 spin_unlock_irqrestore(&apbs[i].mutex, flags);
+>                                 set_current_state(TASK_RUNNING);
+>                                 remove_wait_queue(&FlagSleepRec, &wait);
 
-The module_get prevents the module from even being attempted to be
-unloaded. Code should acquire this if it has done something that would
-cause a module remove function hang indefinitely, such as a design
-that waits for a user FD to close.
+This change doesn't look right to me. It's clear that the code we have is bogus,
+but I think what the authors intended was:
 
-This provides a good user experience but should generally not be
-required for correctness.
+--- a/drivers/char/applicom.c
++++ b/drivers/char/applicom.c
+@@ -577,7 +577,7 @@ static ssize_t ac_read (struct file *filp, char
+__user *buf, size_t count, loff_
+                                        return -EFAULT;
+                                if (copy_to_user(buf + sizeof(st_loc),
+&mailbox, sizeof(mailbox)))
+                                        return -EFAULT;
+-                               return tmp;
++                               return ret;
+                        }
 
-All code passing function pointers across subsystems should always
-fully fence those function pointers during removal. This means it
-interacts with some kind of locking that guarentees nothing is
-currently calling, or ever will call again, those function pointers.
+                        if (tmp > 2) {
 
-This is not just to protect the function pointer code itself, but the
-lock should also protect the data access that function pointer almost
-always invokes. This is the bug here, ap is accessing the matrix_dev
-data from a function pointer without any locking or serialization
-against kfree(matrix_dev). Fencing to guarentee the hook isn't and
-won't run also serves as a strong enough serialization to allow the
-kfree().
+From the git history, I can see that this got changed in linux-2.3.99,
+but the previous
+version just returned zero on success instead of the number of bytes,
+so presumably
+nobody ever cared about the returned value.
 
-The basic logic is that a module removal cannot complete until all
-its function pointers have been removed from everywhere and all the
-locking that protect those removals are satisified.
+> @@ -700,7 +697,6 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>         void __iomem *pmem;
+>         int ret = 0;
+>         static int warncount = 10;
+> -       volatile unsigned char byte_reset_it;
+>         struct st_ram_io *adgl;
+>         void __user *argp = (void __user *)arg;
+>
+> @@ -762,7 +758,7 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+>
+>                 for (i = 0; i < MAX_BOARD; i++) {
+>                         if (apbs[i].RamIO) {
+> -                               byte_reset_it = readb(apbs[i].RamIO + RAM_IT_TO_PC);
+> +                               readb(apbs[i].RamIO + RAM_IT_TO_PC);
+>                         }
 
-Jason
+This is a little subtle but should be fine on all architectures now. I suspect
+this used to be required a long time ago before the readb() function worked
+correctly everywhere.
+
+I'm also reminded that I had meant to send a patch to move this file
+to drivers/staging,
+as all evidence suggests it has not been used for decades.
+
+       Arnd
