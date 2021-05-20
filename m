@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07A7238A8A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:52:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C94838A8B7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:52:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239156AbhETKwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:52:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39730 "EHLO mail.kernel.org"
+        id S236822AbhETKxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:53:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237123AbhETKgp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:36:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AB0EB61C6D;
-        Thu, 20 May 2021 09:54:21 +0000 (UTC)
+        id S237312AbhETKhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:37:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 12E0E60FF3;
+        Thu, 20 May 2021 09:54:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504462;
-        bh=dLExIPbUsLELB2mh7d2PwNf7U5Fnt958NIluJdxmVGA=;
+        s=korg; t=1621504466;
+        bh=dzKtYbWDH6pDhdycN2WQHu3c17AMjpuKPN/DAcATgXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=B2QK0GsOtht/4DZcATBYdHbWQTw8bX67S1mqBF31grwRa4+8sMyeaA6lTgDx8m9f+
-         YS8RNx7ibYnVIO8gC9q5cv7+LCXtg0IYdFWgVcwKytViVxgyQfbzSFy4/JyOwYMo96
-         A4Glcys+DGRB5ZWjUeUMq1oa0jFlzCKMK1dj+gzk=
+        b=dIDEeVbVmpcmJWVehzEypmmf9VAApt+0TEF9dh/yMCl5KHaI5BUkSEeOvvZIaPud8
+         asBt6agTBAmpC+pdBrFsIEVwzDGuZOzSSxbkqWYfCYDxa8RTPq+gfcjuBvzLEHXTDI
+         DCiPmTA3GMckH1Z4aOqwnHexWG8MU48CiDpmbwqM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Felix Fietkau <nbd@nbd.name>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, David Ward <david.ward@gatech.edu>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 257/323] net: ethernet: mtk_eth_soc: fix RX VLAN offload
-Date:   Thu, 20 May 2021 11:22:29 +0200
-Message-Id: <20210520092129.014745554@linuxfoundation.org>
+Subject: [PATCH 4.14 258/323] ASoC: rt286: Make RT286_SET_GPIO_* readable and writable
+Date:   Thu, 20 May 2021 11:22:30 +0200
+Message-Id: <20210520092129.047398960@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,48 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Felix Fietkau <nbd@nbd.name>
+From: David Ward <david.ward@gatech.edu>
 
-[ Upstream commit 3f57d8c40fea9b20543cab4da12f4680d2ef182c ]
+[ Upstream commit cd8499d5c03ba260e3191e90236d0e5f6b147563 ]
 
-The VLAN ID in the rx descriptor is only valid if the RX_DMA_VTAG bit is
-set. Fixes frames wrongly marked with VLAN tags.
+The GPIO configuration cannot be applied if the registers are inaccessible.
+This prevented the headset mic from working on the Dell XPS 13 9343.
 
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
-[Ilya: fix commit message]
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=114171
+Signed-off-by: David Ward <david.ward@gatech.edu>
+Link: https://lore.kernel.org/r/20210418134658.4333-5-david.ward@gatech.edu
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/mediatek/mtk_eth_soc.c | 2 +-
- drivers/net/ethernet/mediatek/mtk_eth_soc.h | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt286.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.c b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-index a52909db67f6..dbd16dd5aa04 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.c
-@@ -1041,7 +1041,7 @@ static int mtk_poll_rx(struct napi_struct *napi, int budget,
- 		skb->protocol = eth_type_trans(skb, netdev);
- 
- 		if (netdev->features & NETIF_F_HW_VLAN_CTAG_RX &&
--		    RX_DMA_VID(trxd.rxd3))
-+		    (trxd.rxd2 & RX_DMA_VTAG))
- 			__vlan_hwaccel_put_tag(skb, htons(ETH_P_8021Q),
- 					       RX_DMA_VID(trxd.rxd3));
- 		skb_record_rx_queue(skb, 0);
-diff --git a/drivers/net/ethernet/mediatek/mtk_eth_soc.h b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-index 3d3c24a28112..ef82a30b2a0d 100644
---- a/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-+++ b/drivers/net/ethernet/mediatek/mtk_eth_soc.h
-@@ -283,6 +283,7 @@
- #define RX_DMA_DONE		BIT(31)
- #define RX_DMA_PLEN0(_x)	(((_x) & 0x3fff) << 16)
- #define RX_DMA_GET_PLEN0(_x)	(((_x) >> 16) & 0x3fff)
-+#define RX_DMA_VTAG		BIT(15)
- 
- /* QDMA descriptor rxd3 */
- #define RX_DMA_VID(_x)		((_x) & 0xfff)
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index 17a66b4a46a2..ce3865a8ddc2 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -174,6 +174,9 @@ static bool rt286_readable_register(struct device *dev, unsigned int reg)
+ 	case RT286_PROC_COEF:
+ 	case RT286_SET_AMP_GAIN_ADC_IN1:
+ 	case RT286_SET_AMP_GAIN_ADC_IN2:
++	case RT286_SET_GPIO_MASK:
++	case RT286_SET_GPIO_DIRECTION:
++	case RT286_SET_GPIO_DATA:
+ 	case RT286_SET_POWER(RT286_DAC_OUT1):
+ 	case RT286_SET_POWER(RT286_DAC_OUT2):
+ 	case RT286_SET_POWER(RT286_ADC_IN1):
 -- 
 2.30.2
 
