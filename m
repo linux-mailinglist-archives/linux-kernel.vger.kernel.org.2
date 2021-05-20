@@ -2,194 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4248438B490
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:47:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F7B38B494
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235252AbhETQst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:48:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21870 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233678AbhETQsr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:48:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621529245;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YCtWwsQ9i5O4Xeu+A+59S2cyBi8nbEN/55Tl4bQDQVk=;
-        b=T0hjDHehvehisbz/DynT3ViLvTd1xquMpf9ZGcYHT7P+PemtCB6Rozyqpoz5ZejsAhd/yS
-        m1UxqsiIe80isYSyALcDl5VDH6/3IE/D8Mk4ZkEGlScgdaacgtnLBDelhHkA230oAsSDjm
-        SP72Nt/ntVFhEC40hXv5LTHP85DQhZw=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-85-a_2K1wejPZexx162O4mhxQ-1; Thu, 20 May 2021 12:47:23 -0400
-X-MC-Unique: a_2K1wejPZexx162O4mhxQ-1
-Received: by mail-wm1-f71.google.com with SMTP id j128-20020a1c55860000b02901384b712094so2552983wmb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:47:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=YCtWwsQ9i5O4Xeu+A+59S2cyBi8nbEN/55Tl4bQDQVk=;
-        b=mXnO9mdp+eny72miYM5JLTV13QaNzeo5N16AOP4haR1AOkUXf5xi7BN4nbMiEfo5cm
-         w6zFCd4VBVIZPxN8OJcXKcIL5Wh6AZzrPER7TqY9VWG+bt8oRbpmAAOR/2qJVHnkf2x7
-         2IZJ1rne8D8Rml0tuC930VDdqGa0pmEoHyxxV0mJiKE3o7n5TqRxg6py/SXWYkaqnA1D
-         3HZceYjzp6qkU+c56jM19jEDcEWfj/37ecTMiYvGpFmM3qFoQe6pDxsmsGz9fNctklnK
-         PlH005RZDbXOta6J+/Drz5Az64mXfbnZv1p/XhXQfJdUIfwUpxMk2Yshai44DQlpKDbk
-         qp0A==
-X-Gm-Message-State: AOAM531dKYDI2wXeU8AGP3+iu2qCN+onlmZ9olirAD4a3K512UXSCyC4
-        5jldjFYhGpWtfUIyfjFKPYKc6C3CH9a1FPLKzkh/KLulOJ/0qUwlpfbb9VWBOGmuicdxeR2srwy
-        vYVnYT/0b6ZE9gQLt0PbIbE2L
-X-Received: by 2002:a5d:648e:: with SMTP id o14mr5098881wri.27.1621529242563;
-        Thu, 20 May 2021 09:47:22 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznkmjfT9NsXfTap8r15oc4f1lXnxEkukMC3LKwqhSw0P7mafL1T2zUAoiXfkNcPhKPnGfrAw==
-X-Received: by 2002:a5d:648e:: with SMTP id o14mr5098869wri.27.1621529242342;
-        Thu, 20 May 2021 09:47:22 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y14sm9415696wmj.37.2021.05.20.09.47.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 09:47:21 -0700 (PDT)
-Subject: Re: [PATCH stable v5.4+ 1/3] x86/kvm: Teardown PV features on boot
- CPU as well
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        stable@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Andrea Righi <andrea.righi@canonical.com>
-References: <20210520125625.12566-1-krzysztof.kozlowski@canonical.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2aff367f-74b5-ba03-229e-6d7b5b79815e@redhat.com>
-Date:   Thu, 20 May 2021 18:47:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210520125625.12566-1-krzysztof.kozlowski@canonical.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235805AbhETQtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:49:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43106 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233372AbhETQs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:48:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 850EC6101E;
+        Thu, 20 May 2021 16:47:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621529256;
+        bh=6GF42znOzBycwTENQxGHhQFFBMgkNekSpq67/mc+CRU=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=RFKdyAgIsgCdw4Tr8cD2qiRZ8XlNgVfKDfPfs7nfObP1YlKzdx8tXD3rCE973cRcY
+         LWIySIvM6T2fdXavWfFzmDc7SbMzDxtATCqXPg5G7fuYgOBlGhxgGTx8n58WwzoAzv
+         rjHUsagJUvRldS/0dBIv9AZNnAb02GozXGIcjAiWdjgaz49+anThJn0CfpwxhlSGJl
+         7UvjtrWVIGOIgsZzFSiaGQVxLotD3PWmQt7vmhuK78ctQquSK3JKvqsw5Wln7d0ZVD
+         slc9ChO87IvCLNe+vHYsfKBBTU5K4HG5NkTroruJZCK5Xr0cF1TNop5QPe8PrF4iML
+         TPngQow8juWzw==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 802F4609B9;
+        Thu, 20 May 2021 16:47:36 +0000 (UTC)
+Subject: Re: [GIT PULL] platform-drivers-x86 for 5.13-2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <ca5ce35d-c5d5-1803-cbb7-b47a5f44e535@redhat.com>
+References: <ca5ce35d-c5d5-1803-cbb7-b47a5f44e535@redhat.com>
+X-PR-Tracked-List-Id: <platform-driver-x86.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ca5ce35d-c5d5-1803-cbb7-b47a5f44e535@redhat.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.13-2
+X-PR-Tracked-Commit-Id: e68671e9e1275dfdda333c3e83b6d28963af16b6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 9ebd8118162b220d616d7e29b505dd64a90f75b6
+Message-Id: <162152925651.27581.6288650863828850372.pr-tracker-bot@kernel.org>
+Date:   Thu, 20 May 2021 16:47:36 +0000
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/21 14:56, Krzysztof Kozlowski wrote:
-> From: Vitaly Kuznetsov <vkuznets@redhat.com>
-> 
-> commit 8b79feffeca28c5459458fe78676b081e87c93a4 upstream.
-> 
-> Various PV features (Async PF, PV EOI, steal time) work through memory
-> shared with hypervisor and when we restore from hibernation we must
-> properly teardown all these features to make sure hypervisor doesn't
-> write to stale locations after we jump to the previously hibernated kernel
-> (which can try to place anything there). For secondary CPUs the job is
-> already done by kvm_cpu_down_prepare(), register syscore ops to do
-> the same for boot CPU.
-> 
-> Krzysztof:
-> This fixes memory corruption visible after second resume from
-> hibernation:
+The pull request you sent on Thu, 20 May 2021 14:39:40 +0200:
 
-Hi, you should include a cover letter detailing the differences between 
-the original patches and the backport.
+> git://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git tags/platform-drivers-x86-v5.13-2
 
-(I'll review it anyway, but it would have helped).
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9ebd8118162b220d616d7e29b505dd64a90f75b6
 
-Paolo
+Thank you!
 
->    BUG: Bad page state in process dbus-daemon  pfn:18b01
->    page:ffffea000062c040 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 compound_mapcount: -30591
->    flags: 0xfffffc0078141(locked|error|workingset|writeback|head|mappedtodisk|reclaim)
->    raw: 000fffffc0078141 dead0000000002d0 dead000000000100 0000000000000000
->    raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
->    page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag set
->    bad because of flags: 0x78141(locked|error|workingset|writeback|head|mappedtodisk|reclaim)
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> Message-Id: <20210414123544.1060604-3-vkuznets@redhat.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
-> [krzysztof: Extend the commit message]
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
-> 
-> Backport to v5.4 seems reasonable. Might have sense to earlier versions,
-> but this was not tested/investigated.
-> 
->   arch/x86/kernel/kvm.c | 32 ++++++++++++++++++++++++++++----
->   1 file changed, 28 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
-> index e820568ed4d5..6b906a651fb1 100644
-> --- a/arch/x86/kernel/kvm.c
-> +++ b/arch/x86/kernel/kvm.c
-> @@ -24,6 +24,7 @@
->   #include <linux/debugfs.h>
->   #include <linux/nmi.h>
->   #include <linux/swait.h>
-> +#include <linux/syscore_ops.h>
->   #include <asm/timer.h>
->   #include <asm/cpu.h>
->   #include <asm/traps.h>
-> @@ -558,17 +559,21 @@ static void kvm_guest_cpu_offline(void)
->   
->   static int kvm_cpu_online(unsigned int cpu)
->   {
-> -	local_irq_disable();
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
->   	kvm_guest_cpu_init();
-> -	local_irq_enable();
-> +	local_irq_restore(flags);
->   	return 0;
->   }
->   
->   static int kvm_cpu_down_prepare(unsigned int cpu)
->   {
-> -	local_irq_disable();
-> +	unsigned long flags;
-> +
-> +	local_irq_save(flags);
->   	kvm_guest_cpu_offline();
-> -	local_irq_enable();
-> +	local_irq_restore(flags);
->   	return 0;
->   }
->   #endif
-> @@ -606,6 +611,23 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
->   	native_flush_tlb_others(flushmask, info);
->   }
->   
-> +static int kvm_suspend(void)
-> +{
-> +	kvm_guest_cpu_offline();
-> +
-> +	return 0;
-> +}
-> +
-> +static void kvm_resume(void)
-> +{
-> +	kvm_cpu_online(raw_smp_processor_id());
-> +}
-> +
-> +static struct syscore_ops kvm_syscore_ops = {
-> +	.suspend	= kvm_suspend,
-> +	.resume		= kvm_resume,
-> +};
-> +
->   static void __init kvm_guest_init(void)
->   {
->   	int i;
-> @@ -649,6 +671,8 @@ static void __init kvm_guest_init(void)
->   	kvm_guest_cpu_init();
->   #endif
->   
-> +	register_syscore_ops(&kvm_syscore_ops);
-> +
->   	/*
->   	 * Hard lockup detection is enabled by default. Disable it, as guests
->   	 * can get false positives too easily, for example if the host is
-> 
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
