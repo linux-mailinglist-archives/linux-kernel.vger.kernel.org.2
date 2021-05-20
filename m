@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3685638A6B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC8038A463
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:04:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbhETKaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:30:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48100 "EHLO mail.kernel.org"
+        id S235556AbhETKFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:05:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235833AbhETKR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:17:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CC0C61459;
-        Thu, 20 May 2021 09:46:27 +0000 (UTC)
+        id S235215AbhETJ7a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:59:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B80D3617ED;
+        Thu, 20 May 2021 09:38:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503987;
-        bh=QAT7/DpyHeJMZMdN80nWXT2iJv4L2bS1nhzR0FOK+k8=;
+        s=korg; t=1621503522;
+        bh=sCBOWjPFlsAS3ZI4sQKtAA1bAk5Y6r/rQizYVdgRpKw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F3eFZyM+JEdMJkoo5+aU2H6kDez5gcpecjMpCTjGox9m6qagNXk7bG1uesZTvdxzr
-         qKqIZ4suuiFH1vAL5y6lHYR85BQH+3agdIOnC3pgEPTw8sdEEBo/3/zrklDe5vfYhE
-         gP7HHTHwxl43Q5N8hWCnRrxK6SB8f4TYgzLT43P4=
+        b=xG5yJo3et8ookWTNxcwfY0aooq82fMGdY3GGs4exSqEbEo7tudFdiU8fGViPNS0Os
+         ZGdNN+xHxIhqAEPDpVzyrEuJu9FgkY55bkuRL7zRzs8jr1ISgm8gUi1qRBqtL0s1zZ
+         Ztwj0y2k0QR43YXxShefHJzXPkXrsnc3+aS8yzLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Vinod Koul <vkoul@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 043/323] phy: phy-twl4030-usb: Fix possible use-after-free in twl4030_usb_remove()
-Date:   Thu, 20 May 2021 11:18:55 +0200
-Message-Id: <20210520092121.579762186@linuxfoundation.org>
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 215/425] tty: actually undefine superseded ASYNC flags
+Date:   Thu, 20 May 2021 11:19:44 +0200
+Message-Id: <20210520092138.488248820@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
+References: <20210520092131.308959589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,42 +39,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit e1723d8b87b73ab363256e7ca3af3ddb75855680 ]
+[ Upstream commit d09845e98a05850a8094ea8fd6dd09a8e6824fff ]
 
-This driver's remove path calls cancel_delayed_work(). However, that
-function does not wait until the work function finishes. This means
-that the callback function may still be running after the driver's
-remove function has finished, which would result in a use-after-free.
+Some kernel-internal ASYNC flags have been superseded by tty-port flags
+and should no longer be used by kernel drivers.
 
-Fix by calling cancel_delayed_work_sync(), which ensures that
-the work is properly cancelled, no longer running, and unable
-to re-schedule itself.
+Fix the misspelled "__KERNEL__" compile guards which failed their sole
+purpose to break out-of-tree drivers that have not yet been updated.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210407092716.3270248-1-yangyingliang@huawei.com
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Fixes: 5c0517fefc92 ("tty: core: Undefine ASYNC_* flags superceded by TTY_PORT* flags")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210407095208.31838-2-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/phy/ti/phy-twl4030-usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/uapi/linux/tty_flags.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/phy/ti/phy-twl4030-usb.c b/drivers/phy/ti/phy-twl4030-usb.c
-index c267afb68f07..ea7564392108 100644
---- a/drivers/phy/ti/phy-twl4030-usb.c
-+++ b/drivers/phy/ti/phy-twl4030-usb.c
-@@ -801,7 +801,7 @@ static int twl4030_usb_remove(struct platform_device *pdev)
+diff --git a/include/uapi/linux/tty_flags.h b/include/uapi/linux/tty_flags.h
+index 900a32e63424..6a3ac496a56c 100644
+--- a/include/uapi/linux/tty_flags.h
++++ b/include/uapi/linux/tty_flags.h
+@@ -39,7 +39,7 @@
+  * WARNING: These flags are no longer used and have been superceded by the
+  *	    TTY_PORT_ flags in the iflags field (and not userspace-visible)
+  */
+-#ifndef _KERNEL_
++#ifndef __KERNEL__
+ #define ASYNCB_INITIALIZED	31 /* Serial port was initialized */
+ #define ASYNCB_SUSPENDED	30 /* Serial port is suspended */
+ #define ASYNCB_NORMAL_ACTIVE	29 /* Normal device is active */
+@@ -81,7 +81,7 @@
+ #define ASYNC_SPD_WARP		(ASYNC_SPD_HI|ASYNC_SPD_SHI)
+ #define ASYNC_SPD_MASK		(ASYNC_SPD_HI|ASYNC_SPD_VHI|ASYNC_SPD_SHI)
  
- 	usb_remove_phy(&twl->phy);
- 	pm_runtime_get_sync(twl->dev);
--	cancel_delayed_work(&twl->id_workaround_work);
-+	cancel_delayed_work_sync(&twl->id_workaround_work);
- 	device_remove_file(twl->dev, &dev_attr_vbus);
- 
- 	/* set transceiver mode to power on defaults */
+-#ifndef _KERNEL_
++#ifndef __KERNEL__
+ /* These flags are no longer used (and were always masked from userspace) */
+ #define ASYNC_INITIALIZED	(1U << ASYNCB_INITIALIZED)
+ #define ASYNC_NORMAL_ACTIVE	(1U << ASYNCB_NORMAL_ACTIVE)
 -- 
 2.30.2
 
