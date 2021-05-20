@@ -2,106 +2,345 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53623389BF1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:37:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A82E389BFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:45:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbhETDiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 23:38:23 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:33105 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhETDiW (ORCPT
+        id S230113AbhETDqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:46:51 -0400
+Received: from mail-pj1-f53.google.com ([209.85.216.53]:36378 "EHLO
+        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhETDqu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 23:38:22 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 194CF84487;
-        Thu, 20 May 2021 15:36:59 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1621481819;
-        bh=VRbO4+naf38qOxw5jDMURFAeVwM1Gn4WAr6oIe/Om1Q=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=IvlORQazLNUXOxWwca6w0GSF/LVUilQq1KeoC5OsjkvkYhSWiohrXByKd4bikWAoc
-         puuOF8foJdJQiD/ZFbzhVtPz5B23V25hX64edzsVFw/oiwh8zrTG9+PufAKpOB4RRQ
-         ZO6Rux5xpqjxYL0lsCgVDh7K/yvuKhF4RnCJF0C4qa12ScAiMh/YrUzzgQugFHui+9
-         Nj2kwGDRTR4VtYg+D9vHPpBJuP5GlCZPemxCWr1q6T9QNpqnXRZCW5xJdy7bNUyj9K
-         BUgYQtUhHZaCxuQpnRodTXWeXWKIb2BSj9fp5VvuVfTNn+OhZgVvfnGsPTHVpLF1hK
-         JRkX8tLfRX1hg==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60a5d95b0000>; Thu, 20 May 2021 15:36:59 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8)
- by svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with
- Microsoft SMTP Server (TLS) id 15.0.1497.18; Thu, 20 May 2021 15:36:58 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.018; Thu, 20 May 2021 15:36:58 +1200
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     "wsa@kernel.org" <wsa@kernel.org>,
-        Joakim Tjernlund <Joakim.Tjernlund@infinera.com>
-CC:     "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 0/4] P2040/P2041 i2c recovery erratum
-Thread-Topic: [PATCH v3 0/4] P2040/P2041 i2c recovery erratum
-Thread-Index: AQHXRquHhXA6XgnPF0OPgP79h3OVQ6reDlyAgAA9BACAAHfVAIAAZZwAgAvTcoA=
-Date:   Thu, 20 May 2021 03:36:58 +0000
-Message-ID: <ae39c62a-7dc7-81f5-ea10-edfdbf905e9d@alliedtelesis.co.nz>
-References: <20210511212052.27242-1-chris.packham@alliedtelesis.co.nz>
- <b90f48cfdc31af08190e7a8eaa71b7bd488fcbaa.camel@infinera.com>
- <ec3cdcc8-5869-9e7d-30c0-59ff4ec67a58@alliedtelesis.co.nz>
- <4e96247275d559bab133d6c318276fa6be4d7be0.camel@infinera.com>
- <20210512150118.GA1004@ninjato>
-In-Reply-To: <20210512150118.GA1004@ninjato>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.32.1.11]
-Content-Type: text/plain; charset="Windows-1252"
-Content-ID: <458C7B1C38153849A89C7527D57D2E44@atlnz.lc>
-Content-Transfer-Encoding: quoted-printable
+        Wed, 19 May 2021 23:46:50 -0400
+Received: by mail-pj1-f53.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so4697469pjt.1
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:45:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/wXqElQRkopl21ZPYblcLk2cmVZq3rqAdYuKshPdrR8=;
+        b=rlQSK1oUkcmHbUUt7oy4sW/Xyk0jz8iRs7aAya4pG30W8GqlSwzOV+IdsIlLcBggEs
+         YAIkyWZjq6e6zZ+0wn2aBh942CcvDHpWYXw8dUZuxMOwBv0YYJybE+U8GLK0LsBr1ScW
+         juyQ9hTU5g/b/JRTO8NzeOZjnZjBe/qKel5aReOSB675T0D3VK9dVSQCEP+lDGYizYG4
+         G8bHCCegfAYsQ9tdpcRnWPLRgVDsLzxi8Zu1XZfmNzVZMUKnnHs/oPj+/SGnRyzxRilk
+         qgxHgYKpr/sITOyAm7XIAkf2ClxII+HHG548P+8m70To+lbXw4sSu8Iqly4Rk4vGJs/j
+         D9xQ==
+X-Gm-Message-State: AOAM530Xt2AD/Lr+kJ/h7PxRHbXdLH39g+HMVt5UHTLqbhFwzXNFQRRM
+        TB/d2MMKhA2XscYAOkK7FfQ=
+X-Google-Smtp-Source: ABdhPJyMiAhO65oJ4Dscpf0QBxkFPePcoojRjYAt7X5H0LXncLNbmj6hUhlCPnk+v0dFyVmxLRrijQ==
+X-Received: by 2002:a17:90a:4d4f:: with SMTP id l15mr283366pjh.78.1621482328330;
+        Wed, 19 May 2021 20:45:28 -0700 (PDT)
+Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:b043:994b:7f8b:3169])
+        by smtp.gmail.com with ESMTPSA id g13sm660500pfr.75.2021.05.19.20.45.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 20:45:27 -0700 (PDT)
+From:   Bart Van Assche <bvanassche@acm.org>
+To:     Joel Becker <jlbec@evilplan.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>
+Subject: [PATCH] configfs: Implement the .read_iter and .write_iter callbacks
+Date:   Wed, 19 May 2021 20:45:21 -0700
+Message-Id: <20210520034521.16102-1-bvanassche@acm.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=WOcBoUkR c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oKJsc7D3gJEA:10 a=N659UExz7-8A:10 a=5FLXtPjwQuUA:10 a=VwQbUJbxAAAA:8 a=T-qbRSzZqTrywjUDPykA:9 a=pILNOxqGKmIA:10 a=AjGcO6oz07-iQ99wixmX:22
-X-SEG-SpamProfiler-Score: 0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Configfs is one of the few filesystems that does not yet support the
+.read_iter and .write_iter callbacks. This patch adds support for these
+callbacks in configfs. Additionally, fix the kernel-doc comment above
+configfs_create_bin_file().
 
-On 13/05/21 3:01 am, wsa@kernel.org wrote:
->>> I've been doing my recent work with a P2040 and prior to that I did tes=
-t
->>> out the recovery on a T2081 (which isn't documented to have this
->>> erratum) when I was re-working the driver. The "new" recovery actually
->>> seems better but I don't have a reliably faulty i2c device so that's
->>> only based on me writing some code to manually trigger the recovery
->>> (using the snippet below) and observing it with an oscilloscope.
->> You don't need a faulty device, just an aborted I2C read/write op.
-> If you can wire GPIOs to the bus, you can use the I2C fault injector:
->
-> 	Documentation/i2c/gpio-fault-injection.rst
->
-> There are already two "incomplete transfer" injectors.
->
-Just giving this thread a poke. I have been looking at my options for=20
-triggering an i2c recovery but haven't really had time to do much. I=20
-think the best option given what I've got access to is a modified SFP=20
-that grounds the SDA line but I need to find a system where I can attach=20
-an oscilloscope (should be a few of these in the office when I can get=20
-on-site).
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+---
+ fs/configfs/file.c | 126 +++++++++++++++++++++------------------------
+ 1 file changed, 58 insertions(+), 68 deletions(-)
 
-I can confirm that when manually triggered the existing recovery and the=20
-new erratum workaround produce what I'd expect to observe on an=20
-oscilloscope.
-
-I haven't explored Joakim's alternative recovery but I don't think that=20
-should hold up these changes, any improvement to the existing recovery=20
-can be done later as a follow-up.
+diff --git a/fs/configfs/file.c b/fs/configfs/file.c
+index da8351d1e455..1c63251356f9 100644
+--- a/fs/configfs/file.c
++++ b/fs/configfs/file.c
+@@ -16,7 +16,7 @@
+ #include <linux/mutex.h>
+ #include <linux/vmalloc.h>
+ #include <linux/uaccess.h>
+-
++#include <linux/uio.h>
+ #include <linux/configfs.h>
+ #include "configfs_internal.h"
+ 
+@@ -80,11 +80,9 @@ static int fill_read_buffer(struct file *file, struct configfs_buffer *buffer)
+ }
+ 
+ /**
+- *	configfs_read_file - read an attribute.
+- *	@file:	file pointer.
+- *	@buf:	buffer to fill.
+- *	@count:	number of bytes to read.
+- *	@ppos:	starting offset in file.
++ *	configfs_read_iter - Read a configfs attribute.
++ *	@iocb: file to read and offset at which to start reading.
++ *	@to: buffer to copy the output to.
+  *
+  *	Userspace wants to read an attribute file. The attribute descriptor
+  *	is in the file's ->d_fsdata. The target item is in the directory's
+@@ -97,10 +95,9 @@ static int fill_read_buffer(struct file *file, struct configfs_buffer *buffer)
+  *	We then call flush_read_buffer() to copy the buffer to userspace
+  *	in the increments specified.
+  */
+-
+-static ssize_t
+-configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *ppos)
++static ssize_t configfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct configfs_buffer *buffer = file->private_data;
+ 	ssize_t retval = 0;
+ 
+@@ -110,21 +107,21 @@ configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *pp
+ 		if (retval)
+ 			goto out;
+ 	}
+-	pr_debug("%s: count = %zd, ppos = %lld, buf = %s\n",
+-		 __func__, count, *ppos, buffer->page);
+-	retval = simple_read_from_buffer(buf, count, ppos, buffer->page,
+-					 buffer->count);
++	pr_debug("%s: count = %zd, pos = %lld, buf = %s\n",
++		 __func__, iov_iter_count(to), iocb->ki_pos, buffer->page);
++	retval = copy_to_iter(buffer->page, buffer->count, to);
++	iocb->ki_pos += retval;
++	if (retval == 0)
++		retval = -EFAULT;
+ out:
+ 	mutex_unlock(&buffer->mutex);
+ 	return retval;
+ }
+ 
+ /**
+- *	configfs_read_bin_file - read a binary attribute.
+- *	@file:	file pointer.
+- *	@buf:	buffer to fill.
+- *	@count:	number of bytes to read.
+- *	@ppos:	starting offset in file.
++ *	configfs_bin_read_iter - Read a binary configfs attribute.
++ *	@iocb: file to read and offset at which to start reading.
++ *	@to: buffer to copy the output to.
+  *
+  *	Userspace wants to read a binary attribute file. The attribute
+  *	descriptor is in the file's ->d_fsdata. The target item is in the
+@@ -139,14 +136,13 @@ configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *pp
+  *	Then we just copy to user-space using simple_read_from_buffer.
+  */
+ 
+-static ssize_t
+-configfs_read_bin_file(struct file *file, char __user *buf,
+-		       size_t count, loff_t *ppos)
++static ssize_t configfs_bin_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct configfs_fragment *frag = to_frag(file);
+ 	struct configfs_buffer *buffer = file->private_data;
+ 	ssize_t retval = 0;
+-	ssize_t len = min_t(size_t, count, PAGE_SIZE);
++	ssize_t len;
+ 
+ 	mutex_lock(&buffer->mutex);
+ 
+@@ -202,8 +198,10 @@ configfs_read_bin_file(struct file *file, char __user *buf,
+ 		buffer->needs_read_fill = 0;
+ 	}
+ 
+-	retval = simple_read_from_buffer(buf, count, ppos, buffer->bin_buffer,
+-					buffer->bin_buffer_size);
++	retval = copy_to_iter(buffer->bin_buffer, buffer->bin_buffer_size, to);
++	iocb->ki_pos += retval;
++	if (retval == 0)
++		retval = -EFAULT;
+ out:
+ 	mutex_unlock(&buffer->mutex);
+ 	return retval;
+@@ -212,32 +210,29 @@ configfs_read_bin_file(struct file *file, char __user *buf,
+ 
+ /**
+  *	fill_write_buffer - copy buffer from userspace.
+- *	@buffer:	data buffer for file.
+- *	@buf:		data from user.
+- *	@count:		number of bytes in @userbuf.
++ *	@buffer:	data buffer that represents the attribute contents.
++ *	@from:		data to copy into the attribute.
+  *
+  *	Allocate @buffer->page if it hasn't been already, then
+  *	copy the user-supplied buffer into it.
+  */
+ 
+-static int
+-fill_write_buffer(struct configfs_buffer * buffer, const char __user * buf, size_t count)
++static int fill_write_buffer(struct configfs_buffer *buffer,
++			     struct iov_iter *from)
+ {
+-	int error;
++	int copied;
+ 
+ 	if (!buffer->page)
+ 		buffer->page = (char *)__get_free_pages(GFP_KERNEL, 0);
+ 	if (!buffer->page)
+ 		return -ENOMEM;
+ 
+-	if (count >= SIMPLE_ATTR_SIZE)
+-		count = SIMPLE_ATTR_SIZE - 1;
+-	error = copy_from_user(buffer->page,buf,count);
++	copied = copy_from_iter(buffer->page, SIMPLE_ATTR_SIZE - 1, from);
+ 	buffer->needs_read_fill = 1;
+ 	/* if buf is assumed to contain a string, terminate it by \0,
+ 	 * so e.g. sscanf() can scan the string easily */
+-	buffer->page[count] = 0;
+-	return error ? -EFAULT : count;
++	buffer->page[copied] = 0;
++	return copied ? : -EFAULT;
+ }
+ 
+ static int
+@@ -255,13 +250,11 @@ flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t cou
+ 
+ 
+ /**
+- *	configfs_write_file - write an attribute.
+- *	@file:	file pointer
+- *	@buf:	data to write
+- *	@count:	number of bytes
+- *	@ppos:	starting offset
++ *	configfs_write_iter - Write a configfs attribute.
++ *	@iocb: file to write to and offset at which to start writing.
++ *	@from: data to copy into the attribute.
+  *
+- *	Similar to configfs_read_file(), though working in the opposite direction.
++ *	Similar to configfs_read_iter(), though working in the opposite direction.
+  *	We allocate and fill the data from the user in fill_write_buffer(),
+  *	then push it to the config_item in flush_write_buffer().
+  *	There is no easy way for us to know if userspace is only doing a partial
+@@ -271,28 +264,26 @@ flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t cou
+  *	the value you're changing, then write entire buffer back.
+  */
+ 
+-static ssize_t
+-configfs_write_file(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
++static ssize_t configfs_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct configfs_buffer *buffer = file->private_data;
+ 	ssize_t len;
+ 
+ 	mutex_lock(&buffer->mutex);
+-	len = fill_write_buffer(buffer, buf, count);
++	len = fill_write_buffer(buffer, from);
+ 	if (len > 0)
+ 		len = flush_write_buffer(file, buffer, len);
+ 	if (len > 0)
+-		*ppos += len;
++		iocb->ki_pos += len;
+ 	mutex_unlock(&buffer->mutex);
+ 	return len;
+ }
+ 
+ /**
+- *	configfs_write_bin_file - write a binary attribute.
+- *	@file:	file pointer
+- *	@buf:	data to write
+- *	@count:	number of bytes
+- *	@ppos:	starting offset
++ *	configfs_bin_write_iter - Write a binary attribute.
++ *	@iocb: file to write to and offset at which to start writing.
++ *	@from: data to copy into the attribute.
+  *
+  *	Writing to a binary attribute file is similar to a normal read.
+  *	We buffer the consecutive writes (binary attribute files do not
+@@ -300,12 +291,13 @@ configfs_write_file(struct file *file, const char __user *buf, size_t count, lof
+  *	commit until the close of the file.
+  */
+ 
+-static ssize_t
+-configfs_write_bin_file(struct file *file, const char __user *buf,
+-			size_t count, loff_t *ppos)
++static ssize_t configfs_bin_write_iter(struct kiocb *iocb,
++				       struct iov_iter *from)
+ {
++	struct file *file = iocb->ki_filp;
+ 	struct configfs_buffer *buffer = file->private_data;
+ 	void *tbuf = NULL;
++	size_t end_offset;
+ 	ssize_t len;
+ 
+ 	mutex_lock(&buffer->mutex);
+@@ -318,15 +310,14 @@ configfs_write_bin_file(struct file *file, const char __user *buf,
+ 	buffer->write_in_progress = true;
+ 
+ 	/* buffer grows? */
+-	if (*ppos + count > buffer->bin_buffer_size) {
+-
+-		if (buffer->cb_max_size &&
+-			*ppos + count > buffer->cb_max_size) {
++	end_offset = iocb->ki_pos + iov_iter_count(from);
++	if (end_offset > buffer->bin_buffer_size) {
++		if (buffer->cb_max_size && end_offset > buffer->cb_max_size) {
+ 			len = -EFBIG;
+ 			goto out;
+ 		}
+ 
+-		tbuf = vmalloc(*ppos + count);
++		tbuf = vmalloc(end_offset);
+ 		if (tbuf == NULL) {
+ 			len = -ENOMEM;
+ 			goto out;
+@@ -341,16 +332,15 @@ configfs_write_bin_file(struct file *file, const char __user *buf,
+ 
+ 		/* clear the new area */
+ 		memset(tbuf + buffer->bin_buffer_size, 0,
+-			*ppos + count - buffer->bin_buffer_size);
++			end_offset - buffer->bin_buffer_size);
+ 		buffer->bin_buffer = tbuf;
+-		buffer->bin_buffer_size = *ppos + count;
++		buffer->bin_buffer_size = end_offset;
+ 	}
+ 
+-	len = simple_write_to_buffer(buffer->bin_buffer,
+-			buffer->bin_buffer_size, ppos, buf, count);
++	len = copy_from_iter(buffer->bin_buffer, buffer->bin_buffer_size, from);
+ out:
+ 	mutex_unlock(&buffer->mutex);
+-	return len;
++	return len ? : -EFAULT;
+ }
+ 
+ static int __configfs_open_file(struct inode *inode, struct file *file, int type)
+@@ -495,16 +485,16 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
+ 
+ 
+ const struct file_operations configfs_file_operations = {
+-	.read		= configfs_read_file,
+-	.write		= configfs_write_file,
++	.read_iter	= configfs_read_iter,
++	.write_iter	= configfs_write_iter,
+ 	.llseek		= generic_file_llseek,
+ 	.open		= configfs_open_file,
+ 	.release	= configfs_release,
+ };
+ 
+ const struct file_operations configfs_bin_file_operations = {
+-	.read		= configfs_read_bin_file,
+-	.write		= configfs_write_bin_file,
++	.read_iter	= configfs_bin_read_iter,
++	.write_iter	= configfs_bin_write_iter,
+ 	.llseek		= NULL,		/* bin file is not seekable */
+ 	.open		= configfs_open_bin_file,
+ 	.release	= configfs_release_bin_file,
+@@ -534,7 +524,7 @@ int configfs_create_file(struct config_item * item, const struct configfs_attrib
+ /**
+  *	configfs_create_bin_file - create a binary attribute file for an item.
+  *	@item:	item we're creating for.
+- *	@attr:	atrribute descriptor.
++ *	@bin_attr: atrribute descriptor.
+  */
+ 
+ int configfs_create_bin_file(struct config_item *item,
