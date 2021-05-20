@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F3938AC88
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5871338AC8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241904AbhETLlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:41:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43606 "EHLO mail.kernel.org"
+        id S242824AbhETLlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240465AbhETLUg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:20:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7991B61D84;
-        Thu, 20 May 2021 10:11:09 +0000 (UTC)
+        id S238470AbhETLU6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:20:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA53C61D89;
+        Thu, 20 May 2021 10:11:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505469;
-        bh=ZpKop7a3TUJCeE4gnzgdKitIvMnEbF0gqyaNlowowLA=;
+        s=korg; t=1621505472;
+        bh=h7JgU1b6vdqjAAdb1MDysc/E7EuCxti64u1idx67Fkg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lFv6j/8lnq3g0pCP61pgpbhebHZrwgDK9zPq39bGvE9cGD4isjglpkMDg+95oXuIM
-         6UqAcfyXbvxKDT8O8uAcKM8t05jit4yRlTgzq/yx7kNsQV1Q+HXS1ql718ipfc6GBp
-         V+8xYV3NM+5zrz21kQ7MRjXtPSy92+fisiFNUa00=
+        b=rk4Mgr//s8+R34JQi59lLYW+gg4NAd/Zuo5tAkWNtyoVsfnaXSnRoRxvayBeyX4Nr
+         MU9ttuhYyGpOkc3IxXv7tCpFoveHAVd3+UGLk6HNRjVyine4Wkq27eC7WgpHG2aZ23
+         9q1e8EK3F9tGnJOFW6Xdb0Le0dFQOatbhh1PjUjQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 115/190] nfc: pn533: prevent potential memory corruption
-Date:   Thu, 20 May 2021 11:22:59 +0200
-Message-Id: <20210520092106.004568090@linuxfoundation.org>
+        stable@vger.kernel.org,
+        coverity-bot <keescook+coverity-bot@chromium.org>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 116/190] ALSA: usb-audio: Add error checks for usb_driver_claim_interface() calls
+Date:   Thu, 20 May 2021 11:23:00 +0200
+Message-Id: <20210520092106.037579813@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -40,37 +40,133 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-[ Upstream commit ca4d4c34ae9aa5c3c0da76662c5e549d2fc0cc86 ]
+[ Upstream commit 5fb45414ae03421255593fd5556aa2d1d82303aa ]
 
-If the "type_a->nfcid_len" is too large then it would lead to memory
-corruption in pn533_target_found_type_a() when we do:
+There are a few calls of usb_driver_claim_interface() but all of those
+miss the proper error checks, as reported by Coverity.  This patch
+adds those missing checks.
 
-	memcpy(nfc_tgt->nfcid1, tgt_type_a->nfcid_data, nfc_tgt->nfcid1_len);
+Along with it, replace the magic pointer with -1 with a constant
+USB_AUDIO_IFACE_UNUSED for better readability.
 
-Fixes: c3b1e1e8a76f ("NFC: Export NFCID1 from pn533")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Reported-by: coverity-bot <keescook+coverity-bot@chromium.org>
+Addresses-Coverity-ID: 1475943 ("Error handling issues")
+Addresses-Coverity-ID: 1475944 ("Error handling issues")
+Addresses-Coverity-ID: 1475945 ("Error handling issues")
+Fixes: b1ce7ba619d9 ("ALSA: usb-audio: claim autodetected PCM interfaces all at once")
+Fixes: e5779998bf8b ("ALSA: usb-audio: refactor code")
+Link: https://lore.kernel.org/r/202104051059.FB7F3016@keescook
+Link: https://lore.kernel.org/r/20210406113534.30455-1-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/nfc/pn533.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/usb/card.c     | 14 +++++++-------
+ sound/usb/quirks.c   | 16 ++++++++++++----
+ sound/usb/usbaudio.h |  2 ++
+ 3 files changed, 21 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/nfc/pn533.c b/drivers/nfc/pn533.c
-index bb3d5ea9869c..001c12867e43 100644
---- a/drivers/nfc/pn533.c
-+++ b/drivers/nfc/pn533.c
-@@ -1250,6 +1250,9 @@ static bool pn533_target_type_a_is_valid(struct pn533_target_type_a *type_a,
- 	if (PN533_TYPE_A_SEL_CASCADE(type_a->sel_res) != 0)
- 		return false;
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index 61d303f4283d..3ded5fe94cea 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -179,9 +179,8 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 				ctrlif, interface);
+ 			return -EINVAL;
+ 		}
+-		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
+-
+-		return 0;
++		return usb_driver_claim_interface(&usb_audio_driver, iface,
++						  USB_AUDIO_IFACE_UNUSED);
+ 	}
  
-+	if (type_a->nfcid_len > NFC_NFCID1_MAXSIZE)
-+		return false;
+ 	if ((altsd->bInterfaceClass != USB_CLASS_AUDIO &&
+@@ -201,7 +200,8 @@ static int snd_usb_create_stream(struct snd_usb_audio *chip, int ctrlif, int int
+ 
+ 	if (! snd_usb_parse_audio_interface(chip, interface)) {
+ 		usb_set_interface(dev, interface, 0); /* reset the current interface */
+-		usb_driver_claim_interface(&usb_audio_driver, iface, (void *)-1L);
++		return usb_driver_claim_interface(&usb_audio_driver, iface,
++						  USB_AUDIO_IFACE_UNUSED);
+ 	}
+ 
+ 	return 0;
+@@ -610,7 +610,7 @@ static void usb_audio_disconnect(struct usb_interface *intf)
+ 	struct snd_card *card;
+ 	struct list_head *p;
+ 
+-	if (chip == (void *)-1L)
++	if (chip == USB_AUDIO_IFACE_UNUSED)
+ 		return;
+ 
+ 	card = chip->card;
+@@ -710,7 +710,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 	struct usb_mixer_interface *mixer;
+ 	struct list_head *p;
+ 
+-	if (chip == (void *)-1L)
++	if (chip == USB_AUDIO_IFACE_UNUSED)
+ 		return 0;
+ 
+ 	if (!chip->num_suspended_intf++) {
+@@ -740,7 +740,7 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ 	struct list_head *p;
+ 	int err = 0;
+ 
+-	if (chip == (void *)-1L)
++	if (chip == USB_AUDIO_IFACE_UNUSED)
+ 		return 0;
+ 
+ 	atomic_inc(&chip->active); /* avoid autopm */
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index cd615514a5ff..7979a9e19c53 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -66,8 +66,12 @@ static int create_composite_quirk(struct snd_usb_audio *chip,
+ 		if (!iface)
+ 			continue;
+ 		if (quirk->ifnum != probed_ifnum &&
+-		    !usb_interface_claimed(iface))
+-			usb_driver_claim_interface(driver, iface, (void *)-1L);
++		    !usb_interface_claimed(iface)) {
++			err = usb_driver_claim_interface(driver, iface,
++							 USB_AUDIO_IFACE_UNUSED);
++			if (err < 0)
++				return err;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -399,8 +403,12 @@ static int create_autodetect_quirks(struct snd_usb_audio *chip,
+ 			continue;
+ 
+ 		err = create_autodetect_quirk(chip, iface, driver);
+-		if (err >= 0)
+-			usb_driver_claim_interface(driver, iface, (void *)-1L);
++		if (err >= 0) {
++			err = usb_driver_claim_interface(driver, iface,
++							 USB_AUDIO_IFACE_UNUSED);
++			if (err < 0)
++				return err;
++		}
+ 	}
+ 
+ 	return 0;
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index c5338be3aa37..09ecc7afdc4f 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -62,6 +62,8 @@ struct snd_usb_audio {
+ 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
+ };
+ 
++#define USB_AUDIO_IFACE_UNUSED	((void *)-1L)
 +
- 	return true;
- }
- 
+ #define usb_audio_err(chip, fmt, args...) \
+ 	dev_err(&(chip)->dev->dev, fmt, ##args)
+ #define usb_audio_warn(chip, fmt, args...) \
 -- 
 2.30.2
 
