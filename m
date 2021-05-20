@@ -2,203 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEC438B914
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A4938B916
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:42:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230321AbhETVmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 17:42:39 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:41759 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhETVmg (ORCPT
+        id S230334AbhETVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:43:23 -0400
+Received: from mail-ed1-f50.google.com ([209.85.208.50]:42688 "EHLO
+        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230300AbhETVnU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 17:42:36 -0400
-Received: by mail-pj1-f53.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso6035336pji.0;
-        Thu, 20 May 2021 14:41:14 -0700 (PDT)
+        Thu, 20 May 2021 17:43:20 -0400
+Received: by mail-ed1-f50.google.com with SMTP id i13so21060287edb.9;
+        Thu, 20 May 2021 14:41:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vCLJpK+9hXa8f0bVbGyOkYYmlU11+GJfZDKiKDK5uNk=;
-        b=gMHC6WFyGFtdf+6GDy1sFhLkkV7JZM+wO7G561h/skxQs2oENWFajx+ksqPmL6R9Qj
-         Moc4KQRXVSSEixbsqUtUsAV+ffxR6CeMdkPuulX+WT0N+BuHNsQBPdg5Cp48x6AU2qYp
-         /VeJo/bAW1VtD4GBTKQoWFzfJ10+BuR1LKTf3m3Z0r7d0CJtE865LrtqXhaTmf2rTMBt
-         RYHcRKUh91dbkWvnGmrAmeA9tYS32hka0i/adQg8MM8wtcxYtSAeauFsHtg1gDDVkgql
-         +/QsjrAZ+vaW/SXckgFlHqVoYp0xN61WW9CJ5wJjwtUcYsMHSIk1BV2dw2DLpBaW2PWQ
-         /0DQ==
-X-Gm-Message-State: AOAM533huEqyBzSKwE8h56yKEw/bjhBsyRfbU5awvT9iNtn1IA90nyvo
-        0P/PQ7aMgQ/GtxfulIAvecA=
-X-Google-Smtp-Source: ABdhPJypnMZcKE+4PZpH/eI52iPE7m1xo2fa+65z1SiPABfV6H6SzH1nlEe4KcQ6G7d5xLc9xTGFaA==
-X-Received: by 2002:a17:903:248e:b029:ec:9c4f:765e with SMTP id p14-20020a170903248eb02900ec9c4f765emr8359201plw.17.1621546874093;
-        Thu, 20 May 2021 14:41:14 -0700 (PDT)
-Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
-        by smtp.gmail.com with ESMTPSA id l20sm2604431pjq.38.2021.05.20.14.41.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 14:41:12 -0700 (PDT)
-Received: by 42.do-not-panic.com (Postfix, from userid 1000)
-        id EF45340321; Thu, 20 May 2021 21:41:11 +0000 (UTC)
-Date:   Thu, 20 May 2021 21:41:11 +0000
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     menglong8.dong@gmail.com
-Cc:     jack@suse.cz, axboe@kernel.dk, hare@suse.de,
-        gregkh@linuxfoundation.org, tj@kernel.org,
-        dong.menglong@zte.com.cn, song@kernel.org, neilb@suse.de,
-        akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
-        f.fainelli@gmail.com, arnd@arndb.de, brho@google.com,
-        linux@rasmusvillemoes.dk, mhiramat@kernel.org, rostedt@goodmis.org,
-        keescook@chromium.org, vbabka@suse.cz, glider@google.com,
-        pmladek@suse.com, chris@chrisdown.name, ebiederm@xmission.com,
-        jojing64@gmail.com, linux-kernel@vger.kernel.org,
-        palmerdabbelt@google.com, linux-fsdevel@vger.kernel.org,
-        viro@zeniv.linux.org.uk
-Subject: Re: [PATCH RESEND] init/initramfs.c: make initramfs support
- pivot_root
-Message-ID: <20210520214111.GV4332@42.do-not-panic.com>
-References: <20210520154244.20209-1-dong.menglong@zte.com.cn>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=f/4LtIOBD6wxF9iMPhLoPX028a1rtI0NTUTVZTA+F+Y=;
+        b=e/66uxwhiRj7tkxVG5eko1XYFVp5SO5oyTL9gKy8ufon3KM7iqvREhclsOH/BLeG0f
+         nqm+jUFb89AyeMXHfjbJ9SUD9lrBgXOVCTMSwK/xWuzj2gxw/aeCzFutUH3PlrsBxAYK
+         umCTrbVBZzicVfdh+Q/JxKCw5dzEpqL6yoerQbjU/7XnaZKSl5Hk+XZ4lrf7FBH6unI4
+         gccxEVWQ1VxLlKWriCYlrTjxFmF/Fj/jFyc6x/d0qw/NAAZeW++JzEiRGChuQGfQ+XBy
+         UAXlYNjISdAEV+IDmrRtdXwQQBBaH7K14RxefWAUilB+oG7eDDjYlwP5zOZLIkZKEPz6
+         8G7Q==
+X-Gm-Message-State: AOAM532P8K9Sro7ZIMuoD45tcbmgUMICkgEZG6Rk9QlN70IGNJqoxENw
+        cLBuNDRTe/F7VKqwpwZx16oKq38A2xV/4B5xf1vGT3BI
+X-Google-Smtp-Source: ABdhPJxibk2/f4GeDvxy3AIuRa9jRf5Bkoi8neyu/Ok51BwgSMelBKvR44Ci02P9JsQRlgtytkLOnMKlNkh9T3CZyE8=
+X-Received: by 2002:aa7:c6cd:: with SMTP id b13mr7100076eds.94.1621546917061;
+ Thu, 20 May 2021 14:41:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520154244.20209-1-dong.menglong@zte.com.cn>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+In-Reply-To: <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Thu, 20 May 2021 17:41:45 -0400
+Message-ID: <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:42:44PM +0800, menglong8.dong@gmail.com wrote:
-> From: Menglong Dong <dong.menglong@zte.com.cn>
-> 
-> During the kernel initialization, the mount tree, which is used by the
-> kernel, is created, and 'rootfs' is mounted as the root file system.
-> 
-> While using initramfs as the root file system, cpio file is unpacked
-> into the rootfs. Thus, this rootfs is exactly what users see in user
-> space, and some problems arose: this rootfs has no parent mount,
-> which make it can't be umounted or pivot_root.
-> 
-> 'pivot_root' is used to change the rootfs and clean the old mountpoints,
-> and it is essential for some users, such as docker. Docker use
-> 'pivot_root' to change the root fs of a process if the current root
-> fs is a block device of initrd. However, when it comes to initramfs,
-> things is different: docker has to use 'chroot()' to change the root
-> fs, as 'pivot_root()' is not supported in initramfs.
+On Thu, May 20, 2021 at 5:13 PM Dave Hansen <dave.hansen@intel.com> wrote:
 
-OK so this seems to be a long winded way of saying you can't efficiently
-use containers today when using initramfs. And then you explain why.
+> >> Regarding error return for allocation failures.
+...
+>  * vmalloc() can fail (the memory.kmem cgroup limit is probably the most
+>    likely place to be exposed to this)
+>  * vmalloc() failure in a fault (like #NM) will result in SIGSEGV
+>  * vmalloc() failure in a syscall can be handled with -ENOMEM
 
-> The usage of 'chroot()' to create root fs for a container introduced
-> a lot problems.
-> 
-> First, 'chroot()' can't clean the old mountpoints which inherited
-> from the host. It means that the mountpoints in host will have a
-> duplicate in every container. Let's image that there are 100
-> containers in host, and there will be 100 duplicates of every
-> mountpoints, which makes resource release an issue. User may
-> remove a USB after he (or she) umount it successfully in the
-> host. However, the USB may still be mounted in containers, although
-> it can't be seen by the 'mount' commond in the container. This
-> means the USB is not released yet, and data may not write back.
-> Therefore, data lose arise.
-> 
-> Second, net-namespace leak is another problem. The net-namespace
-> of containers will be mounted in /var/run/docker/netns/ in host
-> by dockerd. It means that the net-namespace of a container will
-> be mounted in containers which are created after it. Things
-> become worse now, as the net-namespace can't be remove after
-> the destroy of that container, as it is still mounted in other
-> containers. If users want to recreate that container, he will
-> fail if a certain mac address is to be binded with the container,
-> as it is not release yet.
+Thanks for clarifying this, Dave.
 
-That seems like a chicken and egg problem on Docker, in that...
+We added the explicit-allocate to v5,
+which should be on the list by tomorrow.
 
-> Maybe dockerd can umount the unnecessary mountpoints that inherited
-> for the host before do 'chroot()',
+So the questions are:
+1. who calls it -- a call/thread or process?  the application?  a
+library -- which library?
+2. is it optional, or mandatory?
+3. if it is mandatory, what is the best way to enforce it?
+4. should we have a "release" system call too?
 
-Can't docker instead allow to create containers prior to creating
-your local docker network namespace? Not that its a great solution,
-but just worth noting.
+1. Every thread needs a context switch buffer.  Does every thread make
+the system call?  It seems sort of awkward for a library to always
+make a system call before doing a TMUL.  It would be functionally
+harmless, but it would add latency to an otherwise low-latency
+operation.  If some central library does it, and caches that it has
+done it before, then it would be ugly, but at least it would remove an
+unnecessary user/kernel transition.
 
-> but that is not a graceful way.
-> I think the best way is to make 'pivot_root()' support initramfs.
-> 
-> After this patch, initramfs is supported by 'pivot_root()' perfectly.
-> I just create a new rootfs and mount it to the mount-tree before
-> unpack cpio. Therefore, the rootfs used by users has a parent mount,
-> and can use 'pivot_root()'.
-> 
-> What's more, after this patch, 'rootflags' in boot cmd is supported
-> by initramfs. Therefore, users can set the size of tmpfs with
-> 'rootflags=size=1024M'.
-> 
-> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
-> ---
->  init/do_mounts.c | 53 +++++++++++++++++++++++++++++++++++++++---------
->  init/do_mounts.h |  1 +
->  init/initramfs.c | 32 +++++++++++++++++++++++++++++
->  init/main.c      | 17 +++++++++++++++-
->  4 files changed, 92 insertions(+), 11 deletions(-)
-> 
-> diff --git a/init/do_mounts.c b/init/do_mounts.c
-> index a78e44ee6adb..a156b0d28b43 100644
-> --- a/init/do_mounts.c
-> +++ b/init/do_mounts.c
-> @@ -459,7 +459,7 @@ void __init mount_block_root(char *name, int flags)
->  out:
->  	put_page(page);
->  }
-> - 
-> +
->  #ifdef CONFIG_ROOT_NFS
->  
->  #define NFSROOT_TIMEOUT_MIN	5
-> @@ -617,24 +617,57 @@ void __init prepare_namespace(void)
->  	init_chroot(".");
->  }
->  
-> -static bool is_tmpfs;
-> -static int rootfs_init_fs_context(struct fs_context *fc)
-> +#ifdef CONFIG_TMPFS
-> +static __init bool is_tmpfs_enabled(void)
-> +{
-> +	return (!root_fs_names || strstr(root_fs_names, "tmpfs")) &&
-> +	       !saved_root_name[0];
-> +}
-> +#endif
-> +
-> +static __init bool is_ramfs_enabled(void)
->  {
-> -	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
-> -		return shmem_init_fs_context(fc);
-> +	return true;
-> +}
-> +
-> +struct fs_user_root {
-> +	bool (*enabled)(void);
-> +	char *dev_name;
-> +	char *fs_name;
-> +};
->  
-> -	return ramfs_init_fs_context(fc);
-> +static struct fs_user_root user_roots[] __initdata = {
-> +#ifdef CONFIG_TMPFS
-> +	{.fs_name = "tmpfs", .enabled = is_tmpfs_enabled },
-> +#endif
-> +	{.fs_name = "ramfs", .enabled = is_ramfs_enabled }
-> +};
-> +static struct fs_user_root * __initdata user_root;
-> +
-> +int __init mount_user_root(void)
-> +{
-> +	return do_mount_root(user_root->dev_name,
-> +			     user_root->fs_name,
-> +			     root_mountflags,
-> +			     root_mount_data);
->  }
->  
->  struct file_system_type rootfs_fs_type = {
->  	.name		= "rootfs",
-> -	.init_fs_context = rootfs_init_fs_context,
-> +	.init_fs_context = ramfs_init_fs_context,
+2. If it is optional, then v5 is code complete -- because it allows
+you to allocate either explicitly via prtcl, or transparently via #NM.
 
-Why is this always static now? Why is that its correct
-now for init_mount_tree() always to use the ramfs context?
+3. If it is mandatory, then we should re-purpose the XFD mechanism:
+app starts with XFD armed, by default
+if app touches AMX before prctl, it takes a signal (and dies).
+When app calls prctl, allocate buffer disarm XFD for that app (exactly
+what #NM trap does today).
 
-  Luis
+4. I don't see a justification for a release concept, but it is
+possible -- though sort of sticky with possible nested calls from
+combinations of apps and libraries.  If that were sorted out by a
+central library, then the actual system call on the last release per
+thread would re-arm XFD to prevent access until the next explicit
+request.  Unclear if it is important that the kernel actually do the
+free -- some things might run faster if we keep it around...
+
+Len Brown, Intel Open Source Technology Center
