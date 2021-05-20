@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2494B38AC69
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02BEC38AC6A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241601AbhETLjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:39:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41740 "EHLO mail.kernel.org"
+        id S241671AbhETLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:39:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240631AbhETLTC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:19:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CB6C61D6C;
-        Thu, 20 May 2021 10:10:12 +0000 (UTC)
+        id S240646AbhETLTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:19:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D2FCE61D74;
+        Thu, 20 May 2021 10:10:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505413;
-        bh=7UjLbQXIo6n25bLAAf82HRbsyvDIXvpVV1MpmJiGtA4=;
+        s=korg; t=1621505415;
+        bh=KKdEGtLbQVimoWNf7Isk0LvVHXtIZBLsNRi3emaY43E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rEmDh1o8wx3dUf379EA9HvZKPdnCRPmr2xIszoy507cDxN7wanjSSgv6+c/7utdxm
-         9/ZTZGrGUB4HIRGoNe7pXt//a0CFl57sPkcVm4XEGgEHwAJjuedPYRHZaCoomo8htV
-         lGr5qV+Csz4Ckda7TmPz6Dc0HP47NDU1/E5ecZgE=
+        b=DcQD1FfIVoj07pLwmAviiWxETe/QKWpKyiU8aU89VT/ik/NmRnnJUOBRPce5OKFp9
+         SO2pDplQCLTpxPJihGtOCUlGyv8xUlco4GXSnUATvWtThSe7x75y0AB4TyZBiSMKtX
+         aHA9oGEuYZ+YfRO661uSSkAxUlZHEtccr4ptl8AE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 124/190] powerpc/pseries: extract host bridge from pci_bus prior to bus removal
-Date:   Thu, 20 May 2021 11:23:08 +0200
-Message-Id: <20210520092106.302333187@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 125/190] i2c: sh7760: fix IRQ error path
+Date:   Thu, 20 May 2021 11:23:09 +0200
+Message-Id: <20210520092106.341839895@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -40,48 +39,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tyrel Datwyler <tyreld@linux.ibm.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 38d0b1c9cec71e6d0f3bddef0bbce41d05a3e796 ]
+[ Upstream commit 92dfb27240fea2776f61c5422472cb6defca7767 ]
 
-The pci_bus->bridge reference may no longer be valid after
-pci_bus_remove() resulting in passing a bad value to device_unregister()
-for the associated bridge device.
+While adding the invalid IRQ check after calling platform_get_irq(),
+I managed to overlook that the driver has a complex error path in its
+probe() method, thus a simple *return* couldn't be used.  Use a proper
+*goto* instead!
 
-Store the host_bridge reference in a separate variable prior to
-pci_bus_remove().
-
-Fixes: 7340056567e3 ("powerpc/pci: Reorder pci bus/bridge unregistration during PHB removal")
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210211182435.47968-1-tyreld@linux.ibm.com
+Fixes: e5b2e3e74201 ("i2c: sh7760: add IRQ check")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/pseries/pci_dlpar.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-sh7760.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/platforms/pseries/pci_dlpar.c b/arch/powerpc/platforms/pseries/pci_dlpar.c
-index 5d4a3df59d0c..baaeb753fa79 100644
---- a/arch/powerpc/platforms/pseries/pci_dlpar.c
-+++ b/arch/powerpc/platforms/pseries/pci_dlpar.c
-@@ -98,6 +98,7 @@ EXPORT_SYMBOL_GPL(init_phb_dynamic);
- int remove_phb_dynamic(struct pci_controller *phb)
- {
- 	struct pci_bus *b = phb->bus;
-+	struct pci_host_bridge *host_bridge = to_pci_host_bridge(b->bridge);
- 	struct resource *res;
- 	int rc, i;
+diff --git a/drivers/i2c/busses/i2c-sh7760.c b/drivers/i2c/busses/i2c-sh7760.c
+index 70e4437060d5..c836c53caa3f 100644
+--- a/drivers/i2c/busses/i2c-sh7760.c
++++ b/drivers/i2c/busses/i2c-sh7760.c
+@@ -473,7 +473,7 @@ static int sh7760_i2c_probe(struct platform_device *pdev)
  
-@@ -124,7 +125,8 @@ int remove_phb_dynamic(struct pci_controller *phb)
- 	/* Remove the PCI bus and unregister the bridge device from sysfs */
- 	phb->bus = NULL;
- 	pci_remove_bus(b);
--	device_unregister(b->bridge);
-+	host_bridge->bus = NULL;
-+	device_unregister(&host_bridge->dev);
+ 	ret = platform_get_irq(pdev, 0);
+ 	if (ret < 0)
+-		return ret;
++		goto out3;
+ 	id->irq = ret;
  
- 	/* Now release the IO resource */
- 	if (res->flags & IORESOURCE_IO)
+ 	id->adap.nr = pdev->id;
 -- 
 2.30.2
 
