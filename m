@@ -2,103 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 599EA38B2E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2A038B2E8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:20:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243761AbhETPUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:20:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbhETPUm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:20:42 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDA3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:19:20 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id k132so3363342iof.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:19:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gp4zK5F2YjtgwGkVne9PjTqCbpKTKbtlpIMPojGX78E=;
-        b=jxiIg/X8eeGT0fxle+nAvWqUrzDTkM4OMKMHiBuXd3gTNNdIRFHo0W1oWw9eFYzDdo
-         CawCNgJtcrAaq33LtKjLLlavJRSAMmo0q4HfPO+PizyisIBxov3xNupNT2DV1+z38lEb
-         q4dG6qNgQeUhj1XdCcmEhpn5Mq8lfBKpvmIQV86lIGyOFu+GBfwnhd6H49XDP0ZirMzI
-         8CiSeV2hj3UM30FDLUbHnSrLdL8uogFDoohqmlGoMndE9ENHuPttzaMKql4c9R3+AbBo
-         1LwK6uaMjlRXg9XsvrTk9YtqcY1Ijxrhw/aaC+6EgrSD2KNmqRP3llqM8Zna9Bnlsvf3
-         viYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gp4zK5F2YjtgwGkVne9PjTqCbpKTKbtlpIMPojGX78E=;
-        b=C1+hVLaf2R1gpu8VOKfdglRWa58+ldT+x5hkY7kDfCCwqp+YWQG1sw540pnQsEMRnN
-         STAB66WG2sDR812jMVDNLmjpZJvhY9seETfSKizrpCCtn+fV+YZIM2zlAzLxr/XSAHLw
-         kkxcdCobEhJRjhtb8vbAV0ZQdYVplyB2GCcMbYKdaSu7YJ61dB5Wb6GPfSfSuhHzroab
-         tz8am0BtfCOtcTQpDt/mugcO/jXCwW3ZUMMF2OnYYclX5YsAlsDF/FXrlBeAQhUMJ15S
-         Ma8y/DXNx2nmqzSToIALqK+cL3HEl+vOaw7Y9HsuoeY4IfAV8Aw7GotX1cqOWNAy9Fts
-         U2/Q==
-X-Gm-Message-State: AOAM5316KwaXT02EhgH/GY3GE4h1C6ZrVoH7lNVmyrpj0OVCd4/aBJyP
-        iCei85qGn4vsMyiXgPNfN4M=
-X-Google-Smtp-Source: ABdhPJzd/GIEWPYhCBDP28KgS4r3aRlx2GrfhtLxDPMW0Xz/EVLshHxnZV2UnA4rIQXxC2p18t96XQ==
-X-Received: by 2002:a5d:81c9:: with SMTP id t9mr6347913iol.45.1621523959364;
-        Thu, 20 May 2021 08:19:19 -0700 (PDT)
-Received: from edi.home.geth (69-174-157-26.symrinaa.metronetinc.net. [69.174.157.26])
-        by smtp.gmail.com with ESMTPSA id t14sm3410014iob.36.2021.05.20.08.19.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 08:19:19 -0700 (PDT)
-From:   Derrick McKee <derrick.mckee@gmail.com>
-To:     derrick.mckee@gmail.com
-Cc:     Nathan.Burow@ll.mit.edu, Yianni Giannaris <yiannig@mit.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] Ensure kernel AI key is not changed on fork
-Date:   Thu, 20 May 2021 11:18:54 -0400
-Message-Id: <20210520151854.3632129-1-derrick.mckee@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210430150438.GA57205@C02TD0UTHF1T.local>
-References: <20210430150438.GA57205@C02TD0UTHF1T.local>
+        id S243748AbhETPVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:21:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232723AbhETPVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:21:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8786261363;
+        Thu, 20 May 2021 15:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621523999;
+        bh=Vng7zXwIuCJZVNFsguZzrjtqA8ZMldPUOAscXDMmFRo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rICx6Jk4tyojHV8FMJ8B03JlTP8KcuDStU90JQ9K00pCmrh0egKgRnhnXf0D0DOcU
+         70cPXvmX6by1fVF0blg8xgVIQbZZWyJeyHjb4d0hrcXTH1BSNysVKxCg5XUb9Oh7ou
+         zFTTOWys6tDYXOUu3JHfJ/uGdtHQiOPQtiOeDoUr7aRD+mbTQviSBt/NFg7EQqYsBC
+         RPHbO4D7/Ow9iVNQbyi/U268/ooa+aWcZAZhpat4ERPZ1PnID6d07G9XJ+J3FvKYrq
+         kfF38x4Ff4dBdUvQi+Vj7KTHy44ud3vK0k6aEPAYlGo/Vy6P8+GqJ58cT2mcQGTHKr
+         FxX9KwWfl1dng==
+Received: by mail-ej1-f51.google.com with SMTP id gb17so7878444ejc.8;
+        Thu, 20 May 2021 08:19:59 -0700 (PDT)
+X-Gm-Message-State: AOAM532P1j2W4G4ItOCawgpKNNeHpEGfrRp39du+hN1kGPSN/GSW+dxN
+        cqVKFbeJ2eApBDsTXKzRQHouEnbnvka2eZhHnA==
+X-Google-Smtp-Source: ABdhPJwuQcGsfmiQL/tncYJdsumLLsd3GPx7QZ7OaLVcAr3r6WR2jZZdtUn5xwCWFoMQdZS7l7ws1RWUSvQepiUyXhc=
+X-Received: by 2002:a17:907:78cd:: with SMTP id kv13mr5189426ejc.360.1621523998020;
+ Thu, 20 May 2021 08:19:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210518232858.1535403-1-robh@kernel.org> <20210518232858.1535403-2-robh@kernel.org>
+ <72b27bc0-838c-fd7d-32f8-bc00f8508d1d@ti.com>
+In-Reply-To: <72b27bc0-838c-fd7d-32f8-bc00f8508d1d@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 20 May 2021 10:19:45 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLXK6nY9qHRdYK0VGCjAMmkKktWXe9rjkY6rsveYinhRg@mail.gmail.com>
+Message-ID: <CAL_JsqLXK6nY9qHRdYK0VGCjAMmkKktWXe9rjkY6rsveYinhRg@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: mfd: ti,j721e-system-controller: Fix mux
+ node errors
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Wolfram Sang <wsa@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jonathan Cameron <jic23@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel uses the IA key for PAC signing, 
-and this key should remain unchanged from the kernel point of view.
-This patch ensures that the IA key remains constant on fork, 
-if it has been previously set.
-The software is provided on an as-is basis.
+On Thu, May 20, 2021 at 9:42 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 19/05/21 4:58 am, Rob Herring wrote:
+> > The ti,j721e-system-controller binding does not follow the standard mux
+> > controller node name 'mux-controller' and the example is incomplete. Fix
+> > these to avoid schema errors before the mux controller binding is
+> > converted to schema.
+> >
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> > Cc: Roger Quadros <rogerq@ti.com>
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> >  .../mfd/ti,j721e-system-controller.yaml       | 19 +++++++++++++------
+> >  1 file changed, 13 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+> > index 19fcf59fd2fe..272832e9f8f2 100644
+> > --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+> > +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+> > @@ -43,12 +43,10 @@ properties:
+> >
+> >  patternProperties:
+> >    # Optional children
+> > -  "^serdes-ln-ctrl@[0-9a-f]+$":
+> > +  "^mux-controller@[0-9a-f]+$":
+> >      type: object
+> > -    description: |
+> > -      This is the SERDES lane control mux. It should follow the bindings
+> > -      specified in
+> > -      Documentation/devicetree/bindings/mux/reg-mux.txt
+> > +    description:
+> > +      This is the SERDES lane control mux.
+> >
+> >  required:
+> >    - compatible
+> > @@ -68,9 +66,18 @@ examples:
+> >          #size-cells = <1>;
+> >          ranges;
+> >
+> > -        serdes_ln_ctrl: serdes-ln-ctrl@4080 {
+> > +        serdes_ln_ctrl: mux-controller@4080 {
+> >              compatible = "mmio-mux";
+> >              reg = <0x00004080 0x50>;
+>
+> "mmio-mux" compatible doesn't define using "reg" property. But a system
+> can have multiple mux-controllers which would require us to use
+> mux-controller@0, mux-controller@1,..
 
-Signed-off-by: Derrick McKee <derrick.mckee@gmail.com>
-Signed-off-by: Yianni Giannaris <yiannig@mit.edu>
----
- arch/arm64/include/asm/pointer_auth.h | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+It does now in patch 3 as part of the schema conversion. It's optional
+as getting folks to use 'reg' for syscon child nodes is an uphill
+battle.
 
-diff --git a/arch/arm64/include/asm/pointer_auth.h b/arch/arm64/include/asm/pointer_auth.h
-index d50416be99be..9748413e72fd 100644
---- a/arch/arm64/include/asm/pointer_auth.h
-+++ b/arch/arm64/include/asm/pointer_auth.h
-@@ -69,10 +69,13 @@ static inline void ptrauth_keys_init_user(struct ptrauth_keys_user *keys)
- 	ptrauth_keys_install_user(keys);
- }
- 
--static __always_inline void ptrauth_keys_init_kernel(struct ptrauth_keys_kernel *keys)
-+static __always_inline void
-+ptrauth_keys_init_kernel(struct ptrauth_keys_kernel *keys)
- {
--	if (system_supports_address_auth())
--		get_random_bytes(&keys->apia, sizeof(keys->apia));
-+	if (keys->apia.lo == 0 && keys->apia.hi == 0) {
-+		if (system_supports_address_auth())
-+			get_random_bytes(&keys->apia, sizeof(keys->apia));
-+	}
- }
- 
- static __always_inline void ptrauth_keys_switch_kernel(struct ptrauth_keys_kernel *keys)
--- 
-2.31.1
-
+Rob
+>
+> And IIRC if we have "@", 'reg' will be a required required property.
+> Would it be an issue here?
+>
+> Thanks
+> Kishon
