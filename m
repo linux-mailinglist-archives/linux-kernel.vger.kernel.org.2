@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE4E38AC77
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33F2B38AC78
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242656AbhETLkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:40:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
+        id S242678AbhETLkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:40:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240779AbhETLTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:19:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 64D9C61D65;
-        Thu, 20 May 2021 10:10:32 +0000 (UTC)
+        id S240840AbhETLTd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:19:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B1A361D6B;
+        Thu, 20 May 2021 10:10:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505432;
-        bh=/ZW8JwvHwnl77jWCkthAo3Vaac0GolRsZMMhyixU/f4=;
+        s=korg; t=1621505435;
+        bh=r3PgTNOYVYFDY9+0eRBSuSi6TA4LD7E5kTOxTvRapxM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BQx9Qe/QQkIW3cZ34XZiwQ+mSd7rFyVJ1DELwy3JjG9l7bbKeVrta2L2gw/SAuOTW
-         eIp2Mmtc4K7u1lb3wXq6a1R1qAbdrG5vr7sLFQxTwNO35MBzK4D0/oPjcVhHP7wZOE
-         SeVH69w/HBQQKurgFhOPMU1DYTe75L8iKIbrPAx0=
+        b=vay/Zoe7Di+swe0qv/ZKq3v5IR3CpEv5/IQZqQGRU/qzNrRkHvZVucYcVUED7IhfQ
+         XgKZxArOfGv4iQisBmNtQSO4y0vqhOj1o9t5wncG9uSUGKleXhbImv89vX+8fDA8vH
+         3B+MBVGrZOJmYM8bTEEmvt7Jm7ZfsJ12d7+a1RuU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Stefani Seibold <stefani@seibold.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 132/190] kfifo: fix ternary sign extension bugs
-Date:   Thu, 20 May 2021 11:23:16 +0200
-Message-Id: <20210520092106.560858243@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+959223586843e69a2674@syzkaller.appspotmail.com,
+        Xin Long <lucien.xin@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.4 133/190] Revert "net/sctp: fix race condition in sctp_destroy_sock"
+Date:   Thu, 20 May 2021 11:23:17 +0200
+Message-Id: <20210520092106.592913553@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -42,120 +41,80 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Xin Long <lucien.xin@gmail.com>
 
-[ Upstream commit 926ee00ea24320052b46745ef4b00d91c05bd03d ]
+commit 01bfe5e8e428b475982a98a46cca5755726f3f7f upstream.
 
-The intent with this code was to return negative error codes but instead
-it returns positives.
+This reverts commit b166a20b07382b8bc1dcee2a448715c9c2c81b5b.
 
-The problem is how type promotion works with ternary operations.  These
-functions return long, "ret" is an int and "copied" is a u32.  The
-negative error code is first cast to u32 so it becomes a high positive and
-then cast to long where it's still a positive.
+This one has to be reverted as it introduced a dead lock, as
+syzbot reported:
 
-We could fix this by declaring "ret" as a ssize_t but let's just get rid
-of the ternaries instead.
+       CPU0                    CPU1
+       ----                    ----
+  lock(&net->sctp.addr_wq_lock);
+                               lock(slock-AF_INET6);
+                               lock(&net->sctp.addr_wq_lock);
+  lock(slock-AF_INET6);
 
-Link: https://lkml.kernel.org/r/YIE+/cK1tBzSuQPU@mwanda
-Fixes: 5bf2b19320ec ("kfifo: add example files to the kernel sample directory")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Stefani Seibold <stefani@seibold.net>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+CPU0 is the thread of sctp_addr_wq_timeout_handler(), and CPU1
+is that of sctp_close().
+
+The original issue this commit fixed will be fixed in the next
+patch.
+
+Reported-by: syzbot+959223586843e69a2674@syzkaller.appspotmail.com
+Signed-off-by: Xin Long <lucien.xin@gmail.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- samples/kfifo/bytestream-example.c | 8 ++++++--
- samples/kfifo/inttype-example.c    | 8 ++++++--
- samples/kfifo/record-example.c     | 8 ++++++--
- 3 files changed, 18 insertions(+), 6 deletions(-)
+ net/sctp/socket.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/samples/kfifo/bytestream-example.c b/samples/kfifo/bytestream-example.c
-index 2fca916d9edf..a7f5ee8b6edc 100644
---- a/samples/kfifo/bytestream-example.c
-+++ b/samples/kfifo/bytestream-example.c
-@@ -124,8 +124,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
- 	ret = kfifo_from_user(&test, buf, count, &copied);
+--- a/net/sctp/socket.c
++++ b/net/sctp/socket.c
+@@ -1567,9 +1567,11 @@ static void sctp_close(struct sock *sk,
  
- 	mutex_unlock(&write_lock);
-+	if (ret)
-+		return ret;
+ 	/* Supposedly, no process has access to the socket, but
+ 	 * the net layers still may.
++	 * Also, sctp_destroy_sock() needs to be called with addr_wq_lock
++	 * held and that should be grabbed before socket lock.
+ 	 */
+-	local_bh_disable();
+-	bh_lock_sock(sk);
++	spin_lock_bh(&net->sctp.addr_wq_lock);
++	bh_lock_sock_nested(sk);
  
--	return ret ? ret : copied;
-+	return copied;
- }
+ 	/* Hold the sock, since sk_common_release() will put sock_put()
+ 	 * and we have just a little more cleanup.
+@@ -1578,7 +1580,7 @@ static void sctp_close(struct sock *sk,
+ 	sk_common_release(sk);
  
- static ssize_t fifo_read(struct file *file, char __user *buf,
-@@ -140,8 +142,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
- 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 	bh_unlock_sock(sk);
+-	local_bh_enable();
++	spin_unlock_bh(&net->sctp.addr_wq_lock);
  
- 	mutex_unlock(&read_lock);
-+	if (ret)
-+		return ret;
+ 	sock_put(sk);
  
--	return ret ? ret : copied;
-+	return copied;
- }
+@@ -4159,6 +4161,9 @@ static int sctp_init_sock(struct sock *s
+ 	sk_sockets_allocated_inc(sk);
+ 	sock_prot_inuse_add(net, sk->sk_prot, 1);
  
- static const struct file_operations fifo_fops = {
-diff --git a/samples/kfifo/inttype-example.c b/samples/kfifo/inttype-example.c
-index 8dc3c2e7105a..a326a37e9163 100644
---- a/samples/kfifo/inttype-example.c
-+++ b/samples/kfifo/inttype-example.c
-@@ -117,8 +117,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
- 	ret = kfifo_from_user(&test, buf, count, &copied);
++	/* Nothing can fail after this block, otherwise
++	 * sctp_destroy_sock() will be called without addr_wq_lock held
++	 */
+ 	if (net->sctp.default_auto_asconf) {
+ 		spin_lock(&sock_net(sk)->sctp.addr_wq_lock);
+ 		list_add_tail(&sp->auto_asconf_list,
+@@ -4193,9 +4198,7 @@ static void sctp_destroy_sock(struct soc
  
- 	mutex_unlock(&write_lock);
-+	if (ret)
-+		return ret;
- 
--	return ret ? ret : copied;
-+	return copied;
- }
- 
- static ssize_t fifo_read(struct file *file, char __user *buf,
-@@ -133,8 +135,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
- 	ret = kfifo_to_user(&test, buf, count, &copied);
- 
- 	mutex_unlock(&read_lock);
-+	if (ret)
-+		return ret;
- 
--	return ret ? ret : copied;
-+	return copied;
- }
- 
- static const struct file_operations fifo_fops = {
-diff --git a/samples/kfifo/record-example.c b/samples/kfifo/record-example.c
-index 2d7529eeb294..deb87a2e4e6b 100644
---- a/samples/kfifo/record-example.c
-+++ b/samples/kfifo/record-example.c
-@@ -131,8 +131,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
- 	ret = kfifo_from_user(&test, buf, count, &copied);
- 
- 	mutex_unlock(&write_lock);
-+	if (ret)
-+		return ret;
- 
--	return ret ? ret : copied;
-+	return copied;
- }
- 
- static ssize_t fifo_read(struct file *file, char __user *buf,
-@@ -147,8 +149,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
- 	ret = kfifo_to_user(&test, buf, count, &copied);
- 
- 	mutex_unlock(&read_lock);
-+	if (ret)
-+		return ret;
- 
--	return ret ? ret : copied;
-+	return copied;
- }
- 
- static const struct file_operations fifo_fops = {
--- 
-2.30.2
-
+ 	if (sp->do_auto_asconf) {
+ 		sp->do_auto_asconf = 0;
+-		spin_lock_bh(&sock_net(sk)->sctp.addr_wq_lock);
+ 		list_del(&sp->auto_asconf_list);
+-		spin_unlock_bh(&sock_net(sk)->sctp.addr_wq_lock);
+ 	}
+ 	sctp_endpoint_free(sp->ep);
+ 	local_bh_disable();
 
 
