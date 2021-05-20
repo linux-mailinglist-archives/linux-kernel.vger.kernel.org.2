@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BD7538A7DD
+	by mail.lfdr.de (Postfix) with ESMTP id A5BF638A7DE
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237781AbhETKn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:43:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54242 "EHLO mail.kernel.org"
+        id S237493AbhETKnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:43:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55802 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236803AbhETK2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:28:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F9B61C2C;
-        Thu, 20 May 2021 09:50:56 +0000 (UTC)
+        id S236818AbhETK21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:28:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FD1561C33;
+        Thu, 20 May 2021 09:50:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504257;
-        bh=mhxo0Y4O+//2DH4/zYXUM/1/ZzLnbPkrIy1xHvogl6o=;
+        s=korg; t=1621504259;
+        bh=2kfCO7LXG39FlNWL8826sbcj1qX6DzeJ2z1Uf48pomU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VXPPvioI97R7Ield3/t2736lFXS7ARnwMtZHubijREfG5p/RJpl7ybpELiOK5JCDk
-         aNs0oFFNm8K5ZH+6q1HUNU+3+Su1oQsBpN5P7otAbGdNS5eci431PqHlLTmAKyZ4th
-         3gVS4yK6ZUwdsxwV3QE3z7BM9/eb62n6jWGOxPJA=
+        b=DbLpQLUaNkHQwmmhiudNW8LnW7v8rxXGHIhPTHM1TVkjR1+pqgAjWfvnW8Da/6FQl
+         Bnz0//TORhknHikmgB7UBN/pElyDjHqPEsquhZY00H2ICgnOlgdKvaSrm9rTFTSyhf
+         p8bB7keP2OGpl50h1O2naIQfXjVOOUwCDNj7FmKA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 162/323] mtd: rawnand: gpmi: Fix a double free in gpmi_nand_init
-Date:   Thu, 20 May 2021 11:20:54 +0200
-Message-Id: <20210520092125.659517689@linuxfoundation.org>
+Subject: [PATCH 4.14 163/323] staging: rtl8192u: Fix potential infinite loop
+Date:   Thu, 20 May 2021 11:20:55 +0200
+Message-Id: <20210520092125.691185703@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -40,45 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 076de75de1e53160e9b099f75872c1f9adf41a0b ]
+[ Upstream commit f9b9263a25dc3d2eaaa829e207434db6951ca7bc ]
 
-If the callee gpmi_alloc_dma_buffer() failed to alloc memory for
-this->raw_buffer, gpmi_free_dma_buffer() will be called to free
-this->auxiliary_virt. But this->auxiliary_virt is still a non-NULL
-and valid ptr.
+The for-loop iterates with a u8 loop counter i and compares this
+with the loop upper limit of riv->ieee80211->LinkDetectInfo.SlotNum
+that is a u16 type. There is a potential infinite loop if SlotNum
+is larger than the u8 loop counter. Fix this by making the loop
+counter the same type as SlotNum.
 
-Then gpmi_alloc_dma_buffer() returns err and gpmi_free_dma_buffer()
-is called again to free this->auxiliary_virt in err_out. This causes
-a double free.
-
-As gpmi_free_dma_buffer() has already called in gpmi_alloc_dma_buffer's
-error path, so it should return err directly instead of releasing the dma
-buffer again.
-
-Fixes: 4d02423e9afe6 ("mtd: nand: gpmi: Fix gpmi_nand_init() error path")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
-Link: https://lore.kernel.org/linux-mtd/20210403060905.5251-1-lyl2019@mail.ustc.edu.cn
+Addresses-Coverity: ("Infinite loop")
+Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/20210407150308.496623-1-colin.king@canonical.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 2 +-
+ drivers/staging/rtl8192u/r8192U_core.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-index c7d0d2eed6c2..5a694bdc4f75 100644
---- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-+++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
-@@ -2022,7 +2022,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
- 	this->bch_geometry.auxiliary_size = 128;
- 	ret = gpmi_alloc_dma_buffer(this);
- 	if (ret)
--		goto err_out;
-+		return ret;
+diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
+index b5941ae410d9..89ec4bb19e48 100644
+--- a/drivers/staging/rtl8192u/r8192U_core.c
++++ b/drivers/staging/rtl8192u/r8192U_core.c
+@@ -3418,7 +3418,7 @@ static void rtl819x_update_rxcounts(struct r8192_priv *priv, u32 *TotalRxBcnNum,
+ 			     u32 *TotalRxDataNum)
+ {
+ 	u16			SlotIndex;
+-	u8			i;
++	u16			i;
  
- 	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
- 	if (ret)
+ 	*TotalRxBcnNum = 0;
+ 	*TotalRxDataNum = 0;
 -- 
 2.30.2
 
