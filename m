@@ -2,262 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05F7D389C59
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:09:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C711389C5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhETEKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 00:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhETEKk (ORCPT
+        id S229651AbhETEOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 00:14:43 -0400
+Received: from cloud48395.mywhc.ca ([173.209.37.211]:48442 "EHLO
+        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhETEOn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 00:10:40 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC5EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:09:18 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id f9so20979920ybo.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:09:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v6QIg+HGlA05hGXLpgdj8SC7kH5ffoKTkXzO6Yddm3Q=;
-        b=sKWxnOfIqOAEZUi/QUshFqoO+T3dhoNsFQGveHOKhqstV/WnKO6jnlaF4DBOS2Whm5
-         eK/OjRn3JFLhxrOWrDOYf8Y4lGWj0UkVDRef6Rv2xXy6z3LAanAOl0ttRA7ANcLDPFai
-         B4Z6vmcN3FVQF+xnF9jCQQh7JCVg7Xk5dApGkLvqxRF2TMkm3hY7ajaKvmiW5BRTVz2A
-         PWVEaZqv90D4pkcVJtc/yjF/+Z5LuWOzdA6PL4DmnAaW8rc7wfRONzGZiDclB3pao6fR
-         DtY/DyecQVH9VnIazTRk5tXwPQxbqW0+xpQatQcyKmw6OLvRCcGrdEPFHkTWRmvT/D7U
-         5L4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v6QIg+HGlA05hGXLpgdj8SC7kH5ffoKTkXzO6Yddm3Q=;
-        b=U42x2F2jb/dS3BoCiO2f83OhaSBnCTr6U6x3lTtcrxhlfFwihm62Wrrjv8dJwgmgaN
-         swUI+tWBZt9fGDu6x3guwazaZyaMRrMIGW81jMoLCw2ZYkLYSRYjZFLMSJmdQJkGAtRp
-         vzoTsGlvDZaTdVw68Kc26G5ZFlB9FPQzG9d1JXhzLHsakpXlSTP1LiXnTsSQssM5xyIv
-         dqPS+J50pHS5qlbOtG1rHemYuqqYhx792oDgAgGPxM35Syd0eRAGdZ7a/Zn/AWvVlgnf
-         u9SeJVGlstpx+Wwzp4LsDNDCg+nQTxEDFxgaEYFqmm0KA97TrGRfvCr/F3OsTy3Isoif
-         Z84A==
-X-Gm-Message-State: AOAM533OwHhjwtF/YaXTl3vtjfUMTQbfKHcR8qf/AaEvz9qxkBH0gqlh
-        feeWGnGF16xq+Rvz6o4hH4InojUfXCgzPCbcIo0=
-X-Google-Smtp-Source: ABdhPJyfdtTj2Nu+kLFcG5AO5ylfW18wqOa0nNEL8VSkLTJbIrobBr7o6iGYvCtpCgVMAzLUnNcwJZ/uoDd5REUP3gE=
-X-Received: by 2002:a25:204:: with SMTP id 4mr4468671ybc.342.1621483757730;
- Wed, 19 May 2021 21:09:17 -0700 (PDT)
+        Thu, 20 May 2021 00:14:43 -0400
+Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:45864 helo=[192.168.1.177])
+        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <olivier@trillion01.com>)
+        id 1lja3l-0007Hw-2N; Thu, 20 May 2021 00:13:21 -0400
+Message-ID: <b360ed542526da0a510988ce30545f429a7da000.camel@trillion01.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+From:   Olivier Langlois <olivier@trillion01.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stefan Metzmacher <metze@samba.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>
+Date:   Thu, 20 May 2021 00:13:19 -0400
+In-Reply-To: <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+         <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+         <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+         <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
+         <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
+         <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
+         <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
+         <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
+         <8735v3jujv.ffs@nanos.tec.linutronix.de>
+         <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
+         <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
+         <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
+         <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
+         <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
+         <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
+         <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
+Organization: Trillion01 Inc
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.40.1 
 MIME-Version: 1.0
-References: <202105200314.TS5zUUYA-lkp@intel.com>
-In-Reply-To: <202105200314.TS5zUUYA-lkp@intel.com>
-From:   Jordan Niethe <jniethe5@gmail.com>
-Date:   Thu, 20 May 2021 14:09:06 +1000
-Message-ID: <CACzsE9q99HXR=pGBJXVnSF-CxHXRijAzdqKKBo8gX2HiJLgmsQ@mail.gmail.com>
-Subject: Re: arch/powerpc/lib/sstep.c:1172:21: error: variable 'suffix' set
- but not used
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Alistair Popple <alistair@popple.id.au>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - trillion01.com
+X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
+X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 5:01 AM kernel test robot <lkp@intel.com> wrote:
->
-> Hi Jordan,
->
-> FYI, the error/warning still remains.
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   c3d0e3fd41b7f0f5d5d5b6022ab7e813f04ea727
-> commit: 650b55b707fdfa764e9f2b81314d3eb4216fb962 powerpc: Add prefixed instructions to instruction data type
-> date:   1 year ago
-> config: powerpc-klondike_defconfig (attached as .config)
-> compiler: powerpc-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=650b55b707fdfa764e9f2b81314d3eb4216fb962
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 650b55b707fdfa764e9f2b81314d3eb4216fb962
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->    arch/powerpc/lib/sstep.c: In function 'analyse_instr':
-> >> arch/powerpc/lib/sstep.c:1172:21: error: variable 'suffix' set but not used [-Werror=unused-but-set-variable]
->     1172 |  unsigned int word, suffix;
-Yeah, we should only need suffix if we have prefixed instructions.
->          |                     ^~~~~~
->    arch/powerpc/lib/sstep.c:1168:31: error: variable 'rc' set but not used [-Werror=unused-but-set-variable]
->     1168 |  unsigned int opcode, ra, rb, rc, rd, spr, u;
->          |                               ^~
->    cc1: all warnings being treated as errors
->
->
-> vim +/suffix +1172 arch/powerpc/lib/sstep.c
->
->   1153
->   1154  /*
->   1155   * Decode an instruction, and return information about it in *op
->   1156   * without changing *regs.
->   1157   * Integer arithmetic and logical instructions, branches, and barrier
->   1158   * instructions can be emulated just using the information in *op.
->   1159   *
->   1160   * Return value is 1 if the instruction can be emulated just by
->   1161   * updating *regs with the information in *op, -1 if we need the
->   1162   * GPRs but *regs doesn't contain the full register set, or 0
->   1163   * otherwise.
->   1164   */
->   1165  int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
->   1166                    struct ppc_inst instr)
->   1167  {
->   1168          unsigned int opcode, ra, rb, rc, rd, spr, u;
->   1169          unsigned long int imm;
->   1170          unsigned long int val, val2;
->   1171          unsigned int mb, me, sh;
-> > 1172          unsigned int word, suffix;
->   1173          long ival;
->   1174
->   1175          word = ppc_inst_val(instr);
->   1176          suffix = ppc_inst_suffix(instr);
->   1177
->   1178          op->type = COMPUTE;
->   1179
->   1180          opcode = ppc_inst_primary_opcode(instr);
->   1181          switch (opcode) {
->   1182          case 16:        /* bc */
->   1183                  op->type = BRANCH;
->   1184                  imm = (signed short)(word & 0xfffc);
->   1185                  if ((word & 2) == 0)
->   1186                          imm += regs->nip;
->   1187                  op->val = truncate_if_32bit(regs->msr, imm);
->   1188                  if (word & 1)
->   1189                          op->type |= SETLK;
->   1190                  if (branch_taken(word, regs, op))
->   1191                          op->type |= BRTAKEN;
->   1192                  return 1;
->   1193  #ifdef CONFIG_PPC64
->   1194          case 17:        /* sc */
->   1195                  if ((word & 0xfe2) == 2)
->   1196                          op->type = SYSCALL;
->   1197                  else
->   1198                          op->type = UNKNOWN;
->   1199                  return 0;
->   1200  #endif
->   1201          case 18:        /* b */
->   1202                  op->type = BRANCH | BRTAKEN;
->   1203                  imm = word & 0x03fffffc;
->   1204                  if (imm & 0x02000000)
->   1205                          imm -= 0x04000000;
->   1206                  if ((word & 2) == 0)
->   1207                          imm += regs->nip;
->   1208                  op->val = truncate_if_32bit(regs->msr, imm);
->   1209                  if (word & 1)
->   1210                          op->type |= SETLK;
->   1211                  return 1;
->   1212          case 19:
->   1213                  switch ((word >> 1) & 0x3ff) {
->   1214                  case 0:         /* mcrf */
->   1215                          op->type = COMPUTE + SETCC;
->   1216                          rd = 7 - ((word >> 23) & 0x7);
->   1217                          ra = 7 - ((word >> 18) & 0x7);
->   1218                          rd *= 4;
->   1219                          ra *= 4;
->   1220                          val = (regs->ccr >> ra) & 0xf;
->   1221                          op->ccval = (regs->ccr & ~(0xfUL << rd)) | (val << rd);
->   1222                          return 1;
->   1223
->   1224                  case 16:        /* bclr */
->   1225                  case 528:       /* bcctr */
->   1226                          op->type = BRANCH;
->   1227                          imm = (word & 0x400)? regs->ctr: regs->link;
->   1228                          op->val = truncate_if_32bit(regs->msr, imm);
->   1229                          if (word & 1)
->   1230                                  op->type |= SETLK;
->   1231                          if (branch_taken(word, regs, op))
->   1232                                  op->type |= BRTAKEN;
->   1233                          return 1;
->   1234
->   1235                  case 18:        /* rfid, scary */
->   1236                          if (regs->msr & MSR_PR)
->   1237                                  goto priv;
->   1238                          op->type = RFI;
->   1239                          return 0;
->   1240
->   1241                  case 150:       /* isync */
->   1242                          op->type = BARRIER | BARRIER_ISYNC;
->   1243                          return 1;
->   1244
->   1245                  case 33:        /* crnor */
->   1246                  case 129:       /* crandc */
->   1247                  case 193:       /* crxor */
->   1248                  case 225:       /* crnand */
->   1249                  case 257:       /* crand */
->   1250                  case 289:       /* creqv */
->   1251                  case 417:       /* crorc */
->   1252                  case 449:       /* cror */
->   1253                          op->type = COMPUTE + SETCC;
->   1254                          ra = (word >> 16) & 0x1f;
->   1255                          rb = (word >> 11) & 0x1f;
->   1256                          rd = (word >> 21) & 0x1f;
->   1257                          ra = (regs->ccr >> (31 - ra)) & 1;
->   1258                          rb = (regs->ccr >> (31 - rb)) & 1;
->   1259                          val = (word >> (6 + ra * 2 + rb)) & 1;
->   1260                          op->ccval = (regs->ccr & ~(1UL << (31 - rd))) |
->   1261                                  (val << (31 - rd));
->   1262                          return 1;
->   1263                  }
->   1264                  break;
->   1265          case 31:
->   1266                  switch ((word >> 1) & 0x3ff) {
->   1267                  case 598:       /* sync */
->   1268                          op->type = BARRIER + BARRIER_SYNC;
->   1269  #ifdef __powerpc64__
->   1270                          switch ((word >> 21) & 3) {
->   1271                          case 1:         /* lwsync */
->   1272                                  op->type = BARRIER + BARRIER_LWSYNC;
->   1273                                  break;
->   1274                          case 2:         /* ptesync */
->   1275                                  op->type = BARRIER + BARRIER_PTESYNC;
->   1276                                  break;
->   1277                          }
->   1278  #endif
->   1279                          return 1;
->   1280
->   1281                  case 854:       /* eieio */
->   1282                          op->type = BARRIER + BARRIER_EIEIO;
->   1283                          return 1;
->   1284                  }
->   1285                  break;
->   1286          }
->   1287
->   1288          /* Following cases refer to regs->gpr[], so we need all regs */
->   1289          if (!FULL_REGS(regs))
->   1290                  return -1;
->   1291
->   1292          rd = (word >> 21) & 0x1f;
->   1293          ra = (word >> 16) & 0x1f;
->   1294          rb = (word >> 11) & 0x1f;
->   1295          rc = (word >> 6) & 0x1f;
->   1296
->   1297          switch (opcode) {
->   1298  #ifdef __powerpc64__
->   1299          case 2:         /* tdi */
->   1300                  if (rd & trap_compare(regs->gpr[ra], (short) word))
->   1301                          goto trap;
->   1302                  return 1;
->   1303  #endif
->   1304          case 3:         /* twi */
->   1305                  if (rd & trap_compare((int)regs->gpr[ra], (short) word))
->   1306                          goto trap;
->   1307                  return 1;
->   1308
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Hi Jens,
+
+On Wed, 2021-05-12 at 14:55 -0600, Jens Axboe wrote:
+> 
+> > Jens, have you played with core-dumping when there are active
+> > io_uring
+> > threads? There's a test-program in that github issue report..
+> 
+> Yes, I also did that again after the report, and did so again right now
+> just to verify. I'm not seeing any issues with coredumps being
+> generated
+> if the app crashes, or if I send it SIGILL, for example... I also just
+> now tried Olivier's test case, and it seems to dump just fine for me.
+> 
+> I then tried backing out the patch from Stefan, and it works fine with
+> that reverted too. So a bit puzzled as to what is going on here...
+> 
+> Anyway, I'll check in on that github thread and see if we can narrow
+> this down.
+> 
+I know that my test case isn't conclusive. It is a failed attempt to
+capture what my program is doing.
+
+The priority of investigating my core dump issue has substantially
+dropped last week because I did solve my primary issue (A buffer leak
+in the provided buffers to io_uring during disconnection). My program
+did run for days but it did crash morning without any core dump again.
+It is a very frustrating situation because it would probably be a bug
+trivial to diagnostic and fix but without the core, the logs are opaque
+and they just don't give no clue about why the program did crash.
+
+A key characteristic of my program, it is that it generates at least 1
+io-worker thread per io_uring instance.
+
+Oddly enough, I am having a hard time recreating a test case that will
+generate io-worker threads.
+
+My first attempt was with the github issue test-case. I have kept
+tweaking it and I know that I will find the right sequence to get io-
+worker threads spawned.
+
+I suspect that once you meet that condition, it might be sufficient to
+trigger the core dump generation problem.
+
+I have also tried to run benchmark io_uring with
+https://github.com/frevib/io_uring-echo-server/blob/io-uring-feat-fast-poll/benchmarks/benchmarks.md
+(If you give it a try, make sure you erase its private out-of-date
+liburing copy before compiling it...)
+This didn't generate any io-worker thread neither.
+
+In a nutshell here is what my program does for most of its 85-86
+sockets:
+1. create TCP socket
+2. Set O_NONBLOCK to it
+3. Call connect()
+4. Use IORING_OP_POLL_ADD with POLLOUT to be notified when the
+connection completes
+5. Once connection is completed, clear the socket O_NONBLOCK flag, use
+IORING_OP_WRITE to send a request
+6. Submit a IORING_OP_READ with IOSQE_BUFFER_SELECT to read server
+reply asynchronously.
+
+Here are 2 more notes about the sequence:
+a) If you wonder about the flip-flop about blocking and non-nblocking,
+it is because I have adapated existing code to use io_uring. To
+minimize the required code change, I left untouched the non-blocking
+connection code.
+b) If I add IOSQE_ASYNC to the IORING_OP_READ, io_uring will generate a
+lot of io-worker threads. I mean a lot... You can see here:
+https://github.com/axboe/liburing/issues/349
+
+So what I am currently doing is to tweak my test-case to emulate as
+much as possible the described sequence to have some io-worker threads
+spawn and then force a core dump to validate that it is the io-worker
+thread presence that is causing the core dump generation issue (or
+not!)
+
+Quick question to the devs: Is there any example program bundled with
+liburing that is creating some io-workers thread in a sure way?
+
+Greetings,
+Olivier
+
+
