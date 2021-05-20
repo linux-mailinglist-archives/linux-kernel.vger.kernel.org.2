@@ -2,345 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A82E389BFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41C66389BFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:46:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbhETDqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 23:46:51 -0400
-Received: from mail-pj1-f53.google.com ([209.85.216.53]:36378 "EHLO
-        mail-pj1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhETDqu (ORCPT
+        id S230289AbhETDrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:47:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52116 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230185AbhETDrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 23:46:50 -0400
-Received: by mail-pj1-f53.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so4697469pjt.1
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:45:29 -0700 (PDT)
+        Wed, 19 May 2021 23:47:20 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76829C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:45:59 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id s20so8217991plr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:45:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dsx7U7xFEMYwysEjpdGkhCMavbrgfZJA5H4Xahpf5cI=;
+        b=K1wI5foB/OFwa+YxtQyl0ye+iraAQYmdC/sZ87b1fWKNRpvWVu/f99q9N6jwfkD5yl
+         Iy31CmZi4cuch3FS144/63jLe29jilr2SE5Cy2AF9AOZfdQIScIY5ZP9nXWDwWtTMEgN
+         RMqF0Go5He+ZYyWIp9r8jNUgQ8G+JYIYhokz8jyk35r583XRegVPp637VbVUfIJnrlU+
+         zNGq4IW/pZhPe35JHlrpAmKgZibJaqDyj27wEeYRemTsvGzIhAr2i/OD4rxFGAfPfbNk
+         ucGbH9k5n05eqo3ZYZv24VUePrzJ/nE6ETGEJNwJFr1A2NGW+JGSXS6Xlnm7PgA9TtRZ
+         Q85Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/wXqElQRkopl21ZPYblcLk2cmVZq3rqAdYuKshPdrR8=;
-        b=rlQSK1oUkcmHbUUt7oy4sW/Xyk0jz8iRs7aAya4pG30W8GqlSwzOV+IdsIlLcBggEs
-         YAIkyWZjq6e6zZ+0wn2aBh942CcvDHpWYXw8dUZuxMOwBv0YYJybE+U8GLK0LsBr1ScW
-         juyQ9hTU5g/b/JRTO8NzeOZjnZjBe/qKel5aReOSB675T0D3VK9dVSQCEP+lDGYizYG4
-         G8bHCCegfAYsQ9tdpcRnWPLRgVDsLzxi8Zu1XZfmNzVZMUKnnHs/oPj+/SGnRyzxRilk
-         qgxHgYKpr/sITOyAm7XIAkf2ClxII+HHG548P+8m70To+lbXw4sSu8Iqly4Rk4vGJs/j
-         D9xQ==
-X-Gm-Message-State: AOAM530Xt2AD/Lr+kJ/h7PxRHbXdLH39g+HMVt5UHTLqbhFwzXNFQRRM
-        TB/d2MMKhA2XscYAOkK7FfQ=
-X-Google-Smtp-Source: ABdhPJyMiAhO65oJ4Dscpf0QBxkFPePcoojRjYAt7X5H0LXncLNbmj6hUhlCPnk+v0dFyVmxLRrijQ==
-X-Received: by 2002:a17:90a:4d4f:: with SMTP id l15mr283366pjh.78.1621482328330;
-        Wed, 19 May 2021 20:45:28 -0700 (PDT)
-Received: from asus.hsd1.ca.comcast.net ([2601:647:4000:d7:b043:994b:7f8b:3169])
-        by smtp.gmail.com with ESMTPSA id g13sm660500pfr.75.2021.05.19.20.45.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 20:45:27 -0700 (PDT)
-From:   Bart Van Assche <bvanassche@acm.org>
-To:     Joel Becker <jlbec@evilplan.org>
-Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        Bart Van Assche <bvanassche@acm.org>
-Subject: [PATCH] configfs: Implement the .read_iter and .write_iter callbacks
-Date:   Wed, 19 May 2021 20:45:21 -0700
-Message-Id: <20210520034521.16102-1-bvanassche@acm.org>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsx7U7xFEMYwysEjpdGkhCMavbrgfZJA5H4Xahpf5cI=;
+        b=eQnOVw3mox8q7n5bgwzLgNhbYGNvSLepGy94Q8Uf6TJe1GOxSc9QN+FBe9XjAGHcR0
+         N/HU6tkh35A6K57ZnVuHO4t0L3VX2YbHtJpulb3EVAbf7BrNfDEZNfpoXvWMD5elYTev
+         Xno8BzGe9eYFdC+8IJeqP7GphGEw2oMygpI6ov+N/2CeLRbBiu97QnPitmj7XZILFJnJ
+         TFCsDKwUGMYW6ksSWjTC4K7JuB3zVL6YRmZepo50crRbn4Y0nb21vPQPcxy9VZj6WxFo
+         wpdFoI3A1VfqgVPxiY+hstd/2niMgh33sCuqWK423MvnYSMsITca2G2C+RenF+ywY/4H
+         gfSQ==
+X-Gm-Message-State: AOAM532+1Rz7h+9fqCfJ1YW3lGqLxHEW8c2H71vkqTOQdrjj6XZxEI9A
+        HQujiEhqudL8CU69kN3GZaBm3pZErbMn6+siOnT6PA==
+X-Google-Smtp-Source: ABdhPJzsTfKJ0VkQK6fxhnPimvNAb8jp7vq5SsLJdXpFeRYgoELgi5Ucv3Tv8vbqJdubvqR7ufMgTbx+6ERjqnj1yjM=
+X-Received: by 2002:a17:90a:6d43:: with SMTP id z61mr2855552pjj.147.1621482359005;
+ Wed, 19 May 2021 20:45:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210402091145.80635-1-songmuchun@bytedance.com>
+In-Reply-To: <20210402091145.80635-1-songmuchun@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 20 May 2021 11:45:23 +0800
+Message-ID: <CAMZfGtUZgXsNOiyR==G+zLSN91PREss=XcbcfE0COkB8APcDxA@mail.gmail.com>
+Subject: Re: [PATCH v3] writeback: fix obtain a reference to a freeing memcg css
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Tejun Heo <tj@kernel.org>, axboe@fb.com,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configfs is one of the few filesystems that does not yet support the
-.read_iter and .write_iter callbacks. This patch adds support for these
-callbacks in configfs. Additionally, fix the kernel-doc comment above
-configfs_create_bin_file().
+Hi,
 
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
----
- fs/configfs/file.c | 126 +++++++++++++++++++++------------------------
- 1 file changed, 58 insertions(+), 68 deletions(-)
+It seems like this patch has not been added to the linux-next
+tree. Can anyone help with this? Thanks.
 
-diff --git a/fs/configfs/file.c b/fs/configfs/file.c
-index da8351d1e455..1c63251356f9 100644
---- a/fs/configfs/file.c
-+++ b/fs/configfs/file.c
-@@ -16,7 +16,7 @@
- #include <linux/mutex.h>
- #include <linux/vmalloc.h>
- #include <linux/uaccess.h>
--
-+#include <linux/uio.h>
- #include <linux/configfs.h>
- #include "configfs_internal.h"
- 
-@@ -80,11 +80,9 @@ static int fill_read_buffer(struct file *file, struct configfs_buffer *buffer)
- }
- 
- /**
-- *	configfs_read_file - read an attribute.
-- *	@file:	file pointer.
-- *	@buf:	buffer to fill.
-- *	@count:	number of bytes to read.
-- *	@ppos:	starting offset in file.
-+ *	configfs_read_iter - Read a configfs attribute.
-+ *	@iocb: file to read and offset at which to start reading.
-+ *	@to: buffer to copy the output to.
-  *
-  *	Userspace wants to read an attribute file. The attribute descriptor
-  *	is in the file's ->d_fsdata. The target item is in the directory's
-@@ -97,10 +95,9 @@ static int fill_read_buffer(struct file *file, struct configfs_buffer *buffer)
-  *	We then call flush_read_buffer() to copy the buffer to userspace
-  *	in the increments specified.
-  */
--
--static ssize_t
--configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *ppos)
-+static ssize_t configfs_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
-+	struct file *file = iocb->ki_filp;
- 	struct configfs_buffer *buffer = file->private_data;
- 	ssize_t retval = 0;
- 
-@@ -110,21 +107,21 @@ configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *pp
- 		if (retval)
- 			goto out;
- 	}
--	pr_debug("%s: count = %zd, ppos = %lld, buf = %s\n",
--		 __func__, count, *ppos, buffer->page);
--	retval = simple_read_from_buffer(buf, count, ppos, buffer->page,
--					 buffer->count);
-+	pr_debug("%s: count = %zd, pos = %lld, buf = %s\n",
-+		 __func__, iov_iter_count(to), iocb->ki_pos, buffer->page);
-+	retval = copy_to_iter(buffer->page, buffer->count, to);
-+	iocb->ki_pos += retval;
-+	if (retval == 0)
-+		retval = -EFAULT;
- out:
- 	mutex_unlock(&buffer->mutex);
- 	return retval;
- }
- 
- /**
-- *	configfs_read_bin_file - read a binary attribute.
-- *	@file:	file pointer.
-- *	@buf:	buffer to fill.
-- *	@count:	number of bytes to read.
-- *	@ppos:	starting offset in file.
-+ *	configfs_bin_read_iter - Read a binary configfs attribute.
-+ *	@iocb: file to read and offset at which to start reading.
-+ *	@to: buffer to copy the output to.
-  *
-  *	Userspace wants to read a binary attribute file. The attribute
-  *	descriptor is in the file's ->d_fsdata. The target item is in the
-@@ -139,14 +136,13 @@ configfs_read_file(struct file *file, char __user *buf, size_t count, loff_t *pp
-  *	Then we just copy to user-space using simple_read_from_buffer.
-  */
- 
--static ssize_t
--configfs_read_bin_file(struct file *file, char __user *buf,
--		       size_t count, loff_t *ppos)
-+static ssize_t configfs_bin_read_iter(struct kiocb *iocb, struct iov_iter *to)
- {
-+	struct file *file = iocb->ki_filp;
- 	struct configfs_fragment *frag = to_frag(file);
- 	struct configfs_buffer *buffer = file->private_data;
- 	ssize_t retval = 0;
--	ssize_t len = min_t(size_t, count, PAGE_SIZE);
-+	ssize_t len;
- 
- 	mutex_lock(&buffer->mutex);
- 
-@@ -202,8 +198,10 @@ configfs_read_bin_file(struct file *file, char __user *buf,
- 		buffer->needs_read_fill = 0;
- 	}
- 
--	retval = simple_read_from_buffer(buf, count, ppos, buffer->bin_buffer,
--					buffer->bin_buffer_size);
-+	retval = copy_to_iter(buffer->bin_buffer, buffer->bin_buffer_size, to);
-+	iocb->ki_pos += retval;
-+	if (retval == 0)
-+		retval = -EFAULT;
- out:
- 	mutex_unlock(&buffer->mutex);
- 	return retval;
-@@ -212,32 +210,29 @@ configfs_read_bin_file(struct file *file, char __user *buf,
- 
- /**
-  *	fill_write_buffer - copy buffer from userspace.
-- *	@buffer:	data buffer for file.
-- *	@buf:		data from user.
-- *	@count:		number of bytes in @userbuf.
-+ *	@buffer:	data buffer that represents the attribute contents.
-+ *	@from:		data to copy into the attribute.
-  *
-  *	Allocate @buffer->page if it hasn't been already, then
-  *	copy the user-supplied buffer into it.
-  */
- 
--static int
--fill_write_buffer(struct configfs_buffer * buffer, const char __user * buf, size_t count)
-+static int fill_write_buffer(struct configfs_buffer *buffer,
-+			     struct iov_iter *from)
- {
--	int error;
-+	int copied;
- 
- 	if (!buffer->page)
- 		buffer->page = (char *)__get_free_pages(GFP_KERNEL, 0);
- 	if (!buffer->page)
- 		return -ENOMEM;
- 
--	if (count >= SIMPLE_ATTR_SIZE)
--		count = SIMPLE_ATTR_SIZE - 1;
--	error = copy_from_user(buffer->page,buf,count);
-+	copied = copy_from_iter(buffer->page, SIMPLE_ATTR_SIZE - 1, from);
- 	buffer->needs_read_fill = 1;
- 	/* if buf is assumed to contain a string, terminate it by \0,
- 	 * so e.g. sscanf() can scan the string easily */
--	buffer->page[count] = 0;
--	return error ? -EFAULT : count;
-+	buffer->page[copied] = 0;
-+	return copied ? : -EFAULT;
- }
- 
- static int
-@@ -255,13 +250,11 @@ flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t cou
- 
- 
- /**
-- *	configfs_write_file - write an attribute.
-- *	@file:	file pointer
-- *	@buf:	data to write
-- *	@count:	number of bytes
-- *	@ppos:	starting offset
-+ *	configfs_write_iter - Write a configfs attribute.
-+ *	@iocb: file to write to and offset at which to start writing.
-+ *	@from: data to copy into the attribute.
-  *
-- *	Similar to configfs_read_file(), though working in the opposite direction.
-+ *	Similar to configfs_read_iter(), though working in the opposite direction.
-  *	We allocate and fill the data from the user in fill_write_buffer(),
-  *	then push it to the config_item in flush_write_buffer().
-  *	There is no easy way for us to know if userspace is only doing a partial
-@@ -271,28 +264,26 @@ flush_write_buffer(struct file *file, struct configfs_buffer *buffer, size_t cou
-  *	the value you're changing, then write entire buffer back.
-  */
- 
--static ssize_t
--configfs_write_file(struct file *file, const char __user *buf, size_t count, loff_t *ppos)
-+static ssize_t configfs_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
-+	struct file *file = iocb->ki_filp;
- 	struct configfs_buffer *buffer = file->private_data;
- 	ssize_t len;
- 
- 	mutex_lock(&buffer->mutex);
--	len = fill_write_buffer(buffer, buf, count);
-+	len = fill_write_buffer(buffer, from);
- 	if (len > 0)
- 		len = flush_write_buffer(file, buffer, len);
- 	if (len > 0)
--		*ppos += len;
-+		iocb->ki_pos += len;
- 	mutex_unlock(&buffer->mutex);
- 	return len;
- }
- 
- /**
-- *	configfs_write_bin_file - write a binary attribute.
-- *	@file:	file pointer
-- *	@buf:	data to write
-- *	@count:	number of bytes
-- *	@ppos:	starting offset
-+ *	configfs_bin_write_iter - Write a binary attribute.
-+ *	@iocb: file to write to and offset at which to start writing.
-+ *	@from: data to copy into the attribute.
-  *
-  *	Writing to a binary attribute file is similar to a normal read.
-  *	We buffer the consecutive writes (binary attribute files do not
-@@ -300,12 +291,13 @@ configfs_write_file(struct file *file, const char __user *buf, size_t count, lof
-  *	commit until the close of the file.
-  */
- 
--static ssize_t
--configfs_write_bin_file(struct file *file, const char __user *buf,
--			size_t count, loff_t *ppos)
-+static ssize_t configfs_bin_write_iter(struct kiocb *iocb,
-+				       struct iov_iter *from)
- {
-+	struct file *file = iocb->ki_filp;
- 	struct configfs_buffer *buffer = file->private_data;
- 	void *tbuf = NULL;
-+	size_t end_offset;
- 	ssize_t len;
- 
- 	mutex_lock(&buffer->mutex);
-@@ -318,15 +310,14 @@ configfs_write_bin_file(struct file *file, const char __user *buf,
- 	buffer->write_in_progress = true;
- 
- 	/* buffer grows? */
--	if (*ppos + count > buffer->bin_buffer_size) {
--
--		if (buffer->cb_max_size &&
--			*ppos + count > buffer->cb_max_size) {
-+	end_offset = iocb->ki_pos + iov_iter_count(from);
-+	if (end_offset > buffer->bin_buffer_size) {
-+		if (buffer->cb_max_size && end_offset > buffer->cb_max_size) {
- 			len = -EFBIG;
- 			goto out;
- 		}
- 
--		tbuf = vmalloc(*ppos + count);
-+		tbuf = vmalloc(end_offset);
- 		if (tbuf == NULL) {
- 			len = -ENOMEM;
- 			goto out;
-@@ -341,16 +332,15 @@ configfs_write_bin_file(struct file *file, const char __user *buf,
- 
- 		/* clear the new area */
- 		memset(tbuf + buffer->bin_buffer_size, 0,
--			*ppos + count - buffer->bin_buffer_size);
-+			end_offset - buffer->bin_buffer_size);
- 		buffer->bin_buffer = tbuf;
--		buffer->bin_buffer_size = *ppos + count;
-+		buffer->bin_buffer_size = end_offset;
- 	}
- 
--	len = simple_write_to_buffer(buffer->bin_buffer,
--			buffer->bin_buffer_size, ppos, buf, count);
-+	len = copy_from_iter(buffer->bin_buffer, buffer->bin_buffer_size, from);
- out:
- 	mutex_unlock(&buffer->mutex);
--	return len;
-+	return len ? : -EFAULT;
- }
- 
- static int __configfs_open_file(struct inode *inode, struct file *file, int type)
-@@ -495,16 +485,16 @@ static int configfs_release_bin_file(struct inode *inode, struct file *file)
- 
- 
- const struct file_operations configfs_file_operations = {
--	.read		= configfs_read_file,
--	.write		= configfs_write_file,
-+	.read_iter	= configfs_read_iter,
-+	.write_iter	= configfs_write_iter,
- 	.llseek		= generic_file_llseek,
- 	.open		= configfs_open_file,
- 	.release	= configfs_release,
- };
- 
- const struct file_operations configfs_bin_file_operations = {
--	.read		= configfs_read_bin_file,
--	.write		= configfs_write_bin_file,
-+	.read_iter	= configfs_bin_read_iter,
-+	.write_iter	= configfs_bin_write_iter,
- 	.llseek		= NULL,		/* bin file is not seekable */
- 	.open		= configfs_open_bin_file,
- 	.release	= configfs_release_bin_file,
-@@ -534,7 +524,7 @@ int configfs_create_file(struct config_item * item, const struct configfs_attrib
- /**
-  *	configfs_create_bin_file - create a binary attribute file for an item.
-  *	@item:	item we're creating for.
-- *	@attr:	atrribute descriptor.
-+ *	@bin_attr: atrribute descriptor.
-  */
- 
- int configfs_create_bin_file(struct config_item *item,
+On Fri, Apr 2, 2021 at 5:13 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> The caller of wb_get_create() should pin the memcg, because
+> wb_get_create() relies on this guarantee. The rcu read lock
+> only can guarantee that the memcg css returned by css_from_id()
+> cannot be released, but the reference of the memcg can be zero.
+>
+>   rcu_read_lock()
+>   memcg_css = css_from_id()
+>   wb_get_create(memcg_css)
+>       cgwb_create(memcg_css)
+>           // css_get can change the ref counter from 0 back to 1
+>           css_get(memcg_css)
+>   rcu_read_unlock()
+>
+> Fix it by holding a reference to the css before calling
+> wb_get_create(). This is not a problem I encountered in the
+> real world. Just the result of a code review.
+>
+> Fixes: 682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+> Changelog in v3:
+>  1. Do not change GFP_ATOMIC.
+>  2. Update commit log.
+>
+>  Thanks for Michal's review and suggestions.
+>
+> Changelog in v2:
+>  1. Replace GFP_ATOMIC with GFP_NOIO suggested by Matthew.
+>
+>
+>  fs/fs-writeback.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+> index 3ac002561327..dedde99da40d 100644
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -506,9 +506,14 @@ static void inode_switch_wbs(struct inode *inode, int new_wb_id)
+>         /* find and pin the new wb */
+>         rcu_read_lock();
+>         memcg_css = css_from_id(new_wb_id, &memory_cgrp_subsys);
+> -       if (memcg_css)
+> -               isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
+> +       if (memcg_css && !css_tryget(memcg_css))
+> +               memcg_css = NULL;
+>         rcu_read_unlock();
+> +       if (!memcg_css)
+> +               goto out_free;
+> +
+> +       isw->new_wb = wb_get_create(bdi, memcg_css, GFP_ATOMIC);
+> +       css_put(memcg_css);
+>         if (!isw->new_wb)
+>                 goto out_free;
+>
+> --
+> 2.11.0
+>
