@@ -2,70 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECBE238B2AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99CFF38B2B5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243628AbhETPMI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 11:12:08 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:58146 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232020AbhETPMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:12:05 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 05B39CECEA;
-        Thu, 20 May 2021 17:18:33 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v4 0/5] Enable Bluetooth functionality for WCN6750
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1621355686-29550-1-git-send-email-gubbaven@codeaurora.org>
-Date:   Thu, 20 May 2021 17:10:39 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
-        Hemantg <hemantg@codeaurora.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <DF3C6156-F44A-4954-B1EF-CB3051BCC0B6@holtmann.org>
-References: <1621355686-29550-1-git-send-email-gubbaven@codeaurora.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        id S243636AbhETPNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:13:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232020AbhETPNK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:13:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABE24600D1;
+        Thu, 20 May 2021 15:11:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621523509;
+        bh=eFI5rpQJhU6aKiz7M8+Q4aUTrQg2nZYVDF4zrydbhhI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y/B4dHHhjeBn8turYwFunjFQ9HFK+qY2IH/3HqY4hb8q9WMtZwprLoDysMYgcZUtS
+         y6xZN2b0knJu6n9S9zUFRd986f66pngXR2TFF2mYYQWNy719xFTCkv2CF6EDdFhFE3
+         rhzzYPLkrUs7AbwCLzko3IftEvrdeHkmWShLKk3M=
+Date:   Thu, 20 May 2021 17:11:47 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xiaofei Tan <tanxiaofei@huawei.com>
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linuxarm@openeuler.org
+Subject: Re: [PATCH 0/9] tty: hvc_console: Fix some coding style issues
+Message-ID: <YKZ8M8j5/bUJxLq5@kroah.com>
+References: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Venkata,
-
-> These patches enables Bluetooth functionalties for new Qualcomm
-> Bluetooth SoC wcn6750.
+On Mon, May 17, 2021 at 02:37:04PM +0800, Xiaofei Tan wrote:
+> Fix some issues reported by checkpatch.pl. All of them are
+> coding style issues, no function changes.
 > 
-> Venkata Lakshmi Narayana Gubba (5):
->  Bluetooth: hci_qca: Add support for QTI Bluetooth chip wcn6750
->  Bluetooth: btqca: Add support for firmware image with mbn type for
->    WCN6750
->  Bluetooth: btqca: Moved extracting rom version info to common place
->  dt-bindings: net: bluetooth: Convert Qualcomm BT binding to DT schema
->  dt-bindings: net: bluetooth: Add device tree bindings for QTI chip
->    wcn6750
+> Xiaofei Tan (9):
+>   tty: hvc_console: Fix spaces required around that '='
+>   tty: hvc_console: Fix "foo * bar" should be "foo *bar"
+>   tty: hvc_console: Remove trailing whitespace
+>   tty: hvc_console: Fix issues of code indent should use tabs
+>   tty: hvc_console: Delete spaces prohibited around open parenthesis '('
+>     and ')'
+>   tty: hvc_console: Fix coding style issues of block comments
+>   tty: hvc_console: Add a blank line after declarations
+>   tty: hvc_console: Remove the repeated words 'no' and 'from'
+>   tty: hvc_console: Move open brace { on the previous line
 > 
-> .../devicetree/bindings/net/qualcomm-bluetooth.txt |  69 --------
-> .../bindings/net/qualcomm-bluetooth.yaml           | 183 +++++++++++++++++++++
-> drivers/bluetooth/btqca.c                          |  90 +++++++---
-> drivers/bluetooth/btqca.h                          |  14 +-
-> drivers/bluetooth/hci_qca.c                        | 114 ++++++++++---
-> 5 files changed, 354 insertions(+), 116 deletions(-)
-> delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
-> create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+>  drivers/tty/hvc/hvc_console.c | 37 ++++++++++++++++++++++---------------
+>  1 file changed, 22 insertions(+), 15 deletions(-)
 
-all 5 patches have been applied to bluetooth-next tree.
+Do you use this driver?  If so, great, I'm sure there are other "real"
+issues in it that need some work.  But as Johan points out, doing
+drive-by checkpatch cleanups on random files that you do not use, isn't
+the best thing to do.
 
-Regards
+If you just want to do this type of work, please do so in
+drivers/staging/ as it is most welcome there if you wish to get involved
+in kernel work to get experience before doing "real" stuff.
 
-Marcel
-
+thanks,
+g
+reg k-h
