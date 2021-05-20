@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB5138A804
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7221038A809
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236997AbhETKpf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:45:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60414 "EHLO mail.kernel.org"
+        id S237768AbhETKpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:45:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60460 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237068AbhETK3c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:29:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A6B7561261;
-        Thu, 20 May 2021 09:51:27 +0000 (UTC)
+        id S237116AbhETK3i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:29:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DFC5E61412;
+        Thu, 20 May 2021 09:51:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504288;
-        bh=XmTnRO0tUxq1mQAVmgbpfEFX1Y1/wMsQYo/kVpIRatg=;
+        s=korg; t=1621504290;
+        bh=e/saoSKQSXc1xLAhPuyeu7mnQsRJFJA40wQLwfH72D4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AFVGHhe0SvV/IR6IhLjrIOlO0mj9mrYT9PLnuHuJiaYGo9kBQAYcGKTJVyFHBFZy+
-         SbtfK995207g9YCmWCln/FrU+YYTHuuDJryI0mlOpvInwsGuXrUso62jz332SRjJW6
-         sToZ5bsg6pe774whG13PSp9HxsPe/u8B24DSNbxs=
+        b=COrxkK/XvrPVCIh09MaD13f0CFoZHf8upqxrARrJCnjVtvLiWOjICzI4agw71X+t0
+         WOcG4hBSV9zuwiylAaM6opvzoMvWyi1ToXVtDJbqjjvpPB65d17gZ9snMnLhmAhivX
+         sf9ysCovFpf2Kl8HzjaswfpJWKjicpuHWl8L70Hc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>,
-        syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 178/323] ttyprintk: Add TTY hangup callback.
-Date:   Thu, 20 May 2021 11:21:10 +0200
-Message-Id: <20210520092126.213216729@linuxfoundation.org>
+Subject: [PATCH 4.14 179/323] media: vivid: fix assignment of dev->fbuf_out_flags
+Date:   Thu, 20 May 2021 11:21:11 +0200
+Message-Id: <20210520092126.257455356@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,85 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit c0070e1e60270f6a1e09442a9ab2335f3eaeaad2 ]
+[ Upstream commit 5cde22fcc7271812a7944c47b40100df15908358 ]
 
-syzbot is reporting hung task due to flood of
+Currently the chroma_flags and alpha_flags are being zero'd with a bit-wise
+mask and the following statement should be bit-wise or'ing in the new flag
+bits but instead is making a direct assignment.  Fix this by using the |=
+operator rather than an assignment.
 
-  tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
-           port->count);
+Addresses-Coverity: ("Unused value")
 
-message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
-decrementing port->count due to tty_hung_up_p() == true.
-
-----------
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-
-int main(int argc, char *argv[])
-{
-	int i;
-	int fd[10];
-
-	for (i = 0; i < 10; i++)
-		fd[i] = open("/dev/ttyprintk", O_WRONLY);
-	ioctl(fd[0], TIOCVHANGUP);
-	for (i = 0; i < 10; i++)
-		close(fd[i]);
-	close(open("/dev/ttyprintk", O_WRONLY));
-	return 0;
-}
-----------
-
-When TTY hangup happens, port->count needs to be reset via
-"struct tty_operations"->hangup callback.
-
-[1] https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-
-Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
-Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
-Link: https://lore.kernel.org/r/17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: ef834f7836ec ("[media] vivid: add the video capture and output parts")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/ttyprintk.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/media/platform/vivid/vivid-vid-out.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-index 774748497ace..e56ac5adb5fc 100644
---- a/drivers/char/ttyprintk.c
-+++ b/drivers/char/ttyprintk.c
-@@ -159,12 +159,23 @@ static int tpk_ioctl(struct tty_struct *tty,
+diff --git a/drivers/media/platform/vivid/vivid-vid-out.c b/drivers/media/platform/vivid/vivid-vid-out.c
+index 3e7a26d15074..4629679a0f3c 100644
+--- a/drivers/media/platform/vivid/vivid-vid-out.c
++++ b/drivers/media/platform/vivid/vivid-vid-out.c
+@@ -1010,7 +1010,7 @@ int vivid_vid_out_s_fbuf(struct file *file, void *fh,
+ 		return -EINVAL;
+ 	}
+ 	dev->fbuf_out_flags &= ~(chroma_flags | alpha_flags);
+-	dev->fbuf_out_flags = a->flags & (chroma_flags | alpha_flags);
++	dev->fbuf_out_flags |= a->flags & (chroma_flags | alpha_flags);
  	return 0;
  }
  
-+/*
-+ * TTY operations hangup function.
-+ */
-+static void tpk_hangup(struct tty_struct *tty)
-+{
-+	struct ttyprintk_port *tpkp = tty->driver_data;
-+
-+	tty_port_hangup(&tpkp->port);
-+}
-+
- static const struct tty_operations ttyprintk_ops = {
- 	.open = tpk_open,
- 	.close = tpk_close,
- 	.write = tpk_write,
- 	.write_room = tpk_write_room,
- 	.ioctl = tpk_ioctl,
-+	.hangup = tpk_hangup,
- };
- 
- static const struct tty_port_operations null_ops = { };
 -- 
 2.30.2
 
