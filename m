@@ -2,86 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C8FB389EB4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE239389EB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:14:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230409AbhETHPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhETHPM (ORCPT
+        id S230487AbhETHPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:15:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59130 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230444AbhETHPV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:15:12 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17EEBC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:13:50 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id 29so106917pgu.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:13:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=areca-com-tw.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:date:mime-version
-         :content-transfer-encoding;
-        bh=/FZogyMJylWtzS0eidX0k1eno6muyKoInIXOv6M+ByM=;
-        b=DrJ/o5Y6r98D7LiHaOQqQdgv67bnQTekP2Lz8uwmnHCnoXeikFHS1UWXdH3YZIFjE5
-         0sJ10LbC0IgJG1d89ZZsnHMB4AjQdArcFPPOdbUaHPQJjKpu8xmYZZTtaIqtFaiBWCA8
-         SquxN/7ElfbtCN2b227sxwT6BgXj/xL4x3RKFBJ8dnKJEJg09HZB6vG8mKGNYHwT2RB6
-         /vfn5l2EXFK3D0dTZL/8P/stsfwURB/VpkkcVSXg/w7l9t2A/V/x4OCjEZn2TRnOsE4d
-         CzMVqpxDQEbAQItql7tImECh7dFLYCnWlLgurSBmTPcaqQa6LbJxHByqyGKtybbERX9A
-         FiNA==
+        Thu, 20 May 2021 03:15:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621494840;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X397uYzu/1SGZ7jXQoaSeO5WeNNNY9/Yz6fG++yQyTE=;
+        b=H/ThIPczBjR/j/GlgN/LL3yjm28YkRxaLVkDONqVmu5CajZ8jSPP/rpu/S3h1b+l3cNLML
+        04RIVWAiTaOF8He5cKTVQRO1JdBLIFpBheHekLDkPKf1kMQ4IRmTO0+/k+kujEYgAvFnMM
+        0ZAA94wXj8WITI3Ze+R2tso3Yy+Qohk=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-282-5VCswhaJNuOsrWINEhfehA-1; Thu, 20 May 2021 03:13:53 -0400
+X-MC-Unique: 5VCswhaJNuOsrWINEhfehA-1
+Received: by mail-ed1-f69.google.com with SMTP id w1-20020aa7da410000b029038d323eeee3so7027945eds.8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:13:53 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:date:mime-version
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=/FZogyMJylWtzS0eidX0k1eno6muyKoInIXOv6M+ByM=;
-        b=QcqPY5qPtohJDc/jTuLB3mFWTrZQO53sq2YzNHCxsm7XxCaGe8cl1sLOcQqYKv2Gll
-         hUXZtuVv4h0o48s5ZhMyl389y0xx2xFxq4gonsqX6hf6mQOpDj/cqqLVcC1ChVay3eyP
-         mRFIraT495QBBIZ/ytWkr3a2aCLjKilKXrA11BFiWJ10rQuX0LrUEoVf/rw2AkfMIQgq
-         dZr7uhVchTmroiS3Aq/PhdwHKEdSB3djVQJH36GILKxBSqQdOa3JTDzWJ3ub5DiMZ+EV
-         BSoNfzhxq6yJ1eqQsPWav8gSdtBOMHBPPkQYFljqeiuRjXAL/s/tuiX8stNAIKlAnphx
-         6MRA==
-X-Gm-Message-State: AOAM532K39us3ngz2M8TbCWe4owg0/RlEfKKWDHUOEQw+I/bb5gxSCNk
-        DJ6NOnFVl3IU8gGYWHAeCzWfbw==
-X-Google-Smtp-Source: ABdhPJxk1iqei3q6Z+wifKmSwxkuDpy5mFlZdNY6CV5wI8PgPuHlhNIUiWve/ymmfsA557xD7C5Iog==
-X-Received: by 2002:a65:5a81:: with SMTP id c1mr3081613pgt.111.1621494829559;
-        Thu, 20 May 2021 00:13:49 -0700 (PDT)
-Received: from centos78 (60-248-88-209.HINET-IP.hinet.net. [60.248.88.209])
-        by smtp.gmail.com with ESMTPSA id o3sm1220688pgh.22.2021.05.20.00.13.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 May 2021 00:13:49 -0700 (PDT)
-Message-ID: <d0c6dc6431f0e46db6583dc0d04d7983b420d4da.camel@areca.com.tw>
-Subject: [PATCH 2/2] scsi: arcmsr: update driver version to
- v1.50.00.05-20210429
-From:   ching Huang <ching2048@areca.com.tw>
-To:     martin.petersen@oracle.com, James.Bottomley@HansenPartnership.com,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Thu, 20 May 2021 15:13:49 +0800
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-10.el7) 
-Mime-Version: 1.0
+        bh=X397uYzu/1SGZ7jXQoaSeO5WeNNNY9/Yz6fG++yQyTE=;
+        b=rgEWM7jDGSMlyvUdEEnhbBVTj7DnyQO4NJRVksFP7S6DVP9l2LNhwFbayEzBrKInU2
+         A6TguHkVSKhQ9ZH4ueKEyLCGkUg2THNrVmBx2WDSg6ffsjxigXe6GcUo8B2bLZBnuw1b
+         3RbvdOZ9itblDn79wjgC2qP1D+kuAaH2N7YT3/Yxjom2+Xy/bGVhdSd3qjBZGms28gr4
+         IIvmn77JfagNiKNc9KsQsh1qfGvkGQPSPw6fqUFIwECvCi06JybNIikgSiOaxY0z/Zdg
+         LUXvIBC//D6rgeFgv8S+0vZY1hpNFpMRoBP/49LuO6d0RNPuzDk49qvlmrVdWzEbbDy+
+         zNUA==
+X-Gm-Message-State: AOAM533H3zJ5IRuNP38kP3OCpNayWdUac4TrdGLoZlDycl/MTzyv3FfI
+        kNTu3pCv7jvVp0w4wIAM2DCaDu6ed2TIGd5QeduVsWKYvCUf+1zVExSYXmIkT7LOBO0Wh+9+KeH
+        +XmdLUkbxwnhSfu/Ofj3szJ3I
+X-Received: by 2002:a17:906:710a:: with SMTP id x10mr3270203ejj.516.1621494832170;
+        Thu, 20 May 2021 00:13:52 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxibTGTIU5aNfe7e7C+nhhm86RevK1TLm9JeCA0fjdCXTc0xThi0q3SFi5juTDfWbQvOudDdQ==
+X-Received: by 2002:a17:906:710a:: with SMTP id x10mr3270183ejj.516.1621494831957;
+        Thu, 20 May 2021 00:13:51 -0700 (PDT)
+Received: from x1.bristot.me (host-87-19-51-73.retail.telecomitalia.it. [87.19.51.73])
+        by smtp.gmail.com with ESMTPSA id qo19sm923768ejb.7.2021.05.20.00.13.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 00:13:51 -0700 (PDT)
+Subject: Re: [RFC PATCH 04/16] rv/include: Add deterministic automata monitor
+ definition via C macros
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Gabriele Paoloni <gabriele.paoloni@intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1621414942.git.bristot@redhat.com>
+ <1e67370a0808714325b434edfe8f84178867af47.1621414942.git.bristot@redhat.com>
+ <20210519182739.GG21560@worktop.programming.kicks-ass.net>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <c638d724-c9d8-d640-eb99-8e684e2d594b@redhat.com>
+Date:   Thu, 20 May 2021 09:13:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <20210519182739.GG21560@worktop.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: ching Huang <ching2048@areca.com.tw>
+On 5/19/21 8:27 PM, Peter Zijlstra wrote:
+> On Wed, May 19, 2021 at 01:36:25PM +0200, Daniel Bristot de Oliveira wrote:
+> 
+>> +struct da_monitor {
+>> +	char curr_state;
+>> +	bool monitoring;
+>> +	void *model;
+>> +};
+>> +
+>> +#define MAX_PID		 1024000
+> 
+>> +/*
+>> + * Functions to define, init and get a per-task monitor.
+>> + *
+>> + * XXX: Make it dynamic? make it part of the task structure?
+> 
+> Yes !
+> 
+> I'd start with maybe adding a list_head to da_monitor and embedding a
+> single copy into task_struct and link from there. Yes lists suck, but
+> how many monitors do you realistically expect to run concurrently?
 
-Update driver version to v1.50.00.05-20210429.
+Good to know I can use the task struct! This will make my life easier. I did it
+this way because I started doing the code all "out-of-tree," as modules... but
+being in kernel gives such possibilities.
 
-Signed-off-by: ching Huang <ching2048@areca.com.tw>
----
+I will try to implement your idea! I do not see many concurrent monitors
+running, and as the list search will be linear to the number of active
+monitors... it might not even justify any more complex data structure.
 
-diff --git a/drivers/scsi/arcmsr/arcmsr.h b/drivers/scsi/arcmsr/arcmsr.h
-index eb0ef73..6ce57f0 100644
---- a/drivers/scsi/arcmsr/arcmsr.h
-+++ b/drivers/scsi/arcmsr/arcmsr.h
-@@ -49,7 +49,7 @@ struct device_attribute;
- #define ARCMSR_MAX_OUTSTANDING_CMD	1024
- #define ARCMSR_DEFAULT_OUTSTANDING_CMD	128
- #define ARCMSR_MIN_OUTSTANDING_CMD	32
--#define ARCMSR_DRIVER_VERSION		"v1.50.00.04-20210414"
-+#define ARCMSR_DRIVER_VERSION		"v1.50.00.05-20210429"
- #define ARCMSR_SCSI_INITIATOR_ID	255
- #define ARCMSR_MAX_XFER_SECTORS		512
- #define ARCMSR_MAX_XFER_SECTORS_B	4096
+Thanks Peter!
+
+-- Daniel
+
+>> + */
+>> +#define DECLARE_DA_MON_INIT_PER_TASK(name, type)				\
+>> +										\
+>> +struct da_monitor da_mon_##name[MAX_PID];					\
+> 
+> That's ~16M of memory, which seems somewhat silly.
+> 
+>> +										\
+>> +static inline struct da_monitor *da_get_monitor_##name(pid_t pid)		\
+>> +{										\
+>> +	return &da_mon_##name[pid];						\
+>> +}										\
+>> +										\
+>> +void da_monitor_reset_all_##name(void)						\
+>> +{										\
+>> +	struct da_monitor *mon = da_mon_##name;					\
+>> +	int i;									\
+>> +	for (i = 0; i < MAX_PID; i++)						\
+>> +		da_monitor_reset_##name(&mon[i]);				\
+>> +}										\
+>> +										\
+>> +static void da_monitor_init_##name(void)					\
+>> +{										\
+>> +	struct da_monitor *mon = da_mon_##name;					\
+>> +	int i;									\
+>> +										\
+>> +	for (i = 0; i < MAX_PID; i++) {						\
+>> +		mon[i].curr_state = model_get_init_state_##name();		\
+>> +		mon[i].monitoring = 0;						\
+>> +		mon[i].model = model_get_model_##name();			\
+>> +	}									\
+>> +}										\
+> 
 
