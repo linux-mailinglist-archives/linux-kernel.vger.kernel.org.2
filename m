@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC61389E55
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06F71389E57
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhETGzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
+        id S230492AbhETGzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230365AbhETGzZ (ORCPT
+        with ESMTP id S230430AbhETGz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:55:25 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DFF8C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:04 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id e15-20020a0caa4f0000b02901eedbb09299so10877261qvb.15
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:04 -0700 (PDT)
+        Thu, 20 May 2021 02:55:28 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2439C061761
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:05 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id p138-20020a2542900000b029051304a381d9so9042617yba.20
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Vxs+IsfkjudRR9AMrF0VuRYwRpXVOuThAM5t2BO4Wtw=;
-        b=gEeAhMTYbAQslSO01e0o8YIym/dFnsQfB9lZrmyFhl8uqTqmQEDIIu/28e1BOlyvt9
-         rJm5/8Caqo1KIaunpdBy2LPtOXmfi9ZJDnuwRnb21JoByNrFkCChT4Z5xyeBqut1yHQm
-         /TlMDm6OPoewZgMjaOhRgLuU1i+Q2viLaBK5TcX/f4jp7CkEtCTn5SioWFrXLpHFPgfg
-         kYO7g2IN+CR6iy3EfEzmDy81m8wakeRxZZOx4HjJ7gGFFDfSfK4SyZnaOFS2lmsp1BrE
-         F/LSnBPYHDzzGJCEqa0RfGIu9OFnYG7fyBb1AzMWt5UOwD1Z5Gw0p3PCAJBE1ykqsTQ7
-         ooLQ==
+        bh=u+gVIGEYIPA/2ZnKQ/jn+syjhmo8lEqvUYZxU0dhdmw=;
+        b=ilLDWOeIOTKbkZAyTcceDtOpp2Z6oTFrQhsVyqk7X5l9/6+8NJYYI+dDrFdNy8GHPn
+         TXNwPsD+oRKvYdGx4axZhlkFzOkdcr+xYDHDYwdfV6GJubHW0qUcVuNhCtoKbC5rA7Rc
+         HLlOQqtRJZ/ivTzUig8CQccV040hHCbuz35dLgXbD1dVokwc1cOuKZaTLQpYVLsUP3Bu
+         MGJAAygLFemJO4Lj2rtnjvJG8CDZr9Z0uZhqKEqHkyenPQKZNhlA4Evgi1wYHSSLSqnJ
+         48ySo0abwH067PuNMNMETfFX32LpXeIda/dgmAGMAOCqUYbqyCKHzmjDuutRjkgtmoG5
+         3meg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Vxs+IsfkjudRR9AMrF0VuRYwRpXVOuThAM5t2BO4Wtw=;
-        b=WqdLL8JjD4oD11umCae6nAxvQ9zl0qjRO1psbjN4FhRRkc/CQM+QJ7TCbayd5VCaUu
-         rtoZfhuozKEHvBBclv4jQzorRkiOVjwZGIX52HwBCvcXpPAQF69jkqG0WRjQKrUK9laH
-         TcyQDkdTbJztqqLLgoaMke0Pvw3qiJvr4a19wbHUQt+uwR4UXoL2NTQBotaVS1/Ji2zn
-         MhoxUD+f8pgFoCCCn/G5DgDvOIOCN2Ed8dcKb+fMyQn2Lhjc9xLUnlaGN6WdKwBpOq9Z
-         AFd/Ld6gumYWjtW7nBuum/ysfqbF5Au47sGCuLngPSTq/x4OIApMHQLjOikk1jB9ydlN
-         GRzA==
-X-Gm-Message-State: AOAM5302cFNM+/KQLI85uCrC18olBzO35TXBlTOBABeaNnESgoIvYml8
-        1LlliNnJr3ok2uXDGXaBzjDPiIU7ddM=
-X-Google-Smtp-Source: ABdhPJzxHNbGXEeZppZputW4eyMKgrpzCcHkInnC6cFjCLcGtMdRmVBNnbFHvD2nDRL//K+y6INSV9VSvtY=
+        bh=u+gVIGEYIPA/2ZnKQ/jn+syjhmo8lEqvUYZxU0dhdmw=;
+        b=kGPHggyxo0QzLlCv4G7r06Qb9zfq6cYJu4n3UotivJGpIGltx02xhr3dmw5myvMMTB
+         +ZbHFgrPBlvHRFOzV44X/BNunb0sZE08NWoL7Ukl2CPGFW5C4ojk1f5ULcVpNMkwMHLM
+         a8+V1TCPtJTZj/8tHL+9HnYHlYz/Bigq1ANURCC14mJjIXuCM5eCU6+JTuizAZzNiIIr
+         u8eXfLqGhtBe68cHudHsJtza4h2srgcHTDTznQxwVhruHz3nU10Sni6vFJNWMxYzEfHy
+         179XSwdgavLRIWc5CxN1biYoS2EkJnVyEf1eYcyMtFUArZKIHQtx6DsDN2wNQ2P6YXD5
+         BUtw==
+X-Gm-Message-State: AOAM533YpaJcNo3c5ia3Q6gdyS41kyWgd490xt0zYDyNkyhH3hi4hj2m
+        uiBbgl6yA1VtsOKBod8/iMtZhtd4aXg=
+X-Google-Smtp-Source: ABdhPJw2fnax4tdT5Wsay5+rPu2/CLppUyd3dEee27l274OvNNlEZeyxb+pNstV/LKb7q5/PkQmoAivSEq8=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:595d:62ee:f08:8e83])
- (user=yuzhao job=sendgmr) by 2002:ad4:4184:: with SMTP id e4mr4097411qvp.13.1621493643517;
- Wed, 19 May 2021 23:54:03 -0700 (PDT)
-Date:   Thu, 20 May 2021 00:53:43 -0600
+ (user=yuzhao job=sendgmr) by 2002:a05:6902:513:: with SMTP id
+ x19mr5279236ybs.129.1621493645039; Wed, 19 May 2021 23:54:05 -0700 (PDT)
+Date:   Thu, 20 May 2021 00:53:44 -0600
 In-Reply-To: <20210520065355.2736558-1-yuzhao@google.com>
-Message-Id: <20210520065355.2736558-3-yuzhao@google.com>
+Message-Id: <20210520065355.2736558-4-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210520065355.2736558-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v3 02/14] include/linux/nodemask.h: define next_memory_node()
- if !CONFIG_NUMA
+Subject: [PATCH v3 03/14] include/linux/cgroup.h: export cgroup_mutex
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
@@ -86,27 +85,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently next_memory_node only exists when CONFIG_NUMA=y. This patch
-adds the macro for !CONFIG_NUMA.
+cgroup_mutex is needed to synchronize with memcg creations.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
 ---
- include/linux/nodemask.h | 1 +
- 1 file changed, 1 insertion(+)
+ include/linux/cgroup.h | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/nodemask.h b/include/linux/nodemask.h
-index ac398e143c9a..89fe4e3592f9 100644
---- a/include/linux/nodemask.h
-+++ b/include/linux/nodemask.h
-@@ -486,6 +486,7 @@ static inline int num_node_state(enum node_states state)
- #define first_online_node	0
- #define first_memory_node	0
- #define next_online_node(nid)	(MAX_NUMNODES)
-+#define next_memory_node(nid)	(MAX_NUMNODES)
- #define nr_node_ids		1U
- #define nr_online_nodes		1U
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4f2f79de083e..bd5744360cfa 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -432,6 +432,18 @@ static inline void cgroup_put(struct cgroup *cgrp)
+ 	css_put(&cgrp->self);
+ }
  
++extern struct mutex cgroup_mutex;
++
++static inline void cgroup_lock(void)
++{
++	mutex_lock(&cgroup_mutex);
++}
++
++static inline void cgroup_unlock(void)
++{
++	mutex_unlock(&cgroup_mutex);
++}
++
+ /**
+  * task_css_set_check - obtain a task's css_set with extra access conditions
+  * @task: the task to obtain css_set for
+@@ -446,7 +458,6 @@ static inline void cgroup_put(struct cgroup *cgrp)
+  * as locks used during the cgroup_subsys::attach() methods.
+  */
+ #ifdef CONFIG_PROVE_RCU
+-extern struct mutex cgroup_mutex;
+ extern spinlock_t css_set_lock;
+ #define task_css_set_check(task, __c)					\
+ 	rcu_dereference_check((task)->cgroups,				\
+@@ -704,6 +715,8 @@ struct cgroup;
+ static inline u64 cgroup_id(const struct cgroup *cgrp) { return 1; }
+ static inline void css_get(struct cgroup_subsys_state *css) {}
+ static inline void css_put(struct cgroup_subsys_state *css) {}
++static inline void cgroup_lock(void) {}
++static inline void cgroup_unlock(void) {}
+ static inline int cgroup_attach_task_all(struct task_struct *from,
+ 					 struct task_struct *t) { return 0; }
+ static inline int cgroupstats_build(struct cgroupstats *stats,
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
