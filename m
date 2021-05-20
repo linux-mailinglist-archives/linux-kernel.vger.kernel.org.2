@@ -2,120 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2A038B2E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:20:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3033A38B2EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:21:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243748AbhETPVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:21:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43150 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232723AbhETPVV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:21:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8786261363;
-        Thu, 20 May 2021 15:19:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621523999;
-        bh=Vng7zXwIuCJZVNFsguZzrjtqA8ZMldPUOAscXDMmFRo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=rICx6Jk4tyojHV8FMJ8B03JlTP8KcuDStU90JQ9K00pCmrh0egKgRnhnXf0D0DOcU
-         70cPXvmX6by1fVF0blg8xgVIQbZZWyJeyHjb4d0hrcXTH1BSNysVKxCg5XUb9Oh7ou
-         zFTTOWys6tDYXOUu3JHfJ/uGdtHQiOPQtiOeDoUr7aRD+mbTQviSBt/NFg7EQqYsBC
-         RPHbO4D7/Ow9iVNQbyi/U268/ooa+aWcZAZhpat4ERPZ1PnID6d07G9XJ+J3FvKYrq
-         kfF38x4Ff4dBdUvQi+Vj7KTHy44ud3vK0k6aEPAYlGo/Vy6P8+GqJ58cT2mcQGTHKr
-         FxX9KwWfl1dng==
-Received: by mail-ej1-f51.google.com with SMTP id gb17so7878444ejc.8;
-        Thu, 20 May 2021 08:19:59 -0700 (PDT)
-X-Gm-Message-State: AOAM532P1j2W4G4ItOCawgpKNNeHpEGfrRp39du+hN1kGPSN/GSW+dxN
-        cqVKFbeJ2eApBDsTXKzRQHouEnbnvka2eZhHnA==
-X-Google-Smtp-Source: ABdhPJwuQcGsfmiQL/tncYJdsumLLsd3GPx7QZ7OaLVcAr3r6WR2jZZdtUn5xwCWFoMQdZS7l7ws1RWUSvQepiUyXhc=
-X-Received: by 2002:a17:907:78cd:: with SMTP id kv13mr5189426ejc.360.1621523998020;
- Thu, 20 May 2021 08:19:58 -0700 (PDT)
+        id S236690AbhETPWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:22:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233026AbhETPWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:22:47 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E72C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:21:26 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id y2so23284978ybq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:21:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8hro9I3loiFQO7tPWR5EHbQ134jYdNaWCcDWr/ZKxd0=;
+        b=qRMDUd1AXQTjN9du4gVoKHaXfUCh7NrxvD55AdymCSHEv6PAmW8pw0vThGNZM5QA6G
+         wfSXPSwTc0vOoQRX5T9Ad3TskuHnGD2q4s3uMjagCE8Fxq3k7c+fFHsG/ampRx/l5XZn
+         tD/mvhq7dv06+pU1QvJdzYCOGETTghkGD0wA4yYiE61s0V4nVz4SbxwLYub5By2RuyKe
+         Akbu6Gb6hJAhX+So6IJStz4n4sz9Y7ct6WiaeE4eZRiUYhCi0XSnYaUT17JfyA1oZVF8
+         r/rJjk8x6G1yz7we1MvUS5J1IXpV4ZYtmMb3UZR5aoMMTrXgoEFWo1/zG5RkGc9XHKNg
+         oGww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8hro9I3loiFQO7tPWR5EHbQ134jYdNaWCcDWr/ZKxd0=;
+        b=lkWmzzlkYzUtN2ixde4Ct6khjSHxc68nK2t+YklgylOugOgx0A5BZGwVJOKouFbrGC
+         i3L5SGamVWXgL5imUb5tj+GnleyT8yjmVSh9VDawhDKlREP9Sqc1ItH2h3YU4V0wIfAc
+         nXwR1KpwDtKdPObl7Usz4THyTOeKYSxARm9Ia+HAnK0dX2l6i1bSxBOh5WT1WHvtzPlu
+         nE3LjGz3Ke+b1o12cIg+cN8e5f2fxeU8j1QPB7+rrfOlEp1VfhM7NTloDpfALOOa+Yvd
+         5NL0Erxd0KhgoiY3OMgXoVwhqpIs+yRqRV7J8Ah9jXD7zskBYfcBhUtrh/PIEwZDVWYA
+         dJEA==
+X-Gm-Message-State: AOAM532+95Ke1ezaqel2DQs6zKfXRNQJCF/anavP6EQYOzSAgtuxfrQK
+        iv6ibDz96jnCPgupXJvI/eOIpRl5vkbZKPKPPREfsA==
+X-Google-Smtp-Source: ABdhPJwZ+XcD6fGqo+jL5v2obw/+Ww/uWPdsMnI+El5mBp83pjHELZBh+oWZmXIpIKmcbPg5R87RdIzn9+BdLg79Blo=
+X-Received: by 2002:a5b:782:: with SMTP id b2mr7927623ybq.68.1621524085231;
+ Thu, 20 May 2021 08:21:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518232858.1535403-1-robh@kernel.org> <20210518232858.1535403-2-robh@kernel.org>
- <72b27bc0-838c-fd7d-32f8-bc00f8508d1d@ti.com>
-In-Reply-To: <72b27bc0-838c-fd7d-32f8-bc00f8508d1d@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 20 May 2021 10:19:45 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLXK6nY9qHRdYK0VGCjAMmkKktWXe9rjkY6rsveYinhRg@mail.gmail.com>
-Message-ID: <CAL_JsqLXK6nY9qHRdYK0VGCjAMmkKktWXe9rjkY6rsveYinhRg@mail.gmail.com>
-Subject: Re: [PATCH 1/6] dt-bindings: mfd: ti,j721e-system-controller: Fix mux
- node errors
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     devicetree@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Wolfram Sang <wsa@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Niklas_S=C3=B6derlund?= 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        Jonathan Cameron <jic23@kernel.org>
+References: <20210520135226.2335704-1-tmricht@linux.ibm.com>
+In-Reply-To: <20210520135226.2335704-1-tmricht@linux.ibm.com>
+From:   Ian Rogers <irogers@google.com>
+Date:   Thu, 20 May 2021 08:21:12 -0700
+Message-ID: <CAP-5=fV094Ga3T8G5UEBk_s-Y=ZUdVqn-o9386Mqrzg7ZiDTOA@mail.gmail.com>
+Subject: Re: [PATCH][Ping] perf test: Test 17 fails with make LIBPFM4=1 on
+ s390 z/VM
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-perf-users <linux-perf-users@vger.kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        sumanth Korikkar <sumanthk@linux.ibm.com>,
+        Stephane Eranian <eranian@google.com>, svens@linux.ibm.com,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 9:42 AM Kishon Vijay Abraham I <kishon@ti.com> wrote:
+On Thu, May 20, 2021 at 6:52 AM Thomas Richter <tmricht@linux.ibm.com> wrote:
 >
-> Hi Rob,
+> This test case fails on s390 virtual machine z/VM which has no PMU support
+> when the perf tool is built with LIBPFM4=1.
 >
-> On 19/05/21 4:58 am, Rob Herring wrote:
-> > The ti,j721e-system-controller binding does not follow the standard mux
-> > controller node name 'mux-controller' and the example is incomplete. Fix
-> > these to avoid schema errors before the mux controller binding is
-> > converted to schema.
-> >
-> > Cc: Lee Jones <lee.jones@linaro.org>
-> > Cc: Kishon Vijay Abraham I <kishon@ti.com>
-> > Cc: Roger Quadros <rogerq@ti.com>
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> >  .../mfd/ti,j721e-system-controller.yaml       | 19 +++++++++++++------
-> >  1 file changed, 13 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> > index 19fcf59fd2fe..272832e9f8f2 100644
-> > --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> > +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
-> > @@ -43,12 +43,10 @@ properties:
-> >
-> >  patternProperties:
-> >    # Optional children
-> > -  "^serdes-ln-ctrl@[0-9a-f]+$":
-> > +  "^mux-controller@[0-9a-f]+$":
-> >      type: object
-> > -    description: |
-> > -      This is the SERDES lane control mux. It should follow the bindings
-> > -      specified in
-> > -      Documentation/devicetree/bindings/mux/reg-mux.txt
-> > +    description:
-> > +      This is the SERDES lane control mux.
-> >
-> >  required:
-> >    - compatible
-> > @@ -68,9 +66,18 @@ examples:
-> >          #size-cells = <1>;
-> >          ranges;
-> >
-> > -        serdes_ln_ctrl: serdes-ln-ctrl@4080 {
-> > +        serdes_ln_ctrl: mux-controller@4080 {
-> >              compatible = "mmio-mux";
-> >              reg = <0x00004080 0x50>;
+> Using make LIBPFM4=1 builds the perf tool with support for libpfm
+> event notation. The command line flag --pfm-events is valid:
+>  # ./perf record --pfm-events cycles -- true
+>  [ perf record: Woken up 1 times to write data ]
+>  [ perf record: Captured and wrote 0.001 MB perf.data (2 samples) ]
+>  #
 >
-> "mmio-mux" compatible doesn't define using "reg" property. But a system
-> can have multiple mux-controllers which would require us to use
-> mux-controller@0, mux-controller@1,..
+> However the command 'perf test -Fv 17' fails on s390 z/VM virtual machine
+> with LIBPFM4=1:
+>   # perf test -Fv 17
+>   17: Setup struct perf_event_attr                                    :
+>   --- start ---
+>   .....
+>   running './tests/attr/test-record-group2'
+>   unsupp  './tests/attr/test-record-group2'
+>   running './tests/attr/test-record-pfm-period'
+>   expected exclude_hv=0, got 1
+>  FAILED './tests/attr/test-record-pfm-period' - match failure
+>  ---- end ----
+>  Setup struct perf_event_attr: FAILED!
+>
+> When --pfm-event system is not supported, the test returns unsupported
+> and continues. Here is an example using a virtual machine on x86 and
+> Fedora 34:
+>  [root@f33 perf]# perf test -Fv 17
+>  17: Setup struct perf_event_attr                                    :
+>  --- start ---
+>  .....
+>  running './tests/attr/test-record-group2'
+>  unsupp  './tests/attr/test-record-group2'
+>  running './tests/attr/test-record-pfm-period'
+>  unsupp  './tests/attr/test-record-pfm-period'
+>  ....
+>
+> The issue is file ./tests/attr/test-record-pfm-period
+> which requires perf event attribute member exclude_hv to be zero.
+> This is not the case on s390 where the value of exclude_hv is one when
+> executing on a z/VM virtual machine without PMU hardware support.
+>
+> Fix this by allowing value exlucde_hv to be zero or one.
+>
+> Output before:
+>  # /usr/bin/python ./tests/attr.py -d ./tests/attr/ -t \
+>         test-record-pfm-period -p ./perf  -vvv 2>&1| fgrep match
+>     matching [event:base-record]
+>     match: [event:base-record] matches []
+>  FAILED './tests/attr//test-record-pfm-period' - match failure
+>  #
+>
+> Output after:
+>  # /usr/bin/python ./tests/attr.py -d ./tests/attr/ -t \
+>         test-record-pfm-period -p ./perf  -vvv 2>&1| fgrep match
+>     matching [event:base-record]
+>     match: [event:base-record] matches ['event-1-0-6', 'event-1-0-5']
+>   matched
+>     matching [event-1-0-6]
+>     match: [event-1-0-6] matches ['event:base-record']
+>     matching [event-1-0-5]
+>     match: [event-1-0-5] matches ['event:base-record']
+>   matched
+>  #
+>
+> Background:
+> Using libpfm library ends up in this function call sequence
+>
+> pfm_get_perf_event_encoding()
+> +-- pfm_get_os_event_encoding()
+>     +-- pfmlib_perf_event_encode()
+>
+> is called when no hardware specific PMU unit can be detected
+> as in the s390 z/VM virtual machine case. This uses the
+> "perf_events generic PMU" data structure which sets exclude_hv per default.
+> Using this PMU that test case always fails.
+>
+> That is the reason why exclude_hv attribute setting varies.
+>
+> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+> Cc: Ian Rogers <irogers@google.com>
+> ---
+>  tools/perf/tests/attr/test-record-pfm-period | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/tools/perf/tests/attr/test-record-pfm-period b/tools/perf/tests/attr/test-record-pfm-period
+> index 368f5b814094..b962d6d11ee2 100644
+> --- a/tools/perf/tests/attr/test-record-pfm-period
+> +++ b/tools/perf/tests/attr/test-record-pfm-period
+> @@ -7,3 +7,4 @@ ret     = 1
+>  sample_period=77777
+>  sample_type=7
+>  freq=0
+> +exclude_hv=0|1
 
-It does now in patch 3 as part of the schema conversion. It's optional
-as getting folks to use 'reg' for syscon child nodes is an uphill
-battle.
+Presumably you see the same failure for other attribute checks, such
+as test-record-period? Would it make more sense to change base-record
+so that exclude_hv=0|1 ?
 
-Rob
+Thanks,
+Ian
+
+> --
+> 2.30.2
 >
-> And IIRC if we have "@", 'reg' will be a required required property.
-> Would it be an issue here?
->
-> Thanks
-> Kishon
