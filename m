@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4F438B816
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 937E338B81C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237770AbhETUIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:08:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48216 "EHLO
+        id S237558AbhETUKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237436AbhETUIc (ORCPT
+        with ESMTP id S234343AbhETUJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:08:32 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731A5C061574;
-        Thu, 20 May 2021 13:07:10 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 27128301;
-        Thu, 20 May 2021 20:07:10 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 27128301
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1621541230; bh=CNxnOCJVOJKAJIvZB7szAnJIgPV0VeU9F7svfsG8P3I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=nCLQOmE5Xx9lLM9ejGMysPE6efYmduP6+8wUZktVfTkQI3EijzKIiOxmhHTXxmF9v
-         8Uhn0aHC2IRzN4S7c2M8TDt+HB+arlVIoZ/5GnyYVKXhuv92MOoi7UKxeEjOHfDQsD
-         PC8vGNQqNaFLeiioVhR+T2tN9pZiOiSISFedhBV14h3eJYmDLM7Ch8PGP/qU1p51YF
-         mEBziD4bbv2BX3v5c8w83vqPAQ+u34mMrJsK9vTLagtcjChJjW5aOtp9EZB3N5huYm
-         KLX2DmKdoYfk5XKyuiWcuEyiEQ5HN/JB843/d8cqL4+vM/kJ5r1fL4r2SUDOph/qkz
-         O/7C93JlWA67w==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Wei Ming Chen <jj251510319013@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     linux-doc@vger.kernel.org, federico.vaga@vaga.pv.it,
-        alexs@kernel.org, Wei Ming Chen <jj251510319013@gmail.com>
-Subject: Re: [PATCH] docs: Use fallthrough pseudo-keyword
-In-Reply-To: <20210515155142.2490-1-jj251510319013@gmail.com>
-References: <20210515155142.2490-1-jj251510319013@gmail.com>
-Date:   Thu, 20 May 2021 14:07:09 -0600
-Message-ID: <87o8d5np8y.fsf@meer.lwn.net>
+        Thu, 20 May 2021 16:09:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90876C061574;
+        Thu, 20 May 2021 13:08:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=RL+lK8usZm6e87x0wg/qqwwNxRjGH9Tsz6E4tKt5SYE=; b=rcmKoR4bFCQU44vlSTobZtpEC2
+        Zzh9uexgE/GLYgHvVKOgINb/ENNSyNbOaPl95yABDWzCaPWuPbnJeuOrfPCIPlp0LUTsiL9gkkT2f
+        2B2w+LOKCty+s3QIzinmLT118Szbu7Uy9vslU5uSWrm5i6qs8nLzEMgKasd+jPrtph/stfc4PJLlG
+        ve6kEQ12kF8iYLlp2D8Kg5XIJoHPk/tuE1RLe0786dAMTJNfQFTp+AnyWjYjKkfCjxczWE01eeH6E
+        S+zw5e5T7FMnLgzQLKAs0u5PjJGH9sPs1in+lEKoRN0TIZmb8du0TCrWe4M0li8wZCjP82XlBKbel
+        wA0NYxlg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljoxs-00GMAg-31; Thu, 20 May 2021 20:08:23 +0000
+Date:   Thu, 20 May 2021 21:08:16 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 10/10] iio: documentation: fix a typo
+Message-ID: <YKbBsOnQyThisWDP@casper.infradead.org>
+References: <cover.1621413933.git.mchehab+huawei@kernel.org>
+ <ebe6c6597409fb9748e6c05d8e8cb3bd3fa4c6f4.1621413933.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ebe6c6597409fb9748e6c05d8e8cb3bd3fa4c6f4.1621413933.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Wei Ming Chen <jj251510319013@gmail.com> writes:
+On Wed, May 19, 2021 at 10:51:47AM +0200, Mauro Carvalho Chehab wrote:
+> @@ -798,7 +798,7 @@ What:		/sys/.../in_capacitanceY_adaptive_thresh_rising_timeout
+>  What:		/sys/.../in_capacitanceY_adaptive_thresh_falling_timeout
+>  KernelVersion:	5.11
+>  Contact:	linux-iio@vger.kernel.org
+> -Descrption:
+> +Description:
+>  		When adaptive thresholds are used, the tracking signal
+>  		may adjust too slowly to step changes in the raw signal.
+>  		*_timeout (in seconds) specifies a time for which the
 
-> Replace /* fall through */ comment with fallthrough, make
-> it align with original process/coding-style.rst
->
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
-> ---
->  Documentation/translations/it_IT/process/coding-style.rst | 2 +-
->  Documentation/translations/zh_CN/process/coding-style.rst | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-
-Applied, thanks.
-
-jon
+This must be the warning Jon refers to.  * as wildcard, rather than
+* as emphasis marker.
