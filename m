@@ -2,149 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FF2338B425
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:19:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F5BB38B42F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:26:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233885AbhETQUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:20:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233647AbhETQUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:20:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49F2E60FE8;
-        Thu, 20 May 2021 16:19:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621527563;
-        bh=0GmCmFU5wfCMbmtOzP0mBUf5uBtCwTwQbf8LadEdPK4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RfkVHOKkHVmFSDIelI+0Le6gh6OCdtiFzuysKzyJ5wZ5H7a/6lv2TmO95MYoGjUFa
-         1Oz0hMX2sKUjqtQSHL2wcpdFYLRxR5UJzl2jZaZwTzlmp9Jdzku9wC+CcgdxRN0LgS
-         dSgWM+lw0OSidS7vDJlvF/hgy4sNFclikr9JqBowUf3aajYriYuHJoJFXlzSEMwfXQ
-         6tUyUmKkrtfnAV1qwJnC3ZDJr9fEW5Nu5fOH7EHlsOJmRHcP8TQDi3ZB59FQiSIIcR
-         wKja+ONQLflpTy3DW2c/OEGCcT9HQF65OYXfidIucA0h/A2+ODWh7LtI7tkxAWT63x
-         3zA8XJS8WlqTA==
-Date:   Thu, 20 May 2021 18:19:19 +0200
-From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Pavel Machek <pavel@ucw.cz>, linuxarm@huawei.com,
-        mauro.chehab@huawei.com, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-leds@vger.kernel.org
-Subject: Re: [PATCH v2 00/17] Adding support for controlling the leds found
- on Intel NUC
-Message-ID: <20210520181919.608568b2@thinkpad>
-In-Reply-To: <20210520010720.32265ad4@coco.lan>
-References: <cover.1621349813.git.mchehab+huawei@kernel.org>
-        <20210519111107.GC24621@duo.ucw.cz>
-        <20210519141508.6e7a4d56@coco.lan>
-        <20210519194115.GA31672@duo.ucw.cz>
-        <20210520010720.32265ad4@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S233921AbhETQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233064AbhETQ1P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:27:15 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAA4C061760
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:25:54 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso15336861otb.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:25:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=aBkhk3QDWbqSQxByb9B0QwU7XpNxQNo09cMdXpxbbl8=;
+        b=ZTcJ2ZN5oiXQB5JixcdXLMUBNnapMtCPrrCADKk79kIX1HO7C6sJyH98HYPoLlmHsi
+         aLwFtH/1sEk9TAJWoINwVFUCDVeDneG9y10WuHZCQkwnHAAC+wBLYozbvS6zxdJQjHnI
+         0ygWlp5+o43N/ShvItsywwnmDq6K1Zrsxfo88=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aBkhk3QDWbqSQxByb9B0QwU7XpNxQNo09cMdXpxbbl8=;
+        b=hoUbUd+wp+m/NL0V09Tz9n2lSCfvIqg1OnXx5yFeWR99ucn6fjkRdJosMW+eCe+qN0
+         41dypmKdSJI4T9iFAM6QLBgK/jB58tFZbsUwn25Bm91ilYgRhgRYjkeC6KwapCfWHpuV
+         +Q3F8yxM1HMWlSqnyz7tq3jj9zTzQ2awMv4XhY+0NeMjd5U5BtDeljAayrvg7P+5GnsE
+         lUdqVdTpir6bR20Yp1jfevtGX36Zn5jDS5xWJFSNaSEf5Q92tMYt6jBTcGIhindVoCCL
+         7fnwCUoh+xQUNcq4MfVVlWO0WNR64pUUCDwpisk2yn3WD126M82GOapJSeXhLfBNObyK
+         6dpg==
+X-Gm-Message-State: AOAM5335kjcM81dFf0d4LtlVcK/raQgGjGnytg1tl1oMQ5S+Vmf4uoCy
+        O5j/vQVeKmy6F3hctb43WTzulKIpPvaVeAzt8795aA==
+X-Google-Smtp-Source: ABdhPJzdUcCTfi80bWr13zSZ/F0YDpb9U8rAzzxeFvH1KraofvvTAPHpWCxezFVXjEF5rDoRiuG7kW/hvb7nC0aahGE=
+X-Received: by 2002:a9d:4101:: with SMTP id o1mr4653449ote.281.1621527953214;
+ Thu, 20 May 2021 09:25:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-2-robdclark@gmail.com>
+ <8dcdc8d5-176c-f0ad-0d54-6466e9e68a0a@amd.com> <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
+In-Reply-To: <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
+From:   Daniel Vetter <daniel@ffwll.ch>
+Date:   Thu, 20 May 2021 18:25:42 +0200
+Message-ID: <CAKMK7uF9Uz6amffv=bbErbU4+PQ0NRqV0Az9woQfTTikrJSrFw@mail.gmail.com>
+Subject: Re: [RFC 1/3] dma-fence: Add boost fence op
+To:     Rob Clark <robdclark@gmail.com>,
+        Matthew Brost <matthew.brost@intel.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 01:07:20 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Thu, May 20, 2021 at 4:03 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> On Wed, May 19, 2021 at 11:47 PM Christian K=C3=B6nig
+> <christian.koenig@amd.com> wrote:
+> >
+> > Uff, that looks very hardware specific to me.
+>
+> Howso?  I'm not sure I agree.. and even if it was not useful for some
+> hw, it should be useful for enough drivers (and harm no drivers), so I
+> still think it is a good idea
+>
+> The fallback plan is to go the i915 route and stop using atomic
+> helpers and do the same thing inside the driver, but that doesn't help
+> any of the cases where you have a separate kms and gpu driver.
 
-> So, the first thing that the API needs is a way to tell what LED
-> is monitoring the device's power state.
+Don't, because the i915 plan is to actually move towards drm/scheduler
+and atomic helpers.
 
-If a LED can monitor the device's power state in HW, register a LED
-private trigger for this LED. If the LED is configured into this state
-by default, you can set this trigger to be the default_trigger prior
-registering the LED. The name of this private trigger can be
-"hw:powerstate" or something like that (I wonder what others will
-think about this name).
+> > As far as I can see you can also implement completely inside the backen=
+d
+> > by starting a timer on enable_signaling, don't you?
+>
+> Not really.. I mean, the fact that something waited on a fence could
+> be a useful input signal to gpu freq governor, but it is entirely
+> insufficient..
+>
+> If the cpu is spending a lot of time waiting on a fence, cpufreq will
+> clock down so you spend less time waiting.  And no problem has been
+> solved.  You absolutely need the concept of a missed deadline, and a
+> timer doesn't give you that.
 
-> Then, for each power state (S0, S3, S5), define if the LED will
-> be ON all the times or not.
-> 
-> The "slowing breathing" is one of the possible blink patterns.
-> The driver supports 4 other blink patterns
-> 
-> 	- Solid - the LED won't blink;
-> 	- Breathing - it looks like a sinusoidal wave pattern;
-> 	- Pulsing - it looks like a square wave pattern;
-> 	- Strobing - it turns ON suddenly, and then it slowly turns OFF.
-> 
-> The speed of the blink is also adjustable, ranging from 0.1 Hz to 1 Hz,
-> on 0.1 Hz steps.
+Yup agreed.
 
-Is the speed of breathing/strobing also adjustable? Or only when
-pulsing?
+Adding Matt Brost, since he's planning all this boostback work.
+-Daniel
 
-When this "hw:powerstate" trigger is enabled for this LED,
-only then another sysfs files should appear in this LED's sysfs
-directory.
+>
+> BR,
+> -R
+>
+> > Christian.
+> >
+> > Am 19.05.21 um 20:38 schrieb Rob Clark:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > Add a way to hint to the fence signaler that a fence waiter has misse=
+d a
+> > > deadline waiting on the fence.
+> > >
+> > > In some cases, missing a vblank can result in lower gpu utilization,
+> > > when really we want to go in the opposite direction and boost gpu fre=
+q.
+> > > The boost callback gives some feedback to the fence signaler that we
+> > > are missing deadlines, so it can take this into account in it's freq/
+> > > utilization calculations.
+> > >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > ---
+> > >   include/linux/dma-fence.h | 26 ++++++++++++++++++++++++++
+> > >   1 file changed, 26 insertions(+)
+> > >
+> > > diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> > > index 9f12efaaa93a..172702521acc 100644
+> > > --- a/include/linux/dma-fence.h
+> > > +++ b/include/linux/dma-fence.h
+> > > @@ -231,6 +231,17 @@ struct dma_fence_ops {
+> > >       signed long (*wait)(struct dma_fence *fence,
+> > >                           bool intr, signed long timeout);
+> > >
+> > > +     /**
+> > > +      * @boost:
+> > > +      *
+> > > +      * Optional callback, to indicate that a fence waiter missed a =
+deadline.
+> > > +      * This can serve as a signal that (if possible) whatever signa=
+ls the
+> > > +      * fence should boost it's clocks.
+> > > +      *
+> > > +      * This can be called in any context that can call dma_fence_wa=
+it().
+> > > +      */
+> > > +     void (*boost)(struct dma_fence *fence);
+> > > +
+> > >       /**
+> > >        * @release:
+> > >        *
+> > > @@ -586,6 +597,21 @@ static inline signed long dma_fence_wait(struct =
+dma_fence *fence, bool intr)
+> > >       return ret < 0 ? ret : 0;
+> > >   }
+> > >
+> > > +/**
+> > > + * dma_fence_boost - hint from waiter that it missed a deadline
+> > > + *
+> > > + * @fence: the fence that caused the missed deadline
+> > > + *
+> > > + * This function gives a hint from a fence waiter that a deadline wa=
+s
+> > > + * missed, so that the fence signaler can factor this in to device
+> > > + * power state decisions
+> > > + */
+> > > +static inline void dma_fence_boost(struct dma_fence *fence)
+> > > +{
+> > > +     if (fence->ops->boost)
+> > > +             fence->ops->boost(fence);
+> > > +}
+> > > +
+> > >   struct dma_fence *dma_fence_get_stub(void);
+> > >   u64 dma_fence_context_alloc(unsigned num);
+> > >
+> >
 
-> ---
-> 
-> Let me explain this specific part of the API from my original proposal.
-> 
-> Those are the led names from the datasheets (NUC 8 and above),
-> and my proposal for the sysfs class directory name:
-> 
-> =============	===============================
-> LED name	sysfs
-> =============	===============================
-> Skull		``/sys/class/leds/nuc::skull``
-> Skull eyes	``/sys/class/leds/nuc::eyes``
-> Power		``/sys/class/leds/nuc::power``
-> HDD		``/sys/class/leds/nuc::hdd``
-> Front1		``/sys/class/leds/nuc::front1``
-> Front2		``/sys/class/leds/nuc::front2``
-> Front3		``/sys/class/leds/nuc::front3``
-> =============	===============================
-> 
-> For each of the above, there's the need to identify what
-> hardware function is monitored (if any).
-> 
-> My proposal were to add an "indicator" node (the name came from
-> the Intel datasheets) that shows what led will monitor the power state.
-> 
-> Then, one blink_behavior and one blink_frequency per power state,
-> e. g.:
-> 
->     /sys/class/leds/nuc::front1
->     |-- indicator
->     |-- s0_blink_behavior
->     |-- s0_blink_frequency
->     |-- s3_blink_behavior
->     |-- s3_blink_frequency
->     |-- s5_blink_behavior
->     `-- s5_blink_frequency
 
-I'd rather use one file for frequencies and one for intervals, and map
-in to an array, but that is just my preference...
 
-> 
-> PS.: I don't care much about what names we'll use. Feel free to
-> rename them, if you think the above is not clear or generic enough.
-> 
-> -
-> 
-> To make part of the API complete, there's also the need of a node
-> to control the max brightness that the leds will achieve at the
-> ON state, and another one to control the color on each state,
-> as one could define, let's say, "white" when powered on, "blue"
-> when suspended and "yellow" when hibernating. The colors at the
-> NUC I have are RGB (but other models can use an enum for the
-> supported colors).
-> 
->     /sys/class/leds/nuc::front1
->     |-- s0_brightness
->     |-- s0_color		# only shown on colored leds
->     |-- s3_brightness
->     |-- s3_color		# only shown on colored leds
->     |-- s0_brightness
->     `-- s5_color		# only shown on colored leds
-
-If the BIOS reports a LED being full RGB LED, you should register it
-via multicolor framework. Regarding the enum with 8 colors: are these
-colors red, yellow, green, cyan, blue, magenta? Because if so, then
-this is RGB with each channel being binary :) So you can again use
-multicolor framework.
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
