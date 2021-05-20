@@ -2,100 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07598389CFA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:13:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52BB389D00
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:17:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbhETFO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhETFO6 (ORCPT
+        id S230228AbhETFSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:18:51 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:60334 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhETFSu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:14:58 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF5D4C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:13:37 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso4653037pji.0
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:13:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9cwhp3bw5wRVRJ7C8bZKGP756k5sXb+PQe55pMQ2v5c=;
-        b=j/JX7YiEWDtDQ+bknCG5bF9teVwisdvh9sVh5yX24yiib4iCFhSyvpmXOM1S/Lb3J9
-         xq+Tk/5f6X4vC3bvXna00fwni6V6KAqezdUDWWkDJnZ0PD6Zp1vs5HGIpPjGA8THKUNF
-         zx8NT88xtKBx6YHocEV6fBdj5eNrYLny4zehM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9cwhp3bw5wRVRJ7C8bZKGP756k5sXb+PQe55pMQ2v5c=;
-        b=tl4A5vyNRvE6esy3eOb87JeQrn+J1mUoi5tNXjGyI3e93vVnHyqixwq8HiUzXhqk9J
-         ZYC7lpwPFXsJ0G0hM5iKrSBQagM7spq+71NgbDh229vEg6mt77LNUglw2A04ZTW6K4hw
-         g5ScXXRMjcZNsi01jz2uIUtQ3LcfKi7KGvbqHTVI/UNTZNQ8FiqGpOrF9hoBg+YNaPPH
-         G/dHCNAElf1nECoy8iCp1n5PsR+b1vhRPdIzMwTltEgYn5cVCjZow/gdKTT0KpU6YkAN
-         zeCTRmlbNCG8DjCU5kpy1L/SXjBlCsA5W2JWQlhMkRMU92Zt0QXlJv8AOqozE6+fw9/X
-         d0mg==
-X-Gm-Message-State: AOAM532hD7GJJFRCyKZS7rDl/7i9xo0QXb/JX/gQAP05u91ht5UcsCOM
-        WqdVYaGxi9MvRiP70CxAvDW2zg==
-X-Google-Smtp-Source: ABdhPJz3tsVU2Oy+l8umuNLtrOuQcx/bMDNbYaqOGqpLgRq4NZXwY0B2MSxIRiD3wu2Np6NBkQLtcQ==
-X-Received: by 2002:a17:90b:607:: with SMTP id gb7mr2786738pjb.5.1621487617260;
-        Wed, 19 May 2021 22:13:37 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:48db:abf:343e:b4f7])
-        by smtp.gmail.com with ESMTPSA id 23sm868589pgv.90.2021.05.19.22.13.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 22:13:36 -0700 (PDT)
-Date:   Thu, 20 May 2021 14:13:32 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: revert cleanup handling of false positives
-Message-ID: <YKXv/CtdWwiqoAHa@google.com>
-References: <20210517140612.222750-1-senozhatsky@chromium.org>
- <YKPfDQoN5hToB9nk@alley>
+        Thu, 20 May 2021 01:18:50 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14K5ERxU181362;
+        Thu, 20 May 2021 05:17:27 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=kXAbVmzY2Vr39sZ8jzpcxrD3siazfk5ugcT2ZXVs+xY=;
+ b=l2w2Wtz1tsBdBO+hQm5g8FGgCD0GgtuIs1XGEsVpqR2QhPCrV/M4SoeHUYhhRnC6C2xT
+ kKUMY44iWxn3GqCV8icxNc/As946Qtusby46gM2dC8knPQMSV7van8H+HZ61yLhAvAZj
+ NHBGZ2VAL3AC2UeBUtOQw+o7GfzcgvuJKpnlZTb/0tHPr07klrT9YEGwsflD/r/pjXlG
+ ZEr3CDZGoiRR2i1dbfUKN0lc2Mg6AjnlACM2GqDX69Fr9sFqKcOab6m6hehthsF4+xOK
+ WHcOCKFZrH2x0d31PT4a47J02uAR8itzY5Cmqlbl3K5ZjaP09LkIDYSZwjtdy3megRcc Ww== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 38j3tbkjqb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 May 2021 05:17:27 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14K5G4L2054464;
+        Thu, 20 May 2021 05:17:27 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3020.oracle.com with ESMTP id 38mecm8c1g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 May 2021 05:17:27 +0000
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14K5GvSl059925;
+        Thu, 20 May 2021 05:17:26 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 38mecm8c10-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 May 2021 05:17:26 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14K5HMlB019306;
+        Thu, 20 May 2021 05:17:22 GMT
+Received: from kadam (/41.212.42.34)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 19 May 2021 22:17:22 -0700
+Date:   Thu, 20 May 2021 08:17:15 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        James.Bottomley@SteelEye.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] scsi: sni_53c710: Fix a resource leak in an error
+ handling path
+Message-ID: <20210520051715.GZ1955@kadam>
+References: <5a97774020847f6b63e161197254d15ef1d786ea.1621485792.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKPfDQoN5hToB9nk@alley>
+In-Reply-To: <5a97774020847f6b63e161197254d15ef1d786ea.1621485792.git.christophe.jaillet@wanadoo.fr>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: B7-_USFOj86VOVhwwljGs6TeAHKeqzGZ
+X-Proofpoint-GUID: B7-_USFOj86VOVhwwljGs6TeAHKeqzGZ
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9989 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ spamscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999 mlxscore=0
+ impostorscore=0 adultscore=0 clxscore=1011 phishscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105200042
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/18 17:36), Petr Mladek wrote:
-> On Mon 2021-05-17 23:06:12, Sergey Senozhatsky wrote:
-> > This reverts commit 9bf3bc949f8aeefeacea4b1198db833b722a8e27.
-> > 
-> > I can reproduce the case when resumed VCPU starts to execute
-> > is_softlockup() with PVCLOCK_GUEST_STOPPED set on this VCPU:
-> > 
-> > 	watchdog_timer_fn()
-> > 	{
-> > 		...
-> > 
-> > 		kvm_check_and_clear_guest_paused();
-> > 
-> > 		...
-> > 
-> > 		duration = is_softlockup(touch_ts, period_ts);
-> > 		if (unlikely(duration)) {
-> > 			....
-> > 		}
-> > 	}
-> > 
-> > Which means that guest VCPU has been suspended between
-> > kvm_check_and_clear_guest_paused() and is_softlockup(),
-> > and jiffies (clock) thus shifted forward.
+On Thu, May 20, 2021 at 06:44:25AM +0200, Christophe JAILLET wrote:
+> After a successful 'NCR_700_detect()' call, 'NCR_700_release()' must be
+> called to release some DMA related resources, as already done in the
+> remove function.
 > 
-> Are jiffies really updated here?
+> Fixes: c27d85f3f3c5 ("[SCSI] SNI RM 53c710 driver")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-I guess so. Why not?
+Good catch.
 
-VCPUs are not brought up simultaneously, it's up to the host that
-schedules them. So, for instance, when we resume VCPU-3 and it
-discovers this_cpu PVCLOCK_GUEST_STOPPED the VCPU-0 can already
-be resumed, up and running, adding ticks to jiffies.
+Reveiwed-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Am I missing the point of your question?
+regards,
+dan carpenter
+
