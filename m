@@ -2,82 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C2738B85E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5559038B865
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:27:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237375AbhETU23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:28:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235261AbhETU22 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:28:28 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66DAC061574;
-        Thu, 20 May 2021 13:27:06 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 8B4B62F3;
-        Thu, 20 May 2021 20:27:06 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8B4B62F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1621542426; bh=NpuRS2178vxy4S9OffI41QVP9Bg2Y78UthUZZGVg8UA=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=OOiQ05hvuLhjcC3/P9dziZv94vkKr6NkttIIPz3GfQLOP2Nz16XYv1p1y0PWYsf4B
-         nFWmIhluyIP9VoY1K9FkxiTEpG9wrzvz1K4WZBJ+K3rZ/1207ZmKOHFqPOejc6YgKU
-         KdO0CK5jHpuOq9/KTAJV0UMiRQkohS+u4A3cgtFZcw7DhXlhJ70l+IiM/qci33ATvN
-         vPAdR9yD4bkTjMSCGe2AJydJ6kKd2Cxb6kEZfNkRvYQRUqLnyhqZE3iQK2PQXk6kKi
-         YowxnpDH8Xu0vtTy4svG3JmyBvalmoT4bpujh4k99jpXMRvKPLT1vfJgmB2DrK+plZ
-         cMzoNbAzo67Ww==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: Re: [PATCH] docs: block: blk-mq.rst: correct drive -> driver
-In-Reply-To: <20210520074225.1989-1-zbestahu@gmail.com>
-References: <20210520074225.1989-1-zbestahu@gmail.com>
-Date:   Thu, 20 May 2021 14:27:06 -0600
-Message-ID: <877djtnobp.fsf@meer.lwn.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S237831AbhETU3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:29:18 -0400
+Received: from smtp-34.italiaonline.it ([213.209.10.34]:42578 "EHLO libero.it"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238590AbhETU3Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:29:16 -0400
+Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
+ ([82.60.150.250])
+        by smtp-34.iol.local with ESMTPA
+        id jpGWlKVEa5WrZjpGnlTUN7; Thu, 20 May 2021 22:27:52 +0200
+x-libjamoibt: 1601
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1621542472; bh=hBaIiaAmNT+KuPEIlQ0UMo5FUssmoQIEdX0bE+Xrm5c=;
+        h=From;
+        b=RX9rBvhp5PXWC6mEzR/MYtEW8ay1Hk5ZYZ/FhSp1UpmxLSeM4/P6d+KExMgn4v/OA
+         M+dz3Rzh2Ta5ZGkx5r1RRvYtgZ3F9ebfEK0tzQvQCsqUy/7er0coCGkPnBamZmQaK3
+         64S2nnmakma7gsA8u8CQXnjaWpN5nFmeUEBV/xmj1oEEnzwAvayULpOkOOfO5ilEvv
+         6qdVgchWr5kD0w6VIqGL93ODQixfPPgkGV6lFmn5+vJsrc7zNqsImUdGg9nUpwGXhh
+         5MnTmsXLrHiEDbotH75z/eUKJIp40p/qJFPgZL0J9LLPeB+QO2sJRfehgjyNJ00yNt
+         KHDP2v7G/eAQg==
+X-CNFS-Analysis: v=2.4 cv=W4/96Tak c=1 sm=1 tr=0 ts=60a6c648 cx=a_exe
+ a=QSJ1svMVA5tvcuOEAX2Bgw==:117 a=QSJ1svMVA5tvcuOEAX2Bgw==:17 a=sozttTNsAAAA:8
+ a=Fr6HURb7vaUrhCLrTtoA:9 a=aeg5Gbbo78KNqacMgKqU:22
+From:   Dario Binacchi <dariobin@libero.it>
+To:     linux-kernel@vger.kernel.org
+Cc:     Dario Binacchi <dariobin@libero.it>,
+        Tony Lindgren <tony@atomide.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Haojian Zhuang <haojian.zhuang@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-omap@vger.kernel.org
+Subject: [PATCH v3 0/3] am335x: set pinmux registers from pins debug file
+Date:   Thu, 20 May 2021 22:27:27 +0200
+Message-Id: <20210520202730.4444-1-dariobin@libero.it>
+X-Mailer: git-send-email 2.17.1
+X-CMAE-Envelope: MS4xfC4IQyqC8yCTSZda7J5PnkJEZPbrYTBhBMpEICGiISDhj3SIApr58H3eUSX81XdpOeXFDgL4V8j6laxA6ZXoeDcOKIUSg9cKw9BjupDw/smTuSgUSlBr
+ souIJhr6BvMOTnSpF4hwcJZS2Wqo/yklxTVGnC3TB8HlcSbXC3rsDCkzW9koXqdrt0TqAjMBjTQxqcwyfvfq+U0yfo25AyfLTmu7w90kljIioGrxEtn8100M
+ u/NvUrsDCCrNiXi/ywcpPgxTeQTmQoKRLvxlwnltIE2F6kIvM8qHWYCr6Ct1R76fD9vDaGUyxb8/gAQRTtLzbQP8rkyCp95IBasJI6Szrxfh4MlrsxnLTt48
+ R5HJ6ADI+NfLAIG4EQ1+mh5l4dzTr9/P3QjTVigjk/vzjeA7g+v/UHx2jJ07x1q64EqDXsFoY/qGjen11g1bRrcA55QqVlQllHAtVYntDerQyK7D7lO1SuWl
+ cySqt6rwqoDAYBpsMJpzpHFAtJx5EP9l2xRFF436M0HF2vbKSov4PZKJslrPP7d3jMqYZer4H/8FDIIHOr04DeKKhYXMW04Aff6ZUDCUgTcsJzis2R9ifyNc
+ C50kD7a9D6Y9OEBW0Qpycl90rZMY0s0rDzNjpelwUpwrQtYa4XTfiM4aaPgg7KH+fpY=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yue Hu <zbestahu@gmail.com> writes:
 
-> From: Yue Hu <huyue2@yulong.com>
->
-> It is 'driver' to complete the request. Also remove a redundant space.
->
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
-> ---
->  Documentation/block/blk-mq.rst | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
-> index a980d23..d96118c 100644
-> --- a/Documentation/block/blk-mq.rst
-> +++ b/Documentation/block/blk-mq.rst
-> @@ -62,7 +62,7 @@ queue, to be sent in the future, when the hardware is able.
->  Software staging queues
->  ~~~~~~~~~~~~~~~~~~~~~~~
->  
-> -The block IO subsystem adds requests  in the software staging queues
-> +The block IO subsystem adds requests in the software staging queues
->  (represented by struct blk_mq_ctx) in case that they weren't sent
->  directly to the driver. A request is one or more BIOs. They arrived at the
->  block layer through the data structure struct bio. The block layer
-> @@ -132,7 +132,7 @@ In order to indicate which request has been completed, every request is
->  identified by an integer, ranging from 0 to the dispatch queue size. This tag
->  is generated by the block layer and later reused by the device driver, removing
->  the need to create a redundant identifier. When a request is completed in the
-> -drive, the tag is sent back to the block layer to notify it of the finalization.
-> +driver, the tag is sent back to the block layer to notify it of the finalization.
->  This removes the need to do a linear search to find out which IO has been
->  completed.
+The patch was born from the need to change the slew rate of the LCD pins
+of a custom AM335x board during EMC tests. The AM335x, as described in a
+note in section 9.1 of its reference manual [1], is unable to write
+pinmux registers from user space. The series now makes it possible to
+write these registers from the pins debug file.
 
-Applied, thanks.
+[1] https://www.ti.com/lit/ug/spruh73q/spruh73q.pdf
 
-jon
+
+Changes in v3:
+- Use strncpy_from_user() instead of copy_from_user().
+- Do not shadow the error code returned by kstrtouint().
+- Change pin_dbg_set() interface (char *buf --> unsigned int val).
+- Describe pin_dbg_set().
+- Remove CONFIG_DEV_MEM dependency.
+- Change pcs_pin_dbg_set() interface (char *buf -> unsigned int val).
+
+Changes in v2:
+- Remove CONFIG_SOC_AM33XX dependency.
+
+Dario Binacchi (3):
+  docs/pinctrl: update `pins' description under debugfs
+  pinctrl: core: configure pinmux from pins debug file
+  pinctrl: single: set pinmux from pins debug file
+
+ Documentation/driver-api/pin-control.rst |  3 ++
+ drivers/pinctrl/core.c                   | 63 +++++++++++++++++++++++-
+ drivers/pinctrl/pinctrl-single.c         | 13 +++++
+ include/linux/pinctrl/pinctrl.h          |  4 ++
+ 4 files changed, 81 insertions(+), 2 deletions(-)
+
+-- 
+2.17.1
+
