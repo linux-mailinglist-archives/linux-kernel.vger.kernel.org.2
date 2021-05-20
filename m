@@ -2,247 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCF038B226
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:45:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9616238B22B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:46:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhETOrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:47:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230458AbhETOqw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:46:52 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BB17C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 07:45:29 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9cc6:7165:bcc2:1e70])
-        by michel.telenet-ops.be with bizsmtp
-        id 72lR2500U31btb9062lRyq; Thu, 20 May 2021 16:45:26 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ljjvR-007XWm-8J; Thu, 20 May 2021 16:45:25 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ljjvQ-009A0s-F4; Thu, 20 May 2021 16:45:24 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Rob Herring <robh+dt@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     devicetree@vger.kernel.org, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH] dt-bindings: timer: arm,twd: Convert to json-schema
-Date:   Thu, 20 May 2021 16:45:23 +0200
-Message-Id: <3ccc0cf5319f56e230ee3b8a009f8d63afb114c1.1621521847.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
+        id S231315AbhETOsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:48:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:53102 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230483AbhETOsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:48:13 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1198DED1;
+        Thu, 20 May 2021 07:46:52 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 11D393F73B;
+        Thu, 20 May 2021 07:46:47 -0700 (PDT)
+Subject: Re: [PATCH v12 4/8] arm64: kvm: Introduce MTE VM feature
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-5-steven.price@arm.com> <87wnrxtikl.wl-maz@kernel.org>
+ <60fc8939-36b7-35ce-837c-b69d0d40c9a4@arm.com> <875yzdvldb.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <e44c7782-bf7a-80f5-a8ae-75bbb44649ae@arm.com>
+Date:   Thu, 20 May 2021 15:46:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <875yzdvldb.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the ARM Timer-Watchdog Device Tree binding documentation to
-json-schema.  As the old binding document actually contained two
-bindings, it is split in two document: one for the timer part, and one
-for the watchdog part.
+On 20/05/2021 09:51, Marc Zyngier wrote:
+> On Wed, 19 May 2021 11:48:21 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> On 17/05/2021 17:45, Marc Zyngier wrote:
+>>> On Mon, 17 May 2021 13:32:35 +0100,
+>>> Steven Price <steven.price@arm.com> wrote:
+[...]
+>>>> +		}
+>>>> +	}
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>>  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>>  			  struct kvm_memory_slot *memslot, unsigned long hva,
+>>>>  			  unsigned long fault_status)
+>>>> @@ -971,8 +996,13 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+>>>>  	if (writable)
+>>>>  		prot |= KVM_PGTABLE_PROT_W;
+>>>>  
+>>>> -	if (fault_status != FSC_PERM && !device)
+>>>> +	if (fault_status != FSC_PERM && !device) {
+>>>> +		ret = sanitise_mte_tags(kvm, vma_pagesize, pfn);
+>>>> +		if (ret)
+>>>> +			goto out_unlock;
+>>>> +
+>>>>  		clean_dcache_guest_page(pfn, vma_pagesize);
+>>>> +	}
+>>>>  
+>>>>  	if (exec_fault) {
+>>>>  		prot |= KVM_PGTABLE_PROT_X;
+>>>> @@ -1168,12 +1198,17 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+>>>>  bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>>>>  {
+>>>>  	kvm_pfn_t pfn = pte_pfn(range->pte);
+>>>> +	int ret;
+>>>>  
+>>>>  	if (!kvm->arch.mmu.pgt)
+>>>>  		return 0;
+>>>>  
+>>>>  	WARN_ON(range->end - range->start != 1);
+>>>>  
+>>>> +	ret = sanitise_mte_tags(kvm, PAGE_SIZE, pfn);
+>>>> +	if (ret)
+>>>> +		return ret;
+>>>
+>>> Notice the change in return type?
+>>
+>> I do now - I was tricked by the use of '0' as false. Looks like false
+>> ('0') is actually the correct return here to avoid an unnecessary
+>> kvm_flush_remote_tlbs().
+> 
+> Yup. BTW, the return values have been fixed to proper boolean types in
+> the latest set of fixes.
 
-Document missing properties.
-Update examples to match reality.
+Thanks for the heads up - I'll return 'false' to avoid regressing that.
 
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-I have listed Marc as the maintainer, as he wrote the original bindings.
-Marc: Please scream if this is inappropriate ;-)
----
- .../bindings/timer/arm,twd-timer.yaml         | 56 +++++++++++++++++++
- .../devicetree/bindings/timer/arm,twd.txt     | 53 ------------------
- .../bindings/watchdog/arm,twd-wdt.yaml        | 50 +++++++++++++++++
- 3 files changed, 106 insertions(+), 53 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/timer/arm,twd-timer.yaml
- delete mode 100644 Documentation/devicetree/bindings/timer/arm,twd.txt
- create mode 100644 Documentation/devicetree/bindings/watchdog/arm,twd-wdt.yaml
+>>
+>>>> +
+>>>>  	/*
+>>>>  	 * We've moved a page around, probably through CoW, so let's treat it
+>>>>  	 * just like a translation fault and clean the cache to the PoC.
+>>>> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+>>>> index 76ea2800c33e..24a844cb79ca 100644
+>>>> --- a/arch/arm64/kvm/sys_regs.c
+>>>> +++ b/arch/arm64/kvm/sys_regs.c
+>>>> @@ -1047,6 +1047,9 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
+>>>>  		break;
+>>>>  	case SYS_ID_AA64PFR1_EL1:
+>>>>  		val &= ~FEATURE(ID_AA64PFR1_MTE);
+>>>> +		if (kvm_has_mte(vcpu->kvm))
+>>>> +			val |= FIELD_PREP(FEATURE(ID_AA64PFR1_MTE),
+>>>> +					  ID_AA64PFR1_MTE);
+>>>
+>>> Shouldn't this be consistent with what the HW is capable of
+>>> (i.e. FEAT_MTE3 if available), and extracted from the sanitised view
+>>> of the feature set?
+>>
+>> Yes - however at the moment our sanitised view is either FEAT_MTE2 or
+>> nothing:
+>>
+>> 	{
+>> 		.desc = "Memory Tagging Extension",
+>> 		.capability = ARM64_MTE,
+>> 		.type = ARM64_CPUCAP_STRICT_BOOT_CPU_FEATURE,
+>> 		.matches = has_cpuid_feature,
+>> 		.sys_reg = SYS_ID_AA64PFR1_EL1,
+>> 		.field_pos = ID_AA64PFR1_MTE_SHIFT,
+>> 		.min_field_value = ID_AA64PFR1_MTE,
+>> 		.sign = FTR_UNSIGNED,
+>> 		.cpu_enable = cpu_enable_mte,
+>> 	},
+>>
+>> When host support for FEAT_MTE3 is added then the KVM code will need
+>> revisiting to expose that down to the guest safely (AFAICS there's
+>> nothing extra to do here, but I haven't tested any of the MTE3
+>> features). I don't think we want to expose newer versions to the guest
+>> than the host is aware of. (Or indeed expose FEAT_MTE if the host has
+>> MTE disabled because Linux requires at least FEAT_MTE2).
+> 
+> What I was suggesting is to have something like this:
+> 
+>      pfr = read_sanitised_ftr_reg(SYS_ID_AA64PFR1_EL1);
+>      mte = cpuid_feature_extract_unsigned_field(pfr, ID_AA64PFR1_MTE_SHIFT);
+>      val |= FIELD_PREP(FEATURE(ID_AA64PFR1_MTE), mte);
+> 
+> which does the trick nicely, and doesn't expose more than the host
+> supports.
 
-diff --git a/Documentation/devicetree/bindings/timer/arm,twd-timer.yaml b/Documentation/devicetree/bindings/timer/arm,twd-timer.yaml
-new file mode 100644
-index 0000000000000000..7521353fb4b021ad
---- /dev/null
-+++ b/Documentation/devicetree/bindings/timer/arm,twd-timer.yaml
-@@ -0,0 +1,56 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/timer/arm,twd-timer.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ARM Timer-Watchdog Timer
-+
-+maintainers:
-+  - Marc Zyngier <maz@kernel.org>
-+
-+description:
-+  ARM 11MP, Cortex-A5 and Cortex-A9 are often associated with a per-core
-+  Timer-Watchdog (aka TWD), which provides both a per-cpu local timer
-+  and watchdog.
-+
-+  The TWD is usually attached to a GIC to deliver its two per-processor
-+  interrupts.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - arm,cortex-a9-twd-timer
-+      - arm,cortex-a5-twd-timer
-+      - arm,arm11mp-twd-timer
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  always-on:
-+    description:
-+      If present, the timer is powered through an always-on power domain,
-+      therefore it never loses context.
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    twd-timer@2c000600 {
-+            compatible = "arm,arm11mp-twd-timer";
-+            reg = <0x2c000600 0x20>;
-+            interrupts = <GIC_PPI 13 0xf01>;
-+    };
-diff --git a/Documentation/devicetree/bindings/timer/arm,twd.txt b/Documentation/devicetree/bindings/timer/arm,twd.txt
-deleted file mode 100644
-index 383ea19c2bf0073e..0000000000000000
---- a/Documentation/devicetree/bindings/timer/arm,twd.txt
-+++ /dev/null
-@@ -1,53 +0,0 @@
--* ARM Timer Watchdog
--
--ARM 11MP, Cortex-A5 and Cortex-A9 are often associated with a per-core
--Timer-Watchdog (aka TWD), which provides both a per-cpu local timer
--and watchdog.
--
--The TWD is usually attached to a GIC to deliver its two per-processor
--interrupts.
--
--** Timer node required properties:
--
--- compatible : Should be one of:
--	"arm,cortex-a9-twd-timer"
--	"arm,cortex-a5-twd-timer"
--	"arm,arm11mp-twd-timer"
--
--- interrupts : One interrupt to each core
--
--- reg : Specify the base address and the size of the TWD timer
--	register window.
--
--Optional
--
--- always-on : a boolean property. If present, the timer is powered through
--  an always-on power domain, therefore it never loses context.
--
--Example:
--
--	twd-timer@2c000600 {
--		compatible = "arm,arm11mp-twd-timer"";
--		reg = <0x2c000600 0x20>;
--		interrupts = <1 13 0xf01>;
--	};
--
--** Watchdog node properties:
--
--- compatible : Should be one of:
--	"arm,cortex-a9-twd-wdt"
--	"arm,cortex-a5-twd-wdt"
--	"arm,arm11mp-twd-wdt"
--
--- interrupts : One interrupt to each core
--
--- reg : Specify the base address and the size of the TWD watchdog
--	register window.
--
--Example:
--
--	twd-watchdog@2c000620 {
--		compatible = "arm,arm11mp-twd-wdt";
--		reg = <0x2c000620 0x20>;
--		interrupts = <1 14 0xf01>;
--	};
-diff --git a/Documentation/devicetree/bindings/watchdog/arm,twd-wdt.yaml b/Documentation/devicetree/bindings/watchdog/arm,twd-wdt.yaml
-new file mode 100644
-index 0000000000000000..6d50892c96a3154b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/watchdog/arm,twd-wdt.yaml
-@@ -0,0 +1,50 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/watchdog/arm,twd-wdt.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ARM Timer-Watchdog Watchdog
-+
-+maintainers:
-+  - Marc Zyngier <maz@kernel.org>
-+
-+description:
-+  ARM 11MP, Cortex-A5 and Cortex-A9 are often associated with a per-core
-+  Timer-Watchdog (aka TWD), which provides both a per-cpu local timer
-+  and watchdog.
-+
-+  The TWD is usually attached to a GIC to deliver its two per-processor
-+  interrupts.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - arm,cortex-a9-twd-wdt
-+      - arm,cortex-a5-twd-wdt
-+      - arm,arm11mp-twd-wdt
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    twd-watchdog@2c000620 {
-+            compatible = "arm,arm11mp-twd-wdt";
-+            reg = <0x2c000620 0x20>;
-+            interrupts = <GIC_PPI 14 0xf01>;
-+    };
--- 
-2.25.1
+Ok, I have to admit to not fully understanding the sanitised register
+code - but wouldn't this expose higher MTE values if all CPUs support
+it, even though the host doesn't know what a hypothetical 'MTE4' adds?
+Or is there some magic in the sanitising that caps the value to what the
+host knows about?
 
+Thanks,
+
+Steve
