@@ -2,133 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D216738B04B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:45:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C9E38B04F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:46:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236894AbhETNqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:46:31 -0400
-Received: from smtp121.ord1d.emailsrvr.com ([184.106.54.121]:58100 "EHLO
-        smtp121.ord1d.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231733AbhETNq1 (ORCPT
+        id S238616AbhETNsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:48:07 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3448 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237283AbhETNsB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:46:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1621518305;
-        bh=0J2cZCgGNeHKd40qC7x/GP/F3O7N6Ym4nlc3fVWljsk=;
-        h=Subject:To:From:Date:From;
-        b=hLrUMydJEIxEsyLrEqXEEz+iV49F9ERbq6oMouUeZdzqa0+MW8vHrGSycb3CqFE7n
-         PkTKnYqOGK70+D/hoi347Vf5nXXvOzvdOZ0qzhNNqNmqj27or02BysnSBI8r3ljjST
-         6Qx+u3Rirtzh6+G20cYBizKUzdOjrULWqpLnWG28=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp16.relay.ord1d.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id 11B8F401E4;
-        Thu, 20 May 2021 09:45:03 -0400 (EDT)
-Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
- 'range_ni_E_ao_ext' to where it is used
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        "David A. Schleef" <ds@schleef.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        Truxton Fulton <trux@truxton.com>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
-References: <20210520122538.3470259-1-lee.jones@linaro.org>
- <20210520122538.3470259-6-lee.jones@linaro.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Organization: MEV Ltd.
-Message-ID: <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
-Date:   Thu, 20 May 2021 14:45:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 20 May 2021 09:48:01 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fm9tn542KzBttQ;
+        Thu, 20 May 2021 21:43:45 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 21:46:33 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
+ May 2021 21:46:32 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <oliver@neukum.org>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] net: cdc_ncm: use DEVICE_ATTR_RW macro
+Date:   Thu, 20 May 2021 21:46:19 +0800
+Message-ID: <20210520134619.36356-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-In-Reply-To: <20210520122538.3470259-6-lee.jones@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
-X-Classification-ID: acb7c74a-4ef3-49ec-81ee-04773f38be7d-1-1
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 13:25, Lee Jones wrote:
-> ... and mark it as __maybe_unused since not all users of the
-> header file reference it.
-> 
-> Fixes the following W=1 kernel build warning(s):
-> 
->   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
-> 
-> Cc: Ian Abbott <abbotti@mev.co.uk>
-> Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: "David A. Schleef" <ds@schleef.org>
-> Cc: Mori Hess <fmhess@users.sourceforge.net>
-> Cc: Truxton Fulton <trux@truxton.com>
-> Cc: linux-staging@lists.linux.dev
-> Cc: linux-pwm@vger.kernel.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->   drivers/comedi/drivers/ni_mio_common.c | 9 ---------
->   drivers/comedi/drivers/ni_stc.h        | 9 ++++++++-
->   2 files changed, 8 insertions(+), 10 deletions(-)
-> 
-> diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-> index 4f80a4991f953..37615b4e2c10d 100644
-> --- a/drivers/comedi/drivers/ni_mio_common.c
-> +++ b/drivers/comedi/drivers/ni_mio_common.c
-> @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
->   	}
->   };
->   
-> -static const struct comedi_lrange range_ni_E_ao_ext = {
-> -	4, {
-> -		BIP_RANGE(10),
-> -		UNI_RANGE(10),
-> -		RANGE_ext(-1, 1),
-> -		RANGE_ext(0, 1)
-> -	}
-> -};
-> -
->   static const struct comedi_lrange *const ni_range_lkup[] = {
->   	[ai_gain_16] = &range_ni_E_ai,
->   	[ai_gain_8] = &range_ni_E_ai_limited,
-> diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_stc.h
-> index fbc0b753a0f59..0822e65f709dd 100644
-> --- a/drivers/comedi/drivers/ni_stc.h
-> +++ b/drivers/comedi/drivers/ni_stc.h
-> @@ -1137,6 +1137,13 @@ struct ni_private {
->   	u8 rgout0_usage;
->   };
->   
-> -static const struct comedi_lrange range_ni_E_ao_ext;
-> +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
-> +	4, {
-> +		BIP_RANGE(10),
-> +		UNI_RANGE(10),
-> +		RANGE_ext(-1, 1),
-> +		RANGE_ext(0, 1)
-> +	}
-> +};
->   
->   #endif /* _COMEDI_NI_STC_H */
-> 
+Use DEVICE_ATTR_RW helper instead of plain DEVICE_ATTR,
+which makes the code a bit shorter and easier to read.
 
-The "ni_stc.h" header is also included by "ni_mio_cs.c" which doesn't 
-need `range_ni_E_ao_ext` (admittedly, it was already pulling in a 
-"tentative" definition of the variable).
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/usb/cdc_ncm.c | 36 ++++++++++++++++++++++++------------
+ 1 file changed, 24 insertions(+), 12 deletions(-)
 
-Thinking about it, I think it's probably better to move 
-`range_ni_E_ao_ext` from "ni_mio_common.c" into *both* "ni_atmio.c" and 
-"ni_pcimio.c" (I think we can live with the small amount of 
-duplication), and to remove the tentative definition from "ni_stc.h".
-
+diff --git a/drivers/net/usb/cdc_ncm.c b/drivers/net/usb/cdc_ncm.c
+index b04055fd1b79..783d6139fdfa 100644
+--- a/drivers/net/usb/cdc_ncm.c
++++ b/drivers/net/usb/cdc_ncm.c
+@@ -192,7 +192,8 @@ static u32 cdc_ncm_check_tx_max(struct usbnet *dev, u32 new_tx)
+ 	return val;
+ }
+ 
+-static ssize_t cdc_ncm_show_min_tx_pkt(struct device *d, struct device_attribute *attr, char *buf)
++static ssize_t min_tx_pkt_show(struct device *d,
++			       struct device_attribute *attr, char *buf)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -200,7 +201,8 @@ static ssize_t cdc_ncm_show_min_tx_pkt(struct device *d, struct device_attribute
+ 	return sprintf(buf, "%u\n", ctx->min_tx_pkt);
+ }
+ 
+-static ssize_t cdc_ncm_show_rx_max(struct device *d, struct device_attribute *attr, char *buf)
++static ssize_t rx_max_show(struct device *d,
++			   struct device_attribute *attr, char *buf)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -208,7 +210,8 @@ static ssize_t cdc_ncm_show_rx_max(struct device *d, struct device_attribute *at
+ 	return sprintf(buf, "%u\n", ctx->rx_max);
+ }
+ 
+-static ssize_t cdc_ncm_show_tx_max(struct device *d, struct device_attribute *attr, char *buf)
++static ssize_t tx_max_show(struct device *d,
++			   struct device_attribute *attr, char *buf)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -216,7 +219,8 @@ static ssize_t cdc_ncm_show_tx_max(struct device *d, struct device_attribute *at
+ 	return sprintf(buf, "%u\n", ctx->tx_max);
+ }
+ 
+-static ssize_t cdc_ncm_show_tx_timer_usecs(struct device *d, struct device_attribute *attr, char *buf)
++static ssize_t tx_timer_usecs_show(struct device *d,
++				   struct device_attribute *attr, char *buf)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -224,7 +228,9 @@ static ssize_t cdc_ncm_show_tx_timer_usecs(struct device *d, struct device_attri
+ 	return sprintf(buf, "%u\n", ctx->timer_interval / (u32)NSEC_PER_USEC);
+ }
+ 
+-static ssize_t cdc_ncm_store_min_tx_pkt(struct device *d,  struct device_attribute *attr, const char *buf, size_t len)
++static ssize_t min_tx_pkt_store(struct device *d,
++				struct device_attribute *attr,
++				const char *buf, size_t len)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -238,7 +244,9 @@ static ssize_t cdc_ncm_store_min_tx_pkt(struct device *d,  struct device_attribu
+ 	return len;
+ }
+ 
+-static ssize_t cdc_ncm_store_rx_max(struct device *d,  struct device_attribute *attr, const char *buf, size_t len)
++static ssize_t rx_max_store(struct device *d,
++			    struct device_attribute *attr,
++			    const char *buf, size_t len)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -251,7 +259,9 @@ static ssize_t cdc_ncm_store_rx_max(struct device *d,  struct device_attribute *
+ 	return len;
+ }
+ 
+-static ssize_t cdc_ncm_store_tx_max(struct device *d,  struct device_attribute *attr, const char *buf, size_t len)
++static ssize_t tx_max_store(struct device *d,
++			    struct device_attribute *attr,
++			    const char *buf, size_t len)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -264,7 +274,9 @@ static ssize_t cdc_ncm_store_tx_max(struct device *d,  struct device_attribute *
+ 	return len;
+ }
+ 
+-static ssize_t cdc_ncm_store_tx_timer_usecs(struct device *d,  struct device_attribute *attr, const char *buf, size_t len)
++static ssize_t tx_timer_usecs_store(struct device *d,
++				    struct device_attribute *attr,
++				    const char *buf, size_t len)
+ {
+ 	struct usbnet *dev = netdev_priv(to_net_dev(d));
+ 	struct cdc_ncm_ctx *ctx = (struct cdc_ncm_ctx *)dev->data[0];
+@@ -285,10 +297,10 @@ static ssize_t cdc_ncm_store_tx_timer_usecs(struct device *d,  struct device_att
+ 	return len;
+ }
+ 
+-static DEVICE_ATTR(min_tx_pkt, 0644, cdc_ncm_show_min_tx_pkt, cdc_ncm_store_min_tx_pkt);
+-static DEVICE_ATTR(rx_max, 0644, cdc_ncm_show_rx_max, cdc_ncm_store_rx_max);
+-static DEVICE_ATTR(tx_max, 0644, cdc_ncm_show_tx_max, cdc_ncm_store_tx_max);
+-static DEVICE_ATTR(tx_timer_usecs, 0644, cdc_ncm_show_tx_timer_usecs, cdc_ncm_store_tx_timer_usecs);
++static DEVICE_ATTR_RW(min_tx_pkt);
++static DEVICE_ATTR_RW(rx_max);
++static DEVICE_ATTR_RW(tx_max);
++static DEVICE_ATTR_RW(tx_timer_usecs);
+ 
+ static ssize_t ndp_to_end_show(struct device *d, struct device_attribute *attr, char *buf)
+ {
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+2.17.1
+
