@@ -2,177 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E76E38B999
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6F2038B9A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231842AbhETWri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230239AbhETWrg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:47:36 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3293EC061574;
-        Thu, 20 May 2021 15:46:12 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so6329783wmk.1;
-        Thu, 20 May 2021 15:46:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=jZ8b9uIzmHw1BsqRLjKNK/1NTGzSa2HXvmJMPRWZ25A=;
-        b=uC5DotBV8MAOeL0un17S4ig29m7QXgYG5Z+bkw7kGbjlA3QMOm1cZ/6YYkZyjP7AYN
-         qI8MDReQCNVIh9Wmft87Z9T3rXHCfmTp3iQ1qafoJ24ztBaDtMnXeNp7MwlvVGUKS2pZ
-         e0t1xW753pJXBHRRnIK3ySltrYh0VyaCUZ1B/iG8Qo9Q+Mlf8OR9g4HR6q/IVNygKrZl
-         yUY6ekMVLwk3bYN4SkOndcm4puSJ843GaGyTeDEavU/wRtqJ6yzeiT/GK0Cdo47E6mZy
-         5U1LcaLr1bfAx7q+hNEh9SwpS9H5/y3K+LLYRxeKMv+LUe2myoc6TicaxhRIlPUH6uX9
-         la+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jZ8b9uIzmHw1BsqRLjKNK/1NTGzSa2HXvmJMPRWZ25A=;
-        b=sf/5WQZ6p0C2K+u0Dnfot0I2anWKyld11LO2/zG2QI9ffY/ei6xfpqaYQqAbQ9pugO
-         0LKKZ1dD+qpDh2Oz1oPHVoy8pt8UONtYJWIhx4vngtNuiDQBP+VjFL4dJ4wDvFDqbrwH
-         MRjHMTBMPPhpcUTjpFQEIkJOb1NUtNcaFjej0Cos2HuF3xOCqugSV4NyZfD3hCIMvUmJ
-         HYsOtArkTeLERBtOu0mMOn9mfMfwYJrFS/376anTQ2HWUm4j1FO6u2+pUEV84PVAKgDr
-         9dmILiLmGmldnzvJ7h06dYigwn6pnwjZLezO6Y2EPz6TbzW/sETppb5y2OoYdRHbVHmo
-         6l3w==
-X-Gm-Message-State: AOAM531bYcPDn8BqyrnzVWFCdxzBbnN9LD+0EL1zW7deCmz0E96vsxjn
-        P2p+c7abhNze46w0AbTueV4=
-X-Google-Smtp-Source: ABdhPJw0/lT6f/EBAdYYoa8vrlKdb6jvOZaV6h5LdRq0rrHMJlS+gwHDt67F7quhHDTuL23c5TP6Vw==
-X-Received: by 2002:a7b:cb45:: with SMTP id v5mr5866848wmj.48.1621550770788;
-        Thu, 20 May 2021 15:46:10 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.182])
-        by smtp.gmail.com with ESMTPSA id t5sm4784634wmi.32.2021.05.20.15.46.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 15:46:10 -0700 (PDT)
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-References: <cover.1621424513.git.asml.silence@gmail.com>
- <485abb65cf032f4ddf13dcc0bd60e5475638efc2.1621424513.git.asml.silence@gmail.com>
- <0339DB35-27AC-4A50-B807-968C72ABB698@fb.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH 01/23] io_uring: shuffle rarely used ctx fields
-Message-ID: <45a6f8f9-7abf-f513-e872-c346a682e373@gmail.com>
-Date:   Thu, 20 May 2021 23:46:02 +0100
+        id S231919AbhETWtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:49:04 -0400
+Received: from mail-mw2nam08on2055.outbound.protection.outlook.com ([40.107.101.55]:1689
+        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231871AbhETWtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 18:49:02 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VgTcxqMPIEYVZkp0+vrmGuDgrIsvlvmyZsftuzaGRI95Rv7Dy/dvFWcXACTgq7SzWj9nCsstvuoQNoGNCnakB/RFBe2MDaU9wsP6Ab2MBxHw/SQw0LdBL3i32pML0x9TMms09GJ+K/tvRg0pYJS4AY2L7VB9YJagU/wlBB2uJDRmPaQlI3UnQLUgy1gjCgnfmBbg8pBtrdY0vbt05cFfQ8kO4Kd/XUMuHwJHaBQEYeIRDbnyRn2ity3Kwgew5v166SDArKhhSaSD2J5G9qmHwq4cXl4yYLbJw4pDVceMi2iX8VLZaWCU4aHOCmGahPkjX9nC2FX5lkKSGu4UZDs/Vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ucIaFFJwh5azBQTxfuB9kJsGY43NsGq16q65zwNCHvE=;
+ b=KIHlHOPYYpWbxWZ9k68ttTj0rPgwisJ3t56GqWFRJQ5SYsxOkDabhfqZat2PTy7pG7b0rajnG6AZ1TAerAkKh5y6x1b2EI+2/69rNmOjccFTbhiNYbSHsh4dup1f/td+VYcodzx0JrWG47uEQVmiR2Nck2+7Y0cEYoK4qVrjwbe8MelpkmorD+pwfI8xtiuQeNCUceLwK1Seu6yMAONY8iYdA/69NfaabIX8l3NP7UV53qX4DEX3cBXARTM8/LBD94U5JpcEX7OlpvzzrxLzfam13iayCCjpd/kBcVL1xNaDZYPloEKR3v3MsmcX7uzp+6vMxpgSG2r+sveYiLEeCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ucIaFFJwh5azBQTxfuB9kJsGY43NsGq16q65zwNCHvE=;
+ b=VtKqlvKgzvJ+82x2KcICGxCdEWJGYLMk9w+gCHbcGIhZAuZoLffi+iYHMyCF60veSKDgBuDw8JKNWWZP3nlVl8zEBSn3XCca/2Hc3fSweEpi86UREM6rELri0uY8YtmbxcZNsJONnWKr7tpYsZ4Y1r5IJYTOmO8o7CL5EeCfWcA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21)
+ by DM6PR12MB4011.namprd12.prod.outlook.com (2603:10b6:5:1c5::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 20 May
+ 2021 22:47:39 +0000
+Received: from DM5PR1201MB0201.namprd12.prod.outlook.com
+ ([fe80::2833:2120:ed9f:c3e4]) by DM5PR1201MB0201.namprd12.prod.outlook.com
+ ([fe80::2833:2120:ed9f:c3e4%4]) with mapi id 15.20.4129.033; Thu, 20 May 2021
+ 22:47:39 +0000
+Subject: Re: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     David Bartley <andareed@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-x86_64@vger.kernel.org
+References: <20210520174130.94954-1-andareed@gmail.com>
+ <b6be3a80-df49-70ec-a3dc-e621b1e1a8c2@amd.com> <YKbmmNKiwDQ7wRl7@zn.tnic>
+From:   Wei Huang <wei.huang2@amd.com>
+Message-ID: <83432971-9969-5ffc-a2a9-1f4197592ff4@amd.com>
+Date:   Thu, 20 May 2021 17:47:37 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <0339DB35-27AC-4A50-B807-968C72ABB698@fb.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <YKbmmNKiwDQ7wRl7@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.77.11]
+X-ClientProxiedBy: SN4PR0801CA0023.namprd08.prod.outlook.com
+ (2603:10b6:803:29::33) To DM5PR1201MB0201.namprd12.prod.outlook.com
+ (2603:10b6:4:5b::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.31.10.87] (165.204.77.11) by SN4PR0801CA0023.namprd08.prod.outlook.com (2603:10b6:803:29::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 22:47:38 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 95cb6e56-1547-435d-8cbe-08d91be14517
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4011:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB401175615FE1072E1CF93991CF2A9@DM6PR12MB4011.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DOFuaK2tddpwTJkSt2bx7yaISw9SqYjJzYjh15BF0B9eQCC7Wc0lv2rXnEhf0SYg7saY9Z6RhHLQpShcgOxaJVa9ib2TsOHxWLg9RIXOni5KdUw2Le+2DoPUE6FQtrup2ttsWPBv8SAdjpx/pBMFZhHsaAebmcpu83/rysPyz9o0kz7c6dZJF3dlrmor8DXIBl/sErSxBqe6gKB3Z/8ODvMP6IUNTvSc/XXD41JitFUp4XQc4Sj1K7ja8kbmebnXtkjtlrOpz/KIaI2TkuNrI2MhnX4iLew/o651UN4ROfHlb6JmeEP/6PpsDv6ljIzd/YMS5ziyA3Cik9HYVullV9HNWMNm3xlcwkYceP/Z/sQSYA+VE0HDlNNyPPAA3o7u6RB6gS6Samq/9TQfx5XLyR6tZkBJOZ1a0JfBnfzbxXTk+fnHn08BdOPzp/y7V1Xs6XdV0rNpUMWfcu4Z+ho8nSW7JDHLr9dBumepaUSHRjZ3PtUkQZ+fVJq/zAr73w7uCnbwlqJS7Ymr7MlM3sgo28ooJnykIstKBEp3JoCQPCo7rbffea+IJ6Kli/iMdDtghU5ez4r1WrIGcgUULgMGzny+xxDOKNtachKitmTumUfIT4PnPSOUb7ZqPoB09jk8UYCnFqT2blXY9XI4/UzEZpdPrSQl5YvWAJHZPyu8XKZSKbc06uyq99cWLPfQ7rRiGF0nWW5oVomtp7WooLj0d8xhMxy2Cez4sdnVgzk+umc=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(26005)(4326008)(16526019)(186003)(8936002)(8676002)(86362001)(31696002)(6916009)(2906002)(6486002)(36756003)(66476007)(66556008)(66946007)(5660300002)(38100700002)(38350700002)(316002)(478600001)(16576012)(4744005)(53546011)(31686004)(956004)(2616005)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YXVZYzhhTFZlQktBbkQvaHpFbzNoRU5mVG45ZTVVdytFVlROTHFYQy9pcmFS?=
+ =?utf-8?B?elZWTWlLbTViemIvL3BwVllTMVEvVUc0dndOQzhmS3IvcTJiaC8yazNJMW00?=
+ =?utf-8?B?bWpWU0h3enkydUFFZVFDNFNVYXBaRDExOSs0cEEyM2FGREg4c2RlelJTbzVY?=
+ =?utf-8?B?VWpGT21QTnMxZEJiaGUvTno2RndleFFESmlEZlphdlJ3MUQzMG1yOGVNRTBN?=
+ =?utf-8?B?TmlFcWlqZmZMUzZLMjRWV2lXLzR1VGd3Zk1YeHRJd2VncjBpVzNaUVBMdW5Y?=
+ =?utf-8?B?YlJpMjdaSHUrYzluRVVOSm5WV04zVEgxTXNRVHRZcXRjN3ZhYmppaVBlc0VF?=
+ =?utf-8?B?NnFjUnZua25nRGt3TkRnMFIyUHowbVY5aUhTd3VOaStpVjBYU01PUlZJRndF?=
+ =?utf-8?B?ak9JUWVWOG10d0FZb0ZJbmZ0c29WK3lzOWt2bzh2eG16NHVtK0dIc2l3djNq?=
+ =?utf-8?B?Z0Q0NFRwRHM1NFg3dDh2eFVCOWwvMThIT1VMbGZ1VVZsUGNQdmZBREJMWnND?=
+ =?utf-8?B?OXoreHBLOU5wVFhEYTFhREV3RFdYRWR3Vmt6bGp4NFkxcCtmM1luUmg1eEV5?=
+ =?utf-8?B?U0xMb3RmUHp5c3FKU2NiQ09YRWdHbjVrdkNsQTZDZ2xtd1BTOHZ3UTBJSXQy?=
+ =?utf-8?B?ZkZBeDRCdWVvRmE1Z1ZHYm1hQ1VwWndoN3dRUi9hblJsaWpIeXE1dnAvUEI3?=
+ =?utf-8?B?Zkp2aXdxeDZKcE9BV0tkMTN2bEpEcGMwV3M3QUZNSERDT2kybHprRGRkaXFn?=
+ =?utf-8?B?Sm85V0tLWCtIU2c0VWpGd2xyZ2pJaFlHejl4U3drMVB4Z2NFNm5UeGovbVYx?=
+ =?utf-8?B?NmpKcGpEMHdMalRlTzd3MnlKUXJ4Yk1CMitBMjZWNVJobm14NkFSclFLKzNz?=
+ =?utf-8?B?ckV6Z2dUMzBJNThVMUtDQVR5NFgxcktqYkVLMW5NNWJYeVdndGRENlFiYXRX?=
+ =?utf-8?B?cWJiMTQ3NzE5S2FqMXlJYzZGODJVdFRuUWVialRpUkRpcVdlOVhMZ0syVnpC?=
+ =?utf-8?B?aXZNMnBRL3gzZXAwVUxkek5oclY1aHNXdmNSRm5HNzBqWWh5MDJTRFlHbXVB?=
+ =?utf-8?B?MGxuNzArVnA4Y3N6czd4b213TEhvakY5eStqZzhneG9aY3ppYTdDc2FyUGdz?=
+ =?utf-8?B?L1B2YUtRbGNvSGVMS1gxbURXTkVhSlhaTnlsOXNMOHY5WjVRTk5VK21qZ3l6?=
+ =?utf-8?B?QXZZdjMyV3lLNFVEcnhxQ1FDeUt6c0wrWitubUxsTUp0ZVR6RzVwdTRGY3VL?=
+ =?utf-8?B?NHkzdVJROWJSOXJnY3VuTFhrUE9yZUxLcXFSZjM1SFI4NzFta0pVeGgvQWVM?=
+ =?utf-8?B?N2h4T0Z0bEJpaXhTUCtRMXcxNnljK2xuVVVCdmlCUGRPSmJsSVpObXp3ZEZ4?=
+ =?utf-8?B?OFJ5NmZaK1RxaHpRZzhndDNySGh5Y1BIOGRicWdLcGh3T25QbUVUdnl1Mi9N?=
+ =?utf-8?B?YXVjWk95OCs3RGFBL0RzeEpoYzRFSE5hb2ZYODRsVHROMHNSaVBzak5Ua2hn?=
+ =?utf-8?B?ZXo2U202NExmZVhuanI4MWxOYXpEVDRNQ2w0N0FtaXhBL2J0MEpBWHdHSUU2?=
+ =?utf-8?B?WkYvdm9tWFNzcktDWEhvcHNJSk1LaG9SVzBMYUNYWG5GZXNsMnd3Y2hnbU84?=
+ =?utf-8?B?djQxazQyanAydjRlZmY5L3JpRDB0MjlYUDRGdWVNTkpaMzN0OFVkM1ZVbjhp?=
+ =?utf-8?B?d3BhaWFhaHBTMm8zdGQrQlpGNzR4OUNUT29SWGZLQ1NCcFJlNlFXVUd2Y2Zs?=
+ =?utf-8?Q?AEVEMW9eY9sbZ24B8QwMSV/32rIUmt5TLkmH6hl?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 95cb6e56-1547-435d-8cbe-08d91be14517
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0201.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 22:47:39.2797
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PoL+aJAOlkJMF/Cy4JXj4SKsJjCkW1SQenIUrikf2h1IinMswvUOKBTibiIThXdS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 10:46 PM, Song Liu wrote:
->> On May 19, 2021, at 7:13 AM, Pavel Begunkov <asml.silence@gmail.com> wrote:
->> There is a bunch of scattered around ctx fields that are almost never
->> used, e.g. only on ring exit, plunge them to the end, better locality,
->> better aesthetically.
->>
->> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> ---
->> fs/io_uring.c | 36 +++++++++++++++++-------------------
->> 1 file changed, 17 insertions(+), 19 deletions(-)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index 9ac5e278a91e..7e3410ce100a 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -367,9 +367,6 @@ struct io_ring_ctx {
->> 		unsigned		cached_cq_overflow;
->> 		unsigned long		sq_check_overflow;
->>
->> -		/* hashed buffered write serialization */
->> -		struct io_wq_hash	*hash_map;
->> -
->> 		struct list_head	defer_list;
->> 		struct list_head	timeout_list;
->> 		struct list_head	cq_overflow_list;
->> @@ -386,9 +383,6 @@ struct io_ring_ctx {
->>
->> 	struct io_rings	*rings;
->>
->> -	/* Only used for accounting purposes */
->> -	struct mm_struct	*mm_account;
->> -
->> 	const struct cred	*sq_creds;	/* cred used for __io_sq_thread() */
->> 	struct io_sq_data	*sq_data;	/* if using sq thread polling */
->>
->> @@ -409,14 +403,6 @@ struct io_ring_ctx {
->> 	unsigned		nr_user_bufs;
->> 	struct io_mapped_ubuf	**user_bufs;
->>
->> -	struct user_struct	*user;
->> -
->> -	struct completion	ref_comp;
->> -
->> -#if defined(CONFIG_UNIX)
->> -	struct socket		*ring_sock;
->> -#endif
->> -
->> 	struct xarray		io_buffers;
->>
->> 	struct xarray		personalities;
->> @@ -460,12 +446,24 @@ struct io_ring_ctx {
->>
->> 	struct io_restriction		restrictions;
->>
->> -	/* exit task_work */
->> -	struct callback_head		*exit_task_work;
->> -
->> 	/* Keep this last, we don't need it for the fast path */
->> -	struct work_struct		exit_work;
->> -	struct list_head		tctx_list;
->> +	struct {
+
+
+On 5/20/21 5:45 PM, Borislav Petkov wrote:
+> On Thu, May 20, 2021 at 04:36:09PM -0500, Wei Huang wrote:
+>> According to the specification, these IDs look correct to me. I also found
+>> them on two real machines.
 > 
-> Why do we need an anonymous struct here? For cache line alignment?
-> Do we need ____cacheline_aligned_in_smp?
+> Wei, I'm assuming that's an ACK?
 
-Rather as a visual hint considering that most of the field historically
-are in structs (____cacheline_aligned_in_smp). Also preparing to
-potentially splitting it out of the ctx struct as it grows big. 
+Yes, it is an ACK. They match with the values specified in PPR.
 
-First 2-3 patches are not strictly related to bpf and will go separately
-earlier, just the set was based on.
-
->> +		#if defined(CONFIG_UNIX)
->> +			struct socket		*ring_sock;
->> +		#endif
->> +		/* hashed buffered write serialization */
->> +		struct io_wq_hash		*hash_map;
->> +
->> +		/* Only used for accounting purposes */
->> +		struct user_struct		*user;
->> +		struct mm_struct		*mm_account;
->> +
->> +		/* ctx exit and cancelation */
->> +		struct callback_head		*exit_task_work;
->> +		struct work_struct		exit_work;
->> +		struct list_head		tctx_list;
->> +		struct completion		ref_comp;
->> +	};
->> };
->>
->> struct io_uring_task {
-
--- 
-Pavel Begunkov
+> 
+>> On 5/20/21 12:41 PM, David Bartley wrote:
+>>> This is required to support Zen3 APUs in k10temp.
+>>>
+>>> Signed-off-by: David Bartley <andareed@gmail.com>
+> 
+> Btw, David, for the future, pls run your patches through
+> 
+> ./scripts/get_maintainer.pl
+> 
+> so that you get a list of people and mailing lists to CC - otherwise it
+> likely will get missed.
+> 
+> This one I managed to fish out from the lkml firehose, by chance. :-)
+> 
+> Thx.
+> 
