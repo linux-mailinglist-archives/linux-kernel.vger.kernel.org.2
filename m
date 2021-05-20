@@ -2,156 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE239389EB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C615389ED6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:21:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230487AbhETHPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:15:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59130 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230444AbhETHPV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:15:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621494840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=X397uYzu/1SGZ7jXQoaSeO5WeNNNY9/Yz6fG++yQyTE=;
-        b=H/ThIPczBjR/j/GlgN/LL3yjm28YkRxaLVkDONqVmu5CajZ8jSPP/rpu/S3h1b+l3cNLML
-        04RIVWAiTaOF8He5cKTVQRO1JdBLIFpBheHekLDkPKf1kMQ4IRmTO0+/k+kujEYgAvFnMM
-        0ZAA94wXj8WITI3Ze+R2tso3Yy+Qohk=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-282-5VCswhaJNuOsrWINEhfehA-1; Thu, 20 May 2021 03:13:53 -0400
-X-MC-Unique: 5VCswhaJNuOsrWINEhfehA-1
-Received: by mail-ed1-f69.google.com with SMTP id w1-20020aa7da410000b029038d323eeee3so7027945eds.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:13:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=X397uYzu/1SGZ7jXQoaSeO5WeNNNY9/Yz6fG++yQyTE=;
-        b=rgEWM7jDGSMlyvUdEEnhbBVTj7DnyQO4NJRVksFP7S6DVP9l2LNhwFbayEzBrKInU2
-         A6TguHkVSKhQ9ZH4ueKEyLCGkUg2THNrVmBx2WDSg6ffsjxigXe6GcUo8B2bLZBnuw1b
-         3RbvdOZ9itblDn79wjgC2qP1D+kuAaH2N7YT3/Yxjom2+Xy/bGVhdSd3qjBZGms28gr4
-         IIvmn77JfagNiKNc9KsQsh1qfGvkGQPSPw6fqUFIwECvCi06JybNIikgSiOaxY0z/Zdg
-         LUXvIBC//D6rgeFgv8S+0vZY1hpNFpMRoBP/49LuO6d0RNPuzDk49qvlmrVdWzEbbDy+
-         zNUA==
-X-Gm-Message-State: AOAM533H3zJ5IRuNP38kP3OCpNayWdUac4TrdGLoZlDycl/MTzyv3FfI
-        kNTu3pCv7jvVp0w4wIAM2DCaDu6ed2TIGd5QeduVsWKYvCUf+1zVExSYXmIkT7LOBO0Wh+9+KeH
-        +XmdLUkbxwnhSfu/Ofj3szJ3I
-X-Received: by 2002:a17:906:710a:: with SMTP id x10mr3270203ejj.516.1621494832170;
-        Thu, 20 May 2021 00:13:52 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxibTGTIU5aNfe7e7C+nhhm86RevK1TLm9JeCA0fjdCXTc0xThi0q3SFi5juTDfWbQvOudDdQ==
-X-Received: by 2002:a17:906:710a:: with SMTP id x10mr3270183ejj.516.1621494831957;
-        Thu, 20 May 2021 00:13:51 -0700 (PDT)
-Received: from x1.bristot.me (host-87-19-51-73.retail.telecomitalia.it. [87.19.51.73])
-        by smtp.gmail.com with ESMTPSA id qo19sm923768ejb.7.2021.05.20.00.13.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 00:13:51 -0700 (PDT)
-Subject: Re: [RFC PATCH 04/16] rv/include: Add deterministic automata monitor
- definition via C macros
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
-References: <cover.1621414942.git.bristot@redhat.com>
- <1e67370a0808714325b434edfe8f84178867af47.1621414942.git.bristot@redhat.com>
- <20210519182739.GG21560@worktop.programming.kicks-ass.net>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <c638d724-c9d8-d640-eb99-8e684e2d594b@redhat.com>
-Date:   Thu, 20 May 2021 09:13:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231147AbhETHW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:22:56 -0400
+Received: from mail.itouring.de ([85.10.202.141]:58404 "EHLO mail.itouring.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231142AbhETHWy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:22:54 -0400
+X-Greylist: delayed 348 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 May 2021 03:22:53 EDT
+Received: from tux.applied-asynchrony.com (p5b07e8e5.dip0.t-ipconnect.de [91.7.232.229])
+        by mail.itouring.de (Postfix) with ESMTPSA id 10C9FE0;
+        Thu, 20 May 2021 09:15:43 +0200 (CEST)
+Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
+        by tux.applied-asynchrony.com (Postfix) with ESMTP id AA65BF01624;
+        Thu, 20 May 2021 09:15:42 +0200 (CEST)
+Subject: Re: [PATCH BUGFIX] block, bfq: fix delayed stable merge check
+To:     Luca Mariotti <mariottiluca1@hotmail.it>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pietro Pedroni <pedroni.pietro.96@gmail.com>
+References: <DB8PR01MB59647C41BF6C964467EAFE0D882C9@DB8PR01MB5964.eurprd01.prod.exchangelabs.com>
+From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
+Organization: Applied Asynchrony, Inc.
+Message-ID: <f23f8090-4a55-3c16-1bdd-f86634cd6f3b@applied-asynchrony.com>
+Date:   Thu, 20 May 2021 09:15:42 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210519182739.GG21560@worktop.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <DB8PR01MB59647C41BF6C964467EAFE0D882C9@DB8PR01MB5964.eurprd01.prod.exchangelabs.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 8:27 PM, Peter Zijlstra wrote:
-> On Wed, May 19, 2021 at 01:36:25PM +0200, Daniel Bristot de Oliveira wrote:
+On 2021-05-18 12:43, Luca Mariotti wrote:
+> When attempting to schedule a merge of a given bfq_queue with the currently
+> in-service bfq_queue or with a cooperating bfq_queue among the scheduled
+> bfq_queues, delayed stable merge is checked for rotational or non-queueing
+> devs. For this stable merge to be performed, some conditions must be met.
+> If the current bfq_queue underwent some split from some merged bfq_queue,
+> one of these conditions is that two hundred milliseconds must elapse from
+> split, otherwise this condition is always met.
 > 
->> +struct da_monitor {
->> +	char curr_state;
->> +	bool monitoring;
->> +	void *model;
->> +};
->> +
->> +#define MAX_PID		 1024000
+> Unfortunately, by mistake, time_is_after_jiffies() was written instead of
+> time_is_before_jiffies() for this check, verifying that less than two
+> hundred milliseconds have elapsed instead of verifying that at least two
+> hundred milliseconds have elapsed.
 > 
->> +/*
->> + * Functions to define, init and get a per-task monitor.
->> + *
->> + * XXX: Make it dynamic? make it part of the task structure?
+> Fix this issue by replacing time_is_after_jiffies() with
+> time_is_before_jiffies().
 > 
-> Yes !
+> Signed-off-by: Luca Mariotti <mariottiluca1@hotmail.it>
+> Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+> Signed-off-by: Pietro Pedroni <pedroni.pietro.96@gmail.com>
+> ---
+>   block/bfq-iosched.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> I'd start with maybe adding a list_head to da_monitor and embedding a
-> single copy into task_struct and link from there. Yes lists suck, but
-> how many monitors do you realistically expect to run concurrently?
-
-Good to know I can use the task struct! This will make my life easier. I did it
-this way because I started doing the code all "out-of-tree," as modules... but
-being in kernel gives such possibilities.
-
-I will try to implement your idea! I do not see many concurrent monitors
-running, and as the list search will be linear to the number of active
-monitors... it might not even justify any more complex data structure.
-
-Thanks Peter!
-
--- Daniel
-
->> + */
->> +#define DECLARE_DA_MON_INIT_PER_TASK(name, type)				\
->> +										\
->> +struct da_monitor da_mon_##name[MAX_PID];					\
-> 
-> That's ~16M of memory, which seems somewhat silly.
-> 
->> +										\
->> +static inline struct da_monitor *da_get_monitor_##name(pid_t pid)		\
->> +{										\
->> +	return &da_mon_##name[pid];						\
->> +}										\
->> +										\
->> +void da_monitor_reset_all_##name(void)						\
->> +{										\
->> +	struct da_monitor *mon = da_mon_##name;					\
->> +	int i;									\
->> +	for (i = 0; i < MAX_PID; i++)						\
->> +		da_monitor_reset_##name(&mon[i]);				\
->> +}										\
->> +										\
->> +static void da_monitor_init_##name(void)					\
->> +{										\
->> +	struct da_monitor *mon = da_mon_##name;					\
->> +	int i;									\
->> +										\
->> +	for (i = 0; i < MAX_PID; i++) {						\
->> +		mon[i].curr_state = model_get_init_state_##name();		\
->> +		mon[i].monitoring = 0;						\
->> +		mon[i].model = model_get_model_##name();			\
->> +	}									\
->> +}										\
+> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+> index acd1f881273e..2adb1e69c9d2 100644
+> --- a/block/bfq-iosched.c
+> +++ b/block/bfq-iosched.c
+> @@ -2697,7 +2697,7 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
+>   	if (unlikely(!bfqd->nonrot_with_queueing)) {
+>   		if (bic->stable_merge_bfqq &&
+>   		    !bfq_bfqq_just_created(bfqq) &&
+> -		    time_is_after_jiffies(bfqq->split_time +
+> +		    time_is_before_jiffies(bfqq->split_time +
+>   					  msecs_to_jiffies(200))) {
+>   			struct bfq_queue *stable_merge_bfqq =
+>   				bic->stable_merge_bfqq;
 > 
 
+Not sure why but with this patch I quickly got a division-by-zero in BFQ and
+complete system halt. Unfortunately I couldn't capture the exact stack trace,
+but it read something like bfq_calc_weight() or something ike that.
+I looked through the code and found bfq_delta(), so maybe weight got
+reduced to 0?
+
+-h
