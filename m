@@ -2,98 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2DDA38AF37
+	by mail.lfdr.de (Postfix) with ESMTP id EBFF838AF38
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243256AbhETMxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:53:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
+        id S243269AbhETMxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:53:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242935AbhETMvi (ORCPT
+        with ESMTP id S243086AbhETMvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 08:51:38 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117F7C069174
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:16 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id i17so17405690wrq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:15 -0700 (PDT)
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269BAC069175
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:17 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id f22so10779276pgb.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XQxeVP/YPfwPDmoVdUI9QY51IOpHdTucNN69rQ23ZoU=;
-        b=BB2z/a7soZkZglZEGxZJrm9s0Rk4y6yPcnQhkxsnSg7k986jCjPPZ9q3cW28aABSFm
-         aqOMgyXcB0jFMg6a/5gWx+h6HTFovSDVNG1ghkIgEmYukpWgzASDQ/wqBjxnTWrnmDMB
-         IAsvZPdZc1y9CfVzxBXws9mJIzcLDTUymlDGhtg4JTLebuXeT38N2jeXCeP2+PuBazVb
-         v/SpFC0FYq5PsyntjhqvxmfifoRVhkEiF+6ncH66I6TyZUzMIl56yvvulbvEcEY5L2Vx
-         M7Rwlego5jtRcU/yyBgJJ5p1d6TU8kM5ZRRecxVp3jSCA+z9GPDSQLd1MBVXt8d8PUbP
-         blNQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+11Asx9mB6ZyWHyZn4h1vSOfApP9ND3aSL86GPZLDE8=;
+        b=drRAtIfz7o3efRjYGNUrYYK4FSZooNjDRta0p9WGLPAgjwmUIB2Rt0HozeQ9k72rI6
+         n0DfB7ldV8NvKV7bGfRMoElKKbwdsamH+qba9+Spn3R/XlRn0kh8YSIKnnyK4o9yEZZp
+         Ipl8lTxvURBCzbqQZYBPaHtYwjPgLKVs6R2B/K0nWIbgIld2rgWK4OUx1z8vQeTbS3ah
+         1tIRbbkS1YeBvUpBdcuf7UNwkFH3Ivwl1HuSocPqCCKnbztfuT2Rh3dLAr2uWx1TqPi0
+         hEIKfv4vfStz3l/k4JT+cOoSo0A5Ybu0pwKh2TIWQo/r98HnZYxIQlUAYK0ePoU1eBFU
+         PxCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XQxeVP/YPfwPDmoVdUI9QY51IOpHdTucNN69rQ23ZoU=;
-        b=C3lYWqmeuRLg76zIej6IctOLIl/K8eCbu69k8hgwShg8jnvF7Lb0oDx4AlSSI5/sTD
-         6UY2NVeeXgJ6IAsOBPZ3yY2DYaEi3uRTOLpptq2x6kAJwGYJw7rYaxshHLJNruqlnSDq
-         T8X0m5ikuxtNKMv0SilAxSMOkES3o/ABPdT4xrG8m97kYgUYC97F/Z1OgrtoaGmtxmhw
-         G2ai+PSL87OODooOOpmz6540h7QCv/rWYdijGoPKMd/zq2c+KLDLtO932p2OKf1mJ8Pe
-         JVlGcF3dCPC1JYiWdgoqJ7yqBauLwa997T7wrOxqlas3VzYBQ6cMQyAWw4h3XGPM+cT3
-         R3SQ==
-X-Gm-Message-State: AOAM532r7d2B7hBLEyjyT1q4d2vtnVAJFqOGgkExRfps8Up+ekirgmIr
-        nB7/2TltHMX4XyTb0BDqldo3Jw==
-X-Google-Smtp-Source: ABdhPJwyx22/mLe5y5spSEV/LwEWte193Cc++nFZrm1PhYkbQADCWmlSNgrHqgZ46C0I6X8i19+Zsw==
-X-Received: by 2002:a5d:6701:: with SMTP id o1mr4106251wru.390.1621512854660;
-        Thu, 20 May 2021 05:14:14 -0700 (PDT)
-Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id 61sm3393704wrm.52.2021.05.20.05.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:14:14 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
-        Kanoj Sarcar <kanoj@sgi.com>
-Subject: [PATCH 16/16] char: mem: Provide local prototype for non-static function
-Date:   Thu, 20 May 2021 13:13:47 +0100
-Message-Id: <20210520121347.3467794-17-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520121347.3467794-1-lee.jones@linaro.org>
-References: <20210520121347.3467794-1-lee.jones@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+11Asx9mB6ZyWHyZn4h1vSOfApP9ND3aSL86GPZLDE8=;
+        b=k4+Y8kGvdkY+U96PAZvr91sO+5dKQdXzwrID/h/8kZZVItJJBEghZdPITQF+9Ip1Da
+         evyD2NQdKnbkLFyrr19nTmmpK9PLUJhyklEmxswdhq3By2AKXbLFV1//umjyA4PkTFUM
+         k8KOGXjUsEFohqdoJC6B2I3FNS88mZIsI52CQAJ8QHkmYwlTd0w9MImMPII7Vx4hpNZy
+         rJzY7GVMQ8nZ1gZ18pzwfK5NOSbGikk/Gb+H6TUsvfe7PGnGoXOcYvZm/x/VEs0lig5+
+         Y2i8jnhHmDXO9lCVf6JKtfEdSJ3r7NCT/3VhVed0uACcgywoNT97Y/p0G0The8fsBS/b
+         /ItA==
+X-Gm-Message-State: AOAM531MSR5KpGyxQ2UmrSxjGmK57huRelVAKt1240Ag41qsz0ah9tQW
+        ETnlD1RzBAaermQp7b8CDYpzzAMQ465HWgNnX2qKGQ==
+X-Google-Smtp-Source: ABdhPJwbodNgWFgeN2AQHQRqgbGi8pKONPqqgmZHyx3zuUWP8wat9k8I1mThIO5zDnJdgh+krIPYwYTr7uNlCIK1IH4=
+X-Received: by 2002:a63:1054:: with SMTP id 20mr4317007pgq.120.1621512857098;
+ Thu, 20 May 2021 05:14:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-10-jonathan@marek.ca>
+In-Reply-To: <20210511180728.23781-10-jonathan@marek.ca>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 20 May 2021 14:14:04 +0200
+Message-ID: <CAG3jFyv71xJxkH_aq9PMObSKRu1GUcekCHpwKRMTbnrch2vG_Q@mail.gmail.com>
+Subject: Re: [PATCH 09/17] media: camss: csid: allow csid to work without a regulator
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
+>
+> At least for titan HW, CSID don't have an associated regulator. This change
+> is necessary to be able to model this in the CSID resources.
+>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid.c | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
+> index cc11fbfdae13..528674dea06c 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid.c
+> @@ -162,7 +162,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+>                         return ret;
+>                 }
+>
+> -               ret = regulator_enable(csid->vdda);
+> +               ret = csid->vdda ? regulator_enable(csid->vdda) : 0;
+>                 if (ret < 0) {
+>                         pm_runtime_put_sync(dev);
+>                         return ret;
+> @@ -170,14 +170,16 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+>
+>                 ret = csid_set_clock_rates(csid);
+>                 if (ret < 0) {
+> -                       regulator_disable(csid->vdda);
+> +                       if (csid->vdda)
+> +                               regulator_disable(csid->vdda);
+>                         pm_runtime_put_sync(dev);
+>                         return ret;
+>                 }
+>
+>                 ret = camss_enable_clocks(csid->nclocks, csid->clock, dev);
+>                 if (ret < 0) {
+> -                       regulator_disable(csid->vdda);
+> +                       if (csid->vdda)
+> +                               regulator_disable(csid->vdda);
+>                         pm_runtime_put_sync(dev);
+>                         return ret;
+>                 }
+> @@ -188,7 +190,8 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+>                 if (ret < 0) {
+>                         disable_irq(csid->irq);
+>                         camss_disable_clocks(csid->nclocks, csid->clock);
+> -                       regulator_disable(csid->vdda);
+> +                       if (csid->vdda)
+> +                               regulator_disable(csid->vdda);
+>                         pm_runtime_put_sync(dev);
+>                         return ret;
 
- drivers/char/mem.c:95:29: warning: no previous prototype for ‘unxlate_dev_mem_ptr’ [-Wmissing-prototypes]
- drivers/char/mem.c:96:13: note: in expansion of macro ‘unxlate_dev_mem_ptr’
+Since this & the previous chunks of failure cleanups are growing
+larger, maybe it is time to extract all of the failure cleanups into
+gotos. That should probably go into a seperate patch though.
 
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: "C. Scott Ananian" <cananian@alumni.princeton.edu>
-Cc: Kanoj Sarcar <kanoj@sgi.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/char/mem.c | 2 ++
- 1 file changed, 2 insertions(+)
+>                 }
+> @@ -197,7 +200,7 @@ static int csid_set_power(struct v4l2_subdev *sd, int on)
+>         } else {
+>                 disable_irq(csid->irq);
+>                 camss_disable_clocks(csid->nclocks, csid->clock);
+> -               ret = regulator_disable(csid->vdda);
+> +               ret = csid->vdda ? regulator_disable(csid->vdda) : 0;
+>                 pm_runtime_put_sync(dev);
+>         }
+>
+> @@ -634,7 +637,9 @@ int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
+>
+>         /* Regulator */
+>
+> -       csid->vdda = devm_regulator_get(dev, res->regulator[0]);
+> +       csid->vdda = NULL;
+> +       if (res->regulator[0])
+> +               csid->vdda = devm_regulator_get(dev, res->regulator[0]);
+>         if (IS_ERR(csid->vdda)) {
+>                 dev_err(dev, "could not get regulator\n");
+>                 return PTR_ERR(csid->vdda);
 
-diff --git a/drivers/char/mem.c b/drivers/char/mem.c
-index 95741f93a6cd0..7969ac85491df 100644
---- a/drivers/char/mem.c
-+++ b/drivers/char/mem.c
-@@ -40,6 +40,8 @@
- #define DEVMEM_MINOR	1
- #define DEVPORT_MINOR	4
- 
-+void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
-+
- static inline unsigned long size_inside_page(unsigned long start,
- 					     unsigned long size)
- {
--- 
-2.31.1
-
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
