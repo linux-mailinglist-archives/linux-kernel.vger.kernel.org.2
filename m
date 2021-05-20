@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB05A38A810
+	by mail.lfdr.de (Postfix) with ESMTP id 20FD438A80E
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbhETKqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:46:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60480 "EHLO mail.kernel.org"
+        id S237514AbhETKqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:46:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237165AbhETK3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237161AbhETK3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:29:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 447DB611AD;
-        Thu, 20 May 2021 09:51:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7633661186;
+        Thu, 20 May 2021 09:51:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504294;
-        bh=pUU7Sk1wS29Qif8RB2nCfqehjHYuPivh06PDo2M0P1E=;
+        s=korg; t=1621504296;
+        bh=n63INNdp53CnWN4/M9FUKUeIT4BVwDIF/5cVVFzUU1g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NJz6rWQZ90J9N6Vvu2T6eO3CEMxVupOLtVxTDpoyaf13Soaxq5U8Bm4FAk498z74C
-         kuK2tqYN/EJLgVGOLrujXoZvkltyUhfuvRhj8//6Zp1TqqzMHF9f7XHMEzKziAjhi/
-         aI+dK/kkkjzhc7vU74GjC/Qoktc20I/Tr5kstxGg=
+        b=ByxmkMtSW9IZZW1qgYLYJM9hWX83aD++P798uAJ9Z0vmq33iFsfufr1dDVMU9NhWn
+         k4ZP/Q9cZQdpsnnT8ZL8xxwbc+RnVBr4MAsQv2wE8/TBjw2H9vFpzTpq64x2QFQY58
+         PZsbHPGEuIJ2H5gumVkH0h8TeyenoUxdTLmedr5Y=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 181/323] media: m88rs6000t: avoid potential out-of-bounds reads on arrays
-Date:   Thu, 20 May 2021 11:21:13 +0200
-Message-Id: <20210520092126.320126348@linuxfoundation.org>
+        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 182/323] x86/kprobes: Fix to check non boostable prefixes correctly
+Date:   Thu, 20 May 2021 11:21:14 +0200
+Message-Id: <20210520092126.351299026@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -40,54 +39,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Masami Hiramatsu <mhiramat@kernel.org>
 
-[ Upstream commit 9baa3d64e8e2373ddd11c346439e5dfccb2cbb0d ]
+[ Upstream commit 6dd3b8c9f58816a1354be39559f630cd1bd12159 ]
 
-There a 3 array for-loops that don't check the upper bounds of the
-index into arrays and this may lead to potential out-of-bounds
-reads.  Fix this by adding array size upper bounds checks to be
-full safe.
+There are 2 bugs in the can_boost() function because of using
+x86 insn decoder. Since the insn->opcode never has a prefix byte,
+it can not find CS override prefix in it. And the insn->attr is
+the attribute of the opcode, thus inat_is_address_size_prefix(
+insn->attr) always returns false.
 
-Addresses-Coverity: ("Out-of-bounds read")
+Fix those by checking each prefix bytes with for_each_insn_prefix
+loop and getting the correct attribute for each prefix byte.
+Also, this removes unlikely, because this is a slow path.
 
-Link: https://lore.kernel.org/linux-media/20201007121628.20676-1-colin.king@canonical.com
-Fixes: 333829110f1d ("[media] m88rs6000t: add new dvb-s/s2 tuner for integrated chip M88RS6000")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: a8d11cd0714f ("kprobes/x86: Consolidate insn decoder users for copying code")
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Link: https://lore.kernel.org/r/161666691162.1120877.2808435205294352583.stgit@devnote2
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/tuners/m88rs6000t.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kernel/kprobes/core.c | 17 ++++++++++++-----
+ 1 file changed, 12 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/media/tuners/m88rs6000t.c b/drivers/media/tuners/m88rs6000t.c
-index 9f3e0fd4cad9..d4443f9c9fa3 100644
---- a/drivers/media/tuners/m88rs6000t.c
-+++ b/drivers/media/tuners/m88rs6000t.c
-@@ -534,7 +534,7 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
- 	PGA2_cri = PGA2_GC >> 2;
- 	PGA2_crf = PGA2_GC & 0x03;
+diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
+index 700d434f5bda..cfd8269ab4cd 100644
+--- a/arch/x86/kernel/kprobes/core.c
++++ b/arch/x86/kernel/kprobes/core.c
+@@ -173,6 +173,8 @@ NOKPROBE_SYMBOL(skip_prefixes);
+ int can_boost(struct insn *insn, void *addr)
+ {
+ 	kprobe_opcode_t opcode;
++	insn_byte_t prefix;
++	int i;
  
--	for (i = 0; i <= RF_GC; i++)
-+	for (i = 0; i <= RF_GC && i < ARRAY_SIZE(RFGS); i++)
- 		RFG += RFGS[i];
+ 	if (search_exception_tables((unsigned long)addr))
+ 		return 0;	/* Page fault may occur on this address. */
+@@ -185,9 +187,14 @@ int can_boost(struct insn *insn, void *addr)
+ 	if (insn->opcode.nbytes != 1)
+ 		return 0;
  
- 	if (RF_GC == 0)
-@@ -546,12 +546,12 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
- 	if (RF_GC == 3)
- 		RFG += 100;
+-	/* Can't boost Address-size override prefix */
+-	if (unlikely(inat_is_address_size_prefix(insn->attr)))
+-		return 0;
++	for_each_insn_prefix(insn, i, prefix) {
++		insn_attr_t attr;
++
++		attr = inat_get_opcode_attribute(prefix);
++		/* Can't boost Address-size override prefix and CS override prefix */
++		if (prefix == 0x2e || inat_is_address_size_prefix(attr))
++			return 0;
++	}
  
--	for (i = 0; i <= IF_GC; i++)
-+	for (i = 0; i <= IF_GC && i < ARRAY_SIZE(IFGS); i++)
- 		IFG += IFGS[i];
+ 	opcode = insn->opcode.bytes[0];
  
- 	TIAG = TIA_GC * TIA_GS;
+@@ -212,8 +219,8 @@ int can_boost(struct insn *insn, void *addr)
+ 		/* clear and set flags are boostable */
+ 		return (opcode == 0xf5 || (0xf7 < opcode && opcode < 0xfe));
+ 	default:
+-		/* CS override prefix and call are not boostable */
+-		return (opcode != 0x2e && opcode != 0x9a);
++		/* call is not boostable */
++		return opcode != 0x9a;
+ 	}
+ }
  
--	for (i = 0; i <= BB_GC; i++)
-+	for (i = 0; i <= BB_GC && i < ARRAY_SIZE(BBGS); i++)
- 		BBG += BBGS[i];
- 
- 	PGA2G = PGA2_cri * PGA2_cri_GS + PGA2_crf * PGA2_crf_GS;
 -- 
 2.30.2
 
