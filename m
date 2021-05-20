@@ -2,116 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA1C38AE7C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBA038AE7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239520AbhETMjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:39:25 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:2716 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240990AbhETMia (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:38:30 -0400
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KCUlQt022002;
-        Thu, 20 May 2021 12:36:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=8GLrX0d0XmrHl8aiSUsOYdiKs8SYFI6qkK8/mq5o8Ws=;
- b=nS2jbQWqV1JBCy48bZxAUnPXx4QLyy/67LJzNmgLsGAKDflEGN9H+diRN3qXxkQ4ahk9
- 0/QoYwYXEwrq3OD48Z6WQTEEPl4UHa8JgI8X7rO8d6XpzTpO0SfuhyuLnv5mwZ/RQu35
- Vzdz5owBU8wpGK8wnjU63ZSxdaKmvnKQyJJ28KhreNUfgVZe5cZuncmQgkT9Womkn3xP
- hz1ItX8Bgd22nMEbhN/FEV+nL6wFVaQB15pc6wUMWVWB0trg44pae/lxg0AeMdHK9gpL
- R5AnOCwrK0EQmYL9MFg0Kb0VonyKD3F0pLheWjb+P6nIvQXM1g8NlXAzPtaPHICpHkPS UA== 
-Received: from oracle.com (userp3030.oracle.com [156.151.31.80])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38m9bgh3d2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 12:36:58 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14KCavxh105947;
-        Thu, 20 May 2021 12:36:57 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38megmessx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 12:36:56 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14KCauJh105926;
-        Thu, 20 May 2021 12:36:56 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 38megmessc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 12:36:56 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14KCatIN015477;
-        Thu, 20 May 2021 12:36:55 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 20 May 2021 05:36:54 -0700
-Date:   Thu, 20 May 2021 15:36:47 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Marco Cesati <marcocesati@gmail.com>,
-        Fabio Aiuto <fabioaiuto83@gmail.com>, Stanley@BB.SD3,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH 2/2] staging: rtl8723bs: hal: rtl8723b_hal_init: Remove
- unused variable and dead code
-Message-ID: <20210520123647.GG1955@kadam>
-References: <20210520122620.3470450-1-lee.jones@linaro.org>
- <20210520122620.3470450-2-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210520122620.3470450-2-lee.jones@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: eVnGJGhS3kmgJqfetugCIuSxcunvGRdl
-X-Proofpoint-GUID: eVnGJGhS3kmgJqfetugCIuSxcunvGRdl
+        id S240504AbhETMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:39:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49210 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236467AbhETMjE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:39:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3BCCBABE8;
+        Thu, 20 May 2021 12:37:42 +0000 (UTC)
+Date:   Thu, 20 May 2021 14:37:42 +0200
+Message-ID: <s5hfsyhh97t.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>,
+        alsa-devel@alsa-project.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: ALSA: usb-audio: Handle error for the current selector gracefully [ uninitialized variable issue ]
+In-Reply-To: <4b261d68-f53f-240d-2d8a-2f88b337849d@canonical.com>
+References: <4b261d68-f53f-240d-2d8a-2f88b337849d@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 01:26:20PM +0100, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+On Thu, 20 May 2021 10:58:21 +0200,
+Colin Ian King wrote:
 > 
->  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c: In function ‘CCX_FwC2HTxRpt_8723b’:
->  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c:3355:5: warning: variable ‘seq_no’ set but not used [-Wunused-but-set-variable]
+> Hi,
 > 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Marco Cesati <marcocesati@gmail.com>
-> Cc: Fabio Aiuto <fabioaiuto83@gmail.com>
-> Cc: Stanley@BB.SD3
-> Cc: linux-staging@lists.linux.dev
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
+> Static analysis with Coverity on linux-next has detected an
+> uninitialized variable issue with the following commit:
 > 
-> diff --git a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> index 33942ab587720..0270724ccef03 100644
-> --- a/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> +++ b/drivers/staging/rtl8723bs/hal/rtl8723b_hal_init.c
-> @@ -3204,14 +3204,9 @@ void CCX_FwC2HTxRpt_8723b(struct adapter *padapter, u8 *pdata, u8 len)
->  
->  	if (GET_8723B_C2H_TX_RPT_RETRY_OVER(pdata) | GET_8723B_C2H_TX_RPT_LIFE_TIME_OVER(pdata)) {
->  		rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_CCX_PKT_FAIL);
-> -	}
-> -/*
-> -	else if (seq_no != padapter->xmitpriv.seq_no) {
-> -		rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_CCX_PKT_FAIL);
-> -	}
-> -*/
-> -	else
-> +	} else {
->  		rtw_ack_tx_done(&padapter->xmitpriv, RTW_SCTX_DONE_SUCCESS);
-> +	}
+> commit 481f17c41803985446fd12887b2c042f9c43b0d5
+> Author: Takashi Iwai <tiwai@suse.de>
+> Date:   Tue May 18 17:21:12 2021 +0200
+> 
+>     ALSA: usb-audio: Handle error for the current selector gracefully
+> 
+> The branching is a bit convoluted and we end up with variable cur not
+> being initialized. Analysis is as follows:
+> 
+> 254static int __uac_clock_find_source(struct snd_usb_audio *chip,
+> 255                                   const struct audioformat *fmt, int
+> entity_id,
+> 256                                   unsigned long *visited, bool validate)
+> 257{
+> 258        union uac23_clock_source_desc *source;
+> 259        union uac23_clock_selector_desc *selector;
+> 260        union uac23_clock_multiplier_desc *multiplier;
+> 
+>    1. var_decl: Declaring variable cur without initializer.
+> 
+> 261        int ret, i, cur, err, pins, clock_id;
+> 262        const u8 *sources;
+> 263        int proto = fmt->protocol;
+> 264
+> 265        entity_id &= 0xff;
+> 266
+> 
+>    2. Condition test_and_set_bit(entity_id, visited), taking false
+> branch.
+> 
+> 267        if (test_and_set_bit(entity_id, visited)) {
+> 268                usb_audio_warn(chip,
+> 269                         "%s(): recursive clock topology detected, id
+> %d.\n",
+> 270                         __func__, entity_id);
+> 271                return -EINVAL;
+> 272        }
+> 273
+> 274        /* first, see if the ID we're looking for is a clock source
+> already */
+> 275        source = snd_usb_find_clock_source(chip, entity_id, proto);
+> 
+>    3. Condition source, taking false branch.
+> 
+> 276        if (source) {
+> 277                entity_id = GET_VAL(source, proto, bClockID);
+> 278                if (validate && !uac_clock_source_is_valid(chip, fmt,
+> 279
+> entity_id)) {
+> 280                        usb_audio_err(chip,
+> 281                                "clock source %d is not valid, cannot
+> use\n",
+> 282                                entity_id);
+> 283                        return -ENXIO;
+> 284                }
+> 285                return entity_id;
+> 286        }
+> 287
+> 288        selector = snd_usb_find_clock_selector(chip, entity_id, proto);
+> 
+>    4. Condition selector, taking true branch.
+> 289        if (selector) {
+>    5. Condition proto == 48, taking true branch.
+> 290                pins = GET_VAL(selector, proto, bNrInPins);
+>    6. Condition proto == 48, taking true branch.
+> 291                clock_id = GET_VAL(selector, proto, bClockID);
+>    7. Condition proto == 48, taking true branch.
+> 292                sources = GET_VAL(selector, proto, baCSourceID);
+> 293
+>    8. Condition pins == 1, taking false branch.
+> 
+> 294                if (pins == 1) {
+> 295                        ret = 1;
+> 296                        goto find_source;
+> 297                }
+> 298
+> 299                /* the entity ID we are looking for is a selector.
+> 300                 * find out what it currently selects */
+> 301                ret = uac_clock_selector_get_val(chip, clock_id);
+> 
+>    9. Condition ret < 0, taking true branch.
+> 
+> 302                if (ret < 0) {
+> 
+>    10. Condition !chip->autoclock, taking false branch.
+> 
+> 303                        if (!chip->autoclock)
+> 304                                return ret;
+> 
+>    11. Jumping to label find_others.
+> 
+> 305                        goto find_others;
+> 306                }
+> 307
+> 308                /* Selector values are one-based */
+> 309
+> 310                if (ret > pins || ret < 1) {
+> 311                        usb_audio_err(chip,
+> 312                                "%s(): selector reported illegal
+> value, id %d, ret %d\n",
+> 313                                __func__, clock_id, ret);
+> 314
+> 315                        if (!chip->autoclock)
+> 316                                return -EINVAL;
+> 317                        ret = 0;
+> 318                        goto find_others;
+> 319                }
+> 320
+> 321        find_source:
+> 322                cur = ret;
+> 323                ret = __uac_clock_find_source(chip, fmt,
+> 324                                              sources[ret - 1],
+> 325                                              visited, validate);
+> 326                if (ret > 0) {
+> 327                        err = uac_clock_selector_set_val(chip,
+> entity_id, cur);
+> 328                        if (err < 0)
+> 329                                return err;
+> 330                }
+> 331
+> 332                if (!validate || ret > 0 || !chip->autoclock)
+> 333                        return ret;
+> 334
+> 335        find_others:
+> 336                /* The current clock source is invalid, try others. */
+>    12. Condition i <= pins, taking true branch.
+> 337                for (i = 1; i <= pins; i++) {
+> 
+> Uninitialized scalar variable (UNINIT)
+> 
+>    13. uninit_use: Using uninitialized value cur.
+> 
+> 338                        if (i == cur)
+> 339                                continue;
+> 340
 
-The commit message was quite puzzling because "seq_no" doesn't exist.
-Could you resend with a fixed commit message that says "Delete commented
-out code" or whatever?
+Thanks, it looks indeed like a possible scenario.
+The fix patch is below.
 
-regards,
-dan carpenter
+
+Takashi
+
+-- 8< --
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Fix uninitialized variable at
+ __uac_clock_find_source()
+
+The cur variable indicating the currently selected clock source can be
+theoretically used as uninitialized after the recent commit
+481f17c41803 ("ALSA: usb-audio: Handle error for the current selector
+gracefully").  For addressing it, initialize it before use.
+
+Also, one place seems setting 0 to a wrong variable ret, instead of
+cur; otherwise it makes little sense.  Since the initialization is
+done beforehand, we can get rid of this line, too.
+
+Fixes: 481f17c41803 ("ALSA: usb-audio: Handle error for the current selector gracefully")
+Reported-by: Colin Ian King <colin.king@canonical.com>
+Link: https://lore.kernel.org/r/4b261d68-f53f-240d-2d8a-2f88b337849d@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/clock.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index 772478c725c2..0afae839d295 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -290,6 +290,7 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 		pins = GET_VAL(selector, proto, bNrInPins);
+ 		clock_id = GET_VAL(selector, proto, bClockID);
+ 		sources = GET_VAL(selector, proto, baCSourceID);
++		cur = 0;
+ 
+ 		if (pins == 1) {
+ 			ret = 1;
+@@ -314,7 +315,6 @@ static int __uac_clock_find_source(struct snd_usb_audio *chip,
+ 
+ 			if (!chip->autoclock)
+ 				return -EINVAL;
+-			ret = 0;
+ 			goto find_others;
+ 		}
+ 
+-- 
+2.26.2
 
