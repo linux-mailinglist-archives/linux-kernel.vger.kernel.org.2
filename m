@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D034938AC62
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD60D38AC65
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241320AbhETLib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:38:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41684 "EHLO mail.kernel.org"
+        id S241377AbhETLil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:38:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239750AbhETLTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240613AbhETLTA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 07:19:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07F0461D6D;
-        Thu, 20 May 2021 10:10:05 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3977B61D6F;
+        Thu, 20 May 2021 10:10:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505406;
-        bh=hoOV61RPo1BDdbew5cwtAk8F8ixQSjWXyd2PzkDI+Z4=;
+        s=korg; t=1621505408;
+        bh=bxCx1MAP2+M9YGiGyUZpSHuw78e7yD2VQk4Y+7qmHn4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NHwc72KvTX8aHQtXzOBiAt5LSx4z5oOPkRbv7aVc3JiLZKjyxXazYzHo/yJMLCuFl
-         Xhw5xUjmC2MuICcf4ZqQRtUaOyL+tSa/r4X3rWyaFCBp8uQx4hsnpDxdCVij53Ax3w
-         hD8vzVJpGNci8CiN3XncE3UWLoaH+h9EZtmJqNKo=
+        b=U7kST1P6Owc1ro3/XH38syHVrindUTGFOSoVa2k7igsAmn8/SQ3MzDyAojFG8vveV
+         Yq5jY6jEX/EobfMAU2Lfe2+tBJya3CfOKXNFjMX4wF8E1C+D27WvAn7NAKOLbcsfQ6
+         fu76DmGIcsg0glMn7SlnpaIIN+JuKKGSeex5lpqk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 121/190] i2c: cadence: add IRQ check
-Date:   Thu, 20 May 2021 11:23:05 +0200
-Message-Id: <20210520092106.206716721@linuxfoundation.org>
+Subject: [PATCH 4.4 122/190] i2c: jz4780: add IRQ check
+Date:   Thu, 20 May 2021 11:23:06 +0200
+Message-Id: <20210520092106.238198076@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -41,7 +41,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 5581c2c5d02bc63a0edb53e061c8e97cd490646e ]
+[ Upstream commit c5e5f7a8d931fb4beba245bdbc94734175fda9de ]
 
 The driver neglects to check the result of platform_get_irq()'s call and
 blithely passes the negative error codes to devm_request_irq() (which
@@ -49,30 +49,30 @@ takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding
 an original error code.  Stop calling devm_request_irq() with invalid
 IRQ #s.
 
-Fixes: df8eb5691c48 ("i2c: Add driver for Cadence I2C controller")
+Fixes: ba92222ed63a ("i2c: jz4780: Add i2c bus controller driver for Ingenic JZ4780")
 Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-cadence.c | 5 ++++-
+ drivers/i2c/busses/i2c-jz4780.c | 5 ++++-
  1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
-index 84deed6571bd..7d15c9143d16 100644
---- a/drivers/i2c/busses/i2c-cadence.c
-+++ b/drivers/i2c/busses/i2c-cadence.c
-@@ -894,7 +894,10 @@ static int cdns_i2c_probe(struct platform_device *pdev)
- 	if (IS_ERR(id->membase))
- 		return PTR_ERR(id->membase);
+diff --git a/drivers/i2c/busses/i2c-jz4780.c b/drivers/i2c/busses/i2c-jz4780.c
+index ba3b94505c14..d80cee068bea 100644
+--- a/drivers/i2c/busses/i2c-jz4780.c
++++ b/drivers/i2c/busses/i2c-jz4780.c
+@@ -754,7 +754,10 @@ static int jz4780_i2c_probe(struct platform_device *pdev)
  
--	id->irq = platform_get_irq(pdev, 0);
+ 	jz4780_i2c_writew(i2c, JZ4780_I2C_INTM, 0x0);
+ 
+-	i2c->irq = platform_get_irq(pdev, 0);
 +	ret = platform_get_irq(pdev, 0);
 +	if (ret < 0)
-+		return ret;
-+	id->irq = ret;
- 
- 	id->adap.owner = THIS_MODULE;
- 	id->adap.dev.of_node = pdev->dev.of_node;
++		goto err;
++	i2c->irq = ret;
+ 	ret = devm_request_irq(&pdev->dev, i2c->irq, jz4780_i2c_irq, 0,
+ 			       dev_name(&pdev->dev), i2c);
+ 	if (ret)
 -- 
 2.30.2
 
