@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71BD238A7DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAC738A7E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237778AbhETKnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:43:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55722 "EHLO mail.kernel.org"
+        id S237591AbhETKnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:43:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236107AbhETK1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:27:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DC5F961C2B;
-        Thu, 20 May 2021 09:50:45 +0000 (UTC)
+        id S236845AbhETK2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:28:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FDA261490;
+        Thu, 20 May 2021 09:51:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504246;
-        bh=V1ohVyLN9meeVj0ZCiYQuolokfC4mYMVGLS5t0j7eSY=;
+        s=korg; t=1621504264;
+        bh=twIY2PzYrB69Sa89DIlRy28ufoqRyuAKUxHUF87mqls=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eVQP+4EXy0I8aR7nb0H20to3r2TjKvTMqckgF6orRjQwvkxVugkcLEpWOWk4qeglf
-         fC0ZUoLDuavFOYMo9BdqA1c+GPaZVQfL0Uwoxiey30Gy82fwwIsQaGHZ/TT3B8B6RI
-         WxZqZXByqUZGOioG3myJ13lTQs31R7gD7RXzSTd4=
+        b=cpp/fIiEu9RVbLwSheVqPlGv/5y2+Or0ZLD3v9VqCmRhtGMo4MlHBlsRs/+XVs7dl
+         mEqfGhYCifSAynKemspKtVSNZO6Tdlt7QakidKN++yae37LJQY8jVLN8eg9hdDbUBy
+         2XUx052bcJqsR1MZFEMkmjnBBzMqGI2TUP5HMGQ0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.14 131/323] ALSA: hda/realtek: Re-order ALC269 Lenovo quirk table entries
-Date:   Thu, 20 May 2021 11:20:23 +0200
-Message-Id: <20210520092124.600335924@linuxfoundation.org>
+Subject: [PATCH 4.14 132/323] ALSA: hda/realtek: Remove redundant entry for ALC861 Haier/Uniwill devices
+Date:   Thu, 20 May 2021 11:20:24 +0200
+Message-Id: <20210520092124.632176867@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -40,50 +40,34 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit f552ff54c2a700616a02b038e4bf3cbf859f65b7 upstream.
+commit defce244b01ee12534910a4544e11be5eb927d25 upstream.
 
-Just re-order the alc269_fixup_tbl[] entries for Lenovo devices for
-avoiding the oversight of the duplicated or unapplied item in future.
-No functional changes.
+The quirk entry for Uniwill ECS M31EI is with the PCI SSID device 0,
+which means matching with all.  That is, it's essentially equivalent
+with SND_PCI_QUIRK_VENDOR(0x1584), which also matches with the
+previous entry for Haier W18 applying the very same quirk.
 
-Also Cc-to-stable for the further patch applications.
+Let's unify them with the single vendor-quirk entry.
 
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210428112704.23967-10-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210428112704.23967-13-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_realtek.c |    3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -6641,9 +6641,9 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x21b8, "Thinkpad Edge 14", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21ca, "Thinkpad L412", ALC269_FIXUP_SKU_IGNORE),
- 	SND_PCI_QUIRK(0x17aa, 0x21e9, "Thinkpad Edge 15", ALC269_FIXUP_SKU_IGNORE),
-+	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21f6, "Thinkpad T530", ALC269_FIXUP_LENOVO_DOCK_LIMIT_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x21fa, "Thinkpad X230", ALC269_FIXUP_LENOVO_DOCK),
--	SND_PCI_QUIRK(0x17aa, 0x21f3, "Thinkpad T430", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x21fb, "Thinkpad T430s", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2203, "Thinkpad X230 Tablet", ALC269_FIXUP_LENOVO_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x2208, "Thinkpad T431s", ALC269_FIXUP_LENOVO_DOCK),
-@@ -6683,6 +6683,7 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x3978, "Lenovo B50-70", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
-+	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x5013, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x501a, "Thinkpad", ALC283_FIXUP_INT_MIC),
- 	SND_PCI_QUIRK(0x17aa, 0x501e, "Thinkpad L440", ALC292_FIXUP_TPT440_DOCK),
-@@ -6701,7 +6702,6 @@ static const struct snd_pci_quirk alc269
- 	SND_PCI_QUIRK(0x17aa, 0x5109, "Thinkpad", ALC269_FIXUP_LIMIT_INT_MIC_BOOST),
- 	SND_PCI_QUIRK(0x17aa, 0x511e, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
- 	SND_PCI_QUIRK(0x17aa, 0x511f, "Thinkpad", ALC298_FIXUP_TPT470_DOCK),
--	SND_PCI_QUIRK(0x17aa, 0x3bf8, "Quanta FL1", ALC269_FIXUP_PCM_44K),
- 	SND_PCI_QUIRK(0x17aa, 0x9e54, "LENOVO NB", ALC269_FIXUP_LENOVO_EAPD),
- 	SND_PCI_QUIRK(0x1b7d, 0xa831, "Ordissimo EVE2 ", ALC269VB_FIXUP_ORDISSIMO_EVE2), /* Also known as Malata PC-B1303 */
- 
+@@ -7470,8 +7470,7 @@ static const struct snd_pci_quirk alc861
+ 	SND_PCI_QUIRK(0x1043, 0x1393, "ASUS A6Rp", ALC861_FIXUP_ASUS_A6RP),
+ 	SND_PCI_QUIRK_VENDOR(0x1043, "ASUS laptop", ALC861_FIXUP_AMP_VREF_0F),
+ 	SND_PCI_QUIRK(0x1462, 0x7254, "HP DX2200", ALC861_FIXUP_NO_JACK_DETECT),
+-	SND_PCI_QUIRK(0x1584, 0x2b01, "Haier W18", ALC861_FIXUP_AMP_VREF_0F),
+-	SND_PCI_QUIRK(0x1584, 0x0000, "Uniwill ECS M31EI", ALC861_FIXUP_AMP_VREF_0F),
++	SND_PCI_QUIRK_VENDOR(0x1584, "Haier/Uniwill", ALC861_FIXUP_AMP_VREF_0F),
+ 	SND_PCI_QUIRK(0x1734, 0x10c7, "FSC Amilo Pi1505", ALC861_FIXUP_FSC_AMILO_PI1505),
+ 	{}
+ };
 
 
