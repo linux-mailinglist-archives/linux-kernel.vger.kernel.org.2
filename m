@@ -2,146 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F68838B79F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:30:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB35038B7A3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239438AbhETTcK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:32:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40082 "EHLO
+        id S238322AbhETTe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhETTcJ (ORCPT
+        with ESMTP id S234189AbhETTex (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:32:09 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4570C061761
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:30:46 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id i4so24385005ybe.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:30:46 -0700 (PDT)
+        Thu, 20 May 2021 15:34:53 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AF86C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:28 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id ep16-20020a17090ae650b029015d00f578a8so5847817pjb.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:33:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ar6byVVqK1lRvgLic9qsfKVrGRqd/nf6HO0KI5j0j7Y=;
-        b=unZRQZQT4/xG3FpO3Qvabhk7GtClO/EQX8NrK+CX8mvFkiQa5TBKByzoSB9YvynKp3
-         wA78WE5VlE1cFOyQDnI/mFxF/4vPge3E5maZKQwrxGPJ77DLmQPTTfnFSDYgz9h/dGk7
-         9NGIJS0g0ARLDQIZw5T9Koi3k3mI8lRs9mg9FFhdCibrO5tH9jW6eMYopX9ZtNQjBNee
-         IbUNtzyGCGGCoEWI3pfbj2D6gjdROJ2rsWg2Pn01Ty6hESjZajhVy7i7UBQIWPm/rJFA
-         rVxU6dq0z0t+76SD7PsWv3X+0Q3J3SISwxcHy6bB9vMsPkhRDJ77JUbuTSD3BctDTtiG
-         xb3A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=DKaftpjv7H83Jh/uRtII0tq3p9ECwTnXtKKu/Rh05PI=;
+        b=vz5G03Jq3T+zYlANXUXDryLqsRfrAPGj9W2taWRFdoAqGpZb9TiwgFz6Ogsh6l69kb
+         JdPBtixQGnCKuAjOaWr3RFRc37fQZXsY9umWWFIr9btcsZ2H6JvT/yUdwCaPzbadtkk7
+         N1Ozq3SS/8ad81RVsvUvY0I0pwjvMahpz/+P0lx9rO4DvRc3eowOqndgZyTWno9I4ZXO
+         qm1nnrbXkFkzbI6LM68ZxsFc2B4C8MgChsg4h8eU7hTrpYYrvE6c/6Wo2z76zNKgTbBO
+         E/Y/DGO0KUByry4G6Cp9DKF7jIUQHysttBXkHfXRkQWEOqyqWRD14EtyaLwftyOhAUfL
+         FSPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ar6byVVqK1lRvgLic9qsfKVrGRqd/nf6HO0KI5j0j7Y=;
-        b=CThV236FomCKfo+AfGs9A+up5oMynWXFBvDZp/Q459pgq2ekVa6YU/PaccSsxG5Cb2
-         B4od3GDkBaoaj+zUju+aUgMcuGxaXq80Kphr78nu7jtjTSLzUgQrFJRLEbazQIlunUsh
-         VBuyD0HfwU3WVeknwkfvM/5KDRoqKX2VPL5PjEbA1XNo7tg2FKWOez/8S9i04MTHtw1K
-         jasT/RdD9pA9XriRnjrjmzQaL0ep2QM/F9F1SEqt6agy5stXU5S6u/IGsOuZcDLUssnX
-         5L6+K2Ywql+aDOmCLK7216slfWJL8sww7HBfKKhO22F+aW7bqyrWcK8BGGfqe6UhrV68
-         pa1A==
-X-Gm-Message-State: AOAM531elAz4bymuDcFAoAVAa7OUge9E0oybqcr8SUAtKoOCYVG70prn
-        ajS5fUXpXHzfjb+2HJCOXpOCQ9Kek4xto+XhOrABPk3cgn4nkA==
-X-Google-Smtp-Source: ABdhPJxpYOKGwUniY64mHhJrUUD46UWR7FL11JhqYySHKRMSD1AvlOq8F1sramRfgpdMzWznP9AXEMMiLxmDs65ILyA=
-X-Received: by 2002:a25:2fca:: with SMTP id v193mr9594447ybv.412.1621539045424;
- Thu, 20 May 2021 12:30:45 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=DKaftpjv7H83Jh/uRtII0tq3p9ECwTnXtKKu/Rh05PI=;
+        b=mjbqTcFZFAD27BfvIybHzEzHbVRAtPDO910GOCzTPI8YHFMmYU8seOoOksLpEgkFHv
+         nnzE2PykkMk4wdOfdUi4RWm5KTsL28TWf5blCVkUjAC/b3vVJLmDZh8ZDjrRRtjG/IDp
+         vIbz5bQy193sRBoTm3Xelr4m+jwK4sxZkvQAjNhd/32jg8v/g4j10yU/192czLCUGVuD
+         kBe6Jhq0dJibNvisBDmrN2JX697Lv8kEX4hYrP+bHULvyqmLnhlw3oHAuU6QeLOdsVZp
+         y397K/sawPxLyo3cq85LAhtaKF/yfra6rxXiklV9t+plJmyBPGcYnkxekRO7yJD3ODiP
+         DzqQ==
+X-Gm-Message-State: AOAM5310POLd5MdyrbwRQZ4ulzncMYvMzaRJX4IalJBx3eLSsvXkcfnK
+        38CH+TFfYYpWQp55f4dcsG10bw==
+X-Google-Smtp-Source: ABdhPJx2cEANB7DElFy0DEIg4GJXnR9d7vcMndsj8xxQv4VsXHSdZwNwbkTVvozR7t2BFM6ZIHpLeg==
+X-Received: by 2002:a17:90a:7486:: with SMTP id p6mr6949639pjk.216.1621539207345;
+        Thu, 20 May 2021 12:33:27 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id b17sm2565876pgb.71.2021.05.20.12.33.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 12:33:26 -0700 (PDT)
+Date:   Thu, 20 May 2021 19:33:22 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2 27/32] x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
+Message-ID: <YKa5gkwGTIUFpzzH@google.com>
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87b31425b79df3cc44d2bdc6a79d6aa36c42d116.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <3ae38a0b-0676-1543-7015-39a589b2807a@intel.com>
+ <0df80c0f-e0da-e86e-0ab8-abc58f0da559@linux.intel.com>
 MIME-Version: 1.0
-References: <20210520002519.3538432-1-swboyd@chromium.org> <CAGETcx-jK3pBNRYevPmRhw1TALHNjtM5dSxCdEuB+2sBH32rtQ@mail.gmail.com>
- <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
-In-Reply-To: <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 20 May 2021 12:30:09 -0700
-Message-ID: <CAGETcx-mRrqC_sGiBk+wx8RtwjJjXf0KJo+ejU6SweEBiATaLw@mail.gmail.com>
-Subject: Re: [PATCH 0/7] component: Make into an aggregate bus
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0df80c0f-e0da-e86e-0ab8-abc58f0da559@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 6:41 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> Quoting Saravana Kannan (2021-05-19 18:27:50)
-> > On Wed, May 19, 2021 at 5:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > >
-> > > This series is from discussion we had on reordering the device lists for
-> > > drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
-> > > the aggregate device onto and then we probe the device once all the
-> > > components are probed and call component_add(). The probe/remove hooks
-> > > are where the bind/unbind calls go, and then a shutdown hook is added
-> > > that can be used to shutdown the drm display pipeline at the right time.
-> > >
-> > > This works for me on my sc7180 board, but I'm currently struggling with
-> > > the last patch where we migrate the msm driver. It runs into a runtime
-> > > PM problem where the parent device isn't runtime PM enabled yet. I'm
-> > > still trying to figure out a clean solution there. Moving runtime PM
-> > > around breaks boot and I think that's because the power domain is off.
-> > >
-> > > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > > Cc: Rob Clark <robdclark@gmail.com>
-> > > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> > > Cc: Saravana Kannan <saravanak@google.com>
-> > >
-> > > [1] https://lore.kernel.org/r/20210508074118.1621729-1-swboyd@chromium.org
-> > >
-> >
-> > I skimmed through the series and in general the idea is good, but I'm
-> > not sure why each component user needs to be converted/"modern" before
-> > it can make use of the benefits of this series. Why not just have
-> > wrapper functions around the component ops that the new aggregate bus
-> > driver can just call? That'll give all the existing component users
-> > the new ability to use the new ops without having to have two
-> > versions.
->
-> The existing users can only have one or the other. Either use the ops
-> structure or use the struct aggregate_driver. What benefits of this
-> series are they not gaining?
+On Thu, May 20, 2021, Kuppuswamy, Sathyanarayanan wrote:
+> Hi Dave,
+> 
+> On 5/19/21 9:14 AM, Dave Hansen wrote:
+> > On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+> > > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+> > > 
+> > > tdx_shared_mask() returns the mask that has to be set in a page
+> > > table entry to make page shared with VMM.
+> > 
+> > Here's a rewrite:
+> > 
+> > Just like MKTME, TDX reassigns bits of the physical address for
+> > metadata.  MKTME used several bits for an encryption KeyID.  TDX uses a
+> > single bit in guests to communicate whether a physical page should be
+> > protected by TDX as private memory (bit set to 0) or unprotected and
+> > shared with the VMM (bit set to 1).
+> > 
+> > Add a helper, tdg_shared_mask() (bad name please fix it) to generate the
+> 
+> Initially we have used tdx_* prefix for the guest code. But when the code from
+> host side got merged together, we came across many name conflicts.
 
-As I mentioned earlier, if we add device links between the aggregate
-device (consumer) and all the component devices (suppliers), it'll
-take care of a lot of the ordering issues (probe, suspend, runtime PM)
-and dependency issues (unbind the master device if a component driver
-unbinds). It'll allow us to delete a lot of the code in the component
-framework too. I can send the patch for the device links once your
-series settles. So having two implementations comes in the way of a
-clean up and code improvement because we'll have to keep a lot of the
-component code for the purpose of the "legacy" ops.
+Whatever the conflicts are, they are by no means an unsolvable problem.  I am
+more than happy to end up with slightly verbose names in KVM if that's what it
+takes to avoid "tdg".
 
-> > That'll also allow us to do other improvements (I have some
-> > in mind) that'll apply to all the component users instead of only the
-> > converted ones.
->
-> What do you have in mind? I didn't want to convert drivers over to the
-> new way of doing things without making them consciously change their
-> code.
+> So to avoid such issues in future, we were asked not to use the "tdx_" prefix
+> and our alternative choice was "tdg_".
 
-What ordering/behavior would you be changing with the new ops? If the
-new shutdown ops isn't used, it really shouldn't change anything. Put
-another way, if we ignore your msm driver changes, we should be able
-to switch to having a real device for the "master" without making any
-functional change. If you are causing any functional change with the
-new ops, maybe you can key it off a flag that needs to be set? That
-way, we'll have one API/ops but still be backward compatible if you
-are worried about breaking existing users?
+Who asked you not to use tdx_?  More specifically, did that feedback come from a
+maintainer (or anyone on-list), or was it an Intel-internal decision?
 
-> Otherwise I worry it will break things in random, subtle ways. The
-> last patch, as I mentioned above in the cover, causes warnings because
-> the display driver is enabling runtime PM in an odd spot as part of the
-> bind callback of the aggregate/master. That should move out of there and
-> into the msm_pdev driver that registers the aggregate from what I can
-> tell.
+> Also, IMO, "tdg" prefix is more meaningful for guest code (Trusted Domain Guest)
+> compared to "tdx" (Trusted Domain eXtensions). I know that it gets confusing
+> when grepping for TDX related changes. But since these functions are only used
+> inside arch/x86 it should not be too confusing.
+> 
+> Even if rename is requested, IMO, it is easier to do it in one patch over
+> making changes in all the patches. So if it is required, we can do it later
+> once these initial patches were merged.
 
-Can you give more context? I think if you create device links with
-RPM_ACTIVE and PM_RUNTIME flags, it should ensure runtime PM
-correctness.
-
--Saravana
+Hell no, we are not merging known bad crud that requires useless churn to get
+things right.
