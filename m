@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F191238AF4E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:54:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6726838AF51
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:54:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231657AbhETM4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60586 "EHLO
+        id S243219AbhETM4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243528AbhETMys (ORCPT
+        with ESMTP id S243544AbhETMyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:54:48 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B413C068D94
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:19:16 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id u133so9057899wmg.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:19:16 -0700 (PDT)
+        Thu, 20 May 2021 08:54:49 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29565C068D99
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:19:17 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id z17so17429456wrq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:19:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1wzD4rzWGYK0ojKhF0X0MRsVPDkthsomyuwYyyjpIrI=;
-        b=mnsw0oTmfP/J0h9Vwdh/LXIaVIbwOwng0rT00GJWuQiTR1rVfYN2PVO0rpxUJRJ2Ks
-         wFLO72jPJeXsCfklI5GnNgyNkBiUSSAP+wdkJh2L/zzHAYnKyveHGhwTwmy8shcO8kbu
-         Ivhcla5toRdlgMygdgBX1NVv65DRTf9xcxkAzvBtG62eV3nyPfxA+hem3B/xcC/Knaqh
-         NAC5a3on3sT10RCN0KjURTPmqSM/TaK5xkcUc99mYKcocbHDu1j6Y+vnizF98rjbomWM
-         BN3Q5tn3JvYgZTNh+MTpeq/JIlV/gC+0L4P01ReRjOlucrjrtquxD63VVGATSR2RdvGq
-         psRw==
+        bh=jJARt32ZQiETH9hR4IAuZRuz7sl0B3/aEJ08ELK7AnM=;
+        b=hc9xNRkKHJX11+p3/IMzx8mKdj7z881LtfU5FzRyVKytQ+uEq39QOLi4QZYWWTdGx8
+         ZkW/2WB3HIcbZWsYXyUBqKbmTKOMezDZzFnkZIx1wUQ2qC4fQLp+qmJb6JRG/UEsJ3go
+         OVSsiRUdnos9LRp8VF9ZsTuCDOH5vjDIsbJH9hQXw1XGmDLb/mjHokxZ96D+pCjoy0GW
+         DnaeO2zqLJIJGce79KchPaikU+h3rY+flaRR/+fc/RHi/xLPHxIKUWNUYrF1nHcaIodW
+         veN/t6LDOhnxhVp3kQYyJ0upEv7uPcrRxVsJE5ApA7PbnoqIEAj+XZsqOWe4o3ieaD2v
+         0b1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1wzD4rzWGYK0ojKhF0X0MRsVPDkthsomyuwYyyjpIrI=;
-        b=NTxPVGW8KAhJaoG/eBZ/y40SbKNF0zUbyZ7cnG5xZm1xccT++BcVXR6k+R6wWmm/8/
-         /VkOZ6IcYcHYfL/jP1pSgMbpHfdcWE8mFr+VSZ9LxQ4RMHIe8c6bP/krF8MEnTE8xZjB
-         /DrUh3jcP2Cg5tx79Yb0rdz8s502MG7sYqUJ9T/H4Smalymuy6ZDZWSukygObRNPzDth
-         VvWPPK8R7eAVGU0svD0Dgi1HAYyWOvGYtKmIEd5FLjta75si13bvKqF6/LxtnKYuPDD4
-         fex4FLuf3/b40F1LAwIlX12A/6a0Q7VbxlKCoeCifeOpbG5YqFRXcW0xflfhwvBeP62J
-         oTNA==
-X-Gm-Message-State: AOAM533RFQuFZJ1KxJOPgwIO6iwZQdqqSEqv5gv4MrYGnGuVp2F4unNi
-        5BJUE179MPo/RvyR9IPlF76Meg==
-X-Google-Smtp-Source: ABdhPJyZYS/CHSSe/QYyN7dtmArWH+r/nsZP7UGhj4dA5LWlMMF2F8T8oOegJ7wwxYCAsefmdh3s0A==
-X-Received: by 2002:a05:600c:4f0b:: with SMTP id l11mr3718034wmq.126.1621513155063;
+        bh=jJARt32ZQiETH9hR4IAuZRuz7sl0B3/aEJ08ELK7AnM=;
+        b=RLsYMVpDEBPuftG8BV5WpakMATvvZsQgas1Qz0JKwHNSHcREf2RBPI3jIl0h+c3dJp
+         08OrSpOkRW1dGwACHQjEE2Ix5emal8SLLX3loAuOpM3dP+J47SZigLLgs/WFgk76hXXj
+         aZs/RIKWiViX9eXCFwOuflf0hO7K8xs70Hs71fi/AGIS824W7C4vaXF33f+Q4Hp5N5eZ
+         uG8SWuGN3wrfEUVGLbe0c+eLRkEetvw9nTzCylGXDCCIf0IkJALeddnkdjUSrfM2syA9
+         iFddJ+QpEF79kBEW6GGehLH4pEXlCZVkbGy/jnLnPGKyGsMbOj6b3MjfqcqArfDukGXP
+         OCdg==
+X-Gm-Message-State: AOAM532RkRMXSzCqs4AbZRil21SIMzamG/gxQsxXQHXS9O6Pc34Wn/Ms
+        5zNT6KVGUHY5XQQwiGXd5iZ0Oal0NdCXfg==
+X-Google-Smtp-Source: ABdhPJxarmHwD/c26PB+v97pgBjcaCb/OCiMWALW0r0eHRrEaYyiJgdO7yo7Wd/BPmfo6dd5HQqr/A==
+X-Received: by 2002:a5d:498c:: with SMTP id r12mr4018201wrq.31.1621513155789;
         Thu, 20 May 2021 05:19:15 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id f16sm3061161wrm.47.2021.05.20.05.19.14
+        by smtp.gmail.com with ESMTPSA id f16sm3061161wrm.47.2021.05.20.05.19.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:19:14 -0700 (PDT)
+        Thu, 20 May 2021 05:19:15 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Jiri Slaby <jirislaby@kernel.org>
-Subject: [PATCH 05/11] tty: tty_buffer: Fix incorrectly documented function __tty_buffer_request_room()
-Date:   Thu, 20 May 2021 13:19:00 +0100
-Message-Id: <20210520121906.3468725-6-lee.jones@linaro.org>
+Subject: [PATCH 06/11] tty: tty_jobctrl: Fix 2 incorrectly documented functions
+Date:   Thu, 20 May 2021 13:19:01 +0100
+Message-Id: <20210520121906.3468725-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520121906.3468725-1-lee.jones@linaro.org>
 References: <20210520121906.3468725-1-lee.jones@linaro.org>
@@ -67,28 +67,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/tty/tty_buffer.c:259: warning: expecting prototype for tty_buffer_request_room(). Prototype was for __tty_buffer_request_room() instead
+ drivers/tty/tty_jobctrl.c:33: warning: expecting prototype for tty_check_change(). Prototype was for __tty_check_change() instead
+ drivers/tty/tty_jobctrl.c:97: warning: expecting prototype for proc_set_tty(). Prototype was for __proc_set_tty() instead
 
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc: Jiri Slaby <jirislaby@kernel.org>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/tty/tty_buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/tty/tty_jobctrl.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index ace778ed23b91..635d0af229b72 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -244,7 +244,7 @@ void tty_buffer_flush(struct tty_struct *tty, struct tty_ldisc *ld)
+diff --git a/drivers/tty/tty_jobctrl.c b/drivers/tty/tty_jobctrl.c
+index 6119b5e486108..80b86a7992b50 100644
+--- a/drivers/tty/tty_jobctrl.c
++++ b/drivers/tty/tty_jobctrl.c
+@@ -20,7 +20,7 @@ static int is_ignored(int sig)
  }
  
  /**
-- *	tty_buffer_request_room		-	grow tty buffer if needed
-+ *	__tty_buffer_request_room		-	grow tty buffer if needed
-  *	@port: tty port
-  *	@size: size desired
-  *	@flags: buffer flags if new buffer allocated (default = 0)
+- *	tty_check_change	-	check for POSIX terminal changes
++ *	__tty_check_change	-	check for POSIX terminal changes
+  *	@tty: tty to check
+  *	@sig: signal to send
+  *
+@@ -85,7 +85,7 @@ void proc_clear_tty(struct task_struct *p)
+ }
+ 
+ /**
+- * proc_set_tty -  set the controlling terminal
++ * __proc_set_tty -  set the controlling terminal
+  *	@tty: tty structure
+  *
+  * Only callable by the session leader and only if it does not already have
 -- 
 2.31.1
 
