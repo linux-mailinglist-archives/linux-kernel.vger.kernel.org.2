@@ -2,104 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C340389A6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 353FE389A72
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhETAZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 20:25:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
+        id S230147AbhETA0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 20:26:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhETAZd (ORCPT
+        with ESMTP id S229598AbhETA0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 20:25:33 -0400
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61E92C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:24:13 -0700 (PDT)
-Received: by mail-ed1-x532.google.com with SMTP id t3so17335171edc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:24:13 -0700 (PDT)
+        Wed, 19 May 2021 20:26:42 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6046C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:25:21 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v13so7994248ple.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:25:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oOGPCygeGm574jrl8IBVZpfRYMLEqBwpFNqsk8f8+tI=;
-        b=qMKqlCPaMAWpZHfXzZKHA7jX+XfwqBNpHw+03AyLdOAletf5oJRmg2TJv3hhgI51g/
-         EkMIcNh7Gk6bLCivWMSTaVnTXwkGRLeDMlLbL5wL1fbM3W6MYEs3nKQMBCsOKOOEexJr
-         oLeJBLcvx/4b5FSQgMRb87KcIexbJX+PL3vqUQQley4r+bCAPNY4T4qY13B5JZW4mCjs
-         I9EESq+GEU2VAmAvoiaN2LAevH+uHo1Eu3WviuUUvL3qVyPzV02MSPttu6SHjTYJqNn+
-         Ez45/K348f5szv7SyEiWjezNjv/qnqAkIJlqDzW8ybdjeq0g8JmgYGUe4t4GhgDyFyd2
-         sEzQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HnUlRSyazCKo9xmvcnsazZcLuVKlbVM14ntknUcnp7c=;
+        b=lppee0aykW6DYsEq7WnlEJbxTzvXzKJZXA4Qci82EhIxzNrqkndVPltAPRRrIfjq4z
+         Jgc1SlTGuIp/GPyI+PPl8PhKEreGx4dRNFDMme/gHvgkY9T4MFHnMK5bg6FWiXoVn/M2
+         /uaDGv8cnGuege3fZ3SZLURqHSRmzAZBFQ0e4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oOGPCygeGm574jrl8IBVZpfRYMLEqBwpFNqsk8f8+tI=;
-        b=RQcuLhsYKACxmYWC+8LTNI8/Xpvp2fJ17/VCfciXtYH4L3YWRbaqI4T+SNckFsY1gE
-         4lF3OyTYpButksa73K4QGRysMSEied4F5TyHeo/FdkXUY4+yaXM/uGEEssopb61gPBxl
-         z/66pRkmtCtmSUaH8heJtoI9Rk9ojegZfbZvl1xkNFRfGLm7aJ6WBP3MrjoSx9xZt75U
-         u1SiIGD2iUTivCtvp+iH+aH0D/iAzhPlXFLdaOwl/kIqVrGBKOmo0krASGsAWXGiJKAT
-         wYcMKyRfd0Gy6z+jGQCtDYGxMCziNSGL35zvHsY0xQTnV4/134HVpy6WJ2XmjIG/poYv
-         Nr+Q==
-X-Gm-Message-State: AOAM5313ruWp5oSa+q1PFBZCpfXakl2YVc1naQ4pxm3GkfL2JkafuTF1
-        qgIxZrCyY4Qu7Em0JiQWV1DoLHKvNiOlvpW5sVNL9g==
-X-Google-Smtp-Source: ABdhPJxXlcnRqzUtPMdtnerJMEe6JXxL+MdSKqM+G0z1rrdmKNcd22lTPvn5Wgqroye1VbyrgXTfNSfi0Kn+DBcIxc8=
-X-Received: by 2002:a05:6402:128f:: with SMTP id w15mr1939034edv.354.1621470251888;
- Wed, 19 May 2021 17:24:11 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HnUlRSyazCKo9xmvcnsazZcLuVKlbVM14ntknUcnp7c=;
+        b=BVcbY4BupBdaBpIbUuA9um0OxCpY5efQ/nZlU+lwhmaWxKLyGU+X/Wa2dE64tJZnVj
+         qfQYUwYECIQ9D1SGbs5jvE4TSxwlO/8VJMX7BMR3+npTihgRl8OjfAtG8jY7UOzF99HN
+         oQhHOm+ChpIY18DHtaUTFRQRUxSpHeYh6HGAAYvRsN630QUOcbkqwsx6kplUqWQo+k7J
+         Q1Mnl6Z3YXSmVZUgl6wgZHwbyQoFgF+sct5X9Cq9SwmKkax+vHQ9y1PE4ELGKSCEFNDk
+         ayghNPAwX9pLxC64i8/dConoypeu1TFjxqYYCKxDqGhem6j/lFQpjdbzfcDlmPTl0wWM
+         Wjww==
+X-Gm-Message-State: AOAM530Dgretw0JPyUlU7Wjibv8XFeWvJbaZBua6YU9hYEtU+U6Fdwmt
+        RqxTciqTgHk8nrnZ2YORFCs0rQ==
+X-Google-Smtp-Source: ABdhPJwC3IwDI2gFp43UHpOegES+CCjEkSMmtGwVPcBzLAlKbgcBury8x7ZAosf/PakNL9RQbOsijQ==
+X-Received: by 2002:a17:902:d4c3:b029:ee:ae62:9fb7 with SMTP id o3-20020a170902d4c3b02900eeae629fb7mr2675752plg.8.1621470321058;
+        Wed, 19 May 2021 17:25:21 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:200b:db75:4e6c:8b96])
+        by smtp.gmail.com with ESMTPSA id i14sm398904pfk.130.2021.05.19.17.25.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 17:25:20 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Saravana Kannan <saravanak@google.com>
+Subject: [PATCH 0/7] component: Make into an aggregate bus
+Date:   Wed, 19 May 2021 17:25:12 -0700
+Message-Id: <20210520002519.3538432-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
 MIME-Version: 1.0
-References: <20210506223654.1310516-1-ira.weiny@intel.com>
-In-Reply-To: <20210506223654.1310516-1-ira.weiny@intel.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 19 May 2021 17:24:01 -0700
-Message-ID: <CAPcyv4g0n0eHv13b+Uy9sjXWVMtf3gB0Trxf9Ns0HhPtp2f6hg@mail.gmail.com>
-Subject: Re: [PATCH 0/4] Map register blocks individually
-To:     "Weiny, Ira" <ira.weiny@intel.com>
-Cc:     Ben Widawsky <ben.widawsky@intel.com>,
-        Alison Schofield <alison.schofield@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-cxl@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 3:37 PM <ira.weiny@intel.com> wrote:
->
-> From: Ira Weiny <ira.weiny@intel.com>
->
-> User space will want to map some register blocks.
+This series is from discussion we had on reordering the device lists for
+drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
+the aggregate device onto and then we probe the device once all the
+components are probed and call component_add(). The probe/remove hooks
+are where the bind/unbind calls go, and then a shutdown hook is added
+that can be used to shutdown the drm display pipeline at the right time.
 
-The motivation is not to allow userspace access. The motivation is a
-bug fix for hardware implementations that mix component and device
-registers into the same BAR and the fact that the driver stack has
-independent mapping implementations for those 2 cases. It is a happy
-side-effect that this also allows finer grained pci-mmap exclusion.
+This works for me on my sc7180 board, but I'm currently struggling with
+the last patch where we migrate the msm driver. It runs into a runtime
+PM problem where the parent device isn't runtime PM enabled yet. I'm
+still trying to figure out a clean solution there. Moving runtime PM
+around breaks boot and I think that's because the power domain is off.
 
-> Currently BARs are mapped in
-> their entirety and pointers to the register blocks are created into those
-> mappings.  This will prevent mappings from user space.
->
-> This series has 3 clean up patches followed by a patch to mapping the register
-> blocks individually.
->
-> Unfortunately, the information for the register blocks is contained inside the
-> BARs themselves.  Which means the BAR must be mapped, probed, and unmapped
-> prior to the registers being mapped individually.
->
-> The probe stage creates list of register maps which is then iterated to map
-> the individual register blocks.
->
-> Ira Weiny (4):
->   cxl/mem: Fully decode device capability header
->   cxl/mem: Reserve all device regions at once
->   cxl/mem: Introduce cxl_decode_register_block()
->   cxl/mem: Map registers based on capabilities
->
->  drivers/cxl/core.c |  84 ++++++++++++++++++++------
->  drivers/cxl/cxl.h  |  34 +++++++++--
->  drivers/cxl/pci.c  | 147 +++++++++++++++++++++++++++++++++++----------
->  3 files changed, 211 insertions(+), 54 deletions(-)
->
-> --
-> 2.28.0.rc0.12.gb6a658bd00c9
->
+Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+Cc: Saravana Kannan <saravanak@google.com>
+
+[1] https://lore.kernel.org/r/20210508074118.1621729-1-swboyd@chromium.org
+
+Stephen Boyd (7):
+  component: Drop 'dev' argument to component_match_realloc()
+  component: Rename 'dev' to 'parent'
+  component: Introduce struct aggregate_device
+  component: Introduce the aggregate bus_type
+  component: Use dev.parent instead of adev->parent
+  component: Move struct aggregate_device out to header file
+  drm/msm: Migrate to aggregate driver
+
+ drivers/base/component.c      | 614 ++++++++++++++++++++++------------
+ drivers/gpu/drm/msm/msm_drv.c |  47 +--
+ include/linux/component.h     |  73 +++-
+ 3 files changed, 487 insertions(+), 247 deletions(-)
+
+
+base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
+-- 
+https://chromeos.dev
+
