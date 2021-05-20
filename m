@@ -2,236 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2811038ACD9
+	by mail.lfdr.de (Postfix) with ESMTP id 71CD238ACDA
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243527AbhETLuH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:50:07 -0400
-Received: from mail-lf1-f52.google.com ([209.85.167.52]:44742 "EHLO
-        mail-lf1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241981AbhETL3v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:29:51 -0400
-Received: by mail-lf1-f52.google.com with SMTP id j6so21299209lfr.11;
-        Thu, 20 May 2021 04:28:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=NABjH9mhLGUTJZ1B1wVw40uqQXDgbe7ohEozQt28Ijw=;
-        b=hEXnj8NHqHHqimrz/o4LcTg/9wxdWyxIKqiPMxlA9HmgdgHZvdcQEfXJIMiSf2sgSY
-         KuF59eakFXeVh2EZRp1CydKN99qmP7qP7/P+kPzfQ5dU6guYlk3mtx12yXATXkNiBRKj
-         oN4k8kS58RqQRVK0KP5kDG5ofn3F6CjeeJ4Km3XwPoiG+02QF+Ssnx0tt9CN03NCteL3
-         KRZpVut/UtTCMsuI4cUjJs30O4+E3WIXBC6dKbatVl1++GYFrq90TZwiuB007zdkOlPF
-         43J7eE+cNOnsKYGEdYjKz1vIaA+A0MqalB1hpyPyBOGaXVtMfANPepYmViNUZmQ/8mzf
-         wUgQ==
-X-Gm-Message-State: AOAM532/0a4M5OtJyrBnB6vG75H33jgon6K8uXki7oWfdfZ8DudO+94k
-        AeBIsYfojqC/TBzQ5EBUoPk=
-X-Google-Smtp-Source: ABdhPJzDYNyphgHQ173kl+pG4fSUC3kqNxaY08KcogcWxHXYdEzc2JECql+4kPD513XUMrSKATWZUw==
-X-Received: by 2002:a05:6512:34c7:: with SMTP id w7mr3178479lfr.82.1621510107771;
-        Thu, 20 May 2021 04:28:27 -0700 (PDT)
-Received: from localhost.localdomain (dc7vkhyyyyyyyyyyyyyby-3.rev.dnainternet.fi. [2001:14ba:16e2:8300::2])
-        by smtp.gmail.com with ESMTPSA id m4sm244855ljc.20.2021.05.20.04.28.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 04:28:27 -0700 (PDT)
-Date:   Thu, 20 May 2021 14:28:20 +0300
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Walle <michael@walle.cc>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com
-Subject: [PATCH 1/2] gpio: regmap: Support few IC specific operations
-Message-ID: <09091e75157ea28dcad1605008532016304356a4.1621509932.git.matti.vaittinen@fi.rohmeurope.com>
+        id S243553AbhETLuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:50:11 -0400
+Received: from mail-eopbgr1310128.outbound.protection.outlook.com ([40.107.131.128]:62488
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236335AbhETLaY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:30:24 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=l+jmUuFPt1KQ3lwwkQnzoHFZpBqplpg3MSKUkJeiknu76LH1VMeM3y0yYROMDmOsTWh92HfL1ebW7Gr+UBWqvKgPVxa0gF5XfC0LCKOtqYW5VQjanHLgO576DLcUzea0A27ZGAtrB7jou/+QLXDHsOF1R160rY2vZY6Xu0b2bYO1UOcTtVamJ0apKKuyCH5W2LQPcuXzjJaaN5I7EhhQFipxQ+RP5bkVlwp+U6FhVbE8CLO5niWcvqW7Z6fxr+Cmo9VlcPc+Uuv80xiYVW6R6OD2wk6k/F1sI3AHgXUyVoZTMBGzEyh8AccTm5UVeV78fiS8V0rk64ZdVsVgoekMrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gs7zI1JsXrqyljc3mFMjF+/D3mgAIJn+TVqdI5LubsU=;
+ b=m5RRUSGVx/pK3UNvho3E2IrQyXwGTe8fTMp0AWDwnk0NQm4inSQ6gZZdVk3aTFaHFo49w8CrmjcBCGISrym+zyVFSGjmejifNxSubK4KfTBlS9YltcdX2r5+gAciGgOKCtEhdpC+D8o+lgYzgslUcifnHKu/t/57Poattuu3VUX8DkGcmMXobRWf/+1ot0P+E8fWlTparrcr9b35AWD1aV/H2Wk0ZTu9OvyjsEgiUUDqf6GX995DzOtTsCuQLKgzxA2w2MLOxxRKw3UpvaHjEKUDaoDrcJYiiIenfg7vKm8nh7FHl/RkL8xoZSXRrITPE/XSCaUfwWLYLGRwCUUcjQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aspeedtech.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gs7zI1JsXrqyljc3mFMjF+/D3mgAIJn+TVqdI5LubsU=;
+ b=2q20Be2gXHHYTJoBfxaeEbHhGH66Xv/jAi7vCxDnyJMH9ddgdZ6XFHxWO2PovGiynUPYriyB2FO8dcUkjYLtyYJ33rO9gMwNe37jYB4wVgiE3HhEO8GpyiRcfT9VeO70FXBUmwsgjRNUNTrV6w9974M2j0YUJx+H7ZFA8LDd1Tr2eaVvoie4nAEHhQeEqqVYkKgFa3AHQ/TagyK26ykm+NW7OoU9v7S2mYPN2DpEe4hbW42zM2dC9/pFwtbmd3Vg2s4d1MZ4a1nrn7hT/PgGlUV+jdgYWIZiYLt1aFBGQxf+mJMgWOvlYaxqD5QI5jhnqxl54njRJhiyvlYxccSFbw==
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
+ by HK0PR06MB3124.apcprd06.prod.outlook.com (2603:1096:203:8b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 20 May
+ 2021 11:28:59 +0000
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::2984:f1bd:e1f9:5ed6]) by HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::2984:f1bd:e1f9:5ed6%7]) with mapi id 15.20.4129.033; Thu, 20 May 2021
+ 11:28:58 +0000
+From:   Ryan Chen <ryan_chen@aspeedtech.com>
+To:     Joel Stanley <joel@jms.id.au>,
+        Quan Nguyen <quan@os.amperecomputing.com>
+CC:     Corey Minyard <minyard@acm.org>, Rob Herring <robh+dt@kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Wolfram Sang <wsa@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "openipmi-developer@lists.sourceforge.net" 
+        <openipmi-developer@lists.sourceforge.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        Open Source Submission <patches@amperecomputing.com>,
+        Phong Vo <phong@os.amperecomputing.com>,
+        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>
+Subject: RE: [PATCH v3 3/7] i2c: aspeed: Fix unhandled Tx done with NAK
+Thread-Topic: [PATCH v3 3/7] i2c: aspeed: Fix unhandled Tx done with NAK
+Thread-Index: AQHXTIPiaDlIMxFG4EScG2hlz3/zyKrrdFqAgADIwhA=
+Date:   Thu, 20 May 2021 11:28:58 +0000
+Message-ID: <HK0PR06MB3380D7B693922C3D6B3C14F0F22A9@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20210519074934.20712-1-quan@os.amperecomputing.com>
+ <20210519074934.20712-4-quan@os.amperecomputing.com>
+ <CACPK8XeFsuEXeCvG9DC0z+tiri6ptjOFOXe3x+COEZTVqUbVFg@mail.gmail.com>
+In-Reply-To: <CACPK8XeFsuEXeCvG9DC0z+tiri6ptjOFOXe3x+COEZTVqUbVFg@mail.gmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: jms.id.au; dkim=none (message not signed)
+ header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 14e8e689-ba9d-4bca-1087-08d91b827608
+x-ms-traffictypediagnostic: HK0PR06MB3124:
+x-microsoft-antispam-prvs: <HK0PR06MB31242AF71CFB022423C4E75BF22A9@HK0PR06MB3124.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: FV1IVRyFZ2jDKwCfATrk1HSRZcvRJkSp45XkhlPITmJfN31iJz+3R2QdkGdJ+VAz3gIBK7kR8+h4ynqeSmPsfXgo4Qqv8QQehPOc2o5JqKqELBA+sfeFOqNO8Oocl0+qnz4ITQ9u2Fv4uTTDGdfEiZxBtkwK6sUtH2TPe5Lkg558JpDuJRDMHUDP/VBoj+kUneHLTgBomo/ej5bzAmpeeZ7bXwBRwVVKUvb3r2IxogyYoT2GJibYucX76bn89PvFp2mwUPDeBWDRkgLvmttb2wIp91/8SrH2/Gx6/uHSNtiKt8t8JeiRkd1IkYK59HbXEaH2kdy+YiKbMfez250wOc/rMP0Q3bFt1wCYblzj7x7a4xLNPFUeMtsmaoVpMztGKMLsBX3pMMIR66wyafOzIl9hN5Qi+pL808opkVQ1TJaf2JTfOAIh9M5lexpGvr22FEOhlmNRaFzSsTIh9b9Lzs2kxK0OnGBc58uNqZ/x1FKYhRZJfb0QJlcI2YRXghB4DL7p5pSRIHipK5RCpG8ZVWTjJtmblybfdaBukidTp0o4K630V/2q7qyezg5H8sH2zMUN8F5Ew0+nWuXIujIxXFSF+SVdnyLvO24pVi59rsc=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(39850400004)(366004)(396003)(8936002)(86362001)(9686003)(2906002)(7416002)(478600001)(55016002)(8676002)(66946007)(83380400001)(76116006)(66446008)(53546011)(64756008)(110136005)(66476007)(55236004)(7696005)(54906003)(26005)(66556008)(52536014)(71200400001)(33656002)(38100700002)(6506007)(186003)(5660300002)(122000001)(316002)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?MVlSSVZiMnlPRm1iQmxhaXZWbFluM2dxSmhWYU9mamZwTWp5bjZiK2lkYzVk?=
+ =?utf-8?B?NENHbWNGVXJxam9ib0lXTk0zM1UvUC8wVHVXV0xuU09iQ2p6YXdpNVhUVmhO?=
+ =?utf-8?B?ZXNhTFlqWDlGd1FVNE83aDhvbVhoL3FjSS9hWFR0MUwrMTRaN1VVTytTVzVN?=
+ =?utf-8?B?ZXNWcTJhejNleVBEWi9DT29mMGRPQUZpNUQwMEdBQzc2QTdJeGIrYWdUYVBP?=
+ =?utf-8?B?R2F2RW1xT0dmdE5HalRIQjFxb21nSVNncFpEUWM1M001QklwcUYxY2ZOOTA0?=
+ =?utf-8?B?VnZzQlhtYk9ZKzEwamhIN0Q1bUNUWWRGcHNuV1NUdkJVeDByc1VEMldHTUFX?=
+ =?utf-8?B?a0M1bk1adWcydUdHV3c3M2YwMUZUWEY0TmhmTXN4VVN1K2NJeXpBYWY2OXdm?=
+ =?utf-8?B?b2Q1NnpsTHVZZGhFR3R0eU12aVNXMlJCek1rNENaUFNOZWhkTFppMjV3b1Iw?=
+ =?utf-8?B?b2lLMS9obnlQVEJWZ1JZNUV0V0FOVlpVM01vSUltL21iczhRSmwxc0dTZGkr?=
+ =?utf-8?B?OXlScVZ5T2h5cnc2aWpkYlNYYmxaa0dvNXE2bGpBN3VIL0V4SGt2S0R0eDZ6?=
+ =?utf-8?B?UkFmZHBobVJoUUloZlMwQ3VCcG80K1h4UHA2aFQ5cWh1bGVVbmhCa3FtZzBN?=
+ =?utf-8?B?d0habWRjYVhFYVh4Z3I2ZFVkbVp1cXdzM2tBMkttaXMrcXFTV2pJYTNvMkNs?=
+ =?utf-8?B?aUVWZndXaitoV0pPMFJLOC9nZ0taTUhVTXR2MzBNVm5reXVyU01IQzZSZ3VW?=
+ =?utf-8?B?ME1nWVdlRjZVWStqeG1jVnJTdHBaWVlVSnpIVjVEMzNMOTdCSFJqV1U3b2xq?=
+ =?utf-8?B?OHd0RllwY2VFRzV1aCtyYk50Z0Zra0dUVlFVaUZyTGVDaHM5b3FTcEozTlM3?=
+ =?utf-8?B?dzBrb25YQktEcmQ4T2RwdW9SZjZLdEF6SEk1WXpSZFRiSnV5Q2swbEJwUGU4?=
+ =?utf-8?B?NUpIK290alZrT25uSlFKbHVKOFQ1b2tDZGRRYkRscHBCeEVVQ2E0Qmw0dmg5?=
+ =?utf-8?B?Ni9NSnBjdHZla1o0UDR6T2QzWTRWei9lOUNkcWN5czRUWjZicWFYa0k5NFBR?=
+ =?utf-8?B?RmpFa2ZxNnYvVDF2eGR0Q01tZjUxMlZTQmMvWjZnNWJua1RkVG9rKzFFUFpZ?=
+ =?utf-8?B?SlV6NWdKVG9raUZXL2NUL2JCNmxTaDExMStBUm5YV0FmMVdwTEFYYmJtSTdW?=
+ =?utf-8?B?eHJ4dFo2Y2lLUXNxTitIQTFBanRyR05iTXN0ajZYZ1Z4M2g5eHBmemRQNG9I?=
+ =?utf-8?B?dyszWmNDNzk3L1UyQmNTdWdzN21LV1g0RjhDU2RtaTE2UktsbXMzRWljbzVa?=
+ =?utf-8?B?TlA5NW9tcnozMDk1b3hMUUdFb2JFQVE3L0NBeFVtUGtOV0pnNkZiWmhZL1N6?=
+ =?utf-8?B?U1I5SExXU3BNSXFucVVRSW1nWXpYeXBKOWJzbHl5SEhEcldDWlVhdzlOdGEz?=
+ =?utf-8?B?ajdrRVBhVko2TEpjM1VlVWFHRjdWT2Q2Z1RWRVdkOWp0NGZ4RGQ5aGVPOTJs?=
+ =?utf-8?B?a2FkYjRzK0psbXpvZHFPZTdRdnMxcHEvQ0FoZkFqeEVHNG41S2ppRS9sWSs1?=
+ =?utf-8?B?QkZ4WnZMMkFrMlNxTDhIaERyT0VWbWNlNnRMQytLSlJDQ2hPWUVQZzBmQkVX?=
+ =?utf-8?B?MXNUL0JUOTJKVXd3cVZzZ0laT1dKSlM5bUIzaEdiTGVGM0d3Z1NvNXhVNXR0?=
+ =?utf-8?B?RHdpVjRvVTlvVUtmaUYvWmxoL1VwYTl2SlJOWmpudm1XazQ4WktWN0k1ZzRE?=
+ =?utf-8?Q?uAh4iNIpCJTI6wIOVh9wp5+R50C8jvivZe1Ae/+?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="2fHTh5uZTiUOsy+g"
-Content-Disposition: inline
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 14e8e689-ba9d-4bca-1087-08d91b827608
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2021 11:28:58.7845
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: r8gnCH5KT6kR+bRAhCTJ16lv6e+O/P966Mlc0iGjg/TTvDLJ5kxWOdE0n0eFo52GSZXLLevR+ttA7agYPIuQNw/7Pey/qeX+VlGsqUFhMwQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB3124
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---2fHTh5uZTiUOsy+g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-The set_config and init_valid_mask GPIO operations are usually very IC
-specific. Allow IC drivers to provide these custom operations at
-gpio-regmap registration.
-
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/gpio/gpio-regmap.c  | 49 +++++++++++++++++++++++++++++++++++++
- include/linux/gpio/regmap.h | 13 ++++++++++
- 2 files changed, 62 insertions(+)
-
-diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
-index 134cedf151a7..315285cacd3f 100644
---- a/drivers/gpio/gpio-regmap.c
-+++ b/drivers/gpio/gpio-regmap.c
-@@ -27,6 +27,10 @@ struct gpio_regmap {
- 	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
- 			      unsigned int offset, unsigned int *reg,
- 			      unsigned int *mask);
-+	int (*set_config)(struct regmap *regmap, void *drvdata,
-+			  unsigned int offset, unsigned long config);
-+	int (*init_valid_mask)(struct regmap *regmap, void *drvdata,
-+				unsigned long *valid_mask, unsigned int ngpios);
-=20
- 	void *driver_data;
- };
-@@ -39,6 +43,43 @@ static unsigned int gpio_regmap_addr(unsigned int addr)
- 	return addr;
- }
-=20
-+static int regmap_gpio_init_valid_mask(struct gpio_chip *gc,
-+					unsigned long *valid_mask,
-+					unsigned int ngpios)
-+{
-+	struct gpio_regmap *gpio;
-+	void *drvdata;
-+
-+	gpio =3D gpiochip_get_data(gc);
-+
-+	if (!gpio->init_valid_mask) {
-+		WARN_ON(!gpio->init_valid_mask);
-+		return -EINVAL;
-+	}
-+
-+	drvdata =3D gpio_regmap_get_drvdata(gpio);
-+
-+	return gpio->init_valid_mask(gpio->regmap, drvdata, valid_mask, ngpios);
-+}
-+
-+static int gpio_regmap_set_config(struct gpio_chip *gc, unsigned int offse=
-t,
-+				  unsigned long config)
-+{
-+	struct gpio_regmap *gpio;
-+	void *drvdata;
-+
-+	gpio =3D gpiochip_get_data(gc);
-+
-+	if (!gpio->set_config) {
-+		WARN_ON(!gpio->set_config);
-+		return -EINVAL;
-+	}
-+
-+	drvdata =3D gpio_regmap_get_drvdata(gpio);
-+
-+	return gpio->set_config(gpio->regmap, drvdata, offset, config);
-+}
-+
- static int gpio_regmap_simple_xlate(struct gpio_regmap *gpio,
- 				    unsigned int base, unsigned int offset,
- 				    unsigned int *reg, unsigned int *mask)
-@@ -235,6 +276,8 @@ struct gpio_regmap *gpio_regmap_register(const struct g=
-pio_regmap_config *config
- 	gpio->reg_clr_base =3D config->reg_clr_base;
- 	gpio->reg_dir_in_base =3D config->reg_dir_in_base;
- 	gpio->reg_dir_out_base =3D config->reg_dir_out_base;
-+	gpio->set_config =3D config->set_config;
-+	gpio->init_valid_mask =3D config->init_valid_mask;
-=20
- 	/* if not set, assume there is only one register */
- 	if (!gpio->ngpio_per_reg)
-@@ -253,6 +296,10 @@ struct gpio_regmap *gpio_regmap_register(const struct =
-gpio_regmap_config *config
- 	chip->ngpio =3D config->ngpio;
- 	chip->names =3D config->names;
- 	chip->label =3D config->label ?: dev_name(config->parent);
-+	if (gpio->set_config)
-+		chip->set_config =3D gpio_regmap_set_config;
-+	if (gpio->init_valid_mask)
-+		chip->init_valid_mask =3D regmap_gpio_init_valid_mask;
-=20
- #if defined(CONFIG_OF_GPIO)
- 	/* gpiolib will use of_node of the parent if chip->of_node is NULL */
-@@ -280,6 +327,8 @@ struct gpio_regmap *gpio_regmap_register(const struct g=
-pio_regmap_config *config
- 		chip->direction_output =3D gpio_regmap_direction_output;
- 	}
-=20
-+	gpio_regmap_set_drvdata(gpio, config->drvdata);
-+
- 	ret =3D gpiochip_add_data(chip, gpio);
- 	if (ret < 0)
- 		goto err_free_gpio;
-diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
-index 334dd928042b..c382a3caefc3 100644
---- a/include/linux/gpio/regmap.h
-+++ b/include/linux/gpio/regmap.h
-@@ -33,10 +33,18 @@ struct regmap;
-  * @ngpio_per_reg:	Number of GPIOs per register
-  * @irq_domain:		(Optional) IRQ domain if the controller is
-  *			interrupt-capable
-+ * @drvdata:		(Optional) Pointer to IC specific data which is
-+ *			not used by gpio-remap but is provided "as is" to
-+ *			the driver callback(s).
-+ *
-  * @reg_mask_xlate:     (Optional) Translates base address and GPIO
-  *			offset to a register/bitmask pair. If not
-  *			given the default gpio_regmap_simple_xlate()
-  *			is used.
-+ * @set_config:		(Optional) hook for all kinds of settings. Uses
-+ *			the same packed config format as generic pinconf.
-+ * @init_valid_mask:	(Optional) routine to initialize @valid_mask, to
-+ *			be used if not all GPIOs are valid.
-  *
-  * The ->reg_mask_xlate translates a given base address and GPIO offset to
-  * register and mask pair. The base address is one of the given register
-@@ -74,10 +82,15 @@ struct gpio_regmap_config {
- 	int reg_stride;
- 	int ngpio_per_reg;
- 	struct irq_domain *irq_domain;
-+	void *drvdata;
-=20
- 	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
- 			      unsigned int offset, unsigned int *reg,
- 			      unsigned int *mask);
-+	int (*set_config)(struct regmap *regmap, void *drvdata,
-+			  unsigned int offset, unsigned long config);
-+	int (*init_valid_mask)(struct regmap *regmap, void *drvdata,
-+				unsigned long *valid_mask, unsigned int ngpios);
- };
-=20
- struct gpio_regmap *gpio_regmap_register(const struct gpio_regmap_config *=
-config);
-
-base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
---=20
-2.25.4
-
-
---=20
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
-
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =3D]=20
-
---2fHTh5uZTiUOsy+g
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEIx+f8wZb28fLKEhTeFA3/03aocUFAmCmR8cACgkQeFA3/03a
-ocVAswgAkw7xOXvkNG9rtzm11OqfzrlRhjBHC3YJoImTegb5eAt5V5UsUMD774uY
-hwOCCCbjqISb0sk+IUzECycgVhnStTDJ1a85ygj5Nq0v6ZP/x4gaVhGSxdzCpeSc
-4rIt7oD+Y+z8kVmUpm9p3NLgPW/KAwOrpQv6l98BVK8u6Ixs5/lwSX4rcWQGm6Mz
-otEXdwDF76GHnwbd+si69cq0aQknA6ksS4rduBsH6MPGKoSiq+1kJQVNLGuJfy5i
-Q+Tc++fboiRAAA2JQpgDEVCVfWOp9OpKdBDEnW+jvT5ILOV0XF5/KZmbzAfPFsXZ
-NOsiCvrlM0exxYm/wi5bpDEIixcz5A==
-=dcmP
------END PGP SIGNATURE-----
-
---2fHTh5uZTiUOsy+g--
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2VsIFN0YW5sZXkgPGpvZWxA
+am1zLmlkLmF1Pg0KPiBTZW50OiBUaHVyc2RheSwgTWF5IDIwLCAyMDIxIDc6MjkgQU0NCj4gVG86
+IFF1YW4gTmd1eWVuIDxxdWFuQG9zLmFtcGVyZWNvbXB1dGluZy5jb20+OyBSeWFuIENoZW4NCj4g
+PHJ5YW5fY2hlbkBhc3BlZWR0ZWNoLmNvbT4NCj4gQ2M6IENvcmV5IE1pbnlhcmQgPG1pbnlhcmRA
+YWNtLm9yZz47IFJvYiBIZXJyaW5nIDxyb2JoK2R0QGtlcm5lbC5vcmc+Ow0KPiBBbmRyZXcgSmVm
+ZmVyeSA8YW5kcmV3QGFqLmlkLmF1PjsgQnJlbmRhbiBIaWdnaW5zDQo+IDxicmVuZGFuaGlnZ2lu
+c0Bnb29nbGUuY29tPjsgQmVuamFtaW4gSGVycmVuc2NobWlkdA0KPiA8YmVuaEBrZXJuZWwuY3Jh
+c2hpbmcub3JnPjsgV29sZnJhbSBTYW5nIDx3c2FAa2VybmVsLm9yZz47IFBoaWxpcHAgWmFiZWwN
+Cj4gPHAuemFiZWxAcGVuZ3V0cm9uaXguZGU+OyBvcGVuaXBtaS1kZXZlbG9wZXJAbGlzdHMuc291
+cmNlZm9yZ2UubmV0Ow0KPiBkZXZpY2V0cmVlIDxkZXZpY2V0cmVlQHZnZXIua2VybmVsLm9yZz47
+IExpbnV4IEFSTQ0KPiA8bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnPjsgbGlu
+dXgtYXNwZWVkDQo+IDxsaW51eC1hc3BlZWRAbGlzdHMub3psYWJzLm9yZz47IExpbnV4IEtlcm5l
+bCBNYWlsaW5nIExpc3QNCj4gPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+OyBsaW51eC1p
+MmNAdmdlci5rZXJuZWwub3JnOyBPcGVuIFNvdXJjZQ0KPiBTdWJtaXNzaW9uIDxwYXRjaGVzQGFt
+cGVyZWNvbXB1dGluZy5jb20+OyBQaG9uZyBWbw0KPiA8cGhvbmdAb3MuYW1wZXJlY29tcHV0aW5n
+LmNvbT47IFRoYW5nIFEgLiBOZ3V5ZW4NCj4gPHRoYW5nQG9zLmFtcGVyZWNvbXB1dGluZy5jb20+
+OyBPcGVuQk1DIE1haWxsaXN0DQo+IDxvcGVuYm1jQGxpc3RzLm96bGFicy5vcmc+DQo+IFN1Ympl
+Y3Q6IFJlOiBbUEFUQ0ggdjMgMy83XSBpMmM6IGFzcGVlZDogRml4IHVuaGFuZGxlZCBUeCBkb25l
+IHdpdGggTkFLDQo+IA0KPiBSeWFuLCBjYW4geW91IHBsZWFzZSByZXZpZXcgdGhpcyBjaGFuZ2U/
+DQo+IA0KPiBPbiBXZWQsIDE5IE1heSAyMDIxIGF0IDA3OjUwLCBRdWFuIE5ndXllbg0KPiA8cXVh
+bkBvcy5hbXBlcmVjb21wdXRpbmcuY29tPiB3cm90ZToNCj4gPg0KPiA+IEl0IGlzIG9ic2VydmVk
+IHRoYXQgaW4gbm9ybWFsIGNvbmRpdGlvbiwgd2hlbiB0aGUgbGFzdCBieXRlIHNlbnQgYnkNCj4g
+PiBzbGF2ZSwgdGhlIFR4IERvbmUgd2l0aCBOQUsgaXJxIHdpbGwgcmFpc2UuDQo+ID4gQnV0IGl0
+IGlzIGFsc28gb2JzZXJ2ZWQgdGhhdCBzb21ldGltZXMgbWFzdGVyIGlzc3VlcyBuZXh0IHRyYW5z
+YWN0aW9uDQo+ID4gdG9vIHF1aWNrIHdoaWxlIHRoZSBzbGF2ZSBpcnEgaGFuZGxlciBpcyBub3Qg
+eWV0IGludm9rZWQgYW5kIFR4IERvbmUNCj4gPiB3aXRoIE5BSyBpcnEgb2YgbGFzdCBieXRlIG9m
+IHByZXZpb3VzIFJFQUQgUFJPQ0VTU0VEIHdhcyBub3QgYWNrJ2VkLg0KPiA+IFRoaXMgVHggRG9u
+ZSB3aXRoIE5BSyBpcnEgaXMgcmFpc2VkIHRvZ2V0aGVyIHdpdGggdGhlIFNsYXZlIE1hdGNoIGFu
+ZA0KPiA+IFJ4IERvbmUgaXJxIG9mIHRoZSBuZXh0IGNvbWluZyB0cmFuc2FjdGlvbiBmcm9tIG1h
+c3Rlci4NCj4gPiBVbmZvcnR1bmF0ZWx5LCB0aGUgY3VycmVudCBzbGF2ZSBpcnEgaGFuZGxlciBo
+YW5kbGVzIHRoZSBTbGF2ZSBNYXRjaA0KPiA+IGFuZCBSeCBEb25lIG9ubHkgaW4gaGlnaGVyIHBy
+aW9yaXR5IGFuZCBpZ25vcmUgdGhlIFR4IERvbmUgd2l0aCBOQUssDQo+ID4gY2F1c2luZyB0aGUg
+Y29tcGxhaW4gYXMgYmVsb3c6DQo+ID4gImFzcGVlZC1pMmMtYnVzIDFlNzhhMDQwLmkyYy1idXM6
+IGlycSBoYW5kbGVkICE9IGlycS4gZXhwZWN0ZWQNCj4gPiAweDAwMDAwMDg2LCBidXQgd2FzIDB4
+MDAwMDAwODQiDQo+ID4NCj4gPiBUaGlzIGNvbW1pdCBoYW5kbGVzIHRoaXMgY2FzZSBieSBlbWl0
+dGluZyBhIFNsYXZlIFN0b3AgZXZlbnQgZm9yIHRoZQ0KPiA+IFR4IERvbmUgd2l0aCBOQUsgYmVm
+b3JlIHByb2Nlc3NpbmcgU2xhdmUgTWF0Y2ggYW5kIFJ4IERvbmUgZm9yIHRoZQ0KPiA+IGNvbWlu
+ZyB0cmFuc2FjdGlvbiBmcm9tIG1hc3Rlci4NCj4gDQo+IEl0IHNvdW5kcyBsaWtlIHRoaXMgcGF0
+Y2ggaXMgaW5kZXBlbmRlbnQgb2YgdGhlIHJlc3Qgb2YgdGhlIHNlcmllcywgYW5kIGNhbiBnbyBp
+bg0KPiBvbiBpdCdzIG93bi4gUGxlYXNlIHNlbmQgaXQgc2VwYXJhdGVseSB0byB0aGUgaTJjIG1h
+aW50YWluZXJzIGFuZCBhZGQgYSBzdWl0YWJsZQ0KPiBGaXhlcyBsaW5lLCBzdWNoIGFzOg0KPiAN
+Cj4gICBGaXhlczogZjllYjkxMzUwYmIyICgiaTJjOiBhc3BlZWQ6IGFkZGVkIHNsYXZlIHN1cHBv
+cnQgZm9yIEFzcGVlZCBJMkMNCj4gZHJpdmVyIikNCj4gDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5
+OiBRdWFuIE5ndXllbiA8cXVhbkBvcy5hbXBlcmVjb21wdXRpbmcuY29tPg0KPiA+IC0tLQ0KPiA+
+IHYzOg0KPiA+ICAgKyBGaXJzdCBpbnRyb2R1Y2UgaW4gdjMgW1F1YW5dDQo+ID4NCj4gPiAgZHJp
+dmVycy9pMmMvYnVzc2VzL2kyYy1hc3BlZWQuYyB8IDUgKysrKysNCj4gPiAgMSBmaWxlIGNoYW5n
+ZWQsIDUgaW5zZXJ0aW9ucygrKQ0KPiA+DQo+ID4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaTJjL2J1
+c3Nlcy9pMmMtYXNwZWVkLmMNCj4gPiBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9pMmMtYXNwZWVkLmMg
+aW5kZXggNzI0YmYzMDYwMGQ2Li4zZmIzN2MzZjIzZDQNCj4gPiAxMDA2NDQNCj4gPiAtLS0gYS9k
+cml2ZXJzL2kyYy9idXNzZXMvaTJjLWFzcGVlZC5jDQo+ID4gKysrIGIvZHJpdmVycy9pMmMvYnVz
+c2VzL2kyYy1hc3BlZWQuYw0KPiA+IEBAIC0yNTQsNiArMjU0LDExIEBAIHN0YXRpYyB1MzIgYXNw
+ZWVkX2kyY19zbGF2ZV9pcnEoc3RydWN0DQo+ID4gYXNwZWVkX2kyY19idXMgKmJ1cywgdTMyIGly
+cV9zdGF0dXMpDQo+ID4NCj4gPiAgICAgICAgIC8qIFNsYXZlIHdhcyByZXF1ZXN0ZWQsIHJlc3Rh
+cnQgc3RhdGUgbWFjaGluZS4gKi8NCj4gPiAgICAgICAgIGlmIChpcnFfc3RhdHVzICYgQVNQRUVE
+X0kyQ0RfSU5UUl9TTEFWRV9NQVRDSCkgew0KPiANCj4gQ2FuIHlvdSBleHBsYWluIHdoeSB5b3Ug
+bmVlZCB0byBkbyB0aGlzIGhhbmRpbmcgaW5zaWRlIHRoZSBTTEFWRV9NQVRDSA0KPiBjYXNlPw0K
+PiANCj4gQ291bGQgeW91IGluc3RlYWQgbW92ZSB0aGUgVFhfTkFLIGhhbmRsaW5nIHRvIGJlIGFi
+b3ZlIHRoZSBTTEFWRV9NQVRDSA0KPiBjYXNlPw0KPiANCj4gPiArICAgICAgICAgICAgICAgaWYg
+KGlycV9zdGF0dXMgJiBBU1BFRURfSTJDRF9JTlRSX1RYX05BSyAmJg0KPiA+ICsgICAgICAgICAg
+ICAgICAgICAgYnVzLT5zbGF2ZV9zdGF0ZSA9PQ0KPiA+ICsgQVNQRUVEX0kyQ19TTEFWRV9SRUFE
+X1BST0NFU1NFRCkgew0KPiANCj4gRWl0aGVyIHdheSwgdGhpcyBuZWVkcyBhIGNvbW1lbnQgdG8g
+ZXhwbGFpbiB3aGF0IHdlJ3JlIHdvcmtpbmcgYXJvdW5kLg0KPiANCj4gPiArICAgICAgICAgICAg
+ICAgICAgICAgICBpcnFfaGFuZGxlZCB8PSBBU1BFRURfSTJDRF9JTlRSX1RYX05BSzsNCj4gPiAr
+ICAgICAgICAgICAgICAgICAgICAgICBpMmNfc2xhdmVfZXZlbnQoc2xhdmUsIEkyQ19TTEFWRV9T
+VE9QLA0KPiAmdmFsdWUpOw0KDQpBY2NvcmRpbmcgdGhlIHBhdGNoIGFzc3VtZSBzbGF2ZSByZWNl
+aXZlIFRYX05BSyB3aWxsIGJlIGdvIHRvIFNMQVZFX1NUT1Agc3RhdGU/DQoNCj4gPiArICAgICAg
+ICAgICAgICAgfQ0KPiA+ICAgICAgICAgICAgICAgICBpcnFfaGFuZGxlZCB8PSBBU1BFRURfSTJD
+RF9JTlRSX1NMQVZFX01BVENIOw0KPiA+ICAgICAgICAgICAgICAgICBidXMtPnNsYXZlX3N0YXRl
+ID0gQVNQRUVEX0kyQ19TTEFWRV9TVEFSVDsNCj4gPiAgICAgICAgIH0NCj4gPiAtLQ0KPiA+IDIu
+MjguMA0KPiA+DQo=
