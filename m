@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C93538A1FE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:35:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6628838A19A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232989AbhETJg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:36:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33420 "EHLO mail.kernel.org"
+        id S232680AbhETJcf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:32:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232950AbhETJec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:34:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53E4F613AA;
-        Thu, 20 May 2021 09:29:15 +0000 (UTC)
+        id S232457AbhETJag (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:30:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A01061355;
+        Thu, 20 May 2021 09:27:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502955;
-        bh=gNKRC7yC97zcuoCrJCEDsuGb3JoqS9SrcPTSoq1c/cE=;
+        s=korg; t=1621502861;
+        bh=WGlhU5+VJI3wPyKwKyLsjgW80yqtHjVHrQ0vkJJTi3s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fZVTWY+ZLK37kZsKypzdI33wNjfpCiBy8vQ0PEKnulJ1+uSPmtXwDMPTpPq7QSZgV
-         pKm1NXq2GhPECVhMGFUJN+38HMo4UMAHZNOntgSzfr/q07PlxKkZSHnzpaQ8pYCfqO
-         N7+vPyGHehb6l5GOUGiJZYtOe0DQw5sg1WANRVjI=
+        b=zVnGzrebrHUeDMGThYY5ydMAii1Cvp2/OJo88rQwOvJniCxm/ObZm0la+RW1V/9VZ
+         g6oz1ekFfUKulV1SRHoN3f6WGT6DFDlod85O9UtmgEYkb0EyfiLIhaApGS+jlwZgcs
+         dTichBNgLHaBp51uzQcbWj5F1VAhxD9xktSxAhAY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
-        James Smart <jsmart2021@gmail.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 21/37] scsi: lpfc: Fix illegal memory access on Abort IOCBs
-Date:   Thu, 20 May 2021 11:22:42 +0200
-Message-Id: <20210520092052.975357097@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 45/47] ipv6: remove extra dev_hold() for fallback tunnels
+Date:   Thu, 20 May 2021 11:22:43 +0200
+Message-Id: <20210520092054.994713306@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
-References: <20210520092052.265851579@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,60 +40,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: James Smart <jsmart2021@gmail.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit e1364711359f3ced054bda9920477c8bf93b74c5 ]
+commit 0d7a7b2014b1a499a0fe24c9f3063d7856b5aaaf upstream.
 
-In devloss timer handler and in backend calls to terminate remote port I/O,
-there is logic to walk through all active IOCBs and validate them to
-potentially trigger an abort request. This logic is causing illegal memory
-accesses which leads to a crash. Abort IOCBs, which may be on the list, do
-not have an associated lpfc_io_buf struct. The driver is trying to map an
-lpfc_io_buf struct on the IOCB and which results in a bogus address thus
-the issue.
+My previous commits added a dev_hold() in tunnels ndo_init(),
+but forgot to remove it from special functions setting up fallback tunnels.
 
-Fix by skipping over ABORT IOCBs (CLOSE IOCBs are ABORTS that don't send
-ABTS) in the IOCB scan logic.
+Fallback tunnels do call their respective ndo_init()
 
-Link: https://lore.kernel.org/r/20210421234433.102079-1-jsmart2021@gmail.com
-Co-developed-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: Justin Tee <justin.tee@broadcom.com>
-Signed-off-by: James Smart <jsmart2021@gmail.com>
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This leads to various reports like :
+
+unregister_netdevice: waiting for ip6gre0 to become free. Usage count = 2
+
+Fixes: 48bb5697269a ("ip6_tunnel: sit: proper dev_{hold|put} in ndo_[un]init methods")
+Fixes: 6289a98f0817 ("sit: proper dev_{hold|put} in ndo_[un]init methods")
+Fixes: 40cb881b5aaa ("ip6_vti: proper dev_{hold|put} in ndo_[un]init methods")
+Fixes: 7f700334be9a ("ip6_gre: proper dev_{hold|put} in ndo_[un]init methods")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/scsi/lpfc/lpfc_sli.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ net/ipv6/ip6_gre.c    |    3 ---
+ net/ipv6/ip6_tunnel.c |    1 -
+ net/ipv6/ip6_vti.c    |    1 -
+ net/ipv6/sit.c        |    1 -
+ 4 files changed, 6 deletions(-)
 
-diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
-index ef7cef316d21..795460eda6a5 100644
---- a/drivers/scsi/lpfc/lpfc_sli.c
-+++ b/drivers/scsi/lpfc/lpfc_sli.c
-@@ -11337,13 +11337,20 @@ lpfc_sli_validate_fcp_iocb(struct lpfc_iocbq *iocbq, struct lpfc_vport *vport,
- 			   lpfc_ctx_cmd ctx_cmd)
- {
- 	struct lpfc_io_buf *lpfc_cmd;
-+	IOCB_t *icmd = NULL;
- 	int rc = 1;
+--- a/net/ipv6/ip6_gre.c
++++ b/net/ipv6/ip6_gre.c
+@@ -387,7 +387,6 @@ static struct ip6_tnl *ip6gre_tunnel_loc
+ 	if (!(nt->parms.o_flags & TUNNEL_SEQ))
+ 		dev->features |= NETIF_F_LLTX;
  
- 	if (iocbq->vport != vport)
- 		return rc;
+-	dev_hold(dev);
+ 	ip6gre_tunnel_link(ign, nt);
+ 	return nt;
  
--	if (!(iocbq->iocb_flag &  LPFC_IO_FCP) ||
--	    !(iocbq->iocb_flag & LPFC_IO_ON_TXCMPLQ))
-+	if (!(iocbq->iocb_flag & LPFC_IO_FCP) ||
-+	    !(iocbq->iocb_flag & LPFC_IO_ON_TXCMPLQ) ||
-+	      iocbq->iocb_flag & LPFC_DRIVER_ABORTED)
-+		return rc;
-+
-+	icmd = &iocbq->iocb;
-+	if (icmd->ulpCommand == CMD_ABORT_XRI_CN ||
-+	    icmd->ulpCommand == CMD_CLOSE_XRI_CN)
- 		return rc;
+@@ -1539,8 +1538,6 @@ static void ip6gre_fb_tunnel_init(struct
+ 	strcpy(tunnel->parms.name, dev->name);
  
- 	lpfc_cmd = container_of(iocbq, struct lpfc_io_buf, cur_iocbq);
--- 
-2.30.2
-
+ 	tunnel->hlen		= sizeof(struct ipv6hdr) + 4;
+-
+-	dev_hold(dev);
+ }
+ 
+ static struct inet6_protocol ip6gre_protocol __read_mostly = {
+--- a/net/ipv6/ip6_tunnel.c
++++ b/net/ipv6/ip6_tunnel.c
+@@ -1956,7 +1956,6 @@ static int __net_init ip6_fb_tnl_dev_ini
+ 	struct ip6_tnl_net *ip6n = net_generic(net, ip6_tnl_net_id);
+ 
+ 	t->parms.proto = IPPROTO_IPV6;
+-	dev_hold(dev);
+ 
+ 	rcu_assign_pointer(ip6n->tnls_wc[0], t);
+ 	return 0;
+--- a/net/ipv6/ip6_vti.c
++++ b/net/ipv6/ip6_vti.c
+@@ -962,7 +962,6 @@ static int __net_init vti6_fb_tnl_dev_in
+ 	struct vti6_net *ip6n = net_generic(net, vti6_net_id);
+ 
+ 	t->parms.proto = IPPROTO_IPV6;
+-	dev_hold(dev);
+ 
+ 	rcu_assign_pointer(ip6n->tnls_wc[0], t);
+ 	return 0;
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -1470,7 +1470,6 @@ static void __net_init ipip6_fb_tunnel_i
+ 	iph->ihl		= 5;
+ 	iph->ttl		= 64;
+ 
+-	dev_hold(dev);
+ 	rcu_assign_pointer(sitn->tunnels_wc[0], tunnel);
+ }
+ 
 
 
