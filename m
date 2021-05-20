@@ -2,113 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB2F38B53F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B9E438B541
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:32:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234466AbhETRcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:32:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40762 "EHLO
+        id S234318AbhETReQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:34:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231911AbhETRch (ORCPT
+        with ESMTP id S231594AbhETReN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:32:37 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E505C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:31:14 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id c15so20746806ljr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:31:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IWyd5vQ0tdTZhv+oPIYSkEnp7t4QKuqrE25ohxsctR8=;
-        b=Ic/e82cajUiahyEuvPpiuLgc1inY2ttwkJiuCriPNyfS7F1zg8M5p3SHsWKqmo7+hI
-         Bh5GnJnts19VUixtKCeEeTGBFWzRrZ+QazY7jcIe2HgQ71mGUTvr5Gx03S4BWaAZAszH
-         Nx8QfU6s15Bv2B16k5Gp/+OZghbeLRkGtG74lLVjVE8bTpTfUhvhWlhZbjqLGFHbU+Sg
-         oQpoBqntbRmCELVga+htuuHac9aAoeEd/l7A2AjFMtjkw5kon/R+xV5GxBM+hgf3c0gX
-         iOS75GMWQhVN9TH+YVC25jyrQwbStPzPgRyWhsuIfwjR5LZxAISG6IF/qbnRW5XOBlcO
-         mvSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IWyd5vQ0tdTZhv+oPIYSkEnp7t4QKuqrE25ohxsctR8=;
-        b=AI4BnKIahF3bTduLmIlz0WmwqIc/jpVTC3Rq6zSL4nZMnAdmdmckHzpGrLE/s67H3y
-         7oOYxbqAhk1yGmPW4BsXEdRq6H8SxW/Mb6igRMc40+sUjNHVYoDmF88UHC1PgMH5YPNq
-         /uAAL/7+pFu1Gf2icKbxlLoxRaQqhsa5grHEefBLX1j8unBtB6jPZ/CTinIm293ZP+ux
-         yHxLAM9sKxGemz9DAipxwDpEwadF98LKCYKjuHijnwrtfWQ5yGIt6gHu63ZH86KbnSod
-         lNqhYOMAU6yqqxWCqfNFfvURNeORCb62Q8h9xXmqKZDl4Q7X64AhBH40RiJyQvpzwQyQ
-         Bv2w==
-X-Gm-Message-State: AOAM533wKp7juJGwXMmrZt1Gkw9yDNdk6bqQp4ZLrHd/5nSXpWMUHhSm
-        B5tJyCXNS3RZGhcWP8WBPWDNjJyQYZaCOKmcimg=
-X-Google-Smtp-Source: ABdhPJyaYBqT/6DNE5iA0xZlel1YEWkCY46LIKC5808FFImJi1+4D/Jc9UR2WyX1N+m3M8yvcTQfO0aA/7TxS5ipIvw=
-X-Received: by 2002:a2e:bc23:: with SMTP id b35mr3855706ljf.378.1621531872910;
- Thu, 20 May 2021 10:31:12 -0700 (PDT)
+        Thu, 20 May 2021 13:34:13 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D99C061574;
+        Thu, 20 May 2021 10:32:50 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0eb6009f35b1f88a592069.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b600:9f35:b1f8:8a59:2069])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 48CD01EC064A;
+        Thu, 20 May 2021 19:32:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621531968;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=u8iXPH5P0KT0EXX32h1RoqsIrcIQPzeP3RsrjsiJkxU=;
+        b=HqZlwIaK7S+8G5XIuqTKYDYoH54ZGPWvd6EFH8d54FW40o1whnt82F4Dk18qUYuWxmBBZo
+        sy6asLrefqibkXizoqhJMVNEkmjHKQa3RCCTgy2wUL9eJoa4zdtyxhbqTQA5C0PZnP62ay
+        4MYoc9PehMWFAm44E7p+cKzMJY/KgvQ=
+Date:   Thu, 20 May 2021 19:32:42 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
+        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
+        hpa@zytor.com, tony.luck@intel.com
+Subject: Re: [PATCH Part1 RFC v2 10/20] x86/sev: Add a helper for the
+ PVALIDATE instruction
+Message-ID: <YKadOnfjaeffKwav@zn.tnic>
+References: <20210430121616.2295-1-brijesh.singh@amd.com>
+ <20210430121616.2295-11-brijesh.singh@amd.com>
+ <4ecbed35-aca4-9e30-22d0-f5c46b67b70a@amd.com>
 MIME-Version: 1.0
-References: <CAKf6xptjmd9BMuiKpRgj1YyyR97gGXKgYgj-4CKaTvBk4+FeoA@mail.gmail.com>
- <YKaV5ej3WrUJQa7/@slm.duckdns.org>
-In-Reply-To: <YKaV5ej3WrUJQa7/@slm.duckdns.org>
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Thu, 20 May 2021 13:31:01 -0400
-Message-ID: <CAKf6xpsv-v0kMXnuOVmkjOXYV+R=HPnKWL9cufZaNEa6+3jvMw@mail.gmail.com>
-Subject: Re: Calling queue_work() multiple times with the same work_struct
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4ecbed35-aca4-9e30-22d0-f5c46b67b70a@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Tejun.
+On Fri, Apr 30, 2021 at 08:05:36AM -0500, Brijesh Singh wrote:
+> While generating the patches for part1, I accidentally picked the wrong
+> version of this patch.
 
-On Thu, May 20, 2021 at 1:01 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello, Jason.
->
-> On Thu, May 20, 2021 at 08:39:56AM -0400, Jason Andryuk wrote:
-> > 1 & 2 look supported from workqueue.h.  Is the 3rd case true and
-> > guaranteed?  Is it okay to re-use the same work_struct in that case
->
-> Yes.
->
-> > while it's being executed?  A work_struct function can re-queue
->
-> Yes.
->
-> > itself, so I hope #3 is supported.
->
-> Yes.
->
-> > DECLARE_WORK(argo_work, argo_work_fn);
-> > static struct workqueue_struct *argo_wq = alloc_workqueue("argo_wq",
-> >                     WQ_UNBOUND | WQ_HIGHPRI | WQ_CPU_INTENSIVE | WQ_SYSFS, 1);
->
-> I don't know what the device is but does it need both HIGHPRI and
-> CPU_INTENSIVE?
+Adding the right one...
 
-argo is a Xen inter-vm communication mechanism, so networking-ish.  I
-wanted HIGHPRI to ensure it is run promptly.  I wasn't sure about
-CPU_INTENSIVE, but high data rates could potentially copy a fair
-amount of data.  HIGHPRI alone may be sufficient.
+> Author: Brijesh Singh <brijesh.singh@amd.com>
+> Date:   Thu Apr 29 16:45:36 2021 -0500
+> 
+>     x86/sev: Add a helper for the PVALIDATE instruction
+>     
+>     An SNP-active guest uses the PVALIDATE instruction to validate or
+>     rescind the validation of a guest page’s RMP entry. Upon completion,
+>     a return code is stored in EAX and rFLAGS bits are set based on the
+>     return code. If the instruction completed successfully, the CF
+>     indicates if the content of the RMP were changed or not.
+> 
+>     See AMD APM Volume 3 for additional details.
+> 
+>     Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> 
+> diff --git a/arch/x86/include/asm/sev.h b/arch/x86/include/asm/sev.h
+> index 134a7c9d91b6..be67d9c70267 100644
+> --- a/arch/x86/include/asm/sev.h
+> +++ b/arch/x86/include/asm/sev.h
+> @@ -59,6 +59,16 @@ extern void vc_no_ghcb(void);
+>  extern void vc_boot_ghcb(void);
+>  extern bool handle_vc_boot_ghcb(struct pt_regs *regs);
+>  
+> +/* Return code of pvalidate */
+> +#define PVALIDATE_SUCCESS		0
+> +#define PVALIDATE_FAIL_INPUT		1
+> +#define PVALIDATE_FAIL_SIZEMISMATCH	6
 
-> > static void argo_work_fn(struct work_struct *work)
-> > {
-> >     argo_interrupt_rx();  /* iterates multiple "rings" */
-> >     argo_notify();
-> > }
-> >
-> > static irqreturn_t argo_interrupt(int irq, void *dev_id)
-> > {
-> >     queue_work(argo_wq, &argo_work);
-> >
-> >     return IRQ_HANDLED;
-> > }
->
-> Yeah, the above will guarantee that the work function would run at least
-> once since the last invocation of argo_interrupt().
+Those are unused. Remove them pls.
 
-Awesome.  Thank you, Tejun.
+> +#define PVALIDATE_FAIL_NOUPDATE		255 /* Software defined (when rFlags.CF = 1) */
 
-Regards,
-Jason
+Put the comment above the define pls.
+
+> +
+> +/* RMP page size */
+> +#define RMP_PG_SIZE_2M			1
+> +#define RMP_PG_SIZE_4K			0
+
+Add those when you need them - I see
+
+[PATCH Part2 RFC v2 06/37] x86/sev: Add RMP entry lookup helpers
+
+is moving them to some generic header. No need to add them to this patch
+here.
+
+>  #ifdef CONFIG_AMD_MEM_ENCRYPT
+>  extern struct static_key_false sev_es_enable_key;
+>  extern void __sev_es_ist_enter(struct pt_regs *regs);
+> @@ -81,12 +91,29 @@ static __always_inline void sev_es_nmi_complete(void)
+>  		__sev_es_nmi_complete();
+>  }
+>  extern int __init sev_es_efi_map_ghcbs(pgd_t *pgd);
+> +static inline int pvalidate(unsigned long vaddr, bool rmp_psize, bool validate)
+> +{
+> +	bool no_rmpupdate;
+> +	int rc;
+
+Adding this for the mail archives when we find this mail again in the
+future so that I don't have to do binutils git archeology again:
+
+Enablement for the "pvalidate" mnemonic is in binutils commit
+646cc3e0109e ("Add AMD znver3 processor support"). :-)
+
+Please put over the opcode bytes line:
+
+	/* "pvalidate" mnemonic support in binutils 2.36 and newer */
+
+> +
+> +	asm volatile(".byte 0xF2, 0x0F, 0x01, 0xFF\n\t"
+> +		     CC_SET(c)
+> +		     : CC_OUT(c) (no_rmpupdate), "=a"(rc)
+> +		     : "a"(vaddr), "c"(rmp_psize), "d"(validate)
+> +		     : "memory", "cc");
+> +
+> +	if (no_rmpupdate)
+> +		return PVALIDATE_FAIL_NOUPDATE;
+> +
+> +	return rc;
+> +}
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
