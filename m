@@ -2,113 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ECFB38B053
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AF438B057
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:48:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239302AbhETNsW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:48:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
+        id S235672AbhETNtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231946AbhETNsS (ORCPT
+        with ESMTP id S232412AbhETNtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:48:18 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F85BC06175F;
-        Thu, 20 May 2021 06:46:57 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id i7so7566038ejc.5;
-        Thu, 20 May 2021 06:46:57 -0700 (PDT)
+        Thu, 20 May 2021 09:49:42 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C91C061574;
+        Thu, 20 May 2021 06:48:20 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id e15so2441157plh.1;
+        Thu, 20 May 2021 06:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aFmQJac4iuxwmbF46KvAyNCQors8o3Kv89Ax85e/fSk=;
-        b=gfp3n9YGxa7K7QrH/kG5G7lPmDgckjSFtBzbP7QN0LXBdbrlGj776BLliSEBgqM95/
-         m/IVG5AhFHf/oP+kzg/Upa9G/dl1UnuvaWRyhzyOMKk7VfECGaMSpKbe1nC1Emw7exAO
-         Drridg9cymRj9v09HdxOQON2wpAvoKYewwipxAyzmA11kIMIHIOh64BUJwxq34PRbgov
-         jPqXLEfv4KLHy7CnBDA42vhhV7VTi+NayC1OW2U2zYTH194RMbGWaIAIg+/xY+W898w3
-         e7kd5O1rs3FG2qI6zalGvnOBAAP62K6MkPVpuuSI13hJj2UtoPQH1lEEkHFiJX/ZcoiM
-         i3fg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uaQphQqIy8iAUW0DAv32A4yBEG37F4G/mNVlzt/Q+ME=;
+        b=HRyhkFUmiSLZKeZWFF3Dvzlj5g1okiPe87ymdtYmd8U5fk0hoWu8uyvzuonLEDFUe6
+         Q4cmcEwDcH6aRO/a/1BB4hSDMUDefJgy0MY4pIMuxvuaP38O+mdT7Vbv02of2sjIixFx
+         RWabRb+N+SBhfWiCVU2VWPs4teO9NFb2uOv07C38SXQ98ryHr4bP3C/xL0+7a8aiIil+
+         6kt2VtT0E8fTQWqTBbmp9U/eS0dkwM+YRRVD08/rjUp4C/4gnRwywtR2UtdPvvykIZFC
+         RqugG2Y/6OEE8ATbUs52DDJszRmgvBjZ/yyTPQj58p9TLvc8dn7s+60MHP8q0lbAbOZK
+         0jsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aFmQJac4iuxwmbF46KvAyNCQors8o3Kv89Ax85e/fSk=;
-        b=F3raFBVbuKxz+LJOIyPuOzBukXlfmbJL5U87IlOPexanUqKCFQt9ysUj51st7A7QAj
-         wsgo7IexMXv2b+NlA3/V5qivEjfDp63rqWT2oi3QzGLANP9kdcQAVOvskQU5S5gwyn0G
-         0t9fR5m3JqERZIl7DmgZH9Z2E7vqQFvQMEFf7lZtQ5SC/0Yxy1I4JMqn3HuM8RO7ANy9
-         mCFaofALclSJU8Opx1XONxKeNuIpMzKQ0lOLKdXyiMUGfzhiRcqWaVPx2cuKgCHN6aju
-         J05mqTRukyzmCYxf158J60ofTYiNFyP13J/GbJFnOcBxtFgpdyGSW6wQvha7pAOsn240
-         0BVA==
-X-Gm-Message-State: AOAM5317cH2esWaJnInoyC7olp3crVTUwGjGhWionXlE6xzVID+gZVgy
-        s2oVRitAtAQ9FmfxxLqIwDY=
-X-Google-Smtp-Source: ABdhPJyEghuZf4q6DPfhgET8q0IkDmgbGMyM7NDdSatnuXlqzH162qSD+d218cYgpqK4TrAH2uovmA==
-X-Received: by 2002:a17:906:5210:: with SMTP id g16mr4915987ejm.116.1621518415727;
-        Thu, 20 May 2021 06:46:55 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id bw26sm1419379ejb.119.2021.05.20.06.46.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uaQphQqIy8iAUW0DAv32A4yBEG37F4G/mNVlzt/Q+ME=;
+        b=OuJGb84gACP13BPXEMk/Vj5kYxxliHK9ElbU7wgw6TN6rFCctADHozh9QXdsFn7M35
+         +N9om6ydaqnuTmew0JSnjTYXW1qn2BnA5k3vr+I/+8efIREHPekuBP/b84yVAicHWXcl
+         hbB087QW6b+JxJKgbyvjmztk2ge+lDTTydTu0gD4Ta7O0+//kOi624qV3iSjYVA7Ybvl
+         9Y7Q2f1xDokbfrQu887wv3cK8CGti0kjA4fI3ayx4RkWOGCyq/JcY/sbz8kzffB6sRB9
+         +VsTX0e7nB5XKscTm1Hz3JMW8q2sNH8LUkcrWDhvb6QtmVkLO9xuNIqpizTWeZXzSoIQ
+         FiRw==
+X-Gm-Message-State: AOAM531OB9y9bbdqVXdYceWwhyapuW+RtiBI9iPIE+2KI9qOyUPHHejx
+        fPGrbOuHue9zGBr1GaaK3tnyDKCLPI+R/Q==
+X-Google-Smtp-Source: ABdhPJwEcBL5Cs0/MDEIhsfJxHQzbcHFh9+N4ADM0mun9mIH3esx0GWBR5zjbnNVhbYZfoKM8Xf4Qw==
+X-Received: by 2002:a17:902:bc88:b029:ee:7ef1:e770 with SMTP id bb8-20020a170902bc88b02900ee7ef1e770mr6017321plb.19.1621518499626;
+        Thu, 20 May 2021 06:48:19 -0700 (PDT)
+Received: from kelvin-System-Product-Name.lan ([117.173.226.141])
+        by smtp.gmail.com with ESMTPSA id t14sm1954025pfg.168.2021.05.20.06.48.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 06:46:55 -0700 (PDT)
-Date:   Thu, 20 May 2021 16:46:52 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, a.fatoum@pengutronix.de,
-        vladimir.oltean@nxp.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com, mkubecek@suse.cz,
-        bjorn@kernel.org, alobakin@pm.me
-Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
- qdisc
-Message-ID: <20210520134652.2sw6gzfdzsqeedzz@skbuf>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
- <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
+        Thu, 20 May 2021 06:48:19 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Keguang Zhang <keguang.zhang@unisoc.com>
+Subject: [PATCH 0/3] MIPS: Loongson1B: Add dmaengine and NAND device
+Date:   Thu, 20 May 2021 21:48:06 +0800
+Message-Id: <20210520134809.27143-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yunsheng,
+From: Keguang Zhang <keguang.zhang@unisoc.com>
 
-On Thu, May 20, 2021 at 05:45:14PM +0800, Yunsheng Lin wrote:
-> On 2021/5/20 17:27, Yunsheng Lin wrote:
-> > Patch 1: remove unnecessary seqcount operation.
-> > Patch 2: implement TCQ_F_CAN_BYPASS.
-> > Patch 3: remove qdisc->empty.
-> > 
-> > RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-> >         qdisc, and add patch 1 and 3.
-> 
-> @Vladimir, Ahmad
-> It would be good to run your testcase to see if there are any
-> out of order for this version, because this version has used
-> STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
-> thanks.
-> 
-> It is based on newest net branch with qdisc stuck patchset.
-> 
-> Some performance data as below:
-> 
-> pktgen + dummy netdev:
->  threads  without+this_patch   with+this_patch      delta
->     1       2.60Mpps            3.18Mpps             +22%
->     2       3.84Mpps            5.72Mpps             +48%
->     4       5.52Mpps            5.52Mpps             +0.0%
->     8       2.77Mpps            2.81Mpps             +1.4%
->    16       2.24Mpps            2.29Mpps             +2.2%
-> 
-> IP forward testing: 1.05Mpps increases to 1.15Mpps
+This patchset is to add dmaengine and NAND device
+for Loongson1B.
 
-I will start the regression test with the flexcan driver on LS1028A and
-let you know tomorrow or so if there is any TX reordering issue.
+This applies on top of mips-next.
+
+Keguang Zhang (3):
+  MIPS: Loongson1B: Add dma_slave_map to DMA platform data
+  MIPS: Loongson1B: Add Loongson1 dmaengine device
+  MIPS: Loongson1B: Add Loongson1 NAND device
+
+ arch/mips/include/asm/mach-loongson32/dma.h   |  7 ++-
+ arch/mips/include/asm/mach-loongson32/nand.h  |  4 --
+ .../include/asm/mach-loongson32/platform.h    |  4 ++
+ arch/mips/loongson32/common/platform.c        | 63 +++++++++++++++++++
+ arch/mips/loongson32/ls1b/board.c             | 37 ++++++++++-
+ 5 files changed, 107 insertions(+), 8 deletions(-)
+
+
+base-commit: 33ae8f801ad8bec48e886d368739feb2816478f2
+-- 
+2.25.1
+
