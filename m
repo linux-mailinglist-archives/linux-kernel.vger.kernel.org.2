@@ -2,299 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B501838B608
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 074D838B60A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235191AbhETSbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:31:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56538 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233462AbhETSbv (ORCPT
+        id S235273AbhETSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:31:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233462AbhETSbz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:31:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621535429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/bPnMh8D9HEJogKStb+MSo8WLoMkx+68yj+/mcrE5vw=;
-        b=FBng8sGD6zeTCB8INLUepn5UuA2px6CK8RBAtEefppMMeMuNT0F3Nb+VPgzjWAmN5b6lyI
-        78DoA5dAxR+tugu3t+cMVe/cWqpcp8np12OQqOdhVmD5XSBmK8ARlFhtBH4brQA1pqblnC
-        yypIppoKugnOSODYNVJSqQ7KqhpzdJc=
-Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
- [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-215-4eotWF3nNhuI1wpweE7hBg-1; Thu, 20 May 2021 14:30:27 -0400
-X-MC-Unique: 4eotWF3nNhuI1wpweE7hBg-1
-Received: by mail-qt1-f200.google.com with SMTP id 1-20020aed31010000b029019d1c685840so13017331qtg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 11:30:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/bPnMh8D9HEJogKStb+MSo8WLoMkx+68yj+/mcrE5vw=;
-        b=NGm1e5k1GNklAUsmRqwDX9VqDbftFeV/DQ+v0G5xgpF7N5bPxRRXkTNQLfbwW03fiv
-         pGdiDembsOP8YyE9uBUn1L1TW6t+e1yto7t3pKMwBx83EXPJRgn4uwk3mm1Rq4BgdpMf
-         FYv/CyyBWwbZ6+gOWB0MrP/Tc0f2JLR0eve49a1HCKmUsaLEIUVHDmlEsdsmZtPnr1qG
-         UV7kB6lKvMPiV29TNQ3NiB+EgNsADWBuq7dDSobniDcwHKP8I4A9ddDe00bC0lqAT8sq
-         Vl4sl+XMbKaDsxttG0cIXX1s6uUdkVHwlV6PnEE2DCdEb+6Ucyb/m6q9o4AZh3hiL+aJ
-         IFzw==
-X-Gm-Message-State: AOAM533AI+0pWTWHFB6NnmIfCrl9YwxXs3+1yopIJxqiQORzMVQkXlJ6
-        ll9KtaMBwBda4795y86MihbovQV0EsUAxvPgE+AyknjuopBW6bU66G97M0blXUpdytMc9BfkP/k
-        LZLHtCEjy+KbCzUWA1ww1arTx
-X-Received: by 2002:ad4:420b:: with SMTP id k11mr7416627qvp.18.1621535426950;
-        Thu, 20 May 2021 11:30:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwfidu4zN2uet8HOwwObbCGcgkQBZyXWsGSIncju4TJAnj0jTlP5hQB9h0cdJsfDlnQx5Otkw==
-X-Received: by 2002:ad4:420b:: with SMTP id k11mr7416605qvp.18.1621535426777;
-        Thu, 20 May 2021 11:30:26 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id u26sm2512296qtf.24.2021.05.20.11.30.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 11:30:26 -0700 (PDT)
-From:   trix@redhat.com
-To:     mdf@kernel.org
-Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH v2 3/5] fpga: pass fpga_manager_update_ops to the fpga_manager_write functions
-Date:   Thu, 20 May 2021 11:30:22 -0700
-Message-Id: <20210520183022.2022394-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        Thu, 20 May 2021 14:31:55 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54534C061574;
+        Thu, 20 May 2021 11:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=agiakZtvhMa1O9T2XzsnpNjO6uMLLfnHhIvJ8sxlh1Y=; b=Ew5DIjR56nVHadIx3pywARpTvd
+        Kgq0VyI+O62d0VLyFLIu4w7CjQvihMOMTaRgdL8VG7HB0i6DOjHbQxlwccFvsRL6HlnU87Kle5NKO
+        T/EvFNAW3TnfAReeo8nt1ucuvPbyUmN5KKzlmEI/Nbie6KLnfjxukn2+fTEL7ic/44bk/PK5pnYW6
+        6eF40guPIS7n/zLzzE+mrKkKw7N0FSq9BObMkmzj1B6W7Mdn9CDYem5oEFLFi0RNu1vQSLlwkNaVK
+        lm7gK8J0uTRyq/zLQa0fmnnqamK5wzCi3XycoZ+rz1lsaWlkTcgZ3o8T8BxPLEl5gbVjTih08AIF/
+        OMutOsyA==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljnRJ-00GZgm-Jd; Thu, 20 May 2021 18:30:33 +0000
+Subject: Re: [PATCH] Phonet: fix kernel-doc syntax in file headers
+To:     Aditya Srivastava <yashsri421@gmail.com>, courmisch@gmail.com
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210520182159.31462-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <7cb9bfad-55b1-b5f3-5051-a2e837dda736@infradead.org>
+Date:   Thu, 20 May 2021 11:30:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520182159.31462-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On 5/20/21 11:21 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for include/*/linux/phonet.h files follows this syntax, but
+> the content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc.
+> For e.g., running scripts/kernel-doc -none include/linux/phonet.h emits:
+> warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * file phonet.h
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-Refactor fpga_manager_write* functions for reimaging, pass
-the update_ops as a parameter.  Only do the reconfig ops.
+Hi,
+This all looks good, but it would be even better to remove
+the file names. We tend to prefer not to have filenames in their files
+because they get moved or renamed -- and because it's redundant info.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/fpga/fpga-mgr.c | 57 ++++++++++++++++++++++++-----------------
- 1 file changed, 34 insertions(+), 23 deletions(-)
+Anyway,
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
-index e3fc1b0bd7181..4263c9e94949d 100644
---- a/drivers/fpga/fpga-mgr.c
-+++ b/drivers/fpga/fpga-mgr.c
-@@ -77,16 +77,17 @@ EXPORT_SYMBOL_GPL(fpga_image_info_free);
-  */
- static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
- 				   struct fpga_image_info *info,
-+				   const struct fpga_manager_update_ops *uops,
- 				   const char *buf, size_t count)
- {
- 	int ret;
- 
- 	mgr->state = FPGA_MGR_STATE_WRITE_INIT;
- 	if (!mgr->mops->initial_header_size)
--		ret = mgr->mops->reconfig.write_init(mgr, info, NULL, 0);
-+		ret = uops->write_init(mgr, info, NULL, 0);
- 	else
--		ret = mgr->mops->reconfig.write_init(
--		    mgr, info, buf, min(mgr->mops->initial_header_size, count));
-+		ret = uops->write_init(
-+			mgr, info, buf, min(mgr->mops->initial_header_size, count));
- 
- 	if (ret) {
- 		dev_err(&mgr->dev, "Error preparing FPGA for writing\n");
-@@ -99,6 +100,7 @@ static int fpga_mgr_write_init_buf(struct fpga_manager *mgr,
- 
- static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
- 				  struct fpga_image_info *info,
-+				  const struct fpga_manager_update_ops *uops,
- 				  struct sg_table *sgt)
- {
- 	struct sg_mapping_iter miter;
-@@ -107,7 +109,7 @@ static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
- 	int ret;
- 
- 	if (!mgr->mops->initial_header_size)
--		return fpga_mgr_write_init_buf(mgr, info, NULL, 0);
-+		return fpga_mgr_write_init_buf(mgr, info, uops, NULL, 0);
- 
- 	/*
- 	 * First try to use miter to map the first fragment to access the
-@@ -116,7 +118,7 @@ static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
- 	sg_miter_start(&miter, sgt->sgl, sgt->nents, SG_MITER_FROM_SG);
- 	if (sg_miter_next(&miter) &&
- 	    miter.length >= mgr->mops->initial_header_size) {
--		ret = fpga_mgr_write_init_buf(mgr, info, miter.addr,
-+		ret = fpga_mgr_write_init_buf(mgr, info, uops, miter.addr,
- 					      miter.length);
- 		sg_miter_stop(&miter);
- 		return ret;
-@@ -130,7 +132,7 @@ static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
- 
- 	len = sg_copy_to_buffer(sgt->sgl, sgt->nents, buf,
- 				mgr->mops->initial_header_size);
--	ret = fpga_mgr_write_init_buf(mgr, info, buf, len);
-+	ret = fpga_mgr_write_init_buf(mgr, info, uops, buf, len);
- 
- 	kfree(buf);
- 
-@@ -142,12 +144,13 @@ static int fpga_mgr_write_init_sg(struct fpga_manager *mgr,
-  * finish and set the FPGA into operating mode.
-  */
- static int fpga_mgr_write_complete(struct fpga_manager *mgr,
--				   struct fpga_image_info *info)
-+				   struct fpga_image_info *info,
-+				   const struct fpga_manager_update_ops *uops)
- {
- 	int ret;
- 
- 	mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE;
--	ret = mgr->mops->reconfig.write_complete(mgr, info);
-+	ret = uops->write_complete(mgr, info);
- 	if (ret) {
- 		dev_err(&mgr->dev, "Error after writing image data to FPGA\n");
- 		mgr->state = FPGA_MGR_STATE_WRITE_COMPLETE_ERR;
-@@ -162,6 +165,7 @@ static int fpga_mgr_write_complete(struct fpga_manager *mgr,
-  * fpga_mgr_buf_load_sg - load fpga from image in buffer from a scatter list
-  * @mgr:	fpga manager
-  * @info:	fpga image specific information
-+ * @uops:       which update ops to use
-  * @sgt:	scatterlist table
-  *
-  * Step the low level fpga manager through the device-specific steps of getting
-@@ -177,24 +181,25 @@ static int fpga_mgr_write_complete(struct fpga_manager *mgr,
-  */
- static int fpga_mgr_buf_load_sg(struct fpga_manager *mgr,
- 				struct fpga_image_info *info,
-+				const struct fpga_manager_update_ops *uops,
- 				struct sg_table *sgt)
- {
- 	int ret;
- 
--	ret = fpga_mgr_write_init_sg(mgr, info, sgt);
-+	ret = fpga_mgr_write_init_sg(mgr, info, uops, sgt);
- 	if (ret)
- 		return ret;
- 
- 	/* Write the FPGA image to the FPGA. */
- 	mgr->state = FPGA_MGR_STATE_WRITE;
--	if (mgr->mops->reconfig.write_sg) {
--		ret = mgr->mops->reconfig.write_sg(mgr, sgt);
-+	if (uops->write_sg) {
-+		ret = uops->write_sg(mgr, sgt);
- 	} else {
- 		struct sg_mapping_iter miter;
- 
- 		sg_miter_start(&miter, sgt->sgl, sgt->nents, SG_MITER_FROM_SG);
- 		while (sg_miter_next(&miter)) {
--			ret = mgr->mops->reconfig.write(mgr, miter.addr, miter.length);
-+			ret = uops->write(mgr, miter.addr, miter.length);
- 			if (ret)
- 				break;
- 		}
-@@ -207,16 +212,17 @@ static int fpga_mgr_buf_load_sg(struct fpga_manager *mgr,
- 		return ret;
- 	}
- 
--	return fpga_mgr_write_complete(mgr, info);
-+	return fpga_mgr_write_complete(mgr, info, uops);
- }
- 
- static int fpga_mgr_buf_load_mapped(struct fpga_manager *mgr,
- 				    struct fpga_image_info *info,
-+				    const struct fpga_manager_update_ops *uops,
- 				    const char *buf, size_t count)
- {
- 	int ret;
- 
--	ret = fpga_mgr_write_init_buf(mgr, info, buf, count);
-+	ret = fpga_mgr_write_init_buf(mgr, info, uops, buf, count);
- 	if (ret)
- 		return ret;
- 
-@@ -224,20 +230,21 @@ static int fpga_mgr_buf_load_mapped(struct fpga_manager *mgr,
- 	 * Write the FPGA image to the FPGA.
- 	 */
- 	mgr->state = FPGA_MGR_STATE_WRITE;
--	ret = mgr->mops->reconfig.write(mgr, buf, count);
-+	ret = uops->write(mgr, buf, count);
- 	if (ret) {
- 		dev_err(&mgr->dev, "Error while writing image data to FPGA\n");
- 		mgr->state = FPGA_MGR_STATE_WRITE_ERR;
- 		return ret;
- 	}
- 
--	return fpga_mgr_write_complete(mgr, info);
-+	return fpga_mgr_write_complete(mgr, info, uops);
- }
- 
- /**
-  * fpga_mgr_buf_load - load fpga from image in buffer
-  * @mgr:	fpga manager
-  * @info:	fpga image info
-+ * @uops:       which update ops to use
-  * @buf:	buffer contain fpga image
-  * @count:	byte count of buf
-  *
-@@ -250,6 +257,7 @@ static int fpga_mgr_buf_load_mapped(struct fpga_manager *mgr,
-  */
- static int fpga_mgr_buf_load(struct fpga_manager *mgr,
- 			     struct fpga_image_info *info,
-+			     const struct fpga_manager_update_ops *uops,
- 			     const char *buf, size_t count)
- {
- 	struct page **pages;
-@@ -264,8 +272,8 @@ static int fpga_mgr_buf_load(struct fpga_manager *mgr,
- 	 * contiguous kernel buffer and the driver doesn't require SG, non-SG
- 	 * drivers will still work on the slow path.
- 	 */
--	if (mgr->mops->reconfig.write)
--		return fpga_mgr_buf_load_mapped(mgr, info, buf, count);
-+	if (uops->write)
-+		return fpga_mgr_buf_load_mapped(mgr, info, uops, buf, count);
- 
- 	/*
- 	 * Convert the linear kernel pointer into a sg_table of pages for use
-@@ -300,7 +308,7 @@ static int fpga_mgr_buf_load(struct fpga_manager *mgr,
- 	if (rc)
- 		return rc;
- 
--	rc = fpga_mgr_buf_load_sg(mgr, info, &sgt);
-+	rc = fpga_mgr_buf_load_sg(mgr, info, uops, &sgt);
- 	sg_free_table(&sgt);
- 
- 	return rc;
-@@ -322,6 +330,7 @@ static int fpga_mgr_buf_load(struct fpga_manager *mgr,
-  */
- static int fpga_mgr_firmware_load(struct fpga_manager *mgr,
- 				  struct fpga_image_info *info,
-+				  const struct fpga_manager_update_ops *uops,
- 				  const char *image_name)
- {
- 	struct device *dev = &mgr->dev;
-@@ -339,7 +348,7 @@ static int fpga_mgr_firmware_load(struct fpga_manager *mgr,
- 		return ret;
- 	}
- 
--	ret = fpga_mgr_buf_load(mgr, info, fw->data, fw->size);
-+	ret = fpga_mgr_buf_load(mgr, info, uops, fw->data, fw->size);
- 
- 	release_firmware(fw);
- 
-@@ -358,12 +367,14 @@ static int fpga_mgr_firmware_load(struct fpga_manager *mgr,
-  */
- int fpga_mgr_load(struct fpga_manager *mgr, struct fpga_image_info *info)
- {
-+	const struct fpga_manager_update_ops *uops = &mgr->mops->reconfig;
-+
- 	if (info->sgt)
--		return fpga_mgr_buf_load_sg(mgr, info, info->sgt);
-+		return fpga_mgr_buf_load_sg(mgr, info, uops, info->sgt);
- 	if (info->buf && info->count)
--		return fpga_mgr_buf_load(mgr, info, info->buf, info->count);
-+		return fpga_mgr_buf_load(mgr, info, uops, info->buf, info->count);
- 	if (info->firmware_name)
--		return fpga_mgr_firmware_load(mgr, info, info->firmware_name);
-+		return fpga_mgr_firmware_load(mgr, info, uops, info->firmware_name);
- 	return -EINVAL;
- }
- EXPORT_SYMBOL_GPL(fpga_mgr_load);
+Thanks.
+
+> ---
+>  include/linux/phonet.h      | 2 +-
+>  include/uapi/linux/phonet.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/include/linux/phonet.h b/include/linux/phonet.h
+> index bc7d1e529efc..09ecb1f94c5e 100644
+> --- a/include/linux/phonet.h
+> +++ b/include/linux/phonet.h
+> @@ -1,5 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0-only */
+> -/**
+> +/*
+>   * file phonet.h
+>   *
+>   * Phonet sockets kernel interface
+> diff --git a/include/uapi/linux/phonet.h b/include/uapi/linux/phonet.h
+> index a2f6b37a5937..6b873c460994 100644
+> --- a/include/uapi/linux/phonet.h
+> +++ b/include/uapi/linux/phonet.h
+> @@ -1,5 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> -/**
+> +/*
+>   * file phonet.h
+>   *
+>   * Phonet sockets kernel interface
+> 
+
+
 -- 
-2.26.3
+~Randy
 
