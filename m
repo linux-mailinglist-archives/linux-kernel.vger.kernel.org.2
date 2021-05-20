@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53AC938A811
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F6A138A80C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237754AbhETKqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:46:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
+        id S237664AbhETKqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:46:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237164AbhETK3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:29:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A298B60551;
-        Thu, 20 May 2021 09:51:38 +0000 (UTC)
+        id S237186AbhETK3m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:29:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D889661584;
+        Thu, 20 May 2021 09:51:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504299;
-        bh=EVw1yJLDoY2u+9KBb7oQsjBEFyKgubZGB4jVr4IBGjA=;
+        s=korg; t=1621504301;
+        bh=ViUhsG7ihVLMRZP+IwYEc5P+52bbMLlx7R4NnNka/no=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ivtq9E3EVkiztKoDn3y2WVL6Sb+vRG8SXjcYFiBtk9O5wC8V+0qhTKHVWD7q5uGps
-         vXfcHbdtul+Mql0hwXIMLBJTNz7d3FDp4jgtLtZoOpxOzEtiZAXJwRRo4k2bzoxGS6
-         d8w47rSv/LCodhE2m/Uhf6tmC/I4UpHsHUdrH6rM=
+        b=0IdAU+Rfiz0vkReOvhx/QxnzZVGgqRQMK4jaq52rDa0pNPNqt1vUQQxVWODpLury7
+         E7b44fGDveOwlp582tMuHZeonTrP9C+UzKP9doo/+Ky7dLBAd4MZ7t2ojl9BujV9Go
+         2VS6tn6NFn0aRFnQX2vFsmGUzWNrPQMJOHLNpmqc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 183/323] pata_arasan_cf: fix IRQ check
-Date:   Thu, 20 May 2021 11:21:15 +0200
-Message-Id: <20210520092126.382872080@linuxfoundation.org>
+Subject: [PATCH 4.14 184/323] pata_ipx4xx_cf: fix IRQ check
+Date:   Thu, 20 May 2021 11:21:16 +0200
+Message-Id: <20210520092126.414017738@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,52 +41,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit c7e8f404d56b99c80990b19a402c3f640d74be05 ]
+[ Upstream commit e379b40cc0f179403ce0b82b7e539f635a568da5 ]
 
 The driver's probe() method is written as if platform_get_irq() returns 0
 on error, while actually it returns a negative error code (with all the
-other values considered valid IRQs). Rewrite the driver's IRQ checking code
-to pass the positive IRQ #s to ata_host_activate(), propagate upstream
--EPROBE_DEFER, and set up the driver to polling mode on (negative) errors
-and IRQ0 (libata treats IRQ #0 as a polling mode anyway)...
+other values considered valid IRQs).  Rewrite the driver's IRQ checking
+code to pass the positive IRQ #s to ata_host_activate(), propagate errors
+upstream, and treat IRQ0 as error, returning -EINVAL, as the libata code
+treats 0  as  an indication that polling should be used anyway...
 
-Fixes: a480167b23ef ("pata_arasan_cf: Adding support for arasan compact flash host controller")
+Fixes: 0df0d0a0ea9f ("[libata] ARM: add ixp4xx PATA driver")
 Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/pata_arasan_cf.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ drivers/ata/pata_ixp4xx_cf.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
-index b4d54771c9fe..623199fab8fe 100644
---- a/drivers/ata/pata_arasan_cf.c
-+++ b/drivers/ata/pata_arasan_cf.c
-@@ -819,12 +819,19 @@ static int arasan_cf_probe(struct platform_device *pdev)
- 	else
- 		quirk = CF_BROKEN_UDMA; /* as it is on spear1340 */
+diff --git a/drivers/ata/pata_ixp4xx_cf.c b/drivers/ata/pata_ixp4xx_cf.c
+index 0b0d93065f5a..867621f8c387 100644
+--- a/drivers/ata/pata_ixp4xx_cf.c
++++ b/drivers/ata/pata_ixp4xx_cf.c
+@@ -169,8 +169,12 @@ static int ixp4xx_pata_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
  
--	/* if irq is 0, support only PIO */
--	acdev->irq = platform_get_irq(pdev, 0);
--	if (acdev->irq)
-+	/*
-+	 * If there's an error getting IRQ (or we do get IRQ0),
-+	 * support only PIO
-+	 */
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret > 0) {
-+		acdev->irq = ret;
- 		irq_handler = arasan_cf_interrupt;
--	else
-+	} else	if (ret == -EPROBE_DEFER) {
-+		return ret;
-+	} else	{
- 		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
-+	}
+ 	irq = platform_get_irq(pdev, 0);
+-	if (irq)
++	if (irq > 0)
+ 		irq_set_irq_type(irq, IRQ_TYPE_EDGE_RISING);
++	else if (irq < 0)
++		return irq;
++	else
++		return -EINVAL;
  
- 	acdev->pbase = res->start;
- 	acdev->vbase = devm_ioremap_nocache(&pdev->dev, res->start,
+ 	/* Setup expansion bus chip selects */
+ 	*data->cs0_cfg = data->cs0_bits;
 -- 
 2.30.2
 
