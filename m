@@ -2,89 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 53E4338B4C1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF74C38B4D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234195AbhETQ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:59:48 -0400
-Received: from mail-pf1-f177.google.com ([209.85.210.177]:44810 "EHLO
-        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234418AbhETQ67 (ORCPT
+        id S235736AbhETRBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:01:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234382AbhETRAf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:58:59 -0400
-Received: by mail-pf1-f177.google.com with SMTP id 22so12413663pfv.11;
-        Thu, 20 May 2021 09:57:38 -0700 (PDT)
+        Thu, 20 May 2021 13:00:35 -0400
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CEEC06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:59:10 -0700 (PDT)
+Received: by mail-qv1-xf2b.google.com with SMTP id u33so8949487qvf.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:59:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5BNLluTPcpkr8B4gIUADQZy/9CuaYtTWeWTH5QovX+s=;
+        b=URFz5RSgPPV/kvOGMsVL6l2dntqBGNJf3Y8pmFmuSfDqseNkAsiHUFxv/3ls17MO/E
+         rio/jp+21iMGgpc1dU/NrdDM+lcCkQpGn0sMYMkcM/fDFagR3QmrcjqFzPTMVSTzmEUQ
+         XnbWrNLpKUVDB2zBvvs/IDKQ+Y9TX1il2WrNZiAzo7rzjI+MAo7SKScJ4Qk+WiJHoUwg
+         lCf0rGcMN+EBHumAdH2bCzPzrRnjzm/o+irbR2Sgkx6KkDh3SE+fGiBgbInkOOyDdD1L
+         qRSec19A716uMhBkgaXD6lgBino8RfWGJhkSsbqxg108L7EwUH4rWNYzOTjWWVfr1t7A
+         rDZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jLPo0GB3A2MoBZjU1iN/tZ1ti56h7RK68caLrB/74lo=;
-        b=b46D5DAIRmxCCm8Mj78SXEJ/X9uPFlHirqwFQ4aGm/wMbdj3TmaB3DPs3wQrSZaxbK
-         cwFIqMjx3qDdzmscT7WiP0TSquHb4p+ban+T7hWrKShvR5rTOwy3ANk65XKxD78zmkJ5
-         ziAkP20Yn7SNsMOjVc+P/2MJXstqD2GZ48cfHq2eKjXJQRL+VK1K4VspH+0K+cTa2EOw
-         Y1rB0czY+fRsJwjfpjSyrrGHrzKB2OkOaXuUH+sDLudaqoWCh6da4g+1XO2NZuVBORkD
-         j1HAOxWIs6Y8w4n1dmXJvXZwutmBPVT9s/Z7gT2fQt614xb78oK05M6cLNkSAcpb3rQf
-         dEUw==
-X-Gm-Message-State: AOAM530iNepWp6VFJgLpq5gRc11KCvvHWwJnq1Rk5SZ8lbjSqITZyx+w
-        nlKrlLkLh8C8Vyp5WHpxXvc=
-X-Google-Smtp-Source: ABdhPJzQ764raH3JeUb3X+DRnbbP8JSaUQs6h4uV476RdeXIRYMfHF9TNhAAxjxJLnDlTTgPF9CPPg==
-X-Received: by 2002:a05:6a00:acb:b029:2dc:db73:d44c with SMTP id c11-20020a056a000acbb02902dcdb73d44cmr5771286pfl.28.1621529857668;
-        Thu, 20 May 2021 09:57:37 -0700 (PDT)
-Received: from ?IPv6:2601:647:4000:d7:9549:3d1e:fcc5:81d1? ([2601:647:4000:d7:9549:3d1e:fcc5:81d1])
-        by smtp.gmail.com with ESMTPSA id w123sm2301648pfw.151.2021.05.20.09.57.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 09:57:36 -0700 (PDT)
-Subject: Re: [PATCH] scsi: core: Cap shost cmd_per_lun at can_queue
-To:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ming.lei@redhat.com
-References: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
- <988856ad-8e89-97e4-f8fe-54c1ca1b4a93@acm.org>
- <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <439c6fb8-3799-bfae-7f44-9f8c26a7bf79@acm.org>
-Date:   Thu, 20 May 2021 09:57:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5BNLluTPcpkr8B4gIUADQZy/9CuaYtTWeWTH5QovX+s=;
+        b=mGXiob46HIVz+69maSycvy1xrqb5sUFsgcHJ097ZXA5rFBNgBFSfjJp2R1JmOwBhyh
+         YVtpUaRJdv7EImkonXLu/RyE7orj0qCtCV2YSZa70zdwcqg7f5zNLYInXBrgVrlpaooO
+         0CYkeL9e+sQKrnK7qY8zoS6rLkoSgXRFc7MWvIEoMaF7utGQISlgQuay+7kQVKtn5O6P
+         do76Y1wxdfnIfsmO9scur9H5WqmuKV8AH44G7PxqANvYCSe1v/CL1BrffLMcnhLAYEWs
+         vLXfsrg30rlLuf1k2daFTlHxtZoK6YPB04La/RGpHMxMiFQdFhBx8rP0y3IaAgDMiP9l
+         FKeg==
+X-Gm-Message-State: AOAM531Gh0PF36SX6pBhE5uNOm0C1aFH0z3W+MAYjrIKdx6RQf3BB6VR
+        E5s4nlKsgAb6sYgWpN/VfoY=
+X-Google-Smtp-Source: ABdhPJwliv8blUAUbcICceFtO9VG/0CZHjyIfJNtxoF2L0OtgJBVK6I9uRxoK5xucgC1rDohuIchOw==
+X-Received: by 2002:a0c:ca0c:: with SMTP id c12mr6854939qvk.47.1621529948974;
+        Thu, 20 May 2021 09:59:08 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id h8sm2128602qtp.46.2021.05.20.09.59.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 09:59:08 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 May 2021 12:59:07 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Suleiman Souhlal <suleiman@google.com>
+Subject: Re: [PATCH] wq: handle VM suspension in stall detection
+Message-ID: <YKaVW0WVu317LP7L@slm.duckdns.org>
+References: <20210520101422.660054-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520101422.660054-1-senozhatsky@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 9:41 AM, John Garry wrote:
-> On 20/05/2021 16:57, Bart Van Assche wrote:
->> In SCSI header files a mix of int, short and unsigned int is used for
->> cmd_per_lun and can_queue. How about changing the types of these two
->> member variables in include/scsi/*h into u16?
-> I don't mind doing that, but is there any requirement for can_queue to
-> not be limited to 16b?
+On Thu, May 20, 2021 at 07:14:22PM +0900, Sergey Senozhatsky wrote:
+> If VCPU is suspended (VM suspend) in wq_watchdog_timer_fn() then
+> once this VCPU resumes it will see the new jiffies value, while it
+> may take a while before IRQ detects PVCLOCK_GUEST_STOPPED on this
+> VCPU and updates all the watchdogs via pvclock_touch_watchdogs().
+> There is a small chance of misreported WQ stalls in the meantime,
+> because new jiffies is time_after() old 'ts + thresh'.
+> 
+> wq_watchdog_timer_fn()
+> {
+> 	for_each_pool(pool, pi) {
+> 		if (time_after(jiffies, ts + thresh)) {
+> 			pr_emerg("BUG: workqueue lockup - pool");
+> 		}
+> 	}
+> }
+> 
+> Save jiffies at the beginning of this function and use that value
+> for stall detection. If VM gets suspended then we continue using
+> "old" jiffies value and old WQ touch timestamps. If IRQ at some
+> point restarts the stall detection cycle (pvclock_touch_watchdogs())
+> then old jiffies will always be before new 'ts + thresh'.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Maybe I'm missing something but it is not clear to me why different
-structures in the SCSI headers use different data types for can_queue
-and cmd_per_lun?
+Applied to wq/for-5.13-fixes.
 
-$ git grep -nHEw '(cmd_per_lun|can_queue);' include/scsi
-include/scsi/scsi_device.h:318:	unsigned int		can_queue;
-include/scsi/scsi_host.h:372:	int can_queue;
-include/scsi/scsi_host.h:425:	short cmd_per_lun;
-include/scsi/scsi_host.h:612:	int can_queue;
-include/scsi/scsi_host.h:613:	short cmd_per_lun;
+Thanks.
 
-> It seems intentional that can_queue is int and cmd_per_lun is short.
-
-Intentional? It is not clear to me why? Even high-performance drivers
-like iSER and SRP set can_queue by default to a value that fits well in
-a 16-bit variable (512 and 64 respectively). The highest value that I
-found after a quick search is the following:
-
- #define ISCSI_TOTAL_CMDS_MAX		4096
-
-Thanks,
-
-Bart.
+-- 
+tejun
