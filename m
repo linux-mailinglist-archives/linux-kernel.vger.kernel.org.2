@@ -2,97 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6ED38B57B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:50:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2842638B57C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:50:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235433AbhETRvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:51:31 -0400
-Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:44159 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbhETRva (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:51:30 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d10 with ME
-        id 75q52500B21Fzsu035q6DT; Thu, 20 May 2021 19:50:07 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 20 May 2021 19:50:07 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH] scsi: sni_53c710: Fix a resource leak in an error
- handling path
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        James.Bottomley@SteelEye.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <5a97774020847f6b63e161197254d15ef1d786ea.1621485792.git.christophe.jaillet@wanadoo.fr>
- <20210520150641.GA22843@alpha.franken.de>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <37ec6fe9-170f-c282-465e-6ae7d69e623e@wanadoo.fr>
-Date:   Thu, 20 May 2021 19:50:05 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S235435AbhETRwI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:52:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232346AbhETRwF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:52:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7A56613E8;
+        Thu, 20 May 2021 17:50:40 +0000 (UTC)
+Date:   Thu, 20 May 2021 18:50:38 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 4/8] arm64: kvm: Introduce MTE VM feature
+Message-ID: <20210520175037.GG12251@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-5-steven.price@arm.com>
+ <20210520115426.GB12251@arm.com>
+ <5f0996d6-0a6e-ebcd-afcd-8290faba6780@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210520150641.GA22843@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5f0996d6-0a6e-ebcd-afcd-8290faba6780@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 20/05/2021 à 17:06, Thomas Bogendoerfer a écrit :
-> On Thu, May 20, 2021 at 06:44:25AM +0200, Christophe JAILLET wrote:
->> After a successful 'NCR_700_detect()' call, 'NCR_700_release()' must be
->> called to release some DMA related resources, as already done in the
->> remove function.
->>
->> Fixes: c27d85f3f3c5 ("[SCSI] SNI RM 53c710 driver")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/scsi/sni_53c710.c | 1 +
->>   1 file changed, 1 insertion(+)
->>
->> diff --git a/drivers/scsi/sni_53c710.c b/drivers/scsi/sni_53c710.c
->> index 678651b9b4dd..f6d60d542207 100644
->> --- a/drivers/scsi/sni_53c710.c
->> +++ b/drivers/scsi/sni_53c710.c
->> @@ -98,6 +98,7 @@ static int snirm710_probe(struct platform_device *dev)
->>   
->>    out_put_host:
->>   	scsi_host_put(host);
->> +	NCR_700_release(host);
+On Thu, May 20, 2021 at 04:05:46PM +0100, Steven Price wrote:
+> On 20/05/2021 12:54, Catalin Marinas wrote:
+> > On Mon, May 17, 2021 at 01:32:35PM +0100, Steven Price wrote:
+> >> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> >> index c5d1f3c87dbd..8660f6a03f51 100644
+> >> --- a/arch/arm64/kvm/mmu.c
+> >> +++ b/arch/arm64/kvm/mmu.c
+> >> @@ -822,6 +822,31 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
+> >>  	return PAGE_SIZE;
+> >>  }
+> >>  
+> >> +static int sanitise_mte_tags(struct kvm *kvm, unsigned long size,
+> >> +			     kvm_pfn_t pfn)
+> >> +{
+> >> +	if (kvm_has_mte(kvm)) {
+> >> +		/*
+> >> +		 * The page will be mapped in stage 2 as Normal Cacheable, so
+> >> +		 * the VM will be able to see the page's tags and therefore
+> >> +		 * they must be initialised first. If PG_mte_tagged is set,
+> >> +		 * tags have already been initialised.
+> >> +		 */
+> >> +		unsigned long i, nr_pages = size >> PAGE_SHIFT;
+> >> +		struct page *page = pfn_to_online_page(pfn);
+> >> +
+> >> +		if (!page)
+> >> +			return -EFAULT;
+> > 
+> > IIRC we ended up with pfn_to_online_page() to reject ZONE_DEVICE pages
+> > that may be mapped into a guest and we have no idea whether they support
+> > MTE. It may be worth adding a comment, otherwise, as Marc said, the page
+> > wouldn't disappear.
 > 
-> shouldn't this done before the scsi_host_put() to avoid a use after free ?
-
-I did it this way because remove function are:
-    scsi_remove_host
-    NCR_700_release
-
-The other reason was to free resources in the reverse order than allocation.
-But this logic does'nt work in all cases.
-
-> lasi700.c has the same problem.
-
-and a400t.c and bvme6000_scsi.c and mvme16x_scsi.c and sim710.c and 
-zorro7xx.c.
-That is to say all drivers that use NCR_700_detect().
-
-That is why I'm unsure with my patch. It is unusual to have ALL users 
-wrong. It is more likely that I missed something and that the code is 
-correct.
-
-I also don't fully understand why we use 'scsi_host_put' in some place 
-and 'scsi_remove_host' in remove functions.
-Referenced managed resources sometimes have the needed mechanism to 
-automagically release some resource.
-
-> And it looks like NCR_700_detect() will leak
-> dma memory, if scsi_host_alloc() failed.
-
-Agreed. And same if scsi_add_host fails at the end of the function.
-
+> I'll add a comment.
 > 
-> Thomas.
+> >> +
+> >> +		for (i = 0; i < nr_pages; i++, page++) {
+> >> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> >> +				mte_clear_page_tags(page_address(page));
+> > 
+> > We started the page->flags thread and ended up fixing it for the host
+> > set_pte_at() as per the first patch:
+> > 
+> > https://lore.kernel.org/r/c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com
+> > 
+> > Now, can we have a race between the stage 2 kvm_set_spte_gfn() and a
+> > stage 1 set_pte_at()? Only the latter takes a lock. Or between two
+> > kvm_set_spte_gfn() in different VMs? I think in the above thread we
+> > concluded that there's only a problem if the page is shared between
+> > multiple VMMs (MAP_SHARED). How realistic is this and what's the
+> > workaround?
+> > 
+> > Either way, I think it's worth adding a comment here on the race on
+> > page->flags as it looks strange that here it's just a test_and_set_bit()
+> > while set_pte_at() uses a spinlock.
+> > 
 > 
+> Very good point! I should have thought about that. I think splitting the
+> test_and_set_bit() in two (as with the cache flush) is sufficient. While
+> there technically still is a race which could lead to user space tags
+> being clobbered:
+> 
+> a) It's very odd for a VMM to be doing an mprotect() after the fact to
+> add PROT_MTE, or to be sharing the memory with another process which
+> sets PROT_MTE.
+> 
+> b) The window for the race is incredibly small and the VMM (generally)
+> needs to be robust against the guest changing tags anyway.
+> 
+> But I'll add a comment here as well:
+> 
+> 	/*
+> 	 * There is a potential race between sanitising the
+> 	 * flags here and user space using mprotect() to add
+> 	 * PROT_MTE to access the tags, however by splitting
+> 	 * the test/set the only risk is user space tags
+> 	 * being overwritten by the mte_clear_page_tags() call.
+> 	 */
 
+I think (well, I haven't re-checked), an mprotect() in the VMM ends up
+calling set_pte_at_notify() which would call kvm_set_spte_gfn() and that
+will map the page in the guest. So the problem only appears between
+different VMMs sharing the same page. In principle they can be
+MAP_PRIVATE but they'd be CoW so the race wouldn't matter. So it's left
+with MAP_SHARED between multiple VMMs.
+
+I think we should just state that this is unsafe and they can delete
+each-others tags. If we are really worried, we can export that lock you
+added in mte.c.
+
+-- 
+Catalin
