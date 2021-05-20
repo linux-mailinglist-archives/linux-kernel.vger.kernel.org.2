@@ -2,91 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A8B38B12B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C083038B121
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:09:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243752AbhETOLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:11:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243905AbhETOKA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:10:00 -0400
-Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD162C06138A;
-        Thu, 20 May 2021 07:07:35 -0700 (PDT)
-Received: by mail-pj1-x1033.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso4714962pjq.3;
-        Thu, 20 May 2021 07:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=WHenRI2ddGm4OY+8yUrmHOAW4Grwa2o2iMUUu3tmcd4=;
-        b=qK8LqC/+/idRQWyEJXQQVSzpQtSdtzGRuHy9qk++TsJf7VOxoTTzDIt+s4mzRpTjXy
-         0tsEFdLn72WXDrZrUreVpk/6OJJNiUpPwyc259CiQe90Q7nUYa2dVHKwUqCiTe43ndU2
-         jAXiZgUnBuRgB7fLFT+X53RJJLlcMJdX5hEcxcDU9Xy6q33PBgFowttZeBDj2mq0YVHX
-         qU3250MZK4aMmfR9h5gbthtfviSHOUcvyGo7rDoZQ9vyKRd4/KiQ4dWxRJH+Efxn4++0
-         /TPiP7YTqjERLFX3trkXkdb4aYwa+pHD6LHDqUJLl8Gnbm896PO+tlFKM/oq39Y+dzSA
-         5xHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=WHenRI2ddGm4OY+8yUrmHOAW4Grwa2o2iMUUu3tmcd4=;
-        b=WCvDaxnrBnVwHW6WB0ht95oJ9Nn4iYMYPnDoXMxltRgf8KdR8h6dM79Ors2xSI+38/
-         0htv4QkyOtapg20U1WPsy8aGG+mynu6lFKl81cWrpUnrq6HX3QhdduOFgtEqzdGuHNbT
-         BR1FbxoUGgsa6QZFVrp0VK/E8UMG2qBYf+zcdoGjHUEZ5Iw5yTxHUIrqEsWvwmDa7aJM
-         vftf75SM5L0F2sEj7Bw9dV17HKzOxqstk5gvhNN6U+48fbPtmjjNylMecdBiXr0yg0dt
-         7FBu8RocAP833fOYnWKYqaeSAF/3ms02enjhlLquX8zOJmqhhjXOG1rUrMBxWmgekPYC
-         xrSA==
-X-Gm-Message-State: AOAM5329draQ+jn1yOQkJpZZiSeSrAmNU6TWJFrGAWUOAhut8PL7rVHg
-        WSG4Y1FmJxD6dzz2rsW3t366B2J6uwXYRxBc0kc=
-X-Google-Smtp-Source: ABdhPJzRiTKiHbi+57XIAC/XXmhsMKQm6/kV4++5/tbtyGvbZcuXTr0ljTqz/2fnfT8c1ajTSn2k/w==
-X-Received: by 2002:a17:903:3106:b029:e9:15e8:250e with SMTP id w6-20020a1709033106b02900e915e8250emr6049873plc.33.1621519654806;
-        Thu, 20 May 2021 07:07:34 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id w74sm2063265pfd.209.2021.05.20.07.07.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 07:07:34 -0700 (PDT)
-Message-ID: <60a66d26.1c69fb81.1def6.6ee8@mx.google.com>
-Date:   Thu, 20 May 2021 07:07:34 -0700 (PDT)
-X-Google-Original-Date: Thu, 20 May 2021 14:07:32 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/47] 5.10.39-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
+        id S243640AbhETOKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:10:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243637AbhETOJF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:09:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DC236109F;
+        Thu, 20 May 2021 14:07:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621519664;
+        bh=O+hLBEJ2ZIQGEZpp1BxNoPTa8xc8xbPH2+SrmZT9mEc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=VHrlt+6mt4eQGpcAGlYuXuXwOaSkhA8QyeMNdN4DSeWX3yZ7ogpy9MfG8Kdce+hQD
+         X2H5pEp3zaj8Yq7/2+lfcorzigNB91cO5z1/keCnwnc2N8Oefy6B2uYrHnG6AF7hE+
+         PT/GW7SJ/Be0OwYdRp1qyVy7S9hZlHddAJRUwwsUV9El3X2tSlnG3Pm3p06k2poSQS
+         PGh/EuT41/NfwwtHjlqn4h3D6C3ZsjgR5V7oHQhll8bzSRsEzRy7nGovUtQsk/4Jzn
+         +bWSnMv+57IHCPafwzYq0u85A8Wb+TCqSdyRviXIdNNzYHM2jsOnNcOfghehjL5ZAL
+         hnqB9Gi+1xNrA==
+Date:   Thu, 20 May 2021 23:07:38 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH] tools/bootconfig: Fix a build error accroding to
+ undefined fallthrough
+Message-Id: <20210520230738.605c92033e16c13b86f7c99c@kernel.org>
+In-Reply-To: <162087519356.442660.11385099982318160180.stgit@devnote2>
+References: <162087519356.442660.11385099982318160180.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 11:21:58 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.39 release.
-> There are 47 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi Steve,
+
+Can you pick at least this fix since it is a critical bug?
+
+Thank you,
+
+On Thu, 13 May 2021 12:06:33 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Since the "fallthrough" is defined only in the kernel, building
+> lib/bootconfig.c as a part of user-space tools causes a build
+> error.
 > 
-> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> Anything received after that time might be too late.
+> Add a dummy fallthrough to avoid the build error.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.39-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
+> Cc: stable@vger.kernel.org
+> Fixes: 4c1ca831adb1 ("Revert "lib: Revert use of fallthrough pseudo-keyword in lib/"")
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  tools/bootconfig/include/linux/bootconfig.h |    4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> thanks,
-> 
-> greg k-h
+> diff --git a/tools/bootconfig/include/linux/bootconfig.h b/tools/bootconfig/include/linux/bootconfig.h
+> index 078cbd2ba651..de7f30f99af3 100644
+> --- a/tools/bootconfig/include/linux/bootconfig.h
+> +++ b/tools/bootconfig/include/linux/bootconfig.h
+> @@ -4,4 +4,8 @@
+>  
+>  #include "../../../../include/linux/bootconfig.h"
+>  
+> +#ifndef fallthrough
+> +# define fallthrough
+> +#endif
+> +
+>  #endif
 > 
 
-5.10.39-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
 
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
