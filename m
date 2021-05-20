@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29951389E99
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:03:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B1B389E9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:05:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231130AbhETHEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:04:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhETHEg (ORCPT
+        id S230474AbhETHHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:07:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25585 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230383AbhETHHE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:04:36 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EFFC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:03:14 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id n2so23553107ejy.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:03:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wZuC9MkEtBjxIYtF7kqVL9Ifpq76zVZvowCEWkRzdAs=;
-        b=isU1Bu0LYOcmwo2kZ+cxn6aLNagpy/yAVpavSdt0QoSh70Zxzbz5Cbo9vgX0zVM+vf
-         tJNWmzAPB2voZMyxrgD0fjafieA+/5wH0Mv8ATKJmh53aalUm9SUQODFqqVPbg+PUdXo
-         H9R7EQmWsf3D+ZUsHmp9gvDaJl1QtHo6qQ2vRr8rGBd+2OjYWeVB9bT0M1QVLkN5C8NS
-         CmrUJFwCufbKYOtmvdGOBvbocV6hZEeNWi65kA9s7cR0hY6RVWe/Ei7CHfzZxWR5wnd8
-         oE71NvDhg8fGP9ZL2M9OYpa+NfrMb0l/lEZ9YFBFN741IDnOTCnHVcEs0BWYU0gIhGb4
-         /1xg==
+        Thu, 20 May 2021 03:07:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621494343;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KaliF5eDoHyShQ6pVk6nswV0QmddLwdx+Te1ge1ipyU=;
+        b=EJy833z/OS0DN4fNa0ISFYTp82wigHe5/PgOlw2aQqdeg1I36YfMz44qHTON6E7DeGTSdD
+        0+/bDKkbO9OS/g5FM6iNViKyUaLZW73E34avway0ND9Gvcm34i1jNFyOFIQ/HJJz1KxQwb
+        QrfJqugR4whwg5p6MZVakXevup/O0A8=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-FrH6OUSIMTyq-1MPnwbTlA-1; Thu, 20 May 2021 03:05:42 -0400
+X-MC-Unique: FrH6OUSIMTyq-1MPnwbTlA-1
+Received: by mail-ed1-f70.google.com with SMTP id s20-20020a0564025214b029038752a2d8f3so9040332edd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:05:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wZuC9MkEtBjxIYtF7kqVL9Ifpq76zVZvowCEWkRzdAs=;
-        b=MoggTl+u4yignDU/XjUwQnHWAQ7kNFqOXR/b5oneCxmdP9jtwFpCxSFu/8vA+9mefm
-         FaDj6xg+1vVKNqIUILKKCdXxdKWs0IPgyKQLYZeW/k2UdjnOORfKdpEK1qXfMlq1V/Lg
-         kUyfQRgPOkE5wXuPGhNaL3vBbS//Yq4lG8onCTvYQ7tUUOOQBmsQDXWKQHtrCtExBq//
-         1/YejAMvEHVYNC23PAj0V+9hvpjiST6TmyG7TUfgt9maAlg3t+/+x3vxMHQCdsIKjwTU
-         kHaL8QFSUDnetJNXfOVfHFyfNLpnlqnz9hgaBIeyDAHXE6LvE39/SkknBdBfqvn3UD2c
-         USaA==
-X-Gm-Message-State: AOAM533oNL+CxuajkjUasTGssnmiIzpQZaYX1iJjJAGzbquNYx9B6K8n
-        EaRvZk2aIGqeIR4WfJ2nIhDrQjOFfT7Y2v73rmxk
-X-Google-Smtp-Source: ABdhPJxdx8w+fCqswSdKs59iVuZd4vAf9uGIN8nGG/abyN54M6HaotKLEQyMezCx9lo1kEngrpWm4QyOMlEiGHNAl0E=
-X-Received: by 2002:a17:906:c211:: with SMTP id d17mr3165937ejz.247.1621494192590;
- Thu, 20 May 2021 00:03:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-12-xieyongji@bytedance.com>
- <YKYBle/F8aOgHO9p@zeniv-ca.linux.org.uk>
-In-Reply-To: <YKYBle/F8aOgHO9p@zeniv-ca.linux.org.uk>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 20 May 2021 15:03:01 +0800
-Message-ID: <CACycT3vTvdJN4qnp=O8E5fxR15evMexzsK+V_uFT0LZkRSCitw@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in Userspace
-To:     Al Viro <viro@zeniv.linux.org.uk>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KaliF5eDoHyShQ6pVk6nswV0QmddLwdx+Te1ge1ipyU=;
+        b=i52xyjisodzRT3R1RaQwfkdYolXw4xF/S4f7hBFSwAWgQuhFGGkLJPMoFxqgaeGGI+
+         s8xRylNTxxlb70tlb9jiRpNF9Dy2VQYkqrD5+7jAREnRQs0yMzo5Kmrb+GyH/jX5ETzN
+         GElKeQ7VT9RU+48lQnIW5CpxLD6htucRvHfWw9SRniC9OLmEW/iDeNxqjUyejx4pegyY
+         4Oqn4FWmUUDqpku14UmzqQnceAxqWCLfRhkfL8egPakDkRivvc95FAtOMSeXBp8VR83M
+         C72u9VCi5mwOt1Wo13QpgY4j1eSB37/7L9yikCpoRr1Ub2u2euD0McV/XcZDsXFIWjWV
+         zNUw==
+X-Gm-Message-State: AOAM532OUxPbIPhTDQsHSLCGp2+G5smCDfrA+bnZElFOGs/Z9M8NlpoK
+        eZjLjsrgz48iBnSTef5q0lTX/Up1ixuvYhkamDDfa/T2HZFW6X5m73R3SOn4UhrKCmzcZ7I2KGP
+        nO0hSmYFL3hAQkO96o6Ti/BnJ
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr3445593eds.166.1621494340849;
+        Thu, 20 May 2021 00:05:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxv5JoSB/zlPpuQMN8GuzvFJPHkuHmpfxSZN0QQJmqGyUr9a1onbpIw9MzbZAOgIOc+t4fM8A==
+X-Received: by 2002:aa7:c7d5:: with SMTP id o21mr3445576eds.166.1621494340688;
+        Thu, 20 May 2021 00:05:40 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id m10sm987322edp.48.2021.05.20.00.05.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 00:05:40 -0700 (PDT)
+Date:   Thu, 20 May 2021 09:05:38 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Wei Yongjun <weiyongjun1@huawei.com>
 Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Hulk Robot <hulkci@huawei.com>
+Subject: Re: [PATCH -next] vp_vdpa: fix error return code in vp_vdpa_probe()
+Message-ID: <20210520070538.jniunk2rr3nyttuw@steredhat>
+References: <20210519141646.3057093-1-weiyongjun1@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210519141646.3057093-1-weiyongjun1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 2:28 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Wed, May 19, 2021 at 02:16:46PM +0000, Wei Yongjun wrote:
+>Fix to return negative error code -ENOMEM from the error handling
+>case instead of 0, as done elsewhere in this function.
 >
-> On Mon, May 17, 2021 at 05:55:12PM +0800, Xie Yongji wrote:
+>Fixes: 11d8ffed00b2 ("vp_vdpa: switch to use vp_modern_map_vq_notify()")
+>Reported-by: Hulk Robot <hulkci@huawei.com>
+>Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>---
+> drivers/vdpa/virtio_pci/vp_vdpa.c | 1 +
+> 1 file changed, 1 insertion(+)
 >
-> > +     case VDUSE_IOTLB_GET_FD: {
-> > +             struct vduse_iotlb_entry entry;
-> > +             struct vhost_iotlb_map *map;
-> > +             struct vdpa_map_file *map_file;
-> > +             struct vduse_iova_domain *domain = dev->domain;
-> > +             struct file *f = NULL;
-> > +
-> > +             ret = -EFAULT;
-> > +             if (copy_from_user(&entry, argp, sizeof(entry)))
-> > +                     break;
->
->                         return -EFAULT;
-> surely?
-> > +
-> > +             ret = -EINVAL;
-> > +             if (entry.start > entry.last)
-> > +                     break;
->
-> ... and similar here, etc.
->
-
-OK.
-
-> > +             spin_lock(&domain->iotlb_lock);
-> > +             map = vhost_iotlb_itree_first(domain->iotlb,
-> > +                                           entry.start, entry.last);
-> > +             if (map) {
-> > +                     map_file = (struct vdpa_map_file *)map->opaque;
-> > +                     f = get_file(map_file->file);
-> > +                     entry.offset = map_file->offset;
-> > +                     entry.start = map->start;
-> > +                     entry.last = map->last;
-> > +                     entry.perm = map->perm;
-> > +             }
-> > +             spin_unlock(&domain->iotlb_lock);
-> > +             ret = -EINVAL;
-> > +             if (!f)
-> > +                     break;
-> > +
-> > +             ret = -EFAULT;
-> > +             if (copy_to_user(argp, &entry, sizeof(entry))) {
-> > +                     fput(f);
-> > +                     break;
-> > +             }
-> > +             ret = receive_fd(f, perm_to_file_flags(entry.perm));
-> > +             fput(f);
-> > +             break;
->
-> IDGI.  The main difference between receive_fd() and plain old
-> get_unused_fd_flags() + fd_install() is __receive_sock() call.
-> Which does nothing whatsoever in case of non-sockets.  Can you
-> get a socket here?
+>diff --git a/drivers/vdpa/virtio_pci/vp_vdpa.c b/drivers/vdpa/virtio_pci/vp_vdpa.c
+>index c76ebb531212..e5d92db728d3 100644
+>--- a/drivers/vdpa/virtio_pci/vp_vdpa.c
+>+++ b/drivers/vdpa/virtio_pci/vp_vdpa.c
+>@@ -442,6 +442,7 @@ static int vp_vdpa_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+> 			vp_modern_map_vq_notify(mdev, i,
+> 						&vp_vdpa->vring[i].notify_pa);
+> 		if (!vp_vdpa->vring[i].notify) {
+>+			ret = -ENOMEM;
+> 			dev_warn(&pdev->dev, "Fail to map vq notify %d\n", i);
+> 			goto err;
+> 		}
 >
 
-Actually what I want here is the security_file_receive() hook in receive_fd().
+Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
 
-Thanks,
-Yongji
