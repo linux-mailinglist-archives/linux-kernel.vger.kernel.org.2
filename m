@@ -2,158 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E25638ADC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F6938ADCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235166AbhETMQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:16:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52298 "EHLO
+        id S232068AbhETMQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:16:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231694AbhETMQI (ORCPT
+        with ESMTP id S232048AbhETMQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:16:08 -0400
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB455C00366E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:56:43 -0700 (PDT)
-Received: by mail-io1-xd31.google.com with SMTP id z24so16112805ioi.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:56:43 -0700 (PDT)
+        Thu, 20 May 2021 08:16:12 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD430C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:57:30 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id a7so113366plh.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:57:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZggdLxEioYSmHsAN6HdiHwkaCdjjLY0f9eAD0updRrw=;
-        b=gwOq7/3pH8V/2gE94ERMNXP3mpo89c0EaBoRdYiv3gQh0NZ5AsxXUlDYWYADOZtuiZ
-         AlzMofkhhVaVjJ70OpmgP0FVwr7nsJnfFINio4WNaXSn3f5ULLZUP3fRrz6qWMb+4xnr
-         7+bOE3u0k24UY8a0FiD3P94RywWnjtlyjXWaA=
+        bh=PlV0ND2zMSHfNqzEpFSjKgb1Ow4U28pqFWjx1oA2ZI8=;
+        b=BYZSBLouIgG4roXRxQcWWuJimWgriJIdH1kbtNbl8WjMOcvjShw3+qTxXf7yDjxjRw
+         TuMJKaWlgb33vo8JffUd/G1Wivv9JHXi1KKaeh8S2YX1Yyl9kNwgDxuQ7p0dAP+UzVYS
+         3pc64XxVU33PaEzebd7oX6QQ8UF3hKt0ciOx8yi6Ci9XX4YxEerxDDWHDerw3cmz8Zv+
+         a0Uj4YgxKlxrdpJCI4DOTVdzd80YNL4ArB4vIpCbHBjZo5wQA5yRuLfVaptNpVqKl8K5
+         u/QBbXWx1/NM0rGtjw9raSNbbCwiwraBRm0lQYHSZzESZxnS+IRoYvyb2OiXZEDx26DK
+         ECWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZggdLxEioYSmHsAN6HdiHwkaCdjjLY0f9eAD0updRrw=;
-        b=p79/wslTSGbOsbObszlH9e6dZV0cNqkIC8cqpm0MtkXFQS2M6deDS9Fi/3C7y+uFhQ
-         jNOerDL62EWXagCCjph9nJsYp7/W6ucvmIrd2MuSg2VkuzxA5OzH5Yi4Gl9RFYK0oM5q
-         4Q+56z9jpIV5D3ZRnqMah368ZdpkfGzfSCa7QTPxObfBA31UrRqKy5KKbI/cPKMFOQtu
-         Tw5Th6phYmzWfDJZdinm9bNxlXiNFDHobo06QB2rjZj+SN/mGRQSDM14zmsMmfILEjMj
-         3mQyYxqVKCV6qwagYsIbC8+TfLaAz0RYduVsXlpacUab/ddNCOw9k1ioyEM8lD1jRBx4
-         Z9mg==
-X-Gm-Message-State: AOAM531FmG+v34R1eJWCFdvS/blT/rXSJ3/AksHCKSVNpfjZOn1rMgqw
-        rxCL/FLhm7YDxaooF8aJPmbLGPAo/0CR8Jwkr4G7yw==
-X-Google-Smtp-Source: ABdhPJwsRXryrVBLrnfEAhDRXkJWRvO5y68qKTU37qReKB6ekDFRs2lFm7STxXVQpa9ZsaRZSseo6EjW/Uv6Q9RgDH0=
-X-Received: by 2002:a5e:c742:: with SMTP id g2mr4887060iop.40.1621508202940;
- Thu, 20 May 2021 03:56:42 -0700 (PDT)
+        bh=PlV0ND2zMSHfNqzEpFSjKgb1Ow4U28pqFWjx1oA2ZI8=;
+        b=kllqhKQFp3Ij7t+WmhaIoyhudLxcS3qXwfRsPQI7AuWUGcZy6wJrVoh2ccludbWo4y
+         PYWDv05zGLMGe1StPIYc7ezmgXAENfdqSqOkzPh91Y8a08fQ6PKowoyneRgK6RKg6KmT
+         HFU9nOsQyfHZN8XSX41Ko/eQxZuXO+UMYdp3EgM3y9oa0grLDv0BalXNPsHM1GwXqF3U
+         mVhofTnyNCJE55fr3lM+3Ci8Vs6dLFFMsU3KGSsxlX8lGcCvTDPUIZbz05zXAFx5Ni2b
+         Br7YFuMroe7qSJYlgFOruM50Ub5xXkUGvaYcEMEqqwBqzsEm2O2ynn/Mj3UrU3XdlXTI
+         LXpA==
+X-Gm-Message-State: AOAM530xGHmpWTM4u8+M20Gxw5jESCOA8f5g95R5V4yH2wwUqPhWL1aP
+        RrTxapz3vfLQw2wicPaGCD3dx4D7ME7gLRxZbW8koInjqVzN6g==
+X-Google-Smtp-Source: ABdhPJxGZPs13PLXuzze7/vkQeHoAbJomuHm3IrrZMyl4A5feCJsHjkf8pa88MmpcuR6RrfFqIkrob0bkH4c+26E8pQ=
+X-Received: by 2002:a17:902:b70f:b029:f4:5445:cd9f with SMTP id
+ d15-20020a170902b70fb02900f45445cd9fmr5339434pls.32.1621508250299; Thu, 20
+ May 2021 03:57:30 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210507131406.2224177-1-hsinyi@chromium.org>
-In-Reply-To: <20210507131406.2224177-1-hsinyi@chromium.org>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Thu, 20 May 2021 18:56:16 +0800
-Message-ID: <CAJMQK-is=wOWGL-bETEcp=shcnrGdWFh4FbzHWCTEYjg-Zk0Dw@mail.gmail.com>
-Subject: Re: [PATCH v21 0/5] add power control in i2c
-To:     Wolfram Sang <wsa@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-i2c <linux-i2c@vger.kernel.org>,
-        Qii Wang <qii.wang@mediatek.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>
+References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-7-jonathan@marek.ca>
+In-Reply-To: <20210511180728.23781-7-jonathan@marek.ca>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 20 May 2021 12:57:18 +0200
+Message-ID: <CAG3jFytobK4CoX9hg=LFpBAW9QMeiQJJyQ2hK4YE9o44efpHqw@mail.gmail.com>
+Subject: Re: [PATCH 06/17] media: camss: csid-170: remove stray comment
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 9:14 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
 >
-> Although in the most platforms, the power of eeprom
-> and i2c are alway on, some platforms disable the
-> eeprom and i2c power in order to meet low power request.
+> This is a leftover from my original patches, it doesn't serve any purpose.
+> (it was a reminder to figure out how downstream sets a particular field in
+> the register).
 >
-> This patch add the pm_runtime ops to control power to
-> support all platforms.
+> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid-170.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
+> index 2bc695819919..3958bacd7b97 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid-170.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
+> @@ -441,7 +441,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
+>
+>         val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
+>         val |= 1 << CSI2_RX_CFG1_MISR_EN;
+> -       writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1); // csi2_vc_mode_shift_val ?
+> +       writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1);
+>
+>         val = 1 << RDI_CTRL_HALT_CMD;
+>         writel_relaxed(val, csid->base + CSID_RDI_CTRL(0));
 
-Hi maintainers,
-
-Gentle ping on the thread. (the 4th patch is already picked) Thanks.
-
-> Changes since v20:
->  - fix regulator check logic in suspend/resume.
->
-> Changes since v19:
->  - resend v19 with fix tag added.
->
-> Changes since v18:
->  - Fix a function name conflict with drivers/gpu/drm/i915/selftests/i915_gem.c
->
-> Changes since v17:
->  - Add a patch to fix unbalanced regulator disabling.
->  - Add dts patch.
->
-> Changes since v16:
->  - request regulator in device instead of in the core.
->  - control regulator only if it's provided.
->
-> Changes since v15:
->  - Squash the fix[1] for v15.
-> [1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
->
-> Changes since v14:
->  - change the return value in normal condition
->  - access the variable after NULL pointer checking
->  - add ack tag
->
-> Changes since v13:
->  - fixup some logic error
->
-> Changes since v12:
->  - rebase onto v5.7-rc1
->  - change the property description in binding
->
-> Changes since v11:
->  - use suspend_late/resume_early instead of suspend/resume
->  - rebase onto v5.6-rc1
->
-> Changes since v10:
->  - fixup some worng codes
->
-> Changes since v9:
->  - fixup build error
->  - remove redundant code
->
-> Changes since v8:
->  - fixup some wrong code
->  - remove redundant message
->
-> [... snip ...]
->
->
-> Bibby Hsieh (1):
->   i2c: core: support bus regulator controlling in adapter
->
-> Hsin-Yi Wang (4):
->   dt-binding: i2c: mt65xx: add vbus-supply property
->   i2c: mediatek: mt65xx: add optional vbus-supply
->   misc: eeprom: at24: check suspend status before disable regulator
->   arm64: dts: mt8183: add supply name for eeprom
->
->  .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  1 +
->  .../dts/mediatek/mt8183-kukui-kakadu.dtsi     |  4 +
->  .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  4 +
->  .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  4 +
->  drivers/i2c/busses/i2c-mt65xx.c               |  7 ++
->  drivers/i2c/i2c-core-base.c                   | 95 +++++++++++++++++++
->  drivers/misc/eeprom/at24.c                    |  6 +-
->  include/linux/i2c.h                           |  2 +
->  8 files changed, 121 insertions(+), 2 deletions(-)
->
-> --
-> 2.31.1.607.g51e8a6a459-goog
->
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
