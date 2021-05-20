@@ -2,325 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F2C538AE17
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D8638AE2C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:27:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhETMZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:25:15 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:40564 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231805AbhETMYs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:24:48 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KCMx5b000755;
-        Thu, 20 May 2021 07:22:59 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621513379;
-        bh=PHQEjO3386IOiR03Z3Lkca0h/KvRdaxXL9UXwhXPi2o=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=xYDuCKJwzk9DXkIKt0oKJy1kDC8kVrB97iX71+eV+xpwCeXghAg398nLBK2RI4TbF
-         gokd3VwTUrvgpL0yCRhZ8Hf3IbnjtMm3kmhSG1Tj+7zIJiYycYEfmEg8kDTG4ADXa2
-         wZKqVfrIKQVGMXw6JhRT+fvvelHjpzG1X+kuzDPM=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KCMx38004006
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 20 May 2021 07:22:59 -0500
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
- May 2021 07:22:59 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 20 May 2021 07:22:59 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KCMwdv073349;
-        Thu, 20 May 2021 07:22:59 -0500
-Date:   Thu, 20 May 2021 17:52:58 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: implement OTP erase for Winbond and
- similar flashes
-Message-ID: <20210520122256.fhkzpqmu7nxwjoqt@ti.com>
-References: <20210510202056.30000-1-michael@walle.cc>
+        id S232260AbhETM23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:28:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235459AbhETM1R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:27:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5391A6124C;
+        Thu, 20 May 2021 12:25:53 +0000 (UTC)
+Date:   Thu, 20 May 2021 13:25:50 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 3/8] arm64: mte: Sync tags for pages where PTE is
+ untagged
+Message-ID: <20210520122550.GD12251@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-4-steven.price@arm.com>
+ <20210519180610.GE21619@arm.com>
+ <3bac3a47-9f96-c7bf-e401-fdef60dcc9d8@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510202056.30000-1-michael@walle.cc>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <3bac3a47-9f96-c7bf-e401-fdef60dcc9d8@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On 10/05/21 10:20PM, Michael Walle wrote:
-> Winbond flashes with OTP support provide a command to erase the OTP
-> data. This might come in handy during development.
-
-I am not very familiar with the OTP feature. It is supposed to be "One 
-Time Programmable". So does erasing the OTP area make it programmable 
-again? Or it just erases the data and then the OTP region will forever 
-be 0xff?
-
-Because if you can erase and reprogram it, how is it OTP at all?
-
+On Thu, May 20, 2021 at 12:55:21PM +0100, Steven Price wrote:
+> On 19/05/2021 19:06, Catalin Marinas wrote:
+> > On Mon, May 17, 2021 at 01:32:34PM +0100, Steven Price wrote:
+> >> A KVM guest could store tags in a page even if the VMM hasn't mapped
+> >> the page with PROT_MTE. So when restoring pages from swap we will
+> >> need to check to see if there are any saved tags even if !pte_tagged().
+> >>
+> >> However don't check pages for which pte_access_permitted() returns false
+> >> as these will not have been swapped out.
+> >>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  arch/arm64/include/asm/pgtable.h |  9 +++++++--
+> >>  arch/arm64/kernel/mte.c          | 16 ++++++++++++++--
+> >>  2 files changed, 21 insertions(+), 4 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> >> index 0b10204e72fc..275178a810c1 100644
+> >> --- a/arch/arm64/include/asm/pgtable.h
+> >> +++ b/arch/arm64/include/asm/pgtable.h
+> >> @@ -314,8 +314,13 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+> >>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
+> >>  		__sync_icache_dcache(pte);
+> >>  
+> >> -	if (system_supports_mte() &&
+> >> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
+> >> +	/*
+> >> +	 * If the PTE would provide user space access to the tags associated
+> >> +	 * with it then ensure that the MTE tags are synchronised.  Exec-only
+> >> +	 * mappings don't expose tags (instruction fetches don't check tags).
+> >> +	 */
+> >> +	if (system_supports_mte() && pte_present(pte) &&
+> >> +	    pte_access_permitted(pte, false) && !pte_special(pte))
+> >>  		mte_sync_tags(ptep, pte);
+> > 
+> > Looking at the mte_sync_page_tags() logic, we bail out early if it's the
+> > old pte is not a swap one and the new pte is not tagged. So we only need
+> > to call mte_sync_tags() if it's a tagged new pte or the old one is swap.
+> > What about changing the set_pte_at() test to:
+> > 
+> > 	if (system_supports_mte() && pte_present(pte) && !pte_special(pte) &&
+> > 	    (pte_tagged(pte) || is_swap_pte(READ_ONCE(*ptep))))
+> > 		mte_sync_tags(ptep, pte);
+> > 
+> > We can even change mte_sync_tags() to take the old pte directly:
+> > 
+> > 	if (system_supports_mte() && pte_present(pte) && !pte_special(pte)) {
+> > 		pte_t old_pte = READ_ONCE(*ptep);
+> > 		if (pte_tagged(pte) || is_swap_pte(old_pte))
+> > 			mte_sync_tags(old_pte, pte);
+> > 	}
+> > 
+> > It would save a function call in most cases where the page is not
+> > tagged.
 > 
-> This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
-> NXP FSPI controller.
+> Yes that looks like a good optimisation - although you've missed the
+> pte_access_permitted() part of the check ;)
 
-I got the datasheet for this flash from 
-https://www.elinux.org/images/f/f5/Winbond-w25q32.pdf but it doesn't 
-seem to mention the erase OTP command (0x44).
+I was actually wondering if we could remove it. I don't think it buys us
+much as we have a pte_present() check already, so we know it is pointing
+to a valid page. Currently we'd only get a tagged pte on user mappings,
+same with swap entries.
 
+When vmalloc kasan_hw will be added, I think we have a set_pte_at() with
+a tagged pte but init_mm and high address (we might as well add a
+warning if addr > TASK_SIZE_64 on the mte_sync_tags path so that we
+don't forget).
+
+> The problem I hit is one of include dependencies:
 > 
-> Signed-off-by: Michael Walle <michael@walle.cc>
-> ---
-> Changes since v1:
->  - fixed kernel doc
+> is_swap_pte() is defined (as a static inline) in
+> include/linux/swapops.h. However the definition depends on
+> pte_none()/pte_present() which are defined in pgtable.h - so there's a
+> circular dependency.
 > 
-> There is also a patch for mtd-utils to add a small tool to issue
-> the erase:
-> https://lore.kernel.org/linux-mtd/20210510201319.25975-1-michael@walle.cc/
+> Open coding is_swap_pte() in set_pte_at() works, but it's a bit ugly.
+> Any ideas on how to improve on the below?
 > 
->  drivers/mtd/spi-nor/core.c    |  4 +-
->  drivers/mtd/spi-nor/core.h    |  4 ++
->  drivers/mtd/spi-nor/otp.c     | 73 ++++++++++++++++++++++++++++++++++-
->  drivers/mtd/spi-nor/winbond.c |  1 +
->  4 files changed, 78 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
-> index bd2c7717eb10..fac8717f651f 100644
-> --- a/drivers/mtd/spi-nor/core.c
-> +++ b/drivers/mtd/spi-nor/core.c
-> @@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
->  	return nor->controller_ops->read_reg(nor, opcode, buf, len);
->  }
->  
-> -static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-> -					    const u8 *buf, size_t len)
-> +int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-> +				     const u8 *buf, size_t len)
->  {
->  	if (spi_nor_protocol_is_dtr(nor->reg_proto))
->  		return -EOPNOTSUPP;
-> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
-> index 28a2e0be97a3..b410e4eec2fb 100644
-> --- a/drivers/mtd/spi-nor/core.h
-> +++ b/drivers/mtd/spi-nor/core.h
-> @@ -214,6 +214,7 @@ struct spi_nor_otp_ops {
->  	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
->  		     const u8 *buf);
->  	int (*lock)(struct spi_nor *nor, unsigned int region);
-> +	int (*erase)(struct spi_nor *nor, loff_t addr);
+> 	if (system_supports_mte() && pte_present(pte) &&
+> 	    pte_access_permitted(pte, false) && !pte_special(pte)) {
+> 		pte_t old_pte = READ_ONCE(*ptep);
+> 		/*
+> 		 * We only need to synchronise if the new PTE has tags enabled
+> 		 * or if swapping in (in which case another mapping may have
+> 		 * set tags in the past even if this PTE isn't tagged).
+> 		 * (!pte_none() && !pte_present()) is an open coded version of
+> 		 * is_swap_pte()
+> 		 */
+> 		if (pte_tagged(pte) || (!pte_none(pte) && !pte_present(pte)))
+> 			mte_sync_tags(old_pte, pte);
+> 	}
 
-No doc update above?
-
->  	int (*is_locked)(struct spi_nor *nor, unsigned int region);
->  };
->  
-> @@ -481,6 +482,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
->  void spi_nor_spimem_setup_op(const struct spi_nor *nor,
->  			     struct spi_mem_op *op,
->  			     const enum spi_nor_protocol proto);
-> +int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
-> +				     const u8 *buf, size_t len);
->  int spi_nor_write_enable(struct spi_nor *nor);
->  int spi_nor_write_disable(struct spi_nor *nor);
->  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
-> @@ -507,6 +510,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
->  int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
->  int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
->  			   const u8 *buf);
-> +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
->  int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
->  int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
->  
-> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
-> index 61036c716abb..d3ca73c8cc53 100644
-> --- a/drivers/mtd/spi-nor/otp.c
-> +++ b/drivers/mtd/spi-nor/otp.c
-> @@ -8,6 +8,7 @@
->  #include <linux/log2.h>
->  #include <linux/mtd/mtd.h>
->  #include <linux/mtd/spi-nor.h>
-> +#include <linux/spi/spi-mem.h>
->  
->  #include "core.h"
->  
-> @@ -111,6 +112,48 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
->  	return ret ?: written;
->  }
->  
-> +/**
-> + * spi_nor_otp_erase_secr() - erase one OTP region
-
-Nitpick: The function is called erase_secr() but the comment says erase 
-region. Please use consistent wording.
-
-> + * @nor:        pointer to 'struct spi_nor'
-> + * @addr:       offset of the OTP region to be erased
-> + *
-> + * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
-> + * used on GigaDevice and Winbond flashes.
-> + *
-> + * Return: 0 on success, -errno otherwise
-> + */
-> +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
-> +{
-> +	int ret;
-> +
-> +	ret = spi_nor_write_enable(nor);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (nor->spimem) {
-> +		struct spi_mem_op op =
-> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
-> +				   SPI_MEM_OP_ADDR(3, addr, 0),
-
-Only 3 address bytes needed? Can the OTP region ever require 4 byte 
-addressing? For example, say the flash is switched to 4 byte addressing 
-for the main region. Would it still expect 3 byte addressing for OTP 
-ops?
-
-> +				   SPI_MEM_OP_NO_DUMMY,
-> +				   SPI_MEM_OP_NO_DATA);
-> +
-> +		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
-> +
-> +		ret = spi_mem_exec_op(nor->spimem, &op);
-> +	} else {
-> +		nor->bouncebuf[2] = addr & 0xff;
-> +		nor->bouncebuf[1] = (addr >> 8) & 0xff;
-> +		nor->bouncebuf[0] = (addr >> 16) & 0xff;
-> +
-> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
-> +						       nor->bouncebuf, 3);
-
-Huh, sending address in the "data" parameter of write_reg() is strange. 
-Wouldn't you be better off using spi_nor_controller_ops_erase()? It is 
-an erase operation anyway so it should be the natural choice.
-
-This was my first thought anyway. Then I looked at 
-spi_nor_erase_sector(). It looks like controller_ops->erase is optional, 
-and the fallback is this same technique.
-
-I see a lot of similarities between this function and 
-spi_nor_erase_sector(). So you can just swap out nor->erase_opcode and 
-nor->addr_width and call that. I am not the biggest fan of this approach 
-but it is widely used in the core so it should be fine. In fact, OTP 
-read and write also use this approach.
-
-> +	}
-> +	if (ret)
-> +		return ret;
-> +
-> +	return spi_nor_wait_till_ready(nor);
-> +}
-> +
->  static int spi_nor_otp_lock_bit_cr(unsigned int region)
->  {
->  	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
-> @@ -316,12 +359,14 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
->  }
->  
-> -static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-> +static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
-
-spi_nor_mtd_otp_lock_or_erase()? Or would it make it too long?
-
-Anyway, maybe I am bikeshedding too much, but I don't like that you 
-combine two completely independent operations into the same function 
-because they have some common parts. You should make them two separate 
-functions and see how many of the common parts can be split into 
-independent subroutines.
-
-> +				      size_t len, bool is_erase)
->  {
->  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
->  	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
->  	const size_t rlen = spi_nor_otp_region_len(nor);
->  	unsigned int region;
-> +	loff_t rstart;
->  	int ret;
->  
->  	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
-> @@ -337,7 +382,13 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
->  
->  	while (len) {
->  		region = spi_nor_otp_offset_to_region(nor, from);
-> -		ret = ops->lock(nor, region);
-> +
-> +		if (is_erase) {
-> +			rstart = spi_nor_otp_region_start(nor, region);
-> +			ret = ops->erase(nor, rstart);
-
-This further highlights my point. There are subtle differences between 
-erase and lock and having them in the same function might not be the 
-best idea.
-
-> +		} else {
-> +			ret = ops->lock(nor, region);
-> +		}
->  		if (ret)
->  			goto out;
->  
-> @@ -351,6 +402,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
->  	return ret;
->  }
->  
-> +static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
-> +{
-> +	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
-> +}
-> +
-> +static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
-> +{
-> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
-> +	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
-> +
-> +	/* OTP erase is optional */
-> +	if (!ops->erase)
-> +		return -EOPNOTSUPP;
-> +
-> +	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
-> +}
-> +
->  void spi_nor_otp_init(struct spi_nor *nor)
->  {
->  	struct mtd_info *mtd = &nor->mtd;
-> @@ -374,4 +442,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
->  	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
->  	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
->  	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
-> +	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
->  }
-> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
-> index 9a81c67a60c6..96573f61caf5 100644
-> --- a/drivers/mtd/spi-nor/winbond.c
-> +++ b/drivers/mtd/spi-nor/winbond.c
-> @@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
->  static const struct spi_nor_otp_ops winbond_otp_ops = {
->  	.read = spi_nor_otp_read_secr,
->  	.write = spi_nor_otp_write_secr,
-> +	.erase = spi_nor_otp_erase_secr,
->  	.lock = spi_nor_otp_lock_sr2,
->  	.is_locked = spi_nor_otp_is_locked_sr2,
->  };
-> -- 
-> 2.20.1
-> 
+That's why I avoided testing my suggestion ;). I think we should just
+add !pte_none() in there with a comment that it may be a swap pte and
+use the is_swap_pte() again on the mte_sync_tags() path. We already have
+the pte_present() check.
 
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments Inc.
+Catalin
