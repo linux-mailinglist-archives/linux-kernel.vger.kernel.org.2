@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBA8B38AACE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA8D38AAD1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240604AbhETLRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:17:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
+        id S239884AbhETLRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:17:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238634AbhETK5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:57:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B65DA61CF4;
-        Thu, 20 May 2021 10:02:09 +0000 (UTC)
+        id S239092AbhETK5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:57:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE34661CF7;
+        Thu, 20 May 2021 10:02:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504930;
-        bh=5zE6i/k8EBj/j49KT1aMJJuN/V/FPr/WbhyYN+v9Gb8=;
+        s=korg; t=1621504932;
+        bh=8APKXRuvakIe0b/7cybuTVvzfs8YW/6wc5fHM9HTOAM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ou2HMvKfF1AVZcdAJ2GYl/hiOFtfVIIo95pntIN3GhHprW+/sO+IRU9G7+V4p8/Qr
-         yD0ogMZrvLrDFf//qOmw7GsLWDPPp44Zs4ea6qbr+3k71cAUnaOK8BZc18MIsw3E1r
-         2tQB0c+DRl/igaNKbgPZlq7Fg9EHm8MrzJfH2ebI=
+        b=QdJbTjKEL0VohGecP0X6DN5f6sjGjiYtwYiNwSYjIgf7LUkQygIEqL0QVzrne3Vnp
+         xGWYGRbqsF1Uszp06YdcJnNmCKSt9koyJjO0ostJRqlVoW9KXqsFgNPk2BrGo4zaqC
+         TMY2CEW3CwD8wiDqrGDjbcsIo7OsIN/Op0HYRKeU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 112/240] staging: greybus: uart: fix unprivileged TIOCCSERIAL
-Date:   Thu, 20 May 2021 11:21:44 +0200
-Message-Id: <20210520092112.440345354@linuxfoundation.org>
+Subject: [PATCH 4.9 113/240] crypto: qat - Fix a double free in adf_create_ring
+Date:   Thu, 20 May 2021 11:21:45 +0200
+Message-Id: <20210520092112.470581889@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,45 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 60c6b305c11b5fd167ce5e2ce42f3a9098c388f0 ]
+[ Upstream commit f7cae626cabb3350b23722b78fe34dd7a615ca04 ]
 
-TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
-serial devices is only useful for setting the close_delay and
-closing_wait parameters.
+In adf_create_ring, if the callee adf_init_ring() failed, the callee will
+free the ring->base_addr by dma_free_coherent() and return -EFAULT. Then
+adf_create_ring will goto err and the ring->base_addr will be freed again
+in adf_cleanup_ring().
 
-A non-privileged user has only ever been able to set the since long
-deprecated ASYNC_SPD flags and trying to change any other *supported*
-feature should result in -EPERM being returned. Setting the current
-values for any supported features should return success.
+My patch sets ring->base_addr to NULL after the first freed to avoid the
+double free.
 
-Fix the greybus implementation which instead indicated that the
-TIOCSSERIAL ioctl was not even implemented when a non-privileged user
-set the current values.
-
-Fixes: e68453ed28c5 ("greybus: uart-gb: now builds, more framework added")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210407102334.32361-7-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: a672a9dc872ec ("crypto: qat - Intel(R) QAT transport code")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/uart.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/crypto/qat/qat_common/adf_transport.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-index 9ef9cbfd8926..c35c9b766a00 100644
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -661,8 +661,6 @@ static int set_serial_info(struct gb_tty *gb_tty,
- 		if ((close_delay != gb_tty->port.close_delay) ||
- 		    (closing_wait != gb_tty->port.closing_wait))
- 			retval = -EPERM;
--		else
--			retval = -EOPNOTSUPP;
- 	} else {
- 		gb_tty->port.close_delay = close_delay;
- 		gb_tty->port.closing_wait = closing_wait;
+diff --git a/drivers/crypto/qat/qat_common/adf_transport.c b/drivers/crypto/qat/qat_common/adf_transport.c
+index 57d2622728a5..4c0067f8c079 100644
+--- a/drivers/crypto/qat/qat_common/adf_transport.c
++++ b/drivers/crypto/qat/qat_common/adf_transport.c
+@@ -197,6 +197,7 @@ static int adf_init_ring(struct adf_etr_ring_data *ring)
+ 		dev_err(&GET_DEV(accel_dev), "Ring address not aligned\n");
+ 		dma_free_coherent(&GET_DEV(accel_dev), ring_size_bytes,
+ 				  ring->base_addr, ring->dma_addr);
++		ring->base_addr = NULL;
+ 		return -EFAULT;
+ 	}
+ 
 -- 
 2.30.2
 
