@@ -2,108 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB23B389B76
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:39:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C85389B82
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230352AbhETCkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 22:40:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230062AbhETCkU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 22:40:20 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6194BC06175F;
-        Wed, 19 May 2021 19:38:40 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id i5so10844316pgm.0;
-        Wed, 19 May 2021 19:38:40 -0700 (PDT)
+        id S230049AbhETCtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 22:49:42 -0400
+Received: from mail-bn7nam10on2051.outbound.protection.outlook.com ([40.107.92.51]:42592
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229478AbhETCtk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 22:49:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=EEWtE2dUY58vLxrh7/4c2bqK7S9hATqMidajHdm270DIo04zeLex83AqdQqyyjC2TTAuvVvSMKygCUP8cTJkWF/f4SOgauUD1EmNUiA2dFNWCBV571mujSwUOUs0lO90UgGT02LD7eH/wWbRNXpzW1mNiPs/0O9qutICAIS/Lg2zU7bEp4ZE1I7BThDP/yp1CCoiBNt0rqJRpwKqOb/nx5Db+Kup/Y9qBLAHK5EIHS31fvy2DPGQqIZB7BPIX+7Uu1QRgemCmKKqT4SVNGoLzGE9XtIJH/WRR1LxTOohT4Z2129/UGUiZZTsHGgT7SLik7jPeefj3Frl189B1647Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GILSUQ/1Ltt9d+xp6GpgI9F0p2v1XNem3IOKvoztI50=;
+ b=Hif9YiMvixbiq+rRybyIakwKYed8dlcQv6JrqSe6IjIJVWH2S4xOXM261ZGGLXfnsNOuq6xF058msCfm8EshqhTIEOD5C57W0EGUleTk9xBLqBIn0qtylckEFRCyqG2HvGhuqkofWoNRi3cV8uGUSzUrHucOrNKwTKu5B/GhZxQis6vM3Um8/pM1u0zuTjzvv04Xxac7I1of8s1e3C1lyo2cUP7OFdZF2Xmlh4g1aMySo52Kti98KdVd9vLSremALy7WTdhHAxiPvTYjAjMxzNyOgjSeG+X3IZH+MTuJOx9jZ0v2jQ538qLt+bZ8dXTatJtxyW5i5sBLFdSBnv4X4g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=+oDpeZ4j0Q9DFmXNX82+DBFJCZJqLdYMPzNEUa68hdk=;
-        b=IOa8K9tVVVxrX/LEDpljs/uhegyaU7VIZuMoaAVZsjDvNrTugxJq9nCTiuCFBEeDd5
-         3Y7xjzha2OTsAjBRw5pc7a6InhT3llpfUQiJemcPlQrchkqgC9UINiAob8LgJehEDr9Q
-         nmFyzp/SwcJZVNkHQkt2yziclbsRlwso1ofxmByAJcS15BRIANqqokBlgpK4lHAHoquR
-         AtiCPZFyfQ7TIzLWLEp3wiv9qdNxAUr4bcnq3S1LIIf+4M5+HkcigdsLrwpCn+fo0lqf
-         X5ljjTEcCm6UfcJ2a7UMhZkNb9wlVPYhsg6f46u0EJfEY2QykQptftlowkzjQFtSEfhZ
-         eYeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=+oDpeZ4j0Q9DFmXNX82+DBFJCZJqLdYMPzNEUa68hdk=;
-        b=IPF3tDje8shPuDQ9lgPYbwhJYw/3yjP4N4BdLBE4ki2xGFA8d795/E1J5iNjRI+MX7
-         oqrbYU7aFtVYZkMqCrU1v4IaNtw3zJh4ZUpkuS1PLpntNWB4nuY2oMZyZOAJ1wSkqj6/
-         7F1tOB1GA+kQ18MrPuCoubGr/brkGQIxvtvXrOYDVxfdkPnxG5cgfWyVyX9tWH/it3/w
-         SqSX+vvltyZjHkL5CFrvqmEJfmOSCvD3aLs3VmcBpeNKI4NnesEgxfkSCMxwy4nKynJt
-         wwAXQ9kQHqjWpWeonGaelYWTtvnK9L1T3nBZXFQbCyzYAQcMkzCHcXqUI355H/cb8KIc
-         +79A==
-X-Gm-Message-State: AOAM531d/Nw7/T0QDmKSf5PV+2ysDWmT7lm416L/2VlDl7zJDpEf+VPr
-        uUedMB5SSwzGmyM6mus3CbI=
-X-Google-Smtp-Source: ABdhPJyOZjPeKhwYF/NBTz9x78DTVIhWw9ru81FqoCQB8kQAgbM2mwi2ZnccQH72pofVtqTXdW8LxA==
-X-Received: by 2002:a63:1e64:: with SMTP id p36mr2226330pgm.105.1621478319924;
-        Wed, 19 May 2021 19:38:39 -0700 (PDT)
-Received: from localhost.localdomain ([138.197.212.246])
-        by smtp.gmail.com with ESMTPSA id v9sm3005387pjd.26.2021.05.19.19.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 19:38:39 -0700 (PDT)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?iso-8859-1?Q?Ren=E9?= van Dorst <opensource@vdorst.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Subject: Re: [PATCH net-next v2 1/4] net: phy: add MediaTek Gigabit Ethernet PHY driver
-Date:   Thu, 20 May 2021 10:38:28 +0800
-Message-Id: <20210520023828.3261270-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <YKW0acoyM+5rVp0X@lunn.ch>
-References: <20210519033202.3245667-1-dqfext@gmail.com> <20210519033202.3245667-2-dqfext@gmail.com> <YKW0acoyM+5rVp0X@lunn.ch>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GILSUQ/1Ltt9d+xp6GpgI9F0p2v1XNem3IOKvoztI50=;
+ b=MMDCF/AIK/Utsws+/rWe6xh2SclTxhafgqEDhRZpjTmyB4lsf7lUkeS5mMjPHdvRpKyzc8zL9e3/OPOF/qzLLpQhqKX0WNla9cJ9wGwH4vFsVBJu72b4tY/OQ0GDHOrWGjiPmyAdfRBdIqKJClINnDQ63NAJTAkPudJmvYhen+o=
+Received: from BN6PR13CA0003.namprd13.prod.outlook.com (2603:10b6:404:10a::13)
+ by PH0PR02MB7255.namprd02.prod.outlook.com (2603:10b6:510:16::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 20 May
+ 2021 02:48:18 +0000
+Received: from BN1NAM02FT037.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:404:10a:cafe::94) by BN6PR13CA0003.outlook.office365.com
+ (2603:10b6:404:10a::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.11 via Frontend
+ Transport; Thu, 20 May 2021 02:48:18 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT037.mail.protection.outlook.com (10.13.2.148) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4129.27 via Frontend Transport; Thu, 20 May 2021 02:48:18 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 19 May 2021 19:48:17 -0700
+Received: from smtp.xilinx.com (172.19.127.96) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Wed, 19 May 2021 19:48:17 -0700
+Envelope-to: robh@kernel.org,
+ mdf@kernel.org,
+ devicetree@vger.kernel.org,
+ linux-fpga@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ trix@redhat.com
+Received: from [10.17.2.60] (port=56828)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <lizhi.hou@xilinx.com>)
+        id 1ljYjR-0000yZ-H1; Wed, 19 May 2021 19:48:17 -0700
+Subject: Re: [PATCH V6 XRT Alveo 08/20] fpga: xrt: driver infrastructure
+To:     Tom Rix <trix@redhat.com>, Lizhi Hou <lizhi.hou@xilinx.com>,
+        <linux-kernel@vger.kernel.org>
+CC:     <linux-fpga@vger.kernel.org>, <maxz@xilinx.com>,
+        <sonal.santan@xilinx.com>, <yliu@xilinx.com>,
+        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
+        <devicetree@vger.kernel.org>, <mdf@kernel.org>, <robh@kernel.org>,
+        Max Zhen <max.zhen@xilinx.com>
+References: <20210512015339.5649-1-lizhi.hou@xilinx.com>
+ <20210512015339.5649-9-lizhi.hou@xilinx.com>
+ <c6ed9349-1a9a-62a9-521f-a12ec8c4a5a5@redhat.com>
+From:   Lizhi Hou <lizhi.hou@xilinx.com>
+Message-ID: <f0dfe5ee-d4ac-895f-1ba6-136cd897ba08@xilinx.com>
+Date:   Wed, 19 May 2021 19:48:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c6ed9349-1a9a-62a9-521f-a12ec8c4a5a5@redhat.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e98fd6da-b0d7-4b1e-4087-08d91b39b93c
+X-MS-TrafficTypeDiagnostic: PH0PR02MB7255:
+X-Microsoft-Antispam-PRVS: <PH0PR02MB72558E6E39A3EEBFC51B9B58A12A9@PH0PR02MB7255.namprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2201;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: zRylPmlKpnhM+P23DqKKWPxulN5Kj9YJavPk1Tcy7C++hXXGvJQpUI8wmFu2N4Nl/gmXbxU1C6se+ZNUqzJMYxU+qDEXrBjT1pcFZHGdGMWqnIA44lI3fxMpPc8LuzFHZl/2OBm0c6QfUTk/JC3xUbMJBYJ/VMHYvk2qLYUc+c6RAH+QHI2c1Xkwv7Jj9jpBpECq1bcG6GP3cRJG/HQ3isgp3qynIToT1zr9cM0tL/5l/GdZ6G2FcLq0ukediDkkXtoABI0SKAtp+fdti1IHElv9qB8Ez5Anzterb26LEtaYG3oHgfUdtgs2v2kMxrm8Qk12nPr7dPjEijLuFcbO3buXuGv26IePxQ2+6UBbRhBlheSI4XSnsqC93LipdRo+gdSxXrS/+aEbb96WP2OgQM6RZk+inR7ACtGmzF3v7wNhPp6EMQ4uBoWSu4EZTm3gXnqf1kMZ0GJKeoEtLhK8L0Sz4QqH/Z4ppZkpyQBKJrR2v7bLFh4SYmRUpD+0zcNgjsdEjAPo4w2cugTvqI0n6U33aADiYkanvcPF666dXaCT/KyGmTioN5iQwcBRqoEhiWJeVCHLTTWyVX7SK9X0Zxe1ObavlkwZfFhgG9CwnpJNWNNgDH+Pd5+/DlYyiFD/J2Dvzi5KweGZ8OCrweN9d3xIcfuJ807fQ/stkkRU9XPkE6T1ENiuzUwLL0lQVPkN/jqo5BEzEfyZfo9goqn1XSBu1os7JC1OQ8gNYGwdfhY=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(39860400002)(36840700001)(46966006)(53546011)(36906005)(2906002)(110136005)(54906003)(31686004)(44832011)(336012)(2616005)(426003)(316002)(5660300002)(47076005)(36756003)(478600001)(26005)(82740400003)(356005)(31696002)(186003)(8936002)(70586007)(70206006)(9786002)(4326008)(107886003)(83380400001)(7636003)(36860700001)(8676002)(82310400003)(50156003)(2101003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 02:48:18.2985
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e98fd6da-b0d7-4b1e-4087-08d91b39b93c
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT037.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7255
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 02:59:21AM +0200, Andrew Lunn wrote:
-> > +static void mtk_gephy_config_init(struct phy_device *phydev)
-> > +{
-> > +	/* Disable EEE */
-> > +	phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, 0);
-> 
-> Is EEE broken on this PHY? Or is this just to get it into a defined
-> state?
 
-As I said in commit message, the initialization (including EEE) is
-from the vendor driver.
-I have also tested it with EEE enabled by default on one of my APs,
-and got occasional link drops.
 
-> 
-> Otherwise
-> 
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-> 
->     Andrew
+On 05/13/2021 08:27 AM, Tom Rix wrote:
+>
+> On 5/11/21 6:53 PM, Lizhi Hou wrote:
+>> Infrastructure code providing APIs for managing leaf driver instance
+>> groups, facilitating inter-leaf driver calls and root calls.
+>>
+>> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
+>> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
+>> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
+>> Reviewed-by: Tom Rix <trix@redhat.com>
+>
+>> +
+>> +int xrt_subdev_root_request(struct xrt_device *self, u32 cmd, void 
+>> *arg)
+>> +{
+>> +     struct device *dev = DEV(self);
+>> +     struct xrt_subdev_platdata *pdata = DEV_PDATA(self);
+>> +
+>> +     WARN_ON(!pdata->xsp_root_cb);
+>> +     return (*pdata->xsp_root_cb)(dev->parent, 
+>> pdata->xsp_root_cb_arg, cmd, arg);
+>
+> I am running v6 through clang's static analyzer.
+>
+> It reports this problem
+>
+> drivers/fpga/xrt/lib/subdev.c:72:9: warning: Called function pointer is
+> null (null dereference)
+>         return (*pdata->xsp_root_cb)(dev->parent,
+> pdata->xsp_root_cb_arg, cmd, arg);
+> ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> Though there is a warn_on, can you also add a
+>
+> return -EINVAL;
+>
+> To cover this case?
+Sure. I will run through clang myself to check the fix.
+
+Thanks,
+Lizhi
+>
+> Tom
+>
+>> +}
+>
+
