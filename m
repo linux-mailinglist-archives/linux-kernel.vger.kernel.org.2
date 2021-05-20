@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC1F389E56
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F499389E58
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhETGzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
+        id S230499AbhETGzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:55:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbhETGz2 (ORCPT
+        with ESMTP id S230452AbhETGzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:55:28 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC741C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:07 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 129-20020a2504870000b0290513326cc5e0so8674080ybe.10
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:07 -0700 (PDT)
+        Thu, 20 May 2021 02:55:31 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245E9C06138B
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:09 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id c5-20020a0ca9c50000b02901aede9b5061so12455193qvb.14
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=SyTpiiLQc7KnB8Q1E8X3BxXutjquJ4KYbVlpDQgVi/g=;
-        b=F/5vtOLfn2hWqJCcZJILEPNvAi4G3UC/HROV8n8s10GH7JhHnrGHdEho6MiIGVETaO
-         sHn+wn+lopXgJMLEqp5WqaQ769JJNG7YB4Pq15oo9pv+HRPYGP/d500+gP+KrGyChFzI
-         iRtkvAcNwlgumar+mpa5HZRGCb08Jm1ZBJ5134Kg6M2RP3KBMa9LpRBW+jA/uB2ZH6dY
-         SHmfSiGBjz0MLdKbjMO0ZC+E0iCgLKKyI3liy35dgrf7U0uAsmS+Tq+vBabFfUY8cvI2
-         9S4m0Grod6BK2vh7Cxh9tBxuiOnpUkk6GOwodZ5MXTpgU9J25Ztod8Cas20KXVuUUu5L
-         0caQ==
+        bh=Mvah71zeYWGfuEGRbEsLqflL7nXzJ5AdEYR+UovaRYY=;
+        b=EbaEOCfalGO/Os4OKgi4M0ux2tbj/9YV7PKsVCGQdr/8gcQO1wsCl7ywZY/pNC7eXz
+         NoDBi8g1D9jnfogpVvkt+RSkZlQ/wIQfMR8guk0/qk6EZebG/utx01m5VEv0G0jHv0Zr
+         k6d+sXr5o4NS2Kl/7Ur6tOhmyQYo1mJS8W6wy8htCD9qRhKO9rljjjcNNoQFh7jF53I2
+         oqJdy/ZRwC1k/6/iastZquGfCQ1ZDPp9qbDEfPp6RfaePLHAvS2mEcu3b5IlddG8UjMG
+         gnQkyzTi9RZ60CdCTtFo/33uy+SQMY1vKs2glF5gunlSHFA1EaqvtsVi1W2ngxGWiGKh
+         ajyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=SyTpiiLQc7KnB8Q1E8X3BxXutjquJ4KYbVlpDQgVi/g=;
-        b=I/lOZpe4tWCS0mala3TZsfeszZC2f6ezlF6QsZ4a/ik+ur09NYRA+x5bJGwlW5GDlq
-         UnLRSTXE7lfK71dSWsWOnbdahNawKurDhQQHAWYazRhXZbx8wQr8tVsCQRJt62tjdH10
-         3hySRpK88u8siMlEwsnnjOD9xPsxcVvC9q60ppd6Eg2OjbtByyWxV86qM2x45/Wp9SgS
-         1K0/jwK6L1A8aN+ccrl6RiewC05OjfkXbKE3qp2X4jLzxo0Z5jchuk4yzUI9a9UtqjR2
-         jluXY0tCVPqedtSHAZ1h+oHspBuclW26af/5c7EGck5IwrADYKN8hL9LfA0GmuxthLa8
-         CT+g==
-X-Gm-Message-State: AOAM530i7XGlRCP9jxfMmcb0QrUXw8gBhH02/rSREHScRnCCUJvVu8zh
-        smjHRFK1+f6BrShUrxMXHYEhJlEv03M=
-X-Google-Smtp-Source: ABdhPJxef10azDAzK7UEGotre/hx9MbP+rt8RSM5uDH+7LMog0h8qkdAugFcXq/qcLN78UEvnUxUn/nobaI=
+        bh=Mvah71zeYWGfuEGRbEsLqflL7nXzJ5AdEYR+UovaRYY=;
+        b=fKmHfVBojnVD7v0HScBBju/h6BeYHqtiGWztHdkYBBMbAblj6OoCIkOdzbET71QBoY
+         R3bKjlFy/3PcckxPJrbFRhSVsTk4faV9uQfJlZuedG4G3O2EY6PeqhlGN722JnrxjpVk
+         og7sFMeaPJCcbmkZyC+jm4xmnS5Ox2CVjXqgw96+ViRsnfjSJ3Vvu0mOk/ab+jfZ3/ZB
+         HW3plDWWuAO8ijU0AazsQOOG3rvfr/szKKmeJs3e5a7HPpChkX9wvZKAnlyPw+6MvtLe
+         ssM2BgmFkGzG2yd8AzvepX/afdU14K4bigWqSjN8IRR7JVDnGdBKYR4N/tH0JI/apOet
+         Rn1g==
+X-Gm-Message-State: AOAM5337ZUQnuxydxDF/VBFRzHtx51o3/N5HDpf9MYMdQrx5kcdbVyhf
+        HEyO2/+GFcfRnTIPxodPADdKQi6qUwA=
+X-Google-Smtp-Source: ABdhPJxyjS6uG8i8Sad50t/5Pf/9RTagtFbxDvAuxBuu8l0odJlhqIGjN9aFII0GYF+uFWIxSdphl51ZKHc=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:595d:62ee:f08:8e83])
- (user=yuzhao job=sendgmr) by 2002:a25:2009:: with SMTP id g9mr4983935ybg.198.1621493646666;
- Wed, 19 May 2021 23:54:06 -0700 (PDT)
-Date:   Thu, 20 May 2021 00:53:45 -0600
+ (user=yuzhao job=sendgmr) by 2002:a0c:d84d:: with SMTP id i13mr3839330qvj.32.1621493648268;
+ Wed, 19 May 2021 23:54:08 -0700 (PDT)
+Date:   Thu, 20 May 2021 00:53:46 -0600
 In-Reply-To: <20210520065355.2736558-1-yuzhao@google.com>
-Message-Id: <20210520065355.2736558-5-yuzhao@google.com>
+Message-Id: <20210520065355.2736558-6-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210520065355.2736558-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v3 04/14] mm, x86: support the access bit on non-leaf PMD entries
+Subject: [PATCH v3 05/14] mm/vmscan.c: refactor shrink_node()
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
@@ -85,118 +85,227 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some architectures support the accessed bit on non-leaf PMD entries
-(parents) in addition to leaf PTE entries (children) where pages are
-mapped, e.g., x86_64 sets the accessed bit on a parent when using it
-as part of linear-address translation [1]. Page table walkers who are
-interested in the accessed bit on children can take advantage of this:
-they do not need to search the children when the accessed bit is not
-set on a parent, given that they have previously cleared the accessed
-bit on this parent.
-
-[1]: Intel 64 and IA-32 Architectures Software Developer's Manual
-     Volume 3 (October 2019), section 4.8
+Heuristics that determine scan balance between anon and file LRUs are
+rather independent. Move them into a separate function to improve
+readability.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
 ---
- arch/Kconfig                   | 9 +++++++++
- arch/x86/Kconfig               | 1 +
- arch/x86/include/asm/pgtable.h | 2 +-
- arch/x86/mm/pgtable.c          | 5 ++++-
- include/linux/pgtable.h        | 4 ++--
- 5 files changed, 17 insertions(+), 4 deletions(-)
+ mm/vmscan.c | 186 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 98 insertions(+), 88 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index c45b770d3579..e3812adc69f7 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -826,6 +826,15 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE
- config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
- 	bool
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 5199b9696bab..2339459c97d4 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2421,6 +2421,103 @@ enum scan_balance {
+ 	SCAN_FILE,
+ };
  
-+config HAVE_ARCH_PARENT_PMD_YOUNG
-+	bool
-+	depends on PGTABLE_LEVELS > 2
-+	help
-+	  Architectures that select this are able to set the accessed bit on
-+	  non-leaf PMD entries in addition to leaf PTE entries where pages are
-+	  mapped. For them, page table walkers that clear the accessed bit may
-+	  stop at non-leaf PMD entries if they do not see the accessed bit.
++static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
++{
++	unsigned long file;
++	struct lruvec *target_lruvec;
 +
- config HAVE_ARCH_HUGE_VMAP
- 	bool
- 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 0045e1b44190..f619055c4537 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -170,6 +170,7 @@ config X86
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD if X86_64
-+	select HAVE_ARCH_PARENT_PMD_YOUNG	if X86_64
- 	select HAVE_ARCH_USERFAULTFD_WP         if X86_64 && USERFAULTFD
- 	select HAVE_ARCH_USERFAULTFD_MINOR	if X86_64 && USERFAULTFD
- 	select HAVE_ARCH_VMAP_STACK		if X86_64
-diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
-index b1099f2d9800..3a24d2af4e9b 100644
---- a/arch/x86/include/asm/pgtable.h
-+++ b/arch/x86/include/asm/pgtable.h
-@@ -846,7 +846,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
- 
- static inline int pmd_bad(pmd_t pmd)
- {
--	return (pmd_flags(pmd) & ~_PAGE_USER) != _KERNPG_TABLE;
-+	return ((pmd_flags(pmd) | _PAGE_ACCESSED) & ~_PAGE_USER) != _KERNPG_TABLE;
- }
- 
- static inline unsigned long pages_to_mb(unsigned long npg)
-diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
-index d27cf69e811d..b968d6bd28b6 100644
---- a/arch/x86/mm/pgtable.c
-+++ b/arch/x86/mm/pgtable.c
-@@ -550,7 +550,7 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
- 	return ret;
- }
- 
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
- int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 			      unsigned long addr, pmd_t *pmdp)
- {
-@@ -562,6 +562,9 @@ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 
- 	return ret;
- }
-+#endif
++	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
 +
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
- int pudp_test_and_clear_young(struct vm_area_struct *vma,
- 			      unsigned long addr, pud_t *pudp)
- {
-diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-index 46b13780c2c8..94ecc1d277a2 100644
---- a/include/linux/pgtable.h
-+++ b/include/linux/pgtable.h
-@@ -193,7 +193,7 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
- #endif
++	/*
++	 * Determine the scan balance between anon and file LRUs.
++	 */
++	spin_lock_irq(&target_lruvec->lru_lock);
++	sc->anon_cost = target_lruvec->anon_cost;
++	sc->file_cost = target_lruvec->file_cost;
++	spin_unlock_irq(&target_lruvec->lru_lock);
++
++	/*
++	 * Target desirable inactive:active list ratios for the anon
++	 * and file LRU lists.
++	 */
++	if (!sc->force_deactivate) {
++		unsigned long refaults;
++
++		refaults = lruvec_page_state(target_lruvec,
++				WORKINGSET_ACTIVATE_ANON);
++		if (refaults != target_lruvec->refaults[0] ||
++			inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
++			sc->may_deactivate |= DEACTIVATE_ANON;
++		else
++			sc->may_deactivate &= ~DEACTIVATE_ANON;
++
++		/*
++		 * When refaults are being observed, it means a new
++		 * workingset is being established. Deactivate to get
++		 * rid of any stale active pages quickly.
++		 */
++		refaults = lruvec_page_state(target_lruvec,
++				WORKINGSET_ACTIVATE_FILE);
++		if (refaults != target_lruvec->refaults[1] ||
++		    inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
++			sc->may_deactivate |= DEACTIVATE_FILE;
++		else
++			sc->may_deactivate &= ~DEACTIVATE_FILE;
++	} else
++		sc->may_deactivate = DEACTIVATE_ANON | DEACTIVATE_FILE;
++
++	/*
++	 * If we have plenty of inactive file pages that aren't
++	 * thrashing, try to reclaim those first before touching
++	 * anonymous pages.
++	 */
++	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
++	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
++		sc->cache_trim_mode = 1;
++	else
++		sc->cache_trim_mode = 0;
++
++	/*
++	 * Prevent the reclaimer from falling into the cache trap: as
++	 * cache pages start out inactive, every cache fault will tip
++	 * the scan balance towards the file LRU.  And as the file LRU
++	 * shrinks, so does the window for rotation from references.
++	 * This means we have a runaway feedback loop where a tiny
++	 * thrashing file LRU becomes infinitely more attractive than
++	 * anon pages.  Try to detect this based on file LRU size.
++	 */
++	if (!cgroup_reclaim(sc)) {
++		unsigned long total_high_wmark = 0;
++		unsigned long free, anon;
++		int z;
++
++		free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
++		file = node_page_state(pgdat, NR_ACTIVE_FILE) +
++			   node_page_state(pgdat, NR_INACTIVE_FILE);
++
++		for (z = 0; z < MAX_NR_ZONES; z++) {
++			struct zone *zone = &pgdat->node_zones[z];
++
++			if (!managed_zone(zone))
++				continue;
++
++			total_high_wmark += high_wmark_pages(zone);
++		}
++
++		/*
++		 * Consider anon: if that's low too, this isn't a
++		 * runaway file reclaim problem, but rather just
++		 * extreme pressure. Reclaim as per usual then.
++		 */
++		anon = node_page_state(pgdat, NR_INACTIVE_ANON);
++
++		sc->file_is_tiny =
++			file + free <= total_high_wmark &&
++			!(sc->may_deactivate & DEACTIVATE_ANON) &&
++			anon >> sc->priority;
++	}
++}
++
+ /*
+  * Determine how aggressively the anon and file LRU lists should be
+  * scanned.  The relative value of each set of LRU lists is determined
+@@ -2866,7 +2963,6 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 	unsigned long nr_reclaimed, nr_scanned;
+ 	struct lruvec *target_lruvec;
+ 	bool reclaimable = false;
+-	unsigned long file;
  
- #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
--#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
- static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 					    unsigned long address,
- 					    pmd_t *pmdp)
-@@ -214,7 +214,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
- 	BUILD_BUG();
- 	return 0;
- }
--#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
-+#endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG */
- #endif
+ 	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
  
- #ifndef __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+@@ -2876,93 +2972,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 	nr_reclaimed = sc->nr_reclaimed;
+ 	nr_scanned = sc->nr_scanned;
+ 
+-	/*
+-	 * Determine the scan balance between anon and file LRUs.
+-	 */
+-	spin_lock_irq(&target_lruvec->lru_lock);
+-	sc->anon_cost = target_lruvec->anon_cost;
+-	sc->file_cost = target_lruvec->file_cost;
+-	spin_unlock_irq(&target_lruvec->lru_lock);
+-
+-	/*
+-	 * Target desirable inactive:active list ratios for the anon
+-	 * and file LRU lists.
+-	 */
+-	if (!sc->force_deactivate) {
+-		unsigned long refaults;
+-
+-		refaults = lruvec_page_state(target_lruvec,
+-				WORKINGSET_ACTIVATE_ANON);
+-		if (refaults != target_lruvec->refaults[0] ||
+-			inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
+-			sc->may_deactivate |= DEACTIVATE_ANON;
+-		else
+-			sc->may_deactivate &= ~DEACTIVATE_ANON;
+-
+-		/*
+-		 * When refaults are being observed, it means a new
+-		 * workingset is being established. Deactivate to get
+-		 * rid of any stale active pages quickly.
+-		 */
+-		refaults = lruvec_page_state(target_lruvec,
+-				WORKINGSET_ACTIVATE_FILE);
+-		if (refaults != target_lruvec->refaults[1] ||
+-		    inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
+-			sc->may_deactivate |= DEACTIVATE_FILE;
+-		else
+-			sc->may_deactivate &= ~DEACTIVATE_FILE;
+-	} else
+-		sc->may_deactivate = DEACTIVATE_ANON | DEACTIVATE_FILE;
+-
+-	/*
+-	 * If we have plenty of inactive file pages that aren't
+-	 * thrashing, try to reclaim those first before touching
+-	 * anonymous pages.
+-	 */
+-	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
+-	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+-		sc->cache_trim_mode = 1;
+-	else
+-		sc->cache_trim_mode = 0;
+-
+-	/*
+-	 * Prevent the reclaimer from falling into the cache trap: as
+-	 * cache pages start out inactive, every cache fault will tip
+-	 * the scan balance towards the file LRU.  And as the file LRU
+-	 * shrinks, so does the window for rotation from references.
+-	 * This means we have a runaway feedback loop where a tiny
+-	 * thrashing file LRU becomes infinitely more attractive than
+-	 * anon pages.  Try to detect this based on file LRU size.
+-	 */
+-	if (!cgroup_reclaim(sc)) {
+-		unsigned long total_high_wmark = 0;
+-		unsigned long free, anon;
+-		int z;
+-
+-		free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
+-		file = node_page_state(pgdat, NR_ACTIVE_FILE) +
+-			   node_page_state(pgdat, NR_INACTIVE_FILE);
+-
+-		for (z = 0; z < MAX_NR_ZONES; z++) {
+-			struct zone *zone = &pgdat->node_zones[z];
+-			if (!managed_zone(zone))
+-				continue;
+-
+-			total_high_wmark += high_wmark_pages(zone);
+-		}
+-
+-		/*
+-		 * Consider anon: if that's low too, this isn't a
+-		 * runaway file reclaim problem, but rather just
+-		 * extreme pressure. Reclaim as per usual then.
+-		 */
+-		anon = node_page_state(pgdat, NR_INACTIVE_ANON);
+-
+-		sc->file_is_tiny =
+-			file + free <= total_high_wmark &&
+-			!(sc->may_deactivate & DEACTIVATE_ANON) &&
+-			anon >> sc->priority;
+-	}
++	prepare_scan_count(pgdat, sc);
+ 
+ 	shrink_node_memcgs(pgdat, sc);
+ 
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
