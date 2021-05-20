@@ -2,114 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 174CD38B86B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67E7838B861
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:27:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238361AbhETUaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:30:16 -0400
-Received: from smtp-34.italiaonline.it ([213.209.10.34]:42578 "EHLO libero.it"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237864AbhETUaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:30:15 -0400
-Received: from passgat-Modern-14-A10M.homenet.telecomitalia.it
- ([82.60.150.250])
-        by smtp-34.iol.local with ESMTPA
-        id jpGWlKVEa5WrZjpGrlTUNw; Thu, 20 May 2021 22:27:53 +0200
-x-libjamoibt: 1601
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1621542473; bh=iriFGB7/8coo66GVgaP8apTtH6WPOPW8oKA7OvT/6CM=;
-        h=From;
-        b=liNACm8XkWyLia6tBpy2xyV77bu0I86JYRzafaSXLH48DfJlipaGRF/+zQrNYaEnm
-         iUKNehj82KlKaICmXp3GNYHsb0+sy3eQSpl1wvj2tWJmDszbJeqx7pll6jIdkWkbI4
-         dJDuQHIIVK4IUPxk6PuBkxxnua09KRIuKkpUQwrh6nAGZD4Lxcu4kjdiPHBdNPnNQ2
-         c9/yTYrwpxYsgYvsFEJZxZNbu4XNHk9fJNm7DxjZVs4PuPq2n+7tJrYQXeZTFATouZ
-         h4o5lMCm8w0LK2TuCclW3Pw78UfKqDRDYcqp02VNW426oiIiVBQ33RrCzxcXTRSIM0
-         hh3sc5xRZ2Q2A==
-X-CNFS-Analysis: v=2.4 cv=W4/96Tak c=1 sm=1 tr=0 ts=60a6c649 cx=a_exe
- a=QSJ1svMVA5tvcuOEAX2Bgw==:117 a=QSJ1svMVA5tvcuOEAX2Bgw==:17 a=sozttTNsAAAA:8
- a=EdIpBv2ybtxptObV3yYA:9 a=aeg5Gbbo78KNqacMgKqU:22
-From:   Dario Binacchi <dariobin@libero.it>
-To:     linux-kernel@vger.kernel.org
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Tony Lindgren <tony@atomide.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Haojian Zhuang <haojian.zhuang@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
-        linux-omap@vger.kernel.org
-Subject: [PATCH v3 3/3] pinctrl: single: set pinmux from pins debug file
-Date:   Thu, 20 May 2021 22:27:30 +0200
-Message-Id: <20210520202730.4444-4-dariobin@libero.it>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210520202730.4444-1-dariobin@libero.it>
-References: <20210520202730.4444-1-dariobin@libero.it>
-X-CMAE-Envelope: MS4xfIUmEvQVxqvsNff7Mc8QYZVUGolb2h3/P3PFxHG5VygqL5T5I2Ja4Gf6GxfDvt86ebJJBjztbv5sXiNyvfP+xIQSoF/FbWpQM26jzirtbxbau2MWod9W
- UOEccBj3hn6Gx6MDH7rRmXfpc6BzHDXVB1cP6HMk7lJoBw135Ob69lr3pU7vmKn4KEXvB7CLJw+Dp+HBq9oLxWXYi83Cb+uIzRIYu44MIEdopXRcaNi0M3Ra
- fonCq7tbAyLXYaiosCoQMIEbq98pPvyRlWFKFsXPmKw9oQnocT3JBEHRopuEHSSZ+RcQ+QSjlTIxAxhYmZCtkRqH7F56XQ30QdwNu1WkmDFrqpFaGJkyuDse
- lYFXr0Rb0iIlpeanzljf6aoUiJiUfjvBXyg98WoSwgb/W9DebHfNwUVLXceOupyuUPHtwkK1FFotmW6+7T0EcB+/hILoRvXmOstmDlETIO6InIupEwU8rvbh
- pctqDbbP9T4mVHoKTqowPQUyNv2FkMQqpo8Rz9qPno5u97gqNd0lNgMa7m2vUcX6oodbXu1ZNwY/F2MvznICvq4gFnApRxcb3D9hg+sOAk+Zxeag6sL7v5zx
- Yhs=
+        id S237691AbhETU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:29:08 -0400
+Received: from ms.lwn.net ([45.79.88.28]:60702 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236963AbhETU3H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:29:07 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 814E72F3;
+        Thu, 20 May 2021 20:27:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 814E72F3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1621542465; bh=4Sb890MJb2ftT0eWtK0c6D8gcH4gbMVh+6xP0bEVTBU=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=iqmdk/F0zXlaOzi2qIfonlCtVp7Uo3ZYdslx8Oxhc8VWiicgjKQm4xQE1ZRDUuUzI
+         tFtqZDz18WQRoqB6pV+j9C4tJkmEaK9kVwDm+SLWLA3PjJ3IPRTqwUpd8qZ/qIQZ8G
+         VEUVtJGqoT7zTxMCd/gvZDTBKOzQZY3aJEWFuo6TxL8hlTCNH65N3o9EQVFDrY+byu
+         YEjZRkEHxe+0534Qx9S083tTbZK/RctTIcoTTVN641pLiN+a44A7oEwE/a//+TFtQE
+         EN8Dvcj8CqDReMukj2VRfwjQV2RZRQS45gjjYvicT7reR3XaMRlWnrIYe1xHLl3cf2
+         nSGYaovzR4T8w==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Andrew Jeffery <andrew@aj.id.au>, linux-doc@vger.kernel.org
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com, joe@perches.com,
+        linux-kernel@vger.kernel.org, openbmc@lists.ozlabs.org,
+        Jiri Slaby <jirislaby@kernel.org>
+Subject: Re: [PATCH v2] Documentation: checkpatch: Tweak BIT() macro include
+In-Reply-To: <20210520093949.511471-1-andrew@aj.id.au>
+References: <20210520093949.511471-1-andrew@aj.id.au>
+Date:   Thu, 20 May 2021 14:27:45 -0600
+Message-ID: <8735uhnoam.fsf@meer.lwn.net>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As described in section 9.1 of the TI reference manual for AM335x [1],
-"For writing to the control module registers, the MPU will need to be in
-privileged mode of operation and writes will not work from user mode".
-By adding the pin_dbg_set helper to pcs_pinctrl_ops it will be possible
-to write these registers from the pins debug:
+Andrew Jeffery <andrew@aj.id.au> writes:
 
-cd /sys/kernel/debug/pinctrl/44e10800.pinmux-pinctrl-single/
-echo <pin-number> <reg-value> >pins
+> While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+> Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
+>
+> Since that commit BIT() has moved again into include/vdso/bits.h via
+> commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
+>
+> I think the move to the vDSO header can be considered an implementation
+> detail, so for now update the checkpatch documentation to recommend use
+> of include/linux/bits.h.
+>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Acked-by: Jiri Slaby <jirislaby@kernel.org>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>  Documentation/dev-tools/checkpatch.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+> index 51fed1bd72ec..59fcc9f627ea 100644
+> --- a/Documentation/dev-tools/checkpatch.rst
+> +++ b/Documentation/dev-tools/checkpatch.rst
+> @@ -472,7 +472,7 @@ Macros, Attributes and Symbols
+>  
+>    **BIT_MACRO**
+>      Defines like: 1 << <digit> could be BIT(digit).
+> -    The BIT() macro is defined in include/linux/bitops.h::
+> +    The BIT() macro is defined via include/linux/bits.h::
 
-[1] https://www.ti.com/lit/ug/spruh73q/spruh73q.pdf
+Applied, thanks.
 
-Signed-off-by: Dario Binacchi <dariobin@libero.it>
-
----
-
-Changes in v3:
-- Remove CONFIG_DEV_MEM dependency.
-- Change pcs_pin_dbg_set() interface (char *buf -> unsigned int val).
-
-Changes in v2:
-- Remove CONFIG_SOC_AM33XX dependency.
-
- drivers/pinctrl/pinctrl-single.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/pinctrl/pinctrl-single.c b/drivers/pinctrl/pinctrl-single.c
-index 2c9c9835f375..1b75236563cf 100644
---- a/drivers/pinctrl/pinctrl-single.c
-+++ b/drivers/pinctrl/pinctrl-single.c
-@@ -313,6 +313,18 @@ static void pcs_pin_dbg_show(struct pinctrl_dev *pctldev,
- 	seq_printf(s, "%zx %08x %s ", pa, val, DRIVER_NAME);
- }
- 
-+static int pcs_pin_dbg_set(struct pinctrl_dev *pctldev, unsigned int pin,
-+			   unsigned int val)
-+{
-+	struct pcs_device *pcs;
-+	unsigned int mux_bytes;
-+
-+	pcs = pinctrl_dev_get_drvdata(pctldev);
-+	mux_bytes = pcs->width / BITS_PER_BYTE;
-+	pcs->write(val, pcs->base + pin * mux_bytes);
-+	return 0;
-+}
-+
- static void pcs_dt_free_map(struct pinctrl_dev *pctldev,
- 				struct pinctrl_map *map, unsigned num_maps)
- {
-@@ -331,6 +343,7 @@ static const struct pinctrl_ops pcs_pinctrl_ops = {
- 	.get_group_name = pinctrl_generic_get_group_name,
- 	.get_group_pins = pinctrl_generic_get_group_pins,
- 	.pin_dbg_show = pcs_pin_dbg_show,
-+	.pin_dbg_set = pcs_pin_dbg_set,
- 	.dt_node_to_map = pcs_dt_node_to_map,
- 	.dt_free_map = pcs_dt_free_map,
- };
--- 
-2.17.1
-
+jon
