@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E94238B462
+	by mail.lfdr.de (Postfix) with ESMTP id AA6B438B463
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234249AbhETQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:39:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38328 "EHLO mail.kernel.org"
+        id S234032AbhETQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:39:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38390 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232985AbhETQjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:39:20 -0400
+        id S234097AbhETQjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:39:22 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5878761059;
-        Thu, 20 May 2021 16:37:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 58B4B611AB;
+        Thu, 20 May 2021 16:38:00 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgL-002d7b-L2; Thu, 20 May 2021 17:37:57 +0100
+        id 1ljlgM-002d7b-Ku; Thu, 20 May 2021 17:37:58 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 02/39] staging: octeon-hcd: Directly include linux/of.h
-Date:   Thu, 20 May 2021 17:37:14 +0100
-Message-Id: <20210520163751.27325-3-maz@kernel.org>
+Subject: [PATCH 03/39] mfd: ioc3: Directly include linux/irqdomain.h
+Date:   Thu, 20 May 2021 17:37:15 +0100
+Message-Id: <20210520163751.27325-4-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,28 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This drivers currently obtains linux/of.h by luck and a chain of
-bizarre inclusions, which we're about to fix.
+This driver include linux/irqdomain.h via a bizarre set of
+indirection, which we are about to break.
 
-Let's include the required file directly.
+Directly include the required file.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- drivers/staging/octeon-usb/octeon-hcd.c | 1 +
+ drivers/mfd/ioc3.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/drivers/staging/octeon-usb/octeon-hcd.c b/drivers/staging/octeon-usb/octeon-hcd.c
-index f27f20a4aa2d..a079bd0f5b61 100644
---- a/drivers/staging/octeon-usb/octeon-hcd.c
-+++ b/drivers/staging/octeon-usb/octeon-hcd.c
-@@ -52,6 +52,7 @@
- #include <linux/prefetch.h>
- #include <linux/dma-mapping.h>
- #include <linux/platform_device.h>
-+#include <linux/of.h>
- 
- #include <asm/octeon/octeon.h>
- 
+diff --git a/drivers/mfd/ioc3.c b/drivers/mfd/ioc3.c
+index c73ec78f255b..99b9c113f964 100644
+--- a/drivers/mfd/ioc3.c
++++ b/drivers/mfd/ioc3.c
+@@ -14,6 +14,7 @@
+ #include <linux/delay.h>
+ #include <linux/errno.h>
+ #include <linux/interrupt.h>
++#include <linux/irqdomain.h>
+ #include <linux/mfd/core.h>
+ #include <linux/module.h>
+ #include <linux/pci.h>
 -- 
 2.30.2
 
