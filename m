@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B206338B461
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:38:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E94238B462
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:38:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234186AbhETQj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:39:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38262 "EHLO mail.kernel.org"
+        id S234249AbhETQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:39:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233058AbhETQjT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:39:19 -0400
+        id S232985AbhETQjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:39:20 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 59D446101E;
-        Thu, 20 May 2021 16:37:58 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5878761059;
+        Thu, 20 May 2021 16:37:59 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgK-002d7b-HL; Thu, 20 May 2021 17:37:56 +0100
+        id 1ljlgL-002d7b-L2; Thu, 20 May 2021 17:37:57 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 01/39] nios2: Do not include linux/irqdomain.h from asm/irq.h
-Date:   Thu, 20 May 2021 17:37:13 +0100
-Message-Id: <20210520163751.27325-2-maz@kernel.org>
+Subject: [PATCH 02/39] staging: octeon-hcd: Directly include linux/of.h
+Date:   Thu, 20 May 2021 17:37:14 +0100
+Message-Id: <20210520163751.27325-3-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,40 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Including linux/irqdomain.h from asm/irq.h is going to break
-as soon as linux/irqdomain.h will include linux/irq.h, so
-let's fix this. Code relying on linux/irqomain.h should include
-it directly.
+This drivers currently obtains linux/of.h by luck and a chain of
+bizarre inclusions, which we're about to fix.
+
+Let's include the required file directly.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/nios2/include/asm/irq.h | 1 -
- arch/nios2/kernel/irq.c      | 1 +
- 2 files changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/octeon-usb/octeon-hcd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/nios2/include/asm/irq.h b/arch/nios2/include/asm/irq.h
-index 13ce37272279..c52c94884e93 100644
---- a/arch/nios2/include/asm/irq.h
-+++ b/arch/nios2/include/asm/irq.h
-@@ -10,6 +10,5 @@
- #define NIOS2_CPU_NR_IRQS	32
+diff --git a/drivers/staging/octeon-usb/octeon-hcd.c b/drivers/staging/octeon-usb/octeon-hcd.c
+index f27f20a4aa2d..a079bd0f5b61 100644
+--- a/drivers/staging/octeon-usb/octeon-hcd.c
++++ b/drivers/staging/octeon-usb/octeon-hcd.c
+@@ -52,6 +52,7 @@
+ #include <linux/prefetch.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/platform_device.h>
++#include <linux/of.h>
  
- #include <asm-generic/irq.h>
--#include <linux/irqdomain.h>
+ #include <asm/octeon/octeon.h>
  
- #endif
-diff --git a/arch/nios2/kernel/irq.c b/arch/nios2/kernel/irq.c
-index 5f3555ce4865..c6a1a9f6ac42 100644
---- a/arch/nios2/kernel/irq.c
-+++ b/arch/nios2/kernel/irq.c
-@@ -11,6 +11,7 @@
- 
- #include <linux/init.h>
- #include <linux/interrupt.h>
-+#include <linux/irqdomain.h>
- #include <linux/of.h>
- 
- static u32 ienable;
 -- 
 2.30.2
 
