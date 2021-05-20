@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34BF338AAD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B21138AAF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239448AbhETLS2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:18:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57140 "EHLO mail.kernel.org"
+        id S240827AbhETLTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:19:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235586AbhETK6W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:58:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBABD61CFA;
-        Thu, 20 May 2021 10:02:22 +0000 (UTC)
+        id S239326AbhETK7E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:59:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 330966191A;
+        Thu, 20 May 2021 10:02:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504943;
-        bh=Ph0w0id1G7Ipy3q6GC/4LX2FZFvBxnUqcb6GpSd2zsw=;
+        s=korg; t=1621504967;
+        bh=G0Gvg+le5AfDeG8v6ulBFkYfFEl0CA1am35Sooq3Q64=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1coUtrFg1IZnYuUTiu/R0xt37/JOu9OTyfzR4K2PF9opC+HR0gDQCZYJrlsTqLgfN
-         TGQLzFH8O66AL1jaXiQkmuA6KEXh/qS1UHlKgkVE+AJkSsEg7/ZNGSTeK7KWgCJrKd
-         i21rn8y4O1fWY8cf2kJ0P2lq3XfXzFSvDUXyWbqw=
+        b=o4Rvtqx3VgjXTyK8NySYgzLXpAyN2HynyDPgT1a/2W/bksVg/v/lK6agQYLDyKhIZ
+         chA2K4GkvReCIltBVY83hxECOr8vakjzP24KWL5Y9lqMTUsIoAayEjG/zIUqfX/9M2
+         Xzt+XbweEQQa0BaRmD1MhXHQ4SAP+W3eFqSRFFyk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        Thadeu Lima de Souza Cascardo <cascardo@canonical.com>,
+        Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 144/240] liquidio: Fix unintented sign extension of a left shift of a u16
-Date:   Thu, 20 May 2021 11:22:16 +0200
-Message-Id: <20210520092113.486554533@linuxfoundation.org>
+Subject: [PATCH 4.9 145/240] powerpc/perf: Fix PMU constraint check for EBB events
+Date:   Thu, 20 May 2021 11:22:17 +0200
+Message-Id: <20210520092113.521325730@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,46 +42,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
 
-[ Upstream commit 298b58f00c0f86868ea717426beb5c1198772f81 ]
+[ Upstream commit 10f8f96179ecc7f69c927f6d231f6d02736cea83 ]
 
-The macro CN23XX_PEM_BAR1_INDEX_REG is being used to shift oct->pcie_port
-(a u16) left 24 places. There are two subtle issues here, first the
-shift gets promoted to an signed int and then sign extended to a u64.
-If oct->pcie_port is 0x80 or more then the upper bits get sign extended
-to 1. Secondly shfiting a u16 24 bits will lead to an overflow so it
-needs to be cast to a u64 for all the bits to not overflow.
+The power PMU group constraints includes check for EBB events to make
+sure all events in a group must agree on EBB. This will prevent
+scheduling EBB and non-EBB events together. But in the existing check,
+settings for constraint mask and value is interchanged. Patch fixes the
+same.
 
-It is entirely possible that the u16 port value is never large enough
-for this to fail, but it is useful to fix unintended overflows such
-as this.
+Before the patch, PMU selftest "cpu_event_pinned_vs_ebb_test" fails with
+below in dmesg logs. This happens because EBB event gets enabled along
+with a non-EBB cpu event.
 
-Fix this by casting the port parameter to the macro to a u64 before
-the shift.
+  [35600.453346] cpu_event_pinne[41326]: illegal instruction (4)
+  at 10004a18 nip 10004a18 lr 100049f8 code 1 in
+  cpu_event_pinned_vs_ebb_test[10000000+10000]
 
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: 5bc67f587ba7 ("liquidio: CN23XX register definitions")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Test results after the patch:
+
+  $ ./pmu/ebb/cpu_event_pinned_vs_ebb_test
+  test: cpu_event_pinned_vs_ebb
+  tags: git_version:v5.12-rc5-93-gf28c3125acd3-dirty
+  Binding to cpu 8
+  EBB Handler is at 0x100050c8
+  read error on event 0x7fffe6bd4040!
+  PM_RUN_INST_CMPL: result 9872 running/enabled 37930432
+  success: cpu_event_pinned_vs_ebb
+
+This bug was hidden by other logic until commit 1908dc911792 (perf:
+Tweak perf_event_attr::exclusive semantics).
+
+Fixes: 4df489991182 ("powerpc/perf: Add power8 EBB support")
+Reported-by: Thadeu Lima de Souza Cascardo <cascardo@canonical.com>
+Signed-off-by: Athira Rajeev <atrajeev@linux.vnet.ibm.com>
+[mpe: Mention commit 1908dc911792]
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/1617725761-1464-1-git-send-email-atrajeev@linux.vnet.ibm.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/powerpc/perf/isa207-common.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-index 03d79d95ab75..d7e0d2ce15c1 100644
---- a/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-+++ b/drivers/net/ethernet/cavium/liquidio/cn23xx_pf_regs.h
-@@ -526,7 +526,7 @@
- #define    CN23XX_BAR1_INDEX_OFFSET                3
+diff --git a/arch/powerpc/perf/isa207-common.c b/arch/powerpc/perf/isa207-common.c
+index 7592a6491a9a..2d3557406424 100644
+--- a/arch/powerpc/perf/isa207-common.c
++++ b/arch/powerpc/perf/isa207-common.c
+@@ -139,8 +139,8 @@ ebb_bhrb:
+ 	 * EBB events are pinned & exclusive, so this should never actually
+ 	 * hit, but we leave it as a fallback in case.
+ 	 */
+-	mask  |= CNST_EBB_VAL(ebb);
+-	value |= CNST_EBB_MASK;
++	mask  |= CNST_EBB_MASK;
++	value |= CNST_EBB_VAL(ebb);
  
- #define    CN23XX_PEM_BAR1_INDEX_REG(port, idx)		\
--		(CN23XX_PEM_BAR1_INDEX_START + ((port) << CN23XX_PEM_OFFSET) + \
-+		(CN23XX_PEM_BAR1_INDEX_START + (((u64)port) << CN23XX_PEM_OFFSET) + \
- 		 ((idx) << CN23XX_BAR1_INDEX_OFFSET))
- 
- /*############################ DPI #########################*/
+ 	*maskp = mask;
+ 	*valp = value;
 -- 
 2.30.2
 
