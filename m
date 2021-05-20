@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A3938AA7A
+	by mail.lfdr.de (Postfix) with ESMTP id DD74338AA7B
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:13:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240241AbhETLOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:14:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52024 "EHLO mail.kernel.org"
+        id S240333AbhETLOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:14:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238612AbhETKxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:53:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E895C61883;
-        Thu, 20 May 2021 10:00:43 +0000 (UTC)
+        id S237500AbhETKxt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:53:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2C00061CDB;
+        Thu, 20 May 2021 10:00:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504844;
-        bh=ipKLPeu42Bq8fzgLGyaGkLJPTPp01iaR00TYtrxmb4o=;
+        s=korg; t=1621504846;
+        bh=ikUvAc2dvmrT59VybQQhYjoK9wTU9L4Bvf+kBTfqDcA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ee2O+IRcZsbiDIyl57Np6R9gRt2aGm9KXEaNCTxyWlEjSULQkGv7Y3lO+EZtP3org
-         AjPwzybJzVxNG5+beY2fffvu1BcO9m0iwT7+52y2vJ2kpOgw4MB36EbbsCt009hVFl
-         4DKdadeukVKHlh8yQBNPxoLXM7zfoBTQ8nZyBCNA=
+        b=lg65lFzeGJWEJhbFl3IacHZNqFqrVVGbmjh8ckwLtwIU2NrmO3+tGHXXS3PZu51/Z
+         HbK8lM2hCobQho7KOJpDbVfenmV/qLp5/bfxNpVloa756NXU17L0/Bp+3DLoYlo1c9
+         BlTZ8P/vClXIVHhpq6IXDxwZIIeRm8dyuH03e3t8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Fabian Vogt <fabian@ritter-vogt.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 105/240] fotg210-udc: Dont DMA more than the buffer can take
-Date:   Thu, 20 May 2021 11:21:37 +0200
-Message-Id: <20210520092112.210510206@linuxfoundation.org>
+Subject: [PATCH 4.9 106/240] fotg210-udc: Complete OUT requests on short packets
+Date:   Thu, 20 May 2021 11:21:38 +0200
+Message-Id: <20210520092112.240394215@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,36 +41,43 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Fabian Vogt <fabian@ritter-vogt.de>
 
-[ Upstream commit 3e7c2510bdfe89a9ec223dd7acd6bfc8bb1cbeb6 ]
+[ Upstream commit 75bb93be0027123b5db6cbcce89eb62f0f6b3c5b ]
 
-Before this, it wrote as much as available into the buffer, even if it
-didn't fit.
+A short packet indicates the end of a transfer and marks the request as
+complete.
 
 Fixes: b84a8dee23fd ("usb: gadget: add Faraday fotg210_udc driver")
 Signed-off-by: Fabian Vogt <fabian@ritter-vogt.de>
-Link: https://lore.kernel.org/r/20210324141115.9384-7-fabian@ritter-vogt.de
+Link: https://lore.kernel.org/r/20210324141115.9384-8-fabian@ritter-vogt.de
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/fotg210-udc.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/usb/gadget/udc/fotg210-udc.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/usb/gadget/udc/fotg210-udc.c b/drivers/usb/gadget/udc/fotg210-udc.c
-index 491b04dd6db7..b2910bc65e51 100644
+index b2910bc65e51..9e102ba9cf66 100644
 --- a/drivers/usb/gadget/udc/fotg210-udc.c
 +++ b/drivers/usb/gadget/udc/fotg210-udc.c
-@@ -340,8 +340,9 @@ static void fotg210_start_dma(struct fotg210_ep *ep,
- 		} else {
- 			buffer = req->req.buf + req->req.actual;
- 			length = ioread32(ep->fotg210->reg +
--					FOTG210_FIBCR(ep->epnum - 1));
--			length &= FIBCR_BCFX;
-+					FOTG210_FIBCR(ep->epnum - 1)) & FIBCR_BCFX;
-+			if (length > req->req.length - req->req.actual)
-+				length = req->req.length - req->req.actual;
- 		}
- 	} else {
- 		buffer = req->req.buf + req->req.actual;
+@@ -856,12 +856,16 @@ static void fotg210_out_fifo_handler(struct fotg210_ep *ep)
+ {
+ 	struct fotg210_request *req = list_entry(ep->queue.next,
+ 						 struct fotg210_request, queue);
++	int disgr1 = ioread32(ep->fotg210->reg + FOTG210_DISGR1);
+ 
+ 	fotg210_start_dma(ep, req);
+ 
+-	/* finish out transfer */
++	/* Complete the request when it's full or a short packet arrived.
++	 * Like other drivers, short_not_ok isn't handled.
++	 */
++
+ 	if (req->req.length == req->req.actual ||
+-	    req->req.actual < ep->ep.maxpacket)
++	    (disgr1 & DISGR1_SPK_INT(ep->epnum - 1)))
+ 		fotg210_done(ep, req, 0);
+ }
+ 
 -- 
 2.30.2
 
