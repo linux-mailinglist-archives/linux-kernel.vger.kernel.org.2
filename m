@@ -2,33 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD02738A9BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6DD38AA16
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239269AbhETLFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48252 "EHLO mail.kernel.org"
+        id S240442AbhETLKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:10:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238103AbhETKqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:46:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 678B461CAC;
-        Thu, 20 May 2021 09:58:03 +0000 (UTC)
+        id S238853AbhETKuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:50:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D230C61CE1;
+        Thu, 20 May 2021 09:59:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504683;
-        bh=RXzOjeD3DtTd5ZVkHsoedyHcI866GHHZ1NV/ShCYFjs=;
+        s=korg; t=1621504778;
+        bh=I4ry09Znr5ak66+cQSdF/fA+BuoUFvRfYRYVxZAWi2I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nItNJgVf2W95vDnPOi4tY5eEA2d25huKJC7WhQBOfeumjywON4C6butnHt35lauzA
-         hJa8yL3ieJ3mqWTYja0MGjsSqIAQ1wSZjUGXb0LTqKUMyUV3E3xFMphMpJgNfT1Qai
-         wlM5TlLzEeOO6EJo9LsEZEls1qp7KPbrDWp54n5s=
+        b=D6v3/XBwm0thtV51b7b6jg63wFKTOfbkyTApSuXHrWXLUIYdNIvkUcVup48r1L25N
+         go3mkBGO+PfEqhk02r2g1dsg18web/fKMUcBQ4dxIYf1L12VBa+cD8xyzeH6+maItt
+         o/9X0QYnMnSqFMHZ3gbhGB9fe4JNwTaa2wSPBiL8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, dongjian <dongjian@yulong.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Quinn Tran <qutran@marvell.com>,
+        Mike Christie <michael.christie@oracle.com>,
+        Himanshu Madhani <himanshu.madhani@oracle.com>,
+        Daniel Wagner <dwagner@suse.de>, Lee Duncan <lduncan@suse.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 032/240] power: supply: Use IRQF_ONESHOT
-Date:   Thu, 20 May 2021 11:20:24 +0200
-Message-Id: <20210520092109.739008635@linuxfoundation.org>
+Subject: [PATCH 4.9 033/240] scsi: qla2xxx: Always check the return value of qla24xx_get_isp_stats()
+Date:   Thu, 20 May 2021 11:20:25 +0200
+Message-Id: <20210520092109.772140436@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,81 +44,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: dongjian <dongjian@yulong.com>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 2469b836fa835c67648acad17d62bc805236a6ea ]
+[ Upstream commit a2b2cc660822cae08c351c7f6b452bfd1330a4f7 ]
 
-Fixes coccicheck error:
+This patch fixes the following Coverity warning:
 
-drivers/power/supply/pm2301_charger.c:1089:7-27: ERROR:
-drivers/power/supply/lp8788-charger.c:502:8-28: ERROR:
-drivers/power/supply/tps65217_charger.c:239:8-33: ERROR:
-drivers/power/supply/tps65090-charger.c:303:8-33: ERROR:
+    CID 361199 (#1 of 1): Unchecked return value (CHECKED_RETURN)
+    3. check_return: Calling qla24xx_get_isp_stats without checking return
+    value (as is done elsewhere 4 out of 5 times).
 
-Threaded IRQ with no primary handler requested without IRQF_ONESHOT
-
-Signed-off-by: dongjian <dongjian@yulong.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Link: https://lore.kernel.org/r/20210320232359.941-7-bvanassche@acm.org
+Cc: Quinn Tran <qutran@marvell.com>
+Cc: Mike Christie <michael.christie@oracle.com>
+Cc: Himanshu Madhani <himanshu.madhani@oracle.com>
+Cc: Daniel Wagner <dwagner@suse.de>
+Cc: Lee Duncan <lduncan@suse.com>
+Reviewed-by: Daniel Wagner <dwagner@suse.de>
+Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/lp8788-charger.c   | 2 +-
- drivers/power/supply/pm2301_charger.c   | 2 +-
- drivers/power/supply/tps65090-charger.c | 2 +-
- drivers/power/supply/tps65217_charger.c | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/qla2xxx/qla_attr.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/power/supply/lp8788-charger.c b/drivers/power/supply/lp8788-charger.c
-index c3075ea011b6..e800beff1f8f 100644
---- a/drivers/power/supply/lp8788-charger.c
-+++ b/drivers/power/supply/lp8788-charger.c
-@@ -532,7 +532,7 @@ static int lp8788_set_irqs(struct platform_device *pdev,
+diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
+index 33f4181ba9f7..591e2e89ae9f 100644
+--- a/drivers/scsi/qla2xxx/qla_attr.c
++++ b/drivers/scsi/qla2xxx/qla_attr.c
+@@ -1909,6 +1909,8 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
+ 	vha->qla_stats.jiffies_at_last_reset = get_jiffies_64();
  
- 		ret = request_threaded_irq(virq, NULL,
- 					lp8788_charger_irq_thread,
--					0, name, pchg);
-+					IRQF_ONESHOT, name, pchg);
- 		if (ret)
- 			break;
- 	}
-diff --git a/drivers/power/supply/pm2301_charger.c b/drivers/power/supply/pm2301_charger.c
-index 78561b6884fc..9ef218d76aa9 100644
---- a/drivers/power/supply/pm2301_charger.c
-+++ b/drivers/power/supply/pm2301_charger.c
-@@ -1098,7 +1098,7 @@ static int pm2xxx_wall_charger_probe(struct i2c_client *i2c_client,
- 	ret = request_threaded_irq(gpio_to_irq(pm2->pdata->gpio_irq_number),
- 				NULL,
- 				pm2xxx_charger_irq[0].isr,
--				pm2->pdata->irq_type,
-+				pm2->pdata->irq_type | IRQF_ONESHOT,
- 				pm2xxx_charger_irq[0].name, pm2);
+ 	if (IS_FWI2_CAPABLE(ha)) {
++		int rval;
++
+ 		stats = dma_alloc_coherent(&ha->pdev->dev,
+ 		    sizeof(*stats), &stats_dma, GFP_KERNEL);
+ 		if (!stats) {
+@@ -1918,7 +1920,11 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
+ 		}
  
- 	if (ret != 0) {
-diff --git a/drivers/power/supply/tps65090-charger.c b/drivers/power/supply/tps65090-charger.c
-index 1b4b5e09538e..297bf58f0d4f 100644
---- a/drivers/power/supply/tps65090-charger.c
-+++ b/drivers/power/supply/tps65090-charger.c
-@@ -311,7 +311,7 @@ static int tps65090_charger_probe(struct platform_device *pdev)
+ 		/* reset firmware statistics */
+-		qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
++		rval = qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
++		if (rval != QLA_SUCCESS)
++			ql_log(ql_log_warn, vha, 0x70de,
++			       "Resetting ISP statistics failed: rval = %d\n",
++			       rval);
  
- 	if (irq != -ENXIO) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
--			tps65090_charger_isr, 0, "tps65090-charger", cdata);
-+			tps65090_charger_isr, IRQF_ONESHOT, "tps65090-charger", cdata);
- 		if (ret) {
- 			dev_err(cdata->dev,
- 				"Unable to register irq %d err %d\n", irq,
-diff --git a/drivers/power/supply/tps65217_charger.c b/drivers/power/supply/tps65217_charger.c
-index 9fd019f9b88c..a6b4eb61b4bb 100644
---- a/drivers/power/supply/tps65217_charger.c
-+++ b/drivers/power/supply/tps65217_charger.c
-@@ -238,7 +238,7 @@ static int tps65217_charger_probe(struct platform_device *pdev)
- 	if (irq != -ENXIO) {
- 		ret = devm_request_threaded_irq(&pdev->dev, irq, NULL,
- 						tps65217_charger_irq,
--						0, "tps65217-charger",
-+						IRQF_ONESHOT, "tps65217-charger",
- 						charger);
- 		if (ret) {
- 			dev_err(charger->dev,
+ 		dma_free_coherent(&ha->pdev->dev, sizeof(*stats),
+ 		    stats, stats_dma);
 -- 
 2.30.2
 
