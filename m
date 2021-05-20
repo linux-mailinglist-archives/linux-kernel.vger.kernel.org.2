@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8846438AA81
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3BDE38AA15
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240625AbhETLPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:15:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52618 "EHLO mail.kernel.org"
+        id S240412AbhETLKI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:10:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238991AbhETKyW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:54:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A382A61CE0;
-        Thu, 20 May 2021 10:01:01 +0000 (UTC)
+        id S238842AbhETKuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:50:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B67261CC9;
+        Thu, 20 May 2021 09:59:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504862;
-        bh=FVsaYYVv1Qhaj3OnFiRvL2dMG6YsftuPWFaj/nUClgw=;
+        s=korg; t=1621504780;
+        bh=ElteuhxU74EAMqjOjjz/72X/iO6FNABX35L6I2b60iQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NoZhUYRp0LwsT4vH4zcxpob1d0L00AJirFqc5AkPNPMlz+4/AkR4/+qVePtV4rgcq
-         xUgGyvc573wL6IPSGJKFVPs0TRRdILTw1pcQUrpnGMWO4tqCXkRPBR6t3No9g6qy2k
-         ocbiuduokwkIvj6W2cr8ifGJyLlRwbjUSKJo+q0w=
+        b=rzVkGSao7eV9rgeN6lvoVkmybjeeccSfYODEgLzApAA/TlFKum3ulfYAKM1ZskOMW
+         zTzpX9gmcUxBJPoHedNaxcHXLN6/e7+1IoVLqyq6a6UQ5iFy08anrioqLabZlVVi9G
+         qINENeRG2MxOLvMRfYqRdCTprwRO3oirAmAYY4iI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Taehee Yoo <ap420073@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        George Kennedy <george.kennedy@oracle.com>
-Subject: [PATCH 4.9 069/240] hsr: use netdev_err() instead of WARN_ONCE()
-Date:   Thu, 20 May 2021 11:21:01 +0200
-Message-Id: <20210520092110.988964282@linuxfoundation.org>
+        stable@vger.kernel.org, Lin Ma <linma@zju.edu.cn>,
+        Marcel Holtmann <marcel@holtmann.org>
+Subject: [PATCH 4.9 070/240] bluetooth: eliminate the potential race condition when removing the HCI controller
+Date:   Thu, 20 May 2021 11:21:02 +0200
+Message-Id: <20210520092111.028699218@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,35 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Taehee Yoo <ap420073@gmail.com>
+From: Lin Ma <linma@zju.edu.cn>
 
-commit 4b793acdca0050739b99ace6a8b9e7f717f57c6b upstream.
+commit e2cb6b891ad2b8caa9131e3be70f45243df82a80 upstream.
 
-When HSR interface is sending a frame, it finds a node with
-the destination ethernet address from the list.
-If there is no node, it calls WARN_ONCE().
-But, using WARN_ONCE() for this situation is a little bit overdoing.
-So, in this patch, the netdev_err() is used instead.
+There is a possible race condition vulnerability between issuing a HCI
+command and removing the cont.  Specifically, functions hci_req_sync()
+and hci_dev_do_close() can race each other like below:
 
-Signed-off-by: Taehee Yoo <ap420073@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Cc: George Kennedy <george.kennedy@oracle.com>
+thread-A in hci_req_sync()      |   thread-B in hci_dev_do_close()
+                                |   hci_req_sync_lock(hdev);
+test_bit(HCI_UP, &hdev->flags); |
+...                             |   test_and_clear_bit(HCI_UP, &hdev->flags)
+hci_req_sync_lock(hdev);        |
+                                |
+In this commit we alter the sequence in function hci_req_sync(). Hence,
+the thread-A cannot issue th.
+
+Signed-off-by: Lin Ma <linma@zju.edu.cn>
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Fixes: 7c6a329e4447 ("[Bluetooth] Fix regression from using default link policy")
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/hsr/hsr_framereg.c |    3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ net/bluetooth/hci_request.c |   12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
---- a/net/hsr/hsr_framereg.c
-+++ b/net/hsr/hsr_framereg.c
-@@ -310,7 +310,8 @@ void hsr_addr_subst_dest(struct hsr_node
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -275,12 +275,16 @@ int hci_req_sync(struct hci_dev *hdev, i
+ {
+ 	int ret;
  
- 	node_dst = find_node_by_AddrA(&port->hsr->node_db, eth_hdr(skb)->h_dest);
- 	if (!node_dst) {
--		WARN_ONCE(1, "%s: Unknown node\n", __func__);
-+		if (net_ratelimit())
-+			netdev_err(skb->dev, "%s: Unknown node\n", __func__);
- 		return;
- 	}
- 	if (port->type != node_dst->AddrB_port)
+-	if (!test_bit(HCI_UP, &hdev->flags))
+-		return -ENETDOWN;
+-
+ 	/* Serialize all requests */
+ 	hci_req_sync_lock(hdev);
+-	ret = __hci_req_sync(hdev, req, opt, timeout, hci_status);
++	/* check the state after obtaing the lock to protect the HCI_UP
++	 * against any races from hci_dev_do_close when the controller
++	 * gets removed.
++	 */
++	if (test_bit(HCI_UP, &hdev->flags))
++		ret = __hci_req_sync(hdev, req, opt, timeout, hci_status);
++	else
++		ret = -ENETDOWN;
+ 	hci_req_sync_unlock(hdev);
+ 
+ 	return ret;
 
 
