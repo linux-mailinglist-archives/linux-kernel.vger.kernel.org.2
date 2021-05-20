@@ -2,70 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FEAD389A49
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F564389A4D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:04:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230149AbhETADS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 20:03:18 -0400
-Received: from mail-oi1-f177.google.com ([209.85.167.177]:33296 "EHLO
-        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229525AbhETADR (ORCPT
+        id S230071AbhETAFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 20:05:39 -0400
+Received: from mail-oo1-f43.google.com ([209.85.161.43]:42782 "EHLO
+        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229598AbhETAFh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 20:03:17 -0400
-Received: by mail-oi1-f177.google.com with SMTP id b25so14829222oic.0;
-        Wed, 19 May 2021 17:01:56 -0700 (PDT)
+        Wed, 19 May 2021 20:05:37 -0400
+Received: by mail-oo1-f43.google.com with SMTP id v13-20020a4ac00d0000b029020b43b918eeso3398142oop.9;
+        Wed, 19 May 2021 17:04:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CqZdJVwT0Nb8DrWS8WJIIqJzdky4y/DuKpCLQt6Q/iQ=;
-        b=sZymdCNiahf8wEgqAaXW9Zz4XCniADcupJNxKRKM5GWN6Lcv62bfuPVQbR7tE84IMj
-         xNj9LGS7vjiHHbyHCpegELypmakd3EDyIyWymFWOOjKLRoz6/Z31o/aZ+9ARPYUt0RtY
-         JRfshjEFrOyhxF87oJ0gXy9IHQoCBxOZBJTESxVUD9kDnnpgrqV1YzT2K4H5ABxAUp8g
-         BL85qCy2Av4HFssUYBIU0jLerEN8rnt2YcRkUXFgXkWkb5kGAvVg+yDtsgD0sCjGc8wL
-         4710T7xDNcKK1Sf7vHwT7A0JarlsDjbUVLK53s5zJaFj3KBaYFIZtFxLhvUJ8FFeQm4D
-         1eTQ==
-X-Gm-Message-State: AOAM530VQQPCBf2NEMRkyXkCBWBeRYjtaEXOCp2bIV58NU3uAsMzL9HX
-        0Hg2DhMPmJl52Tae4pqMIg==
-X-Google-Smtp-Source: ABdhPJxThq8+RF1gT6s0i1ZuMM1z5xHsoubad0bkXqOJWVYPATEp0Bhsz4Xx38ghfJr5JR0XXyJewA==
-X-Received: by 2002:a54:4385:: with SMTP id u5mr1322615oiv.30.1621468915739;
-        Wed, 19 May 2021 17:01:55 -0700 (PDT)
+        bh=VelUL5MXuP2To1E/8nN6I3+q3PZvbe/mxHKHAkgvihE=;
+        b=natrO9iTBjAonPqGiCUC7D0lZQlwFx4WuDbBeSkyHkPpNvhWMKNjZOmUcma+ESkM//
+         XS7PFyjLqAesAVGzxbDwzOWwyx6PvMU2unNJBHdqHWEFQO4vyPvmR5RYGcK10HVgOHzx
+         yzep3GVNDjaAJuWCbneyWyR+Bs0tQ7/oq87Sr2p6CKZ26yxZF9lM8DHRk5RjT1+WGCgw
+         Cx6zY4d89gkDBhq0CPZLl/eMS9ykZElnZi7CfaM0BVY03LJORGOVCDhJUEUkgBjLKJFS
+         Z6nWrmBPsyyzupwyfVtYqBMKYLMxmeGracXbJaRfPawaJc28ZIMkbqvJDXxnaesGQYFs
+         S5gQ==
+X-Gm-Message-State: AOAM53239ZGoNMUu/LgLdVAb9lCJkqi8w7rwC29YpQ3qg9t7+bJd8E3i
+        Q7yqBJcvqHoWD1QWm0itLbYku1sLYg==
+X-Google-Smtp-Source: ABdhPJzAhRPNx+KYap3sAh7MHV7kxbGwqa5FzdKK/ptx4G8B4zL36npqz/wkXR3QkICcaFuPL2cXVw==
+X-Received: by 2002:a4a:dc4e:: with SMTP id q14mr1576291oov.43.1621469056126;
+        Wed, 19 May 2021 17:04:16 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z6sm261788oiz.39.2021.05.19.17.01.54
+        by smtp.gmail.com with ESMTPSA id i23sm228104oik.22.2021.05.19.17.04.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 17:01:55 -0700 (PDT)
-Received: (nullmailer pid 3920838 invoked by uid 1000);
-        Thu, 20 May 2021 00:01:54 -0000
-Date:   Wed, 19 May 2021 19:01:54 -0500
+        Wed, 19 May 2021 17:04:14 -0700 (PDT)
+Received: (nullmailer pid 3924438 invoked by uid 1000);
+        Thu, 20 May 2021 00:04:13 -0000
+Date:   Wed, 19 May 2021 19:04:13 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     linux-i2c@vger.kernel.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        mkorpershoek@baylibre.com, linux-kernel@vger.kernel.org,
-        Qii Wang <qii.wang@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-mediatek@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 2/3] dt-bindings: i2c: i2c-mt65xx: add binding for MT8365
- SoC
-Message-ID: <20210520000154.GA3920797@robh.at.kernel.org>
-References: <20210518145522.2420135-1-fparent@baylibre.com>
- <20210518145522.2420135-2-fparent@baylibre.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Corentin Labbe <clabbe@baylibre.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Russell King <linux@armlinux.org.uk>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/5] db-dinding: crypto: Add DT bindings documentation
+ for sl3516-ce
+Message-ID: <20210520000413.GA3921068@robh.at.kernel.org>
+References: <20210518151655.125153-1-clabbe@baylibre.com>
+ <20210518151655.125153-2-clabbe@baylibre.com>
+ <CACRpkdZ5ced+S6fQBAMeMuYhC3RN1q88DLyEr=gaPO6h=i26vA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518145522.2420135-2-fparent@baylibre.com>
+In-Reply-To: <CACRpkdZ5ced+S6fQBAMeMuYhC3RN1q88DLyEr=gaPO6h=i26vA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 16:55:21 +0200, Fabien Parent wrote:
-> Add binding documentation for the MT8365 I2C controllers.
+On Tue, May 18, 2021 at 11:38:38PM +0200, Linus Walleij wrote:
+> On Tue, May 18, 2021 at 5:17 PM Corentin Labbe <clabbe@baylibre.com> wrote:
 > 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml | 1 +
->  1 file changed, 1 insertion(+)
+> > This patch adds documentation for Device-Tree bindings for the
+> > SL3516-ce cryptographic offloader driver.
+> > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 > 
+> Apart from misspelled subject "db-binding" I don't see any problems
+> so
 
-Acked-by: Rob Herring <robh@kernel.org>
+And try not to say 'dt binding' twice in the subject and 'documentation' 
+is redundant as that's all bindings.
+
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Reviewed-by: Rob Herring <robh@kernel.org>
+
+> 
+> Yours,
+> Linus Walleij
