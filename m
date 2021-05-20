@@ -2,38 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC59738A13D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:28:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B88638A13F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:28:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232060AbhETJ3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:29:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53892 "EHLO mail.kernel.org"
+        id S232386AbhETJ3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:29:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231851AbhETJ1w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:27:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0887E613BF;
-        Thu, 20 May 2021 09:26:25 +0000 (UTC)
+        id S231911AbhETJ1z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:27:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C4DB613D1;
+        Thu, 20 May 2021 09:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502786;
-        bh=jTHY5n8qWZOrwPMdba7LGqIXjfTJPFfzXkcurO33shg=;
+        s=korg; t=1621502788;
+        bh=w5l4O0LkTqldlHZgRmHg74sh8TNSwu4hS5lJhnkt0G4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f+sfcqZDsIc7j2jLGnJ5B3fMkpk3kWA35DR8zKasrJzTsEX9YQgrUyIoOPqoRvgQL
-         n9mL2ZvLiaKbTzR4FgzgPMRmA8hR/ohsjTDyQsI1srS29jknoi0+A2FCyjDHXlgaGl
-         0rXIrSUNb3KQQ3Ll14rMbRYFXsipZRebo5cm3NP8=
+        b=nYzDhxDc4xhx10JbU7Ek4tgyp9Ea9J7WF5mz30JzLXjG6RdTViUPHpl/w6UXu8ZuY
+         E3804TTJc+QcTE4LdLQGDJH8ZzMYbC0hJKsK7lmwXfFn8Bz28H3K7k7QeB9AJFWtur
+         HYttmwhDeP3DXyZ0XOCsbPFap03oa5QC2NuSe53E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jani Nikula <jani.nikula@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Dave Airlie <airlied@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 5.10 02/47] drm/i915/display: fix compiler warning about array overrun
-Date:   Thu, 20 May 2021 11:22:00 +0200
-Message-Id: <20210520092053.640378568@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: [PATCH 5.10 03/47] airo: work around stack usage warning
+Date:   Thu, 20 May 2021 11:22:01 +0200
+Message-Id: <20210520092053.672558737@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
 References: <20210520092053.559923764@linuxfoundation.org>
@@ -45,69 +39,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Linus Torvalds <torvalds@linux-foundation.org>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit fec4d42724a1bf3dcba52307e55375fdb967b852 upstream.
+commit 7909a590eba6d021f104958857cbc4f0089daceb upstream.
 
-intel_dp_check_mst_status() uses a 14-byte array to read the DPRX Event
-Status Indicator data, but then passes that buffer at offset 10 off as
-an argument to drm_dp_channel_eq_ok().
+gcc-11 with KASAN on 32-bit arm produces a warning about a function
+that needs a lot of stack space:
 
-End result: there are only 4 bytes remaining of the buffer, yet
-drm_dp_channel_eq_ok() wants a 6-byte buffer.  gcc-11 correctly warns
-about this case:
+drivers/net/wireless/cisco/airo.c: In function 'setup_card.constprop':
+drivers/net/wireless/cisco/airo.c:3960:1: error: the frame size of 1512 bytes is larger than 1400 bytes [-Werror=frame-larger-than=]
 
-  drivers/gpu/drm/i915/display/intel_dp.c: In function ‘intel_dp_check_mst_status’:
-  drivers/gpu/drm/i915/display/intel_dp.c:3491:22: warning: ‘drm_dp_channel_eq_ok’ reading 6 bytes from a region of size 4 [-Wstringop-overread]
-   3491 |                     !drm_dp_channel_eq_ok(&esi[10], intel_dp->lane_count)) {
-        |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  drivers/gpu/drm/i915/display/intel_dp.c:3491:22: note: referencing argument 1 of type ‘const u8 *’ {aka ‘const unsigned char *’}
-  In file included from drivers/gpu/drm/i915/display/intel_dp.c:38:
-  include/drm/drm_dp_helper.h:1466:6: note: in a call to function ‘drm_dp_channel_eq_ok’
-   1466 | bool drm_dp_channel_eq_ok(const u8 link_status[DP_LINK_STATUS_SIZE],
-        |      ^~~~~~~~~~~~~~~~~~~~
-       6:14 elapsed
+Most of this is from a single large structure that could be dynamically
+allocated or moved into the per-device structure.  However, as the callers
+all seem to have a fairly well bounded call chain, the easiest change
+is to pull out the part of the function that needs the large variables
+into a separate function and mark that as noinline_for_stack. This does
+not reduce the total stack usage, but it gets rid of the warning and
+requires minimal changes otherwise.
 
-This commit just extends the original array by 2 zero-initialized bytes,
-avoiding the warning.
-
-There may be some underlying bug in here that caused this confusion, but
-this is at least no worse than the existing situation that could use
-random data off the stack.
-
-Cc: Jani Nikula <jani.nikula@intel.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Joonas Lahtinen <joonas.lahtinen@linux.intel.com>
-Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210323131634.2669455-1-arnd@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/i915/display/intel_dp.c |   13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/net/wireless/cisco/airo.c |  117 +++++++++++++++++++++-----------------
+ 1 file changed, 65 insertions(+), 52 deletions(-)
 
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -5655,7 +5655,18 @@ intel_dp_check_mst_status(struct intel_d
- 	drm_WARN_ON_ONCE(&i915->drm, intel_dp->active_mst_links < 0);
+--- a/drivers/net/wireless/cisco/airo.c
++++ b/drivers/net/wireless/cisco/airo.c
+@@ -3825,6 +3825,68 @@ static inline void set_auth_type(struct
+ 		local->last_auth = auth_type;
+ }
  
- 	for (;;) {
--		u8 esi[DP_DPRX_ESI_LEN] = {};
-+		/*
-+		 * The +2 is because DP_DPRX_ESI_LEN is 14, but we then
-+		 * pass in "esi+10" to drm_dp_channel_eq_ok(), which
-+		 * takes a 6-byte array. So we actually need 16 bytes
-+		 * here.
-+		 *
-+		 * Somebody who knows what the limits actually are
-+		 * should check this, but for now this is at least
-+		 * harmless and avoids a valid compiler warning about
-+		 * using more of the array than we have allocated.
-+		 */
-+		u8 esi[DP_DPRX_ESI_LEN+2] = {};
- 		bool handled;
- 		int retry;
++static int noinline_for_stack airo_readconfig(struct airo_info *ai, u8 *mac, int lock)
++{
++	int i, status;
++	/* large variables, so don't inline this function,
++	 * maybe change to kmalloc
++	 */
++	tdsRssiRid rssi_rid;
++	CapabilityRid cap_rid;
++
++	kfree(ai->SSID);
++	ai->SSID = NULL;
++	// general configuration (read/modify/write)
++	status = readConfigRid(ai, lock);
++	if (status != SUCCESS) return ERROR;
++
++	status = readCapabilityRid(ai, &cap_rid, lock);
++	if (status != SUCCESS) return ERROR;
++
++	status = PC4500_readrid(ai, RID_RSSI, &rssi_rid, sizeof(rssi_rid), lock);
++	if (status == SUCCESS) {
++		if (ai->rssi || (ai->rssi = kmalloc(512, GFP_KERNEL)) != NULL)
++			memcpy(ai->rssi, (u8*)&rssi_rid + 2, 512); /* Skip RID length member */
++	}
++	else {
++		kfree(ai->rssi);
++		ai->rssi = NULL;
++		if (cap_rid.softCap & cpu_to_le16(8))
++			ai->config.rmode |= RXMODE_NORMALIZED_RSSI;
++		else
++			airo_print_warn(ai->dev->name, "unknown received signal "
++					"level scale");
++	}
++	ai->config.opmode = adhoc ? MODE_STA_IBSS : MODE_STA_ESS;
++	set_auth_type(ai, AUTH_OPEN);
++	ai->config.modulation = MOD_CCK;
++
++	if (le16_to_cpu(cap_rid.len) >= sizeof(cap_rid) &&
++	    (cap_rid.extSoftCap & cpu_to_le16(1)) &&
++	    micsetup(ai) == SUCCESS) {
++		ai->config.opmode |= MODE_MIC;
++		set_bit(FLAG_MIC_CAPABLE, &ai->flags);
++	}
++
++	/* Save off the MAC */
++	for (i = 0; i < ETH_ALEN; i++) {
++		mac[i] = ai->config.macAddr[i];
++	}
++
++	/* Check to see if there are any insmod configured
++	   rates to add */
++	if (rates[0]) {
++		memset(ai->config.rates, 0, sizeof(ai->config.rates));
++		for (i = 0; i < 8 && rates[i]; i++) {
++			ai->config.rates[i] = rates[i];
++		}
++	}
++	set_bit (FLAG_COMMIT, &ai->flags);
++
++	return SUCCESS;
++}
++
++
+ static u16 setup_card(struct airo_info *ai, u8 *mac, int lock)
+ {
+ 	Cmd cmd;
+@@ -3871,58 +3933,9 @@ static u16 setup_card(struct airo_info *
+ 	if (lock)
+ 		up(&ai->sem);
+ 	if (ai->config.len == 0) {
+-		int i;
+-		tdsRssiRid rssi_rid;
+-		CapabilityRid cap_rid;
+-
+-		kfree(ai->SSID);
+-		ai->SSID = NULL;
+-		// general configuration (read/modify/write)
+-		status = readConfigRid(ai, lock);
+-		if (status != SUCCESS) return ERROR;
+-
+-		status = readCapabilityRid(ai, &cap_rid, lock);
+-		if (status != SUCCESS) return ERROR;
+-
+-		status = PC4500_readrid(ai, RID_RSSI,&rssi_rid, sizeof(rssi_rid), lock);
+-		if (status == SUCCESS) {
+-			if (ai->rssi || (ai->rssi = kmalloc(512, GFP_KERNEL)) != NULL)
+-				memcpy(ai->rssi, (u8*)&rssi_rid + 2, 512); /* Skip RID length member */
+-		}
+-		else {
+-			kfree(ai->rssi);
+-			ai->rssi = NULL;
+-			if (cap_rid.softCap & cpu_to_le16(8))
+-				ai->config.rmode |= RXMODE_NORMALIZED_RSSI;
+-			else
+-				airo_print_warn(ai->dev->name, "unknown received signal "
+-						"level scale");
+-		}
+-		ai->config.opmode = adhoc ? MODE_STA_IBSS : MODE_STA_ESS;
+-		set_auth_type(ai, AUTH_OPEN);
+-		ai->config.modulation = MOD_CCK;
+-
+-		if (le16_to_cpu(cap_rid.len) >= sizeof(cap_rid) &&
+-		    (cap_rid.extSoftCap & cpu_to_le16(1)) &&
+-		    micsetup(ai) == SUCCESS) {
+-			ai->config.opmode |= MODE_MIC;
+-			set_bit(FLAG_MIC_CAPABLE, &ai->flags);
+-		}
+-
+-		/* Save off the MAC */
+-		for (i = 0; i < ETH_ALEN; i++) {
+-			mac[i] = ai->config.macAddr[i];
+-		}
+-
+-		/* Check to see if there are any insmod configured
+-		   rates to add */
+-		if (rates[0]) {
+-			memset(ai->config.rates, 0, sizeof(ai->config.rates));
+-			for (i = 0; i < 8 && rates[i]; i++) {
+-				ai->config.rates[i] = rates[i];
+-			}
+-		}
+-		set_bit (FLAG_COMMIT, &ai->flags);
++		status = airo_readconfig(ai, mac, lock);
++		if (status != SUCCESS)
++			return ERROR;
+ 	}
  
+ 	/* Setup the SSIDs if present */
 
 
