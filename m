@@ -2,132 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F10BF389EDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:25:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DD0389EE3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:28:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230444AbhETH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:26:23 -0400
-Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:42279 "EHLO
-        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229536AbhETH0W (ORCPT
+        id S230365AbhETH36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:29:58 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4695 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhETH35 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:26:22 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 2D74C1C81;
-        Thu, 20 May 2021 03:25:00 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Thu, 20 May 2021 03:25:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=YGzMf60Q5zwVXsxdpGeNbxkVIZVOJSx
-        edpBbmYYWTL8=; b=dwfiAaGl+wHsZJTkcORZR/XCLH4P19DMvOzG30nHjwdY+Ri
-        7a41hUSDmIy9fjIVWWq/ycHP6T4epn6snZKNv0phhEUpGeHinncTLiKVW7S7RPW6
-        r+GZAVpplRK3rmopQL/la1LrPx0Al1wb4xcYwkb9Z2ADHbM/3HYxFmeO67Bn3iKT
-        YclkyWzhDua5/p6UiKVWoQuC04rUwOT4SHOH19qGENLmTwmkZpyYmoDWHTORjnHL
-        RQtnTFhfGZfeePXsnlaoAF+K3BhxnYQfeVYnUvJt+u6RrNjuUt/ibRZ0ZCnds1he
-        10ie0hxlfelIuRH/xktv9aDEThJRxR8MYJbGmiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=YGzMf6
-        0Q5zwVXsxdpGeNbxkVIZVOJSxedpBbmYYWTL8=; b=u8WSnZPFROdo/iv7EPEgkb
-        HkFHTKk+Wf8sJX90efqGY1F6OW4UFYuaJ35NrZwzSGzWk0C4KgvHlmL8VuGskU5z
-        kXOk+DPpNhwBXNclzJHnusinvzVchcy3cP0dNNesupCF6fCQ5CvsrXRauszrpdvM
-        RhAoG6kOTVMsYSPUoYkSfFmINbMDgGxRoHAevv/STnxt65Ys/UWxZkuq88nMbmiG
-        ELMfCbvwhz/lkPnz7YJbTLy589iWQgsnZ9CIucykYwTqq69t9u42I4Rd3QsBlYd8
-        a+iO2QbMoonm9P2FkGGj0WKxZNNE2krKxN5gFVFzCTDg17ZPvxlXBBOOnGmzcrOA
-        ==
-X-ME-Sender: <xms:yg6mYCw171VaWmfjy3nJgrZmKL7YGNMsrJEs37YdhfpiftiULttigQ>
-    <xme:yg6mYORHJfUD_tE1Lnw2w27CadOj-IqRslF8AQrEKyc9BLGZUHD-dSiK96pDR4OCm
-    sKyWRJEjVjrHDjynw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejtddguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedv
-    hefhveeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:yg6mYEXMBtWiVEW-LCcoui41pUcp1neui0KIbSYqLEB6SkvsRLmBNQ>
-    <xmx:yg6mYIhj6jnbTAyDY3czKZZZYB6S9yfPYIm1TcznQxb1J-O_tDPU8Q>
-    <xmx:yg6mYEBV3CuJ9cYACverf7xHa5l2MrROb2FDFFGB8cxInlpBRKwZ7w>
-    <xmx:yw6mYD7-EgYKW3gpOUSgZnpguVX8xr5CB6kGVbWHg76MSh2Ws6HfTw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D2325A004B5; Thu, 20 May 2021 03:24:58 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <a0d1f44a-c8ff-4108-af34-6455b5683262@www.fastmail.com>
-In-Reply-To: <CAKXUXMxTnz6edBLpBgqOo6uUiSGm8rULH9P8G24xx2OhP_Yb6A@mail.gmail.com>
-References: <20210520015704.489737-1-andrew@aj.id.au>
- <CAKXUXMxTnz6edBLpBgqOo6uUiSGm8rULH9P8G24xx2OhP_Yb6A@mail.gmail.com>
-Date:   Thu, 20 May 2021 16:54:37 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Lukas Bulwahn" <lukas.bulwahn@gmail.com>
-Cc:     "Linux Doc Mailing List" <linux-doc@vger.kernel.org>,
-        "Dwaipayan Ray" <dwaipayanray1@gmail.com>,
-        "Joe Perches" <joe@perches.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        openbmc@lists.ozlabs.org, "Jiri Slaby" <jirislaby@kernel.org>
-Subject: Re: [PATCH] Documentation: checkpatch: Tweak BIT() macro include
+        Thu, 20 May 2021 03:29:57 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fm1Vh1qPSz16PlL;
+        Thu, 20 May 2021 15:25:48 +0800 (CST)
+Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 15:28:34 +0800
+Received: from huawei.com (10.174.185.226) by dggpemm500009.china.huawei.com
+ (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 20 May
+ 2021 15:28:34 +0800
+From:   Wang Xingang <wangxingang5@huawei.com>
+To:     <robh@kernel.org>, <will@kernel.org>, <joro@8bytes.org>,
+        <lorenzo.pieralisi@arm.com>, <frowand.list@gmail.com>
+CC:     <robh+dt@kernel.org>, <helgaas@kernel.org>,
+        <gregkh@linuxfoundation.org>, <iommu@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <xieyingtai@huawei.com>,
+        <wangxingang5@huawei.com>
+Subject: [PATCH v3] iommu/of: Fix pci_request_acs() before enumerating PCI devices
+Date:   Thu, 20 May 2021 07:28:28 +0000
+Message-ID: <1621495708-40364-1-git-send-email-wangxingang5@huawei.com>
+X-Mailer: git-send-email 2.6.4.windows.1
+MIME-Version: 1.0
 Content-Type: text/plain
+X-Originating-IP: [10.174.185.226]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500009.china.huawei.com (7.185.36.225)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Xingang Wang <wangxingang5@huawei.com>
 
+When booting with devicetree, the pci_request_acs() is called after the
+enumeration and initialization of PCI devices, thus the ACS is not
+enabled. And ACS should be enabled when IOMMU is detected for the
+PCI host bridge, so add check for IOMMU before probe of PCI host and call
+pci_request_acs() to make sure ACS will be enabled when enumerating PCI
+devices.
 
-On Thu, 20 May 2021, at 16:28, Lukas Bulwahn wrote:
-> On Thu, May 20, 2021 at 3:57 AM Andrew Jeffery <andrew@aj.id.au> wrote:
-> >
-> > While include/linux/bitops.h brings in the BIT() macro, it was moved to
-> > include/linux/bits.h in [1]. Since [1] BIT() has moved again into
-> > include/vdso/bits.h via [2].
-> >
-> > I think the move to the vDSO header can be considered a implementation
-> > detail, so for now update the checkpatch documentation to recommend use
-> > of include/linux/bits.h.
-> >
-> > [1] commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file")
-> > [2] commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
-> >
-> > Cc: Jiri Slaby <jirislaby@kernel.org>
-> > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> 
-> Looks sound to me.
-> 
-> I would prefer a bit of word-smithing the commit message by just
-> removing the references:
-> 
-> So:
-> 
-> > While include/linux/bitops.h brings in the BIT() macro, it was moved to
-> > include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file"). Since that commit, BIT() has moved again into
-> > include/vdso/bits.h via commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
-> >
-> > I think the move to the vDSO header can be considered a implementation
-> > detail, so for now update the checkpatch documentation to recommend use
-> > of include/linux/bits.h.
-> >
-> 
-> And then drop references [1] and [2].
-> 
-> Andrew, what do you think?
+Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+configuring IOMMU linkage")
+Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+---
+ drivers/iommu/of_iommu.c                 |  1 -
+ drivers/pci/controller/pci-host-common.c | 17 +++++++++++++++++
+ 2 files changed, 17 insertions(+), 1 deletion(-)
 
-I mostly did this because initially I wrapped the commit message and 
-checkpatch spat out errors when it failed to properly identify the 
-commit description for [1]. But, leaving the description unwrapped 
-inline in the text feels untidy as it's just a work-around to dodge a 
-shortcoming of checkpatch.
+diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+index a9d2df001149..54a14da242cc 100644
+--- a/drivers/iommu/of_iommu.c
++++ b/drivers/iommu/of_iommu.c
+@@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+ 			.np = master_np,
+ 		};
+ 
+-		pci_request_acs();
+ 		err = pci_for_each_dma_alias(to_pci_dev(dev),
+ 					     of_pci_iommu_init, &info);
+ 	} else {
+diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
+index d3924a44db02..5904ad0bd9ae 100644
+--- a/drivers/pci/controller/pci-host-common.c
++++ b/drivers/pci/controller/pci-host-common.c
+@@ -49,6 +49,21 @@ static struct pci_config_window *gen_pci_init(struct device *dev,
+ 	return cfg;
+ }
+ 
++static void pci_host_enable_acs(struct pci_host_bridge *bridge)
++{
++	struct device_node *np = bridge->dev.parent->of_node;
++	static bool acs_enabled;
++
++	if (!np || acs_enabled)
++		return;
++
++	/* Detect IOMMU and make sure ACS will be enabled */
++	if (of_property_read_bool(np, "iommu-map")) {
++		acs_enabled = true;
++		pci_request_acs();
++	}
++}
++
+ int pci_host_common_probe(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+@@ -81,6 +96,8 @@ int pci_host_common_probe(struct platform_device *pdev)
+ 	bridge->ops = (struct pci_ops *)&ops->pci_ops;
+ 	bridge->msi_domain = true;
+ 
++	pci_host_enable_acs(bridge);
++
+ 	return pci_host_probe(bridge);
+ }
+ EXPORT_SYMBOL_GPL(pci_host_common_probe);
+-- 
+2.19.1
 
-With the reference style the long line moves out of the way and 
-checkpatch can identify the commit descriptions, at the expense of 
-complaints about line length instead. But the line length issue was 
-only a warning and so didn't seem quite so critical.
-
-While the referencing style is terse I felt it was a reasonable 
-compromise that didn't involve fixing checkpatch to fix the checkpatch 
-documentation :/
-
-Andrew
