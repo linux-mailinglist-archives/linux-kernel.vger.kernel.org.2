@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0582938A935
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:59:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F025338A955
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239500AbhETK72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:59:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43872 "EHLO mail.kernel.org"
+        id S238796AbhETLBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:01:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237166AbhETKmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 92C6661C86;
-        Thu, 20 May 2021 09:56:24 +0000 (UTC)
+        id S237456AbhETKnO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:43:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2F9246140C;
+        Thu, 20 May 2021 09:56:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504585;
-        bh=7+W3MFtSxsg9RV4cnbKCJvFbUoL/44yjrTCSxFewvN8=;
+        s=korg; t=1621504602;
+        bh=D7QmoUmX4jhy4lK/S+esCWuLp+cn7RdiO97jOmusmHw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2ek0+iwC9OVxZBgPMrT5vmWvdrQV2AgEiLSOVdJ3zbbo5JHJliFCuj8I6zeu5YNx0
-         0w5Ytj1j+ZNDS+RHn9Pef1SkEW9mvJBqc/STErH2ULE4agOArAeDnLYlWdvYYZywbu
-         WSDKkz/u4+GofxVg3uoTBXhYeGqxWhBQUaZ48dac=
+        b=NUqwqj3r8f2n5RXIntsbnnwrPNSBVip7QgpUorqt+2lqLbvUGxV8pCQskvUGjgR0x
+         hTz2juFwIIKUR4JR1JmGM0RGVxJ1tsw7FrHmSACIJLpDRoK2FKeRknQEjPTNuB5fZE
+         nToXzkPk1dUtu0EYLb/L/eti2Z4CJNi48g9fSeLE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        stable@vger.kernel.org, Ritesh Raj Sarraf <rrs@debian.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 311/323] Input: elants_i2c - do not bind to i2c-hid compatible ACPI instantiated devices
-Date:   Thu, 20 May 2021 11:23:23 +0200
-Message-Id: <20210520092130.889961787@linuxfoundation.org>
+Subject: [PATCH 4.14 313/323] um: Mark all kernel symbols as local
+Date:   Thu, 20 May 2021 11:23:25 +0200
+Message-Id: <20210520092130.980468645@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,129 +42,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 65299e8bfb24774e6340e93ae49f6626598917c8 ]
+[ Upstream commit d5027ca63e0e778b641cf23e3f5c6d6212cf412b ]
 
-Several users have been reporting that elants_i2c gives several errors
-during probe and that their touchscreen does not work on their Lenovo AMD
-based laptops with a touchscreen with a ELAN0001 ACPI hardware-id:
+Ritesh reported a bug [1] against UML, noting that it crashed on
+startup. The backtrace shows the following (heavily redacted):
 
-[    0.550596] elants_i2c i2c-ELAN0001:00: i2c-ELAN0001:00 supply vcc33 not found, using dummy regulator
-[    0.551836] elants_i2c i2c-ELAN0001:00: i2c-ELAN0001:00 supply vccio not found, using dummy regulator
-[    0.560932] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (77 77 77 77): -121
-[    0.562427] elants_i2c i2c-ELAN0001:00: software reset failed: -121
-[    0.595925] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (77 77 77 77): -121
-[    0.597974] elants_i2c i2c-ELAN0001:00: software reset failed: -121
-[    0.621893] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (77 77 77 77): -121
-[    0.622504] elants_i2c i2c-ELAN0001:00: software reset failed: -121
-[    0.632650] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (4d 61 69 6e): -121
-[    0.634256] elants_i2c i2c-ELAN0001:00: boot failed: -121
-[    0.699212] elants_i2c i2c-ELAN0001:00: invalid 'hello' packet: 00 00 ff ff
-[    1.630506] elants_i2c i2c-ELAN0001:00: Failed to read fw id: -121
-[    1.645508] elants_i2c i2c-ELAN0001:00: unknown packet 00 00 ff ff
+(gdb) bt
+...
+ #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
+ #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
+ #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
+...
+ #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
+...
+ #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
+ #45 0x00007f8990968b85 in __getgrnam_r [...]
+ #46 0x00007f89909d6b77 in grantpt [...]
+ #47 0x00007f8990a9394e in __GI_openpty [...]
+ #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
+ #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
+ #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
+ #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
+ #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
 
-Despite these errors, the elants_i2c driver stays bound to the device
-(it returns 0 from its probe method despite the errors), blocking the
-i2c-hid driver from binding.
+indicating that the UML function openpty_cb() calls openpty(),
+which internally calls __getgrnam_r(), which causes the nsswitch
+machinery to get started.
 
-Manually unbinding the elants_i2c driver and binding the i2c-hid driver
-makes the touchscreen work.
+This loads, through lots of indirection that I snipped, the
+libcom_err.so.2 library, which (in an unknown function, "??")
+calls sem_init().
 
-Check if the ACPI-fwnode for the touchscreen contains one of the i2c-hid
-compatiblity-id strings and if it has the I2C-HID spec's DSM to get the
-HID descriptor address, If it has both then make elants_i2c not bind,
-so that the i2c-hid driver can bind.
+Now, of course it wants to get libpthread's sem_init(), since
+it's linked against libpthread. However, the dynamic linker
+looks up that symbol against the binary first, and gets the
+kernel's sem_init().
 
-This assumes that non of the (older) elan touchscreens which actually
-need the elants_i2c driver falsely advertise an i2c-hid compatiblity-id
-+ DSM in their ACPI-fwnodes. If some of them actually do have this
-false advertising, then this change may lead to regressions.
+Hajime Tazaki noted that "objcopy -L" can localize a symbol,
+so the dynamic linker wouldn't do the lookup this way. I tried,
+but for some reason that didn't seem to work.
 
-While at it also drop the unnecessary DEVICE_NAME prefixing of the
-"I2C check functionality error", dev_err already outputs the driver-name.
+Doing the same thing in the linker script instead does seem to
+work, though I cannot entirely explain - it *also* works if I
+just add "VERSION { { global: *; }; }" instead, indicating that
+something else is happening that I don't really understand. It
+may be that explicitly doing that marks them with some kind of
+empty version, and that's different from the default.
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207759
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210405202756.16830-1-hdegoede@redhat.com
+Explicitly marking them with a version breaks kallsyms, so that
+doesn't seem to be possible.
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Marking all the symbols as local seems correct, and does seem
+to address the issue, so do that. Also do it for static link,
+nsswitch libraries could still be loaded there.
+
+[1] https://bugs.debian.org/983379
+
+Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Tested-By: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/elants_i2c.c | 44 ++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ arch/um/kernel/dyn.lds.S | 6 ++++++
+ arch/um/kernel/uml.lds.S | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index 0f4cda7282a2..fd48fb6ef210 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -40,6 +40,7 @@
- #include <linux/of.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/uuid.h>
- #include <asm/unaligned.h>
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index d417e3899700..06309bdbfbbf 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
  
- /* Device, Driver information */
-@@ -1138,6 +1139,40 @@ static void elants_i2c_power_off(void *_data)
- 	}
- }
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id i2c_hid_ids[] = {
-+	{"ACPI0C50", 0 },
-+	{"PNP0C50", 0 },
-+	{ },
-+};
-+
-+static const guid_t i2c_hid_guid =
-+	GUID_INIT(0x3CDFF6F7, 0x4267, 0x4555,
-+		  0xAD, 0x05, 0xB3, 0x0A, 0x3D, 0x89, 0x38, 0xDE);
-+
-+static bool elants_acpi_is_hid_device(struct device *dev)
-+{
-+	acpi_handle handle = ACPI_HANDLE(dev);
-+	union acpi_object *obj;
-+
-+	if (acpi_match_device_ids(ACPI_COMPANION(dev), i2c_hid_ids))
-+		return false;
-+
-+	obj = acpi_evaluate_dsm_typed(handle, &i2c_hid_guid, 1, 1, NULL, ACPI_TYPE_INTEGER);
-+	if (obj) {
-+		ACPI_FREE(obj);
-+		return true;
-+	}
-+
-+	return false;
++VERSION {
++  {
++    local: *;
++  };
 +}
-+#else
-+static bool elants_acpi_is_hid_device(struct device *dev)
-+{
-+	return false;
-+}
-+#endif
 +
- static int elants_i2c_probe(struct i2c_client *client,
- 			    const struct i2c_device_id *id)
+ SECTIONS
  {
-@@ -1146,9 +1181,14 @@ static int elants_i2c_probe(struct i2c_client *client,
- 	unsigned long irqflags;
- 	int error;
+   PROVIDE (__executable_start = START);
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 3d6ed6ba5b78..c3e32fa3941f 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
  
-+	/* Don't bind to i2c-hid compatible devices, these are handled by the i2c-hid drv. */
-+	if (elants_acpi_is_hid_device(&client->dev)) {
-+		dev_warn(&client->dev, "This device appears to be an I2C-HID device, not binding\n");
-+		return -ENODEV;
-+	}
++VERSION {
++  {
++    local: *;
++  };
++}
 +
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
--		dev_err(&client->dev,
--			"%s: i2c check functionality error\n", DEVICE_NAME);
-+		dev_err(&client->dev, "I2C check functionality error\n");
- 		return -ENXIO;
- 	}
- 
+ SECTIONS
+ {
+   /* This must contain the right address - not quite the default ELF one.*/
 -- 
 2.30.2
 
