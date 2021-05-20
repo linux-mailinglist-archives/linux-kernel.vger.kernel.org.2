@@ -2,116 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95C6D38A0A8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:16:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20EC838A0AC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231383AbhETJRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:17:48 -0400
-Received: from mga03.intel.com ([134.134.136.65]:60366 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230361AbhETJRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:17:47 -0400
-IronPort-SDR: HYkiJExSu7LHzARqJ1D/p3H4p0AiM8/0MFLKUWX0nEl8+g5R94PHZQFFcbwHe/nIVhZmr1zEMh
- I0hURpN5lqOg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="201238889"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="201238889"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:16:24 -0700
-IronPort-SDR: Xp4TsI8ViZpdVxEshJ5a1TG1H2oEoUUHgTy45XWgoWcWpJ1DLLl8Q7S/ZL8hLWiTSLycvinMrX
- x5vRBfW0iINQ==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="440373654"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:16:22 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andy.shevchenko@gmail.com>)
-        id 1ljemy-00DRZT-7e; Thu, 20 May 2021 12:16:20 +0300
-Date:   Thu, 20 May 2021 12:16:20 +0300
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
-Message-ID: <YKYo5EBBDbSDiIwD@smile.fi.intel.com>
-References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
- <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
- <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
- <YKYe4rgGTDRfq+va@hovoldconsulting.com>
+        id S231409AbhETJTF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:19:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhETJTE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:19:04 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3005C061574;
+        Thu, 20 May 2021 02:17:42 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id w7so5469662lji.6;
+        Thu, 20 May 2021 02:17:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=q5NNCzIDPxqo067q//hI06QgTQ23wAipeV7AqsspEK8=;
+        b=dMifFK5mrbM1Aw7kDsK+Jze9zdTq/tR03g+XfLe9dj0vGZWFlJZ5I6cO3SH8ZxIpK4
+         BlL1K81BNi6yCiJ8kMxf1iWv84QmbdXSor1jjZB9BQUWSB9Eo0hvyfmNnLehYDUjsX4A
+         n1vAw1n8c56zTAQzKtULbGBYm/IE6e6ZZXIMvs3xe8xEtESi4ZDcDT8OSE+eUyFCFEaX
+         nXPMitLkndG5KIAdZ5mfbG0tTDrjvgvTQow29im9268oVqNi/y3ECdVGdx+b1IJKHV8f
+         bhWKtdxw6uGU5Wu/P1+qAmrTvU/kfhTkY6yCF6PQkz5s/JqhOgeclwYhX4GLKXljBWO6
+         pPrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=q5NNCzIDPxqo067q//hI06QgTQ23wAipeV7AqsspEK8=;
+        b=jf71rP3xdGM198jAAcFfgRVPy6ueIhhMKbr3dQ87CgrCZWNrP2gdlIVEwMflDvdhPT
+         PurtMQcG6YLtImgsJ0yb0Oq9zByRSwiU49XHxrsQEtgVk/yMRMYH5/usf9GXBhej7246
+         PO6pbUpaXYPDsVFLg/ldfxGvPvnGP3nCW0/XMrT4v9ipIg3r+jZlmX1/N2l3+nQyY8Ut
+         yiWb3KZr6wStHIER4NWIroDN8gDRdup291oUa1P5CG1+BXYII5etsSRQlw6XgNCI5BXM
+         Qwj6yMI5K8Ba9OIJ7i70SCGelxBqfhYraAFEa0WKUfnFOf+IYMl8Af5Zv0CCM2c6VoFl
+         2uTA==
+X-Gm-Message-State: AOAM533+3PmtpS0H7A9AEzDj6ovnpb9emL5LEFD3KauQTHWHY9cqUjix
+        FzMw7uiUDeKFvaMcIz9QS8aHWGx+wPikn4Md+WNOOiooBvWmjpAy
+X-Google-Smtp-Source: ABdhPJz4WFFNBnmNgryAJqy1rEQkzpS2J5xI4uNUIVb52y/tSHKTrUi6aO0f+Xw7ZYW8JsoC08GKWLqwhdT2s0mVxSs=
+X-Received: by 2002:a2e:8903:: with SMTP id d3mr2359627lji.373.1621502261149;
+ Thu, 20 May 2021 02:17:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKYe4rgGTDRfq+va@hovoldconsulting.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210520015704.489737-1-andrew@aj.id.au> <CAKXUXMxTnz6edBLpBgqOo6uUiSGm8rULH9P8G24xx2OhP_Yb6A@mail.gmail.com>
+ <a0d1f44a-c8ff-4108-af34-6455b5683262@www.fastmail.com>
+In-Reply-To: <a0d1f44a-c8ff-4108-af34-6455b5683262@www.fastmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 20 May 2021 14:47:28 +0530
+Message-ID: <CABJPP5C7ZokRycaE0aAvUv3BfOJqOvPyqn-P0bbPdyCfnuuESw@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: checkpatch: Tweak BIT() macro include
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        openbmc@lists.ozlabs.org, Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:33:38AM +0200, Johan Hovold wrote:
-> On Thu, May 20, 2021 at 11:15:31AM +0300, Andy Shevchenko wrote:
-> > On Thu, May 20, 2021 at 11:07 AM Johan Hovold <johan@kernel.org> wrote:
-> > > On Tue, May 18, 2021 at 11:33:39AM +0300, Andy Shevchenko wrote:
-> 
-> > > The _if suffix here is too vague.
+On Thu, May 20, 2021 at 12:55 PM Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+>
+>
+> On Thu, 20 May 2021, at 16:28, Lukas Bulwahn wrote:
+> > On Thu, May 20, 2021 at 3:57 AM Andrew Jeffery <andrew@aj.id.au> wrote:
 > > >
-> > > Please use a more descriptive name so that you don't need to look at the
-> > > implementation to understand what the macro does.
+> > > While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> > > include/linux/bits.h in [1]. Since [1] BIT() has moved again into
+> > > include/vdso/bits.h via [2].
 > > >
-> > > Perhaps call it
+> > > I think the move to the vDSO header can be considered a implementation
+> > > detail, so for now update the checkpatch documentation to recommend use
+> > > of include/linux/bits.h.
 > > >
-> > >         for_each_gpio_desc_with_flag()
-> > 
-> > Haha, I have the same in my internal tree, but then I have changed to
-> > _if and here is why:
-> > - the API is solely for internal use (note, internals of struct
-> > gpio_desc available for the same set of users)
-> 
-> That's not a valid argument here. You should never make code harder to
-> read.
-> 
-> There are other ways of marking functions as intended for internal use
-> (e.g. do not export them and add a _ prefix or whatever).
-> 
-> > - the current users do only same pattern
-> 
-> That's not an argument against using a descriptive name. Possibly
-> against adding a generic for_each_gpio_desc() macro.
-> 
-> > - I don't expect that we will have this to be anything else in the future
-> 
-> Again, irrelevant. Possibly an argument against adding another helper in
-> the first place.
-> 
-> > Thus, _if is a good balance between scope of use and naming.
-> 
-> No, no, no. It's never a good idea to obfuscate code.
-> 
-> > I prefer to leave it as is.
-> 
-> I hope you'll reconsider, or that my arguments can convince the
-> maintainers to step in here.
-> 
-> > > or just add the more generic macro
+> > > [1] commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file")
+> > > [2] commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
 > > >
-> > >         for_each_gpio_desc()
+> > > Cc: Jiri Slaby <jirislaby@kernel.org>
+> > > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> >
+> > Looks sound to me.
+> >
+> > I would prefer a bit of word-smithing the commit message by just
+> > removing the references:
+> >
+> > So:
+> >
+> > > While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> > > include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file"). Since that commit, BIT() has moved again into
+> > > include/vdso/bits.h via commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
 > > >
-> > > and open-code the test so that it's clear what's going on here.
-> 
-> FWIW, NAK due to the non-descriptive for_each_desc_if() name.
+> > > I think the move to the vDSO header can be considered a implementation
+> > > detail, so for now update the checkpatch documentation to recommend use
+> > > of include/linux/bits.h.
+> > >
+> >
+> > And then drop references [1] and [2].
+> >
+> > Andrew, what do you think?
+>
+> I mostly did this because initially I wrapped the commit message and
+> checkpatch spat out errors when it failed to properly identify the
+> commit description for [1]. But, leaving the description unwrapped
+> inline in the text feels untidy as it's just a work-around to dodge a
+> shortcoming of checkpatch.
+>
+> With the reference style the long line moves out of the way and
+> checkpatch can identify the commit descriptions, at the expense of
+> complaints about line length instead. But the line length issue was
+> only a warning and so didn't seem quite so critical.
+>
+> While the referencing style is terse I felt it was a reasonable
+> compromise that didn't involve fixing checkpatch to fix the checkpatch
+> documentation :/
+>
 
-Btw, missed argument
+Hey,
+Can you share which wrap around caused the checkpatch errors
+to be emitted? We can try to fix that.
 
-..._with_flag(..., FLAG_...)
+I was able to wrap it without checkpatch complaining. You might consider
+replacing it with this if you wish?
 
-breaks the DRY principle. If you read current code it's clear with that
+While include/linux/bitops.h brings in the BIT() macro, it was moved to
+include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
 
-_if(..., FLAG_...)
+Since that commit BIT() has moved again into include/vdso/bits.h via
+commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
 
--- 
-With Best Regards,
-Andy Shevchenko
+I think the move to the vDSO header can be considered an implementation
+detail, so for now update the checkpatch documentation to recommend use
+of include/linux/bits.h.
 
 
+Thanks,
+Dwaipayan.
