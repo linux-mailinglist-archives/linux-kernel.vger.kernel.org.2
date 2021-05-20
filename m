@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AA6A38AA49
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C774238AA4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:12:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239718AbhETLL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:11:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52024 "EHLO mail.kernel.org"
+        id S239623AbhETLLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:11:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238418AbhETKvq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:51:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C002161CBD;
-        Thu, 20 May 2021 09:59:59 +0000 (UTC)
+        id S239108AbhETKvs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:51:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EEA8E61CCB;
+        Thu, 20 May 2021 10:00:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504800;
-        bh=2OSEyeX9pBWuql5yWd3vSjq9fNNIsfbyxzeN7l1ItuY=;
+        s=korg; t=1621504802;
+        bh=DZ49FfwXbFBW/HdCYNjUsyjxMS1HJY05sHhllPN0g28=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxSiLfPJVr13HNjARA0DhRJ88ISNbsd00Rx6wBRm2Ip9Y1R359enhfQ7kacS7fizh
-         tEuYoOtm72+HU125X2HPEpAdLQJ1TJi9zCXosDax7Frw7hYiiYPIzxo+TiPACWQJm6
-         j5ZPhP4j7jtw9JVVML534Jtv/gnCwchxcDH9rqhQ=
+        b=SbG3LjfaZYYWzs0IA1thp4iJOPOHPRylSSJa+vwkGnEwcnI1KA2NVG/sg8kbZxncR
+         HP2RR6BftTDLg/KEsZcxx7YEDzreFVT+zWzWfmfu7041jcyVTuuSuaes5Fq2LdiMpA
+         2J9r7GRQadArjrNhOXNxQSOvWXtOWCWX06/utN1o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 4.9 087/240] ALSA: hda/realtek: Re-order ALC882 Sony quirk table entries
-Date:   Thu, 20 May 2021 11:21:19 +0200
-Message-Id: <20210520092111.607566269@linuxfoundation.org>
+Subject: [PATCH 4.9 088/240] ALSA: hda/realtek: Re-order ALC269 Sony quirk table entries
+Date:   Thu, 20 May 2021 11:21:20 +0200
+Message-Id: <20210520092111.639138142@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,16 +40,16 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Takashi Iwai <tiwai@suse.de>
 
-commit b7529c18feecb1af92f9db08c8e7fe446a82d96d upstream.
+commit cab561f8d4bc9b196ae20c960aa5da89fd786ab5 upstream.
 
-Just re-order the alc882_fixup_tbl[] entries for Sony devices for
+Just re-order the alc269_fixup_tbl[] entries for Sony devices for
 avoiding the oversight of the duplicated or unapplied item in future.
 No functional changes.
 
 Also Cc-to-stable for the further patch applications.
 
 Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210428112704.23967-3-tiwai@suse.de
+Link: https://lore.kernel.org/r/20210428112704.23967-9-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
@@ -58,19 +58,20 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -2237,11 +2237,11 @@ static const struct snd_pci_quirk alc882
- 	SND_PCI_QUIRK(0x1043, 0x835f, "Asus Eee 1601", ALC888_FIXUP_EEE1601),
- 	SND_PCI_QUIRK(0x1043, 0x84bc, "ASUS ET2700", ALC887_FIXUP_ASUS_BASS),
- 	SND_PCI_QUIRK(0x1043, 0x8691, "ASUS ROG Ranger VIII", ALC882_FIXUP_GPIO3),
-+	SND_PCI_QUIRK(0x104d, 0x9043, "Sony Vaio VGC-LN51JGB", ALC882_FIXUP_NO_PRIMARY_HP),
-+	SND_PCI_QUIRK(0x104d, 0x9044, "Sony VAIO AiO", ALC882_FIXUP_NO_PRIMARY_HP),
- 	SND_PCI_QUIRK(0x104d, 0x9047, "Sony Vaio TT", ALC889_FIXUP_VAIO_TT),
- 	SND_PCI_QUIRK(0x104d, 0x905a, "Sony Vaio Z", ALC882_FIXUP_NO_PRIMARY_HP),
- 	SND_PCI_QUIRK(0x104d, 0x9060, "Sony Vaio VPCL14M1R", ALC882_FIXUP_NO_PRIMARY_HP),
--	SND_PCI_QUIRK(0x104d, 0x9043, "Sony Vaio VGC-LN51JGB", ALC882_FIXUP_NO_PRIMARY_HP),
--	SND_PCI_QUIRK(0x104d, 0x9044, "Sony VAIO AiO", ALC882_FIXUP_NO_PRIMARY_HP),
- 
- 	/* All Apple entries are in codec SSIDs */
- 	SND_PCI_QUIRK(0x106b, 0x00a0, "MacBookPro 3,1", ALC889_FIXUP_MBP_VREF),
+@@ -5821,12 +5821,12 @@ static const struct snd_pci_quirk alc269
+ 	SND_PCI_QUIRK(0x1043, 0x8398, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x83ce, "ASUS P1005", ALC269_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x1043, 0x8516, "ASUS X101CH", ALC269_FIXUP_ASUS_X101),
+-	SND_PCI_QUIRK(0x104d, 0x90b5, "Sony VAIO Pro 11", ALC286_FIXUP_SONY_MIC_NO_PRESENCE),
+-	SND_PCI_QUIRK(0x104d, 0x90b6, "Sony VAIO Pro 13", ALC286_FIXUP_SONY_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x104d, 0x9073, "Sony VAIO", ALC275_FIXUP_SONY_VAIO_GPIO2),
+ 	SND_PCI_QUIRK(0x104d, 0x907b, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK(0x104d, 0x9084, "Sony VAIO", ALC275_FIXUP_SONY_HWEQ),
+ 	SND_PCI_QUIRK(0x104d, 0x9099, "Sony VAIO S13", ALC275_FIXUP_SONY_DISABLE_AAMIX),
++	SND_PCI_QUIRK(0x104d, 0x90b5, "Sony VAIO Pro 11", ALC286_FIXUP_SONY_MIC_NO_PRESENCE),
++	SND_PCI_QUIRK(0x104d, 0x90b6, "Sony VAIO Pro 13", ALC286_FIXUP_SONY_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x10cf, 0x1475, "Lifebook", ALC269_FIXUP_LIFEBOOK),
+ 	SND_PCI_QUIRK(0x10cf, 0x159f, "Lifebook E780", ALC269_FIXUP_LIFEBOOK_NO_HP_TO_LINEOUT),
+ 	SND_PCI_QUIRK(0x10cf, 0x15dc, "Lifebook T731", ALC269_FIXUP_LIFEBOOK_HP_PIN),
 
 
