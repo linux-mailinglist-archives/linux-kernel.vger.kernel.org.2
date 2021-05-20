@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B0B38ABB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC6C38ABB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240737AbhETL1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:27:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37896 "EHLO mail.kernel.org"
+        id S234979AbhETL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:27:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38332 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235618AbhETLHN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:07:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F1D9461D26;
-        Thu, 20 May 2021 10:05:51 +0000 (UTC)
+        id S238962AbhETLHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:07:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDB161D32;
+        Thu, 20 May 2021 10:05:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505152;
-        bh=DxXPoU4nmCj8bRLhnv8Q1DKdGo+gIGPorYOkRXJSt0M=;
+        s=korg; t=1621505155;
+        bh=HRUMB6cOx5+KzcuT3fAC1/OP5cgUpeEa455FMJJUnR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kTKjI11cgJfi3l/rn1dHCnZpIW+2RtQ4ySrBULjsD9K7rXKOvpv9Lf/kNGdZZiBGe
-         IjAYEV0gD2lpZniFbB+YMq7pG2gHiEYDYULRHgXuBPDv3w7vyohIR3G1X4qRwKEj2p
-         onX7zGtK3sz/jRz5+1uMru1OKKbLQ/0fS+d45QfU=
+        b=uyDjcrh3FZxgR67m5RmHTuMVdWzQTurJ2CGxwXpviMK6hQjj+uXBl2WSuYJLS7juT
+         imgrbfG5qGFO9e4kdHTmA+sqUSioPva7pD9EoMiiLER0hSHSztgymlt6irU4C8n8g7
+         1Di/A7PDHG7jX/eAb6s0HfybC39p5sqzWTIVZHaM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 4.9 224/240] x86/msr: Fix wr/rdmsr_safe_regs_on_cpu() prototypes
-Date:   Thu, 20 May 2021 11:23:36 +0200
-Message-Id: <20210520092116.235551046@linuxfoundation.org>
+        stable@vger.kernel.org, Peter Foley <pefoley2@pefoley.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+Subject: [PATCH 4.9 225/240] extcon: adc-jack: Fix incompatible pointer type warning
+Date:   Thu, 20 May 2021 11:23:37 +0200
+Message-Id: <20210520092116.266284298@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,48 +39,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Peter Foley <pefoley2@pefoley.com>
 
-commit 396a66aa1172ef2b78c21651f59b40b87b2e5e1e upstream.
+commit 8a522bf2d4f788306443d36b26b54f0aedcdfdbe upstream.
 
-gcc-11 warns about mismatched prototypes here:
+This patch fixes the incompatible warning of extcon-adc-jack.c driver
+when calling devm_extcon_dev_allocate().
 
-  arch/x86/lib/msr-smp.c:255:51: error: argument 2 of type ‘u32 *’ {aka ‘unsigned int *’} declared as a pointer [-Werror=array-parameter=]
-    255 | int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
-        |                                              ~~~~~^~~~
-  arch/x86/include/asm/msr.h:347:50: note: previously declared as an array ‘u32[8]’ {aka ‘unsigned int[8]’}
-
-GCC is right here - fix up the types.
-
-[ mingo: Twiddled the changelog. ]
-
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/20210322164541.912261-1-arnd@kernel.org
+Signed-off-by: Peter Foley <pefoley2@pefoley.com>
+[cw00.choi: Modify the patch title and descritpion]
+Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/lib/msr-smp.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/extcon/extcon-adc-jack.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/x86/lib/msr-smp.c
-+++ b/arch/x86/lib/msr-smp.c
-@@ -239,7 +239,7 @@ static void __wrmsr_safe_regs_on_cpu(voi
- 	rv->err = wrmsr_safe_regs(rv->regs);
- }
+--- a/include/linux/extcon/extcon-adc-jack.h
++++ b/include/linux/extcon/extcon-adc-jack.h
+@@ -59,7 +59,7 @@ struct adc_jack_pdata {
+ 	const char *name;
+ 	const char *consumer_channel;
  
--int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
-+int rdmsr_safe_regs_on_cpu(unsigned int cpu, u32 regs[8])
- {
- 	int err;
- 	struct msr_regs_info rv;
-@@ -252,7 +252,7 @@ int rdmsr_safe_regs_on_cpu(unsigned int
- }
- EXPORT_SYMBOL(rdmsr_safe_regs_on_cpu);
+-	const enum extcon *cable_names;
++	const unsigned int *cable_names;
  
--int wrmsr_safe_regs_on_cpu(unsigned int cpu, u32 *regs)
-+int wrmsr_safe_regs_on_cpu(unsigned int cpu, u32 regs[8])
- {
- 	int err;
- 	struct msr_regs_info rv;
+ 	/* The last entry's state should be 0 */
+ 	struct adc_jack_cond *adc_conditions;
 
 
