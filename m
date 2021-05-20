@@ -2,171 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43328389AC8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50A3C389AB7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:03:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhETBOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:14:10 -0400
-Received: from m12-14.163.com ([220.181.12.14]:34983 "EHLO m12-14.163.com"
+        id S230178AbhETBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:04:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhETBOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:14:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=Qy19LWiFKg7bMwsI8f
-        6hYFJflRBkGjDtCi5WynYB9s4=; b=OyQZgY+Cpa38F9OE3FWL6Zqvux3x/A34+P
-        jVpUjQ+31GlQHNbG76fEdcNT4MY983cq9C8ZNh9ZuOhhuWPZ9fNxWDABVDUx5msj
-        a8HnL0an0XvzYql7M5ggswNzT4udrxh/nS6blUqWAdyWIsXSqymhxQDN//oItb12
-        37QFsuCfE=
-Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
-        by smtp10 (Coremail) with SMTP id DsCowACnGzGKs6Vg2mmRJw--.1930S2;
-        Thu, 20 May 2021 08:55:41 +0800 (CST)
-From:   samirweng1979 <samirweng1979@163.com>
-To:     tony0620emma@gmail.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org
-Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        wengjianfeng <wengjianfeng@yulong.com>
-Subject: [PATCH] rtw88: coex: remove unnecessary variable and label
-Date:   Thu, 20 May 2021 08:55:45 +0800
-Message-Id: <20210520005545.31272-1-samirweng1979@163.com>
-X-Mailer: git-send-email 2.15.0.windows.1
-X-CM-TRANSID: DsCowACnGzGKs6Vg2mmRJw--.1930S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFWrCF48WF4Dtw18JFW5ZFb_yoW5tr1xpF
-        Wa9a43JrZ8Jr4rXr48GFWFkFyY9w4xtayxA39Yy34fJw18Xr4kZF1DCa4Yyrn0grWrWr1a
-        gF4Dt3y3ua17GFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07bOxhLUUUUU=
-X-Originating-IP: [218.17.89.92]
-X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/xtbBLA2YsV++Lz7CHgAAsk
+        id S229525AbhETBER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 21:04:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0854D6100A;
+        Thu, 20 May 2021 01:02:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621472576;
+        bh=Lf/8QEJNwE3bPrrZVsNXjplajFp91+e38C42i8jmbkY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DYRVfyZJgvP4rPI60P5gD5ZZ+BRhfvGLBaXVXfbHFkavmRgl0cJlE+NNkh1WPTfVI
+         hl6AKVwglJM6trM6ENDCxCZsePwO4D96kNoCQZrtGMaspqSZ4WpzysTUWTWrNDLl0R
+         RzlV+MCk0QlhoPpSxcVsVDuONM/I4ZzFTxh8zH7xYqr6LudXdEp5+BAvCZXsWavEpU
+         h+qx9wUezjOS8ZNxCmK3FqBI56fk+tFQBppaKo7CPyrfWWh/yz1PVZfIkY2gVew1+H
+         D/9sFf8smHmMqCS9gsvvc0LRoZ6Va8n1bdekZ7qgk9okaccmtkOcRgFvHw//ou+nZH
+         l42vYhivFGCOw==
+Date:   Thu, 20 May 2021 03:02:54 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 1/3] rcu/nocb: Start moving nocb code to its own plugin
+ file
+Message-ID: <20210520010254.GC22836@lothringen>
+References: <20210519000930.15702-1-frederic@kernel.org>
+ <20210519000930.15702-2-frederic@kernel.org>
+ <20210519155508.GX4441@paulmck-ThinkPad-P17-Gen-1>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519155508.GX4441@paulmck-ThinkPad-P17-Gen-1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: wengjianfeng <wengjianfeng@yulong.com>
+On Wed, May 19, 2021 at 08:55:08AM -0700, Paul E. McKenney wrote:
+> On Wed, May 19, 2021 at 02:09:28AM +0200, Frederic Weisbecker wrote:
+> > tree_plugin.h is now gathering not only the (no)preempt-rcu specifics
+> > but also other features like NO_CB. As the latter has grown quite in
+> > complexity and volume, it's may be a good idea to start moving the
+> > related code to its own file so we don't need to browse thousand lines
+> > to find what we need.
+> > 
+> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> 
+> Applied with the usual wordsmithing, thank you!
+> 
+> But for consistency with the other similar files included by
+> kernel/rcu/tree.c, should the name instead be kernel/rcu/tree_nocb.h?
 
-In some funciton, the variable ret just used as return value,and
-out label just return ret,so ret and out label are unnecessary,
-we should delete these and use return true/false to replace.
+Ah yes, I hesitated but tree_nocb.h is indeed more consistent. Can I let
+you do the rename?
 
-Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
----
- drivers/net/wireless/realtek/rtw88/coex.c | 40 ++++++++-----------------------
- 1 file changed, 10 insertions(+), 30 deletions(-)
+> Also, if Ingo and I are one the author list, shouldn't you be as well?  ;-)
 
-diff --git a/drivers/net/wireless/realtek/rtw88/coex.c b/drivers/net/wireless/realtek/rtw88/coex.c
-index cedbf38..103e877 100644
---- a/drivers/net/wireless/realtek/rtw88/coex.c
-+++ b/drivers/net/wireless/realtek/rtw88/coex.c
-@@ -630,20 +630,16 @@ static bool rtw_coex_get_bt_scan_type(struct rtw_dev *rtwdev, u8 *scan_type)
- 	struct rtw_coex_info_req req = {0};
- 	struct sk_buff *skb;
- 	u8 *payload;
--	bool ret = false;
- 
- 	req.op_code = BT_MP_INFO_OP_SCAN_TYPE;
- 	skb = rtw_coex_info_request(rtwdev, &req);
- 	if (!skb)
--		goto out;
-+		return false;
- 
- 	payload = get_payload_from_coex_resp(skb);
- 	*scan_type = GET_COEX_RESP_BT_SCAN_TYPE(payload);
- 	dev_kfree_skb_any(skb);
--	ret = true;
--
--out:
--	return ret;
-+	return true;
- }
- 
- static bool rtw_coex_set_lna_constrain_level(struct rtw_dev *rtwdev,
-@@ -651,19 +647,15 @@ static bool rtw_coex_set_lna_constrain_level(struct rtw_dev *rtwdev,
- {
- 	struct rtw_coex_info_req req = {0};
- 	struct sk_buff *skb;
--	bool ret = false;
- 
- 	req.op_code = BT_MP_INFO_OP_LNA_CONSTRAINT;
- 	req.para1 = lna_constrain_level;
- 	skb = rtw_coex_info_request(rtwdev, &req);
- 	if (!skb)
--		goto out;
-+		return false;
- 
- 	dev_kfree_skb_any(skb);
--	ret = true;
--
--out:
--	return ret;
-+	return true;
- }
- 
- #define case_BTSTATUS(src) \
-@@ -3533,19 +3525,15 @@ static bool rtw_coex_get_bt_patch_version(struct rtw_dev *rtwdev,
- 	struct rtw_coex_info_req req = {0};
- 	struct sk_buff *skb;
- 	u8 *payload;
--	bool ret = false;
- 
- 	req.op_code = BT_MP_INFO_OP_PATCH_VER;
- 	skb = rtw_coex_info_request(rtwdev, &req);
- 	if (!skb)
--		goto out;
-+		return false;
- 
- 	payload = get_payload_from_coex_resp(skb);
- 	*patch_version = GET_COEX_RESP_BT_PATCH_VER(payload);
--	ret = true;
--
--out:
--	return ret;
-+	return true;
- }
- 
- static bool rtw_coex_get_bt_supported_version(struct rtw_dev *rtwdev,
-@@ -3554,19 +3542,15 @@ static bool rtw_coex_get_bt_supported_version(struct rtw_dev *rtwdev,
- 	struct rtw_coex_info_req req = {0};
- 	struct sk_buff *skb;
- 	u8 *payload;
--	bool ret = false;
- 
- 	req.op_code = BT_MP_INFO_OP_SUPP_VER;
- 	skb = rtw_coex_info_request(rtwdev, &req);
- 	if (!skb)
--		goto out;
-+		return false;
- 
- 	payload = get_payload_from_coex_resp(skb);
- 	*supported_version = GET_COEX_RESP_BT_SUPP_VER(payload);
--	ret = true;
--
--out:
--	return ret;
-+	return true;
- }
- 
- static bool rtw_coex_get_bt_supported_feature(struct rtw_dev *rtwdev,
-@@ -3575,19 +3559,15 @@ static bool rtw_coex_get_bt_supported_feature(struct rtw_dev *rtwdev,
- 	struct rtw_coex_info_req req = {0};
- 	struct sk_buff *skb;
- 	u8 *payload;
--	bool ret = false;
- 
- 	req.op_code = BT_MP_INFO_OP_SUPP_FEAT;
- 	skb = rtw_coex_info_request(rtwdev, &req);
- 	if (!skb)
--		goto out;
-+		return false;
- 
- 	payload = get_payload_from_coex_resp(skb);
- 	*supported_feature = GET_COEX_RESP_BT_SUPP_FEAT(payload);
--	ret = true;
--
--out:
--	return ret;
-+	return true;
- }
- 
- struct rtw_coex_sta_stat_iter_data {
--- 
-1.9.1
+Heh, alright feel free to add the following as a fixup :-)
 
+diff --git a/kernel/rcu/nocb.h b/kernel/rcu/nocb.h
+index a7783923833e..bf2690ca5d2b 100644
+--- a/kernel/rcu/nocb.h
++++ b/kernel/rcu/nocb.h
+@@ -6,9 +6,11 @@
+  *
+  * Copyright Red Hat, 2009
+  * Copyright IBM Corporation, 2009
++ * Copyright SUSE, 2021
+  *
+  * Author: Ingo Molnar <mingo@elte.hu>
+  *	   Paul E. McKenney <paulmck@linux.ibm.com>
++ *	   Frederic Weisbecker <frederic@kernel.org>
+  */
+ 
+ #ifdef CONFIG_RCU_NOCB_CPU
+
+
+Or perhaps you prefer a separate patch?
+
+Thanks!
