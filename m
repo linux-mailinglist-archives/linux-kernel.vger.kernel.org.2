@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A77E638AA1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E502338AA18
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240507AbhETLKY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:10:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49006 "EHLO mail.kernel.org"
+        id S240487AbhETLKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:10:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238959AbhETKun (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:50:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B208616EC;
-        Thu, 20 May 2021 09:59:44 +0000 (UTC)
+        id S238954AbhETKum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:50:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 983F761CD0;
+        Thu, 20 May 2021 09:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504784;
-        bh=WsMaHoC4fGQ2W3sihmMpnx5MwGQVBLQIWMvOoTuGhnc=;
+        s=korg; t=1621504787;
+        bh=2Vl2YMPx0ocYVCCfLjIexlfpR1+ziBADLp+bZwq6A94=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lxe6IaatA/lp37Nv/VmXlh89gxhPWJ7xF5PeeFxOdk9/c1aIJcSyfVndvGwwkeu2l
-         cH5nY2JO5Z7L0d/WJui9p0HI+juWjTa+FOfFUPhVGQbUW0o2zO0lXPLuBmgwND6/jF
-         /vTQhFnUDSbLa6uittkNtHCYuT1SZTaoIZ9WJ+gQ=
+        b=mhJH+RvFaMRPZG6yyhrz3Q94wdpTtdW1nEwthQndzhinj5LTeVVAeJ0JUj32tHAc3
+         Y5TBepcalgPZF5sX86NOtJR/0yIKpSyYHs/yVz/8avcQoHELgOrQc7lARm2hWcqaI5
+         tZdWqyWwojdCurSlb/G3muP04QtJWAUOLRW3i390=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Gang He <ghe@suse.com>,
-        Heming Zhao <heming.zhao@suse.com>, Song Liu <song@kernel.org>
-Subject: [PATCH 4.9 080/240] md-cluster: fix use-after-free issue when removing rdev
-Date:   Thu, 20 May 2021 11:21:12 +0200
-Message-Id: <20210520092111.370413874@linuxfoundation.org>
+        stable@vger.kernel.org, Heming Zhao <heming.zhao@suse.com>,
+        Christoph Hellwig <hch@lst.de>, Song Liu <song@kernel.org>
+Subject: [PATCH 4.9 081/240] md: factor out a mddev_find_locked helper from mddev_find
+Date:   Thu, 20 May 2021 11:21:13 +0200
+Message-Id: <20210520092111.403218007@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,112 +39,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Heming Zhao <heming.zhao@suse.com>
+From: Christoph Hellwig <hch@lst.de>
 
-commit f7c7a2f9a23e5b6e0f5251f29648d0238bb7757e upstream.
+commit 8b57251f9a91f5e5a599de7549915d2d226cc3af upstream.
 
-md_kick_rdev_from_array will remove rdev, so we should
-use rdev_for_each_safe to search list.
+Factor out a self-contained helper to just lookup a mddev by the dev_t
+"unit".
 
-How to trigger:
-
-env: Two nodes on kvm-qemu x86_64 VMs (2C2G with 2 iscsi luns).
-
-```
-node2=192.168.0.3
-
-for i in {1..20}; do
-    echo ==== $i `date` ====;
-
-    mdadm -Ss && ssh ${node2} "mdadm -Ss"
-    wipefs -a /dev/sda /dev/sdb
-
-    mdadm -CR /dev/md0 -b clustered -e 1.2 -n 2 -l 1 /dev/sda \
-       /dev/sdb --assume-clean
-    ssh ${node2} "mdadm -A /dev/md0 /dev/sda /dev/sdb"
-    mdadm --wait /dev/md0
-    ssh ${node2} "mdadm --wait /dev/md0"
-
-    mdadm --manage /dev/md0 --fail /dev/sda --remove /dev/sda
-    sleep 1
-done
-```
-
-Crash stack:
-
-```
-stack segment: 0000 [#1] SMP
-... ...
-RIP: 0010:md_check_recovery+0x1e8/0x570 [md_mod]
-... ...
-RSP: 0018:ffffb149807a7d68 EFLAGS: 00010207
-RAX: 0000000000000000 RBX: ffff9d494c180800 RCX: ffff9d490fc01e50
-RDX: fffff047c0ed8308 RSI: 0000000000000246 RDI: 0000000000000246
-RBP: 6b6b6b6b6b6b6b6b R08: ffff9d490fc01e40 R09: 0000000000000000
-R10: 0000000000000001 R11: 0000000000000001 R12: 0000000000000000
-R13: ffff9d494c180818 R14: ffff9d493399ef38 R15: ffff9d4933a1d800
-FS:  0000000000000000(0000) GS:ffff9d494f700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fe68cab9010 CR3: 000000004c6be001 CR4: 00000000003706e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- raid1d+0x5c/0xd40 [raid1]
- ? finish_task_switch+0x75/0x2a0
- ? lock_timer_base+0x67/0x80
- ? try_to_del_timer_sync+0x4d/0x80
- ? del_timer_sync+0x41/0x50
- ? schedule_timeout+0x254/0x2d0
- ? md_start_sync+0xe0/0xe0 [md_mod]
- ? md_thread+0x127/0x160 [md_mod]
- md_thread+0x127/0x160 [md_mod]
- ? wait_woken+0x80/0x80
- kthread+0x10d/0x130
- ? kthread_park+0xa0/0xa0
- ret_from_fork+0x1f/0x40
-```
-
-Fixes: dbb64f8635f5d ("md-cluster: Fix adding of new disk with new reload code")
-Fixes: 659b254fa7392 ("md-cluster: remove a disk asynchronously from cluster environment")
 Cc: stable@vger.kernel.org
-Reviewed-by: Gang He <ghe@suse.com>
-Signed-off-by: Heming Zhao <heming.zhao@suse.com>
+Reviewed-by: Heming Zhao <heming.zhao@suse.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Song Liu <song@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/md.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/md/md.c |   32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
 --- a/drivers/md/md.c
 +++ b/drivers/md/md.c
-@@ -8462,11 +8462,11 @@ void md_check_recovery(struct mddev *mdd
- 		}
+@@ -508,6 +508,17 @@ void mddev_init(struct mddev *mddev)
+ }
+ EXPORT_SYMBOL_GPL(mddev_init);
  
- 		if (mddev_is_clustered(mddev)) {
--			struct md_rdev *rdev;
-+			struct md_rdev *rdev, *tmp;
- 			/* kick the device if another node issued a
- 			 * remove disk.
- 			 */
--			rdev_for_each(rdev, mddev) {
-+			rdev_for_each_safe(rdev, tmp, mddev) {
- 				if (test_and_clear_bit(ClusterRemove, &rdev->flags) &&
- 						rdev->raid_disk < 0)
- 					md_kick_rdev_from_array(rdev);
-@@ -8775,12 +8775,12 @@ err_wq:
- static void check_sb_changes(struct mddev *mddev, struct md_rdev *rdev)
++static struct mddev *mddev_find_locked(dev_t unit)
++{
++	struct mddev *mddev;
++
++	list_for_each_entry(mddev, &all_mddevs, all_mddevs)
++		if (mddev->unit == unit)
++			return mddev;
++
++	return NULL;
++}
++
+ static struct mddev *mddev_find(dev_t unit)
  {
- 	struct mdp_superblock_1 *sb = page_address(rdev->sb_page);
--	struct md_rdev *rdev2;
-+	struct md_rdev *rdev2, *tmp;
- 	int role, ret;
- 	char b[BDEVNAME_SIZE];
+ 	struct mddev *mddev, *new = NULL;
+@@ -519,13 +530,13 @@ static struct mddev *mddev_find(dev_t un
+ 	spin_lock(&all_mddevs_lock);
  
- 	/* Check for change of roles in the active devices */
--	rdev_for_each(rdev2, mddev) {
-+	rdev_for_each_safe(rdev2, tmp, mddev) {
- 		if (test_bit(Faulty, &rdev2->flags))
- 			continue;
+ 	if (unit) {
+-		list_for_each_entry(mddev, &all_mddevs, all_mddevs)
+-			if (mddev->unit == unit) {
+-				mddev_get(mddev);
+-				spin_unlock(&all_mddevs_lock);
+-				kfree(new);
+-				return mddev;
+-			}
++		mddev = mddev_find_locked(unit);
++		if (mddev) {
++			mddev_get(mddev);
++			spin_unlock(&all_mddevs_lock);
++			kfree(new);
++			return mddev;
++		}
  
+ 		if (new) {
+ 			list_add(&new->all_mddevs, &all_mddevs);
+@@ -551,12 +562,7 @@ static struct mddev *mddev_find(dev_t un
+ 				return NULL;
+ 			}
+ 
+-			is_free = 1;
+-			list_for_each_entry(mddev, &all_mddevs, all_mddevs)
+-				if (mddev->unit == dev) {
+-					is_free = 0;
+-					break;
+-				}
++			is_free = !mddev_find_locked(dev);
+ 		}
+ 		new->unit = dev;
+ 		new->md_minor = MINOR(dev);
 
 
