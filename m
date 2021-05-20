@@ -2,170 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A9B5389CD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3E7389CD9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:55:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230297AbhETE4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 00:56:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhETE4u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 00:56:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE678611AE;
-        Thu, 20 May 2021 04:55:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621486529;
-        bh=UjIwKnKZAr/joCW4sZFOAQoYzu0+7GxEtfQxicLk82U=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=SSa9GdgxCPYoZcxuAQ0q+v67MrLj4tL22aFghoFfWTWUQXcZ20vx+gv1HxFLKfhpq
-         3eQpmjk/acIgO1MrfAHFJ0BNkdFbYEwWC6HMnFUuht/CO+DXdoK0UYlXUGUtp+l1JX
-         1rRDxnU2s5mdam1L7h9dhbSGIMsFD6H7dnKx+GmjWB4Nco8R1XibDtNUclkdTVBy1F
-         R0vn8/SUcmqG/CXR94Eu9z0HeqdCgIm2jn3vPenW4ydAaHU7171nfGtG0cpXt6QCqn
-         vMu5lonTK6xaSwETmb0N70XAINGwjfF/ACOBKppThbJ3Fw0mCmwnNfX7oSGo/+0eQT
-         4Ynj+tvPeZ+nQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 6E21E5C0138; Wed, 19 May 2021 21:55:29 -0700 (PDT)
-Date:   Wed, 19 May 2021 21:55:29 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Feng Tang <feng.tang@intel.com>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        0day robot <lkp@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Marc Zyngier <maz@kernel.org>, Andi Kleen <ak@linux.intel.com>,
-        Xing Zhengjun <zhengjun.xing@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        ying.huang@intel.com, zhengjun.xing@intel.com, kernel-team@fb.com,
-        neeraju@codeaurora.org, rui.zhang@intel.com
-Subject: Re: [clocksource]  388450c708:  netperf.Throughput_tps -65.1%
- regression
-Message-ID: <20210520045529.GH4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210501003247.2448287-4-paulmck@kernel.org>
- <20210513155515.GB23902@xsang-OptiPlex-9020>
- <20210513170707.GA975577@paulmck-ThinkPad-P17-Gen-1>
- <20210514074314.GB5384@shbuild999.sh.intel.com>
- <20210514174908.GI975577@paulmck-ThinkPad-P17-Gen-1>
- <20210516063419.GA22111@shbuild999.sh.intel.com>
- <20210519060902.GE78241@shbuild999.sh.intel.com>
- <20210519180521.GZ4441@paulmck-ThinkPad-P17-Gen-1>
- <20210520005210.GA18083@shbuild999.sh.intel.com>
+        id S230330AbhETE5E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 00:57:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhETE5E (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 00:57:04 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE89DC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:55:43 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id b7so4145773plg.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7hUMPWC64LAsjcIj5xagu1FVPYx/So//vZuQ9Tazp4A=;
+        b=IfRLXKPkRmQK2vqKG+W7DLxIvHkl6XlhmjYujlpvVgUwtUeW5ztTCuUO/qU1CW0YMI
+         eNU8sZcbsJzBNRgOTj3LUImK2bUrtNtFcwYwyIs/ZOlJlRDL3BHXM1S8T2pyoosEU3aL
+         YoI62eFmCWg+5Huqmv463Vx5vVADHyplpPv1P64n7Mp2eGINbiS4BmcSgyzWe7n4qk/4
+         iNuUhnZZFOV5l6fzPyYHL2hh7vCzyHvQvAd5hJbHnnfYxl0D5d07xiI4W0IvNw6+WyEo
+         aVhv6jxTJtUfyEU4xE8T8ELYQ/rZSEl0HPNyEnVDMWrl6sqvJeAuYeKfDxDo4Vu0DB3B
+         ABiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7hUMPWC64LAsjcIj5xagu1FVPYx/So//vZuQ9Tazp4A=;
+        b=IbXRQE/PYQBOHr6CKM6aONrEAY1QC9Sm0OxcW6log6yJLhC4/l2zOvfpSfguO1QqWv
+         ghS+PECCw039JVwMC58q4OW5gCCxBY9SqWNSbTSNInrfMwjMswo5piaizd6ZlGGnDD7w
+         Oiklirx9is407OoZbu14RKC3fkAzLKXofZhngU2bMGCMep6ttfGRcZVnOQgRXnOGxGR3
+         iSc9YrxxTtX4Y0cFenSojwLtVZkwf06RqpYj7ASVp5/QJ96rsQECUofMFIFEftfxxcl+
+         h8MCvmgJPPMBTnHoW7koERBfS8gI8gDrSKmto6WF5ONM+9+byeif06cSGcYIovjlIeav
+         zMPw==
+X-Gm-Message-State: AOAM533xohNgfgOx9Ob7kW9hFMx5B41GZebLZNF9gGttJMtXabWBbP//
+        hApZcguIgferbc6lbXPSC36OrQ==
+X-Google-Smtp-Source: ABdhPJyURTzdqzYxNX+DsrWg38Bv4qXb2YTaXDts0AQVao5QVwOGHeNqN6CyHLIZ2OkHTafwJjCzcA==
+X-Received: by 2002:a17:90a:a505:: with SMTP id a5mr2822640pjq.58.1621486543191;
+        Wed, 19 May 2021 21:55:43 -0700 (PDT)
+Received: from x1 ([2601:1c0:4701:ae70:1ac3:31d1:689c:7daa])
+        by smtp.gmail.com with ESMTPSA id m1sm446663pjo.10.2021.05.19.21.55.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 21:55:42 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:55:40 -0700
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Ghiti <alex@ghiti.fr>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Wei Fu <tekkamanninja@gmail.com>,
+        Emil Renner Berthing <emil.renner.berthing@gmail.com>
+Subject: Re: [PATCH] riscv: mm: Fix W+X mappings at boot
+Message-ID: <20210520045540.GA3236664@x1>
+References: <20210516170038.7de9c866@xhacker>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520005210.GA18083@shbuild999.sh.intel.com>
+In-Reply-To: <20210516170038.7de9c866@xhacker>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 08:52:10AM +0800, Feng Tang wrote:
-> On Wed, May 19, 2021 at 11:05:21AM -0700, Paul E. McKenney wrote:
-> > On Wed, May 19, 2021 at 02:09:02PM +0800, Feng Tang wrote:
-> > > On Sun, May 16, 2021 at 02:34:19PM +0800, Feng Tang wrote:
-> > > > On Fri, May 14, 2021 at 10:49:08AM -0700, Paul E. McKenney wrote:
-> > > > > On Fri, May 14, 2021 at 03:43:14PM +0800, Feng Tang wrote:
-> > > > > > Hi Paul,
-> > > > > > 
-> > > > > > On Thu, May 13, 2021 at 10:07:07AM -0700, Paul E. McKenney wrote:
-> > > > > > > On Thu, May 13, 2021 at 11:55:15PM +0800, kernel test robot wrote:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > Greeting,
-> > > > > > > > 
-> > > > > > > > FYI, we noticed a -65.1% regression of netperf.Throughput_tps due to commit:
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > commit: 388450c7081ded73432e2b7148c1bb9a0b039963 ("[PATCH v12 clocksource 4/5] clocksource: Reduce clocksource-skew threshold for TSC")
-> > > > > > > > url: https://github.com/0day-ci/linux/commits/Paul-E-McKenney/Do-not-mark-clocks-unstable-due-to-delays-for-v5-13/20210501-083404
-> > > > > > > > base: https://git.kernel.org/cgit/linux/kernel/git/tip/tip.git 2d036dfa5f10df9782f5278fc591d79d283c1fad
-> > > > > > > > 
-> > > > > > > > in testcase: netperf
-> > > > > > > > on test machine: 96 threads 2 sockets Ice Lake with 256G memory
-> > > > > > > > with following parameters:
-> > > > > > > > 
-> > > > > > > > 	ip: ipv4
-> > > > > > > > 	runtime: 300s
-> > > > > > > > 	nr_threads: 25%
-> > > > > > > > 	cluster: cs-localhost
-> > > > > > > > 	test: UDP_RR
-> > > > > > > > 	cpufreq_governor: performance
-> > > > > > > > 	ucode: 0xb000280
-> > > > > > > > 
-> > > > > > > > test-description: Netperf is a benchmark that can be use to measure various aspect of networking performance.
-> > > > > > > > test-url: http://www.netperf.org/netperf/
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > If you fix the issue, kindly add following tag
-> > > > > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > > > > > > 
-> > > > > > > > 
-> > > > > > > > also as Feng Tang checked, this is a "unstable clocksource" case.
-> > > > > > > > attached dmesg FYI.
-> > > > > > > 
-> > > > > > > Agreed, given the clock-skew event and the resulting switch to HPET,
-> > > > > > > performance regressions are expected behavior.
-> > > > > > > 
-> > > > > > > That dmesg output does demonstrate the value of Feng Tang's patch!
-> > > > > > > 
-> > > > > > > I don't see how to obtain the values of ->mult and ->shift that would
-> > > > > > > allow me to compute the delta.  So if you don't tell me otherwise, I
-> > > > > > > will assume that the skew itself was expected on this hardware, perhaps
-> > > > > > > somehow due to the tpm_tis_status warning immediately preceding the
-> > > > > > > clock-skew event.  If my assumption is incorrect, please let me know.
-> > > > > > 
-> > > > > > I run the case with the debug patch applied, the info is:
-> > > > > > 
-> > > > > > [   13.796429] clocksource: timekeeping watchdog on CPU19: Marking clocksource 'tsc' as unstable because the skew is too large:
-> > > > > > [   13.797413] clocksource:                       'hpet' wd_nesc: 505192062 wd_now: 10657158 wd_last: fac6f97 mask: ffffffff
-> > > > > > [   13.797413] clocksource:                       'tsc' cs_nsec: 504008008 cs_now: 3445570292aa5 cs_last: 344551f0cad6f mask: ffffffffffffffff
-> > > > > > [   13.797413] clocksource:                       'tsc' is current clocksource.
-> > > > > > [   13.797413] tsc: Marking TSC unstable due to clocksource watchdog
-> > > > > > [   13.844513] clocksource: Checking clocksource tsc synchronization from CPU 50 to CPUs 0-1,12,22,32-33,60,65.
-> > > > > > [   13.855080] clocksource: Switched to clocksource hpet
-> > > > > > 
-> > > > > > So the delta is 1184 us (505192062 - 504008008), and I agree with
-> > > > > > you that it should be related with the tpm_tis_status warning stuff.
-> > > > > > 
-> > > > > > But this re-trigger my old concerns, that if the margins calculated
-> > > > > > for tsc, hpet are too small?
-> > > > > 
-> > > > > If the error really did disturb either tsc or hpet, then we really
-> > > > > do not have a false positive, and nothing should change (aside from
-> > > > > perhaps documenting that TPM issues can disturb the clocks, or better
-> > > > > yet treating that perturbation as a separate bug that should be fixed).
-> > > > > But if this is yet another way to get a confused measurement, then it
-> > > > > would be better to work out a way to reject the confusion and keep the
-> > > > > tighter margins.  I cannot think right off of a way that this could
-> > > > > cause measurement confusion, but you never know.
-> > > > 
-> > > > I have no doubt in the correctness of the measuring method, but was
-> > > > just afraid some platforms which use to 'just work' will be caught :)
-> > > > 
-> > > > > So any thoughts on exactly how the tpm_tis_status warning might have
-> > > > > resulted in the skew?
-> > > > 
-> > > > The tpm error message has been reported before, and from google there
-> > > > were some similar errors, we'll do some further check.
-> > > 
-> > > Some update on this: further debug shows it is not related to TPM 
-> > > module, as the 'unstable' still happens even if we disable TPM
-> > > module in kernel.
-> > > 
-> > > We run this case on another test box of same type but with latest 
-> > > BIOS and microcode, the tsc freq is correctly calculated and the 
-> > > 'unstable' error can't be reproduced. And we will check how to 
-> > > upgrade the test box in 0day.
-> > 
-> > So this patch series might have located a real BIOS or firmware bug,
-> > then?  ;-)
+On Sun, May 16, 2021 at 05:00:38PM +0800, Jisheng Zhang wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
 > 
-> Yes, it did a good job in exposing a real-world bug! (lucky
-> thing is the bug has a fix :)) 
+> When the kernel mapping was moved the last 2GB of the address space,
+> (__va(PFN_PHYS(max_low_pfn))) is much smaller than the .data section
+> start address, the last set_memory_nx() in protect_kernel_text_data()
+> will fail, thus the .data section is still mapped as W+X. This results
+> in below W+X mapping waring at boot. Fix it by passing the correct
+> .data section page num to the set_memory_nx().
+> 
+> [    0.396516] ------------[ cut here ]------------
+> [    0.396889] riscv/mm: Found insecure W+X mapping at address (____ptrval____)/0xffffffff80c00000
+> [    0.398347] WARNING: CPU: 0 PID: 1 at arch/riscv/mm/ptdump.c:258 note_page+0x244/0x24a
+> [    0.398964] Modules linked in:
+> [    0.399459] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.13.0-rc1+ #14
+> [    0.400003] Hardware name: riscv-virtio,qemu (DT)
+> [    0.400591] epc : note_page+0x244/0x24a
+> [    0.401368]  ra : note_page+0x244/0x24a
+> [    0.401772] epc : ffffffff80007c86 ra : ffffffff80007c86 sp : ffffffe000e7bc30
+> [    0.402304]  gp : ffffffff80caae88 tp : ffffffe000e70000 t0 : ffffffff80cb80cf
+> [    0.402800]  t1 : ffffffff80cb80c0 t2 : 0000000000000000 s0 : ffffffe000e7bc80
+> [    0.403310]  s1 : ffffffe000e7bde8 a0 : 0000000000000053 a1 : ffffffff80c83ff0
+> [    0.403805]  a2 : 0000000000000010 a3 : 0000000000000000 a4 : 6c7e7a5137233100
+> [    0.404298]  a5 : 6c7e7a5137233100 a6 : 0000000000000030 a7 : ffffffffffffffff
+> [    0.404849]  s2 : ffffffff80e00000 s3 : 0000000040000000 s4 : 0000000000000000
+> [    0.405393]  s5 : 0000000000000000 s6 : 0000000000000003 s7 : ffffffe000e7bd48
+> [    0.405935]  s8 : ffffffff81000000 s9 : ffffffffc0000000 s10: ffffffe000e7bd48
+> [    0.406476]  s11: 0000000000001000 t3 : 0000000000000072 t4 : ffffffffffffffff
+> [    0.407016]  t5 : 0000000000000002 t6 : ffffffe000e7b978
+> [    0.407435] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
+> [    0.408052] Call Trace:
+> [    0.408343] [<ffffffff80007c86>] note_page+0x244/0x24a
+> [    0.408855] [<ffffffff8010c5a6>] ptdump_hole+0x14/0x1e
+> [    0.409263] [<ffffffff800f65c6>] walk_pgd_range+0x2a0/0x376
+> [    0.409690] [<ffffffff800f6828>] walk_page_range_novma+0x4e/0x6e
+> [    0.410146] [<ffffffff8010c5f8>] ptdump_walk_pgd+0x48/0x78
+> [    0.410570] [<ffffffff80007d66>] ptdump_check_wx+0xb4/0xf8
+> [    0.410990] [<ffffffff80006738>] mark_rodata_ro+0x26/0x2e
+> [    0.411407] [<ffffffff8031961e>] kernel_init+0x44/0x108
+> [    0.411814] [<ffffffff80002312>] ret_from_exception+0x0/0xc
+> [    0.412309] ---[ end trace 7ec3459f2547ea83 ]---
+> [    0.413141] Checked W+X mappings: failed, 512 W+X pages found
+> 
+> Fixes: 2bfc6cd81bd17e43 ("riscv: Move kernel mapping outside of linear mapping")
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/mm/init.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index 4faf8bd157ea..4c4c92ce0bb8 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -746,14 +746,18 @@ void __init protect_kernel_text_data(void)
+>  	unsigned long init_data_start = (unsigned long)__init_data_begin;
+>  	unsigned long rodata_start = (unsigned long)__start_rodata;
+>  	unsigned long data_start = (unsigned long)_data;
+> -	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+> +#if defined(CONFIG_64BIT) && defined(CONFIG_MMU)
+> +	unsigned long end_va = kernel_virt_addr + load_sz;
+> +#else
+> +	unsigned long end_va = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+> +#endif
+>  
+>  	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
+>  	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
+>  	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
+>  	/* rodata section is marked readonly in mark_rodata_ro */
+>  	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+> -	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
+> +	set_memory_nx(data_start, (end_va - data_start) >> PAGE_SHIFT);
+>  }
+>  
+>  void mark_rodata_ro(void)
+> -- 
+> 2.31.0
+> 
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-Even better!  ;-)
+I know there is a new thread now with a different approach but I wanted
+to say that this did fix that warning on the BeagleV Starlight beta
+prototype board [1] with the StarFive JH7100 SoC [2]. I am using Emil's
+starlight branch [3] which is a set of StarFive patches on top of
+5.13-rc2. Emil included this W+X mapping patch [4]. It does fix the
+warning on boot for me and the bootlog [5] shows:
 
-							Thanx, Paul
+  [    2.302598] Checked W+X mappings: passed, no W+X pages found
+
+Thus if useful, here is my TB:
+
+Tested-by: Drew Fustini <drew@beagleboard.org>
+
+thanks,
+drew
+
+[1] https://github.com/beagleboard/beaglev-starlight
+[2] https://github.com/starfive-tech/beaglev_doc
+[3] https://github.com/esmil/linux/tree/starlight
+[4] https://github.com/esmil/linux/commit/b865eb820db8b9b94a7a2d2619e46cc3251fb90d
+[5] https://gist.github.com/pdp7/0bf9088d034384d29ba4e8418c9dfd91
