@@ -2,116 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 233BF389AFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:41:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19A95389B02
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:43:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhETBmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:42:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52804 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230138AbhETBms (ORCPT
+        id S230166AbhETBpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:45:07 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38894 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230062AbhETBpG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:42:48 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C88C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 18:41:28 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id d21so14906709oic.11
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 18:41:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=iYMoi9RfdIWAgrdRsxo09y149SU9Ox48bYShc9UJAkk=;
-        b=MN+ncWnQj5oJcKQh5vuPCIM41BJLa6s8lmFL8zoK2g+NHcZdFR9PgL21BglNUh2z4n
-         nCdAoiPJU62w6XQ+ItF7ciK0mX48MZ669tc+ocCLqP2rD8dMbE2JuELGbvmIayYXYNOG
-         WH9Tbh2D25aIZVMI9u7RYzMmmgOXo4VlM2ImA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=iYMoi9RfdIWAgrdRsxo09y149SU9Ox48bYShc9UJAkk=;
-        b=d+qYe13PFDiMfYPbA3m8EuMmJq1MqxnmNZV0V3vsI1KBlmXgkOGI0/WZ9OIILLEVjh
-         Jfe/Nmse+27INHUEenlCMP1ygnovOA3fkcg+4I1+GBjGeZIOftHuQ17h+i3sO3ad9aq0
-         ASuASjgcr0hc8DkRMxTaVRy0crBiOpIZWpuanqUwBnkiCt1Zj3eFql7F7STSMgWklkiR
-         0YOOjkEysXdzLod8v9/8Zpbi0l0+7Hb+sVUuQFseg30vHG3HRfBX/vUNvw18MUrp+4BC
-         m8MxixXFTnD+ra58iqItktRy2z3OroBedoV4bHDciE9rKj1F5EQtInmTK87Dmcu9OuJ1
-         PdFQ==
-X-Gm-Message-State: AOAM530ZB3JkL/r/fTKSBAgy6FMqnUVUMRr5TwaIGHJPQ53bSeMTq+gV
-        DhmjRuVt53try0DG0Enj+s9o3gD2FT5P5FPqjuKHDg==
-X-Google-Smtp-Source: ABdhPJw+XAwShhYEdBQWbCN36WfVRcWEA+e8iITrKYVuyjhU4KfB0Q0SdwsVvIj+ukXQ2RGlbZqeN+uJh1kegL9mZus=
-X-Received: by 2002:aca:654d:: with SMTP id j13mr1688671oiw.125.1621474887843;
- Wed, 19 May 2021 18:41:27 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 19 May 2021 21:41:27 -0400
+        Wed, 19 May 2021 21:45:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621475026;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CmPGuPaEus3bom0R7HRQ4kJr/YdcxqC6Aohkp7TcPvM=;
+        b=MX4A4lVtUO2SsbZ47HnIUr37W02cgauUo2uTpLeNXnM9ciUNsWDi2ygSnqFCQ/JjSfMXv5
+        SwNeh68gBWF2+1ei70vKyoT7E0SAkOdRtlInd65WapqlAlMvZwpbSZsCvxkaIqQl0ODtEW
+        SzKN/J+8NXn+nAJ0E7lEfxNxc6kXX1g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-460-oec969U1PGSbsHKGKR-cKA-1; Wed, 19 May 2021 21:43:44 -0400
+X-MC-Unique: oec969U1PGSbsHKGKR-cKA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 40F891883521;
+        Thu, 20 May 2021 01:43:43 +0000 (UTC)
+Received: from dhcp-128-65.nay.redhat.com (ovpn-12-222.pek2.redhat.com [10.72.12.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0553B60BF1;
+        Thu, 20 May 2021 01:43:40 +0000 (UTC)
+Date:   Thu, 20 May 2021 09:43:37 +0800
+From:   Dave Young <dyoung@redhat.com>
+To:     Kevin Mitchell <kevmitch@arista.com>
+Cc:     kexec@lists.infradead.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: i386 kexec-tools for x86_64 kdump kernels
+Message-ID: <20210520014337.GA10223@dhcp-128-65.nay.redhat.com>
+References: <YKNFQnJ5JbqQ/OqI@chmeee>
 MIME-Version: 1.0
-In-Reply-To: <CAGETcx-jK3pBNRYevPmRhw1TALHNjtM5dSxCdEuB+2sBH32rtQ@mail.gmail.com>
-References: <20210520002519.3538432-1-swboyd@chromium.org> <CAGETcx-jK3pBNRYevPmRhw1TALHNjtM5dSxCdEuB+2sBH32rtQ@mail.gmail.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Wed, 19 May 2021 21:41:27 -0400
-Message-ID: <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
-Subject: Re: [PATCH 0/7] component: Make into an aggregate bus
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKNFQnJ5JbqQ/OqI@chmeee>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Saravana Kannan (2021-05-19 18:27:50)
-> On Wed, May 19, 2021 at 5:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> >
-> > This series is from discussion we had on reordering the device lists for
-> > drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
-> > the aggregate device onto and then we probe the device once all the
-> > components are probed and call component_add(). The probe/remove hooks
-> > are where the bind/unbind calls go, and then a shutdown hook is added
-> > that can be used to shutdown the drm display pipeline at the right time.
-> >
-> > This works for me on my sc7180 board, but I'm currently struggling with
-> > the last patch where we migrate the msm driver. It runs into a runtime
-> > PM problem where the parent device isn't runtime PM enabled yet. I'm
-> > still trying to figure out a clean solution there. Moving runtime PM
-> > around breaks boot and I think that's because the power domain is off.
-> >
-> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > Cc: Rob Clark <robdclark@gmail.com>
-> > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> > Cc: Saravana Kannan <saravanak@google.com>
-> >
-> > [1] https://lore.kernel.org/r/20210508074118.1621729-1-swboyd@chromium.org
-> >
->
-> I skimmed through the series and in general the idea is good, but I'm
-> not sure why each component user needs to be converted/"modern" before
-> it can make use of the benefits of this series. Why not just have
-> wrapper functions around the component ops that the new aggregate bus
-> driver can just call? That'll give all the existing component users
-> the new ability to use the new ops without having to have two
-> versions.
+Hi Kevin,
+On 05/17/21 at 09:40pm, Kevin Mitchell wrote:
+> Hi,
+> 
+> As a space-saving strategy for our embedded boot environment, we use an i386
+> kexec binary to load our x86_64 kdump kernel from an x86_64 system kernel. This
+> worked great up until linux-5.2, which included the commit
+> 
+> 9ca5c8e632ce ("x86/kdump: Have crashkernel=X reserve under 4G by
+> default")
+> 
+> Sure enough, according to /proc/iomem, the "Crash kernel" area went from
+> starting at 0x34000000 to 0x7b000000, which is above the 896M
+> limit. Unfortunately, since i386 kexec seems to use
+> kexec/arch/i386/kexec-bzImage.c even to load an x86_64 kernel, the
+> DEFAULT_BZIMAGE_ADDR_MAX = 0x37FFFFFF 896M limit is still enforced when loading
+> the panic kernel:
+> 
+> # kexec32 --load-panic bzImage64
+> Could not find a free area of memory of 0x8000 bytes...
+> locate_hole failed
+> 
+> I can work around this by patching kexec-tools to raise that limit to
+> DEFAULT_BZIMAGE_ADDR_MAX = 0xFFFFFFFF which allows loading the x86_64 kdump
+> bzImage. This does in fact kexec fine from that position if I trigger a panic.
+> 
+> However, this doesn't appear to be a general solution since the 896M does still
+> apply if either of the kernels is i386. In that case, attempting to kexec from
+> the higher address will just hang with no console output. In this case, it
+> probably is better to continue to fail to load the kdump image rather than wait
+> until the panic to find out something is wrong.
 
-The existing users can only have one or the other. Either use the ops
-structure or use the struct aggregate_driver. What benefits of this
-series are they not gaining?
+I'm not sure if you can try to detect the kernel type and special case
+this in kexec-tools, eg. if the 2nd kernel is 64-bit kernel then just
+bump the addr max otherwise go original logic.  If this is doable then
+it would be a good way IMO.
 
-> That'll also allow us to do other improvements (I have some
-> in mind) that'll apply to all the component users instead of only the
-> converted ones.
+See if Eric, Baoquan and other X86 people have more idea.
 
-What do you have in mind? I didn't want to convert drivers over to the
-new way of doing things without making them consciously change their
-code. Otherwise I worry it will break things in random, subtle ways. The
-last patch, as I mentioned above in the cover, causes warnings because
-the display driver is enabling runtime PM in an odd spot as part of the
-bind callback of the aggregate/master. That should move out of there and
-into the msm_pdev driver that registers the aggregate from what I can
-tell.
+> 
+> Fortunately, while 9ca5c8e632ce allows an i386 kernel to reserve a "Crash
+> kernel" region > 896M, it doesn't actually do that by default - I have to force
+> it to go there with crashkernel=@. I am not sure if this is just a fluke or if
+> there is something actually ensuring it defaults to a working
+> location. Nevertheless, it appears the restriction removed by this commit is
+> still required by i386 kernels. Its enforcement has just moved to userspace.
+> 
+> So it seems that the largest fallout of the commit is restricted to the
+> admittedly niche combination linux-x86_64 -> kexec-i386 -> linux-x86_64(kdump),
+> which no longer works out of the box without pinning the crashkernel address or
+> patching kexec.
+> 
+> Is this just something we need to live with or is it worth looking into how to
+> better support this combination?
+
+This is the case I missed, but I would think it as not a common use
+case. It would be better to leave it as is in kernel and try to fix in
+kexec-tools or just use the workaround.
+
+> 
+> Thanks,
+> Kevin
+> 
+
+Thanks
+Dave
+
