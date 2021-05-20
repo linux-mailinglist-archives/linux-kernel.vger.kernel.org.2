@@ -2,187 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E92938A6A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:28:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8255738A6F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhETK3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:29:31 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57865 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236551AbhETKQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:16:50 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621505723; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RimnFyHnEwmSSWhM/3E14U80346pavoF8LlaOtDcD8Y=;
- b=vhv+PBlG1RPb70r4A0xQ3h1IHdnFyYS3Ex/NgPeWmqV0AvCAwhRDIh4nmKVmw/Hui8RfCjM2
- OvdFofxhOekc0fxcTi+YAyUy4li+0yfN0iRMk2RJRTjYtoMupCXZlaZYApSUXwagqQ0VWo9f
- NVBblzVDnBDN4l37g87sn5g1vlI=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60a636b8c4456bc0f1d46043 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 May 2021 10:15:20
- GMT
-Sender: pmaliset=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 550CFC00914; Thu, 20 May 2021 10:15:19 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmaliset)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 12116C4314A;
-        Thu, 20 May 2021 10:15:15 +0000 (UTC)
+        id S236823AbhETKc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:32:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236304AbhETKT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:19:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E05AF619B3;
+        Thu, 20 May 2021 09:47:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621504027;
+        bh=AxwVTSf5DngS8L2lA+nW56nje2oa08i1MY9gDI/Oxf0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=EqhnhtpT81ZKHjEfCj22nOTMrBHZ9zWtSEdXEiKpu8O8+Q4+i1NNeu4YR8MesDqA4
+         wurtBO64EE69X6+1rK31YGhYDChC4N4euJ3q51xN5GteKXxjfxZCoN1cwzPZCCNi9X
+         +R8bZVRm5ugN6UyyvviXjMWtWxSFfUeNECfeXKj4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>
+Subject: [PATCH 4.14 017/323] s390/disassembler: increase ebpf disasm buffer size
+Date:   Thu, 20 May 2021 11:18:29 +0200
+Message-Id: <20210520092120.707299699@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
+References: <20210520092120.115153432@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 20 May 2021 15:45:15 +0530
-From:   Prasad Malisetty <pmaliset@codeaurora.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Stanimir Varbanov <svarbanov@mm-sol.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        mgautam@codeaurora.org, swboyd@chromium.org, dianders@chromium.org,
-        mka@chromium.org
-Subject: Re: [PATCH] PCIe: qcom: Add support to control pipe clk mux
-In-Reply-To: <20210509023547.GJ2484@yoga>
-References: <1620520860-8589-1-git-send-email-pmaliset@codeaurora.org>
- <20210509023547.GJ2484@yoga>
-Message-ID: <3447606ba9ade9d578c609838e63dbb3@codeaurora.org>
-X-Sender: pmaliset@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-09 08:05, Bjorn Andersson wrote:
-> On Sat 08 May 19:41 CDT 2021, Prasad Malisetty wrote:
-> 
->> PCIe driver needs to toggle between bi_tcxo and phy pipe
->> clock as part of its LPM sequence. This is done by setting
->> pipe_clk/ref_clk_src as parent of pipe_clk_src after phy init
->> 
->> Dependent on below change:
->> 
->> 	https://lore.kernel.org/patchwork/patch/1422499/
-> 
-> In what way is this change to the driver dependent on the addition of
-> the node to DT?
-> 
-I will move this patch to DT series patches in next version.
->> 
->> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
->> ---
->>  drivers/pci/controller/dwc/pcie-qcom.c | 23 ++++++++++++++++++++++-
->>  1 file changed, 22 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c 
->> b/drivers/pci/controller/dwc/pcie-qcom.c
->> index 8a7a300..a9f69e8 100644
->> --- a/drivers/pci/controller/dwc/pcie-qcom.c
->> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
->> @@ -9,6 +9,7 @@
->>   */
->> 
->>  #include <linux/clk.h>
->> +#include <linux/clk-provider.h>
-> 
-> Can you help me see why this is needed?
-> 
-Its needed for set_parent function prototype.
->>  #include <linux/crc8.h>
->>  #include <linux/delay.h>
->>  #include <linux/gpio/consumer.h>
->> @@ -166,6 +167,9 @@ struct qcom_pcie_resources_2_7_0 {
->>  	struct regulator_bulk_data supplies[2];
->>  	struct reset_control *pci_reset;
->>  	struct clk *pipe_clk;
->> +	struct clk *pipe_clk_src;
->> +	struct clk *pipe_ext_src;
->> +	struct clk *ref_clk_src;
->>  };
->> 
->>  union qcom_pcie_resources {
->> @@ -1168,7 +1172,19 @@ static int qcom_pcie_get_resources_2_7_0(struct 
->> qcom_pcie *pcie)
->>  		return ret;
->> 
->>  	res->pipe_clk = devm_clk_get(dev, "pipe");
->> -	return PTR_ERR_OR_ZERO(res->pipe_clk);
->> +	if (IS_ERR(res->pipe_clk))
->> +		return PTR_ERR(res->pipe_clk);
->> +
->> +	res->pipe_clk_src = devm_clk_get(dev, "pipe_src");
->> +	if (IS_ERR(res->pipe_clk_src))
-> 
-> How does this not fail on existing targets?
-I will add platform check in next version.
-> 
->> +		return PTR_ERR(res->pipe_clk_src);
->> +
->> +	res->pipe_ext_src = devm_clk_get(dev, "pipe_ext");
->> +	if (IS_ERR(res->pipe_ext_src))
->> +		return PTR_ERR(res->pipe_ext_src);
->> +
->> +	res->ref_clk_src = devm_clk_get(dev, "ref");
->> +	return PTR_ERR_OR_ZERO(res->ref_clk_src);
->>  }
->> 
->>  static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
->> @@ -1255,6 +1271,11 @@ static void qcom_pcie_deinit_2_7_0(struct 
->> qcom_pcie *pcie)
->>  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->>  {
->>  	struct qcom_pcie_resources_2_7_0 *res = &pcie->res.v2_7_0;
->> +	struct dw_pcie *pci = pcie->pci;
->> +	struct device *dev = pci->dev;
->> +
->> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sc7280"))
-> 
-> Why is this specific to sc7280?
-> 
-Newer targets including sc7280 require changing pipe-clk mux to switch 
-between pipe_clk and XO for GDSC enable.
+From: Vasily Gorbik <gor@linux.ibm.com>
 
->> +		clk_set_parent(res->pipe_clk_src, res->pipe_ext_src);
-> 
-> The naming here is not obvious to me, but I think you're going to use
-> this to set parent of gcc_pcie_0_pipe_clk_src to pcie_0_pipe_clk?
-> 
-> But in the commit message you're talking about switching back and forth
-> between the pipe clock and tcxo, can you please help me understand 
-> where
-> this is happening?
-> 
-Shall I add the naming convention for above clocks "pipe_clk_mux and 
-pcie_0_pipe_clk_src" .
-Switching between pipe clk and tcxo are added in suspend/resume 
-callbacks. I will update the commit message
-in next version.
-> 
-> PS. The new clocks should be mentioned in the binding.
-> 
-> Regards,
-> Bjorn
-> 
->> 
->>  	return clk_prepare_enable(res->pipe_clk);
->>  }
->> --
->> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
->> Forum,
->> a Linux Foundation Collaborative Project
->> 
+commit 6f3353c2d2b3eb4de52e9704cb962712033db181 upstream.
+
+Current ebpf disassembly buffer size of 64 is too small. E.g. this line
+takes 65 bytes:
+01fffff8005822e: ec8100ed8065\tclgrj\t%r8,%r1,8,001fffff80058408\n\0
+
+Double the buffer size like it is done for the kernel disassembly buffer.
+
+Fixes the following KASAN finding:
+
+UG: KASAN: stack-out-of-bounds in print_fn_code+0x34c/0x380
+Write of size 1 at addr 001fff800ad5f970 by task test_progs/853
+
+CPU: 53 PID: 853 Comm: test_progs Not tainted
+5.12.0-rc7-23786-g23457d86b1f0-dirty #19
+Hardware name: IBM 3906 M04 704 (LPAR)
+Call Trace:
+ [<0000000cd8e0538a>] show_stack+0x17a/0x1668
+ [<0000000cd8e2a5d8>] dump_stack+0x140/0x1b8
+ [<0000000cd8e16e74>] print_address_description.constprop.0+0x54/0x260
+ [<0000000cd75a8698>] kasan_report+0xc8/0x130
+ [<0000000cd6e26da4>] print_fn_code+0x34c/0x380
+ [<0000000cd6ea0f4e>] bpf_int_jit_compile+0xe3e/0xe58
+ [<0000000cd72c4c88>] bpf_prog_select_runtime+0x5b8/0x9c0
+ [<0000000cd72d1bf8>] bpf_prog_load+0xa78/0x19c0
+ [<0000000cd72d7ad6>] __do_sys_bpf.part.0+0x18e/0x768
+ [<0000000cd6e0f392>] do_syscall+0x12a/0x220
+ [<0000000cd8e333f8>] __do_syscall+0x98/0xc8
+ [<0000000cd8e54834>] system_call+0x6c/0x94
+1 lock held by test_progs/853:
+ #0: 0000000cd9bf7460 (report_lock){....}-{2:2}, at:
+     kasan_report+0x96/0x130
+
+addr 001fff800ad5f970 is located in stack of task test_progs/853 at
+offset 96 in frame:
+ print_fn_code+0x0/0x380
+this frame has 1 object:
+ [32, 96) 'buffer'
+
+Memory state around the buggy address:
+ 001fff800ad5f800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ 001fff800ad5f880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>001fff800ad5f900: 00 00 f1 f1 f1 f1 00 00 00 00 00 00 00 00 f3 f3
+                                                             ^
+ 001fff800ad5f980: f3 f3 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ 001fff800ad5fa00: 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 00 00
+
+Cc: <stable@vger.kernel.org>
+Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ arch/s390/kernel/dis.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/arch/s390/kernel/dis.c
++++ b/arch/s390/kernel/dis.c
+@@ -2026,7 +2026,7 @@ void show_code(struct pt_regs *regs)
+ 
+ void print_fn_code(unsigned char *code, unsigned long len)
+ {
+-	char buffer[64], *ptr;
++	char buffer[128], *ptr;
+ 	int opsize, i;
+ 
+ 	while (len) {
+
+
