@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5D4838A1BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61C2038A18B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232585AbhETJd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:33:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54400 "EHLO mail.kernel.org"
+        id S232450AbhETJb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:31:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232587AbhETJb7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:31:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D7CCA613E9;
-        Thu, 20 May 2021 09:28:13 +0000 (UTC)
+        id S231697AbhETJ3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:29:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6786613C4;
+        Thu, 20 May 2021 09:27:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502894;
-        bh=684/IdpLPgL51WJZHx/nazLtQLd22z0MeAZL+5k0VxE=;
+        s=korg; t=1621502841;
+        bh=eaFzXUGPD19UebBi6DqlyNQJbVt59XWMqXQiVNeK6Cs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zGiHfMIrAUaJT/QdSqzRUokTUDVg/3F2eQSqOVNx6XWCF4ojyWNrAbmDFcN3pCPRU
-         NA65MGPAfIoZCaSIA6SJhShD7Tx7SWAx1pIsvoub8fnHFG4Vr7ik1jSqyE2x8+RSeo
-         SDmP1ANlILkMARj968q11etE0MDvn0DAhBMzSnuE=
+        b=c5DaLJuuIOjh0U3QWEjXoOoD7/c73gUePY616HefDTGJkbIBNXd/mSFHYYI1k1KnE
+         LpPEM1jDNdPaC3Nq/WEjn91LIfHQN+r9nasOg1UL3CL+yhUcNhb1/E7xbeXr3pmtxI
+         s+T/DEkg2wv7cJS0TFtas0xpLJEUAq1fGK4YjD84=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 14/37] Input: elants_i2c - do not bind to i2c-hid compatible ACPI instantiated devices
+Subject: [PATCH 5.10 37/47] net:CXGB4: fix leak if sk_buff is not used
 Date:   Thu, 20 May 2021 11:22:35 +0200
-Message-Id: <20210520092052.745496208@linuxfoundation.org>
+Message-Id: <20210520092054.738614589@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
-References: <20210520092052.265851579@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,129 +41,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Íñigo Huguet <ihuguet@redhat.com>
 
-[ Upstream commit 65299e8bfb24774e6340e93ae49f6626598917c8 ]
+[ Upstream commit 52bfcdd87e83d9e69d22da5f26b1512ffc81deed ]
 
-Several users have been reporting that elants_i2c gives several errors
-during probe and that their touchscreen does not work on their Lenovo AMD
-based laptops with a touchscreen with a ELAN0001 ACPI hardware-id:
+An sk_buff is allocated to send a flow control message, but it's not
+sent in all cases: in case the state is not appropiate to send it or if
+it can't be enqueued.
 
-[    0.550596] elants_i2c i2c-ELAN0001:00: i2c-ELAN0001:00 supply vcc33 not found, using dummy regulator
-[    0.551836] elants_i2c i2c-ELAN0001:00: i2c-ELAN0001:00 supply vccio not found, using dummy regulator
-[    0.560932] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (77 77 77 77): -121
-[    0.562427] elants_i2c i2c-ELAN0001:00: software reset failed: -121
-[    0.595925] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (77 77 77 77): -121
-[    0.597974] elants_i2c i2c-ELAN0001:00: software reset failed: -121
-[    0.621893] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (77 77 77 77): -121
-[    0.622504] elants_i2c i2c-ELAN0001:00: software reset failed: -121
-[    0.632650] elants_i2c i2c-ELAN0001:00: elants_i2c_send failed (4d 61 69 6e): -121
-[    0.634256] elants_i2c i2c-ELAN0001:00: boot failed: -121
-[    0.699212] elants_i2c i2c-ELAN0001:00: invalid 'hello' packet: 00 00 ff ff
-[    1.630506] elants_i2c i2c-ELAN0001:00: Failed to read fw id: -121
-[    1.645508] elants_i2c i2c-ELAN0001:00: unknown packet 00 00 ff ff
+In the first of these 2 cases, the sk_buff was discarded but not freed,
+producing a memory leak.
 
-Despite these errors, the elants_i2c driver stays bound to the device
-(it returns 0 from its probe method despite the errors), blocking the
-i2c-hid driver from binding.
-
-Manually unbinding the elants_i2c driver and binding the i2c-hid driver
-makes the touchscreen work.
-
-Check if the ACPI-fwnode for the touchscreen contains one of the i2c-hid
-compatiblity-id strings and if it has the I2C-HID spec's DSM to get the
-HID descriptor address, If it has both then make elants_i2c not bind,
-so that the i2c-hid driver can bind.
-
-This assumes that non of the (older) elan touchscreens which actually
-need the elants_i2c driver falsely advertise an i2c-hid compatiblity-id
-+ DSM in their ACPI-fwnodes. If some of them actually do have this
-false advertising, then this change may lead to regressions.
-
-While at it also drop the unnecessary DEVICE_NAME prefixing of the
-"I2C check functionality error", dev_err already outputs the driver-name.
-
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=207759
-Acked-by: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210405202756.16830-1-hdegoede@redhat.com
-
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/input/touchscreen/elants_i2c.c | 44 ++++++++++++++++++++++++--
- 1 file changed, 42 insertions(+), 2 deletions(-)
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/input/touchscreen/elants_i2c.c b/drivers/input/touchscreen/elants_i2c.c
-index d4ad24ea54c8..a51e7c85f581 100644
---- a/drivers/input/touchscreen/elants_i2c.c
-+++ b/drivers/input/touchscreen/elants_i2c.c
-@@ -36,6 +36,7 @@
- #include <linux/of.h>
- #include <linux/gpio/consumer.h>
- #include <linux/regulator/consumer.h>
-+#include <linux/uuid.h>
- #include <asm/unaligned.h>
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 3334c9e2152a..546301272271 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -2559,12 +2559,12 @@ int cxgb4_ethofld_send_flowc(struct net_device *dev, u32 eotid, u32 tc)
+ 	spin_lock_bh(&eosw_txq->lock);
+ 	if (tc != FW_SCHED_CLS_NONE) {
+ 		if (eosw_txq->state != CXGB4_EO_STATE_CLOSED)
+-			goto out_unlock;
++			goto out_free_skb;
  
- /* Device, Driver information */
-@@ -1127,6 +1128,40 @@ static void elants_i2c_power_off(void *_data)
+ 		next_state = CXGB4_EO_STATE_FLOWC_OPEN_SEND;
+ 	} else {
+ 		if (eosw_txq->state != CXGB4_EO_STATE_ACTIVE)
+-			goto out_unlock;
++			goto out_free_skb;
+ 
+ 		next_state = CXGB4_EO_STATE_FLOWC_CLOSE_SEND;
  	}
+@@ -2600,17 +2600,19 @@ int cxgb4_ethofld_send_flowc(struct net_device *dev, u32 eotid, u32 tc)
+ 		eosw_txq_flush_pending_skbs(eosw_txq);
+ 
+ 	ret = eosw_txq_enqueue(eosw_txq, skb);
+-	if (ret) {
+-		dev_consume_skb_any(skb);
+-		goto out_unlock;
+-	}
++	if (ret)
++		goto out_free_skb;
+ 
+ 	eosw_txq->state = next_state;
+ 	eosw_txq->flowc_idx = eosw_txq->pidx;
+ 	eosw_txq_advance(eosw_txq, 1);
+ 	ethofld_xmit(dev, eosw_txq);
+ 
+-out_unlock:
++	spin_unlock_bh(&eosw_txq->lock);
++	return 0;
++
++out_free_skb:
++	dev_consume_skb_any(skb);
+ 	spin_unlock_bh(&eosw_txq->lock);
+ 	return ret;
  }
- 
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id i2c_hid_ids[] = {
-+	{"ACPI0C50", 0 },
-+	{"PNP0C50", 0 },
-+	{ },
-+};
-+
-+static const guid_t i2c_hid_guid =
-+	GUID_INIT(0x3CDFF6F7, 0x4267, 0x4555,
-+		  0xAD, 0x05, 0xB3, 0x0A, 0x3D, 0x89, 0x38, 0xDE);
-+
-+static bool elants_acpi_is_hid_device(struct device *dev)
-+{
-+	acpi_handle handle = ACPI_HANDLE(dev);
-+	union acpi_object *obj;
-+
-+	if (acpi_match_device_ids(ACPI_COMPANION(dev), i2c_hid_ids))
-+		return false;
-+
-+	obj = acpi_evaluate_dsm_typed(handle, &i2c_hid_guid, 1, 1, NULL, ACPI_TYPE_INTEGER);
-+	if (obj) {
-+		ACPI_FREE(obj);
-+		return true;
-+	}
-+
-+	return false;
-+}
-+#else
-+static bool elants_acpi_is_hid_device(struct device *dev)
-+{
-+	return false;
-+}
-+#endif
-+
- static int elants_i2c_probe(struct i2c_client *client,
- 			    const struct i2c_device_id *id)
- {
-@@ -1135,9 +1170,14 @@ static int elants_i2c_probe(struct i2c_client *client,
- 	unsigned long irqflags;
- 	int error;
- 
-+	/* Don't bind to i2c-hid compatible devices, these are handled by the i2c-hid drv. */
-+	if (elants_acpi_is_hid_device(&client->dev)) {
-+		dev_warn(&client->dev, "This device appears to be an I2C-HID device, not binding\n");
-+		return -ENODEV;
-+	}
-+
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
--		dev_err(&client->dev,
--			"%s: i2c check functionality error\n", DEVICE_NAME);
-+		dev_err(&client->dev, "I2C check functionality error\n");
- 		return -ENXIO;
- 	}
- 
 -- 
 2.30.2
 
