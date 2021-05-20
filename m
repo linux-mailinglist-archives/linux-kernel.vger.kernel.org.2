@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0E4738A029
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F7B238A02B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231389AbhETIvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:51:08 -0400
-Received: from outbound-smtp19.blacknight.com ([46.22.139.246]:40129 "EHLO
-        outbound-smtp19.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231169AbhETIvH (ORCPT
+        id S231404AbhETIvU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:51:20 -0400
+Received: from outbound-smtp11.blacknight.com ([46.22.139.106]:39979 "EHLO
+        outbound-smtp11.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231398AbhETIvT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:51:07 -0400
+        Thu, 20 May 2021 04:51:19 -0400
 Received: from mail.blacknight.com (pemlinmail03.blacknight.ie [81.17.254.16])
-        by outbound-smtp19.blacknight.com (Postfix) with ESMTPS id DD7FA1C3C01
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:49:45 +0100 (IST)
-Received: (qmail 7830 invoked from network); 20 May 2021 08:49:45 -0000
+        by outbound-smtp11.blacknight.com (Postfix) with ESMTPS id 8A3371C3BF7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:49:56 +0100 (IST)
+Received: (qmail 8544 invoked from network); 20 May 2021 08:49:56 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPA; 20 May 2021 08:49:45 -0000
+  by 81.17.254.9 with ESMTPA; 20 May 2021 08:49:56 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Michal Hocko <mhocko@kernel.org>,
@@ -27,9 +27,9 @@ Cc:     Michal Hocko <mhocko@kernel.org>,
         Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 08/14] mm/memory_hotplug: Fix kerneldoc comment for __remove_memory
-Date:   Thu, 20 May 2021 09:48:03 +0100
-Message-Id: <20210520084809.8576-9-mgorman@techsingularity.net>
+Subject: [PATCH 09/14] mm/zbud: Add kerneldoc fields for zbud_pool
+Date:   Thu, 20 May 2021 09:48:04 +0100
+Message-Id: <20210520084809.8576-10-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210520084809.8576-1-mgorman@techsingularity.net>
 References: <20210520084809.8576-1-mgorman@techsingularity.net>
@@ -39,33 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-make W=1 generates the following warning for __remove_memory
+make W=1 generates the following warning for zbud_pool
 
-  mm/memory_hotplug.c:2044: warning: expecting prototype for remove_memory(). Prototype was for __remove_memory() instead
+  mm/zbud.c:105: warning: Function parameter or member 'zpool' not described in 'zbud_pool'
+  mm/zbud.c:105: warning: Function parameter or member 'zpool_ops' not described in 'zbud_pool'
 
-Commit eca499ab3749 ("mm/hotplug: make remove_memory() interface usable")
-introduced the kerneldoc comment and function but the kerneldoc name and
-function name did not match.
+Commit 479305fd7172 ("zpool: remove zpool_evict()") removed the zpool_evict
+helper and added the associated zpool and operations structure in struct
+zbud_pool but did not add documentation for the fields. Add rudimentary
+documentation.
 
-Fixes: eca499ab3749 ("mm/hotplug: make remove_memory() interface usable")
+Fixes: 479305fd7172 ("zpool: remove zpool_evict()")
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- mm/memory_hotplug.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/zbud.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index e3266be1d020..4ea1b19e8c7a 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -2031,7 +2031,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
- }
- 
- /**
-- * remove_memory
-+ * __remove_memory - Remove memory if every memory block is offline
-  * @nid: the node ID
-  * @start: physical address of the region to remove
-  * @size: size of the region to remove
+diff --git a/mm/zbud.c b/mm/zbud.c
+index 7ec5f27a68b0..a200121da400 100644
+--- a/mm/zbud.c
++++ b/mm/zbud.c
+@@ -87,6 +87,8 @@
+  * @pages_nr:	number of zbud pages in the pool.
+  * @ops:	pointer to a structure of user defined operations specified at
+  *		pool creation time.
++ * @zpool:	zpool driver
++ * @zpool_ops:	zpool operations structure with an evict callback
+  *
+  * This structure is allocated at pool creation time and maintains metadata
+  * pertaining to a particular zbud pool.
 -- 
 2.26.2
 
