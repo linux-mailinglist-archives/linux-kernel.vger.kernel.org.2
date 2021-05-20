@@ -2,236 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDFFA38B8A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:54:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3B238B8A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229659AbhETUzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:55:32 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:49146 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbhETUzb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:55:31 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621544048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1b5EOQQ/YePsonGaR3lRGcz0LoWmLLhdRCD6BOMopXw=;
-        b=YilffwgwuvF7ns1RjBuj3XrxFDri3U6Icv+iwHmiRgXp3DmKKS0ulGuvJ0ZUjdkYdRukdy
-        Ugesy59DLi6YlaP0HPqON0dQdlwMvm+NvSu685KsKn738V0o4JAv8nXaqvOa53QFbSWclW
-        ix0kOXubaeEQRikJDhEsq6F3vH2TKvhDmDafOIWZssFCWY8b/YWiybgXmo78qiBVUULv34
-        NDBeA44vBw4Rz3+MHOV56b44GcQpI7fccQJqdNqKsd/K3YxiN19nKXIcD1yhewM4Hsh/F8
-        7VetH0Qw/vqWBaqMNBUKpcLO1ODCP8+zoonmxII/kcGVYkp/AS0Ogi14+ibKHw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621544048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1b5EOQQ/YePsonGaR3lRGcz0LoWmLLhdRCD6BOMopXw=;
-        b=bHSgkAE6LdkqO1B17Okr2XuhipocTUDnPnj2b5iBoHY25TggkOlXZ5Lfl5M14lyAGwirij
-        Jra0eTcBSOuz9KBg==
-To:     Len Brown <lenb@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        id S229708AbhETU5o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:57:44 -0400
+Received: from mga09.intel.com ([134.134.136.24]:51438 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229589AbhETU5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:57:43 -0400
+IronPort-SDR: nneH0yu6Pb9fob/Utukn5ejiiqh/ZrU0i3Zcpr+O/O6O/IWOtTT5qM5norUpplRqifRg7+tW50
+ npzcvqt6GI/Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201374653"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="201374653"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 13:56:16 -0700
+IronPort-SDR: p32C+la9BEuT9E072KcU9D8Tw+ECTbiR6cIvz+sFuJtOHjyDBDkd3lAmSk64s7+QGfJOOZWPPr
+ lNTgxcdqlJVw==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="543763686"
+Received: from blydon-mobl.amr.corp.intel.com (HELO [10.209.0.109]) ([10.209.0.109])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 13:56:16 -0700
+Subject: Re: [RFC v2 27/32] x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
+To:     Sean Christopherson <seanjc@google.com>,
+        "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
         Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "libc-alpha\@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-In-Reply-To: <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu> <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com> <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com> <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com> <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com> <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com> <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
-Date:   Thu, 20 May 2021 22:54:08 +0200
-Message-ID: <87k0ntazyn.ffs@nanos.tec.linutronix.de>
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87b31425b79df3cc44d2bdc6a79d6aa36c42d116.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <3ae38a0b-0676-1543-7015-39a589b2807a@intel.com>
+ <0df80c0f-e0da-e86e-0ab8-abc58f0da559@linux.intel.com>
+ <YKa5gkwGTIUFpzzH@google.com>
+ <b27a6d31-8fd9-e650-0adf-5f7a8fc96a1c@linux.intel.com>
+ <YKbDtt2K4Z5gtYRc@google.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <e257f5fa-e209-8a5b-659c-129abb72be42@intel.com>
+Date:   Thu, 20 May 2021 13:56:13 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YKbDtt2K4Z5gtYRc@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Len,
+On 5/20/21 1:16 PM, Sean Christopherson wrote:
+> On Thu, May 20, 2021, Kuppuswamy, Sathyanarayanan wrote:
+>> So what is your proposal? "tdx_guest_" / "tdx_host_" ?
+>   1. Abstract things where appropriate, e.g. I'm guessing there is a clever way
+>      to deal with the shared vs. private inversion and avoid tdg_shared_mask
+>      altogether.
 
-On Thu, May 20 2021 at 11:35, Len Brown wrote:
-> On Mon, May 17, 2021 at 5:45 AM Thomas Gleixner <tglx@linutronix.de> wrote:
->
->> AMX (or whatever comes next) is nothing else than a device and it
->> just should be treated as such. The fact that it is not exposed
->> via a driver and a device node does not matter at all.
->
-> TMM registers are part of the CPU architectural state.
-> If TMM registers exist for one logical CPU, they exist for all CPUs --
-> including HT siblings. (Intel supports only homogeneous ISA)
->
-> Ditto for the instructions that access and operate on TMM registers.
->
-> One can reasonably predict, that like Intel has done for all other registers,
-> there will be future instructions added to the ISA to operate on TMM registers,
-> including in combination with non-TMM registers that are also part
-> of the architectural state.
->
-> It is an unfortunate word choice that some documentation calls the
-> TMUL instruction an "accelerator".  It isn't. It is part of the ISA,
-> like any other instruction.
+One example here would be to keep a structure like:
 
-of course I know that it is an instruction and the register state is
-part of the per CPU architectural state.
+struct protected_mem_config
+{
+	unsigned long p_set_bits;
+	unsigned long p_clear_bits;
+}
 
-Though there is a fundamental difference between per logical CPU
-architectural state and per logical CPU resources and you know that as
-well as I do.
+Where 'p_set_bits' are the bits that need to be set to establish memory
+protection and 'p_clear_bits' are the bits that need to be cleared.
+physical_mask would clear both of them:
 
-IOW, that does not change the fact that AMX is a shared resource. That's
-true for AVX and that's also true for the architectural RNG, which is
-also accessed like "any other instruction". We've seen how well that
-works.
+	physical_mask &= ~(pmc.p_set_bits & pmc.p_set_bits);
 
-That's the whole point. Because it's a shared resource with causes
-contention and also has side effects vs. power/thermal and state size
-this _is_ different from 'any other instruction'.
+Then, in a place like __set_memory_enc_dec(), you would query whether
+memory protection was in place or not:
+	
++	if (protect) {
++		cpa.mask_set = pmc.p_set_bits;
++		cpa.mask_clr = pmc.p_clear_bits;
++		map_type = TDX_MAP_PRIVATE;
++	} else {
++		cpa.mask_set = pmc.p_clear_bits;
++		cpa.mask_clr = pmc.p_set_bits;
++		map_type = TDX_MAP_SHARED;
++	}
 
-> I agree that a device interface may make sense for real accelerators
-> that don't run x86 instructions, I don't see long term viability for attempting
-> to carve a sub-set of x86 instructions into a device, particularly when
-> the set of instructions will continue to evolve.
+The is_tdx_guest() if()'s would just go away.
 
-Nobody asked for a device interface for AMX. All I asked for is a
-_mandatory_ "request usage" interface, e.g. prctl.
+Basically, if there's a is_tdx_guest() check in common code, it's a
+place that might need an abstraction.
 
-Just for the record:
+This, for instance:
 
- Your like "any other instruction" argument is a nothing else than a
- strawman.
+> +	if (!ret && is_tdx_guest()) {
+> +		ret = tdg_map_gpa(__pa(addr), numpages, map_type);
+> +	}
 
- There exist instructions today which need OS assistance, e.g. the SGX
- related instructions, the upcoming TDX related ones, ENQCMD & al.
+could probably just be:
 
-Please tell me _why_ they are so different. They are part of the ISA and
-still are subject to fine grained (OS) control.
-
->> Not doing so requires this awkward buffer allocation issue via #NM with
->> all it's downsides; it's just wrong to force the kernel to manage
->> resources of a user space task without being able to return a proper
->> error code.
->
-> The hardware #NM support for fault on first use is a feature to allow the OS
-> to optimize space so that pages do not have to be dedicated to back registers
-> unless/until they are actually used.
->
-> There is absolutely no requirement that a particular
-> OS take advantage of that feature.  If you think that this optimization is
-> awkward, we can easily delete/disable it and simply statically allocate buffers
-> for all threads at initialization time.  Though you'll have to convince me
-> why the word "awkward" applies, rather than "elegant".
-
-It's not elegant. It's a hack to avoid rethinking the approach to this
-kind of features.
-
-But I have to admit that it's a cute hack and it even can be utilized
-for a access-request based solution.
-
-> Regarding error return for allocation failures.
->
-> I'm not familiar with the use-case where vmalloc would be likely to fail today,
-> and I'd be interested if anybody can detail that use-case.
-
-It does not matter whether it's likely or not. Unlikely simply does not
-exist at cloud-scale.
-
-> But even if there is none today, I grate that Linux could evolve to make vmalloc
-> fail in the future, and so an interface to reqeust pre-allocation of buffers
-> is reasonable insurance.  Chang has implemented this prctl in v5
-> of the TMUL patch series.
-
-No, it's not a reasonable insurance, simply because it's not mandatory.
-
->> It also prevents fine grained control over access to this
->> functionality. As AMX is clearly a shared resource which is not per HT
->> thread (maybe not even per core) and it has impact on power/frequency it
->> is important to be able to restrict access on a per process/cgroup
->> scope.
->
-> AMX is analogous to the multiplier used by AVX-512.
-> The architectural state must exist on every CPU, including HT siblings.
-> Today, the HT siblings share the same execution unit,
-> and I have no reason to expect that will change.
-
-I'm well aware that HT siblings share the same execution unit for
-AVX.
-
-Though AMX is if I remember the discussions two years ago correctly
-shared by more than the HT siblings which makes things worse.
-
-> I thought we already addressed the FUD surrounding power/frequency.
-
-What's FUD here?
-
-  The fact that AMX is a shared resource which has contention issues?
-
-  The fact that AMX usage has an influence on power/frequency?
-
-If that's FUD by now, then your documentation needs an update.
-
-> As with every kind of instruction -- those that use
-> more power will leave less power for their peers, and there is a mechanism
-> to track that power budget.  I acknowledge that the mechanism was overly
-> conservative and slow to recover in initial AVX-512 systems, and that issue
-> persists even with the latest publically available hardware today.
-> I acknowledge that you do not trust that Intel has addressed this
-> (for both AVX-512 and AMX) in the first hardware that supports AMX.
-
-It does not matter whether I trust Intel or not to get this right. It
-does neither matter whether there is a mechanism to track the budget or
-not.
-
-What matters is that the proposed #NM automatism simply prevents fine
-grained access control for a _shared_ resource which has implications on
-power and frequency and performance in general due to the fact that it's
-shared and causes contention.
-
-And because the #NM hack allows the world and its dog to use AMX any
-unpriviledged user can utilize it. See the idea to use it for grep...
-
-You might want to talk to the people in your company who care about
-real-time and functional safety whether they think it's a good idea to
-allow unrestricted access to functionality which has an influence on the
-overall system behaviour with no other knob than to turn it off
-completely. Turn it off completely is not an option simply because there
-are valid use cases even in that area.
-
->> Having a proper interface (syscall, prctl) which user space can use to
->> ask for permission and allocation of the necessary buffer(s) is clearly
->> avoiding the downsides and provides the necessary mechanisms for proper
->> control and failure handling.
->>
->> It's not the end of the world if something which wants to utilize this
->> has do issue a syscall during detection. It does not matter whether
->> that's a library or just the application code itself.
->>
->> That's a one off operation and every involved entity can cache the
->> result in TLS.
->>
->> AVX512 has already proven that XSTATE management is fragile and error
->> prone, so we really have to stop this instead of creating yet another
->> half baked solution.
->
-> We fixed the glibc ABI issue.  It is available now and production
-> release is this summer.
-
-That does not answer my questions at all.
-
-> Yes, it should have been addressed when AVX-512 was deployed.
-
-Correct. And in hindsight we should have insisted to have fine grained
-control over that back then, but that's water under the bridge.
-
-AMX and what's coming next is not.
-
-Thanks,
-
-        tglx
+	if (!ret && is_protected_guest()) {
+		ret = x86_vmm_protect(__pa(addr), numpages, protected);
+	}
