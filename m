@@ -2,119 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484C3389B15
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:59:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A47E389B17
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhETCAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 22:00:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38134 "EHLO mail.kernel.org"
+        id S230286AbhETCAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 22:00:44 -0400
+Received: from mga03.intel.com ([134.134.136.65]:28360 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229498AbhETCAi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 22:00:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F56D6135A;
-        Thu, 20 May 2021 01:59:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621475957;
-        bh=JdmBtI/nybX20LTYzwdeu3sRM7FFnENPxyFNjn3PhTc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aQy9ccJsdFmRayoAiTGj43uqjruUasRMW3XaC7Y51U6ChraF+gd4VnB5Mm47kDzoF
-         YtOxGgjcaqZept35IaUQW0QVaeAhwRn2ILFnGyv9rjSwh+marLBoRCyIbJ/p6xFnft
-         V2MQ4C4f2aWrFpBp6vD41RmLBy5yWatN4r39rw8hffgO+MRPVrijETmZN5SYhNHtC6
-         ZJtWFpbhBZRS9NwBEwEiN3/i/Yw67Xq4F7h1bfNd9n9SMfgpmkqUqZG/X5yLoUNN5J
-         KR0y8HJp7SkFTsys/rn8aSejDiLFMkfizOeXOFWduU2BGIsxKMnNxfTzGVg9KmA8yw
-         9magqsOUmrp8A==
-Received: by mail-lf1-f52.google.com with SMTP id c10so1011332lfm.0;
-        Wed, 19 May 2021 18:59:17 -0700 (PDT)
-X-Gm-Message-State: AOAM5327WOAGgXW9GikDB3bFvnTUqsKYQwwWogk7vUYBfA80XEZj7B6q
-        dX8cnR+Y35UQmd72YvGd6ze4QwhGKq+Ih2eYZMA=
-X-Google-Smtp-Source: ABdhPJx4Yk2C9GqxDVxay2oozMIz1ibiukYQwG5GLFDi0mjK8VBRld1CDnMtfMIba/K4AMweT0lkvN1tYYTAfnwELo4=
-X-Received: by 2002:ac2:5493:: with SMTP id t19mr1678843lfk.346.1621475955570;
- Wed, 19 May 2021 18:59:15 -0700 (PDT)
+        id S229808AbhETCAl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 22:00:41 -0400
+IronPort-SDR: 9ilHHvu3XFYG241UlYPqHJSwX1Df0nmi9IWeaOA664HAorf7ErFNf3JUBbB/EyEnWn88FEqcXU
+ tYffy1+sDuUQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="201177919"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="201177919"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 18:59:20 -0700
+IronPort-SDR: ldgRelLTgLkDSbx7NbL3uTtmESuVHgjQi6rC2dIQwEub0NGXnr8TdgNobmkvsZJvX14jJ/GIOa
+ J7JkM8A92hQA==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="440088576"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 18:59:17 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH] mm: move idle swap cache pages to the tail of LRU after
+ COW
+References: <20210519013313.1274454-1-ying.huang@intel.com>
+        <YKUlfeAiq/vv+dHl@cmpxchg.org>
+        <87r1i28ahm.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <YKW/ix3Yg5HRuBaC@cmpxchg.org>
+Date:   Thu, 20 May 2021 09:59:15 +0800
+In-Reply-To: <YKW/ix3Yg5HRuBaC@cmpxchg.org> (Johannes Weiner's message of
+        "Wed, 19 May 2021 21:46:51 -0400")
+Message-ID: <87im3e88ss.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de> <CAJF2gTR5838=Uwc5P6Xs=G7vk80k0yqWcSsNe0OFcwc9sDBBHg@mail.gmail.com>
- <20210519060617.GA28397@lst.de> <20210519065431.GB3076809@x1>
- <CAAhSdy3C1owsbY_9gkxkhWfCXnL_noow7F4t=5+j7q+AJO3pZQ@mail.gmail.com> <CAJF2gTQKqce_6cmGQnfLOX8uXvOUWUR-pQT4yOMioMcFAPfBjQ@mail.gmail.com>
-In-Reply-To: <CAJF2gTQKqce_6cmGQnfLOX8uXvOUWUR-pQT4yOMioMcFAPfBjQ@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 20 May 2021 09:59:04 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTR2gWETwiszV0n4otjHxu0hGXDp1TT9n=8hX8UHVZY3tw@mail.gmail.com>
-Message-ID: <CAJF2gTR2gWETwiszV0n4otjHxu0hGXDp1TT9n=8hX8UHVZY3tw@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 9:47 AM Guo Ren <guoren@kernel.org> wrote:
+Johannes Weiner <hannes@cmpxchg.org> writes:
+
+> On Thu, May 20, 2021 at 09:22:45AM +0800, Huang, Ying wrote:
+>> Johannes Weiner <hannes@cmpxchg.org> writes:
+>> 
+>> > On Wed, May 19, 2021 at 09:33:13AM +0800, Huang Ying wrote:
+>> >> diff --git a/mm/memory.c b/mm/memory.c
+>> >> index b83f734c4e1d..2b6847f4c03e 100644
+>> >> --- a/mm/memory.c
+>> >> +++ b/mm/memory.c
+>> >> @@ -3012,6 +3012,11 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+>> >>  				munlock_vma_page(old_page);
+>> >>  			unlock_page(old_page);
+>> >>  		}
+>> >> +		if (page_copied && PageSwapCache(old_page) &&
+>> >> +		    !page_mapped(old_page) && trylock_page(old_page)) {
+>> >> +			try_to_free_idle_swapcache(old_page);
+>> >> +			unlock_page(old_page);
+>> >
+>> > If there are no more swap or pte references, can we just attempt to
+>> > free the page right away, like we do during regular unmap?
+>> >
+>> > 		if (page_copied)
+>> > 			free_swap_cache(old_page);
+>> > 		put_page(old_page);
+>> 
+>> A previous version of the patch does roughly this.
+>> 
+>> https://lore.kernel.org/lkml/20210113024241.179113-1-ying.huang@intel.com/
+>> 
+>> But Linus has concerns with the overhead introduced in the hot COW path.
 >
-> On Wed, May 19, 2021 at 3:15 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Wed, May 19, 2021 at 12:24 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > >
-> > > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig wrote:
-> > > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
-> > > > > Since the existing RISC-V ISA cannot solve this problem, it is better
-> > > > > to provide some configuration for the SOC vendor to customize.
-> > > >
-> > > > We've been talking about this problem for close to five years.  So no,
-> > > > if you don't manage to get the feature into the ISA it can't be
-> > > > supported.
-> > >
-> > > Isn't it a good goal for Linux to support the capabilities present in
-> > > the SoC that a currently being fab'd?
-> > >
-> > > I believe the CMO group only started last year [1] so the RV64GC SoCs
-> > > that are going into mass production this year would not have had the
-> > > opporuntiy of utilizing any RISC-V ISA extension for handling cache
-> > > management.
-> >
-> > The current Linux RISC-V policy is to only accept patches for frozen or
-> > ratified ISA specs.
-> > (Refer, Documentation/riscv/patch-acceptance.rst)
-> >
-> > This means even if emulate CMO instructions in OpenSBI, the Linux
-I think it's CBO now.
-https://github.com/riscv/riscv-CMOs/blob/master/discussion-files/RISC_V_range_CMOs_bad_v1.00.pdf
-
-> > patches won't be taken by Palmer because CMO specification is
-> > still in draft stage.
-> How do you think about
-> sbi_ecall(SBI_EXT_DMA, SBI_DMA_SYNC, start, size, dir, 0, 0, 0);
-> ? thx
-CBO insn trap is okay for me ;-)
-
-> >
-> > Also, we all know how much time it takes for RISCV international
-> > to freeze some spec. Judging by that we are looking at another
-> > 3-4 years at minimum.
-> >
-> > Regards,
-> > Anup
+> Sorry, I had missed that thread.
 >
+> It sounds like there were the same concerns about the LRU shuffling
+> overhead in the COW page. Now we have numbers for that, but not the
+> free_swap_cache version. Would you be able to run the numbers for that
+> as well? It would be interesting to see how much the additional code
+> complexity buys us.
+
+The number for which workload?  The workload that is used to evaluate
+this patch?
+
+>> Another possibility is to move the idle swap cache page to the tail of
+>> the file LRU list.  But the question is how to identify the page.
 >
->
-> --
-> Best Regards
->  Guo Ren
->
-> ML: https://lore.kernel.org/linux-csky/
+> The LRU type is identified by PG_swapbacked, and we do clear that for
+> anon pages to implement MADV_FREE. It may work here too. But I'm
+> honestly a bit skeptical about the ROI on this...
 
+The definition of PageSwapCache() is
 
+static __always_inline int PageSwapCache(struct page *page)
+{
+#ifdef CONFIG_THP_SWAP
+	page = compound_head(page);
+#endif
+	return PageSwapBacked(page) && test_bit(PG_swapcache, &page->flags);
+}
 
--- 
-Best Regards
- Guo Ren
+So we cannot clear PG_swapbacked directly.
 
-ML: https://lore.kernel.org/linux-csky/
+Best Regards,
+Huang, Ying
