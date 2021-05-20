@@ -2,230 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFF4D38B71A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:17:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1C538B70E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238403AbhETTSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:18:07 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:28627 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237265AbhETTR5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:17:57 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 86B3352142D;
-        Thu, 20 May 2021 22:16:32 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1621538192;
-        bh=ktI7zuP5tqQq2OwwujvZf0jJQ13/fF8fLsGWEJXiAeY=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=0TYvRyZ+YsujHv/E68E5BbRFPwoWf5nAKrAJlr8zs9tdRY4zMltGlH8okurALAnTA
-         deH+XkLZsFqzD3+7ezgvLL3QZQr+HnuFlPm984mq6IDQtfaj3kryCbAz86JHqGWatu
-         dm+UTwMMj5e4PJVX/M9/T49k4/GtBU0/deXyIYt9/dbSYJtRJXvF4WPTzD5K7qzcKW
-         /xqcFM5tmecr+ETuEU7WBZR8KGqnZmtRMpJjZcpVVOcI88mlyZb0K0X4h2l1of5AxX
-         b+pI8n6ANRkQC4Yyl5JsxCXO4vbyCYPXiLnkDllqa+v/jWR8NyL8o+3TgrMSEXoQ7K
-         eDV7ePxxX0ONw==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id F2C18521145;
-        Thu, 20 May 2021 22:16:31 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.129) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
- May 2021 22:16:16 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <oxffffaa@gmail.com>
-Subject: [PATCH v10 04/18] af_vsock: implement SEQPACKET receive loop
-Date:   Thu, 20 May 2021 22:16:08 +0300
-Message-ID: <20210520191611.1271204-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+        id S237989AbhETTRn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:17:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236921AbhETTRm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 15:17:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9E696135A;
+        Thu, 20 May 2021 19:16:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621538181;
+        bh=qY3hpBeVAuCX3rQmLLBqhaAD+XIAqD/Wva7r1sTpmjI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Ki2RQ4f3Izr1A7WBNsI0VLlib/aFJk9UldR0MensCn/hkE9QUESVFebdERfweBDCW
+         rWUhODGM3tARvtEEH4yvTvnuN9aCH5EIK+y/nWOmq22eEQSp+SzIT2VbCkfPUDQjgD
+         zE7b1d+8Yg4k0sohAl1X+P5ov5UZxZ0fEu8plUEZSBlBH77Du6Ks7nZXJOlPyG5vRh
+         28xZGdzclB617Y0tsRF+avAnSKDk/YaOtqS0+6Iuz0ofETtaZZVdurOf0U/cmH3oJm
+         B2LdjMLznrcyJcVZJh1U6wf3NegkE6PkFnQ1CdaKyRAwNSs2RakiahwYHsdZoa+1C/
+         kj8weSC2ni/QQ==
+Date:   Thu, 20 May 2021 21:16:15 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] Adding support for controlling the leds found
+ on Intel NUC
+Message-ID: <20210520211615.437e22ee@coco.lan>
+In-Reply-To: <20210520181919.608568b2@thinkpad>
+References: <cover.1621349813.git.mchehab+huawei@kernel.org>
+        <20210519111107.GC24621@duo.ucw.cz>
+        <20210519141508.6e7a4d56@coco.lan>
+        <20210519194115.GA31672@duo.ucw.cz>
+        <20210520010720.32265ad4@coco.lan>
+        <20210520181919.608568b2@thinkpad>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.68.129]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add receive loop for SEQPACKET. It looks like receive loop for
-STREAM, but there are differences:
-1) It doesn't call notify callbacks.
-2) It doesn't care about 'SO_SNDLOWAT' and 'SO_RCVLOWAT' values, because
-   there is no sense for these values in SEQPACKET case.
-3) It waits until whole record is received or error is found during
-   receiving.
-4) It processes and sets 'MSG_TRUNC' flag.
+Em Thu, 20 May 2021 18:19:19 +0200
+Marek Beh=C3=BAn <kabel@kernel.org> escreveu:
 
-So to avoid extra conditions for two types of socket inside one loop, two
-independent functions were created.
+> On Thu, 20 May 2021 01:07:20 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+>=20
+> > So, the first thing that the API needs is a way to tell what LED
+> > is monitoring the device's power state. =20
+>=20
+> If a LED can monitor the device's power state in HW, register a LED
+> private trigger for this LED. If the LED is configured into this state
+> by default, you can set this trigger to be the default_trigger prior
+> registering the LED. The name of this private trigger can be
+> "hw:powerstate" or something like that (I wonder what others will
+> think about this name).
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
----
- v9 -> v10:
- 1) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
+Ok.
 
- include/net/af_vsock.h   |  4 +++
- net/vmw_vsock/af_vsock.c | 72 +++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 75 insertions(+), 1 deletion(-)
+So, assuming that we will have one trigger per each hardware
+state, it could have something like (names subject to change):
 
-diff --git a/include/net/af_vsock.h b/include/net/af_vsock.h
-index b1c717286993..5175f5a52ce1 100644
---- a/include/net/af_vsock.h
-+++ b/include/net/af_vsock.h
-@@ -135,6 +135,10 @@ struct vsock_transport {
- 	bool (*stream_is_active)(struct vsock_sock *);
- 	bool (*stream_allow)(u32 cid, u32 port);
- 
-+	/* SEQ_PACKET. */
-+	ssize_t (*seqpacket_dequeue)(struct vsock_sock *vsk, struct msghdr *msg,
-+				     int flags, bool *msg_ready);
-+
- 	/* Notification. */
- 	int (*notify_poll_in)(struct vsock_sock *, size_t, bool *);
- 	int (*notify_poll_out)(struct vsock_sock *, size_t, bool *);
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index c4f6bfa1e381..aede474343d1 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -1974,6 +1974,73 @@ static int __vsock_stream_recvmsg(struct sock *sk, struct msghdr *msg,
- 	return err;
- }
- 
-+static int __vsock_seqpacket_recvmsg(struct sock *sk, struct msghdr *msg,
-+				     size_t len, int flags)
-+{
-+	const struct vsock_transport *transport;
-+	bool msg_ready;
-+	struct vsock_sock *vsk;
-+	ssize_t record_len;
-+	long timeout;
-+	int err = 0;
-+	DEFINE_WAIT(wait);
-+
-+	vsk = vsock_sk(sk);
-+	transport = vsk->transport;
-+
-+	timeout = sock_rcvtimeo(sk, flags & MSG_DONTWAIT);
-+	msg_ready = false;
-+	record_len = 0;
-+
-+	while (1) {
-+		ssize_t fragment_len;
-+
-+		if (vsock_wait_data(sk, &wait, timeout, NULL, 0) <= 0) {
-+			/* In case of any loop break(timeout, signal
-+			 * interrupt or shutdown), we report user that
-+			 * nothing was copied.
-+			 */
-+			err = 0;
-+			break;
-+		}
-+
-+		fragment_len = transport->seqpacket_dequeue(vsk, msg, flags, &msg_ready);
-+
-+		if (fragment_len < 0) {
-+			err = -ENOMEM;
-+			break;
-+		}
-+
-+		record_len += fragment_len;
-+
-+		if (msg_ready)
-+			break;
-+	}
-+
-+	if (sk->sk_err)
-+		err = -sk->sk_err;
-+	else if (sk->sk_shutdown & RCV_SHUTDOWN)
-+		err = 0;
-+
-+	if (msg_ready && err == 0) {
-+		/* User sets MSG_TRUNC, so return real length of
-+		 * packet.
-+		 */
-+		if (flags & MSG_TRUNC)
-+			err = record_len;
-+		else
-+			err = len - msg_data_left(msg);
-+
-+		/* Always set MSG_TRUNC if real length of packet is
-+		 * bigger than user's buffer.
-+		 */
-+		if (record_len > len)
-+			msg->msg_flags |= MSG_TRUNC;
-+	}
-+
-+	return err;
-+}
-+
- static int
- vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 			  int flags)
-@@ -2029,7 +2096,10 @@ vsock_connectible_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 		goto out;
- 	}
- 
--	err = __vsock_stream_recvmsg(sk, msg, len, flags);
-+	if (sk->sk_type == SOCK_STREAM)
-+		err = __vsock_stream_recvmsg(sk, msg, len, flags);
-+	else
-+		err = __vsock_seqpacket_recvmsg(sk, msg, len, flags);
- 
- out:
- 	release_sock(sk);
--- 
-2.25.1
+	- hw:powerstate
+	- hw:disk_activity
+	- hw:ethernet_activity
+	- hw:wifi_active
+	- hw:power_limit
 
+Right?
+
+It still needs to indicate two other possible states:
+
+	- software controlled led;
+	- led is disabled.
+
+Setting led's brightness to zero is different than disabling
+it.=20
+
+Disabling can be done via BIOS, but BIOS config doesn't allow
+setting the brightness. There are other difference on BIOS settings:
+it allow disabling each/all LED controls and/or to disable software=20
+control of each LED.
+
+So, we need a way at the API to uniquely identify when the LED
+is software-controlled and when it is disabled.
+Would it be something like:
+
+	- hw:disable
+
+trigger? or better to implement it on a different way?
+
+> > Then, for each power state (S0, S3, S5), define if the LED will
+> > be ON all the times or not.
+> >=20
+> > The "slowing breathing" is one of the possible blink patterns.
+> > The driver supports 4 other blink patterns
+> >=20
+> > 	- Solid - the LED won't blink;
+> > 	- Breathing - it looks like a sinusoidal wave pattern;
+> > 	- Pulsing - it looks like a square wave pattern;
+> > 	- Strobing - it turns ON suddenly, and then it slowly turns OFF.
+> >=20
+> > The speed of the blink is also adjustable, ranging from 0.1 Hz to 1 Hz,
+> > on 0.1 Hz steps. =20
+>=20
+> Is the speed of breathing/strobing also adjustable? Or only when
+> pulsing?
+
+Yes, speed is also adjustable, from 0.1 to 1.0 HZ, in 0.1 Hz
+(NUC 8 and above).
+
+The NUC6 API is more limited than NUC8+: it has just two
+blink patterns (blink, fade), and only 3 frequencies are allowed
+(0.25 Hz, 0.50 Hz and 1.0 Hz).
+
+> When this "hw:powerstate" trigger is enabled for this LED,
+> only then another sysfs files should appear in this LED's sysfs
+> directory.
+
+OK, makes sense.=20
+
+Out of curiosity: is it reliable to make sysfs nodes appear and
+disappear dynamically? Does inotify (or something similar) can
+be used to identify when such nodes appear/disappear?
+
+I remember a long time ago I wanted to use something like that=20
+at the media (or edac?) subsystem, but someone (Greg, I think)
+recommended otherwise due to some potential racing issues.
+
+>=20
+> > ---
+> >=20
+> > Let me explain this specific part of the API from my original proposal.
+> >=20
+> > Those are the led names from the datasheets (NUC 8 and above),
+> > and my proposal for the sysfs class directory name:
+> >=20
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > LED name	sysfs
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Skull		``/sys/class/leds/nuc::skull``
+> > Skull eyes	``/sys/class/leds/nuc::eyes``
+> > Power		``/sys/class/leds/nuc::power``
+> > HDD		``/sys/class/leds/nuc::hdd``
+> > Front1		``/sys/class/leds/nuc::front1``
+> > Front2		``/sys/class/leds/nuc::front2``
+> > Front3		``/sys/class/leds/nuc::front3``
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D	=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >=20
+> > For each of the above, there's the need to identify what
+> > hardware function is monitored (if any).
+> >=20
+> > My proposal were to add an "indicator" node (the name came from
+> > the Intel datasheets) that shows what led will monitor the power state.
+> >=20
+> > Then, one blink_behavior and one blink_frequency per power state,
+> > e. g.:
+> >=20
+> >     /sys/class/leds/nuc::front1
+> >     |-- indicator
+> >     |-- s0_blink_behavior
+> >     |-- s0_blink_frequency
+> >     |-- s3_blink_behavior
+> >     |-- s3_blink_frequency
+> >     |-- s5_blink_behavior
+> >     `-- s5_blink_frequency =20
+>=20
+> I'd rather use one file for frequencies and one for intervals, and map
+> in to an array, but that is just my preference...
+
+By intervals are you meaning 1/frequency? So, basically exposing
+the frequency as two fields? If so, it sounds overkill to me to have both.=
+=20
+
+Btw, maybe instead of "blink_behavior" it could use "blink_pattern".
+
+This would diverge from the datahseet name, but it probably describes
+better what will be controlled when blink is enabled:
+
+	- frequency (or inverval)
+	- pattern
+
+>=20
+> >=20
+> > PS.: I don't care much about what names we'll use. Feel free to
+> > rename them, if you think the above is not clear or generic enough.
+> >=20
+> > -
+> >=20
+> > To make part of the API complete, there's also the need of a node
+> > to control the max brightness that the leds will achieve at the
+> > ON state, and another one to control the color on each state,
+> > as one could define, let's say, "white" when powered on, "blue"
+> > when suspended and "yellow" when hibernating. The colors at the
+> > NUC I have are RGB (but other models can use an enum for the
+> > supported colors).
+> >=20
+> >     /sys/class/leds/nuc::front1
+> >     |-- s0_brightness
+> >     |-- s0_color		# only shown on colored leds
+> >     |-- s3_brightness
+> >     |-- s3_color		# only shown on colored leds
+> >     |-- s0_brightness
+> >     `-- s5_color		# only shown on colored leds =20
+>=20
+> If the BIOS reports a LED being full RGB LED, you should register it
+> via multicolor framework.
+
+OK.
+
+> Regarding the enum with 8 colors: are these
+> colors red, yellow, green, cyan, blue, magenta? Because if so, then
+> this is RGB with each channel being binary :) So you can again use
+> multicolor framework.
+
+The dual-colored ones aren't RGB. Two types are supported:
+	- Blue/Amber
+	- Blue/White
+
+the only one with 8 colors is at NUC6 API: the ring led. This one can be ma=
+pped
+as RGB with 1 bit per color, as those are the colors:
+
+    +---------+
+    | disable |
+    +---------+
+    | cyan    |
+    +---------+
+    | pink    |
+    +---------+
+    | yellow  |
+    +---------+
+    | blue    |
+    +---------+
+    | red     |
+    +---------+
+    | green   |
+    +---------+
+    | white   |
+    +---------+
+
+Thanks,
+Mauro
