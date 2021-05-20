@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB5E38A203
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:35:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CFDE38A19C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhETJhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:37:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34676 "EHLO mail.kernel.org"
+        id S232167AbhETJck (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:32:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54768 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232500AbhETJen (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:34:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 86DEE61401;
-        Thu, 20 May 2021 09:29:17 +0000 (UTC)
+        id S231980AbhETJao (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:30:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C563B613BF;
+        Thu, 20 May 2021 09:27:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502958;
-        bh=6xE87fb93+R24VnrhjQvU4MC3YwFzRjAut5ARQywGzg=;
+        s=korg; t=1621502863;
+        bh=FaSVuKfVy/s/t8GFTRJUt7IzZECEnk/LiLFnjxDgU9A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=w47a2GVl0lHiVnhk85zgDotJYSSNERxjl8pezHUT86pVLfHw6/9e5a2XeuSWBOT/f
-         8l2H5AodPYEWapq6+g7LhiUTc8ySDT0eeS82Dqmsnbwrbrmfx5vHWKlJiwglDkxfOn
-         WI7qMq0bbYAg6CASjKDsZm65IXbQOmKuuwMCwvGs=
+        b=gyi4SwUxsV74qfE/1Zjgv+SMT9CVWHUF4ik/Fyw2NFRrw1hA6RnTb1qyQ90RKeAUA
+         sPVRsMjFEmOyGHxROvwILn6d3mQChgYgl9FT8qgLGJgpHb0S5B84fmyfLXHpxSVbfd
+         1FmCIPkkwY35H50zGfxTiJjJ8w2300Fhz1jLDk58=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jeff Layton <jlayton@kernel.org>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 22/37] ceph: fix fscache invalidation
-Date:   Thu, 20 May 2021 11:22:43 +0200
-Message-Id: <20210520092053.006342427@linuxfoundation.org>
+        stable@vger.kernel.org, Finn Behrens <me@kloenk.de>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH 5.10 46/47] tweewide: Fix most Shebang lines
+Date:   Thu, 20 May 2021 11:22:44 +0200
+Message-Id: <20210520092055.033149893@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
-References: <20210520092052.265851579@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,47 +39,253 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jeff Layton <jlayton@kernel.org>
+From: Finn Behrens <me@kloenk.de>
 
-[ Upstream commit 10a7052c7868bc7bc72d947f5aac6f768928db87 ]
+commit c25ce589dca10d64dde139ae093abc258a32869c upstream.
 
-Ensure that we invalidate the fscache whenever we invalidate the
-pagecache.
+Change every shebang which does not need an argument to use /usr/bin/env.
+This is needed as not every distro has everything under /usr/bin,
+sometimes not even bash.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
-Signed-off-by: Ilya Dryomov <idryomov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Finn Behrens <me@kloenk.de>
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ceph/caps.c  | 1 +
- fs/ceph/inode.c | 1 +
- 2 files changed, 2 insertions(+)
+ Documentation/sphinx/parse-headers.pl                                   |    2 +-
+ Documentation/target/tcm_mod_builder.py                                 |    2 +-
+ Documentation/trace/postprocess/decode_msr.py                           |    2 +-
+ Documentation/trace/postprocess/trace-pagealloc-postprocess.pl          |    2 +-
+ Documentation/trace/postprocess/trace-vmscan-postprocess.pl             |    2 +-
+ arch/ia64/scripts/unwcheck.py                                           |    2 +-
+ scripts/bloat-o-meter                                                   |    2 +-
+ scripts/config                                                          |    2 +-
+ scripts/diffconfig                                                      |    2 +-
+ scripts/get_abi.pl                                                      |    2 +-
+ scripts/show_delta                                                      |    2 +-
+ scripts/sphinx-pre-install                                              |    2 +-
+ scripts/split-man.pl                                                    |    2 +-
+ scripts/tracing/draw_functrace.py                                       |    2 +-
+ tools/perf/python/tracepoint.py                                         |    2 +-
+ tools/perf/python/twatch.py                                             |    2 +-
+ tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py              |    2 +-
+ tools/testing/ktest/compare-ktest-sample.pl                             |    2 +-
+ tools/testing/kunit/kunit.py                                            |    2 +-
+ tools/testing/kunit/kunit_tool_test.py                                  |    2 +-
+ tools/testing/selftests/bpf/test_offload.py                             |    2 +-
+ tools/testing/selftests/drivers/net/mlxsw/sharedbuffer_configuration.py |    2 +-
+ tools/testing/selftests/kselftest/prefix.pl                             |    2 +-
+ tools/testing/selftests/net/devlink_port_split.py                       |    2 +-
+ tools/testing/selftests/tc-testing/tdc_batch.py                         |    2 +-
+ tools/testing/selftests/tc-testing/tdc_multibatch.py                    |    2 +-
+ 26 files changed, 26 insertions(+), 26 deletions(-)
 
-diff --git a/fs/ceph/caps.c b/fs/ceph/caps.c
-index 22833fa5bb58..a6047caf77ec 100644
---- a/fs/ceph/caps.c
-+++ b/fs/ceph/caps.c
-@@ -1780,6 +1780,7 @@ static int try_nonblocking_invalidate(struct inode *inode)
- 	u32 invalidating_gen = ci->i_rdcache_gen;
+--- a/Documentation/sphinx/parse-headers.pl
++++ b/Documentation/sphinx/parse-headers.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ use strict;
+ use Text::Tabs;
+ use Getopt::Long;
+--- a/Documentation/target/tcm_mod_builder.py
++++ b/Documentation/target/tcm_mod_builder.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # The TCM v4 multi-protocol fabric module generation script for drivers/target/$NEW_MOD
+ #
+ # Copyright (c) 2010 Rising Tide Systems
+--- a/Documentation/trace/postprocess/decode_msr.py
++++ b/Documentation/trace/postprocess/decode_msr.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # add symbolic names to read_msr / write_msr in trace
+ # decode_msr msr-index.h < trace
+ import sys
+--- a/Documentation/trace/postprocess/trace-pagealloc-postprocess.pl
++++ b/Documentation/trace/postprocess/trace-pagealloc-postprocess.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # This is a POC (proof of concept or piece of crap, take your pick) for reading the
+ # text representation of trace output related to page allocation. It makes an attempt
+ # to extract some high-level information on what is going on. The accuracy of the parser
+--- a/Documentation/trace/postprocess/trace-vmscan-postprocess.pl
++++ b/Documentation/trace/postprocess/trace-vmscan-postprocess.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # This is a POC for reading the text representation of trace output related to
+ # page reclaim. It makes an attempt to extract some high-level information on
+ # what is going on. The accuracy of the parser may vary
+--- a/arch/ia64/scripts/unwcheck.py
++++ b/arch/ia64/scripts/unwcheck.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # Usage: unwcheck.py FILE
+--- a/scripts/bloat-o-meter
++++ b/scripts/bloat-o-meter
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ #
+ # Copyright 2004 Matt Mackall <mpm@selenic.com>
+ #
+--- a/scripts/config
++++ b/scripts/config
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!/usr/bin/env bash
+ # SPDX-License-Identifier: GPL-2.0
+ # Manipulate options in a .config file from the command line
  
- 	spin_unlock(&ci->i_ceph_lock);
-+	ceph_fscache_invalidate(inode);
- 	invalidate_mapping_pages(&inode->i_data, 0, -1);
- 	spin_lock(&ci->i_ceph_lock);
+--- a/scripts/diffconfig
++++ b/scripts/diffconfig
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # diffconfig - a tool to compare .config files.
+--- a/scripts/get_abi.pl
++++ b/scripts/get_abi.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0
  
-diff --git a/fs/ceph/inode.c b/fs/ceph/inode.c
-index 660a878e20ef..5beebbbb42f0 100644
---- a/fs/ceph/inode.c
-+++ b/fs/ceph/inode.c
-@@ -1875,6 +1875,7 @@ static void ceph_do_invalidate_pages(struct inode *inode)
- 	orig_gen = ci->i_rdcache_gen;
- 	spin_unlock(&ci->i_ceph_lock);
+ use strict;
+--- a/scripts/show_delta
++++ b/scripts/show_delta
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0-only
+ #
+ # show_deltas: Read list of printk messages instrumented with
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0-or-later
+ use strict;
  
-+	ceph_fscache_invalidate(inode);
- 	if (invalidate_inode_pages2(inode->i_mapping) < 0) {
- 		pr_err("invalidate_pages %p fails\n", inode);
- 	}
--- 
-2.30.2
-
+--- a/scripts/split-man.pl
++++ b/scripts/split-man.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # Author: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+--- a/scripts/tracing/draw_functrace.py
++++ b/scripts/tracing/draw_functrace.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0-only
+ 
+ """
+--- a/tools/perf/python/tracepoint.py
++++ b/tools/perf/python/tracepoint.py
+@@ -1,4 +1,4 @@
+-#! /usr/bin/python
++#! /usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0
+ # -*- python -*-
+ # -*- coding: utf-8 -*-
+--- a/tools/perf/python/twatch.py
++++ b/tools/perf/python/twatch.py
+@@ -1,4 +1,4 @@
+-#! /usr/bin/python
++#! /usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0-only
+ # -*- python -*-
+ # -*- coding: utf-8 -*-
+--- a/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
++++ b/tools/power/x86/intel_pstate_tracer/intel_pstate_tracer.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0-only
+ # -*- coding: utf-8 -*-
+ #
+--- a/tools/testing/ktest/compare-ktest-sample.pl
++++ b/tools/testing/ktest/compare-ktest-sample.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ open (IN,"ktest.pl");
+--- a/tools/testing/kunit/kunit.py
++++ b/tools/testing/kunit/kunit.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python3
++#!/usr/bin/env python3
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # A thin wrapper on top of the KUnit Kernel
+--- a/tools/testing/kunit/kunit_tool_test.py
++++ b/tools/testing/kunit/kunit_tool_test.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python3
++#!/usr/bin/env python3
+ # SPDX-License-Identifier: GPL-2.0
+ #
+ # A collection of tests for tools/testing/kunit/kunit.py
+--- a/tools/testing/selftests/bpf/test_offload.py
++++ b/tools/testing/selftests/bpf/test_offload.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python3
++#!/usr/bin/env python3
+ 
+ # Copyright (C) 2017 Netronome Systems, Inc.
+ # Copyright (c) 2019 Mellanox Technologies. All rights reserved
+--- a/tools/testing/selftests/drivers/net/mlxsw/sharedbuffer_configuration.py
++++ b/tools/testing/selftests/drivers/net/mlxsw/sharedbuffer_configuration.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python
++#!/usr/bin/env python
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ import subprocess
+--- a/tools/testing/selftests/kselftest/prefix.pl
++++ b/tools/testing/selftests/kselftest/prefix.pl
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl
++#!/usr/bin/env perl
+ # SPDX-License-Identifier: GPL-2.0
+ # Prefix all lines with "# ", unbuffered. Command being piped in may need
+ # to have unbuffering forced with "stdbuf -i0 -o0 -e0 $cmd".
+--- a/tools/testing/selftests/net/devlink_port_split.py
++++ b/tools/testing/selftests/net/devlink_port_split.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python3
++#!/usr/bin/env python3
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ from subprocess import PIPE, Popen
+--- a/tools/testing/selftests/tc-testing/tdc_batch.py
++++ b/tools/testing/selftests/tc-testing/tdc_batch.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python3
++#!/usr/bin/env python3
+ 
+ """
+ tdc_batch.py - a script to generate TC batch file
+--- a/tools/testing/selftests/tc-testing/tdc_multibatch.py
++++ b/tools/testing/selftests/tc-testing/tdc_multibatch.py
+@@ -1,4 +1,4 @@
+-#!/usr/bin/python3
++#!/usr/bin/env python3
+ # SPDX-License-Identifier: GPL-2.0
+ """
+ tdc_multibatch.py - a thin wrapper over tdc_batch.py to generate multiple batch
 
 
