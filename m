@@ -2,137 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9111C38B41E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:17:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD79438B422
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233825AbhETQTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:19:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233319AbhETQTQ (ORCPT
+        id S233846AbhETQUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:20:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37624 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233840AbhETQUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:19:16 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF8FC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:17:54 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id o27so16711463qkj.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:17:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=X2K2UsQIFakSL3CdJKO88oHVvUmlIFCUmew7iYpt6xQ=;
-        b=Tt16I/P3Oiie+y5ejV3kiyQ94NjZVIk6Q8QErYbjLyk8Os0LLdxq9WS2y7ANrRWOuj
-         sox+ztKic5ZFWHIdB6MB3b4hSGB1Drkmx5X35/qgtfhTeWGuvZw2/jX+qIDHrsf6Ud/G
-         sSUo+/LU3Kxd0o+06jjUpfLHKwWrz65aAQjcU=
+        Thu, 20 May 2021 12:20:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621527528;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6OgNPYxA7i+etU7xLj3nrXr95skp7dY81DNzdhoz9rg=;
+        b=MbsdO9p21Pkqs8IQ0urYaiImkcuy7g1gNMWLTZMZGpJLqdv4uo2/3EqOymTAztfVA54BjK
+        cFxtdpy2XXa5ppZXxRWb+jXjxuQZb8c7sL5CPCqc4UCg18euIXBxMzzyZ9EDWIeuSBzWmc
+        GB3PTWHbmRXEvLVVXAaYOBRSknnOAvg=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-cQVypByEO0-L9DU84zn2RQ-1; Thu, 20 May 2021 12:18:43 -0400
+X-MC-Unique: cQVypByEO0-L9DU84zn2RQ-1
+Received: by mail-wr1-f69.google.com with SMTP id i15-20020a5d558f0000b029011215b1cf5cso2424190wrv.22
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:18:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X2K2UsQIFakSL3CdJKO88oHVvUmlIFCUmew7iYpt6xQ=;
-        b=h+7uQbOpQeh37uJyk/dkvgEHLMwgsfsI8G0WCXGP6Zni/UF4whLC7aOvHbTVTXbTQF
-         DGyLRQgF/p+TiVRcJOrzmDthzE5ajiiIDcyHYijguNVEqfbJcPcEJJ45wa4QwcyzhLbc
-         MXJWh95OPPP1Eak3rJ7qsjAW3Qaf+iruqetWg9GFcnfIC5U0y8nLxuPW7JFIJHvoPKzb
-         Cq51S9kLByfSR3n2TmJkr6EmhP+TPNw6CfYhk9LB3frDwn9ZWijMAr1nTaZHOtxByhaE
-         kwDHtxUQIOJpqpidDPg34cnVDm2PhMmZxMTs7bZW2JxAVQYP8YPgITljLYoXfCBh8RDO
-         TnUw==
-X-Gm-Message-State: AOAM532AJNC1K2lrGJLpdysEsIEDTn66NFBihpcWMU5ry4Q+TyA7b43l
-        LzZwk9L6ThUwPujodhloTO+8IF3a8ET8SA==
-X-Google-Smtp-Source: ABdhPJxF9lfe3GtZieZODWj2nCjG+lSPridOb2iGKyb2fx3sbIFVvy0vXNMILu2NbncNdp5mlsH5fA==
-X-Received: by 2002:a37:65d2:: with SMTP id z201mr6095772qkb.219.1621527472838;
-        Thu, 20 May 2021 09:17:52 -0700 (PDT)
-Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com. [209.85.219.172])
-        by smtp.gmail.com with ESMTPSA id g5sm2132177qtv.56.2021.05.20.09.17.51
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=6OgNPYxA7i+etU7xLj3nrXr95skp7dY81DNzdhoz9rg=;
+        b=oD72nqRMnmLeUxd8QeJ4IK43QZGMDjzmFgfV5YprhTJ4xE7GUHF2X9+Kk97i3I1g8t
+         pr43mmu6IyH+HtHrReDo6mb+Mj126ZdMffLoJSGQhk5Zeyvf6D6fQzbK8joorr3gZMsk
+         4XBC8gHCkNdaT6wXk9FlU4Q8JCfnXfae5ZmQs0QhYTX27ysGgty5lwsv1tDBBNwm6Y7p
+         6733Osl/Giz99gX/XB3HooegTrv5QPdZwiLWBn+yu4Zyz+sZgpIMr3Qtl71aj4L6S9mX
+         RndWmHNt42hJHhlhWstlkAKXFG1MyN74Z0BgT/2CqxQTib75+Pe+3n0IxkvrMcVGG3wa
+         JiZg==
+X-Gm-Message-State: AOAM533WzKWJTvjqbVNJ+L7T4VdsnpaWge64uRk1LrLGG8dNlvf6MAVw
+        7cHxzEcPSmIDsYlWMjLKrIMbJLHLZ9c7QspkQoXqXlTSLpOi3ql9s6J2LFseF5z9qa7m1Q0M5BW
+        s60BSGof7T6AfVBhoa1qc/Zjs
+X-Received: by 2002:a5d:59a4:: with SMTP id p4mr5320581wrr.248.1621527522005;
+        Thu, 20 May 2021 09:18:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyHdHvZnHkFtg16t/tFIWUALZddO72xh0A6mKZ4eMSItEm7NWMHJO7CM8CAVLCm09/8wvuHlw==
+X-Received: by 2002:a5d:59a4:: with SMTP id p4mr5320562wrr.248.1621527521813;
+        Thu, 20 May 2021 09:18:41 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b8sm3978942wrx.15.2021.05.20.09.18.39
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 09:17:52 -0700 (PDT)
-Received: by mail-yb1-f172.google.com with SMTP id n4so5117109ybf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:17:51 -0700 (PDT)
-X-Received: by 2002:a25:80d4:: with SMTP id c20mr8811535ybm.345.1621527471502;
- Thu, 20 May 2021 09:17:51 -0700 (PDT)
+        Thu, 20 May 2021 09:18:40 -0700 (PDT)
+Subject: Re: [PATCH] Move VMEnter and VMExit tracepoints closer to the actual
+ event
+To:     Sean Christopherson <seanjc@google.com>,
+        Stefano De Venuto <stefano.devenuto99@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, rostedt@goodmis.org,
+        y.karadz@gmail.com, Dario Faggioli <dfaggioli@suse.com>
+References: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+ <YKaBEn6oUXaVAb0K@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <ab44e5b1-4448-d6c8-6cda-5e41866f69f1@redhat.com>
+Date:   Thu, 20 May 2021 18:18:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210520012731.3731314-1-swboyd@chromium.org>
-In-Reply-To: <20210520012731.3731314-1-swboyd@chromium.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 20 May 2021 09:17:39 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XfY3yNnH0ZJiRJQCcw8Rs=RGCntETXofK+5xRACVnDyQ@mail.gmail.com>
-Message-ID: <CAD=FV=XfY3yNnH0ZJiRJQCcw8Rs=RGCntETXofK+5xRACVnDyQ@mail.gmail.com>
-Subject: Re: [PATCH] of/fdt: Don't worry about non-memory region overlap for no-map
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Rob Herring <robh@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Quentin Perret <qperret@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKaBEn6oUXaVAb0K@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 20/05/21 17:32, Sean Christopherson wrote:
+> On VMX, I think the tracepoint can be moved below the VMWRITEs without much
+> contention (though doing so is likely a nop), but moving it below
+> kvm_load_guest_xsave_state() requires a bit more discussion.
 
-On Wed, May 19, 2021 at 6:27 PM Stephen Boyd <swboyd@chromium.org> wrote:
->
-> In commit 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove
-> already reserved regions") we returned -EBUSY when trying to mark
-> regions as no-map when they're in the reserved memory node. This if
-> condition will still trigger though if the DT has a /memreserve/ that
-> completely subsumes the no-map memory carveouts in the reserved memory
-> node. Let's only consider this to be a problem if we're trying to mark a
-> region as no-map and it is actually memory. If it isn't memory,
-> presumably it was removed from the memory map via /memreserve/ and thus
-> can't be mapped anyway.
->
-> This silences a warning seen at boot for me on sc7180-trogdor.dtsi
-> boards that have /memreserve/ coming from the bootloader and those
-> reserved regions overlap with the carveouts that we want to use in DT
-> for other purposes like communicating with remote processors.
->
-> Cc: Douglas Anderson <dianders@chromium.org>
-> Cc: Nicolas Boichat <drinkcat@chromium.org>
-> Cc: Quentin Perret <qperret@google.com>
-> Fixes: 8a5a75e5e9e5 ("of/fdt: Make sure no-map does not remove already reserved regions")
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
->  drivers/of/fdt.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index ba17a80b8c79..be13b4b6c2d8 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -1161,7 +1161,8 @@ int __init __weak early_init_dt_reserve_memory_arch(phys_addr_t base,
->                  * If the memory is already reserved (by another region), we
->                  * should not allow it to be marked nomap.
->                  */
-> -               if (memblock_is_region_reserved(base, size))
-> +               if (memblock_is_region_memory(base, size) &&
-> +                   memblock_is_region_reserved(base, size))
->                         return -EBUSY;
+Indeed; as a rule of thumb, the tracepoint on SVM could match the 
+clgi/stgi region, and on VMX it could be placed in a similar location.
 
-I'm not an expert on this code, so take review comments w/ a grain of salt.
+Paolo
 
-That being said, while the change looks right on the surface, I'm not
-sure it's 100% right when I dig. The names of
-memblock_is_region_memory() and memblock_is_region_reserved() make
-them sound more similar than they actually are. One of the two tests
-for intersection and the other for "subset of". I think if
-memblock_is_region_memory() used "intersects" instead of "subset of"
-then your patch would be correct.
+> I 100% agree that the current behavior can be a bit confusing, but I wonder if
+> we'd be better off "solving" that problem through documentation.
 
-Specifically if you've got memory regions:
-
-0x1000 - 0x2000 - memory
-0x3000 - 0x4000 - memory
-
-Then you check memblock_is_region_memory(0x2800, 0x1000) or
-memblock_is_region_memory(0x1800, 0x1000) then I think it will return
-false, right? Because those aren't _subsets_ of memory even though
-they intersect memory.
-
-I don't know if cases like that show up in practice, but it seems
-better to be safe?
-
--Doug
