@@ -2,137 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E383838AFC4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7220B38AFC2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:15:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242924AbhETNQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:16:50 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:33995 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241122AbhETNQl (ORCPT
+        id S242217AbhETNQc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:16:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38262 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232298AbhETNQY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:16:41 -0400
-Received: from mail-wr1-f48.google.com ([209.85.221.48]) by
- mrelayeu.kundenserver.de (mreue107 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N1PLB-1lLHyP3FBT-012oHC; Thu, 20 May 2021 15:15:18 +0200
-Received: by mail-wr1-f48.google.com with SMTP id q5so17634504wrs.4;
-        Thu, 20 May 2021 06:15:18 -0700 (PDT)
-X-Gm-Message-State: AOAM533gSHHm1qKmgDA22uawrvfqLzhGQ6DDVo0mfMpU8mVXIVnuWyhx
-        UZVQF0WYtRbiBZkwnPrP+xCnGY0a9IXdcZiCMAA=
-X-Google-Smtp-Source: ABdhPJy7izUVg5gt6YElALhw2f6/zDsDMB1ic+kYNGjYv2X84KNuAl4bxBkpEVCqClz16VGivLF/RS3eczz4i7BIopU=
-X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr4278435wrx.99.1621516518422;
- Thu, 20 May 2021 06:15:18 -0700 (PDT)
+        Thu, 20 May 2021 09:16:24 -0400
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459F5C061574;
+        Thu, 20 May 2021 06:15:03 -0700 (PDT)
+Received: by mail-wm1-x330.google.com with SMTP id b7so8571037wmh.5;
+        Thu, 20 May 2021 06:15:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+8fuEBGRFLyxD5/pkOP7PuCSROFfwnW0wN+AJDDk3lY=;
+        b=pzF2detpGiwUpJJW3V6gfk2m9xAnF29nXn8m4YvogpVzd0GoYeolKGLILZHDs2tl2/
+         X00iIQi6V4zvD1Tyyx/dgMUBvm5+eRkLOCkaW53oXswsfE6nZK8T2TeOBaJiikGAchwZ
+         raXkn7PyuDMOfnAkYemzf2x3tqPf9mQ+SIGksI2dCURRA/f6hrv81oyhdQ/QJ/lF2LgC
+         ya7Gubth6obitMd9mu5d5++26KRqK4BzeY2k6fM2trKtJhnRTWrzbqsJn4DfErGqOK1v
+         FSNsbW2Co8nr613gZy4dg/rzTe8sosQAlSnjadlWgvCnf/QqJ/aaOyzUV0D2JnhbIxe0
+         nD3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+8fuEBGRFLyxD5/pkOP7PuCSROFfwnW0wN+AJDDk3lY=;
+        b=rrUgL74WBL9BNSfkF9iXk3nn3oZ5q/nB5rBEzXMuG2xuLhrCt72WkLInm9FlHUtNjg
+         3/DpRx5bOVUQqbJpWva5YZBAVN/BN/KnrzB6tH7JqE8a3S0L/upfHU/k1KQFYzrouIBO
+         QoMI5ncREGMlReTml9ueTjaxSyyzM+p4sLZ1dRcOI+N3YZB7OkJy7dCTQaLTFkxOMNhO
+         nY4UMoF+HfoReFJpBzMAf9ReTdIyJJN5rS1DBU1TRJAlMVTwWdNnoNZ1oOuUhhqHjzG/
+         gOoJzmo4ine5qLg4HoR1YUI875XEH6iAfqc+qm+zijCuIkBjlMlYizjZPyM4sQkfaLi5
+         Fwig==
+X-Gm-Message-State: AOAM530fUjAr6kEq4t+6M5sJ8dPZNchf1QK1lkqpoGcXt1+72uUk4wT3
+        n7n70HTQY+5mJgP7L/aUPsopF5IeokOK/Nw+yp8=
+X-Google-Smtp-Source: ABdhPJwHoU1p/QU7aS+IfciqSqFfpMP42KmWBHQgQ6MtZ7k1i1vK/3GxtlTnQ9bmewTaQrIaGqi1S+xvXwnzKxBRJHs=
+X-Received: by 2002:a1c:35c6:: with SMTP id c189mr3935125wma.127.1621516501843;
+ Thu, 20 May 2021 06:15:01 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518144935.15835-1-dsterba@suse.com> <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
-In-Reply-To: <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 20 May 2021 15:14:03 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com>
-Message-ID: <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+ <20210518232451.GA7362@sol> <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
+ <20210519080434.GA22854@sol> <YKTMninSSY3MK6Hf@smile.fi.intel.com> <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com>
+In-Reply-To: <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 20 May 2021 16:14:45 +0300
+Message-ID: <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to user space
+To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:P95Wp0dHfCDqtxkBnMxD2851LdCVZdJzaJbDwDgs0BLJrVHqKJI
- dyOiknrBdDuPBZC1o8N4giLlrzkbZIUOGwEVCTwdMZf0+zZubWolX6WtqniSDja3E9VB/fC
- 60EM4df0oNFLTgwjYYT0lRQfFlFR3b0oht2iHssqU9Jh/+vMVWr+Sv+afz78BG+XCa1s6VF
- ds90yoR15yhXC4bN6EDgA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:sEkOzieQPeQ=:r4DROYVYvjuY/nCJplFbgb
- wrIoasPd9RbKnKC295O4XRkm37dnSqwKSU22E6E+2rvsD1sod1Pml4KupmMd2uGP8Jp7W+EaR
- nby0rCQbZ0qex9hfQ/1cyACCFswLidaVVLSPAN3dCi+LalWjR7Asld7u82jnbevSUgohWsEvE
- RblinN+QhmqjFicpy0INzxkvflX+fy4SpI5P5fiMcT4n+PW9Fznvf7tlvZIGgG4W9uMhlpRcz
- ndM23oA66O1EqJlNSieP2JXc/gIlYQakMuypGqBLWeym2HS1DgvO/pngRAJpuGM99gELkgMH7
- EU4cvb08lPh2YueAOMRhCoTBVNB5vX50pEPVpfN3/MHqTF852SB7ZzjtJcVVXHKcZz70FKVpg
- 6N129/1973zvVJvlmjmAqqzGl70V2RqrbToOtmA14VKMojsMyWh3HxnOvrcbqeWIko+yx6s9z
- aZ49uwZkHuh7tLfej33lxefYndH38qNSlmqg2cwsyWz7ZxJPQLEtWpdvea/WyeM5UcWR/NY0h
- e/Jn3LUPgyl2nMOWMEjLkW5ApzHj1zjc8fqT8MOVmm3CsDNyEiMSYP8q1E9YLzoPHFAPawB5o
- YCSrtbfZDvhqozGQNro/Dby3pdjeFRHg4somkQC4biL+Z44K7Ok9Q+rtj+tCsb2ACDiMKRDps
- B99U=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 9:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Tue, 18 May 2021, David Sterba wrote:
+On Thu, May 20, 2021 at 4:08 PM Bartosz Golaszewski
+<bgolaszewski@baylibre.com> wrote:
+> On Wed, May 19, 2021 at 10:30 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> > On Wed, May 19, 2021 at 04:04:34PM +0800, Kent Gibson wrote:
+> > > On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
+> > > > On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
+> > > > > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
 
-> > --- a/fs/btrfs/scrub.c
-> > +++ b/fs/btrfs/scrub.c
-> > @@ -1988,6 +1993,60 @@ static void scrub_page_put(struct scrub_page *spage)
-> >       }
-> > }
+...
+
+> > > > > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
+> > > > > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
+> > > > > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+
+...
+
+> > > > > You immediately revert this patch in patch 2.
+> > > > > My understanding is that is not allowed within a patch set.
+> > > >
+> > > > > Why split the patches instead of going direct to the new helper?
+> > > >
+> > > > It's for backporting to make it easier. (I deliberately left the context above)
+> > > >
+> > > > I can fold them if maintainers think it's okay to do.
+> > > >
+> > >
+> > > Not sure what the constraints are on backporting, but wouldn't it be
+> > > simpler and cleaner to backport the new helper?
 > >
-> > +/*
-> > + * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
-> > + * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
-> > + */
-> > +static void scrub_throttle(struct scrub_ctx *sctx)
-> > +{
-> > +     const int time_slice = 1000;
-> > +     struct scrub_bio *sbio;
-> > +     struct btrfs_device *device;
-> > +     s64 delta;
-> > +     ktime_t now;
-> > +     u32 div;
-> > +     u64 bwlimit;
-> > +
-> > +     sbio = sctx->bios[sctx->curr];
-> > +     device = sbio->dev;
-> > +     bwlimit = READ_ONCE(device->scrub_speed_max);
-> > +     if (bwlimit == 0)
-> > +             return;
-> > +
-> > +     /*
-> > +      * Slice is divided into intervals when the IO is submitted, adjust by
-> > +      * bwlimit and maximum of 64 intervals.
-> > +      */
-> > +     div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
-> > +     div = min_t(u32, 64, div);
-> > +
-> > +     /* Start new epoch, set deadline */
-> > +     now = ktime_get();
-> > +     if (sctx->throttle_deadline == 0) {
-> > +             sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
->
-> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
->
-> div_u64(bwlimit, div)
+> > Logically (and ideally) it would be three different patches:
+> >  1) introduce helper
+> >  2) use helper
+> >  3) fix places where it's needed to be done
+> >
+> > But the above scheme doesn't fit backporting idea (we don't backport new
+> > features and APIs without really necessity). So, the options left are:
+> >
+> > Option a: One patch (feels a bit like above)
+> > Option b: Two patches like in this series (yes, you are correct about
+> >           disadvantages)
+> >
+> > > But, as you say, it is the maintainers' call.
 
-If 'time_slice' is in nanoseconds, the best interface to use
-is ktime_divns().
+> Third option is to backport this patch but apply the helper
+> immediately to master.
 
-> > +             sctx->throttle_sent = 0;
-> > +     }
-> > +
-> > +     /* Still in the time to send? */
-> > +     if (ktime_before(now, sctx->throttle_deadline)) {
-> > +             /* If current bio is within the limit, send it */
-> > +             sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
-> > +             if (sctx->throttle_sent <= bwlimit / div)
-> > +                     return;
+If I got you correctly, you want to have two patches, one for
+backporting and one for current, correct? But how can we backport
+something which has never been upstreamed?
 
-Doesn't this also need to be changed?
-
-> > +             /* We're over the limit, sleep until the rest of the slice */
-> > +             delta = ktime_ms_delta(sctx->throttle_deadline, now);
-> > +     } else {
-> > +             /* New request after deadline, start new epoch */
-> > +             delta = 0;
-> > +     }
-> > +
-> > +     if (delta)
-> > +             schedule_timeout_interruptible(delta * HZ / 1000);
->
-> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
->
-> I'm a bit surprised gcc doesn't emit code for the division by the
-> constant 1000, but emits a call to __divdi3().  So this has to become
-> div_u64(), too.
-
-There is schedule_hrtimeout(), which takes a ktime_t directly
-but has slightly different behavior. There is also an msecs_to_jiffies
-helper that should produce a fast division.
-
-       Arnd
+-- 
+With Best Regards,
+Andy Shevchenko
