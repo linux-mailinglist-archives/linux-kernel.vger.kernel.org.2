@@ -2,124 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F94B38B51B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5740E38B51F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:23:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233836AbhETRWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:22:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38542 "EHLO
+        id S234027AbhETRYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:24:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233662AbhETRWt (ORCPT
+        with ESMTP id S233209AbhETRYf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:22:49 -0400
-Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34116C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:21:25 -0700 (PDT)
-Received: by mail-qt1-x82f.google.com with SMTP id g8so5827396qtp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:21:25 -0700 (PDT)
+        Thu, 20 May 2021 13:24:35 -0400
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC35C061574;
+        Thu, 20 May 2021 10:23:13 -0700 (PDT)
+Received: by mail-yb1-xb33.google.com with SMTP id r8so23823770ybb.9;
+        Thu, 20 May 2021 10:23:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=dIsGSms3zUeXZTUYxcIlfsJLSeoxkaCz0E4COH66hi8=;
-        b=OkcRWQZ7jQ2GDNnyAoUAPqJjsNQsqfyYhIHHCiGXeNTiWJwpKpLCFXG9t7om3a0n14
-         iW9plRvFzPqjpf11YaIEjARLzGlvn3kGc6brJ6VWez7WfP4AmuE3Jl9j3dqdsnBvHlk1
-         W3xFbCxU0TTRku8NeG4xVtdiQw42Pa5XZqCs0=
+        bh=4hrfGNdJQviYTDIwq5pUkBSs0ZaBMgTRXGDnod5Fzc0=;
+        b=KhegAMuT9sFAWj7axrgLKAaUtMgQ+9poV+P6OTsDOd7VrgwOJWp0EBjG8+p8BxYn5G
+         h8j0cXcY2I93Aa6G2hk2E/GORIpWWrFfVklKMhFv6iVvGp3qPw/5FdU/MICi01s8VDYl
+         QI+vLxMcYLDutOnZvETUeqMMAodNQDTuFbiJTZbeDzr0OttaWJ+jPyIZ8HEbIeU1PYm/
+         2hiobsJLWkL52pP7Tk5tQHoUpVYYnxVdKnNq0Ncfe+Lm8/l+MeHtKwV7A6MDCcAqQWJs
+         g6WZqaj4r4xLqFTT2qWCEZXMG8lWag3JPBKN2+q/mVMpFoWtdvpM74TS/gXI+Wq2+Gll
+         tsJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=dIsGSms3zUeXZTUYxcIlfsJLSeoxkaCz0E4COH66hi8=;
-        b=iBiyySJtVoQ6voHay4H2sq1RwgHetHeuBQGQZjMDOCpanRM2pwW5dBzSRNO7l05+Td
-         bej1NQqXRqDHwZXJN8F0G9Q/z1um7Cxu93BTGgVf3Z9J+K30aOVbIOxsA6QCgUhkeIlx
-         xKYdB4uwX8FiroX9qThT09gIK1ppUUfeeiKpXo6EjHCFj8EmaJai9/upU3Xs8RZghSAu
-         UPN4mkdvPFxOgpXDnOt5mwCI3PVm9/+EVVVAFnzP9vgxzM4pr1//hqbhAvU34X3X4qQY
-         jXgLgc0yHAuULa338plULVRdDzKLhN/s+ez+tG6QGMae+D9Q2NVIM0MJHMsdW6zyX7qU
-         +NlA==
-X-Gm-Message-State: AOAM530cEjP1nsP7MpuPoL/QNngLM4o3uqWF5ujALd8dw2wJFmyd1zkq
-        VHu91572MijB9QlrrwXKMmlPXZIOiuBtZw==
-X-Google-Smtp-Source: ABdhPJzxx+JHeEZ9s2ngY9QnKe61ty5j0EPDMHam0UkzHB2hkG+a1RCWu+xwUs2pPTJICcNvEzIsDw==
-X-Received: by 2002:ac8:7288:: with SMTP id v8mr6328131qto.61.1621531283827;
-        Thu, 20 May 2021 10:21:23 -0700 (PDT)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id r125sm2576839qkf.24.2021.05.20.10.21.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 10:21:23 -0700 (PDT)
-Received: by mail-yb1-f169.google.com with SMTP id b13so22455673ybk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:21:23 -0700 (PDT)
-X-Received: by 2002:a5b:54a:: with SMTP id r10mr8778240ybp.476.1621531282709;
- Thu, 20 May 2021 10:21:22 -0700 (PDT)
+        bh=4hrfGNdJQviYTDIwq5pUkBSs0ZaBMgTRXGDnod5Fzc0=;
+        b=pq9s5w3eTv/nKRXyPOkcZzBM9CAd+RjOTN8htq7KoDUqITSMlCPtTyAmISJu1GDM6M
+         u6VA5OURPxSHaOMANwzICBF5QKV3I1NplF1UWgjzZbwnyhkOq2hyZQ7Lm4IPx8t49Hnb
+         7n7Z128/kfUnJ8TKSGzI2Zc45ptN/HF+itSrsggGh6wg0vagrpa4oCnyheSA0KeVmWCq
+         Gf1ouFR1VwPjwokpzRkHIjQjnL/+gxx8rCuoPxKBVVLTJzx/y01i/EIfz6XO61vntyR+
+         LyzOJV82dPk9UTIb1j+5A3mK5GRjiDVv1YRwePWwAtTdeGLcNoVVAJzB0zQuKK9mUXdD
+         yfCw==
+X-Gm-Message-State: AOAM531tQhVoqbtPGlVh/egoCfqBh0SKWI6GFCjKn6Tvb8c8TzXcPC/0
+        THy3/lo85kEr6roeMH/r9Oqjq5tob6XOJGMGTv7w5EjE
+X-Google-Smtp-Source: ABdhPJzO32iRUOnxZkOFDn/AZEdv2T6RB6HUMeONEAaTqfy5AOpyGoZdXJGbe4j2onx6yFTAm3z61gyvGQ9BC5jpbdI=
+X-Received: by 2002:a25:7246:: with SMTP id n67mr8682179ybc.510.1621531392491;
+ Thu, 20 May 2021 10:23:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210513112842.707103-1-sumit.garg@linaro.org> <20210513112842.707103-3-sumit.garg@linaro.org>
-In-Reply-To: <20210513112842.707103-3-sumit.garg@linaro.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 20 May 2021 10:21:11 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W6gnqDoOCMsDTvP4_yS_szEa2g3_rhDG82ZpDTv6e5MA@mail.gmail.com>
-Message-ID: <CAD=FV=W6gnqDoOCMsDTvP4_yS_szEa2g3_rhDG82ZpDTv6e5MA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] kdb: Simplify kdb_defcmd macro logic
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     kgdb-bugreport@lists.sourceforge.net,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1621424513.git.asml.silence@gmail.com> <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
+ <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com> <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
+In-Reply-To: <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Thu, 20 May 2021 10:23:01 -0700
+Message-ID: <CAEf4BzbLPxNo--P7mCxS_miagFHF4fyoec1VOkpL=uY=oNqpVg@mail.gmail.com>
+Subject: Re: [PATCH 18/23] libbpf: support io_uring
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     io-uring@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
+        Christian Dietrich <stettberger@dokucode.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, May 13, 2021 at 4:29 AM Sumit Garg <sumit.garg@linaro.org> wrote:
+On Thu, May 20, 2021 at 2:58 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
 >
-> Switch to use a linked list instead of dynamic array which makes
-> allocation of kdb macro and traversing the kdb macro commands list
-> simpler.
+> On 5/19/21 6:38 PM, Andrii Nakryiko wrote:
+> > On Wed, May 19, 2021 at 7:14 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
+> >>
+> >> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> >> ---
+> >>  tools/lib/bpf/libbpf.c | 7 +++++++
+> >>  1 file changed, 7 insertions(+)
+> >>
+> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> >> index 4181d178ee7b..de5d1508f58e 100644
+> >> --- a/tools/lib/bpf/libbpf.c
+> >> +++ b/tools/lib/bpf/libbpf.c
+> >> @@ -13,6 +13,10 @@
+> >>  #ifndef _GNU_SOURCE
+> >>  #define _GNU_SOURCE
+> >>  #endif
+> >> +
+> >> +/* hack, use local headers instead of system-wide */
+> >> +#include "../../../include/uapi/linux/bpf.h"
+> >> +
+> >
+> > libbpf is already using the latest UAPI headers, so you don't need
+> > this hack. You just haven't synced include/uapi/linux/bpf.h into
+> > tools/include/uapi/linux/bpf.h
 >
-> Suggested-by: Daniel Thompson <daniel.thompson@linaro.org>
-> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> ---
->  kernel/debug/kdb/kdb_main.c | 107 +++++++++++++++++++-----------------
->  1 file changed, 58 insertions(+), 49 deletions(-)
+> It's more convenient to keep it local to me while RFC, surely will
+> drop it later.
 >
-> diff --git a/kernel/debug/kdb/kdb_main.c b/kernel/debug/kdb/kdb_main.c
-> index de685b2a8ce7..ce7f4c71992d 100644
-> --- a/kernel/debug/kdb/kdb_main.c
-> +++ b/kernel/debug/kdb/kdb_main.c
-> @@ -654,13 +654,16 @@ static void kdb_cmderror(int diag)
->   *     zero for success, a kdb diagnostic if error
->   */
->  struct kdb_macro_t {
-> -       int count;
-> -       bool usable;
-> -       kdbtab_t cmd;
-> -       char **command;
-> +       kdbtab_t cmd;                   /* Macro command name */
+> btw, I had a problem with find_sec_def() successfully matching
+> "iouring.s" string with "iouring", because section_defs[i].len
+> doesn't include final \0 and so does a sort of prefix comparison.
+> That's why "iouring/". Can we fix it? Are compatibility concerns?
 
-It's more than just the name, right?
+If you put "iouring.s" before "iouring" it will be matched first,
+libbpf matches them in order, so more specific prefix should go first.
+It is currently always treated as a prefix, not exact match,
+unfortunately. I have a work planned to revamp this logic quite a bit
+for libbpf 1.0, so this should be improved as part of that work.
 
 
-> +       struct list_head commands;      /* Associated command list */
 
-I get confused between the two different usages of "command". Can we
-call the individual entries of a macro "statements". So this would be:
-
-struct list_head statements; /* Associated statement list */
-
-...and the structure below would get renamed as well.
-
->  };
-> +
-> +struct kdb_macro_cmd_t {
-> +       char *cmd;                      /* Command name */
-
-This isn't the "name" of the command, is it? It's the actual statement
-that the user entered?
-
-
-Other than that, this looks like a nice patch to me.
-
-
--Doug
+>
+> >
+> >>  #include <stdlib.h>
+> >>  #include <stdio.h>
+> >>  #include <stdarg.h>
+> >> @@ -8630,6 +8634,9 @@ static const struct bpf_sec_def section_defs[] = {
+> >>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
+> >>         BPF_EAPROG_SEC("sk_lookup/",            BPF_PROG_TYPE_SK_LOOKUP,
+> >>                                                 BPF_SK_LOOKUP),
+> >> +       SEC_DEF("iouring/",                     IOURING),
+> >> +       SEC_DEF("iouring.s/",                   IOURING,
+> >> +               .is_sleepable = true),
+> >>  };
+> >>
+> >>  #undef BPF_PROG_SEC_IMPL
+> >> --
+> >> 2.31.1
+> >>
+>
+> --
+> Pavel Begunkov
