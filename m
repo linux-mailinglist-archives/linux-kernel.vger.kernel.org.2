@@ -2,80 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C113F389C2E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1F11389C30
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhETD4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 23:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54110 "EHLO
+        id S230353AbhETD4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:56:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhETD4G (ORCPT
+        with ESMTP id S229498AbhETD4a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 23:56:06 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A098C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:54:46 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id 6so10907288pgk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:54:45 -0700 (PDT)
+        Wed, 19 May 2021 23:56:30 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5CF2C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:55:08 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id q6so8422340pjj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:55:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=KZRGLyGlYpZs7oxsD7Yo4EaDAarVQQHn0bIE9uF59k0=;
-        b=Ly58M6479wTJyMHgE/6HMIPI0JxrknZ0fzRgcXjYd901K5hE5hOsQRHLlQDZKU2mm/
-         Go6sZo1IAf0ujxCsdN7quwS0hKJcPynecIsUnIG9UHdWaAEqd7S9LhgXOOIJOFCpDNOi
-         0fJAZPSVjh3v6/0ATh/cK5GKKy+YkQn6wIqAxY1wmZTjYh1aC7pUvANmGFfo+92t8f/A
-         21yTv7cGt5Yog3FxYrZA2bGzdGfTKfRAwD9ji1hia+uUf/f7emVMNm6LBNaSPoyoSr1u
-         ahRt8jPCFsy+PPmXWrujwPuoiEDEezqOODAReKr09YjdeFutZXjQwR8uCfJhA/cA9m7w
-         u1Jg==
+        bh=OZ6VS2QJMKCzoPLlDNWgVyV4xwBqPYXMZ6s6V0FP1g0=;
+        b=oCmte63xvzhUNs94qdZmYE6cRuv8cTD8Rvshq/a7UxcZbRheldugpn+yj5tUJG5TZA
+         YIcDm4hUw/dJeTSW9V/Vn8igeqZ3UYxi3tNM/C3DlPq2991nYIu+uEBwm27mMacvEM/A
+         H6NFPJTjV8F4g5wP4iTbd8f1/BtJlDUksBLvjlSf/gjyxdpJXT0kCWu+YRtzzAT9q7hH
+         Gs/Ajy71xyCSZeCNYSAXdE6tzOgyFlSevqz5zWiXU9CX3th7UJXM/7TCYNY8w/0EYhxf
+         rdm8tPR/ozfZei20s92L+3M7SVal9aLKmwnMjpSZG/P/oxSwf3HHVMdqsWW7a3H6kTPB
+         rdLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KZRGLyGlYpZs7oxsD7Yo4EaDAarVQQHn0bIE9uF59k0=;
-        b=lf+GINnfYg8txO7EM5//HoyQnAMr5+seqpwg2gnBPvfE4QWKT8WC3FnN5MAF6K2Wsw
-         Y8BN/AoG7XcQ9ILAOcIOOPEFMyCmxBo5OOIg7sL8VGHk0dmhAtPi1/mEbT2J8zMycR3F
-         N9qhqCeWdraf4OBwDH7uFyrQfKRxxfmtOMuTGS5tdSLniCg8BeHnnueVCSutgdVIKfTv
-         EpZw8ToNgTBhvfqOgbhFZS/eibD4Is+ejx1LLi/1uoUzl1b33QViRKqt3ZYBl6srZK1f
-         5v+Ckx0IlVnkuJ3gCmbFmjO1fr4GBGn7zqaXqxOTNcQS+5dOIgERvY9vRa1d1nSk2c4j
-         jxcw==
-X-Gm-Message-State: AOAM530PthjPsuBrkjeFMyJ2tlgU3sqznFLYV6FLpqvxvs+0yzt/KU6E
-        C04bun7HbhxLLUVcfPh9yTkffgqteHO8jw==
-X-Google-Smtp-Source: ABdhPJztS1QqD1LiTXn/SocQZq9tDzxtlj38Ux6iQAOUyHioscpcGVHK6n78sJUY0NNB19zVqkoY1Q==
-X-Received: by 2002:a63:2444:: with SMTP id k65mr2447534pgk.1.1621482885418;
-        Wed, 19 May 2021 20:54:45 -0700 (PDT)
+        bh=OZ6VS2QJMKCzoPLlDNWgVyV4xwBqPYXMZ6s6V0FP1g0=;
+        b=HosJ/RkBmKPCUcLSDhQTnU9y9NF3faajbXv9FgspPYDZiUTKoNwcZoN0dGIA98pUQZ
+         eL2FpwEBZwuEc5AnTbTAZRftROOCy/5OtZFvkaWjI302B59trliDZyKVevZyx2foh9UU
+         A1hH7tLs+fe9Akz00U6yF4rmYzuVAvEs+QNEfbofw4Y4nZ2X23lS5/L1CsJqQsPB1fNe
+         4JqaO35zLWwTqnHo6FAxeOjaca+4sLtOul0YoahrNl1A9+FyQ+eTWdu8uPgrh0Ipk2nk
+         IQ1vX0aVWhQneAK/e6+PLOAdYT3yv4gydaN3np77Sbd3iJaRuRIYA7WEu9z8I1TPi3f1
+         E6Vg==
+X-Gm-Message-State: AOAM5323G5u75utXesM42m3sTea39lKu9grI/RP0ynmleHNbTh+VXNAL
+        gXnjc8FelEZvUk7QzqXYz8lUSQ==
+X-Google-Smtp-Source: ABdhPJzcJpX0uew5mRSMgYp21Vdrcgs5nOW8XPejq4gAYE/EMCAHLekXJ5VZxMf7m+5mTmTbj7cGww==
+X-Received: by 2002:a17:902:8205:b029:f4:a8f3:78c8 with SMTP id x5-20020a1709028205b02900f4a8f378c8mr3352663pln.11.1621482908279;
+        Wed, 19 May 2021 20:55:08 -0700 (PDT)
 Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id b15sm672895pfi.100.2021.05.19.20.54.44
+        by smtp.gmail.com with ESMTPSA id 6sm689249pfx.117.2021.05.19.20.55.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 20:54:44 -0700 (PDT)
-Date:   Thu, 20 May 2021 09:24:42 +0530
+        Wed, 19 May 2021 20:55:07 -0700 (PDT)
+Date:   Thu, 20 May 2021 09:25:06 +0530
 From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Hector Yuan <hector.yuan@mediatek.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic
- performance domains
-Message-ID: <20210520035442.qvpsonhifozzrspo@vireshk-i7>
-References: <20210517155458.1016707-1-sudeep.holla@arm.com>
- <CAL_JsqK6B40D8dRu8KoOsx6eSzRXx6KsSEu5mjDokPEAy+p4oA@mail.gmail.com>
- <20210519112308.umxriuv75onuwvmc@bogus>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        mkorpershoek@baylibre.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] cpufreq: mediatek: add support for mt8365
+Message-ID: <20210520035506.2ufedv7vj6wz2nze@vireshk-i7>
+References: <20210519162550.3757832-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519112308.umxriuv75onuwvmc@bogus>
+In-Reply-To: <20210519162550.3757832-1-fparent@baylibre.com>
 User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19-05-21, 12:23, Sudeep Holla wrote:
-> I noticed I haven't cc-ed linux-pm list, do you need me to post there or
-> are you happy to pick it up from here when Hector's mediatek cpufreq drivers
-> using this are ready to be merged ?
+On 19-05-21, 18:25, Fabien Parent wrote:
+> Add compatible stirng for MediaTek MT8365 SoC. Add also the
+> compatible in the blacklist of the cpufreq-dt-platdev driver.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  drivers/cpufreq/cpufreq-dt-platdev.c | 1 +
+>  drivers/cpufreq/mediatek-cpufreq.c   | 1 +
+>  2 files changed, 2 insertions(+)
+> 
+> diff --git a/drivers/cpufreq/cpufreq-dt-platdev.c b/drivers/cpufreq/cpufreq-dt-platdev.c
+> index 5e07065ec22f..d6fd821e3f5a 100644
+> --- a/drivers/cpufreq/cpufreq-dt-platdev.c
+> +++ b/drivers/cpufreq/cpufreq-dt-platdev.c
+> @@ -126,6 +126,7 @@ static const struct of_device_id blacklist[] __initconst = {
+>  	{ .compatible = "mediatek,mt8173", },
+>  	{ .compatible = "mediatek,mt8176", },
+>  	{ .compatible = "mediatek,mt8183", },
+> +	{ .compatible = "mediatek,mt8365", },
+>  	{ .compatible = "mediatek,mt8516", },
+>  
+>  	{ .compatible = "nvidia,tegra20", },
+> diff --git a/drivers/cpufreq/mediatek-cpufreq.c b/drivers/cpufreq/mediatek-cpufreq.c
+> index f2e491b25b07..87019d5a9547 100644
+> --- a/drivers/cpufreq/mediatek-cpufreq.c
+> +++ b/drivers/cpufreq/mediatek-cpufreq.c
+> @@ -537,6 +537,7 @@ static const struct of_device_id mtk_cpufreq_machines[] __initconst = {
+>  	{ .compatible = "mediatek,mt8173", },
+>  	{ .compatible = "mediatek,mt8176", },
+>  	{ .compatible = "mediatek,mt8183", },
+> +	{ .compatible = "mediatek,mt8365", },
+>  	{ .compatible = "mediatek,mt8516", },
+>  
+>  	{ }
 
 Applied. Thanks.
 
