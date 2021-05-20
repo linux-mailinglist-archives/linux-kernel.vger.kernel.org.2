@@ -2,107 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D28F638BA5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ABF038BA5E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhETXZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:25:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233032AbhETXZr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:25:47 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1284BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 16:24:24 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so6363681wmk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 16:24:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=99Is1Ox+Utl3amtJ0W3WXbULjI/XXbGGwaImoB8VLO0=;
-        b=SBhG7LJdDG6oVaDdeb1V/wPcz2OpmKfA0emiiCx8sx7w7QGGe+nk2Gbui8dplk3ueG
-         JCAs/hx4f7hpDdW1E8Ycp+FbSStIqraiwdWD9CyXXvW3T4mu1RQWok0sn24AeMKWT0HP
-         9ObBbfleQHRmT9vl8GHFsOlCtoDtGn8WdgZSI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=99Is1Ox+Utl3amtJ0W3WXbULjI/XXbGGwaImoB8VLO0=;
-        b=UlrCVSLNZsJef9sVGunEt4uwWKBaOhxoDcdVTNXPzFofZkbfQolidwhYnhzZKPLOE5
-         OyWEHmIsciwgtFWKNhRoT5oRkUCxX6OponEEhjXOp9jRSg+SM9URHITF2t6zG8gaBjKk
-         wMTVFAfMEs38ahGiKh5YRFiX5mIU+q6oOLUWM4vV5ctyrr1Dbp74zIfiEFSLz2HWjZ2o
-         t3SCnJeMWnPB4bTtdbVG1lyE+z1xKiG1ISxNU/4NloAYvMEbluF7huLj/nt+gEXgJ6hI
-         fKutY++voG6TA26aoj+0mCpFRsBlH8TxZDYWJ/eF5jqIYbuKe0LOZdy3IC24cZU92vf+
-         Hkbg==
-X-Gm-Message-State: AOAM532QI8NbBX47dAEBuwnN6CQ7BnHnqzCv5jXw0aSR5ndBX/Khn7yD
-        Xb33onssQsb6KSTVjk9F5MxmDw==
-X-Google-Smtp-Source: ABdhPJzk8F30NdHe2UWtkK774YOUN3SDUCB55L0lserV+HcNqSqQASa3kV1OPxlNWZf5JhIfJWjf3g==
-X-Received: by 2002:a05:600c:4fd6:: with SMTP id o22mr5693192wmq.83.1621553062636;
-        Thu, 20 May 2021 16:24:22 -0700 (PDT)
-Received: from localhost ([2620:10d:c093:400::5:ab33])
-        by smtp.gmail.com with ESMTPSA id f188sm10606713wmf.24.2021.05.20.16.24.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 16:24:22 -0700 (PDT)
-Date:   Fri, 21 May 2021 00:24:21 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 06/14] mm/memcontrol.c: Fix kerneldoc comment for
- mem_cgroup_calculate_protection
-Message-ID: <YKbvpWqzN67C50DL@chrisdown.name>
-References: <20210520084809.8576-1-mgorman@techsingularity.net>
- <20210520084809.8576-7-mgorman@techsingularity.net>
+        id S234008AbhETX0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 19:26:41 -0400
+Received: from mga14.intel.com ([192.55.52.115]:31362 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233032AbhETX0h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 19:26:37 -0400
+IronPort-SDR: 3RneZUIdDGPwtyOlirvVkVI8C6gDd8hfR1V0vAk+Tmi8bl+ja7z1auSRzvyiX/NxevVs+3nMp7
+ sbDAtqfOZvog==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201068151"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="201068151"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 16:25:15 -0700
+IronPort-SDR: J0gOtlZQ8GZdPG3UzlJ6lHZEb4Yr2tMFcw7ka/cKgseryEAxeiLaLoNP/pirWnN/07FfVamb3/
+ oEs0rl4Dd86g==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="475437911"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.197.177]) ([10.212.197.177])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 16:25:15 -0700
+Subject: Re: [RFC v2 27/32] x86/tdx: Exclude Shared bit from __PHYSICAL_MASK
+To:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <87b31425b79df3cc44d2bdc6a79d6aa36c42d116.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <3ae38a0b-0676-1543-7015-39a589b2807a@intel.com>
+ <0df80c0f-e0da-e86e-0ab8-abc58f0da559@linux.intel.com>
+ <YKa5gkwGTIUFpzzH@google.com>
+ <b27a6d31-8fd9-e650-0adf-5f7a8fc96a1c@linux.intel.com>
+ <YKbDtt2K4Z5gtYRc@google.com>
+ <f348c391-c665-2987-898c-718d2c53729f@linux.intel.com>
+ <YKbSOJOKBV1Rjb0T@google.com>
+ <283b3d47-f1f6-3c53-0909-ba0540993203@intel.com>
+ <6d508f80-4a76-64c2-9772-da23bb467e0b@linux.intel.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <0bcb46ed-4bdf-9a82-3bdc-2c4d5ffcb627@linux.intel.com>
+Date:   Thu, 20 May 2021 16:25:14 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210520084809.8576-7-mgorman@techsingularity.net>
-User-Agent: Mutt/2.0.7 (481f3800) (2021-05-04)
+In-Reply-To: <6d508f80-4a76-64c2-9772-da23bb467e0b@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mel Gorman writes:
->make W=1 generates the following warning for mem_cgroup_calculate_protection
->
->  mm/memcontrol.c:6468: warning: expecting prototype for mem_cgroup_protected(). Prototype was for mem_cgroup_calculate_protection() instead
->
->Commit 45c7f7e1ef17 ("mm, memcg: decouple e{low,min} state mutations from
->protection checks") changed the function definition but not the associated
->kerneldoc comment.
->
->Fixes: 45c7f7e1ef17 ("mm, memcg: decouple e{low,min} state mutations from protection checks")
->Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 
-Whoops, thanks.
+On 5/20/2021 2:28 PM, Kuppuswamy, Sathyanarayanan wrote:
+>
+>
+> On 5/20/21 2:23 PM, Dave Hansen wrote:
+>> Sathya has even mis-typed "tdx" instead of "tdg" this in his own
+>> changelogs up to this point.  That massively weakens the argument that
+>> "tdg" is a good idea.
+>
+> It is not a typo. But when we did the initial rename from "tdx_" -> 
+> "tdg_",
+> somehow I missed the change log change. That's why I am bit reluctant
+> to go for another rename (since we have scan change log, comments and 
+> code)
+> in all the patches.
 
-Acked-by: Chris Down <chris@chrisdown.name>
 
->---
-> mm/memcontrol.c | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->
->diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->index 64ada9e650a5..030c1dc131ce 100644
->--- a/mm/memcontrol.c
->+++ b/mm/memcontrol.c
->@@ -6456,7 +6456,7 @@ static unsigned long effective_protection(unsigned long usage,
-> }
->
-> /**
->- * mem_cgroup_protected - check if memory consumption is in the normal range
->+ * mem_cgroup_calculate_protection - check if memory consumption is in the normal range
->  * @root: the top ancestor of the sub-tree being checked
->  * @memcg: the memory cgroup to check
->  *
->-- 
->2.26.2
->
->
+Yes I agree. If there's another rename it should be after a full review 
+by all the maintainers. If there is still consensus that a rename is 
+needed then it can be done then.
+
+And we'll just hope that Sean's brain will get used to tdg_ by then.
+
+
+-Andi
+
