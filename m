@@ -2,282 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E52B338B7EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:59:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6351538B7F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237148AbhETUAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:00:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231917AbhETUAR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:00:17 -0400
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDC4C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:58:55 -0700 (PDT)
-Received: by mail-wr1-x430.google.com with SMTP id r12so18861562wrp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:58:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fvRDr1D5/5+LCAmUf65vl1i5y+y4alcViE7GRSVhNkM=;
-        b=IJTQEmled92Limq65lxrtZal8HOwFj/1/UhSrjJkbEbu08DIpkT2M+pXl4vT54YMb/
-         1SEvjeoR8uPrk6as9bd43zO4V1j8Aa75jbzkHbhMRT9KmUCawIf5NbEbJIVb+b0b++Mn
-         FgEo/rN7Yfst8gFYO0KjrBYTSoknMUpMulURY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=fvRDr1D5/5+LCAmUf65vl1i5y+y4alcViE7GRSVhNkM=;
-        b=ECfB2KMY5hY74hEmEdeTO2pgJzTUtAvxlb/wPLw9Kq2DFBbb9TXFihoZkt0kONiQl4
-         sd8OA1986XO4DNVz9AIEL7ZKYzE+8+ZCpv5gVAchoMOqAOGbSaW4lVCzh17IuFuPEdwZ
-         immma4Kvmdw+0LyITfJP+BimZ5mSoJrBgSoWY57k0Lt7S7Hw4mYFDhpCjxnDgP26bHKl
-         Sb4N6I3ZnYUiZuYBXjHgA3rd6jwxQ0SeBi8LUCt1RLI77LgpiusPXPjJsyY/fYtgsGne
-         a1Vg25IYa7Y3fFq49fD7to4nqsUQFgkZfwmXvNoo9FBNJhc/Xuw1K/4dCmoa/u5MxHm1
-         DiJA==
-X-Gm-Message-State: AOAM533sA30a5cGrZLBi+r1B0dBqxMmKYQogsw0mWef0Psz4uEMQzfAs
-        g4JoutPAci136chl0kA48pls4Q==
-X-Google-Smtp-Source: ABdhPJxkVwauF/EHL3NdcMJKAi/zvLETHClTk9XUCWU1LnHRqZ+1dbG0hruL8BgFaGFXrcbqn/w6cg==
-X-Received: by 2002:a5d:4e91:: with SMTP id e17mr6126622wru.396.1621540734354;
-        Thu, 20 May 2021 12:58:54 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id v11sm5059609wrs.9.2021.05.20.12.58.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 12:58:53 -0700 (PDT)
-Date:   Thu, 20 May 2021 21:58:52 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Saravana Kannan <saravanak@google.com>
-Subject: Re: [PATCH 7/7] drm/msm: Migrate to aggregate driver
-Message-ID: <YKa/fEuVqHhV9CPC@phenom.ffwll.local>
-Mail-Followup-To: Stephen Boyd <swboyd@chromium.org>,
+        id S239973AbhETUBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:01:33 -0400
+Received: from ms.lwn.net ([45.79.88.28]:58512 "EHLO ms.lwn.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231917AbhETUBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:01:30 -0400
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id D3783301;
+        Thu, 20 May 2021 20:00:07 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D3783301
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1621540808; bh=2WNLJX/xlZc5xTtT/m0BAIjR0dGVeWDMrn8wfYaNCUM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=JWiESVFNzhYgP3LIrHH+2tY7pTjoh+gKnctlpgARBvgwBWg4BACU+o/zkUA8eRdPF
+         jS85XmMhRO5jK77x2BlQkPxDSbCrzhxlhaMXvDctoM1+BMQOa0yL/SZHdunNPbhAgt
+         4USigcfd0H+vMC4CmQMvwXkhr8hvfRf3UC0K6z2vi4HY7A5m+ShwS2LJ/UDdBlnsDP
+         SPBGKoeOrTvsAjV7A36ox1hL3nOjKNp5cU8ATBlHyBRqSKzr5ElccrOeoSfEDcgg8h
+         LH4udeqBoy+VzdXLKBnnbzSb6qpvpqwupJQPHnbWB4IHmqCdgQ0/NFGZsiTs5E64Wr
+         JxMzmR3UeuhAA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>,
-        Saravana Kannan <saravanak@google.com>
-References: <20210520002519.3538432-1-swboyd@chromium.org>
- <20210520002519.3538432-8-swboyd@chromium.org>
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
+        kvm@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-iio@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH 00/10] Documentation build warning fixes
+In-Reply-To: <cover.1621413933.git.mchehab+huawei@kernel.org>
+References: <cover.1621413933.git.mchehab+huawei@kernel.org>
+Date:   Thu, 20 May 2021 14:00:07 -0600
+Message-ID: <87wnrtnpko.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520002519.3538432-8-swboyd@chromium.org>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 05:25:19PM -0700, Stephen Boyd wrote:
-> The device lists are poorly ordered when the component device code is
-> used. This is because component_master_add_with_match() returns 0
-> regardless of component devices calling component_add() first. It can
-> really only fail if an allocation fails, in which case everything is
-> going bad and we're out of memory. The driver that registers the
-> aggregate driver, can succeed at probe and put the attached device on
-> the DPM lists before any of the component devices are probed and put on
-> the lists.
-> 
-> Within the component device framework this usually isn't that bad
-> because the real driver work is done at bind time via
-> component{,master}_ops::bind(). It becomes a problem when the driver
-> core, or host driver, wants to operate on the component device outside
-> of the bind/unbind functions, e.g. via 'remove' or 'shutdown'. The
-> driver core doesn't understand the relationship between the host device
-> and the component devices and could possibly try to operate on component
-> devices when they're already removed from the system or shut down.
-> 
-> Normally, device links or probe defer would reorder the lists and put
-> devices that depend on other devices in the lists at the correct
-> location, but with component devices this doesn't happen because this
-> information isn't expressed anywhere. Drivers simply succeed at
-> registering their component or the aggregate driver with the component
-> framework and wait for their bind() callback to be called once the other
-> components are ready. In summary, the drivers that make up the aggregate
-> driver can probe in any order.
-> 
-> This ordering problem becomes fairly obvious when shutting down the
-> device with a DSI controller connected to a DSI bridge that is
-> controlled via i2c. In this case, the msm display driver wants to tear
-> down the display pipeline on shutdown via msm_pdev_shutdown() by calling
-> drm_atomic_helper_shutdown(), and it can't do that unless the whole
-> display chain is still probed and active in the system. When a display
-> bridge is on i2c, the i2c device for the bridge will be created whenever
-> the i2c controller probes, which could be before or after the msm
-> display driver probes. If the i2c controller probes after the display
-> driver, then the i2c controller will be shutdown before the display
-> controller during system wide shutdown and thus i2c transactions will
-> stop working before the display pipeline is shut down. This means we'll
-> have the display bridge trying to access an i2c bus that's shut down
-> because drm_atomic_helper_shutdown() is trying to disable the bridge
-> after the bridge is off.
-> 
-> The solution is to make the aggregate driver into a real struct driver
-> that is bound to a device when the other component devices have all
-> probed. Now that the component driver code is a proper bus, we can
-> simply register an aggregate driver with that bus via
-> component_aggregate_register() and then attach the shutdown hook to that
-> driver to be sure that the shutdown for the display pipeline is called
-> before any of the component device driver shutdown hooks are called.
-> 
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> Cc: Rob Clark <robdclark@gmail.com>
-> Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> Cc: Saravana Kannan <saravanak@google.com>
-> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> ---
-> 
-> As stated in the cover letter, this isn't perfect but it still works. I
-> get a warning from runtime PM that the parent device (e00000.mdss) is
-> not runtime PM enabled but the child device (the aggregate device) is
-> being enabled by the bus logic. I need to move around the place that the
-> parent device is runtime PM enabled and probably keep it powered up
-> during the entire time that the driver is probed until the aggregate
-> driver probes.
-> 
->  drivers/gpu/drm/msm/msm_drv.c | 47 +++++++++++++++++++----------------
->  1 file changed, 26 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index e1104d2454e2..0c64e6a2ce25 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -1265,19 +1265,35 @@ static int add_gpu_components(struct device *dev,
->  	return 0;
->  }
->  
-> -static int msm_drm_bind(struct device *dev)
-> +static int msm_drm_bind(struct aggregate_device *adev)
->  {
-> -	return msm_drm_init(dev, &msm_driver);
-> +	return msm_drm_init(adev->dev.parent, &msm_driver);
->  }
->  
-> -static void msm_drm_unbind(struct device *dev)
-> +static void msm_drm_unbind(struct aggregate_device *adev)
->  {
-> -	msm_drm_uninit(dev);
-> +	msm_drm_uninit(adev->dev.parent);
-> +}
-> +
-> +static void msm_drm_shutdown(struct aggregate_device *adev)
-> +{
-> +	struct drm_device *drm = platform_get_drvdata(to_platform_device(adev->dev.parent));
-> +	struct msm_drm_private *priv = drm ? drm->dev_private : NULL;
-> +
-> +	if (!priv || !priv->kms)
-> +		return;
-> +
-> +	drm_atomic_helper_shutdown(drm);
->  }
->  
-> -static const struct component_master_ops msm_drm_ops = {
-> -	.bind = msm_drm_bind,
-> -	.unbind = msm_drm_unbind,
-> +static struct aggregate_driver msm_drm_aggregate_driver = {
-> +	.probe = msm_drm_bind,
-> +	.remove = msm_drm_unbind,
-> +	.shutdown = msm_drm_shutdown,
-> +	.driver = {
-> +		.name	= "msm_drm",
-> +		.owner	= THIS_MODULE,
-> +	},
->  };
->  
->  /*
-> @@ -1306,7 +1322,8 @@ static int msm_pdev_probe(struct platform_device *pdev)
->  	if (ret)
->  		goto fail;
->  
-> -	ret = component_master_add_with_match(&pdev->dev, &msm_drm_ops, match);
-> +	msm_drm_aggregate_driver.match = match;
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
 
-This is a bit awkward design, because it means the driver struct can't be
-made const, and it will blow up when you have multiple instance of the
-same driver. I think the match should stay as part of the register
-function call, and be stored in the aggregate_device struct somewhere.
+> Hi Jon,
+>
+> This small series contain a series of fixes for the documentation. it is
+> against your docs-next branch.
+>
+> Three of the patches fix duplicated symbols at the ABI documents.
+> There are still some ABI warnings from IIO, but all but one were
+> already fixed at linux-next. So, hopefully, after having everything
+> merged, the ABI warnings will be solved.
+>
+> Mauro Carvalho Chehab (10):
+>   docs: update sysfs-platform_profile.rst reference
+>   docs: vcpu-requests.rst: fix reference for atomic ops
+>   docs: translations/zh_CN: fix a typo at 8.Conclusion.rst
+>   docs: sched-bwc.rst: fix a typo on a doc name
+>   docs: update pin-control.rst references
+>   docs: virt: api.rst: fix a pointer to SGX documentation
+>   docs: ABI: iommu: remove duplicated definition for
+>     sysfs-kernel-iommu_groups
+>   docs: ABI: sysfs-class-backlight: unify ambient light zone nodes
+>   docs: ABI: sysfs-class-led-trigger-pattern: remove repeat duplication
+>   iio: documentation: fix a typo
 
-Otherwise I think this looks really solid and fixes your issue properly.
-Obviously needs careful review from Greg KH for the device model side of
-things, and from Rafael Wysocki for pm side.
+Seems like good stuff.  The last patch in the series, though, adds a
+warning:
 
-Bunch of thoughts from a very cursory reading:
+  Documentation/ABI/testing/sysfs-bus-iio:799: WARNING: Inline emphasis start-string without end-string.
 
-- I think it'd be good if we pass the aggregate_device to all components
-  when we bind them, plus the void * parameter just to make this less
-  disruptive. Even more device model goodies.
+So I left that one out and applied the rest.
 
-- Maybe splatter a pile of sysfs links around so that this all becomes
-  visible? Could be interesting for debugging ordering issues. Just an
-  idea, feel free to entirely ignore.
+Thanks,
 
-- Needs solid kerneldoc for everything exposed to drivers and good
-  overview DOC:
-
-- Needs deprecation warnings in the kerneldoc for all the
-  component_master_* and if feasible with a mechanical conversion,
-  converting existing users. I'd like to not be stuck with the old model
-  forever, plus this will give a pile more people to review this code
-  here.
-
-Anyway the name changes in probe and remove hooks below are already worth
-this on their own imo. That's why I'd like to see them in all drivers.
-
-Cheers, Daniel
-
-> +	ret = component_aggregate_register(&pdev->dev, &msm_drm_aggregate_driver);
->  	if (ret)
->  		goto fail;
->  
-> @@ -1319,23 +1336,12 @@ static int msm_pdev_probe(struct platform_device *pdev)
->  
->  static int msm_pdev_remove(struct platform_device *pdev)
->  {
-> -	component_master_del(&pdev->dev, &msm_drm_ops);
-> +	component_aggregate_unregister(&pdev->dev, &msm_drm_aggregate_driver);
->  	of_platform_depopulate(&pdev->dev);
->  
->  	return 0;
->  }
->  
-> -static void msm_pdev_shutdown(struct platform_device *pdev)
-> -{
-> -	struct drm_device *drm = platform_get_drvdata(pdev);
-> -	struct msm_drm_private *priv = drm ? drm->dev_private : NULL;
-> -
-> -	if (!priv || !priv->kms)
-> -		return;
-> -
-> -	drm_atomic_helper_shutdown(drm);
-> -}
-> -
->  static const struct of_device_id dt_match[] = {
->  	{ .compatible = "qcom,mdp4", .data = (void *)KMS_MDP4 },
->  	{ .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
-> @@ -1351,7 +1357,6 @@ MODULE_DEVICE_TABLE(of, dt_match);
->  static struct platform_driver msm_platform_driver = {
->  	.probe      = msm_pdev_probe,
->  	.remove     = msm_pdev_remove,
-> -	.shutdown   = msm_pdev_shutdown,
->  	.driver     = {
->  		.name   = "msm",
->  		.of_match_table = dt_match,
-> -- 
-> https://chromeos.dev
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+jon
