@@ -2,86 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E20C389FAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA105389FB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:18:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231143AbhETITC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:19:02 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:45248 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhETITB (ORCPT
+        id S231184AbhETITv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:19:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhETITu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:19:01 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621498659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=danNVP1F0DwY+87MeHMDjfV5BL9uYyFA1fdtztnvKsc=;
-        b=lCwnkQaIMZ7H9ktIE/e4nsmYKE0r5HGbmayXdWegmAqgQf5gmw3BM9VA6OUZWhEzDPCnLU
-        /vToIYQEUaXBDZ2SlNvYIUfWUZBctduUY9KtCTn1dA3PpM+VpbNa7XStSi4a8dM5QipPXR
-        rPQBY9zIPpm1JkqJ0Box07z8kFeqyb7eAIt41o367m8cg4aN/oacwnKHnKlmZskm31Puro
-        OMrFvhkr/dxM6FRArlrdAbxeZACLNR1fKVdSD1Y3AJSX3MWb9XrM5BmN9lF4YoeEBnIN64
-        iFkSsJPPybtE/Pe8xbbUZbNAkgCBFNBf9kb7PQDohzyv98c6xU7hT6L+fBsWaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621498659;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=danNVP1F0DwY+87MeHMDjfV5BL9uYyFA1fdtztnvKsc=;
-        b=pMAZ9u3mh47ELbQufp/CXDBk/O8yyMA8PRCwz4mlakugExfBwT+xod1NS/RvpFgbNeeBjT
-        75IeiaFu/0H2fWAw==
-To:     Imran Khan <imran.f.khan@oracle.com>, mingo@redhat.com,
-        bp@alien8.de
-Cc:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [RFC PATCH] x86/apic: Fix BUG due to multiple allocation of legacy vectors.
-In-Reply-To: <20210519233928.2157496-1-imran.f.khan@oracle.com>
-References: <20210519233928.2157496-1-imran.f.khan@oracle.com>
-Date:   Thu, 20 May 2021 10:17:39 +0200
-Message-ID: <8735uhddjw.ffs@nanos.tec.linutronix.de>
+        Thu, 20 May 2021 04:19:50 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C194DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:18:28 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id g18so10140050pfr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:18:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bKI5XksRj1pGQlOxnEMxlDuSukieqpSNRup0Wv06N+E=;
+        b=tMRd+yy7HTeqadl9J7L3AKuL71n0YnAbZsYwR0lxSKh0TihCpNujoSDhQ/XQYbjB3Y
+         ewDuJonMRbHcJflEcXhG5PT7NQ4DV45oivO1FtrDnP/gZBgxXx4n92A37gk1gGSBFw46
+         8IyIMVC+XTN+N2YyHtst2wXE7bbWFHpMUvjeBrfRiatEXhq2x2uUr8vKu/YwkIJ75zaf
+         SJz5da7g6NICPOW666b3D3dlbgiillWw5XQlpMwi6q6UHz463Tcgsa7LTEWWssbBVDY5
+         mYKoO5HDm1PDK9eYaCIk0Rg1UKWxmIi9YVm4NjavwY0Nnxbj2zBXsAOGf5IEgt/GybUc
+         Okpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bKI5XksRj1pGQlOxnEMxlDuSukieqpSNRup0Wv06N+E=;
+        b=P5qD3MBdz9Ih7iYys+HeT588iFzvNB+rdTwphjgs3BMn3okZkEgowcDYJZKknT5eyy
+         4rcnPAe1a5dUO8GJIA8vgg/SnnoHj5hjYzJPatpv3AjIDI1erNbq35bDsFrwM8AAV9Wx
+         F/3VSttBQ84x3cG/uu2qJx8dC+VTCfD+X9q9EOjGophxlerit46/yixorwwQtUyqWa2c
+         FRn/Tu5u4wOoLLdtkWxEOy3Vr1RW91d6VpbUq+Ec3nO2XnAbkl2+lmXBLOuoWCA2AB2r
+         Vy4r8tz4hRSvV+QuFntVwJkD0EDmgGm1nMA4J/UYNhD6y6I2eX8z3D2TD/3wNyt1nSHd
+         fijw==
+X-Gm-Message-State: AOAM530jrkENIEF1bsf3DoK5lRDfYFqgoKEmzafpHPQWQzg55e4qrTCd
+        6ANA7xzDYGStL1PiD2kXPYIFxdYwfd+cmY1DnfQ=
+X-Google-Smtp-Source: ABdhPJyetpUWK0Mv5NNi94SFKVjfEE3tf7q63EaUNWPIAXperToAH+OOV5t5wYCneU4jQ8jMEcQazuOLQNbnNsa5W/A=
+X-Received: by 2002:a63:79c3:: with SMTP id u186mr3408662pgc.203.1621498708351;
+ Thu, 20 May 2021 01:18:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210510114107.43006-1-andriy.shevchenko@linux.intel.com> <CACRpkdb30HKOobtP++PqWc7UwM8qV4JC=UPAmUjUgFN_JANa+g@mail.gmail.com>
+In-Reply-To: <CACRpkdb30HKOobtP++PqWc7UwM8qV4JC=UPAmUjUgFN_JANa+g@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 20 May 2021 11:18:11 +0300
+Message-ID: <CAHp75Vc1qU0sBbLOZdTgjJ_pfN73Utg4wtRV8Ohu-OiaeJuycg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ARM: Drop ARCH_NR_GPIOS definition
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Imran,
-
-On Wed, May 19 2021 at 23:39, Imran Khan wrote:
-> During activation of secondary CPUs, lapic_online is
-> invoked to initialize vectors. While lapic_online
-> installs legacy vectors on all CPUs, it does not set
-> the corresponding bits in per CPU bitmap maintained
-> under irq_matrix.
-> This may result in these legacy vectors getting allocated
-> by irq_matrix_alloc and if that happens subsequent invocation
-> of apic_update_vector will cause BUG like the one shown below:
+On Thu, May 20, 2021 at 2:26 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+> On Mon, May 10, 2021 at 1:40 PM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
 >
-> [  154.738226] kernel BUG at arch/x86/kernel/apic/vector.c:172!
+> > The conditional by the generic header is the same,
+> > hence drop unnecessary duplication.
+> >
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+>
+> I think this should go into Russell's patch tracker for convenience,
+> if you're not familiar with it I can sign it off and put it in there,
+> just tell me.
 
-please trim the backtrace. It's not really relevant for understanding
-the problem.
+Nope, I'm not. Please do, thanks!
 
-> This patch marks these legacy vectors as assigned in irq_matrix
+Since he kept silent I suppose it means an agreement on the change.
+It's quite straightforward and can be tested easily.
 
-git grep 'This patch' Documentation/process/
-
-> so that corresponding bits in percpu bitmaps get set and these
-> legacy vectors don't get reallocted.
-
-This is just wrong.
-
-True legacy interrupts (PIC delivery) are marked as system vectors. See
-lapic_assign_legacy_vector(). That prevents them from being allocated.
-
-> [  154.858092] CPU: 22 PID: 3569 Comm: ifup-eth Not tainted 5.8.0-20200716.x86_64 #1
-
-I have no idea what this 5.8.0-magic-date kernel is.
-
-Have you verified that this problem exists with upstream?
-
-Thanks,
-
-        tglx
+-- 
+With Best Regards,
+Andy Shevchenko
