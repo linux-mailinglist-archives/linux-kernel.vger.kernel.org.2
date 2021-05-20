@@ -2,147 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFDED38B805
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:03:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 558C938B80E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240169AbhETUEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:04:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        id S240152AbhETUG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233592AbhETUEk (ORCPT
+        with ESMTP id S232256AbhETUGz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:04:40 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C54EC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:03:18 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id y14so16781152wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:03:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FU0d7+kSraKdngkIyPIt5NSqznuzgSQmwjTFbIqh82I=;
-        b=d3Hei2jwKc/C87+dDBawCoVOIy25i8qyEpyU173i9Pjbt5Y20BvdCZ8F2ElivH/0zu
-         9AEo0+/d2oCPHGEXgs0wUj5fskkaNcF3sxm1lGfOnuv9EtgCvT7UuYR3GC3CDFtxqT1G
-         yp94Q2YMApSmYgq4UPNNxJ7so1vlyBp14sZfg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=FU0d7+kSraKdngkIyPIt5NSqznuzgSQmwjTFbIqh82I=;
-        b=KtU3Y6suhXfftUjOBGT6Lj+hwdUZKq0oxHL/XnNJO46RRvPAoMWfjom9ATFvrnftqy
-         6xAsl07tuhA4EQyBACRKiKPIfgBp3Vka6RxBIgoSgYkSf0e4q7UzPbJ8n2HHyQNTQfzt
-         hWTeClN5cv/rF7IUfZg4P+MwKcFRqMGdtp5ri3frWUCccwZICNTMVFj55oRPrBM79nHF
-         01YamiLHaNFtEL3qosN446RJc1uLR7YMUy0JYIRwD/jNkUN6kVLUuQJ8lnOMkiZ0J1Y8
-         abvm2OoDpMPRESTN5yLSXPR/wp8wo+QKXhIeJB634s5Lo64jOOUaEL9Rp4JnzPESOD6o
-         TwZA==
-X-Gm-Message-State: AOAM5314dbsEmhFXx7OL6fM+DIX1uPkirnet1Ded/NXNjjxm8nmgguOj
-        XGiKzUcRLf3ZXG25ceCx8Z5ahA==
-X-Google-Smtp-Source: ABdhPJz9rVlxy/Vj9yTBij7i/ZlVLzwSpGkTG/jrgEO2Fbi8ijXxMCLylcVrmu8o6ORVeKgxAsWApg==
-X-Received: by 2002:adf:f751:: with SMTP id z17mr5877306wrp.150.1621540996980;
-        Thu, 20 May 2021 13:03:16 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id c15sm4269990wro.21.2021.05.20.13.03.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 13:03:16 -0700 (PDT)
-Date:   Thu, 20 May 2021 22:03:14 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-Subject: Re: [PATCH 0/7] component: Make into an aggregate bus
-Message-ID: <YKbAgipp/rmSjOXn@phenom.ffwll.local>
-Mail-Followup-To: Stephen Boyd <swboyd@chromium.org>,
-        Saravana Kannan <saravanak@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Russell King <rmk+kernel@arm.linux.org.uk>
-References: <20210520002519.3538432-1-swboyd@chromium.org>
- <CAGETcx-jK3pBNRYevPmRhw1TALHNjtM5dSxCdEuB+2sBH32rtQ@mail.gmail.com>
- <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
+        Thu, 20 May 2021 16:06:55 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9059DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:05:33 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 02215301;
+        Thu, 20 May 2021 20:05:32 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 02215301
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1621541133; bh=ObSg9otZA8Wu7CMnLBYLmAJcg5O0RSEPsSKyKg7twhM=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=IJxP8tMOOflQZFe8afnJCqiVRIfEdZPm1xe1+Ul6SY4C1pcokX/B+2DHjwV0I6yaG
+         rWWQRtgUyzS6U6NL0djXvs3nkom3js53LPxYm3kKB9aLeUKljJmeg6z1d4gALfAFWO
+         goZQpUb5o54hSGIkwR2ZS+1zpm9z600EPPRHW01t4E1sQLa0Uk3HXvM9mbuN/sBjG3
+         D79Mu/b9VIIzw2x9CkADk3IOM/ARI7BZZBM9Y1pC8FMkaU1U8+c1O6i8LMmQeMqdTU
+         kus4Dj2MWLb863AREYICxtq/MrBpJQ7HkwFBNxVNjpJ5hgDYOXd5cHITDOXkTV/ZZ6
+         8Kztr0OLarXdA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Marc Koderer <marc@koderer.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@polymtl.ca>,
+        Ananth N Mavinakayanahalli <ananth@in.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Martin Schwidefsky <schwidefsky@de.ibm.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH v4 0/2] Fix typos in samples/kprobes/kprobe_example.c
+In-Reply-To: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1621218083-23519-1-git-send-email-yangtiezhu@loongson.cn>
+Date:   Thu, 20 May 2021 14:05:32 -0600
+Message-ID: <87sg2hnpbn.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 09:41:27PM -0400, Stephen Boyd wrote:
-> Quoting Saravana Kannan (2021-05-19 18:27:50)
-> > On Wed, May 19, 2021 at 5:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > >
-> > > This series is from discussion we had on reordering the device lists for
-> > > drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
-> > > the aggregate device onto and then we probe the device once all the
-> > > components are probed and call component_add(). The probe/remove hooks
-> > > are where the bind/unbind calls go, and then a shutdown hook is added
-> > > that can be used to shutdown the drm display pipeline at the right time.
-> > >
-> > > This works for me on my sc7180 board, but I'm currently struggling with
-> > > the last patch where we migrate the msm driver. It runs into a runtime
-> > > PM problem where the parent device isn't runtime PM enabled yet. I'm
-> > > still trying to figure out a clean solution there. Moving runtime PM
-> > > around breaks boot and I think that's because the power domain is off.
-> > >
-> > > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
-> > > Cc: Rob Clark <robdclark@gmail.com>
-> > > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
-> > > Cc: Saravana Kannan <saravanak@google.com>
-> > >
-> > > [1] https://lore.kernel.org/r/20210508074118.1621729-1-swboyd@chromium.org
-> > >
-> >
-> > I skimmed through the series and in general the idea is good, but I'm
-> > not sure why each component user needs to be converted/"modern" before
-> > it can make use of the benefits of this series. Why not just have
-> > wrapper functions around the component ops that the new aggregate bus
-> > driver can just call? That'll give all the existing component users
-> > the new ability to use the new ops without having to have two
-> > versions.
-> 
-> The existing users can only have one or the other. Either use the ops
-> structure or use the struct aggregate_driver. What benefits of this
-> series are they not gaining?
-> 
-> > That'll also allow us to do other improvements (I have some
-> > in mind) that'll apply to all the component users instead of only the
-> > converted ones.
-> 
-> What do you have in mind? I didn't want to convert drivers over to the
-> new way of doing things without making them consciously change their
-> code. Otherwise I worry it will break things in random, subtle ways. The
-> last patch, as I mentioned above in the cover, causes warnings because
-> the display driver is enabling runtime PM in an odd spot as part of the
-> bind callback of the aggregate/master. That should move out of there and
-> into the msm_pdev driver that registers the aggregate from what I can
-> tell.
+Tiezhu Yang <yangtiezhu@loongson.cn> writes:
 
-Hm yeah that's annoying. Another thing to check is that there's no locking
-issues with lockdep enabled. But there's plenty of other places that
-register/bind drivers within other drivers, so it should all work.
+> Split the v3 patch [1] into two patches suggested by Masami Hiramatsu.
+>
+> [1] https://lore.kernel.org/patchwork/patch/1429021/
+>
+> Tiezhu Yang (2):
+>   samples/kprobes: Fix typo in handler_fault()
+>   samples/kprobes: Fix typo in handler_post()
+>
+>  samples/kprobes/kprobe_example.c | 33 +++++++++++++++++----------------
+>  1 file changed, 17 insertions(+), 16 deletions(-)
 
-I think this is a good reason why more drivers should be converted (in
-separate patches) so that we get a lot more testing and can find bugs in
-the design.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+I've applied the set, with one tweak.  The first patch included this
+line:
+
+  Fixes: 804defea1c02 ("Kprobes: move kprobe examples to samples/")
+
+But that patch, as its title suggests, simply moved the code to a
+different place; it didn't introduce that particular mistake.  So I took
+the Fixes tag out.
+
+Thanks,
+
+jon
