@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 197DC38AB2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C8C938AB2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240614AbhETLVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:21:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
+        id S240695AbhETLVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:21:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237769AbhETLAc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:00:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C68F61933;
-        Thu, 20 May 2021 10:03:29 +0000 (UTC)
+        id S238750AbhETLBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:01:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C0EC61D0A;
+        Thu, 20 May 2021 10:03:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505009;
-        bh=sEsfvlxfhDwNz/ByYf1XBGxL95q/Ch3vdnMjYnakl4E=;
+        s=korg; t=1621505011;
+        bh=rZz1ZdBZL2WzTgvLe7/w0Oc3q815CYmWv5pnPMZ73co=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lB86t4fzwrFPTr5BJGgKW37kvu6N3UJxXoUddWoNccAP+VN+wioqiRubGNJ9ftarF
-         pLPKUdeKLyS+AeakL3iEwNTKQn39jkTOW51f1B/bTdfbV2/7zkrAduIbt7Da0CGStX
-         Vj2iSqcHxGv98PphSK3zrz3MXi2nBAKqzAWUAe5Q=
+        b=0kUaliJ/TYB/G2PSU9f3G3kpqsQQVBozb9K5IVmM/xv18JFsXINY2FExepQTbBXzX
+         4wMRFc8/GpPeiAnXRwop5wEHlQCHX0LD440HG3EzPh8q7SvAlJi2ulL+ZD+l7oBiTD
+         0nehfWvq9/mzvRnkJ2nmSThTwvGBSvtp2Xsa/Zag=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Jakub Kicinski <kubakici@wp.pl>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 148/240] mt7601u: fix always true expression
-Date:   Thu, 20 May 2021 11:22:20 +0200
-Message-Id: <20210520092113.623232483@linuxfoundation.org>
+Subject: [PATCH 4.9 149/240] net: thunderx: Fix unintentional sign extension issue
+Date:   Thu, 20 May 2021 11:22:21 +0200
+Message-Id: <20210520092113.653804196@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -43,43 +42,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 87fce88658ba047ae62e83497d3f3c5dc22fa6f9 ]
+[ Upstream commit e701a25840360706fe4cf5de0015913ca19c274b ]
 
-Currently the expression ~nic_conf1 is always true because nic_conf1
-is a u16 and according to 6.5.3.3 of the C standard the ~ operator
-promotes the u16 to an integer before flipping all the bits. Thus
-the top 16 bits of the integer result are all set so the expression
-is always true.  If the intention was to flip all the bits of nic_conf1
-then casting the integer result back to a u16 is a suitabel fix.
+The shifting of the u8 integers rq->caching by 26 bits to
+the left will be promoted to a 32 bit signed int and then
+sign-extended to a u64. In the event that rq->caching is
+greater than 0x1f then all then all the upper 32 bits of
+the u64 end up as also being set because of the int
+sign-extension. Fix this by casting the u8 values to a
+u64 before the 26 bit left shift.
 
-Interestingly static analyzers seem to thing a bitwise ! should be
-used instead of ~ for this scenario, so I think the original intent
-of the expression may need some extra consideration.
-
-Addresses-Coverity: ("Logical vs. bitwise operator")
-Fixes: c869f77d6abb ("add mt7601u driver")
+Addresses-Coverity: ("Unintended sign extension")
+Fixes: 4863dea3fab0 ("net: Adding support for Cavium ThunderX network controller")
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Jakub Kicinski <kubakici@wp.pl>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210225183241.1002129-1-colin.king@canonical.com
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt7601u/eeprom.c | 2 +-
+ drivers/net/ethernet/cavium/thunder/nicvf_queues.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt7601u/eeprom.c b/drivers/net/wireless/mediatek/mt7601u/eeprom.c
-index da6faea092d6..80d0f64205f8 100644
---- a/drivers/net/wireless/mediatek/mt7601u/eeprom.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/eeprom.c
-@@ -106,7 +106,7 @@ mt7601u_has_tssi(struct mt7601u_dev *dev, u8 *eeprom)
- {
- 	u16 nic_conf1 = get_unaligned_le16(eeprom + MT_EE_NIC_CONF_1);
- 
--	return ~nic_conf1 && (nic_conf1 & MT_EE_NIC_CONF_1_TX_ALC_EN);
-+	return (u16)~nic_conf1 && (nic_conf1 & MT_EE_NIC_CONF_1_TX_ALC_EN);
- }
- 
- static void
+diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+index 747ef0882976..8f3d544bec0c 100644
+--- a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
++++ b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
+@@ -537,7 +537,7 @@ static void nicvf_rcv_queue_config(struct nicvf *nic, struct queue_set *qs,
+ 	mbx.rq.msg = NIC_MBOX_MSG_RQ_CFG;
+ 	mbx.rq.qs_num = qs->vnic_id;
+ 	mbx.rq.rq_num = qidx;
+-	mbx.rq.cfg = (rq->caching << 26) | (rq->cq_qs << 19) |
++	mbx.rq.cfg = ((u64)rq->caching << 26) | (rq->cq_qs << 19) |
+ 			  (rq->cq_idx << 16) | (rq->cont_rbdr_qs << 9) |
+ 			  (rq->cont_qs_rbdr_idx << 8) |
+ 			  (rq->start_rbdr_qs << 1) | (rq->start_qs_rbdr_idx);
 -- 
 2.30.2
 
