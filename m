@@ -2,330 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26F9638B36D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:43:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2B2C38B371
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232770AbhETPoX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:44:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232463AbhETPoS (ORCPT
+        id S232646AbhETPqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:46:42 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:40884 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231556AbhETPqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:44:18 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FE50C061574;
-        Thu, 20 May 2021 08:42:57 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id q15so12116239pgg.12;
-        Thu, 20 May 2021 08:42:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1EIXEZbroAowBj8gtGQktrR8v1TfCp6YMCM0hePlX88=;
-        b=B9+R6au4fgU6hbXX2Fjl2JTWDAvLx4SuzDEdWb7Ym/yCFb9k5mdWgzmNDMqqT+1y+M
-         nRTYqLvbKD7Z37rUwl7KlKdH3nIOE+OzaNCFMvutjOFtFg/XM4riKL+7KS/FNIbevKZV
-         SMyoDkArKJcAD1e6MVbWLetwq0PU+kWn+eZWgal73rjI6gnUSGtvqawrrBPknSxlYuJ4
-         9l9fZzY6cMIxCKhl9zyeOlhBGPpg50vOS5x0datwc90/OkxyK0fNzhNPvI3H9gqzahuM
-         0amQ0TJYoR4tPGH9I5zyKLVM/agMgOfOYxVaTYSY4Z63LU0TMi/n8PrjDntrGReybpoD
-         2bVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=1EIXEZbroAowBj8gtGQktrR8v1TfCp6YMCM0hePlX88=;
-        b=jVYaKN4NqBShLBdS5iRysjSyHlI+Y07m+3R6FxKR33+ftVjJgnnQz30WWAb4VzZyMy
-         J/YlrV+jth3/h/VysXpbZy2UPH75Grra4bBxSJZpxHNS+INPtEfifzOMO3wjo1ZHa81v
-         G2ErLnSjqPAffZ6QOmv9jmAY/y561nJ5sS2Mr1rORHd+IsylGu96GbNRxpJUTB1wWUaN
-         7ItxkII0xGvDChwlQGlYNpGgSekBr7mUwZa+zvgkBkQC2cX3ixrTDn9brOM0L6tuiaV7
-         H2UDvCGzk/Gpq8JuIE+PruwPriRH74QQoL18ZsQaEvb1uH0VnNStCasxca7f0x7zfc8a
-         QhLA==
-X-Gm-Message-State: AOAM531XLoijlOfymzG4/K1kSbZgupsPKDI6MTAGw7nYm3KYUvDCFbnE
-        JuaX5JDBdio3C7wnSZzboUc=
-X-Google-Smtp-Source: ABdhPJz08LGSLSo4ltzdZTKYRrR84e6lECp6ZUyj6MF6bUMk7aF+6/DYHxZVI/ScRHLa6mJOWkgRpQ==
-X-Received: by 2002:a62:6491:0:b029:28e:8c90:6b16 with SMTP id y139-20020a6264910000b029028e8c906b16mr4944591pfb.24.1621525376958;
-        Thu, 20 May 2021 08:42:56 -0700 (PDT)
-Received: from localhost ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id t1sm2240962pjo.33.2021.05.20.08.42.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 08:42:56 -0700 (PDT)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     jack@suse.cz, axboe@kernel.dk
-Cc:     hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
-        dong.menglong@zte.com.cn, song@kernel.org, neilb@suse.de,
-        akpm@linux-foundation.org, mcgrof@kernel.org,
-        wangkefeng.wang@huawei.com, f.fainelli@gmail.com, arnd@arndb.de,
-        brho@google.com, linux@rasmusvillemoes.dk, mhiramat@kernel.org,
-        rostedt@goodmis.org, keescook@chromium.org, vbabka@suse.cz,
-        glider@google.com, pmladek@suse.com, chris@chrisdown.name,
-        ebiederm@xmission.com, jojing64@gmail.com,
-        linux-kernel@vger.kernel.org, palmerdabbelt@google.com,
-        linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk
-Subject: [PATCH RESEND] init/initramfs.c: make initramfs support pivot_root
-Date:   Thu, 20 May 2021 23:42:44 +0800
-Message-Id: <20210520154244.20209-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.31.1
+        Thu, 20 May 2021 11:46:37 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KFYkWb001554;
+        Thu, 20 May 2021 11:44:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=f/Ijhp5BbeF9ZR4d7uFbrh+RPrYVsMiQ6YiGUTVRzN8=;
+ b=DN+HwzDAEvXTCkyQqob3YQmWAIKdGFl0Bi0ZqnnIsJowWYUU+8/7iCGIPImv9/8678Bf
+ GlK7D2e/PLwC2p1WeZx09LSaqbiuAwCnjKrf0LEK7eCLHfSx4jq6rWm8rKuu+KlVvFM/
+ E3ik4WLa64FwuXOPa8uOq8ymzn3enae0cJIYHr0AWEmHBNGlYasxFOF8SoFFi7OfUCO3
+ 1vQp0Pwk0FCjp8EMIJLEjJvRYZeeYikA29z59AQs48EO2Um/Qo2qJYOLy7sFkOP9G/WS
+ BKCEaMXD1flMpLCLWYGz+IvRfFcMFYpquB5GVMcSbcQRK4iRLZFbX9f9uZQbklaBSK9S RA== 
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38nrms4wwj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 11:44:43 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14KFagG5001560;
+        Thu, 20 May 2021 15:44:41 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgtqe8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 15:44:41 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14KFicXw31457692
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 May 2021 15:44:38 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 96CF5A405D;
+        Thu, 20 May 2021 15:44:38 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF1C1A406F;
+        Thu, 20 May 2021 15:44:35 +0000 (GMT)
+Received: from saptagiri.in.ibm.com (unknown [9.77.198.25])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 20 May 2021 15:44:35 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Subject: [PATCH 0/3] Skip numa distance for offline nodes
+Date:   Thu, 20 May 2021 21:14:24 +0530
+Message-Id: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: qipuVRt3mAVylK396hRqmcea3StPvS8H
+X-Proofpoint-GUID: qipuVRt3mAVylK396hRqmcea3StPvS8H
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-20_04:2021-05-20,2021-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 priorityscore=1501 mlxscore=0 bulkscore=0 impostorscore=0
+ suspectscore=0 malwarescore=0 adultscore=0 clxscore=1015 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105200104
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+Geetika reported yet another trace while doing a dlpar CPU add
+operation. This was true even on top of a recent commit
+6980d13f0dd1 ("powerpc/smp: Set numa node before updating mask") which fixed
+a similar trace.
 
-During the kernel initialization, the mount tree, which is used by the
-kernel, is created, and 'rootfs' is mounted as the root file system.
+WARNING: CPU: 40 PID: 2954 at kernel/sched/topology.c:2088 build_sched_domains+0x6e8/0x1540
+Modules linked in: nft_counter nft_compat rpadlpar_io rpaphp mptcp_diag
+xsk_diag tcp_diag udp_diag raw_diag inet_diag unix_diag af_packet_diag
+netlink_diag bonding tls nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib
+nft_reject_inet nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat
+nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set rfkill nf_tables
+nfnetlink dm_multipath pseries_rng xts vmx_crypto binfmt_misc ip_tables xfs
+libcrc32c sd_mod t10_pi sg ibmvscsi ibmveth scsi_transport_srp dm_mirror
+dm_region_hash dm_log dm_mod fuse
+CPU: 40 PID: 2954 Comm: kworker/40:0 Not tainted 5.13.0-rc1+ #19
+Workqueue: events cpuset_hotplug_workfn
+NIP:  c0000000001de588 LR: c0000000001de584 CTR: 00000000006cd36c
+REGS: c00000002772b250 TRAP: 0700   Not tainted  (5.12.0-rc5-master+)
+MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28828422  XER: 0000000d
+CFAR: c00000000020c2f8 IRQMASK: 0 #012GPR00: c0000000001de584 c00000002772b4f0
+c000000001f55400 0000000000000036 #012GPR04: c0000063c6368010 c0000063c63f0a00
+0000000000000027 c0000063c6368018 #012GPR08: 0000000000000023 c0000063c636ef48
+00000063c4de0000 c0000063bfe9ffe8 #012GPR12: 0000000028828424 c0000063fe68fe80
+0000000000000000 0000000000000417 #012GPR16: 0000000000000028 c00000000740dcd8
+c00000000205db68 c000000001a3a4a0 #012GPR20: c000000091ed7d20 c000000091ed8520
+0000000000000001 0000000000000000 #012GPR24: c0000000113a9600 0000000000000190
+0000000000000028 c0000000010e3ac0 #012GPR28: 0000000000000000 c00000000740dd00
+c0000000317b5900 0000000000000190 
+NIP [c0000000001de588] build_sched_domains+0x6e8/0x1540
+LR [c0000000001de584] build_sched_domains+0x6e4/0x1540
+Call Trace:
+[c00000002772b4f0] [c0000000001de584] build_sched_domains+0x6e4/0x1540 (unreliable)
+[c00000002772b640] [c0000000001e08dc] partition_sched_domains_locked+0x3ec/0x530
+[c00000002772b6e0] [c0000000002a2144] rebuild_sched_domains_locked+0x524/0xbf0
+[c00000002772b7e0] [c0000000002a5620] rebuild_sched_domains+0x40/0x70
+[c00000002772b810] [c0000000002a58e4] cpuset_hotplug_workfn+0x294/0xe20
+[c00000002772bc30] [c000000000187510] process_one_work+0x300/0x670
+[c00000002772bd10] [c0000000001878f8] worker_thread+0x78/0x520
+[c00000002772bda0] [c0000000001937f0] kthread+0x1a0/0x1b0
+[c00000002772be10] [c00000000000d6ec] ret_from_kernel_thread+0x5c/0x70
+Instruction dump:
+7ee5bb78 7f0ac378 7f29cb78 7f68db78 7f46d378 7f84e378 f8610068 3c62ff19
+fbe10060 3863e558 4802dd31 60000000 <0fe00000> 3920fff4 f9210080 e86100b0
 
-While using initramfs as the root file system, cpio file is unpacked
-into the rootfs. Thus, this rootfs is exactly what users see in user
-space, and some problems arose: this rootfs has no parent mount,
-which make it can't be umounted or pivot_root.
+Detailed analysis of the failing scenario showed that the span in
+question belongs to NODE domain and further the cpumasks for some
+cpus in NODE overlapped. There are two possible reasons how we ended
+up here:
 
-'pivot_root' is used to change the rootfs and clean the old mountpoints,
-and it is essential for some users, such as docker. Docker use
-'pivot_root' to change the root fs of a process if the current root
-fs is a block device of initrd. However, when it comes to initramfs,
-things is different: docker has to use 'chroot()' to change the root
-fs, as 'pivot_root()' is not supported in initramfs.
+(1) The numa node was offline or blank with no CPUs or memory. Hence
+the sched_max_numa_distance could not be set correctly, or the
+sched_domains_numa_distance happened to be partially populated.
 
-The usage of 'chroot()' to create root fs for a container introduced
-a lot problems.
+(2) Depending on a bogus node_distance of an offline node to populate
+cpumasks is the issue.  On POWER platform the node_distance is
+correctly available only for an online node which has some CPU or
+memory resource associated with it.
 
-First, 'chroot()' can't clean the old mountpoints which inherited
-from the host. It means that the mountpoints in host will have a
-duplicate in every container. Let's image that there are 100
-containers in host, and there will be 100 duplicates of every
-mountpoints, which makes resource release an issue. User may
-remove a USB after he (or she) umount it successfully in the
-host. However, the USB may still be mounted in containers, although
-it can't be seen by the 'mount' commond in the container. This
-means the USB is not released yet, and data may not write back.
-Therefore, data lose arise.
+For example distance info from numactl from a fully populated 8 node
+system at boot may look like this.
 
-Second, net-namespace leak is another problem. The net-namespace
-of containers will be mounted in /var/run/docker/netns/ in host
-by dockerd. It means that the net-namespace of a container will
-be mounted in containers which are created after it. Things
-become worse now, as the net-namespace can't be remove after
-the destroy of that container, as it is still mounted in other
-containers. If users want to recreate that container, he will
-fail if a certain mac address is to be binded with the container,
-as it is not release yet.
+node distances:
+node   0   1   2   3   4   5   6   7
+  0:  10  20  40  40  40  40  40  40
+  1:  20  10  40  40  40  40  40  40
+  2:  40  40  10  20  40  40  40  40
+  3:  40  40  20  10  40  40  40  40
+  4:  40  40  40  40  10  20  40  40
+  5:  40  40  40  40  20  10  40  40
+  6:  40  40  40  40  40  40  10  20
+  7:  40  40  40  40  40  40  20  10
 
-Maybe dockerd can umount the unnecessary mountpoints that inherited
-for the host before do 'chroot()', but that is not a graceful way.
-I think the best way is to make 'pivot_root()' support initramfs.
+However the same system when only two nodes are online at boot, then the
+numa topology will look like
+node distances:
+node   0   1
+  0:  10  20
+  1:  20  10
 
-After this patch, initramfs is supported by 'pivot_root()' perfectly.
-I just create a new rootfs and mount it to the mount-tree before
-unpack cpio. Therefore, the rootfs used by users has a parent mount,
-and can use 'pivot_root()'.
+This series tries to fix both these problems.
+Note: These problems are now visible, thanks to 
+Commit ccf74128d66c ("sched/topology: Assert non-NUMA topology masks don't
+(partially) overlap")
 
-What's more, after this patch, 'rootflags' in boot cmd is supported
-by initramfs. Therefore, users can set the size of tmpfs with
-'rootflags=size=1024M'.
 
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- init/do_mounts.c | 53 +++++++++++++++++++++++++++++++++++++++---------
- init/do_mounts.h |  1 +
- init/initramfs.c | 32 +++++++++++++++++++++++++++++
- init/main.c      | 17 +++++++++++++++-
- 4 files changed, 92 insertions(+), 11 deletions(-)
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Nathan Lynch <nathanl@linux.ibm.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Scott Cheloha <cheloha@linux.ibm.com>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Rik van Riel <riel@surriel.com>
+Cc: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
 
-diff --git a/init/do_mounts.c b/init/do_mounts.c
-index a78e44ee6adb..a156b0d28b43 100644
---- a/init/do_mounts.c
-+++ b/init/do_mounts.c
-@@ -459,7 +459,7 @@ void __init mount_block_root(char *name, int flags)
- out:
- 	put_page(page);
- }
-- 
-+
- #ifdef CONFIG_ROOT_NFS
- 
- #define NFSROOT_TIMEOUT_MIN	5
-@@ -617,24 +617,57 @@ void __init prepare_namespace(void)
- 	init_chroot(".");
- }
- 
--static bool is_tmpfs;
--static int rootfs_init_fs_context(struct fs_context *fc)
-+#ifdef CONFIG_TMPFS
-+static __init bool is_tmpfs_enabled(void)
-+{
-+	return (!root_fs_names || strstr(root_fs_names, "tmpfs")) &&
-+	       !saved_root_name[0];
-+}
-+#endif
-+
-+static __init bool is_ramfs_enabled(void)
- {
--	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
--		return shmem_init_fs_context(fc);
-+	return true;
-+}
-+
-+struct fs_user_root {
-+	bool (*enabled)(void);
-+	char *dev_name;
-+	char *fs_name;
-+};
- 
--	return ramfs_init_fs_context(fc);
-+static struct fs_user_root user_roots[] __initdata = {
-+#ifdef CONFIG_TMPFS
-+	{.fs_name = "tmpfs", .enabled = is_tmpfs_enabled },
-+#endif
-+	{.fs_name = "ramfs", .enabled = is_ramfs_enabled }
-+};
-+static struct fs_user_root * __initdata user_root;
-+
-+int __init mount_user_root(void)
-+{
-+	return do_mount_root(user_root->dev_name,
-+			     user_root->fs_name,
-+			     root_mountflags,
-+			     root_mount_data);
- }
- 
- struct file_system_type rootfs_fs_type = {
- 	.name		= "rootfs",
--	.init_fs_context = rootfs_init_fs_context,
-+	.init_fs_context = ramfs_init_fs_context,
- 	.kill_sb	= kill_litter_super,
- };
- 
- void __init init_rootfs(void)
- {
--	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
--		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
--		is_tmpfs = true;
-+	struct fs_user_root *root;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(user_roots); i++) {
-+		root = &user_roots[i];
-+		if (root->enabled()) {
-+			user_root = root;
-+			break;
-+		}
-+	}
- }
-diff --git a/init/do_mounts.h b/init/do_mounts.h
-index 7a29ac3e427b..34978b17454a 100644
---- a/init/do_mounts.h
-+++ b/init/do_mounts.h
-@@ -13,6 +13,7 @@
- void  mount_block_root(char *name, int flags);
- void  mount_root(void);
- extern int root_mountflags;
-+int   mount_user_root(void);
- 
- static inline __init int create_dev(char *name, dev_t dev)
- {
-diff --git a/init/initramfs.c b/init/initramfs.c
-index af27abc59643..c883379673c0 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -15,6 +15,11 @@
- #include <linux/mm.h>
- #include <linux/namei.h>
- #include <linux/init_syscalls.h>
-+#include <uapi/linux/mount.h>
-+
-+#include "do_mounts.h"
-+
-+extern bool ramdisk_exec_exist(bool abs);
- 
- static ssize_t __init xwrite(struct file *file, const char *p, size_t count,
- 		loff_t *pos)
-@@ -667,6 +672,27 @@ static void __init populate_initrd_image(char *err)
- }
- #endif /* CONFIG_BLK_DEV_RAM */
- 
-+/*
-+ * This function is used to chroot to new initramfs root that
-+ * we unpacked.
-+ */
-+static void __init end_mount_user_root(bool succeed)
-+{
-+	if (!succeed)
-+		goto on_failed;
-+
-+	if (!ramdisk_exec_exist(false))
-+		goto on_failed;
-+
-+	init_mount(".", "/", NULL, MS_MOVE, NULL);
-+	init_chroot(".");
-+	return;
-+
-+on_failed:
-+	init_chdir("/");
-+	init_umount("/root", 0);
-+}
-+
- static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
- {
- 	/* Load the built in initramfs */
-@@ -682,15 +708,21 @@ static void __init do_populate_rootfs(void *unused, async_cookie_t cookie)
- 	else
- 		printk(KERN_INFO "Unpacking initramfs...\n");
- 
-+	if (mount_user_root())
-+		panic("Failed to create user root");
-+
- 	err = unpack_to_rootfs((char *)initrd_start, initrd_end - initrd_start);
- 	if (err) {
-+		end_mount_user_root(false);
- #ifdef CONFIG_BLK_DEV_RAM
- 		populate_initrd_image(err);
- #else
- 		printk(KERN_EMERG "Initramfs unpacking failed: %s\n", err);
- #endif
-+		goto done;
- 	}
- 
-+	end_mount_user_root(true);
- done:
- 	/*
- 	 * If the initrd region is overlapped with crashkernel reserved region,
-diff --git a/init/main.c b/init/main.c
-index eb01e121d2f1..431da5f01f11 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -607,6 +607,21 @@ static inline void setup_nr_cpu_ids(void) { }
- static inline void smp_prepare_cpus(unsigned int maxcpus) { }
- #endif
- 
-+bool __init ramdisk_exec_exist(bool abs)
-+{
-+	char *tmp_command = ramdisk_execute_command;
-+
-+	if (!tmp_command)
-+		return false;
-+
-+	if (!abs) {
-+		while (*tmp_command == '/' || *tmp_command == '.')
-+			tmp_command++;
-+	}
-+
-+	return init_eaccess(tmp_command) == 0;
-+}
-+
- /*
-  * We need to store the untouched command line for future reference.
-  * We also need to store the touched command line since the parameter
-@@ -1568,7 +1583,7 @@ static noinline void __init kernel_init_freeable(void)
- 	 * check if there is an early userspace init.  If yes, let it do all
- 	 * the work
- 	 */
--	if (init_eaccess(ramdisk_execute_command) != 0) {
-+	if (!ramdisk_exec_exist(true)) {
- 		ramdisk_execute_command = NULL;
- 		prepare_namespace();
- 	}
+Srikar Dronamraju (3):
+  sched/topology: Allow archs to populate distance map
+  powerpc/numa: Populate distance map correctly
+  sched/topology: Skip updating masks for non-online nodes
+
+ arch/powerpc/include/asm/topology.h |  3 +++
+ arch/powerpc/mm/numa.c              | 19 +++++++++++++++
+ kernel/sched/topology.c             | 38 +++++++++++++++++++++--------
+ 3 files changed, 50 insertions(+), 10 deletions(-)
+
+
+base-commit: 1699949d3314e5d1956fb082e4cd4798bf6149fc
 -- 
-2.31.1
+2.27.0
 
