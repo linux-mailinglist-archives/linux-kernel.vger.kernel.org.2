@@ -2,115 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6AA38A03C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:51:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5593538A03D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbhETIwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:52:54 -0400
-Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:61312 "EHLO
-        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhETIwx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:52:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1621500692; x=1653036692;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=M9gfNngD0bJlkjc4rg47T5qwp5ZouzRsDXymH0+hpU4=;
-  b=k9gLUJvkoCGDkXYZBQI4jItmLeYZRw/OfpkxPoTONT17UBv0lBk4VcEF
-   KNgD5BwqFXzanVwQV8SSJBioGNXejHMlnzhA3kfZcXfq7JzVXkYD5CIyW
-   1fh1MntN4z147aeDIZsQje2h9cJaNo+C8dFYEFHtUFQWp5hMqCaCrlK+h
-   Y=;
-X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
-   d="scan'208";a="110462845"
-Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com) ([10.43.8.2])
-  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 20 May 2021 08:51:31 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1d-474bcd9f.us-east-1.amazon.com (Postfix) with ESMTPS id 46E99A1B79;
-        Thu, 20 May 2021 08:51:28 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 20 May 2021 08:51:26 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.162.200) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.18; Thu, 20 May 2021 08:51:22 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v6 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the reuseport group.
-Date:   Thu, 20 May 2021 17:51:17 +0900
-Message-ID: <20210520085117.48629-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210520062648.ejqufb6m5wr6z7k2@kafai-mbp.dhcp.thefacebook.com>
-References: <20210520062648.ejqufb6m5wr6z7k2@kafai-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.200]
-X-ClientProxiedBy: EX13D12UWC002.ant.amazon.com (10.43.162.253) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+        id S231446AbhETIxC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:53:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44632 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231444AbhETIw6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 04:52:58 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AC62D60241;
+        Thu, 20 May 2021 08:51:37 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ljeP1-002Sgn-GH; Thu, 20 May 2021 09:51:35 +0100
+Date:   Thu, 20 May 2021 09:51:28 +0100
+Message-ID: <875yzdvldb.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 4/8] arm64: kvm: Introduce MTE VM feature
+In-Reply-To: <60fc8939-36b7-35ce-837c-b69d0d40c9a4@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+        <20210517123239.8025-5-steven.price@arm.com>
+        <87wnrxtikl.wl-maz@kernel.org>
+        <60fc8939-36b7-35ce-837c-b69d0d40c9a4@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Wed, 19 May 2021 23:26:48 -0700
-> On Mon, May 17, 2021 at 09:22:50AM +0900, Kuniyuki Iwashima wrote:
+On Wed, 19 May 2021 11:48:21 +0100,
+Steven Price <steven.price@arm.com> wrote:
 > 
-> > +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
-> > +			       struct sock_reuseport *reuse, bool bind_inany)
-> > +{
-> > +	if (old_reuse == reuse) {
-> > +		/* If sk was in the same reuseport group, just pop sk out of
-> > +		 * the closed section and push sk into the listening section.
-> > +		 */
-> > +		__reuseport_detach_closed_sock(sk, old_reuse);
-> > +		__reuseport_add_sock(sk, old_reuse);
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (!reuse) {
-> > +		/* In bind()/listen() path, we cannot carry over the eBPF prog
-> > +		 * for the shutdown()ed socket. In setsockopt() path, we should
-> > +		 * not change the eBPF prog of listening sockets by attaching a
-> > +		 * prog to the shutdown()ed socket. Thus, we will allocate a new
-> > +		 * reuseport group and detach sk from the old group.
-> > +		 */
-> For the reuseport_attach_prog() path, I think it needs to consider
-> the reuse->num_closed_socks != 0 case also and that should belong
-> to the resurrect case.  For example, when
-> sk_unhashed(sk) but sk->sk_reuseport == 0.
+> On 17/05/2021 17:45, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 13:32:35 +0100,
+> > Steven Price <steven.price@arm.com> wrote:
+> >>
+> >> Add a new VM feature 'KVM_ARM_CAP_MTE' which enables memory tagging
+> >> for a VM. This will expose the feature to the guest and automatically
+> >> tag memory pages touched by the VM as PG_mte_tagged (and clear the tag
+> >> storage) to ensure that the guest cannot see stale tags, and so that
+> >> the tags are correctly saved/restored across swap.
+> >>
+> >> Actually exposing the new capability to user space happens in a later
+> >> patch.
+> > 
+> > uber nit in $SUBJECT: "KVM: arm64:" is the preferred prefix (just like
+> > patches 7 and 8).
+> 
+> Good spot - I obviously got carried away with the "arm64:" prefix ;)
+> 
+> >>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  arch/arm64/include/asm/kvm_emulate.h |  3 +++
+> >>  arch/arm64/include/asm/kvm_host.h    |  3 +++
+> >>  arch/arm64/kvm/hyp/exception.c       |  3 ++-
+> >>  arch/arm64/kvm/mmu.c                 | 37 +++++++++++++++++++++++++++-
+> >>  arch/arm64/kvm/sys_regs.c            |  3 +++
+> >>  include/uapi/linux/kvm.h             |  1 +
+> >>  6 files changed, 48 insertions(+), 2 deletions(-)
+> >>
+> >> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> >> index f612c090f2e4..6bf776c2399c 100644
+> >> --- a/arch/arm64/include/asm/kvm_emulate.h
+> >> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> >> @@ -84,6 +84,9 @@ static inline void vcpu_reset_hcr(struct kvm_vcpu *vcpu)
+> >>  	if (cpus_have_const_cap(ARM64_MISMATCHED_CACHE_TYPE) ||
+> >>  	    vcpu_el1_is_32bit(vcpu))
+> >>  		vcpu->arch.hcr_el2 |= HCR_TID2;
+> >> +
+> >> +	if (kvm_has_mte(vcpu->kvm))
+> >> +		vcpu->arch.hcr_el2 |= HCR_ATA;
+> >>  }
+> >>  
+> >>  static inline unsigned long *vcpu_hcr(struct kvm_vcpu *vcpu)
+> >> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> >> index 7cd7d5c8c4bc..afaa5333f0e4 100644
+> >> --- a/arch/arm64/include/asm/kvm_host.h
+> >> +++ b/arch/arm64/include/asm/kvm_host.h
+> >> @@ -132,6 +132,8 @@ struct kvm_arch {
+> >>  
+> >>  	u8 pfr0_csv2;
+> >>  	u8 pfr0_csv3;
+> >> +	/* Memory Tagging Extension enabled for the guest */
+> >> +	bool mte_enabled;
+> >>  };
+> >>  
+> >>  struct kvm_vcpu_fault_info {
+> >> @@ -769,6 +771,7 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+> >>  #define kvm_arm_vcpu_sve_finalized(vcpu) \
+> >>  	((vcpu)->arch.flags & KVM_ARM64_VCPU_SVE_FINALIZED)
+> >>  
+> >> +#define kvm_has_mte(kvm) (system_supports_mte() && (kvm)->arch.mte_enabled)
+> >>  #define kvm_vcpu_has_pmu(vcpu)					\
+> >>  	(test_bit(KVM_ARM_VCPU_PMU_V3, (vcpu)->arch.features))
+> >>  
+> >> diff --git a/arch/arm64/kvm/hyp/exception.c b/arch/arm64/kvm/hyp/exception.c
+> >> index 73629094f903..56426565600c 100644
+> >> --- a/arch/arm64/kvm/hyp/exception.c
+> >> +++ b/arch/arm64/kvm/hyp/exception.c
+> >> @@ -112,7 +112,8 @@ static void enter_exception64(struct kvm_vcpu *vcpu, unsigned long target_mode,
+> >>  	new |= (old & PSR_C_BIT);
+> >>  	new |= (old & PSR_V_BIT);
+> >>  
+> >> -	// TODO: TCO (if/when ARMv8.5-MemTag is exposed to guests)
+> >> +	if (kvm_has_mte(vcpu->kvm))
+> >> +		new |= PSR_TCO_BIT;
+> >>  
+> >>  	new |= (old & PSR_DIT_BIT);
+> >>  
+> >> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> >> index c5d1f3c87dbd..8660f6a03f51 100644
+> >> --- a/arch/arm64/kvm/mmu.c
+> >> +++ b/arch/arm64/kvm/mmu.c
+> >> @@ -822,6 +822,31 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
+> >>  	return PAGE_SIZE;
+> >>  }
+> >>  
+> >> +static int sanitise_mte_tags(struct kvm *kvm, unsigned long size,
+> >> +			     kvm_pfn_t pfn)
+> > 
+> > Nit: please order the parameters as address, then size.
+> 
+> Sure
+> 
+> >> +{
+> >> +	if (kvm_has_mte(kvm)) {
+> >> +		/*
+> >> +		 * The page will be mapped in stage 2 as Normal Cacheable, so
+> >> +		 * the VM will be able to see the page's tags and therefore
+> >> +		 * they must be initialised first. If PG_mte_tagged is set,
+> >> +		 * tags have already been initialised.
+> >> +		 */
+> >> +		unsigned long i, nr_pages = size >> PAGE_SHIFT;
+> >> +		struct page *page = pfn_to_online_page(pfn);
+> >> +
+> >> +		if (!page)
+> >> +			return -EFAULT;
+> > 
+> > Under which circumstances can this happen? We already have done a GUP
+> > on the page, so I really can't see how the page can vanish from under
+> > our feet.
+> 
+> It's less about the page vanishing and more that pfn_to_online_page()
+> will reject some pages. Specifically in this case we want to reject any
+> sort of device memory (e.g. graphics card memory or other memory on the
+> end of a bus like PCIe) as it is unlikely to support MTE.
 
-In the path, reuseport_resurrect() is called from reuseport_alloc() only
-if reuse->num_closed_socks != 0.
+OK. We really never should see this error as we check for device
+mappings right before calling this, but I guess it doesn't hurt.
 
+> 
+> >> +
+> >> +		for (i = 0; i < nr_pages; i++, page++) {
+> >> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
+> >> +				mte_clear_page_tags(page_address(page));
+> > 
+> > You seem to be doing this irrespective of the VMA being created with
+> > PROT_MTE. This is fine form a guest perspective (all its memory should
+> > be MTE capable). However, I can't see any guarantee that the VMM will
+> > actually allocate memslots with PROT_MTE.
+> > 
+> > Aren't we missing some sanity checks at memslot registration time?
+> 
+> I've taken the decision not to require that the VMM allocates with
+> PROT_MTE, there are two main reasons for this:
+> 
+>  1. The VMM generally doesn't actually want a PROT_MTE mapping as the
+> tags from the guest are almost certainly wrong for most usages (e.g.
+> device emulation). So a PROT_MTE mapping actively gets in the way of the
+> VMM using MTE for it's own purposes. However this then leads to the
+> requirement for the new ioctl in patch 7.
+> 
+>  2. Because the VMM can change the pages in a memslot at any time and
+> KVM relies on mmu notifiers to spot the change it's hard and ugly to
+> enforce that the memslot VMAs keep having the PROT_MTE flag. When I
+> tried this it meant we've discover that a page doesn't have the MTE flag
+> at fault time and have no other option that to kill the VM at that time.
+> 
+> So the model is that non-PROT_MTE memory can be supplied to the memslots
+> and KVM will automatically upgrade it to PG_mte_tagged if you supply it
+> to a VM with MTE enabled. This makes the VMM implementation easier for
+> most cases, and the new ioctl helps for migration. I think the kernel
+> code is tidier too.
 
-> @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
->  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
->  					  lockdep_is_held(&reuseport_lock));
->  	if (reuse) {
-> +		if (reuse->num_closed_socks) {
+OK, I see your point. I guess we rely on the implicit requirement that
+all the available memory is MTE-capable, although I'm willing to bet
+that someone will eventually break this requirement.
 
-But, should this be
+> Of course even better would be a stage 2 flag to control MTE
+> availability on a page-by-page basis, but that doesn't exist in the
+> architecture at the moment.
 
-	if (sk->sk_state == TCP_CLOSE && reuse->num_closed_socks)
+Nah, that'd be way too good. Let's not do that.
 
-because we need not allocate a new group when we attach a bpf prog to
-listeners?
+> 
+> >> +		}
+> >> +	}
+> >> +
+> >> +	return 0;
+> >> +}
+> >> +
+> >>  static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> >>  			  struct kvm_memory_slot *memslot, unsigned long hva,
+> >>  			  unsigned long fault_status)
+> >> @@ -971,8 +996,13 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+> >>  	if (writable)
+> >>  		prot |= KVM_PGTABLE_PROT_W;
+> >>  
+> >> -	if (fault_status != FSC_PERM && !device)
+> >> +	if (fault_status != FSC_PERM && !device) {
+> >> +		ret = sanitise_mte_tags(kvm, vma_pagesize, pfn);
+> >> +		if (ret)
+> >> +			goto out_unlock;
+> >> +
+> >>  		clean_dcache_guest_page(pfn, vma_pagesize);
+> >> +	}
+> >>  
+> >>  	if (exec_fault) {
+> >>  		prot |= KVM_PGTABLE_PROT_X;
+> >> @@ -1168,12 +1198,17 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+> >>  bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+> >>  {
+> >>  	kvm_pfn_t pfn = pte_pfn(range->pte);
+> >> +	int ret;
+> >>  
+> >>  	if (!kvm->arch.mmu.pgt)
+> >>  		return 0;
+> >>  
+> >>  	WARN_ON(range->end - range->start != 1);
+> >>  
+> >> +	ret = sanitise_mte_tags(kvm, PAGE_SIZE, pfn);
+> >> +	if (ret)
+> >> +		return ret;
+> > 
+> > Notice the change in return type?
+> 
+> I do now - I was tricked by the use of '0' as false. Looks like false
+> ('0') is actually the correct return here to avoid an unnecessary
+> kvm_flush_remote_tlbs().
 
+Yup. BTW, the return values have been fixed to proper boolean types in
+the latest set of fixes.
 
-> +			/* sk was shutdown()ed before */
-> +			int err = reuseport_resurrect(sk, reuse, NULL, bind_inany);
-> +
-> +			spin_unlock_bh(&reuseport_lock);
-> +			return err;
-> +		}
-> +
->  		/* Only set reuse->bind_inany if the bind_inany is true.
->  		 * Otherwise, it will overwrite the reuse->bind_inany
->  		 * which was set by the bind/hash path.
+> 
+> >> +
+> >>  	/*
+> >>  	 * We've moved a page around, probably through CoW, so let's treat it
+> >>  	 * just like a translation fault and clean the cache to the PoC.
+> >> diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+> >> index 76ea2800c33e..24a844cb79ca 100644
+> >> --- a/arch/arm64/kvm/sys_regs.c
+> >> +++ b/arch/arm64/kvm/sys_regs.c
+> >> @@ -1047,6 +1047,9 @@ static u64 read_id_reg(const struct kvm_vcpu *vcpu,
+> >>  		break;
+> >>  	case SYS_ID_AA64PFR1_EL1:
+> >>  		val &= ~FEATURE(ID_AA64PFR1_MTE);
+> >> +		if (kvm_has_mte(vcpu->kvm))
+> >> +			val |= FIELD_PREP(FEATURE(ID_AA64PFR1_MTE),
+> >> +					  ID_AA64PFR1_MTE);
+> > 
+> > Shouldn't this be consistent with what the HW is capable of
+> > (i.e. FEAT_MTE3 if available), and extracted from the sanitised view
+> > of the feature set?
+> 
+> Yes - however at the moment our sanitised view is either FEAT_MTE2 or
+> nothing:
+> 
+> 	{
+> 		.desc = "Memory Tagging Extension",
+> 		.capability = ARM64_MTE,
+> 		.type = ARM64_CPUCAP_STRICT_BOOT_CPU_FEATURE,
+> 		.matches = has_cpuid_feature,
+> 		.sys_reg = SYS_ID_AA64PFR1_EL1,
+> 		.field_pos = ID_AA64PFR1_MTE_SHIFT,
+> 		.min_field_value = ID_AA64PFR1_MTE,
+> 		.sign = FTR_UNSIGNED,
+> 		.cpu_enable = cpu_enable_mte,
+> 	},
+> 
+> When host support for FEAT_MTE3 is added then the KVM code will need
+> revisiting to expose that down to the guest safely (AFAICS there's
+> nothing extra to do here, but I haven't tested any of the MTE3
+> features). I don't think we want to expose newer versions to the guest
+> than the host is aware of. (Or indeed expose FEAT_MTE if the host has
+> MTE disabled because Linux requires at least FEAT_MTE2).
+
+What I was suggesting is to have something like this:
+
+     pfr = read_sanitised_ftr_reg(SYS_ID_AA64PFR1_EL1);
+     mte = cpuid_feature_extract_unsigned_field(pfr, ID_AA64PFR1_MTE_SHIFT);
+     val |= FIELD_PREP(FEATURE(ID_AA64PFR1_MTE), mte);
+
+which does the trick nicely, and doesn't expose more than the host
+supports.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
