@@ -2,151 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFFF389B72
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:33:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36E74389B95
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:02:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230401AbhETCeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 22:34:44 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:24469 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230267AbhETCe1 (ORCPT
+        id S230006AbhETDD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:03:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42520 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhETDD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 22:34:27 -0400
-Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210520023224epoutp049e41550dbc5e51bbbfb456eb245b6396~ApZmKpaxJ1640616406epoutp04_
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 02:32:24 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210520023224epoutp049e41550dbc5e51bbbfb456eb245b6396~ApZmKpaxJ1640616406epoutp04_
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1621477944;
-        bh=mPrCx264EdPlM0pzGQBddDNCB0lIGqqu3VXdBgpl+8g=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=d5IgPioriMhgnV4l/m2rTMAF1YAimWHuUxpntVlJjyO2kYD3H/y2D8ehv1fceJPeH
-         dUBBVosmkWOZsDbj3FTDDBHSn0s3cA/6Ufch5Q0KzIX0+AR1kZpso3+4W9IfYTQJ8A
-         lU6XR4wQsz4Kh+4y0Wb9YrE2r5fAx4A4IQ1wu8ow=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210520023224epcas1p29a210571ca9a00e8e6d4ca9a2383bdbc~ApZlnoDtj2773027730epcas1p2T;
-        Thu, 20 May 2021 02:32:24 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.155]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4Flv0572LVz4x9Pw; Thu, 20 May
-        2021 02:32:21 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        D2.E4.09578.53AC5A06; Thu, 20 May 2021 11:32:21 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20210520023221epcas1p4ef055525be61fa87393e57e9401dde82~ApZjJuAVC1198411984epcas1p4X;
-        Thu, 20 May 2021 02:32:21 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210520023221epsmtrp238c983e09f259d0676d3b7e11dbdf160~ApZjI0E0h2076220762epsmtrp2a;
-        Thu, 20 May 2021 02:32:21 +0000 (GMT)
-X-AuditID: b6c32a35-fcfff7000000256a-77-60a5ca35e684
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        EE.B3.08163.53AC5A06; Thu, 20 May 2021 11:32:21 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210520023221epsmtip2c6266ad5a98c5c7a5f22879675d94377~ApZi3Es_J2345823458epsmtip2Y;
-        Thu, 20 May 2021 02:32:21 +0000 (GMT)
-Subject: Re: [PATCH v1 1/7] PM / devfreq: tegra30: Support thermal cooling
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Matt Merhar <mattmerhar@protonmail.com>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <65cdeb50-7ec1-4ed4-1eeb-342c4c915aa1@samsung.com>
-Date:   Thu, 20 May 2021 11:50:50 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 19 May 2021 23:03:58 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 747B1C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:02:37 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id f22so2943154pfn.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:02:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l7sRv5owrkchidf6i75q7ysNXdO5li1djMK8IkkLhxM=;
+        b=xify1oc/CJei7iJHIXxgMVklJY5mW8ywxu92nfb2xy50ya/4F8u4mDf3kOnJxjGCff
+         ihRQnjLq7fcxOab1VMv7229A/MdXg2LBamZCXC0vviNaYHLWS0p+/ylKarJUhSh0qmeN
+         QUq5P1jZwjGPDxfbbVDNrZlLhNTzQBuLGuiL22jv/puda/rJtvD6tpeRZUocQm+tq0Jg
+         jHbMlQeg88dTvh/H1XxSkwHIYrv45p6kSmhmQddHmibU7B9y8L17CRrsxru50C/YpRTK
+         4txAq6aZlPs4xa+PsfTQglnihkybgW3HDZvaBZpqLkhsVHgfbiMuNUwxJdbcfkGtNV7h
+         gPVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l7sRv5owrkchidf6i75q7ysNXdO5li1djMK8IkkLhxM=;
+        b=uUdfMa3hYlyEnttcWIlm4RVPAIL88Zc5j02jDnUYKRftCIF958ZMa30LROinFj6frD
+         Uq/3xupp5smeaJ/vTWbubCI8a1fO/wD4WG9cT27+quE3P4a4sBfCMv9QUbWQo4Fm5HXv
+         uMf+TR47Pcnu79x4lcto4pO9HvR8ehWGrSImndCZn3tRYaDhcLgmqYBqSTD5IpH0kWLf
+         nVdHAuGe0Tzp8VYyKZPO38VgHK+UtBXrhp4Jn7fHMgyhXgfvdjvSySvuSWGH3/qoRyKA
+         CD3tzg1W7aPj8DLTNrK+CARIwc9pf6usfjmBHIWfSld1iMwP/PrVXhnCN5Y87SRehhwK
+         qfSA==
+X-Gm-Message-State: AOAM533X8wiOHs1b52bwM5Eos2KvA9sJIxllp1Acieo9+YXosepVMYk+
+        VBwHaAQhE2f7qKmuppjJ2MFaKQ==
+X-Google-Smtp-Source: ABdhPJzzmIcMrIqVz5QBGc8xv1956TeOI/klyV1+Ji5lpIPTUYGqo/E3QMkVskXOdQGu2hM37TFBOQ==
+X-Received: by 2002:a63:4f4a:: with SMTP id p10mr2359694pgl.384.1621479756818;
+        Wed, 19 May 2021 20:02:36 -0700 (PDT)
+Received: from localhost.localdomain ([139.177.225.232])
+        by smtp.gmail.com with ESMTPSA id l18sm5124806pjq.33.2021.05.19.20.02.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 May 2021 20:02:36 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     akpm@linux-foundation.org, osalvador@suse.de,
+        mike.kravetz@oracle.com, mhocko@suse.com, david@redhat.com,
+        willy@infradead.org
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        duanxiongchun@bytedance.com, zhengqi.arch@bytedance.com,
+        fam.zheng@bytedance.com, Muchun Song <songmuchun@bytedance.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>
+Subject: [PATCH] mm: migrate: fix missing update page_private to hugetlb_page_subpool
+Date:   Thu, 20 May 2021 10:59:49 +0800
+Message-Id: <20210520025949.1866-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-In-Reply-To: <20210510211008.30300-2-digetx@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrCJsWRmVeSWpSXmKPExsWy7bCmga7pqaUJBs195hbzj5xjtVj98TGj
-        RcusRSwWZ5vesFtc3jWHzeJz7xFGi84vs9gs7rXsZbW43biCzeLsM2+L1r1H2C1+7prH4sDj
-        sXPWXXaPTas62Tx6m9+xefS0bWLy6NuyitHj8ya5ALaobJuM1MSU1CKF1Lzk/JTMvHRbJe/g
-        eOd4UzMDQ11DSwtzJYW8xNxUWyUXnwBdt8wcoBuVFMoSc0qBQgGJxcVK+nY2RfmlJakKGfnF
-        JbZKqQUpOQWWBXrFibnFpXnpesn5uVaGBgZGpkCFCdkZX298Zyy4xlFx+OtWxgbGaexdjJwc
-        EgImEt977rB1MXJxCAnsYJS4vH8BI0hCSOATo0T7unCIxGdGiebbDUwwHRs/9jNBJHYxShw5
-        +pwZwnnPKLFn5wlmkCphAS+JOYePs4AkRAQOMUnMn9AENJeDg1mgVGL3BhuQGjYBLYn9L26w
-        gdj8AooSV388BlvNK2An8eLjdbA5LAKqEnv2dYPViAqESZzc1gJVIyhxcuYTFhCbU8BMYsX3
-        L2DXMQuIS9x6Mh/KlpfY/nYOM8TVRzgkuv7bQtguEuv+3YaKC0u8Or4FGhZSEp/f7WWDsKsl
-        Vp48Ag4XCYEORokt+y+wQiSMJfYvncwE8YumxPpd+hBhRYmdv+cyQuzlk3j3tYcVpERCgFei
-        o00IokRZ4vKDu9BAlJRY3N7JNoFRaRaSb2Yh+WAWkg9mISxbwMiyilEstaA4Nz212LDAEDmy
-        NzGCk6+W6Q7GiW8/6B1iZOJgPMQowcGsJMK73XtxghBvSmJlVWpRfnxRaU5q8SFGU2D4TmSW
-        Ek3OB6b/vJJ4Q1MjY2NjCxNDM1NDQyVx3nTn6gQhgfTEktTs1NSC1CKYPiYOTqkGpj1pKxcX
-        Pste9ofRslTo6wYnwy1G4c2czjs2eomK1FR8KYhz/HH35y3F4gsivvVbWvreR51fxPLtqXtU
-        epuMQmm85bR5Ze1S97YHzPp4tNjUWpZ9SpKTe4fgmS11NollJ1b8e1orpNXdwLFMNnWD/+aZ
-        d2qZLQubynm3RU5r5Ej9ruXypGPavPM7AqO0skwTpbV+xj5sfcPId1wuIPX2TRVDm4Q1AaW2
-        ploHL1neeXVkqWp7R7tS4we3Cdochp8UHt16wVDfecshZ5Yk2/GkaRY/T/9mfMHp3WdX6zjl
-        lRBr1UvtDecfvrouyuXbpSEgfGKeT+7mP3F6Dk8mhsdzRBfyphnfMM71+/C24KkSS3FGoqEW
-        c1FxIgA7w7R9RwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrAIsWRmVeSWpSXmKPExsWy7bCSvK7pqaUJBt/PiljMP3KO1WL1x8eM
-        Fi2zFrFYnG16w25xedccNovPvUcYLTq/zGKzuNeyl9XiduMKNouzz7wtWvceYbf4uWseiwOP
-        x85Zd9k9Nq3qZPPobX7H5tHTtonJo2/LKkaPz5vkAtiiuGxSUnMyy1KL9O0SuDK+3vjOWHCN
-        o+Lw162MDYzT2LsYOTkkBEwkNn7sZ+pi5OIQEtjBKLHo2H0WiISkxLSLR5m7GDmAbGGJw4eL
-        IWreMkocfnwbrEZYwEtizuHjYLaIwBEmiW89fiA2s0CpxLON7YwQDVsZJa4v6GICSbAJaEns
-        f3GDDcTmF1CUuPrjMSOIzStgJ/Hi43VmEJtFQFViz75usBpRgTCJnUseM0HUCEqcnPkEbBmn
-        gJnEiu9fmCCWqUv8mXeJGcIWl7j1ZD5UXF5i+9s5zBMYhWchaZ+FpGUWkpZZSFoWMLKsYpRM
-        LSjOTc8tNiwwykst1ytOzC0uzUvXS87P3cQIjkQtrR2Me1Z90DvEyMTBeIhRgoNZSYR3u/fi
-        BCHelMTKqtSi/Pii0pzU4kOM0hwsSuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYpHuYrR/P
-        aijfeia3kCPl7cSTH9/P3y19flXoK5uX6hGNGdcdpl3lCnjkpdk5uUDiVZ56lmnZ/um/+6XS
-        r1qv7vOdxzNjh3sP+7G3TWFubg9vflPcuDI1PZPD6Nyx0KAJd3w1J4es454189rk8mjpNC8T
-        fp83b+69ehIle0OBY9qh9rkvxcVFHeuzs1PC5u9k2bdnztdVYrKe9sIcTJqXtL/PW+RmVN3A
-        +bV10eT9Uoda178oteS9w5krxJ4bfqij8dTexW1b/kbu3cLMZ/NB7FmJ+hPltE6TUM/0lPda
-        fJI5gZmzFeaYPX+f9YKzSiVb4ej+ld9Mw44xdyYGZL7129A5Y+Eil2fHNwq8CbVRYinOSDTU
-        Yi4qTgQAgQat8zMDAAA=
-X-CMS-MailID: 20210520023221epcas1p4ef055525be61fa87393e57e9401dde82
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210510211156epcas1p4d6b1e317b12d97433fa31b43ecce23da
-References: <20210510211008.30300-1-digetx@gmail.com>
-        <CGME20210510211156epcas1p4d6b1e317b12d97433fa31b43ecce23da@epcas1p4.samsung.com>
-        <20210510211008.30300-2-digetx@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 6:10 AM, Dmitry Osipenko wrote:
-> Expose ACTMON devfreq device as a cooling device in order to throttle
-> memory freq on overheat. Throttling of memory freq has a significant
-> cooling effect on NVIDIA Tegra SoCs since higher memory freqs require
-> higher SoC core voltage which is one of the main causes of the heating.
-> 
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/devfreq/tegra30-devfreq.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/devfreq/tegra30-devfreq.c b/drivers/devfreq/tegra30-devfreq.c
-> index ce83f883ca65..10661eb2aed8 100644
-> --- a/drivers/devfreq/tegra30-devfreq.c
-> +++ b/drivers/devfreq/tegra30-devfreq.c
-> @@ -688,6 +688,7 @@ static struct devfreq_dev_profile tegra_devfreq_profile = {
->  	.polling_ms	= ACTMON_SAMPLING_PERIOD,
->  	.target		= tegra_devfreq_target,
->  	.get_dev_status	= tegra_devfreq_get_dev_status,
-> +	.is_cooling_device = true,
->  };
->  
->  static int tegra_governor_get_target(struct devfreq *devfreq,
-> 
+Since commit d6995da31122 ("hugetlb: use page.private for hugetlb specific
+page flags") converts page.private for hugetlb specific page flags. We
+should use hugetlb_page_subpool() to get the subpool pointer instead of
+page_private(). The commit forgot to update it in the page migration
+routine. So fix it.
 
-Applied it. Thanks.
+Fixes: d6995da31122 ("hugetlb: use page.private for hugetlb specific page flags")
+Reported-by: Anshuman Khandual <anshuman.khandual@arm.com>
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/migrate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/mm/migrate.c b/mm/migrate.c
+index e7a173da74ec..43419c4bb097 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -1290,7 +1290,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+ 	 * page_mapping() set, hugetlbfs specific move page routine will not
+ 	 * be called and we could leak usage counts for subpools.
+ 	 */
+-	if (page_private(hpage) && !page_mapping(hpage)) {
++	if (hugetlb_page_subpool(hpage) && !page_mapping(hpage)) {
+ 		rc = -EBUSY;
+ 		goto out_unlock;
+ 	}
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.11.0
+
