@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26B938A7FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 163AA38A80B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237663AbhETKpU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:45:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60378 "EHLO mail.kernel.org"
+        id S237624AbhETKpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:45:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237040AbhETK33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:29:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF94E61C32;
-        Thu, 20 May 2021 09:51:18 +0000 (UTC)
+        id S236002AbhETK3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:29:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13DC7611C2;
+        Thu, 20 May 2021 09:51:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504279;
-        bh=UWOtLWdQXeQzFwHT9Vd1Ir8taV4/nvpEYENR+ttPtHY=;
+        s=korg; t=1621504303;
+        bh=X77CZ2mhBpvbf24kDthnI68hyzl0G4DvTeW/MrSqEqw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PgLEFy7VZxUGeK5zEmw3rDX172YT2li+2FadtLZTtTX0i08LfXxMUijwnlcyTBwA2
-         Uv0oy3o4LPJouMdfYdIWD50BER3IGVLSfeUBbVQyO+X5h9aWiKYG9C7yuXIE7sXMRz
-         +0i/uHieRO2X8FZBroUvCxBGDddYFxx7EGhN9aeQ=
+        b=AQdvjTbBH2+tRQ+7LvOrUO46D6YapsJYUPMRreyxmDvyj8O95ANHf5cl55k1p/bcA
+         ODUTOp4JjWe/kf04PYS5sKFvoPPFFA+6dFoXw/2401bWcN+cFSf1Ok8M61XLB2ndKv
+         muHaMg/7KovMuzLQ1qvsNJgWhD3toKd6YyrDPXsE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sibi Sankar <sibis@codeaurora.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 166/323] soc: qcom: mdt_loader: Validate that p_filesz < p_memsz
-Date:   Thu, 20 May 2021 11:20:58 +0200
-Message-Id: <20210520092125.791670717@linuxfoundation.org>
+Subject: [PATCH 4.14 167/323] soc: qcom: mdt_loader: Detect truncated read of segments
+Date:   Thu, 20 May 2021 11:20:59 +0200
+Message-Id: <20210520092125.830445780@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,41 +42,44 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-[ Upstream commit 84168d1b54e76a1bcb5192991adde5176abe02e3 ]
+[ Upstream commit 0648c55e3a21ccd816e99b6600d6199fbf39d23a ]
 
-The code validates that segments of p_memsz bytes of a segment will fit
-in the provided memory region, but does not validate that p_filesz bytes
-will, which means that an incorrectly crafted ELF header might write
-beyond the provided memory region.
+Given that no validation of how much data the firmware loader read in
+for a given segment truncated segment files would best case result in a
+hash verification failure, without any indication of what went wrong.
 
-Fixes: 051fb70fd4ea ("remoteproc: qcom: Driver for the self-authenticating Hexagon v5")
+Improve this by validating that the firmware loader did return the
+amount of data requested.
+
+Fixes: 445c2410a449 ("soc: qcom: mdt_loader: Use request_firmware_into_buf()")
 Reviewed-by: Sibi Sankar <sibis@codeaurora.org>
-Link: https://lore.kernel.org/r/20210107233119.717173-1-bjorn.andersson@linaro.org
+Link: https://lore.kernel.org/r/20210107232526.716989-1-bjorn.andersson@linaro.org
 Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/soc/qcom/mdt_loader.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/soc/qcom/mdt_loader.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
-index 08bd8549242a..17cba12cdf61 100644
+index 17cba12cdf61..9155b1c75cfb 100644
 --- a/drivers/soc/qcom/mdt_loader.c
 +++ b/drivers/soc/qcom/mdt_loader.c
-@@ -174,6 +174,14 @@ int qcom_mdt_load(struct device *dev, const struct firmware *fw,
- 			break;
+@@ -193,6 +193,15 @@ int qcom_mdt_load(struct device *dev, const struct firmware *fw,
+ 				break;
+ 			}
+ 
++			if (seg_fw->size != phdr->p_filesz) {
++				dev_err(dev,
++					"failed to load segment %d from truncated file %s\n",
++					i, fw_name);
++				release_firmware(seg_fw);
++				ret = -EINVAL;
++				break;
++			}
++
+ 			release_firmware(seg_fw);
  		}
  
-+		if (phdr->p_filesz > phdr->p_memsz) {
-+			dev_err(dev,
-+				"refusing to load segment %d with p_filesz > p_memsz\n",
-+				i);
-+			ret = -EINVAL;
-+			break;
-+		}
-+
- 		ptr = mem_region + offset;
- 
- 		if (phdr->p_filesz) {
 -- 
 2.30.2
 
