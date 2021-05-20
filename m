@@ -2,562 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CAB2389F23
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C8AD389F2E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:55:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhETHwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:52:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhETHwS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:52:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7EE0B611AE;
-        Thu, 20 May 2021 07:50:53 +0000 (UTC)
-Date:   Thu, 20 May 2021 09:50:50 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, Paul Moore <paul@paul-moore.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Steve Grubb <sgrubb@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Eric Paris <eparis@redhat.com>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Subject: Re: [PATCH v4 1/3] audit: replace magic audit syscall class numbers
- with macros
-Message-ID: <20210520075050.2u5rl3tjrn2i6bze@wittgenstein>
-References: <cover.1621363275.git.rgb@redhat.com>
- <2300b1083a32aade7ae7efb95826e8f3f260b1df.1621363275.git.rgb@redhat.com>
+        id S230459AbhETH5O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:57:14 -0400
+Received: from mail-eopbgr50112.outbound.protection.outlook.com ([40.107.5.112]:15173
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229534AbhETH5N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:57:13 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UGiZkoEl3kJ6VZNiS7epDHvR1shVHX0Fe6+q9ePv4GtuYDkJiG4DWAPD4hdAOIk6nwBFq8XFtS0oZbyBDNx9IAOFpRwWya5Alp5MmNHeIEDxHbPPuVdm0MiI3aSe4AIbfi8sPtEziI8IKR0bCgBd/rxhd5uQ5dqq+KQvizTcz5KOLtBm9UMkpG7ojAxMpD8iCHeJHlx43mvk4vq+f0ea0s95TD+P7fUJqYh8Mp7d4681sU+xJ1amZ93rGuPTZ3Gz4aKJbCxLQQJMnUk+pBONkcv0PUL+5H05n9zJYzbSm4Lv+vjRViOFngd07hWdVmGeAOr+Y8QtXB3HKv/Mw4o22g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DP0yXe2WvbwJxdJ8p5RsUThT7TojzmJ0WwvHy6Zs+PA=;
+ b=ixTorlOKS36M06VzN87qZn2IK7g1GIEwrRD6RZE8XcQA5XlIxwsKJ+uuxuAe1xEXu6R8EHe5H/x+V7FdELUWD2YC/4m5eguSTmNe4Q+EjHpzC6Asm86jEwQivMjuXsTNF14Bja7MjNzbfw1Hnyv7WI+alETonSGloAtnnbgdjOyRM6reEMXjrZemmG+/X1jjQOQJ2uGXeFwhBizinQ+uLeZ+cQjYAnnlnJGbIYf9owFdYn73sGjDp85iij/gLYdJ9Af1tztpEgLJcPR8Ik/GVxHG/QRcOwWKbd/NYGSgeE8wg78G2Pvp0iGVpEO1/GZVWnYEq3oOumspHGv/kjdQ6A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=DP0yXe2WvbwJxdJ8p5RsUThT7TojzmJ0WwvHy6Zs+PA=;
+ b=zMMMTJIIQTppGIdx1DTGPpGSClvqJxIe5XSyLnEFRX5PpV9nJJ1PFItHQZlbUZSG73zrqJJIHxS4G5okUYg7aQp5YMH1+9u4W9vc5TdEO4iG3jJoneR9QofEerA4qHUCPzdq8PxVcbN7FDcH8oq4Anukz1XJpp6zgrk5f/HbC5o=
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
+ HE1PR0701MB2458.eurprd07.prod.outlook.com (2603:10a6:3:71::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4173.11; Thu, 20 May 2021 07:55:49 +0000
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::85ed:ce03:c8de:9abf]) by HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::85ed:ce03:c8de:9abf%7]) with mapi id 15.20.4150.017; Thu, 20 May 2021
+ 07:55:49 +0000
+From:   "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "sashal@kernel.org" <sashal@kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Subject: Re: [PATCH 5.4 020/141] ip6_vti: proper dev_{hold|put} in
+ ndo_[un]init methods
+Thread-Topic: [PATCH 5.4 020/141] ip6_vti: proper dev_{hold|put} in
+ ndo_[un]init methods
+Thread-Index: AQHXSyvID4QdV5zjzU+tpRlKYqDNHKrr6OkAgAADIoCAABi0AA==
+Date:   Thu, 20 May 2021 07:55:49 +0000
+Message-ID: <c776ad9a2695c14a65e63796fcfd11e877b9d92c.camel@nokia.com>
+References: <20210517140242.729269392@linuxfoundation.org>
+         <20210517140243.443931506@linuxfoundation.org>
+         <5520be7988fb894c0f4a7c9d7031410c51fcec1c.camel@nokia.com>
+         <YKYBS0W1vh1949rK@kroah.com>
+In-Reply-To: <YKYBS0W1vh1949rK@kroah.com>
+Accept-Language: en-US, en-150, fi-FI
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nokia.com;
+x-originating-ip: [131.228.2.3]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7186e93a-a293-4276-8aaa-08d91b64aed7
+x-ms-traffictypediagnostic: HE1PR0701MB2458:
+x-microsoft-antispam-prvs: <HE1PR0701MB24585FBBF862740374BB7722B42A9@HE1PR0701MB2458.eurprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1148;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: mZcn9czv+eKIbjxQuUWhx2xRHXi92wthJNOWtFY1NbyLjBXGXKxBE9qyqteaeBe6vdbemQGqucZ9QykGEg+XlxyQbrz7FAEzm+AzlEzrLl8NkcqiJIwsRUWn5/S+vcBLMtENFZkQD5JeFPj0klwVbJ0cbqZ0e1jzzNC/BSZD5TC6RTaSRSgJYmP76lGqhJzmskVpTYzfpEooHhnfEH1zA2jIOW6vnuzgw+3rfAUE38RjtOWLOG781RSjcMTFXmZsWPQvrcrxjpMV1K+kuOeRqZZDFR2XCDImcUyWraBaphShQqRE2IusTkb15gbw/7mezCup+FPjmYa8uAUD4UDqhnrfZ5+feXfRrG59ekZ+T1mxhpPgkMk4lYAx+1R5L+OpBJVcjCcT0tayfmVvxdhf3NNABkc0ddxuezBOKwcu9gDr57JhRQ0NgW75jd4DRo2FWmSzhuYT5JgUTwsZuNio5L4csOfspBEHZXGulHkdjXcAwFSj7u6xL8nhG/fNQm0Zqp0UvbJtTfZHxVtvEVtz0moCnhPOCa2lPsXs9fSUsOThzqSIIPSEaQUf1ABOpddM1q7v5IJhXLoI2er8RjKLtsaJisHFojq/rpjlNoJpsQY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(346002)(376002)(396003)(366004)(6512007)(316002)(6486002)(186003)(478600001)(8936002)(8676002)(6506007)(54906003)(36756003)(26005)(71200400001)(2616005)(66946007)(66446008)(122000001)(38100700002)(66556008)(66476007)(76116006)(64756008)(6916009)(2906002)(4744005)(5660300002)(86362001)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?M0luTWo1Umk0dGR2QStramFPU2t0TDZqWDVaVUYvMWtLWjgzanBreGVSSzQv?=
+ =?utf-8?B?cENuZm5XMC9wYnAvRHJucGFUVUMyVkZQdGtSOTZXOXd4YjZNWFpMcEt2WHNs?=
+ =?utf-8?B?ZDJFZWxTNlFpUlhrbmg3Q0I0em9DYkxoSTlxNG43Y3lJK1VMeVhySnhYc1F1?=
+ =?utf-8?B?SmZ4TEtnT1NRNXBXUm02dGRTbzRqV212ZVdxS081TmNxaUtMMXpEU21tcmli?=
+ =?utf-8?B?R0prQWhlUW5teUVQN0NJdWhLcG12bUtnYnQwNjlJckJVZEtiYWg0ZU5Hcnc2?=
+ =?utf-8?B?L0FiYXZhYkczK0xwUGFSSGVsUEpISWlMYVRnSmZSRUxPYnBNUGFnUXpGTWw3?=
+ =?utf-8?B?anlRT1h3cFJjSWZxUWQxT1oxL1EwR0FUcUxKL1NlL2V4UUVqTG05TWRYU3p5?=
+ =?utf-8?B?ZUtjcWJTeGtuQXVaS3pJVmhIRUo4a2Eybngzb3BPdyt6Y0pUcHFicytLRVNJ?=
+ =?utf-8?B?bW85NmQ2RTdQREdEY3pVZFZvQmJiNC9oNUNoNlFsTWU1ckl5MzF3M3FDMnVl?=
+ =?utf-8?B?VGZ0NW9zYW5WU3FVVHcvTjJZek81ay9vejBkQ29Kc1BNYVNFYXIySjhVOCtL?=
+ =?utf-8?B?TFFZSy9YUEYxL2pZWGN5cUVGVTYyQzlQTkdjRkZCL2d5eGxYRS9EM1NKMXd4?=
+ =?utf-8?B?V21HcThIRnR2MU9lUmpzTEhBN0N5QU5QTmY4YUdGWnVMNnRLUldLTXF0akxo?=
+ =?utf-8?B?a2hrTzI0NldUTldFQkFQRzZxQlhLTEhkYUZ3VTduNHJldGhQckEvUkh5S3Iy?=
+ =?utf-8?B?R1ZFTmVuL0hIQVhwS1RTTWV5enZaaWJFeUtCYkdOekNIcHJ6OCtPaUNwU0U2?=
+ =?utf-8?B?VEdsdjdhUFI3Y1NWMkpiSUNTTFpaQ09IWWx1eXBvTWVOQ0t1TmlKZ2hZN25n?=
+ =?utf-8?B?VDQ3U1dvSG9YN0RXdjdMejYreURLbHVEZk9VSzExOTBaSTdXbnlXdzJpdm54?=
+ =?utf-8?B?YlpYYUE4K1Y2SklsUkRRdFVZL2NBak01a05uSHltTWpmdC9BUVF5RSs5K252?=
+ =?utf-8?B?VzhMNFVjQVRRaFB5RW1oWThMSkZNUzB2a0tnZU1TZUU1MFFNREpubHRrM0Yy?=
+ =?utf-8?B?ZjNUMitQOGl2ZXZaMjdDWW9QSkEzOWNrN3dFenlRNzA2TnJqMElOdVQ2SlZX?=
+ =?utf-8?B?TEJNRUw2c0VqemZ3KzZYOFR0Q0N6SDVlcjFobFRWend4WDBXVmNlMmpJcjdQ?=
+ =?utf-8?B?ZmFzQkFock96Ty95TWdQdnQwejd6ZThtSDNUSEhleXZsOURPb2phN1VVdFB6?=
+ =?utf-8?B?Nkl0Q2VmOEg1c2twSU9IMHh3NHRNNE9EK1l6ZmZlTmFUb1NMek84MVd4ZElL?=
+ =?utf-8?B?dzJqT3VCTnpEMUU5WVlzUmNXOStzYjFwV29XNkNhL2UwLzlla096Rm05SXlB?=
+ =?utf-8?B?VFpGVTkrVkhQV3gxYklJRTZzellqdHM2c1pTR1J3ZGE4WkZ4MTdwQ2d3VE1E?=
+ =?utf-8?B?SVZHbzdoam4yUGFjcmdMdkxaMHBObi9NdVRYSUFtL211YjVZZmZLVjExVW9P?=
+ =?utf-8?B?SEJjcGNwMGU4QkpRcWJuRnpTeHlobERzZkdGMDhvamdrcUQxMlljejJCYTBk?=
+ =?utf-8?B?eG9uR1pTTnlSRXIySVQvQjFhK2lhd01tcHBCbG1kak5qODNLMFNGR3hnQWxj?=
+ =?utf-8?B?aWNIV2VZbmx6YnZyMVNlZEtTSkZhTHM2OG5aSzhHMXZNTlIvcmtySk1oYUty?=
+ =?utf-8?B?bTBUM053aHNkeEZUVFhlQlYrMW9sdW4wWHlmOFNvZ2dLbFBPMEJVUTRYczBk?=
+ =?utf-8?Q?CH2behfKo9XwKNvt/H1d202Rem3VlLlWPbqrMj4?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <EA8A38AF6D966F43B2750F545B59E98A@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <2300b1083a32aade7ae7efb95826e8f3f260b1df.1621363275.git.rgb@redhat.com>
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7186e93a-a293-4276-8aaa-08d91b64aed7
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2021 07:55:49.2657
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: bXDKB865KTGslaiJCny7oXkpIU7yzT7aoWlssDFpVEsQLzUc9Mho4+jYRtaZ2jIBk83VEB3PtGMOUzHtp7EfFR8VWzSzVlZDycycez1SmPU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0701MB2458
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 04:00:20PM -0400, Richard Guy Briggs wrote:
-> Replace audit syscall class magic numbers with macros.
-> 
-> This required putting the macros into new header file
-> include/linux/auditsc_classmacros.h since the syscall macros were
-> included for both 64 bit and 32 bit in any compat code, causing
-> redefinition warnings.
-> 
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> Link: https://lore.kernel.org/r/2300b1083a32aade7ae7efb95826e8f3f260b1df.1621363275.git.rgb@redhat.com
-
-Looks good.
-Acked-by: Christian Brauner <christian.brauner@ubuntu.com>
-
-Fwiw, I would explicitly number all enum values in auditsc_class_t not
-just the first one.
-
-> ---
->  MAINTAINERS                         |  1 +
->  arch/alpha/kernel/audit.c           |  8 ++++----
->  arch/ia64/kernel/audit.c            |  8 ++++----
->  arch/parisc/kernel/audit.c          |  8 ++++----
->  arch/parisc/kernel/compat_audit.c   |  9 +++++----
->  arch/powerpc/kernel/audit.c         | 10 +++++-----
->  arch/powerpc/kernel/compat_audit.c  | 11 ++++++-----
->  arch/s390/kernel/audit.c            | 10 +++++-----
->  arch/s390/kernel/compat_audit.c     | 11 ++++++-----
->  arch/sparc/kernel/audit.c           | 10 +++++-----
->  arch/sparc/kernel/compat_audit.c    | 11 ++++++-----
->  arch/x86/ia32/audit.c               | 11 ++++++-----
->  arch/x86/kernel/audit_64.c          |  8 ++++----
->  include/linux/audit.h               |  1 +
->  include/linux/auditsc_classmacros.h | 23 +++++++++++++++++++++++
->  kernel/auditsc.c                    | 12 ++++++------
->  lib/audit.c                         | 10 +++++-----
->  lib/compat_audit.c                  | 11 ++++++-----
->  18 files changed, 102 insertions(+), 71 deletions(-)
->  create mode 100644 include/linux/auditsc_classmacros.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index bd7aff0c120f..3348d12019f9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -3036,6 +3036,7 @@ W:	https://github.com/linux-audit
->  T:	git git://git.kernel.org/pub/scm/linux/kernel/git/pcmoore/audit.git
->  F:	include/asm-generic/audit_*.h
->  F:	include/linux/audit.h
-> +F:	include/linux/auditsc_classmacros.h
->  F:	include/uapi/linux/audit.h
->  F:	kernel/audit*
->  F:	lib/*audit.c
-> diff --git a/arch/alpha/kernel/audit.c b/arch/alpha/kernel/audit.c
-> index 96a9d18ff4c4..81cbd804e375 100644
-> --- a/arch/alpha/kernel/audit.c
-> +++ b/arch/alpha/kernel/audit.c
-> @@ -37,13 +37,13 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  {
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/arch/ia64/kernel/audit.c b/arch/ia64/kernel/audit.c
-> index 5192ca899fe6..dba6a74c9ab3 100644
-> --- a/arch/ia64/kernel/audit.c
-> +++ b/arch/ia64/kernel/audit.c
-> @@ -38,13 +38,13 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  {
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/arch/parisc/kernel/audit.c b/arch/parisc/kernel/audit.c
-> index 9eb47b2225d2..14244e83db75 100644
-> --- a/arch/parisc/kernel/audit.c
-> +++ b/arch/parisc/kernel/audit.c
-> @@ -47,13 +47,13 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  #endif
->  	switch (syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/arch/parisc/kernel/compat_audit.c b/arch/parisc/kernel/compat_audit.c
-> index 20c39c9d86a9..1d6347d37d92 100644
-> --- a/arch/parisc/kernel/compat_audit.c
-> +++ b/arch/parisc/kernel/compat_audit.c
-> @@ -1,4 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +#include <linux/auditsc_classmacros.h>
->  #include <asm/unistd.h>
->  
->  unsigned int parisc32_dir_class[] = {
-> @@ -30,12 +31,12 @@ int parisc32_classify_syscall(unsigned syscall)
->  {
->  	switch (syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 1;
-> +		return AUDITSC_COMPAT;
->  	}
->  }
-> diff --git a/arch/powerpc/kernel/audit.c b/arch/powerpc/kernel/audit.c
-> index a2dddd7f3d09..6eb18ef77dff 100644
-> --- a/arch/powerpc/kernel/audit.c
-> +++ b/arch/powerpc/kernel/audit.c
-> @@ -47,15 +47,15 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  #endif
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/arch/powerpc/kernel/compat_audit.c b/arch/powerpc/kernel/compat_audit.c
-> index 55c6ccda0a85..b1dc2d1c4bad 100644
-> --- a/arch/powerpc/kernel/compat_audit.c
-> +++ b/arch/powerpc/kernel/compat_audit.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #undef __powerpc64__
-> +#include <linux/auditsc_classmacros.h>
->  #include <asm/unistd.h>
->  
->  unsigned ppc32_dir_class[] = {
-> @@ -31,14 +32,14 @@ int ppc32_classify_syscall(unsigned syscall)
->  {
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 1;
-> +		return AUDITSC_COMPAT;
->  	}
->  }
-> diff --git a/arch/s390/kernel/audit.c b/arch/s390/kernel/audit.c
-> index d395c6c9944c..7e331e1831d4 100644
-> --- a/arch/s390/kernel/audit.c
-> +++ b/arch/s390/kernel/audit.c
-> @@ -47,15 +47,15 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  #endif
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/arch/s390/kernel/compat_audit.c b/arch/s390/kernel/compat_audit.c
-> index 444fb1f66944..fc3d1c7ad21c 100644
-> --- a/arch/s390/kernel/compat_audit.c
-> +++ b/arch/s390/kernel/compat_audit.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #undef __s390x__
-> +#include <linux/auditsc_classmacros.h>
->  #include <asm/unistd.h>
->  #include "audit.h"
->  
-> @@ -32,14 +33,14 @@ int s390_classify_syscall(unsigned syscall)
->  {
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 1;
-> +		return AUDITSC_COMPAT;
->  	}
->  }
-> diff --git a/arch/sparc/kernel/audit.c b/arch/sparc/kernel/audit.c
-> index a6e91bf34d48..50fab35bdaba 100644
-> --- a/arch/sparc/kernel/audit.c
-> +++ b/arch/sparc/kernel/audit.c
-> @@ -48,15 +48,15 @@ int audit_classify_syscall(int abi, unsigned int syscall)
->  #endif
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/arch/sparc/kernel/compat_audit.c b/arch/sparc/kernel/compat_audit.c
-> index 10eeb4f15b20..1c1b6d075421 100644
-> --- a/arch/sparc/kernel/compat_audit.c
-> +++ b/arch/sparc/kernel/compat_audit.c
-> @@ -1,5 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #define __32bit_syscall_numbers__
-> +#include <linux/auditsc_classmacros.h>
->  #include <asm/unistd.h>
->  #include "kernel.h"
->  
-> @@ -32,14 +33,14 @@ int sparc32_classify_syscall(unsigned int syscall)
->  {
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 1;
-> +		return AUDITSC_COMPAT;
->  	}
->  }
-> diff --git a/arch/x86/ia32/audit.c b/arch/x86/ia32/audit.c
-> index 6efe6cb3768a..eedc37a1ee13 100644
-> --- a/arch/x86/ia32/audit.c
-> +++ b/arch/x86/ia32/audit.c
-> @@ -1,4 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> +#include <linux/auditsc_classmacros.h>
->  #include <asm/unistd_32.h>
->  #include <asm/audit.h>
->  
-> @@ -31,15 +32,15 @@ int ia32_classify_syscall(unsigned syscall)
->  {
->  	switch (syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  	case __NR_execve:
->  	case __NR_execveat:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 1;
-> +		return AUDITSC_COMPAT;
->  	}
->  }
-> diff --git a/arch/x86/kernel/audit_64.c b/arch/x86/kernel/audit_64.c
-> index 83d9cad4e68b..2a6cc9c9c881 100644
-> --- a/arch/x86/kernel/audit_64.c
-> +++ b/arch/x86/kernel/audit_64.c
-> @@ -47,14 +47,14 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  #endif
->  	switch(syscall) {
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  	case __NR_execve:
->  	case __NR_execveat:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/include/linux/audit.h b/include/linux/audit.h
-> index 82b7c1116a85..283bc91a6932 100644
-> --- a/include/linux/audit.h
-> +++ b/include/linux/audit.h
-> @@ -11,6 +11,7 @@
->  
->  #include <linux/sched.h>
->  #include <linux/ptrace.h>
-> +#include <linux/auditsc_classmacros.h> /* syscall class macros */
->  #include <uapi/linux/audit.h>
->  #include <uapi/linux/netfilter/nf_tables.h>
->  
-> diff --git a/include/linux/auditsc_classmacros.h b/include/linux/auditsc_classmacros.h
-> new file mode 100644
-> index 000000000000..18757d270961
-> --- /dev/null
-> +++ b/include/linux/auditsc_classmacros.h
-> @@ -0,0 +1,23 @@
-> +/* SPDX-License-Identifier: GPL-2.0-or-later */
-> +/* auditsc_classmacros.h -- Auditing support syscall macros
-> + *
-> + * Copyright 2021 Red Hat Inc., Durham, North Carolina.
-> + * All Rights Reserved.
-> + *
-> + * Author: Richard Guy Briggs <rgb@redhat.com>
-> + */
-> +#ifndef _LINUX_AUDITSCM_H_
-> +#define _LINUX_AUDITSCM_H_
-> +
-> +enum auditsc_class_t {
-> +	AUDITSC_NATIVE = 0,
-> +	AUDITSC_COMPAT,
-> +	AUDITSC_OPEN,
-> +	AUDITSC_OPENAT,
-> +	AUDITSC_SOCKETCALL,
-> +	AUDITSC_EXECVE,
-> +
-> +	AUDITSC_NVALS /* count */
-> +};
-> +
-> +#endif
-> diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> index 0a9a1569f1ea..d775ea16505b 100644
-> --- a/kernel/auditsc.c
-> +++ b/kernel/auditsc.c
-> @@ -166,7 +166,7 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
->  	n = ctx->major;
->  
->  	switch (audit_classify_syscall(ctx->arch, n)) {
-> -	case 0:	/* native */
-> +	case AUDITSC_NATIVE:
->  		if ((mask & AUDIT_PERM_WRITE) &&
->  		     audit_match_class(AUDIT_CLASS_WRITE, n))
->  			return 1;
-> @@ -177,7 +177,7 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
->  		     audit_match_class(AUDIT_CLASS_CHATTR, n))
->  			return 1;
->  		return 0;
-> -	case 1: /* 32bit on biarch */
-> +	case AUDITSC_COMPAT: /* 32bit on biarch */
->  		if ((mask & AUDIT_PERM_WRITE) &&
->  		     audit_match_class(AUDIT_CLASS_WRITE_32, n))
->  			return 1;
-> @@ -188,13 +188,13 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
->  		     audit_match_class(AUDIT_CLASS_CHATTR_32, n))
->  			return 1;
->  		return 0;
-> -	case 2: /* open */
-> +	case AUDITSC_OPEN:
->  		return mask & ACC_MODE(ctx->argv[1]);
-> -	case 3: /* openat */
-> +	case AUDITSC_OPENAT:
->  		return mask & ACC_MODE(ctx->argv[2]);
-> -	case 4: /* socketcall */
-> +	case AUDITSC_SOCKETCALL:
->  		return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
-> -	case 5: /* execve */
-> +	case AUDITSC_EXECVE:
->  		return mask & AUDIT_PERM_EXEC;
->  	default:
->  		return 0;
-> diff --git a/lib/audit.c b/lib/audit.c
-> index 5004bff928a7..3ec1a94d8d64 100644
-> --- a/lib/audit.c
-> +++ b/lib/audit.c
-> @@ -45,23 +45,23 @@ int audit_classify_syscall(int abi, unsigned syscall)
->  	switch(syscall) {
->  #ifdef __NR_open
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  #endif
->  #ifdef __NR_openat
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  #endif
->  #ifdef __NR_socketcall
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  #endif
->  #ifdef __NR_execveat
->  	case __NR_execveat:
->  #endif
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 0;
-> +		return AUDITSC_NATIVE;
->  	}
->  }
->  
-> diff --git a/lib/compat_audit.c b/lib/compat_audit.c
-> index 77eabad69b4a..a38b282d353f 100644
-> --- a/lib/compat_audit.c
-> +++ b/lib/compat_audit.c
-> @@ -1,6 +1,7 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/init.h>
->  #include <linux/types.h>
-> +#include <linux/auditsc_classmacros.h>
->  #include <asm/unistd32.h>
->  
->  unsigned compat_dir_class[] = {
-> @@ -33,19 +34,19 @@ int audit_classify_compat_syscall(int abi, unsigned syscall)
->  	switch (syscall) {
->  #ifdef __NR_open
->  	case __NR_open:
-> -		return 2;
-> +		return AUDITSC_OPEN;
->  #endif
->  #ifdef __NR_openat
->  	case __NR_openat:
-> -		return 3;
-> +		return AUDITSC_OPENAT;
->  #endif
->  #ifdef __NR_socketcall
->  	case __NR_socketcall:
-> -		return 4;
-> +		return AUDITSC_SOCKETCALL;
->  #endif
->  	case __NR_execve:
-> -		return 5;
-> +		return AUDITSC_EXECVE;
->  	default:
-> -		return 1;
-> +		return AUDITSC_COMPAT;
->  	}
->  }
-> -- 
-> 2.27.0
-> 
+PiBJIGRvIG5vdCB1bmRlcnN0YW5kLCB3aGF0IG5lZWRzIHRvIGJlIGRvbmUgaGVyZT8NCg0KU29y
+cnksIGVtYWlsIGZvcm1hdHRpbmcgZ290IHNvbWVob3cgbWVzc2VkIHVwLg0KDQpQbGVhc2UgY2hl
+cnJ5LXBpY2sgdGhpcyB0byA1LjQueToNCg0KICBjb21taXQgMGQ3YTdiMjAxNGIxYTQ5OWEwZmUy
+NGM5ZjMwNjNkNzg1NmI1YWFhZg0KICBBdXRob3I6IEVyaWMgRHVtYXpldCA8ZWR1bWF6ZXRAZ29v
+Z2xlLmNvbT4NCiAgRGF0ZTogICBXZWQgTWFyIDMxIDE0OjM4OjExIDIwMjEgLTA3MDANCg0KICAg
+IGlwdjY6IHJlbW92ZSBleHRyYSBkZXZfaG9sZCgpIGZvciBmYWxsYmFjayB0dW5uZWxzDQogICAg
+DQoNCkFuZCB0aGVzZToNCg0KICAgIEZpeGVzOiA0OGJiNTY5NzI2OWEgKCJpcDZfdHVubmVsOiBz
+aXQ6IHByb3BlciBkZXZfe2hvbGR8cHV0fSBpbg0KbmRvX1t1bl1pbml0IG1ldGhvZHMiKQ0KICAg
+IEZpeGVzOiA2Mjg5YTk4ZjA4MTcgKCJzaXQ6IHByb3BlciBkZXZfe2hvbGR8cHV0fSBpbiBuZG9f
+W3VuXWluaXQNCm1ldGhvZHMiKQ0KICAgIEZpeGVzOiA3ZjcwMDMzNGJlOWEgKCJpcDZfZ3JlOiBw
+cm9wZXIgZGV2X3tob2xkfHB1dH0gaW4gbmRvX1t1bl1pbml0DQptZXRob2RzIikNCg0KDQotVG9t
+bWkNCg0KDQo=
