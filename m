@@ -2,190 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69729389B87
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A720F389B71
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:33:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230156AbhETCua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 22:50:30 -0400
-Received: from mail-mw2nam10on2086.outbound.protection.outlook.com ([40.107.94.86]:56800
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229478AbhETCu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 22:50:28 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A0qwnGhqdm3o3j86ISwQnNzKdbYiHVfNtEvRly0epd7dMCENDC07HAazqQfUG1YKxseglE6+/1y0iohOx0XCUaIBLvpZBDgqDwI8TE4Aoo+Hy+G+LV7ww/yrIDWCAyaAri0eFUjzjRGICOKXCQ2LOPD8OPaIOi+FwTa71Jae2QkldbK3/cLGTsnM2i4+YCpnqIlDZl7eTGlH0tos7UgxggGbwyK8VVbKP5Hk8TLZgiZL3d3OwLOEKnGGUEYqgNLeB8SMHkPilNdaDyon7Lmh3z8y30szWACwS3fJDOIeAUBoMGAdLq5FyIn/8OmRztvLJl0nBIK0tWkEaHkcUVGCfw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kaOTeSh2mo22YDBIwWpmN0P0Aq1bhFkK6qdiwpG1KOQ=;
- b=cxaPU5jF1tlRyBONmbajN/TY0ryJmjAKdnWfTGe5K+hv8IW1ZBNRBb76Y7xgbMacpdURZMDrC4s1/tQ7H3TkTyKICfgpFyKg7KDtsyqI6l4G7ky5wpz3Ugkbh7dpFLbB1X3GlSvlWXahLUEW+59Zr551eG7tjduwTJhLxt+NjDes2mhLgW0L9CH+OKH33tMn7le2wViUPgiyGHma44ghIYMxi8kLPHrzypP1d+uVhfH0Wx697R9cmHzSEQrAxy6OeA1KKVJsOkG3jHTq35IER+lRYuENKtIDB/HoCbeTpYcNisuNOFqHqcCgZ8W5Jzn/joutwA8a7XeZ1bq5h9PR9g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kaOTeSh2mo22YDBIwWpmN0P0Aq1bhFkK6qdiwpG1KOQ=;
- b=Y+/NX+3g3MyX2buh7oqe8d8xaNlMu9XRb2GoRDXGBXj5ythojNjHXfS7Mj/xxzS8xkwUcKIbmsDH4ChrTunWZ7lXGdf+WMrWd0RzXL1z3vcd9qmf/oxZHvQHPFt2QpiOePU25YxiGsWGr3BVMlqttSIQe4ldCro4I9u1f0AUGP4=
-Received: from BN6PR2001CA0012.namprd20.prod.outlook.com
- (2603:10b6:404:b4::22) by BN0PR02MB8062.namprd02.prod.outlook.com
- (2603:10b6:408:16f::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 20 May
- 2021 02:49:05 +0000
-Received: from BN1NAM02FT035.eop-nam02.prod.protection.outlook.com
- (2603:10b6:404:b4:cafe::c9) by BN6PR2001CA0012.outlook.office365.com
- (2603:10b6:404:b4::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.25 via Frontend
- Transport; Thu, 20 May 2021 02:49:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT035.mail.protection.outlook.com (10.13.2.81) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4129.27 via Frontend Transport; Thu, 20 May 2021 02:49:05 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 19 May 2021 19:49:03 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Wed, 19 May 2021 19:49:03 -0700
-Envelope-to: robh@kernel.org,
- mdf@kernel.org,
- devicetree@vger.kernel.org,
- linux-fpga@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- trix@redhat.com
-Received: from [10.17.2.60] (port=56836)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <lizhi.hou@xilinx.com>)
-        id 1ljYkB-00012u-Ak; Wed, 19 May 2021 19:49:03 -0700
-Subject: Re: [PATCH V6 XRT Alveo 16/20] fpga: xrt: clock driver
-To:     Tom Rix <trix@redhat.com>, Lizhi Hou <lizhi.hou@xilinx.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <linux-fpga@vger.kernel.org>, <maxz@xilinx.com>,
-        <sonal.santan@xilinx.com>, <yliu@xilinx.com>,
-        <michal.simek@xilinx.com>, <stefanos@xilinx.com>,
-        <devicetree@vger.kernel.org>, <mdf@kernel.org>, <robh@kernel.org>,
-        Max Zhen <max.zhen@xilinx.com>
-References: <20210512015339.5649-1-lizhi.hou@xilinx.com>
- <20210512015339.5649-17-lizhi.hou@xilinx.com>
- <f4a18fa4-f023-d4e5-0622-e15108de90b9@redhat.com>
-From:   Lizhi Hou <lizhi.hou@xilinx.com>
-Message-ID: <d58eeee5-e47d-4e2b-9b49-15f798c305ed@xilinx.com>
-Date:   Wed, 19 May 2021 19:49:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S230327AbhETCej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 22:34:39 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:19578 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230251AbhETCe1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 22:34:27 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210520023121epoutp02b5805aa93cb3abba84f68eff6fb92aac~ApYq8_Akk1920219202epoutp02p
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 02:31:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210520023121epoutp02b5805aa93cb3abba84f68eff6fb92aac~ApYq8_Akk1920219202epoutp02p
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1621477881;
+        bh=MWWWd3rHx9oezvHvsD2UL1Okt3P32180D99blxhLM74=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=lQJeoGZdyH/ObTzsEk8x1udZwGCuQfpH4+DkEevgYybzMGZhvMYmskyAVBwQ37uxl
+         4/PNaCEJw0uHtGtifXjUSwIgCiNFjecppS9vXsJ86Ep3dEF/XReYhNG8n+oSCHEJ0U
+         ikYa4IhZFblcPIWiQ/wuBKMHWeHy+ic1TX3r+CCQ=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210520023116epcas1p3588f100133f3aed9bdebd6462dc87b60~ApYm1uryI2253322533epcas1p3b;
+        Thu, 20 May 2021 02:31:16 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.156]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4Fltyn4S25z4x9QH; Thu, 20 May
+        2021 02:31:13 +0000 (GMT)
+Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6D.D6.09824.0F9C5A06; Thu, 20 May 2021 11:31:12 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
+        20210520023100epcas1p4528846a7b21d98f1b107e103662d5eb7~ApYXj1VgD2925329253epcas1p4H;
+        Thu, 20 May 2021 02:31:00 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210520023100epsmtrp1ccff1ba6b7f934758eac6d190eff46cc~ApYXi9ktu0437504375epsmtrp1O;
+        Thu, 20 May 2021 02:31:00 +0000 (GMT)
+X-AuditID: b6c32a37-061ff70000002660-98-60a5c9f0b7b4
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        6A.A5.08637.4E9C5A06; Thu, 20 May 2021 11:31:00 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210520023100epsmtip2e8eeb589aba09ce267825e7e1c5d8d26~ApYXU2IJI2547525475epsmtip2g;
+        Thu, 20 May 2021 02:31:00 +0000 (GMT)
+Subject: Re: [PATCH v1 4/7] dt-bindings: devfreq: tegra30-actmon: Add
+ cooling-cells
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Matt Merhar <mattmerhar@protonmail.com>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <8dbb9a97-8358-0a2c-bbfc-738f7efa931f@samsung.com>
+Date:   Thu, 20 May 2021 11:49:29 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <f4a18fa4-f023-d4e5-0622-e15108de90b9@redhat.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210510211008.30300-5-digetx@gmail.com>
 Content-Language: en-US
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0375914d-06a6-4ee5-f974-08d91b39d585
-X-MS-TrafficTypeDiagnostic: BN0PR02MB8062:
-X-Microsoft-Antispam-PRVS: <BN0PR02MB8062356EDF95FD7D2CE5F8EFA12A9@BN0PR02MB8062.namprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3631;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B33CF9zup5soKF+SI72H8KdWHBnBYeQae4/H9xCioSdTeDVESk4fmTl2U8QPUpdJCtzFCifVKeYWF8I5HUGj2cqYsdL1k9YJcSW2Ew4fmHvbK9599kVLo6afieYsvz8gODQ59JoSbz35y3+LCOcJb7hxVL6GNGZK5DK9OMVBldN2hJwA8na5Na8tSXYr8uLcOp6UpJ8pxqgUPdbgLDI3HYUfJj3PGbKRUGBxuWL+VtxGD5xacR/QnVXtN9+wuIFXavGdiEIr+wpz8tfcI2tS2igx8F9FbPllO3QkpN4+WEsuz0i8aA8ASmLdML2Hqi41f3g+w/T7Di4Bj1CY018/e6h+vdLFVp+45uj0z/FwTG/CnvktgU2lArzejIYoNHLw0klBGbhWeVGjHWlNr8e29Pi7pDtqhQJdPuJMxdrbz3grtnwv+6Jzp7y/xzmCs0X2qp3i1J0sJVbxPEGsU4CrYWpWdZXIhoUvwNXroyAF+3qFXZKmBQn+UL2w6GCJxKL8Xq9DjH9/OPDf02XnY+oxKdbZRLZ4wUBnC1eM/w8GqTf0P/bEt6AVKdmbLMi9xliop+iPd9amgwViartbJpcR0GN1IgtfiZOzprNMGCQaPzBpbDqlfbuoii8PJ83jk7lbPo8ZflHXH+F8F6JEVsKDVp4xOYyvw/GKfZaddo3KJEMKNQV0+YhgzrG4XvfmqvAHqZBwGgUAWCk4+PYyUIRYox/X4NF9ZwCUmInobrF2kW4=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(376002)(136003)(396003)(39860400002)(346002)(46966006)(36840700001)(36906005)(7636003)(478600001)(31696002)(186003)(36756003)(356005)(47076005)(2906002)(8936002)(82740400003)(70586007)(316002)(336012)(5660300002)(70206006)(26005)(110136005)(107886003)(9786002)(54906003)(2616005)(83380400001)(82310400003)(4326008)(53546011)(8676002)(36860700001)(426003)(44832011)(31686004)(50156003)(2101003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 02:49:05.7569
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0375914d-06a6-4ee5-f974-08d91b39d585
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT035.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR02MB8062
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrKJsWRmVeSWpSXmKPExsWy7bCmru6Hk0sTDO4sEbCYf+Qcq8Xqj48Z
+        LVpmLWKxONv0ht3i8q45bBafe48wWnR+mcVmca9lL6vF7cYVbBZnn3lbtO49wm7xc9c8Fgce
+        j52z7rJ7bFrVyebR2/yOzaOnbROTR9+WVYwenzfJBbBFZdtkpCampBYppOYl56dk5qXbKnkH
+        xzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXmAN2opFCWmFMKFApILC5W0rezKcovLUlVyMgv
+        LrFVSi1IySmwLNArTswtLs1L10vOz7UyNDAwMgUqTMjOmN7UxlLQwFtx4MUHxgbGjVxdjJwc
+        EgImEp2fD7J0MXJxCAnsYJR4tf4MO4TziVHiyvRGqMw3RolV09YxwrTcmbyJFSKxl1Hi3+xf
+        UFXvGSW+3bzNDlIlLBAq0bNxElhCROAQk8T8CU1A7RwczAKlErs32IDUsAloSex/cYMNxOYX
+        UJS4+uMxWAmvgJ1E79V4kDCLgKrE4kOTmUBsUYEwiZPbWsCO4BUQlDg58wkLiM0pYCYxb8t7
+        sLXMAuISt57MZ4Kw5SW2v53DDHKChMAJDok7W2YwQ3zgIvH70FJ2CFtY4tXxLVC2lMTL/jYo
+        u1pi5ckjbBDNHYwSW/ZfYIVIGEvsXwpyEcgvmhLrd+lDhBUldv6eywixmE/i3dceVpASCQFe
+        iY42IYgSZYnLD+4yQdiSEovbO9kmMCrNQvLOLCQvzELywiyEZQsYWVYxiqUWFOempxYbFhgj
+        x/YmRnD61TLfwTjt7Qe9Q4xMHIyHGCU4mJVEeLd7L04Q4k1JrKxKLcqPLyrNSS0+xGgKDOCJ
+        zFKiyfnADJBXEm9oamRsbGxhYmhmamioJM6b7lydICSQnliSmp2aWpBaBNPHxMEp1cDEd1m2
+        UEz54y1294/X69K4KiX513ybsXbTpapX1i2TI93mrrnmpl2qxfRYnu9OO5cuz9myA4eX9Uum
+        SIjfMo5s4Dj/QsNHqzmM98ztXZujo7/bX66JWaIc4PbwkYe768cTi7cx5YjoWS7jPeD1zGPf
+        t/rjom4pb17N6db5LM2vsltIYH47a+LnU3oRmY+M2n/kbPff+cNL+Kx005xjr+qTvrSXN1x5
+        GXa6/ZSE2qF9S1e/vPa1dd36mtV6/8Kcl93VdRRtmZxqcUw50SXL+9skscV7Lz98sdbCdM6O
+        lnvTGp98CPDusPZOUpPX2OGfKXH0qQHjf+3vz0uCGK/PFY2bEpRiYnfo+fe7hw6e3bBCiaU4
+        I9FQi7moOBEAUKLhOUgEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprPIsWRmVeSWpSXmKPExsWy7bCSvO6Tk0sTDC7e5rWYf+Qcq8Xqj48Z
+        LVpmLWKxONv0ht3i8q45bBafe48wWnR+mcVmca9lL6vF7cYVbBZnn3lbtO49wm7xc9c8Fgce
+        j52z7rJ7bFrVyebR2/yOzaOnbROTR9+WVYwenzfJBbBFcdmkpOZklqUW6dslcGVMb2pjKWjg
+        rTjw4gNjA+NGri5GTg4JAROJO5M3sXYxcnEICexmlLjf/44ZIiEpMe3iUSCbA8gWljh8uBii
+        5i2jxMvHfxlBaoQFQiV6Nk5iAbFFBI4wSXzr8QOxmQVKJZ5tbGeEaNjKKPH59HomkASbgJbE
+        /hc32EBsfgFFias/HjOCLOAVsJPovRoPEmYRUJVYfGgyWLmoQJjEziWPwWxeAUGJkzOfgO3i
+        FDCTmLflPTvELnWJP/MuMUPY4hK3nsxngrDlJba/ncM8gVF4FpL2WUhaZiFpmYWkZQEjyypG
+        ydSC4tz03GLDAsO81HK94sTc4tK8dL3k/NxNjOA41NLcwbh91Qe9Q4xMHIyHGCU4mJVEeLd7
+        L04Q4k1JrKxKLcqPLyrNSS0+xCjNwaIkznuh62S8kEB6YklqdmpqQWoRTJaJg1OqgalcyVhW
+        eHHUySyP1ErLC2/Cji6wXxu1TttGSTf1e8wG1Za8kxIdWR+2HNrj/v/F1Q95rrulxJz+Juz9
+        1rujcEJR5aEt4ntirBet2OYobi3+KfOaBlPIDr6F0b4TOcQaKl+8j1FI+BjTEJI2W3z9a8W9
+        5iU+6eeNVA0DA2+Gb7hwQ0Co5b/bv6eOav8KY6t8JyfWF+VN8csNFc/bsPfmi/vBJbI3Dn9e
+        yuZ5aGb82mlroradXbbVzKurJuBhT/+P8rTPfreFHWsuHhU+NV/wMsc19d2/OiMdU0Rn7517
+        TNp6wfRZf3Nb+Wbccvz3/W337x51uQa+iazLN5Vmpi5sn2ppwGu+ylPkzE3/0ye2aSmxFGck
+        GmoxFxUnAgAJ9a2TMgMAAA==
+X-CMS-MailID: 20210520023100epcas1p4528846a7b21d98f1b107e103662d5eb7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210510211159epcas1p119ee938888c0cb5fe966bfe5f4df823a
+References: <20210510211008.30300-1-digetx@gmail.com>
+        <CGME20210510211159epcas1p119ee938888c0cb5fe966bfe5f4df823a@epcas1p1.samsung.com>
+        <20210510211008.30300-5-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/11/21 6:10 AM, Dmitry Osipenko wrote:
+> The ACTMON watches activity of memory clients. Decisions about a minimum
+> required frequency are made based on the info from ACTMON. We can use
+> ACTMON as a thermal cooling device by limiting the required frequency.
+> Document new cooling-cells property of NVIDIA Tegra ACTMON hardware unit.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml   | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+> index 2a940d5d7ab4..0aa9459b7751 100644
+> --- a/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+> +++ b/Documentation/devicetree/bindings/devfreq/nvidia,tegra30-actmon.yaml
+> @@ -63,6 +63,9 @@ properties:
+>        Should contain freqs and voltages and opp-supported-hw property, which
+>        is a bitfield indicating SoC speedo ID mask.
+>  
+> +  "#cooling-cells":
+> +    const: 2
+> +
+>  required:
+>    - compatible
+>    - reg
+> @@ -74,6 +77,7 @@ required:
+>    - interconnects
+>    - interconnect-names
+>    - operating-points-v2
+> +  - "#cooling-cells"
+>  
+>  additionalProperties: false
+>  
+> @@ -118,4 +122,5 @@ examples:
+>          operating-points-v2 = <&dvfs_opp_table>;
+>          interconnects = <&mc TEGRA30_MC_MPCORER &emc>;
+>          interconnect-names = "cpu-read";
+> +        #cooling-cells = <2>;
+>      };
+> 
 
+Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
 
-On 05/13/2021 08:48 AM, Tom Rix wrote:
->
->
->> +
->> +static int get_freq(struct clock *clock, u16 *freq)
->> +{
->
->> +
->> +     /*
->> +      * Multiply both numerator (mul0) and the denominator (div1) with
->> +      * 1000 to account for fractional portion of divider
->> +      */
->> +
->> +     div1 *= 1000;
->> +     div1 += div_frac1;
->> +     div0 *= div1;
->> +     mul0 *= 1000;
->> +     if (div0 == 0) {
->> +             CLOCK_ERR(clock, "clockwiz 0 divider");
->
-> This prevents a divide by zero, but returns 0 without setting freq
->
-> A -EINVAL should be returned or freq initialized to some default value
-Sure.
->
->> +             return 0;
->> +     }
->> +
->> +     input = mul0 * 100;
->> +     do_div(input, div0);
->> +     *freq = (u16)input;
->> +
->> +     return 0;
->> +}
->> +
->>
->> +
->> +static int clock_verify_freq(struct clock *clock)
->> +{
->> +     u32 lookup_freq, clock_freq_counter, request_in_khz, tolerance;
->> +     int err = 0;
->> +     u16 freq;
->> +
->> +     mutex_lock(&clock->clock_lock);
->> +
->> +     err = get_freq(clock, &freq);
->> +     if (err) {
->> +             xrt_err(clock->xdev, "get freq failed, %d", err);
->> +             goto end;
->> +     }
->> +
->> +     err = get_freq_counter(clock, &clock_freq_counter);
->> +     if (err) {
->> +             xrt_err(clock->xdev, "get freq counter failed, %d", err);
->> +             goto end;
->> +     }
->> +
->> +     lookup_freq = find_matching_freq(freq, frequency_table,
->> + ARRAY_SIZE(frequency_table));
->
-> I am running v6 through clang's static analyzer, it shows a problem here
->
-> drivers/fpga/xrt/lib/xleaf/clock.c:474:16: warning: 1st function call
-> argument is an uninitialized value
->         lookup_freq = find_matching_freq(freq, frequency_table,
->                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->
-> See problem with get_freq above
-Sure.
-
-Thanks,
-Lizhi
->
-> Tom
->
->
-
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
