@@ -2,65 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76B8138B294
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECBE238B2AB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhETPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:09:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38974 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238578AbhETPJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:09:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9CA061184;
-        Thu, 20 May 2021 15:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621523266;
-        bh=Wn1M4+UsbaVhUZR2giqAc9Ih5SyelQc6s8D+t56AuSU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=v7Z5kjCtxIONvEvNnF2J0ZxyrNspcPO2Rvb75EwFudWvtmnlcD/Oh72ZqVrj9efwp
-         tQRhbHidgk8uCAUD6cfGGihsDPehhpf/uXpEl9qod5y5qW7zl2bwwAy8lgHz9ut7/0
-         gj05z4Ja1Wpyofoq2eLa1+B3NoARY4FBdzwY1fIQ=
-Date:   Thu, 20 May 2021 17:07:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, Al Longyear <longyear@netcom.com>,
-        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
-        Andrew Morton <andrewm@uow.edu.eu>,
-        Bill Hawes <whawes@star.net>,
-        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        -- <julian@uhunix.uhcc.hawaii.edu>,
-        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
-        Marko Kohtala <Marko.Kohtala@hut.fi>,
-        Michael Callahan <callahan@maths.ox.ac.uk>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Nick Holloway <alfie@dcs.warwick.ac.uk>,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Paul Fulghum <paulkf@microgate.com>,
-        Paul Mackerras <Paul.Mackerras@cs.anu.edu.au>,
-        processes-Sapan Bhatia <sapan@corewars.org>,
-        Rob Herring <robh@kernel.org>,
-        Russell King <rmk@arm.linux.org.uk>
-Subject: Re: [PATCH 00/11] Rid W=1 warnings from TTY
-Message-ID: <YKZ7QA4fFegLbUHH@kroah.com>
-References: <20210520121906.3468725-1-lee.jones@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520121906.3468725-1-lee.jones@linaro.org>
+        id S243628AbhETPMI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 11:12:08 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:58146 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232020AbhETPMF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:12:05 -0400
+Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 05B39CECEA;
+        Thu, 20 May 2021 17:18:33 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH v4 0/5] Enable Bluetooth functionality for WCN6750
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1621355686-29550-1-git-send-email-gubbaven@codeaurora.org>
+Date:   Thu, 20 May 2021 17:10:39 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:BLUETOOTH SUBSYSTEM" <linux-bluetooth@vger.kernel.org>,
+        Hemantg <hemantg@codeaurora.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <DF3C6156-F44A-4954-B1EF-CB3051BCC0B6@holtmann.org>
+References: <1621355686-29550-1-git-send-email-gubbaven@codeaurora.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 01:18:55PM +0100, Lee Jones wrote:
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
+Hi Venkata,
 
-All but 3 applied to my tree, you should rebase and resend those
-remaining ones as they conflicted with things that others recently
-changed.
+> These patches enables Bluetooth functionalties for new Qualcomm
+> Bluetooth SoC wcn6750.
+> 
+> Venkata Lakshmi Narayana Gubba (5):
+>  Bluetooth: hci_qca: Add support for QTI Bluetooth chip wcn6750
+>  Bluetooth: btqca: Add support for firmware image with mbn type for
+>    WCN6750
+>  Bluetooth: btqca: Moved extracting rom version info to common place
+>  dt-bindings: net: bluetooth: Convert Qualcomm BT binding to DT schema
+>  dt-bindings: net: bluetooth: Add device tree bindings for QTI chip
+>    wcn6750
+> 
+> .../devicetree/bindings/net/qualcomm-bluetooth.txt |  69 --------
+> .../bindings/net/qualcomm-bluetooth.yaml           | 183 +++++++++++++++++++++
+> drivers/bluetooth/btqca.c                          |  90 +++++++---
+> drivers/bluetooth/btqca.h                          |  14 +-
+> drivers/bluetooth/hci_qca.c                        | 114 ++++++++++---
+> 5 files changed, 354 insertions(+), 116 deletions(-)
+> delete mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+> create mode 100644 Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
 
-thanks,
+all 5 patches have been applied to bluetooth-next tree.
 
-greg k-h
+Regards
+
+Marcel
+
