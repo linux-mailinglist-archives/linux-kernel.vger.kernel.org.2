@@ -2,166 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99BAE38B503
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:13:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E56C38B505
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:14:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235735AbhETRPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:15:02 -0400
-Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:42395 "EHLO
-        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235395AbhETRO4 (ORCPT
+        id S232984AbhETRP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:15:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231730AbhETRPY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:14:56 -0400
-Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
-        by smtp-cloud9.xs4all.net with ESMTP
-        id jmEWllugRVN4kjmEnlB7e8; Thu, 20 May 2021 19:13:33 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1621530813; bh=bsnO8l7SUux3m+SAtpyvVWCiju520gKsdmdg7rdmmrE=;
-        h=From:To:Subject:Date:Message-Id:MIME-Version:From:Subject;
-        b=KxS05xaly9ZvujaygNM0NoxTadoOmsnWpdNVPTKvhOKK1lhlb+griG+eNEj5/ou6T
-         A+gewrnZ6T/zZ8dfDGiCgYlICAyZuQxe7UEfCxUUdIap2YChhKumNEbG4SqvYr2gTE
-         zKf+1L32mKKPcXbczVzg2IhUTEJngdLmgQhcV40bb8+E1w9yGfjVgt2iMVPjh8wMIT
-         0MaS/jLbmMANj0FXeHnexmi2W4jhi9uDWSGYJerslQUvYMacjNK6vpfaa4U06R6tVu
-         0glhqWsJDnvkR9mXL0vUVhC9Pg9gO2S7ImD1kEPEp/RbmH4HuJCXhmDWIsbNERfiM4
-         bKW1NC1mSYXUw==
-From:   Mark Kettenis <mark.kettenis@xs4all.nl>
-To:     devicetree@vger.kernel.org
-Cc:     Mark Kettenis <kettenis@openbsd.org>,
-        Hector Martin <marcan@marcan.st>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        Thu, 20 May 2021 13:15:24 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B39EC061574;
+        Thu, 20 May 2021 10:14:01 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id i67so16926810qkc.4;
+        Thu, 20 May 2021 10:14:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jq3RYlVbDqirRaEWm8uYC1ns+MqjwZOrxQ2cNaYJlDg=;
+        b=RcqLGnRn4lP6HGnhbtHRODna8BfZi+cQ75Ojh1B4T/MQoZSyXe2wIId8LU/kqGA7RM
+         Jp1XZ8pXeszuDXG2zHzwpmNEWdzYkAqLorKBiBofI+lWWUy9ou5hlBCb/00XqAx7VGqX
+         B2nUQXfsNTC0+7l1GVDhg99kfLgOkyzkrIu2GHZp+5/U4nrOe9v+sKXA4Rrh1IRQs5NC
+         TtjfKt0OJKP+qzmj623o4ETkBwevelOVGwy/nGA4p61DCshVyCcWWdEIZ1L+DULfysEX
+         oUOHMtklqm/ZpQ4LRNJj968x5SDD3XYUmYrQljJeJOO9Y3Z+bNBNtPqjnJ2CuJySJs24
+         6yZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jq3RYlVbDqirRaEWm8uYC1ns+MqjwZOrxQ2cNaYJlDg=;
+        b=dsICxuT99/hCXoElAdGM3dyegCt+4kQ2YozJQDCCgxFCc6CBOyLPja3UC0eUKAX19U
+         9zvevYKSumHVswlv0/Q+tZZgL+8UpmUp9/N9eoc3rn7GSVzdNdNJVaGd9+rDzNCuFU1z
+         7jReg53nkgEm7Mu/QwfoIOyN9sQZo+XPf6FNDK0VvqSvPydlL7u7UfSnZfEf6FefXxUg
+         fJYM4xIjmjmTx6fhNW10OYrdQz1u1bv2H8AC4MJftoYOTKZCfN3H5RcH2ucqb6xBu4Bd
+         fzicNLyrFyt7G3CxBo8ypdkOg5/Pmta275KFCefXhYui0/u0GhkAroywc7jr5mnXWyf+
+         rnOg==
+X-Gm-Message-State: AOAM532UMSvN3Eu5I4GnY5pqmYAjVrGAWeJFbWabFC2EoZGhYD0L0vJU
+        XIrgmstgZ25Tg7umJyppcVs=
+X-Google-Smtp-Source: ABdhPJyYWtKsmIPSoSGsuqdD6zSwDOtYPVRAqi9Swk/0eu3dTFJS9AZQooo4mifGsrIHWJWHudqfBw==
+X-Received: by 2002:a37:93c2:: with SMTP id v185mr6435183qkd.179.1621530840751;
+        Thu, 20 May 2021 10:14:00 -0700 (PDT)
+Received: from smtp.gmail.com ([2804:30c:b19:6700:15d6:7f1d:c87:ccf7])
+        by smtp.gmail.com with ESMTPSA id f127sm2462842qkd.81.2021.05.20.10.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 10:14:00 -0700 (PDT)
+Date:   Thu, 20 May 2021 14:13:56 -0300
+From:   Marcelo Schmitt <marcelo.schmitt1@gmail.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] arm64: apple: Add pinctrl nodes
-Date:   Thu, 20 May 2021 19:13:07 +0200
-Message-Id: <20210520171310.772-3-mark.kettenis@xs4all.nl>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520171310.772-1-mark.kettenis@xs4all.nl>
-References: <20210520171310.772-1-mark.kettenis@xs4all.nl>
+Subject: Re: [PATCH] staging: iio: fix some formatting issues
+Message-ID: <YKaY1GAKkqXnAUrq@smtp.gmail.com>
+References: <1621389170-5850-1-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4xfNue/EHJcQ/3kj0ETzEOtiBUroVlXyBrziKGnpC8nRodkb00C8I36JbQZDWTmOsY6b7bJHCrcJFrOnEqNS/6vch8FbCAPC3K5M3pjsDGEv6tuaZla31w
- /QfYCqbCuQhXoH6TFWtSvxctE+j/KD3SpwQtIYkYW7wJQZiQbNI72SdycMX9cLsMp9ZiT9FB+4JUPbuiphuVyl33W4gJU3hiefPuHcpbofHQRjRJVoRdrutZ
- O54j/D2SZR0gqJuuTjKRSW7P5eI264/mJD/UVxkEpOHAHCPF2LyKBMK8AGetVKtzQABlRvNjQPWMPnI6W+Z8iSh46Qo92mWLdKAjOJ4CF/mOPFfASeRkMzVf
- gVv1AcVp3jbZoCwBG74+lM8D1MQSVVRRIeSeWdWEleIS9lKZCaOS4RifU6POdwqpo+xz1bB0SIO46lGX6sDzrlUz6SNPc8YeCCz5hdKA7BGB/ZZnVxgHxI74
- TCi/9fi2TYReSpDI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621389170-5850-1-git-send-email-wangqing@vivo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Kettenis <kettenis@openbsd.org>
+Hi Wang,
 
-Add pinctrl nodes corresponding to the gpio,t8101 nodes in the
-Apple device tree for the Mac mini (M1, 2020).
+Nice patch for a start. Yet, I think there is room for some improvement.
 
-Clock references are left out at the moment and will be added once
-the appropriate bindings have been settled upon.
+On 05/19, Wang Qing wrote:
+> fixing:
+If you wish, you may add here that this style check is reported by
+checkpatch.
 
-Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
----
- arch/arm64/boot/dts/apple/t8103.dtsi | 83 ++++++++++++++++++++++++++++
- 1 file changed, 83 insertions(+)
+> CHECK: Alignment should match open parenthesis
+> #1351: FILE: drivers/staging/iio/addac/adt7316.c:1351:
+Checkpatch warns that commit log lines starting with '#' are dropped by
+git as comments. Is this intentional?
 
-diff --git a/arch/arm64/boot/dts/apple/t8103.dtsi b/arch/arm64/boot/dts/apple/t8103.dtsi
-index a1e22a2ea2e5..503a76fc30e6 100644
---- a/arch/arm64/boot/dts/apple/t8103.dtsi
-+++ b/arch/arm64/boot/dts/apple/t8103.dtsi
-@@ -9,6 +9,7 @@
- 
- #include <dt-bindings/interrupt-controller/apple-aic.h>
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/pinctrl/apple.h>
- 
- / {
- 	compatible = "apple,t8103", "apple,arm-platform";
-@@ -131,5 +132,87 @@ aic: interrupt-controller@23b100000 {
- 			interrupt-controller;
- 			reg = <0x2 0x3b100000 0x0 0x8000>;
- 		};
-+
-+		pinctrl_ap: pinctrl@23c100000 {
-+			compatible = "apple,t8103-pinctrl", "apple,pinctrl";
-+			reg = <0x2 0x3c100000 0x0 0x100000>;
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl_ap 0 0 212>;
-+
-+			interrupt-controller;
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 190 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 191 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 192 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 193 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 194 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 195 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 196 IRQ_TYPE_LEVEL_HIGH>;
-+
-+			pcie_pins: pcie-pins {
-+				pinmux = <APPLE_PINMUX(150, 1)>,
-+					 <APPLE_PINMUX(151, 1)>,
-+					 <APPLE_PINMUX(32, 1)>;
-+			};
-+		};
-+
-+		pinctrl_aop: pinctrl@24a820000 {
-+			compatible = "apple,t8103-pinctrl", "apple,pinctrl";
-+			reg = <0x2 0x4a820000 0x0 0x4000>;
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl_aop 0 0 42>;
-+
-+			interrupt-controller;
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 268 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 269 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 270 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 271 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 272 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 273 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 274 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
-+		pinctrl_nub: pinctrl@23d1f0000 {
-+			compatible = "apple,t8103-pinctrl", "apple,pinctrl";
-+			reg = <0x2 0x3d1f0000 0x0 0x4000>;
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl_nub 0 0 23>;
-+
-+			interrupt-controller;
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 330 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 331 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 332 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 333 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 334 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 335 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 336 IRQ_TYPE_LEVEL_HIGH>;
-+		};
-+
-+		pinctrl_smc: pinctrl@23e820000 {
-+			compatible = "apple,t8103-pinctrl", "apple,pinctrl";
-+			reg = <0x2 0x3e820000 0x0 0x4000>;
-+
-+			gpio-controller;
-+			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl_smc 0 0 16>;
-+
-+			interrupt-controller;
-+			interrupt-parent = <&aic>;
-+			interrupts = <AIC_IRQ 391 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 392 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 393 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 394 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 395 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 396 IRQ_TYPE_LEVEL_HIGH>,
-+				     <AIC_IRQ 397 IRQ_TYPE_LEVEL_HIGH>;
-+		};
- 	};
- };
--- 
-2.31.1
+> 
+> CHECK: Alignment should match open parenthesis
+> #1378: FILE: drivers/staging/iio/addac/adt7316.c:1378:
+Same warning here.
 
+Its probably not a requirement, but the subject line could be more
+specific about where the changes are for. Maybe start with
+staging: iio: addac:
+or even
+staging: iio: addac: adt7316:
+
+
+Regards,
+
+Marcelo
+
+> 
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  drivers/staging/iio/addac/adt7316.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/staging/iio/addac/adt7316.c b/drivers/staging/iio/addac/adt7316.c
+> index ccbafca..79467f0 100644
+> --- a/drivers/staging/iio/addac/adt7316.c
+> +++ b/drivers/staging/iio/addac/adt7316.c
+> @@ -1348,9 +1348,9 @@ static ssize_t adt7316_show_in_analog_temp_offset(struct device *dev,
+>  }
+>  
+>  static ssize_t adt7316_store_in_analog_temp_offset(struct device *dev,
+> -						struct device_attribute *attr,
+> -						const char *buf,
+> -						size_t len)
+> +						   struct device_attribute *attr,
+> +						   const char *buf,
+> +						   size_t len)
+>  {
+>  	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+>  	struct adt7316_chip_info *chip = iio_priv(dev_info);
+> @@ -1375,9 +1375,9 @@ static ssize_t adt7316_show_ex_analog_temp_offset(struct device *dev,
+>  }
+>  
+>  static ssize_t adt7316_store_ex_analog_temp_offset(struct device *dev,
+> -						struct device_attribute *attr,
+> -						const char *buf,
+> -						size_t len)
+> +						   struct device_attribute *attr,
+> +						   const char *buf,
+> +						   size_t len)
+>  {
+>  	struct iio_dev *dev_info = dev_to_iio_dev(dev);
+>  	struct adt7316_chip_info *chip = iio_priv(dev_info);
+> -- 
+> 2.7.4
+> 
