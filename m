@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBA738A424
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1840A38A411
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:59:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234870AbhETKBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60418 "EHLO mail.kernel.org"
+        id S234438AbhETKA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:00:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59134 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234619AbhETJ4k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:56:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B510661623;
-        Thu, 20 May 2021 09:37:46 +0000 (UTC)
+        id S235123AbhETJzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:55:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 85C22613B4;
+        Thu, 20 May 2021 09:37:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503467;
-        bh=WcZXxMma3oywvHntgEoaPZppZpw7r4oKshEaQ7kByxg=;
+        s=korg; t=1621503445;
+        bh=bBkE66/Q8JF/rMUl905Rn1myBRKl5hrHfu1zTOb7ggc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TWtMb2CU3VngW9K9d8dWd2QdP/TKwZ0IIgkhrqMnmLkn2cKhvrr4EtxnyKtlr+u2N
-         2x5jPPFBh9z5ygwsSYW74lTsDMaAvUWKOURu/kT3+UJX5eSsFbMFQSehzuXqdWKsz8
-         qp9wLLI+QqZQGgXDSQ8Iu36O4V40a8D8jQPagcT0=
+        b=gjOhUmJgRMK2OUO96RakXHoyRu767XRNbL6W9b9hrDX1EgjkpGkYKhMHzeH09pMyM
+         ZSiseSaTjNi4gBxBAVGd9hCsz0Tx/ys+VIhYcHxIOwwVmebiqlYU4sJNKnMI2UTwnF
+         S0ugqCraEervNAhyAMJUGzKNQ+ZATKLPGd10n6o0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        He Ying <heying24@huawei.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 217/425] firmware: qcom-scm: Fix QCOM_SCM configuration
-Date:   Thu, 20 May 2021 11:19:46 +0200
-Message-Id: <20210520092138.556283208@linuxfoundation.org>
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Patrick Venture <venture@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 225/425] soc: aspeed: fix a ternary sign expansion bug
+Date:   Thu, 20 May 2021 11:19:54 +0200
+Message-Id: <20210520092138.815562664@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -39,45 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: He Ying <heying24@huawei.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 2954a6f12f250890ec2433cec03ba92784d613e8 ]
+[ Upstream commit 5ffa828534036348fa90fb3079ccc0972d202c4a ]
 
-When CONFIG_QCOM_SCM is y and CONFIG_HAVE_ARM_SMCCC
-is not set, compiling errors are encountered as follows:
+The intent here was to return negative error codes but it actually
+returns positive values.  The problem is that type promotion with
+ternary operations is quite complicated.
 
-drivers/firmware/qcom_scm-smc.o: In function `__scm_smc_do_quirk':
-qcom_scm-smc.c:(.text+0x36): undefined reference to `__arm_smccc_smc'
-drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call':
-qcom_scm-legacy.c:(.text+0xe2): undefined reference to `__arm_smccc_smc'
-drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call_atomic':
-qcom_scm-legacy.c:(.text+0x1f0): undefined reference to `__arm_smccc_smc'
+"ret" is an int.  "copied" is a u32.  And the snoop_file_read() function
+returns long.  What happens is that "ret" is cast to u32 and becomes
+positive then it's cast to long and it's still positive.
 
-Note that __arm_smccc_smc is defined when HAVE_ARM_SMCCC is y.
-So add dependency on HAVE_ARM_SMCCC in QCOM_SCM configuration.
+Fix this by removing the ternary so that "ret" is type promoted directly
+to long.
 
-Fixes: 916f743da354 ("firmware: qcom: scm: Move the scm driver to drivers/firmware")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
-Link: https://lore.kernel.org/r/20210406094200.60952-1-heying24@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc chardev")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Joel Stanley <joel@jms.id.au>
+Reviewed-by: Patrick Venture <venture@google.com>
+Link: https://lore.kernel.org/r/YIE90PSXsMTa2Y8n@mwanda
+Link: https://lore.kernel.org/r/20210423000919.1249474-1-joel@jms.id.au'
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/misc/aspeed-lpc-snoop.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index ed212c8b4108..1c419e4cea83 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -248,6 +248,7 @@ config FW_CFG_SYSFS_CMDLINE
- config QCOM_SCM
- 	bool
- 	depends on ARM || ARM64
-+	depends on HAVE_ARM_SMCCC
- 	select RESET_CONTROLLER
+diff --git a/drivers/misc/aspeed-lpc-snoop.c b/drivers/misc/aspeed-lpc-snoop.c
+index b4a776bf44bc..e2cb0b9607d1 100644
+--- a/drivers/misc/aspeed-lpc-snoop.c
++++ b/drivers/misc/aspeed-lpc-snoop.c
+@@ -99,8 +99,10 @@ static ssize_t snoop_file_read(struct file *file, char __user *buffer,
+ 			return -EINTR;
+ 	}
+ 	ret = kfifo_to_user(&chan->fifo, buffer, count, &copied);
++	if (ret)
++		return ret;
  
- config QCOM_SCM_32
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static __poll_t snoop_file_poll(struct file *file,
 -- 
 2.30.2
 
