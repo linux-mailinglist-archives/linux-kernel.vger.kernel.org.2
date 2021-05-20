@@ -2,182 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A543838A0B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:20:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF15438A0B8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:20:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231524AbhETJVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:21:32 -0400
-Received: from mga04.intel.com ([192.55.52.120]:24403 "EHLO mga04.intel.com"
+        id S231501AbhETJV3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:21:29 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26865 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230483AbhETJV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230458AbhETJV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 05:21:27 -0400
-IronPort-SDR: SabsN1XDguxKkVPMPM0jT/5g164+DmhTVEiMzEPZysmMZ+rdvbLgeSnV2lmTmmSzkJIOuAoOiX
- 8hteaQ2cE9lw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="199233748"
+IronPort-SDR: LW+HI2QSrRyZTkJt8quQWRUZkV69/XMC18ydqOxEqYXu7sFJqT7KJiotz6lDPHENAT5u+Mcbsw
+ HTBUGfU/evWw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="222265499"
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="199233748"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:20:04 -0700
-IronPort-SDR: K7jppVTLmI1HF96E7Mz9uaj/GZm1uPK4WuShVCPLZHJVTsFEI6LIQiulD4O/ZZxomkrm8ULfkf
- y6GVIEE2Ntew==
+   d="scan'208";a="222265499"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:20:04 -0700
+IronPort-SDR: D9tFDRabU8LkRDjtkf+DxCKaIENTndI7pYZSuQu6DfX7cPNkp698kwjW15pbXtxjKQUQwNicQ+
+ Ou8ZWaZUI04A==
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="473921150"
-Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:20:02 -0700
-Subject: Re: [kbuild-all] Re: [PATCH 3/5] HID: magicmouse: Magic Trackpad 2
- USB battery capacity
-To:     =?UTF-8?B?Sm9zw6kgRXhww7NzaXRv?= <jose.exposito89@gmail.com>
-Cc:     jikos@kernel.org, kbuild-all@lists.01.org,
-        benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210511182023.730524-3-jose.exposito89@gmail.com>
- <202105121712.MGWeLu1Q-lkp@intel.com>
- <20210515185021.GA177131@elementary-os.localdomain>
-From:   Rong Chen <rong.a.chen@intel.com>
-Message-ID: <eeba0785-1d5c-7d4a-d5c4-af6ffb3f4f8b@intel.com>
-Date:   Thu, 20 May 2021 17:18:51 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+   d="scan'208";a="395631467"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:19:59 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ljeqS-00DRbU-2L; Thu, 20 May 2021 12:19:56 +0300
+Date:   Thu, 20 May 2021 12:19:56 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 08/14] d_path: make prepend_name() boolean
+Message-ID: <YKYpvFg3WQe7svpI@smile.fi.intel.com>
+References: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
+ <20210519004901.3829541-1-viro@zeniv.linux.org.uk>
+ <20210519004901.3829541-8-viro@zeniv.linux.org.uk>
+ <AM6PR08MB4376607691168C132AB2F558F72A9@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210515185021.GA177131@elementary-os.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <AM6PR08MB4376607691168C132AB2F558F72A9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 20, 2021 at 09:12:34AM +0000, Justin He wrote:
 
+> IMPORTANT NOTICE: The contents of this email and any attachments are confidential and may also be privileged. If you are not the intended recipient, please notify the sender immediately and do not disclose the contents to any other person, use it for any purpose, or store or copy the information in any medium. Thank you.
 
-On 5/16/21 2:50 AM, José Expósito wrote:
-> On Wed, May 12, 2021 at 05:39:31PM +0800, kernel test robot wrote:
->> Hi "José,
->>
->> Thank you for the patch! Yet something to improve:
->>
->> [auto build test ERROR on hid/for-next]
->> [also build test ERROR on v5.13-rc1 next-20210511]
->> [If your patch is applied to the wrong git tree, kindly drop us a note.
->> And when submitting patch, we suggest to use '--base' as documented in
->> https://git-scm.com/docs/git-format-patch]
->>
->> url:    https://github.com/0day-ci/linux/commits/Jos-Exp-sito/HID-magicmouse-register-power-supply/20210512-022327
->> base:   https://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git for-next
->> config: s390-randconfig-r002-20210512 (attached as .config)
->> compiler: s390-linux-gcc (GCC) 9.3.0
->> reproduce (this is a W=1 build):
->>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>          chmod +x ~/bin/make.cross
->>          # https://github.com/0day-ci/linux/commit/701f395a5566b6d2fd3a78389983237668902998
->>          git remote add linux-review https://github.com/0day-ci/linux
->>          git fetch --no-tags linux-review Jos-Exp-sito/HID-magicmouse-register-power-supply/20210512-022327
->>          git checkout 701f395a5566b6d2fd3a78389983237668902998
->>          # save the attached .config to linux build tree
->>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross W=1 ARCH=s390
->>
->> If you fix the issue, kindly add following tag as appropriate
->> Reported-by: kernel test robot <lkp@intel.com>
->>
->> All errors (new ones prefixed by >>):
->>
->>     s390-linux-ld: drivers/pcmcia/cistpl.o: in function `set_cis_map':
->>     cistpl.c:(.text+0x3a2): undefined reference to `ioremap'
->>     s390-linux-ld: cistpl.c:(.text+0x3dc): undefined reference to `iounmap'
->>     s390-linux-ld: cistpl.c:(.text+0x404): undefined reference to `iounmap'
->>     s390-linux-ld: cistpl.c:(.text+0x416): undefined reference to `ioremap'
->>     s390-linux-ld: drivers/pcmcia/cistpl.o: in function `release_cis_mem':
->>     cistpl.c:(.text+0xe16): undefined reference to `iounmap'
->>     s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_remove':
->>     hid-magicmouse.c:(.text+0xd2c): undefined reference to `usb_kill_urb'
->>>> s390-linux-ld: hid-magicmouse.c:(.text+0xd48): undefined reference to `usb_free_coherent'
->>>> s390-linux-ld: hid-magicmouse.c:(.text+0xd54): undefined reference to `usb_free_urb'
->>     s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_battery_usb_urb_complete':
->>     hid-magicmouse.c:(.text+0xe12): undefined reference to `usb_submit_urb'
->>     s390-linux-ld: drivers/hid/hid-magicmouse.o: in function `magicmouse_probe':
->>     hid-magicmouse.c:(.text+0x1194): undefined reference to `usb_alloc_urb'
->>>> s390-linux-ld: hid-magicmouse.c:(.text+0x121a): undefined reference to `usb_alloc_coherent'
->>     s390-linux-ld: hid-magicmouse.c:(.text+0x1422): undefined reference to `usb_free_coherent'
->>     s390-linux-ld: hid-magicmouse.c:(.text+0x142e): undefined reference to `usb_free_urb'
->>>> s390-linux-ld: hid-magicmouse.c:(.text+0x1462): undefined reference to `usb_submit_urb'
->> ---
->> 0-DAY CI Kernel Test Service, Intel Corporation
->> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> Hi all,
->
-> I'm a little bit confused about the build errors reported by Intel's test bot and I'd really appreciate human input.
-> This is the first patch I submit, so apologies in advance if I missed a basic step.
->
-> I compiled and tested every patch before submission and they all compiled and worked on this tree:
-> git://git.kernel.org/pub/scm/linux/kernel/git/hid/hid.git
->
-> After receiving this email, I followed the instructions attached to build it and indeed it failed.
-> However, I reverted my changes and the kernel still didn't compile.
->
-> Is this something I need to fix?
+Fix it.
 
-Hi José Expósito,
+-- 
+With Best Regards,
+Andy Shevchenko
 
-I think it's related to HAS_IOMEM in drivers/usb/Kconfig:
-
-menuconfig USB_SUPPORT
-         bool "USB support"
-         depends on HAS_IOMEM
-         default y
-         help
-           This option adds core support for Universal Serial Bus (USB).
-           You will also need drivers from the following menu to make 
-use of it.
-
-and I found a similar issue fixed by the below commit:
-
-commit 1f685e6adbbe3c7b1bd9053be771b898d9efa655
-Author: Randy Dunlap <rdunlap@infradead.org>
-Date:   Tue Jan 5 20:25:31 2021 -0800
-
-     ptp: ptp_ines: prevent build when HAS_IOMEM is not set
-
-     ptp_ines.c uses devm_platform_ioremap_resource(), which is only
-     built/available when CONFIG_HAS_IOMEM is enabled.
-     CONFIG_HAS_IOMEM is not enabled for arch/s390/, so builds on S390
-     have a build error:
-
-     s390-linux-ld: drivers/ptp/ptp_ines.o: in function 
-`ines_ptp_ctrl_probe':
-     ptp_ines.c:(.text+0x17e6): undefined reference to 
-`devm_platform_ioremap_resource'
-
-     Prevent builds of ptp_ines.c when HAS_IOMEM is not set.
-
-     Fixes: bad1eaa6ac31 ("ptp: Add a driver for InES time stamping IP 
-core.")
-     Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-     Reported-by: kernel test robot <lkp@intel.com>
-     Link: lore.kernel.org/r/202101031125.ZEFCUiKi-lkp@intel.com
-     Acked-by: Richard Cochran <richardcochran@gmail.com>
-     Link: 
-https://lore.kernel.org/r/20210106042531.1351-1-rdunlap@infradead.org
-     Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-
-diff --git a/drivers/ptp/Kconfig b/drivers/ptp/Kconfig
-index d2bf05ccbbe20d..f2edef0df40f5c 100644
---- a/drivers/ptp/Kconfig
-+++ b/drivers/ptp/Kconfig
-@@ -79,6 +79,7 @@ config DP83640_PHY
-  config PTP_1588_CLOCK_INES
-         tristate "ZHAW InES PTP time stamping IP core"
-         depends on NETWORK_PHY_TIMESTAMPING
-+       depends on HAS_IOMEM
-         depends on PHYLIB
-         depends on PTP_1588_CLOCK
-         help
-
-Best Regards,
-Rong Chen
-
->
-> Thank you very much in advance,
-> José Expósito
-> _______________________________________________
-> kbuild-all mailing list -- kbuild-all@lists.01.org
-> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
