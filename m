@@ -2,47 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9921838B20E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:41:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9CC38B218
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242538AbhETOmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:42:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54974 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240620AbhETOlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:41:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 20BE0ABC2;
-        Thu, 20 May 2021 14:39:44 +0000 (UTC)
-Date:   Thu, 20 May 2021 16:39:43 +0200 (CEST)
-From:   Miroslav Benes <mbenes@suse.cz>
-To:     Jon Mediero <jmdr@disroot.org>
-cc:     Jessica Yu <jeyu@kernel.org>, Petr Mladek <pmladek@suse.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] module: correctly exit module_kallsyms_on_each_symbol
- when fn() != 0
-In-Reply-To: <20210520122326.18563-1-jmdr@disroot.org>
-Message-ID: <alpine.LSU.2.21.2105201639330.1498@pobox.suse.cz>
-References: <20210520122326.18563-1-jmdr@disroot.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S240492AbhETOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:43:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231246AbhETOmp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:42:45 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32245C06135D
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 07:40:02 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id w1so11812382ybt.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 07:40:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9wizOY0EarwWfoT8sBSAOULyiMZlua8eTWF9dLcnBQo=;
+        b=D5sKWuHddAS6wsMF0yqrzBm8O73rmgG9E6k2rGGSsgrHqiz3X4sJH9MzGZlLHljfZp
+         TSlo3reO9Tx+GiS256/5L3pL7Myy3vXOvSe8YImblN2uNqQoqScgvXzJhSSzcIH4gUn9
+         96Pn9IwKKR4hRxINmz/4aBVxsm+CJKyx0KWlGZk9X/qjfOquBzSsFJ0bMHevFPmuNjRX
+         4mdye2AQMYcpE+aU5ugeUU2tM5kCVCEm7twjK7c0/AqP0TYaH3H4Pezz1NmsaVVOvdNr
+         TFm1CdOlc3kkH5thL3BgUhqS3+e6Q0ete9R0WV1t+8PvLqaUrduM2OovkhCSsc6KTzLf
+         79Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9wizOY0EarwWfoT8sBSAOULyiMZlua8eTWF9dLcnBQo=;
+        b=rNhc2wdrzWcbqWBSmHbd9n117Z8LnXRhIHN5dgNM4reoT57VEEQq3MG9EFnYP/KdBy
+         Kaxsooa1ztVqyuNFmiNAITjvAjH7k4I4vBZLYTl0CATuPrcfEjcHXA8YK9FPFMqvTCMs
+         GtCM8ryWoGDOdK4IDF2qnQGgxNE0e1Di2hlTC7onVQ1HiXG1POoJ0UWRWj8RMtFFGHdJ
+         TULHdRgILSvivWAyriQ0CJWHUUmFjJX+wiTxMAng5kCDhy6c73PAsH1++0MFs10+OC8G
+         U85RKC1gBLhUaGUzVqlpNUtbrBKDYxfDqLju0O+CmCqtW88tosxU03ri8pQH7JwunvOA
+         fWbw==
+X-Gm-Message-State: AOAM530qpNzTHrtpV6fFDKOrw/FTpQXHdDxrNk1UP8yiE/yplqTzjnz0
+        B96sFMBSu2cy8HeLVwlDAHo0l8za983ax25gYnEqWA==
+X-Google-Smtp-Source: ABdhPJy1e4N2uZPMyL8hA7V2j6huim5DdDIrfgl2SUEmC46MEQW8QddIKklxeLSX46+xAN1d6tP2LZq+f3U+LVAZc/I=
+X-Received: by 2002:a25:287:: with SMTP id 129mr7557117ybc.312.1621521601487;
+ Thu, 20 May 2021 07:40:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
+ <20210518232451.GA7362@sol> <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
+ <20210519080434.GA22854@sol> <YKTMninSSY3MK6Hf@smile.fi.intel.com>
+ <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com> <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
+In-Reply-To: <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Thu, 20 May 2021 16:39:50 +0200
+Message-ID: <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com>
+Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to user space
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021, Jon Mediero wrote:
+On Thu, May 20, 2021 at 3:15 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Thu, May 20, 2021 at 4:08 PM Bartosz Golaszewski
+> <bgolaszewski@baylibre.com> wrote:
+> > On Wed, May 19, 2021 at 10:30 AM Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Wed, May 19, 2021 at 04:04:34PM +0800, Kent Gibson wrote:
+> > > > On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
+> > > > > On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
+> > > > > > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
+>
+> ...
+>
+> > > > > > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
+> > > > > > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
+> > > > > > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
+>
+> ...
+>
+> > > > > > You immediately revert this patch in patch 2.
+> > > > > > My understanding is that is not allowed within a patch set.
+> > > > >
+> > > > > > Why split the patches instead of going direct to the new helper?
+> > > > >
+> > > > > It's for backporting to make it easier. (I deliberately left the context above)
+> > > > >
+> > > > > I can fold them if maintainers think it's okay to do.
+> > > > >
+> > > >
+> > > > Not sure what the constraints are on backporting, but wouldn't it be
+> > > > simpler and cleaner to backport the new helper?
+> > >
+> > > Logically (and ideally) it would be three different patches:
+> > >  1) introduce helper
+> > >  2) use helper
+> > >  3) fix places where it's needed to be done
+> > >
+> > > But the above scheme doesn't fit backporting idea (we don't backport new
+> > > features and APIs without really necessity). So, the options left are:
+> > >
+> > > Option a: One patch (feels a bit like above)
+> > > Option b: Two patches like in this series (yes, you are correct about
+> > >           disadvantages)
+> > >
+> > > > But, as you say, it is the maintainers' call.
+>
+> > Third option is to backport this patch but apply the helper
+> > immediately to master.
+>
+> If I got you correctly, you want to have two patches, one for
+> backporting and one for current, correct? But how can we backport
+> something which has never been upstreamed?
+>
 
-> Commit 013c1667cf78 ("kallsyms: refactor
-> {,module_}kallsyms_on_each_symbol") replaced the return inside the
-> nested loop with a break, changing the semantics of the function: the
-> break only exits the innermost loop, so the code continues iterating the
-> symbols of the next module instead of exiting.
-> 
-> Fixes: 013c1667cf78 ("kallsyms: refactor {,module_}kallsyms_on_each_symbol")
-> Signed-off-by: Jon Mediero <jmdr@disroot.org>
+Well we would not technically backport anything - there would be one
+patch for mainline and a separate fix for stable.
 
-Reviewed-by: Miroslav Benes <mbenes@suse.cz>
-
-M
+Bart
