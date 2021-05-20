@@ -2,94 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDCFA38AEA4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:41:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3660438AEA6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:42:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242596AbhETMnG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:43:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58188 "EHLO
+        id S239643AbhETMnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:43:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58874 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241572AbhETMlk (ORCPT
+        with ESMTP id S242525AbhETMms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:41:40 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FB7C04FF23
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:00:59 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id j14so15639307wrq.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:00:59 -0700 (PDT)
+        Thu, 20 May 2021 08:42:48 -0400
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5565CC056482
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:53 -0700 (PDT)
+Received: by mail-wr1-x436.google.com with SMTP id q5so17382585wrs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HYp3jg3sRXQlLbxRQ+kLrMqD1BSTvzaOONIVK3wuGQ4=;
-        b=LvW0t1skB6XJu8twERfPKSNy3XvylYIG0stcsLic9SOmmZk4ZzcN7FQwTGNICONhPH
-         9sBNtHdVHQ/zpECKLYw8DuYLbqbZlOOGd2svy36oQsF7G9cwFt1ckKpDFBPfAlr/sMw9
-         XG4HQWchOkNZfCHoeXXllE06rfc8czeAGL0DDfKgLxptKCMfplZfTssn2qBrwNXHJhlH
-         +mbtBYS9SSgMEr1/M6e6DILJ7xdxoI2O2r5OJPOU6B4u1yxlKKXNBFjsbPLcicl7wpoF
-         +090p3gM/wprAjuFf6uZorYL+HX/88AEFJBrYPqpaBf4xgEVVS8hJR3vBwMUcp7+hz5H
-         4NJQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ObgmrN92NxTDRRCctMyGxQK2RJSjpicdlYhfFmhnPOY=;
+        b=e1Gdj9CLqOqawdIr13q6OgyxO0r08kxS9aPOdeuBFlQLEaNvhURhySVJXWRCR7quIm
+         B9EyY2yaZnu5pabaTTGQjl6BsbRpistLCdagKzzvp9lKgtFgjH+P8Zv35Y0JKpzXup6h
+         EfUwsQYRd7KL7cbW5b/dCgln8KCfNbFceO5cY6hyVj/2oEPGzxuAzzo/clK7R7z/FaEm
+         yFtLm+AgIIGMtPOMuiAyBhp/ytZ+3ygswUC07rYa9TKdEqMiYy63rFy7yNoJJvcWU/WU
+         +wEMLio5C3w2nkNvFiRDYtmVF9fxrA6P1eKkRaeEhfaytsmoF7F/0fTo7KXvHtP8Se29
+         O2Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HYp3jg3sRXQlLbxRQ+kLrMqD1BSTvzaOONIVK3wuGQ4=;
-        b=kap8qS9ubsYI/37r6qxS4JCuXI7grHxfHp+cjC0i5rK6hiPTrVyLwI99TSt4gvZWb0
-         7hmnZ+t+C+t8Ih6F2HTx6SAZLJJ/Y0vi4ec8SN3MGaa0ZTwY6XqE2brJsl+L+D4GEFo0
-         42K+qfDhf13SZshYFz2Vmnz5zkcfLZ031XNGG17kr0kRzyrVMAap+vyLU1ChJCVmZ5oA
-         MQRnfZE7BZldk2eWrI1q71juCzQOESGNX5g+akWQm4JH1ZPjlBT+88Phb+V9vLKK/HuL
-         FnTkj4IcOturMt4JmniNLF0qbP2u7KG+S8zO1bYKqatzFvlXhdYW0SK1DHcAzuMQIxZP
-         3Hdg==
-X-Gm-Message-State: AOAM531pOdkYSlv+UvGTtWZM8whH8Fg3fSJFRZaIaxL06lpXhVAarxp6
-        FrmngcI5/nCVFf+0f0JaGGYFeA==
-X-Google-Smtp-Source: ABdhPJwMLZkhMNYQ7r+3ls/lWFpf6jloKJdYaspRvc9HDwaHg4G4iL1cIJ2pYtC94tQgwudmdRIkbg==
-X-Received: by 2002:adf:f5c7:: with SMTP id k7mr3871348wrp.293.1621512058279;
-        Thu, 20 May 2021 05:00:58 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ObgmrN92NxTDRRCctMyGxQK2RJSjpicdlYhfFmhnPOY=;
+        b=rNBlPw6UaKLNH0HufvZyctM6T6mH7+3SKa/+TcUr5hIQ93HZ9bdrJIORPsMp2CZ2zJ
+         zDoM9aIx9pDxgcfjeVQUN0w/u2O5JukN43A8TA6S2E8PnD0A3NbCi0XJWiv9M3L12saI
+         MjrqFJ1IWpPc0vYSVkURPiV57ingMeDMvMgZiX8JnD/jBPpsMqGMsiL+djJF6U8CvwIf
+         aT0ON6ISNK2lMLGBig81c2SWhylP4wiDeEp5Vo3PB3yA7W6yO9kh7CPLQf5nZ7E+jDTz
+         bB4s90YBjqPxg//tMFRs6fskKqDxX0nzy9YjZ7hPsOAgNwmhu/jbV4Awpg1BXT+sZ4H6
+         vKOg==
+X-Gm-Message-State: AOAM530f+XQAQu0S6bE7qC2fUMov88TAWwvQZwLr34k92lhCsFO7MqN6
+        IfIIj84O8NLB/3fMBYAhs46YPQ==
+X-Google-Smtp-Source: ABdhPJxRWZEylxmqK9DM4vAaGp5PwNdLCjcyoyxoDr48TQ06C36yd7o4cMxzmpLrwhXfOi6gcFYN7w==
+X-Received: by 2002:adf:f54b:: with SMTP id j11mr3679400wrp.376.1621512171931;
+        Thu, 20 May 2021 05:02:51 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id s199sm8848269wme.43.2021.05.20.05.00.57
+        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.02.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:00:57 -0700 (PDT)
+        Thu, 20 May 2021 05:02:51 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Anton Altaparmakov <anton@tuxera.com>,
-        linux-ntfs-dev@lists.sourceforge.net
-Subject: [PATCH 15/15] fs: ntfs: runlist: File headers are not good candidates for kernel-doc
-Date:   Thu, 20 May 2021 13:00:43 +0100
-Message-Id: <20210520120043.3462759-16-lee.jones@linaro.org>
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Chandan Uddaraju <chandanu@codeaurora.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org, Evan Quan <evan.quan@amd.com>,
+        Fabien Dessenne <fabien.dessenne@st.com>,
+        freedreno@lists.freedesktop.org,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Jerome Glisse <glisse@freedesktop.org>,
+        Krishna Manikandan <mkrishn@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-media@vger.kernel.org, Luben Tuikov <luben.tuikov@amd.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Vincent Abriou <vincent.abriou@st.com>
+Subject: [PATCH 00/38] Rid W=1 warnings from GPU
+Date:   Thu, 20 May 2021 13:02:10 +0100
+Message-Id: <20210520120248.3464013-1-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520120043.3462759-1-lee.jones@linaro.org>
-References: <20210520120043.3462759-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
- fs/ntfs/runlist.c:22: warning: Function parameter or member 'base' not described in 'ntfs_rl_mm'
- fs/ntfs/runlist.c:22: warning: Function parameter or member 'dst' not described in 'ntfs_rl_mm'
- fs/ntfs/runlist.c:22: warning: Function parameter or member 'src' not described in 'ntfs_rl_mm'
- fs/ntfs/runlist.c:22: warning: Function parameter or member 'size' not described in 'ntfs_rl_mm'
+Lee Jones (38):
+  drm/mediatek/mtk_disp_color: Strip incorrect doc and demote header
+  drm/mediatek/mtk_disp_gamma: Strip and demote non-conformant
+    kernel-doc header
+  drm/radeon/radeon_cs: Fix incorrectly documented function
+    'radeon_cs_parser_fini'
+  drm/mediatek/mtk_disp_ovl: Strip and demote non-conformant header
+  drm/mediatek/mtk_disp_rdma: Strip and demote non-conformant kernel-doc
+    header
+  drm/sti/sti_hdmi_tx3g4c28phy: Provide function names for kernel-doc
+    headers
+  drm/sti/sti_hda: Provide missing function names
+  drm/sti/sti_tvout: Provide a bunch of missing function names
+  drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
+  drm/amd/amdgpu/amdgpu_ids: Correct some function name disparity
+  drm/amd/amdgpu/amdgpu_debugfs: Fix a couple of misnamed functions
+  drm/amd/amdgpu/amdgpu_gmc: Fix a little naming related doc-rot
+  drm/amd/amdgpu/cik_sdma: Fix a few incorrectly named functions
+  drm/amd/amdgpu/gfx_v7_0: Repair function names in the documentation
+  drm/msm/disp/dpu1/dpu_encoder_phys_cmd: Remove unused variable
+    'cmd_enc'
+  drm/amd/amdgpu/si_dma: Fix some function name disparity
+  drm/amd/amdgpu/dce_v6_0: Repair function name of
+    'si_get_number_of_dram_channels()'
+  drm/msm/disp/dpu1/dpu_hw_interrupts: Demote a bunch of kernel-doc
+    abuses
+  drm/radeon/cik: Fix incorrectly named function 'cik_irq_suspend()'
+  drm/radeon/radeon_vm: Fix function naming disparities
+  drm/amd/include/aldebaran_ip_offset: Mark top-level IP_BASE as
+    __maybe_unused
+  drm/msm/disp/dpu1/dpu_plane: Fix a couple of naming issues
+  drm/amd/amdgpu/gmc_v7_0: Fix potential copy/paste issue
+  drm/amd/amdgpu/mmhub_v9_4: Fix naming disparity with
+    'mmhub_v9_4_set_fault_enable_default()'
+  drm/msm/msm_gem: Demote kernel-doc abuses
+  drm/amd/amdgpu/gmc_v10_0: Fix potential copy/paste issue
+  drm/msm/dp/dp_catalog: Correctly document param 'dp_catalog'
+  drm/msm/dp/dp_link: Fix some potential doc-rot
+  drm/radeon/r100: Realign doc header with function
+    'r100_cs_packet_parse_vline()'
+  drm/amd/amdgpu/gfx_v9_4_2: Mark functions called by reference as
+    static
+  drm/amd/amdgpu/sdma_v2_4: Correct misnamed function
+    'sdma_v2_4_ring_emit_hdp_flush()'
+  drm/amd/amdgpu/sdma_v4_0: Realign functions with their headers
+  drm/amd/amdgpu/sdma_v5_0: Fix typo in function name
+  drm/amd/amdgpu/amdgpu_vce: Fix a few incorrectly named functions
+  drm/amd/amdgpu/sdma_v5_2: Repair typo in function name
+  drm/amd/amdgpu/vcn_v1_0: Fix some function naming disparity
+  drm/amd/amdgpu/gfx_v10_0: Demote kernel-doc abuse
+  drm/amd/amdgpu/smuio_v13_0: Realign
+    'smuio_v13_0_is_host_gpu_xgmi_supported()' header
 
-Cc: Anton Altaparmakov <anton@tuxera.com>
-Cc: linux-ntfs-dev@lists.sourceforge.net
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- fs/ntfs/runlist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c   |  4 +--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gmc.c       |  4 +--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c       |  8 ++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vce.c       | 10 +++---
+ drivers/gpu/drm/amd/amdgpu/cik_sdma.c         |  8 ++---
+ drivers/gpu/drm/amd/amdgpu/dce_v6_0.c         |  2 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v10_0.c        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/gfx_v7_0.c         |  6 ++--
+ drivers/gpu/drm/amd/amdgpu/gfx_v9_4_2.c       | 14 ++++----
+ drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c         |  2 +-
+ drivers/gpu/drm/amd/amdgpu/mmhub_v9_4.c       |  2 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v2_4.c        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v4_0.c        |  4 +--
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/sdma_v5_2.c        |  2 +-
+ drivers/gpu/drm/amd/amdgpu/si_dma.c           |  6 ++--
+ drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c      |  2 +-
+ drivers/gpu/drm/amd/amdgpu/vcn_v1_0.c         |  4 +--
+ .../gpu/drm/amd/include/aldebaran_ip_offset.h |  2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_color.c     |  3 +-
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c     |  4 +--
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |  3 +-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |  4 +--
+ .../drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c  |  4 ---
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c | 32 +++++++++----------
+ drivers/gpu/drm/msm/disp/dpu1/dpu_plane.c     |  4 +--
+ drivers/gpu/drm/msm/dp/dp_catalog.c           |  2 +-
+ drivers/gpu/drm/msm/dp/dp_link.c              |  6 ++--
+ drivers/gpu/drm/msm/msm_gem.c                 |  4 +--
+ drivers/gpu/drm/radeon/cik.c                  |  2 +-
+ drivers/gpu/drm/radeon/r100.c                 |  2 +-
+ drivers/gpu/drm/radeon/radeon_cs.c            |  2 +-
+ drivers/gpu/drm/radeon/radeon_vm.c            |  4 +--
+ drivers/gpu/drm/sti/sti_hda.c                 |  6 ++--
+ drivers/gpu/drm/sti/sti_hdmi_tx3g4c28phy.c    |  4 +--
+ drivers/gpu/drm/sti/sti_hqvdp.c               |  2 +-
+ drivers/gpu/drm/sti/sti_tvout.c               | 18 +++++------
+ 38 files changed, 92 insertions(+), 102 deletions(-)
 
-diff --git a/fs/ntfs/runlist.c b/fs/ntfs/runlist.c
-index 6c7822cdf3ac1..b92fc781f59d7 100644
---- a/fs/ntfs/runlist.c
-+++ b/fs/ntfs/runlist.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * runlist.c - NTFS runlist handling code.  Part of the Linux-NTFS project.
-  *
-  * Copyright (c) 2001-2007 Anton Altaparmakov
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Chandan Uddaraju <chandanu@codeaurora.org>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Evan Quan <evan.quan@amd.com>
+Cc: Fabien Dessenne <fabien.dessenne@st.com>
+Cc: freedreno@lists.freedesktop.org
+Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+Cc: Jerome Glisse <glisse@freedesktop.org>
+Cc: Krishna Manikandan <mkrishn@codeaurora.org>
+Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-media@vger.kernel.org
+Cc: Luben Tuikov <luben.tuikov@amd.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: Stephen Boyd <swboyd@chromium.org>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Vincent Abriou <vincent.abriou@st.com>
 -- 
 2.31.1
 
