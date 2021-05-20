@@ -2,105 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59D2138AD0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:56:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9A738ACCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241463AbhETLw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:52:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242938AbhETLsn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:48:43 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C004CC06138C;
-        Thu, 20 May 2021 03:15:34 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id z13so23688287lft.1;
-        Thu, 20 May 2021 03:15:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7aih/d9855v20nIT+U7ZGnplm0nKULD9g48GJ8t3Fc4=;
-        b=XpCvTFvkUZMZKmbL0+fpxbM24MMpjQGwQ07dN2rzc30AXj0c5XvZ1pBV9QSbA8JqcI
-         gwkWFlIv1LIZPKaMNrRqARFzk1OmiqW5eepN9euCwKdEE7qxc+pI7Vigf6EHLp4zmQEq
-         WX4rYZZrZF3hM0Oze7xDsFHR0eXL/E1XJmzgJh0JCLS5I+cVheSdk7xTuXs4gQt5/jc3
-         JH7W895ElWhxzggpWUs7DavKkRoY0s2X7F1kQzwCoYgTQnW9n2231qsmOH+2H9Zj4ntR
-         865bwangq/WyEnQmb3UM4S2bgAIZmZymg9vfin94XCNryEASAnWtMGrWvFOuw/nsjHLr
-         Ihmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7aih/d9855v20nIT+U7ZGnplm0nKULD9g48GJ8t3Fc4=;
-        b=V+hi0qKBy1kvR2rfnLAGjOOiKZa4SIP8CjzNDatDwnPaHRk3jowUAKI4T1wxvm96CG
-         lSU909MHnK1Rurfu6iqNpEZt7RajcZlp7VRWo0qiR+DOFpVesH4fbhNrSjIAemEM2lGR
-         tV2ojfhCtAk3tE+ugTkT3N19VYVZr8ZMy0Ni33Q7WA6E/+ckFnDTK91QYkp7HDexC620
-         CCIrqxjniDHOfQBkJslLArN79Stvi+iqi23Z8j/GzeyFpsTmOqs2TQEC4gS1wgGDfZ9K
-         MR5evEt9qxTsPUGhcQ+zUkOjP/djnxoKsTUgRGc3R83198dQCF1heBvbIUHX5B75xs03
-         yT4w==
-X-Gm-Message-State: AOAM53068GF4wCbum/7Ghd/MQvVA0bVIFEYCOnl5GjOZnsEAGHbXEbQY
-        ZM6IB2r+/Iz05pWJ2YJuEsIGKoXtyyVgOu8Eg3I=
-X-Google-Smtp-Source: ABdhPJw1AXKmS8ULiIJu5WsnA6PZ5Cp6w5T/JRJQQHu8DK50jRaoxHpKcGlftGbj8SyvryF8zRNtnr7NI6fXZEuYJpQ=
-X-Received: by 2002:ac2:4ed9:: with SMTP id p25mr2856096lfr.576.1621505733022;
- Thu, 20 May 2021 03:15:33 -0700 (PDT)
+        id S242931AbhETLsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:48:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45836 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241733AbhETLZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:25:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B0F61441;
+        Thu, 20 May 2021 10:16:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621505807;
+        bh=CNpVJE3RYe0c2aFu09c+Q6PiGWS30OlaJEezwJN5FyA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FrifPBqYl97wkhjbu0C1WYT9XYbJjq+dXoI+goHcgUxbOBMCkgHSIsisXCGHCOd+V
+         9/uDX4pWVsJ7/4gWYua6WQVnoGsvGfjpiyHgLrip0Ay+I2hEeUhPlS6eg4DN/EJcxP
+         7rZmpiAAd+XuFWzPCOjETwtSjwyDHowF/0jg6o/bLN33iPLVZ7ifjVWL7eGyMgWbyt
+         oDr4uaXemk29XsbKlTVtc3nYo5ab8p8pKnb1b4DPU9ROo8CkEhsClmJQMjC0CVZSeR
+         CO3xRolOhRwpZF5fbmXPQnseN22EwZ7LRA/n9nJ8q3Bjefs1a5XEKGQQ9Tmct08R1F
+         22q60Emo0Zkqw==
+Date:   Thu, 20 May 2021 11:16:41 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
+ SCHED_DEADLINE
+Message-ID: <20210520101640.GA10065@willie-the-truck>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-14-will@kernel.org>
+ <YKOU9onXUxVLPGaB@google.com>
+ <20210518102833.GA7770@willie-the-truck>
+ <YKObZ1GcfVIVWRWt@google.com>
+ <20210518105951.GC7770@willie-the-truck>
+ <YKO+9lPLQLPm4Nwt@google.com>
+ <YKYoQ0ezahSC/RAg@localhost.localdomain>
 MIME-Version: 1.0
-References: <20210520093949.511471-1-andrew@aj.id.au>
-In-Reply-To: <20210520093949.511471-1-andrew@aj.id.au>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 20 May 2021 15:45:20 +0530
-Message-ID: <CABJPP5DHgq2gA7K-PiWK6UTx7t8zLaFuz1LCt9eNZPBs3u+hKQ@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: checkpatch: Tweak BIT() macro include
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        openbmc@lists.ozlabs.org, Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKYoQ0ezahSC/RAg@localhost.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 3:10 PM Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> While include/linux/bitops.h brings in the BIT() macro, it was moved to
-> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
-> Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
->
-> Since that commit BIT() has moved again into include/vdso/bits.h via
-> commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
->
-> I think the move to the vDSO header can be considered an implementation
-> detail, so for now update the checkpatch documentation to recommend use
-> of include/linux/bits.h.
->
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Hi Juri,
 
-Looks good to me. Thanks.
+On Thu, May 20, 2021 at 11:13:39AM +0200, Juri Lelli wrote:
+> Apologies for the delay in replying.
 
-Acked-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Not at all!
 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> ---
->  Documentation/dev-tools/checkpatch.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> index 51fed1bd72ec..59fcc9f627ea 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-> @@ -472,7 +472,7 @@ Macros, Attributes and Symbols
->
->    **BIT_MACRO**
->      Defines like: 1 << <digit> could be BIT(digit).
-> -    The BIT() macro is defined in include/linux/bitops.h::
-> +    The BIT() macro is defined via include/linux/bits.h::
->
->        #define BIT(nr)         (1UL << (nr))
->
-> --
-> 2.30.2
->
+> On 18/05/21 13:19, Quentin Perret wrote:
+> > On Tuesday 18 May 2021 at 11:59:51 (+0100), Will Deacon wrote:
+> > > On Tue, May 18, 2021 at 10:48:07AM +0000, Quentin Perret wrote:
+> > > > On Tuesday 18 May 2021 at 11:28:34 (+0100), Will Deacon wrote:
+> > > > > I don't have strong opinions on this, but I _do_ want the admission via
+> > > > > sched_setattr() to be consistent with execve(). What you're suggesting
+> > > > > ticks that box, but how many applications are prepared to handle a failed
+> > > > > execve()? I suspect it will be fatal.
+> > > > 
+> > > > Yep, probably.
+> > > > 
+> > > > > Probably also worth pointing out that the approach here will at least
+> > > > > warn in the execve() case when the affinity is overridden for a deadline
+> > > > > task.
+> > > > 
+> > > > Right so I think either way will be imperfect, so I agree with the
+> > > > above.
+> > > > 
+> > > > Maybe one thing though is that, IIRC, userspace _can_ disable admission
+> > > > control if it wants to. In this case I'd have no problem with allowing
+> > > > this weird behaviour when admission control is off -- the kernel won't
+> > > > provide any guarantees. But if it's left on, then it's a different
+> > > > story.
+> > > > 
+> > > > So what about we say, if admission control is off, we allow execve() and
+> > > > sched_setattr() with appropriate warnings as you suggest, but if
+> > > > admission control is on then we fail both?
+> > > 
+> > > That's an interesting idea. The part that I'm not super keen about is
+> > > that it means admission control _also_ has an effect on the behaviour of
+> > > execve()
+> > 
+> > Right, that's a good point. And it looks like fork() behaves the same
+> > regardless of admission control being enabled or not -- it is forbidden
+> > from DL either way. So I can't say there is a precedent :/
+> > 
+> > > so practically you'd have to have it disabled as long as you
+> > > have the possibility of 32-bit deadline tasks anywhere in the system,
+> > > which impacts 64-bit tasks which may well want admission control enabled.
+> > 
+> > Indeed, this is a bit sad, but I don't know if the kernel should pretend
+> > it can guarantee to meet your deadlines and at the same time allow to do
+> > something that wrecks the underlying theory.
+> > 
+> > I'd personally be happy with saying that admission control should be
+> > disabled on these dumb systems (and have that documented), at least
+> > until DL gets proper support for affinities. ISTR there was work going
+> > in that direction, but some folks in the CC list will know better.
+> > 
+> > @Juri, maybe you would know if that's still planned?
+> 
+> I won't go as far as saying planned, but that is still under "our" radar
+> for sure. Daniel was working on it, but I don't think he had any time to
+> resume that bit of work lately.
+> 
+> So, until we have that, I think we have been as conservative as we could
+> for this type of decisions. I'm a little afraid that allowing
+> configuration to break admission control (even with a non fatal warning
+> is emitted) is still risky. I'd go with fail hard if AC is on, let it
+> pass if AC is off (supposedly the user knows what to do). But I'm not
+> familiar with the mixed 32/64 apps usecase you describe, so I might be
+> missing details.
+
+Ok, thanks for the insight. In which case, I'll go with what we discussed:
+require admission control to be disabled for sched_setattr() but allow
+execve() to a 32-bit task from a 64-bit deadline task with a warning (this
+is probably similar to CPU hotplug?).
+
+I'll update that for v8, and this patch will disappear.
+
+Will
