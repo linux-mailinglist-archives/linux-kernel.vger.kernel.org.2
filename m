@@ -2,193 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16B1A38AE53
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE2E438AE59
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233757AbhETMeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:34:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
+        id S232614AbhETMfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:35:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241205AbhETMe1 (ORCPT
+        with ESMTP id S236250AbhETMfP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:34:27 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D35CC049EB8;
-        Thu, 20 May 2021 04:40:42 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id f12so19319276ljp.2;
-        Thu, 20 May 2021 04:40:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=W1iYG6kbUe5nK7eqeY/6xIuOqZtwvfU9nh1Ly+2R88I=;
-        b=TY+Kgu8IT5hYJYaCLKDo15fgh4ixBEDL3dujMvPydRe9zNoPlRgZX64Sg5tlztCI2R
-         bzUtAdfZ9vmrjpTBVyWjAfJ9oDMqD0CZc2nFSgjD9Zsp9dTRKzICUb78Vb0rV7W5LAQy
-         qkHM4sDzE8sX4NJXgQprKC6Rslty5W7ykWZNPLMSaTDTOKNX7cOny9o8QeUBW0KTvijk
-         L2rI7W/t+ki6/18dSx0wwJC/P427aAw7z3wahSpWyfbEqfP4UnIdqO4qXCi2pqlkbvyG
-         SZhDD757sTMYKwhUV/sSWa9zVIoFlLj8QPCfL0ctY5SgxdRHRGYofd6qYO62ka2se85U
-         elHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=W1iYG6kbUe5nK7eqeY/6xIuOqZtwvfU9nh1Ly+2R88I=;
-        b=TZWDrLuUPE6JUR24LOJ4wkFSBSwzyW6nV/ll5q9kxXCzZecWLhbs3NDC7rD3OPOd4k
-         mqp526wfGwdgEs9/6UHJkxpNr6n2c2C3g0oWLZ8I5ymQpDxvX04EGdlH86h8CfBVeB+l
-         HKMsDYPhFBs17cYNCuAfdZI/KZae2bM5LSCUlm1Q6bVwAfASWoBc65CRTCbtZyJ60z1P
-         hBKxH34MyTVSwOAu7aTp1OeYhF7hmD3iqTCIaL8EHvfd1sQgiyFpQirVwjZwrQ64pPiQ
-         mOsynxGRywDuWjhJMhi+v89OmACVa5YHJ2P+2sXc4g0TgCa7qM80q1Ftz9iM5ADMR1Fz
-         bX3g==
-X-Gm-Message-State: AOAM531Rn/SebEvkEmA8gO5dOQsTIqXu2uUmQ0PaTyAPo0v51g7RymXS
-        WyWZOWqMgk7ch4kIUzVnOurjoog3e4UwkmwCEd7k1Wjt
-X-Google-Smtp-Source: ABdhPJzgyIseVFaqkWWbLmI5/gM92T66y1xoOEKZghJ6yA9kN/FuKODImcvFV0Oc9AsPjwENSYgHtzmFfhY+Z5mLIEw=
-X-Received: by 2002:a2e:b819:: with SMTP id u25mr2701365ljo.182.1621510840603;
- Thu, 20 May 2021 04:40:40 -0700 (PDT)
+        Thu, 20 May 2021 08:35:15 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A58EC061359;
+        Thu, 20 May 2021 04:42:57 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id C76E82224A;
+        Thu, 20 May 2021 13:42:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621510974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=laQkl76GgvzyrBRdNUW0HfGHzeX9yJiMLdDxt+nksGs=;
+        b=f/cbfz/WtsW6H+gjb3KC7RqH9Rqlfhh4lGZl9r+9dGil5gi8NeIjKYIk01w1l5MYHJbBgh
+        9JCb70+fYTUdEVTwooVkPQnDI9kjxIIqFsv5RVTNJKEdzrY/Tdsv/BVt+SaAb0cUf+gwa9
+        umIH6/1q5YZ+ZkIJMwKDyA9bUGN1alM=
 MIME-Version: 1.0
-References: <20210518133935.571298-1-stephan@gerhold.net> <20210518133935.571298-2-stephan@gerhold.net>
- <ac04821e-359d-aaaa-7e07-280156f64036@canonical.com> <YKPWgSnz7STV4u+c@gerhold.net>
- <8b14159f-dca9-a213-031f-83ab2b3840a4@canonical.com> <YKTHXzUhcYa5YJIs@gerhold.net>
- <10b3a50e-877c-d5b1-3e35-e5dff4ef53d8@canonical.com>
-In-Reply-To: <10b3a50e-877c-d5b1-3e35-e5dff4ef53d8@canonical.com>
-From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
-Date:   Thu, 20 May 2021 20:40:29 +0900
-Message-ID: <CACwDmQCQQpLKeaRxfxXYqSty3YhpZ9y7LNxgkKCBQ=YJiAk1cg@mail.gmail.com>
-Subject: Re: [linux-nfc] Re: [PATCH 2/2] nfc: s3fwrn5: i2c: Enable optional
- clock from device tree
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 20 May 2021 13:42:54 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: Re: [PATCH 1/2] gpio: regmap: Support few IC specific operations
+In-Reply-To: <09091e75157ea28dcad1605008532016304356a4.1621509932.git.matti.vaittinen@fi.rohmeurope.com>
+References: <09091e75157ea28dcad1605008532016304356a4.1621509932.git.matti.vaittinen@fi.rohmeurope.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <7d6f71e0a79e6ccd2a9f69be189993a9@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 12:58 AM Krzysztof Kozlowski
-<krzysztof.kozlowski@canonical.com> wrote:
->
-> On 19/05/2021 04:07, Stephan Gerhold wrote:
-> > On Tue, May 18, 2021 at 11:25:55AM -0400, Krzysztof Kozlowski wrote:
-> >> On 18/05/2021 11:00, Stephan Gerhold wrote:
-> >>> On Tue, May 18, 2021 at 10:30:43AM -0400, Krzysztof Kozlowski wrote:
-> >>>> On 18/05/2021 09:39, Stephan Gerhold wrote:
-> >>>>> s3fwrn5 has a NFC_CLK_REQ output GPIO, which is asserted whenever
-> >>>>> the clock is needed for the current operation. This GPIO can be either
-> >>>>> connected directly to the clock provider, or must be monitored by
-> >>>>> this driver.
-> >>>>>
-> >>>>> As an example for the first case, on many Qualcomm devices the
-> >>>>> NFC clock is provided by the main PMIC. The clock can be either
-> >>>>> permanently enabled (clocks = <&rpmcc RPM_SMD_BB_CLK2>) or enabled
-> >>>>> only when requested through a special input pin on the PMIC
-> >>>>> (clocks = <&rpmcc RPM_SMD_BB_CLK2_PIN>).
-> >>>>>
-> >>>>> On the Samsung Galaxy A3/A5 (2015, Qualcomm MSM8916) this mechanism
-> >>>>> is used with S3FWRN5's NFC_CLK_REQ output GPIO to enable the clock
-> >>>>> only when necessary. However, to make that work the s3fwrn5 driver
-> >>>>> must keep the RPM_SMD_BB_CLK2_PIN clock enabled.
-> >>>>
-> >>>> This contradicts the code. You wrote that pin should be kept enabled
-> >>>> (somehow... by driver? by it's firmware?) but your code requests the
-> >>>> clock from provider.
-> >>>>
-> >>>
-> >>> Yeah, I see how that's a bit confusing. Let me try to explain it a bit
-> >>> better. So the Samsung Galaxy A5 (2015) has a "S3FWRN5XS1-YF30", some
-> >>> variant of S3FWRN5 I guess. That S3FWRN5 has a "XI" and "XO" pin in the
-> >>> schematics. "XO" seems to be floating, but "XI" goes to "BB_CLK2"
-> >>> on PM8916 (the main PMIC).
-> >>>
-> >>> Then, there is "GPIO2/NFC_CLK_REQ" on the S3FWRN5. This goes to
-> >>> GPIO_2_NFC_CLK_REQ on PM8916. (Note: I'm talking about two different
-> >>> GPIO2 here, one on S3FWRN5 and one on PM8916, they just happen to have
-> >>> the same number...)
-> >>>
-> >>> So in other words, S3FWRN5 gets some clock from BB_CLK2 on PM8916,
-> >>> and can tell PM8916 that it needs the clock via GPIO2/NFC_CLK_REQ.
-> >>>
-> >>> Now the confusing part is that the rpmcc/clk-smd-rpm driver has two
-> >>> clocks that represent BB_CLK2 (see include/dt-bindings/clock/qcom,rpmcc.h):
-> >>>
-> >>>   - RPM_SMD_BB_CLK2
-> >>>   - RPM_SMD_BB_CLK2_PIN
-> >>>
-> >>> (There are also *_CLK2_A variants but they are even more confusing
-> >>>  and not needed here...)
-> >>>
-> >>> Those end up in different register settings in PM8916. There is one bit
-> >>> to permanently enable BB_CLK2 (= RPM_SMD_BB_CLK2), and one bit to enable
-> >>> BB_CLK2 based on the status of GPIO_2_NFC_CLK_REQ on PM8916
-> >>> (= RPM_SMD_BB_CLK2_PIN).
-> >>>
-> >>> So there is indeed some kind of "AND" inside PM8916 (the register bit
-> >>> and "NFC_CLK_REQ" input pin). To make that "AND" work I need to make
-> >>> some driver (here: the s3fwrn5 driver) enable the clock so the register
-> >>> bit in PM8916 gets set.
-> >>
-> >> Thanks for the explanation, it sounds good. The GPIO2 (or how you call
-> >> it NFC_CLK_REQ) on S3FWRN5 looks like non-configurable from Linux point
-> >> of view. Probably the device firmware plays with it always or at least
-> >> handles it in an unknown way for us.
-> >>
-> >
-> > FWIW, I was looking at some more s3fwrn5 code yesterday and came
-> > across this (in s3fwrn5_nci_rf_configure()):
-> >
-> >       /* Set default clock configuration for external crystal */
-> >       fw_cfg.clk_type = 0x01;
-> >       fw_cfg.clk_speed = 0xff;
-> >       fw_cfg.clk_req = 0xff;
-> >       ret = nci_prop_cmd(info->ndev, NCI_PROP_FW_CFG,
-> >               sizeof(fw_cfg), (__u8 *)&fw_cfg);
-> >       if (ret < 0)
-> >               goto out;
-> >
-> > It does look quite suspiciously like that configures how s3fwrn5 expects
-> > the clock and possibly (fw_cfg.clk_req?) how GPIO2 behaves. But it's not
-> > particularly useful without some documentation for the magic numbers.
->
-> Right, without documentation of FW protocol there is not much we can
-> deduct here. There is no proof even that the comment matches actual code.
->
-> Dear Bongsu,
-> Maybe you could share some details about clock selection?
+Hi Matti,
 
-These configuration values depend on the HW circuit for NFC.
+Am 2021-05-20 13:28, schrieb Matti Vaittinen:
+> The set_config and init_valid_mask GPIO operations are usually very IC
+> specific. Allow IC drivers to provide these custom operations at
+> gpio-regmap registration.
+> 
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> ---
+>  drivers/gpio/gpio-regmap.c  | 49 +++++++++++++++++++++++++++++++++++++
+>  include/linux/gpio/regmap.h | 13 ++++++++++
+>  2 files changed, 62 insertions(+)
+> 
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index 134cedf151a7..315285cacd3f 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -27,6 +27,10 @@ struct gpio_regmap {
+>  	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
+>  			      unsigned int offset, unsigned int *reg,
+>  			      unsigned int *mask);
+> +	int (*set_config)(struct regmap *regmap, void *drvdata,
+> +			  unsigned int offset, unsigned long config);
+> +	int (*init_valid_mask)(struct regmap *regmap, void *drvdata,
+> +				unsigned long *valid_mask, unsigned int ngpios);
 
-There are  two types of fw_cfg.clk_type for N5.
-0x01 : external XTAL ( don't need to control the clock because XTAL
-always supplies
-the NFC clock automatically.)
-0x00 : PLL clock (need to control clock. )
+Maybe we should also make the first argument a "struct gpio_regmap"
+and provide a new gpio_regmap_get_regmap(struct gpio_regmap). Thus
+having a similar api as for the reg_mask_xlate(). Andy?
 
-There are three types of fw_cfg.clk_speed for N5.
-0xFF : for external XTAL
-0x00 : 24M for PLL.
-0x01 : 19.12M for PLL.
+> 
+>  	void *driver_data;
+>  };
+> @@ -39,6 +43,43 @@ static unsigned int gpio_regmap_addr(unsigned int 
+> addr)
+>  	return addr;
+>  }
+> 
+> +static int regmap_gpio_init_valid_mask(struct gpio_chip *gc,
+> +					unsigned long *valid_mask,
+> +					unsigned int ngpios)
+> +{
+> +	struct gpio_regmap *gpio;
+> +	void *drvdata;
+> +
+> +	gpio = gpiochip_get_data(gc);
+> +
+> +	if (!gpio->init_valid_mask) {
+> +		WARN_ON(!gpio->init_valid_mask);
+> +		return -EINVAL;
+> +	}
 
-There are two types of fw_cfg.clk_req for N5.
-0xFF: NFC firmware controls CLK Req when NFC needs the external clock.
-0xF0: NFC firmware doesn't control CLK Req.
+Why not the following?
 
->
-> >
-> > Personally, I just skip all firmware/RF configuration (which works thanks
-> > to commit 4fb7b98c7be3 ("nfc: s3fwrn5: skip the NFC bootloader mode")).
-> > That way, S3FWRN5 just continues using the proper configuration
-> > that was loaded by the vendor drivers at some point. :)
->
-> But isn't that configuration lost after power off?
->
+if (!gpio->init_valid_mask)
+     return 0;
 
-If you skip all firmware/RF configuration, you can use  the preserved
-firmware and
-RF configuration on the chip.
+Thus copying the behavior of gpiolib.
 
->
-> Best regards,
-> Krzysztof
+> +
+> +	drvdata = gpio_regmap_get_drvdata(gpio);
+> +
+> +	return gpio->init_valid_mask(gpio->regmap, drvdata, valid_mask, 
+> ngpios);
+> +}
+> +
+> +static int gpio_regmap_set_config(struct gpio_chip *gc, unsigned int 
+> offset,
+> +				  unsigned long config)
+> +{
+> +	struct gpio_regmap *gpio;
+> +	void *drvdata;
+> +
+> +	gpio = gpiochip_get_data(gc);
+> +
+> +	if (!gpio->set_config) {
+> +		WARN_ON(!gpio->set_config);
+> +		return -EINVAL;
+> +	}
+
+same here, return -ENOTSUPP.
+
+> +
+> +	drvdata = gpio_regmap_get_drvdata(gpio);
+> +
+> +	return gpio->set_config(gpio->regmap, drvdata, offset, config);
+> +}
+> +
+>  static int gpio_regmap_simple_xlate(struct gpio_regmap *gpio,
+>  				    unsigned int base, unsigned int offset,
+>  				    unsigned int *reg, unsigned int *mask)
+> @@ -235,6 +276,8 @@ struct gpio_regmap *gpio_regmap_register(const
+> struct gpio_regmap_config *config
+>  	gpio->reg_clr_base = config->reg_clr_base;
+>  	gpio->reg_dir_in_base = config->reg_dir_in_base;
+>  	gpio->reg_dir_out_base = config->reg_dir_out_base;
+> +	gpio->set_config = config->set_config;
+> +	gpio->init_valid_mask = config->init_valid_mask;
+> 
+>  	/* if not set, assume there is only one register */
+>  	if (!gpio->ngpio_per_reg)
+> @@ -253,6 +296,10 @@ struct gpio_regmap *gpio_regmap_register(const
+> struct gpio_regmap_config *config
+>  	chip->ngpio = config->ngpio;
+>  	chip->names = config->names;
+>  	chip->label = config->label ?: dev_name(config->parent);
+> +	if (gpio->set_config)
+> +		chip->set_config = gpio_regmap_set_config;
+> +	if (gpio->init_valid_mask)
+> +		chip->init_valid_mask = regmap_gpio_init_valid_mask;
+> 
+>  #if defined(CONFIG_OF_GPIO)
+>  	/* gpiolib will use of_node of the parent if chip->of_node is NULL */
+> @@ -280,6 +327,8 @@ struct gpio_regmap *gpio_regmap_register(const
+> struct gpio_regmap_config *config
+>  		chip->direction_output = gpio_regmap_direction_output;
+>  	}
+> 
+> +	gpio_regmap_set_drvdata(gpio, config->drvdata);
+
+I'm wondering if we need the gpio_regmap_set_drvdata() anymore or if
+we can just drop it entirely.
+
+> +
+>  	ret = gpiochip_add_data(chip, gpio);
+>  	if (ret < 0)
+>  		goto err_free_gpio;
+> diff --git a/include/linux/gpio/regmap.h b/include/linux/gpio/regmap.h
+> index 334dd928042b..c382a3caefc3 100644
+> --- a/include/linux/gpio/regmap.h
+> +++ b/include/linux/gpio/regmap.h
+> @@ -33,10 +33,18 @@ struct regmap;
+>   * @ngpio_per_reg:	Number of GPIOs per register
+>   * @irq_domain:		(Optional) IRQ domain if the controller is
+>   *			interrupt-capable
+> + * @drvdata:		(Optional) Pointer to IC specific data which is
+> + *			not used by gpio-remap but is provided "as is" to
+> + *			the driver callback(s).
+> + *
+>   * @reg_mask_xlate:     (Optional) Translates base address and GPIO
+>   *			offset to a register/bitmask pair. If not
+>   *			given the default gpio_regmap_simple_xlate()
+>   *			is used.
+> + * @set_config:		(Optional) hook for all kinds of settings. Uses
+> + *			the same packed config format as generic pinconf.
+> + * @init_valid_mask:	(Optional) routine to initialize @valid_mask, to
+> + *			be used if not all GPIOs are valid.
+>   *
+>   * The ->reg_mask_xlate translates a given base address and GPIO 
+> offset to
+>   * register and mask pair. The base address is one of the given 
+> register
+> @@ -74,10 +82,15 @@ struct gpio_regmap_config {
+>  	int reg_stride;
+>  	int ngpio_per_reg;
+>  	struct irq_domain *irq_domain;
+> +	void *drvdata;
+> 
+>  	int (*reg_mask_xlate)(struct gpio_regmap *gpio, unsigned int base,
+>  			      unsigned int offset, unsigned int *reg,
+>  			      unsigned int *mask);
+> +	int (*set_config)(struct regmap *regmap, void *drvdata,
+> +			  unsigned int offset, unsigned long config);
+> +	int (*init_valid_mask)(struct regmap *regmap, void *drvdata,
+> +				unsigned long *valid_mask, unsigned int ngpios);
+>  };
+> 
+>  struct gpio_regmap *gpio_regmap_register(const struct
+> gpio_regmap_config *config);
+> 
+> base-commit: d07f6ca923ea0927a1024dfccafc5b53b61cfecc
+> --
+> 2.25.4
+
+-michael
