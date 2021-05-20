@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84DF438B6BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:08:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE66038B6C2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhETTJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43712 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234572AbhETTJg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:09:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F98660FE8;
-        Thu, 20 May 2021 19:08:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621537695;
-        bh=z8L4oCBXjvffXYsBtw3x+DRK4fRDIPDgFEx1CMHmpPo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=bWydcwtw1iMbV1+JypJDPdk9CVyD6sIQC76c2/iKwBONip9AfpxVyv2a2jfbvHVEh
-         QGwFuBEvuEZVWOPCZbpIwWACddUQReDqAN4mrJpoWH4hAdkx5FQLASj8Ew5VOdVgpg
-         LpVRu880OHLGkmkpluS8nMpSv0/JZKso3SnO15BcJp3uIur7WoSkl2njWdKHCO0W3h
-         XOG5QUUzsYaV6PdJO1KXuQwHai6Xuaknw+hsmZFKDdck2vt7nJFgLbUjMbIRFuWMcf
-         F4nhPu+0e4FGaUJuoU1iCyJKcHkWU7Hbjts8pFA2XwBaSatl4LyqPwJO/Mi/9ah8q3
-         jTSCn0iOlNZww==
-Date:   Thu, 20 May 2021 20:08:12 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Jaroslav Kysela <perex@perex.cz>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
-Message-ID: <20210520190812.GF3962@sirena.org.uk>
-References: <20210520175054.28308-1-digetx@gmail.com>
- <20210520175054.28308-3-digetx@gmail.com>
- <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
+        id S236602AbhETTKK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:10:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232667AbhETTKI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 15:10:08 -0400
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DAF4C061574;
+        Thu, 20 May 2021 12:08:46 -0700 (PDT)
+Received: by mail-oi1-x234.google.com with SMTP id y76so8130988oia.6;
+        Thu, 20 May 2021 12:08:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=qHZFdkVC10Rk4v8d8wk9MZUODh6XZ/Y3GEXZqNckb5U=;
+        b=lNOy+B/7FQSLTgP+DMgb+OEqF5PvjT3KhWnrXHO+XJP0girbXNeh0EMLGBUNQxlZki
+         YMSGTJiLYHo+8UP8kVmwTmV4OpJX3NqdARsf91DAAxfF7Vhljct5KRkPWnEMQTi0aG5k
+         SjQqwq0sOQnhAP3Dm355NSEIF9hAT6V5Djc+68QcQe4aYZd50ke+TNQ2vsz0YTWOEoo7
+         FvPUdRm7TS4uV7AzTkU57RjI9usIk4I0QlvLkBNNQ1KBgoEfaG2k5JBeYLQcu878+lGj
+         28qZ41e204AUqoYSGLEbZxtyycEPH42j7cVQx9nm5h7NxHppNTOn7O0tJ/ps50UPNDg/
+         iCqQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qHZFdkVC10Rk4v8d8wk9MZUODh6XZ/Y3GEXZqNckb5U=;
+        b=QDUC20QVmZMovrifWWo5z8Tlxeb1xhV4M90PnJK4mIf65BlTwQ0n8WmtSNtzS5FbzF
+         kpJXoe7edsn+qoopDkTKKDN00WlaIJXF1OOQ6m9bRjsNetCYmvqo6Op3PPa1A4vdKXIr
+         shRFzrxERCelEASPgWewJxIb0hrgJGBnuJSB7SD/D6+XaeH23eqtj+OmbaG7HfAZLg0a
+         8LfpcUahYdGMEIWx3N5YjgHMKqDwB8KM9QKoOQ03MoVoYJ1bRgsZY6Mfpq9Lqt6jjVSI
+         Kqg91zRz6YiLtrRZyMRwixSKVT3RaSzocQmTCJGGsGMZOGZSk6urNkqjKwjKeEPaaMoK
+         WMcg==
+X-Gm-Message-State: AOAM532gw3jz+E4RNZJqPhq9EKxk9DlcakJ+c+GIWznRWDZcDz1p812J
+        bkhpnlEC2bRdcakfuKSIELG2A07exZpURxlr/7w=
+X-Google-Smtp-Source: ABdhPJyrLDTWanoEUak7UWzvt+Za/lfUrq4eGtWiV8ldtaWeXrjDMvf0hHRph7JDX32l7J1wcaenH7U+BS5wJa80+x4=
+X-Received: by 2002:a05:6808:1592:: with SMTP id t18mr2455890oiw.123.1621537725647;
+ Thu, 20 May 2021 12:08:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="m1UC1K4AOz1Ywdkx"
-Content-Disposition: inline
-In-Reply-To: <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
-X-Cookie: Offer void where prohibited by law.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210520120248.3464013-1-lee.jones@linaro.org>
+ <20210520120248.3464013-11-lee.jones@linaro.org> <6869f83f-7876-973b-2db3-8c83cc23daf2@amd.com>
+In-Reply-To: <6869f83f-7876-973b-2db3-8c83cc23daf2@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 20 May 2021 15:08:34 -0400
+Message-ID: <CADnq5_M_VzxKFSL59kViFDVgxQbugisa7FEXhwnxFdj1QHjXQA@mail.gmail.com>
+Subject: Re: [PATCH 10/38] drm/amd/amdgpu/amdgpu_ids: Correct some function
+ name disparity
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Applied.  Thanks!
 
---m1UC1K4AOz1Ywdkx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Alex
 
-On Thu, May 20, 2021 at 09:02:49PM +0200, Jaroslav Kysela wrote:
-> Dne 20. 05. 21 v 19:50 Dmitry Osipenko napsal(a):
-> > Squash all machine drivers into a single-universal one. This reduces
-> > code duplication, eases addition of a new drivers and upgrades older
-> > code to a modern Linux kernel APIs.
-
-> > +static struct snd_soc_card snd_soc_tegra_wm9712 = {
-> > +	.dai_link = &tegra_wm9712_dai,
-> > +	.num_links = 1,
-> > +	.fully_routed = true,
-> > +};
-
-> Please, could you also initialize snd_soc_card->components? It may be useful
-> to pass the codec identification to the user space like:
-
-> .components = "codec:wm9712"
-
-Hrm, if this is important to userspace shouldn't the core be doing
-something by default given that it already knows all the components
-going into the card?
-
-> The passed information should be consistent. You may look into the Intel ASoC
-> drivers for the examples (card->components initialization). There are also
-> hints about the number of connected microphones ("cfg-mic:2" - configuration
-> with 2 microphones) or the codec purpose ("hs:rt711" - headset codec is RT711)
-> etc.
-
-This sort of stuff is more something that the card should layer on top.
-
---m1UC1K4AOz1Ywdkx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCms5sACgkQJNaLcl1U
-h9ASfgf9HkitwSIVjMI1yhKeZnUTrueUtiYwFvJjlEJJnCnrsS2QMufsf1/0q6Bn
-yfQQaL660jHo+gkzvnHz0+c+Ykd7HdPx7YRiwPQG33Sh2kva1MsGXa9Wvh+p+unZ
-4rtVpcmIB3azj+sat9pKqOcjfLA0KVDA+COLeS+Yg6OVMq0RIAw+jQRQ+f4oYrlG
-vqF2+bJe3GmE+N/SrrTpx1yYwnRMNEQKCA7o6e5FjaFJzASTo2XColBvEX29ttnc
-7+Z7PTYRGnVlYWpH1JWY+LBd6UHc7YGGArlPeaxbHLUg/kICqq+jkQKBareaQysU
-0VAdJa/rHULm49mE8NfMa45wGan8lA==
-=P/CB
------END PGP SIGNATURE-----
-
---m1UC1K4AOz1Ywdkx--
+On Thu, May 20, 2021 at 8:04 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 20.05.21 um 14:02 schrieb Lee Jones:
+> > Fixes the following W=3D1 kernel build warning(s):
+> >
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:200: warning: expecting proto=
+type for amdgpu_vm_grab_idle(). Prototype was for amdgpu_vmid_grab_idle() i=
+nstead
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:272: warning: expecting proto=
+type for amdgpu_vm_grab_reserved(). Prototype was for amdgpu_vmid_grab_rese=
+rved() instead
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:337: warning: expecting proto=
+type for amdgpu_vm_grab_used(). Prototype was for amdgpu_vmid_grab_used() i=
+nstead
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:410: warning: expecting proto=
+type for amdgpu_vm_grab_id(). Prototype was for amdgpu_vmid_grab() instead
+> >
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Cc: linux-media@vger.kernel.org
+> > Cc: linaro-mm-sig@lists.linaro.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 8 ++++----
+> >   1 file changed, 4 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_ids.c
+> > index b4971e90b98cf..c7f3aae23c625 100644
+> > --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+> > +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+> > @@ -183,7 +183,7 @@ bool amdgpu_vmid_had_gpu_reset(struct amdgpu_device=
+ *adev,
+> >   }
+> >
+> >   /**
+> > - * amdgpu_vm_grab_idle - grab idle VMID
+> > + * amdgpu_vmid_grab_idle - grab idle VMID
+> >    *
+> >    * @vm: vm to allocate id for
+> >    * @ring: ring we want to submit job to
+> > @@ -256,7 +256,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *=
+vm,
+> >   }
+> >
+> >   /**
+> > - * amdgpu_vm_grab_reserved - try to assign reserved VMID
+> > + * amdgpu_vmid_grab_reserved - try to assign reserved VMID
+> >    *
+> >    * @vm: vm to allocate id for
+> >    * @ring: ring we want to submit job to
+> > @@ -325,7 +325,7 @@ static int amdgpu_vmid_grab_reserved(struct amdgpu_=
+vm *vm,
+> >   }
+> >
+> >   /**
+> > - * amdgpu_vm_grab_used - try to reuse a VMID
+> > + * amdgpu_vmid_grab_used - try to reuse a VMID
+> >    *
+> >    * @vm: vm to allocate id for
+> >    * @ring: ring we want to submit job to
+> > @@ -397,7 +397,7 @@ static int amdgpu_vmid_grab_used(struct amdgpu_vm *=
+vm,
+> >   }
+> >
+> >   /**
+> > - * amdgpu_vm_grab_id - allocate the next free VMID
+> > + * amdgpu_vmid_grab - allocate the next free VMID
+> >    *
+> >    * @vm: vm to allocate id for
+> >    * @ring: ring we want to submit job to
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
