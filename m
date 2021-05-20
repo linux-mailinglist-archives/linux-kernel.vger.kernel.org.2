@@ -2,149 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AE4738B438
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 809DE38B43D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:30:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233900AbhETQau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
+        id S233938AbhETQbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbhETQas (ORCPT
+        with ESMTP id S232078AbhETQbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:30:48 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8BCC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:29:27 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id v12so18303094wrq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:29:27 -0700 (PDT)
+        Thu, 20 May 2021 12:31:43 -0400
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E618C061574;
+        Thu, 20 May 2021 09:30:20 -0700 (PDT)
+Received: by mail-qk1-x734.google.com with SMTP id x8so16794960qkl.2;
+        Thu, 20 May 2021 09:30:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7gQAHjRkLz/zMdR9mZ20XGXZokHUiVVILLkWbVKY8vk=;
-        b=cfxPfL5fE4np3aef6bq9mbEbsf+V7xoFH7lEgZwO4Pdk/oIevk19Q3UyCSV9vCBR57
-         oqDSJZrYGS54dgw1cyxBLzrZ9nUvG4J7evXugn3/Hrkt2MbKDwd4terqRk3pzf997Vak
-         U6KAj9L1Il+SoamKwZJ4AlfDNCbUAwVjuKR+8=
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=3W+WKCOZfAqXxcanQdJX+E4VIil1GeWKxxWHUOqsnD4=;
+        b=HAbBW113TuLa9uF4nGtlHtdoyguK0a0XR8RiCgHJn6OOfAVrEndlerGb9lojxQQU46
+         L+JMqEeBn3zvbZm1g3i1qMk6dF88k2K3E6YwAhiwWSxWq013UYHS81e566F87A6jm0rx
+         WswXOtpOOkAqOcBcEbFJrkHq5CNCzz3oc9WcSnT6xfB+69zbr/as/cRSTLBjCRqARdwH
+         b8MuzNtkv872KFOL3l/iZSxYhK7ZbCeb1gs2OE07mDuVVOtkBRsm6yENj/gm1zYhav2y
+         YDsyfqXvkaPzhNMJ8Q2cKHPL6NsH2AklMxth7IQ0ZwikcS1FAOEJIjZXpUT+4BYm9Nbi
+         1Q2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=7gQAHjRkLz/zMdR9mZ20XGXZokHUiVVILLkWbVKY8vk=;
-        b=fXyPnBnz+7vhbpRBv4f7eqYRqGG7MojNIhwp1iHXBl2ruv/7+Pnwd3cCsHhdAC22h4
-         VajW3QpsUTCOSGa0zp8YlQJiJKPQGrthlJgqiz5135X5C4wdrkHQCPu4rTzQMzi3EoaK
-         rZyBS1t7JiL9GrbZ3uuOTrEkdp7+A9wTWNd4f/NfS9KPmTV4XhSmi4SEn9hQW2eauCjo
-         y9shW5DjESOZFfYCd6HXS66YWDaZpr2Sz5M9DI35nnlJJslbKVqajG90EEYw8g2S2tVH
-         k6OFyLKHxCNjwSc44UlNLqPvJ6gbZflx177TizK3mx/qA6JKFJw8xglG9V/mvD6HW0Dr
-         0YdA==
-X-Gm-Message-State: AOAM533I8H8vn6nhzSf+1jQSRmAq3GSHs7pOnNZDDJ17jrnJrQoygv4c
-        gHDbt068SX37pihRLOiabYI+UQ==
-X-Google-Smtp-Source: ABdhPJx7W+fNXWLlfVnpy0Ca20BF42f6arhZCvq55cuTsYgbnk9UslMHeFLkM6bUwg6sp/BGFgOCqQ==
-X-Received: by 2002:a5d:6683:: with SMTP id l3mr5097252wru.398.1621528165809;
-        Thu, 20 May 2021 09:29:25 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id g4sm3156003wmk.45.2021.05.20.09.29.24
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=3W+WKCOZfAqXxcanQdJX+E4VIil1GeWKxxWHUOqsnD4=;
+        b=V83SUxWcSFbHdOTPgsRwukfI6Wu6iLhjqwFKA6XD2mXxixXym+R8Zd/2R9Q6G5d8Lr
+         lQmKeYPXX8HscPnIL4M4prqoH1p27ixQBlnqMVTKz2VisyHEesZHupKFKzvmTnuSF0Cb
+         k+KfBECDG9MXc5qxJiAJ5jhErnMdJdXRFJaQQeZL+rmVO+zbhD5zhnrbWYMjmPSs5dbs
+         OChW78Sfcz8NgkLqMt/jtsyWKj6+yqBQ4G4enHJQ8do4/xzcMtpHXEdWe/asUXFrAfRR
+         IwYFLf0ZWelv/8XvDDXZgM3JlKHG9rEsQCLDFtUfiHARo/w2NO6nU3/zOK1JUJ44TBSX
+         Laog==
+X-Gm-Message-State: AOAM531GsDCnajKnmVf1arhg6X7bITRKvy5/HDjrcte+k3s0uUlvqls2
+        WYWAk+RUQkYfEMURoQbis3M=
+X-Google-Smtp-Source: ABdhPJx9lJDvWGuOPcMvZ/rfOceGpfyiWsJDD9YtW7iPj7j3dfO07FvRecvEo4/GqqOgyg3OBb0xcg==
+X-Received: by 2002:a37:a254:: with SMTP id l81mr5855956qke.175.1621528219596;
+        Thu, 20 May 2021 09:30:19 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id f16sm2151636qth.79.2021.05.20.09.30.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 09:29:25 -0700 (PDT)
-Date:   Thu, 20 May 2021 18:29:23 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthew Brost <matthew.brost@intel.com>
-Subject: Re: [RFC 2/3] drm/atomic: Call dma_fence_boost() when we've missed a
- vblank
-Message-ID: <YKaOY3AWgHh5kplS@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthew Brost <matthew.brost@intel.com>
-References: <20210519183855.1523927-1-robdclark@gmail.com>
- <20210519183855.1523927-3-robdclark@gmail.com>
+        Thu, 20 May 2021 09:30:19 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 May 2021 12:30:18 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, shy828301@gmail.com,
+        junichi.nomura@nec.com, Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: disable controllers at parse time
+Message-ID: <YKaOmmI8G4DPk+uo@slm.duckdns.org>
+References: <20210512201946.2949351-1-shakeelb@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210519183855.1523927-3-robdclark@gmail.com>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210512201946.2949351-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:38:53AM -0700, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Wed, May 12, 2021 at 01:19:46PM -0700, Shakeel Butt wrote:
+> This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
+> too early usage of static_branch_disable()"). The commit 6041186a3258
+> ("init: initialize jump labels before command line option parsing") has
+> moved the jump_label_init() before parse_args() which has made the
+> commit a3e72739b7a7 unnecessary. On the other hand there are
+> consequences of disabling the controllers later as there are subsystems
+> doing the controller checks for different decisions. One such incident
+> is reported [1] regarding the memory controller and its impact on memory
+> reclaim code.
 > 
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> ---
->  drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+> [1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
 > 
-> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
-> index 560aaecba31b..fe10fc2e7f86 100644
-> --- a/drivers/gpu/drm/drm_atomic_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_helper.c
-> @@ -1435,11 +1435,15 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
->  	int i, ret;
->  
->  	for_each_new_plane_in_state(state, plane, new_plane_state, i) {
-> +		u64 vblank_count;
-> +
->  		if (!new_plane_state->fence)
->  			continue;
->  
->  		WARN_ON(!new_plane_state->fb);
->  
-> +		vblank_count = drm_crtc_vblank_count(new_plane_state->crtc);
-> +
->  		/*
->  		 * If waiting for fences pre-swap (ie: nonblock), userspace can
->  		 * still interrupt the operation. Instead of blocking until the
-> @@ -1449,6 +1453,13 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
->  		if (ret)
->  			return ret;
->  
-> +		/*
-> +		 * Check if we've missed a vblank while waiting, and if we have
-> +		 * signal the fence that it's signaler should be boosted
-> +		 */
-> +		if (vblank_count != drm_crtc_vblank_count(new_plane_state->crtc))
-> +			dma_fence_boost(new_plane_state->fence);
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
 
-I think we should do a lot better here:
-- maybe only bother doing this for single-crtc updates, and only if
-  modeset isn't set. No one else cares about latency.
+Applied to cgroup/for-5.13-fixes.
 
-- We should boost _right_ when we've missed the frame, so I think we
-  should have a _timeout wait here that guesstimates when the vblank is
-  over (might need to throw in a vblank wait if we missed) and then boost
-  immediately. Not wait a bunch of frames (worst case) until we finally
-  decide to boost.
-
-Otherwise I really like this, I think it's about the only real reason i915
-isn't using atomic helpers.
-
-Also adding Matt B for this topic.
--Daniel
-
-> +
->  		dma_fence_put(new_plane_state->fence);
->  		new_plane_state->fence = NULL;
->  	}
-> -- 
-> 2.30.2
-> 
+Thanks.
 
 -- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+tejun
