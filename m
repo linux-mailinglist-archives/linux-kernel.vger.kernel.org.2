@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 910E938A85B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 637CE38A866
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238715AbhETKuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:50:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60508 "EHLO mail.kernel.org"
+        id S238743AbhETKuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:50:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237249AbhETKdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:33:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 091FA61C54;
-        Thu, 20 May 2021 09:53:08 +0000 (UTC)
+        id S237065AbhETKdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:33:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3AEA061C55;
+        Thu, 20 May 2021 09:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504389;
-        bh=dQVMyqFmdJZLV5KZ+KgQETcpsT3j27enl1PaykF2Az0=;
+        s=korg; t=1621504391;
+        bh=o13Mt/lsms794xZ8ZPtyRv9zpO+Y43TGEBGBmRL6zhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RGAxf8HuDEeOT70lI8KefYqd6i36UJ8YsbPBF+AiucX+NzhQDayV3poexHgBy38l/
-         x7jMosq5gcfETNITSoRGzysztarKUHlUlMHJKQSXMxL1zee+WBHKHPpgfY+R0YvqOh
-         BXMO8GTX9odggxgsWpsuP5CBejMvgW51jDjyGBf8=
+        b=jZrRYcvTGDwkmQLUVVWS9ge1WheayKYHHAv0LXtl75nwY+J7a6OZosUgKODw1jLKh
+         z6CnWD0BzcfFk0g2ub1x8gcAiEn1uOMT/7lAfU2XIGTQkpV30s0e/ATwVDV5EXyfRN
+         OVtzPiqFO/QcJ0nqdpkYLCC28ypEMf3D8itn+fWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 223/323] ath9k: Fix error check in ath9k_hw_read_revisions() for PCI devices
-Date:   Thu, 20 May 2021 11:21:55 +0200
-Message-Id: <20210520092127.785891440@linuxfoundation.org>
+Subject: [PATCH 4.14 224/323] powerpc/52xx: Fix an invalid ASM expression (addi used instead of add)
+Date:   Thu, 20 May 2021 11:21:56 +0200
+Message-Id: <20210520092127.822491042@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,56 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Toke Høiland-Jørgensen <toke@redhat.com>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit 7dd9a40fd6e0d0f1fd8e1931c007e080801dfdce ]
+[ Upstream commit 8a87a507714386efc39c3ae6fa24d4f79846b522 ]
 
-When the error check in ath9k_hw_read_revisions() was added, it checked for
--EIO which is what ath9k_regread() in the ath9k_htc driver uses. However,
-for plain ath9k, the register read function uses ioread32(), which just
-returns -1 on error. So if such a read fails, it still gets passed through
-and ends up as a weird mac revision in the log output.
+  AS      arch/powerpc/platforms/52xx/lite5200_sleep.o
+arch/powerpc/platforms/52xx/lite5200_sleep.S: Assembler messages:
+arch/powerpc/platforms/52xx/lite5200_sleep.S:184: Warning: invalid register expression
 
-Fix this by changing ath9k_regread() to return -1 on error like ioread32()
-does, and fix the error check to look for that instead of -EIO.
+In the following code, 'addi' is wrong, has to be 'add'
 
-Fixes: 2f90c7e5d094 ("ath9k: Check for errors when reading SREV register")
-Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
-Reviewed-by: Lorenzo Bianconi <lorenzo@kernel.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210326180819.142480-1-toke@redhat.com
+	/* local udelay in sram is needed */
+  udelay: /* r11 - tb_ticks_per_usec, r12 - usecs, overwrites r13 */
+	mullw	r12, r12, r11
+	mftb	r13	/* start */
+	addi	r12, r13, r12 /* end */
+
+Fixes: ee983079ce04 ("[POWERPC] MPC5200 low power mode")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/cb4cec9131c8577803367f1699209a7e104cec2a.1619025821.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath9k/htc_drv_init.c | 2 +-
- drivers/net/wireless/ath/ath9k/hw.c           | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/platforms/52xx/lite5200_sleep.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-index 66ef5cf16450..88e3b4a4de31 100644
---- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-+++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
-@@ -246,7 +246,7 @@ static unsigned int ath9k_regread(void *hw_priv, u32 reg_offset)
- 	if (unlikely(r)) {
- 		ath_dbg(common, WMI, "REGISTER READ FAILED: (0x%04x, %d)\n",
- 			reg_offset, r);
--		return -EIO;
-+		return -1;
- 	}
- 
- 	return be32_to_cpu(val);
-diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
-index 406b52f114f0..933d4f49d6b0 100644
---- a/drivers/net/wireless/ath/ath9k/hw.c
-+++ b/drivers/net/wireless/ath/ath9k/hw.c
-@@ -285,7 +285,7 @@ static bool ath9k_hw_read_revisions(struct ath_hw *ah)
- 
- 	srev = REG_READ(ah, AR_SREV);
- 
--	if (srev == -EIO) {
-+	if (srev == -1) {
- 		ath_err(ath9k_hw_common(ah),
- 			"Failed to read SREV register");
- 		return false;
+diff --git a/arch/powerpc/platforms/52xx/lite5200_sleep.S b/arch/powerpc/platforms/52xx/lite5200_sleep.S
+index 3a9969c429b3..054f927bfef9 100644
+--- a/arch/powerpc/platforms/52xx/lite5200_sleep.S
++++ b/arch/powerpc/platforms/52xx/lite5200_sleep.S
+@@ -181,7 +181,7 @@ sram_code:
+   udelay: /* r11 - tb_ticks_per_usec, r12 - usecs, overwrites r13 */
+ 	mullw	r12, r12, r11
+ 	mftb	r13	/* start */
+-	addi	r12, r13, r12 /* end */
++	add	r12, r13, r12 /* end */
+     1:
+ 	mftb	r13	/* current */
+ 	cmp	cr0, r13, r12
 -- 
 2.30.2
 
