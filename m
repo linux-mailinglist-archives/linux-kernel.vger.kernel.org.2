@@ -2,78 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551D9389CD1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 957AA389CD4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229554AbhETEya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 00:54:30 -0400
-Received: from mail.thorsis.com ([92.198.35.195]:57549 "EHLO mail.thorsis.com"
+        id S230101AbhETEz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 00:55:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52822 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229449AbhETEy3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 00:54:29 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.thorsis.com (Postfix) with ESMTP id B9FB0ECD
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:53:07 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at mail.thorsis.com
-Received: from mail.thorsis.com ([127.0.0.1])
-        by localhost (mail.thorsis.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 90pMgLC3qNpX for <linux-kernel@vger.kernel.org>;
-        Thu, 20 May 2021 06:53:07 +0200 (CEST)
-Received: by mail.thorsis.com (Postfix, from userid 109)
-        id E2E6D1FB4; Thu, 20 May 2021 06:53:05 +0200 (CEST)
-X-Spam-Level: 
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,NO_RECEIVED,
-        NO_RELAYS autolearn=unavailable autolearn_force=no version=3.4.2
-X-Spam-Report: * -1.9 BAYES_00 BODY: Bayes spam probability is 0 to 1%
-        *      [score: 0.0000]
-        * -0.0 NO_RELAYS Informational: message was not relayed via SMTP
-        * -0.0 NO_RECEIVED Informational: message has no Received headers
-Date:   Thu, 20 May 2021 06:52:50 +0200
-From:   Alexander Dahl <ada@thorsis.com>
-To:     "Xu, Yanfei" <yanfei.xu@windriver.com>
-Cc:     "Russell King (Oracle)" <linux@armlinux.org.uk>, rppt@kernel.org,
-        ardb@kernel.org, linus.walleij@linaro.org,
-        akpm@linux-foundation.org, carver4lio@163.com,
-        tiantao6@hisilicon.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm: make the size of vmalloc in cmdline and meminfo
- uniform
-Message-ID: <YKXrIotnzsHKP+qp@ada-deb-carambola.ifak-system.com>
-Mail-Followup-To: "Xu, Yanfei" <yanfei.xu@windriver.com>,
-        "Russell King (Oracle)" <linux@armlinux.org.uk>, rppt@kernel.org,
-        ardb@kernel.org, linus.walleij@linaro.org,
-        akpm@linux-foundation.org, carver4lio@163.com,
-        tiantao6@hisilicon.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-References: <20210518111254.3820480-1-yanfei.xu@windriver.com>
- <20210518112932.GV12395@shell.armlinux.org.uk>
- <20210518120633.GW12395@shell.armlinux.org.uk>
- <63618f13-07cf-6867-bcb1-7a725e6f3ef4@windriver.com>
- <b115f727-570d-d3c1-2a5b-01ed89c450dd@windriver.com>
+        id S229449AbhETEzY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 00:55:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7D24611AE;
+        Thu, 20 May 2021 04:54:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621486443;
+        bh=L6DSXhHdKQSxlvvlLMaDbmTO96rEstMo7pXyyKUcSAs=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=aGoU80/7a2RBQ+aR0pfWgmb3OyOI2BEWp/+Eh1IMqM5zoZM7dj/23aI8fBuugggxB
+         lzdRqwA5Pe8GFPsQlgw7WjzMOVk372qKOMyvFLJrXDgdlziVWjSBITD0wTmgJo04NH
+         /Ud0QL/V8KLe+Wn2kRdX2d4LUCJw+KpgCPlWvMkX35cHYB3vFMZPIt7w/+42GTyiTZ
+         5ImkUY7ZtQs2bBqhe5ChJSq9UqGjiYkvL+sNgNw8IfWIX2fJD/3ZhLLryO6S93wQzP
+         65TIVDyjgWdyNkPQAlzvcJsypEHadUfcBPMOETsHJxj+oRj3gY7gdVRflS0obNJue5
+         KD7zj9yo7NU+g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 99BB75C0138; Wed, 19 May 2021 21:54:03 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:54:03 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
+Subject: Re: [PATCH 3/3] rcu: Assume rcu_report_dead() always deals with
+ local CPU
+Message-ID: <20210520045403.GF4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210519000930.15702-1-frederic@kernel.org>
+ <20210519000930.15702-4-frederic@kernel.org>
+ <20210519185107.GB4441@paulmck-ThinkPad-P17-Gen-1>
+ <20210520005426.GB22836@lothringen>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b115f727-570d-d3c1-2a5b-01ed89c450dd@windriver.com>
+In-Reply-To: <20210520005426.GB22836@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Yanfei,
+On Thu, May 20, 2021 at 02:54:26AM +0200, Frederic Weisbecker wrote:
+> On Wed, May 19, 2021 at 11:51:07AM -0700, Paul E. McKenney wrote:
+> > On Wed, May 19, 2021 at 02:09:30AM +0200, Frederic Weisbecker wrote:
+> > > rcu_report_dead() is always called locally from the idle path. Passing
+> > > a CPU number to it suggests otherwise and is rather error-prone as the
+> > > code inside relies on locality.
+> > > 
+> > > Robustify the function prototype and refine the name along the way.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > 
+> > Makes a lot of sense, thank you!
+> > 
+> > On the function name, here is the list:
+> > 
+> > int rcutree_prepare_cpu(unsigned int cpu) -- notifier from any CPU.
+> > void rcu_cpu_starting(unsigned int cpu) -- direct call on incoming CPU.
+> > int rcutree_online_cpu(unsigned int cpu) -- notifier from any CPU.
+> > 
+> > int rcutree_offline_cpu(unsigned int cpu) -- notifier from any CPU.
+> > void rcu_report_dead(unsigned int cpu) -- direct call on outgoing CPU.
+> > void rcutree_migrate_callbacks(int cpu) -- direct call from surviving CPU.
+> > int rcutree_dead_cpu(unsigned int cpu) -- notifier from any CPU.
+> > 
+> > Note that rcu_report_dead() can also be invoked from cpu_die_early() on
+> > other CPU when onlining a CPU fails.  This happens on arm64.  Which might
+> > be an arm64 bug, but unless I am missing something it is a case where
+> > rcu_report_dead() is called non-locally.
+> 
+> Hmm, I see it only called with smp_processor_id() from cpu_die_early().
 
-Am Wed, May 19, 2021 at 01:32:23PM +0800 schrieb Xu, Yanfei:
-> I am not much familar with community contribution. In this case, what
-> kind of tags should I reply? signed-off-by? Reviewed-by? or any other
-> tags?
+I clearly should have looked at the initialization of that "cpu"
+local variable.  Once again, right you are!
 
-This is explained in kernel documentation, starts here with Acked-by:, Cc:, 
-and Co-developed-by:
+> > And the naming is currently a bit random, isn't it?  :-/
+> > 
+> > Maybe rcutree_*_cpu() if there is a CPU parameter and rcutree_*_self()
+> > if all calls run on the CPU in question?
+> 
+> Makes sense. Or rcutree_*_curr_cpu() but it's going to produce long names.
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+Either way, it should be a separate patch.
 
-And is followed by Reported-by:, Tested-by:, Reviewed-by:, Suggested-by:,
-and Fixes: 
+> > I cannot immediately think of a reason to make names reflect whether
+> > the corresponding functions are directly called or are called via notifier.
+> > Thoughts?
+> 
+> No indeed, let's wait for some convention to ever emerge :)
 
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+Sounds like a long wait, but that works for me!
 
-Hope that helps.
-Alex
-
+							Thanx, Paul
