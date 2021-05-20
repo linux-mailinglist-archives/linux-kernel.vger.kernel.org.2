@@ -2,102 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD10389FA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:15:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF82389FA3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:16:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231152AbhETIRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:17:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        id S231156AbhETIR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:17:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhETIRJ (ORCPT
+        with ESMTP id S229536AbhETIRz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:17:09 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F30FCC061574;
-        Thu, 20 May 2021 01:15:47 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id c12so208338pfl.3;
-        Thu, 20 May 2021 01:15:47 -0700 (PDT)
+        Thu, 20 May 2021 04:17:55 -0400
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683EAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:16:33 -0700 (PDT)
+Received: by mail-ua1-x92c.google.com with SMTP id c6so4744880uat.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:16:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SdyKECh0fEb+UvxR4lagGLq2m3LWI3riUHFAOcDJNJY=;
-        b=BOMwda17kpkCyirEBkjF3uWkvF+DQfeLpDDPMj15Shhf9xXU8/6H3yByt65Lmq5sR4
-         NdpzC8UFppX5HhXaZFzKYVFdgODz0uNGdGIgj1lkqpb6SDjKfZUx4mq8nTnjLoQO/zox
-         U/EdWXFYkjKPNFBTSV6cvopZERxUCFodJjSzOF8FBxGAtguuv1svwQJbpgVWr2dUODil
-         pB5iOEXbFfcZmmE5wjE+i6g4VcSvSsFLeuyEDRHnv+2EUjYOpeYIEr6FTkonbmayQR/A
-         skgHEfCMgoJoD8eyTLaBrzKwRdhoThXF/f6vAOwQTC4yd8skzqJGCMc0NhZz7QI0p4C3
-         brMg==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=ZuVL7UXJC6NvBVvY31rOiGBK+mjRPAZ2DAOIz9A1TgY=;
+        b=FOWQmjCVE/TeyedH79GSPU2GbpaHiDcGEC1tgxYYsIC/eLEjqFIU0+4Zkgfw7RPUst
+         aDPd/JkkDNHZmIqHo+etA7lp8ZAbRIBf+q2Kfw450CTBINGpFuROVcIDaxoDAFqcASP4
+         GInmO9D5os5QJdNIA8g6UeZiKiG4EGE3/l+8SE7dGgkEEuH5wooK2cQv2lv5VTkzrPmv
+         s2MwjgMtUv65iJBIu1PCEW0+gFg+GvtJC578Z5hsjH9fjSE5uFLK+VFEsfVpTMe1wmdm
+         FfB3zgsjnk2Bi2uf1o0FlJzHQ9mACIW3FsvBn6GPZMTRUHGOxSYBgh52RDWQyXigIa/T
+         x77g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SdyKECh0fEb+UvxR4lagGLq2m3LWI3riUHFAOcDJNJY=;
-        b=b3jlhbAidHbceAJ1iwNSZ7T9ONm2R3EWRgt28vNJpfwPKDfuhADE/nNIQu8n3Ae7S5
-         JK3Kmr/+ntbQdDQRzGPEs8ej/q+QkQakVhTyv4BJg+wrnjl62T6bjQJwu8x5qyN1Y2UJ
-         9+atiS0PP7fBu/K7sNeh1++Cs+1wV14a/KacxnH6GvnWpCl3Etc1AcCl4zd7dMhZr5De
-         r2L/LI1xt+JcT7ewgTuDUP8cSIsMmQd7pJeTagS2uNwetX93/Zf7SSFDHR182gs9uu3J
-         m3kjq4lLjYBtRaDbjzeQ1s/t4nbzJakitezHbDYrAUU6wuJMgu5oJ22N0A67nH+UIWoz
-         FIbQ==
-X-Gm-Message-State: AOAM532f6qHwXC3aUIJUNUhG7kTcPV4Tg9zACfzTpWdk+TwVleGlqh3X
-        +6sbKVaDlroGHfNes8lBxqZOMbNRy6oGRpx3qLk=
-X-Google-Smtp-Source: ABdhPJyfFnQlNGsV9/iaPHlsgGs9ebuW/38steaJ9iSfBEMCuOo+ERW/WGRzgvxzw8Plhsi70HqwqJ5UWf/xSQfNpr4=
-X-Received: by 2002:a63:79c3:: with SMTP id u186mr3398497pgc.203.1621498547391;
- Thu, 20 May 2021 01:15:47 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=ZuVL7UXJC6NvBVvY31rOiGBK+mjRPAZ2DAOIz9A1TgY=;
+        b=TYS+vQuaRZjn+fYKnRdBfw2ZxcHvXKJRvgv/AlGJOTujeDDdi5M5FT6KxbegoKvAGm
+         QunajEAWvApHVQvHD76BmKX3vlsbYrShIMkBzHneGBkbeFLfydkTsu6Wj/xlbWYVhpwV
+         dR1cZeu+PhVDmkN69Q+0lk/E92EZBEZalZf8JU9d6z7geXWrjyLGxR6ehhfa3fjWWKT4
+         Hyvt3CAg5ha4uTkPPiS+VFqBtEOPxOHvmsKdruhKCBeOC5iOUqplFbmC6aIbMxj9UXqo
+         /Ne5j2vnwUaP0WAq/pC17lKAMh+nPG2KcCDybDrhdBlAQ4XqzOnKn1otrBEiJbCURz6x
+         a39w==
+X-Gm-Message-State: AOAM533pwB+c/Yn1iKZIZwy4cWMPhDw9N4QMKEUcbmXz84FCbgrvBX6h
+        LWVKcs/GJntAgetSFf0/IJK0nhXFL9uu65e8CEU=
+X-Google-Smtp-Source: ABdhPJywamtNFD9Gq+/caHg1pYxxuEEXHVUJNZT3rnWPkULYRA+L6m0gPe173xuYM5hgbMZG/JHgtXVbDdpUNUm4N8o=
+X-Received: by 2002:ab0:6021:: with SMTP id n1mr3240466ual.36.1621498592500;
+ Thu, 20 May 2021 01:16:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com> <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
-In-Reply-To: <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 20 May 2021 11:15:31 +0300
-Message-ID: <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
+Sender: mrsaishagaddafi111@gmail.com
+Received: by 2002:ab0:43c3:0:0:0:0:0 with HTTP; Thu, 20 May 2021 01:16:32
+ -0700 (PDT)
+From:   "Mr.sawadogo mahama" <sawadogomahama16@gmail.com>
+Date:   Thu, 20 May 2021 01:16:32 -0700
+X-Google-Sender-Auth: MbRbkn7QEFStBcM7F212OBVjrNM
+Message-ID: <CALTXSA=4Fu1k66-oczvYNEZFexKsuKWVa_hDjQw2fOFx3RGWxw@mail.gmail.com>
+Subject: PRIVATE MESSAGE
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:07 AM Johan Hovold <johan@kernel.org> wrote:
-> On Tue, May 18, 2021 at 11:33:39AM +0300, Andy Shevchenko wrote:
+Dear Friend,
 
-Thank you for the response, my answer below.
+My Name is Mr.sawadogo mahama; I am a banker by profession. My reason
+forcontacting you is to transfer an abandoned $25.3 Million United States
+Dollars to your account.
 
-...
+Further details of the transaction shall be forwarded to you as soonas I
+receive your return mail indicating your interest.
 
-> The _if suffix here is too vague.
->
-> Please use a more descriptive name so that you don't need to look at the
-> implementation to understand what the macro does.
->
-> Perhaps call it
->
->         for_each_gpio_desc_with_flag()
+Thanks and hoping to hear from you soon.
 
-Haha, I have the same in my internal tree, but then I have changed to
-_if and here is why:
-- the API is solely for internal use (note, internals of struct
-gpio_desc available for the same set of users)
-- the current users do only same pattern
-- I don't expect that we will have this to be anything else in the future
-
-Thus, _if is a good balance between scope of use and naming.
-
-I prefer to leave it as is.
-
-> or just add the more generic macro
->
->         for_each_gpio_desc()
->
-> and open-code the test so that it's clear what's going on here.
-
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Mr.sawadogo mahama
