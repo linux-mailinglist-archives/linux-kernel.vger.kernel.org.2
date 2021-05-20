@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CEB038B8C6
+	by mail.lfdr.de (Postfix) with ESMTP id E676538B8C7
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229999AbhETVJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 17:09:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39964 "EHLO mail.kernel.org"
+        id S230017AbhETVJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:09:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40010 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229967AbhETVJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 17:09:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 58668613BB;
-        Thu, 20 May 2021 21:08:16 +0000 (UTC)
+        id S229976AbhETVJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 17:09:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E367B6135B;
+        Thu, 20 May 2021 21:08:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621544896;
-        bh=BUA9LNvo8k8nH10fpS36l+eznj9R/ICvAo99H0xPc/I=;
+        s=k20201202; t=1621544899;
+        bh=Zdp+4VD0rfzJ0ifGfyClb+3oqnn3GH/diTzzdQMpEo8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QHhWMnrXytF6NhUpQZtCNq5/PHsYnlBDSxAvo+yNS47VwHKk9uEQpNkYsP8nCgPJk
-         HF3q4gXLXtgn2GSrujRUeevHp812VI8BYOzD/4XnN5y6pqRGCYmIb5wj1b2d4x4pKD
-         w75Yg5usmgiUDSLjG4329AIRFBLP3uApJ8HFn7JIVbdcFWID8dZYNqCvVkjVPfGDm2
-         OVSQyhjhS/7f4nK7OjvE6meS0xk7/6eHiD4q+/eJf+2eJdnusAu5kQUovUuNcBhGIa
-         aYo7qm+QPYh+wpo/6xW2sF3qhJI5pFnu003XNPZ0aNe2A4ePp9FA5Yc9VrsYlFZ2Xy
-         mHUo35ZvwbUVg==
+        b=XDBEEeG2rvBDs9iBETy9kH/h9++izYTDJhBu6bWXFCB4aD21I/d14kT8+J/0hFduW
+         TxQwkb5DOEYrLmUXidIa3Ak9njLA5zSkqjYoB0cBwvQ3BHmjLj55tFqx335kkjBzm9
+         leO3PO5czpUmjHsm1hOparwkW4S6MQ4pLTkI943464gz3Qrup9qI+ao9yW8z72Rtip
+         NSToNLX/+Ez5bWC3DkmlwzsEW9Yz0rYg0zFjcIdnvNWUIVh832NqqzAN16YHomGi7u
+         VIl8jH2KBdQYfbm9YPMV7aMPhmvKgRZ/9R2w2Mc5JRB7KJYL1i3OYfgPbQ45RctMP6
+         uSI8peiOJaSPQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: Re: (subset) [PATCH 1/2] regulator: core: resolve supply for boot-on/always-on regulators
-Date:   Thu, 20 May 2021 22:08:02 +0100
-Message-Id: <162154474678.5259.15209107268879157269.b4-ty@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Sander Vanheule <sander@svanheule.net>,
+        linux-kernel@vger.kernel.org
+Cc:     Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 1/1] regmap: mdio: Don't modify output if error happened
+Date:   Thu, 20 May 2021 22:08:03 +0100
+Message-Id: <162154469970.5223.4613472844151578353.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210519221224.2868496-1-dmitry.baryshkov@linaro.org>
-References: <20210519221224.2868496-1-dmitry.baryshkov@linaro.org>
+In-Reply-To: <20210520120518.30490-1-andriy.shevchenko@linux.intel.com>
+References: <20210520120518.30490-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,20 +43,18 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 01:12:23 +0300, Dmitry Baryshkov wrote:
-> For the boot-on/always-on regulators the set_machine_constrainst() is
-> called before resolving rdev->supply. Thus the code would try to enable
-> rdev before enabling supplying regulator. Enforce resolving supply
-> regulator before enabling rdev.
+On Thu, 20 May 2021 15:05:18 +0300, Andy Shevchenko wrote:
+> regmap_mdio_read() breaks the principle of "no touch output till it's known
+> that the operation succeeds". Refactor it accordingly.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
 Thanks!
 
-[1/2] regulator: core: resolve supply for boot-on/always-on regulators
-      commit: 98e48cd9283dbac0e1445ee780889f10b3d1db6a
+[1/1] regmap: mdio: Don't modify output if error happened
+      commit: e56360d6a119f531506658ea87238e48ad4c95c2
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
