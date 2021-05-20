@@ -2,98 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ADEF38B4E0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:04:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC30338B4E2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:06:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234739AbhETRFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:05:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        id S234858AbhETRIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234357AbhETRFq (ORCPT
+        with ESMTP id S231561AbhETRID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:05:46 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDC9C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:04:25 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id k4so5800209qkd.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:04:25 -0700 (PDT)
+        Thu, 20 May 2021 13:08:03 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C6AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:06:41 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id i19so6784270qtw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:06:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=lCSr/SzE2iIrgBlIlQqVKl0fiziIXta89RXBs1cqiuo=;
-        b=EWJPiCkxcV/aOg9B6lync+fGTxKK5I8d0PMjCFqSP+f1CgSa3LkPFQILqcpz6bGuLu
-         ZFhDEtixjezfEE+BUaG30PuOzVn0gZm+SXp2cgoCplG6ZZhDF2FP1kGVJoU3ZvrPRnKG
-         Z1U5lyAjYzkAC0daTg/cQMf6WKyHWboKcHn3MuBJpZSx2euRAFEkLUjiCazbiOK7cK77
-         zwXcN0jOGyDKiluxmh75+44wyw2H1IBvNY9CYgzOjfmnAY8zo+OCH/64qh4ZEuCHFPVM
-         KaVZFfsc5OW1SBK6DeAhbHT91MYfMab3Dym6E92JRk/CGPlEWtAVAot3j6gNGyHDUYPq
-         9B0g==
+        bh=K7PsYJ63dL59j+Dd8NJqcKhEcRQRpXueEm7j8EFqrA4=;
+        b=oWjDfk1bKNd8MZ91d3wohIdY8MGPtMVO2eb7XVY71Z2cwLmi62OAnCvhLJbXPJNt25
+         vQsBTcZ4qaCZ3hHgUZw98Eyg/dny4GcAmA/g2AyM26qTFpl6vkmkDynBpCoefdWOzvnr
+         HqiV00s2SZf1E3MIUx5jhtHF9DVN3H4H3V2mL7qZjzTrlyVxawTbqgjND20+D4EWUN54
+         N3gWfoF8yGeFWSSyX8EjUW2ptN+PaHRxDeKwRvc/oYHdlSr0/B0q0mOI3UBwMa1I7ww5
+         qvywOXvi08KahlwBAswlM+ZCsDgZ7pYyK221oq3Qy+x5V7AnzKfvOAoIfHPjzdh4dN7a
+         xlBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=lCSr/SzE2iIrgBlIlQqVKl0fiziIXta89RXBs1cqiuo=;
-        b=qN9aikB4EbNI7lbHeVTLwiZ99hutMUW2oUSW0wdfBLt0LNziafEJi/73aVrkragd+Q
-         KljvbTsS6YyGnW7uwVgiEvMk2d3aP+Q8QFhG4sR25y2mr4lD/jEtecVxFzdjb4ApzqXM
-         r+liD5PaUrkoLOlraKmDugE8dSWkEEN8MiZZnCrMJpCIGbx078X514PFuu3PCMaYpJG3
-         ZZxq+LWIlesgxtwfnVvOmjW6bZDx5q62Fw/ep+k+J4YMBTNn/CLN7hK3Mwg7QHsxkQtl
-         71YAC5WFPwzFsuLCNwivwuQyCOb7babUDPFdQebnpog64oYNIuEHfGJqq6ul2+JUz8O+
-         5Hgg==
-X-Gm-Message-State: AOAM531Dr/WK8s5qW+gvVOJRjIKrW0o8NgDuzKmYRDfoB4172akobajR
-        LfLqKr1HQ/UEaFp6CC0AFEk=
-X-Google-Smtp-Source: ABdhPJzTtity4iGFC4Yp5v982tt2+qUmlvmszQepKE4k5SKwionwyfKcSoXMNYdSY4UmnK2lEcKoeQ==
-X-Received: by 2002:a05:620a:818:: with SMTP id s24mr6053508qks.425.1621530264529;
-        Thu, 20 May 2021 10:04:24 -0700 (PDT)
+        bh=K7PsYJ63dL59j+Dd8NJqcKhEcRQRpXueEm7j8EFqrA4=;
+        b=oKsC1ciBvm7i0UmVT0c6K792OLfbhgN3q1382Q9XW01ms6SkRUmdlEisGQ0AptblRB
+         rQs8GVlZN0Tmn3VhmMTQzpYB29qGNKOVvhEqJwi53D9f6WkdiwtOlHJU1eZ74JTZBRqy
+         uYYjFYTXN/mgsZIOss4Giu9R0rGcS6qeIQrcIC5Fp2B1zidRdiSTvi2R5Pg5UitjF9tb
+         FkR582vnyTXVEBvyN+sVcnDIM0SSM3InsIR7jAD1cxhbXCgpqsDfD7Qa7hnR3NLsMt95
+         fLPLxLqnHgNmby4bPP1mnfnaY7xu/PmUQI5bFik/9IuFvetcJi9J/9xr2PyX/6045vJl
+         M5Sw==
+X-Gm-Message-State: AOAM531P4IVkqjIJnSwXdII6qoF5eLwEgnfws3RbbkqmE8HCNT/6C6Hq
+        vN2OQZml5iQAYYJRsxY02pw=
+X-Google-Smtp-Source: ABdhPJwAciyhZPiEeP/2nOG5VEGPLlZSUy9Mec/Sdo0i7QWWBaYDqhLDTaTsCmCmadUw6hR2yOVOaw==
+X-Received: by 2002:ac8:5f90:: with SMTP id j16mr6272151qta.329.1621530395843;
+        Thu, 20 May 2021 10:06:35 -0700 (PDT)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id s24sm2230298qtx.94.2021.05.20.10.04.23
+        by smtp.gmail.com with ESMTPSA id z9sm2300517qtf.10.2021.05.20.10.06.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 10:04:23 -0700 (PDT)
+        Thu, 20 May 2021 10:06:35 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 20 May 2021 13:04:23 -0400
+Date:   Thu, 20 May 2021 13:06:34 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Odin Ugedal <odin@uged.al>
-Cc:     Huaixin Chang <changhuaixin@linux.alibaba.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
-        khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        shanpeic@linux.alibaba.com,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com
-Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
-Message-ID: <YKaWl7A6N5Jyyi01@slm.duckdns.org>
+To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
+Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
+        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
+        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
+        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
+        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
+        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
+        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v5 2/3] sched/fair: Add cfs bandwidth burst statistics
+Message-ID: <YKaXGpMIjJTwF9Ce@slm.duckdns.org>
 References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
- <20210520123419.8039-2-changhuaixin@linux.alibaba.com>
- <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
+ <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
+In-Reply-To: <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Odin.
-
-On Thu, May 20, 2021 at 04:00:29PM +0200, Odin Ugedal wrote:
-> >   cpu.max
-> >     A read-write two value file which exists on non-root cgroups.
-> >     The default is "max 100000".
+On Thu, May 20, 2021 at 08:34:18PM +0800, Huaixin Chang wrote:
+> When using cfs_b and meeting with some throttled periods, users shall
+> use burst buffer to allow bursty workloads. Apart from configuring some
+> burst buffer and watch whether throttled periods disappears, some
+> statistics on burst buffer using are also helpful. Thus expose the
+> following statistics into cpu.stat file:
 > 
-> This will become a "three value file", and I know a few user space projects
-> who parse this file by splitting on the middle space. I am not sure if they are
-> "wrong", but I don't think we usually break such things. Not sure what
-> Tejun thinks about this.
+> nr_burst:   number of periods bandwidth burst occurs
 
-Good point. I haven't thought about that. It would make more sense to
-separate it out to a separate file then - e.g. sth like cpu.max.burst, but
-it seems like there are important questions to answer before adding new
-interfaces.
+nr_bursts
+
+> burst_time: cumulative wall-time that any cpus has
+> 	    used above quota in respective periods
+
+burst_usec may be more in line with other fields in that file.
 
 Thanks.
 
