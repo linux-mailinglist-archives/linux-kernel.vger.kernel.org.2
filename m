@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FD438A80E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53AC938A811
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237514AbhETKqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:46:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
+        id S237754AbhETKqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:46:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237161AbhETK3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237164AbhETK3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:29:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7633661186;
-        Thu, 20 May 2021 09:51:36 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A298B60551;
+        Thu, 20 May 2021 09:51:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504296;
-        bh=n63INNdp53CnWN4/M9FUKUeIT4BVwDIF/5cVVFzUU1g=;
+        s=korg; t=1621504299;
+        bh=EVw1yJLDoY2u+9KBb7oQsjBEFyKgubZGB4jVr4IBGjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ByxmkMtSW9IZZW1qgYLYJM9hWX83aD++P798uAJ9Z0vmq33iFsfufr1dDVMU9NhWn
-         k4ZP/Q9cZQdpsnnT8ZL8xxwbc+RnVBr4MAsQv2wE8/TBjw2H9vFpzTpq64x2QFQY58
-         PZsbHPGEuIJ2H5gumVkH0h8TeyenoUxdTLmedr5Y=
+        b=Ivtq9E3EVkiztKoDn3y2WVL6Sb+vRG8SXjcYFiBtk9O5wC8V+0qhTKHVWD7q5uGps
+         vXfcHbdtul+Mql0hwXIMLBJTNz7d3FDp4jgtLtZoOpxOzEtiZAXJwRRo4k2bzoxGS6
+         d8w47rSv/LCodhE2m/Uhf6tmC/I4UpHsHUdrH6rM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 182/323] x86/kprobes: Fix to check non boostable prefixes correctly
-Date:   Thu, 20 May 2021 11:21:14 +0200
-Message-Id: <20210520092126.351299026@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 183/323] pata_arasan_cf: fix IRQ check
+Date:   Thu, 20 May 2021 11:21:15 +0200
+Message-Id: <20210520092126.382872080@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,71 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Masami Hiramatsu <mhiramat@kernel.org>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 6dd3b8c9f58816a1354be39559f630cd1bd12159 ]
+[ Upstream commit c7e8f404d56b99c80990b19a402c3f640d74be05 ]
 
-There are 2 bugs in the can_boost() function because of using
-x86 insn decoder. Since the insn->opcode never has a prefix byte,
-it can not find CS override prefix in it. And the insn->attr is
-the attribute of the opcode, thus inat_is_address_size_prefix(
-insn->attr) always returns false.
+The driver's probe() method is written as if platform_get_irq() returns 0
+on error, while actually it returns a negative error code (with all the
+other values considered valid IRQs). Rewrite the driver's IRQ checking code
+to pass the positive IRQ #s to ata_host_activate(), propagate upstream
+-EPROBE_DEFER, and set up the driver to polling mode on (negative) errors
+and IRQ0 (libata treats IRQ #0 as a polling mode anyway)...
 
-Fix those by checking each prefix bytes with for_each_insn_prefix
-loop and getting the correct attribute for each prefix byte.
-Also, this removes unlikely, because this is a slow path.
-
-Fixes: a8d11cd0714f ("kprobes/x86: Consolidate insn decoder users for copying code")
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Link: https://lore.kernel.org/r/161666691162.1120877.2808435205294352583.stgit@devnote2
+Fixes: a480167b23ef ("pata_arasan_cf: Adding support for arasan compact flash host controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/kernel/kprobes/core.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ drivers/ata/pata_arasan_cf.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index 700d434f5bda..cfd8269ab4cd 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -173,6 +173,8 @@ NOKPROBE_SYMBOL(skip_prefixes);
- int can_boost(struct insn *insn, void *addr)
- {
- 	kprobe_opcode_t opcode;
-+	insn_byte_t prefix;
-+	int i;
+diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
+index b4d54771c9fe..623199fab8fe 100644
+--- a/drivers/ata/pata_arasan_cf.c
++++ b/drivers/ata/pata_arasan_cf.c
+@@ -819,12 +819,19 @@ static int arasan_cf_probe(struct platform_device *pdev)
+ 	else
+ 		quirk = CF_BROKEN_UDMA; /* as it is on spear1340 */
  
- 	if (search_exception_tables((unsigned long)addr))
- 		return 0;	/* Page fault may occur on this address. */
-@@ -185,9 +187,14 @@ int can_boost(struct insn *insn, void *addr)
- 	if (insn->opcode.nbytes != 1)
- 		return 0;
- 
--	/* Can't boost Address-size override prefix */
--	if (unlikely(inat_is_address_size_prefix(insn->attr)))
--		return 0;
-+	for_each_insn_prefix(insn, i, prefix) {
-+		insn_attr_t attr;
-+
-+		attr = inat_get_opcode_attribute(prefix);
-+		/* Can't boost Address-size override prefix and CS override prefix */
-+		if (prefix == 0x2e || inat_is_address_size_prefix(attr))
-+			return 0;
+-	/* if irq is 0, support only PIO */
+-	acdev->irq = platform_get_irq(pdev, 0);
+-	if (acdev->irq)
++	/*
++	 * If there's an error getting IRQ (or we do get IRQ0),
++	 * support only PIO
++	 */
++	ret = platform_get_irq(pdev, 0);
++	if (ret > 0) {
++		acdev->irq = ret;
+ 		irq_handler = arasan_cf_interrupt;
+-	else
++	} else	if (ret == -EPROBE_DEFER) {
++		return ret;
++	} else	{
+ 		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
 +	}
  
- 	opcode = insn->opcode.bytes[0];
- 
-@@ -212,8 +219,8 @@ int can_boost(struct insn *insn, void *addr)
- 		/* clear and set flags are boostable */
- 		return (opcode == 0xf5 || (0xf7 < opcode && opcode < 0xfe));
- 	default:
--		/* CS override prefix and call are not boostable */
--		return (opcode != 0x2e && opcode != 0x9a);
-+		/* call is not boostable */
-+		return opcode != 0x9a;
- 	}
- }
- 
+ 	acdev->pbase = res->start;
+ 	acdev->vbase = devm_ioremap_nocache(&pdev->dev, res->start,
 -- 
 2.30.2
 
