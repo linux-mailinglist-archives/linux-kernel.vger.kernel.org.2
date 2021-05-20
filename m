@@ -2,155 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8063238B8F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2717938B8FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230197AbhETVbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 17:31:23 -0400
-Received: from mga05.intel.com ([192.55.52.43]:58916 "EHLO mga05.intel.com"
+        id S230218AbhETVbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:31:45 -0400
+Received: from mout.gmx.net ([212.227.15.15]:44895 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhETVbW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 17:31:22 -0400
-IronPort-SDR: AFGR07yVlOPhprIkwDyUzOSZN44IZ7y8Kl7Re4Si8HyxnbMN5c1tgzwq3uUWKMO9JyDFx3/N0e
- uo9Z3yE2+pSw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="286874974"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="286874974"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 14:29:59 -0700
-IronPort-SDR: ZiQfpTc4Xd8/VVRq09t21Ofjk5TBre0u+LyF/RUujFwgDVpbqdhXlwekh5MTB/TJrUpNmIoUsw
- pNQmQCO0J3AA==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="395853393"
-Received: from santoshi-mobl1.amr.corp.intel.com (HELO bwidawsk-mobl5.local) ([10.252.133.11])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 14:29:59 -0700
-From:   Ben Widawsky <ben.widawsky@intel.com>
-To:     linux-cxl@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     linux-pci@vger.kernel.org, linux-acpi@vger.kernel.org,
-        ira.weiny@intel.com, vishal.l.verma@intel.com,
-        alison.schofield@intel.com, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org, Ben Widawsky <ben.widawsky@intel.com>
-Subject: [PATCH v2 4/7] cxl/mem: Get rid of @cxlm.base
-Date:   Thu, 20 May 2021 14:29:53 -0700
-Message-Id: <20210520212953.1181695-1-ben.widawsky@intel.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210413161726.tz7rg46krrekk3lp@intel.com>
-References: <20210413161726.tz7rg46krrekk3lp@intel.com>
+        id S230146AbhETVbn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 17:31:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621546218;
+        bh=d+i76mWshG7XaZzz/88l5YYOGpS5I6jiK8W0BSP798c=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=YPR23ZQnmT7tOVQMeXlmR6Pj40vE7IClsYQ2DZV67n1NFjHQgXxMT7fT0t82KCe/T
+         /zx+oc/lgN52yopY6olCajt3qTShW3e8zbbbv8tdxlPsCDNSympg5gZzmsxoC7rzt6
+         EdGtOVKESKtc6qJd9yHau9uxTND2RjEPQINTUuUE=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from obelix.fritz.box ([46.142.8.56]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N95iH-1lMHFO3JJf-016623; Thu, 20
+ May 2021 23:30:17 +0200
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.12 00/43] 5.12.6-rc2 review
+Message-ID: <27b7c058-dc68-b2e9-3151-d362dd5fbfae@gmx.de>
+Date:   Thu, 20 May 2021 23:30:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DkpKj8jwyu5uKSsacj/q1NKe3Tczf2bfpycEsMS11Q3xygdFMvO
+ BpFqvIPPRV6r79qkHe+DyiFQn2SwQ+yeFm6ltvaUw/uR0sWUXdI2vsy5E1CDYi225JuJlMJ
+ 98pJstaDPEkC41lwgWixpyZEPXfaAX4SAyuycGD5p7ruNyiCNgO66SV70KaabEbuXNHckYE
+ t/16Sf/lBIk5lCZt8RrOg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:t3NH5XIErNs=:mC9rJ3m4HdEgJOv7D7FXXd
+ YZWgDM0aL4AnA5U5pAFEVnA3WXr4j9vK5ja72yT+RDFxEz/2bPQ/X6nU+OzqDPxMGVVEQiIBO
+ R4ocOfv7r/6Ys5GQcMyQle40R+sz8TgYGAjC6113FYYCe/FESe3nxotpl/aGmPeDBSdMt6tJT
+ /p85wHnEGIfpsHX3UKbXeO8Q2AztoD+2WQVKK4g+Mqkse9QBYyDAzOrJF3pvtdQnMimy9Lyot
+ /ws0WVbE3V2tvTojZpK8p/DTr/mHYdc3rOLGcU5wwYt7g/XX5Aghz/LdaJAoZ1V4Nq0jPBdw5
+ VopR7UC2mObX29bQnEbv1VujLmZ0JCQ7okuqKYfqawruaqwLQIRPQOVrOyVwZ0QN1ygcthvNC
+ 5vpO00pSxpPfZHJnCkGG6B0PpmnKwtXwCRtr9X5TLdc+bkI2rVMI/4OPEv8iqdxtU9Jhdz+Df
+ KW2+u4RFx3q+o0PNoeIfnzi/fiShPxR2re997obQIt74/qYCj/867mY+7OrMZJZNHEV+i1qCQ
+ yrZWPAVey1BiiyLhsygI74cOY/oMPGE/rtlkY8mAwXO79zJwPH0WAP0qrv8hBdEljbxtfUHoO
+ G/PDjrgUUWupha846BPKcqL45cC26e0osMNd/vh8PF6gokyr527XWSzvRD4GAJcjJ6c2Sh5jU
+ KnAbobRSlSHmPLlKMTTqjcUEcUdDmergiCu0sPn3LnDG9wIx879P08Lo7v24XhsvMWLh9kjcM
+ qa5RqlsdO+9nsICCThjKGdW3mybmlEovkohUioRyd0cexA0UPV838VIhmmds9X14zygU0STdl
+ YuKe8SZJ95I85hHrXP7pWucwHLXhevMveuGPi3ONuRiCRggiJevBr5mkfYn2ZU+gpReHgbLjn
+ FxOoh+gdO4oieIbqCKoirM7KOZC+1K375DEcoIKavFMWM4MWCGJcntggvbjyyW6xTDPdF9ZXC
+ D2CfGOLV/FWjkzHfSBnFXm6ocOpXNNHIZI8yBnMh8XRLYFCkpdritFZ+OCYMlkNpkIEXMXUnI
+ KG9tcaUfmvVrm/D3VlsLTSXcLVqJYTN7Q50jf1zxcbZ4v87teAGguGCicTfxSKspmu2GwA/iv
+ r+hNVY5nuW4lACj7G8MYvoY3K0g/7YjNYYGUuBPxfqxiCEtFix4p9Mmgtrat6Yy0c304rZkyg
+ wobsIh39SIjr9aP3vuV+pLdDqeVkbGsxizO8oaZE0AP049kScKIgfS0PzKwyf09Z1jL5U=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-@cxlm.base only existed to support holding the base found in the
-register block mapping code, and pass it along to the register setup
-code. Now that the register setup function has all logic around managing
-the registers, from DVSEC to iomapping up to populating our CXL specific
-information, it is easy to turn the @base values into local variables
-and remove them from our device driver state.
+hello
 
-Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Ben Widawsky <ben.widawsky@intel.com>
----
- drivers/cxl/mem.h |  2 --
- drivers/cxl/pci.c | 24 +++++++++++-------------
- 2 files changed, 11 insertions(+), 15 deletions(-)
+apart from one warning all seems fine here with 5.12.6-rc2
 
-diff --git a/drivers/cxl/mem.h b/drivers/cxl/mem.h
-index 23fc40dde27e..13868ff7cadf 100644
---- a/drivers/cxl/mem.h
-+++ b/drivers/cxl/mem.h
-@@ -49,7 +49,6 @@ struct cxl_memdev {
- /**
-  * struct cxl_mem - A CXL memory device
-  * @pdev: The PCI device associated with this CXL device.
-- * @base: IO mappings to the device's MMIO
-  * @cxlmd: Logical memory device chardev / interface
-  * @regs: Parsed register blocks
-  * @payload_size: Size of space for payload
-@@ -64,7 +63,6 @@ struct cxl_memdev {
-  */
- struct cxl_mem {
- 	struct pci_dev *pdev;
--	void __iomem *base;
- 	struct cxl_memdev *cxlmd;
- 
- 	struct cxl_regs regs;
-diff --git a/drivers/cxl/pci.c b/drivers/cxl/pci.c
-index 285a898a0867..d47258e51563 100644
---- a/drivers/cxl/pci.c
-+++ b/drivers/cxl/pci.c
-@@ -941,11 +941,10 @@ static struct cxl_mem *cxl_mem_create(struct pci_dev *pdev)
- 	return cxlm;
- }
- 
--static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
-+static void __iomem *cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
- {
- 	struct pci_dev *pdev = cxlm->pdev;
- 	struct device *dev = &pdev->dev;
--	void __iomem *regs;
- 	u64 offset;
- 	u8 bar;
- 	int rc;
-@@ -957,20 +956,18 @@ static int cxl_mem_map_regblock(struct cxl_mem *cxlm, u32 reg_lo, u32 reg_hi)
- 	if (pci_resource_len(pdev, bar) < offset) {
- 		dev_err(dev, "BAR%d: %pr: too small (offset: %#llx)\n", bar,
- 			&pdev->resource[bar], (unsigned long long)offset);
--		return -ENXIO;
-+		return IOMEM_ERR_PTR(-ENXIO);
- 	}
- 
- 	rc = pcim_iomap_regions(pdev, BIT(bar), pci_name(pdev));
- 	if (rc) {
- 		dev_err(dev, "failed to map registers\n");
--		return rc;
-+		return IOMEM_ERR_PTR(rc);
- 	}
--	regs = pcim_iomap_table(pdev)[bar];
--
--	cxlm->base = regs + offset;
- 
- 	dev_dbg(dev, "Mapped CXL Memory Device resource\n");
--	return 0;
-+
-+	return pcim_iomap_table(pdev)[bar] + offset;
- }
- 
- static int cxl_mem_dvsec(struct pci_dev *pdev, int dvsec)
-@@ -1012,7 +1009,8 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
- 	struct pci_dev *pdev = cxlm->pdev;
- 	struct device *dev = &pdev->dev;
- 	u32 regloc_size, regblocks;
--	int rc, regloc, i;
-+	void __iomem *base;
-+	int regloc, i;
- 
- 	regloc = cxl_mem_dvsec(pdev, PCI_DVSEC_ID_CXL_REGLOC_OFFSET);
- 	if (!regloc) {
-@@ -1038,9 +1036,9 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
- 		reg_type = FIELD_GET(CXL_REGLOC_RBI_MASK, reg_lo);
- 
- 		if (reg_type == CXL_REGLOC_RBI_MEMDEV) {
--			rc = cxl_mem_map_regblock(cxlm, reg_lo, reg_hi);
--			if (rc)
--				return rc;
-+			base = cxl_mem_map_regblock(cxlm, reg_lo, reg_hi);
-+			if (IS_ERR(base))
-+				return PTR_ERR(base);
- 			break;
- 		}
- 	}
-@@ -1050,7 +1048,7 @@ static int cxl_mem_setup_regs(struct cxl_mem *cxlm)
- 		return -ENXIO;
- 	}
- 
--	cxl_setup_device_regs(dev, cxlm->base, &regs->device_regs);
-+	cxl_setup_device_regs(dev, base, &regs->device_regs);
- 
- 	if (!regs->status || !regs->mbox || !regs->memdev) {
- 		dev_err(dev, "registers not found: %s%s%s\n",
--- 
-2.31.1
+thanks
 
+
+...
+                  from arch/x86/kernel/tboot.c:9:
+In function =E2=80=98memcmp=E2=80=99,
+     inlined from =E2=80=98tboot_probe=E2=80=99 at arch/x86/kernel/tboot.c=
+:70:6:
+./include/linux/fortify-string.h:19:33: warning: =E2=80=98__builtin_memcmp=
+_eq=E2=80=99
+specified bound 16 exceeds source size 0 [-Wstringop-overread]
+    19 | #define __underlying_memcmp     __builtin_memcmp
+       |                                 ^
+./include/linux/fortify-string.h:235:16: note: in expansion of macro
+=E2=80=98__underlying_memcmp=E2=80=99
+   235 |         return __underlying_memcmp(p, q, size);
+       |                ^~~~~~~~~~~~~~~~~~~
+   CC      kernel/module.o
+..
+
+
+=2D-
+regards
+
+Ronald
