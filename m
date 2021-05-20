@@ -2,233 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1CF138BA55
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:14:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDC8138BA59
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:18:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhETXP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:15:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:11819 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231723AbhETXP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:15:57 -0400
-IronPort-SDR: aHcAbBc+YnjVvII32KtTyvYHJUCV0ktm5S30TXpeOG94M4X+KQGVeNVkR68RuVG7OiXETmU77A
- 4BzfVgM0/bQg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265272089"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="265272089"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 16:14:35 -0700
-IronPort-SDR: 0s/YPUC0wGoJLHUokxSnH9utBjHkoOxXO6q7PwKYyA6zVoAdtV+R9P335J+Q6qAGO7Ten5I7sf
- Gr1SKVmojsGQ==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="440654994"
-Received: from shaunnab-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.65.6])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 16:14:34 -0700
-Subject: Re: [RFC v2 29/32] x86/tdx: Add helper to do MapGPA TDVMALL
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <7d43f57c3b178a905ef2505cef5313844c497984.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <d139d180-9be7-3f7e-22db-d39fd09dfcb5@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <57690b33-e7da-e345-dfae-b2e18f9a1467@linux.intel.com>
-Date:   Thu, 20 May 2021 16:14:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233679AbhETXT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 19:19:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233032AbhETXT5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 19:19:57 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC82C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 16:18:35 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id v8so21949998lft.8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 16:18:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V/aZkvClPqTkoxRn3OG0yQtPKnHJCNnuxaerq1yum2k=;
+        b=i8rZOgkQrZCPMbsFHBYdAG4mh77RUUBri8iiWFb4glpbSLKrTjBpBNUR5HLX8hMhkM
+         zVRynWksccDahcpq6JPUCmDOOnn9CRPCj7dtp6PSnA/Kv01I97e6ThkBqeVwigPRjFZH
+         uxci66g1LGoKBUoSvMdZoOcL15r7Wf0SlGHy72Glg2A6O05kqoy6ng7kfqBQB17frgzk
+         v+V1ptXmVPIVWwM79M3D4C+TEAtauzwzEDUhcXKY55u8lqBQKPw0TmnoUpS9yDvkG3tZ
+         SD8zrisw7vd2gCiSjkXbjTabV94O9QUNXnSqDkfcCu4DXlz3xAx0cPLZo0hWBQa1BCvo
+         2GkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=V/aZkvClPqTkoxRn3OG0yQtPKnHJCNnuxaerq1yum2k=;
+        b=LWdTfffYMJm4Hr+pKWNCZ+9uec+eIKdXcmMiwxPqeHna6kmRPGRCPK8R+KqS+PiGYW
+         K27qiyordpkAbSlfScWwXGSOrt50ek86paplwJeQenQKw9DpCOzdKhxc4P+4+zagfNkk
+         EMXwl3tX5SS8oPbxkUGno1wNuMzs+Qe9hMN299Drgh2ZxephUZC6zJx7xU1SY/8E9Pxg
+         1bM0RCAD+AK7vItytsm1q+Xe58y0L9fZYwZPeXsKKFwIarnF9VnUne5D6k0OA4E5r63o
+         jeF3dnfdg1Er35eaVOu3tMWt9xPKfTCAUuuGqbwaNq21GtSCoyl8fwqpxdTt55YO/jpI
+         SU6Q==
+X-Gm-Message-State: AOAM531eH+fCSd6u8WxCTQz4A1SHZhNygfehL29PZIBA1UMmb0UcT8mk
+        Tu40NWNwK+Y72YrZdPiNpXQ=
+X-Google-Smtp-Source: ABdhPJwEWg02ikvH2tTZMpJIkAUxAMTsntOKxMB6eLdZJ5Ps2LdV0aOXvB712vhHlDBpdyYe/iyd2w==
+X-Received: by 2002:a19:6a0f:: with SMTP id u15mr4990334lfu.614.1621552713684;
+        Thu, 20 May 2021 16:18:33 -0700 (PDT)
+Received: from 192.168.1.8 ([212.59.242.58])
+        by smtp.gmail.com with ESMTPSA id h25sm432761lfe.3.2021.05.20.16.18.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 16:18:32 -0700 (PDT)
+From:   Maciej Falkowski <maciej.falkowski9@gmail.com>
+To:     natechancellor@gmail.com, ndesaulniers@google.com
+Cc:     clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
+        maciej.falkowski9@gmail.com
+Subject: [PATCH 1/2] Makefile: clang-tools: Print information when clang-tidy tool is missing
+Date:   Fri, 21 May 2021 01:18:20 +0200
+Message-Id: <20210520231821.12272-1-maciej.falkowski9@gmail.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <d139d180-9be7-3f7e-22db-d39fd09dfcb5@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When `clang-tidy` tool is missing in the system, the FileNotFoundError
+exception is raised in the program reporting a stack trace to the user:
 
+$ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
+multiprocessing.pool.RemoteTraceback:
+"""
+Traceback (most recent call last):
+  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 48, in mapstar
+    return list(map(*args))
+  File "./scripts/clang-tools/run-clang-tools.py", line 54, in run_analysis
+    p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
+  File "/usr/lib64/python3.8/subprocess.py", line 489, in run
+    with Popen(*popenargs, **kwargs) as process:
+  File "/usr/lib64/python3.8/subprocess.py", line 854, in __init__
+    self._execute_child(args, executable, preexec_fn, close_fds,
+  File "/usr/lib64/python3.8/subprocess.py", line 1702, in _execute_child
+    raise child_exception_type(errno_num, err_msg, err_filename)
+FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
+"""
 
-On 5/19/21 8:59 AM, Dave Hansen wrote:
-> On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
->> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
->>
->> MapGPA TDVMCALL requests the host VMM to map a GPA range as private or
->> shared memory mappings. Shared GPA mappings can be used for
->> communication beteen TD guest and host VMM, for example for
->> paravirtualized IO.
-> 
-> As usual, I hate the changelog.  This appears to just be regurgitating
-> the spec.
-> 
-> Is this just for part of converting an existing mapping between private
-> and shared?  If so, please say that.
-> 
+The above exception was the direct cause of the following exception:
 
-How about following change?
+Traceback (most recent call last):
+  File "./scripts/clang-tools/run-clang-tools.py", line 74, in <module>
+    main()
+  File "./scripts/clang-tools/run-clang-tools.py", line 70, in main
+    pool.map(run_analysis, datastore)
+  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 364, in map
+    return self._map_async(func, iterable, mapstar, chunksize).get()
+  File "/usr/lib64/python3.8/multiprocessing/pool.py", line 771, in get
+    raise self._value
+FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
 
-     x86/tdx: Add helper to do MapGPA hypercall
+The patch adds more user-friendly information on the missing tool by
+catching FileNotFoundError for `clang-tidy` file and raising exception
+again for possible other files:
 
-     MapGPA hypercall is used by TDX guests to request VMM convert
-     the existing mapping of given GPA address range between
-     private/shared.
+$ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
+Command `clang-tidy` is missing in the system.
 
-     tdx_hcall_gpa_intent() is the wrapper used for making MapGPA
-     hypercall.
+Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
+Link: https://github.com/ClangBuiltLinux/linux/issues/1342
+---
+ scripts/clang-tools/run-clang-tools.py | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-
->> The new helper tdx_map_gpa() provides access to the operation.
-> 
-> <sigh>  You got your own name wrong. It's tdg_map_gpa() in the patch.
-
-I can use tdx_hcall_gpa_intent().
-
-> 
-> BTW, I agree with Sean on this one: "tdg" is a horrible prefix.  You
-> just proved Sean's point by mistyping it.  *EVERYONE* is going to rpeat
-> that mistake: tdg -> tdx.
-> 
->> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
->> index dc80cf7f7d08..4789798d7737 100644
->> --- a/arch/x86/include/asm/tdx.h
->> +++ b/arch/x86/include/asm/tdx.h
->> @@ -7,6 +7,11 @@
->>   
->>   #ifndef __ASSEMBLY__
->>   
->> +enum tdx_map_type {
->> +	TDX_MAP_PRIVATE,
->> +	TDX_MAP_SHARED,
->> +};
-> 
-> I like the enum, but please call out that this is a software construct,
-> not a part of any hardware or VMM ABI.
-> 
->>   #ifdef CONFIG_INTEL_TDX_GUEST
->>   
->>   #include <asm/cpufeature.h>
->> @@ -112,6 +117,8 @@ unsigned short tdg_inw(unsigned short port);
->>   unsigned int tdg_inl(unsigned short port);
->>   
->>   extern phys_addr_t tdg_shared_mask(void);
->> +extern int tdg_map_gpa(phys_addr_t gpa, int numpages,
->> +		       enum tdx_map_type map_type);
->>   
->>   #else // !CONFIG_INTEL_TDX_GUEST
->>   
->> @@ -155,6 +162,12 @@ static inline phys_addr_t tdg_shared_mask(void)
->>   {
->>   	return 0;
->>   }
->> +
->> +static inline int tdg_map_gpa(phys_addr_t gpa, int numpages,
->> +			      enum tdx_map_type map_type)
->> +{
->> +	return -ENODEV;
->> +}
-> 
-> FWIW, you could probably get away with just inlining tdg_map_gpa():
-> 
-> static inline int tdg_map_gpa(phys_addr_t gpa, int numpages, ...
-> {
-> 	u64 ret;
-> 
-> 	if (!IS_ENABLED(CONFIG_INTEL_TDX_GUEST))
-> 		return -ENODEV;
-> 
-> 	if (map_type == TDX_MAP_SHARED)
-> 		gpa |= tdg_shared_mask();
-> 
-> 	ret = tdvmcall(TDVMCALL_MAP_GPA, gpa, ...
-> 
-> 	return ret ? -EIO : 0;
-> }
-> 
-> Then you don't have three copies of the function signature that can get
-> out of sync.
-
-I agree that this simplifies the function definition. But, there are
-other TDX hypercalls definitions in tdx.c. I can't move all of them to
-the header file. If possible, I would like to group all hypercalls in
-the same place.
-
-Also, IMO, it is better to hide hypercall internal implementation details
-in C file. For example, user of MapGPA hypercall does not care about the
-TDVMCALL_MAP_GPA leaf id value. If we inline this function we have to
-move such details to header file.
-
-
-> 
->>   #endif /* CONFIG_INTEL_TDX_GUEST */
->>   #endif /* __ASSEMBLY__ */
->>   #endif /* _ASM_X86_TDX_H */
->> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
->> index 7e391cd7aa2b..074136473011 100644
->> --- a/arch/x86/kernel/tdx.c
->> +++ b/arch/x86/kernel/tdx.c
->> @@ -15,6 +15,8 @@
->>   #include "tdx-kvm.c"
->>   #endif
->>   
->> +#define TDVMCALL_MAP_GPA	0x10001
->> +
->>   static struct {
->>   	unsigned int gpa_width;
->>   	unsigned long attributes;
->> @@ -98,6 +100,17 @@ static void tdg_get_info(void)
->>   	physical_mask &= ~tdg_shared_mask();
->>   }
->>   
->> +int tdg_map_gpa(phys_addr_t gpa, int numpages, enum tdx_map_type map_type)
->> +{
->> +	u64 ret;
->> +
->> +	if (map_type == TDX_MAP_SHARED)
->> +		gpa |= tdg_shared_mask();
->> +
->> +	ret = tdvmcall(TDVMCALL_MAP_GPA, gpa, PAGE_SIZE * numpages, 0, 0);
->> +	return ret ? -EIO : 0;
->> +}
-> 
-> The naming Intel chose here is nasty.  This doesn't "map" anything.  It
-> modifies an existing mapping from what I can tell.  We could name it
-> much better than the spec, perhaps:
-> 
-> 	tdx_hcall_gpa_intent()
-
-I will use this function name in next version.
-
-> 
-> BTW, all of these hypercalls need a consistent prefix.
-
-I can include _hcall in other hypercall helper functions as well.
-
-> 
-> It also needs a comment:
-> 
-> 	/*
-> 	 * Inform the VMM of the guest's intent for this physical page:
-> 	 * shared with the VMM or private to the guest.  The VMM is
-> 	 * expected to change its mapping of the page in response.
-> 	 *
-> 	 * Note: shared->private conversions require further guest
-> 	 * action to accept the page.
-> 	 */
-> 
-> The intent here is important.  It makes it clear that this function
-> really only plays a role in the conversion process.
-
-Thanks. I will include it in next version.
-
-> 
-
+diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
+index fa7655c7cec0..38fc311d2e03 100755
+--- a/scripts/clang-tools/run-clang-tools.py
++++ b/scripts/clang-tools/run-clang-tools.py
+@@ -67,7 +67,13 @@ def main():
+     # Read JSON data into the datastore variable
+     with open(args.path, "r") as f:
+         datastore = json.load(f)
+-        pool.map(run_analysis, datastore)
++        try:
++            pool.map(run_analysis, datastore)
++        except FileNotFoundError as not_found:
++            if not_found.filename == 'clang-tidy':
++                print('Command `clang-tidy` is missing in the system.')
++            else:
++                raise not_found
+ 
+ 
+ if __name__ == "__main__":
 -- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+2.26.3
+
