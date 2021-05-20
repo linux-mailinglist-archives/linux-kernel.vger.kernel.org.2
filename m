@@ -2,98 +2,332 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1B838B2FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBE538B30D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243888AbhETPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:23:19 -0400
-Received: from smtprelay0080.hostedemail.com ([216.40.44.80]:34956 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S243786AbhETPXH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:23:07 -0400
-Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3155B181CC1BF;
-        Thu, 20 May 2021 15:21:43 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id C005517275;
-        Thu, 20 May 2021 15:21:41 +0000 (UTC)
-Message-ID: <3173f7f10e0c212c8c828d9ca4450927f757e7d2.camel@perches.com>
-Subject: Re: [PATCH 6/9] tty: hvc_console: Fix coding style issues of block
- comments
-From:   Joe Perches <joe@perches.com>
-To:     Johan Hovold <johan@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linuxarm@openeuler.org
-Date:   Thu, 20 May 2021 08:21:39 -0700
-In-Reply-To: <YKYcFfKiHT39Gyey@hovoldconsulting.com>
-References: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
-         <1621233433-27094-7-git-send-email-tanxiaofei@huawei.com>
-         <YKJ6ZjT8o5xJmBCr@hovoldconsulting.com>
-         <e88b6fcd-bfe1-9812-905a-862825f420ce@huawei.com>
-         <YKYcFfKiHT39Gyey@hovoldconsulting.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S231642AbhETPYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:24:04 -0400
+Received: from foss.arm.com ([217.140.110.172]:53846 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232245AbhETPX0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:23:26 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 51A4F101E;
+        Thu, 20 May 2021 08:22:05 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 872653F73B;
+        Thu, 20 May 2021 08:22:02 -0700 (PDT)
+Subject: Re: [PATCH v12 5/8] arm64: kvm: Save/restore MTE registers
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-6-steven.price@arm.com> <87v97hth3i.wl-maz@kernel.org>
+ <097f5f5e-b287-3c9e-1f11-e0212601ddd2@arm.com> <874kexvitk.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <06bf0309-6b48-de35-c200-f624f130d940@arm.com>
+Date:   Thu, 20 May 2021 16:21:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C005517275
-X-Spam-Status: No, score=-2.90
-X-Stat-Signature: gpzyzddmarn4jdsor9ep6g1wg5gtmhrf
-X-Rspamd-Server: rspamout03
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX18KqlcSav5TvmdBlRG1J6AisdTKuL2Xz9w=
-X-HE-Tag: 1621524101-433904
+In-Reply-To: <874kexvitk.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-20 at 10:21 +0200, Johan Hovold wrote:
-> On Tue, May 18, 2021 at 12:01:22PM +0800, Xiaofei Tan wrote:
-> > On 2021/5/17 22:15, Johan Hovold wrote:
-> > > On Mon, May 17, 2021 at 02:37:10PM +0800, Xiaofei Tan wrote:
-> > > > Fix coding style issues of block comments, reported by checkpatch.pl.
-> > > > Besides, add a period at the end of the sentenses.
-[]
-> > > > diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-[]
-> > > > @@ -177,7 +177,8 @@ static void hvc_console_print(struct console *co, const char *b,
-> > > >  			r = cons_ops[index]->put_chars(vtermnos[index], c, i);
-> > > >  			if (r <= 0) {
-> > > >  				/* throw away characters on error
-> > > > -				 * but spin in case of -EAGAIN */
-> > > > +				 * but spin in case of -EAGAIN.
-> > > > +				 */
-> > > 
-> > > How is this an improvement? First, the multi-line comment style is
-> > > 
-> > > 	/*
-> > > 	 * ...
-> > > 	 */
-> > > 
-> > 
-> > Yes, mostly we use this style. I can follow it if new version is needed.
+On 20/05/2021 10:46, Marc Zyngier wrote:
+> On Wed, 19 May 2021 14:04:20 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> On 17/05/2021 18:17, Marc Zyngier wrote:
+>>> On Mon, 17 May 2021 13:32:36 +0100,
+>>> Steven Price <steven.price@arm.com> wrote:
+>>>>
+>>>> Define the new system registers that MTE introduces and context switch
+>>>> them. The MTE feature is still hidden from the ID register as it isn't
+>>>> supported in a VM yet.
+>>>>
+>>>> Signed-off-by: Steven Price <steven.price@arm.com>
+>>>> ---
+>>>>  arch/arm64/include/asm/kvm_host.h          |  6 ++
+>>>>  arch/arm64/include/asm/kvm_mte.h           | 66 ++++++++++++++++++++++
+>>>>  arch/arm64/include/asm/sysreg.h            |  3 +-
+>>>>  arch/arm64/kernel/asm-offsets.c            |  3 +
+>>>>  arch/arm64/kvm/hyp/entry.S                 |  7 +++
+>>>>  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 +++++++
+>>>>  arch/arm64/kvm/sys_regs.c                  | 22 ++++++--
+>>>>  7 files changed, 123 insertions(+), 5 deletions(-)
+>>>>  create mode 100644 arch/arm64/include/asm/kvm_mte.h
+>>>>
+>>>> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+>>>> index afaa5333f0e4..309e36cc1b42 100644
+>>>> --- a/arch/arm64/include/asm/kvm_host.h
+>>>> +++ b/arch/arm64/include/asm/kvm_host.h
+>>>> @@ -208,6 +208,12 @@ enum vcpu_sysreg {
+>>>>  	CNTP_CVAL_EL0,
+>>>>  	CNTP_CTL_EL0,
+>>>>  
+>>>> +	/* Memory Tagging Extension registers */
+>>>> +	RGSR_EL1,	/* Random Allocation Tag Seed Register */
+>>>> +	GCR_EL1,	/* Tag Control Register */
+>>>> +	TFSR_EL1,	/* Tag Fault Status Register (EL1) */
+>>>> +	TFSRE0_EL1,	/* Tag Fault Status Register (EL0) */
+>>>> +
+>>>>  	/* 32bit specific registers. Keep them at the end of the range */
+>>>>  	DACR32_EL2,	/* Domain Access Control Register */
+>>>>  	IFSR32_EL2,	/* Instruction Fault Status Register */
+>>>> diff --git a/arch/arm64/include/asm/kvm_mte.h b/arch/arm64/include/asm/kvm_mte.h
+>>>> new file mode 100644
+>>>> index 000000000000..6541c7d6ce06
+>>>> --- /dev/null
+>>>> +++ b/arch/arm64/include/asm/kvm_mte.h
+>>>> @@ -0,0 +1,66 @@
+>>>> +/* SPDX-License-Identifier: GPL-2.0 */
+>>>> +/*
+>>>> + * Copyright (C) 2020 ARM Ltd.
+>>>> + */
+>>>> +#ifndef __ASM_KVM_MTE_H
+>>>> +#define __ASM_KVM_MTE_H
+>>>> +
+>>>> +#ifdef __ASSEMBLY__
+>>>> +
+>>>> +#include <asm/sysreg.h>
+>>>> +
+>>>> +#ifdef CONFIG_ARM64_MTE
+>>>> +
+>>>> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+>>>> +alternative_if_not ARM64_MTE
+>>>> +	b	.L__skip_switch\@
+>>>> +alternative_else_nop_endif
+>>>> +	mrs	\reg1, hcr_el2
+>>>> +	and	\reg1, \reg1, #(HCR_ATA)
+>>>> +	cbz	\reg1, .L__skip_switch\@
+>>>> +
+>>>> +	mrs_s	\reg1, SYS_RGSR_EL1
+>>>> +	str	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+>>>> +	mrs_s	\reg1, SYS_GCR_EL1
+>>>> +	str	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+>>>> +
+>>>> +	ldr	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+>>>> +	msr_s	SYS_RGSR_EL1, \reg1
+>>>> +	ldr	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+>>>> +	msr_s	SYS_GCR_EL1, \reg1
+>>>> +
+>>>> +.L__skip_switch\@:
+>>>> +.endm
+>>>> +
+>>>> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+>>>> +alternative_if_not ARM64_MTE
+>>>> +	b	.L__skip_switch\@
+>>>> +alternative_else_nop_endif
+>>>> +	mrs	\reg1, hcr_el2
+>>>> +	and	\reg1, \reg1, #(HCR_ATA)
+>>>> +	cbz	\reg1, .L__skip_switch\@
+>>>> +
+>>>> +	mrs_s	\reg1, SYS_RGSR_EL1
+>>>> +	str	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+>>>> +	mrs_s	\reg1, SYS_GCR_EL1
+>>>> +	str	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+>>>> +
+>>>> +	ldr	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+>>>> +	msr_s	SYS_RGSR_EL1, \reg1
+>>>> +	ldr	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+>>>> +	msr_s	SYS_GCR_EL1, \reg1
+>>>
+>>> What is the rational for not having any synchronisation here? It is
+>>> quite uncommon to allocate memory at EL2, but VHE can perform all kind
+>>> of tricks.
+>>
+>> I don't follow. This is part of the __guest_exit path and there's an ISB
+>> at the end of that - is that not sufficient? I don't see any possibility
+>> for allocating memory before that. What am I missing?
 > 
-> This is the preferred style outside of networking.
+> Which ISB?  We have a few in the SError handling code, but that's
+> conditioned on not having RAS. With any RAS-enabled CPU, we return to
+> C code early, since we don't need any extra synchronisation (see the
+> comment about the absence of ISB on this path).
+
+Ah, I clearly didn't read the code (or comment) carefully enough -
+indeed with RAS we're potentially skipping the ISB.
+
+> I would really like to ensure that we return to C code in the exact
+> state we left it.
+
+Agreed, I'll stick an ISB at the end of mte_switch_to_hyp. Although
+there's clearly room for optimisation here as ptrauth_switch_to_hyp has
+a similar ISB.
+
+>>
+>>>> +
+>>>> +.L__skip_switch\@:
+>>>> +.endm
+>>>> +
+>>>> +#else /* CONFIG_ARM64_MTE */
+>>>> +
+>>>> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+>>>> +.endm
+>>>> +
+>>>> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+>>>> +.endm
+>>>> +
+>>>> +#endif /* CONFIG_ARM64_MTE */
+>>>> +#endif /* __ASSEMBLY__ */
+>>>> +#endif /* __ASM_KVM_MTE_H */
+>>>> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+>>>> index 65d15700a168..347ccac2341e 100644
+>>>> --- a/arch/arm64/include/asm/sysreg.h
+>>>> +++ b/arch/arm64/include/asm/sysreg.h
+>>>> @@ -651,7 +651,8 @@
+>>>>  
+>>>>  #define INIT_SCTLR_EL2_MMU_ON						\
+>>>>  	(SCTLR_ELx_M  | SCTLR_ELx_C | SCTLR_ELx_SA | SCTLR_ELx_I |	\
+>>>> -	 SCTLR_ELx_IESB | SCTLR_ELx_WXN | ENDIAN_SET_EL2 | SCTLR_EL2_RES1)
+>>>> +	 SCTLR_ELx_IESB | SCTLR_ELx_WXN | ENDIAN_SET_EL2 |		\
+>>>> +	 SCTLR_ELx_ITFSB | SCTLR_EL2_RES1)
+>>>>  
+>>>>  #define INIT_SCTLR_EL2_MMU_OFF \
+>>>>  	(SCTLR_EL2_RES1 | ENDIAN_SET_EL2)
+>>>> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+>>>> index 0cb34ccb6e73..6b489a8462f0 100644
+>>>> --- a/arch/arm64/kernel/asm-offsets.c
+>>>> +++ b/arch/arm64/kernel/asm-offsets.c
+>>>> @@ -111,6 +111,9 @@ int main(void)
+>>>>    DEFINE(VCPU_WORKAROUND_FLAGS,	offsetof(struct kvm_vcpu, arch.workaround_flags));
+>>>>    DEFINE(VCPU_HCR_EL2,		offsetof(struct kvm_vcpu, arch.hcr_el2));
+>>>>    DEFINE(CPU_USER_PT_REGS,	offsetof(struct kvm_cpu_context, regs));
+>>>> +  DEFINE(CPU_RGSR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[RGSR_EL1]));
+>>>> +  DEFINE(CPU_GCR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[GCR_EL1]));
+>>>> +  DEFINE(CPU_TFSRE0_EL1,	offsetof(struct kvm_cpu_context, sys_regs[TFSRE0_EL1]));
+>>>
+>>> TFSRE0_EL1 is never accessed from assembly code. Leftover from a
+>>> previous version?
+>>
+>> Indeed, I will drop it.
+>>
+>>>>    DEFINE(CPU_APIAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIAKEYLO_EL1]));
+>>>>    DEFINE(CPU_APIBKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIBKEYLO_EL1]));
+>>>>    DEFINE(CPU_APDAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APDAKEYLO_EL1]));
+>>>> diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+>>>> index e831d3dfd50d..435346ea1504 100644
+>>>> --- a/arch/arm64/kvm/hyp/entry.S
+>>>> +++ b/arch/arm64/kvm/hyp/entry.S
+>>>> @@ -13,6 +13,7 @@
+>>>>  #include <asm/kvm_arm.h>
+>>>>  #include <asm/kvm_asm.h>
+>>>>  #include <asm/kvm_mmu.h>
+>>>> +#include <asm/kvm_mte.h>
+>>>>  #include <asm/kvm_ptrauth.h>
+>>>>  
+>>>>  	.text
+>>>> @@ -51,6 +52,9 @@ alternative_else_nop_endif
+>>>>  
+>>>>  	add	x29, x0, #VCPU_CONTEXT
+>>>>  
+>>>> +	// mte_switch_to_guest(g_ctxt, h_ctxt, tmp1)
+>>>> +	mte_switch_to_guest x29, x1, x2
+>>>> +
+>>>>  	// Macro ptrauth_switch_to_guest format:
+>>>>  	// 	ptrauth_switch_to_guest(guest cxt, tmp1, tmp2, tmp3)
+>>>>  	// The below macro to restore guest keys is not implemented in C code
+>>>> @@ -142,6 +146,9 @@ SYM_INNER_LABEL(__guest_exit, SYM_L_GLOBAL)
+>>>>  	// when this feature is enabled for kernel code.
+>>>>  	ptrauth_switch_to_hyp x1, x2, x3, x4, x5
+>>>>  
+>>>> +	// mte_switch_to_hyp(g_ctxt, h_ctxt, reg1)
+>>>> +	mte_switch_to_hyp x1, x2, x3
+>>>> +
+>>>>  	// Restore hyp's sp_el0
+>>>>  	restore_sp_el0 x2, x3
+>>>>  
+>>>> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>>> index cce43bfe158f..de7e14c862e6 100644
+>>>> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>>> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+>>>> @@ -14,6 +14,7 @@
+>>>>  #include <asm/kvm_asm.h>
+>>>>  #include <asm/kvm_emulate.h>
+>>>>  #include <asm/kvm_hyp.h>
+>>>> +#include <asm/kvm_mmu.h>
+>>>>  
+>>>>  static inline void __sysreg_save_common_state(struct kvm_cpu_context *ctxt)
+>>>>  {
+>>>> @@ -26,6 +27,16 @@ static inline void __sysreg_save_user_state(struct kvm_cpu_context *ctxt)
+>>>>  	ctxt_sys_reg(ctxt, TPIDRRO_EL0)	= read_sysreg(tpidrro_el0);
+>>>>  }
+>>>>  
+>>>> +static inline bool ctxt_has_mte(struct kvm_cpu_context *ctxt)
+>>>> +{
+>>>> +	struct kvm_vcpu *vcpu = ctxt->__hyp_running_vcpu;
+>>>> +
+>>>> +	if (!vcpu)
+>>>> +		vcpu = container_of(ctxt, struct kvm_vcpu, arch.ctxt);
+>>>> +
+>>>> +	return kvm_has_mte(kern_hyp_va(vcpu->kvm));
+>>>> +}
+>>>> +
+>>>>  static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+>>>>  {
+>>>>  	ctxt_sys_reg(ctxt, CSSELR_EL1)	= read_sysreg(csselr_el1);
+>>>> @@ -46,6 +57,11 @@ static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+>>>>  	ctxt_sys_reg(ctxt, PAR_EL1)	= read_sysreg_par();
+>>>>  	ctxt_sys_reg(ctxt, TPIDR_EL1)	= read_sysreg(tpidr_el1);
+>>>>  
+>>>> +	if (ctxt_has_mte(ctxt)) {
+>>>> +		ctxt_sys_reg(ctxt, TFSR_EL1) = read_sysreg_el1(SYS_TFSR);
+>>>> +		ctxt_sys_reg(ctxt, TFSRE0_EL1) = read_sysreg_s(SYS_TFSRE0_EL1);
+>>>> +	}
+>>>
+>>> I remember suggesting that this is slightly heavier than necessary.
+>>>
+>>> On nVHE, TFSRE0_EL1 could be moved to load/put, as we never run
+>>> userspace with a vcpu loaded. The same holds of course for VHE, but we
+>>> also can move TFSR_EL1 to load/put, as the host uses TFSR_EL2.
+>>>
+>>> Do you see any issue with that?
+>>
+>> The comment[1] I made before was:
 > 
-> > BTW, How about add the '/*' check into checkpatch.pl?
+> Ah, I totally missed this email (or can't remember reading it, which
+> amounts to the same thing). Apologies for that.
 > 
-> Checkpatch already has too many checks IMO
+>>   For TFSR_EL1 + VHE I believe it is synchronised only on vcpu_load/put -
+>>   __sysreg_save_el1_state() is called from kvm_vcpu_load_sysregs_vhe().
+>>
+>>   TFSRE0_EL1 potentially could be improved. I have to admit I was unsure
+>>   if it should be in __sysreg_save_user_state() instead. However AFAICT
+>>   that is called at the same time as __sysreg_save_el1_state() and there's
+>>   no optimisation for nVHE. And given it's an _EL1 register this seemed
+>>   like the logic place.
+>>
+>>   Am I missing something here? Potentially there are other registers to be
+>>   optimised (TPIDRRO_EL0 looks like a possiblity), but IMHO that doesn't
+>>   belong in this series.
+>>
+>> For VHE TFSR_EL1 is already only saved/restored on load/put
+>> (__sysreg_save_el1_state() is called from kvm_vcpu_put_sysregs_vhe()).
+>>
+>> TFSRE0_EL1 could be moved, but I'm not sure where it should live as I
+>> mentioned above.
+> 
+> Yeah, this looks fine, please ignore my rambling.
 
-I sometimes agree.  What checkpatch messages do you think are excessive?
+No problem!
 
-> and I'm a bit surprised that
-> it doesn't check this already. Perhaps it's because you used the -f to
-> run checkpatch on in-kernel code, which you should not.
+Thanks,
 
-Likely not.  If it was run on a suggested patch, checkpatch doesn't emit
-many messages on unmodified patch context lines.  And it shouldn't.
-
-> it's just that you
-> introduce noise in the logs and do pointless changes of context which
-> makes it harder to use tools like git blame and makes backporting harder
-> for no good reason.
-
-Pretty pointless metric IMO.  Context changes in comments are mostly harmless.
-IMO: backporting of these sorts non-bug fix changes is done _far_ too often.
-
+Steve
