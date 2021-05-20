@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE4238AAF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58B0938AACC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240751AbhETLTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:19:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
+        id S240565AbhETLR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:17:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238971AbhETK5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:57:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 26CC861CF3;
-        Thu, 20 May 2021 10:02:03 +0000 (UTC)
+        id S239009AbhETK5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:57:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B9B861CEE;
+        Thu, 20 May 2021 10:02:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504923;
-        bh=YbVIz8Ibv02Yvf0tb5GKbY4pMdqT6P027w+wWsILNAE=;
+        s=korg; t=1621504925;
+        bh=xTJTC7rlW5t5ID182ztymNkJzyQfL24DcRplvDCQ2tM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Yc0zNIjbyByh2k8UdfbkLFMNf7OFEan7HsyR8yMMkamdXCQPInZIzZ14TlQg/jSVv
-         G9B+eIzzJEvdqNuSU8oetT2fbMwnyaC2fcSqVdYnoYxxOBycFHLC/MFWc/sHP9CtgU
-         MGC1/UOcpgPo7bqImXG4yesU9AWiT3eFGIq6/r8s=
+        b=N3hfLHgBM8ov0tisdaCU8/2KdoogQaOyYch5N6yHmPU6NwLRCTPffqq6nDLYyRe4G
+         NVV3ftqKiWn3tF0t0yc3usz3XFrK8/HdvaZFSqQaSrTQr+ZOFpSho0jjlfKEi1SPFd
+         Vpt7hSUR7tU/m8fQsMfIfY4LuMK2moILODGsu08c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia Zhou <zhou.jia2@zte.com.cn>,
-        Yi Wang <wang.yi59@zte.com.cn>, Takashi Iwai <tiwai@suse.de>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 141/240] ALSA: core: remove redundant spin_lock pair in snd_card_disconnect
-Date:   Thu, 20 May 2021 11:22:13 +0200
-Message-Id: <20210520092113.380345776@linuxfoundation.org>
+Subject: [PATCH 4.9 142/240] nfc: pn533: prevent potential memory corruption
+Date:   Thu, 20 May 2021 11:22:14 +0200
+Message-Id: <20210520092113.419317508@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,38 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia Zhou <zhou.jia2@zte.com.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit abc21649b3e5c34b143bf86f0c78e33d5815e250 ]
+[ Upstream commit ca4d4c34ae9aa5c3c0da76662c5e549d2fc0cc86 ]
 
-modification in commit 2a3f7221acdd ("ALSA: core: Fix card races between
-register and disconnect") resulting in this problem.
+If the "type_a->nfcid_len" is too large then it would lead to memory
+corruption in pn533_target_found_type_a() when we do:
 
-Fixes: 2a3f7221acdd ("ALSA: core: Fix card races between register and disconnect")
-Signed-off-by: Jia Zhou <zhou.jia2@zte.com.cn>
-Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
-Link: https://lore.kernel.org/r/1616989007-34429-1-git-send-email-wang.yi59@zte.com.cn
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+	memcpy(nfc_tgt->nfcid1, tgt_type_a->nfcid_data, nfc_tgt->nfcid1_len);
+
+Fixes: c3b1e1e8a76f ("NFC: Export NFCID1 from pn533")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/core/init.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/nfc/pn533/pn533.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 02e96c580cb7..59377e579adb 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -406,10 +406,8 @@ int snd_card_disconnect(struct snd_card *card)
- 		return 0;
- 	}
- 	card->shutdown = 1;
--	spin_unlock(&card->files_lock);
+diff --git a/drivers/nfc/pn533/pn533.c b/drivers/nfc/pn533/pn533.c
+index d9c55830b2b2..6c495664d2cb 100644
+--- a/drivers/nfc/pn533/pn533.c
++++ b/drivers/nfc/pn533/pn533.c
+@@ -678,6 +678,9 @@ static bool pn533_target_type_a_is_valid(struct pn533_target_type_a *type_a,
+ 	if (PN533_TYPE_A_SEL_CASCADE(type_a->sel_res) != 0)
+ 		return false;
  
- 	/* replace file->f_op with special dummy operations */
--	spin_lock(&card->files_lock);
- 	list_for_each_entry(mfile, &card->files_list, list) {
- 		/* it's critical part, use endless loop */
- 		/* we have no room to fail */
++	if (type_a->nfcid_len > NFC_NFCID1_MAXSIZE)
++		return false;
++
+ 	return true;
+ }
+ 
 -- 
 2.30.2
 
