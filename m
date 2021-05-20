@@ -2,186 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBDD038B34B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EED538B351
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:35:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239372AbhETPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233009AbhETPeA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:34:00 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DAC8C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:32:39 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id g18so10962652pfr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:32:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=QqhQoZDC7MFz94mqk6sQxq+J1Jy4fBaSrpD5HtvukHo=;
-        b=GQSB+yNcvl5WPFbVhTJo/8wAPCuvLh16okEgrqHpFrFUV3NTURO4VWAB3v3p7xp/Xc
-         j5DA5s9+ro8UFgpiyQjQV57tEOSKPVr8LekLgk/OZcVTAFRFyDK6P152hDnS7/OJeGQl
-         FrqcluT/D8ZCCU+wz4VCeah/rPynotwzKrVGaWgKtdyQT4bGPgNCmVMuAQraNggt0fGd
-         IW8blAZCvCUzLVdoG3OZ6gHSePwK43Ewot2qGWVoWOam2SnA3b5MBNW2JNdq9EDtdHlz
-         u07M0nPG1UZLKvMhLqvSdGzBuveA8n5FY1afFHvPWvRUvsWacS9OG5c6O2AZP13SA/6z
-         zoMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=QqhQoZDC7MFz94mqk6sQxq+J1Jy4fBaSrpD5HtvukHo=;
-        b=ViAE0BsTaSg7ZJ2TUisB680CQxU4FOzNdBP8sdeBtT/VvmpQIzjusoHIfRDhtw5zQU
-         wktMhMJ597TP7XAiqePndBQVgqn0a/LWygPJzVymzEA+o4Jq6DASQ4X3MhyjV2vrJ3rk
-         xh0dWPuSPQG8EEuL9qTeSbe0G+wNVKWkvfwxQZK3POJ8FRVAzY57rgNxxm1g8Jur3dEZ
-         R+t2EMlPVadUItpW98zHEH/OdvaLHMy6pMxdeAP4rYq6Xk6yONnlcZZH53R3hIFd8vXp
-         jj7/o814iQIglycWniSRuUmdN/6D62gQjeyfhH5DGXQ3f0OGlJirZOwppHFcwfJ6gm3d
-         8VGA==
-X-Gm-Message-State: AOAM5321E+X3aWHoqdlxPKjefVrHrLsHsqONpYeNMjIayDEZDxyxGNZM
-        cYgp+SsOM9pIAxabq2fJ2FjrYg==
-X-Google-Smtp-Source: ABdhPJyxvbxrZPmj/KlN7YOo7aIh+a1ENMCrOndc7hi/C1Hq0/wMBwci1QNKvhWXJmcugaqCarl11g==
-X-Received: by 2002:a63:7048:: with SMTP id a8mr5242227pgn.194.1621524758571;
-        Thu, 20 May 2021 08:32:38 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id s3sm2298779pfu.9.2021.05.20.08.32.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 08:32:37 -0700 (PDT)
-Date:   Thu, 20 May 2021 15:32:34 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Stefano De Venuto <stefano.devenuto99@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, pbonzini@redhat.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        x86@kernel.org, hpa@zytor.com, kvm@vger.kernel.org,
-        rostedt@goodmis.org, y.karadz@gmail.com,
-        Dario Faggioli <dfaggioli@suse.com>
-Subject: Re: [PATCH] Move VMEnter and VMExit tracepoints closer to the actual
- event
-Message-ID: <YKaBEn6oUXaVAb0K@google.com>
-References: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+        id S236186AbhETPhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:37:11 -0400
+Received: from mail-vi1eur05on2090.outbound.protection.outlook.com ([40.107.21.90]:8577
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233009AbhETPhI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:37:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IKQrS6ldq1++LO0Gt/NM/iIfTeudNg2JGRD2iwnuD/wynh4fNZ85ta9nbywZqeJCWjP+Xv1h9lBYSO9yGVdOgI9aJP86QixyIiOnfGeow0a02Gm/OpD3QtNAvS5o6Bvwy8EHvS38O7B6B4MeDEVbZTVhNfP4qhPQ16uqeFlpNYx4Qr473B0EvrcpW0uugy45hez+BuMnWZW2wMT3y/Cr6WhX4n2986bUj+bRr1fw6X9a5wksk0Wq/DnkD9vYyfEVQIn3RjtRz9Kd1L7OBT93iUaOdbEGb+ioKV9GRbEBmLFuKnBHiSo1ZuhalXBO3Sv/JwjTLLzmsihE3vb/vg88vw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u1eS9YU1Q83/OSBG2ow9gYlgLviqnLbY4FY7uWJZ9WU=;
+ b=ExQxANkNi+eNsjW83oo1dZCOkhw8AWuYcKLgjLk+chnU7x8HW9NrWJeyPx/OppMqg0CUeeCIEINXiXKP8XP60yys/ti+c5FwWqNhYu0/h4tyTGVU1wIbhsrDDF3NCUYKYRlEhFF/i31k+GkxTHFM0kXvLa2jPnonRf4Nf1iViK27OgpAGDdQM44FGz0tY+jykfmPcEA5RBp9N3CMPoB8qroQs5qyp6Xo9STVA7FPs49pgd3BfhRiONwPu4aeOdFs15Jd0pP5ltUjT401WfKRKzlsLBWScA34rc43fyOfy+C4zd1rZSfTwIzwL+kw4uC6+bD43y8nHEACLR9DvM131w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u1eS9YU1Q83/OSBG2ow9gYlgLviqnLbY4FY7uWJZ9WU=;
+ b=nV5/3kbz7+ZhhDjIXCAj8cBJDRGj9aLTp8lGXlTyWJtEPRb3yot+AE1m5Cs/C6/eeIUmhAUuq+P/mQCqKhEXpPm8onKhhZ65Z3Bth0D0WDJgb5Wg1t+LoNC4EiQoDV1/VosJWsegvGTdqwZq/YIu1vJxhYsdmqMwkv+eEopFYMY=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0268.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:62::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.28; Thu, 20 May 2021 15:35:42 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::edb4:ae92:2efe:8c8a]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::edb4:ae92:2efe:8c8a%5]) with mapi id 15.20.4129.033; Thu, 20 May 2021
+ 15:35:42 +0000
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
+        Taras Chornyi <tchornyi@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Vadym Kochan <vkochan@marvell.com>
+Subject: [RFC net-next v2 0/4] Marvell Prestera Switchdev initial updates for firmware version 3.0
+Date:   Thu, 20 May 2021 18:34:56 +0300
+Message-Id: <20210520153500.22930-1-vadym.kochan@plvision.eu>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AM4PR0101CA0065.eurprd01.prod.exchangelabs.com
+ (2603:10a6:200:41::33) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM4PR0101CA0065.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 15:35:41 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 2c6bc00a-2016-44c8-07c5-08d91ba4ed9b
+X-MS-TrafficTypeDiagnostic: HE1P190MB0268:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0268BB307047FC8E40342DC2952A9@HE1P190MB0268.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: YXWvaw9U/CJ4rxgnTPNLplv7Ejaa7LOhPBpbDgKGpDrBgPal4ZkJ+6GKYCAdzkpocrr9wv7QUH0AyhL4iM5JEpFjUGrMLP5YmR9QNGybN8kRhHubY3gLs3a81wIyaTttcCBctntqVIsYK41lGtO6CxGYIWRet8lGKHppbZ1UGkcZ3yo43MPL+bGf+57klPSDlA/JlGawK3/lYhZLZ6xn/+HqQJmcAk5AlzBUC1WoCKfJQFMClroPjfgZkZsxt28QuaRbLK22XUyFZhPCdOm5u1i8xQP1zwU/GI/lOR/b6b11CS2K343hL9PPT/8Tz6XM+4gGfcNTpOSnDwLQhdB/37O8VyuVINz9fDOkQdFnelvZj6bJdDZQKbc449d/U1wTaZDu3vAxTV+hJrVKk3DOXrr0/NW+3lWK2Ezs/hEt4xgLl/IU82fpnjVnYbhOHi2B5GSINT8gl40v8JUsyfkJG1CnegALQEKmpJCyB/uuuNG4vcWMtH9C2PzfNt8SYLRprcbXoUv+F7lfCas7c+YnSauuC99oTYcIN/OCQV9GFuKw8abTDwtTr7LZWa5PoMTOYFx4Uwsko+/STphIJMKwmTvt0uaecdZ6HuNpDVWpLGESybS42i6Y4NYorePs01F0PciLBI0sTIXWU20+uJvF8g==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(39830400003)(346002)(366004)(6666004)(26005)(15650500001)(5660300002)(4326008)(6512007)(66476007)(8676002)(66946007)(316002)(66556008)(110136005)(956004)(54906003)(36756003)(186003)(16526019)(52116002)(1076003)(2906002)(8936002)(83380400001)(38100700002)(38350700002)(86362001)(2616005)(44832011)(6506007)(6486002)(478600001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MtU2kJhqwCeJ3aJOrCLtWxXJxJ1aoe8bv01FIFWL0Bn6moaKECM33Ob+hhzm?=
+ =?us-ascii?Q?KBjEF2UypGF+1F4U6QYYZHep8yqBUaZyQwMinBIu2hIQyEsg+uu9wHFbQGK2?=
+ =?us-ascii?Q?dme17oe13D6T43gii4KwkWW8q015/y0GEcZCwFpraksKBwJn4n7pnxM6CARx?=
+ =?us-ascii?Q?NusZheirfU7vjkC4GjyrmOaVWf4t5Gl35wEkblwW9f5NKiMDsz72JGoxSnTL?=
+ =?us-ascii?Q?+9NT07N8vpR/a8bsbTfI0dhUvI3bkdBPJc9RBeGq5x6Xb31EveiwPIFNrdrQ?=
+ =?us-ascii?Q?hs4NJov5IS8FCvHSxRAKqkYIkxBGtHLxJ3N8+y0elZInO4+xzOXt8t07n9HN?=
+ =?us-ascii?Q?ICZ8pJ38317nTh2Flbq3VpmyWUZiOWRpctomWJlorJMaPWO0FieZ1Ff776sc?=
+ =?us-ascii?Q?dN90aa03h0O1FNpPC6Hg26/gba3ueS/zKgRYp9cu3l1W2XHlS/1qijEginyC?=
+ =?us-ascii?Q?xlrHNWQF6wvrWU3/7Bj1JlY138GZHsdR7PvZUHIAMT+xtSqCa1u2Eua7MqxF?=
+ =?us-ascii?Q?j4sJogsFIXtebzG3hhq7gfwnkunAbkWpgMW2FpG7NgHp4MySImA/2+YAMKrj?=
+ =?us-ascii?Q?325DhfcB1R5KHIr8K+ePXGaqdrB1kNxXv5lWuwvBS4k9xKR2qlaTghYEAT6j?=
+ =?us-ascii?Q?guNJIqyHFgzz4Rfhr85J1g7IfKoD8J0TBY3TIduG8mAoUljioFbStdAYrk13?=
+ =?us-ascii?Q?KjLnV6ADn5nlrtELBiNLOKx2Sl/gX/74H9QR9H3m28Vidbdii9BmYmy209Ux?=
+ =?us-ascii?Q?4H7hQ2OSIlo4Tlsz1ndHVae/SDQiOI4Bk3DtzlR/FdidNSgqU8Q+JYUWY5cA?=
+ =?us-ascii?Q?I8EUQiUu2TU7UirOwI3bbIIb96pNsaDFaTBk8IRji17otgR7P25bQVBnKuJ2?=
+ =?us-ascii?Q?5ENI73wvGJiQGSwJhKCgQ/8cSDTwHyO3p6MFnS1IhjoHFTa5zx5Ck43wvqsi?=
+ =?us-ascii?Q?iSOwIoAPDlpaxxOZUmVCKdPIoFcVoSCsqmowlalYRGm0+ABgUbArFololKfI?=
+ =?us-ascii?Q?ttPG/e4jTBYGDqSBO6PqvSODiLM4mpHcY3e/gY4XKo/rXuvzgtzg8PTcx4Gd?=
+ =?us-ascii?Q?BlOwrpwxRpdFNeKXZsEjCSbMnngHAQckstrPEw+4HhxyaCH1qRQ0QY5E/WKq?=
+ =?us-ascii?Q?HQrr4N1fxmMsvSwcRQpjU7GU0yg1YoVMqqcohTLIetj+w8T9UI4X9Yx82GM+?=
+ =?us-ascii?Q?AtnwNb6W+6UVjiCgdBvEzdivHP/oBCoQ3LlT8OT0Vq26KC5JPHX+PjlJwtL9?=
+ =?us-ascii?Q?ixYStCAnfBXbOGqWs/XjevmgPeGeguZsSoqoW3fptz5L3RUfOsId4srQbl/4?=
+ =?us-ascii?Q?WBflNjXEHp43X/aMBzHaH4xn?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c6bc00a-2016-44c8-07c5-08d91ba4ed9b
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 15:35:42.8490
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mvUromHyI+hvEHi2FdJhF8W9PzjCO3pMB7sWEq/AChNwvtYkDtZO6kS++rGKwMAG40xFQd/WoXEJMhrHxPPidmOf1s4o1PzehGe2z2k6yao=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0268
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021, Stefano De Venuto wrote:
-> The kvm_entry and kvm_exit tracepoints are still quite far from the
-> actual VMEnters/VMExits. This means that in a trace we can find host
-> events after a kvm_entry event and before a kvm_exit one, as in this
-> example:
-> 
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167191: kvm_entry:
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167192: write_msr: 48, value 0
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167192: rcu_utilization: Start context switch
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167192: rcu_utilization: End context switch
-> trace-tumbleweed.dat:     <idle>-0     [000]  2.167196: hrtimer_cancel:
-> trace-tumbleweed.dat:     <idle>-0     [000]  2.167197: hrtimer_expire_entry:
-> trace-tumbleweed.dat:     <idle>-0     [000]  2.167201: hrtimer_expire_exit:
-> trace-tumbleweed.dat:     <idle>-0     [000]  2.167201: hrtimer_start:
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167203: read_msr: 48, value 0
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167203: write_msr: 48, value 4
->            trace.dat:  CPU 0/KVM-4594  [001]  2.167204: kvm_exit: 
-> 
-> This patch moves the tracepoints closer to the events, for both Intel
-> and AMD, so that a combined host-guest trace will offer a more
-> realistic representation of what is really happening, as shown here:
-> 
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190290: write_msr: 48, value 0
+From: Vadym Kochan <vkochan@marvell.com>
 
-I'm not sure this is a good thing, as it's not clear to me that invoking tracing
-with the guest's SPEC_CTRL loaded is desirable.  Maybe it's a non-issue, but it
-should be explicitly called out and discussed.
+This series adds minimal support for firmware version 3.0 which
+has such changes like:
 
-And to some extent, the current behavior is _more_ accurate because it shows that
-KVM started its VM-Enter sequence and then the WRMSR occured as part of that
-sequence.  It is writing the guest's value after all.  Ditto for XCR0, XSS, PKRU,
-Intel PT, etc...
+    - initial routing support
 
-A more concrete example would be perf; on VMX, if a perf NMI happens after KVM
-invokes atomic_switch_perf_msrs() then I absolutely want to see that reflected
-in the trace, e.g. to help debug the PEBS mess[*].  If the VM-Enter tracepoint
-is moved closer to VM-Enter, that may or may not hold true depending on where the
-NMI lands.
+    - LAG support
 
-On VMX, I think the tracepoint can be moved below the VMWRITEs without much
-contention (though doing so is likely a nop), but moving it below
-kvm_load_guest_xsave_state() requires a bit more discussion.
+    - events interrupt handling changes
 
-I 100% agree that the current behavior can be a bit confusing, but I wonder if
-we'd be better off "solving" that problem through documentation.
+Changes just make able to work with new firmware version but
+supported features in driver will be added later.
 
-[*] https://lkml.kernel.org/r/20210209225653.1393771-1-jmattson@google.com
+New firmware version was recently merged into linux-firmware tree.
 
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190290: rcu_utilization: Start context switch
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190290: rcu_utilization: End context switch
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190290: kvm_entry:
-> trace-tumbleweed.dat:     <idle>-0     [000]  2.190290: write_msr:
-> trace-tumbleweed.dat:     <idle>-0     [000]  2.190290: cpu_idle:
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190291: kvm_exit:
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190291: read_msr: 48, value 0
->            trace.dat:  CPU 0/KVM-2553  [000]  2.190291: write_msr: 48, value 4 
-> 
-> Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
-> Signed-off-by: Dario Faggioli <dfaggioli@suse.com>
-> ---
+Added ability of loading previous fw major version if the latest one
+is missing, also add support for previous FW ABI.
 
-...
+PATCH -> RFC:
+    1) Load previous fw version if the latest one is missing (suggested by Andrew Lunn)
 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 4bceb5ca3a89..33c732101b83 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6661,6 +6661,8 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->  {
->  	kvm_guest_enter_irqoff();
->  
-> +	trace_kvm_entry(vcpu);
-> +
->  	/* L1D Flush includes CPU buffer clear to mitigate MDS */
->  	if (static_branch_unlikely(&vmx_l1d_should_flush))
->  		vmx_l1d_flush(vcpu);
-> @@ -6675,6 +6677,9 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
->  
->  	vcpu->arch.cr2 = native_read_cr2();
->  
-> +	vmx->exit_reason.full = vmcs_read32(VM_EXIT_REASON);
-> +	trace_kvm_exit(vmx->exit_reason.full, vcpu, KVM_ISA_VMX);
+    2) Add support for previous FW ABI version (suggested by Andrew Lunn)
 
-This is wrong in the 'vmx->fail == true' case.
+RFC v2:
+    1) Get rid of automatic decrementing of
+       major version but hard code it.
 
-> +
->  	kvm_guest_exit_irqoff();
->  }
->  
-> @@ -6693,8 +6698,6 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->  	if (vmx->emulation_required)
->  		return EXIT_FASTPATH_NONE;
->  
-> -	trace_kvm_entry(vcpu);
-> -
->  	if (vmx->ple_window_dirty) {
->  		vmx->ple_window_dirty = false;
->  		vmcs_write32(PLE_WINDOW, vmx->ple_window);
-> @@ -6814,15 +6817,12 @@ static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
->  		return EXIT_FASTPATH_NONE;
->  	}
->  
-> -	vmx->exit_reason.full = vmcs_read32(VM_EXIT_REASON);
->  	if (unlikely((u16)vmx->exit_reason.basic == EXIT_REASON_MCE_DURING_VMENTRY))
->  		kvm_machine_check();
->  
->  	if (likely(!vmx->exit_reason.failed_vmentry))
->  		vmx->idt_vectoring_info = vmcs_read32(IDT_VECTORING_INFO_FIELD);
->  
-> -	trace_kvm_exit(vmx->exit_reason.full, vcpu, KVM_ISA_VMX);
-> -
->  	if (unlikely(vmx->exit_reason.failed_vmentry))
->  		return EXIT_FASTPATH_NONE;
->  
-> -- 
-> 2.31.1
-> 
+    2) Print error message with file path if
+       previous FW could not be loaded.
+
+
+Vadym Kochan (4):
+  net: marvell: prestera: disable events interrupt while handling
+  net: marvell: prestera: align flood setting according to latest
+    firmware version
+  net: marvell: prestera: bump supported firmware version to 3.0
+  net: marvell: prestera: try to load previous fw version
+
+ .../ethernet/marvell/prestera/prestera_hw.c   |  85 +++++++++++++-
+ .../ethernet/marvell/prestera/prestera_hw.h   |   3 +-
+ .../ethernet/marvell/prestera/prestera_pci.c  | 104 ++++++++++++++----
+ .../marvell/prestera/prestera_switchdev.c     |  17 ++-
+ 4 files changed, 175 insertions(+), 34 deletions(-)
+
+-- 
+2.17.1
+
