@@ -2,82 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 287E8389D75
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F11AA389D78
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:05:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230317AbhETGEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:04:52 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41493 "EHLO ozlabs.org"
+        id S230368AbhETGGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:06:30 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52860 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229534AbhETGEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:04:47 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Flzgc4ktKz9sWW;
-        Thu, 20 May 2021 16:03:24 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621490604;
-        bh=JYW7BBiW4SCYSs7XUcEVt+cNReQ+SXkLndA2+yTqtBo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bERs0UuDmYY8eGIk5Hx8LlwNuwiylA5wodV7CeVMlNQbvD1FJ4uH9ukZWPrwkEj2T
-         GdSUyGmMIPg+Y/xoxNP4MtVUepEBtDlZUMLpLnq1/TEIHqi7zanS+2pizfPO1rkhQf
-         ivlggnPP3MwUESWlW4DbPAcG6aPho2QP42SiVQ0ELxj1sOucHoCK9Fby93nUVcpQbF
-         hjl1yxwNyRQO4wXX2bUv8vh6o0frdUPZJBRTMOoNzs2MBr8i6TuZLsZl+rWuMgy6vh
-         tNe+JJKS/npDKXXYuAutoky0GtyuJff8iJ9AkFPrgvtrAu2VFvLV/rybhDWJ8PPrOj
-         FM511Agn5sKHw==
-Date:   Thu, 20 May 2021 16:03:23 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the cxl tree
-Message-ID: <20210520160323.0467b629@canb.auug.org.au>
+        id S229534AbhETGG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 02:06:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621490706; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9aV43J4LYYDq28unM+WOCaDSlePk+ZYEcjPfgd4X2r8=;
+        b=Kv3FDhUuYeHz1ibksc6IbemGP0XoBacHr1xeskd0ZMP1uOFSJvZwah9n9d5kkX0sv+U2KY
+        gA4uv+ScIubFedSeFJOdcBmZOUXL1oORwtresiguorTKqMHcDqjZ9tIedMqzOYl+6ZhZU2
+        Tpuz9MH7qaEWhS7fKMaHEfFp20Y6uHo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 6C49EAEE7;
+        Thu, 20 May 2021 06:05:06 +0000 (UTC)
+Message-ID: <2c0f621f2e1d3991edf198cb32d8e788ceeb6d7d.camel@suse.com>
+Subject: Re: [PATCH] Move VMEnter and VMExit tracepoints closer to the
+ actual event
+From:   Dario Faggioli <dfaggioli@suse.com>
+To:     Stefano De Venuto <stefano.devenuto99@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, rostedt@goodmis.org,
+        y.karadz@gmail.com, Borislav Petkov <bpetkov@suse.de>
+Date:   Thu, 20 May 2021 08:05:04 +0200
+In-Reply-To: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+References: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-Q4tI7q0ZmYDhB4CBxseV"
+User-Agent: Evolution 3.40.1 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ayGP_AIPojzEGKUmVmpfME4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ayGP_AIPojzEGKUmVmpfME4
-Content-Type: text/plain; charset=US-ASCII
+
+--=-Q4tI7q0ZmYDhB4CBxseV
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+On Wed, 2021-05-19 at 20:23 +0200, Stefano De Venuto wrote:
+>=20
+> Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
+> Signed-off-by: Dario Faggioli <dfaggioli@suse.com>
+>
+So, thanks to Boris, I realized that this is both wrong and
+inconsistent (and it's my fault, not Stefano's).
 
-After merging the cxl tree, today's linux-next build (htmldocs)
-produced this warning:
+This is how it should be:
 
-Documentation/driver-api/cxl/memory-devices.rst:32: WARNING: Title underlin=
-e too short.
+Co-developed-by: Dario Faggioli <dfaggioli@suse.com>
+Signed-off-by: Dario Faggioli <dfaggioli@suse.com>
+Signed-off-by: Stefano De Venuto <stefano.devenuto99@gmail.com>
 
-CXL Core
--------
+Of course, we're happy to re-submit with it fixed, if necessary. Just
+let us know.
 
-Introduced by commit
-
-  5f653f7590ab ("cxl/core: Rename bus.c to core.c")
-
+Sorry and Regards
 --=20
-Cheers,
-Stephen Rothwell
+Dario Faggioli, Ph.D
+http://about.me/dario.faggioli
+Virtualization Software Engineer
+SUSE Labs, SUSE https://www.suse.com/
+-------------------------------------------------------------------
+<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
 
---Sig_/ayGP_AIPojzEGKUmVmpfME4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+--=-Q4tI7q0ZmYDhB4CBxseV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCl+6sACgkQAVBC80lX
-0Gy4CAf9EErwKeUhqzAv2+Hpf/dfuI1AtmuyMn4AxJBbSLPSy5Egrd7ysrs8BB4U
-ZWb+rOCSI0o7dOgyafBNEXFTG7jyXHk0Xz+j+EWGAXwGfLRwJrWjQmmXSnaA40tX
-P2HdpASuoc59JKyT8HyGcXNmgTRiAnwJ9OF9NgvkTkKHVQiUfL50URS7fAyFgOsy
-iPrh8vf++Qp38jsP6FAMPla1sJLD9EMG+olIS47mPfmvAhXUiFXAf9LmA5u1z9/z
-kST7mcWwoBdkRX6jP3K0SZrw/zaQLgGUW/0d9TAquRbUL4VBxcrh4ca97fMj084D
-BzDCcZYCu2ck59hsN+z7+JXmBx5utQ==
-=1hy8
+iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmCl/BAACgkQFkJ4iaW4
+c+4oOQ//SYj3i96wyJIL8hwnxiMDPVDF6HJj6gKJIuhzuKIWUr0G8MhjRvUiAFoV
+wMGogO6eouUEMDSIYwhwR/p5+PHY5RhVYQWvq80LsD2wEaZVD94XdRSJnC+9C4/K
+TztPFebAMX4ngbWSKc/BalK8Wjmpea9/6qKqv8NGMgXYPiWBdbJnfQXWrhHr9Mdg
+nEN93bhAYJwhH+yG06D/SYDzLt9PMYLEzij+t38SBfeXE5gJdofGVDePwQjxX/oW
+QDyUg+4i34RH9nIbNUUpJwk2tJsH57z+dmCXZ+kMk9MBvoQfuJ7asr0qp6a81auN
+3543xlY34lKLwg6LTvp/Vzctnw7Pvdxssyc/rVuUKe9JesKM5Cv7J0/KyTUELuMt
+1xRe+TJf/5QLoVtvXb83YVHkXcHb8qyk1knqT2sGnoSax/WwO99pmh+mXvK6bLBR
+n3ZADfVLTnAClpTzFdrPLx7Nw06kPQNekPZLOaNd22FExgZEGp7Hr0SALFBnq/ve
+Nu8v69XZ9/UVYmFxnA8AEMbISq3SlVA2QxlU9J6wnw3yUivwHC7f+4eq2qPhrSaF
+neNixMiymSE/9t/hJbrtSsW9FlpcJdYbi46AOegva4+OP33w7qR0CnPjJkXl997w
+G1gfpEjpz5yBd8VLkEF2dLzpwLTj+E/C1/OoxKE9RXZDh2qKjlY=
+=7IoS
 -----END PGP SIGNATURE-----
 
---Sig_/ayGP_AIPojzEGKUmVmpfME4--
+--=-Q4tI7q0ZmYDhB4CBxseV--
+
