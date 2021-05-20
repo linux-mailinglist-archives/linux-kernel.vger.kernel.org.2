@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A921A38A8B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9682938A8BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:53:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239230AbhETKwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:52:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39816 "EHLO mail.kernel.org"
+        id S238706AbhETKxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:53:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237029AbhETKhh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:37:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4230761C6E;
-        Thu, 20 May 2021 09:54:28 +0000 (UTC)
+        id S237348AbhETKhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:37:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7482F61184;
+        Thu, 20 May 2021 09:54:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504468;
-        bh=zuYue1qlKmWu/hX0P2NKY6ebYP5eUaBn+QVoYt12324=;
+        s=korg; t=1621504470;
+        bh=kGG51gVk4oUe1HtB/oZPpqkTAh6QD9POEA+VOCSGNPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OmUeblSmCiBteShpWeDsgmGgoWk3X0i1kK6lU5nYh+kN2lPecS34LhojRa/dU7sRU
-         +Cu7Y//AAhTZmZcQfnTJTEQhAcrB1yMkEKqNFgAZ6reVF0XpJtkxNsS1AB/8WL2AtK
-         hN+I/WOGwOEdbDeclo6jfCOY9h9KehnmkHbo3KiI=
+        b=0+X7pfiQzMmhi5VbIfpAo8f9/t4Cuc91pbt9XK6jvOgBhiK8+hHJym6k2ofzBq2IA
+         x0EkLuz71NU9KhcK24uxExeMOo1NuwG0SBC189FRWTVIOpFiYdXfFVAJ4MysLRFmtt
+         mo9A+uFeYmfZi6LHSJtcP52uKZeHBIHZWQdzz7HU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Chao Yu <yuchao0@huawei.com>, Jaegeuk Kim <jaegeuk@kernel.org>,
+        stable@vger.kernel.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 259/323] f2fs: fix a redundant call to f2fs_balance_fs if an error occurs
-Date:   Thu, 20 May 2021 11:22:31 +0200
-Message-Id: <20210520092129.079045453@linuxfoundation.org>
+Subject: [PATCH 4.14 260/323] PCI: Release OF node in pci_scan_device()s error path
+Date:   Thu, 20 May 2021 11:22:32 +0200
+Message-Id: <20210520092129.119087446@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -40,43 +42,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-[ Upstream commit 28e18ee636ba28532dbe425540af06245a0bbecb ]
+[ Upstream commit c99e755a4a4c165cad6effb39faffd0f3377c02d ]
 
-The  uninitialized variable dn.node_changed does not get set when a
-call to f2fs_get_node_page fails.  This uninitialized value gets used
-in the call to f2fs_balance_fs() that may or not may not balances
-dirty node and dentry pages depending on the uninitialized state of
-the variable. Fix this by only calling f2fs_balance_fs if err is
-not set.
+In pci_scan_device(), if pci_setup_device() fails for any reason, the code
+will not release device's of_node by calling pci_release_of_node().  Fix
+that by calling the release function.
 
-Thanks to Jaegeuk Kim for suggesting an appropriate fix.
-
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: 2a3407607028 ("f2fs: call f2fs_balance_fs only when node was changed")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Fixes: 98d9f30c820d ("pci/of: Match PCI devices to OF nodes dynamically")
+Link: https://lore.kernel.org/r/20210124232826.1879-1-dmitry.baryshkov@linaro.org
+Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/f2fs/inline.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/pci/probe.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/f2fs/inline.c b/fs/f2fs/inline.c
-index 8906f6381b1a..74bc861bab39 100644
---- a/fs/f2fs/inline.c
-+++ b/fs/f2fs/inline.c
-@@ -203,7 +203,8 @@ out:
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index 55ece07e584a..e716d8bba227 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -2014,6 +2014,7 @@ static struct pci_dev *pci_scan_device(struct pci_bus *bus, int devfn)
+ 	pci_set_of_node(dev);
  
- 	f2fs_put_page(page, 1);
- 
--	f2fs_balance_fs(sbi, dn.node_changed);
-+	if (!err)
-+		f2fs_balance_fs(sbi, dn.node_changed);
- 
- 	return err;
- }
+ 	if (pci_setup_device(dev)) {
++		pci_release_of_node(dev);
+ 		pci_bus_put(dev->bus);
+ 		kfree(dev);
+ 		return NULL;
 -- 
 2.30.2
 
