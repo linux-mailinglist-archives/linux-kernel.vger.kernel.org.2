@@ -2,171 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F8738B618
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:33:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C759F38B61A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:34:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235372AbhETSe6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:34:58 -0400
-Received: from mail-oo1-f42.google.com ([209.85.161.42]:33464 "EHLO
-        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233857AbhETSez (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:34:55 -0400
-Received: by mail-oo1-f42.google.com with SMTP id j17-20020a4ad6d10000b02901fef5280522so4022008oot.0;
-        Thu, 20 May 2021 11:33:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VpIZNz0K+hrxnCAMqgX+GPbbK86F0GzoMq8JmMIGB7w=;
-        b=GK4z/Lyn3/Yv9zAQgDPIP247ZIy3vqJ5084pFF4+qC3n8CsEYBFo93LP0kCNaSXfTI
-         Cno/PKiz9eMdFGpaPxVvdrStrRcj5a7/i1b2WArii4WGagifu6y/p06M6NsaRbAPf0GZ
-         /V/cebsYhJs/tf0XxTYfG820iIy7tG7fRVT8Pn81By7J+rPNHLnI0+kYpZq49kOo/Rex
-         ucdy5TaSjqer7gF9GTGPLmw1ddoWcqN/dT++6NYkyx7vrEWPLKpyxOFznRc/DS6ssGEY
-         pbaLd9FCjl7QXHMnuPDReJcAN5YxgL7gbVqP2RJN6CCPirh5Cyc+Xqlxu/d6okALDhRv
-         Ezpw==
-X-Gm-Message-State: AOAM531I1IkmasjLeY9ZqpjyfOiV03i5bIwY+JhFSfvtxsjpo0a5869y
-        KU1eqdhOO9OJviBliYxOSwQQvVunXG7Qw6lbwqg=
-X-Google-Smtp-Source: ABdhPJyt7I5FNcJxtfGw3djcsM8WjYoSDjCWd/Wk635t7zznxdsE+ePyb48FtPDEjnEzSsgrW+Rdz3XedxcVLKfq4P0=
-X-Received: by 2002:a4a:e5d5:: with SMTP id r21mr4913042oov.1.1621535612897;
- Thu, 20 May 2021 11:33:32 -0700 (PDT)
+        id S235411AbhETSfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:35:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233857AbhETSfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 14:35:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76780611AE;
+        Thu, 20 May 2021 18:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621535637;
+        bh=NMGesVtPQnY/FQJ7V9cpTdNOJfWW9YVR9/m3Tj3KVW8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=N9DRU5zjc35Fx+EIojoqAGs/cPymC7vlHHGNikd4n4kC7zD6U5pu2mM7qcZ8lLipQ
+         2hsooLMbHwK9xCLriZvkkrq7jv/X0Kg9qeyzitXsmNW3m5hhi++GLTF9/PjMUZEDuk
+         7NUHo1m4B3lbnDIaQsCHkBC/ewXANNchbt5+C+mSGuzyXjmP0l9DCX5Mca8V1VhqOS
+         HLKxTmRbZsP43NnYtxwHWLlEkHRQpGomslDw95sT67UInPlPvxPywVrfGs4W3VEmF5
+         m3UzvwXZh1rrNBp3+PnTqEWm0Ww/e+mJ335NS5LZxdPXi+eLXTH0QFtObHaqGVMI2O
+         CfEl1uD8r1kYw==
+Date:   Thu, 20 May 2021 19:33:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
+        Liang Liang <liang.liang@amd.com>
+Subject: Re: [PATCH] spi:amd: Add support for latest platform
+Message-ID: <20210520183352.GE3962@sirena.org.uk>
+References: <20210520133946.2263172-1-Nehal-Bakulchandra.shah@amd.com>
 MIME-Version: 1.0
-References: <20210520140928.3252671-1-djrscally@gmail.com> <20210520140928.3252671-3-djrscally@gmail.com>
-In-Reply-To: <20210520140928.3252671-3-djrscally@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 20 May 2021 20:33:21 +0200
-Message-ID: <CAJZ5v0hoDswjr+7r4uf6jZvV3t+-UDtEA0V7A_MvdT_34XrbJA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/8] ACPI: scan: Add function to fetch dependent of
- acpi device
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "open list:ACPI COMPONENT ARCHITECTURE (ACPICA)" <devel@acpica.org>,
-        Len Brown <lenb@kernel.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="C94crkcyjafcjHxo"
+Content-Disposition: inline
+In-Reply-To: <20210520133946.2263172-1-Nehal-Bakulchandra.shah@amd.com>
+X-Cookie: Offer void where prohibited by law.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 4:11 PM Daniel Scally <djrscally@gmail.com> wrote:
->
-> In some ACPI tables we encounter, devices use the _DEP method to assert
-> a dependence on other ACPI devices as opposed to the OpRegions that the
-> specification intends. We need to be able to find those devices "from"
-> the dependee, so add a callback and a wrapper to walk over the
-> acpi_dep_list and return the dependent ACPI device.
->
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> ---
-> Changes since v3:
->
->         Both new functions were renamed.
->
->  drivers/acpi/scan.c     | 38 ++++++++++++++++++++++++++++++++++++++
->  include/acpi/acpi_bus.h |  1 +
->  2 files changed, 39 insertions(+)
->
-> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-> index 195635c3462b..1a76fbdfa669 100644
-> --- a/drivers/acpi/scan.c
-> +++ b/drivers/acpi/scan.c
-> @@ -2105,6 +2105,21 @@ static void acpi_bus_attach(struct acpi_device *device, bool first_pass)
->                 device->handler->hotplug.notify_online(device);
->  }
->
-> +static int acpi_return_dep_dev(struct acpi_dep_data *dep, void *data)
 
-What about calling this acpi_get_first_consumer_cb()?
+--C94crkcyjafcjHxo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +{
-> +       struct acpi_device *adev;
-> +       int ret;
-> +
-> +       ret = acpi_bus_get_device(dep->consumer, &adev);
-> +       if (ret)
-> +               /* If we don't find an adev then we want to continue parsing */
-> +               return 0;
-> +
-> +       *(struct acpi_device **)data = adev;
+On Thu, May 20, 2021 at 07:09:46PM +0530, Nehal Bakulchandra Shah wrote:
 
-And it can do the get_device() here, can't it?
+> *Support for latest platform
+> *Hardware Fifo has 72 bytes limitation so fix for the larger data size.
 
-So maybe use acpi_bus_get_acpi_device() instead of
-acpi_bus_get_device()?  Would be simpler.
+These two things sound like they should be separate patches, and it
+looks like there are some other changes mixed in here which aren't
+called out in the changelog.  This should be a patch series with one
+change per patch, that makes things much easier to review.
 
-> +
-> +       return 1;
-> +}
-> +
->  static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
+>  	while (spi_busy) {
+> -		usleep_range(10, 20);
+> +		usleep_range(10, 40);
+
+Why change the delay?  This looks like a separate patch.
+
+>  	return 0;
+> @@ -146,9 +180,14 @@ static void amd_spi_execute_opcode(struct spi_master=
+ *master)
 >  {
->         struct acpi_device *adev;
-> @@ -2168,6 +2183,29 @@ void acpi_dev_clear_dependencies(struct acpi_device *supplier)
->  }
->  EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
->
-> +/**
-> + * acpi_dev_get_dependent_dev - Return ACPI device dependent on @supplier
+>  	struct amd_spi *amd_spi =3D spi_master_get_devdata(master);
+> =20
+> +	amd_spi_busy_wait(amd_spi);
+>  	/* Set ExecuteOpCode bit in the CTRL0 register */
 
-And what about calling this acpi_get_first_consumer() ?
+A blank line after the busy wait, and it'd be good to have a comment
+saying why there's a busy wait before actually doing the operation since
+this looks quite odd.
 
-> + * @supplier: Pointer to the dependee device
-> + *
-> + * Returns the first &struct acpi_device which declares itself dependent on
-> + * @supplier via the _DEP buffer, parsed from the acpi_dep_list.
-> + *
-> + * The caller is responsible for putting the reference to adev when it is no
-> + * longer needed.
-> + */
-> +struct acpi_device *acpi_dev_get_dependent_dev(struct acpi_device *supplier)
-> +{
-> +       struct acpi_device *adev = NULL;
+> @@ -241,7 +325,8 @@ static int amd_spi_master_transfer(struct spi_master =
+*master,
+>  	 * program the controller.
+>  	 */
+>  	amd_spi_fifo_xfer(amd_spi, master, msg);
+> -
+> +	if (amd_spi->devtype_data->version)
+> +		amd_spi_clear_chip(master);
+
+Does this disable the chip select?  Should there be a separate set_cs()
+operation?
+
+>  	amd_spi =3D spi_master_get_devdata(master);
+> -	amd_spi->io_remap_addr =3D devm_platform_ioremap_resource(pdev, 0);
 > +
-> +       acpi_walk_dep_device_list(supplier->handle, acpi_return_dep_dev, &adev);
+> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	amd_spi->io_remap_addr =3D devm_ioremap_resource(&pdev->dev, res);
 > +
-> +       if (adev)
-> +               get_device(&adev->dev);
-> +
-> +       return adev;
-> +}
-> +EXPORT_SYMBOL_GPL(acpi_dev_get_dependent_dev);
-> +
->  /**
->   * acpi_bus_scan - Add ACPI device node objects in a given namespace scope.
->   * @handle: Root of the namespace scope to scan.
-> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
-> index 0b2c4f170f4d..68d378207704 100644
-> --- a/include/acpi/acpi_bus.h
-> +++ b/include/acpi/acpi_bus.h
-> @@ -692,6 +692,7 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
->  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
->
->  void acpi_dev_clear_dependencies(struct acpi_device *supplier);
-> +struct acpi_device *acpi_dev_get_dependent_dev(struct acpi_device *supplier);
->  struct acpi_device *
->  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const char *uid, s64 hrv);
->  struct acpi_device *
-> --
-> 2.25.1
->
+
+res is never referenced so it's not clear why this change is being made?
+
+>  	/* Initialize the spi_master fields */
+>  	master->bus_num =3D 0;
+>  	master->num_chipselect =3D 4;
+>  	master->mode_bits =3D 0;
+> -	master->flags =3D SPI_MASTER_HALF_DUPLEX;
+>  	master->setup =3D amd_spi_master_setup;
+>  	master->transfer_one_message =3D amd_spi_master_transfer;
+
+I'm not seeing a change anywhere that looks like it adds full duplex
+support for the v1 hardware (or v2 for that matter) and this isn't
+called out in the changelog.
+
+--C94crkcyjafcjHxo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCmq5AACgkQJNaLcl1U
+h9D+UAf4uppXruMhqwdp5uEqIkfYy/+WtyrHf+FXHv7GfXIkWWAUIxlPm3ka53Lq
+j3NxlYjqGd+NteFMXP3Y1nsI7VirtVUb/Olj7y6LJbEYX+FI85K1Kc/jQ7UIJXQB
+Kxzf1s/DNMl0hmQEPOJd6AfRYpzl9HsLzJDmMGJRlBi7rrisiOXFDwrIACCz498Z
+WZ4ARK+gU7rHK27Ryn1ZBmtFG3ahl2ksSlxflKqBJ3rFHoWhh4Xhj3OCvXC6xs6g
+vD+Bjy4aODtTAE+rmsq8ReDqhpQd0OP2TmBou+EMp/iIcOValyhNqlGgehB7w6Lr
++ABrg+bvn5RfLfTZyCVdMtIjUnIQ
+=EvC4
+-----END PGP SIGNATURE-----
+
+--C94crkcyjafcjHxo--
