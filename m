@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3452D38A6C2
+	by mail.lfdr.de (Postfix) with ESMTP id ADA5A38A6C3
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237144AbhETK3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:29:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
+        id S237167AbhETK3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:29:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235800AbhETKRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:17:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 077BD61454;
-        Thu, 20 May 2021 09:46:02 +0000 (UTC)
+        id S235815AbhETKRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:17:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E2ED61455;
+        Thu, 20 May 2021 09:46:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503963;
-        bh=nr8udd1qg14NizUVqi69DoKYfc9SNyTvp8JR4yw2N9U=;
+        s=korg; t=1621503967;
+        bh=YBlSG0CxKZJRXO2zFQtplCOnG9ojUjbFXr2qEAn/B6g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GDav2c2KtQn/Tb3bbTrFWEj/TRSrQLtC/PV0g0R3tLagru+WqE9FFDr7bMIQoxm3p
-         7GvmxmVujyIeJfbi+p1rAi2guNhRqwsd2uTzxsR7ItdwtpYcaeVknSaGT4OpwlUK86
-         B89C3/s4WqLQ7zZvc6XA+XEtr/Ok2r99dhnA4CkY=
+        b=gF+mSSJPS+sdh/d01Wyc5Eho4zabvQpgpIrMN78R3t5tHjpIOF6d/A3OkwF5FKV9X
+         OHDj1KLsgqDyJ/JlMLTdZK0AT3+gTDz+0rSvLfzzZyWcWjy16OSoERrmboy02DXPPA
+         sk6/VmuSbquVNaqdfVvJTQ3wGtWrpanpLHLETjCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        stable@vger.kernel.org,
+        Mathias Nyman <mathias.nyman@linux.intel.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 033/323] usb: gadget: f_uac1: validate input parameters
-Date:   Thu, 20 May 2021 11:18:45 +0200
-Message-Id: <20210520092121.248458105@linuxfoundation.org>
+Subject: [PATCH 4.14 035/323] usb: xhci: Fix port minor revision
+Date:   Thu, 20 May 2021 11:18:47 +0200
+Message-Id: <20210520092121.317183536@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,111 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 
-[ Upstream commit a59c68a6a3d1b18e2494f526eb19893a34fa6ec6 ]
+[ Upstream commit 64364bc912c01b33bba6c22e3ccb849bfca96398 ]
 
-Currently user can configure UAC1 function with
-parameters that violate UAC1 spec or are not supported
-by UAC1 gadget implementation.
+Some hosts incorrectly use sub-minor version for minor version (i.e.
+0x02 instead of 0x20 for bcdUSB 0x320 and 0x01 for bcdUSB 0x310).
+Currently the xHCI driver works around this by just checking for minor
+revision > 0x01 for USB 3.1 everywhere. With the addition of USB 3.2,
+checking this gets a bit cumbersome. Since there is no USB release with
+bcdUSB 0x301 to 0x309, we can assume that sub-minor version 01 to 09 is
+incorrect. Let's try to fix this and use the minor revision that matches
+with the USB/xHCI spec to help with the version checking within the
+driver.
 
-This can lead to incorrect behavior if such gadget
-is connected to the host - like enumeration failure
-or other issues depending on host's UAC1 driver
-implementation, bringing user to a long hours
-of debugging the issue.
-
-Instead of silently accept these parameters, throw
-an error if they are not valid.
-
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Link: https://lore.kernel.org/r/1614599375-8803-5-git-send-email-ruslan.bilovol@gmail.com
+Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Link: https://lore.kernel.org/r/ed330e95a19dc367819c5b4d78bf7a541c35aa0a.1615432770.git.Thinh.Nguyen@synopsys.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/function/f_uac1.c | 43 ++++++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
+ drivers/usb/host/xhci-mem.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/drivers/usb/gadget/function/f_uac1.c b/drivers/usb/gadget/function/f_uac1.c
-index 3f4ee28e7896..edbb3b9a9709 100644
---- a/drivers/usb/gadget/function/f_uac1.c
-+++ b/drivers/usb/gadget/function/f_uac1.c
-@@ -23,6 +23,9 @@
- #include "u_audio.h"
- #include "u_uac1.h"
+diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
+index 70452c881e56..5fd1e95f5400 100644
+--- a/drivers/usb/host/xhci-mem.c
++++ b/drivers/usb/host/xhci-mem.c
+@@ -2085,6 +2085,15 @@ static void xhci_add_in_port(struct xhci_hcd *xhci, unsigned int num_ports,
  
-+/* UAC1 spec: 3.7.2.3 Audio Channel Cluster Format */
-+#define UAC1_CHANNEL_MASK 0x0FFF
-+
- struct f_uac1 {
- 	struct g_audio g_audio;
- 	u8 ac_intf, as_in_intf, as_out_intf;
-@@ -34,6 +37,11 @@ static inline struct f_uac1 *func_to_uac1(struct usb_function *f)
- 	return container_of(f, struct f_uac1, g_audio.func);
- }
- 
-+static inline struct f_uac1_opts *g_audio_to_uac1_opts(struct g_audio *audio)
-+{
-+	return container_of(audio->func.fi, struct f_uac1_opts, func_inst);
-+}
-+
- /*
-  * DESCRIPTORS ... most are static, but strings and full
-  * configuration descriptors are built on demand.
-@@ -509,11 +517,42 @@ static void f_audio_disable(struct usb_function *f)
- 
- /*-------------------------------------------------------------------------*/
- 
-+static int f_audio_validate_opts(struct g_audio *audio, struct device *dev)
-+{
-+	struct f_uac1_opts *opts = g_audio_to_uac1_opts(audio);
-+
-+	if (!opts->p_chmask && !opts->c_chmask) {
-+		dev_err(dev, "Error: no playback and capture channels\n");
-+		return -EINVAL;
-+	} else if (opts->p_chmask & ~UAC1_CHANNEL_MASK) {
-+		dev_err(dev, "Error: unsupported playback channels mask\n");
-+		return -EINVAL;
-+	} else if (opts->c_chmask & ~UAC1_CHANNEL_MASK) {
-+		dev_err(dev, "Error: unsupported capture channels mask\n");
-+		return -EINVAL;
-+	} else if ((opts->p_ssize < 1) || (opts->p_ssize > 4)) {
-+		dev_err(dev, "Error: incorrect playback sample size\n");
-+		return -EINVAL;
-+	} else if ((opts->c_ssize < 1) || (opts->c_ssize > 4)) {
-+		dev_err(dev, "Error: incorrect capture sample size\n");
-+		return -EINVAL;
-+	} else if (!opts->p_srate) {
-+		dev_err(dev, "Error: incorrect playback sampling rate\n");
-+		return -EINVAL;
-+	} else if (!opts->c_srate) {
-+		dev_err(dev, "Error: incorrect capture sampling rate\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- /* audio function driver setup/binding */
- static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- {
- 	struct usb_composite_dev	*cdev = c->cdev;
- 	struct usb_gadget		*gadget = cdev->gadget;
-+	struct device			*dev = &gadget->dev;
- 	struct f_uac1			*uac1 = func_to_uac1(f);
- 	struct g_audio			*audio = func_to_g_audio(f);
- 	struct f_uac1_opts		*audio_opts;
-@@ -523,6 +562,10 @@ static int f_audio_bind(struct usb_configuration *c, struct usb_function *f)
- 	int				rate;
- 	int				status;
- 
-+	status = f_audio_validate_opts(audio, dev);
-+	if (status)
-+		return status;
-+
- 	audio_opts = container_of(f->fi, struct f_uac1_opts, func_inst);
- 
- 	us = usb_gstrings_attach(cdev, uac1_strings, ARRAY_SIZE(strings_uac1));
+ 	if (major_revision == 0x03) {
+ 		rhub = &xhci->usb3_rhub;
++		/*
++		 * Some hosts incorrectly use sub-minor version for minor
++		 * version (i.e. 0x02 instead of 0x20 for bcdUSB 0x320 and 0x01
++		 * for bcdUSB 0x310). Since there is no USB release with sub
++		 * minor version 0x301 to 0x309, we can assume that they are
++		 * incorrect and fix it here.
++		 */
++		if (minor_revision > 0x00 && minor_revision < 0x10)
++			minor_revision <<= 4;
+ 	} else if (major_revision <= 0x02) {
+ 		rhub = &xhci->usb2_rhub;
+ 	} else {
 -- 
 2.30.2
 
