@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA8D38AAD1
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA6138AAD2
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239884AbhETLRo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:17:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56930 "EHLO mail.kernel.org"
+        id S239896AbhETLRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:17:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239092AbhETK5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EE34661CF7;
-        Thu, 20 May 2021 10:02:11 +0000 (UTC)
+        id S239054AbhETK5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:57:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AFA861CF9;
+        Thu, 20 May 2021 10:02:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504932;
-        bh=8APKXRuvakIe0b/7cybuTVvzfs8YW/6wc5fHM9HTOAM=;
+        s=korg; t=1621504934;
+        bh=2fKbQnLZ9rcMKB/YD89KcbhKbvDanPeCFXWm9bkjNxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QdJbTjKEL0VohGecP0X6DN5f6sjGjiYtwYiNwSYjIgf7LUkQygIEqL0QVzrne3Vnp
-         xGWYGRbqsF1Uszp06YdcJnNmCKSt9koyJjO0ostJRqlVoW9KXqsFgNPk2BrGo4zaqC
-         TMY2CEW3CwD8wiDqrGDjbcsIo7OsIN/Op0HYRKeU=
+        b=r865FLRKgeWo6g73tYsBTj+VJzKh6fVxoLSDE7RP3eSShYFqee8+DCibKtHl0W6L5
+         sUEeTiJUS0ES94KpUro1hQ/KdjvctfEyDBik2KJbqakCc1Z0bKFYfqR11rOuJu1iL9
+         BBwwMwWaoSFyTBAq9VBrshQkYM7BR1eJ/tr19WbQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 113/240] crypto: qat - Fix a double free in adf_create_ring
-Date:   Thu, 20 May 2021 11:21:45 +0200
-Message-Id: <20210520092112.470581889@linuxfoundation.org>
+Subject: [PATCH 4.9 114/240] usb: gadget: r8a66597: Add missing null check on return from platform_get_resource
+Date:   Thu, 20 May 2021 11:21:46 +0200
+Message-Id: <20210520092112.501680277@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,37 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit f7cae626cabb3350b23722b78fe34dd7a615ca04 ]
+[ Upstream commit 9c2076090c2815fe7c49676df68dde7e60a9b9fc ]
 
-In adf_create_ring, if the callee adf_init_ring() failed, the callee will
-free the ring->base_addr by dma_free_coherent() and return -EFAULT. Then
-adf_create_ring will goto err and the ring->base_addr will be freed again
-in adf_cleanup_ring().
+The call to platform_get_resource can potentially return a NULL pointer
+on failure, so add this check and return -EINVAL if it fails.
 
-My patch sets ring->base_addr to NULL after the first freed to avoid the
-double free.
-
-Fixes: a672a9dc872ec ("crypto: qat - Intel(R) QAT transport code")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
+Fixes: c41442474a26 ("usb: gadget: R8A66597 peripheral controller support.")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Addresses-Coverity: ("Dereference null return")
+Link: https://lore.kernel.org/r/20210406184510.433497-1-colin.king@canonical.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/crypto/qat/qat_common/adf_transport.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/gadget/udc/r8a66597-udc.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/crypto/qat/qat_common/adf_transport.c b/drivers/crypto/qat/qat_common/adf_transport.c
-index 57d2622728a5..4c0067f8c079 100644
---- a/drivers/crypto/qat/qat_common/adf_transport.c
-+++ b/drivers/crypto/qat/qat_common/adf_transport.c
-@@ -197,6 +197,7 @@ static int adf_init_ring(struct adf_etr_ring_data *ring)
- 		dev_err(&GET_DEV(accel_dev), "Ring address not aligned\n");
- 		dma_free_coherent(&GET_DEV(accel_dev), ring_size_bytes,
- 				  ring->base_addr, ring->dma_addr);
-+		ring->base_addr = NULL;
- 		return -EFAULT;
- 	}
+diff --git a/drivers/usb/gadget/udc/r8a66597-udc.c b/drivers/usb/gadget/udc/r8a66597-udc.c
+index 230e3248f386..80503c3604ca 100644
+--- a/drivers/usb/gadget/udc/r8a66597-udc.c
++++ b/drivers/usb/gadget/udc/r8a66597-udc.c
+@@ -1855,6 +1855,8 @@ static int r8a66597_probe(struct platform_device *pdev)
+ 		return PTR_ERR(reg);
+ 
+ 	ires = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
++	if (!ires)
++		return -EINVAL;
+ 	irq = ires->start;
+ 	irq_trigger = ires->flags & IRQF_TRIGGER_MASK;
  
 -- 
 2.30.2
