@@ -2,186 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F5BB38B42F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:26:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE4738B438
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:29:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233921AbhETQ1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54138 "EHLO
+        id S233900AbhETQau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233064AbhETQ1P (ORCPT
+        with ESMTP id S231980AbhETQas (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:27:15 -0400
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AAA4C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:25:54 -0700 (PDT)
-Received: by mail-ot1-x32d.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso15336861otb.13
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:25:54 -0700 (PDT)
+        Thu, 20 May 2021 12:30:48 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C8BCC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:29:27 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id v12so18303094wrq.6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aBkhk3QDWbqSQxByb9B0QwU7XpNxQNo09cMdXpxbbl8=;
-        b=ZTcJ2ZN5oiXQB5JixcdXLMUBNnapMtCPrrCADKk79kIX1HO7C6sJyH98HYPoLlmHsi
-         aLwFtH/1sEk9TAJWoINwVFUCDVeDneG9y10WuHZCQkwnHAAC+wBLYozbvS6zxdJQjHnI
-         0ygWlp5+o43N/ShvItsywwnmDq6K1Zrsxfo88=
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7gQAHjRkLz/zMdR9mZ20XGXZokHUiVVILLkWbVKY8vk=;
+        b=cfxPfL5fE4np3aef6bq9mbEbsf+V7xoFH7lEgZwO4Pdk/oIevk19Q3UyCSV9vCBR57
+         oqDSJZrYGS54dgw1cyxBLzrZ9nUvG4J7evXugn3/Hrkt2MbKDwd4terqRk3pzf997Vak
+         U6KAj9L1Il+SoamKwZJ4AlfDNCbUAwVjuKR+8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aBkhk3QDWbqSQxByb9B0QwU7XpNxQNo09cMdXpxbbl8=;
-        b=hoUbUd+wp+m/NL0V09Tz9n2lSCfvIqg1OnXx5yFeWR99ucn6fjkRdJosMW+eCe+qN0
-         41dypmKdSJI4T9iFAM6QLBgK/jB58tFZbsUwn25Bm91ilYgRhgRYjkeC6KwapCfWHpuV
-         +Q3F8yxM1HMWlSqnyz7tq3jj9zTzQ2awMv4XhY+0NeMjd5U5BtDeljAayrvg7P+5GnsE
-         lUdqVdTpir6bR20Yp1jfevtGX36Zn5jDS5xWJFSNaSEf5Q92tMYt6jBTcGIhindVoCCL
-         7fnwCUoh+xQUNcq4MfVVlWO0WNR64pUUCDwpisk2yn3WD126M82GOapJSeXhLfBNObyK
-         6dpg==
-X-Gm-Message-State: AOAM5335kjcM81dFf0d4LtlVcK/raQgGjGnytg1tl1oMQ5S+Vmf4uoCy
-        O5j/vQVeKmy6F3hctb43WTzulKIpPvaVeAzt8795aA==
-X-Google-Smtp-Source: ABdhPJzdUcCTfi80bWr13zSZ/F0YDpb9U8rAzzxeFvH1KraofvvTAPHpWCxezFVXjEF5rDoRiuG7kW/hvb7nC0aahGE=
-X-Received: by 2002:a9d:4101:: with SMTP id o1mr4653449ote.281.1621527953214;
- Thu, 20 May 2021 09:25:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-2-robdclark@gmail.com>
- <8dcdc8d5-176c-f0ad-0d54-6466e9e68a0a@amd.com> <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
-In-Reply-To: <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=7gQAHjRkLz/zMdR9mZ20XGXZokHUiVVILLkWbVKY8vk=;
+        b=fXyPnBnz+7vhbpRBv4f7eqYRqGG7MojNIhwp1iHXBl2ruv/7+Pnwd3cCsHhdAC22h4
+         VajW3QpsUTCOSGa0zp8YlQJiJKPQGrthlJgqiz5135X5C4wdrkHQCPu4rTzQMzi3EoaK
+         rZyBS1t7JiL9GrbZ3uuOTrEkdp7+A9wTWNd4f/NfS9KPmTV4XhSmi4SEn9hQW2eauCjo
+         y9shW5DjESOZFfYCd6HXS66YWDaZpr2Sz5M9DI35nnlJJslbKVqajG90EEYw8g2S2tVH
+         k6OFyLKHxCNjwSc44UlNLqPvJ6gbZflx177TizK3mx/qA6JKFJw8xglG9V/mvD6HW0Dr
+         0YdA==
+X-Gm-Message-State: AOAM533I8H8vn6nhzSf+1jQSRmAq3GSHs7pOnNZDDJ17jrnJrQoygv4c
+        gHDbt068SX37pihRLOiabYI+UQ==
+X-Google-Smtp-Source: ABdhPJx7W+fNXWLlfVnpy0Ca20BF42f6arhZCvq55cuTsYgbnk9UslMHeFLkM6bUwg6sp/BGFgOCqQ==
+X-Received: by 2002:a5d:6683:: with SMTP id l3mr5097252wru.398.1621528165809;
+        Thu, 20 May 2021 09:29:25 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g4sm3156003wmk.45.2021.05.20.09.29.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 09:29:25 -0700 (PDT)
+Date:   Thu, 20 May 2021 18:29:23 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 20 May 2021 18:25:42 +0200
-Message-ID: <CAKMK7uF9Uz6amffv=bbErbU4+PQ0NRqV0Az9woQfTTikrJSrFw@mail.gmail.com>
-Subject: Re: [RFC 1/3] dma-fence: Add boost fence op
-To:     Rob Clark <robdclark@gmail.com>,
-        Matthew Brost <matthew.brost@intel.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Matthew Brost <matthew.brost@intel.com>
+Subject: Re: [RFC 2/3] drm/atomic: Call dma_fence_boost() when we've missed a
+ vblank
+Message-ID: <YKaOY3AWgHh5kplS@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, Rob Clark <robdclark@chromium.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matthew Brost <matthew.brost@intel.com>
+References: <20210519183855.1523927-1-robdclark@gmail.com>
+ <20210519183855.1523927-3-robdclark@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519183855.1523927-3-robdclark@gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 4:03 PM Rob Clark <robdclark@gmail.com> wrote:
->
-> On Wed, May 19, 2021 at 11:47 PM Christian K=C3=B6nig
-> <christian.koenig@amd.com> wrote:
-> >
-> > Uff, that looks very hardware specific to me.
->
-> Howso?  I'm not sure I agree.. and even if it was not useful for some
-> hw, it should be useful for enough drivers (and harm no drivers), so I
-> still think it is a good idea
->
-> The fallback plan is to go the i915 route and stop using atomic
-> helpers and do the same thing inside the driver, but that doesn't help
-> any of the cases where you have a separate kms and gpu driver.
+On Wed, May 19, 2021 at 11:38:53AM -0700, Rob Clark wrote:
+> From: Rob Clark <robdclark@chromium.org>
+> 
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/drm_atomic_helper.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/drivers/gpu/drm/drm_atomic_helper.c b/drivers/gpu/drm/drm_atomic_helper.c
+> index 560aaecba31b..fe10fc2e7f86 100644
+> --- a/drivers/gpu/drm/drm_atomic_helper.c
+> +++ b/drivers/gpu/drm/drm_atomic_helper.c
+> @@ -1435,11 +1435,15 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+>  	int i, ret;
+>  
+>  	for_each_new_plane_in_state(state, plane, new_plane_state, i) {
+> +		u64 vblank_count;
+> +
+>  		if (!new_plane_state->fence)
+>  			continue;
+>  
+>  		WARN_ON(!new_plane_state->fb);
+>  
+> +		vblank_count = drm_crtc_vblank_count(new_plane_state->crtc);
+> +
+>  		/*
+>  		 * If waiting for fences pre-swap (ie: nonblock), userspace can
+>  		 * still interrupt the operation. Instead of blocking until the
+> @@ -1449,6 +1453,13 @@ int drm_atomic_helper_wait_for_fences(struct drm_device *dev,
+>  		if (ret)
+>  			return ret;
+>  
+> +		/*
+> +		 * Check if we've missed a vblank while waiting, and if we have
+> +		 * signal the fence that it's signaler should be boosted
+> +		 */
+> +		if (vblank_count != drm_crtc_vblank_count(new_plane_state->crtc))
+> +			dma_fence_boost(new_plane_state->fence);
 
-Don't, because the i915 plan is to actually move towards drm/scheduler
-and atomic helpers.
+I think we should do a lot better here:
+- maybe only bother doing this for single-crtc updates, and only if
+  modeset isn't set. No one else cares about latency.
 
-> > As far as I can see you can also implement completely inside the backen=
-d
-> > by starting a timer on enable_signaling, don't you?
->
-> Not really.. I mean, the fact that something waited on a fence could
-> be a useful input signal to gpu freq governor, but it is entirely
-> insufficient..
->
-> If the cpu is spending a lot of time waiting on a fence, cpufreq will
-> clock down so you spend less time waiting.  And no problem has been
-> solved.  You absolutely need the concept of a missed deadline, and a
-> timer doesn't give you that.
+- We should boost _right_ when we've missed the frame, so I think we
+  should have a _timeout wait here that guesstimates when the vblank is
+  over (might need to throw in a vblank wait if we missed) and then boost
+  immediately. Not wait a bunch of frames (worst case) until we finally
+  decide to boost.
 
-Yup agreed.
+Otherwise I really like this, I think it's about the only real reason i915
+isn't using atomic helpers.
 
-Adding Matt Brost, since he's planning all this boostback work.
+Also adding Matt B for this topic.
 -Daniel
 
->
-> BR,
-> -R
->
-> > Christian.
-> >
-> > Am 19.05.21 um 20:38 schrieb Rob Clark:
-> > > From: Rob Clark <robdclark@chromium.org>
-> > >
-> > > Add a way to hint to the fence signaler that a fence waiter has misse=
-d a
-> > > deadline waiting on the fence.
-> > >
-> > > In some cases, missing a vblank can result in lower gpu utilization,
-> > > when really we want to go in the opposite direction and boost gpu fre=
-q.
-> > > The boost callback gives some feedback to the fence signaler that we
-> > > are missing deadlines, so it can take this into account in it's freq/
-> > > utilization calculations.
-> > >
-> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
-> > > ---
-> > >   include/linux/dma-fence.h | 26 ++++++++++++++++++++++++++
-> > >   1 file changed, 26 insertions(+)
-> > >
-> > > diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
-> > > index 9f12efaaa93a..172702521acc 100644
-> > > --- a/include/linux/dma-fence.h
-> > > +++ b/include/linux/dma-fence.h
-> > > @@ -231,6 +231,17 @@ struct dma_fence_ops {
-> > >       signed long (*wait)(struct dma_fence *fence,
-> > >                           bool intr, signed long timeout);
-> > >
-> > > +     /**
-> > > +      * @boost:
-> > > +      *
-> > > +      * Optional callback, to indicate that a fence waiter missed a =
-deadline.
-> > > +      * This can serve as a signal that (if possible) whatever signa=
-ls the
-> > > +      * fence should boost it's clocks.
-> > > +      *
-> > > +      * This can be called in any context that can call dma_fence_wa=
-it().
-> > > +      */
-> > > +     void (*boost)(struct dma_fence *fence);
-> > > +
-> > >       /**
-> > >        * @release:
-> > >        *
-> > > @@ -586,6 +597,21 @@ static inline signed long dma_fence_wait(struct =
-dma_fence *fence, bool intr)
-> > >       return ret < 0 ? ret : 0;
-> > >   }
-> > >
-> > > +/**
-> > > + * dma_fence_boost - hint from waiter that it missed a deadline
-> > > + *
-> > > + * @fence: the fence that caused the missed deadline
-> > > + *
-> > > + * This function gives a hint from a fence waiter that a deadline wa=
-s
-> > > + * missed, so that the fence signaler can factor this in to device
-> > > + * power state decisions
-> > > + */
-> > > +static inline void dma_fence_boost(struct dma_fence *fence)
-> > > +{
-> > > +     if (fence->ops->boost)
-> > > +             fence->ops->boost(fence);
-> > > +}
-> > > +
-> > >   struct dma_fence *dma_fence_get_stub(void);
-> > >   u64 dma_fence_context_alloc(unsigned num);
-> > >
-> >
+> +
+>  		dma_fence_put(new_plane_state->fence);
+>  		new_plane_state->fence = NULL;
+>  	}
+> -- 
+> 2.30.2
+> 
 
-
-
---=20
+-- 
 Daniel Vetter
 Software Engineer, Intel Corporation
 http://blog.ffwll.ch
