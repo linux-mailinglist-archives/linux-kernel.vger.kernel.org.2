@@ -2,32 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426A238AC9E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCC238AC9B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241976AbhETLnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:43:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41740 "EHLO mail.kernel.org"
+        id S241942AbhETLmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:42:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239734AbhETLWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S240456AbhETLWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 07:22:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDAEC613E9;
-        Thu, 20 May 2021 10:11:35 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0DC9961961;
+        Thu, 20 May 2021 10:11:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505496;
-        bh=IcjHdlf9KxllRu2dQjiU+p5/Nicq0fCb64u7Ewrsj1U=;
+        s=korg; t=1621505498;
+        bh=UogBEB41DP29uE+l1xlhaR64a7oRQDW4cw10EadUpeQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=UoPOCzsBbSI3oJWpmVqW6kGQDgro+cBdOqXFANSwt1Qo5GSIqCbZ1mtZCHyhOFOe/
-         i9rDF0T8C0tJz8G9ZUQkI+NazxfXm3aKxBsX0tSMtv3ELAToGpBSiqhsC1GT/Lx9Tp
-         4FZrfIKzaG17M++ONz0vbS22E9MRPILvBmHtof2o=
+        b=uC4kOuAfPumrCRC6faQIIp6+MD3R4qpaXlR5rmLUMducEvN2PsaiaoMb+qdurJCQW
+         CPPr+e+S/KTDyz4nJH6dES8cckD6ntOdEZmoeUEbAfUOrunKmxfeF+1QdaBE2L1yrV
+         fc3YP+ekxkk6f8SE0S7hcy5OnT9D0TKRcusLQLW0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
-        Vineet Gupta <vgupta@synopsys.com>
-Subject: [PATCH 4.4 162/190] ARC: entry: fix off-by-one error in syscall number validation
-Date:   Thu, 20 May 2021 11:23:46 +0200
-Message-Id: <20210520092107.524217122@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Ellerman <mpe@ellerman.id.au>
+Subject: [PATCH 4.4 163/190] powerpc/64s: Fix crashes when toggling entry flush barrier
+Date:   Thu, 20 May 2021 11:23:47 +0200
+Message-Id: <20210520092107.555227801@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -39,51 +38,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vineet Gupta <vgupta@synopsys.com>
+From: Michael Ellerman <mpe@ellerman.id.au>
 
-commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
+commit aec86b052df6541cc97c5fca44e5934cbea4963b upstream.
 
-We have NR_syscall syscalls from [0 .. NR_syscall-1].
-However the check for invalid syscall number is "> NR_syscall" as
-opposed to >=. This off-by-one error erronesously allows "NR_syscall"
-to be treated as valid syscall causeing out-of-bounds access into
-syscall-call table ensuing a crash (holes within syscall table have a
-invalid-entry handler but this is beyond the array implementing the
-table).
+The entry flush mitigation can be enabled/disabled at runtime via a
+debugfs file (entry_flush), which causes the kernel to patch itself to
+enable/disable the relevant mitigations.
 
-This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
-kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
-NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
-not handled as -ENOSYS but processed leading to a crash.
+However depending on which mitigation we're using, it may not be safe to
+do that patching while other CPUs are active. For example the following
+crash:
 
-Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
-Reported-by: Shahab Vahedi <shahab@synopsys.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+  sleeper[15639]: segfault (11) at c000000000004c20 nip c000000000004c20 lr c000000000004c20
+
+Shows that we returned to userspace with a corrupted LR that points into
+the kernel, due to executing the partially patched call to the fallback
+entry flush (ie. we missed the LR restore).
+
+Fix it by doing the patching under stop machine. The CPUs that aren't
+doing the patching will be spinning in the core of the stop machine
+logic. That is currently sufficient for our purposes, because none of
+the patching we do is to that code or anywhere in the vicinity.
+
+Fixes: f79643787e0a ("powerpc/64s: flush L1D on kernel entry")
+Cc: stable@vger.kernel.org # v5.10+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/20210506044959.1298123-2-mpe@ellerman.id.au
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/arc/kernel/entry.S |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/powerpc/lib/feature-fixups.c |   17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
---- a/arch/arc/kernel/entry.S
-+++ b/arch/arc/kernel/entry.S
-@@ -181,7 +181,7 @@ tracesys:
+--- a/arch/powerpc/lib/feature-fixups.c
++++ b/arch/powerpc/lib/feature-fixups.c
+@@ -16,6 +16,7 @@
+ #include <linux/kernel.h>
+ #include <linux/string.h>
+ #include <linux/init.h>
++#include <linux/stop_machine.h>
+ #include <asm/cputable.h>
+ #include <asm/code-patching.h>
+ #include <asm/page.h>
+@@ -279,8 +280,9 @@ void do_uaccess_flush_fixups(enum l1d_fl
+ 						: "unknown");
+ }
  
- 	; Do the Sys Call as we normally would.
- 	; Validate the Sys Call number
--	cmp     r8,  NR_syscalls
-+	cmp     r8,  NR_syscalls - 1
- 	mov.hi  r0, -ENOSYS
- 	bhi     tracesys_exit
+-void do_entry_flush_fixups(enum l1d_flush_type types)
++static int __do_entry_flush_fixups(void *data)
+ {
++	enum l1d_flush_type types = *(enum l1d_flush_type *)data;
+ 	unsigned int instrs[3], *dest;
+ 	long *start, *end;
+ 	int i;
+@@ -331,6 +333,19 @@ void do_entry_flush_fixups(enum l1d_flus
+ 							: "ori type" :
+ 		(types &  L1D_FLUSH_MTTRIG)     ? "mttrig type"
+ 						: "unknown");
++
++	return 0;
++}
++
++void do_entry_flush_fixups(enum l1d_flush_type types)
++{
++	/*
++	 * The call to the fallback flush can not be safely patched in/out while
++	 * other CPUs are executing it. So call __do_entry_flush_fixups() on one
++	 * CPU while all other CPUs spin in the stop machine core with interrupts
++	 * hard disabled.
++	 */
++	stop_machine(__do_entry_flush_fixups, &types, NULL);
+ }
  
-@@ -264,7 +264,7 @@ ENTRY(EV_Trap)
- 	;============ Normal syscall case
- 
- 	; syscall num shd not exceed the total system calls avail
--	cmp     r8,  NR_syscalls
-+	cmp     r8,  NR_syscalls - 1
- 	mov.hi  r0, -ENOSYS
- 	bhi     ret_from_system_call
- 
+ void do_rfi_flush_fixups(enum l1d_flush_type types)
 
 
