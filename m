@@ -2,66 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57FB338B9E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D24838B9EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232636AbhETXBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49834 "EHLO mail.kernel.org"
+        id S232787AbhETXDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 19:03:31 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56012 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231967AbhETXBd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:01:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 0C71B610CB;
-        Thu, 20 May 2021 23:00:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621551611;
-        bh=RodYAsenl4WrJP+FTPtI4LSzG6NrUntKxs5yYrfyaCQ=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=P029qtln04p09be/HaxbydPchEkslAhGEYq0iYz5fdp4DYTFwXP3D7k+tyi5zBdwU
-         osyVzcRTBPWJ4JeQ0pGdoJIPc7ysH67iPv6QoC07DHzyIpTj093q52B7UG7t7OP0nC
-         a2VobC4YifIsUXTihoa31vJWSeofVnmC2u6mVX5Cd+aIegnj3Jf4ThO4bjpsH7dO76
-         cCPkBEXSoHqJjQ/WEWDdhjxFjbP+Y+dL0EVMUTd5MOF6g3/iwfc4FYA+gSFRcXKyEj
-         ATnYOvXk3t/1fco0m83bMCNt2VZT3js2TPJ/zcnrEAXMIP14FzgN4dbJ73pcVxCV+c
-         pp6l0ft/Qr07A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 063EF60A38;
-        Thu, 20 May 2021 23:00:11 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S232628AbhETXDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 19:03:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621551728; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=pisM6KYls1v5AvliFgn9qOzxbjtfnUwMBY5Kn3jUpfI=; b=uF0FzHDye21JzOcprTGDtu8ptJIlUYJUmxERQ2IpNd7rPg1IM1XLnlgGl+gQMwZbB+Cd9T8H
+ on6rrKvNxT85rVgMjJWnEhJkcxMXQaZVccd70nv6eiHCETiVABIARiWlBSINnHqLg7yfr+Gm
+ 3jwz6fT2WrylYQMphC3XrnYZhe0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60a6ea6c60c53c8c9d279def (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 May 2021 23:02:04
+ GMT
+Sender: psodagud=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D0681C433D3; Thu, 20 May 2021 23:02:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: psodagud)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 73250C4338A;
+        Thu, 20 May 2021 23:02:03 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: atm: use DEVICE_ATTR_RO macro
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162155161102.31527.6723659556894141191.git-patchwork-notify@kernel.org>
-Date:   Thu, 20 May 2021 23:00:11 +0000
-References: <20210520133645.48412-1-yuehaibing@huawei.com>
-In-Reply-To: <20210520133645.48412-1-yuehaibing@huawei.com>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 20 May 2021 16:02:03 -0700
+From:   psodagud@codeaurora.org
+To:     catalin.marinas@arm.com, will@kernel.org, Dave.Martin@arm.com,
+        amit.kachhap@arm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: sve_user_discard
+Message-ID: <785d7bc29da6bff0dceeb712c24601fd@codeaurora.org>
+X-Sender: psodagud@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi All,
 
-This patch was applied to netdev/net-next.git (refs/heads/master):
+This is regarding sve_user_disable(CPACR_EL1_ZEN_EL0EN) on every system 
+call.  If a userspace task is using SVE instructions and making sys 
+calls in between, it would impact the performance of the thread. On 
+every SVE instructions after SVC/system call, it would trap to EL1.
 
-On Thu, 20 May 2021 21:36:45 +0800 you wrote:
-> Use DEVICE_ATTR_RO helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
-> 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  net/atm/atm_sysfs.c | 24 ++++++++++++------------
->  1 file changed, 12 insertions(+), 12 deletions(-)
+I think by setting CPACR_EL1_ZEN_EL0EN flag,  the processor faults when 
+it runs an SVE instruction. This approach may be taken as part of FPSIMD 
+registers switching optimizations.  Can below portion of the code use 
+thread.fpsimd_cpu and fpsimd_last_state variables to avoid clearing 
+CPACR_EL1_ZEN_EL0EN for this kind of use cases?
 
-Here is the summary with links:
-  - [net-next] net: atm: use DEVICE_ATTR_RO macro
-    https://git.kernel.org/netdev/net-next/c/48afdaea04eb
+static inline void sve_user_discard(void)
+{
+	if (!system_supports_sve())
+		return;
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+	clear_thread_flag(TIF_SVE);
 
+	/*
+	 * task_fpsimd_load() won't be called to update CPACR_EL1 in
+	 * ret_to_user unless TIF_FOREIGN_FPSTATE is still set, which only
+	 * happens if a context switch or kernel_neon_begin() or context
+	 * modification (sigreturn, ptrace) intervenes.
+	 * So, ensure that CPACR_EL1 is already correct for the fast-path case.
+	 */
+	sve_user_disable();
+}
 
+-Thanks, Prasad
