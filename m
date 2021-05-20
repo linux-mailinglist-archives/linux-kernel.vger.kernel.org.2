@@ -2,90 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC30338B4E2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE93A38B4E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234858AbhETRIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35178 "EHLO
+        id S234925AbhETRIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhETRID (ORCPT
+        with ESMTP id S231561AbhETRIl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:08:03 -0400
+        Thu, 20 May 2021 13:08:41 -0400
 Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C6AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:06:41 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id i19so6784270qtw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:06:41 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10922C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:07:20 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id g8so5792292qtp.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:07:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=K7PsYJ63dL59j+Dd8NJqcKhEcRQRpXueEm7j8EFqrA4=;
-        b=oWjDfk1bKNd8MZ91d3wohIdY8MGPtMVO2eb7XVY71Z2cwLmi62OAnCvhLJbXPJNt25
-         vQsBTcZ4qaCZ3hHgUZw98Eyg/dny4GcAmA/g2AyM26qTFpl6vkmkDynBpCoefdWOzvnr
-         HqiV00s2SZf1E3MIUx5jhtHF9DVN3H4H3V2mL7qZjzTrlyVxawTbqgjND20+D4EWUN54
-         N3gWfoF8yGeFWSSyX8EjUW2ptN+PaHRxDeKwRvc/oYHdlSr0/B0q0mOI3UBwMa1I7ww5
-         qvywOXvi08KahlwBAswlM+ZCsDgZ7pYyK221oq3Qy+x5V7AnzKfvOAoIfHPjzdh4dN7a
-         xlBw==
+        bh=osvvf+q8LQse5/3VhNbzmRp9V7XQZTF1W41c/FjQvXk=;
+        b=geA8+r9rTUCGAXeg3BZRgUWP0D3y8t64juZ3veGY88v9oJz0oDWREr59tHIcG3GkYh
+         57q3nRdpD/9sogxj7y+DWRfJZAqx7z+T19o5UalMgxfphAv6mB4uMOIfZpjecxA6DamK
+         JVDA4iexfVgYG4V4GM1/j1RkfY8cBsvws7Cnm+qpr7wxQR0W3y4Skf/M/MkN3VGNBeJB
+         xZGcxnSDajVwl64jLgJSehvoRGt/gqrColferxFG0ITodjFU5eYyz+ZaehhtcWGxCYsu
+         KZP0V9AorsY91fGzUULw/qlu6EU8V/2zCz+n3xcEnaRhe7tAqNueKfZWzy13/V3dCw6u
+         4cUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=K7PsYJ63dL59j+Dd8NJqcKhEcRQRpXueEm7j8EFqrA4=;
-        b=oKsC1ciBvm7i0UmVT0c6K792OLfbhgN3q1382Q9XW01ms6SkRUmdlEisGQ0AptblRB
-         rQs8GVlZN0Tmn3VhmMTQzpYB29qGNKOVvhEqJwi53D9f6WkdiwtOlHJU1eZ74JTZBRqy
-         uYYjFYTXN/mgsZIOss4Giu9R0rGcS6qeIQrcIC5Fp2B1zidRdiSTvi2R5Pg5UitjF9tb
-         FkR582vnyTXVEBvyN+sVcnDIM0SSM3InsIR7jAD1cxhbXCgpqsDfD7Qa7hnR3NLsMt95
-         fLPLxLqnHgNmby4bPP1mnfnaY7xu/PmUQI5bFik/9IuFvetcJi9J/9xr2PyX/6045vJl
-         M5Sw==
-X-Gm-Message-State: AOAM531P4IVkqjIJnSwXdII6qoF5eLwEgnfws3RbbkqmE8HCNT/6C6Hq
-        vN2OQZml5iQAYYJRsxY02pw=
-X-Google-Smtp-Source: ABdhPJwAciyhZPiEeP/2nOG5VEGPLlZSUy9Mec/Sdo0i7QWWBaYDqhLDTaTsCmCmadUw6hR2yOVOaw==
-X-Received: by 2002:ac8:5f90:: with SMTP id j16mr6272151qta.329.1621530395843;
-        Thu, 20 May 2021 10:06:35 -0700 (PDT)
+        bh=osvvf+q8LQse5/3VhNbzmRp9V7XQZTF1W41c/FjQvXk=;
+        b=IxaxJXilhiPc+FTvhhwnwJQdtHL7cWRnkxWrKpM7LQXOs/LCNKLElysPbFx2H0+0sG
+         0GmAecGmSoqtWR23SHEOBVgE85JWdiAsevw42yYlSsUc0Ccb3rTT+n5Bs4GRnIfq3RrQ
+         w+DhZl7AWfvwTy5iQWGP79KSQaTiJV2TlR7v1HBGOvajOGSfcr/nUIs3fSpr1CWJEDZR
+         uvVUHAKV/bhktyJX5g6oiVRPKppTAESTZm7CIoGC+EHKyJR9oybEKrHDR141bsrtcDjr
+         Vx/v99i0sFVmfjkV5hbN4v+SYc7hhUtlWDgjobE22mHLDx+nOlH1dCshXpsUwn7oZwws
+         Kynw==
+X-Gm-Message-State: AOAM532Di8rjXKtDphHm+GijeHivhEOvqpGb6AIazQKD8PvPwVpIhRV6
+        atPrqQAq76KkYOj2QaacuSY=
+X-Google-Smtp-Source: ABdhPJxnHwlSxmlwYjun2x8z2O7hvVNaDmKru46nG535/XexVx/vRyyV//ePCLmCpYfWlnzjKfrl7w==
+X-Received: by 2002:a05:622a:1cd:: with SMTP id t13mr5985792qtw.243.1621530439204;
+        Thu, 20 May 2021 10:07:19 -0700 (PDT)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id z9sm2300517qtf.10.2021.05.20.10.06.35
+        by smtp.gmail.com with ESMTPSA id r10sm2625527qke.9.2021.05.20.10.07.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 10:06:35 -0700 (PDT)
+        Thu, 20 May 2021 10:07:18 -0700 (PDT)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 20 May 2021 13:06:34 -0400
+Date:   Thu, 20 May 2021 13:07:17 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
-        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
-        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
-        pauld@redhead.com, peterz@infradead.org, pjt@google.com,
-        rostedt@goodmis.org, shanpeic@linux.alibaba.com,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-Subject: Re: [PATCH v5 2/3] sched/fair: Add cfs bandwidth burst statistics
-Message-ID: <YKaXGpMIjJTwF9Ce@slm.duckdns.org>
-References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
- <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
+To:     Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk
+Subject: Re: [PATCH] blk-throttle: fix race between submitter and throttler
+ thread
+Message-ID: <YKaXRaJJOeOgMaGq@slm.duckdns.org>
+References: <20210513082827.1818-1-dmtrmonakhov@yandex-team.ru>
+ <YKZ5i5P8fL8bgq7G@slm.duckdns.org>
+ <1394051621530051@iva4-92c901fae84c.qloud-c.yandex.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
+In-Reply-To: <1394051621530051@iva4-92c901fae84c.qloud-c.yandex.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 08:34:18PM +0800, Huaixin Chang wrote:
-> When using cfs_b and meeting with some throttled periods, users shall
-> use burst buffer to allow bursty workloads. Apart from configuring some
-> burst buffer and watch whether throttled periods disappears, some
-> statistics on burst buffer using are also helpful. Thus expose the
-> following statistics into cpu.stat file:
-> 
-> nr_burst:   number of periods bandwidth burst occurs
+Hello, Dmitry.
 
-nr_bursts
+On Thu, May 20, 2021 at 08:00:51PM +0300, Dmitry Monakhov wrote:
+> >> + BUG_ON(!bio_flagged(parent, BIO_CHAIN));
+> > 
+> > Let's do WARN_ON_ONCE().
+> If we hit this point when this mean that  ->bio_end_io  will be called for parent bio.
+> Which likely result in use-after-free for that bio and silent data corruption for bio's pages
+> So IMHO BUG_ON is more appropriate here. What do you think?
 
-> burst_time: cumulative wall-time that any cpus has
-> 	    used above quota in respective periods
-
-burst_usec may be more in line with other fields in that file.
+I see. That makes sense. Can you add a comment explaining the above?
 
 Thanks.
 
