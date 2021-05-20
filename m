@@ -2,156 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E04338AE50
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:33:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16B1A38AE53
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:33:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235199AbhETMec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57134 "EHLO
+        id S233757AbhETMeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:34:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240796AbhETMeZ (ORCPT
+        with ESMTP id S241205AbhETMe1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:34:25 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52841C049EB0;
-        Thu, 20 May 2021 04:40:35 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id y36so5764507ybi.11;
-        Thu, 20 May 2021 04:40:35 -0700 (PDT)
+        Thu, 20 May 2021 08:34:27 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D35CC049EB8;
+        Thu, 20 May 2021 04:40:42 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id f12so19319276ljp.2;
+        Thu, 20 May 2021 04:40:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=vOKexcaIw4g2vbrwnKp/g+ph6O5XnE0uXT4mDO7PWv8=;
-        b=GnJFb+uRtqee1qkdkQxzXg1Y+2KQ5NDp0kgEXxos+702pxqs64ye7RvB2WTT8j4Agk
-         xvbcvm92rG/xl/JYAWmOda1E+BRfOtTRuWYIqObGt5jvH1I9mfhTAxkFC4Ywj2yry9p0
-         7pKidPRp4Du3ztmXXWqDBUghuF+36OciigUJvtX3ED1n5JNPRIdz21sUrDRbcBqcS434
-         X6Fqr2KsD8PRdmHZc6sJpc3ZXZm1fYLOMd4r0kl2wEvIkpLJyRXEXkCNK60Z6hbf9IKX
-         hnWvBf//ruPYWW/GieQYuUuCKtHLs2i6T3Be9K3KslrrzOj72HtWPeARl+BJiwmzl+oJ
-         G32g==
+        bh=W1iYG6kbUe5nK7eqeY/6xIuOqZtwvfU9nh1Ly+2R88I=;
+        b=TY+Kgu8IT5hYJYaCLKDo15fgh4ixBEDL3dujMvPydRe9zNoPlRgZX64Sg5tlztCI2R
+         bzUtAdfZ9vmrjpTBVyWjAfJ9oDMqD0CZc2nFSgjD9Zsp9dTRKzICUb78Vb0rV7W5LAQy
+         qkHM4sDzE8sX4NJXgQprKC6Rslty5W7ykWZNPLMSaTDTOKNX7cOny9o8QeUBW0KTvijk
+         L2rI7W/t+ki6/18dSx0wwJC/P427aAw7z3wahSpWyfbEqfP4UnIdqO4qXCi2pqlkbvyG
+         SZhDD757sTMYKwhUV/sSWa9zVIoFlLj8QPCfL0ctY5SgxdRHRGYofd6qYO62ka2se85U
+         elHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=vOKexcaIw4g2vbrwnKp/g+ph6O5XnE0uXT4mDO7PWv8=;
-        b=NPfHnhF/n5CZmkF/zdQg/SVBUjaLD11F4+uab5ltzwD82axb1hqqwA45VMu6UXMaV/
-         P7KOs2q8WVtuiB8pdCg1SAnOI/9vkMuISfscGEgABNozudnHDwUQmpiXCW29DNray6ds
-         IS8um1h52IJO9WB83QCC5wYvonvErryQxlMW7jRlVnh6TUTmQB0KtDBWh4SLu6RdIccQ
-         8817aRkM0bSho8cpgBhfVn4Wta9Vzy+UIld1I/a0/WhoxVq8OSBTTtGvKTD5zuDb9E5m
-         myM1IBJLzbOuQUWrBeRtbDY/cQpPsYMfVNyBM3oiufLTA4xxmoW78F4wS4WIsJ1Ss+6Q
-         o/2Q==
-X-Gm-Message-State: AOAM533zvlxq7eSsyLOxvyAWa72+86dBopHn6r4I0yzcdaJa7hn1pvMw
-        e3JrQ2rz2/Vi0G6/CbF/sCjamUocSXbZsHc3kmI=
-X-Google-Smtp-Source: ABdhPJxMCd99LMdMXUg+BnOiV3mkGMsYuFGUgUpYt2rcFslbZo0dMYlj9vDhbVi2LIGAwBtL/bcFZnxVi5ZPgJVOMV0=
-X-Received: by 2002:a25:6d89:: with SMTP id i131mr7000838ybc.148.1621510834531;
- Thu, 20 May 2021 04:40:34 -0700 (PDT)
+        bh=W1iYG6kbUe5nK7eqeY/6xIuOqZtwvfU9nh1Ly+2R88I=;
+        b=TZWDrLuUPE6JUR24LOJ4wkFSBSwzyW6nV/ll5q9kxXCzZecWLhbs3NDC7rD3OPOd4k
+         mqp526wfGwdgEs9/6UHJkxpNr6n2c2C3g0oWLZ8I5ymQpDxvX04EGdlH86h8CfBVeB+l
+         HKMsDYPhFBs17cYNCuAfdZI/KZae2bM5LSCUlm1Q6bVwAfASWoBc65CRTCbtZyJ60z1P
+         hBKxH34MyTVSwOAu7aTp1OeYhF7hmD3iqTCIaL8EHvfd1sQgiyFpQirVwjZwrQ64pPiQ
+         mOsynxGRywDuWjhJMhi+v89OmACVa5YHJ2P+2sXc4g0TgCa7qM80q1Ftz9iM5ADMR1Fz
+         bX3g==
+X-Gm-Message-State: AOAM531Rn/SebEvkEmA8gO5dOQsTIqXu2uUmQ0PaTyAPo0v51g7RymXS
+        WyWZOWqMgk7ch4kIUzVnOurjoog3e4UwkmwCEd7k1Wjt
+X-Google-Smtp-Source: ABdhPJzgyIseVFaqkWWbLmI5/gM92T66y1xoOEKZghJ6yA9kN/FuKODImcvFV0Oc9AsPjwENSYgHtzmFfhY+Z5mLIEw=
+X-Received: by 2002:a2e:b819:: with SMTP id u25mr2701365ljo.182.1621510840603;
+ Thu, 20 May 2021 04:40:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520104343.317119-1-joerichey94@gmail.com> <20210520111119.GC17233@C02TD0UTHF1T.local>
-In-Reply-To: <20210520111119.GC17233@C02TD0UTHF1T.local>
-From:   Joseph Richey <joerichey94@gmail.com>
-Date:   Thu, 20 May 2021 04:40:23 -0700
-Message-ID: <CAAXkRofTpf7R31V8vQOghkzWL+Ofqu0eCNV-WOmpm8pmpTvtLg@mail.gmail.com>
-Subject: Re: [PATCH 0/6] Don't use BIT() macro in UAPI headers
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     trivial@kernel.org, Joe Richey <joerichey@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org
+References: <20210518133935.571298-1-stephan@gerhold.net> <20210518133935.571298-2-stephan@gerhold.net>
+ <ac04821e-359d-aaaa-7e07-280156f64036@canonical.com> <YKPWgSnz7STV4u+c@gerhold.net>
+ <8b14159f-dca9-a213-031f-83ab2b3840a4@canonical.com> <YKTHXzUhcYa5YJIs@gerhold.net>
+ <10b3a50e-877c-d5b1-3e35-e5dff4ef53d8@canonical.com>
+In-Reply-To: <10b3a50e-877c-d5b1-3e35-e5dff4ef53d8@canonical.com>
+From:   Bongsu Jeon <bongsu.jeon2@gmail.com>
+Date:   Thu, 20 May 2021 20:40:29 +0900
+Message-ID: <CACwDmQCQQpLKeaRxfxXYqSty3YhpZ9y7LNxgkKCBQ=YJiAk1cg@mail.gmail.com>
+Subject: Re: [linux-nfc] Re: [PATCH 2/2] nfc: s3fwrn5: i2c: Enable optional
+ clock from device tree
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Bongsu Jeon <bongsu.jeon@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 4:11 AM Mark Rutland <mark.rutland@arm.com> wrote:
+On Thu, May 20, 2021 at 12:58 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
 >
-> Hi,
->
-> On Thu, May 20, 2021 at 03:43:37AM -0700, Joe Richey wrote:
-> > From: Joe Richey <joerichey@google.com>
+> On 19/05/2021 04:07, Stephan Gerhold wrote:
+> > On Tue, May 18, 2021 at 11:25:55AM -0400, Krzysztof Kozlowski wrote:
+> >> On 18/05/2021 11:00, Stephan Gerhold wrote:
+> >>> On Tue, May 18, 2021 at 10:30:43AM -0400, Krzysztof Kozlowski wrote:
+> >>>> On 18/05/2021 09:39, Stephan Gerhold wrote:
+> >>>>> s3fwrn5 has a NFC_CLK_REQ output GPIO, which is asserted whenever
+> >>>>> the clock is needed for the current operation. This GPIO can be either
+> >>>>> connected directly to the clock provider, or must be monitored by
+> >>>>> this driver.
+> >>>>>
+> >>>>> As an example for the first case, on many Qualcomm devices the
+> >>>>> NFC clock is provided by the main PMIC. The clock can be either
+> >>>>> permanently enabled (clocks = <&rpmcc RPM_SMD_BB_CLK2>) or enabled
+> >>>>> only when requested through a special input pin on the PMIC
+> >>>>> (clocks = <&rpmcc RPM_SMD_BB_CLK2_PIN>).
+> >>>>>
+> >>>>> On the Samsung Galaxy A3/A5 (2015, Qualcomm MSM8916) this mechanism
+> >>>>> is used with S3FWRN5's NFC_CLK_REQ output GPIO to enable the clock
+> >>>>> only when necessary. However, to make that work the s3fwrn5 driver
+> >>>>> must keep the RPM_SMD_BB_CLK2_PIN clock enabled.
+> >>>>
+> >>>> This contradicts the code. You wrote that pin should be kept enabled
+> >>>> (somehow... by driver? by it's firmware?) but your code requests the
+> >>>> clock from provider.
+> >>>>
+> >>>
+> >>> Yeah, I see how that's a bit confusing. Let me try to explain it a bit
+> >>> better. So the Samsung Galaxy A5 (2015) has a "S3FWRN5XS1-YF30", some
+> >>> variant of S3FWRN5 I guess. That S3FWRN5 has a "XI" and "XO" pin in the
+> >>> schematics. "XO" seems to be floating, but "XI" goes to "BB_CLK2"
+> >>> on PM8916 (the main PMIC).
+> >>>
+> >>> Then, there is "GPIO2/NFC_CLK_REQ" on the S3FWRN5. This goes to
+> >>> GPIO_2_NFC_CLK_REQ on PM8916. (Note: I'm talking about two different
+> >>> GPIO2 here, one on S3FWRN5 and one on PM8916, they just happen to have
+> >>> the same number...)
+> >>>
+> >>> So in other words, S3FWRN5 gets some clock from BB_CLK2 on PM8916,
+> >>> and can tell PM8916 that it needs the clock via GPIO2/NFC_CLK_REQ.
+> >>>
+> >>> Now the confusing part is that the rpmcc/clk-smd-rpm driver has two
+> >>> clocks that represent BB_CLK2 (see include/dt-bindings/clock/qcom,rpmcc.h):
+> >>>
+> >>>   - RPM_SMD_BB_CLK2
+> >>>   - RPM_SMD_BB_CLK2_PIN
+> >>>
+> >>> (There are also *_CLK2_A variants but they are even more confusing
+> >>>  and not needed here...)
+> >>>
+> >>> Those end up in different register settings in PM8916. There is one bit
+> >>> to permanently enable BB_CLK2 (= RPM_SMD_BB_CLK2), and one bit to enable
+> >>> BB_CLK2 based on the status of GPIO_2_NFC_CLK_REQ on PM8916
+> >>> (= RPM_SMD_BB_CLK2_PIN).
+> >>>
+> >>> So there is indeed some kind of "AND" inside PM8916 (the register bit
+> >>> and "NFC_CLK_REQ" input pin). To make that "AND" work I need to make
+> >>> some driver (here: the s3fwrn5 driver) enable the clock so the register
+> >>> bit in PM8916 gets set.
+> >>
+> >> Thanks for the explanation, it sounds good. The GPIO2 (or how you call
+> >> it NFC_CLK_REQ) on S3FWRN5 looks like non-configurable from Linux point
+> >> of view. Probably the device firmware plays with it always or at least
+> >> handles it in an unknown way for us.
+> >>
 > >
-> > The BIT(n) macro is used in the kernel as an alias for (1 << n).
-> > However, it is not defined in the UAPI headers, which means that any
-> > UAPI header files must be careful not to use it, or else the user
-> > will get a linker error.
->
-> Beware that the common definition of BIT() (in include/vdso/bits.h) is:
->
-> | #define BIT(nr)                 (UL(1) << (nr))
->
-> That UL() can be important if `nr` is ever greater than bits per int.
->
-> > For example, compiling the following program:
+> > FWIW, I was looking at some more s3fwrn5 code yesterday and came
+> > across this (in s3fwrn5_nci_rf_configure()):
 > >
-> >     #include <sys/auxv.h>
-> >     #include <asm/hwcap2.h>
+> >       /* Set default clock configuration for external crystal */
+> >       fw_cfg.clk_type = 0x01;
+> >       fw_cfg.clk_speed = 0xff;
+> >       fw_cfg.clk_req = 0xff;
+> >       ret = nci_prop_cmd(info->ndev, NCI_PROP_FW_CFG,
+> >               sizeof(fw_cfg), (__u8 *)&fw_cfg);
+> >       if (ret < 0)
+> >               goto out;
 > >
-> >     // Detect if FSGSBASE instructions are enabled
-> >     int main() {
-> >         unsigned long val = getauxval(AT_HWCAP2);
-> >         return !(val & HWCAP2_FSGSBASE);
-> >     }
-> >
-> > Results in the following likner error:
-> >
-> >     /usr/bin/ld: /tmp/cceFpAdR.o: in function `main':
-> >     gs.c:(.text+0x21): undefined reference to `BIT'
-> >
-> > This patch series changes all UAPI uses of BIT() to just be open-coded.
+> > It does look quite suspiciously like that configures how s3fwrn5 expects
+> > the clock and possibly (fw_cfg.clk_req?) how GPIO2 behaves. But it's not
+> > particularly useful without some documentation for the magic numbers.
 >
-> In include/uapi/linux/const.h we have an equivaleint _BITUL() macro,
-> which I think should be used in preference of open-coding this (and is
-> already used in a number of uapi headers).
+> Right, without documentation of FW protocol there is not much we can
+> deduct here. There is no proof even that the comment matches actual code.
+>
+> Dear Bongsu,
+> Maybe you could share some details about clock selection?
 
-That's a good idea. I mostly just did the open-coding for
-consistency with the surrounding code, but aside from kvm.h
-there aren't really many usages to change, so I can do it.
+These configuration values depend on the HW circuit for NFC.
 
-For kvm.h, I think it might be best to leave it open-coded
-and move the entire file to _BITUL() at once.
+There are  two types of fw_cfg.clk_type for N5.
+0x01 : external XTAL ( don't need to control the clock because XTAL
+always supplies
+the NFC clock automatically.)
+0x00 : PLL clock (need to control clock. )
+
+There are three types of fw_cfg.clk_speed for N5.
+0xFF : for external XTAL
+0x00 : 24M for PLL.
+0x01 : 19.12M for PLL.
+
+There are two types of fw_cfg.clk_req for N5.
+0xFF: NFC firmware controls CLK Req when NFC needs the external clock.
+0xF0: NFC firmware doesn't control CLK Req.
 
 >
-> > However, there really should be a check for this in checkpatch.pl
-> > Currently, the script actually _encourages_ users to use the BIT macro
-> > even if adding things to UAPI.
+> >
+> > Personally, I just skip all firmware/RF configuration (which works thanks
+> > to commit 4fb7b98c7be3 ("nfc: s3fwrn5: skip the NFC bootloader mode")).
+> > That way, S3FWRN5 just continues using the proper configuration
+> > that was loaded by the vendor drivers at some point. :)
 >
-> I think having something that suggests s/BIT()/_BITUL()/ under uapi
-> would be good.
+> But isn't that configuration lost after power off?
+>
 
-I'll just change the script to recommend _BITUL() (instead
-of BIT()) if the code path contains "uapi".
+If you skip all firmware/RF configuration, you can use  the preserved
+firmware and
+RF configuration on the chip.
 
 >
-> Thanks,
-> Mark.
->
-> >
-> > Running `rg "BIT\(" **/uapi/**` shows no more usage of BIT() in any
-> > UAPI headers. Tested by building a basic kernel. Changes are trivial.
-> >
-> > Joe Richey (6):
-> >   x86/elf: Don't use BIT() macro in UAPI headers
-> >   KVM: X86: Don't use BIT() macro in UAPI headers
-> >   drivers: firmware: psci: Don't use BIT() macro in UAPI headers
-> >   uacce: Don't use BIT() macro in UAPI headers
-> >   media: vicodec: Don't use BIT() macro in UAPI headers
-> >   tools headers UAPI: Sync pkt_sched.h with the kernel sources
-> >
-> >  arch/x86/include/uapi/asm/hwcap2.h   |   2 +-
-> >  include/uapi/linux/kvm.h             |   4 +-
-> >  include/uapi/linux/psci.h            |   2 +-
-> >  include/uapi/linux/v4l2-controls.h   |  22 ++---
-> >  include/uapi/misc/uacce/uacce.h      |   2 +-
-> >  tools/include/uapi/linux/kvm.h       |   4 +-
-> >  tools/include/uapi/linux/pkt_sched.h | 122 ++++++++++++++++++++++++---
-> >  7 files changed, 130 insertions(+), 28 deletions(-)
-> >
-> > --
-> > 2.31.1
-> >
+> Best regards,
+> Krzysztof
