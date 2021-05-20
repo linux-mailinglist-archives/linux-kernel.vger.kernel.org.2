@@ -2,86 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6843738B9D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:54:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E635338B9D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:55:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232523AbhETW4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:56:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57436 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232354AbhETWz7 (ORCPT
+        id S232545AbhETW4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:56:20 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:51941 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231967AbhETW4T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:55:59 -0400
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1523C061761;
-        Thu, 20 May 2021 15:54:36 -0700 (PDT)
-Received: by mail-oo1-xc36.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so4157298oop.12;
-        Thu, 20 May 2021 15:54:36 -0700 (PDT)
+        Thu, 20 May 2021 18:56:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UKy/4EOqX34+btYJVJguAt3+TaDG0hsu7L4ycydPMrk=;
-        b=mVbw1Cv4vucFekYoIn2YMiaHsmhAsLB/eCNqE1NPgAW4Gf35PISLc7mFM/JOl1Rr+u
-         LQ9eRoG3nn/eYb2kSGzJFMHAgPDjFFxvFuEB1tccENR8izox8Yj6MEbyif+u0vuN64oA
-         K1EMniT10NAoUvzr2ZK0AqPJnKEBcllAqjaM1ISVWrIVozFOmNUIBE+ar/3BUhDcJLbF
-         XRMutxyYD9i0XCmWhUhmSHpV9yMRhgh//KLuKWbcYUy0B6kJd/4ZeME2z5cA9brdDF7Y
-         8QrkLpPP+2BuXM7jgoTZ9nkB9KrfhEFjiKCh5Jp2p84Fog0GV6pRA4sIlZ1r8l+p03gp
-         tziw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=UKy/4EOqX34+btYJVJguAt3+TaDG0hsu7L4ycydPMrk=;
-        b=JXtpsRBMBmzmXerlH6MrCNULl0wEcebwkhZnC75vFvJQNGQIgB1ZvrXs9EY0B/bnCh
-         DK0HYkcmv1WeNTrEONWDxN61BdaFb6fv7Zs8CO7eyWA69s/n+6okDDYFpHkTuwgbNvuF
-         yFr40NozQ9o/xZ1InHtsizGnKVr7G/l44bdYwnjBRzwn3NxbMuFtiuFuOZLSg51zK6Pu
-         HFPMowuwF6bT0ciSTTCiuwCpudpbm7YTtIXI7TNJ1Dyao7/bdhJd/83GL9xHNzEUk3UW
-         pZGZiM2wTkWDObBpJRShbOKw97vxdxbuhMBTH8YhSW0XW6/+QsE3UhB8rIO6izhnmh1S
-         rqGg==
-X-Gm-Message-State: AOAM533hYqrJcAn1GOaQ6k6HW9jUv4kufxFhpxo7FUPPymcfMTrvpzGu
-        fEVkSuvhtY0smbSBtHMO6n4GT5H+iXc=
-X-Google-Smtp-Source: ABdhPJzU6jIxTAOQ16KWAZumpt28z0s8Wsm3A/Jq3fyfUPEHt2q9I05YZQXofU2zYo+tI7/lxWLHJg==
-X-Received: by 2002:a4a:4581:: with SMTP id y123mr5449166ooa.33.1621551276344;
-        Thu, 20 May 2021 15:54:36 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 73sm399087oty.40.2021.05.20.15.54.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 15:54:35 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 20 May 2021 15:54:34 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 00/43] 5.12.6-rc2 review
-Message-ID: <20210520225434.GF2968078@roeck-us.net>
-References: <20210520152254.218537944@linuxfoundation.org>
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621551298; x=1653087298;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=x+CmPkt+gS5GHDvNirO+GVQ5AFM4U/vtAYwbl2/w4vw=;
+  b=ngENQGCm+/3DPzB+MofJdkiWd+Q30OlEdbYaOofXogc2yaa8EOflaJnj
+   2bBmSTgjyXtAJWPY6tBC8kwzMrjWxLDOKWVCbTs6XkskTs0ZvGTXA7gAp
+   0bTveUVxVQFxT8AIdmcaHAUo0+a2iAmjddOFsxsfZ00YUJdthUgYmssuW
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
+   d="scan'208";a="2453487"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2c-87a10be6.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 20 May 2021 22:54:58 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2c-87a10be6.us-west-2.amazon.com (Postfix) with ESMTPS id D8908A1EEA;
+        Thu, 20 May 2021 22:54:56 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 22:54:55 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.137) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 22:54:51 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the reuseport group.
+Date:   Fri, 21 May 2021 07:54:48 +0900
+Message-ID: <20210520225448.14157-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210520212201.zq3ozwx3vrobd2ua@kafai-mbp.dhcp.thefacebook.com>
+References: <20210520212201.zq3ozwx3vrobd2ua@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520152254.218537944@linuxfoundation.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.137]
+X-ClientProxiedBy: EX13D21UWB002.ant.amazon.com (10.43.161.177) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 05:23:29PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.6 release.
-> There are 43 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Thu, 20 May 2021 14:22:01 -0700
+> On Thu, May 20, 2021 at 05:51:17PM +0900, Kuniyuki Iwashima wrote:
+> > From:   Martin KaFai Lau <kafai@fb.com>
+> > Date:   Wed, 19 May 2021 23:26:48 -0700
+> > > On Mon, May 17, 2021 at 09:22:50AM +0900, Kuniyuki Iwashima wrote:
+> > > 
+> > > > +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
+> > > > +			       struct sock_reuseport *reuse, bool bind_inany)
+> > > > +{
+> > > > +	if (old_reuse == reuse) {
+> > > > +		/* If sk was in the same reuseport group, just pop sk out of
+> > > > +		 * the closed section and push sk into the listening section.
+> > > > +		 */
+> > > > +		__reuseport_detach_closed_sock(sk, old_reuse);
+> > > > +		__reuseport_add_sock(sk, old_reuse);
+> > > > +		return 0;
+> > > > +	}
+> > > > +
+> > > > +	if (!reuse) {
+> > > > +		/* In bind()/listen() path, we cannot carry over the eBPF prog
+> > > > +		 * for the shutdown()ed socket. In setsockopt() path, we should
+> > > > +		 * not change the eBPF prog of listening sockets by attaching a
+> > > > +		 * prog to the shutdown()ed socket. Thus, we will allocate a new
+> > > > +		 * reuseport group and detach sk from the old group.
+> > > > +		 */
+> > > For the reuseport_attach_prog() path, I think it needs to consider
+> > > the reuse->num_closed_socks != 0 case also and that should belong
+> > > to the resurrect case.  For example, when
+> > > sk_unhashed(sk) but sk->sk_reuseport == 0.
+> > 
+> > In the path, reuseport_resurrect() is called from reuseport_alloc() only
+> > if reuse->num_closed_socks != 0.
+> > 
+> > 
+> > > @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
+> > >  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
+> > >  					  lockdep_is_held(&reuseport_lock));
+> > >  	if (reuse) {
+> > > +		if (reuse->num_closed_socks) {
+> > 
+> > But, should this be
+> > 
+> > 	if (sk->sk_state == TCP_CLOSE && reuse->num_closed_socks)
+> > 
+> > because we need not allocate a new group when we attach a bpf prog to
+> > listeners?
+> The reuseport_alloc() is fine as is.  No need to change.
+
+I missed sk_unhashed(sk) prevents calling reuseport_alloc()
+if sk_state == TCP_LISTEN. I'll keep it as is.
+
+
 > 
-> Responses should be made by Sat, 22 May 2021 15:22:43 +0000.
-> Anything received after that time might be too late.
+> I should have copied reuseport_attach_prog() in the last reply and
+> commented there instead.
 > 
+> I meant reuseport_attach_prog() needs a change.  In reuseport_attach_prog(),
+> iiuc, currently passing the "else if (!rcu_access_pointer(sk->sk_reuseport_cb))"
+> check implies the sk was (and still is) hashed with sk_reuseport enabled
+> because the current behavior would have set sk_reuseport_cb to NULL during
+> unhash but it is no longer true now.  For example, this will break:
+> 
+> 1. shutdown(lsk); /* lsk was bound with sk_reuseport enabled */
+> 2. setsockopt(lsk, ..., SO_REUSEPORT, &zero, ...); /* disable sk_reuseport */
+> 3. setsockopt(lsk, ..., SO_ATTACH_REUSEPORT_EBPF, &prog_fd, ...);
+>    ^---- /* This will work now because sk_reuseport_cb is not NULL.
+>           * However, it shouldn't be allowed.
+> 	  */
 
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 462 pass: 462 fail: 0
+Thank you for explanation, I understood the case.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Exactly, I've confirmed that the case succeeded in the setsockopt() and I
+could change the active listeners' prog via a shutdowned socket.
 
-Guenter
+
+> 
+> I am thinking something like this (uncompiled code):
+> 
+> int reuseport_attach_prog(struct sock *sk, struct bpf_prog *prog)
+> {
+> 	struct sock_reuseport *reuse;
+> 	struct bpf_prog *old_prog;
+> 
+> 	if (sk_unhashed(sk)) {
+> 		int err;
+> 
+> 		if (!sk->sk_reuseport)
+> 			return -EINVAL;
+> 
+> 		err = reuseport_alloc(sk, false);
+> 		if (err)
+> 			return err;
+> 	} else if (!rcu_access_pointer(sk->sk_reuseport_cb)) {
+> 		/* The socket wasn't bound with SO_REUSEPORT */
+> 		return -EINVAL;
+> 	}
+> 
+> 	/* ... */
+> }
+> 
+> WDYT?
+
+I tested this change worked fine. I think this change should be added in
+reuseport_detach_prog() also.
+
+---8<---
+int reuseport_detach_prog(struct sock *sk)
+{
+        struct sock_reuseport *reuse;
+        struct bpf_prog *old_prog;
+
+        if (!rcu_access_pointer(sk->sk_reuseport_cb))
+		return sk->sk_reuseport ? -ENOENT : -EINVAL;
+---8<---
+
+
+Another option is to add the check in sock_setsockopt():
+SO_ATTACH_REUSEPORT_[CE]BPF, SO_DETACH_REUSEPORT_BPF.
+
+Which do you think is better ?
