@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EE638AA53
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:12:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E859738AA57
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:12:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239832AbhETLLs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:11:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52462 "EHLO mail.kernel.org"
+        id S239948AbhETLMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:12:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237575AbhETKwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:52:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5D0D616E8;
-        Thu, 20 May 2021 10:00:10 +0000 (UTC)
+        id S239143AbhETKwV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:52:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2319461CCE;
+        Thu, 20 May 2021 10:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504811;
-        bh=lSdtHzYaRgOBT0gWw44EQQ3IskH5dXfvS34EW1mGgGs=;
+        s=korg; t=1621504813;
+        bh=Iee+eRKmWk3nQvQWXeOxyGtN2r1yw3VSpMQ68nE4tz8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=moMv//HznK1Pe4+VSC8czsfuQxz+2E8C8gLkexOoEmz2rxBZ8lMA8d0fwIr3Cbgm5
-         PW8fwQ6ozbufRA32HudXZJXaiwfakoBcBwmVoVbQP9wDlmMELmGBIXC/hi7Dgz5+mo
-         VUZKhf3EnrwK/hFCoHh9IYl3EZMVjclDF/z6SRKQ=
+        b=TTWtQIj8h/0nGjsD+pjLp2CnS3WtC9jUPUP73LoPSW7BeEtkASP0lixyCSJkhkPXW
+         wsuBG9biZB6SPLf3F3etF94OqX4FW3PSFxiPriXLvF+nWXY7kWPGIA9rS5YghbZUD8
+         ihzE/HEl3tVUFSBi5RY0VvFhWh1inkHS7UH4H1ZQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Iago Abal <mail@iagoabal.eu>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: [PATCH 4.9 091/240] usb: gadget: pch_udc: Revert d3cb25a12138 completely
-Date:   Thu, 20 May 2021 11:21:23 +0200
-Message-Id: <20210520092111.739156032@linuxfoundation.org>
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 092/240] memory: gpmc: fix out of bounds read and dereference on gpmc_cs[]
+Date:   Thu, 20 May 2021 11:21:24 +0200
+Message-Id: <20210520092111.777184492@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,83 +41,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+From: Colin Ian King <colin.king@canonical.com>
 
-commit 50a318cc9b54a36f00beadf77e578a50f3620477 upstream.
+[ Upstream commit e004c3e67b6459c99285b18366a71af467d869f5 ]
 
-The commit d3cb25a12138 ("usb: gadget: udc: fix spin_lock in pch_udc")
-obviously was not thought through and had made the situation even worse
-than it was before. Two changes after almost reverted it. but a few
-leftovers have been left as it. With this revert d3cb25a12138 completely.
+Currently the array gpmc_cs is indexed by cs before it cs is range checked
+and the pointer read from this out-of-index read is dereferenced. Fix this
+by performing the range check on cs before the read and the following
+pointer dereference.
 
-While at it, narrow down the scope of unlocked section to prevent
-potential race when prot_stall is assigned.
-
-Fixes: d3cb25a12138 ("usb: gadget: udc: fix spin_lock in pch_udc")
-Fixes: 9903b6bedd38 ("usb: gadget: pch-udc: fix lock")
-Fixes: 1d23d16a88e6 ("usb: gadget: pch_udc: reorder spin_[un]lock to avoid deadlock")
-Cc: Iago Abal <mail@iagoabal.eu>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210323153626.54908-5-andriy.shevchenko@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Addresses-Coverity: ("Negative array index read")
+Fixes: 9ed7a776eb50 ("ARM: OMAP2+: Fix support for multiple devices on a GPMC chip select")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20210223193821.17232-1-colin.king@canonical.com
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/pch_udc.c |   17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ drivers/memory/omap-gpmc.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
---- a/drivers/usb/gadget/udc/pch_udc.c
-+++ b/drivers/usb/gadget/udc/pch_udc.c
-@@ -604,18 +604,22 @@ static void pch_udc_reconnect(struct pch
- static inline void pch_udc_vbus_session(struct pch_udc_dev *dev,
- 					  int is_active)
+diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
+index a9d47c06f80f..4af2f5b231dd 100644
+--- a/drivers/memory/omap-gpmc.c
++++ b/drivers/memory/omap-gpmc.c
+@@ -1028,8 +1028,8 @@ EXPORT_SYMBOL(gpmc_cs_request);
+ 
+ void gpmc_cs_free(int cs)
  {
-+	unsigned long		iflags;
-+
-+	spin_lock_irqsave(&dev->lock, iflags);
- 	if (is_active) {
- 		pch_udc_reconnect(dev);
- 		dev->vbus_session = 1;
- 	} else {
- 		if (dev->driver && dev->driver->disconnect) {
--			spin_lock(&dev->lock);
-+			spin_unlock_irqrestore(&dev->lock, iflags);
- 			dev->driver->disconnect(&dev->gadget);
--			spin_unlock(&dev->lock);
-+			spin_lock_irqsave(&dev->lock, iflags);
- 		}
- 		pch_udc_set_disconnect(dev);
- 		dev->vbus_session = 0;
+-	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
+-	struct resource *res = &gpmc->mem;
++	struct gpmc_cs_data *gpmc;
++	struct resource *res;
+ 
+ 	spin_lock(&gpmc_mem_lock);
+ 	if (cs >= gpmc_cs_num || cs < 0 || !gpmc_cs_reserved(cs)) {
+@@ -1038,6 +1038,9 @@ void gpmc_cs_free(int cs)
+ 		spin_unlock(&gpmc_mem_lock);
+ 		return;
  	}
-+	spin_unlock_irqrestore(&dev->lock, iflags);
- }
- 
- /**
-@@ -1172,20 +1176,25 @@ static int pch_udc_pcd_selfpowered(struc
- static int pch_udc_pcd_pullup(struct usb_gadget *gadget, int is_on)
- {
- 	struct pch_udc_dev	*dev;
-+	unsigned long		iflags;
- 
- 	if (!gadget)
- 		return -EINVAL;
++	gpmc = &gpmc_cs[cs];
++	res = &gpmc->mem;
 +
- 	dev = container_of(gadget, struct pch_udc_dev, gadget);
-+
-+	spin_lock_irqsave(&dev->lock, iflags);
- 	if (is_on) {
- 		pch_udc_reconnect(dev);
- 	} else {
- 		if (dev->driver && dev->driver->disconnect) {
--			spin_lock(&dev->lock);
-+			spin_unlock_irqrestore(&dev->lock, iflags);
- 			dev->driver->disconnect(&dev->gadget);
--			spin_unlock(&dev->lock);
-+			spin_lock_irqsave(&dev->lock, iflags);
- 		}
- 		pch_udc_set_disconnect(dev);
- 	}
-+	spin_unlock_irqrestore(&dev->lock, iflags);
- 
- 	return 0;
- }
+ 	gpmc_cs_disable_mem(cs);
+ 	if (res->flags)
+ 		release_resource(res);
+-- 
+2.30.2
+
 
 
