@@ -2,130 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4352389D12
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:25:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16833389D17
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230338AbhETF0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:26:39 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:52079 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhETF0i (ORCPT
+        id S230379AbhETF0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:26:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230284AbhETF0u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:26:38 -0400
-Received: by mail-wm1-f54.google.com with SMTP id u133so8380715wmg.1;
-        Wed, 19 May 2021 22:25:15 -0700 (PDT)
+        Thu, 20 May 2021 01:26:50 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65F0C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:25:28 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id i7so5426389ejc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:25:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uWBM5AU+ZMmhfuFgx+3Y6a4UcjGbnQI1cx3aK/uVkZc=;
+        b=GL+WlKsfyUHY8seOawsA4s5AlWavihDlxxMiz4lqDQkGQ3TCLutMAu4lMNn1Jxl1jd
+         y6HZQBYQq4ioIg5e1Lo1gqt31jawj5s1SHuxpLit2ITf+CLm+kWietUyVpKk9w4fmD2p
+         H1mq2ZWQ+t44wxCCc60m/5A3JNEqMh/2fd2x9LhB3LxkVed1yMz8Mpz7F/P0y2G397sv
+         VSQF7iSQ5NJLrAtBZr6BqKr6Rz+PbkPQ/INLOdyfBiVRt3/wYV7gh1O0NplzDAANxyj3
+         lbLjDfxqrMTZkAS3Dv9Xk96J7MuslFrqt1MYHRbQds+nk19xlmKW/1bKi0HXgU5HEy19
+         xy7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=uBDTnysTP/v0yudg9DFa2zD2k+gjVi/C3z5x9N8ueoY=;
-        b=Yg2OoAUHOzP27GCMCTk6m7gj2f75oRAvmKRQmHReeUn7Vlu9fnoc+qlzOtaTxr1Gq2
-         NJNLUqYVaf/3XTcMQfHD5pS0AC9KZs7giPnmYpOL35eIAcy36CXh+O7fxD1GLtylRPg0
-         aoudLlP0oxJ7KpNFjX+ZvxTbYz6i8irqma9gEsIww7Ic4IpYYm1qGuj8v9mQIHpS096X
-         SM9MnCAs+OhWyiDHkm58XRVBhngNGZ5KOBgcOHzEE37WuB5ajk/+Q6gyoAB1A2o3q1WY
-         q4Z9uA4EFA9YDFoWNAXcGHtInmL8kPn3Cu9NJebX/Vu8aCx7D6LABQVmjDO/t/NUlqh1
-         QRmg==
-X-Gm-Message-State: AOAM533yXfAirCyf9fRIg9RNz+0HG3I9WFDfrzSNfu5Cgu9GsvlHBV9n
-        E7ro17xBznfFRiV+4Y+VEb0=
-X-Google-Smtp-Source: ABdhPJxJk7MpMpRXJ5tCRNdyCu5OIB3BCLm8IYcRkJ2azAx7L7aZj2oqaTWfUcipbqlMNiLpWPNfpg==
-X-Received: by 2002:a1c:9d43:: with SMTP id g64mr1793957wme.181.1621488315285;
-        Wed, 19 May 2021 22:25:15 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id a11sm1663829wrx.38.2021.05.19.22.25.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 22:25:14 -0700 (PDT)
-Subject: Re: [PATCH v3 2/2] serial: 8250: Use BIT(x) for UART_{CAP,BUG}_*
-To:     Andrew Jeffery <andrew@aj.id.au>, linux-serial@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org, joel@jms.id.au,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        jenmin_yuan@aspeedtech.com, ryan_chen@aspeedtech.com,
-        miltonm@us.ibm.com
-References: <20210520021334.497341-1-andrew@aj.id.au>
- <20210520021334.497341-3-andrew@aj.id.au>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <20eec190-d80e-b32a-8949-e5e2918a110b@kernel.org>
-Date:   Thu, 20 May 2021 07:25:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uWBM5AU+ZMmhfuFgx+3Y6a4UcjGbnQI1cx3aK/uVkZc=;
+        b=qNWl+K0A0wS1iIYY6FUdgN4ESxT//UECYU60ZMHMbdHRvdohiNh9LXwZXbDXtfj/tU
+         bZA7cLBRpezkSzeAkbLgEQGL/HkLZuvHOJnIcSil2wDBMff+Z6YQCIXp1Ja5OVJZ58Sn
+         U53u8P5QGL+q8Td/PpCkE0SYXRHq2nsFwaxRHX7xL0A4vnKKA/nUbVQLZ3c/Vd16zrhz
+         0nxcqEUml8qynNiShBX8VQxhaQJjkhvpXAXwK30Pl6W49+oBJkoRmvLW0Z4MRtpDjz9T
+         gMXg2auHIOOsznxRedwaRYMgZXGpyy41aQ/Z7jrITNaltPYiey4DQHZ9TFz6bvqy7td5
+         nhSg==
+X-Gm-Message-State: AOAM533k0HkyjqqzkBJi91cwHcyVc+Dil4CY5kjVHkhsfiD7ZbqWOXa4
+        8xSRkcV/jDXV4uOWB6U6kkjl6G/sSCgyuf7K4rcQ
+X-Google-Smtp-Source: ABdhPJyvwWWA7f5Fzvsx4TdTu7nIvH6pnRUuPJ62OuR0bCAchfYi7vwKGliv4oVBF/L7UoIrnWNYnk0fkzFFBOuZgj8=
+X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr2877318ejb.174.1621488327265;
+ Wed, 19 May 2021 22:25:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210520021334.497341-3-andrew@aj.id.au>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-5-xieyongji@bytedance.com>
+ <CACycT3s1rEvNnNkJKQsHGRsyLPADieFdVkb1Sp3GObR0Vox5Fg@mail.gmail.com> <20210519144206.GF32682@kadam>
+In-Reply-To: <20210519144206.GF32682@kadam>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Thu, 20 May 2021 13:25:16 +0800
+Message-ID: <CACycT3veubBFCg9omxLDJJFP7B7QH8++Q+tKmb_M_hmNS45cmw@mail.gmail.com>
+Subject: Re: Re: [PATCH v7 04/12] virtio-blk: Add validation for block size in
+ config space
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>, viro@zeniv.linux.org.uk,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20. 05. 21, 4:13, Andrew Jeffery wrote:
-> BIT(x) improves readability and safety with respect to shifts.
-> 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+On Wed, May 19, 2021 at 10:42 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> On Wed, May 19, 2021 at 09:39:20PM +0800, Yongji Xie wrote:
+> > On Mon, May 17, 2021 at 5:56 PM Xie Yongji <xieyongji@bytedance.com> wrote:
+> > >
+> > > This ensures that we will not use an invalid block size
+> > > in config space (might come from an untrusted device).
+>
+> I looked at if I should add this as an untrusted function so that Smatch
+> could find these sorts of bugs but this is reading data from the host so
+> there has to be some level of trust...
+>
 
-Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
+It would be great if Smatch could detect this case if possible. The
+data might be trusted in traditional VM cases. But now the data can be
+read from a userspace daemon when VDUSE is enabled.
 
-> ---
->   drivers/tty/serial/8250/8250.h | 33 +++++++++++++++++----------------
->   1 file changed, 17 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/tty/serial/8250/8250.h b/drivers/tty/serial/8250/8250.h
-> index 34aa2714f3c9..6473361525d1 100644
-> --- a/drivers/tty/serial/8250/8250.h
-> +++ b/drivers/tty/serial/8250/8250.h
-> @@ -7,6 +7,7 @@
->    *  Copyright (C) 2001 Russell King.
->    */
->   
-> +#include <linux/bits.h>
->   #include <linux/serial_8250.h>
->   #include <linux/serial_reg.h>
->   #include <linux/dmaengine.h>
-> @@ -70,25 +71,25 @@ struct serial8250_config {
->   	unsigned int	flags;
->   };
->   
-> -#define UART_CAP_FIFO	(1 << 8)	/* UART has FIFO */
-> -#define UART_CAP_EFR	(1 << 9)	/* UART has EFR */
-> -#define UART_CAP_SLEEP	(1 << 10)	/* UART has IER sleep */
-> -#define UART_CAP_AFE	(1 << 11)	/* MCR-based hw flow control */
-> -#define UART_CAP_UUE	(1 << 12)	/* UART needs IER bit 6 set (Xscale) */
-> -#define UART_CAP_RTOIE	(1 << 13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
-> -#define UART_CAP_HFIFO	(1 << 14)	/* UART has a "hidden" FIFO */
-> -#define UART_CAP_RPM	(1 << 15)	/* Runtime PM is active while idle */
-> -#define UART_CAP_IRDA	(1 << 16)	/* UART supports IrDA line discipline */
-> -#define UART_CAP_MINI	(1 << 17)	/* Mini UART on BCM283X family lacks:
-> +#define UART_CAP_FIFO	BIT(8)	/* UART has FIFO */
-> +#define UART_CAP_EFR	BIT(9)	/* UART has EFR */
-> +#define UART_CAP_SLEEP	BIT(10)	/* UART has IER sleep */
-> +#define UART_CAP_AFE	BIT(11)	/* MCR-based hw flow control */
-> +#define UART_CAP_UUE	BIT(12)	/* UART needs IER bit 6 set (Xscale) */
-> +#define UART_CAP_RTOIE	BIT(13)	/* UART needs IER bit 4 set (Xscale, Tegra) */
-> +#define UART_CAP_HFIFO	BIT(14)	/* UART has a "hidden" FIFO */
-> +#define UART_CAP_RPM	BIT(15)	/* Runtime PM is active while idle */
-> +#define UART_CAP_IRDA	BIT(16)	/* UART supports IrDA line discipline */
-> +#define UART_CAP_MINI	BIT(17)	/* Mini UART on BCM283X family lacks:
->   					 * STOP PARITY EPAR SPAR WLEN5 WLEN6
->   					 */
->   
-> -#define UART_BUG_QUOT	(1 << 0)	/* UART has buggy quot LSB */
-> -#define UART_BUG_TXEN	(1 << 1)	/* UART has buggy TX IIR status */
-> -#define UART_BUG_NOMSR	(1 << 2)	/* UART has buggy MSR status bits (Au1x00) */
-> -#define UART_BUG_THRE	(1 << 3)	/* UART has buggy THRE reassertion */
-> -#define UART_BUG_PARITY	(1 << 4)	/* UART mishandles parity if FIFO enabled */
-> -#define UART_BUG_TXRACE	(1 << 5)	/* UART Tx fails to set remote DR */
-> +#define UART_BUG_QUOT	BIT(0)	/* UART has buggy quot LSB */
-> +#define UART_BUG_TXEN	BIT(1)	/* UART has buggy TX IIR status */
-> +#define UART_BUG_NOMSR	BIT(2)	/* UART has buggy MSR status bits (Au1x00) */
-> +#define UART_BUG_THRE	BIT(3)	/* UART has buggy THRE reassertion */
-> +#define UART_BUG_PARITY	BIT(4)	/* UART mishandles parity if FIFO enabled */
-> +#define UART_BUG_TXRACE	BIT(5)	/* UART Tx fails to set remote DR */
->   
->   
->   #ifdef CONFIG_SERIAL_8250_SHARE_IRQ
-> 
+> I should add some more untrusted data kvm functions to Smatch.  Right
+> now I only have kvm_register_read() and I've added kvm_read_guest_virt()
+> just now.
+>
+> > >
+> > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
+> > > ---
+> > >  drivers/block/virtio_blk.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
+> > > index ebb4d3fe803f..c848aa36d49b 100644
+> > > --- a/drivers/block/virtio_blk.c
+> > > +++ b/drivers/block/virtio_blk.c
+> > > @@ -826,7 +826,7 @@ static int virtblk_probe(struct virtio_device *vdev)
+> > >         err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
+> > >                                    struct virtio_blk_config, blk_size,
+> > >                                    &blk_size);
+> > > -       if (!err)
+> > > +       if (!err && blk_size > 0 && blk_size <= max_size)
+> >
+> > The check here is incorrect. I will use PAGE_SIZE as the maximum
+> > boundary in the new version.
+>
+> What does this bug look like to the user?
 
+The kernel will panic if the block size is larger than PAGE_SIZE.
 
--- 
-js
-suse labs
+> A minimum block size of 1 seems pretty crazy.  Surely the minimum should be > higher?
+>
+
+Yes, 512 is better here.
+
+Thanks,
+Yongji
