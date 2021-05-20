@@ -2,34 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFDA138A78F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8280D38A7F9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236304AbhETKkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55902 "EHLO mail.kernel.org"
+        id S237953AbhETKpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:45:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60374 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236882AbhETKYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:24:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8AD061C22;
-        Thu, 20 May 2021 09:49:39 +0000 (UTC)
+        id S237037AbhETK32 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:29:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A27DC61C3B;
+        Thu, 20 May 2021 09:51:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504180;
-        bh=yHeNw5XrD0xJO+tRISAzog9L/HQZ5m3hnns6KRmPw9U=;
+        s=korg; t=1621504277;
+        bh=CGi/xxuZCryuy+5YfCN7ojft/9E3qEgxLhPOFjURu5o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MwlOq91A+2CPwz9nKw8eS+Ue7vDMIQ9bs9YWZkF2rpM3HOiDqsWm8OfPJoFKv34Zt
-         /vLpjcbxDk84lyZuhlwUdAYkJ7nPs4x8swYaNuvetf4/uNzrLpOrHt8ZYPd2b9Cg2O
-         NM4S3lNM5vzbmZqnL8yXxFTYX5ve2wKP1kVt9G18=
+        b=BLsoqRIaMJHYl3ENTeC8cQqFZ+9td3fcROFLOliRYFeYuL0Ll1m+NSGeBz+HK9MTR
+         Nlzzv+9nae4C4ia4mC4scYKoPQVwJbxeIB7kWJb9pX6atmptXJ6fWZUW7d59Tx+Ei4
+         Nv32uvICBjWjpiA7zrES62LyKEJhgEdNznK49cZw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Alex Deucher <alexander.deucher@amd.com>
-Subject: [PATCH 4.14 127/323] drm/radeon: fix copy of uninitialized variable back to userspace
-Date:   Thu, 20 May 2021 11:20:19 +0200
-Message-Id: <20210520092124.463608385@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 128/323] ALSA: hda/realtek: Re-order ALC882 Acer quirk table entries
+Date:   Thu, 20 May 2021 11:20:20 +0200
+Message-Id: <20210520092124.498862829@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,36 +38,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 8dbc2ccac5a65c5b57e3070e36a3dc97c7970d96 upstream.
+commit b265047ac56bad8c4f3d0c8bf9cb4e828ee0d28e upstream.
 
-Currently the ioctl command RADEON_INFO_SI_BACKEND_ENABLED_MASK can
-copy back uninitialised data in value_tmp that pointer *value points
-to. This can occur when rdev->family is less than CHIP_BONAIRE and
-less than CHIP_TAHITI.  Fix this by adding in a missing -EINVAL
-so that no invalid value is copied back to userspace.
+Just re-order the alc882_fixup_tbl[] entries for Acer devices for
+avoiding the oversight of the duplicated or unapplied item in future.
+No functional changes.
 
-Addresses-Coverity: ("Uninitialized scalar variable)
-Cc: stable@vger.kernel.org # 3.13+
-Fixes: 439a1cfffe2c ("drm/radeon: expose render backend mask to the userspace")
-Reviewed-by: Christian König <christian.koenig@amd.com>
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Also Cc-to-stable for the further patch applications.
+
+Cc: <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210428112704.23967-2-tiwai@suse.de
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/gpu/drm/radeon/radeon_kms.c |    1 +
- 1 file changed, 1 insertion(+)
+ sound/pci/hda/patch_realtek.c |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
---- a/drivers/gpu/drm/radeon/radeon_kms.c
-+++ b/drivers/gpu/drm/radeon/radeon_kms.c
-@@ -531,6 +531,7 @@ static int radeon_info_ioctl(struct drm_
- 			*value = rdev->config.si.backend_enable_mask;
- 		} else {
- 			DRM_DEBUG_KMS("BACKEND_ENABLED_MASK is si+ only!\n");
-+			return -EINVAL;
- 		}
- 		break;
- 	case RADEON_INFO_MAX_SCLK:
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2301,13 +2301,13 @@ static const struct snd_pci_quirk alc882
+ 		      ALC882_FIXUP_ACER_ASPIRE_8930G),
+ 	SND_PCI_QUIRK(0x1025, 0x0146, "Acer Aspire 6935G",
+ 		      ALC882_FIXUP_ACER_ASPIRE_8930G),
++	SND_PCI_QUIRK(0x1025, 0x0142, "Acer Aspire 7730G",
++		      ALC882_FIXUP_ACER_ASPIRE_4930G),
++	SND_PCI_QUIRK(0x1025, 0x0155, "Packard-Bell M5120", ALC882_FIXUP_PB_M5210),
+ 	SND_PCI_QUIRK(0x1025, 0x015e, "Acer Aspire 6930G",
+ 		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+ 	SND_PCI_QUIRK(0x1025, 0x0166, "Acer Aspire 6530G",
+ 		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+-	SND_PCI_QUIRK(0x1025, 0x0142, "Acer Aspire 7730G",
+-		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+-	SND_PCI_QUIRK(0x1025, 0x0155, "Packard-Bell M5120", ALC882_FIXUP_PB_M5210),
+ 	SND_PCI_QUIRK(0x1025, 0x021e, "Acer Aspire 5739G",
+ 		      ALC882_FIXUP_ACER_ASPIRE_4930G),
+ 	SND_PCI_QUIRK(0x1025, 0x0259, "Acer Aspire 5935", ALC889_FIXUP_DAC_ROUTE),
 
 
