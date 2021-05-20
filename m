@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A4938B916
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:42:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26B6D38B919
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhETVnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 17:43:23 -0400
-Received: from mail-ed1-f50.google.com ([209.85.208.50]:42688 "EHLO
-        mail-ed1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbhETVnU (ORCPT
+        id S230345AbhETVpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:45:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230291AbhETVo7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 17:43:20 -0400
-Received: by mail-ed1-f50.google.com with SMTP id i13so21060287edb.9;
-        Thu, 20 May 2021 14:41:57 -0700 (PDT)
+        Thu, 20 May 2021 17:44:59 -0400
+Received: from mail-io1-xd32.google.com (mail-io1-xd32.google.com [IPv6:2607:f8b0:4864:20::d32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F33C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:43:37 -0700 (PDT)
+Received: by mail-io1-xd32.google.com with SMTP id t11so18090860iol.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=mRSw2I7XDnnc5ITtr5YLMCGw8zw6dxZ7JSv8THbsa1o=;
+        b=SekyqvHWjEeagJMU9CjiHKrfnzbRgsvYETe7YwZWOXnMVVR7nfWLYSYmo79c4yhP71
+         FqYMi+lSsiGNcqqunxu1OvMzUtfV6yzWpDiQxPI+dv+0K2XUIRtnhcSGCZjsuChwd+DI
+         cQLWUfsjVp0o4xiJWq1Z3fXG/gDQlJme1igTo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=f/4LtIOBD6wxF9iMPhLoPX028a1rtI0NTUTVZTA+F+Y=;
-        b=e/66uxwhiRj7tkxVG5eko1XYFVp5SO5oyTL9gKy8ufon3KM7iqvREhclsOH/BLeG0f
-         nqm+jUFb89AyeMXHfjbJ9SUD9lrBgXOVCTMSwK/xWuzj2gxw/aeCzFutUH3PlrsBxAYK
-         umCTrbVBZzicVfdh+Q/JxKCw5dzEpqL6yoerQbjU/7XnaZKSl5Hk+XZ4lrf7FBH6unI4
-         gccxEVWQ1VxLlKWriCYlrTjxFmF/Fj/jFyc6x/d0qw/NAAZeW++JzEiRGChuQGfQ+XBy
-         UAXlYNjISdAEV+IDmrRtdXwQQBBaH7K14RxefWAUilB+oG7eDDjYlwP5zOZLIkZKEPz6
-         8G7Q==
-X-Gm-Message-State: AOAM532P8K9Sro7ZIMuoD45tcbmgUMICkgEZG6Rk9QlN70IGNJqoxENw
-        cLBuNDRTe/F7VKqwpwZx16oKq38A2xV/4B5xf1vGT3BI
-X-Google-Smtp-Source: ABdhPJxibk2/f4GeDvxy3AIuRa9jRf5Bkoi8neyu/Ok51BwgSMelBKvR44Ci02P9JsQRlgtytkLOnMKlNkh9T3CZyE8=
-X-Received: by 2002:aa7:c6cd:: with SMTP id b13mr7100076eds.94.1621546917061;
- Thu, 20 May 2021 14:41:57 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=mRSw2I7XDnnc5ITtr5YLMCGw8zw6dxZ7JSv8THbsa1o=;
+        b=GTyQs4zopB5FCaRS9q92Ofo2MfSPZse38UNRDbvGwnNokxsvtYVUd2MqXP6DdWZ2bG
+         +Rpr/9rpYlLMBDAW+7AtZwBBq+LkV94vqCQ4O9KCHj9RCpWB3C6Dt7gzpSKrc3JPkyUa
+         q7llSvwWyskZz9ElbrIuWJBI9oGcmr6I7r3knO5ay9qtEaopIluOkFg+C9epKABVmKxf
+         Nh0z+vIbNMcN70RO7I4sApCCFck9FpoWRoA+NQ8yQ7rnhZHyTRdPKfe8mgT7yWYM4Xyt
+         Siv9Hw+D3mw2Vdf2C62EtUCsgChpRrOzVis+Q7ifGutVmpuMdydYUne3qm3iQ3bwCFJa
+         NDvg==
+X-Gm-Message-State: AOAM532RnDw3gkuVKZSXvzcvdkli4v46Napc+7HoWhFol8x6hHaRffX7
+        4XrQEng+jEuNOFkp9WQ+3zJWlw==
+X-Google-Smtp-Source: ABdhPJxGvT/EsOD0HmbS4hnpNFM1zzIhEPA9EvHYU5J5gord3MtgGFhPzmWxWpX0cAcbyfobZ/vzqQ==
+X-Received: by 2002:a5d:87c4:: with SMTP id q4mr6553422ios.141.1621547017029;
+        Thu, 20 May 2021 14:43:37 -0700 (PDT)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id n12sm4217249ile.0.2021.05.20.14.43.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 14:43:36 -0700 (PDT)
+Subject: Re: [PATCH 5.12 00/43] 5.12.6-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210520152254.218537944@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <e67e6529-628f-ee75-16e1-c9b577adbc89@linuxfoundation.org>
+Date:   Thu, 20 May 2021 15:43:35 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
-In-Reply-To: <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
-From:   Len Brown <lenb@kernel.org>
-Date:   Thu, 20 May 2021 17:41:45 -0400
-Message-ID: <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210520152254.218537944@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 5:13 PM Dave Hansen <dave.hansen@intel.com> wrote:
+On 5/20/21 9:23 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.6 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 22 May 2021 15:22:43 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.6-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-> >> Regarding error return for allocation failures.
-...
->  * vmalloc() can fail (the memory.kmem cgroup limit is probably the most
->    likely place to be exposed to this)
->  * vmalloc() failure in a fault (like #NM) will result in SIGSEGV
->  * vmalloc() failure in a syscall can be handled with -ENOMEM
+Compiled and booted on my test system. No dmesg regressions.
 
-Thanks for clarifying this, Dave.
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
 
-We added the explicit-allocate to v5,
-which should be on the list by tomorrow.
-
-So the questions are:
-1. who calls it -- a call/thread or process?  the application?  a
-library -- which library?
-2. is it optional, or mandatory?
-3. if it is mandatory, what is the best way to enforce it?
-4. should we have a "release" system call too?
-
-1. Every thread needs a context switch buffer.  Does every thread make
-the system call?  It seems sort of awkward for a library to always
-make a system call before doing a TMUL.  It would be functionally
-harmless, but it would add latency to an otherwise low-latency
-operation.  If some central library does it, and caches that it has
-done it before, then it would be ugly, but at least it would remove an
-unnecessary user/kernel transition.
-
-2. If it is optional, then v5 is code complete -- because it allows
-you to allocate either explicitly via prtcl, or transparently via #NM.
-
-3. If it is mandatory, then we should re-purpose the XFD mechanism:
-app starts with XFD armed, by default
-if app touches AMX before prctl, it takes a signal (and dies).
-When app calls prctl, allocate buffer disarm XFD for that app (exactly
-what #NM trap does today).
-
-4. I don't see a justification for a release concept, but it is
-possible -- though sort of sticky with possible nested calls from
-combinations of apps and libraries.  If that were sorted out by a
-central library, then the actual system call on the last release per
-thread would re-arm XFD to prevent access until the next explicit
-request.  Unclear if it is important that the kernel actually do the
-free -- some things might run faster if we keep it around...
-
-Len Brown, Intel Open Source Technology Center
+thanks,
+-- Shuah
