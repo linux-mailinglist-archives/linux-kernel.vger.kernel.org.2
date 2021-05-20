@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23E9338ABF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:32:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B456138ABCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240874AbhETLac (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:30:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58196 "EHLO mail.kernel.org"
+        id S238729AbhETL1z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:27:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239662AbhETLKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:10:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46ACA61D48;
-        Thu, 20 May 2021 10:07:09 +0000 (UTC)
+        id S239329AbhETLIB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:08:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8D41660200;
+        Thu, 20 May 2021 10:06:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505229;
-        bh=AQCgiZQKfDgZW64XvcUOoHXZf+lYBeOXQbgpMYOkqTs=;
+        s=korg; t=1621505166;
+        bh=A5inPiDro2dmLvOCGI1sSMAgCihZAUQs94S2G83GUg8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZqxGifia04oz5TDNsNOsMCl9hpZOlUQNMTR/uEgPQ1CfFzEy7E6thm7E+dCNSHn5T
-         rYZk+rw1E6P3Eq07KYCrO75qtzZsDh7UBI8LWvZvPJvemVf2ptkPPwaCdotSSgVyV+
-         r1pDi5D9CqYbcmfXZy0kKM+AQXVxTd+FS1+av6H0=
+        b=ccSMp79x4zO7RysLwFL8/4aIwlAQ0SYk+uiSrt/d3Hh6xeSL+GCgmMam+oLMxnPp9
+         Q81yoZzPNT2/vJ9fGCJbmPzh2PNgvygume4JGb2XRPhDUbgNujD5k2hTapoS6VFSGJ
+         qG4LTI6+gZDPCAhEz5mdZZrm2LWOw/xHLTyfX+Z4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Langsdorf <mlangsdo@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.4 009/190] ACPI: custom_method: fix potential use-after-free issue
-Date:   Thu, 20 May 2021 11:21:13 +0200
-Message-Id: <20210520092102.487669532@linuxfoundation.org>
+        stable@vger.kernel.org, DooHyun Hwang <dh0421.hwang@samsung.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: [PATCH 4.4 012/190] mmc: core: Do a power cycle when the CMD11 fails
+Date:   Thu, 20 May 2021 11:21:16 +0200
+Message-Id: <20210520092102.581769861@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -39,45 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Langsdorf <mlangsdo@redhat.com>
+From: DooHyun Hwang <dh0421.hwang@samsung.com>
 
-commit e483bb9a991bdae29a0caa4b3a6d002c968f94aa upstream.
+commit 147186f531ae49c18b7a9091a2c40e83b3d95649 upstream.
 
-In cm_write(), buf is always freed when reaching the end of the
-function.  If the requested count is less than table.length, the
-allocated buffer will be freed but subsequent calls to cm_write() will
-still try to access it.
+A CMD11 is sent to the SD/SDIO card to start the voltage switch procedure
+into 1.8V I/O. According to the SD spec a power cycle is needed of the
+card, if it turns out that the CMD11 fails. Let's fix this, to allow a
+retry of the initialization without the voltage switch, to succeed.
 
-Remove the unconditional kfree(buf) at the end of the function and
-set the buf to NULL in the -EINVAL error path to match the rest of
-function.
+Note that, whether it makes sense to also retry with the voltage switch
+after the power cycle is a bit more difficult to know. At this point, we
+treat it like the CMD11 isn't supported and therefore we skip it when
+retrying.
 
-Fixes: 03d1571d9513 ("ACPI: custom_method: fix memory leaks")
-Signed-off-by: Mark Langsdorf <mlangsdo@redhat.com>
-Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Signed-off-by: DooHyun Hwang <dh0421.hwang@samsung.com>
+Link: https://lore.kernel.org/r/20210210045936.7809-1-dh0421.hwang@samsung.com
+Cc: stable@vger.kernel.org
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/custom_method.c |    2 +-
+ drivers/mmc/core/core.c |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/acpi/custom_method.c
-+++ b/drivers/acpi/custom_method.c
-@@ -50,6 +50,7 @@ static ssize_t cm_write(struct file *fil
- 	    (*ppos + count < count) ||
- 	    (count > uncopied_bytes)) {
- 		kfree(buf);
-+		buf = NULL;
- 		return -EINVAL;
- 	}
+--- a/drivers/mmc/core/core.c
++++ b/drivers/mmc/core/core.c
+@@ -1593,7 +1593,7 @@ int mmc_set_signal_voltage(struct mmc_ho
  
-@@ -71,7 +72,6 @@ static ssize_t cm_write(struct file *fil
- 		add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
- 	}
+ 	err = mmc_wait_for_cmd(host, &cmd, 0);
+ 	if (err)
+-		return err;
++		goto power_cycle;
  
--	kfree(buf);
- 	return count;
- }
- 
+ 	if (!mmc_host_is_spi(host) && (cmd.resp[0] & R1_ERROR))
+ 		return -EIO;
 
 
