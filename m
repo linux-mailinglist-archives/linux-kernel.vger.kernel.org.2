@@ -2,306 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8E238B4EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A310F38B4F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235091AbhETRJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:09:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
+        id S235188AbhETRLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:11:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbhETRJr (ORCPT
+        with ESMTP id S231561AbhETRLm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:09:47 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A71EC06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:08:25 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id c196so8862771oib.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:08:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=19vRcmplLXN5rsKze776GJzl9Zc5ZlB+YGB7+ebjG1U=;
-        b=LdWbG1JohbVo0PpbgUBgm0nknB5Jrgz9zGJYezv2szJC/EWjMxqIOEYlDUZbtgaYXp
-         U1TX5owkIXMWUT41mKmhgieYXtfFjwnzrpKAiqDZKQLL5il2F3suoKpQ89wR6wUeHQMx
-         ed3wW4Z/PH9MvBKspeA5P70T/RwodhoujLsLw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=19vRcmplLXN5rsKze776GJzl9Zc5ZlB+YGB7+ebjG1U=;
-        b=CWQI2WTKQHiXzbPS5hvjznqSBTEBZYP3ZnXNUyrlcoW5l/1/5oGkHHRztuX9AF8UxI
-         rtop0ly91KJgPB3HVjcrmitQpFPnb/lX/0q4YXomiEhkeERKaGog7BYsoif+u1nYolH8
-         yKPBwRWJcnVx/VKSx4CN+QOnmNWUJKlBMniOfG3hRyCIoTolGIOu21TlLSeD+QpLWFxZ
-         cIj/GEB0DIqoig2W3nkUH1N6MdrIkj1SZyOYD+B6iQ7bOMVpMYVf53/EoTR+x8UbZjut
-         4p15EUFBIEtBrStOS9m7v7ki9F2IopmYtCe8sav5OfmAJSx9PgVUQnsRvBNhrS3z/9ba
-         7IOg==
-X-Gm-Message-State: AOAM532EiXcuqOHZJkqzeeDmHCUPc3ZJbFvruuXrICwWVE+hCaaKgqZg
-        8cwHz4a2N6cHhirXTtmNmxK5vh0B8IYHc73qar1L4w==
-X-Google-Smtp-Source: ABdhPJxFOX5qzESyK/Qlnhl0yO++z8yh0BXFjwg0t/1L8tVO0VOZCnP7yjmCBKWgN8hCRULLZYh74RTBvvvz+tw6RP8=
-X-Received: by 2002:a54:4809:: with SMTP id j9mr3993051oij.14.1621530504649;
- Thu, 20 May 2021 10:08:24 -0700 (PDT)
+        Thu, 20 May 2021 13:11:42 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19D1C061574;
+        Thu, 20 May 2021 10:10:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=R1db04gCDc88M4j8lnXXQGGvma3BzvTlALwCNoaW7ZY=; b=ZuqbPud8IMqoIg8wQCoWYWFCxF
+        3LJ7i1WAFtF1pqdMe12k7h+GxLKi2/TRBUgJyMFZIRWjQRYnVONi0HJwVqguD00YZqKWtcvepYxMi
+        uz9OIDYUkiWk7O3WlAjPUK2RvD48HEMJnzRm2tkm6pv7cfHRoAp6Fve0G0CGPI5gcX63WiyyzPEGq
+        wDSew9B1GCVhRrkord1QtTgxPzz9YabZMV2AqzdDY8Vq8M5HuX8/ZlwqNqumkV8cSmlmk/aQvtYJ7
+        RQMO++7cgFM2RaO2Is52x7EHalCU6HDVUXBdP96PPWJz7AmxWAvqC9p1cD6SQa0SJMNacKUUvSUDs
+        /htdn7dg==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljmBe-00GXCA-GN; Thu, 20 May 2021 17:10:18 +0000
+Subject: Re: [PATCH] media: davinci: fix two kernel-doc comments
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+References: <89cf71e62cd39da12e7a6e36ae6db126391ca9e2.1621519649.git.mchehab+huawei@kernel.org>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <76df28ed-9243-8fb5-be67-aa9130b5a174@infradead.org>
+Date:   Thu, 20 May 2021 10:10:16 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-2-robdclark@gmail.com>
- <8dcdc8d5-176c-f0ad-0d54-6466e9e68a0a@amd.com> <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
- <d65acf46-4c3b-4903-6222-0b81915d355d@amd.com> <CAF6AEGvm1tFwpfyJrX1bTGoHg_wzKKLQvSk2qLHf3XeqvEzDPA@mail.gmail.com>
- <e8f3d71c-7025-deab-4dd7-14f3fa6a8810@gmail.com> <YKaPf3VLfjoZJRw7@phenom.ffwll.local>
- <4244879a-e2b8-7994-e3fb-f63c0e115a2c@amd.com>
-In-Reply-To: <4244879a-e2b8-7994-e3fb-f63c0e115a2c@amd.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Thu, 20 May 2021 19:08:13 +0200
-Message-ID: <CAKMK7uHROqWzTaG-JDzd343WJJiJCbzEOCZ++oCmKrQJAQgo7A@mail.gmail.com>
-Subject: Re: [Linaro-mm-sig] [RFC 1/3] dma-fence: Add boost fence op
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Rob Clark <robdclark@chromium.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <89cf71e62cd39da12e7a6e36ae6db126391ca9e2.1621519649.git.mchehab+huawei@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 6:41 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 20.05.21 um 18:34 schrieb Daniel Vetter:
-> > On Thu, May 20, 2021 at 06:01:39PM +0200, Christian K=C3=B6nig wrote:
-> >> Am 20.05.21 um 16:54 schrieb Rob Clark:
-> >>> On Thu, May 20, 2021 at 7:11 AM Christian K=C3=B6nig
-> >>> <christian.koenig@amd.com> wrote:
-> >>>>
-> >>>> Am 20.05.21 um 16:07 schrieb Rob Clark:
-> >>>>> On Wed, May 19, 2021 at 11:47 PM Christian K=C3=B6nig
-> >>>>> <christian.koenig@amd.com> wrote:
-> >>>>>> Uff, that looks very hardware specific to me.
-> >>>>> Howso?  I'm not sure I agree.. and even if it was not useful for so=
-me
-> >>>>> hw, it should be useful for enough drivers (and harm no drivers), s=
-o I
-> >>>>> still think it is a good idea
-> >>>>>
-> >>>>> The fallback plan is to go the i915 route and stop using atomic
-> >>>>> helpers and do the same thing inside the driver, but that doesn't h=
-elp
-> >>>>> any of the cases where you have a separate kms and gpu driver.
-> >>>> Yeah, that's certainly not something we want.
-> >>>>
-> >>>>>> As far as I can see you can also implement completely inside the b=
-ackend
-> >>>>>> by starting a timer on enable_signaling, don't you?
-> >>>>> Not really.. I mean, the fact that something waited on a fence coul=
-d
-> >>>>> be a useful input signal to gpu freq governor, but it is entirely
-> >>>>> insufficient..
-> >>>>>
-> >>>>> If the cpu is spending a lot of time waiting on a fence, cpufreq wi=
-ll
-> >>>>> clock down so you spend less time waiting.  And no problem has been
-> >>>>> solved.  You absolutely need the concept of a missed deadline, and =
-a
-> >>>>> timer doesn't give you that.
-> >>>> Ok then I probably don't understand the use case here.
-> >>>>
-> >>>> What exactly do you try to solve?
-> >>> Basically situations where you are ping-ponging between GPU and CPU..
-> >>> for example if you are double buffering instead of triple buffering,
-> >>> and doing vblank sync'd pageflips.  The GPU, without any extra signal=
-,
-> >>> could get stuck at 30fps and a low gpu freq, because it ends up idle
-> >>> while waiting for an extra vblank cycle for the next back-buffer to
-> >>> become available.  Whereas if it boosted up to a higher freq and
-> >>> stopped missing a vblank deadline, it would be less idle due to
-> >>> getting the next back-buffer sooner (due to not missing a vblank
-> >>> deadline).
-> >> Ok the is the why, but what about the how?
-> >>
-> >> How does it help to have this boost callback and not just start a time=
- on
-> >> enable signaling and stop it when the signal arrives?
-> > Because the render side (or drm/scheduler, if msm would use that) has n=
-o
-> > idea for which vblank a rendering actually is for.
->
-> AH! So we are basically telling the fence backend that we have just
-> missed an event we waited for.
->
-> So what we want to know is how long the frontend wanted to wait instead
-> of how long the backend took for rendering.
+On 5/20/21 7:07 AM, Mauro Carvalho Chehab wrote:
+> A typo there is causing two warnings:
+> 	drivers/media/platform/davinci/vpif_display.c:114: warning: Function parameter or member 'nplanes' not described in 'vpif_buffer_queue_setup'
+> 	drivers/media/platform/davinci/vpif_capture.c:112: warning: Function parameter or member 'nplanes' not described in 'vpif_buffer_queue_setup'
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/platform/davinci/vpif_capture.c | 2 +-
+>  drivers/media/platform/davinci/vpif_display.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/davinci/vpif_capture.c b/drivers/media/platform/davinci/vpif_capture.c
+> index 8d2e165bf7de..c034e25dd9aa 100644
+> --- a/drivers/media/platform/davinci/vpif_capture.c
+> +++ b/drivers/media/platform/davinci/vpif_capture.c
+> @@ -99,7 +99,7 @@ static int vpif_buffer_prepare(struct vb2_buffer *vb)
+>   * vpif_buffer_queue_setup : Callback function for buffer setup.
 
-tbh I'm not sure the timestamp matters at all. What we do in i915 is
-boost quite aggressively, and then let the usual clock tuning wittle
-it down if we overshot. Plus soom cool-down to prevent
-abuse/continuous boosting. I think we also differentiate between
-display boost and userspace waits.
+    * vpif_buffer_queue_setup - Callback ...
 
-On the display side we also wait until the vblank has passed we aimed
-for (atm always the next, we don't have target_frame support like
-amdgpu), to avoid boosting when there's no point.
+>   * @vq: vb2_queue ptr
+>   * @nbuffers: ptr to number of buffers requested by application
+> - * @nplanes:: contains number of distinct video planes needed to hold a frame
+> + * @nplanes: contains number of distinct video planes needed to hold a frame
+>   * @sizes: contains the size (in bytes) of each plane.
+>   * @alloc_devs: ptr to allocation context
+>   *
+> diff --git a/drivers/media/platform/davinci/vpif_display.c b/drivers/media/platform/davinci/vpif_display.c
+> index e5f61d9b221d..59f6b782e104 100644
+> --- a/drivers/media/platform/davinci/vpif_display.c
+> +++ b/drivers/media/platform/davinci/vpif_display.c
+> @@ -101,7 +101,7 @@ static int vpif_buffer_prepare(struct vb2_buffer *vb)
+>   * vpif_buffer_queue_setup : Callback function for buffer setup.
 
-> > So boosting right when you've missed your frame (not what Rob implement=
-s
-> > currently, but fixable) is the right semantics.
-> >
-> > The other issue is that for cpu waits, we want to differentiate from fe=
-nce
-> > waits that userspace does intentially (e.g. wait ioctl) and waits that
-> > random other things are doing within the kernel to keep track of progre=
-ss.
-> >
-> > For the former we know that userspace is stuck waiting for the gpu, and=
- we
-> > probably want to boost. For the latter we most definitely do _not_ want=
- to
-> > boost.
-> >
-> > Otoh I do agree with you that the current api is a bit awkward, so perh=
-aps
-> > we do need a dma_fence_userspace_wait wrapper which boosts automaticall=
-y
-> > after a bit. And similarly perhaps a drm_vblank_dma_fence_wait, where y=
-ou
-> > give it a vblank target, and if the fence isn't signalled by then, we k=
-ick
-> > it real hard.
->
-> Yeah, something like an use case driven API would be nice to have.
->
-> For this particular case I suggest that we somehow extend the enable
-> signaling callback.
->
-> > But otherwise yes this is absolutely a thing that matters a ton. If you
-> > look at Matt Brost's scheduler rfc, there's also a line item in there
-> > about adding this kind of boosting to drm/scheduler.
->
-> BTW: I still can't see this in my inbox.
+same (s/ : / - /)
 
-You've replied already:
+>   * @vq: vb2_queue ptr
+>   * @nbuffers: ptr to number of buffers requested by application
+> - * @nplanes:: contains number of distinct video planes needed to hold a frame
+> + * @nplanes: contains number of distinct video planes needed to hold a frame
+>   * @sizes: contains the size (in bytes) of each plane.
+>   * @alloc_devs: ptr to allocation context
+>   *
+> 
 
-https://lore.kernel.org/dri-devel/20210518235830.133834-1-matthew.brost@int=
-el.com/
+Thanks.
+-- 
+~Randy
 
-It's just the big picture plan of what areas we're all trying to
-tackle with some why, so that everyone knows what's coming in the next
-half year at least. Probably longer until this is all sorted. I think
-Matt has some poc hacked-up pile, but nothing really to show.
--Daniel
-
-> Do you have a link?
->
-> Christian.
->
-> > -Daniel
-> >
-> >
-> >> Regards,
-> >> Christian.
-> >>
-> >>> BR,
-> >>> -R
-> >>>
-> >>>> Thanks,
-> >>>> Christian.
-> >>>>
-> >>>>> BR,
-> >>>>> -R
-> >>>>>
-> >>>>>> Christian.
-> >>>>>>
-> >>>>>> Am 19.05.21 um 20:38 schrieb Rob Clark:
-> >>>>>>> From: Rob Clark <robdclark@chromium.org>
-> >>>>>>>
-> >>>>>>> Add a way to hint to the fence signaler that a fence waiter has m=
-issed a
-> >>>>>>> deadline waiting on the fence.
-> >>>>>>>
-> >>>>>>> In some cases, missing a vblank can result in lower gpu utilizati=
-on,
-> >>>>>>> when really we want to go in the opposite direction and boost gpu=
- freq.
-> >>>>>>> The boost callback gives some feedback to the fence signaler that=
- we
-> >>>>>>> are missing deadlines, so it can take this into account in it's f=
-req/
-> >>>>>>> utilization calculations.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Rob Clark <robdclark@chromium.org>
-> >>>>>>> ---
-> >>>>>>>      include/linux/dma-fence.h | 26 ++++++++++++++++++++++++++
-> >>>>>>>      1 file changed, 26 insertions(+)
-> >>>>>>>
-> >>>>>>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.=
-h
-> >>>>>>> index 9f12efaaa93a..172702521acc 100644
-> >>>>>>> --- a/include/linux/dma-fence.h
-> >>>>>>> +++ b/include/linux/dma-fence.h
-> >>>>>>> @@ -231,6 +231,17 @@ struct dma_fence_ops {
-> >>>>>>>          signed long (*wait)(struct dma_fence *fence,
-> >>>>>>>                              bool intr, signed long timeout);
-> >>>>>>>
-> >>>>>>> +     /**
-> >>>>>>> +      * @boost:
-> >>>>>>> +      *
-> >>>>>>> +      * Optional callback, to indicate that a fence waiter misse=
-d a deadline.
-> >>>>>>> +      * This can serve as a signal that (if possible) whatever s=
-ignals the
-> >>>>>>> +      * fence should boost it's clocks.
-> >>>>>>> +      *
-> >>>>>>> +      * This can be called in any context that can call dma_fenc=
-e_wait().
-> >>>>>>> +      */
-> >>>>>>> +     void (*boost)(struct dma_fence *fence);
-> >>>>>>> +
-> >>>>>>>          /**
-> >>>>>>>           * @release:
-> >>>>>>>           *
-> >>>>>>> @@ -586,6 +597,21 @@ static inline signed long dma_fence_wait(str=
-uct dma_fence *fence, bool intr)
-> >>>>>>>          return ret < 0 ? ret : 0;
-> >>>>>>>      }
-> >>>>>>>
-> >>>>>>> +/**
-> >>>>>>> + * dma_fence_boost - hint from waiter that it missed a deadline
-> >>>>>>> + *
-> >>>>>>> + * @fence: the fence that caused the missed deadline
-> >>>>>>> + *
-> >>>>>>> + * This function gives a hint from a fence waiter that a deadlin=
-e was
-> >>>>>>> + * missed, so that the fence signaler can factor this in to devi=
-ce
-> >>>>>>> + * power state decisions
-> >>>>>>> + */
-> >>>>>>> +static inline void dma_fence_boost(struct dma_fence *fence)
-> >>>>>>> +{
-> >>>>>>> +     if (fence->ops->boost)
-> >>>>>>> +             fence->ops->boost(fence);
-> >>>>>>> +}
-> >>>>>>> +
-> >>>>>>>      struct dma_fence *dma_fence_get_stub(void);
-> >>>>>>>      u64 dma_fence_context_alloc(unsigned num);
-> >>>>>>>
-> >>> _______________________________________________
-> >>> Linaro-mm-sig mailing list
-> >>> Linaro-mm-sig@lists.linaro.org
-> >>> https://nam11.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fl=
-ists.linaro.org%2Fmailman%2Flistinfo%2Flinaro-mm-sig&amp;data=3D04%7C01%7Cc=
-hristian.koenig%40amd.com%7C69c1843a93ec4888abd308d91bad18bd%7C3dd8961fe488=
-4e608e11a82d994e183d%7C0%7C0%7C637571252548030247%7CUnknown%7CTWFpbGZsb3d8e=
-yJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&am=
-p;sdata=3DEJBA9rVl5xTRmdEPzyCyGX7xyZMKAGVhTmoEnsPfOxw%3D&amp;reserved=3D0
->
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
