@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE9C38A86A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC41838A862
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238986AbhETKup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39658 "EHLO mail.kernel.org"
+        id S239013AbhETKur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:50:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237693AbhETKfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237696AbhETKfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:35:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A22A61622;
-        Thu, 20 May 2021 09:53:30 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B29C61621;
+        Thu, 20 May 2021 09:53:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504411;
-        bh=2/Rl3W7X4b1oq6Dbm5G5YS7nPddJzKElO4sRm5F2M2c=;
+        s=korg; t=1621504413;
+        bh=2VQ4lbtPbGdQsa4zQm0fVzFo92ffNQnqn4D6SswZcco=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BXbYW84ZJP87G02OYg4OO7IL2G/B4EMfaXtPJFX39ploPcWTl4xBRacVIFSAJolsD
-         VFRJy5yLAoce2wp5WQ8ccY0S6IPoGcSfCu1RkTe+vhr4GqsViUgJXqzbE40jwZK+VY
-         vDp0iesVnt6blsVcwIv1IgcJGEKZ2f+GrfQy4VPg=
+        b=fHEuk286zj2BeZnx4YhGbOXU/+kzieNNSjNQPwxgYkUjDuR42a2G4HWGRFRlugI9m
+         9OsKmXtQvl9wmPUAMTHmVYNAjAxjU/v+4TG57QPJx10NbvitThCoDi7yfSAoS50XxE
+         djSw0kMVJkGn/lepH7UCfFYugwsvTQ26vFmV0O0s=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Quentin Perret <qperret@google.com>
-Subject: [PATCH 4.14 232/323] Revert "fdt: Properly handle "no-map" field in the memory region"
-Date:   Thu, 20 May 2021 11:22:04 +0200
-Message-Id: <20210520092128.112193143@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Zhen Lei <thunder.leizhen@huawei.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>
+Subject: [PATCH 4.14 233/323] tpm: fix error return code in tpm2_get_cc_attrs_tbl()
+Date:   Thu, 20 May 2021 11:22:05 +0200
+Message-Id: <20210520092128.144394142@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,29 +40,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+From: Zhen Lei <thunder.leizhen@huawei.com>
 
-This reverts commit 71bc5d496725f7f923904d2f41cd39e32c647fdf.
-It is not really a fix, and the backport misses dependencies, which
-breaks existing platforms.
+commit 1df83992d977355177810c2b711afc30546c81ce upstream.
 
-Reported-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Signed-off-by: Quentin Perret <qperret@google.com>
+If the total number of commands queried through TPM2_CAP_COMMANDS is
+different from that queried through TPM2_CC_GET_CAPABILITY, it indicates
+an unknown error. In this case, an appropriate error code -EFAULT should
+be returned. However, we currently do not explicitly assign this error
+code to 'rc'. As a result, 0 was incorrectly returned.
+
+Cc: stable@vger.kernel.org
+Fixes: 58472f5cd4f6("tpm: validate TPM 2.0 commands")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/of/fdt.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/tpm/tpm2-cmd.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -1213,7 +1213,7 @@ int __init __weak early_init_dt_reserve_
- 					phys_addr_t size, bool nomap)
- {
- 	if (nomap)
--		return memblock_mark_nomap(base, size);
-+		return memblock_remove(base, size);
- 	return memblock_reserve(base, size);
- }
+--- a/drivers/char/tpm/tpm2-cmd.c
++++ b/drivers/char/tpm/tpm2-cmd.c
+@@ -1051,6 +1051,7 @@ static int tpm2_get_cc_attrs_tbl(struct
  
+ 	if (nr_commands !=
+ 	    be32_to_cpup((__be32 *)&buf.data[TPM_HEADER_SIZE + 5])) {
++		rc = -EFAULT;
+ 		tpm_buf_destroy(&buf);
+ 		goto out;
+ 	}
 
 
