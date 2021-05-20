@@ -2,122 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A29C389F84
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF2D1389F9E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhETIL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:11:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        id S230526AbhETIQj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:16:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbhETILt (ORCPT
+        with ESMTP id S230429AbhETIQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:11:49 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB19C061574;
-        Thu, 20 May 2021 01:10:28 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id 10so11809240pfl.1;
-        Thu, 20 May 2021 01:10:28 -0700 (PDT)
+        Thu, 20 May 2021 04:16:33 -0400
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C456CC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:15:11 -0700 (PDT)
+Received: by mail-oi1-x230.google.com with SMTP id j75so15614541oih.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:15:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fgc3MSJEF2dvUk6J7VrW1TUKtv/b5izfCPz91BOaza0=;
-        b=fWtJFnkBqwr4/yT89SomaJ3S6WBdDp0OG4kypY94b6UdCw6ipsBwPeD5DjLw1O1b7i
-         BlKnNzo7HhhPX/XT6+yPfWx8TAvA4f1PSiMOewiV5L7gkVyK75mb8/03NaiJ/MnhPOeH
-         4oYfhT+cTHeot+gwslIG+A6YQXVzv1hbRmeRwDTp6k4aHpl+iaEpOtiql+fPQQ8MI4+z
-         300RmnrFlhXo52Cg0X09mwhgVZjgfei7TlphhegLuHil1Ri2hqtwegFiR+5NeJ4/6mhX
-         pMzYc0YFSgCOWh+g+/d8CNKmWaowoCt+xuwtZGQiu8U4iUmczwctGn4Yc7x66fr0gvDW
-         DT9w==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=nMDQIGNN2athUw77QzoxbIIxTVnjEUXN1gVmGUELkVE=;
+        b=SsQfc1zR+XeSGQo7ATvGLAygCqAoQdAKJ10BQbNRTAdGZbHXkP5E2SeBTa/fmozrtr
+         BW1ch1lrmrOquATIbjBBJQ3qB7nz2vMpT+teZq42SgeJ1AlWZPQW7JZSQePDVYDQhZNQ
+         /3xuFjIu65ZqHjnqpsHTH4b61QayocPTbNdrw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fgc3MSJEF2dvUk6J7VrW1TUKtv/b5izfCPz91BOaza0=;
-        b=ewGo306VYeuphfYUpd4wpXzo2CcuYsVZCxAxSyBIe7SY1xTJqIubhA1dcSPLZsTz1g
-         3Ykf1ZXIjUNgoMl9NxrtHEei45cTOvKZ1w7fwtIZTU6kRHgvKKt3XOrELkMq5MG6xte4
-         ISKuQ4mJ/bSbFO1/ogVRmoi2FZxJJDqhDx+9JRsN54f+OsY0sbVZmsyyCg4Ff96RzVwX
-         pAtk1m1Z2aaqcCF/WIJsKpFFBbGdUvGuTGALapUDAzAIpV5W/n6Kh9/q8ezdfKELnXG4
-         e8CqSQHGQPPRi2wbWcvcX+fu0SYGENrmSMaECsVJjjNoE8v3SR1NRkxfGaM26ufG8KcV
-         YUOg==
-X-Gm-Message-State: AOAM5300DQTFGtaVDc57D42iTtNzAkn2TlzACoQ5DSMjEYmOb9229uDZ
-        ZExkDs7quvpRd9FACQbUHEO/r4gouZh5MvAuhCxN/IWxLEg=
-X-Google-Smtp-Source: ABdhPJzoXv56PX9mE2cvK/ACtqsNaEmJeuGetWOrhz3jz9/Ayz3RB5OFwKJlT+lIffywJ8ITr1kYnFhIB6RbZ03EDeY=
-X-Received: by 2002:a63:79c3:: with SMTP id u186mr3377788pgc.203.1621498227612;
- Thu, 20 May 2021 01:10:27 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=nMDQIGNN2athUw77QzoxbIIxTVnjEUXN1gVmGUELkVE=;
+        b=BCZtWP4m1ZUHPLdfvWEEbFsLZE0u8jFJp8XsdOxth8xIQ5Rlei8hiCtEX22uRmVgb6
+         w72bGlrpHr9VNe/1X2eEb6hZeAcR6LtUDSccc0TCS/N3bdvRqSwSuUTx6e5+llxhzHFy
+         vmHebznYN2aKYNXGB8rNZZteiozws0tGbN/kn7bev8hQV7nzCBS6Q6UKJPzb2s5U5THG
+         dWawLmizhJQIrzigZQxquUgjUbxO/VovVkMadxdMf7USor+H1r7lQPeLExJPJJcdy6xt
+         Adpb+N6A2UWwXjfutlRgacZvdfTMGjaDRYKBhWYBFOWQnMd8QmrNZCE15Ld+2DNsW/Lv
+         XKRw==
+X-Gm-Message-State: AOAM530RQoktIBbm9ZyW+zAgNxDljYrpm5ml2oiVvQAQ+y0i0UkNR+cJ
+        4/vWAU3e8peTe9IQDDHMpjs4GICmc3MMf22HGNZ/JA==
+X-Google-Smtp-Source: ABdhPJwxsXmfJTVN1Dt1DE1hOOnvh3huMgzuBaqFM49Psm1tLnZS6IREr/TfQ24FfmOw3l4L4vqvrWbtroEWNUiP9Ek=
+X-Received: by 2002:aca:654d:: with SMTP id j13mr2566246oiw.125.1621498511160;
+ Thu, 20 May 2021 01:15:11 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 20 May 2021 04:15:10 -0400
 MIME-Version: 1.0
-References: <20210516135531.2203-1-dariobin@libero.it> <20210516135531.2203-2-dariobin@libero.it>
- <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
- <1735504854.166374.1621346262270@mail1.libero.it> <CAHp75VeADiRKdfnsXQ=y3z1WAJBbtZ+P=8tdyYtVQpJrSrQ63Q@mail.gmail.com>
- <20210519100235.GA3063522@x1> <CAHp75Ve5sonh1qNgqqF1yr8OiuJVWXb-UJj+kzxQa7+R-YVoXQ@mail.gmail.com>
- <20210520041733.GA3269241@x1>
-In-Reply-To: <20210520041733.GA3269241@x1>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 20 May 2021 11:10:11 +0300
-Message-ID: <CAHp75Venn3Z6qz2HsELW108QORzZoLYdY8mDTxaKX-8c_3p3hA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug file
-To:     Drew Fustini <drew@beagleboard.org>
-Cc:     Dario Binacchi <dariobin@libero.it>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Vladimir Zapolskiy <vz@mleia.com>
+In-Reply-To: <70a90d229551bcec21ed74cfd1350b9b@codeaurora.org>
+References: <20210512082220.7137-1-rojay@codeaurora.org> <CAE-0n52D-K1T0QgxA-S7BXxE3Qk807F9edNyR+2RL4YxRyigMg@mail.gmail.com>
+ <70a90d229551bcec21ed74cfd1350b9b@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Thu, 20 May 2021 04:15:10 -0400
+Message-ID: <CAE-0n50o1XRnV3HSAM7uhfS8M3kf_m0DrTkqCfYGdnSjpF6Xfg@mail.gmail.com>
+Subject: Re: [PATCH V10] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+To:     rojay@codeaurora.org
+Cc:     wsa@kernel.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, skananth@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 7:17 AM Drew Fustini <drew@beagleboard.org> wrote:
-> On Wed, May 19, 2021 at 02:27:38PM +0300, Andy Shevchenko wrote:
-> > On Wed, May 19, 2021 at 1:02 PM Drew Fustini <drew@beagleboard.org> wrote:
-> > > On Tue, May 18, 2021 at 05:01:30PM +0300, Andy Shevchenko wrote:
-
-...
-
-> > > Vladimir Zapolskiy wrote in e73339037f6b ("pinctrl: remove unused
-> > > 'pinconf-config' debugfs interface"):
-> > >
-> > >     Of course it might be possible to increase MAX_NAME_LEN, and then add
-> > >     .pin_config_dbg_parse_modify callbacks to the drivers, but the whole
-> > >     idea of such a limited debug option looks inviable. A more flexible
-> > >     way to functionally substitute the original approach is to implicitly
-> > >     or explicitly use pinctrl_select_state() function whenever needed.
-> > >
-> > > This makes me think it is not a good idea to bring back pinconf-config.
-> > > The pinmux-select debugfs file that I add added in commit 6199f6becc86
-> > > ("pinctrl: pinmux: Add pinmux-select debugfs file") provides a method to
-> > > activate a pin function and pin group which I think provides the same
-> > > capability as long as the possible pin functions are described in dts.
-> >
-> > The problem is that the pinctrl_select_state() is very limited and has
-> > no clear meanings of the states. Only few are defined and still
-> > unclear. What does `sleep` or `standby` or whatever mean? It may be
-> > quite different to the device in question. Basically what we need is
-> > to say we want this device ('function') to appear on this group of
-> > pins ('group'). And pinctrl_select_state() can't fulfill this simple
-> > task :-(
-> >
-> > If we look at the ACPI case it makes that API completely out of useful
-> > context (it can be used due to above and some kind of layering
-> > violations, like PM vs. pin control).
-> >
-> > Since above is the debugfs interface we may return it for the certain
-> > task, i.e. printing current function / group choice(s) (if it's not
-> > done by other means) and allow to switch it desired function/group
-> > (that's what Dario tries to achieve AFAIU).
+Quoting rojay@codeaurora.org (2021-05-16 23:32:50)
+> Hi Stephen,
 >
-> A write to the pinmux-select debugfs file will call pinmux_select() in
-> drivers/pinctrl/pinmux.c which, after some validation checks, will call
-> pmxops->set_mux() with function selector and group selector as
-> arguments.  For pinctrl-single, this will invoke pcs_set_mux() which
-> will ultimately set the mux mode bits in the register for each pin in
-> that function.
+> Now, I have made the changes, calling i2c_mark_adapter_suspended() in
+> shutdown() and i2c_mark_adapter_suspended()/_resumed() from runtime
+> suspend/resume also and validated the changes. I have also picked
+> your patch [1] for this validation.
 >
-> IS that useful for pin controllers in ACPI systems as well?
+> During the device boot up I am seeing multiple traces shown below.
+> Are these expected now and needs to be fixed from rt5682/respective
+> client driver?
+>
+> Trace1:
+> [   11.709477] i2c i2c-9: Transfer while suspended
+> [   11.905595] Call trace:
+> [   11.908124]  __i2c_transfer+0xb8/0x38c
+> [   11.911984]  i2c_transfer+0xa0/0xf4
+> [   11.915569]  i2c_transfer_buffer_flags+0x68/0x9c
+> [   11.920314]  regmap_i2c_write+0x34/0x64
+> [   11.924255]  _regmap_raw_write_impl+0x4e8/0x7bc
+> [   11.928911]  _regmap_bus_raw_write+0x70/0x8c
+> [   11.933301]  _regmap_write+0x100/0x150
+> [   11.937152]  regmap_write+0x54/0x78
+> [   11.940744]  soc_component_write_no_lock+0x34/0xa8
+> [   11.945666]  snd_soc_component_write+0x3c/0x5c
+> [   11.950242]  rt5682_set_component_pll+0x1e4/0x2b4 [snd_soc_rt5682]
+> [   11.956588]  snd_soc_component_set_pll+0x50/0xa8
+> [   11.961328]  snd_soc_dai_set_pll+0x74/0xc8
+> [   11.965542]  sc7180_snd_startup+0x9c/0x120 [snd_soc_sc7180]
+> [   11.971262]  snd_soc_link_startup+0x34/0x88
+> [   11.975557]  soc_pcm_open+0x100/0x538
+> [   11.979323]  snd_pcm_open_substream+0x530/0x704
+> [   11.983980]  snd_pcm_open+0xc8/0x210
+> [   11.987653]  snd_pcm_playback_open+0x50/0x80
+> [   11.992049]  snd_open+0x120/0x150
+> [   11.995462]  chrdev_open+0xb8/0x1a4
+> [   11.999056]  do_dentry_open+0x238/0x358
+> [   12.003001]  vfs_open+0x34/0x40
+> [   12.006235]  path_openat+0x9e8/0xd60
+> [   12.009913]  do_filp_open+0x90/0x10c
+> [   12.013587]  do_sys_open+0x148/0x314
+> [   12.017260]  __arm64_compat_sys_openat+0x28/0x34
+> [   12.022009]  el0_svc_common+0xa4/0x16c
+> [   12.025860]  el0_svc_compat_handler+0x2c/0x40
+> [   12.030337]  el0_svc_compat+0x8/0x10
+> [   12.034018] ---[ end trace 745ead557fcbb5dc ]---
 
-Yes, the debugfs interface is useful independently of the resource
-provider. What I was talking about is the boot / driver load time pin
-muxing and configuration as well as PM transitions.
+Ah I see. Maybe it isn't correct to mark the device as suspended in
+runtime PM operations because the bus will be resumed during the
+transfer? So only mark it suspended during system wide suspend/resume
+transitions?
 
--- 
-With Best Regards,
-Andy Shevchenko
+-Stephen
+
+> [   12.040151] rt5682 9-001a: ASoC: error at soc_component_write_no_lock
+> on rt5682.9-001a: -108
+> [   12.049055] rt5682 9-001a: ASoC: error at soc_component_write_no_lock
+> on rt5682.9-001a: -108
+> [   12.057742] rt5682 9-001a: ASoC: error at
+> snd_soc_component_update_bits on rt5682.9-001a: -108
+>
+> Trace2:
+> [    3.515390] i2c i2c-2: Transfer while suspended
+> [    3.606749] Call trace:
+> [    3.606751]  __i2c_transfer+0xb8/0x38c
+> [    3.606752]  i2c_transfer+0xa0/0xf4
+> [    3.606754]  i2c_transfer_buffer_flags+0x68/0x9c
+> [    3.639599] hub 2-1.4:1.0: USB hub found
+> [    3.644375]  regmap_i2c_write+0x34/0x64
+> [    3.644376]  _regmap_raw_write_impl+0x4e8/0x7bc
+> [    3.644378]  _regmap_bus_raw_write+0x70/0x8c
+> [    3.644379]  _regmap_write+0x100/0x150
+> [    3.644381]  regmap_write+0x54/0x78
+> [    3.644383]  ti_sn_aux_transfer+0x90/0x244
+> [    3.650695] hub 2-1.4:1.0: 4 ports detected
+> [    3.655288]  drm_dp_dpcd_access+0x8c/0x11c
+> [    3.655289]  drm_dp_dpcd_read+0x64/0x10c
+> [    3.655290]  ti_sn_bridge_enable+0x5c/0x824
+> [    3.655292]  drm_atomic_bridge_chain_enable+0x78/0xa0
+> [    3.655294]  drm_atomic_helper_commit_modeset_enables+0x198/0x238
+> [    3.655295]  msm_atomic_commit_tail+0x324/0x714
+> [    3.655297]  commit_tail+0xa4/0x108
+> [    3.664985] usb 1-1.4: new high-speed USB device number 4 using
+> xhci-hcd
+> [    3.666204]  drm_atomic_helper_commit+0xf4/0xfc
+> [    3.666205]  drm_atomic_commit+0x50/0x5c
+> [    3.666206]  drm_atomic_helper_set_config+0x64/0x98
+> [    3.666208]  drm_mode_setcrtc+0x26c/0x590
+> [    3.666209]  drm_ioctl_kernel+0x9c/0x114
+> [    3.701074] hub 2-1.4:1.0: USB hub found
+> [    3.703347]  drm_ioctl+0x288/0x420
+> [    3.703349]  drm_compat_ioctl+0xd0/0xe0
+> [    3.703351]  __arm64_compat_sys_ioctl+0x100/0x2108
+> [    3.703354]  el0_svc_common+0xa4/0x16c
+> [    3.708499] hub 2-1.4:1.0: 4 ports detected
+> [    3.711588]  el0_svc_compat_handler+0x2c/0x40
+> [    3.711590]  el0_svc_compat+0x8/0x10
+> [    3.711591] ---[ end trace 745ead557fcbb5db ]---
+> [    3.772120] usb 1-1.4: New USB device found, idVendor=0bda,
+> idProduct=5411, bcdDevice= 1.04
+> [    3.794990] ti_sn65dsi86 2-002d: [drm:ti_sn_bridge_enable] *ERROR*
+> Can't read lane count (-108); assuming 4
+>
+> [1]
+> https://lore.kernel.org/r/20210508075151.1626903-2-swboyd@chromium.org
+>
