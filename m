@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F03138A16B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DF5F38A16F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:30:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232460AbhETJbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53820 "EHLO mail.kernel.org"
+        id S232370AbhETJbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:31:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232316AbhETJ3B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:29:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E81C46135C;
-        Thu, 20 May 2021 09:27:07 +0000 (UTC)
+        id S232346AbhETJ3N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:29:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5EE73613AF;
+        Thu, 20 May 2021 09:27:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502828;
-        bh=VDUosEsJvzk5DKSA2eIVQH5GA6mro6Oe7eIha4U+KJk=;
+        s=korg; t=1621502832;
+        bh=NIA5fAMjpk1RwpqY4MlElviJvCZGHJESiiCEeAkUWAs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KMMpAMRcR8Bs4M/49gldnP0H0KV7+lRrZaMAXPOzw7vrMszk0OWYW4fjafFep67jY
-         yzQ4N0EzKF+/w1XqnJUvBTILUah4PjPLIJRZ5dhgjj3/NW3U941c6BenZaOXMK+I88
-         YuWssznmkxsadp8ULhwUHVpKNTcb3e8nYEjbuZ0c=
+        b=dVBv93+4d6PwC7ei8s8qLOpm+iVbihvVppVsnrFCY1F0GT29UJHLzbqWe3iMsKk4F
+         MX7kMIKD+LjIqI6eDL+EdQC3wnoHaZY+22EJqSSzfh5QB/tSPZZst1AdInsFTBIlpm
+         5cAtqJ4gsg2MH81Ss9YNhmocGVPjAlBEy4uKaj4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        Zhang Zhengming <zhangzhengming@huawei.com>,
-        Zhao Lei <zhaolei69@huawei.com>,
-        Wang Xiaogang <wangxiaogang3@huawei.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        syzbot+e267bed19bfc5478fb33@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 32/47] bridge: Fix possible races between assigning rx_handler_data and setting IFF_BRIDGE_PORT bit
-Date:   Thu, 20 May 2021 11:22:30 +0200
-Message-Id: <20210520092054.578583294@linuxfoundation.org>
+Subject: [PATCH 5.10 33/47] net: hsr: check skb can contain struct hsr_ethhdr in fill_frame_info
+Date:   Thu, 20 May 2021 11:22:31 +0200
+Message-Id: <20210520092054.609980069@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
 References: <20210520092053.559923764@linuxfoundation.org>
@@ -44,83 +42,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhang Zhengming <zhangzhengming@huawei.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-[ Upstream commit 59259ff7a81b9eb6213891c6451221e567f8f22f ]
+[ Upstream commit 2e9f60932a2c19e8a11b4a69d419f107024b05a0 ]
 
-There is a crash in the function br_get_link_af_size_filtered,
-as the port_exists(dev) is true and the rx_handler_data of dev is NULL.
-But the rx_handler_data of dev is correct saved in vmcore.
+Check at start of fill_frame_info that the MAC header in the supplied
+skb is large enough to fit a struct hsr_ethhdr, as otherwise this is
+not a valid HSR frame. If it is too small, return an error which will
+then cause the callers to clean up the skb. Fixes a KMSAN-found
+uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=f7e9b601f1414f814f7602a82b6619a8d80bce3f
 
-The oops looks something like:
- ...
- pc : br_get_link_af_size_filtered+0x28/0x1c8 [bridge]
- ...
- Call trace:
-  br_get_link_af_size_filtered+0x28/0x1c8 [bridge]
-  if_nlmsg_size+0x180/0x1b0
-  rtnl_calcit.isra.12+0xf8/0x148
-  rtnetlink_rcv_msg+0x334/0x370
-  netlink_rcv_skb+0x64/0x130
-  rtnetlink_rcv+0x28/0x38
-  netlink_unicast+0x1f0/0x250
-  netlink_sendmsg+0x310/0x378
-  sock_sendmsg+0x4c/0x70
-  __sys_sendto+0x120/0x150
-  __arm64_sys_sendto+0x30/0x40
-  el0_svc_common+0x78/0x130
-  el0_svc_handler+0x38/0x78
-  el0_svc+0x8/0xc
-
-In br_add_if(), we found there is no guarantee that
-assigning rx_handler_data to dev->rx_handler_data
-will before setting the IFF_BRIDGE_PORT bit of priv_flags.
-So there is a possible data competition:
-
-CPU 0:                                                        CPU 1:
-(RCU read lock)                                               (RTNL lock)
-rtnl_calcit()                                                 br_add_slave()
-  if_nlmsg_size()                                               br_add_if()
-    br_get_link_af_size_filtered()                              -> netdev_rx_handler_register
-                                                                    ...
-                                                                    // The order is not guaranteed
-      ...                                                           -> dev->priv_flags |= IFF_BRIDGE_PORT;
-      // The IFF_BRIDGE_PORT bit of priv_flags has been set
-      -> if (br_port_exists(dev)) {
-        // The dev->rx_handler_data has NOT been assigned
-        -> p = br_port_get_rcu(dev);
-        ....
-                                                                    -> rcu_assign_pointer(dev->rx_handler_data, rx_handler_data);
-                                                                     ...
-
-Fix it in br_get_link_af_size_filtered, using br_port_get_check_rcu() and checking the return value.
-
-Signed-off-by: Zhang Zhengming <zhangzhengming@huawei.com>
-Reviewed-by: Zhao Lei <zhaolei69@huawei.com>
-Reviewed-by: Wang Xiaogang <wangxiaogang3@huawei.com>
-Suggested-by: Nikolay Aleksandrov <nikolay@nvidia.com>
+Reported-by: syzbot+e267bed19bfc5478fb33@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/bridge/br_netlink.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ net/hsr/hsr_forward.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/net/bridge/br_netlink.c b/net/bridge/br_netlink.c
-index 92d64abffa87..73f71c22f4c0 100644
---- a/net/bridge/br_netlink.c
-+++ b/net/bridge/br_netlink.c
-@@ -99,8 +99,9 @@ static size_t br_get_link_af_size_filtered(const struct net_device *dev,
+diff --git a/net/hsr/hsr_forward.c b/net/hsr/hsr_forward.c
+index b4e06ae08834..90c72e4c0a8f 100644
+--- a/net/hsr/hsr_forward.c
++++ b/net/hsr/hsr_forward.c
+@@ -493,6 +493,10 @@ static int fill_frame_info(struct hsr_frame_info *frame,
+ 	struct ethhdr *ethhdr;
+ 	__be16 proto;
  
- 	rcu_read_lock();
- 	if (netif_is_bridge_port(dev)) {
--		p = br_port_get_rcu(dev);
--		vg = nbp_vlan_group_rcu(p);
-+		p = br_port_get_check_rcu(dev);
-+		if (p)
-+			vg = nbp_vlan_group_rcu(p);
- 	} else if (dev->priv_flags & IFF_EBRIDGE) {
- 		br = netdev_priv(dev);
- 		vg = br_vlan_group_rcu(br);
++	/* Check if skb contains hsr_ethhdr */
++	if (skb->mac_len < sizeof(struct hsr_ethhdr))
++		return -EINVAL;
++
+ 	memset(frame, 0, sizeof(*frame));
+ 	frame->is_supervision = is_supervision_frame(port->hsr, skb);
+ 	frame->node_src = hsr_get_node(port, &hsr->node_db, skb,
 -- 
 2.30.2
 
