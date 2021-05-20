@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5BF638A7DE
+	by mail.lfdr.de (Postfix) with ESMTP id EF22238A7DF
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237493AbhETKnc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:43:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55802 "EHLO mail.kernel.org"
+        id S237809AbhETKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:43:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236818AbhETK21 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:28:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1FD1561C33;
-        Thu, 20 May 2021 09:50:58 +0000 (UTC)
+        id S236509AbhETK2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:28:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2DF61401;
+        Thu, 20 May 2021 09:51:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504259;
-        bh=2kfCO7LXG39FlNWL8826sbcj1qX6DzeJ2z1Uf48pomU=;
+        s=korg; t=1621504261;
+        bh=T49rh45U6lPypUCiE91O/QscMUsu3C9juocM8XfqQ0M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DbLpQLUaNkHQwmmhiudNW8LnW7v8rxXGHIhPTHM1TVkjR1+pqgAjWfvnW8Da/6FQl
-         Bnz0//TORhknHikmgB7UBN/pElyDjHqPEsquhZY00H2ICgnOlgdKvaSrm9rTFTSyhf
-         p8bB7keP2OGpl50h1O2naIQfXjVOOUwCDNj7FmKA=
+        b=SRV4jplt1XAesU4bPFShF3v3US0Zx3jiC2fcM6NRtgKfsAN3n/jlZrVId4ul2JaS4
+         TN+7TYKJNjLDoa53kTzUJR3xMsHI+MTb6k/zvKlADwnMblkqpWliLlTlh/ovCK6Hun
+         TpOLconeUeEJiVr7RZFWo77LUeeL4+Z4M1H2MC2M=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 163/323] staging: rtl8192u: Fix potential infinite loop
-Date:   Thu, 20 May 2021 11:20:55 +0200
-Message-Id: <20210520092125.691185703@linuxfoundation.org>
+Subject: [PATCH 4.14 164/323] staging: greybus: uart: fix unprivileged TIOCCSERIAL
+Date:   Thu, 20 May 2021 11:20:56 +0200
+Message-Id: <20210520092125.724807910@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,39 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit f9b9263a25dc3d2eaaa829e207434db6951ca7bc ]
+[ Upstream commit 60c6b305c11b5fd167ce5e2ce42f3a9098c388f0 ]
 
-The for-loop iterates with a u8 loop counter i and compares this
-with the loop upper limit of riv->ieee80211->LinkDetectInfo.SlotNum
-that is a u16 type. There is a potential infinite loop if SlotNum
-is larger than the u8 loop counter. Fix this by making the loop
-counter the same type as SlotNum.
+TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
+serial devices is only useful for setting the close_delay and
+closing_wait parameters.
 
-Addresses-Coverity: ("Infinite loop")
-Fixes: 8fc8598e61f6 ("Staging: Added Realtek rtl8192u driver to staging")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Link: https://lore.kernel.org/r/20210407150308.496623-1-colin.king@canonical.com
+A non-privileged user has only ever been able to set the since long
+deprecated ASYNC_SPD flags and trying to change any other *supported*
+feature should result in -EPERM being returned. Setting the current
+values for any supported features should return success.
+
+Fix the greybus implementation which instead indicated that the
+TIOCSSERIAL ioctl was not even implemented when a non-privileged user
+set the current values.
+
+Fixes: e68453ed28c5 ("greybus: uart-gb: now builds, more framework added")
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210407102334.32361-7-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/rtl8192u/r8192U_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/staging/greybus/uart.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/staging/rtl8192u/r8192U_core.c b/drivers/staging/rtl8192u/r8192U_core.c
-index b5941ae410d9..89ec4bb19e48 100644
---- a/drivers/staging/rtl8192u/r8192U_core.c
-+++ b/drivers/staging/rtl8192u/r8192U_core.c
-@@ -3418,7 +3418,7 @@ static void rtl819x_update_rxcounts(struct r8192_priv *priv, u32 *TotalRxBcnNum,
- 			     u32 *TotalRxDataNum)
- {
- 	u16			SlotIndex;
--	u8			i;
-+	u16			i;
- 
- 	*TotalRxBcnNum = 0;
- 	*TotalRxDataNum = 0;
+diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
+index 2b297df88bdd..b0b7d4a1cee4 100644
+--- a/drivers/staging/greybus/uart.c
++++ b/drivers/staging/greybus/uart.c
+@@ -657,8 +657,6 @@ static int set_serial_info(struct gb_tty *gb_tty,
+ 		if ((close_delay != gb_tty->port.close_delay) ||
+ 		    (closing_wait != gb_tty->port.closing_wait))
+ 			retval = -EPERM;
+-		else
+-			retval = -EOPNOTSUPP;
+ 	} else {
+ 		gb_tty->port.close_delay = close_delay;
+ 		gb_tty->port.closing_wait = closing_wait;
 -- 
 2.30.2
 
