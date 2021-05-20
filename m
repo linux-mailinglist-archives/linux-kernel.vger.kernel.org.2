@@ -2,61 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937E338B81C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:08:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF84038B81F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237558AbhETUKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:10:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234343AbhETUJ7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:09:59 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90876C061574;
-        Thu, 20 May 2021 13:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RL+lK8usZm6e87x0wg/qqwwNxRjGH9Tsz6E4tKt5SYE=; b=rcmKoR4bFCQU44vlSTobZtpEC2
-        Zzh9uexgE/GLYgHvVKOgINb/ENNSyNbOaPl95yABDWzCaPWuPbnJeuOrfPCIPlp0LUTsiL9gkkT2f
-        2B2w+LOKCty+s3QIzinmLT118Szbu7Uy9vslU5uSWrm5i6qs8nLzEMgKasd+jPrtph/stfc4PJLlG
-        ve6kEQ12kF8iYLlp2D8Kg5XIJoHPk/tuE1RLe0786dAMTJNfQFTp+AnyWjYjKkfCjxczWE01eeH6E
-        S+zw5e5T7FMnLgzQLKAs0u5PjJGH9sPs1in+lEKoRN0TIZmb8du0TCrWe4M0li8wZCjP82XlBKbel
-        wA0NYxlg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljoxs-00GMAg-31; Thu, 20 May 2021 20:08:23 +0000
-Date:   Thu, 20 May 2021 21:08:16 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 10/10] iio: documentation: fix a typo
-Message-ID: <YKbBsOnQyThisWDP@casper.infradead.org>
-References: <cover.1621413933.git.mchehab+huawei@kernel.org>
- <ebe6c6597409fb9748e6c05d8e8cb3bd3fa4c6f4.1621413933.git.mchehab+huawei@kernel.org>
+        id S237772AbhETULe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:11:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234343AbhETULc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:11:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 5B3B66128A;
+        Thu, 20 May 2021 20:10:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621541410;
+        bh=WaCgMvfXBR2gKyUZwzBouYnqALdTwOxZMFC0C16Yfqo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=r0GmfvCV5y8lZ1sXAGwxJgaOTV/M4QhbiaiKN+TtKmof1O7GuR4saIdXK9oMsDOUT
+         h4bnvm5ioDd9Ba9CzavQtpGqFApB79cCbYez0aijCSlJw12MtPWPF9xc3dwCn51o+M
+         GlLOc6KxBkz3LQ9vfzP0tzI/T/9oFOYePrhKkSSz9/ahMZUI+mQHY1CSOf/dpX6Sq6
+         KhLRnNVmb1lQXOzb8fJegJIXpRnHJhTPe5yO+OxhMxcsbEdNlKFp77AiBP2OH2bt6o
+         PmRjGvtWhQ0bA+u+KXT58eE20yjF2tcCKHK5yisYhyrtltoug4ktSzG2LfalvngXZ5
+         vX67EJIavZ63A==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4B90D60283;
+        Thu, 20 May 2021 20:10:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ebe6c6597409fb9748e6c05d8e8cb3bd3fa4c6f4.1621413933.git.mchehab+huawei@kernel.org>
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v2 0/4] MT7530 interrupt support
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162154141030.20508.8664926088973694353.git-patchwork-notify@kernel.org>
+Date:   Thu, 20 May 2021 20:10:10 +0000
+References: <20210519033202.3245667-1-dqfext@gmail.com>
+In-Reply-To: <20210519033202.3245667-1-dqfext@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
+        hkallweit1@gmail.com, kuba@kernel.org, Landen.Chao@mediatek.com,
+        matthias.bgg@gmail.com, linux@armlinux.org.uk,
+        sean.wang@mediatek.com, vivien.didelot@gmail.com,
+        olteanv@gmail.com, robh+dt@kernel.org, linus.walleij@linaro.org,
+        gregkh@linuxfoundation.org, sergio.paracuellos@gmail.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, weijie.gao@mediatek.com,
+        gch981213@gmail.com, opensource@vdorst.com,
+        frank-w@public-files.de, tglx@linutronix.de, maz@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:51:47AM +0200, Mauro Carvalho Chehab wrote:
-> @@ -798,7 +798,7 @@ What:		/sys/.../in_capacitanceY_adaptive_thresh_rising_timeout
->  What:		/sys/.../in_capacitanceY_adaptive_thresh_falling_timeout
->  KernelVersion:	5.11
->  Contact:	linux-iio@vger.kernel.org
-> -Descrption:
-> +Description:
->  		When adaptive thresholds are used, the tracking signal
->  		may adjust too slowly to step changes in the raw signal.
->  		*_timeout (in seconds) specifies a time for which the
+Hello:
 
-This must be the warning Jon refers to.  * as wildcard, rather than
-* as emphasis marker.
+This series was applied to netdev/net-next.git (refs/heads/master):
+
+On Wed, 19 May 2021 11:31:58 +0800 you wrote:
+> Add support for MT7530 interrupt controller.
+> 
+> DENG Qingfang (4):
+>   net: phy: add MediaTek Gigabit Ethernet PHY driver
+>   net: dsa: mt7530: add interrupt support
+>   dt-bindings: net: dsa: add MT7530 interrupt controller binding
+>   staging: mt7621-dts: enable MT7530 interrupt controller
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v2,1/4] net: phy: add MediaTek Gigabit Ethernet PHY driver
+    https://git.kernel.org/netdev/net-next/c/e40d2cca0189
+  - [net-next,v2,2/4] net: dsa: mt7530: add interrupt support
+    https://git.kernel.org/netdev/net-next/c/ba751e28d442
+  - [net-next,v2,3/4] dt-bindings: net: dsa: add MT7530 interrupt controller binding
+    https://git.kernel.org/netdev/net-next/c/4006f986c091
+  - [net-next,v2,4/4] staging: mt7621-dts: enable MT7530 interrupt controller
+    https://git.kernel.org/netdev/net-next/c/f494f0935ffb
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
