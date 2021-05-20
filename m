@@ -2,187 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF3338B5F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6171938B5F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231823AbhETSZp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 14:25:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234989AbhETSZo (ORCPT
+        id S234197AbhETS2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:28:47 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:17951 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232426AbhETS2p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:25:44 -0400
-Received: from cascadia.aikidev.net (cascadia.aikidev.net [IPv6:2600:3c01:e000:267:0:a171:de7:c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C45FC061574;
-        Thu, 20 May 2021 11:24:22 -0700 (PDT)
-Received: from localhost (97-120-1-76.ptld.qwest.net [97.120.1.76])
-        (Authenticated sender: vagrant@aikidev.net)
-        by cascadia.aikidev.net (Postfix) with ESMTPSA id C9AC71ACD4;
-        Thu, 20 May 2021 11:24:19 -0700 (PDT)
-From:   Vagrant Cascadian <vagrant@reproducible-builds.org>
-To:     Salvatore Bonaccorso <carnil@debian.org>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
-        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Chen-Yu Tsai <wens@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
-In-Reply-To: <YKQm/F+JIjf/YUHm@eldamar.lan>
-References: <1243888060.510560.1612783497400@ichabod.co-bxl>
- <20210210150118.ly252i37eykayrcb@gilmour>
- <1719200956.433094.1613199092092@ichabod.co-bxl>
- <6612268.HtAl026vyE@jernej-laptop> <YKFPGC2qBMipQPbd@eldamar.lan>
- <87o8dawhy3.fsf@yucca> <20210518150652.zxj56bljjeq3ogln@gilmour>
- <YKQiws6yP35QIpJd@eldamar.lan> <YKQm/F+JIjf/YUHm@eldamar.lan>
-Date:   Thu, 20 May 2021 11:24:18 -0700
-Message-ID: <87a6opqn59.fsf@ponder>
+        Thu, 20 May 2021 14:28:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1621535245; x=1653071245;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=s8cmiaERlKUz3hIIWr0df5gbBWVmLCfxFe0w+iSnRl0=;
+  b=e+iYgtAU1vuD16gVST83hsIVL0aplgjT+UBVzuATrs2AXgav7EyEwYBe
+   cfOBlkH5QK2gJpzN5vsg2xL5YBKnLsD06S675dqSmvGlZEsZ4gguMCF6x
+   WPWlCC8CtFIPGQnHZV3JJD1jRUsRt6Z27kiOeXmnFgPxa9xx/8s1badIg
+   k=;
+X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
+   d="scan'208";a="109050490"
+Subject: Re: [PATCH v2 03/10] KVM: X86: Add kvm_scale_tsc_l1() and
+ kvm_compute_tsc_offset_l1()
+Thread-Topic: [PATCH v2 03/10] KVM: X86: Add kvm_scale_tsc_l1() and
+ kvm_compute_tsc_offset_l1()
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2a-69849ee2.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-4101.iad4.amazon.com with ESMTP; 20 May 2021 18:27:17 +0000
+Received: from EX13MTAUEE001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-69849ee2.us-west-2.amazon.com (Postfix) with ESMTPS id 168A8A1DEC;
+        Thu, 20 May 2021 18:27:15 +0000 (UTC)
+Received: from EX13D08UEE004.ant.amazon.com (10.43.62.182) by
+ EX13MTAUEE001.ant.amazon.com (10.43.62.226) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 18:27:13 +0000
+Received: from EX13D18EUA001.ant.amazon.com (10.43.165.58) by
+ EX13D08UEE004.ant.amazon.com (10.43.62.182) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 18:27:13 +0000
+Received: from EX13D18EUA001.ant.amazon.com ([10.43.165.58]) by
+ EX13D18EUA001.ant.amazon.com ([10.43.165.58]) with mapi id 15.00.1497.018;
+ Thu, 20 May 2021 18:27:12 +0000
+From:   "Stamatis, Ilias" <ilstam@amazon.com>
+To:     "seanjc@google.com" <seanjc@google.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Woodhouse, David" <dwmw@amazon.co.uk>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "mtosatti@redhat.com" <mtosatti@redhat.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "zamsden@gmail.com" <zamsden@gmail.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "mlevitsk@redhat.com" <mlevitsk@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>
+Thread-Index: AQHXR0Eu985oRo9Cq0eeOk7jLKEluarp5bsAgACnOACAAG8LAIABv5mA
+Date:   Thu, 20 May 2021 18:27:12 +0000
+Message-ID: <980ceab359264525a6e8ae8403ff3a42a465b4ef.camel@amazon.com>
+References: <20210512150945.4591-1-ilstam@amazon.com>
+         <20210512150945.4591-4-ilstam@amazon.com> <YKRH7qVHpow6kwi5@google.com>
+         <772e232c27d180f876a5b49d7f188c0c3acd7560.camel@amazon.com>
+         <YKUxWh1Blu7rLZR9@google.com>
+In-Reply-To: <YKUxWh1Blu7rLZR9@google.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.164.198]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1840E9ADAB2B4E4DB079DC7BE116AE73@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-18, Salvatore Bonaccorso wrote:
-> On Tue, May 18, 2021 at 10:25:40PM +0200, Salvatore Bonaccorso wrote:
->> On Tue, May 18, 2021 at 05:06:52PM +0200, Maxime Ripard wrote:
->> > On Sun, May 16, 2021 at 01:18:44PM -0700, Vagrant Cascadian wrote:
->> > > On 2021-05-16, Salvatore Bonaccorso wrote:
->> > > > On Sat, Feb 13, 2021 at 09:51:17AM +0100, Jernej Škrabec wrote:
->> > > >> Let me first explain that it was oversight on my side not noticing initials in 
->> > > >> your SoB tag. But since the issue was raised by Maxime, I didn't follow up.
->> > > >> 
->> > > >> Dne sobota, 13. februar 2021 ob 07:51:32 CET je B.R. Oake napisal(a):
->> > > >> > On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
->> > > >> > > Unfortunately we can't take this patch as is, this needs to be your real
->> > > >> > > name, see:
->> > > >> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#de
->> > > >> > > veloper-s-certificate-of-origin-1-1
->> > > >> > Dear Maxime,
->> > > >> > 
->> > > >> > Thank you very much for considering my contribution and for all your
->> > > >> > work on supporting sunxi-based hardware; I appreciate it.
->> > > >> > 
->> > > >> > Thank you for referring me to the Developer's Certificate of Origin, but
->> > > >> > I had already read it before submitting (I had to do so in order to know
->> > > >> > what I was saying by "Signed-off-by:") and I do certify what it says.
->> > > >> > 
->> > > >> > Looking through recent entries in the commit log of the mainline kernel,
->> > > >> > I see several patches from authors such as:
->> > > >> > 
->> > > >> >   H.J. Lu <hjl.tools@gmail.com>
->> > > >> >   B K Karthik <karthik.bk2000@live.com>
->> > > >> >   JC Kuo <jckuo@nvidia.com>
->> > > >> >   EJ Hsu <ejh@nvidia.com>
->> > > >> >   LH Lin <lh.lin@mediatek.com>
->> > > >> >   KP Singh <kpsingh@kernel.org>
->> > > >> >   Karthik B S <karthik.b.s@intel.com>
->> > > >> >   Shreyas NC <shreyas.nc@intel.com>
->> > > >> >   Vandana BN <bnvandana@gmail.com>
->> > > >> > 
->> > > >> > so I believe names of this form are in fact acceptable, even if the
->> > > >> > style might seem a little old-fashioned to some.
->> > > >> 
->> > > >> Speaking generally, not only for this case, prior art arguments rarely hold, 
->> > > >> because:
->> > > >> - it might be oversight,
->> > > >> - it might be a bad practice, which should not be followed in new 
->> > > >> contributions,
->> > > >> - different maintainers have different point of view on same thing,
->> > > >> - maintainer wants to adapt new practice or steer subsystem in new direction
->> > > >> 
->> > > >> > 
->> > > >> > I would like to add that I have met many people with names such as C.J.,
->> > > >> > A A, TC, MG, etc. That is what everybody calls them and it would be
->> > > >> > natural for them to sign themselves that way. Some of them might want to
->> > > >> > contribute to Linux some day, and I think it would be a great shame and
->> > > >> > a loss to all of us if they were discouraged from doing so by reading
->> > > >> > our conversation in the archives and concluding that any contribution
->> > > >> > from them, however small, would be summarily refused simply because of
->> > > >> > their name. Please could you ensure that does not happen?
->> > > >> 
->> > > >> The link you posted says following:
->> > > >> "using your real name (sorry, no pseudonyms or anonymous contributions.)"
->> > > >> 
->> > > >> I believe that real name means no initials, no matter what people are 
->> > > >> accustomed to. From my point of view, CJ is pseudonym derived from real name.
->> > > >> 
->> > > >> This is not the first time that fix of SoB tag was requested, you can find such 
->> > > >> requests in ML archives.
->> > > 
->> > > I'm sure this isn't the first time this sort of thing has been brought
->> > > up on this subject, but I feel obliged to mention:
->> > > 
->> > >   https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
->> > > 
->> > > This seems to be blocked on culturally dependent perception of what
->> > > looks like a "real name" as opposed to any technical grounds.
->> > > 
->> > > What is the goal of the "real name" in Signed-off-by actually trying to
->> > > achieve?
->> > 
->> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
->> > 
->> > I'm not the one making the rules, sorry
->> 
->> Would it be technically possible to do the following: Based on the
->> downstream report we receved in Debian in
->> https://bugs.debian.org/988574 wrap up the same patch (I guess I will
->> need to use another commit message wording) and resubmit with my own
->> SoB with my downstream hat on and say a Tested-by from Vagrant? So we
->> are not blocked on the SoB issue from this original post of the change
->> to apply to arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts ?
->
-> Here is an attempt to do that and coming from
-> https://bugs.debian.org/988574 for the change change submission.
->
-> Regards,
-> Salvatore
->
-> From 93c335c997d6386fc5cb7b9c5621b9b9725de20e Mon Sep 17 00:00:00 2001
-> From: Salvatore Bonaccorso <carnil@debian.org>
-> Date: Tue, 18 May 2021 22:33:49 +0200
-> Subject: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
->
-> Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
-> config") sets the RX/TX delay according to the phy-mode property in the
-> device tree. For the Orange Pi Plus board this is "rgmii", which is the
-> wrong setting.
->
-> Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
-> Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
-> the Ethernet working again on this board.
->
-> Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
-> Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
-> Link: https://bugs.debian.org/988574
-> Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
-
-Seems worth crediting the original reporter "B.R. Oake"
-<broake@mailfence.com> with a Reported-by as well?
-
-
-live well,
-  vagrant
-
-> ---
->  arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-> index 97f497854e05..d05fa679dcd3 100644
-> --- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-> +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
-> @@ -85,7 +85,7 @@ &emac {
->  	pinctrl-0 = <&emac_rgmii_pins>;
->  	phy-supply = <&reg_gmac_3v3>;
->  	phy-handle = <&ext_rgmii_phy>;
-> -	phy-mode = "rgmii";
-> +	phy-mode = "rgmii-id";
->  
->  	status = "okay";
->  };
-> -- 
-> 2.31.1
+T24gV2VkLCAyMDIxLTA1LTE5IGF0IDE1OjQwICswMDAwLCBTZWFuIENocmlzdG9waGVyc29uIHdy
+b3RlOg0KPiBPbiBXZWQsIE1heSAxOSwgMjAyMSwgU3RhbWF0aXMsIElsaWFzIHdyb3RlOg0KPiA+
+IE9uIFR1ZSwgMjAyMS0wNS0xOCBhdCAyMzowNCArMDAwMCwgU2VhbiBDaHJpc3RvcGhlcnNvbiB3
+cm90ZToNCj4gPiA+IE9uIFdlZCwgTWF5IDEyLCAyMDIxLCBJbGlhcyBTdGFtYXRpcyB3cm90ZToN
+Cj4gPiA+ID4gZGlmZiAtLWdpdCBhL2FyY2gveDg2L2t2bS94ODYuYyBiL2FyY2gveDg2L2t2bS94
+ODYuYw0KPiA+ID4gPiBpbmRleCAwN2NmNWQ3ZWNlMzguLjg0YWYxYWY3YTJjYyAxMDA2NDQNCj4g
+PiA+ID4gLS0tIGEvYXJjaC94ODYva3ZtL3g4Ni5jDQo+ID4gPiA+ICsrKyBiL2FyY2gveDg2L2t2
+bS94ODYuYw0KPiA+ID4gPiBAQCAtMjMxOSwxOCArMjMxOSwzMCBAQCB1NjQga3ZtX3NjYWxlX3Rz
+YyhzdHJ1Y3Qga3ZtX3ZjcHUgKnZjcHUsIHU2NCB0c2MpDQo+ID4gPiA+ICB9DQo+ID4gPiA+ICBF
+WFBPUlRfU1lNQk9MX0dQTChrdm1fc2NhbGVfdHNjKTsNCj4gPiA+ID4gDQo+ID4gPiA+IC1zdGF0
+aWMgdTY0IGt2bV9jb21wdXRlX3RzY19vZmZzZXQoc3RydWN0IGt2bV92Y3B1ICp2Y3B1LCB1NjQg
+dGFyZ2V0X3RzYykNCj4gPiA+ID4gK3U2NCBrdm1fc2NhbGVfdHNjX2wxKHN0cnVjdCBrdm1fdmNw
+dSAqdmNwdSwgdTY0IHRzYykNCj4gPiA+ID4gK3sNCj4gPiA+ID4gKyAgICAgdTY0IF90c2MgPSB0
+c2M7DQo+ID4gPiA+ICsgICAgIHU2NCByYXRpbyA9IHZjcHUtPmFyY2gubDFfdHNjX3NjYWxpbmdf
+cmF0aW87DQo+ID4gPiA+ICsNCj4gPiA+ID4gKyAgICAgaWYgKHJhdGlvICE9IGt2bV9kZWZhdWx0
+X3RzY19zY2FsaW5nX3JhdGlvKQ0KPiA+ID4gPiArICAgICAgICAgICAgIF90c2MgPSBfX3NjYWxl
+X3RzYyhyYXRpbywgdHNjKTsNCj4gPiA+ID4gKw0KPiA+ID4gPiArICAgICByZXR1cm4gX3RzYzsN
+Cj4gPiA+ID4gK30NCj4gPiA+IA0KPiA+ID4gSnVzdCBtYWtlIHRoZSByYXRpbyBhIHBhcmFtLiAg
+VGhpcyBpcyBjb21wbGV0ZSBjb3B5K3Bhc3RlIG9mIGt2bV9zY2FsZV90c2MoKSwNCj4gPiA+IHdp
+dGggMyBjaGFyYWN0ZXJzIGFkZGVkLiAgQW5kIGFsbCBvZiB0aGUgY2FsbGVycyBhcmUgYWxyZWFk
+eSBpbiBhbiBMMS1zcGVjaWZpYw0KPiA+ID4gZnVuY3Rpb24gb3IgaGF2ZSBMMSB2cy4gTDIgYXdh
+cmVuZXNzLiAgSU1PLCB0aGF0IG1ha2VzIHRoZSBjb2RlIGxlc3MgbWFnaWNhbCwgdG9vLA0KPiA+
+ID4gYXMgSSBkb24ndCBoYXZlIHRvIGRpdmUgaW50byBhIGhlbHBlciB0byBzZWUgdGhhdCBpdCBy
+ZWFkcyBsMV90c2Nfc2NhbGluZ19yYXRpbw0KPiA+ID4gdmVyc3VzIHRzY19zY2FsaW5nX3JhdGlv
+Lg0KPiA+ID4gDQo+ID4gDQo+ID4gVGhhdCdzIGhvdyBJIGRpZCBpdCBpbml0aWFsbHkgYnV0IGNo
+YW5nZWQgaXQgaW50byBhIHNlcGFyYXRlIGZ1bmN0aW9uIGFmdGVyDQo+ID4gcmVjZWl2aW5nIGZl
+ZWRiYWNrIG9uIHYxLiBJJ20gbmV1dHJhbCwgSSBkb24ndCBtaW5kIGNoYW5naW5nIGl0IGJhY2su
+DQo+IA0KPiBBaCwgSSBzZWUgdGhlIGNvbnVuZHJ1bS4gIFRoZSB2ZW5kb3IgY29kZSBpc24ndCBz
+dHJhaWdodGZvcndhcmQgYmVjYXVzZSBvZiBhbGwNCj4gdGhlIGVuYWJsaW5nIGNoZWNrcyBhZ2Fp
+bnN0IHZtY3MxMiBjb250cm9scy4NCj4gDQo+IEdpdmVuIHRoYXQsIEkgZG9uJ3QgdGVycmlibHkg
+bWluZCB0aGUgY2FsbGJhY2tzLCBidXQgSSBkbyB0aGluayB0aGUgY29ubmVjdGlvbg0KPiBiZXR3
+ZWVuIHRoZSBjb21wdXRhdGlvbiBhbmQgdGhlIFZNV1JJVEUgbmVlZHMgdG8gYmUgbW9yZSBleHBs
+aWNpdC4NCj4gDQo+IFBva2luZyBhcm91bmQgdGhlIGNvZGUsIHRoZSBvdGhlciB0aGluZyB0aGF0
+IHdvdWxkIGhlbHAgd291bGQgYmUgdG8gZ2V0IHJpZCBvZg0KPiB0aGUgYXdmdWwgZGVjYWNoZV90
+c2NfbXVsdGlwbGllcigpLiAgVGhhdCBoZWxwZXIgd2FzIGFkZGVkIHRvIHBhcGVyIG92ZXIgdGhl
+DQo+IGNvbXBsZXRlbHkgYnJva2VuIGxvZ2ljIG9mIGNvbW1pdCBmZjJjM2ExODAzNzcgKCJLVk06
+IFZNWDogU2V0dXAgVFNDIHNjYWxpbmcNCj4gcmF0aW8gd2hlbiBhIHZjcHUgaXMgbG9hZGVkIiku
+ICBJdHMgdXNlIGluIHZteF92Y3B1X2xvYWRfdm1jcygpIGlzIGJhc2ljYWxseQ0KPiAid3JpdGUg
+dGhlIFZNQ1MgaWYgd2UgZm9yZ290IHRvIGVhcmxpZXIiLCB3aGljaCBpcyBhbGwga2luZHMgb2Yg
+d3JvbmcuDQo+IA0KDQpJIGFtIGdvaW5nIHRvIGFkZCBhIHBhdGNoIHRoYXQgcmVtb3ZlcyBkZWNh
+Y2hlX3RzY19tdWx0aXBsaWVyKCkgYW5kIA0Kdm14LT5jdXJyZW50X3RzY19yYXRpbyBhcyB0aGUg
+bGF0dGVyIGlzIHVzZWxlc3Mgc2luY2UgdmNwdS0+YXJjaC50c2Nfc2NhbGluZ19yYXRpbyANCmlz
+IGFscmVhZHkgdGhlIGN1cnJlbnQgcmF0aW8uIEFuZCB3aXRob3V0IGl0IGRlY2FjaGVfdHNjX211
+bHRpcGxpZXIoKSBiZWNvbWVzDQphbiBvbmUtbGluZXIgdGhhdCBpcyBwb2ludGxlc3MgdG8gaGF2
+ZTsgd2UgY2FuIGRvIHZtY3Nfd3JpdGU2NCgpIGRpcmVjdGx5Lg0KDQpOZXZlcnRoZWxlc3MsIEkg
+YW0gbm90IGdvaW5nIHRvIG1vdmUgdGhlIGNvZGUgb3V0c2lkZSBvZiB2bXhfdmNwdV9sb2FkX3Zt
+Y3MoKS4NCkdyYW50ZWQsIGEgYmV0dGVyIHBsYWNlIGZvciBzZXR0aW5nIHRoZSBtdWx0aXBsaWVy
+IGluIGhhcmR3YXJlIHdvdWxkIGJlDQpzZXRfdHNjX2toeigpLiBCdXQgdGhpcyBmdW5jdGlvbiBp
+cyBpbnNpZGUgeDg2LmMgc28gaXQgd291bGQgcmVxdWlyZSB5ZXQNCmFub3RoZXIgdmVuZG9yIGNh
+bGxiYWNrIHRvIGJlIGFkZGVkLCBtb3ZlIHRoZSBzdm0gY29kZSB0b28sIGV0YywgZXRjLg0KDQpN
+dWNoIG1vcmUgcmVmYWN0b3JpbmcgY2FuIGJlIGRvbmUgaW4gS1ZNIGNvZGUgaW4gZ2VuZXJhbCBi
+dXQgSSBkb24ndCB0aGluayBpdA0KaGFzIHRvIGJlIHBhcnQgb2YgdGhpcyBzZXJpZXMuIEkgYW0g
+Z29pbmcgdG8gc2VuZCB0aGUgdjMgcGF0Y2hlcyB0b21vcnJvdy4gDQoNCklsaWFzDQoNCg==
