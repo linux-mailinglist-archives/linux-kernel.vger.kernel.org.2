@@ -2,181 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E5538BA51
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CF138BA55
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:14:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233730AbhETXNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:13:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbhETXNu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:13:50 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 185E0C061574;
-        Thu, 20 May 2021 16:12:28 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmQVv4XMdz9s1l;
-        Fri, 21 May 2021 09:12:23 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621552345;
-        bh=WcMkrUu3k+ohRQ/4F/39KI6wf45Q7hCA8Iv/s7Ip8IE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ouB4UH1wQmBuGDKb54Qq4/V6+AKKYYKXy4xO2z9U8A3BXA3SD/fufSkM0nlk190Qy
-         RU415nAlE7b27UXjlh/Hq3YDxBqPZOcyA3/UyXqk9y2HEqHwqfteGSL+RdfnwwKbGo
-         5oSzkYegEPDTfYEPbM8zSpGUqO6+VggXyPT17DXAlwjJez04n1uawRrRW5YOB7T2zz
-         8XKgjEc/vIhjWJgGNXJ0OJsxKH5MhMTyXQPwpKy4EcVcdQUt+sygIw9m5suRYr2bv2
-         nmhgleXgSH3Q6guC+G7Grts+As30QAMkceZ3kg8nqMFR8mAeFjBYZYnYSfR64ziC2J
-         7fH4CQ7gsMBqA==
-Date:   Fri, 21 May 2021 09:12:22 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Stefano Brivio <sbrivio@redhat.com>
-Subject: Re: linux-next: manual merge of the netfilter-next tree with the
- net tree
-Message-ID: <20210521091222.3112f371@canb.auug.org.au>
-In-Reply-To: <20210519140532.677d1bb6@canb.auug.org.au>
-References: <20210519095627.7697ff12@canb.auug.org.au>
-        <20210519140532.677d1bb6@canb.auug.org.au>
+        id S233822AbhETXP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 19:15:58 -0400
+Received: from mga07.intel.com ([134.134.136.100]:11819 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231723AbhETXP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 19:15:57 -0400
+IronPort-SDR: aHcAbBc+YnjVvII32KtTyvYHJUCV0ktm5S30TXpeOG94M4X+KQGVeNVkR68RuVG7OiXETmU77A
+ 4BzfVgM0/bQg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265272089"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="265272089"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 16:14:35 -0700
+IronPort-SDR: 0s/YPUC0wGoJLHUokxSnH9utBjHkoOxXO6q7PwKYyA6zVoAdtV+R9P335J+Q6qAGO7Ten5I7sf
+ Gr1SKVmojsGQ==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="440654994"
+Received: from shaunnab-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.65.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 16:14:34 -0700
+Subject: Re: [RFC v2 29/32] x86/tdx: Add helper to do MapGPA TDVMALL
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <7d43f57c3b178a905ef2505cef5313844c497984.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <d139d180-9be7-3f7e-22db-d39fd09dfcb5@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <57690b33-e7da-e345-dfae-b2e18f9a1467@linux.intel.com>
+Date:   Thu, 20 May 2021 16:14:31 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/0vSKJnr.sGtnbDQ_z8cdll/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <d139d180-9be7-3f7e-22db-d39fd09dfcb5@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/0vSKJnr.sGtnbDQ_z8cdll/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi all,
-
-On Wed, 19 May 2021 14:05:32 +1000 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->
-> On Wed, 19 May 2021 09:56:27 +1000 Stephen Rothwell <sfr@canb.auug.org.au=
-> wrote:
-> >
-> > Today's linux-next merge of the netfilter-next tree got a conflict in:
-> >=20
-> >   net/netfilter/nft_set_pipapo.c
-> >=20
-> > between commit:
-> >=20
-> >   f0b3d338064e ("netfilter: nft_set_pipapo_avx2: Add irq_fpu_usable() c=
-heck, fallback to non-AVX2 version")
-> >=20
-> > from the net tree and commit:
-> >=20
-> >   b1bc08f6474f ("netfilter: nf_tables: prefer direct calls for set look=
-ups")
-> >=20
-> > from the netfilter-next tree.
-> >=20
-> > I fixed it up (I just used the latter) and can carry the fix as necessa=
-ry. This
-> > is now fixed as far as linux-next is concerned, but any non trivial
-> > conflicts should be mentioned to your upstream maintainer when your tree
-> > is submitted for merging.  You may also want to consider cooperating
-> > with the maintainer of the conflicting tree to minimise any particularly
-> > complex conflicts. =20
->=20
-> This merge also needs the following merge resolution patch:
->=20
-> From: Stephen Rothwell <sfr@canb.auug.org.au>
-> Date: Wed, 19 May 2021 13:48:22 +1000
-> Subject: [PATCH] fix up for merge involving nft_pipapo_lookup()
->=20
-> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> ---
->  net/netfilter/nft_set_pipapo.h | 2 --
->  1 file changed, 2 deletions(-)
->=20
-> diff --git a/net/netfilter/nft_set_pipapo.h b/net/netfilter/nft_set_pipap=
-o.h
-> index d84afb8fa79a..25a75591583e 100644
-> --- a/net/netfilter/nft_set_pipapo.h
-> +++ b/net/netfilter/nft_set_pipapo.h
-> @@ -178,8 +178,6 @@ struct nft_pipapo_elem {
-> =20
->  int pipapo_refill(unsigned long *map, int len, int rules, unsigned long =
-*dst,
->  		  union nft_pipapo_map_bucket *mt, bool match_only);
-> -bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
-> -		       const u32 *key, const struct nft_set_ext **ext);
-> =20
->  /**
->   * pipapo_and_field_buckets_4bit() - Intersect 4-bit buckets
-> --=20
-> 2.30.2
-
-Actually it appears to also need this:
-
-diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter=
-/nf_tables_core.h
-index 789e9eadd76d..8652b2514e57 100644
---- a/include/net/netfilter/nf_tables_core.h
-+++ b/include/net/netfilter/nf_tables_core.h
-@@ -89,6 +89,8 @@ extern const struct nft_set_type nft_set_bitmap_type;
- extern const struct nft_set_type nft_set_pipapo_type;
- extern const struct nft_set_type nft_set_pipapo_avx2_type;
-=20
-+bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
-+			    const u32 *key, const struct nft_set_ext **ext);
- #ifdef CONFIG_RETPOLINE
- bool nft_rhash_lookup(const struct net *net, const struct nft_set *set,
- 		      const u32 *key, const struct nft_set_ext **ext);
-@@ -101,8 +103,6 @@ bool nft_hash_lookup_fast(const struct net *net,
- 			  const u32 *key, const struct nft_set_ext **ext);
- bool nft_hash_lookup(const struct net *net, const struct nft_set *set,
- 		     const u32 *key, const struct nft_set_ext **ext);
--bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
--			    const u32 *key, const struct nft_set_ext **ext);
- bool nft_set_do_lookup(const struct net *net, const struct nft_set *set,
- 		       const u32 *key, const struct nft_set_ext **ext);
- #else
-diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-index 9addc0b447f7..dce866d93fee 100644
---- a/net/netfilter/nft_set_pipapo.c
-+++ b/net/netfilter/nft_set_pipapo.c
-@@ -408,7 +408,6 @@ int pipapo_refill(unsigned long *map, int len, int rule=
-s, unsigned long *dst,
-  *
-  * Return: true on match, false otherwise.
-  */
--INDIRECT_CALLABLE_SCOPE
- bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
- 		       const u32 *key, const struct nft_set_ext **ext)
- {
 
 
---=20
-Cheers,
-Stephen Rothwell
+On 5/19/21 8:59 AM, Dave Hansen wrote:
+> On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+>> From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+>>
+>> MapGPA TDVMCALL requests the host VMM to map a GPA range as private or
+>> shared memory mappings. Shared GPA mappings can be used for
+>> communication beteen TD guest and host VMM, for example for
+>> paravirtualized IO.
+> 
+> As usual, I hate the changelog.  This appears to just be regurgitating
+> the spec.
+> 
+> Is this just for part of converting an existing mapping between private
+> and shared?  If so, please say that.
+> 
 
---Sig_/0vSKJnr.sGtnbDQ_z8cdll/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+How about following change?
 
------BEGIN PGP SIGNATURE-----
+     x86/tdx: Add helper to do MapGPA hypercall
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCm7NYACgkQAVBC80lX
-0GyxDAf/Vz6NNCLaAf5gi7TM4rpMIQd8jzf1uEvnYKZhALVYzZiL7RxAhBh+E8Lz
-QCJlZA6SCuOXiK/BTDphPhrP9UqCjTq9WDLAosiJLStN4LsKBuOLDVL7ae8mZGi7
-VbGwO72SK5gmlbOJGQ7yp5lMqj1POaFOr7gT8D2FVC/jXA28Ky9/eoTdQlY7xett
-AYLaiHSO8AhtZWs725TTONgNZMuxZxhQODrghbST50IsXW1tbFaBb0Ixu2lvF8dZ
-ZIRnBTxRfeUm7SE+oTLXdV7ZSsSVhHMcgz0kS6sc2iTeJj5aOTRn1/Ti2gQo6iPb
-3jmw/8jp6rNFcBKP+1UZ5HmJsZpUAg==
-=73UX
------END PGP SIGNATURE-----
+     MapGPA hypercall is used by TDX guests to request VMM convert
+     the existing mapping of given GPA address range between
+     private/shared.
 
---Sig_/0vSKJnr.sGtnbDQ_z8cdll/--
+     tdx_hcall_gpa_intent() is the wrapper used for making MapGPA
+     hypercall.
+
+
+>> The new helper tdx_map_gpa() provides access to the operation.
+> 
+> <sigh>  You got your own name wrong. It's tdg_map_gpa() in the patch.
+
+I can use tdx_hcall_gpa_intent().
+
+> 
+> BTW, I agree with Sean on this one: "tdg" is a horrible prefix.  You
+> just proved Sean's point by mistyping it.  *EVERYONE* is going to rpeat
+> that mistake: tdg -> tdx.
+> 
+>> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+>> index dc80cf7f7d08..4789798d7737 100644
+>> --- a/arch/x86/include/asm/tdx.h
+>> +++ b/arch/x86/include/asm/tdx.h
+>> @@ -7,6 +7,11 @@
+>>   
+>>   #ifndef __ASSEMBLY__
+>>   
+>> +enum tdx_map_type {
+>> +	TDX_MAP_PRIVATE,
+>> +	TDX_MAP_SHARED,
+>> +};
+> 
+> I like the enum, but please call out that this is a software construct,
+> not a part of any hardware or VMM ABI.
+> 
+>>   #ifdef CONFIG_INTEL_TDX_GUEST
+>>   
+>>   #include <asm/cpufeature.h>
+>> @@ -112,6 +117,8 @@ unsigned short tdg_inw(unsigned short port);
+>>   unsigned int tdg_inl(unsigned short port);
+>>   
+>>   extern phys_addr_t tdg_shared_mask(void);
+>> +extern int tdg_map_gpa(phys_addr_t gpa, int numpages,
+>> +		       enum tdx_map_type map_type);
+>>   
+>>   #else // !CONFIG_INTEL_TDX_GUEST
+>>   
+>> @@ -155,6 +162,12 @@ static inline phys_addr_t tdg_shared_mask(void)
+>>   {
+>>   	return 0;
+>>   }
+>> +
+>> +static inline int tdg_map_gpa(phys_addr_t gpa, int numpages,
+>> +			      enum tdx_map_type map_type)
+>> +{
+>> +	return -ENODEV;
+>> +}
+> 
+> FWIW, you could probably get away with just inlining tdg_map_gpa():
+> 
+> static inline int tdg_map_gpa(phys_addr_t gpa, int numpages, ...
+> {
+> 	u64 ret;
+> 
+> 	if (!IS_ENABLED(CONFIG_INTEL_TDX_GUEST))
+> 		return -ENODEV;
+> 
+> 	if (map_type == TDX_MAP_SHARED)
+> 		gpa |= tdg_shared_mask();
+> 
+> 	ret = tdvmcall(TDVMCALL_MAP_GPA, gpa, ...
+> 
+> 	return ret ? -EIO : 0;
+> }
+> 
+> Then you don't have three copies of the function signature that can get
+> out of sync.
+
+I agree that this simplifies the function definition. But, there are
+other TDX hypercalls definitions in tdx.c. I can't move all of them to
+the header file. If possible, I would like to group all hypercalls in
+the same place.
+
+Also, IMO, it is better to hide hypercall internal implementation details
+in C file. For example, user of MapGPA hypercall does not care about the
+TDVMCALL_MAP_GPA leaf id value. If we inline this function we have to
+move such details to header file.
+
+
+> 
+>>   #endif /* CONFIG_INTEL_TDX_GUEST */
+>>   #endif /* __ASSEMBLY__ */
+>>   #endif /* _ASM_X86_TDX_H */
+>> diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+>> index 7e391cd7aa2b..074136473011 100644
+>> --- a/arch/x86/kernel/tdx.c
+>> +++ b/arch/x86/kernel/tdx.c
+>> @@ -15,6 +15,8 @@
+>>   #include "tdx-kvm.c"
+>>   #endif
+>>   
+>> +#define TDVMCALL_MAP_GPA	0x10001
+>> +
+>>   static struct {
+>>   	unsigned int gpa_width;
+>>   	unsigned long attributes;
+>> @@ -98,6 +100,17 @@ static void tdg_get_info(void)
+>>   	physical_mask &= ~tdg_shared_mask();
+>>   }
+>>   
+>> +int tdg_map_gpa(phys_addr_t gpa, int numpages, enum tdx_map_type map_type)
+>> +{
+>> +	u64 ret;
+>> +
+>> +	if (map_type == TDX_MAP_SHARED)
+>> +		gpa |= tdg_shared_mask();
+>> +
+>> +	ret = tdvmcall(TDVMCALL_MAP_GPA, gpa, PAGE_SIZE * numpages, 0, 0);
+>> +	return ret ? -EIO : 0;
+>> +}
+> 
+> The naming Intel chose here is nasty.  This doesn't "map" anything.  It
+> modifies an existing mapping from what I can tell.  We could name it
+> much better than the spec, perhaps:
+> 
+> 	tdx_hcall_gpa_intent()
+
+I will use this function name in next version.
+
+> 
+> BTW, all of these hypercalls need a consistent prefix.
+
+I can include _hcall in other hypercall helper functions as well.
+
+> 
+> It also needs a comment:
+> 
+> 	/*
+> 	 * Inform the VMM of the guest's intent for this physical page:
+> 	 * shared with the VMM or private to the guest.  The VMM is
+> 	 * expected to change its mapping of the page in response.
+> 	 *
+> 	 * Note: shared->private conversions require further guest
+> 	 * action to accept the page.
+> 	 */
+> 
+> The intent here is important.  It makes it clear that this function
+> really only plays a role in the conversion process.
+
+Thanks. I will include it in next version.
+
+> 
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
