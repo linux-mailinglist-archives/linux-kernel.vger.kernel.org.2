@@ -2,97 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1301738B290
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E20A38B29B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:08:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242921AbhETPIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:08:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:53480 "EHLO foss.arm.com"
+        id S243216AbhETPJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:09:50 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41345 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231764AbhETPIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:08:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CC3FD101E;
-        Thu, 20 May 2021 08:06:51 -0700 (PDT)
-Received: from [192.168.1.16] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5D5E53F73B;
-        Thu, 20 May 2021 08:06:48 -0700 (PDT)
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-14-will@kernel.org> <YKOU9onXUxVLPGaB@google.com>
- <20210518102833.GA7770@willie-the-truck> <YKObZ1GcfVIVWRWt@google.com>
- <20210518105951.GC7770@willie-the-truck> <YKO+9lPLQLPm4Nwt@google.com>
- <YKYoQ0ezahSC/RAg@localhost.localdomain>
- <20210520101640.GA10065@willie-the-truck> <YKY7FvFeRlXVjcaA@google.com>
- <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <0dbdfe1e-dede-d33d-ca89-768a1fa3c907@arm.com>
-Date:   Thu, 20 May 2021 17:06:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232452AbhETPJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:09:46 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1ljkHS-0001VG-01; Thu, 20 May 2021 17:08:10 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 47969C101E; Thu, 20 May 2021 17:07:42 +0200 (CEST)
+Date:   Thu, 20 May 2021 17:07:42 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] MIPS: SEAD3: Correct Ethernet node name
+Message-ID: <20210520150742.GB22843@alpha.franken.de>
+References: <cover.1621518686.git.geert+renesas@glider.be>
+ <b708fdb009912cf247ef257dce519c52889688d8.1621518686.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-In-Reply-To: <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b708fdb009912cf247ef257dce519c52889688d8.1621518686.git.geert+renesas@glider.be>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 14:38, Daniel Bristot de Oliveira wrote:
-> On 5/20/21 12:33 PM, Quentin Perret wrote:
->> On Thursday 20 May 2021 at 11:16:41 (+0100), Will Deacon wrote:
->>> Ok, thanks for the insight. In which case, I'll go with what we discussed:
->>> require admission control to be disabled for sched_setattr() but allow
->>> execve() to a 32-bit task from a 64-bit deadline task with a warning (this
->>> is probably similar to CPU hotplug?).
->>
->> Still not sure that we can let execve go through ... It will break AC
->> all the same, so it should probably fail as well if AC is on IMO
->>
+On Thu, May 20, 2021 at 03:58:38PM +0200, Geert Uytterhoeven wrote:
+> make dtbs_check:
 > 
-> If the cpumask of the 32-bit task is != of the 64-bit task that is executing it,
-> the admission control needs to be re-executed, and it could fail. So I see this
-> operation equivalent to sched_setaffinity(). This will likely be true for future
-> schedulers that will allow arbitrary affinities (AC should run on affinity
-> change, and could fail).
+>     eth@1f010000: $nodename:0: 'eth@1f010000' does not match '^ethernet(@.*)?$'
 > 
-> I would vote with Juri: "I'd go with fail hard if AC is on, let it
-> pass if AC is off (supposedly the user knows what to do)," (also hope nobody
-> complains until we add better support for affinity, and use this as a motivation
-> to get back on this front).
-> 
-> -- Daniel
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  arch/mips/boot/dts/mti/sead3.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-(1) # chrt -d -T 5000000 -P 16666666 0 ./32bit_app
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-(2) # ./32bit_app &
-
-    # chrt -d -T 5000000 -P 16666666 -p 0 pid_of(32bit_app)
-
-
-Wouldn't the behaviour of (1) and (2) be different w/o this patch?
-
-In (1) __sched_setscheduler() happens before execve so it operates on
-p->cpus_ptr equal span.
-
-In (2) span != p->cpus_ptr so DL AC will fail.
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
