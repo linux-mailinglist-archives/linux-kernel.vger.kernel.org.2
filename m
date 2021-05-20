@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB7238A150
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:30:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C41E38A0DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231720AbhETJaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:30:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
+        id S231707AbhETJ0Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:26:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231483AbhETJ2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:28:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A9096101D;
-        Thu, 20 May 2021 09:26:39 +0000 (UTC)
+        id S231639AbhETJ0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:26:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 606CE61261;
+        Thu, 20 May 2021 09:24:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502799;
-        bh=lbIRNO1WZCWiKbr/Ifjz8eEMSOpWWxfisLEMvMUDHoE=;
+        s=korg; t=1621502695;
+        bh=L1TraLPJIGnK4pTDFEezIQ9FbUehOUnWLcqyWq2g0cA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TrW/NESEvGfreSS20raIgkdHbW/LQEOe4PpFtpH2XXO1b6SfXmQ1YUifr6eCJmbLP
-         PVh4Jh2lVHZLPprN/Xrz2n566Q5gbxuvSD/27Q8DTq8MQkYIYMtYSsEU+iP2yo65EB
-         JUdJbBbuwE8+GmYrhVk8wLAulZ2Mjt2TayzJCxMs=
+        b=dD+HmtOVyX4vUUVh5rTrlGkaPFTtkRFZoahKE5upQBdQOrJ7N8eevEto8dzADjLZK
+         WvnOUFzpKMkSEn5Z3YXghQgeuvVWZ06j9I99I6a0AH3VBvi3LL18zcU91niWn+q0ZS
+         GpqCLjzEFZbppIVhssKUMDxdp5n7E11O6v+oQ56g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-        Eric Dumazet <edumazet@google.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Ritesh Raj Sarraf <rrs@debian.org>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Richard Weinberger <richard@nod.at>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 08/47] virtio_net: Do not pull payload in skb->head
+Subject: [PATCH 5.12 18/45] um: Mark all kernel symbols as local
 Date:   Thu, 20 May 2021 11:22:06 +0200
-Message-Id: <20210520092053.825306214@linuxfoundation.org>
+Message-Id: <20210520092054.113971608@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-References: <20210520092053.559923764@linuxfoundation.org>
+In-Reply-To: <20210520092053.516042993@linuxfoundation.org>
+References: <20210520092053.516042993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -44,117 +42,109 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db ]
+[ Upstream commit d5027ca63e0e778b641cf23e3f5c6d6212cf412b ]
 
-Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
-under-estimation for tiny skbs") brought  a ~10% performance drop.
+Ritesh reported a bug [1] against UML, noting that it crashed on
+startup. The backtrace shows the following (heavily redacted):
 
-The reason for the performance drop was that GRO was forced
-to chain sk_buff (using skb_shinfo(skb)->frag_list), which
-uses more memory but also cause packet consumers to go over
-a lot of overhead handling all the tiny skbs.
+(gdb) bt
+...
+ #26 0x0000000060015b5d in sem_init () at ipc/sem.c:268
+ #27 0x00007f89906d92f7 in ?? () from /lib/x86_64-linux-gnu/libcom_err.so.2
+ #28 0x00007f8990ab8fb2 in call_init (...) at dl-init.c:72
+...
+ #40 0x00007f89909bf3a6 in nss_load_library (...) at nsswitch.c:359
+...
+ #44 0x00007f8990895e35 in _nss_compat_getgrnam_r (...) at nss_compat/compat-grp.c:486
+ #45 0x00007f8990968b85 in __getgrnam_r [...]
+ #46 0x00007f89909d6b77 in grantpt [...]
+ #47 0x00007f8990a9394e in __GI_openpty [...]
+ #48 0x00000000604a1f65 in openpty_cb (...) at arch/um/os-Linux/sigio.c:407
+ #49 0x00000000604a58d0 in start_idle_thread (...) at arch/um/os-Linux/skas/process.c:598
+ #50 0x0000000060004a3d in start_uml () at arch/um/kernel/skas/process.c:45
+ #51 0x00000000600047b2 in linux_main (...) at arch/um/kernel/um_arch.c:334
+ #52 0x000000006000574f in main (...) at arch/um/os-Linux/main.c:144
 
-It turns out that virtio_net page_to_skb() has a wrong strategy :
-It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
-copies 128 bytes from the page, before feeding the packet to GRO stack.
+indicating that the UML function openpty_cb() calls openpty(),
+which internally calls __getgrnam_r(), which causes the nsswitch
+machinery to get started.
 
-This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
-under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
-meaning we were not packing MSS with 100% efficiency.
+This loads, through lots of indirection that I snipped, the
+libcom_err.so.2 library, which (in an unknown function, "??")
+calls sem_init().
 
-Fix is to pull only the ethernet header in page_to_skb()
+Now, of course it wants to get libpthread's sem_init(), since
+it's linked against libpthread. However, the dynamic linker
+looks up that symbol against the binary first, and gets the
+kernel's sem_init().
 
-Then, we change virtio_net_hdr_to_skb() to pull the missing
-headers, instead of assuming they were already pulled by callers.
+Hajime Tazaki noted that "objcopy -L" can localize a symbol,
+so the dynamic linker wouldn't do the lookup this way. I tried,
+but for some reason that didn't seem to work.
 
-This fixes the performance regression, but could also allow virtio_net
-to accept packets with more than 128bytes of headers.
+Doing the same thing in the linker script instead does seem to
+work, though I cannot entirely explain - it *also* works if I
+just add "VERSION { { global: *; }; }" instead, indicating that
+something else is happening that I don't really understand. It
+may be that explicitly doing that marks them with some kind of
+empty version, and that's different from the default.
 
-Many thanks to Xuan Zhuo for his report, and his tests/help.
+Explicitly marking them with a version breaks kallsyms, so that
+doesn't seem to be possible.
 
-Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
-Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Link: https://www.spinics.net/lists/netdev/msg731397.html
-Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Cc: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: Jason Wang <jasowang@redhat.com>
-Cc: virtualization@lists.linux-foundation.org
-Acked-by: Jason Wang <jasowang@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Marking all the symbols as local seems correct, and does seem
+to address the issue, so do that. Also do it for static link,
+nsswitch libraries could still be loaded there.
+
+[1] https://bugs.debian.org/983379
+
+Reported-by: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Tested-By: Ritesh Raj Sarraf <rrs@debian.org>
+Signed-off-by: Richard Weinberger <richard@nod.at>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/virtio_net.c   | 10 +++++++---
- include/linux/virtio_net.h | 14 +++++++++-----
- 2 files changed, 16 insertions(+), 8 deletions(-)
+ arch/um/kernel/dyn.lds.S | 6 ++++++
+ arch/um/kernel/uml.lds.S | 6 ++++++
+ 2 files changed, 12 insertions(+)
 
-diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
-index 038ce4e5e84b..286f836a53bf 100644
---- a/drivers/net/virtio_net.c
-+++ b/drivers/net/virtio_net.c
-@@ -406,9 +406,13 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
- 	offset += hdr_padded_len;
- 	p += hdr_padded_len;
+diff --git a/arch/um/kernel/dyn.lds.S b/arch/um/kernel/dyn.lds.S
+index dacbfabf66d8..2f2a8ce92f1e 100644
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -6,6 +6,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
  
--	copy = len;
--	if (copy > skb_tailroom(skb))
--		copy = skb_tailroom(skb);
-+	/* Copy all frame if it fits skb->head, otherwise
-+	 * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
-+	 */
-+	if (len <= skb_tailroom(skb))
-+		copy = len;
-+	else
-+		copy = ETH_HLEN + metasize;
- 	skb_put_data(skb, p, copy);
- 
- 	if (metasize) {
-diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
-index 98775d7fa696..b465f8f3e554 100644
---- a/include/linux/virtio_net.h
-+++ b/include/linux/virtio_net.h
-@@ -65,14 +65,18 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
- 	skb_reset_mac_header(skb);
- 
- 	if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
--		u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
--		u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
-+		u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
-+		u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
-+		u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
++VERSION {
++  {
++    local: *;
++  };
++}
 +
-+		if (!pskb_may_pull(skb, needed))
-+			return -EINVAL;
+ SECTIONS
+ {
+   PROVIDE (__executable_start = START);
+diff --git a/arch/um/kernel/uml.lds.S b/arch/um/kernel/uml.lds.S
+index 45d957d7004c..7a8e2b123e29 100644
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -7,6 +7,12 @@ OUTPUT_ARCH(ELF_ARCH)
+ ENTRY(_start)
+ jiffies = jiffies_64;
  
- 		if (!skb_partial_csum_set(skb, start, off))
- 			return -EINVAL;
- 
- 		p_off = skb_transport_offset(skb) + thlen;
--		if (p_off > skb_headlen(skb))
-+		if (!pskb_may_pull(skb, p_off))
- 			return -EINVAL;
- 	} else {
- 		/* gso packets without NEEDS_CSUM do not set transport_offset.
-@@ -102,14 +106,14 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
- 			}
- 
- 			p_off = keys.control.thoff + thlen;
--			if (p_off > skb_headlen(skb) ||
-+			if (!pskb_may_pull(skb, p_off) ||
- 			    keys.basic.ip_proto != ip_proto)
- 				return -EINVAL;
- 
- 			skb_set_transport_header(skb, keys.control.thoff);
- 		} else if (gso_type) {
- 			p_off = thlen;
--			if (p_off > skb_headlen(skb))
-+			if (!pskb_may_pull(skb, p_off))
- 				return -EINVAL;
- 		}
- 	}
++VERSION {
++  {
++    local: *;
++  };
++}
++
+ SECTIONS
+ {
+   /* This must contain the right address - not quite the default ELF one.*/
 -- 
 2.30.2
 
