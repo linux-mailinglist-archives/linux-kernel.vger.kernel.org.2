@@ -2,152 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D0D338B733
+	by mail.lfdr.de (Postfix) with ESMTP id 9A65638B735
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238033AbhETTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:19:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239166AbhETTTb (ORCPT
+        id S239118AbhETTTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:19:44 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:53661 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236421AbhETTTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:19:31 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5102C06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:04 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so4042119ood.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=inhHSx4VVdd6VlmWYA1Oc6IjDKgdb7a8vsKxGCF5N0I=;
-        b=XCOGtUJUvbDS2LdLMD6oXtSH4CFhzjRz6VqPhCJZs+ccNHknMTPnl1WQOdtBkMofoO
-         HP4e8tFBFuyMt7E6B4x4it1C3Zdzy9wMtVfHX7DawfZMYE46Ok1sa5XVvgcIikk/SpSd
-         HAh2SogLnOZ9BLXlKj00Y7ocS93RyXZInitiyCQ+YBiFNfrpb6EYJw6Motp5n7Zf3+N3
-         05I6EqhujA09IzhZVSp5w5jvO8KUyXhxhfjrSdJqeaWGsnRFxg5vgl1TqVJKX/R4u8xD
-         2OPrwRTagsl4gN6C1tWMjGQQ+RSVeCglioCmQiA+GONXMC25aFCi0gOL11WYlQeJbxsP
-         GKJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=inhHSx4VVdd6VlmWYA1Oc6IjDKgdb7a8vsKxGCF5N0I=;
-        b=YIdtv/QJ1vMDwyMXYs5pTmydykZTzXBHq8dqQTtkiKvZE5fEyQ8F/xAvY34fvKm2Wb
-         PQNwqLjiQk7n4mhpHC1Wws1udeYSYP8gc5vhfwjt94wGYYGXxJ8jeUXRl94GBM57w97/
-         8mOD95t5QfUcUMV8GVVMRD5VOkNhTBd51tACmrNKj9gnQJyXdjfnlS3L7HxyUygYnq3j
-         6mqZJoqYgrvu5D3gegjgtPgAmFe8YWnTRHRBf//DCBvbhOMdJAvRfiDT+KoQKBCxaqA1
-         YYLPPOgYPApKCGAkxGXMG/20Dm6ynb16aBAmbkZyknX7wkr19bmFcmjyRHMBDllmxPsq
-         uh+A==
-X-Gm-Message-State: AOAM530uNhtGemW/pYZUmATKICh80g5FRNwe+TTXLYBb1Rf6JKPkAqPf
-        mlL1vYcFuUk+qqAAfSGKjOl9Xru+JGEAfFQUUH4=
-X-Google-Smtp-Source: ABdhPJzh6BsciXjhKaLIHK8DE7cvwKOEYyYVAA+r2OS+xmgokC8Ab+vei2Pi46Wk1Ws9U1NNJoG21+doLDQ+3RwRenQ=
-X-Received: by 2002:a4a:d543:: with SMTP id q3mr4937571oos.72.1621538282712;
- Thu, 20 May 2021 12:18:02 -0700 (PDT)
+        Thu, 20 May 2021 15:19:32 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 563DE78578;
+        Thu, 20 May 2021 22:18:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1621538287;
+        bh=bWDXjnusAw0GqGde8Fo03zr/rla806XOlO/i15vi3PU=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=yP8N7NW6CzTaTE30tPQnUAABTuFzCcUoeQZmFs0z1ju5e1UJMiqY/neoc0g67fm07
+         nToSK2M1fotvgM0C87stdZg7K1PBBoSvbNW+fBO+zAfdYB+7wsl9I2PjPn+AXFr24O
+         E1YNw8zAqdAJXmel7eskg+EN34nCwyknKZ3xgK/Y5GF4Zs2+KBM3HApddl0XgNzchk
+         gCRy5J/VreuK8eHECMfCRcGU5akIKN8HX4jg9N2ndkCihVcAIFglj+JbxLu31yufCK
+         XOIa3b0NRwUkebjQXuaNtYpu7DCiJ58U8xxz7KtFf6XI0sKX4W7PFC4yeKIy/5pzTy
+         5bU+ldoHMF9Mw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 12C7E7857D;
+        Thu, 20 May 2021 22:18:07 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
+ May 2021 22:18:06 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [PATCH v10 11/18] virtio/vsock: dequeue callback for SOCK_SEQPACKET
+Date:   Thu, 20 May 2021 22:17:58 +0300
+Message-ID: <20210520191801.1272027-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210520120248.3464013-1-lee.jones@linaro.org> <20210520120248.3464013-22-lee.jones@linaro.org>
-In-Reply-To: <20210520120248.3464013-22-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 20 May 2021 15:17:51 -0400
-Message-ID: <CADnq5_Mk9WkJP4m+mn175H+2btAnrXqhioGM07Ow+x9VtwQKaQ@mail.gmail.com>
-Subject: Re: [PATCH 21/38] drm/amd/include/aldebaran_ip_offset: Mark top-level
- IP_BASE as __maybe_unused
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Callback fetches RW packets from rx queue of socket until whole record
+is copied(if user's buffer is full, user is not woken up). This is done
+to not stall sender, because if we wake up user and it leaves syscall,
+nobody will send credit update for rest of record, and sender will wait
+for next enter of read syscall at receiver's side. So if user buffer is
+full, we just send credit update and drop data.
 
-Alex
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+---
+ v9 -> v10:
+ 1) Number of dequeued bytes incremented even in case when
+    user's buffer is full.
+ 2) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
+ 3) Rename variable 'err' to 'dequeued_len', in case of error
+    it has negative value.
 
-On Thu, May 20, 2021 at 8:03 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:259:29: warn=
-ing: =E2=80=98XGMI2_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:252:29: warn=
-ing: =E2=80=98XGMI1_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:245:29: warn=
-ing: =E2=80=98XGMI0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:238:29: warn=
-ing: =E2=80=98WAFL1_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:231:29: warn=
-ing: =E2=80=98WAFL0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:161:29: warn=
-ing: =E2=80=98PCIE0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:119:29: warn=
-ing: =E2=80=98L2IMU0_BASE=E2=80=99 defined but not used [-Wunused-const-var=
-iable=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:112:29: warn=
-ing: =E2=80=98L1IMUPCIE0_BASE=E2=80=99 defined but not used [-Wunused-const=
--variable=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:105:29: warn=
-ing: =E2=80=98L1IMUIOAGR0_BASE=E2=80=99 defined but not used [-Wunused-cons=
-t-variable=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:98:29: warni=
-ng: =E2=80=98IOHC0_BASE=E2=80=99 defined but not used [-Wunused-const-varia=
-ble=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:91:29: warni=
-ng: =E2=80=98IOAPIC0_BASE=E2=80=99 defined but not used [-Wunused-const-var=
-iable=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:84:29: warni=
-ng: =E2=80=98IOAGR0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
-able=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:63:29: warni=
-ng: =E2=80=98FUSE_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
-le=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:49:29: warni=
-ng: =E2=80=98DBGU_IO0_BASE=E2=80=99 defined but not used [-Wunused-const-va=
-riable=3D]
->  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:42:29: warni=
-ng: =E2=80=98CLK_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
-e=3D]
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/include/aldebaran_ip_offset.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/include/aldebaran_ip_offset.h b/drivers/=
-gpu/drm/amd/include/aldebaran_ip_offset.h
-> index 644ffec2b0ce8..cdd426b41c20e 100644
-> --- a/drivers/gpu/drm/amd/include/aldebaran_ip_offset.h
-> +++ b/drivers/gpu/drm/amd/include/aldebaran_ip_offset.h
-> @@ -30,7 +30,7 @@ struct IP_BASE_INSTANCE {
->
->  struct IP_BASE {
->      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
-> -};
-> +} __maybe_unused;
->
->  static const struct IP_BASE ATHUB_BASE =3D { { { { 0x00000C20, 0x02408C0=
-0, 0, 0, 0, 0 } },
->                                          { { 0, 0, 0, 0, 0, 0 } },
-> --
-> 2.31.1
->
+ include/linux/virtio_vsock.h            |  5 ++
+ net/vmw_vsock/virtio_transport_common.c | 65 +++++++++++++++++++++++++
+ 2 files changed, 70 insertions(+)
+
+diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+index dc636b727179..02acf6e9ae04 100644
+--- a/include/linux/virtio_vsock.h
++++ b/include/linux/virtio_vsock.h
+@@ -80,6 +80,11 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+ 			       struct msghdr *msg,
+ 			       size_t len, int flags);
+ 
++ssize_t
++virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
++				   struct msghdr *msg,
++				   int flags,
++				   bool *msg_ready);
+ s64 virtio_transport_stream_has_data(struct vsock_sock *vsk);
+ s64 virtio_transport_stream_has_space(struct vsock_sock *vsk);
+ 
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index ad0d34d41444..61349b2ea7fe 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -393,6 +393,59 @@ virtio_transport_stream_do_dequeue(struct vsock_sock *vsk,
+ 	return err;
+ }
+ 
++static int virtio_transport_seqpacket_do_dequeue(struct vsock_sock *vsk,
++						 struct msghdr *msg,
++						 int flags,
++						 bool *msg_ready)
++{
++	struct virtio_vsock_sock *vvs = vsk->trans;
++	struct virtio_vsock_pkt *pkt;
++	int dequeued_len = 0;
++	size_t user_buf_len = msg_data_left(msg);
++
++	*msg_ready = false;
++	spin_lock_bh(&vvs->rx_lock);
++
++	while (!*msg_ready && !list_empty(&vvs->rx_queue) && dequeued_len >= 0) {
++		size_t bytes_to_copy;
++		size_t pkt_len;
++
++		pkt = list_first_entry(&vvs->rx_queue, struct virtio_vsock_pkt, list);
++		pkt_len = (size_t)le32_to_cpu(pkt->hdr.len);
++		bytes_to_copy = min(user_buf_len, pkt_len);
++
++		if (bytes_to_copy) {
++			/* sk_lock is held by caller so no one else can dequeue.
++			 * Unlock rx_lock since memcpy_to_msg() may sleep.
++			 */
++			spin_unlock_bh(&vvs->rx_lock);
++
++			if (memcpy_to_msg(msg, pkt->buf, bytes_to_copy))
++				dequeued_len = -EINVAL;
++			else
++				user_buf_len -= bytes_to_copy;
++
++			spin_lock_bh(&vvs->rx_lock);
++		}
++
++		if (dequeued_len >= 0)
++			dequeued_len += pkt_len;
++
++		if (le32_to_cpu(pkt->hdr.flags) & VIRTIO_VSOCK_SEQ_EOR)
++			*msg_ready = true;
++
++		virtio_transport_dec_rx_pkt(vvs, pkt);
++		list_del(&pkt->list);
++		virtio_transport_free_pkt(pkt);
++	}
++
++	spin_unlock_bh(&vvs->rx_lock);
++
++	virtio_transport_send_credit_update(vsk);
++
++	return dequeued_len;
++}
++
+ ssize_t
+ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+ 				struct msghdr *msg,
+@@ -405,6 +458,18 @@ virtio_transport_stream_dequeue(struct vsock_sock *vsk,
+ }
+ EXPORT_SYMBOL_GPL(virtio_transport_stream_dequeue);
+ 
++ssize_t
++virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
++				   struct msghdr *msg,
++				   int flags, bool *msg_ready)
++{
++	if (flags & MSG_PEEK)
++		return -EOPNOTSUPP;
++
++	return virtio_transport_seqpacket_do_dequeue(vsk, msg, flags, msg_ready);
++}
++EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
++
+ int
+ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+ 			       struct msghdr *msg,
+-- 
+2.25.1
+
