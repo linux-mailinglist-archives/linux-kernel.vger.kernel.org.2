@@ -2,86 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50A3C389AB7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:03:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23A5E389AB9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230178AbhETBET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:04:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58152 "EHLO mail.kernel.org"
+        id S230159AbhETBHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:07:15 -0400
+Received: from m12-14.163.com ([220.181.12.14]:57474 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229525AbhETBER (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:04:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0854D6100A;
-        Thu, 20 May 2021 01:02:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621472576;
-        bh=Lf/8QEJNwE3bPrrZVsNXjplajFp91+e38C42i8jmbkY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DYRVfyZJgvP4rPI60P5gD5ZZ+BRhfvGLBaXVXfbHFkavmRgl0cJlE+NNkh1WPTfVI
-         hl6AKVwglJM6trM6ENDCxCZsePwO4D96kNoCQZrtGMaspqSZ4WpzysTUWTWrNDLl0R
-         RzlV+MCk0QlhoPpSxcVsVDuONM/I4ZzFTxh8zH7xYqr6LudXdEp5+BAvCZXsWavEpU
-         h+qx9wUezjOS8ZNxCmK3FqBI56fk+tFQBppaKo7CPyrfWWh/yz1PVZfIkY2gVew1+H
-         D/9sFf8smHmMqCS9gsvvc0LRoZ6Va8n1bdekZ7qgk9okaccmtkOcRgFvHw//ou+nZH
-         l42vYhivFGCOw==
-Date:   Thu, 20 May 2021 03:02:54 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, rcu@vger.kernel.org
-Subject: Re: [PATCH 1/3] rcu/nocb: Start moving nocb code to its own plugin
- file
-Message-ID: <20210520010254.GC22836@lothringen>
-References: <20210519000930.15702-1-frederic@kernel.org>
- <20210519000930.15702-2-frederic@kernel.org>
- <20210519155508.GX4441@paulmck-ThinkPad-P17-Gen-1>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519155508.GX4441@paulmck-ThinkPad-P17-Gen-1>
+        id S229498AbhETBHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 21:07:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=YOchqfhpn3lK2OOd3n
+        pIduxooTbqyf1OrzYjh6gcgIE=; b=UfdiT528QWiFQVNDEHQc7ohjshGLBepBWC
+        lIQaK6nm+bM6upKeBT3IPDOvpxA0T8hlHOt3Uekw7j8Eo5zKrG3xJVX3VcunabaT
+        bl/hmPJsscw/s3svgsi1xdoxsoRXUFGAIIfYky5qyUzmi4pz0esOE3GGM9PL/BOW
+        +PZp7btNk=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp10 (Coremail) with SMTP id DsCowAC3EW_ktaVgHLaSJw--.37542S2;
+        Thu, 20 May 2021 09:05:42 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     gustavoars@kernel.org, hslester96@gmail.com, davem@davemloft.net
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH RESEND] NFC: st21nfca: remove unnecessary variable and labels
+Date:   Thu, 20 May 2021 09:05:50 +0800
+Message-Id: <20210520010550.31240-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: DsCowAC3EW_ktaVgHLaSJw--.37542S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXrWkKF17Gr1rJFy5WF1Dtrb_yoW5ur13pa
+        yagrykArW8Gry2gr45uw4rAas09w4vvry7GFy5C3WSvw4jyr93XF1rG3WS9r45tr95Cw15
+        Aw42qr4kWr9rJrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b5GQDUUUUU=
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiLwaYsVUMYlGKBwAAsn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 08:55:08AM -0700, Paul E. McKenney wrote:
-> On Wed, May 19, 2021 at 02:09:28AM +0200, Frederic Weisbecker wrote:
-> > tree_plugin.h is now gathering not only the (no)preempt-rcu specifics
-> > but also other features like NO_CB. As the latter has grown quite in
-> > complexity and volume, it's may be a good idea to start moving the
-> > related code to its own file so we don't need to browse thousand lines
-> > to find what we need.
-> > 
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> 
-> Applied with the usual wordsmithing, thank you!
-> 
-> But for consistency with the other similar files included by
-> kernel/rcu/tree.c, should the name instead be kernel/rcu/tree_nocb.h?
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-Ah yes, I hesitated but tree_nocb.h is indeed more consistent. Can I let
-you do the rename?
+assign vlue (EIO/EPROTO) to variable r, and goto exit label,
+but just return r follow exit label, so we delete exit label,
+and just replace with return sentence.
 
-> Also, if Ingo and I are one the author list, shouldn't you be as well?  ;-)
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/nfc/st21nfca/dep.c | 59 ++++++++++++++--------------------------------
+ 1 file changed, 18 insertions(+), 41 deletions(-)
 
-Heh, alright feel free to add the following as a fixup :-)
-
-diff --git a/kernel/rcu/nocb.h b/kernel/rcu/nocb.h
-index a7783923833e..bf2690ca5d2b 100644
---- a/kernel/rcu/nocb.h
-+++ b/kernel/rcu/nocb.h
-@@ -6,9 +6,11 @@
-  *
-  * Copyright Red Hat, 2009
-  * Copyright IBM Corporation, 2009
-+ * Copyright SUSE, 2021
-  *
-  * Author: Ingo Molnar <mingo@elte.hu>
-  *	   Paul E. McKenney <paulmck@linux.ibm.com>
-+ *	   Frederic Weisbecker <frederic@kernel.org>
-  */
+diff --git a/drivers/nfc/st21nfca/dep.c b/drivers/nfc/st21nfca/dep.c
+index 8874d60..1ec651e 100644
+--- a/drivers/nfc/st21nfca/dep.c
++++ b/drivers/nfc/st21nfca/dep.c
+@@ -196,38 +196,29 @@ static int st21nfca_tm_recv_atr_req(struct nfc_hci_dev *hdev,
  
- #ifdef CONFIG_RCU_NOCB_CPU
+ 	skb_trim(skb, skb->len - 1);
+ 
+-	if (!skb->len) {
+-		r = -EIO;
+-		goto exit;
+-	}
++	if (!skb->len)
++		return -EIO;
+ 
+-	if (skb->len < ST21NFCA_ATR_REQ_MIN_SIZE) {
+-		r = -EPROTO;
+-		goto exit;
+-	}
++	if (skb->len < ST21NFCA_ATR_REQ_MIN_SIZE)
++		return -EPROTO;
+ 
+ 	atr_req = (struct st21nfca_atr_req *)skb->data;
+ 
+-	if (atr_req->length < sizeof(struct st21nfca_atr_req)) {
+-		r = -EPROTO;
+-		goto exit;
+-	}
++	if (atr_req->length < sizeof(struct st21nfca_atr_req))
++		return -EPROTO;
+ 
+ 	r = st21nfca_tm_send_atr_res(hdev, atr_req);
+ 	if (r)
+-		goto exit;
++		return r;
+ 
+ 	gb_len = skb->len - sizeof(struct st21nfca_atr_req);
+ 
+ 	r = nfc_tm_activated(hdev->ndev, NFC_PROTO_NFC_DEP_MASK,
+ 			      NFC_COMM_PASSIVE, atr_req->gbi, gb_len);
+ 	if (r)
+-		goto exit;
+-
+-	r = 0;
++		return r;
+ 
+-exit:
+-	return r;
++	return 0;
+ }
+ 
+ static int st21nfca_tm_send_psl_res(struct nfc_hci_dev *hdev,
+@@ -280,25 +271,18 @@ static int st21nfca_tm_recv_psl_req(struct nfc_hci_dev *hdev,
+ 				    struct sk_buff *skb)
+ {
+ 	struct st21nfca_psl_req *psl_req;
+-	int r;
+ 
+ 	skb_trim(skb, skb->len - 1);
+ 
+-	if (!skb->len) {
+-		r = -EIO;
+-		goto exit;
+-	}
++	if (!skb->len)
++		return -EIO;
+ 
+ 	psl_req = (struct st21nfca_psl_req *)skb->data;
+ 
+-	if (skb->len < sizeof(struct st21nfca_psl_req)) {
+-		r = -EIO;
+-		goto exit;
+-	}
++	if (skb->len < sizeof(struct st21nfca_psl_req))
++		return -EIO;
+ 
+-	r = st21nfca_tm_send_psl_res(hdev, psl_req);
+-exit:
+-	return r;
++	return st21nfca_tm_send_psl_res(hdev, psl_req);
+ }
+ 
+ int st21nfca_tm_send_dep_res(struct nfc_hci_dev *hdev, struct sk_buff *skb)
+@@ -324,7 +308,6 @@ static int st21nfca_tm_recv_dep_req(struct nfc_hci_dev *hdev,
+ {
+ 	struct st21nfca_dep_req_res *dep_req;
+ 	u8 size;
+-	int r;
+ 	struct st21nfca_hci_info *info = nfc_hci_get_clientdata(hdev);
+ 
+ 	skb_trim(skb, skb->len - 1);
+@@ -332,20 +315,16 @@ static int st21nfca_tm_recv_dep_req(struct nfc_hci_dev *hdev,
+ 	size = 4;
+ 
+ 	dep_req = (struct st21nfca_dep_req_res *)skb->data;
+-	if (skb->len < size) {
+-		r = -EIO;
+-		goto exit;
+-	}
++	if (skb->len < size)
++		return -EIO;
+ 
+ 	if (ST21NFCA_NFC_DEP_DID_BIT_SET(dep_req->pfb))
+ 		size++;
+ 	if (ST21NFCA_NFC_DEP_NAD_BIT_SET(dep_req->pfb))
+ 		size++;
+ 
+-	if (skb->len < size) {
+-		r = -EIO;
+-		goto exit;
+-	}
++	if (skb->len < size)
++		return -EIO;
+ 
+ 	/* Receiving DEP_REQ - Decoding */
+ 	switch (ST21NFCA_NFC_DEP_PFB_TYPE(dep_req->pfb)) {
+@@ -364,8 +343,6 @@ static int st21nfca_tm_recv_dep_req(struct nfc_hci_dev *hdev,
+ 	skb_pull(skb, size);
+ 
+ 	return nfc_tm_data_received(hdev->ndev, skb);
+-exit:
+-	return r;
+ }
+ 
+ static int st21nfca_tm_event_send_data(struct nfc_hci_dev *hdev,
+-- 
+1.9.1
 
-
-Or perhaps you prefer a separate patch?
-
-Thanks!
