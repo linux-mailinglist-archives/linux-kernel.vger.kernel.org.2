@@ -2,178 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF9E38A068
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297D238A07B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231381AbhETI7q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:59:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58953 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231145AbhETI7n (ORCPT
+        id S231533AbhETJAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:00:25 -0400
+Received: from smtp-fw-80007.amazon.com ([99.78.197.218]:4920 "EHLO
+        smtp-fw-80007.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhETJAX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:59:43 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1ljeVZ-0003n1-Sr; Thu, 20 May 2021 08:58:21 +0000
-From:   Colin Ian King <colin.king@canonical.com>
-To:     Takashi Iwai <tiwai@suse.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: re: ALSA: usb-audio: Handle error for the current selector gracefully
- [ uninitialized variable issue ]
-Message-ID: <4b261d68-f53f-240d-2d8a-2f88b337849d@canonical.com>
-Date:   Thu, 20 May 2021 09:58:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 20 May 2021 05:00:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621501143; x=1653037143;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=no9PnC7ByGDo1gM/bT84lXIETBhtfnlKSpWwpRPaUhw=;
+  b=g2db0lf6nqHeZg2oyjCIuWps2pLvaniB7EPQHgoUZ0+5VkqJQP4mD72G
+   0aXDWjq9iMtmYVry/4Ozk/BI5xi9AABJauCNgz+txT1NLKsp3KRbSbz4h
+   JDpqO23DadXs3845RkLrNpwtp2X29Lw8UODCnaoVEbc35MINX+3dm3fOs
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
+   d="scan'208";a="2272361"
+Received: from pdx4-co-svc-p1-lb2-vlan3.amazon.com (HELO email-inbound-relay-1e-28209b7b.us-east-1.amazon.com) ([10.25.36.214])
+  by smtp-border-fw-80007.pdx80.corp.amazon.com with ESMTP; 20 May 2021 08:59:02 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1e-28209b7b.us-east-1.amazon.com (Postfix) with ESMTPS id 13B14A5FE4;
+        Thu, 20 May 2021 08:59:00 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 08:58:59 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.160.137) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 08:58:53 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 00/11] Socket migration for SO_REUSEPORT.
+Date:   Thu, 20 May 2021 17:58:49 +0900
+Message-ID: <20210520085849.49799-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210520063029.vrnv5eld6w4glea6@kafai-mbp.dhcp.thefacebook.com>
+References: <20210520063029.vrnv5eld6w4glea6@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.137]
+X-ClientProxiedBy: EX13D15UWA002.ant.amazon.com (10.43.160.218) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Wed, 19 May 2021 23:30:29 -0700
+> On Mon, May 17, 2021 at 09:22:47AM +0900, Kuniyuki Iwashima wrote:
+> > The SO_REUSEPORT option allows sockets to listen on the same port and to
+> > accept connections evenly. However, there is a defect in the current
+> > implementation [1]. When a SYN packet is received, the connection is tied
+> > to a listening socket. Accordingly, when the listener is closed, in-flight
+> > requests during the three-way handshake and child sockets in the accept
+> > queue are dropped even if other listeners on the same port could accept
+> > such connections.
+> > 
+> > This situation can happen when various server management tools restart
+> > server (such as nginx) processes. For instance, when we change nginx
+> > configurations and restart it, it spins up new workers that respect the new
+> > configuration and closes all listeners on the old workers, resulting in the
+> > in-flight ACK of 3WHS is responded by RST.
+> > 
+> > To avoid such a situation, users have to know deeply how the kernel handles
+> > SYN packets and implement connection draining by eBPF [2]:
+> > 
+> >   1. Stop routing SYN packets to the listener by eBPF.
+> >   2. Wait for all timers to expire to complete requests
+> >   3. Accept connections until EAGAIN, then close the listener.
+> > 
+> >   or
+> > 
+> >   1. Start counting SYN packets and accept syscalls using the eBPF map.
+> >   2. Stop routing SYN packets.
+> >   3. Accept connections up to the count, then close the listener.
+> > 
+> > In either way, we cannot close a listener immediately. However, ideally,
+> > the application need not drain the not yet accepted sockets because 3WHS
+> > and tying a connection to a listener are just the kernel behaviour. The
+> > root cause is within the kernel, so the issue should be addressed in kernel
+> > space and should not be visible to user space. This patchset fixes it so
+> > that users need not take care of kernel implementation and connection
+> > draining. With this patchset, the kernel redistributes requests and
+> > connections from a listener to the others in the same reuseport group
+> > at/after close or shutdown syscalls.
+> > 
+> > Although some software does connection draining, there are still merits in
+> > migration. For some security reasons, such as replacing TLS certificates,
+> > we may want to apply new settings as soon as possible and/or we may not be
+> > able to wait for connection draining. The sockets in the accept queue have
+> > not started application sessions yet. So, if we do not drain such sockets,
+> > they can be handled by the newer listeners and could have a longer
+> > lifetime. It is difficult to drain all connections in every case, but we
+> > can decrease such aborted connections by migration. In that sense,
+> > migration is always better than draining. 
+> > 
+> > Moreover, auto-migration simplifies user space logic and also works well in
+> > a case where we cannot modify and build a server program to implement the
+> > workaround.
+> > 
+> > Note that the source and destination listeners MUST have the same settings
+> > at the socket API level; otherwise, applications may face inconsistency and
+> > cause errors. In such a case, we have to use the eBPF program to select a
+> > specific listener or to cancel migration.
+> > 
+> > Special thanks to Martin KaFai Lau for bouncing ideas and exchanging code
+> > snippets along the way.
+> > 
+> > 
+> > Link:
+> >  [1] The SO_REUSEPORT socket option
+> >  https://lwn.net/Articles/542629/ 
+> > 
+> >  [2] Re: [PATCH 1/1] net: Add SO_REUSEPORT_LISTEN_OFF socket option as drain mode
+> >  https://lore.kernel.org/netdev/1458828813.10868.65.camel@edumazet-glaptop3.roam.corp.google.com/
+> > 
+> > 
+> > Changelog:
+> >  v6:
+> >   * Change description in ip-sysctl.rst
+> >   * Test IPPROTO_TCP before reading tfo_listener
+> >   * Move reqsk_clone() to inet_connection_sock.c and rename to
+> >     inet_reqsk_clone()
+> >   * Pass req->rsk_listener to inet_csk_reqsk_queue_drop() and
+> >     reqsk_queue_removed() in the migration path of receiving ACK
+> >   * s/ARG_PTR_TO_SOCKET/PTR_TO_SOCKET/ in sk_reuseport_is_valid_access()
+> >   * In selftest, use atomic ops to increment global vars, drop ACK by XDP,
+> >     enable force fastopen, use "skel->bss" instead of "skel->data"
+> Some commit messages need to be updated: s/reqsk_clone/inet_reqsk_clone/
 
-Static analysis with Coverity on linux-next has detected an
-uninitialized variable issue with the following commit:
+I'll fix them.
 
-commit 481f17c41803985446fd12887b2c042f9c43b0d5
-Author: Takashi Iwai <tiwai@suse.de>
-Date:   Tue May 18 17:21:12 2021 +0200
 
-    ALSA: usb-audio: Handle error for the current selector gracefully
+> 
+> One thing needs to be addressed in patch 3.
+> 
+> Others lgtm.
+> 
+> Acked-by: Martin KaFai Lau <kafai@fb.com>
 
-The branching is a bit convoluted and we end up with variable cur not
-being initialized. Analysis is as follows:
+Thank you!!
 
-254static int __uac_clock_find_source(struct snd_usb_audio *chip,
-255                                   const struct audioformat *fmt, int
-entity_id,
-256                                   unsigned long *visited, bool validate)
-257{
-258        union uac23_clock_source_desc *source;
-259        union uac23_clock_selector_desc *selector;
-260        union uac23_clock_multiplier_desc *multiplier;
-
-   1. var_decl: Declaring variable cur without initializer.
-
-261        int ret, i, cur, err, pins, clock_id;
-262        const u8 *sources;
-263        int proto = fmt->protocol;
-264
-265        entity_id &= 0xff;
-266
-
-   2. Condition test_and_set_bit(entity_id, visited), taking false
-branch.
-
-267        if (test_and_set_bit(entity_id, visited)) {
-268                usb_audio_warn(chip,
-269                         "%s(): recursive clock topology detected, id
-%d.\n",
-270                         __func__, entity_id);
-271                return -EINVAL;
-272        }
-273
-274        /* first, see if the ID we're looking for is a clock source
-already */
-275        source = snd_usb_find_clock_source(chip, entity_id, proto);
-
-   3. Condition source, taking false branch.
-
-276        if (source) {
-277                entity_id = GET_VAL(source, proto, bClockID);
-278                if (validate && !uac_clock_source_is_valid(chip, fmt,
-279
-entity_id)) {
-280                        usb_audio_err(chip,
-281                                "clock source %d is not valid, cannot
-use\n",
-282                                entity_id);
-283                        return -ENXIO;
-284                }
-285                return entity_id;
-286        }
-287
-288        selector = snd_usb_find_clock_selector(chip, entity_id, proto);
-
-   4. Condition selector, taking true branch.
-289        if (selector) {
-   5. Condition proto == 48, taking true branch.
-290                pins = GET_VAL(selector, proto, bNrInPins);
-   6. Condition proto == 48, taking true branch.
-291                clock_id = GET_VAL(selector, proto, bClockID);
-   7. Condition proto == 48, taking true branch.
-292                sources = GET_VAL(selector, proto, baCSourceID);
-293
-   8. Condition pins == 1, taking false branch.
-
-294                if (pins == 1) {
-295                        ret = 1;
-296                        goto find_source;
-297                }
-298
-299                /* the entity ID we are looking for is a selector.
-300                 * find out what it currently selects */
-301                ret = uac_clock_selector_get_val(chip, clock_id);
-
-   9. Condition ret < 0, taking true branch.
-
-302                if (ret < 0) {
-
-   10. Condition !chip->autoclock, taking false branch.
-
-303                        if (!chip->autoclock)
-304                                return ret;
-
-   11. Jumping to label find_others.
-
-305                        goto find_others;
-306                }
-307
-308                /* Selector values are one-based */
-309
-310                if (ret > pins || ret < 1) {
-311                        usb_audio_err(chip,
-312                                "%s(): selector reported illegal
-value, id %d, ret %d\n",
-313                                __func__, clock_id, ret);
-314
-315                        if (!chip->autoclock)
-316                                return -EINVAL;
-317                        ret = 0;
-318                        goto find_others;
-319                }
-320
-321        find_source:
-322                cur = ret;
-323                ret = __uac_clock_find_source(chip, fmt,
-324                                              sources[ret - 1],
-325                                              visited, validate);
-326                if (ret > 0) {
-327                        err = uac_clock_selector_set_val(chip,
-entity_id, cur);
-328                        if (err < 0)
-329                                return err;
-330                }
-331
-332                if (!validate || ret > 0 || !chip->autoclock)
-333                        return ret;
-334
-335        find_others:
-336                /* The current clock source is invalid, try others. */
-   12. Condition i <= pins, taking true branch.
-337                for (i = 1; i <= pins; i++) {
-
-Uninitialized scalar variable (UNINIT)
-
-   13. uninit_use: Using uninitialized value cur.
-
-338                        if (i == cur)
-339                                continue;
-340
-
-Colin
+I'll respin after the discussion about 3rd patch.
