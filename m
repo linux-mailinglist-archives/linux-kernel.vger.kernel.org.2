@@ -2,84 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FF038AD29
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75C2E38AD22
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:56:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241033AbhETL5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:57:40 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3091 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236669AbhETLzf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:55:35 -0400
-Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fm7Bn1QpXz6J68Q;
-        Thu, 20 May 2021 19:42:25 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 13:54:09 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Thu, 20 May 2021 13:54:09 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-CC:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
-        "mjg59@srcf.ucam.org" <mjg59@srcf.ucam.org>,
-        "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 3/7] ima: Introduce template fields mntuidmap and
- mntgidmap
-Thread-Topic: [PATCH 3/7] ima: Introduce template fields mntuidmap and
- mntgidmap
-Thread-Index: AQHXTVYl5/ijYWmHy0e6NDJab3clu6rr+yiAgAABJoCAAEZSAA==
-Date:   Thu, 20 May 2021 11:54:08 +0000
-Message-ID: <f3dfccf2aa5f4c5b96ff6c55a222b7dd@huawei.com>
-References: <20210520085701.465369-1-roberto.sassu@huawei.com>
- <20210520085701.465369-4-roberto.sassu@huawei.com>
- <20210520093659.oeeytegx2tvzp33e@wittgenstein>
- <20210520094105.x2k3bc53xejfl5b2@wittgenstein>
-In-Reply-To: <20210520094105.x2k3bc53xejfl5b2@wittgenstein>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S242218AbhETL4x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:56:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:48786 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S244146AbhETLy4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:54:56 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7CFE5101E;
+        Thu, 20 May 2021 04:53:32 -0700 (PDT)
+Received: from [10.163.80.140] (unknown [10.163.80.140])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2B3943F73D;
+        Thu, 20 May 2021 04:53:27 -0700 (PDT)
+Subject: Re: [PATCH] arm64: mm: hugetlb: add support for free vmemmap pages of
+ HugeTLB
+To:     David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, will@kernel.org,
+        akpm@linux-foundation.org, bodeddub@amazon.com, osalvador@suse.de,
+        mike.kravetz@oracle.com, rientjes@google.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com
+References: <20210518091826.36937-1-songmuchun@bytedance.com>
+ <1b9d008a-7544-cc85-5c2f-532b984eb5b5@arm.com>
+ <88114091-fbb2-340d-b69b-a572fa340265@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <df8a0fd5-2389-6ef0-b8e2-1c56663e7868@arm.com>
+Date:   Thu, 20 May 2021 17:24:12 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <88114091-fbb2-340d-b69b-a572fa340265@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBDaHJpc3RpYW4gQnJhdW5lciBbbWFpbHRvOmNocmlzdGlhbi5icmF1bmVyQHVidW50
-dS5jb21dDQo+IFNlbnQ6IFRodXJzZGF5LCBNYXkgMjAsIDIwMjEgMTE6NDEgQU0NCj4gT24gVGh1
-LCBNYXkgMjAsIDIwMjEgYXQgMTE6Mzc6MDdBTSArMDIwMCwgQ2hyaXN0aWFuIEJyYXVuZXIgd3Jv
-dGU6DQo+ID4gT24gVGh1LCBNYXkgMjAsIDIwMjEgYXQgMTA6NTY6NTdBTSArMDIwMCwgUm9iZXJ0
-byBTYXNzdSB3cm90ZToNCj4gPiA+IFRoaXMgcGF0Y2ggaW50cm9kdWNlcyB0aGUgbmV3IHRlbXBs
-YXRlIGZpZWxkcyBtbnR1aWRtYXAgYW5kIG1udGdpZG1hcCwNCj4gPiA+IHdoaWNoIGluY2x1ZGUg
-cmVzcGVjdGl2ZWx5IHRoZSBVSUQgYW5kIEdJRCBtYXBwaW5ncyBvZiB0aGUgaWRtYXBwZWQNCj4g
-bW91bnQsDQo+ID4gPiBpZiB0aGUgdXNlciBuYW1lc3BhY2UgaXMgbm90IHRoZSBpbml0aWFsIG9u
-ZS4NCj4gPiA+DQo+ID4gPiBUaGVzZSB0ZW1wbGF0ZSBmaWVsZHMsIHdoaWNoIHNob3VsZCBiZSBp
-bmNsdWRlZCB3aGVuZXZlciB0aGUgaXVpZCBhbmQgdGhlDQo+ID4gPiBpZ2lkIGZpZWxkcyBhcmUg
-aW5jbHVkZWQsIGFsbG93IHJlbW90ZSB2ZXJpZmllcnMgdG8gZmluZCB0aGUgb3JpZ2luYWwgVUlE
-DQo+ID4gPiBhbmQgR0lEIG9mIHRoZSBpbm9kZSBkdXJpbmcgc2lnbmF0dXJlIHZlcmlmaWNhdGlv
-bi4gVGhlIGl1aWQgYW5kIGlnaWQNCj4gPiA+IGZpZWxkcyBpbmNsdWRlIHRoZSBtYXBwZWQgVUlE
-IGFuZCBHSUQgd2hlbiB0aGUgaW5vZGUgaXMgaW4gYW4gaWRtYXBwZWQNCj4gPiA+IG1vdW50Lg0K
-PiA+ID4NCj4gPiA+IFRoaXMgc29sdXRpb24gaGFzIGJlZW4gcHJlZmVycmVkIHRvIHByb3ZpZGlu
-ZyBhbHdheXMgdGhlIG9yaWdpbmFsIFVJRCBhbmQNCj4gPiA+IEdJRCwgcmVnYXJkbGVzcyBvZiB3
-aGV0aGVyIHRoZSBpbm9kZSBpcyBpbiBhbiBpZG1hcHBlZCBtb3VudCBvciBub3QsIGFzDQo+ID4g
-PiB0aGUgbWFwcGVkIFVJRCBhbmQgR0lEIGFyZSB0aG9zZSBzZWVuIGJ5IHByb2Nlc3NlcyBhbmQg
-bWF0Y2hlZCB3aXRoDQo+IHRoZSBJTUENCj4gPiA+IHBvbGljeS4NCj4gPg0KPiA+IEhtLCBsb29r
-aW5nIGF0IHRoZSBjb2RlIHRoaXMgZG9lc24ndCBzZWVtIGxpa2UgYSBnb29kIGlkZWEgdG8gbWUu
-IEkNCj4gPiB0aGluayB3ZSBzaG91bGQgYXZvaWQgdGhhdCBhbmQganVzdCByZWx5IG9uIHRoZSBv
-cmlnaW5hbCB1aWQgYW5kIGdpZC4NCj4gDQo+IEl0J2QgYmUgb2sgdG8gaW5jbHVkZSB0aGUgbWFw
-cGVkIHVpZC9naWQgYnV0IGRvbid0IGNvcHkgdGhlIG1hcHBpbmcNCj4gaXRzZWxmLg0KDQpVaG0s
-IHdlIHdvdWxkIG5lZWQgYSB3YXkgdG8gb2J0YWluIHRoZSBvcmlnaW5hbCBVSUQgYW5kIEdJRCB0
-bw0KdmVyaWZ5IHRoZSBwb3J0YWJsZSBzaWduYXR1cmUuDQoNClJvYmVydG8NCg0KSFVBV0VJIFRF
-Q0hOT0xPR0lFUyBEdWVzc2VsZG9yZiBHbWJILCBIUkIgNTYwNjMNCk1hbmFnaW5nIERpcmVjdG9y
-OiBMaSBQZW5nLCBMaSBKaWFuLCBTaGkgWWFubGkNCg==
+
+On 5/19/21 5:33 PM, David Hildenbrand wrote:
+> On 19.05.21 13:45, Anshuman Khandual wrote:
+>>
+>>
+>> On 5/18/21 2:48 PM, Muchun Song wrote:
+>>> The preparation of supporting freeing vmemmap associated with each
+>>> HugeTLB page is ready, so we can support this feature for arm64.
+>>>
+>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>> ---
+>>>   arch/arm64/mm/mmu.c | 5 +++++
+>>>   fs/Kconfig          | 2 +-
+>>>   2 files changed, 6 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>>> index 5d37e461c41f..967b01ce468d 100644
+>>> --- a/arch/arm64/mm/mmu.c
+>>> +++ b/arch/arm64/mm/mmu.c
+>>> @@ -23,6 +23,7 @@
+>>>   #include <linux/mm.h>
+>>>   #include <linux/vmalloc.h>
+>>>   #include <linux/set_memory.h>
+>>> +#include <linux/hugetlb.h>
+>>>     #include <asm/barrier.h>
+>>>   #include <asm/cputype.h>
+>>> @@ -1134,6 +1135,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+>>>       pmd_t *pmdp;
+>>>         WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+>>> +
+>>> +    if (is_hugetlb_free_vmemmap_enabled() && !altmap)
+>>> +        return vmemmap_populate_basepages(start, end, node, altmap);
+>>
+>> Not considering the fact that this will force the kernel to have only
+>> base page size mapping for vmemmap (unless altmap is also requested)
+>> which might reduce the performance, it also enables vmemmap mapping to
+>> be teared down or build up at runtime which could potentially collide
+>> with other kernel page table walkers like ptdump or memory hotremove
+>> operation ! How those possible collisions are protected right now ?
+> 
+> Hi Anshuman,
+> 
+> Memory hotremove is not an issue IIRC. At the time memory is removed, all huge pages either have been migrated away or dissolved; the vmemmap is stable.
+
+But what happens when a hot remove section's vmemmap area (which is being
+teared down) is nearby another vmemmap area which is either created or
+being destroyed for HugeTLB alloc/free purpose. As you mentioned HugeTLB
+pages inside the hot remove section might be safe. But what about other
+HugeTLB areas whose vmemmap area shares page table entries with vmemmap
+entries for a section being hot removed ? Massive HugeTLB alloc/use/free
+test cycle using memory just adjacent to a memory hotplug area, which is
+always added and removed periodically, should be able to expose this problem.
+
+IIUC unlike vmalloc(), vmemap mapping areas in the kernel page table were
+always constant unless there are hotplug add or remove operations which
+are protected with a hotplug lock. Now with this change, we could have
+simultaneous walking and add or remove of the vmemap areas without any
+synchronization. Is not this problematic ?
+
+On arm64 memory hot remove operation empties free portions of the vmemmap
+table after clearing them. Hence all concurrent walkers (hugetlb_vmemmap,
+hot remove, ptdump etc) need to be synchronized against hot remove.
+
+From arch/arm64/mm/mmu.c
+
+void vmemmap_free(unsigned long start, unsigned long end,
+                struct vmem_altmap *altmap)
+{
+#ifdef CONFIG_MEMORY_HOTPLUG
+        WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+
+        unmap_hotplug_range(start, end, true, altmap);
+        free_empty_tables(start, end, VMEMMAP_START, VMEMMAP_END);
+#endif
+}
+
+> 
+> vmemmap access (accessing the memmap via a virtual address) itself is not an issue. Manually walking (vmemmap) page tables might behave 
+
+Right.
+
+differently, not sure if ptdump would require any synchronization.
+
+Dumping an wrong value is probably okay but crashing because a page table
+entry is being freed after ptdump acquired the pointer is bad. On arm64,
+ptdump() is protected against hotremove via [get|put]_online_mems().
+
+> 
+>>
+>> Does not this vmemmap operation increase latency for HugeTLB usage ?
+>> Should not this runtime enablement also take into account some other
+>> qualifying information apart from potential memory save from struct
+>> page areas. Just wondering.
+> 
+> That's one of the reasons why it explicitly has to be enabled by an admin.
+> 
+
+config HUGETLB_PAGE_FREE_VMEMMAP
+        def_bool HUGETLB_PAGE
+        depends on X86_64 || ARM64
+        depends on SPARSEMEM_VMEMMAP
+
+Should not this depend on EXPERT as well ? Regardless, there is a sync
+problem on arm64 if this feature is enabled as vmemmap portions can be
+freed up during hot remove operation. But wondering how latency would
+be impacted if vmemap_remap_[alloc|free]() add [get|put]_online_mems().
