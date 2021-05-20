@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C166638A4A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B18D838A4FE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235688AbhETKH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:07:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37248 "EHLO mail.kernel.org"
+        id S235401AbhETKLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:11:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235047AbhETKBx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:01:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E363661421;
-        Thu, 20 May 2021 09:39:36 +0000 (UTC)
+        id S235059AbhETKBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:01:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 23E7F6142E;
+        Thu, 20 May 2021 09:39:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503577;
-        bh=w6JjWfvx0/KxablD9QkYLIjUpPO76ZMO4tRBlwAJeuE=;
+        s=korg; t=1621503579;
+        bh=o13Mt/lsms794xZ8ZPtyRv9zpO+Y43TGEBGBmRL6zhM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hfK9wu3IzD4K+DynlfiNuEzVA073a1oguXXsrMSxLPLDGYDLaPcf4ThNaqLhAtd7i
-         YrInKZPtToVQo/AgqmXckMVuIP2mL3Ryd4tQOH+7+aOaas9xJYWfcriagkpIfnq/OF
-         ODzBsEYNryXiQ5V6xFGsaBiBL4NpxK9+ud20Uwz8=
+        b=Pyg8kUrQkWFQ8loy5yzg31DEJRMGLlx7kvT4XKCk91W3RTmn2+rHoOAxJzpPfYORE
+         77QjSyXvCInUpKrZpTHie6YnGC5eAoQj1ABjwCF3D80PgstiO6rDBVYl7lQpf51KhY
+         O7Ucvu2Aiok2aCJOEhqfMFMRmefcpmiJrQQnFJPA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@ucw.cz>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 283/425] ath10k: Fix ath10k_wmi_tlv_op_pull_peer_stats_info() unlock without lock
-Date:   Thu, 20 May 2021 11:20:52 +0200
-Message-Id: <20210520092140.746525449@linuxfoundation.org>
+Subject: [PATCH 4.19 284/425] powerpc/52xx: Fix an invalid ASM expression (addi used instead of add)
+Date:   Thu, 20 May 2021 11:20:53 +0200
+Message-Id: <20210520092140.779206343@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -41,40 +41,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shuah Khan <skhan@linuxfoundation.org>
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-[ Upstream commit eaaf52e4b866f265eb791897d622961293fd48c1 ]
+[ Upstream commit 8a87a507714386efc39c3ae6fa24d4f79846b522 ]
 
-ath10k_wmi_tlv_op_pull_peer_stats_info() could try to unlock RCU lock
-winthout locking it first when peer reason doesn't match the valid
-cases for this function.
+  AS      arch/powerpc/platforms/52xx/lite5200_sleep.o
+arch/powerpc/platforms/52xx/lite5200_sleep.S: Assembler messages:
+arch/powerpc/platforms/52xx/lite5200_sleep.S:184: Warning: invalid register expression
 
-Add a default case to return without unlocking.
+In the following code, 'addi' is wrong, has to be 'add'
 
-Fixes: 09078368d516 ("ath10k: hold RCU lock when calling ieee80211_find_sta_by_ifaddr()")
-Reported-by: Pavel Machek <pavel@ucw.cz>
-Signed-off-by: Shuah Khan <skhan@linuxfoundation.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210406230228.31301-1-skhan@linuxfoundation.org
+	/* local udelay in sram is needed */
+  udelay: /* r11 - tb_ticks_per_usec, r12 - usecs, overwrites r13 */
+	mullw	r12, r12, r11
+	mftb	r13	/* start */
+	addi	r12, r13, r12 /* end */
+
+Fixes: ee983079ce04 ("[POWERPC] MPC5200 low power mode")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/cb4cec9131c8577803367f1699209a7e104cec2a.1619025821.git.christophe.leroy@csgroup.eu
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/wmi-tlv.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/powerpc/platforms/52xx/lite5200_sleep.S | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/wmi-tlv.c b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-index 04dc5714aa72..243887fdb343 100644
---- a/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-+++ b/drivers/net/wireless/ath/ath10k/wmi-tlv.c
-@@ -465,6 +465,9 @@ static void ath10k_wmi_event_tdls_peer(struct ath10k *ar, struct sk_buff *skb)
- 					GFP_ATOMIC
- 					);
- 		break;
-+	default:
-+		kfree(tb);
-+		return;
- 	}
- 
- exit:
+diff --git a/arch/powerpc/platforms/52xx/lite5200_sleep.S b/arch/powerpc/platforms/52xx/lite5200_sleep.S
+index 3a9969c429b3..054f927bfef9 100644
+--- a/arch/powerpc/platforms/52xx/lite5200_sleep.S
++++ b/arch/powerpc/platforms/52xx/lite5200_sleep.S
+@@ -181,7 +181,7 @@ sram_code:
+   udelay: /* r11 - tb_ticks_per_usec, r12 - usecs, overwrites r13 */
+ 	mullw	r12, r12, r11
+ 	mftb	r13	/* start */
+-	addi	r12, r13, r12 /* end */
++	add	r12, r13, r12 /* end */
+     1:
+ 	mftb	r13	/* current */
+ 	cmp	cr0, r13, r12
 -- 
 2.30.2
 
