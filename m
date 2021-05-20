@@ -2,68 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E347538B67B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:01:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B0FE38B682
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:01:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236522AbhETTCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:02:34 -0400
-Received: from msg-2.mailo.com ([213.182.54.12]:48110 "EHLO msg-2.mailo.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234486AbhETTCc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:02:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
-        t=1621537260; bh=TWiNdURZ1lEp1xpr9VOsip1Riwkh1Q/WyXtAZIvp1sQ=;
-        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:MIME-Version:
-         Content-Type;
-        b=SPPufKj9kVK2eOk1QrPiYUYx0AWJv1/WFfUYzBgiUpPuZpQgqLOXHo/MHP9caAPgG
-         KtNMVaHwX4/juv1rN0T9QGc5rSALATZXkKo2jJemMO/RgxLBDLiREGsA5W0NtxqhRb
-         w28YgHe5zz8VUIJU01uc+6fqqvnmhQtJRhdPm5aM=
-Received: by 192.168.90.15 [192.168.90.15] with ESMTP
-        via ip-206.mailobj.net [213.182.55.206]
-        Thu, 20 May 2021 21:00:59 +0200 (CEST)
-X-EA-Auth: kLc09m6AjTNTFQ0pDF3o6BRXVrApVEscOKBZcnucRK2aUaeIHyBXoUEW0budx8Cf2EqYjjCVjRFTxnnHUlLs7BB0iKLx2byc
-Date:   Fri, 21 May 2021 00:30:41 +0530
-From:   Deepak R Varma <drv@mailo.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, drv@mailo.com
-Subject: [PATCH RESEND 0/5] staging: media: atomisp: code formatting changes
-Message-ID: <cover.1619850663.git.drv@mailo.com>
+        id S236603AbhETTCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:02:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236505AbhETTCd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 15:02:33 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A312CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:01:10 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id r12so18727586wrp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:01:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2DRojMIGvqGqfd6599LIXINUCsrKqBTGuM0HeJNOCqY=;
+        b=BhW/gXf8pWSAZIebe6nxATFBDBMilShlmVRZzJL0Z7cmhZ34wH8yiODRYqZmjd0Bbw
+         5FLnj7yUL68hbF/XNuFKxoi0pfP4IxkJ9c+tMdT028yF+NF5NC4AbnGloFwc4U/IgJJb
+         HkBmb6/op7D4qo7GUrP+MqqfwZ6YMDM+Oxk8Miamy9HC5vBwZMh5J6OxRXCPhVYondTN
+         OQQCjBR3wG190MivkxGFRMZfvJSZhA+Pb19zi5r6dE1ffLHfPQK8OngnGA2VqwGj8doy
+         fyt+TWfbk49ktvoZDPBPDYLY6+bP73h8SefLmUIpQlMpElMBtYVTr7MMgHl7IQ2YM0NU
+         tiQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2DRojMIGvqGqfd6599LIXINUCsrKqBTGuM0HeJNOCqY=;
+        b=I8or9gwpogCjZX/5fCCIHTgftPodfAKXxiHKcE/gaD2gzN2ZUS/JXlNIw9Jwx0lGRi
+         FawFrj/sUfki4/SqN9CIawhpJDNwe6sNDpTwVhh6+dURrLLVYVsVmD03Rxwt4EMKR8nr
+         0GevJH4N+bumbkhx82xvir5xh8vX5D00MLWyyhLoN3LiJsz1+ritb7uffAmh/9lIqHCo
+         zOjZc175k6Ia+rQ6lZk37CwClm3ElcNc/WpjSZghnraGPDPcQ+y+OCmSyAIlVjUDZJW7
+         OnhR9aHBpQUYgv9NpZSdW01/GCxHx/1hFpmCe4MVjfK8cMx8IgYFSoX2IugX40yGD1Mn
+         1fXQ==
+X-Gm-Message-State: AOAM532gF6yK/RKTjMiknTLudEFv91LQiuwi85uXFFgJhGcFiVf5EHzh
+        usKLeTeUnKCjC6wZV9gadgYn4w==
+X-Google-Smtp-Source: ABdhPJyFFyrDcMhhbJFcjr+Bz0N+pSMlyvPDFQtGOrLH3IV1YMX4KzVeEjRTqSnwuhvjNtamRbprxA==
+X-Received: by 2002:adf:f58e:: with SMTP id f14mr5759911wro.258.1621537269261;
+        Thu, 20 May 2021 12:01:09 -0700 (PDT)
+Received: from dell.default ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id p20sm9011899wmq.10.2021.05.20.12.01.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 12:01:08 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alain Volmat <alain.volmat@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Anders Berg <anders.berg@lsi.com>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Cedric Madianga <cedric.madianga@gmail.com>,
+        Dennis Kovalev <dkovalev@ru.mvista.com>,
+        Doug Anderson <dianders@chromium.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-tegra@vger.kernel.org, Marek Vasut <marex@denx.de>,
+        Maxime Coquelin <maxime.coquelin@st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Max Schwarz <max.schwarz@online.de>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Peter Korsgaard <peter@korsgaard.com>,
+        Peter Rosin <peda@axentia.se>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
+        Rudolf Marek <r.marek@assembler.cz>,
+        Sachin Verma <sachin.verma@st.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shariff Md <smohammed@nvidia.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thor Thayer <thor.thayer@linux.intel.com>,
+        Tomoya MORINAGA <tomoya.rohm@gmail.com>,
+        Vaibhav Gupta <vaibhavgupta40@gmail.com>,
+        Vitaly Wool <vwool@ru.mvista.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wolfram Sang <wsa@kernel.org>
+Subject: [PATCH 00/16] Rid W=1 warnings from I2C
+Date:   Thu, 20 May 2021 20:00:49 +0100
+Message-Id: <20210520190105.3772683-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch set overall improves the code organisation and readability of
-the files of atomisp drivers. There are several complaints reported by
-checkpatch including ERROR and WARNING types on the files under atomisp/pci
-directory.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-The changes are proposed on a per file basis since there are many
-issues to be addressed in each individual file. The patches are built
-on the media_tree/for-v5.14-out1 tree/branch.
+Lee Jones (16):
+  i2c: busses: i2c-nomadik: Fix formatting issue pertaining to 'timeout'
+  i2c: muxes: i2c-arb-gpio-challenge: Demote non-conformant kernel-doc
+    headers
+  i2c: busses: i2c-ali1563: File headers are not good candidates for
+    kernel-doc
+  i2c: busses: i2c-altera: Fix formatting issue in struct and demote
+    unworthy kernel-doc headers
+  i2c: busses: i2c-axxia: Fix formatting issue in struct and demote
+    unworthy kernel-doc headers
+  i2c: busses: i2c-cadence: Fix incorrectly documented 'enum
+    cdns_i2c_slave_mode'
+  i2c: busses: i2c-designware-master: Fix misnaming of
+    'i2c_dw_init_master()'
+  i2c: busses: i2c-eg20t: Fix 'bad line' issue and provide description
+    for 'msgs' param
+  i2c: busses: i2c-mxs: Demote barely half complete kernel-doc header
+  i2c: busses: i2c-ocores: Place the expected function names into the
+    documentation headers
+  i2c: busses: i2c-pnx: Provide descriptions for 'alg_data' data
+    structure
+  i2c: busses: i2c-rk3x: Demote unworthy headers and help more complete
+    ones
+  i2c: busses: i2c-st: Fix copy/paste function misnaming issues
+  i2c: busses: i2c-stm32f4: Remove incorrectly placed ' ' from function
+    name
+  i2c: busses: i2c-tegra-bpmp: Demote kernel-doc abuses
+  i2c: busses: i2c-st: trivial: Fix spelling issue 'enmpty => empty'
 
+ drivers/i2c/busses/i2c-ali1563.c           |  2 +-
+ drivers/i2c/busses/i2c-altera.c            |  9 ++++-----
+ drivers/i2c/busses/i2c-axxia.c             | 11 +++++------
+ drivers/i2c/busses/i2c-cadence.c           |  2 +-
+ drivers/i2c/busses/i2c-designware-master.c |  2 +-
+ drivers/i2c/busses/i2c-eg20t.c             |  3 ++-
+ drivers/i2c/busses/i2c-mxs.c               |  2 +-
+ drivers/i2c/busses/i2c-nomadik.c           |  2 +-
+ drivers/i2c/busses/i2c-ocores.c            |  8 ++++----
+ drivers/i2c/busses/i2c-pnx.c               |  8 ++++----
+ drivers/i2c/busses/i2c-rk3x.c              | 18 +++++++++---------
+ drivers/i2c/busses/i2c-st.c                |  4 ++--
+ drivers/i2c/busses/i2c-stm32f4.c           |  2 +-
+ drivers/i2c/busses/i2c-tegra-bpmp.c        |  4 ++--
+ drivers/i2c/muxes/i2c-arb-gpio-challenge.c |  4 ++--
+ 15 files changed, 40 insertions(+), 41 deletions(-)
 
-Deepak R Varma (5):
-  staging: media: atomisp: code formatting changes atomisp_csi2.c
-  staging: media: atomisp: code formatting changes sh_css_mipi.c
-  staging: media: atomisp: code formatting changes sh_css_params.c
-  staging: media: atomisp: code formatting changes sh_css_sp.c
-  staging: media: atomisp: code formatting changes sh_css_version.c
-
- .../staging/media/atomisp/pci/atomisp_csi2.c  |  72 +-
- .../staging/media/atomisp/pci/sh_css_mipi.c   | 170 ++--
- .../staging/media/atomisp/pci/sh_css_params.c | 929 +++++++++---------
- drivers/staging/media/atomisp/pci/sh_css_sp.c | 471 ++++-----
- .../media/atomisp/pci/sh_css_version.c        |   4 +-
- 5 files changed, 754 insertions(+), 892 deletions(-)
-
+Cc: Alain Volmat <alain.volmat@foss.st.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Anders Berg <anders.berg@lsi.com>
+Cc: Andreas Larsson <andreas@gaisler.com>
+Cc: Andrew Lunn <andrew@lunn.ch>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Cedric Madianga <cedric.madianga@gmail.com>
+Cc: Dennis Kovalev <dkovalev@ru.mvista.com>
+Cc: Doug Anderson <dianders@chromium.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Heiko Stuebner <heiko@sntech.de>
+Cc: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Krzysztof Adamski <krzysztof.adamski@nokia.com>
+Cc: Linus Walleij <linus.walleij@linaro.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-i2c@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+Cc: linux-stm32@st-md-mailman.stormreply.com
+Cc: linux-tegra@vger.kernel.org
+Cc: Marek Vasut <marex@denx.de>
+Cc: Maxime Coquelin <maxime.coquelin@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Max Schwarz <max.schwarz@online.de>
+Cc: Michal Simek <michal.simek@xilinx.com>
+Cc: Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc: NXP Linux Team <linux-imx@nxp.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
+Cc: Peter Korsgaard <peter@korsgaard.com>
+Cc: Peter Rosin <peda@axentia.se>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
+Cc: Rudolf Marek <r.marek@assembler.cz>
+Cc: Sachin Verma <sachin.verma@st.com>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shariff Md <smohammed@nvidia.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Srinidhi Kasagar <srinidhi.kasagar@stericsson.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Thor Thayer <thor.thayer@linux.intel.com>
+Cc: Tomoya MORINAGA <tomoya.rohm@gmail.com>
+Cc: Vaibhav Gupta <vaibhavgupta40@gmail.com>
+Cc: Vitaly Wool <vwool@ru.mvista.com>
+Cc: Vladimir Zapolskiy <vz@mleia.com>
+Cc: Wolfram Sang <wsa@kernel.org>
 -- 
-2.30.2
-
-
+2.31.1
 
