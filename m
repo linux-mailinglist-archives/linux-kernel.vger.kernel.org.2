@@ -2,57 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39AC38A51E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F388D38A52D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234424AbhETKNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:13:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37280 "EHLO mail.kernel.org"
+        id S235986AbhETKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:13:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235585AbhETKFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:05:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09C3D61353;
-        Thu, 20 May 2021 09:41:08 +0000 (UTC)
-Date:   Thu, 20 May 2021 11:41:05 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>
-Cc:     zohar@linux.ibm.com, mjg59@srcf.ucam.org,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/7] ima: Introduce template fields mntuidmap and
- mntgidmap
-Message-ID: <20210520094105.x2k3bc53xejfl5b2@wittgenstein>
-References: <20210520085701.465369-1-roberto.sassu@huawei.com>
- <20210520085701.465369-4-roberto.sassu@huawei.com>
- <20210520093659.oeeytegx2tvzp33e@wittgenstein>
+        id S231854AbhETKFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:05:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A2DA6193E;
+        Thu, 20 May 2021 09:41:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621503680;
+        bh=vZajh5UbMpDz/Iqesx+IBHa7vHiuendi2Mqnx13uUb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LKltMB401mPIjUwQwe43sMun7geDKntsB7NV4npSSnbzASTxoEKGNgZeVJJ8Nnfn8
+         P1mDdg75HvhQKqRazcvWorB42JE8FGHEdUxmUSTV7wbuKCOS7xCp0mu0HmOOfqJKiJ
+         Pghm2eUI0GDQ+gAchnKg1c05CLOPloPcdUDoJWLYTle4T6An3IeCQasGEoNRlgQ6r+
+         kDSHeTcylhiG5T09AlB+yuQvb9dqx+HrpzBCK45UmqdEs77qfFWCAfojYW+V0DP9At
+         /t6TbUY12DE7Vq8uA95f3zCz3MrE6/ix6iMeJQP5YT6PpnVfhLzrOCCuRxr7Dyx+0h
+         FDjOwob/ayeSQ==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1ljfB9-0002BA-O9; Thu, 20 May 2021 11:41:19 +0200
+Date:   Thu, 20 May 2021 11:41:19 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
+Message-ID: <YKYuv+pD4lgmrwdu@hovoldconsulting.com>
+References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
+ <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
+ <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
+ <YKYe4rgGTDRfq+va@hovoldconsulting.com>
+ <YKYo5EBBDbSDiIwD@smile.fi.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520093659.oeeytegx2tvzp33e@wittgenstein>
+In-Reply-To: <YKYo5EBBDbSDiIwD@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:37:07AM +0200, Christian Brauner wrote:
-> On Thu, May 20, 2021 at 10:56:57AM +0200, Roberto Sassu wrote:
-> > This patch introduces the new template fields mntuidmap and mntgidmap,
-> > which include respectively the UID and GID mappings of the idmapped mount,
-> > if the user namespace is not the initial one.
+On Thu, May 20, 2021 at 12:16:20PM +0300, Andy Shevchenko wrote:
+> On Thu, May 20, 2021 at 10:33:38AM +0200, Johan Hovold wrote:
+> > On Thu, May 20, 2021 at 11:15:31AM +0300, Andy Shevchenko wrote:
+> > > On Thu, May 20, 2021 at 11:07 AM Johan Hovold <johan@kernel.org> wrote:
+> > > > On Tue, May 18, 2021 at 11:33:39AM +0300, Andy Shevchenko wrote:
 > > 
-> > These template fields, which should be included whenever the iuid and the
-> > igid fields are included, allow remote verifiers to find the original UID
-> > and GID of the inode during signature verification. The iuid and igid
-> > fields include the mapped UID and GID when the inode is in an idmapped
-> > mount.
-> > 
-> > This solution has been preferred to providing always the original UID and
-> > GID, regardless of whether the inode is in an idmapped mount or not, as
-> > the mapped UID and GID are those seen by processes and matched with the IMA
-> > policy.
-> 
-> Hm, looking at the code this doesn't seem like a good idea to me. I
-> think we should avoid that and just rely on the original uid and gid.
+> > > > The _if suffix here is too vague.
+> > > >
+> > > > Please use a more descriptive name so that you don't need to look at the
+> > > > implementation to understand what the macro does.
+> > > >
+> > > > Perhaps call it
+> > > >
+> > > >         for_each_gpio_desc_with_flag()
 
-It'd be ok to include the mapped uid/gid but don't copy the mapping
-itself.
+> > > > or just add the more generic macro
+> > > >
+> > > >         for_each_gpio_desc()
+> > > >
+> > > > and open-code the test so that it's clear what's going on here.
+> > 
+> > FWIW, NAK due to the non-descriptive for_each_desc_if() name.
+> 
+> Btw, missed argument
+> 
+> ..._with_flag(..., FLAG_...)
+> 
+> breaks the DRY principle. If you read current code it's clear with that
+> 
+> _if(..., FLAG_...)
+
+That we have precisely zero for_each_ macros with an _if suffix should
+also give you a hint that this is not a good idea.
+
+Again, you shouldn't have to look at the implementation to understand
+what a helper does.
+
+Johan
