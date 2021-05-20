@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2432538A6D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBB6C38A6D1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237258AbhETKa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:30:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50912 "EHLO mail.kernel.org"
+        id S237252AbhETKau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:30:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48156 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235859AbhETKR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:17:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C48B613DA;
-        Thu, 20 May 2021 09:46:24 +0000 (UTC)
+        id S235897AbhETKRa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:17:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 87100619AA;
+        Thu, 20 May 2021 09:46:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503985;
-        bh=qbbmotqRcQsqZb8LKliq760hLm0WV5WZAvv/LQ2y9qw=;
+        s=korg; t=1621503990;
+        bh=tlO2siHJUQfvhnKHtCRO7YA5YCYNwzREQxpqx/9Zkow=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Am5QtegRppxPdM8O57aw2vtWYjOswR9I1sm6FOnw+kKQhuei78sC0e86m+RV8aO9B
-         Iy7PlQ95iv80ctRLXzsCOLbz+aRp1cFibVZs03QIC4ra/rPyNrjoJtZgIze51Ruz7+
-         m3jJM0AdcbK1HtdXcojgb4YBwuHgSotKrh7tZqts=
+        b=iRVfZMgBI4JibeYSO+PJ8gTPibUl10PtGW5xcZ4Vg5zF9pR90sD6TRtZAftn1xkvl
+         2Fzkz/VIDzn2g3Vr7XDAuaCWKHI+3rIFytAnhcglS/Wtwz1ucneFrm//iLAiy4zocz
+         qg6fxfiNG5HOrvLo5GUxpse6YBYCMA972ZXlN1j0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        stable@vger.kernel.org, Qu Wenruo <wqu@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        David Sterba <dsterba@suse.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 042/323] intel_th: Consistency and off-by-one fix
-Date:   Thu, 20 May 2021 11:18:54 +0200
-Message-Id: <20210520092121.547462229@linuxfoundation.org>
+Subject: [PATCH 4.14 044/323] btrfs: convert logic BUG_ON()s in replace_path to ASSERT()s
+Date:   Thu, 20 May 2021 11:18:56 +0200
+Message-Id: <20210520092121.613364104@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,47 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Machek <pavel@ucw.cz>
+From: Josef Bacik <josef@toxicpanda.com>
 
-[ Upstream commit 18ffbc47d45a1489b664dd68fb3a7610a6e1dea3 ]
+[ Upstream commit 7a9213a93546e7eaef90e6e153af6b8fc7553f10 ]
 
-Consistently use "< ... +1" in for loops.
+A few BUG_ON()'s in replace_path are purely to keep us from making
+logical mistakes, so replace them with ASSERT()'s.
 
-Fix of-by-one in for_each_set_bit().
-
-Signed-off-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Link: https://lore.kernel.org/lkml/20190724095841.GA6952@amd/
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Link: https://lore.kernel.org/r/20210414171251.14672-6-alexander.shishkin@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hwtracing/intel_th/gth.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/btrfs/relocation.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
-index 2a3ae9006c58..79473ba48d0c 100644
---- a/drivers/hwtracing/intel_th/gth.c
-+++ b/drivers/hwtracing/intel_th/gth.c
-@@ -485,7 +485,7 @@ static void intel_th_gth_disable(struct intel_th_device *thdev,
- 	output->active = false;
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index c01239d1f1e6..313547442a6e 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -1808,8 +1808,8 @@ int replace_path(struct btrfs_trans_handle *trans,
+ 	int ret;
+ 	int slot;
  
- 	for_each_set_bit(master, gth->output[output->port].master,
--			 TH_CONFIGURABLE_MASTERS) {
-+			 TH_CONFIGURABLE_MASTERS + 1) {
- 		gth_master_set(gth, master, -1);
- 	}
- 	spin_unlock(&gth->gth_lock);
-@@ -624,7 +624,7 @@ static void intel_th_gth_unassign(struct intel_th_device *thdev,
- 	othdev->output.port = -1;
- 	othdev->output.active = false;
- 	gth->output[port].output = NULL;
--	for (master = 0; master <= TH_CONFIGURABLE_MASTERS; master++)
-+	for (master = 0; master < TH_CONFIGURABLE_MASTERS + 1; master++)
- 		if (gth->master[master] == port)
- 			gth->master[master] = -1;
- 	spin_unlock(&gth->gth_lock);
+-	BUG_ON(src->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
+-	BUG_ON(dest->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID);
++	ASSERT(src->root_key.objectid == BTRFS_TREE_RELOC_OBJECTID);
++	ASSERT(dest->root_key.objectid != BTRFS_TREE_RELOC_OBJECTID);
+ 
+ 	last_snapshot = btrfs_root_last_snapshot(&src->root_item);
+ again:
+@@ -1841,7 +1841,7 @@ again:
+ 	parent = eb;
+ 	while (1) {
+ 		level = btrfs_header_level(parent);
+-		BUG_ON(level < lowest_level);
++		ASSERT(level >= lowest_level);
+ 
+ 		ret = btrfs_bin_search(parent, &key, level, &slot);
+ 		if (ret && slot > 0)
 -- 
 2.30.2
 
