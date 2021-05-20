@@ -2,64 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF831389FE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21824389FED
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:35:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhETIfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:35:54 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:58421 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbhETIfx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:35:53 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lje8P-00027g-0B; Thu, 20 May 2021 08:34:25 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Clemens Ladisch <clemens@ladisch.de>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err issue
-Date:   Thu, 20 May 2021 09:34:24 +0100
-Message-Id: <20210520083424.6685-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S231260AbhETIhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:37:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:34458 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230102AbhETIhG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 04:37:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621499744; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=iFqDqDGNusFcTWoYhOsnJAlpgmr8zyG2LCD23iwtO7w=;
+        b=MUwQtOhhpue1M5O6jjNLv9xobUdzxKOA5+3Vt7pjtf53XjdD6+KiToornxONG690fK+Thk
+        t6GTmZgDif0JqrJJevJ/7y2rOxS76+cR2GQtjhJzIMRG4H/PtRX/Evyuc6dapB4g7jxOuh
+        MmHilKdPyKM4O6WkmW3LHQte4B/zUCk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 590F7AAFD;
+        Thu, 20 May 2021 08:35:44 +0000 (UTC)
+Date:   Thu, 20 May 2021 10:35:43 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        shuah@kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, patches@opensource.cirrus.com
+Subject: Re: [PATCH v8 RESEND 1/4] lib: vsprintf: scanf: Negative number must
+ have field width > 1
+Message-ID: <YKYfX5Vp+4onbIFj@alley>
+References: <20210514161206.30821-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210514161206.30821-1-rf@opensource.cirrus.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Fri 2021-05-14 17:12:03, Richard Fitzgerald wrote:
+> If a signed number field starts with a '-' the field width must be > 1,
+> or unlimited, to allow at least one digit after the '-'.
+> 
+> This patch adds a check for this. If a signed field starts with '-'
+> and field_width == 1 the scanf will quit.
+> 
+> It is ok for a signed number field to have a field width of 1 if it
+> starts with a digit. In that case the single digit can be converted.
+> 
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> Reviewed-by: Petr Mladek <pmladek@suse.com>
+> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Currently in the case where the payload_length is less than the
-cip_header_size the error return variable err is not being set
-and function parse_ir_ctx_header can return an uninitialized
-error return value. Fix this by setting err to zero.
+The entrire patchset has been committed into print/linux.git,
+branch for-5.14-vsprintf-scanf.
 
-Addresses-Coverity: ("Uninitialized scalar variable")
-Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/firewire/amdtp-stream.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks for reminder. I am sorry. It somehow fallen from my radar.
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index af5c3629f1ac..242b1147d768 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -663,6 +663,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
- 		} else {
- 			// Handle the cycle so that empty packet arrives.
- 			cip_header = NULL;
-+			err = 0;
- 			*data_blocks = 0;
- 			*syt = 0;
- 		}
--- 
-2.31.1
-
+Best Regards,
+Petr
