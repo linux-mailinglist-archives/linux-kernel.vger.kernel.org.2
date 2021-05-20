@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C2038A18B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F7AE38A206
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:36:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbhETJb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:31:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
+        id S233065AbhETJhX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:37:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34944 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231697AbhETJ3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:29:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6786613C4;
-        Thu, 20 May 2021 09:27:20 +0000 (UTC)
+        id S232186AbhETJfE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:35:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 300D8613BD;
+        Thu, 20 May 2021 09:29:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502841;
-        bh=eaFzXUGPD19UebBi6DqlyNQJbVt59XWMqXQiVNeK6Cs=;
+        s=korg; t=1621502964;
+        bh=pzL1qU+2Rr0Nm+QO054FvBXcIonwTHJVm2YLEYIoKR0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5DaLJuuIOjh0U3QWEjXoOoD7/c73gUePY616HefDTGJkbIBNXd/mSFHYYI1k1KnE
-         LpPEM1jDNdPaC3Nq/WEjn91LIfHQN+r9nasOg1UL3CL+yhUcNhb1/E7xbeXr3pmtxI
-         s+T/DEkg2wv7cJS0TFtas0xpLJEUAq1fGK4YjD84=
+        b=c02nRaSjLUNyTqiowdNFxKWdUMHw59gtp/JeoJmo1lw4e7Xh1FnN2ElW5okOvN2t0
+         z7Fv2Z9igd/Z/aS4H+QoqDyL4K5R30b7jV2YrRKDXctjQbogaMTePIcF3l50WfgnoD
+         MAnqcBtE+AQq9iTetjEQt7Y1YszDU097vw2hbUHg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 37/47] net:CXGB4: fix leak if sk_buff is not used
-Date:   Thu, 20 May 2021 11:22:35 +0200
-Message-Id: <20210520092054.738614589@linuxfoundation.org>
+Subject: [PATCH 5.4 15/37] Input: silead - add workaround for x86 BIOS-es which bring the chip up in a stuck state
+Date:   Thu, 20 May 2021 11:22:36 +0200
+Message-Id: <20210520092052.778033835@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-References: <20210520092053.559923764@linuxfoundation.org>
+In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
+References: <20210520092052.265851579@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,68 +40,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Íñigo Huguet <ihuguet@redhat.com>
+From: Hans de Goede <hdegoede@redhat.com>
 
-[ Upstream commit 52bfcdd87e83d9e69d22da5f26b1512ffc81deed ]
+[ Upstream commit e479187748a8f151a85116a7091c599b121fdea5 ]
 
-An sk_buff is allocated to send a flow control message, but it's not
-sent in all cases: in case the state is not appropiate to send it or if
-it can't be enqueued.
+Some buggy BIOS-es bring up the touchscreen-controller in a stuck
+state where it blocks the I2C bus. Specifically this happens on
+the Jumper EZpad 7 tablet model.
 
-In the first of these 2 cases, the sk_buff was discarded but not freed,
-producing a memory leak.
+After much poking at this problem I have found that the following steps
+are necessary to unstuck the chip / bus:
 
-Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+1. Turn off the Silead chip.
+2. Try to do an I2C transfer with the chip, this will fail in response to
+   which the I2C-bus-driver will call: i2c_recover_bus() which will unstuck
+   the I2C-bus. Note the unstuck-ing of the I2C bus only works if we first
+   drop the chip of the bus by turning it off.
+3. Turn the chip back on.
+
+On the x86/ACPI systems were this problem is seen, step 1. and 3. require
+making ACPI calls and dealing with ACPI Power Resources. This commit adds
+a workaround which runtime-suspends the chip to turn it off, leaving it up
+to the ACPI subsystem to deal with all the ACPI specific details.
+
+There is no good way to detect this bug, so the workaround gets activated
+by a new "silead,stuck-controller-bug" boolean device-property. Since this
+is only used on x86/ACPI, this will be set by model specific device-props
+set by drivers/platform/x86/touchscreen_dmi.c. Therefor this new
+device-property is not documented in the DT-bindings.
+
+Dmesg will contain the following messages on systems where the workaround
+is activated:
+
+[   54.309029] silead_ts i2c-MSSL1680:00: [Firmware Bug]: Stuck I2C bus: please ignore the next 'controller timed out' error
+[   55.373593] i2c_designware 808622C1:04: controller timed out
+[   55.582186] silead_ts i2c-MSSL1680:00: Silead chip ID: 0x80360000
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Link: https://lore.kernel.org/r/20210405202745.16777-1-hdegoede@redhat.com
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/sge.c | 16 +++++++++-------
- 1 file changed, 9 insertions(+), 7 deletions(-)
+ drivers/input/touchscreen/silead.c | 44 +++++++++++++++++++++++++++---
+ 1 file changed, 40 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-index 3334c9e2152a..546301272271 100644
---- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
-@@ -2559,12 +2559,12 @@ int cxgb4_ethofld_send_flowc(struct net_device *dev, u32 eotid, u32 tc)
- 	spin_lock_bh(&eosw_txq->lock);
- 	if (tc != FW_SCHED_CLS_NONE) {
- 		if (eosw_txq->state != CXGB4_EO_STATE_CLOSED)
--			goto out_unlock;
-+			goto out_free_skb;
+diff --git a/drivers/input/touchscreen/silead.c b/drivers/input/touchscreen/silead.c
+index ad8b6a2bfd36..c8776146f1d1 100644
+--- a/drivers/input/touchscreen/silead.c
++++ b/drivers/input/touchscreen/silead.c
+@@ -20,6 +20,7 @@
+ #include <linux/input/mt.h>
+ #include <linux/input/touchscreen.h>
+ #include <linux/pm.h>
++#include <linux/pm_runtime.h>
+ #include <linux/irq.h>
+ #include <linux/regulator/consumer.h>
  
- 		next_state = CXGB4_EO_STATE_FLOWC_OPEN_SEND;
- 	} else {
- 		if (eosw_txq->state != CXGB4_EO_STATE_ACTIVE)
--			goto out_unlock;
-+			goto out_free_skb;
+@@ -335,10 +336,8 @@ static int silead_ts_get_id(struct i2c_client *client)
  
- 		next_state = CXGB4_EO_STATE_FLOWC_CLOSE_SEND;
- 	}
-@@ -2600,17 +2600,19 @@ int cxgb4_ethofld_send_flowc(struct net_device *dev, u32 eotid, u32 tc)
- 		eosw_txq_flush_pending_skbs(eosw_txq);
- 
- 	ret = eosw_txq_enqueue(eosw_txq, skb);
--	if (ret) {
--		dev_consume_skb_any(skb);
--		goto out_unlock;
+ 	error = i2c_smbus_read_i2c_block_data(client, SILEAD_REG_ID,
+ 					      sizeof(chip_id), (u8 *)&chip_id);
+-	if (error < 0) {
+-		dev_err(&client->dev, "Chip ID read error %d\n", error);
++	if (error < 0)
+ 		return error;
 -	}
-+	if (ret)
-+		goto out_free_skb;
  
- 	eosw_txq->state = next_state;
- 	eosw_txq->flowc_idx = eosw_txq->pidx;
- 	eosw_txq_advance(eosw_txq, 1);
- 	ethofld_xmit(dev, eosw_txq);
+ 	data->chip_id = le32_to_cpu(chip_id);
+ 	dev_info(&client->dev, "Silead chip ID: 0x%8X", data->chip_id);
+@@ -351,12 +350,49 @@ static int silead_ts_setup(struct i2c_client *client)
+ 	int error;
+ 	u32 status;
  
--out_unlock:
-+	spin_unlock_bh(&eosw_txq->lock);
-+	return 0;
++	/*
++	 * Some buggy BIOS-es bring up the chip in a stuck state where it
++	 * blocks the I2C bus. The following steps are necessary to
++	 * unstuck the chip / bus:
++	 * 1. Turn off the Silead chip.
++	 * 2. Try to do an I2C transfer with the chip, this will fail in
++	 *    response to which the I2C-bus-driver will call:
++	 *    i2c_recover_bus() which will unstuck the I2C-bus. Note the
++	 *    unstuck-ing of the I2C bus only works if we first drop the
++	 *    chip off the bus by turning it off.
++	 * 3. Turn the chip back on.
++	 *
++	 * On the x86/ACPI systems were this problem is seen, step 1. and
++	 * 3. require making ACPI calls and dealing with ACPI Power
++	 * Resources. The workaround below runtime-suspends the chip to
++	 * turn it off, leaving it up to the ACPI subsystem to deal with
++	 * this.
++	 */
 +
-+out_free_skb:
-+	dev_consume_skb_any(skb);
- 	spin_unlock_bh(&eosw_txq->lock);
- 	return ret;
- }
++	if (device_property_read_bool(&client->dev,
++				      "silead,stuck-controller-bug")) {
++		pm_runtime_set_active(&client->dev);
++		pm_runtime_enable(&client->dev);
++		pm_runtime_allow(&client->dev);
++
++		pm_runtime_suspend(&client->dev);
++
++		dev_warn(&client->dev, FW_BUG "Stuck I2C bus: please ignore the next 'controller timed out' error\n");
++		silead_ts_get_id(client);
++
++		/* The forbid will also resume the device */
++		pm_runtime_forbid(&client->dev);
++		pm_runtime_disable(&client->dev);
++	}
++
+ 	silead_ts_set_power(client, SILEAD_POWER_OFF);
+ 	silead_ts_set_power(client, SILEAD_POWER_ON);
+ 
+ 	error = silead_ts_get_id(client);
+-	if (error)
++	if (error) {
++		dev_err(&client->dev, "Chip ID read error %d\n", error);
+ 		return error;
++	}
+ 
+ 	error = silead_ts_init(client);
+ 	if (error)
 -- 
 2.30.2
 
