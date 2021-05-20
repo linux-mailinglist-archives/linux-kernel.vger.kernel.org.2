@@ -2,37 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D6DD38AA16
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DA9238A9C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:05:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240442AbhETLKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:10:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48312 "EHLO mail.kernel.org"
+        id S239495AbhETLGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:06:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238853AbhETKuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:50:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D230C61CE1;
-        Thu, 20 May 2021 09:59:37 +0000 (UTC)
+        id S238395AbhETKrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:47:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2C9D61CB1;
+        Thu, 20 May 2021 09:58:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504778;
-        bh=I4ry09Znr5ak66+cQSdF/fA+BuoUFvRfYRYVxZAWi2I=;
+        s=korg; t=1621504701;
+        bh=RxSDs10Oqh684eg1f1HuD5natqgFviAlM902DsIm54o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D6v3/XBwm0thtV51b7b6jg63wFKTOfbkyTApSuXHrWXLUIYdNIvkUcVup48r1L25N
-         go3mkBGO+PfEqhk02r2g1dsg18web/fKMUcBQ4dxIYf1L12VBa+cD8xyzeH6+maItt
-         o/9X0QYnMnSqFMHZ3gbhGB9fe4JNwTaa2wSPBiL8=
+        b=Ioz0+7XO/9hfs81gg/zDGvLxZayXpiURaRPS9ikPBS6YDt1yUtc/T1noEmKKPXuA7
+         wxrWb24m+rc4sP5n9fBwM2FP9oZZhyJu9Zz4lO0RapbGFZDDp0Gpgqrtb1ZRzKrAMR
+         SNLFpc2GK7M097m06IpT36tkQWx8qsosdM7WClM0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Quinn Tran <qutran@marvell.com>,
-        Mike Christie <michael.christie@oracle.com>,
-        Himanshu Madhani <himanshu.madhani@oracle.com>,
-        Daniel Wagner <dwagner@suse.de>, Lee Duncan <lduncan@suse.com>,
-        Bart Van Assche <bvanassche@acm.org>,
+        stable@vger.kernel.org, Hannes Reinecke <hare@suse.de>,
+        "Ewan D. Milne" <emilne@redhat.com>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 033/240] scsi: qla2xxx: Always check the return value of qla24xx_get_isp_stats()
-Date:   Thu, 20 May 2021 11:20:25 +0200
-Message-Id: <20210520092109.772140436@linuxfoundation.org>
+Subject: [PATCH 4.9 034/240] scsi: scsi_dh_alua: Remove check for ASC 24h in alua_rtpg()
+Date:   Thu, 20 May 2021 11:20:26 +0200
+Message-Id: <20210520092109.803933039@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -44,57 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bart Van Assche <bvanassche@acm.org>
+From: Ewan D. Milne <emilne@redhat.com>
 
-[ Upstream commit a2b2cc660822cae08c351c7f6b452bfd1330a4f7 ]
+[ Upstream commit bc3f2b42b70eb1b8576e753e7d0e117bbb674496 ]
 
-This patch fixes the following Coverity warning:
+Some arrays return ILLEGAL_REQUEST with ASC 00h if they don't support the
+RTPG extended header so remove the check for INVALID FIELD IN CDB.
 
-    CID 361199 (#1 of 1): Unchecked return value (CHECKED_RETURN)
-    3. check_return: Calling qla24xx_get_isp_stats without checking return
-    value (as is done elsewhere 4 out of 5 times).
-
-Link: https://lore.kernel.org/r/20210320232359.941-7-bvanassche@acm.org
-Cc: Quinn Tran <qutran@marvell.com>
-Cc: Mike Christie <michael.christie@oracle.com>
-Cc: Himanshu Madhani <himanshu.madhani@oracle.com>
-Cc: Daniel Wagner <dwagner@suse.de>
-Cc: Lee Duncan <lduncan@suse.com>
-Reviewed-by: Daniel Wagner <dwagner@suse.de>
-Reviewed-by: Himanshu Madhani <himanshu.madhani@oracle.com>
-Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Link: https://lore.kernel.org/r/20210331201154.20348-1-emilne@redhat.com
+Reviewed-by: Hannes Reinecke <hare@suse.de>
+Signed-off-by: Ewan D. Milne <emilne@redhat.com>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/qla2xxx/qla_attr.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ drivers/scsi/device_handler/scsi_dh_alua.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/scsi/qla2xxx/qla_attr.c b/drivers/scsi/qla2xxx/qla_attr.c
-index 33f4181ba9f7..591e2e89ae9f 100644
---- a/drivers/scsi/qla2xxx/qla_attr.c
-+++ b/drivers/scsi/qla2xxx/qla_attr.c
-@@ -1909,6 +1909,8 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
- 	vha->qla_stats.jiffies_at_last_reset = get_jiffies_64();
- 
- 	if (IS_FWI2_CAPABLE(ha)) {
-+		int rval;
-+
- 		stats = dma_alloc_coherent(&ha->pdev->dev,
- 		    sizeof(*stats), &stats_dma, GFP_KERNEL);
- 		if (!stats) {
-@@ -1918,7 +1920,11 @@ qla2x00_reset_host_stats(struct Scsi_Host *shost)
+diff --git a/drivers/scsi/device_handler/scsi_dh_alua.c b/drivers/scsi/device_handler/scsi_dh_alua.c
+index 2bc3dc6244a5..dce885276235 100644
+--- a/drivers/scsi/device_handler/scsi_dh_alua.c
++++ b/drivers/scsi/device_handler/scsi_dh_alua.c
+@@ -564,10 +564,11 @@ static int alua_rtpg(struct scsi_device *sdev, struct alua_port_group *pg)
+ 		 * even though it shouldn't according to T10.
+ 		 * The retry without rtpg_ext_hdr_req set
+ 		 * handles this.
++		 * Note:  some arrays return a sense key of ILLEGAL_REQUEST
++		 * with ASC 00h if they don't support the extended header.
+ 		 */
+ 		if (!(pg->flags & ALUA_RTPG_EXT_HDR_UNSUPP) &&
+-		    sense_hdr.sense_key == ILLEGAL_REQUEST &&
+-		    sense_hdr.asc == 0x24 && sense_hdr.ascq == 0) {
++		    sense_hdr.sense_key == ILLEGAL_REQUEST) {
+ 			pg->flags |= ALUA_RTPG_EXT_HDR_UNSUPP;
+ 			goto retry;
  		}
- 
- 		/* reset firmware statistics */
--		qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
-+		rval = qla24xx_get_isp_stats(base_vha, stats, stats_dma, BIT_0);
-+		if (rval != QLA_SUCCESS)
-+			ql_log(ql_log_warn, vha, 0x70de,
-+			       "Resetting ISP statistics failed: rval = %d\n",
-+			       rval);
- 
- 		dma_free_coherent(&ha->pdev->dev, sizeof(*stats),
- 		    stats, stats_dma);
 -- 
 2.30.2
 
