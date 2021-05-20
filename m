@@ -2,92 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AB5F38B6A0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF2AD38B6A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236794AbhETTDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:03:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236820AbhETTC7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:02:59 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F646C06134E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:01:28 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id f19-20020a05600c1553b02901794fafcfefso5400051wmg.2
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:01:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=HIrBOeC01necSSZBh3WJb8n11gnvVfu7DpmNSO/Nbdk=;
-        b=S3VMEbyBQOtP5mk7L4Z0kvrmwSyAW1Az4ghiLWeUSLmnTheeBe4hplHB1pAfjXxk2J
-         1pdySSLkVm+SbFZQqIcOqNLzRgLxn5Dw8p9ITAHRa62sw6sXKC6e3D6blDS/NwyJkHmi
-         d3YGCv/Oe/75D6LdEeM5qVHnwKZ4YneLFby22O/hAjtfCWD9jHkAsQsSLXOOUZv43R7p
-         K266NV2hzw1ZXt6YkStFZL72OD5a52ptCEgGG/wVx0q9yxogfUa45qb5iXZEET2V8Sph
-         AKOpN+Ip03iiVjRhufVncdAvwW+Bax1bJL3KOBBSpvpNgYooC3uFDExasyMCr1gkLq2b
-         hE6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=HIrBOeC01necSSZBh3WJb8n11gnvVfu7DpmNSO/Nbdk=;
-        b=n9X+jz4FN6oGre5Mva00tJaEgs8PzquPRHnZOlF8tqR4uxEpnmBTDMn5khM0R2A5BK
-         EcNGKcy6hAssh246Rth17176sVGP2rtYuIZ59RK24Z+7IVTbkh2CbLVzh1QN571V55cH
-         pB1leiExaxXIkIWqAR0VFH0f5w6u6oFD4U3brfVgLtgg9gVedUixl5Q2vm21wSu6MXLp
-         7zXB3c3wOUDE/pYGXRwiOMltVvwewwm+1hFCXrplIH6NTqUEsHT6AXf6zKFkSZej8on9
-         TmLVovo4H4dcl9KwM2k2QyNLazTNrbyby9wnjEU1s/HYUMZlZ6SxSFkmiFELtTWi6AWf
-         MayQ==
-X-Gm-Message-State: AOAM532o/qylE/sZYpxHxeoSTPgQopj6yjYPW6H/VZeZLFmEAUztFn8B
-        Ry/rJvLxrFjYqWqJLBAU8hDd3w==
-X-Google-Smtp-Source: ABdhPJy8x+5IqIuAaGa3Pu0VZAqeQTQc8GGW/aqUrprIq9Qhf0ZRha2icrPTKw33qAJIeBV/l2AHhA==
-X-Received: by 2002:a05:600c:2cd2:: with SMTP id l18mr4974579wmc.142.1621537287095;
-        Thu, 20 May 2021 12:01:27 -0700 (PDT)
-Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id p20sm9011899wmq.10.2021.05.20.12.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 12:01:26 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Patrice Chotard <patrice.chotard@foss.st.com>,
-        Maxime Coquelin <maxime.coquelin@st.com>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
-Subject: [PATCH 16/16] i2c: busses: i2c-st: trivial: Fix spelling issue 'enmpty => empty'
-Date:   Thu, 20 May 2021 20:01:05 +0100
-Message-Id: <20210520190105.3772683-17-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520190105.3772683-1-lee.jones@linaro.org>
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
+        id S236751AbhETTEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:04:12 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:48270 "EHLO msg-2.mailo.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236223AbhETTEE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 15:04:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1621537355; bh=ijy37RyjYk6m4ia5GEIsA7JeXUj0r1H5uDtNOjiSFGQ=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=ES1O+VWXYmRc/F9pNgtmY21f6gUG2VcluOAGmva1VT6kZDHu3KMGq74uDcXh3U0VB
+         bW6oSsEKF8xaf0900cDBwPddWRoN9eXdzymyrDm+GOTJOKLPRui5HAwXbGkbzQS24A
+         Kinkw8i96Xc75wEgxNpLbkeH9wNFvZtkcn58ZEuo=
+Received: by 192.168.90.11 [192.168.90.11] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Thu, 20 May 2021 21:02:34 +0200 (CEST)
+X-EA-Auth: dcZZMJ7MDv7PZ9WAFym8kgq7TMZgrzoahXZIeTFogHSKaejnBkSRVp6UrTo+ggV9KmHQgSyc/jqnGnob9utjvimDiYjvRhkz
+Date:   Fri, 21 May 2021 00:32:15 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, drv@mailo.com
+Subject: [PATCH RESEND 1/5] staging: media: atomisp: code formatting changes
+ atomisp_csi2.c
+Message-ID: <00fa47d7270a58f7ac1c0d952ada2db52a429a35.1619850663.git.drv@mailo.com>
+References: <cover.1619850663.git.drv@mailo.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1619850663.git.drv@mailo.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: Patrice Chotard <patrice.chotard@foss.st.com>
-Cc: Maxime Coquelin <maxime.coquelin@st.com>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-i2c@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/i2c/busses/i2c-st.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Several trivial code reformatting changes done according to the coding
+style guidelines. These changes improves code organisation and readability
+and also 4 address many chackpatch error, warning and check complaints.
 
-diff --git a/drivers/i2c/busses/i2c-st.c b/drivers/i2c/busses/i2c-st.c
-index 30089b38044b5..88482316d22a0 100644
---- a/drivers/i2c/busses/i2c-st.c
-+++ b/drivers/i2c/busses/i2c-st.c
-@@ -524,7 +524,7 @@ static void st_i2c_handle_write(struct st_i2c_dev *i2c_dev)
+Signed-off-by: Deepak R Varma <drv@mailo.com>
+---
+ .../staging/media/atomisp/pci/atomisp_csi2.c  | 72 +++++++++----------
+ 1 file changed, 35 insertions(+), 37 deletions(-)
+
+diff --git a/drivers/staging/media/atomisp/pci/atomisp_csi2.c b/drivers/staging/media/atomisp/pci/atomisp_csi2.c
+index 060b8765ae96..f33a08b2564f 100644
+--- a/drivers/staging/media/atomisp/pci/atomisp_csi2.c
++++ b/drivers/staging/media/atomisp/pci/atomisp_csi2.c
+@@ -22,14 +22,12 @@
+ #include "atomisp_internal.h"
+ #include "atomisp-regs.h"
+ 
+-static struct v4l2_mbus_framefmt *__csi2_get_format(struct
+-	atomisp_mipi_csi2_device
+-	* csi2,
+-	struct
+-	v4l2_subdev_pad_config *cfg,
+-	enum
+-	v4l2_subdev_format_whence
+-	which, unsigned int pad) {
++static struct
++v4l2_mbus_framefmt *__csi2_get_format(struct atomisp_mipi_csi2_device *csi2,
++				      struct v4l2_subdev_pad_config *cfg,
++				      enum v4l2_subdev_format_whence which,
++				      unsigned int pad)
++{
+ 	if (which == V4L2_SUBDEV_FORMAT_TRY)
+ 		return v4l2_subdev_get_try_format(&csi2->subdev, cfg, pad);
+ 	else
+@@ -42,7 +40,7 @@ static struct v4l2_mbus_framefmt *__csi2_get_format(struct
+  * @fh     : V4L2 subdev file handle
+  * @code   : pointer to v4l2_subdev_pad_mbus_code_enum structure
+  * return -EINVAL or zero on success
+-*/
++ */
+ static int csi2_enum_mbus_code(struct v4l2_subdev *sd,
+ 			       struct v4l2_subdev_pad_config *cfg,
+ 			       struct v4l2_subdev_mbus_code_enum *code)
+@@ -68,7 +66,7 @@ static int csi2_enum_mbus_code(struct v4l2_subdev *sd,
+  * @pad: pad num
+  * @fmt: pointer to v4l2 format structure
+  * return -EINVAL or zero on success
+-*/
++ */
+ static int csi2_get_format(struct v4l2_subdev *sd,
+ 			   struct v4l2_subdev_pad_config *cfg,
+ 			   struct v4l2_subdev_format *fmt)
+@@ -101,12 +99,12 @@ int atomisp_csi2_set_ffmt(struct v4l2_subdev *sd,
+ 		else
+ 			actual_ffmt->code = atomisp_in_fmt_conv[0].code;
+ 
+-		actual_ffmt->width = clamp_t(
+-					 u32, ffmt->width, ATOM_ISP_MIN_WIDTH,
+-					 ATOM_ISP_MAX_WIDTH);
+-		actual_ffmt->height = clamp_t(
+-					  u32, ffmt->height, ATOM_ISP_MIN_HEIGHT,
+-					  ATOM_ISP_MAX_HEIGHT);
++		actual_ffmt->width = clamp_t(u32, ffmt->width,
++					     ATOM_ISP_MIN_WIDTH,
++					     ATOM_ISP_MAX_WIDTH);
++		actual_ffmt->height = clamp_t(u32, ffmt->height,
++					      ATOM_ISP_MIN_HEIGHT,
++					      ATOM_ISP_MAX_HEIGHT);
+ 
+ 		tmp_ffmt = *ffmt = *actual_ffmt;
+ 
+@@ -127,7 +125,7 @@ int atomisp_csi2_set_ffmt(struct v4l2_subdev *sd,
+  * @pad: pad num
+  * @fmt: pointer to v4l2 format structure
+  * return -EINVAL or zero on success
+-*/
++ */
+ static int csi2_set_format(struct v4l2_subdev *sd,
+ 			   struct v4l2_subdev_pad_config *cfg,
+ 			   struct v4l2_subdev_format *fmt)
+@@ -142,7 +140,7 @@ static int csi2_set_format(struct v4l2_subdev *sd,
+  * @enable: Enable/disable stream (1/0)
+  *
+  * Return 0 on success or a negative error code otherwise.
+-*/
++ */
+ static int csi2_set_stream(struct v4l2_subdev *sd, int enable)
+ {
+ 	return 0;
+@@ -179,7 +177,7 @@ static const struct v4l2_subdev_ops csi2_ops = {
+  * @remote : Pointer to remote pad array
+  * @flags  : Link flags
+  * return -EINVAL or zero on success
+-*/
++ */
+ static int csi2_link_setup(struct media_entity *entity,
+ 			   const struct media_pad *local,
+ 			   const struct media_pad *remote, u32 flags)
+@@ -217,10 +215,10 @@ static const struct media_entity_operations csi2_media_ops = {
+ };
+ 
+ /*
+-* ispcsi2_init_entities - Initialize subdev and media entity.
+-* @csi2: Pointer to ispcsi2 structure.
+-* return -ENOMEM or zero on success
+-*/
++ * ispcsi2_init_entities - Initialize subdev and media entity.
++ * @csi2: Pointer to ispcsi2 structure.
++ * return -ENOMEM or zero on success
++ */
+ static int mipi_csi2_init_entities(struct atomisp_mipi_csi2_device *csi2,
+ 				   int port)
+ {
+@@ -244,9 +242,8 @@ static int mipi_csi2_init_entities(struct atomisp_mipi_csi2_device *csi2,
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	csi2->formats[CSI2_PAD_SINK].code =
+-	    csi2->formats[CSI2_PAD_SOURCE].code =
+-		atomisp_in_fmt_conv[0].code;
++	csi2->formats[CSI2_PAD_SINK].code = atomisp_in_fmt_conv[0].code;
++	csi2->formats[CSI2_PAD_SOURCE].code = atomisp_in_fmt_conv[0].code;
+ 
+ 	return 0;
+ }
+@@ -374,21 +371,22 @@ static void atomisp_csi2_configure_isp2401(struct atomisp_sub_device *asd)
+ 	    (isp->inputs[asd->input_curr].camera->ctrl_handler, &ctrl) == 0)
+ 		mipi_freq = ctrl.value;
+ 
+-	clk_termen = atomisp_csi2_configure_calc(coeff_clk_termen,
+-		     mipi_freq, TERMEN_DEFAULT);
+-	clk_settle = atomisp_csi2_configure_calc(coeff_clk_settle,
+-		     mipi_freq, SETTLE_DEFAULT);
+-	dat_termen = atomisp_csi2_configure_calc(coeff_dat_termen,
+-		     mipi_freq, TERMEN_DEFAULT);
+-	dat_settle = atomisp_csi2_configure_calc(coeff_dat_settle,
+-		     mipi_freq, SETTLE_DEFAULT);
++	clk_termen = atomisp_csi2_configure_calc(coeff_clk_termen, mipi_freq,
++						 TERMEN_DEFAULT);
++	clk_settle = atomisp_csi2_configure_calc(coeff_clk_settle, mipi_freq,
++						 SETTLE_DEFAULT);
++	dat_termen = atomisp_csi2_configure_calc(coeff_dat_termen, mipi_freq,
++						 TERMEN_DEFAULT);
++	dat_settle = atomisp_csi2_configure_calc(coeff_dat_settle, mipi_freq,
++						 SETTLE_DEFAULT);
++
+ 	for (n = 0; n < csi2_port_lanes[port] + 1; n++) {
+ 		hrt_address base = csi2_port_base[port] + csi2_lane_base[n];
+ 
+ 		atomisp_css2_hw_store_32(base + CSI2_REG_RX_CSI_DLY_CNT_TERMEN,
+-				     n == 0 ? clk_termen : dat_termen);
++					 n == 0 ? clk_termen : dat_termen);
+ 		atomisp_css2_hw_store_32(base + CSI2_REG_RX_CSI_DLY_CNT_SETTLE,
+-				     n == 0 ? clk_settle : dat_settle);
++					 n == 0 ? clk_settle : dat_settle);
+ 	}
  }
  
- /**
-- * st_i2c_handle_read() - Handle FIFO enmpty interrupt in case of read
-+ * st_i2c_handle_read() - Handle FIFO empty interrupt in case of read
-  * @i2c_dev: Controller's private data
-  */
- static void st_i2c_handle_read(struct st_i2c_dev *i2c_dev)
+@@ -400,7 +398,7 @@ void atomisp_csi2_configure(struct atomisp_sub_device *asd)
+ 
+ /*
+  * atomisp_mipi_csi2_cleanup - Routine for module driver cleanup
+-*/
++ */
+ void atomisp_mipi_csi2_cleanup(struct atomisp_device *isp)
+ {
+ }
 -- 
-2.31.1
+2.30.2
+
+
 
