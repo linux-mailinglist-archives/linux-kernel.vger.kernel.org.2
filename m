@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA05038A6A5
+	by mail.lfdr.de (Postfix) with ESMTP id F408838A6A6
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:28:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237094AbhETK3h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:29:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47610 "EHLO mail.kernel.org"
+        id S237119AbhETK3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:29:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47608 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235797AbhETKRQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:17:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 39F08613D4;
-        Thu, 20 May 2021 09:46:05 +0000 (UTC)
+        id S235814AbhETKRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:17:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3BC36199D;
+        Thu, 20 May 2021 09:46:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503965;
-        bh=K4VxfRdlHMv/KHvkR1/3xCGjraQQ5uaFcWEMcRL0Jsk=;
+        s=korg; t=1621503970;
+        bh=Ijss7ILH0wpXAWgpiT4C5Kk8LSV4ypLf4ecaPXgNKCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ET9cbwNlDf8zbQDW1VpZdZy0eK401Qnnw6NAQH1txMl5xaB5RyiIYvJ/XPQt5yPTB
-         vB/5i4bHwKDcWWMX97r/jghGpBU5rjjFu7aixbWkHJqbH7xJf4GH9OoNvd2NvvFp1D
-         rZuInnreMpfQUtCwYn4pi/c6psmw+PyNtqAQL0IU=
+        b=1gqGETfn7PSauqxmxexC3AsJ2nHM+MsQp6rOhBNtjFXriBlJCNnR4r6/Itq71Wcg4
+         z5eRmLXkOKwFxUpj7kQbRpkqM/yI+hwd0TCutLeadLhmjwi3o+/tAiBRw4n5BG6r89
+         VbBW+sjBQ+jzYyIWozm1SwMyN4UsyjAQohTraZaA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Wesley Cheng <wcheng@codeaurora.org>,
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 034/323] usb: dwc3: gadget: Ignore EP queue requests during bus reset
-Date:   Thu, 20 May 2021 11:18:46 +0200
-Message-Id: <20210520092121.278701251@linuxfoundation.org>
+Subject: [PATCH 4.14 036/323] PCI: PM: Do not read power state in pci_enable_device_flags()
+Date:   Thu, 20 May 2021 11:18:48 +0200
+Message-Id: <20210520092121.348625922@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,46 +41,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wesley Cheng <wcheng@codeaurora.org>
+From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-[ Upstream commit 71ca43f30df9c642970f9dc9b2d6f463f4967e7b ]
+[ Upstream commit 4514d991d99211f225d83b7e640285f29f0755d0 ]
 
-The current dwc3_gadget_reset_interrupt() will stop any active
-transfers, but only addresses blocking of EP queuing for while we are
-coming from a disconnected scenario, i.e. after receiving the disconnect
-event.  If the host decides to issue a bus reset on the device, the
-connected parameter will still be set to true, allowing for EP queuing
-to continue while we are disabling the functions.  To avoid this, set the
-connected flag to false until the stop active transfers is complete.
+It should not be necessary to update the current_state field of
+struct pci_dev in pci_enable_device_flags() before calling
+do_pci_enable_device() for the device, because none of the
+code between that point and the pci_set_power_state() call in
+do_pci_enable_device() invoked later depends on it.
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
-Link: https://lore.kernel.org/r/1616146285-19149-3-git-send-email-wcheng@codeaurora.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Moreover, doing that is actively harmful in some cases.  For example,
+if the given PCI device depends on an ACPI power resource whose _STA
+method initially returns 0 ("off"), but the config space of the PCI
+device is accessible and the power state retrieved from the
+PCI_PM_CTRL register is D0, the current_state field in the struct
+pci_dev representing that device will get out of sync with the
+power.state of its ACPI companion object and that will lead to
+power management issues going forward.
+
+To avoid such issues it is better to leave the current_state value
+as is until it is changed to PCI_D0 by do_pci_enable_device() as
+appropriate.  However, the power state of the device is not changed
+to PCI_D0 if it is already enabled when pci_enable_device_flags()
+gets called for it, so update its current_state in that case, but
+use pci_update_current_state() covering platform PM too for that.
+
+Link: https://lore.kernel.org/lkml/20210314000439.3138941-1-luzmaximilian@gmail.com/
+Reported-by: Maximilian Luz <luzmaximilian@gmail.com>
+Tested-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Reviewed-by: Mika Westerberg <mika.westerberg@linux.intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/dwc3/gadget.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/pci/pci.c | 16 +++-------------
+ 1 file changed, 3 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 510ed406fb0b..909e8aafd580 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2695,6 +2695,15 @@ static void dwc3_gadget_reset_interrupt(struct dwc3 *dwc)
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index c847b5554db6..1993e5e28ea7 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1378,20 +1378,10 @@ static int pci_enable_device_flags(struct pci_dev *dev, unsigned long flags)
+ 	int err;
+ 	int i, bars = 0;
  
- 	dwc->connected = true;
+-	/*
+-	 * Power state could be unknown at this point, either due to a fresh
+-	 * boot or a device removal call.  So get the current power state
+-	 * so that things like MSI message writing will behave as expected
+-	 * (e.g. if the device really is in D0 at enable time).
+-	 */
+-	if (dev->pm_cap) {
+-		u16 pmcsr;
+-		pci_read_config_word(dev, dev->pm_cap + PCI_PM_CTRL, &pmcsr);
+-		dev->current_state = (pmcsr & PCI_PM_CTRL_STATE_MASK);
+-	}
+-
+-	if (atomic_inc_return(&dev->enable_cnt) > 1)
++	if (atomic_inc_return(&dev->enable_cnt) > 1) {
++		pci_update_current_state(dev, dev->current_state);
+ 		return 0;		/* already enabled */
++	}
  
-+	/*
-+	 * Ideally, dwc3_reset_gadget() would trigger the function
-+	 * drivers to stop any active transfers through ep disable.
-+	 * However, for functions which defer ep disable, such as mass
-+	 * storage, we will need to rely on the call to stop active
-+	 * transfers here, and avoid allowing of request queuing.
-+	 */
-+	dwc->connected = false;
-+
- 	/*
- 	 * WORKAROUND: DWC3 revisions <1.88a have an issue which
- 	 * would cause a missing Disconnect Event if there's a
+ 	bridge = pci_upstream_bridge(dev);
+ 	if (bridge)
 -- 
 2.30.2
 
