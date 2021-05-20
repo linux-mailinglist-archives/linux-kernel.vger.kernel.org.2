@@ -2,146 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7726438B47D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 475F538B486
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234115AbhETQmo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:42:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232796AbhETQmm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:42:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C3AF61019;
-        Thu, 20 May 2021 16:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621528881;
-        bh=awSiHVeGzJRRHkeF4CGvWgRsRaK/KjYATUm/abbBIIc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Fi2TL2WZCTo1uvMAEA9rSm5JD213/Ei7uNCAJHL8SRqDbEP49pI++0Clls5LR3/Q1
-         4udZS4786wBjfgzZMwLktVrRYPi7FAjfr/1ncvX6uVOd01B8mfNT3X/QDh9KndeljF
-         Q1QNDeiFQxFGIK+3uPJ1yXhgeG4pteTt4nPgfIGNvOwkGXbBQcDUS5TWOBrzk0TQsB
-         pj0gpCnbWw1JUrY0FOGZ1dKQ9pG/OKpbU8wwzn8/4kE2wh4C0p0OxCHsQ9TY+X4TUA
-         872xohX/ATEO0eI8xZcXt+mMciUR5oj0NWX0szkHW364EcbI91tmgrJy+3J8E6G45X
-         +bjuyZoYPX3Vg==
-Received: by mail-ed1-f54.google.com with SMTP id w12so12425845edx.1;
-        Thu, 20 May 2021 09:41:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530R1d+4/+yx1yFLHX1LAcHmRbch+1bAZUj9T64iOWUDlm2pcwFr
-        fKdRixiOuWst25qUhdBiqwHOt/Rl13Dh4Vmkdw==
-X-Google-Smtp-Source: ABdhPJzNfOK9kMEcPqLpjClyB2Nr76A4rY18B920Fi6CuDkCnEo31srKm0zLPRVv1WnY7X/FVdtqNPP5rdt+j7avqNw=
-X-Received: by 2002:a05:6402:c7:: with SMTP id i7mr6095866edu.194.1621528879987;
- Thu, 20 May 2021 09:41:19 -0700 (PDT)
+        id S234593AbhETQnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:43:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4704 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232565AbhETQnu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:43:50 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmFnk0gmmz16QXk;
+        Fri, 21 May 2021 00:39:38 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 00:42:24 +0800
+Received: from [10.47.87.246] (10.47.87.246) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 20 May
+ 2021 17:42:22 +0100
+Subject: Re: [PATCH] scsi: core: Cap shost cmd_per_lun at can_queue
+To:     Bart Van Assche <bvanassche@acm.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ming.lei@redhat.com>
+References: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
+ <988856ad-8e89-97e4-f8fe-54c1ca1b4a93@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
+Date:   Thu, 20 May 2021 17:41:15 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <20210511090122.6995-1-a-govindraju@ti.com> <20210517221513.GA3263368@robh.at.kernel.org>
- <e239365e-35d7-694a-55cc-7dabfa66b108@ti.com>
-In-Reply-To: <e239365e-35d7-694a-55cc-7dabfa66b108@ti.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 20 May 2021 11:41:07 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKM5unmiXdYBzM9xfEETfTVTF9RMXPuT7Lb7w0cnwd1mw@mail.gmail.com>
-Message-ID: <CAL_JsqKM5unmiXdYBzM9xfEETfTVTF9RMXPuT7Lb7w0cnwd1mw@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <988856ad-8e89-97e4-f8fe-54c1ca1b4a93@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.87.246]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 9:13 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
->
->
-> Hi Rob,
->
-> On 18/05/21 3:45 am, Rob Herring wrote:
-> > On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
-> >> Convert gpio-davinci dt-binding documentation from txt to yaml format.
-> >>
-> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
-> >> ---
-> >>  .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
-> >>  .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
-> >>  MAINTAINERS                                   |   2 +-
-> >>  3 files changed, 194 insertions(+), 168 deletions(-)
-> >>  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
-> >>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
-> >>
->
-> [...]
->
-> >> +properties:
-> >> +  compatible:
-> >> +    oneOf:
-> >> +      - items:
-> >> +          - enum:
-> >> +              - ti,k2g-gpio
-> >> +              - ti,am654-gpio
-> >> +              - ti,j721e-gpio
-> >> +              - ti,am64-gpio
-> >> +          - const: ti,keystone-gpio
-> >> +
-> >> +      - items:
-> >> +          - const: ti,dm6441-gpio
-> >> +      - items:
-> >> +          - const: ti,keystone-gpio
-> >
-> > These 2 can be expressed as an 'enum'.
->
-> I will change this.
->
-> >
-> >> +
-> >> +  reg:
-> >> +    maxItems: 1
-> >> +    description:
-> >> +      Physical base address of the controller and the size of memory mapped registers.
-> >
-> > Drop. That's every 'reg' property.
-> >
->
-> I'll drop this.
->
-> >> +
-> >> +  gpio-controller: true
-> >> +
-> >> +  gpio-ranges: true
-> >> +
-> >> +  gpio-line-names:
-> >> +    description: strings describing the names of each gpio line.
-> >
-> > Any constraints like min/max number of lines?
-> >
->
-> The max number of lines will be equal to ti,ngpio. Is there any way to
-> equate maxItems to the a property value in json schema ?
+On 20/05/2021 16:57, Bart Van Assche wrote:
+> On 5/19/21 7:31 AM, John Garry wrote:
+>> Function sdev_store_queue_depth() enforces that the sdev queue depth cannot
+>> exceed Shost.can_queue.
+>>
+>> The sdev initial value comes from shost cmd_per_lun.
+>>
+>> However, the LLDD may still set cmd_per_lun > can_queue, which leads to an
+>> initial sdev queue depth greater than can_queue.
+>>
+>> Such an issue was reported in [0], which caused a hang. That has since
+>> been fixed in commit fc09acb7de31 ("scsi: scsi_debug: Fix cmd_per_lun,
+>> set to max_queue").
+>>
+>> Stop this possibly happening for other drivers by capping
+>> shost.cmd_per_lun at shost.can_queue.
+>>
+>> [0] https://lore.kernel.org/linux-scsi/YHaez6iN2HHYxYOh@T590/
+>>
+>> Signed-off-by: John Garry <john.garry@huawei.com>
+>> ---
+>> Earlier patch was in https://lore.kernel.org/linux-scsi/1618848384-204144-1-git-send-email-john.garry@huawei.com/
+>>
+>> diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+>> index ba72bd4202a2..624e2582c3df 100644
+>> --- a/drivers/scsi/hosts.c
+>> +++ b/drivers/scsi/hosts.c
+>> @@ -220,6 +220,9 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+>>   		goto fail;
+>>   	}
+>>   
+>> +	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
+>> +				   shost->can_queue);
+>> +
+>>   	error = scsi_init_sense_cache(shost);
+>>   	if (error)
+>>   		goto fail;
+> 
+> 
 
-There have been discussions about something like that for json-schema,
-but nothing yet AFAIK. Is there a max for ti,ngpio? Nothing means
-2^32. Surely there's something less than that. You can always adjust
-the max later.
+Hi Bart,
 
-> >> +
-> >> +  "#gpio-cells":
-> >> +    const: 2
-> >> +    description:
-> >> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
-> >> +
-> >> +  interrupts:
-> >> +    description:
-> >> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
-> >
-> > Needs constraints. How many items and what are they?
->
-> Here also the maximum number of interrupts is equal to ti,ngpio in
-> unbanked interrupts case. Same as above is there anyway to equate
-> maxItems to ti,ngpio property in json schma ? If not, then what would be
-> the best way to handle this ?
+> In SCSI header files a mix of int, short and unsigned int is used for
+> cmd_per_lun and can_queue. How about changing the types of these two
+> member variables in include/scsi/*h into u16?
+I don't mind doing that, but is there any requirement for can_queue to 
+not be limited to 16b?
 
-Banked means 1 combined interrupt?
+It seems intentional that can_queue is int and cmd_per_lun is short.
+
+As an aside, if short is 16b, it does not even seem to have efficient 
+packing on Scsi_host today (although we can move things around):
+
+int can_queue;
+short cmd_per_lun;
+short unsigned int sg_tablesize;
+short unsigned int sg_prot_tablesize;
+/* 16b hole */
+unsigned int max_sectors;
+
+> 
+> Anyway:
+> 
+> Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+> 
+
+thanks!
+
+> 
+> 
+> .
+> 
+
