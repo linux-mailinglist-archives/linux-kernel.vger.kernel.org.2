@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8255738A6F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8084B38A6C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236823AbhETKc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:32:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51994 "EHLO mail.kernel.org"
+        id S236722AbhETKaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:30:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236304AbhETKT3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:19:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E05AF619B3;
-        Thu, 20 May 2021 09:47:06 +0000 (UTC)
+        id S236076AbhETKRo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:17:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2717C619B1;
+        Thu, 20 May 2021 09:46:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504027;
-        bh=AxwVTSf5DngS8L2lA+nW56nje2oa08i1MY9gDI/Oxf0=;
+        s=korg; t=1621503996;
+        bh=ei9iTt0r4h3BD9g8FPpUBx6gbxyb2fvqMpT5RYW8ObY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EqhnhtpT81ZKHjEfCj22nOTMrBHZ9zWtSEdXEiKpu8O8+Q4+i1NNeu4YR8MesDqA4
-         wurtBO64EE69X6+1rK31YGhYDChC4N4euJ3q51xN5GteKXxjfxZCoN1cwzPZCCNi9X
-         +R8bZVRm5ugN6UyyvviXjMWtWxSFfUeNECfeXKj4=
+        b=zPGmK++V++jY/pEz8kg35zE7wcjjfCcvKIxPrlCKd0aKvQFU00j/eSP6KvbHnguJj
+         pgLqH6agT7PlmYcHrt47zmpTXbGnCooByssR21/eB4Ra4wfdk9XatYHbmPYCxVbwUV
+         oaDp2oNfu7qv5qLzEHhcD5h/OXEB+gWsaQ+yiTE4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>
-Subject: [PATCH 4.14 017/323] s390/disassembler: increase ebpf disasm buffer size
-Date:   Thu, 20 May 2021 11:18:29 +0200
-Message-Id: <20210520092120.707299699@linuxfoundation.org>
+        stable@vger.kernel.org, Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Subject: [PATCH 4.14 020/323] arm64: dts: mt8173: fix property typo of phys in dsi node
+Date:   Thu, 20 May 2021 11:18:32 +0200
+Message-Id: <20210520092120.810616980@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,74 +40,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vasily Gorbik <gor@linux.ibm.com>
+From: Chunfeng Yun <chunfeng.yun@mediatek.com>
 
-commit 6f3353c2d2b3eb4de52e9704cb962712033db181 upstream.
+commit e4e5d030bd779fb8321d3b8bd65406fbe0827037 upstream.
 
-Current ebpf disassembly buffer size of 64 is too small. E.g. this line
-takes 65 bytes:
-01fffff8005822e: ec8100ed8065\tclgrj\t%r8,%r1,8,001fffff80058408\n\0
+Use 'phys' instead of 'phy'.
 
-Double the buffer size like it is done for the kernel disassembly buffer.
-
-Fixes the following KASAN finding:
-
-UG: KASAN: stack-out-of-bounds in print_fn_code+0x34c/0x380
-Write of size 1 at addr 001fff800ad5f970 by task test_progs/853
-
-CPU: 53 PID: 853 Comm: test_progs Not tainted
-5.12.0-rc7-23786-g23457d86b1f0-dirty #19
-Hardware name: IBM 3906 M04 704 (LPAR)
-Call Trace:
- [<0000000cd8e0538a>] show_stack+0x17a/0x1668
- [<0000000cd8e2a5d8>] dump_stack+0x140/0x1b8
- [<0000000cd8e16e74>] print_address_description.constprop.0+0x54/0x260
- [<0000000cd75a8698>] kasan_report+0xc8/0x130
- [<0000000cd6e26da4>] print_fn_code+0x34c/0x380
- [<0000000cd6ea0f4e>] bpf_int_jit_compile+0xe3e/0xe58
- [<0000000cd72c4c88>] bpf_prog_select_runtime+0x5b8/0x9c0
- [<0000000cd72d1bf8>] bpf_prog_load+0xa78/0x19c0
- [<0000000cd72d7ad6>] __do_sys_bpf.part.0+0x18e/0x768
- [<0000000cd6e0f392>] do_syscall+0x12a/0x220
- [<0000000cd8e333f8>] __do_syscall+0x98/0xc8
- [<0000000cd8e54834>] system_call+0x6c/0x94
-1 lock held by test_progs/853:
- #0: 0000000cd9bf7460 (report_lock){....}-{2:2}, at:
-     kasan_report+0x96/0x130
-
-addr 001fff800ad5f970 is located in stack of task test_progs/853 at
-offset 96 in frame:
- print_fn_code+0x0/0x380
-this frame has 1 object:
- [32, 96) 'buffer'
-
-Memory state around the buggy address:
- 001fff800ad5f800: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- 001fff800ad5f880: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
->001fff800ad5f900: 00 00 f1 f1 f1 f1 00 00 00 00 00 00 00 00 f3 f3
-                                                             ^
- 001fff800ad5f980: f3 f3 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- 001fff800ad5fa00: 00 00 00 00 00 00 00 f1 f1 f1 f1 00 00 00 00 00
-
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Heiko Carstens <hca@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
-Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
+Fixes: 81ad4dbaf7af ("arm64: dts: mt8173: Add display subsystem related nodes")
+Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: stable <stable@vger.kernel.org>
+Link: https://lore.kernel.org/r/20210316092232.9806-5-chunfeng.yun@mediatek.com
+Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kernel/dis.c |    2 +-
+ arch/arm64/boot/dts/mediatek/mt8173.dtsi |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/arch/s390/kernel/dis.c
-+++ b/arch/s390/kernel/dis.c
-@@ -2026,7 +2026,7 @@ void show_code(struct pt_regs *regs)
- 
- void print_fn_code(unsigned char *code, unsigned long len)
- {
--	char buffer[64], *ptr;
-+	char buffer[128], *ptr;
- 	int opsize, i;
- 
- 	while (len) {
+--- a/arch/arm64/boot/dts/mediatek/mt8173.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8173.dtsi
+@@ -1029,7 +1029,7 @@
+ 				 <&mmsys CLK_MM_DSI1_DIGITAL>,
+ 				 <&mipi_tx1>;
+ 			clock-names = "engine", "digital", "hs";
+-			phy = <&mipi_tx1>;
++			phys = <&mipi_tx1>;
+ 			phy-names = "dphy";
+ 			status = "disabled";
+ 		};
 
 
