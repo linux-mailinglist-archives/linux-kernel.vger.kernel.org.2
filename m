@@ -2,110 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 074D838B60A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A61FF38B60C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235273AbhETSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:31:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233462AbhETSbz (ORCPT
+        id S235311AbhETScT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:32:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20935 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233857AbhETScS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:31:55 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54534C061574;
-        Thu, 20 May 2021 11:30:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=agiakZtvhMa1O9T2XzsnpNjO6uMLLfnHhIvJ8sxlh1Y=; b=Ew5DIjR56nVHadIx3pywARpTvd
-        Kgq0VyI+O62d0VLyFLIu4w7CjQvihMOMTaRgdL8VG7HB0i6DOjHbQxlwccFvsRL6HlnU87Kle5NKO
-        T/EvFNAW3TnfAReeo8nt1ucuvPbyUmN5KKzlmEI/Nbie6KLnfjxukn2+fTEL7ic/44bk/PK5pnYW6
-        6eF40guPIS7n/zLzzE+mrKkKw7N0FSq9BObMkmzj1B6W7Mdn9CDYem5oEFLFi0RNu1vQSLlwkNaVK
-        lm7gK8J0uTRyq/zLQa0fmnnqamK5wzCi3XycoZ+rz1lsaWlkTcgZ3o8T8BxPLEl5gbVjTih08AIF/
-        OMutOsyA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljnRJ-00GZgm-Jd; Thu, 20 May 2021 18:30:33 +0000
-Subject: Re: [PATCH] Phonet: fix kernel-doc syntax in file headers
-To:     Aditya Srivastava <yashsri421@gmail.com>, courmisch@gmail.com
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210520182159.31462-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7cb9bfad-55b1-b5f3-5051-a2e837dda736@infradead.org>
-Date:   Thu, 20 May 2021 11:30:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 20 May 2021 14:32:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621535456;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WMVLkroGznixoNyjbJwPulQLiUxwQzLRzXIYgKX9DDk=;
+        b=dta0JpN+E838v4kR0ai5DzTSWUzqWHm0eof9APZ0ee8WSjQ6HY4adoEK8XtWj9chWjoPYL
+        tLabztvbkam8NV3ISStXbhmE1z/n8XpLCdRLVc7Z/+BuWhmv/KQ6i7pHWkNkPEZjracRXT
+        kvt0pH7rpZK7VpuGXgNQ3l1Dg8CB9Zk=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-309-KkcoFy_GP7qmemcl-h44ug-1; Thu, 20 May 2021 14:30:54 -0400
+X-MC-Unique: KkcoFy_GP7qmemcl-h44ug-1
+Received: by mail-qt1-f200.google.com with SMTP id h2-20020a05622a1702b02901b9123889b0so12952789qtk.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 11:30:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMVLkroGznixoNyjbJwPulQLiUxwQzLRzXIYgKX9DDk=;
+        b=gxKmaHbksQf/TW21s/pK3KR5y8bvL9njlG9NfGXCdBB8jaobsBo1vGFfCywT2fQqmf
+         9oRsGF78ja6RLJnwVo+8m7A6SKWQjVEAFU7w/kJODg3qBH0Lys4l/Vy0LfvsWn8RE5c/
+         7ps9sbKpJSB9cJ7YgXYt+l7HRHqSNFpuVlnPfgGgw6hY1vMkyv16aWw5X93G8HPt6WQm
+         MNQQde3TTqZot8Lw3oJzP++may0JvbWVg9YoPo61cfXA2Wgk4n11k5lEYGfax6kMxH6x
+         yIEqZTTJPYfC6aZhc5zO+U3GC7esHFZ83uzPwN5xIVqDzcYHJE/kN26Si1GXl5L7EIf7
+         IBfg==
+X-Gm-Message-State: AOAM533j0KT57k10jU6dSzd/hFSgaXVxWEw0gaUJVR+A7NNNgoA7SrUl
+        TnrRW6Eve1CbX3sxCKwtDUa5Kx+rtqiJPzFhfdUcDFCl9jFUsl+h6mEKj3rlSiUQ+YBuDi/+Yz3
+        yAqnlQEfM6wMuLYwTDySIluYm
+X-Received: by 2002:ac8:7ef2:: with SMTP id r18mr6698649qtc.333.1621535453807;
+        Thu, 20 May 2021 11:30:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJypqNQnjLGYPT9cwZhXzhzvHWqROXjiEksYjG//nhkya+T2M49M4zItRGoqs+JifXjOAf4e0g==
+X-Received: by 2002:ac8:7ef2:: with SMTP id r18mr6698627qtc.333.1621535453658;
+        Thu, 20 May 2021 11:30:53 -0700 (PDT)
+Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t17sm2377264qto.92.2021.05.20.11.30.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 11:30:53 -0700 (PDT)
+From:   trix@redhat.com
+To:     mdf@kernel.org
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tom Rix <trix@redhat.com>
+Subject: [PATCH v2 4/5] fpga: defer checking for update ops until they are used
+Date:   Thu, 20 May 2021 11:30:48 -0700
+Message-Id: <20210520183048.2022642-1-trix@redhat.com>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-In-Reply-To: <20210520182159.31462-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 11:21 AM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> The header for include/*/linux/phonet.h files follows this syntax, but
-> the content inside does not comply with kernel-doc.
-> 
-> This line was probably not meant for kernel-doc parsing, but is parsed
-> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-> causes unexpected warning from kernel-doc.
-> For e.g., running scripts/kernel-doc -none include/linux/phonet.h emits:
-> warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->  * file phonet.h
-> 
-> Provide a simple fix by replacing this occurrence with general comment
-> format, i.e. '/*', to prevent kernel-doc from parsing it.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+From: Tom Rix <trix@redhat.com>
 
-Hi,
-This all looks good, but it would be even better to remove
-the file names. We tend to prefer not to have filenames in their files
-because they get moved or renamed -- and because it's redundant info.
+Which update ops need to be used will depend on the
+FPGA_MGR_REIMAGE bit in the fpga_image_info flags.
+reimaging is optional, no drv that does not need
+to remimage should be forced to provide stub functions.
 
-Anyway,
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Tom Rix <trix@redhat.com>
+---
+ drivers/fpga/fpga-mgr.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-Thanks.
-
-> ---
->  include/linux/phonet.h      | 2 +-
->  include/uapi/linux/phonet.h | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/phonet.h b/include/linux/phonet.h
-> index bc7d1e529efc..09ecb1f94c5e 100644
-> --- a/include/linux/phonet.h
-> +++ b/include/linux/phonet.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0-only */
-> -/**
-> +/*
->   * file phonet.h
->   *
->   * Phonet sockets kernel interface
-> diff --git a/include/uapi/linux/phonet.h b/include/uapi/linux/phonet.h
-> index a2f6b37a5937..6b873c460994 100644
-> --- a/include/uapi/linux/phonet.h
-> +++ b/include/uapi/linux/phonet.h
-> @@ -1,5 +1,5 @@
->  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> -/**
-> +/*
->   * file phonet.h
->   *
->   * Phonet sockets kernel interface
-> 
-
-
+diff --git a/drivers/fpga/fpga-mgr.c b/drivers/fpga/fpga-mgr.c
+index 4263c9e94949d..5247703a3743d 100644
+--- a/drivers/fpga/fpga-mgr.c
++++ b/drivers/fpga/fpga-mgr.c
+@@ -369,6 +369,14 @@ int fpga_mgr_load(struct fpga_manager *mgr, struct fpga_image_info *info)
+ {
+ 	const struct fpga_manager_update_ops *uops = &mgr->mops->reconfig;
+ 
++	if (!uops->write_complete ||
++	    !uops->write_init ||
++	    (!uops->write && !uops->write_sg) ||
++	    (uops->write && uops->write_sg)) {
++		dev_err(&mgr->dev, "Attempt to load an image without fpga_manager_update_ops\n");
++		return -EOPNOTSUPP;
++	}
++
+ 	if (info->sgt)
+ 		return fpga_mgr_buf_load_sg(mgr, info, uops, info->sgt);
+ 	if (info->buf && info->count)
+@@ -579,10 +587,7 @@ struct fpga_manager *fpga_mgr_create(struct device *dev, const char *name,
+ 	struct fpga_manager *mgr;
+ 	int id, ret;
+ 
+-	if (!mops || !mops->reconfig.write_complete || !mops->state ||
+-	    !mops->reconfig.write_init || (!mops->reconfig.write &&
+-						 !mops->reconfig.write_sg) ||
+-	    (mops->reconfig.write && mops->reconfig.write_sg)) {
++	if (!mops || !mops->state) {
+ 		dev_err(dev, "Attempt to register without fpga_manager_ops\n");
+ 		return NULL;
+ 	}
 -- 
-~Randy
+2.26.3
 
