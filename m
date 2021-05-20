@@ -2,110 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9174538B4DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:01:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AB738B4DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233990AbhETRDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231587AbhETRDQ (ORCPT
+        id S234674AbhETRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:05:34 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:46356 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234386AbhETRFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:03:16 -0400
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F392FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:01:54 -0700 (PDT)
-Received: by mail-qk1-x736.google.com with SMTP id k127so16882195qkc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:01:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GnCcM4kag0zi75Uj3XnSUlN1BTLRGuzOS27Epni0zmo=;
-        b=eak30O+kEa209QuEDAZAJMFUbuAf2bsnMkD8l28owJBdDM/gZzDyLdO6bbWJTTHFBs
-         A/OoRkWEINWzols+VuxAtmCddsz6VIaJGwfcEAveNenaOTEg8QJ7XH0eD+El4ZEYmJe3
-         5X6h1rS6gpu/aqmZhEXJwcXWQf/DhXGzVP99D4obEySNIGPfWg9u8QtJXsxHOQx4OD8r
-         tqrOQJrz9pZNNfsgJEb/hM/ULv5nSidgffjAAkXAn79jnNpetxan/l/WW4+hv121+A7r
-         wjmygZ7y70h7nqBJuic3ByMxT0A6m7wD1LB8kEfisi33s4BD0ZhMnQwnQztTG3a+AaK6
-         Teqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=GnCcM4kag0zi75Uj3XnSUlN1BTLRGuzOS27Epni0zmo=;
-        b=ZqALsFzeDqXprc7QDEP+k0d2VjRJO8SVB/zvthmh6dUt1FOkHNc9jYHX0ByuYGaiGi
-         LpglX5v9kvJ+5ik47TPCdFuiMhqh8O3Vfmgo821k+oDWljYjkwv11/s9e5FwT3vZxmTQ
-         VT0kmOhVF3651kX95B5Bb+9gMQkLrfVHibtDpcdB860WxA6RdjtO8Sw85CmjkMiwif6m
-         QmmPUzWtu7Vq8Qipiw7ZDVHv3hC7xT/vvfmZtIgt3/GeuF015xXeY1j78K0JJtjECn47
-         0YSqxBdan+fG2VZ6xnIEys0xsjEYcV2YtnfIQtsq146qE7Il0AAno0Zj7h4ObiAW9F9s
-         aP0w==
-X-Gm-Message-State: AOAM53218rPxLGdCSJBtmdIiKQ0hA40HADzAnwaJ/XpGQPPwE949fEYK
-        D3R8ATzoqXuWp0WT5KvxjIw=
-X-Google-Smtp-Source: ABdhPJz11VyJYws//1N5g3k2MC2R6i3xdtq9pyvWSXk86cGaGETPxPxkxvumfeOimd/jIXh5ADP8hA==
-X-Received: by 2002:a37:9b51:: with SMTP id d78mr6195648qke.441.1621530114179;
-        Thu, 20 May 2021 10:01:54 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y8sm2312647qtn.61.2021.05.20.10.01.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 10:01:53 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Derek Kiernan <derek.kiernan@xilinx.com>
-Cc:     Dragan Cvetic <dragan.cvetic@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [RFC PATCH] misc: xilinx-sdfec: Check if file->private_data is NULL
-Date:   Thu, 20 May 2021 10:01:50 -0700
-Message-Id: <20210520170150.1615956-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Thu, 20 May 2021 13:05:33 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KH4A59061988;
+        Thu, 20 May 2021 12:04:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621530250;
+        bh=Hahd3sJXjUgbQKssP+efhi1/PrDATemEHuhR+XCl+SA=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=ll54Kt+/1sM8XptacJI2fGaMqjqQ6sDSsFszlSQr1cskjDxgt8m5sw9Ni4Y96v1OI
+         R6M69OCEIkPG4jXcUFlTJaY8alqaunzKotc8OArubdgGrdB7aov0OOwQZEYJvFLL4Y
+         VVL6bsyNwAirEGU8llEJj4Xqwu3HSB6+rjTuAjCE=
+Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KH4A3V004928
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 May 2021 12:04:10 -0500
+Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
+ May 2021 12:04:09 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 20 May 2021 12:04:10 -0500
+Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KH44Wk078148;
+        Thu, 20 May 2021 12:04:05 -0500
+Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
+To:     Rob Herring <robh@kernel.org>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210511090122.6995-1-a-govindraju@ti.com>
+ <20210517221513.GA3263368@robh.at.kernel.org>
+ <e239365e-35d7-694a-55cc-7dabfa66b108@ti.com>
+ <CAL_JsqKM5unmiXdYBzM9xfEETfTVTF9RMXPuT7Lb7w0cnwd1mw@mail.gmail.com>
+From:   Aswath Govindraju <a-govindraju@ti.com>
+Message-ID: <50d6dea2-f35d-d620-a8f2-29ad97365119@ti.com>
+Date:   Thu, 20 May 2021 22:34:03 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL_JsqKM5unmiXdYBzM9xfEETfTVTF9RMXPuT7Lb7w0cnwd1mw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-container_of() only returns NULL if the passed pointer is NULL _and_
-the embedded element is the first element of the structure. Even if that
-is the case, testing against it is misleading and possibly dangerous
-because the position of the embedded element may change. Explicitly
-check if the parameter is NULL and bail out if so instead of checking
-the result of container_of().
+Hi Rob,
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-RFC:
+On 20/05/21 10:11 pm, Rob Herring wrote:
+> On Tue, May 18, 2021 at 9:13 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
+>>
+>>
+>> Hi Rob,
+>>
+>> On 18/05/21 3:45 am, Rob Herring wrote:
+>>> On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
+>>>> Convert gpio-davinci dt-binding documentation from txt to yaml format.
+>>>>
+>>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>>>> ---
+>>>>  .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
+>>>>  .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
+>>>>  MAINTAINERS                                   |   2 +-
+>>>>  3 files changed, 194 insertions(+), 168 deletions(-)
+>>>>  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+>>>>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+>>>>
+>>
+>> [...]
+>>
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    oneOf:
+>>>> +      - items:
+>>>> +          - enum:
+>>>> +              - ti,k2g-gpio
+>>>> +              - ti,am654-gpio
+>>>> +              - ti,j721e-gpio
+>>>> +              - ti,am64-gpio
+>>>> +          - const: ti,keystone-gpio
+>>>> +
+>>>> +      - items:
+>>>> +          - const: ti,dm6441-gpio
+>>>> +      - items:
+>>>> +          - const: ti,keystone-gpio
+>>>
+>>> These 2 can be expressed as an 'enum'.
+>>
+>> I will change this.
+>>
+>>>
+>>>> +
+>>>> +  reg:
+>>>> +    maxItems: 1
+>>>> +    description:
+>>>> +      Physical base address of the controller and the size of memory mapped registers.
+>>>
+>>> Drop. That's every 'reg' property.
+>>>
+>>
+>> I'll drop this.
+>>
+>>>> +
+>>>> +  gpio-controller: true
+>>>> +
+>>>> +  gpio-ranges: true
+>>>> +
+>>>> +  gpio-line-names:
+>>>> +    description: strings describing the names of each gpio line.
+>>>
+>>> Any constraints like min/max number of lines?
+>>>
+>>
+>> The max number of lines will be equal to ti,ngpio. Is there any way to
+>> equate maxItems to the a property value in json schema ?
+> 
+> There have been discussions about something like that for json-schema,
+> but nothing yet AFAIK. Is there a max for ti,ngpio? Nothing means
+> 2^32. Surely there's something less than that. You can always adjust
+> the max later.
 
-The NULL check in the poll function is likely unnecessary. Interestingly,
-there is no NULL check in the ioctl function, even though there is a
-similar container_of() in that function. However, I do not feel
-comfortable enough to change the functionality of this code and drop
-the check entirely.
+Thank you. I will put an cap on this number based on the existing device
+trees.
 
- drivers/misc/xilinx_sdfec.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+>>>> +
+>>>> +  "#gpio-cells":
+>>>> +    const: 2
+>>>> +    description:
+>>>> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
+>>>> +
+>>>> +  interrupts:
+>>>> +    description:
+>>>> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
+>>>
+>>> Needs constraints. How many items and what are they?
+>>
+>> Here also the maximum number of interrupts is equal to ti,ngpio in
+>> unbanked interrupts case. Same as above is there anyway to equate
+>> maxItems to ti,ngpio property in json schma ? If not, then what would be
+>> the best way to handle this ?
+> 
+> Banked means 1 combined interrupt?
+> 
+Yes, one combined interrupt per bank and there can be multiple banks per
+gpio instance.
 
-diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
-index 23c8448a9c3b..0a3721d31dea 100644
---- a/drivers/misc/xilinx_sdfec.c
-+++ b/drivers/misc/xilinx_sdfec.c
-@@ -1011,11 +1011,11 @@ static __poll_t xsdfec_poll(struct file *file, poll_table *wait)
- 	__poll_t mask = 0;
- 	struct xsdfec_dev *xsdfec;
- 
--	xsdfec = container_of(file->private_data, struct xsdfec_dev, miscdev);
--
--	if (!xsdfec)
-+	if (!file->private_data)
- 		return EPOLLNVAL | EPOLLHUP;
- 
-+	xsdfec = container_of(file->private_data, struct xsdfec_dev, miscdev);
-+
- 	poll_wait(file, &xsdfec->waitq, wait);
- 
- 	/* XSDFEC ISR detected an error */
--- 
-2.25.1
-
+Thanks,
+Aswath
