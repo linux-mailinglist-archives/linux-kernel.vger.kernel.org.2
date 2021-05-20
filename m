@@ -2,127 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1061A389B99
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 732FB389BA4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:13:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230188AbhETDHM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 23:07:12 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4759 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhETDHL (ORCPT
+        id S230090AbhETDO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:14:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44836 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhETDO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 23:07:11 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Flvff052jzqV3M;
-        Thu, 20 May 2021 11:02:18 +0800 (CST)
-Received: from dggpemm000003.china.huawei.com (7.185.36.128) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 11:05:33 +0800
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.224) by
- dggpemm000003.china.huawei.com (7.185.36.128) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 11:05:32 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-doc@vger.kernel.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, Marc Zyngier <maz@kernel.org>
-CC:     <wanghaibin.wang@huawei.com>, <zhang.zhanghailiang@huawei.com>,
-        <gaojinhao@huawei.com>
-Subject: [PATCH] KVM: halt polling: Make the adjustment of polling time clearer
-Date:   Thu, 20 May 2021 11:05:29 +0800
-Message-ID: <20210520030529.22048-1-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
+        Wed, 19 May 2021 23:14:26 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D46E9C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:13:05 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id c17so11325843pfn.6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 20:13:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=l4FqofBPzTFOe/vcTYGIA+MZyZ9bPwJdmK6oj34OHvY=;
+        b=jli7jfI0AJlTshbSyviLDRn8eRJ5kwjfDX466aMZkQYXgrxkVggU8ZZL02pHZp2EW/
+         vY/8CEaS6Ih/oVyA/c8roajIzDn3kLdCk40Ij6RqM7KVf/qbVIajXcWtPY2Fzy3sDe+0
+         2ZfYLE9cOHfC87W7b7W+z6bLl3IbA64J6VGKvlfBW/fgjxsWAVhiKGsENtLvKLP26oHr
+         p1uSXeC+fBt+WZ3a9K0Mi4v4ojR91N/1Mo5NuVFktnU8SbHOsySpMROZY+PKvmxbqOGD
+         /HwurTLmJ0i51XeYXhNVHIn9+3ceXdxoA5zsK8G1pdOONFIlTGagWvlJPwIUYmVWoBI2
+         Rrww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=l4FqofBPzTFOe/vcTYGIA+MZyZ9bPwJdmK6oj34OHvY=;
+        b=TssCFRYMunMIhyof1geYzrbPPpj2g9tFQAOw88USHxcYW5/aHdzGYz9AYF2vWvWFOA
+         PTNqWErGxlPu6odUiFhZZO5OLF40Vgi8P19lmse8sKob4IrbDy5nshhyrwG1uc1mTtH7
+         TgRnxpMnlO3iOYnzFuvzWhG5Uy+4bZuSgUtnntDtBx6hiDiFvPVuk28CbgQLme1tt/Oc
+         40wWTYjbNaNJrF7JPo4KBWxOpW+PRg4WSgqky0f9hLUvGgsjx0bmvaVWCXN5U/EBDvGZ
+         xdQQflYd/rf59nDVPoYID5tiZR5+bRmaujSjpt4tWroDxmaQg9VJLSmpaspJOq7s22W/
+         BW+w==
+X-Gm-Message-State: AOAM531Ef5ImOufRVaYzlILiqJaACMADMShuY9iSdRIINQ5CODeGrk9K
+        0zqkAnKJPbPzmwZPlJQUGxyTUA==
+X-Google-Smtp-Source: ABdhPJyr1sX0c2X2ifVKz/ZDNjCI6RXE/3KawtLX70d4FW/4cQTnr9AZPl4cRVe9GFZsyMP15XCDTQ==
+X-Received: by 2002:a05:6a00:1384:b029:2c7:fcda:8d83 with SMTP id t4-20020a056a001384b02902c7fcda8d83mr2339843pfg.0.1621480385263;
+        Wed, 19 May 2021 20:13:05 -0700 (PDT)
+Received: from starnight.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id hk15sm4741590pjb.53.2021.05.19.20.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 20:13:04 -0700 (PDT)
+From:   Jian-Hong Pan <jhp@endlessos.org>
+To:     "Rafael J . Wysocki" <rafael@kernel.org>
+Cc:     Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux@endlessos.org,
+        Chris Chiu <chris.chiu@canonical.com>,
+        Jian-Hong Pan <jhp@endlessos.org>
+Subject: [PATCH v3] ACPI: EC: Make more Asus laptops use ECDT _GPE
+Date:   Thu, 20 May 2021 11:09:50 +0800
+Message-Id: <20210520030949.2471-1-jhp@endlessos.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <CABTNMG12HADeXoWe+25kYKQPcY8KV0GCDx+75GVAVATQ1pZYTA@mail.gmail.com>
+References: <CABTNMG12HADeXoWe+25kYKQPcY8KV0GCDx+75GVAVATQ1pZYTA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.224]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm000003.china.huawei.com (7.185.36.128)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we have "block_ns > halt_poll_ns" and "block_ns < max_halt_poll_ns",
-then "halt_poll_ns < max_halt_poll_ns" is true, so we can drop this extra
-condition.
+From: Chris Chiu <chris.chiu@canonical.com>
 
-We want to make sure halt_poll_ns is not zero before shrinking it. Put
-the condition in shrinking primitive can make code clearer.
+More ASUS laptops have the _GPE define in the DSDT table with a
+different value than the _GPE number in the ECDT.
 
-None functional change.
+This is causing media keys not working on ASUS X505BA/BP, X542BA/BP
 
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
+Add model info to the quirks list.
+
+Signed-off-by: Chris Chiu <chris.chiu@canonical.com>
+Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
 ---
- Documentation/virt/kvm/halt-polling.rst | 21 ++++++++++-----------
- virt/kvm/kvm_main.c                     | 11 ++++++-----
- 2 files changed, 16 insertions(+), 16 deletions(-)
+v2: Edit the author information with valid email address
 
-diff --git a/Documentation/virt/kvm/halt-polling.rst b/Documentation/virt/kvm/halt-polling.rst
-index 4922e4a15f18..d9f699395a7f 100644
---- a/Documentation/virt/kvm/halt-polling.rst
-+++ b/Documentation/virt/kvm/halt-polling.rst
-@@ -47,17 +47,16 @@ Thus this is a per vcpu (or vcore) value.
- During polling if a wakeup source is received within the halt polling interval,
- the interval is left unchanged. In the event that a wakeup source isn't
- received during the polling interval (and thus schedule is invoked) there are
--two options, either the polling interval and total block time[0] were less than
--the global max polling interval (see module params below), or the total block
--time was greater than the global max polling interval.
--
--In the event that both the polling interval and total block time were less than
--the global max polling interval then the polling interval can be increased in
--the hope that next time during the longer polling interval the wake up source
--will be received while the host is polling and the latency benefits will be
--received. The polling interval is grown in the function grow_halt_poll_ns() and
--is multiplied by the module parameters halt_poll_ns_grow and
--halt_poll_ns_grow_start.
-+two options, either the total block time[0] were less than the global max
-+polling interval (see module params below), or the total block time was greater
-+than the global max polling interval.
-+
-+In the event that the total block time were less than the global max polling
-+interval then the polling interval can be increased in the hope that next time
-+during the longer polling interval the wake up source will be received while the
-+host is polling and the latency benefits will be received. The polling interval
-+is grown in the function grow_halt_poll_ns() and is multiplied by the module
-+parameters halt_poll_ns_grow and halt_poll_ns_grow_start.
- 
- In the event that the total block time was greater than the global max polling
- interval then the host will never poll for long enough (limited by the global
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 6b4feb92dc79..13a9996c4ccb 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2906,6 +2906,9 @@ static void shrink_halt_poll_ns(struct kvm_vcpu *vcpu)
- 	unsigned int old, val, shrink;
- 
- 	old = val = vcpu->halt_poll_ns;
-+	if (!old)
-+		return;
-+
- 	shrink = READ_ONCE(halt_poll_ns_shrink);
- 	if (shrink == 0)
- 		val = 0;
-@@ -3003,12 +3006,10 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
- 			if (block_ns <= vcpu->halt_poll_ns)
- 				;
- 			/* we had a long block, shrink polling */
--			else if (vcpu->halt_poll_ns &&
--					block_ns > vcpu->kvm->max_halt_poll_ns)
-+			else if (block_ns > vcpu->kvm->max_halt_poll_ns)
- 				shrink_halt_poll_ns(vcpu);
--			/* we had a short halt and our poll time is too small */
--			else if (vcpu->halt_poll_ns < vcpu->kvm->max_halt_poll_ns &&
--					block_ns < vcpu->kvm->max_halt_poll_ns)
-+			/* we had a short block, grow polling */
-+			else if (block_ns < vcpu->kvm->max_halt_poll_ns)
- 				grow_halt_poll_ns(vcpu);
- 		} else {
- 			vcpu->halt_poll_ns = 0;
+v3: Edit Chris' S-o-b with current valid email address
+
+ drivers/acpi/ec.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+index 13565629ce0a..e8c5da2b964a 100644
+--- a/drivers/acpi/ec.c
++++ b/drivers/acpi/ec.c
+@@ -1846,6 +1846,22 @@ static const struct dmi_system_id ec_dmi_table[] __initconst = {
+ 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 	DMI_MATCH(DMI_PRODUCT_NAME, "GL702VMK"),}, NULL},
+ 	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BA", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X505BA"),}, NULL},
++	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X505BP", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X505BP"),}, NULL},
++	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BA", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X542BA"),}, NULL},
++	{
++	ec_honor_ecdt_gpe, "ASUSTeK COMPUTER INC. X542BP", {
++	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	DMI_MATCH(DMI_PRODUCT_NAME, "X542BP"),}, NULL},
++	{
+ 	ec_honor_ecdt_gpe, "ASUS X550VXK", {
+ 	DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+ 	DMI_MATCH(DMI_PRODUCT_NAME, "X550VXK"),}, NULL},
 -- 
-2.19.1
+2.31.1
 
