@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B90A38B4CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:59:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0486838B4D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:59:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234190AbhETRAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:00:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57494 "EHLO mail.kernel.org"
+        id S234220AbhETRA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:00:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57562 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238845AbhETQ7W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:59:22 -0400
+        id S239250AbhETQ7X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:59:23 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E3C261353;
-        Thu, 20 May 2021 16:58:00 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AD5761363;
+        Thu, 20 May 2021 16:58:02 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgX-002d7b-IV; Thu, 20 May 2021 17:38:10 +0100
+        id 1ljlgZ-002d7b-2R; Thu, 20 May 2021 17:38:11 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 13/39] irqdomain: Kill irq_domain_add_legacy_isa
-Date:   Thu, 20 May 2021 17:37:25 +0100
-Message-Id: <20210520163751.27325-14-maz@kernel.org>
+Subject: [PATCH 14/39] irqdomain: Reimplement irq_linear_revmap() with irq_find_mapping()
+Date:   Thu, 20 May 2021 17:37:26 +0100
+Message-Id: <20210520163751.27325-15-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,55 +66,112 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This helper doesn't have a user anymore, let's remove it.
+irq_linear_revmap() is supposed to be a fast path for domain
+lookups, but it only exposes low-level details of the irqdomain
+implementation, details which are better kept private.
+
+The *overhead* between the two is only a function call and
+a couple of tests, so it is likely that noone can show any
+meaningful difference compared to the cost of taking an
+interrupt.
+
+Reimplement irq_linear_revmap() with irq_find_mapping()
+in order to preserve source code compatibility, and
+rename the internal field for a measure.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- Documentation/core-api/irq/irq-domain.rst |  1 -
- include/linux/irqdomain.h                 | 11 -----------
- 2 files changed, 12 deletions(-)
+ include/linux/irqdomain.h | 22 +++++++++-------------
+ kernel/irq/irqdomain.c    |  6 +++---
+ 2 files changed, 12 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/core-api/irq/irq-domain.rst b/Documentation/core-api/irq/irq-domain.rst
-index 8214e215a8bf..53283b3729a1 100644
---- a/Documentation/core-api/irq/irq-domain.rst
-+++ b/Documentation/core-api/irq/irq-domain.rst
-@@ -146,7 +146,6 @@ Legacy
- 
- 	irq_domain_add_simple()
- 	irq_domain_add_legacy()
--	irq_domain_add_legacy_isa()
- 	irq_domain_create_simple()
- 	irq_domain_create_legacy()
- 
 diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 62a8e3d23829..9f884c948739 100644
+index 9f884c948739..42b3f7d03a32 100644
 --- a/include/linux/irqdomain.h
 +++ b/include/linux/irqdomain.h
-@@ -45,9 +45,6 @@ struct cpumask;
- struct seq_file;
- struct irq_affinity_desc;
+@@ -151,9 +151,9 @@ struct irq_domain_chip_generic;
+  * Revmap data, used internally by irq_domain
+  * @revmap_direct_max_irq: The largest hwirq that can be set for controllers that
+  *                         support direct mapping
+- * @revmap_size: Size of the linear map table @linear_revmap[]
++ * @revmap_size: Size of the linear map table @revmap[]
+  * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
+- * @linear_revmap: Linear table of hwirq->virq reverse mappings
++ * @revmap: Linear table of hwirq->virq reverse mappings
+  */
+ struct irq_domain {
+ 	struct list_head link;
+@@ -177,7 +177,7 @@ struct irq_domain {
+ 	unsigned int revmap_size;
+ 	struct radix_tree_root revmap_tree;
+ 	struct mutex revmap_tree_mutex;
+-	unsigned int linear_revmap[];
++	unsigned int revmap[];
+ };
  
--/* Number of irqs reserved for a legacy isa controller */
--#define NUM_ISA_INTERRUPTS	16
--
- #define IRQ_DOMAIN_IRQ_SPEC_PARAMS 16
- 
- /**
-@@ -355,14 +352,6 @@ static inline struct irq_domain *irq_domain_add_nomap(struct device_node *of_nod
- {
- 	return __irq_domain_add(of_node_to_fwnode(of_node), 0, max_irq, max_irq, ops, host_data);
+ /* Irq domain flags */
+@@ -394,24 +394,20 @@ static inline unsigned int irq_create_mapping(struct irq_domain *host,
+ 	return irq_create_mapping_affinity(host, hwirq, NULL);
  }
--static inline struct irq_domain *irq_domain_add_legacy_isa(
--				struct device_node *of_node,
--				const struct irq_domain_ops *ops,
--				void *host_data)
--{
--	return irq_domain_add_legacy(of_node, NUM_ISA_INTERRUPTS, 0, 0, ops,
--				     host_data);
--}
- static inline struct irq_domain *irq_domain_add_tree(struct device_node *of_node,
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
+ 
+-
+ /**
+- * irq_linear_revmap() - Find a linux irq from a hw irq number.
++ * irq_find_mapping() - Find a linux irq from a hw irq number.
+  * @domain: domain owning this hardware interrupt
+  * @hwirq: hardware irq number in that domain space
+- *
+- * This is a fast path alternative to irq_find_mapping() that can be
+- * called directly by irq controller code to save a handful of
+- * instructions. It is always safe to call, but won't find irqs mapped
+- * using the radix tree.
+  */
++extern unsigned int irq_find_mapping(struct irq_domain *host,
++				     irq_hw_number_t hwirq);
++
+ static inline unsigned int irq_linear_revmap(struct irq_domain *domain,
+ 					     irq_hw_number_t hwirq)
+ {
+-	return hwirq < domain->revmap_size ? domain->linear_revmap[hwirq] : 0;
++	return irq_find_mapping(domain, hwirq);
+ }
+-extern unsigned int irq_find_mapping(struct irq_domain *host,
+-				     irq_hw_number_t hwirq);
++
+ extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
+ 
+ extern const struct irq_domain_ops irq_domain_simple_ops;
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index 6284443b87ec..8bd012253989 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -486,7 +486,7 @@ static void irq_domain_clear_mapping(struct irq_domain *domain,
+ 				     irq_hw_number_t hwirq)
+ {
+ 	if (hwirq < domain->revmap_size) {
+-		domain->linear_revmap[hwirq] = 0;
++		domain->revmap[hwirq] = 0;
+ 	} else {
+ 		mutex_lock(&domain->revmap_tree_mutex);
+ 		radix_tree_delete(&domain->revmap_tree, hwirq);
+@@ -499,7 +499,7 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
+ 				   struct irq_data *irq_data)
+ {
+ 	if (hwirq < domain->revmap_size) {
+-		domain->linear_revmap[hwirq] = irq_data->irq;
++		domain->revmap[hwirq] = irq_data->irq;
+ 	} else {
+ 		mutex_lock(&domain->revmap_tree_mutex);
+ 		radix_tree_insert(&domain->revmap_tree, hwirq, irq_data);
+@@ -885,7 +885,7 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
+ 
+ 	/* Check if the hwirq is in the linear revmap. */
+ 	if (hwirq < domain->revmap_size)
+-		return domain->linear_revmap[hwirq];
++		return domain->revmap[hwirq];
+ 
+ 	rcu_read_lock();
+ 	data = radix_tree_lookup(&domain->revmap_tree, hwirq);
 -- 
 2.30.2
 
