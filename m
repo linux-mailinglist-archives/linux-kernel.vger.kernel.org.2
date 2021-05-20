@@ -2,40 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B18438AB95
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B06338ABA0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240552AbhETLZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:25:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39782 "EHLO mail.kernel.org"
+        id S241068AbhETL0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:26:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239140AbhETLGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:06:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE33E60FDB;
-        Thu, 20 May 2021 10:05:29 +0000 (UTC)
+        id S238167AbhETLGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:06:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A5976142A;
+        Thu, 20 May 2021 10:05:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505130;
-        bh=bxQYnJV0rEBNwhtbGDeP8nQut7nB2UF5lBADMfe58Sk=;
+        s=korg; t=1621505132;
+        bh=p1cSVQX4FEmHZvzCPLvZISok0a/nDQ0qJLk9WnVKDv4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mJP+wGChkL5N8+j96JTVna8DbBPfDr1NZ2qrgrBZV0SOK3Yu/qwvz4btQLIo8Fn4r
-         0GNOSn2s4fvOCYHelpQ4VlpaALCI2QAfB74C3RfKvCvxuF7xujRQ6gmGCYryUjjywX
-         ERA0NDkNm3uolFxUl08lv+t0W8khM4tcNbdSHFDw=
+        b=YUW8r9Y5b2jpma2pGoJZRwy+hbcQrIcBZ7ik2MJpLtBu+n2tmtRmoFJmj/m4g6v6M
+         Db1PKoS1O6aAxL5NBRGTf45t7C0cZobRyFadwScyhlbqmK0m2aCfBh3/+UHJhV90PS
+         T157jsmQNe0PlKHseanQ4WiRqov2or2DaU37nZyI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 236/240] lib: stackdepot: turn depot_lock spinlock to raw_spinlock
-Date:   Thu, 20 May 2021 11:23:48 +0200
-Message-Id: <20210520092116.613782743@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.9 237/240] sit: proper dev_{hold|put} in ndo_[un]init methods
+Date:   Thu, 20 May 2021 11:23:49 +0200
+Message-Id: <20210520092116.645263479@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -47,75 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit 78564b9434878d686c5f88c4488b20cccbcc42bc ]
+commit 6289a98f0817a4a457750d6345e754838eae9439 upstream.
 
-In RT system, the spin_lock will be replaced by sleepable rt_mutex lock,
-in __call_rcu(), disable interrupts before calling
-kasan_record_aux_stack(), will trigger this calltrace:
+After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
+a warning [1]
 
-  BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:951
-  in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 19, name: pgdatinit0
-  Call Trace:
-    ___might_sleep.cold+0x1b2/0x1f1
-    rt_spin_lock+0x3b/0xb0
-    stack_depot_save+0x1b9/0x440
-    kasan_save_stack+0x32/0x40
-    kasan_record_aux_stack+0xa5/0xb0
-    __call_rcu+0x117/0x880
-    __exit_signal+0xafb/0x1180
-    release_task+0x1d6/0x480
-    exit_notify+0x303/0x750
-    do_exit+0x678/0xcf0
-    kthread+0x364/0x4f0
-    ret_from_fork+0x22/0x30
+Issue here is that:
 
-Replace spinlock with raw_spinlock.
+- all dev_put() should be paired with a corresponding prior dev_hold().
 
-Link: https://lkml.kernel.org/r/20210329084009.27013-1-qiang.zhang@windriver.com
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Reported-by: Andrew Halaney <ahalaney@redhat.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Vijayanand Jitta <vjitta@codeaurora.org>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: Yogesh Lal <ylal@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+- A driver doing a dev_put() in its ndo_uninit() MUST also
+  do a dev_hold() in its ndo_init(), only when ndo_init()
+  is returning 0.
+
+Otherwise, register_netdevice() would call ndo_uninit()
+in its error path and release a refcount too soon.
+
+Fixes: 919067cc845f ("net: add CONFIG_PCPU_DEV_REFCNT")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/stackdepot.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ net/ipv6/sit.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -78,7 +78,7 @@ static void *stack_slabs[STACK_ALLOC_MAX
- static int depot_index;
- static int next_slab_inited;
- static size_t depot_offset;
--static DEFINE_SPINLOCK(depot_lock);
-+static DEFINE_RAW_SPINLOCK(depot_lock);
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -209,8 +209,6 @@ static int ipip6_tunnel_create(struct ne
  
- static bool init_stack_slab(void **prealloc)
- {
-@@ -253,7 +253,7 @@ depot_stack_handle_t depot_save_stack(st
- 			prealloc = page_address(page);
+ 	ipip6_tunnel_clone_6rd(dev, sitn);
+ 
+-	dev_hold(dev);
+-
+ 	ipip6_tunnel_link(sitn, t);
+ 	return 0;
+ 
+@@ -1400,7 +1398,7 @@ static int ipip6_tunnel_init(struct net_
+ 		dev->tstats = NULL;
+ 		return err;
  	}
+-
++	dev_hold(dev);
+ 	return 0;
+ }
  
--	spin_lock_irqsave(&depot_lock, flags);
-+	raw_spin_lock_irqsave(&depot_lock, flags);
- 
- 	found = find_stack(*bucket, trace->entries, trace->nr_entries, hash);
- 	if (!found) {
-@@ -277,7 +277,7 @@ depot_stack_handle_t depot_save_stack(st
- 		WARN_ON(!init_stack_slab(&prealloc));
- 	}
- 
--	spin_unlock_irqrestore(&depot_lock, flags);
-+	raw_spin_unlock_irqrestore(&depot_lock, flags);
- exit:
- 	if (prealloc) {
- 		/* Nobody used this memory, ok to free it. */
 
 
