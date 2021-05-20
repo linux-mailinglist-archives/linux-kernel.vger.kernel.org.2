@@ -2,329 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8891C389CF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D529E389CF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:12:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhETFNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42946 "EHLO
+        id S230347AbhETFNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhETFN2 (ORCPT
+        with ESMTP id S230312AbhETFNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:13:28 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C323AC061574;
-        Wed, 19 May 2021 22:12:06 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id c20so15060245qkm.3;
-        Wed, 19 May 2021 22:12:06 -0700 (PDT)
+        Thu, 20 May 2021 01:13:36 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055FFC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:12:16 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id s68-20020a372c470000b0290305f75a7cecso11571271qkh.8
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:12:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iGt6GNjsfcEFc3c4nOlUAk3fFQaMQQwdP1dl8p3iAGA=;
-        b=XsbtYwLM8yDhrIKnU1IPeW+OBWK+iRII6f3dhXjBfqmI/dkveyf/Lh6LrsoNFbqXJE
-         iPl+z2Utn/HJQ9tSnambS4e4WLzwuk+nhT5GNp0KcEFYX/UczmDtmeBX0zKu3XmDuMaT
-         RqE24wTrcjJ/uO9UjdeD+t06Nl9qAqZ4KJ0kXilDdjSGL2y4Ez9CfhxivE8hp3B5lxV0
-         oj04bJF7d/EfJd3vIWpp6fTCY/EizQdHR8uFUL6hWqqOt/3S/Q3Rca8xuDHkkXZjGwvn
-         IYU20X9+cLIW49Wn/XZj1jsVdhHeS4OUd6sX4yxZIuDIVrMGqRZ4VI6reY4Y0kfPKAtQ
-         mItw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=nSHjW7bKWecnxQu3kZC8W2cm3ydg9WYf51lZYtMzgOg=;
+        b=vMOyzNDeFx1M0xVAhwjqx0war39y6moGq+UKVlCCcBk5bnt3xZzpzsr6K88mh/0wj7
+         wXEchgKN2iwi7xQ7tWHAjUHHwBXHbSrBl0vRuLN9r99Qmf2kxpE4tGpNUqyjXXwmdci4
+         njMzdWq4Raas3wxwNTR+tcNWS5Puh5/l1qTNJBcjOX/4whGr4cKAGnDS49Yz/VqLP4G0
+         NFr6ItR7Kgs9jSeNbML8IXxwDuYUSAyqLfk7kKLH3LuYbY01EOYQTOfBu4auVNvpItaF
+         mNMxKkB9qFxCvRF70tqHDX+6zt/gOXaBR3kodT9H3MulXbyH+IBRYEhp7NZOtRf5dILG
+         Kw3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iGt6GNjsfcEFc3c4nOlUAk3fFQaMQQwdP1dl8p3iAGA=;
-        b=jRoU+mZQnvG6EHBN672RVFQXmROhFj1zeO5hW5SZLf496IUNEApPBB3klzHHJ4HE9F
-         pVrqH60uID7YP6j+MMsqzn7HU3erRXu5u8EBp9ypno9PxX/a7Pn20+LEULbu2TWpWNqR
-         y3bqhr+d8nuo+pfU3jDF6A8CvxOGN7nVuSedUF+uif9jfdhtolmChIEM4UURL7nDDkHm
-         ZMMGJNBHoZRSnxeReRoTLu1kSX9zvQkPgCsb9zJyXkqYo4fizO6j+aBziau85mCckpvp
-         uFIfj6xjgiC1ZEaya5uKQxbSl62QbdM/v937J2Z2Cn4XCMZlhJUBRvdU29Mgy4niiQR5
-         wwew==
-X-Gm-Message-State: AOAM533/PY810cMkdE7UcWRCMpWjUKfRYswEvSt7k4KEC42z+oO8lI5i
-        obt+rMeBu+DHQ1iagm4JXaoVvemVCso=
-X-Google-Smtp-Source: ABdhPJwLeGsPMKAx/rwckCUPjNK7U9lKL0vV5aAiUFFz5sL8F2Il7TrcEncxfg+Z9fG/nkuFDjFh7g==
-X-Received: by 2002:a05:620a:24cf:: with SMTP id m15mr3002581qkn.435.1621487525665;
-        Wed, 19 May 2021 22:12:05 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p19sm1328845qki.119.2021.05.19.22.12.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 22:12:05 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v5 1/5] hwmon: (max31790) Rework to use regmap
-To:     =?UTF-8?B?VsOhY2xhdiBLdWJlcm7DoXQ=?= <kubernat@cesnet.cz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210512013052.903297-1-kubernat@cesnet.cz>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <f8ed6593-f120-959c-cc5c-481df11e38b6@roeck-us.net>
-Date:   Wed, 19 May 2021 22:12:03 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210512013052.903297-1-kubernat@cesnet.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=nSHjW7bKWecnxQu3kZC8W2cm3ydg9WYf51lZYtMzgOg=;
+        b=r0c06UvKH7nEMLXR+VmyFuFqCpqh+Ie1qW81xWpnP0IrkK5y6lvaVdPbPEwAGhTgSj
+         Fdgxn4Fr9PDIgXztshNkpw+X2f7exCnfLiUVLcHvbSDSrxK0mofHg5XY4yo+HU4t2ZoJ
+         PWwGps5KopJFmYYoiqaACblbu0SmD/RncJHHLHC1lkO78YZQeqaYBCoIZVmxiVxlKac9
+         HWJl64tpv2nI1fLZXV56K5HBH4Cpqh8e0KivD4ubAndukjR5RF/SkBY5lFHhoaXEW1Pt
+         v8rQEwAL1tjZmNngn931is9O9ThKV4N35oN4s+FIMJHxhOyOOdiYkhJ1c2HX/zWGTbJ4
+         i0Sg==
+X-Gm-Message-State: AOAM532UxSY/9UoZvTVojV7WmgrZy8ERf87j1Rco4ZvvjIbkWqwJFXlm
+        RTFQvRzlBEfxUtX0+95CbIfMVJsxdD+NzcfFRg==
+X-Google-Smtp-Source: ABdhPJwQy5bIy4FKavqab+Kx8aF2GTMz69DN1UlXuxvD3QCWzHsTrIWRlA/EWOV/vDw4aNXYNhXNIErpZY5ypI2XpA==
+X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:5827:f259:c0e8:5b1d])
+ (user=howardchung job=sendgmr) by 2002:a0c:e34b:: with SMTP id
+ a11mr3693793qvm.24.1621487535094; Wed, 19 May 2021 22:12:15 -0700 (PDT)
+Date:   Thu, 20 May 2021 13:12:09 +0800
+Message-Id: <20210520131145.v2.1.I69e82377dd94ad7cba0cde75bcac2dce62fbc542@changeid>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+Subject: [PATCH v2] Bluetooth: disable filter dup when scan for adv monitor
+From:   Howard Chung <howardchung@google.com>
+To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        Yun-Hao Chung <howardchung@chromium.org>,
+        Archie Pusaka <apusaka@chromium.org>,
+        Manish Mandlik <mmandlik@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/11/21 6:30 PM, Václav Kubernát wrote:
-> Converting the driver to use regmap makes it more generic. It also makes
-> it a lot easier to debug through debugfs.
-> 
-> Signed-off-by: Václav Kubernát <kubernat@cesnet.cz>
-> ---
->   drivers/hwmon/Kconfig    |   1 +
->   drivers/hwmon/max31790.c | 254 ++++++++++++++++++++-------------------
->   2 files changed, 133 insertions(+), 122 deletions(-)
-> 
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 54f04e61fb83..c2ec57672c4e 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1092,6 +1092,7 @@ config SENSORS_MAX6697
->   config SENSORS_MAX31790
->   	tristate "Maxim MAX31790 sensor chip"
->   	depends on I2C
-> +	select REGMAP_I2C
->   	help
->   	  If you say yes here you get support for 6-Channel PWM-Output
->   	  Fan RPM Controller.
-> diff --git a/drivers/hwmon/max31790.c b/drivers/hwmon/max31790.c
-> index 2c6b333a28e9..e3765ce4444a 100644
-> --- a/drivers/hwmon/max31790.c
-> +++ b/drivers/hwmon/max31790.c
-> @@ -12,6 +12,7 @@
->   #include <linux/init.h>
->   #include <linux/jiffies.h>
->   #include <linux/module.h>
-> +#include <linux/regmap.h>
->   #include <linux/slab.h>
->   
->   /* MAX31790 registers */
-> @@ -46,92 +47,53 @@
->   
->   #define NR_CHANNEL			6
->   
-> +#define MAX31790_REG_USER_BYTE_67	0x67
-> +
-> +#define BULK_TO_U16(msb, lsb)		(((msb) << 8) + (lsb))
-> +#define U16_MSB(num)			(((num) & 0xFF00) >> 8)
-> +#define U16_LSB(num)			((num) & 0x00FF)
-> +
-> +static const struct regmap_range max31790_ro_range = {
-> +	.range_min = MAX31790_REG_TACH_COUNT(0),
-> +	.range_max = MAX31790_REG_PWMOUT(0) - 1,
-> +};
-> +
-> +static const struct regmap_access_table max31790_wr_table = {
-> +	.no_ranges = &max31790_ro_range,
-> +	.n_no_ranges = 1,
-> +};
-> +
-> +static const struct regmap_range max31790_volatile_ranges[] = {
-> +	regmap_reg_range(MAX31790_REG_TACH_COUNT(0), MAX31790_REG_TACH_COUNT(12)),
-> +	regmap_reg_range(MAX31790_REG_FAN_FAULT_STATUS2, MAX31790_REG_FAN_FAULT_STATUS1),
-> +};
-> +
-> +static const struct regmap_access_table max31790_volatile_table = {
-> +	.no_ranges = max31790_volatile_ranges,
-> +	.n_no_ranges = 2,
-> +	.n_yes_ranges = 0
-> +};
-> +
-> +static const struct regmap_config max31790_regmap_config = {
-> +	.reg_bits = 8,
-> +	.val_bits = 8,
-> +	.reg_stride = 1,
-> +	.max_register = MAX31790_REG_USER_BYTE_67,
-> +	.wr_table = &max31790_wr_table,
-> +	.volatile_table = &max31790_volatile_table
-> +};
-> +
->   /*
->    * Client data (each client gets its own)
->    */
->   struct max31790_data {
-> -	struct i2c_client *client;
-> +	struct regmap *regmap;
-> +
->   	struct mutex update_lock;
-> -	bool valid; /* zero until following fields are valid */
-> -	unsigned long last_updated; /* in jiffies */
-> -
-> -	/* register values */
->   	u8 fan_config[NR_CHANNEL];
->   	u8 fan_dynamics[NR_CHANNEL];
-> -	u16 fault_status;
-> -	u16 tach[NR_CHANNEL * 2];
-> -	u16 pwm[NR_CHANNEL];
-> -	u16 target_count[NR_CHANNEL];
->   };
->   
-> -static struct max31790_data *max31790_update_device(struct device *dev)
-> -{
-> -	struct max31790_data *data = dev_get_drvdata(dev);
-> -	struct i2c_client *client = data->client;
-> -	struct max31790_data *ret = data;
-> -	int i;
-> -	int rv;
-> -
-> -	mutex_lock(&data->update_lock);
-> -
-> -	if (time_after(jiffies, data->last_updated + HZ) || !data->valid) {
-> -		rv = i2c_smbus_read_byte_data(client,
-> -				MAX31790_REG_FAN_FAULT_STATUS1);
-> -		if (rv < 0)
-> -			goto abort;
-> -		data->fault_status = rv & 0x3F;
-> -
-> -		rv = i2c_smbus_read_byte_data(client,
-> -				MAX31790_REG_FAN_FAULT_STATUS2);
-> -		if (rv < 0)
-> -			goto abort;
-> -		data->fault_status |= (rv & 0x3F) << 6;
-> -
-> -		for (i = 0; i < NR_CHANNEL; i++) {
-> -			rv = i2c_smbus_read_word_swapped(client,
-> -					MAX31790_REG_TACH_COUNT(i));
-> -			if (rv < 0)
-> -				goto abort;
-> -			data->tach[i] = rv;
-> -
-> -			if (data->fan_config[i]
-> -			    & MAX31790_FAN_CFG_TACH_INPUT) {
-> -				rv = i2c_smbus_read_word_swapped(client,
-> -					MAX31790_REG_TACH_COUNT(NR_CHANNEL
-> -								+ i));
-> -				if (rv < 0)
-> -					goto abort;
-> -				data->tach[NR_CHANNEL + i] = rv;
-> -			} else {
-> -				rv = i2c_smbus_read_word_swapped(client,
-> -						MAX31790_REG_PWMOUT(i));
-> -				if (rv < 0)
-> -					goto abort;
-> -				data->pwm[i] = rv;
-> -
-> -				rv = i2c_smbus_read_word_swapped(client,
-> -						MAX31790_REG_TARGET_COUNT(i));
-> -				if (rv < 0)
-> -					goto abort;
-> -				data->target_count[i] = rv;
-> -			}
-> -		}
-> -
-> -		data->last_updated = jiffies;
-> -		data->valid = true;
-> -	}
-> -	goto done;
-> -
-> -abort:
-> -	data->valid = false;
-> -	ret = ERR_PTR(rv);
-> -
-> -done:
-> -	mutex_unlock(&data->update_lock);
-> -
-> -	return ret;
-> -}
-> -
->   static const u8 tach_period[8] = { 1, 2, 4, 8, 16, 32, 32, 32 };
->   
->   static u8 get_tach_period(u8 fan_dynamics)
-> @@ -159,28 +121,75 @@ static u8 bits_for_tach_period(int rpm)
->   	return bits;
->   }
->   
-> +static int read_reg_byte(struct regmap *regmap, u8 reg)
-> +{
-> +	int rv;
-> +	int val;
-> +
-> +	rv = regmap_read(regmap, reg, &val);
-> +	if (rv < 0)
-> +		return rv;
-> +
-> +	return val;
-> +}
-> +
-> +static int read_reg_word(struct regmap *regmap, u8 reg)
-> +{
-> +	int rv;
-> +	u8 val_bulk[2];
-> +
-> +	rv = regmap_bulk_read(regmap, reg, val_bulk, 2);
-> +	if (rv < 0)
-> +		return rv;
-> +
-> +	return BULK_TO_U16(val_bulk[0], val_bulk[1]);
-> +}
-> +
-> +static int write_reg_word(struct regmap *regmap, u8 reg, u16 val)
-> +{
-> +	u8 bulk_val[2];
-> +
-> +	bulk_val[0] = U16_MSB(val);
-> +	bulk_val[1] = U16_LSB(val);
-> +
-> +	return regmap_bulk_write(regmap, reg, bulk_val, 2);
-> +}
-> +
->   static int max31790_read_fan(struct device *dev, u32 attr, int channel,
->   			     long *val)
->   {
-> -	struct max31790_data *data = max31790_update_device(dev);
-> -	int sr, rpm;
-> -
-> -	if (IS_ERR(data))
-> -		return PTR_ERR(data);
-> +	struct max31790_data *data = dev_get_drvdata(dev);
-> +	struct regmap *regmap = data->regmap;
-> +	int tach, fault;
->   
->   	switch (attr) {
->   	case hwmon_fan_input:
-> -		sr = get_tach_period(data->fan_dynamics[channel]);
-> -		rpm = RPM_FROM_REG(data->tach[channel], sr);
-> -		*val = rpm;
-> +		tach = read_reg_word(regmap, MAX31790_REG_TACH_COUNT(channel));
-> +		if (tach < 0)
-> +			return tach;
-> +
-> +		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
->   		return 0;
->   	case hwmon_fan_target:
-> -		sr = get_tach_period(data->fan_dynamics[channel]);
-> -		rpm = RPM_FROM_REG(data->target_count[channel], sr);
-> -		*val = rpm;
-> +		tach = read_reg_word(regmap, MAX31790_REG_TARGET_COUNT(channel));
-> +		if (tach < 0)
-> +			return tach;
-> +
-> +		*val = RPM_FROM_REG(tach, get_tach_period(data->fan_dynamics[channel]));
->   		return 0;
->   	case hwmon_fan_fault:
-> -		*val = !!(data->fault_status & (1 << channel));
-> +		if (channel > 6)
+From: Yun-Hao Chung <howardchung@chromium.org>
 
-Please use the NR_CHANNEL constant.
+Disable duplicates filter when scanning for advertisement monitor for
+the following reasons. The scanning includes active scan and passive
+scan.
 
-> +			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS2);
-> +		else
-> +			fault = read_reg_byte(regmap, MAX31790_REG_FAN_FAULT_STATUS1);
-> +
-> +		if (fault < 0)
-> +			return fault;
-> +
-> +		if (channel > 6)
-> +			*val = !!(fault & (1 << (channel - 6)));
-> +		else
-> +			*val = !!(fault & (1 << channel));
+For HW pattern filtering (ex. MSFT), Realtek and Qualcomm controllers
+ignore RSSI_Sampling_Period when the duplicates filter is enabled.
 
-Better written without conditional as
-		*val = !!(fault & (1 << (channel % NR_CHANNEL)));
+For SW pattern filtering, when we're not doing interleaved scanning, it
+is necessary to disable duplicates filter, otherwise hosts can only
+receive one advertisement and it's impossible to know if a peer is still
+in range.
 
-Guenter
+Reviewed-by: Archie Pusaka <apusaka@chromium.org>
+Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
+
+Signed-off-by: Yun-Hao Chung <howardchung@chromium.org>
+
+---
+
+Changes in v2:
+- include the vendor name in the comment and commit messages
+
+ net/bluetooth/hci_request.c | 46 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 41 insertions(+), 5 deletions(-)
+
+diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
+index fa9125b782f85..3465862429fb5 100644
+--- a/net/bluetooth/hci_request.c
++++ b/net/bluetooth/hci_request.c
+@@ -932,7 +932,7 @@ static bool scan_use_rpa(struct hci_dev *hdev)
+ 
+ static void hci_req_start_scan(struct hci_request *req, u8 type, u16 interval,
+ 			       u16 window, u8 own_addr_type, u8 filter_policy,
+-			       bool addr_resolv)
++			       bool filter_dup, bool addr_resolv)
+ {
+ 	struct hci_dev *hdev = req->hdev;
+ 
+@@ -997,7 +997,7 @@ static void hci_req_start_scan(struct hci_request *req, u8 type, u16 interval,
+ 
+ 		memset(&ext_enable_cp, 0, sizeof(ext_enable_cp));
+ 		ext_enable_cp.enable = LE_SCAN_ENABLE;
+-		ext_enable_cp.filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
++		ext_enable_cp.filter_dup = filter_dup;
+ 
+ 		hci_req_add(req, HCI_OP_LE_SET_EXT_SCAN_ENABLE,
+ 			    sizeof(ext_enable_cp), &ext_enable_cp);
+@@ -1016,7 +1016,7 @@ static void hci_req_start_scan(struct hci_request *req, u8 type, u16 interval,
+ 
+ 		memset(&enable_cp, 0, sizeof(enable_cp));
+ 		enable_cp.enable = LE_SCAN_ENABLE;
+-		enable_cp.filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
++		enable_cp.filter_dup = filter_dup;
+ 		hci_req_add(req, HCI_OP_LE_SET_SCAN_ENABLE, sizeof(enable_cp),
+ 			    &enable_cp);
+ 	}
+@@ -1053,6 +1053,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
+ 	u8 own_addr_type;
+ 	u8 filter_policy;
+ 	u16 window, interval;
++	/* Default is to enable duplicates filter */
++	u8 filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
+ 	/* Background scanning should run with address resolution */
+ 	bool addr_resolv = true;
+ 
+@@ -1106,6 +1108,20 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
+ 	} else if (hci_is_adv_monitoring(hdev)) {
+ 		window = hdev->le_scan_window_adv_monitor;
+ 		interval = hdev->le_scan_int_adv_monitor;
++
++		/* Disable duplicates filter when scanning for advertisement
++		 * monitor for the following reasons.
++		 *
++		 * For HW pattern filtering (ex. MSFT), Realtek and Qualcomm
++		 * controllers ignore RSSI_Sampling_Period when the duplicates
++		 * filter is enabled.
++		 *
++		 * For SW pattern filtering, when we're not doing interleaved
++		 * scanning, it is necessary to disable duplicates filter,
++		 * otherwise hosts can only receive one advertisement and it's
++		 * impossible to know if a peer is still in range.
++		 */
++		filter_dup = LE_SCAN_FILTER_DUP_DISABLE;
+ 	} else {
+ 		window = hdev->le_scan_window;
+ 		interval = hdev->le_scan_interval;
+@@ -1113,7 +1129,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
+ 
+ 	bt_dev_dbg(hdev, "LE passive scan with whitelist = %d", filter_policy);
+ 	hci_req_start_scan(req, LE_SCAN_PASSIVE, interval, window,
+-			   own_addr_type, filter_policy, addr_resolv);
++			   own_addr_type, filter_policy, filter_dup,
++			   addr_resolv);
+ }
+ 
+ static bool adv_instance_is_scannable(struct hci_dev *hdev, u8 instance)
+@@ -3135,6 +3152,8 @@ static int active_scan(struct hci_request *req, unsigned long opt)
+ 	u8 own_addr_type;
+ 	/* White list is not used for discovery */
+ 	u8 filter_policy = 0x00;
++	/* Default is to enable duplicates filter */
++	u8 filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
+ 	/* Discovery doesn't require controller address resolution */
+ 	bool addr_resolv = false;
+ 	int err;
+@@ -3159,9 +3178,26 @@ static int active_scan(struct hci_request *req, unsigned long opt)
+ 	if (err < 0)
+ 		own_addr_type = ADDR_LE_DEV_PUBLIC;
+ 
++	if (hci_is_adv_monitoring(hdev)) {
++		/* Duplicate filter should be disabled when some advertisement
++		 * monitor is activated, otherwise AdvMon can only receive one
++		 * advertisement for one peer(*) during active scanning, and
++		 * might report loss to these peers.
++		 *
++		 * Note that different controllers have different meanings of
++		 * |duplicate|. Some of them consider packets with the same
++		 * address as duplicate, and others consider packets with the
++		 * same address and the same RSSI as duplicate. Although in the
++		 * latter case we don't need to disable duplicate filter, but
++		 * it is common to have active scanning for a short period of
++		 * time, the power impact should be neglectable.
++		 */
++		filter_dup = LE_SCAN_FILTER_DUP_DISABLE;
++	}
++
+ 	hci_req_start_scan(req, LE_SCAN_ACTIVE, interval,
+ 			   hdev->le_scan_window_discovery, own_addr_type,
+-			   filter_policy, addr_resolv);
++			   filter_policy, filter_dup, addr_resolv);
+ 	return 0;
+ }
+ 
+-- 
+2.31.1.751.gd2f1c929bd-goog
+
