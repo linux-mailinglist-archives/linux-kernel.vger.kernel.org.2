@@ -2,113 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F8638A3B8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 898EE38A3F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234126AbhETJ4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234394AbhETJwc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:52:32 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E895FC07E5C1;
-        Thu, 20 May 2021 02:32:07 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id x188so11922745pfd.7;
-        Thu, 20 May 2021 02:32:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=HLfcO/MecS4+rtd6Pd4VQw8XBO3rw/gjM5Y8RjQr1Ds=;
-        b=hmbUgAfMKfKl6L8zVr8C4kuv+fzJpbOFoDCK3X2SnwJDb7AzoGF8V5mY//xvNZ91OR
-         BMyw6GS5vbB5z4dJSPoOuiBmYJCHYLA945ohnJ7UU2bpAi5Gl40wwgxxAIspD3Xtrp2g
-         OCcbB3g+rMVDJ5oxjtsBhVN4a/QvyuUUEuNk7FaNr+gqw48VDXugM3Dngebou3mKHqc4
-         EQTJv4Uxpl2lKdiDbTm2jyCf2a3ZDpukZMngYRhf0JsTZqRZQCQ1BijA+dz6vhkDsJg0
-         QUTtGmec67/GS6UYn264mjcQvSSiEvN2hoHM5usWL72NtPms4rU28fW/yg8V66I+Hpit
-         RfVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=HLfcO/MecS4+rtd6Pd4VQw8XBO3rw/gjM5Y8RjQr1Ds=;
-        b=t5KO7rLVGsLLAbYtFPttr/TLxMTzqeSe+LJqsT1O/zD4AbBorTJmPGSxzhzySYpXbt
-         aW1oZ10gWGcbC/f/rB+5UeZ3+uboRYykZNLHN/ml6BRF7CYi0wkUgPO15rO8tIR68fWG
-         AG7VRvh5xmzCLc8LI50Y8mGo3HTP2ek4pQhrgw/YTV1qVVb5VGre2v4HF4jm48FrM3Mo
-         EAUnhYqdp+29XEVqunoXEqzgQqsjm4bzSe4K9NpJ1fkPbrA0WONUZcJ9JBsfwJnAmQeT
-         hum675C4HUxiTe8UFy/zZc2CSyqEWAqcl2hu0KBKcTEdZIx1mVt4pxOvH9O1DYwsahv8
-         20rw==
-X-Gm-Message-State: AOAM531ssCkKnovW5mgxvmFB9mXmOawOjh5LdxqtdpRyDIm6IZgKU6Os
-        qL9ALJtC3TFJOlyPaF/zw/8=
-X-Google-Smtp-Source: ABdhPJySK9IhwVTlxZj17iML3cV3LYHRtDOolrJuxa9X3Das7Yp30fDO44U/UJ8d5pYuXGyH3TrtzA==
-X-Received: by 2002:a62:6481:0:b029:249:ecee:a05d with SMTP id y123-20020a6264810000b0290249eceea05dmr3648202pfb.9.1621503127359;
-        Thu, 20 May 2021 02:32:07 -0700 (PDT)
-Received: from localhost (public-nat-08.vpngate.v4.open.ad.jp. [219.100.37.240])
-        by smtp.gmail.com with ESMTPSA id t1sm1557398pjo.33.2021.05.20.02.32.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 02:32:06 -0700 (PDT)
-Date:   Thu, 20 May 2021 02:31:55 -0700
-From:   Isaku Yamahata <isaku.yamahata@gmail.com>
-To:     Connor Kuehl <ckuehl@redhat.com>
-Cc:     isaku.yamahata@intel.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        isaku.yamahata@gmail.com
-Subject: Re: [RFC PATCH 00/67] KVM: X86: TDX support
-Message-ID: <20210520093155.GA3602295@private.email.ne.jp>
-References: <cover.1605232743.git.isaku.yamahata@intel.com>
- <3edc0fb2-d552-88df-eead-9e2b80e79be4@redhat.com>
+        id S234540AbhETJ6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:58:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234898AbhETJzE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:55:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CC5CD613E1;
+        Thu, 20 May 2021 09:37:02 +0000 (UTC)
+Date:   Thu, 20 May 2021 11:36:59 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>
+Cc:     zohar@linux.ibm.com, mjg59@srcf.ucam.org,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/7] ima: Introduce template fields mntuidmap and
+ mntgidmap
+Message-ID: <20210520093659.oeeytegx2tvzp33e@wittgenstein>
+References: <20210520085701.465369-1-roberto.sassu@huawei.com>
+ <20210520085701.465369-4-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3edc0fb2-d552-88df-eead-9e2b80e79be4@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210520085701.465369-4-roberto.sassu@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:37:23AM -0500,
-Connor Kuehl <ckuehl@redhat.com> wrote:
-
-> On 11/16/20 12:25 PM, isaku.yamahata@intel.com wrote:
-> > From: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > * What's TDX?
-> > TDX stands for Trust Domain Extensions which isolates VMs from
-> > the virtual-machine manager (VMM)/hypervisor and any other software on
-> > the platform. [1]
-> > For details, the specifications, [2], [3], [4], [5], [6], [7], are
-> > available.
-> > 
-> > 
-> > * The goal of this RFC patch
-> > The purpose of this post is to get feedback early on high level design
-> > issue of KVM enhancement for TDX. The detailed coding (variable naming
-> > etc) is not cared of. This patch series is incomplete (not working).
-> > Although multiple software components, not only KVM but also QEMU,
-> > guest Linux and virtual bios, need to be updated, this includes only
-> > KVM VMM part. For those who are curious to changes to other
-> > component, there are public repositories at github. [8], [9]
+On Thu, May 20, 2021 at 10:56:57AM +0200, Roberto Sassu wrote:
+> This patch introduces the new template fields mntuidmap and mntgidmap,
+> which include respectively the UID and GID mappings of the idmapped mount,
+> if the user namespace is not the initial one.
 > 
-> Hi,
+> These template fields, which should be included whenever the iuid and the
+> igid fields are included, allow remote verifiers to find the original UID
+> and GID of the inode during signature verification. The iuid and igid
+> fields include the mapped UID and GID when the inode is in an idmapped
+> mount.
 > 
-> I'm planning on reading through this patch set; but before I do, since
-> it's been several months and it's a non-trivially sized series, I just
-> wanted to confirm that this is the latest revision of the RFC that
-> you'd like comments on. Or, if there's a more recent series that I've
-> missed, I would be grateful for a pointer to it.
+> This solution has been preferred to providing always the original UID and
+> GID, regardless of whether the inode is in an idmapped mount or not, as
+> the mapped UID and GID are those seen by processes and matched with the IMA
+> policy.
 
-Hi. I'm planning to post rebased/updated v2 soon. Hopefully next week.
-So please wait for it. It will include non-trivial change and catch up for the updated spec.
-
-Thanks,
-
--- 
-Isaku Yamahata <isaku.yamahata@gmail.com>
+Hm, looking at the code this doesn't seem like a good idea to me. I
+think we should avoid that and just rely on the original uid and gid.
