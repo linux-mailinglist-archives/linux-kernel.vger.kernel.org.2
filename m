@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BF9F38AC9C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CBAF38AC9F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240613AbhETLm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:42:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41684 "EHLO mail.kernel.org"
+        id S241829AbhETLnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:43:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236564AbhETLWM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:22:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4933A6105A;
-        Thu, 20 May 2021 10:11:40 +0000 (UTC)
+        id S239551AbhETLWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:22:21 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76E0661962;
+        Thu, 20 May 2021 10:11:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505500;
-        bh=qgA/fXD4F6Koj9VdCi58OxcitLjK1laDKud+WmMKar8=;
+        s=korg; t=1621505502;
+        bh=GZ3C6n59e3n9ghMP7G81j0IE013CKYeByUyEE0SyP0I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OociV8P/4izf7tM6f7GDUe15yuW3NBvCUqsTQK/qI9XeZEnqgyAzsklFxcZ4HRpzh
-         HbTQwwJD4GihZ4VBCqxcFSwRWBVCFiUVjGBZQQIiJeGDB3b5SLsKmv0otyGomtWWWZ
-         YDlgRQqnrhVvOUtBBoosyL2SlmkmzJJd+lX1Z6iI=
+        b=bbFR+ltlmjm57AGjsGHU6gl0EScd1DI4rzQmCTjHKzrx7KngRMcD8xD3r+aKT8sWn
+         3yaTN2QC1yR1ltWFC5FOcQa0/rHDtLxo/PHZy12Ns5Dh2owy386ljE9OdrCX36GnQi
+         /LJZXjLjYvq1eL4WpDiV3yo9RWsMNIfIvbpg56To=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com,
-        syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.4 164/190] squashfs: fix divide error in calculate_skip()
-Date:   Thu, 20 May 2021 11:23:48 +0200
-Message-Id: <20210520092107.590542533@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 165/190] usb: fotg210-hcd: Fix an error message
+Date:   Thu, 20 May 2021 11:23:49 +0200
+Message-Id: <20210520092107.625502040@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -42,53 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Lougher <phillip@squashfs.org.uk>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 
-commit d6e621de1fceb3b098ebf435ef7ea91ec4838a1a upstream.
+[ Upstream commit a60a34366e0d09ca002c966dd7c43a68c28b1f82 ]
 
-Sysbot has reported a "divide error" which has been identified as being
-caused by a corrupted file_size value within the file inode.  This value
-has been corrupted to a much larger value than expected.
+'retval' is known to be -ENODEV here.
+This is a hard-coded default error code which is not useful in the error
+message. Moreover, another error message is printed at the end of the
+error handling path. The corresponding error code (-ENOMEM) is more
+informative.
 
-Calculate_skip() is passed i_size_read(inode) >> msblk->block_log.  Due to
-the file_size value corruption this overflows the int argument/variable in
-that function, leading to the divide error.
+So remove simplify the first error message.
 
-This patch changes the function to use u64.  This will accommodate any
-unexpectedly large values due to corruption.
+While at it, also remove the useless initialization of 'retval'.
 
-The value returned from calculate_skip() is clamped to be never more than
-SQUASHFS_CACHED_BLKS - 1, or 7.  So file_size corruption does not lead to
-an unexpectedly large return result here.
-
-Link: https://lkml.kernel.org/r/20210507152618.9447-1-phillip@squashfs.org.uk
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-Reported-by: <syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com>
-Reported-by: <syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Fixes: 7d50195f6c50 ("usb: host: Faraday fotg210-hcd driver")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Link: https://lore.kernel.org/r/94531bcff98e46d4f9c20183a90b7f47f699126c.1620333419.git.christophe.jaillet@wanadoo.fr
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/file.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/usb/host/fotg210-hcd.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/fs/squashfs/file.c
-+++ b/fs/squashfs/file.c
-@@ -224,11 +224,11 @@ failure:
-  * If the skip factor is limited in this way then the file will use multiple
-  * slots.
-  */
--static inline int calculate_skip(int blocks)
-+static inline int calculate_skip(u64 blocks)
- {
--	int skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
-+	u64 skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
- 		 * SQUASHFS_META_INDEXES);
--	return min(SQUASHFS_CACHED_BLKS - 1, skip + 1);
-+	return min((u64) SQUASHFS_CACHED_BLKS - 1, skip + 1);
- }
+diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
+index 11b3a8c57eab..5dacc3076efd 100644
+--- a/drivers/usb/host/fotg210-hcd.c
++++ b/drivers/usb/host/fotg210-hcd.c
+@@ -5610,7 +5610,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
+ 	struct usb_hcd *hcd;
+ 	struct resource *res;
+ 	int irq;
+-	int retval = -ENODEV;
++	int retval;
+ 	struct fotg210_hcd *fotg210;
  
- 
+ 	if (usb_disabled())
+@@ -5630,7 +5630,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
+ 	hcd = usb_create_hcd(&fotg210_fotg210_hc_driver, dev,
+ 			dev_name(dev));
+ 	if (!hcd) {
+-		dev_err(dev, "failed to create hcd with err %d\n", retval);
++		dev_err(dev, "failed to create hcd\n");
+ 		retval = -ENOMEM;
+ 		goto fail_create_hcd;
+ 	}
+-- 
+2.30.2
+
 
 
