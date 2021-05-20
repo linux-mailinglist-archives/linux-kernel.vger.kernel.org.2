@@ -2,103 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A97238A320
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F017A38A3BE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:56:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234226AbhETJtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:49:08 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4768 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233833AbhETJqj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:46:39 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fm4WY03tVzqVFT;
-        Thu, 20 May 2021 17:41:45 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 17:45:15 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Thu, 20 May
- 2021 17:45:15 +0800
-Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
- qdisc
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>,
-        <a.fatoum@pengutronix.de>, <vladimir.oltean@nxp.com>
-CC:     <olteanv@gmail.com>, <ast@kernel.org>, <daniel@iogearbox.net>,
-        <andriin@fb.com>, <edumazet@google.com>, <weiwan@google.com>,
-        <cong.wang@bytedance.com>, <ap420073@gmail.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <mkl@pengutronix.de>,
-        <linux-can@vger.kernel.org>, <jhs@mojatatu.com>,
-        <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>,
-        <alobakin@pm.me>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
-Message-ID: <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
-Date:   Thu, 20 May 2021 17:45:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S234453AbhETJ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:56:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58252 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234440AbhETJwr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:52:47 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CA114ABEA;
+        Thu, 20 May 2021 09:51:19 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3BD601F2C9C; Thu, 20 May 2021 11:51:19 +0200 (CEST)
+Date:   Thu, 20 May 2021 11:51:19 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Xing Zhengjun <zhengjun.xing@linux.intel.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, Jan Kara <jack@suse.cz>,
+        Theodore Ts'o <tytso@mit.edu>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        lkp@intel.com
+Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
+Message-ID: <20210520095119.GA18952@quack2.suse.cz>
+References: <20210227120804.GB22871@xsang-OptiPlex-9020>
+ <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme717-chm.china.huawei.com (10.1.199.113) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/mixed; boundary="gBBFr7Ir9EOA20Yy"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/20 17:27, Yunsheng Lin wrote:
-> Patch 1: remove unnecessary seqcount operation.
-> Patch 2: implement TCQ_F_CAN_BYPASS.
-> Patch 3: remove qdisc->empty.
+
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+
+Hello!
+
+On Thu 20-05-21 15:13:20, Xing Zhengjun wrote:
 > 
-> RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
->         qdisc, and add patch 1 and 3.
+>      Do you have time to look at this? The regression still existed in the
+> latest Linux mainline v5.13-rc2.
 
-@Vladimir, Ahmad
-It would be good to run your testcase to see if there are any
-out of order for this version, because this version has used
-STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
-thanks.
+Thanks for verification and for the ping! I had a look into this and I
+think the regression is caused by the changes in orphan handling. The load
+runs multiple tasks all creating and deleting files. This generally
+contends on the orphan locking with fast storage (which is your case
+because you use ramdisk as a backing store AFAICT). And the changes I did
+move superblock checksum computation under the orphan lock so the lock hold
+times are now higher.
 
-It is based on newest net branch with qdisc stuck patchset.
+Sadly it is not easy to move checksum update from under the orphan lock and
+maintain checksum consistency since the checksum has to be recomputed
+consistently with the changes of superblock state. But I have one idea how
+we could maybe improve the situation. Can you check whether attached patch
+recovers the regression? Because that's about how good it could get when we
+are more careful when writing out superblock.
 
-Some performance data as below:
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
-pktgen + dummy netdev:
- threads  without+this_patch   with+this_patch      delta
-    1       2.60Mpps            3.18Mpps             +22%
-    2       3.84Mpps            5.72Mpps             +48%
-    4       5.52Mpps            5.52Mpps             +0.0%
-    8       2.77Mpps            2.81Mpps             +1.4%
-   16       2.24Mpps            2.29Mpps             +2.2%
+--gBBFr7Ir9EOA20Yy
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-ext4-Experiment-with-checksum-computation-during-orp.patch"
 
-IP forward testing: 1.05Mpps increases to 1.15Mpps
+From fb788956380e066308e2a37afb97d2c4bed44de5 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Thu, 20 May 2021 11:46:02 +0200
+Subject: [PATCH] ext4: Experiment with checksum computation during orphan
+ handling
 
-> 
-> Yunsheng Lin (3):
->   net: sched: avoid unnecessary seqcount operation for lockless qdisc
->   net: sched: implement TCQ_F_CAN_BYPASS for lockless qdisc
->   net: sched: remove qdisc->empty for lockless qdisc
-> 
->  include/net/sch_generic.h | 26 +++++++++++++-------------
->  net/core/dev.c            | 22 ++++++++++++++++++++--
->  net/sched/sch_generic.c   | 23 ++++++++++++++++-------
->  3 files changed, 49 insertions(+), 22 deletions(-)
-> 
+DONTMERGE. Just experiment whether this recovers performance.
 
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/namei.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index afb9d05a99ba..bb687ed4a604 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -3105,7 +3105,6 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
+ 		NEXT_ORPHAN(inode) = le32_to_cpu(sbi->s_es->s_last_orphan);
+ 		lock_buffer(sbi->s_sbh);
+ 		sbi->s_es->s_last_orphan = cpu_to_le32(inode->i_ino);
+-		ext4_superblock_csum_set(sb);
+ 		unlock_buffer(sbi->s_sbh);
+ 		dirty = true;
+ 	}
+@@ -3113,6 +3112,9 @@ int ext4_orphan_add(handle_t *handle, struct inode *inode)
+ 	mutex_unlock(&sbi->s_orphan_lock);
+ 
+ 	if (dirty) {
++		lock_buffer(sbi->s_sbh);
++		ext4_superblock_csum_set(sb);
++		unlock_buffer(sbi->s_sbh);
+ 		err = ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
+ 		rc = ext4_mark_iloc_dirty(handle, inode, &iloc);
+ 		if (!err)
+@@ -3191,9 +3193,9 @@ int ext4_orphan_del(handle_t *handle, struct inode *inode)
+ 		}
+ 		lock_buffer(sbi->s_sbh);
+ 		sbi->s_es->s_last_orphan = cpu_to_le32(ino_next);
++		mutex_unlock(&sbi->s_orphan_lock);
+ 		ext4_superblock_csum_set(inode->i_sb);
+ 		unlock_buffer(sbi->s_sbh);
+-		mutex_unlock(&sbi->s_orphan_lock);
+ 		err = ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
+ 	} else {
+ 		struct ext4_iloc iloc2;
+-- 
+2.26.2
+
+
+--gBBFr7Ir9EOA20Yy--
