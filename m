@@ -2,35 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7512638AB6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE7AE38AB6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241294AbhETLYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39634 "EHLO mail.kernel.org"
+        id S241361AbhETLYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:24:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39632 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238682AbhETLEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237450AbhETLEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 07:04:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 209BE61D16;
-        Thu, 20 May 2021 10:04:34 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A05B6192D;
+        Thu, 20 May 2021 10:04:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505075;
-        bh=OTbSiwauZZ0FTdkzXgPJIbFUGR+UuxbBdPOLf2qKQ8M=;
+        s=korg; t=1621505077;
+        bh=GgrLl6uBq4OvXt0I0ec1fvwloYaMRa2/9eAwroYI6aM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ju9Clmw7TfhD0tIEr8naWx0tUnenankXoKwG4IEL8pIqFiiKiXl/IS27zCzStisQR
-         Y3y1tdslPs5iznEDrvkO4IsjDBvO+FSaaeiAHs2eqLIHvQuQLxgGE09izrvmqojQFk
-         0djiMQLZ7QiU50Dl90Jal897rDMmCZCLsZEy3pEs=
+        b=APrTI7NVNuJKpO2AeTo2RTH3dGN3K7dTqTL7FOGoA5dpTrrFgERn4KPL051IMvIYN
+         GPYQNhi7ugVnhmeCZ3VT5Z+Fm3vbeu4MFzXtxHqBz8QoMW2xsu4kc3+uvLtPyCqJKY
+         ei1Gax31KZ0Pa8wFYX4xErr7QiL/JvnZXUTB/tmI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 210/240] ACPI: scan: Fix a memory leak in an error handling path
-Date:   Thu, 20 May 2021 11:23:22 +0200
-Message-Id: <20210520092115.710975069@linuxfoundation.org>
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.9 211/240] usb: xhci: Increase timeout for HC halt
+Date:   Thu, 20 May 2021 11:23:23 +0200
+Message-Id: <20210520092115.755695313@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -42,36 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-[ Upstream commit 0c8bd174f0fc131bc9dfab35cd8784f59045da87 ]
+commit ca09b1bea63ab83f4cca3a2ae8bc4f597ec28851 upstream.
 
-If 'acpi_device_set_name()' fails, we must free
-'acpi_device_bus_id->bus_id' or there is a (potential) memory leak.
+On some devices (specifically the SC8180x based Surface Pro X with
+QCOM04A6) HC halt / xhci_halt() times out during boot. Manually binding
+the xhci-hcd driver at some point later does not exhibit this behavior.
+To work around this, double XHCI_MAX_HALT_USEC, which also resolves this
+issue.
 
-Fixes: eb50aaf960e3 ("ACPI: scan: Use unique number for instance_no")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512080816.866037-5-mathias.nyman@linux.intel.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/scan.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/usb/host/xhci-ext-caps.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
-index d749fe20fbfc..89ce7b14a166 100644
---- a/drivers/acpi/scan.c
-+++ b/drivers/acpi/scan.c
-@@ -704,6 +704,7 @@ int acpi_device_add(struct acpi_device *device,
+--- a/drivers/usb/host/xhci-ext-caps.h
++++ b/drivers/usb/host/xhci-ext-caps.h
+@@ -19,8 +19,9 @@
+  * along with this program; if not, write to the Free Software Foundation,
+  * Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+-/* Up to 16 ms to halt an HC */
+-#define XHCI_MAX_HALT_USEC	(16*1000)
++
++/* HC should halt within 16 ms, but use 32 ms as some hosts take longer */
++#define XHCI_MAX_HALT_USEC	(32 * 1000)
+ /* HC not running - set to 1 when run/stop bit is cleared. */
+ #define XHCI_STS_HALT		(1<<0)
  
- 		result = acpi_device_set_name(device, acpi_device_bus_id);
- 		if (result) {
-+			kfree_const(acpi_device_bus_id->bus_id);
- 			kfree(acpi_device_bus_id);
- 			goto err_unlock;
- 		}
--- 
-2.30.2
-
 
 
