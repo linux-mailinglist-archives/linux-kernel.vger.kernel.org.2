@@ -2,90 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD79438B422
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:18:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FF2338B425
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233846AbhETQUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:20:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37624 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233840AbhETQUK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:20:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621527528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=6OgNPYxA7i+etU7xLj3nrXr95skp7dY81DNzdhoz9rg=;
-        b=MbsdO9p21Pkqs8IQ0urYaiImkcuy7g1gNMWLTZMZGpJLqdv4uo2/3EqOymTAztfVA54BjK
-        cFxtdpy2XXa5ppZXxRWb+jXjxuQZb8c7sL5CPCqc4UCg18euIXBxMzzyZ9EDWIeuSBzWmc
-        GB3PTWHbmRXEvLVVXAaYOBRSknnOAvg=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-cQVypByEO0-L9DU84zn2RQ-1; Thu, 20 May 2021 12:18:43 -0400
-X-MC-Unique: cQVypByEO0-L9DU84zn2RQ-1
-Received: by mail-wr1-f69.google.com with SMTP id i15-20020a5d558f0000b029011215b1cf5cso2424190wrv.22
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:18:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6OgNPYxA7i+etU7xLj3nrXr95skp7dY81DNzdhoz9rg=;
-        b=oD72nqRMnmLeUxd8QeJ4IK43QZGMDjzmFgfV5YprhTJ4xE7GUHF2X9+Kk97i3I1g8t
-         pr43mmu6IyH+HtHrReDo6mb+Mj126ZdMffLoJSGQhk5Zeyvf6D6fQzbK8joorr3gZMsk
-         4XBC8gHCkNdaT6wXk9FlU4Q8JCfnXfae5ZmQs0QhYTX27ysGgty5lwsv1tDBBNwm6Y7p
-         6733Osl/Giz99gX/XB3HooegTrv5QPdZwiLWBn+yu4Zyz+sZgpIMr3Qtl71aj4L6S9mX
-         RndWmHNt42hJHhlhWstlkAKXFG1MyN74Z0BgT/2CqxQTib75+Pe+3n0IxkvrMcVGG3wa
-         JiZg==
-X-Gm-Message-State: AOAM533WzKWJTvjqbVNJ+L7T4VdsnpaWge64uRk1LrLGG8dNlvf6MAVw
-        7cHxzEcPSmIDsYlWMjLKrIMbJLHLZ9c7QspkQoXqXlTSLpOi3ql9s6J2LFseF5z9qa7m1Q0M5BW
-        s60BSGof7T6AfVBhoa1qc/Zjs
-X-Received: by 2002:a5d:59a4:: with SMTP id p4mr5320581wrr.248.1621527522005;
-        Thu, 20 May 2021 09:18:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyHdHvZnHkFtg16t/tFIWUALZddO72xh0A6mKZ4eMSItEm7NWMHJO7CM8CAVLCm09/8wvuHlw==
-X-Received: by 2002:a5d:59a4:: with SMTP id p4mr5320562wrr.248.1621527521813;
-        Thu, 20 May 2021 09:18:41 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id b8sm3978942wrx.15.2021.05.20.09.18.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 09:18:40 -0700 (PDT)
-Subject: Re: [PATCH] Move VMEnter and VMExit tracepoints closer to the actual
- event
-To:     Sean Christopherson <seanjc@google.com>,
-        Stefano De Venuto <stefano.devenuto99@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, rostedt@goodmis.org,
-        y.karadz@gmail.com, Dario Faggioli <dfaggioli@suse.com>
-References: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
- <YKaBEn6oUXaVAb0K@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <ab44e5b1-4448-d6c8-6cda-5e41866f69f1@redhat.com>
-Date:   Thu, 20 May 2021 18:18:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233885AbhETQUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:20:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59618 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233647AbhETQUp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:20:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49F2E60FE8;
+        Thu, 20 May 2021 16:19:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621527563;
+        bh=0GmCmFU5wfCMbmtOzP0mBUf5uBtCwTwQbf8LadEdPK4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=RfkVHOKkHVmFSDIelI+0Le6gh6OCdtiFzuysKzyJ5wZ5H7a/6lv2TmO95MYoGjUFa
+         1Oz0hMX2sKUjqtQSHL2wcpdFYLRxR5UJzl2jZaZwTzlmp9Jdzku9wC+CcgdxRN0LgS
+         dSgWM+lw0OSidS7vDJlvF/hgy4sNFclikr9JqBowUf3aajYriYuHJoJFXlzSEMwfXQ
+         6tUyUmKkrtfnAV1qwJnC3ZDJr9fEW5Nu5fOH7EHlsOJmRHcP8TQDi3ZB59FQiSIIcR
+         wKja+ONQLflpTy3DW2c/OEGCcT9HQF65OYXfidIucA0h/A2+ODWh7LtI7tkxAWT63x
+         3zA8XJS8WlqTA==
+Date:   Thu, 20 May 2021 18:19:19 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, linuxarm@huawei.com,
+        mauro.chehab@huawei.com, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org
+Subject: Re: [PATCH v2 00/17] Adding support for controlling the leds found
+ on Intel NUC
+Message-ID: <20210520181919.608568b2@thinkpad>
+In-Reply-To: <20210520010720.32265ad4@coco.lan>
+References: <cover.1621349813.git.mchehab+huawei@kernel.org>
+        <20210519111107.GC24621@duo.ucw.cz>
+        <20210519141508.6e7a4d56@coco.lan>
+        <20210519194115.GA31672@duo.ucw.cz>
+        <20210520010720.32265ad4@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <YKaBEn6oUXaVAb0K@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/21 17:32, Sean Christopherson wrote:
-> On VMX, I think the tracepoint can be moved below the VMWRITEs without much
-> contention (though doing so is likely a nop), but moving it below
-> kvm_load_guest_xsave_state() requires a bit more discussion.
+On Thu, 20 May 2021 01:07:20 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-Indeed; as a rule of thumb, the tracepoint on SVM could match the 
-clgi/stgi region, and on VMX it could be placed in a similar location.
+> So, the first thing that the API needs is a way to tell what LED
+> is monitoring the device's power state.
 
-Paolo
+If a LED can monitor the device's power state in HW, register a LED
+private trigger for this LED. If the LED is configured into this state
+by default, you can set this trigger to be the default_trigger prior
+registering the LED. The name of this private trigger can be
+"hw:powerstate" or something like that (I wonder what others will
+think about this name).
 
-> I 100% agree that the current behavior can be a bit confusing, but I wonder if
-> we'd be better off "solving" that problem through documentation.
+> Then, for each power state (S0, S3, S5), define if the LED will
+> be ON all the times or not.
+> 
+> The "slowing breathing" is one of the possible blink patterns.
+> The driver supports 4 other blink patterns
+> 
+> 	- Solid - the LED won't blink;
+> 	- Breathing - it looks like a sinusoidal wave pattern;
+> 	- Pulsing - it looks like a square wave pattern;
+> 	- Strobing - it turns ON suddenly, and then it slowly turns OFF.
+> 
+> The speed of the blink is also adjustable, ranging from 0.1 Hz to 1 Hz,
+> on 0.1 Hz steps.
 
+Is the speed of breathing/strobing also adjustable? Or only when
+pulsing?
+
+When this "hw:powerstate" trigger is enabled for this LED,
+only then another sysfs files should appear in this LED's sysfs
+directory.
+
+> ---
+> 
+> Let me explain this specific part of the API from my original proposal.
+> 
+> Those are the led names from the datasheets (NUC 8 and above),
+> and my proposal for the sysfs class directory name:
+> 
+> =============	===============================
+> LED name	sysfs
+> =============	===============================
+> Skull		``/sys/class/leds/nuc::skull``
+> Skull eyes	``/sys/class/leds/nuc::eyes``
+> Power		``/sys/class/leds/nuc::power``
+> HDD		``/sys/class/leds/nuc::hdd``
+> Front1		``/sys/class/leds/nuc::front1``
+> Front2		``/sys/class/leds/nuc::front2``
+> Front3		``/sys/class/leds/nuc::front3``
+> =============	===============================
+> 
+> For each of the above, there's the need to identify what
+> hardware function is monitored (if any).
+> 
+> My proposal were to add an "indicator" node (the name came from
+> the Intel datasheets) that shows what led will monitor the power state.
+> 
+> Then, one blink_behavior and one blink_frequency per power state,
+> e. g.:
+> 
+>     /sys/class/leds/nuc::front1
+>     |-- indicator
+>     |-- s0_blink_behavior
+>     |-- s0_blink_frequency
+>     |-- s3_blink_behavior
+>     |-- s3_blink_frequency
+>     |-- s5_blink_behavior
+>     `-- s5_blink_frequency
+
+I'd rather use one file for frequencies and one for intervals, and map
+in to an array, but that is just my preference...
+
+> 
+> PS.: I don't care much about what names we'll use. Feel free to
+> rename them, if you think the above is not clear or generic enough.
+> 
+> -
+> 
+> To make part of the API complete, there's also the need of a node
+> to control the max brightness that the leds will achieve at the
+> ON state, and another one to control the color on each state,
+> as one could define, let's say, "white" when powered on, "blue"
+> when suspended and "yellow" when hibernating. The colors at the
+> NUC I have are RGB (but other models can use an enum for the
+> supported colors).
+> 
+>     /sys/class/leds/nuc::front1
+>     |-- s0_brightness
+>     |-- s0_color		# only shown on colored leds
+>     |-- s3_brightness
+>     |-- s3_color		# only shown on colored leds
+>     |-- s0_brightness
+>     `-- s5_color		# only shown on colored leds
+
+If the BIOS reports a LED being full RGB LED, you should register it
+via multicolor framework. Regarding the enum with 8 colors: are these
+colors red, yellow, green, cyan, blue, magenta? Because if so, then
+this is RGB with each channel being binary :) So you can again use
+multicolor framework.
