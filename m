@@ -2,111 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42EDA38B75E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C7F438B75C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239804AbhETTW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:22:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37756 "EHLO
+        id S239599AbhETTW0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:22:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238137AbhETTWX (ORCPT
+        with ESMTP id S238111AbhETTWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 15:22:23 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F593C061761;
-        Thu, 20 May 2021 12:21:01 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id v13-20020a4ac00d0000b029020b43b918eeso4034879oop.9;
-        Thu, 20 May 2021 12:21:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=jFT2vUjneyK4vqRQTSud440oIlDIOlBm9ntEGOINv5Y=;
-        b=D/khYlkLs8eViqkgfzspKIJORMK1dqfOo1QORFPm78nkMtTSIa1UQj6LQt0fIE6ssK
-         O9lGaXHlOXL0EV3fv5Y7a3jr8Zi4S3yLbWxTmBOLNyY0PZvYryPpLCycq/h5tkzT2HuY
-         3jV0KhJ1nlMefUkBn7EhcQ3JcPl/mvqQg2LfwO2IHXEmlwsyszD2SCOp6Oxpo90sUv48
-         07FSiNdFZFri7Qmk2zpc9QYfYxH+jElnevL3fMYQsO5uiR4P7O5gYqgVfynSMG3iWNAI
-         ffhBH8v2gU5bqy03nFTAr4jH8Vf9/R3ruvrIfz59jVqo0gHklxN+Pv9gT1P4hByy4TNd
-         rnKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=jFT2vUjneyK4vqRQTSud440oIlDIOlBm9ntEGOINv5Y=;
-        b=qOmp2k0F/HdQUbiuJMeZ5ZRGHlA9A55GTGEIKbmI6wYUfQbSqakNdOjvxnK8TWKkQP
-         MJMskvgBDkeotK/CaOmVzuT1L6+lg59G6SUcfmfmh4FV1C+B9jd8eFiylP0jGLAtXUoQ
-         nn2h9C4D4EwiBzvuVyrve2mGe9y2lY3x2lfzUeww+xnCKYWukafq0w6YKP5N5O/6rdyu
-         PgSFevtM8lUKr7/kpwu63L8fz/ZCqV4ZFmYj5XkPRQK4OF1Himv+EMUza7JJk3a1MBJW
-         N9DvcjDlX9vpA8btYTcA6GCeVN5ZRH+1PWJ+ZA7m4KIUPlY5URzTJPSb33xmfU3lJF81
-         E6iQ==
-X-Gm-Message-State: AOAM531u0c3XNfrE6zPkb2+SUnqDiMouVLp2ZDjRUcnpFNOQ+M6irwXy
-        PughOFPYyDBT9MYq/AZ8ZQvmJDG5hfXGnoBVM8U=
-X-Google-Smtp-Source: ABdhPJwJQXId/bdVgc0jHCEOn9JarUKc13A1Cej/AgWqhMN32NoS8pW18t/ZaSTqNE9XaYPco1cgGarYCI/JzluP2as=
-X-Received: by 2002:a4a:d543:: with SMTP id q3mr4945275oos.72.1621538460855;
- Thu, 20 May 2021 12:21:00 -0700 (PDT)
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66C2CC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:21:01 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.18.neoplus.adsl.tpnet.pl [83.6.168.18])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id D60D01FF04;
+        Thu, 20 May 2021 21:20:54 +0200 (CEST)
+Subject: Re: [PATCH] brcmfmac: Add support for BCM43596 PCIe Wi-Fi
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>,
+        Arend van Spriel <arend.vanspriel@broadcom.com>,
+        phone-devel@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, martin.botka@somainline.org,
+        marijn.suijten@somainline.org,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Seung-Woo Kim <sw0312.kim@samsung.com>,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210307113550.7720-1-konrad.dybcio@somainline.org>
+ <5e7b575a-7820-3d10-8617-36911d49f4a9@broadcom.com>
+ <754923af-407e-05f8-148e-4c2a3faf42ab@somainline.org>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <bfe3d2d5-6ee6-678f-644f-e5448480d94e@somainline.org>
+Date:   Thu, 20 May 2021 21:20:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210520120248.3464013-1-lee.jones@linaro.org> <20210520120248.3464013-30-lee.jones@linaro.org>
-In-Reply-To: <20210520120248.3464013-30-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 20 May 2021 15:20:49 -0400
-Message-ID: <CADnq5_PjnKC8qRMY7+TGfi2mpOXpiF-0bkm6VfB9+aqgi3bWmA@mail.gmail.com>
-Subject: Re: [PATCH 29/38] drm/radeon/r100: Realign doc header with function 'r100_cs_packet_parse_vline()'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
-        <linaro-mm-sig@lists.linaro.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        linux-media <linux-media@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <754923af-407e-05f8-148e-4c2a3faf42ab@somainline.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+Hi,
 
-On Thu, May 20, 2021 at 8:03 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/radeon/r100.c:1423: warning: expecting prototype for r10=
-0_cs_packet_next_vline(). Prototype was for r100_cs_packet_parse_vline() in=
-stead
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Sumit Semwal <sumit.semwal@linaro.org>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Cc: linux-media@vger.kernel.org
-> Cc: linaro-mm-sig@lists.linaro.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/radeon/r100.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/radeon/r100.c b/drivers/gpu/drm/radeon/r100.=
-c
-> index fcfcaec25a9ef..3c4e7c15fd159 100644
-> --- a/drivers/gpu/drm/radeon/r100.c
-> +++ b/drivers/gpu/drm/radeon/r100.c
-> @@ -1406,7 +1406,7 @@ int r100_cs_parse_packet0(struct radeon_cs_parser *=
-p,
->  }
->
->  /**
-> - * r100_cs_packet_next_vline() - parse userspace VLINE packet
-> + * r100_cs_packet_parse_vline() - parse userspace VLINE packet
->   * @p:         parser structure holding parsing context.
->   *
->   * Userspace sends a special sequence for VLINE waits.
-> --
-> 2.31.1
->
+
+sorry for the lack of answer from me (I've had a lot going on..), but the one Angelo has given you is right. We have to use the files that SONY ships with their stock Android firmware. Could you look into this patch once again?
+
+
+Konrad
+
