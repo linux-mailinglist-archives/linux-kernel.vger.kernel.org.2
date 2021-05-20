@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EAD38A42A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F31138A430
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234973AbhETKBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:01:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60864 "EHLO mail.kernel.org"
+        id S235073AbhETKB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:01:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58884 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234659AbhETJ5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:57:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F8DB6140F;
-        Thu, 20 May 2021 09:37:55 +0000 (UTC)
+        id S234809AbhETJ5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:57:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E05BA613C4;
+        Thu, 20 May 2021 09:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503476;
-        bh=thZBLT5OleGrMB3A34zQLhYUq+OfO+QaM23VjAiwnac=;
+        s=korg; t=1621503480;
+        bh=5QCqTbrqK1neTRtFoEs1yh57+EA60LQKgHDuV2Fxf/s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YPl09w+a/AykjJoTkNylJ/p8cxsmx/hklVhXz5pgeB44L3RBQ71sTjpexoa6R3mxm
-         o8ATX809qJHaT/eSRekWhjNE6qcNywT9rnLihQSkoN+lWcwf2M+sA8mgury+rsJsRC
-         i0QamDDG1RX78Kjs0MDH+DaA+uaEPvAcx/lFx2B4=
+        b=nkM+Veb6IzRYRM8niZTK9yyd1FIs27HB2jWRHrWuhtoKAzpgvOybnTVL00eJoDV5b
+         NHayDo7iurI0x++XXu/MCr9Rrloeehj9G4SMrwATwhOc77B7FJF4iV38kR7RPywgJs
+         /lOL3JT4hZqtanRsh59lRon9xISzy5MIn5NRn/08=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 238/425] clk: uniphier: Fix potential infinite loop
-Date:   Thu, 20 May 2021 11:20:07 +0200
-Message-Id: <20210520092139.250619600@linuxfoundation.org>
+Subject: [PATCH 4.19 240/425] scsi: sun3x_esp: Add IRQ check
+Date:   Thu, 20 May 2021 11:20:09 +0200
+Message-Id: <20210520092139.314215834@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -41,45 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit f6b1340dc751a6caa2a0567b667d0f4f4172cd58 ]
+[ Upstream commit 14b321380eb333c82853d7d612d0995f05f88fdc ]
 
-The for-loop iterates with a u8 loop counter i and compares this
-with the loop upper limit of num_parents that is an int type.
-There is a potential infinite loop if num_parents is larger than
-the u8 loop counter. Fix this by making the loop counter the same
-type as num_parents.  Also make num_parents an unsigned int to
-match the return type of the call to clk_hw_get_num_parents.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding the real
+error code.  Stop calling request_irq() with the invalid IRQ #s.
 
-Addresses-Coverity: ("Infinite loop")
-Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
-Link: https://lore.kernel.org/r/20210409090104.629722-1-colin.king@canonical.com
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
+Link: https://lore.kernel.org/r/363eb4c8-a3bf-4dc9-2a9e-90f349030a15@omprussia.ru
+Fixes: 0bb67f181834 ("[SCSI] sun3x_esp: convert to esp_scsi")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/clk/uniphier/clk-uniphier-mux.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/scsi/sun3x_esp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
-index 2c243a894f3b..3a52ab968ac2 100644
---- a/drivers/clk/uniphier/clk-uniphier-mux.c
-+++ b/drivers/clk/uniphier/clk-uniphier-mux.c
-@@ -40,10 +40,10 @@ static int uniphier_clk_mux_set_parent(struct clk_hw *hw, u8 index)
- static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
- {
- 	struct uniphier_clk_mux *mux = to_uniphier_clk_mux(hw);
--	int num_parents = clk_hw_get_num_parents(hw);
-+	unsigned int num_parents = clk_hw_get_num_parents(hw);
- 	int ret;
- 	unsigned int val;
--	u8 i;
-+	unsigned int i;
+diff --git a/drivers/scsi/sun3x_esp.c b/drivers/scsi/sun3x_esp.c
+index 0b1421cdf8a0..f9aa95e48eee 100644
+--- a/drivers/scsi/sun3x_esp.c
++++ b/drivers/scsi/sun3x_esp.c
+@@ -233,7 +233,9 @@ static int esp_sun3x_probe(struct platform_device *dev)
+ 	if (!esp->command_block)
+ 		goto fail_unmap_regs_dma;
  
- 	ret = regmap_read(mux->regmap, mux->reg, &val);
- 	if (ret)
+-	host->irq = platform_get_irq(dev, 0);
++	host->irq = err = platform_get_irq(dev, 0);
++	if (err < 0)
++		goto fail_unmap_command_block;
+ 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED,
+ 			  "SUN3X ESP", esp);
+ 	if (err < 0)
 -- 
 2.30.2
 
