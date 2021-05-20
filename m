@@ -2,88 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13C1438B454
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:34:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEDA38B451
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234011AbhETQgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:36:02 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:43522 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232707AbhETQgB (ORCPT
+        id S232525AbhETQfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:35:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231724AbhETQfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:36:01 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KGW0ig011261;
-        Thu, 20 May 2021 11:33:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=YHGDnB3/fKKfk2ymDd/HVOs1tLCKFJCMnts8DlcLJw0=;
- b=goTMduqKB/ozx4yGi6GaEyYu6savPRvRdPSJ2BQqeu//X9HlgIjePmkA8S0HzyT3VPRV
- egYb7DQWi+g9syhqyc4hJQpLdM2sAZdgrEAqPNN2uetWHgMIrF203IraSJBGuwF5FmzS
- WL4AQQnvzmZ3WS7y6sxWMJDlz1yrXTljy4UXg+ccnMsurhStvEFot5l5YO8TE6FvRVA2
- X23PS5x5yYaoOGMOhlU+oBaq2oKfrEUlM+dAAGqj3xtUWx2rOvRu6z2mTtMqGkWkopMv
- IMySxT4Sxj3bEQb/JM50CMkrtZQlPUa3TidKK1NwhzfanrERI9LhAJysrJPz3AnSFGLH 7w== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 38n43v9qyw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 20 May 2021 11:33:30 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Thu, 20 May
- 2021 17:33:27 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Thu, 20 May 2021 17:33:27 +0100
-Received: from AUSNPC0LSNW1-debian.cirrus.com (AUSNPC0LSNW1.ad.cirrus.com [198.61.65.101])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 02E0611CD;
-        Thu, 20 May 2021 16:33:26 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <broonie@kernel.org>, <pierre-louis.bossart@linux.intel.com>,
-        <cezary.rojewski@intel.com>, <liam.r.girdwood@linux.intel.com>,
-        <yang.jie@linux.intel.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-kernel@vger.kernel.org>,
-        <patches@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH] ASoC: Intel: boards: Select SND_SOC_HDAC_HDMI for Soundwire machine driver
-Date:   Thu, 20 May 2021 17:33:24 +0100
-Message-ID: <20210520163324.19046-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.20.1
+        Thu, 20 May 2021 12:35:32 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AEFAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:34:11 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso5804253wmm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:34:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=D/fC8cTjvNjAco9GQ5lMElWjnvmZVnjTOXVPAX+OC80=;
+        b=lRzdwUQiyIC72DgMTpYMkcuSlY2LeVVmwy5VuSyIpEFfSZQBnUFZ/DKzZfZ6wMKKCG
+         NJMBGuj3d1KUSHYEZiOzTA7Tvy5FDEyCQuscm8+sx+9IyWekNZtWU7ZFv4O5r0pwXUtH
+         6fkJVOTCkOfp8POTQB+R9D5UTTjRbP+gB7sZs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=D/fC8cTjvNjAco9GQ5lMElWjnvmZVnjTOXVPAX+OC80=;
+        b=PolqUYFS04U3SngOV9NSGGnpl61RH/sMj9tRXp4AhkrludkL7Bv3WvHE0G+8+Ukylr
+         c1+i9C73gMm/xjKPGQuJRKCIOYYxsHc7U7cnpUrb7GB00poOk6Ja8uwtr9VGl8jG42cP
+         l8xrkyRoV6oeTywNyjGjhWPkxmocqfl1A/PtYT0onY6UHVf95BiBt+t0aKIvda5OIN8s
+         xCy6hZ/odCctBbbclBrtq8h0nqz8dYf21O0dOfZYFy8vB6yCqSHlG7KK5JG87Le2EiaG
+         60BmXTzKDLJylGKpFJYe9JiDd4PAzFMINh/Rr+IzTWKF8RsCYXc3CBIzw8pO4+S3o06J
+         3Iag==
+X-Gm-Message-State: AOAM531NRcsEzLt5B88DP/HApeNSY2tyn61BMWxlOr4cLhOk2W9kVNNQ
+        Q03P8B+Uu5gLSFv6ec5MvPMraQ==
+X-Google-Smtp-Source: ABdhPJyhdMR3oFuRjaw5S9reOQX95e2IfiwqzbyiREbxH7yL0pX59nNF5rh34EwG77dVF6QQ6945+A==
+X-Received: by 2002:a1c:5449:: with SMTP id p9mr5017481wmi.61.1621528449691;
+        Thu, 20 May 2021 09:34:09 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id g206sm9800386wme.16.2021.05.20.09.34.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 09:34:09 -0700 (PDT)
+Date:   Thu, 20 May 2021 18:34:07 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [RFC 1/3] dma-fence: Add boost fence op
+Message-ID: <YKaPf3VLfjoZJRw7@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210519183855.1523927-1-robdclark@gmail.com>
+ <20210519183855.1523927-2-robdclark@gmail.com>
+ <8dcdc8d5-176c-f0ad-0d54-6466e9e68a0a@amd.com>
+ <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
+ <d65acf46-4c3b-4903-6222-0b81915d355d@amd.com>
+ <CAF6AEGvm1tFwpfyJrX1bTGoHg_wzKKLQvSk2qLHf3XeqvEzDPA@mail.gmail.com>
+ <e8f3d71c-7025-deab-4dd7-14f3fa6a8810@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 7n3ICBrRN2cTxZYdQpGrXFphjaUoB_IP
-X-Proofpoint-ORIG-GUID: 7n3ICBrRN2cTxZYdQpGrXFphjaUoB_IP
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 spamscore=0
- bulkscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0 impostorscore=0
- lowpriorityscore=0 phishscore=0 adultscore=0 mlxscore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105200107
+In-Reply-To: <e8f3d71c-7025-deab-4dd7-14f3fa6a8810@gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add select of SND_SOC_HDAC_HDMI for SND_SOC_INTEL_SOUNDWIRE_SOF_MACH.
-Without this the build results in missing references to
-hdac_hdmi_jack_port_init and hdac_hdmi_jack_init.
+On Thu, May 20, 2021 at 06:01:39PM +0200, Christian König wrote:
+> Am 20.05.21 um 16:54 schrieb Rob Clark:
+> > On Thu, May 20, 2021 at 7:11 AM Christian König
+> > <christian.koenig@amd.com> wrote:
+> > > 
+> > > 
+> > > Am 20.05.21 um 16:07 schrieb Rob Clark:
+> > > > On Wed, May 19, 2021 at 11:47 PM Christian König
+> > > > <christian.koenig@amd.com> wrote:
+> > > > > Uff, that looks very hardware specific to me.
+> > > > Howso?  I'm not sure I agree.. and even if it was not useful for some
+> > > > hw, it should be useful for enough drivers (and harm no drivers), so I
+> > > > still think it is a good idea
+> > > > 
+> > > > The fallback plan is to go the i915 route and stop using atomic
+> > > > helpers and do the same thing inside the driver, but that doesn't help
+> > > > any of the cases where you have a separate kms and gpu driver.
+> > > Yeah, that's certainly not something we want.
+> > > 
+> > > > > As far as I can see you can also implement completely inside the backend
+> > > > > by starting a timer on enable_signaling, don't you?
+> > > > Not really.. I mean, the fact that something waited on a fence could
+> > > > be a useful input signal to gpu freq governor, but it is entirely
+> > > > insufficient..
+> > > > 
+> > > > If the cpu is spending a lot of time waiting on a fence, cpufreq will
+> > > > clock down so you spend less time waiting.  And no problem has been
+> > > > solved.  You absolutely need the concept of a missed deadline, and a
+> > > > timer doesn't give you that.
+> > > Ok then I probably don't understand the use case here.
+> > > 
+> > > What exactly do you try to solve?
+> > Basically situations where you are ping-ponging between GPU and CPU..
+> > for example if you are double buffering instead of triple buffering,
+> > and doing vblank sync'd pageflips.  The GPU, without any extra signal,
+> > could get stuck at 30fps and a low gpu freq, because it ends up idle
+> > while waiting for an extra vblank cycle for the next back-buffer to
+> > become available.  Whereas if it boosted up to a higher freq and
+> > stopped missing a vblank deadline, it would be less idle due to
+> > getting the next back-buffer sooner (due to not missing a vblank
+> > deadline).
+> 
+> Ok the is the why, but what about the how?
+> 
+> How does it help to have this boost callback and not just start a time on
+> enable signaling and stop it when the signal arrives?
 
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/soc/intel/boards/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+Because the render side (or drm/scheduler, if msm would use that) has no
+idea for which vblank a rendering actually is for.
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index eef5f4ac87c5..6a1639b14b67 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -601,6 +601,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
- 	select SND_SOC_DMIC
- 	select SND_SOC_INTEL_HDA_DSP_COMMON
- 	select SND_SOC_INTEL_SOF_MAXIM_COMMON
-+	select SND_SOC_HDAC_HDMI
- 	help
- 	  Add support for Intel SoundWire-based platforms connected to
- 	  MAX98373, RT700, RT711, RT1308 and RT715
+So boosting right when you've missed your frame (not what Rob implements
+currently, but fixable) is the right semantics.
+
+The other issue is that for cpu waits, we want to differentiate from fence
+waits that userspace does intentially (e.g. wait ioctl) and waits that
+random other things are doing within the kernel to keep track of progress.
+
+For the former we know that userspace is stuck waiting for the gpu, and we
+probably want to boost. For the latter we most definitely do _not_ want to
+boost.
+
+Otoh I do agree with you that the current api is a bit awkward, so perhaps
+we do need a dma_fence_userspace_wait wrapper which boosts automatically
+after a bit. And similarly perhaps a drm_vblank_dma_fence_wait, where you
+give it a vblank target, and if the fence isn't signalled by then, we kick
+it real hard.
+
+But otherwise yes this is absolutely a thing that matters a ton. If you
+look at Matt Brost's scheduler rfc, there's also a line item in there
+about adding this kind of boosting to drm/scheduler.
+-Daniel
+
+
+> 
+> Regards,
+> Christian.
+> 
+> > 
+> > BR,
+> > -R
+> > 
+> > > Thanks,
+> > > Christian.
+> > > 
+> > > > BR,
+> > > > -R
+> > > > 
+> > > > > Christian.
+> > > > > 
+> > > > > Am 19.05.21 um 20:38 schrieb Rob Clark:
+> > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > 
+> > > > > > Add a way to hint to the fence signaler that a fence waiter has missed a
+> > > > > > deadline waiting on the fence.
+> > > > > > 
+> > > > > > In some cases, missing a vblank can result in lower gpu utilization,
+> > > > > > when really we want to go in the opposite direction and boost gpu freq.
+> > > > > > The boost callback gives some feedback to the fence signaler that we
+> > > > > > are missing deadlines, so it can take this into account in it's freq/
+> > > > > > utilization calculations.
+> > > > > > 
+> > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > > ---
+> > > > > >     include/linux/dma-fence.h | 26 ++++++++++++++++++++++++++
+> > > > > >     1 file changed, 26 insertions(+)
+> > > > > > 
+> > > > > > diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> > > > > > index 9f12efaaa93a..172702521acc 100644
+> > > > > > --- a/include/linux/dma-fence.h
+> > > > > > +++ b/include/linux/dma-fence.h
+> > > > > > @@ -231,6 +231,17 @@ struct dma_fence_ops {
+> > > > > >         signed long (*wait)(struct dma_fence *fence,
+> > > > > >                             bool intr, signed long timeout);
+> > > > > > 
+> > > > > > +     /**
+> > > > > > +      * @boost:
+> > > > > > +      *
+> > > > > > +      * Optional callback, to indicate that a fence waiter missed a deadline.
+> > > > > > +      * This can serve as a signal that (if possible) whatever signals the
+> > > > > > +      * fence should boost it's clocks.
+> > > > > > +      *
+> > > > > > +      * This can be called in any context that can call dma_fence_wait().
+> > > > > > +      */
+> > > > > > +     void (*boost)(struct dma_fence *fence);
+> > > > > > +
+> > > > > >         /**
+> > > > > >          * @release:
+> > > > > >          *
+> > > > > > @@ -586,6 +597,21 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+> > > > > >         return ret < 0 ? ret : 0;
+> > > > > >     }
+> > > > > > 
+> > > > > > +/**
+> > > > > > + * dma_fence_boost - hint from waiter that it missed a deadline
+> > > > > > + *
+> > > > > > + * @fence: the fence that caused the missed deadline
+> > > > > > + *
+> > > > > > + * This function gives a hint from a fence waiter that a deadline was
+> > > > > > + * missed, so that the fence signaler can factor this in to device
+> > > > > > + * power state decisions
+> > > > > > + */
+> > > > > > +static inline void dma_fence_boost(struct dma_fence *fence)
+> > > > > > +{
+> > > > > > +     if (fence->ops->boost)
+> > > > > > +             fence->ops->boost(fence);
+> > > > > > +}
+> > > > > > +
+> > > > > >     struct dma_fence *dma_fence_get_stub(void);
+> > > > > >     u64 dma_fence_context_alloc(unsigned num);
+> > > > > > 
+> > _______________________________________________
+> > Linaro-mm-sig mailing list
+> > Linaro-mm-sig@lists.linaro.org
+> > https://lists.linaro.org/mailman/listinfo/linaro-mm-sig
+> 
+
 -- 
-2.20.1
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
