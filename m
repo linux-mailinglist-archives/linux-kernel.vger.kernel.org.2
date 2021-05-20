@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A7E38A827
+	by mail.lfdr.de (Postfix) with ESMTP id EB18238A828
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238221AbhETKrG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:47:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60378 "EHLO mail.kernel.org"
+        id S238234AbhETKrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:47:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237284AbhETKb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237287AbhETKb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:31:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA06A61C4D;
-        Thu, 20 May 2021 09:52:02 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 01DF5614A7;
+        Thu, 20 May 2021 09:52:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504323;
-        bh=TuqiWQ4ROAsgjp1Mjiz3bp9joRa+82z8UOoZwQuYqEU=;
+        s=korg; t=1621504325;
+        bh=KQhPeZnW2nWyf/Ff/gdFewVGIDpXPlb8reWCN3mCa1o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CvI7l72puJliooP326dYyNNCcqpJAzsCQ37SzbkKMl8rzBRzbU6x6oRL0iR+EMJzg
-         5hUeiIErMLfou5AwOHL21jvePVL/MbQmDXgvsLPHb4iXobGOVZbHuIAdvaiyt4/XJd
-         JoQ0Owg88EK+WFK6WCW/F1W/tdbAa8wO8Nm3r28k=
+        b=yfSvIDWw+N3U5zkE2NFjUXuAfK7TpwadZessU8UV/T9kp91/Fiimcd36aFXZ5il+A
+         A/3Dl1vFMO1g3o+1YXiFeraUw2QjdYoOvbNZdvYSV0+Nj0iJKXbhbQYQUZx7faiBCo
+         Ct1A1OQqJF4I4rcmlsYBv0DaBOQ7LodIWKu+15rQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 193/323] HSI: core: fix resource leaks in hsi_add_client_from_dt()
-Date:   Thu, 20 May 2021 11:21:25 +0200
-Message-Id: <20210520092126.736441964@linuxfoundation.org>
+Subject: [PATCH 4.14 194/323] x86/events/amd/iommu: Fix sysfs type mismatch
+Date:   Thu, 20 May 2021 11:21:26 +0200
+Message-Id: <20210520092126.767874119@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,44 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@oracle.com>
+From: Nathan Chancellor <nathan@kernel.org>
 
-[ Upstream commit 5c08b0f75575648032f309a6f58294453423ed93 ]
+[ Upstream commit de5bc7b425d4c27ae5faa00ea7eb6b9780b9a355 ]
 
-If some of the allocations fail between the dev_set_name() and the
-device_register() then the name will not be freed.  Fix this by
-moving dev_set_name() directly in front of the call to device_register().
+dev_attr_show() calls _iommu_event_show() via an indirect call but
+_iommu_event_show()'s type does not currently match the type of the
+show() member in 'struct device_attribute', resulting in a Control Flow
+Integrity violation.
 
-Fixes: a2aa24734d9d ("HSI: Add common DT binding for HSI client devices")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+$ cat /sys/devices/amd_iommu_1/events/mem_dte_hit
+csource=0x0a
+
+$ dmesg | grep "CFI failure"
+[ 3526.735140] CFI failure (target: _iommu_event_show...):
+
+Change _iommu_event_show() and 'struct amd_iommu_event_desc' to
+'struct device_attribute' so that there is no more CFI violation.
+
+Fixes: 7be6296fdd75 ("perf/x86/amd: AMD IOMMU Performance Counter PERF uncore PMU implementation")
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20210415001112.3024673-1-nathan@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hsi/hsi_core.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ arch/x86/events/amd/iommu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/hsi/hsi_core.c b/drivers/hsi/hsi_core.c
-index 9065efd21851..71895da63810 100644
---- a/drivers/hsi/hsi_core.c
-+++ b/drivers/hsi/hsi_core.c
-@@ -223,8 +223,6 @@ static void hsi_add_client_from_dt(struct hsi_port *port,
- 	if (err)
- 		goto err;
+diff --git a/arch/x86/events/amd/iommu.c b/arch/x86/events/amd/iommu.c
+index 3641e24fdac5..5a372b8902f4 100644
+--- a/arch/x86/events/amd/iommu.c
++++ b/arch/x86/events/amd/iommu.c
+@@ -84,12 +84,12 @@ static struct attribute_group amd_iommu_events_group = {
+ };
  
--	dev_set_name(&cl->device, "%s", name);
--
- 	err = hsi_of_property_parse_mode(client, "hsi-mode", &mode);
- 	if (err) {
- 		err = hsi_of_property_parse_mode(client, "hsi-rx-mode",
-@@ -306,6 +304,7 @@ static void hsi_add_client_from_dt(struct hsi_port *port,
- 	cl->device.release = hsi_client_release;
- 	cl->device.of_node = client;
+ struct amd_iommu_event_desc {
+-	struct kobj_attribute attr;
++	struct device_attribute attr;
+ 	const char *event;
+ };
  
-+	dev_set_name(&cl->device, "%s", name);
- 	if (device_register(&cl->device) < 0) {
- 		pr_err("hsi: failed to register client: %s\n", name);
- 		put_device(&cl->device);
+-static ssize_t _iommu_event_show(struct kobject *kobj,
+-				struct kobj_attribute *attr, char *buf)
++static ssize_t _iommu_event_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
+ {
+ 	struct amd_iommu_event_desc *event =
+ 		container_of(attr, struct amd_iommu_event_desc, attr);
 -- 
 2.30.2
 
