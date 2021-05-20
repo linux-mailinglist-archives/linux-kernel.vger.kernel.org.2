@@ -2,136 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C913C389BEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:35:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D69D389BE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230320AbhETDgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 23:36:39 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:45066 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229531AbhETDgi (ORCPT
+        id S230273AbhETDdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:33:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229531AbhETDde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 23:36:38 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14K3JA4S041222;
-        Thu, 20 May 2021 11:19:11 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 20 May
- 2021 11:31:48 +0800
-Date:   Thu, 20 May 2021 11:31:41 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>
-CC:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        "ChiaWei Wang" <chiawei_wang@aspeedtech.com>,
-        Troy Lee <troy_lee@aspeedtech.com>,
-        Steven Lee <steven_lee@aspeedtech.com>
-Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
- AST2600
-Message-ID: <20210520033140.GA3656@aspeedtech.com>
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
- <20210519080436.18975-2-jamin_lin@aspeedtech.com>
- <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
+        Wed, 19 May 2021 23:33:34 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD633C061574;
+        Wed, 19 May 2021 20:32:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id kr9so329160pjb.5;
+        Wed, 19 May 2021 20:32:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=27vMgcBoK9ejwXq1ePHAeG7jlHZcEPcZzjaJh1mmpP4=;
+        b=ep+qZMIPjndRE5CAdoC1tDXeOD+YCgiv+YD6b1xhiyU1Nfe59KlBBR9+tPrf/z4omf
+         pzSegEIlaQ44L4/wKMzt+MW6FScOtdgMEv+yHKqoSvfpzJqSKV5EP5zuplCOVsTqWQKh
+         cG0wWTWkoMjuhM1b3OkqsQpn0FPDgYUQpz1VMnGWx0f86trw4N0iSliFmMkKg5asBUpS
+         aYEXmiS/tKZlYo7cm03HLIaBtTBjfEk5WbB7BoXGzMexK2ud5eBPUHhc/S0OuHS4ajz+
+         CdSC78R5uY7yQLXrYv7e8+BqWIsNlEVdacMrhKWyBUb7UMRTy05Rgzn7jdW8dr2Ze2nN
+         Z78g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=27vMgcBoK9ejwXq1ePHAeG7jlHZcEPcZzjaJh1mmpP4=;
+        b=k6XLFforaHoNFiiI7uvrUW7IkuA+f+pVxaue+C2zwwVa4QqwktSyQSngFFnZL1W8k8
+         o2bcRHgm2SNIcR4QKTsGjTM+w3rD9ok9oU6pFVnygbVR+7jNcoX2756gB9VvUzLqSQcq
+         3rlhVJa4adZxQ6VXG109BqwQdCZZCK/LXm+zYAF9cxE8fUFiecvdCf6Y5u05iiQcbDTA
+         4kGOKVZxEwHKfDg0H70Fba72Nm3a8z1N1CFLUMMNFmI1dwBNw7PekZHNpucdz8gtaxhg
+         1+vX8BlUSA5h2OmgfbbdHJucKK5KQKwPDLqMuOdKUQWxEbKNiR2p5+utkAyF0WqwZ2J4
+         7eQQ==
+X-Gm-Message-State: AOAM532rOiqCY2wVJTTJpeXaMs0m54yxifFvXi8fWKwZ7nKI9Pw5TMex
+        Z06JK9aiqWTS0OpLnvRY0H0=
+X-Google-Smtp-Source: ABdhPJwOFctzlfOT8MQ0V2PMhrbrfjr3TSufidZF7N6mtN0ewSE756Yl9s6NK9LTECVuUUiYBc2oMw==
+X-Received: by 2002:a17:90b:180b:: with SMTP id lw11mr2484356pjb.141.1621481532376;
+        Wed, 19 May 2021 20:32:12 -0700 (PDT)
+Received: from localhost.localdomain ([203.90.233.36])
+        by smtp.gmail.com with ESMTPSA id 4sm632912pgn.31.2021.05.19.20.32.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 19 May 2021 20:32:11 -0700 (PDT)
+From:   qxj511mail@gmail.com
+To:     a.zummo@towertech.it
+Cc:     alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, qiuxiaojin@cvte.com
+Subject: [PATCH] rtc: rs5c372:  Fix read the time from RTC is illegal When reading time from an uninitialized RTC chip, The value may be illegal
+Date:   Thu, 20 May 2021 11:31:56 +0800
+Message-Id: <20210520033156.23209-1-qxj511mail@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14K3JA4S041222
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/19/2021 22:59, Joel Stanley wrote:
-> On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
-> >
-> > The register definition between AST2600 A2 and A3 is different.
-> > This patch avoid new registers definition of AST2600 to use
-> > this driver. We will submit the path for the new registers
-> > definition of AST2600.
-> 
-> The AST2600 v9 datasheet says that bit 2 selects between old and new
-> register sets, and that the old register set is the default.
-> 
-> Has the default changed for the A3?, and the datasheet is incorrect?
-> 
-> Does the A3 still support the old register set?
-> 
-We suggest user to use the new i2c driver for AST2600 and we will sumbit
-it. This driver is used to AST2500 and AST2400 SOCs. Change this
-driver to check global register of i2c to avoid user build the wrong driver. 
+From: qiuxiaojin <qiuxiaojin@cvte.com>
 
-> >
-> > Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> > ---
-> >  drivers/i2c/busses/i2c-aspeed.c | 22 ++++++++++++++++++++++
-> >  1 file changed, 22 insertions(+)
-> >
-> > diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
-> > index 724bf30600d6..007309077d9f 100644
-> > --- a/drivers/i2c/busses/i2c-aspeed.c
-> > +++ b/drivers/i2c/busses/i2c-aspeed.c
-> > @@ -19,14 +19,20 @@
-> >  #include <linux/irqchip/chained_irq.h>
-> >  #include <linux/irqdomain.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/mfd/syscon.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of_address.h>
-> >  #include <linux/of_irq.h>
-> >  #include <linux/of_platform.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> >  #include <linux/reset.h>
-> >  #include <linux/slab.h>
-> >
-> > +/* I2C Global Registers */
-> > +/* 0x0c : I2CG Global Control Register (AST2500)  */
-> > +#define ASPEED_I2CG_GLOBAL_CTRL_REG                    0x0c
-> > +
-> >  /* I2C Register */
-> >  #define ASPEED_I2C_FUN_CTRL_REG                                0x00
-> >  #define ASPEED_I2C_AC_TIMING_REG1                      0x04
-> > @@ -973,6 +979,22 @@ static int aspeed_i2c_probe_bus(struct platform_device *pdev)
-> >         struct resource *res;
-> >         int irq, ret;
-> >
-> > +       if (of_device_is_compatible(pdev->dev.of_node,
-> > +                                   "aspeed,ast2600-i2c-bus")) {
-> > +               u32 global_ctrl;
-> > +               struct regmap *gr_regmap;
-> > +
-> > +               gr_regmap = syscon_regmap_lookup_by_compatible("aspeed,ast2600-i2c-global");
-> > +
-> > +               if (IS_ERR(gr_regmap)) {
-> > +                       ret = PTR_ERR(gr_regmap);
-> > +               } else {
-> > +                       regmap_read(gr_regmap, ASPEED_I2CG_GLOBAL_CTRL_REG, &global_ctrl);
-> > +                       if (global_ctrl & BIT(2))
-> > +                               return -EIO;
-> > +               }
-> > +       }
-> > +
-> >         bus = devm_kzalloc(&pdev->dev, sizeof(*bus), GFP_KERNEL);
-> >         if (!bus)
-> >                 return -ENOMEM;
-> > --
-> > 2.17.1
-> >
+Signed-off-by: qiuxiaojin <qiuxiaojin@cvte.com>
+---
+ drivers/rtc/rtc-rs5c372.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+diff --git a/drivers/rtc/rtc-rs5c372.c b/drivers/rtc/rtc-rs5c372.c
+index 3bd6eaa0dcf6..ce61e15d5f3a 100644
+--- a/drivers/rtc/rtc-rs5c372.c
++++ b/drivers/rtc/rtc-rs5c372.c
+@@ -212,6 +212,7 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ 	struct rs5c372	*rs5c = i2c_get_clientdata(client);
+ 	int		status = rs5c_get_regs(rs5c);
+ 	unsigned char ctrl2 = rs5c->regs[RS5C_REG_CTRL2];
++	int flags_utime = 0;
+ 
+ 	if (status < 0)
+ 		return status;
+@@ -239,12 +240,27 @@ static int rs5c372_rtc_read_time(struct device *dev, struct rtc_time *tm)
+ 	tm->tm_wday = bcd2bin(rs5c->regs[RS5C372_REG_WDAY] & 0x07);
+ 	tm->tm_mday = bcd2bin(rs5c->regs[RS5C372_REG_DAY] & 0x3f);
+ 
++	if (tm->tm_mday < 1) {
++		// The value read from the register may be zero, which is an illegal value
++		flags_utime = flags_utime + 1;
++		tm->tm_mday = 1;
++	}
++
+ 	/* tm->tm_mon is zero-based */
+ 	tm->tm_mon = bcd2bin(rs5c->regs[RS5C372_REG_MONTH] & 0x1f) - 1;
+ 
++	if (tm->tm_mon < 0) {
++		flags_utime = flags_utime + 1;
++		tm->tm_mday = 0;
++	}
++
+ 	/* year is 1900 + tm->tm_year */
+ 	tm->tm_year = bcd2bin(rs5c->regs[RS5C372_REG_YEAR]) + 100;
+ 
++	if (flags_utime > 0) {
++		rs5c372_rtc_set_time(dev, tm);
++	}
++
+ 	dev_dbg(&client->dev, "%s: tm is secs=%d, mins=%d, hours=%d, "
+ 		"mday=%d, mon=%d, year=%d, wday=%d\n",
+ 		__func__,
+-- 
+2.29.0
+
