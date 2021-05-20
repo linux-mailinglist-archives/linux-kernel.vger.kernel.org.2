@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA4738A822
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:46:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61D0538A824
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238155AbhETKqk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:46:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33738 "EHLO mail.kernel.org"
+        id S238182AbhETKqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:46:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236651AbhETKa5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:30:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D29761C38;
-        Thu, 20 May 2021 09:51:53 +0000 (UTC)
+        id S236806AbhETKbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:31:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DBF4613FE;
+        Thu, 20 May 2021 09:51:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504314;
-        bh=3Gn753fkwrHl9WOyOxVbJ+VolEhzTSTT82586210nyU=;
+        s=korg; t=1621504316;
+        bh=FJx9plFRkCLtY+h32Yo0G9TZRxeVfAmOVNZCVF8I4iE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dtkwDMRAqM01wDYwxe9jmiW6Kt63o4lNXbHmBVtozwwB9dEQHSKnR03eul6eCJbpt
-         Jlzxuf4lNbHj4SFqQKZQKqiKWyQKDiKSDb9tCfrdIHEsHi9F3cRLFi567uBKm87fFJ
-         RiTUsTmorVblkiGzAad5CAuySkdRG6pwotcajAfQ=
+        b=tINhdjIvC+eVX5QlN78cKBjI93NxCSYW3Tv4PZyrDZrE4wrxyre5NgozPEXoF4+43
+         nVp70MNdhPk4uIx6AY2ALNNTLbh98fPrr0Ib/lBifu6u/8a+CtgEiPXMIJZexK0hhc
+         1kqI8Gl/wP8TmtLRozSy0wnQWeae+RuNs9KYjjsA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
         "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 189/323] scsi: jazz_esp: Add IRQ check
-Date:   Thu, 20 May 2021 11:21:21 +0200
-Message-Id: <20210520092126.603439354@linuxfoundation.org>
+Subject: [PATCH 4.14 190/323] scsi: sun3x_esp: Add IRQ check
+Date:   Thu, 20 May 2021 11:21:22 +0200
+Message-Id: <20210520092126.633465190@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,37 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 38fca15c29db6ed06e894ac194502633e2a7d1fb ]
+[ Upstream commit 14b321380eb333c82853d7d612d0995f05f88fdc ]
 
 The driver neglects to check the result of platform_get_irq()'s call and
 blithely passes the negative error codes to request_irq() (which takes
 *unsigned* IRQ #), causing it to fail with -EINVAL, overriding the real
 error code.  Stop calling request_irq() with the invalid IRQ #s.
 
-Link: https://lore.kernel.org/r/594aa9ae-2215-49f6-f73c-33bd38989912@omprussia.ru
-Fixes: 352e921f0dd4 ("[SCSI] jazz_esp: converted to use esp_core")
+Link: https://lore.kernel.org/r/363eb4c8-a3bf-4dc9-2a9e-90f349030a15@omprussia.ru
+Fixes: 0bb67f181834 ("[SCSI] sun3x_esp: convert to esp_scsi")
 Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/jazz_esp.c | 4 +++-
+ drivers/scsi/sun3x_esp.c | 4 +++-
  1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/jazz_esp.c b/drivers/scsi/jazz_esp.c
-index 9aaa74e349cc..65f0dbfc3a45 100644
---- a/drivers/scsi/jazz_esp.c
-+++ b/drivers/scsi/jazz_esp.c
-@@ -170,7 +170,9 @@ static int esp_jazz_probe(struct platform_device *dev)
+diff --git a/drivers/scsi/sun3x_esp.c b/drivers/scsi/sun3x_esp.c
+index d50c5ed8f428..167ae2d29e47 100644
+--- a/drivers/scsi/sun3x_esp.c
++++ b/drivers/scsi/sun3x_esp.c
+@@ -233,7 +233,9 @@ static int esp_sun3x_probe(struct platform_device *dev)
  	if (!esp->command_block)
- 		goto fail_unmap_regs;
+ 		goto fail_unmap_regs_dma;
  
 -	host->irq = platform_get_irq(dev, 0);
 +	host->irq = err = platform_get_irq(dev, 0);
 +	if (err < 0)
 +		goto fail_unmap_command_block;
- 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED, "ESP", esp);
+ 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED,
+ 			  "SUN3X ESP", esp);
  	if (err < 0)
- 		goto fail_unmap_command_block;
 -- 
 2.30.2
 
