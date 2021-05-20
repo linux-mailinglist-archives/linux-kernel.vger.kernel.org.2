@@ -2,116 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E4A38B5F2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:24:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF3338B5F4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhETSZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52754 "EHLO
+        id S231823AbhETSZp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 14:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231546AbhETSZj (ORCPT
+        with ESMTP id S234989AbhETSZo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:25:39 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E66FC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 11:24:17 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id c10so13474949qtx.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 11:24:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1s5Dsz7vse2deNA6SMMU0kbqW1ES7IG9klI1lUdnBBg=;
-        b=du0uGiNN2aHIPskO4+egQDuFjF5ZSMIfrhxJ+iadWI9R296iYrT38J52IC2ujD5NdY
-         h+vjjfif5YPHTpE3DTMzDGW2QCGbAzAObnnGomtCi0UlrOFGj236Kfa1Wg5b1YmEKT3T
-         2iNv31ww8xbEL3g/qzTDJ8TOgdo4VQNpQiyrHzPyVumdX/8zw3iMjMbXaO8LRSicsjud
-         XYaSIty6Bc8gh4J9JMH1T3DBUloVYJ0i+mOEnA1075zWs2W0UusWppqhoMlon4GKTLlm
-         CvK/wTiTRHy6LHPE+SEqvCtI3ZkW5jauwebD8pSR5hPZ4MLo/Izc3MT6g87+h5GrQxT8
-         EasQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1s5Dsz7vse2deNA6SMMU0kbqW1ES7IG9klI1lUdnBBg=;
-        b=jCNY58rv2WFPAHVP2aweEOI0UNVCURq9PlmAx854bmsak8m1boxu1b1xB43oZIgzR8
-         7bHqTZorjIPp3uYnkGZjp5o6Pa6PByeUaePszUlj6AJERrG697h6Ck9Kv1rNiBFz6iMV
-         xp98y1IWH7/yvbp08hE6wY9YR2Bry2ex6h3NmZqpt823hSdQbcdOp1OkpNA+8xocP9Qn
-         xVFgGUGrlXakigq0jCxdW5o90TyQQpcSSPDjKG3K962XrsUWDHokyo+w7GfQ9kCI1d6p
-         zlfY6zCA66S7XyufilNhL/DL5uaEmD1r5HiyX3rjVjIDBURO0LusRNauftPw5RKXguVc
-         +L/g==
-X-Gm-Message-State: AOAM531qJ2V+8v7Lr/lbvjipD/XUkHc41xVrtXLA/wGUL6/5c70Z690/
-        t/U2a9aH4t9VqFKqyAN5a/5vA0Gpb5BWUPeMolgxtybB9sQEBA==
-X-Google-Smtp-Source: ABdhPJzQIqydEluuiZ+gsCfR8EoFruiir97R4iNWc7F9aFJDAu0Uymbr2sq3UpFFgzWq0x40zB+qmsHAP9fwKKABJwk=
-X-Received: by 2002:aed:3169:: with SMTP id 96mr6689774qtg.164.1621535056348;
- Thu, 20 May 2021 11:24:16 -0700 (PDT)
+        Thu, 20 May 2021 14:25:44 -0400
+Received: from cascadia.aikidev.net (cascadia.aikidev.net [IPv6:2600:3c01:e000:267:0:a171:de7:c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C45FC061574;
+        Thu, 20 May 2021 11:24:22 -0700 (PDT)
+Received: from localhost (97-120-1-76.ptld.qwest.net [97.120.1.76])
+        (Authenticated sender: vagrant@aikidev.net)
+        by cascadia.aikidev.net (Postfix) with ESMTPSA id C9AC71ACD4;
+        Thu, 20 May 2021 11:24:19 -0700 (PDT)
+From:   Vagrant Cascadian <vagrant@reproducible-builds.org>
+To:     Salvatore Bonaccorso <carnil@debian.org>,
+        Maxime Ripard <maxime@cerno.tech>
+Cc:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
+        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
+In-Reply-To: <YKQm/F+JIjf/YUHm@eldamar.lan>
+References: <1243888060.510560.1612783497400@ichabod.co-bxl>
+ <20210210150118.ly252i37eykayrcb@gilmour>
+ <1719200956.433094.1613199092092@ichabod.co-bxl>
+ <6612268.HtAl026vyE@jernej-laptop> <YKFPGC2qBMipQPbd@eldamar.lan>
+ <87o8dawhy3.fsf@yucca> <20210518150652.zxj56bljjeq3ogln@gilmour>
+ <YKQiws6yP35QIpJd@eldamar.lan> <YKQm/F+JIjf/YUHm@eldamar.lan>
+Date:   Thu, 20 May 2021 11:24:18 -0700
+Message-ID: <87a6opqn59.fsf@ponder>
 MIME-Version: 1.0
-References: <20210430150438.GA57205@C02TD0UTHF1T.local> <20210520151854.3632129-1-derrick.mckee@gmail.com>
- <20210520160035.GP17233@C02TD0UTHF1T.local>
-In-Reply-To: <20210520160035.GP17233@C02TD0UTHF1T.local>
-From:   Derrick McKee <derrick.mckee@gmail.com>
-Date:   Thu, 20 May 2021 14:24:04 -0400
-Message-ID: <CAJoBWHyUkP4nkgxHJAZr+291GLy2UCOhC-cn=ez416N4xWSk=w@mail.gmail.com>
-Subject: Re: [PATCH] Ensure kernel AI key is not changed on fork
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Nathan Harrison Burow <Nathan.Burow@ll.mit.edu>,
-        Yianni Giannaris <yiannig@mit.edu>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 12:00 PM Mark Rutland <mark.rutland@arm.com> wrote:
-
-> On the kernel side, we use a unique IA key per kernel thread, and while
-> this must remain the same *for that kernel thread*, the kernel IA key
-> should differ across kernel threads when a fork() occurs.
-
-Thank you for the clarification.
-
-> I think you're trying to use the keys in a different way than upstream
-> intends to, and we do not need this change as-is.
+On 2021-05-18, Salvatore Bonaccorso wrote:
+> On Tue, May 18, 2021 at 10:25:40PM +0200, Salvatore Bonaccorso wrote:
+>> On Tue, May 18, 2021 at 05:06:52PM +0200, Maxime Ripard wrote:
+>> > On Sun, May 16, 2021 at 01:18:44PM -0700, Vagrant Cascadian wrote:
+>> > > On 2021-05-16, Salvatore Bonaccorso wrote:
+>> > > > On Sat, Feb 13, 2021 at 09:51:17AM +0100, Jernej Škrabec wrote:
+>> > > >> Let me first explain that it was oversight on my side not noticing initials in 
+>> > > >> your SoB tag. But since the issue was raised by Maxime, I didn't follow up.
+>> > > >> 
+>> > > >> Dne sobota, 13. februar 2021 ob 07:51:32 CET je B.R. Oake napisal(a):
+>> > > >> > On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
+>> > > >> > > Unfortunately we can't take this patch as is, this needs to be your real
+>> > > >> > > name, see:
+>> > > >> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#de
+>> > > >> > > veloper-s-certificate-of-origin-1-1
+>> > > >> > Dear Maxime,
+>> > > >> > 
+>> > > >> > Thank you very much for considering my contribution and for all your
+>> > > >> > work on supporting sunxi-based hardware; I appreciate it.
+>> > > >> > 
+>> > > >> > Thank you for referring me to the Developer's Certificate of Origin, but
+>> > > >> > I had already read it before submitting (I had to do so in order to know
+>> > > >> > what I was saying by "Signed-off-by:") and I do certify what it says.
+>> > > >> > 
+>> > > >> > Looking through recent entries in the commit log of the mainline kernel,
+>> > > >> > I see several patches from authors such as:
+>> > > >> > 
+>> > > >> >   H.J. Lu <hjl.tools@gmail.com>
+>> > > >> >   B K Karthik <karthik.bk2000@live.com>
+>> > > >> >   JC Kuo <jckuo@nvidia.com>
+>> > > >> >   EJ Hsu <ejh@nvidia.com>
+>> > > >> >   LH Lin <lh.lin@mediatek.com>
+>> > > >> >   KP Singh <kpsingh@kernel.org>
+>> > > >> >   Karthik B S <karthik.b.s@intel.com>
+>> > > >> >   Shreyas NC <shreyas.nc@intel.com>
+>> > > >> >   Vandana BN <bnvandana@gmail.com>
+>> > > >> > 
+>> > > >> > so I believe names of this form are in fact acceptable, even if the
+>> > > >> > style might seem a little old-fashioned to some.
+>> > > >> 
+>> > > >> Speaking generally, not only for this case, prior art arguments rarely hold, 
+>> > > >> because:
+>> > > >> - it might be oversight,
+>> > > >> - it might be a bad practice, which should not be followed in new 
+>> > > >> contributions,
+>> > > >> - different maintainers have different point of view on same thing,
+>> > > >> - maintainer wants to adapt new practice or steer subsystem in new direction
+>> > > >> 
+>> > > >> > 
+>> > > >> > I would like to add that I have met many people with names such as C.J.,
+>> > > >> > A A, TC, MG, etc. That is what everybody calls them and it would be
+>> > > >> > natural for them to sign themselves that way. Some of them might want to
+>> > > >> > contribute to Linux some day, and I think it would be a great shame and
+>> > > >> > a loss to all of us if they were discouraged from doing so by reading
+>> > > >> > our conversation in the archives and concluding that any contribution
+>> > > >> > from them, however small, would be summarily refused simply because of
+>> > > >> > their name. Please could you ensure that does not happen?
+>> > > >> 
+>> > > >> The link you posted says following:
+>> > > >> "using your real name (sorry, no pseudonyms or anonymous contributions.)"
+>> > > >> 
+>> > > >> I believe that real name means no initials, no matter what people are 
+>> > > >> accustomed to. From my point of view, CJ is pseudonym derived from real name.
+>> > > >> 
+>> > > >> This is not the first time that fix of SoB tag was requested, you can find such 
+>> > > >> requests in ML archives.
+>> > > 
+>> > > I'm sure this isn't the first time this sort of thing has been brought
+>> > > up on this subject, but I feel obliged to mention:
+>> > > 
+>> > >   https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+>> > > 
+>> > > This seems to be blocked on culturally dependent perception of what
+>> > > looks like a "real name" as opposed to any technical grounds.
+>> > > 
+>> > > What is the goal of the "real name" in Signed-off-by actually trying to
+>> > > achieve?
+>> > 
+>> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
+>> > 
+>> > I'm not the one making the rules, sorry
+>> 
+>> Would it be technically possible to do the following: Based on the
+>> downstream report we receved in Debian in
+>> https://bugs.debian.org/988574 wrap up the same patch (I guess I will
+>> need to use another commit message wording) and resubmit with my own
+>> SoB with my downstream hat on and say a Tested-by from Vagrant? So we
+>> are not blocked on the SoB issue from this original post of the change
+>> to apply to arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts ?
 >
-> So NAK to this patch as it stands.
-
-Given the above discussion, I agree with the NAK.
-
+> Here is an attempt to do that and coming from
+> https://bugs.debian.org/988574 for the change change submission.
 >
-> > ---
-> >  arch/arm64/include/asm/pointer_auth.h | 9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/arm64/include/asm/pointer_auth.h b/arch/arm64/include/asm/pointer_auth.h
-> > index d50416be99be..9748413e72fd 100644
-> > --- a/arch/arm64/include/asm/pointer_auth.h
-> > +++ b/arch/arm64/include/asm/pointer_auth.h
-> > @@ -69,10 +69,13 @@ static inline void ptrauth_keys_init_user(struct ptrauth_keys_user *keys)
-> >       ptrauth_keys_install_user(keys);
-> >  }
-> >
-> > -static __always_inline void ptrauth_keys_init_kernel(struct ptrauth_keys_kernel *keys)
-> > +static __always_inline void
-> > +ptrauth_keys_init_kernel(struct ptrauth_keys_kernel *keys)
-> >  {
-> > -     if (system_supports_address_auth())
-> > -             get_random_bytes(&keys->apia, sizeof(keys->apia));
-> > +     if (keys->apia.lo == 0 && keys->apia.hi == 0) {
-> > +             if (system_supports_address_auth())
-> > +                     get_random_bytes(&keys->apia, sizeof(keys->apia));
-> > +     }
-> >  }
-> >
-> >  static __always_inline void ptrauth_keys_switch_kernel(struct ptrauth_keys_kernel *keys)
-> > --
-> > 2.31.1
-> >
+> Regards,
+> Salvatore
+>
+> From 93c335c997d6386fc5cb7b9c5621b9b9725de20e Mon Sep 17 00:00:00 2001
+> From: Salvatore Bonaccorso <carnil@debian.org>
+> Date: Tue, 18 May 2021 22:33:49 +0200
+> Subject: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
+>
+> Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+> config") sets the RX/TX delay according to the phy-mode property in the
+> device tree. For the Orange Pi Plus board this is "rgmii", which is the
+> wrong setting.
+>
+> Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
+> Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
+> the Ethernet working again on this board.
+>
+> Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+> Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
+> Link: https://bugs.debian.org/988574
+> Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
+
+Seems worth crediting the original reporter "B.R. Oake"
+<broake@mailfence.com> with a Reported-by as well?
 
 
+live well,
+  vagrant
 
--- 
-Derrick McKee
-Phone: (703) 957-9362
-Email: derrick.mckee@gmail.com
+> ---
+>  arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+> index 97f497854e05..d05fa679dcd3 100644
+> --- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+> +++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+> @@ -85,7 +85,7 @@ &emac {
+>  	pinctrl-0 = <&emac_rgmii_pins>;
+>  	phy-supply = <&reg_gmac_3v3>;
+>  	phy-handle = <&ext_rgmii_phy>;
+> -	phy-mode = "rgmii";
+> +	phy-mode = "rgmii-id";
+>  
+>  	status = "okay";
+>  };
+> -- 
+> 2.31.1
