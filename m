@@ -2,164 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 610F2389AD8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:22:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A1A389AED
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:35:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhETBYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:24:00 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:43049 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230049AbhETBX7 (ORCPT
+        id S230219AbhETBgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:36:36 -0400
+Received: from regular1.263xmail.com ([211.150.70.199]:50622 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhETBge (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:23:59 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210520012210epoutp049126976d674b3f934896e25fefe0248b~AocRXBwT52105721057epoutp047
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:22:10 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210520012210epoutp049126976d674b3f934896e25fefe0248b~AocRXBwT52105721057epoutp047
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1621473730;
-        bh=oO9Bsak6buLdyZ0ElfmZV+Ftbykbeh+pNMakJGzjd9A=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=diR3h3/3sC8yVfQUJAymSTZHWqDyVz6uo+HsVv6p5N7iDfaylZ2lFRo4rnRjHV55i
-         StLY9XE3dKX+qhf54OpT6eMPAl6Ztw9p3c48mYQo+UQqgZfCSnhI7+O1ZJPaT9g8U3
-         ZdmhXEQv+k+spPyEHWY5+OfZuW3sZFA8m59DQatE=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210520012203epcas1p2d89187772ca095d93c4216e42df86023~AocLGk5Ei2002820028epcas1p2m;
-        Thu, 20 May 2021 01:22:03 +0000 (GMT)
-Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FlsQw1GSsz4x9QF; Thu, 20 May
-        2021 01:22:00 +0000 (GMT)
-Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
-        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        57.7D.09824.3B9B5A06; Thu, 20 May 2021 10:21:55 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210520012154epcas1p17f8894f3dcf351646d2b5eec0f8d0b65~AocCI4aMu1780417804epcas1p1y;
-        Thu, 20 May 2021 01:21:54 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210520012154epsmtrp167bb48497007f48dcfb7cca866e017de~AocCIJVOK0166401664epsmtrp1k;
-        Thu, 20 May 2021 01:21:54 +0000 (GMT)
-X-AuditID: b6c32a37-04bff70000002660-13-60a5b9b3ef5a
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        1F.F8.08163.2B9B5A06; Thu, 20 May 2021 10:21:54 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210520012153epsmtip2bde4bad601320244a83865794a32d959~AocB_4yD12141621416epsmtip20;
-        Thu, 20 May 2021 01:21:53 +0000 (GMT)
-Subject: Re: [PATCH v2 1/1] extcon: intel-mrfld: Sync hardware and software
- state on init
-To:     Ferry Toth <ftoth@exalondelft.nl>, linux-kernel@vger.kernel.org
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        stable@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <c6b40bfa-7629-9309-95e8-2ca877630610@samsung.com>
-Date:   Thu, 20 May 2021 10:40:22 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Wed, 19 May 2021 21:36:34 -0400
+X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Wed, 19 May 2021 21:36:34 EDT
+Received: from localhost (unknown [192.168.167.13])
+        by regular1.263xmail.com (Postfix) with ESMTP id 7564612ED;
+        Thu, 20 May 2021 09:27:41 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.236] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P32138T140105872516864S1621474013383973_;
+        Thu, 20 May 2021 09:26:59 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <6158bed3826150f8b8c821007edef603>
+X-RL-SENDER: zhangqing@rock-chips.com
+X-SENDER: zhangqing@rock-chips.com
+X-LOGIN-NAME: zhangqing@rock-chips.com
+X-FST-TO: linux-kernel@vger.kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Subject: Re: [PATCH] clk: rockchip: fix rk3568 cpll clk gate bits
+To:     Peter Geis <pgwipeout@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Kever Yang <kever.yang@rock-chips.com>
+Cc:     linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210519174149.3691335-1-pgwipeout@gmail.com>
+From:   "elaine.zhang" <zhangqing@rock-chips.com>
+Organization: rockchip
+Message-ID: <91fb0c11-1626-4a8c-7e01-2ef71faddc64@rock-chips.com>
+Date:   Thu, 20 May 2021 09:26:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210518212708.301112-1-ftoth@exalondelft.nl>
+In-Reply-To: <20210519174149.3691335-1-pgwipeout@gmail.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdlhTT3fzzqUJBrt3SVi8nHCY0eLzLTGL
-        y7vmsFncblzBZrFg4yNGB1aPns33GT12zrrL7tG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkp
-        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBrlRTKEnNKgUIBicXFSvp2NkX5
-        pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGV2dSgX/eCv+/PjK2sC4
-        nbuLkZNDQsBEYvmek6xdjFwcQgI7GCXunljECOF8YpRY+WIGlPOZUWLimQ62LkYOsJafx7Uh
-        4rsYJVaf/skE4bxnlFjRM50RZK6wQLTEg6bFzCC2iICzxK6j+9hAbGaBIonldxrBatgEtCT2
-        v7gBFucXUJS4+uMxWJxXwE5iz98NYL0sAqoSJ7+0MoHYogJhEie3tUDVCEqcnPmEBcTmFLCW
-        6JrzmglivrjErSfzoWx5ie1v5zCDHCch0Mgh8ax7BTvE0y4Sn3/uYYOwhSVeHd8CFZeSeNnf
-        BmVXS6w8eYQNormDUWLL/gusEAljif1LJzOBgoJZQFNi/S59iLCixM7fcxkhFvNJvPvawwoJ
-        LV6JjjYhiBJlicsP7jJB2JISi9s72SYwKs1C8s4sJC/MQvLCLIRlCxhZVjGKpRYU56anFhsW
-        GCNH9iZGcIrUMt/BOO3tB71DjEwcjIcYJTiYlUR4t3svThDiTUmsrEotyo8vKs1JLT7EaAoM
-        4InMUqLJ+cAknVcSb2hqZGxsbGFiaGZqaKgkzpvuXJ0gJJCeWJKanZpakFoE08fEwSnVwFTU
-        k/vN6cjCVfkpFXX7hNV8z+ld/GaokXf/xh2OMM7loWt6zwoUvrI0jFw0O6NOhVnXb8KhnSpZ
-        4rd1OOfI5n9/d+zgtTSPo1ITJUVKhZZktR5wWqSmma/E++aXbNqlbLbiR/nZ+d/+1+3butR9
-        /p4SV5tMt8favGX33X8U9t1YuTR5T9Hvs11V9k6ec86uNkrP15WY1L5PKPofQ8YW/oV7Js/u
-        PPpTbnMUu8rz+T2y6XVMVlNf6u1Z2+w0VepPyIqFDp9FPp9sP/mO5YPZ7CWylZ2OVdUbJdYo
-        bWjlvW8c2aZxRXNqtqoBF/OmtULSrIHOAnJPb4SXXrCU6L7w4eXUAw/tDr56sTRt6daCT0os
-        xRmJhlrMRcWJAMD/ZHYaBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrILMWRmVeSWpSXmKPExsWy7bCSvO6mnUsTDM5uZbV4OeEwo8XnW2IW
-        l3fNYbO43biCzWLBxkeMDqwePZvvM3rsnHWX3aNvyypGj8+b5AJYorhsUlJzMstSi/TtErgy
-        ujqVCv7xVvz58ZW1gXE7dxcjB4eEgInEz+PaXYxcHEICOxglmpa3MHcxcgLFJSWmXTzKDFEj
-        LHH4cDFEzVtGiR8t6xlBaoQFoiUeNC0GqxcRcJbYdXQfG4jNLFAkMffgJ0aIhj5Gif2XnrGC
-        JNgEtCT2v7gBVsQvoChx9cdjsEG8AnYSe/5uABvEIqAqcfJLKxOILSoQJrFzyWMmiBpBiZMz
-        n7CA2JwC1hJdc14zQSxTl/gz7xIzhC0ucevJfKi4vMT2t3OYJzAKz0LSPgtJyywkLbOQtCxg
-        ZFnFKJlaUJybnltsWGCUl1quV5yYW1yal66XnJ+7iREcK1paOxj3rPqgd4iRiYPxEKMEB7OS
-        CO9278UJQrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTCd
-        0q7L/X590/8XVf+uiRhwSbGUF3Jte/RSu4ZBsFv50frCxWtsb3Oeei55h22NbbeEwMu9SsI5
-        zI/muZcveysRlJQTyRq8w22hqsh+ubzFrd/2ej7c+tX9++X57D4OOyqWrTtxdo/x5r7JbUrv
-        ni+Z0jXjeeKpcrlFSrefNga9zPe5l3TklsyHe96bLC9s5GlJdmbNeZC9ffHjJWw3PrG3yH46
-        2lZw0Gex4P9rC8+InLZgM/06MewN61SD1s+hmsHiMdxNr9bryAt5Hdop/OTz0pKriXttW+Vs
-        u9om3Oz8bav15SHHYhPND8fnn/k98aGE3ld+tXlrLA7xsZZoTVV8ZXz6rOD8socte1eqvOCe
-        rcRSnJFoqMVcVJwIAMpBqA0EAwAA
-X-CMS-MailID: 20210520012154epcas1p17f8894f3dcf351646d2b5eec0f8d0b65
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210518212900epcas1p1ee28319630a51ab22ebf938c5bc222b3
-References: <CGME20210518212900epcas1p1ee28319630a51ab22ebf938c5bc222b3@epcas1p1.samsung.com>
-        <20210518212708.301112-1-ftoth@exalondelft.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 6:27 AM, Ferry Toth wrote:
-> extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
-> DRD to detect a change in the switch position. This change initializes the
-> status at probe time.
-> 
-> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
-> Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: stable@vger.kernel.org
-> ---
-> 
-> v2:
->  - Clarified patch title (Chanwoo)
-> ---
->  drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
-> index f47016fb28a8..cd1a5f230077 100644
-> --- a/drivers/extcon/extcon-intel-mrfld.c
-> +++ b/drivers/extcon/extcon-intel-mrfld.c
-> @@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
->  	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
->  	struct regmap *regmap = pmic->regmap;
->  	struct mrfld_extcon_data *data;
-> +	unsigned int status;
->  	unsigned int id;
->  	int irq, ret;
->  
-> @@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
->  	/* Get initial state */
->  	mrfld_extcon_role_detect(data);
->  
-> +	/*
-> +	 * Cached status value is used for cable detection, see comments
-> +	 * in mrfld_extcon_cable_detect(), we need to sync cached value
-> +	 * with a real state of the hardware.
-> +	 */
-> +	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
-> +	data->status = status;
-> +
->  	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
->  	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
->  
-> 
+Hi: Michael:
 
-Applied it. Thanks.
+Thanks for your patch.
 
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+Reviewed-by: Elaine Zhang<zhangqing@rock-chips.com>
+
+ÔÚ 2021/5/20 ÉÏÎç1:41, Peter Geis Ð´µÀ:
+> The cpll clk gate bits had an ordering issue. This led to the loss of
+> the boot sdmmc controller when the gmac was shut down with:
+> `ip link set eth0 down`
+> as the cpll_100m was shut off instead of the cpll_62p5.
+> cpll_62p5, cpll_50m, cpll_25m were all off by one with cpll_100m
+> misplaced.
+>
+> Fixes: cf911d89c4c5 ("clk: rockchip: add clock controller for rk3568")
+>
+> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> ---
+>   drivers/clk/rockchip/clk-rk3568.c | 10 +++++-----
+>   1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/clk/rockchip/clk-rk3568.c b/drivers/clk/rockchip/clk-rk3568.c
+> index 946ea2f45bf3..75ca855e720d 100644
+> --- a/drivers/clk/rockchip/clk-rk3568.c
+> +++ b/drivers/clk/rockchip/clk-rk3568.c
+> @@ -454,17 +454,17 @@ static struct rockchip_clk_branch rk3568_clk_branches[] __initdata = {
+>   	COMPOSITE_NOMUX(CPLL_125M, "cpll_125m", "cpll", CLK_IGNORE_UNUSED,
+>   			RK3568_CLKSEL_CON(80), 0, 5, DFLAGS,
+>   			RK3568_CLKGATE_CON(35), 10, GFLAGS),
+> +	COMPOSITE_NOMUX(CPLL_100M, "cpll_100m", "cpll", CLK_IGNORE_UNUSED,
+> +			RK3568_CLKSEL_CON(82), 0, 5, DFLAGS,
+> +			RK3568_CLKGATE_CON(35), 11, GFLAGS),
+>   	COMPOSITE_NOMUX(CPLL_62P5M, "cpll_62p5", "cpll", CLK_IGNORE_UNUSED,
+>   			RK3568_CLKSEL_CON(80), 8, 5, DFLAGS,
+> -			RK3568_CLKGATE_CON(35), 11, GFLAGS),
+> +			RK3568_CLKGATE_CON(35), 12, GFLAGS),
+>   	COMPOSITE_NOMUX(CPLL_50M, "cpll_50m", "cpll", CLK_IGNORE_UNUSED,
+>   			RK3568_CLKSEL_CON(81), 0, 5, DFLAGS,
+> -			RK3568_CLKGATE_CON(35), 12, GFLAGS),
+> +			RK3568_CLKGATE_CON(35), 13, GFLAGS),
+>   	COMPOSITE_NOMUX(CPLL_25M, "cpll_25m", "cpll", CLK_IGNORE_UNUSED,
+>   			RK3568_CLKSEL_CON(81), 8, 6, DFLAGS,
+> -			RK3568_CLKGATE_CON(35), 13, GFLAGS),
+> -	COMPOSITE_NOMUX(CPLL_100M, "cpll_100m", "cpll", CLK_IGNORE_UNUSED,
+> -			RK3568_CLKSEL_CON(82), 0, 5, DFLAGS,
+>   			RK3568_CLKGATE_CON(35), 14, GFLAGS),
+>   	COMPOSITE_NOMUX(0, "clk_osc0_div_750k", "xin24m", CLK_IGNORE_UNUSED,
+>   			RK3568_CLKSEL_CON(82), 8, 6, DFLAGS,
+
+
