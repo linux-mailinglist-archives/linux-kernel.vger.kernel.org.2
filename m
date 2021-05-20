@@ -2,120 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A788C389E7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:58:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A876389E84
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:59:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230504AbhETG7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:59:09 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25390 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230486AbhETG7I (ORCPT
+        id S230486AbhETHAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:00:09 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55964 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229978AbhETHAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:59:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621493866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yk/fRgYi2L7XzzhzUngfnYDpP+H9os1AbdPkEcmZX34=;
-        b=H5zd7enuH6+9lglRNoSqXK2Vyk10R9MNt2RJb+1R2JXdPtYl1KDKYSfhy0RTq2lnSbNa3+
-        ye+3GDlbPBCKrfXVvNBoUBGtiZ9lpVOPSij79fy2GA37occtwE1xXJ/a+b1TrtxeVKXEwJ
-        L4AAjSoCoKZSZjtdrgQbvIxTqpglScQ=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-304-7ObaReEmOfmme6JCuN4Utw-1; Thu, 20 May 2021 02:57:45 -0400
-X-MC-Unique: 7ObaReEmOfmme6JCuN4Utw-1
-Received: by mail-ej1-f71.google.com with SMTP id sd18-20020a170906ce32b02903cedf584542so4583619ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:57:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Yk/fRgYi2L7XzzhzUngfnYDpP+H9os1AbdPkEcmZX34=;
-        b=JuLmUAUVl3E9atdLOGwf63A3eDEkCPiZbn0O+fbwGPdMu5b63AAWxJTd3tWhRvgaFC
-         N/Ed0zEIxCmw+C1XFuCdplzQ0Fgy4rsplTCG3glAtc5crf8Sr1lFJB9ZZFR24mlODZfr
-         tZhCLoOLImv7tazPml1G89B+foXZjpo091tSKfJAiS8PoczaDLB+AP5eduodg3cnGsIb
-         KgRSL6IadxAustQwi8BUfrSfiUbmtr+EOgDOm9tANE9JIXKJb0tMgLwBOXPfLPAjiSus
-         9+AI+55B/nUlhH38/9JqBiO5YgpvfeOs7PTCJebMh56gJMg/ZIC+kLZkbNcJ6sph0Lbg
-         4RPg==
-X-Gm-Message-State: AOAM530GRpFba9uA59aN/2FUJImmVG6SKF8mwnYK5n5owiTGND7ZAe+2
-        vPYtxVLxNeKfKpjwA1IKjzU9FVRtPvmqrkmCcSTzRQzE0inzUYJ5/WGgWZzAIfnfsG67OrheBSK
-        RHZvT4GOl8AU7i7ap9+tidnVf
-X-Received: by 2002:aa7:ca4d:: with SMTP id j13mr3351883edt.158.1621493863913;
-        Wed, 19 May 2021 23:57:43 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvaPAHqZ90kTD56q0xPxdxX4VIpFhP49jTuNKOT7yC+Ps7zWZaaAeelD3WfdxPrLMM334dxg==
-X-Received: by 2002:aa7:ca4d:: with SMTP id j13mr3351872edt.158.1621493863788;
-        Wed, 19 May 2021 23:57:43 -0700 (PDT)
-Received: from x1.bristot.me (host-87-19-51-73.retail.telecomitalia.it. [87.19.51.73])
-        by smtp.gmail.com with ESMTPSA id t23sm977083edq.74.2021.05.19.23.57.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 May 2021 23:57:43 -0700 (PDT)
-Subject: Re: [RFC PATCH 09/16] rv/monitors: wip instrumentation and
- Makefile/Kconfig entries
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>
-Cc:     Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
-        Kate Carcia <kcarcia@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Gabriele Paoloni <gabriele.paoloni@intel.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
-References: <cover.1621414942.git.bristot@redhat.com>
- <8ffcb3a4c8b55ef63cc02b487aa1c8ad5bf3f800.1621414942.git.bristot@redhat.com>
- <ae9c9d42-2bee-3f97-1d53-43b876b1ec4f@infradead.org>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <90da7215-200e-3665-f892-6947e95fc6b1@redhat.com>
-Date:   Thu, 20 May 2021 08:57:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 20 May 2021 03:00:08 -0400
+Received: from 36-229-229-74.dynamic-ip.hinet.net ([36.229.229.74] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1ljcdi-0003qu-An; Thu, 20 May 2021 06:58:39 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
+Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4] drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops
+Date:   Thu, 20 May 2021 14:58:20 +0800
+Message-Id: <20210520065832.614245-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <ae9c9d42-2bee-3f97-1d53-43b876b1ec4f@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 8:14 PM, Randy Dunlap wrote:
-> On 5/19/21 4:36 AM, Daniel Bristot de Oliveira wrote:
->> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
->> index 74eb2f216255..4a1088c5ba68 100644
->> --- a/kernel/trace/rv/Kconfig
->> +++ b/kernel/trace/rv/Kconfig
->> @@ -14,6 +14,13 @@ menuconfig RV
->>  
->>  if RV
->>  
->> +config RV_MON_WIP
->> +	depends on PREEMPTIRQ_TRACEPOINTS
->> +	tristate "WIP monitor"
->> +	help
->> +	  Enable WIP sample monitor, this is a sample monitor that
-> 
-> 	                    monitor. This
-> 
->> +	  illustrates the usage of per-cpu monitors.
-> 
-> What does WIP mean here? I didn't see that in patch 08 (though
-> I could have missed it -- I did look).
-> 
-> 
+On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
+to discrete GFX after S3. This is not desirable, because userspace will
+treat connected display as a new one, losing display settings.
 
-WIP means "Wakeup In Preemptive." I will add the long name to the first
-occurrence in patch 08, and to the Kconfig.
+The expected behavior is to let discrete GFX drives all external
+displays.
 
-Thanks!
--- Daniel
+The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
+The method is inside the another _DSM, so add the _DSM and call it
+accordingly.
+
+I also tested some MUX-less and iGPU only laptops with that _DSM, no
+regression was found.
+
+v4:
+ - Rebase.
+ - Change the DSM name to avoid confusion.
+ - Move the function call to intel_opregion.
+
+v3:
+ - Remove BXT from names.
+ - Change the parameter type.
+ - Fold the function into intel_modeset_init_hw().
+
+v2:
+ - Forward declare struct pci_dev.
+
+Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
+References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/gpu/drm/i915/display/intel_acpi.c     | 19 +++++++++++++++++++
+ drivers/gpu/drm/i915/display/intel_acpi.h     |  3 +++
+ drivers/gpu/drm/i915/display/intel_opregion.c |  3 +++
+ 3 files changed, 25 insertions(+)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
+index 833d0c1be4f1..7cfe91fc05f2 100644
+--- a/drivers/gpu/drm/i915/display/intel_acpi.c
++++ b/drivers/gpu/drm/i915/display/intel_acpi.c
+@@ -19,6 +19,12 @@ static const guid_t intel_dsm_guid =
+ 	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
+ 		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
+ 
++#define INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED 0 /* No args */
++
++static const guid_t intel_dsm_guid2 =
++	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
++		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
++
+ static char *intel_dsm_port_name(u8 id)
+ {
+ 	switch (id) {
+@@ -176,6 +182,19 @@ void intel_unregister_dsm_handler(void)
+ {
+ }
+ 
++void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
++{
++	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
++	acpi_handle dhandle;
++
++	dhandle = ACPI_HANDLE(&pdev->dev);
++	if (!dhandle)
++		return;
++
++	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
++			  INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
++}
++
+ /*
+  * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
+  * Attached to the Display Adapter).
+diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
+index e8b068661d22..9f197401c313 100644
+--- a/drivers/gpu/drm/i915/display/intel_acpi.h
++++ b/drivers/gpu/drm/i915/display/intel_acpi.h
+@@ -11,11 +11,14 @@ struct drm_i915_private;
+ #ifdef CONFIG_ACPI
+ void intel_register_dsm_handler(void);
+ void intel_unregister_dsm_handler(void);
++void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915);
+ void intel_acpi_device_id_update(struct drm_i915_private *i915);
+ #else
+ static inline void intel_register_dsm_handler(void) { return; }
+ static inline void intel_unregister_dsm_handler(void) { return; }
+ static inline
++void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915) { return; }
++static inline
+ void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
+ #endif /* CONFIG_ACPI */
+ 
+diff --git a/drivers/gpu/drm/i915/display/intel_opregion.c b/drivers/gpu/drm/i915/display/intel_opregion.c
+index dfd724e506b5..3855fba70980 100644
+--- a/drivers/gpu/drm/i915/display/intel_opregion.c
++++ b/drivers/gpu/drm/i915/display/intel_opregion.c
+@@ -1078,6 +1078,9 @@ void intel_opregion_resume(struct drm_i915_private *i915)
+ 		opregion->asle->ardy = ASLE_ARDY_READY;
+ 	}
+ 
++	/* Some platforms abuse the _DSM to enable MUX */
++	intel_dsm_get_bios_data_funcs_supported(i915);
++
+ 	intel_opregion_notify_adapter(i915, PCI_D0);
+ }
+ 
+-- 
+2.31.1
 
