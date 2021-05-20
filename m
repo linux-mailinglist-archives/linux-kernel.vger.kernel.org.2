@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BB238B379
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31BC538B37F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:47:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236410AbhETPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:48:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231670AbhETPsF (ORCPT
+        id S236796AbhETPsc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 11:48:32 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:34577 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231670AbhETPsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:48:05 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36997C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:46:44 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v12so9293796plo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:46:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oQs9jtWBxUSYheKfenr+oS5kRIQjvZiaP96jdn9gsMU=;
-        b=sLtEbitldgXrD8ZBjQvwX8vXZsSeGCvELvSzENcd2YSqXu9iBk1TDDVBxvGX2WckOo
-         ZLff2Dr5rf7BZosrT+ewzXMyOMJf7XdiMM+n3CouAjKLmyJ4lGRwEzzaStNPUE+WjS7D
-         c4LMP0I9t0UmqsR5mCkTOYB5wd2kxuubtNhodBLwxrETygnNDHDCHy31/oGVyKeNzdvA
-         oWnKYwvfUNzPUzQWFbzq2skT99K0pE/S0vy4Ytuvbak/Y0917zqNoYtlUW9/+DpwLaIl
-         gnMbO4DOkYo0VcpgnuDlYdMT3S9glBXtaGx55Sc4kX843kWuILdUe5osSIXS/GEEbknw
-         Mxjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oQs9jtWBxUSYheKfenr+oS5kRIQjvZiaP96jdn9gsMU=;
-        b=Mhki1DUXl+qtfmdIofXLyAiwuUVp4/OgqAqMPbEJpEst+avRrWI8czAhXd5OVqyW0t
-         hEcIc+DNkWMfSvm5I9QvSeR2lUKyBrpzzbI512qy1enxwBz7w7T0Qkk8af/9oZEScNWO
-         8z5massBKIg4C4m5mmgeraidZoPeIpG7K0RFsrhoGMgTyoGhLmJ4a1W4rDd2ojcfGely
-         fuEMmaaQAIF4oMlHJbaWibk8NOpKbcbeacco8kAXdVrOoi7fCkJs2HKyIZ4TEUBQ6DB+
-         p8Fj1rdRLyFcmFJ1S8phFXFhUY2GX7IezpJ8/gwDVRCR9cwopQGf7BYC4GmgI3yiZary
-         9iiQ==
-X-Gm-Message-State: AOAM5338s/Utg0p7Rj3x/x8M4m+rNzXAQKjDbdypsP1w767lDo32vvFn
-        w8zEEadOdn4nDT27Y+MfhMcZZA==
-X-Google-Smtp-Source: ABdhPJxiFrIPGyZeGPWU+3qcevfuOBti/QMH85WV51tQ0Qoku7ZeZreMmR0xPInOvOCdtXteJDisrw==
-X-Received: by 2002:a17:90a:fb51:: with SMTP id iq17mr5581236pjb.4.1621525603564;
-        Thu, 20 May 2021 08:46:43 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id x13sm2654328pja.3.2021.05.20.08.46.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 08:46:42 -0700 (PDT)
-Date:   Thu, 20 May 2021 15:46:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Joe Richey <joerichey94@gmail.com>
-Cc:     trivial@kernel.org, Joe Richey <joerichey@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org
-Subject: Re: [PATCH 2/6] KVM: X86: Don't use BIT() macro in UAPI headers
-Message-ID: <YKaEX35G9Qmx3thQ@google.com>
-References: <20210520104343.317119-1-joerichey94@gmail.com>
- <20210520104343.317119-3-joerichey94@gmail.com>
+        Thu, 20 May 2021 11:48:31 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-428-vupLqh65Oji912do6_HGVA-1; Thu, 20 May 2021 11:47:05 -0400
+X-MC-Unique: vupLqh65Oji912do6_HGVA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AA3DA79EC4;
+        Thu, 20 May 2021 15:47:04 +0000 (UTC)
+Received: from bahia.redhat.com (ovpn-112-99.ams2.redhat.com [10.36.112.99])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F2DE310016F4;
+        Thu, 20 May 2021 15:46:55 +0000 (UTC)
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Greg Kurz <groug@kaod.org>
+Subject: [PATCH v4 0/5] virtiofs: propagate sync() to file server
+Date:   Thu, 20 May 2021 17:46:49 +0200
+Message-Id: <20210520154654.1791183-1-groug@kaod.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520104343.317119-3-joerichey94@gmail.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This feedback applies to all patches in this series.
+This was a single patch until v3. Some preliminary cleanups were
+introduced for submounts in this v4.
 
-On Thu, May 20, 2021, Joe Richey wrote:
-> From: Joe Richey <joerichey@google.com>
-> 
-> A previous patch
+This can be tested with a custom virtiofsd implementing FUSE_SYNCFS, here:
 
-Heh, I think it goes without saying that the code was introduced by a previous
-patch, unless you've invented a time machine, in which case we should talk...
+https://gitlab.com/gkurz/qemu/-/tree/fuse-sync
 
-> [1] used the BIT() macro to define the
-> KVM_DIRTY_GFN_F_* constants in KVM's UAPI header.
-> 
-> This macro is defined in the kernel but not in the UAPI headers.
-> 
-> [1] https://patchwork.kernel.org/patch/11854393
+v4: - submount fixes
+    - set nodeid of the superblock in the request (Miklos)
 
-Linking to the patch isn't helpful/desirable in this case because it doesn't
-provide any info about when the commit actually landed in the kernel.  And
-depending on the whims of the maintainer, what was posted may not exactly match
-the code that was commited.
+v3: - just keep a 64-bit padding field in the arg struct (Vivek)
 
-What you want is a Fixes: tag that points at the offending commit.  The Fixes:
-tag will also get the fix picked up for stable kernels, though in KVM we often
-explicitly add "Cc: stable@vger.kernel.org" (though IIRC tglx prefers not to have
-the explicit Cc).
+v2: - clarify compatibility with older servers in changelog (Vivek)
+    - ignore the wait == 0 case (Miklos)
+    - 64-bit aligned argument structure (Vivek, Miklos)
 
-Anyways, the changelog can simply be something like:
+Greg Kurz (5):
+  fuse: Fix leak in fuse_dentry_automount() error path
+  fuse: Call vfs_get_tree() for submounts
+  fuse: Make fuse_fill_super_submount() static
+  virtiofs: Skip submounts in sget_fc()
+  virtiofs: propagate sync() to file server
 
-  Replace BIT() in KVM's UAPI header with an open coded equivalent.  BIT() is
-  not defined in the UAPI headers and its usage may cause userspace build errors.
+ fs/fuse/dir.c             | 45 +++++---------------
+ fs/fuse/fuse_i.h          | 12 +++---
+ fs/fuse/inode.c           | 87 ++++++++++++++++++++++++++++++++++++++-
+ fs/fuse/virtio_fs.c       |  9 ++++
+ include/uapi/linux/fuse.h | 10 ++++-
+ 5 files changed, 120 insertions(+), 43 deletions(-)
 
-  Fixes: fb04a1eddb1a ("KVM: X86: Implement ring-based dirty memory tracking")
-  Signed-off-by: Joe Richey <joerichey@google.com>
+-- 
+2.26.3
+
+
