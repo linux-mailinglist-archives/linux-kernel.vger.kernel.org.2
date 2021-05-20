@@ -2,75 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7018638AF41
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4FF238AF45
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243173AbhETMzB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:55:01 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46698 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243286AbhETMxK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:53:10 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621515108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S242757AbhETMzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:55:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60182 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243263AbhETMxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:53:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621515111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=+3xFIgLG8VbxqA7fAkiqQPj+DCPXmppnaBD63xBqlzI=;
-        b=bxWFLS6UXQgyC9XUY5Qp33i3La8iQhK2xQ6rfqUKBF26CuP0n9pC+hRKMiKgNg4wowGSFP
-        XWeZEisHXG0FIesJfWK8jyaY1D/OH3qhM2WUWt0ZxsZtSin4eqDRvEi4+Eg4cHJMViwIwO
-        XGrk8Pl7lDAl2IJY2z9KHQQWiHvNM8KJ7vcQmv7GWJpId13gu8sGWif1umxVK7X/ckrPd7
-        N0gO/8NY+tGs2nlHgIiHQx8DpEaoYN/jo1qc46XCunJWzZAVn4XsktH3jyYX/syvEA1RNj
-        ViF9E7KYhv0kn3D7t7WwabSzSNzkQU0J4BqxKtIMA4IBzgNa9DyjqQjyrQbbTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621515108;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+3xFIgLG8VbxqA7fAkiqQPj+DCPXmppnaBD63xBqlzI=;
-        b=M9gPm8uAE9Si+m0qKumiPUGsYCH9/on8NpNwsWMpHH03jjOxa97fyMSSHvkjumE7ixeRWG
-        V0+md2ta4rFy73Cw==
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        lkft-triage@lists.linaro.org,
+        bh=VbT6WFYy0bkSk8HAYhg7anUqtgOM3QEr3KjCoKwSfHQ=;
+        b=gOKAeXWpE3pQwkKpXwPHYoc4ERb31lQ3gBN7nTVt1yldwdnn1/3/XyAFth9rfgDimJkoQH
+        agqxk+9Aox0SUUfXdjH85VkMEQazH8fYJyaFRs2tPVAJC3VdcHlyCnVzQyWN5LMIv2YHXJ
+        O5RoTQ3j+3gflRxjf1BSBzx8QDoYDOo=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8A566ABE8;
+        Thu, 20 May 2021 12:51:51 +0000 (UTC)
+Date:   Thu, 20 May 2021 14:51:50 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Oliver Sang <oliver.sang@intel.com>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        X86 ML <x86@kernel.org>, Kalesh Singh <kaleshsingh@google.com>
-Subject: Re: BUG: unable to handle page fault for address - EIP: __kmap_local_page_prot
-In-Reply-To: <CA+G9fYsogFQZSeFyGinZ_EQOEW11cmU5oxuEoDuwyCVNaXv3yA@mail.gmail.com>
-References: <CA+G9fYtAbUGO9oAtL8eZ9Pu-_a1wx3y8Tk=pDO3Fh3dEwoRGWg@mail.gmail.com> <87mtsqd0c1.ffs@nanos.tec.linutronix.de> <CA+G9fYsogFQZSeFyGinZ_EQOEW11cmU5oxuEoDuwyCVNaXv3yA@mail.gmail.com>
-Date:   Thu, 20 May 2021 14:51:48 +0200
-Message-ID: <87tumxbmaj.ffs@nanos.tec.linutronix.de>
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        John Ogness <john.ogness@linutronix.de>,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Embedded <linux-embedded@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: Re: [PATCH 3/3] lib/vsprintf: Use pr_crit() instead of long fancy
+ messages
+Message-ID: <YKZbZhACyIENhM8S@alley>
+References: <20210331093104.383705-1-geert+renesas@glider.be>
+ <20210331093104.383705-4-geert+renesas@glider.be>
+ <CAMuHMdXQArCn9BS_8p0iUAgomfEHWe8ypg=B_SGfvJu8c_L5vg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdXQArCn9BS_8p0iUAgomfEHWe8ypg=B_SGfvJu8c_L5vg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20 2021 at 12:40, Naresh Kamboju wrote:
-> On Thu, 20 May 2021 at 00:20, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> The below patch did not solve the reported problem.
-> after applying this patch
-> CONFIG_HAVE_MOVE_PUD
-> disappeared from the config.
-> but still i see WARNING: and BUG: when running LTP mm tests.
+On Mon 2021-05-17 08:21:12, Geert Uytterhoeven wrote:
+> On Wed, Mar 31, 2021 at 11:59 AM Geert Uytterhoeven
+> <geert+renesas@glider.be> wrote:
+> > While long fancy messages have a higher probability of being seen than
+> > small messages, they may scroll of the screen fast, if visible at all,
+> > and may still be missed.  In addition, they increase boot time and
+> > kernel size.
+> >
+> > The correct mechanism to increase importance of a kernel message is not
+> > to draw fancy boxes with more text, but to shout louder, i.e. increase
+> > the message's reporting level.  Making sure the administrator of the
+> > system is aware of such a message is a system policy, and is the
+> > responsability of a user-space log daemon.
+> >
+> > Fix this by increasing the reporting level from KERN_WARNING to
+> > KERN_CRIT, and removing irrelevant text and graphics.
+> >
+> > This reduces kernel size by ca. 0.5 KiB.
+> >
+> > Fixes: 5ead723a20e0447b ("lib/vsprintf: no_hash_pointers prints all addresses as unhashed")
+> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> 
+> No comments?
+> Unlike the cases handled by the other two patches in this series,
+> this one cannot be configured out.
 
-Yes, but that's a different warning ....
+IMHO, the best solution would be to create a generic API for
+eye-catching messages.
 
-> Test log link,
-> FYI,
-> i386 kernel Image running on x86_64 machine.
-> https://lkft.validation.linaro.org/scheduler/job/2749690#L10139
+I am sure that WARN() is misused on many locations all over the kernel
+because people just wanted eye-catching message, for example, see
+https://lore.kernel.org/r/2149df3f542d25ce15d049e81d6188bb7198478c.camel@fi.rohmeurope.com
 
-Sorry, but this webpage is making my browser go apeshit and finding
-anything in that gunk of user space messages is a pain. Can we please
-have a proper plain dmesg?
+It might be a win-win solution.
 
-Thanks,
-
-        tglx
+Best Regards,
+Petr
