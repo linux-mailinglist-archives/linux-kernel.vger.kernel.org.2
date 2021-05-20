@@ -2,122 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391E738B575
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6ED38B57B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbhETRvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232346AbhETRvC (ORCPT
+        id S235433AbhETRvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:51:31 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:44159 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235142AbhETRva (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:51:02 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB1AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:49:40 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id 76so17014470qkn.13
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:49:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wnCevUZkueOstLHW1AR+QAWLP03GYm6cWFjqEuHEYGM=;
-        b=VltoijMDIEpRVRY9l4HbfrI7BGbonOBsac4oFYuRIH/2XzCHlXMheQcqxsyieGVmd3
-         RYKsDZR9DrFvtQQhrPbgzeUSR3BH8PI7JXEoIJktZJBqChWZ6ejMdKAMs0sy9MzjSM7Q
-         MmzXyySIqsGszhgVQwbm/jjSdMitHM4MRziZO3g0djOwcNF2BG1fbGBz+mnznJGy9cyi
-         9hGp7ggKIdlgfdrurwa4IRkJo49fg5RkbN5APqaiSPm8FZ1yjK2ZsTFrlpLEOwqTpswy
-         H34W0Uu8ghb6KoBH6W8EsLQKTGZ3QsT51tncEUvkrHPBbsQzU8kbswMd4Q8pCi6V1dXk
-         4qig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wnCevUZkueOstLHW1AR+QAWLP03GYm6cWFjqEuHEYGM=;
-        b=lBaCJlNlzmYYw86v4BYDKL915Z9Miv1c0RU12YVQvpOsJoyeHBMIkJ0BItoLFA2Mj4
-         05SRday+eI6eziFjO4ClD24o9Bu3sDWBrVpbcWvds4z6IoEXv7D8T8INH5D9GUeF2QWT
-         g6j8+vPbANdJzIKsuLClPlGk8ZqGISWUhIjciENBV5z3PsiOvHklzicAEC47oCf/7TAN
-         P5ySejxw1S7Ev1AwR2b4k/bTa1RpHUplAWw2PdTlPFXhmEwy5M+eNxCsDDWj47gyw7sy
-         mcHzOtyu+LV/3SqVrNeEuIDr6RkGh918mBHwVhSOCfI/7Alb4F51IOWOzLhj0+G5BkuE
-         llyg==
-X-Gm-Message-State: AOAM530SvWljjMH9stWpRl2R3dyJ8/twevgSeuRsgam/2yaKajnGBKxU
-        RGovMDmw2fT6W4OGElKUTm2h6w==
-X-Google-Smtp-Source: ABdhPJyFy0sHlDam4B2F9bdQUSXGtggaa+v1VdI6qA9a2zyjmzAcFwO3W53jqtukcNIc+T1Ho3fwLQ==
-X-Received: by 2002:a05:620a:3dd:: with SMTP id r29mr6463037qkm.468.1621532979915;
-        Thu, 20 May 2021 10:49:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:3178])
-        by smtp.gmail.com with ESMTPSA id l4sm2384579qkp.48.2021.05.20.10.49.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 10:49:38 -0700 (PDT)
-Date:   Thu, 20 May 2021 13:49:37 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH] mm: move idle swap cache pages to the tail of LRU after
- COW
-Message-ID: <YKahMXCwDRlBksAU@cmpxchg.org>
-References: <20210519013313.1274454-1-ying.huang@intel.com>
- <YKUlfeAiq/vv+dHl@cmpxchg.org>
- <87r1i28ahm.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <YKW/ix3Yg5HRuBaC@cmpxchg.org>
- <87im3e88ss.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        Thu, 20 May 2021 13:51:30 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d10 with ME
+        id 75q52500B21Fzsu035q6DT; Thu, 20 May 2021 19:50:07 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Thu, 20 May 2021 19:50:07 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH] scsi: sni_53c710: Fix a resource leak in an error
+ handling path
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        James.Bottomley@SteelEye.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <5a97774020847f6b63e161197254d15ef1d786ea.1621485792.git.christophe.jaillet@wanadoo.fr>
+ <20210520150641.GA22843@alpha.franken.de>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <37ec6fe9-170f-c282-465e-6ae7d69e623e@wanadoo.fr>
+Date:   Thu, 20 May 2021 19:50:05 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87im3e88ss.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <20210520150641.GA22843@alpha.franken.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 09:59:15AM +0800, Huang, Ying wrote:
-> Johannes Weiner <hannes@cmpxchg.org> writes:
+Le 20/05/2021 à 17:06, Thomas Bogendoerfer a écrit :
+> On Thu, May 20, 2021 at 06:44:25AM +0200, Christophe JAILLET wrote:
+>> After a successful 'NCR_700_detect()' call, 'NCR_700_release()' must be
+>> called to release some DMA related resources, as already done in the
+>> remove function.
+>>
+>> Fixes: c27d85f3f3c5 ("[SCSI] SNI RM 53c710 driver")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/scsi/sni_53c710.c | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/drivers/scsi/sni_53c710.c b/drivers/scsi/sni_53c710.c
+>> index 678651b9b4dd..f6d60d542207 100644
+>> --- a/drivers/scsi/sni_53c710.c
+>> +++ b/drivers/scsi/sni_53c710.c
+>> @@ -98,6 +98,7 @@ static int snirm710_probe(struct platform_device *dev)
+>>   
+>>    out_put_host:
+>>   	scsi_host_put(host);
+>> +	NCR_700_release(host);
 > 
-> > On Thu, May 20, 2021 at 09:22:45AM +0800, Huang, Ying wrote:
-> >> Johannes Weiner <hannes@cmpxchg.org> writes:
-> >> 
-> >> > On Wed, May 19, 2021 at 09:33:13AM +0800, Huang Ying wrote:
-> >> >> diff --git a/mm/memory.c b/mm/memory.c
-> >> >> index b83f734c4e1d..2b6847f4c03e 100644
-> >> >> --- a/mm/memory.c
-> >> >> +++ b/mm/memory.c
-> >> >> @@ -3012,6 +3012,11 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
-> >> >>  				munlock_vma_page(old_page);
-> >> >>  			unlock_page(old_page);
-> >> >>  		}
-> >> >> +		if (page_copied && PageSwapCache(old_page) &&
-> >> >> +		    !page_mapped(old_page) && trylock_page(old_page)) {
-> >> >> +			try_to_free_idle_swapcache(old_page);
-> >> >> +			unlock_page(old_page);
-> >> >
-> >> > If there are no more swap or pte references, can we just attempt to
-> >> > free the page right away, like we do during regular unmap?
-> >> >
-> >> > 		if (page_copied)
-> >> > 			free_swap_cache(old_page);
-> >> > 		put_page(old_page);
-> >> 
-> >> A previous version of the patch does roughly this.
-> >> 
-> >> https://lore.kernel.org/lkml/20210113024241.179113-1-ying.huang@intel.com/
-> >> 
-> >> But Linus has concerns with the overhead introduced in the hot COW path.
-> >
-> > Sorry, I had missed that thread.
-> >
-> > It sounds like there were the same concerns about the LRU shuffling
-> > overhead in the COW page. Now we have numbers for that, but not the
-> > free_swap_cache version. Would you be able to run the numbers for that
-> > as well? It would be interesting to see how much the additional code
-> > complexity buys us.
-> 
-> The number for which workload?  The workload that is used to evaluate
-> this patch?
+> shouldn't this done before the scsi_host_put() to avoid a use after free ?
 
-Yeah, the pmbench one from the changelog.
+I did it this way because remove function are:
+    scsi_remove_host
+    NCR_700_release
+
+The other reason was to free resources in the reverse order than allocation.
+But this logic does'nt work in all cases.
+
+> lasi700.c has the same problem.
+
+and a400t.c and bvme6000_scsi.c and mvme16x_scsi.c and sim710.c and 
+zorro7xx.c.
+That is to say all drivers that use NCR_700_detect().
+
+That is why I'm unsure with my patch. It is unusual to have ALL users 
+wrong. It is more likely that I missed something and that the code is 
+correct.
+
+I also don't fully understand why we use 'scsi_host_put' in some place 
+and 'scsi_remove_host' in remove functions.
+Referenced managed resources sometimes have the needed mechanism to 
+automagically release some resource.
+
+> And it looks like NCR_700_detect() will leak
+> dma memory, if scsi_host_alloc() failed.
+
+Agreed. And same if scsi_add_host fails at the end of the function.
+
+> 
+> Thomas.
+> 
+
