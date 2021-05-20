@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9529D38ABB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAAED38A97D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241335AbhETL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:27:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47834 "EHLO mail.kernel.org"
+        id S239210AbhETLCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:02:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239999AbhETLG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:06:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3975661D30;
-        Thu, 20 May 2021 10:05:43 +0000 (UTC)
+        id S237947AbhETKoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:44:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E773861C96;
+        Thu, 20 May 2021 09:57:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505143;
-        bh=Sz6EOdc7yV52bDWQgKlyk4LCblp+4sumZFTP9xmgSn8=;
+        s=korg; t=1621504622;
+        bh=JWBxnV+Asf0mk2kGN/PYA43yeYqpEAkA4ZyWW1vQK6A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CLDSbpXgBX+d99fx3U4ygjrB03lftueVMXA7dhwSeOxcAhDwbHCsmcfkNS7CQ3iJk
-         MnS+9Y75Q4me2Covx1HuByLwGJJv7Wfq2OFcvfxPRcZN4FJoi72bAbdezS4WDcF/Go
-         nSishVS5kqqvfGsnosBc0S67CfYxnF/aAeM6+VZc=
+        b=bVhMKt5KkzEdghlUCmqECBtpHczeLoBWD/OTGfFeYvxLD7KZEZM0oHCUX+O4vcQhg
+         w+1U8OmVhrYLYuc/sDRPqb0IYIKO+OCqNlTlBh+NRSQgSq3eixmS6CAOMxQaDmsYdc
+         YKVfvM4soKHG+UO2Tx4rX56/BBZkzpYpyBa/XMUo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Mike Snitzer <snitzer@redhat.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.9 220/240] dm ioctl: fix out of bounds array access when no devices
+        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.14 320/323] sit: proper dev_{hold|put} in ndo_[un]init methods
 Date:   Thu, 20 May 2021 11:23:32 +0200
-Message-Id: <20210520092116.089755523@linuxfoundation.org>
+Message-Id: <20210520092131.211549239@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
-References: <20210520092108.587553970@linuxfoundation.org>
+In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
+References: <20210520092120.115153432@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,39 +40,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mikulas Patocka <mpatocka@redhat.com>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 4edbe1d7bcffcd6269f3b5eb63f710393ff2ec7a upstream.
+commit 6289a98f0817a4a457750d6345e754838eae9439 upstream.
 
-If there are not any dm devices, we need to zero the "dev" argument in
-the first structure dm_name_list. However, this can cause out of
-bounds write, because the "needed" variable is zero and len may be
-less than eight.
+After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
+a warning [1]
 
-Fix this bug by reporting DM_BUFFER_FULL_FLAG if the result buffer is
-too small to hold the "nl->dev" value.
+Issue here is that:
 
-Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: stable@vger.kernel.org
-Signed-off-by: Mike Snitzer <snitzer@redhat.com>
-[iwamatsu: Adjust context]
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+- all dev_put() should be paired with a corresponding prior dev_hold().
+
+- A driver doing a dev_put() in its ndo_uninit() MUST also
+  do a dev_hold() in its ndo_init(), only when ndo_init()
+  is returning 0.
+
+Otherwise, register_netdevice() would call ndo_uninit()
+in its error path and release a refcount too soon.
+
+Fixes: 919067cc845f ("net: add CONFIG_PCPU_DEV_REFCNT")
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/md/dm-ioctl.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/ipv6/sit.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/drivers/md/dm-ioctl.c
-+++ b/drivers/md/dm-ioctl.c
-@@ -524,7 +524,7 @@ static int list_devices(struct dm_ioctl
- 	 * Grab our output buffer.
- 	 */
- 	nl = get_result_buffer(param, param_size, &len);
--	if (len < needed) {
-+	if (len < needed || len < sizeof(nl->dev)) {
- 		param->flags |= DM_BUFFER_FULL_FLAG;
- 		goto out;
+--- a/net/ipv6/sit.c
++++ b/net/ipv6/sit.c
+@@ -209,8 +209,6 @@ static int ipip6_tunnel_create(struct ne
+ 
+ 	ipip6_tunnel_clone_6rd(dev, sitn);
+ 
+-	dev_hold(dev);
+-
+ 	ipip6_tunnel_link(sitn, t);
+ 	return 0;
+ 
+@@ -1393,7 +1391,7 @@ static int ipip6_tunnel_init(struct net_
+ 		dev->tstats = NULL;
+ 		return err;
  	}
+-
++	dev_hold(dev);
+ 	return 0;
+ }
+ 
 
 
