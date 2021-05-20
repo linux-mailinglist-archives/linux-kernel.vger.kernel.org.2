@@ -2,89 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BAD838A043
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:53:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C86B38A048
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:54:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhETIyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhETIyp (ORCPT
+        id S231371AbhETI4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:56:09 -0400
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:1114 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230442AbhETI4H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:54:45 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6775DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:53:24 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621500802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=skGknAwoPCnWVG2vIbapxefIECkgS4asZL7CQlC2/vA=;
-        b=GOJQJWMPrPgdhhjj5r3+3aNjLrqNK1mp48wbLJNIG+sytIkPv0AzRgtQNxCnoN1awN8u38
-        cPiWH/ifiyt7TrXOCrkLS28SxETZsYB/mzV+T0QORXNIv3D3JAPFa1idddK0dRz3u6aE2Q
-        dJOC8xp/2m0b72rCCVS0p1nlp2vWhtAzqqetAFZH4eNwjmthVaWGWFuKvqiIlQeDbwLiZz
-        +qerfKMJRcoUrdxYNxsf2Vx9tjZoe/nf7+ZM5yP/ajSEA5LF/N2fKH8ULNq1kf875Camrz
-        GOREoFrg27FVZGCdKEAlQaI349hnJE+2YDa7qoZDWMFt0WJBUNQCD/SXSFhk0Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621500802;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=skGknAwoPCnWVG2vIbapxefIECkgS4asZL7CQlC2/vA=;
-        b=sSyLi6KeW5sAPJ6RpB9HYH1YmmIqj2RmYFSInSJqJhXlNivEXpNi2Qd5ULFDPsR9NjZSRS
-        DO+Rho+qvqq+KJCA==
-To:     "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 6/6] x86/syscall: use int everywhere for system call numbers
-In-Reply-To: <20210518191303.4135296-7-hpa@zytor.com>
-References: <20210518191303.4135296-1-hpa@zytor.com> <20210518191303.4135296-7-hpa@zytor.com>
-Date:   Thu, 20 May 2021 10:53:21 +0200
-Message-ID: <87zgwpbxby.ffs@nanos.tec.linutronix.de>
+        Thu, 20 May 2021 04:56:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621500886; x=1653036886;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=00YqfMRgZNskF3qk2sbk+H/Ar30K7s92E161jGs1MNw=;
+  b=vmjCw5glsisImGnHpQ27q8aguEdTmM6rXjH1xdX+67UJ1ru6w0KYVcET
+   HY0PpWdS3BksqE6PoZpeaf8kvEjTN/qf3ASFTANZ08kKQQlcMem1a9x41
+   Tvy6q5rzo/tZOlM+ZBc/fJvO32IbgePs+/U5KwocYFwo38lPayWEMGJ1S
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
+   d="scan'208";a="110463401"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1d-98acfc19.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP; 20 May 2021 08:54:46 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-98acfc19.us-east-1.amazon.com (Postfix) with ESMTPS id 355C7A071F;
+        Thu, 20 May 2021 08:54:45 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 08:54:44 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.200) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Thu, 20 May 2021 08:54:39 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 09/11] bpf: Support socket migration by eBPF.
+Date:   Thu, 20 May 2021 17:54:35 +0900
+Message-ID: <20210520085435.48836-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210520062723.nora2kagi46b47lr@kafai-mbp.dhcp.thefacebook.com>
+References: <20210520062723.nora2kagi46b47lr@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Originating-IP: [10.43.162.200]
+X-ClientProxiedBy: EX13D28UWB002.ant.amazon.com (10.43.161.140) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18 2021 at 12:13, H. Peter Anvin wrote:
-> +static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
-> +{
-> +	/*
-> +	 * Convert negative numbers to very high and thus out of range
-> +	 * numbers for comparisons. Use unsigned long to slightly
-> +	 * improve the array_index_nospec() generated code.
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Wed, 19 May 2021 23:27:23 -0700
+> On Mon, May 17, 2021 at 09:22:56AM +0900, Kuniyuki Iwashima wrote:
+> > This patch introduces a new bpf_attach_type for BPF_PROG_TYPE_SK_REUSEPORT
+> > to check if the attached eBPF program is capable of migrating sockets. When
+> > the eBPF program is attached, we run it for socket migration if the
+> > expected_attach_type is BPF_SK_REUSEPORT_SELECT_OR_MIGRATE or
+> > net.ipv4.tcp_migrate_req is enabled.
+> > 
+> > Ccurrently, the expected_attach_type is not enforced for the
+> nit. 'Currenctly,'
 
-How is that actually improving the generated code?
-
-unsigned long:
-
- 104:	48 81 fa bf 01 00 00 	cmp    $0x1bf,%rdx
- 10b:	48 19 c0             	sbb    %rax,%rax
- 10e:	48 21 c2             	and    %rax,%rdx
- 111:	48 89 df             	mov    %rbx,%rdi
- 114:	48 8b 04 d5 00 00 00 	mov    0x0(,%rdx,8),%rax
- 11b:	00 
- 11c:	e8 00 00 00 00       	callq  121 <do_syscall_64+0x41>
-
-unsigned int:
-
-  f1:	48 81 fa bf 01 00 00 	cmp    $0x1bf,%rdx
-  f8:	48 19 d2             	sbb    %rdx,%rdx
-  fb:	21 d0                	and    %edx,%eax
-  fd:	48 89 df             	mov    %rbx,%rdi
- 100:	48 8b 04 c5 00 00 00 	mov    0x0(,%rax,8),%rax
- 107:	00 
- 108:	e8 00 00 00 00       	callq  10d <do_syscall_64+0x3d>
-
-Text size increases with that unsigned long cast.
-
-I must be missing something.
-
-Thanks,
-
-        tglx
+Thank you, I'll fix it to 'Currently' :)
