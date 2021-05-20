@@ -2,138 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D559B389E72
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A788C389E7A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhETG7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229547AbhETG7D (ORCPT
+        id S230504AbhETG7J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:59:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25390 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230486AbhETG7I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:59:03 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5CA5C061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:57:41 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id o127so8477832wmo.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:57:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=h0fXYIN2E5J54+ZmwB3JHOzFpG3abb+viSfy+a5rRgw=;
-        b=kYsHClz4ZtHy58wi/PZc8Bs4XDjVdchu3qYDz74eF+jeJ1IcvezLu7xBX3SUAex/Fr
-         WRUwd9s2agikUezDuM7gyKY2QxMlrLnZTlsDcy1M4boya7xjTOK59F46hBC+jvIwWu0d
-         DFOLKIjh5BIRKyLLbT3RC4x+k/ZXWrPBdTtqfwz1EhkqD0TTzux7YHxOCCWkc6zKwQHo
-         gc8B8Yq5nFGgMo+tad28yqUrL4ZTghKDfSsJrZxgEALJ6dXRavaUnUTCWklWorJuFaga
-         ocs1ZtX9yll7uVmZyp6noJWyThvG6AQmR8evtXzzvXuPzyxSjT6YhKwQsjXcrv0cFjY9
-         /FjA==
+        Thu, 20 May 2021 02:59:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621493866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Yk/fRgYi2L7XzzhzUngfnYDpP+H9os1AbdPkEcmZX34=;
+        b=H5zd7enuH6+9lglRNoSqXK2Vyk10R9MNt2RJb+1R2JXdPtYl1KDKYSfhy0RTq2lnSbNa3+
+        ye+3GDlbPBCKrfXVvNBoUBGtiZ9lpVOPSij79fy2GA37occtwE1xXJ/a+b1TrtxeVKXEwJ
+        L4AAjSoCoKZSZjtdrgQbvIxTqpglScQ=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-304-7ObaReEmOfmme6JCuN4Utw-1; Thu, 20 May 2021 02:57:45 -0400
+X-MC-Unique: 7ObaReEmOfmme6JCuN4Utw-1
+Received: by mail-ej1-f71.google.com with SMTP id sd18-20020a170906ce32b02903cedf584542so4583619ejb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:57:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=h0fXYIN2E5J54+ZmwB3JHOzFpG3abb+viSfy+a5rRgw=;
-        b=Mq7UgZo1UYqy/gHWjO4m8uV6fWKthz+HZQ/hVEPZMh5e/Qdtm3xmyRRzqDfXu/WVb2
-         jlXIpen9jO/BIF6iJxJC5jiI0yaSsXE0zypvzZUh9hjFa6y+84rmz6GRhHAP239VuP38
-         Fy0DvH5BuGPq5dF7oidMYj/qA2GKBsE0DOe2/tF4o0Mld+bCiOZt6V9uTeNMBDz04dCG
-         oGt9EL2iGqqVPGRCOkJt2re4a2rR1tPLKVxVHYm+QztpBcMyvul3CRv7b5i8jI83cXMj
-         x+GpfJHZFDdDPT9in70e/VJVIVnB0obvyu+rvB21h+uj0+MSzexWShpXqUq6bcQA/pI8
-         nEaw==
-X-Gm-Message-State: AOAM530n0CpGsyFS3QPhpqKW3fLm11wFp0PhDffDnZ+eAENtfWJ1PaUI
-        dlkk6OopTOYHsmSXQ/nIRL2/ZA==
-X-Google-Smtp-Source: ABdhPJwfHhX3Uc2t1nICQjEObP1SNmCR/vpanAyfFKJX+C5RLOD3pJjV/DqCSibv78lHl+kI5oJEjA==
-X-Received: by 2002:a1c:9dc3:: with SMTP id g186mr2053326wme.47.1621493860351;
-        Wed, 19 May 2021 23:57:40 -0700 (PDT)
-Received: from localhost ([2a01:cb19:826e:8e00:a45f:260c:febd:73ce])
-        by smtp.gmail.com with ESMTPSA id w12sm1928423wrt.16.2021.05.19.23.57.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 23:57:39 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     kernel test robot <lkp@intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     kbuild-all@lists.01.org, Fabien Parent <fparent@baylibre.com>,
-        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] Input: mtk-pmic-keys - add support for MT6358
-In-Reply-To: <202105200248.VC2Rdk6B-lkp@intel.com>
-References: <20210512152648.39961-4-mkorpershoek@baylibre.com>
- <202105200248.VC2Rdk6B-lkp@intel.com>
-Date:   Thu, 20 May 2021 08:57:38 +0200
-Message-ID: <87sg2h28pp.fsf@baylibre.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Yk/fRgYi2L7XzzhzUngfnYDpP+H9os1AbdPkEcmZX34=;
+        b=JuLmUAUVl3E9atdLOGwf63A3eDEkCPiZbn0O+fbwGPdMu5b63AAWxJTd3tWhRvgaFC
+         N/Ed0zEIxCmw+C1XFuCdplzQ0Fgy4rsplTCG3glAtc5crf8Sr1lFJB9ZZFR24mlODZfr
+         tZhCLoOLImv7tazPml1G89B+foXZjpo091tSKfJAiS8PoczaDLB+AP5eduodg3cnGsIb
+         KgRSL6IadxAustQwi8BUfrSfiUbmtr+EOgDOm9tANE9JIXKJb0tMgLwBOXPfLPAjiSus
+         9+AI+55B/nUlhH38/9JqBiO5YgpvfeOs7PTCJebMh56gJMg/ZIC+kLZkbNcJ6sph0Lbg
+         4RPg==
+X-Gm-Message-State: AOAM530GRpFba9uA59aN/2FUJImmVG6SKF8mwnYK5n5owiTGND7ZAe+2
+        vPYtxVLxNeKfKpjwA1IKjzU9FVRtPvmqrkmCcSTzRQzE0inzUYJ5/WGgWZzAIfnfsG67OrheBSK
+        RHZvT4GOl8AU7i7ap9+tidnVf
+X-Received: by 2002:aa7:ca4d:: with SMTP id j13mr3351883edt.158.1621493863913;
+        Wed, 19 May 2021 23:57:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzvaPAHqZ90kTD56q0xPxdxX4VIpFhP49jTuNKOT7yC+Ps7zWZaaAeelD3WfdxPrLMM334dxg==
+X-Received: by 2002:aa7:ca4d:: with SMTP id j13mr3351872edt.158.1621493863788;
+        Wed, 19 May 2021 23:57:43 -0700 (PDT)
+Received: from x1.bristot.me (host-87-19-51-73.retail.telecomitalia.it. [87.19.51.73])
+        by smtp.gmail.com with ESMTPSA id t23sm977083edq.74.2021.05.19.23.57.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 23:57:43 -0700 (PDT)
+Subject: Re: [RFC PATCH 09/16] rv/monitors: wip instrumentation and
+ Makefile/Kconfig entries
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>
+Cc:     Tommaso Cucinotta <tommaso.cucinotta@santannapisa.it>,
+        Kate Carcia <kcarcia@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Gabriele Paoloni <gabriele.paoloni@intel.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Clark Williams <williams@redhat.com>, linux-doc@vger.kernel.org
+References: <cover.1621414942.git.bristot@redhat.com>
+ <8ffcb3a4c8b55ef63cc02b487aa1c8ad5bf3f800.1621414942.git.bristot@redhat.com>
+ <ae9c9d42-2bee-3f97-1d53-43b876b1ec4f@infradead.org>
+From:   Daniel Bristot de Oliveira <bristot@redhat.com>
+Message-ID: <90da7215-200e-3665-f892-6947e95fc6b1@redhat.com>
+Date:   Thu, 20 May 2021 08:57:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <ae9c9d42-2bee-3f97-1d53-43b876b1ec4f@infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 5/19/21 8:14 PM, Randy Dunlap wrote:
+> On 5/19/21 4:36 AM, Daniel Bristot de Oliveira wrote:
+>> diff --git a/kernel/trace/rv/Kconfig b/kernel/trace/rv/Kconfig
+>> index 74eb2f216255..4a1088c5ba68 100644
+>> --- a/kernel/trace/rv/Kconfig
+>> +++ b/kernel/trace/rv/Kconfig
+>> @@ -14,6 +14,13 @@ menuconfig RV
+>>  
+>>  if RV
+>>  
+>> +config RV_MON_WIP
+>> +	depends on PREEMPTIRQ_TRACEPOINTS
+>> +	tristate "WIP monitor"
+>> +	help
+>> +	  Enable WIP sample monitor, this is a sample monitor that
+> 
+> 	                    monitor. This
+> 
+>> +	  illustrates the usage of per-cpu monitors.
+> 
+> What does WIP mean here? I didn't see that in patch 08 (though
+> I could have missed it -- I did look).
+> 
+> 
 
-kernel test robot <lkp@intel.com> writes:
+WIP means "Wakeup In Preemptive." I will add the long name to the first
+occurrence in patch 08, and to the Kconfig.
 
-> Hi Mattijs,
->
-> Thank you for the patch! Yet something to improve:
->
-> [auto build test ERROR on input/next]
-> [also build test ERROR on v5.13-rc2 next-20210519]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
->
-> url:    https://github.com/0day-ci/linux/commits/Mattijs-Korpershoek/input-MT6358-PMIC-button-support/20210513-001558
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git next
-> config: s390-randconfig-r014-20210519 (attached as .config)
-> compiler: s390-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://github.com/0day-ci/linux/commit/74aae2763d0c259046aa7079a46ba0dfe1995e37
->         git remote add linux-review https://github.com/0day-ci/linux
->         git fetch --no-tags linux-review Mattijs-Korpershoek/input-MT6358-PMIC-button-support/20210513-001558
->         git checkout 74aae2763d0c259046aa7079a46ba0dfe1995e37
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=s390 
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All errors (new ones prefixed by >>):
->
->>> drivers/input/keyboard/mtk-pmic-keys.c:80:22: error: 'MT6358_TOPSTATUS' undeclared here (not in a function); did you mean 'MT6397_OCSTATUS0'?
->       80 |   MTK_PMIC_KEYS_REGS(MT6358_TOPSTATUS,
->          |                      ^~~~~~~~~~~~~~~~
->    drivers/input/keyboard/mtk-pmic-keys.c:47:14: note: in definition of macro 'MTK_PMIC_KEYS_REGS'
->       47 |  .deb_reg  = _deb_reg,  \
->          |              ^~~~~~~~
->>> drivers/input/keyboard/mtk-pmic-keys.c:85:18: error: 'MT6358_TOP_RST_MISC' undeclared here (not in a function); did you mean 'MT6397_TOP_RST_MISC'?
->       85 |  .pmic_rst_reg = MT6358_TOP_RST_MISC,
->          |                  ^~~~~~~~~~~~~~~~~~~
->          |                  MT6397_TOP_RST_MISC
-This build failure is expected.
-As written in the cover letter, this depends on [1]
+Thanks!
+-- Daniel
 
-[1] has been applied to the mfd tree but it's not part of v5.13-rc2
-
-[1] https://lore.kernel.org/r/20210506094116.638527-1-mkorpershoek@baylibre.com
-
->
->
-> vim +80 drivers/input/keyboard/mtk-pmic-keys.c
->
->     77	
->     78	static const struct mtk_pmic_regs mt6358_regs = {
->     79		.keys_regs[MTK_PMIC_PWRKEY_INDEX] =
->   > 80			MTK_PMIC_KEYS_REGS(MT6358_TOPSTATUS,
->     81			0x2, MT6358_PSC_TOP_INT_CON0, 0x5),
->     82		.keys_regs[MTK_PMIC_HOMEKEY_INDEX] =
->     83			MTK_PMIC_KEYS_REGS(MT6358_TOPSTATUS,
->     84			0x8, MT6358_PSC_TOP_INT_CON0, 0xa),
->   > 85		.pmic_rst_reg = MT6358_TOP_RST_MISC,
->     86	};
->     87	
->
-> ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
