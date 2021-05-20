@@ -2,43 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47ACC38A975
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC30438AB90
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhETLCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:02:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44702 "EHLO mail.kernel.org"
+        id S239993AbhETLZ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:25:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237855AbhETKnt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:43:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A74D61C91;
-        Thu, 20 May 2021 09:56:57 +0000 (UTC)
+        id S239385AbhETLGC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:06:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D379761927;
+        Thu, 20 May 2021 10:05:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504618;
-        bh=HoXhbdPkempNh0y+GrVdzvcto/dJ8wWErjeD512HHMg=;
+        s=korg; t=1621505128;
+        bh=MW3yIXAfcBoXXRXxaYwi0JgwfVDxofXfnrb2vjB8MxQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gbkqpMnHYM0xs1GyPUDrpz/RG0V3Piiv0eblO2eEfaR1V/2/hQcGnUp4+0sIhCljF
-         ltgZpE/YKn6VjR38KIR5a8yFTFueCkCqneVe46EQwO/Iq9OSNPz+xfgcAXkxA2zOCb
-         tKMiCaREc90IJOKathzTt3sRFxBU/Z7V1pR+0cbw=
+        b=Bopv6TAlI7TaaEEDM8TfSs46DwVrisGnrj2mI9O4kOKHETUbvC7HxktXqfuMdpgYD
+         sdySeyqCyRVctBZ2zC1NuHORC+bqrGDeqr+bOudoZSCr8choYCca04igpajjZJO+5x
+         7loH8aKcGXBpia2GJvdU64BKEkRETZPoGOwb4j/g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 318/323] lib: stackdepot: turn depot_lock spinlock to raw_spinlock
+        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 4.9 218/240] MIPS: Avoid handcoded DIVU in `__div64_32 altogether
 Date:   Thu, 20 May 2021 11:23:30 +0200
-Message-Id: <20210520092131.145691824@linuxfoundation.org>
+Message-Id: <20210520092116.016517909@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+References: <20210520092108.587553970@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,80 +39,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-[ Upstream commit 78564b9434878d686c5f88c4488b20cccbcc42bc ]
+commit 25ab14cbe9d1b66fda44c71a2db7582a31b6f5cd upstream.
 
-In RT system, the spin_lock will be replaced by sleepable rt_mutex lock,
-in __call_rcu(), disable interrupts before calling
-kasan_record_aux_stack(), will trigger this calltrace:
+Remove the inline asm with a DIVU instruction from `__div64_32' and use
+plain C code for the intended DIVMOD calculation instead.  GCC is smart
+enough to know that both the quotient and the remainder are calculated
+with single DIVU, so with ISAs up to R5 the same instruction is actually
+produced with overall similar code.
 
-  BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:951
-  in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 19, name: pgdatinit0
-  Call Trace:
-    ___might_sleep.cold+0x1b2/0x1f1
-    rt_spin_lock+0x3b/0xb0
-    stack_depot_save+0x1b9/0x440
-    kasan_save_stack+0x32/0x40
-    kasan_record_aux_stack+0xa5/0xb0
-    __call_rcu+0x117/0x880
-    __exit_signal+0xafb/0x1180
-    release_task+0x1d6/0x480
-    exit_notify+0x303/0x750
-    do_exit+0x678/0xcf0
-    kthread+0x364/0x4f0
-    ret_from_fork+0x22/0x30
+For R6 compiled code will work, but separate DIVU and MODU instructions
+will be produced, which are also interlocked, so scalar implementations
+will likely not perform as well as older ISAs with their asynchronous MD
+unit.  Likely still faster then the generic algorithm though.
 
-Replace spinlock with raw_spinlock.
+This removes a compilation error for R6 however where the original DIVU
+instruction is not supported anymore and the MDU accumulator registers
+have been removed and consequently GCC complains as to a constraint it
+cannot find a register for:
 
-Link: https://lkml.kernel.org/r/20210329084009.27013-1-qiang.zhang@windriver.com
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Reported-by: Andrew Halaney <ahalaney@redhat.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Vijayanand Jitta <vjitta@codeaurora.org>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: Yogesh Lal <ylal@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+In file included from ./include/linux/math.h:5,
+                 from ./include/linux/kernel.h:13,
+                 from mm/page-writeback.c:15:
+./include/linux/math64.h: In function 'div_u64_rem':
+./arch/mips/include/asm/div64.h:76:17: error: inconsistent operand constraints in an 'asm'
+   76 |                 __asm__("divu   $0, %z1, %z2"                           \
+      |                 ^~~~~~~
+./include/asm-generic/div64.h:245:25: note: in expansion of macro '__div64_32'
+  245 |                 __rem = __div64_32(&(n), __base);       \
+      |                         ^~~~~~~~~~
+./include/linux/math64.h:91:22: note: in expansion of macro 'do_div'
+   91 |         *remainder = do_div(dividend, divisor);
+      |                      ^~~~~~
+
+This has passed correctness verification with test_div64 and reduced the
+module's average execution time down to 1.0404s from 1.0445s with R3400
+@40MHz.  The module's MIPS I machine code has also shrunk by 12 bytes or
+3 instructions.
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- lib/stackdepot.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/div64.h |    8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 759ff419fe61..c519aa07d2e9 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -78,7 +78,7 @@ static void *stack_slabs[STACK_ALLOC_MAX_SLABS];
- static int depot_index;
- static int next_slab_inited;
- static size_t depot_offset;
--static DEFINE_SPINLOCK(depot_lock);
-+static DEFINE_RAW_SPINLOCK(depot_lock);
+--- a/arch/mips/include/asm/div64.h
++++ b/arch/mips/include/asm/div64.h
+@@ -58,7 +58,6 @@
  
- static bool init_stack_slab(void **prealloc)
- {
-@@ -253,7 +253,7 @@ depot_stack_handle_t depot_save_stack(struct stack_trace *trace,
- 			prealloc = page_address(page);
- 	}
- 
--	spin_lock_irqsave(&depot_lock, flags);
-+	raw_spin_lock_irqsave(&depot_lock, flags);
- 
- 	found = find_stack(*bucket, trace->entries, trace->nr_entries, hash);
- 	if (!found) {
-@@ -277,7 +277,7 @@ depot_stack_handle_t depot_save_stack(struct stack_trace *trace,
- 		WARN_ON(!init_stack_slab(&prealloc));
- 	}
- 
--	spin_unlock_irqrestore(&depot_lock, flags);
-+	raw_spin_unlock_irqrestore(&depot_lock, flags);
- exit:
- 	if (prealloc) {
- 		/* Nobody used this memory, ok to free it. */
--- 
-2.30.2
-
+ #define __div64_32(n, base) ({						\
+ 	unsigned long __upper, __low, __high, __radix;			\
+-	unsigned long long __modquot;					\
+ 	unsigned long long __quot;					\
+ 	unsigned long long __div;					\
+ 	unsigned long __mod;						\
+@@ -73,11 +72,8 @@
+ 		__upper = __high;					\
+ 		__high = 0;						\
+ 	} else {							\
+-		__asm__("divu	$0, %z1, %z2"				\
+-		: "=x" (__modquot)					\
+-		: "Jr" (__high), "Jr" (__radix));			\
+-		__upper = __modquot >> 32;				\
+-		__high = __modquot;					\
++		__upper = __high % __radix;				\
++		__high /= __radix;					\
+ 	}								\
+ 									\
+ 	__mod = do_div64_32(__low, __upper, __low, __radix);		\
 
 
