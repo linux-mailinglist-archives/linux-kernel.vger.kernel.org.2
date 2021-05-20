@@ -2,32 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF22238A7DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A099838A847
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237809AbhETKni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:43:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55848 "EHLO mail.kernel.org"
+        id S238059AbhETKsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:48:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236509AbhETK2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:28:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E2DF61401;
-        Thu, 20 May 2021 09:51:01 +0000 (UTC)
+        id S237083AbhETKcc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:32:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D002F614A5;
+        Thu, 20 May 2021 09:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504261;
-        bh=T49rh45U6lPypUCiE91O/QscMUsu3C9juocM8XfqQ0M=;
+        s=korg; t=1621504356;
+        bh=WrsVI5mFToELXjgqq2dNUjbXEKgp08fYpZquCyhtomw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SRV4jplt1XAesU4bPFShF3v3US0Zx3jiC2fcM6NRtgKfsAN3n/jlZrVId4ul2JaS4
-         TN+7TYKJNjLDoa53kTzUJR3xMsHI+MTb6k/zvKlADwnMblkqpWliLlTlh/ovCK6Hun
-         TpOLconeUeEJiVr7RZFWo77LUeeL4+Z4M1H2MC2M=
+        b=Y1xkw0J2oT3wbj3si29TUKrEzBYIHsvSE1wRlztBaZdwUwzUupsrlic0BvSFtIs2x
+         yWvWUwrwZl6C1HXwsXpAZt6cpUI5lBjjfQ/gHreL+3RNjzH3+ftXOIkS68xDuosk9H
+         43xB31x49NbzsMOgsMxqfNsd3TBogodNbJwYexy0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org,
+        "William A. Kennington III" <wak@google.com>,
+        Mark Brown <broonie@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 164/323] staging: greybus: uart: fix unprivileged TIOCCSERIAL
-Date:   Thu, 20 May 2021 11:20:56 +0200
-Message-Id: <20210520092125.724807910@linuxfoundation.org>
+Subject: [PATCH 4.14 165/323] spi: Fix use-after-free with devm_spi_alloc_*
+Date:   Thu, 20 May 2021 11:20:57 +0200
+Message-Id: <20210520092125.760183751@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,45 +41,94 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: William A. Kennington III <wak@google.com>
 
-[ Upstream commit 60c6b305c11b5fd167ce5e2ce42f3a9098c388f0 ]
+[ Upstream commit 794aaf01444d4e765e2b067cba01cc69c1c68ed9 ]
 
-TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
-serial devices is only useful for setting the close_delay and
-closing_wait parameters.
+We can't rely on the contents of the devres list during
+spi_unregister_controller(), as the list is already torn down at the
+time we perform devres_find() for devm_spi_release_controller. This
+causes devices registered with devm_spi_alloc_{master,slave}() to be
+mistakenly identified as legacy, non-devm managed devices and have their
+reference counters decremented below 0.
 
-A non-privileged user has only ever been able to set the since long
-deprecated ASYNC_SPD flags and trying to change any other *supported*
-feature should result in -EPERM being returned. Setting the current
-values for any supported features should return success.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 660 at lib/refcount.c:28 refcount_warn_saturate+0x108/0x174
+[<b0396f04>] (refcount_warn_saturate) from [<b03c56a4>] (kobject_put+0x90/0x98)
+[<b03c5614>] (kobject_put) from [<b0447b4c>] (put_device+0x20/0x24)
+ r4:b6700140
+[<b0447b2c>] (put_device) from [<b07515e8>] (devm_spi_release_controller+0x3c/0x40)
+[<b07515ac>] (devm_spi_release_controller) from [<b045343c>] (release_nodes+0x84/0xc4)
+ r5:b6700180 r4:b6700100
+[<b04533b8>] (release_nodes) from [<b0454160>] (devres_release_all+0x5c/0x60)
+ r8:b1638c54 r7:b117ad94 r6:b1638c10 r5:b117ad94 r4:b163dc10
+[<b0454104>] (devres_release_all) from [<b044e41c>] (__device_release_driver+0x144/0x1ec)
+ r5:b117ad94 r4:b163dc10
+[<b044e2d8>] (__device_release_driver) from [<b044f70c>] (device_driver_detach+0x84/0xa0)
+ r9:00000000 r8:00000000 r7:b117ad94 r6:b163dc54 r5:b1638c10 r4:b163dc10
+[<b044f688>] (device_driver_detach) from [<b044d274>] (unbind_store+0xe4/0xf8)
 
-Fix the greybus implementation which instead indicated that the
-TIOCSSERIAL ioctl was not even implemented when a non-privileged user
-set the current values.
+Instead, determine the devm allocation state as a flag on the
+controller which is guaranteed to be stable during cleanup.
 
-Fixes: e68453ed28c5 ("greybus: uart-gb: now builds, more framework added")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210407102334.32361-7-johan@kernel.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 5e844cc37a5c ("spi: Introduce device-managed SPI controller allocation")
+Signed-off-by: William A. Kennington III <wak@google.com>
+Link: https://lore.kernel.org/r/20210407095527.2771582-1-wak@google.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/staging/greybus/uart.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/spi/spi.c       | 9 ++-------
+ include/linux/spi/spi.h | 3 +++
+ 2 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-index 2b297df88bdd..b0b7d4a1cee4 100644
---- a/drivers/staging/greybus/uart.c
-+++ b/drivers/staging/greybus/uart.c
-@@ -657,8 +657,6 @@ static int set_serial_info(struct gb_tty *gb_tty,
- 		if ((close_delay != gb_tty->port.close_delay) ||
- 		    (closing_wait != gb_tty->port.closing_wait))
- 			retval = -EPERM;
--		else
--			retval = -EOPNOTSUPP;
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index ca9970a63fdf..da71a53b0df7 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -2076,6 +2076,7 @@ struct spi_controller *__devm_spi_alloc_controller(struct device *dev,
+ 
+ 	ctlr = __spi_alloc_controller(dev, size, slave);
+ 	if (ctlr) {
++		ctlr->devm_allocated = true;
+ 		*ptr = ctlr;
+ 		devres_add(dev, ptr);
  	} else {
- 		gb_tty->port.close_delay = close_delay;
- 		gb_tty->port.closing_wait = closing_wait;
+@@ -2304,11 +2305,6 @@ int devm_spi_register_controller(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_spi_register_controller);
+ 
+-static int devm_spi_match_controller(struct device *dev, void *res, void *ctlr)
+-{
+-	return *(struct spi_controller **)res == ctlr;
+-}
+-
+ static int __unregister(struct device *dev, void *null)
+ {
+ 	spi_unregister_device(to_spi_device(dev));
+@@ -2353,8 +2349,7 @@ void spi_unregister_controller(struct spi_controller *ctlr)
+ 	/* Release the last reference on the controller if its driver
+ 	 * has not yet been converted to devm_spi_alloc_master/slave().
+ 	 */
+-	if (!devres_find(ctlr->dev.parent, devm_spi_release_controller,
+-			 devm_spi_match_controller, ctlr))
++	if (!ctlr->devm_allocated)
+ 		put_device(&ctlr->dev);
+ 
+ 	/* free bus id */
+diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+index 715bd276a041..a8f6606dd498 100644
+--- a/include/linux/spi/spi.h
++++ b/include/linux/spi/spi.h
+@@ -452,6 +452,9 @@ struct spi_controller {
+ 
+ #define SPI_MASTER_GPIO_SS		BIT(5)	/* GPIO CS must select slave */
+ 
++	/* flag indicating this is a non-devres managed controller */
++	bool			devm_allocated;
++
+ 	/* flag indicating this is an SPI slave controller */
+ 	bool			slave;
+ 
 -- 
 2.30.2
 
