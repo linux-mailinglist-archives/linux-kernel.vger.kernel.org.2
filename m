@@ -2,129 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16833389D17
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:25:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 741FC389D1D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:29:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230379AbhETF0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:26:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S230319AbhETFa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230284AbhETF0u (ORCPT
+        with ESMTP id S229526AbhETFa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:26:50 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65F0C061760
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:25:28 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id i7so5426389ejc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:25:28 -0700 (PDT)
+        Thu, 20 May 2021 01:30:58 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82468C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:29:36 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id b13-20020a17090a8c8db029015cd97baea9so4706678pjo.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uWBM5AU+ZMmhfuFgx+3Y6a4UcjGbnQI1cx3aK/uVkZc=;
-        b=GL+WlKsfyUHY8seOawsA4s5AlWavihDlxxMiz4lqDQkGQ3TCLutMAu4lMNn1Jxl1jd
-         y6HZQBYQq4ioIg5e1Lo1gqt31jawj5s1SHuxpLit2ITf+CLm+kWietUyVpKk9w4fmD2p
-         H1mq2ZWQ+t44wxCCc60m/5A3JNEqMh/2fd2x9LhB3LxkVed1yMz8Mpz7F/P0y2G397sv
-         VSQF7iSQ5NJLrAtBZr6BqKr6Rz+PbkPQ/INLOdyfBiVRt3/wYV7gh1O0NplzDAANxyj3
-         lbLjDfxqrMTZkAS3Dv9Xk96J7MuslFrqt1MYHRbQds+nk19xlmKW/1bKi0HXgU5HEy19
-         xy7Q==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=03CafkfXLEnTUzsbYB0mlqsT3bt8omYZAMedXzm00hs=;
+        b=fWWCb/vvC9x/i/5U+eqRoBgdk4TMvsd99mMS+l1F2K0d4Ee+XfPdfqaB3NMLpU1wCW
+         ECPt6enxTJ6f0V3wbsEpGKI5T8jJVy00NX5o9ILbDvicm0wCnUpY119og7ygNKuEQYky
+         DBOtJIzQxA9UQbvXXzScutGxRY4j6ndVlAcxs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uWBM5AU+ZMmhfuFgx+3Y6a4UcjGbnQI1cx3aK/uVkZc=;
-        b=qNWl+K0A0wS1iIYY6FUdgN4ESxT//UECYU60ZMHMbdHRvdohiNh9LXwZXbDXtfj/tU
-         bZA7cLBRpezkSzeAkbLgEQGL/HkLZuvHOJnIcSil2wDBMff+Z6YQCIXp1Ja5OVJZ58Sn
-         U53u8P5QGL+q8Td/PpCkE0SYXRHq2nsFwaxRHX7xL0A4vnKKA/nUbVQLZ3c/Vd16zrhz
-         0nxcqEUml8qynNiShBX8VQxhaQJjkhvpXAXwK30Pl6W49+oBJkoRmvLW0Z4MRtpDjz9T
-         gMXg2auHIOOsznxRedwaRYMgZXGpyy41aQ/Z7jrITNaltPYiey4DQHZ9TFz6bvqy7td5
-         nhSg==
-X-Gm-Message-State: AOAM533k0HkyjqqzkBJi91cwHcyVc+Dil4CY5kjVHkhsfiD7ZbqWOXa4
-        8xSRkcV/jDXV4uOWB6U6kkjl6G/sSCgyuf7K4rcQ
-X-Google-Smtp-Source: ABdhPJyvwWWA7f5Fzvsx4TdTu7nIvH6pnRUuPJ62OuR0bCAchfYi7vwKGliv4oVBF/L7UoIrnWNYnk0fkzFFBOuZgj8=
-X-Received: by 2002:a17:906:edaf:: with SMTP id sa15mr2877318ejb.174.1621488327265;
- Wed, 19 May 2021 22:25:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=03CafkfXLEnTUzsbYB0mlqsT3bt8omYZAMedXzm00hs=;
+        b=r85gr2hBFxtN27rrKuajsdsezjbht2LlDrPVxtj+j+4nwBllJEHdhGUp4I6JxSheVl
+         9YnCIILlYsN9S3Ab1WQ4ql0xawo/VWyqpv7juRIxXNxmk0kgsQr02jW8i45l6x36AZCW
+         5hXngurCtuoxSvcZFP1WZBcWftU9/zQcSp1SlMRXGtdij2c1QPsYAs6t/Ew6gteJtCEx
+         TtDrCXvKIOdsLjA1X6fqeL7xGIbatEj486EEOK2bQalNF5BapT1Th+jhLtmNFHvx8lcH
+         hkxMyx4vk41unWZ0rfMzkWHx8DvnhPd1qg/SaBHOB7RfIfcaovVhEcALev4mF24JT/Vr
+         0qzw==
+X-Gm-Message-State: AOAM530nivtCdPl+Yis3EwnZA6snWNk+jBx2hnaiKRfc7gEUxbpS3d+U
+        +laOqeE4gR1thU2BP09buzrI2g==
+X-Google-Smtp-Source: ABdhPJwqZtRUU0nsIsV0zek7NdysBejQDUTfhKjFgiDG1EKjsMY2/ZhgfYZ2KoBPAVEDH9VcXMamHw==
+X-Received: by 2002:a17:90a:bd8a:: with SMTP id z10mr3233667pjr.203.1621488576054;
+        Wed, 19 May 2021 22:29:36 -0700 (PDT)
+Received: from google.com ([2409:10:2e40:5100:48db:abf:343e:b4f7])
+        by smtp.gmail.com with ESMTPSA id t14sm828344pfg.168.2021.05.19.22.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 22:29:35 -0700 (PDT)
+Date:   Thu, 20 May 2021 14:29:31 +0900
+From:   Sergey Senozhatsky <senozhatsky@chromium.org>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] watchdog: Reliable handling of timestamps
+Message-ID: <YKXzuy336Fmrcz1s@google.com>
+References: <20210517140612.222750-1-senozhatsky@chromium.org>
+ <YKPfDQoN5hToB9nk@alley>
+ <YKT55gw+RZfyoFf7@alley>
 MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-5-xieyongji@bytedance.com>
- <CACycT3s1rEvNnNkJKQsHGRsyLPADieFdVkb1Sp3GObR0Vox5Fg@mail.gmail.com> <20210519144206.GF32682@kadam>
-In-Reply-To: <20210519144206.GF32682@kadam>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 20 May 2021 13:25:16 +0800
-Message-ID: <CACycT3veubBFCg9omxLDJJFP7B7QH8++Q+tKmb_M_hmNS45cmw@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 04/12] virtio-blk: Add validation for block size in
- config space
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>, viro@zeniv.linux.org.uk,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKT55gw+RZfyoFf7@alley>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:42 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
->
-> On Wed, May 19, 2021 at 09:39:20PM +0800, Yongji Xie wrote:
-> > On Mon, May 17, 2021 at 5:56 PM Xie Yongji <xieyongji@bytedance.com> wrote:
-> > >
-> > > This ensures that we will not use an invalid block size
-> > > in config space (might come from an untrusted device).
->
-> I looked at if I should add this as an untrusted function so that Smatch
-> could find these sorts of bugs but this is reading data from the host so
-> there has to be some level of trust...
->
+On (21/05/19 13:43), Petr Mladek wrote:
+> 
+> The commit 9bf3bc949f8aeefeacea4b ("watchdog: cleanup handling of false
+> positives") tried to handle a virtual host stopped by the host a more
+> straightforward and cleaner way.
+> 
+> But it introduced a risk of false softlockup reports. The virtual host
+> might be stopped at any time, for example between
+> kvm_check_and_clear_guest_paused() and is_softlockup().
+> As a result, is_softlockup() might read the updated jiffies
+> are detects softlockup.
+> 
+> A solution might be to put back kvm_check_and_clear_guest_paused()
+> after is_softlockup() and detect it. But it would put back
+> the cycle that complicates the logic.
+> 
+> In fact, the handling of all the timestamps is not reliable.
+> The code does not guarantee when and how many times the timestamps
+> are read. For example, "period_ts" might be touched anytime also
+> from NMI and re-read in is_softlockup(). It works just by chance.
+> 
+> Fix all the problems by making the code even more explicit.
+> 
+> 1. Make sure that "now" and "period_ts" timestamps are read only
+>    once. They might be changed at anytime by NMI or when the virtual
+>    guest is stopped by the host. Note that "now" timestamp does
+>    this implicitly because "jiffies" is marked volatile.
+> 
+> 2. "now" time must be read first. The state of "period_ts" will decide
+>    whether it will be used or the period will get restarted.
+> 
+> 3. kvm_check_and_clear_guest_paused() must be called before reading
+>    "period_ts". It touches the variable when the guest was
+>    stopped.
+> 
+> As a result, "now" timestamp is used only when the watchdog was
+> not touched and the guest not stopped in the meantime. "period_ts"
+> is restarted in all other situations.
+> 
+> Fixes: 9bf3bc949f8aeefeacea4b ("watchdog: cleanup handling of false positives")
+> Reported-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+> Signed-off-by: Petr Mladek <pmladek@suse.com>
 
-It would be great if Smatch could detect this case if possible. The
-data might be trusted in traditional VM cases. But now the data can be
-read from a userspace daemon when VDUSE is enabled.
-
-> I should add some more untrusted data kvm functions to Smatch.  Right
-> now I only have kvm_register_read() and I've added kvm_read_guest_virt()
-> just now.
->
-> > >
-> > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > > ---
-> > >  drivers/block/virtio_blk.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > > index ebb4d3fe803f..c848aa36d49b 100644
-> > > --- a/drivers/block/virtio_blk.c
-> > > +++ b/drivers/block/virtio_blk.c
-> > > @@ -826,7 +826,7 @@ static int virtblk_probe(struct virtio_device *vdev)
-> > >         err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
-> > >                                    struct virtio_blk_config, blk_size,
-> > >                                    &blk_size);
-> > > -       if (!err)
-> > > +       if (!err && blk_size > 0 && blk_size <= max_size)
-> >
-> > The check here is incorrect. I will use PAGE_SIZE as the maximum
-> > boundary in the new version.
->
-> What does this bug look like to the user?
-
-The kernel will panic if the block size is larger than PAGE_SIZE.
-
-> A minimum block size of 1 seems pretty crazy.  Surely the minimum should be > higher?
->
-
-Yes, 512 is better here.
-
-Thanks,
-Yongji
+Reviewed-by: Sergey Senozhatsky <senozhatsky@chromium.org>
