@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9B6738AAF4
+	by mail.lfdr.de (Postfix) with ESMTP id 0FF7E38AAF2
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240728AbhETLTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:19:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
+        id S240668AbhETLTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:19:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239317AbhETK6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239319AbhETK6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 912D161919;
-        Thu, 20 May 2021 10:02:40 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C6894613C9;
+        Thu, 20 May 2021 10:02:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504961;
-        bh=nr0zYTv8LM9PUJavyoKcbBHyCg6isjtmGM8GDhkFACk=;
+        s=korg; t=1621504963;
+        bh=LwyKKuJhez3Ec+1Kjgypop6eGz0miF8Pt3i3GUl3z0g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FZvDIx2v1mpb5QwYRDW7saaRLNWIRnRDndeB5/ViBfpMpB72z950wos/2sl7XxLJN
-         nnqCKrTzaUla1zJ+W+7fUZ45x72xc6+cG0f/ZFceKQpQS6HIgVb+8c1EmuvzrfcEmT
-         PGAYHIc2ZXqdD6DpLNezeIzdBIUXJ9sEGdXg6wpI=
+        b=YWpEvaq3uIKj/Dz7HCM5SWsKMgrPzRCuEqJFHZq77A+oXf1p7pYQuUReb0SHWbgmN
+         QzV7tBTwmA9ONmQNIM6u1xCHMvEhf3/35IrLtWXFT5d9MYphYv3VRq4Ryc4iuX+xYx
+         08AIIEJRkXXlQy1YOEophk5vZ6Saa2LvhMvCR3ow=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org,
+        =?UTF-8?q?Toke=20H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 160/240] net: davinci_emac: Fix incorrect masking of tx and rx error channel
-Date:   Thu, 20 May 2021 11:22:32 +0200
-Message-Id: <20210520092114.023559146@linuxfoundation.org>
+Subject: [PATCH 4.9 161/240] ath9k: Fix error check in ath9k_hw_read_revisions() for PCI devices
+Date:   Thu, 20 May 2021 11:22:33 +0200
+Message-Id: <20210520092114.054774132@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,46 +42,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Toke Høiland-Jørgensen <toke@redhat.com>
 
-[ Upstream commit d83b8aa5207d81f9f6daec9888390f079cc5db3f ]
+[ Upstream commit 7dd9a40fd6e0d0f1fd8e1931c007e080801dfdce ]
 
-The bit-masks used for the TXERRCH and RXERRCH (tx and rx error channels)
-are incorrect and always lead to a zero result. The mask values are
-currently the incorrect post-right shifted values, fix this by setting
-them to the currect values.
+When the error check in ath9k_hw_read_revisions() was added, it checked for
+-EIO which is what ath9k_regread() in the ath9k_htc driver uses. However,
+for plain ath9k, the register read function uses ioread32(), which just
+returns -1 on error. So if such a read fails, it still gets passed through
+and ends up as a weird mac revision in the log output.
 
-(I double checked these against the TMS320TCI6482 data sheet, section
-5.30, page 127 to ensure I had the correct mask values for the TXERRCH
-and RXERRCH fields in the MACSTATUS register).
+Fix this by changing ath9k_regread() to return -1 on error like ioread32()
+does, and fix the error check to look for that instead of -EIO.
 
-Addresses-Coverity: ("Operands don't affect result")
-Fixes: a6286ee630f6 ("net: Add TI DaVinci EMAC driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: 2f90c7e5d094 ("ath9k: Check for errors when reading SREV register")
+Signed-off-by: Toke Høiland-Jørgensen <toke@redhat.com>
+Reviewed-by: Lorenzo Bianconi <lorenzo@kernel.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210326180819.142480-1-toke@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/ti/davinci_emac.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/wireless/ath/ath9k/htc_drv_init.c | 2 +-
+ drivers/net/wireless/ath/ath9k/hw.c           | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/ti/davinci_emac.c b/drivers/net/ethernet/ti/davinci_emac.c
-index 413cf14dbacd..8b7596fef42a 100644
---- a/drivers/net/ethernet/ti/davinci_emac.c
-+++ b/drivers/net/ethernet/ti/davinci_emac.c
-@@ -183,11 +183,11 @@ static const char emac_version_string[] = "TI DaVinci EMAC Linux v6.1";
- /* EMAC mac_status register */
- #define EMAC_MACSTATUS_TXERRCODE_MASK	(0xF00000)
- #define EMAC_MACSTATUS_TXERRCODE_SHIFT	(20)
--#define EMAC_MACSTATUS_TXERRCH_MASK	(0x7)
-+#define EMAC_MACSTATUS_TXERRCH_MASK	(0x70000)
- #define EMAC_MACSTATUS_TXERRCH_SHIFT	(16)
- #define EMAC_MACSTATUS_RXERRCODE_MASK	(0xF000)
- #define EMAC_MACSTATUS_RXERRCODE_SHIFT	(12)
--#define EMAC_MACSTATUS_RXERRCH_MASK	(0x7)
-+#define EMAC_MACSTATUS_RXERRCH_MASK	(0x700)
- #define EMAC_MACSTATUS_RXERRCH_SHIFT	(8)
+diff --git a/drivers/net/wireless/ath/ath9k/htc_drv_init.c b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+index 15a0036dcc6e..09d737f3461b 100644
+--- a/drivers/net/wireless/ath/ath9k/htc_drv_init.c
++++ b/drivers/net/wireless/ath/ath9k/htc_drv_init.c
+@@ -246,7 +246,7 @@ static unsigned int ath9k_regread(void *hw_priv, u32 reg_offset)
+ 	if (unlikely(r)) {
+ 		ath_dbg(common, WMI, "REGISTER READ FAILED: (0x%04x, %d)\n",
+ 			reg_offset, r);
+-		return -EIO;
++		return -1;
+ 	}
  
- /* EMAC RX register masks */
+ 	return be32_to_cpu(val);
+diff --git a/drivers/net/wireless/ath/ath9k/hw.c b/drivers/net/wireless/ath/ath9k/hw.c
+index e7fca78cdd96..9d664398a41b 100644
+--- a/drivers/net/wireless/ath/ath9k/hw.c
++++ b/drivers/net/wireless/ath/ath9k/hw.c
+@@ -285,7 +285,7 @@ static bool ath9k_hw_read_revisions(struct ath_hw *ah)
+ 
+ 	srev = REG_READ(ah, AR_SREV);
+ 
+-	if (srev == -EIO) {
++	if (srev == -1) {
+ 		ath_err(ath9k_hw_common(ah),
+ 			"Failed to read SREV register");
+ 		return false;
 -- 
 2.30.2
 
