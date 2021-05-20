@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2584A38AC58
+	by mail.lfdr.de (Postfix) with ESMTP id 944B538AC59
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239525AbhETLiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38292 "EHLO mail.kernel.org"
+        id S241885AbhETLiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:38:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38358 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240490AbhETLRT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:17:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A96861D72;
-        Thu, 20 May 2021 10:09:45 +0000 (UTC)
+        id S240534AbhETLRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:17:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BA0061D70;
+        Thu, 20 May 2021 10:09:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505386;
-        bh=S93TGJLzU4z0SvaBVoU9+QAZiDLSTWOOJBOi35DTRa0=;
+        s=korg; t=1621505388;
+        bh=eSjBDezw5GUs86aXFJgox3tmd//r+gj6jkpjpTOlgWY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FT0KSwl6R5edw/cf3FWC1yC/66r7JVOfeS/NMfDudY36y4theWXXDhmVgr7B7GHRR
-         qLCUH35pFCdS1okjpKjYd6hQKj8msLWJD5ragtQguscdYZjipcM0WiYKimPsFpmwOK
-         Xl/m8/AWHDF08S3vmzl9fWP+Kp1vMQobQ9XqOLbA=
+        b=HEOrylqZuTWJfZlFZ4YoHpynp43HbgSxgoImySAfHysJgiKStexmhat+0er+9d50H
+         LfNH8JH2c7MUuDONTta25V284466fzdJj8k2WYjs4hzy1XOa3ltwTBXRZYs3niaUVL
+         34h3wnQ/H7d6+guoDqBvlK6fBWpcW90uTfV80NZM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 077/190] ARM: dts: exynos: correct PMIC interrupt trigger level on SMDK5250
-Date:   Thu, 20 May 2021 11:22:21 +0200
-Message-Id: <20210520092104.741800409@linuxfoundation.org>
+Subject: [PATCH 4.4 078/190] ARM: dts: exynos: correct PMIC interrupt trigger level on Snow
+Date:   Thu, 20 May 2021 11:22:22 +0200
+Message-Id: <20210520092104.771971015@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -41,7 +41,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit f6368c60561370e4a92fac22982a3bd656172170 ]
+[ Upstream commit 8987efbb17c2522be8615085df9a14da2ab53d34 ]
 
 The Maxim PMIC datasheets describe the interrupt line as active low
 with a requirement of acknowledge from the CPU.  Without specifying the
@@ -51,21 +51,21 @@ configuration, not necessarily working for this hardware.
 Additionally, the interrupt line is shared so using level sensitive
 interrupt is here especially important to avoid races.
 
-Fixes: 47580e8d94c2 ("ARM: dts: Specify MAX77686 pmic interrupt for exynos5250-smdk5250")
+Fixes: c61248afa819 ("ARM: dts: Add max77686 RTC interrupt to cros5250-common")
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
-Link: https://lore.kernel.org/r/20201210212534.216197-8-krzk@kernel.org
+Link: https://lore.kernel.org/r/20201210212534.216197-9-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/boot/dts/exynos5250-smdk5250.dts | 2 +-
+ arch/arm/boot/dts/exynos5250-snow-common.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm/boot/dts/exynos5250-smdk5250.dts b/arch/arm/boot/dts/exynos5250-smdk5250.dts
-index 0f5dcd418af8..97b152e43f9c 100644
---- a/arch/arm/boot/dts/exynos5250-smdk5250.dts
-+++ b/arch/arm/boot/dts/exynos5250-smdk5250.dts
-@@ -134,7 +134,7 @@
+diff --git a/arch/arm/boot/dts/exynos5250-snow-common.dtsi b/arch/arm/boot/dts/exynos5250-snow-common.dtsi
+index 0a7f408824d8..b45ad99da8c5 100644
+--- a/arch/arm/boot/dts/exynos5250-snow-common.dtsi
++++ b/arch/arm/boot/dts/exynos5250-snow-common.dtsi
+@@ -281,7 +281,7 @@
+ 	max77686: max77686@09 {
  		compatible = "maxim,max77686";
- 		reg = <0x09>;
  		interrupt-parent = <&gpx3>;
 -		interrupts = <2 IRQ_TYPE_NONE>;
 +		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
