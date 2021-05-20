@@ -2,103 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF6F389EF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:31:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B55D6389EF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:33:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230507AbhETHdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46508 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhETHdN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:33:13 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A63C061760
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:31:48 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id v12so16507944wrq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:31:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AX9UJdkScEdnsuqA+e3cbBPgNM6jgDtJcxN/2LdsVjY=;
-        b=NXNdoEChth+QHQQusotYXDdQSrZeyuu2Ac7f0XklNEL6PRynGLj4yBCnsE17osQ2ED
-         PLX5QY+M58Qo2KOla6PeAKJwiBv9Mq0Qenzh2kHuMT8bLAqVEBkHZpYdTdXE7hV7i9I8
-         kzErqDcXYhYeAQVbJRwns7AcoKx0aKje5kXC+G74BoUIOnI92+44wPxDdbCM/2Tariv/
-         mqizsHpbet77RQbuMBM20ma8X4IMfryFFTRayzhkABYjeKn1Q5iHGQc/gWHQChYKTAM7
-         4Ct6/ZTsgp2+TYf7Y2kD1Cv6f8ficIhOb4PDbkAMU2cZQ8334dYuXzhz5MffUPJ1Wa0p
-         Wzcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=AX9UJdkScEdnsuqA+e3cbBPgNM6jgDtJcxN/2LdsVjY=;
-        b=hT4HgSvyJ/Zx2nZ6eC8t5/KCi+2aT3Ys65EYlPfdiuOyZKWS7XMvpGKcp4QRF15gnP
-         qLU9S3/KXX8Cq7kkKJ+BT7w/t0wNLkJIzaYlFOoZaqqQVUjZPVuL52lC00PLaLz48dHb
-         8XZp5WshqV/MTF8C6jPJ9HKtOizzJt4+EQiZqo4iUN5jYILOPtUUMwmBbQfUP9uc0Bi+
-         NS1BTojq1PG6f83SsYfu8fWNEy5OZg2I8aiS/OpvER9XeTgGZ81d45lmQSUVczSQBLEv
-         rcRFhu0gpTtU5GG2i7+rlveqbUc6zh0DgL1x4EmUQLm3/bYe0Z+16ab4YmlBGiA0L4T7
-         6+6g==
-X-Gm-Message-State: AOAM532NhXbIkvabJNvKfAOeWyhnRF18yfrAtmvydERYDJwEQrqnumqz
-        Up4T0RSVMDsDdQQFfo0rsZPTqOnJAfkqXA==
-X-Google-Smtp-Source: ABdhPJyQX1KBfytXyZKHPcLunFU+XbTr8fHcoxEqDTKSWfzltphYDK+CFHr3Jaqjsouy9IyHXiMbIw==
-X-Received: by 2002:a05:6000:186a:: with SMTP id d10mr2810801wri.41.1621495907520;
-        Thu, 20 May 2021 00:31:47 -0700 (PDT)
-Received: from jackdaw.baylibre.com (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id u19sm1637050wmq.7.2021.05.20.00.31.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 00:31:47 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] clk: meson: axg-audio: improve deferral handling
-Date:   Thu, 20 May 2021 09:31:36 +0200
-Message-Id: <20210520073136.272925-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.31.1
+        id S230403AbhETHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:34:53 -0400
+Received: from mga07.intel.com ([134.134.136.100]:17034 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhETHes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:34:48 -0400
+IronPort-SDR: mHdxQ6z3QJTxA9FAS7yz/Fan8avejP/oaMsHU8ECaXll94aO2ao/LVbTkvd4bkW1eAlpKRJFLn
+ aQrVq5iVAWyw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="265079984"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="265079984"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:33:27 -0700
+IronPort-SDR: A2G2dULyX5u+hXjc1IsDi3pnqyRWa4YlPM1CfvPxBQNBuvpEpvJ+sDA7tnu/EP8a5WwR89GNw+
+ cZ3sgBD7Kr0A==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="473880275"
+Received: from yhuang6-desk1.sh.intel.com ([10.239.13.1])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:33:20 -0700
+From:   Huang Ying <ying.huang@intel.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Huang Ying <ying.huang@intel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Andrea Parri <andrea.parri@amarulasolutions.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Omar Sandoval <osandov@fb.com>,
+        Paul McKenney <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Miaohe Lin <linmiaohe@huawei.com>
+Subject: [PATCH -V2] mm, swap: Remove unnecessary smp_rmb() in swap_type_to_swap_info()
+Date:   Thu, 20 May 2021 15:33:01 +0800
+Message-Id: <20210520073301.1676294-1-ying.huang@intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use dev_err_probe() for clock and reset resources to indicate the deferral
-reason through sysfs when waiting for the resource to come up.
+Before commit c10d38cc8d3e ("mm, swap: bounds check swap_info array
+accesses to avoid NULL derefs"), the typical code to reference the
+swap_info[] is as follows,
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+  type = swp_type(swp_entry);
+  if (type >= nr_swapfiles)
+          /* handle invalid swp_entry */;
+  p = swap_info[type];
+  /* access fields of *p.  OOPS! p may be NULL! */
+
+Because the ordering isn't guaranteed, it's possible that
+swap_info[type] is read before "nr_swapfiles".  And that may result
+in NULL pointer dereference.
+
+So after commit c10d38cc8d3e, the code becomes,
+
+  struct swap_info_struct *swap_type_to_swap_info(int type)
+  {
+	  if (type >= READ_ONCE(nr_swapfiles))
+		  return NULL;
+	  smp_rmb();
+	  return READ_ONCE(swap_info[type]);
+  }
+
+  /* users */
+  type = swp_type(swp_entry);
+  p = swap_type_to_swap_info(type);
+  if (!p)
+	  /* handle invalid swp_entry */;
+  /* dereference p */
+
+Where the value of swap_info[type] (that is, "p") is checked to be
+non-zero before being dereferenced.  So, the NULL deferencing
+becomes impossible even if "nr_swapfiles" is read after
+swap_info[type].  Therefore, the "smp_rmb()" becomes unnecessary.
+
+And, we don't even need to read "nr_swapfiles" here.  Because the
+non-zero checking for "p" is sufficient.  We just need to make sure we
+will not access out of the boundary of the array.  With the change,
+nr_swapfiles will only be accessed with swap_lock held, except in
+swapcache_free_entries().  Where the absolute correctness of the value
+isn't needed, as described in the comments.
+
+We still need to guarantee swap_info[type] is read before being
+dereferenced.  That can be satisfied via the data dependency ordering
+enforced by READ_ONCE(swap_info[type]).  This needs to be paired with
+proper write barriers.  So smp_store_release() is used in
+alloc_swap_info() to guarantee the fields of *swap_info[type] is
+initialized before swap_info[type] itself being written.  Note that
+the fields of *swap_info[type] is initialized to be 0 via kvzalloc()
+firstly.  The assignment and deferencing of swap_info[type] is like
+rcu_assign_pointer() and rcu_dereference().
+
+Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
+Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Andrea Parri <andrea.parri@amarulasolutions.com>
+Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
+Cc: Andi Kleen <ak@linux.intel.com>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: Omar Sandoval <osandov@fb.com>
+Cc: Paul McKenney <paulmck@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Miaohe Lin <linmiaohe@huawei.com>
+
+v2:
+
+- Revise the patch description and comments per Peter's comments.
+
 ---
- This is a follow up on
- https://lore.kernel.org/r/20210429090516.61085-1-jbrunet@baylibre.com
+ mm/swapfile.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
 
- drivers/clk/meson/axg-audio.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/clk/meson/axg-audio.c b/drivers/clk/meson/axg-audio.c
-index 7c8d02164443..bfe36bd41339 100644
---- a/drivers/clk/meson/axg-audio.c
-+++ b/drivers/clk/meson/axg-audio.c
-@@ -1665,8 +1665,7 @@ static int devm_clk_get_enable(struct device *dev, char *id)
- 	clk = devm_clk_get(dev, id);
- 	if (IS_ERR(clk)) {
- 		ret = PTR_ERR(clk);
--		if (ret != -EPROBE_DEFER)
--			dev_err(dev, "failed to get %s", id);
-+		dev_err_probe(dev, ret, "failed to get %s", id);
- 		return ret;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 2aad85751991..65dd979a0f94 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -100,11 +100,10 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
+ 
+ static struct swap_info_struct *swap_type_to_swap_info(int type)
+ {
+-	if (type >= READ_ONCE(nr_swapfiles))
++	if (type >= MAX_SWAPFILES)
+ 		return NULL;
+ 
+-	smp_rmb();	/* Pairs with smp_wmb in alloc_swap_info. */
+-	return READ_ONCE(swap_info[type]);
++	return READ_ONCE(swap_info[type]); /* rcu_dereference() */
+ }
+ 
+ static inline unsigned char swap_count(unsigned char ent)
+@@ -2884,14 +2883,12 @@ static struct swap_info_struct *alloc_swap_info(void)
  	}
- 
-@@ -1811,7 +1810,7 @@ static int axg_audio_clkc_probe(struct platform_device *pdev)
- 
- 	ret = device_reset(dev);
- 	if (ret) {
--		dev_err(dev, "failed to reset device\n");
-+		dev_err_probe(dev, ret, "failed to reset device\n");
- 		return ret;
- 	}
- 
+ 	if (type >= nr_swapfiles) {
+ 		p->type = type;
+-		WRITE_ONCE(swap_info[type], p);
+ 		/*
+-		 * Write swap_info[type] before nr_swapfiles, in case a
+-		 * racing procfs swap_start() or swap_next() is reading them.
+-		 * (We never shrink nr_swapfiles, we never free this entry.)
++		 * Publish the swap_info_struct after initializing it.
++		 * Note that kvzalloc() above zeroes all its fields.
+ 		 */
+-		smp_wmb();
+-		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
++		smp_store_release(&swap_info[type], p); /* rcu_assign_pointer() */
++		nr_swapfiles++;
+ 	} else {
+ 		defer = p;
+ 		p = swap_info[type];
 -- 
-2.31.1
+2.30.2
 
