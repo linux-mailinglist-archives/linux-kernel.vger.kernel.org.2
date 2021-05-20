@@ -2,197 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B8038A0BB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D22CE38A0BF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:22:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231508AbhETJWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:22:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49990 "EHLO mail.kernel.org"
+        id S231543AbhETJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:23:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230483AbhETJWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:22:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B80B6124C;
-        Thu, 20 May 2021 09:21:08 +0000 (UTC)
-Date:   Thu, 20 May 2021 10:21:06 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Evgenii Stepanov <eugenis@google.com>
-Cc:     Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] kasan: speed up mte_set_mem_tag_range
-Message-ID: <20210520092105.GA12251@arm.com>
-References: <20210520020305.2826694-1-eugenis@google.com>
+        id S230483AbhETJXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:23:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C59D6135B;
+        Thu, 20 May 2021 09:22:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621502549;
+        bh=mUcJvIDAEBZyVHNKECFJUZjJN3jvp0QlOwLkY/Lr9Fk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cueszxQKwQo1fo7eIWpKuItZ8ECXgi/2vnaWA0pNz+29DdsMCsgVBrOylLW1Tc796
+         ykghyQdgdNweB99uGbZpBiR/abnhi6a6tvpDSRJBSlTRH+guNjbEILhH11pM5YVW8l
+         qikrLp12Gf3+V0bI2mTYHPHnuLF0sMWN+jW1Zc9wp2Hnz4R6Qx6IqWRrTyetKnOTxT
+         VTAYRrZ5Cty92fnQiP6W2f7v4CjKifEpoWSK06xHDI2820QymWBehcgfdTzIfeA1+S
+         axUDrX0WCefyze7NmG8HS8370jvh0dHH2OX6jwBgO/zCzl5dACYCmgdd7qT1dFDN63
+         +47eoiF2EDfgQ==
+Received: by mail-wr1-f49.google.com with SMTP id n2so16960849wrm.0;
+        Thu, 20 May 2021 02:22:29 -0700 (PDT)
+X-Gm-Message-State: AOAM530wSHLlQY/IxbV8+KgIOXuQNcSRlcK5sl2nUhEDoIqsXLJWFiAW
+        TtkwIT3xox3uLR+w9gNoCNSomurX5s0+D8S+1qc=
+X-Google-Smtp-Source: ABdhPJzsrao8n8zbfttxKQpALJPp9YROd3f6fNW2rL/Ta9Y6h4hoYQ0fRUSF+pGM0FB3yjSG8oB6dY7AKuvOfp8E4v0=
+X-Received: by 2002:adf:e589:: with SMTP id l9mr3343339wrm.361.1621502547736;
+ Thu, 20 May 2021 02:22:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520020305.2826694-1-eugenis@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210517203343.3941777-1-arnd@kernel.org> <20210517203343.3941777-5-arnd@kernel.org>
+ <87h7iycvlo.ffs@nanos.tec.linutronix.de> <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
+In-Reply-To: <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 20 May 2021 11:21:12 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2fBRe4PS40iV5-_LQGuAneN1HKksq6Xp3ETijs5xxG_Q@mail.gmail.com>
+Message-ID: <CAK8P3a2fBRe4PS40iV5-_LQGuAneN1HKksq6Xp3ETijs5xxG_Q@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] compat: remove some compat entry points
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Brian Gerst <brgerst@gmail.com>,
+        Eric Biederman <ebiederm@xmission.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 07:03:05PM -0700, Evgenii Stepanov wrote:
-> Use DC GVA / DC GZVA to speed up KASan memory tagging in HW tags mode.
-> 
-> The first cacheline is always tagged using STG/STZG even if the address is
-> cacheline-aligned, as benchmarks show it is faster than a conditional
-> branch.
-> 
-> Signed-off-by: Evgenii Stepanov <eugenis@google.com>
-> Co-developed-by: Peter Collingbourne <pcc@google.com>
-> Signed-off-by: Peter Collingbourne <pcc@google.com>
+On Wed, May 19, 2021 at 11:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Wed, May 19, 2021 at 10:33 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > On Mon, May 17 2021 at 22:33, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > These are all handled correctly when calling the native
+> > > system call entry point, so remove the special cases.
+> > >  arch/x86/entry/syscall_x32.c              |  2 ++
+> > >  arch/x86/entry/syscalls/syscall_32.tbl    |  6 ++--
+> > >  arch/x86/entry/syscalls/syscall_64.tbl    |  4 +--
+> >
+> > That conflicts with
+> >
+> >   https://lore.kernel.org/lkml/20210517073815.97426-1-masahiroy@kernel.org/
+> >
+> > which I'm picking up. We have more changes in that area coming in.
+>
+> Ok, thanks for the heads-up. I'll try a merge or rebase to see how this can be
+> handled. If both the drivers/net and drivers/media get picked up for 5.14, maybe
+> the rebased patches can go through -mm on top, along with the final
+> removal of compat_alloc_user_space()/copy_in_user(). If not, I suppose these
+> four patches can also wait another release.
 
-Some nitpicks below but it looks fine otherwise.
+On second thought, this patch 4/4 is not even required here to kill off
+compat_alloc_user_space, so the easiest alternative might be to merge the
+other patches first, and then do this part together with the removal of
+the unused functions in a follow-up series.
 
-> diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
-> index ddd4d17cf9a0..34e23886f346 100644
-> --- a/arch/arm64/include/asm/mte-kasan.h
-> +++ b/arch/arm64/include/asm/mte-kasan.h
-> @@ -48,43 +48,85 @@ static inline u8 mte_get_random_tag(void)
->  	return mte_get_ptr_tag(addr);
->  }
->  
-> +static inline u64 __stg_post(u64 p)
-> +{
-> +	asm volatile(__MTE_PREAMBLE "stg %0, [%0], #16"
-> +		     : "+r"(p)
-> +		     :
-> +		     : "memory");
-> +	return p;
-> +}
-> +
-> +static inline u64 __stzg_post(u64 p)
-> +{
-> +	asm volatile(__MTE_PREAMBLE "stzg %0, [%0], #16"
-> +		     : "+r"(p)
-> +		     :
-> +		     : "memory");
-> +	return p;
-> +}
-> +
-> +static inline void __dc_gva(u64 p)
-> +{
-> +	asm volatile(__MTE_PREAMBLE "dc gva, %0" : : "r"(p) : "memory");
-> +}
-> +
-> +static inline void __dc_gzva(u64 p)
-> +{
-> +	asm volatile(__MTE_PREAMBLE "dc gzva, %0" : : "r"(p) : "memory");
-> +}
-> +
->  /*
->   * Assign allocation tags for a region of memory based on the pointer tag.
->   * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-> - * size must be non-zero and MTE_GRANULE_SIZE aligned.
-> + * size must be MTE_GRANULE_SIZE aligned.
->   */
-> -static inline void mte_set_mem_tag_range(void *addr, size_t size,
-> -						u8 tag, bool init)
-> +static inline void mte_set_mem_tag_range(void *addr, size_t size, u8 tag,
-> +					 bool init)
->  {
-> -	u64 curr, end;
-> +	u64 curr, DCZID, mask, line_size, end1, end2, end3;
-
-Nitpick 1: please use lowercase for variables even if they match some
-register.
-
->  
-> -	if (!size)
-> -		return;
-> +	/* Read DC G(Z)VA store size from the register. */
-> +	__asm__ __volatile__(__MTE_PREAMBLE "mrs %0, dczid_el0"
-> +			     : "=r"(DCZID)::);
-> +	line_size = 4ul << (DCZID & 0xf);
-
-No need for __MTE_PREAMBLE here, this register has been available since
-8.0. Even better, just use read_cpuid(DCZID_EL0) directly rather than
-asm.
-
-I'd also call this variable block_size (or dczid_bs etc.), it's not
-necessarily a cache line size (we have CTR_EL0 for that), though most
-implementations probably do just that. There are a few instances below
-where the comments refer to cache lines.
-
->  	curr = (u64)__tag_set(addr, tag);
-> -	end = curr + size;
-> -
-> -	/*
-> -	 * 'asm volatile' is required to prevent the compiler to move
-> -	 * the statement outside of the loop.
-> +	mask = line_size - 1;
-> +	/* STG/STZG up to the end of the first cache line. */
-> +	end1 = curr | mask;
-> +	end3 = curr + size;
-> +	/* DC GVA / GZVA in [end1, end2) */
-> +	end2 = end3 & ~mask;
-> +
-> +	/* The following code uses STG on the first cache line even if the start
-> +	 * address is cache line aligned - it appears to be faster than an
-> +	 * alignment check + conditional branch. Also, if the size is at least 2
-> +	 * cache lines, the first two loops can use post-condition to save one
-> +	 * branch each.
->  	 */
-
-Nitpick 2: the multiline comments start with an empty /* (as per the
-coding style doc).
-
-> -	if (init) {
-> -		do {
-> -			asm volatile(__MTE_PREAMBLE "stzg %0, [%0]"
-> -				     :
-> -				     : "r" (curr)
-> -				     : "memory");
-> -			curr += MTE_GRANULE_SIZE;
-> -		} while (curr != end);
-> -	} else {
-> -		do {
-> -			asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-> -				     :
-> -				     : "r" (curr)
-> -				     : "memory");
-> -			curr += MTE_GRANULE_SIZE;
-> -		} while (curr != end);
-> -	}
-> +#define SET_MEMTAG_RANGE(stg_post, dc_gva)		\
-> +	do {						\
-> +		if (size >= 2 * line_size) {		\
-> +			do {				\
-> +				curr = stg_post(curr);	\
-> +			} while (curr < end1);		\
-> +							\
-> +			do {				\
-> +				dc_gva(curr);		\
-> +				curr += line_size;	\
-> +			} while (curr < end2);		\
-> +		}					\
-> +							\
-> +		while (curr < end3)			\
-> +			curr = stg_post(curr);		\
-> +	} while (0)
-> +
-> +	if (init)
-> +		SET_MEMTAG_RANGE(__stzg_post, __dc_gzva);
-> +	else
-> +		SET_MEMTAG_RANGE(__stg_post, __dc_gva);
-> +#undef SET_MEMTAG_RANGE
->  }
->  
->  void mte_enable_kernel_sync(void);
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-
-With the above fixed, feel free to add:
-
-Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
-
-(aiming at 5.14)
-
--- 
-Catalin
+        Arnd
