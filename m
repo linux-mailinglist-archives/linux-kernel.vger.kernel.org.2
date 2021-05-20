@@ -2,158 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF8EE38A0A5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:13:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95C6D38A0A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:16:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230469AbhETJPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:15:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:53212 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230361AbhETJPG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:15:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621502025;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=59HPsGZmbzpogUicaNHmrUD8Ii9KkB0f2xmqCHspsTo=;
-        b=LQAZUEv5YMShFMGwZ7wluDVqOj9HbUIVSk90lyzrNkx5EbNxblVFq09Ot0PXRRj0Mmyy7b
-        6gLgUItsgFMt4UsGjLmG8GFwC8unbMMagx8wiu/zouHCQQFTyyVE1tvRmGECWk0s9LxXT/
-        6GsmQNeda6/3IoDAPMc+jX9OYbHFc4U=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-573-pRcF2XPLMmib_lsDg4veLg-1; Thu, 20 May 2021 05:13:43 -0400
-X-MC-Unique: pRcF2XPLMmib_lsDg4veLg-1
-Received: by mail-ed1-f71.google.com with SMTP id d4-20020aa7ce040000b029038d1d0524d0so8454006edv.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 02:13:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=59HPsGZmbzpogUicaNHmrUD8Ii9KkB0f2xmqCHspsTo=;
-        b=R9jDrojWk07Cws3bJ7lfAZn6zzbHpTWQ/Ta1MAbsGnFek0HyasWK+P8ARvFZhe6Dvx
-         GlJYwm7LwDW0Pbf6zz+En8+vSX56h0sIZjkIZEZbNKge3q/wA0k9V7aNQpWudlQZ5B0C
-         e8m0k6ybmI2U16L+WmWoe/8v4Ef13PJAmfRLrvlffBlji0xeSZXnHHkERHj3/ncMSgRS
-         RLWDfOeQNVqYQTuaI9htFFRYgBQ03u3G6b/mS32l7Pt7gQvhwy04WtyXckN7cOgjBFyc
-         1xgItYrgpA7j14+KAJ/Zi58RhctWCKS++aTNVvsUPGdzeqQIF/gZ7+p/SNANSdCN0ppR
-         /3aw==
-X-Gm-Message-State: AOAM531tGqf58AMQRsyeevhCOWfhoTvQ6ZgWs1AvUvrF64x6GkCgRQ9J
-        H1vPGIVc2OGb0metII8nRl0RsxyrOP1110vhjn9q4SuHG6jP350FekY7ADexaUuHcnLlj8FzqUr
-        OotB3hguO1rC8ujLjKzivRdcX
-X-Received: by 2002:aa7:cf03:: with SMTP id a3mr3881009edy.314.1621502022602;
-        Thu, 20 May 2021 02:13:42 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwO5bplhisfH9RW1Z9F0sJ6j+LdGZBEEI9k9SIWx/hvQL387V2z51rP68w514cHUGZf41f4WQ==
-X-Received: by 2002:aa7:cf03:: with SMTP id a3mr3880983edy.314.1621502022394;
-        Thu, 20 May 2021 02:13:42 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.18.58])
-        by smtp.gmail.com with ESMTPSA id gt12sm1047058ejb.60.2021.05.20.02.13.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 02:13:41 -0700 (PDT)
-Date:   Thu, 20 May 2021 11:13:39 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Quentin Perret <qperret@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <YKYoQ0ezahSC/RAg@localhost.localdomain>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-14-will@kernel.org>
- <YKOU9onXUxVLPGaB@google.com>
- <20210518102833.GA7770@willie-the-truck>
- <YKObZ1GcfVIVWRWt@google.com>
- <20210518105951.GC7770@willie-the-truck>
- <YKO+9lPLQLPm4Nwt@google.com>
+        id S231383AbhETJRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:17:48 -0400
+Received: from mga03.intel.com ([134.134.136.65]:60366 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230361AbhETJRr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:17:47 -0400
+IronPort-SDR: HYkiJExSu7LHzARqJ1D/p3H4p0AiM8/0MFLKUWX0nEl8+g5R94PHZQFFcbwHe/nIVhZmr1zEMh
+ I0hURpN5lqOg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="201238889"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="201238889"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:16:24 -0700
+IronPort-SDR: Xp4TsI8ViZpdVxEshJ5a1TG1H2oEoUUHgTy45XWgoWcWpJ1DLLl8Q7S/ZL8hLWiTSLycvinMrX
+ x5vRBfW0iINQ==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="440373654"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:16:22 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andy.shevchenko@gmail.com>)
+        id 1ljemy-00DRZT-7e; Thu, 20 May 2021 12:16:20 +0300
+Date:   Thu, 20 May 2021 12:16:20 +0300
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Kent Gibson <warthog618@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
+Message-ID: <YKYo5EBBDbSDiIwD@smile.fi.intel.com>
+References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
+ <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
+ <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
+ <YKYe4rgGTDRfq+va@hovoldconsulting.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKO+9lPLQLPm4Nwt@google.com>
+In-Reply-To: <YKYe4rgGTDRfq+va@hovoldconsulting.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Quentin and Will,
-
-Apologies for the delay in replying.
-
-On 18/05/21 13:19, Quentin Perret wrote:
-> On Tuesday 18 May 2021 at 11:59:51 (+0100), Will Deacon wrote:
-> > On Tue, May 18, 2021 at 10:48:07AM +0000, Quentin Perret wrote:
-> > > On Tuesday 18 May 2021 at 11:28:34 (+0100), Will Deacon wrote:
-> > > > I don't have strong opinions on this, but I _do_ want the admission via
-> > > > sched_setattr() to be consistent with execve(). What you're suggesting
-> > > > ticks that box, but how many applications are prepared to handle a failed
-> > > > execve()? I suspect it will be fatal.
-> > > 
-> > > Yep, probably.
-> > > 
-> > > > Probably also worth pointing out that the approach here will at least
-> > > > warn in the execve() case when the affinity is overridden for a deadline
-> > > > task.
-> > > 
-> > > Right so I think either way will be imperfect, so I agree with the
-> > > above.
-> > > 
-> > > Maybe one thing though is that, IIRC, userspace _can_ disable admission
-> > > control if it wants to. In this case I'd have no problem with allowing
-> > > this weird behaviour when admission control is off -- the kernel won't
-> > > provide any guarantees. But if it's left on, then it's a different
-> > > story.
-> > > 
-> > > So what about we say, if admission control is off, we allow execve() and
-> > > sched_setattr() with appropriate warnings as you suggest, but if
-> > > admission control is on then we fail both?
+On Thu, May 20, 2021 at 10:33:38AM +0200, Johan Hovold wrote:
+> On Thu, May 20, 2021 at 11:15:31AM +0300, Andy Shevchenko wrote:
+> > On Thu, May 20, 2021 at 11:07 AM Johan Hovold <johan@kernel.org> wrote:
+> > > On Tue, May 18, 2021 at 11:33:39AM +0300, Andy Shevchenko wrote:
+> 
+> > > The _if suffix here is too vague.
+> > >
+> > > Please use a more descriptive name so that you don't need to look at the
+> > > implementation to understand what the macro does.
+> > >
+> > > Perhaps call it
+> > >
+> > >         for_each_gpio_desc_with_flag()
 > > 
-> > That's an interesting idea. The part that I'm not super keen about is
-> > that it means admission control _also_ has an effect on the behaviour of
-> > execve()
+> > Haha, I have the same in my internal tree, but then I have changed to
+> > _if and here is why:
+> > - the API is solely for internal use (note, internals of struct
+> > gpio_desc available for the same set of users)
 > 
-> Right, that's a good point. And it looks like fork() behaves the same
-> regardless of admission control being enabled or not -- it is forbidden
-> from DL either way. So I can't say there is a precedent :/
+> That's not a valid argument here. You should never make code harder to
+> read.
 > 
-> > so practically you'd have to have it disabled as long as you
-> > have the possibility of 32-bit deadline tasks anywhere in the system,
-> > which impacts 64-bit tasks which may well want admission control enabled.
+> There are other ways of marking functions as intended for internal use
+> (e.g. do not export them and add a _ prefix or whatever).
 > 
-> Indeed, this is a bit sad, but I don't know if the kernel should pretend
-> it can guarantee to meet your deadlines and at the same time allow to do
-> something that wrecks the underlying theory.
+> > - the current users do only same pattern
 > 
-> I'd personally be happy with saying that admission control should be
-> disabled on these dumb systems (and have that documented), at least
-> until DL gets proper support for affinities. ISTR there was work going
-> in that direction, but some folks in the CC list will know better.
+> That's not an argument against using a descriptive name. Possibly
+> against adding a generic for_each_gpio_desc() macro.
 > 
-> @Juri, maybe you would know if that's still planned?
+> > - I don't expect that we will have this to be anything else in the future
+> 
+> Again, irrelevant. Possibly an argument against adding another helper in
+> the first place.
+> 
+> > Thus, _if is a good balance between scope of use and naming.
+> 
+> No, no, no. It's never a good idea to obfuscate code.
+> 
+> > I prefer to leave it as is.
+> 
+> I hope you'll reconsider, or that my arguments can convince the
+> maintainers to step in here.
+> 
+> > > or just add the more generic macro
+> > >
+> > >         for_each_gpio_desc()
+> > >
+> > > and open-code the test so that it's clear what's going on here.
+> 
+> FWIW, NAK due to the non-descriptive for_each_desc_if() name.
 
-I won't go as far as saying planned, but that is still under "our" radar
-for sure. Daniel was working on it, but I don't think he had any time to
-resume that bit of work lately.
+Btw, missed argument
 
-So, until we have that, I think we have been as conservative as we could
-for this type of decisions. I'm a little afraid that allowing
-configuration to break admission control (even with a non fatal warning
-is emitted) is still risky. I'd go with fail hard if AC is on, let it
-pass if AC is off (supposedly the user knows what to do). But I'm not
-familiar with the mixed 32/64 apps usecase you describe, so I might be
-missing details.
+..._with_flag(..., FLAG_...)
 
-Best,
-Juri
+breaks the DRY principle. If you read current code it's clear with that
+
+_if(..., FLAG_...)
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
