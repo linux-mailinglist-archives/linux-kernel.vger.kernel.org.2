@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0587638AC7B
+	by mail.lfdr.de (Postfix) with ESMTP id 7994C38AC7C
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242745AbhETLk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:40:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39588 "EHLO mail.kernel.org"
+        id S242776AbhETLkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:40:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240997AbhETLTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S241000AbhETLTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 07:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9A961D7E;
-        Thu, 20 May 2021 10:10:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D859613E5;
+        Thu, 20 May 2021 10:10:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505441;
-        bh=BRdGr/TlbkTLITp74Ajm2rEP1BuzEVJewHTKzHPom0c=;
+        s=korg; t=1621505443;
+        bh=UuI6kqth4+CJXrv9i+pQbcCa85wGcLTvm3qUCtZsltg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sYzVrZQ/t9ypZAgQpDguz3B0un5PKlKvUSefriU4ExFpPFN8zyIBDRvHUpvaoeQdp
-         1iG+UY6zSv6fSRL3un26Abaiqkf5v2aSjXK2nurDH9o6918v4jQEjZpJDQlEgL2gbC
-         Ojg9HBC+HsePnHF1+lcfQGmVkh4v/GkFM2VDZejw=
+        b=kUOUSuL5RLCA/ad/ZAt+h/Nqf3pcASr5fG546l2R2jW6u6bJ1aX2ZBoAUmkRIkgrL
+         rf+h5wnj1B+j75Huzuxx71fae0eTY9z3KZg2MILQInwrpjweB+TKyzKbYuos+ALMMI
+         fQDX31WyExF0ZbQzUpQVGbNJ7VCClUbkKXwz1hao=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
-        Hoang Le <hoang.h.le@dektech.com.au>,
+        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 136/190] tipc: convert dest nodes address to network order
-Date:   Thu, 20 May 2021 11:23:20 +0200
-Message-Id: <20210520092106.691076367@linuxfoundation.org>
+Subject: [PATCH 4.4 137/190] net: stmmac: Set FIFO sizes for ipq806x
+Date:   Thu, 20 May 2021 11:23:21 +0200
+Message-Id: <20210520092106.723994761@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -41,39 +40,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hoang Le <hoang.h.le@dektech.com.au>
+From: Jonathan McDowell <noodles@earth.li>
 
-[ Upstream commit 1980d37565061ab44bdc2f9e4da477d3b9752e81 ]
+[ Upstream commit e127906b68b49ddb3ecba39ffa36a329c48197d3 ]
 
-(struct tipc_link_info)->dest is in network order (__be32), so we must
-convert the value to network order before assigning. The problem detected
-by sparse:
+Commit eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
+started using the TX FIFO size to verify what counts as a valid MTU
+request for the stmmac driver.  This is unset for the ipq806x variant.
+Looking at older patches for this it seems the RX + TXs buffers can be
+up to 8k, so set appropriately.
 
-net/tipc/netlink_compat.c:699:24: warning: incorrect type in assignment (different base types)
-net/tipc/netlink_compat.c:699:24:    expected restricted __be32 [usertype] dest
-net/tipc/netlink_compat.c:699:24:    got int
+(I sent this as an RFC patch in June last year, but received no replies.
+I've been running with this on my hardware (a MikroTik RB3011) since
+then with larger MTUs to support both the internal qca8k switch and
+VLANs with no problems. Without the patch it's impossible to set the
+larger MTU required to support this.)
 
-Acked-by: Jon Maloy <jmaloy@redhat.com>
-Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: Jonathan McDowell <noodles@earth.li>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/tipc/netlink_compat.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
-index 0975a28f8686..fb1b5dcf0142 100644
---- a/net/tipc/netlink_compat.c
-+++ b/net/tipc/netlink_compat.c
-@@ -632,7 +632,7 @@ static int tipc_nl_compat_link_dump(struct tipc_nl_compat_msg *msg,
+diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+index ee5a7c05a0e6..f1eb9f99076a 100644
+--- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
++++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
+@@ -361,6 +361,8 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
+ 	plat_dat->bsp_priv = gmac;
+ 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
+ 	plat_dat->multicast_filter_bins = 0;
++	plat_dat->tx_fifo_size = 8192;
++	plat_dat->rx_fifo_size = 8192;
  
- 	nla_parse_nested(link, TIPC_NLA_LINK_MAX, attrs[TIPC_NLA_LINK], NULL);
- 
--	link_info.dest = nla_get_flag(link[TIPC_NLA_LINK_DEST]);
-+	link_info.dest = htonl(nla_get_flag(link[TIPC_NLA_LINK_DEST]));
- 	link_info.up = htonl(nla_get_flag(link[TIPC_NLA_LINK_UP]));
- 	nla_strlcpy(link_info.str, link[TIPC_NLA_LINK_NAME],
- 		    TIPC_MAX_LINK_NAME);
+ 	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+ }
 -- 
 2.30.2
 
