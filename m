@@ -2,126 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393B038B0D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D652A38B0BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243768AbhETOBl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:01:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3633 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243483AbhETN7w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:59:52 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FmB911qMZzmWsr;
-        Thu, 20 May 2021 21:56:05 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 21:58:22 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
- May 2021 21:58:21 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <mpm@selenic.com>, <herbert@gondor.apana.org.au>,
-        <yuehaibing@huawei.com>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] hwrng: core - Use DEVICE_ATTR_<RW|RO> macro
-Date:   Thu, 20 May 2021 21:57:13 +0800
-Message-ID: <20210520135713.32464-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S243074AbhETOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:01:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243499AbhETN7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 09:59:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C24D60FF3;
+        Thu, 20 May 2021 13:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621519107;
+        bh=9Z9KtTy2XJzfMy3Np+yfMnnpZx1rqHwlJ+eViM6aKGg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zzZKKHy8Rvb2U6+fIVhMVR4d5FQY3bliHouy3pSAQ81rdLSMQgPZMcZUsRyciMnB5
+         ZbBk+zb+O85Z8nqUfoyYz6XrYMRXjrvGIt6tKvhYx8g0KCsREhI4GBhbgxJ1HtDdSt
+         fCZrWgZP/7jZ9IhI2OGk+7Au4bnWZ387ujj8o7iI=
+Date:   Thu, 20 May 2021 15:58:25 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        kernel test robot <oliver.sang@intel.com>,
+        stable <stable@vger.kernel.org>,
+        linux-nvidia@lists.surfsouth.com, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        igormtorrente@gmail.com, fero@drama.obuda.kando.hu
+Subject: Re: [PATCH] video: hgafb: correctly handle card detect failure
+ during probe
+Message-ID: <YKZrAVk85IjNYVHs@kroah.com>
+References: <20210516192714.25823-1-mail@anirudhrb.com>
+ <YKZm17dj4R1c2ns/@anirudhrb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKZm17dj4R1c2ns/@anirudhrb.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_RW()/DEVICE_ATTR_RO() helper instead of
-plain DEVICE_ATTR, which makes the code a bit shorter and
-easier to read.
+On Thu, May 20, 2021 at 07:10:39PM +0530, Anirudh Rayabharam wrote:
+> On Mon, May 17, 2021 at 12:57:14AM +0530, Anirudh Rayabharam wrote:
+> > The return value of hga_card_detect() is not properly handled causing
+> > the probe to succeed even though hga_card_detect() failed. Since probe
+> > succeeds, hgafb_open() can be called which will end up operating on an
+> > unmapped hga_vram. This results in an out-of-bounds access as reported
+> > by kernel test robot [1].
+> > 
+> > To fix this, correctly detect failure of hga_card_detect() by checking
+> > for a non-zero error code.
+> > 
+> > [1]: https://lore.kernel.org/lkml/20210516150019.GB25903@xsang-OptiPlex-9020/
+> > 
+> > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > Fixes: dc13cac4862c ("video: hgafb: fix potential NULL pointer dereference")
+> 
+> Greg, this is one of the UMN fixes we did. So, do you want to take this
+> patch into your tree?
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/char/hw_random/core.c | 36 +++++++++++++++--------------------
- 1 file changed, 15 insertions(+), 21 deletions(-)
+Yes, will queue it up in a few days after Linus takes the current pull
+request I sent him for this.
 
-diff --git a/drivers/char/hw_random/core.c b/drivers/char/hw_random/core.c
-index adb3c2bd7783..59beaf4d29bd 100644
---- a/drivers/char/hw_random/core.c
-+++ b/drivers/char/hw_random/core.c
-@@ -319,9 +319,9 @@ static int enable_best_rng(void)
- 	return ret;
- }
- 
--static ssize_t hwrng_attr_current_store(struct device *dev,
--					struct device_attribute *attr,
--					const char *buf, size_t len)
-+static ssize_t rng_current_store(struct device *dev,
-+				 struct device_attribute *attr,
-+				 const char *buf, size_t len)
- {
- 	int err = -ENODEV;
- 	struct hwrng *rng, *old_rng, *new_rng;
-@@ -354,9 +354,9 @@ static ssize_t hwrng_attr_current_store(struct device *dev,
- 	return err ? : len;
- }
- 
--static ssize_t hwrng_attr_current_show(struct device *dev,
--				       struct device_attribute *attr,
--				       char *buf)
-+static ssize_t rng_current_show(struct device *dev,
-+				struct device_attribute *attr,
-+				char *buf)
- {
- 	ssize_t ret;
- 	struct hwrng *rng;
-@@ -371,9 +371,9 @@ static ssize_t hwrng_attr_current_show(struct device *dev,
- 	return ret;
- }
- 
--static ssize_t hwrng_attr_available_show(struct device *dev,
--					 struct device_attribute *attr,
--					 char *buf)
-+static ssize_t rng_available_show(struct device *dev,
-+				  struct device_attribute *attr,
-+				  char *buf)
- {
- 	int err;
- 	struct hwrng *rng;
-@@ -392,22 +392,16 @@ static ssize_t hwrng_attr_available_show(struct device *dev,
- 	return strlen(buf);
- }
- 
--static ssize_t hwrng_attr_selected_show(struct device *dev,
--					struct device_attribute *attr,
--					char *buf)
-+static ssize_t rng_selected_show(struct device *dev,
-+				 struct device_attribute *attr,
-+				 char *buf)
- {
- 	return sysfs_emit(buf, "%d\n", cur_rng_set_by_user);
- }
- 
--static DEVICE_ATTR(rng_current, S_IRUGO | S_IWUSR,
--		   hwrng_attr_current_show,
--		   hwrng_attr_current_store);
--static DEVICE_ATTR(rng_available, S_IRUGO,
--		   hwrng_attr_available_show,
--		   NULL);
--static DEVICE_ATTR(rng_selected, S_IRUGO,
--		   hwrng_attr_selected_show,
--		   NULL);
-+static DEVICE_ATTR_RW(rng_current);
-+static DEVICE_ATTR_RO(rng_available);
-+static DEVICE_ATTR_RO(rng_selected);
- 
- static struct attribute *rng_dev_attrs[] = {
- 	&dev_attr_rng_current.attr,
--- 
-2.17.1
+thanks,
 
+greg k-h
