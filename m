@@ -2,95 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9D85389C47
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:03:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05F7D389C59
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229988AbhETEFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 00:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56094 "EHLO
+        id S229586AbhETEKm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 00:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhETEFB (ORCPT
+        with ESMTP id S229436AbhETEKk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 00:05:01 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E227C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:03:40 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id t4so8248447plc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:03:40 -0700 (PDT)
+        Thu, 20 May 2021 00:10:40 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CC5EC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:09:18 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id f9so20979920ybo.6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:09:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=G2plJT1XiULDHpwMBzOhMAgpJs8GM8boE9+4LAq43YQ=;
-        b=uZD7ZMWKjDklh9fS9fiGJFg3u5Nrut0SaIKSJej67+5MslWmJ+BtpfimXuIj6UFcZi
-         gu109e76aoAtw5VTXwkTLtTMQtsNAJEZ/8ffkk+01CYWKh16MJQGbJ3WzETzmaZC40ZY
-         qtBKyrMYTyilfz/c0FnouapjiN+hWS7rlXXfI6inm3Bc32NwbR4RkKUnAA7azsN8BjAV
-         Q/dB+i4MKY5L6A4jj1CGWh7Ln2ZY+XbcReE243nI+nwwBFs5kvL3KzUTfYeKlZ/W/v59
-         ntPH5Hp/pC+Em/Gy0u2SK3pIULSXgDyAobs/Z9dVJwi9l2NoqAhJMpSUa280fFMfVLBY
-         7GaA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v6QIg+HGlA05hGXLpgdj8SC7kH5ffoKTkXzO6Yddm3Q=;
+        b=sKWxnOfIqOAEZUi/QUshFqoO+T3dhoNsFQGveHOKhqstV/WnKO6jnlaF4DBOS2Whm5
+         eK/OjRn3JFLhxrOWrDOYf8Y4lGWj0UkVDRef6Rv2xXy6z3LAanAOl0ttRA7ANcLDPFai
+         B4Z6vmcN3FVQF+xnF9jCQQh7JCVg7Xk5dApGkLvqxRF2TMkm3hY7ajaKvmiW5BRTVz2A
+         PWVEaZqv90D4pkcVJtc/yjF/+Z5LuWOzdA6PL4DmnAaW8rc7wfRONzGZiDclB3pao6fR
+         DtY/DyecQVH9VnIazTRk5tXwPQxbqW0+xpQatQcyKmw6OLvRCcGrdEPFHkTWRmvT/D7U
+         5L4w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=G2plJT1XiULDHpwMBzOhMAgpJs8GM8boE9+4LAq43YQ=;
-        b=gijSHF8j+kEbeswYp2sop7oph13cYFKKE53wollDoWTTi2vYC1AVvq179ccvcS81Pa
-         krKkRKkgX4P6a4v9hxqcOwmopt/+TvCf5MQXvRNncRSMnxo2pimfjEWYi+gDjoMoF1+B
-         Ro70vbBWP7LiOhES1YG8vYRihmCZaHbIZBsjwXT9eCzgABcAjZQYNQIeIGRPrjKeKBxK
-         1kXQqMn4fPY5QKKFPdWYqg5V00/+a28teeFOj7GLe654YXrKt8SNx3HnyghHJh6i9HKR
-         8dgQxaFkcDtREf6Ai5lPe+E4ZcS+I8UQ8cvO4HbQHtsYcVQlRXSBsQkP6H+PMuUfK1yz
-         qkFA==
-X-Gm-Message-State: AOAM530hvzCSMCh/Uy6hdeQDXlxSZ/zzNoxCjwGXIfWYnWevUtrQ8G6w
-        iwIwPiwI93qbiA3l0krpGDA2nQ==
-X-Google-Smtp-Source: ABdhPJwY/uIVOZ5D7U0Z5xDFpV9+y9ry8sxg34z+ApagG38ZdmDoTIt36nb73X60pF6yNYcpEftPYg==
-X-Received: by 2002:a17:902:a5ca:b029:ef:ac0a:f00f with SMTP id t10-20020a170902a5cab02900efac0af00fmr3326798plq.22.1621483419827;
-        Wed, 19 May 2021 21:03:39 -0700 (PDT)
-Received: from localhost ([136.185.154.93])
-        by smtp.gmail.com with ESMTPSA id c3sm685370pfi.213.2021.05.19.21.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 21:03:39 -0700 (PDT)
-Date:   Thu, 20 May 2021 09:33:37 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        vireshk@kernel.org
-Subject: Re: [PATCH -next] opp: use list_del_init instead of
- list_del/INIT_LIST_HEAD
-Message-ID: <20210520040337.k47l2fxstfs2l2q3@vireshk-i7>
-References: <20210518044910.608878-1-yangyingliang@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v6QIg+HGlA05hGXLpgdj8SC7kH5ffoKTkXzO6Yddm3Q=;
+        b=U42x2F2jb/dS3BoCiO2f83OhaSBnCTr6U6x3lTtcrxhlfFwihm62Wrrjv8dJwgmgaN
+         swUI+tWBZt9fGDu6x3guwazaZyaMRrMIGW81jMoLCw2ZYkLYSRYjZFLMSJmdQJkGAtRp
+         vzoTsGlvDZaTdVw68Kc26G5ZFlB9FPQzG9d1JXhzLHsakpXlSTP1LiXnTsSQssM5xyIv
+         dqPS+J50pHS5qlbOtG1rHemYuqqYhx792oDgAgGPxM35Syd0eRAGdZ7a/Zn/AWvVlgnf
+         u9SeJVGlstpx+Wwzp4LsDNDCg+nQTxEDFxgaEYFqmm0KA97TrGRfvCr/F3OsTy3Isoif
+         Z84A==
+X-Gm-Message-State: AOAM533OwHhjwtF/YaXTl3vtjfUMTQbfKHcR8qf/AaEvz9qxkBH0gqlh
+        feeWGnGF16xq+Rvz6o4hH4InojUfXCgzPCbcIo0=
+X-Google-Smtp-Source: ABdhPJyfdtTj2Nu+kLFcG5AO5ylfW18wqOa0nNEL8VSkLTJbIrobBr7o6iGYvCtpCgVMAzLUnNcwJZ/uoDd5REUP3gE=
+X-Received: by 2002:a25:204:: with SMTP id 4mr4468671ybc.342.1621483757730;
+ Wed, 19 May 2021 21:09:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518044910.608878-1-yangyingliang@huawei.com>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <202105200314.TS5zUUYA-lkp@intel.com>
+In-Reply-To: <202105200314.TS5zUUYA-lkp@intel.com>
+From:   Jordan Niethe <jniethe5@gmail.com>
+Date:   Thu, 20 May 2021 14:09:06 +1000
+Message-ID: <CACzsE9q99HXR=pGBJXVnSF-CxHXRijAzdqKKBo8gX2HiJLgmsQ@mail.gmail.com>
+Subject: Re: arch/powerpc/lib/sstep.c:1172:21: error: variable 'suffix' set
+ but not used
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alistair Popple <alistair@popple.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 18-05-21, 12:49, Yang Yingliang wrote:
-> Using list_del_init() instead of list_del() + INIT_LIST_HEAD()
-> to simpify the code.
-> 
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+On Thu, May 20, 2021 at 5:01 AM kernel test robot <lkp@intel.com> wrote:
+>
+> Hi Jordan,
+>
+> FYI, the error/warning still remains.
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   c3d0e3fd41b7f0f5d5d5b6022ab7e813f04ea727
+> commit: 650b55b707fdfa764e9f2b81314d3eb4216fb962 powerpc: Add prefixed instructions to instruction data type
+> date:   1 year ago
+> config: powerpc-klondike_defconfig (attached as .config)
+> compiler: powerpc-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=650b55b707fdfa764e9f2b81314d3eb4216fb962
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 650b55b707fdfa764e9f2b81314d3eb4216fb962
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=powerpc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    arch/powerpc/lib/sstep.c: In function 'analyse_instr':
+> >> arch/powerpc/lib/sstep.c:1172:21: error: variable 'suffix' set but not used [-Werror=unused-but-set-variable]
+>     1172 |  unsigned int word, suffix;
+Yeah, we should only need suffix if we have prefixed instructions.
+>          |                     ^~~~~~
+>    arch/powerpc/lib/sstep.c:1168:31: error: variable 'rc' set but not used [-Werror=unused-but-set-variable]
+>     1168 |  unsigned int opcode, ra, rb, rc, rd, spr, u;
+>          |                               ^~
+>    cc1: all warnings being treated as errors
+>
+>
+> vim +/suffix +1172 arch/powerpc/lib/sstep.c
+>
+>   1153
+>   1154  /*
+>   1155   * Decode an instruction, and return information about it in *op
+>   1156   * without changing *regs.
+>   1157   * Integer arithmetic and logical instructions, branches, and barrier
+>   1158   * instructions can be emulated just using the information in *op.
+>   1159   *
+>   1160   * Return value is 1 if the instruction can be emulated just by
+>   1161   * updating *regs with the information in *op, -1 if we need the
+>   1162   * GPRs but *regs doesn't contain the full register set, or 0
+>   1163   * otherwise.
+>   1164   */
+>   1165  int analyse_instr(struct instruction_op *op, const struct pt_regs *regs,
+>   1166                    struct ppc_inst instr)
+>   1167  {
+>   1168          unsigned int opcode, ra, rb, rc, rd, spr, u;
+>   1169          unsigned long int imm;
+>   1170          unsigned long int val, val2;
+>   1171          unsigned int mb, me, sh;
+> > 1172          unsigned int word, suffix;
+>   1173          long ival;
+>   1174
+>   1175          word = ppc_inst_val(instr);
+>   1176          suffix = ppc_inst_suffix(instr);
+>   1177
+>   1178          op->type = COMPUTE;
+>   1179
+>   1180          opcode = ppc_inst_primary_opcode(instr);
+>   1181          switch (opcode) {
+>   1182          case 16:        /* bc */
+>   1183                  op->type = BRANCH;
+>   1184                  imm = (signed short)(word & 0xfffc);
+>   1185                  if ((word & 2) == 0)
+>   1186                          imm += regs->nip;
+>   1187                  op->val = truncate_if_32bit(regs->msr, imm);
+>   1188                  if (word & 1)
+>   1189                          op->type |= SETLK;
+>   1190                  if (branch_taken(word, regs, op))
+>   1191                          op->type |= BRTAKEN;
+>   1192                  return 1;
+>   1193  #ifdef CONFIG_PPC64
+>   1194          case 17:        /* sc */
+>   1195                  if ((word & 0xfe2) == 2)
+>   1196                          op->type = SYSCALL;
+>   1197                  else
+>   1198                          op->type = UNKNOWN;
+>   1199                  return 0;
+>   1200  #endif
+>   1201          case 18:        /* b */
+>   1202                  op->type = BRANCH | BRTAKEN;
+>   1203                  imm = word & 0x03fffffc;
+>   1204                  if (imm & 0x02000000)
+>   1205                          imm -= 0x04000000;
+>   1206                  if ((word & 2) == 0)
+>   1207                          imm += regs->nip;
+>   1208                  op->val = truncate_if_32bit(regs->msr, imm);
+>   1209                  if (word & 1)
+>   1210                          op->type |= SETLK;
+>   1211                  return 1;
+>   1212          case 19:
+>   1213                  switch ((word >> 1) & 0x3ff) {
+>   1214                  case 0:         /* mcrf */
+>   1215                          op->type = COMPUTE + SETCC;
+>   1216                          rd = 7 - ((word >> 23) & 0x7);
+>   1217                          ra = 7 - ((word >> 18) & 0x7);
+>   1218                          rd *= 4;
+>   1219                          ra *= 4;
+>   1220                          val = (regs->ccr >> ra) & 0xf;
+>   1221                          op->ccval = (regs->ccr & ~(0xfUL << rd)) | (val << rd);
+>   1222                          return 1;
+>   1223
+>   1224                  case 16:        /* bclr */
+>   1225                  case 528:       /* bcctr */
+>   1226                          op->type = BRANCH;
+>   1227                          imm = (word & 0x400)? regs->ctr: regs->link;
+>   1228                          op->val = truncate_if_32bit(regs->msr, imm);
+>   1229                          if (word & 1)
+>   1230                                  op->type |= SETLK;
+>   1231                          if (branch_taken(word, regs, op))
+>   1232                                  op->type |= BRTAKEN;
+>   1233                          return 1;
+>   1234
+>   1235                  case 18:        /* rfid, scary */
+>   1236                          if (regs->msr & MSR_PR)
+>   1237                                  goto priv;
+>   1238                          op->type = RFI;
+>   1239                          return 0;
+>   1240
+>   1241                  case 150:       /* isync */
+>   1242                          op->type = BARRIER | BARRIER_ISYNC;
+>   1243                          return 1;
+>   1244
+>   1245                  case 33:        /* crnor */
+>   1246                  case 129:       /* crandc */
+>   1247                  case 193:       /* crxor */
+>   1248                  case 225:       /* crnand */
+>   1249                  case 257:       /* crand */
+>   1250                  case 289:       /* creqv */
+>   1251                  case 417:       /* crorc */
+>   1252                  case 449:       /* cror */
+>   1253                          op->type = COMPUTE + SETCC;
+>   1254                          ra = (word >> 16) & 0x1f;
+>   1255                          rb = (word >> 11) & 0x1f;
+>   1256                          rd = (word >> 21) & 0x1f;
+>   1257                          ra = (regs->ccr >> (31 - ra)) & 1;
+>   1258                          rb = (regs->ccr >> (31 - rb)) & 1;
+>   1259                          val = (word >> (6 + ra * 2 + rb)) & 1;
+>   1260                          op->ccval = (regs->ccr & ~(1UL << (31 - rd))) |
+>   1261                                  (val << (31 - rd));
+>   1262                          return 1;
+>   1263                  }
+>   1264                  break;
+>   1265          case 31:
+>   1266                  switch ((word >> 1) & 0x3ff) {
+>   1267                  case 598:       /* sync */
+>   1268                          op->type = BARRIER + BARRIER_SYNC;
+>   1269  #ifdef __powerpc64__
+>   1270                          switch ((word >> 21) & 3) {
+>   1271                          case 1:         /* lwsync */
+>   1272                                  op->type = BARRIER + BARRIER_LWSYNC;
+>   1273                                  break;
+>   1274                          case 2:         /* ptesync */
+>   1275                                  op->type = BARRIER + BARRIER_PTESYNC;
+>   1276                                  break;
+>   1277                          }
+>   1278  #endif
+>   1279                          return 1;
+>   1280
+>   1281                  case 854:       /* eieio */
+>   1282                          op->type = BARRIER + BARRIER_EIEIO;
+>   1283                          return 1;
+>   1284                  }
+>   1285                  break;
+>   1286          }
+>   1287
+>   1288          /* Following cases refer to regs->gpr[], so we need all regs */
+>   1289          if (!FULL_REGS(regs))
+>   1290                  return -1;
+>   1291
+>   1292          rd = (word >> 21) & 0x1f;
+>   1293          ra = (word >> 16) & 0x1f;
+>   1294          rb = (word >> 11) & 0x1f;
+>   1295          rc = (word >> 6) & 0x1f;
+>   1296
+>   1297          switch (opcode) {
+>   1298  #ifdef __powerpc64__
+>   1299          case 2:         /* tdi */
+>   1300                  if (rd & trap_compare(regs->gpr[ra], (short) word))
+>   1301                          goto trap;
+>   1302                  return 1;
+>   1303  #endif
+>   1304          case 3:         /* twi */
+>   1305                  if (rd & trap_compare((int)regs->gpr[ra], (short) word))
+>   1306                          goto trap;
+>   1307                  return 1;
+>   1308
+>
 > ---
->  drivers/opp/of.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/opp/of.c b/drivers/opp/of.c
-> index c582a9ca397b..aa75a1caf08a 100644
-> --- a/drivers/opp/of.c
-> +++ b/drivers/opp/of.c
-> @@ -433,8 +433,7 @@ static void lazy_link_required_opp_table(struct opp_table *new_table)
->  
->  		/* All required opp-tables found, remove from lazy list */
->  		if (!lazy) {
-> -			list_del(&opp_table->lazy);
-> -			INIT_LIST_HEAD(&opp_table->lazy);
-> +			list_del_init(&opp_table->lazy);
->  
->  			list_for_each_entry(opp, &opp_table->opp_list, node)
->  				_required_opps_available(opp, opp_table->required_opp_count);
-
-Applied. Thanks.
-
--- 
-viresh
+> 0-DAY CI Kernel Test Service, Intel Corporation
+> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
