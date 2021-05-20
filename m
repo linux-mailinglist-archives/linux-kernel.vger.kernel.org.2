@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EBF538A845
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:47:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB67B38A800
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238037AbhETKs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:48:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33416 "EHLO mail.kernel.org"
+        id S237134AbhETKpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237078AbhETKcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:32:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A211161C46;
-        Thu, 20 May 2021 09:52:33 +0000 (UTC)
+        id S237045AbhETK33 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:29:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C01B61C3A;
+        Thu, 20 May 2021 09:51:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504354;
-        bh=/hcxhy2mgNjwhbDfiyWU5PPzDU5bWuTaMU+8t8Y+/pQ=;
+        s=korg; t=1621504281;
+        bh=LdD+ZUYfvzHxZiSBwdzdSmm41ilw312hMDHiNRqdreY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gonbEFruA1Uf3qjEvKYalHy4cQ65hBvrej5cVjbPC7IyDdkCtij5YXHoRYwu18ua0
-         l4DXTzX4pHLWCycsMUc59f22/uZDF/CrJUCwFLsU4dRo8um6ympS9TVfrwH4QFOOM/
-         pyN7pKCYURMV5veInzzVSZ2v3fD0bQ9D8On9f7+I=
+        b=TxHxfevhTB3b5L9YwySApfdN74wxNsBDZKZTD2HH0sn8S3/nPgWRe3NhTnfpYuFIJ
+         hO+gEwrMZW/XBP/4qmwUGjZ9n5m2RaLcn5bhMfIHA05CFx5GInTgxO7z1DV0cj/XJP
+         uxfFdbBGilHqyNnWEKfuONian0KLXbVcb6x7sp0k=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        He Ying <heying24@huawei.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 174/323] firmware: qcom-scm: Fix QCOM_SCM configuration
-Date:   Thu, 20 May 2021 11:21:06 +0200
-Message-Id: <20210520092126.077248573@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 175/323] platform/x86: pmc_atom: Match all Beckhoff Automation baytrail boards with critclk_systems DMI table
+Date:   Thu, 20 May 2021 11:21:07 +0200
+Message-Id: <20210520092126.116384324@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,45 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: He Ying <heying24@huawei.com>
+From: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
 
-[ Upstream commit 2954a6f12f250890ec2433cec03ba92784d613e8 ]
+[ Upstream commit d21e5abd3a005253eb033090aab2e43bce090d89 ]
 
-When CONFIG_QCOM_SCM is y and CONFIG_HAVE_ARM_SMCCC
-is not set, compiling errors are encountered as follows:
+pmc_plt_clk* clocks are used for ethernet controllers, so need to stay
+turned on. This adds the affected board family to critclk_systems DMI
+table, so the clocks are marked as CLK_CRITICAL and not turned off.
 
-drivers/firmware/qcom_scm-smc.o: In function `__scm_smc_do_quirk':
-qcom_scm-smc.c:(.text+0x36): undefined reference to `__arm_smccc_smc'
-drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call':
-qcom_scm-legacy.c:(.text+0xe2): undefined reference to `__arm_smccc_smc'
-drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call_atomic':
-qcom_scm-legacy.c:(.text+0x1f0): undefined reference to `__arm_smccc_smc'
+This replaces the previously listed boards with a match for the whole
+device family CBxx63. CBxx63 matches only baytrail devices.
+There are new affected boards that would otherwise need to be listed.
+There are unaffected boards in the family, but having the clocks
+turned on is not an issue.
 
-Note that __arm_smccc_smc is defined when HAVE_ARM_SMCCC is y.
-So add dependency on HAVE_ARM_SMCCC in QCOM_SCM configuration.
-
-Fixes: 916f743da354 ("firmware: qcom: scm: Move the scm driver to drivers/firmware")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: He Ying <heying24@huawei.com>
-Link: https://lore.kernel.org/r/20210406094200.60952-1-heying24@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 648e921888ad ("clk: x86: Stop marking clocks as CLK_IS_CRITICAL")
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Steffen Dirkwinkel <s.dirkwinkel@beckhoff.com>
+Link: https://lore.kernel.org/r/20210412133006.397679-1-linux-kernel-dev@beckhoff.com
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/firmware/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/platform/x86/pmc_atom.c | 28 ++--------------------------
+ 1 file changed, 2 insertions(+), 26 deletions(-)
 
-diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
-index 42c4ff75281b..89c5f3651c3b 100644
---- a/drivers/firmware/Kconfig
-+++ b/drivers/firmware/Kconfig
-@@ -206,6 +206,7 @@ config FW_CFG_SYSFS_CMDLINE
- config QCOM_SCM
- 	bool
- 	depends on ARM || ARM64
-+	depends on HAVE_ARM_SMCCC
- 	select RESET_CONTROLLER
- 
- config QCOM_SCM_32
+diff --git a/drivers/platform/x86/pmc_atom.c b/drivers/platform/x86/pmc_atom.c
+index 92205b90c25c..d1d5ec3c0f14 100644
+--- a/drivers/platform/x86/pmc_atom.c
++++ b/drivers/platform/x86/pmc_atom.c
+@@ -453,34 +453,10 @@ static const struct dmi_system_id critclk_systems[] = {
+ 	},
+ 	{
+ 		/* pmc_plt_clk* - are used for ethernet controllers */
+-		.ident = "Beckhoff CB3163",
++		.ident = "Beckhoff Baytrail",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
+-			DMI_MATCH(DMI_BOARD_NAME, "CB3163"),
+-		},
+-	},
+-	{
+-		/* pmc_plt_clk* - are used for ethernet controllers */
+-		.ident = "Beckhoff CB4063",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
+-			DMI_MATCH(DMI_BOARD_NAME, "CB4063"),
+-		},
+-	},
+-	{
+-		/* pmc_plt_clk* - are used for ethernet controllers */
+-		.ident = "Beckhoff CB6263",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
+-			DMI_MATCH(DMI_BOARD_NAME, "CB6263"),
+-		},
+-	},
+-	{
+-		/* pmc_plt_clk* - are used for ethernet controllers */
+-		.ident = "Beckhoff CB6363",
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Beckhoff Automation"),
+-			DMI_MATCH(DMI_BOARD_NAME, "CB6363"),
++			DMI_MATCH(DMI_PRODUCT_FAMILY, "CBxx63"),
+ 		},
+ 	},
+ 	{
 -- 
 2.30.2
 
