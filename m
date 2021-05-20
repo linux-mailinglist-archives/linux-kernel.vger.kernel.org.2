@@ -2,71 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B652938AEAF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:42:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 251FB38AEB2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:43:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242627AbhETMoC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:44:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S241519AbhETMoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:44:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhETMnN (ORCPT
+        with ESMTP id S241576AbhETMnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 08:43:13 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96BBBC056487
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:56 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id z137-20020a1c7e8f0000b02901774f2a7dc4so4959662wmc.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:56 -0700 (PDT)
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 958B4C056488
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:57 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id q5so17382864wrs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:02:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=lGLjcLP6XbktLbs6h51Tzfo9UCd4ALnwNCABJxfHlD8=;
-        b=RswVceEghKvRou9H+Y+n/4SGLr0iHCK4YwE3OtciUiXOYGX33RrcazH0XHhG0gM+FR
-         gDrggVWuc+eJ1ovzgkuY+nVHRfRMrHXKxfrg+GjAq4UJ/sIPYyWgLURB/U1ydhi+rjL4
-         a0gT7DPM+iyP3Hdl+CY7cNrDKLkgXD97xlVuD0YpS0TAa4vANNYC4IZAtHLY7yOiIGnZ
-         TsXH7/P3K+/tLqt6ivBjAxI4vTZTF19wicEn7EeqL1MYCjzYWyLcJe3EkWuV3k4dV2u7
-         WSngNPnxaWDxif2K48yALBZJ+wpI3RYui68JmuoX7vY6B1uSkUmP+m9gPbGh1rpieE3S
-         mQ5A==
+        bh=rMlp5Ni2aMFHyMfn1NEHDx/+WQIjP8upodgZGGEhVrs=;
+        b=gJ5vwtlJY7kaNteg3cWUjwJv5QuZOeibKsxrj//n0jDmkoKtte74LApZcTlPr3qEqP
+         Mzlsm32bjp2uf3LzaVXTu+oFZkLGE4pTbES/qflCNupCozcEmwvchzxKRUHqTfRKpNXs
+         zEicCevttpN4sMsTEZ94vVRt504daIkzMKuLcw3vq1J0PIZIfEVUUHhct/UQaU/ZB9gx
+         J5d4neL47KFQgbcS03O3OV+qSvgERINie9CzvOoS3MZgvX8kCZhOlq8BmHybvhU7Ozwz
+         RqTuE8aFs3eZ8FW0ANRkzgtq4JeJkrDEZqY6jD+Talvm6SYqqFJfG/V/DGQCZbqQ2YnC
+         QGlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=lGLjcLP6XbktLbs6h51Tzfo9UCd4ALnwNCABJxfHlD8=;
-        b=gPdW3l5LcQiO0JlDw18HLJAsnUaCgTYvqFvxE7Kcli3So4yC+Wu34h3qczaIy0BRk2
-         eQq/3xVL1dmludI13WH4/UPkstqywtgaZdZuXW+HE0RDQuod8UWtFpTQwrARfMUkk0cW
-         ADVYThMZGGeLGX+9kUAo8Y44Y8kgKRBP2Om3IVBvU60VcWa5HqT1gmzTyf6hgxkYZ/fr
-         GPsvtyrlw/4fg8TLSU5kElgqESK55WHx3auu0oCd/6HCjc0Vk37HW9HXnvgWm8sN6xje
-         Nu++uAb9CeShk3ZS0kw4846knEs5or3S1WY2x09kdd2KllIv1PmrfHN2FMBHcsYDCX7f
-         bf6A==
-X-Gm-Message-State: AOAM532DgxfIi2MWFwlqhLijjMDzRtXPXRC1ARPkgQhTJVseuvzGY/9P
-        +3yGYb10TSOO/x1j6aUmOldDFQ==
-X-Google-Smtp-Source: ABdhPJxYJE37rXT7HUjUcMLnTidaMQQQNRQYf0bEaPu9Z9ouJiVKZK37ju5F7bwa1KL/1nYfylvzFg==
-X-Received: by 2002:a1c:e241:: with SMTP id z62mr3728499wmg.135.1621512175250;
-        Thu, 20 May 2021 05:02:55 -0700 (PDT)
+        bh=rMlp5Ni2aMFHyMfn1NEHDx/+WQIjP8upodgZGGEhVrs=;
+        b=gn6FZ4H5rhIa/GKdcwRck9Us+YUK0v7c19tF+aZBvmcydSz+l3QsCaot6Lzlnieex8
+         FbyXIEGvooxOu1oP1ZOO/tAAQJ6r8tUyxv3sYFhQ8cSAUBHI1wdz5ZUpAU4KjGA9gCf5
+         7HiJ4xN+GQLqPO/pVIvtqCB1CpoyoJQ9VSIY/kg2diP0w1un3STaR468r6tkU/eoHG5a
+         Y5tWjSsR58yeSUKt74H5sLRI5Ues/DytRoodMHmJoavOsr+AXWwdnmoVxieCX0UvWAmi
+         1NquKn3n77xGbtSi+KsHwvPKchwOOELE+9txxocEq/g00F0bOKTJAJ8pGiHAGrASvzzU
+         qXoQ==
+X-Gm-Message-State: AOAM532mIxMRbJGLawvnD4CbLslsL6enb03OmdZpj466h3o8Hrg+seCD
+        n9/KV7EAeHV821b+ZOj0b6TWpg==
+X-Google-Smtp-Source: ABdhPJxP35SmgHpjJBCWNK5+CE0sT2ZLGFbHSqTr5K3epue7/zsIbU6Tm4drzmp4lFX5MYElIP+/cg==
+X-Received: by 2002:adf:e291:: with SMTP id v17mr3940756wri.149.1621512176218;
+        Thu, 20 May 2021 05:02:56 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.02.54
+        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.02.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:02:54 -0700 (PDT)
+        Thu, 20 May 2021 05:02:55 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jerome Glisse <glisse@freedesktop.org>,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 03/38] drm/radeon/radeon_cs: Fix incorrectly documented function 'radeon_cs_parser_fini'
-Date:   Thu, 20 May 2021 13:02:13 +0100
-Message-Id: <20210520120248.3464013-4-lee.jones@linaro.org>
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: [PATCH 04/38] drm/mediatek/mtk_disp_ovl: Strip and demote non-conformant header
+Date:   Thu, 20 May 2021 13:02:14 +0100
+Message-Id: <20210520120248.3464013-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520120248.3464013-1-lee.jones@linaro.org>
 References: <20210520120248.3464013-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -74,36 +73,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/radeon/radeon_cs.c:417: warning: expecting prototype for cs_parser_fini(). Prototype was for radeon_cs_parser_fini() instead
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'clk' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'regs' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'cmdq_reg' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'vblank_cb' not described in 'mtk_disp_ovl'
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c:83: warning: Function parameter or member 'vblank_cb_data' not described in 'mtk_disp_ovl'
 
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc: Philipp Zabel <p.zabel@pengutronix.de>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Sumit Semwal <sumit.semwal@linaro.org>
-Cc: Jerome Glisse <glisse@freedesktop.org>
-Cc: amd-gfx@lists.freedesktop.org
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
 Cc: dri-devel@lists.freedesktop.org
-Cc: linux-media@vger.kernel.org
-Cc: linaro-mm-sig@lists.linaro.org
+Cc: linux-mediatek@lists.infradead.org
+Cc: linux-arm-kernel@lists.infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/radeon/radeon_cs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/radeon/radeon_cs.c b/drivers/gpu/drm/radeon/radeon_cs.c
-index 48162501c1ee6..80a3bee933d6d 100644
---- a/drivers/gpu/drm/radeon/radeon_cs.c
-+++ b/drivers/gpu/drm/radeon/radeon_cs.c
-@@ -405,7 +405,7 @@ static int cmp_size_smaller_first(void *priv, const struct list_head *a,
- }
+diff --git a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+index 961f87f8d4d15..fa9d79963cd34 100644
+--- a/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
++++ b/drivers/gpu/drm/mediatek/mtk_disp_ovl.c
+@@ -66,9 +66,8 @@ struct mtk_disp_ovl_data {
+ 	bool smi_id_en;
+ };
  
- /**
-- * cs_parser_fini() - clean parser states
-+ * radeon_cs_parser_fini() - clean parser states
-  * @parser:	parser structure holding parsing context.
-  * @error:	error number
-  * @backoff:	indicator to backoff the reservation
+-/**
++/*
+  * struct mtk_disp_ovl - DISP_OVL driver structure
+- * @ddp_comp: structure containing type enum and hardware resources
+  * @crtc: associated crtc to report vblank events to
+  * @data: platform data
+  */
 -- 
 2.31.1
 
