@@ -2,125 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A136D38AF71
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBA8438AF70
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243262AbhETNA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:00:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33724 "EHLO
+        id S243399AbhETNAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:00:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243510AbhETM77 (ORCPT
+        with ESMTP id S243516AbhETNAA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:59:59 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 007F2C07E5EE
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:47 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id y14so15384540wrm.13
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:47 -0700 (PDT)
+        Thu, 20 May 2021 09:00:00 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F62C07E5EF
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:48 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id c14so15683580wrx.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2vuP9pLH1GNFHwKBRVQ+EoRKak5xCUlItci//u09Xk8=;
-        b=ocxpZ7zRPzo57+6/Fsnho3JT0+eWzP76JoZoItEJXbQN+knRsvJgsRlPLzIMVzKtaa
-         mkheSRD0qP0DLda1T1rXusSQCoPYP8M5aNmTiRQMHQ4bvkSWJqajm0Wo9Mq9avvYByY0
-         pfMmfLkfglzkiLD2yuSuP3tqmsfmcFXLSqb9q3pFM2viEl78Njitqsbe3L+uqg8CF8kz
-         A6jrnT0ujJJyMh170OjAOnC/H1asTVk0+xAaV385iPV0oy3VU0zgwIK0s/rh/k4hRkph
-         bOKqOE/0Nj3AY+1IzD57qVzTJp8Ubxolr0TBfVh4ascNCAup6BfE7YD17swcAfLWx4ZI
-         5yOg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=q0C+y7HOfSg/6tgxS7HJNLZy6uehQaI3fIiA1xOsmw8=;
+        b=EK5UiuJJcjQQR3bHsXev1MOW/juVA6ocYp8BJrkzIcxa0qhd6HL136HUsZGgJkw186
+         et1seY37AEl9JKcpQtC2unmPbHSWVFpWnJwREQlArIcLycJ9s3+ETovvxG0WrDYBtTXD
+         f42w2nBL9s17nvIpySDBtNLdOsxlROt0sUBoRCueHgxNqPlXRGPT3WsdPcu0Suyf/jij
+         sfd8htNEjZ7c93q9JE+b9SjhiNNHucEMTJaDrWNHPj2aSoKUn1nBXyku6iflwlc87yVG
+         6ZCRuQf6Lw/G32n79EhGEvrbxlsqPn6dGvsRXlXCTEmZ1MVoqIT0gV1q9BLIik97sEml
+         5DTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2vuP9pLH1GNFHwKBRVQ+EoRKak5xCUlItci//u09Xk8=;
-        b=qbwHXW/veT2Rh1DEEb/sQq9X9k6dKB2UpGWZspe9FtgKVjSPUaqONHGc7Ioska9QTn
-         q8Heuwc9FeKKsosyhu2uhrwapz+evBKi0lY8cBXtXkwmX1J9L64YmFZM3nm9Oo9X4LFZ
-         jpN1iRqOVPXVFyyN80SK9/Hrxxgf//cB+FgLAOJN8yVtc2Er1rOKgMFmRmNQytmlFEGN
-         S7wGvHnFr+xudW1vphuTtmO7nCANAb9+dGCzjCO+gCVRzOUdjYiZZOAKAkdmOOyKUVfA
-         4u4ysElpdlDv/7Xvf4TXg8NJrdvMEEaLrpSkMIkzxYnUoepNQV/H2W3SUA2FojT7Tzvm
-         jCqQ==
-X-Gm-Message-State: AOAM531Y9pcMYJzrLwiQT2Q8wvsKa4kpEMeAr1OHNaoJ6D4Fe9XR1x9u
-        g8Wk8KD36fNcMVX1p0c2KLnUgA==
-X-Google-Smtp-Source: ABdhPJx/TXikSkc7C/v1F9MZEU3YeLs4Ntw7IApwlyf3djEsw/U9yhQEwRad6QvbBU8Hm6OLrw1XNQ==
-X-Received: by 2002:a5d:4b87:: with SMTP id b7mr3889282wrt.129.1621513546632;
-        Thu, 20 May 2021 05:25:46 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=q0C+y7HOfSg/6tgxS7HJNLZy6uehQaI3fIiA1xOsmw8=;
+        b=L/iroQrKiemUdAXHcXLjDRloVCKDD0Nz0A42cKGJfoDJC/HeYeRy4VEsaX7M2MwdfY
+         RQ1gGGzWKfsqU38krZrgCDgme5ud1c17Uqr4td2EySwlxhGOypPwJ4UtqrfWF4Lrod4g
+         Iw/6bN3DK0Y7zgD2AJHrYpDsZeaxIP7K8KsKOfJxP2I0DYbyEmhutOIK/RAWq0wf2S68
+         Z23zQEIFVmxgqvRpyKSQzli6BudYLL0qLZE905AOiJG8v7x3YQ5OKjwuQ4bR8J3Mz0Iw
+         7TZ2ck6Eto0JUnAUR7XOtuuFwZwj7Th1ry7Ei8RjXslXJ2zTEM0XzxH7xD7PU16y/xZ/
+         6N/w==
+X-Gm-Message-State: AOAM532O9p60cdToxnoCkIR6Xb7D663HOQJxYuQXi/h6Kif7v+HbOcbI
+        w4/UQwsxbvQEtlbycbo7ZoCV9870PioJYg==
+X-Google-Smtp-Source: ABdhPJxQEE80mbLz8n2ne+LzLhW0Y2jI1/+Lp7TCBgF57VR2JCx+aj4e86MZO8U/+nHx+2YK2UZPtw==
+X-Received: by 2002:a5d:4f03:: with SMTP id c3mr4010026wru.158.1621513547499;
+        Thu, 20 May 2021 05:25:47 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id i11sm3205643wrq.26.2021.05.20.05.25.45
+        by smtp.gmail.com with ESMTPSA id i11sm3205643wrq.26.2021.05.20.05.25.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:25:46 -0700 (PDT)
+        Thu, 20 May 2021 05:25:47 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Anders Blomdell <anders.blomdell@control.lth.se>,
-        Comedi <comedi@comedi.org>, "David A. Schleef" <ds@schleef.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Herman.Bruyninckx@mech.kuleuven.ac.be,
+Cc:     linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
         H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Ian Abbott <abbotti@mev.co.uk>,
-        "J.P. Mellor" <jpmellor@rose-hulman.edu>,
-        Klaas.Gadeyne@mech.kuleuven.ac.be, linux-pwm@vger.kernel.org,
-        linux-staging@lists.linux.dev,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        "Spencer E. Olson" <olsonse@umich.edu>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Truxton Fulton <trux@truxton.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Wim.Meeussen@mech.kuleuven.ac.be
-Subject: [PATCH 0/6] Rid W=1 warnings from Comedi
-Date:   Thu, 20 May 2021 13:25:32 +0100
-Message-Id: <20210520122538.3470259-1-lee.jones@linaro.org>
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "David A. Schleef" <ds@schleef.org>, linux-staging@lists.linux.dev
+Subject: [PATCH 1/6] comedi: comedi_8254: Fix descriptions for 'i8254' and 'iobase'
+Date:   Thu, 20 May 2021 13:25:33 +0100
+Message-Id: <20210520122538.3470259-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210520122538.3470259-1-lee.jones@linaro.org>
+References: <20210520122538.3470259-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-Lee Jones (6):
-  comedi: comedi_8254: Fix descriptions for 'i8254' and 'iobase'
-  comedi: drivers: jr3_pci: Remove set but unused variable
-    'min_full_scale'
-  comedi: drivers: ni_tio: Fix slightly broken kernel-doc and demote
-    others
-  comedi: drivers: ni_routes: Demote non-conforming kernel-doc headers
-  comedi: drivers: ni_mio_common: Move 'range_ni_E_ao_ext' to where it
-    is used
-  comedi: drivers: comedi_isadma: Fix misspelling of 'dma_chan1'
+ drivers/staging/comedi/drivers/comedi_8254.c:561: warning: Function parameter or member 'i8254' not described in 'comedi_8254_subdevice_init'
+ drivers/staging/comedi/drivers/comedi_8254.c:620: warning: Function parameter or member 'iobase' not described in 'comedi_8254_init'
+ drivers/staging/comedi/drivers/comedi_8254.c:620: warning: Excess function parameter 'mmio' description in 'comedi_8254_init'
 
- drivers/comedi/drivers/comedi_8254.c   |  3 ++-
- drivers/comedi/drivers/comedi_isadma.c |  2 +-
- drivers/comedi/drivers/jr3_pci.c       |  3 +--
- drivers/comedi/drivers/ni_mio_common.c |  9 ---------
- drivers/comedi/drivers/ni_routes.c     |  6 +++---
- drivers/comedi/drivers/ni_stc.h        |  9 ++++++++-
- drivers/comedi/drivers/ni_tio.c        | 12 ++++++------
- 7 files changed, 21 insertions(+), 23 deletions(-)
-
-Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
-Cc: Anders Blomdell <anders.blomdell@control.lth.se>
-Cc: Comedi <comedi@comedi.org>
-Cc: "David A. Schleef" <ds@schleef.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Herman.Bruyninckx@mech.kuleuven.ac.be
-Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: Ian Abbott <abbotti@mev.co.uk>
-Cc: "J.P. Mellor" <jpmellor@rose-hulman.edu>
-Cc: Klaas.Gadeyne@mech.kuleuven.ac.be
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: linux-pwm@vger.kernel.org
+Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: "David A. Schleef" <ds@schleef.org>
 Cc: linux-staging@lists.linux.dev
-Cc: Mori Hess <fmhess@users.sourceforge.net>
-Cc: "Spencer E. Olson" <olsonse@umich.edu>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Truxton Fulton <trux@truxton.com>
-Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-Cc: Wim.Meeussen@mech.kuleuven.ac.be
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/comedi/drivers/comedi_8254.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/comedi/drivers/comedi_8254.c b/drivers/comedi/drivers/comedi_8254.c
+index d1d509e9add94..4bf5daa9e8855 100644
+--- a/drivers/comedi/drivers/comedi_8254.c
++++ b/drivers/comedi/drivers/comedi_8254.c
+@@ -555,6 +555,7 @@ static int comedi_8254_insn_config(struct comedi_device *dev,
+ /**
+  * comedi_8254_subdevice_init - initialize a comedi_subdevice for the 8254 timer
+  * @s:		comedi_subdevice struct
++ * @i8254:	comedi_8254 struct
+  */
+ void comedi_8254_subdevice_init(struct comedi_subdevice *s,
+ 				struct comedi_8254 *i8254)
+@@ -607,7 +608,7 @@ static struct comedi_8254 *__i8254_init(unsigned long iobase,
+ 
+ /**
+  * comedi_8254_init - allocate and initialize the 8254 device for pio access
+- * @mmio:	port I/O base address
++ * @iobase:	port I/O base address
+  * @osc_base:	base time of the counter in ns
+  *		OPTIONAL - only used by comedi_8254_cascade_ns_to_timer()
+  * @iosize:	I/O register size
 -- 
 2.31.1
 
