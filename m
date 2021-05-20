@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD9A38A7DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD7538A7DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232315AbhETKnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54246 "EHLO mail.kernel.org"
+        id S237781AbhETKn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:43:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54242 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236113AbhETK2V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:28:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B408061C2F;
-        Thu, 20 May 2021 09:50:54 +0000 (UTC)
+        id S236803AbhETK2Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:28:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E7F9B61C2C;
+        Thu, 20 May 2021 09:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504255;
-        bh=bLWm8hy44V8UpnLnkmIfeoX9moIiwg7OlwNSNKDjnRc=;
+        s=korg; t=1621504257;
+        bh=mhxo0Y4O+//2DH4/zYXUM/1/ZzLnbPkrIy1xHvogl6o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MS4vbZUg4ps5wNGCdveoGe4mQU2+RuEWYmWbr/uHSRxgZaQsoqGuOgV7BiSFaYr1u
-         SmJKTg8o7FZKvbkgpjbh0iA+EArODkDMxd5Bp13i2GUd5NykxKOloeIsKAQv2HP8Xu
-         CqlMnvgdcCzJ7bJedbit+YyjSXoKUQpzCbU8HCbw=
+        b=VXPPvioI97R7Ield3/t2736lFXS7ARnwMtZHubijREfG5p/RJpl7ybpELiOK5JCDk
+         aNs0oFFNm8K5ZH+6q1HUNU+3+Su1oQsBpN5P7otAbGdNS5eci431PqHlLTmAKyZ4th
+         3gVS4yK6ZUwdsxwV3QE3z7BM9/eb62n6jWGOxPJA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 161/323] USB: gadget: udc: fix wrong pointer passed to IS_ERR() and PTR_ERR()
-Date:   Thu, 20 May 2021 11:20:53 +0200
-Message-Id: <20210520092125.623965079@linuxfoundation.org>
+Subject: [PATCH 4.14 162/323] mtd: rawnand: gpmi: Fix a double free in gpmi_nand_init
+Date:   Thu, 20 May 2021 11:20:54 +0200
+Message-Id: <20210520092125.659517689@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -40,38 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yang Yingliang <yangyingliang@huawei.com>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 2e3d055bf27d70204cae349335a62a4f9b7c165a ]
+[ Upstream commit 076de75de1e53160e9b099f75872c1f9adf41a0b ]
 
-IS_ERR() and PTR_ERR() use wrong pointer, it should be
-udc->virt_addr, fix it.
+If the callee gpmi_alloc_dma_buffer() failed to alloc memory for
+this->raw_buffer, gpmi_free_dma_buffer() will be called to free
+this->auxiliary_virt. But this->auxiliary_virt is still a non-NULL
+and valid ptr.
 
-Fixes: 1b9f35adb0ff ("usb: gadget: udc: Add Synopsys UDC Platform driver")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-Link: https://lore.kernel.org/r/20210330130159.1051979-1-yangyingliang@huawei.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Then gpmi_alloc_dma_buffer() returns err and gpmi_free_dma_buffer()
+is called again to free this->auxiliary_virt in err_out. This causes
+a double free.
+
+As gpmi_free_dma_buffer() has already called in gpmi_alloc_dma_buffer's
+error path, so it should return err directly instead of releasing the dma
+buffer again.
+
+Fixes: 4d02423e9afe6 ("mtd: nand: gpmi: Fix gpmi_nand_init() error path")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Miquel Raynal <miquel.raynal@bootlin.com>
+Link: https://lore.kernel.org/linux-mtd/20210403060905.5251-1-lyl2019@mail.ustc.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/snps_udc_plat.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mtd/nand/gpmi-nand/gpmi-nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/usb/gadget/udc/snps_udc_plat.c b/drivers/usb/gadget/udc/snps_udc_plat.c
-index e8a5fdaee37d..204f7acf89a4 100644
---- a/drivers/usb/gadget/udc/snps_udc_plat.c
-+++ b/drivers/usb/gadget/udc/snps_udc_plat.c
-@@ -122,8 +122,8 @@ static int udc_plat_probe(struct platform_device *pdev)
+diff --git a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+index c7d0d2eed6c2..5a694bdc4f75 100644
+--- a/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
++++ b/drivers/mtd/nand/gpmi-nand/gpmi-nand.c
+@@ -2022,7 +2022,7 @@ static int gpmi_nand_init(struct gpmi_nand_data *this)
+ 	this->bch_geometry.auxiliary_size = 128;
+ 	ret = gpmi_alloc_dma_buffer(this);
+ 	if (ret)
+-		goto err_out;
++		return ret;
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 	udc->virt_addr = devm_ioremap_resource(dev, res);
--	if (IS_ERR(udc->regs))
--		return PTR_ERR(udc->regs);
-+	if (IS_ERR(udc->virt_addr))
-+		return PTR_ERR(udc->virt_addr);
- 
- 	/* udc csr registers base */
- 	udc->csr = udc->virt_addr + UDC_CSR_ADDR;
+ 	ret = nand_scan_ident(mtd, GPMI_IS_MX6(this) ? 2 : 1, NULL);
+ 	if (ret)
 -- 
 2.30.2
 
