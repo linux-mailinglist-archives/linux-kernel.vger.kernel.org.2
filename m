@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B06338ABA0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3AB38ABB0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241068AbhETL0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:26:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40076 "EHLO mail.kernel.org"
+        id S241232AbhETL0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:26:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46522 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238167AbhETLGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:06:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A5976142A;
-        Thu, 20 May 2021 10:05:32 +0000 (UTC)
+        id S239784AbhETLGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:06:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D09D61D2F;
+        Thu, 20 May 2021 10:05:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505132;
-        bh=p1cSVQX4FEmHZvzCPLvZISok0a/nDQ0qJLk9WnVKDv4=;
+        s=korg; t=1621505134;
+        bh=CqcbiGG3D8ZGwi43JqH1x8ekm0gqCVio8VS2iYHfugk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YUW8r9Y5b2jpma2pGoJZRwy+hbcQrIcBZ7ik2MJpLtBu+n2tmtRmoFJmj/m4g6v6M
-         Db1PKoS1O6aAxL5NBRGTf45t7C0cZobRyFadwScyhlbqmK0m2aCfBh3/+UHJhV90PS
-         T157jsmQNe0PlKHseanQ4WiRqov2or2DaU37nZyI=
+        b=cgzohvKKF7X9YL/LDWcaoMKZWorN4mCX/1ui9mX3gOiVHfkpHD4yMqRIm8Io/7xrE
+         CyZxAKQUZri/uFO3lQt9Y5d3XB/SYgizKVrPokoQpTfkiOku+G+jq24IYW3j+hBY1X
+         JPWGQbm8toXUW7ktH6s/6MfDi1dTX96RV4zAGsD4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
         syzbot <syzkaller@googlegroups.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.9 237/240] sit: proper dev_{hold|put} in ndo_[un]init methods
-Date:   Thu, 20 May 2021 11:23:49 +0200
-Message-Id: <20210520092116.645263479@linuxfoundation.org>
+Subject: [PATCH 4.9 238/240] ip6_tunnel: sit: proper dev_{hold|put} in ndo_[un]init methods
+Date:   Thu, 20 May 2021 11:23:50 +0200
+Message-Id: <20210520092116.677306400@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -42,7 +42,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Eric Dumazet <edumazet@google.com>
 
-commit 6289a98f0817a4a457750d6345e754838eae9439 upstream.
+commit 48bb5697269a7cbe5194dbb044dc38c517e34c58 upstream.
+
+Same reasons than for the previous commits :
+6289a98f0817 ("sit: proper dev_{hold|put} in ndo_[un]init methods")
+40cb881b5aaa ("ip6_vti: proper dev_{hold|put} in ndo_[un]init methods")
+7f700334be9a ("ip6_gre: proper dev_{hold|put} in ndo_[un]init methods")
 
 After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
 a warning [1]
@@ -58,34 +63,73 @@ Issue here is that:
 Otherwise, register_netdevice() would call ndo_uninit()
 in its error path and release a refcount too soon.
 
+[1]
+WARNING: CPU: 1 PID: 21059 at lib/refcount.c:31 refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
+Modules linked in:
+CPU: 1 PID: 21059 Comm: syz-executor.4 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
+Code: 1d 6a 5a e8 09 31 ff 89 de e8 8d 1a ab fd 84 db 75 e0 e8 d4 13 ab fd 48 c7 c7 a0 e1 c1 89 c6 05 4a 5a e8 09 01 e8 2e 36 fb 04 <0f> 0b eb c4 e8 b8 13 ab fd 0f b6 1d 39 5a e8 09 31 ff 89 de e8 58
+RSP: 0018:ffffc900025aefe8 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815c51f5 RDI: fffff520004b5def
+RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bdf8e R11: 0000000000000000 R12: ffff888023488568
+R13: ffff8880254e9000 R14: 00000000dfd82cfd R15: ffff88802ee2d7c0
+FS:  00007f13bc590700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f0943e74000 CR3: 0000000025273000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_dec include/linux/refcount.h:344 [inline]
+ refcount_dec include/linux/refcount.h:359 [inline]
+ dev_put include/linux/netdevice.h:4135 [inline]
+ ip6_tnl_dev_uninit+0x370/0x3d0 net/ipv6/ip6_tunnel.c:387
+ register_netdevice+0xadf/0x1500 net/core/dev.c:10308
+ ip6_tnl_create2+0x1b5/0x400 net/ipv6/ip6_tunnel.c:263
+ ip6_tnl_newlink+0x312/0x580 net/ipv6/ip6_tunnel.c:2052
+ __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3443
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+
 Fixes: 919067cc845f ("net: add CONFIG_PCPU_DEV_REFCNT")
 Signed-off-by: Eric Dumazet <edumazet@google.com>
 Reported-by: syzbot <syzkaller@googlegroups.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/sit.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ net/ipv6/ip6_tunnel.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -209,8 +209,6 @@ static int ipip6_tunnel_create(struct ne
+--- a/net/ipv6/ip6_tunnel.c
++++ b/net/ipv6/ip6_tunnel.c
+@@ -273,7 +273,6 @@ static int ip6_tnl_create2(struct net_de
  
- 	ipip6_tunnel_clone_6rd(dev, sitn);
+ 	strcpy(t->parms.name, dev->name);
  
 -	dev_hold(dev);
--
- 	ipip6_tunnel_link(sitn, t);
+ 	ip6_tnl_link(ip6n, t);
  	return 0;
  
-@@ -1400,7 +1398,7 @@ static int ipip6_tunnel_init(struct net_
- 		dev->tstats = NULL;
- 		return err;
- 	}
--
+@@ -1845,6 +1844,7 @@ ip6_tnl_dev_init_gen(struct net_device *
+ 	if (!(t->parms.flags & IP6_TNL_F_IGN_ENCAP_LIMIT))
+ 		dev->mtu -= 8;
+ 
 +	dev_hold(dev);
  	return 0;
- }
  
+ destroy_dst:
 
 
