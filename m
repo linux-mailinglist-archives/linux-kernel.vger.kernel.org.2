@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90EC638A976
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7882D38A979
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239190AbhETLCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:02:24 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:60288 "EHLO
+        id S239231AbhETLCb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:02:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38692 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237565AbhETKoA (ORCPT
+        by vger.kernel.org with ESMTP id S237911AbhETKoG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:44:00 -0400
+        Thu, 20 May 2021 06:44:06 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621507358;
+        s=mimecast20190719; t=1621507365;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fzKc8otL995FMgE/dY3Fv/l/KMH2QqAEASjB2RUM+o8=;
-        b=EanUJOvnbiu5cGJPRJ5+k1Hd6Xu7RHM69a5KX/7zJwP53F7x9rjrzkKtBuqSZ0tdch+jHq
-        Q7IvsB77Kg4eIc0v1O/3jDsJ8yLZAb8stM6qsZnz5SEk6utWfKxVftwHyQZkLwDdfgPT+M
-        QmpHvdITcLtiW9mDjlY4GabgFILFGlY=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-VaSfBBsiN6KLkUrgcgnbmg-1; Thu, 20 May 2021 06:42:37 -0400
-X-MC-Unique: VaSfBBsiN6KLkUrgcgnbmg-1
-Received: by mail-wr1-f71.google.com with SMTP id a9-20020adfc4490000b0290112095ca785so3269702wrg.14
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:42:37 -0700 (PDT)
+        bh=Nr9+DlfBg48tYmT45uZZLEvFJ1KtfJY23S6lwgRrWao=;
+        b=ZJFeqmVoTWfSiQU83jw6yXx3Cbuz0AU//2gdBioFHEN0e7OfkF21ECXI6yeXumYPcryDHs
+        bpMyxpOKE83XDdDSwM1Vk5k527Tvr72xhnUiCNQztGlfEqf2t5DfbDEG4uwkvZV2wert/i
+        LSliUqdTropH8z6pIiChj/yzYXOa62A=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-81-0EvZk562PaWVhbO5C4JHgA-1; Thu, 20 May 2021 06:42:43 -0400
+X-MC-Unique: 0EvZk562PaWVhbO5C4JHgA-1
+Received: by mail-wm1-f72.google.com with SMTP id y129-20020a1c32870000b029016920cc7087so2087466wmy.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:42:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:organization
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=fzKc8otL995FMgE/dY3Fv/l/KMH2QqAEASjB2RUM+o8=;
-        b=sGS+GJJOCsTm0ifNzO9htQXabocqbjpiVbrWobLjvqih6/uIBIksRSaIjAUhuqOAng
-         q9mkBCB7VBp6SLO/KgrtC/HIjyUeGTHYRXtvyHY0LtIRb5itvrSIfxTnxXQMJVvz0x55
-         AK9dPRcSmK6WghlN2FM8JDX26kghVpE9+Ra+898Lj//aLdS42LBvJZV7YPIQrcAGKGNh
-         EdHLW8jTMUu3MX3eng8aSFVaujektgBqDC42fzFF/8oVWVradgDgnqUFYsDvW3i7/M2L
-         3qv0p2Bo4hXrNsWKDTFpuCBgMUxPDzpWAUpFrxaQVRKEpCTjF2ubdbUGFoCp9ONivnAI
-         vQog==
-X-Gm-Message-State: AOAM5334/U1Dus9OV8brDqHPMAK1xgauWIcYBepRutg7AGBpxWvW2Gem
-        Jhbr7il9eOnW7f6sSFyAQsGtZoFFUbiemYMLYlp6+/8ruBM7yWScSM4hc/7TS6323+P4ol93d72
-        heDHjaQUMJrt+fEqteiNRePLJgc/3ZjCPVyrdvrpus6FdWa52T5Lhw10miuI9Sv7J43UmWpE5
-X-Received: by 2002:a1c:2985:: with SMTP id p127mr3011283wmp.165.1621507356226;
-        Thu, 20 May 2021 03:42:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz4soDFIHP99TZ0OevVyozD5GpuTFTtbX6eNOB1PPc1CU2RzPZsFsqTr73AZN5LSDi3G/zXOQ==
-X-Received: by 2002:a1c:2985:: with SMTP id p127mr3011256wmp.165.1621507355912;
-        Thu, 20 May 2021 03:42:35 -0700 (PDT)
+        bh=Nr9+DlfBg48tYmT45uZZLEvFJ1KtfJY23S6lwgRrWao=;
+        b=iLoVav0vH8DTTapnvi+wSMCrJ5n3Azp6JKQAIuPD7nIxx/wC5dSXLmzAeFlJBDoFbC
+         iVy3LFKWbaOH7fIZc+fRn0WsUtPAyMKiU9G8y1rb+ZIlvjYCcvZYDDeWRjzjFsAYV5RU
+         uqsMFA/I9F/MguAUNjkgiBdn6m/kkcMziqyI+VfyGyWqAqt+xAFx/A4EV8LGxZOP2cnc
+         y6Ry52wgF+VxwCM7v5H4FUuGt8Hj6UqggTsL4HJv9YEIXI0xi1fBUe3Ni77uMjZJ9Bpw
+         Lnh+8w155fwJH94a7x3iXV4DNPVO2DUQkNGF9G9jE23SFi38F4+9NPU4DGU/KJTvDuY8
+         YW+g==
+X-Gm-Message-State: AOAM5300ISRhkJmWuQF8mx9J97eI3VfkftjUaNRzya4Fi97gHtTMRS3G
+        TjSI0eAX60hKFmRPsQdWg6FSH+n9G5lqX7WUNJMMC8BNGY9KeM7aWw/5meKF1tJvC4Yh9uz5oGy
+        kVkeHnnutyaozC9z7ABMtOg1eFgq11WemsJOJ4iOOvc0tDDIzyMXDEsoJ476A68+ZkuBzXphp
+X-Received: by 2002:adf:e4c8:: with SMTP id v8mr3589450wrm.345.1621507362475;
+        Thu, 20 May 2021 03:42:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzFqUkFevK/7EEQMp2LynkF0uJ/mORJiN1O6rHeSUplUHDQXCsm2NGQAZS/cMUvEBdsDMpkLw==
+X-Received: by 2002:adf:e4c8:: with SMTP id v8mr3589420wrm.345.1621507362177;
+        Thu, 20 May 2021 03:42:42 -0700 (PDT)
 Received: from [192.168.3.132] (p5b0c6315.dip0.t-ipconnect.de. [91.12.99.21])
-        by smtp.gmail.com with ESMTPSA id d9sm2749745wrx.11.2021.05.20.03.42.35
+        by smtp.gmail.com with ESMTPSA id x2sm2256899wmj.3.2021.05.20.03.42.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 03:42:35 -0700 (PDT)
-Subject: Re: [PATCH 07/14] mm/memory_hotplug: Fix kerneldoc comment for
- __try_online_node
+        Thu, 20 May 2021 03:42:41 -0700 (PDT)
+Subject: Re: [PATCH 08/14] mm/memory_hotplug: Fix kerneldoc comment for
+ __remove_memory
 To:     Mel Gorman <mgorman@techsingularity.net>,
         Andrew Morton <akpm@linux-foundation.org>
 Cc:     Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
@@ -61,15 +61,15 @@ Cc:     Michal Hocko <mhocko@kernel.org>, Vlastimil Babka <vbabka@suse.cz>,
         Yang Shi <shy828301@gmail.com>, Linux-MM <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>
 References: <20210520084809.8576-1-mgorman@techsingularity.net>
- <20210520084809.8576-8-mgorman@techsingularity.net>
+ <20210520084809.8576-9-mgorman@techsingularity.net>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-Message-ID: <d4434e56-5e42-2f53-7338-9103143bc656@redhat.com>
-Date:   Thu, 20 May 2021 12:42:34 +0200
+Message-ID: <96f1cf9c-3516-30d5-201a-9212cdd79ac2@redhat.com>
+Date:   Thu, 20 May 2021 12:42:41 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210520084809.8576-8-mgorman@techsingularity.net>
+In-Reply-To: <20210520084809.8576-9-mgorman@techsingularity.net>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,39 +78,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 20.05.21 10:48, Mel Gorman wrote:
-> make W=1 generates the following warning for try_online_node
+> make W=1 generates the following warning for __remove_memory
 > 
-> mm/memory_hotplug.c:1087: warning: expecting prototype for try_online_node(). Prototype was for __try_online_node() instead
+>    mm/memory_hotplug.c:2044: warning: expecting prototype for remove_memory(). Prototype was for __remove_memory() instead
 > 
-> Commit b9ff036082cd ("mm/memory_hotplug.c: make add_memory_resource use
-> __try_online_node") renamed the function but did not update the associated
-> kerneldoc. The function is static and somewhat specialised in nature
-> so it's not clear it warrants being a kerneldoc by moving the comment
-> to try_online_node. Hence, leave the comment of the internal helper in
-> place but leave it out of kerneldoc and correct the function name in
-> the comment.
+> Commit eca499ab3749 ("mm/hotplug: make remove_memory() interface usable")
+> introduced the kerneldoc comment and function but the kerneldoc name and
+> function name did not match.
 > 
-> Fixes: Commit b9ff036082cd ("mm/memory_hotplug.c: make add_memory_resource use __try_online_node")
+> Fixes: eca499ab3749 ("mm/hotplug: make remove_memory() interface usable")
 > Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 > ---
->   mm/memory_hotplug.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+>   mm/memory_hotplug.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-> index 70620d0dd923..e3266be1d020 100644
+> index e3266be1d020..4ea1b19e8c7a 100644
 > --- a/mm/memory_hotplug.c
 > +++ b/mm/memory_hotplug.c
-> @@ -1072,8 +1072,8 @@ static void rollback_node_hotadd(int nid)
+> @@ -2031,7 +2031,7 @@ static int __ref try_remove_memory(int nid, u64 start, u64 size)
 >   }
 >   
->   
-> -/**
-> - * try_online_node - online a node if offlined
-> +/*
-> + * __try_online_node - online a node if offlined
+>   /**
+> - * remove_memory
+> + * __remove_memory - Remove memory if every memory block is offline
 >    * @nid: the node ID
->    * @set_node_online: Whether we want to online the node
->    * called by cpu_up() to online a node without onlined memory.
+>    * @start: physical address of the region to remove
+>    * @size: size of the region to remove
 > 
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
