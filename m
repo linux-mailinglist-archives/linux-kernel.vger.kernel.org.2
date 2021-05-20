@@ -2,131 +2,280 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F205838B84F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:22:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7BA238B851
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:23:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236500AbhETUXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S236730AbhETUYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:24:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236245AbhETUXe (ORCPT
+        with ESMTP id S235410AbhETUYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:23:34 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8845AC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:22:11 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id x18so8931285pfi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:22:11 -0700 (PDT)
+        Thu, 20 May 2021 16:24:50 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E093C061761
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:23:28 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id y2so24495713ybq.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:23:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0kHUdBz9cuFf2vqxAG3Pc3rwFQXdOdHIp65C2b34hQI=;
-        b=dEbYyegVNncUJt/SGH/oedIn1Atx8b0ygTK3+FvgB7epKgdgC9Dr0BsUcCu0DxDONy
-         nOdkHnRrc3EBQFs4KDXJ2K2uXczhWNN1TvwwnypClxAMhk225QAwV9ZAelVesgPg4gEr
-         31hxAUaGEeNvn6+euCcc++hR4Xgw1fdJ0bpe9gijjtkWvhSXD/tHe5v0KrdOqvGiZ5NY
-         P6OGPy2PbFW56a9XMokoEoRNtE8kgoqlejBFIcr1DWdGvlU9ZNvYJlWfmLN53bOLE3SM
-         zedriT9bXOz/nINIc4gsQfjJhak9v4hEdPX055ElQy+ecm56rMsB3X+mLdo/0q44EAj4
-         wjHA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MVYvG69dM0fC6VHqsM41A8Q/ztvt7bvyrWxB/84zXpw=;
+        b=A6H7F4mJDsj+qJsCnEUjuVaB8RyyVctXtD8OEjFgx4Caknyq5y4GXQWtPArqrNBZvx
+         00x7IwQs2lF+CLqDcks5Ukf76T0DSEHGHC2q1XlqJnc/pN0wKDkzbITh6OwuOOcJRXK6
+         NI5vll/QrZvokRHTdDIdw0XaPF3coyQxTbSmapQg93cX9LqkJg9pKOemiXcFJRFDzYqf
+         GP5E/yBsjPVM+9mUFZl9dHRxuu1NYCvCDr7rh/6mm9ybi4b8npSsKgzYSHrbGZYnxlra
+         U/VM2IWY0rdUEvICRxR6xZUp/KxfSfq+k7Vg65Dy1XSeegBUKtJ/J3FWEVIYxah+3CYY
+         L5Zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0kHUdBz9cuFf2vqxAG3Pc3rwFQXdOdHIp65C2b34hQI=;
-        b=S6HdC1pehjloiRl1dAJn2rbWlJDuNRcCI7llbl+8L7V8y8PkGIVB6hMEcnHKUdh7Cq
-         Po1MbnUdDK/RPMAIQrxdVq4oeGl2arZUw+cRQk8q7Wc93Ms9PL2AJn8uYcddevSlM+Ck
-         Mmm7eQLJ9Jl9RBYyhGW+RY3n4aoNHKxOYu0wX7zYPsfEhh6NUIlWfqzhNPAE5wKmDsSW
-         fHMBCImSmziRwOBA0WxQZIjX4DahqbPgW9SgM5sY4PGKpUFve3vhEhU7gP0nlhiLKViS
-         3ns2WR8e7pwf1ku6lTWnMh/yd3rsjuy6js/nfOdT7ns6j0E9ynJeAudCBJTnQ+0K65RH
-         8bDg==
-X-Gm-Message-State: AOAM532rXGjxribhRIMYD5hjnu5eO1iqxCgsbj6UZ1t1+uL5bLT9rBeE
-        xuDCGSROFHNLtJpkmoywg6YOmw==
-X-Google-Smtp-Source: ABdhPJxE3b2rco77LJIbWnsRpfZ7UydHf0CesLXTf2wlREWqTk3U//LCQG9XIv1gDO7Oo1lfvMXjYw==
-X-Received: by 2002:a63:224d:: with SMTP id t13mr6260936pgm.283.1621542130812;
-        Thu, 20 May 2021 13:22:10 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id x203sm2612206pfc.86.2021.05.20.13.22.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 13:22:10 -0700 (PDT)
-Date:   Thu, 20 May 2021 20:22:06 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     Peter Gonda <pgonda@google.com>, kvm list <kvm@vger.kernel.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH] KVM: SVM: Do not terminate SEV-ES guests on GHCB
- validation failure
-Message-ID: <YKbE7m40GnSRZsr1@google.com>
-References: <f8811b3768c4306af7fb2732b6b3755489832c55.1621020158.git.thomas.lendacky@amd.com>
- <CAMkAt6qJqTvM0PX+ja3rLP3toY-Rr4pSUbiFKL1GwzYZPG6f8g@mail.gmail.com>
- <324d9228-03e9-0fe2-59c0-5e41e449211b@amd.com>
- <YKa1jduPK9JyjWbx@google.com>
- <YKa4I0cs/8lyy0fN@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MVYvG69dM0fC6VHqsM41A8Q/ztvt7bvyrWxB/84zXpw=;
+        b=IAw21IO6H94/Rm3QDmfL3IpVWo/7965K0TgcR2DN8t0vbzWEsIAaWLADDBhtjHo6hM
+         LFja9AXCEs7PeQOChbu8zBUm+6y27PAA0vJwZJYvL1OH21tuYV9qbS0S5Yvig1gWSelK
+         s4lgMVxl0KEcULxMF1qL9BDImsXxMNdJb1rZCMwcKAkpCTU4VLeB9rcMPQ+yS0jO5WPr
+         YEEAjDovd9EjvkLosrYCbVODoZ3bk9b8w4B6H31mRcDXFDwIWtAFUdct9GZqLTKZhozj
+         D5UJIGk7E/OaILh5Apy6+a0P1OsW66T1FLGhcgSxLgDPyj0o/bA6ObNTajzLXKGNZne6
+         RDsw==
+X-Gm-Message-State: AOAM531jR450DLEfJ0PDRsaeZfFEIFpeFXu1ecLeneV8W+T8/9PyEs2d
+        XfC1HnjVIghtcYHx7uw4U+sQEdTaY0D/grnOq9SAyw==
+X-Google-Smtp-Source: ABdhPJwqDvRHLda2COB+ayK+YS4pv2lYnwtWyCrePqkFPUARyDA8/lJFmO/4FGC9m8jWuLHZjcHB5N4s1GVhyCasHhQ=
+X-Received: by 2002:a25:3f47:: with SMTP id m68mr9474846yba.228.1621542207016;
+ Thu, 20 May 2021 13:23:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKa4I0cs/8lyy0fN@google.com>
+References: <20210520002519.3538432-1-swboyd@chromium.org> <20210520002519.3538432-8-swboyd@chromium.org>
+ <YKa/fEuVqHhV9CPC@phenom.ffwll.local>
+In-Reply-To: <YKa/fEuVqHhV9CPC@phenom.ffwll.local>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 20 May 2021 13:22:51 -0700
+Message-ID: <CAGETcx8=Be4HbgEnpXJOU_PBVsV3cud7EJpOcTRv0SKZgSUjrw@mail.gmail.com>
+Subject: Re: [PATCH 7/7] drm/msm: Migrate to aggregate driver
+To:     Stephen Boyd <swboyd@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021, Sean Christopherson wrote:
-> On Thu, May 20, 2021, Sean Christopherson wrote:
-> > On Mon, May 17, 2021, Tom Lendacky wrote:
-> > > On 5/14/21 6:06 PM, Peter Gonda wrote:
-> > > > On Fri, May 14, 2021 at 1:22 PM Tom Lendacky <thomas.lendacky@amd.com> wrote:
-> > > >>
-> > > >> Currently, an SEV-ES guest is terminated if the validation of the VMGEXIT
-> > > >> exit code and parameters fail. Since the VMGEXIT instruction can be issued
-> > > >> from userspace, even though userspace (likely) can't update the GHCB,
-> > > >> don't allow userspace to be able to kill the guest.
-> > > >>
-> > > >> Return a #GP request through the GHCB when validation fails, rather than
-> > > >> terminating the guest.
-> > > > 
-> > > > Is this a gap in the spec? I don't see anything that details what
-> > > > should happen if the correct fields for NAE are not set in the first
-> > > > couple paragraphs of section 4 'GHCB Protocol'.
-> > > 
-> > > No, I don't think the spec needs to spell out everything like this. The
-> > > hypervisor is free to determine its course of action in this case.
-> > 
-> > The hypervisor can decide whether to inject/return an error or kill the guest,
-> > but what errors can be returned and how they're returned absolutely needs to be
-> > ABI between guest and host, and to make the ABI vendor agnostic the GHCB spec
-> > is the logical place to define said ABI.
-> > 
-> > For example, "injecting" #GP if the guest botched the GHCB on #VMGEXIT(CPUID) is
-> > completely nonsensical.  As is, a Linux guest appears to blindly forward the #GP,
-> > which means if something does go awry KVM has just made debugging the guest that
-> > much harder, e.g. imagine the confusion that will ensue if the end result is a
-> > SIGBUS to userspace on CPUID.
-> > 
-> > There needs to be an explicit error code for "you gave me bad data", otherwise
-> > we're signing ourselves up for future pain.
-> 
-> More concretely, I think the best course of action is to define a new return code
-> in SW_EXITINFO1[31:0], e.g. '2', with additional information in SW_EXITINFO2.
-> 
-> In theory, an old-but-sane guest will interpret the unexpected return code as
-> fatal to whatever triggered the #VMGEXIT, e.g. SIGBUS to userspace.  Unfortunately
-> Linux isn't sane because sev_es_ghcb_hv_call() assumes any non-'1' result means
-> success, but that's trivial to fix and IMO should be fixed irrespective of where
-> this goes.
+On Thu, May 20, 2021 at 12:58 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Wed, May 19, 2021 at 05:25:19PM -0700, Stephen Boyd wrote:
+> > The device lists are poorly ordered when the component device code is
+> > used. This is because component_master_add_with_match() returns 0
+> > regardless of component devices calling component_add() first. It can
+> > really only fail if an allocation fails, in which case everything is
+> > going bad and we're out of memory. The driver that registers the
+> > aggregate driver, can succeed at probe and put the attached device on
+> > the DPM lists before any of the component devices are probed and put on
+> > the lists.
+> >
+> > Within the component device framework this usually isn't that bad
+> > because the real driver work is done at bind time via
+> > component{,master}_ops::bind(). It becomes a problem when the driver
+> > core, or host driver, wants to operate on the component device outside
+> > of the bind/unbind functions, e.g. via 'remove' or 'shutdown'. The
+> > driver core doesn't understand the relationship between the host device
+> > and the component devices and could possibly try to operate on component
+> > devices when they're already removed from the system or shut down.
+> >
+> > Normally, device links or probe defer would reorder the lists and put
+> > devices that depend on other devices in the lists at the correct
+> > location, but with component devices this doesn't happen because this
+> > information isn't expressed anywhere. Drivers simply succeed at
+> > registering their component or the aggregate driver with the component
+> > framework and wait for their bind() callback to be called once the other
+> > components are ready. In summary, the drivers that make up the aggregate
+> > driver can probe in any order.
+> >
+> > This ordering problem becomes fairly obvious when shutting down the
+> > device with a DSI controller connected to a DSI bridge that is
+> > controlled via i2c. In this case, the msm display driver wants to tear
+> > down the display pipeline on shutdown via msm_pdev_shutdown() by calling
+> > drm_atomic_helper_shutdown(), and it can't do that unless the whole
+> > display chain is still probed and active in the system. When a display
+> > bridge is on i2c, the i2c device for the bridge will be created whenever
+> > the i2c controller probes, which could be before or after the msm
+> > display driver probes. If the i2c controller probes after the display
+> > driver, then the i2c controller will be shutdown before the display
+> > controller during system wide shutdown and thus i2c transactions will
+> > stop working before the display pipeline is shut down. This means we'll
+> > have the display bridge trying to access an i2c bus that's shut down
+> > because drm_atomic_helper_shutdown() is trying to disable the bridge
+> > after the bridge is off.
+> >
+> > The solution is to make the aggregate driver into a real struct driver
+> > that is bound to a device when the other component devices have all
+> > probed. Now that the component driver code is a proper bus, we can
+> > simply register an aggregate driver with that bus via
+> > component_aggregate_register() and then attach the shutdown hook to that
+> > driver to be sure that the shutdown for the display pipeline is called
+> > before any of the component device driver shutdown hooks are called.
+> >
+> > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > Cc: Rob Clark <robdclark@gmail.com>
+> > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+> > Cc: Saravana Kannan <saravanak@google.com>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >
+> > As stated in the cover letter, this isn't perfect but it still works. I
+> > get a warning from runtime PM that the parent device (e00000.mdss) is
+> > not runtime PM enabled but the child device (the aggregate device) is
+> > being enabled by the bus logic. I need to move around the place that the
+> > parent device is runtime PM enabled and probably keep it powered up
+> > during the entire time that the driver is probed until the aggregate
+> > driver probes.
+> >
+> >  drivers/gpu/drm/msm/msm_drv.c | 47 +++++++++++++++++++----------------
+> >  1 file changed, 26 insertions(+), 21 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> > index e1104d2454e2..0c64e6a2ce25 100644
+> > --- a/drivers/gpu/drm/msm/msm_drv.c
+> > +++ b/drivers/gpu/drm/msm/msm_drv.c
+> > @@ -1265,19 +1265,35 @@ static int add_gpu_components(struct device *dev,
+> >       return 0;
+> >  }
+> >
+> > -static int msm_drm_bind(struct device *dev)
+> > +static int msm_drm_bind(struct aggregate_device *adev)
+> >  {
+> > -     return msm_drm_init(dev, &msm_driver);
+> > +     return msm_drm_init(adev->dev.parent, &msm_driver);
+> >  }
+> >
+> > -static void msm_drm_unbind(struct device *dev)
+> > +static void msm_drm_unbind(struct aggregate_device *adev)
+> >  {
+> > -     msm_drm_uninit(dev);
+> > +     msm_drm_uninit(adev->dev.parent);
+> > +}
+> > +
+> > +static void msm_drm_shutdown(struct aggregate_device *adev)
+> > +{
+> > +     struct drm_device *drm = platform_get_drvdata(to_platform_device(adev->dev.parent));
+> > +     struct msm_drm_private *priv = drm ? drm->dev_private : NULL;
+> > +
+> > +     if (!priv || !priv->kms)
+> > +             return;
+> > +
+> > +     drm_atomic_helper_shutdown(drm);
+> >  }
+> >
+> > -static const struct component_master_ops msm_drm_ops = {
+> > -     .bind = msm_drm_bind,
+> > -     .unbind = msm_drm_unbind,
+> > +static struct aggregate_driver msm_drm_aggregate_driver = {
+> > +     .probe = msm_drm_bind,
+> > +     .remove = msm_drm_unbind,
+> > +     .shutdown = msm_drm_shutdown,
+> > +     .driver = {
+> > +             .name   = "msm_drm",
+> > +             .owner  = THIS_MODULE,
+> > +     },
+> >  };
+> >
+> >  /*
+> > @@ -1306,7 +1322,8 @@ static int msm_pdev_probe(struct platform_device *pdev)
+> >       if (ret)
+> >               goto fail;
+> >
+> > -     ret = component_master_add_with_match(&pdev->dev, &msm_drm_ops, match);
+> > +     msm_drm_aggregate_driver.match = match;
+>
+> This is a bit awkward design, because it means the driver struct can't be
+> made const, and it will blow up when you have multiple instance of the
+> same driver. I think the match should stay as part of the register
+> function call, and be stored in the aggregate_device struct somewhere.
+>
+> Otherwise I think this looks really solid and fixes your issue properly.
+> Obviously needs careful review from Greg KH for the device model side of
+> things, and from Rafael Wysocki for pm side.
+>
+> Bunch of thoughts from a very cursory reading:
+>
+> - I think it'd be good if we pass the aggregate_device to all components
+>   when we bind them, plus the void * parameter just to make this less
+>   disruptive. Even more device model goodies.
+>
+> - Maybe splatter a pile of sysfs links around so that this all becomes
+>   visible? Could be interesting for debugging ordering issues. Just an
+>   idea, feel free to entirely ignore.
 
-One last thing (hopefully): Erdem pointed out that if the GCHB GPA (or any
-derferenced pointers within the GHCB) is invalid or is set to a private GPA
-(mostly in the context of SNP) then the VMM will likely have no choice but to
-kill the guest in response to #VMGEXIT.
+Device links give this for free too! You can check what components
+make up a device and their state too.
 
-It's probably a good idea to add a blurb in one of the specs explicitly calling
-out that #VMGEXIT can be executed from userspace, and that before returning to
-uesrspace the guest kernel must always ensure that the GCHB points at a legal
-GPA _and_ all primary fields are marked invalid. 
+-Saravana
+
+>
+> - Needs solid kerneldoc for everything exposed to drivers and good
+>   overview DOC:
+>
+> - Needs deprecation warnings in the kerneldoc for all the
+>   component_master_* and if feasible with a mechanical conversion,
+>   converting existing users. I'd like to not be stuck with the old model
+>   forever, plus this will give a pile more people to review this code
+>   here.
+>
+> Anyway the name changes in probe and remove hooks below are already worth
+> this on their own imo. That's why I'd like to see them in all drivers.
+>
+> Cheers, Daniel
+>
+> > +     ret = component_aggregate_register(&pdev->dev, &msm_drm_aggregate_driver);
+> >       if (ret)
+> >               goto fail;
+> >
+> > @@ -1319,23 +1336,12 @@ static int msm_pdev_probe(struct platform_device *pdev)
+> >
+> >  static int msm_pdev_remove(struct platform_device *pdev)
+> >  {
+> > -     component_master_del(&pdev->dev, &msm_drm_ops);
+> > +     component_aggregate_unregister(&pdev->dev, &msm_drm_aggregate_driver);
+> >       of_platform_depopulate(&pdev->dev);
+> >
+> >       return 0;
+> >  }
+> >
+> > -static void msm_pdev_shutdown(struct platform_device *pdev)
+> > -{
+> > -     struct drm_device *drm = platform_get_drvdata(pdev);
+> > -     struct msm_drm_private *priv = drm ? drm->dev_private : NULL;
+> > -
+> > -     if (!priv || !priv->kms)
+> > -             return;
+> > -
+> > -     drm_atomic_helper_shutdown(drm);
+> > -}
+> > -
+> >  static const struct of_device_id dt_match[] = {
+> >       { .compatible = "qcom,mdp4", .data = (void *)KMS_MDP4 },
+> >       { .compatible = "qcom,mdss", .data = (void *)KMS_MDP5 },
+> > @@ -1351,7 +1357,6 @@ MODULE_DEVICE_TABLE(of, dt_match);
+> >  static struct platform_driver msm_platform_driver = {
+> >       .probe      = msm_pdev_probe,
+> >       .remove     = msm_pdev_remove,
+> > -     .shutdown   = msm_pdev_shutdown,
+> >       .driver     = {
+> >               .name   = "msm",
+> >               .of_match_table = dt_match,
+> > --
+> > https://chromeos.dev
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
