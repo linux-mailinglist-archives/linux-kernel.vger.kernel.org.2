@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B7538B4BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2821F38B4D7
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234795AbhETQ7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:59:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56174 "EHLO mail.kernel.org"
+        id S237868AbhETRBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:01:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56538 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234195AbhETQ6u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:58:50 -0400
+        id S234922AbhETQ7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:59:07 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1438961363;
-        Thu, 20 May 2021 16:57:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 21715613B5;
+        Thu, 20 May 2021 16:57:46 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgk-002d7b-Hw; Thu, 20 May 2021 17:38:23 +0100
+        id 1ljlgm-002d7b-7f; Thu, 20 May 2021 17:38:24 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 23/39] irqdesc: Fix __handle_domain_irq() comment
-Date:   Thu, 20 May 2021 17:37:35 +0100
-Message-Id: <20210520163751.27325-24-maz@kernel.org>
+Subject: [PATCH 24/39] irqchip/nvic: Convert from handle_IRQ() to handle_domain_irq()
+Date:   Thu, 20 May 2021 17:37:36 +0100
+Message-Id: <20210520163751.27325-25-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,28 +66,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It appears that the comment about a NULL domain meaning anything
-has always been wrong. Fix it.
+Given that the nvic driver is fully irqdomain aware, there is no
+reason for it to use the arch-specific handle_IRQ(), and it can
+be moved over to handle_domain_irq().
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/irqdesc.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ drivers/irqchip/irq-nvic.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/include/linux/irqdesc.h b/include/linux/irqdesc.h
-index cdd1cf8207f6..2971eb7e65f1 100644
---- a/include/linux/irqdesc.h
-+++ b/include/linux/irqdesc.h
-@@ -165,8 +165,7 @@ int generic_handle_irq(unsigned int irq);
- /*
-  * Convert a HW interrupt number to a logical one using a IRQ domain,
-  * and handle the result interrupt number. Return -EINVAL if
-- * conversion failed. Providing a NULL domain indicates that the
-- * conversion has already been done.
-+ * conversion failed.
-  */
- int __handle_domain_irq(struct irq_domain *domain, unsigned int hwirq,
- 			bool lookup, struct pt_regs *regs);
+diff --git a/drivers/irqchip/irq-nvic.c b/drivers/irqchip/irq-nvic.c
+index f747e2209ea9..b31c4cff4d3a 100644
+--- a/drivers/irqchip/irq-nvic.c
++++ b/drivers/irqchip/irq-nvic.c
+@@ -40,9 +40,7 @@ static struct irq_domain *nvic_irq_domain;
+ asmlinkage void __exception_irq_entry
+ nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
+ {
+-	unsigned int irq = irq_linear_revmap(nvic_irq_domain, hwirq);
+-
+-	handle_IRQ(irq, regs);
++	handle_domain_irq(nvic_irq_domain, hwirq, regs);
+ }
+ 
+ static int nvic_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
 -- 
 2.30.2
 
