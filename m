@@ -2,132 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 848EF389FB3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:21:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD06389FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhETIXF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:23:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhETIXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:23:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 706FD60FDB;
-        Thu, 20 May 2021 08:21:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621498902;
-        bh=oWxI169wjo2M8TXbBtnWbk/CC+L/aPQaBjR392b98q4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EtLMNXiVjiEK+Dph+zxyljcXqY595W4KwG1mako/NR+gZoWAzlpd+SBHfUuLkUtaw
-         M7FzRLyftRzcOpAxTKgl2IrqrRb0Y7OGo+zgaRUvM/mfFHx4wkxj9cc5XfbQkqg/86
-         Eu4NQPjMUIU2Mtd2VG8SGVDgtEY3So3/6up2xxC+JGF1MBdmp1JFdJ0eTRNtf+DdMJ
-         yLO8N1v2YbgPvt4oZNPRAoTPyD30God8QmAS+OQekZsvw6uHFhZ8ufiQ3On5F+nwDJ
-         LmnVhc/OZZjnIuNZgXqUood6bcTwp/lPZZIyMO8RG6YK7fKl0ed3euZ/haAUg0HUx/
-         hgNYYOa8yWTjw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1ljdw5-0001rd-1N; Thu, 20 May 2021 10:21:41 +0200
-Date:   Thu, 20 May 2021 10:21:41 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Xiaofei Tan <tanxiaofei@huawei.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linuxarm@openeuler.org
-Subject: Re: [PATCH 6/9] tty: hvc_console: Fix coding style issues of block
- comments
-Message-ID: <YKYcFfKiHT39Gyey@hovoldconsulting.com>
-References: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
- <1621233433-27094-7-git-send-email-tanxiaofei@huawei.com>
- <YKJ6ZjT8o5xJmBCr@hovoldconsulting.com>
- <e88b6fcd-bfe1-9812-905a-862825f420ce@huawei.com>
+        id S231126AbhETI2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:28:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58233 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230406AbhETI2M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 04:28:12 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lje14-0001aS-9X; Thu, 20 May 2021 08:26:50 +0000
+From:   Colin Ian King <colin.king@canonical.com>
+Subject: re: drm/amdgpu/acpi: unify ATCS handling (v2) [uninitialized variable
+ error]
+To:     Alex Deucher <alexander.deucher@amd.com>
+Cc:     =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Message-ID: <89aaa652-7e9b-dee1-cb8a-2fb11212a100@canonical.com>
+Date:   Thu, 20 May 2021 09:26:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e88b6fcd-bfe1-9812-905a-862825f420ce@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 12:01:22PM +0800, Xiaofei Tan wrote:
-> Hi Johan,
-> 
-> Thanks for reviewing this patch.
-> 
-> On 2021/5/17 22:15, Johan Hovold wrote:
-> > On Mon, May 17, 2021 at 02:37:10PM +0800, Xiaofei Tan wrote:
-> >> Fix coding style issues of block comments, reported by checkpatch.pl.
-> >> Besides, add a period at the end of the sentenses.
-> >>
-> >> Signed-off-by: Xiaofei Tan <tanxiaofei@huawei.com>
-> >> ---
-> >>  drivers/tty/hvc/hvc_console.c | 15 ++++++++++-----
-> >>  1 file changed, 10 insertions(+), 5 deletions(-)
-> >>
-> >> diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
-> >> index 39018e5..a61cdf0 100644
-> >> --- a/drivers/tty/hvc/hvc_console.c
-> >> +++ b/drivers/tty/hvc/hvc_console.c
-> >> @@ -177,7 +177,8 @@ static void hvc_console_print(struct console *co, const char *b,
-> >>  			r = cons_ops[index]->put_chars(vtermnos[index], c, i);
-> >>  			if (r <= 0) {
-> >>  				/* throw away characters on error
-> >> -				 * but spin in case of -EAGAIN */
-> >> +				 * but spin in case of -EAGAIN.
-> >> +				 */
-> >
-> > How is this an improvement? First, the multi-line comment style is
-> >
-> > 	/*
-> > 	 * ...
-> > 	 */
-> >
-> 
-> Yes, mostly we use this style. I can follow it if new version is needed.
+Hi,
 
-This is the preferred style outside of networking.
+Static analysis on linux-next with Coverity has detected an issue in
+drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c with the following commit:
 
-> BTW, How about add the '/*' check into checkpatch.pl?
+commit c1c4d8efdddec8a0ccc8525b29740640bd652ce8
+Author: Alex Deucher <alexander.deucher@amd.com>
+Date:   Wed May 19 15:47:42 2021 -0400
 
-Checkpatch already has too many checks IMO and I'm a bit surprised that
-it doesn't check this already. Perhaps it's because you used the -f to
-run checkpatch on in-kernel code, which you should not.
+    drm/amdgpu/acpi: unify ATCS handling (v2)
 
-> > Second, that sentence is not capitalised so why do add a period?
-> >
-> 
-> How about capitalize the sentence, or just remove the period ?
 
-How about just leaving this unchanged?
+The analysis is as follows:
 
-> > Third, why are you sending checkpatch.pl cleanups for files outside of
-> > staging?
-> >
-> 
-> I'm sorry, Is this a rule, or kind of tradition? I've never heard of 
-> this before.
 
-Many subsystems reject pure style changes unless you're also doing some
-real changes to the code in question. This is a good default rule, even
-if some maintainers may occasionally accept churn like this.
+805int amdgpu_acpi_init(struct amdgpu_device *adev)
+806{
+807        acpi_handle handle, atif_handle, atcs_handle;
+808        struct amdgpu_atif *atif;
+809        struct amdgpu_atcs *atcs;
 
-You appear to be paid to do kernel work. Why don't you start fixing bugs
-or help out reviewing new code instead of sending trivial patches like
-this? We can always need another hand.
+   1. var_decl: Declaring variable ret without initializer.
 
-But if all you you want is to increase your company patch count then
-please go work in drivers/staging where most trivial style changes are
-currently accepted.
+810        int ret;
+811
+812        /* Get the device handle */
 
-> > Unless doing some real changes to the files in question as well this is
-> > mostly just churn and noise that makes it harder to backport fixes and
-> > do code forensics for no real gain.
-> 
-> I'm not sure. But if cleanup patches have made it hard to backport fixes 
-> and do code forensics, then the code quality may not be
-> good enough.
+   2. Condition is_acpi_device_node(__to_acpi_device_node_fwnode),
+taking true branch.
+   3. Condition 0 /* !!(!__builtin_types_compatible_p() &&
+!__builtin_types_compatible_p()) */, taking false branch.
 
-No, that has nothing to do with code quality, it's just that you
-introduce noise in the logs and do pointless changes of context which
-makes it harder to use tools like git blame and makes backporting harder
-for no good reason.
+813        handle = ACPI_HANDLE(&adev->pdev->dev);
+814
 
-Johan
+   4. Condition !adev->bios, taking false branch.
+   5. Condition !handle, taking false branch.
+
+815        if (!adev->bios || !handle)
+816                return 0;
+817
+818        /* Probe for ATIF, and initialize it if found */
+819        atif_handle = amdgpu_atif_probe_handle(handle);
+
+   6. Condition !atif_handle, taking true branch.
+820        if (!atif_handle)
+   7. Jumping to label atcs.
+
+821                goto atcs;
+822
+823        atif = kzalloc(sizeof(*atif), GFP_KERNEL);
+824        if (!atif) {
+825                DRM_WARN("Not enough memory to initialize ATIF\n");
+826                goto atcs;
+827        }
+828        atif->handle = atif_handle;
+829
+830        /* Call the ATIF method */
+831        ret = amdgpu_atif_verify_interface(atif);
+832        if (ret) {
+833                DRM_DEBUG_DRIVER("Call to ATIF verify_interface
+failed: %d\n", ret);
+834                kfree(atif);
+835                goto atcs;
+836        }
+837        adev->atif = atif;
+838
+839#if defined(CONFIG_BACKLIGHT_CLASS_DEVICE) ||
+defined(CONFIG_BACKLIGHT_CLASS_DEVICE_MODULE)
+840        if (atif->notifications.brightness_change) {
+841                if (amdgpu_device_has_dc_support(adev)) {
+842#if defined(CONFIG_DRM_AMD_DC)
+843                        struct amdgpu_display_manager *dm = &adev->dm;
+844                        if (dm->backlight_dev)
+845                                atif->bd = dm->backlight_dev;
+846#endif
+847                } else {
+848                        struct drm_encoder *tmp;
+849
+850                        /* Find the encoder controlling the brightness */
+851                        list_for_each_entry(tmp,
+&adev_to_drm(adev)->mode_config.encoder_list,
+852                                            head) {
+853                                struct amdgpu_encoder *enc =
+to_amdgpu_encoder(tmp);
+854
+855                                if ((enc->devices &
+(ATOM_DEVICE_LCD_SUPPORT)) &&
+856                                    enc->enc_priv) {
+857                                        struct
+amdgpu_encoder_atom_dig *dig = enc->enc_priv;
+858                                        if (dig->bl_dev) {
+859                                                atif->bd = dig->bl_dev;
+860                                                break;
+861                                        }
+862                                }
+863                        }
+864                }
+865        }
+866#endif
+867
+868        if (atif->functions.sbios_requests &&
+!atif->functions.system_params) {
+869                /* XXX check this workraround, if sbios request
+function is
+870                 * present we have to see how it's configured in the
+system
+871                 * params
+872                 */
+873                atif->functions.system_params = true;
+874        }
+875
+876        if (atif->functions.system_params) {
+877                ret = amdgpu_atif_get_notification_params(atif);
+878                if (ret) {
+879                        DRM_DEBUG_DRIVER("Call to GET_SYSTEM_PARAMS
+failed: %d\n",
+880                                        ret);
+881                        /* Disable notification */
+882                        atif->notification_cfg.enabled = false;
+883                }
+884        }
+885
+886        if (atif->functions.query_backlight_transfer_characteristics) {
+887                ret = amdgpu_atif_query_backlight_caps(atif);
+888                if (ret) {
+889                        DRM_DEBUG_DRIVER("Call to
+QUERY_BACKLIGHT_TRANSFER_CHARACTERISTICS failed: %d\n",
+890                                        ret);
+891                        atif->backlight_caps.caps_valid = false;
+892                }
+893        } else {
+894                atif->backlight_caps.caps_valid = false;
+895        }
+896
+897atcs:
+898        /* Probe for ATCS, and initialize it if found */
+899        atcs_handle = amdgpu_atcs_probe_handle(handle);
+
+   8. Condition !atcs_handle, taking true branch.
+900        if (!atcs_handle)
+   9. Jumping to label out.
+
+901                goto out;
+902
+903        atcs = kzalloc(sizeof(*atcs), GFP_KERNEL);
+     CID 114228: Uninitialized pointer read (UNINIT) [select issue]
+904        if (!atif) {
+905                DRM_WARN("Not enough memory to initialize ATCS\n");
+906                goto out;
+907        }
+908        atcs->handle = atcs_handle;
+909
+910        /* Call the ATCS method */
+911        ret = amdgpu_atcs_verify_interface(atcs);
+912        if (ret) {
+913                DRM_DEBUG_DRIVER("Call to ATCS verify_interface
+failed: %d\n", ret);
+914                kfree(atcs);
+915                goto out;
+916        }
+917        adev->atcs = atcs;
+918
+919out:
+920        adev->acpi_nb.notifier_call = amdgpu_acpi_event;
+921        register_acpi_notifier(&adev->acpi_nb);
+922
+
+  Uninitialized scalar variable (UNINIT)
+  10. uninit_use: Using uninitialized value ret.
+
+923        return ret;
+924}
+
+The chain of gotos end up with an uninitialized ret being returned on an
+error condition. I was sure what value to assign to ret for this error
+case, so I'm reporting this issue.
+
+Colin
