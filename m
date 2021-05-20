@@ -2,100 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F2A389B35
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:13:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C59389B3A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 04:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhETCOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 22:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbhETCOg (ORCPT
+        id S230328AbhETCPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 22:15:49 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4688 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230246AbhETCOs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 22:14:36 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0D0CC061574;
-        Wed, 19 May 2021 19:12:23 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id b26so6054735lfq.4;
-        Wed, 19 May 2021 19:12:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FTCd6+qiif01nDICAPQwlVynjOYjR5IJKwPzRGQKUlc=;
-        b=eby5+MG5WOLfBJG5eg8HoCR/ZBM6jNxULHNd3nt/BEVa8feoOsK/QERWdS6sVXR7mX
-         z2Z+9m72d/z5eyCeX0LythlCLs9TSv6NIjniPi6vO70ZeYt+1pB154TUa+fxTXxfKnto
-         q2jygY4V1DeiFfbI6DxYYI51j0fAVepvIt8ojPfaJRcNSxVQ8BkOqfYCeXMjbwLRTQXO
-         OfEmSwJ86BiN58WIGXsSgBXgO4h7dYO/ho0CnpqtakIT1/x1LUgvpCZTMKV9lZqgpGhE
-         JGINJ2uoVKUqBsi7CSBcKkhiAVD1S5op+4yyIDijfvQxik9DQky+bkBszloJieSp1CUv
-         CkQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FTCd6+qiif01nDICAPQwlVynjOYjR5IJKwPzRGQKUlc=;
-        b=gh5Iv/nIgmONPZ3I81FPjrDGRu0NUeAjkDzkqT2RP/cO+k1cFzk7/QBCCaWDg7cAVr
-         VWoDjunZujOqV03KNO7x5euLftCu21A1KLvukAkLbzC0hN/fSyVVZYW/q96OqkaZdEgW
-         X3qTulhhVkAIUj+U7jR05eKcnfESH0hTDIM7a4+bVjXXMOtHnH50YLYhg9lxnY09Jl9G
-         szCOaabElKSDBj9A8tkQtsaiTVr6gKKRBc5YTMxnlfj+kxNtiRgiph3Vo4lOGAJB4r+P
-         B1idkgSLBCPV1JMaZ0CvIvn9eHCIv7DCyma2taqAKZaLc9K5MRHU2v2saAjGdCKaEQ2j
-         CGLA==
-X-Gm-Message-State: AOAM532prRFMVATkfeZ+oI4bp6aZrpQblrKhaRxPhn8KmLQvBM2hJJMc
-        kgwMns6Sldk458c8KBNpXzv/jrR+0gv0dbwoQaL3Qgt5zw4=
-X-Google-Smtp-Source: ABdhPJze41Tna3mdxpem1bwA3YO/pMjKiaQ5H13HVKKTehHFnhDyXjRsAc5yKedHyMM3VA8zA62/1UIE1m2QHNnNOtQ=
-X-Received: by 2002:a19:c397:: with SMTP id t145mr1755064lff.307.1621476742264;
- Wed, 19 May 2021 19:12:22 -0700 (PDT)
+        Wed, 19 May 2021 22:14:48 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FltW3215Fz16Q96;
+        Thu, 20 May 2021 10:10:39 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 10:13:25 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 10:13:25 +0800
+Subject: Re: [PATCH -next resend] sfc: farch: fix compile warning in
+ efx_farch_dimension_resources()
+To:     Edward Cree <ecree.xilinx@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+CC:     <davem@davemloft.net>
+References: <20210519021136.1638370-1-yangyingliang@huawei.com>
+ <d90bd556-efd0-1b75-7708-7217fe490cf2@gmail.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <3bf4adf0-ed98-ab86-cd5a-efca3ea856bc@huawei.com>
+Date:   Thu, 20 May 2021 10:13:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <1621421227-34130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-In-Reply-To: <1621421227-34130-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 19 May 2021 21:12:11 -0500
-Message-ID: <CAH2r5mvPTFcueM4VotLvQfiNLDeG0_CMXKQdUtyMYstXYznJqQ@mail.gmail.com>
-Subject: Re: [PATCH] cifs: Fix inconsistent indenting
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <d90bd556-efd0-1b75-7708-7217fe490cf2@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-merged into cifs-2.6.git for-next
+Hi,
 
-On Wed, May 19, 2021 at 2:27 PM Jiapeng Chong
-<jiapeng.chong@linux.alibaba.com> wrote:
->
-> Eliminate the follow smatch warning:
->
-> fs/cifs/fs_context.c:1148 smb3_fs_context_parse_param() warn:
-> inconsistent indenting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-> ---
->  fs/cifs/fs_context.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/cifs/fs_context.c b/fs/cifs/fs_context.c
-> index 5d21cd9..92d4ab0 100644
-> --- a/fs/cifs/fs_context.c
-> +++ b/fs/cifs/fs_context.c
-> @@ -1145,7 +1145,7 @@ static int smb3_fs_context_parse_param(struct fs_context *fc,
->                 /* if iocharset not set then load_nls_default
->                  * is used by caller
->                  */
-> -                cifs_dbg(FYI, "iocharset set to %s\n", ctx->iocharset);
-> +               cifs_dbg(FYI, "iocharset set to %s\n", ctx->iocharset);
->                 break;
->         case Opt_netbiosname:
->                 memset(ctx->source_rfc1001_name, 0x20,
-> --
-> 1.8.3.1
->
+On 2021/5/19 22:40, Edward Cree wrote:
+> On 19/05/2021 03:11, Yang Yingliang wrote:
+>> Fix the following kernel build warning when CONFIG_SFC_SRIOV is disabled:
+>>
+>>    drivers/net/ethernet/sfc/farch.c: In function ‘efx_farch_dimension_resources’:
+>>    drivers/net/ethernet/sfc/farch.c:1671:21: warning: variable ‘buftbl_min’ set but not used [-Wunused-but-set-variable]
+>>      unsigned vi_count, buftbl_min, total_tx_channels;
+>>
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>>   drivers/net/ethernet/sfc/farch.c | 9 +++++----
+>>   1 file changed, 5 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/sfc/farch.c b/drivers/net/ethernet/sfc/farch.c
+>> index 49df02ecee91..6048b08b89ec 100644
+>> --- a/drivers/net/ethernet/sfc/farch.c
+>> +++ b/drivers/net/ethernet/sfc/farch.c
+>> @@ -1668,13 +1668,17 @@ void efx_farch_rx_pull_indir_table(struct efx_nic *efx)
+>>    */
+>>   void efx_farch_dimension_resources(struct efx_nic *efx, unsigned sram_lim_qw)
+>>   {
+>> -	unsigned vi_count, buftbl_min, total_tx_channels;
+>> +	unsigned vi_count, total_tx_channels;
+>>   
+>>   #ifdef CONFIG_SFC_SRIOV
+>>   	struct siena_nic_data *nic_data = efx->nic_data;
+>> +	unsigned buftbl_min;
+>>   #endif
+> As I said the first time you sent this:
+> Reverse xmas tree is messed up here, please fix.
+> Apart from that, LGTM.
+
+Do you mean like this:
+
+diff --git a/drivers/net/ethernet/sfc/farch.c 
+b/drivers/net/ethernet/sfc/farch.c
+
+index 6048b08b89ec..b16f04cf7223 100644
+--- a/drivers/net/ethernet/sfc/farch.c
++++ b/drivers/net/ethernet/sfc/farch.c
+@@ -1668,10 +1668,10 @@ void efx_farch_rx_pull_indir_table(struct 
+efx_nic *efx)
+   */
+  void efx_farch_dimension_resources(struct efx_nic *efx, unsigned 
+sram_lim_qw)
+  {
+-    unsigned vi_count, total_tx_channels;
++    unsigned total_tx_channels, vi_count;
+
+  #ifdef CONFIG_SFC_SRIOV
+-    struct siena_nic_data *nic_data = efx->nic_data;
++    struct siena_nic_data *nic_data;
+      unsigned buftbl_min;
+  #endif
+
+@@ -1679,6 +1679,7 @@ void efx_farch_dimension_resources(struct efx_nic 
+*efx, unsigned sram_lim_qw)
+      vi_count = max(efx->n_channels, total_tx_channels * 
+EFX_MAX_TXQ_PER_CHANNEL);
+
+  #ifdef CONFIG_SFC_SRIOV
++    nic_data = efx->nic_data;
+      /* Account for the buffer table entries backing the datapath channels
+       * and the descriptor caches for those channels.
+       */
 
 
--- 
 Thanks,
 
-Steve
+Yang
+
+>
+> -ed
+>
+>>   
+>>   	total_tx_channels = efx->n_tx_channels + efx->n_extra_tx_channels;
+>> +	vi_count = max(efx->n_channels, total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL);
+>> +
+>> +#ifdef CONFIG_SFC_SRIOV
+>>   	/* Account for the buffer table entries backing the datapath channels
+>>   	 * and the descriptor caches for those channels.
+>>   	 */
+>> @@ -1682,9 +1686,6 @@ void efx_farch_dimension_resources(struct efx_nic *efx, unsigned sram_lim_qw)
+>>   		       total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL * EFX_MAX_DMAQ_SIZE +
+>>   		       efx->n_channels * EFX_MAX_EVQ_SIZE)
+>>   		      * sizeof(efx_qword_t) / EFX_BUF_SIZE);
+>> -	vi_count = max(efx->n_channels, total_tx_channels * EFX_MAX_TXQ_PER_CHANNEL);
+>> -
+>> -#ifdef CONFIG_SFC_SRIOV
+>>   	if (efx->type->sriov_wanted) {
+>>   		if (efx->type->sriov_wanted(efx)) {
+>>   			unsigned vi_dc_entries, buftbl_free;
+>>
+> .
