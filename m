@@ -2,150 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3B38B24A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:53:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE2338B239
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231865AbhETOzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:55:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36254 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231418AbhETOzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:55:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621522419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M8hqVgNQf+om50EjQbuWLvBSRMEEuDC2cfNombgOqIA=;
-        b=tu3s2Wt5SshdfJXLmnHlL4WqWSI4s+yOHxwVBO4l8aV+a3YzJBruqkUV3bF4j5FE9IDyuy
-        2JUPeVuDHwqzd4A9WTnznq7MDD5VcKOZ/ITIsQ4H8/7u7mybX2h1kGP7EyoAx1VT+/0YXH
-        N/slWUMzz91Dblog3HCzXN6c5mhMO7g=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B812ABE8;
-        Thu, 20 May 2021 14:53:39 +0000 (UTC)
-Date:   Thu, 20 May 2021 16:53:38 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Justin He <Justin.He@arm.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Eric Biggers <ebiggers@google.com>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 08/14] d_path: make prepend_name() boolean
-Message-ID: <YKZ38jOCZUlpiqTS@alley>
-References: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
- <20210519004901.3829541-1-viro@zeniv.linux.org.uk>
- <20210519004901.3829541-8-viro@zeniv.linux.org.uk>
- <AM6PR08MB4376607691168C132AB2F558F72A9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+        id S231396AbhETOvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:51:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230483AbhETOvq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:51:46 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCEEEC061574;
+        Thu, 20 May 2021 07:50:23 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id v12so17970425wrq.6;
+        Thu, 20 May 2021 07:50:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Pw/S3DhRfs9hqIwXkjoQ53ij2Leive6HtbA3MFyHCVA=;
+        b=hwiIauTkRs1gkN7GptgkaSNYGZrP3Ui4s0V1lP3VcpU9RdwFWgPVtzMNlwAMoyPI9s
+         I3PU2aWE4CfRaH9vhiYZHL4ZGUUoS8qUrgEV10VObwtOqCMXgORXcqrLFvBKxrSZjk7U
+         Qy1ReiQyV5LNQNzkjF6irBDS4DxFx32SHBvWepatsCspmxetBEaXfREFdmHe269HmmRt
+         v/p+fLWYleQBkV2+rMjMpiJGHWoFBON/jYuJop49t+TmRKFFYAZccBHEeboTIKls3dmz
+         Lu25yodi2wA30N77koIcqpHBweSntl6WcktpsTVQQkL4mmoicBJglBDbb9I8RA0NJFLq
+         oLrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Pw/S3DhRfs9hqIwXkjoQ53ij2Leive6HtbA3MFyHCVA=;
+        b=EXVfvn0yTle641f2Ubi9S0Ncxjd2Y94bfJuzuDwLQat/ae7L055EKzrHy1USi9734M
+         aMOqJWbs0uu/cyzN6sck/Y2jz/JsoJco2O8xafF0CADH+DdyCn4r0nt8MvqB6Iz37rpA
+         FZ2HkFsQjzIDptqP6PbkKxfAC9h1Yi2yH2AUT3WZMX5sni1n0sUxaKlF3CnKH8++rk2E
+         HP7cMlGeh+MMiiIkFjetx7NNN2YwYnXQzp6dqYY8KcLdWJ4tRdLnuA+Gb9uk+KdmBxed
+         DjdWwonE9A4asgetB/UcU4LdH2mrMJsl/YRTovRZ9JLko2wHd/G0YKsM+hmtxiCF01Hp
+         S2hw==
+X-Gm-Message-State: AOAM532nlH4dHdBj3xaMOzGj+jWW7rp/pBaPW8a9p7XVvLIBpSNnV1LI
+        CRo4WjCFgf/8nedzDF58KBfOG21ZDLmBYmui8VE=
+X-Google-Smtp-Source: ABdhPJyqpa5z8S7zPqUU/Sw+yjCc4qC8hKSJNQRRZDc71DjdMxDOwRF7Ke51/NMtAhuN4Tw9Wv81UvtjRWmRVbsahmU=
+X-Received: by 2002:adf:fa46:: with SMTP id y6mr4810707wrr.83.1621522222321;
+ Thu, 20 May 2021 07:50:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AM6PR08MB4376607691168C132AB2F558F72A9@AM6PR08MB4376.eurprd08.prod.outlook.com>
+References: <20210519183855.1523927-1-robdclark@gmail.com> <20210519183855.1523927-2-robdclark@gmail.com>
+ <8dcdc8d5-176c-f0ad-0d54-6466e9e68a0a@amd.com> <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
+ <d65acf46-4c3b-4903-6222-0b81915d355d@amd.com>
+In-Reply-To: <d65acf46-4c3b-4903-6222-0b81915d355d@amd.com>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 20 May 2021 07:54:05 -0700
+Message-ID: <CAF6AEGvm1tFwpfyJrX1bTGoHg_wzKKLQvSk2qLHf3XeqvEzDPA@mail.gmail.com>
+Subject: Re: [RFC 1/3] dma-fence: Add boost fence op
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-05-20 09:12:34, Justin He wrote:
-> Hi Al
-> 
-> > -----Original Message-----
-> > From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
-> > Sent: Wednesday, May 19, 2021 8:49 AM
-> > To: Linus Torvalds <torvalds@linux-foundation.org>
-> > Cc: Justin He <Justin.He@arm.com>; Petr Mladek <pmladek@suse.com>; Steven
-> > Rostedt <rostedt@goodmis.org>; Sergey Senozhatsky
-> > <senozhatsky@chromium.org>; Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com>; Rasmus Villemoes
-> > <linux@rasmusvillemoes.dk>; Jonathan Corbet <corbet@lwn.net>; Heiko
-> > Carstens <hca@linux.ibm.com>; Vasily Gorbik <gor@linux.ibm.com>; Christian
-> > Borntraeger <borntraeger@de.ibm.com>; Eric W . Biederman
-> > <ebiederm@xmission.com>; Darrick J. Wong <darrick.wong@oracle.com>; Peter
-> > Zijlstra (Intel) <peterz@infradead.org>; Ira Weiny <ira.weiny@intel.com>;
-> > Eric Biggers <ebiggers@google.com>; Ahmed S. Darwish
-> > <a.darwish@linutronix.de>; open list:DOCUMENTATION <linux-
-> > doc@vger.kernel.org>; Linux Kernel Mailing List <linux-
-> > kernel@vger.kernel.org>; linux-s390 <linux-s390@vger.kernel.org>; linux-
-> > fsdevel <linux-fsdevel@vger.kernel.org>
-> > Subject: [PATCH 08/14] d_path: make prepend_name() boolean
+On Thu, May 20, 2021 at 7:11 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+>
+>
+> Am 20.05.21 um 16:07 schrieb Rob Clark:
+> > On Wed, May 19, 2021 at 11:47 PM Christian K=C3=B6nig
+> > <christian.koenig@amd.com> wrote:
+> >> Uff, that looks very hardware specific to me.
+> > Howso?  I'm not sure I agree.. and even if it was not useful for some
+> > hw, it should be useful for enough drivers (and harm no drivers), so I
+> > still think it is a good idea
 > >
-> > It returns only 0 or -ENAMETOOLONG and both callers only check if
-> > the result is negative.  Might as well return true on success and
-> > false on failure...
+> > The fallback plan is to go the i915 route and stop using atomic
+> > helpers and do the same thing inside the driver, but that doesn't help
+> > any of the cases where you have a separate kms and gpu driver.
+>
+> Yeah, that's certainly not something we want.
+>
+> >> As far as I can see you can also implement completely inside the backe=
+nd
+> >> by starting a timer on enable_signaling, don't you?
+> > Not really.. I mean, the fact that something waited on a fence could
+> > be a useful input signal to gpu freq governor, but it is entirely
+> > insufficient..
 > >
-> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
-> > ---
-> >  fs/d_path.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > If the cpu is spending a lot of time waiting on a fence, cpufreq will
+> > clock down so you spend less time waiting.  And no problem has been
+> > solved.  You absolutely need the concept of a missed deadline, and a
+> > timer doesn't give you that.
+>
+> Ok then I probably don't understand the use case here.
+>
+> What exactly do you try to solve?
+
+Basically situations where you are ping-ponging between GPU and CPU..
+for example if you are double buffering instead of triple buffering,
+and doing vblank sync'd pageflips.  The GPU, without any extra signal,
+could get stuck at 30fps and a low gpu freq, because it ends up idle
+while waiting for an extra vblank cycle for the next back-buffer to
+become available.  Whereas if it boosted up to a higher freq and
+stopped missing a vblank deadline, it would be less idle due to
+getting the next back-buffer sooner (due to not missing a vblank
+deadline).
+
+BR,
+-R
+
+> Thanks,
+> Christian.
+>
 > >
-> > diff --git a/fs/d_path.c b/fs/d_path.c
-> > index 327cc3744554..83db83446afd 100644
-> > --- a/fs/d_path.c
-> > +++ b/fs/d_path.c
-> > @@ -34,15 +34,15 @@ static void prepend(char **buffer, int *buflen, const
-> > char *str, int namelen)
-> >   *
-> >   * Load acquire is needed to make sure that we see that terminating NUL.
-> >   */
-> > -static int prepend_name(char **buffer, int *buflen, const struct qstr
-> > *name)
-> > +static bool prepend_name(char **buffer, int *buflen, const struct qstr
-> > *name)
-> >  {
-> >       const char *dname = smp_load_acquire(&name->name); /* ^^^ */
-> >       u32 dlen = READ_ONCE(name->len);
-> >       char *p;
+> > BR,
+> > -R
 > >
-> >       *buflen -= dlen + 1;
-> > -     if (*buflen < 0)
-> > -             return -ENAMETOOLONG;
-> > +     if (unlikely(*buflen < 0))
-> > +             return false;
-> 
-> I don't object to this patch itself.
-> Just wonder whether we need to relax the check condition of "*buflen < 0" ?
-> 
-> Given that in vsnprintf code path, sometimes the *buflen is < 0.
-> 
-> Please see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/lib/vsprintf.c#n2698
-
-IMHO, the patch is fine. It is likely some misunderstanding.
-The above link points to:
-
-2693	str = buf;
-2694	end = buf + size;
-2695
-2696	/* Make sure end is always >= buf */
-2697	if (end < buf) {
-2698		end = ((void *)-1);
-2699		size = end - buf;
-2700	}
-
-"end" points right behind the end of the buffer. It is later
-used instead of the buffer size. The above code handles a potential
-overflow of "buf + size". I causes that "end" will be 0xffffffff
-in case of the overflow.
-
-That said. vsnprintf() returns the number of characters which would
-be generated for the given input. But only the "size" is written.
-This require copying the characters one by one.
-
-It is useful to see how many characters were lost. But I am not sure
-if this ever worked for the dentry functions.
-
-Best Regards,
-Petr
+> >> Christian.
+> >>
+> >> Am 19.05.21 um 20:38 schrieb Rob Clark:
+> >>> From: Rob Clark <robdclark@chromium.org>
+> >>>
+> >>> Add a way to hint to the fence signaler that a fence waiter has misse=
+d a
+> >>> deadline waiting on the fence.
+> >>>
+> >>> In some cases, missing a vblank can result in lower gpu utilization,
+> >>> when really we want to go in the opposite direction and boost gpu fre=
+q.
+> >>> The boost callback gives some feedback to the fence signaler that we
+> >>> are missing deadlines, so it can take this into account in it's freq/
+> >>> utilization calculations.
+> >>>
+> >>> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> >>> ---
+> >>>    include/linux/dma-fence.h | 26 ++++++++++++++++++++++++++
+> >>>    1 file changed, 26 insertions(+)
+> >>>
+> >>> diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> >>> index 9f12efaaa93a..172702521acc 100644
+> >>> --- a/include/linux/dma-fence.h
+> >>> +++ b/include/linux/dma-fence.h
+> >>> @@ -231,6 +231,17 @@ struct dma_fence_ops {
+> >>>        signed long (*wait)(struct dma_fence *fence,
+> >>>                            bool intr, signed long timeout);
+> >>>
+> >>> +     /**
+> >>> +      * @boost:
+> >>> +      *
+> >>> +      * Optional callback, to indicate that a fence waiter missed a =
+deadline.
+> >>> +      * This can serve as a signal that (if possible) whatever signa=
+ls the
+> >>> +      * fence should boost it's clocks.
+> >>> +      *
+> >>> +      * This can be called in any context that can call dma_fence_wa=
+it().
+> >>> +      */
+> >>> +     void (*boost)(struct dma_fence *fence);
+> >>> +
+> >>>        /**
+> >>>         * @release:
+> >>>         *
+> >>> @@ -586,6 +597,21 @@ static inline signed long dma_fence_wait(struct =
+dma_fence *fence, bool intr)
+> >>>        return ret < 0 ? ret : 0;
+> >>>    }
+> >>>
+> >>> +/**
+> >>> + * dma_fence_boost - hint from waiter that it missed a deadline
+> >>> + *
+> >>> + * @fence: the fence that caused the missed deadline
+> >>> + *
+> >>> + * This function gives a hint from a fence waiter that a deadline wa=
+s
+> >>> + * missed, so that the fence signaler can factor this in to device
+> >>> + * power state decisions
+> >>> + */
+> >>> +static inline void dma_fence_boost(struct dma_fence *fence)
+> >>> +{
+> >>> +     if (fence->ops->boost)
+> >>> +             fence->ops->boost(fence);
+> >>> +}
+> >>> +
+> >>>    struct dma_fence *dma_fence_get_stub(void);
+> >>>    u64 dma_fence_context_alloc(unsigned num);
+> >>>
+>
