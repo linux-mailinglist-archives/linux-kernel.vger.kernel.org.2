@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F6B038AD8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9905B38AD9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:07:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242422AbhETMFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
+        id S237444AbhETMIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:08:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242274AbhETMFd (ORCPT
+        with ESMTP id S237423AbhETMIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:05:33 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318BBC06917D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:34:03 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id n17-20020a7bc5d10000b0290169edfadac9so5112722wmk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:34:03 -0700 (PDT)
+        Thu, 20 May 2021 08:08:20 -0400
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC088C06EA71
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:39:44 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id z4so6590486plg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:39:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5n6riXCd1vkZQcoH0r5gYShL1+XQ6uXaF5ZA75ztkS4=;
-        b=hqF1evK4XE7TofUsWGxTL13k2AC6u5yfZPjf37ZMM6wuWy4eazgaoxsdsj4w7FSenB
-         Suqt0myWlzhpBr4iWL3CsiFkL/KE7Ot/esZP0uWdz+8wuYpAeWgNHUhcdGNl1UCxRO0o
-         xS7CdKhyi4jGanQWWI3xKFxQoVoLb0IgGRFJFihhHtx1/zac3eiqhaf4dQiBOq1/4wtv
-         NA81yyGUp5grSRuRZJXK9aOYqLiCPSGIBXZMPG+fCpkyfbmRJtHyQT5RogbOGlMwsNl9
-         J0kUIoAY1OFO8I9n2tDAiqXGl8FZmhYDVgkNikPJkpp1EwxNbAQeqAp+aiWzdWKTMlfH
-         K6oA==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m/RdGTpHpIlnNqukYMSfOi40wGs3gJ2bxRFA/p/HWmc=;
+        b=Vhj8ZxDnRnFsKkjgvE0jTxFiP9E6eGyLcgWFUbcEE6BPCOaYrfiee/sSxQ3bZ3EmIA
+         8qUPu2mopXJqA5KvDOG7fLjhRNErG+GGUFexzHbLH4YKa69rcXjN0GBvGE1rsIY05p2e
+         VROBlatX93nO4HEMcczfdE1W935uS1GxpIkkQGV0VWsWo71UQYT7Tq39t5h0jiz88DUu
+         q13f+kH8jZmY1bdai6bxM2NpJ4rOaf/sGrOVZ3+cn8Z5zd9zHRc5AIobTBTe0Q7cq/zo
+         GkW4aBUXx17jLCVVrC8mDrHyqSPGRU0oaLUS2156S3ymDUAjA0k6rDXw736AH2PngNEw
+         ENdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=5n6riXCd1vkZQcoH0r5gYShL1+XQ6uXaF5ZA75ztkS4=;
-        b=H9OInu3o0pYxcFwoKwtdih95/XZwZKKr9+LcdsAy1NNuyA3eqjCLyp5/1COQBCzVlb
-         iLr+OxB0abInj5ImKbavC46FXYlWY9MnRCuXFPhKbQ0KegD8Znktwt+xb5NjqiY4OKzq
-         85MJN2pMoUeK301tob8NotiwOpTI5Pj8nMx1MLeUY4n8SWiyfQmC80Rfwq2vZRLsA2I1
-         nZdOZvVVRmsKEtJzT6ViP2HwqpkWprHiJ2nSeOjJsSeEHijPhR/2y6Z4VHcpR3DGSx80
-         cBzpKabI3Gr5F8fVGsLYUqQsH0nQetECBnNgFvkM9hqkJzLfyEzSS9Rp6uvKm6xuXceq
-         PrBQ==
-X-Gm-Message-State: AOAM531LPqMmKo5xeg0+HX8XLrKHfhqKJDMi4etECcL9sdjaG6/KYy4O
-        Ami2H8JPMwU+vNy5AaZP+b5lcg==
-X-Google-Smtp-Source: ABdhPJxq6/OQqdBrhuKZaLq+XaCRlIoDOoH49bUkTeQ3q8Q0V8pTmzOTJi3JYtKP3tAWP/lop7kWOg==
-X-Received: by 2002:a7b:cc15:: with SMTP id f21mr3398343wmh.86.1621506841514;
-        Thu, 20 May 2021 03:34:01 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id r1sm2649161wrt.67.2021.05.20.03.34.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 03:34:00 -0700 (PDT)
-Date:   Thu, 20 May 2021 10:33:58 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Juri Lelli <juri.lelli@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <YKY7FvFeRlXVjcaA@google.com>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-14-will@kernel.org>
- <YKOU9onXUxVLPGaB@google.com>
- <20210518102833.GA7770@willie-the-truck>
- <YKObZ1GcfVIVWRWt@google.com>
- <20210518105951.GC7770@willie-the-truck>
- <YKO+9lPLQLPm4Nwt@google.com>
- <YKYoQ0ezahSC/RAg@localhost.localdomain>
- <20210520101640.GA10065@willie-the-truck>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m/RdGTpHpIlnNqukYMSfOi40wGs3gJ2bxRFA/p/HWmc=;
+        b=t+cWdSUBdKu3LDliX1jF06bpiErwyWltGAdpybjRdRIRkTAMP43U3gjvPxtjZTAkRg
+         JJ6B7UW7eSbSlouP4Fg6IIMjBhIwH/cUO1v/Aof7V+FSv4UQS6SKKtObjjAgJP6zDTeT
+         kO4q7ps5n4HA7Csghw3TcNZhp/UtLCeWH6iLlgvOfi2aq690/zghfo8TQLaUBIMyxuRl
+         QgMeslZciobVrDmDWA8A4hIHsjZTReo+q/lBudnVxlX5R5Hw13pb5gWSI/c8OhQn6nqO
+         HRciJxUZ1vTDUQkx74eBNSazlbuewfEclPIQoQDw2txpZts1p42KqYZaXFEKp+wpQYag
+         aBpg==
+X-Gm-Message-State: AOAM530iszDSJbj5DdAAhAYXxW6Dbe3uD0ggZ4BVlJufUHyQUYcGNOll
+        6maX4ZwOavfkMIieTLk7P1wDFHJxrlTKVzw91XoLUg==
+X-Google-Smtp-Source: ABdhPJzf2fR6d+CPHdEr95MzZvm9RJFlJaLVIyK+Nk/R1dCYvI8lZdQuPG7bvcKxY0sCx8N2rOrD6gLETNVjiPOY5J0=
+X-Received: by 2002:a17:902:b70f:b029:f4:5445:cd9f with SMTP id
+ d15-20020a170902b70fb02900f45445cd9fmr5262680pls.32.1621507184286; Thu, 20
+ May 2021 03:39:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520101640.GA10065@willie-the-truck>
+References: <20210511180728.23781-1-jonathan@marek.ca> <20210511180728.23781-6-jonathan@marek.ca>
+In-Reply-To: <20210511180728.23781-6-jonathan@marek.ca>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Thu, 20 May 2021 12:39:33 +0200
+Message-ID: <CAG3jFytS-SBsgPTwN5Uzn=g9k_o-+ifyN7aPrzTvY1nb_csptA@mail.gmail.com>
+Subject: Re: [PATCH 05/17] media: camss: csid-170: don't enable unused irqs
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     MSM <linux-arm-msm@vger.kernel.org>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Todor Tomov <todor.too@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        "open list:QUALCOMM CAMERA SUBSYSTEM DRIVER" 
+        <linux-media@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 20 May 2021 at 11:16:41 (+0100), Will Deacon wrote:
-> Ok, thanks for the insight. In which case, I'll go with what we discussed:
-> require admission control to be disabled for sched_setattr() but allow
-> execve() to a 32-bit task from a 64-bit deadline task with a warning (this
-> is probably similar to CPU hotplug?).
+On Tue, 11 May 2021 at 20:08, Jonathan Marek <jonathan@marek.ca> wrote:
+>
+> csid_isr() only checks for the reset irq, so enabling any other irqs
+> doesn't make sense. The "RDI irq" comment is also wrong, the register
+> should be CSID_CSI2_RDIN_IRQ_MASK. Without this fix there may be an
+> excessive amount of irqs.
+>
+> Fixes: eebe6d00e9bf ("media: camss: Add support for CSID hardware version Titan 170")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/media/platform/qcom/camss/camss-csid-170.c | 6 ------
+>  1 file changed, 6 deletions(-)
+>
+> diff --git a/drivers/media/platform/qcom/camss/camss-csid-170.c b/drivers/media/platform/qcom/camss/camss-csid-170.c
+> index a81cc94c075f..2bc695819919 100644
+> --- a/drivers/media/platform/qcom/camss/camss-csid-170.c
+> +++ b/drivers/media/platform/qcom/camss/camss-csid-170.c
+> @@ -443,12 +443,6 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
+>         val |= 1 << CSI2_RX_CFG1_MISR_EN;
+>         writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1); // csi2_vc_mode_shift_val ?
+>
+> -       /* error irqs start at BIT(11) */
+> -       writel_relaxed(~0u, csid->base + CSID_CSI2_RX_IRQ_MASK);
+> -
+> -       /* RDI irq */
+> -       writel_relaxed(~0u, csid->base + CSID_TOP_IRQ_MASK);
+> -
+>         val = 1 << RDI_CTRL_HALT_CMD;
+>         writel_relaxed(val, csid->base + CSID_RDI_CTRL(0));
+>  }
 
-Still not sure that we can let execve go through ... It will break AC
-all the same, so it should probably fail as well if AC is on IMO
-
+Reviewed-by: Robert Foss <robert.foss@linaro.org>
