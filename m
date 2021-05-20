@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8951438B4B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CE4138B4D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234239AbhETQ64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:58:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55708 "EHLO mail.kernel.org"
+        id S239014AbhETRBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:01:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233954AbhETQ6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:58:43 -0400
+        id S240005AbhETQ7c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:59:32 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 68AAE613AD;
-        Thu, 20 May 2021 16:57:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id ED5EA6139A;
+        Thu, 20 May 2021 16:58:09 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlh3-002d7b-Rh; Thu, 20 May 2021 17:38:41 +0100
+        id 1ljlh5-002d7b-1N; Thu, 20 May 2021 17:38:43 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 37/39] xtensa: Bulk conversion to generic_handle_domain_irq()
-Date:   Thu, 20 May 2021 17:37:49 +0100
-Message-Id: <20210520163751.27325-38-maz@kernel.org>
+Subject: [PATCH 38/39] nios2: Bulk conversion to generic_handle_domain_irq()
+Date:   Thu, 20 May 2021 17:37:50 +0100
+Message-Id: <20210520163751.27325-39-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -73,31 +73,26 @@ generic_handle_domain_irq().
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/xtensa/kernel/irq.c | 4 +---
+ arch/nios2/kernel/irq.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/arch/xtensa/kernel/irq.c b/arch/xtensa/kernel/irq.c
-index a48bf2d10ac2..764b54bef701 100644
---- a/arch/xtensa/kernel/irq.c
-+++ b/arch/xtensa/kernel/irq.c
-@@ -33,8 +33,6 @@ DECLARE_PER_CPU(unsigned long, nmi_count);
- 
+diff --git a/arch/nios2/kernel/irq.c b/arch/nios2/kernel/irq.c
+index c6a1a9f6ac42..6b7890e5f7af 100644
+--- a/arch/nios2/kernel/irq.c
++++ b/arch/nios2/kernel/irq.c
+@@ -19,11 +19,9 @@ static u32 ienable;
  asmlinkage void do_IRQ(int hwirq, struct pt_regs *regs)
  {
--	int irq = irq_find_mapping(NULL, hwirq);
--
- #ifdef CONFIG_DEBUG_STACKOVERFLOW
- 	/* Debugging check for stack overflow: is there less than 1KB free? */
- 	{
-@@ -48,7 +46,7 @@ asmlinkage void do_IRQ(int hwirq, struct pt_regs *regs)
- 			       sp - sizeof(struct thread_info));
- 	}
- #endif
+ 	struct pt_regs *oldregs = set_irq_regs(regs);
+-	int irq;
+ 
+ 	irq_enter();
+-	irq = irq_find_mapping(NULL, hwirq);
 -	generic_handle_irq(irq);
 +	generic_handle_domain_irq(NULL, hwirq);
- }
+ 	irq_exit();
  
- int arch_show_interrupts(struct seq_file *p, int prec)
+ 	set_irq_regs(oldregs);
 -- 
 2.30.2
 
