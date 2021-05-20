@@ -2,151 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C711389C5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFADD389C61
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:17:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229651AbhETEOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 00:14:43 -0400
-Received: from cloud48395.mywhc.ca ([173.209.37.211]:48442 "EHLO
-        cloud48395.mywhc.ca" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbhETEOn (ORCPT
+        id S229655AbhETES7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 00:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229436AbhETES6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 00:14:43 -0400
-Received: from modemcable064.203-130-66.mc.videotron.ca ([66.130.203.64]:45864 helo=[192.168.1.177])
-        by cloud48395.mywhc.ca with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <olivier@trillion01.com>)
-        id 1lja3l-0007Hw-2N; Thu, 20 May 2021 00:13:21 -0400
-Message-ID: <b360ed542526da0a510988ce30545f429a7da000.camel@trillion01.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-From:   Olivier Langlois <olivier@trillion01.com>
-To:     Jens Axboe <axboe@kernel.dk>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Stefan Metzmacher <metze@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
+        Thu, 20 May 2021 00:18:58 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D9C1C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:17:36 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so4731999pjb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 21:17:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vSAhZlU3cc1f6R2gciMFVwjz3Y0xmsU0eN+/yBhrwpg=;
+        b=0mpN1Faim4HtKeNt6TXGKV0MLs4V1OI1LaBLltG6s635DQj0Z2aN3x8Kj7Q/yk77CS
+         7ljPE3+EYFnL8m99Y52+e8bAywN75Js1Kkcf1/tfjMfPxAtFWt29XsWJh80nt2AOmIE8
+         QsSH2SeYrE+1O6/FbThzgIS9mBU6sLOif1wensg5FuQZ6kl12MvGeLDKAB/+8WeLxGDS
+         jYa7eGR1cXMqwibtdUzfOFh7eRgfxHmdHEWk8ddM9YmyAdjuBcfIc3PzuasJzQGzfn3d
+         oLdrhwiBSy/IQutIFPSZ3ZvCIA3n6iHsIhxLQNBGxfnXphjjI2XhT2rQdiZbmaTM2msn
+         MSxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vSAhZlU3cc1f6R2gciMFVwjz3Y0xmsU0eN+/yBhrwpg=;
+        b=mTKXEModiCIjJe8GVYl4SfIwpKJUgYOXbRCdK+THVTfUre4tnn2/glGkwFi6l24vhF
+         9IReT0Z8ALZad8af4hQdwFUYr7czwRtndic5itOw7h/p3wBgJ6uYMYjmumQvGXQBNXPA
+         EkF6ZS20/OnNDyxbOU1cUfqtfxLsB9YaDSoE+nBZ9ZZGFR3KBoHF+UgjHnwto8cpIaIv
+         9ftlo5iYBoTFm3x4NLzpPK3qKgffyHAwh6Gp29Z1QXuI94TTcv8yU7JE2W57/mwiFLId
+         Py+5ln/BTEqAa/OOPlHV+fruSzKApD4viyt7L+z4SqNcMrLtEOKI7qqOoP8zsSSRP2Qr
+         x72g==
+X-Gm-Message-State: AOAM533JRK68kbfhTv4gNvofO65/+lBD9hR8ptD+0bVSXvE6wNlWT4pC
+        zCIt1kvrAwAlltAjnRJDMloqfQ==
+X-Google-Smtp-Source: ABdhPJwC+NZfBg5/s5BAg4vrE8D40RHS9LjfijOWYCDvRAAjOrfBrExkmcrqP7cNnplO8+M6GwLXHw==
+X-Received: by 2002:a17:90a:c712:: with SMTP id o18mr2679294pjt.157.1621484255903;
+        Wed, 19 May 2021 21:17:35 -0700 (PDT)
+Received: from x1 ([2601:1c0:4701:ae70:1ac3:31d1:689c:7daa])
+        by smtp.gmail.com with ESMTPSA id 128sm707095pfy.194.2021.05.19.21.17.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 21:17:35 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:17:33 -0700
+From:   Drew Fustini <drew@beagleboard.org>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Dario Binacchi <dariobin@libero.it>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-Date:   Thu, 20 May 2021 00:13:19 -0400
-In-Reply-To: <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
-         <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
-         <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
-         <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
-         <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
-         <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
-         <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
-         <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
-         <8735v3jujv.ffs@nanos.tec.linutronix.de>
-         <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
-         <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
-         <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
-         <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
-         <17471c9fec18765449ef3a5a4cddc23561b97f52.camel@trillion01.com>
-         <CAHk-=whoJCocFsQ7+Sqq=dkuzHE+RXxvRdd4ZvyYqnsKBqsKAA@mail.gmail.com>
-         <3df541c3-728c-c63d-eaeb-a4c382e01f0b@kernel.dk>
-Organization: Trillion01 Inc
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.40.1 
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Vladimir Zapolskiy <vz@mleia.com>
+Subject: Re: [PATCH 1/2] pinctrl: core: configure pinmux from pins debug file
+Message-ID: <20210520041733.GA3269241@x1>
+References: <20210516135531.2203-1-dariobin@libero.it>
+ <20210516135531.2203-2-dariobin@libero.it>
+ <CAHp75Vd8875hRNk1JK6gkmfxjqxBSu4cRNE1zJt9TyEW7TvsMg@mail.gmail.com>
+ <1735504854.166374.1621346262270@mail1.libero.it>
+ <CAHp75VeADiRKdfnsXQ=y3z1WAJBbtZ+P=8tdyYtVQpJrSrQ63Q@mail.gmail.com>
+ <20210519100235.GA3063522@x1>
+ <CAHp75Ve5sonh1qNgqqF1yr8OiuJVWXb-UJj+kzxQa7+R-YVoXQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cloud48395.mywhc.ca
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - trillion01.com
-X-Get-Message-Sender-Via: cloud48395.mywhc.ca: authenticated_id: olivier@trillion01.com
-X-Authenticated-Sender: cloud48395.mywhc.ca: olivier@trillion01.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75Ve5sonh1qNgqqF1yr8OiuJVWXb-UJj+kzxQa7+R-YVoXQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jens,
-
-On Wed, 2021-05-12 at 14:55 -0600, Jens Axboe wrote:
+On Wed, May 19, 2021 at 02:27:38PM +0300, Andy Shevchenko wrote:
+> On Wed, May 19, 2021 at 1:02 PM Drew Fustini <drew@beagleboard.org> wrote:
+> > On Tue, May 18, 2021 at 05:01:30PM +0300, Andy Shevchenko wrote:
 > 
-> > Jens, have you played with core-dumping when there are active
-> > io_uring
-> > threads? There's a test-program in that github issue report..
+> ...
 > 
-> Yes, I also did that again after the report, and did so again right now
-> just to verify. I'm not seeing any issues with coredumps being
-> generated
-> if the app crashes, or if I send it SIGILL, for example... I also just
-> now tried Olivier's test case, and it seems to dump just fine for me.
+> > Vladimir Zapolskiy wrote in e73339037f6b ("pinctrl: remove unused
+> > 'pinconf-config' debugfs interface"):
+> >
+> >     Of course it might be possible to increase MAX_NAME_LEN, and then add
+> >     .pin_config_dbg_parse_modify callbacks to the drivers, but the whole
+> >     idea of such a limited debug option looks inviable. A more flexible
+> >     way to functionally substitute the original approach is to implicitly
+> >     or explicitly use pinctrl_select_state() function whenever needed.
+> >
+> > This makes me think it is not a good idea to bring back pinconf-config.
+> > The pinmux-select debugfs file that I add added in commit 6199f6becc86
+> > ("pinctrl: pinmux: Add pinmux-select debugfs file") provides a method to
+> > activate a pin function and pin group which I think provides the same
+> > capability as long as the possible pin functions are described in dts.
 > 
-> I then tried backing out the patch from Stefan, and it works fine with
-> that reverted too. So a bit puzzled as to what is going on here...
+> The problem is that the pinctrl_select_state() is very limited and has
+> no clear meanings of the states. Only few are defined and still
+> unclear. What does `sleep` or `standby` or whatever mean? It may be
+> quite different to the device in question. Basically what we need is
+> to say we want this device ('function') to appear on this group of
+> pins ('group'). And pinctrl_select_state() can't fulfill this simple
+> task :-(
 > 
-> Anyway, I'll check in on that github thread and see if we can narrow
-> this down.
+> If we look at the ACPI case it makes that API completely out of useful
+> context (it can be used due to above and some kind of layering
+> violations, like PM vs. pin control).
 > 
-I know that my test case isn't conclusive. It is a failed attempt to
-capture what my program is doing.
+> Since above is the debugfs interface we may return it for the certain
+> task, i.e. printing current function / group choice(s) (if it's not
+> done by other means) and allow to switch it desired function/group
+> (that's what Dario tries to achieve AFAIU).
 
-The priority of investigating my core dump issue has substantially
-dropped last week because I did solve my primary issue (A buffer leak
-in the provided buffers to io_uring during disconnection). My program
-did run for days but it did crash morning without any core dump again.
-It is a very frustrating situation because it would probably be a bug
-trivial to diagnostic and fix but without the core, the logs are opaque
-and they just don't give no clue about why the program did crash.
+A write to the pinmux-select debugfs file will call pinmux_select() in
+drivers/pinctrl/pinmux.c which, after some validation checks, will call
+pmxops->set_mux() with function selector and group selector as
+arguments.  For pinctrl-single, this will invoke pcs_set_mux() which
+will ultimately set the mux mode bits in the register for each pin in
+that function.
 
-A key characteristic of my program, it is that it generates at least 1
-io-worker thread per io_uring instance.
+IS that useful for pin controllers in ACPI systems as well?
 
-Oddly enough, I am having a hard time recreating a test case that will
-generate io-worker threads.
-
-My first attempt was with the github issue test-case. I have kept
-tweaking it and I know that I will find the right sequence to get io-
-worker threads spawned.
-
-I suspect that once you meet that condition, it might be sufficient to
-trigger the core dump generation problem.
-
-I have also tried to run benchmark io_uring with
-https://github.com/frevib/io_uring-echo-server/blob/io-uring-feat-fast-poll/benchmarks/benchmarks.md
-(If you give it a try, make sure you erase its private out-of-date
-liburing copy before compiling it...)
-This didn't generate any io-worker thread neither.
-
-In a nutshell here is what my program does for most of its 85-86
-sockets:
-1. create TCP socket
-2. Set O_NONBLOCK to it
-3. Call connect()
-4. Use IORING_OP_POLL_ADD with POLLOUT to be notified when the
-connection completes
-5. Once connection is completed, clear the socket O_NONBLOCK flag, use
-IORING_OP_WRITE to send a request
-6. Submit a IORING_OP_READ with IOSQE_BUFFER_SELECT to read server
-reply asynchronously.
-
-Here are 2 more notes about the sequence:
-a) If you wonder about the flip-flop about blocking and non-nblocking,
-it is because I have adapated existing code to use io_uring. To
-minimize the required code change, I left untouched the non-blocking
-connection code.
-b) If I add IOSQE_ASYNC to the IORING_OP_READ, io_uring will generate a
-lot of io-worker threads. I mean a lot... You can see here:
-https://github.com/axboe/liburing/issues/349
-
-So what I am currently doing is to tweak my test-case to emulate as
-much as possible the described sequence to have some io-worker threads
-spawn and then force a core dump to validate that it is the io-worker
-thread presence that is causing the core dump generation issue (or
-not!)
-
-Quick question to the devs: Is there any example program bundled with
-liburing that is creating some io-workers thread in a sure way?
-
-Greetings,
-Olivier
-
-
+thanks,
+drew
