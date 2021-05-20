@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A76838A83E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EBF538A845
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:47:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232731AbhETKsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:48:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33278 "EHLO mail.kernel.org"
+        id S238037AbhETKs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:48:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33416 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236968AbhETKcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:32:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7052C61C44;
-        Thu, 20 May 2021 09:52:31 +0000 (UTC)
+        id S237078AbhETKcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:32:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A211161C46;
+        Thu, 20 May 2021 09:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504351;
-        bh=uvhpI6Q/SHPZ/xU7JSDPSFlerRc05DpY9Z2169ObaMk=;
+        s=korg; t=1621504354;
+        bh=/hcxhy2mgNjwhbDfiyWU5PPzDU5bWuTaMU+8t8Y+/pQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=BgyjE8yH62izYZdEOpa9fThwpTa9x+HoDAjKUNcgOHQMeJB1qR6Jf6Zs7n2B4lySK
-         oX8K0s3U2zeo1na8DzVfy6cbz2fVTxW+9mNmxzGxkOhUNCHYOLBmrS8Vv5M8AWju8H
-         UMaa8izxbreXeErHoV/ysLDEGE0bPO+uvn8ys3vg=
+        b=gonbEFruA1Uf3qjEvKYalHy4cQ65hBvrej5cVjbPC7IyDdkCtij5YXHoRYwu18ua0
+         l4DXTzX4pHLWCycsMUc59f22/uZDF/CrJUCwFLsU4dRo8um6ympS9TVfrwH4QFOOM/
+         pyN7pKCYURMV5veInzzVSZ2v3fD0bQ9D8On9f7+I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 173/323] tty: fix return value for unsupported ioctls
-Date:   Thu, 20 May 2021 11:21:05 +0200
-Message-Id: <20210520092126.039045155@linuxfoundation.org>
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        He Ying <heying24@huawei.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 174/323] firmware: qcom-scm: Fix QCOM_SCM configuration
+Date:   Thu, 20 May 2021 11:21:06 +0200
+Message-Id: <20210520092126.077248573@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,83 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johan Hovold <johan@kernel.org>
+From: He Ying <heying24@huawei.com>
 
-[ Upstream commit 1b8b20868a6d64cfe8174a21b25b74367bdf0560 ]
+[ Upstream commit 2954a6f12f250890ec2433cec03ba92784d613e8 ]
 
-Drivers should return -ENOTTY ("Inappropriate I/O control operation")
-when an ioctl isn't supported, while -EINVAL is used for invalid
-arguments.
+When CONFIG_QCOM_SCM is y and CONFIG_HAVE_ARM_SMCCC
+is not set, compiling errors are encountered as follows:
 
-Fix up the TIOCMGET, TIOCMSET and TIOCGICOUNT helpers which returned
--EINVAL when a tty driver did not implement the corresponding
-operations.
+drivers/firmware/qcom_scm-smc.o: In function `__scm_smc_do_quirk':
+qcom_scm-smc.c:(.text+0x36): undefined reference to `__arm_smccc_smc'
+drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call':
+qcom_scm-legacy.c:(.text+0xe2): undefined reference to `__arm_smccc_smc'
+drivers/firmware/qcom_scm-legacy.o: In function `scm_legacy_call_atomic':
+qcom_scm-legacy.c:(.text+0x1f0): undefined reference to `__arm_smccc_smc'
 
-Note that the TIOCMGET and TIOCMSET helpers predate git and do not get a
-corresponding Fixes tag below.
+Note that __arm_smccc_smc is defined when HAVE_ARM_SMCCC is y.
+So add dependency on HAVE_ARM_SMCCC in QCOM_SCM configuration.
 
-Fixes: d281da7ff6f7 ("tty: Make tiocgicount a handler")
-Signed-off-by: Johan Hovold <johan@kernel.org>
-Link: https://lore.kernel.org/r/20210407095208.31838-3-johan@kernel.org
+Fixes: 916f743da354 ("firmware: qcom: scm: Move the scm driver to drivers/firmware")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: He Ying <heying24@huawei.com>
+Link: https://lore.kernel.org/r/20210406094200.60952-1-heying24@huawei.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/tty_io.c       | 8 ++++----
- include/linux/tty_driver.h | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ drivers/firmware/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
-index d7e56de19c58..ae3af8debf67 100644
---- a/drivers/tty/tty_io.c
-+++ b/drivers/tty/tty_io.c
-@@ -2424,14 +2424,14 @@ out:
-  *	@p: pointer to result
-  *
-  *	Obtain the modem status bits from the tty driver if the feature
-- *	is supported. Return -EINVAL if it is not available.
-+ *	is supported. Return -ENOTTY if it is not available.
-  *
-  *	Locking: none (up to the driver)
-  */
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index 42c4ff75281b..89c5f3651c3b 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -206,6 +206,7 @@ config FW_CFG_SYSFS_CMDLINE
+ config QCOM_SCM
+ 	bool
+ 	depends on ARM || ARM64
++	depends on HAVE_ARM_SMCCC
+ 	select RESET_CONTROLLER
  
- static int tty_tiocmget(struct tty_struct *tty, int __user *p)
- {
--	int retval = -EINVAL;
-+	int retval = -ENOTTY;
- 
- 	if (tty->ops->tiocmget) {
- 		retval = tty->ops->tiocmget(tty);
-@@ -2449,7 +2449,7 @@ static int tty_tiocmget(struct tty_struct *tty, int __user *p)
-  *	@p: pointer to desired bits
-  *
-  *	Set the modem status bits from the tty driver if the feature
-- *	is supported. Return -EINVAL if it is not available.
-+ *	is supported. Return -ENOTTY if it is not available.
-  *
-  *	Locking: none (up to the driver)
-  */
-@@ -2461,7 +2461,7 @@ static int tty_tiocmset(struct tty_struct *tty, unsigned int cmd,
- 	unsigned int set, clear, val;
- 
- 	if (tty->ops->tiocmset == NULL)
--		return -EINVAL;
-+		return -ENOTTY;
- 
- 	retval = get_user(val, p);
- 	if (retval)
-diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
-index 31c2b5b166de..ebca9e4a2fed 100644
---- a/include/linux/tty_driver.h
-+++ b/include/linux/tty_driver.h
-@@ -236,7 +236,7 @@
-  *
-  *	Called when the device receives a TIOCGICOUNT ioctl. Passed a kernel
-  *	structure to complete. This method is optional and will only be called
-- *	if provided (otherwise EINVAL will be returned).
-+ *	if provided (otherwise ENOTTY will be returned).
-  */
- 
- #include <linux/export.h>
+ config QCOM_SCM_32
 -- 
 2.30.2
 
