@@ -2,142 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F2038B9A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB2B138B9AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:47:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231919AbhETWtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:49:04 -0400
-Received: from mail-mw2nam08on2055.outbound.protection.outlook.com ([40.107.101.55]:1689
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231871AbhETWtC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:49:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=VgTcxqMPIEYVZkp0+vrmGuDgrIsvlvmyZsftuzaGRI95Rv7Dy/dvFWcXACTgq7SzWj9nCsstvuoQNoGNCnakB/RFBe2MDaU9wsP6Ab2MBxHw/SQw0LdBL3i32pML0x9TMms09GJ+K/tvRg0pYJS4AY2L7VB9YJagU/wlBB2uJDRmPaQlI3UnQLUgy1gjCgnfmBbg8pBtrdY0vbt05cFfQ8kO4Kd/XUMuHwJHaBQEYeIRDbnyRn2ity3Kwgew5v166SDArKhhSaSD2J5G9qmHwq4cXl4yYLbJw4pDVceMi2iX8VLZaWCU4aHOCmGahPkjX9nC2FX5lkKSGu4UZDs/Vw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ucIaFFJwh5azBQTxfuB9kJsGY43NsGq16q65zwNCHvE=;
- b=KIHlHOPYYpWbxWZ9k68ttTj0rPgwisJ3t56GqWFRJQ5SYsxOkDabhfqZat2PTy7pG7b0rajnG6AZ1TAerAkKh5y6x1b2EI+2/69rNmOjccFTbhiNYbSHsh4dup1f/td+VYcodzx0JrWG47uEQVmiR2Nck2+7Y0cEYoK4qVrjwbe8MelpkmorD+pwfI8xtiuQeNCUceLwK1Seu6yMAONY8iYdA/69NfaabIX8l3NP7UV53qX4DEX3cBXARTM8/LBD94U5JpcEX7OlpvzzrxLzfam13iayCCjpd/kBcVL1xNaDZYPloEKR3v3MsmcX7uzp+6vMxpgSG2r+sveYiLEeCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ucIaFFJwh5azBQTxfuB9kJsGY43NsGq16q65zwNCHvE=;
- b=VtKqlvKgzvJ+82x2KcICGxCdEWJGYLMk9w+gCHbcGIhZAuZoLffi+iYHMyCF60veSKDgBuDw8JKNWWZP3nlVl8zEBSn3XCca/2Hc3fSweEpi86UREM6rELri0uY8YtmbxcZNsJONnWKr7tpYsZ4Y1r5IJYTOmO8o7CL5EeCfWcA=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21)
- by DM6PR12MB4011.namprd12.prod.outlook.com (2603:10b6:5:1c5::28) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 20 May
- 2021 22:47:39 +0000
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::2833:2120:ed9f:c3e4]) by DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::2833:2120:ed9f:c3e4%4]) with mapi id 15.20.4129.033; Thu, 20 May 2021
- 22:47:39 +0000
-Subject: Re: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     David Bartley <andareed@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-x86_64@vger.kernel.org
-References: <20210520174130.94954-1-andareed@gmail.com>
- <b6be3a80-df49-70ec-a3dc-e621b1e1a8c2@amd.com> <YKbmmNKiwDQ7wRl7@zn.tnic>
-From:   Wei Huang <wei.huang2@amd.com>
-Message-ID: <83432971-9969-5ffc-a2a9-1f4197592ff4@amd.com>
-Date:   Thu, 20 May 2021 17:47:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-In-Reply-To: <YKbmmNKiwDQ7wRl7@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.11]
-X-ClientProxiedBy: SN4PR0801CA0023.namprd08.prod.outlook.com
- (2603:10b6:803:29::33) To DM5PR1201MB0201.namprd12.prod.outlook.com
- (2603:10b6:4:5b::21)
+        id S231967AbhETWtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:49:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55862 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231871AbhETWtM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 18:49:12 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFE11C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 15:47:49 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id f12so21752267ljp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 15:47:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MK6UuBIOW5R2C8Iik+b838Uyxt1hZt7UCg8fzYUlkJM=;
+        b=Kbv1b3W4u6if/TbnXml6z6WLZX+vV6pJa2chv2sir1ieVIBNCwWC2xK0iKDDKHnvZR
+         wqMFJJeDewYui9uxx85KPo3lNmuMvF0p+ctdANp7OEWGNaqzUfVagn2xRvEQaWdH54r9
+         XFsF6j2e/O5g98r7P6HyCZn0nai5BKkY0FvEdvHzeYq5DAcicVkIm/uKbMtaBowQyfsK
+         3ihSx9HueMCxrbBaHmrzYzwHg/rJCZpl5UsP89QoQu0U6RH+rVJvFI0jQix9Aiq4O0jF
+         FuF/TYCL7gmKHm2J8wUK40GuhvB94v52P06n1qUCiieafFgDbW9ncNjHJc1OZRmm7Ikf
+         qyMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=MK6UuBIOW5R2C8Iik+b838Uyxt1hZt7UCg8fzYUlkJM=;
+        b=PDKYM5b/PW0tU9whlsH3Me6WwzHi02cHaEFI1nocneZJKy1S75YqFJHDMIGt6CbmVW
+         pXRBU39g02lNhidh4f4VhmJ+pjAcJLwuj4U2oofUI9yupAqM0Vk4ep4cW0AHHPcZzgDw
+         zw5WgsHhZNqygUFuETU+j5V9dOGlZUwuiQtm49VPw7g7n2Gt32vB33CRQoW3bZf73Bzp
+         8QYxs2oneerr9bZg1lwPTum474OXZgKhI33PBTHqxgzX0B8nJRONhIqXPZ45kd8HXhnW
+         oypXoJTQG7hTo+luz7gXmYiYL/dFYCcBmAfqDldfszTiP9jshES68+M6OmYUWe9N1pC9
+         4YQw==
+X-Gm-Message-State: AOAM531IlAMsbWW+hfpLVP/w3njNd/79RXFu/Tl1qmFK4RuOi6ul6/BV
+        Qw6nq/Ss+ghKasCEaZZfWVYmUw==
+X-Google-Smtp-Source: ABdhPJy1yWBktF2zEtLYvCS2iJbCI0D40LFFUKeD8jKIFoUzmWKkuQ+OrXTerLh10M0JuhL8Vf0SUA==
+X-Received: by 2002:a2e:a373:: with SMTP id i19mr4523970ljn.49.1621550868249;
+        Thu, 20 May 2021 15:47:48 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id q15sm422512lfc.177.2021.05.20.15.47.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 15:47:47 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id 3989710174D; Fri, 21 May 2021 01:47:50 +0300 (+03)
+Date:   Fri, 21 May 2021 01:47:50 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC v2-fix 1/1] x86/tdx: Handle in-kernel MMIO
+Message-ID: <20210520224750.xjrf6zteya5qsnhk@box.shutemov.name>
+References: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
+ <20210518004807.258503-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <36cd2665-6d8b-9c0b-eec1-25152dcca2a3@intel.com>
+ <YKPo2Zde5b0QxIPJ@google.com>
+ <d8c87904-d994-8a5a-c0e8-be861fcac6df@linux.intel.com>
+ <YKQEoMau3ovCzJ1W@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.10.87] (165.204.77.11) by SN4PR0801CA0023.namprd08.prod.outlook.com (2603:10b6:803:29::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 22:47:38 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 95cb6e56-1547-435d-8cbe-08d91be14517
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4011:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB401175615FE1072E1CF93991CF2A9@DM6PR12MB4011.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: DOFuaK2tddpwTJkSt2bx7yaISw9SqYjJzYjh15BF0B9eQCC7Wc0lv2rXnEhf0SYg7saY9Z6RhHLQpShcgOxaJVa9ib2TsOHxWLg9RIXOni5KdUw2Le+2DoPUE6FQtrup2ttsWPBv8SAdjpx/pBMFZhHsaAebmcpu83/rysPyz9o0kz7c6dZJF3dlrmor8DXIBl/sErSxBqe6gKB3Z/8ODvMP6IUNTvSc/XXD41JitFUp4XQc4Sj1K7ja8kbmebnXtkjtlrOpz/KIaI2TkuNrI2MhnX4iLew/o651UN4ROfHlb6JmeEP/6PpsDv6ljIzd/YMS5ziyA3Cik9HYVullV9HNWMNm3xlcwkYceP/Z/sQSYA+VE0HDlNNyPPAA3o7u6RB6gS6Samq/9TQfx5XLyR6tZkBJOZ1a0JfBnfzbxXTk+fnHn08BdOPzp/y7V1Xs6XdV0rNpUMWfcu4Z+ho8nSW7JDHLr9dBumepaUSHRjZ3PtUkQZ+fVJq/zAr73w7uCnbwlqJS7Ymr7MlM3sgo28ooJnykIstKBEp3JoCQPCo7rbffea+IJ6Kli/iMdDtghU5ez4r1WrIGcgUULgMGzny+xxDOKNtachKitmTumUfIT4PnPSOUb7ZqPoB09jk8UYCnFqT2blXY9XI4/UzEZpdPrSQl5YvWAJHZPyu8XKZSKbc06uyq99cWLPfQ7rRiGF0nWW5oVomtp7WooLj0d8xhMxy2Cez4sdnVgzk+umc=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(26005)(4326008)(16526019)(186003)(8936002)(8676002)(86362001)(31696002)(6916009)(2906002)(6486002)(36756003)(66476007)(66556008)(66946007)(5660300002)(38100700002)(38350700002)(316002)(478600001)(16576012)(4744005)(53546011)(31686004)(956004)(2616005)(52116002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?YXVZYzhhTFZlQktBbkQvaHpFbzNoRU5mVG45ZTVVdytFVlROTHFYQy9pcmFS?=
- =?utf-8?B?elZWTWlLbTViemIvL3BwVllTMVEvVUc0dndOQzhmS3IvcTJiaC8yazNJMW00?=
- =?utf-8?B?bWpWU0h3enkydUFFZVFDNFNVYXBaRDExOSs0cEEyM2FGREg4c2RlelJTbzVY?=
- =?utf-8?B?VWpGT21QTnMxZEJiaGUvTno2RndleFFESmlEZlphdlJ3MUQzMG1yOGVNRTBN?=
- =?utf-8?B?TmlFcWlqZmZMUzZLMjRWV2lXLzR1VGd3Zk1YeHRJd2VncjBpVzNaUVBMdW5Y?=
- =?utf-8?B?YlJpMjdaSHUrYzluRVVOSm5WV04zVEgxTXNRVHRZcXRjN3ZhYmppaVBlc0VF?=
- =?utf-8?B?NnFjUnZua25nRGt3TkRnMFIyUHowbVY5aUhTd3VOaStpVjBYU01PUlZJRndF?=
- =?utf-8?B?ak9JUWVWOG10d0FZb0ZJbmZ0c29WK3lzOWt2bzh2eG16NHVtK0dIc2l3djNq?=
- =?utf-8?B?Z0Q0NFRwRHM1NFg3dDh2eFVCOWwvMThIT1VMbGZ1VVZsUGNQdmZBREJMWnND?=
- =?utf-8?B?OXoreHBLOU5wVFhEYTFhREV3RFdYRWR3Vmt6bGp4NFkxcCtmM1luUmg1eEV5?=
- =?utf-8?B?U0xMb3RmUHp5c3FKU2NiQ09YRWdHbjVrdkNsQTZDZ2xtd1BTOHZ3UTBJSXQy?=
- =?utf-8?B?ZkZBeDRCdWVvRmE1Z1ZHYm1hQ1VwWndoN3dRUi9hblJsaWpIeXE1dnAvUEI3?=
- =?utf-8?B?Zkp2aXdxeDZKcE9BV0tkMTN2bEpEcGMwV3M3QUZNSERDT2kybHprRGRkaXFn?=
- =?utf-8?B?Sm85V0tLWCtIU2c0VWpGd2xyZ2pJaFlHejl4U3drMVB4Z2NFNm5UeGovbVYx?=
- =?utf-8?B?NmpKcGpEMHdMalRlTzd3MnlKUXJ4Yk1CMitBMjZWNVJobm14NkFSclFLKzNz?=
- =?utf-8?B?ckV6Z2dUMzBJNThVMUtDQVR5NFgxcktqYkVLMW5NNWJYeVdndGRENlFiYXRX?=
- =?utf-8?B?cWJiMTQ3NzE5S2FqMXlJYzZGODJVdFRuUWVialRpUkRpcVdlOVhMZ0syVnpC?=
- =?utf-8?B?aXZNMnBRL3gzZXAwVUxkek5oclY1aHNXdmNSRm5HNzBqWWh5MDJTRFlHbXVB?=
- =?utf-8?B?MGxuNzArVnA4Y3N6czd4b213TEhvakY5eStqZzhneG9aY3ppYTdDc2FyUGdz?=
- =?utf-8?B?L1B2YUtRbGNvSGVMS1gxbURXTkVhSlhaTnlsOXNMOHY5WjVRTk5VK21qZ3l6?=
- =?utf-8?B?QXZZdjMyV3lLNFVEcnhxQ1FDeUt6c0wrWitubUxsTUp0ZVR6RzVwdTRGY3VL?=
- =?utf-8?B?NHkzdVJROWJSOXJnY3VuTFhrUE9yZUxLcXFSZjM1SFI4NzFta0pVeGgvQWVM?=
- =?utf-8?B?N2h4T0Z0bEJpaXhTUCtRMXcxNnljK2xuVVVCdmlCUGRPSmJsSVpObXp3ZEZ4?=
- =?utf-8?B?OFJ5NmZaK1RxaHpRZzhndDNySGh5Y1BIOGRicWdLcGh3T25QbUVUdnl1Mi9N?=
- =?utf-8?B?YXVjWk95OCs3RGFBL0RzeEpoYzRFSE5hb2ZYODRsVHROMHNSaVBzak5Ua2hn?=
- =?utf-8?B?ZXo2U202NExmZVhuanI4MWxOYXpEVDRNQ2w0N0FtaXhBL2J0MEpBWHdHSUU2?=
- =?utf-8?B?WkYvdm9tWFNzcktDWEhvcHNJSk1LaG9SVzBMYUNYWG5GZXNsMnd3Y2hnbU84?=
- =?utf-8?B?djQxazQyanAydjRlZmY5L3JpRDB0MjlYUDRGdWVNTkpaMzN0OFVkM1ZVbjhp?=
- =?utf-8?B?d3BhaWFhaHBTMm8zdGQrQlpGNzR4OUNUT29SWGZLQ1NCcFJlNlFXVUd2Y2Zs?=
- =?utf-8?Q?AEVEMW9eY9sbZ24B8QwMSV/32rIUmt5TLkmH6hl?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95cb6e56-1547-435d-8cbe-08d91be14517
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 22:47:39.2797
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PoL+aJAOlkJMF/Cy4JXj4SKsJjCkW1SQenIUrikf2h1IinMswvUOKBTibiIThXdS
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4011
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKQEoMau3ovCzJ1W@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 18, 2021 at 06:17:04PM +0000, Sean Christopherson wrote:
+> On Tue, May 18, 2021, Andi Kleen wrote:
+> > > Why does this code exist at all?  TDX and SEV-ES absolutely must share code for
+> > > handling MMIO reflection.  It will require a fair amount of refactoring to move
+> > > the guts of vc_handle_mmio() to common code, but there is zero reason to maintain
+> > > two separate versions of the opcode cracking.
+> > 
+> > While that's true on the high level, all the low level details are
+> > different. We looked at unifying at some point, but it would have been a
+> > callback hell. I don't think unifying would make anything cleaner.
+> 
+> How hard did you look?  The only part that _must_ be different between SEV and
+> TDX is the hypercall itself, which is wholly contained at the very end of
+> vc_do_mmio().
 
+I've come up with the code below. decode_mmio() can be shared with SEV.
 
-On 5/20/21 5:45 PM, Borislav Petkov wrote:
-> On Thu, May 20, 2021 at 04:36:09PM -0500, Wei Huang wrote:
->> According to the specification, these IDs look correct to me. I also found
->> them on two real machines.
-> 
-> Wei, I'm assuming that's an ACK?
+I don't have a testing setup for AMD. I can do a blind patch, but it would
+be much more productive if someone on AMD side could look into this.
 
-Yes, it is an ACK. They match with the values specified in PPR.
+Any opinions?
 
-> 
->> On 5/20/21 12:41 PM, David Bartley wrote:
->>> This is required to support Zen3 APUs in k10temp.
->>>
->>> Signed-off-by: David Bartley <andareed@gmail.com>
-> 
-> Btw, David, for the future, pls run your patches through
-> 
-> ./scripts/get_maintainer.pl
-> 
-> so that you get a list of people and mailing lists to CC - otherwise it
-> likely will get missed.
-> 
-> This one I managed to fish out from the lkml firehose, by chance. :-)
-> 
-> Thx.
-> 
+enum mmio_type {
+	MMIO_DECODE_FAILED,
+	MMIO_WRITE,
+	MMIO_WRITE_IMM,
+	MMIO_READ,
+	MMIO_READ_ZERO_EXTEND,
+	MMIO_READ_SIGN_EXTEND,
+	MMIO_MOVS,
+};
+
+static enum mmio_type decode_mmio(struct insn *insn, struct pt_regs *regs,
+				  int *bytes)
+{
+	int type = MMIO_DECODE_FAILED;
+
+	*bytes = 0;
+
+	switch (insn->opcode.bytes[0]) {
+	case 0x88: /* MOV m8,r8 */
+		*bytes = 1;
+		fallthrough;
+	case 0x89: /* MOV m16/m32/m64, r16/m32/m64 */
+		if (!*bytes)
+			*bytes = insn->opnd_bytes;
+		type = MMIO_WRITE;
+		break;
+
+	case 0xc6: /* MOV m8, imm8 */
+		*bytes = 1;
+		fallthrough;
+	case 0xc7: /* MOV m16/m32/m64, imm16/imm32/imm64 */
+		if (!*bytes)
+			*bytes = insn->opnd_bytes;
+		type = MMIO_WRITE_IMM;
+		break;
+
+	case 0x8a: /* MOV r8, m8 */
+		*bytes = 1;
+		fallthrough;
+	case 0x8b: /* MOV r16/r32/r64, m16/m32/m64 */
+		if (!*bytes)
+			*bytes = insn->opnd_bytes;
+		type = MMIO_READ;
+		break;
+
+	case 0xa4: /* MOVS m8, m8 */
+		*bytes = 1;
+		fallthrough;
+	case 0xa5: /* MOVS m16/m32/m64, m16/m32/m64 */
+		if (!*bytes)
+			*bytes = insn->opnd_bytes;
+		type = MMIO_MOVS;
+		break;
+
+	case 0x0f: /* Two-byte instruction */
+		switch (insn->opcode.bytes[1]) {
+		case 0xb6: /* MOVZX r16/r32/r64, m8 */
+			*bytes = 1;
+			fallthrough;
+		case 0xb7: /* MOVZX r32/r64, m16 */
+			if (!*bytes)
+				*bytes = 2;
+			type = MMIO_READ_ZERO_EXTEND;
+			break;
+
+		case 0xbe: /* MOVSX r16/r32/r64, m8 */
+			*bytes = 1;
+			fallthrough;
+		case 0xbf: /* MOVSX r32/r64, m16 */
+			if (!*bytes)
+				*bytes = 2;
+			type = MMIO_READ_SIGN_EXTEND;
+			break;
+		}
+		break;
+	}
+
+	return type;
+}
+
+static int tdg_handle_mmio(struct pt_regs *regs, struct ve_info *ve)
+{
+	int size;
+	unsigned long *reg;
+	struct insn insn;
+	unsigned long val = 0;
+
+	kernel_insn_init(&insn, (void *) regs->ip, MAX_INSN_SIZE);
+	insn_get_length(&insn);
+	insn_get_opcode(&insn);
+
+	reg = get_reg_ptr(&insn, regs);
+
+	switch (decode_mmio(&insn, regs, &size)) {
+	case MMIO_WRITE:
+		memcpy(&val, reg, size);
+		tdg_mmio(size, true, ve->gpa, val);
+		break;
+	case MMIO_WRITE_IMM:
+		val = insn.immediate.value;
+		tdg_mmio(size, true, ve->gpa, val);
+		break;
+	case MMIO_READ:
+		val = tdg_mmio(size, false, ve->gpa, val);
+		/* Zero-extend for 32-bit operation */
+		if (size == 4)
+			*reg = 0;
+		memcpy(reg, &val, size);
+		break;
+	case MMIO_READ_ZERO_EXTEND:
+		val = tdg_mmio(size, false, ve->gpa, val);
+
+		/* Zero extend based on operand size */
+		memset(reg, 0, insn.opnd_bytes);
+		memcpy(reg, &val, size);
+		break;
+	case MMIO_READ_SIGN_EXTEND:
+		val = tdg_mmio(size, false, ve->gpa, val);
+
+		/* Sign extend based on operand size */
+		if (val & (size == 1 ? 0x80 : 0x8000))
+			memset(reg, 0xff, insn.opnd_bytes);
+		else
+			memset(reg, 0, insn.opnd_bytes);
+		memcpy(reg, &val, size);
+		break;
+	case MMIO_MOVS:
+	case MMIO_DECODE_FAILED:
+		force_sig_fault(SIGBUS, BUS_ADRERR, (void __user *) ve->gla);
+		return 0;
+	}
+
+	return insn.length;
+}
+
+-- 
+ Kirill A. Shutemov
