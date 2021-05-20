@@ -2,88 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6351538B7F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:00:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A63D38B7F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:00:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239973AbhETUBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:01:33 -0400
-Received: from ms.lwn.net ([45.79.88.28]:58512 "EHLO ms.lwn.net"
+        id S240085AbhETUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:01:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231917AbhETUBa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:01:30 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id D3783301;
-        Thu, 20 May 2021 20:00:07 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D3783301
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1621540808; bh=2WNLJX/xlZc5xTtT/m0BAIjR0dGVeWDMrn8wfYaNCUM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=JWiESVFNzhYgP3LIrHH+2tY7pTjoh+gKnctlpgARBvgwBWg4BACU+o/zkUA8eRdPF
-         jS85XmMhRO5jK77x2BlQkPxDSbCrzhxlhaMXvDctoM1+BMQOa0yL/SZHdunNPbhAgt
-         4USigcfd0H+vMC4CmQMvwXkhr8hvfRf3UC0K6z2vi4HY7A5m+ShwS2LJ/UDdBlnsDP
-         SPBGKoeOrTvsAjV7A36ox1hL3nOjKNp5cU8ATBlHyBRqSKzr5ElccrOeoSfEDcgg8h
-         LH4udeqBoy+VzdXLKBnnbzSb6qpvpqwupJQPHnbWB4IHmqCdgQ0/NFGZsiTs5E64Wr
-         JxMzmR3UeuhAA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Lee Jones <lee.jones@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org,
-        kvm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-iio@vger.kernel.org, patches@opensource.cirrus.com
-Subject: Re: [PATCH 00/10] Documentation build warning fixes
-In-Reply-To: <cover.1621413933.git.mchehab+huawei@kernel.org>
-References: <cover.1621413933.git.mchehab+huawei@kernel.org>
-Date:   Thu, 20 May 2021 14:00:07 -0600
-Message-ID: <87wnrtnpko.fsf@meer.lwn.net>
+        id S238332AbhETUBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:01:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 00D7B6135C;
+        Thu, 20 May 2021 20:00:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621540810;
+        bh=RkzgR3UO/59f5ZMiYTFtG/ZRLkG7zTixNPT6XKlHaHA=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Uiy92zDfdemgsNbWBHSg7eUoPEgbJp5oI0H4Hf+RExZHSjv0Rf3O8UMZrG2q6uOud
+         0EiemV8YR7p2Ed1AHncTk/zNx0lVq8VoL7bUveZmE8+photQEKvMP4roIy60IVWFfc
+         jbLiEq+TdJvQL2nBTNU/E6YDyPBU3WuLgp67DS3V7WCUgVRqEwhCTMo1KAU0+eZCNh
+         TDv9J5CaPgEeffgKQBRUc8pF+i0teuFZEqmk0NjjhiwJ+lhdll8SeIcTW5pR6kKWcM
+         rEDtHBw0PbVuBZ83U9IXDOuNO39p14NDSwYu0u9rv9uY1P6tlsEuHMcWlO/KlVmsWv
+         Q8Y2Zk32gRIlg==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E985F60A4F;
+        Thu, 20 May 2021 20:00:09 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] selftests: Add .gitignore for nci test suite
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162154080995.16251.177596405013047761.git-patchwork-notify@kernel.org>
+Date:   Thu, 20 May 2021 20:00:09 +0000
+References: <20210519213333.3947830-1-dmatlack@google.com>
+In-Reply-To: <20210519213333.3947830-1-dmatlack@google.com>
+To:     David Matlack <dmatlack@google.com>
+Cc:     netdev@vger.kernel.org, linux-nfc@lists.01.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bongsu.jeon@samsung.com, shuah@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> writes:
+Hello:
 
-> Hi Jon,
->
-> This small series contain a series of fixes for the documentation. it is
-> against your docs-next branch.
->
-> Three of the patches fix duplicated symbols at the ABI documents.
-> There are still some ABI warnings from IIO, but all but one were
-> already fixed at linux-next. So, hopefully, after having everything
-> merged, the ABI warnings will be solved.
->
-> Mauro Carvalho Chehab (10):
->   docs: update sysfs-platform_profile.rst reference
->   docs: vcpu-requests.rst: fix reference for atomic ops
->   docs: translations/zh_CN: fix a typo at 8.Conclusion.rst
->   docs: sched-bwc.rst: fix a typo on a doc name
->   docs: update pin-control.rst references
->   docs: virt: api.rst: fix a pointer to SGX documentation
->   docs: ABI: iommu: remove duplicated definition for
->     sysfs-kernel-iommu_groups
->   docs: ABI: sysfs-class-backlight: unify ambient light zone nodes
->   docs: ABI: sysfs-class-led-trigger-pattern: remove repeat duplication
->   iio: documentation: fix a typo
+This patch was applied to netdev/net.git (refs/heads/master):
 
-Seems like good stuff.  The last patch in the series, though, adds a
-warning:
+On Wed, 19 May 2021 21:33:33 +0000 you wrote:
+> Building the nci test suite produces a binary, nci_dev, that git then
+> tries to track. Add a .gitignore file to tell git to ignore this binary.
+> 
+> Signed-off-by: David Matlack <dmatlack@google.com>
+> ---
+>  tools/testing/selftests/nci/.gitignore | 1 +
+>  1 file changed, 1 insertion(+)
+>  create mode 100644 tools/testing/selftests/nci/.gitignore
 
-  Documentation/ABI/testing/sysfs-bus-iio:799: WARNING: Inline emphasis start-string without end-string.
+Here is the summary with links:
+  - selftests: Add .gitignore for nci test suite
+    https://git.kernel.org/netdev/net/c/8570e75a5543
 
-So I left that one out and applied the rest.
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-Thanks,
 
-jon
