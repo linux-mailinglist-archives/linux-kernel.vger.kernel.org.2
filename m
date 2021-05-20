@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFBA738A88D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A061E38A894
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238406AbhETKvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:51:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39830 "EHLO mail.kernel.org"
+        id S237843AbhETKv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:51:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39842 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237814AbhETKfi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:35:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CD9EB61C5F;
-        Thu, 20 May 2021 09:53:50 +0000 (UTC)
+        id S237825AbhETKfj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:35:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0980A61C62;
+        Thu, 20 May 2021 09:53:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504431;
-        bh=sEsfvlxfhDwNz/ByYf1XBGxL95q/Ch3vdnMjYnakl4E=;
+        s=korg; t=1621504433;
+        bh=S4EPmOGhWiuMWGNKe7t0Ij091sAS3B5qwwBRaUlda2k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r+bKRr2IKwANgWj1IsVOIzEXtlj5ks/xz3jbrLihwxyszhnKDFEl2NAGcftRu+YyQ
-         hnMkYTAjxeRA4PUZK3L8mhJYNiaITzmTjfszV1D+bGLNOFU8MFGT67bCReQdKytvHP
-         lVgCEZIzbNrn2IsrSBtMoMR9Lr6T8ieQz6nzvy34=
+        b=l+D/30/LwbdC98aUn925bCmBfcO0+7IKBl2joIbVmDnyZYsuq3I9sS32xlZ9fL21P
+         oCmpe1YQZNJvdA2UCcBoAcCyAXStCzNkpo8xZA/vlrGQWbG49C1ws3zzTFsHfk8uN9
+         4AB6wJKpFnbSdBAYDxj7KQ36prtxdSLQhw8QksV0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Jakub Kicinski <kubakici@wp.pl>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Wang Wensheng <wangwensheng4@huawei.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 208/323] mt7601u: fix always true expression
-Date:   Thu, 20 May 2021 11:21:40 +0200
-Message-Id: <20210520092127.259353102@linuxfoundation.org>
+Subject: [PATCH 4.14 209/323] IB/hfi1: Fix error return code in parse_platform_config()
+Date:   Thu, 20 May 2021 11:21:41 +0200
+Message-Id: <20210520092127.290936006@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,45 +41,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Wang Wensheng <wangwensheng4@huawei.com>
 
-[ Upstream commit 87fce88658ba047ae62e83497d3f3c5dc22fa6f9 ]
+[ Upstream commit 4c7d9c69adadfc31892c7e8e134deb3546552106 ]
 
-Currently the expression ~nic_conf1 is always true because nic_conf1
-is a u16 and according to 6.5.3.3 of the C standard the ~ operator
-promotes the u16 to an integer before flipping all the bits. Thus
-the top 16 bits of the integer result are all set so the expression
-is always true.  If the intention was to flip all the bits of nic_conf1
-then casting the integer result back to a u16 is a suitabel fix.
+Fix to return a negative error code from the error handling case instead
+of 0, as done elsewhere in this function.
 
-Interestingly static analyzers seem to thing a bitwise ! should be
-used instead of ~ for this scenario, so I think the original intent
-of the expression may need some extra consideration.
-
-Addresses-Coverity: ("Logical vs. bitwise operator")
-Fixes: c869f77d6abb ("add mt7601u driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Jakub Kicinski <kubakici@wp.pl>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210225183241.1002129-1-colin.king@canonical.com
+Fixes: 7724105686e7 ("IB/hfi1: add driver files")
+Link: https://lore.kernel.org/r/20210408113140.103032-1-wangwensheng4@huawei.com
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Wang Wensheng <wangwensheng4@huawei.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt7601u/eeprom.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/infiniband/hw/hfi1/firmware.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/wireless/mediatek/mt7601u/eeprom.c b/drivers/net/wireless/mediatek/mt7601u/eeprom.c
-index da6faea092d6..80d0f64205f8 100644
---- a/drivers/net/wireless/mediatek/mt7601u/eeprom.c
-+++ b/drivers/net/wireless/mediatek/mt7601u/eeprom.c
-@@ -106,7 +106,7 @@ mt7601u_has_tssi(struct mt7601u_dev *dev, u8 *eeprom)
- {
- 	u16 nic_conf1 = get_unaligned_le16(eeprom + MT_EE_NIC_CONF_1);
- 
--	return ~nic_conf1 && (nic_conf1 & MT_EE_NIC_CONF_1_TX_ALC_EN);
-+	return (u16)~nic_conf1 && (nic_conf1 & MT_EE_NIC_CONF_1_TX_ALC_EN);
- }
- 
- static void
+diff --git a/drivers/infiniband/hw/hfi1/firmware.c b/drivers/infiniband/hw/hfi1/firmware.c
+index 5aea8f47e670..c54359376cda 100644
+--- a/drivers/infiniband/hw/hfi1/firmware.c
++++ b/drivers/infiniband/hw/hfi1/firmware.c
+@@ -1885,6 +1885,7 @@ int parse_platform_config(struct hfi1_devdata *dd)
+ 			dd_dev_err(dd, "%s: Failed CRC check at offset %ld\n",
+ 				   __func__, (ptr -
+ 				   (u32 *)dd->platform_config.data));
++			ret = -EINVAL;
+ 			goto bail;
+ 		}
+ 		/* Jump the CRC DWORD */
 -- 
 2.30.2
 
