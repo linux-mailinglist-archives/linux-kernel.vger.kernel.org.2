@@ -2,92 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E893738A21D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:36:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E4D38A2AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233176AbhETJiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:38:08 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43441 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232798AbhETJgK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:36:10 -0400
-IronPort-SDR: Esu2JEOBwudslraAcHnkOF9vHjC1L1/CKDGGZGU6Xi7wPejJ6GijnrvlWDp1ez2XQ/Q9Tt8Lw1
- DpBjHDXWxmTw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="200885392"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="200885392"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:27:39 -0700
-IronPort-SDR: +sUa9gM+/Z1y98mtmoOMZfbqht1iPHqMV+zajcgvCrVHikBZi210qjFXmJVsQgoFeqKsS9r5mL
- qnw74XFPfh3g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="543394301"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 20 May 2021 02:27:36 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 20 May 2021 12:27:36 +0300
-Date:   Thu, 20 May 2021 12:27:36 +0300
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH v2 1/1] usb: typec: tcpm: Use LE to CPU conversion when
- accessing msg->header
-Message-ID: <YKYriLzi0ylBrWL+@kuha.fi.intel.com>
-References: <20210519100358.64018-1-andriy.shevchenko@linux.intel.com>
+        id S233710AbhETJoG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233460AbhETJl2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:41:28 -0400
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DEB4C0611CB;
+        Thu, 20 May 2021 02:29:53 -0700 (PDT)
+Received: by mail-wm1-x333.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4686211wmc.1;
+        Thu, 20 May 2021 02:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=0cGf1aBFrVZ9AWx/JMeJaEcovPhb2SGzpzNb2QM+Nk0=;
+        b=uHOB9zSLOzNOqCaCdv3tAd2rduYeX+Y6HLl91ACEXI0mAiipvTrz62XOO2SaIgoVty
+         Pf+RMtbo6f9V42RwSERPXTfjWo95E9cFtuWO9WKA3FnlyXzYA2sixDVebOmpsiGxbbrs
+         9H75RMmiqXRnaSuCiHDHAfG1oZEYV+e0kFKI3et7gI5qVSablXEgzMq74sy11W+OVSBg
+         fv7UHDUKttjvUQS8McyFbz5R9rRxXKz5CWcwkYd/YNSYTQwhvZ8bx4KdaLHqPOOdvH9T
+         sB+YUNNslLh91vbqAYFcpIySpJbri7dhqbJjx3hah4/GEvkwzv8dQ2huIVBDg0fLwNfN
+         LmAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=0cGf1aBFrVZ9AWx/JMeJaEcovPhb2SGzpzNb2QM+Nk0=;
+        b=b241yx4hf56L3tEHKBQhrGCfw5ivFN1cjGHJyZbq0u25yRJ45G588C23bUBsHe4/Tr
+         To5G0q1Yh/rS0KVsRK4ujsrJmcwnKrd4UI1NMmipIxHuiiGnz7rpkFDmJg52F0+QNqn7
+         +Oc8VkiDcmWpsXHaa9jlBKja/Ige0pioOntrjCVS3SPruE1R0gVgwREswpTUoCtf/9va
+         MMZK7I2l7JHcuD/q/IXd/03nPxWnadsAuYko+CixmXvw/LZhDbTc8ZX44G4XTaERhGwP
+         pvUzV/NrcL80fNn0j4AmGX5rbQoaLj9Jr+8E0TiOaBljnJBcycE8K9sHD1Bz2oI6I/PP
+         k+Vw==
+X-Gm-Message-State: AOAM533utA1yRr3PAzH1zVJ+8yjKg9Ut4UcV7j9XSyEYvG5h5QFbyBod
+        PB45V9Om1zDF3VeN4VMutHM=
+X-Google-Smtp-Source: ABdhPJyzQVEd0/LMaL/vCBhQFOWm/v6djjo0ZDbNWBjNqUGvVSd07eOXBWJMelsuPcjU1JJMY/FRXA==
+X-Received: by 2002:a7b:ce0f:: with SMTP id m15mr3040219wmc.55.1621502991917;
+        Thu, 20 May 2021 02:29:51 -0700 (PDT)
+Received: from agape.jhs ([5.171.80.207])
+        by smtp.gmail.com with ESMTPSA id x2sm2018708wmj.3.2021.05.20.02.29.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 02:29:51 -0700 (PDT)
+Date:   Thu, 20 May 2021 11:29:49 +0200
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     hdegoede@redhat.com, Larry.Finger@lwfinger.net
+Cc:     gregkh@linuxfoundation.org, johannes@sipsolutions.net,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-wireless@vger.kernel.org
+Subject: staging: rtl8723bs: removal of 5G code
+Message-ID: <20210520092946.GA1404@agape.jhs>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519100358.64018-1-andriy.shevchenko@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 01:03:58PM +0300, Andy Shevchenko wrote:
-> Sparse is not happy about strict type handling:
->   .../typec/tcpm/tcpm.c:2720:27: warning: restricted __le16 degrades to integer
->   .../typec/tcpm/tcpm.c:2814:32: warning: restricted __le16 degrades to integer
-> 
-> Fix this by converting LE to CPU before use.
-> 
-> Fixes: ae8a2ca8a221 ("usb: typec: Group all TCPCI/TCPM code together")
-> Fixes: 64f7c494a3c0 ("typec: tcpm: Add support for sink PPS related messages")
-> Cc: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi all,
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I'm stick with removal of 5Ghz code from rtl8723bs wireless card driver
+(in staging subsystem).
 
-> ---
-> v2: fixed subject prefix
->  drivers/usb/typec/tcpm/tcpm.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index 64133e586c64..8fdfd7f65ad7 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2717,7 +2717,7 @@ static void tcpm_pd_ext_msg_request(struct tcpm_port *port,
->  	enum pd_ext_msg_type type = pd_header_type_le(msg->header);
->  	unsigned int data_size = pd_ext_header_data_size_le(msg->ext_msg.header);
->  
-> -	if (!(msg->ext_msg.header & PD_EXT_HDR_CHUNKED)) {
-> +	if (!(le16_to_cpu(msg->ext_msg.header) & PD_EXT_HDR_CHUNKED)) {
->  		tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
->  		tcpm_log(port, "Unchunked extended messages unsupported");
->  		return;
-> @@ -2811,7 +2811,7 @@ static void tcpm_pd_rx_handler(struct kthread_work *work)
->  				 "Data role mismatch, initiating error recovery");
->  			tcpm_set_state(port, ERROR_RECOVERY, 0);
->  		} else {
-> -			if (msg->header & PD_HEADER_EXT_HDR)
-> +			if (le16_to_cpu(msg->header) & PD_HEADER_EXT_HDR)
->  				tcpm_pd_ext_msg_request(port, msg);
->  			else if (cnt)
->  				tcpm_pd_data_request(port, msg);
-> -- 
-> 2.30.2
+I think that this task comprehend deletion of all code managing
+80Mhz bandwidth and upper bandwidth (160 and 80+80). For the latter
+it's simple, there's quite no code (unused enums and obsolete comments).
 
--- 
-heikki
+The former seems to be trickier, there are handlers like this:
+
+        /* 3 Set Reg483 */
+        SubChnlNum = phy_GetSecondaryChnl_8723B(Adapter);
+        rtw_write8(Adapter, REG_DATA_SC_8723B, SubChnlNum);
+
+phy_GetSecondaryChnl_8723B() contains code like:
+
+        } else if (pHalData->CurrentChannelBW == CHANNEL_WIDTH_40) {
+                if (pHalData->nCur40MhzPrimeSC == HAL_PRIME_CHNL_OFFSET_UPPER)
+                        SCSettingOf20 = VHT_DATA_SC_20_UPPER_OF_80MHZ;
+                else if (pHalData->nCur40MhzPrimeSC == HAL_PRIME_CHNL_OFFSET_LOWER)
+                        SCSettingOf20 = VHT_DATA_SC_20_LOWER_OF_80MHZ;
+        }
+
+so if we are on a 40M channel some settings involving 80M are made and
+the whole is then written on card registers.
+
+May I get rid of the whole? Are there some implications I should be aware of?
+Is secondary channel needed if we are on 40M bandwidth?
+
+Thank you in advance,
+
+fabio
