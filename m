@@ -2,132 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F6538AF15
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:49:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F002638AF1C
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:50:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235063AbhETMut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:50:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59378 "EHLO
+        id S231521AbhETMvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243148AbhETMsQ (ORCPT
+        with ESMTP id S242949AbhETMvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:48:16 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040F4C05A987
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:08:31 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id c14so15622049wrx.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:08:30 -0700 (PDT)
+        Thu, 20 May 2021 08:51:05 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E71C05BD04
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:13:57 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id l18-20020a1ced120000b029014c1adff1edso5276491wmh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:13:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=hyUyvkWuivxw9i+qeaOF+fHwJvasLJtrCwBlaujeHnI=;
-        b=phk7StCn27NCqHvMZsSU8b01cTn8UgRmTvpxYCeQACzojFZ+iawJ96f6IPE1R8iNbc
-         ewlfUrxbLkl2gkf4+V4GKPJbSN7L6w+MT5R3tKMO7SDQG3VCGXYl01pqrruLcfabsnX6
-         sVzb37UIKEcjTuRnWo4JDFxcGl6W57WxltZMrnld6BJMy3MEtkGrggJblIx/iZbM5BRr
-         NaJoj4Oq+Wv3UBFOcC3BXR43RHDqwWgea2grnaRkreapmRQQNKTf6jnoYy91e/o+RW2D
-         SZxOW2vG4YqZ5CbKgrCoH95ZYHRJNFKXNtIclhmXKUjB0b+yRnqcfhFLweKdyusKwQoT
-         znLQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N+rsDWAMv4x1ZiNx5AapS5e6MR/cbmzAQ/wF+EUOxGU=;
+        b=cR3MbNlHRY+hSafJx7VAjfSope7BFgR94/44HuaDrveC1bGEnVAaWRp72T7xvM0XoU
+         OTDDqMvOLczZa0Yvp5vjEaVW5Exg5f5iypjfSszL7Pv/7/5oSjatQAHxdeMrD/CSxPmP
+         8XbqrDRkkfYJAlnaICjiZD7MIHTWYiFNH0cEy/lXgNFMkwo28P57IbtdVRsrhxAn+q9p
+         S5SSJBsrkkm8/LbtosRlsbtzn7QgwanZfaqwoxfOHC69k6CHIljV5dyJ9RWYnRzTlG6R
+         v1m1BolGX8TjunA9APuGjMSeBGGGxaMaO6jVTKKwGm+M2rQw3SEwbNWRVcLOeUzuHSC3
+         YHhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=hyUyvkWuivxw9i+qeaOF+fHwJvasLJtrCwBlaujeHnI=;
-        b=J/kWoprqGP962ALbu637kmK8kZyVRvG3O1/cF9/s3l6zzh2G6Xtawk/8di+KTo6KA4
-         gie7et0RimBGoxK7c22EhD02VDBYa1YX1ufnv+2ypBYSACJrLTLPES8zK3YkAyLfR1qc
-         aH02YKPEPIhFdzJlV3VYVVzMl6Iog2NaNZgiOSebJl7f/gA0qpn3M+h8XOrEQLnkP3IK
-         6DuRVXYMeaLNjif7X9+T19VFZ6nKV86VWgDuN2alUr5ho71Z6RYRkux7W9yAJKiyLVMZ
-         iqbDUd1Wotu791FZ0GJLEFwFCgiHjpD3uFN0jhSdVnCu0jOdSnTOBlf0iorkqVSYTDUd
-         RiAw==
-X-Gm-Message-State: AOAM531MmjxAj9wbymSaw1KgSL6vSETvYn8n5uQ3lo5usqYuG6KkQCss
-        E7VB4bIWaqtSJJtjzP/2QDAylA==
-X-Google-Smtp-Source: ABdhPJzjlR+LYGD37K92PFXuPL/scEGkgU3Dp+Bz+kzkL7RN9xEC53URbdJZJXexaKH3AbllkfL/JA==
-X-Received: by 2002:a05:6000:2cb:: with SMTP id o11mr3943077wry.326.1621512509630;
-        Thu, 20 May 2021 05:08:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=N+rsDWAMv4x1ZiNx5AapS5e6MR/cbmzAQ/wF+EUOxGU=;
+        b=Oh9wPbtpvYa5pMSKOdSGn7+qmWdM/6RXV7S1X0JT3cfKWIh4+nOvtKcPe765I3ULQf
+         tobZXeS2AOh2KdMfaMEEOgGItqlJ7dqW+p2d0BICSDXs2iOgehXj4hzDjgIP3+9eF6kT
+         KhqUkluiX4OX+qJIPgNpa8sNITjgVs9WyEP7DAi+qGdjJ76pRdUj5XuLK6Zw5moWFVKG
+         /ZSuvftJCB/gx7iLKAzPXiZ2q8viMvZgvb/19ghstWnF7M8CvWYm3TqbVFKpvmtGnetR
+         0cZ4iXFsLRwKlFBhOGnEJEbiAvTGycuhZCulPrx7bAb01BOUw0OW/3dYGWNcaFGNEPUk
+         1GqA==
+X-Gm-Message-State: AOAM530GlsEyBLv895RkyfqPrdKO8Vh9pA93ooZnWzDQ+MulXAftG6Is
+        1SBUdJvN1uGx84iR+0VI2BCZTA==
+X-Google-Smtp-Source: ABdhPJyASSt/x1V8q95MVvVq2U/YMyWW3NXlYBCB6FmxOMXdwlT2RPBDCPtfjX12ceL8X8BK7YpF8Q==
+X-Received: by 2002:a7b:c34a:: with SMTP id l10mr3390379wmj.46.1621512835550;
+        Thu, 20 May 2021 05:13:55 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id r7sm2237170wmq.18.2021.05.20.05.08.28
+        by smtp.gmail.com with ESMTPSA id 61sm3393704wrm.52.2021.05.20.05.13.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:08:29 -0700 (PDT)
+        Thu, 20 May 2021 05:13:55 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Andrey Smirnov <andrew.smirnov@gmail.com>
-Subject: [PATCH 7/7] mfd: si476x-i2c: Fix incorrectly documented function names
-Date:   Thu, 20 May 2021 13:08:20 +0100
-Message-Id: <20210520120820.3465562-8-lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bob Picco <robert.picco@hp.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
+        "cs.c" <support.linux@omnikey.com>,
+        Dave Safford <safford@watson.ibm.com>,
+        David Airlie <airlied@linux.ie>, dwmw2@infradead.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Harald Welte <laforge@gnumonks.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jerome Glisse <j.glisse@gmail.com>,
+        Kanoj Sarcar <kanoj@sgi.com>, Kylene Hall <kjhall@us.ibm.com>,
+        Lijun Pan <ljp@linux.ibm.com>, linux-crypto@vger.kernel.org,
+        linux-integrity@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Matt Mackall <mpm@selenic.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>, paulkf@microgate.com,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Reiner Sailer <sailer@watson.ibm.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        van Doorn <leendert@watson.ibm.com>
+Subject: [PATCH 00/16] Rid W=1 warnings from Char
+Date:   Thu, 20 May 2021 13:13:31 +0100
+Message-Id: <20210520121347.3467794-1-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520120820.3465562-1-lee.jones@linaro.org>
-References: <20210520120820.3465562-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
- drivers/mfd/si476x-i2c.c:360: warning: expecting prototype for si476x_drain_rds_fifo(). Prototype was for si476x_core_drain_rds_fifo() instead
- drivers/mfd/si476x-i2c.c:467: warning: expecting prototype for si476x_get_status(). Prototype was for si476x_core_get_status() instead
- drivers/mfd/si476x-i2c.c:484: warning: expecting prototype for si476x_get_and_signal_status(). Prototype was for si476x_core_get_and_signal_status() instead
- drivers/mfd/si476x-i2c.c:555: warning: expecting prototype for si476x_firmware_version_to_revision(). Prototype was for si476x_core_fwver_to_revision() instead
- drivers/mfd/si476x-i2c.c:619: warning: expecting prototype for si476x_get_revision_info(). Prototype was for si476x_core_get_revision_info() instead
+Lee Jones (16):
+  char: pcmcia: cm4000_cs: Remove unused variable 'tmp'
+  char: pcmcia: cm4040_cs: Remove unused variable 'uc'
+  char: random: Include header containing our prototypes
+  char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
+  char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
+  char: applicom: Remove 3 unused variables 'ret' and 2 instances of
+    'byte_reset_it'
+  char: tpm: tpm1-cmd: Fix a couple of misnamed functions
+  char: tpm: tpm_ftpm_tee: Fix a couple of kernel-doc misdemeanours
+  char: agp: backend: Demote some non-conformant kernel-doc headers
+  char: agp: frontend: Include header file containing our prototypes
+  char: agp: via-agp: Remove unused variable 'current_size'
+  char: hpet: Remove unused variable 'm'
+  char: agp: generic: Place braces around optimised out function in if()
+  char: agp: uninorth-agp: Remove unused variable 'size'
+  char: hw_random: pseries-rng: Demote non-conformant kernel-doc header
+  char: mem: Provide local prototype for non-static function
 
+ drivers/char/agp/backend.c           |  4 +-
+ drivers/char/agp/frontend.c          |  1 +
+ drivers/char/agp/generic.c           |  3 +-
+ drivers/char/agp/uninorth-agp.c      |  3 --
+ drivers/char/agp/via-agp.c           |  3 --
+ drivers/char/applicom.c              | 10 ++--
+ drivers/char/hpet.c                  |  4 +-
+ drivers/char/hw_random/pseries-rng.c |  2 +-
+ drivers/char/mem.c                   |  2 +
+ drivers/char/pcmcia/cm4000_cs.c      |  3 +-
+ drivers/char/pcmcia/cm4040_cs.c      |  3 +-
+ drivers/char/pcmcia/synclink_cs.c    | 74 +++++++++++++++-------------
+ drivers/char/random.c                |  1 +
+ drivers/char/tpm/tpm1-cmd.c          |  4 +-
+ drivers/char/tpm/tpm_ftpm_tee.c      |  6 +--
+ 15 files changed, 60 insertions(+), 63 deletions(-)
+
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Bob Picco <robert.picco@hp.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>
+Cc: "C. Scott Ananian" <cananian@alumni.princeton.edu>
+Cc: "cs.c" <support.linux@omnikey.com>
+Cc: Dave Safford <safford@watson.ibm.com>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dwmw2@infradead.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Harald Welte <laforge@gnumonks.org>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Jerome Glisse <j.glisse@gmail.com>
+Cc: Kanoj Sarcar <kanoj@sgi.com>
+Cc: Kylene Hall <kjhall@us.ibm.com>
 Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- drivers/mfd/si476x-i2c.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mfd/si476x-i2c.c b/drivers/mfd/si476x-i2c.c
-index c1d7b845244ed..a2635c2d9d1a9 100644
---- a/drivers/mfd/si476x-i2c.c
-+++ b/drivers/mfd/si476x-i2c.c
-@@ -350,7 +350,7 @@ static inline void si476x_core_start_rds_drainer_once(struct si476x_core *core)
- 	mutex_unlock(&core->rds_drainer_status_lock);
- }
- /**
-- * si476x_drain_rds_fifo() - RDS buffer drainer.
-+ * si476x_core_drain_rds_fifo() - RDS buffer drainer.
-  * @work: struct work_struct being ppassed to the function by the
-  * kernel.
-  *
-@@ -454,7 +454,7 @@ int si476x_core_i2c_xfer(struct si476x_core *core,
- EXPORT_SYMBOL_GPL(si476x_core_i2c_xfer);
- 
- /**
-- * si476x_get_status()
-+ * si476x_core_get_status()
-  * @core: Core device structure
-  *
-  * Get the status byte of the core device by berforming one byte I2C
-@@ -473,7 +473,7 @@ static int si476x_core_get_status(struct si476x_core *core)
- }
- 
- /**
-- * si476x_get_and_signal_status() - IRQ dispatcher
-+ * si476x_core_get_and_signal_status() - IRQ dispatcher
-  * @core: Core device structure
-  *
-  * Dispatch the arrived interrupt request based on the value of the
-@@ -532,7 +532,7 @@ static irqreturn_t si476x_core_interrupt(int irq, void *dev)
- }
- 
- /**
-- * si476x_firmware_version_to_revision()
-+ * si476x_core_fwver_to_revision()
-  * @core: Core device structure
-  * @func: Selects the boot function of the device:
-  *         *_BOOTLOADER  - Boot loader
-@@ -603,7 +603,7 @@ static int si476x_core_fwver_to_revision(struct si476x_core *core,
- }
- 
- /**
-- * si476x_get_revision_info()
-+ * si476x_core_get_revision_info()
-  * @core: Core device structure
-  *
-  * Get the firmware version number of the device. It is done in
+Cc: Lijun Pan <ljp@linux.ibm.com>
+Cc: linux-crypto@vger.kernel.org
+Cc: linux-integrity@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: Matt Mackall <mpm@selenic.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michael Neuling <mikey@neuling.org>
+Cc: paulkf@microgate.com
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Peter Huewe <peterhuewe@gmx.de>
+Cc: Reiner Sailer <sailer@watson.ibm.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Thirupathaiah Annapureddy <thiruan@microsoft.com>
+Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc: "Uwe Kleine-König" <uwe@kleine-koenig.org>
+Cc: van Doorn <leendert@watson.ibm.com>
 -- 
 2.31.1
 
