@@ -2,94 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B84D5389DFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF694389E0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:39:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230441AbhETGeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33066 "EHLO
+        id S230315AbhETGk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:40:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230408AbhETGeQ (ORCPT
+        with ESMTP id S229681AbhETGkw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:34:16 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8E6EC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:32:54 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id et19so16396353ejc.4
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:32:54 -0700 (PDT)
+        Thu, 20 May 2021 02:40:52 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7A48C06175F
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:39:31 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id c20so15185975qkm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:39:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/Men5rmBujePBODaPqTxdL7d5Hadu/ohxPE3843bVkM=;
-        b=A7yY9vj41fmYGyDYrkBklpQ9dUGDZHKmyUG0IoLZvByGjHFG/UW2ZN1aqLORfLHnBx
-         QqYKMTRtEi7Z9I16QUhEMhIryMW5cMGumf2bXTMpReFl4KvhBJ3IsB6RpkNcmCxlgSz9
-         zt6OskmxaC4qYaDH8kQvnsFnMUNFKpFwJCeNoqGTrCLTLnN39ys3Gz96V3X6WIhj/Njj
-         Peep5jzTFtVG5kL0RROyLmX/J8k4buO/vDp/GNp2LMt4Al8eRZqhCFBuCEywseyKvRzf
-         qFl4sFlV+mKrMgjVfanq31xDK3tYoh7pWzsFiEb3w3btIjndenXixOANombxaU5ncyPv
-         WbJA==
+        bh=e/NSxqpkIDrHAb8EdngT+J5y92xOhsZUELUZeumbo14=;
+        b=XZhu4NB364LO5HgzFR5xaRq+2+Ny8I/tbuM557W/djcP2WZR5/YY1P3k16G0KqQZ5g
+         9wOC75EFGAaEHt77aJ4y5qFZynUNK1/otklqj7so1biOf1FGROrwm/ILpXyxkwLvM+aC
+         k3452c8bAQ6BEmJklQOi+zYSoBDbgxiFQQFO0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/Men5rmBujePBODaPqTxdL7d5Hadu/ohxPE3843bVkM=;
-        b=g+jeGX085Jpj4hh4uXwRG0kHdarRwrG7XVpxuZRimpof1fXiAiBmNcgKeQzmY77fHu
-         IxynVuuq/AIhg0En6XP+uWdzgVppdRtegrYVMd1aIwdje3Pbl2tAPm1hGSa7S2u3Jpbw
-         xvmYIRqAgdpTaBHl5kXz4LmtrV8cEZJmyhb2ZnOGx+60O3v69iwZZ19GFBqaLtP3eOpL
-         eQeLE/882LUS+j/agwZ1OYsOUxGvBMp0ayEIISHt1bYdvo1MEJEtAOVohZZqPOvR4yIv
-         ThBJIgSzYYLTKXXI9kYaDBl3mp3TEi+oRk4RWKvaglpz87xGOk4Xroxyq28Jkn1IR/xG
-         UytQ==
-X-Gm-Message-State: AOAM532ecs4tmk+sRNWZ3LJqoUT8sYK1iTg/+pEUMnv/r+F4bC7td9KW
-        w5Fe8T7xBLfyIBnBB0WXYhN3ego90m4/Z2rkIz7S
-X-Google-Smtp-Source: ABdhPJx6xRY71uAWPKVPYMZsfI1C2ZOby/JHxCV6UkDwez9y1Wuqisip7Dr7L+8aPN3fVQWQls2IuNvwZo9GmF/km/A=
-X-Received: by 2002:a17:906:456:: with SMTP id e22mr3000572eja.427.1621492373326;
- Wed, 19 May 2021 23:32:53 -0700 (PDT)
+        bh=e/NSxqpkIDrHAb8EdngT+J5y92xOhsZUELUZeumbo14=;
+        b=ZFng3OaYs9NTbZMLsmTs59zcEC0cR5uC+6DDVks+b4H8Qm4SFklY5SEpMYbpgsmE9R
+         sdewrvlg28HGL2M7kXlJPzHxXVIVwUiLcs+qkMCqS3pzNNNjwpUngf6OenrmQWYZ7vqq
+         +hz/k2bL7ASPZWGTirbNzyAA7XgxC3R9do9gunQMuEoRFeWSszM0HPLONM5jrw4gVX/q
+         fASE70fXUoqHpNL5WksFYO7IYUd+PEY+rOo9Mz6E01tqGLdbWwwDYyMgZ4b3sbrC3sRT
+         3M+aHRe7CwyXzehSwIbxpXz+6tpZJqXx2d+qeKAg0yjEXY8bFj0SFVPKmiNxuYc4S3xv
+         gXaQ==
+X-Gm-Message-State: AOAM533AFWMOPq2Pt/2TqO/OpOYSXulpO8QhQU0PYo2AUrzBUb9sDGC5
+        wIq+5MQ/n5fsWPaMk7aCUYGwOIv43mS5kQ==
+X-Google-Smtp-Source: ABdhPJwHaMV870HF2x8tPMt/Rz3nXgnEaRmK/9zqrBo+Krj85sRPRXJKNOFX29liJiX6E959aVVilg==
+X-Received: by 2002:ae9:eb93:: with SMTP id b141mr3422430qkg.151.1621492770710;
+        Wed, 19 May 2021 23:39:30 -0700 (PDT)
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com. [209.85.222.182])
+        by smtp.gmail.com with ESMTPSA id m15sm1291219qtn.47.2021.05.19.23.39.30
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 23:39:30 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id k127so15162825qkc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:39:30 -0700 (PDT)
+X-Received: by 2002:a05:6638:14ce:: with SMTP id l14mr3931980jak.90.1621492759440;
+ Wed, 19 May 2021 23:39:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-3-xieyongji@bytedance.com>
- <YKX/SUq53GDtq84t@zeniv-ca.linux.org.uk>
-In-Reply-To: <YKX/SUq53GDtq84t@zeniv-ca.linux.org.uk>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 20 May 2021 14:32:42 +0800
-Message-ID: <CACycT3uD-D78EXu+njGb5Wctb1qV4VzwyfcN1803x8SY65QSTA@mail.gmail.com>
-Subject: Re: Re: [PATCH v7 02/12] file: Export receive_fd() to modules
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
+References: <20210518064215.2856977-1-tientzu@chromium.org>
+ <20210518064215.2856977-5-tientzu@chromium.org> <ae050c36-8179-e465-84f0-e46c361bd71e@gmail.com>
+In-Reply-To: <ae050c36-8179-e465-84f0-e46c361bd71e@gmail.com>
+From:   Claire Chang <tientzu@chromium.org>
+Date:   Thu, 20 May 2021 14:39:08 +0800
+X-Gmail-Original-Message-ID: <CALiNf29jpi7=UKFPc7TK8wiNbq6TL=Uj-Mvmj9HRvOLnr-r_Ow@mail.gmail.com>
+Message-ID: <CALiNf29jpi7=UKFPc7TK8wiNbq6TL=Uj-Mvmj9HRvOLnr-r_Ow@mail.gmail.com>
+Subject: Re: [PATCH v7 04/15] swiotlb: Add restricted DMA pool initialization
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
+        sstabellini@kernel.org, Robin Murphy <robin.murphy@arm.com>,
+        grant.likely@arm.com, xypron.glpk@gmx.de,
+        Thierry Reding <treding@nvidia.com>, mingo@kernel.org,
+        bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        Dan Williams <dan.j.williams@intel.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, xen-devel@lists.xenproject.org,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Jim Quinlan <james.quinlan@broadcom.com>,
+        Tomasz Figa <tfiga@chromium.org>, bskeggs@redhat.com,
+        Bjorn Helgaas <bhelgaas@google.com>, chris@chris-wilson.co.uk,
+        Daniel Vetter <daniel@ffwll.ch>, airlied@linux.ie,
+        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
+        jani.nikula@linux.intel.com, Jianxiong Gao <jxgao@google.com>,
+        joonas.lahtinen@linux.intel.com, linux-pci@vger.kernel.org,
+        maarten.lankhorst@linux.intel.com, matthew.auld@intel.com,
+        rodrigo.vivi@intel.com, thomas.hellstrom@linux.intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 2:18 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+On Thu, May 20, 2021 at 2:54 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
-> On Mon, May 17, 2021 at 05:55:03PM +0800, Xie Yongji wrote:
-> > Export receive_fd() so that some modules can use
-> > it to pass file descriptor between processes without
-> > missing any security stuffs.
 >
-> Which tree is that against?  Because in mainline this won't even build, let
-> alone work.
 >
+> On 5/17/2021 11:42 PM, Claire Chang wrote:
+> > Add the initialization function to create restricted DMA pools from
+> > matching reserved-memory nodes.
+> >
+> > Signed-off-by: Claire Chang <tientzu@chromium.org>
+> > ---
+> >  include/linux/device.h  |  4 +++
+> >  include/linux/swiotlb.h |  3 +-
+> >  kernel/dma/swiotlb.c    | 76 +++++++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 82 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/include/linux/device.h b/include/linux/device.h
+> > index 38a2071cf776..4987608ea4ff 100644
+> > --- a/include/linux/device.h
+> > +++ b/include/linux/device.h
+> > @@ -416,6 +416,7 @@ struct dev_links_info {
+> >   * @dma_pools:       Dma pools (if dma'ble device).
+> >   * @dma_mem: Internal for coherent mem override.
+> >   * @cma_area:        Contiguous memory area for dma allocations
+> > + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
+> >   * @archdata:        For arch-specific additions.
+> >   * @of_node: Associated device tree node.
+> >   * @fwnode:  Associated device node supplied by platform firmware.
+> > @@ -521,6 +522,9 @@ struct device {
+> >  #ifdef CONFIG_DMA_CMA
+> >       struct cma *cma_area;           /* contiguous memory area for dma
+> >                                          allocations */
+> > +#endif
+> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> > +     struct io_tlb_mem *dma_io_tlb_mem;
+> >  #endif
+> >       /* arch specific additions */
+> >       struct dev_archdata     archdata;
+> > diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+> > index 216854a5e513..03ad6e3b4056 100644
+> > --- a/include/linux/swiotlb.h
+> > +++ b/include/linux/swiotlb.h
+> > @@ -72,7 +72,8 @@ extern enum swiotlb_force swiotlb_force;
+> >   *           range check to see if the memory was in fact allocated by this
+> >   *           API.
+> >   * @nslabs:  The number of IO TLB blocks (in groups of 64) between @start and
+> > - *           @end. This is command line adjustable via setup_io_tlb_npages.
+> > + *           @end. For default swiotlb, this is command line adjustable via
+> > + *           setup_io_tlb_npages.
+> >   * @used:    The number of used IO TLB block.
+> >   * @list:    The free list describing the number of free entries available
+> >   *           from each index.
+> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > index b849b01a446f..1d8eb4de0d01 100644
+> > --- a/kernel/dma/swiotlb.c
+> > +++ b/kernel/dma/swiotlb.c
+> > @@ -39,6 +39,13 @@
+> >  #ifdef CONFIG_DEBUG_FS
+> >  #include <linux/debugfs.h>
+> >  #endif
+> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> > +#include <linux/io.h>
+> > +#include <linux/of.h>
+> > +#include <linux/of_fdt.h>
+> > +#include <linux/of_reserved_mem.h>
+> > +#include <linux/slab.h>
+> > +#endif
+> >
+> >  #include <asm/io.h>
+> >  #include <asm/dma.h>
+> > @@ -690,3 +697,72 @@ static int __init swiotlb_create_default_debugfs(void)
+> >  late_initcall(swiotlb_create_default_debugfs);
+> >
+> >  #endif
+> > +
+> > +#ifdef CONFIG_DMA_RESTRICTED_POOL
+> > +static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
+> > +                                 struct device *dev)
+> > +{
+> > +     struct io_tlb_mem *mem = rmem->priv;
+> > +     unsigned long nslabs = rmem->size >> IO_TLB_SHIFT;
+> > +
+> > +     if (dev->dma_io_tlb_mem)
+> > +             return 0;
+> > +
+> > +     /*
+> > +      * Since multiple devices can share the same pool, the private data,
+> > +      * io_tlb_mem struct, will be initialized by the first device attached
+> > +      * to it.
+> > +      */
+> > +     if (!mem) {
+> > +             mem = kzalloc(struct_size(mem, slots, nslabs), GFP_KERNEL);
+> > +             if (!mem)
+> > +                     return -ENOMEM;
+> > +
+> > +             if (PageHighMem(pfn_to_page(PHYS_PFN(rmem->base)))) {
+> > +                     kfree(mem);
+> > +                     return -EINVAL;
+>
+> This could probably deserve a warning here to indicate that the reserved
+> area must be accessible within the linear mapping as I would expect a
+> lot of people to trip over that.
 
-Oh, sorry for that. Now I'm based on vhost.git tree. But looks like I
-miss Christoph's commit
-42eb0d54c08 ("fs: split receive_fd_replace from __receive_fd"). Will
-rebase on it in v8.
+Ok. Will add it.
 
-Thanks,
-Yongji
+>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> --
+> Florian
