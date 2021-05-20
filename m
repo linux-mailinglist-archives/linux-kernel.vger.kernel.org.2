@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13A1F38AAFA
+	by mail.lfdr.de (Postfix) with ESMTP id 5C6DA38AAFB
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240876AbhETLTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:19:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54442 "EHLO mail.kernel.org"
+        id S240902AbhETLTj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:19:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239335AbhETK7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:59:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9504361D00;
-        Thu, 20 May 2021 10:02:51 +0000 (UTC)
+        id S239357AbhETK7G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:59:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D2561D01;
+        Thu, 20 May 2021 10:02:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504972;
-        bh=CjuAzQW9FYvydYL6RLKGhIB4LWUs9CAKBq9pQV1X8MQ=;
+        s=korg; t=1621504974;
+        bh=/ZW8JwvHwnl77jWCkthAo3Vaac0GolRsZMMhyixU/f4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Bs0XfIuuKwZbt+oymw1NTrN5jxr6isscuR/QT2DDjmaJ1EsX4YeBlTfM9y9d8Agmu
-         xAQ+vTXTvqo0AcM7nfLgp0R8N13RhwOfQk6RXkQ25Sh5Ru3q1PZcwDPQArkfOodsno
-         RkGd+IZjzsHEA99VkPISXMMpRsShNtuk19WJr+l8=
+        b=ziGdYPqUe/eBrObgGZ3T7B0PT388nwa+605icYvqqj1k/gAT7OGYFHzFAxPBqjOZg
+         GDEHaieCr1neNOvhIgcMKtkZzAK+xqvRi3iEyhVOU2vPcbwnuhtiYXyu6V0fyQXayq
+         JRptOxKF8UqJUlpZku3AEFuAD6Qa1W8n1vQY0yD0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Stefani Seibold <stefani@seibold.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 164/240] net:nfc:digital: Fix a double free in digital_tg_recv_dep_req
-Date:   Thu, 20 May 2021 11:22:36 +0200
-Message-Id: <20210520092114.157127912@linuxfoundation.org>
+Subject: [PATCH 4.9 165/240] kfifo: fix ternary sign extension bugs
+Date:   Thu, 20 May 2021 11:22:37 +0200
+Message-Id: <20210520092114.188530857@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,39 +42,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-[ Upstream commit 75258586793efc521e5dd52a5bf6c7a4cf7002be ]
+[ Upstream commit 926ee00ea24320052b46745ef4b00d91c05bd03d ]
 
-In digital_tg_recv_dep_req, it calls nfc_tm_data_received(..,resp).
-If nfc_tm_data_received() failed, the callee will free the resp via
-kfree_skb() and return error. But in the exit branch, the resp
-will be freed again.
+The intent with this code was to return negative error codes but instead
+it returns positives.
 
-My patch sets resp to NULL if nfc_tm_data_received() failed, to
-avoid the double free.
+The problem is how type promotion works with ternary operations.  These
+functions return long, "ret" is an int and "copied" is a u32.  The
+negative error code is first cast to u32 so it becomes a high positive and
+then cast to long where it's still a positive.
 
-Fixes: 1c7a4c24fbfd9 ("NFC Digital: Add target NFC-DEP support")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+We could fix this by declaring "ret" as a ssize_t but let's just get rid
+of the ternaries instead.
+
+Link: https://lkml.kernel.org/r/YIE+/cK1tBzSuQPU@mwanda
+Fixes: 5bf2b19320ec ("kfifo: add example files to the kernel sample directory")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Stefani Seibold <stefani@seibold.net>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/nfc/digital_dep.c | 2 ++
- 1 file changed, 2 insertions(+)
+ samples/kfifo/bytestream-example.c | 8 ++++++--
+ samples/kfifo/inttype-example.c    | 8 ++++++--
+ samples/kfifo/record-example.c     | 8 ++++++--
+ 3 files changed, 18 insertions(+), 6 deletions(-)
 
-diff --git a/net/nfc/digital_dep.c b/net/nfc/digital_dep.c
-index f864ce19e13d..582f97d035ef 100644
---- a/net/nfc/digital_dep.c
-+++ b/net/nfc/digital_dep.c
-@@ -1289,6 +1289,8 @@ static void digital_tg_recv_dep_req(struct nfc_digital_dev *ddev, void *arg,
- 	}
+diff --git a/samples/kfifo/bytestream-example.c b/samples/kfifo/bytestream-example.c
+index 2fca916d9edf..a7f5ee8b6edc 100644
+--- a/samples/kfifo/bytestream-example.c
++++ b/samples/kfifo/bytestream-example.c
+@@ -124,8 +124,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
  
- 	rc = nfc_tm_data_received(ddev->nfc_dev, resp);
-+	if (rc)
-+		resp = NULL;
+ 	mutex_unlock(&write_lock);
++	if (ret)
++		return ret;
  
- exit:
- 	kfree_skb(ddev->chaining_skb);
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static ssize_t fifo_read(struct file *file, char __user *buf,
+@@ -140,8 +142,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&read_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static const struct file_operations fifo_fops = {
+diff --git a/samples/kfifo/inttype-example.c b/samples/kfifo/inttype-example.c
+index 8dc3c2e7105a..a326a37e9163 100644
+--- a/samples/kfifo/inttype-example.c
++++ b/samples/kfifo/inttype-example.c
+@@ -117,8 +117,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&write_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static ssize_t fifo_read(struct file *file, char __user *buf,
+@@ -133,8 +135,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&read_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static const struct file_operations fifo_fops = {
+diff --git a/samples/kfifo/record-example.c b/samples/kfifo/record-example.c
+index 2d7529eeb294..deb87a2e4e6b 100644
+--- a/samples/kfifo/record-example.c
++++ b/samples/kfifo/record-example.c
+@@ -131,8 +131,10 @@ static ssize_t fifo_write(struct file *file, const char __user *buf,
+ 	ret = kfifo_from_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&write_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static ssize_t fifo_read(struct file *file, char __user *buf,
+@@ -147,8 +149,10 @@ static ssize_t fifo_read(struct file *file, char __user *buf,
+ 	ret = kfifo_to_user(&test, buf, count, &copied);
+ 
+ 	mutex_unlock(&read_lock);
++	if (ret)
++		return ret;
+ 
+-	return ret ? ret : copied;
++	return copied;
+ }
+ 
+ static const struct file_operations fifo_fops = {
 -- 
 2.30.2
 
