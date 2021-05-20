@@ -2,89 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D22CE38A0BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:22:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C3638A10E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231543AbhETJXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:23:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50782 "EHLO mail.kernel.org"
+        id S232101AbhETJ2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:28:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230483AbhETJXu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:23:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C59D6135B;
-        Thu, 20 May 2021 09:22:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621502549;
-        bh=mUcJvIDAEBZyVHNKECFJUZjJN3jvp0QlOwLkY/Lr9Fk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cueszxQKwQo1fo7eIWpKuItZ8ECXgi/2vnaWA0pNz+29DdsMCsgVBrOylLW1Tc796
-         ykghyQdgdNweB99uGbZpBiR/abnhi6a6tvpDSRJBSlTRH+guNjbEILhH11pM5YVW8l
-         qikrLp12Gf3+V0bI2mTYHPHnuLF0sMWN+jW1Zc9wp2Hnz4R6Qx6IqWRrTyetKnOTxT
-         VTAYRrZ5Cty92fnQiP6W2f7v4CjKifEpoWSK06xHDI2820QymWBehcgfdTzIfeA1+S
-         axUDrX0WCefyze7NmG8HS8370jvh0dHH2OX6jwBgO/zCzl5dACYCmgdd7qT1dFDN63
-         +47eoiF2EDfgQ==
-Received: by mail-wr1-f49.google.com with SMTP id n2so16960849wrm.0;
-        Thu, 20 May 2021 02:22:29 -0700 (PDT)
-X-Gm-Message-State: AOAM530wSHLlQY/IxbV8+KgIOXuQNcSRlcK5sl2nUhEDoIqsXLJWFiAW
-        TtkwIT3xox3uLR+w9gNoCNSomurX5s0+D8S+1qc=
-X-Google-Smtp-Source: ABdhPJzsrao8n8zbfttxKQpALJPp9YROd3f6fNW2rL/Ta9Y6h4hoYQ0fRUSF+pGM0FB3yjSG8oB6dY7AKuvOfp8E4v0=
-X-Received: by 2002:adf:e589:: with SMTP id l9mr3343339wrm.361.1621502547736;
- Thu, 20 May 2021 02:22:27 -0700 (PDT)
+        id S231594AbhETJ1K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:27:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 639E16139A;
+        Thu, 20 May 2021 09:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621502749;
+        bh=VqDrfQz3DNremgssuAMH/M9i4w6iI2e8Vl4TPkmQYxE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0YoKXfP8+yCRVPtg2Ou4HJCb4om73qG4gDIamabQsSiwmy5SUxbUpvzYHWmQQXhvp
+         oVi6wjCDBwzWp+zbf39Ff1Enk7ga3g1oiiYa7pqmRilOp4uvftV+sy4+CS3drkaS85
+         Us10ddnRUhfdPuAEEkEEEXLg3gJZA2we87fyaBvA=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 5.12 00/45] 5.12.6-rc1 review
+Date:   Thu, 20 May 2021 11:21:48 +0200
+Message-Id: <20210520092053.516042993@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210517203343.3941777-1-arnd@kernel.org> <20210517203343.3941777-5-arnd@kernel.org>
- <87h7iycvlo.ffs@nanos.tec.linutronix.de> <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
-In-Reply-To: <CAK8P3a0KULCWrGZt=C9uWDgqNf184KC-uaK9rN8ZXjTG1HAqsw@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 20 May 2021 11:21:12 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a2fBRe4PS40iV5-_LQGuAneN1HKksq6Xp3ETijs5xxG_Q@mail.gmail.com>
-Message-ID: <CAK8P3a2fBRe4PS40iV5-_LQGuAneN1HKksq6Xp3ETijs5xxG_Q@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] compat: remove some compat entry points
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Brian Gerst <brgerst@gmail.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.6-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-5.12.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 5.12.6-rc1
+X-KernelTest-Deadline: 2021-05-22T09:20+00:00
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:00 PM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Wed, May 19, 2021 at 10:33 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >
-> > On Mon, May 17 2021 at 22:33, Arnd Bergmann wrote:
-> > > From: Arnd Bergmann <arnd@arndb.de>
-> > >
-> > > These are all handled correctly when calling the native
-> > > system call entry point, so remove the special cases.
-> > >  arch/x86/entry/syscall_x32.c              |  2 ++
-> > >  arch/x86/entry/syscalls/syscall_32.tbl    |  6 ++--
-> > >  arch/x86/entry/syscalls/syscall_64.tbl    |  4 +--
-> >
-> > That conflicts with
-> >
-> >   https://lore.kernel.org/lkml/20210517073815.97426-1-masahiroy@kernel.org/
-> >
-> > which I'm picking up. We have more changes in that area coming in.
->
-> Ok, thanks for the heads-up. I'll try a merge or rebase to see how this can be
-> handled. If both the drivers/net and drivers/media get picked up for 5.14, maybe
-> the rebased patches can go through -mm on top, along with the final
-> removal of compat_alloc_user_space()/copy_in_user(). If not, I suppose these
-> four patches can also wait another release.
+This is the start of the stable review cycle for the 5.12.6 release.
+There are 45 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-On second thought, this patch 4/4 is not even required here to kill off
-compat_alloc_user_space, so the easiest alternative might be to merge the
-other patches first, and then do this part together with the removal of
-the unused functions in a follow-up series.
+Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+Anything received after that time might be too late.
 
-        Arnd
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.6-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 5.12.6-rc1
+
+Eric Dumazet <edumazet@google.com>
+    ipv6: remove extra dev_hold() for fallback tunnels
+
+Eric Dumazet <edumazet@google.com>
+    ip6_tunnel: sit: proper dev_{hold|put} in ndo_[un]init methods
+
+Eric Dumazet <edumazet@google.com>
+    sit: proper dev_{hold|put} in ndo_[un]init methods
+
+Eric Dumazet <edumazet@google.com>
+    ip6_gre: proper dev_{hold|put} in ndo_[un]init methods
+
+Yannick Vignon <yannick.vignon@nxp.com>
+    net: stmmac: Do not enable RX FIFO overflow interrupts
+
+Zqiang <qiang.zhang@windriver.com>
+    lib: stackdepot: turn depot_lock spinlock to raw_spinlock
+
+yangerkun <yangerkun@huawei.com>
+    block: reexpand iov_iter after read/write
+
+Hui Wang <hui.wang@canonical.com>
+    ALSA: hda: generic: change the DAC ctl name for LO+SPK or LO+HP
+
+Íñigo Huguet <ihuguet@redhat.com>
+    net:CXGB4: fix leak if sk_buff is not used
+
+Hans de Goede <hdegoede@redhat.com>
+    gpiolib: acpi: Add quirk to ignore EC wakeups on Dell Venue 10 Pro 5055
+
+Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+    drm/amd/display: Fix two cursor duplication when using overlay
+
+Keith Busch <kbusch@kernel.org>
+    nvmet: remove unsupported command noise
+
+Phillip Potter <phil@philpotter.co.uk>
+    net: hsr: check skb can contain struct hsr_ethhdr in fill_frame_info
+
+Zhang Zhengming <zhangzhengming@huawei.com>
+    bridge: Fix possible races between assigning rx_handler_data and setting IFF_BRIDGE_PORT bit
+
+Darren Powell <darren.powell@amd.com>
+    amdgpu/pm: Prevent force of DCEFCLK on NAVI10 and SIENNA_CICHLID
+
+Bodo Stroesser <bostroesser@gmail.com>
+    scsi: target: tcmu: Return from tcmu_handle_completions() if cmd_id not found
+
+Jeff Layton <jlayton@kernel.org>
+    ceph: don't allow access to MDS-private inodes
+
+Jeff Layton <jlayton@kernel.org>
+    ceph: don't clobber i_snap_caps on non-I_NEW inode
+
+Jeff Layton <jlayton@kernel.org>
+    ceph: fix fscache invalidation
+
+James Smart <jsmart2021@gmail.com>
+    scsi: lpfc: Fix illegal memory access on Abort IOCBs
+
+Nathan Chancellor <nathan@kernel.org>
+    riscv: Workaround mcount name prior to clang-13
+
+Nathan Chancellor <nathan@kernel.org>
+    scripts/recordmcount.pl: Fix RISC-V regex for clang
+
+Nathan Chancellor <nathan@kernel.org>
+    riscv: Use $(LD) instead of $(CC) to link vDSO
+
+Prashant Malani <pmalani@chromium.org>
+    platform/chrome: cros_ec_typec: Add DP mode check
+
+Manivannan Sadhasivam <mani@kernel.org>
+    ARM: 9075/1: kernel: Fix interrupted SMC calls
+
+Vidya Sagar <vidyas@nvidia.com>
+    PCI: tegra: Add Tegra194 MCFG quirks for ECAM errata
+
+Johannes Berg <johannes.berg@intel.com>
+    um: Disable CONFIG_GCOV with MODULES
+
+Johannes Berg <johannes.berg@intel.com>
+    um: Mark all kernel symbols as local
+
+Chuck Lever <chuck.lever@oracle.com>
+    svcrdma: Don't leak send_ctxt on Send errors
+
+Yi Chen <chenyi77@huawei.com>
+    f2fs: fix to avoid NULL pointer dereference
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    NFS: NFS_INO_REVAL_PAGECACHE should mark the change attribute invalid
+
+Hans de Goede <hdegoede@redhat.com>
+    Input: silead - add workaround for x86 BIOS-es which bring the chip up in a stuck state
+
+Hans de Goede <hdegoede@redhat.com>
+    Input: elants_i2c - do not bind to i2c-hid compatible ACPI instantiated devices
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    PCI: tegra: Fix runtime PM imbalance in pex_ep_event_pex_rst_deassert()
+
+Feilong Lin <linfeilong@huawei.com>
+    ACPI / hotplug / PCI: Fix reference count leak in enable_slot()
+
+Trond Myklebust <trond.myklebust@hammerspace.com>
+    NFS: Fix fscache invalidation in nfs_set_cache_invalid()
+
+louis.wang <liang26812@gmail.com>
+    ARM: 9066/1: ftrace: pause/unpause function graph tracer in cpu_suspend()
+
+Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
+    dmaengine: dw-edma: Fix crash on loading/unloading driver
+
+Arnd Bergmann <arnd@arndb.de>
+    PCI: thunder: Fix compile testing
+
+Ard Biesheuvel <ardb@kernel.org>
+    ARM: 9058/1: cache-v7: refactor v7_invalidate_l1 to avoid clobbering r5/r6
+
+Arnd Bergmann <arnd@arndb.de>
+    usb: sl811-hcd: improve misleading indentation
+
+Arnd Bergmann <arnd@arndb.de>
+    kgdb: fix gcc-11 warning on indentation
+
+Arnd Bergmann <arnd@arndb.de>
+    airo: work around stack usage warning
+
+Linus Torvalds <torvalds@linux-foundation.org>
+    drm/i915/display: fix compiler warning about array overrun
+
+Arnd Bergmann <arnd@arndb.de>
+    x86/msr: Fix wr/rdmsr_safe_regs_on_cpu() prototypes
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                           |   4 +-
+ arch/arm/kernel/asm-offsets.c                      |   3 +
+ arch/arm/kernel/smccc-call.S                       |  11 +-
+ arch/arm/kernel/suspend.c                          |  19 +++-
+ arch/arm/mm/cache-v7.S                             |  51 +++++----
+ arch/riscv/include/asm/ftrace.h                    |  14 ++-
+ arch/riscv/kernel/mcount.S                         |  10 +-
+ arch/riscv/kernel/vdso/Makefile                    |  12 +--
+ arch/um/Kconfig.debug                              |   1 +
+ arch/um/kernel/Makefile                            |   1 -
+ arch/um/kernel/dyn.lds.S                           |   6 ++
+ arch/um/kernel/gmon_syms.c                         |  16 ---
+ arch/um/kernel/uml.lds.S                           |   6 ++
+ arch/x86/lib/msr-smp.c                             |   4 +-
+ drivers/acpi/pci_mcfg.c                            |   7 ++
+ drivers/dma/dw-edma/dw-edma-core.c                 |  11 +-
+ drivers/gpio/gpiolib-acpi.c                        |  14 +++
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c  |  51 +++++++++
+ drivers/gpu/drm/amd/pm/swsmu/smu11/navi10_ppt.c    |   5 +-
+ .../drm/amd/pm/swsmu/smu11/sienna_cichlid_ppt.c    |   4 +-
+ drivers/gpu/drm/i915/display/intel_dp.c            |  13 ++-
+ drivers/input/touchscreen/elants_i2c.c             |  44 +++++++-
+ drivers/input/touchscreen/silead.c                 |  44 +++++++-
+ drivers/misc/kgdbts.c                              |  26 ++---
+ drivers/net/ethernet/chelsio/cxgb4/sge.c           |  16 +--
+ drivers/net/ethernet/stmicro/stmmac/dwmac4_dma.c   |   7 +-
+ drivers/net/ethernet/stmicro/stmmac/stmmac_main.c  |  14 +--
+ drivers/net/wireless/cisco/airo.c                  | 117 ++++++++++++---------
+ drivers/nvme/target/admin-cmd.c                    |   6 +-
+ drivers/pci/controller/dwc/Makefile                |   2 +-
+ drivers/pci/controller/dwc/pcie-tegra194.c         | 104 +++++++++++++++++-
+ drivers/pci/controller/pci-thunder-ecam.c          |   2 +-
+ drivers/pci/controller/pci-thunder-pem.c           |  13 +--
+ drivers/pci/hotplug/acpiphp_glue.c                 |   1 +
+ drivers/pci/pci.h                                  |   6 ++
+ drivers/platform/chrome/cros_ec_typec.c            |   5 +
+ drivers/scsi/lpfc/lpfc_sli.c                       |  11 +-
+ drivers/target/target_core_user.c                  |   4 +-
+ drivers/usb/host/sl811-hcd.c                       |   9 +-
+ fs/block_dev.c                                     |  20 +++-
+ fs/ceph/caps.c                                     |   1 +
+ fs/ceph/export.c                                   |   8 ++
+ fs/ceph/inode.c                                    |  13 ++-
+ fs/ceph/mds_client.c                               |   7 ++
+ fs/ceph/super.h                                    |  24 +++++
+ fs/f2fs/segment.c                                  |   5 +-
+ fs/nfs/inode.c                                     |   7 +-
+ include/linux/pci-ecam.h                           |   1 +
+ lib/stackdepot.c                                   |   6 +-
+ net/bridge/br_netlink.c                            |   5 +-
+ net/hsr/hsr_forward.c                              |   4 +
+ net/ipv6/ip6_gre.c                                 |   7 +-
+ net/ipv6/ip6_tunnel.c                              |   3 +-
+ net/ipv6/ip6_vti.c                                 |   1 -
+ net/ipv6/sit.c                                     |   5 +-
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c              |   8 +-
+ scripts/recordmcount.pl                            |   2 +-
+ sound/pci/hda/hda_generic.c                        |  16 ++-
+ 58 files changed, 609 insertions(+), 228 deletions(-)
+
+
