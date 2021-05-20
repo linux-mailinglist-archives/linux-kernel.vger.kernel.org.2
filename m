@@ -2,61 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3036C389F70
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:06:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E129389F75
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:07:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230519AbhETIHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhETIHo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:07:44 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0571C061574;
-        Thu, 20 May 2021 01:06:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EnMP33KD+v1NrZLekTHVvqXVLcSZIAG5TyluA2WJ8xo=; b=VBOQN5YQLqy9hFu1pzd15ldk0y
-        iAt19jFhSEpbvZ1+Q5i649CVOMlTcX4wJFDz0K2mS6FalkPvOwtApOyYYTE6ztaWgacQD5nXnK8WP
-        xKZpNhvwKwiNHg8tWrb3zJvmOcHGoplx2s1DbyJrkQMrDGizj50ZiK0jcODlFJuasSrlrGz9Fobyj
-        iZ5z2jSSyGMJzyaephsd/TyQWpDQShzjsf51XJ6PjHFoLQBPdYsBu2K8u8mdfrvbcR0A9VurYVnQc
-        HmwYVZHicIjB2xZjcen1GpH2xP3B65fgz6pQJIymEoDFwumw8YBsiCpD4qnplFzTGb0KxLz6L7Rx1
-        09J8yQjw==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljdg5-00FiuP-QZ; Thu, 20 May 2021 08:05:38 +0000
-Date:   Thu, 20 May 2021 09:05:09 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     colyli@suse.de
-Cc:     linux-bcache@vger.kernel.org, linux-block@vger.kernel.org,
+        id S231148AbhETIJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:09:05 -0400
+Received: from m12-16.163.com ([220.181.12.16]:38867 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229536AbhETIJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 04:09:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id; bh=WduaGUDQfJqAn/2CdZ
+        sXiEbdQawNCPzecMhloNG8VdQ=; b=IANSKRb4bj0JWgUq2zAC+lh8bKmR2MagiJ
+        m3gswqekqiF8x/lk5INrlon8iD2mXC1xFKfu9Amy98EtV8v8ebCt/Kd5W000KHRe
+        lTpnXD/ePWN1BVQxmDeyE6t1B+nD+Mz0Y8+cEp+RMeRBlgZ8B9S5cfiGDmdhjM+T
+        avXERQzlc=
+Received: from wengjianfeng.ccdomain.com (unknown [218.17.89.92])
+        by smtp12 (Coremail) with SMTP id EMCowADnJVKQGKZgPukHsQ--.30342S2;
+        Thu, 20 May 2021 16:06:43 +0800 (CST)
+From:   samirweng1979 <samirweng1979@163.com>
+To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
+        rodrigo.vivi@intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        chris@chris-wilson.co.uk, mika.kuoppala@linux.intel.com,
+        sudeep.holla@arm.com, maarten.lankhorst@linux.intel.com
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
-        Diego Ercolani <diego.ercolani@gmail.com>,
-        Jan Szubiak <jan.szubiak@linuxpolska.pl>,
-        Marco Rebhan <me@dblsaiko.net>,
-        Matthias Ferdinand <bcache@mfedv.net>,
-        Thorsten Knabe <linux@thorsten-knabe.de>,
-        Victor Westerhuis <victor@westerhu.is>,
-        Vojtech Pavlik <vojtech@suse.cz>, stable@vger.kernel.org,
-        Takashi Iwai <tiwai@suse.com>,
-        Kent Overstreet <kent.overstreet@gmail.com>
-Subject: Re: [PATCH v3] bcache: avoid oversized read request in cache missing
- code path
-Message-ID: <YKYYNVD+NsXaOFNe@infradead.org>
-References: <20210518110009.11413-1-colyli@suse.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210518110009.11413-1-colyli@suse.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+        wengjianfeng <wengjianfeng@yulong.com>
+Subject: [PATCH] drm/i915/gt: fix typo issue
+Date:   Thu, 20 May 2021 16:06:46 +0800
+Message-Id: <20210520080646.24132-1-samirweng1979@163.com>
+X-Mailer: git-send-email 2.15.0.windows.1
+X-CM-TRANSID: EMCowADnJVKQGKZgPukHsQ--.30342S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrtrW7Cw47CFWkAF1kKF4DArb_yoWkuFX_Ca
+        yUAry3Ja42qFn0kFy7ArnxZFy2y3ZxCr48G3W2qry7try7Aw4qgwsYvry5WF13WF43t3yD
+        Zas5ZasY9w13GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU50jg3UUUUU==
+X-Originating-IP: [218.17.89.92]
+X-CM-SenderInfo: pvdpx25zhqwiqzxzqiywtou0bp/1tbiHROYsVSIqyRUwQAAsh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fix is pretty gross.  Adding pages to bios can fail for all kinds
-of reasons, so the fix is to use bio_add_page and check its return
-value, and if it needs another bio keep looping and chaining more bios.
+From: wengjianfeng <wengjianfeng@yulong.com>
 
-And maybe capping the readahead to some sane upper bound still makes
-sense, but it should never look at BIO_MAX_VECS for that.
+change 'freqency' to 'frequency'.
+
+Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
+---
+ drivers/gpu/drm/i915/gt/selftest_rps.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/gt/selftest_rps.c b/drivers/gpu/drm/i915/gt/selftest_rps.c
+index 967641f..71e6658 100644
+--- a/drivers/gpu/drm/i915/gt/selftest_rps.c
++++ b/drivers/gpu/drm/i915/gt/selftest_rps.c
+@@ -606,7 +606,7 @@ int live_rps_frequency_cs(void *arg)
+ 	int err = 0;
+ 
+ 	/*
+-	 * The premise is that the GPU does change freqency at our behest.
++	 * The premise is that the GPU does change frequency at our behest.
+ 	 * Let's check there is a correspondence between the requested
+ 	 * frequency, the actual frequency, and the observed clock rate.
+ 	 */
+@@ -747,7 +747,7 @@ int live_rps_frequency_srm(void *arg)
+ 	int err = 0;
+ 
+ 	/*
+-	 * The premise is that the GPU does change freqency at our behest.
++	 * The premise is that the GPU does change frequency at our behest.
+ 	 * Let's check there is a correspondence between the requested
+ 	 * frequency, the actual frequency, and the observed clock rate.
+ 	 */
+-- 
+1.9.1
+
+
