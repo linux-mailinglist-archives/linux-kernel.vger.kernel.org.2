@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8960838AC6B
+	by mail.lfdr.de (Postfix) with ESMTP id E02B138AC6C
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242187AbhETLjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:39:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37920 "EHLO mail.kernel.org"
+        id S242245AbhETLj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:39:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37932 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240679AbhETLTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:19:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 120FE61D75;
-        Thu, 20 May 2021 10:10:16 +0000 (UTC)
+        id S240700AbhETLTI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:19:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4022861D78;
+        Thu, 20 May 2021 10:10:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505417;
-        bh=zxuLGrBTmBa/HsIIrpnILXloFIxoiESPmeAb8Nk0y74=;
+        s=korg; t=1621505419;
+        bh=L700owuqNnrDur4amLaUtpvwjSeUO7C2Wa8E5QQUiBA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Gl8abSZVyKKcZ8kUbrHkLImax0XBIgNrQNmTtcd437x9BDoxqfOyGE8WbJX0Kvcoc
-         fTduQVG7698e2NcOvFDyFzpPPwxa9hBERNOcDB5HS26cCFb1OXuiRxAU5oUGi95EMw
-         tcmsFwibwMEk9kTwZFIRnBmBMd0iR8GOUrlNXEdY=
+        b=1BXHZpAiPpbZZuZhdhI2l3FQ0S5VIJ65mIqvniQ7H5m8fsIz9o21w0qGkZBJw7o53
+         FcM9kaDeJ5myd86tJ+UmUPoGb3grtykSAcySFY8/k8mLLu5nJgpo4LGMZBvu+Oav70
+         +i9LYWqn2nv3iOu2kJVXuvtJeiIJh04V8Ni0dQmk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
-        Kalle Valo <kvalo@codeaurora.org>,
+        stable@vger.kernel.org, Stefano Garzarella <sgarzare@redhat.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 126/190] mwl8k: Fix a double Free in mwl8k_probe_hw
-Date:   Thu, 20 May 2021 11:23:10 +0200
-Message-Id: <20210520092106.371129919@linuxfoundation.org>
+Subject: [PATCH 4.4 127/190] vsock/vmci: log once the failed queue pair allocation
+Date:   Thu, 20 May 2021 11:23:11 +0200
+Message-Id: <20210520092106.401451833@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -40,39 +41,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+From: Stefano Garzarella <sgarzare@redhat.com>
 
-[ Upstream commit a8e083ee8e2a6c94c29733835adae8bf5b832748 ]
+[ Upstream commit e16edc99d658cd41c60a44cc14d170697aa3271f ]
 
-In mwl8k_probe_hw, hw->priv->txq is freed at the first time by
-dma_free_coherent() in the call chain:
-if(!priv->ap_fw)->mwl8k_init_txqs(hw)->mwl8k_txq_init(hw, i).
+VMCI feature is not supported in conjunction with the vSphere Fault
+Tolerance (FT) feature.
 
-Then in err_free_queues of mwl8k_probe_hw, hw->priv->txq is freed
-at the second time by mwl8k_txq_deinit(hw, i)->dma_free_coherent().
+VMware Tools can repeatedly try to create a vsock connection. If FT is
+enabled the kernel logs is flooded with the following messages:
 
-My patch set txq->txd to NULL after the first free to avoid the
-double free.
+    qp_alloc_hypercall result = -20
+    Could not attach to queue pair with -20
 
-Fixes: a66098daacee2 ("mwl8k: Marvell TOPDOG wireless driver")
-Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20210402182627.4256-1-lyl2019@mail.ustc.edu.cn
+"qp_alloc_hypercall result = -20" was hidden by commit e8266c4c3307
+("VMCI: Stop log spew when qp allocation isn't possible"), but "Could
+not attach to queue pair with -20" is still there flooding the log.
+
+Since the error message can be useful in some cases, print it only once.
+
+Fixes: d021c344051a ("VSOCK: Introduce VM Sockets")
+Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+Reviewed-by: Jorgen Hansen <jhansen@vmware.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mwl8k.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/vmw_vsock/vmci_transport.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/mwl8k.c b/drivers/net/wireless/mwl8k.c
-index 088429d0a634..d448480b8406 100644
---- a/drivers/net/wireless/mwl8k.c
-+++ b/drivers/net/wireless/mwl8k.c
-@@ -1459,6 +1459,7 @@ static int mwl8k_txq_init(struct ieee80211_hw *hw, int index)
- 	txq->skb = kcalloc(MWL8K_TX_DESCS, sizeof(*txq->skb), GFP_KERNEL);
- 	if (txq->skb == NULL) {
- 		pci_free_consistent(priv->pdev, size, txq->txd, txq->txd_dma);
-+		txq->txd = NULL;
- 		return -ENOMEM;
+diff --git a/net/vmw_vsock/vmci_transport.c b/net/vmw_vsock/vmci_transport.c
+index 217810674c35..1f3f34b56840 100644
+--- a/net/vmw_vsock/vmci_transport.c
++++ b/net/vmw_vsock/vmci_transport.c
+@@ -593,8 +593,7 @@ vmci_transport_queue_pair_alloc(struct vmci_qp **qpair,
+ 			       peer, flags, VMCI_NO_PRIVILEGE_FLAGS);
+ out:
+ 	if (err < 0) {
+-		pr_err("Could not attach to queue pair with %d\n",
+-		       err);
++		pr_err_once("Could not attach to queue pair with %d\n", err);
+ 		err = vmci_transport_error_to_vsock_error(err);
  	}
  
 -- 
