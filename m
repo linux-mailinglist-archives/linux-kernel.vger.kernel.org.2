@@ -2,126 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3717338B246
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDB3B38B24A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:53:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhETOyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:54:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
+        id S231865AbhETOzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:55:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36254 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231418AbhETOyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:54:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40447611ED;
-        Thu, 20 May 2021 14:53:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621522398;
-        bh=zVOXEq4PpxdP/GDV+JOkW9i/z2WKjL9VqOVhutGb1E8=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Ovq7yVud0KeKKV/kyc6Amr+6H0oQam7AMS50agJV03rzqMXDV1or7l9t+KQed3yqj
-         gkuUz2tmgTTA8uqq3JF5cTNAQJFZSfgdxsfvzukBKYIzAFixE+NmFEIQbHODOUJ86+
-         g2mkXXsUP9xv/eAebDrIgL9DgIQwC3z3xp7VSxKmUuovSYwG44jPAtFcHBB7HWld3x
-         TThcxb6vv6vBL1FqUs9X6GNM5Prf1igSaiAt6gae1OGM9GlSAGRhBPbXJa2pNay8sU
-         GGTeEQwppzyIH0avDWuIsrR93lQ8NSG4s1lnHJCmEdubMt95S70h7lhFutMwQ/yq3a
-         Odfnschgdj2yQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 0D3095C00D8; Thu, 20 May 2021 07:53:18 -0700 (PDT)
-Date:   Thu, 20 May 2021 07:53:18 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
+        id S231418AbhETOzC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:55:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621522419; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=M8hqVgNQf+om50EjQbuWLvBSRMEEuDC2cfNombgOqIA=;
+        b=tu3s2Wt5SshdfJXLmnHlL4WqWSI4s+yOHxwVBO4l8aV+a3YzJBruqkUV3bF4j5FE9IDyuy
+        2JUPeVuDHwqzd4A9WTnznq7MDD5VcKOZ/ITIsQ4H8/7u7mybX2h1kGP7EyoAx1VT+/0YXH
+        N/slWUMzz91Dblog3HCzXN6c5mhMO7g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9B812ABE8;
+        Thu, 20 May 2021 14:53:39 +0000 (UTC)
+Date:   Thu, 20 May 2021 16:53:38 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Justin He <Justin.He@arm.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <20210520145318.GJ4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
- <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
- <YKMbQQ0qBAixXC5p@google.com>
- <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
- <YKX/H0EwRRLM+cAa@google.com>
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Eric Biggers <ebiggers@google.com>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH 08/14] d_path: make prepend_name() boolean
+Message-ID: <YKZ38jOCZUlpiqTS@alley>
+References: <YKRfI29BBnC255Vp@zeniv-ca.linux.org.uk>
+ <20210519004901.3829541-1-viro@zeniv.linux.org.uk>
+ <20210519004901.3829541-8-viro@zeniv.linux.org.uk>
+ <AM6PR08MB4376607691168C132AB2F558F72A9@AM6PR08MB4376.eurprd08.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKX/H0EwRRLM+cAa@google.com>
+In-Reply-To: <AM6PR08MB4376607691168C132AB2F558F72A9@AM6PR08MB4376.eurprd08.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 03:18:07PM +0900, Sergey Senozhatsky wrote:
-> On (21/05/18 16:15), Paul E. McKenney wrote:
-> > 
-> > In the shorter term...  PVCLOCK_GUEST_STOPPED is mostly for things like
-> > guest migration and debugger breakpoints, correct?  Either way, I am
-> > wondering if rcu_cpu_stall_reset() should take a lighter touch.  Right
-> > now, it effectively disables all stalls for the current grace period.
-> > Why not make it restart the stall timeout when the stoppage is detected?
+On Thu 2021-05-20 09:12:34, Justin He wrote:
+> Hi Al
 > 
-> rcu_cpu_stall_reset() is used in many other places, not sure if we can
-> change its behaviour rcu_cpu_stall_reset().
-
-There was some use case back in the day where they wanted an indefinite
-suppression of RCU CPU stall warnings for the current grace period, but
-all the current use cases look fine with restarting the stall timeout.
-
-However, please see below.
-
-> Maybe it'll be possible to just stop calling it from PV-clock and do
-> something like this
-
-This was in fact one of the things I was considering, at least until
-I convinced myself that I needed to ask some questions.
-
-One point of possibly unnecessary nervousness on my part is resetting
-the start of the grace period, which might confuse diagnostics.
-
-But how about something like this?
-
-void rcu_cpu_stall_reset(void)
-{
-	WRITE_ONCE(rcu_state.jiffies_stall,
-		   jiffies + rcu_jiffies_till_stall_check());
-}
-
-Would something like that work?
-
-(One issue with this is if there has already been an RCU CPU stall
-warning, in which case the timeout for repeat warnings is tripled.  But in
-the current use cases, I don't see that this matters.  If it turns out to
-matter, I would just add a flag to rcu_state saying whether the current
-grace period had seen a stall, and use that to decide whether or not
-to triple the timeout.)
-
-							Thanx, Paul
-
-> ---
+> > -----Original Message-----
+> > From: Al Viro <viro@ftp.linux.org.uk> On Behalf Of Al Viro
+> > Sent: Wednesday, May 19, 2021 8:49 AM
+> > To: Linus Torvalds <torvalds@linux-foundation.org>
+> > Cc: Justin He <Justin.He@arm.com>; Petr Mladek <pmladek@suse.com>; Steven
+> > Rostedt <rostedt@goodmis.org>; Sergey Senozhatsky
+> > <senozhatsky@chromium.org>; Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com>; Rasmus Villemoes
+> > <linux@rasmusvillemoes.dk>; Jonathan Corbet <corbet@lwn.net>; Heiko
+> > Carstens <hca@linux.ibm.com>; Vasily Gorbik <gor@linux.ibm.com>; Christian
+> > Borntraeger <borntraeger@de.ibm.com>; Eric W . Biederman
+> > <ebiederm@xmission.com>; Darrick J. Wong <darrick.wong@oracle.com>; Peter
+> > Zijlstra (Intel) <peterz@infradead.org>; Ira Weiny <ira.weiny@intel.com>;
+> > Eric Biggers <ebiggers@google.com>; Ahmed S. Darwish
+> > <a.darwish@linutronix.de>; open list:DOCUMENTATION <linux-
+> > doc@vger.kernel.org>; Linux Kernel Mailing List <linux-
+> > kernel@vger.kernel.org>; linux-s390 <linux-s390@vger.kernel.org>; linux-
+> > fsdevel <linux-fsdevel@vger.kernel.org>
+> > Subject: [PATCH 08/14] d_path: make prepend_name() boolean
+> >
+> > It returns only 0 or -ENAMETOOLONG and both callers only check if
+> > the result is negative.  Might as well return true on success and
+> > false on failure...
+> >
+> > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> > ---
+> >  fs/d_path.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/fs/d_path.c b/fs/d_path.c
+> > index 327cc3744554..83db83446afd 100644
+> > --- a/fs/d_path.c
+> > +++ b/fs/d_path.c
+> > @@ -34,15 +34,15 @@ static void prepend(char **buffer, int *buflen, const
+> > char *str, int namelen)
+> >   *
+> >   * Load acquire is needed to make sure that we see that terminating NUL.
+> >   */
+> > -static int prepend_name(char **buffer, int *buflen, const struct qstr
+> > *name)
+> > +static bool prepend_name(char **buffer, int *buflen, const struct qstr
+> > *name)
+> >  {
+> >       const char *dname = smp_load_acquire(&name->name); /* ^^^ */
+> >       u32 dlen = READ_ONCE(name->len);
+> >       char *p;
+> >
+> >       *buflen -= dlen + 1;
+> > -     if (*buflen < 0)
+> > -             return -ENAMETOOLONG;
+> > +     if (unlikely(*buflen < 0))
+> > +             return false;
 > 
-> diff --git a/arch/x86/kernel/pvclock.c b/arch/x86/kernel/pvclock.c
-> index eda37df016f0..2d2489eda8e6 100644
-> --- a/arch/x86/kernel/pvclock.c
-> +++ b/arch/x86/kernel/pvclock.c
-> @@ -40,7 +40,7 @@ void pvclock_touch_watchdogs(void)
->  {
->  	touch_softlockup_watchdog_sync();
->  	clocksource_touch_watchdog();
-> -	rcu_cpu_stall_reset();
-> +	record_gp_stall_check_time();
->  	reset_hung_task_detector();
->  }
->  
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index cb233c79f0bc..6b3165c7a2c3 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -137,7 +137,7 @@ void rcu_cpu_stall_reset(void)
->  // Interaction with RCU grace periods
->  
->  /* Start of new grace period, so record stall time (and forcing times). */
-> -static void record_gp_stall_check_time(void)
-> +void record_gp_stall_check_time(void)
->  {
->  	unsigned long j = jiffies;
->  	unsigned long j1;
+> I don't object to this patch itself.
+> Just wonder whether we need to relax the check condition of "*buflen < 0" ?
+> 
+> Given that in vsnprintf code path, sometimes the *buflen is < 0.
+> 
+> Please see https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/lib/vsprintf.c#n2698
+
+IMHO, the patch is fine. It is likely some misunderstanding.
+The above link points to:
+
+2693	str = buf;
+2694	end = buf + size;
+2695
+2696	/* Make sure end is always >= buf */
+2697	if (end < buf) {
+2698		end = ((void *)-1);
+2699		size = end - buf;
+2700	}
+
+"end" points right behind the end of the buffer. It is later
+used instead of the buffer size. The above code handles a potential
+overflow of "buf + size". I causes that "end" will be 0xffffffff
+in case of the overflow.
+
+That said. vsnprintf() returns the number of characters which would
+be generated for the given input. But only the "size" is written.
+This require copying the characters one by one.
+
+It is useful to see how many characters were lost. But I am not sure
+if this ever worked for the dentry functions.
+
+Best Regards,
+Petr
