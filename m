@@ -2,119 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719A038AF6F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75B6F38AF84
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243327AbhETNAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:00:37 -0400
-Received: from mout.kundenserver.de ([217.72.192.74]:53953 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243126AbhETM7Q (ORCPT
+        id S243100AbhETNDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:03:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238839AbhETNDN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:59:16 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]) by
- mrelayeu.kundenserver.de (mreue109 [213.165.67.113]) with ESMTPSA (Nemesis)
- id 1N5VPg-1lPRVq0GmQ-016uqm; Thu, 20 May 2021 14:57:52 +0200
-Received: by mail-wr1-f51.google.com with SMTP id d11so17545188wrw.8;
-        Thu, 20 May 2021 05:57:51 -0700 (PDT)
-X-Gm-Message-State: AOAM530+yzh3xYPiWG5xSNbtv5b5IgrnFm60ad8exszY0tPIzeEobxKO
-        kw42dByODq01ooirNvSZ2rHkOZQcOd2oCyir41k=
-X-Google-Smtp-Source: ABdhPJzjF6dsH5HoZqJvsW8Z8vuY/KQcYke0jL+BR2nKnLRzRk59Q8j7MY6u03gtUYt403a0Fz/TtBgmPs8YgE0TcrY=
-X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr4175890wrx.99.1621515471669;
- Thu, 20 May 2021 05:57:51 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210520121347.3467794-1-lee.jones@linaro.org>
-In-Reply-To: <20210520121347.3467794-1-lee.jones@linaro.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 20 May 2021 14:56:36 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0VujuG8eU_CEVSvzbk4nAJz8fStedM5eMUrLAr9EJxDQ@mail.gmail.com>
-Message-ID: <CAK8P3a0VujuG8eU_CEVSvzbk4nAJz8fStedM5eMUrLAr9EJxDQ@mail.gmail.com>
-Subject: Re: [PATCH 00/16] Rid W=1 warnings from Char
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bob Picco <robert.picco@hp.com>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
-        "cs.c" <support.linux@omnikey.com>,
-        Dave Safford <safford@watson.ibm.com>,
-        David Airlie <airlied@linux.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Harald Welte <laforge@gnumonks.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jerome Glisse <j.glisse@gmail.com>,
-        Kanoj Sarcar <kanoj@sgi.com>, Kylene Hall <kjhall@us.ibm.com>,
-        Lijun Pan <ljp@linux.ibm.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, linux-integrity@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Paul Fulghum <paulkf@microgate.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Reiner Sailer <sailer@watson.ibm.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= <uwe@kleine-koenig.org>,
-        van Doorn <leendert@watson.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:yvVNwwBycJCIlcrc4BDzcLFDc1s4oGKfJ/oereHaRGVPiNPShLt
- LmFPlyi9rBfchEpG9BFpwl6S2BkePecWMcMGANg828hF8j7GC1t3BCq8kMEyBRWH00cZiLi
- MwnuDW/6Dv25fiBjVzTvPY5VuZfpwF327sAg6NSHoi6CIUOE5efsWATDORoES21ZPGzZmlk
- jknF2Z2lKdDqFgOXhzf6A==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ihe3XjEbXTo=:6IpCwXHHiTCKoD7LvlI/9N
- Iln0zu5HDMsdj/9n8ymWAHZtAmfhsTubuOrBaucWcZnqI89ca9xDG3/NAp2k1AFXycvz5Fl6U
- iJHC/6fCKPLVaE9DFepdbpFYn4+eH4xa5I69tyJwBpXPVvkYmIDyvd/4SGYVvhnBthUDQQ4hw
- h8ZMOOsEzz2UzOIibwxNxOLohdp3Ou8m46wzwayNQQZqFSD0kiGqYPkiPL6PQYptMR6CTgQTj
- YxNKYiprDaa8Fjay36E41tgH3W62HzCrLr77k5+UYlhR7MPtjkS9wwEMbewG5URRNRf9fSA4l
- zno4e40ghfdFNB6455kWm0RsRtHj9n9pCBi9gAKl5o879z8iKnAwTOz2vBfi/RNgjavTXaWAV
- 1UHCc10FpMc27IWIWsxXXsgGwcuQ36Q4UkPG2W+MnfmktU6P5PE1ZqdomBOeM5UlZKyq0QXR4
- DaBfU9vwB6TckUywe1xqn/4sCw8DsIN5oFZ43YbNY9XnWopVDj1Kua0Tv3nTQMHHSZkdy3x2e
- 721GSmLd/MUL02OCl3UTm6aFYxC5PYc/YO7kApObryQ+ntqBnS88ovP5/6W1SUeKkzQ8/eiHD
- 6Dma10DMNkafG48NowEqxqXdecjbDnIFFIw7UOlKjxf7Dr1tqsu6fmx1KWy25OTLWz67pRGo/
- pCrI=
+        Thu, 20 May 2021 09:03:13 -0400
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E64FC049E85;
+        Thu, 20 May 2021 05:33:24 -0700 (PDT)
+Received: by mail-pj1-x102f.google.com with SMTP id ot16so7115166pjb.3;
+        Thu, 20 May 2021 05:33:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=AE4RaGKxoH7cfnhM64HNwu2DhDpNuuWHI6pwKl++Cqs=;
+        b=ckbWutmOAGH6EFFYUheMjYgwrwZ8tOXEVbXjcjW88z5pgsHsl3XbuAjOfvVENDuQyt
+         psidiYCPcppxAsHtLbOx7WBZVQJKZ0/0h8XxlAROyfQkD6ZfjQbIVVbRPRcQCCqov3hY
+         CnJ9xoV5/b0H2wKQLnYM/ZOO+BTe7AeNO3woFf7PgkPADkiorABkYXalCXZzVoR+0fx2
+         P0dhdQYCWzdntfZM/5/PcbuBU/+2sBaVgAwDuwmy45CGxARBMxK/hXIhSNE8jipflPFt
+         jo2eIPBkZJhvD2oJlVAIOMjjZdYyxj82R25aO8KcQF82pL3g7P6aniaLE7tcKKIjpss0
+         q2KA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=AE4RaGKxoH7cfnhM64HNwu2DhDpNuuWHI6pwKl++Cqs=;
+        b=Bo6F3x/5tYLErrikV8grZtk8Rqr4ZxWfTtEvC4PvaxxuiqeyxYMoJ58O3KEZhkWRlx
+         n6DiJk1zmHzeEAZb25peVTn/qpvbIeho1sViMdRFHhgIEENmkMvumqlN3m3r6WlUhLRu
+         K6e1LOdPsabogYLKAkFbnbajcOjnAbgcjoNowTj4uE/Xih+W0JrndXosnQgOz8NdZtgY
+         qLlF4i2ATy/7B7D0HJOlrKoflavs90HX8P7kz5vfxOgK4S951E9WR/RSpohYEmc3vIsc
+         cKgajnH4QPE9LwAtYnlmr/+y94s4DqAiL0lC2XxZeGU2DtEZy5ONLMpkYGLuDRljeArE
+         BONw==
+X-Gm-Message-State: AOAM53123DlicKa8x3g9jfKlsEcBQpENBlou+Yo7I2g/M0NTz2XRqZ3G
+        n1XQmm7ZGff86mNAaLrLbg==
+X-Google-Smtp-Source: ABdhPJyNhOyfFXFeoWuZ85y5dUB8WkaL1wh62VX4SM/VIT2iYvGQMtIc8zKjWvxQ8uwumcwBJ5icvQ==
+X-Received: by 2002:a17:90a:7842:: with SMTP id y2mr5053341pjl.68.1621514003645;
+        Thu, 20 May 2021 05:33:23 -0700 (PDT)
+Received: from vultr.guest ([107.191.53.97])
+        by smtp.gmail.com with ESMTPSA id z22sm2054752pfa.157.2021.05.20.05.33.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 May 2021 05:33:23 -0700 (PDT)
+From:   Zheyu Ma <zheyuma97@gmail.com>
+To:     GR-Linux-NIC-Dev@marvell.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zheyuma97@gmail.com
+Subject: [PATCH v2] net/qla3xxx: fix schedule while atomic in ql_sem_spinlock
+Date:   Thu, 20 May 2021 12:32:36 +0000
+Message-Id: <1621513956-23060-1-git-send-email-zheyuma97@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 2:13 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> This set is part of a larger effort attempting to clean-up W=1
-> kernel builds, which are currently overwhelmingly riddled with
-> niggly little warnings.
->
-> Lee Jones (16):
->   char: pcmcia: cm4000_cs: Remove unused variable 'tmp'
->   char: pcmcia: cm4040_cs: Remove unused variable 'uc'
->   char: random: Include header containing our prototypes
->   char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
->   char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
->   char: applicom: Remove 3 unused variables 'ret' and 2 instances of
->     'byte_reset_it'
->   char: tpm: tpm1-cmd: Fix a couple of misnamed functions
->   char: tpm: tpm_ftpm_tee: Fix a couple of kernel-doc misdemeanours
->   char: agp: backend: Demote some non-conformant kernel-doc headers
->   char: agp: frontend: Include header file containing our prototypes
->   char: agp: via-agp: Remove unused variable 'current_size'
->   char: hpet: Remove unused variable 'm'
->   char: agp: generic: Place braces around optimised out function in if()
->   char: agp: uninorth-agp: Remove unused variable 'size'
->   char: hw_random: pseries-rng: Demote non-conformant kernel-doc header
->   char: mem: Provide local prototype for non-static function
+When calling the 'ql_sem_spinlock', the driver has already acquired the
+spin lock, so the driver should not call 'ssleep' in atomic context.
 
-Thanks a lot!
+This bug can be fixed by using 'mdelay' instead of 'ssleep'.
 
-I've looked all the patches now and commented on patches 6 and 16.
-With my comments addressed
+The KASAN's log reveals it:
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+[    3.238124 ] BUG: scheduling while atomic: swapper/0/1/0x00000002
+[    3.238748 ] 2 locks held by swapper/0/1:
+[    3.239151 ]  #0: ffff88810177b240 (&dev->mutex){....}-{3:3}, at:
+__device_driver_lock+0x41/0x60
+[    3.240026 ]  #1: ffff888107c60e28 (&qdev->hw_lock){....}-{2:2}, at:
+ql3xxx_probe+0x2aa/0xea0
+[    3.240873 ] Modules linked in:
+[    3.241187 ] irq event stamp: 460854
+[    3.241541 ] hardirqs last  enabled at (460853): [<ffffffff843051bf>]
+_raw_spin_unlock_irqrestore+0x4f/0x70
+[    3.242245 ] hardirqs last disabled at (460854): [<ffffffff843058ca>]
+_raw_spin_lock_irqsave+0x2a/0x70
+[    3.242245 ] softirqs last  enabled at (446076): [<ffffffff846002e4>]
+__do_softirq+0x2e4/0x4b1
+[    3.242245 ] softirqs last disabled at (446069): [<ffffffff811ba5e0>]
+irq_exit_rcu+0x100/0x110
+[    3.242245 ] Preemption disabled at:
+[    3.242245 ] [<ffffffff828ca5ba>] ql3xxx_probe+0x2aa/0xea0
+[    3.242245 ] Kernel panic - not syncing: scheduling while atomic
+[    3.242245 ] CPU: 2 PID: 1 Comm: swapper/0 Not tainted
+5.13.0-rc1-00145
+-gee7dc339169-dirty #16
+[    3.242245 ] Call Trace:
+[    3.242245 ]  dump_stack+0xba/0xf5
+[    3.242245 ]  ? ql3xxx_probe+0x1f0/0xea0
+[    3.242245 ]  panic+0x15a/0x3f2
+[    3.242245 ]  ? vprintk+0x76/0x150
+[    3.242245 ]  ? ql3xxx_probe+0x2aa/0xea0
+[    3.242245 ]  __schedule_bug+0xae/0xe0
+[    3.242245 ]  __schedule+0x72e/0xa00
+[    3.242245 ]  schedule+0x43/0xf0
+[    3.242245 ]  schedule_timeout+0x28b/0x500
+[    3.242245 ]  ? del_timer_sync+0xf0/0xf0
+[    3.242245 ]  ? msleep+0x2f/0x70
+[    3.242245 ]  msleep+0x59/0x70
+[    3.242245 ]  ql3xxx_probe+0x307/0xea0
+[    3.242245 ]  ? _raw_spin_unlock_irqrestore+0x3a/0x70
+[    3.242245 ]  ? pci_device_remove+0x110/0x110
+[    3.242245 ]  local_pci_probe+0x45/0xa0
+[    3.242245 ]  pci_device_probe+0x12b/0x1d0
+[    3.242245 ]  really_probe+0x2a9/0x610
+[    3.242245 ]  driver_probe_device+0x90/0x1d0
+[    3.242245 ]  ? mutex_lock_nested+0x1b/0x20
+[    3.242245 ]  device_driver_attach+0x68/0x70
+[    3.242245 ]  __driver_attach+0x124/0x1b0
+[    3.242245 ]  ? device_driver_attach+0x70/0x70
+[    3.242245 ]  bus_for_each_dev+0xbb/0x110
+[    3.242245 ]  ? rdinit_setup+0x45/0x45
+[    3.242245 ]  driver_attach+0x27/0x30
+[    3.242245 ]  bus_add_driver+0x1eb/0x2a0
+[    3.242245 ]  driver_register+0xa9/0x180
+[    3.242245 ]  __pci_register_driver+0x82/0x90
+[    3.242245 ]  ? yellowfin_init+0x25/0x25
+[    3.242245 ]  ql3xxx_driver_init+0x23/0x25
+[    3.242245 ]  do_one_initcall+0x7f/0x3d0
+[    3.242245 ]  ? rdinit_setup+0x45/0x45
+[    3.242245 ]  ? rcu_read_lock_sched_held+0x4f/0x80
+[    3.242245 ]  kernel_init_freeable+0x2aa/0x301
+[    3.242245 ]  ? rest_init+0x2c0/0x2c0
+[    3.242245 ]  kernel_init+0x18/0x190
+[    3.242245 ]  ? rest_init+0x2c0/0x2c0
+[    3.242245 ]  ? rest_init+0x2c0/0x2c0
+[    3.242245 ]  ret_from_fork+0x1f/0x30
+[    3.242245 ] Dumping ftrace buffer:
+[    3.242245 ]    (ftrace buffer empty)
+[    3.242245 ] Kernel Offset: disabled
+[    3.242245 ] Rebooting in 1 seconds.
 
-       Arnd
+Reported-by: Zheyu Ma <zheyuma97@gmail.com>
+Signed-off-by: Zheyu Ma <zheyuma97@gmail.com>
+---
+Changes in v2:
+    - Use 'mdelay' instead of releasing the lock before the 'ssleep'.
+---
+ drivers/net/ethernet/qlogic/qla3xxx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
+index 214e347097a7..2376b2729633 100644
+--- a/drivers/net/ethernet/qlogic/qla3xxx.c
++++ b/drivers/net/ethernet/qlogic/qla3xxx.c
+@@ -114,7 +114,7 @@ static int ql_sem_spinlock(struct ql3_adapter *qdev,
+ 		value = readl(&port_regs->CommonRegs.semaphoreReg);
+ 		if ((value & (sem_mask >> 16)) == sem_bits)
+ 			return 0;
+-		ssleep(1);
++		mdelay(1000);
+ 	} while (--seconds);
+ 	return -1;
+ }
+-- 
+2.17.1
+
