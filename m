@@ -2,101 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6AC38AFA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB58838AF7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:01:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243403AbhETNIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:08:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241090AbhETNIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:08:19 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C089C068DAA
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:56:08 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so5356707wmf.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:56:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=if0ycK4+NNWTbWHGaYK5Da18NP5caqSXni6fMq7q9yI=;
-        b=amZH54kSKRB0+hHIeIIM+BkjBYAf7u3p66FFqGGNKMpW11NL5KOEWMxs99h1hVpteZ
-         AYmWghNu407l5ol37KkhmjtgbvI3yqAPSrVFJN3dG6JAuLIE0eMuu4JmKZ1mFLETSxYW
-         vB3A2Cnzx52Xy/CQtUgHXxbIxi06vjHW8EfjUhbN7KAA4lhnKjWsQzN13g4hmdBe2Lhr
-         vNVQ8PayG9Cr4wKyQoNahGSJpwm+ghlbVZ50Q68JwX5NDOG7jgzsm+G8jM4N+U6roEKY
-         0WKcwkSS0+7Fh5qp3Ffggl+gJ0/JlcHr2wYL+NVqiuu2mtExFYfpIKKjjz9+hbVn0Fvm
-         e9pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=if0ycK4+NNWTbWHGaYK5Da18NP5caqSXni6fMq7q9yI=;
-        b=nZ2pvRdyhS0IuXm3Ga+rZQPAOkSHzc9/KaUYX/kA3UxSn5DMZ1fPHlUGABO/PLnV8C
-         0hRBnh50qdM5iaGOWMgUtxR/tfnQgWYrdQMhBxTGSNqlMP5EoqlIJXT3rqWbHwwJawAN
-         joRGkup08NndN8JeEaHlJ2b8E6OL/fChfX0n8DFzZzYAFf2PVfVot+Oya37GGBQf3mNQ
-         Whlcyzhy2YJjESfb9F+RrArZTAMdpHVByZKsT0fperO6bvVE7BWz23UCizosszzq53UV
-         0qWnYeJ3IWTOF6xpfHkE5RCRRIeHPq4R0fexOe+RA4x7DXQMXUak/u8Jddo96TcXg6Uo
-         N8bw==
-X-Gm-Message-State: AOAM531xU/JR7BdxfdbU7AiYtRfhIIuZ3UHU5yw5APMDq2tUN9J20v1p
-        hQ6HOn3hFC4ypc8w9EVbKSfyaA==
-X-Google-Smtp-Source: ABdhPJwp+Q5nP0uN2sUE9lL1K9KxsQLF0iSwGoeUL+Yc6xFGJd1EMWCymFlzFqIhwvX/Nr4eJTPKUA==
-X-Received: by 2002:a7b:cf13:: with SMTP id l19mr3915112wmg.140.1621515367215;
-        Thu, 20 May 2021 05:56:07 -0700 (PDT)
-Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id q3sm3015977wrr.43.2021.05.20.05.56.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:56:06 -0700 (PDT)
-From:   Lee Jones <lee.jones@linaro.org>
-To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Remy Card <card@masi.ibp.fr>,
-        "David S. Miller" <davem@caip.rutgers.edu>,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH 1/1] fs: ext4: namei: trivial: Fix a couple of small whitespace issues
-Date:   Thu, 20 May 2021 13:55:58 +0100
-Message-Id: <20210520125558.3476318-1-lee.jones@linaro.org>
-X-Mailer: git-send-email 2.31.1
+        id S242352AbhETNDJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:03:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35148 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S243484AbhETNBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 09:01:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BCE16101D;
+        Thu, 20 May 2021 12:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621515584;
+        bh=nQrRZHjWKNdXiBNX6cRGOnv29CYUBlwhspaneO1L6Jk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qxeawXU+83ZzmmNQDdFv/8/hnBMA9tU78vccYHSBHlY3ts4m2WMd1y+Bk7HXuORV3
+         PBtV5nxV9hNpCeHd2d0XedjAfT1d/49B4/b3pRkLZ/N80yz11bvKHN4a/y/A3iTc91
+         YKNH7BMUdBGntyoHbpX6pqNbUtuF74XeTN6sRZmE=
+Date:   Thu, 20 May 2021 14:59:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Vidya Sagar <vidyas@nvidia.com>,
+        linux-tegra <linux-tegra@vger.kernel.org>
+Subject: Re: [PATCH 5.10 00/47] 5.10.39-rc1 review
+Message-ID: <YKZdPjqh7hFJslqA@kroah.com>
+References: <20210520092053.559923764@linuxfoundation.org>
+ <447d562a-248f-7e92-42de-4239a2c18fc0@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <447d562a-248f-7e92-42de-4239a2c18fc0@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: Remy Card <card@masi.ibp.fr>
-Cc: "David S. Miller" <davem@caip.rutgers.edu>
-Cc: linux-ext4@vger.kernel.org
-Signed-off-by: Lee Jones <lee.jones@linaro.org>
----
- fs/ext4/namei.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Thu, May 20, 2021 at 01:32:14PM +0100, Jon Hunter wrote:
+> Hi Greg,
+> 
+> On 20/05/2021 10:21, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.10.39 release.
+> > There are 47 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.39-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> 
+> ...
+> 
+> > Vidya Sagar <vidyas@nvidia.com>
+> >     PCI: tegra: Add Tegra194 MCFG quirks for ECAM errata
+> 
+> 
+> The above is causing some tests regressions for Tegra. We have a fix
+> that is under review but not merged yet [0]. Please can you drop this
+> for v5.10 and v5.12? Sorry about that.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index afb9d05a99bae..7e780cf311c5a 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1899,7 +1899,7 @@ static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
-  * Returns pointer to de in block into which the new entry will be inserted.
-  */
- static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
--			struct buffer_head **bh,struct dx_frame *frame,
-+			struct buffer_head **bh, struct dx_frame *frame,
- 			struct dx_hash_info *hinfo)
- {
- 	unsigned blocksize = dir->i_sb->s_blocksize;
-@@ -2246,7 +2246,7 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
- 	if (retval)
- 		goto out_frames;
- 
--	de = do_split(handle,dir, &bh2, frame, &fname->hinfo);
-+	de = do_split(handle, dir, &bh2, frame, &fname->hinfo);
- 	if (IS_ERR(de)) {
- 		retval = PTR_ERR(de);
- 		goto out_frames;
--- 
-2.31.1
+Now dropped, thanks.  I'll wait a few hours to see if anything else
+comes up before pushing a -rc2 out for both of these.
 
+greg k-h
