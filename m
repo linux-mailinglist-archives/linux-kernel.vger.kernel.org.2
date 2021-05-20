@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2821F38B4D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CF8038B45F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237868AbhETRBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:01:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234922AbhETQ7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:59:07 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 21715613B5;
-        Thu, 20 May 2021 16:57:46 +0000 (UTC)
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <maz@kernel.org>)
-        id 1ljlgm-002d7b-7f; Thu, 20 May 2021 17:38:24 +0100
-From:   Marc Zyngier <maz@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        kernel-team@android.com
-Subject: [PATCH 24/39] irqchip/nvic: Convert from handle_IRQ() to handle_domain_irq()
-Date:   Thu, 20 May 2021 17:37:36 +0100
-Message-Id: <20210520163751.27325-25-maz@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
-References: <20210520163751.27325-1-maz@kernel.org>
+        id S234063AbhETQjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:39:04 -0400
+Received: from mail-ed1-f43.google.com ([209.85.208.43]:37517 "EHLO
+        mail-ed1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231616AbhETQjD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:39:03 -0400
+Received: by mail-ed1-f43.google.com with SMTP id g7so7993358edm.4;
+        Thu, 20 May 2021 09:37:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=OhFIRCkOs81fMaxAYpodGS2wjOUuiCI5qY37aZo8prk=;
+        b=paJHBuC02DD1NaG4qLKCqcv72RyFINn1psRzIrhztJX0jZgRc9221S4KXC8B8gePS8
+         XSW0wESRC8WD+j+gN9ICCoeDbssF8gJ+pn7wHLXHWmPicYT0JDp7xoECB7dsLc9BiZAn
+         KQutSv7Gf2HpBjrxLrNGlFZ5DXxSzgiNKoXdE9OGkKYKJXZcI0FeJqrJGoTiTBrL7GO1
+         mUAd/ncKU1ZZRCyTSHvNGQKdMId2l/xJnhfms7bQgSxKsNol9WWOPXL2ET3xNay8udxo
+         MXszzUwiks9a0dx0XlmREBp1Ca3MznegDYj5Fy0mWT3YiBDvZegRsmFFNf2WXGk9vhyw
+         yhUg==
+X-Gm-Message-State: AOAM533bGLFPdGwZCsHe0q7RsHURQW2yIKShSQlv3WAfN1n/yJVrcBW8
+        vmJTs42BC22ZqtJcBcRPtcQ=
+X-Google-Smtp-Source: ABdhPJySjueqwJ0nBVt1XTqdBV3okGQINyLQJzKQhWyXJq0b4JIe47S0Tagq+MjF1Mg8c2q1nBmycA==
+X-Received: by 2002:aa7:cb90:: with SMTP id r16mr5935263edt.247.1621528659444;
+        Thu, 20 May 2021 09:37:39 -0700 (PDT)
+Received: from rocinante.localdomain ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id e12sm1675053ejk.99.2021.05.20.09.37.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 09:37:38 -0700 (PDT)
+Date:   Thu, 20 May 2021 18:37:37 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 5/7] PCI/sysfs: Allow userspace to query and
+ set device reset mechanism
+Message-ID: <20210520163737.GD641812@rocinante.localdomain>
+References: <20210519235426.99728-1-ameynarkhede03@gmail.com>
+ <20210519235426.99728-6-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: linux-kernel@vger.kernel.org, tglx@linutronix.de, mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org, ley.foon.tan@intel.com, chris@zankel.net, jcmvbkbc@gmail.com, vgupta@synopsys.com, tsbogend@alpha.franken.de, robert.jarzmik@free.fr, linux@armlinux.org.uk, krzysztof.kozlowski@canonical.com, ysato@users.sourceforge.jp, dalias@libc.org, geert@linux-m68k.org, alexander.deucher@amd.com, christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch, robdclark@gmail.com, linus.walleij@linaro.org, lee.jones@linaro.org, lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com, bgolaszewski@baylibre.com, kernel-team@android.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210519235426.99728-6-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given that the nvic driver is fully irqdomain aware, there is no
-reason for it to use the arch-specific handle_IRQ(), and it can
-be moved over to handle_domain_irq().
+Hi Amey,
 
-Signed-off-by: Marc Zyngier <maz@kernel.org>
----
- drivers/irqchip/irq-nvic.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+[...]
+> +	if (sysfs_streq(buf, "")) {
+> +		pci_warn(pdev, "All device reset methods disabled by user");
+> +		goto set_reset_methods;
+> +	}
 
-diff --git a/drivers/irqchip/irq-nvic.c b/drivers/irqchip/irq-nvic.c
-index f747e2209ea9..b31c4cff4d3a 100644
---- a/drivers/irqchip/irq-nvic.c
-+++ b/drivers/irqchip/irq-nvic.c
-@@ -40,9 +40,7 @@ static struct irq_domain *nvic_irq_domain;
- asmlinkage void __exception_irq_entry
- nvic_handle_irq(irq_hw_number_t hwirq, struct pt_regs *regs)
- {
--	unsigned int irq = irq_linear_revmap(nvic_irq_domain, hwirq);
--
--	handle_IRQ(irq, regs);
-+	handle_domain_irq(nvic_irq_domain, hwirq, regs);
- }
- 
- static int nvic_irq_domain_alloc(struct irq_domain *domain, unsigned int virq,
--- 
-2.30.2
+The sysfs_streq() is nice, indeed.
 
+> +	while ((name = strsep((char **)&buf, ",")) != NULL) {
+
+I believe we could make this parsing a little bit more resilient,
+especially since we are handling user input and this cannot ever be
+really fully trusted, so for example:
+
+  while ((name = strsep((char **)&buf, ","))) {
+	if !(strlen(name))  <--- sysfs_streq() could be used here too.
+		continue;
+
+	name = strim(name); <--- remove leading and trailing whitespaces, if any.
+	(...)
+
+[...]
+> +	if (reset_methods[0] &&
+> +	    reset_methods[0] != PCI_RESET_FN_METHODS)
+> +		pci_warn(pdev, "Device specific reset disabled/de-prioritized by user");
+
+What would be difference between disabling and de-prioritizing, is there
+be a way for us to distinguish between the two?  I was wondering if we
+could, notify the user when the device specific reset is disable or when
+it has been de-prioritized?
+
+Krzysztof
