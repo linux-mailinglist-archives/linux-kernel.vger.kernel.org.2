@@ -2,141 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF2D389AE9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:29:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 610F2389AD8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:22:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbhETBaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:30:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229498AbhETBaT (ORCPT
+        id S230176AbhETBYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:24:00 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:43049 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230049AbhETBX7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:30:19 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41D69C061574;
-        Wed, 19 May 2021 18:28:58 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id s12so2481986qta.3;
-        Wed, 19 May 2021 18:28:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=KepwKSoYma0dg9U0/mBOP8MmCRfubuuYSK9aM8Nmlh0=;
-        b=FWd23Em3TRRJerAxlCpbjkxiSjpxTGbiO/sKBokUK9I4NbtBXCSAi8aDcNndCmYouo
-         /NEkcTCH0g3bzKhccq8fFq0zypIXxk0NX9qhJxDe9mSPnzIMU8mHyOyuNLIvQIrF2pYc
-         ImMI7ZLyBO6GnLsExVPiblAPPZZIvsYY460UVB6wqiWydFcSLpC4LoHmxKfQYi1JcTOa
-         mAq1GjOgd40AXR3C4evz2nc0guZWCanKnKqugo7GyHAZ9By3OUujAi+nb+mntOulO+fD
-         R3SMSWNnJ1G6v2y7S1kWHpGSeL40vVL1p0EuuY5zrav0F4Dt1U9D2odExfTas4NpjkDP
-         inOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=KepwKSoYma0dg9U0/mBOP8MmCRfubuuYSK9aM8Nmlh0=;
-        b=K/rsYIMlMPSWZ95VgYyMSyD33drsWyBC4hJkMP5cu7siNHhaGQR+SPswzgRcS1MAvm
-         4FftHo8e01bqD/Toqb+J5KmUYX0a94YwIXewSxdVNUhCN+1a0ggwG+KCWhbr/DeS09Af
-         wNQYByq32NqA3mbbaqCShmtrWEFdtF3+yT3wFwIiyxpH4cKpE7ahW+NKskWyWgH0oDhs
-         Bzabkb9t3d1bBTzsjzN98wUVbyjxNbcu/1P2hMnDdkFgubXdjD0HaBbMNn4zeiNXREQR
-         C0R0gvM0ngsFZHM8+dTpScuOfFTUEAMGNQZMDVvVcivdA0aOnfhWLSV+kxHj/4tGf4Yg
-         Yuxg==
-X-Gm-Message-State: AOAM530+3K4ofF3IL7F9GAh8p6m8PHSzcmcHvsymxzgGDq8b6/7UgWln
-        qY93pgjWk8lH0tpLbwvfVEARhfmNGQkaj1mgqBq9BgW8481A8A==
-X-Google-Smtp-Source: ABdhPJxRu1lCzqPxh1XA/RSLS/eQz16qc1M2MC1nRj8K/zwf6TzAegxlzm+m0Jl5X4ko1ioF+FRx7jbbRYTwfDVcieQ=
-X-Received: by 2002:a05:622a:341:: with SMTP id r1mr2634942qtw.307.1621474137387;
- Wed, 19 May 2021 18:28:57 -0700 (PDT)
+        Wed, 19 May 2021 21:23:59 -0400
+Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210520012210epoutp049126976d674b3f934896e25fefe0248b~AocRXBwT52105721057epoutp047
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 01:22:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210520012210epoutp049126976d674b3f934896e25fefe0248b~AocRXBwT52105721057epoutp047
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1621473730;
+        bh=oO9Bsak6buLdyZ0ElfmZV+Ftbykbeh+pNMakJGzjd9A=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=diR3h3/3sC8yVfQUJAymSTZHWqDyVz6uo+HsVv6p5N7iDfaylZ2lFRo4rnRjHV55i
+         StLY9XE3dKX+qhf54OpT6eMPAl6Ztw9p3c48mYQo+UQqgZfCSnhI7+O1ZJPaT9g8U3
+         ZdmhXEQv+k+spPyEHWY5+OfZuW3sZFA8m59DQatE=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20210520012203epcas1p2d89187772ca095d93c4216e42df86023~AocLGk5Ei2002820028epcas1p2m;
+        Thu, 20 May 2021 01:22:03 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4FlsQw1GSsz4x9QF; Thu, 20 May
+        2021 01:22:00 +0000 (GMT)
+Received: from epcas1p2.samsung.com ( [182.195.41.46]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        57.7D.09824.3B9B5A06; Thu, 20 May 2021 10:21:55 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210520012154epcas1p17f8894f3dcf351646d2b5eec0f8d0b65~AocCI4aMu1780417804epcas1p1y;
+        Thu, 20 May 2021 01:21:54 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210520012154epsmtrp167bb48497007f48dcfb7cca866e017de~AocCIJVOK0166401664epsmtrp1k;
+        Thu, 20 May 2021 01:21:54 +0000 (GMT)
+X-AuditID: b6c32a37-04bff70000002660-13-60a5b9b3ef5a
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        1F.F8.08163.2B9B5A06; Thu, 20 May 2021 10:21:54 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210520012153epsmtip2bde4bad601320244a83865794a32d959~AocB_4yD12141621416epsmtip20;
+        Thu, 20 May 2021 01:21:53 +0000 (GMT)
+Subject: Re: [PATCH v2 1/1] extcon: intel-mrfld: Sync hardware and software
+ state on init
+To:     Ferry Toth <ftoth@exalondelft.nl>, linux-kernel@vger.kernel.org
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        stable@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <c6b40bfa-7629-9309-95e8-2ca877630610@samsung.com>
+Date:   Thu, 20 May 2021 10:40:22 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-References: <CANgQ54dicgKSZFm3w9sbAYztFw9xBHZnt8aQMNCEfMn_twBbWQ@mail.gmail.com>
- <89da58fc162b46558d60495110fcf75f@realtek.com>
-In-Reply-To: <89da58fc162b46558d60495110fcf75f@realtek.com>
-From:   =?UTF-8?B?6YKx5ZCN56Kp?= <ccchiu77@gmail.com>
-Date:   Thu, 20 May 2021 09:28:46 +0800
-Message-ID: <CANgQ54cKA5N1h1kMgS52N1acrp+pJzV3e+8vd61miSS0_VVD7Q@mail.gmail.com>
-Subject: Re: How does the rate adaptive mask work on Realtek WiFi driver
-To:     Pkshih <pkshih@realtek.com>
-Cc:     Andy Huang <tehuang@realtek.com>,
-        "Larry.Finger@lwfinger.net" <Larry.Finger@lwfinger.net>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
-        Reto Schneider <reto.schneider@husqvarnagroup.com>,
-        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210518212708.301112-1-ftoth@exalondelft.nl>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpnk+LIzCtJLcpLzFFi42LZdlhTT3fzzqUJBrt3SVi8nHCY0eLzLTGL
+        y7vmsFncblzBZrFg4yNGB1aPns33GT12zrrL7tG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkp
+        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBrlRTKEnNKgUIBicXFSvp2NkX5
+        pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGV2dSgX/eCv+/PjK2sC4
+        nbuLkZNDQsBEYvmek6xdjFwcQgI7GCXunljECOF8YpRY+WIGlPOZUWLimQ62LkYOsJafx7Uh
+        4rsYJVaf/skE4bxnlFjRM50RZK6wQLTEg6bFzCC2iICzxK6j+9hAbGaBIonldxrBatgEtCT2
+        v7gBFucXUJS4+uMxWJxXwE5iz98NYL0sAqoSJ7+0MoHYogJhEie3tUDVCEqcnPmEBcTmFLCW
+        6JrzmglivrjErSfzoWx5ie1v5zCDHCch0Mgh8ax7BTvE0y4Sn3/uYYOwhSVeHd8CFZeSeNnf
+        BmVXS6w8eYQNormDUWLL/gusEAljif1LJzOBgoJZQFNi/S59iLCixM7fcxkhFvNJvPvawwoJ
+        LV6JjjYhiBJlicsP7jJB2JISi9s72SYwKs1C8s4sJC/MQvLCLIRlCxhZVjGKpRYU56anFhsW
+        GCNH9iZGcIrUMt/BOO3tB71DjEwcjIcYJTiYlUR4t3svThDiTUmsrEotyo8vKs1JLT7EaAoM
+        4InMUqLJ+cAknVcSb2hqZGxsbGFiaGZqaKgkzpvuXJ0gJJCeWJKanZpakFoE08fEwSnVwFTU
+        k/vN6cjCVfkpFXX7hNV8z+ld/GaokXf/xh2OMM7loWt6zwoUvrI0jFw0O6NOhVnXb8KhnSpZ
+        4rd1OOfI5n9/d+zgtTSPo1ITJUVKhZZktR5wWqSmma/E++aXbNqlbLbiR/nZ+d/+1+3butR9
+        /p4SV5tMt8favGX33X8U9t1YuTR5T9Hvs11V9k6ec86uNkrP15WY1L5PKPofQ8YW/oV7Js/u
+        PPpTbnMUu8rz+T2y6XVMVlNf6u1Z2+w0VepPyIqFDp9FPp9sP/mO5YPZ7CWylZ2OVdUbJdYo
+        bWjlvW8c2aZxRXNqtqoBF/OmtULSrIHOAnJPb4SXXrCU6L7w4eXUAw/tDr56sTRt6daCT0os
+        xRmJhlrMRcWJAMD/ZHYaBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrILMWRmVeSWpSXmKPExsWy7bCSvO6mnUsTDM5uZbV4OeEwo8XnW2IW
+        l3fNYbO43biCzWLBxkeMDqwePZvvM3rsnHWX3aNvyypGj8+b5AJYorhsUlJzMstSi/TtErgy
+        ujqVCv7xVvz58ZW1gXE7dxcjB4eEgInEz+PaXYxcHEICOxglmpa3MHcxcgLFJSWmXTzKDFEj
+        LHH4cDFEzVtGiR8t6xlBaoQFoiUeNC0GqxcRcJbYdXQfG4jNLFAkMffgJ0aIhj5Gif2XnrGC
+        JNgEtCT2v7gBVsQvoChx9cdjsEG8AnYSe/5uABvEIqAqcfJLKxOILSoQJrFzyWMmiBpBiZMz
+        n7CA2JwC1hJdc14zQSxTl/gz7xIzhC0ucevJfKi4vMT2t3OYJzAKz0LSPgtJyywkLbOQtCxg
+        ZFnFKJlaUJybnltsWGCUl1quV5yYW1yal66XnJ+7iREcK1paOxj3rPqgd4iRiYPxEKMEB7OS
+        CO9278UJQrwpiZVVqUX58UWlOanFhxilOViUxHkvdJ2MFxJITyxJzU5NLUgtgskycXBKNTCd
+        0q7L/X590/8XVf+uiRhwSbGUF3Jte/RSu4ZBsFv50frCxWtsb3Oeei55h22NbbeEwMu9SsI5
+        zI/muZcveysRlJQTyRq8w22hqsh+ubzFrd/2ej7c+tX9++X57D4OOyqWrTtxdo/x5r7JbUrv
+        ni+Z0jXjeeKpcrlFSrefNga9zPe5l3TklsyHe96bLC9s5GlJdmbNeZC9ffHjJWw3PrG3yH46
+        2lZw0Gex4P9rC8+InLZgM/06MewN61SD1s+hmsHiMdxNr9bryAt5Hdop/OTz0pKriXttW+Vs
+        u9om3Oz8bav15SHHYhPND8fnn/k98aGE3ld+tXlrLA7xsZZoTVV8ZXz6rOD8socte1eqvOCe
+        rcRSnJFoqMVcVJwIAMpBqA0EAwAA
+X-CMS-MailID: 20210520012154epcas1p17f8894f3dcf351646d2b5eec0f8d0b65
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210518212900epcas1p1ee28319630a51ab22ebf938c5bc222b3
+References: <CGME20210518212900epcas1p1ee28319630a51ab22ebf938c5bc222b3@epcas1p1.samsung.com>
+        <20210518212708.301112-1-ftoth@exalondelft.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pkshih <pkshih@realtek.com> =E6=96=BC 2021=E5=B9=B45=E6=9C=8814=E6=97=A5 =
-=E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=882:08=E5=AF=AB=E9=81=93=EF=BC=9A
->
->
-> > -----Original Message-----
-> > From: =E9=82=B1=E5=90=8D=E7=A2=A9 [mailto:ccchiu77@gmail.com]
-> > Sent: Monday, May 10, 2021 4:36 PM
-> > To: Pkshih; Andy Huang; Larry.Finger@lwfinger.net; kuba@kernel.org; kva=
-lo@codeaurora.org; Reto
-> > Schneider; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: How does the rate adaptive mask work on Realtek WiFi driver
-> >
-> > Hi guys,
-> >     I had a problem while verifying the ampdu tx throughput with the
-> > rtl8xxxu driver on RTL8188CUS module. The throughput number is
-> > relatively good, 39~42Mbps  TCP on 2.4GHz channel. However, the
-> > retransmission rate is high, it's 15% ~ 21% with rtl8xxxu driver and
-> > It's almost the same result with the rtl8192cu driver. I can get
-> > averagely 7~10% retransmission rate in the same test bed with Realtek
-> > vendor driver.
-> >
-> >     From the air capture, I can see the rtl8xxxu driver keep sending
-> > the aggregated frames in MCS7 and doesn't even fall back to lower MCS
-> > index in the subsequent retries. I can only see very few retried
-> > packets been sent with MCS0 or 6Mbps grate. On the vendor driver, I'll
-> > see the retried ampdu packets with MCS4 after 3 retries w/o ack from
-> > the receiver.
-> >
-> >     From the rate mask command issued by the h2c command, I force both
-> > the rtl8xxxu driver and vendor driver to use the same ratemask 0xfffff
-> > (MCS 0-7 and b/g rate included) and leave the arg0 as-is (mostly 0xa0)
-> > and I expect both drivers can do the rate adaptive thing in the same
-> > way, but it seems to make no difference. The rtl8xxxu driver still
-> > sends the packets with highest MCS.
-> >
-> >     Can anyone tell me what should I expect the rate adaptive to work
-> > with the rate mask 0xfffff and 0xf0000? Does the 0xf0000 means that it
-> > will pick up a tx rate only between nrate MCS4 to MCS7? I need a base
-> > line so that I can judge it's simply a rate mask problem or maybe the
-> > h2c command is not written correctly. Please kindly suggest what I
-> > should do next. Thanks
-> >
->
-> The rate mask indicates which rates will be used by rate adaptive mechani=
-sm.
-> I'm not sure the exact bit allocation for CCK/OFDM/MCS, maybe
-> 0x0000f/0x00ff0/0xff0000 for CCK/OFDM/MCS respectively, but you can trace
-> vendor driver to know the detail.
->
-> I suggest you can try to send only OFDM rate mask, and expect to see OFDM
-> rate only by your sniffer. If it's still keep on MCS7, rate adaptive may
-> not work properly.
->
-Thanks. That's my expectation and I'll try to verify it on vendor
-driver and upstream rtl8192cu driver.
+On 5/19/21 6:27 AM, Ferry Toth wrote:
+> extcon driver for Basin Cove PMIC shadows the switch status used for dwc3
+> DRD to detect a change in the switch position. This change initializes the
+> status at probe time.
+> 
+> Signed-off-by: Ferry Toth <ftoth@exalondelft.nl>
+> Fixes: 492929c54791 ("extcon: mrfld: Introduce extcon driver for Basin Cove PMIC")
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: stable@vger.kernel.org
+> ---
+> 
+> v2:
+>  - Clarified patch title (Chanwoo)
+> ---
+>  drivers/extcon/extcon-intel-mrfld.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/drivers/extcon/extcon-intel-mrfld.c b/drivers/extcon/extcon-intel-mrfld.c
+> index f47016fb28a8..cd1a5f230077 100644
+> --- a/drivers/extcon/extcon-intel-mrfld.c
+> +++ b/drivers/extcon/extcon-intel-mrfld.c
+> @@ -197,6 +197,7 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+>  	struct intel_soc_pmic *pmic = dev_get_drvdata(dev->parent);
+>  	struct regmap *regmap = pmic->regmap;
+>  	struct mrfld_extcon_data *data;
+> +	unsigned int status;
+>  	unsigned int id;
+>  	int irq, ret;
+>  
+> @@ -244,6 +245,14 @@ static int mrfld_extcon_probe(struct platform_device *pdev)
+>  	/* Get initial state */
+>  	mrfld_extcon_role_detect(data);
+>  
+> +	/*
+> +	 * Cached status value is used for cable detection, see comments
+> +	 * in mrfld_extcon_cable_detect(), we need to sync cached value
+> +	 * with a real state of the hardware.
+> +	 */
+> +	regmap_read(regmap, BCOVE_SCHGRIRQ1, &status);
+> +	data->status = status;
+> +
+>  	mrfld_extcon_clear(data, BCOVE_MIRQLVL1, BCOVE_LVL1_CHGR);
+>  	mrfld_extcon_clear(data, BCOVE_MCHGRIRQ1, BCOVE_CHGRIRQ_ALL);
+>  
+> 
 
-> Also, you can compare the content of rate adaptive H2C with vendor driver=
- to
-> see if the format is correct.
->
-> Another thing is to try 'fix_rate' in tx_desc. Check the vendor driver to
-> know the use_rate/rate/bw fields of tx_desc. Then, try to fix the rate yo=
-u
-> want.
->
-If I set the fix_rate in tx_desc, will the rate mask in H2C command be
-ignored? Or the underlying firmware will do the tx rate fallback for
-the retry packets?
+Applied it. Thanks.
 
-Chris
-
-> --
-> Ping-Ke
->
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
