@@ -2,101 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E427B389FE2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:33:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF831389FE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhETIfD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:35:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39002 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhETIfA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:35:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97D7860FF1;
-        Thu, 20 May 2021 08:33:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621499619;
-        bh=zC2Jqfc5np9GUFGI4yjQnL4CXojZ6bzom+Oi0SOtk6s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VaD2bxFUKLLJL8MZWeXdgd6q98EV/SNrK2Wqdz0NYQnUnk+uh/famzLtgHFS9cQlP
-         btasDmMYDDxyotLe+oDzQxnX2WePQ6cgFGEgpF520zG6eT95zu6L3BJG8XAE1j4oe2
-         N6VcOg5ro1zaUaQ3N62R0KqvFVeHNj4mFdU02qC6pTav5LRdtAqNbkj2pZYU9nZBGk
-         /SkTTieKeFKEMITBw7obSIsim32Pxace5CsHTE8+6NqzCl2g8a1x1iwqXZl2CMV7kU
-         ebEbltxjM8HKMJBOI2q3FxHEZr1btdImy5txRDeIudK2r0pm5aaYwQ6gVeiidLIJuS
-         XED+6/wBeYa/Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lje7e-0001vI-7G; Thu, 20 May 2021 10:33:38 +0200
-Date:   Thu, 20 May 2021 10:33:38 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
-Message-ID: <YKYe4rgGTDRfq+va@hovoldconsulting.com>
-References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
- <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
- <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
+        id S231253AbhETIfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:35:54 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:58421 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhETIfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 04:35:53 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lje8P-00027g-0B; Thu, 20 May 2021 08:34:25 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Clemens Ladisch <clemens@ladisch.de>,
+        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err issue
+Date:   Thu, 20 May 2021 09:34:24 +0100
+Message-Id: <20210520083424.6685-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:15:31AM +0300, Andy Shevchenko wrote:
-> On Thu, May 20, 2021 at 11:07 AM Johan Hovold <johan@kernel.org> wrote:
-> > On Tue, May 18, 2021 at 11:33:39AM +0300, Andy Shevchenko wrote:
+From: Colin Ian King <colin.king@canonical.com>
 
-> > The _if suffix here is too vague.
-> >
-> > Please use a more descriptive name so that you don't need to look at the
-> > implementation to understand what the macro does.
-> >
-> > Perhaps call it
-> >
-> >         for_each_gpio_desc_with_flag()
-> 
-> Haha, I have the same in my internal tree, but then I have changed to
-> _if and here is why:
-> - the API is solely for internal use (note, internals of struct
-> gpio_desc available for the same set of users)
+Currently in the case where the payload_length is less than the
+cip_header_size the error return variable err is not being set
+and function parse_ir_ctx_header can return an uninitialized
+error return value. Fix this by setting err to zero.
 
-That's not a valid argument here. You should never make code harder to
-read.
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/firewire/amdtp-stream.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-There are other ways of marking functions as intended for internal use
-(e.g. do not export them and add a _ prefix or whatever).
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index af5c3629f1ac..242b1147d768 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -663,6 +663,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 		} else {
+ 			// Handle the cycle so that empty packet arrives.
+ 			cip_header = NULL;
++			err = 0;
+ 			*data_blocks = 0;
+ 			*syt = 0;
+ 		}
+-- 
+2.31.1
 
-> - the current users do only same pattern
-
-That's not an argument against using a descriptive name. Possibly
-against adding a generic for_each_gpio_desc() macro.
-
-> - I don't expect that we will have this to be anything else in the future
-
-Again, irrelevant. Possibly an argument against adding another helper in
-the first place.
-
-> Thus, _if is a good balance between scope of use and naming.
-
-No, no, no. It's never a good idea to obfuscate code.
-
-> I prefer to leave it as is.
-
-I hope you'll reconsider, or that my arguments can convince the
-maintainers to step in here.
-
-> > or just add the more generic macro
-> >
-> >         for_each_gpio_desc()
-> >
-> > and open-code the test so that it's clear what's going on here.
-
-FWIW, NAK due to the non-descriptive for_each_desc_if() name.
-
-Johan
