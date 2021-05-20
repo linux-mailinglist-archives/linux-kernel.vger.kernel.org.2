@@ -2,117 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A66C38B4AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:54:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 53E4338B4C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233612AbhETQzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:55:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233564AbhETQzh (ORCPT
+        id S234195AbhETQ7s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:59:48 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:44810 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234418AbhETQ67 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:55:37 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BC86C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:54:13 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id i17so18352269wrq.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:54:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=o7pBWJzNKsDVSAi0Kda9nVTcz1QRPwNqhV8cq3eyftA=;
-        b=OJpCCVZ/L/pcOIRGd2BvgxdCB+r8SNq/NM0TjSTdRqq/BRuLbTialPysWVcRztaQzV
-         o1zkqS/OZk0QRTfaMMcdUZr9qBWRpZvpa/GKZ882fkoQbV2J3w5sM/fC1Kg8SjijfaEM
-         bOqLPXxBcRL724S4rgpz7Q2HbqHx/0FKvodUlVfMs3n8bWvGbs/pw9LxrhY7bifK1+8M
-         9s2hzs3mXjVGtfD2JlUQfexustocAqoOJYAFLPLXQZvceJjeK2sLw/XxYFnGpAA3K4WI
-         kdKJEfFZEx+do6zfnGJiiWvlB9Hy8q+UtDjKDM5whB9ooSiBFrFPq4ShLjTPhSpma6xv
-         TtXw==
+        Thu, 20 May 2021 12:58:59 -0400
+Received: by mail-pf1-f177.google.com with SMTP id 22so12413663pfv.11;
+        Thu, 20 May 2021 09:57:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=o7pBWJzNKsDVSAi0Kda9nVTcz1QRPwNqhV8cq3eyftA=;
-        b=q4S22nxlwWkYv9oFDOvk/84i3gzWJyF8Wrz/1YG8zWzgNNSDfaxJzVH86ZkH8pnD6J
-         dgj6mLPRUm0Uh7ucdrcHq4tCPLPuB1i6TEXp6TcPof4pQW8ncN10QRc8zjgW7UCegLAg
-         Ew5IuO7//nimXMVNbdQfiaGXJ/E7KXCfCnueVfpuamCNnQGQ4X81066xIG1DKToS6uNF
-         D2fiK4wPruLk1IcsDJ5C0UdUjWEhGXPvQzOpqCsYu3oZ6NhqiZTmTD0RAKFi/sV9lRQ0
-         LLal2IwSGbLfbbkWCDoTbBSS7Ql9sU1wefBdPrMRKJccPun+RzLIY8Gw5OPi5TeVbyM8
-         m+BA==
-X-Gm-Message-State: AOAM53146pZaRQ6QAhfGgXmfK8H+zmifKzLy1uOZOCLAUztxha0llYIV
-        OWeVmTmExFbk2PI7X2x8zBAxY2dw7vZb5koR3sfy5H7KbBuRmg==
-X-Google-Smtp-Source: ABdhPJyLmgaoTM51t95U44bzxtlVZkq59RCk4epIylEp1iw8ZiHJkO7dVBh7RRx7zg0Gfa8eC6I9NzZU0pfgj/GrTrs=
-X-Received: by 2002:a5d:6248:: with SMTP id m8mr5314867wrv.42.1621529652057;
- Thu, 20 May 2021 09:54:12 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jLPo0GB3A2MoBZjU1iN/tZ1ti56h7RK68caLrB/74lo=;
+        b=b46D5DAIRmxCCm8Mj78SXEJ/X9uPFlHirqwFQ4aGm/wMbdj3TmaB3DPs3wQrSZaxbK
+         cwFIqMjx3qDdzmscT7WiP0TSquHb4p+ban+T7hWrKShvR5rTOwy3ANk65XKxD78zmkJ5
+         ziAkP20Yn7SNsMOjVc+P/2MJXstqD2GZ48cfHq2eKjXJQRL+VK1K4VspH+0K+cTa2EOw
+         Y1rB0czY+fRsJwjfpjSyrrGHrzKB2OkOaXuUH+sDLudaqoWCh6da4g+1XO2NZuVBORkD
+         j1HAOxWIs6Y8w4n1dmXJvXZwutmBPVT9s/Z7gT2fQt614xb78oK05M6cLNkSAcpb3rQf
+         dEUw==
+X-Gm-Message-State: AOAM530iNepWp6VFJgLpq5gRc11KCvvHWwJnq1Rk5SZ8lbjSqITZyx+w
+        nlKrlLkLh8C8Vyp5WHpxXvc=
+X-Google-Smtp-Source: ABdhPJzQ764raH3JeUb3X+DRnbbP8JSaUQs6h4uV476RdeXIRYMfHF9TNhAAxjxJLnDlTTgPF9CPPg==
+X-Received: by 2002:a05:6a00:acb:b029:2dc:db73:d44c with SMTP id c11-20020a056a000acbb02902dcdb73d44cmr5771286pfl.28.1621529857668;
+        Thu, 20 May 2021 09:57:37 -0700 (PDT)
+Received: from ?IPv6:2601:647:4000:d7:9549:3d1e:fcc5:81d1? ([2601:647:4000:d7:9549:3d1e:fcc5:81d1])
+        by smtp.gmail.com with ESMTPSA id w123sm2301648pfw.151.2021.05.20.09.57.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 09:57:36 -0700 (PDT)
+Subject: Re: [PATCH] scsi: core: Cap shost cmd_per_lun at can_queue
+To:     John Garry <john.garry@huawei.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ming.lei@redhat.com
+References: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
+ <988856ad-8e89-97e4-f8fe-54c1ca1b4a93@acm.org>
+ <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <439c6fb8-3799-bfae-7f44-9f8c26a7bf79@acm.org>
+Date:   Thu, 20 May 2021 09:57:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210520150344.273900-1-maxime@cerno.tech>
-In-Reply-To: <20210520150344.273900-1-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Thu, 20 May 2021 17:53:56 +0100
-Message-ID: <CAPY8ntD8NHLU6xX+hU9n5LgoJM8_N+pvabmCpOw6AQrH_peN5g@mail.gmail.com>
-Subject: Re: [PATCH 0/4] drm/vc4: Add support for the BCM2711 VEC
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        devicetree@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+On 5/20/21 9:41 AM, John Garry wrote:
+> On 20/05/2021 16:57, Bart Van Assche wrote:
+>> In SCSI header files a mix of int, short and unsigned int is used for
+>> cmd_per_lun and can_queue. How about changing the types of these two
+>> member variables in include/scsi/*h into u16?
+> I don't mind doing that, but is there any requirement for can_queue to
+> not be limited to 16b?
 
-On Thu, 20 May 2021 at 16:03, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Hi,
->
-> The composite output in the BCM2711 is dealt using the VEC. While the earlier
-> SoCs were properly supported, it wasn't functional on the BCM2711. Add the
-> needed support from the RPi downstream kernel.
+Maybe I'm missing something but it is not clear to me why different
+structures in the SCSI headers use different data types for can_queue
+and cmd_per_lun?
 
-Thanks for upstreaming these.
-As far as I'm concerned they're all good, but DT bindings aren't an
-area of expertise for me.
+$ git grep -nHEw '(cmd_per_lun|can_queue);' include/scsi
+include/scsi/scsi_device.h:318:	unsigned int		can_queue;
+include/scsi/scsi_host.h:372:	int can_queue;
+include/scsi/scsi_host.h:425:	short cmd_per_lun;
+include/scsi/scsi_host.h:612:	int can_queue;
+include/scsi/scsi_host.h:613:	short cmd_per_lun;
 
-Patches 1&3:
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-Patches 2&4:
-Acked-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+> It seems intentional that can_queue is int and cmd_per_lun is short.
 
-This is going to need firmware from 23rd March 2021 or later in order
-to ensure that the VEC can use an integer divider from the PLL. PLLC
-was rejigged to run at 2592MHz so that /24 gives the VEC the 108MHz
-clock it requires. (Before that it needed a special config.txt option
-to set the PLLs appropriately).
+Intentional? It is not clear to me why? Even high-performance drivers
+like iSER and SRP set can_queue by default to a value that fits well in
+a 16-bit variable (512 and 64 respectively). The highest value that I
+found after a quick search is the following:
 
- Dave
+ #define ISCSI_TOTAL_CMDS_MAX		4096
 
-> Maxime
->
-> Mateusz Kwiatkowski (4):
->   drm/vc4: Fix clock source for VEC PixelValve on BCM2711
->   dt-bindings: display: bcm2835-vec: Add BCM2711 compatible
->   drm/vc4: Separate VEC compatible variants
->   ARM: boot: dts: bcm2711: Add BCM2711 VEC compatible
->
->  .../bindings/display/brcm,bcm2835-vec.yaml    |  4 ++-
->  arch/arm/boot/dts/bcm2711.dtsi                |  1 +
->  drivers/gpu/drm/vc4/vc4_crtc.c                |  2 +-
->  drivers/gpu/drm/vc4/vc4_vec.c                 | 27 +++++++++++++++----
->  4 files changed, 27 insertions(+), 7 deletions(-)
->
-> --
-> 2.31.1
->
+Thanks,
+
+Bart.
