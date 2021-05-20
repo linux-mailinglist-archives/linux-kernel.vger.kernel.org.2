@@ -2,129 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D498F38A024
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:49:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C4938A036
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231379AbhETIud (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:50:33 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:63882 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S231327AbhETIu3 (ORCPT
+        id S231420AbhETIwb convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 04:52:31 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3082 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhETIwa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:50:29 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14K8XbSj109369;
-        Thu, 20 May 2021 04:49:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=3BTS8X/BF0hBtVsWyUvfPuTrJLgKfy/67BLmvvvtcZA=;
- b=WxKRFEoHvLP8XGoFH6rmSM3kp/tJx65z/cbMfjish0mu3lWCBAMCdLpDrMjxJ7ObkpYg
- HM0gQ87TePD6ZYbTjRx7I+THA0ak/zNtJcL1TNameb1ta4Sy7QE/2NnPYA/8vx4TGmO3
- LsbPovltcQJBEX5YTe383nIIv3aUCmeZWns5CdQASZvENZPXFNjIvxX691ByMPMTtacW
- 4BkKNis0wYMejGJfr4vXGgYO2yzEWaV5hxfsZZ9hfP5oTagucDQr675OsrfLNTkD2lf4
- YYh2YitNbbGGNFef70iwbHLuKXCJgcT4ukiV3bro4178FTHM+MnPG+Iy6AK2018JkMI2 ww== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38nkn0htsf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 04:49:06 -0400
-Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14K8YIex111236;
-        Thu, 20 May 2021 04:49:05 -0400
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38nkn0htrr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 04:49:05 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14K8mHe8029954;
-        Thu, 20 May 2021 08:49:03 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgtgxg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 08:49:03 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14K8n0wi46334214
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 08:49:00 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 67E62A4069;
-        Thu, 20 May 2021 08:49:00 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AFD98A404D;
-        Thu, 20 May 2021 08:48:59 +0000 (GMT)
-Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.68.61])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with SMTP;
-        Thu, 20 May 2021 08:48:59 +0000 (GMT)
-Date:   Thu, 20 May 2021 10:48:57 +0200
-From:   Halil Pasic <pasic@linux.ibm.com>
-To:     Tony Krowiak <akrowiak@linux.ibm.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
-        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com
-Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
- interception handler
-Message-ID: <20210520104857.65d75858.pasic@linux.ibm.com>
-In-Reply-To: <330f099c-3d5e-c552-3047-4b462b1c9fa9@linux.ibm.com>
-References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
-        <20210519153921.804887-3-akrowiak@linux.ibm.com>
-        <20210519161610.GO1002214@nvidia.com>
-        <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
-        <20210519232202.GV1002214@nvidia.com>
-        <330f099c-3d5e-c552-3047-4b462b1c9fa9@linux.ibm.com>
-Organization: IBM
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
-Content-Type: text/plain; charset=US-ASCII
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -0pvXTxs9dAuSrFCTyePfqjlbz6e_31x
-X-Proofpoint-GUID: iMDKktRqHLPpdYcfHo6EeAW6ECF8h9J8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 20 May 2021 04:52:30 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fm37b4pzCz6Vyk8;
+        Thu, 20 May 2021 16:39:23 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 10:51:07 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Thu, 20 May 2021 10:51:07 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     "zohar@linux.ibm.com" <zohar@linux.ibm.com>,
+        "mjg59@srcf.ucam.org" <mjg59@srcf.ucam.org>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RESEND][PATCH 05/12] evm: Introduce evm_hmac_disabled() to
+ safely ignore verification errors
+Thread-Topic: [RESEND][PATCH 05/12] evm: Introduce evm_hmac_disabled() to
+ safely ignore verification errors
+Thread-Index: AQHXTVT5Cen0F7247Ua8qAW+2PClM6rsD3UA
+Date:   Thu, 20 May 2021 08:51:07 +0000
+Message-ID: <6d7e059876b64f249b9a01d8b7696e29@huawei.com>
+References: <20210514152753.982958-6-roberto.sassu@huawei.com>
+ <20210520084831.465058-1-roberto.sassu@huawei.com>
+In-Reply-To: <20210520084831.465058-1-roberto.sassu@huawei.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_01:2021-05-20,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- bulkscore=0 impostorscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- phishscore=0 spamscore=0 lowpriorityscore=0 clxscore=1015 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105200065
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 21:08:15 -0400
-Tony Krowiak <akrowiak@linux.ibm.com> wrote:
-
-> >
-> > This is nonesense too:
-> >
-> > 	if (vcpu->kvm->arch.crypto.pqap_hook) {
-> > 		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
-> > 			return -EOPNOTSUPP;
-> > 		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
-> >
-> > It should have a lock around it of some kind, not a
-> > try_module_get. module_get is not la lock.  
+> From: Roberto Sassu
+> Sent: Thursday, May 20, 2021 10:49 AM
+> When a file is being created, LSMs can set the initial label with the
+> inode_init_security hook. If no HMAC key is loaded, the new file will have
+> LSM xattrs but not the HMAC. It is also possible that the file remains
+> without protected xattrs after creation if no active LSM provided it, or
+> because the filesystem does not support them.
 > 
-> As I said earlier, I don't know why the author did this. 
+> Unfortunately, EVM will deny any further metadata operation on new files,
+> as evm_protect_xattr() will return the INTEGRITY_NOLABEL error if protected
+> xattrs exist without security.evm, INTEGRITY_NOXATTRS if no protected
+> xattrs exist or INTEGRITY_UNKNOWN if xattrs are not supported. This would
+> limit the usability of EVM when only a public key is loaded, as commands
+> such as cp or tar with the option to preserve xattrs won't work.
+> 
+> This patch introduces the evm_hmac_disabled() function to determine whether
+> or not it is safe to ignore verification errors, based on the ability of
+> EVM to calculate HMACs. If the HMAC key is not loaded, and it cannot be
+> loaded in the future due to the EVM_SETUP_COMPLETE initialization flag,
+> allowing an operation despite the attrs/xattrs being found invalid will not
+> make them valid.
+> 
+> Since the post hooks can be executed even when the HMAC key is not loaded,
+> this patch also ensures that the EVM_INIT_HMAC initialization flag is set
+> before the post hooks call evm_update_evmxattr().
 
-Please have a look at these links from the archive to get some
-perspective:
-https://lkml.org/lkml/2020/12/4/994
-https://lkml.org/lkml/2020/12/3/987
-https://www.lkml.org/lkml/2019/3/1/260
+Resending, to ignore INTEGRITY_UNKNOWN when a filesystem does not
+support xattrs.
 
-We can ask the original author, but I don't think we have to. BTW the
-patch that introduced it has your r-b.
+Roberto
 
-> My best guess
-> is that he wanted to ensure that the module was still loaded; otherwise,
-> the data structures contained therein - for example, the pqap_hook
-> and matrix_mdev that contains it - would be gonzo.
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
 
-More precisely prevent the module from unloading while we execute code
-from it. As I've pointed out in a previous email the module may be gone
-by the time we call try_module_get().
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> ---
+>  security/integrity/evm/evm_main.c | 39 ++++++++++++++++++++++++++++++-
+>  1 file changed, 38 insertions(+), 1 deletion(-)
+> 
+> diff --git a/security/integrity/evm/evm_main.c
+> b/security/integrity/evm/evm_main.c
+> index 782915117175..4206c7e492ae 100644
+> --- a/security/integrity/evm/evm_main.c
+> +++ b/security/integrity/evm/evm_main.c
+> @@ -90,6 +90,24 @@ static bool evm_key_loaded(void)
+>  	return (bool)(evm_initialized & EVM_KEY_MASK);
+>  }
+> 
+> +/*
+> + * This function determines whether or not it is safe to ignore verification
+> + * errors, based on the ability of EVM to calculate HMACs. If the HMAC key
+> + * is not loaded, and it cannot be loaded in the future due to the
+> + * EVM_SETUP_COMPLETE initialization flag, allowing an operation despite
+> the
+> + * attrs/xattrs being found invalid will not make them valid.
+> + */
+> +static bool evm_hmac_disabled(void)
+> +{
+> +	if (evm_initialized & EVM_INIT_HMAC)
+> +		return false;
+> +
+> +	if (!(evm_initialized & EVM_SETUP_COMPLETE))
+> +		return false;
+> +
+> +	return true;
+> +}
+> +
+>  static int evm_find_protected_xattrs(struct dentry *dentry)
+>  {
+>  	struct inode *inode = d_backing_inode(dentry);
+> @@ -338,6 +356,10 @@ static int evm_protect_xattr(struct dentry *dentry,
+> const char *xattr_name,
+>  	if (evm_status == INTEGRITY_NOXATTRS) {
+>  		struct integrity_iint_cache *iint;
+> 
+> +		/* Exception if the HMAC is not going to be calculated. */
+> +		if (evm_hmac_disabled())
+> +			return 0;
+> +
+>  		iint = integrity_iint_find(d_backing_inode(dentry));
+>  		if (iint && (iint->flags & IMA_NEW_FILE))
+>  			return 0;
+> @@ -354,6 +376,10 @@ static int evm_protect_xattr(struct dentry *dentry,
+> const char *xattr_name,
+>  				    -EPERM, 0);
+>  	}
+>  out:
+> +	/* Exception if the HMAC is not going to be calculated. */
+> +	if (evm_hmac_disabled() && (evm_status == INTEGRITY_NOLABEL ||
+> +	    evm_status == INTEGRITY_UNKNOWN))
+> +		return 0;
+>  	if (evm_status != INTEGRITY_PASS)
+>  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> d_backing_inode(dentry),
+>  				    dentry->d_name.name,
+> "appraise_metadata",
+> @@ -474,6 +500,9 @@ void evm_inode_post_setxattr(struct dentry *dentry,
+> const char *xattr_name,
+>  	if (!strcmp(xattr_name, XATTR_NAME_EVM))
+>  		return;
+> 
+> +	if (!(evm_initialized & EVM_INIT_HMAC))
+> +		return;
+> +
+>  	evm_update_evmxattr(dentry, xattr_name, xattr_value,
+> xattr_value_len);
+>  }
+> 
+> @@ -497,6 +526,9 @@ void evm_inode_post_removexattr(struct dentry
+> *dentry, const char *xattr_name)
+>  	if (!strcmp(xattr_name, XATTR_NAME_EVM))
+>  		return;
+> 
+> +	if (!(evm_initialized & EVM_INIT_HMAC))
+> +		return;
+> +
+>  	evm_update_evmxattr(dentry, xattr_name, NULL, 0);
+>  }
+> 
+> @@ -522,7 +554,9 @@ int evm_inode_setattr(struct dentry *dentry, struct
+> iattr *attr)
+>  		return 0;
+>  	evm_status = evm_verify_current_integrity(dentry);
+>  	if ((evm_status == INTEGRITY_PASS) ||
+> -	    (evm_status == INTEGRITY_NOXATTRS))
+> +	    (evm_status == INTEGRITY_NOXATTRS) ||
+> +	    (evm_hmac_disabled() && (evm_status == INTEGRITY_NOLABEL ||
+> +	     evm_status == INTEGRITY_UNKNOWN)))
+>  		return 0;
+>  	integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> d_backing_inode(dentry),
+>  			    dentry->d_name.name, "appraise_metadata",
+> @@ -548,6 +582,9 @@ void evm_inode_post_setattr(struct dentry *dentry,
+> int ia_valid)
+> 
+>  	evm_reset_status(dentry->d_inode);
+> 
+> +	if (!(evm_initialized & EVM_INIT_HMAC))
+> +		return;
+> +
+>  	if (ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID))
+>  		evm_update_evmxattr(dentry, NULL, NULL, 0);
+>  }
+> --
+> 2.25.1
 
-Regards,
-Halil
