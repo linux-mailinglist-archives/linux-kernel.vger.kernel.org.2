@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DE8838ACDE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6F1038ACAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243668AbhETLui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:50:38 -0400
-Received: from m1380.mail.163.com ([220.181.13.80]:31707 "EHLO
-        m1380.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241607AbhETLdz (ORCPT
+        id S241109AbhETLp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:45:27 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:60737 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241257AbhETLYG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:33:55 -0400
-X-Greylist: delayed 938 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 May 2021 07:33:52 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=Lvxlv
-        /jbqFyHOx/iy1dvt7BdawmxAecjJiBDgIXlLmA=; b=bFATlEO229Lc5MhnJ2cWD
-        bDPdDP2CBejMrQCOq1N/9lUUDhBkiYcPFKxXLHEsxLxSSJZw2LkqefKhAQaHNBba
-        ZdrSnkhPHxMdW+iS5C0qspdwWoR1hkA8UqiyBNoviTzNG0aHSv3BeRnhl41yIeOY
-        pb89batFAlg564f1qwgcoA=
-Received: from wsj20369$163.com ( [120.197.196.176] ) by
- ajax-webmail-wmsvr80 (Coremail) ; Thu, 20 May 2021 19:16:40 +0800 (CST)
-X-Originating-IP: [120.197.196.176]
-Date:   Thu, 20 May 2021 19:16:40 +0800 (CST)
-From:   "Shujun Wang" <wsj20369@163.com>
-To:     bbhatt@codeaurora.org
-Cc:     mani@kernel.org, hemantk@codeaurora.org, loic.poulain@linaro.org,
-        jarvis.w.jiang@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH RESEND,v2] bus: mhi: pci_generic: T99W175: update
- channel name from AT to DUN
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <88d7754c381ba9eb927b4dd91e30ca35@codeaurora.org>
-References: <20210517095415.3626-1-wsj20369@163.com>
- <88d7754c381ba9eb927b4dd91e30ca35@codeaurora.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
-MIME-Version: 1.0
-Message-ID: <734feeda.5d5f.179897de742.Coremail.wsj20369@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: UMGowACHAzEZRaZgLrHkAA--.24290W
-X-CM-SenderInfo: hzvmjiqtwzqiywtou0bp/xtbBQwaYF1++LpAUPAABs8
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+        Thu, 20 May 2021 07:24:06 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 6a821899;
+        Thu, 20 May 2021 13:22:42 +0200 (CEST)
+Date:   Thu, 20 May 2021 13:22:42 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     robh@kernel.org, kettenis@openbsd.org, devicetree@vger.kernel.org,
+        marcan@marcan.st, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <CACRpkdYPsL+5ZN3WOovwqkGydaGoJZCskwMkT6rhZ1BYpYVgrw@mail.gmail.com>
+        (message from Linus Walleij on Thu, 20 May 2021 01:27:37 +0200)
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
+References: <20210508142000.85116-1-kettenis@openbsd.org> <20210508142000.85116-2-kettenis@openbsd.org>
+ <20210510141955.GA58072@robh.at.kernel.org> <5612be5a12568600@bloch.sibelius.xs4all.nl> <CACRpkdYPsL+5ZN3WOovwqkGydaGoJZCskwMkT6rhZ1BYpYVgrw@mail.gmail.com>
+Message-ID: <5612e60278566bd3@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjEtMDUtMTggMDI6MDE6MTAsICJCaGF1bWlrIEJoYXR0IiA8YmJoYXR0QGNvZGVhdXJv
-cmEub3JnPiB3cm90ZToKPk9uIDIwMjEtMDUtMTcgMDI6NTQgQU0sIFNodWp1biBXYW5nIHdyb3Rl
-Ogo+PiBGcm9tOiBKYXJ2aXMgSmlhbmcgPGphcnZpcy53LmppYW5nQGdtYWlsLmNvbT4KPj4gCj4+
-IEFjY29yZGluZyB0byBNSEkgdjEuMSBzcGVjaWZpY2F0aW9uLCBjaGFuZ2UgdGhlIGNoYW5uZWwg
-bmFtZSBvZiBUOTlXMTc1Cj4+IGZyb20gIkFUIiB0byAiRFVOIiAoRGlhbC11cCBuZXR3b3JraW5n
-KSBmb3IgYm90aCBjaGFubmVsIDMyIGFuZCAzMywKPj4gc28gdGhhdCB0aGUgY2hhbm5lbHMgY2Fu
-IGJlIGJvdW5kIHRvIHRoZSBRY29tIFdXQU4gY29udHJvbCBkcml2ZXIsIGFuZAo+PiBkZXZpY2Ug
-bm9kZSBzdWNoIGFzIC9kZXYvd3dhbjBwM0FUIHdpbGwgYmUgZ2VuZXJhdGVkLCB3aGljaCBpcyB2
-ZXJ5IAo+PiB1c2VmdWwKPj4gZm9yIGRlYnVnZ2luZyBtb2RlbQo+PiAKPj4gRml4ZXM6IGFhYzQy
-NjU2MmY1NiAoImJ1czogbWhpOiBwY2lfZ2VuZXJpYzogSW50cm9kdWNlIEZveGNvbm4gVDk5VzE3
-NSAKPj4gc3VwcG9ydCIpCj4+IFNpZ25lZC1vZmYtYnk6IEphcnZpcyBKaWFuZyA8amFydmlzLncu
-amlhbmdAZ21haWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBTaHVqdW4gV2FuZyA8d3NqMjAzNjlA
-MTYzLmNvbT4KPgo+UmV2aWV3ZWQtYnk6IEJoYXVtaWsgQmhhdHQgPGJiaGF0dEBjb2RlYXVyb3Jh
-Lm9yZz4KCkhpIEJoYXVtaWssCgpUaGFua3MgYSBsb3QuCgo+PiAtLS0KPj4gCj4+IHYyOiBBZGQ6
-IEZpeGVzOiBhYWM0MjY1NjJmNTYKPj4gCj4+ICBkcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMu
-YyB8IDQgKystLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
-bnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYyAK
-Pj4gYi9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYwo+PiBpbmRleCA3YzgxMGYwMmEyZWYu
-LjhjN2Y2NTc2ZTQyMSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9idXMvbWhpL3BjaV9nZW5lcmlj
-LmMKPj4gKysrIGIvZHJpdmVycy9idXMvbWhpL3BjaV9nZW5lcmljLmMKPj4gQEAgLTMxMSw4ICsz
-MTEsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG1oaV9jaGFubmVsX2NvbmZpZwo+PiBtaGlfZm94
-Y29ubl9zZHg1NV9jaGFubmVsc1tdID0gewo+PiAgCU1ISV9DSEFOTkVMX0NPTkZJR19ETCg1LCAi
-RElBRyIsIDMyLCAxKSwKPj4gIAlNSElfQ0hBTk5FTF9DT05GSUdfVUwoMTIsICJNQklNIiwgMzIs
-IDApLAo+PiAgCU1ISV9DSEFOTkVMX0NPTkZJR19ETCgxMywgIk1CSU0iLCAzMiwgMCksCj4+IC0J
-TUhJX0NIQU5ORUxfQ09ORklHX1VMKDMyLCAiQVQiLCAzMiwgMCksCj4+IC0JTUhJX0NIQU5ORUxf
-Q09ORklHX0RMKDMzLCAiQVQiLCAzMiwgMCksCj4+ICsJTUhJX0NIQU5ORUxfQ09ORklHX1VMKDMy
-LCAiRFVOIiwgMzIsIDApLAo+PiArCU1ISV9DSEFOTkVMX0NPTkZJR19ETCgzMywgIkRVTiIsIDMy
-LCAwKSwKPj4gIAlNSElfQ0hBTk5FTF9DT05GSUdfSFdfVUwoMTAwLCAiSVBfSFcwX01CSU0iLCAx
-MjgsIDIpLAo+PiAgCU1ISV9DSEFOTkVMX0NPTkZJR19IV19ETCgxMDEsICJJUF9IVzBfTUJJTSIs
-IDEyOCwgMyksCj4+ICB9Owo+Cj5UaGFua3MsCj5CaGF1bWlrCj4tLS0KPlRoZSBRdWFsY29tbSBJ
-bm5vdmF0aW9uIENlbnRlciwgSW5jLiBpcyBhIG1lbWJlciBvZiB0aGUgQ29kZSBBdXJvcmEgCj5G
-b3J1bSwKPmEgTGludXggRm91bmRhdGlvbiBDb2xsYWJvcmF0aXZlIFByb2plY3QK
+> From: Linus Walleij <linus.walleij@linaro.org>
+> Date: Thu, 20 May 2021 01:27:37 +0200
+> 
+> On Mon, May 10, 2021 at 7:06 PM Mark Kettenis <mark.kettenis@xs4all.nl> wrote:
+> > > From: Rob Herring <robh@kernel.org>
+> 
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    items:
+> > > > +      - const: apple,t8103-pinctrl
+> > > > +      - const: apple,pinctrl
+> > >
+> > > A genericish fallback is maybe questionable for pinctrl. That's not
+> > > often the same from one SoC to the next.
+> >
+> > Krzysztof raised a similar point.  It seems that Apple isn't in the
+> > habit of changing this aspect of their SoCs.
+> 
+> Rob what's your stance on this? Does it need to be changed?
+> Else I'll apply the patch.
+
+Hi Linus,
+
+Rob asked me to provide a description for the interrupts in response
+to the v2 I sent a few days ago:
+
+  http://patchwork.ozlabs.org/project/devicetree-bindings/patch/20210516183221.93686-2-mark.kettenis@xs4all.nl/
+
+I'll roll a v3 later today for that.
+
+Cheers,
+
+Mark
