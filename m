@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF7D38A8DC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:53:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B663E38A899
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:52:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239487AbhETKzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:55:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39794 "EHLO mail.kernel.org"
+        id S238179AbhETKvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:51:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238175AbhETKji (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:39:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 935F1610CB;
-        Thu, 20 May 2021 09:55:18 +0000 (UTC)
+        id S237884AbhETKf4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:35:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A7E9561C63;
+        Thu, 20 May 2021 09:53:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504519;
-        bh=2yVv66ORtp3I0H7NgUJ9D7pHsQDEf/7FRXuB7kH07dI=;
+        s=korg; t=1621504440;
+        bh=BKZByb+bMQrTyrLgjdFq3/qR+nFiiFhVqTM4UmzAeCc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TQzZd5AzItPWmRrM42u2nw+Q2lmom/it0MKCLDjTeasEitM81fVeFYyrkDJeS4wF/
-         YOkDWSIuEbVY/7+tZL428RDeiZOogvwGQPyJUwk87WmShRnDCLrqlocYWXIx6jRcgR
-         FT212cq4yMW4XveSK1H9pveQS5e4qI40uLXR51o4=
+        b=rDsmUu+ddWD35AOuamoEOkkAoUnouU0YVm1d/aLig/B7HdfhE37q0dVNMIBIVFvYw
+         AcsxG2Cmf+hKjA63JZh07kZzOUaGG0jS1Gx1ROW7NuSIV+I+jNWVbv6g7vUeI6WYP5
+         +4bepmod9e1kW5fdibjTrzeJbEMPNGzNLluc7rGM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
         Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 238/323] ALSA: hdspm: dont disable if not enabled
-Date:   Thu, 20 May 2021 11:22:10 +0200
-Message-Id: <20210520092128.331893003@linuxfoundation.org>
+Subject: [PATCH 4.14 239/323] ALSA: rme9652: dont disable if not enabled
+Date:   Thu, 20 May 2021 11:22:11 +0200
+Message-Id: <20210520092128.367371755@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,42 +42,42 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit 790f5719b85e12e10c41753b864e74249585ed08 ]
+[ Upstream commit f57a741874bb6995089020e97a1dcdf9b165dcbe ]
 
-hdspm wants to disable a not enabled pci device, which makes kernel
+rme9652 wants to disable a not enabled pci device, which makes kernel
 throw a warning. Make sure the device is enabled before calling disable.
 
-[    1.786391] snd_hdspm 0000:00:03.0: disabling already-disabled device
-[    1.786400] WARNING: CPU: 0 PID: 182 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
-[    1.795181] Call Trace:
-[    1.795320]  snd_hdspm_card_free+0x58/0xa0 [snd_hdspm]
-[    1.795595]  release_card_device+0x4b/0x80 [snd]
-[    1.795860]  device_release+0x3b/0xa0
-[    1.796072]  kobject_put+0x94/0x1b0
-[    1.796260]  put_device+0x13/0x20
-[    1.796438]  snd_card_free+0x61/0x90 [snd]
-[    1.796659]  snd_hdspm_probe+0x97b/0x1440 [snd_hdspm]
+[    1.751595] snd_rme9652 0000:00:03.0: disabling already-disabled device
+[    1.751605] WARNING: CPU: 0 PID: 174 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.759968] Call Trace:
+[    1.760145]  snd_rme9652_card_free+0x76/0xa0 [snd_rme9652]
+[    1.760434]  release_card_device+0x4b/0x80 [snd]
+[    1.760679]  device_release+0x3b/0xa0
+[    1.760874]  kobject_put+0x94/0x1b0
+[    1.761059]  put_device+0x13/0x20
+[    1.761235]  snd_card_free+0x61/0x90 [snd]
+[    1.761454]  snd_rme9652_probe+0x3be/0x700 [snd_rme9652]
 
 Suggested-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-Link: https://lore.kernel.org/r/20210321153840.378226-3-ztong0001@gmail.com
+Link: https://lore.kernel.org/r/20210321153840.378226-4-ztong0001@gmail.com
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/rme9652/hdspm.c | 3 ++-
+ sound/pci/rme9652/rme9652.c | 3 ++-
  1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/pci/rme9652/hdspm.c b/sound/pci/rme9652/hdspm.c
-index 343f533906ba..5bbbbba0817b 100644
---- a/sound/pci/rme9652/hdspm.c
-+++ b/sound/pci/rme9652/hdspm.c
-@@ -6913,7 +6913,8 @@ static int snd_hdspm_free(struct hdspm * hdspm)
- 	if (hdspm->port)
- 		pci_release_regions(hdspm->pci);
+diff --git a/sound/pci/rme9652/rme9652.c b/sound/pci/rme9652/rme9652.c
+index edd765e22377..f82fa5be7d33 100644
+--- a/sound/pci/rme9652/rme9652.c
++++ b/sound/pci/rme9652/rme9652.c
+@@ -1761,7 +1761,8 @@ static int snd_rme9652_free(struct snd_rme9652 *rme9652)
+ 	if (rme9652->port)
+ 		pci_release_regions(rme9652->pci);
  
--	pci_disable_device(hdspm->pci);
-+	if (pci_is_enabled(hdspm->pci))
-+		pci_disable_device(hdspm->pci);
+-	pci_disable_device(rme9652->pci);
++	if (pci_is_enabled(rme9652->pci))
++		pci_disable_device(rme9652->pci);
  	return 0;
  }
  
