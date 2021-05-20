@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353FE389A72
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EE6389A80
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 02:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230147AbhETA0o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 20:26:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35976 "EHLO
+        id S230160AbhETA0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 20:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229598AbhETA0m (ORCPT
+        with ESMTP id S230023AbhETA0m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 19 May 2021 20:26:42 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6046C06175F
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:25:21 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id v13so7994248ple.9
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:25:21 -0700 (PDT)
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B9D0C061760
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:25:22 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id v12so7993638plo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 17:25:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HnUlRSyazCKo9xmvcnsazZcLuVKlbVM14ntknUcnp7c=;
-        b=lppee0aykW6DYsEq7WnlEJbxTzvXzKJZXA4Qci82EhIxzNrqkndVPltAPRRrIfjq4z
-         Jgc1SlTGuIp/GPyI+PPl8PhKEreGx4dRNFDMme/gHvgkY9T4MFHnMK5bg6FWiXoVn/M2
-         /uaDGv8cnGuege3fZ3SZLURqHSRmzAZBFQ0e4=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=aRquPtKESR1fixPzXGluszKZZ1e3a9BRsbbdMoeuLvY=;
+        b=Ds0tK1t4lVQ8KE/sGvf2nUVymAK21Pt8pKPu3fln6VW9CNikaOaUrGjV4DPHFPbQ+s
+         CrE9qPxuFx80GzKOsWy/tx7t0AC57nz/Ictcrbg4xp864prwxIt69Hb9v/dSkuTPZD61
+         7pIUUGfmzYO93Wp+YVhARCpxNoVBGUjPBTDng=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=HnUlRSyazCKo9xmvcnsazZcLuVKlbVM14ntknUcnp7c=;
-        b=BVcbY4BupBdaBpIbUuA9um0OxCpY5efQ/nZlU+lwhmaWxKLyGU+X/Wa2dE64tJZnVj
-         qfQYUwYECIQ9D1SGbs5jvE4TSxwlO/8VJMX7BMR3+npTihgRl8OjfAtG8jY7UOzF99HN
-         oQhHOm+ChpIY18DHtaUTFRQRUxSpHeYh6HGAAYvRsN630QUOcbkqwsx6kplUqWQo+k7J
-         Q1Mnl6Z3YXSmVZUgl6wgZHwbyQoFgF+sct5X9Cq9SwmKkax+vHQ9y1PE4ELGKSCEFNDk
-         ayghNPAwX9pLxC64i8/dConoypeu1TFjxqYYCKxDqGhem6j/lFQpjdbzfcDlmPTl0wWM
-         Wjww==
-X-Gm-Message-State: AOAM530Dgretw0JPyUlU7Wjibv8XFeWvJbaZBua6YU9hYEtU+U6Fdwmt
-        RqxTciqTgHk8nrnZ2YORFCs0rQ==
-X-Google-Smtp-Source: ABdhPJwC3IwDI2gFp43UHpOegES+CCjEkSMmtGwVPcBzLAlKbgcBury8x7ZAosf/PakNL9RQbOsijQ==
-X-Received: by 2002:a17:902:d4c3:b029:ee:ae62:9fb7 with SMTP id o3-20020a170902d4c3b02900eeae629fb7mr2675752plg.8.1621470321058;
-        Wed, 19 May 2021 17:25:21 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=aRquPtKESR1fixPzXGluszKZZ1e3a9BRsbbdMoeuLvY=;
+        b=Uf+4cfmH4+PEw9MpOs1rP9Wvn7jxHaqrdgHd/YtyWfTf9uYL1xKsMJAygC35FcpBg/
+         JM67zF2UcseIJu0UxeSqYNpsrcfnPdEEcS4pg0thyd+6RSGP0Ly0r213tGr4vlbNUhOI
+         ddAyfG3Gz36mR88a7+nnroXJoiidN4nVKfXln4C2DkuPuKD0d+9DYOvEdoN17f9mFA3+
+         4S6mcAKPkv7nSjERPrNPLIC9pSjDODt/WdDBbGWWo66DPxZOujNwq55QqvnDU+VKelSn
+         L1SY9TWLmQMe68XRCTP2ixAhT65RvEtHku2UeZD+Bb9noFM01EDqeCswaxbYDhrf/hm/
+         OO8Q==
+X-Gm-Message-State: AOAM531qgWLEIChiKuw5YthyU9u9ApUgYJtWSjgHvdBbfohPcf+uX4b/
+        fLhJwMtkCsc1UgOm7ex7+jFDAA==
+X-Google-Smtp-Source: ABdhPJzQ4U2lTNUnLgnTbBfp6T56SKS85QwT+rKLMXH6K8ql9c3cbNItvfoNOn06y8J7swXPzEuKMg==
+X-Received: by 2002:a17:90a:7e03:: with SMTP id i3mr155918pjl.197.1621470322127;
+        Wed, 19 May 2021 17:25:22 -0700 (PDT)
 Received: from smtp.gmail.com ([2620:15c:202:201:200b:db75:4e6c:8b96])
-        by smtp.gmail.com with ESMTPSA id i14sm398904pfk.130.2021.05.19.17.25.20
+        by smtp.gmail.com with ESMTPSA id i14sm398904pfk.130.2021.05.19.17.25.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 17:25:20 -0700 (PDT)
+        Wed, 19 May 2021 17:25:21 -0700 (PDT)
 From:   Stephen Boyd <swboyd@chromium.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
@@ -54,53 +54,62 @@ Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Rob Clark <robdclark@gmail.com>,
         Russell King <rmk+kernel@arm.linux.org.uk>,
         Saravana Kannan <saravanak@google.com>
-Subject: [PATCH 0/7] component: Make into an aggregate bus
-Date:   Wed, 19 May 2021 17:25:12 -0700
-Message-Id: <20210520002519.3538432-1-swboyd@chromium.org>
+Subject: [PATCH 1/7] component: Drop 'dev' argument to component_match_realloc()
+Date:   Wed, 19 May 2021 17:25:13 -0700
+Message-Id: <20210520002519.3538432-2-swboyd@chromium.org>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
+In-Reply-To: <20210520002519.3538432-1-swboyd@chromium.org>
+References: <20210520002519.3538432-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series is from discussion we had on reordering the device lists for
-drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
-the aggregate device onto and then we probe the device once all the
-components are probed and call component_add(). The probe/remove hooks
-are where the bind/unbind calls go, and then a shutdown hook is added
-that can be used to shutdown the drm display pipeline at the right time.
-
-This works for me on my sc7180 board, but I'm currently struggling with
-the last patch where we migrate the msm driver. It runs into a runtime
-PM problem where the parent device isn't runtime PM enabled yet. I'm
-still trying to figure out a clean solution there. Moving runtime PM
-around breaks boot and I think that's because the power domain is off.
+This argument isn't used. Drop it.
 
 Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
 Cc: "Rafael J. Wysocki" <rafael@kernel.org>
 Cc: Rob Clark <robdclark@gmail.com>
 Cc: Russell King <rmk+kernel@arm.linux.org.uk>
 Cc: Saravana Kannan <saravanak@google.com>
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
+ drivers/base/component.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/r/20210508074118.1621729-1-swboyd@chromium.org
-
-Stephen Boyd (7):
-  component: Drop 'dev' argument to component_match_realloc()
-  component: Rename 'dev' to 'parent'
-  component: Introduce struct aggregate_device
-  component: Introduce the aggregate bus_type
-  component: Use dev.parent instead of adev->parent
-  component: Move struct aggregate_device out to header file
-  drm/msm: Migrate to aggregate driver
-
- drivers/base/component.c      | 614 ++++++++++++++++++++++------------
- drivers/gpu/drm/msm/msm_drv.c |  47 +--
- include/linux/component.h     |  73 +++-
- 3 files changed, 487 insertions(+), 247 deletions(-)
-
-
-base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
+diff --git a/drivers/base/component.c b/drivers/base/component.c
+index 272ba42392f0..bbe1757dfa89 100644
+--- a/drivers/base/component.c
++++ b/drivers/base/component.c
+@@ -307,8 +307,7 @@ static void devm_component_match_release(struct device *dev, void *res)
+ 	component_match_release(dev, res);
+ }
+ 
+-static int component_match_realloc(struct device *dev,
+-	struct component_match *match, size_t num)
++static int component_match_realloc(struct component_match *match, size_t num)
+ {
+ 	struct component_match_array *new;
+ 
+@@ -359,7 +358,7 @@ static void __component_match_add(struct device *master,
+ 		size_t new_size = match->alloc + 16;
+ 		int ret;
+ 
+-		ret = component_match_realloc(master, match, new_size);
++		ret = component_match_realloc(match, new_size);
+ 		if (ret) {
+ 			*matchptr = ERR_PTR(ret);
+ 			return;
+@@ -469,7 +468,7 @@ int component_master_add_with_match(struct device *dev,
+ 	int ret;
+ 
+ 	/* Reallocate the match array for its true size */
+-	ret = component_match_realloc(dev, match, match->num);
++	ret = component_match_realloc(match, match->num);
+ 	if (ret)
+ 		return ret;
+ 
 -- 
 https://chromeos.dev
 
