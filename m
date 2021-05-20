@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71C1D38AAF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AD7238AAF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240624AbhETLTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:19:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54402 "EHLO mail.kernel.org"
+        id S240848AbhETLTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:19:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239302AbhETK6w (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:58:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 07A6961CFF;
-        Thu, 20 May 2021 10:02:44 +0000 (UTC)
+        id S239336AbhETK7F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:59:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65BE161CFD;
+        Thu, 20 May 2021 10:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504965;
-        bh=00WXR+OlTujK/PkeXnndoqQ066Ja43WCBFFxGxfv10g=;
+        s=korg; t=1621504969;
+        bh=an3twia1nuUTARI/pGMLULGkQ70yyRb/iOVS98OpQhg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZlplXq21hAMlAnhLJRyz0LHzUIGFa2kSwtR4NHWL+o5cNUbRRRHsyLAIrAU2qrnKd
-         mBM3bOlit4YAz9/UWLGaeNFnAh5uJsMl9BY9mhvteq59emoZNe8yU1jEqRB6Ip+dow
-         4ySA+etaOHzs0qvxYqPo2l9RPfarqDPYGp2H2ttk=
+        b=uEATYKkQZ6wFy6ukRKsHMqHV+Mrw9Ew3zqOTsoTlphF/mT/qSYkjkc+G5p3xCbEn9
+         6Dhj0AzXxXJe/Tplf7BK5Pm4a6jSSFLm6A4iMZS6OlBzLdclXumkGQD4sici6UgQwz
+         gpfH1DqeJn/5fcTJAqELOuSIbGHt1UjKaDhVUWZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 162/240] powerpc/52xx: Fix an invalid ASM expression (addi used instead of add)
-Date:   Thu, 20 May 2021 11:22:34 +0200
-Message-Id: <20210520092114.086918412@linuxfoundation.org>
+Subject: [PATCH 4.9 163/240] net:emac/emac-mac: Fix a use after free in emac_mac_tx_buf_send
+Date:   Thu, 20 May 2021 11:22:35 +0200
+Message-Id: <20210520092114.118233388@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,44 +40,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 8a87a507714386efc39c3ae6fa24d4f79846b522 ]
+[ Upstream commit 6d72e7c767acbbdd44ebc7d89c6690b405b32b57 ]
 
-  AS      arch/powerpc/platforms/52xx/lite5200_sleep.o
-arch/powerpc/platforms/52xx/lite5200_sleep.S: Assembler messages:
-arch/powerpc/platforms/52xx/lite5200_sleep.S:184: Warning: invalid register expression
+In emac_mac_tx_buf_send, it calls emac_tx_fill_tpd(..,skb,..).
+If some error happens in emac_tx_fill_tpd(), the skb will be freed via
+dev_kfree_skb(skb) in error branch of emac_tx_fill_tpd().
+But the freed skb is still used via skb->len by netdev_sent_queue(,skb->len).
 
-In the following code, 'addi' is wrong, has to be 'add'
+As i observed that emac_tx_fill_tpd() haven't modified the value of skb->len,
+thus my patch assigns skb->len to 'len' before the possible free and
+use 'len' instead of skb->len later.
 
-	/* local udelay in sram is needed */
-  udelay: /* r11 - tb_ticks_per_usec, r12 - usecs, overwrites r13 */
-	mullw	r12, r12, r11
-	mftb	r13	/* start */
-	addi	r12, r13, r12 /* end */
-
-Fixes: ee983079ce04 ("[POWERPC] MPC5200 low power mode")
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/cb4cec9131c8577803367f1699209a7e104cec2a.1619025821.git.christophe.leroy@csgroup.eu
+Fixes: b9b17debc69d2 ("net: emac: emac gigabit ethernet controller driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/platforms/52xx/lite5200_sleep.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/ethernet/qualcomm/emac/emac-mac.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/platforms/52xx/lite5200_sleep.S b/arch/powerpc/platforms/52xx/lite5200_sleep.S
-index 08ab6fefcf7a..5f44e9223413 100644
---- a/arch/powerpc/platforms/52xx/lite5200_sleep.S
-+++ b/arch/powerpc/platforms/52xx/lite5200_sleep.S
-@@ -180,7 +180,7 @@ sram_code:
-   udelay: /* r11 - tb_ticks_per_usec, r12 - usecs, overwrites r13 */
- 	mullw	r12, r12, r11
- 	mftb	r13	/* start */
--	addi	r12, r13, r12 /* end */
-+	add	r12, r13, r12 /* end */
-     1:
- 	mftb	r13	/* current */
- 	cmp	cr0, r13, r12
+diff --git a/drivers/net/ethernet/qualcomm/emac/emac-mac.c b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
+index 9d223ff65071..882f2b7ec6d1 100644
+--- a/drivers/net/ethernet/qualcomm/emac/emac-mac.c
++++ b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
+@@ -1504,6 +1504,7 @@ int emac_mac_tx_buf_send(struct emac_adapter *adpt, struct emac_tx_queue *tx_q,
+ {
+ 	struct emac_tpd tpd;
+ 	u32 prod_idx;
++	int len;
+ 
+ 	memset(&tpd, 0, sizeof(tpd));
+ 
+@@ -1523,9 +1524,10 @@ int emac_mac_tx_buf_send(struct emac_adapter *adpt, struct emac_tx_queue *tx_q,
+ 	if (skb_network_offset(skb) != ETH_HLEN)
+ 		TPD_TYP_SET(&tpd, 1);
+ 
++	len = skb->len;
+ 	emac_tx_fill_tpd(adpt, tx_q, skb, &tpd);
+ 
+-	netdev_sent_queue(adpt->netdev, skb->len);
++	netdev_sent_queue(adpt->netdev, len);
+ 
+ 	/* Make sure the are enough free descriptors to hold one
+ 	 * maximum-sized SKB.  We need one desc for each fragment,
 -- 
 2.30.2
 
