@@ -2,172 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AB738B4DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ADEF38B4E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:04:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234674AbhETRFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:05:34 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:46356 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234386AbhETRFd (ORCPT
+        id S234739AbhETRFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:05:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234357AbhETRFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:05:33 -0400
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KH4A59061988;
-        Thu, 20 May 2021 12:04:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621530250;
-        bh=Hahd3sJXjUgbQKssP+efhi1/PrDATemEHuhR+XCl+SA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ll54Kt+/1sM8XptacJI2fGaMqjqQ6sDSsFszlSQr1cskjDxgt8m5sw9Ni4Y96v1OI
-         R6M69OCEIkPG4jXcUFlTJaY8alqaunzKotc8OArubdgGrdB7aov0OOwQZEYJvFLL4Y
-         VVL6bsyNwAirEGU8llEJj4Xqwu3HSB6+rjTuAjCE=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KH4A3V004928
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 20 May 2021 12:04:10 -0500
-Received: from DLEE111.ent.ti.com (157.170.170.22) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
- May 2021 12:04:09 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Thu, 20 May 2021 12:04:10 -0500
-Received: from [10.250.235.117] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KH44Wk078148;
-        Thu, 20 May 2021 12:04:05 -0500
-Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
-To:     Rob Herring <robh@kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Keerthy <j-keerthy@ti.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210511090122.6995-1-a-govindraju@ti.com>
- <20210517221513.GA3263368@robh.at.kernel.org>
- <e239365e-35d7-694a-55cc-7dabfa66b108@ti.com>
- <CAL_JsqKM5unmiXdYBzM9xfEETfTVTF9RMXPuT7Lb7w0cnwd1mw@mail.gmail.com>
-From:   Aswath Govindraju <a-govindraju@ti.com>
-Message-ID: <50d6dea2-f35d-d620-a8f2-29ad97365119@ti.com>
-Date:   Thu, 20 May 2021 22:34:03 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 20 May 2021 13:05:46 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EDC9C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:04:25 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id k4so5800209qkd.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:04:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=lCSr/SzE2iIrgBlIlQqVKl0fiziIXta89RXBs1cqiuo=;
+        b=EWJPiCkxcV/aOg9B6lync+fGTxKK5I8d0PMjCFqSP+f1CgSa3LkPFQILqcpz6bGuLu
+         ZFhDEtixjezfEE+BUaG30PuOzVn0gZm+SXp2cgoCplG6ZZhDF2FP1kGVJoU3ZvrPRnKG
+         Z1U5lyAjYzkAC0daTg/cQMf6WKyHWboKcHn3MuBJpZSx2euRAFEkLUjiCazbiOK7cK77
+         zwXcN0jOGyDKiluxmh75+44wyw2H1IBvNY9CYgzOjfmnAY8zo+OCH/64qh4ZEuCHFPVM
+         KaVZFfsc5OW1SBK6DeAhbHT91MYfMab3Dym6E92JRk/CGPlEWtAVAot3j6gNGyHDUYPq
+         9B0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=lCSr/SzE2iIrgBlIlQqVKl0fiziIXta89RXBs1cqiuo=;
+        b=qN9aikB4EbNI7lbHeVTLwiZ99hutMUW2oUSW0wdfBLt0LNziafEJi/73aVrkragd+Q
+         KljvbTsS6YyGnW7uwVgiEvMk2d3aP+Q8QFhG4sR25y2mr4lD/jEtecVxFzdjb4ApzqXM
+         r+liD5PaUrkoLOlraKmDugE8dSWkEEN8MiZZnCrMJpCIGbx078X514PFuu3PCMaYpJG3
+         ZZxq+LWIlesgxtwfnVvOmjW6bZDx5q62Fw/ep+k+J4YMBTNn/CLN7hK3Mwg7QHsxkQtl
+         71YAC5WFPwzFsuLCNwivwuQyCOb7babUDPFdQebnpog64oYNIuEHfGJqq6ul2+JUz8O+
+         5Hgg==
+X-Gm-Message-State: AOAM531Dr/WK8s5qW+gvVOJRjIKrW0o8NgDuzKmYRDfoB4172akobajR
+        LfLqKr1HQ/UEaFp6CC0AFEk=
+X-Google-Smtp-Source: ABdhPJzTtity4iGFC4Yp5v982tt2+qUmlvmszQepKE4k5SKwionwyfKcSoXMNYdSY4UmnK2lEcKoeQ==
+X-Received: by 2002:a05:620a:818:: with SMTP id s24mr6053508qks.425.1621530264529;
+        Thu, 20 May 2021 10:04:24 -0700 (PDT)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
+        by smtp.gmail.com with ESMTPSA id s24sm2230298qtx.94.2021.05.20.10.04.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 10:04:23 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 20 May 2021 13:04:23 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Huaixin Chang <changhuaixin@linux.alibaba.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        shanpeic@linux.alibaba.com,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
+Message-ID: <YKaWl7A6N5Jyyi01@slm.duckdns.org>
+References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
+ <20210520123419.8039-2-changhuaixin@linux.alibaba.com>
+ <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAL_JsqKM5unmiXdYBzM9xfEETfTVTF9RMXPuT7Lb7w0cnwd1mw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+Hello, Odin.
 
-On 20/05/21 10:11 pm, Rob Herring wrote:
-> On Tue, May 18, 2021 at 9:13 AM Aswath Govindraju <a-govindraju@ti.com> wrote:
->>
->>
->> Hi Rob,
->>
->> On 18/05/21 3:45 am, Rob Herring wrote:
->>> On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
->>>> Convert gpio-davinci dt-binding documentation from txt to yaml format.
->>>>
->>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->>>> ---
->>>>  .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
->>>>  .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
->>>>  MAINTAINERS                                   |   2 +-
->>>>  3 files changed, 194 insertions(+), 168 deletions(-)
->>>>  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
->>>>  create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
->>>>
->>
->> [...]
->>
->>>> +properties:
->>>> +  compatible:
->>>> +    oneOf:
->>>> +      - items:
->>>> +          - enum:
->>>> +              - ti,k2g-gpio
->>>> +              - ti,am654-gpio
->>>> +              - ti,j721e-gpio
->>>> +              - ti,am64-gpio
->>>> +          - const: ti,keystone-gpio
->>>> +
->>>> +      - items:
->>>> +          - const: ti,dm6441-gpio
->>>> +      - items:
->>>> +          - const: ti,keystone-gpio
->>>
->>> These 2 can be expressed as an 'enum'.
->>
->> I will change this.
->>
->>>
->>>> +
->>>> +  reg:
->>>> +    maxItems: 1
->>>> +    description:
->>>> +      Physical base address of the controller and the size of memory mapped registers.
->>>
->>> Drop. That's every 'reg' property.
->>>
->>
->> I'll drop this.
->>
->>>> +
->>>> +  gpio-controller: true
->>>> +
->>>> +  gpio-ranges: true
->>>> +
->>>> +  gpio-line-names:
->>>> +    description: strings describing the names of each gpio line.
->>>
->>> Any constraints like min/max number of lines?
->>>
->>
->> The max number of lines will be equal to ti,ngpio. Is there any way to
->> equate maxItems to the a property value in json schema ?
+On Thu, May 20, 2021 at 04:00:29PM +0200, Odin Ugedal wrote:
+> >   cpu.max
+> >     A read-write two value file which exists on non-root cgroups.
+> >     The default is "max 100000".
 > 
-> There have been discussions about something like that for json-schema,
-> but nothing yet AFAIK. Is there a max for ti,ngpio? Nothing means
-> 2^32. Surely there's something less than that. You can always adjust
-> the max later.
+> This will become a "three value file", and I know a few user space projects
+> who parse this file by splitting on the middle space. I am not sure if they are
+> "wrong", but I don't think we usually break such things. Not sure what
+> Tejun thinks about this.
 
-Thank you. I will put an cap on this number based on the existing device
-trees.
+Good point. I haven't thought about that. It would make more sense to
+separate it out to a separate file then - e.g. sth like cpu.max.burst, but
+it seems like there are important questions to answer before adding new
+interfaces.
 
-> 
->>>> +
->>>> +  "#gpio-cells":
->>>> +    const: 2
->>>> +    description:
->>>> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
->>>> +
->>>> +  interrupts:
->>>> +    description:
->>>> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
->>>
->>> Needs constraints. How many items and what are they?
->>
->> Here also the maximum number of interrupts is equal to ti,ngpio in
->> unbanked interrupts case. Same as above is there anyway to equate
->> maxItems to ti,ngpio property in json schma ? If not, then what would be
->> the best way to handle this ?
-> 
-> Banked means 1 combined interrupt?
-> 
-Yes, one combined interrupt per bank and there can be multiple banks per
-gpio instance.
+Thanks.
 
-Thanks,
-Aswath
+-- 
+tejun
