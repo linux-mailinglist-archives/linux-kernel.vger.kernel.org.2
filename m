@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC6C38ABB8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6972138AB79
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234979AbhETL1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:27:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38332 "EHLO mail.kernel.org"
+        id S241706AbhETLZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:25:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59406 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238962AbhETLHd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:07:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CDB161D32;
-        Thu, 20 May 2021 10:05:54 +0000 (UTC)
+        id S235259AbhETLFA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:05:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CD69761D2B;
+        Thu, 20 May 2021 10:05:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505155;
-        bh=HRUMB6cOx5+KzcuT3fAC1/OP5cgUpeEa455FMJJUnR0=;
+        s=korg; t=1621505106;
+        bh=XmQgosihI8PMEqg8GdiqdEf8AdIq18xjlc027afweOY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uyDjcrh3FZxgR67m5RmHTuMVdWzQTurJ2CGxwXpviMK6hQjj+uXBl2WSuYJLS7juT
-         imgrbfG5qGFO9e4kdHTmA+sqUSioPva7pD9EoMiiLER0hSHSztgymlt6irU4C8n8g7
-         1Di/A7PDHG7jX/eAb6s0HfybC39p5sqzWTIVZHaM=
+        b=bHhg5TUmzCzMck29dN03xBba3ljoPvfrfHmQfSotjrwYZ36n9AIPyfgXFVJNTbvHH
+         duH1QTw/yJXeuNCD9GAzUoGvE1Lb1m5C8Btu14aPIDpa+4rKfQHUDib2Q8dlWkCmKh
+         VL8nsXVm9mO3U4fu7Iu8vk4Xinxh6QHxOR1b7SPE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Foley <pefoley2@pefoley.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH 4.9 225/240] extcon: adc-jack: Fix incompatible pointer type warning
-Date:   Thu, 20 May 2021 11:23:37 +0200
-Message-Id: <20210520092116.266284298@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 4.9 226/240] kgdb: fix gcc-11 warning on indentation
+Date:   Thu, 20 May 2021 11:23:38 +0200
+Message-Id: <20210520092116.303133897@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,31 +40,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Foley <pefoley2@pefoley.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-commit 8a522bf2d4f788306443d36b26b54f0aedcdfdbe upstream.
+commit 40cc3a80bb42587db1e6ae21d6f3090582d33e89 upstream.
 
-This patch fixes the incompatible warning of extcon-adc-jack.c driver
-when calling devm_extcon_dev_allocate().
+gcc-11 starts warning about misleading indentation inside of macros:
 
-Signed-off-by: Peter Foley <pefoley2@pefoley.com>
-[cw00.choi: Modify the patch title and descritpion]
-Signed-off-by: Chanwoo Choi <cw00.choi@samsung.com>
+drivers/misc/kgdbts.c: In function ‘kgdbts_break_test’:
+drivers/misc/kgdbts.c:103:9: error: this ‘if’ clause does not guard... [-Werror=misleading-indentation]
+  103 |         if (verbose > 1) \
+      |         ^~
+drivers/misc/kgdbts.c:200:9: note: in expansion of macro ‘v2printk’
+  200 |         v2printk("kgdbts: breakpoint complete\n");
+      |         ^~~~~~~~
+drivers/misc/kgdbts.c:105:17: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘if’
+  105 |                 touch_nmi_watchdog();   \
+      |                 ^~~~~~~~~~~~~~~~~~
+
+The code looks correct to me, so just reindent it for readability.
+
+Fixes: e8d31c204e36 ("kgdb: add kgdb internal test suite")
+Acked-by: Daniel Thompson <daniel.thompson@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/r/20210322164308.827846-1-arnd@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/extcon/extcon-adc-jack.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/kgdbts.c |   26 +++++++++++++-------------
+ 1 file changed, 13 insertions(+), 13 deletions(-)
 
---- a/include/linux/extcon/extcon-adc-jack.h
-+++ b/include/linux/extcon/extcon-adc-jack.h
-@@ -59,7 +59,7 @@ struct adc_jack_pdata {
- 	const char *name;
- 	const char *consumer_channel;
+--- a/drivers/misc/kgdbts.c
++++ b/drivers/misc/kgdbts.c
+@@ -105,19 +105,19 @@
+ #include <linux/module.h>
+ #include <asm/sections.h>
  
--	const enum extcon *cable_names;
-+	const unsigned int *cable_names;
+-#define v1printk(a...) do { \
+-	if (verbose) \
+-		printk(KERN_INFO a); \
+-	} while (0)
+-#define v2printk(a...) do { \
+-	if (verbose > 1) \
+-		printk(KERN_INFO a); \
+-		touch_nmi_watchdog();	\
+-	} while (0)
+-#define eprintk(a...) do { \
+-		printk(KERN_ERR a); \
+-		WARN_ON(1); \
+-	} while (0)
++#define v1printk(a...) do {		\
++	if (verbose)			\
++		printk(KERN_INFO a);	\
++} while (0)
++#define v2printk(a...) do {		\
++	if (verbose > 1)		\
++		printk(KERN_INFO a);	\
++	touch_nmi_watchdog();		\
++} while (0)
++#define eprintk(a...) do {		\
++	printk(KERN_ERR a);		\
++	WARN_ON(1);			\
++} while (0)
+ #define MAX_CONFIG_LEN		40
  
- 	/* The last entry's state should be 0 */
- 	struct adc_jack_cond *adc_conditions;
+ static struct kgdb_io kgdbts_io_ops;
 
 
