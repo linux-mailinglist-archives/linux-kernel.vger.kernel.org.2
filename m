@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E40338AE8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF42F38AE9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238434AbhETMlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:41:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
+        id S241206AbhETMmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:42:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235280AbhETMks (ORCPT
+        with ESMTP id S241955AbhETMlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:40:48 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54DDDC04C3F4;
-        Thu, 20 May 2021 04:56:36 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id g38so22373388ybi.12;
-        Thu, 20 May 2021 04:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XtLuHF6z7UgNsxkYSCkrtjLaJueixWRiunK7AUVux9A=;
-        b=qN+O3tvfeSsZLPGFWfKsDD0t5wX8hic7UDaqW1PTbFTiqWkCLKVuSEV20edtQIPjAN
-         8ahdsffMecVwLQb3sOhht8+/1v+oz1Zu8ehQQzsaMEztz3EMLx4kWewmjns3nhkmuS7O
-         NQTWiNgdD0u6FEpGf/rStUS76awzCsjKTGlh+T3YZa9xYU2dWZePF54jPlXiTMxtl4HX
-         JVP+M78fgBC6X9Nr7Si86QsYWe3V8FZrsQC7c0KVsu5KxByI/VFo6klM+Jkgs6IZVgJL
-         a20AQFnnlNo/LbVdAS2LvnQ59cfbF8WNhHgcHetXpQWZ19EH4hUqT78Ilaq3ruc3WVFG
-         TTjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XtLuHF6z7UgNsxkYSCkrtjLaJueixWRiunK7AUVux9A=;
-        b=eQYZQAdKtAZ3BgI/HMWeqM9nJn8VdPmyL1qXo2Cfz82t/sRwOOL0HVsajZkxloRrRS
-         TXYEIfSxPBD5449Np00O9jeAF/PZeubCSTD9M+87U7L7RyRevcx8sw55mWSSkgaT+dO9
-         287wV0kAt72mdzaKLHFrKQ1QHWMbi72anaVE4p8Is2tjmxJvm8CsIN+1YmtyeHtf+p1W
-         G4L/VYd56axSVkcInNSVSe4IFoaSxIFeUKmK6h91d5/OehmhPnFPNxhMZB7zEfOAypac
-         TDlCxvKzhIZdBtKJbP6WZLbfSrEzLgmxDt7ac7qww0PS0LybfxT+PsqWTWBtsgbBx11q
-         vcKA==
-X-Gm-Message-State: AOAM530rCWbTByfo5ko36hbLSoaf8e2ezyEIM9tS2jfB6BtT3Akv3RrJ
-        0ZBv4edbKxWca/ACZx9+xORXwcpcFm2fRE0LOYM=
-X-Google-Smtp-Source: ABdhPJyBD0p/eM/csawKlA4Hsro6iMvr3JZ8tWIUdHs2En0vB/vTvHKG4rvyyV4uxcS/JoDMWwqONzeiIMIRTk4DXg4=
-X-Received: by 2002:a25:b112:: with SMTP id g18mr6696595ybj.281.1621511795095;
- Thu, 20 May 2021 04:56:35 -0700 (PDT)
+        Thu, 20 May 2021 08:41:25 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21210C0611EA
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:00:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=r9GR7msVdIEp3a4rq9cpsOCHYoC70zlaenAZiGtT+tk=; b=KLQf3eixwTu2GrcJ/dqnzHwq49
+        t22XDmAw5cxkLn18JPDoYk/HBuxipOHK5s66zUsynb/kBtDog3sAkeuEkmiiNEt1KGG9g0Bhk70Q+
+        7oUmoIallZ7meR5UoBvyABv7aQJO/kEYvpt+LO9oYQQgvwQFLZlcj6yCjNR0trsDFesHE7bVK9jag
+        AQX+e96f+xuS0nKsrNG1Ol3JefZL01uq/wYnGYr/yAY6gLNT0YkhpBOl6jl872GovxfGk67/GKwnN
+        6d2VH9unjF6QnxJcTVbMn9cx/m4NBkXIRhAekHL3Z7M1pzeb7CW2prMKHGc34xdBb6Q2XrX5j0A2W
+        NeaYucSg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljhHw-00FwX2-4q; Thu, 20 May 2021 11:57:11 +0000
+Date:   Thu, 20 May 2021 12:56:28 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Aaron Tomlin <atomlin@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        mhocko@suse.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm/page_alloc: bail out on fatal signal during
+ reclaim/compaction retry attempt
+Message-ID: <YKZObDpduqwWi/Zm@casper.infradead.org>
+References: <YKVn69o1UizH0kJD@casper.infradead.org>
+ <20210519201743.3260890-1-atomlin@redhat.com>
+ <20210519213455.97ff95f0124b4120787f8314@linux-foundation.org>
+ <9b11dcd8-bc3b-aae9-feb1-43543bf9e22f@suse.cz>
+ <20210520114257.huqhkqsdrhohn3u5@ava.usersys.com>
 MIME-Version: 1.0
-References: <20210520093949.511471-1-andrew@aj.id.au>
-In-Reply-To: <20210520093949.511471-1-andrew@aj.id.au>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 20 May 2021 13:56:24 +0200
-Message-ID: <CAKXUXMy0CziXXHJBzz8bJBj-wE0f6L1JSK2KuHwBzkbk_F+4iA@mail.gmail.com>
-Subject: Re: [PATCH v2] Documentation: checkpatch: Tweak BIT() macro include
-To:     Andrew Jeffery <andrew@aj.id.au>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        openbmc@lists.ozlabs.org, Jiri Slaby <jirislaby@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520114257.huqhkqsdrhohn3u5@ava.usersys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:40 AM Andrew Jeffery <andrew@aj.id.au> wrote:
->
-> While include/linux/bitops.h brings in the BIT() macro, it was moved to
-> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
-> Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
->
-> Since that commit BIT() has moved again into include/vdso/bits.h via
-> commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
->
-> I think the move to the vDSO header can be considered an implementation
-> detail, so for now update the checkpatch documentation to recommend use
-> of include/linux/bits.h.
->
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Acked-by: Jiri Slaby <jirislaby@kernel.org>
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+On Thu, May 20, 2021 at 12:42:57PM +0100, Aaron Tomlin wrote:
+> On Thu 2021-05-20 12:20 +0200, Vlastimil Babka wrote:
+> > On 5/20/21 6:34 AM, Andrew Morton wrote:
+> > > 
+> > > What observed problems motivated this change?
+> > > 
+> > > What were the observed runtime effects of this change?
+> > 
+> > Yep those details from the previous thread should be included here.
+> 
+> Fair enough.
+> 
+> During kernel crash dump/or vmcore analysis: I discovered in the context of
+> __alloc_pages_slowpath() the value stored in the no_progress_loops variable
+> was found to be 31,611,688 i.e. well above MAX_RECLAIM_RETRIES; and a fatal
+> signal was pending against current.
+
+While this is true, it's not really answering Andrew's question.
+What we want as part of the commit message is something like:
+
+"A customer experienced a low memory situation and sent their task a
+fatal signal.  Instead of dying promptly, it looped in the page
+allocator failing to make progress because ..."
+
+> 
+>      #6 [ffff00002e78f7c0] do_try_to_free_pages+0xe4 at ffff00001028bd24
+>      #7 [ffff00002e78f840] try_to_free_pages+0xe4 at ffff00001028c0f4
+>      #8 [ffff00002e78f900] __alloc_pages_nodemask+0x500 at ffff0000102cd130
+> 
+>                                                              //      w28 = *(sp + 148)      /* no_progress_loops */
+>      0xffff0000102cd1e0 <__alloc_pages_nodemask+0x5b0>:      ldr     w0, [sp,#148]
+>                                                              //      w0 = w0 + 0x1
+>      0xffff0000102cd1e4 <__alloc_pages_nodemask+0x5b4>:      add     w0, w0, #0x1
+>                                                              //      *(sp + 148) = w0
+>      0xffff0000102cd1e8 <__alloc_pages_nodemask+0x5b8>:      str     w0, [sp,#148]
+>                                                              //      if (w0 >= 0x10)
+>                                                              //          goto __alloc_pages_nodemask+0x904
+>      0xffff0000102cd1ec <__alloc_pages_nodemask+0x5bc>:      cmp     w0, #0x10
+>      0xffff0000102cd1f0 <__alloc_pages_nodemask+0x5c0>:      b.gt    0xffff0000102cd534
+> 
+>  - The stack pointer was 0xffff00002e78f900
+> 
+>      crash> p *(int *)(0xffff00002e78f900+148)
+>      $1 = 31611688
+> 
+>      crash> ps 521171
+>         PID    PPID  CPU       TASK        ST  %MEM     VSZ    RSS  COMM
+>      > 521171      1  36  ffff8080e2128800  RU   0.0 34789440  18624  special
+> 
+>      crash> p &((struct task_struct *)0xffff8080e2128800)->signal.shared_pending
+>      $2 = (struct sigpending *) 0xffff80809a416e40
+> 
+>      crash> p ((struct sigpending *)0xffff80809a416e40)->signal.sig[0]
+>      $3 = 0x804100
+> 
+>      crash> sig -s 0x804100
+>      SIGKILL SIGTERM SIGXCPU
+> 
+>      crash> p ((struct sigpending *)0xffff80809a416e40)->signal.sig[0] & 1U << (9 - 1)
+>      $4 = 0x100
+> 
+> 
+> Unfortunately, this incident was not reproduced, to date.
+> 
+> 
+> 
+> 
+> 
+> Kind regards,
+> 
+> -- 
+> Aaron Tomlin
 
 
-Acked-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-
-Jonathan, can you please pick this patch into your doc-next tree? Thanks.
-
-Lukas
-
-> ---
->  Documentation/dev-tools/checkpatch.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
-> index 51fed1bd72ec..59fcc9f627ea 100644
-> --- a/Documentation/dev-tools/checkpatch.rst
-> +++ b/Documentation/dev-tools/checkpatch.rst
-> @@ -472,7 +472,7 @@ Macros, Attributes and Symbols
->
->    **BIT_MACRO**
->      Defines like: 1 << <digit> could be BIT(digit).
-> -    The BIT() macro is defined in include/linux/bitops.h::
-> +    The BIT() macro is defined via include/linux/bits.h::
->
->        #define BIT(nr)         (1UL << (nr))
->
-> --
-> 2.30.2
->
