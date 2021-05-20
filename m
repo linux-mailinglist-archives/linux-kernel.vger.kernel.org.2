@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B893B38AC98
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D01538AC9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242149AbhETLmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:42:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44452 "EHLO mail.kernel.org"
+        id S241859AbhETLmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241130AbhETLVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:21:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E53A613D9;
-        Thu, 20 May 2021 10:11:31 +0000 (UTC)
+        id S241149AbhETLWJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:22:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 99E50613E6;
+        Thu, 20 May 2021 10:11:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505491;
-        bh=pdeOjzT6MVNubvZ/yMLucSYt+bX/RIVGbC6rpXwTb9o=;
+        s=korg; t=1621505494;
+        bh=ucvdEwS9N3zdEKkduSTtwlyI/XRmnJ2wfx/KnKn7nr0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pM06eyQld3EitLhSH9zZGhuadhEuu9UqXZx/cKXwGkQcxj5qDSUoFzDW+/E5pWt0p
-         YEwlI5Zg8+TfwbkGJYmoK/v7BeqDhotp5rWNaleUEqg9yEqIIlzC9QI9TNJq675VSs
-         DEM244RM90htzTei2KxUa0enfN2RxG7+5ju9ba/o=
+        b=uxoc+EENtL237qGRLuncCooVideLHAGN3ArUcLu6Gk3NcRSOrOvcDa5Pmu0FCRUtb
+         Nf6L9H3FShNnJ3/Dg4f3ZxPcvg5ARDGi83sg55+Cc9NDBBSJC8Bj95OKhdg043aPYP
+         AR+FbVGCK0OF37jXqtoftYSlJXUl8CJ41RaMfAWQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        Hugh Dickins <hughd@google.com>,
+        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
+        TOTE Robot <oslab@tsinghua.edu.cn>,
+        Baoquan He <bhe@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 160/190] ksm: fix potential missing rmap_item for stable_node
-Date:   Thu, 20 May 2021 11:23:44 +0200
-Message-Id: <20210520092107.460817694@linuxfoundation.org>
+Subject: [PATCH 4.4 161/190] kernel: kexec_file: fix error return code of kexec_calculate_store_digests()
+Date:   Thu, 20 May 2021 11:23:45 +0200
+Message-Id: <20210520092107.492801926@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -42,55 +43,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miaohe Lin <linmiaohe@huawei.com>
+From: Jia-Ju Bai <baijiaju1990@gmail.com>
 
-[ Upstream commit c89a384e2551c692a9fe60d093fd7080f50afc51 ]
+[ Upstream commit 31d82c2c787d5cf65fedd35ebbc0c1bd95c1a679 ]
 
-When removing rmap_item from stable tree, STABLE_FLAG of rmap_item is
-cleared with head reserved.  So the following scenario might happen: For
-ksm page with rmap_item1:
+When vzalloc() returns NULL to sha_regions, no error return code of
+kexec_calculate_store_digests() is assigned.  To fix this bug, ret is
+assigned with -ENOMEM in this case.
 
-cmp_and_merge_page
-  stable_node->head = &migrate_nodes;
-  remove_rmap_item_from_tree, but head still equal to stable_node;
-  try_to_merge_with_ksm_page failed;
-  return;
-
-For the same ksm page with rmap_item2, stable node migration succeed this
-time.  The stable_node->head does not equal to migrate_nodes now.  For ksm
-page with rmap_item1 again:
-
-cmp_and_merge_page
- stable_node->head != &migrate_nodes && rmap_item->head == stable_node
- return;
-
-We would miss the rmap_item for stable_node and might result in failed
-rmap_walk_ksm().  Fix this by set rmap_item->head to NULL when rmap_item
-is removed from stable tree.
-
-Link: https://lkml.kernel.org/r/20210330140228.45635-5-linmiaohe@huawei.com
-Fixes: 4146d2d673e8 ("ksm: make !merge_across_nodes migration safe")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: Hugh Dickins <hughd@google.com>
+Link: https://lkml.kernel.org/r/20210309083904.24321-1-baijiaju1990@gmail.com
+Fixes: a43cac0d9dc2 ("kexec: split kexec_file syscall code to kexec_file.c")
+Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
+Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
+Acked-by: Baoquan He <bhe@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/ksm.c | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/kexec_file.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/mm/ksm.c b/mm/ksm.c
-index f51613052aee..cafe00dfdc3b 100644
---- a/mm/ksm.c
-+++ b/mm/ksm.c
-@@ -633,6 +633,7 @@ static void remove_rmap_item_from_tree(struct rmap_item *rmap_item)
- 			ksm_pages_shared--;
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index 6030efd4a188..1210cd6bcaa6 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -575,8 +575,10 @@ static int kexec_calculate_store_digests(struct kimage *image)
  
- 		put_anon_vma(rmap_item->anon_vma);
-+		rmap_item->head = NULL;
- 		rmap_item->address &= PAGE_MASK;
+ 	sha_region_sz = KEXEC_SEGMENT_MAX * sizeof(struct kexec_sha_region);
+ 	sha_regions = vzalloc(sha_region_sz);
+-	if (!sha_regions)
++	if (!sha_regions) {
++		ret = -ENOMEM;
+ 		goto out_free_desc;
++	}
  
- 	} else if (rmap_item->address & UNSTABLE_FLAG) {
+ 	desc->tfm   = tfm;
+ 	desc->flags = 0;
 -- 
 2.30.2
 
