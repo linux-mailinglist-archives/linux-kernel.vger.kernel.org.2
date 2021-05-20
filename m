@@ -2,32 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1344838A149
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB7238A150
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:30:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231579AbhETJ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:29:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
+        id S231720AbhETJaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:30:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54220 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232124AbhETJ2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:28:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 052D3613D4;
-        Thu, 20 May 2021 09:26:36 +0000 (UTC)
+        id S231483AbhETJ2G (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:28:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A9096101D;
+        Thu, 20 May 2021 09:26:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502797;
-        bh=NZQEPQYccewLr+VRuJ61RYKbXOqWqPAxAxbdO+r18iY=;
+        s=korg; t=1621502799;
+        bh=lbIRNO1WZCWiKbr/Ifjz8eEMSOpWWxfisLEMvMUDHoE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kLWSrhFrUdl9eNVFUCbycbGD1s0tWrAKK22e4lA1FpquP/1Dvsw3uxNwE2YpJuHbM
-         B9xXTvq0b1RC6HTzUtBlMJbZO+NL/hiT7dyzYanwAqzDwgeiIjc+2DgrqcqefdGV5L
-         udQZbXiYQ3+oLjfp0C5Z0YXzcoo7eDKNQdaEFwv4=
+        b=TrW/NESEvGfreSS20raIgkdHbW/LQEOe4PpFtpH2XXO1b6SfXmQ1YUifr6eCJmbLP
+         PVh4Jh2lVHZLPprN/Xrz2n566Q5gbxuvSD/27Q8DTq8MQkYIYMtYSsEU+iP2yo65EB
+         JUdJbBbuwE8+GmYrhVk8wLAulZ2Mjt2TayzJCxMs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.10 07/47] isdn: capi: fix mismatched prototypes
-Date:   Thu, 20 May 2021 11:22:05 +0200
-Message-Id: <20210520092053.794437463@linuxfoundation.org>
+        stable@vger.kernel.org, Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
+        Eric Dumazet <edumazet@google.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        virtualization@lists.linux-foundation.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 08/47] virtio_net: Do not pull payload in skb->head
+Date:   Thu, 20 May 2021 11:22:06 +0200
+Message-Id: <20210520092053.825306214@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
 References: <20210520092053.559923764@linuxfoundation.org>
@@ -39,56 +44,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Eric Dumazet <edumazet@google.com>
 
-commit 5ee7d4c7fbc9d3119a20b1c77d34003d1f82ac26 upstream.
+[ Upstream commit 0f6925b3e8da0dbbb52447ca8a8b42b371aac7db ]
 
-gcc-11 complains about a prototype declaration that is different
-from the function definition:
+Xuan Zhuo reported that commit 3226b158e67c ("net: avoid 32 x truesize
+under-estimation for tiny skbs") brought  a ~10% performance drop.
 
-drivers/isdn/capi/kcapi.c:724:44: error: argument 2 of type ‘u8 *’ {aka ‘unsigned char *’} declared as a pointer [-Werror=array-parameter=]
-  724 | u16 capi20_get_manufacturer(u32 contr, u8 *buf)
-      |                                        ~~~~^~~
-In file included from drivers/isdn/capi/kcapi.c:13:
-drivers/isdn/capi/kcapi.h:62:43: note: previously declared as an array ‘u8[64]’ {aka ‘unsigned char[64]’}
-   62 | u16 capi20_get_manufacturer(u32 contr, u8 buf[CAPI_MANUFACTURER_LEN]);
-      |                                        ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
-drivers/isdn/capi/kcapi.c:790:38: error: argument 2 of type ‘u8 *’ {aka ‘unsigned char *’} declared as a pointer [-Werror=array-parameter=]
-  790 | u16 capi20_get_serial(u32 contr, u8 *serial)
-      |                                  ~~~~^~~~~~
-In file included from drivers/isdn/capi/kcapi.c:13:
-drivers/isdn/capi/kcapi.h:64:37: note: previously declared as an array ‘u8[8]’ {aka ‘unsigned char[8]’}
-   64 | u16 capi20_get_serial(u32 contr, u8 serial[CAPI_SERIAL_LEN]);
-      |                                  ~~~^~~~~~~~~~~~~~~~~~~~~~~
+The reason for the performance drop was that GRO was forced
+to chain sk_buff (using skb_shinfo(skb)->frag_list), which
+uses more memory but also cause packet consumers to go over
+a lot of overhead handling all the tiny skbs.
 
-Change the definition to make them match.
+It turns out that virtio_net page_to_skb() has a wrong strategy :
+It allocates skbs with GOOD_COPY_LEN (128) bytes in skb->head, then
+copies 128 bytes from the page, before feeding the packet to GRO stack.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+This was suboptimal before commit 3226b158e67c ("net: avoid 32 x truesize
+under-estimation for tiny skbs") because GRO was using 2 frags per MSS,
+meaning we were not packing MSS with 100% efficiency.
+
+Fix is to pull only the ethernet header in page_to_skb()
+
+Then, we change virtio_net_hdr_to_skb() to pull the missing
+headers, instead of assuming they were already pulled by callers.
+
+This fixes the performance regression, but could also allow virtio_net
+to accept packets with more than 128bytes of headers.
+
+Many thanks to Xuan Zhuo for his report, and his tests/help.
+
+Fixes: 3226b158e67c ("net: avoid 32 x truesize under-estimation for tiny skbs")
+Reported-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Link: https://www.spinics.net/lists/netdev/msg731397.html
+Co-Developed-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: virtualization@lists.linux-foundation.org
+Acked-by: Jason Wang <jasowang@redhat.com>
 Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/isdn/capi/kcapi.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/net/virtio_net.c   | 10 +++++++---
+ include/linux/virtio_net.h | 14 +++++++++-----
+ 2 files changed, 16 insertions(+), 8 deletions(-)
 
---- a/drivers/isdn/capi/kcapi.c
-+++ b/drivers/isdn/capi/kcapi.c
-@@ -721,7 +721,7 @@ u16 capi20_put_message(struct capi20_app
-  * Return value: CAPI result code
-  */
+diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+index 038ce4e5e84b..286f836a53bf 100644
+--- a/drivers/net/virtio_net.c
++++ b/drivers/net/virtio_net.c
+@@ -406,9 +406,13 @@ static struct sk_buff *page_to_skb(struct virtnet_info *vi,
+ 	offset += hdr_padded_len;
+ 	p += hdr_padded_len;
  
--u16 capi20_get_manufacturer(u32 contr, u8 *buf)
-+u16 capi20_get_manufacturer(u32 contr, u8 buf[CAPI_MANUFACTURER_LEN])
- {
- 	struct capi_ctr *ctr;
- 	u16 ret;
-@@ -787,7 +787,7 @@ u16 capi20_get_version(u32 contr, struct
-  * Return value: CAPI result code
-  */
+-	copy = len;
+-	if (copy > skb_tailroom(skb))
+-		copy = skb_tailroom(skb);
++	/* Copy all frame if it fits skb->head, otherwise
++	 * we let virtio_net_hdr_to_skb() and GRO pull headers as needed.
++	 */
++	if (len <= skb_tailroom(skb))
++		copy = len;
++	else
++		copy = ETH_HLEN + metasize;
+ 	skb_put_data(skb, p, copy);
  
--u16 capi20_get_serial(u32 contr, u8 *serial)
-+u16 capi20_get_serial(u32 contr, u8 serial[CAPI_SERIAL_LEN])
- {
- 	struct capi_ctr *ctr;
- 	u16 ret;
+ 	if (metasize) {
+diff --git a/include/linux/virtio_net.h b/include/linux/virtio_net.h
+index 98775d7fa696..b465f8f3e554 100644
+--- a/include/linux/virtio_net.h
++++ b/include/linux/virtio_net.h
+@@ -65,14 +65,18 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+ 	skb_reset_mac_header(skb);
+ 
+ 	if (hdr->flags & VIRTIO_NET_HDR_F_NEEDS_CSUM) {
+-		u16 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
+-		u16 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
++		u32 start = __virtio16_to_cpu(little_endian, hdr->csum_start);
++		u32 off = __virtio16_to_cpu(little_endian, hdr->csum_offset);
++		u32 needed = start + max_t(u32, thlen, off + sizeof(__sum16));
++
++		if (!pskb_may_pull(skb, needed))
++			return -EINVAL;
+ 
+ 		if (!skb_partial_csum_set(skb, start, off))
+ 			return -EINVAL;
+ 
+ 		p_off = skb_transport_offset(skb) + thlen;
+-		if (p_off > skb_headlen(skb))
++		if (!pskb_may_pull(skb, p_off))
+ 			return -EINVAL;
+ 	} else {
+ 		/* gso packets without NEEDS_CSUM do not set transport_offset.
+@@ -102,14 +106,14 @@ static inline int virtio_net_hdr_to_skb(struct sk_buff *skb,
+ 			}
+ 
+ 			p_off = keys.control.thoff + thlen;
+-			if (p_off > skb_headlen(skb) ||
++			if (!pskb_may_pull(skb, p_off) ||
+ 			    keys.basic.ip_proto != ip_proto)
+ 				return -EINVAL;
+ 
+ 			skb_set_transport_header(skb, keys.control.thoff);
+ 		} else if (gso_type) {
+ 			p_off = thlen;
+-			if (p_off > skb_headlen(skb))
++			if (!pskb_may_pull(skb, p_off))
+ 				return -EINVAL;
+ 		}
+ 	}
+-- 
+2.30.2
+
 
 
