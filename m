@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD4038AA90
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:14:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8270638AAAB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240273AbhETLPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:15:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52986 "EHLO mail.kernel.org"
+        id S239659AbhETLQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:16:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239322AbhETKyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:54:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A35DA61CD9;
-        Thu, 20 May 2021 10:01:12 +0000 (UTC)
+        id S239332AbhETKys (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:54:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D748B61CDE;
+        Thu, 20 May 2021 10:01:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504873;
-        bh=W0/dNqm/kaKCm1AGdTHFv975kkgTSR20LvHF+6GkFLI=;
+        s=korg; t=1621504875;
+        bh=XmTnRO0tUxq1mQAVmgbpfEFX1Y1/wMsQYo/kVpIRatg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oj9DQpSOvef82GT5kZsHx/GQ8xCAogkpFlxKGJE3qOedlKREFmBg0eOmwPkct2sLo
-         NegLZTTIqZpqCEwzv5KMDDTeIXXF8lCHL26bQkfZH/FzKkP/amqScwIqSgUH+desMb
-         YFC1rHtRWkEZWdiMCDeDr5z5GNlrG7bZxO88hEvM=
+        b=Rb9ZLcx4rU4hBJNq2lTN0OgRiDqa0WGYZt3jbj4GzPNHhkZEzYTP0oZs3DWA4/er9
+         KkTgk4Nd62vGJq9Agd8QDoPCmB5Lkia12if4hNj1YH65UPjZY+h02m7gUHoNpx4IQI
+         Vdw9c04JMbnG4+OKz3YxIEsGAhw2JrURHZQYg2fE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 120/240] Drivers: hv: vmbus: Increase wait time for VMbus unload
-Date:   Thu, 20 May 2021 11:21:52 +0200
-Message-Id: <20210520092112.694255937@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>,
+        syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 121/240] ttyprintk: Add TTY hangup callback.
+Date:   Thu, 20 May 2021 11:21:53 +0200
+Message-Id: <20210520092112.726583376@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,96 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Michael Kelley <mikelley@microsoft.com>
+From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
 
-[ Upstream commit 77db0ec8b7764cb9b09b78066ebfd47b2c0c1909 ]
+[ Upstream commit c0070e1e60270f6a1e09442a9ab2335f3eaeaad2 ]
 
-When running in Azure, disks may be connected to a Linux VM with
-read/write caching enabled. If a VM panics and issues a VMbus
-UNLOAD request to Hyper-V, the response is delayed until all dirty
-data in the disk cache is flushed.  In extreme cases, this flushing
-can take 10's of seconds, depending on the disk speed and the amount
-of dirty data. If kdump is configured for the VM, the current 10 second
-timeout in vmbus_wait_for_unload() may be exceeded, and the UNLOAD
-complete message may arrive well after the kdump kernel is already
-running, causing problems.  Note that no problem occurs if kdump is
-not enabled because Hyper-V waits for the cache flush before doing
-a reboot through the BIOS/UEFI code.
+syzbot is reporting hung task due to flood of
 
-Fix this problem by increasing the timeout in vmbus_wait_for_unload()
-to 100 seconds. Also output periodic messages so that if anyone is
-watching the serial console, they won't think the VM is completely
-hung.
+  tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
+           port->count);
 
-Fixes: 911e1987efc8 ("Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload")
-Signed-off-by: Michael Kelley <mikelley@microsoft.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Link: https://lore.kernel.org/r/1618894089-126662-1-git-send-email-mikelley@microsoft.com
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
+message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
+decrementing port->count due to tty_hung_up_p() == true.
+
+----------
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+	int i;
+	int fd[10];
+
+	for (i = 0; i < 10; i++)
+		fd[i] = open("/dev/ttyprintk", O_WRONLY);
+	ioctl(fd[0], TIOCVHANGUP);
+	for (i = 0; i < 10; i++)
+		close(fd[i]);
+	close(open("/dev/ttyprintk", O_WRONLY));
+	return 0;
+}
+----------
+
+When TTY hangup happens, port->count needs to be reset via
+"struct tty_operations"->hangup callback.
+
+[1] https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
+
+Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
+Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
+Link: https://lore.kernel.org/r/17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/hv/channel_mgmt.c | 30 +++++++++++++++++++++++++-----
- 1 file changed, 25 insertions(+), 5 deletions(-)
+ drivers/char/ttyprintk.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
-index 7bf5e2fe1751..60c122b355ea 100644
---- a/drivers/hv/channel_mgmt.c
-+++ b/drivers/hv/channel_mgmt.c
-@@ -675,6 +675,12 @@ static void init_vp_index(struct vmbus_channel *channel, u16 dev_type)
- 	channel->target_vp = hv_context.vp_index[cur_cpu];
+diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
+index 774748497ace..e56ac5adb5fc 100644
+--- a/drivers/char/ttyprintk.c
++++ b/drivers/char/ttyprintk.c
+@@ -159,12 +159,23 @@ static int tpk_ioctl(struct tty_struct *tty,
+ 	return 0;
  }
  
-+#define UNLOAD_DELAY_UNIT_MS	10		/* 10 milliseconds */
-+#define UNLOAD_WAIT_MS		(100*1000)	/* 100 seconds */
-+#define UNLOAD_WAIT_LOOPS	(UNLOAD_WAIT_MS/UNLOAD_DELAY_UNIT_MS)
-+#define UNLOAD_MSG_MS		(5*1000)	/* Every 5 seconds */
-+#define UNLOAD_MSG_LOOPS	(UNLOAD_MSG_MS/UNLOAD_DELAY_UNIT_MS)
++/*
++ * TTY operations hangup function.
++ */
++static void tpk_hangup(struct tty_struct *tty)
++{
++	struct ttyprintk_port *tpkp = tty->driver_data;
 +
- static void vmbus_wait_for_unload(void)
- {
- 	int cpu;
-@@ -692,12 +698,17 @@ static void vmbus_wait_for_unload(void)
- 	 * vmbus_connection.unload_event. If not, the last thing we can do is
- 	 * read message pages for all CPUs directly.
- 	 *
--	 * Wait no more than 10 seconds so that the panic path can't get
--	 * hung forever in case the response message isn't seen.
-+	 * Wait up to 100 seconds since an Azure host must writeback any dirty
-+	 * data in its disk cache before the VMbus UNLOAD request will
-+	 * complete. This flushing has been empirically observed to take up
-+	 * to 50 seconds in cases with a lot of dirty data, so allow additional
-+	 * leeway and for inaccuracies in mdelay(). But eventually time out so
-+	 * that the panic path can't get hung forever in case the response
-+	 * message isn't seen.
- 	 */
--	for (i = 0; i < 1000; i++) {
-+	for (i = 1; i <= UNLOAD_WAIT_LOOPS; i++) {
- 		if (completion_done(&vmbus_connection.unload_event))
--			break;
-+			goto completed;
- 
- 		for_each_online_cpu(cpu) {
- 			page_addr = hv_context.synic_message_page[cpu];
-@@ -717,9 +728,18 @@ static void vmbus_wait_for_unload(void)
- 			vmbus_signal_eom(msg, message_type);
- 		}
- 
--		mdelay(10);
-+		/*
-+		 * Give a notice periodically so someone watching the
-+		 * serial output won't think it is completely hung.
-+		 */
-+		if (!(i % UNLOAD_MSG_LOOPS))
-+			pr_notice("Waiting for VMBus UNLOAD to complete\n");
++	tty_port_hangup(&tpkp->port);
++}
 +
-+		mdelay(UNLOAD_DELAY_UNIT_MS);
- 	}
-+	pr_err("Continuing even though VMBus UNLOAD did not complete\n");
+ static const struct tty_operations ttyprintk_ops = {
+ 	.open = tpk_open,
+ 	.close = tpk_close,
+ 	.write = tpk_write,
+ 	.write_room = tpk_write_room,
+ 	.ioctl = tpk_ioctl,
++	.hangup = tpk_hangup,
+ };
  
-+completed:
- 	/*
- 	 * We're crashing and already got the UNLOAD_RESPONSE, cleanup all
- 	 * maybe-pending messages on all CPUs to be able to receive new
+ static const struct tty_port_operations null_ops = { };
 -- 
 2.30.2
 
