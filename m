@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7994C38AC7C
+	by mail.lfdr.de (Postfix) with ESMTP id C318E38AC7D
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242776AbhETLkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:40:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39586 "EHLO mail.kernel.org"
+        id S240387AbhETLke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:40:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241000AbhETLTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:19:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D859613E5;
-        Thu, 20 May 2021 10:10:43 +0000 (UTC)
+        id S241005AbhETLTu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:19:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A550D6195D;
+        Thu, 20 May 2021 10:10:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505443;
-        bh=UuI6kqth4+CJXrv9i+pQbcCa85wGcLTvm3qUCtZsltg=;
+        s=korg; t=1621505446;
+        bh=nTm8LRrpyUZP5X3dXoiOauWMZOqsahfD2+SgGSn6TW0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kUOUSuL5RLCA/ad/ZAt+h/Nqf3pcASr5fG546l2R2jW6u6bJ1aX2ZBoAUmkRIkgrL
-         rf+h5wnj1B+j75Huzuxx71fae0eTY9z3KZg2MILQInwrpjweB+TKyzKbYuos+ALMMI
-         fQDX31WyExF0ZbQzUpQVGbNJ7VCClUbkKXwz1hao=
+        b=VnLKF9vLJC2Sp/lyCDnIdszHIVI+StYrPyFJ3L3TMJmOYmY7CGTwY5s1x7zDO8Y2o
+         dKu3XIvAgf1Nw/wbohbG2MP/zXwyrrXgrezX2dxKCoEI7cO4tKAe3/wbvdW3keigFR
+         DhbMT5mK8dxRUIQXlYtFpvqJ6CAu5i/RUxTLEruk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jonathan McDowell <noodles@earth.li>,
-        "David S. Miller" <davem@davemloft.net>,
+        stable@vger.kernel.org, Takashi Iwai <tiwai@suse.de>,
+        Tong Zhang <ztong0001@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 137/190] net: stmmac: Set FIFO sizes for ipq806x
-Date:   Thu, 20 May 2021 11:23:21 +0200
-Message-Id: <20210520092106.723994761@linuxfoundation.org>
+Subject: [PATCH 4.4 138/190] ALSA: hdsp: dont disable if not enabled
+Date:   Thu, 20 May 2021 11:23:22 +0200
+Message-Id: <20210520092106.755692975@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -40,42 +40,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan McDowell <noodles@earth.li>
+From: Tong Zhang <ztong0001@gmail.com>
 
-[ Upstream commit e127906b68b49ddb3ecba39ffa36a329c48197d3 ]
+[ Upstream commit 507cdb9adba006a7798c358456426e1aea3d9c4f ]
 
-Commit eaf4fac47807 ("net: stmmac: Do not accept invalid MTU values")
-started using the TX FIFO size to verify what counts as a valid MTU
-request for the stmmac driver.  This is unset for the ipq806x variant.
-Looking at older patches for this it seems the RX + TXs buffers can be
-up to 8k, so set appropriately.
+hdsp wants to disable a not enabled pci device, which makes kernel
+throw a warning. Make sure the device is enabled before calling disable.
 
-(I sent this as an RFC patch in June last year, but received no replies.
-I've been running with this on my hardware (a MikroTik RB3011) since
-then with larger MTUs to support both the internal qca8k switch and
-VLANs with no problems. Without the patch it's impossible to set the
-larger MTU required to support this.)
+[    1.758292] snd_hdsp 0000:00:03.0: disabling already-disabled device
+[    1.758327] WARNING: CPU: 0 PID: 180 at drivers/pci/pci.c:2146 pci_disable_device+0x91/0xb0
+[    1.766985] Call Trace:
+[    1.767121]  snd_hdsp_card_free+0x94/0xf0 [snd_hdsp]
+[    1.767388]  release_card_device+0x4b/0x80 [snd]
+[    1.767639]  device_release+0x3b/0xa0
+[    1.767838]  kobject_put+0x94/0x1b0
+[    1.768027]  put_device+0x13/0x20
+[    1.768207]  snd_card_free+0x61/0x90 [snd]
+[    1.768430]  snd_hdsp_probe+0x524/0x5e0 [snd_hdsp]
 
-Signed-off-by: Jonathan McDowell <noodles@earth.li>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Suggested-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+Link: https://lore.kernel.org/r/20210321153840.378226-2-ztong0001@gmail.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/pci/rme9652/hdsp.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-index ee5a7c05a0e6..f1eb9f99076a 100644
---- a/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-ipq806x.c
-@@ -361,6 +361,8 @@ static int ipq806x_gmac_probe(struct platform_device *pdev)
- 	plat_dat->bsp_priv = gmac;
- 	plat_dat->fix_mac_speed = ipq806x_gmac_fix_mac_speed;
- 	plat_dat->multicast_filter_bins = 0;
-+	plat_dat->tx_fifo_size = 8192;
-+	plat_dat->rx_fifo_size = 8192;
+diff --git a/sound/pci/rme9652/hdsp.c b/sound/pci/rme9652/hdsp.c
+index dd6c9e6a1d53..4128c04fbfde 100644
+--- a/sound/pci/rme9652/hdsp.c
++++ b/sound/pci/rme9652/hdsp.c
+@@ -5314,7 +5314,8 @@ static int snd_hdsp_free(struct hdsp *hdsp)
+ 	if (hdsp->port)
+ 		pci_release_regions(hdsp->pci);
  
- 	return stmmac_dvr_probe(&pdev->dev, plat_dat, &stmmac_res);
+-	pci_disable_device(hdsp->pci);
++	if (pci_is_enabled(hdsp->pci))
++		pci_disable_device(hdsp->pci);
+ 	return 0;
  }
+ 
 -- 
 2.30.2
 
