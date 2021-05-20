@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EAC038AF79
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:00:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42D1438AF73
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243291AbhETNBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34074 "EHLO
+        id S235797AbhETNA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:00:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243518AbhETNAA (ORCPT
+        with ESMTP id S243534AbhETNAC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:00:00 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF54EC07E5F1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:50 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id v12so17468192wrq.6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:50 -0700 (PDT)
+        Thu, 20 May 2021 09:00:02 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDC4CC07E5F2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:51 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id h4so17431482wrt.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:25:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=iWHHZenPdXEGjTL4o2YmW5+QSRDXwgRTW/XSnJQGVco=;
-        b=Wv/FFniBNiTi3NdT00spzpZydJDt/XAfKmCPOCuTPf+PxaznjZQf0u4dBpni3cNQ82
-         sbFEKjFWtCu5zDKAldhRr7/OnxynVJaIiY8hwv0kA9QhidUq8dDcnQf1JpDN2Nno/Cqj
-         Ai5OXXSMidPQ9wr+XD+wjFR9O6+WOb/1QWEbZz7bRIVFqqOfS3ShXjn5YUnhNWw/4+KB
-         xxl3s2vjXFPzkeIarws9UWaIZA+d3JNOXImfqu7QrKnHlbtmdHxoXICSLFstbOkNfnte
-         5y9jEJhMdABOX5SQopMZumsmNBvrfYNGkODSbxiwdZOUf07n9E4gSyYoQSWpZiaNXB+v
-         eeoQ==
+        bh=Iake2F5SCqL96uP7ue4UGSnXZRKlzS1m33y5dac9NCQ=;
+        b=oDFTfAAAWe1ZccivV9vnUbldHQghKuaYh75rny/yV4nmtno8d05eavadzGyGqJbhg5
+         bIhmDo5beDOYKUM0xCZKhT7cWw6XZOqpJ3LlkeUPmN/wx9w3rBns6zoxTXBsDeHxYrOA
+         98vJwg4Ai42N7ZxorY4kQKVHcGRZcnw3bx0zLDoJF9g+i0BPszT0CQbhmdheSp56jz4h
+         tdgyN4Rnuya/RsCTNrm9REX1XwC41GZHWIVikyXyS15iS2HcURA8jg/zd66XAKKaBEqz
+         tcIcB4lnZyMw29FsdAc+9phu/LDJj4UuFlLT3C98crUHMfqD/aezKyqckbXT+X5K4HKr
+         zmAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=iWHHZenPdXEGjTL4o2YmW5+QSRDXwgRTW/XSnJQGVco=;
-        b=UwK0cjYTwYp7UaTv0mcc8zMnw+MGYfOolQRAJO81yOhbfMNCuWQeDw7pIRp0F35lh7
-         Zc5hcIUdkNwCpqNoQmw0MO65m19L7aGF3v3hFxbpWwqUSDwqlcnCDXRW8bAflSSSX92y
-         Nnba/Jsc1KE333BKq1bzT9SQxAxYMTXrUn1tNz4Nj2SXsuvWEscYp6kimmKeHs0TIzii
-         cJmWSdb+tG2KQiMlHFMJ280d1rOK6ag+Kii1qPmKNeBaB6g5Vp2C92zMO9834cjjiVYL
-         kkSWakHd2ZXDdxMILlyU89k6YjJtBKx99Qb585HRDKp927j9BQ4FG0WPYU0hBlSbwQw+
-         W+Bw==
-X-Gm-Message-State: AOAM5316xOYvBWxPwguyprUCN/oqrB/P8auilX3f/XaRFBL5QQTaCHkI
-        rNJ8pbCHxFOpS2FBKCKyo/ty3w==
-X-Google-Smtp-Source: ABdhPJwBxKu75VlpsTqLdiKp9VQFXNmc9V8U4BbkTTnCMt8V8X2STFodB9ClocabOvdQHewb1qliKw==
-X-Received: by 2002:a5d:5250:: with SMTP id k16mr4015113wrc.211.1621513549344;
-        Thu, 20 May 2021 05:25:49 -0700 (PDT)
+        bh=Iake2F5SCqL96uP7ue4UGSnXZRKlzS1m33y5dac9NCQ=;
+        b=CEVIrgjVXeWRcTlSvTYHeL9Op1Y9V9hGpcMdc87MLzozpQtPjO2mzqhFLo5AK9TV4D
+         663AaqX1NtXmMSeJSNxUFI5cFXP+q9Xva2isMOejcu8VOUC6Pqby963Fzl4Be2VhRCDP
+         VFry7JHf581D+UC8k/wOwfhOLu/roOODDTMWjfbqlPobs4ozf5J7GcgpEi3+mZjuRjEJ
+         JnJRHFok1rnatdB4+bOtfDt+ugQmHdTFvSPW4dB2mTedqRPkFXE4xSh7wrI+/Cj3tlff
+         RAMayerN3GWcddhemrLhpRbbVo4e++uWUpJLdUHBqzHz7Wjys3rR226Fi5mw4WvtAWN2
+         KnEA==
+X-Gm-Message-State: AOAM533AeGvumPLTVSw5VFHBRPysgCYkn0pwNq34AcZko9RlOJtw9Wnr
+        wtbKJ72kxI+zYTaU0fGK0W/ncw==
+X-Google-Smtp-Source: ABdhPJyw/pJKuyjGhmfBWQzQ095HIZL4gldZsVBTphZkrJrj9Hn0Sp0waI2jo1RWYamFVis+mj/7Mw==
+X-Received: by 2002:a05:6000:180e:: with SMTP id m14mr4035783wrh.229.1621513550423;
+        Thu, 20 May 2021 05:25:50 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id i11sm3205643wrq.26.2021.05.20.05.25.48
+        by smtp.gmail.com with ESMTPSA id i11sm3205643wrq.26.2021.05.20.05.25.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:25:48 -0700 (PDT)
+        Thu, 20 May 2021 05:25:49 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
         H Hartley Sweeten <hsweeten@visionengravers.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        "J.P. Mellor" <jpmellor@rose-hulman.edu>,
-        Herman.Bruyninckx@mech.kuleuven.ac.be,
-        Wim.Meeussen@mech.kuleuven.ac.be,
-        Klaas.Gadeyne@mech.kuleuven.ac.be, Comedi <comedi@comedi.org>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        "Spencer E. Olson" <olsonse@umich.edu>,
         linux-staging@lists.linux.dev
-Subject: [PATCH 3/6] comedi: drivers: ni_tio: Fix slightly broken kernel-doc and demote others
-Date:   Thu, 20 May 2021 13:25:35 +0100
-Message-Id: <20210520122538.3470259-4-lee.jones@linaro.org>
+Subject: [PATCH 4/6] comedi: drivers: ni_routes: Demote non-conforming kernel-doc headers
+Date:   Thu, 20 May 2021 13:25:36 +0100
+Message-Id: <20210520122538.3470259-5-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520122538.3470259-1-lee.jones@linaro.org>
 References: <20210520122538.3470259-1-lee.jones@linaro.org>
@@ -73,64 +70,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/staging/comedi/drivers/ni_tio.c:1515: warning: Function parameter or member 'counter_dev' not described in 'ni_tio_get_routing'
- drivers/staging/comedi/drivers/ni_tio.c:1515: warning: Function parameter or member 'dest' not described in 'ni_tio_get_routing'
- drivers/staging/comedi/drivers/ni_tio.c:1515: warning: expecting prototype for Retrieves the register value of the current source of the output selector for(). Prototype was for ni_tio_get_routing() instead
- drivers/staging/comedi/drivers/ni_tio.c:1544: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
- drivers/staging/comedi/drivers/ni_tio.c:1584: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/staging/comedi/drivers/ni_routes.c:249: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ drivers/staging/comedi/drivers/ni_routes.c:398: warning: Function parameter or member 'routes' not described in 'ni_route_set_has_source'
+ drivers/staging/comedi/drivers/ni_routes.c:398: warning: Function parameter or member 'source' not described in 'ni_route_set_has_source'
+ drivers/staging/comedi/drivers/ni_routes.c:524: warning: Function parameter or member 'src_sel_reg_value' not described in 'ni_find_route_source'
+ drivers/staging/comedi/drivers/ni_routes.c:524: warning: Function parameter or member 'dest' not described in 'ni_find_route_source'
+ drivers/staging/comedi/drivers/ni_routes.c:524: warning: Function parameter or member 'tables' not described in 'ni_find_route_source'
 
 Cc: Ian Abbott <abbotti@mev.co.uk>
 Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Mori Hess <fmhess@users.sourceforge.net>
-Cc: "J.P. Mellor" <jpmellor@rose-hulman.edu>
-Cc: Herman.Bruyninckx@mech.kuleuven.ac.be
-Cc: Wim.Meeussen@mech.kuleuven.ac.be
-Cc: Klaas.Gadeyne@mech.kuleuven.ac.be
-Cc: Comedi <comedi@comedi.org>
+Cc: "Alexander A. Klimov" <grandmaster@al2klimov.de>
+Cc: "Spencer E. Olson" <olsonse@umich.edu>
 Cc: linux-staging@lists.linux.dev
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/comedi/drivers/ni_tio.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/comedi/drivers/ni_routes.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/comedi/drivers/ni_tio.c b/drivers/comedi/drivers/ni_tio.c
-index f6154addaa956..da6826d77e600 100644
---- a/drivers/comedi/drivers/ni_tio.c
-+++ b/drivers/comedi/drivers/ni_tio.c
-@@ -1501,7 +1501,7 @@ int ni_tio_insn_config(struct comedi_device *dev,
+diff --git a/drivers/comedi/drivers/ni_routes.c b/drivers/comedi/drivers/ni_routes.c
+index 1f2aa3b239a0d..f0f8cd424b309 100644
+--- a/drivers/comedi/drivers/ni_routes.c
++++ b/drivers/comedi/drivers/ni_routes.c
+@@ -245,7 +245,7 @@ unsigned int ni_get_valid_routes(const struct ni_route_tables *tables,
  }
- EXPORT_SYMBOL_GPL(ni_tio_insn_config);
+ EXPORT_SYMBOL_GPL(ni_get_valid_routes);
  
 -/**
 +/*
-  * Retrieves the register value of the current source of the output selector for
-  * the given destination.
-  *
-@@ -1541,10 +1541,10 @@ int ni_tio_get_routing(struct ni_gpct_device *counter_dev, unsigned int dest)
- EXPORT_SYMBOL_GPL(ni_tio_get_routing);
- 
- /**
-- * Sets the register value of the selector MUX for the given destination.
-- * @counter_dev:Pointer to general counter device.
-- * @destination:Device-global identifier of route destination.
-- * @register_value:
-+ * ni_tio_set_routing() - Sets the register value of the selector MUX for the given destination.
-+ * @counter_dev: Pointer to general counter device.
-+ * @dest:        Device-global identifier of route destination.
-+ * @reg:
-  *		The first several bits of this value should store the desired
-  *		value to write to the register.  All other bits are for
-  *		transmitting information that modify the mode of the particular
-@@ -1580,7 +1580,7 @@ int ni_tio_set_routing(struct ni_gpct_device *counter_dev, unsigned int dest,
+  * List of NI global signal names that, as destinations, are only routeable
+  * indirectly through the *_arg elements of the comedi_cmd structure.
+  */
+@@ -387,7 +387,7 @@ ni_find_route_set(const int destination,
  }
- EXPORT_SYMBOL_GPL(ni_tio_set_routing);
+ EXPORT_SYMBOL_GPL(ni_find_route_set);
  
 -/**
 +/*
-  * Sets the given destination MUX to its default value or disable it.
+  * ni_route_set_has_source() - Determines whether the given source is in
+  *			       included given route_set.
   *
-  * Return: 0 if successful; -EINVAL if terminal is unknown.
+@@ -506,7 +506,7 @@ s8 ni_route_to_register(const int src, const int dest,
+ }
+ EXPORT_SYMBOL_GPL(ni_route_to_register);
+ 
+-/**
++/*
+  * ni_find_route_source() - Finds the signal source corresponding to a signal
+  *			    route (src-->dest) of the specified routing register
+  *			    value and the specified route destination on the
 -- 
 2.31.1
 
