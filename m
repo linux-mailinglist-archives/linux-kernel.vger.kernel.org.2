@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7199138ACC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 747F838AC20
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:34:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242589AbhETLra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:47:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44410 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241656AbhETLZR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:25:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB0DC61DA1;
-        Thu, 20 May 2021 10:12:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505575;
-        bh=YpRFGTAE4g5Za+BUms+4PFtNjTmWeJ/ILzmlQjeRLlU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QdTPn6HNFE74W0nnU4Cr6Fvh70tNL+984HkNArhEBv5K6dwjBGJoGXsPobqRM8AO3
-         UggqJ62YC5qNeLT19YYJWgLWkbeoODNMG6Hiz3BieAkmwhh63sOsj+C+qqYKVpLPnx
-         cYSKRtHdqrHI6MLerKYFie57SR41kJAPTCh1nxyE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Stable@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Subject: [PATCH 4.4 190/190] iio: tsl2583: Fix division by a zero lux_val
-Date:   Thu, 20 May 2021 11:24:14 +0200
-Message-Id: <20210520092108.447707916@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
-References: <20210520092102.149300807@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S241870AbhETLeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:34:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240033AbhETLNU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:13:20 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F864C028020;
+        Thu, 20 May 2021 03:00:50 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id l70so11498529pga.1;
+        Thu, 20 May 2021 03:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T08PDvJ5aWhDHE7UN2bq23pqqz017tvRN2/y5Yo5lkU=;
+        b=kR4voAyfac4Y9JkSDlCiXBERU/mdOJchqPpyDcLAZ8XVsEWuJBqC1P0EBQAsXdrHxc
+         Zv8r5lUXQ+GO+bcvKXdm6envSVjmBUU6w0lRyg6465y+TI35BTKe10SDXs9qCIpEAjyW
+         mWzQiEK1DsyqY/V9PM8iVEFTDfVvwA9pRg9bPziqYD9E3/4c1D5hfteiT89fX/DUHvy0
+         RRfxOCoD0jg5Yj1kDecYqkqxRn+GsxalX6wDauLMAh7joDDN5f+9c1zJm9P+9myUFs+N
+         YBgmH2D/xpHlRQdhbVBvvCbdKzma463UhMHvrlOv2fqx+n4Vtu9kjPFHmb7jgHi54ris
+         7Rdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=T08PDvJ5aWhDHE7UN2bq23pqqz017tvRN2/y5Yo5lkU=;
+        b=Z5fKK3sPg76vRdVsVZtSedC1OCMDlZ1kSzv0tjiOj6YenvdyhRrpOAjHzvE6qUlkqi
+         dh5OhRRX4EPmRU9HkkDD3Y2422xokwXq/+l4h9FIN/UZPGvq6gOlo0xhIU/qO/LEA+kJ
+         tHKHfHin255w32nRmJaKWYNw1hFm/kM3uOPEnSq98JXmUoHhoCzkyrhbrug2oS4Szkbm
+         QUtHDwF98mN/xRto86OWfiWrjoF/MUXohkCYPcFeW67O5JocjX7SrmwBsyeb1CAukjbW
+         /Bi4Wrh7Tpfcz/N3nFt4BBhN5Uv9+8toSKgIk1Vw0DUdk+XszBWk0kRMI+NNpyLJsajz
+         jMtg==
+X-Gm-Message-State: AOAM531EYynrQmtLbCCUTrtZbd2MiWkFtBXUnkahdN1FT+YEF9at9N2M
+        UfdHOPABaDStWJlbGm2xoY7PLXub3Givfw==
+X-Google-Smtp-Source: ABdhPJxKwg1X6fMTC6AGAtOdB/casyKbH46SR2l+fASHySSu4WZdcMTtroyNoGSrOu3Yq5B6b6ouaw==
+X-Received: by 2002:a63:368f:: with SMTP id d137mr304435pga.93.1621504850080;
+        Thu, 20 May 2021 03:00:50 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id j16sm1753853pfi.92.2021.05.20.03.00.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 03:00:49 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     adrian.hunter@intel.com, riteshh@codeaurora.org,
+        asutoshd@codeaurora.org, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: cqhci: use data instead of mrq parameter from cqhci_dma_map()
+Date:   Thu, 20 May 2021 18:00:36 +0800
+Message-Id: <20210520100036.2195-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Yue Hu <huyue2@yulong.com>
 
-commit af0e1871d79cfbb91f732d2c6fa7558e45c31038 upstream.
+cqhci_dma_map() will be only called by cqhci_prep_tran_desc() which
+already has 'mrq->data'.
 
-The lux_val returned from tsl2583_get_lux can potentially be zero,
-so check for this to avoid a division by zero and an overflowed
-gain_trim_val.
-
-Fixes clang scan-build warning:
-
-drivers/iio/light/tsl2583.c:345:40: warning: Either the
-condition 'lux_val<0' is redundant or there is division
-by zero at line 345. [zerodivcond]
-
-Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Cc: <Stable@vger.kernel.org>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-[iwamatsu: Change file path.]
-Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Yue Hu <huyue2@yulong.com>
 ---
- drivers/staging/iio/light/tsl2583.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/mmc/host/cqhci-core.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
---- a/drivers/staging/iio/light/tsl2583.c
-+++ b/drivers/staging/iio/light/tsl2583.c
-@@ -378,6 +378,15 @@ static int taos_als_calibrate(struct iio
- 		dev_err(&chip->client->dev, "taos_als_calibrate failed to get lux\n");
- 		return lux_val;
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index 93b0432..e759e3b 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -446,10 +446,9 @@ static void cqhci_prep_task_desc(struct mmc_request *mrq,
  	}
-+
-+	/* Avoid division by zero of lux_value later on */
-+	if (lux_val == 0) {
-+		dev_err(&chip->client->dev,
-+			"%s: lux_val of 0 will produce out of range trim_value\n",
-+			__func__);
-+		return -ENODATA;
-+	}
-+
- 	gain_trim_val = (unsigned int) (((chip->taos_settings.als_cal_target)
- 			* chip->taos_settings.als_gain_trim) / lux_val);
+ }
  
-
+-static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
++static int cqhci_dma_map(struct mmc_host *host, struct mmc_data *data)
+ {
+ 	int sg_count;
+-	struct mmc_data *data = mrq->data;
+ 
+ 	if (!data)
+ 		return -EINVAL;
+@@ -499,7 +498,7 @@ static int cqhci_prep_tran_desc(struct mmc_request *mrq,
+ 	u8 *desc;
+ 	struct scatterlist *sg;
+ 
+-	sg_count = cqhci_dma_map(mrq->host, mrq);
++	sg_count = cqhci_dma_map(mrq->host, data);
+ 	if (sg_count < 0) {
+ 		pr_err("%s: %s: unable to map sg lists, %d\n",
+ 				mmc_hostname(mrq->host), __func__, sg_count);
+-- 
+1.9.1
 
