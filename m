@@ -2,114 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ADE338AEF0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:47:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7CB38AEF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:47:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242873AbhETMsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:48:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59956 "EHLO
+        id S242900AbhETMsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:48:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242888AbhETMrD (ORCPT
+        with ESMTP id S242924AbhETMrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:47:03 -0400
+        Thu, 20 May 2021 08:47:08 -0400
 Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73881C0610E4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:08:24 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so5295306wmk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:08:24 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BA9DC0610E6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:08:25 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id b7so8440927wmh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:08:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Dn893ZzVrKXxQGRxEGsSD/9iX3yhc8jm1WEGCUx35vg=;
-        b=S2Y9j+cYl2OkQaVFtUSIfETQKvk5W+SxbVM6ZZKlawNxttmj07hBNPMvlWpIHxTFMF
-         GYszHT/Q6x1xgChKP7CkdcIYxpZab0aEzADi87JtO4GpFiBiQFnCM1f0aVjDd4LCrw9Q
-         /Ew90g8H9IIMwSjmuwWtk7h//osuy7ogeoUIw7Wy9yockiD9GTg4HjIaMYi8jT1g7DfW
-         64aGVyJWb22bFwqruMCm7qrKAs+rMgqrT2iX/+X9vc0RTsH7A2AJJhzrp83WnD3iZXof
-         y1Qk90ZPVu5dTkuqNoXmC9u9f9DdSc5KX2tH7zuy51BELt3SZFXQkI3tcKpmwj5E64qa
-         dbRw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oCVCX80G9lI3O3DeFSFdWNKU1XN0pA4zwW94RZh137s=;
+        b=DnovUsZrtkLnNIXfVzFMlXamimyl3QsLUj3BLuCSCi6P7s2pHJS+wtg6wFZSPMIZOW
+         tGW5MLIS4HlwPS8tJGwKr1EEyzO2bMzF22qUyq4is1106KZBOnEJBd7ctalV/p1DLtw8
+         ZoGXfcO4Gekv9w1r+yR54P8TUa0cE7d2WjvX1kI3kAJ47GqSKBjjfApHBsq8i1b7ExT/
+         XwYeotY/IxJhHASH1kEHUcYTKmsPcAo5dwvJJQPvLnl1Tsp8HqZGFdXhA+24El9G94A7
+         i7MQVVLWkQQU7UqkYLD5T5Gx12kCsOu1BcdLb6WU7cMSWkn1hagvDWcnBEdDRiNFfyuk
+         tk6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Dn893ZzVrKXxQGRxEGsSD/9iX3yhc8jm1WEGCUx35vg=;
-        b=lvy3UlWoByYoEEysOP4XcuJ8rLCDPah72TZr00gHbjn5qoKk82I2RshR0xcXgcSbhs
-         JbL7iOx4OgZrbH9yNOWut4ehrI89aiPA7bttsAgkKscfbgqsvgmtfl3PCU0aK29FrnQo
-         +FTawnKzIujk+m0c/aYhP9A3G5yEaEQAb3cI7C4eAR/58D3LJNMGMQ2ytz72W1h3Snqh
-         sJnOny52eNTRfJ9kEXWzv19+vDoGfmjUDf/wDcZqNltKHk/KxxP8v+IcvXmysOeEAfVt
-         SKhKMjJLj7HmgaAI1ENxyD/SqI6QTNUMcR5U8ambDX860YyF2eDfAlXXWk05SC16muU4
-         japg==
-X-Gm-Message-State: AOAM53089+NxsM3dJ+dKSIQ0j64Y59HE4v4qEdXjSOl0bKEvnyukjRSy
-        L+Y7fErBnO5gIY8aHkXL9IJfDw==
-X-Google-Smtp-Source: ABdhPJwO3+PzB1jF9H7RuxVvHTa5RqChw/PU+oskvT+RTxWQGEDL9CTAgDEAwPmTTXUr64ng2h445Q==
-X-Received: by 2002:a05:600c:4f48:: with SMTP id m8mr3703078wmq.169.1621512503023;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oCVCX80G9lI3O3DeFSFdWNKU1XN0pA4zwW94RZh137s=;
+        b=JhJE0mZm0ryy2Z0yltGMRjQqEQcPXt+K9SZ9A+sjPFW2uGBtZGOT/PD77AcQzi2TK2
+         CKQkWrufzJ4yyHxcV5eyTSlNiHNviGgM6jMkcWw13cbyo8YsBQt23gFfsrOxdHrvunm/
+         QvK+Mt4l+2L6slEWHtHG82EXZ0Mc4MoG03XBeA/xKuFFGXF4YGDOO8ajU6P+Ag346SMK
+         4kCQlr1Qz9TcKeZjUhQUYAfwH0YoolbksMJPOH4P394+Csl5Ne82UtNIlrUD9T1RSqJC
+         bHokZ5JkYz2MaeI383i+XsOBry+fqGQUiP8AFmo/RCla/SuCxjcVK/II1nfIvfHTcDyg
+         37rQ==
+X-Gm-Message-State: AOAM530ypMPjmSweNKfuR/hihaQbCdh/ElG0GRdlnU1DKy78SHaGXJPh
+        Sm16zVpm/mMSl2Dg36JI1tSVGiKpf+6Szw==
+X-Google-Smtp-Source: ABdhPJxsxO3cMjQOIu2NzIsyrv2mZnjNOFpHFPCLkjEAhYlt/DnCg68LsHAQJE3vvWCRMk1OgPiD7g==
+X-Received: by 2002:a05:600c:19c8:: with SMTP id u8mr3794890wmq.50.1621512503864;
         Thu, 20 May 2021 05:08:23 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id r7sm2237170wmq.18.2021.05.20.05.08.22
+        by smtp.gmail.com with ESMTPSA id r7sm2237170wmq.18.2021.05.20.05.08.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:08:22 -0700 (PDT)
+        Thu, 20 May 2021 05:08:23 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        Kai Svahn <kai.svahn@nokia.com>,
-        Keshava Munegowda <keshava_mgowda@ti.com>,
-        Kumar Sanghvi <kumar.sanghvi@stericsson.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
         Mark Brown <broonie@opensource.wolfsonmicro.com>,
-        Mattias Nilsson <mattias.i.nilsson@stericsson.com>,
-        patches@opensource.cirrus.com, Roger Quadros <rogerq@ti.com>,
-        Sundar Iyer <sundar.iyer@stericsson.com>,
-        syed khasim <x0khasim@ti.com>, Tony Lindgren <tony@atomide.com>
-Subject: [PATCH 0/7] Rid W=1 warnings from MFD
-Date:   Thu, 20 May 2021 13:08:13 +0100
-Message-Id: <20210520120820.3465562-1-lee.jones@linaro.org>
+        patches@opensource.cirrus.com
+Subject: [PATCH 1/7] mfd: wm831x-core: Fix incorrect function name wm831x_reg_unlock()
+Date:   Thu, 20 May 2021 13:08:14 +0100
+Message-Id: <20210520120820.3465562-2-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210520120820.3465562-1-lee.jones@linaro.org>
+References: <20210520120820.3465562-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This set is part of a larger effort attempting to clean-up W=1
-kernel builds, which are currently overwhelmingly riddled with
-niggly little warnings.
+Fixes the following W=1 kernel build warning(s):
 
-Lee Jones (7):
-  mfd: wm831x-core: Fix incorrect function name wm831x_reg_unlock()
-  mfd: twl-core: Fix incorrect function name twl_regcache_bypass()
-  mfd: db8500-prcmu: Fix multiple incorrectly documented function names
-  mfd: omap-usb-host: File headers are not good candidates for
-    kernel-doc
-  mfd: omap-usb-tll: File headers are not good candidates for kernel-doc
-  mfd: si476x-cmd: Fix a bunch of incorrectly documented function names
-  mfd: si476x-i2c: Fix incorrectly documented function names
+ drivers/mfd/wm831x-core.c:121: warning: expecting prototype for wm831x_reg_unlock(). Prototype was for wm831x_reg_lock() instead
 
- drivers/mfd/db8500-prcmu.c  |  6 +++---
- drivers/mfd/omap-usb-host.c |  2 +-
- drivers/mfd/omap-usb-tll.c  |  2 +-
- drivers/mfd/si476x-cmd.c    | 24 ++++++++++++------------
- drivers/mfd/si476x-i2c.c    | 10 +++++-----
- drivers/mfd/twl-core.c      |  2 +-
- drivers/mfd/wm831x-core.c   |  2 +-
- 7 files changed, 24 insertions(+), 24 deletions(-)
-
-Cc: Andrey Smirnov <andrew.smirnov@gmail.com>
-Cc: Kai Svahn <kai.svahn@nokia.com>
-Cc: Keshava Munegowda <keshava_mgowda@ti.com>
-Cc: Kumar Sanghvi <kumar.sanghvi@stericsson.com>
 Cc: Lee Jones <lee.jones@linaro.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-omap@vger.kernel.org
 Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-Cc: Mattias Nilsson <mattias.i.nilsson@stericsson.com>
 Cc: patches@opensource.cirrus.com
-Cc: Roger Quadros <rogerq@ti.com>
-Cc: Sundar Iyer <sundar.iyer@stericsson.com>
-Cc: syed khasim <x0khasim@ti.com>
-Cc: Tony Lindgren <tony@atomide.com>
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/mfd/wm831x-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mfd/wm831x-core.c b/drivers/mfd/wm831x-core.c
+index bcef08f58fb3f..c31809b17547e 100644
+--- a/drivers/mfd/wm831x-core.c
++++ b/drivers/mfd/wm831x-core.c
+@@ -109,7 +109,7 @@ static int wm831x_reg_locked(struct wm831x *wm831x, unsigned short reg)
+ }
+ 
+ /**
+- * wm831x_reg_unlock: Unlock user keyed registers
++ * wm831x_reg_lock: Unlock user keyed registers
+  *
+  * The WM831x has a user key preventing writes to particularly
+  * critical registers.  This function locks those registers,
 -- 
 2.31.1
 
