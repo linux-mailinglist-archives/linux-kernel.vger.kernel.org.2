@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F71389E57
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC1F389E56
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhETGzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:55:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37880 "EHLO
+        id S230467AbhETGzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:55:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37890 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbhETGz2 (ORCPT
+        with ESMTP id S230435AbhETGz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 02:55:28 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2439C061761
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:05 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id p138-20020a2542900000b029051304a381d9so9042617yba.20
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC741C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 129-20020a2504870000b0290513326cc5e0so8674080ybe.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=u+gVIGEYIPA/2ZnKQ/jn+syjhmo8lEqvUYZxU0dhdmw=;
-        b=ilLDWOeIOTKbkZAyTcceDtOpp2Z6oTFrQhsVyqk7X5l9/6+8NJYYI+dDrFdNy8GHPn
-         TXNwPsD+oRKvYdGx4axZhlkFzOkdcr+xYDHDYwdfV6GJubHW0qUcVuNhCtoKbC5rA7Rc
-         HLlOQqtRJZ/ivTzUig8CQccV040hHCbuz35dLgXbD1dVokwc1cOuKZaTLQpYVLsUP3Bu
-         MGJAAygLFemJO4Lj2rtnjvJG8CDZr9Z0uZhqKEqHkyenPQKZNhlA4Evgi1wYHSSLSqnJ
-         48ySo0abwH067PuNMNMETfFX32LpXeIda/dgmAGMAOCqUYbqyCKHzmjDuutRjkgtmoG5
-         3meg==
+        bh=SyTpiiLQc7KnB8Q1E8X3BxXutjquJ4KYbVlpDQgVi/g=;
+        b=F/5vtOLfn2hWqJCcZJILEPNvAi4G3UC/HROV8n8s10GH7JhHnrGHdEho6MiIGVETaO
+         sHn+wn+lopXgJMLEqp5WqaQ769JJNG7YB4Pq15oo9pv+HRPYGP/d500+gP+KrGyChFzI
+         iRtkvAcNwlgumar+mpa5HZRGCb08Jm1ZBJ5134Kg6M2RP3KBMa9LpRBW+jA/uB2ZH6dY
+         SHmfSiGBjz0MLdKbjMO0ZC+E0iCgLKKyI3liy35dgrf7U0uAsmS+Tq+vBabFfUY8cvI2
+         9S4m0Grod6BK2vh7Cxh9tBxuiOnpUkk6GOwodZ5MXTpgU9J25Ztod8Cas20KXVuUUu5L
+         0caQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=u+gVIGEYIPA/2ZnKQ/jn+syjhmo8lEqvUYZxU0dhdmw=;
-        b=kGPHggyxo0QzLlCv4G7r06Qb9zfq6cYJu4n3UotivJGpIGltx02xhr3dmw5myvMMTB
-         +ZbHFgrPBlvHRFOzV44X/BNunb0sZE08NWoL7Ukl2CPGFW5C4ojk1f5ULcVpNMkwMHLM
-         a8+V1TCPtJTZj/8tHL+9HnYHlYz/Bigq1ANURCC14mJjIXuCM5eCU6+JTuizAZzNiIIr
-         u8eXfLqGhtBe68cHudHsJtza4h2srgcHTDTznQxwVhruHz3nU10Sni6vFJNWMxYzEfHy
-         179XSwdgavLRIWc5CxN1biYoS2EkJnVyEf1eYcyMtFUArZKIHQtx6DsDN2wNQ2P6YXD5
-         BUtw==
-X-Gm-Message-State: AOAM533YpaJcNo3c5ia3Q6gdyS41kyWgd490xt0zYDyNkyhH3hi4hj2m
-        uiBbgl6yA1VtsOKBod8/iMtZhtd4aXg=
-X-Google-Smtp-Source: ABdhPJw2fnax4tdT5Wsay5+rPu2/CLppUyd3dEee27l274OvNNlEZeyxb+pNstV/LKb7q5/PkQmoAivSEq8=
+        bh=SyTpiiLQc7KnB8Q1E8X3BxXutjquJ4KYbVlpDQgVi/g=;
+        b=I/lOZpe4tWCS0mala3TZsfeszZC2f6ezlF6QsZ4a/ik+ur09NYRA+x5bJGwlW5GDlq
+         UnLRSTXE7lfK71dSWsWOnbdahNawKurDhQQHAWYazRhXZbx8wQr8tVsCQRJt62tjdH10
+         3hySRpK88u8siMlEwsnnjOD9xPsxcVvC9q60ppd6Eg2OjbtByyWxV86qM2x45/Wp9SgS
+         1K0/jwK6L1A8aN+ccrl6RiewC05OjfkXbKE3qp2X4jLzxo0Z5jchuk4yzUI9a9UtqjR2
+         jluXY0tCVPqedtSHAZ1h+oHspBuclW26af/5c7EGck5IwrADYKN8hL9LfA0GmuxthLa8
+         CT+g==
+X-Gm-Message-State: AOAM530i7XGlRCP9jxfMmcb0QrUXw8gBhH02/rSREHScRnCCUJvVu8zh
+        smjHRFK1+f6BrShUrxMXHYEhJlEv03M=
+X-Google-Smtp-Source: ABdhPJxef10azDAzK7UEGotre/hx9MbP+rt8RSM5uDH+7LMog0h8qkdAugFcXq/qcLN78UEvnUxUn/nobaI=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:595d:62ee:f08:8e83])
- (user=yuzhao job=sendgmr) by 2002:a05:6902:513:: with SMTP id
- x19mr5279236ybs.129.1621493645039; Wed, 19 May 2021 23:54:05 -0700 (PDT)
-Date:   Thu, 20 May 2021 00:53:44 -0600
+ (user=yuzhao job=sendgmr) by 2002:a25:2009:: with SMTP id g9mr4983935ybg.198.1621493646666;
+ Wed, 19 May 2021 23:54:06 -0700 (PDT)
+Date:   Thu, 20 May 2021 00:53:45 -0600
 In-Reply-To: <20210520065355.2736558-1-yuzhao@google.com>
-Message-Id: <20210520065355.2736558-4-yuzhao@google.com>
+Message-Id: <20210520065355.2736558-5-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210520065355.2736558-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v3 03/14] include/linux/cgroup.h: export cgroup_mutex
+Subject: [PATCH v3 04/14] mm, x86: support the access bit on non-leaf PMD entries
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
@@ -85,54 +85,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cgroup_mutex is needed to synchronize with memcg creations.
+Some architectures support the accessed bit on non-leaf PMD entries
+(parents) in addition to leaf PTE entries (children) where pages are
+mapped, e.g., x86_64 sets the accessed bit on a parent when using it
+as part of linear-address translation [1]. Page table walkers who are
+interested in the accessed bit on children can take advantage of this:
+they do not need to search the children when the accessed bit is not
+set on a parent, given that they have previously cleared the accessed
+bit on this parent.
+
+[1]: Intel 64 and IA-32 Architectures Software Developer's Manual
+     Volume 3 (October 2019), section 4.8
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
 ---
- include/linux/cgroup.h | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ arch/Kconfig                   | 9 +++++++++
+ arch/x86/Kconfig               | 1 +
+ arch/x86/include/asm/pgtable.h | 2 +-
+ arch/x86/mm/pgtable.c          | 5 ++++-
+ include/linux/pgtable.h        | 4 ++--
+ 5 files changed, 17 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 4f2f79de083e..bd5744360cfa 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -432,6 +432,18 @@ static inline void cgroup_put(struct cgroup *cgrp)
- 	css_put(&cgrp->self);
+diff --git a/arch/Kconfig b/arch/Kconfig
+index c45b770d3579..e3812adc69f7 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -826,6 +826,15 @@ config HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ config HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD
+ 	bool
+ 
++config HAVE_ARCH_PARENT_PMD_YOUNG
++	bool
++	depends on PGTABLE_LEVELS > 2
++	help
++	  Architectures that select this are able to set the accessed bit on
++	  non-leaf PMD entries in addition to leaf PTE entries where pages are
++	  mapped. For them, page table walkers that clear the accessed bit may
++	  stop at non-leaf PMD entries if they do not see the accessed bit.
++
+ config HAVE_ARCH_HUGE_VMAP
+ 	bool
+ 
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 0045e1b44190..f619055c4537 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -170,6 +170,7 @@ config X86
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE_PUD if X86_64
++	select HAVE_ARCH_PARENT_PMD_YOUNG	if X86_64
+ 	select HAVE_ARCH_USERFAULTFD_WP         if X86_64 && USERFAULTFD
+ 	select HAVE_ARCH_USERFAULTFD_MINOR	if X86_64 && USERFAULTFD
+ 	select HAVE_ARCH_VMAP_STACK		if X86_64
+diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+index b1099f2d9800..3a24d2af4e9b 100644
+--- a/arch/x86/include/asm/pgtable.h
++++ b/arch/x86/include/asm/pgtable.h
+@@ -846,7 +846,7 @@ static inline unsigned long pmd_page_vaddr(pmd_t pmd)
+ 
+ static inline int pmd_bad(pmd_t pmd)
+ {
+-	return (pmd_flags(pmd) & ~_PAGE_USER) != _KERNPG_TABLE;
++	return ((pmd_flags(pmd) | _PAGE_ACCESSED) & ~_PAGE_USER) != _KERNPG_TABLE;
  }
  
-+extern struct mutex cgroup_mutex;
+ static inline unsigned long pages_to_mb(unsigned long npg)
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index d27cf69e811d..b968d6bd28b6 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -550,7 +550,7 @@ int ptep_test_and_clear_young(struct vm_area_struct *vma,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
+ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 			      unsigned long addr, pmd_t *pmdp)
+ {
+@@ -562,6 +562,9 @@ int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 
+ 	return ret;
+ }
++#endif
 +
-+static inline void cgroup_lock(void)
-+{
-+	mutex_lock(&cgroup_mutex);
-+}
-+
-+static inline void cgroup_unlock(void)
-+{
-+	mutex_unlock(&cgroup_mutex);
-+}
-+
- /**
-  * task_css_set_check - obtain a task's css_set with extra access conditions
-  * @task: the task to obtain css_set for
-@@ -446,7 +458,6 @@ static inline void cgroup_put(struct cgroup *cgrp)
-  * as locks used during the cgroup_subsys::attach() methods.
-  */
- #ifdef CONFIG_PROVE_RCU
--extern struct mutex cgroup_mutex;
- extern spinlock_t css_set_lock;
- #define task_css_set_check(task, __c)					\
- 	rcu_dereference_check((task)->cgroups,				\
-@@ -704,6 +715,8 @@ struct cgroup;
- static inline u64 cgroup_id(const struct cgroup *cgrp) { return 1; }
- static inline void css_get(struct cgroup_subsys_state *css) {}
- static inline void css_put(struct cgroup_subsys_state *css) {}
-+static inline void cgroup_lock(void) {}
-+static inline void cgroup_unlock(void) {}
- static inline int cgroup_attach_task_all(struct task_struct *from,
- 					 struct task_struct *t) { return 0; }
- static inline int cgroupstats_build(struct cgroupstats *stats,
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ int pudp_test_and_clear_young(struct vm_area_struct *vma,
+ 			      unsigned long addr, pud_t *pudp)
+ {
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 46b13780c2c8..94ecc1d277a2 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -193,7 +193,7 @@ static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+ #endif
+ 
+ #ifndef __HAVE_ARCH_PMDP_TEST_AND_CLEAR_YOUNG
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++#if defined(CONFIG_TRANSPARENT_HUGEPAGE) || defined(CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG)
+ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 					    unsigned long address,
+ 					    pmd_t *pmdp)
+@@ -214,7 +214,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 	BUILD_BUG();
+ 	return 0;
+ }
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE || CONFIG_HAVE_ARCH_PARENT_PMD_YOUNG */
+ #endif
+ 
+ #ifndef __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
