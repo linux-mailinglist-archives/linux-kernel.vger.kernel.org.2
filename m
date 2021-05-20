@@ -2,100 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9377238B037
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:42:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E93D138B03A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240500AbhETNnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:43:19 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21371 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238175AbhETNmg (ORCPT
+        id S241259AbhETNnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:43:31 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3447 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239378AbhETNmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:42:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1621518051; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=g366NAyIOHGUnmU1H63NB1lXwhcYXHlezQIRprstNF8Wtjt9iC/dczA9RagvoEs5ys621mpiRDd7x/v4cWWmtwC8YR5FIfYIzMZYqsxQzEx9Wr6ijIUPpYZn8MS/NWnsQsi9ud+tpVhTbjPtR//y9Nq4ZmXI8g53oKfIGDvK5fc=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1621518051; h=Content-Type:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=7VNeDRXRLa85jo7cthDYXanGoVHoiLzcwRL2eJbBc4Q=; 
-        b=NT/YbWWIGwaB810Ax5TA/0bAb/G3mAGqKXs617ByEW7UgVb0Ff5EAklvknryjULH2NGMpEWhvAKTXTRUVoIBgOKhAZkrCtu2CgqCUmCze3ct+H5S5HhGOzzkMDtx9/JZnBT4df4j+1dx//yaADH4EWzxa9DFs8qX13ehf5odse8=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1621518051;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:In-Reply-To;
-        bh=7VNeDRXRLa85jo7cthDYXanGoVHoiLzcwRL2eJbBc4Q=;
-        b=DhQR6BlcX/91j1pV697dRGRM60S+vbqLTUXQRJ257ZxRwhLgDvA6cXqImWdgFNPD
-        VZuxjfxgplf/s9w/0voP/XSRUPvKd/oLZy36qHm3JLp+KQ9GlWeN4MryAWdaKMZEmSj
-        xpOb2stWUt7eJQp8VED2Az3/0EMFGgWfZn2Ac05k=
-Received: from anirudhrb.com (106.51.110.115 [106.51.110.115]) by mx.zohomail.com
-        with SMTPS id 1621518046958980.6684477891203; Thu, 20 May 2021 06:40:46 -0700 (PDT)
-Date:   Thu, 20 May 2021 19:10:39 +0530
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        kernel test robot <oliver.sang@intel.com>,
-        stable <stable@vger.kernel.org>,
-        linux-nvidia@lists.surfsouth.com, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mail@anirudhrb.com, igormtorrente@gmail.com,
-        fero@drama.obuda.kando.hu
-Subject: Re: [PATCH] video: hgafb: correctly handle card detect failure
- during probe
-Message-ID: <YKZm17dj4R1c2ns/@anirudhrb.com>
-References: <20210516192714.25823-1-mail@anirudhrb.com>
+        Thu, 20 May 2021 09:42:45 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fm9mp1rVQzBvJn;
+        Thu, 20 May 2021 21:38:34 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 21:41:20 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
+ May 2021 21:41:19 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <linux-usb@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] net: usb: hso: use DEVICE_ATTR_RO macro
+Date:   Thu, 20 May 2021 21:41:16 +0800
+Message-ID: <20210520134116.36872-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210516192714.25823-1-mail@anirudhrb.com>
-X-ZohoMailClient: External
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 12:57:14AM +0530, Anirudh Rayabharam wrote:
-> The return value of hga_card_detect() is not properly handled causing
-> the probe to succeed even though hga_card_detect() failed. Since probe
-> succeeds, hgafb_open() can be called which will end up operating on an
-> unmapped hga_vram. This results in an out-of-bounds access as reported
-> by kernel test robot [1].
-> 
-> To fix this, correctly detect failure of hga_card_detect() by checking
-> for a non-zero error code.
-> 
-> [1]: https://lore.kernel.org/lkml/20210516150019.GB25903@xsang-OptiPlex-9020/
-> 
-> Reported-by: kernel test robot <oliver.sang@intel.com>
-> Fixes: dc13cac4862c ("video: hgafb: fix potential NULL pointer dereference")
+Use DEVICE_ATTR_RO helper instead of plain DEVICE_ATTR,
+which makes the code a bit shorter and easier to read.
 
-Greg, this is one of the UMN fixes we did. So, do you want to take this
-patch into your tree?
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/usb/hso.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-thanks!
+diff --git a/drivers/net/usb/hso.c b/drivers/net/usb/hso.c
+index 63e394cafc17..d84258c70d0c 100644
+--- a/drivers/net/usb/hso.c
++++ b/drivers/net/usb/hso.c
+@@ -457,9 +457,8 @@ static const struct usb_device_id hso_ids[] = {
+ MODULE_DEVICE_TABLE(usb, hso_ids);
+ 
+ /* Sysfs attribute */
+-static ssize_t hso_sysfs_show_porttype(struct device *dev,
+-				       struct device_attribute *attr,
+-				       char *buf)
++static ssize_t hsotype_show(struct device *dev,
++			    struct device_attribute *attr, char *buf)
+ {
+ 	struct hso_device *hso_dev = dev_get_drvdata(dev);
+ 	char *port_name;
+@@ -505,7 +504,7 @@ static ssize_t hso_sysfs_show_porttype(struct device *dev,
+ 
+ 	return sprintf(buf, "%s\n", port_name);
+ }
+-static DEVICE_ATTR(hsotype, 0444, hso_sysfs_show_porttype, NULL);
++static DEVICE_ATTR_RO(hsotype);
+ 
+ static struct attribute *hso_serial_dev_attrs[] = {
+ 	&dev_attr_hsotype.attr,
+-- 
+2.17.1
 
-	- Anirudh.
-
-> Cc: stable <stable@vger.kernel.org>
-> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
-> ---
->  drivers/video/fbdev/hgafb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/hgafb.c b/drivers/video/fbdev/hgafb.c
-> index cc8e62ae93f6..bd3d07aa4f0e 100644
-> --- a/drivers/video/fbdev/hgafb.c
-> +++ b/drivers/video/fbdev/hgafb.c
-> @@ -558,7 +558,7 @@ static int hgafb_probe(struct platform_device *pdev)
->  	int ret;
->  
->  	ret = hga_card_detect();
-> -	if (!ret)
-> +	if (ret)
->  		return ret;
->  
->  	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
-> -- 
-> 2.26.2
-> 
