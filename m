@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093CD38AC52
+	by mail.lfdr.de (Postfix) with ESMTP id 5D72F38AC53
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241454AbhETLhN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:37:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37174 "EHLO mail.kernel.org"
+        id S241638AbhETLhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:37:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239790AbhETLRB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:17:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 911B56143F;
-        Thu, 20 May 2021 10:09:30 +0000 (UTC)
+        id S239844AbhETLRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:17:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C68146194D;
+        Thu, 20 May 2021 10:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505371;
-        bh=9bCk7lst2Wr2aSBAmq/2HsY7GvcqAWinacpkppcJSuE=;
+        s=korg; t=1621505373;
+        bh=aqSnn32DClRk/sKgfHKM1/7v4s/2EXYqYOp9LYOrsQo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5OIEiy7xo4HJobES/D9vHolyqpWeb4Tp9LKm1ILHeN329Ysr6qu/WGpVdWgT/4RP
-         oSQp2wVsdYOhQZ86RY9y41h/iC0B3R01TRGLqtvdNfLUxhPHpCJaEVbisuS4irT6fS
-         /a5f4oN7HghdD5KUnxiAJOAYmC3lp0Ju3SodpIOs=
+        b=IJ+634vXMX4v8M5y1g12c1+FjucCnHVqkVG00V/zr6wIj+bWLvlHcNoipj0b26ImI
+         Zej/sCx7jLQI1r27X4Js4+oglxSGF1xAidYRsvzY+we/wqi1HBdPNiKCJcX7IQHDMl
+         iGpfQPsqcIDWp6+J+dEOzccdOtosAzOmRIFmNvFE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 103/190] ata: libahci_platform: fix IRQ check
-Date:   Thu, 20 May 2021 11:22:47 +0200
-Message-Id: <20210520092105.601733089@linuxfoundation.org>
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 104/190] scsi: fcoe: Fix mismatched fcoe_wwn_from_mac declaration
+Date:   Thu, 20 May 2021 11:22:48 +0200
+Message-Id: <20210520092105.633546421@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -39,42 +40,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit b30d0040f06159de97ad9c0b1536f47250719d7d ]
+[ Upstream commit 5b11c9d80bde81f6896cc85b23aeaa9502a704ed ]
 
-Iff platform_get_irq() returns 0, ahci_platform_init_host() would return 0
-early (as if the call was successful). Override IRQ0 with -EINVAL instead
-as the 'libata' regards 0 as "no IRQ" (thus polling) anyway...
+An old cleanup changed the array size from MAX_ADDR_LEN to unspecified in
+the declaration, but now gcc-11 warns about this:
 
-Fixes: c034640a32f8 ("ata: libahci: properly propagate return value of platform_get_irq()")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Link: https://lore.kernel.org/r/4448c8cc-331f-2915-0e17-38ea34e251c8@omprussia.ru
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+drivers/scsi/fcoe/fcoe_ctlr.c:1972:37: error: argument 1 of type ‘unsigned char[32]’ with mismatched bound [-Werror=array-parameter=]
+ 1972 | u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN],
+      |                       ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~
+In file included from /git/arm-soc/drivers/scsi/fcoe/fcoe_ctlr.c:33:
+include/scsi/libfcoe.h:252:37: note: previously declared as ‘unsigned char[]’
+  252 | u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
+      |                       ~~~~~~~~~~~~~~^~~~~
+
+Change the type back to what the function definition uses.
+
+Link: https://lore.kernel.org/r/20210322164702.957810-1-arnd@kernel.org
+Fixes: fdd78027fd47 ("[SCSI] fcoe: cleans up libfcoe.h and adds fcoe.h for fcoe module")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/ata/libahci_platform.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ include/scsi/libfcoe.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/ata/libahci_platform.c b/drivers/ata/libahci_platform.c
-index 65371e1befe8..8839ad6b73e3 100644
---- a/drivers/ata/libahci_platform.c
-+++ b/drivers/ata/libahci_platform.c
-@@ -516,11 +516,13 @@ int ahci_platform_init_host(struct platform_device *pdev,
- 	int i, irq, n_ports, rc;
+diff --git a/include/scsi/libfcoe.h b/include/scsi/libfcoe.h
+index e59180264591..004bf0ca8884 100644
+--- a/include/scsi/libfcoe.h
++++ b/include/scsi/libfcoe.h
+@@ -256,7 +256,7 @@ int fcoe_ctlr_recv_flogi(struct fcoe_ctlr *, struct fc_lport *,
+ 			 struct fc_frame *);
  
- 	irq = platform_get_irq(pdev, 0);
--	if (irq <= 0) {
-+	if (irq < 0) {
- 		if (irq != -EPROBE_DEFER)
- 			dev_err(dev, "no irq\n");
- 		return irq;
- 	}
-+	if (!irq)
-+		return -EINVAL;
- 
- 	hpriv->irq = irq;
- 
+ /* libfcoe funcs */
+-u64 fcoe_wwn_from_mac(unsigned char mac[], unsigned int, unsigned int);
++u64 fcoe_wwn_from_mac(unsigned char mac[MAX_ADDR_LEN], unsigned int, unsigned int);
+ int fcoe_libfc_config(struct fc_lport *, struct fcoe_ctlr *,
+ 		      const struct libfc_function_template *, int init_fcp);
+ u32 fcoe_fc_crc(struct fc_frame *fp);
 -- 
 2.30.2
 
