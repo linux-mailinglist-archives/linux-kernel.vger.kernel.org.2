@@ -2,88 +2,333 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F388D38A52D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1625538A6BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:28:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235986AbhETKNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:13:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37782 "EHLO mail.kernel.org"
+        id S235328AbhETKaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:30:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231854AbhETKFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:05:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4A2DA6193E;
-        Thu, 20 May 2021 09:41:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621503680;
-        bh=vZajh5UbMpDz/Iqesx+IBHa7vHiuendi2Mqnx13uUb4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LKltMB401mPIjUwQwe43sMun7geDKntsB7NV4npSSnbzASTxoEKGNgZeVJJ8Nnfn8
-         P1mDdg75HvhQKqRazcvWorB42JE8FGHEdUxmUSTV7wbuKCOS7xCp0mu0HmOOfqJKiJ
-         Pghm2eUI0GDQ+gAchnKg1c05CLOPloPcdUDoJWLYTle4T6An3IeCQasGEoNRlgQ6r+
-         kDSHeTcylhiG5T09AlB+yuQvb9dqx+HrpzBCK45UmqdEs77qfFWCAfojYW+V0DP9At
-         /t6TbUY12DE7Vq8uA95f3zCz3MrE6/ix6iMeJQP5YT6PpnVfhLzrOCCuRxr7Dyx+0h
-         FDjOwob/ayeSQ==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1ljfB9-0002BA-O9; Thu, 20 May 2021 11:41:19 +0200
-Date:   Thu, 20 May 2021 11:41:19 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH v2 1/1] gpiolib: Introduce for_each_gpio_desc_if() macro
-Message-ID: <YKYuv+pD4lgmrwdu@hovoldconsulting.com>
-References: <20210518083339.23416-1-andriy.shevchenko@linux.intel.com>
- <YKYYp6Z4HAYHLaFz@hovoldconsulting.com>
- <CAHp75Vf_tQxPcRa_ObYngUFQqzFrx2RyUcqemyeHFDOD1XEnbQ@mail.gmail.com>
- <YKYe4rgGTDRfq+va@hovoldconsulting.com>
- <YKYo5EBBDbSDiIwD@smile.fi.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKYo5EBBDbSDiIwD@smile.fi.intel.com>
+        id S234861AbhETKRg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:17:36 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B482F619AE;
+        Thu, 20 May 2021 09:46:34 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ljfGC-002Tzu-KZ; Thu, 20 May 2021 10:46:32 +0100
+Date:   Thu, 20 May 2021 10:46:31 +0100
+Message-ID: <874kexvitk.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 5/8] arm64: kvm: Save/restore MTE registers
+In-Reply-To: <097f5f5e-b287-3c9e-1f11-e0212601ddd2@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+        <20210517123239.8025-6-steven.price@arm.com>
+        <87v97hth3i.wl-maz@kernel.org>
+        <097f5f5e-b287-3c9e-1f11-e0212601ddd2@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 12:16:20PM +0300, Andy Shevchenko wrote:
-> On Thu, May 20, 2021 at 10:33:38AM +0200, Johan Hovold wrote:
-> > On Thu, May 20, 2021 at 11:15:31AM +0300, Andy Shevchenko wrote:
-> > > On Thu, May 20, 2021 at 11:07 AM Johan Hovold <johan@kernel.org> wrote:
-> > > > On Tue, May 18, 2021 at 11:33:39AM +0300, Andy Shevchenko wrote:
+On Wed, 19 May 2021 14:04:20 +0100,
+Steven Price <steven.price@arm.com> wrote:
+> 
+> On 17/05/2021 18:17, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 13:32:36 +0100,
+> > Steven Price <steven.price@arm.com> wrote:
+> >>
+> >> Define the new system registers that MTE introduces and context switch
+> >> them. The MTE feature is still hidden from the ID register as it isn't
+> >> supported in a VM yet.
+> >>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  arch/arm64/include/asm/kvm_host.h          |  6 ++
+> >>  arch/arm64/include/asm/kvm_mte.h           | 66 ++++++++++++++++++++++
+> >>  arch/arm64/include/asm/sysreg.h            |  3 +-
+> >>  arch/arm64/kernel/asm-offsets.c            |  3 +
+> >>  arch/arm64/kvm/hyp/entry.S                 |  7 +++
+> >>  arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h | 21 +++++++
+> >>  arch/arm64/kvm/sys_regs.c                  | 22 ++++++--
+> >>  7 files changed, 123 insertions(+), 5 deletions(-)
+> >>  create mode 100644 arch/arm64/include/asm/kvm_mte.h
+> >>
+> >> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> >> index afaa5333f0e4..309e36cc1b42 100644
+> >> --- a/arch/arm64/include/asm/kvm_host.h
+> >> +++ b/arch/arm64/include/asm/kvm_host.h
+> >> @@ -208,6 +208,12 @@ enum vcpu_sysreg {
+> >>  	CNTP_CVAL_EL0,
+> >>  	CNTP_CTL_EL0,
+> >>  
+> >> +	/* Memory Tagging Extension registers */
+> >> +	RGSR_EL1,	/* Random Allocation Tag Seed Register */
+> >> +	GCR_EL1,	/* Tag Control Register */
+> >> +	TFSR_EL1,	/* Tag Fault Status Register (EL1) */
+> >> +	TFSRE0_EL1,	/* Tag Fault Status Register (EL0) */
+> >> +
+> >>  	/* 32bit specific registers. Keep them at the end of the range */
+> >>  	DACR32_EL2,	/* Domain Access Control Register */
+> >>  	IFSR32_EL2,	/* Instruction Fault Status Register */
+> >> diff --git a/arch/arm64/include/asm/kvm_mte.h b/arch/arm64/include/asm/kvm_mte.h
+> >> new file mode 100644
+> >> index 000000000000..6541c7d6ce06
+> >> --- /dev/null
+> >> +++ b/arch/arm64/include/asm/kvm_mte.h
+> >> @@ -0,0 +1,66 @@
+> >> +/* SPDX-License-Identifier: GPL-2.0 */
+> >> +/*
+> >> + * Copyright (C) 2020 ARM Ltd.
+> >> + */
+> >> +#ifndef __ASM_KVM_MTE_H
+> >> +#define __ASM_KVM_MTE_H
+> >> +
+> >> +#ifdef __ASSEMBLY__
+> >> +
+> >> +#include <asm/sysreg.h>
+> >> +
+> >> +#ifdef CONFIG_ARM64_MTE
+> >> +
+> >> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+> >> +alternative_if_not ARM64_MTE
+> >> +	b	.L__skip_switch\@
+> >> +alternative_else_nop_endif
+> >> +	mrs	\reg1, hcr_el2
+> >> +	and	\reg1, \reg1, #(HCR_ATA)
+> >> +	cbz	\reg1, .L__skip_switch\@
+> >> +
+> >> +	mrs_s	\reg1, SYS_RGSR_EL1
+> >> +	str	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+> >> +	mrs_s	\reg1, SYS_GCR_EL1
+> >> +	str	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+> >> +
+> >> +	ldr	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+> >> +	msr_s	SYS_RGSR_EL1, \reg1
+> >> +	ldr	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+> >> +	msr_s	SYS_GCR_EL1, \reg1
+> >> +
+> >> +.L__skip_switch\@:
+> >> +.endm
+> >> +
+> >> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+> >> +alternative_if_not ARM64_MTE
+> >> +	b	.L__skip_switch\@
+> >> +alternative_else_nop_endif
+> >> +	mrs	\reg1, hcr_el2
+> >> +	and	\reg1, \reg1, #(HCR_ATA)
+> >> +	cbz	\reg1, .L__skip_switch\@
+> >> +
+> >> +	mrs_s	\reg1, SYS_RGSR_EL1
+> >> +	str	\reg1, [\g_ctxt, #CPU_RGSR_EL1]
+> >> +	mrs_s	\reg1, SYS_GCR_EL1
+> >> +	str	\reg1, [\g_ctxt, #CPU_GCR_EL1]
+> >> +
+> >> +	ldr	\reg1, [\h_ctxt, #CPU_RGSR_EL1]
+> >> +	msr_s	SYS_RGSR_EL1, \reg1
+> >> +	ldr	\reg1, [\h_ctxt, #CPU_GCR_EL1]
+> >> +	msr_s	SYS_GCR_EL1, \reg1
 > > 
-> > > > The _if suffix here is too vague.
-> > > >
-> > > > Please use a more descriptive name so that you don't need to look at the
-> > > > implementation to understand what the macro does.
-> > > >
-> > > > Perhaps call it
-> > > >
-> > > >         for_each_gpio_desc_with_flag()
+> > What is the rational for not having any synchronisation here? It is
+> > quite uncommon to allocate memory at EL2, but VHE can perform all kind
+> > of tricks.
+> 
+> I don't follow. This is part of the __guest_exit path and there's an ISB
+> at the end of that - is that not sufficient? I don't see any possibility
+> for allocating memory before that. What am I missing?
 
-> > > > or just add the more generic macro
-> > > >
-> > > >         for_each_gpio_desc()
-> > > >
-> > > > and open-code the test so that it's clear what's going on here.
+Which ISB?  We have a few in the SError handling code, but that's
+conditioned on not having RAS. With any RAS-enabled CPU, we return to
+C code early, since we don't need any extra synchronisation (see the
+comment about the absence of ISB on this path).
+
+I would really like to ensure that we return to C code in the exact
+state we left it.
+
+> 
+> >> +
+> >> +.L__skip_switch\@:
+> >> +.endm
+> >> +
+> >> +#else /* CONFIG_ARM64_MTE */
+> >> +
+> >> +.macro mte_switch_to_guest g_ctxt, h_ctxt, reg1
+> >> +.endm
+> >> +
+> >> +.macro mte_switch_to_hyp g_ctxt, h_ctxt, reg1
+> >> +.endm
+> >> +
+> >> +#endif /* CONFIG_ARM64_MTE */
+> >> +#endif /* __ASSEMBLY__ */
+> >> +#endif /* __ASM_KVM_MTE_H */
+> >> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> >> index 65d15700a168..347ccac2341e 100644
+> >> --- a/arch/arm64/include/asm/sysreg.h
+> >> +++ b/arch/arm64/include/asm/sysreg.h
+> >> @@ -651,7 +651,8 @@
+> >>  
+> >>  #define INIT_SCTLR_EL2_MMU_ON						\
+> >>  	(SCTLR_ELx_M  | SCTLR_ELx_C | SCTLR_ELx_SA | SCTLR_ELx_I |	\
+> >> -	 SCTLR_ELx_IESB | SCTLR_ELx_WXN | ENDIAN_SET_EL2 | SCTLR_EL2_RES1)
+> >> +	 SCTLR_ELx_IESB | SCTLR_ELx_WXN | ENDIAN_SET_EL2 |		\
+> >> +	 SCTLR_ELx_ITFSB | SCTLR_EL2_RES1)
+> >>  
+> >>  #define INIT_SCTLR_EL2_MMU_OFF \
+> >>  	(SCTLR_EL2_RES1 | ENDIAN_SET_EL2)
+> >> diff --git a/arch/arm64/kernel/asm-offsets.c b/arch/arm64/kernel/asm-offsets.c
+> >> index 0cb34ccb6e73..6b489a8462f0 100644
+> >> --- a/arch/arm64/kernel/asm-offsets.c
+> >> +++ b/arch/arm64/kernel/asm-offsets.c
+> >> @@ -111,6 +111,9 @@ int main(void)
+> >>    DEFINE(VCPU_WORKAROUND_FLAGS,	offsetof(struct kvm_vcpu, arch.workaround_flags));
+> >>    DEFINE(VCPU_HCR_EL2,		offsetof(struct kvm_vcpu, arch.hcr_el2));
+> >>    DEFINE(CPU_USER_PT_REGS,	offsetof(struct kvm_cpu_context, regs));
+> >> +  DEFINE(CPU_RGSR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[RGSR_EL1]));
+> >> +  DEFINE(CPU_GCR_EL1,		offsetof(struct kvm_cpu_context, sys_regs[GCR_EL1]));
+> >> +  DEFINE(CPU_TFSRE0_EL1,	offsetof(struct kvm_cpu_context, sys_regs[TFSRE0_EL1]));
 > > 
-> > FWIW, NAK due to the non-descriptive for_each_desc_if() name.
+> > TFSRE0_EL1 is never accessed from assembly code. Leftover from a
+> > previous version?
 > 
-> Btw, missed argument
+> Indeed, I will drop it.
 > 
-> ..._with_flag(..., FLAG_...)
+> >>    DEFINE(CPU_APIAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIAKEYLO_EL1]));
+> >>    DEFINE(CPU_APIBKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APIBKEYLO_EL1]));
+> >>    DEFINE(CPU_APDAKEYLO_EL1,	offsetof(struct kvm_cpu_context, sys_regs[APDAKEYLO_EL1]));
+> >> diff --git a/arch/arm64/kvm/hyp/entry.S b/arch/arm64/kvm/hyp/entry.S
+> >> index e831d3dfd50d..435346ea1504 100644
+> >> --- a/arch/arm64/kvm/hyp/entry.S
+> >> +++ b/arch/arm64/kvm/hyp/entry.S
+> >> @@ -13,6 +13,7 @@
+> >>  #include <asm/kvm_arm.h>
+> >>  #include <asm/kvm_asm.h>
+> >>  #include <asm/kvm_mmu.h>
+> >> +#include <asm/kvm_mte.h>
+> >>  #include <asm/kvm_ptrauth.h>
+> >>  
+> >>  	.text
+> >> @@ -51,6 +52,9 @@ alternative_else_nop_endif
+> >>  
+> >>  	add	x29, x0, #VCPU_CONTEXT
+> >>  
+> >> +	// mte_switch_to_guest(g_ctxt, h_ctxt, tmp1)
+> >> +	mte_switch_to_guest x29, x1, x2
+> >> +
+> >>  	// Macro ptrauth_switch_to_guest format:
+> >>  	// 	ptrauth_switch_to_guest(guest cxt, tmp1, tmp2, tmp3)
+> >>  	// The below macro to restore guest keys is not implemented in C code
+> >> @@ -142,6 +146,9 @@ SYM_INNER_LABEL(__guest_exit, SYM_L_GLOBAL)
+> >>  	// when this feature is enabled for kernel code.
+> >>  	ptrauth_switch_to_hyp x1, x2, x3, x4, x5
+> >>  
+> >> +	// mte_switch_to_hyp(g_ctxt, h_ctxt, reg1)
+> >> +	mte_switch_to_hyp x1, x2, x3
+> >> +
+> >>  	// Restore hyp's sp_el0
+> >>  	restore_sp_el0 x2, x3
+> >>  
+> >> diff --git a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> >> index cce43bfe158f..de7e14c862e6 100644
+> >> --- a/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> >> +++ b/arch/arm64/kvm/hyp/include/hyp/sysreg-sr.h
+> >> @@ -14,6 +14,7 @@
+> >>  #include <asm/kvm_asm.h>
+> >>  #include <asm/kvm_emulate.h>
+> >>  #include <asm/kvm_hyp.h>
+> >> +#include <asm/kvm_mmu.h>
+> >>  
+> >>  static inline void __sysreg_save_common_state(struct kvm_cpu_context *ctxt)
+> >>  {
+> >> @@ -26,6 +27,16 @@ static inline void __sysreg_save_user_state(struct kvm_cpu_context *ctxt)
+> >>  	ctxt_sys_reg(ctxt, TPIDRRO_EL0)	= read_sysreg(tpidrro_el0);
+> >>  }
+> >>  
+> >> +static inline bool ctxt_has_mte(struct kvm_cpu_context *ctxt)
+> >> +{
+> >> +	struct kvm_vcpu *vcpu = ctxt->__hyp_running_vcpu;
+> >> +
+> >> +	if (!vcpu)
+> >> +		vcpu = container_of(ctxt, struct kvm_vcpu, arch.ctxt);
+> >> +
+> >> +	return kvm_has_mte(kern_hyp_va(vcpu->kvm));
+> >> +}
+> >> +
+> >>  static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+> >>  {
+> >>  	ctxt_sys_reg(ctxt, CSSELR_EL1)	= read_sysreg(csselr_el1);
+> >> @@ -46,6 +57,11 @@ static inline void __sysreg_save_el1_state(struct kvm_cpu_context *ctxt)
+> >>  	ctxt_sys_reg(ctxt, PAR_EL1)	= read_sysreg_par();
+> >>  	ctxt_sys_reg(ctxt, TPIDR_EL1)	= read_sysreg(tpidr_el1);
+> >>  
+> >> +	if (ctxt_has_mte(ctxt)) {
+> >> +		ctxt_sys_reg(ctxt, TFSR_EL1) = read_sysreg_el1(SYS_TFSR);
+> >> +		ctxt_sys_reg(ctxt, TFSRE0_EL1) = read_sysreg_s(SYS_TFSRE0_EL1);
+> >> +	}
+> > 
+> > I remember suggesting that this is slightly heavier than necessary.
+> > 
+> > On nVHE, TFSRE0_EL1 could be moved to load/put, as we never run
+> > userspace with a vcpu loaded. The same holds of course for VHE, but we
+> > also can move TFSR_EL1 to load/put, as the host uses TFSR_EL2.
+> > 
+> > Do you see any issue with that?
 > 
-> breaks the DRY principle. If you read current code it's clear with that
-> 
-> _if(..., FLAG_...)
+> The comment[1] I made before was:
 
-That we have precisely zero for_each_ macros with an _if suffix should
-also give you a hint that this is not a good idea.
+Ah, I totally missed this email (or can't remember reading it, which
+amounts to the same thing). Apologies for that.
 
-Again, you shouldn't have to look at the implementation to understand
-what a helper does.
+>   For TFSR_EL1 + VHE I believe it is synchronised only on vcpu_load/put -
+>   __sysreg_save_el1_state() is called from kvm_vcpu_load_sysregs_vhe().
+> 
+>   TFSRE0_EL1 potentially could be improved. I have to admit I was unsure
+>   if it should be in __sysreg_save_user_state() instead. However AFAICT
+>   that is called at the same time as __sysreg_save_el1_state() and there's
+>   no optimisation for nVHE. And given it's an _EL1 register this seemed
+>   like the logic place.
+>
+>   Am I missing something here? Potentially there are other registers to be
+>   optimised (TPIDRRO_EL0 looks like a possiblity), but IMHO that doesn't
+>   belong in this series.
+> 
+> For VHE TFSR_EL1 is already only saved/restored on load/put
+> (__sysreg_save_el1_state() is called from kvm_vcpu_put_sysregs_vhe()).
+> 
+> TFSRE0_EL1 could be moved, but I'm not sure where it should live as I
+> mentioned above.
 
-Johan
+Yeah, this looks fine, please ignore my rambling.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
