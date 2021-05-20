@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 101AB38A85C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0A1538A867
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238765AbhETKuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:50:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33278 "EHLO mail.kernel.org"
+        id S238787AbhETKuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:50:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36796 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237405AbhETKeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:34:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 73C5661C4E;
-        Thu, 20 May 2021 09:53:13 +0000 (UTC)
+        id S237406AbhETKeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:34:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A66F161C56;
+        Thu, 20 May 2021 09:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504393;
-        bh=+kLHwROEIgv5ph2zdEqrUmAQL6AVz54tVtpSmP3VTkw=;
+        s=korg; t=1621504396;
+        bh=QLJjFypi65JDbScRZIz9INsFoQm67Ejt9XfgE9HuiH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YadODJ8jKVMx5Rqz3ngOUmaRxS/RbXXsaDkl2kXSY8HlwIp4JscdNjnptNOG9TYjw
-         tA+9oMqLKF1KdCiCmCu041dzb09CbWVAnOzi+/Q+wQZvmkhnN73b5YvbL6RfgAgt8b
-         SrwDVel/D+yi4Wr7o2EYYUeDPsTTJIdpAicxXiGU=
+        b=q44Bwe3ehbqgpd2cLzctZSpajFILbh1ywA2mom7am9o6YQJKQ9NMR0wSJHIj1GpLF
+         pFzifgsv80wNG1T51868hs76EuP/tU5r4NVOMqZ9+zL7n5f3cF4xOdR1DiTERfh/T/
+         3VDfP38VfSGfM0S6eeQH0aa9Csfhz6YVTrl+xWEA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
         "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 225/323] net:emac/emac-mac: Fix a use after free in emac_mac_tx_buf_send
-Date:   Thu, 20 May 2021 11:21:57 +0200
-Message-Id: <20210520092127.854814690@linuxfoundation.org>
+Subject: [PATCH 4.14 226/323] net:nfc:digital: Fix a double free in digital_tg_recv_dep_req
+Date:   Thu, 20 May 2021 11:21:58 +0200
+Message-Id: <20210520092127.891539071@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -42,49 +42,37 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 6d72e7c767acbbdd44ebc7d89c6690b405b32b57 ]
+[ Upstream commit 75258586793efc521e5dd52a5bf6c7a4cf7002be ]
 
-In emac_mac_tx_buf_send, it calls emac_tx_fill_tpd(..,skb,..).
-If some error happens in emac_tx_fill_tpd(), the skb will be freed via
-dev_kfree_skb(skb) in error branch of emac_tx_fill_tpd().
-But the freed skb is still used via skb->len by netdev_sent_queue(,skb->len).
+In digital_tg_recv_dep_req, it calls nfc_tm_data_received(..,resp).
+If nfc_tm_data_received() failed, the callee will free the resp via
+kfree_skb() and return error. But in the exit branch, the resp
+will be freed again.
 
-As i observed that emac_tx_fill_tpd() haven't modified the value of skb->len,
-thus my patch assigns skb->len to 'len' before the possible free and
-use 'len' instead of skb->len later.
+My patch sets resp to NULL if nfc_tm_data_received() failed, to
+avoid the double free.
 
-Fixes: b9b17debc69d2 ("net: emac: emac gigabit ethernet controller driver")
+Fixes: 1c7a4c24fbfd9 ("NFC Digital: Add target NFC-DEP support")
 Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/qualcomm/emac/emac-mac.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/nfc/digital_dep.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/net/ethernet/qualcomm/emac/emac-mac.c b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
-index 44f797ab5d15..57f509a6c449 100644
---- a/drivers/net/ethernet/qualcomm/emac/emac-mac.c
-+++ b/drivers/net/ethernet/qualcomm/emac/emac-mac.c
-@@ -1458,6 +1458,7 @@ int emac_mac_tx_buf_send(struct emac_adapter *adpt, struct emac_tx_queue *tx_q,
- {
- 	struct emac_tpd tpd;
- 	u32 prod_idx;
-+	int len;
+diff --git a/net/nfc/digital_dep.c b/net/nfc/digital_dep.c
+index 4f9a973988b2..1eed0cf59190 100644
+--- a/net/nfc/digital_dep.c
++++ b/net/nfc/digital_dep.c
+@@ -1285,6 +1285,8 @@ static void digital_tg_recv_dep_req(struct nfc_digital_dev *ddev, void *arg,
+ 	}
  
- 	memset(&tpd, 0, sizeof(tpd));
+ 	rc = nfc_tm_data_received(ddev->nfc_dev, resp);
++	if (rc)
++		resp = NULL;
  
-@@ -1477,9 +1478,10 @@ int emac_mac_tx_buf_send(struct emac_adapter *adpt, struct emac_tx_queue *tx_q,
- 	if (skb_network_offset(skb) != ETH_HLEN)
- 		TPD_TYP_SET(&tpd, 1);
- 
-+	len = skb->len;
- 	emac_tx_fill_tpd(adpt, tx_q, skb, &tpd);
- 
--	netdev_sent_queue(adpt->netdev, skb->len);
-+	netdev_sent_queue(adpt->netdev, len);
- 
- 	/* Make sure the are enough free descriptors to hold one
- 	 * maximum-sized SKB.  We need one desc for each fragment,
+ exit:
+ 	kfree_skb(ddev->chaining_skb);
 -- 
 2.30.2
 
