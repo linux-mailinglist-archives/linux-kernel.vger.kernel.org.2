@@ -2,312 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF7D038AFB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:08:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2456B38AF96
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242243AbhETNKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:10:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240275AbhETNJm (ORCPT
+        id S243324AbhETNFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:05:48 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:53529 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S240983AbhETNFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:09:42 -0400
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1E3C061236
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:04:21 -0700 (PDT)
-Received: by mail-io1-xd2e.google.com with SMTP id p8so16430165iol.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:04:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=poorly.run; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LaILeXDQ0boA1j3FLO8VWLh6qerXlZqRCMq60RpzKEc=;
-        b=RLn3xKHobOFvZGz0ghTnYHK5Te1heylHLZDMRa3NHzie16L+RemZXJOUMR8pspyJeI
-         SpSZLpUvz2zfoewTkT/8c4ogotCfIxI9BrwEyqbR/i39/NSX+/ddum+nIx8nPzvEf46F
-         1Qyv2f8KAfkNMh/WLc9+XBJQbYYB4fbxfiOS8XBmRo5c3fctrNHps/D01fWHNCinljpR
-         hQFc7DDzlf55fLKCo2BIkR122dc5qMbMYuu09BSUEfNmMOCwyENSOh4fUgItIcy6I0v8
-         oGS+REV9VRblzjm7xKQuuOImHJXunvMud7pkMdkW1Xn9RQZ/TudNEtnKlmd+fkZ+Cony
-         9ZeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LaILeXDQ0boA1j3FLO8VWLh6qerXlZqRCMq60RpzKEc=;
-        b=sjN+IQZCHi7DicEvme00ztJOzonwSKGSjB16l7+13ROXxayIphxxTZB2pg4NFxqH/c
-         zOmX7pYQEW+pctQeF93dqSPQ1RiqvWh01psl18pw+k6+Z8KmIj23W9eRxfo0iY1lBKUe
-         4lg/n22JqtYYC1Q5+4iw5eXrKJ3M8XFLhyxZCxgs9SwcB80rmRgsabDCvntBbbuMb5q1
-         Dm3/ZrW30O4HT1RD6BMeGdQCWbhfUPgEhdfZEHcbnr4N1Hlh2ttQxCEOepl1OK1vSTvr
-         JHdQUnkuaKmkWPJdkUaSsyCK/DOfEeyvkC0bua6c5R8XT1GTQTBVMmWIlYPaDWSuA+LO
-         EW4g==
-X-Gm-Message-State: AOAM530pKceDdTmT4cHAKzlruD0LYfPgH16Nkk3aDms0CJ9//G1kxv1D
-        mUKDABXAVgRE7aZpgRhUH1SKSsh9bPos9u0V/Kh1zQ==
-X-Google-Smtp-Source: ABdhPJwfNwnUIs9JCwBhNCCzuYKrbU6/EOU4x7fJTdO30hXcwWQCXXe29GQIVa9BkbOHDSpYhHQrhZMscQ9WkDc7cmU=
-X-Received: by 2002:a5d:9959:: with SMTP id v25mr5618382ios.85.1621515860195;
- Thu, 20 May 2021 06:04:20 -0700 (PDT)
+        Thu, 20 May 2021 09:05:39 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id DD6631725;
+        Thu, 20 May 2021 09:04:16 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Thu, 20 May 2021 09:04:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=PB8aFO0bwnqJ+dOxGGLQidZNKsJ
+        Ew8NFmWMUOhVb3Gw=; b=OA+mtaUyy+VSofW6UXYNgJ5/3R4srrqaaqkKXww4Alc
+        NKTVGGuPpuYpZqm6UuN5FY8VTazomSef4/sMYD0S2fm/2tN/tfGsx0Vs3LrRvELa
+        9hXlzbpRPf0XlXQ6/8uHICfTzKEsdVITZJIdpNzr5GSwVKobspUzB3Aj/RmT2Mbm
+        q2sHztRaHLCc0zT0o/Q2sFFWWVfrKkvRcDAzlK/F8kIvH4LFePld1lDGFSdPZSJl
+        9aIyXzNovmB3wEjmqNEvP97lvbzF79fDh3lIar9ViE0k83MFxz28KhY4ijnHexyL
+        cTf4XPJxlfBW6F4v8DIIWbArpHs1JHgc4JU8mhBjDnA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PB8aFO
+        0bwnqJ+dOxGGLQidZNKsJEw8NFmWMUOhVb3Gw=; b=lwe9suLQ3B4Osp9BqL76mh
+        87GaL31cD2UGzZwhCOL3F9SqgSmMgs46u952/zry+PNR2XSWz6wVxO7lTkIndhOK
+        NPl8zWyu0SEpKW24l804/ENaKVvchUQPkCOZYlu/E0Cbua/1+/Av+Pp0GDVUE8zr
+        jrMkM8kcAW57uFgCHwPzf9N0hKat9uszngOEVlCHYiL6oH3kt+ILRGvxYOljN7n1
+        rBm0xf+msiZTfngT9PKVxKRDTSeI2nqb9U9jpns2Hc2bdAFdaUP/7AMbH8mx04fg
+        rQJ4jUd7VeWXMSxyEBuYyzjQmrPpMVXcgnlI3sb2h+JtAHmnw/DypngXtTwIEycw
+        ==
+X-ME-Sender: <xms:Tl6mYPhfJFavWrDCnzg7x82gmC5te8x9hqOJE3t5eca2f225llJa5A>
+    <xme:Tl6mYMDISyzs4y3E5j03ECTQMfZWj5KDGTU34thAjHb9ht0FYJQs3CC6YaQjYaTy6
+    sLJAdE_dcow2VV_jiY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejuddgheelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeelhfeugedvjefgjefgudekfedutedvtddutdeuieev
+    tddtgeetjeekvdefgeefhfenucfkphepudegrdefrdeihedrudejheenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehoqdhtrghkrghshhhisehs
+    rghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:Tl6mYPFRAXuQ36b-S0BeEy738PjkkgVYK3B8s5CD-M75UJsYcFQ9WA>
+    <xmx:Tl6mYMTVPVxQVUXot91qZmpBO3NM1iaaft7fDdjiaEKm_uItZNh1aw>
+    <xmx:Tl6mYMzgVRncpkMZm1dIgltnU0HN-DofwMXrk0kKNYYA12GsytY4ng>
+    <xmx:UF6mYLqb_IHyEpP-gtHzTeuOjQv3YLbjch_vjUOcEtfolyiO-TgCnA>
+Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu, 20 May 2021 09:04:12 -0400 (EDT)
+Date:   Thu, 20 May 2021 22:04:09 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Colin King <colin.king@canonical.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err
+ issue
+Message-ID: <20210520130409.GA170303@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
+        Colin King <colin.king@canonical.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210520083424.6685-1-colin.king@canonical.com>
+ <s5hh7ixh9qn.wl-tiwai@suse.de>
 MIME-Version: 1.0
-References: <20210429042834.1127456-1-hsinyi@chromium.org>
-In-Reply-To: <20210429042834.1127456-1-hsinyi@chromium.org>
-From:   Sean Paul <sean@poorly.run>
-Date:   Thu, 20 May 2021 09:03:44 -0400
-Message-ID: <CAMavQK+QTaG0Bgb7cYw=mvKcyaQo4FKPYJPSppUx=CZvo_QJeg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/3] gpu: drm: separate panel orientation property
- creating and value setting
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hh7ixh9qn.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 12:28 AM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
->
-> drm_dev_register() sets connector->registration_state to
-> DRM_CONNECTOR_REGISTERED and dev->registered to true. If
-> drm_connector_set_panel_orientation() is first called after
-> drm_dev_register(), it will fail several checks and results in following
-> warning.
->
-> Add a function to create panel orientation property and set default value
-> to UNKNOWN, so drivers can call this function to init the property earlier
-> , and let the panel set the real value later.
->
-> [    4.480976] ------------[ cut here ]------------
-> [    4.485603] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:45 __drm_mode_object_add+0xb4/0xbc
-> <snip>
-> [    4.609772] Call trace:
-> [    4.612208]  __drm_mode_object_add+0xb4/0xbc
-> [    4.616466]  drm_mode_object_add+0x20/0x2c
-> [    4.620552]  drm_property_create+0xdc/0x174
-> [    4.624723]  drm_property_create_enum+0x34/0x98
-> [    4.629241]  drm_connector_set_panel_orientation+0x64/0xa0
-> [    4.634716]  boe_panel_get_modes+0x88/0xd8
-> [    4.638802]  drm_panel_get_modes+0x2c/0x48
-> [    4.642887]  panel_bridge_get_modes+0x1c/0x28
-> [    4.647233]  drm_bridge_connector_get_modes+0xa0/0xd4
-> [    4.652273]  drm_helper_probe_single_connector_modes+0x218/0x700
-> [    4.658266]  drm_mode_getconnector+0x1b4/0x45c
-> [    4.662699]  drm_ioctl_kernel+0xac/0x128
-> [    4.666611]  drm_ioctl+0x268/0x410
-> [    4.670002]  drm_compat_ioctl+0xdc/0xf0
-> [    4.673829]  __arm64_compat_sys_ioctl+0xc8/0x100
-> [    4.678436]  el0_svc_common+0xf4/0x1c0
-> [    4.682174]  do_el0_svc_compat+0x28/0x3c
-> [    4.686088]  el0_svc_compat+0x10/0x1c
-> [    4.689738]  el0_sync_compat_handler+0xa8/0xcc
-> [    4.694171]  el0_sync_compat+0x178/0x180
-> [    4.698082] ---[ end trace b4f2db9d9c88610b ]---
-> [    4.702721] ------------[ cut here ]------------
-> [    4.707329] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:243 drm_object_attach_property+0x48/0xb8
-> <snip>
-> [    4.833830] Call trace:
-> [    4.836266]  drm_object_attach_property+0x48/0xb8
-> [    4.840958]  drm_connector_set_panel_orientation+0x84/0xa0
-> [    4.846432]  boe_panel_get_modes+0x88/0xd8
-> [    4.850516]  drm_panel_get_modes+0x2c/0x48
-> [    4.854600]  panel_bridge_get_modes+0x1c/0x28
-> [    4.858946]  drm_bridge_connector_get_modes+0xa0/0xd4
-> [    4.863984]  drm_helper_probe_single_connector_modes+0x218/0x700
-> [    4.869978]  drm_mode_getconnector+0x1b4/0x45c
-> [    4.874410]  drm_ioctl_kernel+0xac/0x128
-> [    4.878320]  drm_ioctl+0x268/0x410
-> [    4.881711]  drm_compat_ioctl+0xdc/0xf0
-> [    4.885536]  __arm64_compat_sys_ioctl+0xc8/0x100
-> [    4.890142]  el0_svc_common+0xf4/0x1c0
-> [    4.893879]  do_el0_svc_compat+0x28/0x3c
-> [    4.897791]  el0_svc_compat+0x10/0x1c
-> [    4.901441]  el0_sync_compat_handler+0xa8/0xcc
-> [    4.905873]  el0_sync_compat+0x178/0x180
-> [    4.909783] ---[ end trace b4f2db9d9c88610c ]---
->
+Hi,
 
-+intel-gfx for i915 changes
+On Thu, May 20, 2021 at 02:26:24PM +0200, Takashi Iwai wrote:
+> On Thu, 20 May 2021 10:34:24 +0200,
+> Colin King wrote:
+> > 
+> > From: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Currently in the case where the payload_length is less than the
+> > cip_header_size the error return variable err is not being set
+> > and function parse_ir_ctx_header can return an uninitialized
+> > error return value. Fix this by setting err to zero.
+> > 
+> > Addresses-Coverity: ("Uninitialized scalar variable")
+> > Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> 
+> Just a bikeshed, IMO, it'd be more proper to initialize err at the
+> beginning than setting 0 at every branch, e.g.
+> 
+> --- a/sound/firewire/amdtp-stream.c
+> +++ b/sound/firewire/amdtp-stream.c
+> @@ -652,7 +652,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  	unsigned int payload_length;
+>  	const __be32 *cip_header;
+>  	unsigned int cip_header_size;
+> -	int err;
+> +	int err = 0;
+>  
+>  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+>  
+> @@ -683,7 +683,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  		}
+>  	} else {
+>  		cip_header = NULL;
+> -		err = 0;
+>  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
+>  		*syt = 0;
 
-Reviewed-by: Sean Paul <seanpaul@chromium.org>
+Thanks for the patches.
 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> v6, v5:
-> don't create property in set_panel_orientation.
->
-> v4, v3:
-> create property in dsi driver and set value in panel.
->
-> v2:
-> create property in connector init
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20210426051848.2600890-1-hsinyi@chromium.org/
->
-> v1:
-> set panel orientation in dsi driver
-> https://patchwork.kernel.org/project/linux-mediatek/patch/20210409045314.3420733-1-hsinyi@chromium.org/
-> ---
->  drivers/gpu/drm/drm_connector.c         | 58 ++++++++++++++++++-------
->  drivers/gpu/drm/i915/display/icl_dsi.c  |  1 +
->  drivers/gpu/drm/i915/display/intel_dp.c |  1 +
->  drivers/gpu/drm/i915/display/vlv_dsi.c  |  1 +
->  include/drm/drm_connector.h             |  2 +
->  5 files changed, 47 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index 7631f76e7f34..7189baaabf41 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -1210,7 +1210,7 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
->   *     INPUT_PROP_DIRECT) will still map 1:1 to the actual LCD panel
->   *     coordinates, so if userspace rotates the picture to adjust for
->   *     the orientation it must also apply the same transformation to the
-> - *     touchscreen input coordinates. This property is initialized by calling
-> + *     touchscreen input coordinates. This property value is set by calling
->   *     drm_connector_set_panel_orientation() or
->   *     drm_connector_set_panel_orientation_with_quirk()
->   *
-> @@ -2173,8 +2173,8 @@ EXPORT_SYMBOL(drm_connector_set_vrr_capable_property);
->   * @connector: connector for which to set the panel-orientation property.
->   * @panel_orientation: drm_panel_orientation value to set
->   *
-> - * This function sets the connector's panel_orientation and attaches
-> - * a "panel orientation" property to the connector.
-> + * This function sets the connector's panel_orientation value. If the property
-> + * doesn't exist, it will return an error.
->   *
->   * Calling this function on a connector where the panel_orientation has
->   * already been set is a no-op (e.g. the orientation has been overridden with
-> @@ -2205,19 +2205,11 @@ int drm_connector_set_panel_orientation(
->         info->panel_orientation = panel_orientation;
->
->         prop = dev->mode_config.panel_orientation_property;
-> -       if (!prop) {
-> -               prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
-> -                               "panel orientation",
-> -                               drm_panel_orientation_enum_list,
-> -                               ARRAY_SIZE(drm_panel_orientation_enum_list));
-> -               if (!prop)
-> -                       return -ENOMEM;
-> -
-> -               dev->mode_config.panel_orientation_property = prop;
-> -       }
-> +       if (WARN_ON(!prop))
-> +               return -EINVAL;
->
-> -       drm_object_attach_property(&connector->base, prop,
-> -                                  info->panel_orientation);
-> +       drm_object_property_set_value(&connector->base, prop,
-> +                                     info->panel_orientation);
->         return 0;
->  }
->  EXPORT_SYMBOL(drm_connector_set_panel_orientation);
-> @@ -2225,7 +2217,7 @@ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
->  /**
->   * drm_connector_set_panel_orientation_with_quirk -
->   *     set the connector's panel_orientation after checking for quirks
-> - * @connector: connector for which to init the panel-orientation property.
-> + * @connector: connector for which to set the panel-orientation property.
->   * @panel_orientation: drm_panel_orientation value to set
->   * @width: width in pixels of the panel, used for panel quirk detection
->   * @height: height in pixels of the panel, used for panel quirk detection
-> @@ -2252,6 +2244,40 @@ int drm_connector_set_panel_orientation_with_quirk(
->  }
->  EXPORT_SYMBOL(drm_connector_set_panel_orientation_with_quirk);
->
-> +/**
-> + * drm_connector_init_panel_orientation_property -
-> + *     create the connector's panel orientation property
-> + *
-> + * This function attaches a "panel orientation" property to the connector
-> + * and initializes its value to DRM_MODE_PANEL_ORIENTATION_UNKNOWN.
-> + *
-> + * The value of the property can be set by drm_connector_set_panel_orientation()
-> + * or drm_connector_set_panel_orientation_with_quirk() later.
-> + *
-> + * Returns:
-> + * Zero on success, negative errno on failure.
-> + */
-> +int drm_connector_init_panel_orientation_property(
-> +       struct drm_connector *connector)
-> +{
-> +       struct drm_device *dev = connector->dev;
-> +       struct drm_property *prop;
-> +
-> +       prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
-> +                       "panel orientation",
-> +                       drm_panel_orientation_enum_list,
-> +                       ARRAY_SIZE(drm_panel_orientation_enum_list));
-> +       if (!prop)
-> +               return -ENOMEM;
-> +
-> +       dev->mode_config.panel_orientation_property = prop;
-> +       drm_object_attach_property(&connector->base, prop,
-> +                                  DRM_MODE_PANEL_ORIENTATION_UNKNOWN);
-> +
-> +       return 0;
-> +}
-> +EXPORT_SYMBOL(drm_connector_init_panel_orientation_property);
-> +
->  int drm_connector_set_obj_prop(struct drm_mode_object *obj,
->                                     struct drm_property *property,
->                                     uint64_t value)
-> diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
-> index 9282978060b0..5ac4538e4283 100644
-> --- a/drivers/gpu/drm/i915/display/icl_dsi.c
-> +++ b/drivers/gpu/drm/i915/display/icl_dsi.c
-> @@ -1903,6 +1903,7 @@ static void icl_dsi_add_properties(struct intel_connector *connector)
->
->         connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
->
-> +       drm_connector_init_panel_orientation_property(&connector->base);
->         drm_connector_set_panel_orientation_with_quirk(&connector->base,
->                                 intel_dsi_get_panel_orientation(connector),
->                                 connector->panel.fixed_mode->hdisplay,
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-> index a5231ac3443a..f1d664e5abb2 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
-> @@ -5263,6 +5263,7 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
->         intel_panel_setup_backlight(connector, pipe);
->
->         if (fixed_mode) {
-> +               drm_connector_init_panel_orientation_property(connector);
->                 drm_connector_set_panel_orientation_with_quirk(connector,
->                                 dev_priv->vbt.orientation,
->                                 fixed_mode->hdisplay, fixed_mode->vdisplay);
-> diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
-> index 9bee99fe5495..853855482af1 100644
-> --- a/drivers/gpu/drm/i915/display/vlv_dsi.c
-> +++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
-> @@ -1632,6 +1632,7 @@ static void vlv_dsi_add_properties(struct intel_connector *connector)
->
->                 connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
->
-> +               drm_connector_init_panel_orientation_property(&connector->base);
->                 drm_connector_set_panel_orientation_with_quirk(
->                                 &connector->base,
->                                 intel_dsi_get_panel_orientation(connector),
-> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
-> index 1922b278ffad..4396c1c4a5db 100644
-> --- a/include/drm/drm_connector.h
-> +++ b/include/drm/drm_connector.h
-> @@ -1696,6 +1696,8 @@ int drm_connector_set_panel_orientation_with_quirk(
->         struct drm_connector *connector,
->         enum drm_panel_orientation panel_orientation,
->         int width, int height);
-> +int drm_connector_init_panel_orientation_property(
-> +       struct drm_connector *connector);
->  int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
->                                           int min, int max);
->
-> --
-> 2.31.1.498.g6c1eba8ee3d-goog
->
+The error check is just done for the case to process CIP header, thus we
+can put the auto variable into the branch.
+
+======== 8< --------
+From 3fcca0062297e937c665f1c8e3a117e1187f4115 Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Thu, 20 May 2021 21:59:50 +0900
+Subject: [PATCH] ALSA: firewire-lib: Fix uninitialized variable err issue
+
+The check of error is just done for the case that CIP header is available.
+
+This commit moves auto variable into the branch to process CIP header.
+
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+Suggested-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 37c8de8a..11ae4e88 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -748,7 +748,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 	unsigned int payload_length;
+ 	const __be32 *cip_header;
+ 	unsigned int cip_header_size;
+-	int err;
+ 
+ 	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+ 
+@@ -766,6 +765,8 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 
+ 	if (cip_header_size > 0) {
+ 		if (payload_length >= cip_header_size) {
++			int err;
++
+ 			cip_header = ctx_header + IR_CTX_HEADER_DEFAULT_QUADLETS;
+ 			err = check_cip_header(s, cip_header, payload_length - cip_header_size,
+ 					       data_blocks, data_block_counter, syt);
+@@ -779,7 +780,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 		}
+ 	} else {
+ 		cip_header = NULL;
+-		err = 0;
+ 		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
+ 		*syt = 0;
+ 
+@@ -790,7 +790,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+ 	trace_amdtp_packet(s, cycle, cip_header, payload_length, *data_blocks,
+ 			   *data_block_counter, packet_index, index);
+ 
+-	return err;
++	return 0;
+ }
+ 
+ // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
+-- 
+2.27.0
+======== 8< --------
+
+
+Thanks
+
+Takashi Sakamoto
