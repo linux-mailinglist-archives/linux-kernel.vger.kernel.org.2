@@ -2,36 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD0C38A1EA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:35:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1B3038A18F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232804AbhETJgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:36:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35870 "EHLO mail.kernel.org"
+        id S232089AbhETJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:32:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231867AbhETJd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:33:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9109613FC;
-        Thu, 20 May 2021 09:28:59 +0000 (UTC)
+        id S232020AbhETJaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:30:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 51FE3613BE;
+        Thu, 20 May 2021 09:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502940;
-        bh=rpf7cwl2Ri7h/8RGVYEo/sowX/WykXW286bVHGABWgI=;
+        s=korg; t=1621502847;
+        bh=D45tlCA9zXAvOAVRHqU/gLe6d0zvfzQUB7x9YvPdHRk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zul2zRA77lJor/lftVMGSrWx7d6hjIBMK6Sx8nZeLeS5nCQWrX/Tr1jEg/7tdhizo
-         s4CnJOveSMnJTzjyIsxSyKsW+cOMiAqyNo1Cck8jqvJBbF+q3vXrwaUnfNBZtWwtpa
-         xb+hzM9YK71TPvxAoUedRSWN9ZgFJBFfM6XFGf6o=
+        b=N10vsRbX0VD89zmifybOEwGCDlLZeCH7b7Cl8OpGfOKTbe5cggW8oNWzdWEhAxQIu
+         VeKebLRJhyRSXMcLenBkf8d2l02ZMQdb44xQNYaKakeLSO+WD6vvjhyQQsI7Jevl/T
+         RTpl/Txth6PNlh2SVzfiYrVG60jBtRz9jZRkZy2c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
+        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
+        Andrew Halaney <ahalaney@redhat.com>,
+        Alexander Potapenko <glider@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Vijayanand Jitta <vjitta@codeaurora.org>,
+        Vinayak Menon <vinmenon@codeaurora.org>,
+        Yogesh Lal <ylal@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 17/37] um: Disable CONFIG_GCOV with MODULES
+Subject: [PATCH 5.10 40/47] lib: stackdepot: turn depot_lock spinlock to raw_spinlock
 Date:   Thu, 20 May 2021 11:22:38 +0200
-Message-Id: <20210520092052.842992229@linuxfoundation.org>
+Message-Id: <20210520092054.837875234@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
-References: <20210520092052.265851579@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,74 +47,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+From: Zqiang <qiang.zhang@windriver.com>
 
-[ Upstream commit ad3d19911632debc886ef4a992d41d6de7927006 ]
+[ Upstream commit 78564b9434878d686c5f88c4488b20cccbcc42bc ]
 
-CONFIG_GCOV doesn't work with modules, and for various reasons
-it cannot work, see also
-https://lore.kernel.org/r/d36ea54d8c0a8dd706826ba844a6f27691f45d55.camel@sipsolutions.net
+In RT system, the spin_lock will be replaced by sleepable rt_mutex lock,
+in __call_rcu(), disable interrupts before calling
+kasan_record_aux_stack(), will trigger this calltrace:
 
-Make CONFIG_GCOV depend on !MODULES to avoid anyone
-running into issues there. This also means we need
-not export the gcov symbols.
+  BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:951
+  in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 19, name: pgdatinit0
+  Call Trace:
+    ___might_sleep.cold+0x1b2/0x1f1
+    rt_spin_lock+0x3b/0xb0
+    stack_depot_save+0x1b9/0x440
+    kasan_save_stack+0x32/0x40
+    kasan_record_aux_stack+0xa5/0xb0
+    __call_rcu+0x117/0x880
+    __exit_signal+0xafb/0x1180
+    release_task+0x1d6/0x480
+    exit_notify+0x303/0x750
+    do_exit+0x678/0xcf0
+    kthread+0x364/0x4f0
+    ret_from_fork+0x22/0x30
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
+Replace spinlock with raw_spinlock.
+
+Link: https://lkml.kernel.org/r/20210329084009.27013-1-qiang.zhang@windriver.com
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+Reported-by: Andrew Halaney <ahalaney@redhat.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
+Cc: Vijayanand Jitta <vjitta@codeaurora.org>
+Cc: Vinayak Menon <vinmenon@codeaurora.org>
+Cc: Yogesh Lal <ylal@codeaurora.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/um/Kconfig.debug      |  1 +
- arch/um/kernel/Makefile    |  1 -
- arch/um/kernel/gmon_syms.c | 16 ----------------
- 3 files changed, 1 insertion(+), 17 deletions(-)
- delete mode 100644 arch/um/kernel/gmon_syms.c
+ lib/stackdepot.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/um/Kconfig.debug b/arch/um/Kconfig.debug
-index 85726eeec345..e4a0f12f20d9 100644
---- a/arch/um/Kconfig.debug
-+++ b/arch/um/Kconfig.debug
-@@ -17,6 +17,7 @@ config GCOV
- 	bool "Enable gcov support"
- 	depends on DEBUG_INFO
- 	depends on !KCOV
-+	depends on !MODULES
- 	help
- 	  This option allows developers to retrieve coverage data from a UML
- 	  session.
-diff --git a/arch/um/kernel/Makefile b/arch/um/kernel/Makefile
-index 5aa882011e04..e698e0c7dbdc 100644
---- a/arch/um/kernel/Makefile
-+++ b/arch/um/kernel/Makefile
-@@ -21,7 +21,6 @@ obj-y = config.o exec.o exitcode.o irq.o ksyms.o mem.o \
+diff --git a/lib/stackdepot.c b/lib/stackdepot.c
+index 2caffc64e4c8..25bbac46605e 100644
+--- a/lib/stackdepot.c
++++ b/lib/stackdepot.c
+@@ -70,7 +70,7 @@ static void *stack_slabs[STACK_ALLOC_MAX_SLABS];
+ static int depot_index;
+ static int next_slab_inited;
+ static size_t depot_offset;
+-static DEFINE_SPINLOCK(depot_lock);
++static DEFINE_RAW_SPINLOCK(depot_lock);
  
- obj-$(CONFIG_BLK_DEV_INITRD) += initrd.o
- obj-$(CONFIG_GPROF)	+= gprof_syms.o
--obj-$(CONFIG_GCOV)	+= gmon_syms.o
- obj-$(CONFIG_EARLY_PRINTK) += early_printk.o
- obj-$(CONFIG_STACKTRACE) += stacktrace.o
+ static bool init_stack_slab(void **prealloc)
+ {
+@@ -281,7 +281,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+ 			prealloc = page_address(page);
+ 	}
  
-diff --git a/arch/um/kernel/gmon_syms.c b/arch/um/kernel/gmon_syms.c
-deleted file mode 100644
-index 9361a8eb9bf1..000000000000
---- a/arch/um/kernel/gmon_syms.c
-+++ /dev/null
-@@ -1,16 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * Copyright (C) 2001 - 2007 Jeff Dike (jdike@{addtoit,linux.intel}.com)
-- */
--
--#include <linux/module.h>
--
--extern void __bb_init_func(void *)  __attribute__((weak));
--EXPORT_SYMBOL(__bb_init_func);
--
--extern void __gcov_init(void *)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_init);
--extern void __gcov_merge_add(void *, unsigned int)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_merge_add);
--extern void __gcov_exit(void)  __attribute__((weak));
--EXPORT_SYMBOL(__gcov_exit);
+-	spin_lock_irqsave(&depot_lock, flags);
++	raw_spin_lock_irqsave(&depot_lock, flags);
+ 
+ 	found = find_stack(*bucket, entries, nr_entries, hash);
+ 	if (!found) {
+@@ -305,7 +305,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
+ 		WARN_ON(!init_stack_slab(&prealloc));
+ 	}
+ 
+-	spin_unlock_irqrestore(&depot_lock, flags);
++	raw_spin_unlock_irqrestore(&depot_lock, flags);
+ exit:
+ 	if (prealloc) {
+ 		/* Nobody used this memory, ok to free it. */
 -- 
 2.30.2
 
