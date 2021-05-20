@@ -2,149 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DE838AE0A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:22:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03D538AE14
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbhETMXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:23:20 -0400
-Received: from mail-bn7nam10on2068.outbound.protection.outlook.com ([40.107.92.68]:58367
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231642AbhETMXG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:23:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NxCN0CCL6zxY9O6Ql3FEikNEThTeIhILk/YK0fbwTI76jVRLBMmvVUNaqVcYCBYOuZwUPKA+ivu30VcrAu0WrNAugMeT6MonML4K7hw88wuJE4jYHd7eQVVfC+lH+Ng6RN4rz0xLCdJH4AOnXl50ejpMK9obv9YPusokuzMlinIkE7U36E50+mSPl5v3u1861daGxqg9w9nhrbxgva8rNQE5Km0Da54NIop5YKwlz6F7ejrF4ega8k0Do2Bxoi6eGhZK5bo/YV4GfeYTA+lxZPSj6A33GDaD6V1HCHun/0Jwkqw+NcXTkunE7M80uaL3LQPFSLXZnGwy1jqVBQ8uQA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IyZRyoYtoXC/9vC+LWUbs1JG8VYj002HZHBYh+iPUos=;
- b=mllAw4e3zeuBxTBihE/ThtjCRC2OS6z43PrS+TpNngLIkonAH61IEtv6oNoxZyuPAC66KoIPmPcSngMSv4CbW1CsTLr3VKSUCi/w2kN45d9YFshccfF1WifLMBErrcjCmhaEVty0OjGNI8wEirr0jCs+JrLgucmCqHRFB13o6mPFF6wdjGC5xbxxc3hJ0uCQYdCHJbpZ52J4aOTpwyopMI1P/bjFHK/U5ISCTtd/+EW6kxLBhEgNYWa8YCD+jdoQnbxBbxyP3Zjav+vR555Cc0xx+Qc1Ypyrt4JfIVdDHJ8AzoGfy/P0EAOzNLvNQHUTGYK8csdI74w/XwG8MuNGFg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=lists.infradead.org
- smtp.mailfrom=xilinx.com; dmarc=pass (p=none sp=none pct=100) action=none
- header.from=xilinx.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IyZRyoYtoXC/9vC+LWUbs1JG8VYj002HZHBYh+iPUos=;
- b=jmArAqpFbhbkmKJwtYFLB+/N6lpo3euVEamR9+aN2eyF4bU60iOUY4mrQgddIpwgxy6Wuz0+sPSPVNw1eEEBLQJc7p1L0QNXM9JYCsfH7ZTCuaiv5Sxcmeh0/o8c5y34aBHYIYkLvf3ydfBGcehHCmFXNzQC4MFn0nDrsnU2qjs=
-Received: from SN7PR04CA0064.namprd04.prod.outlook.com (2603:10b6:806:121::9)
- by BN6PR02MB2451.namprd02.prod.outlook.com (2603:10b6:404:54::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 20 May
- 2021 12:21:44 +0000
-Received: from SN1NAM02FT0007.eop-nam02.prod.protection.outlook.com
- (2603:10b6:806:121:cafe::2b) by SN7PR04CA0064.outlook.office365.com
- (2603:10b6:806:121::9) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend
- Transport; Thu, 20 May 2021 12:21:44 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=pass action=none
- header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- SN1NAM02FT0007.mail.protection.outlook.com (10.97.5.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4129.27 via Frontend Transport; Thu, 20 May 2021 12:21:44 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 05:21:42 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 20 May 2021 05:21:42 -0700
-Envelope-to: linux-arm-kernel@lists.infradead.org,
- linux-serial@vger.kernel.org,
- jirislaby@kernel.org,
- gregkh@linuxfoundation.org,
- linux-kernel@vger.kernel.org,
- lee.jones@linaro.org
-Received: from [172.30.17.109] (port=53970)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1ljhgM-00072r-KD; Thu, 20 May 2021 05:21:42 -0700
-Subject: Re: [PATCH 11/11] tty: serial: xilinx_uartps: Fix documentation for
- cdns_uart_clk_notifier_cb()
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        <linux-serial@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20210520121906.3468725-1-lee.jones@linaro.org>
- <20210520121906.3468725-12-lee.jones@linaro.org>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <b25d7c14-8d38-2c45-1bc9-1c64da167031@xilinx.com>
-Date:   Thu, 20 May 2021 14:21:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S231888AbhETMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:24:48 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35400 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232736AbhETMYJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:24:09 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KCDXYO061658;
+        Thu, 20 May 2021 08:22:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=IZbN4vqXm8b+HdkSIcyeN9o2mhjmTr8hv3qe5z3P+mA=;
+ b=p/4tNJaQmIFoL3SYoCjLQwhGpLHb258cyyqVVgQzwKcr4KZjwpp9hA4/JssSpgSdmLSa
+ vzJm1jduZnDkAtNca4VJQmfhut9L2adQNDbHW4HhyaBGrnH5jXB3xk28UFB+OLFFDZ5n
+ uTyds56SlJOe2ymO0oWvrb+J5ipzykwp7jMlDm0Xc/8nKIY7Sni9svgqaCC69CHAFIjM
+ 9TX7Z+IL+IVv/w+ow4kQpHA0zNMRR4/YrMRSVPvALOeOLgDR8aLXlK7eHq+Jo3tjLMrF
+ xlISKc1nWn2Z6vlmDSuYqxH0uhazI5QL+tNDhsACWviuKdGZSRby7EUlU5r47TWaPOrT mg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38nqk889ju-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 08:22:33 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14KCDSk5061029;
+        Thu, 20 May 2021 08:22:33 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38nqk889j7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 08:22:32 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14KCHKuG022146;
+        Thu, 20 May 2021 12:22:30 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8amb7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 12:22:30 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14KCM0Zw21234144
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 May 2021 12:22:00 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 911BCA4062;
+        Thu, 20 May 2021 12:22:28 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F3F75A405B;
+        Thu, 20 May 2021 12:22:24 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.80.188])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 20 May 2021 12:22:24 +0000 (GMT)
+Message-ID: <c134ad45d924e8b719f8abb6d36b426b889e9394.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH 0/3] Add additional MOK vars
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        torvalds@linux-foundation.org,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        pjones@redhat.com, glin@suse.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
+Date:   Thu, 20 May 2021 08:22:24 -0400
+In-Reply-To: <7F861393-7971-43AB-A741-223B8A50FFA0@oracle.com>
+References: <20210517225714.498032-1-eric.snowberg@oracle.com>
+         <fdb42621e7145ce81a34840cbcf0914874c78913.camel@linux.ibm.com>
+         <7F861393-7971-43AB-A741-223B8A50FFA0@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: LdGi0352dDnyZBNOXHCG8T7TUW4eOwLf
+X-Proofpoint-GUID: d7MQK1BTGmRq8hovTSZeKDT6zxvWKm1c
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-In-Reply-To: <20210520121906.3468725-12-lee.jones@linaro.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a9eca8a9-1773-47ab-8f1a-08d91b89d4a5
-X-MS-TrafficTypeDiagnostic: BN6PR02MB2451:
-X-Microsoft-Antispam-PRVS: <BN6PR02MB24511D088A09F96955F069C0C62A9@BN6PR02MB2451.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:3173;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 9e/+zmFvKNtUAQ4yxOoyjxkiIfRZjV0c4cS1PTtstySGC7EzYJqCfSARCPbA9g9lezWRxXHIlcc9UZn7hPqraOlj1bQfE/CBrIgxo7esWDP4VgPimHxiXH/fVfjmnXxw2K8wR0y+RJAxniPjt5SaiaOVLMVJA+K5baUCsWKha8n6ay57hoaRESy62r+04jLUaqtnryuGBue9cZ9YgpcYJAd+Mr2wbS/67I3K2g56u05tzUD9NKPlLkmdacsUAIWMQW4ZmaYrQpyzhUeI8P3VbnmFSFRLO32jrc+ADjl7MkKKbwlrtEsa9gDiVtS/eCC8AL81Gq+U5ToZBLwQvVQt8ASVpRg351V6zFHG9aGsce4ETxiVH56uKVa6MP1q/Pw07ATs0sd5DMJrYWBrrRmw+fTgBj5d1/yTQu8NX5batRJ86ODpwsbnnLBCiGeRvHmJQE6u6BxeHEiijaf8vndN+8LAqfq1YduQt911d66cuuzZ34dMbzWVhdyxsSc3gtGvtoafDXfB3ECan7BK1sXleSJNtlNapKZ1+WtH2jJcrR/5PjnMFbIG7CXKEjE5nQia8e8+hYr7RU4UEGsPKWj3VbSnpZtxBKfZ1oLCrsxhc47i81M876GPntSExiqbpu9vpE0F4d+2rtA9wfm2ArSB1ZyKPkJhGJ7MMZuJjz16ALyd4ogiUa9MmkpLfz4eyvO2nUOYuoXR30e1NF2LKLdLDA==
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(39850400004)(46966006)(36840700001)(47076005)(186003)(36906005)(70586007)(8676002)(83380400001)(36860700001)(2616005)(426003)(31696002)(478600001)(31686004)(44832011)(8936002)(82310400003)(82740400003)(316002)(7636003)(5660300002)(4326008)(36756003)(9786002)(2906002)(54906003)(70206006)(356005)(26005)(53546011)(6916009)(336012)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 12:21:44.0925
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9eca8a9-1773-47ab-8f1a-08d91b89d4a5
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: SN1NAM02FT0007.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2451
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-20_03:2021-05-20,2021-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 adultscore=0
+ mlxscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2104190000 definitions=main-2105200093
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 2021-05-19 at 16:04 -0600, Eric Snowberg wrote:
+> > On May 19, 2021, at 8:32 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> > 
+> > On Mon, 2021-05-17 at 18:57 -0400, Eric Snowberg wrote:
+> >> This series is being sent as an RFC. I am looking for feedback; if
+> >> adding additional MOK variables would be an acceptable solution to help
+> >> downstream Linux distros solve some of the problems we are facing?
+> >> 
+> >> Currently, pre-boot keys are not trusted within the Linux boundary [1].
+> >> Pre-boot keys include UEFI Secure Boot DB keys and MOKList keys. These
+> >> keys are loaded into the platform keyring and can only be used for kexec.
+> >> If an end-user wants to use their own key within the Linux trust
+> >> boundary, they must either compile it into the kernel themselves or use
+> >> the insert-sys-cert script. Both options present a problem. Many
+> >> end-users do not want to compile their own kernels. With the
+> >> insert-sys-cert option, there are missing upstream changes [2].  Also,
+> >> with the insert-sys-cert option, the end-user must re-sign their kernel
+> >> again with their own key, and then insert that key into the MOK db.
+> >> Another problem with insert-sys-cert is that only a single key can be
+> >> inserted into a compressed kernel.
+> >> 
+> >> Having the ability to insert a key into the Linux trust boundary opens
+> >> up various possibilities.  The end-user can use a pre-built kernel and
+> >> sign their own kernel modules.  It also opens up the ability for an
+> >> end-user to more easily use digital signature based IMA-appraisal.  To
+> >> get a key into the ima keyring, it must be signed by a key within the
+> >> Linux trust boundary.
+> >> 
+> >> Downstream Linux distros try to have a single signed kernel for each
+> >> architecture.  Each end-user may use this kernel in entirely different
+> >> ways.  Some downstream kernels have chosen to always trust platform keys
+> >> within the Linux trust boundary.  In addition, most downstream kernels
+> >> do not have an easy way for an end-user to use digital signature based
+> >> IMA-appraisal.
+> >> 
+> >> This series adds two new MOK variables to shim. The first variable
+> >> allows the end-user to decide if they want to trust keys contained
+> >> within the platform keyring within the Linux trust boundary. By default,
+> >> nothing changes; platform keys are not trusted within the Linux kernel.
+> >> They are only trusted after the end-user makes the decision themself.
+> >> The end-user would set this through mokutil using a new --trust-platform
+> >> option [3]. This would work similar to how the kernel uses MOK variables
+> >> to enable/disable signature validation as well as use/ignore the db.
+> >> 
+> >> The second MOK variable allows a downstream Linux distro to make
+> >> better use of the IMA architecture specific Secure Boot policy.  This
+> >> IMA policy is enabled whenever Secure Boot is enabled.  By default, this 
+> >> new MOK variable is not defined.  This causes the IMA architecture 
+> >> specific Secure Boot policy to be disabled.  Since this changes the 
+> >> current behavior, it is placed behind a new Kconfig option.  Kernels
+> >> built with IMA_UEFI_ARCH_POLICY enabled would  allow the end-user
+> >> to enable this through mokutil using a new --ima-sb-enable option [3].
+> >> This gives the downstream Linux distro the capability to offer the
+> >> IMA architecture specific Secure Boot policy option, while giving
+> >> the end-user the ability to decide if they want to use it.
+> >> 
+> >> I have included links to both the mokutil [3] and shim [4] changes I
+> >> made to support this new functionality.
+> >> 
+> >> Thank you and looking forward to hearing your reviews.
+> > 
+> > This patch set addresses two very different issues - allowing keys on
+> > the platform keyring to be trusted for things other than verifying the
+> > kexec kernel image signature, overwriting the arch specific IMA secure
+> > boot policy rules.  The only common denominator is basing those
+> > decisions on UEFI variables, which has been previously suggested and
+> > rejected.  The threat model hasn't changed.
+> 
+> Could you point me please to the previous discussion on the threat model
+> this change would violate?  What I found was [1], which I have tried to
+> solve with this series.  Having the ability to update a MOK variable 
+> indicates the user is not only root, but also the machine owner.  MOK 
+> variable updates require both root access to update and then physical 
+> presence to set via shim after reboot. This patch set tries to address 
+> the "*second* order" Linus requested [2].
+
+The concern is not with the normal way of updating MOK.
+
+> 
+> > The desire for allowing a single local CA key to be loaded onto a
+> > trusted keyring is understandable.  A local CA key can be used to sign
+> > certificates, allowing them to be loaded onto the IMA keyring.  What is
+> > the need for multiple keys?
+> 
+> We have no control over how many keys an end-user may wish to enroll.  
+> They might want to enroll a CA for IMA and a different key for their 
+> kernel modules. This is a generic kernel that can serve many different 
+> purposes. Think distro kernels - like Fedora, Ubuntu, Oracle Linux, etc.
+
+This patch set changes the secondary keyring root of trust, which is
+currently the builtin or other keys on the secondary keyring.  My
+concern with this change, is that any key on the secondary keyring may
+then be directly loaded or used to verify other keys being loaded onto
+the IMA keyring.
+
+I really do understand the need for extending the root of trust beyond
+the builtin keys and allowing end user keys to be loaded onto a kernel
+keyring, but it needs to be done safely.  The first step might include
+locally signing the MOK keys being loaded onto the secondary keyring
+and then somehow safely providing the local-CA key id to the kernel.
+
+> 
+> > Making an exception for using a UEFI key for anything other than
+> > verifying the kexec kernel image, can not be based solely on UEFI
+> > variables, but should require some form of kernel
+> > agreement/confirmation.  
+> 
+> Isn’t that the case today with how MOK variables get set through
+> mokutil and shim? 
+> 
+> > If/when a safe mechanism for identifying a
+> > single local CA key is defined, the certificate should be loaded
+> > directly onto the secondary keyring, not linked to the platform
+> > keyring.
+> > The system owner can enable/disable secure boot.  Disabling the arch
+> > secure boot IMA policy rules is not needed.  However, another mechanism
+> > for enabling them would be acceptable.
+> 
+> For a distro kernel, disabling the arch secure boot IMA policy rules is 
+> needed.  Distributions build a single kernel that can be used in many 
+> different ways. If we wanted to add a built-in IMA policy for an extra 
+> level of security protection, this allows the end-user to opt-in when 
+> secure boot is enabled. They are then protected before init is called. 
+> Not every user will want this protection; a different user may just want 
+> secure boot enabled without the IMA level protection.
+
+When secure boot is enabled, the IMA arch policy rules verify the kexec
+kernel image is properly signed.  When CONFIG_MODULE_SIG is not
+configured, it also verifies kernel modules are properly signed.
+
+> After going through the mailing list history related to IMA appraisal, 
+> is this feature strictly geared towards a custom kernel used for a 
+> specific purpose?  Do you view it as not being a feature suitable for 
+> a generic distribution kernel to offer? 
+
+IMA-appraisal is enabled by distros, but requires labeling the
+filesystem with security.ima xattrs, before loading an appraisal
+policy.
+
+thanks,
+
+Mimi
+
+> 
+> 
+> [1] https://lore.kernel.org/lkml/1556221605.24945.3.camel@HansenPartnership.com/
+> [2] https://marc.info/?l=linux-kernel&m=136185386310140&w=2
+> 
+> 
 
 
-On 5/20/21 2:19 PM, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/tty/serial/xilinx_uartps.c:496: warning: expecting prototype for cdns_uart_clk_notitifer_cb(). Prototype was for cdns_uart_clk_notifier_cb() instead
-> 
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Jiri Slaby <jirislaby@kernel.org>
-> Cc: Michal Simek <michal.simek@xilinx.com>
-> Cc: linux-serial@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/tty/serial/xilinx_uartps.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/tty/serial/xilinx_uartps.c b/drivers/tty/serial/xilinx_uartps.c
-> index 67a2db621e2b7..2cdcfb8f034de 100644
-> --- a/drivers/tty/serial/xilinx_uartps.c
-> +++ b/drivers/tty/serial/xilinx_uartps.c
-> @@ -484,7 +484,7 @@ static unsigned int cdns_uart_set_baud_rate(struct uart_port *port,
->  
->  #ifdef CONFIG_COMMON_CLK
->  /**
-> - * cdns_uart_clk_notitifer_cb - Clock notifier callback
-> + * cdns_uart_clk_notifier_cb - Clock notifier callback
->   * @nb:		Notifier block
->   * @event:	Notify event
->   * @data:	Notifier data
-> 
-
-Reviewed-by: Michal Simek <michal.simek@xilinx.com>
-
-Thanks,
-Michal
