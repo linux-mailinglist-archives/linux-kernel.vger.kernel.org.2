@@ -2,83 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF84038B81F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB3CA38B822
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237772AbhETULe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:11:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56002 "EHLO mail.kernel.org"
+        id S238458AbhETUOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:14:24 -0400
+Received: from mga05.intel.com ([192.55.52.43]:52814 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234343AbhETULc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:11:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 5B3B66128A;
-        Thu, 20 May 2021 20:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621541410;
-        bh=WaCgMvfXBR2gKyUZwzBouYnqALdTwOxZMFC0C16Yfqo=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=r0GmfvCV5y8lZ1sXAGwxJgaOTV/M4QhbiaiKN+TtKmof1O7GuR4saIdXK9oMsDOUT
-         h4bnvm5ioDd9Ba9CzavQtpGqFApB79cCbYez0aijCSlJw12MtPWPF9xc3dwCn51o+M
-         GlLOc6KxBkz3LQ9vfzP0tzI/T/9oFOYePrhKkSSz9/ahMZUI+mQHY1CSOf/dpX6Sq6
-         KhLRnNVmb1lQXOzb8fJegJIXpRnHJhTPe5yO+OxhMxcsbEdNlKFp77AiBP2OH2bt6o
-         PmRjGvtWhQ0bA+u+KXT58eE20yjF2tcCKHK5yisYhyrtltoug4ktSzG2LfalvngXZ5
-         vX67EJIavZ63A==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4B90D60283;
-        Thu, 20 May 2021 20:10:10 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S233675AbhETUOY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:14:24 -0400
+IronPort-SDR: XdQ4xIC0XhtdNbr2rStTFbweZr3Mr/UjNcnh4Jubfq38ixePmP2dacq5dRhASxMUqmfdLdLxJ7
+ 4GasDXB4FBUQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="286857636"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="286857636"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 13:13:02 -0700
+IronPort-SDR: PFMPvpd4Uj3LcG5c8OukCx6maliUMMhlb+FaQCXIQcziEQ3CnQlgO9OAsZ7v3sMBXzHpB26+iT
+ jUhgvX8E8tLA==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="440602602"
+Received: from shaunnab-mobl2.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.65.6])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 13:13:01 -0700
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+To:     Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
+ <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
+ <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+ <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
+ <YJm5QY8omAvdpBO9@google.com> <YJpP/S8MajKNhBl4@zn.tnic>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
+Date:   Thu, 20 May 2021 13:12:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v2 0/4] MT7530 interrupt support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162154141030.20508.8664926088973694353.git-patchwork-notify@kernel.org>
-Date:   Thu, 20 May 2021 20:10:10 +0000
-References: <20210519033202.3245667-1-dqfext@gmail.com>
-In-Reply-To: <20210519033202.3245667-1-dqfext@gmail.com>
-To:     DENG Qingfang <dqfext@gmail.com>
-Cc:     davem@davemloft.net, andrew@lunn.ch, f.fainelli@gmail.com,
-        hkallweit1@gmail.com, kuba@kernel.org, Landen.Chao@mediatek.com,
-        matthias.bgg@gmail.com, linux@armlinux.org.uk,
-        sean.wang@mediatek.com, vivien.didelot@gmail.com,
-        olteanv@gmail.com, robh+dt@kernel.org, linus.walleij@linaro.org,
-        gregkh@linuxfoundation.org, sergio.paracuellos@gmail.com,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, weijie.gao@mediatek.com,
-        gch981213@gmail.com, opensource@vdorst.com,
-        frank-w@public-files.de, tglx@linutronix.de, maz@kernel.org
+In-Reply-To: <YJpP/S8MajKNhBl4@zn.tnic>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This series was applied to netdev/net-next.git (refs/heads/master):
 
-On Wed, 19 May 2021 11:31:58 +0800 you wrote:
-> Add support for MT7530 interrupt controller.
+On 5/11/21 2:35 AM, Borislav Petkov wrote:
+> Preach brother!:)
 > 
-> DENG Qingfang (4):
->   net: phy: add MediaTek Gigabit Ethernet PHY driver
->   net: dsa: mt7530: add interrupt support
->   dt-bindings: net: dsa: add MT7530 interrupt controller binding
->   staging: mt7621-dts: enable MT7530 interrupt controller
+> /me goes and greps mailboxes...
 > 
-> [...]
+> ah, do you mean this, per chance:
+> 
+> https://lore.kernel.org/kvm/20210421144402.GB5004@zn.tnic/
+> 
+> ?
+> 
+> And yes, this has "sev" in the name and dhansen makes sense to me in
+> wishing to unify all the protected guest feature queries under a common
+> name. And then depending on the vendor, that common name will call the
+> respective vendor's helper to answer the protected guest aspect asked
+> about.
+> 
+> This way, generic code will call
+> 
+> 	protected_guest_has()
+> 
+> or so and be nicely abstracted away from the underlying implementation.
+> 
+> Hohumm, yap, sounds nice to me.
+> 
+> Thx.
 
-Here is the summary with links:
-  - [net-next,v2,1/4] net: phy: add MediaTek Gigabit Ethernet PHY driver
-    https://git.kernel.org/netdev/net-next/c/e40d2cca0189
-  - [net-next,v2,2/4] net: dsa: mt7530: add interrupt support
-    https://git.kernel.org/netdev/net-next/c/ba751e28d442
-  - [net-next,v2,3/4] dt-bindings: net: dsa: add MT7530 interrupt controller binding
-    https://git.kernel.org/netdev/net-next/c/4006f986c091
-  - [net-next,v2,4/4] staging: mt7621-dts: enable MT7530 interrupt controller
-    https://git.kernel.org/netdev/net-next/c/f494f0935ffb
+I see many variants of SEV/SME related checks in the common code path
+between TDX and SEV/SME. Can a generic call like
+protected_guest_has(MEMORY_ENCRYPTION) or is_protected_guest()
+replace all these variants?
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+We will not be able to test AMD related features. So I need to confirm
+it with AMD code maintainers/developers before making this change.
 
+arch/x86/include/asm/io.h:313:	if (sev_key_active() || is_tdx_guest()) {			\
+arch/x86/include/asm/io.h:329:	if (sev_key_active() || is_tdx_guest()) {			\
+arch/x86/kernel/pci-swiotlb.c:52:	if (sme_active() || is_tdx_guest())
+arch/x86/mm/ioremap.c:96:	if (!sev_active() && !is_tdx_guest())
+arch/x86/mm/pat/set_memory.c:1984:	if (!mem_encrypt_active() && !is_tdx_guest())
 
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
