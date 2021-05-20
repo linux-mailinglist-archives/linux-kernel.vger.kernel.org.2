@@ -2,113 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1DD0389EE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:28:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9261F389EE6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230365AbhETH36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:29:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4695 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhETH35 (ORCPT
+        id S230437AbhETHaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:30:55 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56735 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229534AbhETHax (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:29:57 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fm1Vh1qPSz16PlL;
-        Thu, 20 May 2021 15:25:48 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 15:28:34 +0800
-Received: from huawei.com (10.174.185.226) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 20 May
- 2021 15:28:34 +0800
-From:   Wang Xingang <wangxingang5@huawei.com>
-To:     <robh@kernel.org>, <will@kernel.org>, <joro@8bytes.org>,
-        <lorenzo.pieralisi@arm.com>, <frowand.list@gmail.com>
-CC:     <robh+dt@kernel.org>, <helgaas@kernel.org>,
-        <gregkh@linuxfoundation.org>, <iommu@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <xieyingtai@huawei.com>,
-        <wangxingang5@huawei.com>
-Subject: [PATCH v3] iommu/of: Fix pci_request_acs() before enumerating PCI devices
-Date:   Thu, 20 May 2021 07:28:28 +0000
-Message-ID: <1621495708-40364-1-git-send-email-wangxingang5@huawei.com>
-X-Mailer: git-send-email 2.6.4.windows.1
+        Thu, 20 May 2021 03:30:53 -0400
+Received: from mail-ej1-f72.google.com ([209.85.218.72])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <juerg.haefliger@canonical.com>)
+        id 1ljd7b-0005x6-LB
+        for linux-kernel@vger.kernel.org; Thu, 20 May 2021 07:29:31 +0000
+Received: by mail-ej1-f72.google.com with SMTP id bi3-20020a170906a243b02903933c4d9132so4626649ejb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:29:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oO2SCYGtTo5Wt/hf8sMJwZqbwWNXWFclqIhqPsgzV88=;
+        b=qxs2wzbAc4b2hm+KrtadEsBO37pxxeqvhtZwOfVlEZgoRkaFc6/yuI0/BojU981VdD
+         OKPEZfNPsMWO6wjW9Vyelm2zQNvF8cuHiM1dA42xdt/fCBDb/W20v8WR7jVs8GyYTrac
+         WBt/FCZ308NMKYxy3o/H+b/NwJKTfPSdKDL6A1Xg14IYRooNdxlx1YzkTqLSEVWkYJSd
+         FmqZXlDXziowivgTVfYf+v2gWDUEczWtznDP2/JVou7Oxe9HcM3YJWUNlOVyeWsJFNSq
+         jAdjnJ+3We14k5mjh5IcDb1F/iw2tvXPejetjcXyNhwimL4shOxGhdgA3vEQ/3Pu7T/H
+         qXMg==
+X-Gm-Message-State: AOAM531xesdpoHWjxWjkVsjeztCDxe+A2j3bkhdUY87xmAM5iDHmvKom
+        j3SE7H7YVu/ePSKKcsFtFOWjUZkenTBz9TMSA0/OO3jHO9T/bSwJ4WcDEi7nQJcKjja9CPjaegp
+        thQIXJQ87VxZSzKTjkgQSGDzRlxHP35io7fPoti7zuA==
+X-Received: by 2002:a50:f388:: with SMTP id g8mr3481203edm.236.1621495771349;
+        Thu, 20 May 2021 00:29:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3llZrF7b+xOgLeASrg9WSKrMq2NRLbmtU5nmGIBP83yGNp6rNV05Tv5+nYK+is+hXlrkHTg==
+X-Received: by 2002:a50:f388:: with SMTP id g8mr3481192edm.236.1621495771182;
+        Thu, 20 May 2021 00:29:31 -0700 (PDT)
+Received: from gollum.fritz.box ([194.191.244.86])
+        by smtp.gmail.com with ESMTPSA id m9sm978873ejj.53.2021.05.20.00.29.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 00:29:30 -0700 (PDT)
+From:   Juerg Haefliger <juerg.haefliger@canonical.com>
+X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
+To:     joe@perches.com, Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-watchdog@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: [PATCH] watchdog: ziirave_wdt: Remove VERSION_FMT defines and add sysfs newlines
+Date:   Thu, 20 May 2021 09:29:18 +0200
+Message-Id: <20210520072918.76482-1-juergh@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.185.226]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xingang Wang <wangxingang5@huawei.com>
+Remove the ZIIRAVE_{BL,FW}_VERION_FMT defines since they're only used in
+very few places. While at it, add newlines to sysfs outputs.
 
-When booting with devicetree, the pci_request_acs() is called after the
-enumeration and initialization of PCI devices, thus the ACS is not
-enabled. And ACS should be enabled when IOMMU is detected for the
-PCI host bridge, so add check for IOMMU before probe of PCI host and call
-pci_request_acs() to make sure ACS will be enabled when enumerating PCI
-devices.
-
-Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
-configuring IOMMU linkage")
-Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+Suggested-By: Joe Perches <joe@perches.com>
+Signed-off-by: Juerg Haefliger <juergh@canonical.com>
 ---
- drivers/iommu/of_iommu.c                 |  1 -
- drivers/pci/controller/pci-host-common.c | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-index a9d2df001149..54a14da242cc 100644
---- a/drivers/iommu/of_iommu.c
-+++ b/drivers/iommu/of_iommu.c
-@@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
- 			.np = master_np,
- 		};
+ Depends on: https://lore.kernel.org/lkml/20210511061812.480172-1-juergh@canonical.com/
+
+ drivers/watchdog/ziirave_wdt.c | 15 ++++++---------
+ 1 file changed, 6 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/watchdog/ziirave_wdt.c b/drivers/watchdog/ziirave_wdt.c
+index 6c9414d09684..c5a9b820d43a 100644
+--- a/drivers/watchdog/ziirave_wdt.c
++++ b/drivers/watchdog/ziirave_wdt.c
+@@ -69,9 +69,6 @@ static char *ziirave_reasons[] = {"power cycle", "hw watchdog", NULL, NULL,
+ #define ZIIRAVE_CMD_JUMP_TO_BOOTLOADER_MAGIC	1
+ #define ZIIRAVE_CMD_RESET_PROCESSOR_MAGIC	1
  
--		pci_request_acs();
- 		err = pci_for_each_dma_alias(to_pci_dev(dev),
- 					     of_pci_iommu_init, &info);
- 	} else {
-diff --git a/drivers/pci/controller/pci-host-common.c b/drivers/pci/controller/pci-host-common.c
-index d3924a44db02..5904ad0bd9ae 100644
---- a/drivers/pci/controller/pci-host-common.c
-+++ b/drivers/pci/controller/pci-host-common.c
-@@ -49,6 +49,21 @@ static struct pci_config_window *gen_pci_init(struct device *dev,
- 	return cfg;
- }
+-#define ZIIRAVE_FW_VERSION_FMT	"02.%02u.%02u"
+-#define ZIIRAVE_BL_VERSION_FMT	"01.%02u.%02u"
+-
+ struct ziirave_wdt_rev {
+ 	unsigned char major;
+ 	unsigned char minor;
+@@ -445,7 +442,7 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct device *dev,
+ 	if (ret)
+ 		return ret;
  
-+static void pci_host_enable_acs(struct pci_host_bridge *bridge)
-+{
-+	struct device_node *np = bridge->dev.parent->of_node;
-+	static bool acs_enabled;
-+
-+	if (!np || acs_enabled)
-+		return;
-+
-+	/* Detect IOMMU and make sure ACS will be enabled */
-+	if (of_property_read_bool(np, "iommu-map")) {
-+		acs_enabled = true;
-+		pci_request_acs();
-+	}
-+}
-+
- int pci_host_common_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
-@@ -81,6 +96,8 @@ int pci_host_common_probe(struct platform_device *pdev)
- 	bridge->ops = (struct pci_ops *)&ops->pci_ops;
- 	bridge->msi_domain = true;
+-	ret = sysfs_emit(buf, ZIIRAVE_FW_VERSION_FMT,
++	ret = sysfs_emit(buf, "02.%02u.%02u\n",
+ 			 w_priv->firmware_rev.major,
+ 			 w_priv->firmware_rev.minor);
  
-+	pci_host_enable_acs(bridge);
-+
- 	return pci_host_probe(bridge);
- }
- EXPORT_SYMBOL_GPL(pci_host_common_probe);
+@@ -469,7 +466,7 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = sysfs_emit(buf, ZIIRAVE_BL_VERSION_FMT,
++	ret = sysfs_emit(buf, "01.%02u.%02u\n",
+ 			 w_priv->bootloader_rev.major,
+ 			 w_priv->bootloader_rev.minor);
+ 
+@@ -493,7 +490,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct device *dev,
+ 	if (ret)
+ 		return ret;
+ 
+-	ret = sysfs_emit(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
++	ret = sysfs_emit(buf, "%s\n", ziirave_reasons[w_priv->reset_reason]);
+ 
+ 	mutex_unlock(&w_priv->sysfs_mutex);
+ 
+@@ -538,7 +535,7 @@ static ssize_t ziirave_wdt_sysfs_store_firm(struct device *dev,
+ 	}
+ 
+ 	dev_info(&client->dev,
+-		 "Firmware updated to version " ZIIRAVE_FW_VERSION_FMT "\n",
++		 "Firmware updated to version 02.%02u.%02u\n",
+ 		 w_priv->firmware_rev.major, w_priv->firmware_rev.minor);
+ 
+ 	/* Restore the watchdog timeout */
+@@ -679,7 +676,7 @@ static int ziirave_wdt_probe(struct i2c_client *client,
+ 	}
+ 
+ 	dev_info(&client->dev,
+-		 "Firmware version: " ZIIRAVE_FW_VERSION_FMT "\n",
++		 "Firmware version: 02.%02u.%02u\n",
+ 		 w_priv->firmware_rev.major, w_priv->firmware_rev.minor);
+ 
+ 	ret = ziirave_wdt_revision(client, &w_priv->bootloader_rev,
+@@ -690,7 +687,7 @@ static int ziirave_wdt_probe(struct i2c_client *client,
+ 	}
+ 
+ 	dev_info(&client->dev,
+-		 "Bootloader version: " ZIIRAVE_BL_VERSION_FMT "\n",
++		 "Bootloader version: 01.%02u.%02u\n",
+ 		 w_priv->bootloader_rev.major, w_priv->bootloader_rev.minor);
+ 
+ 	w_priv->reset_reason = i2c_smbus_read_byte_data(client,
 -- 
-2.19.1
+2.27.0
 
