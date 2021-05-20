@@ -2,161 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2F8F38B2DB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 599EA38B2E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243715AbhETPT1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 11:19:27 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:55597 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231298AbhETPTZ (ORCPT
+        id S243761AbhETPUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:20:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231298AbhETPUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:19:25 -0400
-Received: from smtpclient.apple (p4fefc9d6.dip0.t-ipconnect.de [79.239.201.214])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 9BD4ACECEA;
-        Thu, 20 May 2021 17:25:56 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH] Bluetooth: hci_h5: Add RTL8822CS capabilities
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
-Date:   Thu, 20 May 2021 17:18:02 +0200
-Cc:     linux-bluetooth <linux-bluetooth@vger.kernel.org>,
-        CrosBT Upstreaming <chromeos-bluetooth-upstreaming@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Abhishek Pandit-Subedi <abhishekpandit@chromium.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <3DB375AF-3BC3-43F3-A1F5-1E3CBF17318D@holtmann.org>
-References: <20210513165327.1.I4d214bb82746fb2ed94eb1c2100dda0f63cf9a25@changeid>
- <7867EC1F-324A-4739-B5F7-DDEB3994EA7A@holtmann.org>
- <CAJQfnxE4PY09GpxGYLKy2kXnaCQaUmCakhCKnhqGnoK+9aSyyg@mail.gmail.com>
- <DAE03499-573B-4A72-A2A9-2E139B78AB2E@holtmann.org>
- <CAJQfnxHg50mKGVpQoH-dobphAzpFwyc2gQMzVkLZeNUW0Yyh3Q@mail.gmail.com>
- <CAJQfnxG1ba=imd_BiOXpuT8WF8HeWPcs5y4kdKx+fV6LEL9SyA@mail.gmail.com>
-To:     Archie Pusaka <apusaka@google.com>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        Thu, 20 May 2021 11:20:42 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EDA3C061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:19:20 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id k132so3363342iof.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=gp4zK5F2YjtgwGkVne9PjTqCbpKTKbtlpIMPojGX78E=;
+        b=jxiIg/X8eeGT0fxle+nAvWqUrzDTkM4OMKMHiBuXd3gTNNdIRFHo0W1oWw9eFYzDdo
+         CawCNgJtcrAaq33LtKjLLlavJRSAMmo0q4HfPO+PizyisIBxov3xNupNT2DV1+z38lEb
+         q4dG6qNgQeUhj1XdCcmEhpn5Mq8lfBKpvmIQV86lIGyOFu+GBfwnhd6H49XDP0ZirMzI
+         8CiSeV2hj3UM30FDLUbHnSrLdL8uogFDoohqmlGoMndE9ENHuPttzaMKql4c9R3+AbBo
+         1LwK6uaMjlRXg9XsvrTk9YtqcY1Ijxrhw/aaC+6EgrSD2KNmqRP3llqM8Zna9Bnlsvf3
+         viYA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=gp4zK5F2YjtgwGkVne9PjTqCbpKTKbtlpIMPojGX78E=;
+        b=C1+hVLaf2R1gpu8VOKfdglRWa58+ldT+x5hkY7kDfCCwqp+YWQG1sw540pnQsEMRnN
+         STAB66WG2sDR812jMVDNLmjpZJvhY9seETfSKizrpCCtn+fV+YZIM2zlAzLxr/XSAHLw
+         kkxcdCobEhJRjhtb8vbAV0ZQdYVplyB2GCcMbYKdaSu7YJ61dB5Wb6GPfSfSuhHzroab
+         tz8am0BtfCOtcTQpDt/mugcO/jXCwW3ZUMMF2OnYYclX5YsAlsDF/FXrlBeAQhUMJ15S
+         Ma8y/DXNx2nmqzSToIALqK+cL3HEl+vOaw7Y9HsuoeY4IfAV8Aw7GotX1cqOWNAy9Fts
+         U2/Q==
+X-Gm-Message-State: AOAM5316KwaXT02EhgH/GY3GE4h1C6ZrVoH7lNVmyrpj0OVCd4/aBJyP
+        iCei85qGn4vsMyiXgPNfN4M=
+X-Google-Smtp-Source: ABdhPJzd/GIEWPYhCBDP28KgS4r3aRlx2GrfhtLxDPMW0Xz/EVLshHxnZV2UnA4rIQXxC2p18t96XQ==
+X-Received: by 2002:a5d:81c9:: with SMTP id t9mr6347913iol.45.1621523959364;
+        Thu, 20 May 2021 08:19:19 -0700 (PDT)
+Received: from edi.home.geth (69-174-157-26.symrinaa.metronetinc.net. [69.174.157.26])
+        by smtp.gmail.com with ESMTPSA id t14sm3410014iob.36.2021.05.20.08.19.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 08:19:19 -0700 (PDT)
+From:   Derrick McKee <derrick.mckee@gmail.com>
+To:     derrick.mckee@gmail.com
+Cc:     Nathan.Burow@ll.mit.edu, Yianni Giannaris <yiannig@mit.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] Ensure kernel AI key is not changed on fork
+Date:   Thu, 20 May 2021 11:18:54 -0400
+Message-Id: <20210520151854.3632129-1-derrick.mckee@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210430150438.GA57205@C02TD0UTHF1T.local>
+References: <20210430150438.GA57205@C02TD0UTHF1T.local>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Archie,
+The kernel uses the IA key for PAC signing, 
+and this key should remain unchanged from the kernel point of view.
+This patch ensures that the IA key remains constant on fork, 
+if it has been previously set.
+The software is provided on an as-is basis.
 
->>>>>> RTL8822 chipset supports WBS, and this information is conveyed in
->>>>>> btusb.c. However, the UART driver doesn't have this information just
->>>>>> yet.
->>>>>> 
->>>>>> Signed-off-by: Archie Pusaka <apusaka@chromium.org>
->>>>>> Reviewed-by: Abhishek Pandit-Subedi <abhishekpandit@chromium.org>
->>>>>> ---
->>>>>> 
->>>>>> drivers/bluetooth/btrtl.c  | 26 ++++++++++++++++----------
->>>>>> drivers/bluetooth/btrtl.h  |  2 ++
->>>>>> drivers/bluetooth/hci_h5.c |  5 +----
->>>>>> 3 files changed, 19 insertions(+), 14 deletions(-)
->>>>>> 
->>>>>> diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
->>>>>> index e7fe5fb22753..988a09860c6b 100644
->>>>>> --- a/drivers/bluetooth/btrtl.c
->>>>>> +++ b/drivers/bluetooth/btrtl.c
->>>>>> @@ -719,17 +719,8 @@ int btrtl_download_firmware(struct hci_dev *hdev,
->>>>>> }
->>>>>> EXPORT_SYMBOL_GPL(btrtl_download_firmware);
->>>>>> 
->>>>>> -int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>> +void btrtl_set_quirks(struct hci_dev *hdev, struct btrtl_device_info *btrtl_dev)
->>>>>> {
->>>>>> -     struct btrtl_device_info *btrtl_dev;
->>>>>> -     int ret;
->>>>>> -
->>>>>> -     btrtl_dev = btrtl_initialize(hdev, NULL);
->>>>>> -     if (IS_ERR(btrtl_dev))
->>>>>> -             return PTR_ERR(btrtl_dev);
->>>>>> -
->>>>>> -     ret = btrtl_download_firmware(hdev, btrtl_dev);
->>>>>> -
->>>>>>     /* Enable controller to do both LE scan and BR/EDR inquiry
->>>>>>      * simultaneously.
->>>>>>      */
->>>>>> @@ -750,6 +741,21 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>>             rtl_dev_dbg(hdev, "WBS supported not enabled.");
->>>>>>             break;
->>>>>>     }
->>>>>> +}
->>>>>> +EXPORT_SYMBOL_GPL(btrtl_set_quirks);
->>>>>> +
->>>>>> +int btrtl_setup_realtek(struct hci_dev *hdev)
->>>>>> +{
->>>>>> +     struct btrtl_device_info *btrtl_dev;
->>>>>> +     int ret;
->>>>>> +
->>>>>> +     btrtl_dev = btrtl_initialize(hdev, NULL);
->>>>>> +     if (IS_ERR(btrtl_dev))
->>>>>> +             return PTR_ERR(btrtl_dev);
->>>>>> +
->>>>>> +     ret = btrtl_download_firmware(hdev, btrtl_dev);
->>>>>> +
->>>>>> +     btrtl_set_quirks(hdev, btrtl_dev);
->>>>>> 
->>>>>>     btrtl_free(btrtl_dev);
->>>>>>     return ret;
->>>>>> diff --git a/drivers/bluetooth/btrtl.h b/drivers/bluetooth/btrtl.h
->>>>>> index 2a582682136d..260167f01b08 100644
->>>>>> --- a/drivers/bluetooth/btrtl.h
->>>>>> +++ b/drivers/bluetooth/btrtl.h
->>>>>> @@ -54,6 +54,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
->>>>>> void btrtl_free(struct btrtl_device_info *btrtl_dev);
->>>>>> int btrtl_download_firmware(struct hci_dev *hdev,
->>>>>>                         struct btrtl_device_info *btrtl_dev);
->>>>>> +void btrtl_set_quirks(struct hci_dev *hdev,
->>>>>> +                   struct btrtl_device_info *btrtl_dev);
->>>>>> int btrtl_setup_realtek(struct hci_dev *hdev);
->>>>>> int btrtl_shutdown_realtek(struct hci_dev *hdev);
->>>>>> int btrtl_get_uart_settings(struct hci_dev *hdev,
->>>>>> diff --git a/drivers/bluetooth/hci_h5.c b/drivers/bluetooth/hci_h5.c
->>>>>> index 27e96681d583..e0520639f4ba 100644
->>>>>> --- a/drivers/bluetooth/hci_h5.c
->>>>>> +++ b/drivers/bluetooth/hci_h5.c
->>>>>> @@ -906,10 +906,7 @@ static int h5_btrtl_setup(struct h5 *h5)
->>>>>>     /* Give the device some time before the hci-core sends it a reset */
->>>>>>     usleep_range(10000, 20000);
->>>>>> 
->>>>>> -     /* Enable controller to do both LE scan and BR/EDR inquiry
->>>>>> -      * simultaneously.
->>>>>> -      */
->>>>>> -     set_bit(HCI_QUIRK_SIMULTANEOUS_DISCOVERY, &h5->hu->hdev->quirks);
->>>>>> +     btrtl_set_quirks(h5->hu->hdev, btrtl_dev);
->>>>> 
->>>>> any reason why not just setting WBS quirk here?
->>>> 
->>>> Hmm, I think WBS is the feature of the chipset and not the transport.
->>>> Therefore isn't it better to just have it set in one place?
->>>> Setting the quirks here means we need to copy paste the settings from btrtl.c.
->>> 
->>> but since you are already setting HCI_QUIRK_SIMULTANEOUS_DISCOVERY right now, I don’t see the difference.
->> 
->> Sorry, I don't get what you mean.
->> With this patch I also moved HCI_QUIRK_SIMULTANEOUS_DISCOVERY into
->> btrtl.c, so it's together with the WBS quirk.
->> 
->>> Can we actually verify that we still need the WBS quirk. I think we fixed the broken errerrnous packet flag handling.
->> 
->> To be honest, I am not aware about the story of the broken erroneous
->> packet flag.
->> Last time I checked I still needed the quirk to have RTL8822 on UART
->> properly run WBS, but that was months ago...
->> Let me verify whether this quirk is still needed.
-> 
-> It looks like we still need the WBS quirk because otherwise the host
-> wouldn't know whether the controller supports WBS or not. It's used in
-> get_supported_settings() in mgmt.c.
+Signed-off-by: Derrick McKee <derrick.mckee@gmail.com>
+Signed-off-by: Yianni Giannaris <yiannig@mit.edu>
+---
+ arch/arm64/include/asm/pointer_auth.h | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-and why not set it unconditionally for all Realtek chips?
-
-Regards
-
-Marcel
+diff --git a/arch/arm64/include/asm/pointer_auth.h b/arch/arm64/include/asm/pointer_auth.h
+index d50416be99be..9748413e72fd 100644
+--- a/arch/arm64/include/asm/pointer_auth.h
++++ b/arch/arm64/include/asm/pointer_auth.h
+@@ -69,10 +69,13 @@ static inline void ptrauth_keys_init_user(struct ptrauth_keys_user *keys)
+ 	ptrauth_keys_install_user(keys);
+ }
+ 
+-static __always_inline void ptrauth_keys_init_kernel(struct ptrauth_keys_kernel *keys)
++static __always_inline void
++ptrauth_keys_init_kernel(struct ptrauth_keys_kernel *keys)
+ {
+-	if (system_supports_address_auth())
+-		get_random_bytes(&keys->apia, sizeof(keys->apia));
++	if (keys->apia.lo == 0 && keys->apia.hi == 0) {
++		if (system_supports_address_auth())
++			get_random_bytes(&keys->apia, sizeof(keys->apia));
++	}
+ }
+ 
+ static __always_inline void ptrauth_keys_switch_kernel(struct ptrauth_keys_kernel *keys)
+-- 
+2.31.1
 
