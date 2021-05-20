@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EB4038AAA1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B93538AA9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:14:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240065AbhETLPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:15:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54442 "EHLO mail.kernel.org"
+        id S239951AbhETLPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:15:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239386AbhETKyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:54:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C7DE61CE2;
-        Thu, 20 May 2021 10:01:21 +0000 (UTC)
+        id S239394AbhETKyy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:54:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A2A4661CE3;
+        Thu, 20 May 2021 10:01:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504881;
-        bh=pUU7Sk1wS29Qif8RB2nCfqehjHYuPivh06PDo2M0P1E=;
+        s=korg; t=1621504884;
+        bh=EVw1yJLDoY2u+9KBb7oQsjBEFyKgubZGB4jVr4IBGjA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b+vmHTwzSdp6IweFvoAkT6ijSA5/tPAZ9l0VKEBWQSPmJ9mMEDrd56rxx7hmN0RZd
-         XKuzQgo4efjOGpRaGviZOI8qOHUN/zVtO5bXt9j6GVIlcT8/bQcnM/WJVsAU1NKKIF
-         gTPg6rjaXEmTYzgF2pi8W4GoBc4HNKjlPE689+e8=
+        b=Fz/jyc/PH9vkrd54O4k0kq2VtzQyFSOqnBrm4IP1f+Db/UeocTtCUBOGCXKzhHW4C
+         XCESwMG7HzpC+aViggQ9WVJJDlXDsa8X/msbc2ygr4pg5eOblrTm/uxJGiOPZpQGe7
+         b4gpQEuw05O8xhvjGV/LUI+WQiCo1fwn/c7YUn4Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 124/240] media: m88rs6000t: avoid potential out-of-bounds reads on arrays
-Date:   Thu, 20 May 2021 11:21:56 +0200
-Message-Id: <20210520092112.828024442@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 125/240] pata_arasan_cf: fix IRQ check
+Date:   Thu, 20 May 2021 11:21:57 +0200
+Message-Id: <20210520092112.859760725@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,54 +40,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit 9baa3d64e8e2373ddd11c346439e5dfccb2cbb0d ]
+[ Upstream commit c7e8f404d56b99c80990b19a402c3f640d74be05 ]
 
-There a 3 array for-loops that don't check the upper bounds of the
-index into arrays and this may lead to potential out-of-bounds
-reads.  Fix this by adding array size upper bounds checks to be
-full safe.
+The driver's probe() method is written as if platform_get_irq() returns 0
+on error, while actually it returns a negative error code (with all the
+other values considered valid IRQs). Rewrite the driver's IRQ checking code
+to pass the positive IRQ #s to ata_host_activate(), propagate upstream
+-EPROBE_DEFER, and set up the driver to polling mode on (negative) errors
+and IRQ0 (libata treats IRQ #0 as a polling mode anyway)...
 
-Addresses-Coverity: ("Out-of-bounds read")
-
-Link: https://lore.kernel.org/linux-media/20201007121628.20676-1-colin.king@canonical.com
-Fixes: 333829110f1d ("[media] m88rs6000t: add new dvb-s/s2 tuner for integrated chip M88RS6000")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Fixes: a480167b23ef ("pata_arasan_cf: Adding support for arasan compact flash host controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/tuners/m88rs6000t.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/ata/pata_arasan_cf.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/media/tuners/m88rs6000t.c b/drivers/media/tuners/m88rs6000t.c
-index 9f3e0fd4cad9..d4443f9c9fa3 100644
---- a/drivers/media/tuners/m88rs6000t.c
-+++ b/drivers/media/tuners/m88rs6000t.c
-@@ -534,7 +534,7 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
- 	PGA2_cri = PGA2_GC >> 2;
- 	PGA2_crf = PGA2_GC & 0x03;
+diff --git a/drivers/ata/pata_arasan_cf.c b/drivers/ata/pata_arasan_cf.c
+index b4d54771c9fe..623199fab8fe 100644
+--- a/drivers/ata/pata_arasan_cf.c
++++ b/drivers/ata/pata_arasan_cf.c
+@@ -819,12 +819,19 @@ static int arasan_cf_probe(struct platform_device *pdev)
+ 	else
+ 		quirk = CF_BROKEN_UDMA; /* as it is on spear1340 */
  
--	for (i = 0; i <= RF_GC; i++)
-+	for (i = 0; i <= RF_GC && i < ARRAY_SIZE(RFGS); i++)
- 		RFG += RFGS[i];
+-	/* if irq is 0, support only PIO */
+-	acdev->irq = platform_get_irq(pdev, 0);
+-	if (acdev->irq)
++	/*
++	 * If there's an error getting IRQ (or we do get IRQ0),
++	 * support only PIO
++	 */
++	ret = platform_get_irq(pdev, 0);
++	if (ret > 0) {
++		acdev->irq = ret;
+ 		irq_handler = arasan_cf_interrupt;
+-	else
++	} else	if (ret == -EPROBE_DEFER) {
++		return ret;
++	} else	{
+ 		quirk |= CF_BROKEN_MWDMA | CF_BROKEN_UDMA;
++	}
  
- 	if (RF_GC == 0)
-@@ -546,12 +546,12 @@ static int m88rs6000t_get_rf_strength(struct dvb_frontend *fe, u16 *strength)
- 	if (RF_GC == 3)
- 		RFG += 100;
- 
--	for (i = 0; i <= IF_GC; i++)
-+	for (i = 0; i <= IF_GC && i < ARRAY_SIZE(IFGS); i++)
- 		IFG += IFGS[i];
- 
- 	TIAG = TIA_GC * TIA_GS;
- 
--	for (i = 0; i <= BB_GC; i++)
-+	for (i = 0; i <= BB_GC && i < ARRAY_SIZE(BBGS); i++)
- 		BBG += BBGS[i];
- 
- 	PGA2G = PGA2_cri * PGA2_cri_GS + PGA2_crf * PGA2_crf_GS;
+ 	acdev->pbase = res->start;
+ 	acdev->vbase = devm_ioremap_nocache(&pdev->dev, res->start,
 -- 
 2.30.2
 
