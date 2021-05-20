@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFE738A0D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:25:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1344838A149
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:28:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231689AbhETJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:26:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52520 "EHLO mail.kernel.org"
+        id S231579AbhETJ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:29:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231614AbhETJ0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:26:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 30F7761244;
-        Thu, 20 May 2021 09:24:53 +0000 (UTC)
+        id S232124AbhETJ2F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:28:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 052D3613D4;
+        Thu, 20 May 2021 09:26:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502693;
-        bh=tUlpM3DQBjSnWR7vaADyD1QCt5Vsf2xpNC/talcvKrk=;
+        s=korg; t=1621502797;
+        bh=NZQEPQYccewLr+VRuJ61RYKbXOqWqPAxAxbdO+r18iY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYD9IY2aLVVKeXzlxH9Y9JW4jDGD7ki06xfnuivUNFztMuLqL+4d76Cx02Xc+HstF
-         tmZhcHFcr4/5pURY9PBH+9r9GZeXFLnEBLsL8PHw+/60EGa22sEcO7ZGKM0f07cGEE
-         QxWPd1lY126SLSu/PlBf5plnC/0DmhJDZKYmVs+0=
+        b=kLWSrhFrUdl9eNVFUCbycbGD1s0tWrAKK22e4lA1FpquP/1Dvsw3uxNwE2YpJuHbM
+         B9xXTvq0b1RC6HTzUtBlMJbZO+NL/hiT7dyzYanwAqzDwgeiIjc+2DgrqcqefdGV5L
+         udQZbXiYQ3+oLjfp0C5Z0YXzcoo7eDKNQdaEFwv4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 17/45] svcrdma: Dont leak send_ctxt on Send errors
+        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.10 07/47] isdn: capi: fix mismatched prototypes
 Date:   Thu, 20 May 2021 11:22:05 +0200
-Message-Id: <20210520092054.083978290@linuxfoundation.org>
+Message-Id: <20210520092053.794437463@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.516042993@linuxfoundation.org>
-References: <20210520092053.516042993@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,48 +39,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chuck Lever <chuck.lever@oracle.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-[ Upstream commit 351461f332db5670056a9c6bce6916027f91072f ]
+commit 5ee7d4c7fbc9d3119a20b1c77d34003d1f82ac26 upstream.
 
-Address a rare send_ctxt leak in the svc_rdma_sendto() error paths.
+gcc-11 complains about a prototype declaration that is different
+from the function definition:
 
-Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+drivers/isdn/capi/kcapi.c:724:44: error: argument 2 of type ‘u8 *’ {aka ‘unsigned char *’} declared as a pointer [-Werror=array-parameter=]
+  724 | u16 capi20_get_manufacturer(u32 contr, u8 *buf)
+      |                                        ~~~~^~~
+In file included from drivers/isdn/capi/kcapi.c:13:
+drivers/isdn/capi/kcapi.h:62:43: note: previously declared as an array ‘u8[64]’ {aka ‘unsigned char[64]’}
+   62 | u16 capi20_get_manufacturer(u32 contr, u8 buf[CAPI_MANUFACTURER_LEN]);
+      |                                        ~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/isdn/capi/kcapi.c:790:38: error: argument 2 of type ‘u8 *’ {aka ‘unsigned char *’} declared as a pointer [-Werror=array-parameter=]
+  790 | u16 capi20_get_serial(u32 contr, u8 *serial)
+      |                                  ~~~~^~~~~~
+In file included from drivers/isdn/capi/kcapi.c:13:
+drivers/isdn/capi/kcapi.h:64:37: note: previously declared as an array ‘u8[8]’ {aka ‘unsigned char[8]’}
+   64 | u16 capi20_get_serial(u32 contr, u8 serial[CAPI_SERIAL_LEN]);
+      |                                  ~~~^~~~~~~~~~~~~~~~~~~~~~~
+
+Change the definition to make them match.
+
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/sunrpc/xprtrdma/svc_rdma_sendto.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/isdn/capi/kcapi.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-index 52c759a8543e..3669661457c1 100644
---- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-+++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
-@@ -958,7 +958,7 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
- 	p = xdr_reserve_space(&sctxt->sc_stream,
- 			      rpcrdma_fixed_maxsz * sizeof(*p));
- 	if (!p)
--		goto err0;
-+		goto err1;
+--- a/drivers/isdn/capi/kcapi.c
++++ b/drivers/isdn/capi/kcapi.c
+@@ -721,7 +721,7 @@ u16 capi20_put_message(struct capi20_app
+  * Return value: CAPI result code
+  */
  
- 	ret = svc_rdma_send_reply_chunk(rdma, rctxt, &rqstp->rq_res);
- 	if (ret < 0)
-@@ -970,11 +970,11 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
- 	*p = pcl_is_empty(&rctxt->rc_reply_pcl) ? rdma_msg : rdma_nomsg;
+-u16 capi20_get_manufacturer(u32 contr, u8 *buf)
++u16 capi20_get_manufacturer(u32 contr, u8 buf[CAPI_MANUFACTURER_LEN])
+ {
+ 	struct capi_ctr *ctr;
+ 	u16 ret;
+@@ -787,7 +787,7 @@ u16 capi20_get_version(u32 contr, struct
+  * Return value: CAPI result code
+  */
  
- 	if (svc_rdma_encode_read_list(sctxt) < 0)
--		goto err0;
-+		goto err1;
- 	if (svc_rdma_encode_write_list(rctxt, sctxt) < 0)
--		goto err0;
-+		goto err1;
- 	if (svc_rdma_encode_reply_chunk(rctxt, sctxt, ret) < 0)
--		goto err0;
-+		goto err1;
- 
- 	ret = svc_rdma_send_reply_msg(rdma, sctxt, rctxt, rqstp);
- 	if (ret < 0)
--- 
-2.30.2
-
+-u16 capi20_get_serial(u32 contr, u8 *serial)
++u16 capi20_get_serial(u32 contr, u8 serial[CAPI_SERIAL_LEN])
+ {
+ 	struct capi_ctr *ctr;
+ 	u16 ret;
 
 
