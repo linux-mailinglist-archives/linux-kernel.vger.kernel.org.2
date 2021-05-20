@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEF5E38ACE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5A9238ACF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235647AbhETLvX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:51:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44860 "EHLO
+        id S241975AbhETLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242719AbhETLkY (ORCPT
+        with ESMTP id S241306AbhETLmO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:40:24 -0400
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2284C04981A
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:12:13 -0700 (PDT)
-Received: by mail-il1-x129.google.com with SMTP id g11so10766525ilq.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:12:13 -0700 (PDT)
+        Thu, 20 May 2021 07:42:14 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9534C061359;
+        Thu, 20 May 2021 03:13:40 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so5165876pjp.4;
+        Thu, 20 May 2021 03:13:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hM9iWHQw8llRbnnbpFxr+yRm64ZVy+q1ZE0MMw/cpmY=;
-        b=GeBzHXR2RcwkBbBvN9dKO+0RWo4eNKFGpi1tU9lKPekIem6dxP3/52yhjMRD/Oidcq
-         zZavPug6l5BXmxDgui4b789qBPszWqOV+6l8iREx5MoVPzOp3n3pgn22DX3qzUATsGxo
-         rks/P1XAW7x1p4AOMBxvszjx4BJ0i6XAtg749OFi5mqONDqF0/WMz9g4cORdVB7bdsWc
-         Bwy4bKNMD/LjExq50rxEk2b/AmZKRPd9rDDWMDlfwmLiMGF53PkorP5fpuVSiByhJHpI
-         4VapdKMTTQBWMHbFB/R3WKbhgsR1XXvisGx7DPGBpY7Nhm4+nNxnnF2gSfF3zD0ZSmGl
-         v9eA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BK4nPnSX0W1HYC8KLYnXHOTPgxtKRR+x442dLO+mDz0=;
+        b=SP6USzDMW0tfeye1gzxbep8Sjz+YnXgKzNBNcVO60fn1x+joA2C9ngKgHh6qKa1bY5
+         eTZ4LPL4fpCq8so6FGuNuswhI+OzNr+BqxeEU9w0bMoVVoE2aTtNdrZRCGyu/QU2FJO8
+         eEz+aBy938X8NSFbKo+pl2fODYeqUFfFTchjpbFwjf40SY0ZndkEVWWp+5mDmDzFznly
+         G0TdAj+j6YdgkEvzzDemTDHxqGT+2v5LMDfvDSW5uP3c+4EbMcTFaRyUxr8JwfM2eUMU
+         mo0WvKN2bexznFAt0TymulA1n56azTg70QVRzvaCzKTJbwxyTNqB58coHJ2mwtdb+rX9
+         TT/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hM9iWHQw8llRbnnbpFxr+yRm64ZVy+q1ZE0MMw/cpmY=;
-        b=js9+3nO/9M/8L7k5afLKMMj8HGNtlZouUDsUGxHVur/D+Uxu4OdxVYDCa9lDzK9Ohq
-         guTiW+q62hzfA5oHvPiK2tpqMvDUWdBXKoG7h2xr5mF1WcBa6g6cMPZpgfjfY7dbgCsf
-         NYthQ9l3+uc0P0KYNx0dlE8eEnRJNYPhEGA4WAzUMg7pWv2xi/p3/qlUmMycunTimefQ
-         NbJDTjPQKreJP6QMTmJltnDS1jg5KZISLMNLdX7e+Dwbqduvp1qvGIEwZC4L9ez26Wag
-         2NAoSjiaQe13nRF6jRGnfeAJOTJJbhAIgA5jHF0i9+6by2MjolFEuPWADYKKn86GKrne
-         TC1w==
-X-Gm-Message-State: AOAM533S/xdF7wYMet24TozMlEgdWD1ABTt5HsRbQDV24Csldk72oL4V
-        8UrV09iY4EOhcrVNVl7kIWpUuj1ryrjwY7quncXS3w==
-X-Google-Smtp-Source: ABdhPJz2wgYK5wtzmQSOAagwO9bVo75O8m6IquGkE4Ecf2XrkgakHVTo8l14fAfQGKSdQ65mecXLc9MikZT1ap2eQuc=
-X-Received: by 2002:a05:6e02:92f:: with SMTP id o15mr4811751ilt.127.1621505533011;
- Thu, 20 May 2021 03:12:13 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BK4nPnSX0W1HYC8KLYnXHOTPgxtKRR+x442dLO+mDz0=;
+        b=PLbt9q1ngeM64IEkzz38RE+lwzCb4eTlC07a5rdtKr3ZEIyCuCPoJuZymMPETSrC6s
+         ZBEwAJ9OxIKXHzfXyfMVQV+nORVW2xRz2r+SRYQxbZiNaljta5Y2O9J6A91MmNkPfJoS
+         CMxjID4C5hwt7EofYgy7cD1sOsrJ/D6TWatk4Ndv5MGbCimWOK2IXLPu0RAdpXIZSjuy
+         hvIEVu40xAk5Cw2kh6ep6bwdfhAeC0l+MnKvWuA84naQsgFS9OJCMSBCi5zC21O1kJox
+         0MmN5HjN8IVpl9pF4viKbgVlFEWcNNS+LkkUADw4hPkAoomq9MWqQA3dDJCEkaoYtoIY
+         0Ghg==
+X-Gm-Message-State: AOAM532VLhyLqyXE5LCK+yj9HCalVR68wJW28WDGxbPWO4llnWJGfr+t
+        BLSEWb+56J3aSdmhMwCmK8o=
+X-Google-Smtp-Source: ABdhPJy79V1UJo4Nw4HJTmXdRZm9RJbB/fW+Yb8RpFtbB5Pw+HFgSZMu0Ue7KHGgM7CvJHFgJUEa2Q==
+X-Received: by 2002:a17:90a:2:: with SMTP id 2mr4451120pja.107.1621505620415;
+        Thu, 20 May 2021 03:13:40 -0700 (PDT)
+Received: from tj.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id g8sm6307878pju.6.2021.05.20.03.13.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 03:13:40 -0700 (PDT)
+From:   Yue Hu <zbestahu@gmail.com>
+To:     adrian.hunter@intel.com, riteshh@codeaurora.org,
+        asutoshd@codeaurora.org, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: [PATCH] mmc: cqhci: fix typo
+Date:   Thu, 20 May 2021 18:13:30 +0800
+Message-Id: <20210520101330.2255-1-zbestahu@gmail.com>
+X-Mailer: git-send-email 2.29.2.windows.3
 MIME-Version: 1.0
-References: <20210520064508.3121211-1-pihsun@chromium.org>
-In-Reply-To: <20210520064508.3121211-1-pihsun@chromium.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 20 May 2021 18:12:02 +0800
-Message-ID: <CA+Px+wXnMsLbEhpwEPpkDar+6RT+jT3YPnkFDKB1wFaLn12jRw@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: anx7625: Synchronously run runtime suspend.
-To:     Pi-Hsun Shih <pihsun@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        "open list:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 2:45 PM Pi-Hsun Shih <pihsun@chromium.org> wrote:
-> Fixes: 60487584a79a ("drm/bridge: anx7625: refactor power control to use runtime PM framework")
-> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+From: Yue Hu <huyue2@yulong.com>
 
-Tested-by: Tzung-Bi Shih <tzungbi@google.com>
+'descritors' -> 'descriptors'
+
+Signed-off-by: Yue Hu <huyue2@yulong.com>
+---
+ drivers/mmc/host/cqhci-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
+index e759e3b..c237b6e 100644
+--- a/drivers/mmc/host/cqhci-core.c
++++ b/drivers/mmc/host/cqhci-core.c
+@@ -146,7 +146,7 @@ static void cqhci_dumpregs(struct cqhci_host *cq_host)
+ }
+ 
+ /*
+- * The allocated descriptor table for task, link & transfer descritors
++ * The allocated descriptor table for task, link & transfer descriptors
+  * looks like:
+  * |----------|
+  * |task desc |  |->|----------|
+-- 
+1.9.1
+
