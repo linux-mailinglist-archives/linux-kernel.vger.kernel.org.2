@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CC6838ABC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5579738AA20
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241594AbhETL1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:27:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38974 "EHLO mail.kernel.org"
+        id S238647AbhETLK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:10:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238049AbhETLHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:07:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3249860BD3;
-        Thu, 20 May 2021 10:06:01 +0000 (UTC)
+        id S238995AbhETKuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:50:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C69B160C3F;
+        Thu, 20 May 2021 09:59:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505161;
-        bh=ElMWXytHLhIqi64Gk7kpZGsahtsBL1G92TPQA90NMtY=;
+        s=korg; t=1621504789;
+        bh=Xtb75x+6vaCBMpeFqitC/PyP58tciQn/PQ7zTTMXx6M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=evB4a6AbNpoS852uS1hscBgQaxd8ZrSSqYnl0XF785RwVtUL63TOIrRwF9652XP5q
-         3F46vgdOeyLIHb8qyG2/htc7r/n3GRSCxSvX5cyTYEowznoVETUt6UIWiyJIel+hx5
-         k6qdD/ePyIugUeHwllCbSy98tKWbRRNBB6Jz86Uw=
+        b=v9uf2fHRQy7G9To4zzAn3cZ0Rmtlj+KPfm4qKRxsLtLGiv/S1ELCyATqe2yCR9B34
+         WyC5vPZO6fR5eCiC7I57nRiA9M5lFsbz4QvLcQDjQ/znhKfJABLZO+8DapOip98jK5
+         9diw9CalRI1+K8YXjl5zUIbfzwQXdaZTQyRBvI+c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Mark Langsdorf <mlangsdo@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
-Subject: [PATCH 4.4 010/190] ACPI: custom_method: fix a possible memory leak
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Zhao Heming <heming.zhao@suse.com>, Song Liu <song@kernel.org>
+Subject: [PATCH 4.9 082/240] md: md_open returns -EBUSY when entering racing area
 Date:   Thu, 20 May 2021 11:21:14 +0200
-Message-Id: <20210520092102.518366034@linuxfoundation.org>
+Message-Id: <20210520092111.443914515@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
-References: <20210520092102.149300807@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+References: <20210520092108.587553970@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,36 +39,146 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mark Langsdorf <mlangsdo@redhat.com>
+From: Zhao Heming <heming.zhao@suse.com>
 
-commit 1cfd8956437f842836e8a066b40d1ec2fc01f13e upstream.
+commit 6a4db2a60306eb65bfb14ccc9fde035b74a4b4e7 upstream.
 
-In cm_write(), if the 'buf' is allocated memory but not fully consumed,
-it is possible to reallocate the buffer without freeing it by passing
-'*ppos' as 0 on a subsequent call.
+commit d3374825ce57 ("md: make devices disappear when they are no longer
+needed.") introduced protection between mddev creating & removing. The
+md_open shouldn't create mddev when all_mddevs list doesn't contain
+mddev. With currently code logic, there will be very easy to trigger
+soft lockup in non-preempt env.
 
-Add an explicit kfree() before kzalloc() to prevent the possible memory
-leak.
+This patch changes md_open returning from -ERESTARTSYS to -EBUSY, which
+will break the infinitely retry when md_open enter racing area.
 
-Fixes: 526b4af47f44 ("ACPI: Split out custom_method functionality into an own driver")
-Signed-off-by: Mark Langsdorf <mlangsdo@redhat.com>
-Cc: 5.4+ <stable@vger.kernel.org> # 5.4+
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+This patch is partly fix soft lockup issue, full fix needs mddev_find
+is split into two functions: mddev_find & mddev_find_or_alloc. And
+md_open should call new mddev_find (it only does searching job).
+
+For more detail, please refer with Christoph's "split mddev_find" patch
+in later commits.
+
+*** env ***
+kvm-qemu VM 2C1G with 2 iscsi luns
+kernel should be non-preempt
+
+*** script ***
+
+about trigger every time with below script
+
+```
+1  node1="mdcluster1"
+2  node2="mdcluster2"
+3
+4  mdadm -Ss
+5  ssh ${node2} "mdadm -Ss"
+6  wipefs -a /dev/sda /dev/sdb
+7  mdadm -CR /dev/md0 -b clustered -e 1.2 -n 2 -l mirror /dev/sda \
+   /dev/sdb --assume-clean
+8
+9  for i in {1..10}; do
+10    echo ==== $i ====;
+11
+12    echo "test  ...."
+13    ssh ${node2} "mdadm -A /dev/md0 /dev/sda /dev/sdb"
+14    sleep 1
+15
+16    echo "clean  ....."
+17    ssh ${node2} "mdadm -Ss"
+18 done
+```
+
+I use mdcluster env to trigger soft lockup, but it isn't mdcluster
+speical bug. To stop md array in mdcluster env will do more jobs than
+non-cluster array, which will leave enough time/gap to allow kernel to
+run md_open.
+
+*** stack ***
+
+```
+[  884.226509]  mddev_put+0x1c/0xe0 [md_mod]
+[  884.226515]  md_open+0x3c/0xe0 [md_mod]
+[  884.226518]  __blkdev_get+0x30d/0x710
+[  884.226520]  ? bd_acquire+0xd0/0xd0
+[  884.226522]  blkdev_get+0x14/0x30
+[  884.226524]  do_dentry_open+0x204/0x3a0
+[  884.226531]  path_openat+0x2fc/0x1520
+[  884.226534]  ? seq_printf+0x4e/0x70
+[  884.226536]  do_filp_open+0x9b/0x110
+[  884.226542]  ? md_release+0x20/0x20 [md_mod]
+[  884.226543]  ? seq_read+0x1d8/0x3e0
+[  884.226545]  ? kmem_cache_alloc+0x18a/0x270
+[  884.226547]  ? do_sys_open+0x1bd/0x260
+[  884.226548]  do_sys_open+0x1bd/0x260
+[  884.226551]  do_syscall_64+0x5b/0x1e0
+[  884.226554]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+```
+
+*** rootcause ***
+
+"mdadm -A" (or other array assemble commands) will start a daemon "mdadm
+--monitor" by default. When "mdadm -Ss" is running, the stop action will
+wakeup "mdadm --monitor". The "--monitor" daemon will immediately get
+info from /proc/mdstat. This time mddev in kernel still exist, so
+/proc/mdstat still show md device, which makes "mdadm --monitor" to open
+/dev/md0.
+
+The previously "mdadm -Ss" is removing action, the "mdadm --monitor"
+open action will trigger md_open which is creating action. Racing is
+happening.
+
+```
+<thread 1>: "mdadm -Ss"
+md_release
+  mddev_put deletes mddev from all_mddevs
+  queue_work for mddev_delayed_delete
+  at this time, "/dev/md0" is still available for opening
+
+<thread 2>: "mdadm --monitor ..."
+md_open
+ + mddev_find can't find mddev of /dev/md0, and create a new mddev and
+ |    return.
+ + trigger "if (mddev->gendisk != bdev->bd_disk)" and return
+      -ERESTARTSYS.
+```
+
+In non-preempt kernel, <thread 2> is occupying on current CPU. and
+mddev_delayed_delete which was created in <thread 1> also can't be
+schedule.
+
+In preempt kernel, it can also trigger above racing. But kernel doesn't
+allow one thread running on a CPU all the time. after <thread 2> running
+some time, the later "mdadm -A" (refer above script line 13) will call
+md_alloc to alloc a new gendisk for mddev. it will break md_open
+statement "if (mddev->gendisk != bdev->bd_disk)" and return 0 to caller,
+the soft lockup is broken.
+
+Cc: stable@vger.kernel.org
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Zhao Heming <heming.zhao@suse.com>
+Signed-off-by: Song Liu <song@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/acpi/custom_method.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/md/md.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---- a/drivers/acpi/custom_method.c
-+++ b/drivers/acpi/custom_method.c
-@@ -37,6 +37,8 @@ static ssize_t cm_write(struct file *fil
- 				   sizeof(struct acpi_table_header)))
- 			return -EFAULT;
- 		uncopied_bytes = max_size = table.length;
-+		/* make sure the buf is not allocated */
-+		kfree(buf);
- 		buf = kzalloc(max_size, GFP_KERNEL);
- 		if (!buf)
- 			return -ENOMEM;
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 368cad6cd53a..464cca5d5952 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -7821,8 +7821,7 @@ static int md_open(struct block_device *bdev, fmode_t mode)
+ 		/* Wait until bdev->bd_disk is definitely gone */
+ 		if (work_pending(&mddev->del_work))
+ 			flush_workqueue(md_misc_wq);
+-		/* Then retry the open from the top */
+-		return -ERESTARTSYS;
++		return -EBUSY;
+ 	}
+ 	BUG_ON(mddev != bdev->bd_disk->private_data);
+ 
+-- 
+2.31.1
+
 
 
