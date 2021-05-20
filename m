@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F7E738A980
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BE8738AB6D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238593AbhETLDG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:03:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43872 "EHLO mail.kernel.org"
+        id S241385AbhETLYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:24:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39630 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238121AbhETKoW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:44:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4CC3F61C9D;
-        Thu, 20 May 2021 09:57:06 +0000 (UTC)
+        id S238980AbhETLEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:04:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B0A761930;
+        Thu, 20 May 2021 10:04:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504626;
-        bh=dh175F8KQU04S24NUHvgMK/FkX88h9zpiRWP3KuMN+I=;
+        s=korg; t=1621505079;
+        bh=iv/5rXtzT0ctIRZTVHraCYhLh6rKHKljN6baBKx/wj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SsgRMq2/JeLtTJFVXuiuJVudduMdXNaI8Pv6R/m+YRIbpfCRcqdyC1Hw9vZJL9uL1
-         W4oE3z+oMB74MKd2qG2LAaa9zCaDnKqHTMV79tNiWw5x747ZGC6RwUVQvHfLI7zRmE
-         PNthGikh82r80NTSoSdTuZbMsq9wekDLA7yTuVHY=
+        b=qkVpu9wycZ0yZEvo5hQsaq9mIUN27WzSnjagJp2G5KyeuY9NRC09XPekQWLt64MWt
+         ae0nGuCkaaIP7XjDyQPbQm18cGemWBJemcU8qXiyl9g7vI4DGM3pGpzuEOQ31+pcPK
+         5F4olWd9hAOpybxxjxxxl0RuCYe0yA+OjI6gxuZI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 312/323] Input: silead - add workaround for x86 BIOS-es which bring the chip up in a stuck state
+        stable@vger.kernel.org,
+        Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>,
+        Phil Elwell <phil@raspberrypi.com>
+Subject: [PATCH 4.9 212/240] usb: dwc2: Fix gadget DMA unmap direction
 Date:   Thu, 20 May 2021 11:23:24 +0200
-Message-Id: <20210520092130.940427193@linuxfoundation.org>
+Message-Id: <20210520092115.796712478@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+References: <20210520092108.587553970@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,127 +40,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Phil Elwell <phil@raspberrypi.com>
 
-[ Upstream commit e479187748a8f151a85116a7091c599b121fdea5 ]
+commit 75a41ce46bae6cbe7d3bb2584eb844291d642874 upstream.
 
-Some buggy BIOS-es bring up the touchscreen-controller in a stuck
-state where it blocks the I2C bus. Specifically this happens on
-the Jumper EZpad 7 tablet model.
+The dwc2 gadget support maps and unmaps DMA buffers as necessary. When
+mapping and unmapping it uses the direction of the endpoint to select
+the direction of the DMA transfer, but this fails for Control OUT
+transfers because the unmap occurs after the endpoint direction has
+been reversed for the status phase.
 
-After much poking at this problem I have found that the following steps
-are necessary to unstuck the chip / bus:
+A possible solution would be to unmap the buffer before the direction
+is changed, but a safer, less invasive fix is to remember the buffer
+direction independently of the endpoint direction.
 
-1. Turn off the Silead chip.
-2. Try to do an I2C transfer with the chip, this will fail in response to
-   which the I2C-bus-driver will call: i2c_recover_bus() which will unstuck
-   the I2C-bus. Note the unstuck-ing of the I2C bus only works if we first
-   drop the chip of the bus by turning it off.
-3. Turn the chip back on.
-
-On the x86/ACPI systems were this problem is seen, step 1. and 3. require
-making ACPI calls and dealing with ACPI Power Resources. This commit adds
-a workaround which runtime-suspends the chip to turn it off, leaving it up
-to the ACPI subsystem to deal with all the ACPI specific details.
-
-There is no good way to detect this bug, so the workaround gets activated
-by a new "silead,stuck-controller-bug" boolean device-property. Since this
-is only used on x86/ACPI, this will be set by model specific device-props
-set by drivers/platform/x86/touchscreen_dmi.c. Therefor this new
-device-property is not documented in the DT-bindings.
-
-Dmesg will contain the following messages on systems where the workaround
-is activated:
-
-[   54.309029] silead_ts i2c-MSSL1680:00: [Firmware Bug]: Stuck I2C bus: please ignore the next 'controller timed out' error
-[   55.373593] i2c_designware 808622C1:04: controller timed out
-[   55.582186] silead_ts i2c-MSSL1680:00: Silead chip ID: 0x80360000
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Link: https://lore.kernel.org/r/20210405202745.16777-1-hdegoede@redhat.com
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: fe0b94abcdf6 ("usb: dwc2: gadget: manage ep0 state in software")
+Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+Link: https://lore.kernel.org/r/20210506112200.2893922-1-phil@raspberrypi.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/input/touchscreen/silead.c | 44 +++++++++++++++++++++++++++---
- 1 file changed, 40 insertions(+), 4 deletions(-)
+ drivers/usb/dwc2/core.h   |    2 ++
+ drivers/usb/dwc2/gadget.c |    3 ++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/input/touchscreen/silead.c b/drivers/input/touchscreen/silead.c
-index 7c0eeef29b3c..18c866129845 100644
---- a/drivers/input/touchscreen/silead.c
-+++ b/drivers/input/touchscreen/silead.c
-@@ -28,6 +28,7 @@
- #include <linux/input/mt.h>
- #include <linux/input/touchscreen.h>
- #include <linux/pm.h>
-+#include <linux/pm_runtime.h>
- #include <linux/irq.h>
- #include <linux/regulator/consumer.h>
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -164,6 +164,7 @@ struct dwc2_hsotg_req;
+  * @lock: State lock to protect contents of endpoint.
+  * @dir_in: Set to true if this endpoint is of the IN direction, which
+  *          means that it is sending data to the Host.
++ * @map_dir: Set to the value of dir_in when the DMA buffer is mapped.
+  * @index: The index for the endpoint registers.
+  * @mc: Multi Count - number of transactions per microframe
+  * @interval - Interval for periodic endpoints, in frames or microframes.
+@@ -207,6 +208,7 @@ struct dwc2_hsotg_ep {
+ 	unsigned short		fifo_index;
  
-@@ -319,10 +320,8 @@ static int silead_ts_get_id(struct i2c_client *client)
+ 	unsigned char           dir_in;
++	unsigned char           map_dir;
+ 	unsigned char           index;
+ 	unsigned char           mc;
+ 	u16                     interval;
+--- a/drivers/usb/dwc2/gadget.c
++++ b/drivers/usb/dwc2/gadget.c
+@@ -308,7 +308,7 @@ static void dwc2_hsotg_unmap_dma(struct
+ 	if (hs_req->req.length == 0)
+ 		return;
  
- 	error = i2c_smbus_read_i2c_block_data(client, SILEAD_REG_ID,
- 					      sizeof(chip_id), (u8 *)&chip_id);
--	if (error < 0) {
--		dev_err(&client->dev, "Chip ID read error %d\n", error);
-+	if (error < 0)
- 		return error;
--	}
+-	usb_gadget_unmap_request(&hsotg->gadget, req, hs_ep->dir_in);
++	usb_gadget_unmap_request(&hsotg->gadget, req, hs_ep->map_dir);
+ }
  
- 	data->chip_id = le32_to_cpu(chip_id);
- 	dev_info(&client->dev, "Silead chip ID: 0x%8X", data->chip_id);
-@@ -335,12 +334,49 @@ static int silead_ts_setup(struct i2c_client *client)
- 	int error;
- 	u32 status;
+ /**
+@@ -745,6 +745,7 @@ static int dwc2_hsotg_map_dma(struct dwc
+ 	if (hs_req->req.length == 0)
+ 		return 0;
  
-+	/*
-+	 * Some buggy BIOS-es bring up the chip in a stuck state where it
-+	 * blocks the I2C bus. The following steps are necessary to
-+	 * unstuck the chip / bus:
-+	 * 1. Turn off the Silead chip.
-+	 * 2. Try to do an I2C transfer with the chip, this will fail in
-+	 *    response to which the I2C-bus-driver will call:
-+	 *    i2c_recover_bus() which will unstuck the I2C-bus. Note the
-+	 *    unstuck-ing of the I2C bus only works if we first drop the
-+	 *    chip off the bus by turning it off.
-+	 * 3. Turn the chip back on.
-+	 *
-+	 * On the x86/ACPI systems were this problem is seen, step 1. and
-+	 * 3. require making ACPI calls and dealing with ACPI Power
-+	 * Resources. The workaround below runtime-suspends the chip to
-+	 * turn it off, leaving it up to the ACPI subsystem to deal with
-+	 * this.
-+	 */
-+
-+	if (device_property_read_bool(&client->dev,
-+				      "silead,stuck-controller-bug")) {
-+		pm_runtime_set_active(&client->dev);
-+		pm_runtime_enable(&client->dev);
-+		pm_runtime_allow(&client->dev);
-+
-+		pm_runtime_suspend(&client->dev);
-+
-+		dev_warn(&client->dev, FW_BUG "Stuck I2C bus: please ignore the next 'controller timed out' error\n");
-+		silead_ts_get_id(client);
-+
-+		/* The forbid will also resume the device */
-+		pm_runtime_forbid(&client->dev);
-+		pm_runtime_disable(&client->dev);
-+	}
-+
- 	silead_ts_set_power(client, SILEAD_POWER_OFF);
- 	silead_ts_set_power(client, SILEAD_POWER_ON);
- 
- 	error = silead_ts_get_id(client);
--	if (error)
-+	if (error) {
-+		dev_err(&client->dev, "Chip ID read error %d\n", error);
- 		return error;
-+	}
- 
- 	error = silead_ts_init(client);
- 	if (error)
--- 
-2.30.2
-
++	hs_ep->map_dir = hs_ep->dir_in;
+ 	ret = usb_gadget_map_request(&hsotg->gadget, req, hs_ep->dir_in);
+ 	if (ret)
+ 		goto dma_error;
 
 
