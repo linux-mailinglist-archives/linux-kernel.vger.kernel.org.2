@@ -2,132 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E140E389E94
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29951389E99
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:03:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231124AbhETHDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:03:41 -0400
-Received: from mga05.intel.com ([192.55.52.43]:53040 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230460AbhETHDi (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:03:38 -0400
-IronPort-SDR: pO24zgEBxdNL/xg/o7dmURGISaU9tOlYKkh4IOFQZ42kjyf7IF7g+BWJlHTuL024qD/WC4M67D
- z0cQjx2QDo0w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="286691074"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="286691074"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:02:17 -0700
-IronPort-SDR: gJ18iSheBGtxdrVlC0gqsqOle0u4CpiiIB50yMdhowyIB3fkAOqLNz0bcW7eWgLGQoFu1Vhb2n
- LQ61Dd6oNnlQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="543206925"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 20 May 2021 00:02:15 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v1 5/5] perf c2c: Support record for hybrid platform
-Date:   Thu, 20 May 2021 15:00:40 +0800
-Message-Id: <20210520070040.710-6-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210520070040.710-1-yao.jin@linux.intel.com>
-References: <20210520070040.710-1-yao.jin@linux.intel.com>
+        id S231130AbhETHEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:04:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhETHEg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:04:36 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06EFFC06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:03:14 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id n2so23553107ejy.7
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:03:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wZuC9MkEtBjxIYtF7kqVL9Ifpq76zVZvowCEWkRzdAs=;
+        b=isU1Bu0LYOcmwo2kZ+cxn6aLNagpy/yAVpavSdt0QoSh70Zxzbz5Cbo9vgX0zVM+vf
+         tJNWmzAPB2voZMyxrgD0fjafieA+/5wH0Mv8ATKJmh53aalUm9SUQODFqqVPbg+PUdXo
+         H9R7EQmWsf3D+ZUsHmp9gvDaJl1QtHo6qQ2vRr8rGBd+2OjYWeVB9bT0M1QVLkN5C8NS
+         CmrUJFwCufbKYOtmvdGOBvbocV6hZEeNWi65kA9s7cR0hY6RVWe/Ei7CHfzZxWR5wnd8
+         oE71NvDhg8fGP9ZL2M9OYpa+NfrMb0l/lEZ9YFBFN741IDnOTCnHVcEs0BWYU0gIhGb4
+         /1xg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wZuC9MkEtBjxIYtF7kqVL9Ifpq76zVZvowCEWkRzdAs=;
+        b=MoggTl+u4yignDU/XjUwQnHWAQ7kNFqOXR/b5oneCxmdP9jtwFpCxSFu/8vA+9mefm
+         FaDj6xg+1vVKNqIUILKKCdXxdKWs0IPgyKQLYZeW/k2UdjnOORfKdpEK1qXfMlq1V/Lg
+         kUyfQRgPOkE5wXuPGhNaL3vBbS//Yq4lG8onCTvYQ7tUUOOQBmsQDXWKQHtrCtExBq//
+         1/YejAMvEHVYNC23PAj0V+9hvpjiST6TmyG7TUfgt9maAlg3t+/+x3vxMHQCdsIKjwTU
+         kHaL8QFSUDnetJNXfOVfHFyfNLpnlqnz9hgaBIeyDAHXE6LvE39/SkknBdBfqvn3UD2c
+         USaA==
+X-Gm-Message-State: AOAM533oNL+CxuajkjUasTGssnmiIzpQZaYX1iJjJAGzbquNYx9B6K8n
+        EaRvZk2aIGqeIR4WfJ2nIhDrQjOFfT7Y2v73rmxk
+X-Google-Smtp-Source: ABdhPJxdx8w+fCqswSdKs59iVuZd4vAf9uGIN8nGG/abyN54M6HaotKLEQyMezCx9lo1kEngrpWm4QyOMlEiGHNAl0E=
+X-Received: by 2002:a17:906:c211:: with SMTP id d17mr3165937ejz.247.1621494192590;
+ Thu, 20 May 2021 00:03:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-12-xieyongji@bytedance.com>
+ <YKYBle/F8aOgHO9p@zeniv-ca.linux.org.uk>
+In-Reply-To: <YKYBle/F8aOgHO9p@zeniv-ca.linux.org.uk>
+From:   Yongji Xie <xieyongji@bytedance.com>
+Date:   Thu, 20 May 2021 15:03:01 +0800
+Message-ID: <CACycT3vTvdJN4qnp=O8E5fxR15evMexzsK+V_uFT0LZkRSCitw@mail.gmail.com>
+Subject: Re: Re: [PATCH v7 11/12] vduse: Introduce VDUSE - vDPA Device in Userspace
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        Parav Pandit <parav@nvidia.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Christian Brauner <christian.brauner@canonical.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>, joro@8bytes.org,
+        virtualization <virtualization@lists.linux-foundation.org>,
+        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support 'perf c2c record' for hybrid platform. On hybrid platform,
-such as Alderlake, when executing 'perf c2c record', it actually calls:
+On Thu, May 20, 2021 at 2:28 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Mon, May 17, 2021 at 05:55:12PM +0800, Xie Yongji wrote:
+>
+> > +     case VDUSE_IOTLB_GET_FD: {
+> > +             struct vduse_iotlb_entry entry;
+> > +             struct vhost_iotlb_map *map;
+> > +             struct vdpa_map_file *map_file;
+> > +             struct vduse_iova_domain *domain = dev->domain;
+> > +             struct file *f = NULL;
+> > +
+> > +             ret = -EFAULT;
+> > +             if (copy_from_user(&entry, argp, sizeof(entry)))
+> > +                     break;
+>
+>                         return -EFAULT;
+> surely?
+> > +
+> > +             ret = -EINVAL;
+> > +             if (entry.start > entry.last)
+> > +                     break;
+>
+> ... and similar here, etc.
+>
 
-record -W -d --phys-data --sample-cpu
--e {cpu_core/mem-loads-aux/,cpu_core/mem-loads,ldlat=30/}:P
--e cpu_atom/mem-loads,ldlat=30/P
--e cpu_core/mem-stores/P
--e cpu_atom/mem-stores/P
+OK.
 
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/builtin-c2c.c | 36 +++++++++++++++++++-----------------
- 1 file changed, 19 insertions(+), 17 deletions(-)
+> > +             spin_lock(&domain->iotlb_lock);
+> > +             map = vhost_iotlb_itree_first(domain->iotlb,
+> > +                                           entry.start, entry.last);
+> > +             if (map) {
+> > +                     map_file = (struct vdpa_map_file *)map->opaque;
+> > +                     f = get_file(map_file->file);
+> > +                     entry.offset = map_file->offset;
+> > +                     entry.start = map->start;
+> > +                     entry.last = map->last;
+> > +                     entry.perm = map->perm;
+> > +             }
+> > +             spin_unlock(&domain->iotlb_lock);
+> > +             ret = -EINVAL;
+> > +             if (!f)
+> > +                     break;
+> > +
+> > +             ret = -EFAULT;
+> > +             if (copy_to_user(argp, &entry, sizeof(entry))) {
+> > +                     fput(f);
+> > +                     break;
+> > +             }
+> > +             ret = receive_fd(f, perm_to_file_flags(entry.perm));
+> > +             fput(f);
+> > +             break;
+>
+> IDGI.  The main difference between receive_fd() and plain old
+> get_unused_fd_flags() + fd_install() is __receive_sock() call.
+> Which does nothing whatsoever in case of non-sockets.  Can you
+> get a socket here?
+>
 
-diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-index a4fd375acdd1..70804ad9017a 100644
---- a/tools/perf/builtin-c2c.c
-+++ b/tools/perf/builtin-c2c.c
-@@ -2907,8 +2907,9 @@ static const char * const *record_mem_usage = __usage_record;
- 
- static int perf_c2c__record(int argc, const char **argv)
- {
--	int rec_argc, i = 0, j;
-+	int rec_argc, i = 0, j, rec_nr = 0;
- 	const char **rec_argv;
-+	char **rec_tmp;
- 	int ret;
- 	bool all_user = false, all_kernel = false;
- 	bool event_set = false;
-@@ -2932,11 +2933,17 @@ static int perf_c2c__record(int argc, const char **argv)
- 	argc = parse_options(argc, argv, options, record_mem_usage,
- 			     PARSE_OPT_KEEP_UNKNOWN);
- 
--	rec_argc = argc + 11; /* max number of arguments */
-+	rec_argc = argc + 64; /* max number of arguments */
- 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
- 	if (!rec_argv)
- 		return -1;
- 
-+	rec_tmp = calloc(rec_argc + 1, sizeof(char *));
-+	if (!rec_tmp) {
-+		free(rec_argv);
-+		return -1;
-+	}
-+
- 	rec_argv[i++] = "record";
- 
- 	if (!event_set) {
-@@ -2964,21 +2971,9 @@ static int perf_c2c__record(int argc, const char **argv)
- 	rec_argv[i++] = "--phys-data";
- 	rec_argv[i++] = "--sample-cpu";
- 
--	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
--		e = perf_mem_events__ptr(j);
--		if (!e->record)
--			continue;
--
--		if (!e->supported) {
--			pr_err("failed: event '%s' not supported\n",
--			       perf_mem_events__name(j, NULL));
--			free(rec_argv);
--			return -1;
--		}
--
--		rec_argv[i++] = "-e";
--		rec_argv[i++] = perf_mem_events__name(j, NULL);
--	}
-+	ret = perf_mem_events__record_args(rec_argv, &i, rec_tmp, &rec_nr);
-+	if (ret)
-+		goto out;
- 
- 	if (all_user)
- 		rec_argv[i++] = "--all-user";
-@@ -3002,6 +2997,13 @@ static int perf_c2c__record(int argc, const char **argv)
- 	}
- 
- 	ret = cmd_record(i, rec_argv);
-+out:
-+	for (i = 0; i < rec_nr; i++) {
-+		if (rec_tmp[i])
-+			free(rec_tmp[i]);
-+	}
-+
-+	free(rec_tmp);
- 	free(rec_argv);
- 	return ret;
- }
--- 
-2.17.1
+Actually what I want here is the security_file_receive() hook in receive_fd().
 
+Thanks,
+Yongji
