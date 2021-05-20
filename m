@@ -2,85 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAF3C38B963
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:12:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A06D038B96A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbhETWNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:13:25 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:49853 "EHLO ozlabs.org"
+        id S231348AbhETWVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:21:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60638 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230407AbhETWNZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:13:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmP9F64G3z9sRf;
-        Fri, 21 May 2021 08:12:01 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621548722;
-        bh=TqnHHxzneSUM+Vtm7yQ0B6Jtgr79ZSgUUEtGGe9dkQo=;
-        h=Date:From:To:Cc:Subject:From;
-        b=G4pV//4E9IBiTFnQtY0DE8mnSR6orBK3Y9H0FlZhQMB/JgnjIdgkd/Pn6dw/67ZQ3
-         j+UdXJXF8d//O6yAUali/hDURQhKIhov5VOHEAyJcqh4edGZhJW4RcIKVd71rw+Ccq
-         r8z8xX3Zv3hg1qPyEjw/s4OAq5IVrqhr+AJzZMc6uywZ4APAhqYfsC9SE1zyWGFF9W
-         8FzN5r13UQZLJ8VyNvW+GYk0es6dwGbyZE/XjrYd9HUqy7eUAcjQvJHeqAuH422FQa
-         vwnmsHce8TpeKe94BnxZonst5nR+YIgcBRG7PyZHI+PXcId6IyYnnV7VrmyKMS9HYa
-         1+3vDqna1KPFQ==
-Date:   Fri, 21 May 2021 08:12:00 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mimi Zohar <zohar@linux.vnet.ibm.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the integrity tree
-Message-ID: <20210521081200.48ab785b@canb.auug.org.au>
+        id S229750AbhETWVc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 18:21:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id DF3566135C;
+        Thu, 20 May 2021 22:20:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621549210;
+        bh=glrPf7khmGAvBbB4imbnnS6aY6FgU7QslbD9PSC/1Gg=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=RuWWpsh2lXVQmcqp5TEWBbuvO2ooGKlXQpHmmWlo0nwaxDnwnLbDmxr1HRunUZf0z
+         selAs3Uqibmz0auk6v7s9U/NUZplgMV/MWg+y9ec4JDu/ENkLSRqdo3tfF4T8jBOr2
+         vOXb3XBdcdrNwzAecqjBKojGTHDpFJ2EHN90u4+KWbyiVa/YpspcjiD347q38hWGo5
+         80Dow9QdsvJ4QMrCG3zyaujEuJsYeO2FSka6/rEgZzIDq7yXBumqcnNPF7PLKhmkQr
+         PW6bSAFXBmsbpHKhGx4e2Ke1AtPFcfWbvZ3SWWwQGoNSgjO8l/iUkqwtzNv65nMGS+
+         SRcktX5fPa8KQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id CF95760982;
+        Thu, 20 May 2021 22:20:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Gk_aNiJotpqKDCOYYVCYThT";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next 0/9] net: remove leading spaces before tabs
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162154921084.13631.15799228433249563284.git-patchwork-notify@kernel.org>
+Date:   Thu, 20 May 2021 22:20:10 +0000
+References: <1621482474-26903-1-git-send-email-tanghui20@huawei.com>
+In-Reply-To: <1621482474-26903-1-git-send-email-tanghui20@huawei.com>
+To:     Hui Tang <tanghui20@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Gk_aNiJotpqKDCOYYVCYThT
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello:
 
-Hi all,
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-In commit
+On Thu, 20 May 2021 11:47:45 +0800 you wrote:
+> There are a few leading spaces before tabs and remove it by running the
+> following commard:
+> 
+>         $ find . -name '*.[ch]' | xargs sed -r -i 's/^[ ]+\t/\t/'
+> 
+> Hui Tang (9):
+>   net: wan: remove leading spaces before tabs
+>   net: usb: remove leading spaces before tabs
+>   net: slip: remove leading spaces before tabs
+>   net: ppp: remove leading spaces before tabs
+>   net: hamradio: remove leading spaces before tabs
+>   net: fddi: skfp: remove leading spaces before tabs
+>   net: appletalk: remove leading spaces before tabs
+>   ifb: remove leading spaces before tabs
+>   mii: remove leading spaces before tabs
+> 
+> [...]
 
-  ae67dd38c193 ("evm: fix writing <securityfs>/evm overflow")
+Here is the summary with links:
+  - [net-next,1/9] net: wan: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/c169a93c8176
+  - [net-next,2/9] net: usb: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/094fefd663ad
+  - [net-next,3/9] net: slip: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/1d314fc1a157
+  - [net-next,4/9] net: ppp: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/63b63138f656
+  - [net-next,5/9] net: hamradio: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/d1542f85dfc2
+  - [net-next,6/9] net: fddi: skfp: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/a597111a3ce3
+  - [net-next,7/9] net: appletalk: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/20a4fc3bc284
+  - [net-next,8/9] ifb: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/cf9207d77aef
+  - [net-next,9/9] mii: remove leading spaces before tabs
+    https://git.kernel.org/netdev/net-next/c/9e5914cc9571
 
-Fixes tag
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-  Fixes: f00d79750712 ("EVM: Allow userspace to signal an RSA key has been
 
-has these problem(s):
-
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
-
-Please do not split Fixes tags over more than one line.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/Gk_aNiJotpqKDCOYYVCYThT
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCm3rAACgkQAVBC80lX
-0GxnTAgAmwsNglnSiGt9XHpXWmUcRlFmWBUaJlgYJ7CkbLrRiJQqIGtkYFAmlpL4
-sSE0kLbLtCLNQ/o33BETmrJBnyf49e7x6nDLiwxf0aMv6il4oo1SGxVhQ4Z5LcQr
-9hSgFwHVX82TEl40KjY/hvYN5MNxCagIyaZF0XaAgyX0J1+oqoXVJbeugnSk92At
-Cm2UTu34CdGxj7llt0lmkrVNkaVe3JXE+MYlDHdwM3oDgIdIoWyjmZFlPDjGZNSX
-T+g6UsBPuCNTfmrX1i6/kUyS++AYe8mzflsdinURgqMTWDMB0gpsUK858F5PItQc
-YRXFRq5Flqa4eizHXaEgKTiSqIr/Qg==
-=ZyFX
------END PGP SIGNATURE-----
-
---Sig_/Gk_aNiJotpqKDCOYYVCYThT--
