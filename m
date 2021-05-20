@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21BAC38A111
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824F338A163
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:30:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232130AbhETJ2G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:28:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
+        id S232011AbhETJaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:30:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52924 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231680AbhETJ1M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:27:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97C75613AD;
-        Thu, 20 May 2021 09:25:50 +0000 (UTC)
+        id S232246AbhETJ2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:28:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D17DC613AC;
+        Thu, 20 May 2021 09:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502751;
-        bh=T/inIGMNNUhjyeV6rD7o+aCemA0Lhcn3vQlXzVHhUmo=;
+        s=korg; t=1621502815;
+        bh=1mr0cXhJPFdaFsqLosOsaDj+RY4gl869txn+y8di1nU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gKB6nr50yRkZAZ4R4E0tkag/tuV0nIKnIztjw0HHIVK2WPV9NWw6rj+mtA/8fuAg5
-         73sOacrWsRDXfbBA+iDcA5sQnkNYq7l4nTxeog2KSSd90fJW79GnUYUe5+P1cKtoWR
-         k0KW23YutthuQi05BP21+LJn9jVZh5Uwg/xuEUGE=
+        b=B54K2gLia+ihqL/nRusPtuRDhrXXxU1eTHZqy4U3mMZWVZ4Vgi2yRfDWO5mgASoSA
+         BsS96EPvUSLAJfFdJIm5Mj6toeyhcGLuD+nkqFzK/PN6+M6+HjigTh+glANPjdPWHt
+         rdxFyIgUxUYVV8pCgSPLahSV3tjiYaXLuVeB5Rs0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Louis Li <Ching-shih.Li@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Harry Wentland <Harry.Wentland@amd.com>,
-        Hersen Wu <hersenxs.wu@amd.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
+        stable@vger.kernel.org, Justin Tee <justin.tee@broadcom.com>,
+        James Smart <jsmart2021@gmail.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 35/45] drm/amd/display: Fix two cursor duplication when using overlay
-Date:   Thu, 20 May 2021 11:22:23 +0200
-Message-Id: <20210520092054.658264304@linuxfoundation.org>
+Subject: [PATCH 5.10 26/47] scsi: lpfc: Fix illegal memory access on Abort IOCBs
+Date:   Thu, 20 May 2021 11:22:24 +0200
+Message-Id: <20210520092054.394672939@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.516042993@linuxfoundation.org>
-References: <20210520092053.516042993@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,145 +41,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+From: James Smart <jsmart2021@gmail.com>
 
-[ Upstream commit 16e9b3e58bc3fce7391539e0eb3fd167cbf9951f ]
+[ Upstream commit e1364711359f3ced054bda9920477c8bf93b74c5 ]
 
-Our driver supports overlay planes, and as expected, some userspace
-compositor takes advantage of these features. If the userspace is not
-enabling the cursor, they can use multiple planes as they please.
-Nevertheless, we start to have constraints when userspace tries to
-enable hardware cursor with various planes. Basically, we cannot draw
-the cursor at the same size and position on two separated pipes since it
-uses extra bandwidth and DML only run with one cursor.
+In devloss timer handler and in backend calls to terminate remote port I/O,
+there is logic to walk through all active IOCBs and validate them to
+potentially trigger an abort request. This logic is causing illegal memory
+accesses which leads to a crash. Abort IOCBs, which may be on the list, do
+not have an associated lpfc_io_buf struct. The driver is trying to map an
+lpfc_io_buf struct on the IOCB and which results in a bogus address thus
+the issue.
 
-For those reasons, when we enable hardware cursor and multiple planes,
-our driver should accept variations like the ones described below:
+Fix by skipping over ABORT IOCBs (CLOSE IOCBs are ABORTS that don't send
+ABTS) in the IOCB scan logic.
 
-  +-------------+   +--------------+
-  | +---------+ |   |              |
-  | |Primary  | |   | Primary      |
-  | |         | |   | Overlay      |
-  | +---------+ |   |              |
-  |Overlay      |   |              |
-  +-------------+   +--------------+
-
-In this scenario, we can have the desktop UI in the overlay and some
-other framebuffer attached to the primary plane (e.g., video). However,
-userspace needs to obey some rules and avoid scenarios like the ones
-described below (when enabling hw cursor):
-
-                                      +--------+
-                                      |Overlay |
- +-------------+    +-----+-------+ +-|        |--+
- | +--------+  | +--------+       | | +--------+  |
- | |Overlay |  | |Overlay |       | |             |
- | |        |  | |        |       | |             |
- | +--------+  | +--------+       | |             |
- | Primary     |    | Primary     | | Primary     |
- +-------------+    +-------------+ +-------------+
-
- +-------------+   +-------------+
- |     +--------+  |  Primary    |
- |     |Overlay |  |             |
- |     |        |  |             |
- |     +--------+  | +--------+  |
- | Primary     |   | |Overlay |  |
- +-------------+   +-|        |--+
-                     +--------+
-
-If the userspace violates some of the above scenarios, our driver needs
-to reject the commit; otherwise, we can have unexpected behavior. Since
-we don't have a proper driver validation for the above case, we can see
-some problems like a duplicate cursor in applications that use multiple
-planes. This commit fixes the cursor issue and others by adding adequate
-verification for multiple planes.
-
-Change since V1 (Harry and Sean):
-- Remove cursor verification from the equation.
-
-Cc: Louis Li <Ching-shih.Li@amd.com>
-Cc: Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>
-Cc: Harry Wentland <Harry.Wentland@amd.com>
-Cc: Hersen Wu <hersenxs.wu@amd.com>
-Cc: Sean Paul <seanpaul@chromium.org>
-Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Reviewed-by: Harry Wentland <harry.wentland@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Link: https://lore.kernel.org/r/20210421234433.102079-1-jsmart2021@gmail.com
+Co-developed-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: Justin Tee <justin.tee@broadcom.com>
+Signed-off-by: James Smart <jsmart2021@gmail.com>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 51 +++++++++++++++++++
- 1 file changed, 51 insertions(+)
+ drivers/scsi/lpfc/lpfc_sli.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-index 71e07ebc8f88..b63f55ea8758 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-@@ -9344,6 +9344,53 @@ static int add_affected_mst_dsc_crtcs(struct drm_atomic_state *state, struct drm
- }
- #endif
+diff --git a/drivers/scsi/lpfc/lpfc_sli.c b/drivers/scsi/lpfc/lpfc_sli.c
+index 3e5c0718555a..bf171ef61abd 100644
+--- a/drivers/scsi/lpfc/lpfc_sli.c
++++ b/drivers/scsi/lpfc/lpfc_sli.c
+@@ -11590,13 +11590,20 @@ lpfc_sli_validate_fcp_iocb(struct lpfc_iocbq *iocbq, struct lpfc_vport *vport,
+ 			   lpfc_ctx_cmd ctx_cmd)
+ {
+ 	struct lpfc_io_buf *lpfc_cmd;
++	IOCB_t *icmd = NULL;
+ 	int rc = 1;
  
-+static int validate_overlay(struct drm_atomic_state *state)
-+{
-+	int i;
-+	struct drm_plane *plane;
-+	struct drm_plane_state *old_plane_state, *new_plane_state;
-+	struct drm_plane_state *primary_state, *overlay_state = NULL;
-+
-+	/* Check if primary plane is contained inside overlay */
-+	for_each_oldnew_plane_in_state_reverse(state, plane, old_plane_state, new_plane_state, i) {
-+		if (plane->type == DRM_PLANE_TYPE_OVERLAY) {
-+			if (drm_atomic_plane_disabling(plane->state, new_plane_state))
-+				return 0;
-+
-+			overlay_state = new_plane_state;
-+			continue;
-+		}
-+	}
-+
-+	/* check if we're making changes to the overlay plane */
-+	if (!overlay_state)
-+		return 0;
-+
-+	/* check if overlay plane is enabled */
-+	if (!overlay_state->crtc)
-+		return 0;
-+
-+	/* find the primary plane for the CRTC that the overlay is enabled on */
-+	primary_state = drm_atomic_get_plane_state(state, overlay_state->crtc->primary);
-+	if (IS_ERR(primary_state))
-+		return PTR_ERR(primary_state);
-+
-+	/* check if primary plane is enabled */
-+	if (!primary_state->crtc)
-+		return 0;
-+
-+	/* Perform the bounds check to ensure the overlay plane covers the primary */
-+	if (primary_state->crtc_x < overlay_state->crtc_x ||
-+	    primary_state->crtc_y < overlay_state->crtc_y ||
-+	    primary_state->crtc_x + primary_state->crtc_w > overlay_state->crtc_x + overlay_state->crtc_w ||
-+	    primary_state->crtc_y + primary_state->crtc_h > overlay_state->crtc_y + overlay_state->crtc_h) {
-+		DRM_DEBUG_ATOMIC("Overlay plane is enabled with hardware cursor but does not fully cover primary plane\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
- /**
-  * amdgpu_dm_atomic_check() - Atomic check implementation for AMDgpu DM.
-  * @dev: The DRM device
-@@ -9518,6 +9565,10 @@ static int amdgpu_dm_atomic_check(struct drm_device *dev,
- 			goto fail;
- 	}
+ 	if (iocbq->vport != vport)
+ 		return rc;
  
-+	ret = validate_overlay(state);
-+	if (ret)
-+		goto fail;
+-	if (!(iocbq->iocb_flag &  LPFC_IO_FCP) ||
+-	    !(iocbq->iocb_flag & LPFC_IO_ON_TXCMPLQ))
++	if (!(iocbq->iocb_flag & LPFC_IO_FCP) ||
++	    !(iocbq->iocb_flag & LPFC_IO_ON_TXCMPLQ) ||
++	      iocbq->iocb_flag & LPFC_DRIVER_ABORTED)
++		return rc;
 +
- 	/* Add new/modified planes */
- 	for_each_oldnew_plane_in_state_reverse(state, plane, old_plane_state, new_plane_state, i) {
- 		ret = dm_update_plane_state(dc, state, plane,
++	icmd = &iocbq->iocb;
++	if (icmd->ulpCommand == CMD_ABORT_XRI_CN ||
++	    icmd->ulpCommand == CMD_CLOSE_XRI_CN)
+ 		return rc;
+ 
+ 	lpfc_cmd = container_of(iocbq, struct lpfc_io_buf, cur_iocbq);
 -- 
 2.30.2
 
