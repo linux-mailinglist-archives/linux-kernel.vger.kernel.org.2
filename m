@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E369338A7E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F40838A7EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237567AbhETKn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55262 "EHLO mail.kernel.org"
+        id S237972AbhETKoL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:44:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55508 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236581AbhETK2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:28:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E018B61C34;
-        Thu, 20 May 2021 09:51:07 +0000 (UTC)
+        id S236659AbhETK3A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:29:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17F0261C2E;
+        Thu, 20 May 2021 09:51:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504268;
-        bh=4Dh4ky47eesxA32whC6DU9UPEv4hl2aLNhlx19AD61s=;
+        s=korg; t=1621504270;
+        bh=ONUvG69htUK3IfTeZ8iBDJdzdN4TErSqN6rWACDy5b8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u//g7pQ6TCfIyoumlHiYreD3/8m5kTkxi38CJ10MqqjU9K89/QmnW5Uhl7ox/Xv7Q
-         cYo0oXQ8VPnKxRr9Eyc5k6dB3luO6tluuy/UcrI9o6v2LdGuZ21JBkT6AIjtvHDRZf
-         KAJr2oAU453cgyCaVAHR8yok4rtYiZ9AxE/gdcUc=
+        b=qO8sGchtj0UDLxcraSwL91ZiGXzt42Q6e44QNLJUFwJB66nyC9OQbjrWyUDsi1mzG
+         9XUtrnh0wjbs8qJSKIjOZtbCXrw/d6u/fdmtms4Ah+EhEN33vHXGynqMfnMOzXHHnv
+         B+qIk+UaXjVrIdilRmiowpRKl5ZlurzvEYl7W2zg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 4.14 134/323] KVM: s390: split kvm_s390_logical_to_effective
-Date:   Thu, 20 May 2021 11:20:26 +0200
-Message-Id: <20210520092124.704650356@linuxfoundation.org>
+        stable@vger.kernel.org, Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Cornelia Huck <cohuck@redhat.com>
+Subject: [PATCH 4.14 135/323] KVM: s390: fix guarded storage control register handling
+Date:   Thu, 20 May 2021 11:20:27 +0200
+Message-Id: <20210520092124.743840407@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,73 +42,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+From: Heiko Carstens <hca@linux.ibm.com>
 
-commit f85f1baaa18932a041fd2b1c2ca6cfd9898c7d2b upstream.
+commit 44bada28219031f9e8e86b84460606efa57b871e upstream.
 
-Split kvm_s390_logical_to_effective to a generic function called
-_kvm_s390_logical_to_effective. The new function takes a PSW and an address
-and returns the address with the appropriate bits masked off. The old
-function now calls the new function with the appropriate PSW from the vCPU.
+store_regs_fmt2() has an ordering problem: first the guarded storage
+facility is enabled on the local cpu, then preemption disabled, and
+then the STGSC (store guarded storage controls) instruction is
+executed.
 
-This is needed to avoid code duplication for vSIE.
+If the process gets scheduled away between enabling the guarded
+storage facility and before preemption is disabled, this might lead to
+a special operation exception and therefore kernel crash as soon as
+the process is scheduled back and the STGSC instruction is executed.
 
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Fixes: 4e0b1ab72b8a ("KVM: s390: gs support for kvm guests")
+Signed-off-by: Heiko Carstens <hca@linux.ibm.com>
 Reviewed-by: Christian Borntraeger <borntraeger@de.ibm.com>
-Cc: stable@vger.kernel.org # for VSIE: correctly handle MVPG when in VSIE
-Link: https://lore.kernel.org/r/20210302174443.514363-2-imbrenda@linux.ibm.com
+Reviewed-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: Janosch Frank <frankja@linux.ibm.com>
+Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Cc: <stable@vger.kernel.org> # 4.12
+Link: https://lore.kernel.org/r/20210415080127.1061275-1-hca@linux.ibm.com
 Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kvm/gaccess.h |   31 ++++++++++++++++++++++++-------
- 1 file changed, 24 insertions(+), 7 deletions(-)
+ arch/s390/kvm/kvm-s390.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/s390/kvm/gaccess.h
-+++ b/arch/s390/kvm/gaccess.h
-@@ -40,6 +40,29 @@ static inline unsigned long kvm_s390_rea
- }
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -3395,16 +3395,16 @@ static void store_regs(struct kvm_vcpu *
+ 	current->thread.fpu.fpc = vcpu->arch.host_fpregs.fpc;
+ 	current->thread.fpu.regs = vcpu->arch.host_fpregs.regs;
+ 	if (MACHINE_HAS_GS) {
++		preempt_disable();
+ 		__ctl_set_bit(2, 4);
+ 		if (vcpu->arch.gs_enabled)
+ 			save_gs_cb(current->thread.gs_cb);
+-		preempt_disable();
+ 		current->thread.gs_cb = vcpu->arch.host_gscb;
+ 		restore_gs_cb(vcpu->arch.host_gscb);
+-		preempt_enable();
+ 		if (!vcpu->arch.host_gscb)
+ 			__ctl_clear_bit(2, 4);
+ 		vcpu->arch.host_gscb = NULL;
++		preempt_enable();
+ 	}
  
- /**
-+ * _kvm_s390_logical_to_effective - convert guest logical to effective address
-+ * @psw: psw of the guest
-+ * @ga: guest logical address
-+ *
-+ * Convert a guest logical address to an effective address by applying the
-+ * rules of the addressing mode defined by bits 31 and 32 of the given PSW
-+ * (extendended/basic addressing mode).
-+ *
-+ * Depending on the addressing mode, the upper 40 bits (24 bit addressing
-+ * mode), 33 bits (31 bit addressing mode) or no bits (64 bit addressing
-+ * mode) of @ga will be zeroed and the remaining bits will be returned.
-+ */
-+static inline unsigned long _kvm_s390_logical_to_effective(psw_t *psw,
-+							   unsigned long ga)
-+{
-+	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_64BIT)
-+		return ga;
-+	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_31BIT)
-+		return ga & ((1UL << 31) - 1);
-+	return ga & ((1UL << 24) - 1);
-+}
-+
-+/**
-  * kvm_s390_logical_to_effective - convert guest logical to effective address
-  * @vcpu: guest virtual cpu
-  * @ga: guest logical address
-@@ -55,13 +78,7 @@ static inline unsigned long kvm_s390_rea
- static inline unsigned long kvm_s390_logical_to_effective(struct kvm_vcpu *vcpu,
- 							  unsigned long ga)
- {
--	psw_t *psw = &vcpu->arch.sie_block->gpsw;
--
--	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_64BIT)
--		return ga;
--	if (psw_bits(*psw).eaba == PSW_BITS_AMODE_31BIT)
--		return ga & ((1UL << 31) - 1);
--	return ga & ((1UL << 24) - 1);
-+	return _kvm_s390_logical_to_effective(&vcpu->arch.sie_block->gpsw, ga);
  }
- 
- /*
 
 
