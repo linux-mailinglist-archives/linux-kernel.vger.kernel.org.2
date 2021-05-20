@@ -2,88 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E4F38A290
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 201F338A2A9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:44:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233122AbhETJnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:43:10 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:42396 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233135AbhETJk2 (ORCPT
+        id S233690AbhETJn6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:43:58 -0400
+Received: from wout2-smtp.messagingengine.com ([64.147.123.25]:54705 "EHLO
+        wout2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233418AbhETJlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:40:28 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: eballetbo)
-        with ESMTPSA id 4C5131F43885
-Subject: Re: [RESEND PATCH v7 2/2] arm64: dts: mt8183: add cbas node under
- cros_ec
-To:     Ikjoon Jang <ikjn@chromium.org>, devicetree@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Guenter Roeck <groeck@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        linux-input@vger.kernel.org, Hsin-Yi Wang <hsinyi@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>
-References: <20210514122051.266169-1-ikjn@chromium.org>
- <20210514122051.266169-3-ikjn@chromium.org>
-From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
-Message-ID: <19282d66-3c7b-1778-9c77-676784fc3406@collabora.com>
-Date:   Thu, 20 May 2021 11:39:01 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 20 May 2021 05:41:25 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 62A861AA7;
+        Thu, 20 May 2021 05:40:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Thu, 20 May 2021 05:40:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=x2k0UiONZCObGpvODgZnHAg9eN
+        EhLhqxabKrZsSDvjI=; b=slOL6qNSXs7we0zun5eCgQqDc4sDuaCxRsZDYeo4zh
+        nvEfSxtYRo8mE/7Mgvb3uO4GLFSNk7rvmUuqsKj5XHpUg5LQ9B3Zy/Q1ZwVh5NZX
+        NYNagULLZMVlQALqNZlxfHXcJex7KnQpkf921f9SlfQdXsxp+UUKHflC34C2MUJy
+        ytnwBjdOoMVlCMaSXkTCTfZ8S5WkG+ViuDVCa9rIwwq36TRcnkLZ7GylXmZVDiEh
+        8Qw40I3vtyLd2usEU5n8Ctfw576Uc1SfaeylFrcsdJtC5ycPrmFghhS1ejPVLVSG
+        0qa9aL5ZTxOJLzRGovh55IHZH4odDYrSBMxLfaEEk2GQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=x2k0UiONZCObGpvOD
+        gZnHAg9eNEhLhqxabKrZsSDvjI=; b=IyGn/yUXBB4Bpz5cZSmPcI0f41zN6l8Nv
+        URV5aWiFPa62Qk+CbttH+aVLnE0BJAtPXcbSppwFOfoPQ9ancllnaQsj5GO5gow3
+        gFo0wEjnAx4oYv4YxRILCteMksdHyFG2Irf+IGwhr0lMD3sMa0Evt1u2mJkrJCWT
+        oiHTH1NTDgM6EIbPeejn9M0DfeEqbYhnVASN66cYcbfbd0cpwc1q7DHtLlziLhQ1
+        5C3AoRHQ8RZ98sT3EP0essqX1/2uxlCa/1+4cWqvkS7YMt7nacFYS842vDpcAyKY
+        nJDr2gjDnXU4WWQ/v4Bqg1+K7/0LCvCat5ldj1KNZdlyqoox+0CkQ==
+X-ME-Sender: <xms:cS6mYJ-olAe6v6nJ4uwn54DypilDqwyK4EsBKn_N5QHCrnKiimlCDA>
+    <xme:cS6mYNvBVGZSri_6I2cEsad90RWtLHP3OvFtFs2JKXsZ-EHwm1xJQcG4ACsBf9diW
+    hY4MLLYFhR9TKb5kQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejuddgudekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeetnhgurhgvficu
+    lfgvfhhfvghrhicuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrghtthgvrh
+    hnpeekhfeiffejveefveehtdeiiefhfedvjeelvddvtdehffetudejtefhueeuleeftden
+    ucfkphepvddtfedrheejrddvudehrdeknecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:cS6mYHCkhU8hukniFB3POLltZobtA5dPgKJ37BZiVWsyYViGcncrMQ>
+    <xmx:cS6mYNcPx-nyCX9Fj2gdy4oFkhmCTAT_tD4zWZapYScaXhtvlkRbmw>
+    <xmx:cS6mYOOsdKq-TgDmKbz9socMfMElcSZNPMt4oZyTm3Z8cCis6b26Iw>
+    <xmx:ci6mYF0pmPR4exQRE7ng3ZtaMVj1MksP-UtC9jFYBYDouVFmli1krQ>
+Received: from mistburn.lan (203-57-215-8.dyn.iinet.net.au [203.57.215.8])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu, 20 May 2021 05:39:58 -0400 (EDT)
+From:   Andrew Jeffery <andrew@aj.id.au>
+To:     linux-doc@vger.kernel.org
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com, joe@perches.com,
+        corbet@lwn.net, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Jiri Slaby <jirislaby@kernel.org>
+Subject: [PATCH v2] Documentation: checkpatch: Tweak BIT() macro include
+Date:   Thu, 20 May 2021 19:09:49 +0930
+Message-Id: <20210520093949.511471-1-andrew@aj.id.au>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <20210514122051.266169-3-ikjn@chromium.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ikjoon,
+While include/linux/bitops.h brings in the BIT() macro, it was moved to
+include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
 
-Thank you for the patch.
+Since that commit BIT() has moved again into include/vdso/bits.h via
+commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
 
-On 14/5/21 14:20, Ikjoon Jang wrote:
-> Add a 'cbas' device node for supporting tablet mode switch in
-> kukui devices.
-> 
-> Kukui platforms with detacheable base have an additional input
-> device under cros-ec, which reports SW_TABLET_MODE regarding
-> its base state (e.g. base flipped or detached).
-> 
-> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> 
+I think the move to the vDSO header can be considered an implementation
+detail, so for now update the checkpatch documentation to recommend use
+of include/linux/bits.h.
 
-Reviewed-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Cc: Jiri Slaby <jirislaby@kernel.org>
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
+Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+---
+ Documentation/dev-tools/checkpatch.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
-> 
-> Changes in v7:
-> - remove a label in cbas node
-> - fix an erratum in commit message (table --> tablet)
-> - dt-binding patchess merged altogether with mt8183 dts
-> 
->  arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index ff56bcfa3370..1512605a438e 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -816,6 +816,10 @@ usbc_extcon: extcon0 {
->  			compatible = "google,extcon-usbc-cros-ec";
->  			google,usb-port-id = <0>;
->  		};
-> +
-> +		cbas {
-> +			compatible = "google,cros-cbas";
-> +		};
->  	};
->  };
->  
-> 
+diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+index 51fed1bd72ec..59fcc9f627ea 100644
+--- a/Documentation/dev-tools/checkpatch.rst
++++ b/Documentation/dev-tools/checkpatch.rst
+@@ -472,7 +472,7 @@ Macros, Attributes and Symbols
+ 
+   **BIT_MACRO**
+     Defines like: 1 << <digit> could be BIT(digit).
+-    The BIT() macro is defined in include/linux/bitops.h::
++    The BIT() macro is defined via include/linux/bits.h::
+ 
+       #define BIT(nr)         (1UL << (nr))
+ 
+-- 
+2.30.2
+
