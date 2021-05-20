@@ -2,89 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5A9238ACF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBC1638ACC4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:46:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241975AbhETLvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:51:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45174 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241306AbhETLmO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:42:14 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9534C061359;
-        Thu, 20 May 2021 03:13:40 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id o17-20020a17090a9f91b029015cef5b3c50so5165876pjp.4;
-        Thu, 20 May 2021 03:13:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BK4nPnSX0W1HYC8KLYnXHOTPgxtKRR+x442dLO+mDz0=;
-        b=SP6USzDMW0tfeye1gzxbep8Sjz+YnXgKzNBNcVO60fn1x+joA2C9ngKgHh6qKa1bY5
-         eTZ4LPL4fpCq8so6FGuNuswhI+OzNr+BqxeEU9w0bMoVVoE2aTtNdrZRCGyu/QU2FJO8
-         eEz+aBy938X8NSFbKo+pl2fODYeqUFfFTchjpbFwjf40SY0ZndkEVWWp+5mDmDzFznly
-         G0TdAj+j6YdgkEvzzDemTDHxqGT+2v5LMDfvDSW5uP3c+4EbMcTFaRyUxr8JwfM2eUMU
-         mo0WvKN2bexznFAt0TymulA1n56azTg70QVRzvaCzKTJbwxyTNqB58coHJ2mwtdb+rX9
-         TT/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BK4nPnSX0W1HYC8KLYnXHOTPgxtKRR+x442dLO+mDz0=;
-        b=PLbt9q1ngeM64IEkzz38RE+lwzCb4eTlC07a5rdtKr3ZEIyCuCPoJuZymMPETSrC6s
-         ZBEwAJ9OxIKXHzfXyfMVQV+nORVW2xRz2r+SRYQxbZiNaljta5Y2O9J6A91MmNkPfJoS
-         CMxjID4C5hwt7EofYgy7cD1sOsrJ/D6TWatk4Ndv5MGbCimWOK2IXLPu0RAdpXIZSjuy
-         hvIEVu40xAk5Cw2kh6ep6bwdfhAeC0l+MnKvWuA84naQsgFS9OJCMSBCi5zC21O1kJox
-         0MmN5HjN8IVpl9pF4viKbgVlFEWcNNS+LkkUADw4hPkAoomq9MWqQA3dDJCEkaoYtoIY
-         0Ghg==
-X-Gm-Message-State: AOAM532VLhyLqyXE5LCK+yj9HCalVR68wJW28WDGxbPWO4llnWJGfr+t
-        BLSEWb+56J3aSdmhMwCmK8o=
-X-Google-Smtp-Source: ABdhPJy79V1UJo4Nw4HJTmXdRZm9RJbB/fW+Yb8RpFtbB5Pw+HFgSZMu0Ue7KHGgM7CvJHFgJUEa2Q==
-X-Received: by 2002:a17:90a:2:: with SMTP id 2mr4451120pja.107.1621505620415;
-        Thu, 20 May 2021 03:13:40 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id g8sm6307878pju.6.2021.05.20.03.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 03:13:40 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     adrian.hunter@intel.com, riteshh@codeaurora.org,
-        asutoshd@codeaurora.org, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] mmc: cqhci: fix typo
-Date:   Thu, 20 May 2021 18:13:30 +0800
-Message-Id: <20210520101330.2255-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        id S242749AbhETLrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:47:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44452 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241667AbhETLZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:25:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 996F8613DB;
+        Thu, 20 May 2021 10:13:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621505622;
+        bh=S3gLhoo8Ondtb55yuwsITX8sRcnwOlVkrIyE435lzD8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=WWv8AoyL8dnq8yQl0YC2rAiF45/PrMsS0iIOhK5XrB+8Seq0CcqfQbM/TA8/5rbdE
+         2Ed7bqodJzk12UP3hC4IkSBBDzCTCmULqlEkw32Z8u22kbECFFZR76qVf0HKzL5Vek
+         j+nFVcWTc23rxowxkWh3FlBBc/c7H4yAOouVQM6bEGNbfJiJD5K4lF43qwXJdgqMxj
+         tfckYrjCWpN3EoWzMbnbOHIw6ppJlIIY1CwzDDl5s3V9eQfPmUtIqBdkWoJYAyHdVr
+         Ks6Htsj8N/rHfTa/NkSF66OgzR13Bl3Q7Hff4YLr5BKTnz0wmgH+LbfgfXOuEOW+hg
+         72SXh2vZIi+TA==
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Avihai Horon <avihaih@nvidia.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org
+Subject: [PATCH rdma-next v1 0/2] Enable relaxed ordering for ULPs
+Date:   Thu, 20 May 2021 13:13:34 +0300
+Message-Id: <cover.1621505111.git.leonro@nvidia.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-'descritors' -> 'descriptors'
+Changelog:
+v1:
+ * Enabled by default RO in IB/core instead of changing all users
+v0: https://lore.kernel.org/lkml/20210405052404.213889-1-leon@kernel.org
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/mmc/host/cqhci-core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+------------------------------------------------------------------------
+From Avihai,
 
-diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-index e759e3b..c237b6e 100644
---- a/drivers/mmc/host/cqhci-core.c
-+++ b/drivers/mmc/host/cqhci-core.c
-@@ -146,7 +146,7 @@ static void cqhci_dumpregs(struct cqhci_host *cq_host)
- }
- 
- /*
-- * The allocated descriptor table for task, link & transfer descritors
-+ * The allocated descriptor table for task, link & transfer descriptors
-  * looks like:
-  * |----------|
-  * |task desc |  |->|----------|
+Relaxed Ordering is a PCIe mechanism that relaxes the strict ordering
+imposed on PCI transactions, and thus, can improve performance for
+applications that can handle this lack of strict ordering.
+
+Currently, relaxed ordering can be set only by user space applications
+for user MRs. Not all user space applications support relaxed ordering
+and for this reason it was added as an optional capability that is
+disabled by default. This behavior is not changed as part of this series,
+and relaxed ordering remains disabled by default for user space.
+
+On the other hand, kernel users should universally support relaxed
+ordering, as they are designed to read data only after observing the CQE
+and use the DMA API correctly. There are a few platforms with broken
+relaxed ordering implementation, but for them relaxed ordering is expected
+to be turned off globally in the PCI level. In addition, note that this is
+not the first use of relaxed ordering. Relaxed ordering has been enabled
+by default in mlx5 ethernet driver, and user space apps use it as well for
+quite a while.
+
+Hence, this series enabled relaxed ordering by default for kernel users so
+they can benefit as well from the performance improvements.
+
+The following test results show the performance improvement achieved
+with relaxed ordering. The test was performed by running FIO traffic
+between a NVIDIA DGX A100 (ConnectX-6 NICs and AMD CPUs) and a NVMe
+storage fabric, using NFSoRDMA:
+
+Without Relaxed Ordering:
+READ: bw=16.5GiB/s (17.7GB/s), 16.5GiB/s-16.5GiB/s (17.7GB/s-17.7GB/s),
+io=1987GiB (2133GB), run=120422-120422msec
+
+With relaxed ordering:
+READ: bw=72.9GiB/s (78.2GB/s), 72.9GiB/s-72.9GiB/s (78.2GB/s-78.2GB/s),
+io=2367GiB (2542GB), run=32492-32492msec
+
+The series has been tested over NVMe, iSER, SRP and NFS with ConnectX-6
+NIC. The tests included FIO verify and stress tests, and various
+resiliency tests (shutting down NIC port in the middle of traffic,
+rebooting the target in the middle of traffic etc.).
+
+Thanks
+
+Avihai Horon (2):
+  RDMA: Enable Relaxed Ordering by default for kernel ULPs
+  RDMA/mlx5: Allow modifying Relaxed Ordering via fast registration
+
+ drivers/infiniband/core/umem.c                |  2 +-
+ drivers/infiniband/core/uverbs_cmd.c          | 64 ++++++++++++++--
+ drivers/infiniband/core/uverbs_std_types_mr.c | 21 ++++--
+ drivers/infiniband/hw/mlx5/devx.c             | 10 ++-
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          | 10 ++-
+ drivers/infiniband/hw/mlx5/mr.c               | 22 +++---
+ drivers/infiniband/hw/mlx5/wr.c               | 74 ++++++++++++++-----
+ include/rdma/ib_verbs.h                       | 68 ++++++++++++++++-
+ 8 files changed, 220 insertions(+), 51 deletions(-)
+
 -- 
-1.9.1
+2.31.1
 
