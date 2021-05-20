@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC6EA38AF27
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA9D38AF26
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:50:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243297AbhETMwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:52:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60338 "EHLO
+        id S243179AbhETMwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:52:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241892AbhETMvI (ORCPT
+        with ESMTP id S242992AbhETMvJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:51:08 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D2BC061350
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:02 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id d11so17399186wrw.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:02 -0700 (PDT)
+        Thu, 20 May 2021 08:51:09 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BBABC06137B
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:03 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id z85-20020a1c7e580000b029017a76f3afbaso2554396wmc.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Rju/n+tgLLGe7lvo2xTmpHWt0wLiBBFgOYcgQ5kqFFw=;
-        b=fn9XorEWDy3zI2gyW4fxqhuvXTOKXDYR8MPWpHQwFhVZOy96m8xgrmaJPDln6+OlyJ
-         2mnW9SZ3ZnZNd5w7wURKzBbypb9oWxbXQLRwn2Njdabto9CWT3cngBpar6y32swhB9aP
-         +mWDvEr782FxityxaQEwlH9m/n/hB/zjxGvnEgQqIZ/0ffmnC+sJxPfOWaaiiVlxpiHT
-         /g4lnhMw6giMbUlUOTFY2/t9j+Joz9wg5XSmtugfUP/Ix3xhv3TmbpAkEPslV/qwrAbK
-         yduS5PdwFICEtXNZqUrCWRFfN3N9FbC6ChTavijKKzJvFxx6sgWtXcC2UADWkHCfgA6L
-         jIww==
+        bh=wEzB7gTHrWqORyhx09JqRSjOeMlQtTq6ka3eRikoOfE=;
+        b=UpZ/VNVYlGIKfLnk6k1JCdE8x5m4yriNk6bOFLJUi27MaZ5U58XCJxMMkW5pk4W610
+         u1vvptZH3t5ElLh8HK4bw4oUmqoMC7+NJFcN5/LXW5YgI8L3ShaZU75veKqF+Q30EGn/
+         192Vr2LqYY7ENIGzCSyEqQc2ivCCAoK4/54KRHTAKaqLEhP0a5bDPKIZEjmbF7oF/dYs
+         OcaN8CODi8paulOEI+vOsNauam8fh+7p8KWNNQN60j4YILqSllsELiQAIV7VnIfH1dOz
+         ZjG9yrdVnfUzzob2Mle4ytBv9PxXGcvu1b5AAtE1wSemalDLeMPLdOxB0D4IwHQLF+5T
+         W9QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Rju/n+tgLLGe7lvo2xTmpHWt0wLiBBFgOYcgQ5kqFFw=;
-        b=thrSGEb51xztuzf2MWBrnnj20JkK632I7dlRD9ipwrvEuKeQhedx2pTkPz3A7dMBCH
-         MUT75L0DBxrZr4G53Qz6Ama6/5apbjtmg8ZmhVM2iN0GcU6FEqqp7tnRS7lBajM1eO3e
-         pAZjERFtRW5DaGBYPTdRlRRnDihAdclfaLl6PZwNpFeQZn9muBzlP70H7yogvm703iAL
-         Qe7cIwrt/hKJnbliTVDxk7bSQufvsleY/HH54FZv52xed4rRLDkpkVzyRjkL9yW0w+nf
-         s2FHc68Pw1EoFi0cp1OiwOBegrjMX7a3B232rfdaoxCY4G3JPpSqp4yD/CAQbtyi3oyE
-         ss3A==
-X-Gm-Message-State: AOAM5311Yjc+qIwFIKNk2MDxtl7dOXx28d0Ju+ucFpyznRkLopn/WG23
-        2Y9poTCZpO/aVqyfJ2ra9QpTnw==
-X-Google-Smtp-Source: ABdhPJwXUkda9qvuLFx20ROyWuUf3BkmUx4PzNijHm5GFasxf0b0bE8FhLUumVB/rO8GGKbxc74hQA==
-X-Received: by 2002:adf:e607:: with SMTP id p7mr3966473wrm.358.1621512840866;
-        Thu, 20 May 2021 05:14:00 -0700 (PDT)
+        bh=wEzB7gTHrWqORyhx09JqRSjOeMlQtTq6ka3eRikoOfE=;
+        b=VLSQU4FU1m14GCUM+SDJNesmNx2/g661JzM7e9kbY4YNBCllHXNff+CatbuW+uXDxK
+         gT1xYQ7uKOtun0YpptTJZvqEPIhy32g0Yc3s5K5lS+DR+PqyqBfuWA5XyB7Gixes9LEx
+         ZslYluq/U2oHIeEvU3AEOI4RUjbbVF60YSuWAUYVp6N7sO1Rng4QOl7oqBDXARmbh25g
+         spp6tfIxshR3mZ6mn8eyQPjirHQ1hLxFXcH6Ck09GNK/z9pjupQdY/KMTXow6/xB3cOT
+         vti9ccsvBDU/T2FlWUjx1mt2e63VA8V4IgcOqLJhyuY6xy3hzfI4s4kKaBitAnCFvpDQ
+         5ELQ==
+X-Gm-Message-State: AOAM533F5Gb3kBI5IuHDiGelfPSZD8pVueVbIUQJ+A6qgLJyT1asVuOu
+        Fj11BifxIN3hDpxqHc0lbWlWaw==
+X-Google-Smtp-Source: ABdhPJwxSCl47cNJ5jARhlS0JP+KLmBAn01Z7e2l0gNQa53oThjb3H213j0NaozSwY6GNh8pIc7Hsg==
+X-Received: by 2002:a05:600c:3515:: with SMTP id h21mr3800044wmq.148.1621512841962;
+        Thu, 20 May 2021 05:14:01 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
         by smtp.gmail.com with ESMTPSA id 61sm3393704wrm.52.2021.05.20.05.14.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:14:00 -0700 (PDT)
+        Thu, 20 May 2021 05:14:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        paulkf@microgate.com
-Subject: [PATCH 05/16] char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
-Date:   Thu, 20 May 2021 13:13:36 +0100
-Message-Id: <20210520121347.3467794-6-lee.jones@linaro.org>
+        dwmw2@infradead.org
+Subject: [PATCH 06/16] char: applicom: Remove 3 unused variables 'ret' and 2 instances of 'byte_reset_it'
+Date:   Thu, 20 May 2021 13:13:37 +0100
+Message-Id: <20210520121347.3467794-7-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520121347.3467794-1-lee.jones@linaro.org>
 References: <20210520121347.3467794-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -67,52 +68,77 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/char/pcmcia/synclink_cs.c:4068: warning: Function parameter or member 'dev' not described in 'hdlcdev_ioctl'
- drivers/char/pcmcia/synclink_cs.c:4068: warning: Function parameter or member 'ifr' not described in 'hdlcdev_ioctl'
- drivers/char/pcmcia/synclink_cs.c:4068: warning: Function parameter or member 'cmd' not described in 'hdlcdev_ioctl'
- drivers/char/pcmcia/synclink_cs.c:4068: warning: expecting prototype for called by network layer to process IOCTL call to network device(). Prototype was for hdlcdev_ioctl() instead
- drivers/char/pcmcia/synclink_cs.c:4173: warning: Function parameter or member 'txqueue' not described in 'hdlcdev_tx_timeout'
+ drivers/char/applicom.c: In function ‘ac_register_board’:
+ drivers/char/applicom.c:131:25: warning: variable ‘byte_reset_it’ set but not used [-Wunused-but-set-variable]
+ drivers/char/applicom.c: In function ‘ac_read’:
+ drivers/char/applicom.c:540:6: warning: variable ‘ret’ set but not used [-Wunused-but-set-variable]
+ drivers/char/applicom.c: In function ‘ac_ioctl’:
+ drivers/char/applicom.c:703:25: warning: variable ‘byte_reset_it’ set but not used [-Wunused-but-set-variable]
 
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Lee Jones <lee.jones@linaro.org>
-Cc: paulkf@microgate.com
+Cc: dwmw2@infradead.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/char/pcmcia/synclink_cs.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ drivers/char/applicom.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/char/pcmcia/synclink_cs.c b/drivers/char/pcmcia/synclink_cs.c
-index 4a1e63911b279..b004abac61542 100644
---- a/drivers/char/pcmcia/synclink_cs.c
-+++ b/drivers/char/pcmcia/synclink_cs.c
-@@ -4054,11 +4054,12 @@ static int hdlcdev_close(struct net_device *dev)
- }
- 
- /**
-- * called by network layer to process IOCTL call to network device
-+ * hdlcdev_ioctl() - called by network layer to process IOCTL call
-+ *                   to network device
-  *
-- * dev  pointer to network device structure
-- * ifr  pointer to network interface request structure
-- * cmd  IOCTL command code
-+ * @dev:  pointer to network device structure
-+ * @ifr:  pointer to network interface request structure
-+ * @cmd:  IOCTL command code
-  *
-  * returns 0 if success, otherwise error code
-  */
-@@ -4165,7 +4166,8 @@ static int hdlcdev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
-  * hdlcdev_tx_timeout() - called by network layer when transmit timeout
-  *                        is detected
-  *
-- * @dev:  pointer to network device structure
-+ * @dev:      pointer to network device structure
-+ * @txqueue:  unused
-  */
- static void hdlcdev_tx_timeout(struct net_device *dev, unsigned int txqueue)
+diff --git a/drivers/char/applicom.c b/drivers/char/applicom.c
+index deb85a334c937..2d4ab42a986cb 100644
+--- a/drivers/char/applicom.c
++++ b/drivers/char/applicom.c
+@@ -128,8 +128,6 @@ static int dummy;	/* dev_id for request_irq() */
+ static int ac_register_board(unsigned long physloc, void __iomem *loc, 
+ 		      unsigned char boardno)
  {
+-	volatile unsigned char byte_reset_it;
+-
+ 	if((readb(loc + CONF_END_TEST)     != 0x00) ||
+ 	   (readb(loc + CONF_END_TEST + 1) != 0x55) ||
+ 	   (readb(loc + CONF_END_TEST + 2) != 0xAA) ||
+@@ -157,7 +155,7 @@ static int ac_register_board(unsigned long physloc, void __iomem *loc,
+ 	apbs[boardno].RamIO = loc;
+ 	init_waitqueue_head(&apbs[boardno].FlagSleepSend);
+ 	spin_lock_init(&apbs[boardno].mutex);
+-	byte_reset_it = readb(loc + RAM_IT_TO_PC);
++	readb(loc + RAM_IT_TO_PC);
+ 
+ 	numboards++;
+ 	return boardno + 1;
+@@ -537,7 +535,6 @@ static ssize_t ac_read (struct file *filp, char __user *buf, size_t count, loff_
+ 	unsigned long flags;
+ 	unsigned int i;
+ 	unsigned char tmp;
+-	int ret = 0;
+ 	DECLARE_WAITQUEUE(wait, current);
+ #ifdef DEBUG
+ 	int loopcount=0;
+@@ -568,7 +565,7 @@ static ssize_t ac_read (struct file *filp, char __user *buf, size_t count, loff_
+ 
+ 				/* Got a packet for us */
+ 				memset(&st_loc, 0, sizeof(st_loc));
+-				ret = do_ac_read(i, buf, &st_loc, &mailbox);
++				do_ac_read(i, buf, &st_loc, &mailbox);
+ 				spin_unlock_irqrestore(&apbs[i].mutex, flags);
+ 				set_current_state(TASK_RUNNING);
+ 				remove_wait_queue(&FlagSleepRec, &wait);
+@@ -700,7 +697,6 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	void __iomem *pmem;
+ 	int ret = 0;
+ 	static int warncount = 10;
+-	volatile unsigned char byte_reset_it;
+ 	struct st_ram_io *adgl;
+ 	void __user *argp = (void __user *)arg;
+ 
+@@ -762,7 +758,7 @@ static long ac_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 		
+ 		for (i = 0; i < MAX_BOARD; i++) {
+ 			if (apbs[i].RamIO) {
+-				byte_reset_it = readb(apbs[i].RamIO + RAM_IT_TO_PC);
++				readb(apbs[i].RamIO + RAM_IT_TO_PC);
+ 			}
+ 		}
+ 		break;
 -- 
 2.31.1
 
