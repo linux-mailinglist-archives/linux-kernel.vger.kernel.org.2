@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD0B38AAFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 734B838AB01
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241003AbhETLTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:19:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57038 "EHLO mail.kernel.org"
+        id S241043AbhETLUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:20:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57122 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239551AbhETK7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:59:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9D70961D04;
-        Thu, 20 May 2021 10:03:02 +0000 (UTC)
+        id S239566AbhETK7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:59:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D338561D06;
+        Thu, 20 May 2021 10:03:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504983;
-        bh=zmheuGEIVSckVMyyv4arLnlmE4cyggUMR0mEGACkVs4=;
+        s=korg; t=1621504985;
+        bh=rkX6z2dPoS2cqSstGb9735JhgAFXr7gdHa10h8sCZ04=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i3SX4FInVnKRPkRruzJ6d+CoAZaGr2T0sGwSKFrc3A+8MJ2//YPkfWEH+X0w+rCuU
-         cx9RtlgNt5ItsLOE+KcD53xfFklpF/Loj5ciolhVvih/cX0lWnE8OZL+In/+mBjieJ
-         uWAJSvHeEabVLRSvXBHNQZb7zDHWc3U2bMjxxXss=
+        b=ak9PEN0/QrDcA6x+AhUGq62XMJZj+aiI/NdfQlHXeq8zuAlN/7Dq0FQLAljos3YAl
+         jAiDOdWgT30usG5sZ09hO2LxzpEiGMY8WCqTGsVloKFbkeXXmQli+wSFxBWNNrE6Xq
+         hgSUq66SQvg9gdzrVWEsNcMWb7C5cInlHviA43pI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Quentin Perret <qperret@google.com>
-Subject: [PATCH 4.9 169/240] Revert "fdt: Properly handle "no-map" field in the memory region"
-Date:   Thu, 20 May 2021 11:22:41 +0200
-Message-Id: <20210520092114.320010701@linuxfoundation.org>
+        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
+        David Teigland <teigland@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 170/240] fs: dlm: fix debugfs dump
+Date:   Thu, 20 May 2021 11:22:42 +0200
+Message-Id: <20210520092114.359205151@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,29 +40,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Quentin Perret <qperret@google.com>
+From: Alexander Aring <aahringo@redhat.com>
 
-This reverts commit 86ac82a7c708acf4738c396228be7b8fdaae4d99.
-It is not really a fix, and the backport misses dependencies, which
-breaks existing platforms.
+[ Upstream commit 92c48950b43f4a767388cf87709d8687151a641f ]
 
-Reported-by: Alexandre TORGUE <alexandre.torgue@foss.st.com>
-Signed-off-by: Quentin Perret <qperret@google.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This patch fixes the following message which randomly pops up during
+glocktop call:
+
+seq_file: buggy .next function table_seq_next did not update position index
+
+The issue is that seq_read_iter() in fs/seq_file.c also needs an
+increment of the index in an non next record case as well which this
+patch fixes otherwise seq_read_iter() will print out the above message.
+
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+Signed-off-by: David Teigland <teigland@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/of/fdt.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/dlm/debug_fs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/of/fdt.c
-+++ b/drivers/of/fdt.c
-@@ -1159,7 +1159,7 @@ int __init __weak early_init_dt_reserve_
- 					phys_addr_t size, bool nomap)
- {
- 	if (nomap)
--		return memblock_mark_nomap(base, size);
-+		return memblock_remove(base, size);
- 	return memblock_reserve(base, size);
- }
+diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
+index 466f7d60edc2..fabce23fdbac 100644
+--- a/fs/dlm/debug_fs.c
++++ b/fs/dlm/debug_fs.c
+@@ -545,6 +545,7 @@ static void *table_seq_next(struct seq_file *seq, void *iter_ptr, loff_t *pos)
  
+ 		if (bucket >= ls->ls_rsbtbl_size) {
+ 			kfree(ri);
++			++*pos;
+ 			return NULL;
+ 		}
+ 		tree = toss ? &ls->ls_rsbtbl[bucket].toss : &ls->ls_rsbtbl[bucket].keep;
+-- 
+2.30.2
+
 
 
