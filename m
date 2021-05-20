@@ -2,107 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 423FB38B652
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:49:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0053138B654
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:50:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236215AbhETSuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:50:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58422 "EHLO
+        id S235780AbhETSv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:51:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234105AbhETSut (ORCPT
+        with ESMTP id S232147AbhETSv1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:50:49 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC3DC061574;
-        Thu, 20 May 2021 11:49:26 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id j12so12491096pgh.7;
-        Thu, 20 May 2021 11:49:26 -0700 (PDT)
+        Thu, 20 May 2021 14:51:27 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C399C061574;
+        Thu, 20 May 2021 11:50:05 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id k14so23430641eji.2;
+        Thu, 20 May 2021 11:50:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=3bJ6aCi358D6gLPHam70m7qIlIxiB35FHIyn3aer04k=;
-        b=KxTNQW9/gvB1b9rfZC4RriR6oyJ22kiVpjF/C99eettZzJ9DMuNgPCFBEwg7hy14bu
-         oOAPzAbGWao69tzW255IDM5PB3HE2nVj5yVUqJLA4cSgeDLry53UIjhSCLVrQMnK6c/i
-         a8+BHXE7SzYR443eVXCrmIrabGFhjYPGERcq8YVKxS8625Fb3U8N/tpiqQs0WAaANXhC
-         WZ4QDc+5wNdS1wWcd4G0YH8iuIHOTxKqy5+xzw2BUzrmZiBod2L40P45p5WTfXNDiond
-         WsLgRV51k41qGOSB0GIPar1wtq+21CqVUytXitppHOSZqAH2Vav3rXsjSpukPTd8Fx6t
-         BnYQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=NnKMgOmf0c+dMs5OOR9EylvV3pMJvuEJGJcj5/OghcY=;
+        b=COC5yBCT+C3XLSemHFd9cAqqFOGMngVtoW+KhbHub+oLAPOMplkT3Al6kDmEHIUfQS
+         UkmGi5/TWFDNmNNYcxnqm4DIqhibMavhgJtgeiqeBxWen/aEM/2gFh8bWD4Tjakz4PT2
+         mSoj3eBjcOqrm3JcwfQ5u+lUDclefIr4kQHlzxeIF86CuW9cCnXBMb0rZrDisAcibqEy
+         lnwHRlIywggX4bK0UoxZ3zxorkP0Ls80OJfzTuX6bfLDh9l0dryEw+uVPH6yttZIYMes
+         wpQJL8m6UIfn/hdoEWphCYqeFem5MKi5tp8zgQLq8Vk02EBfTt7Zj/JVBVjTQj+zhhrQ
+         Xw1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=3bJ6aCi358D6gLPHam70m7qIlIxiB35FHIyn3aer04k=;
-        b=B4trR7vflWiQsoxnk+Q3pSJB3eJrRGz35YinRVhfLYLxmKl66AypgSwuHcFl00/tze
-         cWsZRfwf9VvdyFKVKHOwuGsK9QX9ZeO3pL+FGxTFFQB1aLYMebHfWm11F21TqJqGcCj8
-         y2jcy1SK4TclTkS7E4pxEL+Bl70kAld09JZZRpvbvoKnikN0XZxSZ330LrZtrUPOSfkn
-         K5CGBkg+fFL7QEHVTo1EssCnUdwtXC+NkyWgVC1abmIxBlC8ihpGKzZIEj2QwNTKuRSu
-         /EybjLUxg6vB1NbNkqiMDCNFGTNYa+2wdr3OytheATjQotXlZznL+yswD2wh5FSBCAit
-         6/7w==
-X-Gm-Message-State: AOAM530Khroh7nCN2ODs7zPbFs0kQPSqAdWIIKxmD+e4JySNcaKSf0ZT
-        96+sc7wfbpql392E2d7LT2A=
-X-Google-Smtp-Source: ABdhPJxxGJ2l0KhcECjJ8y0p4tXKuyfnCVIopqfN8F2ZIwSg2T93Y2vTlT/+TBnoradgW6ZEMixlYA==
-X-Received: by 2002:a62:2e04:0:b029:2db:4c99:614f with SMTP id u4-20020a622e040000b02902db4c99614fmr6078229pfu.47.1621536566193;
-        Thu, 20 May 2021 11:49:26 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:600d:a93f:4822:12f2:8c52:6d8b])
-        by smtp.googlemail.com with ESMTPSA id n30sm2741230pgd.8.2021.05.20.11.49.21
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=NnKMgOmf0c+dMs5OOR9EylvV3pMJvuEJGJcj5/OghcY=;
+        b=MrVByEW5Cn1yk0FiJg9KecAWRYHHXIzVcQwEIv9Dhh7lbd8y6ROH9YqmZzxpdiJXg+
+         0j0ashPioEkT29OZA+G7/S8Na5W/kpNKQb8hCDF1VVd25msIrYdSpqh91TP1SGXY1sby
+         QoS+RR//os+/zz8qdVniAq4P1KmKxjK/6aoBNTmCKnmF+zRqvwDek2nzOPSoFKS3FeSx
+         /RnLceJq/sGsq+xLcbhzhL/ZRkMHQFmkvobdxyZ+IC1D9rF6fBEAfPXJ1+YaFvayfwtV
+         XR30ZHnR0xRyVRyq2XWvTUtrNkumPEQNxFO2OlkYuEaFhaUaEi5UnY2lFKFl4Ik2dS4C
+         oc5A==
+X-Gm-Message-State: AOAM532FDiaGYIN2j/UMaCE6awP725ig49vpMv3g0gDVG9oqGXZnQYv8
+        fa/KsFXv6SIxpKdKIbIxR4s=
+X-Google-Smtp-Source: ABdhPJxy+O0ZhrxdLerD5A3+UtJX/eya/A1LGbJgbOCzoFUOU0Fv7DoSHjZInjLeAGRlSiaf5boj4A==
+X-Received: by 2002:a17:906:2ac5:: with SMTP id m5mr6054117eje.517.1621536603791;
+        Thu, 20 May 2021 11:50:03 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id n12sm2061670edw.95.2021.05.20.11.50.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 11:49:25 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     davem@davemloft.net
-Cc:     yashsri421@gmail.com, lukas.bulwahn@gmail.com,
-        rdunlap@infradead.org, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] net: encx24j600: fix kernel-doc syntax in file headers
-Date:   Fri, 21 May 2021 00:19:15 +0530
-Message-Id: <20210520184915.588-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 20 May 2021 11:50:02 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Thu, 20 May 2021 20:50:01 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     Vagrant Cascadian <vagrant@reproducible-builds.org>
+Cc:     Maxime Ripard <maxime@cerno.tech>,
+        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@siol.net>,
+        "B.R. Oake" <broake@mailfence.com>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Chen-Yu Tsai <wens@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix Ethernet PHY mode
+Message-ID: <YKavWaIEH/SdzT4m@eldamar.lan>
+References: <1243888060.510560.1612783497400@ichabod.co-bxl>
+ <20210210150118.ly252i37eykayrcb@gilmour>
+ <1719200956.433094.1613199092092@ichabod.co-bxl>
+ <6612268.HtAl026vyE@jernej-laptop>
+ <YKFPGC2qBMipQPbd@eldamar.lan>
+ <87o8dawhy3.fsf@yucca>
+ <20210518150652.zxj56bljjeq3ogln@gilmour>
+ <YKQiws6yP35QIpJd@eldamar.lan>
+ <YKQm/F+JIjf/YUHm@eldamar.lan>
+ <87a6opqn59.fsf@ponder>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87a6opqn59.fsf@ponder>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The opening comment mark '/**' is used for highlighting the beginning of
-kernel-doc comments.
-The header for drivers/net/ethernet/microchip/encx24j600 files follows
-this syntax, but the content inside does not comply with kernel-doc.
+Hi,
 
-This line was probably not meant for kernel-doc parsing, but is parsed
-due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
-causes unexpected warning from kernel-doc.
-For e.g., running scripts/kernel-doc -none
-drivers/net/ethernet/microchip/encx24j600_hw.h emits:
-warning: expecting prototype for h(). Prototype was for _ENCX24J600_HW_H() instead
+On Thu, May 20, 2021 at 11:24:18AM -0700, Vagrant Cascadian wrote:
+> On 2021-05-18, Salvatore Bonaccorso wrote:
+> > On Tue, May 18, 2021 at 10:25:40PM +0200, Salvatore Bonaccorso wrote:
+> >> On Tue, May 18, 2021 at 05:06:52PM +0200, Maxime Ripard wrote:
+> >> > On Sun, May 16, 2021 at 01:18:44PM -0700, Vagrant Cascadian wrote:
+> >> > > On 2021-05-16, Salvatore Bonaccorso wrote:
+> >> > > > On Sat, Feb 13, 2021 at 09:51:17AM +0100, Jernej Škrabec wrote:
+> >> > > >> Let me first explain that it was oversight on my side not noticing initials in 
+> >> > > >> your SoB tag. But since the issue was raised by Maxime, I didn't follow up.
+> >> > > >> 
+> >> > > >> Dne sobota, 13. februar 2021 ob 07:51:32 CET je B.R. Oake napisal(a):
+> >> > > >> > On Wed Feb 10 at 16:01:18 CET 2021, Maxime Ripard wrote:
+> >> > > >> > > Unfortunately we can't take this patch as is, this needs to be your real
+> >> > > >> > > name, see:
+> >> > > >> > > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#de
+> >> > > >> > > veloper-s-certificate-of-origin-1-1
+> >> > > >> > Dear Maxime,
+> >> > > >> > 
+> >> > > >> > Thank you very much for considering my contribution and for all your
+> >> > > >> > work on supporting sunxi-based hardware; I appreciate it.
+> >> > > >> > 
+> >> > > >> > Thank you for referring me to the Developer's Certificate of Origin, but
+> >> > > >> > I had already read it before submitting (I had to do so in order to know
+> >> > > >> > what I was saying by "Signed-off-by:") and I do certify what it says.
+> >> > > >> > 
+> >> > > >> > Looking through recent entries in the commit log of the mainline kernel,
+> >> > > >> > I see several patches from authors such as:
+> >> > > >> > 
+> >> > > >> >   H.J. Lu <hjl.tools@gmail.com>
+> >> > > >> >   B K Karthik <karthik.bk2000@live.com>
+> >> > > >> >   JC Kuo <jckuo@nvidia.com>
+> >> > > >> >   EJ Hsu <ejh@nvidia.com>
+> >> > > >> >   LH Lin <lh.lin@mediatek.com>
+> >> > > >> >   KP Singh <kpsingh@kernel.org>
+> >> > > >> >   Karthik B S <karthik.b.s@intel.com>
+> >> > > >> >   Shreyas NC <shreyas.nc@intel.com>
+> >> > > >> >   Vandana BN <bnvandana@gmail.com>
+> >> > > >> > 
+> >> > > >> > so I believe names of this form are in fact acceptable, even if the
+> >> > > >> > style might seem a little old-fashioned to some.
+> >> > > >> 
+> >> > > >> Speaking generally, not only for this case, prior art arguments rarely hold, 
+> >> > > >> because:
+> >> > > >> - it might be oversight,
+> >> > > >> - it might be a bad practice, which should not be followed in new 
+> >> > > >> contributions,
+> >> > > >> - different maintainers have different point of view on same thing,
+> >> > > >> - maintainer wants to adapt new practice or steer subsystem in new direction
+> >> > > >> 
+> >> > > >> > 
+> >> > > >> > I would like to add that I have met many people with names such as C.J.,
+> >> > > >> > A A, TC, MG, etc. That is what everybody calls them and it would be
+> >> > > >> > natural for them to sign themselves that way. Some of them might want to
+> >> > > >> > contribute to Linux some day, and I think it would be a great shame and
+> >> > > >> > a loss to all of us if they were discouraged from doing so by reading
+> >> > > >> > our conversation in the archives and concluding that any contribution
+> >> > > >> > from them, however small, would be summarily refused simply because of
+> >> > > >> > their name. Please could you ensure that does not happen?
+> >> > > >> 
+> >> > > >> The link you posted says following:
+> >> > > >> "using your real name (sorry, no pseudonyms or anonymous contributions.)"
+> >> > > >> 
+> >> > > >> I believe that real name means no initials, no matter what people are 
+> >> > > >> accustomed to. From my point of view, CJ is pseudonym derived from real name.
+> >> > > >> 
+> >> > > >> This is not the first time that fix of SoB tag was requested, you can find such 
+> >> > > >> requests in ML archives.
+> >> > > 
+> >> > > I'm sure this isn't the first time this sort of thing has been brought
+> >> > > up on this subject, but I feel obliged to mention:
+> >> > > 
+> >> > >   https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+> >> > > 
+> >> > > This seems to be blocked on culturally dependent perception of what
+> >> > > looks like a "real name" as opposed to any technical grounds.
+> >> > > 
+> >> > > What is the goal of the "real name" in Signed-off-by actually trying to
+> >> > > achieve?
+> >> > 
+> >> > https://www.kernel.org/doc/html/latest/process/submitting-patches.html#developer-s-certificate-of-origin-1-1
+> >> > 
+> >> > I'm not the one making the rules, sorry
+> >> 
+> >> Would it be technically possible to do the following: Based on the
+> >> downstream report we receved in Debian in
+> >> https://bugs.debian.org/988574 wrap up the same patch (I guess I will
+> >> need to use another commit message wording) and resubmit with my own
+> >> SoB with my downstream hat on and say a Tested-by from Vagrant? So we
+> >> are not blocked on the SoB issue from this original post of the change
+> >> to apply to arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts ?
+> >
+> > Here is an attempt to do that and coming from
+> > https://bugs.debian.org/988574 for the change change submission.
+> >
+> > Regards,
+> > Salvatore
+> >
+> > From 93c335c997d6386fc5cb7b9c5621b9b9725de20e Mon Sep 17 00:00:00 2001
+> > From: Salvatore Bonaccorso <carnil@debian.org>
+> > Date: Tue, 18 May 2021 22:33:49 +0200
+> > Subject: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
+> >
+> > Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+> > config") sets the RX/TX delay according to the phy-mode property in the
+> > device tree. For the Orange Pi Plus board this is "rgmii", which is the
+> > wrong setting.
+> >
+> > Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
+> > Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
+> > the Ethernet working again on this board.
+> >
+> > Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+> > Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
+> > Link: https://bugs.debian.org/988574
+> > Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
+> 
+> Seems worth crediting the original reporter "B.R. Oake"
+> <broake@mailfence.com> with a Reported-by as well?
 
-Provide a simple fix by replacing such occurrences with general comment
-format, i.e. '/*', to prevent kernel-doc from parsing it.
+Right, very good point, attached a revisited patch.
 
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Regards,
+Salvatore
+
+From 886f1e5cf477f5e2b5a88718b47d11a9d78325d2 Mon Sep 17 00:00:00 2001
+From: Salvatore Bonaccorso <carnil@debian.org>
+Date: Tue, 18 May 2021 22:33:49 +0200
+Subject: [PATCH] ARM: dts: sun8i: h3: orangepi-plus: Fix ethernet phy-mode
+
+Commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay
+config") sets the RX/TX delay according to the phy-mode property in the
+device tree. For the Orange Pi Plus board this is "rgmii", which is the
+wrong setting.
+
+Following the example of a900cac3750b ("ARM: dts: sun7i: a20: bananapro:
+Fix ethernet phy-mode") the phy-mode is changed to "rgmii-id" which gets
+the Ethernet working again on this board.
+
+Fixes: bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay config")
+Reported-by: "B.R. Oake" <broake@mailfence.com>
+Reported-by: Vagrant Cascadian <vagrant@reproducible-builds.org>
+Link: https://bugs.debian.org/988574
+Signed-off-by: Salvatore Bonaccorso <carnil@debian.org>
 ---
- drivers/net/ethernet/microchip/encx24j600.c    | 2 +-
- drivers/net/ethernet/microchip/encx24j600_hw.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/encx24j600.c b/drivers/net/ethernet/microchip/encx24j600.c
-index 3658c4ae3c37..ee921a99e439 100644
---- a/drivers/net/ethernet/microchip/encx24j600.c
-+++ b/drivers/net/ethernet/microchip/encx24j600.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0-or-later
--/**
-+/*
-  * Microchip ENCX24J600 ethernet driver
-  *
-  * Copyright (C) 2015 Gridpoint
-diff --git a/drivers/net/ethernet/microchip/encx24j600_hw.h b/drivers/net/ethernet/microchip/encx24j600_hw.h
-index f604a260ede7..fac61a8fbd02 100644
---- a/drivers/net/ethernet/microchip/encx24j600_hw.h
-+++ b/drivers/net/ethernet/microchip/encx24j600_hw.h
-@@ -1,5 +1,5 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--/**
-+/*
-  * encx24j600_hw.h: Register definitions
-  *
-  */
+v2:
+ - Add a Reported-by for "B.R. Oake" <broake@mailfence.com>
+---
+ arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+index 97f497854e05..d05fa679dcd3 100644
+--- a/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
++++ b/arch/arm/boot/dts/sun8i-h3-orangepi-plus.dts
+@@ -85,7 +85,7 @@ &emac {
+ 	pinctrl-0 = <&emac_rgmii_pins>;
+ 	phy-supply = <&reg_gmac_3v3>;
+ 	phy-handle = <&ext_rgmii_phy>;
+-	phy-mode = "rgmii";
++	phy-mode = "rgmii-id";
+ 
+ 	status = "okay";
+ };
 -- 
-2.17.1
+2.31.1
 
