@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D882838AB76
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1606738AB34
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241630AbhETLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:25:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59276 "EHLO mail.kernel.org"
+        id S240930AbhETLVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:21:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240066AbhETLE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:04:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6A38A61D2D;
-        Thu, 20 May 2021 10:05:01 +0000 (UTC)
+        id S239098AbhETLBj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:01:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69B9E61423;
+        Thu, 20 May 2021 10:03:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505101;
-        bh=8nAV+BLngu0fFs8EMp2agqkejTe7TnNMaP+QMkgtdMg=;
+        s=korg; t=1621505022;
+        bh=T3kO8RrvNCX8As7P6Z7PFwvA19Yoow54UYuEWBXkQOg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y11zPp3XqymWg3kgZO4WVismNcxXOb91KUDK/ZvkZMsfQLk435k4BwB6+ecqeuLmZ
-         5Eu4sK/AaH1YDs4nlkyeDxfHDCQNMmAbue8z3ikCdUw0ZJmlIoCxPDFenD/3M99t+1
-         oK6NjYLaR+URsEvwFLcUl887iKTBXanQNcsQaTOI=
+        b=kBzteK5eBY/1Znu3hDRCuWDRppBbb/U0mhteF9ijHxJp8h7WcQSg4DkpVQFFoi+ay
+         1e6WB1swGPQhIyFiBn/TDDoFkLKtu1c6VIv3u8Jp/G2A3YoxTwwASJn/TAoQvt3nes
+         dMiRa3hzq3hmVUjaB6hNpO2FhlYFvI3K1/7IFJ/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Emmanuel Grumbach <emmanuel.grumbach@intel.com>,
-        Johannes Berg <johannes.berg@intel.com>,
+        stable@vger.kernel.org, Miklos Szeredi <mszeredi@redhat.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 179/240] mac80211: clear the beacons CRC after channel switch
-Date:   Thu, 20 May 2021 11:22:51 +0200
-Message-Id: <20210520092114.671665723@linuxfoundation.org>
+Subject: [PATCH 4.9 180/240] cuse: prevent clone
+Date:   Thu, 20 May 2021 11:22:52 +0200
+Message-Id: <20210520092114.703207137@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,50 +39,35 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
+From: Miklos Szeredi <mszeredi@redhat.com>
 
-[ Upstream commit d6843d1ee283137723b4a8c76244607ce6db1951 ]
+[ Upstream commit 8217673d07256b22881127bf50dce874d0e51653 ]
 
-After channel switch, we should consider any beacon with a
-CSA IE as a new switch. If the CSA IE is a leftover from
-before the switch that the AP forgot to remove, we'll get
-a CSA-to-Self.
+For cloned connections cuse_channel_release() will be called more than
+once, resulting in use after free.
 
-This caused issues in iwlwifi where the firmware saw a beacon
-with a CSA-to-Self with mode = 1 on the new channel after a
-switch. The firmware considered this a new switch and closed
-its queues. Since the beacon didn't change between before and
-after the switch, we wouldn't handle it (the CRC is the same)
-and we wouldn't let the firmware open its queues again or
-disconnect if the CSA IE stays for too long.
+Prevent device cloning for CUSE, which does not make sense at this point,
+and highly unlikely to be used in real life.
 
-Clear the CRC valid state after we switch to make sure that
-we handle the beacon and handle the CSA IE as required.
-
-Signed-off-by: Emmanuel Grumbach <emmanuel.grumbach@intel.com>
-Link: https://lore.kernel.org/r/20210408143124.b9e68aa98304.I465afb55ca2c7d59f7bf610c6046a1fd732b4c28@changeid
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/mac80211/mlme.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ fs/fuse/cuse.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/net/mac80211/mlme.c b/net/mac80211/mlme.c
-index 58b80270e58c..3217c98f2b5a 100644
---- a/net/mac80211/mlme.c
-+++ b/net/mac80211/mlme.c
-@@ -1101,6 +1101,11 @@ static void ieee80211_chswitch_post_beacon(struct ieee80211_sub_if_data *sdata)
+diff --git a/fs/fuse/cuse.c b/fs/fuse/cuse.c
+index d9aba9700726..b83367300f48 100644
+--- a/fs/fuse/cuse.c
++++ b/fs/fuse/cuse.c
+@@ -616,6 +616,8 @@ static int __init cuse_init(void)
+ 	cuse_channel_fops.owner		= THIS_MODULE;
+ 	cuse_channel_fops.open		= cuse_channel_open;
+ 	cuse_channel_fops.release	= cuse_channel_release;
++	/* CUSE is not prepared for FUSE_DEV_IOC_CLONE */
++	cuse_channel_fops.unlocked_ioctl	= NULL;
  
- 	sdata->vif.csa_active = false;
- 	ifmgd->csa_waiting_bcn = false;
-+	/*
-+	 * If the CSA IE is still present on the beacon after the switch,
-+	 * we need to consider it as a new CSA (possibly to self).
-+	 */
-+	ifmgd->beacon_crc_valid = false;
- 
- 	ret = drv_post_channel_switch(sdata);
- 	if (ret) {
+ 	cuse_class = class_create(THIS_MODULE, "cuse");
+ 	if (IS_ERR(cuse_class))
 -- 
 2.30.2
 
