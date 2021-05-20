@@ -2,150 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 088FF38B372
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BB238B379
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:46:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237747AbhETPqo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:46:44 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:34712 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232881AbhETPqi (ORCPT
+        id S236410AbhETPsH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:48:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231670AbhETPsF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:46:38 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KFY5hV043013;
-        Thu, 20 May 2021 11:44:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=pQGY4jNTts+73SN3k2bYuXF2IcfoCawtUPZI0Dx9pCg=;
- b=ZfM3R+JrFcJOdpl3oP3lZEIlvRXy+BCdemIWLZWvRFT6ZWefZuDHga1VlOC2xaKhH6eL
- YbxlPC4RppKP4JsBPiOARHQGzPapVaqgSXolzF1sIwQPyRPYMvRVFpPW6GTMI5t5Teg5
- TkNXQDDr4yfSgknbBzLVqVI2fo2WLKLIfKIIjbyYhIgEa5wuG00TcLsoxyzJ8Go+An3O
- fdbXQfqoMYYfLTQuk01bSBpWMuDwW+znl9PSf2/b/o0X/RQYtbb//VJrN+hDWiYxPwGw
- 5amcAv+lrogxm2YmAG0l2IRzMec11eru0lba3GJ+yyXfxcL5lq9qzg1efg+vi4rUb/fW xg== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38nsh32ppn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 11:44:53 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14KFa9b6030159;
-        Thu, 20 May 2021 15:44:51 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06fra.de.ibm.com with ESMTP id 38j5jh1gvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 15:44:51 +0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14KFimVt29098334
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 15:44:48 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4E2ADA4040;
-        Thu, 20 May 2021 15:44:48 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 72D18A4053;
-        Thu, 20 May 2021 15:44:45 +0000 (GMT)
-Received: from saptagiri.in.ibm.com (unknown [9.77.198.25])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 20 May 2021 15:44:45 +0000 (GMT)
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Thu, 20 May 2021 11:48:05 -0400
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36997C06175F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:46:44 -0700 (PDT)
+Received: by mail-pl1-x636.google.com with SMTP id v12so9293796plo.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 08:46:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=oQs9jtWBxUSYheKfenr+oS5kRIQjvZiaP96jdn9gsMU=;
+        b=sLtEbitldgXrD8ZBjQvwX8vXZsSeGCvELvSzENcd2YSqXu9iBk1TDDVBxvGX2WckOo
+         ZLff2Dr5rf7BZosrT+ewzXMyOMJf7XdiMM+n3CouAjKLmyJ4lGRwEzzaStNPUE+WjS7D
+         c4LMP0I9t0UmqsR5mCkTOYB5wd2kxuubtNhodBLwxrETygnNDHDCHy31/oGVyKeNzdvA
+         oWnKYwvfUNzPUzQWFbzq2skT99K0pE/S0vy4Ytuvbak/Y0917zqNoYtlUW9/+DpwLaIl
+         gnMbO4DOkYo0VcpgnuDlYdMT3S9glBXtaGx55Sc4kX843kWuILdUe5osSIXS/GEEbknw
+         Mxjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oQs9jtWBxUSYheKfenr+oS5kRIQjvZiaP96jdn9gsMU=;
+        b=Mhki1DUXl+qtfmdIofXLyAiwuUVp4/OgqAqMPbEJpEst+avRrWI8czAhXd5OVqyW0t
+         hEcIc+DNkWMfSvm5I9QvSeR2lUKyBrpzzbI512qy1enxwBz7w7T0Qkk8af/9oZEScNWO
+         8z5massBKIg4C4m5mmgeraidZoPeIpG7K0RFsrhoGMgTyoGhLmJ4a1W4rDd2ojcfGely
+         fuEMmaaQAIF4oMlHJbaWibk8NOpKbcbeacco8kAXdVrOoi7fCkJs2HKyIZ4TEUBQ6DB+
+         p8Fj1rdRLyFcmFJ1S8phFXFhUY2GX7IezpJ8/gwDVRCR9cwopQGf7BYC4GmgI3yiZary
+         9iiQ==
+X-Gm-Message-State: AOAM5338s/Utg0p7Rj3x/x8M4m+rNzXAQKjDbdypsP1w767lDo32vvFn
+        w8zEEadOdn4nDT27Y+MfhMcZZA==
+X-Google-Smtp-Source: ABdhPJxiFrIPGyZeGPWU+3qcevfuOBti/QMH85WV51tQ0Qoku7ZeZreMmR0xPInOvOCdtXteJDisrw==
+X-Received: by 2002:a17:90a:fb51:: with SMTP id iq17mr5581236pjb.4.1621525603564;
+        Thu, 20 May 2021 08:46:43 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id x13sm2654328pja.3.2021.05.20.08.46.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 08:46:42 -0700 (PDT)
+Date:   Thu, 20 May 2021 15:46:39 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Joe Richey <joerichey94@gmail.com>
+Cc:     trivial@kernel.org, Joe Richey <joerichey@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linuxppc-dev@lists.ozlabs.org,
-        Nathan Lynch <nathanl@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Scott Cheloha <cheloha@linux.ibm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Subject: [PATCH 3/3] sched/topology: Skip updating masks for non-online nodes
-Date:   Thu, 20 May 2021 21:14:27 +0530
-Message-Id: <20210520154427.1041031-4-srikar@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.26.3
-In-Reply-To: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
-References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org
+Subject: Re: [PATCH 2/6] KVM: X86: Don't use BIT() macro in UAPI headers
+Message-ID: <YKaEX35G9Qmx3thQ@google.com>
+References: <20210520104343.317119-1-joerichey94@gmail.com>
+ <20210520104343.317119-3-joerichey94@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: beR8I2y4bAIXHz4b5IfZsaQD4o1I6Gff
-X-Proofpoint-ORIG-GUID: beR8I2y4bAIXHz4b5IfZsaQD4o1I6Gff
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_04:2021-05-20,2021-05-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 lowpriorityscore=0 bulkscore=0
- impostorscore=0 malwarescore=0 spamscore=0 priorityscore=1501 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105200104
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520104343.317119-3-joerichey94@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently scheduler doesn't check if node is online before adding CPUs
-to the node mask. However on some architectures, node distance is only
-available for nodes that are online. Its not sure how much to rely on
-the node distance, when one of the nodes is offline.
+This feedback applies to all patches in this series.
 
-If said node distance is fake (since one of the nodes is offline) and
-the actual node distance is different, then the cpumask of such nodes
-when the nodes become becomes online will be wrong.
+On Thu, May 20, 2021, Joe Richey wrote:
+> From: Joe Richey <joerichey@google.com>
+> 
+> A previous patch
 
-This can cause topology_span_sane to throw up a warning message and the
-rest of the topology being not updated properly.
+Heh, I think it goes without saying that the code was introduced by a previous
+patch, unless you've invented a time machine, in which case we should talk...
 
-Resolve this by skipping update of cpumask for nodes that are not
-online.
+> [1] used the BIT() macro to define the
+> KVM_DIRTY_GFN_F_* constants in KVM's UAPI header.
+> 
+> This macro is defined in the kernel but not in the UAPI headers.
+> 
+> [1] https://patchwork.kernel.org/patch/11854393
 
-Cc: LKML <linux-kernel@vger.kernel.org>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: Nathan Lynch <nathanl@linux.ibm.com>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Scott Cheloha <cheloha@linux.ibm.com>
-Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Rik van Riel <riel@surriel.com>
-Cc: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Reported-by: Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
----
- kernel/sched/topology.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Linking to the patch isn't helpful/desirable in this case because it doesn't
+provide any info about when the commit actually landed in the kernel.  And
+depending on the whims of the maintainer, what was posted may not exactly match
+the code that was commited.
 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index ccb9aff59add..ba0555e83548 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1731,6 +1731,9 @@ void sched_init_numa(void)
- 			sched_domains_numa_masks[i][j] = mask;
- 
- 			for_each_node(k) {
-+				if (!node_online(j))
-+					continue;
-+
- 				if (sched_debug() && (node_distance(j, k) != node_distance(k, j)))
- 					sched_numa_warn("Node-distance not symmetric");
- 
-@@ -1793,6 +1796,9 @@ void sched_domains_numa_masks_set(unsigned int cpu)
- 
- 	for (i = 0; i < sched_domains_numa_levels; i++) {
- 		for (j = 0; j < nr_node_ids; j++) {
-+			if (!node_online(j))
-+				continue;
-+
- 			if (node_distance(j, node) <= sched_domains_numa_distance[i])
- 				cpumask_set_cpu(cpu, sched_domains_numa_masks[i][j]);
- 		}
--- 
-2.27.0
+What you want is a Fixes: tag that points at the offending commit.  The Fixes:
+tag will also get the fix picked up for stable kernels, though in KVM we often
+explicitly add "Cc: stable@vger.kernel.org" (though IIRC tglx prefers not to have
+the explicit Cc).
 
+Anyways, the changelog can simply be something like:
+
+  Replace BIT() in KVM's UAPI header with an open coded equivalent.  BIT() is
+  not defined in the UAPI headers and its usage may cause userspace build errors.
+
+  Fixes: fb04a1eddb1a ("KVM: X86: Implement ring-based dirty memory tracking")
+  Signed-off-by: Joe Richey <joerichey@google.com>
