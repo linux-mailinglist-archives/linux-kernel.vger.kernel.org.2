@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF74C38B4D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C91238B4DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235736AbhETRBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:01:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33340 "EHLO
+        id S234266AbhETREK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:04:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234382AbhETRAf (ORCPT
+        with ESMTP id S235019AbhETREG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:00:35 -0400
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03CEEC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:59:10 -0700 (PDT)
-Received: by mail-qv1-xf2b.google.com with SMTP id u33so8949487qvf.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 09:59:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5BNLluTPcpkr8B4gIUADQZy/9CuaYtTWeWTH5QovX+s=;
-        b=URFz5RSgPPV/kvOGMsVL6l2dntqBGNJf3Y8pmFmuSfDqseNkAsiHUFxv/3ls17MO/E
-         rio/jp+21iMGgpc1dU/NrdDM+lcCkQpGn0sMYMkcM/fDFagR3QmrcjqFzPTMVSTzmEUQ
-         XnbWrNLpKUVDB2zBvvs/IDKQ+Y9TX1il2WrNZiAzo7rzjI+MAo7SKScJ4Qk+WiJHoUwg
-         lCf0rGcMN+EBHumAdH2bCzPzrRnjzm/o+irbR2Sgkx6KkDh3SE+fGiBgbInkOOyDdD1L
-         qRSec19A716uMhBkgaXD6lgBino8RfWGJhkSsbqxg108L7EwUH4rWNYzOTjWWVfr1t7A
-         rDZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5BNLluTPcpkr8B4gIUADQZy/9CuaYtTWeWTH5QovX+s=;
-        b=mGXiob46HIVz+69maSycvy1xrqb5sUFsgcHJ097ZXA5rFBNgBFSfjJp2R1JmOwBhyh
-         YVtpUaRJdv7EImkonXLu/RyE7orj0qCtCV2YSZa70zdwcqg7f5zNLYInXBrgVrlpaooO
-         0CYkeL9e+sQKrnK7qY8zoS6rLkoSgXRFc7MWvIEoMaF7utGQISlgQuay+7kQVKtn5O6P
-         do76Y1wxdfnIfsmO9scur9H5WqmuKV8AH44G7PxqANvYCSe1v/CL1BrffLMcnhLAYEWs
-         vLXfsrg30rlLuf1k2daFTlHxtZoK6YPB04La/RGpHMxMiFQdFhBx8rP0y3IaAgDMiP9l
-         FKeg==
-X-Gm-Message-State: AOAM531Gh0PF36SX6pBhE5uNOm0C1aFH0z3W+MAYjrIKdx6RQf3BB6VR
-        E5s4nlKsgAb6sYgWpN/VfoY=
-X-Google-Smtp-Source: ABdhPJwliv8blUAUbcICceFtO9VG/0CZHjyIfJNtxoF2L0OtgJBVK6I9uRxoK5xucgC1rDohuIchOw==
-X-Received: by 2002:a0c:ca0c:: with SMTP id c12mr6854939qvk.47.1621529948974;
-        Thu, 20 May 2021 09:59:08 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id h8sm2128602qtp.46.2021.05.20.09.59.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 09:59:08 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 20 May 2021 12:59:07 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Suleiman Souhlal <suleiman@google.com>
-Subject: Re: [PATCH] wq: handle VM suspension in stall detection
-Message-ID: <YKaVW0WVu317LP7L@slm.duckdns.org>
-References: <20210520101422.660054-1-senozhatsky@chromium.org>
+        Thu, 20 May 2021 13:04:06 -0400
+X-Greylist: delayed 110 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 20 May 2021 10:02:45 PDT
+Received: from forwardcorp1j.mail.yandex.net (forwardcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::183])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03BEAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:02:44 -0700 (PDT)
+Received: from iva8-d077482f1536.qloud-c.yandex.net (iva8-d077482f1536.qloud-c.yandex.net [IPv6:2a02:6b8:c0c:2f26:0:640:d077:482f])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id E6CD82E17ED;
+        Thu, 20 May 2021 20:00:51 +0300 (MSK)
+Received: from mail.yandex-team.ru (mail.yandex-team.ru [2a02:6b8:b080:9020::1:f])
+        by iva8-d077482f1536.qloud-c.yandex.net (mxbackcorp/Yandex) with HTTP id n0ZueB01WW21-0p1mcVGp;
+        Thu, 20 May 2021 20:00:51 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1621530051; bh=d+H8GCIV5S3WIPcPht8m0TNgn2GZfcRkAgWxaYkRe4g=;
+        h=Message-Id:Cc:Subject:In-Reply-To:Date:References:To:From;
+        b=b5yv92FmXO4Rqwq0hL8Dlc6drL0WcStLx3ms5SHFz3n+sRhs+WNL43jD0FRuh6F2J
+         g66l1F7SnN/vvu2/E2HDIJKSglqvd3mpygeMJXJJj9cGz+ZZ8OQu5F+p1wJYgvmmZP
+         EhIOB0d9VWvYYcy532GALTiaYKHLt7NS6fwfyAbk=
+Authentication-Results: iva8-d077482f1536.qloud-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+X-Yandex-Sender-Uid: 1120000000084479
+Received: by iva4-92c901fae84c.qloud-c.yandex.net with HTTP;
+        Thu, 20 May 2021 20:00:51 +0300
+From:   Dmitry Monakhov <dmtrmonakhov@yandex-team.ru>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk
+In-Reply-To: <YKZ5i5P8fL8bgq7G@slm.duckdns.org>
+References: <20210513082827.1818-1-dmtrmonakhov@yandex-team.ru> <YKZ5i5P8fL8bgq7G@slm.duckdns.org>
+Subject: Re: [PATCH] blk-throttle: fix race between submitter and throttler thread
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520101422.660054-1-senozhatsky@chromium.org>
+X-Mailer: Yamail [ http://yandex.ru ] 5.0
+Date:   Thu, 20 May 2021 20:00:51 +0300
+Message-Id: <1394051621530051@iva4-92c901fae84c.qloud-c.yandex.net>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 07:14:22PM +0900, Sergey Senozhatsky wrote:
-> If VCPU is suspended (VM suspend) in wq_watchdog_timer_fn() then
-> once this VCPU resumes it will see the new jiffies value, while it
-> may take a while before IRQ detects PVCLOCK_GUEST_STOPPED on this
-> VCPU and updates all the watchdogs via pvclock_touch_watchdogs().
-> There is a small chance of misreported WQ stalls in the meantime,
-> because new jiffies is time_after() old 'ts + thresh'.
-> 
-> wq_watchdog_timer_fn()
-> {
-> 	for_each_pool(pool, pi) {
-> 		if (time_after(jiffies, ts + thresh)) {
-> 			pr_emerg("BUG: workqueue lockup - pool");
-> 		}
-> 	}
-> }
-> 
-> Save jiffies at the beginning of this function and use that value
-> for stall detection. If VM gets suspended then we continue using
-> "old" jiffies value and old WQ touch timestamps. If IRQ at some
-> point restarts the stall detection cycle (pvclock_touch_watchdogs())
-> then old jiffies will always be before new 'ts + thresh'.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Applied to wq/for-5.13-fixes.
 
-Thanks.
-
--- 
-tejun
+> Hello, Dmitry.
+> 
+> This generally looks good to me. A couple nits below.
+> 
+>> @@ -277,6 +277,8 @@ static struct bio *__bio_chain_endio(struct bio *bio)
+>> {
+>> struct bio *parent = bio->bi_private;
+>>
+>> + BUG_ON(!bio_flagged(parent, BIO_CHAIN));
+> 
+> Let's do WARN_ON_ONCE().
+If we hit this point when this mean that  ->bio_end_io  will be called for parent bio.
+Which likely result in use-after-free for that bio and silent data corruption for bio's pages
+So IMHO BUG_ON is more appropriate here. What do you think?
+> 
+>> @@ -2270,6 +2285,8 @@ bool blk_throtl_bio(struct bio *bio)
+>>
+>> td->nr_queued[rw]++;
+>> throtl_add_bio_tg(bio, qn, tg);
+> 
+> Can you add some comment here explaining how now that the bio is added for
+> throttling, there are two accessors of it and the bio must not be modified
+> without holding the lock?
+Sound reasonable, will be back with updated comments.
+> 
+> Thank you.
+> 
+> --
+> tejun
