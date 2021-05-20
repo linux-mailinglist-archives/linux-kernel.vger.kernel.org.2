@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ABC38AB4A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB2438AB43
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240090AbhETLWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:22:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57202 "EHLO mail.kernel.org"
+        id S240444AbhETLWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:22:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57204 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238210AbhETLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238908AbhETLB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 07:01:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9DE6561D0F;
-        Thu, 20 May 2021 10:03:55 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CA1FE61D11;
+        Thu, 20 May 2021 10:03:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505036;
-        bh=Mi2KtEz4PPUxtbCTXUfEY7jGyDAc7Vp0qP13vekl+RI=;
+        s=korg; t=1621505038;
+        bh=luXZQP9Rz2/4d6Wl+X/ZCEKV/DqB17C0PCwyfQdo5ng=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+gCIy+/98dk+iXZIxN0HII2RMTIJx8pIPYleYn8bgXFLIO+WKh+qbKFTTQUuyn+Y
-         CBHKF/+q9YoLG5tfctPOyDgUETch8Tz9W/+6eG62lu7anNaLvlDL3rfzxGdaeul4iV
-         ioddnzVi5VFpRkXUjZv2FdAGqZAohRHGQ/RV2G3g=
+        b=lnfPjEtp4/7hpP2tXtctmHCvBr81fKuBbFNaiJz0OjuZnmXvgot5akXMITqGFV4tU
+         3+bz7WfrkhHrqxjyNcF8FQxelHMFHmBrdTjJrQwtRuaMCvswWnAEBaP+WjY8tudauh
+         NSsEcg91PK2+B5xRcysPSjld93IOtWf74eCC2rT8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zhen Lei <thunder.leizhen@huawei.com>,
-        Wang Nan <wangnan0@huawei.com>, Will Deacon <will@kernel.org>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
+        stable@vger.kernel.org,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 194/240] ARM: 9064/1: hw_breakpoint: Do not directly check the events overflow_handler hook
-Date:   Thu, 20 May 2021 11:23:06 +0200
-Message-Id: <20210520092115.177668376@linuxfoundation.org>
+Subject: [PATCH 4.9 195/240] NFSv4.2: Always flush out writes in nfs42_proc_fallocate()
+Date:   Thu, 20 May 2021 11:23:07 +0200
+Message-Id: <20210520092115.210265542@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,45 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Trond Myklebust <trond.myklebust@hammerspace.com>
 
-[ Upstream commit a506bd5756290821a4314f502b4bafc2afcf5260 ]
+[ Upstream commit 99f23783224355e7022ceea9b8d9f62c0fd01bd8 ]
 
-The commit 1879445dfa7b ("perf/core: Set event's default
-::overflow_handler()") set a default event->overflow_handler in
-perf_event_alloc(), and replace the check event->overflow_handler with
-is_default_overflow_handler(), but one is missing.
+Whether we're allocating or delallocating space, we should flush out the
+pending writes in order to avoid races with attribute updates.
 
-Currently, the bp->overflow_handler can not be NULL. As a result,
-enable_single_step() is always not invoked.
-
-Comments from Zhen Lei:
-
- https://patchwork.kernel.org/project/linux-arm-kernel/patch/20210207105934.2001-1-thunder.leizhen@huawei.com/
-
-Fixes: 1879445dfa7b ("perf/core: Set event's default ::overflow_handler()")
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: Wang Nan <wangnan0@huawei.com>
-Acked-by: Will Deacon <will@kernel.org>
-Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+Fixes: 1e564d3dbd68 ("NFSv4.2: Fix a race in nfs42_proc_deallocate()")
+Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/arm/kernel/hw_breakpoint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs42proc.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/arch/arm/kernel/hw_breakpoint.c b/arch/arm/kernel/hw_breakpoint.c
-index 671dbc28e5d4..59e04e2d9d9d 100644
---- a/arch/arm/kernel/hw_breakpoint.c
-+++ b/arch/arm/kernel/hw_breakpoint.c
-@@ -891,7 +891,7 @@ static void breakpoint_handler(unsigned long unknown, struct pt_regs *regs)
- 			info->trigger = addr;
- 			pr_debug("breakpoint fired: address = 0x%x\n", addr);
- 			perf_bp_event(bp, regs);
--			if (!bp->overflow_handler)
-+			if (is_default_overflow_handler(bp))
- 				enable_single_step(bp, addr);
- 			goto unlock;
+diff --git a/fs/nfs/nfs42proc.c b/fs/nfs/nfs42proc.c
+index 5cda392028ce..7e9fb1119bcf 100644
+--- a/fs/nfs/nfs42proc.c
++++ b/fs/nfs/nfs42proc.c
+@@ -56,7 +56,8 @@ static int _nfs42_proc_fallocate(struct rpc_message *msg, struct file *filep,
+ static int nfs42_proc_fallocate(struct rpc_message *msg, struct file *filep,
+ 				loff_t offset, loff_t len)
+ {
+-	struct nfs_server *server = NFS_SERVER(file_inode(filep));
++	struct inode *inode = file_inode(filep);
++	struct nfs_server *server = NFS_SERVER(inode);
+ 	struct nfs4_exception exception = { };
+ 	struct nfs_lock_context *lock;
+ 	int err;
+@@ -65,9 +66,13 @@ static int nfs42_proc_fallocate(struct rpc_message *msg, struct file *filep,
+ 	if (IS_ERR(lock))
+ 		return PTR_ERR(lock);
+ 
+-	exception.inode = file_inode(filep);
++	exception.inode = inode;
+ 	exception.state = lock->open_context->state;
+ 
++	err = nfs_sync_inode(inode);
++	if (err)
++		goto out;
++
+ 	do {
+ 		err = _nfs42_proc_fallocate(msg, filep, lock, offset, len);
+ 		if (err == -ENOTSUPP) {
+@@ -76,7 +81,7 @@ static int nfs42_proc_fallocate(struct rpc_message *msg, struct file *filep,
  		}
+ 		err = nfs4_handle_exception(server, err, &exception);
+ 	} while (exception.retry);
+-
++out:
+ 	nfs_put_lock_context(lock);
+ 	return err;
+ }
+@@ -114,16 +119,13 @@ int nfs42_proc_deallocate(struct file *filep, loff_t offset, loff_t len)
+ 		return -EOPNOTSUPP;
+ 
+ 	inode_lock(inode);
+-	err = nfs_sync_inode(inode);
+-	if (err)
+-		goto out_unlock;
+ 
+ 	err = nfs42_proc_fallocate(&msg, filep, offset, len);
+ 	if (err == 0)
+ 		truncate_pagecache_range(inode, offset, (offset + len) -1);
+ 	if (err == -EOPNOTSUPP)
+ 		NFS_SERVER(inode)->caps &= ~NFS_CAP_DEALLOCATE;
+-out_unlock:
++
+ 	inode_unlock(inode);
+ 	return err;
+ }
 -- 
 2.30.2
 
