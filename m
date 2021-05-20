@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C0A38A8CE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FC138A8D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239078AbhETKy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39950 "EHLO mail.kernel.org"
+        id S239259AbhETKyc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:54:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237413AbhETKiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237415AbhETKiF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:38:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A14D61C78;
-        Thu, 20 May 2021 09:54:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ABA3C6124C;
+        Thu, 20 May 2021 09:54:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504481;
-        bh=mfU49GYTZqOw/I7JKuvZr88Pd7fKmif0/zfVAt6DikE=;
+        s=korg; t=1621504484;
+        bh=DtFV3Wqo/7PG62HucM/2btXMTajYH5p0FkeVxlfwrRc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=E+O4DOy0wIvynLraAetdkoKq/gbGdJ1FYFNGrRQsR2gY/2C4BRLs2W5SjFsHCVsZx
-         Z2+OhSRscYEFL5vPRCqpdkk1M2nyqtBLPVA0EjJ8rfnLQt+B9kF21D4ap8nplVKwIj
-         eUwVouv4EYWGpddJkp+WAnzhfBasb0csTCfv/p3g=
+        b=ybvVCBRfEIyiOgoAtgah1H+wV047162+Bc3zJuWuUPXGZcKiCKAj7W/aP/Ucikgxa
+         y9AHpNV4OrZPvrc6DusmwvlYZJU8liSgLnN5n+aAfG+3Azxzz9rXPqZpR/34ak5Jbj
+         YX8u3tcsXDLCgAu8kuAI15VYuJjqqPuytA8FsOTk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nikola Livic <nlivic@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
+        stable@vger.kernel.org, Olga Kornievskaia <kolga@netapp.com>,
         Trond Myklebust <trond.myklebust@hammerspace.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 265/323] pNFS/flexfiles: fix incorrect size check in decode_nfs_fh()
-Date:   Thu, 20 May 2021 11:22:37 +0200
-Message-Id: <20210520092129.302664881@linuxfoundation.org>
+Subject: [PATCH 4.14 266/323] NFSv4.2 fix handling of sr_eof in SEEKs reply
+Date:   Thu, 20 May 2021 11:22:38 +0200
+Message-Id: <20210520092129.335986771@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,50 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nikola Livic <nlivic@gmail.com>
+From: Olga Kornievskaia <kolga@netapp.com>
 
-[ Upstream commit ed34695e15aba74f45247f1ee2cf7e09d449f925 ]
+[ Upstream commit 73f5c88f521a630ea1628beb9c2d48a2e777a419 ]
 
-We (adam zabrocki, alexander matrosov, alexander tereshkin, maksym
-bazalii) observed the check:
+Currently the client ignores the value of the sr_eof of the SEEK
+operation. According to the spec, if the server didn't find the
+requested extent and reached the end of the file, the server
+would return sr_eof=true. In case the request for DATA and no
+data was found (ie in the middle of the hole), then the lseek
+expects that ENXIO would be returned.
 
-	if (fh->size > sizeof(struct nfs_fh))
-
-should not use the size of the nfs_fh struct which includes an extra two
-bytes from the size field.
-
-struct nfs_fh {
-	unsigned short         size;
-	unsigned char          data[NFS_MAXFHSIZE];
-}
-
-but should determine the size from data[NFS_MAXFHSIZE] so the memcpy
-will not write 2 bytes beyond destination.  The proposed fix is to
-compare against the NFS_MAXFHSIZE directly, as is done elsewhere in fs
-code base.
-
-Fixes: d67ae825a59d ("pnfs/flexfiles: Add the FlexFile Layout Driver")
-Signed-off-by: Nikola Livic <nlivic@gmail.com>
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 1c6dcbe5ceff8 ("NFS: Implement SEEK")
+Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
 Signed-off-by: Trond Myklebust <trond.myklebust@hammerspace.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/flexfilelayout/flexfilelayout.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs42proc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/nfs/flexfilelayout/flexfilelayout.c b/fs/nfs/flexfilelayout/flexfilelayout.c
-index 74f15498c9bf..9d99e19d98bd 100644
---- a/fs/nfs/flexfilelayout/flexfilelayout.c
-+++ b/fs/nfs/flexfilelayout/flexfilelayout.c
-@@ -101,7 +101,7 @@ static int decode_nfs_fh(struct xdr_stream *xdr, struct nfs_fh *fh)
- 	if (unlikely(!p))
- 		return -ENOBUFS;
- 	fh->size = be32_to_cpup(p++);
--	if (fh->size > sizeof(struct nfs_fh)) {
-+	if (fh->size > NFS_MAXFHSIZE) {
- 		printk(KERN_ERR "NFS flexfiles: Too big fh received %d\n",
- 		       fh->size);
- 		return -EOVERFLOW;
+diff --git a/fs/nfs/nfs42proc.c b/fs/nfs/nfs42proc.c
+index 1c4361aed415..a61792f777be 100644
+--- a/fs/nfs/nfs42proc.c
++++ b/fs/nfs/nfs42proc.c
+@@ -305,7 +305,10 @@ static loff_t _nfs42_proc_llseek(struct file *filep,
+ 	if (status)
+ 		return status;
+ 
+-	return vfs_setpos(filep, res.sr_offset, inode->i_sb->s_maxbytes);
++	if (whence == SEEK_DATA && res.sr_eof)
++		return -NFS4ERR_NXIO;
++	else
++		return vfs_setpos(filep, res.sr_offset, inode->i_sb->s_maxbytes);
+ }
+ 
+ loff_t nfs42_proc_llseek(struct file *filep, loff_t offset, int whence)
 -- 
 2.30.2
 
