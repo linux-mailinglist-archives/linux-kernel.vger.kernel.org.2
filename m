@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA44238A977
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9529D38ABB6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239776AbhETLC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:02:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44958 "EHLO mail.kernel.org"
+        id S241335AbhETL1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:27:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237912AbhETKoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:44:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BB96861C90;
-        Thu, 20 May 2021 09:56:59 +0000 (UTC)
+        id S239999AbhETLG4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:06:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3975661D30;
+        Thu, 20 May 2021 10:05:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504620;
-        bh=97YbxEaPhkNbzZCJI9dvPq3/hKx5CAZlYlzMlxBP67o=;
+        s=korg; t=1621505143;
+        bh=Sz6EOdc7yV52bDWQgKlyk4LCblp+4sumZFTP9xmgSn8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o7mrqCjG6wuaB8LXV7g+TPVkNQMwFbEQm2evhnWLhrSZMnBxgilVSDd0CQ1+mx0Ih
-         cBYKnM9ESA/EmhXIoFpsz15pW4IDH/x+Hdb3vpxxmQTz+mfkMEP33qYOGHy7RNOxx9
-         rmcTSPCqZ6v7+QqHuJzpXQgXWnmwyrSVsIg18fGQ=
+        b=CLDSbpXgBX+d99fx3U4ygjrB03lftueVMXA7dhwSeOxcAhDwbHCsmcfkNS7CQ3iJk
+         MnS+9Y75Q4me2Covx1HuByLwGJJv7Wfq2OFcvfxPRcZN4FJoi72bAbdezS4WDcF/Go
+         nSishVS5kqqvfGsnosBc0S67CfYxnF/aAeM6+VZc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tomas Melin <tomas.melin@vaisala.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 319/323] serial: 8250: fix potential deadlock in rs485-mode
-Date:   Thu, 20 May 2021 11:23:31 +0200
-Message-Id: <20210520092131.177575205@linuxfoundation.org>
+        stable@vger.kernel.org, Mikulas Patocka <mpatocka@redhat.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Mike Snitzer <snitzer@redhat.com>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Subject: [PATCH 4.9 220/240] dm ioctl: fix out of bounds array access when no devices
+Date:   Thu, 20 May 2021 11:23:32 +0200
+Message-Id: <20210520092116.089755523@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+References: <20210520092108.587553970@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,57 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomas Melin <tomas.melin@vaisala.com>
+From: Mikulas Patocka <mpatocka@redhat.com>
 
-[ Upstream commit b86f86e8e7c5264bb8f5835d60f9ec840d9f5a7a ]
+commit 4edbe1d7bcffcd6269f3b5eb63f710393ff2ec7a upstream.
 
-Canceling hrtimer when holding uart spinlock can deadlock.
+If there are not any dm devices, we need to zero the "dev" argument in
+the first structure dm_name_list. However, this can cause out of
+bounds write, because the "needed" variable is zero and len may be
+less than eight.
 
-CPU0: syscall write
-          -> get uart port spinlock
-              -> write uart
-                  -> start_tx_rs485
-                      -> hrtimer_cancel
-                          -> wait for hrtimer callback to finish
+Fix this bug by reporting DM_BUFFER_FULL_FLAG if the result buffer is
+too small to hold the "nl->dev" value.
 
-CPU1: hrtimer IRQ
-          -> run hrtimer
-              -> em485_handle_stop_tx
-                  -> get uart port spinlock
-
-CPU0 is waiting for the hrtimer callback to finish, but the hrtimer
-callback running on CPU1 is waiting to get the uart port spinlock.
-
-This deadlock can be avoided by not canceling the hrtimers in these paths.
-Setting active_timer=NULL can be done without accessing hrtimer,
-and that will effectively cancel operations that would otherwise have been
-performed by the hrtimer callback.
-
-Signed-off-by: Tomas Melin <tomas.melin@vaisala.com>
+Signed-off-by: Mikulas Patocka <mpatocka@redhat.com>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Mike Snitzer <snitzer@redhat.com>
+[iwamatsu: Adjust context]
+Signed-off-by: Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/tty/serial/8250/8250_port.c |    3 ---
- 1 file changed, 3 deletions(-)
+ drivers/md/dm-ioctl.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/serial/8250/8250_port.c
-+++ b/drivers/tty/serial/8250/8250_port.c
-@@ -1527,7 +1527,6 @@ static inline void __stop_tx(struct uart
- 			return;
- 
- 		em485->active_timer = NULL;
--		hrtimer_cancel(&em485->start_tx_timer);
- 
- 		__stop_tx_rs485(p);
+--- a/drivers/md/dm-ioctl.c
++++ b/drivers/md/dm-ioctl.c
+@@ -524,7 +524,7 @@ static int list_devices(struct dm_ioctl
+ 	 * Grab our output buffer.
+ 	 */
+ 	nl = get_result_buffer(param, param_size, &len);
+-	if (len < needed) {
++	if (len < needed || len < sizeof(nl->dev)) {
+ 		param->flags |= DM_BUFFER_FULL_FLAG;
+ 		goto out;
  	}
-@@ -1591,8 +1590,6 @@ static inline void start_tx_rs485(struct
- 		serial8250_stop_rx(&up->port);
- 
- 	em485->active_timer = NULL;
--	if (hrtimer_is_queued(&em485->stop_tx_timer))
--		hrtimer_cancel(&em485->stop_tx_timer);
- 
- 	mcr = serial8250_in_MCR(up);
- 	if (!!(up->port.rs485.flags & SER_RS485_RTS_ON_SEND) !=
 
 
