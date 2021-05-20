@@ -2,35 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE8C138AB64
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25A3038AB67
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241239AbhETLYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:24:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38332 "EHLO mail.kernel.org"
+        id S241048AbhETLYD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:24:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38340 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239530AbhETLDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:03:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4DD4261D13;
-        Thu, 20 May 2021 10:04:26 +0000 (UTC)
+        id S239547AbhETLDe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:03:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F45D61D14;
+        Thu, 20 May 2021 10:04:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505066;
-        bh=qgA/fXD4F6Koj9VdCi58OxcitLjK1laDKud+WmMKar8=;
+        s=korg; t=1621505069;
+        bh=AL0y3Ulyq87lO2EIkGtAVDh3O0quA74rVMLpWusQE+c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OxKHxef/PFXDPWzHc/Cfqyti2fSvZQ+oCqRe2rE6sZgqACC9FbNoitMgUv+fIVreP
-         QbyzSFOrziPzRr9yU0gyiLld7fCV8oBcq7c4VbHh4UU/DTjkl1W2p1hGJ9XIbUJ+vI
-         opwTmqJoK4P5SWKZDao0fbqDpjQy2g5n5zQzq3Og=
+        b=bWJjUSp9n9sw8EaLaVis46tyDUD/sBEUs/KSR0D0gbop7jV1vYo1jk2AIXwiaUR8k
+         7jDhkTUT+Kkw6fTyGq2LgKAWfZynre+MoDITbY9nqj8oPqSesogttgNBCzpxHUg96R
+         i01pQeSB0n64Vo0Y6XrN6J5NLW5BjLqiN9skegCw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Phillip Lougher <phillip@squashfs.org.uk>,
-        syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com,
-        syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 207/240] squashfs: fix divide error in calculate_skip()
-Date:   Thu, 20 May 2021 11:23:19 +0200
-Message-Id: <20210520092115.608903588@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 208/240] iio: proximity: pulsedlight: Fix rumtime PM imbalance on error
+Date:   Thu, 20 May 2021 11:23:20 +0200
+Message-Id: <20210520092115.648446005@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -42,53 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phillip Lougher <phillip@squashfs.org.uk>
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-commit d6e621de1fceb3b098ebf435ef7ea91ec4838a1a upstream.
+[ Upstream commit a2fa9242e89f27696515699fe0f0296bf1ac1815 ]
 
-Sysbot has reported a "divide error" which has been identified as being
-caused by a corrupted file_size value within the file inode.  This value
-has been corrupted to a much larger value than expected.
+When lidar_write_control() fails, a pairing PM usage counter
+decrement is needed to keep the counter balanced.
 
-Calculate_skip() is passed i_size_read(inode) >> msblk->block_log.  Due to
-the file_size value corruption this overflows the int argument/variable in
-that function, leading to the divide error.
-
-This patch changes the function to use u64.  This will accommodate any
-unexpectedly large values due to corruption.
-
-The value returned from calculate_skip() is clamped to be never more than
-SQUASHFS_CACHED_BLKS - 1, or 7.  So file_size corruption does not lead to
-an unexpectedly large return result here.
-
-Link: https://lkml.kernel.org/r/20210507152618.9447-1-phillip@squashfs.org.uk
-Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
-Reported-by: <syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com>
-Reported-by: <syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 4ac4e086fd8c5 ("iio: pulsedlight-lidar-lite: add runtime PM")
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Link: https://lore.kernel.org/r/20210412053204.4889-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/squashfs/file.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ drivers/iio/proximity/pulsedlight-lidar-lite-v2.c | 1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/squashfs/file.c
-+++ b/fs/squashfs/file.c
-@@ -224,11 +224,11 @@ failure:
-  * If the skip factor is limited in this way then the file will use multiple
-  * slots.
-  */
--static inline int calculate_skip(int blocks)
-+static inline int calculate_skip(u64 blocks)
- {
--	int skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
-+	u64 skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
- 		 * SQUASHFS_META_INDEXES);
--	return min(SQUASHFS_CACHED_BLKS - 1, skip + 1);
-+	return min((u64) SQUASHFS_CACHED_BLKS - 1, skip + 1);
- }
+diff --git a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+index 3141c3c161bb..46e969a3a9b7 100644
+--- a/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
++++ b/drivers/iio/proximity/pulsedlight-lidar-lite-v2.c
+@@ -166,6 +166,7 @@ static int lidar_get_measurement(struct lidar_data *data, u16 *reg)
+ 	ret = lidar_write_control(data, LIDAR_REG_CONTROL_ACQUIRE);
+ 	if (ret < 0) {
+ 		dev_err(&client->dev, "cannot send start measurement command");
++		pm_runtime_put_noidle(&client->dev);
+ 		return ret;
+ 	}
  
- 
+-- 
+2.30.2
+
 
 
