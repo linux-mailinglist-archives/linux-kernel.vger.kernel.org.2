@@ -2,39 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07ADF38A12C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66AD638A0E3
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232285AbhETJ2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:28:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52732 "EHLO mail.kernel.org"
+        id S231774AbhETJ0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:26:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232021AbhETJ1n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:27:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 680CE613B6;
-        Thu, 20 May 2021 09:26:19 +0000 (UTC)
+        id S231713AbhETJ00 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:26:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B0F961261;
+        Thu, 20 May 2021 09:25:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502779;
-        bh=ZS5OhBg/T4BfvVRuuVPob80P71kYOtIlYk1gRfrP6P8=;
+        s=korg; t=1621502704;
+        bh=gFCcF5BTHerYyZCaGQSR28fzhZp33fOtxwvk3P1bJTw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W6xBV2Z+DZpwmdQrOsAFOuO+zkzfkiFdoeghU3kmkzplaNZMJR4D20YoqD6ByCk5I
-         kwsBdKjzBMmtQUXsYB/GBRBIOiYsoRdW04KsvTNACRhwPRlLd+uhUS/FtbVrfqDIuP
-         MknU08lhZAs/QrAPVO3IualdoI3qoFEX0ozEgJ8Q=
+        b=VDVHjkoUdUM9aM9BfGJ3Bz+mtx7ZcNNHzOw6J8wiilTU2QCsZQVwH+uCbvLzQJB8V
+         SzCoku/c8zLUKFuFYRL2pQAF5prN2pwSQ3dZE/Rsjh0PmGtZPgn0R21//82j2ZZmCr
+         bNy1oGMTp2mIyHMuFOo/DOH1awY6zifL9D9Q7Pjk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Robert Richter <rric@kernel.org>,
+        stable@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 10/47] PCI: thunder: Fix compile testing
-Date:   Thu, 20 May 2021 11:22:08 +0200
-Message-Id: <20210520092053.887183963@linuxfoundation.org>
+Subject: [PATCH 5.12 21/45] ARM: 9075/1: kernel: Fix interrupted SMC calls
+Date:   Thu, 20 May 2021 11:22:09 +0200
+Message-Id: <20210520092054.208150206@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-References: <20210520092053.559923764@linuxfoundation.org>
+In-Reply-To: <20210520092053.516042993@linuxfoundation.org>
+References: <20210520092053.516042993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,99 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-[ Upstream commit 16f7ae5906dfbeff54f74ec75d0563bb3a87ab0b ]
+[ Upstream commit 57ac51667d8cd62731223d687e5fe7b41c502f89 ]
 
-Compile-testing these drivers is currently broken. Enabling it causes a
-couple of build failures though:
+On Qualcomm ARM32 platforms, the SMC call can return before it has
+completed. If this occurs, the call can be restarted, but it requires
+using the returned session ID value from the interrupted SMC call.
 
-  drivers/pci/controller/pci-thunder-ecam.c:119:30: error: shift count >= width of type [-Werror,-Wshift-count-overflow]
-  drivers/pci/controller/pci-thunder-pem.c:54:2: error: implicit declaration of function 'writeq' [-Werror,-Wimplicit-function-declaration]
-  drivers/pci/controller/pci-thunder-pem.c:392:8: error: implicit declaration of function 'acpi_get_rc_resources' [-Werror,-Wimplicit-function-declaration]
+The ARM32 SMCC code already has the provision to add platform specific
+quirks for things like this. So let's make use of it and add the
+Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
+driver.
 
-Fix them with the obvious one-line changes.
+This change is similar to the below one added for ARM64 a while ago:
+commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
 
-Link: https://lore.kernel.org/r/20210308152501.2135937-2-arnd@kernel.org
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
-Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Robert Richter <rric@kernel.org>
+Without this change, the Qualcomm ARM32 platforms like SDX55 will return
+-EINVAL for SMC calls used for modem firmware loading and validation.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/pci/controller/pci-thunder-ecam.c |  2 +-
- drivers/pci/controller/pci-thunder-pem.c  | 13 +++++++------
- drivers/pci/pci.h                         |  6 ++++++
- 3 files changed, 14 insertions(+), 7 deletions(-)
+ arch/arm/kernel/asm-offsets.c |  3 +++
+ arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/pci/controller/pci-thunder-ecam.c b/drivers/pci/controller/pci-thunder-ecam.c
-index 7e8835fee5f7..d79395881d76 100644
---- a/drivers/pci/controller/pci-thunder-ecam.c
-+++ b/drivers/pci/controller/pci-thunder-ecam.c
-@@ -116,7 +116,7 @@ static int thunder_ecam_p2_config_read(struct pci_bus *bus, unsigned int devfn,
- 	 * the config space access window.  Since we are working with
- 	 * the high-order 32 bits, shift everything down by 32 bits.
- 	 */
--	node_bits = (cfg->res.start >> 32) & (1 << 12);
-+	node_bits = upper_32_bits(cfg->res.start) & (1 << 12);
+diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
+index be8050b0c3df..70993af22d80 100644
+--- a/arch/arm/kernel/asm-offsets.c
++++ b/arch/arm/kernel/asm-offsets.c
+@@ -24,6 +24,7 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/hardware/cache-l2x0.h>
+ #include <linux/kbuild.h>
++#include <linux/arm-smccc.h>
+ #include "signal.h"
  
- 	v |= node_bits;
- 	set_val(v, where, size, val);
-diff --git a/drivers/pci/controller/pci-thunder-pem.c b/drivers/pci/controller/pci-thunder-pem.c
-index 3f847969143e..4b12dd42bf23 100644
---- a/drivers/pci/controller/pci-thunder-pem.c
-+++ b/drivers/pci/controller/pci-thunder-pem.c
-@@ -12,6 +12,7 @@
- #include <linux/pci-acpi.h>
- #include <linux/pci-ecam.h>
- #include <linux/platform_device.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
- #include "../pci.h"
- 
- #if defined(CONFIG_PCI_HOST_THUNDER_PEM) || (defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS))
-@@ -315,9 +316,9 @@ static int thunder_pem_init(struct device *dev, struct pci_config_window *cfg,
- 	 * structure here for the BAR.
- 	 */
- 	bar4_start = res_pem->start + 0xf00000;
--	pem_pci->ea_entry[0] = (u32)bar4_start | 2;
--	pem_pci->ea_entry[1] = (u32)(res_pem->end - bar4_start) & ~3u;
--	pem_pci->ea_entry[2] = (u32)(bar4_start >> 32);
-+	pem_pci->ea_entry[0] = lower_32_bits(bar4_start) | 2;
-+	pem_pci->ea_entry[1] = lower_32_bits(res_pem->end - bar4_start) & ~3u;
-+	pem_pci->ea_entry[2] = upper_32_bits(bar4_start);
- 
- 	cfg->priv = pem_pci;
- 	return 0;
-@@ -325,9 +326,9 @@ static int thunder_pem_init(struct device *dev, struct pci_config_window *cfg,
- 
- #if defined(CONFIG_ACPI) && defined(CONFIG_PCI_QUIRKS)
- 
--#define PEM_RES_BASE		0x87e0c0000000UL
--#define PEM_NODE_MASK		GENMASK(45, 44)
--#define PEM_INDX_MASK		GENMASK(26, 24)
-+#define PEM_RES_BASE		0x87e0c0000000ULL
-+#define PEM_NODE_MASK		GENMASK_ULL(45, 44)
-+#define PEM_INDX_MASK		GENMASK_ULL(26, 24)
- #define PEM_MIN_DOM_IN_NODE	4
- #define PEM_MAX_DOM_IN_NODE	10
- 
-diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
-index f86cae9aa1f4..09ebc134d0d7 100644
---- a/drivers/pci/pci.h
-+++ b/drivers/pci/pci.h
-@@ -606,6 +606,12 @@ static inline int pci_dev_specific_reset(struct pci_dev *dev, int probe)
- #if defined(CONFIG_PCI_QUIRKS) && defined(CONFIG_ARM64)
- int acpi_get_rc_resources(struct device *dev, const char *hid, u16 segment,
- 			  struct resource *res);
-+#else
-+static inline int acpi_get_rc_resources(struct device *dev, const char *hid,
-+					u16 segment, struct resource *res)
-+{
-+	return -ENODEV;
-+}
+ /*
+@@ -148,6 +149,8 @@ int main(void)
+   DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
+   DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
  #endif
++  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
++  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
+   BLANK();
+   DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
+   DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
+diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
+index 00664c78faca..931df62a7831 100644
+--- a/arch/arm/kernel/smccc-call.S
++++ b/arch/arm/kernel/smccc-call.S
+@@ -3,7 +3,9 @@
+  * Copyright (c) 2015, Linaro Limited
+  */
+ #include <linux/linkage.h>
++#include <linux/arm-smccc.h>
  
- u32 pci_rebar_get_possible_sizes(struct pci_dev *pdev, int bar);
++#include <asm/asm-offsets.h>
+ #include <asm/opcodes-sec.h>
+ #include <asm/opcodes-virt.h>
+ #include <asm/unwind.h>
+@@ -27,7 +29,14 @@ UNWIND(	.fnstart)
+ UNWIND(	.save	{r4-r7})
+ 	ldm	r12, {r4-r7}
+ 	\instr
+-	pop	{r4-r7}
++	ldr	r4, [sp, #36]
++	cmp	r4, #0
++	beq	1f			// No quirk structure
++	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
++	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
++	bne	1f			// No quirk present
++	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
++1:	pop	{r4-r7}
+ 	ldr	r12, [sp, #(4 * 4)]
+ 	stm	r12, {r0-r3}
+ 	bx	lr
 -- 
 2.30.2
 
