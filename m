@@ -2,136 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DAE338AB9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 816C438AA29
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240818AbhETL0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:26:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37188 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239401AbhETLGG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:06:06 -0400
-Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C2CFC0612F3;
-        Thu, 20 May 2021 02:58:15 -0700 (PDT)
-Received: by mail-wm1-x333.google.com with SMTP id h3-20020a05600c3503b0290176f13c7715so4831135wmq.5;
-        Thu, 20 May 2021 02:58:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=VSSStV1UVW9GUULFLbeRmm9wy52EiHMU0utlA/8pnvE=;
-        b=JY2ZSVUWiwcKXQ8VUM4s6Y3HI2Ap+urjh71RlhmLq2jwlRVqBrIM6xYVqrJ5mRpqra
-         ync2ycExhxsHg7qzUjjq5ufVaQ78lN6ZOtubNzY5v/hhZOSRcFobXKJoHntIE3+36P+9
-         8hneODynDFY0zI7ps+cGp8sJbw1M4wMG1fK0bvSL3rTf03w0kezyD9cn0hEL10GKJC4d
-         8tu5VvhGheh7pUCKSoMFjiz7GvWMt6Lk4Jfjv31j/Aq5teZMUZuUhY26Z98M41I/L5q8
-         vkFTUwGDliR6wy8VOIeWeMbyzjSnq359mhF+1HkyH+obQ9wxp/Z8D0cr8RshMkCTpBKW
-         hunw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VSSStV1UVW9GUULFLbeRmm9wy52EiHMU0utlA/8pnvE=;
-        b=kfdcgnpPO6ifp63oFHmwmWEj9vak+UbhOkm1q0MWnXnYKzQAs51ggnVeU1mjfS8SmK
-         NWbU/FheeDTnvKRDWplkASlv0VZPYGyUzYIgW8l9okXFLnQFtkQGl7xuReNT5qv+KFof
-         8dxybcIY7+2QfCKHN16yumRKtKQZzs92WFsBLoFJRd4YsCCZqJ9tAwFF1wtcw7gwt1iC
-         07JuJ8t9e72o6pxnwmjUXIEtSxTMiDs3V/TmaaPCswiNFz3T1o8FNZH7tzciwLDhI3HJ
-         xN0DCtcZ5mBuo6xob7kZ4JgC3mGcHQNQU17z8+YRIQRroML5+Dq9jGrBnB9DrRCsS7fh
-         H2sQ==
-X-Gm-Message-State: AOAM532dmo057kM5J6wYDgqsaDxWn8rNjKblVnO5kP7oeCxqNOcVIYi6
-        tn+6CC8Hd3NgviNup54J+VY=
-X-Google-Smtp-Source: ABdhPJzP8kx3ScHOA9Pi7EFe9kLW2SonhDbJXpzAM/zltPv+hDcrDwtwWVokCY64iOMP4L5vne6BNA==
-X-Received: by 2002:a1c:4601:: with SMTP id t1mr2789609wma.27.1621504693981;
-        Thu, 20 May 2021 02:58:13 -0700 (PDT)
-Received: from ?IPv6:2620:10d:c096:310::2810? ([2620:10d:c093:600::2:130f])
-        by smtp.gmail.com with ESMTPSA id x10sm2561652wrt.65.2021.05.20.02.58.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 02:58:13 -0700 (PDT)
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     io-uring@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-References: <cover.1621424513.git.asml.silence@gmail.com>
- <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
- <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH 18/23] libbpf: support io_uring
-Message-ID: <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
-Date:   Thu, 20 May 2021 10:58:03 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S238812AbhETLKl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:10:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239020AbhETKur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:50:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 69EDE61CD6;
+        Thu, 20 May 2021 09:59:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621504792;
+        bh=8XaTgPGPzMKrVYB55TT07RWpor7EE721k5DsUaOSml0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Ie2tMfGK1o1rBRZPngS1gPkvaHRuwU8AFvP3QMJTaXoVaAyU/50RYhn/lE+JEyyjn
+         h1ytCatz8wmyed76m6nh8RoGWn1iMadS2DmKEJ1YCtuEK7xTl8IXp5cPuyHd6ZuJ4w
+         /q/IYW0HmDEV52+1+QJiq6OcUshgX6W1YfUOVbQTCk2ZD7vr0RMuXvkUcBaDU4vdco
+         e2pVyvrcI6ilp/F1lXNqbCsP9YQsI3IVxefLPge6P3sosgonkmNt4rerqcl0aqxXW5
+         8RnohRlffqkKSnr3D9zLc/LLXApCGpYTQ/Qk9ahQf4Xiqe6Ee6RQ/f0FyZLurCNOtW
+         0UJhM0g9KxItA==
+Received: by mail-oi1-f178.google.com with SMTP id s19so15864342oic.7;
+        Thu, 20 May 2021 02:59:52 -0700 (PDT)
+X-Gm-Message-State: AOAM531iF1VeMbr8mvDPap9p5qugLWT/colddp3bwjqTYiz4V3vp4P86
+        bccgv6Sj0nNV/6flU5pEuAscLok32pblwxR20hU=
+X-Google-Smtp-Source: ABdhPJxFl7ZFAJvxWiszmikWzGkP+5QaUAR2Rrt8rhTxIOrBEaQH8G7l6XiBT1Y+lrgctnhdZU+kC/ywCYsIxk4dEpY=
+X-Received: by 2002:aca:4343:: with SMTP id q64mr2653931oia.33.1621504791801;
+ Thu, 20 May 2021 02:59:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210520092053.516042993@linuxfoundation.org> <20210520092053.731407333@linuxfoundation.org>
+In-Reply-To: <20210520092053.731407333@linuxfoundation.org>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 20 May 2021 11:59:40 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXECeTz5T+0Pi77POE-uo65D_+gXFHZh=wi6EDVBDK2Rsg@mail.gmail.com>
+Message-ID: <CAMj1kXECeTz5T+0Pi77POE-uo65D_+gXFHZh=wi6EDVBDK2Rsg@mail.gmail.com>
+Subject: Re: [PATCH 5.12 06/45] ARM: 9058/1: cache-v7: refactor
+ v7_invalidate_l1 to avoid clobbering r5/r6
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Sasha Levin <sashal@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/19/21 6:38 PM, Andrii Nakryiko wrote:
-> On Wed, May 19, 2021 at 7:14 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> ---
->>  tools/lib/bpf/libbpf.c | 7 +++++++
->>  1 file changed, 7 insertions(+)
->>
->> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
->> index 4181d178ee7b..de5d1508f58e 100644
->> --- a/tools/lib/bpf/libbpf.c
->> +++ b/tools/lib/bpf/libbpf.c
->> @@ -13,6 +13,10 @@
->>  #ifndef _GNU_SOURCE
->>  #define _GNU_SOURCE
->>  #endif
->> +
->> +/* hack, use local headers instead of system-wide */
->> +#include "../../../include/uapi/linux/bpf.h"
->> +
-> 
-> libbpf is already using the latest UAPI headers, so you don't need
-> this hack. You just haven't synced include/uapi/linux/bpf.h into
-> tools/include/uapi/linux/bpf.h
+On Thu, 20 May 2021 at 11:25, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> From: Ard Biesheuvel <ardb@kernel.org>
+>
+> [ Upstream commit f9e7a99fb6b86aa6a00e53b34ee6973840e005aa ]
+>
+> The cache invalidation code in v7_invalidate_l1 can be tweaked to
+> re-read the associativity from CCSIDR, and keep the way identifier
+> component in a single register that is assigned in the outer loop. This
+> way, we need 2 registers less.
+>
+> Given that the number of sets is typically much larger than the
+> associativity, rearrange the code so that the outer loop has the fewer
+> number of iterations, ensuring that the re-read of CCSIDR only occurs a
+> handful of times in practice.
+>
+> Fix the whitespace while at it, and update the comment to indicate that
+> this code is no longer a clone of anything else.
+>
+> Acked-by: Nicolas Pitre <nico@fluxnic.net>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-It's more convenient to keep it local to me while RFC, surely will
-drop it later.
+Please do NOT backport this to any stable trees.
 
-btw, I had a problem with find_sec_def() successfully matching
-"iouring.s" string with "iouring", because section_defs[i].len
-doesn't include final \0 and so does a sort of prefix comparison.
-That's why "iouring/". Can we fix it? Are compatibility concerns?
+It has no cc:stable tag
+It has no fixes: tag
+It was part of a 3 part series, but only the middle patch was selected.
+It touches ARM assembly that may assemble without problems but be
+completely broken at runtime when used out of the original intended
+context.
 
-> 
->>  #include <stdlib.h>
->>  #include <stdio.h>
->>  #include <stdarg.h>
->> @@ -8630,6 +8634,9 @@ static const struct bpf_sec_def section_defs[] = {
->>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
->>         BPF_EAPROG_SEC("sk_lookup/",            BPF_PROG_TYPE_SK_LOOKUP,
->>                                                 BPF_SK_LOOKUP),
->> +       SEC_DEF("iouring/",                     IOURING),
->> +       SEC_DEF("iouring.s/",                   IOURING,
->> +               .is_sleepable = true),
->>  };
->>
->>  #undef BPF_PROG_SEC_IMPL
->> --
->> 2.31.1
->>
+Tip: disregard patches touching .S files entirely unless they have a
+cc:stable or fixes: tag. Or teach the bot never to AUTOSEL anything
+authored by me: if it needs to go to -stable, I will ask you myself.
 
--- 
-Pavel Begunkov
+--
+Ard.
+
+
+
+> ---
+>  arch/arm/mm/cache-v7.S | 51 +++++++++++++++++++++---------------------
+>  1 file changed, 25 insertions(+), 26 deletions(-)
+>
+> diff --git a/arch/arm/mm/cache-v7.S b/arch/arm/mm/cache-v7.S
+> index dc8f152f3556..e3bc1d6e13d0 100644
+> --- a/arch/arm/mm/cache-v7.S
+> +++ b/arch/arm/mm/cache-v7.S
+> @@ -33,41 +33,40 @@ icache_size:
+>   * processor.  We fix this by performing an invalidate, rather than a
+>   * clean + invalidate, before jumping into the kernel.
+>   *
+> - * This function is cloned from arch/arm/mach-tegra/headsmp.S, and needs
+> - * to be called for both secondary cores startup and primary core resume
+> - * procedures.
+> + * This function needs to be called for both secondary cores startup and
+> + * primary core resume procedures.
+>   */
+>  ENTRY(v7_invalidate_l1)
+>         mov     r0, #0
+>         mcr     p15, 2, r0, c0, c0, 0
+>         mrc     p15, 1, r0, c0, c0, 0
+>
+> -       movw    r1, #0x7fff
+> -       and     r2, r1, r0, lsr #13
+> +       movw    r3, #0x3ff
+> +       and     r3, r3, r0, lsr #3      @ 'Associativity' in CCSIDR[12:3]
+> +       clz     r1, r3                  @ WayShift
+> +       mov     r2, #1
+> +       mov     r3, r3, lsl r1          @ NumWays-1 shifted into bits [31:...]
+> +       movs    r1, r2, lsl r1          @ #1 shifted left by same amount
+> +       moveq   r1, #1                  @ r1 needs value > 0 even if only 1 way
+>
+> -       movw    r1, #0x3ff
+> +       and     r2, r0, #0x7
+> +       add     r2, r2, #4              @ SetShift
+>
+> -       and     r3, r1, r0, lsr #3      @ NumWays - 1
+> -       add     r2, r2, #1              @ NumSets
+> +1:     movw    r4, #0x7fff
+> +       and     r0, r4, r0, lsr #13     @ 'NumSets' in CCSIDR[27:13]
+>
+> -       and     r0, r0, #0x7
+> -       add     r0, r0, #4      @ SetShift
+> -
+> -       clz     r1, r3          @ WayShift
+> -       add     r4, r3, #1      @ NumWays
+> -1:     sub     r2, r2, #1      @ NumSets--
+> -       mov     r3, r4          @ Temp = NumWays
+> -2:     subs    r3, r3, #1      @ Temp--
+> -       mov     r5, r3, lsl r1
+> -       mov     r6, r2, lsl r0
+> -       orr     r5, r5, r6      @ Reg = (Temp<<WayShift)|(NumSets<<SetShift)
+> -       mcr     p15, 0, r5, c7, c6, 2
+> -       bgt     2b
+> -       cmp     r2, #0
+> -       bgt     1b
+> -       dsb     st
+> -       isb
+> -       ret     lr
+> +2:     mov     r4, r0, lsl r2          @ NumSet << SetShift
+> +       orr     r4, r4, r3              @ Reg = (Temp<<WayShift)|(NumSets<<SetShift)
+> +       mcr     p15, 0, r4, c7, c6, 2
+> +       subs    r0, r0, #1              @ Set--
+> +       bpl     2b
+> +       subs    r3, r3, r1              @ Way--
+> +       bcc     3f
+> +       mrc     p15, 1, r0, c0, c0, 0   @ re-read cache geometry from CCSIDR
+> +       b       1b
+> +3:     dsb     st
+> +       isb
+> +       ret     lr
+>  ENDPROC(v7_invalidate_l1)
+>
+>  /*
+> --
+> 2.30.2
+>
+>
+>
