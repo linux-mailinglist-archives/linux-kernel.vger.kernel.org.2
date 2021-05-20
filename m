@@ -2,510 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2624738AB7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 945CA38AA09
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241845AbhETLZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:25:36 -0400
-Received: from mx0a-0064b401.pphosted.com ([205.220.166.238]:27692 "EHLO
-        mx0a-0064b401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S238103AbhETLFu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:05:50 -0400
-X-Greylist: delayed 1058 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 May 2021 07:05:50 EDT
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KAhtQu002695;
-        Thu, 20 May 2021 03:46:37 -0700
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2169.outbound.protection.outlook.com [104.47.58.169])
-        by mx0a-0064b401.pphosted.com with ESMTP id 38ngvn06s4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 03:46:37 -0700
+        id S240146AbhETLJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:09:11 -0400
+Received: from mail-eopbgr130090.outbound.protection.outlook.com ([40.107.13.90]:50308
+        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S238545AbhETKtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:49:47 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GzHrQeq9DPz+9oiey6KXOuAbtKA6iL5CBWHgl+oqIGFXqGh3TLHdVLZugo8YMgBnydDlNX+plCi62y++kUyuRmC6bIuPr/6bYNqCZhL6TlQLkXxMyNGPEfeKnD1Jx23w93Pwv18d6CWaHY2NGIKbY3iUbAVJc/G3r4QVNu4fqzoqGr3TJlRGmrj9Bb9E0mf374On1ikiwDr4yDlcSZwZwq12lTMjih1NSEoO28JjyRDLARZzc9SgKejqwbxS8//2UMfq+qWxfxn9in6pLqnJU6wuXcFABG44uKpyZgD0drBlufhDZdKxLwkRd72tlXVz1PL0dwpmeDwZrZ5YLJnGew==
+ b=Us4HNIq13Y/xHLy77bZmtxWVIKvXRtaAa0ShxbUcMD55/tDesny8D0Ys03pVrxxzhEdMYJhbyH8FOiF3ZIEfvN6JHDo83PJB6TyWlBY0rC470A5FxUdqctn7sfAsqnuvDKvWG1mhvUFWsLpxwaXug0LgdUA4ptG+dihSJHhC6vyz8R3qXOF/1FScX9TYnFv/FbHDNnMDazzsU7ubGJGMX0leQ9/5JsVD4Yhd+t0JTi1RDW3j5bLn5u/kFtxYVQ5LabtomMD5kY9v7OHiudRLi8fITObXILu66YXZmCUEaEFHl2NtwM2ko5m4hLClappMFZyutWl0Ejyj8Hm/QOOb6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a/q6yN4/pFgmR+xqTWJX7Ug2CJ4cPhUpFNGFsHdM5O8=;
- b=DdjwnMHEdBo6XH34vaCGHjAtdjI3X91FPdLxk2sE/T6e0rXqDy9/2E25fXD+US7v/6vJA7kVYKtdppglzPwro6BNXoKuYrnV4eWz6KGgR1AcFJtwgT4HWKb/IXL92FQIF7yJEnbWG46rZCT43hm0A1BEjR7ftfGE72X/Yb3m9u20gCnSB2r4/OQ1DjZgIUyNZL5QJnW/4AeAKLw3cdq5w41rWf8KTAz7XYX5y6q4fQE+JfI5BQwvqsaDsOiu/OFeGCFz3noX7Q703ujIUUInOGxXWpobzBKWEbMjWNTAZ3vdslxC79VzMIEtv3j3kdH0esN8qESJezQBnrt0G0q+cw==
+ bh=dk8YWKxxANO6zjBxiyn8/RlX2TNVioWCTsWOxYdQDsg=;
+ b=R2jEOsuSbVS5PWHiMTBFZqxVzAxNz9KiYRrnodRZPnoM+Qpy2vhlHXPpfW3YP9TzeMglv51SWwIvyiq6iGOWlnrxt0UlTw9I8DMSLLN0GsHeEFXKF/NxHcSLSSpdSJT1YmVyg54drBsw2E+yrwODvImvWU8CSgzhrr9PPTJ1Oz7M84sGlSEpi08l3atHa8zpMp1vhm3Wx2lnNgLY4uE9C3n3+l2K2pj91aRRhzitdpDuxuh9WrKL52SUuOgNPpmfNijnVymh/7TUBBNsHXx9luPKjAlmM03odyorI1Lwx++A/KFgRC5qbkeW3bDbqNMQHHmJuGQYq1g/yRodw7uDcw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
+ smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
+ dkim=pass header.d=plvision.eu; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a/q6yN4/pFgmR+xqTWJX7Ug2CJ4cPhUpFNGFsHdM5O8=;
- b=AlEbyE20jxa+WUHQ0iKoygCHGWX4DtZ3+vPHhVVSV2hmTF3HyLd34x973CI0eVA5BbIx9zyVAZ/OBjeOFJmwh/rPAYCdtZMq97zmA0qN6cT3DgOvN4+qsMsdnlKlwcrLw51Tg6n0bqXceYOrqq5m8Nk0X4g02wC9+0+4Pu1GNzY=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none
- header.from=windriver.com;
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com (2603:10b6:910:7a::30)
- by CY4PR1101MB2152.namprd11.prod.outlook.com (2603:10b6:910:23::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.26; Thu, 20 May
- 2021 10:46:35 +0000
-Received: from CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::cccf:6e19:b547:da8b]) by CY4PR11MB0071.namprd11.prod.outlook.com
- ([fe80::cccf:6e19:b547:da8b%6]) with mapi id 15.20.4129.032; Thu, 20 May 2021
- 10:46:35 +0000
-Subject: Re: [V2][PATCH 2/2] drm: xlnx: consolidate the functions which
- programming AUDIO_VIDEO_SELECT register
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Michal Simek <michal.simek@xilinx.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210518095019.3855369-1-quanyang.wang@windriver.com>
- <20210518095019.3855369-3-quanyang.wang@windriver.com>
- <YKYyUof3HPEFXQYc@pendragon.ideasonboard.com>
-From:   "quanyang.wang" <quanyang.wang@windriver.com>
-Message-ID: <d028fb6c-6669-fedb-a4a0-fa570b1bf626@windriver.com>
-Date:   Thu, 20 May 2021 18:45:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <YKYyUof3HPEFXQYc@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [60.247.85.82]
-X-ClientProxiedBy: SJ0PR05CA0186.namprd05.prod.outlook.com
- (2603:10b6:a03:330::11) To CY4PR11MB0071.namprd11.prod.outlook.com
- (2603:10b6:910:7a::30)
+ bh=dk8YWKxxANO6zjBxiyn8/RlX2TNVioWCTsWOxYdQDsg=;
+ b=qXO45MOMBRB6d+PLDKwWCgTucec9gP8cyrFnnNJjdldLLHtRDyqJ7kSLnXZ6k/4e2GEHgboFLoogLKTj6eat0f6f2t+Y+wv4XM7EHPs8o+f6LPVgz2/pyuC9XWOQnfUR6DV0cfW4rI5WRG/j73Xgh+hIly7/NASJc0W4LY3F5XY=
+Authentication-Results: lunn.ch; dkim=none (message not signed)
+ header.d=none;lunn.ch; dmarc=none action=none header.from=plvision.eu;
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
+ HE1P190MB0026.EURP190.PROD.OUTLOOK.COM (2603:10a6:3:c9::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.26; Thu, 20 May 2021 10:48:17 +0000
+Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::edb4:ae92:2efe:8c8a]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ ([fe80::edb4:ae92:2efe:8c8a%5]) with mapi id 15.20.4129.033; Thu, 20 May 2021
+ 10:48:17 +0000
+Date:   Thu, 20 May 2021 13:48:14 +0300
+From:   Vadym Kochan <vadym.kochan@plvision.eu>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        Taras Chornyi <tchornyi@marvell.com>,
+        linux-kernel@vger.kernel.org,
+        Mickey Rachamim <mickeyr@marvell.com>,
+        Vadym Kochan <vkochan@marvell.com>
+Subject: Re: [RFC net-next 1/4] net: marvell: prestera: try to load previous
+ fw version
+Message-ID: <20210520104814.GA5302@plvision.eu>
+References: <20210519143321.849-1-vadym.kochan@plvision.eu>
+ <20210519143321.849-2-vadym.kochan@plvision.eu>
+ <YKW3YhuDSHQtR4Tb@lunn.ch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKW3YhuDSHQtR4Tb@lunn.ch>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [217.20.186.93]
+X-ClientProxiedBy: AM0PR03CA0073.eurprd03.prod.outlook.com
+ (2603:10a6:208:69::14) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
+ (2603:10a6:7:56::28)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [128.224.162.199] (60.247.85.82) by SJ0PR05CA0186.namprd05.prod.outlook.com (2603:10b6:a03:330::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.12 via Frontend Transport; Thu, 20 May 2021 10:46:32 +0000
+Received: from plvision.eu (217.20.186.93) by AM0PR03CA0073.eurprd03.prod.outlook.com (2603:10a6:208:69::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 10:48:16 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4639350d-175e-4c32-9da7-08d91b7c895b
-X-MS-TrafficTypeDiagnostic: CY4PR1101MB2152:
-X-Microsoft-Antispam-PRVS: <CY4PR1101MB215259A66633BAD6AF2CFE64F02A9@CY4PR1101MB2152.namprd11.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Office365-Filtering-Correlation-Id: 4a2c337d-8987-4cea-40d7-08d91b7cc658
+X-MS-TrafficTypeDiagnostic: HE1P190MB0026:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1P190MB0026B181D3F5F78B2C124715952A9@HE1P190MB0026.EURP190.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: yFEnJ1EDNrFp6YqPRiEab2oy0HuseD+HfFC+pmLZwoN4BMKTWOkSBE5ibzll/SWxt490i9HmUp9puzHanCENL4BW/LxNJJf/cPz71sU4EsyrT+V2ftmnFTSgbiy3V8HtS27lz/WZWodX0t3jqvF2TCRsBQukYe0mRgLtiJxID5derCecExEyqwWz670Cx+JBH3hkOvb6f+bIDNsy5Hm1vgcd+n9rkCCv9cKDi98nBUU/01X+12STZAEnt1C0HS9fDXdzX/hYom4KFlPTKe4N3eZnXtg4Pj+Gl6mfi3oRT20Zaq4rZCOlUmjeguLaT3KvYgH6qkQaEbj2k6lIe3lvBU0NHgRtN/NMWJ1vvUeHuzCSplglDAAX9Ql48MDw9byAIjq3J12Bsh2c27xUVCWbYvsuszATm2VSWpwIHwMppk0JXgA1au3p6FYkeN/Wm8gTWPHs1zbETTW2Qam4yUyMTRu4nwDFxPh26EGqLvQ4MvIU+kd2LPLVT86GPpqpJggFL+B1o9itVCOy4XT3PEGjz01CDQQpBLx6ZyUZBobZv/MRdfosrB1POztGD81tb+aQqkpQOf+JWXYjFWue6K+xhyyfLsTilKwCJ5JMCgFxaiwunpubDTNEexpC/Fv6RhV0iiv7a2UGjoGaL06dcEkdFlHu/98kvYM+u5COvb30OwCjGKLlfENHCjkEvUbRLaTTbYmowkRYAR6eDtAwwQpCeyV+3wY4XnMX5JiVsJM/ElkCphcmB1xbZfqCw6nIE9RC
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR11MB0071.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39840400004)(136003)(396003)(376002)(346002)(83380400001)(2616005)(478600001)(6706004)(66476007)(6666004)(2906002)(30864003)(86362001)(31696002)(54906003)(16576012)(53546011)(26005)(6916009)(66556008)(36756003)(66946007)(186003)(316002)(956004)(52116002)(38100700002)(38350700002)(8936002)(31686004)(6486002)(8676002)(5660300002)(4326008)(16526019)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RXFYUkppMFZGWGExdGFvOTZnT3FYWGNpenk1RHNhSEx2NWljWnR4b3I5Tk1o?=
- =?utf-8?B?cWNodWZOVWw1ZE9QNElqWmU0d080dWNOUkkvbkpGdHpoTGlMd0tIMUFOU2ov?=
- =?utf-8?B?LzFjZUtmMDBvUG8wb2VPWThlaVRpdEI3V3FmNGRvdG1TM2dGbWQ3REdYWkEy?=
- =?utf-8?B?MEdpTFphOXpxQkVTbG5MM1gvUGw3SXR5QjFxSHEzMU9na1R6RjdjZTdzSmRM?=
- =?utf-8?B?NlBYTzZvWm9YVFkraEFta3R0YU1wSlRIc3ZTOXh1WlE3VExFNmRBV043cXor?=
- =?utf-8?B?Q1U5UnVvSTU0MVhVejZHaE1WdHNOa1NyZS9tVStRMkNvbzdJclp5ZTZON0RX?=
- =?utf-8?B?b3ZYeXg0aWJndUQ3WlZIMWdPUHBYeXVNTHpLSEFwTlpMSnd0Q0FPUmVXbEpr?=
- =?utf-8?B?ZlBESVlsZVlpYmZ5MW5hcHJIemRqSGc4RDFvZzc3SkQyUDE5R1VyelFmQ0lu?=
- =?utf-8?B?ZFN5TjNoRmlHNmVVUURab0RHTDltL3dpeFAwNWo2UlVBR2hhZW1vVnZpZ3A3?=
- =?utf-8?B?dXY3QzhQUmIvQUFOblZnSFZncGpQWE1QUHlCSDRuQzhreDhXQU5rRXhDZG0x?=
- =?utf-8?B?bzd5S1orNVVVM0NMU3dqb3BCdkkwbGpUbW1PaHo5QUxWZWQwbDkyT2owaUFr?=
- =?utf-8?B?T29KRGtZdHZ4bDNURG5WM2ZGdzVudVJRNDhVWTJUOUU1bGxZNHY5MXEzcGw2?=
- =?utf-8?B?cVVsdGtxYWxwMHdheFlBeHlmSmc5OTVQZmk2TDRiVmJWa0pYRzR3WE5HamMr?=
- =?utf-8?B?eUhIWHlVQTNEUnlaNW5zbnlBVlJwQ09veDl5RVhQbHRsQTRVbU1rQmdwMzNw?=
- =?utf-8?B?QzhmNzlFR2FxV0lxWjFLNDhDL2VEbTRsVWtUZTlmMGVBV2JSQm9HaFhzNk80?=
- =?utf-8?B?WFVaMmFneXVORkdPT3JsLzIwVTVLYTVseWpYUXh0UWs0VzNSRGVBM0RzalFG?=
- =?utf-8?B?VlkxbmprTGZGaHZBeUFhVUU0ZXBSZ0ZKRmlhMUl3YlBncVQ0Qm1rcExsT1VH?=
- =?utf-8?B?N1VuYUdwcVZPVWV6aU5HSXMxcEMvK2pYL2NtMlpQZGdMbjNhclBZNzRxaU9W?=
- =?utf-8?B?Vnl4MGZ3ZlVDanhWMCtRU21CMFJHMnJMeEpsZk93TTBpSnZ5SW0wVUJGM3Uv?=
- =?utf-8?B?ZEFuRC9OU2ZkaGFVeVpCTzFGS1pJa242c2tieFJXanI3WWRFTC9iVEFxem05?=
- =?utf-8?B?ekJUUGNlM1ZPUUs1SVZSZzRSSFIwVjdQaWhYWCtYT1RjTTkraVNYdnJWb2lS?=
- =?utf-8?B?WVprVXpPa0EvRzEyL1c3MmthdkRzY0JDdVV0SVRFMm1NQU9NK09MbExuWnlQ?=
- =?utf-8?B?TUNUVFN2ZURQandTSzlaU0tVRWcyVzNOc2J4b1FhREhaYmo4bTNOOS9DVzY0?=
- =?utf-8?B?NUZhc1JEZlFOcjhGd2cxeS96NzU4aUh3cFZtLys2V2xMMCt5eDJ5NE9BbHR1?=
- =?utf-8?B?ODNra2VmYWxaTk45L2MxTFBFYTZRd3E4TWg1cmQ1eGtjRExscVh0RXF0dno3?=
- =?utf-8?B?azM3UnowYXQ5enJZbm5MR3ZaZ1BvUVNWNUtvZmYwY1JkUEtBYU82am9sLzE2?=
- =?utf-8?B?cmVzV01WSXU1b2RoS1dXeE5wVmFmemU2NW9CRlRvRnJaNndIbUI3d3k0OXZW?=
- =?utf-8?B?cUQ1TDUzQm9iV3k3aWdnVlhvL0tER3pKOHNlTllEeVNkKzFJZFhnRDBxYms3?=
- =?utf-8?B?UFFML3JXVlhPclJoVFR4TlcxeUYzeVV3Vk03SUlkT1cwaW93S3VGOXM4SGQ2?=
- =?utf-8?Q?MsUufB3T6r/DMMLsLn7mmL6pGdmwcFPoKSvbNOf?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4639350d-175e-4c32-9da7-08d91b7c895b
-X-MS-Exchange-CrossTenant-AuthSource: CY4PR11MB0071.namprd11.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: XPn/xQIzcXIdqwhOunO3BLoNsm0T+IG7rQ4upPPzlg3egbRzBwRrxRWN8gAT2p3Ou/YJMShLxb1b2MKbpzd3Ljub3HQ3ZxbWDJ3NRsVU4Rb1BkK4YLNxRweMVZFxI8Zs9w77ss8ql+Y81iRe4rVYogeoup8TF7BxYmY85Anif4IOY/7HHTVafwrSCyW2Zml7jRDfpNEkQYJw6SC7fe8DLblHCigO1E/bLbvWP0HYcnl9Fmt3BcKgQ1Ti6Xrb27/JYokUTI5y2vKlTs4xf/VXTsItSvSNLF9KFMq4+N28FvhuOymurisDaJbtE2lN7mVuAypBMSvZBXAt+RofccP+/4MsfBbnhgDreFU8oayl0QCYhAPqX0m8Fo/Uy0Y4V6217ctetOlynOMJ0+83yLw9l+onKPwPmQNEuNC3C17Dj9o2Wq9jGJ2rx5jHWgasHS4ajTm65Fa6zHdT64L7Tpmkd80D7n4gtkgmwtXqRZ3msUoysjLb1jkeEaWMHL6uqB5OJRPz+PbR2ZQwA3ZtlzvWozdvmfIo+Vv8kDrI85N7nsDfELlZwg3t5QfueLixXBl+8zHpY0XQaMwTyZW6gYWa0ZTz3x7j0KTln9gBu4drkDTYxLvAU7A2ow8vdiozq3D2y26TMelToY3R56mpYs1Tmg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(376002)(136003)(366004)(346002)(396003)(316002)(54906003)(26005)(8886007)(66946007)(478600001)(1076003)(83380400001)(33656002)(66476007)(44832011)(4326008)(6916009)(8936002)(956004)(2616005)(38350700002)(66556008)(86362001)(2906002)(8676002)(36756003)(7696005)(186003)(52116002)(38100700002)(5660300002)(16526019)(55016002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?jVpWmSc1/M4WHJNaSngiqopjKOn7IZEvxz2Q6oiKiCBRkZFPN7Y9wLeHTbGd?=
+ =?us-ascii?Q?a9t3APGJoQDgoyALqdzMrzn5XBw2IfQhTT2aMxj8hkJi5hIXxk4QZTs//6UA?=
+ =?us-ascii?Q?ywVqD+/AwgqGfOWZXv6sCD+paQq1k/VWedlV9K17OWjxqir6b3qG1Sj3MItk?=
+ =?us-ascii?Q?FoEcbVeN6tE6cseHaHBfq2BoU4IQGWp2rVI8MFnfCMeiUK6milp4egGWJSwl?=
+ =?us-ascii?Q?UHilw16cEQ24+wIXbOuLaLslDNmgCPHUGlnTY6r0Q7rUG7xs54UyMqzH9bxe?=
+ =?us-ascii?Q?WnX2D/gUpcyOwpWDGjwy6p3UhPKIHoEGCvgj/SpzOKfbzwat3VrD2sOc6uhK?=
+ =?us-ascii?Q?Id5icMln075hKwpklkSRID/0MAB6Ki2d7UNA1hEDbfwUUl9IGj7ebhzIUC+K?=
+ =?us-ascii?Q?wpcSfrqoezR+CmE4q7HjqNq0phGJZfaYa/1iEmKO/+8U2UpolUlAY6kMRdx8?=
+ =?us-ascii?Q?hpmFNdfC1F13zKIZvG/BJnIifwSCTj49uhWOKkdJXXg/Ey/Z9uhZJTiZC3Px?=
+ =?us-ascii?Q?+9fJpvdORoDkEpggskOlW92MlPeZPInsF0x0ycRAhSX4sp5icISMsmSlIhOZ?=
+ =?us-ascii?Q?Gro/UnCeNmELd8S+VKTnHOdElviwTmOEGjyIgkr8IG7riTnYg1q8g4ZWzg5C?=
+ =?us-ascii?Q?4aa3YWedynp0x/aZ94V8K3H65YHaX9x1B9f3noldiZvbvZ5Wj6W6BRnBBs87?=
+ =?us-ascii?Q?cq7Mvr8HdLlryHJpGtoYKTOf6qC4LjWytdDfcz+r2Sfzxsct37iTVn863aJy?=
+ =?us-ascii?Q?ALyuXV66CaMbXEq0lieF7tMujosCk9+DVtYJTtAJUiqxdPp8BHHILq9eu55z?=
+ =?us-ascii?Q?ZMX3TLGu/C8ZSmef8QWXrTBc+GsqizOvpnlf1fckOYHoFS4o0Cls+tr8Juq3?=
+ =?us-ascii?Q?u16Fvgn8q318DcZhIjM8rdFCGLWxBWX5EzfX8RSAa8W4GS7ECxJ61VsdpP6x?=
+ =?us-ascii?Q?WQLZLBqeJLl4uQglTBMAgaC77qhSig2zAtQ5zxaTT7gYrT5JtcqcK61fGL+o?=
+ =?us-ascii?Q?SKB2XMiJB3tHmagjfKKacgLT8ng0z7inAiHx4TJ7F5iMG6XwH9b55MG7NfRA?=
+ =?us-ascii?Q?gtf46aiHiitAWl+i8yZYL52O4qdb7y/2Crj3b1unFEfX3IA2I0cXDdaJ8mEe?=
+ =?us-ascii?Q?TcUkoGuhdNxDf10JLz8aMr54LEvXH0EtdYrJrS7sTtgfAYq4L+Cr/kRMjJqJ?=
+ =?us-ascii?Q?13jVAE+RTGpqzl7Kx4OotIq1f/9lsaBQA1jBHznzIAkUBrdfM/J3l/GSszly?=
+ =?us-ascii?Q?B1rq0dKtvWO6Ce3uiK5uLAe+hTqsWI7A1l89gZa6/86zYaX2C+f1RaecVmhT?=
+ =?us-ascii?Q?ZjXyiucyInx0bIBXIlQuqj4L?=
+X-OriginatorOrg: plvision.eu
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2c337d-8987-4cea-40d7-08d91b7cc658
+X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 10:46:34.9400
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 10:48:17.1120
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: he4glwHtj4zHK10wxqVBb63zudzsLftBySL6mt57HxWkhGNDqxa0SWnMjg8AzAk/FjUG1CfufBiLS7GvUudRJeM2ah9Qm3I3Rx6kHFhlhZs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR1101MB2152
-X-Proofpoint-ORIG-GUID: 4Lgvw8xKpM0y7glVCqyImBM9EVRnJ7XI
-X-Proofpoint-GUID: 4Lgvw8xKpM0y7glVCqyImBM9EVRnJ7XI
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_03:2021-05-20,2021-05-19 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 clxscore=1015 mlxlogscore=999 adultscore=0 priorityscore=1501
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105200081
+X-MS-Exchange-CrossTenant-UserPrincipalName: LTZD/nAITZ9WlZx1dIr+agtfpiXLiRzzL8EkVS38t47Hb7lWRI4OrW5na+bBNd09ZJaCnpu7ptcnPFGvwBtPeOUUQ2/GQPmn9cq18jGh2P4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0026
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
-Thank you for your review.
+On Thu, May 20, 2021 at 03:12:02AM +0200, Andrew Lunn wrote:
+> > +static int prestera_fw_get(struct prestera_fw *fw)
+> > +{
+> > +	int ver_maj = PRESTERA_SUPP_FW_MAJ_VER;
+> > +	int ver_min = PRESTERA_SUPP_FW_MIN_VER;
+> > +	char fw_path[128];
+> > +	int err;
+> > +
+> > +pick_fw_ver:
+> > +	snprintf(fw_path, sizeof(fw_path), PRESTERA_FW_PATH_FMT,
+> > +		 ver_maj, ver_min);
+> > +
+> > +	err = request_firmware_direct(&fw->bin, fw_path, fw->dev.dev);
+> > +	if (err) {
+> > +		if (ver_maj == PRESTERA_SUPP_FW_MAJ_VER) {
+> > +			ver_maj--;
+> > +			goto pick_fw_ver;
+> > +		} else {
+> > +			dev_err(fw->dev.dev, "failed to request firmware file\n");
+> > +			return err;
+> > +		}
+> > +	}
+> 
+> So lets say for the sake of the argument, you have version 3.0 and
+> 2.42. It looks like this code will first try to load version 3.0. If
+> that fails, ver_maj is decremented, so it tries 2.0, which also fails
+> because it should be looking for 2.42. I don't think this decrement is
+> a good idea.
 
-On 5/20/21 5:56 PM, Laurent Pinchart wrote:
-> Hi Quanyang,
-> 
-> Thank you for the patch.
-> 
-> On Tue, May 18, 2021 at 05:50:19PM +0800, quanyang.wang@windriver.com wrote:
->> From: Quanyang Wang <quanyang.wang@windriver.com>
->>
->> For now, the functions zynqmp_disp_avbuf_enable/disable_audio and
->> zynqmp_disp_avbuf_enable/disable_video are all programming the register
->> AV_BUF_OUTPUT_AUDIO_VIDEO_SELECT to select the output for audio or video.
->> And in the future, many drm properties (like video_tpg, audio_tpg,
->> audio_pl, etc) also need to access it. So let's introduce some variables
->> of enum type and consolidate the code to unify handling this.
->>
->> Signed-off-by: Quanyang Wang <quanyang.wang@windriver.com>
->> ---
->>   drivers/gpu/drm/xlnx/zynqmp_disp.c      | 168 ++++++++++++++----------
->>   drivers/gpu/drm/xlnx/zynqmp_disp_regs.h |  23 +---
->>   2 files changed, 106 insertions(+), 85 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
->> index eefb278e24c6..3672d2f5665b 100644
->> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
->> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
->> @@ -102,12 +102,39 @@ enum zynqmp_disp_layer_id {
->>   
->>   /**
->>    * enum zynqmp_disp_layer_mode - Layer mode
->> - * @ZYNQMP_DISP_LAYER_NONLIVE: non-live (memory) mode
->> + * @ZYNQMP_DISP_LAYER_MEM: memory mode
->>    * @ZYNQMP_DISP_LAYER_LIVE: live (stream) mode
->> + * @ZYNQMP_DISP_LAYER_TPG: tpg mode (only for video layer)
->> + * @ZYNQMP_DISP_LAYER_DISABLE: disable mode
-> 
-> "Disable" isn't really a mode :-S
-Yes, as per Register Reference for AV_BUF_OUTPUT_AUDIO_VIDEO_SELECT
-VID_STREAM2_SEL	3:2	rw	0x2	STREAM2 Enable
-				00: Disable graphics from memory/live
-				01: Enable graphics from memory
-				10: Enable graphics from live
-				11: None
-VID_STREAM1_SEL	1:0	rw	STREAM1 Select:
-				0: Live Video
-				1: Video from memory
-				2: Pattern Generator
-				3: None (black frames)
-
-The NONE mode maybe better.
-> 
->>    */
->>   enum zynqmp_disp_layer_mode {
->> -	ZYNQMP_DISP_LAYER_NONLIVE,
->> -	ZYNQMP_DISP_LAYER_LIVE
->> +	ZYNQMP_DISP_LAYER_MEM,
->> +	ZYNQMP_DISP_LAYER_LIVE,
->> +	ZYNQMP_DISP_LAYER_TPG,
->> +	ZYNQMP_DISP_LAYER_DISABLE
->> +};
->> +
->> +enum avbuf_vid_mode {
->> +	VID_MODE_LIVE,
->> +	VID_MODE_MEM,
->> +	VID_MODE_TPG,
->> +	VID_MODE_NONE
->> +};
-> 
-> I don't like this much. The enum here doesn't clearly show that the
-> values correspond to hardware register values. I'd rather address this
-> in drivers/gpu/drm/xlnx/zynqmp_disp_regs.h, see below for a proposal.
-The value of LIVE/MEM/TPG is different from two layer.
-In Video layer, 0 is live, 1 is mem, 2 is tpg and 3 is blackscreen.
-But for gfx mode, 0 is disable, 1 is mem, 2 is live and 3 is blackscreen.
-If we define ZYNQMP_DISP_AV_BUF_OUTPUT_LIVE is 0, it only works for 
-video layer but not graphic layer. So I define one enumeration type to 
-abstract the both layer mode and also define two enumeration for each 
-layer in order to write enumeration vairables directly to register.
-> 
->> +
->> +enum avbuf_gfx_mode {
->> +	GFX_MODE_DISABLE,
->> +	GFX_MODE_MEM,
->> +	GFX_MODE_LIVE,
->> +	GFX_MODE_NONE
->> +};
->> +
->> +enum avbuf_aud_mode {
->> +	AUD1_MODE_LIVE,
->> +	AUD1_MODE_MEM,
->> +	AUD1_MODE_TPG,
->> +	AUD1_MODE_DISABLE,
->> +	AUD2_MODE_DISABLE,
->> +	AUD2_MODE_ENABLE
-> 
-> Combining AUD1 and AUD2 in the same enum, with the
-> " - AUD2_MODE_DISABLE" below, is really a hack. Let's keep
-> hardware-related valeus in drivers/gpu/drm/xlnx/zynqmp_disp_regs.h.
-OK, I will revert this part.
-> 
-> Overall I'm not really fond of this rework I'm afraid, I think the
-> result is way less readable. Given that this isn't required yet as
-> support for the TPG or the PL input isn't part of this series, unless it
-> can be rewritten in a better way already, I'd prefer dropping this patch
-> for now and including it in a series that enables TPG or PL input.
-Yes, I agree. It's not a good time to add this patch now. I will rewrite 
-it in a better way. Please drop this patch.
+Ahh, you are correct, I was too focused on a major version. So the only
+option which I see is to hard-code also the previous version.
 
 > 
-> I also think it could be beneficial to split the patch in two, it seems
-> to do a bit too much.
-Would you please give some suggestions?
+> Also:
 > 
->>   };
->>   
->>   /**
->> @@ -542,92 +569,102 @@ static void zynqmp_disp_avbuf_disable_channels(struct zynqmp_disp_avbuf *avbuf)
->>   }
->>   
->>   /**
->> - * zynqmp_disp_avbuf_enable_audio - Enable audio
->> + * zynqmp_disp_avbuf_output_select - Select the buffer manager outputs
->>    * @avbuf: Audio/video buffer manager
->> + * @layer: The layer
->> + * @mode: The mode for this layer
->>    *
->> - * Enable all audio buffers with a non-live (memory) source.
->> + * Select the buffer manager outputs for @layer.
->>    */
->> -static void zynqmp_disp_avbuf_enable_audio(struct zynqmp_disp_avbuf *avbuf)
->> +static void zynqmp_disp_avbuf_output_select(struct zynqmp_disp_avbuf *avbuf,
->> +					   struct zynqmp_disp_layer *layer,
->> +					   u32 mode)
->>   {
->> -	u32 val;
->> +	u32 reg;
->>   
->> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
->> -	val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK;
->> -	val |= ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MEM;
->> -	val |= ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_EN;
->> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
->> +	reg = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
->> +
->> +	/* Select audio mode when the layer is NULL */
+> > +			dev_err(fw->dev.dev, "failed to request firmware file\n");
 > 
-> This is also a hack, I don't really like it. I'd much prefer keeping
-> audio handling in separate functions.
-OK, I will keep the audio functions.
+> It would be useful to say what version you are actually looking for,
+> so the user can go find the correct firmware.
+
+I agree.
+
+> 
+>    Andrew
+
 Thanks,
-Quanyang
-> 
->> +	if (layer == NULL) {
->> +		if (mode >= AUD2_MODE_DISABLE) {
->> +			reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_MASK;
->> +			reg |= FIELD_PREP(ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_MASK,
->> +					(mode - AUD2_MODE_DISABLE));
->> +		} else {
->> +			reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK;
->> +			reg |= FIELD_PREP(ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK, mode);
->> +		}
->> +	} else if (is_layer_vid(layer)) {
->> +		reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
->> +		reg |= FIELD_PREP(ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK, mode);
->> +	} else {
->> +		reg &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK;
->> +		reg |= FIELD_PREP(ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK, mode);
->> +	}
->> +
->> +	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, reg);
->>   }
->>   
->>   /**
->> - * zynqmp_disp_avbuf_disable_audio - Disable audio
->> + * zynqmp_disp_avbuf_enable_audio - Enable audio
->>    * @avbuf: Audio/video buffer manager
->>    *
->> - * Disable all audio buffers.
->> + * Enable all audio buffers.
->>    */
->> -static void zynqmp_disp_avbuf_disable_audio(struct zynqmp_disp_avbuf *avbuf)
->> +static void zynqmp_disp_avbuf_enable_audio(struct zynqmp_disp_avbuf *avbuf)
->>   {
->> -	u32 val;
->> -
->> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
->> -	val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK;
->> -	val |= ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_DISABLE;
->> -	val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_EN;
->> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
->> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD1_MODE_MEM);
->> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD2_MODE_ENABLE);
->>   }
->>   
->>   /**
->> - * zynqmp_disp_avbuf_enable_video - Enable a video layer
->> + * zynqmp_disp_avbuf_disable_audio - Disable audio
->>    * @avbuf: Audio/video buffer manager
->> - * @layer: The layer
->> - * @mode: Operating mode of layer
->>    *
->> - * Enable the video/graphics buffer for @layer.
->> + * Disable all audio buffers.
->>    */
->> -static void zynqmp_disp_avbuf_enable_video(struct zynqmp_disp_avbuf *avbuf,
->> -					   struct zynqmp_disp_layer *layer,
->> -					   enum zynqmp_disp_layer_mode mode)
->> +static void zynqmp_disp_avbuf_disable_audio(struct zynqmp_disp_avbuf *avbuf)
->>   {
->> -	u32 val;
->> -
->> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
->> -	if (is_layer_vid(layer)) {
->> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
->> -		if (mode == ZYNQMP_DISP_LAYER_NONLIVE)
->> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MEM;
->> -		else
->> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_LIVE;
->> -	} else {
->> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK;
->> -		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MEM;
->> -		if (mode == ZYNQMP_DISP_LAYER_NONLIVE)
->> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MEM;
->> -		else
->> -			val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_LIVE;
->> -	}
->> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
->> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD1_MODE_DISABLE);
->> +	zynqmp_disp_avbuf_output_select(avbuf, NULL, AUD2_MODE_DISABLE);
->>   }
->>   
->>   /**
->> - * zynqmp_disp_avbuf_disable_video - Disable a video layer
->> - * @avbuf: Audio/video buffer manager
->> + * zynqmp_disp_avbuf_set_layer_output - Set layer output
->>    * @layer: The layer
->> + * @mode: The layer mode
->>    *
->> - * Disable the video/graphics buffer for @layer.
->> + * Set output for @layer
->>    */
->> -static void zynqmp_disp_avbuf_disable_video(struct zynqmp_disp_avbuf *avbuf,
->> -					    struct zynqmp_disp_layer *layer)
->> +static void zynqmp_disp_avbuf_set_layer_output(struct zynqmp_disp_layer *layer,
->> +					   enum zynqmp_disp_layer_mode mode)
->>   {
->> -	u32 val;
->> -
->> -	val = zynqmp_disp_avbuf_read(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT);
->> -	if (is_layer_vid(layer)) {
->> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK;
->> -		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_NONE;
->> -	} else {
->> -		val &= ~ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK;
->> -		val |= ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_DISABLE;
->> +	struct zynqmp_disp *disp = layer->disp;
->> +	int val;
->> +
->> +	switch (mode) {
->> +	case ZYNQMP_DISP_LAYER_LIVE:
->> +		val = is_layer_vid(layer) ? VID_MODE_LIVE : GFX_MODE_LIVE;
->> +		break;
->> +	case ZYNQMP_DISP_LAYER_MEM:
->> +		val = is_layer_vid(layer) ? VID_MODE_MEM : GFX_MODE_MEM;
->> +		break;
->> +	case ZYNQMP_DISP_LAYER_TPG:
->> +		if (!is_layer_vid(layer)) {
->> +			dev_err(disp->dev, "gfx layer has no tpg mode\n");
->> +			return;
->> +		}
->> +		val = VID_MODE_TPG;
->> +		break;
->> +	case ZYNQMP_DISP_LAYER_DISABLE:
->> +		val = is_layer_vid(layer) ? VID_MODE_NONE : GFX_MODE_DISABLE;
->> +		break;
->> +	default:
->> +		dev_err(disp->dev, "invalid layer mode\n");
->> +		return;
->>   	}
->> -	zynqmp_disp_avbuf_write(avbuf, ZYNQMP_DISP_AV_BUF_OUTPUT, val);
->> +
->> +	zynqmp_disp_avbuf_output_select(&disp->avbuf, layer, val);
->>   }
->>   
->>   /**
->> @@ -1030,11 +1067,10 @@ zynqmp_disp_layer_find_format(struct zynqmp_disp_layer *layer,
->>    */
->>   static void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer)
->>   {
->> -	zynqmp_disp_avbuf_enable_video(&layer->disp->avbuf, layer,
->> -				       ZYNQMP_DISP_LAYER_NONLIVE);
->> +	zynqmp_disp_avbuf_set_layer_output(layer, ZYNQMP_DISP_LAYER_MEM);
->>   	zynqmp_disp_blend_layer_enable(&layer->disp->blend, layer);
->>   
->> -	layer->mode = ZYNQMP_DISP_LAYER_NONLIVE;
->> +	layer->mode = ZYNQMP_DISP_LAYER_MEM;
->>   }
->>   
->>   /**
->> @@ -1051,7 +1087,7 @@ static void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer)
->>   	for (i = 0; i < layer->drm_fmt->num_planes; i++)
->>   		dmaengine_terminate_sync(layer->dmas[i].chan);
->>   
->> -	zynqmp_disp_avbuf_disable_video(&layer->disp->avbuf, layer);
->> +	zynqmp_disp_avbuf_set_layer_output(layer, ZYNQMP_DISP_LAYER_DISABLE);
->>   	zynqmp_disp_blend_layer_disable(&layer->disp->blend, layer);
->>   }
->>   
->> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
->> index f92a006d5070..4316e324102d 100644
->> --- a/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
->> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp_regs.h
->> @@ -118,25 +118,10 @@
->>   #define ZYNQMP_DISP_AV_BUF_STC_SNAPSHOT0		0x60
->>   #define ZYNQMP_DISP_AV_BUF_STC_SNAPSHOT1		0x64
->>   #define ZYNQMP_DISP_AV_BUF_OUTPUT			0x70
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_SHIFT		0
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK		(0x3 << 0)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_LIVE		(0 << 0)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MEM		(1 << 0)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_PATTERN		(2 << 0)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_NONE		(3 << 0)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_SHIFT		2
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK		(0x3 << 2)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_DISABLE		(0 << 2)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MEM		(1 << 2)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_LIVE		(2 << 2)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_NONE		(3 << 2)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_SHIFT		4
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK		(0x3 << 4)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_PL		(0 << 4)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MEM		(1 << 4)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_PATTERN		(2 << 4)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_DISABLE		(3 << 4)
->> -#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_EN		BIT(6)
->> +#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK		GENMASK(1, 0)
->> +#define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK		GENMASK(3, 2)
->> +#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD1_MASK		GENMASK(5, 4)
->> +#define ZYNQMP_DISP_AV_BUF_OUTPUT_AUD2_MASK		BIT(6)
->>   #define ZYNQMP_DISP_AV_BUF_HCOUNT_VCOUNT_INT0		0x74
->>   #define ZYNQMP_DISP_AV_BUF_HCOUNT_VCOUNT_INT1		0x78
->>   #define ZYNQMP_DISP_AV_BUF_PATTERN_GEN_SELECT		0x100
-> 
-> Following my comment above, let's write this
-> 
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_LIVE			0
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_MEM			1
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_PATTERN		2
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_NONE			3
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1(v)		((v) << 0)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID1_MASK		GENMASK(1, 0)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2(v)		((v) << 2)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID2_MASK		GENMASK(3, 2)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID3(v)		((v) << 4)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID3_MASK		GENMASK(5, 4)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID4(v)		((v) << 6)
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID4_MASK		GENMASK(7, 6)
-> 
-> Or possibly better,
-> 
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_LIVE			0
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_MEM			1
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_PATTERN		2
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_NONE			3
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID(n, v)		((v) << ((n) * 2))
-> #define ZYNQMP_DISP_AV_BUF_OUTPUT_VID_MASK(n)		GENMASK((n)+1, (n))
-> 
