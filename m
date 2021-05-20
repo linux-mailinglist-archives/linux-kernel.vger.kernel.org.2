@@ -2,94 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4FF238AF45
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:54:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 035E538AF6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242757AbhETMzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:55:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60182 "EHLO mx2.suse.de"
+        id S243374AbhETNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:00:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35674 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243263AbhETMxO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:53:14 -0400
+        id S243088AbhETM7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:59:07 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621515111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=VbT6WFYy0bkSk8HAYhg7anUqtgOM3QEr3KjCoKwSfHQ=;
-        b=gOKAeXWpE3pQwkKpXwPHYoc4ERb31lQ3gBN7nTVt1yldwdnn1/3/XyAFth9rfgDimJkoQH
-        agqxk+9Aox0SUUfXdjH85VkMEQazH8fYJyaFRs2tPVAJC3VdcHlyCnVzQyWN5LMIv2YHXJ
-        O5RoTQ3j+3gflRxjf1BSBzx8QDoYDOo=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8A566ABE8;
-        Thu, 20 May 2021 12:51:51 +0000 (UTC)
-Date:   Thu, 20 May 2021 14:51:50 +0200
-From:   Petr Mladek <pmladek@suse.com>
+        by mx2.suse.de (Postfix) with ESMTP id 81D43AC5B;
+        Thu, 20 May 2021 12:57:42 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 9767EDA7F9; Thu, 20 May 2021 14:55:08 +0200 (CEST)
+Date:   Thu, 20 May 2021 14:55:08 +0200
+From:   David Sterba <dsterba@suse.cz>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        John Ogness <john.ogness@linutronix.de>,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Embedded <linux-embedded@vger.kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: Re: [PATCH 3/3] lib/vsprintf: Use pr_crit() instead of long fancy
- messages
-Message-ID: <YKZbZhACyIENhM8S@alley>
-References: <20210331093104.383705-1-geert+renesas@glider.be>
- <20210331093104.383705-4-geert+renesas@glider.be>
- <CAMuHMdXQArCn9BS_8p0iUAgomfEHWe8ypg=B_SGfvJu8c_L5vg@mail.gmail.com>
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
+Message-ID: <20210520125508.GA7604@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+References: <20210518144935.15835-1-dsterba@suse.com>
+ <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMuHMdXQArCn9BS_8p0iUAgomfEHWe8ypg=B_SGfvJu8c_L5vg@mail.gmail.com>
+In-Reply-To: <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-05-17 08:21:12, Geert Uytterhoeven wrote:
-> On Wed, Mar 31, 2021 at 11:59 AM Geert Uytterhoeven
-> <geert+renesas@glider.be> wrote:
-> > While long fancy messages have a higher probability of being seen than
-> > small messages, they may scroll of the screen fast, if visible at all,
-> > and may still be missed.  In addition, they increase boot time and
-> > kernel size.
+On Thu, May 20, 2021 at 09:43:10AM +0200, Geert Uytterhoeven wrote:
+> > - values written to the file accept suffixes like K, M
+> > - file is in the per-device directory /sys/fs/btrfs/FSID/devinfo/DEVID/scrub_speed_max
+> > - 0 means use default priority of IO
 > >
-> > The correct mechanism to increase importance of a kernel message is not
-> > to draw fancy boxes with more text, but to shout louder, i.e. increase
-> > the message's reporting level.  Making sure the administrator of the
-> > system is aware of such a message is a system policy, and is the
-> > responsability of a user-space log daemon.
+> > The scheduler is a simple deadline one and the accuracy is up to nearest
+> > 128K.
 > >
-> > Fix this by increasing the reporting level from KERN_WARNING to
-> > KERN_CRIT, and removing irrelevant text and graphics.
-> >
-> > This reduces kernel size by ca. 0.5 KiB.
-> >
-> > Fixes: 5ead723a20e0447b ("lib/vsprintf: no_hash_pointers prints all addresses as unhashed")
-> > Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> > Signed-off-by: David Sterba <dsterba@suse.com>
 > 
-> No comments?
-> Unlike the cases handled by the other two patches in this series,
-> this one cannot be configured out.
+> Thanks for your patch, which is now commit b4a9f4bee31449bc ("btrfs:
+> scrub: per-device bandwidth control") in linux-next.
+> 
+> noreply@ellerman.id.au reported the following failures for e.g.
+> m68k/defconfig:
+> 
+> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
 
-IMHO, the best solution would be to create a generic API for
-eye-catching messages.
+I'll fix it, thanks for the report.
 
-I am sure that WARN() is misused on many locations all over the kernel
-because people just wanted eye-catching message, for example, see
-https://lore.kernel.org/r/2149df3f542d25ce15d049e81d6188bb7198478c.camel@fi.rohmeurope.com
+> > +static void scrub_throttle(struct scrub_ctx *sctx)
+> > +{
+> > +	const int time_slice = 1000;
+> > +	struct scrub_bio *sbio;
+> > +	struct btrfs_device *device;
+> > +	s64 delta;
+> > +	ktime_t now;
+> > +	u32 div;
+> > +	u64 bwlimit;
+> > +
+> > +	sbio = sctx->bios[sctx->curr];
+> > +	device = sbio->dev;
+> > +	bwlimit = READ_ONCE(device->scrub_speed_max);
+> > +	if (bwlimit == 0)
+> > +		return;
+> > +
+> > +	/*
+> > +	 * Slice is divided into intervals when the IO is submitted, adjust by
+> > +	 * bwlimit and maximum of 64 intervals.
+> > +	 */
+> > +	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
+> > +	div = min_t(u32, 64, div);
+> > +
+> > +	/* Start new epoch, set deadline */
+> > +	now = ktime_get();
+> > +	if (sctx->throttle_deadline == 0) {
+> > +		sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
+> 
+> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> 
+> div_u64(bwlimit, div)
+> 
+> > +		sctx->throttle_sent = 0;
+> > +	}
+> > +
+> > +	/* Still in the time to send? */
+> > +	if (ktime_before(now, sctx->throttle_deadline)) {
+> > +		/* If current bio is within the limit, send it */
+> > +		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
+> > +		if (sctx->throttle_sent <= bwlimit / div)
+> > +			return;
+> > +
+> > +		/* We're over the limit, sleep until the rest of the slice */
+> > +		delta = ktime_ms_delta(sctx->throttle_deadline, now);
+> > +	} else {
+> > +		/* New request after deadline, start new epoch */
+> > +		delta = 0;
+> > +	}
+> > +
+> > +	if (delta)
+> > +		schedule_timeout_interruptible(delta * HZ / 1000);
+> 
+> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+> 
+> I'm a bit surprised gcc doesn't emit code for the division by the
+> constant 1000, but emits a call to __divdi3().  So this has to become
+> div_u64(), too.
+> 
+> > +	/* Next call will start the deadline period */
+> > +	sctx->throttle_deadline = 0;
+> > +}
+> 
+> BTW, any chance you can start adding lore Link: tags to your commits, to
+> make it easier to find the email thread to reply to when reporting a
+> regression?
 
-It might be a win-win solution.
-
-Best Regards,
-Petr
+Well, no I'm not going to do that, sorry. It should be easy enough to
+paste the patch subject to the search field on lore.k.org and click the
+link leading to the mail, I do that all the time. Making sure that
+patches have all the tags and information takes time already so I'm not
+too keen to spend time on adding links.
