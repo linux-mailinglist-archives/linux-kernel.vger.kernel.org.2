@@ -2,120 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B93A38A961
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8993238A6C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238897AbhETLB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:01:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236113AbhETKn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:43:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 905DB61429;
-        Thu, 20 May 2021 09:56:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504607;
-        bh=BFRnI6vzCgVT3DYw8YAxwW+Dxt1m4o+N2XErRg2k3l8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t+MwwIT6nE8Vf+cjroFZVviIYe2u0vqu1k44XvqnRUworAsas8a1yIZ7uJ43CGPY0
-         gj+jVjmxOdJyPcoW7n/9u8IXBrmONOSHzpWeMEoAZ4SHQI/QGhcGjVxKv7Cbxl9i8M
-         bk7NJIzvD15X5gUj7zt13qR2VooPp+E/ZrtVhNh0=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 323/323] ipv6: remove extra dev_hold() for fallback tunnels
-Date:   Thu, 20 May 2021 11:23:35 +0200
-Message-Id: <20210520092131.317480667@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S237211AbhETKa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:30:26 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:28342 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235817AbhETKSB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:18:01 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14KA18f0077450;
+        Thu, 20 May 2021 18:01:08 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from slee-VirtualBox.localdomain (192.168.100.253) by
+ TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 20 May 2021 18:13:47 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Andrew Jeffery" <andrew@aj.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>
+CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
+        <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>
+Subject: [PATCH v4 0/3] mmc: sdhci-of-aspeed: Support toggling SD bus signal
+Date:   Thu, 20 May 2021 18:13:42 +0800
+Message-ID: <20210520101346.16772-1-steven_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14KA18f0077450
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
 
-commit 0d7a7b2014b1a499a0fe24c9f3063d7856b5aaaf upstream.
+AST2600-A2 EVB has the reference design for enabling SD bus
+power and toggling SD bus signal voltage between 3.3v and 1.8v by
+GPIO regulators.
+This patch series adds sdhci node and gpio regulators in a new dts file
+for AST2600-A2 EVB.
+The description of the reference design of AST2600-A2 EVB is added
+in the new dts file.
 
-My previous commits added a dev_hold() in tunnels ndo_init(),
-but forgot to remove it from special functions setting up fallback tunnels.
+This patch also include a helper for updating AST2600 sdhci capability
+registers.
 
-Fallback tunnels do call their respective ndo_init()
+Changes from v3:
+* Remove the example of gpio regulator from dt-bindings.
+* Add sdhci node and gpio regulators to a new dts file.
+* Move the comment of the reference design to the new
+  dts file.
+* Modify commit message of sdhci-of-aspeed.c.
+* Fix coding style issues of sdhci-of-aspeed.c.
+* Remove the implementation of eMMC resetc since it has no relevance to
+  the goal that this patch series want to achieve and it may needs further
+  discussion about the design of reset behavior.
 
-This leads to various reports like :
+Changes from v2:
+* Move the comment of the reference design from dt-bindings to device tree.
+* Add clk-phase binding for eMMC controller.
+* Reimplement aspeed_sdc_set_slot_capability().
+* Separate the implementation of eMMC reset to another patch file.
+* Fix yaml document error per the report of dt_binding_check and
+  dtbs_check.
 
-unregister_netdevice: waiting for ip6gre0 to become free. Usage count = 2
+Changes from v1:
+* Add the device tree example for AST2600 A2 EVB in dt-bindings
+  document
+* Add timing-phase for eMMC controller.
+* Remove power-gpio and power-switch-gpio from sdhci driver, they should
+  be handled by regulator.
+* Add a helper to update capability registers in the driver.
+* Sync sdhci settings from device tree to SoC capability registers.
+* Sync timing-phase from device tree to SoC Clock Phase Control
+  register
 
-Fixes: 48bb5697269a ("ip6_tunnel: sit: proper dev_{hold|put} in ndo_[un]init methods")
-Fixes: 6289a98f0817 ("sit: proper dev_{hold|put} in ndo_[un]init methods")
-Fixes: 40cb881b5aaa ("ip6_vti: proper dev_{hold|put} in ndo_[un]init methods")
-Fixes: 7f700334be9a ("ip6_gre: proper dev_{hold|put} in ndo_[un]init methods")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- net/ipv6/ip6_gre.c    |    3 ---
- net/ipv6/ip6_tunnel.c |    1 -
- net/ipv6/ip6_vti.c    |    1 -
- net/ipv6/sit.c        |    1 -
- 4 files changed, 6 deletions(-)
+Please help to review.
 
---- a/net/ipv6/ip6_gre.c
-+++ b/net/ipv6/ip6_gre.c
-@@ -350,7 +350,6 @@ static struct ip6_tnl *ip6gre_tunnel_loc
- 	if (!(nt->parms.o_flags & TUNNEL_SEQ))
- 		dev->features |= NETIF_F_LLTX;
- 
--	dev_hold(dev);
- 	ip6gre_tunnel_link(ign, nt);
- 	return nt;
- 
-@@ -1124,8 +1123,6 @@ static void ip6gre_fb_tunnel_init(struct
- 	strcpy(tunnel->parms.name, dev->name);
- 
- 	tunnel->hlen		= sizeof(struct ipv6hdr) + 4;
--
--	dev_hold(dev);
- }
- 
- 
---- a/net/ipv6/ip6_tunnel.c
-+++ b/net/ipv6/ip6_tunnel.c
-@@ -1905,7 +1905,6 @@ static int __net_init ip6_fb_tnl_dev_ini
- 	struct ip6_tnl_net *ip6n = net_generic(net, ip6_tnl_net_id);
- 
- 	t->parms.proto = IPPROTO_IPV6;
--	dev_hold(dev);
- 
- 	rcu_assign_pointer(ip6n->tnls_wc[0], t);
- 	return 0;
---- a/net/ipv6/ip6_vti.c
-+++ b/net/ipv6/ip6_vti.c
-@@ -934,7 +934,6 @@ static int __net_init vti6_fb_tnl_dev_in
- 	struct vti6_net *ip6n = net_generic(net, vti6_net_id);
- 
- 	t->parms.proto = IPPROTO_IPV6;
--	dev_hold(dev);
- 
- 	rcu_assign_pointer(ip6n->tnls_wc[0], t);
- 	return 0;
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -1407,7 +1407,6 @@ static void __net_init ipip6_fb_tunnel_i
- 	iph->ihl		= 5;
- 	iph->ttl		= 64;
- 
--	dev_hold(dev);
- 	rcu_assign_pointer(sitn->tunnels_wc[0], tunnel);
- }
- 
+Regards,
+Steven
 
+Steven Lee (3):
+  ARM: dts: aspeed: ast2600evb: Add sdhci node and gpio regulator for A2
+    evb.
+  ARM: dts: aspeed: ast2600evb: Add phase correction for emmc
+    controller.
+  mmc: sdhci-of-aspeed: Configure the SDHCIs as specified by the
+    devicetree.
+
+ arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts | 98 +++++++++++++++++++++
+ arch/arm/boot/dts/aspeed-ast2600-evb.dts    |  3 +-
+ drivers/mmc/host/sdhci-of-aspeed.c          | 48 ++++++++++
+ 3 files changed, 148 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/aspeed-ast2600-evb-a2.dts
+
+-- 
+2.17.1
 
