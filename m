@@ -2,64 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14946389FA6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E20C389FAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbhETISN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:18:13 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:57959 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229536AbhETISL (ORCPT
+        id S231143AbhETITC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:19:02 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45248 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229536AbhETITB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:18:11 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1ljdrK-0000s2-AR; Thu, 20 May 2021 08:16:46 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Xinhui.Pan@amd.com, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] drm/amdgpu/acpi: Fix null check on memory allocation
-Date:   Thu, 20 May 2021 09:16:46 +0100
-Message-Id: <20210520081646.6296-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 20 May 2021 04:19:01 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621498659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=danNVP1F0DwY+87MeHMDjfV5BL9uYyFA1fdtztnvKsc=;
+        b=lCwnkQaIMZ7H9ktIE/e4nsmYKE0r5HGbmayXdWegmAqgQf5gmw3BM9VA6OUZWhEzDPCnLU
+        /vToIYQEUaXBDZ2SlNvYIUfWUZBctduUY9KtCTn1dA3PpM+VpbNa7XStSi4a8dM5QipPXR
+        rPQBY9zIPpm1JkqJ0Box07z8kFeqyb7eAIt41o367m8cg4aN/oacwnKHnKlmZskm31Puro
+        OMrFvhkr/dxM6FRArlrdAbxeZACLNR1fKVdSD1Y3AJSX3MWb9XrM5BmN9lF4YoeEBnIN64
+        iFkSsJPPybtE/Pe8xbbUZbNAkgCBFNBf9kb7PQDohzyv98c6xU7hT6L+fBsWaA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621498659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=danNVP1F0DwY+87MeHMDjfV5BL9uYyFA1fdtztnvKsc=;
+        b=pMAZ9u3mh47ELbQufp/CXDBk/O8yyMA8PRCwz4mlakugExfBwT+xod1NS/RvpFgbNeeBjT
+        75IeiaFu/0H2fWAw==
+To:     Imran Khan <imran.f.khan@oracle.com>, mingo@redhat.com,
+        bp@alien8.de
+Cc:     x86@kernel.org, hpa@zytor.com, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [RFC PATCH] x86/apic: Fix BUG due to multiple allocation of legacy vectors.
+In-Reply-To: <20210519233928.2157496-1-imran.f.khan@oracle.com>
+References: <20210519233928.2157496-1-imran.f.khan@oracle.com>
+Date:   Thu, 20 May 2021 10:17:39 +0200
+Message-ID: <8735uhddjw.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Imran,
 
-The current null check is checking the wrong pointer atif. Fix this
-to check the correct pointer atcs.
+On Wed, May 19 2021 at 23:39, Imran Khan wrote:
+> During activation of secondary CPUs, lapic_online is
+> invoked to initialize vectors. While lapic_online
+> installs legacy vectors on all CPUs, it does not set
+> the corresponding bits in per CPU bitmap maintained
+> under irq_matrix.
+> This may result in these legacy vectors getting allocated
+> by irq_matrix_alloc and if that happens subsequent invocation
+> of apic_update_vector will cause BUG like the one shown below:
+>
+> [  154.738226] kernel BUG at arch/x86/kernel/apic/vector.c:172!
 
-Addresses-Coverity: ("Uninitialized pointer read")
-Fixes: c1c4d8efddde ("drm/amdgpu/acpi: unify ATCS handling (v2)")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+please trim the backtrace. It's not really relevant for understanding
+the problem.
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-index c39f447df21d..b3ee7fb72b81 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_acpi.c
-@@ -901,7 +901,7 @@ int amdgpu_acpi_init(struct amdgpu_device *adev)
- 		goto out;
- 
- 	atcs = kzalloc(sizeof(*atcs), GFP_KERNEL);
--	if (!atif) {
-+	if (!atcs) {
- 		DRM_WARN("Not enough memory to initialize ATCS\n");
- 		goto out;
- 	}
--- 
-2.31.1
+> This patch marks these legacy vectors as assigned in irq_matrix
 
+git grep 'This patch' Documentation/process/
+
+> so that corresponding bits in percpu bitmaps get set and these
+> legacy vectors don't get reallocted.
+
+This is just wrong.
+
+True legacy interrupts (PIC delivery) are marked as system vectors. See
+lapic_assign_legacy_vector(). That prevents them from being allocated.
+
+> [  154.858092] CPU: 22 PID: 3569 Comm: ifup-eth Not tainted 5.8.0-20200716.x86_64 #1
+
+I have no idea what this 5.8.0-magic-date kernel is.
+
+Have you verified that this problem exists with upstream?
+
+Thanks,
+
+        tglx
