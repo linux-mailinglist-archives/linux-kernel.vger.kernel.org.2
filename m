@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF05B38B468
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC24638B469
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234265AbhETQjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:39:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38692 "EHLO mail.kernel.org"
+        id S234443AbhETQjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:39:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38744 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234160AbhETQj0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:39:26 -0400
+        id S234169AbhETQj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:39:27 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 31D98611BD;
-        Thu, 20 May 2021 16:38:04 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4179661244;
+        Thu, 20 May 2021 16:38:05 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgQ-002d7b-Gx; Thu, 20 May 2021 17:38:02 +0100
+        id 1ljlgR-002d7b-Fj; Thu, 20 May 2021 17:38:03 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 07/39] MIPS: Add missing linux/irqdomain.h includes
-Date:   Thu, 20 May 2021 17:37:19 +0100
-Message-Id: <20210520163751.27325-8-maz@kernel.org>
+Subject: [PATCH 08/39] MIPS: Do not include linux/irqdomain.h from asm/irq.h
+Date:   Thu, 20 May 2021 17:37:20 +0100
+Message-Id: <20210520163751.27325-9-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,65 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A number of MIPS platforms are failing to directly include
-irqdomain.h. Fix this so that we can drop unnecessary dependencies
+Including linux/irqdomain.h from asm/irq.h is going to break
+as soon as linux/irqdomain.h will include linux/irq.h, so
+let's fix this. Code relying on linux/irqomain.h should include
+it directly.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/mips/pci/pci-rt3883.c       | 1 +
- arch/mips/pci/pci-xtalk-bridge.c | 1 +
- arch/mips/sgi-ip27/ip27-irq.c    | 1 +
- arch/mips/sgi-ip30/ip30-irq.c    | 1 +
- 4 files changed, 4 insertions(+)
+ arch/mips/include/asm/irq.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/pci/pci-rt3883.c b/arch/mips/pci/pci-rt3883.c
-index aebd4964ea34..c48e23cf5b5e 100644
---- a/arch/mips/pci/pci-rt3883.c
-+++ b/arch/mips/pci/pci-rt3883.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/interrupt.h>
-+#include <linux/irqdomain.h>
- #include <linux/of.h>
- #include <linux/of_irq.h>
- #include <linux/of_pci.h>
-diff --git a/arch/mips/pci/pci-xtalk-bridge.c b/arch/mips/pci/pci-xtalk-bridge.c
-index d2216942af18..ab9bedb82b28 100644
---- a/arch/mips/pci/pci-xtalk-bridge.c
-+++ b/arch/mips/pci/pci-xtalk-bridge.c
-@@ -13,6 +13,7 @@
- #include <linux/platform_data/xtalk-bridge.h>
- #include <linux/nvmem-consumer.h>
- #include <linux/crc16.h>
-+#include <linux/irqdomain.h>
+diff --git a/arch/mips/include/asm/irq.h b/arch/mips/include/asm/irq.h
+index f021de661c3a..d1477ecb1af9 100644
+--- a/arch/mips/include/asm/irq.h
++++ b/arch/mips/include/asm/irq.h
+@@ -11,7 +11,6 @@
  
- #include <asm/pci/bridge.h>
- #include <asm/paccess.h>
-diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-index 42df9fafa943..95c1bff1ab9f 100644
---- a/arch/mips/sgi-ip27/ip27-irq.c
-+++ b/arch/mips/sgi-ip27/ip27-irq.c
-@@ -9,6 +9,7 @@
+ #include <linux/linkage.h>
+ #include <linux/smp.h>
+-#include <linux/irqdomain.h>
  
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/irqdomain.h>
- #include <linux/ioport.h>
- #include <linux/kernel.h>
- #include <linux/bitops.h>
-diff --git a/arch/mips/sgi-ip30/ip30-irq.c b/arch/mips/sgi-ip30/ip30-irq.c
-index e8374e4c705b..ba87704073c8 100644
---- a/arch/mips/sgi-ip30/ip30-irq.c
-+++ b/arch/mips/sgi-ip30/ip30-irq.c
-@@ -6,6 +6,7 @@
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
-+#include <linux/irqdomain.h>
- #include <linux/percpu.h>
- #include <linux/spinlock.h>
- #include <linux/tick.h>
+ #include <asm/mipsmtregs.h>
+ 
 -- 
 2.30.2
 
