@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0AAC38AC7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0587638AC7B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242722AbhETLkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:40:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
+        id S242745AbhETLk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:40:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240888AbhETLTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:19:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 094CB613E3;
-        Thu, 20 May 2021 10:10:38 +0000 (UTC)
+        id S240997AbhETLTt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:19:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D9A961D7E;
+        Thu, 20 May 2021 10:10:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505439;
-        bh=K4Gxbu8Li8VuMOhLddDQQmmtlV8IRL45B30dXYpG75g=;
+        s=korg; t=1621505441;
+        bh=BRdGr/TlbkTLITp74Ajm2rEP1BuzEVJewHTKzHPom0c=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VEwlEEO4fNwVzNvAmQQhPeEBg4+PArT+DH/8ttMv0O06eo9CZrdHgVJA3LexVqayM
-         9OnezD3YB1CMsPixqQBJs3m4gexTZ01q30ExXfmqA0kUfkCO7vf0S+57lQTScfERIT
-         4Sg9ex0QrBpyvAsZm1aZTLlCo8GDnbx1D4xJcxSc=
+        b=sYzVrZQ/t9ypZAgQpDguz3B0un5PKlKvUSefriU4ExFpPFN8zyIBDRvHUpvaoeQdp
+         1iG+UY6zSv6fSRL3un26Abaiqkf5v2aSjXK2nurDH9o6918v4jQEjZpJDQlEgL2gbC
+         Ojg9HBC+HsePnHF1+lcfQGmVkh4v/GkFM2VDZejw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Alexander Aring <aahringo@redhat.com>,
-        David Teigland <teigland@redhat.com>,
+        stable@vger.kernel.org, Jon Maloy <jmaloy@redhat.com>,
+        Hoang Le <hoang.h.le@dektech.com.au>,
+        "David S. Miller" <davem@davemloft.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 135/190] fs: dlm: fix debugfs dump
-Date:   Thu, 20 May 2021 11:23:19 +0200
-Message-Id: <20210520092106.661300839@linuxfoundation.org>
+Subject: [PATCH 4.4 136/190] tipc: convert dest nodes address to network order
+Date:   Thu, 20 May 2021 11:23:20 +0200
+Message-Id: <20210520092106.691076367@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -40,38 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Alexander Aring <aahringo@redhat.com>
+From: Hoang Le <hoang.h.le@dektech.com.au>
 
-[ Upstream commit 92c48950b43f4a767388cf87709d8687151a641f ]
+[ Upstream commit 1980d37565061ab44bdc2f9e4da477d3b9752e81 ]
 
-This patch fixes the following message which randomly pops up during
-glocktop call:
+(struct tipc_link_info)->dest is in network order (__be32), so we must
+convert the value to network order before assigning. The problem detected
+by sparse:
 
-seq_file: buggy .next function table_seq_next did not update position index
+net/tipc/netlink_compat.c:699:24: warning: incorrect type in assignment (different base types)
+net/tipc/netlink_compat.c:699:24:    expected restricted __be32 [usertype] dest
+net/tipc/netlink_compat.c:699:24:    got int
 
-The issue is that seq_read_iter() in fs/seq_file.c also needs an
-increment of the index in an non next record case as well which this
-patch fixes otherwise seq_read_iter() will print out the above message.
-
-Signed-off-by: Alexander Aring <aahringo@redhat.com>
-Signed-off-by: David Teigland <teigland@redhat.com>
+Acked-by: Jon Maloy <jmaloy@redhat.com>
+Signed-off-by: Hoang Le <hoang.h.le@dektech.com.au>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/debug_fs.c | 1 +
- 1 file changed, 1 insertion(+)
+ net/tipc/netlink_compat.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/dlm/debug_fs.c b/fs/dlm/debug_fs.c
-index eea64912c9c0..3b79c0284a30 100644
---- a/fs/dlm/debug_fs.c
-+++ b/fs/dlm/debug_fs.c
-@@ -545,6 +545,7 @@ static void *table_seq_next(struct seq_file *seq, void *iter_ptr, loff_t *pos)
+diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
+index 0975a28f8686..fb1b5dcf0142 100644
+--- a/net/tipc/netlink_compat.c
++++ b/net/tipc/netlink_compat.c
+@@ -632,7 +632,7 @@ static int tipc_nl_compat_link_dump(struct tipc_nl_compat_msg *msg,
  
- 		if (bucket >= ls->ls_rsbtbl_size) {
- 			kfree(ri);
-+			++*pos;
- 			return NULL;
- 		}
- 		tree = toss ? &ls->ls_rsbtbl[bucket].toss : &ls->ls_rsbtbl[bucket].keep;
+ 	nla_parse_nested(link, TIPC_NLA_LINK_MAX, attrs[TIPC_NLA_LINK], NULL);
+ 
+-	link_info.dest = nla_get_flag(link[TIPC_NLA_LINK_DEST]);
++	link_info.dest = htonl(nla_get_flag(link[TIPC_NLA_LINK_DEST]));
+ 	link_info.up = htonl(nla_get_flag(link[TIPC_NLA_LINK_UP]));
+ 	nla_strlcpy(link_info.str, link[TIPC_NLA_LINK_NAME],
+ 		    TIPC_MAX_LINK_NAME);
 -- 
 2.30.2
 
