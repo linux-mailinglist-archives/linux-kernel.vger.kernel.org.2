@@ -2,107 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2887C38B03E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A2538B03D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:42:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240213AbhETNnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:43:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239228AbhETNnO (ORCPT
+        id S240075AbhETNnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:43:45 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:35938 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239100AbhETNnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:43:14 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA2DC061342
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:41:30 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so5298353pjv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lCDY3zqYN0TPm8XTDIr+feSz7CGQpYBusVmFxZWqbvU=;
-        b=aYWpmcG5UzZYC+GcETZKyG/HHk9fPzAE6LU8/INOkQM5UZ1Yhm8j3OhGzZW0NjogHI
-         q6fDF14+qqS3G+/gwiAo1S32FwPnRb/jZ5dOYjR720kR4CywTZk3la+dZv9d+wZcsSTN
-         OBVzV8pjjA1u/jk4Ut+OypKVCJjV7ozSUeMhM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lCDY3zqYN0TPm8XTDIr+feSz7CGQpYBusVmFxZWqbvU=;
-        b=P5c7EQVCnJF+igXCo/Z+Rr/SyLpmcEIzPBItqVql223et52UdJF2QGtvcpQ236ejEY
-         A13oe27fvYWs7Ivc4K0cGZOne5qvEJmm+4ri6MJhH7/6wHOPj6jDSXabxaaFTM3zKv+9
-         fKL1dKjNdicvN7SlxTxmmJPsuCOpUYEdERtzV9WM89qqT4fR+gkg43PGJeF6pgx0AIYX
-         Omqlo4q4VeISiz7od1+P/mINsEAC1MNMtNWGQvbQJIafRNmxP4DZh3Q31R/m4EelZ/2j
-         a7Vs1svrcyChtXEqeH3hTMIyMvAnU31S2ux8RCdfv3Zvw8eJJ1c5ooDHxB69SU55ibDA
-         V8TA==
-X-Gm-Message-State: AOAM5325dUHt6XhkNe6tWy3mpEVP+zuS6naZRuDQCb27hiirZS3CU+1w
-        vE8G1ptT2z6az11Ixiog4bL85g==
-X-Google-Smtp-Source: ABdhPJxIYFp3eVKeAwRaBfZhep5/uA8j/WMPoEzhG5E+LYHkc9EzY3M3ZpacSfZlKO4VgWPceDGyhg==
-X-Received: by 2002:a17:903:189:b029:f1:d67a:5168 with SMTP id z9-20020a1709030189b02900f1d67a5168mr5966517plg.82.1621518085625;
-        Thu, 20 May 2021 06:41:25 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:3d5d:d560:9fb4:d9d1])
-        by smtp.gmail.com with UTF8SMTPSA id k21sm2111284pgb.56.2021.05.20.06.41.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 06:41:25 -0700 (PDT)
-Date:   Thu, 20 May 2021 06:41:23 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v10 2/5] USB: misc: Add onboard_usb_hub driver
-Message-ID: <YKZnA2bifn346bPa@google.com>
-References: <20210511225223.550762-1-mka@chromium.org>
- <20210511155152.v10.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <YKPz7a68duMyXU5x@google.com>
- <20210518194511.GA1137841@rowland.harvard.edu>
- <YKQ0XxhIWaN37HMr@google.com>
- <20210519144356.GB1165692@rowland.harvard.edu>
- <YKWaJdrpj1ixx9+v@google.com>
- <20210520020521.GB1186755@rowland.harvard.edu>
+        Thu, 20 May 2021 09:43:08 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KDfeRf038341;
+        Thu, 20 May 2021 08:41:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621518100;
+        bh=NzysMlm/BUH/w03D45s98fi6UMQpfCETbmthl1hZcMc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=vLB1IazODqqfLSF4SRyxPeVKfUiQtkNqCRJHIbcEQWq29Oa2A4HjBHl0q7IVeeZ+3
+         Rp+4Q2i12cZNS53OxEbrUI7HfPS/MOwBG7x7DLcieBTX6oYdlU+IxLERV6DYRh5m3Y
+         zSRa2wJhEH5/9/eZJAoKpj1aZVNX0Fd6glirq8pk=
+Received: from DFLE103.ent.ti.com (dfle103.ent.ti.com [10.64.6.24])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KDfep3112909
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 May 2021 08:41:40 -0500
+Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE103.ent.ti.com
+ (10.64.6.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
+ May 2021 08:41:40 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 20 May 2021 08:41:40 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KDfeuO094474;
+        Thu, 20 May 2021 08:41:40 -0500
+Date:   Thu, 20 May 2021 08:41:40 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+CC:     Tero Kristo <kristo@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Lokesh Vutla <lokeshvutla@ti.com>
+Subject: Re: [PATCH 1/4] arm64: dts: ti: k3-j721e-main: Fix external refclk
+ input to SERDES
+Message-ID: <20210520134140.qzjl7td7ojoqudok@snippet>
+References: <20210512151209.27560-1-kishon@ti.com>
+ <20210512151209.27560-2-kishon@ti.com>
+ <20210512185157.q5sr2xqf3w5igfte@imagines>
+ <68c95cf1-84fa-2194-7bb1-e3c60e7f1fc0@ti.com>
+ <20210513140137.5uvftgtsku3xfobz@engraving>
+ <81b7dc76-0918-0a95-5715-cf701e638bbe@ti.com>
+ <20210517140519.4ltzvw3k74z72urz@dingo>
+ <3529e35f-0bef-fd8c-515a-6d4552f2467d@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210520020521.GB1186755@rowland.harvard.edu>
+In-Reply-To: <3529e35f-0bef-fd8c-515a-6d4552f2467d@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:05:21PM -0400, Alan Stern wrote:
-> On Wed, May 19, 2021 at 04:07:17PM -0700, Matthias Kaehlcke wrote:
-> > On Wed, May 19, 2021 at 10:43:56AM -0400, Alan Stern wrote:
-> > > On Tue, May 18, 2021 at 02:40:47PM -0700, Matthias Kaehlcke wrote:
-> > > > 
-> > > > Could you also have a look at "[4/5] usb: host: xhci-plat:
-> > > > Create platform device for onboard hubs in probe()"
-> > > > (https://lore.kernel.org/patchwork/patch/1425453/)? It's a
-> > > > relatively short patch that creates the platform device for
-> > > > the driver from xhci-plat as you suggested in the v4
-> > > > discussion.
-> > > 
-> > > I'm not the maintainer for xhci-related drivers.
-> > > 
-> > > However, there is at least one thing about this patch which looks 
-> > > suspicious: Adding the onboard_hub_dev pointer to struct usb_hcd instead 
-> > > of to struct xhci_plat_priv, where it would make a lot more sense.
-> > 
-> > I can move it to struct usb_hcd if that's preferred
+On 18:48-20210520, Kishon Vijay Abraham I wrote:
+> Hi Nishanth,
 > 
-> Thinko: The patch already has it in struct usb_hcd.  I suggested moving 
-> it to struct xhci_plat_priv.
+> On 17/05/21 7:35 pm, Nishanth Menon wrote:
+> > On 14:00-20210517, Kishon Vijay Abraham I wrote:
+> >> Hi Nishanth,
+> >>
+> >> On 13/05/21 7:31 pm, Nishanth Menon wrote:
+> >>> On 17:41-20210513, Kishon Vijay Abraham I wrote:
+> >>>> Hi Nishanth,
+> >>>>
+> >>>> On 13/05/21 12:21 am, Nishanth Menon wrote:
+> >>>>> On 20:42-20210512, Kishon Vijay Abraham I wrote:
+> >>>>>> Rename the external refclk inputs to the SERDES from
+> >>>>>> dummy_cmn_refclk/dummy_cmn_refclk1 to cmn_refclk/cmn_refclk1
+> >>>>>> respectively. Also move the external refclk DT nodes outside the
+> >>>>>> cbass_main DT node. Since in j721e common processor board, only the
+> >>>>>> cmn_refclk1 is connected to 100MHz clock, fix the clock frequency.
+> >>>>>>
+> >>>>>> Fixes: afd094ebe69f ("arm64: dts: ti: k3-j721e-main: Add WIZ and SERDES PHY nodes")
+> >>>>>
+> >>>>> Assume we want this part of 5.13 fixes?
+> >>>>
+> >>>> This doesn't fix any functionality. Okay for me to go in 5.14 along with
+> >>>> the rest of the series.
+> >>>
+> >>>
+> >>>>>
+> >>>>>> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> >>>>>> ---
+> >>>>>>  .../dts/ti/k3-j721e-common-proc-board.dts     |  4 ++
+> >>>>>>  arch/arm64/boot/dts/ti/k3-j721e-main.dtsi     | 58 ++++++++++---------
+> >>>>>>  2 files changed, 34 insertions(+), 28 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> >>>>>> index 60764366e22b..86f7ab511ee8 100644
+> >>>>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> >>>>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dts
+> >>>>>> @@ -635,6 +635,10 @@
+> >>>>>>  	status = "disabled";
+> >>>>>>  };
+> >>>>>>  
+> >>>>>> +&cmn_refclk1 {
+> >>>>>> +	clock-frequency = <100000000>;
+> >>>>>> +};
+> >>>>>> +
+> >>>>>>  &serdes0 {
+> >>>>>>  	serdes0_pcie_link: link@0 {
+> >>>>>>  		reg = <0>;
+> >>>>>> diff --git a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> >>>>>> index c2aa45a3ac79..002a0c1520ee 100644
+> >>>>>> --- a/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> >>>>>> +++ b/arch/arm64/boot/dts/ti/k3-j721e-main.dtsi
+> >>>>>> @@ -8,6 +8,20 @@
+> >>>>>>  #include <dt-bindings/mux/mux.h>
+> >>>>>>  #include <dt-bindings/mux/ti-serdes.h>
+> >>>>>>  
+> >>>>>> +/ {
+> >>>>>> +	cmn_refclk: cmn-refclk {
+> >>>>>> +		#clock-cells = <0>;
+> >>>>>> +		compatible = "fixed-clock";
+> >>>>>> +		clock-frequency = <0>;
+> >>>>>> +	};
+> >>>>>> +
+> >>>>>> +	cmn_refclk1: cmn-refclk1 {
+> >>>>>
+> >>>>> Just curious: why cant we use the standard nodenames with clock?
+> >>>>
+> >>>> We can use standard names here. Is there any defined nodename for
+> >>>> clocks? clk or clock? Don't see $nodename defined for clocks in
+> >>>> dt-schema repository.
+> >>>
+> >>> Looking at the fixed-clock example, lets go with clock
+> >>
+> >> Since I have two clocks here adding clock@0 and clock@1 introduces the
+> >> following error.
+> >> /home/a0393678/repos/linux-wip/arch/arm64/boot/dts/ti/k3-j721e-common-proc-board.dt.yaml:
+> >> /: clock@0: 'anyOf' conditional failed, one must be fixed:
+> >>         'reg' is a required property
+> >>         'ranges' is a required property
+> >>
+> >> The current "fixed-clock" binding doesn't allow adding "reg" property.
+> >> We'll stick to non standard names? or do you think the binding has to be
+> >> fixed?
+> > 
+> > Look at other fixed-clock examples in other arm64 examples
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/freescale/imx8mm.dtsi#n147
+> > is a good one.. Binding is fine, IMHO.
+> 
+> Ah Thanks. It only has to be prefixed with clock-.
 
-Ah, didn't actively recall to which struct I added it to, it has been a
-while since I wrote that patch ;-) Agreed that struct xhci_plat_priv is
-a better place.
+
+Yep - also, though I think it is self evident, I will explicitly state
+as well: since dts should represent hardware, using names like "dummy"
+does'nt belong to dts - it would indicate something of a software
+construct. Knowing what you are trying to describe, I do understand it
+is not a "software construct", but please avoid using similar naming
+which may create misunderstanding.
+
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
