@@ -2,178 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C742C38AFF2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9334D38AFF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:26:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237007AbhETN0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:26:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48036 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231733AbhETN0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:26:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D44566135A;
-        Thu, 20 May 2021 13:25:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621517120;
-        bh=ZGR0d1utfxvQm3s0niYerfupf8fQvgD1F1Vf6QEpFTQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IXW65ZzioDVPpl+gzUyMI7M0QoFYoDQ0n55Jigm9jcR1TrXz764f5RO555kqg1dgS
-         +59mcs5flYcU+0f1rFAoFe9rsMmFbdg6NdLm97gxNtobggpXUyFZrdolLMEiypJY5E
-         cKA3ALOxntTIfnBmr94MP95KzRU7w2Qj4WyArEzPGceHu6fcpBcJSUAzuhQEjeBIC0
-         HCw/kXVbZsToel77d5YBHK4zxdRsL9rbmbT6u1XtU4j4JiCqI9OMV5lsQbSElz+NJ/
-         sU4yw79M9FHu5fq9GK62cYcRgvw6/MUSq8M0chxk840k/b5ooVe+7hT0pbretYqesF
-         MjgN9G723EnIw==
-Received: by mail-ej1-f45.google.com with SMTP id i7so7449408ejc.5;
-        Thu, 20 May 2021 06:25:20 -0700 (PDT)
-X-Gm-Message-State: AOAM53030A9e5BQg0z0iBIVmjylPcFjc9VRSAWkjfT7X7/XH8knMDu3/
-        RFXWKnG0wf6rD3wgU4NpBylvngu/JHaHhi0T6g==
-X-Google-Smtp-Source: ABdhPJyYRw8Cvw8jFOxekcPR1d+Gtnv+Q16LLY5HiWSVWHW/5gWy/2iRMsHIUVSQpFkOEVzkI/Xk0CeumJ0LRI12PjY=
-X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr4688567ejc.108.1621517119203;
- Thu, 20 May 2021 06:25:19 -0700 (PDT)
+        id S238887AbhETN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:28:05 -0400
+Received: from mail-vk1-f173.google.com ([209.85.221.173]:41816 "EHLO
+        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234137AbhETN2D (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 09:28:03 -0400
+Received: by mail-vk1-f173.google.com with SMTP id n71so2664221vkf.8;
+        Thu, 20 May 2021 06:26:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kVftqxA9v+JvVyYELD56NQzbqBmkwWKJa852Ut1Tatg=;
+        b=cizpZg5tH2uwNSjCBET5vFzhEZJDZUb7/lrohZLAnRbtoZT98NPnNPrsZvZdeTYT3/
+         4l6+dvVlys2zYMVQlVYIznMgj8j1sAcgQjUliSYKnxhIRRDXQ9gQcCuEjlh+YL6BLLIu
+         o4ln6nn0FaGcHG1eyzOcuGtw3qditlNs69HnaEWopwMsRZY839vW2eQNo7TKenT1gQHN
+         p2m/DZy59YW65u0zCq7pJD/vXNbSNZjMx1bQ3ZxVHnk0BNS6397lRKNwAzSGF++LMbh4
+         89fhuefNjW08r173lkjBPE39grEhr5PSW2gz+oFVYf0d5bCs7gm8tRooJrmmn/SYmsmO
+         0GNQ==
+X-Gm-Message-State: AOAM531NJz1ZbZpGwUZh9I1GEEnZa4HDHl+76JRmaq0I/xDfE0cLTgXQ
+        M7XJEFrUPuP9GgVwQlsgBHwVXsbLVRZd5FgeKqg7fsFn
+X-Google-Smtp-Source: ABdhPJyl6lYJFVdz57nxN6fV6GjRxgWNrWyvP7/aAFid7dKsdHsMIlU4xz5jVMI7LURDD/Z0d7DIpJvvUvqOcKvyAZE=
+X-Received: by 2002:a1f:a388:: with SMTP id m130mr4145273vke.1.1621517200867;
+ Thu, 20 May 2021 06:26:40 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210517200907.1459182-1-dianders@chromium.org>
- <20210517130450.v7.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
- <20210519200156.GA3535665@robh.at.kernel.org> <CAD=FV=XNaB8fVvwwHPgo8wPmG3EmJ68u_3o8qpPXn4YobNokAA@mail.gmail.com>
-In-Reply-To: <CAD=FV=XNaB8fVvwwHPgo8wPmG3EmJ68u_3o8qpPXn4YobNokAA@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 20 May 2021 08:25:06 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL9p1nOQs5V5xN167E860Gm+3dTRaOwpv2X+AP=cM1Q_g@mail.gmail.com>
-Message-ID: <CAL_JsqL9p1nOQs5V5xN167E860Gm+3dTRaOwpv2X+AP=cM1Q_g@mail.gmail.com>
-Subject: Re: [PATCH v7 03/10] dt-bindings: drm/bridge: ti-sn65dsi86: Add
- aux-bus child
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
-        Lyude Paul <lyude@redhat.com>,
-        Thierry Reding <treding@nvidia.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Linus W <linus.walleij@linaro.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Clark <robdclark@chromium.org>,
-        Steev Klimaszewski <steev@kali.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+References: <20210518144935.15835-1-dsterba@suse.com> <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
+ <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 20 May 2021 15:26:29 +0200
+Message-ID: <CAMuHMdVFAc66m=eSWhd3Vzk4J_YH8UF6Qe+M2C=PRZ1StYMg_w@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     David Sterba <dsterba@suse.com>,
+        linux-btrfs <linux-btrfs@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 4:06 PM Doug Anderson <dianders@chromium.org> wrote:
->
-> Hi,
->
-> On Wed, May 19, 2021 at 1:02 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > On Mon, May 17, 2021 at 01:09:00PM -0700, Douglas Anderson wrote:
-> > > We want to be able to list an eDP panel as a child of a ti-sn65dsi86
-> > > node to represent the fact that the panel is connected to the bridge's
-> > > DP AUX bus. Though the panel and the bridge chip are connected in
-> > > several ways, the DP AUX bus is the primary control interface between
-> > > the two and thus makes the most sense to model in device tree
-> > > hierarchy.
+Hi Arnd,
+
+On Thu, May 20, 2021 at 3:15 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> On Thu, May 20, 2021 at 9:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> > On Tue, 18 May 2021, David Sterba wrote:
+> > > --- a/fs/btrfs/scrub.c
+> > > +++ b/fs/btrfs/scrub.c
+> > > @@ -1988,6 +1993,60 @@ static void scrub_page_put(struct scrub_page *spage)
+> > >       }
+> > > }
 > > >
-> > > Listing a panel in this way makes it possible for the panel driver to
-> > > easily get access to the DP AUX bus that it resides on, which can be
-> > > useful to help in auto-detecting the panel and for turning on various
-> > > bits.
-> > >
-> > > NOTE: it's still possible to continue using the bridge chip and point
-> > > to a panel that _isn't_ listed as a child of the bridge chip (since
-> > > it's worked that way previously), but that should be deprecated since
-> > > there is no downside to listing the panel under the bridge chip.
-> > >
-> > > The idea for this bus's design was hashed out over IRC [1].
-> > >
-> > > [1] https://people.freedesktop.org/~cbrill/dri-log/?channel=dri-devel&date=2021-05-11
-> > >
-> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> > > ---
-> > > Possibly we might want something fancier that could be included by
-> > > other eDP controller bindings. If we want to do this, I'd love to be
-> > > pointed at a good example to follow.
-> > >
-> > > Changes in v7:
-> > > - ti-sn65dsi86: Add aux-bus child patch new for v7.
-> > >
-> > >  .../bindings/display/bridge/ti,sn65dsi86.yaml | 22 ++++++++++++++++++-
-> > >  1 file changed, 21 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> > > index 26932d2e86ab..51f5a29e216c 100644
-> > > --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> > > +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
-> > > @@ -70,6 +70,11 @@ properties:
-> > >      const: 1
-> > >      description: See ../../pwm/pwm.yaml for description of the cell formats.
-> > >
-> > > +  aux-bus:
-> >
-> > As this is a node:
-> >
-> > type: object
-> >
-> > > +    description:
-> > > +      It is recommended that you place your panel under the aux-bus node
-> > > +      here to represent the control hierarchy.
+> > > +/*
+> > > + * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
+> > > + * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
+> > > + */
+> > > +static void scrub_throttle(struct scrub_ctx *sctx)
+> > > +{
+> > > +     const int time_slice = 1000;
+> > > +     struct scrub_bio *sbio;
+> > > +     struct btrfs_device *device;
+> > > +     s64 delta;
+> > > +     ktime_t now;
+> > > +     u32 div;
+> > > +     u64 bwlimit;
 > > > +
-> > >    ports:
-> > >      $ref: /schemas/graph.yaml#/properties/ports
-> > >
-> > > @@ -201,11 +206,26 @@ examples:
-> > >
-> > >            port@1 {
-> > >              reg = <1>;
-> > > -            endpoint {
-> > > +            sn65dsi86_out: endpoint {
-> > >                remote-endpoint = <&panel_in_edp>;
-> > >              };
-> > >            };
-> > >          };
+> > > +     sbio = sctx->bios[sctx->curr];
+> > > +     device = sbio->dev;
+> > > +     bwlimit = READ_ONCE(device->scrub_speed_max);
+> > > +     if (bwlimit == 0)
+> > > +             return;
 > > > +
-> > > +        aux-bus {
-> > > +          panel {
+> > > +     /*
+> > > +      * Slice is divided into intervals when the IO is submitted, adjust by
+> > > +      * bwlimit and maximum of 64 intervals.
+> > > +      */
+> > > +     div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
+> > > +     div = min_t(u32, 64, div);
+> > > +
+> > > +     /* Start new epoch, set deadline */
+> > > +     now = ktime_get();
+> > > +     if (sctx->throttle_deadline == 0) {
+> > > +             sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
 > >
-> > We should perhaps have a separate aux-bus schema.
+> > ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+> >
+> > div_u64(bwlimit, div)
 >
-> Yeah. Before spending lots of time digging into how to do this I
-> wanted to see if anyone was going to give me a big-old NAK on the
-> whole approach. ;-)
+> If 'time_slice' is in nanoseconds, the best interface to use
+> is ktime_divns().
+
+Actually this one is not a problem...
+
 >
-> I guess I'd make a file called "dp-aux-bus.yaml" (maybe right under
-> bindings/display?) and then I'd include it like this:
+> > > +             sctx->throttle_sent = 0;
+> > > +     }
+> > > +
+> > > +     /* Still in the time to send? */
+> > > +     if (ktime_before(now, sctx->throttle_deadline)) {
+> > > +             /* If current bio is within the limit, send it */
+> > > +             sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
+> > > +             if (sctx->throttle_sent <= bwlimit / div)
+> > > +                     return;
 >
-> aux-bus:
->   $ref: "../dp-aux-bus.yaml#"
+> Doesn't this also need to be changed?
 
-Right.
+... but this is.
 
-> > Something should
-> > define the child node is 'panel' and nothing else.
->
-> At the moment the code also requires that the node name is 'aux-bus'.
-> Any objections to that?
+Sorry. I added the annotation to the wrong line, after devising which
+code caused the issue from looking at the generated assembly ;-)
 
-No. There's 2 ways to do that. The above does and adding $nodename in
-dp-aux-bus.yaml will. The latter also means the schema will be applied
-automatically to any node named 'aux-bus'. That means the schema will
-be applied twice unless you have 'select: false'. The main advantage
-of the latter case is it gets applied even without all the users
-converted to schema.
+Gr{oetje,eeting}s,
 
-> > Though perhaps
-> > connectors are valid too?
->
-> They might be. We could always add it later?
+                        Geert
 
-Sure.
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-Rob
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
