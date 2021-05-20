@@ -2,104 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401C9389CE1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72694389CF1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:11:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230221AbhETFEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:04:15 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54300 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhETFEO (ORCPT
+        id S230052AbhETFNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:13:02 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:35853 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhETFNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:04:14 -0400
-Received: from fsav107.sakura.ne.jp (fsav107.sakura.ne.jp [27.133.134.234])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 14K5228p049599;
-        Thu, 20 May 2021 14:02:02 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav107.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp);
- Thu, 20 May 2021 14:02:02 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav107.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 14K522Xq049596
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 20 May 2021 14:02:02 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] BUG: MAX_LOCKDEP_KEYS too low! (2)
-To:     Dmitry Vyukov <dvyukov@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        David Miller <davem@davemloft.net>
-Cc:     syzbot <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        WireGuard mailing list <wireguard@lists.zx2c4.com>
-References: <0000000000003687bd05c2b2401d@google.com>
- <CACT4Y+YJDGFN4q-aTPritnjjHEXiFovOm9eO6Ay4xC1YOa5z3w@mail.gmail.com>
- <c545268c-fe62-883c-4c46-974b3bb3cea1@infradead.org>
- <CACT4Y+aEtYPAdrU7KkE303yDw__QiG7m1tWVJewV8C_Mt9=1qg@mail.gmail.com>
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Message-ID: <208cd812-214f-ef2f-26ec-cc7a73953885@i-love.sakura.ne.jp>
-Date:   Thu, 20 May 2021 14:02:00 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Thu, 20 May 2021 01:13:00 -0400
+Received: (Authenticated sender: alex@ghiti.fr)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 21422240006;
+        Thu, 20 May 2021 05:11:34 +0000 (UTC)
+Subject: Re: [PATCH RFC] riscv: Map the kernel with correct permissions the
+ first time
+To:     Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Zong Li <zong.li@sifive.com>, Anup Patel <anup@brainfault.org>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210518152134.1772653-1-alex@ghiti.fr>
+ <20210520002909.0b699b2b@xhacker>
+From:   Alex Ghiti <alex@ghiti.fr>
+Message-ID: <8d60a600-9f01-e913-fe2c-da0e0a363f82@ghiti.fr>
+Date:   Thu, 20 May 2021 07:11:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+aEtYPAdrU7KkE303yDw__QiG7m1tWVJewV8C_Mt9=1qg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20210520002909.0b699b2b@xhacker>
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/05/20 5:09, Dmitry Vyukov wrote:
-> On Wed, May 19, 2021 at 9:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> On 5/19/21 12:48 PM, Dmitry Vyukov wrote:
->>> On Wed, May 19, 2021 at 7:35 PM syzbot
->>> <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com> wrote:
->>>>
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    b81ac784 net: cdc_eem: fix URL to CDC EEM 1.0 spec
->>>> git tree:       net
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a257c3d00000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=5b86a12e0d1933b5
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a70a6358abd2c3f9550f
->>>>
->>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>>
->>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
->>>> Reported-by: syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com
->>>>
->>>> BUG: MAX_LOCKDEP_KEYS too low!
->>>
->>
->> include/linux/lockdep.h
->>
->> #define MAX_LOCKDEP_KEYS_BITS           13
->> #define MAX_LOCKDEP_KEYS                (1UL << MAX_LOCKDEP_KEYS_BITS)
+Hi Jisheng,
+
+On 19/05/2021 18:29, Jisheng Zhang wrote:
+> On Tue, 18 May 2021 17:21:34 +0200
+> Alexandre Ghiti <alex@ghiti.fr> wrote:
 > 
-> Ouch, so it's not configurable yet :(
+>> For 64b kernels, we map all the kernel with write and execute permissions
+>> and afterwards remove writability from text and executability from data.
+>>
+>> For 32b kernels, the kernel mapping resides in the linear mapping, so we
+>> map all the linear mapping as writable and executable and afterwards we
+>> remove those properties for unused memory and kernel mapping as
+>> described above.
+>>
+>> Change this behavior to directly map the kernel with correct permissions
+>> and avoid going through the whole mapping to fix the permissions.
+>>
+>> At the same time, this fixes an issue introduced by commit 2bfc6cd81bd1
+>> ("riscv: Move kernel mapping outside of linear mapping") as reported
+>> here https://github.com/starfive-tech/linux/issues/17.
+>>
+>> Signed-off-by: Alexandre Ghiti <alex@ghiti.fr>
+>> ---
+>>
+>> This patchset was tested on:
+>>
+>> * kernel:
+>> - rv32 with CONFIG_STRICT_KERNEL_RWX: OK
+>> - rv32 without CONFIG_STRICT_KERNEL_RWX: OK
+>> - rv64 with CONFIG_STRICT_KERNEL_RWX: OK
+>> - rv64 without CONFIG_STRICT_KERNEL_RWX: OK
+>>
+>> * xipkernel:
+>> - rv32: build only
+>> - rv64: OK
+>>
+>>   arch/riscv/include/asm/set_memory.h |  2 -
+>>   arch/riscv/kernel/setup.c           |  1 -
+>>   arch/riscv/mm/init.c                | 80 ++++++++++++++---------------
+>>   3 files changed, 38 insertions(+), 45 deletions(-)
+>>
+>> diff --git a/arch/riscv/include/asm/set_memory.h b/arch/riscv/include/asm/set_memory.h
+>> index 086f757e8ba3..70154f012791 100644
+>> --- a/arch/riscv/include/asm/set_memory.h
+>> +++ b/arch/riscv/include/asm/set_memory.h
+>> @@ -16,13 +16,11 @@ int set_memory_rw(unsigned long addr, int numpages);
+>>   int set_memory_x(unsigned long addr, int numpages);
+>>   int set_memory_nx(unsigned long addr, int numpages);
+>>   int set_memory_rw_nx(unsigned long addr, int numpages);
+>> -void protect_kernel_text_data(void);
+>>   #else
+>>   static inline int set_memory_ro(unsigned long addr, int numpages) { return 0; }
+>>   static inline int set_memory_rw(unsigned long addr, int numpages) { return 0; }
+>>   static inline int set_memory_x(unsigned long addr, int numpages) { return 0; }
+>>   static inline int set_memory_nx(unsigned long addr, int numpages) { return 0; }
+>> -static inline void protect_kernel_text_data(void) {}
+>>   static inline int set_memory_rw_nx(unsigned long addr, int numpages) { return 0; }
+>>   #endif
+>>   
+>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+>> index 03901d3a8b02..1eb50e512056 100644
+>> --- a/arch/riscv/kernel/setup.c
+>> +++ b/arch/riscv/kernel/setup.c
+>> @@ -292,7 +292,6 @@ void __init setup_arch(char **cmdline_p)
+>>   	sbi_init();
+>>   
+>>   	if (IS_ENABLED(CONFIG_STRICT_KERNEL_RWX)) {
+>> -		protect_kernel_text_data();
+>>   		protect_kernel_linear_mapping_text_rodata();
+> 
+> If we extend the idea a bit, I.E create the correct permission for alias line
+> mapping at the first time, we can remove protect_kernel_linear_mapping_text_rodata()
+> 
 
-I didn't try to make this value configurable, for
+Yes, I agree, I will do that.
 
-> Unless, of course, we identify the offender that produced thousands of
-> lock classes in the log and fix it.
+> PS: No matter whether it's fine to extend, the set_memory_nx() calling in
+> protect_kernel_linear_mapping_text_rodata() is not necessary since the linear
+> mapping for 64bit is NX from the beginning.
 
-number of currently active locks should decrease over time.
-If this message is printed, increasing this value unlikely helps.
+You're totally right, that will be fixed when removing 
+protect_kernel_linear_mapping_text_rodata() entirely.
 
-We have https://lkml.kernel.org/r/c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru
-which seems to be unresolved.
+> 
+>>   	}
+>>   
+>> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+>> index 4faf8bd157ea..92b3184420a2 100644
+>> --- a/arch/riscv/mm/init.c
+>> +++ b/arch/riscv/mm/init.c
+>> @@ -436,6 +436,36 @@ asmlinkage void __init __copy_data(void)
+>>   }
+>>   #endif
+>>   
+>> +#ifdef CONFIG_STRICT_KERNEL_RWX
+>> +#define is_text_va(va)		({								\
+>> +		unsigned long _va = va;								\
+>> +		(_va < (unsigned long)__init_data_begin && _va >= (unsigned long)_start);	\
+>> +	})
+> 
+> It's better if is_text_va() is a inline function
+> 
 
-Regarding this report, cleanup of bonding device is too slow to catch up to
-creation of bonding device?
+Ok, will do.
 
-We might need to throttle creation of BPF, bonding etc. which involve WQ operation for clean up ?
+>> +
+>> +static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
+> 
+> I'm not sure whether it's necessary to put __init marker to inline functions
+> There are such issues in current riscv code, I planed to cook one patch
+> to remove __init from inline functions.
+> 
+> 
+>> +{
+>> +	return is_text_va(va) ? PAGE_KERNEL_READ_EXEC : PAGE_KERNEL;
+> 
+> if we extend the idea, then here we may return PAGE_KERNEL_READ, PAGE_KERNEL
+> and PAGE_KERNEL_READ_EXEC correspondingly.
+
+Again, I agree :)
+
+I will come up with an enhanced v2 soon,
+
+Thanks for your comments,
+
+Alex
+
+> 
+> Thanks
+> 
+>> +}
+>> +
+>> +void mark_rodata_ro(void)
+>> +{
+>> +	unsigned long rodata_start = (unsigned long)__start_rodata;
+>> +	unsigned long data_start = (unsigned long)_data;
+>> +
+>> +	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+>> +
+>> +	debug_checkwx();
+>> +}
+>> +#else
+>> +static inline __init pgprot_t pgprot_from_kernel_va(uintptr_t va)
+>> +{
+>> +	if (IS_ENABLED(CONFIG_32BIT))
+>> +		return PAGE_KERNEL_EXEC;
+>> +
+>> +	return (va < kernel_virt_addr) ? PAGE_KERNEL : PAGE_KERNEL_EXEC;
+>> +}
+>> +#endif
+>> +
+>>   /*
+>>    * setup_vm() is called from head.S with MMU-off.
+>>    *
+>> @@ -465,7 +495,8 @@ uintptr_t xiprom, xiprom_sz;
+>>   #define xiprom_sz      (*((uintptr_t *)XIP_FIXUP(&xiprom_sz)))
+>>   #define xiprom         (*((uintptr_t *)XIP_FIXUP(&xiprom)))
+>>   
+>> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size,
+>> +					    __always_unused bool early)
+>>   {
+>>   	uintptr_t va, end_va;
+>>   
+>> @@ -484,7 +515,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>>   				   map_size, PAGE_KERNEL);
+>>   }
+>>   #else
+>> -static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>> +static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size, bool early)
+>>   {
+>>   	uintptr_t va, end_va;
+>>   
+>> @@ -492,7 +523,7 @@ static void __init create_kernel_page_table(pgd_t *pgdir, uintptr_t map_size)
+>>   	for (va = kernel_virt_addr; va < end_va; va += map_size)
+>>   		create_pgd_mapping(pgdir, va,
+>>   				   load_pa + (va - kernel_virt_addr),
+>> -				   map_size, PAGE_KERNEL_EXEC);
+>> +				   map_size, early ? PAGE_KERNEL_EXEC : pgprot_from_kernel_va(va));
+>>   }
+>>   #endif
+>>   
+>> @@ -569,7 +600,7 @@ asmlinkage void __init setup_vm(uintptr_t dtb_pa)
+>>   	 * us to reach paging_init(). We map all memory banks later
+>>   	 * in setup_vm_final() below.
+>>   	 */
+>> -	create_kernel_page_table(early_pg_dir, map_size);
+>> +	create_kernel_page_table(early_pg_dir, map_size, true);
+>>   
+>>   #ifndef __PAGETABLE_PMD_FOLDED
+>>   	/* Setup early PMD for DTB */
+>> @@ -693,21 +724,15 @@ static void __init setup_vm_final(void)
+>>   		map_size = best_map_size(start, end - start);
+>>   		for (pa = start; pa < end; pa += map_size) {
+>>   			va = (uintptr_t)__va(pa);
+>> -			create_pgd_mapping(swapper_pg_dir, va, pa,
+>> -					   map_size,
+>> -#ifdef CONFIG_64BIT
+>> -					   PAGE_KERNEL
+>> -#else
+>> -					   PAGE_KERNEL_EXEC
+>> -#endif
+>> -					);
+>>   
+>> +			create_pgd_mapping(swapper_pg_dir, va, pa, map_size,
+>> +					   pgprot_from_kernel_va(va));
+>>   		}
+>>   	}
+>>   
+>>   #ifdef CONFIG_64BIT
+>>   	/* Map the kernel */
+>> -	create_kernel_page_table(swapper_pg_dir, PMD_SIZE);
+>> +	create_kernel_page_table(swapper_pg_dir, PMD_SIZE, false);
+>>   #endif
+>>   
+>>   	/* Clear fixmap PTE and PMD mappings */
+>> @@ -738,35 +763,6 @@ static inline void setup_vm_final(void)
+>>   }
+>>   #endif /* CONFIG_MMU */
+>>   
+>> -#ifdef CONFIG_STRICT_KERNEL_RWX
+>> -void __init protect_kernel_text_data(void)
+>> -{
+>> -	unsigned long text_start = (unsigned long)_start;
+>> -	unsigned long init_text_start = (unsigned long)__init_text_begin;
+>> -	unsigned long init_data_start = (unsigned long)__init_data_begin;
+>> -	unsigned long rodata_start = (unsigned long)__start_rodata;
+>> -	unsigned long data_start = (unsigned long)_data;
+>> -	unsigned long max_low = (unsigned long)(__va(PFN_PHYS(max_low_pfn)));
+>> -
+>> -	set_memory_ro(text_start, (init_text_start - text_start) >> PAGE_SHIFT);
+>> -	set_memory_ro(init_text_start, (init_data_start - init_text_start) >> PAGE_SHIFT);
+>> -	set_memory_nx(init_data_start, (rodata_start - init_data_start) >> PAGE_SHIFT);
+>> -	/* rodata section is marked readonly in mark_rodata_ro */
+>> -	set_memory_nx(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+>> -	set_memory_nx(data_start, (max_low - data_start) >> PAGE_SHIFT);
+>> -}
+>> -
+>> -void mark_rodata_ro(void)
+>> -{
+>> -	unsigned long rodata_start = (unsigned long)__start_rodata;
+>> -	unsigned long data_start = (unsigned long)_data;
+>> -
+>> -	set_memory_ro(rodata_start, (data_start - rodata_start) >> PAGE_SHIFT);
+>> -
+>> -	debug_checkwx();
+>> -}
+>> -#endif
+>> -
+>>   #ifdef CONFIG_KEXEC_CORE
+>>   /*
+>>    * reserve_crashkernel() - reserves memory for crash kernel
+> 
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
+> 
