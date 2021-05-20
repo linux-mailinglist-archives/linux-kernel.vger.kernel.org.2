@@ -2,195 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3197938B810
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A38A38B814
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:07:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240242AbhETUHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:07:30 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:61566 "EHLO m43-7.mailgun.net"
+        id S237111AbhETUIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:08:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232256AbhETUH3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:07:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621541167; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=tIi11JvMaJUrccT5HPI071vmJi9rsmm0l6ZeJdFpBdA=;
- b=sl1Hk0h8Z5Kxhrn7CA0iBjWDPxNjAlOhZrKfhjWDolXBARdrq22TNa+ninbEgT6gTQ+ytPSU
- rvyUaAivlu+jnAdLHIUEuMgmW4JRuhy9rrxPISuMVOzAY73VNFnJK+8y7y1IM/DrJHd+Wb2r
- klW0ZFh/DqnQW7C6tHKt3JklTWY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 60a6c11df752fca668f324ec (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 May 2021 20:05:49
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B3E56C4338A; Thu, 20 May 2021 20:05:49 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5D478C4338A;
-        Thu, 20 May 2021 20:05:48 +0000 (UTC)
+        id S234708AbhETUI3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:08:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7DADC6121E;
+        Thu, 20 May 2021 20:07:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621541227;
+        bh=pFf9otXpGIOgWFDqx2eADeNTgOtcU5w03TbAb82o17s=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=kusykJbJM5cStbYzo5DKswJ2pXwb1ATZyf1LPFRnjDS88LCDH/KFA9R7DseZKqnJp
+         AJa12fhb2mHzQlNZnTof2uLku/QPXmB1FnVQliyLaXNXnhImLwzdMoVO5pSmpN5+tn
+         wpJ1XTqIJHHP+YnFIQfNM7cnp/4Eimq80Z5tlZtpgvaru6G/woNRVODv/ZOgMceU0+
+         OwTa1seIYtNUAPHlG/jXterBT0bJEmLmajvg0+Z2vUSpvMetnXY8cN3onSbamvL/xH
+         E8VLO63DkZhoTC8RqaGr/KKlNk0IUfPQZVC1qoUSebBM2G7XZjCVmboQerGlA/k8+q
+         kVYfCkSJIRbZQ==
+Date:   Thu, 20 May 2021 22:07:03 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org,
+        linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Pavel Machek <pavel@ucw.cz>, gregkh@linuxfoundation.org
+Subject: Re: [PATCH v2 16/17] leds: leds-nuc: add support for changing the
+ ethernet type indicator
+Message-ID: <20210520220703.5a86b994@thinkpad>
+In-Reply-To: <20210520205933.3cfc57a9@coco.lan>
+References: <cover.1621349813.git.mchehab+huawei@kernel.org>
+        <792598f4a1a3219b6517057c92559b0f0a95b419.1621349814.git.mchehab+huawei@kernel.org>
+        <20210519100253.49b155e9@thinkpad>
+        <20210519121812.4285b3ea@coco.lan>
+        <20210519141102.0161a9d9@thinkpad>
+        <20210519162413.4feeab02@coco.lan>
+        <20210519175503.567e6ecc@thinkpad>
+        <20210519203014.1838de3a@coco.lan>
+        <20210520130014.7189a315@dellmb>
+        <20210520180028.495f94e4@coco.lan>
+        <20210520183633.084a8c3f@thinkpad>
+        <20210520205933.3cfc57a9@coco.lan>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 20 May 2021 13:05:48 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
- correctly
-In-Reply-To: <CAE-0n52rBrjy-=dpqK+dae2GNk1rAaQnKqCjzdqiAoS13gHpSQ@mail.gmail.com>
-References: <1621013713-6860-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n53VUr=f=PKnO5HhXZ3BAG_mNBwmQrfQPxHvxLZPDReA+g@mail.gmail.com>
- <c1a3ced9ac4682bae310712a11576322@codeaurora.org>
- <CAE-0n50yRCA00ck_FtXwzKw_R8UcocMzTh8V7NOe4ob__3G3bg@mail.gmail.com>
- <e071434531947e5c4275a1a14b77b2c3@codeaurora.org>
- <CAE-0n52rBrjy-=dpqK+dae2GNk1rAaQnKqCjzdqiAoS13gHpSQ@mail.gmail.com>
-Message-ID: <f476d82d0798e0d7eb9e12949aa2c8f1@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-20 12:28, Stephen Boyd wrote:
-> Quoting khsieh@codeaurora.org (2021-05-20 09:08:03)
->> On 2021-05-19 14:06, Stephen Boyd wrote:
->> > Quoting khsieh@codeaurora.org (2021-05-19 09:01:02)
->> >> On 2021-05-18 14:42, Stephen Boyd wrote:
->> >> > Quoting Kuogee Hsieh (2021-05-14 10:35:13)
->> >> >> irq_hpd interrupt should be handled after dongle plugged in and
->> >> >> before dongle unplugged. Hence irq_hpd interrupt is enabled at
->> >> >> the end of the plugin handle and disabled at the beginning of
->> >> >> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
->> >> >> handled same as the dongle unplugged which tears down the mainlink
->> >> >> and disables the phy. This patch fixes this problem by only tearing
->> >> >> down the mainlink but keeping phy enabled at irq_hpd with
->> >> >> sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
->> >> >> handled by setup mainlink only.
->> >> >>
->> >> >> Changes in v2:
->> >> >> -- add ctrl->phy_Power_count
->> >> >>
->> >> >> Changes in v3:
->> >> >> -- del ctrl->phy_Power_count
->> >> >> -- add phy_power_off to dp_ctrl_off_link_stream()
->> >> >>
->> >> >> Changes in v4:
->> >> >> -- return immediately if clock disable failed at
->> >> >> dp_ctrl_off_link_stream()
->> >> >>
->> >> >> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> >> >
->> >> > I think we want some Fixes tag. Not sure what it would be though.
->> >> >
->> >> > I also noticed that if I plug and unplug the HDMI cable from my apple
->> >> > dongle that I see this error message
->> >> >
->> >> >   [drm:dp_display_usbpd_attention_cb] *ERROR* Disconnected, no
->> >> > DP_LINK_STATUS_UPDATED
->> >>
->> >> > *ERROR* Disconnected, no DP_LINK_STATUS_UPDATED <== this is caused by
->> >> > dongle generate the second
->> >> irq_hpd with sink_count = 0 after first first irq_hpd with sink_count
->> >> =
->> >> 0. The fix is you have
->> >> set dongle to D3 (power off) state after first irq_pd with sink_count
->> >> =display_disable
->> >> 0 handled.
->> >> I have a patch fix this problem. I will merge and re submit for
->> >> review.
->> >
->> > That's good. I still don't understand how the kthread can't race with
->> > irq_hpd and hpd going low though. Userspace will have to disable
->> > thectrl_off_link_stream()).
->> > display and that could happen far later than the time that the hpd low
->> > interrupt fires and is processed. Can't hpd go high during that time
->> > and
->> > then blip before userspace notices and disables the display?
->> >
->> > Put another way, putting the dongle into D3 state may make the race
->> > window smaller, but it's not fixing the root cause of the problem which
->> > is that the kthread is running later and userspace is involved in the
->> > state of the dongle while irqs are firing. The three different contexts
->> > have to coordinate work, so it feels like a better approach would be to
->> > shut off the irq_hpd interrupt once hpd goes low for an unplug in
->> > hardirq context so that we don't have to consider the cable state or
->> > userspace changing the state after we notify it.
->> 
->> There is no race condition here.
->> The interrupts are converted into event and stored at event q.
->> event thread service event sequentially and make sure transaction had
->> been completed before service next event.
->> The first irq_hpd with sink_count = 0 is handled and this transaction
->> will not completed until user space frame work turn off display
->> (msm_dp_display_disable()).
->> After that, the second irq_hpd with sink_count will be service which
->> found that display is off so it spill out DP_LINK_STATUS_UPDATED 
->> warning
->> message and do nothing.
->> 
->> Put dongle to D3 state so that it will not issue the unnecessary 
->> second
->> irq_hpd with sink_count = 0. this will prevent the annoy but unharmful
->> DP_LINK_STATUS_UPDATED warning message.
->> Again, we can not disable hpd interrupt since dongle still attached 
->> and
->> hdmi cable can be plugged in at any instant.
->> 
+On Thu, 20 May 2021 20:59:33 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> > On the contrary, there is something the driver can do with these
+> > attributes. If the specific combination is not supported, the driver
+> > should return -EOPNOTSUPP in the trigger_offload method and let the
+> > netdev trigger do the work in software.   
 > 
-> Right I'm not suggesting to disable hpd interrupt, just the hpd_irq
-> interrupt once an unplug irq comes in, and do that in hardirq context.
-> Also, I'm suggesting that we consider unplug as a higher priority if 
-> the
-> hard irq handler is delayed for some reason and both an unplug irq and
-> an hpd irq are pending in the hardware when the hard irq handler is
-> running. Putting the dongle into D3 state won't fix these problems.
+> Letting netdev to trigger is something we don't want to allow, as this
+> can cause side effects, making it doing slow the system due to BIOS calls
+> for no good reason.
+>
+> > What exactly do the LEDs do
+> > when configured to blink on activity on a network device? Do they just
+> > blink on RX/TX, and otherwise are off?  Or are they on when a cable is
+> > plugged, blink on rx/tx and otherwise off?  
+> 
+> They are on when a cable is plugged, blink on rx/tx and otherwise off.
+> 
+> Worth mentioning that, besides the LEDs controlled by this driver, each
+> RJ-45 port also a couple leds that behave just like normal RJ-45 ones: 
+> a yellow led for Ethernet PHY detection and a green one for traffic.
 
+So what the LED does when configured for ethernet is almost equivalent
+to netdev setting [link=1, rx=1, activity=1]. Almost because we still have
+the correct device setting and interval setting.
 
+Theoretically what you can do is deny the netdev trigger for every
+other netdev setting (since, according to you, it would use too much
+CPU time in BIOS via software control). This could be done by the
+offload method returning another error value, or maybe just returning 0
+and printing info about this into kernel log. I wonder what others
+think about this possible resolution.
 
-The unplug interrupt is not happen in this case since dongle still 
-attached.
-The unplug interrupt only happen when dongle unplugged.
+> > Have you looked into DSDT and SSDT tables?  
+> 
+> It doesn't help.
 
-I think you mistakenly think DP_LINK_STATUS_UPDATED is caused by unplug 
-interrupt.
-DP_LINK_STATUS_UPDATED happen is due to dongle issue two consecutive 
-irq_hpd with sink_count = 0 when hdmi cable unplugged from dongle.
-The first irq_hpd with sink_count = 0 is handled as expected to turn off 
-display.
-After that the second irq_hpd with sink_count = 0 is handled.
-Since display had turned off, then there is nothing to do but spill 
-DP_LINK_STATUS_UPDATED warning message.
-There is no unplug (hpd become low) happen in this case since dongle 
-still attached.
+Pity :(
 
-All interrupt (plug/irq_hpd and unplug) are required to be handled in 
-the order of happening.
-We can not ignore any one.
-For example, you plug/unplug two different resolution monitor 
-alternative to/from dongle and unplug dongle once for while.
+> > If even DSDT data is not enough to reliably find out which of the 2
+> > network interfaces belongs to which LED setting, the worst case scenario
+> > here is for your driver to need to have a list containing this
+> > information for specific motherboards, and other people can then extend
+> > the driver to support their motherboards as well.  
+> 
+> Needing something like that sucks and it is hard to maintain,
+> and depends on people reporting issues.
 
-I think the race condition you describe here all had been taken care 
-with
-1) convert irq into event and store at event q in order.
-2) irq handled base on transaction. Next irq can be handled when 
-previous irq transaction is done.
+I don't see much difference between this and various drivers having
+different OF compatible strings for different chips all supported by
+one driver.
 
+> Ok, on some cases, there are no other options, but this is not
+> the case here, as the user of such API that wants to monitor
+> just a single interface (default is to monitor both) can easily 
+> ask the driver to monitor LAN1. If it doesn't work, switch to LAN2.
+> 
+> That's a way more elegant than adding some guessing code that
+> would be checking for the machine codes, eventually printing
+> a warning and disabling support for monitoring LAN when the
+> machine is not properly identified.
+> 
+> Also, implementing such table can be painful. I can't see an
+> easy way to implement it, specially without having any information
+> about how all other models that support the WMI API are shipped,
+> and how to map "LAN1", "LAN2" into something that matches netdev
+> detection. OK, if each one have a different BUS ID,
+> a mapping table could associate each one with a different BUS
+> ID, and then some logic at netdev would convert BUS ID into
+> the device name.
+> 
+> > > > > Also, while netdev trigger seems to use just one device name,
+> > > > > the NUC allows to monitor both interfaces at the same time.        
+> > > > 
+> > > > Yes. This can be solved in the future by extending netdev trigger to
+> > > > support blinking on activity on multiple netdevices. I also thought
+> > > > about this for use with another HW (mv88e6xxx switch).
+> > > >       
+> > > > > See, unfortunately I can't see a common API that would fit
+> > > > > nicely on both cases.        
+> > > > 
+> > > > Well I can.      
+> > > 
+> > > Then the API needs to change, in order to allow to abstract from
+> > > netdev-centric view of Ethernet interfaces. Or, instead, some
+> > > other trigger is needed for firmware-controlled events.    
+> > 
+> > No. If the necessary information for determining which network
+> > interface pairs to LED1 and which to LED2 cannot be reliably determined
+> > from ACPI tables, then IMO the driver should specify this information
+> > for each motherboard that wants to use this feature.  
+> 
+> What's the gain of adding such extra complexity to the driver?
 
+Having a consistent API on different devices is a benefit in itself, I
+would think.
 
+> All the user wants is to blink a led only for one of the LAN ports.
+> 
+> Denying it and using a more complex API doesn't make much sense, IMO.
 
+As I see it you are the one wanting to introduce more complexity into
+the sysfs ABI. There is already a solution together with documentation
+and everything for when the user wants to "blink a led only for one of
+the LAN ports". It is the netdev trigger. And you want to complicate
+that ABI.
+
+> > > -
+> > > 
+> > > One thing that it is not clear to me: let's say that the LED
+> > > called "front1" is currently handling Ethernet events, but
+> > > the user wants to use, instead, the "front2" LED, disabling
+> > > the "front1" one (or using for another event, like wifi, which
+> > > is not monitored on BIOS default).
+> > > 
+> > > How this can be done using the trigger's API?    
+> > 
+> > cd /sys/class/leds/front1
+> > echo none >trigger
+> > cd /sys/class/leds/front2
+> > echo netdev >trigger  
+> 
+> Clear enough to me.
+> 
+> > echo ifname >device_name
+> > echo 1 >rx
+> > echo 1 >tx  
+> 
+> And that's the part that it makes no sense for this hardware ;-)
+> 
+> It can't identify RX/TX in separate. It can only monitor both RX and TX at
+> the same time.
+> 
+> So, for this specific device, neither "rx", "tx" or "interval"
+> attributes should be shown.
+
+If a netdev setting is not supported by the HW, it should be done in SW.
+You say that for this controller it would be bad to do in SW, because it
+would take too much time in BIOS calls. (I wonder how much...) If this
+is really the case then I still think it is more preferable to do this
+via netdev trigger, and forbid settings not supported by HW. The result
+could be:
+
+     # I want the LED to blink on ethernet activity
+   $ echo netdev >trigger
+     # ok, but I only wan't it to blink on rx activity, not tx
+   $ echo 0 >tx
+   Operation not supported.
+
+Pavel, what is your opinion here?
+
+Marek
