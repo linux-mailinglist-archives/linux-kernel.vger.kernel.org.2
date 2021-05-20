@@ -2,150 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0237D38AF48
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:54:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 304B038AF3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242949AbhETMzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:55:17 -0400
-Received: from mail-am6eur05on2070.outbound.protection.outlook.com ([40.107.22.70]:41185
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        id S242820AbhETMyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:54:04 -0400
+Received: from mail-dm6nam10on2089.outbound.protection.outlook.com ([40.107.93.89]:60608
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S242808AbhETMxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:53:51 -0400
+        id S238600AbhETMwp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:52:45 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nvWvog/jAXZ+CHu0aKRfssGnwb6nKs+9GD04HaiNpqTOU69f4rnIU32Lg1mA9df9kV3d9MO3mD9cEAr9gqyvnl8PkJD5/+2flJ5XQX1taziXNKf/ks4BGfT2zzPuydKHoDUWB5W55WG8+aK36MgoYYdf3pKUsgVrbwKZkhrJJPvRvh0tVHvc+5fcrxf4XneZ/kRQkv1atjux+u0Jw6jklG7KXPR40w3yHDNZ4rKqywdHQURIu/TX1iAScL38yklWOfeDeG0r+cNJcwN7PA2HoN0V/POacWYCXU3R2ScKM5zDNB+jZ3oUtI4W+8yKlYyRdR9JI8nwR+U+ftt318r46g==
+ b=n5z++hArubgIz1MC5pBI+O2+p49ZHEg3H4Q8tkB5Xjhj3Tidbhh/HdhxlWjwnD5o4tfmykQmxO8GdegVy+j/kNjWTuLacdEVvHytAKe9VW/7E0azH20EeZfXrq41ulRuNDi4Wyjfou3PHrBLC3l6wTHPZ1jArMcjkR6CYkDxJF6+iUAg7vsL2cH1eddAxSei6JOH5ARBqmZhD6RQxyXL4n19SMEl1SPcWWDFkq2Mcth5TRaylI60m5gu1n7MseXjk8KryYsD73LDOvo85HEpviof7xHgd96DQfyfbqD29GWrcocMcRYD4nwUgSBSTAIQL0SHnZE8uqYirghO3sJxoA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ipw5TmPIB0VYSze72pR/m0DdVCMChjEwVDAkFx+bL50=;
- b=OC4a9FwypnPVZN0Eas7tTjxGTKnDpR00RZQSquCiUIrNhFhqeswBAsgvUz+h7m1veVD9UB/7CcTMvsttjwMLHnmfGvbsw8o/qlLiJeajKgREArxCqJEjScSfg0bG7NKqu61FydAUYGIj3Nc47+GgzqLp09cZRVkZWR3EMZ1141QnSymSl/3ELaVUlZ8HcCId15A8XMFfelkXUQ7dwJKagfHs6dmdDptUXQDWy3Elp6EYa0FLLRSlMTWFAa3XGyHwfIKUPkIU+AOE/erLx8d56kI0oLLlzNDe/eZc6BIFlQG1FAzPv0Ag+LnQxfurhoZaFd7emyoIwjWNK1qZAJ3XMg==
+ bh=fDG3CM2C3VcnGNqPsG/H6ll6MuZ1kERIwBUrZraeiEU=;
+ b=ApkJTVMXF1yZHLSBtG0wa8NNke2oMhoIrdxH14HsZNzTGr5LKPuvOp9vWwgK8hGwHf27EsdkfGteKbqRpL5sY9rag/x8rd7rnmjeSpKpRilu6cHmP7O0Nu/K9qIcv27tWCTOyHsAnegk8xqdC9M05aJtvhDJRmstqagVy720ovt4VQYk2E8jVlWKJam7PHc3vn1HGYkQOOgG8tlny8iE/CT7K+WcjUs0RFmGRJoddbkodlpEBdMpD7V8B4uBcqccccHX8d6vKB/TfG3iGGJ+tVwsQ6+pxost1QdlCOP0CJZTBxy388QUTPZe5+QZGrkQvauwMnk0EktdxnrXmm4hXw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ipw5TmPIB0VYSze72pR/m0DdVCMChjEwVDAkFx+bL50=;
- b=GjaYId9aPEM0ICJgHtPwNDGvL/zxvhyEwVUneQwHtyCgMnlAkwDLLCg+nkutbdF3yEqXIrWDEGY136k0HD4DFhepthDj7dGvfNbOpoueKzLEhgmcje/n3+qaerZDRXakQ5vKOhjwgWCw5YR/dkXERU5uVH9Z3UC3a2/c1cp3w6w=
-Authentication-Results: st.com; dkim=none (message not signed)
- header.d=none;st.com; dmarc=none action=none header.from=nxp.com;
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
- by DB8PR04MB6345.eurprd04.prod.outlook.com (2603:10a6:10:106::11) with
+ bh=fDG3CM2C3VcnGNqPsG/H6ll6MuZ1kERIwBUrZraeiEU=;
+ b=m4N+FPZnelNG8e3K7UzsUnJ7PWieIckncKpMwKA0dCprh0qh/LlukDEdZTeTm+4hq9v4s3HwJm+BeZnJB2vHW0Mi0pL3aySzs3andv9aNFVnUqiTNxE8xqQwr4s/8gfm3IAoLdIxmA7etNBoXldrEephVEqzn0WTEiQBZE44QZ+43EmEZUQ98a8I5CjfD+2GMMELvt6V17T4uAxZ/7+Kv+6HOgqykqOnbJJd2bINDvyCUxRYymtYZnHdSJD9dtZ0LW0tutGq4ui4nHPR124rPGaj/HdTdmxfEHifDtmEy53wKH9AWSKI4K91BNjo3BlyYAdavwctHm8GsM13yinV1w==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4778.namprd12.prod.outlook.com (2603:10b6:5:167::13) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Thu, 20 May
- 2021 12:51:30 +0000
-Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
- ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4129.034; Thu, 20 May 2021
- 12:51:30 +0000
-From:   Joakim Zhang <qiangqing.zhang@nxp.com>
-To:     peppe.cavallaro@st.com, alexandre.torgue@foss.st.com,
-        joabreu@synopsys.com, davem@davemloft.net, kuba@kernel.org,
-        mcoquelin.stm32@gmail.com, andrew@lunn.ch
-Cc:     netdev@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-imx@nxp.com
-Subject: [PATCH net 2/2] net: stmmac: fix system hang if change mac address after interface ifdown
-Date:   Thu, 20 May 2021 20:51:17 +0800
-Message-Id: <20210520125117.1015-3-qiangqing.zhang@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210520125117.1015-1-qiangqing.zhang@nxp.com>
-References: <20210520125117.1015-1-qiangqing.zhang@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR06CA0095.apcprd06.prod.outlook.com
- (2603:1096:3:14::21) To DB8PR04MB6795.eurprd04.prod.outlook.com
- (2603:10a6:10:fa::15)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Thu, 20 May
+ 2021 12:51:22 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4150.023; Thu, 20 May 2021
+ 12:51:22 +0000
+Date:   Thu, 20 May 2021 09:51:21 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Halil Pasic <pasic@linux.ibm.com>
+Cc:     Tony Krowiak <akrowiak@linux.ibm.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, borntraeger@de.ibm.com,
+        cohuck@redhat.com, pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+Message-ID: <20210520125121.GX1002214@nvidia.com>
+References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
+ <20210519153921.804887-3-akrowiak@linux.ibm.com>
+ <20210519161610.GO1002214@nvidia.com>
+ <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
+ <20210519232202.GV1002214@nvidia.com>
+ <20210520103829.0913b6de.pasic@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520103829.0913b6de.pasic@linux.ibm.com>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: MN2PR16CA0017.namprd16.prod.outlook.com
+ (2603:10b6:208:134::30) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.71) by SG2PR06CA0095.apcprd06.prod.outlook.com (2603:1096:3:14::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.32 via Frontend Transport; Thu, 20 May 2021 12:51:27 +0000
+Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR16CA0017.namprd16.prod.outlook.com (2603:10b6:208:134::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 12:51:22 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lji93-00B97s-3M; Thu, 20 May 2021 09:51:21 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 99d00032-fe4c-465e-096e-08d91b8dfd66
-X-MS-TrafficTypeDiagnostic: DB8PR04MB6345:
+X-MS-Office365-Filtering-Correlation-Id: 478e5c5d-2e17-47a1-7f2c-08d91b8df880
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4778:
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB634517E1BC7AE57A0D3B0EC8E62A9@DB8PR04MB6345.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1303;
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4778CB5C31401A915354586BC22A9@DM6PR12MB4778.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: weWILU04lxGfCL0thB8HM/nIBV9YKzWKFOmWJCLGAG4Q6kjUoh4WgbGHZrVxmlybLXyClzwbi97zK2PQTJb0ixEwCMi5KAoj9pSUKPcGTKNVRyYxxq0+KlNJCCVO9o0mXip6M7mScBk1o2d4Lb1fHgN/G+hytJN+cZBGhFs08FymOsUMXRxxnhu4mECer2gyZ2dLTty1Iohfl7amEynL0v0DzfV/zpe5+sPJ0EFSDOxy92nmrfZcVBl6Zw1644B64egOfmJ3R5zkAAhJ2NYu8WCcAxpZlWntc4gnhqP4dWRnOhqiVJPriuutjH8j26lCrTpebPTSQpJ1HWEfns6AlZvc5zEu5w58z6FWSe+PXydPwsBa0GDUOqSDTM8hjZd3v5McP7Dg5G2nIj+IPNvoWAD6P/qCAPumpaSUff21DM7Bcuj2u02o/Z8OzoXdabiQwxiyIwcTE8UmnH/4FRhctWfT5x0LNL+FqsafoDofW7/04+eFxqhUg2TwGIjRz5DB14cIKF6DgcpU76SLYCgYJxt7gHED4v5eVELK5AgcwxPCBzQ4nQ0slKzXnsvQk2OCh9kN/HXnX43O9Z26Re9eTvPH7UHxB3xqV80k/ww8As/JJ9LhBytuDUoobcffS431uy1ksHcQZiDZLjOiMfh+ei/sQ3roS3CGnIQPmQ9kZuGLmW7F6CQTcSgvarr5L1fJ
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(346002)(396003)(366004)(136003)(8936002)(38100700002)(38350700002)(6512007)(956004)(36756003)(52116002)(4326008)(8676002)(7416002)(1076003)(6506007)(5660300002)(86362001)(316002)(26005)(83380400001)(478600001)(2616005)(66946007)(6666004)(66476007)(66556008)(6486002)(2906002)(186003)(16526019)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?o6K9mIckWmq9UfBF+Re6uwQWly3wynROghxGs0eDu4DhZEKe5ttB5WSq/TaS?=
- =?us-ascii?Q?nkQ6bmiRL9vVTSiQfr5cvfO+SjcEBhnI1g3XTKVCdhKukrkN5JGRq85omv+t?=
- =?us-ascii?Q?qoPJgrj3uqmKC5Ens4h2gWHfo2uJRghhqyN/+xsEH2poF/Cd3sToLtkeyfEz?=
- =?us-ascii?Q?iEaMpMxqHqnLcRI3GDegVfVVO6lQhbt0+q8/+4F0lL4HCfYF/NpCjbeOyUD1?=
- =?us-ascii?Q?6quif8tAprLNklWTNu3bs+0O3IJUz/O7GW9byh3Nlazufzd9T91cx/1LmYqd?=
- =?us-ascii?Q?JNrHV+fmRiztyQ19pimttQyc9/Ah97pA8NBNHj12tPK4CwVHkbV8Nlna8LPG?=
- =?us-ascii?Q?7sbbyh4YG0iYjDl7egpU+TJdC3pbGK0A8Tq23IJU6mKI0C5b4BAJz8eKB0eS?=
- =?us-ascii?Q?wd3nmcw6E7CQ8DO8atj8G4jJi35AWlDXchWfR/XLdaaqBHarYuB1Afnn/H1g?=
- =?us-ascii?Q?8C30eWKgm+TSjXKYBtQnTzFvWc5EDUlae9zF1XTaZlaJqyaCzE9ir3zF4PKl?=
- =?us-ascii?Q?A3qjxqHEklOmd+UVT154kkVT3ZVy9FnmiLeHoCIJUraReasJ/ud4ydfDjw7s?=
- =?us-ascii?Q?61EPCZKaEacuHws4JMQjTW/W9Kp/2jz9txr2Gy3/XrfJZ5rLl+SvhPqHrh8s?=
- =?us-ascii?Q?8Ja7DsYonyTEZM+UVbocsaRhv9kKjboCZDiw1Cz7Q3SU8uHxCj9F+Z2bo3vh?=
- =?us-ascii?Q?GsbuGbHHOQgvUnRXm3l18cw2IlOsbweqF9wpu5+9cDlVaP6YpXD3SXNhDfit?=
- =?us-ascii?Q?xjBcnqyhMFU8BOHIG5ZGH2VC3N8WYU+JCWjKuCEJ7OiMYBpl+/p7ItnCGAhn?=
- =?us-ascii?Q?USpnMwAKu0MS3WvfcxiFkk1g9eU1419h4CRkdKwim572pvP4+ji5oo9ZYC1e?=
- =?us-ascii?Q?GTljSXRQGaaR8NNL9KyBrszaOFYEDhJeb8mZ+96p7itMZfEAVXrObRtMXXKA?=
- =?us-ascii?Q?R6eBswh5LawQv1GIlIivz1gHsHQMGeDNBV+YiTxPDLeKRhSKEY5fs7xp5b32?=
- =?us-ascii?Q?+xDbNH1OBT+MsFanJxg0+myeKWt78QPJjwjWOkjwpm6WANfBTe9Rwae12iU5?=
- =?us-ascii?Q?GczO7kQRzG1Vi37dvemtmxhksuF6uYDhyboSl+R7K17LsZ0Wkx2YTvqxA8xn?=
- =?us-ascii?Q?tjXrAqABoAVQ8ppWnSy9ijS0zGjQ+TgibONB6rSaKIqi5a5XC4CFRiTnJfhP?=
- =?us-ascii?Q?/bhJ/SbxRRZ2ZCjdga0syPOFMkkCWoX9pqtkxtlut8sserwzCtLrzfmeQyiw?=
- =?us-ascii?Q?r1v4tz8uBp6p93zBiAa4QngjpkMp6kZAq/kfr2oBu0XI1snDCIlfGKiRVI1X?=
- =?us-ascii?Q?hG5YZkZxHdj9bGHQpboPpsTl?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99d00032-fe4c-465e-096e-08d91b8dfd66
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: /xkb6GaSFtBuMdXreo3VB7P21XKVBs97Kvygurl+iJIuMkU7Q/FWZwymqyZOLAxxCLol7AIT5MS1DGnAVcle7mbs4ifCIIzW8NSRak8j/Cy8Y0/Pw/l4ZDky98d2FOlS+VoqSw8l9+Ug7jzl70r4v5Hmi7eqSEsuD2yIab8FLpPenpocWNHw+W762pB1U5UNAy+Rea4Mo51ZWIYTn1ZRvGuLfbl8MroIPnMfVNAyRLCNfefk0jbvu9iTBz3i218/rxaAeTaKOD1JvMkNKnrdW+iQhEgNTVE+tiVVzci+SL8LYCWhz0g908Em1z/49AANtL07miJ3nelLGTQUui5ZOZA1WogWCpc7GkiS6gtxyi6ENbYcqKFX7/ODsgDhxiTDbmY+KM+MNutKC1cK7IukJAWSuivPebomMO15ZhN+a4BqBUNuEPP+LQ3Juo7AXnSHmjnphu0Igiwc09W5SJXQYQIGKJumb1nWvVgr1+IPBBgCh+Ll7XdB164X2IjDP5MRi4VbF4YJS5Vj7bd92D4PF0t4V90OZYYfpgmuuM2yzX9xvGtHPsSe44UythzdpCCssm7VHaOmJ6ckBfVSFhSsBwKarLEmixeylZeV/Y0JffIpYPxlrY/gM9p1OrvNSZv5rK5sTTPNgLXb9nRnz2Dj3O66tAkKrurwhkNqkgckcsXfTDeeJtuZbzooyUmEdYixsA3yjwPaUYObz7VpJaNN4eW2TxZ8KMNF+SRlXJYW6oI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(39860400002)(396003)(66556008)(66946007)(6916009)(66476007)(83380400001)(9786002)(4326008)(38100700002)(966005)(1076003)(186003)(2906002)(9746002)(33656002)(8936002)(8676002)(26005)(36756003)(86362001)(478600001)(2616005)(426003)(5660300002)(107886003)(316002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?BIWeIu3jRzz3xOghJ0Adq4rsiOlOCW1NS90q1TabCJFNRdg3rfT88dsKlJt0?=
+ =?us-ascii?Q?9ataDPDZwlk0N3FjCiYtCBjOxXQPYwKYCQMcUFRnbjsI/Exew27c9bfa5VMO?=
+ =?us-ascii?Q?SeKgNtUoTlypwMEf2KSgDs95eoQXrr6ipLIDp1OGX5peq5yG48qfGAQfJM4r?=
+ =?us-ascii?Q?rPBmxCYA3jWug/Ev8UaXkebsXTZUwD4RDzjdonivd5iMleBooTytvGZckZwP?=
+ =?us-ascii?Q?VGzpT54l9iP9RMJXRYc1pVCpiD/Ggo6Tw4zg5Q0wy1wg46ncAk+iVxFPI/kX?=
+ =?us-ascii?Q?+UpdWBuyyoXO/FSBUq1mt3rVwEMJyHBZ/mtoCLj/Sao4cPmMllUwvJR8HVFM?=
+ =?us-ascii?Q?OSmgkb1iYTMJpsuiYeSu9zLkJFhip6d1YykSZtZiRyNW5UrQhBXLzUXSpxNO?=
+ =?us-ascii?Q?jaoMUnqfJMuXdxGtZyA9y6HV0hE2rcqvn2HI3FJsZ8X7vhfe7xdDSGyu85wS?=
+ =?us-ascii?Q?ubN166DVbkHh5IqsukWDRSCKk5Gauh0I0hadOUdHtT8ViKY6Y46jZzWqWn6O?=
+ =?us-ascii?Q?c76VgmEAuDHXdjz0RLTGDQ0mv5VJvm4ZyB5JEt9KMt1cou+DWVVyUlkJWwxI?=
+ =?us-ascii?Q?8Ll37t7pNb0p4up3H46IUWG6TrsH4pCZ05Y56a366Oi9r2Yh2fBYr1+jDfcC?=
+ =?us-ascii?Q?9s8wJMOWO4WjJ7YRfMi1gQJ+IoThGRyfrGhZTHG4ucx7sQIL+NcUza6HRl9y?=
+ =?us-ascii?Q?j+7vgdam36unuUhY3juP/TGDibI4yehx7nvzamJ3KLQY5b3LdWT0K8ftvRHY?=
+ =?us-ascii?Q?4E1y/lLtvcXBJzPBMfS5z563lblTCUwdwhWin7R2B1bvFs0TM7h8cYzl4S4B?=
+ =?us-ascii?Q?41KHiM5ze2mgNTiLU/6bvwC7DrO9qKmNqb3OWbUtC+HzDhBdN3SY2zKeF9cH?=
+ =?us-ascii?Q?ufXBL5yi/1vqNGUvjqACBGihELPyiVyXX7pgdddON+nveZAV/iFBfSMIZGEq?=
+ =?us-ascii?Q?n5brF3IOfelSiEhUUyFtQW8a2KdZvcq/ACsCqoFnMNsVsAB8J+9dbRGNgZdK?=
+ =?us-ascii?Q?B64ywTi7R/NpSi8GJACm65Kg0XV3K36iLaRYBZoodRon4wwtKmtyimg/XyDB?=
+ =?us-ascii?Q?R/rEPz89QlkaqXJdb4yCBbAIOAfVBF5xMWamVZai3jiaXxths9OuM+pfb8tj?=
+ =?us-ascii?Q?A17akGi1K9aVuipBBZhK4z9i4+oQY4KNiJCSBmAdKH9kbXwV6RZVws5X1PFh?=
+ =?us-ascii?Q?y0vnuywPXX56dTwFCr9sb8DgCvy/ADAFXv8kwA/79W06/HQWfwcEvJwsEsvJ?=
+ =?us-ascii?Q?SjlUPKv6yegmrpDvLff1A+7m1gYQ183HjF9qgJjo/oMJ0yv/BI5J698jcZGi?=
+ =?us-ascii?Q?PLdrRYmcg5CI6siliUkrEzeW?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 478e5c5d-2e17-47a1-7f2c-08d91b8df880
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 12:51:30.8383
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 12:51:22.6443
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uTWExuoGviA1rfE5TZIinm7rcpC720G2X3nHuuw3UDUFdR82FnW22CG6f9AevWaoUE2OBUh1yiFpUNWUWfgfXA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6345
+X-MS-Exchange-CrossTenant-UserPrincipalName: bu/tz2X7+YuBslYMy59dyPs6t6uw+JqIpJf3CUAgGcdcg4U9g+NLrZrrsnlQYH3x
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4778
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix system hang with below sequences:
-~# ifconfig ethx down
-~# ifconfig ethx hw ether xx:xx:xx:xx:xx:xx
+On Thu, May 20, 2021 at 10:38:29AM +0200, Halil Pasic wrote:
 
-After ethx down, stmmac all clocks gated off and then register access causes
-system hang.
+> > It eliminates one atomic from a lock, but
+> > if you go on to immediately do something like try_module_get, which
+> > has an atomic inside, the whole thing is pointless (assuming
+> > try_module_get was even the right thing to do)
+> 
+> I'm not sure about this argument, or that RCU should be used only for
+> highly performance sensitive read workloads. 
 
-Fixes: 5ec55823438e ("net: stmmac: add clocks management for gmac driver")
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/net/ethernet/stmicro/stmmac/stmmac_main.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+Fundamentally RCU is a technique for building a read/write lock that
+avoids an atomic incr on the read side. This comes at the cost of
+significantly slowing down the write side.
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-index df4ce5977fad..5d956a553434 100644
---- a/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-+++ b/drivers/net/ethernet/stmicro/stmmac/stmmac_main.c
-@@ -5891,12 +5891,21 @@ static int stmmac_set_mac_address(struct net_device *ndev, void *addr)
- 	struct stmmac_priv *priv = netdev_priv(ndev);
- 	int ret = 0;
- 
-+	ret = pm_runtime_get_sync(priv->device);
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(priv->device);
-+		return ret;
-+	}
-+
- 	ret = eth_mac_addr(ndev, addr);
- 	if (ret)
--		return ret;
-+		goto set_mac_error;
- 
- 	stmmac_set_umac_addr(priv, priv->hw, ndev->dev_addr, 0);
- 
-+set_mac_error:
-+	pm_runtime_put(priv->device);
-+
- 	return ret;
- }
- 
--- 
-2.17.1
+Everything about RCU is very complicated, people typically use it
+wrong.
 
+People use it wrong so often than Paul wrote a very long list of
+guidelines to help understand if it is being used properly:
+
+  Documentation/RCU/checklist.rst
+
+If you haven't memorized this document then you probably shouldn't be
+using RCU at all :)
+
+> Can you please elaborate on the argument above and also put your
+> statement in perspective with https://lwn.net/Articles/263130/?
+
+This article doesn't talk much about the downsides - and focuses on
+performance win. If you need the performance then sure use RCU, but
+RCU is not a general purpose replacement for a rwsem. People should
+*always* reach for a rwsem first. Design that properly and then ask
+themselves if the rwsem can or should be optimized to a RCU.
+
+> Yes a simple sleepable lock would work, and we wouldn't need
+> get_module(). Because before the vfio_ap module unloads, it
+> sets all vcpu->kvm->arch.crypto.pqap_hook instances to NULL. So if
+> we know that vcpu->kvm->arch.crypto.pqap_hook then we know
+> that the still have valid references to the module.
+
+Yes
+ 
+> But in my opinion RCU is also viable (not this patch). I think, I prefer
+> a lock for simplicity, unless it is not (deadlocks) ;).
+
+As soon as you said you needed to sleep RCU stopped being viable. To
+make a sleepable region you need to do an atomic write and at that
+instant all the value of RCU was destroyed - use a normal rwsem.
+
+There is SRCU that solves the sleepable problem, but it has an
+incredible cost in both write side performance and memory usage that
+should only be reached for if high read side performance is really
+required.
+
+Jason
