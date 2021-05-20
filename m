@@ -2,56 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E20A38B29B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:08:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76B8138B294
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243216AbhETPJu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:09:50 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41345 "EHLO elvis.franken.de"
+        id S231764AbhETPJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:09:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232452AbhETPJq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:09:46 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1ljkHS-0001VG-01; Thu, 20 May 2021 17:08:10 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 47969C101E; Thu, 20 May 2021 17:07:42 +0200 (CEST)
-Date:   Thu, 20 May 2021 17:07:42 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] MIPS: SEAD3: Correct Ethernet node name
-Message-ID: <20210520150742.GB22843@alpha.franken.de>
-References: <cover.1621518686.git.geert+renesas@glider.be>
- <b708fdb009912cf247ef257dce519c52889688d8.1621518686.git.geert+renesas@glider.be>
+        id S238578AbhETPJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:09:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9CA061184;
+        Thu, 20 May 2021 15:07:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621523266;
+        bh=Wn1M4+UsbaVhUZR2giqAc9Ih5SyelQc6s8D+t56AuSU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v7Z5kjCtxIONvEvNnF2J0ZxyrNspcPO2Rvb75EwFudWvtmnlcD/Oh72ZqVrj9efwp
+         tQRhbHidgk8uCAUD6cfGGihsDPehhpf/uXpEl9qod5y5qW7zl2bwwAy8lgHz9ut7/0
+         gj05z4Ja1Wpyofoq2eLa1+B3NoARY4FBdzwY1fIQ=
+Date:   Thu, 20 May 2021 17:07:44 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Al Longyear <longyear@netcom.com>,
+        "Andrew J. Kroll" <ag784@freenet.buffalo.edu>,
+        Andrew Morton <andrewm@uow.edu.eu>,
+        Bill Hawes <whawes@star.net>,
+        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        -- <julian@uhunix.uhcc.hawaii.edu>,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        Marko Kohtala <Marko.Kohtala@hut.fi>,
+        Michael Callahan <callahan@maths.ox.ac.uk>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Nick Holloway <alfie@dcs.warwick.ac.uk>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Paul Fulghum <paulkf@microgate.com>,
+        Paul Mackerras <Paul.Mackerras@cs.anu.edu.au>,
+        processes-Sapan Bhatia <sapan@corewars.org>,
+        Rob Herring <robh@kernel.org>,
+        Russell King <rmk@arm.linux.org.uk>
+Subject: Re: [PATCH 00/11] Rid W=1 warnings from TTY
+Message-ID: <YKZ7QA4fFegLbUHH@kroah.com>
+References: <20210520121906.3468725-1-lee.jones@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b708fdb009912cf247ef257dce519c52889688d8.1621518686.git.geert+renesas@glider.be>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210520121906.3468725-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 03:58:38PM +0200, Geert Uytterhoeven wrote:
-> make dtbs_check:
-> 
->     eth@1f010000: $nodename:0: 'eth@1f010000' does not match '^ethernet(@.*)?$'
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  arch/mips/boot/dts/mti/sead3.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, May 20, 2021 at 01:18:55PM +0100, Lee Jones wrote:
+> This set is part of a larger effort attempting to clean-up W=1
+> kernel builds, which are currently overwhelmingly riddled with
+> niggly little warnings.
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+All but 3 applied to my tree, you should rebase and resend those
+remaining ones as they conflicted with things that others recently
+changed.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+thanks,
+
+greg k-h
