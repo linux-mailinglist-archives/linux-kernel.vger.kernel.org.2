@@ -2,100 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D66338AF90
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB45838AF9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242808AbhETNFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34628 "EHLO
+        id S243395AbhETNHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:07:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237416AbhETNE7 (ORCPT
+        with ESMTP id S243416AbhETNHN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:04:59 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918C7C06135C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:40:09 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id p20so19521574ljj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:40:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=CZBjnoBLTFoBWgdZyV2FVeoTbN+eKb/uryygiH4YrpY=;
-        b=EL/9tWdDAAgPYiKLZWvquX27VMrn7Xr+NGnZkjlYQjUB8zNKZjriS8yICU3uhFZewf
-         5zrIoXKAbdXM+UNezuBr496uXTyzGzqnmjrL3u1TgocPzkQqUJraEP6GN1wCZxPXN37T
-         ISLnlbwoCp/1/sKnph9qYuqjPVQoBcbhEYHguaYXv4PWrKcsUXJZ8YLxOKYqY6/feNpb
-         fN112IJtV0Mgjchw65Lw3ZO3RxbfKqdk6xF6ZywxZ9zNSjS6BCt220iUXkScCni7C4B/
-         W17LIo7iK/rZVa3IkhA5SRBVC6926J8b8ofB4A1XM2WaboaYKBtva2rKeeXX/udtSasJ
-         KJCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=CZBjnoBLTFoBWgdZyV2FVeoTbN+eKb/uryygiH4YrpY=;
-        b=qs3A84ez8IgTxGLRIRm9B0uEHgotYFGL/9ymSPKYUSBZFmVCLuqICwi2R30XuoHmlr
-         2XXADCcVeQNB7GvH7jRDJl37c/hj2crwnjFcY1LbCqQuUhFrs/vQMm6Ftyf834zBb1tu
-         NnsBWbPPnsae2NmGoOly4QP0T/Y9ohX8u3J2fjo7WSM1t5ZeKSl13G2PUv3WMKPa5Dp8
-         gVZQL08tWdNcmUYkmW74B2aihZRkEjIEvJorLYeGnnYLXtMAH/V3azqvUpwK4p6TcOA+
-         nda1/8bu/zxmXFMBXX1Rh309m4/LID95o6hTRbHex4mX66+UbEbDgXUVP/KTEJbTOpRA
-         WfqA==
-X-Gm-Message-State: AOAM531IVquwtfXGOgOviUqfyWaSVKXK3Mf9ajTOQtFih8jWOOyHQwkv
-        i5anwM7yKM/PTQTlBUo2VvIAD67300x+35VfWpA=
-X-Google-Smtp-Source: ABdhPJwLTQTF7ZaEFYikpAktLc9lNMuBHnImOkdrdUUckIR0l1RMjKY7xTo9JSPumZBBfhnoZSiZnJVXkxyfDbUAm2Y=
-X-Received: by 2002:a05:651c:232:: with SMTP id z18mr2948628ljn.489.1621514407950;
- Thu, 20 May 2021 05:40:07 -0700 (PDT)
+        Thu, 20 May 2021 09:07:13 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BDFEC0610D9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:47:20 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lji4v-0001Dk-Qz; Thu, 20 May 2021 14:47:05 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lji4u-0004FW-43; Thu, 20 May 2021 14:47:04 +0200
+Date:   Thu, 20 May 2021 14:47:03 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Ian Abbott <abbotti@mev.co.uk>,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        "David A. Schleef" <ds@schleef.org>,
+        Mori Hess <fmhess@users.sourceforge.net>,
+        Truxton Fulton <trux@truxton.com>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
+ 'range_ni_E_ao_ext' to where it is used
+Message-ID: <20210520124703.37w3r2fnw3pjsjot@pengutronix.de>
+References: <20210520122538.3470259-1-lee.jones@linaro.org>
+ <20210520122538.3470259-6-lee.jones@linaro.org>
 MIME-Version: 1.0
-From:   Jason Andryuk <jandryuk@gmail.com>
-Date:   Thu, 20 May 2021 08:39:56 -0400
-Message-ID: <CAKf6xptjmd9BMuiKpRgj1YyyR97gGXKgYgj-4CKaTvBk4+FeoA@mail.gmail.com>
-Subject: Calling queue_work() multiple times with the same work_struct
-To:     Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="drt6bspysws4e3wb"
+Content-Disposition: inline
+In-Reply-To: <20210520122538.3470259-6-lee.jones@linaro.org>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-I'm looking for clarification of the behavior of queue_work().  From
-the header description, I'm not sure if I need additional complexity
-for re-queuing work.
+--drt6bspysws4e3wb
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I want to ensure the following cases all occur when calling queue_work().
-1) work_struct not queued -> work_struct queued
-2) work_struct queued -> work_struct queued (no change)
-3) work_struct running -> work_struct queued (so it will run again)
+Hello Lee,
 
-1 & 2 look supported from workqueue.h.  Is the 3rd case true and
-guaranteed?  Is it okay to re-use the same work_struct in that case
-while it's being executed?  A work_struct function can re-queue
-itself, so I hope #3 is supported.
+On Thu, May 20, 2021 at 01:25:37PM +0100, Lee Jones wrote:
+> ... and mark it as __maybe_unused since not all users of the
+> header file reference it.
+>=20
+> Fixes the following W=3D1 kernel build warning(s):
+>=20
+>  drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: =E2=80=
+=98range_ni_E_ao_ext=E2=80=99 defined but not used [-Wunused-const-variable=
+=3D]
+>=20
+> Cc: Ian Abbott <abbotti@mev.co.uk>
+> Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Thierry Reding <thierry.reding@gmail.com>
+> Cc: "Uwe Kleine-K=C3=B6nig" <u.kleine-koenig@pengutronix.de>
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: "David A. Schleef" <ds@schleef.org>
+> Cc: Mori Hess <fmhess@users.sourceforge.net>
+> Cc: Truxton Fulton <trux@truxton.com>
+> Cc: linux-staging@lists.linux.dev
+> Cc: linux-pwm@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/comedi/drivers/ni_mio_common.c | 9 ---------
+>  drivers/comedi/drivers/ni_stc.h        | 9 ++++++++-
+>  2 files changed, 8 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/driv=
+ers/ni_mio_common.c
+> index 4f80a4991f953..37615b4e2c10d 100644
+> --- a/drivers/comedi/drivers/ni_mio_common.c
+> +++ b/drivers/comedi/drivers/ni_mio_common.c
+> @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x=
+ =3D {
+>  	}
+>  };
+> =20
+> -static const struct comedi_lrange range_ni_E_ao_ext =3D {
+> -	4, {
+> -		BIP_RANGE(10),
+> -		UNI_RANGE(10),
+> -		RANGE_ext(-1, 1),
+> -		RANGE_ext(0, 1)
+> -	}
+> -};
+> -
+>  static const struct comedi_lrange *const ni_range_lkup[] =3D {
+>  	[ai_gain_16] =3D &range_ni_E_ai,
+>  	[ai_gain_8] =3D &range_ni_E_ai_limited,
+> diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_=
+stc.h
+> index fbc0b753a0f59..0822e65f709dd 100644
+> --- a/drivers/comedi/drivers/ni_stc.h
+> +++ b/drivers/comedi/drivers/ni_stc.h
+> @@ -1137,6 +1137,13 @@ struct ni_private {
+>  	u8 rgout0_usage;
+>  };
+> =20
+> -static const struct comedi_lrange range_ni_E_ao_ext;
+> +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext =3D {
+> +	4, {
+> +		BIP_RANGE(10),
+> +		UNI_RANGE(10),
+> +		RANGE_ext(-1, 1),
+> +		RANGE_ext(0, 1)
+> +	}
+> +};
 
-The virtual device I'm working on has a single interrupt shared for
-multiple rings.  So whenever an interrupt occurs, I need to re-queue
-the single work_struct on the workqueue to ensure we don't miss an
-event.  That is, we need to re-iterate all the rings if the interrupt
-comes halfway through processing the list of rings.  If multiple
-interrupts come through while running, we only need to re-queue a
-single work item for all of them.
+When you send this patch some time ago I wrote:
 
-Below is what I hope works for the code to give something tangible.
+| I think a downside of this solution is that range_ni_E_ao_ext might be
+| duplicated in the object files. (Ditto for the status quo BTW.)
+|=20
+| I think the right approach to fix the compiler warning and the
+| duplication is to declare range_ni_E_ao_ext external in the header and
+| keep the definition in ni_mio_common.c.
 
-Thank you,
-Jason
+You didn't reply to that, so maybe you missed it?
 
-DECLARE_WORK(argo_work, argo_work_fn);
-static struct workqueue_struct *argo_wq = alloc_workqueue("argo_wq",
-                    WQ_UNBOUND | WQ_HIGHPRI | WQ_CPU_INTENSIVE | WQ_SYSFS, 1);
+Best regards
+Uwe
 
-static void argo_work_fn(struct work_struct *work)
-{
-    argo_interrupt_rx();  /* iterates multiple "rings" */
-    argo_notify();
-}
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
 
-static irqreturn_t argo_interrupt(int irq, void *dev_id)
-{
-    queue_work(argo_wq, &argo_work);
+--drt6bspysws4e3wb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-    return IRQ_HANDLED;
-}
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCmWkQACgkQwfwUeK3K
+7Am3yQf/QDEk6FnlXWz2XZJUtFPOfRT6SFJwexcP/05uMpdcRQ6k0ibtZpQDDEYF
++9VJBQs4ESJT8sZbj38q+wyLWxhQ+mbeLVz+N4wUwNti/qb0Uc71CV+MRPXLJZer
+eauuRTSCxwwfUnM7IVXOdOLGzN7SfGK6wDE/0cv2xr/r65/8EfcFcPKKkCEBHV7V
++MJMq+y+efY9q/Q8CxCQ7TVe3SaWDbzMj529kzezj2rEtk9NOklTn4VRqATc4RV5
+vRZ0E1EEy8tyROWZDSw6h+7mOtox9M22jgUAhukA28gOZauqArTsgtGWcjCI75GF
+qc3qPQopf5IfFWYUsmbmNn47SJqikw==
+=Yd+/
+-----END PGP SIGNATURE-----
+
+--drt6bspysws4e3wb--
