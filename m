@@ -2,102 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 747F838AC20
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6827038ACCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241870AbhETLeF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:34:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38394 "EHLO
+        id S243103AbhETLtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:49:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240033AbhETLNU (ORCPT
+        with ESMTP id S240145AbhETLZ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:13:20 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F864C028020;
-        Thu, 20 May 2021 03:00:50 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id l70so11498529pga.1;
-        Thu, 20 May 2021 03:00:50 -0700 (PDT)
+        Thu, 20 May 2021 07:25:57 -0400
+Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2B0C035430
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:06:43 -0700 (PDT)
+Received: by mail-ua1-x936.google.com with SMTP id x1so4858004uau.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T08PDvJ5aWhDHE7UN2bq23pqqz017tvRN2/y5Yo5lkU=;
-        b=kR4voAyfac4Y9JkSDlCiXBERU/mdOJchqPpyDcLAZ8XVsEWuJBqC1P0EBQAsXdrHxc
-         Zv8r5lUXQ+GO+bcvKXdm6envSVjmBUU6w0lRyg6465y+TI35BTKe10SDXs9qCIpEAjyW
-         mWzQiEK1DsyqY/V9PM8iVEFTDfVvwA9pRg9bPziqYD9E3/4c1D5hfteiT89fX/DUHvy0
-         RRfxOCoD0jg5Yj1kDecYqkqxRn+GsxalX6wDauLMAh7joDDN5f+9c1zJm9P+9myUFs+N
-         YBgmH2D/xpHlRQdhbVBvvCbdKzma463UhMHvrlOv2fqx+n4Vtu9kjPFHmb7jgHi54ris
-         7Rdw==
+        d=deviqon.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7QyAz/Y7sojLhm4WGgiSHyG7ZKRB6TQwfwV5kBelVWI=;
+        b=HM0C/fxgCgP9PqpIBs5RDFfOToJmqVddEeDOSQdQiFAZ0XmNj8tPrwEkz+wAzTxKbL
+         9wM1LXUkA4xetjxn3/1N8FZgv060Y/XtU52d2O98mkHuJi93Je4nJXZ5KvaglO3xm1L3
+         OC2mdYuBizLnhryJnABFdzoaW3hXnWa/gyCyeW/FZp19piowNWF+9FgaGN65jrsK5TkF
+         dwougd3a+a7hBIcQHMjLDVR2Q4uhQlsPwAgVhHLjrCw+zP9fj/3oZyCfD2y457RhS0CR
+         5bv3I1jYwawTDKdpiI4d7rjBQc1JtfDQZUKdKEgzgZqgmQlGi8PlX1uE8aovFyL0HzLo
+         4zkw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=T08PDvJ5aWhDHE7UN2bq23pqqz017tvRN2/y5Yo5lkU=;
-        b=Z5fKK3sPg76vRdVsVZtSedC1OCMDlZ1kSzv0tjiOj6YenvdyhRrpOAjHzvE6qUlkqi
-         dh5OhRRX4EPmRU9HkkDD3Y2422xokwXq/+l4h9FIN/UZPGvq6gOlo0xhIU/qO/LEA+kJ
-         tHKHfHin255w32nRmJaKWYNw1hFm/kM3uOPEnSq98JXmUoHhoCzkyrhbrug2oS4Szkbm
-         QUtHDwF98mN/xRto86OWfiWrjoF/MUXohkCYPcFeW67O5JocjX7SrmwBsyeb1CAukjbW
-         /Bi4Wrh7Tpfcz/N3nFt4BBhN5Uv9+8toSKgIk1Vw0DUdk+XszBWk0kRMI+NNpyLJsajz
-         jMtg==
-X-Gm-Message-State: AOAM531EYynrQmtLbCCUTrtZbd2MiWkFtBXUnkahdN1FT+YEF9at9N2M
-        UfdHOPABaDStWJlbGm2xoY7PLXub3Givfw==
-X-Google-Smtp-Source: ABdhPJxKwg1X6fMTC6AGAtOdB/casyKbH46SR2l+fASHySSu4WZdcMTtroyNoGSrOu3Yq5B6b6ouaw==
-X-Received: by 2002:a63:368f:: with SMTP id d137mr304435pga.93.1621504850080;
-        Thu, 20 May 2021 03:00:50 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id j16sm1753853pfi.92.2021.05.20.03.00.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 03:00:49 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     adrian.hunter@intel.com, riteshh@codeaurora.org,
-        asutoshd@codeaurora.org, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] mmc: cqhci: use data instead of mrq parameter from cqhci_dma_map()
-Date:   Thu, 20 May 2021 18:00:36 +0800
-Message-Id: <20210520100036.2195-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7QyAz/Y7sojLhm4WGgiSHyG7ZKRB6TQwfwV5kBelVWI=;
+        b=YEOq6gQc9JZ0arxJgMQ3OIwma0xtMk7O6u/TBMvoed39XL3jEmWBpOOA88o/cb8Jdh
+         iF/kEA1cWSv2vdbox1t/23ZDD1/3ZcHn1LBiWbTZazLHtcUq9mc8T9EBbzgUW5VDEXch
+         VmYmWFCig38DkK4iryfTxsqQkKShfSXIckpZCsvy34WvmquopXfHifLwqbxXQxW6HhIJ
+         jH1QFVAPxxzbow0bUDrD3HV59LzTrneLFtuB0xHvs85toMRWCxhmcba6H2J18cS4zRVr
+         JssL0hsLGG++zP2bzsu88EaBAGUx05XcGfR1HejoIRJcGbkqcJYxEK6YIv26/Ofhhv51
+         sUbQ==
+X-Gm-Message-State: AOAM530RLLxDmDDDvyS3gat3eOPutfajwq0NoNYaO+Yd6LolH7CEWezI
+        IPDkKiN3vpIU6gNV62aRoflxBVecXmrm9uav1uJFcQ==
+X-Google-Smtp-Source: ABdhPJzy3ITiPckKdlsOzI9fCyc0onwPpPpVy562GHjplX8ZWe+S0MCOuc5oXcO1rwAgcmmS4rg2e6wmWmzJOhzxX68=
+X-Received: by 2002:ab0:14ce:: with SMTP id f14mr3285015uae.50.1621505202313;
+ Thu, 20 May 2021 03:06:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210516061425.8757-1-aardelean@deviqon.com> <CAHp75VcesNFXCMoWbdBR2mFCt89p8aycWbheMhv9DnU8TBqNSA@mail.gmail.com>
+In-Reply-To: <CAHp75VcesNFXCMoWbdBR2mFCt89p8aycWbheMhv9DnU8TBqNSA@mail.gmail.com>
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+Date:   Thu, 20 May 2021 13:06:30 +0300
+Message-ID: <CAASAkoa6btmLCj-XouKVj=hCG2euhT2MnNWWQAS7jorJBEoQEA@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-stmpe: fully use convert probe to device-managed
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
+        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+On Thu, 20 May 2021 at 09:40, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>
+>
+>
+> On Sunday, May 16, 2021, Alexandru Ardelean <aardelean@deviqon.com> wrote:
+>>
+>> The driver doesn't look like it can be built as a kmod, so leaks cannot
+>> happen via a rmmod mechanism.
+>> The remove hook was removed via commit 3b52bb960ec6 ("gpio: stmpe: make
+>> it explicitly non-modular").
+>>
+>> The IRQ is registered via devm_request_threaded_irq(), making the driver
+>> only partially device-managed.
+>>
+>> In any case all resources should be made device-managed, mostly as a good
+>> practice. That way at least the unwinding on error is happening in reverse
+>> order (as the probe).
+>>
+>> This change also removes platform_set_drvdata() since the information is
+>> never retrieved to be used in the driver.
+>
+>
+> Any driver can be unbind from device thru sysfs. The exception is when they (device drivers) specifically disable that.
 
-cqhci_dma_map() will be only called by cqhci_prep_tran_desc() which
-already has 'mrq->data'.
+Oh, I see.
+Thanks for the info :)
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/mmc/host/cqhci-core.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-index 93b0432..e759e3b 100644
---- a/drivers/mmc/host/cqhci-core.c
-+++ b/drivers/mmc/host/cqhci-core.c
-@@ -446,10 +446,9 @@ static void cqhci_prep_task_desc(struct mmc_request *mrq,
- 	}
- }
- 
--static int cqhci_dma_map(struct mmc_host *host, struct mmc_request *mrq)
-+static int cqhci_dma_map(struct mmc_host *host, struct mmc_data *data)
- {
- 	int sg_count;
--	struct mmc_data *data = mrq->data;
- 
- 	if (!data)
- 		return -EINVAL;
-@@ -499,7 +498,7 @@ static int cqhci_prep_tran_desc(struct mmc_request *mrq,
- 	u8 *desc;
- 	struct scatterlist *sg;
- 
--	sg_count = cqhci_dma_map(mrq->host, mrq);
-+	sg_count = cqhci_dma_map(mrq->host, data);
- 	if (sg_count < 0) {
- 		pr_err("%s: %s: unable to map sg lists, %d\n",
- 				mmc_hostname(mrq->host), __func__, sg_count);
--- 
-1.9.1
-
+>
+>>
+>> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+>> ---
+>>
+>> I'm not sure if this should be marked with a Fixes tag.
+>> But if so, it should probably be for commit 3b52bb960ec6 (also mentioned in
+>> the comment above).
+>>
+>>  drivers/gpio/gpio-stmpe.c | 32 +++++++++++++-------------------
+>>  1 file changed, 13 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/drivers/gpio/gpio-stmpe.c b/drivers/gpio/gpio-stmpe.c
+>> index b94ef8181428..dd4d58b4ae49 100644
+>> --- a/drivers/gpio/gpio-stmpe.c
+>> +++ b/drivers/gpio/gpio-stmpe.c
+>> @@ -449,6 +449,11 @@ static void stmpe_init_irq_valid_mask(struct gpio_chip *gc,
+>>         }
+>>  }
+>>
+>> +static void stmpe_gpio_disable(void *stmpe)
+>> +{
+>> +       stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
+>> +}
+>> +
+>>  static int stmpe_gpio_probe(struct platform_device *pdev)
+>>  {
+>>         struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
+>> @@ -461,7 +466,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+>>                 return -EINVAL;
+>>         }
+>>
+>> -       stmpe_gpio = kzalloc(sizeof(*stmpe_gpio), GFP_KERNEL);
+>> +       stmpe_gpio = devm_kzalloc(&pdev->dev, sizeof(*stmpe_gpio), GFP_KERNEL);
+>>         if (!stmpe_gpio)
+>>                 return -ENOMEM;
+>>
+>> @@ -489,7 +494,11 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+>>
+>>         ret = stmpe_enable(stmpe, STMPE_BLOCK_GPIO);
+>>         if (ret)
+>> -               goto out_free;
+>> +               return ret;
+>> +
+>> +       ret = devm_add_action_or_reset(&pdev->dev, stmpe_gpio_disable, stmpe);
+>> +       if (ret)
+>> +               return ret;
+>>
+>>         if (irq > 0) {
+>>                 struct gpio_irq_chip *girq;
+>> @@ -499,7 +508,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+>>                                 "stmpe-gpio", stmpe_gpio);
+>>                 if (ret) {
+>>                         dev_err(&pdev->dev, "unable to get irq: %d\n", ret);
+>> -                       goto out_disable;
+>> +                       return ret;
+>>                 }
+>>
+>>                 girq = &stmpe_gpio->chip.irq;
+>> @@ -514,22 +523,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
+>>                 girq->init_valid_mask = stmpe_init_irq_valid_mask;
+>>         }
+>>
+>> -       ret = gpiochip_add_data(&stmpe_gpio->chip, stmpe_gpio);
+>> -       if (ret) {
+>> -               dev_err(&pdev->dev, "unable to add gpiochip: %d\n", ret);
+>> -               goto out_disable;
+>> -       }
+>> -
+>> -       platform_set_drvdata(pdev, stmpe_gpio);
+>> -
+>> -       return 0;
+>> -
+>> -out_disable:
+>> -       stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
+>> -       gpiochip_remove(&stmpe_gpio->chip);
+>> -out_free:
+>> -       kfree(stmpe_gpio);
+>> -       return ret;
+>> +       return devm_gpiochip_add_data(&pdev->dev, &stmpe_gpio->chip, stmpe_gpio);
+>>  }
+>>
+>>  static struct platform_driver stmpe_gpio_driver = {
+>> --
+>> 2.31.1
+>>
+>
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+>
+>
