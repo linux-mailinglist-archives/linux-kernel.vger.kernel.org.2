@@ -2,113 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089C138B55D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:42:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06B1238B55E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234942AbhETRnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231752AbhETRnt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:43:49 -0400
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0039AC061574;
-        Thu, 20 May 2021 10:42:26 -0700 (PDT)
-Received: by mail-pl1-x62b.google.com with SMTP id s4so7967430plg.12;
-        Thu, 20 May 2021 10:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x8zCNoX6FBhDb9BPO2SfpaVqoJwSrdnELOz9ad+w2Hs=;
-        b=F0K9pE5jJqO8El0iUu+UuqqOSEvHIusZlmi4TvCeT5ioYpbo+fW6HuQSOdpjSu1dkj
-         /mraHU6rfUA/G0r5M4Nx3xYmyX3L8wT5eDyCzITAaWbl4rX1oxVL6hm4JpX8X3yCsKIO
-         nKwSXwhgAuV05IWPfCdnxP3OFntqGlDonkDbbpIYN8iEctU2no2tvck5FEkCBShflI5+
-         f62hC85CBNY86C77r/F5nLdJu3K3Dr5x7pqni285Y2ERJaw6yplmN6rgzhXp85Tqweb+
-         wyvK9WZRZ7EvhSLK82KM9rQwCDrpAmobJ11QhYsDihxbT6+qkn/59lKijwgCAwF8Dwry
-         xAvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=x8zCNoX6FBhDb9BPO2SfpaVqoJwSrdnELOz9ad+w2Hs=;
-        b=r9mGrHSEpQYcU3q/gHvdH6HZcNx6hPX1MHVPMoOX7dmtTJgtTmJoEU33d0h9imPcSb
-         xbCd/Z45yamFdUpNg6s4Y+q8jHCZ3De2G1Vx8TNZUTXxS81ZRNTqzbZ9A9TfZaEklAOS
-         s5Hri43ax2LZ+LKBdFZYdBvuIb00tSshJMm2+FtLpm6V/93X+NANJXIx7+Y6R81lBBUC
-         21LD9gL3dNPdfdXKng5NSZz8/HdOzZEVIkpEyEmgfLKgAp2dolLM27nd70D8Btb/nf38
-         Ukh4lmNd5Rk+ptQTkxgxao7wKSrZe9MbdXOq1Q/2LXOJTYik5tO+cfNliaSxwjxHJw0z
-         fCIw==
-X-Gm-Message-State: AOAM530ALvwTZUPT2lJ/eXXkROVT9VxHv06OZJTBqs8jh2KcxMCISub+
-        T0FElby1+WR/QGwpJnQDQ7qSZ3tf6ORWzQ==
-X-Google-Smtp-Source: ABdhPJwj0dMmG40f8FtDMB8YzT+MDULCxn3q34+OFOndOfilj6OxZRRkgKKg22tGrzN5VR4RI99OuQ==
-X-Received: by 2002:a17:90a:e2c5:: with SMTP id fr5mr6066622pjb.150.1621532545967;
-        Thu, 20 May 2021 10:42:25 -0700 (PDT)
-Received: from tardis.. ([2601:645:8203:5ef0:aaa1:59ff:fe3e:c140])
-        by smtp.googlemail.com with ESMTPSA id u24sm2671644pga.78.2021.05.20.10.42.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 10:42:25 -0700 (PDT)
-From:   David Bartley <andareed@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-x86_64@vger.kernel.org, David Bartley <andareed@gmail.com>
-Subject: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
-Date:   Thu, 20 May 2021 10:41:30 -0700
-Message-Id: <20210520174130.94954-1-andareed@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S234971AbhETRoJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:44:09 -0400
+Received: from mga11.intel.com ([192.55.52.93]:24888 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231752AbhETRoG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:44:06 -0400
+IronPort-SDR: S/OPJ86AZO2lbF5TsvDZb9VAyh2+S9ILg1lNSRY8deXsg57Ihs88nU95dl1+nzmROwLgdgpL2k
+ nxwp524Z1qyQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="198203329"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="198203329"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 10:42:44 -0700
+IronPort-SDR: gw1dT1YGXSyJqiXemMXFCkgirIiONYPZhGPCwMaIc8hKRuMDKMjycdp26Yn+pY4/cM9ITae7rb
+ fLT/sFHxVbwQ==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="543682823"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 10:42:44 -0700
+Date:   Thu, 20 May 2021 10:42:44 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Ben Widawsky <ben.widawsky@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        linux-cxl@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/4] cxl/mem: Fully decode device capability header
+Message-ID: <20210520174244.GC1837122@iweiny-DESK2.sc.intel.com>
+References: <20210506223654.1310516-1-ira.weiny@intel.com>
+ <20210506223654.1310516-2-ira.weiny@intel.com>
+ <CAPcyv4iV-Xq7eGBHavETiKW=kfucxDnua3a4j6MKtswz=n4gRA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPcyv4iV-Xq7eGBHavETiKW=kfucxDnua3a4j6MKtswz=n4gRA@mail.gmail.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is required to support Zen3 APUs in k10temp.
+On Wed, May 19, 2021 at 05:50:44PM -0700, Dan Williams wrote:
+> On Thu, May 6, 2021 at 3:37 PM <ira.weiny@intel.com> wrote:
+> >
+> > From: Ira Weiny <ira.weiny@intel.com>
+> >
+> > Previously only the capability ID and offset were decoded.
+> >
+> > Create a version MASK and decode the additional version and length
+> > fields of the header.
+> >
+> 
+> I'm not seeing a justification for why Linux would want this patch?
+> 
+> > Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+> > ---
+> >  drivers/cxl/core.c | 15 ++++++++++++---
+> >  drivers/cxl/cxl.h  |  1 +
+> >  2 files changed, 13 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/cxl/core.c b/drivers/cxl/core.c
+> > index b3c3532b53f7..21553386e218 100644
+> > --- a/drivers/cxl/core.c
+> > +++ b/drivers/cxl/core.c
+> > @@ -501,12 +501,21 @@ void cxl_setup_device_regs(struct device *dev, void __iomem *base,
+> >
+> >         for (cap = 1; cap <= cap_count; cap++) {
+> >                 void __iomem *register_block;
+> > -               u32 offset;
+> > +               u32 hdr, offset, __maybe_unused length;
+> 
+> What's the point of reading the length and not using it?
 
-Signed-off-by: David Bartley <andareed@gmail.com>
----
- arch/x86/kernel/amd_nb.c | 3 +++
- include/linux/pci_ids.h  | 1 +
- 2 files changed, 4 insertions(+)
+Then length is needed in a future patch and it seemed easier to split by saying
+we are just going to decode the entire header as a patch.
 
-diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
-index 09083094eb57..23dda362dc0f 100644
---- a/arch/x86/kernel/amd_nb.c
-+++ b/arch/x86/kernel/amd_nb.c
-@@ -25,6 +25,7 @@
- #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F4 0x144c
- #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F4 0x1444
- #define PCI_DEVICE_ID_AMD_19H_DF_F4	0x1654
-+#define PCI_DEVICE_ID_AMD_19H_M50H_DF_F4 0x166e
- 
- /* Protect the PCI config register pairs used for SMN and DF indirect access. */
- static DEFINE_MUTEX(smn_mutex);
-@@ -57,6 +58,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F3) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F3) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F3) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F3) },
- 	{}
- };
- 
-@@ -72,6 +74,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M60H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F4) },
-+	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F4) },
- 	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
- 	{}
- };
-diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-index 4c3fa5293d76..5356ccf1c275 100644
---- a/include/linux/pci_ids.h
-+++ b/include/linux/pci_ids.h
-@@ -555,6 +555,7 @@
- #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
- #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
- #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
-+#define PCI_DEVICE_ID_AMD_19H_M50H_DF_F3 0x166d
- #define PCI_DEVICE_ID_AMD_CNB17H_F3	0x1703
- #define PCI_DEVICE_ID_AMD_LANCE		0x2000
- #define PCI_DEVICE_ID_AMD_LANCE_HOME	0x2001
--- 
-2.30.2
+Ben caught this too because sparse found the unused variable...
 
+Let me see about squashing this into the future patch.
+
+> If this is
+> used in a future patch then wait until then to add it.
+
+ok.
+
+> 
+> >                 u16 cap_id;
+> > +               u8 version;
+> > +
+> > +               hdr = readl(base + cap * 0x10);
+> > +
+> > +               cap_id = FIELD_GET(CXLDEV_CAP_HDR_CAP_ID_MASK, hdr);
+> > +               version = FIELD_GET(CXLDEV_CAP_HDR_VERSION_MASK, hdr);
+> > +               if (version != 1)
+> > +                       dev_err(dev, "Vendor cap ID: %x incorrect version (0x%x)\n",
+> > +                               cap_id, version);
+> 
+> It's not an error. Any future version needs to be backwards
+> compatible. All this is doing is ensuring that when hardware is
+> updated old kernels will start spamming the log.
+
+Yep...
+
+After deleting this I think I should just 'forward squash' the length into the
+patch where I need it.
+
+Ira
+
+> 
+> >
+> > -               cap_id = FIELD_GET(CXLDEV_CAP_HDR_CAP_ID_MASK,
+> > -                                  readl(base + cap * 0x10));
+> >                 offset = readl(base + cap * 0x10 + 0x4);
+> > +               length = readl(base + cap * 0x10 + 0x8);
+> > +
+> >                 register_block = base + offset;
+> >
+> >                 switch (cap_id) {
+> > diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+> > index 0211f44c95a2..9b315c069557 100644
+> > --- a/drivers/cxl/cxl.h
+> > +++ b/drivers/cxl/cxl.h
+> > @@ -15,6 +15,7 @@
+> >  #define   CXLDEV_CAP_ARRAY_COUNT_MASK GENMASK_ULL(47, 32)
+> >  /* CXL 2.0 8.2.8.2 CXL Device Capability Header Register */
+> >  #define CXLDEV_CAP_HDR_CAP_ID_MASK GENMASK(15, 0)
+> > +#define CXLDEV_CAP_HDR_VERSION_MASK GENMASK(23, 16)
+> >  /* CXL 2.0 8.2.8.2.1 CXL Device Capabilities */
+> >  #define CXLDEV_CAP_CAP_ID_DEVICE_STATUS 0x1
+> >  #define CXLDEV_CAP_CAP_ID_PRIMARY_MAILBOX 0x2
+> > --
+> > 2.28.0.rc0.12.gb6a658bd00c9
+> >
