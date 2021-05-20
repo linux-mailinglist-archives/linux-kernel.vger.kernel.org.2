@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B622838A96E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B2038AB77
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238496AbhETLB6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:01:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46230 "EHLO mail.kernel.org"
+        id S241655AbhETLZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:25:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237841AbhETKnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:43:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E13961C8A;
-        Thu, 20 May 2021 09:56:53 +0000 (UTC)
+        id S240075AbhETLE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9E68861D1F;
+        Thu, 20 May 2021 10:05:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504613;
-        bh=v+o9R/WRLaLDBMpf2DCdFw1HJwrUNglZKj5Rq94Tmf0=;
+        s=korg; t=1621505104;
+        bh=7oYuLHNwzc9jy8+tx7Q4sSHTjfKDMdJFbkcaYmc36R8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sGVLopYIgkDUA1dt9Z4MWGNYuRPAVAY3ARIMLkXufpmyhD/AOjaKYj3CboIxSbKXI
-         F+PStB3QSdC1QIk4rxDdBMzvforYQRTWCktNg1b397KCEdo6f0nIgpB6YKaC8eSfW+
-         ZaLzRpPoACV1oMmXd/n38EZepewl4XXKMnb7uzcM=
+        b=exwl6lFiQ2/5PYp/VU+Y1bMov5cHC2ONY1ULwlOumSPgSVsCJHmfz7QBrZLJclXTq
+         G6bud5qjooTbLoBmb/8w+34B6EQBdJeRzkdHZF/yf5WP5Um3aotDphkipct7zVX0HB
+         9UOMv/p7EOo/DYF7+Gu3K4OcwMDnVqdE7uvHkWiA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hui Wang <hui.wang@canonical.com>,
-        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 316/323] ALSA: hda: generic: change the DAC ctl name for LO+SPK or LO+HP
-Date:   Thu, 20 May 2021 11:23:28 +0200
-Message-Id: <20210520092131.076616885@linuxfoundation.org>
+        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH 4.9 217/240] MIPS: Avoid DIVU in `__div64_32 is result would be zero
+Date:   Thu, 20 May 2021 11:23:29 +0200
+Message-Id: <20210520092115.976737043@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+References: <20210520092108.587553970@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,64 +39,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hui Wang <hui.wang@canonical.com>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-[ Upstream commit f48652bbe3ae62ba2835a396b7e01f063e51c4cd ]
+commit c1d337d45ec0a802299688e17d568c4e3a585895 upstream.
 
-Without this change, the DAC ctl's name could be changed only when
-the machine has both Speaker and Headphone, but we met some machines
-which only has Lineout and Headhpone, and the Lineout and Headphone
-share the Audio Mixer0 and DAC0, the ctl's name is set to "Front".
+We already check the high part of the divident against zero to avoid the
+costly DIVU instruction in that case, needed to reduce the high part of
+the divident, so we may well check against the divisor instead and set
+the high part of the quotient to zero right away.  We need to treat the
+high part the divident in that case though as the remainder that would
+be calculated by the DIVU instruction we avoided.
 
-On most of machines, the "Front" is used for Speaker only or Lineout
-only, but on this machine it is shared by Lineout and Headphone,
-This introduces an issue in the pipewire and pulseaudio, suppose users
-want the Headphone to be on and the Speaker/Lineout to be off, they
-could turn off the "Front", this works on most of the machines, but on
-this machine, the "Front" couldn't be turned off otherwise the
-headphone will be off too. Here we do some change to let the ctl's
-name change to "Headphone+LO" on this machine, and pipewire and
-pulseaudio already could handle "Headphone+LO" and "Speaker+LO".
-(https://gitlab.freedesktop.org/pipewire/pipewire/-/issues/747)
+This has passed correctness verification with test_div64 and reduced the
+module's average execution time down to 1.0445s and 0.2619s from 1.0668s
+and 0.2629s respectively for an R3400 CPU @40MHz and a 5Kc CPU @160MHz.
 
-BugLink: http://bugs.launchpad.net/bugs/804178
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
-Link: https://lore.kernel.org/r/20210504073917.22406-1-hui.wang@canonical.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/hda_generic.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+ arch/mips/include/asm/div64.h |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 14881fe80a21..1833deefe1af 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -1212,11 +1212,17 @@ static const char *get_line_out_pfx(struct hda_codec *codec, int ch,
- 		*index = ch;
- 		return "Headphone";
- 	case AUTO_PIN_LINE_OUT:
--		/* This deals with the case where we have two DACs and
--		 * one LO, one HP and one Speaker */
--		if (!ch && cfg->speaker_outs && cfg->hp_outs) {
--			bool hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
--			bool spk_lo_shared = !path_has_mixer(codec, spec->speaker_paths[0], ctl_type);
-+		/* This deals with the case where one HP or one Speaker or
-+		 * one HP + one Speaker need to share the DAC with LO
-+		 */
-+		if (!ch) {
-+			bool hp_lo_shared = false, spk_lo_shared = false;
-+
-+			if (cfg->speaker_outs)
-+				spk_lo_shared = !path_has_mixer(codec,
-+								spec->speaker_paths[0],	ctl_type);
-+			if (cfg->hp_outs)
-+				hp_lo_shared = !path_has_mixer(codec, spec->hp_paths[0], ctl_type);
- 			if (hp_lo_shared && spk_lo_shared)
- 				return spec->vmaster_mute.hook ? "PCM" : "Master";
- 			if (hp_lo_shared)
--- 
-2.30.2
-
+--- a/arch/mips/include/asm/div64.h
++++ b/arch/mips/include/asm/div64.h
+@@ -68,9 +68,11 @@
+ 									\
+ 	__high = __div >> 32;						\
+ 	__low = __div;							\
+-	__upper = __high;						\
+ 									\
+-	if (__high) {							\
++	if (__high < __radix) {						\
++		__upper = __high;					\
++		__high = 0;						\
++	} else {							\
+ 		__asm__("divu	$0, %z1, %z2"				\
+ 		: "=x" (__modquot)					\
+ 		: "Jr" (__high), "Jr" (__radix));			\
 
 
