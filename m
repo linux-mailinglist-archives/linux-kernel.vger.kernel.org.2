@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8C938AB2E
+	by mail.lfdr.de (Postfix) with ESMTP id 655F538AB2F
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:21:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240695AbhETLVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:21:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59128 "EHLO mail.kernel.org"
+        id S240762AbhETLVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:21:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59276 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238750AbhETLBC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:01:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C0EC61D0A;
-        Thu, 20 May 2021 10:03:31 +0000 (UTC)
+        id S232682AbhETLBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:01:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9B93C61355;
+        Thu, 20 May 2021 10:03:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505011;
-        bh=rZz1ZdBZL2WzTgvLe7/w0Oc3q815CYmWv5pnPMZ73co=;
+        s=korg; t=1621505014;
+        bh=Z6UbPC3YaFr6xZOYx04oMx0zKfG+uYNupeNTenzyxoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0kUaliJ/TYB/G2PSU9f3G3kpqsQQVBozb9K5IVmM/xv18JFsXINY2FExepQTbBXzX
-         4wMRFc8/GpPeiAnXRwop5wEHlQCHX0LD440HG3EzPh8q7SvAlJi2ulL+ZD+l7oBiTD
-         0nehfWvq9/mzvRnkJ2nmSThTwvGBSvtp2Xsa/Zag=
+        b=HkXsznKl0xDwM7+qXVL2zaUvclf98NPdico/uHvDBtHpILajCyTF2s/XQj776905f
+         pvyZKZ4BD+Zut8D8lBCRF57ig/B29iqO3j226iOu3KDkBr+J/SxGx8LXyFLh0Y8vKk
+         2m2eaVbHVGbE0cJG9qG+v6aJuviEKlyBWnOPLsUM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 149/240] net: thunderx: Fix unintentional sign extension issue
-Date:   Thu, 20 May 2021 11:22:21 +0200
-Message-Id: <20210520092113.653804196@linuxfoundation.org>
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 150/240] i2c: cadence: add IRQ check
+Date:   Thu, 20 May 2021 11:22:22 +0200
+Message-Id: <20210520092113.684270469@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,40 +39,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit e701a25840360706fe4cf5de0015913ca19c274b ]
+[ Upstream commit 5581c2c5d02bc63a0edb53e061c8e97cd490646e ]
 
-The shifting of the u8 integers rq->caching by 26 bits to
-the left will be promoted to a 32 bit signed int and then
-sign-extended to a u64. In the event that rq->caching is
-greater than 0x1f then all then all the upper 32 bits of
-the u64 end up as also being set because of the int
-sign-extension. Fix this by casting the u8 values to a
-u64 before the 26 bit left shift.
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to devm_request_irq() (which
+takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding
+an original error code.  Stop calling devm_request_irq() with invalid
+IRQ #s.
 
-Addresses-Coverity: ("Unintended sign extension")
-Fixes: 4863dea3fab0 ("net: Adding support for Cavium ThunderX network controller")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Fixes: df8eb5691c48 ("i2c: Add driver for Cadence I2C controller")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Signed-off-by: Wolfram Sang <wsa@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/cavium/thunder/nicvf_queues.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/i2c/busses/i2c-cadence.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
-index 747ef0882976..8f3d544bec0c 100644
---- a/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
-+++ b/drivers/net/ethernet/cavium/thunder/nicvf_queues.c
-@@ -537,7 +537,7 @@ static void nicvf_rcv_queue_config(struct nicvf *nic, struct queue_set *qs,
- 	mbx.rq.msg = NIC_MBOX_MSG_RQ_CFG;
- 	mbx.rq.qs_num = qs->vnic_id;
- 	mbx.rq.rq_num = qidx;
--	mbx.rq.cfg = (rq->caching << 26) | (rq->cq_qs << 19) |
-+	mbx.rq.cfg = ((u64)rq->caching << 26) | (rq->cq_qs << 19) |
- 			  (rq->cq_idx << 16) | (rq->cont_rbdr_qs << 9) |
- 			  (rq->cont_qs_rbdr_idx << 8) |
- 			  (rq->start_rbdr_qs << 1) | (rq->start_qs_rbdr_idx);
+diff --git a/drivers/i2c/busses/i2c-cadence.c b/drivers/i2c/busses/i2c-cadence.c
+index 45d6771fac8c..23ee1a423654 100644
+--- a/drivers/i2c/busses/i2c-cadence.c
++++ b/drivers/i2c/busses/i2c-cadence.c
+@@ -908,7 +908,10 @@ static int cdns_i2c_probe(struct platform_device *pdev)
+ 	if (IS_ERR(id->membase))
+ 		return PTR_ERR(id->membase);
+ 
+-	id->irq = platform_get_irq(pdev, 0);
++	ret = platform_get_irq(pdev, 0);
++	if (ret < 0)
++		return ret;
++	id->irq = ret;
+ 
+ 	id->adap.owner = THIS_MODULE;
+ 	id->adap.dev.of_node = pdev->dev.of_node;
 -- 
 2.30.2
 
