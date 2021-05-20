@@ -2,93 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809DE38B43D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3386A38B447
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:32:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233938AbhETQbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232078AbhETQbn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:31:43 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E618C061574;
-        Thu, 20 May 2021 09:30:20 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id x8so16794960qkl.2;
-        Thu, 20 May 2021 09:30:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=3W+WKCOZfAqXxcanQdJX+E4VIil1GeWKxxWHUOqsnD4=;
-        b=HAbBW113TuLa9uF4nGtlHtdoyguK0a0XR8RiCgHJn6OOfAVrEndlerGb9lojxQQU46
-         L+JMqEeBn3zvbZm1g3i1qMk6dF88k2K3E6YwAhiwWSxWq013UYHS81e566F87A6jm0rx
-         WswXOtpOOkAqOcBcEbFJrkHq5CNCzz3oc9WcSnT6xfB+69zbr/as/cRSTLBjCRqARdwH
-         b8MuzNtkv872KFOL3l/iZSxYhK7ZbCeb1gs2OE07mDuVVOtkBRsm6yENj/gm1zYhav2y
-         YDsyfqXvkaPzhNMJ8Q2cKHPL6NsH2AklMxth7IQ0ZwikcS1FAOEJIjZXpUT+4BYm9Nbi
-         1Q2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=3W+WKCOZfAqXxcanQdJX+E4VIil1GeWKxxWHUOqsnD4=;
-        b=V83SUxWcSFbHdOTPgsRwukfI6Wu6iLhjqwFKA6XD2mXxixXym+R8Zd/2R9Q6G5d8Lr
-         lQmKeYPXX8HscPnIL4M4prqoH1p27ixQBlnqMVTKz2VisyHEesZHupKFKzvmTnuSF0Cb
-         k+KfBECDG9MXc5qxJiAJ5jhErnMdJdXRFJaQQeZL+rmVO+zbhD5zhnrbWYMjmPSs5dbs
-         OChW78Sfcz8NgkLqMt/jtsyWKj6+yqBQ4G4enHJQ8do4/xzcMtpHXEdWe/asUXFrAfRR
-         IwYFLf0ZWelv/8XvDDXZgM3JlKHG9rEsQCLDFtUfiHARo/w2NO6nU3/zOK1JUJ44TBSX
-         Laog==
-X-Gm-Message-State: AOAM531GsDCnajKnmVf1arhg6X7bITRKvy5/HDjrcte+k3s0uUlvqls2
-        WYWAk+RUQkYfEMURoQbis3M=
-X-Google-Smtp-Source: ABdhPJx9lJDvWGuOPcMvZ/rfOceGpfyiWsJDD9YtW7iPj7j3dfO07FvRecvEo4/GqqOgyg3OBb0xcg==
-X-Received: by 2002:a37:a254:: with SMTP id l81mr5855956qke.175.1621528219596;
-        Thu, 20 May 2021 09:30:19 -0700 (PDT)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [199.96.183.179])
-        by smtp.gmail.com with ESMTPSA id f16sm2151636qth.79.2021.05.20.09.30.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 09:30:19 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 20 May 2021 12:30:18 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, shy828301@gmail.com,
-        junichi.nomura@nec.com, Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        id S233946AbhETQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:33:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231655AbhETQdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:33:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 13CF861019;
+        Thu, 20 May 2021 16:32:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621528347;
+        bh=xap1mXh1aur7meGreudrJanpOTnkh3G8eXqK30buDU0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iAPrl2gKGSuO1pkSKW3UyYVcIWate1zEbOx6uQS2z95I8eDwM5jqfMk29DubPfRIB
+         XwsyHZwvACHYvGD0QV4Fo7/GdQU0WsQmoZcWNWGjE32mb0V5JPXWEsGlzFHi9dKv5w
+         cnlHYrN7T2AnP/D4CPLBxjmzzIXyAsnYSGFVHVQ+GpeJs37Rba47rJrVR6bJvwcJuO
+         nk9Cq7fFLi8ozynliJ5dZNB352FPHSA0xx95jh/TRbrrwyBOyQVynS2JO7IpG87WTI
+         LfcNN0673MChDgM+7lS1mEjMyCwbBBV2K0Hztme9ch8fTT22DOEneBXRwjXMY8o4kb
+         8aXKLMX9iJkCg==
+Date:   Thu, 20 May 2021 19:32:23 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     shuah@kernel.org, linux-kselftest@vger.kernel.org,
+        linux-sgx@vger.kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: disable controllers at parse time
-Message-ID: <YKaOmmI8G4DPk+uo@slm.duckdns.org>
-References: <20210512201946.2949351-1-shakeelb@google.com>
+Subject: Re: [PATCH v5 2/2] selftests/sgx: Migrate to kselftest harness
+Message-ID: <YKaPFzzEQuA9j1ul@kernel.org>
+References: <20210512215323.420639-1-jarkko@kernel.org>
+ <20210512215323.420639-2-jarkko@kernel.org>
+ <3b920525-694c-a8e4-93f5-7b1a3f9ad009@intel.com>
+ <YKP+CavM21klDHH8@kernel.org>
+ <YKQcH2/5ENIp2Bps@kernel.org>
+ <16d7588e-a44c-90c1-44be-3a9cca1dc913@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210512201946.2949351-1-shakeelb@google.com>
+In-Reply-To: <16d7588e-a44c-90c1-44be-3a9cca1dc913@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 12, 2021 at 01:19:46PM -0700, Shakeel Butt wrote:
-> This patch effectively reverts the commit a3e72739b7a7 ("cgroup: fix
-> too early usage of static_branch_disable()"). The commit 6041186a3258
-> ("init: initialize jump labels before command line option parsing") has
-> moved the jump_label_init() before parse_args() which has made the
-> commit a3e72739b7a7 unnecessary. On the other hand there are
-> consequences of disabling the controllers later as there are subsystems
-> doing the controller checks for different decisions. One such incident
-> is reported [1] regarding the memory controller and its impact on memory
-> reclaim code.
+On Tue, May 18, 2021 at 01:07:16PM -0700, Reinette Chatre wrote:
+> Hi Jarkko,
 > 
-> [1] https://lore.kernel.org/linux-mm/921e53f3-4b13-aab8-4a9e-e83ff15371e4@nec.com
+> On 5/18/2021 12:57 PM, Jarkko Sakkinen wrote:
+> > On Tue, May 18, 2021 at 08:49:00PM +0300, Jarkko Sakkinen wrote:
+> > > On Mon, May 17, 2021 at 10:03:42AM -0700, Reinette Chatre wrote:
+> > > > Hi Jarkko,
+> > > > 
+> > > > On 5/12/2021 2:53 PM, Jarkko Sakkinen wrote:
+> > > > > Migrate to kselftest harness. Use a fixture test with enclave initialized
+> > > > > and de-initialized for each of the existing three tests, in other words:
+> > > > > 
+> > > > > 1. One FIXTURE() for managing the enclave life-cycle.
+> > > > > 2. Three TEST_F()'s, one for each test case.
+> > > > > 
+> > > > > This gives a leaps better reporting than before. Here's an example
+> > > > > transcript:
+> > > > > 
+> > > > > TAP version 13
+> > > > > 1..3
+> > > > > 
+> > > > > ok 1 enclave.unclobbered_vdso
+> > > > > 
+> > > > > ok 2 enclave.clobbered_vdso
+> > > > > 
+> > > > > ok 3 enclave.clobbered_vdso_and_user_function
+> > > > > 
+> > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+> > > > > ---
+> > > > > 
+> > > > > v5:
+> > > > > * Use TH_LOG() for printing enclave address ranges instead of printf(),
+> > > > >     based on Reinette's remark.
+> > > > 
+> > > > Thank you for considering my feedback. The motivation for my comment was to
+> > > > consider how this test output will be parsed. If these tests will have their
+> > > > output parsed by automated systems then it needs to conform to the TAP13
+> > > > format as supported by kselftest.
+> > > > 
+> > > > In your latest version the output printed during a successful test has been
+> > > > changed, using TH_LOG() as you noted. From what I can tell this is the only
+> > > > output addressed - failing tests continue to print error messages (perror,
+> > > > fprintf) without consideration of how they will be parsed. My apologies, I
+> > > > am not a kselftest expert to know what the best way for this integration is.
+> > > > 
+> > > > Reinette
+> > > 
+> > > It's a valid question, yes.
+> > > 
+> > > The problem is that only main.c can use kselftest macros because
+> > > kselftest_harness.h pulls
+> > > 
+> > > static int test_harness_run(int __attribute__((unused)) argc,
+> > > 			    char __attribute__((unused)) **argv)
+> > > 
+> > > which will not end up having a call site (because there's no
+> > > "TEST_HARNESS_MAIN").
+> > > 
+> > > The whole logging thing in kselftest harness is a bit ambiguous.
+> > > Namely:
+> > > 
+> > > 1. There's a macro TH_LOG() defined in kselftest_harness.h, which
+> > >     "internally" uses fprintf().
+> > > 2. There's an inline function ksft_print_msg() in kselftest.h
+> > >     using vsprintf().
+> > > 
+> > > To add to that, kselftest_harness.h internally prints by using
+> > > ksft_print_msg(), and provides TH_LOG(), which does not use
+> > > ksft_print_msg().
+> > > 
+> > > I don't really get the logic in all this.
+> > 
+> > I tried to split TH_LOG() as separate entity but it's not possible, as the
+> > macros access a static variable called '_metadata'.
+> > 
+> > I'm not exactly sure how to proceed from this, if we want to make logging
+> > consistent.
+> > 
+> > I would personally suggest to leave the error messages intact in load.c,
+> > because there is no way to make them consistent, except by removing them.
 > 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Reported-by: NOMURA JUNICHI(野村　淳一) <junichi.nomura@nec.com>
+> 
+> It is not clear to me why ksft_print_msg() cannot be used but an alternative
+> to it may be to just prefix all existing diagnostic messages with "# ".
+> 
+> Reinette
 
-Applied to cgroup/for-5.13-fixes.
+How is using ksft_print_msg() better than using fprintf()? It's as
+incompatible with the logging used by fixtures, as is a raw fprintf().
 
-Thanks.
+What is the gain of doing that?
 
--- 
-tejun
+/Jarkko
