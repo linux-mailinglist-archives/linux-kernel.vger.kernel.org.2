@@ -2,158 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B02389DF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:31:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8EB5389DF9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230423AbhETGcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:32:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55558 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbhETGcR (ORCPT
+        id S230400AbhETGdd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:33:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31225 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230325AbhETGda (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:32:17 -0400
-Received: from mail-ed1-f71.google.com ([209.85.208.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <juerg.haefliger@canonical.com>)
-        id 1ljcCt-0002AY-SF
-        for linux-kernel@vger.kernel.org; Thu, 20 May 2021 06:30:55 +0000
-Received: by mail-ed1-f71.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso9068745edu.18
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:30:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version;
-        bh=T8MGweMWh8G1Vb1FxsntXZZXVCiDZgcu3o7qGFDrNfw=;
-        b=F/aPznbtIKWIT+dHubIGCsCUTTN992Kh6kxeRnKriq/4sV/z92i1BGDHmpsh/tXfEP
-         4IXPRCM7EB81ZRYndppHcgWioDHjoitrIcSPX9eIKZty5SS59CJ7vPTMZzEcPGZCxa2G
-         oV6BlvqKo4Ww6MMWmdgtlynIpNnXXGSuxfj4rlFBrfkoKFJieMY3+ZAEFthXN1OssidK
-         JvPNUkog9kET6VGeIaJFSsAulb3eBLf9fJerizNiMNtBr6f/Nq20M8Pu2dC+w5rSEZ45
-         kxT8XvF2GYtnBvfkF1xYRrUq8rnvhJvdqqH9ovRsVLAlOavk6fHTphh+wp0nUJ53IXRt
-         XLHg==
-X-Gm-Message-State: AOAM533TLKrp497SfXJwLpAhV9MihHGDK77XVKRAW8tedJxc5BO4JhMG
-        2pSgJ7z44fwA77dDc5Hw+nBH5VREN7XzbYciSuAZeyMGHN9oOHyDQ1svx+FlZv+CYkuTAQRfvc5
-        dPaJyXpdbd9uxzb/TmralyaJz4tGtmqaundRhSVJiuA==
-X-Received: by 2002:a50:ff13:: with SMTP id a19mr3255222edu.300.1621492255642;
-        Wed, 19 May 2021 23:30:55 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyNuPb1H6GgcBejEqtfEk4G+6+0hpLo6D3PmJC9QoZVsHwbgkZ+4/XF36vpbR0o9XtSZq3ixA==
-X-Received: by 2002:a50:ff13:: with SMTP id a19mr3255207edu.300.1621492255469;
-        Wed, 19 May 2021 23:30:55 -0700 (PDT)
-Received: from smeagol ([194.191.244.86])
-        by smtp.gmail.com with ESMTPSA id fb19sm882547ejc.10.2021.05.19.23.30.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 May 2021 23:30:54 -0700 (PDT)
-From:   Juerg Haefliger <juerg.haefliger@canonical.com>
-X-Google-Original-From: Juerg Haefliger <juergh@canonical.com>
-Date:   Thu, 20 May 2021 08:30:52 +0200
-To:     Joe Perches <joe@perches.com>
-Cc:     Juerg Haefliger <juerg.haefliger@canonical.com>,
-        wim@linux-watchdog.org, linux@roeck-us.net, joel@jms.id.au,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, andrew@aj.id.au,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] watchdog: Use sysfs_emit() and sysfs_emit_at() in
- "show" functions
-Message-ID: <20210520083052.68a0e1d9@smeagol>
-In-Reply-To: <f2e616645f311ccaf6e0acb996f8c4360a0480ec.camel@perches.com>
-References: <20210511061812.480172-1-juergh@canonical.com>
-        <f2e616645f311ccaf6e0acb996f8c4360a0480ec.camel@perches.com>
-Organization: Canonical Ltd
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Thu, 20 May 2021 02:33:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621492329; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=RN9lgRAgMkbnuV8dyfImkunBot4H1ttLFkBzjmJVfK4=;
+ b=uvrA359Ct03CknBLQ4RLA/Axq1Sp4oB5KM9aSGPmRjuot3en2pOXhpFi2BQEh1Jb1YSkYlYw
+ i5Buz0yCBuGWwMsK7ihrmlCqvuG+F5yG8tVcZkMKX1W0tVj2n1xhSH4bKLK3PDrzJeXte5Yl
+ g0tQhwhwfpTUb+JBiBmaNJMokEo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60a602617b5af81b5ce0b7f7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 May 2021 06:32:01
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5134DC4338A; Thu, 20 May 2021 06:32:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 71E51C433F1;
+        Thu, 20 May 2021 06:32:00 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/L_fDvoyzrJmgDY0oW_xHuS=";
- protocol="application/pgp-signature"; micalg=pgp-sha512
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 20 May 2021 12:02:00 +0530
+From:   skakit@codeaurora.org
+To:     Matthias Kaehlcke <mka@chromium.org>, Vinod Koul <vkoul@kernel.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V4 3/8] arm64: dts: qcom: pm7325: Add pm7325 base
+ dts file
+In-Reply-To: <YKPua2M6t9yIJ5uy@google.com>
+References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
+ <1621318822-29332-4-git-send-email-skakit@codeaurora.org>
+ <YKOpE1V25rdDj4Tk@vkoul-mobl.Dlink> <YKPua2M6t9yIJ5uy@google.com>
+Message-ID: <52d277a8598277716f37ad0c1f724845@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/L_fDvoyzrJmgDY0oW_xHuS=
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On 2021-05-18 22:12, Matthias Kaehlcke wrote:
+> On Tue, May 18, 2021 at 05:16:27PM +0530, Vinod Koul wrote:
+>> On 18-05-21, 11:50, satya priya wrote:
+>> > Add base DTS file for pm7325 along with GPIOs and temp-alarm nodes.
+>> >
+>> > Signed-off-by: satya priya <skakit@codeaurora.org>
+>> > Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>> > ---
+>> > Changes in RESEND V4:
+>> >  - No Changes.
+>> >
+>> >  arch/arm64/boot/dts/qcom/pm7325.dtsi | 53 ++++++++++++++++++++++++++++++++++++
+>> >  1 file changed, 53 insertions(+)
+>> >  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> >
+>> > diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > new file mode 100644
+>> > index 0000000..e7f64a9
+>> > --- /dev/null
+>> > +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > @@ -0,0 +1,53 @@
+>> > +// SPDX-License-Identifier: BSD-3-Clause
+>> > +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
+>> > +
+>> > +#include <dt-bindings/interrupt-controller/irq.h>
+>> > +#include <dt-bindings/spmi/spmi.h>
+>> > +
+>> > +&spmi_bus {
+>> > +	pm7325: pmic@1 {
+>> > +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
+>> 
+>> where is qcom,pm7325 documented?
 
-On Wed, 12 May 2021 21:48:37 -0700
-Joe Perches <joe@perches.com> wrote:
+> 
+> good point, I missed that one.
+> 
 
-> On Tue, 2021-05-11 at 08:18 +0200, Juerg Haefliger wrote:
-> > Convert sprintf() in sysfs "show" functions to sysfs_emit() and
-> > sysfs_emit_at() in order to check for buffer overruns in sysfs outputs.=
- =20
-> []
-> > diff --git a/drivers/watchdog/ziirave_wdt.c b/drivers/watchdog/ziirave_=
-wdt.c =20
-> []
-> > @@ -445,8 +445,9 @@ static ssize_t ziirave_wdt_sysfs_show_firm(struct d=
-evice *dev,
-> > =C2=A0	if (ret)
-> > =C2=A0		return ret;
-> > =C2=A0
-> >=20
-> > -	ret =3D sprintf(buf, ZIIRAVE_FW_VERSION_FMT, w_priv->firmware_rev.maj=
-or,
-> > -		      w_priv->firmware_rev.minor);
-> > +	ret =3D sysfs_emit(buf, ZIIRAVE_FW_VERSION_FMT,
-> > +			 w_priv->firmware_rev.major,
-> > +			 w_priv->firmware_rev.minor);
-> > =C2=A0
-> >=20
-> > =C2=A0	mutex_unlock(&w_priv->sysfs_mutex);
-> > =C2=A0
-> >=20
-> > @@ -468,8 +469,9 @@ static ssize_t ziirave_wdt_sysfs_show_boot(struct d=
-evice *dev,
-> > =C2=A0	if (ret)
-> > =C2=A0		return ret;
-> > =C2=A0
-> >=20
-> > -	ret =3D sprintf(buf, ZIIRAVE_BL_VERSION_FMT, w_priv->bootloader_rev.m=
-ajor,
-> > -		      w_priv->bootloader_rev.minor);
-> > +	ret =3D sysfs_emit(buf, ZIIRAVE_BL_VERSION_FMT,
-> > +			 w_priv->bootloader_rev.major,
-> > +			 w_priv->bootloader_rev.minor);
-> > =C2=A0
-> >=20
-> > =C2=A0	mutex_unlock(&w_priv->sysfs_mutex);
-> > =C2=A0
-> >=20
-> > @@ -491,7 +493,7 @@ static ssize_t ziirave_wdt_sysfs_show_reason(struct=
- device *dev,
-> > =C2=A0	if (ret)
-> > =C2=A0		return ret;
-> > =C2=A0
-> >=20
-> > -	ret =3D sprintf(buf, "%s", ziirave_reasons[w_priv->reset_reason]);
-> > +	ret =3D sysfs_emit(buf, "%s", ziirave_reasons[w_priv->reset_reason]);=
- =20
->=20
-> All of these formats should probably end with a newline
-> and the ZIIRAVE_<FOO>_VERSION_FMT defines are to me unnecessary.
->=20
+Actually this point was discussed during V2( 
+https://lore.kernel.org/patchwork/patch/1406186/#1607321 ).
+As far as I understand it is not mandatory to add "qcom,pm7325" as we 
+are adding "qcom,spmi-pmic". It is just a good to have change.
+I could not find the documentation for pm8350c, pmk8350 and pmr735a as 
+well.
 
-I'll send a follow-on patch for that.
+>> > +		reg = <0x1 SPMI_USID>;
+>> > +		#address-cells = <1>;
+>> > +		#size-cells = <0>;
+>> > +
+>> > +		pm7325_temp_alarm: temp-alarm@a00 {
+>> > +			compatible = "qcom,spmi-temp-alarm";
+>> > +			reg = <0xa00>;
+>> > +			interrupts = <0x1 0xa 0x0 IRQ_TYPE_EDGE_BOTH>;
+>> > +			#thermal-sensor-cells = <0>;
+>> > +		};
+>> > +
+>> > +		pm7325_gpios: gpios@8800 {
+>> > +			compatible = "qcom,pm7325-gpio", "qcom,spmi-gpio";
+>> 
+>> where is qcom,pm7325-gpio documented?
+> 
+> It's added by the 'Add GPIO support for PM7325' series
+> (https://patchwork.kernel.org/project/linux-arm-msm/list/?series=481133)
+> 
+> The binding change was acked by Rob and the code by Bjorn, so it can be
+> expected to land, but it would still be good to mention the dependency
+> explicitly.
 
-...Juerg
+The binding patch is applied now.
 
---Sig_/L_fDvoyzrJmgDY0oW_xHuS=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEhZfU96IuprviLdeLD9OLCQumQrcFAmCmAhwACgkQD9OLCQum
-QrdOUhAAhmiMFmidekLXp9pqzm0r5JwSAY1m4G+OnbZpW9WCaxohD8bivxvVa7Xm
-6EQ6SNXkM6joh9iOr0MOawpiWxD2M//Cfuy2XKMSQudbTE4TE8rDD6KbgsBxWzd4
-6z82Nsd56uBA87Hrl3pVuVBHtPffIxHZGIc04GQIP24up9hZRmeZZj74trNOSdSb
-Dtf0zv2qkkWsWNTolj/aVK9oIo/gRYKFYS4Y2pouUyWO9ZKwceJoKdCZtzZjIeUT
-PIRyAFdd0LR4yVUxIF4pZSixNuL1o03ny5jRIBT8ToYxfS1jielPtsvlva7MWLdW
-wBACWcOkS6ZvvKdYyFDBmvi/6MOwkrLzPuoVxeMitWMZKVoyKXwff8pCPOLd+IVk
-qGKNjn1bNT2oi3AgDo6oA13Fl8rrkRpeJPi5aHZtmz0gs/xBsyD55l2tEBuBQREF
-z6hU4+R7FUak99gLvIVDIaKqmJn6k/1fRoCKr9BokKgS9yqJl8DVxkRNXP1LfaQt
-5RO5nsWLmgI5vSW2ScDa8hHBE0eGgaVaLJeRTSyreuTQFNJrAWpgu3Fc4LKUT2JR
-CXyR+PFBZyNQLv4SomVOztXBN83EO4cBYFebZQF3JERAOdzy4FUvwnuDj+cq//fA
-Ra6RAuVCO3+yjoIxNZVXpZiVIdPQlYeIIzBNwiSJJh06OXpovqI=
-=lrYW
------END PGP SIGNATURE-----
-
---Sig_/L_fDvoyzrJmgDY0oW_xHuS=--
+Thanks,
+Satya Priya
