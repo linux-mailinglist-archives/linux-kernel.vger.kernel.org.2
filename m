@@ -2,167 +2,312 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BEB38AF92
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:04:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF7D038AFB1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:08:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234474AbhETNFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:05:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:50926 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238364AbhETNFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:05:13 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A401011D4;
-        Thu, 20 May 2021 06:03:50 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C6E2C3F73B;
-        Thu, 20 May 2021 06:03:47 -0700 (PDT)
-Subject: Re: [PATCH v12 3/8] arm64: mte: Sync tags for pages where PTE is
- untagged
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-4-steven.price@arm.com> <20210519180610.GE21619@arm.com>
- <3bac3a47-9f96-c7bf-e401-fdef60dcc9d8@arm.com>
- <20210520122550.GD12251@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <85946169-3670-c33e-bd49-abd16dce3fa1@arm.com>
-Date:   Thu, 20 May 2021 14:03:42 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S242243AbhETNKL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240275AbhETNJm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 09:09:42 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB1E3C061236
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:04:21 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id p8so16430165iol.11
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 06:04:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=poorly.run; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LaILeXDQ0boA1j3FLO8VWLh6qerXlZqRCMq60RpzKEc=;
+        b=RLn3xKHobOFvZGz0ghTnYHK5Te1heylHLZDMRa3NHzie16L+RemZXJOUMR8pspyJeI
+         SpSZLpUvz2zfoewTkT/8c4ogotCfIxI9BrwEyqbR/i39/NSX+/ddum+nIx8nPzvEf46F
+         1Qyv2f8KAfkNMh/WLc9+XBJQbYYB4fbxfiOS8XBmRo5c3fctrNHps/D01fWHNCinljpR
+         hQFc7DDzlf55fLKCo2BIkR122dc5qMbMYuu09BSUEfNmMOCwyENSOh4fUgItIcy6I0v8
+         oGS+REV9VRblzjm7xKQuuOImHJXunvMud7pkMdkW1Xn9RQZ/TudNEtnKlmd+fkZ+Cony
+         9ZeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LaILeXDQ0boA1j3FLO8VWLh6qerXlZqRCMq60RpzKEc=;
+        b=sjN+IQZCHi7DicEvme00ztJOzonwSKGSjB16l7+13ROXxayIphxxTZB2pg4NFxqH/c
+         zOmX7pYQEW+pctQeF93dqSPQ1RiqvWh01psl18pw+k6+Z8KmIj23W9eRxfo0iY1lBKUe
+         4lg/n22JqtYYC1Q5+4iw5eXrKJ3M8XFLhyxZCxgs9SwcB80rmRgsabDCvntBbbuMb5q1
+         Dm3/ZrW30O4HT1RD6BMeGdQCWbhfUPgEhdfZEHcbnr4N1Hlh2ttQxCEOepl1OK1vSTvr
+         JHdQUnkuaKmkWPJdkUaSsyCK/DOfEeyvkC0bua6c5R8XT1GTQTBVMmWIlYPaDWSuA+LO
+         EW4g==
+X-Gm-Message-State: AOAM530pKceDdTmT4cHAKzlruD0LYfPgH16Nkk3aDms0CJ9//G1kxv1D
+        mUKDABXAVgRE7aZpgRhUH1SKSsh9bPos9u0V/Kh1zQ==
+X-Google-Smtp-Source: ABdhPJwfNwnUIs9JCwBhNCCzuYKrbU6/EOU4x7fJTdO30hXcwWQCXXe29GQIVa9BkbOHDSpYhHQrhZMscQ9WkDc7cmU=
+X-Received: by 2002:a5d:9959:: with SMTP id v25mr5618382ios.85.1621515860195;
+ Thu, 20 May 2021 06:04:20 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210520122550.GD12251@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+References: <20210429042834.1127456-1-hsinyi@chromium.org>
+In-Reply-To: <20210429042834.1127456-1-hsinyi@chromium.org>
+From:   Sean Paul <sean@poorly.run>
+Date:   Thu, 20 May 2021 09:03:44 -0400
+Message-ID: <CAMavQK+QTaG0Bgb7cYw=mvKcyaQo4FKPYJPSppUx=CZvo_QJeg@mail.gmail.com>
+Subject: Re: [PATCH v6 1/3] gpu: drm: separate panel orientation property
+ creating and value setting
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Intel Graphics Development <intel-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 13:25, Catalin Marinas wrote:
-> On Thu, May 20, 2021 at 12:55:21PM +0100, Steven Price wrote:
->> On 19/05/2021 19:06, Catalin Marinas wrote:
->>> On Mon, May 17, 2021 at 01:32:34PM +0100, Steven Price wrote:
->>>> A KVM guest could store tags in a page even if the VMM hasn't mapped
->>>> the page with PROT_MTE. So when restoring pages from swap we will
->>>> need to check to see if there are any saved tags even if !pte_tagged().
->>>>
->>>> However don't check pages for which pte_access_permitted() returns false
->>>> as these will not have been swapped out.
->>>>
->>>> Signed-off-by: Steven Price <steven.price@arm.com>
->>>> ---
->>>>  arch/arm64/include/asm/pgtable.h |  9 +++++++--
->>>>  arch/arm64/kernel/mte.c          | 16 ++++++++++++++--
->>>>  2 files changed, 21 insertions(+), 4 deletions(-)
->>>>
->>>> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
->>>> index 0b10204e72fc..275178a810c1 100644
->>>> --- a/arch/arm64/include/asm/pgtable.h
->>>> +++ b/arch/arm64/include/asm/pgtable.h
->>>> @@ -314,8 +314,13 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
->>>>  	if (pte_present(pte) && pte_user_exec(pte) && !pte_special(pte))
->>>>  		__sync_icache_dcache(pte);
->>>>  
->>>> -	if (system_supports_mte() &&
->>>> -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
->>>> +	/*
->>>> +	 * If the PTE would provide user space access to the tags associated
->>>> +	 * with it then ensure that the MTE tags are synchronised.  Exec-only
->>>> +	 * mappings don't expose tags (instruction fetches don't check tags).
->>>> +	 */
->>>> +	if (system_supports_mte() && pte_present(pte) &&
->>>> +	    pte_access_permitted(pte, false) && !pte_special(pte))
->>>>  		mte_sync_tags(ptep, pte);
->>>
->>> Looking at the mte_sync_page_tags() logic, we bail out early if it's the
->>> old pte is not a swap one and the new pte is not tagged. So we only need
->>> to call mte_sync_tags() if it's a tagged new pte or the old one is swap.
->>> What about changing the set_pte_at() test to:
->>>
->>> 	if (system_supports_mte() && pte_present(pte) && !pte_special(pte) &&
->>> 	    (pte_tagged(pte) || is_swap_pte(READ_ONCE(*ptep))))
->>> 		mte_sync_tags(ptep, pte);
->>>
->>> We can even change mte_sync_tags() to take the old pte directly:
->>>
->>> 	if (system_supports_mte() && pte_present(pte) && !pte_special(pte)) {
->>> 		pte_t old_pte = READ_ONCE(*ptep);
->>> 		if (pte_tagged(pte) || is_swap_pte(old_pte))
->>> 			mte_sync_tags(old_pte, pte);
->>> 	}
->>>
->>> It would save a function call in most cases where the page is not
->>> tagged.
->>
->> Yes that looks like a good optimisation - although you've missed the
->> pte_access_permitted() part of the check ;)
-> 
-> I was actually wondering if we could remove it. I don't think it buys us
-> much as we have a pte_present() check already, so we know it is pointing
-> to a valid page. Currently we'd only get a tagged pte on user mappings,
-> same with swap entries.
+On Thu, Apr 29, 2021 at 12:28 AM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> drm_dev_register() sets connector->registration_state to
+> DRM_CONNECTOR_REGISTERED and dev->registered to true. If
+> drm_connector_set_panel_orientation() is first called after
+> drm_dev_register(), it will fail several checks and results in following
+> warning.
+>
+> Add a function to create panel orientation property and set default value
+> to UNKNOWN, so drivers can call this function to init the property earlier
+> , and let the panel set the real value later.
+>
+> [    4.480976] ------------[ cut here ]------------
+> [    4.485603] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:45 __drm_mode_object_add+0xb4/0xbc
+> <snip>
+> [    4.609772] Call trace:
+> [    4.612208]  __drm_mode_object_add+0xb4/0xbc
+> [    4.616466]  drm_mode_object_add+0x20/0x2c
+> [    4.620552]  drm_property_create+0xdc/0x174
+> [    4.624723]  drm_property_create_enum+0x34/0x98
+> [    4.629241]  drm_connector_set_panel_orientation+0x64/0xa0
+> [    4.634716]  boe_panel_get_modes+0x88/0xd8
+> [    4.638802]  drm_panel_get_modes+0x2c/0x48
+> [    4.642887]  panel_bridge_get_modes+0x1c/0x28
+> [    4.647233]  drm_bridge_connector_get_modes+0xa0/0xd4
+> [    4.652273]  drm_helper_probe_single_connector_modes+0x218/0x700
+> [    4.658266]  drm_mode_getconnector+0x1b4/0x45c
+> [    4.662699]  drm_ioctl_kernel+0xac/0x128
+> [    4.666611]  drm_ioctl+0x268/0x410
+> [    4.670002]  drm_compat_ioctl+0xdc/0xf0
+> [    4.673829]  __arm64_compat_sys_ioctl+0xc8/0x100
+> [    4.678436]  el0_svc_common+0xf4/0x1c0
+> [    4.682174]  do_el0_svc_compat+0x28/0x3c
+> [    4.686088]  el0_svc_compat+0x10/0x1c
+> [    4.689738]  el0_sync_compat_handler+0xa8/0xcc
+> [    4.694171]  el0_sync_compat+0x178/0x180
+> [    4.698082] ---[ end trace b4f2db9d9c88610b ]---
+> [    4.702721] ------------[ cut here ]------------
+> [    4.707329] WARNING: CPU: 5 PID: 369 at drivers/gpu/drm/drm_mode_object.c:243 drm_object_attach_property+0x48/0xb8
+> <snip>
+> [    4.833830] Call trace:
+> [    4.836266]  drm_object_attach_property+0x48/0xb8
+> [    4.840958]  drm_connector_set_panel_orientation+0x84/0xa0
+> [    4.846432]  boe_panel_get_modes+0x88/0xd8
+> [    4.850516]  drm_panel_get_modes+0x2c/0x48
+> [    4.854600]  panel_bridge_get_modes+0x1c/0x28
+> [    4.858946]  drm_bridge_connector_get_modes+0xa0/0xd4
+> [    4.863984]  drm_helper_probe_single_connector_modes+0x218/0x700
+> [    4.869978]  drm_mode_getconnector+0x1b4/0x45c
+> [    4.874410]  drm_ioctl_kernel+0xac/0x128
+> [    4.878320]  drm_ioctl+0x268/0x410
+> [    4.881711]  drm_compat_ioctl+0xdc/0xf0
+> [    4.885536]  __arm64_compat_sys_ioctl+0xc8/0x100
+> [    4.890142]  el0_svc_common+0xf4/0x1c0
+> [    4.893879]  do_el0_svc_compat+0x28/0x3c
+> [    4.897791]  el0_svc_compat+0x10/0x1c
+> [    4.901441]  el0_sync_compat_handler+0xa8/0xcc
+> [    4.905873]  el0_sync_compat+0x178/0x180
+> [    4.909783] ---[ end trace b4f2db9d9c88610c ]---
+>
 
-Actually the other way round makes more sense surely?
-pte_access_permitted() is true if both PTE_VALID & PTE_USER are set.
-pte_present() is true if *either* PTE_VALID or PTE_PROT_NONE are set. So
-the pte_present() is actually redundant.
++intel-gfx for i915 changes
 
-> When vmalloc kasan_hw will be added, I think we have a set_pte_at() with
-> a tagged pte but init_mm and high address (we might as well add a
-> warning if addr > TASK_SIZE_64 on the mte_sync_tags path so that we
-> don't forget).
+Reviewed-by: Sean Paul <seanpaul@chromium.org>
 
-While we might not yet have tagged kernel pages - I'm not sure there's
-much point weakening the check to have to then check addr as well in the
-future.
-
->> The problem I hit is one of include dependencies:
->>
->> is_swap_pte() is defined (as a static inline) in
->> include/linux/swapops.h. However the definition depends on
->> pte_none()/pte_present() which are defined in pgtable.h - so there's a
->> circular dependency.
->>
->> Open coding is_swap_pte() in set_pte_at() works, but it's a bit ugly.
->> Any ideas on how to improve on the below?
->>
->> 	if (system_supports_mte() && pte_present(pte) &&
->> 	    pte_access_permitted(pte, false) && !pte_special(pte)) {
->> 		pte_t old_pte = READ_ONCE(*ptep);
->> 		/*
->> 		 * We only need to synchronise if the new PTE has tags enabled
->> 		 * or if swapping in (in which case another mapping may have
->> 		 * set tags in the past even if this PTE isn't tagged).
->> 		 * (!pte_none() && !pte_present()) is an open coded version of
->> 		 * is_swap_pte()
->> 		 */
->> 		if (pte_tagged(pte) || (!pte_none(pte) && !pte_present(pte)))
->> 			mte_sync_tags(old_pte, pte);
->> 	}
-> 
-> That's why I avoided testing my suggestion ;). I think we should just
-> add !pte_none() in there with a comment that it may be a swap pte and
-> use the is_swap_pte() again on the mte_sync_tags() path. We already have
-> the pte_present() check.
-
-Well of course I didn't test the above beyond building - and I've
-screwed up because the open coded is_swap_pte() should have been called
-on old_pte not pte!
-
-So the pte_present() check above (which I've just removed...) is for the
-*new* PTE. So I think we need to keep both here.
-
-Steve
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+> v6, v5:
+> don't create property in set_panel_orientation.
+>
+> v4, v3:
+> create property in dsi driver and set value in panel.
+>
+> v2:
+> create property in connector init
+> https://patchwork.kernel.org/project/linux-mediatek/patch/20210426051848.2600890-1-hsinyi@chromium.org/
+>
+> v1:
+> set panel orientation in dsi driver
+> https://patchwork.kernel.org/project/linux-mediatek/patch/20210409045314.3420733-1-hsinyi@chromium.org/
+> ---
+>  drivers/gpu/drm/drm_connector.c         | 58 ++++++++++++++++++-------
+>  drivers/gpu/drm/i915/display/icl_dsi.c  |  1 +
+>  drivers/gpu/drm/i915/display/intel_dp.c |  1 +
+>  drivers/gpu/drm/i915/display/vlv_dsi.c  |  1 +
+>  include/drm/drm_connector.h             |  2 +
+>  5 files changed, 47 insertions(+), 16 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
+> index 7631f76e7f34..7189baaabf41 100644
+> --- a/drivers/gpu/drm/drm_connector.c
+> +++ b/drivers/gpu/drm/drm_connector.c
+> @@ -1210,7 +1210,7 @@ static const struct drm_prop_enum_list dp_colorspaces[] = {
+>   *     INPUT_PROP_DIRECT) will still map 1:1 to the actual LCD panel
+>   *     coordinates, so if userspace rotates the picture to adjust for
+>   *     the orientation it must also apply the same transformation to the
+> - *     touchscreen input coordinates. This property is initialized by calling
+> + *     touchscreen input coordinates. This property value is set by calling
+>   *     drm_connector_set_panel_orientation() or
+>   *     drm_connector_set_panel_orientation_with_quirk()
+>   *
+> @@ -2173,8 +2173,8 @@ EXPORT_SYMBOL(drm_connector_set_vrr_capable_property);
+>   * @connector: connector for which to set the panel-orientation property.
+>   * @panel_orientation: drm_panel_orientation value to set
+>   *
+> - * This function sets the connector's panel_orientation and attaches
+> - * a "panel orientation" property to the connector.
+> + * This function sets the connector's panel_orientation value. If the property
+> + * doesn't exist, it will return an error.
+>   *
+>   * Calling this function on a connector where the panel_orientation has
+>   * already been set is a no-op (e.g. the orientation has been overridden with
+> @@ -2205,19 +2205,11 @@ int drm_connector_set_panel_orientation(
+>         info->panel_orientation = panel_orientation;
+>
+>         prop = dev->mode_config.panel_orientation_property;
+> -       if (!prop) {
+> -               prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
+> -                               "panel orientation",
+> -                               drm_panel_orientation_enum_list,
+> -                               ARRAY_SIZE(drm_panel_orientation_enum_list));
+> -               if (!prop)
+> -                       return -ENOMEM;
+> -
+> -               dev->mode_config.panel_orientation_property = prop;
+> -       }
+> +       if (WARN_ON(!prop))
+> +               return -EINVAL;
+>
+> -       drm_object_attach_property(&connector->base, prop,
+> -                                  info->panel_orientation);
+> +       drm_object_property_set_value(&connector->base, prop,
+> +                                     info->panel_orientation);
+>         return 0;
+>  }
+>  EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+> @@ -2225,7 +2217,7 @@ EXPORT_SYMBOL(drm_connector_set_panel_orientation);
+>  /**
+>   * drm_connector_set_panel_orientation_with_quirk -
+>   *     set the connector's panel_orientation after checking for quirks
+> - * @connector: connector for which to init the panel-orientation property.
+> + * @connector: connector for which to set the panel-orientation property.
+>   * @panel_orientation: drm_panel_orientation value to set
+>   * @width: width in pixels of the panel, used for panel quirk detection
+>   * @height: height in pixels of the panel, used for panel quirk detection
+> @@ -2252,6 +2244,40 @@ int drm_connector_set_panel_orientation_with_quirk(
+>  }
+>  EXPORT_SYMBOL(drm_connector_set_panel_orientation_with_quirk);
+>
+> +/**
+> + * drm_connector_init_panel_orientation_property -
+> + *     create the connector's panel orientation property
+> + *
+> + * This function attaches a "panel orientation" property to the connector
+> + * and initializes its value to DRM_MODE_PANEL_ORIENTATION_UNKNOWN.
+> + *
+> + * The value of the property can be set by drm_connector_set_panel_orientation()
+> + * or drm_connector_set_panel_orientation_with_quirk() later.
+> + *
+> + * Returns:
+> + * Zero on success, negative errno on failure.
+> + */
+> +int drm_connector_init_panel_orientation_property(
+> +       struct drm_connector *connector)
+> +{
+> +       struct drm_device *dev = connector->dev;
+> +       struct drm_property *prop;
+> +
+> +       prop = drm_property_create_enum(dev, DRM_MODE_PROP_IMMUTABLE,
+> +                       "panel orientation",
+> +                       drm_panel_orientation_enum_list,
+> +                       ARRAY_SIZE(drm_panel_orientation_enum_list));
+> +       if (!prop)
+> +               return -ENOMEM;
+> +
+> +       dev->mode_config.panel_orientation_property = prop;
+> +       drm_object_attach_property(&connector->base, prop,
+> +                                  DRM_MODE_PANEL_ORIENTATION_UNKNOWN);
+> +
+> +       return 0;
+> +}
+> +EXPORT_SYMBOL(drm_connector_init_panel_orientation_property);
+> +
+>  int drm_connector_set_obj_prop(struct drm_mode_object *obj,
+>                                     struct drm_property *property,
+>                                     uint64_t value)
+> diff --git a/drivers/gpu/drm/i915/display/icl_dsi.c b/drivers/gpu/drm/i915/display/icl_dsi.c
+> index 9282978060b0..5ac4538e4283 100644
+> --- a/drivers/gpu/drm/i915/display/icl_dsi.c
+> +++ b/drivers/gpu/drm/i915/display/icl_dsi.c
+> @@ -1903,6 +1903,7 @@ static void icl_dsi_add_properties(struct intel_connector *connector)
+>
+>         connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+>
+> +       drm_connector_init_panel_orientation_property(&connector->base);
+>         drm_connector_set_panel_orientation_with_quirk(&connector->base,
+>                                 intel_dsi_get_panel_orientation(connector),
+>                                 connector->panel.fixed_mode->hdisplay,
+> diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
+> index a5231ac3443a..f1d664e5abb2 100644
+> --- a/drivers/gpu/drm/i915/display/intel_dp.c
+> +++ b/drivers/gpu/drm/i915/display/intel_dp.c
+> @@ -5263,6 +5263,7 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
+>         intel_panel_setup_backlight(connector, pipe);
+>
+>         if (fixed_mode) {
+> +               drm_connector_init_panel_orientation_property(connector);
+>                 drm_connector_set_panel_orientation_with_quirk(connector,
+>                                 dev_priv->vbt.orientation,
+>                                 fixed_mode->hdisplay, fixed_mode->vdisplay);
+> diff --git a/drivers/gpu/drm/i915/display/vlv_dsi.c b/drivers/gpu/drm/i915/display/vlv_dsi.c
+> index 9bee99fe5495..853855482af1 100644
+> --- a/drivers/gpu/drm/i915/display/vlv_dsi.c
+> +++ b/drivers/gpu/drm/i915/display/vlv_dsi.c
+> @@ -1632,6 +1632,7 @@ static void vlv_dsi_add_properties(struct intel_connector *connector)
+>
+>                 connector->base.state->scaling_mode = DRM_MODE_SCALE_ASPECT;
+>
+> +               drm_connector_init_panel_orientation_property(&connector->base);
+>                 drm_connector_set_panel_orientation_with_quirk(
+>                                 &connector->base,
+>                                 intel_dsi_get_panel_orientation(connector),
+> diff --git a/include/drm/drm_connector.h b/include/drm/drm_connector.h
+> index 1922b278ffad..4396c1c4a5db 100644
+> --- a/include/drm/drm_connector.h
+> +++ b/include/drm/drm_connector.h
+> @@ -1696,6 +1696,8 @@ int drm_connector_set_panel_orientation_with_quirk(
+>         struct drm_connector *connector,
+>         enum drm_panel_orientation panel_orientation,
+>         int width, int height);
+> +int drm_connector_init_panel_orientation_property(
+> +       struct drm_connector *connector);
+>  int drm_connector_attach_max_bpc_property(struct drm_connector *connector,
+>                                           int min, int max);
+>
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
