@@ -2,330 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F4C38A92E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09A338A8D6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:53:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238016AbhETK6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:58:54 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:34621 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237557AbhETKlo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:41:44 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4Fm5RN02vpz9sVs;
-        Thu, 20 May 2021 12:23:12 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HQX43WlMW-gC; Thu, 20 May 2021 12:23:11 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fm5RL0nmLz9sVM;
-        Thu, 20 May 2021 12:23:10 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D90148B811;
-        Thu, 20 May 2021 12:23:09 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1OQrkVU3sLE0; Thu, 20 May 2021 12:23:09 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (po15451.idsi0.si.c-s.fr [172.25.230.105])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8A9588B814;
-        Thu, 20 May 2021 12:23:09 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 744E064C44; Thu, 20 May 2021 10:23:09 +0000 (UTC)
-Message-Id: <e79cd8e111ca13bf8c61a384bac365aa7e207647.1621506159.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <5d146b31b943e7ad674894421db4feef54804b9b.1621506159.git.christophe.leroy@csgroup.eu>
-References: <5d146b31b943e7ad674894421db4feef54804b9b.1621506159.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 10/12] powerpc/lib/feature-fixups: Use PPC_RAW_xxx() macros
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        naveen.n.rao@linux.vnet.ibm.com, jniethe5@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 20 May 2021 10:23:09 +0000 (UTC)
+        id S239374AbhETKyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:54:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47250 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237840AbhETKjB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:39:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621507059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=nCRKEE+KFN690bJnqXzOEK+MhCAkoQiBHxbYpiXjE28=;
+        b=dq6qrHPHxohdf7mTLVJdcwQHojclr4RJ4LGoyG74qouowrGDwaRkjp5RKNl2oKKAUwTrQp
+        6Urjl65CJHSiat4yBTduLa2HKgzfATR6rVWmYPE0OjWA85pdrjhCtO/94cGheFvJOc8xN3
+        gNwoZYlv2I9RViYOERsJND41AOftq6Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-DdxlY75aOwqIjpo0vUW2IQ-1; Thu, 20 May 2021 06:37:38 -0400
+X-MC-Unique: DdxlY75aOwqIjpo0vUW2IQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E30B107ACCD;
+        Thu, 20 May 2021 10:37:37 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-25.pek2.redhat.com [10.72.12.25])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 217131F4;
+        Thu, 20 May 2021 10:37:30 +0000 (UTC)
+From:   Baoquan He <bhe@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-doc@vger.kernel.org, kexec@lists.infradead.org,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>, akpm@linux-foundation.org
+Subject: [PATCH] Documentation: kdump: update kdump guide
+Date:   Thu, 20 May 2021 18:37:29 +0800
+Message-Id: <20210520103729.13696-1-bhe@redhat.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use PPC_RAW_xxx() macros instead of open coding assembly
-opcodes.
+Some parts of the guide are aged, hence need be updated.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+1) The backup area of the 1st 640K on X86_64 has been removed
+   by below commits, update the description accordingly.
+
+   commit 7c321eb2b843 ("x86/kdump: Remove the backup region handling")
+   commit 6f599d84231f ("x86/kdump: Always reserve the low 1M when the crashkernel option is specified")
+
+2) Sort out the descripiton of "crashkernel syntax" part.
+
+3) And some other minor cleanups.
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
 ---
- arch/powerpc/include/asm/ppc-opcode.h |   4 +
- arch/powerpc/include/asm/reg.h        |   1 +
- arch/powerpc/lib/feature-fixups.c     | 121 +++++++++++++-------------
- 3 files changed, 65 insertions(+), 61 deletions(-)
+ Documentation/admin-guide/kdump/kdump.rst | 150 ++++++++++++++--------
+ 1 file changed, 97 insertions(+), 53 deletions(-)
 
-diff --git a/arch/powerpc/include/asm/ppc-opcode.h b/arch/powerpc/include/asm/ppc-opcode.h
-index 9cf8575e00d6..027af76db4bd 100644
---- a/arch/powerpc/include/asm/ppc-opcode.h
-+++ b/arch/powerpc/include/asm/ppc-opcode.h
-@@ -411,6 +411,8 @@
- #define PPC_RAW_DCBFPS(a, b)		(0x7c0000ac | ___PPC_RA(a) | ___PPC_RB(b) | (4 << 21))
- #define PPC_RAW_DCBSTPS(a, b)		(0x7c0000ac | ___PPC_RA(a) | ___PPC_RB(b) | (6 << 21))
- #define PPC_RAW_SC()			(0x44000002)
-+#define PPC_RAW_SYNC()			(0x7c0004ac)
-+#define PPC_RAW_ISYNC()			(0x4c00012c)
+diff --git a/Documentation/admin-guide/kdump/kdump.rst b/Documentation/admin-guide/kdump/kdump.rst
+index 75a9dd98e76e..6d0dcf5b5e1f 100644
+--- a/Documentation/admin-guide/kdump/kdump.rst
++++ b/Documentation/admin-guide/kdump/kdump.rst
+@@ -2,7 +2,7 @@
+ Documentation for Kdump - The kexec-based Crash Dumping Solution
+ ================================================================
  
- /*
-  * Define what the VSX XX1 form instructions will look like, then add
-@@ -563,6 +565,8 @@
- #define PPC_RAW_NEG(d, a)		(0x7c0000d0 | ___PPC_RT(d) | ___PPC_RA(a))
+-This document includes overview, setup and installation, and analysis
++This document includes overview, setup, installation, and analysis
+ information.
  
- #define PPC_RAW_MFSPR(d, spr)		(0x7c0002a6 | ___PPC_RT(d) | __PPC_SPR(spr))
-+#define PPC_RAW_MTSPR(spr, d)		(0x7c0003a6 | ___PPC_RS(d) | __PPC_SPR(spr))
-+#define PPC_RAW_EIEIO()			(0x7c0006ac)
+ Overview
+@@ -13,12 +13,12 @@ dump of the system kernel's memory needs to be taken (for example, when
+ the system panics). The system kernel's memory image is preserved across
+ the reboot and is accessible to the dump-capture kernel.
  
- /* Deal with instructions that older assemblers aren't aware of */
- #define	PPC_BCCTR_FLUSH		stringify_in_c(.long PPC_INST_BCCTR_FLUSH)
-diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
-index 7c81d3e563b2..c70782eae3a0 100644
---- a/arch/powerpc/include/asm/reg.h
-+++ b/arch/powerpc/include/asm/reg.h
-@@ -393,6 +393,7 @@
- #define SPRN_PMMAR	0x356	/* Power Management Memory Activity Register */
- #define SPRN_PSSCR	0x357	/* Processor Stop Status and Control Register (ISA 3.0) */
- #define SPRN_PSSCR_PR	0x337	/* PSSCR ISA 3.0, privileged mode access */
-+#define SPRN_TRIG2	0x372
- #define SPRN_PMCR	0x374	/* Power Management Control Register */
- #define SPRN_RWMR	0x375	/* Region-Weighting Mode Register */
+-You can use common commands, such as cp and scp, to copy the
+-memory image to a dump file on the local disk, or across the network to
+-a remote system.
++You can use common commands, such as cp, scp or makedumpfile to copy
++the memory image to a dump file on the local disk, or across the network
++to a remote system.
  
-diff --git a/arch/powerpc/lib/feature-fixups.c b/arch/powerpc/lib/feature-fixups.c
-index fe26f2fa0f3f..f0fc521b82ae 100644
---- a/arch/powerpc/lib/feature-fixups.c
-+++ b/arch/powerpc/lib/feature-fixups.c
-@@ -91,7 +91,7 @@ static int patch_feature_section(unsigned long value, struct fixup_entry *fcur)
- 			return 1;
- 	}
+-Kdump and kexec are currently supported on the x86, x86_64, ppc64, ia64,
+-s390x, arm and arm64 architectures.
++Kdump and kexec are currently supported on the x86/64, ppc64, ia64,
++s390x, arm/64 architectures.
  
--	nop = ppc_inst(PPC_INST_NOP);
-+	nop = ppc_inst(PPC_RAW_NOP());
- 	for (; dest < end; dest = ppc_inst_next(dest, &nop))
- 		raw_patch_instruction(dest, nop);
+ When the system kernel boots, it reserves a small section of memory for
+ the dump-capture kernel. This ensures that ongoing Direct Memory Access
+@@ -27,12 +27,14 @@ The kexec -p command loads the dump-capture kernel into this reserved
+ memory.
  
-@@ -128,21 +128,21 @@ static void do_stf_entry_barrier_fixups(enum stf_barrier_type types)
- 	start = PTRRELOC(&__start___stf_entry_barrier_fixup);
- 	end = PTRRELOC(&__stop___stf_entry_barrier_fixup);
+ On x86 machines, the first 640 KB of physical memory is needed to boot,
+-regardless of where the kernel loads. Therefore, kexec backs up this
+-region just before rebooting into the dump-capture kernel.
++regardless of where the kernel loads. For simpler handling, the whole
++low 1M is reserved to avoid any later kernel or device driver writing
++data into this area. Like this, the low 1M can be reused as system RAM
++by kdump kernel without extra handling.
  
--	instrs[0] = 0x60000000; /* nop */
--	instrs[1] = 0x60000000; /* nop */
--	instrs[2] = 0x60000000; /* nop */
-+	instrs[0] = PPC_RAW_NOP();
-+	instrs[1] = PPC_RAW_NOP();
-+	instrs[2] = PPC_RAW_NOP();
+-Similarly on PPC64 machines first 32KB of physical memory is needed for
+-booting regardless of where the kernel is loaded and to support 64K page
+-size kexec backs up the first 64KB memory.
++On PPC64 machines first 32KB of physical memory is needed for booting
++regardless of where the kernel is loaded and to support 64K page size
++kexec backs up the first 64KB memory.
  
- 	i = 0;
- 	if (types & STF_BARRIER_FALLBACK) {
--		instrs[i++] = 0x7d4802a6; /* mflr r10		*/
--		instrs[i++] = 0x60000000; /* branch patched below */
--		instrs[i++] = 0x7d4803a6; /* mtlr r10		*/
-+		instrs[i++] = PPC_RAW_MFLR(_R10);
-+		instrs[i++] = PPC_RAW_NOP(); /* branch patched below */
-+		instrs[i++] = PPC_RAW_MTLR(_R10);
- 	} else if (types & STF_BARRIER_EIEIO) {
--		instrs[i++] = 0x7e0006ac; /* eieio + bit 6 hint */
-+		instrs[i++] = PPC_RAW_EIEIO() | 0x02000000; /* eieio + bit 6 hint */
- 	} else if (types & STF_BARRIER_SYNC_ORI) {
--		instrs[i++] = 0x7c0004ac; /* hwsync		*/
--		instrs[i++] = 0xe94d0000; /* ld r10,0(r13)	*/
--		instrs[i++] = 0x63ff0000; /* ori 31,31,0 speculation barrier */
-+		instrs[i++] = PPC_RAW_SYNC();
-+		instrs[i++] = PPC_RAW_LD(_R10, _R13, 0);
-+		instrs[i++] = PPC_RAW_ORI(_R31, _R31, 0); /* speculation barrier */
- 	}
+ For s390x, when kdump is triggered, the crashkernel region is exchanged
+ with the region [0, crashkernel region size] and then the kdump kernel
+@@ -46,14 +48,14 @@ passed to the dump-capture kernel through the elfcorehdr= boot
+ parameter. Optionally the size of the ELF header can also be passed
+ when using the elfcorehdr=[size[KMG]@]offset[KMG] syntax.
  
- 	for (i = 0; start < end; start++, i++) {
-@@ -180,32 +180,31 @@ static void do_stf_exit_barrier_fixups(enum stf_barrier_type types)
- 	start = PTRRELOC(&__start___stf_exit_barrier_fixup);
- 	end = PTRRELOC(&__stop___stf_exit_barrier_fixup);
+-
+ With the dump-capture kernel, you can access the memory image through
+ /proc/vmcore. This exports the dump as an ELF-format file that you can
+-write out using file copy commands such as cp or scp. Further, you can
+-use analysis tools such as the GNU Debugger (GDB) and the Crash tool to
+-debug the dump file. This method ensures that the dump pages are correctly
+-ordered.
+-
++write out using file copy commands such as cp or scp. You can also use
++makedumpfile utility to analyze and write out filtered contents with
++options, e.g with '-d 31' it will only write out kernel data. Further,
++you can use analysis tools such as the GNU Debugger (GDB) and the Crash
++tool to debug the dump file. This method ensures that the dump pages are
++correctly ordered.
  
--	instrs[0] = 0x60000000; /* nop */
--	instrs[1] = 0x60000000; /* nop */
--	instrs[2] = 0x60000000; /* nop */
--	instrs[3] = 0x60000000; /* nop */
--	instrs[4] = 0x60000000; /* nop */
--	instrs[5] = 0x60000000; /* nop */
-+	instrs[0] = PPC_RAW_NOP();
-+	instrs[1] = PPC_RAW_NOP();
-+	instrs[2] = PPC_RAW_NOP();
-+	instrs[3] = PPC_RAW_NOP();
-+	instrs[4] = PPC_RAW_NOP();
-+	instrs[5] = PPC_RAW_NOP();
+ Setup and Installation
+ ======================
+@@ -111,7 +113,7 @@ There are two possible methods of using Kdump.
+ 2) Or use the system kernel binary itself as dump-capture kernel and there is
+    no need to build a separate dump-capture kernel. This is possible
+    only with the architectures which support a relocatable kernel. As
+-   of today, i386, x86_64, ppc64, ia64, arm and arm64 architectures support
++   of today, x86/64, ppc64, ia64, arm/64 architectures support
+    relocatable kernel.
  
- 	i = 0;
- 	if (types & STF_BARRIER_FALLBACK || types & STF_BARRIER_SYNC_ORI) {
- 		if (cpu_has_feature(CPU_FTR_HVMODE)) {
--			instrs[i++] = 0x7db14ba6; /* mtspr 0x131, r13 (HSPRG1) */
--			instrs[i++] = 0x7db04aa6; /* mfspr r13, 0x130 (HSPRG0) */
-+			instrs[i++] = PPC_RAW_MTSPR(SPRN_HSPRG1, _R13);
-+			instrs[i++] = PPC_RAW_MFSPR(_R13, SPRN_HSPRG0);
- 		} else {
--			instrs[i++] = 0x7db243a6; /* mtsprg 2,r13	*/
--			instrs[i++] = 0x7db142a6; /* mfsprg r13,1    */
-+			instrs[i++] = PPC_RAW_MTSPR(SPRN_SPRG2, _R13);
-+			instrs[i++] = PPC_RAW_MFSPR(_R13, SPRN_SPRG1);
- 	        }
--		instrs[i++] = 0x7c0004ac; /* hwsync		*/
--		instrs[i++] = 0xe9ad0000; /* ld r13,0(r13)	*/
--		instrs[i++] = 0x63ff0000; /* ori 31,31,0 speculation barrier */
--		if (cpu_has_feature(CPU_FTR_HVMODE)) {
--			instrs[i++] = 0x7db14aa6; /* mfspr r13, 0x131 (HSPRG1) */
--		} else {
--			instrs[i++] = 0x7db242a6; /* mfsprg r13,2 */
--		}
-+		instrs[i++] = PPC_RAW_SYNC();
-+		instrs[i++] = PPC_RAW_LD(_R10, _R13, 0);
-+		instrs[i++] = PPC_RAW_ORI(_R31, _R31, 0); /* speculation barrier */
-+		if (cpu_has_feature(CPU_FTR_HVMODE))
-+			instrs[i++] = PPC_RAW_MFSPR(_R13, SPRN_HSPRG1);
-+		else
-+			instrs[i++] = PPC_RAW_MFSPR(_R13, SPRN_SPRG2);
- 	} else if (types & STF_BARRIER_EIEIO) {
--		instrs[i++] = 0x7e0006ac; /* eieio + bit 6 hint */
-+		instrs[i++] = PPC_RAW_EIEIO() | 0x02000000; /* eieio + bit 6 hint */
- 	}
+ Building a relocatable kernel is advantageous from the point of view that
+@@ -125,9 +127,18 @@ dump-capture kernels for enabling kdump support.
+ System kernel config options
+ ----------------------------
  
- 	for (i = 0; start < end; start++, i++) {
-@@ -258,24 +257,24 @@ void do_uaccess_flush_fixups(enum l1d_flush_type types)
- 	start = PTRRELOC(&__start___uaccess_flush_fixup);
- 	end = PTRRELOC(&__stop___uaccess_flush_fixup);
+-1) Enable "kexec system call" in "Processor type and features."::
++1) Enable "kexec system call" or "kexec file based system call" in
++   "Processor type and features."::
++
++	CONFIG_KEXEC=y or CONFIG_KEXEC_FILE=y
++
++   And both of them will select KEXEC_CORE::
  
--	instrs[0] = 0x60000000; /* nop */
--	instrs[1] = 0x60000000; /* nop */
--	instrs[2] = 0x60000000; /* nop */
--	instrs[3] = 0x4e800020; /* blr */
-+	instrs[0] = PPC_RAW_NOP();
-+	instrs[1] = PPC_RAW_NOP();
-+	instrs[2] = PPC_RAW_NOP();
-+	instrs[3] = PPC_RAW_BLR();
+-	CONFIG_KEXEC=y
++	CONFIG_KEXEC_CORE=y
++
++   Subsequently, CRASH_CORE is selected by KEXEC_CORE::
++
++	CONFIG_CRASH_CORE=y
  
- 	i = 0;
- 	if (types == L1D_FLUSH_FALLBACK) {
--		instrs[3] = 0x60000000; /* nop */
-+		instrs[3] = PPC_RAW_NOP();
- 		/* fallthrough to fallback flush */
- 	}
+ 2) Enable "sysfs file system support" in "Filesystem" -> "Pseudo
+    filesystems." This is usually enabled by default::
+@@ -180,7 +191,7 @@ Dump-capture kernel config options (Arch Dependent, i386 and x86_64)
  
- 	if (types & L1D_FLUSH_ORI) {
--		instrs[i++] = 0x63ff0000; /* ori 31,31,0 speculation barrier */
--		instrs[i++] = 0x63de0000; /* ori 30,30,0 L1d flush*/
-+		instrs[i++] = PPC_RAW_ORI(_R31, _R31, 0); /* speculation barrier */
-+		instrs[i++] = PPC_RAW_ORI(_R30, _R30, 0); /* L1d flush */
- 	}
+ 	CONFIG_SMP=n
  
- 	if (types & L1D_FLUSH_MTTRIG)
--		instrs[i++] = 0x7c12dba6; /* mtspr TRIG2,r0 (SPR #882) */
-+		instrs[i++] = PPC_RAW_MTSPR(SPRN_TRIG2, _R0);
+-   (If CONFIG_SMP=y, then specify maxcpus=1 on the kernel command line
++   (If CONFIG_SMP=y, then specify nr_cpus=1 on the kernel command line
+    when loading the dump-capture kernel, see section "Load the Dump-capture
+    Kernel".)
  
- 	for (i = 0; start < end; start++, i++) {
- 		dest = (void *)start + *start;
-@@ -306,24 +305,24 @@ static int __do_entry_flush_fixups(void *data)
- 	long *start, *end;
- 	int i;
+@@ -241,10 +252,6 @@ Dump-capture kernel config options (Arch Dependent, ia64)
  
--	instrs[0] = 0x60000000; /* nop */
--	instrs[1] = 0x60000000; /* nop */
--	instrs[2] = 0x60000000; /* nop */
-+	instrs[0] = PPC_RAW_NOP();
-+	instrs[1] = PPC_RAW_NOP();
-+	instrs[2] = PPC_RAW_NOP();
+ 	crashkernel=256M
  
- 	i = 0;
- 	if (types == L1D_FLUSH_FALLBACK) {
--		instrs[i++] = 0x7d4802a6; /* mflr r10		*/
--		instrs[i++] = 0x60000000; /* branch patched below */
--		instrs[i++] = 0x7d4803a6; /* mtlr r10		*/
-+		instrs[i++] = PPC_RAW_MFLR(_R10);
-+		instrs[i++] = PPC_RAW_NOP(); /* branch patched below */
-+		instrs[i++] = PPC_RAW_MTLR(_R10);
- 	}
+-  If the start address is specified, note that the start address of the
+-  kernel will be aligned to 64Mb, so if the start address is not then
+-  any space below the alignment point will be wasted.
+-
+ Dump-capture kernel config options (Arch Dependent, arm)
+ ----------------------------------------------------------
  
- 	if (types & L1D_FLUSH_ORI) {
--		instrs[i++] = 0x63ff0000; /* ori 31,31,0 speculation barrier */
--		instrs[i++] = 0x63de0000; /* ori 30,30,0 L1d flush*/
-+		instrs[i++] = PPC_RAW_ORI(_R31, _R31, 0); /* speculation barrier */
-+		instrs[i++] = PPC_RAW_ORI(_R30, _R30, 0); /* L1d flush */
- 	}
+@@ -260,44 +267,77 @@ Dump-capture kernel config options (Arch Dependent, arm64)
+   on non-VHE systems even if it is configured. This is because the CPU
+   will not be reset to EL2 on panic.
  
- 	if (types & L1D_FLUSH_MTTRIG)
--		instrs[i++] = 0x7c12dba6; /* mtspr TRIG2,r0 (SPR #882) */
-+		instrs[i++] = PPC_RAW_MTSPR(SPRN_TRIG2, _R0);
+-Extended crashkernel syntax
++crashkernel syntax
+ ===========================
++1) crashkernel=size@offset
  
- 	/*
- 	 * If we're patching in or out the fallback flush we need to be careful about the
-@@ -421,22 +420,22 @@ void do_rfi_flush_fixups(enum l1d_flush_type types)
- 	start = PTRRELOC(&__start___rfi_flush_fixup);
- 	end = PTRRELOC(&__stop___rfi_flush_fixup);
+-While the "crashkernel=size[@offset]" syntax is sufficient for most
+-configurations, sometimes it's handy to have the reserved memory dependent
+-on the value of System RAM -- that's mostly for distributors that pre-setup
+-the kernel command line to avoid a unbootable system after some memory has
+-been removed from the machine.
++   Here 'size' specifies how much memory to reserve for the dump-capture kernel
++   and 'offset' specifies the beginning of this reserved memory. For example,
++   "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
++   starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
++
++   The crashkernel region can be automatically placed by the system
++   kernel at run time. This is done by specifying the base address as 0,
++   or omitting it all together::
  
--	instrs[0] = 0x60000000; /* nop */
--	instrs[1] = 0x60000000; /* nop */
--	instrs[2] = 0x60000000; /* nop */
-+	instrs[0] = PPC_RAW_NOP();
-+	instrs[1] = PPC_RAW_NOP();
-+	instrs[2] = PPC_RAW_NOP();
+-The syntax is::
++         crashkernel=256M@0
++   or::
  
- 	if (types & L1D_FLUSH_FALLBACK)
- 		/* b .+16 to fallback flush */
--		instrs[0] = 0x48000010;
-+		instrs[0] = PPC_INST_BRANCH | 16;
+-    crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
+-    range=start-[end]
++         crashkernel=256M
  
- 	i = 0;
- 	if (types & L1D_FLUSH_ORI) {
--		instrs[i++] = 0x63ff0000; /* ori 31,31,0 speculation barrier */
--		instrs[i++] = 0x63de0000; /* ori 30,30,0 L1d flush*/
-+		instrs[i++] = PPC_RAW_ORI(_R31, _R31, 0); /* speculation barrier */
-+		instrs[i++] = PPC_RAW_ORI(_R30, _R30, 0); /* L1d flush */
- 	}
+-For example::
++   If the start address is specified, note that the start address of the
++   kernel will be aligned to a value (which is Arch dependent), so if the
++   start address is not then any space below the alignment point will be
++   wasted.
  
- 	if (types & L1D_FLUSH_MTTRIG)
--		instrs[i++] = 0x7c12dba6; /* mtspr TRIG2,r0 (SPR #882) */
-+		instrs[i++] = PPC_RAW_MTSPR(SPRN_TRIG2, _R0);
+-    crashkernel=512M-2G:64M,2G-:128M
++2) range1:size1[,range2:size2,...][@offset]
  
- 	for (i = 0; start < end; start++, i++) {
- 		dest = (void *)start + *start;
-@@ -467,11 +466,11 @@ void do_barrier_nospec_fixups_range(bool enable, void *fixup_start, void *fixup_
- 	start = fixup_start;
- 	end = fixup_end;
+-This would mean:
++   While the "crashkernel=size[@offset]" syntax is sufficient for most
++   configurations, sometimes it's handy to have the reserved memory dependent
++   on the value of System RAM -- that's mostly for distributors that pre-setup
++   the kernel command line to avoid a unbootable system after some memory has
++   been removed from the machine.
  
--	instr = 0x60000000; /* nop */
-+	instr = PPC_RAW_NOP();
+-    1) if the RAM is smaller than 512M, then don't reserve anything
+-       (this is the "rescue" case)
+-    2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
+-    3) if the RAM size is larger than 2G, then reserve 128M
++   The syntax is::
  
- 	if (enable) {
- 		pr_info("barrier-nospec: using ORI speculation barrier\n");
--		instr = 0x63ff0000; /* ori 31,31,0 speculation barrier */
-+		instr = PPC_RAW_ORI(_R31, _R31, 0); /* speculation barrier */
- 	}
++       crashkernel=<range1>:<size1>[,<range2>:<size2>,...][@offset]
++       range=start-[end]
  
- 	for (i = 0; start < end; start++, i++) {
-@@ -508,13 +507,13 @@ void do_barrier_nospec_fixups_range(bool enable, void *fixup_start, void *fixup_
- 	start = fixup_start;
- 	end = fixup_end;
++   For example::
  
--	instr[0] = PPC_INST_NOP;
--	instr[1] = PPC_INST_NOP;
-+	instr[0] = PPC_RAW_NOP();
-+	instr[1] = PPC_RAW_NOP();
+-Boot into System Kernel
+-=======================
++       crashkernel=512M-2G:64M,2G-:128M
  
- 	if (enable) {
- 		pr_info("barrier-nospec: using isync; sync as speculation barrier\n");
--		instr[0] = PPC_INST_ISYNC;
--		instr[1] = PPC_INST_SYNC;
-+		instr[0] = PPC_RAW_ISYNC();
-+		instr[1] = PPC_RAW_SYNC();
- 	}
++   This would mean:
++
++       1) if the RAM is smaller than 512M, then don't reserve anything
++          (this is the "rescue" case)
++       2) if the RAM size is between 512M and 2G (exclusive), then reserve 64M
++       3) if the RAM size is larger than 2G, then reserve 128M
++
++3) crashkernel=size,high and crashkernel=size,low
++
++   If memory above 4G is preferred, crashkernel=size,high can be used to
++   fulfill that. With it, physical memory is allowed to allocate from top,
++   so could be above 4G if system has more than 4G RAM installed. Otherwise,
++   memory region will be allocated below 4G if available.
++
++   When crashkernel=X,high is passed, kernel could allocate physical memory
++   region above 4G, low memory under 4G is needed in this case. There are
++   three ways to get low memory:
++
++      1) Kernel will allocate at least 256M memory below 4G automatically
++         if crashkernel=Y,low is not specified.
++      2) Let user specify low memory size instread.
++      3) Specified value 0 will disable low memory allocation::
++
++            crashkernel=0,low
++
++Boot into System Kernel
++-----------------------
+ 1) Update the boot loader (such as grub, yaboot, or lilo) configuration
+    files as necessary.
  
- 	for (i = 0; start < end; start++, i++) {
-@@ -536,7 +535,7 @@ static void patch_btb_flush_section(long *curr)
- 	end = (void *)curr + *(curr + 1);
- 	for (; start < end; start++) {
- 		pr_devel("patching dest %lx\n", (unsigned long)start);
--		patch_instruction((struct ppc_inst *)start, ppc_inst(PPC_INST_NOP));
-+		patch_instruction((struct ppc_inst *)start, ppc_inst(PPC_RAW_NOP()));
- 	}
- }
+-2) Boot the system kernel with the boot parameter "crashkernel=Y@X",
+-   where Y specifies how much memory to reserve for the dump-capture kernel
+-   and X specifies the beginning of this reserved memory. For example,
+-   "crashkernel=64M@16M" tells the system kernel to reserve 64 MB of memory
+-   starting at physical address 0x01000000 (16MB) for the dump-capture kernel.
++2) Boot the system kernel with the boot parameter "crashkernel=Y@X".
  
+    On x86 and x86_64, use "crashkernel=64M@16M".
+ 
+@@ -392,7 +432,7 @@ loading dump-capture kernel.
+ 
+ For i386, x86_64 and ia64:
+ 
+-	"1 irqpoll maxcpus=1 reset_devices"
++	"1 irqpoll nr_cpus=1 reset_devices"
+ 
+ For ppc64:
+ 
+@@ -400,7 +440,7 @@ For ppc64:
+ 
+ For s390x:
+ 
+-	"1 maxcpus=1 cgroup_disable=memory"
++	"1 nr_cpus=1 cgroup_disable=memory"
+ 
+ For arm:
+ 
+@@ -408,7 +448,7 @@ For arm:
+ 
+ For arm64:
+ 
+-	"1 maxcpus=1 reset_devices"
++	"1 nr_cpus=1 reset_devices"
+ 
+ Notes on loading the dump-capture kernel:
+ 
+@@ -487,7 +527,12 @@ After the dump-capture kernel is booted, write out the dump file with
+ the following command::
+ 
+    cp /proc/vmcore <dump-file>
++   scp /proc/vmcore to <user@server>:<path>/%HOST-%DATE/
++
++You can also use makedumpfile utility to write out the dump file
++with specified options to filter out unwanted contents, e.g::
+ 
++   core_collector makedumpfile -l --message-level 1 -d 31
+ 
+ Analysis
+ ========
+@@ -535,8 +580,7 @@ This will cause a kdump to occur at the add_taint()->panic() call.
+ Contact
+ =======
+ 
+-- Vivek Goyal (vgoyal@redhat.com)
+-- Maneesh Soni (maneesh@in.ibm.com)
++- kexec@lists.infradead.org
+ 
+ GDB macros
+ ==========
 -- 
-2.25.0
+2.17.2
 
