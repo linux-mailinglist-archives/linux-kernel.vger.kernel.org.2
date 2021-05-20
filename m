@@ -2,127 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F3E138AA62
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E2638AA79
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238848AbhETLMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:12:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:46304 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239239AbhETKwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:52:55 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F182B14FF;
-        Thu, 20 May 2021 03:51:28 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4372F3F719;
-        Thu, 20 May 2021 03:51:26 -0700 (PDT)
-Subject: Re: [PATCH v12 6/8] arm64: kvm: Expose KVM_ARM_CAP_MTE
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-7-steven.price@arm.com> <87tun1tg1l.wl-maz@kernel.org>
- <4e1fc7b7-ea8c-a87c-9177-d9e03ff96cb8@arm.com> <8735uhvhqz.wl-maz@kernel.org>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <2dff0e85-abfd-4261-a670-6008ff9195ff@arm.com>
-Date:   Thu, 20 May 2021 11:51:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S239806AbhETLON convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 07:14:13 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56184 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238690AbhETKxM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:53:12 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-273-SZ-uRtyiMuiGND1F0dV4yw-1; Thu, 20 May 2021 11:51:42 +0100
+X-MC-Unique: SZ-uRtyiMuiGND1F0dV4yw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 20 May 2021 11:51:40 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 20 May 2021 11:51:40 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christophe Leroy' <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "naveen.n.rao@linux.vnet.ibm.com" <naveen.n.rao@linux.vnet.ibm.com>,
+        "jniethe5@gmail.com" <jniethe5@gmail.com>
+CC:     "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v1 12/12] powerpc: Replace PPC_INST_NOP by PPC_RAW_NOP()
+Thread-Topic: [PATCH v1 12/12] powerpc: Replace PPC_INST_NOP by PPC_RAW_NOP()
+Thread-Index: AQHXTWKqsFNaBF2Go0GIp2jNepTo56rsMM/Q
+Date:   Thu, 20 May 2021 10:51:40 +0000
+Message-ID: <30d3299cdf8a49e488834fe0c02d03c0@AcuMS.aculab.com>
+References: <5d146b31b943e7ad674894421db4feef54804b9b.1621506159.git.christophe.leroy@csgroup.eu>
+ <ad46c195ca1b8572629ef07ba6bfe247585239a6.1621506159.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <ad46c195ca1b8572629ef07ba6bfe247585239a6.1621506159.git.christophe.leroy@csgroup.eu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <8735uhvhqz.wl-maz@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 11:09, Marc Zyngier wrote:
-> On Wed, 19 May 2021 14:26:31 +0100,
-> Steven Price <steven.price@arm.com> wrote:
->>
->> On 17/05/2021 18:40, Marc Zyngier wrote:
->>> On Mon, 17 May 2021 13:32:37 +0100,
->>> Steven Price <steven.price@arm.com> wrote:
->>>>
->>>> It's now safe for the VMM to enable MTE in a guest, so expose the
->>>> capability to user space.
->>>>
->>>> Signed-off-by: Steven Price <steven.price@arm.com>
->>>> ---
->>>>  arch/arm64/kvm/arm.c      | 9 +++++++++
->>>>  arch/arm64/kvm/sys_regs.c | 3 +++
->>>>  2 files changed, 12 insertions(+)
->>>>
->>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->>>> index 1cb39c0803a4..e89a5e275e25 100644
->>>> --- a/arch/arm64/kvm/arm.c
->>>> +++ b/arch/arm64/kvm/arm.c
->>>> @@ -93,6 +93,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->>>>  		r = 0;
->>>>  		kvm->arch.return_nisv_io_abort_to_user = true;
->>>>  		break;
->>>> +	case KVM_CAP_ARM_MTE:
->>>> +		if (!system_supports_mte() || kvm->created_vcpus)
->>>> +			return -EINVAL;
->>>> +		r = 0;
->>>> +		kvm->arch.mte_enabled = true;
->>>
->>> As far as I can tell from the architecture, this isn't valid for a
->>> 32bit guest.
->>
->> Indeed, however the MTE flag is a property of the VM not of the vCPU.
->> And, unless I'm mistaken, it's technically possible to create a VM where
->> some CPUs are 32 bit and some 64 bit. Not that I can see much use of a
->> configuration like that.
+From: Christophe Leroy
+> Sent: 20 May 2021 11:23
 > 
-> It looks that this is indeed a bug, and I'm on my way to squash it.
-> Can't believe we allowed that for so long...
+> On the road to removing all PPC_INST_xx defines in
+> asm/ppc-opcodes.h, change PPC_INST_NOP to PPC_RAW_NOP().
+...
+> @@ -475,7 +474,7 @@
+>  #define PPC_RAW_ADD_DOT(t, a, b)	(PPC_INST_ADD | ___PPC_RT(t) | ___PPC_RA(a) | ___PPC_RB(b) | 0x1)
+>  #define PPC_RAW_ADDC(t, a, b)		(0x7c000014 | ___PPC_RT(t) | ___PPC_RA(a) | ___PPC_RB(b))
+>  #define PPC_RAW_ADDC_DOT(t, a, b)	(0x7c000014 | ___PPC_RT(t) | ___PPC_RA(a) | ___PPC_RB(b) | 0x1)
+> -#define PPC_RAW_NOP()			(PPC_INST_NOP)
+> +#define PPC_RAW_NOP()			PPC_RAW_ORI(0, 0, 0)
 
-Ah, well if you're going to kill off mixed 32bit/64bit VMs then...
+Shouldn't that be PPC_RAW_ORI(_R0, _R0, 0) ?
 
-> But the architecture clearly states:
-> 
-> <quote>
-> These features are supported in AArch64 state only.
-> </quote>
-> 
-> So I'd expect something like:
-> 
-> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-> index 956cdc240148..50635eacfa43 100644
-> --- a/arch/arm64/kvm/reset.c
-> +++ b/arch/arm64/kvm/reset.c
-> @@ -220,7 +220,8 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
->  	switch (vcpu->arch.target) {
->  	default:
->  		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
-> -			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1)) {
-> +			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1) ||
-> +			    vcpu->kvm->arch.mte_enabled) {
->  				ret = -EINVAL;
->  				goto out;
->  			}
-> 
-> that makes it completely impossible to create 32bit CPUs within a
-> MTE-enabled guest.
+Also PPC_RAW_ADC_DOT() could be (PPC_RAW_ADC(t, a, b) | 0x1)
 
-... that makes complete sense, and I'll include this hunk in my next
-posting.
+	David
 
-Thanks,
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
-Steve
