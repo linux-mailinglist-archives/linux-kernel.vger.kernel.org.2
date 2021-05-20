@@ -2,100 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5413838B985
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3FF38B989
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:39:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231640AbhETWgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhETWgK (ORCPT
+        id S231669AbhETWki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:40:38 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:31332 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231593AbhETWkh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:36:10 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE405C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 15:34:47 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id t30so12831701pgl.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 15:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bTS10J8Fh4/AouNMIjaBMXhuO+gGwEf47jXocC6JZwU=;
-        b=Z5qQMq/4e1ey9FmErr3jqiPFdMJEGgWcJQcEzl82VmhbsDd0Tgy3HSm5aBoPa5DnBH
-         7bDqehGpiSCtOltIvKVIHWrvm10Q0y3PqL8J/ccnX4iSdALIzJJFjxyLY+pGZ8u0edwW
-         RGzRhD+AA+bsexpUJ5MB69eRn9QEQkjDVYjRQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bTS10J8Fh4/AouNMIjaBMXhuO+gGwEf47jXocC6JZwU=;
-        b=Kt1WlW7AbXc1fTneok1GQ82SscaQ8ZX+r7Qtb0siyTmJ8ATLS/jXpXUmSUqKBY3+ya
-         03ROR1DqxpEl3tuCe45Y+rwiqJO+vlhFTgsU+SowK3ePdHqumkiHX0b0HHxShSveoqxG
-         WD9ni1lM58tP85d5OtEk2FjXzdv6P1LUHeEPxSQmZyjBypiHMhqqQKq/5Shgxo0DRuU/
-         RbF1vozi3kevDDelYVkUhftJjx7BARArpP47niVz6jvdz6ZBLgVEedi/Bont2w+S9t07
-         kwqPWLxWXl5dLLlHfVp4rP+thYsHrIC4DNxf4/GydM3BIkEHJGe13VWI4RMl+D42WzR/
-         ZtWA==
-X-Gm-Message-State: AOAM531KWofk5n6gU4IoErGxEK9q8/3D7o5dnBBnRImR1zQH+FV5L2Jw
-        upBTbh0Drg/ycXdeQMv7XYozyXTRH8V4bA==
-X-Google-Smtp-Source: ABdhPJySvh04MDIPE23NVRcL5tmdYVXsmdK3rbDvUka+pcsQ57zAzLVvWxIh9RNuz/OKLm+tiNFs3A==
-X-Received: by 2002:a63:5a01:: with SMTP id o1mr3705692pgb.313.1621550087293;
-        Thu, 20 May 2021 15:34:47 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:245d:3890:fa95:996e])
-        by smtp.gmail.com with ESMTPSA id 4sm2850883pgn.31.2021.05.20.15.34.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 15:34:46 -0700 (PDT)
-Date:   Fri, 21 May 2021 07:34:41 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <YKbkAXELPxXJcsHA@google.com>
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
- <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
- <YKMbQQ0qBAixXC5p@google.com>
- <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
- <YKX4ueNIabfd1DAD@google.com>
- <20210520145708.GK4441@paulmck-ThinkPad-P17-Gen-1>
+        Thu, 20 May 2021 18:40:37 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621550355; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=u5Fv69WG7AZKBChnOzRtJI8AUhfjpxnX1Q0kHh77Ii0=;
+ b=xgUQ2KSlJyaxqNDxR8oAmdBgtnqZmF8URfwnlbdGR/fgCUnoWTg/1qXEjfuTes5Ps8BvK6Dz
+ lKbo0SXI7WeAgLaavwyE4rimzS9Q+eLfgTZ6IxbDewhyyo2mBo6nIfDtYjR2QZ7DrXJdsAuT
+ CWHrOaLP/HU5g5EPABWeMwZYHsE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60a6e50f7b9a7a2b6cb64565 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 May 2021 22:39:11
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7377FC43460; Thu, 20 May 2021 22:39:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D27A4C433F1;
+        Thu, 20 May 2021 22:39:09 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520145708.GK4441@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 20 May 2021 15:39:09 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
+ correctly
+In-Reply-To: <CAE-0n51+mbCAqWWTOMDA4Rx_=96V4tK8g+UWVZ-nnp50dFzRPA@mail.gmail.com>
+References: <1621013713-6860-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n53VUr=f=PKnO5HhXZ3BAG_mNBwmQrfQPxHvxLZPDReA+g@mail.gmail.com>
+ <c1a3ced9ac4682bae310712a11576322@codeaurora.org>
+ <CAE-0n50yRCA00ck_FtXwzKw_R8UcocMzTh8V7NOe4ob__3G3bg@mail.gmail.com>
+ <e071434531947e5c4275a1a14b77b2c3@codeaurora.org>
+ <CAE-0n52rBrjy-=dpqK+dae2GNk1rAaQnKqCjzdqiAoS13gHpSQ@mail.gmail.com>
+ <f476d82d0798e0d7eb9e12949aa2c8f1@codeaurora.org>
+ <CAE-0n51+mbCAqWWTOMDA4Rx_=96V4tK8g+UWVZ-nnp50dFzRPA@mail.gmail.com>
+Message-ID: <5d341df202facb3240a72cfb35e18167@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/20 07:57), Paul E. McKenney wrote:
-> > 
-> > Sounds good. I can cook a patch and run some tests.
-> > Or do you want to send a patch?
+On 2021-05-20 14:28, Stephen Boyd wrote:
+> Quoting khsieh@codeaurora.org (2021-05-20 13:05:48)
+>> On 2021-05-20 12:28, Stephen Boyd wrote:
+>> >> Put dongle to D3 state so that it will not issue the unnecessary
+>> >> second
+>> >> irq_hpd with sink_count = 0. this will prevent the annoy but unharmful
+>> >> DP_LINK_STATUS_UPDATED warning message.
+>> >> Again, we can not disable hpd interrupt since dongle still attached
+>> >> and
+>> >> hdmi cable can be plugged in at any instant.
+>> >>
+>> >
+>> > Right I'm not suggesting to disable hpd interrupt, just the hpd_irq
+>> > interrupt once an unplug irq comes in, and do that in hardirq context.
+>> > Also, I'm suggesting that we consider unplug as a higher priority if
+>> > the
+>> > hard irq handler is delayed for some reason and both an unplug irq and
+>> > an hpd irq are pending in the hardware when the hard irq handler is
+>> > running. Putting the dongle into D3 state won't fix these problems.
+>> 
+>> 
+>> 
+>> The unplug interrupt is not happen in this case since dongle still
+>> attached.
+>> The unplug interrupt only happen when dongle unplugged.
 > 
-> Given that you have the test setup, things might go faster if you do
-> the patch, especially taking timezones into consideration.  Of course,
-> if you run into difficulties, you know where to find me.
-
-OK. Sounds good to me.
-
-> > While VCPU-2 has PVCLOCK_GUEST_STOPPED set (resuming) and is in
-> > check_cpu_stall(), the VCPU-3 is executing:
-> > 
-> > 	apic_timer_interrupt()
-> > 	 tick_irq_enter()
-> > 	  tick_do_update_jiffies64()
-> > 	   do_timer()
+> Agreed.
 > 
-> OK, but the normal grace period time is way less than one second, and
-> the stall timeout in mainline is 21 seconds, so that would be a -lot-
-> of jiffies of skew.  Or does the restarting really take that long a time?
+>> 
+>> I think you mistakenly think DP_LINK_STATUS_UPDATED is caused by 
+>> unplug
+>> interrupt.
+> 
+> Ok, got it.
+> 
+>> DP_LINK_STATUS_UPDATED happen is due to dongle issue two consecutive
+>> irq_hpd with sink_count = 0 when hdmi cable unplugged from dongle.
+>> The first irq_hpd with sink_count = 0 is handled as expected to turn 
+>> off
+>> display.
+>> After that the second irq_hpd with sink_count = 0 is handled.
+>> Since display had turned off, then there is nothing to do but spill
+>> DP_LINK_STATUS_UPDATED warning message.
+>> There is no unplug (hpd become low) happen in this case since dongle
+>> still attached.
+> 
+> Agreed.
+> 
+>> 
+>> All interrupt (plug/irq_hpd and unplug) are required to be handled in
+>> the order of happening.
+>> We can not ignore any one.
+>> For example, you plug/unplug two different resolution monitor
+>> alternative to/from dongle and unplug dongle once for while.
+>> 
+>> I think the race condition you describe here all had been taken care
+>> with
+>> 1) convert irq into event and store at event q in order.
+>> 2) irq handled base on transaction. Next irq can be handled when
+>> previous irq transaction is done.
+>> 
+> 
+> I'm mostly trying to point out that the irq handling and masking needs
+> to be done in the hard irq context and not in the kthread. It may or 
+> may
+> not be related to this message that's printed.
+> 
+> What happens if the hardirq is blocked by some other irq that takes a
+> long time to process? Imagine this scenario:
+> 
+> CPU0                                CPU1
+> ----                                ----
+>  really_long_other_hardirq() {
+>                                     hpd_irq
+> 				    hpd_irq
+> 				    hpd low
+>  }
+> 
+>  dp_display_irq_handler() {
+> 
 
-That's a good question. I see huge jiffies spike in the logs.
-I suspect that resuming a VM can take some time, especially on a "not
-powerful at all" overcommitted host (more virtual CPUs than physical
-ones).
+
+>    <fork things to kthread>
+>  }
+> 
+> Shouldn't we ignore any hpd_irq events in this scenario? And shouldn't
+> we be disabling the hpd_irq by masking it with DP_DP_IRQ_HPD_INT_MASK
+> when hpd goes low (i.e. DP_DP_HPD_UNPLUG_INT_MASK)?
+
+
+
+1) irq_hpd interrupt always happen before unplug interrupt
+2)if hdp_isr_status = (DP_DP_IRQ_HPD_INT_MASK | 
+DP_DP_HPD_UNPLUG_INT_MASK) at the time when read at 
+dp_display_irq_handler(),
+then DP_DP_IRQ_HPD_INT_MASK will be add into evetn q first followed by 
+DP_DP_HPD_UNPLUG_INT_MASK be add into event q.
+So that DP_DP_IRQ_HPD_INT_MASK will be executed by the event thread 
+before DP_DP_HPD_UNPLUG_INT_MASK.
+On the other word, IRQ_HPD has higher priority over UNPLUG in the timing 
+matter.
+By doing that we can shut down display gracefully.
+
+If you insist, at hdp_isr_status = (DP_DP_IRQ_HPD_INT_MASK | 
+DP_DP_HPD_UNPLUG_INT_MASK) case,
+we can have only add DP_DP_HPD_UNPLUG_INT_MASK to event q only by 
+dropping DP_DP_IRQ_HPD_INT_MASK.
+Is this will work for you?
+
+
+
+
+
+
+
+
+
