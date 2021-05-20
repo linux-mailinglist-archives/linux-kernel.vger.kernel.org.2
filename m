@@ -2,105 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B392038B73F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 611A738B742
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:19:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239639AbhETTUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:20:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237526AbhETTUM (ORCPT
+        id S239334AbhETTUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:20:37 -0400
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:53997 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239489AbhETTUc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:20:12 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4305CC06138C
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:51 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso15891181ote.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=k4cJT0t0XqH8XRsIxYqfk56ojXIbxXc2e35W87HcykQ=;
-        b=qHh6R09e+J7BzRLsfIkrZMaQF90Gh7tDIXX+qeJYMxDO8auMYJ3XchSJ7PZTfNmgWB
-         mzdqLCK4X8jPmwYddiEy/c17ZzX1r6f52WgqcYNpLxnre/4+n7JnLiIOGg6b342lwt/M
-         RMLeDi31SjXNTCrr6jKqvsRm/x5lldWcKuzMftPWdqjw/DxJXlp2foLpm/nsqPOZEaPL
-         tG0Kj7P+apd+zhYkpPBZz2ka2jU8ZlGEAWURsAH/mXDIRhDNGNMjfR4fAqeQu5dn3be+
-         oz1NzWMfb2KNeLNLqypWB5HL77m5jsBd9OCSBbSEzWg2b33NwDdr/lM9Kojo91N+3WDr
-         oNKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=k4cJT0t0XqH8XRsIxYqfk56ojXIbxXc2e35W87HcykQ=;
-        b=Cv/uFYDfUHIOl8EM6rZQ+Y+a3lWb1PQ/vrsKRqA6PjKNlgvw7auZ9xBSk3UbjpO5tJ
-         4uE0KxvIf/4AxyigUtfeAXMLfZxMxOCCcpF6bmCqLUUFVg5WMFhy7zbxG1UoWqD4VwVB
-         094w1a3V7bCMOMLPRTWZVMnwhINhPC2tfuj4Cfg3nGCWlKuTUZESFLXWPYP6UUIw9vcO
-         IJtNCxhioeJ5o3cgH62PgtCYPD2oiU71z0QcH5ADIImYjj2n+DSInMoFfzzz4ln+DNXG
-         pNwlmuBtjCNNApQauMUB6+I/qOSY847xJ/Rj6wcsc762zo2h0yvJ0MwTYbnjBNyoLKkp
-         J43Q==
-X-Gm-Message-State: AOAM531dnjR6KS5RF6oEDf33IZ9ly4c1uEmTmqN8Robl7CzK7yu5zY+4
-        xh3ENeJx8X3HrBG1RZsjjpjiQTlKW5pH6BSSb60=
-X-Google-Smtp-Source: ABdhPJwbhch6P7kEoQ/7IE2/9EGX+cfUBP3J4UMXaGAyK0/P18gcZ6qVrnDYx1H+9tG35FMsygm5TBUusV0zgaq6Cpo=
-X-Received: by 2002:a9d:57cd:: with SMTP id q13mr5113995oti.23.1621538330703;
- Thu, 20 May 2021 12:18:50 -0700 (PDT)
+        Thu, 20 May 2021 15:20:32 -0400
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 35D9478584;
+        Thu, 20 May 2021 22:19:07 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1621538347;
+        bh=IregU34X8IEVQFvS6fNfC+XqIktBmYKjT4kmSksRqAg=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=eMNx5HtBLDB9RmdeWLPvYRDd67Cq6kM7uWQcj4a2fSittWd8A3OKX6Cg0pND9ELk6
+         BgLQRNE6r8k1jSLxCRIBmwrANaDkw/73QluNiOvyy5HdxJwuxx6jq1rbDxIUTkSYHO
+         vJGiZSVq7OR3yoUDtyvpfhqgtgCQ2Q/54l2c1fRKbL0f+Xaf/Z7x3QTJGQQKwvhNlh
+         QEzasNlDm+0b/f1PV0uXGq7QXFq7BisRoX086G9fZLkxqM0k22hNchnmWOhhwSa99o
+         Nt00TyktODlnIxTlsEOI70NGiSKwduh+u94rGbsPPSRKFDqey5CcUwpFJXN9w+8SI7
+         a2VSIAzV9vJjw==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id F31CF78594;
+        Thu, 20 May 2021 22:19:06 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
+ May 2021 22:19:06 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [PATCH v10 14/18] virtio/vsock: enable SEQPACKET for transport
+Date:   Thu, 20 May 2021 22:18:57 +0300
+Message-ID: <20210520191901.1272423-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210520120248.3464013-1-lee.jones@linaro.org> <20210520120248.3464013-24-lee.jones@linaro.org>
-In-Reply-To: <20210520120248.3464013-24-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 20 May 2021 15:18:39 -0400
-Message-ID: <CADnq5_M0=6O3jzTZ-fwbwf4fnJM3YzyodsH0_56Kj7vSt1JZ5Q@mail.gmail.com>
-Subject: Re: [PATCH 23/38] drm/amd/amdgpu/gmc_v7_0: Fix potential copy/paste issue
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+To make transport work with SOCK_SEQPACKET two updates were
+added:
+1) SOCK_SEQPACKET ops for virtio transport and 'seqpacket_allow()'
+   callback.
+2) Handling of SEQPACKET bit: guest tries to negotiate it with vhost.
 
-On Thu, May 20, 2021 at 8:03 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c:526: warning: expecting prototype =
-for gmc_v8_0_set_fault_enable_default(). Prototype was for gmc_v7_0_set_fau=
-lt_enable_default() instead
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c b/drivers/gpu/drm/amd/=
-amdgpu/gmc_v7_0.c
-> index 210ada2289ec9..8e282169f99eb 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v7_0.c
-> @@ -516,7 +516,7 @@ static void gmc_v7_0_get_vm_pte(struct amdgpu_device =
-*adev,
->  }
->
->  /**
-> - * gmc_v8_0_set_fault_enable_default - update VM fault handling
-> + * gmc_v7_0_set_fault_enable_default - update VM fault handling
->   *
->   * @adev: amdgpu_device pointer
->   * @value: true redirects VM faults to the default page
-> --
-> 2.31.1
->
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+---
+ v9 -> v10:
+ 1) Use 'virtio_has_feature()' to check feature bit.
+ 2) Move assignment to 'seqpacket_allow' before 'rcu_assign_pointer()'.
+
+ net/vmw_vsock/virtio_transport.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+index 2700a63ab095..bc5ee8df723a 100644
+--- a/net/vmw_vsock/virtio_transport.c
++++ b/net/vmw_vsock/virtio_transport.c
+@@ -62,6 +62,7 @@ struct virtio_vsock {
+ 	struct virtio_vsock_event event_list[8];
+ 
+ 	u32 guest_cid;
++	bool seqpacket_allow;
+ };
+ 
+ static u32 virtio_transport_get_local_cid(void)
+@@ -443,6 +444,8 @@ static void virtio_vsock_rx_done(struct virtqueue *vq)
+ 	queue_work(virtio_vsock_workqueue, &vsock->rx_work);
+ }
+ 
++static bool virtio_transport_seqpacket_allow(u32 remote_cid);
++
+ static struct virtio_transport virtio_transport = {
+ 	.transport = {
+ 		.module                   = THIS_MODULE,
+@@ -469,6 +472,10 @@ static struct virtio_transport virtio_transport = {
+ 		.stream_is_active         = virtio_transport_stream_is_active,
+ 		.stream_allow             = virtio_transport_stream_allow,
+ 
++		.seqpacket_dequeue        = virtio_transport_seqpacket_dequeue,
++		.seqpacket_enqueue        = virtio_transport_seqpacket_enqueue,
++		.seqpacket_allow          = virtio_transport_seqpacket_allow,
++
+ 		.notify_poll_in           = virtio_transport_notify_poll_in,
+ 		.notify_poll_out          = virtio_transport_notify_poll_out,
+ 		.notify_recv_init         = virtio_transport_notify_recv_init,
+@@ -485,6 +492,19 @@ static struct virtio_transport virtio_transport = {
+ 	.send_pkt = virtio_transport_send_pkt,
+ };
+ 
++static bool virtio_transport_seqpacket_allow(u32 remote_cid)
++{
++	struct virtio_vsock *vsock;
++	bool seqpacket_allow;
++
++	rcu_read_lock();
++	vsock = rcu_dereference(the_virtio_vsock);
++	seqpacket_allow = vsock->seqpacket_allow;
++	rcu_read_unlock();
++
++	return seqpacket_allow;
++}
++
+ static void virtio_transport_rx_work(struct work_struct *work)
+ {
+ 	struct virtio_vsock *vsock =
+@@ -608,6 +628,9 @@ static int virtio_vsock_probe(struct virtio_device *vdev)
+ 	vsock->event_run = true;
+ 	mutex_unlock(&vsock->event_lock);
+ 
++	if (virtio_has_feature(vdev, VIRTIO_VSOCK_F_SEQPACKET))
++		vsock->seqpacket_allow = true;
++
+ 	vdev->priv = vsock;
+ 	rcu_assign_pointer(the_virtio_vsock, vsock);
+ 
+@@ -695,6 +718,7 @@ static struct virtio_device_id id_table[] = {
+ };
+ 
+ static unsigned int features[] = {
++	VIRTIO_VSOCK_F_SEQPACKET
+ };
+ 
+ static struct virtio_driver virtio_vsock_driver = {
+-- 
+2.25.1
+
