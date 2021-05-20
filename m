@@ -2,43 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1B3038A18F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A21EA38A1F5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:35:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhETJcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:32:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54266 "EHLO mail.kernel.org"
+        id S232944AbhETJgk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:36:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232020AbhETJaG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:30:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 51FE3613BE;
-        Thu, 20 May 2021 09:27:27 +0000 (UTC)
+        id S232854AbhETJeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:34:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF8AB613F6;
+        Thu, 20 May 2021 09:29:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502847;
-        bh=D45tlCA9zXAvOAVRHqU/gLe6d0zvfzQUB7x9YvPdHRk=;
+        s=korg; t=1621502949;
+        bh=OzlWMVGgpd25rHrQBjN8DYUmb/aeiDcv8B+taC7pLC8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N10vsRbX0VD89zmifybOEwGCDlLZeCH7b7Cl8OpGfOKTbe5cggW8oNWzdWEhAxQIu
-         VeKebLRJhyRSXMcLenBkf8d2l02ZMQdb44xQNYaKakeLSO+WD6vvjhyQQsI7Jevl/T
-         RTpl/Txth6PNlh2SVzfiYrVG60jBtRz9jZRkZy2c=
+        b=WWyOTmsw3XAiyGT8+/onT+J5gEVfd9Z0C1GTsrxhaX3IIHg1YNx09oMBKbHxQ8m8v
+         38hcW4j8D6fBtSyBjicR0bKrq2ONgrniybEKtzFHdzhxRlkegSM9XQL0f7a+sNWqdA
+         KmwwckQ+OPS2p8SmFg4lj1Y8HoPo1tIDn+DncXQI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Zqiang <qiang.zhang@windriver.com>,
-        Andrew Halaney <ahalaney@redhat.com>,
-        Alexander Potapenko <glider@google.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Vijayanand Jitta <vjitta@codeaurora.org>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Yogesh Lal <ylal@codeaurora.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
+        stable@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 40/47] lib: stackdepot: turn depot_lock spinlock to raw_spinlock
-Date:   Thu, 20 May 2021 11:22:38 +0200
-Message-Id: <20210520092054.837875234@linuxfoundation.org>
+Subject: [PATCH 5.4 18/37] ARM: 9075/1: kernel: Fix interrupted SMC calls
+Date:   Thu, 20 May 2021 11:22:39 +0200
+Message-Id: <20210520092052.881855162@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-References: <20210520092053.559923764@linuxfoundation.org>
+In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
+References: <20210520092052.265851579@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -47,78 +42,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zqiang <qiang.zhang@windriver.com>
+From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-[ Upstream commit 78564b9434878d686c5f88c4488b20cccbcc42bc ]
+[ Upstream commit 57ac51667d8cd62731223d687e5fe7b41c502f89 ]
 
-In RT system, the spin_lock will be replaced by sleepable rt_mutex lock,
-in __call_rcu(), disable interrupts before calling
-kasan_record_aux_stack(), will trigger this calltrace:
+On Qualcomm ARM32 platforms, the SMC call can return before it has
+completed. If this occurs, the call can be restarted, but it requires
+using the returned session ID value from the interrupted SMC call.
 
-  BUG: sleeping function called from invalid context at kernel/locking/rtmutex.c:951
-  in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 19, name: pgdatinit0
-  Call Trace:
-    ___might_sleep.cold+0x1b2/0x1f1
-    rt_spin_lock+0x3b/0xb0
-    stack_depot_save+0x1b9/0x440
-    kasan_save_stack+0x32/0x40
-    kasan_record_aux_stack+0xa5/0xb0
-    __call_rcu+0x117/0x880
-    __exit_signal+0xafb/0x1180
-    release_task+0x1d6/0x480
-    exit_notify+0x303/0x750
-    do_exit+0x678/0xcf0
-    kthread+0x364/0x4f0
-    ret_from_fork+0x22/0x30
+The ARM32 SMCC code already has the provision to add platform specific
+quirks for things like this. So let's make use of it and add the
+Qualcomm specific quirk (ARM_SMCCC_QUIRK_QCOM_A6) used by the QCOM_SCM
+driver.
 
-Replace spinlock with raw_spinlock.
+This change is similar to the below one added for ARM64 a while ago:
+commit 82bcd087029f ("firmware: qcom: scm: Fix interrupted SCM calls")
 
-Link: https://lkml.kernel.org/r/20210329084009.27013-1-qiang.zhang@windriver.com
-Signed-off-by: Zqiang <qiang.zhang@windriver.com>
-Reported-by: Andrew Halaney <ahalaney@redhat.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Gustavo A. R. Silva <gustavoars@kernel.org>
-Cc: Vijayanand Jitta <vjitta@codeaurora.org>
-Cc: Vinayak Menon <vinmenon@codeaurora.org>
-Cc: Yogesh Lal <ylal@codeaurora.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Without this change, the Qualcomm ARM32 platforms like SDX55 will return
+-EINVAL for SMC calls used for modem firmware loading and validation.
+
+Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/stackdepot.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/kernel/asm-offsets.c |  3 +++
+ arch/arm/kernel/smccc-call.S  | 11 ++++++++++-
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 2caffc64e4c8..25bbac46605e 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -70,7 +70,7 @@ static void *stack_slabs[STACK_ALLOC_MAX_SLABS];
- static int depot_index;
- static int next_slab_inited;
- static size_t depot_offset;
--static DEFINE_SPINLOCK(depot_lock);
-+static DEFINE_RAW_SPINLOCK(depot_lock);
+diff --git a/arch/arm/kernel/asm-offsets.c b/arch/arm/kernel/asm-offsets.c
+index bfb05c93494d..4ce2e29da14d 100644
+--- a/arch/arm/kernel/asm-offsets.c
++++ b/arch/arm/kernel/asm-offsets.c
+@@ -27,6 +27,7 @@
+ #include <asm/vdso_datapage.h>
+ #include <asm/hardware/cache-l2x0.h>
+ #include <linux/kbuild.h>
++#include <linux/arm-smccc.h>
+ #include "signal.h"
  
- static bool init_stack_slab(void **prealloc)
- {
-@@ -281,7 +281,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- 			prealloc = page_address(page);
- 	}
+ /*
+@@ -160,6 +161,8 @@ int main(void)
+   DEFINE(SLEEP_SAVE_SP_PHYS,	offsetof(struct sleep_save_sp, save_ptr_stash_phys));
+   DEFINE(SLEEP_SAVE_SP_VIRT,	offsetof(struct sleep_save_sp, save_ptr_stash));
+ #endif
++  DEFINE(ARM_SMCCC_QUIRK_ID_OFFS,	offsetof(struct arm_smccc_quirk, id));
++  DEFINE(ARM_SMCCC_QUIRK_STATE_OFFS,	offsetof(struct arm_smccc_quirk, state));
+   BLANK();
+   DEFINE(DMA_BIDIRECTIONAL,	DMA_BIDIRECTIONAL);
+   DEFINE(DMA_TO_DEVICE,		DMA_TO_DEVICE);
+diff --git a/arch/arm/kernel/smccc-call.S b/arch/arm/kernel/smccc-call.S
+index 00664c78faca..931df62a7831 100644
+--- a/arch/arm/kernel/smccc-call.S
++++ b/arch/arm/kernel/smccc-call.S
+@@ -3,7 +3,9 @@
+  * Copyright (c) 2015, Linaro Limited
+  */
+ #include <linux/linkage.h>
++#include <linux/arm-smccc.h>
  
--	spin_lock_irqsave(&depot_lock, flags);
-+	raw_spin_lock_irqsave(&depot_lock, flags);
- 
- 	found = find_stack(*bucket, entries, nr_entries, hash);
- 	if (!found) {
-@@ -305,7 +305,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- 		WARN_ON(!init_stack_slab(&prealloc));
- 	}
- 
--	spin_unlock_irqrestore(&depot_lock, flags);
-+	raw_spin_unlock_irqrestore(&depot_lock, flags);
- exit:
- 	if (prealloc) {
- 		/* Nobody used this memory, ok to free it. */
++#include <asm/asm-offsets.h>
+ #include <asm/opcodes-sec.h>
+ #include <asm/opcodes-virt.h>
+ #include <asm/unwind.h>
+@@ -27,7 +29,14 @@ UNWIND(	.fnstart)
+ UNWIND(	.save	{r4-r7})
+ 	ldm	r12, {r4-r7}
+ 	\instr
+-	pop	{r4-r7}
++	ldr	r4, [sp, #36]
++	cmp	r4, #0
++	beq	1f			// No quirk structure
++	ldr     r5, [r4, #ARM_SMCCC_QUIRK_ID_OFFS]
++	cmp     r5, #ARM_SMCCC_QUIRK_QCOM_A6
++	bne	1f			// No quirk present
++	str	r6, [r4, #ARM_SMCCC_QUIRK_STATE_OFFS]
++1:	pop	{r4-r7}
+ 	ldr	r12, [sp, #(4 * 4)]
+ 	stm	r12, {r0-r3}
+ 	bx	lr
 -- 
 2.30.2
 
