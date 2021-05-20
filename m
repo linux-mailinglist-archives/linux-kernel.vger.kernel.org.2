@@ -2,293 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 496E238B953
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BF4838B958
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:02:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231156AbhETWCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:02:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbhETWCx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:02:53 -0400
-Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A0D1C061574;
-        Thu, 20 May 2021 15:01:31 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id D3C4E1280AFB;
-        Thu, 20 May 2021 15:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1621548089;
-        bh=6B36EHNlOMF+m6qguQbqNXb4TpgIJjDrp1/nC1OLWrU=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=K+K0BwIkdD/XqLAaIVIL9SkMjxyIQNtWzhibsqmYgXMxgMuWW/WWeTNGQOxuP0C3L
-         788TXogTBNpvc1haAliWYXrN+TcN53QAcZVGkmSDJAmEW41iKRzB7ZbVvhveZdm9zG
-         O3GM1G+8ibyzzVzQLoCoQvhr6HApyP36elp9pJCY=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id sZEBQ-8w3_SY; Thu, 20 May 2021 15:01:29 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 6F8BF1280AF0;
-        Thu, 20 May 2021 15:01:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=hansenpartnership.com; s=20151216; t=1621548089;
-        bh=6B36EHNlOMF+m6qguQbqNXb4TpgIJjDrp1/nC1OLWrU=;
-        h=Message-ID:Subject:From:To:Date:From;
-        b=K+K0BwIkdD/XqLAaIVIL9SkMjxyIQNtWzhibsqmYgXMxgMuWW/WWeTNGQOxuP0C3L
-         788TXogTBNpvc1haAliWYXrN+TcN53QAcZVGkmSDJAmEW41iKRzB7ZbVvhveZdm9zG
-         O3GM1G+8ibyzzVzQLoCoQvhr6HApyP36elp9pJCY=
-Message-ID: <376a0bde564e90d69378434a402eace5a298d6c4.camel@HansenPartnership.com>
-Subject: [GIT PULL] SCSI fixes for 5.13-rc2
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Thu, 20 May 2021 15:01:28 -0700
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
+        id S231222AbhETWDs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:03:48 -0400
+Received: from mail-bn8nam08on2118.outbound.protection.outlook.com ([40.107.100.118]:30040
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230270AbhETWDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 18:03:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NEZfTq+HTqXiGam1B1yFSpZwLA8/Hjkkga+ubvsxaHK2DrNoyinKa7ZDehBJknX0Z42AmTL71R/rmoH+70ypL7jzeNpv0hESUxVccVCFbDiXrC01qYz/bzOO/Z38B/Xp6PUAK6Sk2CG9UOx3tfdsetw6NZugfNtE+EUCLik21O5uPCXh6fUWWSbnMaYxektV9iRCGlqKTzEdkEASLExWeW4nIf//YbqDujHlqsbkq4TDlYFVurdm0miJw9Xdfpw7kJGrAm3RND4gCD5wag+PtVaR9ryEYBvQZL8QsPWYfCF3iCW9QNUDkQ4earG94xQ+1QAcLy5ebp6d0zBB4SQFvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NWDYjlIOhuJLKb5krRn3ncNwm8xjetPfunuT4EGfASU=;
+ b=kr7WaJPvpzH38OunAdxWYHYT8fMK+LbOXE1ir/2FY+o+IVapyRvmq2a4P3qRVftdy+8w51oKJ5sPda6C0ByA7tFQLHxb5MPzU0FlRDmwZePdqDpt98WJ2CSi61AwW89TnF1RHtA2vvZnIDA0IgP4Zxd0qQoG3ElK/IO7szUBA7N659aBeeldwqXCpVqInYk59MQgCTr1lycmw1xB3whSg1qN7G3waJJFPWaCaSJ7WQz+lFcbJbuIebPeLD0CrDUyri62ryhhknpkQXIXdX2bTz1N1zQhRikzR8p9pZu2+Hb26idPo8mm8thMVIABaDx368Km2+OeJ9lUKrTchce9Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
+ header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
+ arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NWDYjlIOhuJLKb5krRn3ncNwm8xjetPfunuT4EGfASU=;
+ b=EUZDGrnDQe+YtMKnvVMrC3nGMiDSwIMDFDBBH9Hscxhz/v6dOQAQ4/rc5YFNUvowWZXtogClrQhZ61wHlH3Tjkg4VvDHNpBDSD3l7qKFMdrpCbk9m6NzMIgz/u8GHiLYhp3ujmABvRKNEB/MzqhJmkmmVrXMxXsqsw8mQZInhpRihNpLCueGkJ1m29TldLZbj1Aj3g9LugJSn5L9WOgF7UNSwCg5QGiX2jSFiv9lsHcsx6hdCS5MfbUAw0HWcoFVa7zUFYvJAuUYc/7ziyejNZKUIwBzqJchX/q/VthrVAkatI2o3adzq84Og2Wjn5SFUtOGc5KnR8PJOqZkv8plLw==
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=cornelisnetworks.com;
+Received: from SJ0PR01MB6446.prod.exchangelabs.com (2603:10b6:a03:29e::12) by
+ BYAPR01MB4854.prod.exchangelabs.com (2603:10b6:a03:8e::28) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4129.26; Thu, 20 May 2021 22:02:19 +0000
+Received: from SJ0PR01MB6446.prod.exchangelabs.com
+ ([fe80::495c:e39b:be49:9f00]) by SJ0PR01MB6446.prod.exchangelabs.com
+ ([fe80::495c:e39b:be49:9f00%7]) with mapi id 15.20.4150.023; Thu, 20 May 2021
+ 22:02:18 +0000
+Subject: Re: [PATCH rdma-next] RDMA/rdmavt: Decouple QP and SGE lists
+ allocations
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leon@kernel.org>,
+        "Marciniszyn, Mike" <mike.marciniszyn@cornelisnetworks.com>,
+        Doug Ledford <dledford@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+References: <4237ab8a-a851-ecdf-ec41-4e798a2da156@cornelisnetworks.com>
+ <20210514130247.GA1002214@nvidia.com>
+ <47acc7ec-a37f-fa20-ea67-b546c6050279@cornelisnetworks.com>
+ <20210514143516.GG1002214@nvidia.com>
+ <CH0PR01MB71533DE9DBEEAEC7C250F8F8F2509@CH0PR01MB7153.prod.exchangelabs.com>
+ <20210514150237.GJ1002214@nvidia.com> <YKTDPm6j29jziSxT@unreal>
+ <0b3cc247-b67b-6151-2a32-e4682ff9af22@cornelisnetworks.com>
+ <20210519182941.GQ1002214@nvidia.com>
+ <1ceb34ec-eafb-697e-672c-17f9febb2e82@cornelisnetworks.com>
+ <20210519202623.GU1002214@nvidia.com>
+From:   Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+Message-ID: <983802a6-0fa2-e181-832e-13a2d5f0fa82@cornelisnetworks.com>
+Date:   Thu, 20 May 2021 18:02:09 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.2
+In-Reply-To: <20210519202623.GU1002214@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [24.154.216.5]
+X-ClientProxiedBy: BL1PR13CA0288.namprd13.prod.outlook.com
+ (2603:10b6:208:2bc::23) To SJ0PR01MB6446.prod.exchangelabs.com
+ (2603:10b6:a03:29e::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from Denniss-MacBook-Pro.local (24.154.216.5) by BL1PR13CA0288.namprd13.prod.outlook.com (2603:10b6:208:2bc::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.11 via Frontend Transport; Thu, 20 May 2021 22:02:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: f565080d-af9a-4786-2799-08d91bdaec84
+X-MS-TrafficTypeDiagnostic: BYAPR01MB4854:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR01MB485447ADB77A0D88F2F55152F42A9@BYAPR01MB4854.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Z29o8sIP9xZ4AN2VtlPDFeZy2F7AHPYV2KdOMju+lBwRUTYv5tP0jqSnzwZlTqxoTBOwVEcS5XjGsdmu3WF4M2E0LuPvYMbtArHuvAzAK4fc9sqEhNz6BMjIzT0SZ2vL595/Tv+KZ0Ctmu1uo5mujYk4aYrKaddsiBlRRZBWJTgP6uDJrvjK5YY3V5V9ThLNKKh6i45Rzk0TI5CjyL9t2SSNfklX7Apmbr7NqwscrB8yNKsg1zmdbvC5nqZ5ztNfYQu3M+8FTu/qKmukrCqfLAlLS9Nol5Woa7ex9EccBH1mwRxCKPJTTNVlYJifkdl85Dha2YdSJEKVLK4F3RxzlV2/5mXwH1/iL1VTgJ24dgsWwqa3H1D2FP6bfM16zRll260AwU4BnRcippknwRxhSBya41zmbnUdBQbbvuhu2G54l7izskDOv7d1oYrYatHd4kcbxr32hENFjQERkEudOXCsnRVwgqJmn1TX1ur0SbLgd2hwHnKoeRS4tpmuNSNVEKtkn86Z0ItxA2gB6kVtjoEzJ+W+cR9G+YdCdH2sxcfXA2zGpKfAjvlUHJb6/9p2hJ9SfELWkVrHnLfj7qaQMSEsnZxY0yVWjLyj6ZGZIl8+9VJTIrJv0jG6yWxeeVe85c+Ci2FPMyFhAyWEVd//OklvO9LjhrV6sFrsY4/eQpyL0UmfopSbxo2onUcPDl9ZZzEmB6hz6JGmS2OJdHGCoUBCZvr/Bcdq5pFlRkrPRvo=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR01MB6446.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(346002)(39840400004)(396003)(66556008)(66476007)(8936002)(6486002)(66946007)(478600001)(31696002)(8676002)(44832011)(38350700002)(86362001)(38100700002)(52116002)(316002)(2906002)(6512007)(31686004)(53546011)(6506007)(26005)(54906003)(16526019)(186003)(36756003)(956004)(6916009)(5660300002)(2616005)(83380400001)(4326008)(6666004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dUFvcVJYUWd0Yko2b2hpU1IwUEVxb28wd1g3T2tya3VUeTg4aTk3N3RuWi9X?=
+ =?utf-8?B?VmxMTlFuVzFYMHN4RnZyVmpGQk9laEVWQmc1bEVoemtYUDFwUHVuYzRSc0FT?=
+ =?utf-8?B?c3ZYOEp2eUQ3QTZjRnJMYk52UHJ6T1BuN3kvOUJSVHZJRzdxTitFcG1HRlRZ?=
+ =?utf-8?B?Tnp1UVRxYUJxUEtINWNMY0k5dHVIanRSVStZY05hcGwxZlQ2bk8veGxiSHBu?=
+ =?utf-8?B?MUpzWFVUYlEreVRmNHB3RjJOa0k5MXFVZmc3N3ZNOXlBVHhmd280Z3VLSlhw?=
+ =?utf-8?B?b2NUNTVjUzh5d3NKV1JRYVFoczNwVGozeFh0OTBJV25uMkRzUENJaEpOQWx3?=
+ =?utf-8?B?SmtCWlRaUmpwWVErc1BVZVhhZUpvdmwzcGppNkNRSE4wVnprU1ZrZ1NuNUph?=
+ =?utf-8?B?aGpFd2w3R2Rza0QwN2h5RlhuVmpjazl1cGFJVGVVTVlmNEdQT0g2SnYwQ21F?=
+ =?utf-8?B?RGRQaVd4amxNRnpEdURvakRhamF2cm1yblBnSHgyWXFmUmxtMElUMzlQQnVo?=
+ =?utf-8?B?eis4bjM2d1hOaGlwbFdmYndDd0M3N09DV1R4SnZDZWRLZy9jM3hHQXZTOVEv?=
+ =?utf-8?B?dDQzUkI3dE8yTTBXSkQ0M3ZSZlZvakJGNGo3WDBzMVIrbEgvSnZoNmJzNXRl?=
+ =?utf-8?B?T3RleGxQdWdaMm1KR0kramZnQ3dTZm1KWWhkeEZRWHhHWnBKemp2SWxoV1Ur?=
+ =?utf-8?B?SGYyc08wYmFSdUZTZEZpTFFWNjJaVXNnQ0szSnJ6b016UnB6RTMvNTlLODN5?=
+ =?utf-8?B?N084WTNmTGVmczlTUE42WHVqdE5wRGdWTFl6MTF1VkRJMkYzS2VjU29MeHUz?=
+ =?utf-8?B?TUVoK1dnbnVXTHRVNkw1M2dTMXJnYWNlaFdsbU5pOXp6dXM5eDdySXErNFYv?=
+ =?utf-8?B?WXppWS93MHBXemdSZ3lnOFJHWGp5SU5Cd2Fmajc2aEdQQmxTKzlmbnhFbGV1?=
+ =?utf-8?B?OFpYZS93NXBtSDdVMDBrYm9WM21NUDdPWWJyK1hQb2NxZWx0aDIvdVNNRVhx?=
+ =?utf-8?B?YVNmSVJPbEgyd3JvQTlFYytHMkswcC9xc254c0Z5L3gwV3ZyUHFGd2tpaTc5?=
+ =?utf-8?B?akxmRW1HaXlOaHl1VDdNYUF5QzJERzFERVU4RFI4MEJ4czN3SmhlOWxKWWsw?=
+ =?utf-8?B?eDhZOXl4d0xjRnVpaCszTzNucG1PR2hGeUpIcWg2eDlWSGMzZ0NMWmVKb29Y?=
+ =?utf-8?B?YS9pN3dkNjNyeTVSZkowUG1MZUV3K1hHZUxwTGxsY1dheWF4VkJPcktKSGlX?=
+ =?utf-8?B?b0JRS3ZIVjR4SzdSU1BXV2NwWFpyd0tEaExpU3hmdVZMcHlsbDAwU1o0RmMx?=
+ =?utf-8?B?dEo3N2xkUURHM3B4NlBvWW5ZK0trYWZ2Z1BLQW9LWk1yUEU3Q2hjZ052YUVG?=
+ =?utf-8?B?WEMrSUF3UlJxeUEyRzBuYTlCL0RIVFBicEZLWC9Xc3lWelBLbVBSdVpDSi9F?=
+ =?utf-8?B?ZlZEVU9ZcWd0UTZsMmxDZTJxdy80UDE4bWVzRG1kekJzRi9vTGVuUVoyMXlu?=
+ =?utf-8?B?UWl2SHhlcFpBTXU3UkVLeFkzZ2pOR29IODRvMWlmT0gwc285c2tZalJ3cDR1?=
+ =?utf-8?B?Vld6T2lac25NMnJtM1VFcU9iT1Rmbk5PUWlKYklzQVIyMnlhYU1JVmpOU0sx?=
+ =?utf-8?B?MTIrTStoa0x2ODJqUTlWVFJveWJ2UnFnRDJJK09nSGNLVzg2Ni9pS0VhN01U?=
+ =?utf-8?B?Sy9WU3VqQkQvVGdXUHA5RExaQWZSMllXT3VYQzNuRzB1eXFXRzRhc1M4dzAv?=
+ =?utf-8?Q?yxqmXTYntA8xTL4kRWUtTXD9bHt0nFeL7AWtqEN?=
+X-OriginatorOrg: cornelisnetworks.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f565080d-af9a-4786-2799-08d91bdaec84
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR01MB6446.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 22:02:18.3654
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: NnN8XeM8rdQkkftbx69x98FKlyYRHbE79LX/Tpyfy/ASgw3FNCsnY71swLgd4Qa68LMo7Td0zfTiwGLZspNzOwnOv9t1Cr6PuTCFrOccu787teX1CuMhkwda3BnWYeAb
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR01MB4854
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-8 small fixes, all in drivers.
+On 5/19/21 4:26 PM, Jason Gunthorpe wrote:
+> On Wed, May 19, 2021 at 03:49:31PM -0400, Dennis Dalessandro wrote:
+>> On 5/19/21 2:29 PM, Jason Gunthorpe wrote:
+>>> On Wed, May 19, 2021 at 07:56:32AM -0400, Dennis Dalessandro wrote:
+>>>
+>>>> Perhaps the code can be enhanced to move more stuff into the driver's own
+>>>> structs as Jason points out, but that should happen first. For now I still
+>>>> don't understand why the core can't optionally make the allocation per node.
+>>>
+>>> Because I think it is wrong in the general case to assign all
+>>> allocations to a single node?
+>>
+>> If by general case you mean for all drivers, sure, totally agree. We aren't
+>> talking about all drivers though, just the particular case of rdmavt.
+> 
+> I think it is wrong for rdmavt too and your benchmarks have focused on
+> a specific case with process/thread affinities that can actually
+> benefit from it.
+> 
+> I don't want to encourage other drivers to do the same thing.
 
-The patch is available here:
+I would imagine they would get the same push back we are getting here. I 
+don't think this would encourage anyone honestly.
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+> The correct thing to do today in 2021 is to use the standard NUMA
+> memory policy on already node-affine threads. The memory policy goes
+> into the kernel and normal non-_node allocations will obey it. When
+> combined with an appropriate node-affine HCA this will work as you are
+> expecting right now.
 
-The short changelog is:
+So we shouldn't see any issue in the normal case is what you are saying. 
+I'd like to believe that, proving it is not easy though.
 
-Ajish Koshy (1):
-      scsi: pm80xx: Fix drives missing during rmmod/insmod loop
+> However you can't do anything like that while the kernel has the _node
+> annotations, that overrides the NUMA memory policy and breaks the
+> policy system!
 
-Bart Van Assche (1):
-      scsi: ufs: core: Increase the usable queue depth
+Does our driver doing this break the entire system? I'm not sure how 
+that's possible. Is there an effort to get rid of these per node 
+allocations so ultimately we won't have a choice at some point?
 
-Javed Hasan (1):
-      scsi: qedf: Add pointer checks in qedf_update_link_speed()
+> The *only* reason to override the node behavior in the kernel is if
+> the kernel knows with high certainty that allocations are only going
+> to be touched by certain CPUs, such as because it knows that the
+> allocation is substantially for use in a CPU pinned irq/workqeueue or
+> accessed via DMA from a node affine DMA device.
+> 
+> None of these seem true for the QP struct.
 
-Matt Wang (1):
-      scsi: BusLogic: Fix 64-bit system enumeration error for Buslogic
+Will let Mike M respond about that. He's got a much better handle on the 
+implications.
 
-Peter Wang (1):
-      scsi: ufs: ufs-mediatek: Fix power down spec violation
+> Especially since for RDMA all of the above is highly situational. The
+> IRQ/WQ processing anything in RDMA should be tied to the comp_vector,
+> so without knowing that information you simply can't do anything
+> correct at allocation time.
 
-Zhen Lei (1):
-      scsi: qla2xxx: Fix error return code in qla82xx_write_flash_dword()
+I don't think that's true for our case. The comp_vector may in some 
+cases be the right thing to dictate where memory should be, in our case 
+I don't think that's true all the time.
 
-And the diffstat:
+> The idea of allocating every to the HW's node is simply not correct
+> design. I will grant you it may have made sense ages ago before the
+> NUMA stuff was more completed, but today it does not and you'd be
+> better to remove it all and use memory policy properly than insist we
+> keep it around forever.
 
- drivers/scsi/BusLogic.c           |  6 +++---
- drivers/scsi/BusLogic.h           |  2 +-
- drivers/scsi/pm8001/pm8001_hwi.c  | 10 ++++++----
- drivers/scsi/pm8001/pm8001_init.c |  2 +-
- drivers/scsi/pm8001/pm8001_sas.c  |  7 ++++++-
- drivers/scsi/pm8001/pm80xx_hwi.c  | 12 ++++++------
- drivers/scsi/qedf/qedf_main.c     |  4 +++-
- drivers/scsi/qla2xxx/qla_nx.c     |  3 ++-
- drivers/scsi/ufs/ufs-mediatek.c   |  4 ++++
- drivers/scsi/ufs/ufshcd.c         |  5 ++++-
- 10 files changed, 36 insertions(+), 19 deletions(-)
+Not insisting anything. If the trend is to remove these sort of 
+allocations and other drivers are no longer doing this "not correct 
+design" we are certainly open to change. We just want to understand the 
+impact first rather than being strong armed into accepting a performance 
+regression just so Leon can refactor some code.
 
-With full diff below.
-
-James
-
----
-
-diff --git a/drivers/scsi/BusLogic.c b/drivers/scsi/BusLogic.c
-index 3ee46a843cb5..adddcd589941 100644
---- a/drivers/scsi/BusLogic.c
-+++ b/drivers/scsi/BusLogic.c
-@@ -2926,11 +2926,11 @@ static int blogic_qcmd_lck(struct scsi_cmnd *command,
- 		ccb->opcode = BLOGIC_INITIATOR_CCB_SG;
- 		ccb->datalen = count * sizeof(struct blogic_sg_seg);
- 		if (blogic_multimaster_type(adapter))
--			ccb->data = (void *)((unsigned int) ccb->dma_handle +
-+			ccb->data = (unsigned int) ccb->dma_handle +
- 					((unsigned long) &ccb->sglist -
--					(unsigned long) ccb));
-+					(unsigned long) ccb);
- 		else
--			ccb->data = ccb->sglist;
-+			ccb->data = virt_to_32bit_virt(ccb->sglist);
- 
- 		scsi_for_each_sg(command, sg, count, i) {
- 			ccb->sglist[i].segbytes = sg_dma_len(sg);
-diff --git a/drivers/scsi/BusLogic.h b/drivers/scsi/BusLogic.h
-index a8e4a19788a7..7d1ec10f2430 100644
---- a/drivers/scsi/BusLogic.h
-+++ b/drivers/scsi/BusLogic.h
-@@ -806,7 +806,7 @@ struct blogic_ccb {
- 	unsigned char cdblen;				/* Byte 2 */
- 	unsigned char sense_datalen;			/* Byte 3 */
- 	u32 datalen;					/* Bytes 4-7 */
--	void *data;					/* Bytes 8-11 */
-+	u32 data;					/* Bytes 8-11 */
- 	unsigned char:8;				/* Byte 12 */
- 	unsigned char:8;				/* Byte 13 */
- 	enum blogic_adapter_status adapter_status;	/* Byte 14 */
-diff --git a/drivers/scsi/pm8001/pm8001_hwi.c b/drivers/scsi/pm8001/pm8001_hwi.c
-index ecd06d2d7e81..71aa6af08340 100644
---- a/drivers/scsi/pm8001/pm8001_hwi.c
-+++ b/drivers/scsi/pm8001/pm8001_hwi.c
-@@ -3765,11 +3765,13 @@ static int mpi_hw_event(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 	case HW_EVENT_PHY_START_STATUS:
- 		pm8001_dbg(pm8001_ha, MSG, "HW_EVENT_PHY_START_STATUS status = %x\n",
- 			   status);
--		if (status == 0) {
-+		if (status == 0)
- 			phy->phy_state = 1;
--			if (pm8001_ha->flags == PM8001F_RUN_TIME &&
--					phy->enable_completion != NULL)
--				complete(phy->enable_completion);
-+
-+		if (pm8001_ha->flags == PM8001F_RUN_TIME &&
-+				phy->enable_completion != NULL) {
-+			complete(phy->enable_completion);
-+			phy->enable_completion = NULL;
- 		}
- 		break;
- 	case HW_EVENT_SAS_PHY_UP:
-diff --git a/drivers/scsi/pm8001/pm8001_init.c b/drivers/scsi/pm8001/pm8001_init.c
-index 390c33df0357..af09bd282cb9 100644
---- a/drivers/scsi/pm8001/pm8001_init.c
-+++ b/drivers/scsi/pm8001/pm8001_init.c
-@@ -1151,8 +1151,8 @@ static int pm8001_pci_probe(struct pci_dev *pdev,
- 		goto err_out_shost;
- 	}
- 	list_add_tail(&pm8001_ha->list, &hba_list);
--	scsi_scan_host(pm8001_ha->shost);
- 	pm8001_ha->flags = PM8001F_RUN_TIME;
-+	scsi_scan_host(pm8001_ha->shost);
- 	return 0;
- 
- err_out_shost:
-diff --git a/drivers/scsi/pm8001/pm8001_sas.c b/drivers/scsi/pm8001/pm8001_sas.c
-index d28af413b93a..335cf37e6cb9 100644
---- a/drivers/scsi/pm8001/pm8001_sas.c
-+++ b/drivers/scsi/pm8001/pm8001_sas.c
-@@ -264,12 +264,17 @@ void pm8001_scan_start(struct Scsi_Host *shost)
- 	int i;
- 	struct pm8001_hba_info *pm8001_ha;
- 	struct sas_ha_struct *sha = SHOST_TO_SAS_HA(shost);
-+	DECLARE_COMPLETION_ONSTACK(completion);
- 	pm8001_ha = sha->lldd_ha;
- 	/* SAS_RE_INITIALIZATION not available in SPCv/ve */
- 	if (pm8001_ha->chip_id == chip_8001)
- 		PM8001_CHIP_DISP->sas_re_init_req(pm8001_ha);
--	for (i = 0; i < pm8001_ha->chip->n_phy; ++i)
-+	for (i = 0; i < pm8001_ha->chip->n_phy; ++i) {
-+		pm8001_ha->phy[i].enable_completion = &completion;
- 		PM8001_CHIP_DISP->phy_start_req(pm8001_ha, i);
-+		wait_for_completion(&completion);
-+		msleep(300);
-+	}
- }
- 
- int pm8001_scan_finished(struct Scsi_Host *shost, unsigned long time)
-diff --git a/drivers/scsi/pm8001/pm80xx_hwi.c b/drivers/scsi/pm8001/pm80xx_hwi.c
-index 4e980830f9f5..700530e969ac 100644
---- a/drivers/scsi/pm8001/pm80xx_hwi.c
-+++ b/drivers/scsi/pm8001/pm80xx_hwi.c
-@@ -3487,13 +3487,13 @@ static int mpi_phy_start_resp(struct pm8001_hba_info *pm8001_ha, void *piomb)
- 	pm8001_dbg(pm8001_ha, INIT,
- 		   "phy start resp status:0x%x, phyid:0x%x\n",
- 		   status, phy_id);
--	if (status == 0) {
-+	if (status == 0)
- 		phy->phy_state = PHY_LINK_DOWN;
--		if (pm8001_ha->flags == PM8001F_RUN_TIME &&
--				phy->enable_completion != NULL) {
--			complete(phy->enable_completion);
--			phy->enable_completion = NULL;
--		}
-+
-+	if (pm8001_ha->flags == PM8001F_RUN_TIME &&
-+			phy->enable_completion != NULL) {
-+		complete(phy->enable_completion);
-+		phy->enable_completion = NULL;
- 	}
- 	return 0;
- 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 69f7784233f9..756231151882 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -536,7 +536,9 @@ static void qedf_update_link_speed(struct qedf_ctx *qedf,
- 	if (linkmode_intersects(link->supported_caps, sup_caps))
- 		lport->link_supported_speeds |= FC_PORTSPEED_20GBIT;
- 
--	fc_host_supported_speeds(lport->host) = lport->link_supported_speeds;
-+	if (lport->host && lport->host->shost_data)
-+		fc_host_supported_speeds(lport->host) =
-+			lport->link_supported_speeds;
- }
- 
- static void qedf_bw_update(void *dev)
-diff --git a/drivers/scsi/qla2xxx/qla_nx.c b/drivers/scsi/qla2xxx/qla_nx.c
-index 0677295957bc..615e44af1ca6 100644
---- a/drivers/scsi/qla2xxx/qla_nx.c
-+++ b/drivers/scsi/qla2xxx/qla_nx.c
-@@ -1063,7 +1063,8 @@ qla82xx_write_flash_dword(struct qla_hw_data *ha, uint32_t flashaddr,
- 		return ret;
- 	}
- 
--	if (qla82xx_flash_set_write_enable(ha))
-+	ret = qla82xx_flash_set_write_enable(ha);
-+	if (ret < 0)
- 		goto done_write;
- 
- 	qla82xx_wr_32(ha, QLA82XX_ROMUSB_ROM_WDATA, data);
-diff --git a/drivers/scsi/ufs/ufs-mediatek.c b/drivers/scsi/ufs/ufs-mediatek.c
-index a981f261b304..aee3cfc7142a 100644
---- a/drivers/scsi/ufs/ufs-mediatek.c
-+++ b/drivers/scsi/ufs/ufs-mediatek.c
-@@ -922,6 +922,7 @@ static void ufs_mtk_vreg_set_lpm(struct ufs_hba *hba, bool lpm)
- static int ufs_mtk_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- {
- 	int err;
-+	struct arm_smccc_res res;
- 
- 	if (ufshcd_is_link_hibern8(hba)) {
- 		err = ufs_mtk_link_set_lpm(hba);
-@@ -941,6 +942,9 @@ static int ufs_mtk_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
- 			goto fail;
- 	}
- 
-+	if (ufshcd_is_link_off(hba))
-+		ufs_mtk_device_reset_ctrl(0, res);
-+
- 	return 0;
- fail:
- 	/*
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 3eb54937f1d8..72fd41bfbd54 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -2842,7 +2842,7 @@ static int ufshcd_wait_for_dev_cmd(struct ufs_hba *hba,
-  * ufshcd_exec_dev_cmd - API for sending device management requests
-  * @hba: UFS hba
-  * @cmd_type: specifies the type (NOP, Query...)
-- * @timeout: time in seconds
-+ * @timeout: timeout in milliseconds
-  *
-  * NOTE: Since there is only one available tag for device management commands,
-  * it is expected you hold the hba->dev_cmd.lock mutex.
-@@ -2872,6 +2872,9 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
- 	}
- 	tag = req->tag;
- 	WARN_ON_ONCE(!ufshcd_valid_tag(hba, tag));
-+	/* Set the timeout such that the SCSI error handler is not activated. */
-+	req->timeout = msecs_to_jiffies(2 * timeout);
-+	blk_mq_start_request(req);
- 
- 	init_completion(&wait);
- 	lrbp = &hba->lrb[tag];
-
+-Denny
