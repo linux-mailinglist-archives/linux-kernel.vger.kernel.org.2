@@ -2,247 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03D538AE14
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2C538AE17
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:24:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbhETMYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:24:48 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:35400 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232736AbhETMYJ (ORCPT
+        id S232018AbhETMZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:25:15 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:40564 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231805AbhETMYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:24:09 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KCDXYO061658;
-        Thu, 20 May 2021 08:22:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=IZbN4vqXm8b+HdkSIcyeN9o2mhjmTr8hv3qe5z3P+mA=;
- b=p/4tNJaQmIFoL3SYoCjLQwhGpLHb258cyyqVVgQzwKcr4KZjwpp9hA4/JssSpgSdmLSa
- vzJm1jduZnDkAtNca4VJQmfhut9L2adQNDbHW4HhyaBGrnH5jXB3xk28UFB+OLFFDZ5n
- uTyds56SlJOe2ymO0oWvrb+J5ipzykwp7jMlDm0Xc/8nKIY7Sni9svgqaCC69CHAFIjM
- 9TX7Z+IL+IVv/w+ow4kQpHA0zNMRR4/YrMRSVPvALOeOLgDR8aLXlK7eHq+Jo3tjLMrF
- xlISKc1nWn2Z6vlmDSuYqxH0uhazI5QL+tNDhsACWviuKdGZSRby7EUlU5r47TWaPOrT mg== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38nqk889ju-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 08:22:33 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14KCDSk5061029;
-        Thu, 20 May 2021 08:22:33 -0400
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38nqk889j7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 08:22:32 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14KCHKuG022146;
-        Thu, 20 May 2021 12:22:30 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8amb7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 12:22:30 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14KCM0Zw21234144
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 12:22:00 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 911BCA4062;
-        Thu, 20 May 2021 12:22:28 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F3F75A405B;
-        Thu, 20 May 2021 12:22:24 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.80.188])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 20 May 2021 12:22:24 +0000 (GMT)
-Message-ID: <c134ad45d924e8b719f8abb6d36b426b889e9394.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/3] Add additional MOK vars
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
-        linux-integrity <linux-integrity@vger.kernel.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        torvalds@linux-foundation.org,
-        "Serge E . Hallyn" <serge@hallyn.com>,
-        James Bottomley <James.Bottomley@HansenPartnership.com>,
-        pjones@redhat.com, glin@suse.com,
-        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>
-Date:   Thu, 20 May 2021 08:22:24 -0400
-In-Reply-To: <7F861393-7971-43AB-A741-223B8A50FFA0@oracle.com>
-References: <20210517225714.498032-1-eric.snowberg@oracle.com>
-         <fdb42621e7145ce81a34840cbcf0914874c78913.camel@linux.ibm.com>
-         <7F861393-7971-43AB-A741-223B8A50FFA0@oracle.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: LdGi0352dDnyZBNOXHCG8T7TUW4eOwLf
-X-Proofpoint-GUID: d7MQK1BTGmRq8hovTSZeKDT6zxvWKm1c
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 20 May 2021 08:24:48 -0400
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KCMx5b000755;
+        Thu, 20 May 2021 07:22:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621513379;
+        bh=PHQEjO3386IOiR03Z3Lkca0h/KvRdaxXL9UXwhXPi2o=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=xYDuCKJwzk9DXkIKt0oKJy1kDC8kVrB97iX71+eV+xpwCeXghAg398nLBK2RI4TbF
+         gokd3VwTUrvgpL0yCRhZ8Hf3IbnjtMm3kmhSG1Tj+7zIJiYycYEfmEg8kDTG4ADXa2
+         wZKqVfrIKQVGMXw6JhRT+fvvelHjpzG1X+kuzDPM=
+Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KCMx38004006
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 May 2021 07:22:59 -0500
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE114.ent.ti.com
+ (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
+ May 2021 07:22:59 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 20 May 2021 07:22:59 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KCMwdv073349;
+        Thu, 20 May 2021 07:22:59 -0500
+Date:   Thu, 20 May 2021 17:52:58 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: Re: [PATCH v2] mtd: spi-nor: implement OTP erase for Winbond and
+ similar flashes
+Message-ID: <20210520122256.fhkzpqmu7nxwjoqt@ti.com>
+References: <20210510202056.30000-1-michael@walle.cc>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_03:2021-05-20,2021-05-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
- impostorscore=0 bulkscore=0 phishscore=0 mlxlogscore=999 adultscore=0
- mlxscore=0 lowpriorityscore=0 spamscore=0 priorityscore=1501
- malwarescore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105200093
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210510202056.30000-1-michael@walle.cc>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-19 at 16:04 -0600, Eric Snowberg wrote:
-> > On May 19, 2021, at 8:32 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
-> > 
-> > On Mon, 2021-05-17 at 18:57 -0400, Eric Snowberg wrote:
-> >> This series is being sent as an RFC. I am looking for feedback; if
-> >> adding additional MOK variables would be an acceptable solution to help
-> >> downstream Linux distros solve some of the problems we are facing?
-> >> 
-> >> Currently, pre-boot keys are not trusted within the Linux boundary [1].
-> >> Pre-boot keys include UEFI Secure Boot DB keys and MOKList keys. These
-> >> keys are loaded into the platform keyring and can only be used for kexec.
-> >> If an end-user wants to use their own key within the Linux trust
-> >> boundary, they must either compile it into the kernel themselves or use
-> >> the insert-sys-cert script. Both options present a problem. Many
-> >> end-users do not want to compile their own kernels. With the
-> >> insert-sys-cert option, there are missing upstream changes [2].  Also,
-> >> with the insert-sys-cert option, the end-user must re-sign their kernel
-> >> again with their own key, and then insert that key into the MOK db.
-> >> Another problem with insert-sys-cert is that only a single key can be
-> >> inserted into a compressed kernel.
-> >> 
-> >> Having the ability to insert a key into the Linux trust boundary opens
-> >> up various possibilities.  The end-user can use a pre-built kernel and
-> >> sign their own kernel modules.  It also opens up the ability for an
-> >> end-user to more easily use digital signature based IMA-appraisal.  To
-> >> get a key into the ima keyring, it must be signed by a key within the
-> >> Linux trust boundary.
-> >> 
-> >> Downstream Linux distros try to have a single signed kernel for each
-> >> architecture.  Each end-user may use this kernel in entirely different
-> >> ways.  Some downstream kernels have chosen to always trust platform keys
-> >> within the Linux trust boundary.  In addition, most downstream kernels
-> >> do not have an easy way for an end-user to use digital signature based
-> >> IMA-appraisal.
-> >> 
-> >> This series adds two new MOK variables to shim. The first variable
-> >> allows the end-user to decide if they want to trust keys contained
-> >> within the platform keyring within the Linux trust boundary. By default,
-> >> nothing changes; platform keys are not trusted within the Linux kernel.
-> >> They are only trusted after the end-user makes the decision themself.
-> >> The end-user would set this through mokutil using a new --trust-platform
-> >> option [3]. This would work similar to how the kernel uses MOK variables
-> >> to enable/disable signature validation as well as use/ignore the db.
-> >> 
-> >> The second MOK variable allows a downstream Linux distro to make
-> >> better use of the IMA architecture specific Secure Boot policy.  This
-> >> IMA policy is enabled whenever Secure Boot is enabled.  By default, this 
-> >> new MOK variable is not defined.  This causes the IMA architecture 
-> >> specific Secure Boot policy to be disabled.  Since this changes the 
-> >> current behavior, it is placed behind a new Kconfig option.  Kernels
-> >> built with IMA_UEFI_ARCH_POLICY enabled would  allow the end-user
-> >> to enable this through mokutil using a new --ima-sb-enable option [3].
-> >> This gives the downstream Linux distro the capability to offer the
-> >> IMA architecture specific Secure Boot policy option, while giving
-> >> the end-user the ability to decide if they want to use it.
-> >> 
-> >> I have included links to both the mokutil [3] and shim [4] changes I
-> >> made to support this new functionality.
-> >> 
-> >> Thank you and looking forward to hearing your reviews.
-> > 
-> > This patch set addresses two very different issues - allowing keys on
-> > the platform keyring to be trusted for things other than verifying the
-> > kexec kernel image signature, overwriting the arch specific IMA secure
-> > boot policy rules.  The only common denominator is basing those
-> > decisions on UEFI variables, which has been previously suggested and
-> > rejected.  The threat model hasn't changed.
-> 
-> Could you point me please to the previous discussion on the threat model
-> this change would violate?  What I found was [1], which I have tried to
-> solve with this series.  Having the ability to update a MOK variable 
-> indicates the user is not only root, but also the machine owner.  MOK 
-> variable updates require both root access to update and then physical 
-> presence to set via shim after reboot. This patch set tries to address 
-> the "*second* order" Linus requested [2].
+Hi Michael,
 
-The concern is not with the normal way of updating MOK.
+On 10/05/21 10:20PM, Michael Walle wrote:
+> Winbond flashes with OTP support provide a command to erase the OTP
+> data. This might come in handy during development.
+
+I am not very familiar with the OTP feature. It is supposed to be "One 
+Time Programmable". So does erasing the OTP area make it programmable 
+again? Or it just erases the data and then the OTP region will forever 
+be 0xff?
+
+Because if you can erase and reprogram it, how is it OTP at all?
 
 > 
-> > The desire for allowing a single local CA key to be loaded onto a
-> > trusted keyring is understandable.  A local CA key can be used to sign
-> > certificates, allowing them to be loaded onto the IMA keyring.  What is
-> > the need for multiple keys?
-> 
-> We have no control over how many keys an end-user may wish to enroll.  
-> They might want to enroll a CA for IMA and a different key for their 
-> kernel modules. This is a generic kernel that can serve many different 
-> purposes. Think distro kernels - like Fedora, Ubuntu, Oracle Linux, etc.
+> This was tested with a Winbond W25Q32JW on a LS1028A SoC with the
+> NXP FSPI controller.
 
-This patch set changes the secondary keyring root of trust, which is
-currently the builtin or other keys on the secondary keyring.  My
-concern with this change, is that any key on the secondary keyring may
-then be directly loaded or used to verify other keys being loaded onto
-the IMA keyring.
-
-I really do understand the need for extending the root of trust beyond
-the builtin keys and allowing end user keys to be loaded onto a kernel
-keyring, but it needs to be done safely.  The first step might include
-locally signing the MOK keys being loaded onto the secondary keyring
-and then somehow safely providing the local-CA key id to the kernel.
+I got the datasheet for this flash from 
+https://www.elinux.org/images/f/f5/Winbond-w25q32.pdf but it doesn't 
+seem to mention the erase OTP command (0x44).
 
 > 
-> > Making an exception for using a UEFI key for anything other than
-> > verifying the kexec kernel image, can not be based solely on UEFI
-> > variables, but should require some form of kernel
-> > agreement/confirmation.  
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> ---
+> Changes since v1:
+>  - fixed kernel doc
 > 
-> Isn’t that the case today with how MOK variables get set through
-> mokutil and shim? 
+> There is also a patch for mtd-utils to add a small tool to issue
+> the erase:
+> https://lore.kernel.org/linux-mtd/20210510201319.25975-1-michael@walle.cc/
 > 
-> > If/when a safe mechanism for identifying a
-> > single local CA key is defined, the certificate should be loaded
-> > directly onto the secondary keyring, not linked to the platform
-> > keyring.
-> > The system owner can enable/disable secure boot.  Disabling the arch
-> > secure boot IMA policy rules is not needed.  However, another mechanism
-> > for enabling them would be acceptable.
+>  drivers/mtd/spi-nor/core.c    |  4 +-
+>  drivers/mtd/spi-nor/core.h    |  4 ++
+>  drivers/mtd/spi-nor/otp.c     | 73 ++++++++++++++++++++++++++++++++++-
+>  drivers/mtd/spi-nor/winbond.c |  1 +
+>  4 files changed, 78 insertions(+), 4 deletions(-)
 > 
-> For a distro kernel, disabling the arch secure boot IMA policy rules is 
-> needed.  Distributions build a single kernel that can be used in many 
-> different ways. If we wanted to add a built-in IMA policy for an extra 
-> level of security protection, this allows the end-user to opt-in when 
-> secure boot is enabled. They are then protected before init is called. 
-> Not every user will want this protection; a different user may just want 
-> secure boot enabled without the IMA level protection.
+> diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> index bd2c7717eb10..fac8717f651f 100644
+> --- a/drivers/mtd/spi-nor/core.c
+> +++ b/drivers/mtd/spi-nor/core.c
+> @@ -166,8 +166,8 @@ static int spi_nor_controller_ops_read_reg(struct spi_nor *nor, u8 opcode,
+>  	return nor->controller_ops->read_reg(nor, opcode, buf, len);
+>  }
+>  
+> -static int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+> -					    const u8 *buf, size_t len)
+> +int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+> +				     const u8 *buf, size_t len)
+>  {
+>  	if (spi_nor_protocol_is_dtr(nor->reg_proto))
+>  		return -EOPNOTSUPP;
+> diff --git a/drivers/mtd/spi-nor/core.h b/drivers/mtd/spi-nor/core.h
+> index 28a2e0be97a3..b410e4eec2fb 100644
+> --- a/drivers/mtd/spi-nor/core.h
+> +++ b/drivers/mtd/spi-nor/core.h
+> @@ -214,6 +214,7 @@ struct spi_nor_otp_ops {
+>  	int (*write)(struct spi_nor *nor, loff_t addr, size_t len,
+>  		     const u8 *buf);
+>  	int (*lock)(struct spi_nor *nor, unsigned int region);
+> +	int (*erase)(struct spi_nor *nor, loff_t addr);
 
-When secure boot is enabled, the IMA arch policy rules verify the kexec
-kernel image is properly signed.  When CONFIG_MODULE_SIG is not
-configured, it also verifies kernel modules are properly signed.
+No doc update above?
 
-> After going through the mailing list history related to IMA appraisal, 
-> is this feature strictly geared towards a custom kernel used for a 
-> specific purpose?  Do you view it as not being a feature suitable for 
-> a generic distribution kernel to offer? 
+>  	int (*is_locked)(struct spi_nor *nor, unsigned int region);
+>  };
+>  
+> @@ -481,6 +482,8 @@ extern const struct spi_nor_manufacturer spi_nor_xmc;
+>  void spi_nor_spimem_setup_op(const struct spi_nor *nor,
+>  			     struct spi_mem_op *op,
+>  			     const enum spi_nor_protocol proto);
+> +int spi_nor_controller_ops_write_reg(struct spi_nor *nor, u8 opcode,
+> +				     const u8 *buf, size_t len);
+>  int spi_nor_write_enable(struct spi_nor *nor);
+>  int spi_nor_write_disable(struct spi_nor *nor);
+>  int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable);
+> @@ -507,6 +510,7 @@ ssize_t spi_nor_write_data(struct spi_nor *nor, loff_t to, size_t len,
+>  int spi_nor_otp_read_secr(struct spi_nor *nor, loff_t addr, size_t len, u8 *buf);
+>  int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+>  			   const u8 *buf);
+> +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr);
+>  int spi_nor_otp_lock_sr2(struct spi_nor *nor, unsigned int region);
+>  int spi_nor_otp_is_locked_sr2(struct spi_nor *nor, unsigned int region);
+>  
+> diff --git a/drivers/mtd/spi-nor/otp.c b/drivers/mtd/spi-nor/otp.c
+> index 61036c716abb..d3ca73c8cc53 100644
+> --- a/drivers/mtd/spi-nor/otp.c
+> +++ b/drivers/mtd/spi-nor/otp.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/log2.h>
+>  #include <linux/mtd/mtd.h>
+>  #include <linux/mtd/spi-nor.h>
+> +#include <linux/spi/spi-mem.h>
+>  
+>  #include "core.h"
+>  
+> @@ -111,6 +112,48 @@ int spi_nor_otp_write_secr(struct spi_nor *nor, loff_t addr, size_t len,
+>  	return ret ?: written;
+>  }
+>  
+> +/**
+> + * spi_nor_otp_erase_secr() - erase one OTP region
 
-IMA-appraisal is enabled by distros, but requires labeling the
-filesystem with security.ima xattrs, before loading an appraisal
-policy.
+Nitpick: The function is called erase_secr() but the comment says erase 
+region. Please use consistent wording.
 
-thanks,
+> + * @nor:        pointer to 'struct spi_nor'
+> + * @addr:       offset of the OTP region to be erased
+> + *
+> + * Erase one OTP region by using the SPINOR_OP_ESECR commands. This method is
+> + * used on GigaDevice and Winbond flashes.
+> + *
+> + * Return: 0 on success, -errno otherwise
+> + */
+> +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
+> +{
+> +	int ret;
+> +
+> +	ret = spi_nor_write_enable(nor);
+> +	if (ret)
+> +		return ret;
+> +
+> +	if (nor->spimem) {
+> +		struct spi_mem_op op =
+> +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
+> +				   SPI_MEM_OP_ADDR(3, addr, 0),
 
-Mimi
+Only 3 address bytes needed? Can the OTP region ever require 4 byte 
+addressing? For example, say the flash is switched to 4 byte addressing 
+for the main region. Would it still expect 3 byte addressing for OTP 
+ops?
 
+> +				   SPI_MEM_OP_NO_DUMMY,
+> +				   SPI_MEM_OP_NO_DATA);
+> +
+> +		spi_nor_spimem_setup_op(nor, &op, nor->write_proto);
+> +
+> +		ret = spi_mem_exec_op(nor->spimem, &op);
+> +	} else {
+> +		nor->bouncebuf[2] = addr & 0xff;
+> +		nor->bouncebuf[1] = (addr >> 8) & 0xff;
+> +		nor->bouncebuf[0] = (addr >> 16) & 0xff;
+> +
+> +		ret = spi_nor_controller_ops_write_reg(nor, SPINOR_OP_ESECR,
+> +						       nor->bouncebuf, 3);
+
+Huh, sending address in the "data" parameter of write_reg() is strange. 
+Wouldn't you be better off using spi_nor_controller_ops_erase()? It is 
+an erase operation anyway so it should be the natural choice.
+
+This was my first thought anyway. Then I looked at 
+spi_nor_erase_sector(). It looks like controller_ops->erase is optional, 
+and the fallback is this same technique.
+
+I see a lot of similarities between this function and 
+spi_nor_erase_sector(). So you can just swap out nor->erase_opcode and 
+nor->addr_width and call that. I am not the biggest fan of this approach 
+but it is widely used in the core so it should be fine. In fact, OTP 
+read and write also use this approach.
+
+> +	}
+> +	if (ret)
+> +		return ret;
+> +
+> +	return spi_nor_wait_till_ready(nor);
+> +}
+> +
+>  static int spi_nor_otp_lock_bit_cr(unsigned int region)
+>  {
+>  	static const int lock_bits[] = { SR2_LB1, SR2_LB2, SR2_LB3 };
+> @@ -316,12 +359,14 @@ static int spi_nor_mtd_otp_write(struct mtd_info *mtd, loff_t to, size_t len,
+>  	return spi_nor_mtd_otp_read_write(mtd, to, len, retlen, buf, true);
+>  }
+>  
+> -static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+> +static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t from,
+
+spi_nor_mtd_otp_lock_or_erase()? Or would it make it too long?
+
+Anyway, maybe I am bikeshedding too much, but I don't like that you 
+combine two completely independent operations into the same function 
+because they have some common parts. You should make them two separate 
+functions and see how many of the common parts can be split into 
+independent subroutines.
+
+> +				      size_t len, bool is_erase)
+>  {
+>  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+>  	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+>  	const size_t rlen = spi_nor_otp_region_len(nor);
+>  	unsigned int region;
+> +	loff_t rstart;
+>  	int ret;
+>  
+>  	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
+> @@ -337,7 +382,13 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+>  
+>  	while (len) {
+>  		region = spi_nor_otp_offset_to_region(nor, from);
+> -		ret = ops->lock(nor, region);
+> +
+> +		if (is_erase) {
+> +			rstart = spi_nor_otp_region_start(nor, region);
+> +			ret = ops->erase(nor, rstart);
+
+This further highlights my point. There are subtle differences between 
+erase and lock and having them in the same function might not be the 
+best idea.
+
+> +		} else {
+> +			ret = ops->lock(nor, region);
+> +		}
+>  		if (ret)
+>  			goto out;
+>  
+> @@ -351,6 +402,23 @@ static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+>  	return ret;
+>  }
+>  
+> +static int spi_nor_mtd_otp_lock(struct mtd_info *mtd, loff_t from, size_t len)
+> +{
+> +	return spi_nor_mtd_otp_lock_erase(mtd, from, len, false);
+> +}
+> +
+> +static int spi_nor_mtd_otp_erase(struct mtd_info *mtd, loff_t from, size_t len)
+> +{
+> +	struct spi_nor *nor = mtd_to_spi_nor(mtd);
+> +	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
+> +
+> +	/* OTP erase is optional */
+> +	if (!ops->erase)
+> +		return -EOPNOTSUPP;
+> +
+> +	return spi_nor_mtd_otp_lock_erase(mtd, from, len, true);
+> +}
+> +
+>  void spi_nor_otp_init(struct spi_nor *nor)
+>  {
+>  	struct mtd_info *mtd = &nor->mtd;
+> @@ -374,4 +442,5 @@ void spi_nor_otp_init(struct spi_nor *nor)
+>  	mtd->_read_user_prot_reg = spi_nor_mtd_otp_read;
+>  	mtd->_write_user_prot_reg = spi_nor_mtd_otp_write;
+>  	mtd->_lock_user_prot_reg = spi_nor_mtd_otp_lock;
+> +	mtd->_erase_user_prot_reg = spi_nor_mtd_otp_erase;
+>  }
+> diff --git a/drivers/mtd/spi-nor/winbond.c b/drivers/mtd/spi-nor/winbond.c
+> index 9a81c67a60c6..96573f61caf5 100644
+> --- a/drivers/mtd/spi-nor/winbond.c
+> +++ b/drivers/mtd/spi-nor/winbond.c
+> @@ -139,6 +139,7 @@ static int winbond_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+>  static const struct spi_nor_otp_ops winbond_otp_ops = {
+>  	.read = spi_nor_otp_read_secr,
+>  	.write = spi_nor_otp_write_secr,
+> +	.erase = spi_nor_otp_erase_secr,
+>  	.lock = spi_nor_otp_lock_sr2,
+>  	.is_locked = spi_nor_otp_is_locked_sr2,
+>  };
+> -- 
+> 2.20.1
 > 
-> 
-> [1] https://lore.kernel.org/lkml/1556221605.24945.3.camel@HansenPartnership.com/
-> [2] https://marc.info/?l=linux-kernel&m=136185386310140&w=2
-> 
-> 
 
-
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
