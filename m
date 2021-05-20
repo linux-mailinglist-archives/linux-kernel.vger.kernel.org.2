@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C759F38B61A
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:34:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EAB438B61D
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:35:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235411AbhETSfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:35:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60700 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233857AbhETSfT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:35:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76780611AE;
-        Thu, 20 May 2021 18:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621535637;
-        bh=NMGesVtPQnY/FQJ7V9cpTdNOJfWW9YVR9/m3Tj3KVW8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N9DRU5zjc35Fx+EIojoqAGs/cPymC7vlHHGNikd4n4kC7zD6U5pu2mM7qcZ8lLipQ
-         2hsooLMbHwK9xCLriZvkkrq7jv/X0Kg9qeyzitXsmNW3m5hhi++GLTF9/PjMUZEDuk
-         7NUHo1m4B3lbnDIaQsCHkBC/ewXANNchbt5+C+mSGuzyXjmP0l9DCX5Mca8V1VhqOS
-         HLKxTmRbZsP43NnYtxwHWLlEkHRQpGomslDw95sT67UInPlPvxPywVrfGs4W3VEmF5
-         m3UzvwXZh1rrNBp3+PnTqEWm0Ww/e+mJ335NS5LZxdPXi+eLXTH0QFtObHaqGVMI2O
-         CfEl1uD8r1kYw==
-Date:   Thu, 20 May 2021 19:33:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Nehal Bakulchandra Shah <Nehal-Bakulchandra.shah@amd.com>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shyam Sundar S K <Shyam-sundar.S-k@amd.com>,
-        Liang Liang <liang.liang@amd.com>
-Subject: Re: [PATCH] spi:amd: Add support for latest platform
-Message-ID: <20210520183352.GE3962@sirena.org.uk>
-References: <20210520133946.2263172-1-Nehal-Bakulchandra.shah@amd.com>
+        id S235454AbhETSgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:36:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233857AbhETSgS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 14:36:18 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A33DC061574;
+        Thu, 20 May 2021 11:34:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=V+JOfDgV7psnkj9YIO5jH92IC9XuEYZaAjsGKe0XexU=; b=xTP5O2cQQJsLksrvH79y45+Bkv
+        V3Q2iFmUSM/LouF/+t/bmVFzQeKVSNHXIlfXo1Jr92T4rRrsQaTLADiY45CIz2GaX6gdQO6DTxHbX
+        0yndj/n79FqynwJupu6W4GEVL7VFRF6Xm460otL4s6Gz1J/L66YIzPRWylOMkS0PODnR1RM+t9NiT
+        k6c6yNfsp4nAjTevHLoYByTs+MOWfIkOX62J86cagaD5m1Q3VvH5gSs3F75LDZHJX+20TAYUkDc4O
+        g59DKwmjMI8JC+NaRRO/WTZS5HSdN34JxKrM5ob9p1lfWJbeEJLcUTi7E03hjpGvaxfljBWdZL2PJ
+        AAzICuOg==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljnVY-00GZnc-28; Thu, 20 May 2021 18:34:56 +0000
+Subject: Re: [PATCH] f2fs: fix kernel-doc syntax in file header
+To:     Aditya Srivastava <yashsri421@gmail.com>, jaegeuk@kernel.org
+Cc:     lukas.bulwahn@gmail.com, chao@kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org
+References: <20210520182933.31965-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d1e7aaa1-4f59-2480-003d-5a5a37443c75@infradead.org>
+Date:   Thu, 20 May 2021 11:34:55 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="C94crkcyjafcjHxo"
-Content-Disposition: inline
-In-Reply-To: <20210520133946.2263172-1-Nehal-Bakulchandra.shah@amd.com>
-X-Cookie: Offer void where prohibited by law.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210520182933.31965-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/20/21 11:29 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for include/linux/f2fs_fs.h follows this syntax, but the
+> content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * include/linux/f2fs_fs.h
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
---C94crkcyjafcjHxo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-On Thu, May 20, 2021 at 07:09:46PM +0530, Nehal Bakulchandra Shah wrote:
+Even better would be to remove the filename from the file.
 
-> *Support for latest platform
-> *Hardware Fifo has 72 bytes limitation so fix for the larger data size.
+Thanks.
 
-These two things sound like they should be separate patches, and it
-looks like there are some other changes mixed in here which aren't
-called out in the changelog.  This should be a patch series with one
-change per patch, that makes things much easier to review.
+> ---
+>  include/linux/f2fs_fs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
+> index 5487a80617a3..028d1b18f0e7 100644
+> --- a/include/linux/f2fs_fs.h
+> +++ b/include/linux/f2fs_fs.h
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -/**
+> +/*
+>   * include/linux/f2fs_fs.h
+>   *
+>   * Copyright (c) 2012 Samsung Electronics Co., Ltd.
+> 
 
->  	while (spi_busy) {
-> -		usleep_range(10, 20);
-> +		usleep_range(10, 40);
 
-Why change the delay?  This looks like a separate patch.
+-- 
+~Randy
 
->  	return 0;
-> @@ -146,9 +180,14 @@ static void amd_spi_execute_opcode(struct spi_master=
- *master)
->  {
->  	struct amd_spi *amd_spi =3D spi_master_get_devdata(master);
-> =20
-> +	amd_spi_busy_wait(amd_spi);
->  	/* Set ExecuteOpCode bit in the CTRL0 register */
-
-A blank line after the busy wait, and it'd be good to have a comment
-saying why there's a busy wait before actually doing the operation since
-this looks quite odd.
-
-> @@ -241,7 +325,8 @@ static int amd_spi_master_transfer(struct spi_master =
-*master,
->  	 * program the controller.
->  	 */
->  	amd_spi_fifo_xfer(amd_spi, master, msg);
-> -
-> +	if (amd_spi->devtype_data->version)
-> +		amd_spi_clear_chip(master);
-
-Does this disable the chip select?  Should there be a separate set_cs()
-operation?
-
->  	amd_spi =3D spi_master_get_devdata(master);
-> -	amd_spi->io_remap_addr =3D devm_platform_ioremap_resource(pdev, 0);
-> +
-> +	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +	amd_spi->io_remap_addr =3D devm_ioremap_resource(&pdev->dev, res);
-> +
-
-res is never referenced so it's not clear why this change is being made?
-
->  	/* Initialize the spi_master fields */
->  	master->bus_num =3D 0;
->  	master->num_chipselect =3D 4;
->  	master->mode_bits =3D 0;
-> -	master->flags =3D SPI_MASTER_HALF_DUPLEX;
->  	master->setup =3D amd_spi_master_setup;
->  	master->transfer_one_message =3D amd_spi_master_transfer;
-
-I'm not seeing a change anywhere that looks like it adds full duplex
-support for the v1 hardware (or v2 for that matter) and this isn't
-called out in the changelog.
-
---C94crkcyjafcjHxo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEyBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCmq5AACgkQJNaLcl1U
-h9D+UAf4uppXruMhqwdp5uEqIkfYy/+WtyrHf+FXHv7GfXIkWWAUIxlPm3ka53Lq
-j3NxlYjqGd+NteFMXP3Y1nsI7VirtVUb/Olj7y6LJbEYX+FI85K1Kc/jQ7UIJXQB
-Kxzf1s/DNMl0hmQEPOJd6AfRYpzl9HsLzJDmMGJRlBi7rrisiOXFDwrIACCz498Z
-WZ4ARK+gU7rHK27Ryn1ZBmtFG3ahl2ksSlxflKqBJ3rFHoWhh4Xhj3OCvXC6xs6g
-vD+Bjy4aODtTAE+rmsq8ReDqhpQd0OP2TmBou+EMp/iIcOValyhNqlGgehB7w6Lr
-+ABrg+bvn5RfLfTZyCVdMtIjUnIQ
-=EvC4
------END PGP SIGNATURE-----
-
---C94crkcyjafcjHxo--
