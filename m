@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC74389E92
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:02:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6C4389E93
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230355AbhETHDi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:03:38 -0400
+        id S230523AbhETHDk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:03:40 -0400
 Received: from mga05.intel.com ([192.55.52.43]:53040 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230406AbhETHDd (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:03:33 -0400
-IronPort-SDR: +PhqzdgUXobWYz557etFn8uAmCeqzMnR3OpJTd50UMlPlCjmYszeggh1xgNwCP3r1d5ZICQOQT
- FR0yIFwgDlcQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="286691058"
+        id S230483AbhETHDg (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:03:36 -0400
+IronPort-SDR: 65xxCRkBPGcOP9W8RBnRHQt+zULtWr5WLB0lKiVnjEBfHy8YOowNOTIgx34bZvng6FJL9m+d1B
+ +jqNbEyxtlFg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="286691067"
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="286691058"
+   d="scan'208";a="286691067"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:02:12 -0700
-IronPort-SDR: sMvuZsY5gIdAu6YZXzJuBLFO4A/HJfFx2dhv0Cvnl54IG3/eVgmCXDG0+iKRBTlaGzTVaEHjxI
- TzrOA1SkOCNw==
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:02:15 -0700
+IronPort-SDR: knuLv7M6KQrNhJkq6BoJxssBSW9hGIfRc/fR5DQeha88+FpI6/KyDyaiQ02FSf+oH7nbvaC1Gh
+ LEBpeE1DA2bw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="543206891"
+   d="scan'208";a="543206899"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 20 May 2021 00:02:10 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 20 May 2021 00:02:12 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v1 3/5] perf tools: Check if mem_events is supported for hybrid
-Date:   Thu, 20 May 2021 15:00:38 +0800
-Message-Id: <20210520070040.710-4-yao.jin@linux.intel.com>
+Subject: [PATCH v1 4/5] perf mem: Support record for hybrid platform
+Date:   Thu, 20 May 2021 15:00:39 +0800
+Message-Id: <20210520070040.710-5-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210520070040.710-1-yao.jin@linux.intel.com>
 References: <20210520070040.710-1-yao.jin@linux.intel.com>
@@ -41,106 +41,186 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Check if the mem_events ('mem-loads' and 'mem-stores') exist
-in the sysfs path.
+Support 'perf mem record' for hybrid platform. On hybrid platform,
+such as Alderlake, when executing 'perf mem record', it actually calls:
 
-For Alderlake, the hybrid cpu pmu are "cpu_core" and "cpu_atom".
-Check the existing of following paths:
-/sys/devices/cpu_atom/events/mem-loads
-/sys/devices/cpu_atom/events/mem-stores
-/sys/devices/cpu_core/events/mem-loads
-/sys/devices/cpu_core/events/mem-stores
-
-If the patch exists, the mem_event is supported.
+record -e {cpu_core/mem-loads-aux/,cpu_core/mem-loads,ldlat=30/}:P
+       -e cpu_atom/mem-loads,ldlat=30/P
+       -e cpu_core/mem-stores/P
+       -e cpu_atom/mem-stores/P
 
 Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
- tools/perf/util/mem-events.c | 43 +++++++++++++++++++++++++++++-------
- 1 file changed, 35 insertions(+), 8 deletions(-)
+ tools/perf/builtin-mem.c     | 39 ++++++++++++----------
+ tools/perf/util/mem-events.c | 65 ++++++++++++++++++++++++++++++++++++
+ tools/perf/util/mem-events.h |  2 ++
+ 3 files changed, 89 insertions(+), 17 deletions(-)
 
-diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
-index c736eaded06c..e8f6e745eaf0 100644
---- a/tools/perf/util/mem-events.c
-+++ b/tools/perf/util/mem-events.c
-@@ -12,14 +12,16 @@
- #include "mem-events.h"
- #include "debug.h"
- #include "symbol.h"
-+#include "pmu.h"
-+#include "pmu-hybrid.h"
+diff --git a/tools/perf/builtin-mem.c b/tools/perf/builtin-mem.c
+index 03795bf49d51..a50abcb45f0f 100644
+--- a/tools/perf/builtin-mem.c
++++ b/tools/perf/builtin-mem.c
+@@ -62,8 +62,9 @@ static const char * const *record_mem_usage = __usage;
  
- unsigned int perf_mem_events__loads_ldlat = 30;
- 
- #define E(t, n, s) { .tag = t, .name = n, .sysfs_name = s }
- 
- static struct perf_mem_event perf_mem_events[PERF_MEM_EVENTS__MAX] = {
--	E("ldlat-loads",	"cpu/mem-loads,ldlat=%u/P",	"cpu/events/mem-loads"),
--	E("ldlat-stores",	"cpu/mem-stores/P",		"cpu/events/mem-stores"),
-+	E("ldlat-loads",	"%s/mem-loads,ldlat=%u/P",	"%s/events/mem-loads"),
-+	E("ldlat-stores",	"%s/mem-stores/P",		"%s/events/mem-stores"),
- 	E(NULL,			NULL,				NULL),
- };
- #undef E
-@@ -100,6 +102,18 @@ int perf_mem_events__parse(const char *str)
- 	return -1;
- }
- 
-+static bool perf_mem_events__supported(const char *mnt, char *sysfs_name)
-+{
-+	char path[PATH_MAX];
-+	struct stat st;
-+
-+	scnprintf(path, PATH_MAX, "%s/devices/%s", mnt, sysfs_name);
-+	if (!stat(path, &st))
-+		return true;
-+
-+	return false;
-+}
-+
- int perf_mem_events__init(void)
+ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
  {
- 	const char *mnt = sysfs__mount();
-@@ -110,9 +124,10 @@ int perf_mem_events__init(void)
- 		return -ENOENT;
+-	int rec_argc, i = 0, j;
++	int rec_argc, i = 0, j,  tmp_nr = 0;
+ 	const char **rec_argv;
++	char **rec_tmp;
+ 	int ret;
+ 	bool all_user = false, all_kernel = false;
+ 	struct perf_mem_event *e;
+@@ -87,11 +88,20 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 	argc = parse_options(argc, argv, options, record_mem_usage,
+ 			     PARSE_OPT_KEEP_UNKNOWN);
  
- 	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
--		char path[PATH_MAX];
- 		struct perf_mem_event *e = perf_mem_events__ptr(j);
--		struct stat st;
-+		struct perf_pmu *pmu;
-+		char sysfs_name[100];
-+		int unsupported = 0;
+-	rec_argc = argc + 9; /* max number of arguments */
++	rec_argc = argc + 64; /* max number of arguments */
+ 	rec_argv = calloc(rec_argc + 1, sizeof(char *));
+ 	if (!rec_argv)
+ 		return -1;
  
- 		/*
- 		 * If the event entry isn't valid, skip initialization
-@@ -121,11 +136,23 @@ int perf_mem_events__init(void)
- 		if (!e->tag)
- 			continue;
- 
--		scnprintf(path, PATH_MAX, "%s/devices/%s",
--			  mnt, e->sysfs_name);
-+		if (!perf_pmu__has_hybrid()) {
-+			scnprintf(sysfs_name, sizeof(sysfs_name),
-+				  e->sysfs_name, "cpu");
-+			e->supported = perf_mem_events__supported(mnt, sysfs_name);
-+		} else {
-+			perf_pmu__for_each_hybrid_pmu(pmu) {
-+				scnprintf(sysfs_name, sizeof(sysfs_name),
-+					  e->sysfs_name, pmu->name);
-+				if (!perf_mem_events__supported(mnt, sysfs_name))
-+					unsupported++;
-+			}
++	/*
++	 * Save the allocated event name strings.
++	 */
++	rec_tmp = calloc(rec_argc + 1, sizeof(char *));
++	if (!rec_tmp) {
++		free(rec_argv);
++		return -1;
++	}
 +
-+			e->supported = (unsupported == 0) ? true : false;
-+		}
+ 	rec_argv[i++] = "record";
  
--		if (!stat(path, &st))
--			e->supported = found = true;
-+		if (e->supported)
-+			found = true;
+ 	e = perf_mem_events__ptr(PERF_MEM_EVENTS__LOAD_STORE);
+@@ -128,21 +138,9 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
+ 	if (mem->data_page_size)
+ 		rec_argv[i++] = "--data-page-size";
+ 
+-	for (j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
+-		e = perf_mem_events__ptr(j);
+-		if (!e->record)
+-			continue;
+-
+-		if (!e->supported) {
+-			pr_err("failed: event '%s' not supported\n",
+-			       perf_mem_events__name(j, NULL));
+-			free(rec_argv);
+-			return -1;
+-		}
+-
+-		rec_argv[i++] = "-e";
+-		rec_argv[i++] = perf_mem_events__name(j, NULL);
+-	}
++	ret = perf_mem_events__record_args(rec_argv, &i, rec_tmp, &tmp_nr);
++	if (ret)
++		goto out;
+ 
+ 	if (all_user)
+ 		rec_argv[i++] = "--all-user";
+@@ -164,6 +162,13 @@ static int __cmd_record(int argc, const char **argv, struct perf_mem *mem)
  	}
  
- 	return found ? 0 : -ENOENT;
+ 	ret = cmd_record(i, rec_argv);
++out:
++	for (i = 0; i < tmp_nr; i++) {
++		if (rec_tmp[i])
++			free(rec_tmp[i]);
++	}
++
++	free(rec_tmp);
+ 	free(rec_argv);
+ 	return ret;
+ }
+diff --git a/tools/perf/util/mem-events.c b/tools/perf/util/mem-events.c
+index e8f6e745eaf0..909ee91b75f0 100644
+--- a/tools/perf/util/mem-events.c
++++ b/tools/perf/util/mem-events.c
+@@ -173,6 +173,71 @@ void perf_mem_events__list(void)
+ 	}
+ }
+ 
++static void perf_mem_events__print_unsupport_hybrid(struct perf_mem_event *e,
++						    int idx)
++{
++	const char *mnt = sysfs__mount();
++	char sysfs_name[100];
++	struct perf_pmu *pmu;
++
++	perf_pmu__for_each_hybrid_pmu(pmu) {
++		scnprintf(sysfs_name, sizeof(sysfs_name), e->sysfs_name,
++			  pmu->name);
++		if (!perf_mem_events__supported(mnt, sysfs_name)) {
++			pr_err("failed: event '%s' not supported\n",
++			       perf_mem_events__name(idx, pmu->name));
++		}
++	}
++}
++
++int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
++				 char **rec_tmp, int *tmp_nr)
++{
++	int i = *argv_nr, k = 0;
++	struct perf_mem_event *e;
++	struct perf_pmu *pmu;
++	char *s;
++
++	for (int j = 0; j < PERF_MEM_EVENTS__MAX; j++) {
++		e = perf_mem_events__ptr(j);
++		if (!e->record)
++			continue;
++
++		if (!perf_pmu__has_hybrid()) {
++			if (!e->supported) {
++				pr_err("failed: event '%s' not supported\n",
++				       perf_mem_events__name(j, NULL));
++				return -1;
++			}
++
++			rec_argv[i++] = "-e";
++			rec_argv[i++] = perf_mem_events__name(j, NULL);
++		} else {
++			if (!e->supported) {
++				perf_mem_events__print_unsupport_hybrid(e, j);
++				return -1;
++			}
++
++			perf_pmu__for_each_hybrid_pmu(pmu) {
++				rec_argv[i++] = "-e";
++				s = perf_mem_events__name(j, pmu->name);
++				if (s) {
++					s = strdup(s);
++					if (!s)
++						return -1;
++
++					rec_argv[i++] = s;
++					rec_tmp[k++] = s;
++				}
++			}
++		}
++	}
++
++	*argv_nr = i;
++	*tmp_nr = k;
++	return 0;
++}
++
+ static const char * const tlb_access[] = {
+ 	"N/A",
+ 	"HIT",
+diff --git a/tools/perf/util/mem-events.h b/tools/perf/util/mem-events.h
+index a3fa19093fd2..916242f8020a 100644
+--- a/tools/perf/util/mem-events.h
++++ b/tools/perf/util/mem-events.h
+@@ -43,6 +43,8 @@ struct perf_mem_event *perf_mem_events__ptr(int i);
+ bool is_mem_loads_aux_event(struct evsel *leader);
+ 
+ void perf_mem_events__list(void);
++int perf_mem_events__record_args(const char **rec_argv, int *argv_nr,
++				 char **rec_tmp, int *tmp_nr);
+ 
+ int perf_mem__tlb_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
+ int perf_mem__lvl_scnprintf(char *out, size_t sz, struct mem_info *mem_info);
 -- 
 2.17.1
 
