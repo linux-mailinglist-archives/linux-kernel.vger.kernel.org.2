@@ -2,36 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2623F38AB60
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA7E138AB58
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241105AbhETLXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:23:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59406 "EHLO mail.kernel.org"
+        id S241204AbhETLXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:23:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37054 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239282AbhETLDI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:03:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C912D61924;
-        Thu, 20 May 2021 10:04:19 +0000 (UTC)
+        id S238957AbhETLDH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:03:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 05E5461929;
+        Thu, 20 May 2021 10:04:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505060;
-        bh=U5N/GdyTV5zFPWNj6RxCgq2re3ReJcMbI8cfl+nBixM=;
+        s=korg; t=1621505062;
+        bh=NbHsWF4toT2TuevvL7bKcFylbLteqHQtL3Dy47Am6cc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pqLjG/zUzkO9dsZBH/fxs/oMB+pflCscZUH/S60H2SmfdztIrov+RIMJ5s912cdRb
-         Ckm5IYWa16yE8vCsC5tzmBiUII7YWg0w1x/S4A4+Syr/oo1AZ355br1hAcLVMQA4Zq
-         SrdYc0eM1Ba/mRXTM5X0UyWo2CrSKTkCrkIQ1WKE=
+        b=CcDJZK/ycq5oGtfFqujLYwI171qp1ph2mw+GmH0FdT1F6XhtV5ihBeXWfp1BTViNO
+         xR/dhGEFqgejOnmiOdtkDgSd5+ybMzl4uM+PV9aXtLZS0jUxmysl7DNzXqaZYkcPLE
+         QXrNLmo0xxH11Tjn9cD87vjNlf6AQuyJLXfv8Cyw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>,
-        TOTE Robot <oslab@tsinghua.edu.cn>,
-        Baoquan He <bhe@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 204/240] kernel: kexec_file: fix error return code of kexec_calculate_store_digests()
-Date:   Thu, 20 May 2021 11:23:16 +0200
-Message-Id: <20210520092115.509485964@linuxfoundation.org>
+        stable@vger.kernel.org, Shahab Vahedi <shahab@synopsys.com>,
+        Vineet Gupta <vgupta@synopsys.com>
+Subject: [PATCH 4.9 205/240] ARC: entry: fix off-by-one error in syscall number validation
+Date:   Thu, 20 May 2021 11:23:17 +0200
+Message-Id: <20210520092115.539153255@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -43,44 +39,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Vineet Gupta <vgupta@synopsys.com>
 
-[ Upstream commit 31d82c2c787d5cf65fedd35ebbc0c1bd95c1a679 ]
+commit 3433adc8bd09fc9f29b8baddf33b4ecd1ecd2cdc upstream.
 
-When vzalloc() returns NULL to sha_regions, no error return code of
-kexec_calculate_store_digests() is assigned.  To fix this bug, ret is
-assigned with -ENOMEM in this case.
+We have NR_syscall syscalls from [0 .. NR_syscall-1].
+However the check for invalid syscall number is "> NR_syscall" as
+opposed to >=. This off-by-one error erronesously allows "NR_syscall"
+to be treated as valid syscall causeing out-of-bounds access into
+syscall-call table ensuing a crash (holes within syscall table have a
+invalid-entry handler but this is beyond the array implementing the
+table).
 
-Link: https://lkml.kernel.org/r/20210309083904.24321-1-baijiaju1990@gmail.com
-Fixes: a43cac0d9dc2 ("kexec: split kexec_file syscall code to kexec_file.c")
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn>
-Acked-by: Baoquan He <bhe@redhat.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This problem showed up on v5.6 kernel when testing glibc 2.33 (v5.10
+kernel capable, includng faccessat2 syscall 439). The v5.6 kernel has
+NR_syscalls=439 (0 to 438). Due to the bug, 439 passed by glibc was
+not handled as -ENOSYS but processed leading to a crash.
+
+Link: https://github.com/foss-for-synopsys-dwc-arc-processors/linux/issues/48
+Reported-by: Shahab Vahedi <shahab@synopsys.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Vineet Gupta <vgupta@synopsys.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/kexec_file.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/arc/kernel/entry.S |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index 037c321c5618..2edaed6803ff 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -528,8 +528,10 @@ static int kexec_calculate_store_digests(struct kimage *image)
+--- a/arch/arc/kernel/entry.S
++++ b/arch/arc/kernel/entry.S
+@@ -169,7 +169,7 @@ tracesys:
  
- 	sha_region_sz = KEXEC_SEGMENT_MAX * sizeof(struct kexec_sha_region);
- 	sha_regions = vzalloc(sha_region_sz);
--	if (!sha_regions)
-+	if (!sha_regions) {
-+		ret = -ENOMEM;
- 		goto out_free_desc;
-+	}
+ 	; Do the Sys Call as we normally would.
+ 	; Validate the Sys Call number
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     tracesys_exit
  
- 	desc->tfm   = tfm;
- 	desc->flags = 0;
--- 
-2.30.2
-
+@@ -252,7 +252,7 @@ ENTRY(EV_Trap)
+ 	;============ Normal syscall case
+ 
+ 	; syscall num shd not exceed the total system calls avail
+-	cmp     r8,  NR_syscalls
++	cmp     r8,  NR_syscalls - 1
+ 	mov.hi  r0, -ENOSYS
+ 	bhi     .Lret_from_system_call
+ 
 
 
