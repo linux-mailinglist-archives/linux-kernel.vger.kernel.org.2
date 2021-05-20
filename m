@@ -2,145 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F214A38B72E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:18:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D0D338B733
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:18:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237605AbhETTTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:19:21 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:29314 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238548AbhETTTK (ORCPT
+        id S238033AbhETTTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:19:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239166AbhETTTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:19:10 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 5202B521411;
-        Thu, 20 May 2021 22:17:46 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1621538266;
-        bh=8oNeV4LEYCCpV1spWguJcgspnidGzg4R+7hRzi0VJSs=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=4Gw4sI2/qSO9G7rfCXs7uE7GL1WUQJwU3ZDsHriRRlN1f9EmclBJDQGcjq+xn23tV
-         GJZWSu7iAwWi5VDsOF82Mx/OwOa6CUolR87f+LsRREH3zfWg23wV1mbyM1Nm6uKRj9
-         MR0zwlwz92jxD+3VrKAO/w5R8YG2NE/Z/fnBFKIq65F+w0IxaHVlBETIgVij3DDFR5
-         tpFMvdbojk0w/kvh2Um3hY2f2pESXF68W/5IQsadSP+l6IW663kMs6Dv72XhJsWWq5
-         LOrGbrxNfaeNRUYR8DRgTz5HfqlZb3mR3d6QpzTdz52NOYjTPg6ZrOW5zs6rELlllm
-         OIopnOkJlYqnQ==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 0DE1052142D;
-        Thu, 20 May 2021 22:17:46 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
- May 2021 22:17:45 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <oxffffaa@gmail.com>
-Subject: [PATCH v10 10/18] virtio/vsock: defines and constants for SEQPACKET
-Date:   Thu, 20 May 2021 22:17:36 +0300
-Message-ID: <20210520191739.1271886-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+        Thu, 20 May 2021 15:19:31 -0400
+Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5102C06138C
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:04 -0700 (PDT)
+Received: by mail-oo1-xc2c.google.com with SMTP id s20-20020a4ae9940000b02902072d5df239so4042119ood.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=inhHSx4VVdd6VlmWYA1Oc6IjDKgdb7a8vsKxGCF5N0I=;
+        b=XCOGtUJUvbDS2LdLMD6oXtSH4CFhzjRz6VqPhCJZs+ccNHknMTPnl1WQOdtBkMofoO
+         HP4e8tFBFuyMt7E6B4x4it1C3Zdzy9wMtVfHX7DawfZMYE46Ok1sa5XVvgcIikk/SpSd
+         HAh2SogLnOZ9BLXlKj00Y7ocS93RyXZInitiyCQ+YBiFNfrpb6EYJw6Motp5n7Zf3+N3
+         05I6EqhujA09IzhZVSp5w5jvO8KUyXhxhfjrSdJqeaWGsnRFxg5vgl1TqVJKX/R4u8xD
+         2OPrwRTagsl4gN6C1tWMjGQQ+RSVeCglioCmQiA+GONXMC25aFCi0gOL11WYlQeJbxsP
+         GKJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=inhHSx4VVdd6VlmWYA1Oc6IjDKgdb7a8vsKxGCF5N0I=;
+        b=YIdtv/QJ1vMDwyMXYs5pTmydykZTzXBHq8dqQTtkiKvZE5fEyQ8F/xAvY34fvKm2Wb
+         PQNwqLjiQk7n4mhpHC1Wws1udeYSYP8gc5vhfwjt94wGYYGXxJ8jeUXRl94GBM57w97/
+         8mOD95t5QfUcUMV8GVVMRD5VOkNhTBd51tACmrNKj9gnQJyXdjfnlS3L7HxyUygYnq3j
+         6mqZJoqYgrvu5D3gegjgtPgAmFe8YWnTRHRBf//DCBvbhOMdJAvRfiDT+KoQKBCxaqA1
+         YYLPPOgYPApKCGAkxGXMG/20Dm6ynb16aBAmbkZyknX7wkr19bmFcmjyRHMBDllmxPsq
+         uh+A==
+X-Gm-Message-State: AOAM530uNhtGemW/pYZUmATKICh80g5FRNwe+TTXLYBb1Rf6JKPkAqPf
+        mlL1vYcFuUk+qqAAfSGKjOl9Xru+JGEAfFQUUH4=
+X-Google-Smtp-Source: ABdhPJzh6BsciXjhKaLIHK8DE7cvwKOEYyYVAA+r2OS+xmgokC8Ab+vei2Pi46Wk1Ws9U1NNJoG21+doLDQ+3RwRenQ=
+X-Received: by 2002:a4a:d543:: with SMTP id q3mr4937571oos.72.1621538282712;
+ Thu, 20 May 2021 12:18:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210520120248.3464013-1-lee.jones@linaro.org> <20210520120248.3464013-22-lee.jones@linaro.org>
+In-Reply-To: <20210520120248.3464013-22-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 20 May 2021 15:17:51 -0400
+Message-ID: <CADnq5_Mk9WkJP4m+mn175H+2btAnrXqhioGM07Ow+x9VtwQKaQ@mail.gmail.com>
+Subject: Re: [PATCH 21/38] drm/amd/include/aldebaran_ip_offset: Mark top-level
+ IP_BASE as __maybe_unused
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add set of defines and constants for SOCK_SEQPACKET support
-in vsock.
+Applied.  Thanks!
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
----
- include/uapi/linux/virtio_vsock.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Alex
 
-diff --git a/include/uapi/linux/virtio_vsock.h b/include/uapi/linux/virtio_vsock.h
-index 1d57ed3d84d2..3dd3555b2740 100644
---- a/include/uapi/linux/virtio_vsock.h
-+++ b/include/uapi/linux/virtio_vsock.h
-@@ -38,6 +38,9 @@
- #include <linux/virtio_ids.h>
- #include <linux/virtio_config.h>
- 
-+/* The feature bitmap for virtio vsock */
-+#define VIRTIO_VSOCK_F_SEQPACKET	1	/* SOCK_SEQPACKET supported */
-+
- struct virtio_vsock_config {
- 	__le64 guest_cid;
- } __attribute__((packed));
-@@ -65,6 +68,7 @@ struct virtio_vsock_hdr {
- 
- enum virtio_vsock_type {
- 	VIRTIO_VSOCK_TYPE_STREAM = 1,
-+	VIRTIO_VSOCK_TYPE_SEQPACKET = 2,
- };
- 
- enum virtio_vsock_op {
-@@ -91,4 +95,9 @@ enum virtio_vsock_shutdown {
- 	VIRTIO_VSOCK_SHUTDOWN_SEND = 2,
- };
- 
-+/* VIRTIO_VSOCK_OP_RW flags values */
-+enum virtio_vsock_rw {
-+	VIRTIO_VSOCK_SEQ_EOR = 1,
-+};
-+
- #endif /* _UAPI_LINUX_VIRTIO_VSOCK_H */
--- 
-2.25.1
-
+On Thu, May 20, 2021 at 8:03 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:259:29: warn=
+ing: =E2=80=98XGMI2_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:252:29: warn=
+ing: =E2=80=98XGMI1_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:245:29: warn=
+ing: =E2=80=98XGMI0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:238:29: warn=
+ing: =E2=80=98WAFL1_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:231:29: warn=
+ing: =E2=80=98WAFL0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:161:29: warn=
+ing: =E2=80=98PCIE0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:119:29: warn=
+ing: =E2=80=98L2IMU0_BASE=E2=80=99 defined but not used [-Wunused-const-var=
+iable=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:112:29: warn=
+ing: =E2=80=98L1IMUPCIE0_BASE=E2=80=99 defined but not used [-Wunused-const=
+-variable=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:105:29: warn=
+ing: =E2=80=98L1IMUIOAGR0_BASE=E2=80=99 defined but not used [-Wunused-cons=
+t-variable=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:98:29: warni=
+ng: =E2=80=98IOHC0_BASE=E2=80=99 defined but not used [-Wunused-const-varia=
+ble=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:91:29: warni=
+ng: =E2=80=98IOAPIC0_BASE=E2=80=99 defined but not used [-Wunused-const-var=
+iable=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:84:29: warni=
+ng: =E2=80=98IOAGR0_BASE=E2=80=99 defined but not used [-Wunused-const-vari=
+able=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:63:29: warni=
+ng: =E2=80=98FUSE_BASE=E2=80=99 defined but not used [-Wunused-const-variab=
+le=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:49:29: warni=
+ng: =E2=80=98DBGU_IO0_BASE=E2=80=99 defined but not used [-Wunused-const-va=
+riable=3D]
+>  drivers/gpu/drm/amd/amdgpu/../include/aldebaran_ip_offset.h:42:29: warni=
+ng: =E2=80=98CLK_BASE=E2=80=99 defined but not used [-Wunused-const-variabl=
+e=3D]
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/include/aldebaran_ip_offset.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/include/aldebaran_ip_offset.h b/drivers/=
+gpu/drm/amd/include/aldebaran_ip_offset.h
+> index 644ffec2b0ce8..cdd426b41c20e 100644
+> --- a/drivers/gpu/drm/amd/include/aldebaran_ip_offset.h
+> +++ b/drivers/gpu/drm/amd/include/aldebaran_ip_offset.h
+> @@ -30,7 +30,7 @@ struct IP_BASE_INSTANCE {
+>
+>  struct IP_BASE {
+>      struct IP_BASE_INSTANCE instance[MAX_INSTANCE];
+> -};
+> +} __maybe_unused;
+>
+>  static const struct IP_BASE ATHUB_BASE =3D { { { { 0x00000C20, 0x02408C0=
+0, 0, 0, 0, 0 } },
+>                                          { { 0, 0, 0, 0, 0, 0 } },
+> --
+> 2.31.1
+>
