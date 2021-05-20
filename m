@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316F638A831
+	by mail.lfdr.de (Postfix) with ESMTP id F215738A833
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:46:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237149AbhETKr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:47:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60472 "EHLO mail.kernel.org"
+        id S238376AbhETKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:47:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237077AbhETKbk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:31:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 091B261C41;
-        Thu, 20 May 2021 09:52:15 +0000 (UTC)
+        id S237323AbhETKbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:31:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A5B61C49;
+        Thu, 20 May 2021 09:52:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504336;
-        bh=sN7CZz3fyDCAITyI9xonr0ZopyfhEPkXWlY8M6AYkaw=;
+        s=korg; t=1621504338;
+        bh=2GY01OsC7VGukOUeNRc8K8i7wEp992UsqrzLthKnV/Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gjCZu+ep7YcI9ZZ79n3Shvb7hYuZmH8pns9rpK+dxafhZhl5PCxaoVsPB5MwlE2G9
-         9WmKAjR+DoqJogGJhxJOEuNkGkFTsjSJC+HniMRBxWojBVK97FURv8ScbyEOkk0ggl
-         pS6CLV+myKcxjTBSIRb4Ot3tNejFce/u/Hvx6ztU=
+        b=dLc5fr1K7vgEdVooW4vG8V2A0FKq0farzRZ7yIg0ZTs0oRcGh3FWnUFwyhB91sOJY
+         q1+zc9wj3zo7JitnP2Ha8q7yO3aXJ6qip6ZMiKuUqIwPKPRLbc+wuHdDAJV18nyVu3
+         vyBRdDvxW7cN1LMIX9B/Vl9YepB/hhK5RHu6T/AM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
+        Chen Huang <chenhuang5@huawei.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 198/323] powerpc/prom: Mark identical_pvr_fixup as __init
-Date:   Thu, 20 May 2021 11:21:30 +0200
-Message-Id: <20210520092126.905755708@linuxfoundation.org>
+Subject: [PATCH 4.14 199/323] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build configuration
+Date:   Thu, 20 May 2021 11:21:31 +0200
+Message-Id: <20210520092126.942607998@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -40,58 +41,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Chen Huang <chenhuang5@huawei.com>
 
-[ Upstream commit 1ef1dd9c7ed27b080445e1576e8a05957e0e4dfc ]
+[ Upstream commit 4fe529449d85e78972fa327999961ecc83a0b6db ]
 
-If identical_pvr_fixup() is not inlined, there are two modpost warnings:
+When compiling the powerpc with the SMP disabled, it shows the issue:
 
-WARNING: modpost: vmlinux.o(.text+0x54e8): Section mismatch in reference
-from the function identical_pvr_fixup() to the function
-.init.text:of_get_flat_dt_prop()
-The function identical_pvr_fixup() references
-the function __init of_get_flat_dt_prop().
-This is often because identical_pvr_fixup lacks a __init
-annotation or the annotation of of_get_flat_dt_prop is wrong.
+arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
+arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
+  177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
+      |    ^~~~~~~~~~~~~~~~
+      |    smp_send_stop
+cc1: all warnings being treated as errors
+make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
+make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
+make: *** [Makefile:1980: arch/powerpc] Error 2
+make: *** Waiting for unfinished jobs....
 
-WARNING: modpost: vmlinux.o(.text+0x551c): Section mismatch in reference
-from the function identical_pvr_fixup() to the function
-.init.text:identify_cpu()
-The function identical_pvr_fixup() references
-the function __init identify_cpu().
-This is often because identical_pvr_fixup lacks a __init
-annotation or the annotation of identify_cpu is wrong.
+We found that powerpc used ipi to implement hardlockup watchdog, so the
+HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
 
-identical_pvr_fixup() calls two functions marked as __init and is only
-called by a function marked as __init so it should be marked as __init
-as well. At the same time, remove the inline keywork as it is not
-necessary to inline this function. The compiler is still free to do so
-if it feels it is worthwhile since commit 889b3c1245de ("compiler:
-remove CONFIG_OPTIMIZE_INLINING entirely").
-
-Fixes: 14b3d926a22b ("[POWERPC] 4xx: update 440EP(x)/440GR(x) identical PVR issue workaround")
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Chen Huang <chenhuang5@huawei.com>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://github.com/ClangBuiltLinux/linux/issues/1316
-Link: https://lore.kernel.org/r/20210302200829.2680663-1-nathan@kernel.org
+Link: https://lore.kernel.org/r/20210327094900.938555-1-chenhuang5@huawei.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/prom.c | 2 +-
+ arch/powerpc/Kconfig | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-index bbe9c57dd1a3..99409d0420d2 100644
---- a/arch/powerpc/kernel/prom.c
-+++ b/arch/powerpc/kernel/prom.c
-@@ -265,7 +265,7 @@ static struct feature_property {
- };
- 
- #if defined(CONFIG_44x) && defined(CONFIG_PPC_FPU)
--static inline void identical_pvr_fixup(unsigned long node)
-+static __init void identical_pvr_fixup(unsigned long node)
- {
- 	unsigned int pvr;
- 	const char *model = of_get_flat_dt_prop(node, "model", NULL);
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index fff11a5bb805..3fcfa8534156 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -208,7 +208,7 @@ config PPC
+ 	select HAVE_MEMBLOCK_NODE_MAP
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+-	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
++	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
+ 	select HAVE_OPROFILE
+ 	select HAVE_OPTPROBES			if PPC64
+ 	select HAVE_PERF_EVENTS
 -- 
 2.30.2
 
