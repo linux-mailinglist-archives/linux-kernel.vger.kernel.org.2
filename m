@@ -2,67 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 299AA38B404
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:04:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E97E38B407
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:08:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhETQF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:05:56 -0400
-Received: from router.aksignal.cz ([62.44.4.214]:57646 "EHLO
-        router.aksignal.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232813AbhETQFx (ORCPT
+        id S233429AbhETQJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:09:12 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:37511 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231601AbhETQJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:05:53 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by router.aksignal.cz (Postfix) with ESMTP id CE0E2491C2;
-        Thu, 20 May 2021 18:04:30 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at router.aksignal.cz
-Received: from router.aksignal.cz ([127.0.0.1])
-        by localhost (router.aksignal.cz [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id KfKDd3OZg2TC; Thu, 20 May 2021 18:04:30 +0200 (CEST)
-Received: from pc-gameroom.prchals.tk (unknown [83.240.30.185])
-        (Authenticated sender: jiri.prchal@aksignal.cz)
-        by router.aksignal.cz (Postfix) with ESMTPSA id 5F61A491C0;
-        Thu, 20 May 2021 18:04:30 +0200 (CEST)
-From:   Jiri Prchal <jiri.prchal@aksignal.cz>
-To:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Christian Eggers <ceggers@arri.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Prchal <jiri.prchal@aksignal.cz>
-Subject: [PATCH v5 0/5] add support for FRAM
-Date:   Thu, 20 May 2021 18:04:28 +0200
-Message-Id: <20210520160428.51647-1-jiri.prchal@aksignal.cz>
-X-Mailer: git-send-email 2.25.1
+        Thu, 20 May 2021 12:09:11 -0400
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 49F5C6000F;
+        Thu, 20 May 2021 16:07:48 +0000 (UTC)
+Date:   Thu, 20 May 2021 18:07:47 +0200
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Corentin Labbe <clabbe@baylibre.com>,
+        Boris Brezillon <boris.brezillon@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh R <vigneshr@ti.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 2/2] mtd: partitions: redboot: fix style issues
+Message-ID: <20210520180747.03fd60b8@xps13>
+In-Reply-To: <CACRpkdZhhNQupN_4Oh759bKL7sEM9M=yOW1y-mT69ugEkjRMZw@mail.gmail.com>
+References: <20210520114851.1274609-1-clabbe@baylibre.com>
+        <20210520114851.1274609-2-clabbe@baylibre.com>
+        <CACRpkda6ou1SJZzBwHXN_kWofnFw8w7XAkr7VcFO2NrqbQug_Q@mail.gmail.com>
+        <20210520173619.26870bc8@xps13>
+        <CACRpkdZhhNQupN_4Oh759bKL7sEM9M=yOW1y-mT69ugEkjRMZw@mail.gmail.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adds support for Cypress FRAMs.
 
-Jiri Prchal (5):
-  nvmem: eeprom: at25: add support for FRAM
-  nvmem: eeprom: at25: add support for FRAM
-  nvmem: eeprom: add documentation for FRAM
-  nvmem: eeprom: at25: export FRAM serial num
-  nvmem: eeprom: add documentation of sysfs sernum file
+Linus Walleij <linus.walleij@linaro.org> wrote on Thu, 20 May 2021
+18:00:04 +0200:
 
- .../ABI/testing/sysfs-class-spi-eeprom        |   6 +
- .../devicetree/bindings/eeprom/at25.yaml      |  31 +++-
- drivers/misc/eeprom/Kconfig                   |   5 +-
- drivers/misc/eeprom/at25.c                    | 167 ++++++++++++++----
- drivers/nvmem/core.c                          |   4 +
- include/linux/nvmem-provider.h                |   1 +
- 6 files changed, 176 insertions(+), 38 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-class-spi-eeprom
+> On Thu, May 20, 2021 at 5:36 PM Miquel Raynal <miquel.raynal@bootlin.com> wrote:
+> > Linus Walleij <linus.walleij@linaro.org> wrote on Thu, 20 May 2021
+> > 17:24:26 +0200:  
+> > > On Thu, May 20, 2021 at 1:49 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+> > >  
+> > > > This patch fixes easy checkpatch issues.
+> > > >
+> > > > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>  
+> > > (...)  
+> > > > -    uint32_t     flash_base;    // Address within FLASH of image  
+> > > (...)  
+> > > > +       u32       flash_base;    // Address within FLASH of image  
+> > >
+> > > Does checkpatch complain about this? At one point the MTD maintainer
+> > > disliked the u32/u16/u8 types and explicitly wanted to use the C
+> > > standard library types, and it's the kind of eccentric maintainer
+> > > deviations we accommodate for.  
+> >
+> > I suppose this happened quite some time ago? :)
+> >
+> > I've never heard Richard nor Boris complaining about it, nor will I.  
+> 
+> Yes that was a specific David Woodhouse preference.
+> I'm too old!
 
---
-v2: fixes in some files
-v3: resend and added more recipients
-v4: resend
-v5: fixes up to Greg comments, add documentation
----
-2.25.1
-
+Don't be sad, the new trend is to be sleek. In the dark I worship
+variables declaration in a reverse Christmas tree order ;-)
