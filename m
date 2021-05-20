@@ -2,94 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1670438AF1E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3604F38AF36
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243093AbhETMvj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:51:39 -0400
+        id S243209AbhETMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:53:04 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242269AbhETMvH (ORCPT
+        with ESMTP id S242540AbhETMvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:51:07 -0400
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26B0DC06916D;
-        Thu, 20 May 2021 05:13:57 -0700 (PDT)
-Received: by mail-oi1-x232.google.com with SMTP id b25so16244439oic.0;
-        Thu, 20 May 2021 05:13:57 -0700 (PDT)
+        Thu, 20 May 2021 08:51:37 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D77CC069173
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:15 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso5280012wmm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=acaajPzuKCDrOFX5gmmTjekv1R6GhRxiFcjrlWBQ62A=;
-        b=LqFXQaa0+PrzE8lY/mSLntTGLHm6S54Dq1PdCCJQ9YEA6YSs6Sm8UAKNdQYIRX7GFU
-         l0BtZrvCVvQOszSdgDT3oU60EcqmuaUcVSMbtnBYzMEEBmdFuH43r+D4EXPz/Yxzq/Fk
-         TcKaTm5d1E0j/5COr1RmAfmr4SnT6R7jX4SBkEiw48tWdY7ij2bLVp57XnGJWPvnuU58
-         GQe2IEb6ueJWHrU0yF6Z9GkRc+0MT5GCZLMcCwyc6dhM+6yYJtbyZbNyLx4fIt44uHeY
-         3N0YD7VNR0dhqSSkLr0XmA90za38UswtvQR9NFxXqRdIwfl4Pw+0860HeAT8GY6OPfgK
-         Sw5g==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=63aR0ApZJ3bwroQWXqAaSkH9cV6NbSWgeKUqcgHI7+A=;
+        b=FwbLKM2KkOv0flbvtj3nJnPuN0+A2r3yE/1kP07JVzwHo5CAewGS3FlOHT47wv+eje
+         Ukb+qynmxWBL1JoL3mzRQiWF+x5dTlrdiwmyJ1CelSy6zUItrLRiDVyOfMFbL7uj7hon
+         waxf4ZxdWSpAi2zOuJAXJ0NcgWVnl7PXa7AePVpn/y5ZdvWmSqVp1aflW3D9V9+i0Smu
+         ALyRNqMW9E3jjT1z1bLSeRAlyh22qBbRn3ci9A+j298IVUCYzQo/vZEkvDm2KeUd0mX2
+         lUWLleyUEqIDi8dwHDGlDdxoey80XmBjZKrw+PwTLvI1LP87RDpDU+HjgP8iSc/+8PBJ
+         GPOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=acaajPzuKCDrOFX5gmmTjekv1R6GhRxiFcjrlWBQ62A=;
-        b=jcpwCFTLHXXmg0rRywxCQbqSyVbcP6whu3GMtwBHNhVfp0m2keSbLuoZEJoWPY14om
-         ouBIBCPijX2nU3RT9E709mfCzfr961B7ieKu3TuxSYqBfN1zbqXvgRPwHCXWDn60u9p0
-         iR4Du100/G3PiZTstsmTpSlrqBRPXRRlDoi0Smm2gGbvxpw4g4vZJJ6rn0UqNZbwvcVQ
-         ztrzPwiAP1XyGDSL+4BuEQeZZ64e5ReIgvOlv9JeNW6EzYhUN9ldG7RVuDQHZO0J/DCF
-         GYBMwitelfAbLXv28eSWXwSnVqwD9NO6yRRH0/iB0PWMLO9cnPmBHXUJ+U1GQ+KZ12Ri
-         wLXg==
-X-Gm-Message-State: AOAM530s+Kw2C8GHR3C7bzSBDIHtb1+gw4RXnOBVUbIBGt7zcVlmIqCT
-        6oxBBm9olOhn7KftCBn9EpMnZKRkc1iEGf8HAg==
-X-Google-Smtp-Source: ABdhPJyjLQC8w35cvcxLwyvOQqhRZnBH4AQwZ3j123NQN1fwLUTBeNtwM9PHIPM2mMIQwwddbRiHsEDQ6h8X8yBhDOo=
-X-Received: by 2002:a05:6808:143:: with SMTP id h3mr802936oie.96.1621512836598;
- Thu, 20 May 2021 05:13:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=63aR0ApZJ3bwroQWXqAaSkH9cV6NbSWgeKUqcgHI7+A=;
+        b=m9Zgge9Sv2z2PP+QHi5q29OMPuG3trQnRA596jC2bJn/ateQbYEzcTz/Pz8vd8m34u
+         dyUIVPzegIU+3qN7RdDmBc4APAGy67A6bGdDVaVDMgtBoNS7No6WJCrzbaxvC9qaKw9k
+         lI+Qkg+mswfK3dlFox00Fw88yafbsDXdCZiXHamHNpzaQhDby05DjtNrBMXzFqz7XvR+
+         Srlz61lBs3XJLix0EDI801AsbKNi0oaaeRgEQW6oOjKIgNG/lkTZmouHSgyw3S+odQ/N
+         6zb1+HioPL4r8hPDkH0yvET3su0s4HLO0e4kNt+rGFNTfsHKdRyLVPxcX2ZsQkI6GBE1
+         ykFQ==
+X-Gm-Message-State: AOAM532aAOCs4I3bLEiIC6KMDVubXcj9QNltysg3soHOBfiaXYhOJpak
+        MZ+ZWtu5UPuEzZJOYaem4nA1EA==
+X-Google-Smtp-Source: ABdhPJw1Fp+Jmjls9UkJh6YCn4HHFBXPq5pRCzpBsC65iVfftho44k60NMHVqYTzgP4lBPc3lSuE+g==
+X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr3730747wmi.26.1621512853737;
+        Thu, 20 May 2021 05:14:13 -0700 (PDT)
+Received: from dell.default ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id 61sm3393704wrm.52.2021.05.20.05.14.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 05:14:13 -0700 (PDT)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Lijun Pan <ljp@linux.ibm.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Michael Neuling <mikey@neuling.org>,
+        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH 15/16] char: hw_random: pseries-rng: Demote non-conformant kernel-doc header
+Date:   Thu, 20 May 2021 13:13:46 +0100
+Message-Id: <20210520121347.3467794-16-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210520121347.3467794-1-lee.jones@linaro.org>
+References: <20210520121347.3467794-1-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <1621406954-1130-1-git-send-email-zheyuma97@gmail.com> <20210519.122605.1971627339402718160.davem@davemloft.net>
-In-Reply-To: <20210519.122605.1971627339402718160.davem@davemloft.net>
-From:   Zheyu Ma <zheyuma97@gmail.com>
-Date:   Thu, 20 May 2021 20:13:45 +0800
-Message-ID: <CAMhUBjkCdP-jfnKwAwdCR78tMqgHTPW6qVssE6T66=NrWznkJQ@mail.gmail.com>
-Subject: Re: [PATCH] net/qla3xxx: fix schedule while atomic in ql_sem_spinlock
-To:     David Miller <davem@davemloft.net>
-Cc:     GR-Linux-NIC-Dev@marvell.com, kuba@kernel.org,
-        netdev@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 3:26 AM David Miller <davem@davemloft.net> wrote:
->
-> From: Zheyu Ma <zheyuma97@gmail.com>
-> Date: Wed, 19 May 2021 06:49:14 +0000
->
-> > When calling the 'ql_sem_spinlock', the driver has already acquired the
-> > spin lock, so the driver should not call 'ssleep' in atomic context.
-> >
-> > This bug can be fixed by unlocking before calling 'ssleep'.
->  ...
-> > diff --git a/drivers/net/ethernet/qlogic/qla3xxx.c b/drivers/net/ethernet/qlogic/qla3xxx.c
-> > index 214e347097a7..af7c142a066f 100644
-> > --- a/drivers/net/ethernet/qlogic/qla3xxx.c
-> > +++ b/drivers/net/ethernet/qlogic/qla3xxx.c
-> > @@ -114,7 +114,9 @@ static int ql_sem_spinlock(struct ql3_adapter *qdev,
-> >               value = readl(&port_regs->CommonRegs.semaphoreReg);
-> >               if ((value & (sem_mask >> 16)) == sem_bits)
-> >                       return 0;
-> > +             spin_unlock_irq(&qdev->hw_lock);
-> >               ssleep(1);
-> > +             spin_lock_irq(&qdev->hw_lock);
-> >       } while (--seconds);
-> >       return -1;
-> >  }
->
-> Are you sure dropping the lock like this dos not introduce a race condition?
->
-> Thank you.
+Fixes the following W=1 kernel build warning(s):
 
-Thanks for your comment, it is indeed inappropriate to release the
-lock here, I will resend the second version of the patch.
+ drivers/char/hw_random/pseries-rng.c:42: warning: Function parameter or member 'vdev' not described in 'pseries_rng_get_desired_dma'
 
-Zheyu Ma
+Cc: Matt Mackall <mpm@selenic.com>
+Cc: Herbert Xu <herbert@gondor.apana.org.au>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Lijun Pan <ljp@linux.ibm.com>
+Cc: "Uwe Kleine-König" <uwe@kleine-koenig.org>
+Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Michael Neuling <mikey@neuling.org>
+Cc: linux-crypto@vger.kernel.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Signed-off-by: Lee Jones <lee.jones@linaro.org>
+---
+ drivers/char/hw_random/pseries-rng.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/char/hw_random/pseries-rng.c b/drivers/char/hw_random/pseries-rng.c
+index f4949b689bd5a..62bdd5af1339f 100644
+--- a/drivers/char/hw_random/pseries-rng.c
++++ b/drivers/char/hw_random/pseries-rng.c
+@@ -29,7 +29,7 @@ static int pseries_rng_read(struct hwrng *rng, void *data, size_t max, bool wait
+ 	return 8;
+ }
+ 
+-/**
++/*
+  * pseries_rng_get_desired_dma - Return desired DMA allocate for CMO operations
+  *
+  * This is a required function for a driver to operate in a CMO environment
+-- 
+2.31.1
+
