@@ -2,39 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D307E38AB5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FB238AB57
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240858AbhETLXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:23:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57506 "EHLO mail.kernel.org"
+        id S241201AbhETLXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59128 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239809AbhETLCd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:02:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AAB561925;
-        Thu, 20 May 2021 10:04:13 +0000 (UTC)
+        id S239300AbhETLDD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:03:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D51761D2C;
+        Thu, 20 May 2021 10:04:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505053;
-        bh=Vw5QKD1Sz/YNWUyJ1j/o0e85Lywf3RtbcVTZm+WeXFg=;
+        s=korg; t=1621505055;
+        bh=8OQj5p3y3B1QGSdoqzyGs4Hfl3t+mA/SsXXk5jSOApg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1sOb6FbIh3UAnE2jMxYWXdD+igSpPe3iPOiuAtOTLagqux/5DsMOfFE1B08mnk6Zy
-         /G6hxExsAtdbSBiD19aKQNAY+f0a1I2noTxGR0afJPmpS4NQxLAYlLl4wpB3bD/t/V
-         QutielW117ihScMA3fKx5heR/oxeSqDL4J6Arp0s=
+        b=uHaAFacJZsX8dWIa8RPUEUhC2M9zlUtBD8ZwAfj1x3RKNxgvV1z+w+OrfJfGXC3qZ
+         Kcy1e3/n5j0Ip4+zKIVqPFdawwgE6hYoDcS8+c9Z4DLEFhbA2mk8vsOZ+xBJQW3E/l
+         cfuUspjEEskIZC9RGHHp23ywCVT7dVRhtXrPBlKY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Miaohe Lin <linmiaohe@huawei.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Ebru Akagunduz <ebru.akagunduz@gmail.com>,
+        Feilong Lin <linfeilong@huawei.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
-        Rik van Riel <riel@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 201/240] khugepaged: fix wrong result value for trace_mm_collapse_huge_page_isolate()
-Date:   Thu, 20 May 2021 11:23:13 +0200
-Message-Id: <20210520092115.402247186@linuxfoundation.org>
+Subject: [PATCH 4.9 202/240] mm/hugeltb: handle the error case in hugetlb_fix_reserve_counts()
+Date:   Thu, 20 May 2021 11:23:14 +0200
+Message-Id: <20210520092115.441531656@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -48,58 +45,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Miaohe Lin <linmiaohe@huawei.com>
 
-[ Upstream commit 74e579bf231a337ab3786d59e64bc94f45ca7b3f ]
+[ Upstream commit da56388c4397878a65b74f7fe97760f5aa7d316b ]
 
-In writable and !referenced case, the result value should be
-SCAN_LACK_REFERENCED_PAGE for trace_mm_collapse_huge_page_isolate()
-instead of default 0 (SCAN_FAIL) here.
+A rare out of memory error would prevent removal of the reserve map region
+for a page.  hugetlb_fix_reserve_counts() handles this rare case to avoid
+dangling with incorrect counts.  Unfortunately, hugepage_subpool_get_pages
+and hugetlb_acct_memory could possibly fail too.  We should correctly
+handle these cases.
 
-Link: https://lkml.kernel.org/r/20210306032947.35921-5-linmiaohe@huawei.com
-Fixes: 7d2eba0557c1 ("mm: add tracepoint for scanning pages")
+Link: https://lkml.kernel.org/r/20210410072348.20437-5-linmiaohe@huawei.com
+Fixes: b5cec28d36f5 ("hugetlbfs: truncate_hugepages() takes a range of pages")
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Ebru Akagunduz <ebru.akagunduz@gmail.com>
+Cc: Feilong Lin <linfeilong@huawei.com>
 Cc: Mike Kravetz <mike.kravetz@oracle.com>
-Cc: Rik van Riel <riel@redhat.com>
 Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
 Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- mm/khugepaged.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ mm/hugetlb.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index 753b0e2fef36..0f1bdbae45e2 100644
---- a/mm/khugepaged.c
-+++ b/mm/khugepaged.c
-@@ -596,17 +596,17 @@ static int __collapse_huge_page_isolate(struct vm_area_struct *vma,
- 		    mmu_notifier_test_young(vma->vm_mm, address))
- 			referenced++;
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index e2b5e38e7a4b..9049e8613237 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -586,13 +586,20 @@ void hugetlb_fix_reserve_counts(struct inode *inode)
+ {
+ 	struct hugepage_subpool *spool = subpool_inode(inode);
+ 	long rsv_adjust;
++	bool reserved = false;
+ 
+ 	rsv_adjust = hugepage_subpool_get_pages(spool, 1);
+-	if (rsv_adjust) {
++	if (rsv_adjust > 0) {
+ 		struct hstate *h = hstate_inode(inode);
+ 
+-		hugetlb_acct_memory(h, 1);
++		if (!hugetlb_acct_memory(h, 1))
++			reserved = true;
++	} else if (!rsv_adjust) {
++		reserved = true;
  	}
--	if (likely(writable)) {
--		if (likely(referenced)) {
--			result = SCAN_SUCCEED;
--			trace_mm_collapse_huge_page_isolate(page, none_or_zero,
--							    referenced, writable, result);
--			return 1;
--		}
--	} else {
 +
-+	if (unlikely(!writable)) {
- 		result = SCAN_PAGE_RO;
-+	} else if (unlikely(!referenced)) {
-+		result = SCAN_LACK_REFERENCED_PAGE;
-+	} else {
-+		result = SCAN_SUCCEED;
-+		trace_mm_collapse_huge_page_isolate(page, none_or_zero,
-+						    referenced, writable, result);
-+		return 1;
- 	}
--
- out:
- 	release_pte_pages(pte, _pte);
- 	trace_mm_collapse_huge_page_isolate(page, none_or_zero,
++	if (!reserved)
++		pr_warn("hugetlb: Huge Page Reserved count may go negative.\n");
+ }
+ 
+ /*
 -- 
 2.30.2
 
