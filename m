@@ -2,106 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AD8B38B85B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:26:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C2738B85E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237032AbhETU1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:27:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52496 "EHLO
+        id S237375AbhETU23 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:28:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235261AbhETU1T (ORCPT
+        with ESMTP id S235261AbhETU22 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:27:19 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B073C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:25:57 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id t3so20854072edc.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:25:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=L6+wHMIa16BIAfcr0/AspV73VlTuSsDUuM2FpOlowOc=;
-        b=O9qoQYrizwrGO33O23Eh/taGb21Uq+Sf41L3WzruURauHfByuEuoJ1UE1mSl0b+3i4
-         NSD8MlBu7ZqxAXskQNYjyW0Cf3HNjspL2OeWNALMprYILIwuDFRwj/iD5XNMi4tftycW
-         EsknKdePJnUKRI7GwYUV4vgaiBNKlvfZYpI3YgA+pOtRuOdBwCcz6pJyixy1j6tnjTwA
-         xc2nWDa5LBBVMSo3KVFY7ratdf/2jGMvaBkcjlxZeGivKjGwBBF3BqIOAyT5GGFYupwY
-         OXfUcXE+pz37Vs2ya5wtU7hZnc0G6kQwzloGCssXZuruhVK/nWdQ7GD3YjcBN8DK7xpf
-         IPdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=L6+wHMIa16BIAfcr0/AspV73VlTuSsDUuM2FpOlowOc=;
-        b=ENViASengEISP6hTgN2S+ReWN8Yc1ly0ljxqPRYObr3TYunicswcaJoxA+eaHu5F8N
-         KyHFV/MLuBagKtyXLYEtTTO/H2/sChpnUyaWwmhGp+/f01kteFQIvPnmdsG5YBwZCjk0
-         vwPoqFF4ikOOgFNwxDU4RK4Fxe1TgmSoNJ4FptW536kN/LOzXjmRGH1qc+8bOAFKWo3w
-         gdoSxeSg2DxBX5AURhxRmUyJMd11MlRV4Qs/lWq4AWFCuGTqbOWPgCQKzQslkOCMr4Fz
-         OtJXueX55ny4kCe3z/kbGWFMVk6FEAv5xrA23nVHrj9T/5J8dtQKmjaNtRanAxf0H4fb
-         HbSg==
-X-Gm-Message-State: AOAM530+7fd1K/P52Hh93gdbEDZz3mDIXsv7Cxuqvnr9aeAIwxfqFKcr
-        ZO0qq1++Gx8uqdRL1LO1yFJOpuJcUecGA5V+AAU7TPmB0/8=
-X-Google-Smtp-Source: ABdhPJw8pr02cKMNKMU/gav1Jo5Bo/EIho2tm3jRn7MMn/JFbkOi35Bg7rsUYA+POgIEX4ds0rT2SCk9e8a1tOYJReE=
-X-Received: by 2002:a05:6402:190e:: with SMTP id e14mr6952362edz.146.1621542356228;
- Thu, 20 May 2021 13:25:56 -0700 (PDT)
+        Thu, 20 May 2021 16:28:28 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66DAC061574;
+        Thu, 20 May 2021 13:27:06 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 8B4B62F3;
+        Thu, 20 May 2021 20:27:06 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8B4B62F3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1621542426; bh=NpuRS2178vxy4S9OffI41QVP9Bg2Y78UthUZZGVg8UA=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=OOiQ05hvuLhjcC3/P9dziZv94vkKr6NkttIIPz3GfQLOP2Nz16XYv1p1y0PWYsf4B
+         nFWmIhluyIP9VoY1K9FkxiTEpG9wrzvz1K4WZBJ+K3rZ/1207ZmKOHFqPOejc6YgKU
+         KdO0CK5jHpuOq9/KTAJV0UMiRQkohS+u4A3cgtFZcw7DhXlhJ70l+IiM/qci33ATvN
+         vPAdR9yD4bkTjMSCGe2AJydJ6kKd2Cxb6kEZfNkRvYQRUqLnyhqZE3iQK2PQXk6kKi
+         YowxnpDH8Xu0vtTy4svG3JmyBvalmoT4bpujh4k99jpXMRvKPLT1vfJgmB2DrK+plZ
+         cMzoNbAzo67Ww==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Yue Hu <zbestahu@gmail.com>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        huyue2@yulong.com, zbestahu@163.com
+Subject: Re: [PATCH] docs: block: blk-mq.rst: correct drive -> driver
+In-Reply-To: <20210520074225.1989-1-zbestahu@gmail.com>
+References: <20210520074225.1989-1-zbestahu@gmail.com>
+Date:   Thu, 20 May 2021 14:27:06 -0600
+Message-ID: <877djtnobp.fsf@meer.lwn.net>
 MIME-Version: 1.0
-References: <20210430082744.3638743-1-narmstrong@baylibre.com>
-In-Reply-To: <20210430082744.3638743-1-narmstrong@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Thu, 20 May 2021 22:25:45 +0200
-Message-ID: <CAFBinCC0aaMUbBkJ4bjhFa0A+sZH1muyW6kqAQYfjjXOkrNPGg@mail.gmail.com>
-Subject: Re: [PATCH] drm/meson: fix shutdown crash when component not probed
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Stefan Agner <stefan@agner.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+Yue Hu <zbestahu@gmail.com> writes:
 
-since this has not received any Reviewed-by yet I tried my best to
-review it myself
-
-On Fri, Apr 30, 2021 at 10:28 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
-[...]
-> --- a/drivers/gpu/drm/meson/meson_drv.c
-> +++ b/drivers/gpu/drm/meson/meson_drv.c
-> @@ -485,11 +485,12 @@ static int meson_probe_remote(struct platform_device *pdev,
->  static void meson_drv_shutdown(struct platform_device *pdev)
->  {
->         struct meson_drm *priv = dev_get_drvdata(&pdev->dev);
-this part made it hard for me because I was wondering where the
-matching dev_set_drvdata call is
-it turns out platform_set_drvdata is used instead, meaning for me it
-would have been easier to understand if platform_get_drvdata was used
-here
-that's however nothing which has changed with this patch
-
-> -       struct drm_device *drm = priv->drm;
+> From: Yue Hu <huyue2@yulong.com>
 >
-> -       DRM_DEBUG_DRIVER("\n");
-> -       drm_kms_helper_poll_fini(drm);
-> -       drm_atomic_helper_shutdown(drm);
-> +       if (!priv)
-> +               return;
-> +
-> +       drm_kms_helper_poll_fini(priv->drm);
-> +       drm_atomic_helper_shutdown(priv->drm);
->  }
-then this part finally made sense to me (as non-drm person), as
-platform_set_drvdata comes near the end of meson_drv_bind_master (so
-any errors would cause the drvdata to be NULL).
+> It is 'driver' to complete the request. Also remove a redundant space.
+>
+> Signed-off-by: Yue Hu <huyue2@yulong.com>
+> ---
+>  Documentation/block/blk-mq.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
+> index a980d23..d96118c 100644
+> --- a/Documentation/block/blk-mq.rst
+> +++ b/Documentation/block/blk-mq.rst
+> @@ -62,7 +62,7 @@ queue, to be sent in the future, when the hardware is able.
+>  Software staging queues
+>  ~~~~~~~~~~~~~~~~~~~~~~~
+>  
+> -The block IO subsystem adds requests  in the software staging queues
+> +The block IO subsystem adds requests in the software staging queues
+>  (represented by struct blk_mq_ctx) in case that they weren't sent
+>  directly to the driver. A request is one or more BIOs. They arrived at the
+>  block layer through the data structure struct bio. The block layer
+> @@ -132,7 +132,7 @@ In order to indicate which request has been completed, every request is
+>  identified by an integer, ranging from 0 to the dispatch queue size. This tag
+>  is generated by the block layer and later reused by the device driver, removing
+>  the need to create a redundant identifier. When a request is completed in the
+> -drive, the tag is sent back to the block layer to notify it of the finalization.
+> +driver, the tag is sent back to the block layer to notify it of the finalization.
+>  This removes the need to do a linear search to find out which IO has been
+>  completed.
 
-with this I can also give me:
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-in addition to my:
-Tested-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Applied, thanks.
 
-Can you please queue this up for -fixes or do we need to ask someone to do it?
-
-
-Best regards,
-Martin
+jon
