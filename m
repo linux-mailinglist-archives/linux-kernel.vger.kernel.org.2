@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4623438AEC1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6A238AECA
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242479AbhETMot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
+        id S242841AbhETMpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:45:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239630AbhETMnP (ORCPT
+        with ESMTP id S238336AbhETMnV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:43:15 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F805C05648E
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:03 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id x8so17376415wrq.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:03 -0700 (PDT)
+        Thu, 20 May 2021 08:43:21 -0400
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 987AFC056491
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:04 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id q5so17383312wrs.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=fcdvP1BzIl3x+PleFuz79GqrL71ya8Oj0cjWTPEe9qs=;
-        b=S64+RsMhtnMW++KWmgbEqE74s+1Eun93Cetk185djJxdf9FR/w3NO0qeRSBTZAUFYU
-         FB6nzj6Sxtn5klIAr4ywcIjV7hv3BgISoh2zt+tMge1UCEgmN1vWhrZoNVQeEy45T/Ql
-         +0K2ZcIGbt24yqiLKYYl/cHvWnxeUjIKKWK5rvgnebNYyxCZ3Yy818gN69SCWXS7YJuO
-         f+zvHzX9xgejdrJxFd8Fhs/Ct4LMGjtnM/i0KYu+XTmU+Uc09GxP0K+z5Ls8wHScKk3V
-         7Jau3cb2J+9G22D/R9+h2iplsHPh+OlUNFAPPRAcC0rEi+tnIbZdVbSbjIr+xSmlbwTs
-         SdHQ==
+        bh=erxm+Xcrd7+qygxkCLKKNU6rbI+w3lNDzPu8B/httcU=;
+        b=OE1cmOeal6mPQ3zY2RJYNzLtzyM0CyRa/eBZHVQFbLPbo4XxFRKmFTfyjaRvKhOasA
+         hsZjqbS+YYSXLp0jBQp9nvLozK2NuK4+EZXBYKlK/zb+ZI5ALEfDhcrouqo71EsiWyGl
+         dpRYBbKFuPPVmDWnZFYucI6qPiXCOW2SI0++B+paB0abLzPN8pmtpqj9s8MZBLSLa1gF
+         BOS1Y4mjTQipSdmTUML3II0zTQleLPhan2VJ4IaVPVI178JIN2NNaiQYqUFo4xEbJysy
+         fCafIbHV0mLWXiEuaeESdDWjMqZIMKDL2IfpqSl0N6fhknVAhAmOTzgb1DAV0LKz/mT1
+         XpbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=fcdvP1BzIl3x+PleFuz79GqrL71ya8Oj0cjWTPEe9qs=;
-        b=WulOFeVdR1xQkmI67UI4TD7xDfqK159QHV50EsZcoujs8WHPsZeLrRzcnXrLdZO438
-         eYuyNtdGWRB1wxInKab1b1WbLqazY9GmYat1ykesfsdjB6Sv0FVX8llDi9hXMi9kSmYm
-         aifue7mvng4147wEVuxpNhy2frpGDUXLlm2CA8ja2ITxokHyazrNmPD6q/JRuY/bsYBY
-         QDvFAKp+SXKyOIbvI6PzzxLpgDQ+H1PBYcQr6Wf651TGxuoET18K23ENhafBsMdIVpnu
-         aIVPRsSwGzEGlESDrEngQOvfb1dCrLSgDQ1X7yoB3v6MmGPuVrPv41ntQ3IwDToyh3St
-         5GBg==
-X-Gm-Message-State: AOAM530XSrA4VTSjZjTNJWSbOuttD5y9itVnrdveTVQF2+IJqesanfTj
-        g0w1CXrHF2HQi6VKUr3Cp0DzXg==
-X-Google-Smtp-Source: ABdhPJznQ+PN/ydUmSuB50IaUzPB6eOj2r2H+nAw3Wmuu+wHu51V6mwHuNY30Mxg+Z5y6k3sluHD0g==
-X-Received: by 2002:a05:6000:1001:: with SMTP id a1mr3828637wrx.59.1621512182229;
-        Thu, 20 May 2021 05:03:02 -0700 (PDT)
+        bh=erxm+Xcrd7+qygxkCLKKNU6rbI+w3lNDzPu8B/httcU=;
+        b=a/XzBfhDrgk/kOkjFIgaunbzVaCKmDA4SGW0NtX0T3mkKasdKnjKS3DQdU3Jcdm6qx
+         ToVlQFK9YUAhmsaqlZ1+AAHYWVaaCs1M33nI02u9w4W7Ky4dO0cjDaPLDdLZYNg7CbzH
+         sjGGUDQUDk3P93ebkTy4yR8r21n8MGpMR7yD363h21kfiiMi5E82RNehprHZulESokvx
+         GXQkpAuVOnag+mcdN9O2TubreJxT7T+aXGir8EP7EJfBK4dPsRKaHfbzXb3k5MElksav
+         ssbyp61C5KsTcUa4TM/5AwwnzNX4dkgq7gdNK/hh5BMKIsCXxwZYKXSeaYtB83CJ+fWS
+         UnVg==
+X-Gm-Message-State: AOAM533ysiLlbXih8kzTkwLfD/Olr89XkiSFe/iUAJUQPMvnaMZbC9xW
+        eg+0rSu7D8MW71qu2K0SGC+ZoQ==
+X-Google-Smtp-Source: ABdhPJzC65qtzUVA+gIP2kmGgel53QLMcK/7hJnqDkaigOHVU54rfgzhY6XVPlH7o1hAbiiYYuUonw==
+X-Received: by 2002:a5d:50c7:: with SMTP id f7mr4037179wrt.189.1621512183252;
+        Thu, 20 May 2021 05:03:03 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.03.01
+        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.03.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:03:01 -0700 (PDT)
+        Thu, 20 May 2021 05:03:02 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -58,9 +58,9 @@ Cc:     linux-kernel@vger.kernel.org,
         Sumit Semwal <sumit.semwal@linaro.org>,
         amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
-Subject: [PATCH 10/38] drm/amd/amdgpu/amdgpu_ids: Correct some function name disparity
-Date:   Thu, 20 May 2021 13:02:20 +0100
-Message-Id: <20210520120248.3464013-11-lee.jones@linaro.org>
+Subject: [PATCH 11/38] drm/amd/amdgpu/amdgpu_debugfs: Fix a couple of misnamed functions
+Date:   Thu, 20 May 2021 13:02:21 +0100
+Message-Id: <20210520120248.3464013-12-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520120248.3464013-1-lee.jones@linaro.org>
 References: <20210520120248.3464013-1-lee.jones@linaro.org>
@@ -73,10 +73,8 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:200: warning: expecting prototype for amdgpu_vm_grab_idle(). Prototype was for amdgpu_vmid_grab_idle() instead
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:272: warning: expecting prototype for amdgpu_vm_grab_reserved(). Prototype was for amdgpu_vmid_grab_reserved() instead
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:337: warning: expecting prototype for amdgpu_vm_grab_used(). Prototype was for amdgpu_vmid_grab_used() instead
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:410: warning: expecting prototype for amdgpu_vm_grab_id(). Prototype was for amdgpu_vmid_grab() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:1004: warning: expecting prototype for amdgpu_debugfs_regs_gfxoff_write(). Prototype was for amdgpu_debugfs_gfxoff_write() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c:1053: warning: expecting prototype for amdgpu_debugfs_regs_gfxoff_status(). Prototype was for amdgpu_debugfs_gfxoff_read() instead
 
 Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
@@ -89,49 +87,31 @@ Cc: linux-media@vger.kernel.org
 Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-index b4971e90b98cf..c7f3aae23c625 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
-@@ -183,7 +183,7 @@ bool amdgpu_vmid_had_gpu_reset(struct amdgpu_device *adev,
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+index bcaf271b39bf5..a9bbb0034e1ec 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_debugfs.c
+@@ -990,7 +990,7 @@ static ssize_t amdgpu_debugfs_gpr_read(struct file *f, char __user *buf,
  }
  
  /**
-- * amdgpu_vm_grab_idle - grab idle VMID
-+ * amdgpu_vmid_grab_idle - grab idle VMID
+- * amdgpu_debugfs_regs_gfxoff_write - Enable/disable GFXOFF
++ * amdgpu_debugfs_gfxoff_write - Enable/disable GFXOFF
   *
-  * @vm: vm to allocate id for
-  * @ring: ring we want to submit job to
-@@ -256,7 +256,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *vm,
- }
+  * @f: open file handle
+  * @buf: User buffer to write data from
+@@ -1041,7 +1041,7 @@ static ssize_t amdgpu_debugfs_gfxoff_write(struct file *f, const char __user *bu
+ 
  
  /**
-- * amdgpu_vm_grab_reserved - try to assign reserved VMID
-+ * amdgpu_vmid_grab_reserved - try to assign reserved VMID
+- * amdgpu_debugfs_regs_gfxoff_status - read gfxoff status
++ * amdgpu_debugfs_gfxoff_read - read gfxoff status
   *
-  * @vm: vm to allocate id for
-  * @ring: ring we want to submit job to
-@@ -325,7 +325,7 @@ static int amdgpu_vmid_grab_reserved(struct amdgpu_vm *vm,
- }
- 
- /**
-- * amdgpu_vm_grab_used - try to reuse a VMID
-+ * amdgpu_vmid_grab_used - try to reuse a VMID
-  *
-  * @vm: vm to allocate id for
-  * @ring: ring we want to submit job to
-@@ -397,7 +397,7 @@ static int amdgpu_vmid_grab_used(struct amdgpu_vm *vm,
- }
- 
- /**
-- * amdgpu_vm_grab_id - allocate the next free VMID
-+ * amdgpu_vmid_grab - allocate the next free VMID
-  *
-  * @vm: vm to allocate id for
-  * @ring: ring we want to submit job to
+  * @f: open file handle
+  * @buf: User buffer to store read data in
 -- 
 2.31.1
 
