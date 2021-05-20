@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E3A038AAB1
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DD9E38AACF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240455AbhETLQW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:16:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52442 "EHLO mail.kernel.org"
+        id S239714AbhETLRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:17:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52462 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238718AbhETK4K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:56:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E506961CE7;
-        Thu, 20 May 2021 10:01:36 +0000 (UTC)
+        id S238803AbhETK4L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:56:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 246F961CE8;
+        Thu, 20 May 2021 10:01:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504897;
-        bh=APEL3NPHVZ70NZi9W8u6aNCiB6M4fnP/x0E/P/hQ7mI=;
+        s=korg; t=1621504899;
+        bh=thZBLT5OleGrMB3A34zQLhYUq+OfO+QaM23VjAiwnac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=wArtXUvfQ+MD0bZ09/LrcT68RpsoTAsbjnNGVhfe/WTklWVDaGnZ5N0Y7mw2WpXmf
-         Jm1ayyIC+fuOkD7TTvAeXM9rpI7kRPDQJFQ/Mqwr4WP1lpDv1DLbkNi8Iu74Zve1Gg
-         ommOddR4CiyVkpS03CZEmhQviSUJvYdGrUz0YcW4=
+        b=KPqHgdiQeGVhU48eK8RzP5GnQnFRwZiPFxnOqHFG0WpwiVVSlv8lMjjAd9UvBXRRl
+         ca06p6WjW1BosXRaKBloKWZxSjDY+tJMj4jDLyGBg80GnBGy1uLMhROfgNGI4FsbfE
+         4xv9asvzbNiAPaRRxgLl+KlViEG/7+0PHh/dwH50=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 130/240] media: dvb-usb-remote: fix dvb_usb_nec_rc_key_to_event type mismatch
-Date:   Thu, 20 May 2021 11:22:02 +0200
-Message-Id: <20210520092113.032479662@linuxfoundation.org>
+Subject: [PATCH 4.9 131/240] clk: uniphier: Fix potential infinite loop
+Date:   Thu, 20 May 2021 11:22:03 +0200
+Message-Id: <20210520092113.062799427@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,45 +41,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Colin Ian King <colin.king@canonical.com>
 
-[ Upstream commit 0fa430e96d3c3561a78701f51fd8593da68b8474 ]
+[ Upstream commit f6b1340dc751a6caa2a0567b667d0f4f4172cd58 ]
 
-gcc-11 warns about the prototype not exactly matching the function
-definition:
+The for-loop iterates with a u8 loop counter i and compares this
+with the loop upper limit of num_parents that is an int type.
+There is a potential infinite loop if num_parents is larger than
+the u8 loop counter. Fix this by making the loop counter the same
+type as num_parents.  Also make num_parents an unsigned int to
+match the return type of the call to clk_hw_get_num_parents.
 
-drivers/media/usb/dvb-usb/dvb-usb-remote.c:363:20: error: argument 2 of type ‘u8[5]’ {aka ‘unsigned char[5]’} with mismatched bound [-Werror=array-parameter=]
-  363 |                 u8 keybuf[5], u32 *event, int *state)
-      |                 ~~~^~~~~~~~~
-In file included from drivers/media/usb/dvb-usb/dvb-usb-common.h:13,
-                 from drivers/media/usb/dvb-usb/dvb-usb-remote.c:9:
-drivers/media/usb/dvb-usb/dvb-usb.h:490:65: note: previously declared as ‘u8[]’ {aka ‘unsigned char[]’}
-  490 | extern int dvb_usb_nec_rc_key_to_event(struct dvb_usb_device *, u8[], u32 *, int *);
-      |                                                                 ^~~~
-
-Fixes: 776338e121b9 ("[PATCH] dvb: Add generalized dvb-usb driver")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sean Young <sean@mess.org>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Addresses-Coverity: ("Infinite loop")
+Fixes: 734d82f4a678 ("clk: uniphier: add core support code for UniPhier clock driver")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Masahiro Yamada <masahiroy@kernel.org>
+Link: https://lore.kernel.org/r/20210409090104.629722-1-colin.king@canonical.com
+Signed-off-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/media/usb/dvb-usb/dvb-usb.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/clk/uniphier/clk-uniphier-mux.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/media/usb/dvb-usb/dvb-usb.h b/drivers/media/usb/dvb-usb/dvb-usb.h
-index 107255b08b2b..704d57e3ea1c 100644
---- a/drivers/media/usb/dvb-usb/dvb-usb.h
-+++ b/drivers/media/usb/dvb-usb/dvb-usb.h
-@@ -471,7 +471,8 @@ extern int dvb_usb_generic_rw(struct dvb_usb_device *, u8 *, u16, u8 *, u16,int)
- extern int dvb_usb_generic_write(struct dvb_usb_device *, u8 *, u16);
+diff --git a/drivers/clk/uniphier/clk-uniphier-mux.c b/drivers/clk/uniphier/clk-uniphier-mux.c
+index 2c243a894f3b..3a52ab968ac2 100644
+--- a/drivers/clk/uniphier/clk-uniphier-mux.c
++++ b/drivers/clk/uniphier/clk-uniphier-mux.c
+@@ -40,10 +40,10 @@ static int uniphier_clk_mux_set_parent(struct clk_hw *hw, u8 index)
+ static u8 uniphier_clk_mux_get_parent(struct clk_hw *hw)
+ {
+ 	struct uniphier_clk_mux *mux = to_uniphier_clk_mux(hw);
+-	int num_parents = clk_hw_get_num_parents(hw);
++	unsigned int num_parents = clk_hw_get_num_parents(hw);
+ 	int ret;
+ 	unsigned int val;
+-	u8 i;
++	unsigned int i;
  
- /* commonly used remote control parsing */
--extern int dvb_usb_nec_rc_key_to_event(struct dvb_usb_device *, u8[], u32 *, int *);
-+int dvb_usb_nec_rc_key_to_event(struct dvb_usb_device *d, u8 keybuf[5],
-+				u32 *event, int *state);
- 
- /* commonly used firmware download types and function */
- struct hexline {
+ 	ret = regmap_read(mux->regmap, mux->reg, &val);
+ 	if (ret)
 -- 
 2.30.2
 
