@@ -2,68 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE79C38AEB6
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4623438AEC1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241591AbhETMoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:44:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58206 "EHLO
+        id S242479AbhETMot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:44:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241623AbhETMnO (ORCPT
+        with ESMTP id S239630AbhETMnP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:43:14 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B25C05648D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:02 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id r12so17402618wrp.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:02 -0700 (PDT)
+        Thu, 20 May 2021 08:43:15 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F805C05648E
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:03 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id x8so17376415wrq.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:03:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=GHanPGk1uQOVUKO22D7xcyQQ9/A6KPvFy4YVhuM9AVY=;
-        b=iFfSsAYG2vZJGqO4833luoS6Wmg6j9sAa9WWKN01RUL6INuZ6N0hv/fdVckHCONa6U
-         5r4Y+RdUh5Nix3ij/hx3o7v8SOUDNMvYKsxYJdQ2QqH3Y7ZYLhiyUdbJj1Ruo1dHrp+9
-         oS9rGv7YEvWeXai75sMeeaQMsRS6CmmcYjvWnBFAQcasupyx94TpIp/7VUZ3OoKKhu08
-         0leE5pQx4HrbA6U1pZtM16KWWKe6tJIyo15196qnrVzSpH0Lp2TFKDBnTvxSWB+ACSC+
-         W9LTkMQu2Xg3P+oDb4HHLp0lRI4poht30R7A+1+T9CqoZJs/cQ3Hv4qPHJeSMST4e7vH
-         jCVw==
+        bh=fcdvP1BzIl3x+PleFuz79GqrL71ya8Oj0cjWTPEe9qs=;
+        b=S64+RsMhtnMW++KWmgbEqE74s+1Eun93Cetk185djJxdf9FR/w3NO0qeRSBTZAUFYU
+         FB6nzj6Sxtn5klIAr4ywcIjV7hv3BgISoh2zt+tMge1UCEgmN1vWhrZoNVQeEy45T/Ql
+         +0K2ZcIGbt24yqiLKYYl/cHvWnxeUjIKKWK5rvgnebNYyxCZ3Yy818gN69SCWXS7YJuO
+         f+zvHzX9xgejdrJxFd8Fhs/Ct4LMGjtnM/i0KYu+XTmU+Uc09GxP0K+z5Ls8wHScKk3V
+         7Jau3cb2J+9G22D/R9+h2iplsHPh+OlUNFAPPRAcC0rEi+tnIbZdVbSbjIr+xSmlbwTs
+         SdHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=GHanPGk1uQOVUKO22D7xcyQQ9/A6KPvFy4YVhuM9AVY=;
-        b=uEBkgjMpknNwya6MsRmH03LMAjAdIrGY6qhUJQwRaXJ7IEljLcCAnSsmHREzqBGpUR
-         RxmO2QRPt15A5cAtv5J0lFTZBuFqBhkbSZ9+6hXZqHDrZrWAd3AP3ZWgmZQH0oMJs4YW
-         ODGv9FkMBk4cvEv5MufYpw9EwFNW4Aa1sJrwDoA+IlWmWvH691SRQ0ETknZbZkUlvm0i
-         o8Ywo+yJk7fzEI7lbpSY2SBh7OAeEJfDjlUpap8W1wLUNAz4yKZBktMbjrKi6SP3FL34
-         ry7oNzmb+cpg/k6sLwF8EAczpx7djlJggt6j7OZ9dgTQ19NPEvV9YZtgN8+FR8JSiLlx
-         VQVw==
-X-Gm-Message-State: AOAM530HA9k6G6n6IkkHmErOy9HWfRjYQ+ankm0KXV3kXF5pfaN2AfAc
-        88SavKAx6kZ8EVWC/NK2Ec6+3Q==
-X-Google-Smtp-Source: ABdhPJxda1MrjZvoUJVBz6GDOHlK4UYlGNKUlKIKXSUkmLUKlH3DlLWPNY/UMvP2hYZ6zWITjCWk+w==
-X-Received: by 2002:a5d:4536:: with SMTP id j22mr3886009wra.329.1621512181098;
-        Thu, 20 May 2021 05:03:01 -0700 (PDT)
+        bh=fcdvP1BzIl3x+PleFuz79GqrL71ya8Oj0cjWTPEe9qs=;
+        b=WulOFeVdR1xQkmI67UI4TD7xDfqK159QHV50EsZcoujs8WHPsZeLrRzcnXrLdZO438
+         eYuyNtdGWRB1wxInKab1b1WbLqazY9GmYat1ykesfsdjB6Sv0FVX8llDi9hXMi9kSmYm
+         aifue7mvng4147wEVuxpNhy2frpGDUXLlm2CA8ja2ITxokHyazrNmPD6q/JRuY/bsYBY
+         QDvFAKp+SXKyOIbvI6PzzxLpgDQ+H1PBYcQr6Wf651TGxuoET18K23ENhafBsMdIVpnu
+         aIVPRsSwGzEGlESDrEngQOvfb1dCrLSgDQ1X7yoB3v6MmGPuVrPv41ntQ3IwDToyh3St
+         5GBg==
+X-Gm-Message-State: AOAM530XSrA4VTSjZjTNJWSbOuttD5y9itVnrdveTVQF2+IJqesanfTj
+        g0w1CXrHF2HQi6VKUr3Cp0DzXg==
+X-Google-Smtp-Source: ABdhPJznQ+PN/ydUmSuB50IaUzPB6eOj2r2H+nAw3Wmuu+wHu51V6mwHuNY30Mxg+Z5y6k3sluHD0g==
+X-Received: by 2002:a05:6000:1001:: with SMTP id a1mr3828637wrx.59.1621512182229;
+        Thu, 20 May 2021 05:03:02 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.03.00
+        by smtp.gmail.com with ESMTPSA id j10sm2886332wrt.32.2021.05.20.05.03.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:03:00 -0700 (PDT)
+        Thu, 20 May 2021 05:03:01 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Fabien Dessenne <fabien.dessenne@st.com>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 09/38] drm/sti/sti_hqvdp: Fix incorrectly named function 'sti_hqvdp_vtg_cb()'
-Date:   Thu, 20 May 2021 13:02:19 +0100
-Message-Id: <20210520120248.3464013-10-lee.jones@linaro.org>
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: [PATCH 10/38] drm/amd/amdgpu/amdgpu_ids: Correct some function name disparity
+Date:   Thu, 20 May 2021 13:02:20 +0100
+Message-Id: <20210520120248.3464013-11-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520120248.3464013-1-lee.jones@linaro.org>
 References: <20210520120248.3464013-1-lee.jones@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -71,32 +73,65 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/sti/sti_hqvdp.c:796: warning: expecting prototype for sti_vdp_vtg_cb(). Prototype was for sti_hqvdp_vtg_cb() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:200: warning: expecting prototype for amdgpu_vm_grab_idle(). Prototype was for amdgpu_vmid_grab_idle() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:272: warning: expecting prototype for amdgpu_vm_grab_reserved(). Prototype was for amdgpu_vmid_grab_reserved() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:337: warning: expecting prototype for amdgpu_vm_grab_used(). Prototype was for amdgpu_vmid_grab_used() instead
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c:410: warning: expecting prototype for amdgpu_vm_grab_id(). Prototype was for amdgpu_vmid_grab() instead
 
-Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Fabien Dessenne <fabien.dessenne@st.com>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
+Cc: linux-media@vger.kernel.org
+Cc: linaro-mm-sig@lists.linaro.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/gpu/drm/sti/sti_hqvdp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/sti/sti_hqvdp.c b/drivers/gpu/drm/sti/sti_hqvdp.c
-index edbb99f53de19..d09b08995b12a 100644
---- a/drivers/gpu/drm/sti/sti_hqvdp.c
-+++ b/drivers/gpu/drm/sti/sti_hqvdp.c
-@@ -782,7 +782,7 @@ static void sti_hqvdp_disable(struct sti_hqvdp *hqvdp)
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+index b4971e90b98cf..c7f3aae23c625 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ids.c
+@@ -183,7 +183,7 @@ bool amdgpu_vmid_had_gpu_reset(struct amdgpu_device *adev,
  }
  
  /**
-- * sti_vdp_vtg_cb
-+ * sti_hqvdp_vtg_cb
-  * @nb: notifier block
-  * @evt: event message
-  * @data: private data
+- * amdgpu_vm_grab_idle - grab idle VMID
++ * amdgpu_vmid_grab_idle - grab idle VMID
+  *
+  * @vm: vm to allocate id for
+  * @ring: ring we want to submit job to
+@@ -256,7 +256,7 @@ static int amdgpu_vmid_grab_idle(struct amdgpu_vm *vm,
+ }
+ 
+ /**
+- * amdgpu_vm_grab_reserved - try to assign reserved VMID
++ * amdgpu_vmid_grab_reserved - try to assign reserved VMID
+  *
+  * @vm: vm to allocate id for
+  * @ring: ring we want to submit job to
+@@ -325,7 +325,7 @@ static int amdgpu_vmid_grab_reserved(struct amdgpu_vm *vm,
+ }
+ 
+ /**
+- * amdgpu_vm_grab_used - try to reuse a VMID
++ * amdgpu_vmid_grab_used - try to reuse a VMID
+  *
+  * @vm: vm to allocate id for
+  * @ring: ring we want to submit job to
+@@ -397,7 +397,7 @@ static int amdgpu_vmid_grab_used(struct amdgpu_vm *vm,
+ }
+ 
+ /**
+- * amdgpu_vm_grab_id - allocate the next free VMID
++ * amdgpu_vmid_grab - allocate the next free VMID
+  *
+  * @vm: vm to allocate id for
+  * @ring: ring we want to submit job to
 -- 
 2.31.1
 
