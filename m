@@ -2,90 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D576389FCB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F0E389FD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 10:30:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231189AbhETIaN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 04:30:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59258 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhETIaM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 04:30:12 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399CDC061574;
-        Thu, 20 May 2021 01:28:50 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id l70so11341844pga.1;
-        Thu, 20 May 2021 01:28:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fNwm3g2gLFqW8k/J4MYUNInnUysaFCvyxZVIOLPuoQA=;
-        b=ZFaDgpVXYaNuSzlkV41plByij9nWPuAmXof4XR1HU6+duXJoJBuV84GJ01CBhu2DXO
-         933HcUeKHcxoefuhn0we4XLpvgN75gjSnrxn4dz1FB4zttZDm/cE7/fGbP38Yc+nBor1
-         L69JxyKZmd6paywpYWgSbwfLbJVvKGlgjQQM83bZRa3StxCsgfE3F4DVOS2mSFHqY031
-         OMGtz9ZyL3q/0jffnUVOeDJAdaJ9v4DAlXEFChMHqqFmfGzpl7hMQD9PQheoKsxbOSUK
-         x/Y/qDMDdp/ebhsmCo92XvHvthdIb0m9qLqMqEYkFu9ExZ6wjFHFvGNeZW6uE+rwO2MH
-         cIKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fNwm3g2gLFqW8k/J4MYUNInnUysaFCvyxZVIOLPuoQA=;
-        b=UmqdcxaBHGn1ulZDAD5O/2tBPoOoe5pj2FpScqdsjRugnICrdEArMt71I35S3MpGPz
-         Z8pwh6jEz68BWKmps7EHErb/I19tMh3E+FE5L8xHccTsifdqM0bBxhjrIXTvQfKZZQAL
-         2+OlqI3qFhta3sDpjIGE47wEvtbHuhkuG5KyWOYCm3qqb7USvD1wmRXhaBfl5+8cjQ2n
-         HSHKXinxodcfD9BHo4oZ/DT9CvFm/2qLJD/X4yzdfI06baUzEb1OA2DiFrA/2uq8OkrX
-         IgTWiKYKxAULwglNeiVxZSp8v/3+qgSUzqSlbmWw2SDPVF+6Cg3sANAM2k3BT/2sdkuV
-         1g0w==
-X-Gm-Message-State: AOAM531NtDjOQh/92EPQdzbSlj74LJ/YE1+J1gi7DntlHkzRjMkjljBu
-        MZaF0v3x3qptuHVuJlf3xWI=
-X-Google-Smtp-Source: ABdhPJxKUqhNAMI/a9ElcGAkHhLNDjlzSXgYUbm339j9dziYqgOM6jnbw17qfzJG1YvxI726dIqk5w==
-X-Received: by 2002:aa7:8d46:0:b029:2de:75aa:1964 with SMTP id s6-20020aa78d460000b02902de75aa1964mr3345424pfe.61.1621499329670;
-        Thu, 20 May 2021 01:28:49 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id r11sm1427887pgl.34.2021.05.20.01.28.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 01:28:49 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] mmc: core: Use ternery for return value in mmc_vdd_to_ocrbitnum()
-Date:   Thu, 20 May 2021 16:28:37 +0800
-Message-Id: <20210520082837.2129-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231215AbhETIb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 04:31:57 -0400
+Received: from mga11.intel.com ([192.55.52.93]:61362 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230102AbhETIb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 04:31:56 -0400
+IronPort-SDR: voHcOnXo/2B6P5fKbS2wb2NwNDn3Qpp5VVoy9xF76S4diDkyDFI0x/jowOSLqAspITTdGc8Q1K
+ 1+KSAwS+rtRA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="198088155"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="198088155"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 01:30:10 -0700
+IronPort-SDR: OrraMT7xKCAhV7vX4z8WmEXKmxrk+p6QfFCb5R6GlHLSFMErOh7bl2yD9287jDqXiD22IWV/hn
+ Edn43VdvTXJw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="473899304"
+Received: from shbuild999.sh.intel.com ([10.239.147.94])
+  by orsmga001.jf.intel.com with ESMTP; 20 May 2021 01:30:05 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, ying.huang@intel.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [RFC Patch v2 0/4] mm/mempolicy: some fix and semantics cleanup 
+Date:   Thu, 20 May 2021 16:30:00 +0800
+Message-Id: <1621499404-67756-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+Hi All,
 
-Just simplify the code.
+We've posted v4 patchset introducing a new "perfer-many" memory policy
+https://lore.kernel.org/lkml/1615952410-36895-1-git-send-email-feng.tang@intel.com/ ,
+for which Michal Hocko gave many comments while pointing out some
+problems, and we also found some semantics confusion about 'prefer'
+and 'local' policy, as well as some duplicated code. This patchset
+tries to address them. Please help to review, thanks!
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- drivers/mmc/core/core.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+- Feng
 
-diff --git a/drivers/mmc/core/core.c b/drivers/mmc/core/core.c
-index f194940..600543c 100644
---- a/drivers/mmc/core/core.c
-+++ b/drivers/mmc/core/core.c
-@@ -1028,9 +1028,7 @@ static int mmc_vdd_to_ocrbitnum(int vdd, bool low_bits)
- 
- 	/* Base 2000 mV, step 100 mV, bit's base 8. */
- 	bit = (vdd - 2000) / 100 + 8;
--	if (bit > max_bit)
--		return max_bit;
--	return bit;
-+	return (bit > max_bit) ? max_bit : bit;
- }
- 
- /**
+
+Feng Tang (4):
+  mm/mempolicy: skip nodemask intersect check for 'interleave' when oom
+  mm/mempolicy: unify the preprocessing for mbind and set_mempolicy
+  mm/mempolicy: don't handle MPOL_LOCAL like a fake MPOL_PREFERRED
+    policy
+  mm/mempolicy: kill MPOL_F_LOCAL bit
+
+ include/uapi/linux/mempolicy.h |   1 +
+ mm/mempolicy.c                 | 205 +++++++++++++++++++----------------------
+ 2 files changed, 98 insertions(+), 108 deletions(-)
+
 -- 
-1.9.1
+2.7.4
 
