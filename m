@@ -2,221 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 023FE38B23E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:51:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 613C138B245
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:53:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231405AbhETOwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:52:44 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:12128 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S230102AbhETOwi (ORCPT
+        id S231460AbhETOym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:54:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231410AbhETOyj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:52:38 -0400
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KEc6UI027717;
-        Thu, 20 May 2021 16:51:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=YWpglcXsTk8lS2dAh+WicVzQTdxMUfpjuhDJYeZ6rKw=;
- b=qpoVf/rnR3yb4EnV9zpGHPJPC51ZJqxxtVpdfl4FAhXAf4uYUfkQXKG/wNHBKnef2mf7
- z6Y+GqcFThLXl01pfCNnBT1kFifdrEwi6O+n6t0WOSmfr1vg0ePewdAPDqQaUbR0KKO9
- 5EN3h4+xlMAM9T3EwXvv09VDsaXN79F7yHqJ1wtYZSFybzZyDxa15fCOqYFgAE4jsKGB
- +9s4BVm2o53JqYg0hWYbYojBKsQw0OVU6PjcN6DOJRdSdeZE3Jguru5voMS2Ozsw3K4o
- Jc+vUPo0HC8crgmNeGlvq9x5i5FSWlujQr7HDqbZcNEvt13e0sM18ChhL03I7Qa/zJI4 zw== 
-Received: from eur03-ve1-obe.outbound.protection.outlook.com (mail-ve1eur03lp2056.outbound.protection.outlook.com [104.47.9.56])
-        by mx07-00178001.pphosted.com with ESMTP id 38nemtn330-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 16:51:05 +0200
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SYR1wEEBBv7j5v+nipNrPm0aWaPbJ8A0MoCdHQk0MwAUgK7voSGTYF3krt9dJYk2xlMZPMGMU2M0/vmkuCV6eIaaLHnOeCWn6i/6mP/4dDAgfWcZlRyRvBHYv6QJmzX55qHavwW2QABflxLZ+pXuviNdPozEmApAidxRVHzrcwnSoNwAR+2szvCoPqkp6t+lrsqk2kOdggYDUar63UBGBto1xOgEtSIjeFbC6E/19LA2Lh09tblIwEDOa/JnmMI06UEfNuJ8iC6vbjW24BSdl2aZPjfoqPO43OK5UPKe3hPd3+6M0eOy0ggV95ms7l/JL3QFYCOWDRCLtXf7WsOkZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=YWpglcXsTk8lS2dAh+WicVzQTdxMUfpjuhDJYeZ6rKw=;
- b=R9sz75qwOAGfwSPX5lPOgBlnydRRlS2APkkGJu6QpkBOz2+9WLWQ39fbvJAOnTU3GUchroRzqgdqkZwfJ4Xr0s09AP10uV4FtaqmaurVlSkjVGo3aPu+N0gZebX0L9lud1HL2PPmdBjjaKHH8Gfw6VdHiGyybKZmgtYUche0ZnrmxpgK1pkv8h65FJqbnR5Ga6qhtBCcf3Jtt2GqvxRlXEFOYCjOmSN/jQXitMwBnTcp98oeySKoKexLr3gj7xqFPIEF0Fbq+PZqMGqkErX1x1hu78f1ZWhGW7EcliS4naw68YGrX2Tie+qBfBPcbFBJ7Sf+WfyKGXL6+JNeE7cDRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=st.com; dmarc=pass action=none header.from=st.com; dkim=pass
- header.d=st.com; arc=none
-Received: from AM9PR10MB4119.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1fb::17)
- by AM0PR10MB3124.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:18d::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Thu, 20 May
- 2021 14:47:36 +0000
-Received: from AM9PR10MB4119.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::7d09:c28c:b46e:1ed]) by AM9PR10MB4119.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::7d09:c28c:b46e:1ed%7]) with mapi id 15.20.4129.033; Thu, 20 May 2021
- 14:47:36 +0000
-From:   Fabien DESSENNE <fabien.dessenne@st.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
-Subject: RE: [PATCH 07/38] drm/sti/sti_hda: Provide missing function names
-Thread-Topic: [PATCH 07/38] drm/sti/sti_hda: Provide missing function names
-Thread-Index: AQHXTXAWtG2AcsBQ8kiyV2XsVNLpRqrscjYQ
-Date:   Thu, 20 May 2021 14:47:36 +0000
-Message-ID: <AM9PR10MB4119486EC3DF4A4F796A021F9A2A9@AM9PR10MB4119.EURPRD10.PROD.OUTLOOK.COM>
-References: <20210520120248.3464013-1-lee.jones@linaro.org>
- <20210520120248.3464013-8-lee.jones@linaro.org>
-In-Reply-To: <20210520120248.3464013-8-lee.jones@linaro.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_Enabled=true;
- MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_SetDate=2021-05-20T14:47:34Z;
- MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_Method=Standard;
- MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_Name=23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0;
- MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_SiteId=75e027c9-20d5-47d5-b82f-77d7cd041e8f;
- MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_ActionId=055cd27c-91cd-4427-9821-8c2427d42065;
- MSIP_Label_23add6c0-cfdb-4bb9-b90f-bf23b83aa6c0_ContentBits=2
-authentication-results: linaro.org; dkim=none (message not signed)
- header.d=none;linaro.org; dmarc=none action=none header.from=st.com;
-x-originating-ip: [165.225.76.51]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 9aed58f9-8d39-4329-b456-08d91b9e35b8
-x-ms-traffictypediagnostic: AM0PR10MB3124:
-x-microsoft-antispam-prvs: <AM0PR10MB31245C4E53AAB22D57A545759A2A9@AM0PR10MB3124.EURPRD10.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:632;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: nMjoKW5L9Wi5FbAbqqV48O8HMzqohJjWT8VjKH//XyB+T90doa7/6prhGi3ded5MxKE8aRWDxQ5vZsFWG5q7Quh2yvn+E+DMZwxsP4PJMfcoiJZanpZO49L16i2wV/kKEhnt8KBPahR1q71IdFGVMrPg/MvT3NV/qNnLxhLvh6ggUfdjE39DaUzgjGK8MkJ0Dz8IsJZ49kXmzSjV6y5mM+gIsxFMJaPjyE9F1KGzvkxRGNWfFuObKf6eCLnf/qH4KEzEz+XZpWHSTulY9vp2gnaiseE31Z1AEBjWRSa57kWGkrmr3ZbGlobdiWFBEHwAC6nMhHbYNFg4X+H3Jy59zokjtcIW0SmkhdhNKdEWvin0JiT8eKEkOJ/R2fv+6C8vQdvpjFBdq2N5E9SRLhBEe6sJUTbcH9yoPTdW04jN0sCCe1zHkNoK7RtQFflf+8blynxH6rZD23NQUIvWTFOMzbpPr+YGOf3k5CVQqG5iR9dDTqovwnKNGKl9dPPcnZ8XvnEoHs2IvvEwIL7wNDF4uQDkivjI6w/ezptLBVVlmMVM48zNoyN0Xcd39ia0UufKjHRaadbhBhl/4xYvzrG5PxCRmdxjrctL/f5bdkqYC34=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM9PR10MB4119.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(136003)(396003)(366004)(346002)(9686003)(52536014)(66556008)(186003)(7696005)(6916009)(86362001)(66476007)(83380400001)(66446008)(53546011)(33656002)(6506007)(76116006)(64756008)(66946007)(55236004)(478600001)(8676002)(316002)(54906003)(8936002)(38100700002)(122000001)(55016002)(5660300002)(71200400001)(4326008)(2906002)(26005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?Y6Wuhee15Nn5MuyoKDCXBtv1nJAIbhJRGW5+5S4J7zaZCTajvKViotQbVMtC?=
- =?us-ascii?Q?9rjtmyXxJdHt9hOmSfN0yelP3YauKZwWMAuPviQgaSgQcXyYhQxxOfNDhHJp?=
- =?us-ascii?Q?z4LeekpD74zxLhLrGYIlME2/Dw2LHB3bYAKEa1NNnskirOeoxIvQ2WrsZ2O/?=
- =?us-ascii?Q?TaIDsg3XU99PzHzNJjGfz5DMRAwj9MHLxst5HBlzDDCpq6rxiQfz6PSj56nV?=
- =?us-ascii?Q?OuS2yN3YY4/Dk8AbCBVytkv2OiJyo19xkIiEiCH/4JiC+HBj299/fDkCeudC?=
- =?us-ascii?Q?1SDekrmRjWj1jkOZM2HeyLDJ0J3gJ+nYZpVY7Vk4z0COFFxnJohwc+kaSZcT?=
- =?us-ascii?Q?hU3dVfWLneOHkuWMm+pRj1nTTdjeV/A5kfiT4dk19gdT5CLFaaGlWlBKOvnk?=
- =?us-ascii?Q?gmeDXH4Iq9sGd4OXDvUQtl1aAJqmOdR7hqOLoO3Hz3/DVMQGib3xx2m5mDfc?=
- =?us-ascii?Q?yTo3jVtMr0zjv+mp9gdvQ+kaVwny2RKQCFcUG5tpIRjmMlTZnhoJKKFib3cL?=
- =?us-ascii?Q?zZ+2zHZoKsTceVkJOgMueUq2Wzc4a1olrrF1hd1M21QFmOLEvofCKWcazQ4E?=
- =?us-ascii?Q?2apbA4KcmJAkmT3qpU82d3dxNlQ3dsqtjEvStW5ee2nqjSv+aDC5qntEH4Fm?=
- =?us-ascii?Q?7P1Aj2jwIcZLvIaqqx83if8op2NcqsBO9tbqUJRRW7N7WRXpvbmnnzRrpB2h?=
- =?us-ascii?Q?zQD+RRjao2kZ9dOAQ6jbnL/CA+ns/YNQbd+S+3jNjsTj32tLkQhlgjWShUu9?=
- =?us-ascii?Q?oBNYy0FRU006zxDNEAUrK0HIMV1JiICAcdGFMXahn3kTBUjHAoCChcjOJJ9E?=
- =?us-ascii?Q?XYd1EK30hapu2R4MFcuEMUOZBZ8xy/zDeu7dO+i99MhFToIT/Mt5ObAt6BHi?=
- =?us-ascii?Q?Kg3iEfvl1/dbNkeJJF2xI202EXW8TenuJKHlsmdVH6HyMkP1HXBy8JPlzPvi?=
- =?us-ascii?Q?ryaA7yTiu7ZsXedmHk2BQKDZip2NMsDHoBntjDqvjqySAIwj/S/7VUPJO9jp?=
- =?us-ascii?Q?SDZf7wgirgjDtzdJXWgMzgodtyRRnryQJX8U6NcHlHl49TfwmWhosj/YJhXJ?=
- =?us-ascii?Q?ZnwvicfM7qpI1nScH5wrXr1C2yVMkgI4baHECi2hhY30r0a4c52DK8siG4mk?=
- =?us-ascii?Q?WQgxyFKkYxA3Sb+3nZxbzu45KNDgq3dsPReKLyo0d/qKMfS2DVvvdYnQBReP?=
- =?us-ascii?Q?4Acz6tWtBwPvJAlxNeRER0mdud7qrJpzR6Diepit9NcusDYSpSL0vJReHQMM?=
- =?us-ascii?Q?5DNEKNfYbvjyRdfrSHpcrINJZw7NBewByvM/qFjkFHzNs8WX7uV2uueE3fpQ?=
- =?us-ascii?Q?HkuJ6zQAQ2dtNJDmSLopErsX?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 20 May 2021 10:54:39 -0400
+Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E6DC06175F;
+        Thu, 20 May 2021 07:53:15 -0700 (PDT)
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4FmCQv2txyzQj8f;
+        Thu, 20 May 2021 16:53:11 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:references:in-reply-to:message-id:from:from
+        :date:date:received; s=mail20150812; t=1621522388; bh=P8MrA8pPpf
+        BNVWmYRRfh+GiMlhTG+PweVmx43zpGaHU=; b=Wi9GzXp7kBpjsfj+eBh5xGHv4E
+        u1wAZcgP4eEZk8bLvG5JxNBE0XIYCsPGSAH+JIphAB2DRgOGKd1sx6BXxbJZGnTY
+        SmBifwoyGIyH93M2FPYEeeVeS33z61wmhI27Pe2yuDzkzB3pB0t8MYUOsxYC1vBh
+        sBA4IF3LsZMGbfFhioj8LSHPP0M1wFKGynYFGhk7rldB2ubdinS1modLn4g1CfXa
+        +E2XcAw8dYMuLXP0vJ/aBW7AZVS/jEcgyyhTkIpKXE7ix7XirymCaTkK5PfoqEpC
+        vWnRJ3L41OuwMHCXhWNS1DoeuXjJYM5EBAak+hS8iUfgf7T+R+D7TcL02z6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1621522389;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=twfdgMKvq+qZu+1IFRTbYX3i4ggeYR+hsqTGbJOWG9s=;
+        b=eEhTc//ZDnXzuSfh7tIVl8HnqNSF1SnIiThtNvXF7xw1kNKSXuMIAqiAlweP2pmBnhn0xt
+        J8mTPOzx6m8yEdxyM7pnjS8rElSV0Nz77XU6gQyCDC3gGXHP9tbolUbBTLhmE0YN0Zj7j0
+        1nLj/2/91f4uKhqdxAAV06QD+Cm/l3mJlRa6oJUSnYN9azP+L0DdFcveBZho3e8mnJFcf+
+        vD4DhjIx37mQDRo3lCh4vlyTzzbxLlQEKLw6XjJmWeLkZ5le3CyXhq4GUrH/d1P8QZ1JoF
+        dnpZqZX8jQmbrpZ3VYAqKHsRrMElCwdRq1Jsc3bw6LZVROPxaAeovr6aIaXOoQ==
+X-Virus-Scanned: amavisd-new at heinlein-support.de
+Received: from smtp2.mailbox.org ([80.241.60.241])
+        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
+        with ESMTP id 1eLjRH_01cFl; Thu, 20 May 2021 16:53:08 +0200 (CEST)
+Date:   Thu, 20 May 2021 16:53:07 +0200 (CEST)
+From:   torvic9@mailbox.org
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "almaz.alexandrovich@paragon-software.com" 
+        <almaz.alexandrovich@paragon-software.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Message-ID: <1291339880.1758.1621522387730@office.mailbox.org>
+In-Reply-To: <CAKwvOd=Z1ia4ZufDbRsEUkumwkz15TtSb2V1aBT7SN8w86RKYw@mail.gmail.com>
+References: <212218590.13874.1621431781547@office.mailbox.org>
+ <CAKwvOd=Z1ia4ZufDbRsEUkumwkz15TtSb2V1aBT7SN8w86RKYw@mail.gmail.com>
+Subject: Re: [PATCH] fs/ntfs3: make ntfs3 compile with clang-12
 MIME-Version: 1.0
-X-OriginatorOrg: ST.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM9PR10MB4119.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9aed58f9-8d39-4329-b456-08d91b9e35b8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2021 14:47:36.8809
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 75e027c9-20d5-47d5-b82f-77d7cd041e8f
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: eJ7xrb2TX/CG83ml1P+KES4qY/S8OlIlRKadQ7ONhBe4KYYPTcM5hE2JZ6B5wAo6eILqSAqUrrYL3WeCZYYMjA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB3124
-X-Proofpoint-GUID: UyZYqZXWsulWreDMbWT_yJJSLl6BDXJS
-X-Proofpoint-ORIG-GUID: UyZYqZXWsulWreDMbWT_yJJSLl6BDXJS
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_03:2021-05-20,2021-05-20 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0 mlxlogscore=999
- bulkscore=0 clxscore=1011 priorityscore=1501 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105200102
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-SPAM-Probability: 
+X-Rspamd-Score: -3.31 / 15.00 / 15.00
+X-Rspamd-Queue-Id: 4A07317FF
+X-Rspamd-UID: 58cfba
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lee
 
-Thank you for the patch
+> Nick Desaulniers <ndesaulniers@google.com> hat am 20.05.2021 01:06 geschrieben:
+> 
+>  
+> On Wed, May 19, 2021 at 6:43 AM <torvic9@mailbox.org> wrote:
+> >
+> > Some of the ccflags in the fs/ntfs3 Makefile are for gcc only.
+> > Replace them with clang alternatives if necessary.
+> >
+> > Signed-off-by: Tor Vic <torvic9@mailbox.org>
+> 
+> Thanks for the patch. +clang-built-linux; please make sure to cc the
+> lists from ./scripts/get_maintainer.pl <patch file>.  It should
+> recommend our mailing list of the words clang or llvm appear anywhere
+> in the patch file. This helps spread around the review burden.
+> 
 
-BR
-Fabien
+Cool, I didn't know about that script, thanks!
 
+> > ---
+> >  fs/ntfs3/Makefile | 4 +++-
+> >  1 file changed, 3 insertions(+), 1 deletions(-)
+> >
+> > diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
+> > index b06a06cc0..dae144033 100644
+> > --- a/fs/ntfs3/Makefile
+> > +++ b/fs/ntfs3/Makefile
+> > @@ -4,7 +4,9 @@
+> >  #
+> >
+> >  # to check robot warnings
+> > -ccflags-y += -Wunused-but-set-variable -Wold-style-declaration -Wint-to-pointer-cast
+> > +ccflags-y += -Wint-to-pointer-cast \
+> > +       $(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
+> > +       $(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
+> 
+> I think it would be better to leave off the second parameter of both
+> of these, which is the fallback.
 
-ST Restricted
+OK, I will do that.
+Thanks for your feedback!
 
-> -----Original Message-----
-> From: Lee Jones <lee.jones@linaro.org>
-> Sent: jeudi 20 mai 2021 14:02
-> To: lee.jones@linaro.org
-> Cc: linux-kernel@vger.kernel.org; Benjamin Gaignard
-> <benjamin.gaignard@linaro.org>; David Airlie <airlied@linux.ie>; Daniel V=
-etter
-> <daniel@ffwll.ch>; Fabien DESSENNE <fabien.dessenne@st.com>; dri-
-> devel@lists.freedesktop.org
-> Subject: [PATCH 07/38] drm/sti/sti_hda: Provide missing function names
->=20
-> Fixes the following W=3D1 kernel build warning(s):
->=20
->  drivers/gpu/drm/sti/sti_hda.c:283: warning: expecting prototype for Sear=
-ch for
-> a video mode in the supported modes table(). Prototype was for
-> hda_get_mode_idx() instead
->  drivers/gpu/drm/sti/sti_hda.c:301: warning: expecting prototype for Enab=
-le the
-> HD DACS(). Prototype was for hda_enable_hd_dacs() instead
->  drivers/gpu/drm/sti/sti_hda.c:383: warning: This comment starts with '/*=
-*', but
-> isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->=20
-> Cc: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Fabien Dessenne <fabien.dessenne@st.com>
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-Reviewed-by: Fabien Dessenne <fabien.dessenne@foss.st.com>
-
-> ---
->  drivers/gpu/drm/sti/sti_hda.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/sti/sti_hda.c b/drivers/gpu/drm/sti/sti_hda.=
-c index
-> 5c2b650b561d5..03f3377f918c0 100644
-> --- a/drivers/gpu/drm/sti/sti_hda.c
-> +++ b/drivers/gpu/drm/sti/sti_hda.c
-> @@ -272,7 +272,7 @@ static void hda_write(struct sti_hda *hda, u32 val, i=
-nt
-> offset)  }
->=20
->  /**
-> - * Search for a video mode in the supported modes table
-> + * hda_get_mode_idx - Search for a video mode in the supported modes
-> + table
->   *
->   * @mode: mode being searched
->   * @idx: index of the found mode
-> @@ -292,7 +292,7 @@ static bool hda_get_mode_idx(struct
-> drm_display_mode mode, int *idx)  }
->=20
->  /**
-> - * Enable the HD DACS
-> + * hda_enable_hd_dacs - Enable the HD DACS
->   *
->   * @hda: pointer to HD analog structure
->   * @enable: true if HD DACS need to be enabled, else false @@ -380,7 +38=
-0,7
-> @@ static void hda_debugfs_init(struct sti_hda *hda, struct drm_minor *mi=
-nor)
-> }
->=20
->  /**
-> - * Configure AWG, writing instructions
-> + * sti_hda_configure_awg - Configure AWG, writing instructions
->   *
->   * @hda: pointer to HD analog structure
->   * @awg_instr: pointer to AWG instructions table
-> --
-> 2.31.1
+> 
+> >
+> >  obj-$(CONFIG_NTFS3_FS) += ntfs3.o
+> >
+> > --
+> > 2.31.1
+> 
+> -- 
+> Thanks,
+> ~Nick Desaulniers
