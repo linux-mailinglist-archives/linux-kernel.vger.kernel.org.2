@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2261F38B471
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:39:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7059B38B473
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234143AbhETQkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:40:43 -0400
-Received: from mail.itouring.de ([85.10.202.141]:58408 "EHLO mail.itouring.de"
+        id S232838AbhETQk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:40:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232812AbhETQkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:40:42 -0400
-Received: from tux.applied-asynchrony.com (p5b07e8e5.dip0.t-ipconnect.de [91.7.232.229])
-        by mail.itouring.de (Postfix) with ESMTPSA id 42DC8E0;
-        Thu, 20 May 2021 18:39:19 +0200 (CEST)
-Received: from [192.168.100.221] (hho.applied-asynchrony.com [192.168.100.221])
-        by tux.applied-asynchrony.com (Postfix) with ESMTP id D4F8BF01624;
-        Thu, 20 May 2021 18:39:18 +0200 (CEST)
-Subject: Re: [PATCH BUGFIX] block, bfq: fix delayed stable merge check
-From:   =?UTF-8?Q?Holger_Hoffst=c3=a4tte?= <holger@applied-asynchrony.com>
-To:     Luca Mariotti <mariottiluca1@hotmail.it>,
-        Paolo Valente <paolo.valente@linaro.org>,
-        Jens Axboe <axboe@kernel.dk>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pietro Pedroni <pedroni.pietro.96@gmail.com>
-References: <DB8PR01MB59647C41BF6C964467EAFE0D882C9@DB8PR01MB5964.eurprd01.prod.exchangelabs.com>
- <f23f8090-4a55-3c16-1bdd-f86634cd6f3b@applied-asynchrony.com>
-Organization: Applied Asynchrony, Inc.
-Message-ID: <d7c3135c-7431-0b6d-dc5b-f0339ce1290d@applied-asynchrony.com>
-Date:   Thu, 20 May 2021 18:39:18 +0200
+        id S231856AbhETQk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:40:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D46B66101E;
+        Thu, 20 May 2021 16:39:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621528776;
+        bh=mObjZUvojMIcttlGVKOdPZNIC+72oRM77+VaW6oOZtg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=MQi0wcQ1KfRkkfbfZ5gRHrmfWXI55F+viWrMSvvcblM6Q84GAa7VZvS454pH8Q8x2
+         8LhEm6jxEYwNGN+pPkQXm7+dUPkRH9NfrKYntzmhc4f38r6fmxNgMmr0QYxQ7FD6Nj
+         FLNC+2+Q1HoywJ6WuKgl6KOdrK9okB2QXjNVcVxQ7TR213QrY5Q9zP10QNHEIJaQSE
+         pXETGFqaj9FbLL4cS7obTSt8IpfwGoWsccXv9UKawEt3/TYu0X/DjMhaHRRpG6+G1n
+         RiocVzBx9UcRr7+pa4GtdtsdpBGw5f7uBB1x1TwCvzxiNz947Oa3Jpe6qmcgYNiVzD
+         nIrA5jQyUOu+w==
+Date:   Thu, 20 May 2021 19:39:33 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     amirmizi6@gmail.com
+Cc:     Eyal.Cohen@nuvoton.com, peterhuewe@gmx.de, jgg@ziepe.ca,
+        linux-kernel@vger.kernel.org, linux-integrity@vger.kernel.org,
+        Dan.Morav@nuvoton.com, oren.tanami@nuvoton.com,
+        shmulik.hager@nuvoton.com, amir.mizinski@nuvoton.com
+Subject: Re: [PATCH v2] tpm2: add longer timeout for verify signature command
+Message-ID: <YKaQxV4wzZ/UYrdu@kernel.org>
+References: <20210519140059.85919-1-amirmizi6@gmail.com>
+ <20210519140059.85919-2-amirmizi6@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f23f8090-4a55-3c16-1bdd-f86634cd6f3b@applied-asynchrony.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519140059.85919-2-amirmizi6@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-20 09:15, Holger Hoffstätte wrote:
-> On 2021-05-18 12:43, Luca Mariotti wrote:
->> When attempting to schedule a merge of a given bfq_queue with the currently
->> in-service bfq_queue or with a cooperating bfq_queue among the scheduled
->> bfq_queues, delayed stable merge is checked for rotational or non-queueing
->> devs. For this stable merge to be performed, some conditions must be met.
->> If the current bfq_queue underwent some split from some merged bfq_queue,
->> one of these conditions is that two hundred milliseconds must elapse from
->> split, otherwise this condition is always met.
->>
->> Unfortunately, by mistake, time_is_after_jiffies() was written instead of
->> time_is_before_jiffies() for this check, verifying that less than two
->> hundred milliseconds have elapsed instead of verifying that at least two
->> hundred milliseconds have elapsed.
->>
->> Fix this issue by replacing time_is_after_jiffies() with
->> time_is_before_jiffies().
->>
->> Signed-off-by: Luca Mariotti <mariottiluca1@hotmail.it>
->> Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
->> Signed-off-by: Pietro Pedroni <pedroni.pietro.96@gmail.com>
->> ---
->>   block/bfq-iosched.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
->> index acd1f881273e..2adb1e69c9d2 100644
->> --- a/block/bfq-iosched.c
->> +++ b/block/bfq-iosched.c
->> @@ -2697,7 +2697,7 @@ bfq_setup_cooperator(struct bfq_data *bfqd, struct bfq_queue *bfqq,
->>       if (unlikely(!bfqd->nonrot_with_queueing)) {
->>           if (bic->stable_merge_bfqq &&
->>               !bfq_bfqq_just_created(bfqq) &&
->> -            time_is_after_jiffies(bfqq->split_time +
->> +            time_is_before_jiffies(bfqq->split_time +
->>                         msecs_to_jiffies(200))) {
->>               struct bfq_queue *stable_merge_bfqq =
->>                   bic->stable_merge_bfqq;
->>
+On Wed, May 19, 2021 at 05:00:59PM +0300, amirmizi6@gmail.com wrote:
+> From: Amir Mizinski <amirmizi6@gmail.com>
 > 
-> Not sure why but with this patch I quickly got a division-by-zero in BFQ and
-> complete system halt. Unfortunately I couldn't capture the exact stack trace,
-> but it read something like bfq_calc_weight() or something ike that.
-> I looked through the code and found bfq_delta(), so maybe weight got
-> reduced to 0?
+> While running a TPM2_CC_VERIFY_SIGNATURE(0x177) operation with RSA 3070-bit
 
-Tried again, another boom. This time I managed to capture a stack trace
-(scrolled out at the top, but it's the same as before and easily reproducible):
+The hexcode for the TPM command is absoulutely irrelevant detail.
 
-https://imgur.com/a/sU1pDaF
+AFAIK, 3070-bit does not exist. It's 3072-bit.
 
-This is a heavily patched 5.10.x, but it's been perfectly stable so far
-until I added this last patch; the one before was avoid-circular-stable-merges.
-Maybe an unintentional side effect? In any case all I see is bfq_delta() inlined
-into bfq_calc_finish() and exploding since entity->weight is apparently 0.
+> keys the TPM driver fails with the following error:
 
-Hope this helps.
+Empty line here.
 
--h
+> "kernel: [ 2416.187522] tpm tpm0: Operation Timed out"
+> 
+> Since a) the TPM PC Client specification does not specify a number for
+
+Remove "a)".
+> verify signature operation timeout, and b) the duration of
+
+Remove "b)".
+
+> TPM2_CC_VERIFY_SIGNATURE with RSA 3070-bit keys exceeds the current timeout
+> of TPM_LONG (2 seconds), it is preferable to pick the longest timeout
+> possible.
+
+Empty line here.
+
+> Therefore, set the duration for TPM2_CC_VERIFY_SIGNATUE to TPM_LONG_LONG
+> (5 minutes).
+> 
+Add here:
+
+Link: https://trustedcomputinggroup.org/resource/pc-client-specific-platform-firmware-profile-specification/
+
+> Signed-off-by: Amir Mizinski <amirmizi6@gmail.com>
+
+
+> ---
+>  drivers/char/tpm/tpm2-cmd.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/char/tpm/tpm2-cmd.c b/drivers/char/tpm/tpm2-cmd.c
+> index 7603295..e71154b 100644
+> --- a/drivers/char/tpm/tpm2-cmd.c
+> +++ b/drivers/char/tpm/tpm2-cmd.c
+> @@ -87,7 +87,7 @@ static u8 tpm2_ordinal_duration_index(u32 ordinal)
+>  		return TPM_MEDIUM;
+>  
+>  	case TPM2_CC_VERIFY_SIGNATURE:        /* 177 */
+> -		return TPM_LONG;
+> +		return TPM_LONG_LONG;
+>  
+>  	case TPM2_CC_PCR_EXTEND:              /* 182 */
+>  		return TPM_MEDIUM;
+> -- 
+> 2.7.4
+> 
+> 
+
+/Jarkko
