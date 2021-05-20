@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED3E38AB6B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 441A938AB6E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:25:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241313AbhETLYP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:24:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39636 "EHLO mail.kernel.org"
+        id S241411AbhETLY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:24:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238904AbhETLEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:04:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC7AF61D18;
-        Thu, 20 May 2021 10:04:41 +0000 (UTC)
+        id S239079AbhETLEB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:04:01 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D5C5161D15;
+        Thu, 20 May 2021 10:04:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505082;
-        bh=FTzwyjt6Q+HO2/iZymre7bCZ/r3haZklXwZJ9kdhC/8=;
+        s=korg; t=1621505084;
+        bh=EYqJyQn1h3/jnWGL9CemVfZG4p72PJcqzn8dYrWlgVE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NT8ioos+ZJ1oyzxk/mEyo7rMDeEGS8AzMlsfxQHnnuQLTOMdcryY8WF8XWBxQBeg4
-         Qyp9P/hvCLOfGjRmZtRoYHRBmxq2J2GaAGIgpGqdmNwRz6x6hjlXQUdhBLP1IwNiEz
-         jz8Kmz1OyU3+nc1Xvr7SRu4+aK44PkuFEs50yEVE=
+        b=Z0B+SR5StWb5bqEvNA6hAL5pXqqjcmeHZ3/PzjFfzdLjd4QAqYdE140dRlx934Ykk
+         hcfGXwNpmTtrPawHH9LDtcNZxndYkaOLS7uXp3mUFRRitBnKnW9Ek4KbeX0+tvTRLo
+         wFb5OqIhL/9VnJ4FGcFuFGm0w7i994YR+xc3/M+Q=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tianping Fang <tianping.fang@mediatek.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>
-Subject: [PATCH 4.9 213/240] usb: core: hub: fix race condition about TRSMRCY of resume
-Date:   Thu, 20 May 2021 11:23:25 +0200
-Message-Id: <20210520092115.829789969@linuxfoundation.org>
+        stable@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 4.9 214/240] KVM: x86: Cancel pvclock_gtod_work on module removal
+Date:   Thu, 20 May 2021 11:23:26 +0200
+Message-Id: <20210520092115.867797789@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -40,45 +39,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunfeng Yun <chunfeng.yun@mediatek.com>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-commit 975f94c7d6c306b833628baa9aec3f79db1eb3a1 upstream.
+commit 594b27e677b35f9734b1969d175ebc6146741109 upstream.
 
-This may happen if the port becomes resume status exactly
-when usb_port_resume() gets port status, it still need provide
-a TRSMCRY time before access the device.
+Nothing prevents the following:
 
-CC: <stable@vger.kernel.org>
-Reported-by: Tianping Fang <tianping.fang@mediatek.com>
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
-Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
-Link: https://lore.kernel.org/r/20210512020738.52961-1-chunfeng.yun@mediatek.com
+  pvclock_gtod_notify()
+    queue_work(system_long_wq, &pvclock_gtod_work);
+  ...
+  remove_module(kvm);
+  ...
+  work_queue_run()
+    pvclock_gtod_work()	<- UAF
+
+Ditto for any other operation on that workqueue list head which touches
+pvclock_gtod_work after module removal.
+
+Cancel the work in kvm_arch_exit() to prevent that.
+
+Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Message-Id: <87czu4onry.ffs@nanos.tec.linutronix.de>
+Cc: stable@vger.kernel.org
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/usb/core/hub.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/kvm/x86.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/drivers/usb/core/hub.c
-+++ b/drivers/usb/core/hub.c
-@@ -3486,9 +3486,6 @@ int usb_port_resume(struct usb_device *u
- 		 * sequence.
- 		 */
- 		status = hub_port_status(hub, port1, &portstatus, &portchange);
--
--		/* TRSMRCY = 10 msec */
--		msleep(10);
- 	}
- 
-  SuspendCleared:
-@@ -3503,6 +3500,9 @@ int usb_port_resume(struct usb_device *u
- 				usb_clear_port_feature(hub->hdev, port1,
- 						USB_PORT_FEAT_C_SUSPEND);
- 		}
-+
-+		/* TRSMRCY = 10 msec */
-+		msleep(10);
- 	}
- 
- 	if (udev->persist_enabled)
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -6268,6 +6268,7 @@ void kvm_arch_exit(void)
+ 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
+ #ifdef CONFIG_X86_64
+ 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
++	cancel_work_sync(&pvclock_gtod_work);
+ #endif
+ 	kvm_x86_ops = NULL;
+ 	kvm_mmu_module_exit();
 
 
