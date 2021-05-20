@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D33F38A7AC
+	by mail.lfdr.de (Postfix) with ESMTP id 56D3B38A7AD
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237001AbhETKlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:41:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55706 "EHLO mail.kernel.org"
+        id S237338AbhETKlb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:41:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55722 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236078AbhETKZy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:25:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 856F561C1C;
-        Thu, 20 May 2021 09:49:59 +0000 (UTC)
+        id S236122AbhETKZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:25:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEDB961C1D;
+        Thu, 20 May 2021 09:50:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504200;
-        bh=P1Ify455ivagZ26TDWeqsKNPqMogp8ndawhHq0OgRFg=;
+        s=korg; t=1621504202;
+        bh=4AIor2tQy5aVxNbhSVcl1zbC+mRocMs1g+Y59Jdgcbc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=o3wBKE9gu9A4Wq7adcCYTQUQ2+DzWHRFEX7M96Mm3+/4zhYFPAeU/nuWZq3JEVq22
-         AfN00XXfAY2ltpTbJyE8dWcmZhuTMg+0U5GJ4svON8s6oQirWvchjtXdY75zvExEqM
-         6xXMvtuOdV9Y4zEVQvs1zMTfBwNkqKPgA12Tao4k=
+        b=R1UmFpjvgXLVWwjyJz8K8f3VD/5ScDyaVUbxKZsvV7lkJSDLLTENJIuBPYn98yfSh
+         ZzO0oxH3SxRLbFzXx24ATyZkZ+JXejwe6scPrrbXPtRzOHI8bS017w2IO0KkfYJnI3
+         +RTay1IMYWeu90QnGXDITAHg0pc26lAfuLyyAF6E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
+        stable@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 138/323] memory: gpmc: fix out of bounds read and dereference on gpmc_cs[]
-Date:   Thu, 20 May 2021 11:20:30 +0200
-Message-Id: <20210520092124.839813789@linuxfoundation.org>
+Subject: [PATCH 4.14 139/323] ARM: dts: exynos: correct PMIC interrupt trigger level on Odroid X/U3 family
+Date:   Thu, 20 May 2021 11:20:31 +0200
+Message-Id: <20210520092124.870603960@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,51 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
 
-[ Upstream commit e004c3e67b6459c99285b18366a71af467d869f5 ]
+[ Upstream commit 6503c568e97a52f8b7a3109718db438e52e59485 ]
 
-Currently the array gpmc_cs is indexed by cs before it cs is range checked
-and the pointer read from this out-of-index read is dereferenced. Fix this
-by performing the range check on cs before the read and the following
-pointer dereference.
+The Maxim PMIC datasheets describe the interrupt line as active low
+with a requirement of acknowledge from the CPU.  Without specifying the
+interrupt type in Devicetree, kernel might apply some fixed
+configuration, not necessarily working for this hardware.
 
-Addresses-Coverity: ("Negative array index read")
-Fixes: 9ed7a776eb50 ("ARM: OMAP2+: Fix support for multiple devices on a GPMC chip select")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20210223193821.17232-1-colin.king@canonical.com
+Additionally, the interrupt line is shared so using level sensitive
+interrupt is here especially important to avoid races.
+
+Fixes: eea6653aae7b ("ARM: dts: Enable PMIC interrupts for exynos4412-odroid-common")
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Link: https://lore.kernel.org/r/20201210212534.216197-6-krzk@kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/memory/omap-gpmc.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/exynos4412-odroid-common.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/memory/omap-gpmc.c b/drivers/memory/omap-gpmc.c
-index cc0da96d07ca..4eb1b8ebfd22 100644
---- a/drivers/memory/omap-gpmc.c
-+++ b/drivers/memory/omap-gpmc.c
-@@ -1028,8 +1028,8 @@ EXPORT_SYMBOL(gpmc_cs_request);
- 
- void gpmc_cs_free(int cs)
- {
--	struct gpmc_cs_data *gpmc = &gpmc_cs[cs];
--	struct resource *res = &gpmc->mem;
-+	struct gpmc_cs_data *gpmc;
-+	struct resource *res;
- 
- 	spin_lock(&gpmc_mem_lock);
- 	if (cs >= gpmc_cs_num || cs < 0 || !gpmc_cs_reserved(cs)) {
-@@ -1038,6 +1038,9 @@ void gpmc_cs_free(int cs)
- 		spin_unlock(&gpmc_mem_lock);
- 		return;
- 	}
-+	gpmc = &gpmc_cs[cs];
-+	res = &gpmc->mem;
-+
- 	gpmc_cs_disable_mem(cs);
- 	if (res->flags)
- 		release_resource(res);
+diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+index 0d516529bf54..8735c5428677 100644
+--- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
++++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+@@ -265,7 +265,7 @@
+ 	max77686: pmic@09 {
+ 		compatible = "maxim,max77686";
+ 		interrupt-parent = <&gpx3>;
+-		interrupts = <2 IRQ_TYPE_NONE>;
++		interrupts = <2 IRQ_TYPE_LEVEL_LOW>;
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&max77686_irq>;
+ 		reg = <0x09>;
 -- 
 2.30.2
 
