@@ -2,85 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB89389AD9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:22:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF9F389ADD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbhETBYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:24:12 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64728 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230049AbhETBYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:24:12 -0400
-IronPort-SDR: dpDEAwo4cosxh7djoclagD3YJO9nrb0cDd/CyRKx7tsdRMijD5cpUt2WxqMY+DOx5KqSjDSgKZ
- mtruFU8Hf+ZQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="188246568"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="188246568"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 18:22:51 -0700
-IronPort-SDR: PWfdGOb06qVDM6X27/4KBStD4pv/kuC00A1YSX6+Oy8t8xQP6JPZsr49wEn13KAimSly57HxQM
- je1fZtKIKKVg==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="440222333"
-Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 May 2021 18:22:47 -0700
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
-        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH] mm: move idle swap cache pages to the tail of LRU after
- COW
-References: <20210519013313.1274454-1-ying.huang@intel.com>
-        <YKUlfeAiq/vv+dHl@cmpxchg.org>
-Date:   Thu, 20 May 2021 09:22:45 +0800
-In-Reply-To: <YKUlfeAiq/vv+dHl@cmpxchg.org> (Johannes Weiner's message of
-        "Wed, 19 May 2021 10:49:33 -0400")
-Message-ID: <87r1i28ahm.fsf@yhuang6-desk1.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        id S230239AbhETB0D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:26:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55235 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229498AbhETB0C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 21:26:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621473881;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=IFScK2pvhtODjjn+AQe2siqswh7swK/I7mngg5hnEgo=;
+        b=GGBcpZVkiWKFN5fM72KKRyiuYf8WRZkcT2uvZU5D2tk5KBxZfN7Y+TCUmOsDyGWu1Z5pWa
+        XtKIoXiSGONVJsBJEkkgkRZVfZhiTSMUIP8sjS95W7+494XdlYYQINqfEZFDVHOfxsIvTL
+        JHzLgL2GaplbGMmnCKaZkFwHJfvAcYk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-32-zq82DM8yM_eR4JAUW-d8GA-1; Wed, 19 May 2021 21:24:38 -0400
+X-MC-Unique: zq82DM8yM_eR4JAUW-d8GA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 196AD80ED8B;
+        Thu, 20 May 2021 01:24:37 +0000 (UTC)
+Received: from T590 (ovpn-12-84.pek2.redhat.com [10.72.12.84])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id CEBBC687D8;
+        Thu, 20 May 2021 01:24:30 +0000 (UTC)
+Date:   Thu, 20 May 2021 09:24:25 +0800
+From:   Ming Lei <ming.lei@redhat.com>
+To:     John Garry <john.garry@huawei.com>
+Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: core: Cap shost cmd_per_lun at can_queue
+Message-ID: <YKW6SRdRPRbi4NAT@T590>
+References: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Johannes Weiner <hannes@cmpxchg.org> writes:
+On Wed, May 19, 2021 at 10:31:02PM +0800, John Garry wrote:
+> Function sdev_store_queue_depth() enforces that the sdev queue depth cannot
+> exceed Shost.can_queue.
+> 
+> The sdev initial value comes from shost cmd_per_lun.
+> 
+> However, the LLDD may still set cmd_per_lun > can_queue, which leads to an
+> initial sdev queue depth greater than can_queue.
+> 
+> Such an issue was reported in [0], which caused a hang. That has since
+> been fixed in commit fc09acb7de31 ("scsi: scsi_debug: Fix cmd_per_lun,
+> set to max_queue").
+> 
+> Stop this possibly happening for other drivers by capping
+> shost.cmd_per_lun at shost.can_queue.
+> 
+> [0] https://lore.kernel.org/linux-scsi/YHaez6iN2HHYxYOh@T590/
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+> Earlier patch was in https://lore.kernel.org/linux-scsi/1618848384-204144-1-git-send-email-john.garry@huawei.com/
+> 
+> diff --git a/drivers/scsi/hosts.c b/drivers/scsi/hosts.c
+> index ba72bd4202a2..624e2582c3df 100644
+> --- a/drivers/scsi/hosts.c
+> +++ b/drivers/scsi/hosts.c
+> @@ -220,6 +220,9 @@ int scsi_add_host_with_dma(struct Scsi_Host *shost, struct device *dev,
+>  		goto fail;
+>  	}
+>  
+> +	shost->cmd_per_lun = min_t(short, shost->cmd_per_lun,
+> +				   shost->can_queue);
+> +
+>  	error = scsi_init_sense_cache(shost);
+>  	if (error)
+>  		goto fail;
+> -- 
+> 2.26.2
+> 
 
-> On Wed, May 19, 2021 at 09:33:13AM +0800, Huang Ying wrote:
->> diff --git a/mm/memory.c b/mm/memory.c
->> index b83f734c4e1d..2b6847f4c03e 100644
->> --- a/mm/memory.c
->> +++ b/mm/memory.c
->> @@ -3012,6 +3012,11 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
->>  				munlock_vma_page(old_page);
->>  			unlock_page(old_page);
->>  		}
->> +		if (page_copied && PageSwapCache(old_page) &&
->> +		    !page_mapped(old_page) && trylock_page(old_page)) {
->> +			try_to_free_idle_swapcache(old_page);
->> +			unlock_page(old_page);
->
-> If there are no more swap or pte references, can we just attempt to
-> free the page right away, like we do during regular unmap?
->
-> 		if (page_copied)
-> 			free_swap_cache(old_page);
-> 		put_page(old_page);
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
 
-A previous version of the patch does roughly this.
+-- 
+Ming
 
-https://lore.kernel.org/lkml/20210113024241.179113-1-ying.huang@intel.com/
-
-But Linus has concerns with the overhead introduced in the hot COW path.
-
-Another possibility is to move the idle swap cache page to the tail of
-the file LRU list.  But the question is how to identify the page.
-
-Best Regards,
-Huang, Ying
