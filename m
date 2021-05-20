@@ -2,68 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3604F38AF36
+	by mail.lfdr.de (Postfix) with ESMTP id A2DDA38AF37
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243209AbhETMxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
+        id S243256AbhETMxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242540AbhETMvh (ORCPT
+        with ESMTP id S242935AbhETMvi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:51:37 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D77CC069173
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:15 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id u4-20020a05600c00c4b02901774b80945cso5280012wmm.3
+        Thu, 20 May 2021 08:51:38 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117F7C069174
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:16 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id i17so17405690wrq.11
         for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:14:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=63aR0ApZJ3bwroQWXqAaSkH9cV6NbSWgeKUqcgHI7+A=;
-        b=FwbLKM2KkOv0flbvtj3nJnPuN0+A2r3yE/1kP07JVzwHo5CAewGS3FlOHT47wv+eje
-         Ukb+qynmxWBL1JoL3mzRQiWF+x5dTlrdiwmyJ1CelSy6zUItrLRiDVyOfMFbL7uj7hon
-         waxf4ZxdWSpAi2zOuJAXJ0NcgWVnl7PXa7AePVpn/y5ZdvWmSqVp1aflW3D9V9+i0Smu
-         ALyRNqMW9E3jjT1z1bLSeRAlyh22qBbRn3ci9A+j298IVUCYzQo/vZEkvDm2KeUd0mX2
-         lUWLleyUEqIDi8dwHDGlDdxoey80XmBjZKrw+PwTLvI1LP87RDpDU+HjgP8iSc/+8PBJ
-         GPOA==
+        bh=XQxeVP/YPfwPDmoVdUI9QY51IOpHdTucNN69rQ23ZoU=;
+        b=BB2z/a7soZkZglZEGxZJrm9s0Rk4y6yPcnQhkxsnSg7k986jCjPPZ9q3cW28aABSFm
+         aqOMgyXcB0jFMg6a/5gWx+h6HTFovSDVNG1ghkIgEmYukpWgzASDQ/wqBjxnTWrnmDMB
+         IAsvZPdZc1y9CfVzxBXws9mJIzcLDTUymlDGhtg4JTLebuXeT38N2jeXCeP2+PuBazVb
+         v/SpFC0FYq5PsyntjhqvxmfifoRVhkEiF+6ncH66I6TyZUzMIl56yvvulbvEcEY5L2Vx
+         M7Rwlego5jtRcU/yyBgJJ5p1d6TU8kM5ZRRecxVp3jSCA+z9GPDSQLd1MBVXt8d8PUbP
+         blNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=63aR0ApZJ3bwroQWXqAaSkH9cV6NbSWgeKUqcgHI7+A=;
-        b=m9Zgge9Sv2z2PP+QHi5q29OMPuG3trQnRA596jC2bJn/ateQbYEzcTz/Pz8vd8m34u
-         dyUIVPzegIU+3qN7RdDmBc4APAGy67A6bGdDVaVDMgtBoNS7No6WJCrzbaxvC9qaKw9k
-         lI+Qkg+mswfK3dlFox00Fw88yafbsDXdCZiXHamHNpzaQhDby05DjtNrBMXzFqz7XvR+
-         Srlz61lBs3XJLix0EDI801AsbKNi0oaaeRgEQW6oOjKIgNG/lkTZmouHSgyw3S+odQ/N
-         6zb1+HioPL4r8hPDkH0yvET3su0s4HLO0e4kNt+rGFNTfsHKdRyLVPxcX2ZsQkI6GBE1
-         ykFQ==
-X-Gm-Message-State: AOAM532aAOCs4I3bLEiIC6KMDVubXcj9QNltysg3soHOBfiaXYhOJpak
-        MZ+ZWtu5UPuEzZJOYaem4nA1EA==
-X-Google-Smtp-Source: ABdhPJw1Fp+Jmjls9UkJh6YCn4HHFBXPq5pRCzpBsC65iVfftho44k60NMHVqYTzgP4lBPc3lSuE+g==
-X-Received: by 2002:a05:600c:410a:: with SMTP id j10mr3730747wmi.26.1621512853737;
-        Thu, 20 May 2021 05:14:13 -0700 (PDT)
+        bh=XQxeVP/YPfwPDmoVdUI9QY51IOpHdTucNN69rQ23ZoU=;
+        b=C3lYWqmeuRLg76zIej6IctOLIl/K8eCbu69k8hgwShg8jnvF7Lb0oDx4AlSSI5/sTD
+         6UY2NVeeXgJ6IAsOBPZ3yY2DYaEi3uRTOLpptq2x6kAJwGYJw7rYaxshHLJNruqlnSDq
+         T8X0m5ikuxtNKMv0SilAxSMOkES3o/ABPdT4xrG8m97kYgUYC97F/Z1OgrtoaGmtxmhw
+         G2ai+PSL87OODooOOpmz6540h7QCv/rWYdijGoPKMd/zq2c+KLDLtO932p2OKf1mJ8Pe
+         JVlGcF3dCPC1JYiWdgoqJ7yqBauLwa997T7wrOxqlas3VzYBQ6cMQyAWw4h3XGPM+cT3
+         R3SQ==
+X-Gm-Message-State: AOAM532r7d2B7hBLEyjyT1q4d2vtnVAJFqOGgkExRfps8Up+ekirgmIr
+        nB7/2TltHMX4XyTb0BDqldo3Jw==
+X-Google-Smtp-Source: ABdhPJwyx22/mLe5y5spSEV/LwEWte193Cc++nFZrm1PhYkbQADCWmlSNgrHqgZ46C0I6X8i19+Zsw==
+X-Received: by 2002:a5d:6701:: with SMTP id o1mr4106251wru.390.1621512854660;
+        Thu, 20 May 2021 05:14:14 -0700 (PDT)
 Received: from dell.default ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id 61sm3393704wrm.52.2021.05.20.05.14.12
+        by smtp.gmail.com with ESMTPSA id 61sm3393704wrm.52.2021.05.20.05.14.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 05:14:13 -0700 (PDT)
+        Thu, 20 May 2021 05:14:14 -0700 (PDT)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Lijun Pan <ljp@linux.ibm.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michael Neuling <mikey@neuling.org>,
-        linux-crypto@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 15/16] char: hw_random: pseries-rng: Demote non-conformant kernel-doc header
-Date:   Thu, 20 May 2021 13:13:46 +0100
-Message-Id: <20210520121347.3467794-16-lee.jones@linaro.org>
+        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
+        Kanoj Sarcar <kanoj@sgi.com>
+Subject: [PATCH 16/16] char: mem: Provide local prototype for non-static function
+Date:   Thu, 20 May 2021 13:13:47 +0100
+Message-Id: <20210520121347.3467794-17-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520121347.3467794-1-lee.jones@linaro.org>
 References: <20210520121347.3467794-1-lee.jones@linaro.org>
@@ -76,38 +69,31 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/char/hw_random/pseries-rng.c:42: warning: Function parameter or member 'vdev' not described in 'pseries_rng_get_desired_dma'
+ drivers/char/mem.c:95:29: warning: no previous prototype for ‘unxlate_dev_mem_ptr’ [-Wmissing-prototypes]
+ drivers/char/mem.c:96:13: note: in expansion of macro ‘unxlate_dev_mem_ptr’
 
-Cc: Matt Mackall <mpm@selenic.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>
-Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Lijun Pan <ljp@linux.ibm.com>
-Cc: "Uwe Kleine-König" <uwe@kleine-koenig.org>
-Cc: Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Michael Neuling <mikey@neuling.org>
-Cc: linux-crypto@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
+Cc: "C. Scott Ananian" <cananian@alumni.princeton.edu>
+Cc: Kanoj Sarcar <kanoj@sgi.com>
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- drivers/char/hw_random/pseries-rng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/mem.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/char/hw_random/pseries-rng.c b/drivers/char/hw_random/pseries-rng.c
-index f4949b689bd5a..62bdd5af1339f 100644
---- a/drivers/char/hw_random/pseries-rng.c
-+++ b/drivers/char/hw_random/pseries-rng.c
-@@ -29,7 +29,7 @@ static int pseries_rng_read(struct hwrng *rng, void *data, size_t max, bool wait
- 	return 8;
- }
+diff --git a/drivers/char/mem.c b/drivers/char/mem.c
+index 95741f93a6cd0..7969ac85491df 100644
+--- a/drivers/char/mem.c
++++ b/drivers/char/mem.c
+@@ -40,6 +40,8 @@
+ #define DEVMEM_MINOR	1
+ #define DEVPORT_MINOR	4
  
--/**
-+/*
-  * pseries_rng_get_desired_dma - Return desired DMA allocate for CMO operations
-  *
-  * This is a required function for a driver to operate in a CMO environment
++void unxlate_dev_mem_ptr(phys_addr_t phys, void *addr);
++
+ static inline unsigned long size_inside_page(unsigned long start,
+ 					     unsigned long size)
+ {
 -- 
 2.31.1
 
