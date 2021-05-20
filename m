@@ -2,86 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C996938B9C1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:52:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4039038B9C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 00:53:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232251AbhETWyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 18:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232047AbhETWyN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 18:54:13 -0400
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBB1C061574;
-        Thu, 20 May 2021 15:52:50 -0700 (PDT)
-Received: by mail-oi1-x22d.google.com with SMTP id j75so17895342oih.10;
-        Thu, 20 May 2021 15:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nQQJxE5pyG/Gx9Bcp8GCpgcaurbBPz7jbF3U+OPkZFU=;
-        b=pBZLLSLVANY8vFzHQOdfRQKtjUwQz1O/1VgqWgTaae7Qkk5e1d3E1i+ysjPLC1dmPa
-         wtQtkrEDf85je5khRGLNYh3SPYxsK4d4P3+t7fVbJNrEYOGowQO7gV/jMdsN1Gowgzsd
-         XIGyMmjW2AQYd6Zb6fpnkM1Yas2Gv/a6nr7YdaYpX5BrIyZMFIfYN5V/9shH5XFqKEv/
-         jEOIO7s0rPG9dexOmDJeO/4Rhmez3XJIR1Yv+SEA/m6/aTvEg0gk/ZTusxP0oDwHzpJQ
-         QoY+62oHYIkll49733OE+XdjFy5J67U+bExkgSF95FywsAxucseunB8xCvp0JNtQ1uqR
-         KJVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nQQJxE5pyG/Gx9Bcp8GCpgcaurbBPz7jbF3U+OPkZFU=;
-        b=SEbHhb4MhSQFif5X+rn3ReJJ7VH76Jk3Ucm5l1YuHU2+hPp2mhkiTpxMxjrQ7lXllX
-         p4XPqqZMuC/wX8j/klWkkS7tTnEkm2GF7m7mzXSqW18aEeNnWQr3U8IDTg2UIR6YSOc4
-         RZ5ewmDiprb6mmlifoMrgj2W/3EjTPqCTVz+UmyciNkKkbVO3rLJbmkST8jcfNVkMYFe
-         LTIhoe67wqSBOdTYS7XU0GUjNrmbC6MbS6fDlY4Mkhs1WK5gaAFUCburbMP9cFjOLDzL
-         wDUkWpAOdnlOrVHVNrzgQyg2HDTcPDYjhkcCVlvMjJoiHWnU7C2vlmxA7+X02H3G1EHt
-         t3Uw==
-X-Gm-Message-State: AOAM531AbD5jETAgnAa0sbSJ6Qu09cD7Vu3YvDMOOk5LUWJvOJMWqUZm
-        +oOowMflqiuAdtjMFwLhSu0=
-X-Google-Smtp-Source: ABdhPJx++SHzCNNWJUV1CnX7Sn/fuLbdk2cQT8AE8xAmwhiQunmvmcRwEvT6V39xw1Tqjk1mMJvQ5g==
-X-Received: by 2002:a54:4d98:: with SMTP id y24mr4971350oix.18.1621551169735;
-        Thu, 20 May 2021 15:52:49 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a23sm904429otf.47.2021.05.20.15.52.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 15:52:49 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 20 May 2021 15:52:47 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.14 000/323] 4.14.233-rc1 review
-Message-ID: <20210520225247.GB2968078@roeck-us.net>
-References: <20210520092120.115153432@linuxfoundation.org>
+        id S232287AbhETWy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 18:54:29 -0400
+Received: from mga12.intel.com ([192.55.52.136]:52623 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232047AbhETWy1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 18:54:27 -0400
+IronPort-SDR: Cmjdr028K5eLwRgMY/TcEKRaMNb59xR7ujX+Qx+LhvVFqAPH/XIwaFqT1IGgFbSgxTSpVjhsMw
+ qQxLo0TnoVfw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="180963325"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="180963325"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 15:53:05 -0700
+IronPort-SDR: Nqt9sxgoJI6a0rKGEuzKU/QXFfJvtXan9oZfSHtZZIZXrKmbE0i8P6P2asOOnxBEDLiNpp6G9a
+ L3gfOtaRDJBQ==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="631578936"
+Received: from blydon-mobl.amr.corp.intel.com (HELO [10.209.0.109]) ([10.209.0.109])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 15:53:04 -0700
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+To:     Len Brown <lenb@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic>
+ <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic>
+ <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic>
+ <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic>
+ <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic>
+ <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de>
+ <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de>
+ <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
+Date:   Thu, 20 May 2021 15:53:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 11:18:12AM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.14.233 release.
-> There are 323 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 5/20/21 2:41 PM, Len Brown wrote:
+> So the questions are:
+> 1. who calls it -- a call/thread or process?  the application?  a
+> library -- which library?
+> 2. is it optional, or mandatory?
+> 3. if it is mandatory, what is the best way to enforce it?
+> 4. should we have a "release" system call too?
 > 
-> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> Anything received after that time might be too late.
-> 
+> 1. Every thread needs a context switch buffer.  Does every thread make
+> the system call?  It seems sort of awkward for a library to always
+> make a system call before doing a TMUL.  It would be functionally
+> harmless, but it would add latency to an otherwise low-latency
+> operation.  If some central library does it, and caches that it has
+> done it before, then it would be ugly, but at least it would remove an
+> unnecessary user/kernel transition.
 
-Build results:
-	total: 168 pass: 168 fail: 0
-Qemu test results:
-	total: 406 pass: 406 fail: 0
+Our system calls are *REALLY* fast.  We can even do a vsyscall for this
+if we want to get the overhead down near zero.  Userspace can also cache
+the "I did the prctl()" state in thread-local storage if it wants to
+avoid the syscall.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+> 2. If it is optional, then v5 is code complete -- because it allows
+> you to allocate either explicitly via prtcl, or transparently via #NM.
 
-Guenter
+It needs to be mandatory.  If it's not, then nobody will use it, and
+they'll suffer the dreaded SIGSEGV-on-vmalloc()-failure and start filing
+bug reports.
+
+> 3. If it is mandatory, then we should re-purpose the XFD mechanism:
+> app starts with XFD armed, by default
+> if app touches AMX before prctl, it takes a signal (and dies).
+> When app calls prctl, allocate buffer disarm XFD for that app (exactly
+> what #NM trap does today).
+
+Yes, that sounds like a good use of XFD.
+
+> 4. I don't see a justification for a release concept, but it is
+> possible -- though sort of sticky with possible nested calls from
+> combinations of apps and libraries.  If that were sorted out by a
+> central library, then the actual system call on the last release per
+> thread would re-arm XFD to prevent access until the next explicit
+> request.  Unclear if it is important that the kernel actually do the
+> free -- some things might run faster if we keep it around...
+
+I think would be more of a get/put model rather than an allocate/free model.
+
+The "put" could effectively be a noop for now.  But, if we don't put
+this in the ABI up front, we can't add it later.  That means that we
+could never add a lazy-free, even if we wanted to.
