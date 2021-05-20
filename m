@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2558F38AA3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3E138AA62
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239611AbhETLLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:11:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33759 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237857AbhETKvj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:51:39 -0400
-Received: from mail-pj1-f71.google.com ([209.85.216.71])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1ljgFs-0004Et-OB
-        for linux-kernel@vger.kernel.org; Thu, 20 May 2021 10:50:16 +0000
-Received: by mail-pj1-f71.google.com with SMTP id g11-20020a17090a578bb029015564873bf4so5943856pji.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:50:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oSIkOsI8pThklktnXX4z9cUIRN7lX3KR2qCGDTjhrNQ=;
-        b=r0MIOfhrm1RIue1fctYNsxS6TcWvwOh40m9BOj5RLBw3Zr+FSkuQEU0WlqF+IBUWW1
-         pmNXM3/IDLbpac+esND/sAGAlaWjYzunaa4MiZagJtDKqQWx2XzSqfQYiXi+85+Bq+x3
-         9cqDhcSEN8nWvbdJKl5xwuwTjWogHjAP8DZpivitvC1tosqs/0usl+JQIkGv9ZHDwc5f
-         QVk0RescMA7Zvi/oj7/VuLpBvppVXCYcXlbX/Gv+6C8izCT0rlsDO+vkAUxsudfcdaig
-         6OUE76H03ibDEd5Z04svCZ2YquP+EKYLDfhd8oUIMGEyqvHhmG7xF5x6Yo4+Uu9HAGnp
-         vkBw==
-X-Gm-Message-State: AOAM530MUidl24hA9MloiOOiMnSLUlLIJcH9A4TH06qmS1oSaSQ0K5ER
-        UEPWSB2yWtLOkRLNLOwkrAwmkOojka+6g9L6IFmvpHf/9LrrMqIfe7mmY2A/hj1JnKllV2Begs/
-        llaQ76wrlaY1z0e9Bgaz9Nd/z9rUxACmCPRqBh6nh
-X-Received: by 2002:a63:617:: with SMTP id 23mr4009265pgg.409.1621507815423;
-        Thu, 20 May 2021 03:50:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzwn7XUCN2dSuQXAeNGr6FMEIaM7LGBpuYtyC006hVb4wQ637WWz+UKG8DjSlSmjgdfmCFSng==
-X-Received: by 2002:a63:617:: with SMTP id 23mr4009249pgg.409.1621507815112;
-        Thu, 20 May 2021 03:50:15 -0700 (PDT)
-Received: from localhost.localdomain (223-136-144-189.emome-ip.hinet.net. [223.136.144.189])
-        by smtp.gmail.com with ESMTPSA id q24sm1852614pgb.19.2021.05.20.03.50.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 03:50:14 -0700 (PDT)
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-To:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     po-hsu.lin@canonical.com, shuah@kernel.org, kuba@kernel.org,
-        davem@davemloft.net, skhan@linuxfoundation.org
-Subject: [PATCH] selftests: net: devlink_port_split.py: skip the test if no devlink device
-Date:   Thu, 20 May 2021 18:49:54 +0800
-Message-Id: <20210520104954.25007-1-po-hsu.lin@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S238848AbhETLMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:12:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:46304 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239239AbhETKwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:52:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id F182B14FF;
+        Thu, 20 May 2021 03:51:28 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4372F3F719;
+        Thu, 20 May 2021 03:51:26 -0700 (PDT)
+Subject: Re: [PATCH v12 6/8] arm64: kvm: Expose KVM_ARM_CAP_MTE
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-7-steven.price@arm.com> <87tun1tg1l.wl-maz@kernel.org>
+ <4e1fc7b7-ea8c-a87c-9177-d9e03ff96cb8@arm.com> <8735uhvhqz.wl-maz@kernel.org>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <2dff0e85-abfd-4261-a670-6008ff9195ff@arm.com>
+Date:   Thu, 20 May 2021 11:51:21 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <8735uhvhqz.wl-maz@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When there is no devlink device, the following command will return:
-  $ devlink -j dev show
-  {dev:{}}
+On 20/05/2021 11:09, Marc Zyngier wrote:
+> On Wed, 19 May 2021 14:26:31 +0100,
+> Steven Price <steven.price@arm.com> wrote:
+>>
+>> On 17/05/2021 18:40, Marc Zyngier wrote:
+>>> On Mon, 17 May 2021 13:32:37 +0100,
+>>> Steven Price <steven.price@arm.com> wrote:
+>>>>
+>>>> It's now safe for the VMM to enable MTE in a guest, so expose the
+>>>> capability to user space.
+>>>>
+>>>> Signed-off-by: Steven Price <steven.price@arm.com>
+>>>> ---
+>>>>  arch/arm64/kvm/arm.c      | 9 +++++++++
+>>>>  arch/arm64/kvm/sys_regs.c | 3 +++
+>>>>  2 files changed, 12 insertions(+)
+>>>>
+>>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+>>>> index 1cb39c0803a4..e89a5e275e25 100644
+>>>> --- a/arch/arm64/kvm/arm.c
+>>>> +++ b/arch/arm64/kvm/arm.c
+>>>> @@ -93,6 +93,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+>>>>  		r = 0;
+>>>>  		kvm->arch.return_nisv_io_abort_to_user = true;
+>>>>  		break;
+>>>> +	case KVM_CAP_ARM_MTE:
+>>>> +		if (!system_supports_mte() || kvm->created_vcpus)
+>>>> +			return -EINVAL;
+>>>> +		r = 0;
+>>>> +		kvm->arch.mte_enabled = true;
+>>>
+>>> As far as I can tell from the architecture, this isn't valid for a
+>>> 32bit guest.
+>>
+>> Indeed, however the MTE flag is a property of the VM not of the vCPU.
+>> And, unless I'm mistaken, it's technically possible to create a VM where
+>> some CPUs are 32 bit and some 64 bit. Not that I can see much use of a
+>> configuration like that.
+> 
+> It looks that this is indeed a bug, and I'm on my way to squash it.
+> Can't believe we allowed that for so long...
 
-This will cause IndexError when trying to access the first element
-in dev of this json dataset. Use the kselftest framework skip code
-to skip this test in this case.
+Ah, well if you're going to kill off mixed 32bit/64bit VMs then...
 
-Example output with this change:
-  # selftests: net: devlink_port_split.py
-  # no devlink device was found, test skipped
-  ok 7 selftests: net: devlink_port_split.py # SKIP
+> But the architecture clearly states:
+> 
+> <quote>
+> These features are supported in AArch64 state only.
+> </quote>
+> 
+> So I'd expect something like:
+> 
+> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+> index 956cdc240148..50635eacfa43 100644
+> --- a/arch/arm64/kvm/reset.c
+> +++ b/arch/arm64/kvm/reset.c
+> @@ -220,7 +220,8 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+>  	switch (vcpu->arch.target) {
+>  	default:
+>  		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
+> -			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1)) {
+> +			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1) ||
+> +			    vcpu->kvm->arch.mte_enabled) {
+>  				ret = -EINVAL;
+>  				goto out;
+>  			}
+> 
+> that makes it completely impossible to create 32bit CPUs within a
+> MTE-enabled guest.
 
-Link: https://bugs.launchpad.net/bugs/1928889
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
----
- tools/testing/selftests/net/devlink_port_split.py | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+... that makes complete sense, and I'll include this hunk in my next
+posting.
 
-diff --git a/tools/testing/selftests/net/devlink_port_split.py b/tools/testing/selftests/net/devlink_port_split.py
-index 834066d..2b5d6ff 100755
---- a/tools/testing/selftests/net/devlink_port_split.py
-+++ b/tools/testing/selftests/net/devlink_port_split.py
-@@ -18,6 +18,8 @@ import sys
- #
- 
- 
-+# Kselftest framework requirement - SKIP code is 4
-+KSFT_SKIP=4
- Port = collections.namedtuple('Port', 'bus_info name')
- 
- 
-@@ -239,7 +241,11 @@ def main(cmdline=None):
-         assert stderr == ""
- 
-         devs = json.loads(stdout)['dev']
--        dev = list(devs.keys())[0]
-+        if devs:
-+            dev = list(devs.keys())[0]
-+        else:
-+            print("no devlink device was found, test skipped")
-+            sys.exit(KSFT_SKIP)
- 
-     cmd = "devlink dev show %s" % dev
-     stdout, stderr = run_command(cmd)
--- 
-2.7.4
+Thanks,
 
+Steve
