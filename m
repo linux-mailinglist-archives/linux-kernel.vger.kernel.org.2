@@ -2,116 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC68738AC13
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4569238AC4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241430AbhETLdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:33:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:47082 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239675AbhETLMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:12:46 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4236311D4;
-        Thu, 20 May 2021 04:11:25 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.7.235])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D94AC3F719;
-        Thu, 20 May 2021 04:11:21 -0700 (PDT)
-Date:   Thu, 20 May 2021 12:11:19 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Joe Richey <joerichey94@gmail.com>
-Cc:     trivial@kernel.org, Joe Richey <joerichey@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org
-Subject: Re: [PATCH 0/6] Don't use BIT() macro in UAPI headers
-Message-ID: <20210520111119.GC17233@C02TD0UTHF1T.local>
-References: <20210520104343.317119-1-joerichey94@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520104343.317119-1-joerichey94@gmail.com>
+        id S241047AbhETLgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:36:18 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:58650 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238662AbhETLQ0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:16:26 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id 0249ab6f;
+        Thu, 20 May 2021 13:15:00 +0200 (CEST)
+Date:   Thu, 20 May 2021 13:15:00 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, kettenis@openbsd.org, marcan@marcan.st,
+        linus.walleij@linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20210518134356.GA553438@robh.at.kernel.org> (message from Rob
+        Herring on Tue, 18 May 2021 08:43:56 -0500)
+Subject: Re: [PATCH v2 1/2] dt-bindings: pinctrl: Add DT bindings for
+ apple,pinctrl
+References: <20210516183221.93686-1-mark.kettenis@xs4all.nl>
+ <20210516183221.93686-2-mark.kettenis@xs4all.nl> <20210518134356.GA553438@robh.at.kernel.org>
+Message-ID: <5612e5e6c7aa2646@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Thu, May 20, 2021 at 03:43:37AM -0700, Joe Richey wrote:
-> From: Joe Richey <joerichey@google.com>
+> Date: Tue, 18 May 2021 08:43:56 -0500
+> From: Rob Herring <robh@kernel.org>
 > 
-> The BIT(n) macro is used in the kernel as an alias for (1 << n).
-> However, it is not defined in the UAPI headers, which means that any
-> UAPI header files must be careful not to use it, or else the user
-> will get a linker error. 
-
-Beware that the common definition of BIT() (in include/vdso/bits.h) is:
-
-| #define BIT(nr)                 (UL(1) << (nr))
-
-That UL() can be important if `nr` is ever greater than bits per int.
-
-> For example, compiling the following program:
+> On Sun, May 16, 2021 at 08:32:17PM +0200, Mark Kettenis wrote:
+> > From: Mark Kettenis <kettenis@openbsd.org>
+> > 
+> > The Apple GPIO controller is a simple combined pin and GPIO conroller
+> > present on Apple ARM SoC platforms, including various iPhone and iPad
+> > devices and the "Apple Silicon" Macs.
+> > 
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> >  .../bindings/pinctrl/apple,pinctrl.yaml       | 103 ++++++++++++++++++
+> >  MAINTAINERS                                   |   2 +
+> >  include/dt-bindings/pinctrl/apple.h           |  13 +++
+> >  3 files changed, 118 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> >  create mode 100644 include/dt-bindings/pinctrl/apple.h
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> > new file mode 100644
+> > index 000000000000..fae23e1d845e
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> > @@ -0,0 +1,103 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pinctrl/apple,pinctrl.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple GPIO controller
+> > +
+> > +maintainers:
+> > +  - Mark Kettenis <kettenis@openbsd.org>
+> > +
+> > +description: |
+> > +  The Apple GPIO controller is a simple combined pin and GPIO
+> > +  controller present on Apple ARM SoC platforms, including various
+> > +  iPhone and iPad devices and the "Apple Silicon" Macs.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pinctrl
+> > +      - const: apple,pinctrl
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  clocks:
+> > +    maxItems: 1
+> > +
+> > +  gpio-controller: true
+> > +
+> > +  '#gpio-cells':
+> > +    const: 2
+> > +
+> > +  gpio-ranges:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 7
 > 
->     #include <sys/auxv.h>
->     #include <asm/hwcap2.h>
-> 
->     // Detect if FSGSBASE instructions are enabled
->     int main() {
->         unsigned long val = getauxval(AT_HWCAP2);
->         return !(val & HWCAP2_FSGSBASE);
->     }
-> 
-> Results in the following likner error:
-> 
->     /usr/bin/ld: /tmp/cceFpAdR.o: in function `main':
->     gs.c:(.text+0x21): undefined reference to `BIT'
-> 
-> This patch series changes all UAPI uses of BIT() to just be open-coded.
+> Add some description about what each interrupt is.
 
-In include/uapi/linux/const.h we have an equivaleint _BITUL() macro,
-which I think should be used in preference of open-coding this (and is
-already used in a number of uapi headers).
+Will do.  This aspect of the hardware is somewhat interesting.  Pins
+can be assigned to one of (up to 7) interrupt groups, each with their
+own interrupt.
 
-> However, there really should be a check for this in checkpatch.pl
-> Currently, the script actually _encourages_ users to use the BIT macro
-> even if adding things to UAPI.
+> Is this really 1-7 or either 1 or 7?
 
-I think having something that suggests s/BIT()/_BITUL()/ under uapi
-would be good.
+The intention is 1-7, to cater for the case where less than 7
+interrupt groups are supported by a particular instance of this
+hardware block.  For the M1, it seems there always are 7 interrupt
+groups, but I found a device tree for the iBridge2,1 where one of the
+instances only supports 3 interrupt groups and therefore only provides
+three interrupts.
 
-Thanks,
-Mark.
-
-> 
-> Running `rg "BIT\(" **/uapi/**` shows no more usage of BIT() in any
-> UAPI headers. Tested by building a basic kernel. Changes are trivial.
-> 
-> Joe Richey (6):
->   x86/elf: Don't use BIT() macro in UAPI headers
->   KVM: X86: Don't use BIT() macro in UAPI headers
->   drivers: firmware: psci: Don't use BIT() macro in UAPI headers
->   uacce: Don't use BIT() macro in UAPI headers
->   media: vicodec: Don't use BIT() macro in UAPI headers
->   tools headers UAPI: Sync pkt_sched.h with the kernel sources
-> 
->  arch/x86/include/uapi/asm/hwcap2.h   |   2 +-
->  include/uapi/linux/kvm.h             |   4 +-
->  include/uapi/linux/psci.h            |   2 +-
->  include/uapi/linux/v4l2-controls.h   |  22 ++---
->  include/uapi/misc/uacce/uacce.h      |   2 +-
->  tools/include/uapi/linux/kvm.h       |   4 +-
->  tools/include/uapi/linux/pkt_sched.h | 122 ++++++++++++++++++++++++---
->  7 files changed, 130 insertions(+), 28 deletions(-)
-> 
-> -- 
-> 2.31.1
+> > +
+> > +  interrupt-controller: true
+> > +
+> > +patternProperties:
+> > +  '-pins$':
+> > +    type: object
+> > +    $ref: pinmux-node.yaml#
+> > +
+> > +    properties:
+> > +      pinmux:
+> > +        description:
+> > +          Values are constructed from pin number and alternate function
+> > +          configuration number using the APPLE_PINMUX() helper macro
+> > +          defined in include/dt-bindings/pinctrl/apple.h.
+> > +
+> > +    required:
+> > +      - pinmux
+> > +
+> > +    additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - gpio-controller
+> > +  - '#gpio-cells'
+> > +  - gpio-ranges
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> > +    #include <dt-bindings/pinctrl/apple.h>
+> > +
+> > +    soc {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      pinctrl: pinctrl@23c100000 {
+> > +        compatible = "apple,t8103-pinctrl", "apple,pinctrl";
+> > +        reg = <0x2 0x3c100000 0x0 0x100000>;
+> > +        clocks = <&gpio_clk>;
+> > +
+> > +        gpio-controller;
+> > +        #gpio-cells = <2>;
+> > +        gpio-ranges = <&pinctrl 0 0 212>;
+> > +
+> > +        interrupt-controller;
+> > +        interrupt-parent = <&aic>;
+> > +        interrupts = <AIC_IRQ 16 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 17 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 18 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 19 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 20 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 21 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 22 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        pcie_pins: pcie-pins {
+> > +          pinmux = <APPLE_PINMUX(150, 1)>,
+> > +                   <APPLE_PINMUX(151, 1)>,
+> > +                   <APPLE_PINMUX(32, 1)>;
+> > +        };
+> > +      };
+> > +    };
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index ad0e9be66885..7327c9b778f1 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1654,9 +1654,11 @@ C:	irc://chat.freenode.net/asahi-dev
+> >  T:	git https://github.com/AsahiLinux/linux.git
+> >  F:	Documentation/devicetree/bindings/arm/apple.yaml
+> >  F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> > +F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> >  F:	arch/arm64/boot/dts/apple/
+> >  F:	drivers/irqchip/irq-apple-aic.c
+> >  F:	include/dt-bindings/interrupt-controller/apple-aic.h
+> > +F:	include/dt-bindings/pinctrl/apple.h
+> >  
+> >  ARM/ARTPEC MACHINE SUPPORT
+> >  M:	Jesper Nilsson <jesper.nilsson@axis.com>
+> > diff --git a/include/dt-bindings/pinctrl/apple.h b/include/dt-bindings/pinctrl/apple.h
+> > new file mode 100644
+> > index 000000000000..ea0a6f466592
+> > --- /dev/null
+> > +++ b/include/dt-bindings/pinctrl/apple.h
+> > @@ -0,0 +1,13 @@
+> > +/* SPDX-License-Identifier: GPL-2.0+ OR MIT */
+> > +/*
+> > + * This header provides constants for Apple pinctrl bindings.
+> > + */
+> > +
+> > +#ifndef _DT_BINDINGS_PINCTRL_APPLE_H
+> > +#define _DT_BINDINGS_PINCTRL_APPLE_H
+> > +
+> > +#define APPLE_PINMUX(pin, func) ((pin) | ((func) << 16))
+> > +#define APPLE_PIN(pinmux) ((pinmux) & 0xffff)
+> > +#define APPLE_FUNC(pinmux) ((pinmux) >> 16)
+> > +
+> > +#endif /* _DT_BINDINGS_PINCTRL_APPLE_H */
+> > -- 
+> > 2.31.1
+> > 
 > 
