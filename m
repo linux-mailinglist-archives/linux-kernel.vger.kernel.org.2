@@ -2,141 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0AB9389EA9
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E195E389EAD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbhETHKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41308 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhETHKD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:10:03 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B59C06175F
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:08:42 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id c20so23608775ejm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:08:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KPPDvbdoZYkF98kJEXLJL5DQM+/NDzpAbyD+0wj0y0A=;
-        b=Se9KYEfzncKvZO5zuibSZNbij3GfLYq8vJWZIp5Rt7L9U5AyliRF9b0kqfP6IAmgge
-         7Krig9HpLukT74foF5zhNSAlQwK2yDEcBbVOWe5ziBdJ8l8A4E0m1P87IPiYFuaIY6UE
-         k79Xf3InR5zOQmjg8jMvS37YGVQm94PGO0lIcvXbhWGWr30k+pNFNRDadGZk8bu2lu9+
-         tTLWF0hTnA816jLyuweb3DM1RTEi+87p0Qe9+TImwfmI+OmewWBM/i8IMHK5U7pWkFGC
-         AbjI3ivFGlXwBO+7i1ZCHXmWnoxS9VFDTqlUmnwJ0M5G8JFKs2Hx0HMa19GMvyknHXal
-         Q+sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KPPDvbdoZYkF98kJEXLJL5DQM+/NDzpAbyD+0wj0y0A=;
-        b=aZuxKm3wszdpymObHoKVoPSH9yeqY726uth78maoWexM/qUhrrafA4LcOgcmAQuWwb
-         YL93rPhY+bVlKcRi1CmBN1R0+DqMEqCZhUiw7i22Mx/eQlJ/2SR6LsiKKUIly34yaq1w
-         DWCP5j2JdPKcZMzGx9LSqngjX2ReF9Api17AZLk/KIfHFyzOrrUVApQ5n2SfPW4nnniy
-         J+knOAz/+lOqg5Mpe5dalIp9xsDWin9yXBs2gajY+VinRprOU/YplW0dTXRQ/5XilCMt
-         Htd7WV7AQLCncysI+DA4xTjjOLCqeqoIpvKiQO7rJomDk84rKwstC2poghsjLmwS454v
-         MhtA==
-X-Gm-Message-State: AOAM532IxyWwg9bSENkEyfe73MjuOpnCS+sATAhOjeHtf43cJ2xXqvlQ
-        lhwESuKQ8oxUg4NJJStRRuEotdJmqhjd5itTsa6J
-X-Google-Smtp-Source: ABdhPJw1qaVXgdxcGdVjGAKmjj/w5JqA2hGu9Vaio3k3hOBCyVJZ7/UOZ9K52sSkcUhiotF7loRy9jJ04HYXeZSSc/k=
-X-Received: by 2002:a17:906:456:: with SMTP id e22mr3125837eja.427.1621494521280;
- Thu, 20 May 2021 00:08:41 -0700 (PDT)
+        id S231133AbhETHKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:10:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49514 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230460AbhETHKL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:10:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C21CA6124C;
+        Thu, 20 May 2021 07:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621494530;
+        bh=/hvP4vNjX4gtYC9WWzk/yQSQZPjYP3EYj+Eiaj4tT54=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aLq19CMOvIwuUBOxvgt+NT+VBwGljc5C/YxPv+pwiFukdg1hWlcA66JU9rsdXm/ZV
+         SdvyOQXV27Fv2H84PPWuvIhZUo7IXO7KYvUJOE1zybZSBQT7bEKOC2XGtB9Bor4D17
+         wfPC+4WV62xM3o00uPh4r+d854Cp4OCOq6B7laXw=
+Date:   Thu, 20 May 2021 09:08:48 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?SmnFmcOt?= Prchal <jiri.prchal@aksignal.cz>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Christian Eggers <ceggers@arri.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v4 1/4] nvmem: eeprom: at25: add support for FRAM
+Message-ID: <YKYLAIrRJPks51yx@kroah.com>
+References: <20210520054714.8736-1-jiri.prchal@aksignal.cz>
+ <20210520054714.8736-2-jiri.prchal@aksignal.cz>
+ <YKX5aaV3DGvIm8RP@kroah.com>
+ <81420093-7af6-bed3-eee7-38be125a67e4@aksignal.cz>
 MIME-Version: 1.0
-References: <20210517095513.850-1-xieyongji@bytedance.com> <20210517095513.850-5-xieyongji@bytedance.com>
- <CACycT3s1rEvNnNkJKQsHGRsyLPADieFdVkb1Sp3GObR0Vox5Fg@mail.gmail.com>
- <20210519144206.GF32682@kadam> <CACycT3veubBFCg9omxLDJJFP7B7QH8++Q+tKmb_M_hmNS45cmw@mail.gmail.com>
- <20210520013921-mutt-send-email-mst@kernel.org>
-In-Reply-To: <20210520013921-mutt-send-email-mst@kernel.org>
-From:   Yongji Xie <xieyongji@bytedance.com>
-Date:   Thu, 20 May 2021 15:08:30 +0800
-Message-ID: <CACycT3v=JDH4SE=2GyeTJVZ7iywhpJoKCYhZ0tAvZTxgfSoOWQ@mail.gmail.com>
-Subject: Re: Re: Re: [PATCH v7 04/12] virtio-blk: Add validation for block
- size in config space
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        Parav Pandit <parav@nvidia.com>,
-        Christoph Hellwig <hch@infradead.org>,
-        Christian Brauner <christian.brauner@canonical.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, bcrl@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>,
-        =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@nextfour.com>,
-        joro@8bytes.org,
-        virtualization <virtualization@lists.linux-foundation.org>,
-        netdev@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        linux-fsdevel@vger.kernel.org, iommu@lists.linux-foundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <81420093-7af6-bed3-eee7-38be125a67e4@aksignal.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 1:43 PM Michael S. Tsirkin <mst@redhat.com> wrote:
->
-> On Thu, May 20, 2021 at 01:25:16PM +0800, Yongji Xie wrote:
-> > On Wed, May 19, 2021 at 10:42 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> > >
-> > > On Wed, May 19, 2021 at 09:39:20PM +0800, Yongji Xie wrote:
-> > > > On Mon, May 17, 2021 at 5:56 PM Xie Yongji <xieyongji@bytedance.com> wrote:
-> > > > >
-> > > > > This ensures that we will not use an invalid block size
-> > > > > in config space (might come from an untrusted device).
-> > >
-> > > I looked at if I should add this as an untrusted function so that Smatch
-> > > could find these sorts of bugs but this is reading data from the host so
-> > > there has to be some level of trust...
-> > >
-> >
-> > It would be great if Smatch could detect this case if possible. The
-> > data might be trusted in traditional VM cases. But now the data can be
-> > read from a userspace daemon when VDUSE is enabled.
-> >
-> > > I should add some more untrusted data kvm functions to Smatch.  Right
-> > > now I only have kvm_register_read() and I've added kvm_read_guest_virt()
-> > > just now.
-> > >
-> > > > >
-> > > > > Signed-off-by: Xie Yongji <xieyongji@bytedance.com>
-> > > > > ---
-> > > > >  drivers/block/virtio_blk.c | 2 +-
-> > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/drivers/block/virtio_blk.c b/drivers/block/virtio_blk.c
-> > > > > index ebb4d3fe803f..c848aa36d49b 100644
-> > > > > --- a/drivers/block/virtio_blk.c
-> > > > > +++ b/drivers/block/virtio_blk.c
-> > > > > @@ -826,7 +826,7 @@ static int virtblk_probe(struct virtio_device *vdev)
-> > > > >         err = virtio_cread_feature(vdev, VIRTIO_BLK_F_BLK_SIZE,
-> > > > >                                    struct virtio_blk_config, blk_size,
-> > > > >                                    &blk_size);
-> > > > > -       if (!err)
-> > > > > +       if (!err && blk_size > 0 && blk_size <= max_size)
-> > > >
-> > > > The check here is incorrect. I will use PAGE_SIZE as the maximum
-> > > > boundary in the new version.
-> > >
-> > > What does this bug look like to the user?
-> >
-> > The kernel will panic if the block size is larger than PAGE_SIZE.
->
-> Kernel panic at this point is par for the course IMHO.
+On Thu, May 20, 2021 at 08:54:52AM +0200, Jiří Prchal wrote:
+> 
+> On 20. 05. 21 7:53, Greg Kroah-Hartman wrote:
+> > On Thu, May 20, 2021 at 07:47:11AM +0200, Jiri Prchal wrote:
+> > > Added enum and string for FRAM to expose it as "fram".
+> > 
+> > documentation???
+> > 
+> Hi Greg,
+> please help me, you mean more explanation in commit message?
 
-But it seems better if we can avoid this kind of panic. Because this
-might also be triggered by a buggy VDUSE daemon.
+No, I mean you need to document user/kernel apis that you add in
+Documentation/ABI/ please.
 
-> Let's focus on eliminating data corruption for starters.
+thanks,
 
-OK, now the incorrect used length might cause data corruption in
-virtio-net and virtio-console drivers as I mentioned in another mail.
-I will send a fix ASAP.
-
-Thanks,
-Yongji
+greg k-h
