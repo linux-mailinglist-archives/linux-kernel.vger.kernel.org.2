@@ -2,131 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B67F438B757
+	by mail.lfdr.de (Postfix) with ESMTP id 4998138B756
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238018AbhETTVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:21:46 -0400
-Received: from mx13.kaspersky-labs.com ([91.103.66.164]:30322 "EHLO
-        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238111AbhETTVl (ORCPT
+        id S239700AbhETTVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:21:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37558 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238018AbhETTVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:21:41 -0400
-Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay13.kaspersky-labs.com (Postfix) with ESMTP id EBE545212D6;
-        Thu, 20 May 2021 22:20:14 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1621538415;
-        bh=2fgv6quaAojndVwSYVCltsVkau3dKg8d9BBkNJEHikk=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=wCEvA7Xrl4WuzPaLA4/Oav9hrK1TfXfcFF28lYzjGvsiFltUVK6wcfh5Xa/dhkBIk
-         3hLl5GoAiDPIbeQQaR9/47q0+NkS07WKMkF5LBoTwLkFMVLxxsnpVIF2V5kBvfLIUU
-         f71JkVomRQD+wJktliXMCk47jR1oUZ+CUf4mQncVP4fYILJINEgYlozlKUVpwQYbXx
-         7U3oVV5QXBBVUh565k9SlNDVjR58l/3IAiXkt4LDsE0Prlo2jFkH+g8We9dL4/PHeQ
-         9mbJBKFFk1yDnS3FSI+biLCWORQhRvGJSIHsJzLV1r2w/I1DgfOPCQQ8/QSk2AZ31y
-         Y71MshpRaJ04A==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id EBABF52129F;
-        Thu, 20 May 2021 22:20:13 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
- May 2021 22:20:13 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Norbert Slusarek <nslusarek@gmx.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Andra Paraschiv <andraprs@amazon.com>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <oxffffaa@gmail.com>
-Subject: [PATCH v10 18/18] virtio/vsock: update trace event for SEQPACKET
-Date:   Thu, 20 May 2021 22:20:04 +0300
-Message-ID: <20210520192008.1272910-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+        Thu, 20 May 2021 15:21:40 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F65C0613CE;
+        Thu, 20 May 2021 12:20:19 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id j75so17389753oih.10;
+        Thu, 20 May 2021 12:20:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=PfgwTVkMgiwTa2ZUJi4Rqpy4DzXkVzihsc1UndFlxZA=;
+        b=NKXl/O4Ah4nhqRZkqVf7JWT06B7xn241Wl6InCIzbJbLIuLi4vfTnaDrtlDTjxDQVi
+         n30NCGYnAoGxnSG/VWuWTQ+YK7PcX9F9m5Xpy8FvszrYZNU3ITT17+QkEfw/+eCQ+Pkt
+         mLk4rneTHZwhebapO0piSnDF2/cEBjYQY/NbDQitSmHZSiZ11NWAPqW8C3iOPpcFafJN
+         qCP9cMoArj2JNtrRctLNjX6fyLtrTmYEkwu0AHzbJOi4N+RnXc2su55cSnse9MAWxLBJ
+         z0h7NrAKCgvhrjjYExJ3ftsS1HKoD+9OnT8mPmjAez+Vncw+mZOevxqJhe1TsUGEAEbS
+         mq9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=PfgwTVkMgiwTa2ZUJi4Rqpy4DzXkVzihsc1UndFlxZA=;
+        b=W0FmVYcdL04lB7gn6B/KQ/uJUjP/BcjbrfZgaQXb8KlBRLrdS+vi3moQNX/Pz/nB6O
+         ZxXQL8T+rzjHAUeWo0WzvRm/ndxYM4OuawQV0a1qFl7dgTdZKCTgoEMvMjXzKgphz+ok
+         9PhV9Pd2wkPMI/MkMLPzgpbvB9QBjHgRnSS558/nzWy3LWf1Uma8WlGsWoUcz+2Ue8Zk
+         TjA/AtILYRJZDRUrDWjbd4OP2+mzGhfDbN6/M/Fsm/WUAbT/AVnPoPpLdLU+fA81aGMA
+         64gSTy68prrwqe0/FFqBDbMpjZvM4ShV3Z6FXyZv9DGkcuKDm673hUAsTpXgePx3nx4G
+         0U+w==
+X-Gm-Message-State: AOAM5324th0V2pnOtdQMjTTBJ6se3aEt/j6VcXfnmUW4SKG1l0lvH9B8
+        Ar77L0N3kMj83T7a7dUCPyXGCUMnFb1ooQaMM6uDkMXt
+X-Google-Smtp-Source: ABdhPJwvc46ikCv5xL8krtN+XasKLQNxgGwSb0z9zUHEbeOTG8SunshtMqXtCUQ8+ULgPYLiJCxGyKV39ZYg0zNwFbc=
+X-Received: by 2002:a05:6808:249:: with SMTP id m9mr4203881oie.120.1621538418645;
+ Thu, 20 May 2021 12:20:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210520120248.3464013-1-lee.jones@linaro.org> <20210520120248.3464013-27-lee.jones@linaro.org>
+In-Reply-To: <20210520120248.3464013-27-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 20 May 2021 15:20:07 -0400
+Message-ID: <CADnq5_PaefTWkWnOPTJMTgL-zocXtB9wGnK30PiZG2iNAA=oOw@mail.gmail.com>
+Subject: Re: [PATCH 26/38] drm/amd/amdgpu/gmc_v10_0: Fix potential copy/paste issue
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add SEQPACKET socket type to vsock trace event.
+Applied.  Thanks!
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
----
- include/trace/events/vsock_virtio_transport_common.h | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Alex
 
-diff --git a/include/trace/events/vsock_virtio_transport_common.h b/include/trace/events/vsock_virtio_transport_common.h
-index 6782213778be..b30c0e319b0e 100644
---- a/include/trace/events/vsock_virtio_transport_common.h
-+++ b/include/trace/events/vsock_virtio_transport_common.h
-@@ -9,9 +9,12 @@
- #include <linux/tracepoint.h>
- 
- TRACE_DEFINE_ENUM(VIRTIO_VSOCK_TYPE_STREAM);
-+TRACE_DEFINE_ENUM(VIRTIO_VSOCK_TYPE_SEQPACKET);
- 
- #define show_type(val) \
--	__print_symbolic(val, { VIRTIO_VSOCK_TYPE_STREAM, "STREAM" })
-+	__print_symbolic(val, \
-+				{ VIRTIO_VSOCK_TYPE_STREAM, "STREAM" }, \
-+				{ VIRTIO_VSOCK_TYPE_SEQPACKET, "SEQPACKET" })
- 
- TRACE_DEFINE_ENUM(VIRTIO_VSOCK_OP_INVALID);
- TRACE_DEFINE_ENUM(VIRTIO_VSOCK_OP_REQUEST);
--- 
-2.25.1
-
+On Thu, May 20, 2021 at 8:03 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c:955: warning: expecting prototype=
+ for gmc_v8_0_gart_fini(). Prototype was for gmc_v10_0_gart_fini() instead
+>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Sumit Semwal <sumit.semwal@linaro.org>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-media@vger.kernel.org
+> Cc: linaro-mm-sig@lists.linaro.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c b/drivers/gpu/drm/amd=
+/amdgpu/gmc_v10_0.c
+> index f02dc904e4cfe..105ed1bf4a88c 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/gmc_v10_0.c
+> @@ -947,7 +947,7 @@ static int gmc_v10_0_sw_init(void *handle)
+>  }
+>
+>  /**
+> - * gmc_v8_0_gart_fini - vm fini callback
+> + * gmc_v10_0_gart_fini - vm fini callback
+>   *
+>   * @adev: amdgpu_device pointer
+>   *
+> --
+> 2.31.1
+>
