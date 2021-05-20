@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F499389E58
+	by mail.lfdr.de (Postfix) with ESMTP id 88D87389E59
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:54:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhETGzj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 02:55:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37910 "EHLO
+        id S230452AbhETGzl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:55:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230452AbhETGzb (ORCPT
+        with ESMTP id S230466AbhETGzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 02:55:31 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245E9C06138B
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:09 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id c5-20020a0ca9c50000b02901aede9b5061so12455193qvb.14
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:09 -0700 (PDT)
+        Thu, 20 May 2021 02:55:32 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46CEC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:10 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id d201-20020ae9efd20000b02902e9e9d8d9dcso11687575qkg.10
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 23:54:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Mvah71zeYWGfuEGRbEsLqflL7nXzJ5AdEYR+UovaRYY=;
-        b=EbaEOCfalGO/Os4OKgi4M0ux2tbj/9YV7PKsVCGQdr/8gcQO1wsCl7ywZY/pNC7eXz
-         NoDBi8g1D9jnfogpVvkt+RSkZlQ/wIQfMR8guk0/qk6EZebG/utx01m5VEv0G0jHv0Zr
-         k6d+sXr5o4NS2Kl/7Ur6tOhmyQYo1mJS8W6wy8htCD9qRhKO9rljjjcNNoQFh7jF53I2
-         oqJdy/ZRwC1k/6/iastZquGfCQ1ZDPp9qbDEfPp6RfaePLHAvS2mEcu3b5IlddG8UjMG
-         gnQkyzTi9RZ60CdCTtFo/33uy+SQMY1vKs2glF5gunlSHFA1EaqvtsVi1W2ngxGWiGKh
-         ajyA==
+        bh=Yl+DjwsBODMfyiL17kQw/9BLrEC9zXFz8Mxu59WzP4Y=;
+        b=Mrzy2M2k9QAzqf4Qlq2wFgC1uycH9/GSOy89uVYR+gUD3oaKMWpOn95M8hs2EzT1FG
+         /N40V1/URD7mP48ZsP72lzG3rMvI0SepioQCu+0asiEBUJUrtY6kEz2CKTJEB4MwAGRU
+         xnH/e/C5szSot199E2rMI+ZUJo/y8pBDfNIzZ7XzQ811Wxr6oM1C4DVA6DHQSWtdqS5J
+         VMMjdjvsXW8hHCzs+5W06EYb73kJeqPHOFZ+XFMWXFrm8l/F2qujro4FMOgux0JB/XLW
+         32qxH7ovQyCHL8Gg6vGigkolgFZhe6oag4JfCx0cj6eFlP+2j2w5ryU0kRvvHVILA9Xq
+         e6Hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Mvah71zeYWGfuEGRbEsLqflL7nXzJ5AdEYR+UovaRYY=;
-        b=fKmHfVBojnVD7v0HScBBju/h6BeYHqtiGWztHdkYBBMbAblj6OoCIkOdzbET71QBoY
-         R3bKjlFy/3PcckxPJrbFRhSVsTk4faV9uQfJlZuedG4G3O2EY6PeqhlGN722JnrxjpVk
-         og7sFMeaPJCcbmkZyC+jm4xmnS5Ox2CVjXqgw96+ViRsnfjSJ3Vvu0mOk/ab+jfZ3/ZB
-         HW3plDWWuAO8ijU0AazsQOOG3rvfr/szKKmeJs3e5a7HPpChkX9wvZKAnlyPw+6MvtLe
-         ssM2BgmFkGzG2yd8AzvepX/afdU14K4bigWqSjN8IRR7JVDnGdBKYR4N/tH0JI/apOet
-         Rn1g==
-X-Gm-Message-State: AOAM5337ZUQnuxydxDF/VBFRzHtx51o3/N5HDpf9MYMdQrx5kcdbVyhf
-        HEyO2/+GFcfRnTIPxodPADdKQi6qUwA=
-X-Google-Smtp-Source: ABdhPJxyjS6uG8i8Sad50t/5Pf/9RTagtFbxDvAuxBuu8l0odJlhqIGjN9aFII0GYF+uFWIxSdphl51ZKHc=
+        bh=Yl+DjwsBODMfyiL17kQw/9BLrEC9zXFz8Mxu59WzP4Y=;
+        b=Nel79d/ExWs1HdZZs12GqadGHxgI3W8FnqvRED1IBxJnCtiluti6ndyhp/JXtjDIct
+         YtIRkMNVwmwMk6EFx5QOv0Br5VYQ/72hZsMd8kNj9z/m8CUtpMnJluKVNeyNT+Livkww
+         y2hwgGJiuvWxBIy+ja/GH64SkCJTuttiOxpNFaRxB1STfhM2PjwwwiQG5GTxbqkkn3Dg
+         fKBlHYI17sQ05tZRovJETs0f+1wBQPftjwjm6PJzpZ3ooNcBXdB6hRUrGZ6Pmyf2bRBR
+         BptRYxbaQdSprCABGMW/2ySltaJaFitv6fShejQMxDX8xe+JDYJ0kEn9/3aMVEt+Vy+X
+         rTAw==
+X-Gm-Message-State: AOAM532IBC74aEi91Xqgl2rYw1QINB7mrdZT3v/EvERcHHCbI6v9/2cU
+        Qe2UGq6f4OIKykMrwADvTCo5whMI+DQ=
+X-Google-Smtp-Source: ABdhPJyyAX33aocRYynTtALpNyjv0w+Wa7lDS9awJiNK6me024wMLg+4FL2RHzwNDLwZg9DFBZ+B1LiDSsc=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:595d:62ee:f08:8e83])
- (user=yuzhao job=sendgmr) by 2002:a0c:d84d:: with SMTP id i13mr3839330qvj.32.1621493648268;
- Wed, 19 May 2021 23:54:08 -0700 (PDT)
-Date:   Thu, 20 May 2021 00:53:46 -0600
+ (user=yuzhao job=sendgmr) by 2002:a05:6214:18d:: with SMTP id
+ q13mr3804726qvr.60.1621493649877; Wed, 19 May 2021 23:54:09 -0700 (PDT)
+Date:   Thu, 20 May 2021 00:53:47 -0600
 In-Reply-To: <20210520065355.2736558-1-yuzhao@google.com>
-Message-Id: <20210520065355.2736558-6-yuzhao@google.com>
+Message-Id: <20210520065355.2736558-7-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20210520065355.2736558-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v3 05/14] mm/vmscan.c: refactor shrink_node()
+Subject: [PATCH v3 06/14] mm/workingset.c: refactor pack_shadow() and unpack_shadow()
 From:   Yu Zhao <yuzhao@google.com>
 To:     linux-mm@kvack.org
 Cc:     Alex Shi <alexs@kernel.org>, Andi Kleen <ak@linux.intel.com>,
@@ -85,227 +85,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Heuristics that determine scan balance between anon and file LRUs are
-rather independent. Move them into a separate function to improve
-readability.
+This patches moves the bucket order and PageWorkingset() out of
+pack_shadow() and unpack_shadow(). It has no merits on its own but
+makes the upcoming changes to mm/workingset.c less diffy.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 Tested-by: Konstantin Kharlamov <Hi-Angel@yandex.ru>
 ---
- mm/vmscan.c | 186 +++++++++++++++++++++++++++-------------------------
- 1 file changed, 98 insertions(+), 88 deletions(-)
+ mm/workingset.c | 53 ++++++++++++++++++++-----------------------------
+ 1 file changed, 22 insertions(+), 31 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 5199b9696bab..2339459c97d4 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2421,6 +2421,103 @@ enum scan_balance {
- 	SCAN_FILE,
- };
+diff --git a/mm/workingset.c b/mm/workingset.c
+index b7cdeca5a76d..edb8aed2587e 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -168,9 +168,9 @@
+  * refault distance will immediately activate the refaulting page.
+  */
  
-+static void prepare_scan_count(pg_data_t *pgdat, struct scan_control *sc)
-+{
-+	unsigned long file;
-+	struct lruvec *target_lruvec;
-+
-+	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
-+
-+	/*
-+	 * Determine the scan balance between anon and file LRUs.
-+	 */
-+	spin_lock_irq(&target_lruvec->lru_lock);
-+	sc->anon_cost = target_lruvec->anon_cost;
-+	sc->file_cost = target_lruvec->file_cost;
-+	spin_unlock_irq(&target_lruvec->lru_lock);
-+
-+	/*
-+	 * Target desirable inactive:active list ratios for the anon
-+	 * and file LRU lists.
-+	 */
-+	if (!sc->force_deactivate) {
-+		unsigned long refaults;
-+
-+		refaults = lruvec_page_state(target_lruvec,
-+				WORKINGSET_ACTIVATE_ANON);
-+		if (refaults != target_lruvec->refaults[0] ||
-+			inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
-+			sc->may_deactivate |= DEACTIVATE_ANON;
-+		else
-+			sc->may_deactivate &= ~DEACTIVATE_ANON;
-+
-+		/*
-+		 * When refaults are being observed, it means a new
-+		 * workingset is being established. Deactivate to get
-+		 * rid of any stale active pages quickly.
-+		 */
-+		refaults = lruvec_page_state(target_lruvec,
-+				WORKINGSET_ACTIVATE_FILE);
-+		if (refaults != target_lruvec->refaults[1] ||
-+		    inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
-+			sc->may_deactivate |= DEACTIVATE_FILE;
-+		else
-+			sc->may_deactivate &= ~DEACTIVATE_FILE;
-+	} else
-+		sc->may_deactivate = DEACTIVATE_ANON | DEACTIVATE_FILE;
-+
-+	/*
-+	 * If we have plenty of inactive file pages that aren't
-+	 * thrashing, try to reclaim those first before touching
-+	 * anonymous pages.
-+	 */
-+	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
-+	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
-+		sc->cache_trim_mode = 1;
-+	else
-+		sc->cache_trim_mode = 0;
-+
-+	/*
-+	 * Prevent the reclaimer from falling into the cache trap: as
-+	 * cache pages start out inactive, every cache fault will tip
-+	 * the scan balance towards the file LRU.  And as the file LRU
-+	 * shrinks, so does the window for rotation from references.
-+	 * This means we have a runaway feedback loop where a tiny
-+	 * thrashing file LRU becomes infinitely more attractive than
-+	 * anon pages.  Try to detect this based on file LRU size.
-+	 */
-+	if (!cgroup_reclaim(sc)) {
-+		unsigned long total_high_wmark = 0;
-+		unsigned long free, anon;
-+		int z;
-+
-+		free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
-+		file = node_page_state(pgdat, NR_ACTIVE_FILE) +
-+			   node_page_state(pgdat, NR_INACTIVE_FILE);
-+
-+		for (z = 0; z < MAX_NR_ZONES; z++) {
-+			struct zone *zone = &pgdat->node_zones[z];
-+
-+			if (!managed_zone(zone))
-+				continue;
-+
-+			total_high_wmark += high_wmark_pages(zone);
-+		}
-+
-+		/*
-+		 * Consider anon: if that's low too, this isn't a
-+		 * runaway file reclaim problem, but rather just
-+		 * extreme pressure. Reclaim as per usual then.
-+		 */
-+		anon = node_page_state(pgdat, NR_INACTIVE_ANON);
-+
-+		sc->file_is_tiny =
-+			file + free <= total_high_wmark &&
-+			!(sc->may_deactivate & DEACTIVATE_ANON) &&
-+			anon >> sc->priority;
-+	}
-+}
-+
+-#define EVICTION_SHIFT	((BITS_PER_LONG - BITS_PER_XA_VALUE) +	\
+-			 1 + NODES_SHIFT + MEM_CGROUP_ID_SHIFT)
+-#define EVICTION_MASK	(~0UL >> EVICTION_SHIFT)
++#define EVICTION_SHIFT		(BITS_PER_XA_VALUE - MEM_CGROUP_ID_SHIFT - NODES_SHIFT)
++#define EVICTION_MASK		(BIT(EVICTION_SHIFT) - 1)
++#define WORKINGSET_WIDTH	1
+ 
  /*
-  * Determine how aggressively the anon and file LRU lists should be
-  * scanned.  The relative value of each set of LRU lists is determined
-@@ -2866,7 +2963,6 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
- 	unsigned long nr_reclaimed, nr_scanned;
- 	struct lruvec *target_lruvec;
- 	bool reclaimable = false;
--	unsigned long file;
+  * Eviction timestamps need to be able to cover the full range of
+@@ -182,36 +182,23 @@
+  */
+ static unsigned int bucket_order __read_mostly;
  
- 	target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
+-static void *pack_shadow(int memcgid, pg_data_t *pgdat, unsigned long eviction,
+-			 bool workingset)
++static void *pack_shadow(int memcg_id, struct pglist_data *pgdat, unsigned long val)
+ {
+-	eviction >>= bucket_order;
+-	eviction &= EVICTION_MASK;
+-	eviction = (eviction << MEM_CGROUP_ID_SHIFT) | memcgid;
+-	eviction = (eviction << NODES_SHIFT) | pgdat->node_id;
+-	eviction = (eviction << 1) | workingset;
++	val = (val << MEM_CGROUP_ID_SHIFT) | memcg_id;
++	val = (val << NODES_SHIFT) | pgdat->node_id;
  
-@@ -2876,93 +2972,7 @@ static void shrink_node(pg_data_t *pgdat, struct scan_control *sc)
- 	nr_reclaimed = sc->nr_reclaimed;
- 	nr_scanned = sc->nr_scanned;
+-	return xa_mk_value(eviction);
++	return xa_mk_value(val);
+ }
  
--	/*
--	 * Determine the scan balance between anon and file LRUs.
--	 */
--	spin_lock_irq(&target_lruvec->lru_lock);
--	sc->anon_cost = target_lruvec->anon_cost;
--	sc->file_cost = target_lruvec->file_cost;
--	spin_unlock_irq(&target_lruvec->lru_lock);
--
--	/*
--	 * Target desirable inactive:active list ratios for the anon
--	 * and file LRU lists.
--	 */
--	if (!sc->force_deactivate) {
--		unsigned long refaults;
--
--		refaults = lruvec_page_state(target_lruvec,
--				WORKINGSET_ACTIVATE_ANON);
--		if (refaults != target_lruvec->refaults[0] ||
--			inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
--			sc->may_deactivate |= DEACTIVATE_ANON;
--		else
--			sc->may_deactivate &= ~DEACTIVATE_ANON;
--
--		/*
--		 * When refaults are being observed, it means a new
--		 * workingset is being established. Deactivate to get
--		 * rid of any stale active pages quickly.
--		 */
--		refaults = lruvec_page_state(target_lruvec,
--				WORKINGSET_ACTIVATE_FILE);
--		if (refaults != target_lruvec->refaults[1] ||
--		    inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
--			sc->may_deactivate |= DEACTIVATE_FILE;
--		else
--			sc->may_deactivate &= ~DEACTIVATE_FILE;
--	} else
--		sc->may_deactivate = DEACTIVATE_ANON | DEACTIVATE_FILE;
--
--	/*
--	 * If we have plenty of inactive file pages that aren't
--	 * thrashing, try to reclaim those first before touching
--	 * anonymous pages.
--	 */
--	file = lruvec_page_state(target_lruvec, NR_INACTIVE_FILE);
--	if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
--		sc->cache_trim_mode = 1;
--	else
--		sc->cache_trim_mode = 0;
--
--	/*
--	 * Prevent the reclaimer from falling into the cache trap: as
--	 * cache pages start out inactive, every cache fault will tip
--	 * the scan balance towards the file LRU.  And as the file LRU
--	 * shrinks, so does the window for rotation from references.
--	 * This means we have a runaway feedback loop where a tiny
--	 * thrashing file LRU becomes infinitely more attractive than
--	 * anon pages.  Try to detect this based on file LRU size.
--	 */
--	if (!cgroup_reclaim(sc)) {
--		unsigned long total_high_wmark = 0;
--		unsigned long free, anon;
--		int z;
--
--		free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
--		file = node_page_state(pgdat, NR_ACTIVE_FILE) +
--			   node_page_state(pgdat, NR_INACTIVE_FILE);
--
--		for (z = 0; z < MAX_NR_ZONES; z++) {
--			struct zone *zone = &pgdat->node_zones[z];
--			if (!managed_zone(zone))
--				continue;
--
--			total_high_wmark += high_wmark_pages(zone);
--		}
--
--		/*
--		 * Consider anon: if that's low too, this isn't a
--		 * runaway file reclaim problem, but rather just
--		 * extreme pressure. Reclaim as per usual then.
--		 */
--		anon = node_page_state(pgdat, NR_INACTIVE_ANON);
--
--		sc->file_is_tiny =
--			file + free <= total_high_wmark &&
--			!(sc->may_deactivate & DEACTIVATE_ANON) &&
--			anon >> sc->priority;
--	}
-+	prepare_scan_count(pgdat, sc);
+-static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
+-			  unsigned long *evictionp, bool *workingsetp)
++static unsigned long unpack_shadow(void *shadow, int *memcg_id, struct pglist_data **pgdat)
+ {
+-	unsigned long entry = xa_to_value(shadow);
+-	int memcgid, nid;
+-	bool workingset;
++	unsigned long val = xa_to_value(shadow);
  
- 	shrink_node_memcgs(pgdat, sc);
+-	workingset = entry & 1;
+-	entry >>= 1;
+-	nid = entry & ((1UL << NODES_SHIFT) - 1);
+-	entry >>= NODES_SHIFT;
+-	memcgid = entry & ((1UL << MEM_CGROUP_ID_SHIFT) - 1);
+-	entry >>= MEM_CGROUP_ID_SHIFT;
++	*pgdat = NODE_DATA(val & (BIT(NODES_SHIFT) - 1));
++	val >>= NODES_SHIFT;
++	*memcg_id = val & (BIT(MEM_CGROUP_ID_SHIFT) - 1);
  
+-	*memcgidp = memcgid;
+-	*pgdat = NODE_DATA(nid);
+-	*evictionp = entry << bucket_order;
+-	*workingsetp = workingset;
++	return val >> MEM_CGROUP_ID_SHIFT;
+ }
+ 
+ /**
+@@ -266,8 +253,10 @@ void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg)
+ 	/* XXX: target_memcg can be NULL, go through lruvec */
+ 	memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
+ 	eviction = atomic_long_read(&lruvec->nonresident_age);
++	eviction >>= bucket_order;
++	eviction = (eviction << WORKINGSET_WIDTH) | PageWorkingset(page);
+ 	workingset_age_nonresident(lruvec, thp_nr_pages(page));
+-	return pack_shadow(memcgid, pgdat, eviction, PageWorkingset(page));
++	return pack_shadow(memcgid, pgdat, eviction);
+ }
+ 
+ /**
+@@ -294,7 +283,7 @@ void workingset_refault(struct page *page, void *shadow)
+ 	bool workingset;
+ 	int memcgid;
+ 
+-	unpack_shadow(shadow, &memcgid, &pgdat, &eviction, &workingset);
++	eviction = unpack_shadow(shadow, &memcgid, &pgdat);
+ 
+ 	rcu_read_lock();
+ 	/*
+@@ -318,6 +307,8 @@ void workingset_refault(struct page *page, void *shadow)
+ 		goto out;
+ 	eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
+ 	refault = atomic_long_read(&eviction_lruvec->nonresident_age);
++	workingset = eviction & (BIT(WORKINGSET_WIDTH) - 1);
++	eviction = (eviction >> WORKINGSET_WIDTH) << bucket_order;
+ 
+ 	/*
+ 	 * Calculate the refault distance
+@@ -335,7 +326,7 @@ void workingset_refault(struct page *page, void *shadow)
+ 	 * longest time, so the occasional inappropriate activation
+ 	 * leading to pressure on the active list is not a problem.
+ 	 */
+-	refault_distance = (refault - eviction) & EVICTION_MASK;
++	refault_distance = (refault - eviction) & (EVICTION_MASK >> WORKINGSET_WIDTH);
+ 
+ 	/*
+ 	 * The activation decision for this page is made at the level
+@@ -593,7 +584,7 @@ static int __init workingset_init(void)
+ 	unsigned int max_order;
+ 	int ret;
+ 
+-	BUILD_BUG_ON(BITS_PER_LONG < EVICTION_SHIFT);
++	BUILD_BUG_ON(EVICTION_SHIFT < WORKINGSET_WIDTH);
+ 	/*
+ 	 * Calculate the eviction bucket size to cover the longest
+ 	 * actionable refault distance, which is currently half of
+@@ -601,7 +592,7 @@ static int __init workingset_init(void)
+ 	 * some more pages at runtime, so keep working with up to
+ 	 * double the initial memory by using totalram_pages as-is.
+ 	 */
+-	timestamp_bits = BITS_PER_LONG - EVICTION_SHIFT;
++	timestamp_bits = EVICTION_SHIFT - WORKINGSET_WIDTH;
+ 	max_order = fls_long(totalram_pages() - 1);
+ 	if (max_order > timestamp_bits)
+ 		bucket_order = max_order - timestamp_bits;
 -- 
 2.31.1.751.gd2f1c929bd-goog
 
