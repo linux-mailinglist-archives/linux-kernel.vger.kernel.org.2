@@ -2,126 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613C138B245
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3717338B246
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhETOym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:54:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231410AbhETOyj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231514AbhETOyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:54:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58418 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231418AbhETOyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 10:54:39 -0400
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [IPv6:2001:67c:2050::465:202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18E6DC06175F;
-        Thu, 20 May 2021 07:53:15 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4FmCQv2txyzQj8f;
-        Thu, 20 May 2021 16:53:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
-        content-transfer-encoding:content-type:content-type:mime-version
-        :subject:subject:references:in-reply-to:message-id:from:from
-        :date:date:received; s=mail20150812; t=1621522388; bh=P8MrA8pPpf
-        BNVWmYRRfh+GiMlhTG+PweVmx43zpGaHU=; b=Wi9GzXp7kBpjsfj+eBh5xGHv4E
-        u1wAZcgP4eEZk8bLvG5JxNBE0XIYCsPGSAH+JIphAB2DRgOGKd1sx6BXxbJZGnTY
-        SmBifwoyGIyH93M2FPYEeeVeS33z61wmhI27Pe2yuDzkzB3pB0t8MYUOsxYC1vBh
-        sBA4IF3LsZMGbfFhioj8LSHPP0M1wFKGynYFGhk7rldB2ubdinS1modLn4g1CfXa
-        +E2XcAw8dYMuLXP0vJ/aBW7AZVS/jEcgyyhTkIpKXE7ix7XirymCaTkK5PfoqEpC
-        vWnRJ3L41OuwMHCXhWNS1DoeuXjJYM5EBAak+hS8iUfgf7T+R+D7TcL02z6Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1621522389;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=twfdgMKvq+qZu+1IFRTbYX3i4ggeYR+hsqTGbJOWG9s=;
-        b=eEhTc//ZDnXzuSfh7tIVl8HnqNSF1SnIiThtNvXF7xw1kNKSXuMIAqiAlweP2pmBnhn0xt
-        J8mTPOzx6m8yEdxyM7pnjS8rElSV0Nz77XU6gQyCDC3gGXHP9tbolUbBTLhmE0YN0Zj7j0
-        1nLj/2/91f4uKhqdxAAV06QD+Cm/l3mJlRa6oJUSnYN9azP+L0DdFcveBZho3e8mnJFcf+
-        vD4DhjIx37mQDRo3lCh4vlyTzzbxLlQEKLw6XjJmWeLkZ5le3CyXhq4GUrH/d1P8QZ1JoF
-        dnpZqZX8jQmbrpZ3VYAqKHsRrMElCwdRq1Jsc3bw6LZVROPxaAeovr6aIaXOoQ==
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id 1eLjRH_01cFl; Thu, 20 May 2021 16:53:08 +0200 (CEST)
-Date:   Thu, 20 May 2021 16:53:07 +0200 (CEST)
-From:   torvic9@mailbox.org
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "almaz.alexandrovich@paragon-software.com" 
-        <almaz.alexandrovich@paragon-software.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Message-ID: <1291339880.1758.1621522387730@office.mailbox.org>
-In-Reply-To: <CAKwvOd=Z1ia4ZufDbRsEUkumwkz15TtSb2V1aBT7SN8w86RKYw@mail.gmail.com>
-References: <212218590.13874.1621431781547@office.mailbox.org>
- <CAKwvOd=Z1ia4ZufDbRsEUkumwkz15TtSb2V1aBT7SN8w86RKYw@mail.gmail.com>
-Subject: Re: [PATCH] fs/ntfs3: make ntfs3 compile with clang-12
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40447611ED;
+        Thu, 20 May 2021 14:53:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621522398;
+        bh=zVOXEq4PpxdP/GDV+JOkW9i/z2WKjL9VqOVhutGb1E8=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=Ovq7yVud0KeKKV/kyc6Amr+6H0oQam7AMS50agJV03rzqMXDV1or7l9t+KQed3yqj
+         gkuUz2tmgTTA8uqq3JF5cTNAQJFZSfgdxsfvzukBKYIzAFixE+NmFEIQbHODOUJ86+
+         g2mkXXsUP9xv/eAebDrIgL9DgIQwC3z3xp7VSxKmUuovSYwG44jPAtFcHBB7HWld3x
+         TThcxb6vv6vBL1FqUs9X6GNM5Prf1igSaiAt6gae1OGM9GlSAGRhBPbXJa2pNay8sU
+         GGTeEQwppzyIH0avDWuIsrR93lQ8NSG4s1lnHJCmEdubMt95S70h7lhFutMwQ/yq3a
+         Odfnschgdj2yQ==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 0D3095C00D8; Thu, 20 May 2021 07:53:18 -0700 (PDT)
+Date:   Thu, 20 May 2021 07:53:18 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
+Message-ID: <20210520145318.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210516102716.689596-1-senozhatsky@chromium.org>
+ <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKMbQQ0qBAixXC5p@google.com>
+ <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKX/H0EwRRLM+cAa@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -3.31 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 4A07317FF
-X-Rspamd-UID: 58cfba
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKX/H0EwRRLM+cAa@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-> Nick Desaulniers <ndesaulniers@google.com> hat am 20.05.2021 01:06 geschrieben:
+On Thu, May 20, 2021 at 03:18:07PM +0900, Sergey Senozhatsky wrote:
+> On (21/05/18 16:15), Paul E. McKenney wrote:
+> > 
+> > In the shorter term...  PVCLOCK_GUEST_STOPPED is mostly for things like
+> > guest migration and debugger breakpoints, correct?  Either way, I am
+> > wondering if rcu_cpu_stall_reset() should take a lighter touch.  Right
+> > now, it effectively disables all stalls for the current grace period.
+> > Why not make it restart the stall timeout when the stoppage is detected?
 > 
+> rcu_cpu_stall_reset() is used in many other places, not sure if we can
+> change its behaviour rcu_cpu_stall_reset().
+
+There was some use case back in the day where they wanted an indefinite
+suppression of RCU CPU stall warnings for the current grace period, but
+all the current use cases look fine with restarting the stall timeout.
+
+However, please see below.
+
+> Maybe it'll be possible to just stop calling it from PV-clock and do
+> something like this
+
+This was in fact one of the things I was considering, at least until
+I convinced myself that I needed to ask some questions.
+
+One point of possibly unnecessary nervousness on my part is resetting
+the start of the grace period, which might confuse diagnostics.
+
+But how about something like this?
+
+void rcu_cpu_stall_reset(void)
+{
+	WRITE_ONCE(rcu_state.jiffies_stall,
+		   jiffies + rcu_jiffies_till_stall_check());
+}
+
+Would something like that work?
+
+(One issue with this is if there has already been an RCU CPU stall
+warning, in which case the timeout for repeat warnings is tripled.  But in
+the current use cases, I don't see that this matters.  If it turns out to
+matter, I would just add a flag to rcu_state saying whether the current
+grace period had seen a stall, and use that to decide whether or not
+to triple the timeout.)
+
+							Thanx, Paul
+
+> ---
+> 
+> diff --git a/arch/x86/kernel/pvclock.c b/arch/x86/kernel/pvclock.c
+> index eda37df016f0..2d2489eda8e6 100644
+> --- a/arch/x86/kernel/pvclock.c
+> +++ b/arch/x86/kernel/pvclock.c
+> @@ -40,7 +40,7 @@ void pvclock_touch_watchdogs(void)
+>  {
+>  	touch_softlockup_watchdog_sync();
+>  	clocksource_touch_watchdog();
+> -	rcu_cpu_stall_reset();
+> +	record_gp_stall_check_time();
+>  	reset_hung_task_detector();
+>  }
 >  
-> On Wed, May 19, 2021 at 6:43 AM <torvic9@mailbox.org> wrote:
-> >
-> > Some of the ccflags in the fs/ntfs3 Makefile are for gcc only.
-> > Replace them with clang alternatives if necessary.
-> >
-> > Signed-off-by: Tor Vic <torvic9@mailbox.org>
-> 
-> Thanks for the patch. +clang-built-linux; please make sure to cc the
-> lists from ./scripts/get_maintainer.pl <patch file>.  It should
-> recommend our mailing list of the words clang or llvm appear anywhere
-> in the patch file. This helps spread around the review burden.
-> 
-
-Cool, I didn't know about that script, thanks!
-
-> > ---
-> >  fs/ntfs3/Makefile | 4 +++-
-> >  1 file changed, 3 insertions(+), 1 deletions(-)
-> >
-> > diff --git a/fs/ntfs3/Makefile b/fs/ntfs3/Makefile
-> > index b06a06cc0..dae144033 100644
-> > --- a/fs/ntfs3/Makefile
-> > +++ b/fs/ntfs3/Makefile
-> > @@ -4,7 +4,9 @@
-> >  #
-> >
-> >  # to check robot warnings
-> > -ccflags-y += -Wunused-but-set-variable -Wold-style-declaration -Wint-to-pointer-cast
-> > +ccflags-y += -Wint-to-pointer-cast \
-> > +       $(call cc-option,-Wunused-but-set-variable,-Wunused-const-variable) \
-> > +       $(call cc-option,-Wold-style-declaration,-Wout-of-line-declaration)
-> 
-> I think it would be better to leave off the second parameter of both
-> of these, which is the fallback.
-
-OK, I will do that.
-Thanks for your feedback!
-
-> 
-> >
-> >  obj-$(CONFIG_NTFS3_FS) += ntfs3.o
-> >
-> > --
-> > 2.31.1
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index cb233c79f0bc..6b3165c7a2c3 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -137,7 +137,7 @@ void rcu_cpu_stall_reset(void)
+>  // Interaction with RCU grace periods
+>  
+>  /* Start of new grace period, so record stall time (and forcing times). */
+> -static void record_gp_stall_check_time(void)
+> +void record_gp_stall_check_time(void)
+>  {
+>  	unsigned long j = jiffies;
+>  	unsigned long j1;
