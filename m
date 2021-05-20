@@ -2,223 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0170C38AD47
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32CF138ACCB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241384AbhETMBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:01:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48700 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241924AbhETMAw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:00:52 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4F8C04FF32;
-        Thu, 20 May 2021 03:22:21 -0700 (PDT)
-Date:   Thu, 20 May 2021 10:22:18 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621506139;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IB5WzEny1VMFztKI/99vS1hgVslzBteBSCM3j6Jl6P8=;
-        b=RjTutPHA9BN4olBfxAtmwR9szJ+hrDlIc4QumZx2b8Jup330HvXbS0UoJOGdF940K+obfS
-        dWiAuPre3m3JWwrnnbcQbm2TiqRucJIRmpTvZnOtj1P7n4m6oRMtaOiaIPKpEXF9pD8xHm
-        xuTZVhgNtilCddHrDFD/C+7q+1ZMmerK8m6c7/wQXxiEFUl3JsXU4GS+8oiTm38Xjg12ca
-        mbP2n13jQ14XXtgTqmknnX/4hudlAgUMeOduHGLu5LmxBj6RqujnDYC+s4QdSLfF52oQs/
-        LVO2EE2aMUu2KdjFYp070V1CIUjUW4qLOWDrNDC0Q1PVBgeYtfHqw6Rsg5Wrkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621506139;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IB5WzEny1VMFztKI/99vS1hgVslzBteBSCM3j6Jl6P8=;
-        b=9U4K/E3zYbkPZFgmIbKXY+Iyl3xc8yc43UcXBMYen+DY0+jvKYmQ3rF8GHIlihG09gHerN
-        5J2acNOIGCeCi9Bg==
-From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/sev-es: Use __put_user()/__get_user() for data accesses
-Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
-        stable@vger.kernel.org, #@tip-bot2.tec.linutronix.de,
-        v5.10+@tip-bot2.tec.linutronix.de, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210519135251.30093-4-joro@8bytes.org>
-References: <20210519135251.30093-4-joro@8bytes.org>
-MIME-Version: 1.0
-Message-ID: <162150613809.29796.2550841094526532766.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        id S242955AbhETLst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:48:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46006 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S241769AbhETLZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:25:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 142BA61279;
+        Thu, 20 May 2021 10:24:14 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ljfqe-002V85-2q; Thu, 20 May 2021 11:24:12 +0100
+Date:   Thu, 20 May 2021 11:24:11 +0100
+Message-ID: <871ra1vh2s.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 8/8] KVM: arm64: Document MTE capability and ioctl
+In-Reply-To: <3b4cca00-e81d-322e-6f65-4d0850aac5a5@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+        <20210517123239.8025-9-steven.price@arm.com>
+        <87r1i5teou.wl-maz@kernel.org>
+        <3b4cca00-e81d-322e-6f65-4d0850aac5a5@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On Wed, 19 May 2021 15:09:23 +0100,
+Steven Price <steven.price@arm.com> wrote:
+> 
+> On 17/05/2021 19:09, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 13:32:39 +0100,
+> > Steven Price <steven.price@arm.com> wrote:
+> >>
+> >> A new capability (KVM_CAP_ARM_MTE) identifies that the kernel supports
+> >> granting a guest access to the tags, and provides a mechanism for the
+> >> VMM to enable it.
+> >>
+> >> A new ioctl (KVM_ARM_MTE_COPY_TAGS) provides a simple way for a VMM to
+> >> access the tags of a guest without having to maintain a PROT_MTE mapping
+> >> in userspace. The above capability gates access to the ioctl.
+> >>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  Documentation/virt/kvm/api.rst | 53 ++++++++++++++++++++++++++++++++++
+> >>  1 file changed, 53 insertions(+)
+> >>
+> >> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+> >> index 22d077562149..a31661b870ba 100644
+> >> --- a/Documentation/virt/kvm/api.rst
+> >> +++ b/Documentation/virt/kvm/api.rst
+> >> @@ -5034,6 +5034,40 @@ see KVM_XEN_VCPU_SET_ATTR above.
+> >>  The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
+> >>  with the KVM_XEN_VCPU_GET_ATTR ioctl.
+> >>  
+> >> +4.130 KVM_ARM_MTE_COPY_TAGS
+> >> +---------------------------
+> >> +
+> >> +:Capability: KVM_CAP_ARM_MTE
+> >> +:Architectures: arm64
+> >> +:Type: vm ioctl
+> >> +:Parameters: struct kvm_arm_copy_mte_tags
+> >> +:Returns: 0 on success, < 0 on error
+> >> +
+> >> +::
+> >> +
+> >> +  struct kvm_arm_copy_mte_tags {
+> >> +	__u64 guest_ipa;
+> >> +	__u64 length;
+> >> +	union {
+> >> +		void __user *addr;
+> >> +		__u64 padding;
+> >> +	};
+> >> +	__u64 flags;
+> >> +	__u64 reserved[2];
+> >> +  };
+> > 
+> > This doesn't exactly match the structure in the previous patch :-(.
+> 
+> :( I knew there was a reason I didn't include it in the documentation
+> for the first 9 versions... I'll fix this up, thanks for spotting it.
+> 
+> >> +
+> >> +Copies Memory Tagging Extension (MTE) tags to/from guest tag memory. The
+> >> +``guest_ipa`` and ``length`` fields must be ``PAGE_SIZE`` aligned. The ``addr``
+> >> +fieldmust point to a buffer which the tags will be copied to or from.
+> >> +
+> >> +``flags`` specifies the direction of copy, either ``KVM_ARM_TAGS_TO_GUEST`` or
+> >> +``KVM_ARM_TAGS_FROM_GUEST``.
+> >> +
+> >> +The size of the buffer to store the tags is ``(length / MTE_GRANULE_SIZE)``
+> > 
+> > Should we add a UAPI definition for MTE_GRANULE_SIZE?
+> 
+> I wasn't sure whether to export this or not. The ioctl is based around
+> the existing ptrace interface (PTRACE_{PEEK,POKE}MTETAGS) which doesn't
+> expose a UAPI definition. Admittedly the documentation there also just
+> says "16-byte granule" rather than MTE_GRANULE_SIZE.
+> 
+> So I'll just remove the reference to MTE_GRANULE_SIZE in the
+> documentation unless you feel that we should have a UAPI definition.
 
-Commit-ID:     4954f5b8ef0baf70fe978d1a99a5f70e4dd5c877
-Gitweb:        https://git.kernel.org/tip/4954f5b8ef0baf70fe978d1a99a5f70e4dd5c877
-Author:        Joerg Roedel <jroedel@suse.de>
-AuthorDate:    Wed, 19 May 2021 15:52:46 +02:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 19 May 2021 18:45:37 +02:00
+Dropping the mention of this symbol and replacing it by the value 16
+matches the architecture and doesn't require any extra UAPI
+definition, so let's just do that.
 
-x86/sev-es: Use __put_user()/__get_user() for data accesses
+> 
+> >> +bytes (i.e. 1/16th of the corresponding size). Each byte contains a single tag
+> >> +value. This matches the format of ``PTRACE_PEEKMTETAGS`` and
+> >> +``PTRACE_POKEMTETAGS``.
+> >> +
+> >>  5. The kvm_run structure
+> >>  ========================
+> >>  
+> >> @@ -6362,6 +6396,25 @@ default.
+> >>  
+> >>  See Documentation/x86/sgx/2.Kernel-internals.rst for more details.
+> >>  
+> >> +7.26 KVM_CAP_ARM_MTE
+> >> +--------------------
+> >> +
+> >> +:Architectures: arm64
+> >> +:Parameters: none
+> >> +
+> >> +This capability indicates that KVM (and the hardware) supports exposing the
+> >> +Memory Tagging Extensions (MTE) to the guest. It must also be enabled by the
+> >> +VMM before the guest will be granted access.
+> >> +
+> >> +When enabled the guest is able to access tags associated with any memory given
+> >> +to the guest. KVM will ensure that the pages are flagged ``PG_mte_tagged`` so
+> >> +that the tags are maintained during swap or hibernation of the host; however
+> >> +the VMM needs to manually save/restore the tags as appropriate if the VM is
+> >> +migrated.
+> >> +
+> >> +When enabled the VMM may make use of the ``KVM_ARM_MTE_COPY_TAGS`` ioctl to
+> >> +perform a bulk copy of tags to/from the guest.
+> >> +
+> > 
+> > Missing limitation to AArch64 guests.
+> 
+> As mentioned previously it's not technically limited to AArch64, but
+> I'll expand this to make it clear that MTE isn't usable from a AArch32 VCPU.
 
-The put_user() and get_user() functions do checks on the address which is
-passed to them. They check whether the address is actually a user-space
-address and whether its fine to access it. They also call might_fault()
-to indicate that they could fault and possibly sleep.
+I believe the architecture is quite clear that it *is* limited to
+AArch64. The clarification is welcome though.
 
-All of these checks are neither wanted nor needed in the #VC exception
-handler, which can be invoked from almost any context and also for MMIO
-instructions from kernel space on kernel memory. All the #VC handler
-wants to know is whether a fault happened when the access was tried.
+	M.
 
-This is provided by __put_user()/__get_user(), which just do the access
-no matter what. Also add comments explaining why __get_user() and
-__put_user() are the best choice here and why it is safe to use them
-in this context. Also explain why copy_to/from_user can't be used.
-
-In addition, also revert commit
-
-  7024f60d6552 ("x86/sev-es: Handle string port IO to kernel memory properly")
-
-because using __get_user()/__put_user() fixes the same problem while
-the above commit introduced several problems:
-
-  1) It uses access_ok() which is only allowed in task context.
-
-  2) It uses memcpy() which has no fault handling at all and is
-     thus unsafe to use here.
-
-  [ bp: Fix up commit ID of the reverted commit above. ]
-
-Fixes: f980f9c31a92 ("x86/sev-es: Compile early handler code into kernel image")
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Cc: stable@vger.kernel.org # v5.10+
-Link: https://lkml.kernel.org/r/20210519135251.30093-4-joro@8bytes.org
----
- arch/x86/kernel/sev.c | 66 +++++++++++++++++++++++++++++-------------
- 1 file changed, 46 insertions(+), 20 deletions(-)
-
-diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
-index 1f428f4..651b81c 100644
---- a/arch/x86/kernel/sev.c
-+++ b/arch/x86/kernel/sev.c
-@@ -315,31 +315,44 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
- 	u16 d2;
- 	u8  d1;
- 
--	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
--	if (!user_mode(ctxt->regs) && !access_ok(target, size)) {
--		memcpy(dst, buf, size);
--		return ES_OK;
--	}
--
-+	/*
-+	 * This function uses __put_user() independent of whether kernel or user
-+	 * memory is accessed. This works fine because __put_user() does no
-+	 * sanity checks of the pointer being accessed. All that it does is
-+	 * to report when the access failed.
-+	 *
-+	 * Also, this function runs in atomic context, so __put_user() is not
-+	 * allowed to sleep. The page-fault handler detects that it is running
-+	 * in atomic context and will not try to take mmap_sem and handle the
-+	 * fault, so additional pagefault_enable()/disable() calls are not
-+	 * needed.
-+	 *
-+	 * The access can't be done via copy_to_user() here because
-+	 * vc_write_mem() must not use string instructions to access unsafe
-+	 * memory. The reason is that MOVS is emulated by the #VC handler by
-+	 * splitting the move up into a read and a write and taking a nested #VC
-+	 * exception on whatever of them is the MMIO access. Using string
-+	 * instructions here would cause infinite nesting.
-+	 */
- 	switch (size) {
- 	case 1:
- 		memcpy(&d1, buf, 1);
--		if (put_user(d1, target))
-+		if (__put_user(d1, target))
- 			goto fault;
- 		break;
- 	case 2:
- 		memcpy(&d2, buf, 2);
--		if (put_user(d2, target))
-+		if (__put_user(d2, target))
- 			goto fault;
- 		break;
- 	case 4:
- 		memcpy(&d4, buf, 4);
--		if (put_user(d4, target))
-+		if (__put_user(d4, target))
- 			goto fault;
- 		break;
- 	case 8:
- 		memcpy(&d8, buf, 8);
--		if (put_user(d8, target))
-+		if (__put_user(d8, target))
- 			goto fault;
- 		break;
- 	default:
-@@ -370,30 +383,43 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
- 	u16 d2;
- 	u8  d1;
- 
--	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
--	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
--		memcpy(buf, src, size);
--		return ES_OK;
--	}
--
-+	/*
-+	 * This function uses __get_user() independent of whether kernel or user
-+	 * memory is accessed. This works fine because __get_user() does no
-+	 * sanity checks of the pointer being accessed. All that it does is
-+	 * to report when the access failed.
-+	 *
-+	 * Also, this function runs in atomic context, so __get_user() is not
-+	 * allowed to sleep. The page-fault handler detects that it is running
-+	 * in atomic context and will not try to take mmap_sem and handle the
-+	 * fault, so additional pagefault_enable()/disable() calls are not
-+	 * needed.
-+	 *
-+	 * The access can't be done via copy_from_user() here because
-+	 * vc_read_mem() must not use string instructions to access unsafe
-+	 * memory. The reason is that MOVS is emulated by the #VC handler by
-+	 * splitting the move up into a read and a write and taking a nested #VC
-+	 * exception on whatever of them is the MMIO access. Using string
-+	 * instructions here would cause infinite nesting.
-+	 */
- 	switch (size) {
- 	case 1:
--		if (get_user(d1, s))
-+		if (__get_user(d1, s))
- 			goto fault;
- 		memcpy(buf, &d1, 1);
- 		break;
- 	case 2:
--		if (get_user(d2, s))
-+		if (__get_user(d2, s))
- 			goto fault;
- 		memcpy(buf, &d2, 2);
- 		break;
- 	case 4:
--		if (get_user(d4, s))
-+		if (__get_user(d4, s))
- 			goto fault;
- 		memcpy(buf, &d4, 4);
- 		break;
- 	case 8:
--		if (get_user(d8, s))
-+		if (__get_user(d8, s))
- 			goto fault;
- 		memcpy(buf, &d8, 8);
- 		break;
+-- 
+Without deviation from the norm, progress is not possible.
