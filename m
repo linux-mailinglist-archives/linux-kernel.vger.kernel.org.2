@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D8B38B4D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD29938B4D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbhETRBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:01:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56832 "EHLO mail.kernel.org"
+        id S238717AbhETRBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:01:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236314AbhETQ7K (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:59:10 -0400
+        id S239761AbhETQ73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:59:29 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C03F61363;
-        Thu, 20 May 2021 16:57:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B41B61353;
+        Thu, 20 May 2021 16:58:08 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgx-002d7b-MT; Thu, 20 May 2021 17:38:35 +0100
+        id 1ljlgy-002d7b-Kb; Thu, 20 May 2021 17:38:36 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 33/39] SH: Bulk conversion to generic_handle_domain_irq()
-Date:   Thu, 20 May 2021 17:37:45 +0100
-Message-Id: <20210520163751.27325-34-maz@kernel.org>
+Subject: [PATCH 34/39] ARM: Bulk conversion to generic_handle_domain_irq()
+Date:   Thu, 20 May 2021 17:37:46 +0100
+Message-Id: <20210520163751.27325-35-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -73,50 +73,50 @@ generic_handle_domain_irq().
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/sh/boards/mach-se/7343/irq.c  | 2 +-
- arch/sh/boards/mach-se/7722/irq.c  | 2 +-
- arch/sh/boards/mach-x3proto/gpio.c | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm/mach-pxa/pxa_cplds_irqs.c | 6 ++----
+ arch/arm/mach-s3c/irq-s3c24xx.c    | 5 ++---
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/arch/sh/boards/mach-se/7343/irq.c b/arch/sh/boards/mach-se/7343/irq.c
-index 1aedbfe32654..f9f3b14f70d5 100644
---- a/arch/sh/boards/mach-se/7343/irq.c
-+++ b/arch/sh/boards/mach-se/7343/irq.c
-@@ -38,7 +38,7 @@ static void se7343_irq_demux(struct irq_desc *desc)
- 	mask = ioread16(se7343_irq_regs + PA_CPLD_ST_REG);
+diff --git a/arch/arm/mach-pxa/pxa_cplds_irqs.c b/arch/arm/mach-pxa/pxa_cplds_irqs.c
+index ec0d9b094744..ce1bbabbad54 100644
+--- a/arch/arm/mach-pxa/pxa_cplds_irqs.c
++++ b/arch/arm/mach-pxa/pxa_cplds_irqs.c
+@@ -39,10 +39,8 @@ static irqreturn_t cplds_irq_handler(int in_irq, void *d)
  
- 	for_each_set_bit(bit, &mask, SE7343_FPGA_IRQ_NR)
--		generic_handle_irq(irq_linear_revmap(se7343_irq_domain, bit));
-+		generic_handle_domain_irq(se7343_irq_domain, bit);
+ 	do {
+ 		pending = readl(fpga->base + FPGA_IRQ_SET_CLR) & fpga->irq_mask;
+-		for_each_set_bit(bit, &pending, CPLDS_NB_IRQ) {
+-			generic_handle_irq(irq_find_mapping(fpga->irqdomain,
+-							    bit));
+-		}
++		for_each_set_bit(bit, &pending, CPLDS_NB_IRQ)
++			generic_handle_domain_irq(fpga->irqdomain, bit);
+ 	} while (pending);
  
- 	chip->irq_unmask(data);
- }
-diff --git a/arch/sh/boards/mach-se/7722/irq.c b/arch/sh/boards/mach-se/7722/irq.c
-index 6d34592767f8..efa96edd47dc 100644
---- a/arch/sh/boards/mach-se/7722/irq.c
-+++ b/arch/sh/boards/mach-se/7722/irq.c
-@@ -37,7 +37,7 @@ static void se7722_irq_demux(struct irq_desc *desc)
- 	mask = ioread16(se7722_irq_regs + IRQ01_STS_REG);
+ 	return IRQ_HANDLED;
+diff --git a/arch/arm/mach-s3c/irq-s3c24xx.c b/arch/arm/mach-s3c/irq-s3c24xx.c
+index 0c631c14a817..3edc5f614eef 100644
+--- a/arch/arm/mach-s3c/irq-s3c24xx.c
++++ b/arch/arm/mach-s3c/irq-s3c24xx.c
+@@ -298,7 +298,7 @@ static void s3c_irq_demux(struct irq_desc *desc)
+ 	struct s3c_irq_data *irq_data = irq_desc_get_chip_data(desc);
+ 	struct s3c_irq_intc *intc = irq_data->intc;
+ 	struct s3c_irq_intc *sub_intc = irq_data->sub_intc;
+-	unsigned int n, offset, irq;
++	unsigned int n, offset;
+ 	unsigned long src, msk;
  
- 	for_each_set_bit(bit, &mask, SE7722_FPGA_IRQ_NR)
--		generic_handle_irq(irq_linear_revmap(se7722_irq_domain, bit));
-+		generic_handle_domain_irq(se7722_irq_domain, bit);
+ 	/* we're using individual domains for the non-dt case
+@@ -318,8 +318,7 @@ static void s3c_irq_demux(struct irq_desc *desc)
+ 	while (src) {
+ 		n = __ffs(src);
+ 		src &= ~(1 << n);
+-		irq = irq_find_mapping(sub_intc->domain, offset + n);
+-		generic_handle_irq(irq);
++		generic_handle_domain_irq(sub_intc->domain, offset + n);
+ 	}
  
- 	chip->irq_unmask(data);
- }
-diff --git a/arch/sh/boards/mach-x3proto/gpio.c b/arch/sh/boards/mach-x3proto/gpio.c
-index efc992f641a6..f82d3a6a844a 100644
---- a/arch/sh/boards/mach-x3proto/gpio.c
-+++ b/arch/sh/boards/mach-x3proto/gpio.c
-@@ -68,7 +68,7 @@ static void x3proto_gpio_irq_handler(struct irq_desc *desc)
- 
- 	mask = __raw_readw(KEYDETR);
- 	for_each_set_bit(pin, &mask, NR_BASEBOARD_GPIOS)
--		generic_handle_irq(irq_linear_revmap(x3proto_irq_domain, pin));
-+		generic_handle_domain_irq(x3proto_irq_domain, pin);
- 
- 	chip->irq_unmask(data);
- }
+ 	chained_irq_exit(chip, desc);
 -- 
 2.30.2
 
