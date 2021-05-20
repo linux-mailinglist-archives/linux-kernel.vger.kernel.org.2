@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FB938B4C0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B69C38B4B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234880AbhETQ7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 12:59:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56304 "EHLO mail.kernel.org"
+        id S233977AbhETQ6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 12:58:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55442 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234230AbhETQ6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:58:55 -0400
+        id S233806AbhETQ6j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:58:39 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C3DE4613BE;
-        Thu, 20 May 2021 16:57:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 72A10613C1;
+        Thu, 20 May 2021 16:57:17 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlgc-002d7b-NV; Thu, 20 May 2021 17:38:15 +0100
+        id 1ljlge-002d7b-8T; Thu, 20 May 2021 17:38:16 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 17/39] irqdomain: Use struct_size() helper when allocating irqdomain
-Date:   Thu, 20 May 2021 17:37:29 +0100
-Message-Id: <20210520163751.27325-18-maz@kernel.org>
+Subject: [PATCH 18/39] irqdomain: Cache irq_data instead of a virq number in the revmap
+Date:   Thu, 20 May 2021 17:37:30 +0100
+Message-Id: <20210520163751.27325-19-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,30 +66,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Instead of open-coding the size computation of struct irqdomain,
-use the struct_size() helper instead.
+Caching a virq number in the revmap is pretty inefficient, as
+it means we will need to convert it back to either an irq_data
+or irq_desc to do anything with it.
 
-This is going to be handy as we change the type of the revmap
-array.
+It is also a bit odd, as the radix tree does cache irq_data
+pointers.
+
+Change the revmap type to be an irq_data pointer instead of
+an unsigned int, and preserve the current API for now.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- kernel/irq/irqdomain.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/irqdomain.h |  4 ++--
+ kernel/irq/irqdomain.c    | 16 +++++++++++-----
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index 0916cf9c6e20..340cc04611dd 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -151,7 +151,7 @@ struct irq_domain_chip_generic;
+  * Revmap data, used internally by irq_domain
+  * @revmap_size: Size of the linear map table @revmap[]
+  * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
+- * @revmap: Linear table of hwirq->virq reverse mappings
++ * @revmap: Linear table of irq_data pointers
+  */
+ struct irq_domain {
+ 	struct list_head link;
+@@ -174,7 +174,7 @@ struct irq_domain {
+ 	unsigned int revmap_size;
+ 	struct radix_tree_root revmap_tree;
+ 	struct mutex revmap_tree_mutex;
+-	unsigned int revmap[];
++	struct irq_data *revmap[];
+ };
+ 
+ /* Irq domain flags */
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index fa94c86e47d4..cdcb1989cd20 100644
+index cdcb1989cd20..7a4e38804487 100644
 --- a/kernel/irq/irqdomain.c
 +++ b/kernel/irq/irqdomain.c
-@@ -150,7 +150,7 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
- 		    (!IS_ENABLED(CONFIG_IRQ_DOMAIN_NOMAP) && direct_max)))
- 		return NULL;
+@@ -505,7 +505,7 @@ static void irq_domain_clear_mapping(struct irq_domain *domain,
+ 		return;
  
--	domain = kzalloc_node(sizeof(*domain) + (sizeof(unsigned int) * size),
-+	domain = kzalloc_node(struct_size(domain, revmap, size),
- 			      GFP_KERNEL, of_node_to_nid(to_of_node(fwnode)));
- 	if (!domain)
- 		return NULL;
+ 	if (hwirq < domain->revmap_size) {
+-		domain->revmap[hwirq] = 0;
++		domain->revmap[hwirq] = NULL;
+ 	} else {
+ 		mutex_lock(&domain->revmap_tree_mutex);
+ 		radix_tree_delete(&domain->revmap_tree, hwirq);
+@@ -521,7 +521,7 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
+ 		return;
+ 
+ 	if (hwirq < domain->revmap_size) {
+-		domain->revmap[hwirq] = irq_data->irq;
++		domain->revmap[hwirq] = irq_data;
+ 	} else {
+ 		mutex_lock(&domain->revmap_tree_mutex);
+ 		radix_tree_insert(&domain->revmap_tree, hwirq, irq_data);
+@@ -913,7 +913,7 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
+ 
+ 	/* Check if the hwirq is in the linear revmap. */
+ 	if (hwirq < domain->revmap_size)
+-		return domain->revmap[hwirq];
++		return domain->revmap[hwirq]->irq;
+ 
+ 	rcu_read_lock();
+ 	data = radix_tree_lookup(&domain->revmap_tree, hwirq);
+@@ -1496,8 +1496,14 @@ static void irq_domain_fix_revmap(struct irq_data *d)
+ {
+ 	void __rcu **slot;
+ 
+-	if (irq_domain_is_nomap(d->domain) || d->hwirq < d->domain->revmap_size)
+-		return; /* Not using radix tree. */
++	if (irq_domain_is_nomap(d->domain))
++		return;
++
++	if (d->hwirq < d->domain->revmap_size) {
++		/* Not using radix tree */
++		d->domain->revmap[d->hwirq] = d;
++		return;
++	}
+ 
+ 	/* Fix up the revmap. */
+ 	mutex_lock(&d->domain->revmap_tree_mutex);
 -- 
 2.30.2
 
