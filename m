@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0837938A9EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:06:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BA6138A9EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:06:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239416AbhETLHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:07:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49004 "EHLO mail.kernel.org"
+        id S239277AbhETLH4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:07:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238511AbhETKt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:49:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 98ADC61624;
-        Thu, 20 May 2021 09:59:02 +0000 (UTC)
+        id S238542AbhETKtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:49:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CAABA61CBC;
+        Thu, 20 May 2021 09:59:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504743;
-        bh=I8jmfYHEiMAQZxO0KSLEM3bvt/fJTbONMc5LuOWcpOg=;
+        s=korg; t=1621504745;
+        bh=tjkIxn5V8+0BzLdtAIO2twJtqa+6KImAIg9oC+bPsrw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=AJH7Lu3FnfF8WCRfhIkvgOE8QAnYZLMW2ygYpV3YB56WeKTbNNVHoWMtIujL3IL56
-         uFcf2BJJRlapECu/axuXsWvLJSgp5iR1QAWxWsa082S7AlefDNjDaUihD6aG3/ZqKb
-         cGCk6hL36DaK70UqsYUVvgAK2ZmFRP06IoAeMCkU=
+        b=k5a8z10VjsapXPvTs2meaHNSdXuTGFT+q+lxr+3V/10Rwiqm2PEmJKUuf6twvv8KS
+         XEE9GTRVHOL5JjsaT4osvWzKD2Z6/NkE6T641ipvRe66/ifuLfqXzhtHtXBgDHFYb3
+         7oKeuHTIvyV21Ls+uQJ4jeexBCpjR2gtxVZeb6F4=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, stable@kernel.org,
-        Fengnan Chang <changfengnan@vivo.com>,
-        Andreas Dilger <adilger@dilger.ca>,
-        Theodore Tso <tytso@mit.edu>
-Subject: [PATCH 4.9 060/240] ext4: fix error code in ext4_commit_super
-Date:   Thu, 20 May 2021 11:20:52 +0200
-Message-Id: <20210520092110.701773877@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: [PATCH 4.9 061/240] media: dvbdev: Fix memory leak in dvb_media_device_free()
+Date:   Thu, 20 May 2021 11:20:53 +0200
+Message-Id: <20210520092110.731561447@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -41,38 +41,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Fengnan Chang <changfengnan@vivo.com>
+From: Peilin Ye <yepeilin.cs@gmail.com>
 
-commit f88f1466e2a2e5ca17dfada436d3efa1b03a3972 upstream.
+commit bf9a40ae8d722f281a2721779595d6df1c33a0bf upstream.
 
-We should set the error code when ext4_commit_super check argument failed.
-Found in code review.
-Fixes: c4be0c1dc4cdc ("filesystem freeze: add error handling of write_super_lockfs/unlockfs").
+dvb_media_device_free() is leaking memory. Free `dvbdev->adapter->conn`
+before setting it to NULL, as documented in include/media/media-device.h:
+"The media_entity instance itself must be freed explicitly by the driver
+if required."
 
-Cc: stable@kernel.org
-Signed-off-by: Fengnan Chang <changfengnan@vivo.com>
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-Link: https://lore.kernel.org/r/20210402101631.561-1-changfengnan@vivo.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://syzkaller.appspot.com/bug?id=9bbe4b842c98f0ed05c5eed77a226e9de33bf298
+
+Link: https://lore.kernel.org/linux-media/20201211083039.521617-1-yepeilin.cs@gmail.com
+Cc: stable@vger.kernel.org
+Fixes: 0230d60e4661 ("[media] dvbdev: Add RF connector if needed")
+Reported-by: syzbot+7f09440acc069a0d38ac@syzkaller.appspotmail.com
+Signed-off-by: Peilin Ye <yepeilin.cs@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/ext4/super.c |    6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/media/dvb-core/dvbdev.c |    1 +
+ 1 file changed, 1 insertion(+)
 
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4678,8 +4678,10 @@ static int ext4_commit_super(struct supe
- 	struct buffer_head *sbh = EXT4_SB(sb)->s_sbh;
- 	int error = 0;
+--- a/drivers/media/dvb-core/dvbdev.c
++++ b/drivers/media/dvb-core/dvbdev.c
+@@ -216,6 +216,7 @@ static void dvb_media_device_free(struct
  
--	if (!sbh || block_device_ejected(sb))
--		return error;
-+	if (!sbh)
-+		return -EINVAL;
-+	if (block_device_ejected(sb))
-+		return -ENODEV;
- 
- 	/*
- 	 * If the file system is mounted read-only, don't update the
+ 	if (dvbdev->adapter->conn) {
+ 		media_device_unregister_entity(dvbdev->adapter->conn);
++		kfree(dvbdev->adapter->conn);
+ 		dvbdev->adapter->conn = NULL;
+ 		kfree(dvbdev->adapter->conn_pads);
+ 		dvbdev->adapter->conn_pads = NULL;
 
 
