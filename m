@@ -2,152 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0B538B73B
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6796D38B73E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237958AbhETTUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:20:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237888AbhETTUF (ORCPT
+        id S237136AbhETTUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:20:17 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:29679 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237749AbhETTUM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:20:05 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F8EC061343
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:35 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id x18so8804279pfi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IbDNLG0jf9xOveSRgWid326dIGGUMcgFP2QxrRiUBDk=;
-        b=OaPenAgnZ75QKdCdKloLhNQb8Z9zXb5fJlf0AMLUNKyh2IQyG6fOH8SGnMsDGhQR/D
-         Z9GPJJDcyauRgwCRYOZRPKS278ksdR/VyE8apmokWZ2PCalyDyI3xXG8oHMZaYvZRzzz
-         w3CkorenoyU81j9m4YTf76wBV5NYQ99BmlPqD7bL9EMsML4WjHcPR1CUPHX/0KyYbhA7
-         OoaaLPq6Mi0sOhY75JsC1sO405LIeswBGhCQ5djqy1IrPLVPwvRRKaSvWhS0ksDy/dQr
-         Kt8Fdu/GK4aWb1xBVzywxIGiWrxK0sJEFOfU0h0kj8rr060s1oQW3NL4Gel3uBSfa8CU
-         7dBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IbDNLG0jf9xOveSRgWid326dIGGUMcgFP2QxrRiUBDk=;
-        b=Ei0FoUepeSYJuff8echkxgDW4ZLRmROmglKy5lWmJ25YTQFZT/0/FtBrUmyRCJt3Ks
-         RcuHPNa44SafyHdrWPHzd6sRQ6kLMbloc5WZVBGPK+ORiz3MY/quMn1X5JInODu2gWSG
-         zv+7+3F2/FR6CGcGgTbTNF1SURASLfvLf+5N521u1kTA58fqe7jRFv50L0M+fjZdxvFS
-         v+uJzCUQPdQ/lgj5m8DW3SZK1QNlL4QsIxyDNuNkbWYw766JpaYvTjeanRnKj9IQs9xD
-         7nhviX0NqnAMD4bXlgglx4QMgg0GtSAZVitgI2mVOC8mivAYiBkSe/Rbnr+tQh2qXDtc
-         06vg==
-X-Gm-Message-State: AOAM531D3D1nVxfOB9PjJVym0eL9FLsAq/3RPodlUvHat9L2vjHUbKKY
-        a3A1IA8QgR4+m22YWh9sghAYpg2G0BtKbm5FJaNpaw==
-X-Google-Smtp-Source: ABdhPJx0izHau/v0BeugY1T+uAckk0gggIKe/29kNNx6qL1yZBDyGN2pLdLwJC0lLKZqaHBfgv69XBzvHeRM5/9yCDU=
-X-Received: by 2002:a63:5511:: with SMTP id j17mr6130803pgb.191.1621538315098;
- Thu, 20 May 2021 12:18:35 -0700 (PDT)
+        Thu, 20 May 2021 15:20:12 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id C0956521428;
+        Thu, 20 May 2021 22:18:46 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1621538326;
+        bh=ynHxPwASThf1EJnj3clRfhUuzSRHxC2klA5K8rmsOPI=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=3vvc9LZWgrbqOT+yVMbNAQzbXxWlQSVS19v6ng4KGgMrFM5MfrWaK1YMptR5pB3ds
+         hfW6wgsPxKr/T9eq9XCl0nxqfXFSr35CjQaX7MQPUE4glnd2SGiJRuV3ACfZGe5nJS
+         AGVjm42kg9iXgeSTML0UenFV8T863HEhY/VExf7xmDqr2Wyev8qwL/oD2AHa1FQ+fC
+         WHBb8SJr7/SRr9asUNzTJzsTNPfLbt4aPqViojNVMG91xAhLgsEqgMfLvLgj//0lix
+         BhLu+PFI1JqH/eJywk4OogvNYVl5o+k0Bn7KvZn7YvLryq5LNWayFSUtPI6T85/oG1
+         m043uql8nc1HA==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 700F452144A;
+        Thu, 20 May 2021 22:18:46 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
+ May 2021 22:18:45 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Norbert Slusarek <nslusarek@gmx.net>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [PATCH v10 13/18] virtio/vsock: rest of SOCK_SEQPACKET support
+Date:   Thu, 20 May 2021 22:18:37 +0300
+Message-ID: <20210520191840.1272290-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-References: <20210513234309.366727-1-almasrymina@google.com>
- <CAHS8izNkBvS9gkSjy8FbWBOPDynwr8PXXXbMHt_2=5sZJsa6-Q@mail.gmail.com> <09dc0712-48e8-8ba2-f170-4c2febcfff83@oracle.com>
-In-Reply-To: <09dc0712-48e8-8ba2-f170-4c2febcfff83@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 20 May 2021 12:18:24 -0700
-Message-ID: <CAHS8izN3+DwCMnVotW7UoiROKEpBh=i+n2jb+oMJQwbKeegx7Q@mail.gmail.com>
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx1.avp.ru (10.64.67.241) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: arseniy-pc.avp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 5:14 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 5/13/21 4:49 PM, Mina Almasry wrote:
-> > On Thu, May 13, 2021 at 4:43 PM Mina Almasry <almasrymina@google.com> wrote:
-> >>
-> >> When hugetlb_mcopy_atomic_pte() is called with:
-> >> - mode==MCOPY_ATOMIC_NORMAL and,
-> >> - we already have a page in the page cache corresponding to the
-> >> associated address,
-> >>
-> >> We will allocate a huge page from the reserves, and then fail to insert it
-> >> into the cache and return -EEXIST. In this case, we need to return -EEXIST
-> >> without allocating a new page as the page already exists in the cache.
-> >> Allocating the extra page causes the resv_huge_pages to underflow temporarily
-> >> until the extra page is freed.
-> >>
-> >> To fix this we check if a page exists in the cache, and allocate it and
-> >> insert it in the cache immediately while holding the lock. After that we
-> >> copy the contents into the page.
-> >>
-> >> As a side effect of this, pages may exist in the cache for which the
-> >> copy failed and for these pages PageUptodate(page) == false. Modify code
-> >> that query the cache to handle this correctly.
-> >>
-> >
-> > To be honest, I'm not sure I've done this bit correctly. Please take a
-> > look and let me know what you think. It may be too overly complicated
-> > to have !PageUptodate() pages in the cache and ask the rest of the
-> > code to handle that edge case correctly, but I'm not sure how else to
-> > fix this issue.
-> >
->
-> I think you just moved the underflow from hugetlb_mcopy_atomic_pte to
-> hugetlb_no_page.  Why?
->
-> Consider the case where there is only one reserve left and someone does
-> the MCOPY_ATOMIC_NORMAL for the address.  We will allocate the page and
-> consume the reserve (reserve count == 0) and insert the page into the
-> cache.  Now, if the copy_huge_page_from_user fails we must drop the
-> locks/fault mutex to do the copy.  While locks are dropped, someone
-> faults on the address and ends up in hugetlb_no_page.  The page is in
-> the cache but not up to date, so we go down the allocate new page path
-> and will decrement the reserve count again to cause underflow.
->
-> How about this approach?
-> - Keep the check for hugetlbfs_pagecache_present in hugetlb_mcopy_atomic_pte
->   that you added.  That will catch the race where the page was added to
->   the cache before entering the routine.
-> - With the above check in place, we only need to worry about the case
->   where copy_huge_page_from_user fails and we must drop locks.  In this
->   case we:
->   - Free the page previously allocated.
->   - Allocate a 'temporary' huge page without consuming reserves.  I'm
->     thinking of something similar to page migration.
->   - Drop the locks and let the copy_huge_page_from_user be done to the
->     temporary page.
->   - When reentering hugetlb_mcopy_atomic_pte after dropping locks (the
->     *pagep case) we need to once again check
->     hugetlbfs_pagecache_present.
->   - We then try to allocate the huge page which will consume the
->     reserve.  If successful, copy contents of temporary page to newly
->     allocated page.  Free temporary page.
->
-> There may be issues with this, and I have not given it deep thought.  It
-> does abuse the temporary huge page concept, but perhaps no more than
-> page migration.  Things do slow down if the extra page allocation and
-> copy is required, but that would only be the case if copy_huge_page_from_user
-> needs to be done without locks.  Not sure, but hoping that is rare.
+Small updates to make SOCK_SEQPACKET work:
+1) Send SHUTDOWN on socket close for SEQPACKET type.
+2) Set SEQPACKET packet type during send.
+3) Set 'VIRTIO_VSOCK_SEQ_EOR' bit in flags for last
+   packet of message.
 
-Just following up this a bit: I've implemented this approach locally,
-and with it it's passing the test as-is. When I hack the code such
-that the copy in hugetlb_mcopy_atomic_pte() always fails, I run into
-this edge case, which causes resv_huge_pages to underflow again (this
-time permemantly):
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
+---
+ v9 -> v10:
+ 1) Use 'msg_data_left()' instead of direct access to 'msg_hdr'.
+ 2) Commit message updated.
+ 3) Add check for socket type when setting SEQ_EOR bit.
 
-- hugetlb_no_page() is called on an index and a page is allocated and
-inserted into the cache consuming the reservation.
-- remove_huge_page() is called on this index and the page is removed from cache.
-- hugetlb_mcopy_atomic_pte() is called on this index, we do not find
-the page in the cache and we trigger this code patch and the copy
-fails.
-- The allocations in this code path seem to double consume the
-reservation and resv_huge_pages underflows.
+ include/linux/virtio_vsock.h            |  4 ++++
+ net/vmw_vsock/virtio_transport_common.c | 18 ++++++++++++++++--
+ 2 files changed, 20 insertions(+), 2 deletions(-)
 
-I'm looking at this edge case to understand why a prior
-remove_huge_page() causes my code to underflow resv_huge_pages.
+diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+index 02acf6e9ae04..7360ab7ea0af 100644
+--- a/include/linux/virtio_vsock.h
++++ b/include/linux/virtio_vsock.h
+@@ -80,6 +80,10 @@ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+ 			       struct msghdr *msg,
+ 			       size_t len, int flags);
+ 
++int
++virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
++				   struct msghdr *msg,
++				   size_t len);
+ ssize_t
+ virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+ 				   struct msghdr *msg,
+diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+index a6f8b0f39775..f7a3281b3eab 100644
+--- a/net/vmw_vsock/virtio_transport_common.c
++++ b/net/vmw_vsock/virtio_transport_common.c
+@@ -74,6 +74,11 @@ virtio_transport_alloc_pkt(struct virtio_vsock_pkt_info *info,
+ 		err = memcpy_from_msg(pkt->buf, info->msg, len);
+ 		if (err)
+ 			goto out;
++
++		if (msg_data_left(info->msg) == 0 &&
++		    info->type == VIRTIO_VSOCK_TYPE_SEQPACKET)
++			pkt->hdr.flags = cpu_to_le32(info->flags |
++						VIRTIO_VSOCK_SEQ_EOR);
+ 	}
+ 
+ 	trace_virtio_transport_alloc_pkt(src_cid, src_port,
+@@ -187,7 +192,7 @@ static int virtio_transport_send_pkt_info(struct vsock_sock *vsk,
+ 	struct virtio_vsock_pkt *pkt;
+ 	u32 pkt_len = info->pkt_len;
+ 
+-	info->type = VIRTIO_VSOCK_TYPE_STREAM;
++	info->type = virtio_transport_get_type(sk_vsock(vsk));
+ 
+ 	t_ops = virtio_transport_get_ops(vsk);
+ 	if (unlikely(!t_ops))
+@@ -478,6 +483,15 @@ virtio_transport_seqpacket_dequeue(struct vsock_sock *vsk,
+ }
+ EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_dequeue);
+ 
++int
++virtio_transport_seqpacket_enqueue(struct vsock_sock *vsk,
++				   struct msghdr *msg,
++				   size_t len)
++{
++	return virtio_transport_stream_enqueue(vsk, msg, len);
++}
++EXPORT_SYMBOL_GPL(virtio_transport_seqpacket_enqueue);
++
+ int
+ virtio_transport_dgram_dequeue(struct vsock_sock *vsk,
+ 			       struct msghdr *msg,
+@@ -912,7 +926,7 @@ void virtio_transport_release(struct vsock_sock *vsk)
+ 	struct sock *sk = &vsk->sk;
+ 	bool remove_sock = true;
+ 
+-	if (sk->sk_type == SOCK_STREAM)
++	if (sk->sk_type == SOCK_STREAM || sk->sk_type == SOCK_SEQPACKET)
+ 		remove_sock = virtio_transport_close(vsk);
+ 
+ 	if (remove_sock) {
+-- 
+2.25.1
 
-> --
-> Mike Kravetz
