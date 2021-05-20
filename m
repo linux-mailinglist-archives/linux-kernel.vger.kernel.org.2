@@ -2,141 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9A738ACCA
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EA638AD41
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242931AbhETLsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:48:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241733AbhETLZZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:25:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C3B0F61441;
-        Thu, 20 May 2021 10:16:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621505807;
-        bh=CNpVJE3RYe0c2aFu09c+Q6PiGWS30OlaJEezwJN5FyA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FrifPBqYl97wkhjbu0C1WYT9XYbJjq+dXoI+goHcgUxbOBMCkgHSIsisXCGHCOd+V
-         9/uDX4pWVsJ7/4gWYua6WQVnoGsvGfjpiyHgLrip0Ay+I2hEeUhPlS6eg4DN/EJcxP
-         7rZmpiAAd+XuFWzPCOjETwtSjwyDHowF/0jg6o/bLN33iPLVZ7ifjVWL7eGyMgWbyt
-         oDr4uaXemk29XsbKlTVtc3nYo5ab8p8pKnb1b4DPU9ROo8CkEhsClmJQMjC0CVZSeR
-         CO3xRolOhRwpZF5fbmXPQnseN22EwZ7LRA/n9nJ8q3Bjefs1a5XEKGQQ9Tmct08R1F
-         22q60Emo0Zkqw==
-Date:   Thu, 20 May 2021 11:16:41 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <20210520101640.GA10065@willie-the-truck>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-14-will@kernel.org>
- <YKOU9onXUxVLPGaB@google.com>
- <20210518102833.GA7770@willie-the-truck>
- <YKObZ1GcfVIVWRWt@google.com>
- <20210518105951.GC7770@willie-the-truck>
- <YKO+9lPLQLPm4Nwt@google.com>
- <YKYoQ0ezahSC/RAg@localhost.localdomain>
+        id S241907AbhETMAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243933AbhETMAG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:00:06 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EE8C0611C9;
+        Thu, 20 May 2021 03:21:15 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id t17so2329275ljd.9;
+        Thu, 20 May 2021 03:21:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K2cc8lrs7KTJ2rzXzsJVI1VFEnWT2ol2a83/8eM7dQs=;
+        b=jHMAj+TPqUK6uCBdJ9yQMBnfh/ME17wsDvCEiziK9Mqs5YOmrpQcTkvOKoGM6tydQZ
+         PqIpkU7FieU5u2Fv93H0TxQnA6ZzjXE3M84osHh0Y9hn7J6suhFrrPy7xxpI2NdBAAwT
+         JZ2oxbt/Xv2Y/EnBUPNYNXmIVhe8Wj6YS64ldN7h7Nu07LxSPBvku/2tRTwXgnG+KkdZ
+         UeKMv4ZNXcaWC/BjjYEol9GE47uU6MMUWIaH0rPbcOs1BLP6Hjvc9QC+ngHIpWpKEE6c
+         qs7cGnGNQoZc6EhD7XDRLkf1lEYp26BStuc6kj4NgZ/myUBqoaL6yA4AN49/9yz8hxaO
+         2mCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K2cc8lrs7KTJ2rzXzsJVI1VFEnWT2ol2a83/8eM7dQs=;
+        b=sUhQ+Kp5pSVIv/GDkBY3Z7YBR04X0GLfp/6nFtDhKYBI9gmZwtIGz00jDvU5Jih2/Y
+         USa43j3tFQMX5jxnq/bAGU9isEk7jIGYEwtGyfIKqc6DBvTB4lTx1FATXN7soO2v4Uwc
+         eJE2iWP1b9wiqfBOI2AzOySHWxw2OMqgqMmm1+Y6geJHpE5/atSYDOukwoYJgKFKT00e
+         b6xeqIfnMJlja8J5rNsur7oCNmya4aH47qXBx/3Sp0iv2D2SLbcRDuK3F5n9ycwnG47R
+         aL/gpnUyzjL1WOZ6784cu019L1kOSfeb0OKio6kj0RSQNZh9ZKUc35ZrBaij7oNAiLdB
+         lf6Q==
+X-Gm-Message-State: AOAM533oGBoW0clfpzqGvDV+0F1u1U7T8E242pg8urat9eui/nHXPF/E
+        b1WLoUahcyLKJ9YCVpUuHALlPqpm0IoyFQPzC9BFHMUHpcaMKg==
+X-Google-Smtp-Source: ABdhPJzP0EzigPL60MzO730q2rJB5lyvpkC19VIvrAuQao49kViHZ8hbh47wf1reVrYu9RHb2Jjpg9oWxOU3efr1j7g=
+X-Received: by 2002:a2e:1602:: with SMTP id w2mr2572231ljd.510.1621506073369;
+ Thu, 20 May 2021 03:21:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKYoQ0ezahSC/RAg@localhost.localdomain>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210520015704.489737-1-andrew@aj.id.au> <CAKXUXMxTnz6edBLpBgqOo6uUiSGm8rULH9P8G24xx2OhP_Yb6A@mail.gmail.com>
+ <a0d1f44a-c8ff-4108-af34-6455b5683262@www.fastmail.com> <CABJPP5C7ZokRycaE0aAvUv3BfOJqOvPyqn-P0bbPdyCfnuuESw@mail.gmail.com>
+ <72ed5aa8-bca5-451d-9458-48735fc17b84@www.fastmail.com>
+In-Reply-To: <72ed5aa8-bca5-451d-9458-48735fc17b84@www.fastmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 20 May 2021 15:51:00 +0530
+Message-ID: <CABJPP5AMPL22dJ2YKNqdTtHrTJRr=SKnxo05PKn9FoveNX7tow@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: checkpatch: Tweak BIT() macro include
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        openbmc@lists.ozlabs.org, Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Juri,
+On Thu, May 20, 2021 at 3:15 PM Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+>
+>
+> On Thu, 20 May 2021, at 18:47, Dwaipayan Ray wrote:
+> > On Thu, May 20, 2021 at 12:55 PM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > >
+> > >
+> > >
+> > > On Thu, 20 May 2021, at 16:28, Lukas Bulwahn wrote:
+> > > > On Thu, May 20, 2021 at 3:57 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+> > > > >
+> > > > > While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> > > > > include/linux/bits.h in [1]. Since [1] BIT() has moved again into
+> > > > > include/vdso/bits.h via [2].
+> > > > >
+> > > > > I think the move to the vDSO header can be considered a implementation
+> > > > > detail, so for now update the checkpatch documentation to recommend use
+> > > > > of include/linux/bits.h.
+> > > > >
+> > > > > [1] commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file")
+> > > > > [2] commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
+> > > > >
+> > > > > Cc: Jiri Slaby <jirislaby@kernel.org>
+> > > > > Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> > > >
+> > > > Looks sound to me.
+> > > >
+> > > > I would prefer a bit of word-smithing the commit message by just
+> > > > removing the references:
+> > > >
+> > > > So:
+> > > >
+> > > > > While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> > > > > include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file"). Since that commit, BIT() has moved again into
+> > > > > include/vdso/bits.h via commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
+> > > > >
+> > > > > I think the move to the vDSO header can be considered a implementation
+> > > > > detail, so for now update the checkpatch documentation to recommend use
+> > > > > of include/linux/bits.h.
+> > > > >
+> > > >
+> > > > And then drop references [1] and [2].
+> > > >
+> > > > Andrew, what do you think?
+> > >
+> > > I mostly did this because initially I wrapped the commit message and
+> > > checkpatch spat out errors when it failed to properly identify the
+> > > commit description for [1]. But, leaving the description unwrapped
+> > > inline in the text feels untidy as it's just a work-around to dodge a
+> > > shortcoming of checkpatch.
+> > >
+> > > With the reference style the long line moves out of the way and
+> > > checkpatch can identify the commit descriptions, at the expense of
+> > > complaints about line length instead. But the line length issue was
+> > > only a warning and so didn't seem quite so critical.
+> > >
+> > > While the referencing style is terse I felt it was a reasonable
+> > > compromise that didn't involve fixing checkpatch to fix the checkpatch
+> > > documentation :/
+> > >
+> >
+> > Hey,
+> > Can you share which wrap around caused the checkpatch errors
+> > to be emitted? We can try to fix that.
+> >
+> > I was able to wrap it without checkpatch complaining. You might consider
+> > replacing it with this if you wish?
+> >
+> > While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> > include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+> > Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
+>
+> This wording works because the commit description is only split across
+> two lines. With the wording I had it was split across three, and this
+> caused checkpatch to barf. If we do this:
+>
 
-On Thu, May 20, 2021 at 11:13:39AM +0200, Juri Lelli wrote:
-> Apologies for the delay in replying.
+Yes it won't work for 3 lines. We are checking only for an additional line
+for split commit descriptions. Might be a thing to improve in the future.
 
-Not at all!
+> While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+> Move some macros from <linux/bitops.h> to a new <linux/bits.h>
+> file").
+>
+> we get:
+>
+> ERROR: Please use git commit description style 'commit <12+ chars of sha1> ("<title line>")' - ie: 'commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file")'
+> #7:
+> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+>
+> total: 1 errors, 0 warnings, 8 lines checked
+>
+> Anyway, I've replaced the commit message with your suggestion:
+>
+> https://lore.kernel.org/linux-doc/20210520093949.511471-1-andrew@aj.id.au/
+>
+> Thanks for work-shopping it :)
+>
 
-> On 18/05/21 13:19, Quentin Perret wrote:
-> > On Tuesday 18 May 2021 at 11:59:51 (+0100), Will Deacon wrote:
-> > > On Tue, May 18, 2021 at 10:48:07AM +0000, Quentin Perret wrote:
-> > > > On Tuesday 18 May 2021 at 11:28:34 (+0100), Will Deacon wrote:
-> > > > > I don't have strong opinions on this, but I _do_ want the admission via
-> > > > > sched_setattr() to be consistent with execve(). What you're suggesting
-> > > > > ticks that box, but how many applications are prepared to handle a failed
-> > > > > execve()? I suspect it will be fatal.
-> > > > 
-> > > > Yep, probably.
-> > > > 
-> > > > > Probably also worth pointing out that the approach here will at least
-> > > > > warn in the execve() case when the affinity is overridden for a deadline
-> > > > > task.
-> > > > 
-> > > > Right so I think either way will be imperfect, so I agree with the
-> > > > above.
-> > > > 
-> > > > Maybe one thing though is that, IIRC, userspace _can_ disable admission
-> > > > control if it wants to. In this case I'd have no problem with allowing
-> > > > this weird behaviour when admission control is off -- the kernel won't
-> > > > provide any guarantees. But if it's left on, then it's a different
-> > > > story.
-> > > > 
-> > > > So what about we say, if admission control is off, we allow execve() and
-> > > > sched_setattr() with appropriate warnings as you suggest, but if
-> > > > admission control is on then we fail both?
-> > > 
-> > > That's an interesting idea. The part that I'm not super keen about is
-> > > that it means admission control _also_ has an effect on the behaviour of
-> > > execve()
-> > 
-> > Right, that's a good point. And it looks like fork() behaves the same
-> > regardless of admission control being enabled or not -- it is forbidden
-> > from DL either way. So I can't say there is a precedent :/
-> > 
-> > > so practically you'd have to have it disabled as long as you
-> > > have the possibility of 32-bit deadline tasks anywhere in the system,
-> > > which impacts 64-bit tasks which may well want admission control enabled.
-> > 
-> > Indeed, this is a bit sad, but I don't know if the kernel should pretend
-> > it can guarantee to meet your deadlines and at the same time allow to do
-> > something that wrecks the underlying theory.
-> > 
-> > I'd personally be happy with saying that admission control should be
-> > disabled on these dumb systems (and have that documented), at least
-> > until DL gets proper support for affinities. ISTR there was work going
-> > in that direction, but some folks in the CC list will know better.
-> > 
-> > @Juri, maybe you would know if that's still planned?
-> 
-> I won't go as far as saying planned, but that is still under "our" radar
-> for sure. Daniel was working on it, but I don't think he had any time to
-> resume that bit of work lately.
-> 
-> So, until we have that, I think we have been as conservative as we could
-> for this type of decisions. I'm a little afraid that allowing
-> configuration to break admission control (even with a non fatal warning
-> is emitted) is still risky. I'd go with fail hard if AC is on, let it
-> pass if AC is off (supposedly the user knows what to do). But I'm not
-> familiar with the mixed 32/64 apps usecase you describe, so I might be
-> missing details.
+Thanks for the patch :)
 
-Ok, thanks for the insight. In which case, I'll go with what we discussed:
-require admission control to be disabled for sched_setattr() but allow
-execve() to a 32-bit task from a 64-bit deadline task with a warning (this
-is probably similar to CPU hotplug?).
-
-I'll update that for v8, and this patch will disappear.
-
-Will
+Dwaipayan.
