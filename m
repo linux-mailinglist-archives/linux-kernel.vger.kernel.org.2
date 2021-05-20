@@ -2,94 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B46C038A185
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:30:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38D3D38A0D5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:25:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhETJby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:31:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
+        id S231641AbhETJ0R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:26:17 -0400
+Received: from mga07.intel.com ([134.134.136.100]:25217 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232394AbhETJ3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:29:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4FF6613BB;
-        Thu, 20 May 2021 09:27:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502839;
-        bh=W42O8Wv/8lMaanREDKsHj35vnriAM2s9KOhNS7F29KY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U17jX2/YIGC+0AEJQT3Q/B8uxJM7vSygHdESG6tvuNBx7uheF+hcGhQi06t5U9Amc
-         dh8nuN4S067y/yNs5gEoDpDt6P4N/B9lK93KhqKIOq/nYGvmkNFL5v1aKKp4qAcYtA
-         ziN+QDvo91DH/fHJRZ7PTNVwtMflxr37aceGp/Bc=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 36/47] gpiolib: acpi: Add quirk to ignore EC wakeups on Dell Venue 10 Pro 5055
-Date:   Thu, 20 May 2021 11:22:34 +0200
-Message-Id: <20210520092054.708944648@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-References: <20210520092053.559923764@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S231584AbhETJ0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:26:08 -0400
+IronPort-SDR: BO7oiCpGKPd8EftbGf1nzw2d913hBUSrm5WredVIWezmcJOfx5QLIwU/OYsDpbfT71VMEA4BD1
+ yI8AJMYGOeBA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="265097263"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="265097263"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:24:47 -0700
+IronPort-SDR: Etc2GQhGchnN4xp520cc+mOggfx1lrYzlgf8MeQUXDsE3UTJWlffOSk0/xhVgGmCOcy0XuK90R
+ myMCRHwWbJOw==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="473923820"
+Received: from shao2-debian.sh.intel.com (HELO [10.239.13.11]) ([10.239.13.11])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 02:24:45 -0700
+Subject: Re: [kbuild-all] Re: kernel/sched/fair.c:9551:12: warning: stack
+ frame size of 1376 bytes in function 'load_balance'
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+References: <202105112356.JuDlybKz-lkp@intel.com>
+ <CAKfTPtB9B9jv_uSk0fS7uOTtH5FCwLcAOrPjtXzRuURLUMFnoA@mail.gmail.com>
+ <CAK8P3a0YVh=hoBthjH7N=mSXOi0fEdwvyuHUJ36qricqVUZ9jA@mail.gmail.com>
+From:   Rong Chen <rong.a.chen@intel.com>
+Message-ID: <cae151a3-7d88-a1fd-4d34-d599238f6a4e@intel.com>
+Date:   Thu, 20 May 2021 17:23:34 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a0YVh=hoBthjH7N=mSXOi0fEdwvyuHUJ36qricqVUZ9jA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
-
-[ Upstream commit da91ece226729c76f60708efc275ebd4716ad089 ]
-
-Like some other Bay and Cherry Trail SoC based devices the Dell Venue
-10 Pro 5055 has an embedded-controller which uses ACPI GPIO events to
-report events instead of using the standard ACPI EC interface for this.
-
-The EC interrupt is only used to report battery-level changes and
-it keeps doing this while the system is suspended, causing the system
-to not stay suspended.
-
-Add an ignore-wake quirk for the GPIO pin used by the EC to fix the
-spurious wakeups from suspend.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/gpio/gpiolib-acpi.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
-index 863f059bc498..6f11714ce023 100644
---- a/drivers/gpio/gpiolib-acpi.c
-+++ b/drivers/gpio/gpiolib-acpi.c
-@@ -1407,6 +1407,20 @@ static const struct dmi_system_id gpiolib_acpi_quirks[] __initconst = {
- 			.no_edge_events_on_boot = true,
- 		},
- 	},
-+	{
-+		/*
-+		 * The Dell Venue 10 Pro 5055, with Bay Trail SoC + TI PMIC uses an
-+		 * external embedded-controller connected via I2C + an ACPI GPIO
-+		 * event handler on INT33FFC:02 pin 12, causing spurious wakeups.
-+		 */
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 10 Pro 5055"),
-+		},
-+		.driver_data = &(struct acpi_gpiolib_dmi_quirk) {
-+			.ignore_wake = "INT33FC:02@12",
-+		},
-+	},
- 	{
- 		/*
- 		 * HP X2 10 models with Cherry Trail SoC + TI PMIC use an
--- 
-2.30.2
 
 
+On 5/19/21 8:32 PM, Arnd Bergmann wrote:
+> On Mon, May 17, 2021 at 3:45 PM Vincent Guittot
+> <vincent.guittot@linaro.org> wrote:
+>> On Tue, 11 May 2021 at 18:01, kernel test robot <lkp@intel.com> wrote:
+>>> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+>>> head:   1140ab592e2ebf8153d2b322604031a8868ce7a5
+>>> commit: 0826530de3cbdc89e60a89e86def94a5f0fc81ca sched/fair: Remove update of blocked load from newidle_balance
+>>> date:   9 weeks ago
+>>> config: mips-randconfig-r022-20210511 (attached as .config)
+>>> compiler: clang version 13.0.0 (https://github.com/llvm/llvm-project a0fed635fe1701470062495a6ffee1c608f3f1bc)
+>>> reproduce (this is a W=1 build):
+>>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>>          chmod +x ~/bin/make.cross
+>>>          # install mips cross compiling tool for clang build
+>>>          # apt-get install binutils-mips-linux-gnu
+>>>          # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=0826530de3cbdc89e60a89e86def94a5f0fc81ca
+>>>          git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>>>          git fetch --no-tags linus master
+>>>          git checkout 0826530de3cbdc89e60a89e86def94a5f0fc81ca
+>>>          # save the attached .config to linux build tree
+>>>          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross W=1 ARCH=mips
+>> It was a bit difficult to find the warning among the thousand
+> I opened an issue against clang about it:
+>
+> See https://github.com/ClangBuiltLinux/linux/issues/1379
+
+Hi Arnd,
+
+We have disabled CONFIG_UBSAN_ALIGNMENT for mips/clang in our kconfigs
+according to the comments in the above link.
+
+Best Regards,
+Rong Chen
+
+>
+> but then found that this is already known. I think it would be best to
+> make the kernel test robot
+> set CONFIG_COMPILE_TEST to avoid issues like this. I have annotated a
+> number of symbols
+> that are known to cause unnecessary false positives in a similar way
+> to get a clean build.
+>
+>          Arnd
+> _______________________________________________
+> kbuild-all mailing list -- kbuild-all@lists.01.org
+> To unsubscribe send an email to kbuild-all-leave@lists.01.org
 
