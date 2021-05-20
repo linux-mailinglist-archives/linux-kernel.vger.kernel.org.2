@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA5A38A6C3
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2432538A6D2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:35:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237167AbhETK3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:29:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47686 "EHLO mail.kernel.org"
+        id S237258AbhETKa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:30:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50912 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235815AbhETKRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:17:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E2ED61455;
-        Thu, 20 May 2021 09:46:07 +0000 (UTC)
+        id S235859AbhETKR2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:17:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C48B613DA;
+        Thu, 20 May 2021 09:46:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503967;
-        bh=YBlSG0CxKZJRXO2zFQtplCOnG9ojUjbFXr2qEAn/B6g=;
+        s=korg; t=1621503985;
+        bh=qbbmotqRcQsqZb8LKliq760hLm0WV5WZAvv/LQ2y9qw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gF+mSSJPS+sdh/d01Wyc5Eho4zabvQpgpIrMN78R3t5tHjpIOF6d/A3OkwF5FKV9X
-         OHDj1KLsgqDyJ/JlMLTdZK0AT3+gTDz+0rSvLfzzZyWcWjy16OSoERrmboy02DXPPA
-         sk6/VmuSbquVNaqdfVvJTQ3wGtWrpanpLHLETjCw=
+        b=Am5QtegRppxPdM8O57aw2vtWYjOswR9I1sm6FOnw+kKQhuei78sC0e86m+RV8aO9B
+         Iy7PlQ95iv80ctRLXzsCOLbz+aRp1cFibVZs03QIC4ra/rPyNrjoJtZgIze51Ruz7+
+         m3jJM0AdcbK1HtdXcojgb4YBwuHgSotKrh7tZqts=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        stable@vger.kernel.org, Pavel Machek <pavel@denx.de>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 035/323] usb: xhci: Fix port minor revision
-Date:   Thu, 20 May 2021 11:18:47 +0200
-Message-Id: <20210520092121.317183536@linuxfoundation.org>
+Subject: [PATCH 4.14 042/323] intel_th: Consistency and off-by-one fix
+Date:   Thu, 20 May 2021 11:18:54 +0200
+Message-Id: <20210520092121.547462229@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,49 +41,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+From: Pavel Machek <pavel@ucw.cz>
 
-[ Upstream commit 64364bc912c01b33bba6c22e3ccb849bfca96398 ]
+[ Upstream commit 18ffbc47d45a1489b664dd68fb3a7610a6e1dea3 ]
 
-Some hosts incorrectly use sub-minor version for minor version (i.e.
-0x02 instead of 0x20 for bcdUSB 0x320 and 0x01 for bcdUSB 0x310).
-Currently the xHCI driver works around this by just checking for minor
-revision > 0x01 for USB 3.1 everywhere. With the addition of USB 3.2,
-checking this gets a bit cumbersome. Since there is no USB release with
-bcdUSB 0x301 to 0x309, we can assume that sub-minor version 01 to 09 is
-incorrect. Let's try to fix this and use the minor revision that matches
-with the USB/xHCI spec to help with the version checking within the
-driver.
+Consistently use "< ... +1" in for loops.
 
-Acked-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Link: https://lore.kernel.org/r/ed330e95a19dc367819c5b4d78bf7a541c35aa0a.1615432770.git.Thinh.Nguyen@synopsys.com
+Fix of-by-one in for_each_set_bit().
+
+Signed-off-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Link: https://lore.kernel.org/lkml/20190724095841.GA6952@amd/
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210414171251.14672-6-alexander.shishkin@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci-mem.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/hwtracing/intel_th/gth.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index 70452c881e56..5fd1e95f5400 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -2085,6 +2085,15 @@ static void xhci_add_in_port(struct xhci_hcd *xhci, unsigned int num_ports,
+diff --git a/drivers/hwtracing/intel_th/gth.c b/drivers/hwtracing/intel_th/gth.c
+index 2a3ae9006c58..79473ba48d0c 100644
+--- a/drivers/hwtracing/intel_th/gth.c
++++ b/drivers/hwtracing/intel_th/gth.c
+@@ -485,7 +485,7 @@ static void intel_th_gth_disable(struct intel_th_device *thdev,
+ 	output->active = false;
  
- 	if (major_revision == 0x03) {
- 		rhub = &xhci->usb3_rhub;
-+		/*
-+		 * Some hosts incorrectly use sub-minor version for minor
-+		 * version (i.e. 0x02 instead of 0x20 for bcdUSB 0x320 and 0x01
-+		 * for bcdUSB 0x310). Since there is no USB release with sub
-+		 * minor version 0x301 to 0x309, we can assume that they are
-+		 * incorrect and fix it here.
-+		 */
-+		if (minor_revision > 0x00 && minor_revision < 0x10)
-+			minor_revision <<= 4;
- 	} else if (major_revision <= 0x02) {
- 		rhub = &xhci->usb2_rhub;
- 	} else {
+ 	for_each_set_bit(master, gth->output[output->port].master,
+-			 TH_CONFIGURABLE_MASTERS) {
++			 TH_CONFIGURABLE_MASTERS + 1) {
+ 		gth_master_set(gth, master, -1);
+ 	}
+ 	spin_unlock(&gth->gth_lock);
+@@ -624,7 +624,7 @@ static void intel_th_gth_unassign(struct intel_th_device *thdev,
+ 	othdev->output.port = -1;
+ 	othdev->output.active = false;
+ 	gth->output[port].output = NULL;
+-	for (master = 0; master <= TH_CONFIGURABLE_MASTERS; master++)
++	for (master = 0; master < TH_CONFIGURABLE_MASTERS + 1; master++)
+ 		if (gth->master[master] == port)
+ 			gth->master[master] = -1;
+ 	spin_unlock(&gth->gth_lock);
 -- 
 2.30.2
 
