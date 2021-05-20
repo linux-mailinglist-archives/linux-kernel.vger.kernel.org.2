@@ -2,96 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CD8A38AE0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:22:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A172238AE22
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:24:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhETMXY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:23:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
+        id S234683AbhETMZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232127AbhETMXI (ORCPT
+        with ESMTP id S232714AbhETMZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:23:08 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D455DC09F5F6
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:17:04 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id z19-20020a7bc7d30000b029017521c1fb75so5197007wmk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:17:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=FFbC/8AD0LOFNwNu9BRgUtFruC/G1IwePtG3av6RsOY=;
-        b=k1LNclxtiP6W7x7zqryjIF2j1zX5LVI89E2F+ZC0OosAJK+edKHkMljCHDcNA4W6r9
-         oo4eZKxNjGjNVEJ8BFhLlpoqnPMwuEiPyWw0EOz4IxxVlKUgsrlswX/caR97z6QS70oV
-         NZ3/faNHyMCstTucEuXIupFp8etwQE4J3yqi0J69jZcU0Mx7BKVpa2T7q24WhNiKWtvb
-         PU5LpeN250fH9rB8YtK5Dy/MNYmxcDZJKb5GKWG8MkZ5EEWxsJ6BFLPncstIQhXlrfUP
-         vHUQIPzmn+0TEAFURxP+OL/A4Cij2M4dnT2BPNlHbT0nR+8xyCyGrpl/dPtQmw2IqIcV
-         nkXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=FFbC/8AD0LOFNwNu9BRgUtFruC/G1IwePtG3av6RsOY=;
-        b=hCjjXhFsNP/KR0jksety2TC2wJZr4C2ZKDtMRx4PlZlnzLI8igAq2A4olhC9EQDHES
-         7G9f6+yyjjJipJBD8u5yByeU05ADeg+ct37B8QxFBTTUONAm9ZIVoG7JPGKUm4qX7CyZ
-         mzxycIKFRgLR4M27LSC8LmCd4NO6+cEnDf2NeXR8UqTARrQVxYzeO7TgCqIaMC7M39PL
-         3bw1XOHC9sHZn63sD5vnZOb86k95U5aKrZEZcadtlW/yBVu+PkqDI2VyQia7hQNatSLk
-         fUiz79caSO+70I63LV+hANdrJWgQ3jtUVGTLIEDH996NC5PTk+FJhBDlF9eoI41rGmhW
-         YJFg==
-X-Gm-Message-State: AOAM5338lD2UzzJE4Ywv3/zqr15wSERsVwIrumcJOrpsXFXYu1bMPl8e
-        kON7cQAAHk9tqkwIgSUHdjzOkA==
-X-Google-Smtp-Source: ABdhPJy170kk8Q53GOuLn6l2Mf+w5xTtNMkRzkP4oBTF3ZetnMbI5rV9xgKJjjvpwPsSs4pLxpDMAw==
-X-Received: by 2002:a1c:4d01:: with SMTP id o1mr3222583wmh.42.1621509423424;
-        Thu, 20 May 2021 04:17:03 -0700 (PDT)
-Received: from localhost.localdomain ([88.160.162.107])
-        by smtp.gmail.com with ESMTPSA id a19sm2310757wmb.40.2021.05.20.04.17.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 04:17:02 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>
-Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
-        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: rng: mediatek: add mt8365 to mtk rng binding
-Date:   Thu, 20 May 2021 13:16:56 +0200
-Message-Id: <20210520111656.66017-2-fparent@baylibre.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520111656.66017-1-fparent@baylibre.com>
-References: <20210520111656.66017-1-fparent@baylibre.com>
+        Thu, 20 May 2021 08:25:17 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A99C0AF785
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:21:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=sCwMcwa2kg+AkPZlCazcoWrH/8f3pwrtAWEJ7S1Wl2E=; b=Khd3SqXf04hdLqifmK3uHZXml7
+        ucZy4r+VIk1NG7qnnD7BFbEJXFNDJ/VsBeXs3GQ/xZM40wHNkkwTOz1nnpTq17B5cwoilo/LE8WiB
+        LCyBf5JWa9+KzyLiKFJTyFr/63bMSzB3o2G4RekJAbQyLrQVqt0jB3pyKEfFSsez+hkZpdS2HvkWK
+        m2dWbtBC7Z+d42YNM9kYHzjL2/8LFQy8NKDn9RwEIerk18sV/rzmCNhc6VfGYJBfKNwnr5w50uV91
+        fC2qTC7m+gYvPoeK05JXn+7JhJP5jVgCiy1U+ZZmFDN8fqzyP4UJykCeCCGSHPnGppP54qcEM/hWD
+        ef5ROLFw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljgg8-00FtvO-JY; Thu, 20 May 2021 11:18:07 +0000
+Date:   Thu, 20 May 2021 12:17:24 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V2] mm/thp: Make ALLOC_SPLIT_PTLOCKS dependent on
+ USE_SPLIT_PTE_PTLOCKS
+Message-ID: <YKZFRPqg4wKjOdVg@casper.infradead.org>
+References: <1621409586-5555-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621409586-5555-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add RNG binding for MT8365 SoC.
+On Wed, May 19, 2021 at 01:03:06PM +0530, Anshuman Khandual wrote:
+> Split ptlocks need not be defined and allocated unless they are being used.
+> ALLOC_SPLIT_PTLOCKS is inherently dependent on USE_SPLIT_PTE_PTLOCKS. This
+> just makes it explicit and clear. While here drop the spinlock_t element
+> from the struct page when USE_SPLIT_PTE_PTLOCKS is not enabled.
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
+I didn't spot this email yesterday.  I'm not a fan.  Isn't struct page
+already complicated enough without adding another ifdef to it?  Surely
+there's a better way than this.
 
-v2: Write the compatible in a more compact way
-
- Documentation/devicetree/bindings/rng/mtk-rng.yaml | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-index 4be5fc3c1409..61888e07bda0 100644
---- a/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-+++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
-@@ -21,6 +21,7 @@ properties:
-           - enum:
-               - mediatek,mt7622-rng
-               - mediatek,mt7629-rng
-+              - mediatek,mt8365-rng
-               - mediatek,mt8516-rng
-           - const: mediatek,mt7623-rng
- 
--- 
-2.31.1
-
+> +++ b/include/linux/mm_types.h
+> @@ -152,10 +152,12 @@ struct page {
+>  				struct mm_struct *pt_mm; /* x86 pgds only */
+>  				atomic_t pt_frag_refcount; /* powerpc */
+>  			};
+> +#if USE_SPLIT_PTE_PTLOCKS
+>  #if ALLOC_SPLIT_PTLOCKS
+>  			spinlock_t *ptl;
+>  #else
+>  			spinlock_t ptl;
+> +#endif
+>  #endif
+>  		};
+>  		struct {	/* ZONE_DEVICE pages */
