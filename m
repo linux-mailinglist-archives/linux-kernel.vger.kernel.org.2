@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECC7138B4CA
+	by mail.lfdr.de (Postfix) with ESMTP id 8B92438B4C9
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 18:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237998AbhETRAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:00:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
+        id S235068AbhETRAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:00:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57258 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238451AbhETQ7S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 12:59:18 -0400
+        id S237996AbhETQ7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 12:59:16 -0400
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B9C1261363;
-        Thu, 20 May 2021 16:57:56 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D2AB66139A;
+        Thu, 20 May 2021 16:57:54 +0000 (UTC)
 Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1ljlga-002d7b-6F; Thu, 20 May 2021 17:38:12 +0100
+        id 1ljlgb-002d7b-NH; Thu, 20 May 2021 17:38:13 +0100
 From:   Marc Zyngier <maz@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Thomas Gleixner <tglx@linutronix.de>,
@@ -50,9 +50,9 @@ Cc:     Thomas Gleixner <tglx@linutronix.de>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Bartosz Golaszewski <bgolaszewski@baylibre.com>,
         kernel-team@android.com
-Subject: [PATCH 15/39] powerpc: Move the use of irq_domain_add_nomap() behind a config option
-Date:   Thu, 20 May 2021 17:37:27 +0100
-Message-Id: <20210520163751.27325-16-maz@kernel.org>
+Subject: [PATCH 16/39] irqdomain: Make normal and nomap irqdomains exclusive
+Date:   Thu, 20 May 2021 17:37:28 +0100
+Message-Id: <20210520163751.27325-17-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210520163751.27325-1-maz@kernel.org>
 References: <20210520163751.27325-1-maz@kernel.org>
@@ -66,139 +66,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only a handful of old PPC systems are still using the old 'nomap'
-variant of the irqdomain library. Move the associated definitions
-behind a configuration option, which will allow us to make some
-more radical changes.
+Direct mappings are completely exclusive of normal mappings, meaning
+that we can refactor the code slightly so that we can get rid of
+the revmap_direct_max_irq field and use the revmap_size field
+instead, reducing the size of the irqdomain structure.
 
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/powerpc/platforms/cell/Kconfig     | 1 +
- arch/powerpc/platforms/powermac/Kconfig | 1 +
- arch/powerpc/platforms/ps3/Kconfig      | 1 +
- arch/powerpc/sysdev/xive/Kconfig        | 1 +
- include/linux/irqdomain.h               | 8 ++++++--
- kernel/irq/Kconfig                      | 5 +++++
- kernel/irq/irqdomain.c                  | 2 ++
- 7 files changed, 17 insertions(+), 2 deletions(-)
+ include/linux/irqdomain.h |  6 +++---
+ kernel/irq/irqdomain.c    | 45 ++++++++++++++++++++++++++++++---------
+ 2 files changed, 38 insertions(+), 13 deletions(-)
 
-diff --git a/arch/powerpc/platforms/cell/Kconfig b/arch/powerpc/platforms/cell/Kconfig
-index e7c976bcadff..cb70c5f25bc6 100644
---- a/arch/powerpc/platforms/cell/Kconfig
-+++ b/arch/powerpc/platforms/cell/Kconfig
-@@ -35,6 +35,7 @@ config PPC_IBM_CELL_BLADE
- config AXON_MSI
- 	bool
- 	depends on PPC_IBM_CELL_BLADE && PCI_MSI
-+	select IRQ_DOMAIN_NOMAP
- 	default y
- 
- menu "Cell Broadband Engine options"
-diff --git a/arch/powerpc/platforms/powermac/Kconfig b/arch/powerpc/platforms/powermac/Kconfig
-index c02d8c503b29..b97bf12801eb 100644
---- a/arch/powerpc/platforms/powermac/Kconfig
-+++ b/arch/powerpc/platforms/powermac/Kconfig
-@@ -24,6 +24,7 @@ config PPC_PMAC32_PSURGE
- 	bool "Support for powersurge upgrade cards" if EXPERT
- 	depends on SMP && PPC32 && PPC_PMAC
- 	select PPC_SMP_MUXED_IPI
-+	select IRQ_DOMAIN_NOMAP
- 	default y
- 	help
- 	  The powersurge cpu boards can be used in the generation
-diff --git a/arch/powerpc/platforms/ps3/Kconfig b/arch/powerpc/platforms/ps3/Kconfig
-index e32406e918d0..4d0535cc7946 100644
---- a/arch/powerpc/platforms/ps3/Kconfig
-+++ b/arch/powerpc/platforms/ps3/Kconfig
-@@ -7,6 +7,7 @@ config PPC_PS3
- 	select USB_OHCI_BIG_ENDIAN_MMIO
- 	select USB_EHCI_BIG_ENDIAN_MMIO
- 	select HAVE_PCI
-+	select IRQ_DOMAIN_NOMAP
- 	help
- 	  This option enables support for the Sony PS3 game console
- 	  and other platforms using the PS3 hypervisor.  Enabling this
-diff --git a/arch/powerpc/sysdev/xive/Kconfig b/arch/powerpc/sysdev/xive/Kconfig
-index 785c292d104b..97796c6b63f0 100644
---- a/arch/powerpc/sysdev/xive/Kconfig
-+++ b/arch/powerpc/sysdev/xive/Kconfig
-@@ -3,6 +3,7 @@ config PPC_XIVE
- 	bool
- 	select PPC_SMP_MUXED_IPI
- 	select HARDIRQS_SW_RESEND
-+	select IRQ_DOMAIN_NOMAP
- 
- config PPC_XIVE_NATIVE
- 	bool
 diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index 42b3f7d03a32..723495ec5a2f 100644
+index 723495ec5a2f..0916cf9c6e20 100644
 --- a/include/linux/irqdomain.h
 +++ b/include/linux/irqdomain.h
-@@ -345,6 +345,8 @@ static inline struct irq_domain *irq_domain_add_linear(struct device_node *of_no
- {
- 	return __irq_domain_add(of_node_to_fwnode(of_node), size, size, 0, ops, host_data);
- }
-+
-+#ifdef CONFIG_IRQ_DOMAIN_NOMAP
- static inline struct irq_domain *irq_domain_add_nomap(struct device_node *of_node,
- 					 unsigned int max_irq,
- 					 const struct irq_domain_ops *ops,
-@@ -352,6 +354,10 @@ static inline struct irq_domain *irq_domain_add_nomap(struct device_node *of_nod
- {
- 	return __irq_domain_add(of_node_to_fwnode(of_node), 0, max_irq, max_irq, ops, host_data);
- }
-+
-+extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
-+#endif
-+
- static inline struct irq_domain *irq_domain_add_tree(struct device_node *of_node,
- 					 const struct irq_domain_ops *ops,
- 					 void *host_data)
-@@ -408,8 +414,6 @@ static inline unsigned int irq_linear_revmap(struct irq_domain *domain,
- 	return irq_find_mapping(domain, hwirq);
- }
+@@ -149,8 +149,6 @@ struct irq_domain_chip_generic;
+  * @parent: Pointer to parent irq_domain to support hierarchy irq_domains
+  *
+  * Revmap data, used internally by irq_domain
+- * @revmap_direct_max_irq: The largest hwirq that can be set for controllers that
+- *                         support direct mapping
+  * @revmap_size: Size of the linear map table @revmap[]
+  * @revmap_tree: Radix map tree for hwirqs that don't fit in the linear map
+  * @revmap: Linear table of hwirq->virq reverse mappings
+@@ -173,7 +171,6 @@ struct irq_domain {
  
--extern unsigned int irq_create_direct_mapping(struct irq_domain *host);
--
- extern const struct irq_domain_ops irq_domain_simple_ops;
+ 	/* reverse map data. The linear map gets appended to the irq_domain */
+ 	irq_hw_number_t hwirq_max;
+-	unsigned int revmap_direct_max_irq;
+ 	unsigned int revmap_size;
+ 	struct radix_tree_root revmap_tree;
+ 	struct mutex revmap_tree_mutex;
+@@ -207,6 +204,9 @@ enum {
+ 	 */
+ 	IRQ_DOMAIN_MSI_NOMASK_QUIRK	= (1 << 6),
  
- /* stock xlate functions */
-diff --git a/kernel/irq/Kconfig b/kernel/irq/Kconfig
-index d79ef2493a28..fbc54c2a7f23 100644
---- a/kernel/irq/Kconfig
-+++ b/kernel/irq/Kconfig
-@@ -70,6 +70,11 @@ config IRQ_DOMAIN_HIERARCHY
- 	bool
- 	select IRQ_DOMAIN
- 
-+# Support for obsolete non-mapping irq domains
-+config IRQ_DOMAIN_NOMAP
-+	bool
-+	select IRQ_DOMAIN
++	/* Irq domain doesn't translate anything */
++	IRQ_DOMAIN_FLAG_NO_MAP		= (1 << 7),
 +
- # Support for hierarchical fasteoi+edge and fasteoi+level handlers
- config IRQ_FASTEOI_HIERARCHY_HANDLERS
- 	bool
+ 	/*
+ 	 * Flags starting from IRQ_DOMAIN_FLAG_NONCORE are reserved
+ 	 * for implementation specific purposes and ignored by the
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 8bd012253989..e0143e640683 100644
+index e0143e640683..fa94c86e47d4 100644
 --- a/kernel/irq/irqdomain.c
 +++ b/kernel/irq/irqdomain.c
-@@ -604,6 +604,7 @@ void irq_domain_associate_many(struct irq_domain *domain, unsigned int irq_base,
- }
- EXPORT_SYMBOL_GPL(irq_domain_associate_many);
+@@ -146,6 +146,10 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
  
-+#ifdef CONFIG_IRQ_DOMAIN_NOMAP
- /**
-  * irq_create_direct_mapping() - Allocate an irq for direct mapping
-  * @domain: domain to allocate the irq for or NULL for default domain
-@@ -644,6 +645,7 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
- 	return virq;
- }
- EXPORT_SYMBOL_GPL(irq_create_direct_mapping);
-+#endif
+ 	static atomic_t unknown_domains;
  
- /**
-  * irq_create_mapping_affinity() - Map a hardware interrupt into linux irq space
++	if (WARN_ON((size && direct_max) ||
++		    (!IS_ENABLED(CONFIG_IRQ_DOMAIN_NOMAP) && direct_max)))
++		return NULL;
++
+ 	domain = kzalloc_node(sizeof(*domain) + (sizeof(unsigned int) * size),
+ 			      GFP_KERNEL, of_node_to_nid(to_of_node(fwnode)));
+ 	if (!domain)
+@@ -213,8 +217,14 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, int size,
+ 	domain->ops = ops;
+ 	domain->host_data = host_data;
+ 	domain->hwirq_max = hwirq_max;
++
++	if (direct_max) {
++		size = direct_max;
++		domain->flags |= IRQ_DOMAIN_FLAG_NO_MAP;
++	}
++
+ 	domain->revmap_size = size;
+-	domain->revmap_direct_max_irq = direct_max;
++
+ 	irq_domain_check_hierarchy(domain);
+ 
+ 	mutex_lock(&irq_domain_mutex);
+@@ -482,9 +492,18 @@ struct irq_domain *irq_get_default_host(void)
+ 	return irq_default_domain;
+ }
+ 
++static bool irq_domain_is_nomap(struct irq_domain *domain)
++{
++	return IS_ENABLED(CONFIG_IRQ_DOMAIN_NOMAP) &&
++	       (domain->flags & IRQ_DOMAIN_FLAG_NO_MAP);
++}
++
+ static void irq_domain_clear_mapping(struct irq_domain *domain,
+ 				     irq_hw_number_t hwirq)
+ {
++	if (irq_domain_is_nomap(domain))
++		return;
++
+ 	if (hwirq < domain->revmap_size) {
+ 		domain->revmap[hwirq] = 0;
+ 	} else {
+@@ -498,6 +517,9 @@ static void irq_domain_set_mapping(struct irq_domain *domain,
+ 				   irq_hw_number_t hwirq,
+ 				   struct irq_data *irq_data)
+ {
++	if (irq_domain_is_nomap(domain))
++		return;
++
+ 	if (hwirq < domain->revmap_size) {
+ 		domain->revmap[hwirq] = irq_data->irq;
+ 	} else {
+@@ -629,9 +651,9 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
+ 		pr_debug("create_direct virq allocation failed\n");
+ 		return 0;
+ 	}
+-	if (virq >= domain->revmap_direct_max_irq) {
++	if (virq >= domain->revmap_size) {
+ 		pr_err("ERROR: no free irqs available below %i maximum\n",
+-			domain->revmap_direct_max_irq);
++			domain->revmap_size);
+ 		irq_free_desc(virq);
+ 		return 0;
+ 	}
+@@ -879,10 +901,14 @@ unsigned int irq_find_mapping(struct irq_domain *domain,
+ 	if (domain == NULL)
+ 		return 0;
+ 
+-	if (hwirq < domain->revmap_direct_max_irq) {
+-		data = irq_domain_get_irq_data(domain, hwirq);
+-		if (data && data->hwirq == hwirq)
+-			return hwirq;
++	if (irq_domain_is_nomap(domain)) {
++		if (hwirq < domain->revmap_size) {
++			data = irq_domain_get_irq_data(domain, hwirq);
++			if (data && data->hwirq == hwirq)
++				return hwirq;
++		}
++
++		return 0;
+ 	}
+ 
+ 	/* Check if the hwirq is in the linear revmap. */
+@@ -1470,7 +1496,7 @@ static void irq_domain_fix_revmap(struct irq_data *d)
+ {
+ 	void __rcu **slot;
+ 
+-	if (d->hwirq < d->domain->revmap_size)
++	if (irq_domain_is_nomap(d->domain) || d->hwirq < d->domain->revmap_size)
+ 		return; /* Not using radix tree. */
+ 
+ 	/* Fix up the revmap. */
+@@ -1830,8 +1856,7 @@ static void
+ irq_domain_debug_show_one(struct seq_file *m, struct irq_domain *d, int ind)
+ {
+ 	seq_printf(m, "%*sname:   %s\n", ind, "", d->name);
+-	seq_printf(m, "%*ssize:   %u\n", ind + 1, "",
+-		   d->revmap_size + d->revmap_direct_max_irq);
++	seq_printf(m, "%*ssize:   %u\n", ind + 1, "", d->revmap_size);
+ 	seq_printf(m, "%*smapped: %u\n", ind + 1, "", d->mapcount);
+ 	seq_printf(m, "%*sflags:  0x%08x\n", ind +1 , "", d->flags);
+ 	if (d->ops && d->ops->debug_show)
 -- 
 2.30.2
 
