@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52BB389D00
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:17:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A6B389D0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhETFSv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:18:51 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:60334 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbhETFSu (ORCPT
+        id S230036AbhETFZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:25:39 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:37396 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhETFZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:18:50 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14K5ERxU181362;
-        Thu, 20 May 2021 05:17:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=kXAbVmzY2Vr39sZ8jzpcxrD3siazfk5ugcT2ZXVs+xY=;
- b=l2w2Wtz1tsBdBO+hQm5g8FGgCD0GgtuIs1XGEsVpqR2QhPCrV/M4SoeHUYhhRnC6C2xT
- kKUMY44iWxn3GqCV8icxNc/As946Qtusby46gM2dC8knPQMSV7van8H+HZ61yLhAvAZj
- NHBGZ2VAL3AC2UeBUtOQw+o7GfzcgvuJKpnlZTb/0tHPr07klrT9YEGwsflD/r/pjXlG
- ZEr3CDZGoiRR2i1dbfUKN0lc2Mg6AjnlACM2GqDX69Fr9sFqKcOab6m6hehthsF4+xOK
- WHcOCKFZrH2x0d31PT4a47J02uAR8itzY5Cmqlbl3K5ZjaP09LkIDYSZwjtdy3megRcc Ww== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 38j3tbkjqb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 05:17:27 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14K5G4L2054464;
-        Thu, 20 May 2021 05:17:27 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38mecm8c1g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 05:17:27 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14K5GvSl059925;
-        Thu, 20 May 2021 05:17:26 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 38mecm8c10-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 05:17:26 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14K5HMlB019306;
-        Thu, 20 May 2021 05:17:22 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 19 May 2021 22:17:22 -0700
-Date:   Thu, 20 May 2021 08:17:15 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        James.Bottomley@SteelEye.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] scsi: sni_53c710: Fix a resource leak in an error
- handling path
-Message-ID: <20210520051715.GZ1955@kadam>
-References: <5a97774020847f6b63e161197254d15ef1d786ea.1621485792.git.christophe.jaillet@wanadoo.fr>
+        Thu, 20 May 2021 01:25:38 -0400
+Received: by mail-wm1-f48.google.com with SMTP id f19-20020a05600c1553b02901794fafcfefso3950770wmg.2;
+        Wed, 19 May 2021 22:24:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lFsvoCkU9zQjo7Svj5G5k4DUPYp2NU7fos0X3OEtvpQ=;
+        b=NWTNLA8psn359D+d8i94TFdHpY2QtJlfmw4Yvt20OVIlGgJzQVV02XM00nFj1T8Pvr
+         3ThjwfFWFGULYE7rAK+Vr3Ap/z8u+2yUElxrWvg+qcbgHWqR4gNkDlb4o6G6uOy7WK1f
+         ncn9QoguChn35rAxYB4/sIeDsY+ndS90i8q5/+O1s3sBc7ZGxO2TFLwjCWIVnTMkDwlF
+         LRFNTmU0qdx4cvZEz1oxVdwmRgUFwiEHSaE1uVbym5Zq6Q0GD0uxvNJQzXCja1D4mC7V
+         TH+nhVFcJrrUb6mX8R3ZyAAiJi2S/q6UvdeI1D1d4S6oSxJAKY1VyK9gOzA/lYFZXFCU
+         d+UQ==
+X-Gm-Message-State: AOAM533UCJXbLyPSmsyD6GtvgHDIHkMeVr+QqYvTCTllfmT6q6uwANjU
+        kAm3zfCIBBcvKiqNUI5a/7I=
+X-Google-Smtp-Source: ABdhPJwN1AJlH1oTPvwkZwtZxul6M9lJoO1Ot1z9kwebbxqx175nN7692CsdnxvBrcF0kKH719VSBA==
+X-Received: by 2002:a05:600c:19c8:: with SMTP id u8mr2149681wmq.25.1621488256924;
+        Wed, 19 May 2021 22:24:16 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id g206sm7863810wme.16.2021.05.19.22.24.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 22:24:16 -0700 (PDT)
+Subject: Re: [PATCH] Documentation: checkpatch: Tweak BIT() macro include
+To:     Andrew Jeffery <andrew@aj.id.au>, linux-doc@vger.kernel.org
+Cc:     dwaipayanray1@gmail.com, lukas.bulwahn@gmail.com, joe@perches.com,
+        corbet@lwn.net, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+References: <20210520015704.489737-1-andrew@aj.id.au>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <7a14c4ea-46ef-a615-a109-1b9777c507cd@kernel.org>
+Date:   Thu, 20 May 2021 07:24:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a97774020847f6b63e161197254d15ef1d786ea.1621485792.git.christophe.jaillet@wanadoo.fr>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: B7-_USFOj86VOVhwwljGs6TeAHKeqzGZ
-X-Proofpoint-GUID: B7-_USFOj86VOVhwwljGs6TeAHKeqzGZ
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9989 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- spamscore=0 priorityscore=1501 suspectscore=0 mlxlogscore=999 mlxscore=0
- impostorscore=0 adultscore=0 clxscore=1011 phishscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105200042
+In-Reply-To: <20210520015704.489737-1-andrew@aj.id.au>
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 06:44:25AM +0200, Christophe JAILLET wrote:
-> After a successful 'NCR_700_detect()' call, 'NCR_700_release()' must be
-> called to release some DMA related resources, as already done in the
-> remove function.
+On 20. 05. 21, 3:57, Andrew Jeffery wrote:
+> While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> include/linux/bits.h in [1]. Since [1] BIT() has moved again into
+> include/vdso/bits.h via [2].
 > 
-> Fixes: c27d85f3f3c5 ("[SCSI] SNI RM 53c710 driver")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> I think the move to the vDSO header can be considered a implementation
+> detail, so for now update the checkpatch documentation to recommend use
+> of include/linux/bits.h.
+> 
+> [1] commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file")
+> [2] commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
+> 
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-Good catch.
+Acked-by: Jiri Slaby <jirislaby@kernel.org>
 
-Reveiwed-by: Dan Carpenter <dan.carpenter@oracle.com>
+Thanks.
 
-regards,
-dan carpenter
+> ---
+>   Documentation/dev-tools/checkpatch.rst | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/dev-tools/checkpatch.rst b/Documentation/dev-tools/checkpatch.rst
+> index 51fed1bd72ec..59fcc9f627ea 100644
+> --- a/Documentation/dev-tools/checkpatch.rst
+> +++ b/Documentation/dev-tools/checkpatch.rst
+> @@ -472,7 +472,7 @@ Macros, Attributes and Symbols
+>   
+>     **BIT_MACRO**
+>       Defines like: 1 << <digit> could be BIT(digit).
+> -    The BIT() macro is defined in include/linux/bitops.h::
+> +    The BIT() macro is defined via include/linux/bits.h::
+>   
+>         #define BIT(nr)         (1UL << (nr))
+>   
+> 
 
+
+-- 
+js
+suse labs
