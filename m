@@ -2,183 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB48389F0E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0172389F12
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:44:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhETHoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:44:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhETHog (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:44:36 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DEAC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:43:13 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9cc6:7165:bcc2:1e70])
-        by xavier.telenet-ops.be with bizsmtp
-        id 6vjB2500531btb901vjBWU; Thu, 20 May 2021 09:43:11 +0200
-Received: from geert (helo=localhost)
-        by ramsan.of.borg with local-esmtp (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ljdKo-007R7k-PS; Thu, 20 May 2021 09:43:10 +0200
-Date:   Thu, 20 May 2021 09:43:10 +0200 (CEST)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     David Sterba <dsterba@suse.com>
-cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
-In-Reply-To: <20210518144935.15835-1-dsterba@suse.com>
-Message-ID: <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
-References: <20210518144935.15835-1-dsterba@suse.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S230517AbhETHpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:45:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58894 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230339AbhETHpb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:45:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B5A5160FE6;
+        Thu, 20 May 2021 07:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621496650;
+        bh=lqLzPDKL4ipblaaoCPqkYvpTc23hgtIbN1FbtWWpSr0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=L6sDvDAAwbA+tDbYs5qfBbT8MgDiW8jvk5zj75VYMoZZ3be99F+ww048wc2ZVR08L
+         tmxGDps34RDsKVer3iThcwkOCTZ5Il9bnAnROLYOhHGPvPiias5Z75zWZUTXIU4BnV
+         qIaRhvVVwfOsX4kOoYcrQocjzGyCwbD0itfLu1UEj3lPVBEGQrt9+Virnv0nFYds31
+         9pLJmJtLG4bNSuA6Y7CAJ+euqEkhQwfvc+nDLWugng233u9+m7wM/lXGYnhwUbCQ8e
+         T9v0vtEvMDXlOq/hx6VlrDlv580vxjaVGMGwfoec3sVaijt/23F6c3xpayskMjxoPW
+         j3sb4n20SD2iA==
+Date:   Thu, 20 May 2021 13:14:07 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: soundwire fixes for v5.13
+Message-ID: <YKYTR+oPW1XEBIi7@vkoul-mobl.Dlink>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="D/m+Mx5ygU/zaSUH"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- 	Hi David,
 
-On Tue, 18 May 2021, David Sterba wrote:
-> Add sysfs interface to limit io during scrub. We relied on the ionice
-> interface to do that, eg. the idle class let the system usable while
-> scrub was running. This has changed when mq-deadline got widespread and
-> did not implement the scheduling classes. That was a CFQ thing that got
-> deleted. We've got numerous complaints from users about degraded
-> performance.
->
-> Currently only BFQ supports that but it's not a common scheduler and we
-> can't ask everybody to switch to it.
->
-> Alternatively the cgroup io limiting can be used but that also a
-> non-trivial setup (v2 required, the controller must be enabled on the
-> system). This can still be used if desired.
->
-> Other ideas that have been explored: piggy-back on ionice (that is set
-> per-process and is accessible) and interpret the class and classdata as
-> bandwidth limits, but this does not have enough flexibility as there are
-> only 8 allowed and we'd have to map fixed limits to each value. Also
-> adjusting the value would need to lookup the process that currently runs
-> scrub on the given device, and the value is not sticky so would have to
-> be adjusted each time scrub runs.
->
-> Running out of options, sysfs does not look that bad:
->
-> - it's accessible from scripts, or udev rules
-> - the name is similar to what MD-RAID has
->  (/proc/sys/dev/raid/speed_limit_max or /sys/block/mdX/md/sync_speed_max)
-> - the value is sticky at least for filesystem mount time
-> - adjusting the value has immediate effect
-> - sysfs is available in constrained environments (eg. system rescue)
-> - the limit also applies to device replace
->
-> Sysfs:
->
-> - raw value is in bytes
-> - values written to the file accept suffixes like K, M
-> - file is in the per-device directory /sys/fs/btrfs/FSID/devinfo/DEVID/scrub_speed_max
-> - 0 means use default priority of IO
->
-> The scheduler is a simple deadline one and the accuracy is up to nearest
-> 128K.
->
-> Signed-off-by: David Sterba <dsterba@suse.com>
+--D/m+Mx5ygU/zaSUH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your patch, which is now commit b4a9f4bee31449bc ("btrfs:
-scrub: per-device bandwidth control") in linux-next.
+Hello Greg,
 
-noreply@ellerman.id.au reported the following failures for e.g.
-m68k/defconfig:
+Please pull to recieve the fix for v5.13. This is one patch fix for
+regression in qcom boards.
 
-ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-> --- a/fs/btrfs/scrub.c
-> +++ b/fs/btrfs/scrub.c
-> @@ -1988,6 +1993,60 @@ static void scrub_page_put(struct scrub_page *spage)
-> 	}
-> }
->
-> +/*
-> + * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
-> + * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
-> + */
-> +static void scrub_throttle(struct scrub_ctx *sctx)
-> +{
-> +	const int time_slice = 1000;
-> +	struct scrub_bio *sbio;
-> +	struct btrfs_device *device;
-> +	s64 delta;
-> +	ktime_t now;
-> +	u32 div;
-> +	u64 bwlimit;
-> +
-> +	sbio = sctx->bios[sctx->curr];
-> +	device = sbio->dev;
-> +	bwlimit = READ_ONCE(device->scrub_speed_max);
-> +	if (bwlimit == 0)
-> +		return;
-> +
-> +	/*
-> +	 * Slice is divided into intervals when the IO is submitted, adjust by
-> +	 * bwlimit and maximum of 64 intervals.
-> +	 */
-> +	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
-> +	div = min_t(u32, 64, div);
-> +
-> +	/* Start new epoch, set deadline */
-> +	now = ktime_get();
-> +	if (sctx->throttle_deadline == 0) {
-> +		sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+are available in the Git repository at:
 
-div_u64(bwlimit, div)
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
+undwire-5.13-fixes
 
-> +		sctx->throttle_sent = 0;
-> +	}
-> +
-> +	/* Still in the time to send? */
-> +	if (ktime_before(now, sctx->throttle_deadline)) {
-> +		/* If current bio is within the limit, send it */
-> +		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
-> +		if (sctx->throttle_sent <= bwlimit / div)
-> +			return;
-> +
-> +		/* We're over the limit, sleep until the rest of the slice */
-> +		delta = ktime_ms_delta(sctx->throttle_deadline, now);
-> +	} else {
-> +		/* New request after deadline, start new epoch */
-> +		delta = 0;
-> +	}
-> +
-> +	if (delta)
-> +		schedule_timeout_interruptible(delta * HZ / 1000);
+for you to fetch changes up to da096fbccd52803db3edd9dd0c5ae4079d31c456:
 
-ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+  soundwire: qcom: fix handling of qcom,ports-block-pack-mode (2021-05-13 1=
+1:14:13 +0530)
 
-I'm a bit surprised gcc doesn't emit code for the division by the
-constant 1000, but emits a call to __divdi3().  So this has to become
-div_u64(), too.
+----------------------------------------------------------------
+soundwire fixes for v5.13
 
-> +	/* Next call will start the deadline period */
-> +	sctx->throttle_deadline = 0;
-> +}
+Fix in qcom driver for handling of qcom,ports-block-pack-mode property.
+This fixes regression reported in DragonBoard DB845c and Lenovo Yoga
+C630.
 
-BTW, any chance you can start adding lore Link: tags to your commits, to
-make it easier to find the email thread to reply to when reporting a
-regression?
+----------------------------------------------------------------
+Srinivas Kandagatla (1):
+      soundwire: qcom: fix handling of qcom,ports-block-pack-mode
 
-Thanks!
+ drivers/soundwire/qcom.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-Gr{oetje,eeting}s,
+Thanks
+--=20
+~Vinod
 
- 						Geert
+--D/m+Mx5ygU/zaSUH
+Content-Type: application/pgp-signature; name="signature.asc"
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+-----BEGIN PGP SIGNATURE-----
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmCmE0YACgkQfBQHDyUj
+g0cM0RAAqgd6E9hnO3LcDPo3zh2/rzIeQzSHmwKq/ZawON37Ugpg5hXVDHBoGA1U
+guldveQOKDsPIUXxcJYCfQjgbzgBoO0ZmRq28t7A1G6zJZTfNrRH47Hyn+rqydmJ
+J1MD3UWJOjF9gEookjUt8ACM0haARi4TZgxf+X3MjagWj17+KlFLo7GUekV8gkoj
+0MU1fxWp3jpQ6DsjjSuJZK1jt3PfotBJuJc4TMaQTcWOm5FvGYT7E4HtO/z8LI1N
+4tsYIvR8fVnGPM7FdKSKwYanYkZOchh2W2aFy0QgOVkST1GOhf5lk2vPWzamn2WK
+mZcAIeEvnH1VLppDhSE+RXC2wNBJ+/ZRTkdXQzy4YEP+CZKFPyzU3xie46aWu8Xr
+EV/FEa2uL4z9ynHGe30yGUG6Ou/jl9GgNtI0zUqEEe3Tc9VlJ2PhKxMWetUlzNzE
+7LRb2jjn1RZy1Vel9hNX0nEuWZek/PMpplaEctJ4atxHP3+gVg2ITChGb/g4Qk+h
+yYo7xWPzXZz+X70P2xDBUEsFQ3cFghvKbh5Taol0fuYc2uw6ClyvvsU0AkAXPkuO
+b2VsoDppgteiZCZU2QtsjV1mbGzNgJ+86QRE3h1Y8njZBCXY7l5kjJjehVXKLYV5
+W7KGlFcps3OCg3jpAEDIkUJlS2TLoGEmXO8j/SDLFTJvGHde9FM=
+=4r6M
+-----END PGP SIGNATURE-----
+
+--D/m+Mx5ygU/zaSUH--
