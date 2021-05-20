@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1D638A437
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:00:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 580E738A1AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:33:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhETKCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:02:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
+        id S232557AbhETJd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232683AbhETJ5t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:57:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 574A561413;
-        Thu, 20 May 2021 09:38:04 +0000 (UTC)
+        id S232526AbhETJbS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:31:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3823C613D3;
+        Thu, 20 May 2021 09:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503484;
-        bh=7pr1gT2zu4ViCIn79nfuxOnVjImZACenSZ+23zagixw=;
+        s=korg; t=1621502880;
+        bh=lQVEHXpOkP+0xKhQL1ij6j/rrt8ZABA81dSlc2Bmugo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fi6g5V8+AgyjZj8Zn+xixHEaVYqNYaME3L/1G/4fC6K1xfZ4Fq42p3EL8T2QQ2Ffq
-         WTY423v9Womu5u7ADEf+RC/8ri7v0ndMQ1JwVd7C6e1MrLO+LN/LgfPLbefQpFJ/yM
-         Rr+JdbGfCIH1lhD3foK/KjdNw17dlFN6/UenRdnY=
+        b=Wo689zP8wgP+jHvudBU561XKzo7RYGNlRFLd5CAZEJIqAWlNPk5yvAs+HoMoICui8
+         puqZxPLCJTLQUmapRJk5NwW4DJIZEb3d6x2hOfIEf7Wo6fj1153iXnigdmog2lr5iQ
+         5dmXZaXJ5QwPJc6hvGygGLjh6ZV4g0Y+lJ4TzBB8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Brian King <brking@linux.vnet.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        stable@vger.kernel.org, Feilong Lin <linfeilong@huawei.com>,
+        Zhiqiang Liu <liuzhiqiang26@huawei.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 242/425] scsi: ibmvfc: Fix invalid state machine BUG_ON()
-Date:   Thu, 20 May 2021 11:20:11 +0200
-Message-Id: <20210520092139.380189408@linuxfoundation.org>
+Subject: [PATCH 5.10 13/47] ACPI / hotplug / PCI: Fix reference count leak in enable_slot()
+Date:   Thu, 20 May 2021 11:22:11 +0200
+Message-Id: <20210520092053.977616615@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
-References: <20210520092131.308959589@linuxfoundation.org>
+In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
+References: <20210520092053.559923764@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,130 +42,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Brian King <brking@linux.vnet.ibm.com>
+From: Feilong Lin <linfeilong@huawei.com>
 
-[ Upstream commit 15cfef8623a449d40d16541687afd58e78033be3 ]
+[ Upstream commit 3bbfd319034ddce59e023837a4aa11439460509b ]
 
-This fixes an issue hitting the BUG_ON() in ibmvfc_do_work(). When going
-through a host action of IBMVFC_HOST_ACTION_RESET, we change the action to
-IBMVFC_HOST_ACTION_TGT_DEL, then drop the host lock, and reset the CRQ,
-which changes the host state to IBMVFC_NO_CRQ. If, prior to setting the
-host state to IBMVFC_NO_CRQ, ibmvfc_init_host() is called, it can then end
-up changing the host action to IBMVFC_HOST_ACTION_INIT.  If we then change
-the host state to IBMVFC_NO_CRQ, we will then hit the BUG_ON().
+In enable_slot(), if pci_get_slot() returns NULL, we clear the SLOT_ENABLED
+flag. When pci_get_slot() finds a device, it increments the device's
+reference count.  In this case, we did not call pci_dev_put() to decrement
+the reference count, so the memory of the device (struct pci_dev type) will
+eventually leak.
 
-Make a couple of changes to avoid this. Leave the host action to be
-IBMVFC_HOST_ACTION_RESET or IBMVFC_HOST_ACTION_REENABLE until after we drop
-the host lock and reset or reenable the CRQ. Also harden the host state
-machine to ensure we cannot leave the reset / reenable state until we've
-finished processing the reset or reenable.
+Call pci_dev_put() to decrement its reference count when pci_get_slot()
+returns a PCI device.
 
-Link: https://lore.kernel.org/r/20210413001009.902400-1-tyreld@linux.ibm.com
-Fixes: 73ee5d867287 ("[SCSI] ibmvfc: Fix soft lockup on resume")
-Signed-off-by: Brian King <brking@linux.vnet.ibm.com>
-[tyreld: added fixes tag]
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-[mkp: fix comment checkpatch warnings]
-Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Link: https://lore.kernel.org/r/b411af88-5049-a1c6-83ac-d104a1f429be@huawei.com
+Signed-off-by: Feilong Lin <linfeilong@huawei.com>
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: Bjorn Helgaas <bhelgaas@google.com>
+Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/scsi/ibmvscsi/ibmvfc.c | 57 ++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 19 deletions(-)
+ drivers/pci/hotplug/acpiphp_glue.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 50078a199fea..b811436a46d0 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -506,8 +506,17 @@ static void ibmvfc_set_host_action(struct ibmvfc_host *vhost,
- 		if (vhost->action == IBMVFC_HOST_ACTION_ALLOC_TGTS)
- 			vhost->action = action;
- 		break;
-+	case IBMVFC_HOST_ACTION_REENABLE:
-+	case IBMVFC_HOST_ACTION_RESET:
-+		vhost->action = action;
-+		break;
- 	case IBMVFC_HOST_ACTION_INIT:
- 	case IBMVFC_HOST_ACTION_TGT_DEL:
-+	case IBMVFC_HOST_ACTION_LOGO:
-+	case IBMVFC_HOST_ACTION_QUERY_TGTS:
-+	case IBMVFC_HOST_ACTION_TGT_DEL_FAILED:
-+	case IBMVFC_HOST_ACTION_NONE:
-+	default:
- 		switch (vhost->action) {
- 		case IBMVFC_HOST_ACTION_RESET:
- 		case IBMVFC_HOST_ACTION_REENABLE:
-@@ -517,15 +526,6 @@ static void ibmvfc_set_host_action(struct ibmvfc_host *vhost,
- 			break;
+diff --git a/drivers/pci/hotplug/acpiphp_glue.c b/drivers/pci/hotplug/acpiphp_glue.c
+index 3365c93abf0e..f031302ad401 100644
+--- a/drivers/pci/hotplug/acpiphp_glue.c
++++ b/drivers/pci/hotplug/acpiphp_glue.c
+@@ -533,6 +533,7 @@ static void enable_slot(struct acpiphp_slot *slot, bool bridge)
+ 			slot->flags &= ~SLOT_ENABLED;
+ 			continue;
  		}
- 		break;
--	case IBMVFC_HOST_ACTION_LOGO:
--	case IBMVFC_HOST_ACTION_QUERY_TGTS:
--	case IBMVFC_HOST_ACTION_TGT_DEL_FAILED:
--	case IBMVFC_HOST_ACTION_NONE:
--	case IBMVFC_HOST_ACTION_RESET:
--	case IBMVFC_HOST_ACTION_REENABLE:
--	default:
--		vhost->action = action;
--		break;
++		pci_dev_put(dev);
  	}
  }
  
-@@ -4346,26 +4346,45 @@ static void ibmvfc_do_work(struct ibmvfc_host *vhost)
- 	case IBMVFC_HOST_ACTION_INIT_WAIT:
- 		break;
- 	case IBMVFC_HOST_ACTION_RESET:
--		vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
- 		spin_unlock_irqrestore(vhost->host->host_lock, flags);
- 		rc = ibmvfc_reset_crq(vhost);
-+
- 		spin_lock_irqsave(vhost->host->host_lock, flags);
--		if (rc == H_CLOSED)
-+		if (!rc || rc == H_CLOSED)
- 			vio_enable_interrupts(to_vio_dev(vhost->dev));
--		if (rc || (rc = ibmvfc_send_crq_init(vhost)) ||
--		    (rc = vio_enable_interrupts(to_vio_dev(vhost->dev)))) {
--			ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
--			dev_err(vhost->dev, "Error after reset (rc=%d)\n", rc);
-+		if (vhost->action == IBMVFC_HOST_ACTION_RESET) {
-+			/*
-+			 * The only action we could have changed to would have
-+			 * been reenable, in which case, we skip the rest of
-+			 * this path and wait until we've done the re-enable
-+			 * before sending the crq init.
-+			 */
-+			vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
-+
-+			if (rc || (rc = ibmvfc_send_crq_init(vhost)) ||
-+			    (rc = vio_enable_interrupts(to_vio_dev(vhost->dev)))) {
-+				ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
-+				dev_err(vhost->dev, "Error after reset (rc=%d)\n", rc);
-+			}
- 		}
- 		break;
- 	case IBMVFC_HOST_ACTION_REENABLE:
--		vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
- 		spin_unlock_irqrestore(vhost->host->host_lock, flags);
- 		rc = ibmvfc_reenable_crq_queue(vhost);
-+
- 		spin_lock_irqsave(vhost->host->host_lock, flags);
--		if (rc || (rc = ibmvfc_send_crq_init(vhost))) {
--			ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
--			dev_err(vhost->dev, "Error after enable (rc=%d)\n", rc);
-+		if (vhost->action == IBMVFC_HOST_ACTION_REENABLE) {
-+			/*
-+			 * The only action we could have changed to would have
-+			 * been reset, in which case, we skip the rest of this
-+			 * path and wait until we've done the reset before
-+			 * sending the crq init.
-+			 */
-+			vhost->action = IBMVFC_HOST_ACTION_TGT_DEL;
-+			if (rc || (rc = ibmvfc_send_crq_init(vhost))) {
-+				ibmvfc_link_down(vhost, IBMVFC_LINK_DEAD);
-+				dev_err(vhost->dev, "Error after enable (rc=%d)\n", rc);
-+			}
- 		}
- 		break;
- 	case IBMVFC_HOST_ACTION_LOGO:
 -- 
 2.30.2
 
