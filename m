@@ -2,137 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BE5138B74D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:20:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B67F438B757
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:20:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238084AbhETTVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37448 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236619AbhETTVU (ORCPT
+        id S238018AbhETTVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:21:46 -0400
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:30322 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238111AbhETTVl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:21:20 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B4EC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:19:58 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id v12so9656817plo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sAQXDqHg+QqOGKOJDjzmLWV7mdQnspavEi3kfD9gWIQ=;
-        b=LcLMvABXBv5ssd8bBL16v2rmmU6poAzb8jnXwjRqhVULOejJ17dTRYHjQ95sldLyhQ
-         EDkVbm00GBaTsS1JMySlM1Sz/N+3xFfJCW+K2MdrAiP1C7ZEqVSgfjQGsP2yoXYqefhf
-         qE0fuyqYkKwH3gsADK+p96u9ltd4jRqp5G5R4O/RfdXCKQWnLBRJbneh2aw/23DVqSDM
-         ClNy1kR62nD0QmugvWd+ViPAs+fJtH8rMijXVsgWA7RwEyv14PbpBBEyh9RKcP5NYP3c
-         1nwjYIZ7A95sb+jMJlAaMvInQuxpsOFTwknCyXzdXZAu4c5NMELQIaAkLx811v7/h9lT
-         6d+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=sAQXDqHg+QqOGKOJDjzmLWV7mdQnspavEi3kfD9gWIQ=;
-        b=oU1Qh4Y+p+a+9+DGfWCwNMUJpUxbEM1DTQakCCsgutXa4S+Rf3NG3TJEE1odGX3Th/
-         5T3vWuSqjYGK3TmuNlCd2O+Tyu92bU2xspFfQRek3rxsIMXQCqeygsFBaku6aLEJK5fi
-         XIKfognD8fwt7kHzKE2E6BASZzegdS6jKffghho5jQZhdxCxL7T1fBtcjrbonunHo9it
-         3ycBDhQVExyxgz6UP6WnmrhN2pOOWdeymT10I5OujCI+MbJ4lf58/EFzotAmP/Usyr4M
-         /3OZnhWlf+3wy0MLQKEBqnrOBlc4Odm3+CYVYP6NfnktHvDrlBtrojMnO8JuFsKwnDN1
-         N7TQ==
-X-Gm-Message-State: AOAM530H7X4b00MDCgStanuz5JUAV1Cq/GLStQLTyQq+5WpJHWfIRusq
-        zwobPTK/jg7FI7LXYIrJgmk=
-X-Google-Smtp-Source: ABdhPJyYIIyIs0/OH0gsyJGAd3roUCX7k/v+yE4krIf+WxGBQ1evaiaQo8bj/Av86C7pt3cd20qAOw==
-X-Received: by 2002:a17:90b:201:: with SMTP id fy1mr6755194pjb.119.1621538397947;
-        Thu, 20 May 2021 12:19:57 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:f248:e9e3:9874:9116])
-        by smtp.gmail.com with ESMTPSA id c9sm2461371pfl.169.2021.05.20.12.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 12:19:57 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Thu, 20 May 2021 12:19:55 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        John Dias <joaodias@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] mm: page_alloc: dump migrate-failed pages only at -EBUSY
-Message-ID: <YKa2Wyo9xqIErpfa@google.com>
-References: <20210519213341.2620708-1-minchan@kernel.org>
+        Thu, 20 May 2021 15:21:41 -0400
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id EBE545212D6;
+        Thu, 20 May 2021 22:20:14 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail202102; t=1621538415;
+        bh=2fgv6quaAojndVwSYVCltsVkau3dKg8d9BBkNJEHikk=;
+        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
+        b=wCEvA7Xrl4WuzPaLA4/Oav9hrK1TfXfcFF28lYzjGvsiFltUVK6wcfh5Xa/dhkBIk
+         3hLl5GoAiDPIbeQQaR9/47q0+NkS07WKMkF5LBoTwLkFMVLxxsnpVIF2V5kBvfLIUU
+         f71JkVomRQD+wJktliXMCk47jR1oUZ+CUf4mQncVP4fYILJINEgYlozlKUVpwQYbXx
+         7U3oVV5QXBBVUh565k9SlNDVjR58l/3IAiXkt4LDsE0Prlo2jFkH+g8We9dL4/PHeQ
+         9mbJBKFFk1yDnS3FSI+biLCWORQhRvGJSIHsJzLV1r2w/I1DgfOPCQQ8/QSk2AZ31y
+         Y71MshpRaJ04A==
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id EBABF52129F;
+        Thu, 20 May 2021 22:20:13 +0300 (MSK)
+Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
+ May 2021 22:20:13 +0300
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+To:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Norbert Slusarek <nslusarek@gmx.net>,
+        Colin Ian King <colin.king@canonical.com>,
+        Andra Paraschiv <andraprs@amazon.com>
+CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <oxffffaa@gmail.com>
+Subject: [PATCH v10 18/18] virtio/vsock: update trace event for SEQPACKET
+Date:   Thu, 20 May 2021 22:20:04 +0300
+Message-ID: <20210520192008.1272910-1-arseny.krasnov@kaspersky.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519213341.2620708-1-minchan@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 02:33:41PM -0700, Minchan Kim wrote:
-> alloc_contig_dump_pages aims for helping debugging page migration
-> failure by page refcount mismatch or something else of page itself
-> from migration handler function. However, in -ENOMEM case, there is
-> nothing to get clue from page descriptor information so just
-> dump pages only when -EBUSY happens.
-> 
-> Signed-off-by: Minchan Kim <minchan@kernel.org>
-> ---
->  mm/page_alloc.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index 3100fcb08500..c0a2971dc755 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -8760,7 +8760,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
->  
->  	lru_cache_enable();
->  	if (ret < 0) {
-> -		alloc_contig_dump_pages(&cc->migratepages);
-> +		if (ret == -EBUSY)
-> +			alloc_contig_dump_pages(&cc->migratepages);
->  		putback_movable_pages(&cc->migratepages);
->  		return ret;
->  	}
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-> 
+Add SEQPACKET socket type to vsock trace event.
 
-Resend with a little modifying description.
-
-From c5a2fea291cf46079b87cc9ac9a25fc7f819d0fd Mon Sep 17 00:00:00 2001
-From: Minchan Kim <minchan@kernel.org>
-Date: Wed, 19 May 2021 14:22:18 -0700
-Subject: [PATCH] mm: page_alloc: dump migrate-failed pages only at -EBUSY
-
-alloc_contig_dump_pages aims for helping debugging page migration
-failure by elevated page refcount compared to expected_count.
-(for the detail, please look at migrate_page_move_mapping)
-
-However, -ENOMEM is just the case that system is under memory
-pressure state, not relevant with page refcount at all. Thus,
-the dumping page list is not helpful for the debugging point of view.
-
-Signed-off-by: Minchan Kim <minchan@kernel.org>
+Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
 ---
- mm/page_alloc.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/trace/events/vsock_virtio_transport_common.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 3100fcb08500..c0a2971dc755 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -8760,7 +8760,8 @@ static int __alloc_contig_migrate_range(struct compact_control *cc,
+diff --git a/include/trace/events/vsock_virtio_transport_common.h b/include/trace/events/vsock_virtio_transport_common.h
+index 6782213778be..b30c0e319b0e 100644
+--- a/include/trace/events/vsock_virtio_transport_common.h
++++ b/include/trace/events/vsock_virtio_transport_common.h
+@@ -9,9 +9,12 @@
+ #include <linux/tracepoint.h>
  
- 	lru_cache_enable();
- 	if (ret < 0) {
--		alloc_contig_dump_pages(&cc->migratepages);
-+		if (ret == -EBUSY)
-+			alloc_contig_dump_pages(&cc->migratepages);
- 		putback_movable_pages(&cc->migratepages);
- 		return ret;
- 	}
+ TRACE_DEFINE_ENUM(VIRTIO_VSOCK_TYPE_STREAM);
++TRACE_DEFINE_ENUM(VIRTIO_VSOCK_TYPE_SEQPACKET);
+ 
+ #define show_type(val) \
+-	__print_symbolic(val, { VIRTIO_VSOCK_TYPE_STREAM, "STREAM" })
++	__print_symbolic(val, \
++				{ VIRTIO_VSOCK_TYPE_STREAM, "STREAM" }, \
++				{ VIRTIO_VSOCK_TYPE_SEQPACKET, "SEQPACKET" })
+ 
+ TRACE_DEFINE_ENUM(VIRTIO_VSOCK_OP_INVALID);
+ TRACE_DEFINE_ENUM(VIRTIO_VSOCK_OP_REQUEST);
 -- 
-2.31.1.818.g46aad6cb9e-goog
+2.25.1
 
