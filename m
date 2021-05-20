@@ -2,179 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CECE838B1A4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6575438B1A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbhETO0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:26:14 -0400
-Received: from mail-bn8nam11on2116.outbound.protection.outlook.com ([40.107.236.116]:30977
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232781AbhETO0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:26:12 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ThQc8l5cPAxt0X8UDgMAhzhNFjkJfFjJs6na7vGkFze03dzEAF+fISHwG360YktOZgsTrOD7ROEjcQetKoZ61BR2jRg666xCCB34366KeJvascW9WM06fv8bNdZWYdcEtBMll75r/9kxkdRoj87itn2u9fokyZWzFc84FWw4Ss4+eamKW+35QMKd0lrg5HPgMQ2IqkB7EZcV3HDytUSWJG0SY+SmqgW1ej7tqrNU+0jb5S1swXHKdcrtoPkbDTQD9XMitsaU8kc4BzVeYYkwzSrVC3SGcqSoq8kkFb1PaVl/l63hxcL06a0IKmzunzKSv5B/hJK4l3l8Vt/2ODcFEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Czb2tMM+hL8/ExpxHxdKem2pI+LOhiqEXGR/6kZRt0I=;
- b=iqdCf5x7ktXLsUUuOVE84MBUjzY0urblTpkdjfvELAj0vMG1XscYcM1Y0lA5BffZTq8bwlcr1F1LgIO65udrNzAkapQAJ4xrwyDtk18zwSsPUWUcdz//EtAUUO9IbrhwuoHozGJkCVuWkwGSX2u9tD8JIY0wUY+K1CmZKOwrMvIKhjVq1pa7y2uZXA5HeqxrGIkVCJaiWfd6PG+cy8BRSf3cc2SEZ4lvMco/1a5DNsKzCNe0Dpz/y5gUAyOE01vl3cJhICq28qgEtf15Zb1BEwzRdaXnj+XvGFnsIbOshzHjR7Ts9wTcBGcTFehOZwtkBY3Ns5lCx9m2kqfc10c9wQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Czb2tMM+hL8/ExpxHxdKem2pI+LOhiqEXGR/6kZRt0I=;
- b=SS8uEUg0w+1+NFsKpUa+TKqSwKhgg89uiTByxxnZThzIBmmDDk7swquiMbqhAZRmx3BnByB6PeUgVDCpsJSu4NwxWM4Eeipz/93x0R6/J9ks5LXdCZs/Els3txLLw5DT9r/Nx84S1uNx/aflm574ihBeR4J60ZwQAVqlhZ9KdUc=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none
- header.from=os.amperecomputing.com;
-Received: from MW2PR0102MB3482.prod.exchangelabs.com (2603:10b6:302:c::32) by
- MW4PR01MB6146.prod.exchangelabs.com (2603:10b6:303:7c::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4129.28; Thu, 20 May 2021 14:24:49 +0000
-Received: from MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::d840:7aa7:58d4:b503]) by MW2PR0102MB3482.prod.exchangelabs.com
- ([fe80::d840:7aa7:58d4:b503%5]) with mapi id 15.20.4129.034; Thu, 20 May 2021
- 14:24:49 +0000
-Subject: Re: [PATCH v3 7/7] bindings: ipmi: Add binding for Aspeed SSIF BMC
- driver
-To:     Rob Herring <robh@kernel.org>
-Cc:     openbmc@lists.ozlabs.org, Wolfram Sang <wsa@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Open Source Submission <patches@amperecomputing.com>,
-        openipmi-developer@lists.sourceforge.net,
-        "Thang Q . Nguyen" <thang@os.amperecomputing.com>,
-        devicetree@vger.kernel.org, Corey Minyard <minyard@acm.org>,
-        Joel Stanley <joel@jms.id.au>,
-        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-        Phong Vo <phong@os.amperecomputing.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        linux-aspeed@lists.ozlabs.org,
-        Brendan Higgins <brendanhiggins@google.com>
-References: <20210519074934.20712-1-quan@os.amperecomputing.com>
- <20210519074934.20712-8-quan@os.amperecomputing.com>
- <1621438164.118346.3134230.nullmailer@robh.at.kernel.org>
-From:   Quan Nguyen <quan@os.amperecomputing.com>
-Message-ID: <d935935e-018d-f2b2-d129-60a37f85926b@os.amperecomputing.com>
-Date:   Thu, 20 May 2021 21:24:27 +0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.2
-In-Reply-To: <1621438164.118346.3134230.nullmailer@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [2402:800:623c:5f9b:6031:ff4f:8fc2:44d0]
-X-ClientProxiedBy: HK2PR02CA0216.apcprd02.prod.outlook.com
- (2603:1096:201:20::28) To MW2PR0102MB3482.prod.exchangelabs.com
- (2603:10b6:302:c::32)
+        id S235699AbhETO0d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:26:33 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56711 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232781AbhETO0a (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 10:26:30 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621520709; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=zyVvMEbw6fGlwBlGsUwf0H2yuUNMPC9CYtNKkDWlN6k=; b=lCmBELI6uqQfUFkwrji9nT+TMY100sf0JJ9r39usMz+pGF6jgiN9z3pkadPeR+45XDq8oMol
+ VSXb+5Czdz/fYFPbQJl9Iax90o4HjvC8VOZhdT+Q5baHuq33J5QrNsaZ1/Eq5ThkZACm3sPA
+ 4AIP2eqU8WHS4x+R/P/uvaRueJ0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60a6713e60c53c8c9db27822 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 20 May 2021 14:25:02
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8F955C43144; Thu, 20 May 2021 14:25:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 02868C43460;
+        Thu, 20 May 2021 14:24:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 02868C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        swboyd@chromium.org, judyhsiao@chromium.org
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH v2] ASoC: qcom: lpass-cpu: Fix pop noise during audio capture begin
+Date:   Thu, 20 May 2021 19:54:32 +0530
+Message-Id: <20210520142432.29869-1-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [IPv6:2402:800:623c:5f9b:6031:ff4f:8fc2:44d0] (2402:800:623c:5f9b:6031:ff4f:8fc2:44d0) by HK2PR02CA0216.apcprd02.prod.outlook.com (2603:1096:201:20::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 14:24:44 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 51846f47-9d21-45b1-0ff7-08d91b9b060c
-X-MS-TrafficTypeDiagnostic: MW4PR01MB6146:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MW4PR01MB6146E89270DBCF6318AF5CECF22A9@MW4PR01MB6146.prod.exchangelabs.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Cgm8s571/mWlq+4z3Qclmz3ggY4d1dMqfzaCKvyHIWrIw9HJlCu5mEKRbwU0zWiGLoW3FyEXeomtzHHGo6I7f+AxrimCOsu6pnj1MkfTb373f13mn8Ux6Fmg1gfzPq9WuoOE7Uj+eHZhlVRIpGw7GATF2tlpOZ+hacZg6CXXCFsWM6JN1algnVrrzEvrmyCeIg2Q5fo4XBWPipEFuqj1z06arYltfuUbJRgQC0thXF28Py6dY9utOTRDQK0kEhtPuV/WketIMx5G7uhIzD0o7Ei1E0EaXHS220B7WlCEKTwm3RFekHVAstrIUlm2Cgva2zfbYrvQ/lV86piC0+QTtkDaYhld/rLWk9B4qcGBFeBqmoIKLXwR90REWJbHGO2MYstfZv+FqkDnBSpfL8HMedyuQBUvNM7xGpPw54qHiFZKu8HA/v+i7rihag1DIVo3pkKgWLlGX+sNHfqc/cR0fFrYS23mTVAkNcHBtMrC8OOW0GS7og4CvzJnMfxCYCPus+TUxqMeHTb4aXMBdbciN2F+DK0IHXUPJFnuHD+0l6++VLa6kze+UyIGGH+a8BoUaMWAGF0q0B7ImwT14Wo6i6XfLx8+uSEUet8RqybFkMBD8bI45jvYi6CpLxALPgpRIhFVqgEpwc+Vc+bG5E3/q/C/kBraZtUIcdhWGt2rwh0nXLLSePiyKSZaimFv0VLhFD9YfEGBYUaci21szAaqKAx2GtD1WOWGsQzlHmuGalZ8g4OMi65tdWH/J2124VgJiKFqpklsxOgkWAVe5vULGQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR0102MB3482.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39840400004)(376002)(136003)(396003)(366004)(16526019)(966005)(316002)(8936002)(86362001)(186003)(53546011)(7416002)(52116002)(66476007)(6666004)(38100700002)(83380400001)(4326008)(2616005)(6916009)(5660300002)(6486002)(66556008)(478600001)(8676002)(54906003)(31696002)(66946007)(2906002)(31686004)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?VWUxTmw5ZTVoUU1OeUlSenp5ZnUyR0hMSi9UQ0I0ZG0zcFc5M1VROUhSSHV3?=
- =?utf-8?B?c2IwSUpLc003c0ZWWFltS3BaUWI2bWpYWEJnblhzRkxXbUN0ZkpWMGxPV2lO?=
- =?utf-8?B?WVM1Y2lLNk5wSGhFTG1WNUVvT3p1ZkZxMWJocnB2QlBWWDg0d2s2TkpXWFU5?=
- =?utf-8?B?SDA2cm1LRm9sbHpTSm13RTE3RXR4Mm1xbkRhSTM2TkhaRFkwa3FsVVlJVkti?=
- =?utf-8?B?M0JuTjNLNkJCWG5zLzZFNjhtOVowdG5GN0lYT2dwbGFoQ0xNUFJyc3VrWHZ6?=
- =?utf-8?B?S2RPZytIRmgwbkdVR2VUWlhJMUlhTjZYdzQ5NTc0dDRjQjNlNm0vcnFpTjZ4?=
- =?utf-8?B?eXJ5aTUvMzd1TC8zcW5XOWVjWEtaVjNSbU5tTWlzcWhlb1FoWXpBenVCSmUx?=
- =?utf-8?B?emo1T3RDREU0R2MxbFVuNlN2S3d3aWhrM2NRZ0VWUUVIZ1F3RjRkOVJjWkM3?=
- =?utf-8?B?STRJdkJzK0xYcnFQQ2J4azdGWWthWTkxSmxGWisycTlvTnFTT2hrZTltbDdF?=
- =?utf-8?B?a2Q2dnFMYTFCdWJ0V1hScnlDTERUYVRqcUZISzFyZFpMVFRyaXl2TC9JTTdx?=
- =?utf-8?B?MGdsUUw1bWg3QVVZaUxkU2RCWWNiTDh4dHR5cElYeDZJank5eEJrS3VsQzlI?=
- =?utf-8?B?VFNhWHF0WXI4RFFCNlo4WkhEaE85Z2p5TlVDeU5tVm5idDRXT1FrcXpoWUhp?=
- =?utf-8?B?U00xSFBoT0h1ZlM0T3AvM2lkRDU0K0F0Y0thc0VuOXFiQVZ5RXV6V1FMd3U5?=
- =?utf-8?B?WmIwVHN6TE1OemdHMU1TdGZTMTA1MG45WWJZL2NpQ2M4ZFlKUU9DNVhkbkxj?=
- =?utf-8?B?ZFRVZEZWNE10NXk4b3dZZjZHbGE4U1VMYjk2VnduK0p0V2xXTWVpcmt5MEV5?=
- =?utf-8?B?SVcwdDQwTXZlWVFKL205MW4zMnA5MTRLdC8wdDNZWGtwWGVrUHNWS1ZNMFFB?=
- =?utf-8?B?L3ZMR0pPRDFadHBtZlQwZjUyTVRVTzRiOUFHaDgzaHh6VkVkd0ZCRHdnT1Nh?=
- =?utf-8?B?ZkVwNk5XTGlOVlJRUkE5NHppOE8xamoyaFdzL3AzUEFHUmpGMkJsMy9EeFdF?=
- =?utf-8?B?bjd0OE9LMkFueEU5UDJyc1JIbW56ZlkzM3NmeTB6WEhzQUhDd2QweHhxcGJ2?=
- =?utf-8?B?Z0NBN2RNTFR0bHNNdFZ3TkF4eW83ZCs4aW5WTll4VHRLd0czWmxHdnhoZjRz?=
- =?utf-8?B?dUdwVW9BNVYxRXFSQ0E0UDAvZ3VXcnVZMURLSDYxNy81SVNTbjVMY09tVVkw?=
- =?utf-8?B?TDJKVEJiaS9Yb3FDNnU1Z1ZMcW5jVHFWcXl3QjBleWw0aE9ZL0tNMldLdlRF?=
- =?utf-8?B?MkNZRUxhOGMzUldnaGlZcjBlRzdoQk03dU95S0hrcXlZcGFDYXcrcUJXRjkv?=
- =?utf-8?B?RnZxcVVzWldVUldMU3hvL1BxQmJlNUgyeWlzZ0Y2MFdRRUlMUHdGVlRZSnhX?=
- =?utf-8?B?U1VqWXcxZzBDbjA4NU5pazdOaHRQcTdmbVlsbzZXZ0hJNVVHRTFOYXRQTUg0?=
- =?utf-8?B?QXB4T0NiTG9vME5odW1YZmFHeGIwWEM0MUZwNG1DdGppaDZlOERUeUdMUFdp?=
- =?utf-8?B?T282VGtZdTJtUzNrYnN4ajJlbk9CbW0ySHZZWCtKd2pTZE8zdU1IY1FDWkM2?=
- =?utf-8?B?dG02NXNPZm5wZ2V6QU9DWHM4Q3dJM2E4SXhYL1RydVphYlZTamw5Qk14ZldP?=
- =?utf-8?B?UnhjYUtxaFFIbGc1blVtN3UwanQ4NjBqU3RmTm9naW4wbXU5Q2IwaTRqUGZE?=
- =?utf-8?B?c2l4Z2s4d0hWbVBURDNPZlFxcjFOSC80NlhaYlgyT1ZBandpYXY4bEhMekRv?=
- =?utf-8?B?dDZuWjhnR0MzL0M1c0R1YWkya1VGNnJxRWNYU1l3N3dNWXpZcGlMTjE1WWZJ?=
- =?utf-8?Q?yRXW7yhYMsjQQ?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51846f47-9d21-45b1-0ff7-08d91b9b060c
-X-MS-Exchange-CrossTenant-AuthSource: MW2PR0102MB3482.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 14:24:48.8428
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Yw+BgjxxQKv8OI4FxOPN15npAQfSJO+287eiAQv+DWKqcTFbxpsFA1+jEAiHHGM8zZR3hZTGKYFDb9BNH0z8u3kIGH72ttf6VsbYsAb3TOs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR01MB6146
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/2021 22:29, Rob Herring wrote:
-> On Wed, 19 May 2021 14:49:34 +0700, Quan Nguyen wrote:
->> Add device tree binding document for the Aspeed SSIF BMC driver.
->>
->> Signed-off-by: Quan Nguyen <quan@os.amperecomputing.com>
->> ---
->> v3:
->>    + Switched to use DT schema format [Rob]
->>
->>   .../bindings/ipmi/aspeed-ssif-bmc.yaml        | 33 +++++++++++++++++++
->>   1 file changed, 33 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.yaml
->>
-> 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
-> 
-> yamllint warnings/errors:
-> 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dts:21.13-26: Warning (reg_format): /example-0/ssif-bmc@10:reg: property has invalid length (4 bytes) (#address-cells == 1, #size-cells == 1)
-> Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dt.yaml: Warning (pci_device_reg): Failed prerequisite 'reg_format'
-> Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dt.yaml: Warning (pci_device_bus_num): Failed prerequisite 'reg_format'
-> Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dt.yaml: Warning (simple_bus_reg): Failed prerequisite 'reg_format'
-> Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dt.yaml: Warning (i2c_bus_reg): Failed prerequisite 'reg_format'
-> Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dt.yaml: Warning (spi_bus_reg): Failed prerequisite 'reg_format'
-> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/ipmi/aspeed-ssif-bmc.example.dt.yaml: example-0: ssif-bmc@10:reg:0: [16] is too short
-> 	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
-> 
-> See https://patchwork.ozlabs.org/patch/1480727
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
-> 
-Thanks,
-Will fix in next version.
+This patch fixes PoP noise of around 15ms observed during audio capture begin.
+Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for introducing some delay
+before capture start and clock enable.
 
-- Quan
+Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+Changes Since V1:
+	-- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
+	-- Added comments 
+	
+ sound/soc/qcom/lpass-cpu.c | 48 ++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 46 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+index c62d2612e8f5..c5bb3f16d25f 100644
+--- a/sound/soc/qcom/lpass-cpu.c
++++ b/sound/soc/qcom/lpass-cpu.c
+@@ -93,9 +93,18 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+ 		struct snd_soc_dai *dai)
+ {
+ 	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
++	unsigned int id = dai->driver->id;
+ 
+ 	clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+-	clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
++	/* To ensure BCLK/LRCLK disabled even in device node validation.
++	  Will not impact if disabled in trigger suspend */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
++	else
++		regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
++
++	clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+ }
+ 
+ static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+@@ -275,6 +284,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		/* To ensure lpass BCLK/LRCLK is enabled during
++	   		device resume. Will not impact if enabled in prepare */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_ENABLE);
+@@ -296,6 +307,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		/* To ensure lpass BCLK/LRCLK is disabled during
++	   		device suspend */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			ret = regmap_fields_write(i2sctl->spken, id,
+ 						 LPAIF_I2SCTL_SPKEN_DISABLE);
+@@ -308,19 +321,50 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+ 				ret);
+ 
+ 		clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+-
++		break;
++	default:
+ 		break;
+ 	}
+ 
+ 	return ret;
+ }
+ 
++static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
++		struct snd_soc_dai *dai)
++{
++	struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
++	struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
++	unsigned int id = dai->driver->id;
++	int ret = -EINVAL;
++	/* To ensure lpass BCLK/LRCLK is enabled bit before
++	   playback/capture data flow starts */
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
++	else
++		ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
++
++	if (ret)
++		dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
++	       ret);
++
++	ret = clk_enable(drvdata->mi2s_bit_clk[id]);
++
++	if (ret) {
++		dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
++		clk_disable(drvdata->mi2s_osr_clk[id]);
++		return ret;
++	}
++	return 0;
++}
++
++
+ const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+ 	.set_sysclk	= lpass_cpu_daiops_set_sysclk,
+ 	.startup	= lpass_cpu_daiops_startup,
+ 	.shutdown	= lpass_cpu_daiops_shutdown,
+ 	.hw_params	= lpass_cpu_daiops_hw_params,
+ 	.trigger	= lpass_cpu_daiops_trigger,
++	.prepare	= lpass_cpu_daiops_prepare,
+ };
+ EXPORT_SYMBOL_GPL(asoc_qcom_lpass_cpu_dai_ops);
+ 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+
