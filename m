@@ -2,125 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB4838B56E
+	by mail.lfdr.de (Postfix) with ESMTP id 0400138B56D
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:47:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235260AbhETRsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:48:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235126AbhETRsm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:48:42 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48DD0C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:47:21 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id v12so9522004plo.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:47:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uaNz0pGgnw41U7b9/4YySDsutMOtFyU5/A1BP+vwOSo=;
-        b=nCxzoJwnT7b6cU313aMMJaaa/LaDoZ4dIFz/OQLbUH1mpz+AZordGu5hYYSSoF3iuZ
-         9jzy8zZoas868Og3FAhNYOhzCj2pdqvV9gHZYuJ5nbVWCIdbZNxc6kfmtl+GyipUpUAi
-         FbVj/sxrrKf0Q25Z6ougkD5jPcdFSl7uW9HamsQTMVYAXiUbV5ovyPgE/vugL3v1mCVh
-         6jh7FVqWmc7LhgJCPiiAxUAmAcMBzfDpJ1td1suJCAULiANv+WqwmOd4uyD1O3J7zZre
-         mJbVZQwLGKY49yHvgTRqxv46eCFFLE6a83VkLBwO5pJp6DaHy4C7o/k+Kir4HAL/fYqw
-         Di2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=uaNz0pGgnw41U7b9/4YySDsutMOtFyU5/A1BP+vwOSo=;
-        b=UndIRCccDswfOSaD2HxPJgd4PYMQOAYrscKNCny1PWV7Q+khy4IkqkQZYxLN7OMHxO
-         /lSbcLdwAXLSYNZzBbNdhpLH/QUzjVHVJ7Tjiyynvlo6g/ETqZuIoqWalDk0QFLWLRwe
-         Gjm53sFL4nsA4lgQvR/Xq3zyBy2H76i4y+65dj2cWw/29GNbBXdf6T5TEdFAxG4wUtLw
-         uWF9TVOIi3yfxFQ1iu8bJBw0giSI/5tYZQ2dgrRMK9ZldOxmuMtrdNUEMas6B3P3Xo23
-         XjzhChbnKOtXVQYyfZseI2bIoyk5Zu6THn5Yux40Kk/+7Vlw8mXm+0X4rbpZF0z2FDfc
-         TZDg==
-X-Gm-Message-State: AOAM531sGqgqf7eeWvaprcW35ac3Ir3izKYBmwtGXtlQDTJaJKhxrt9U
-        nl/MdqlAUgNk2QrvJrOqja8=
-X-Google-Smtp-Source: ABdhPJyxsXj/b5lWKiUQS4qPuu+WqQ2yEz3XfUJJmUnGQ5dI42+4c2/1SAu9dNtZLBLiOuMOjm1pkA==
-X-Received: by 2002:a17:90a:7e09:: with SMTP id i9mr5967986pjl.166.1621532840693;
-        Thu, 20 May 2021 10:47:20 -0700 (PDT)
-Received: from ubuntu.localdomain ([103.196.78.23])
-        by smtp.googlemail.com with ESMTPSA id t15sm5775310pjh.0.2021.05.20.10.47.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 10:47:20 -0700 (PDT)
-From:   Hriday Hegde <hridayhegde1999@gmail.com>
-Cc:     hridayhegde1999@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Sean Behan <codebam@riseup.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: emxx_udc: Fixed coding style in places where lines should not end in '('
-Date:   Thu, 20 May 2021 10:46:57 -0700
-Message-Id: <20210520174701.8370-1-hridayhegde1999@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S235163AbhETRsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:48:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50568 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230339AbhETRsl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:48:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8C142613D1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 17:47:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621532839;
+        bh=v6c692HpaiUNYLBW8NHQxpu5a4y3zsvrULjJ+1d4CSY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vJJ+CFa6mcYGibOcKcKkmiumbYkSWLrRDzT12/QCPD7n7/EN4Ju/qYfcwnxC2kzzK
+         nsNECseUSy9Tp4b4fTFHbH5E9naUtsOn6VrfbfAU/GkN7DvvFCSnUBCna7zzKt+luY
+         lYF8RgpOZJhf8Y861gKVJxhOzFV+X2P1Q0HEYL/fFBubZXCrwf3btzqCSM4yG5bXF4
+         ObbzRj1Ige6BYv2LNGpBtbrImdkBs0Lhzof2KymWTKHb+jSWisvoHOYt6rnKr5xxkb
+         vFThECuc+kQT9Am6M5sS1cidHTqTThsfw7HT2j30tfj+C5VwVhSF6vlq1WKsmIIUWw
+         EEZnT6Jsg8SPw==
+Received: by mail-ed1-f44.google.com with SMTP id s6so20350450edu.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 10:47:19 -0700 (PDT)
+X-Gm-Message-State: AOAM5322bcU867zq0VcBabUPAIEt4E4IOo6g3ae3HMMwlTpuUR8PUTr1
+        zXvevc8Hful/OzEwhRqrrp7VdkN0o/588tkjEg==
+X-Google-Smtp-Source: ABdhPJxPOecSm7Lse7H/+a0GuLAtwROgxrajM++9UFLVwD1e2pkoRhWaLvZGj6HsYR5yXp76zqg+ptVJVg/RuNJ/27s=
+X-Received: by 2002:a05:6402:3513:: with SMTP id b19mr4788912edd.137.1621532838075;
+ Thu, 20 May 2021 10:47:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210520163751.27325-1-maz@kernel.org> <20210520163751.27325-31-maz@kernel.org>
+In-Reply-To: <20210520163751.27325-31-maz@kernel.org>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 20 May 2021 12:47:06 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+nu8PmONzx2AfysRWuhJDV9Xn3O5rCOfEZL0KoC12_qw@mail.gmail.com>
+Message-ID: <CAL_Jsq+nu8PmONzx2AfysRWuhJDV9Xn3O5rCOfEZL0KoC12_qw@mail.gmail.com>
+Subject: Re: [PATCH 30/39] PCI: Bulk conversion to generic_handle_domain_irq()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The fixes were for the following checkpatch outputs:
+On Thu, May 20, 2021 at 11:57 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> Wherever possible, replace constructs that match either
+> generic_handle_irq(irq_find_mapping()) or
+> generic_handle_irq(irq_linear_revmap()) to a single call to
+> generic_handle_domain_irq().
+>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
+> ---
+>  drivers/pci/controller/dwc/pci-dra7xx.c        | 14 +++++---------
+>  drivers/pci/controller/dwc/pci-keystone.c      |  5 ++---
+>  .../pci/controller/dwc/pcie-designware-host.c  |  9 ++++-----
+>  drivers/pci/controller/dwc/pcie-uniphier.c     |  6 ++----
+>  .../controller/mobiveil/pcie-mobiveil-host.c   | 15 ++++++---------
+>  drivers/pci/controller/pci-aardvark.c          |  5 ++---
+>  drivers/pci/controller/pci-ftpci100.c          |  2 +-
+>  drivers/pci/controller/pci-tegra.c             |  8 +++-----
+>  drivers/pci/controller/pci-xgene-msi.c         |  9 +++------
+>  drivers/pci/controller/pcie-altera-msi.c       | 10 ++++------
+>  drivers/pci/controller/pcie-altera.c           | 10 ++++------
+>  drivers/pci/controller/pcie-brcmstb.c          |  9 ++++-----
+>  drivers/pci/controller/pcie-iproc-msi.c        |  4 +---
+>  drivers/pci/controller/pcie-mediatek-gen3.c    | 13 ++++---------
+>  drivers/pci/controller/pcie-mediatek.c         | 12 ++++--------
+>  drivers/pci/controller/pcie-microchip-host.c   | 18 +++++++-----------
+>  drivers/pci/controller/pcie-rcar-host.c        |  8 +++-----
+>  drivers/pci/controller/pcie-rockchip-host.c    |  8 +++-----
+>  drivers/pci/controller/pcie-xilinx-cpm.c       |  4 ++--
+>  drivers/pci/controller/pcie-xilinx-nwl.c       | 13 +++----------
+>  drivers/pci/controller/pcie-xilinx.c           |  9 ++++-----
+>  21 files changed, 71 insertions(+), 120 deletions(-)
 
-CHECK: Lines should not end with a '('
-1076: FILE: drivers/staging/emxx_udc/emxx_udc.c:1076:
-+				_nbu2ss_writel(
 
-CHECK: Lines should not end with a '('
-1228: FILE: drivers/staging/emxx_udc/emxx_udc.c:1228:
-+		length = _nbu2ss_readl(
+> diff --git a/drivers/pci/controller/pci-xgene-msi.c b/drivers/pci/controller/pci-xgene-msi.c
+> index 1c34c897a7e2..cf3832b905e8 100644
+> --- a/drivers/pci/controller/pci-xgene-msi.c
+> +++ b/drivers/pci/controller/pci-xgene-msi.c
+> @@ -291,8 +291,7 @@ static void xgene_msi_isr(struct irq_desc *desc)
+>         struct irq_chip *chip = irq_desc_get_chip(desc);
+>         struct xgene_msi_group *msi_groups;
+>         struct xgene_msi *xgene_msi;
+> -       unsigned int virq;
+> -       int msir_index, msir_val, hw_irq;
+> +       int msir_index, msir_val, hw_irq, ret;
+>         u32 intr_index, grp_select, msi_grp;
+>
+>         chained_irq_enter(chip, desc);
+> @@ -330,10 +329,8 @@ static void xgene_msi_isr(struct irq_desc *desc)
+>                          * CPU0
+>                          */
+>                         hw_irq = hwirq_to_canonical_hwirq(hw_irq);
+> -                       virq = irq_find_mapping(xgene_msi->inner_domain, hw_irq);
+> -                       WARN_ON(!virq);
+> -                       if (virq != 0)
+> -                               generic_handle_irq(virq);
+> +                       ret = generic_handle_domain_irq(xgene_msi->inner_domain, hw_irq);
+> +                       WARN_ON(ret);
 
-CHECK: Lines should not end with a '('
-1465: FILE: drivers/staging/emxx_udc/emxx_udc.c:1465:
-+			regdata = _nbu2ss_readl(
+There's various error prints in some of the handlers. I think they
+should be moved to the core. I can't imagine handling the irq is ever
+optional.
 
-Signed-off-by: Hriday Hegde <hridayhegde1999@gmail.com>
----
- drivers/staging/emxx_udc/emxx_udc.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index 741147a4f0fe..8364316c1d25 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -1073,8 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
- 		i_word_length = length / sizeof(u32);
- 		if (i_word_length > 0) {
- 			for (i = 0; i < i_word_length; i++) {
--				_nbu2ss_writel(
--					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-+				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1]
-+					.EP_WRITE,
- 					p_buf_32->dw);
- 
- 				p_buf_32++;
-@@ -1225,8 +1225,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
- 		return;
- 
- 	if (ep->epnum > 0) {
--		length = _nbu2ss_readl(
--			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
-+		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
- 
- 		length &= EPN_LDATA;
- 		if (length < ep->ep.maxpacket)
-@@ -1462,8 +1461,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
- 		for (limit_cnt = 0
- 			; limit_cnt < IN_DATA_EMPTY_COUNT
- 			; limit_cnt++) {
--			regdata = _nbu2ss_readl(
--				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
-+			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
- 
- 			if ((regdata & EPN_IN_DATA) == 0)
- 				break;
--- 
-2.25.1
-
+Rob
