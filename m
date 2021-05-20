@@ -2,32 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7E0338A852
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:47:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E506438A85F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236492AbhETKsu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:48:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60378 "EHLO mail.kernel.org"
+        id S238915AbhETKuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:50:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236947AbhETKd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236493AbhETKd3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:33:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B467E61606;
-        Thu, 20 May 2021 09:52:46 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F39346161C;
+        Thu, 20 May 2021 09:52:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504367;
-        bh=os3IdbjtmowGQlAp1NLTz3BkNBLLRVYjWB6eNY2ukH4=;
+        s=korg; t=1621504369;
+        bh=kbph+OCMGvkpl0PwQ4sZMAjVv0+sOnl0W0xrNpNcW+o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N5vuu0ZLEU4VCbJ9JdvYvgbFYNeTQAKAa+mY0pqOoOIu2rJ5VEwALr6/JEubsyq1o
-         z1MZOZBhdQeg4ybidxufwnRvpXbmVtcn/RWsP1TDcBsgag6QWj5Ma8ETCHRIGLNPzR
-         iWdWgjb5El6M/r00sGmVNG7s1vt2uFf4dcZzy/KA=
+        b=CzIC/CH7Wli5dLJIqWtv+tlh1dIoSO5s8g99YJl0Y9A7THpOzPz50AYhRFIvZuuKR
+         R1kW+tFrk3kgx6oAGeAEV+NqapRHP5ZF3t/lZKonRusuUcbZGVKpz721VK/cNiCGni
+         hrCTTEPkLCSrTtz2MP126D90fNseR7ch364KzhTY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 214/323] i2c: sh7760: add IRQ check
-Date:   Thu, 20 May 2021 11:21:46 +0200
-Message-Id: <20210520092127.466115212@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 215/323] MIPS: pci-legacy: stop using of_pci_range_to_resource
+Date:   Thu, 20 May 2021 11:21:47 +0200
+Message-Id: <20210520092127.498539638@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -39,40 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 
-[ Upstream commit e5b2e3e742015dd2aa6bc7bcef2cb59b2de1221c ]
+[ Upstream commit 3ecb9dc1581eebecaee56decac70e35365260866 ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to devm_request_irq() (which
-takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding
-an original error code.  Stop calling devm_request_irq() with invalid
-IRQ #s.
+Mirror commit aeba3731b150 ("powerpc/pci: Fix IO space breakage after
+of_pci_range_to_resource() change").
 
-Fixes: a26c20b1fa6d ("i2c: Renesas SH7760 I2C master driver")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Most MIPS platforms do not define PCI_IOBASE, nor implement
+pci_address_to_pio(). Moreover, IO_SPACE_LIMIT is 0xffff for most MIPS
+platforms. of_pci_range_to_resource passes the _start address_ of the IO
+range into pci_address_to_pio, which then checks it against
+IO_SPACE_LIMIT and fails, because for MIPS platforms that use
+pci-legacy (pci-lantiq, pci-rt3883, pci-mt7620), IO ranges start much
+higher than 0xffff.
+
+In fact, pci-mt7621 in staging already works around this problem, see
+commit 09dd629eeabb ("staging: mt7621-pci: fix io space and properly set
+resource limits")
+
+So just stop using of_pci_range_to_resource, which does not work for
+MIPS.
+
+Fixes PCI errors like:
+  pci_bus 0000:00: root bus resource [io  0xffffffff]
+
+Fixes: 0b0b0893d49b ("of/pci: Fix the conversion of IO ranges into IO resources")
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc: Liviu Dudau <Liviu.Dudau@arm.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-sh7760.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/mips/pci/pci-legacy.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-sh7760.c b/drivers/i2c/busses/i2c-sh7760.c
-index c2005c789d2b..c79c9f542c5a 100644
---- a/drivers/i2c/busses/i2c-sh7760.c
-+++ b/drivers/i2c/busses/i2c-sh7760.c
-@@ -471,7 +471,10 @@ static int sh7760_i2c_probe(struct platform_device *pdev)
- 		goto out2;
+diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+index 1ae6bc414e2b..c932ffa6e1d3 100644
+--- a/arch/mips/pci/pci-legacy.c
++++ b/arch/mips/pci/pci-legacy.c
+@@ -169,8 +169,13 @@ void pci_load_of_ranges(struct pci_controller *hose, struct device_node *node)
+ 			res = hose->mem_resource;
+ 			break;
+ 		}
+-		if (res != NULL)
+-			of_pci_range_to_resource(&range, node, res);
++		if (res != NULL) {
++			res->name = node->full_name;
++			res->flags = range.flags;
++			res->start = range.cpu_addr;
++			res->end = range.cpu_addr + range.size - 1;
++			res->parent = res->child = res->sibling = NULL;
++		}
  	}
+ }
  
--	id->irq = platform_get_irq(pdev, 0);
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
-+	id->irq = ret;
- 
- 	id->adap.nr = pdev->id;
- 	id->adap.algo = &sh7760_i2c_algo;
 -- 
 2.30.2
 
