@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAED38A97D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43B1438ABB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239210AbhETLCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:02:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45066 "EHLO mail.kernel.org"
+        id S241323AbhETL07 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:26:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47890 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237947AbhETKoK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:44:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E773861C96;
-        Thu, 20 May 2021 09:57:01 +0000 (UTC)
+        id S240022AbhETLG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:06:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B33861D2A;
+        Thu, 20 May 2021 10:05:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504622;
-        bh=JWBxnV+Asf0mk2kGN/PYA43yeYqpEAkA4ZyWW1vQK6A=;
+        s=korg; t=1621505145;
+        bh=ohp7rWeWY5eEJpqoG1zTg90+0OjjATPWPtYVKU5OirU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bVhMKt5KkzEdghlUCmqECBtpHczeLoBWD/OTGfFeYvxLD7KZEZM0oHCUX+O4vcQhg
-         w+1U8OmVhrYLYuc/sDRPqb0IYIKO+OCqNlTlBh+NRSQgSq3eixmS6CAOMxQaDmsYdc
-         YKVfvM4soKHG+UO2Tx4rX56/BBZkzpYpyBa/XMUo=
+        b=a/RQ8TOvu+c0Yj+aJCe5NmywcUDClNduMcWL7BaP7wYfY3WuhnTttdOIGo/s0rawc
+         RgCu0+er5SnmjbmlB58zVG/it7z6DgPh+AJ2O5/kwRTkNwu6Hm+qJnPO7+smuiUpLV
+         bWQlUcF+sRHVRIXGSkVNY4ehvBmtTscIZAJF1wm0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Eric Dumazet <edumazet@google.com>,
-        syzbot <syzkaller@googlegroups.com>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 4.14 320/323] sit: proper dev_{hold|put} in ndo_[un]init methods
-Date:   Thu, 20 May 2021 11:23:32 +0200
-Message-Id: <20210520092131.211549239@linuxfoundation.org>
+        stable@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
+        syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com
+Subject: [PATCH 4.9 221/240] kobject_uevent: remove warning in init_uevent_argv()
+Date:   Thu, 20 May 2021 11:23:33 +0200
+Message-Id: <20210520092116.120588012@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
-References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+References: <20210520092108.587553970@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,52 +39,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 6289a98f0817a4a457750d6345e754838eae9439 upstream.
+commit b4104180a2efb85f55e1ba1407885c9421970338 upstream.
 
-After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
-a warning [1]
+syzbot can trigger the WARN() in init_uevent_argv() which isn't the
+nicest as the code does properly recover and handle the error.  So
+change the WARN() call to pr_warn() and provide some more information on
+what the buffer size that was needed.
 
-Issue here is that:
-
-- all dev_put() should be paired with a corresponding prior dev_hold().
-
-- A driver doing a dev_put() in its ndo_uninit() MUST also
-  do a dev_hold() in its ndo_init(), only when ndo_init()
-  is returning 0.
-
-Otherwise, register_netdevice() would call ndo_uninit()
-in its error path and release a refcount too soon.
-
-Fixes: 919067cc845f ("net: add CONFIG_PCPU_DEV_REFCNT")
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Reported-by: syzbot <syzkaller@googlegroups.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Link: https://lore.kernel.org/r/20201107082206.GA19079@kroah.com
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Reported-by: syzbot+92340f7b2b4789907fdb@syzkaller.appspotmail.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/20210405094852.1348499-1-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- net/ipv6/sit.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ lib/kobject_uevent.c |    9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
---- a/net/ipv6/sit.c
-+++ b/net/ipv6/sit.c
-@@ -209,8 +209,6 @@ static int ipip6_tunnel_create(struct ne
+--- a/lib/kobject_uevent.c
++++ b/lib/kobject_uevent.c
+@@ -128,12 +128,13 @@ static int kobj_usermode_filter(struct k
  
- 	ipip6_tunnel_clone_6rd(dev, sitn);
+ static int init_uevent_argv(struct kobj_uevent_env *env, const char *subsystem)
+ {
++	int buffer_size = sizeof(env->buf) - env->buflen;
+ 	int len;
  
--	dev_hold(dev);
--
- 	ipip6_tunnel_link(sitn, t);
- 	return 0;
- 
-@@ -1393,7 +1391,7 @@ static int ipip6_tunnel_init(struct net_
- 		dev->tstats = NULL;
- 		return err;
+-	len = strlcpy(&env->buf[env->buflen], subsystem,
+-		      sizeof(env->buf) - env->buflen);
+-	if (len >= (sizeof(env->buf) - env->buflen)) {
+-		WARN(1, KERN_ERR "init_uevent_argv: buffer size too small\n");
++	len = strlcpy(&env->buf[env->buflen], subsystem, buffer_size);
++	if (len >= buffer_size) {
++		pr_warn("init_uevent_argv: buffer size of %d too small, needed %d\n",
++			buffer_size, len);
+ 		return -ENOMEM;
  	}
--
-+	dev_hold(dev);
- 	return 0;
- }
  
 
 
