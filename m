@@ -2,133 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 035E538AF6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C44EE38AF67
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243374AbhETNAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:00:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35674 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243088AbhETM7H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:59:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 81D43AC5B;
-        Thu, 20 May 2021 12:57:42 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 9767EDA7F9; Thu, 20 May 2021 14:55:08 +0200 (CEST)
-Date:   Thu, 20 May 2021 14:55:08 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
-Message-ID: <20210520125508.GA7604@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
-References: <20210518144935.15835-1-dsterba@suse.com>
- <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
+        id S238379AbhETNAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:00:13 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:37048 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S242996AbhETM57 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 08:57:59 -0400
+Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1ljiE7-0005Q5-Ax
+        for linux-kernel@vger.kernel.org; Thu, 20 May 2021 12:56:35 +0000
+Received: by mail-qt1-f197.google.com with SMTP id f17-20020ac87f110000b02901e117339ea7so12168447qtk.16
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 05:56:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GTsCI7Ul4nDoQha4vSzhm2s0jP3aZ/M4QD8W/QCV/+0=;
+        b=UHjd0qj4Z7kILnp/EwEMmRImHdbxQm8abZWtMPbFT4DMXpl0QyQHPOrKwQeYFIPEuo
+         HY32soyW0ZFTsIfVkfyRWkrmIF0hmLQvHK+qZibxkWrOuBsw4xtyqkrg8qDclSD596P4
+         ESwqzqhMLl7nBD2bOJtyX6eDh0WmgQfWKtHE4P4pVXyrMfMeuPS+GcLvGwH/GA83tHcY
+         wOmQxorHql0z/i97wEcJhexYwkZq6mMAuYmmUh3BlGEQmbbC3meOcpMYa30NxqH8KhI+
+         ijPkGQiPsXY4WI+Ej8lZa8N2KKOncAU1xBxnesNtKpgR+2KDbCfYU4/sEtR/FjMogvnP
+         blaA==
+X-Gm-Message-State: AOAM532vLkWiQdoZf8C0Q34PWhtx/3EJNqm7+IJqulQgF1xLaojwUDQA
+        bA6unQ4pygAHBgyWBfj4pEXGbId+JF4aZm/2YJoNZ2hRbpScAxtdRqmWxUbzHtgQc0O1ku0AFBZ
+        xiJbuom2mUkN7t6MO57gl2nM1mwvIJupB2UpZgtdy2A==
+X-Received: by 2002:a37:4697:: with SMTP id t145mr4889842qka.188.1621515394431;
+        Thu, 20 May 2021 05:56:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzVA/A4t3ep/bU/SXqDGZuuLc1tdq3g7fGuJjWd5nWI06K1ldK6khe556QlVnqNuNVK+VNUrA==
+X-Received: by 2002:a37:4697:: with SMTP id t145mr4889807qka.188.1621515394226;
+        Thu, 20 May 2021 05:56:34 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.48.3])
+        by smtp.gmail.com with ESMTPSA id g185sm1931471qkf.62.2021.05.20.05.56.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 05:56:33 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     stable@vger.kernel.org, x86@kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH stable v5.4+ 1/3] x86/kvm: Teardown PV features on boot CPU as well
+Date:   Thu, 20 May 2021 08:56:23 -0400
+Message-Id: <20210520125625.12566-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 09:43:10AM +0200, Geert Uytterhoeven wrote:
-> > - values written to the file accept suffixes like K, M
-> > - file is in the per-device directory /sys/fs/btrfs/FSID/devinfo/DEVID/scrub_speed_max
-> > - 0 means use default priority of IO
-> >
-> > The scheduler is a simple deadline one and the accuracy is up to nearest
-> > 128K.
-> >
-> > Signed-off-by: David Sterba <dsterba@suse.com>
-> 
-> Thanks for your patch, which is now commit b4a9f4bee31449bc ("btrfs:
-> scrub: per-device bandwidth control") in linux-next.
-> 
-> noreply@ellerman.id.au reported the following failures for e.g.
-> m68k/defconfig:
-> 
-> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
 
-I'll fix it, thanks for the report.
+commit 8b79feffeca28c5459458fe78676b081e87c93a4 upstream.
 
-> > +static void scrub_throttle(struct scrub_ctx *sctx)
-> > +{
-> > +	const int time_slice = 1000;
-> > +	struct scrub_bio *sbio;
-> > +	struct btrfs_device *device;
-> > +	s64 delta;
-> > +	ktime_t now;
-> > +	u32 div;
-> > +	u64 bwlimit;
-> > +
-> > +	sbio = sctx->bios[sctx->curr];
-> > +	device = sbio->dev;
-> > +	bwlimit = READ_ONCE(device->scrub_speed_max);
-> > +	if (bwlimit == 0)
-> > +		return;
-> > +
-> > +	/*
-> > +	 * Slice is divided into intervals when the IO is submitted, adjust by
-> > +	 * bwlimit and maximum of 64 intervals.
-> > +	 */
-> > +	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
-> > +	div = min_t(u32, 64, div);
-> > +
-> > +	/* Start new epoch, set deadline */
-> > +	now = ktime_get();
-> > +	if (sctx->throttle_deadline == 0) {
-> > +		sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
-> 
-> ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-> 
-> div_u64(bwlimit, div)
-> 
-> > +		sctx->throttle_sent = 0;
-> > +	}
-> > +
-> > +	/* Still in the time to send? */
-> > +	if (ktime_before(now, sctx->throttle_deadline)) {
-> > +		/* If current bio is within the limit, send it */
-> > +		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
-> > +		if (sctx->throttle_sent <= bwlimit / div)
-> > +			return;
-> > +
-> > +		/* We're over the limit, sleep until the rest of the slice */
-> > +		delta = ktime_ms_delta(sctx->throttle_deadline, now);
-> > +	} else {
-> > +		/* New request after deadline, start new epoch */
-> > +		delta = 0;
-> > +	}
-> > +
-> > +	if (delta)
-> > +		schedule_timeout_interruptible(delta * HZ / 1000);
-> 
-> ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
-> 
-> I'm a bit surprised gcc doesn't emit code for the division by the
-> constant 1000, but emits a call to __divdi3().  So this has to become
-> div_u64(), too.
-> 
-> > +	/* Next call will start the deadline period */
-> > +	sctx->throttle_deadline = 0;
-> > +}
-> 
-> BTW, any chance you can start adding lore Link: tags to your commits, to
-> make it easier to find the email thread to reply to when reporting a
-> regression?
+Various PV features (Async PF, PV EOI, steal time) work through memory
+shared with hypervisor and when we restore from hibernation we must
+properly teardown all these features to make sure hypervisor doesn't
+write to stale locations after we jump to the previously hibernated kernel
+(which can try to place anything there). For secondary CPUs the job is
+already done by kvm_cpu_down_prepare(), register syscore ops to do
+the same for boot CPU.
 
-Well, no I'm not going to do that, sorry. It should be easy enough to
-paste the patch subject to the search field on lore.k.org and click the
-link leading to the mail, I do that all the time. Making sure that
-patches have all the tags and information takes time already so I'm not
-too keen to spend time on adding links.
+Krzysztof:
+This fixes memory corruption visible after second resume from
+hibernation:
+
+  BUG: Bad page state in process dbus-daemon  pfn:18b01
+  page:ffffea000062c040 refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 compound_mapcount: -30591
+  flags: 0xfffffc0078141(locked|error|workingset|writeback|head|mappedtodisk|reclaim)
+  raw: 000fffffc0078141 dead0000000002d0 dead000000000100 0000000000000000
+  raw: 0000000000000001 0000000000000000 00000000ffffffff 0000000000000000
+  page dumped because: PAGE_FLAGS_CHECK_AT_PREP flag set
+  bad because of flags: 0x78141(locked|error|workingset|writeback|head|mappedtodisk|reclaim)
+
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Message-Id: <20210414123544.1060604-3-vkuznets@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
+[krzysztof: Extend the commit message]
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+
+Backport to v5.4 seems reasonable. Might have sense to earlier versions,
+but this was not tested/investigated.
+
+ arch/x86/kernel/kvm.c | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/kvm.c b/arch/x86/kernel/kvm.c
+index e820568ed4d5..6b906a651fb1 100644
+--- a/arch/x86/kernel/kvm.c
++++ b/arch/x86/kernel/kvm.c
+@@ -24,6 +24,7 @@
+ #include <linux/debugfs.h>
+ #include <linux/nmi.h>
+ #include <linux/swait.h>
++#include <linux/syscore_ops.h>
+ #include <asm/timer.h>
+ #include <asm/cpu.h>
+ #include <asm/traps.h>
+@@ -558,17 +559,21 @@ static void kvm_guest_cpu_offline(void)
+ 
+ static int kvm_cpu_online(unsigned int cpu)
+ {
+-	local_irq_disable();
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	kvm_guest_cpu_init();
+-	local_irq_enable();
++	local_irq_restore(flags);
+ 	return 0;
+ }
+ 
+ static int kvm_cpu_down_prepare(unsigned int cpu)
+ {
+-	local_irq_disable();
++	unsigned long flags;
++
++	local_irq_save(flags);
+ 	kvm_guest_cpu_offline();
+-	local_irq_enable();
++	local_irq_restore(flags);
+ 	return 0;
+ }
+ #endif
+@@ -606,6 +611,23 @@ static void kvm_flush_tlb_others(const struct cpumask *cpumask,
+ 	native_flush_tlb_others(flushmask, info);
+ }
+ 
++static int kvm_suspend(void)
++{
++	kvm_guest_cpu_offline();
++
++	return 0;
++}
++
++static void kvm_resume(void)
++{
++	kvm_cpu_online(raw_smp_processor_id());
++}
++
++static struct syscore_ops kvm_syscore_ops = {
++	.suspend	= kvm_suspend,
++	.resume		= kvm_resume,
++};
++
+ static void __init kvm_guest_init(void)
+ {
+ 	int i;
+@@ -649,6 +671,8 @@ static void __init kvm_guest_init(void)
+ 	kvm_guest_cpu_init();
+ #endif
+ 
++	register_syscore_ops(&kvm_syscore_ops);
++
+ 	/*
+ 	 * Hard lockup detection is enabled by default. Disable it, as guests
+ 	 * can get false positives too easily, for example if the host is
+-- 
+2.27.0
+
