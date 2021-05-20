@@ -2,97 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85346389F0C
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:42:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDB48389F0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230495AbhETHoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:44:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48932 "EHLO
+        id S230514AbhETHoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:44:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229534AbhETHoO (ORCPT
+        with ESMTP id S229534AbhETHog (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:44:14 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A3EC061574;
-        Thu, 20 May 2021 00:42:52 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id i5so11287254pgm.0;
-        Thu, 20 May 2021 00:42:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oRNmu4fMUCv8GN4dVQHhZfDAn0xmZo5zh42IKcZfNQU=;
-        b=exEQZIaM6kI1l10smNkICNFSlZU6GljTx/YP1jL4G1ffoLY2dmWeHr77ErdQm6Umna
-         revmSql19HwIBkrHRwCrBVzYfiF8u4bjwdtOjJ0JPkhBJ7h+eLRSFEz/Muz6noQ3PmNa
-         fa39jzhr0KXz8VnhKNVHJAL3+Yg5pq5MalF60iZ5I4KlYUpKjUX11MLSWIQVLS2dGlKZ
-         +iiGY7casEt8EQYue/cHuh1FDteJMhODHxw1YYrza7jhMQ3tGrtfkTWxBqKAzHE7ubvU
-         oIvK6ECKslXNbs9MifyehIIiRosamr/7D0WkyQ/9C+iPmqsMWf6JZPl/3+3EGy02pzRO
-         e8bg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oRNmu4fMUCv8GN4dVQHhZfDAn0xmZo5zh42IKcZfNQU=;
-        b=qUFPL69jDWncdiej0i2tGqmVeSHXi8DNi9UisYeBZmY0Oh2cBGwIW3HXMSbslCkdSc
-         P5ofT0LgvY0nkEr7JVn1T5TlWRhC5oZ7bJp4UYpkBjsPxkifrNTXXr+tEM9FQDziraft
-         3GM9ZKXfGxcevZv9XRphFg7Cq/kSYD8Vb4a5Z1i7RLcgtepynHP3+xsZyOdE/9+5vyQH
-         yf6FTSFaQaF0bsDBWjmJ/cD78dXV5USephFNkUU7ApZrVSWElHvhABBN8D6CHGiWWYnt
-         A+WKk3/ifwBQODWA9v9MAtnLO/y97wRcp5npOfRS8ZOdWehhHhIk48vi/uB20rYMUDy6
-         XzDA==
-X-Gm-Message-State: AOAM5325X6jHJPW9sYLQi31czBDYFwjxH74j+h7n0gIQ938GnrbQjCMl
-        8Ws8TSurn1gfiNNI7ngfGoLXgbShHJ+98w==
-X-Google-Smtp-Source: ABdhPJxjDfuA5Hyk3X3ksb5Ed0mviEchcCoB2Wt8F10O16clWtZ8WPi4Ps0qKlJyUmGpiuqdEbq09g==
-X-Received: by 2002:a65:5a81:: with SMTP id c1mr3186182pgt.111.1621496572247;
-        Thu, 20 May 2021 00:42:52 -0700 (PDT)
-Received: from tj.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id cc2sm1317042pjb.39.2021.05.20.00.42.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 00:42:51 -0700 (PDT)
-From:   Yue Hu <zbestahu@gmail.com>
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com
-Subject: [PATCH] docs: block: blk-mq.rst: correct drive -> driver
-Date:   Thu, 20 May 2021 15:42:25 +0800
-Message-Id: <20210520074225.1989-1-zbestahu@gmail.com>
-X-Mailer: git-send-email 2.29.2.windows.3
+        Thu, 20 May 2021 03:44:36 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17DEAC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:43:13 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9cc6:7165:bcc2:1e70])
+        by xavier.telenet-ops.be with bizsmtp
+        id 6vjB2500531btb901vjBWU; Thu, 20 May 2021 09:43:11 +0200
+Received: from geert (helo=localhost)
+        by ramsan.of.borg with local-esmtp (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1ljdKo-007R7k-PS; Thu, 20 May 2021 09:43:10 +0200
+Date:   Thu, 20 May 2021 09:43:10 +0200 (CEST)
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     David Sterba <dsterba@suse.com>
+cc:     linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
+In-Reply-To: <20210518144935.15835-1-dsterba@suse.com>
+Message-ID: <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
+References: <20210518144935.15835-1-dsterba@suse.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII; format=flowed
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yue Hu <huyue2@yulong.com>
+ 	Hi David,
 
-It is 'driver' to complete the request. Also remove a redundant space.
+On Tue, 18 May 2021, David Sterba wrote:
+> Add sysfs interface to limit io during scrub. We relied on the ionice
+> interface to do that, eg. the idle class let the system usable while
+> scrub was running. This has changed when mq-deadline got widespread and
+> did not implement the scheduling classes. That was a CFQ thing that got
+> deleted. We've got numerous complaints from users about degraded
+> performance.
+>
+> Currently only BFQ supports that but it's not a common scheduler and we
+> can't ask everybody to switch to it.
+>
+> Alternatively the cgroup io limiting can be used but that also a
+> non-trivial setup (v2 required, the controller must be enabled on the
+> system). This can still be used if desired.
+>
+> Other ideas that have been explored: piggy-back on ionice (that is set
+> per-process and is accessible) and interpret the class and classdata as
+> bandwidth limits, but this does not have enough flexibility as there are
+> only 8 allowed and we'd have to map fixed limits to each value. Also
+> adjusting the value would need to lookup the process that currently runs
+> scrub on the given device, and the value is not sticky so would have to
+> be adjusted each time scrub runs.
+>
+> Running out of options, sysfs does not look that bad:
+>
+> - it's accessible from scripts, or udev rules
+> - the name is similar to what MD-RAID has
+>  (/proc/sys/dev/raid/speed_limit_max or /sys/block/mdX/md/sync_speed_max)
+> - the value is sticky at least for filesystem mount time
+> - adjusting the value has immediate effect
+> - sysfs is available in constrained environments (eg. system rescue)
+> - the limit also applies to device replace
+>
+> Sysfs:
+>
+> - raw value is in bytes
+> - values written to the file accept suffixes like K, M
+> - file is in the per-device directory /sys/fs/btrfs/FSID/devinfo/DEVID/scrub_speed_max
+> - 0 means use default priority of IO
+>
+> The scheduler is a simple deadline one and the accuracy is up to nearest
+> 128K.
+>
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-Signed-off-by: Yue Hu <huyue2@yulong.com>
----
- Documentation/block/blk-mq.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thanks for your patch, which is now commit b4a9f4bee31449bc ("btrfs:
+scrub: per-device bandwidth control") in linux-next.
 
-diff --git a/Documentation/block/blk-mq.rst b/Documentation/block/blk-mq.rst
-index a980d23..d96118c 100644
---- a/Documentation/block/blk-mq.rst
-+++ b/Documentation/block/blk-mq.rst
-@@ -62,7 +62,7 @@ queue, to be sent in the future, when the hardware is able.
- Software staging queues
- ~~~~~~~~~~~~~~~~~~~~~~~
- 
--The block IO subsystem adds requests  in the software staging queues
-+The block IO subsystem adds requests in the software staging queues
- (represented by struct blk_mq_ctx) in case that they weren't sent
- directly to the driver. A request is one or more BIOs. They arrived at the
- block layer through the data structure struct bio. The block layer
-@@ -132,7 +132,7 @@ In order to indicate which request has been completed, every request is
- identified by an integer, ranging from 0 to the dispatch queue size. This tag
- is generated by the block layer and later reused by the device driver, removing
- the need to create a redundant identifier. When a request is completed in the
--drive, the tag is sent back to the block layer to notify it of the finalization.
-+driver, the tag is sent back to the block layer to notify it of the finalization.
- This removes the need to do a linear search to find out which IO has been
- completed.
- 
--- 
-1.9.1
+noreply@ellerman.id.au reported the following failures for e.g.
+m68k/defconfig:
 
+ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+
+> --- a/fs/btrfs/scrub.c
+> +++ b/fs/btrfs/scrub.c
+> @@ -1988,6 +1993,60 @@ static void scrub_page_put(struct scrub_page *spage)
+> 	}
+> }
+>
+> +/*
+> + * Throttling of IO submission, bandwidth-limit based, the timeslice is 1
+> + * second.  Limit can be set via /sys/fs/UUID/devinfo/devid/scrub_speed_max.
+> + */
+> +static void scrub_throttle(struct scrub_ctx *sctx)
+> +{
+> +	const int time_slice = 1000;
+> +	struct scrub_bio *sbio;
+> +	struct btrfs_device *device;
+> +	s64 delta;
+> +	ktime_t now;
+> +	u32 div;
+> +	u64 bwlimit;
+> +
+> +	sbio = sctx->bios[sctx->curr];
+> +	device = sbio->dev;
+> +	bwlimit = READ_ONCE(device->scrub_speed_max);
+> +	if (bwlimit == 0)
+> +		return;
+> +
+> +	/*
+> +	 * Slice is divided into intervals when the IO is submitted, adjust by
+> +	 * bwlimit and maximum of 64 intervals.
+> +	 */
+> +	div = max_t(u32, 1, (u32)(bwlimit / (16 * 1024 * 1024)));
+> +	div = min_t(u32, 64, div);
+> +
+> +	/* Start new epoch, set deadline */
+> +	now = ktime_get();
+> +	if (sctx->throttle_deadline == 0) {
+> +		sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
+
+ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
+
+div_u64(bwlimit, div)
+
+> +		sctx->throttle_sent = 0;
+> +	}
+> +
+> +	/* Still in the time to send? */
+> +	if (ktime_before(now, sctx->throttle_deadline)) {
+> +		/* If current bio is within the limit, send it */
+> +		sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
+> +		if (sctx->throttle_sent <= bwlimit / div)
+> +			return;
+> +
+> +		/* We're over the limit, sleep until the rest of the slice */
+> +		delta = ktime_ms_delta(sctx->throttle_deadline, now);
+> +	} else {
+> +		/* New request after deadline, start new epoch */
+> +		delta = 0;
+> +	}
+> +
+> +	if (delta)
+> +		schedule_timeout_interruptible(delta * HZ / 1000);
+
+ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
+
+I'm a bit surprised gcc doesn't emit code for the division by the
+constant 1000, but emits a call to __divdi3().  So this has to become
+div_u64(), too.
+
+> +	/* Next call will start the deadline period */
+> +	sctx->throttle_deadline = 0;
+> +}
+
+BTW, any chance you can start adding lore Link: tags to your commits, to
+make it easier to find the email thread to reply to when reporting a
+regression?
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+ 						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+ 							    -- Linus Torvalds
