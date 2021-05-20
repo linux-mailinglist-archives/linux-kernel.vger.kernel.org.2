@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE09838A145
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFE738A0D9
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 11:25:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhETJ3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 05:29:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
+        id S231689AbhETJ0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 05:26:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52520 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232085AbhETJ2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:28:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C75E8613CD;
-        Thu, 20 May 2021 09:26:34 +0000 (UTC)
+        id S231614AbhETJ0P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:26:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 30F7761244;
+        Thu, 20 May 2021 09:24:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621502795;
-        bh=+qCpiST8QXsMbZk0mHv5OqwNTBuSvdd3ZhDR1u2MVqI=;
+        s=korg; t=1621502693;
+        bh=tUlpM3DQBjSnWR7vaADyD1QCt5Vsf2xpNC/talcvKrk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Lb4CE2Sgbfukf/3ZFlgmAu3gCgClNJURwBJ1U0ioOS6Dc0uFKGcTEKWTke2/GggzE
-         v3QUHPPZ1s9Y11ekFvuiL0AwTJYPTBP6Z7C4JvdB5b6uc/mDRcVFkjb1Jvd9ucVbLf
-         PwMV0drOIjmjnmrdpQm0J+uxPQ34on1fvkkL83Ec=
+        b=mYD9IY2aLVVKeXzlxH9Y9JW4jDGD7ki06xfnuivUNFztMuLqL+4d76Cx02Xc+HstF
+         tmZhcHFcr4/5pURY9PBH+9r9GZeXFLnEBLsL8PHw+/60EGa22sEcO7ZGKM0f07cGEE
+         QxWPd1lY126SLSu/PlBf5plnC/0DmhJDZKYmVs+0=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Tosk Robot <tencent_os_robot@tencent.com>,
-        Kaixu Xia <kaixuxia@tencent.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 5.10 06/47] cxgb4: Fix the -Wmisleading-indentation warning
-Date:   Thu, 20 May 2021 11:22:04 +0200
-Message-Id: <20210520092053.765557266@linuxfoundation.org>
+        stable@vger.kernel.org, Chuck Lever <chuck.lever@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 17/45] svcrdma: Dont leak send_ctxt on Send errors
+Date:   Thu, 20 May 2021 11:22:05 +0200
+Message-Id: <20210520092054.083978290@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520092053.559923764@linuxfoundation.org>
-References: <20210520092053.559923764@linuxfoundation.org>
+In-Reply-To: <20210520092053.516042993@linuxfoundation.org>
+References: <20210520092053.516042993@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,34 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kaixu Xia <kaixuxia@tencent.com>
+From: Chuck Lever <chuck.lever@oracle.com>
 
-commit ea8146c6845799142aa4ee2660741c215e340cdf upstream.
+[ Upstream commit 351461f332db5670056a9c6bce6916027f91072f ]
 
-Fix the gcc warning:
+Address a rare send_ctxt leak in the svc_rdma_sendto() error paths.
 
-drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c:2673:9: warning: this 'for' clause does not guard... [-Wmisleading-indentation]
- 2673 |         for (i = 0; i < n; ++i) \
-
-Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
-Link: https://lore.kernel.org/r/1604467444-23043-1-git-send-email-kaixuxia@tencent.com
-Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sunrpc/xprtrdma/svc_rdma_sendto.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-+++ b/drivers/net/ethernet/chelsio/cxgb4/cxgb4_debugfs.c
-@@ -2671,7 +2671,7 @@ do { \
- 	seq_printf(seq, "%-12s", s); \
- 	for (i = 0; i < n; ++i) \
- 		seq_printf(seq, " %16" fmt_spec, v); \
--		seq_putc(seq, '\n'); \
-+	seq_putc(seq, '\n'); \
- } while (0)
- #define S(s, v) S3("s", s, v)
- #define T3(fmt_spec, s, v) S3(fmt_spec, s, tx[i].v)
+diff --git a/net/sunrpc/xprtrdma/svc_rdma_sendto.c b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+index 52c759a8543e..3669661457c1 100644
+--- a/net/sunrpc/xprtrdma/svc_rdma_sendto.c
++++ b/net/sunrpc/xprtrdma/svc_rdma_sendto.c
+@@ -958,7 +958,7 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
+ 	p = xdr_reserve_space(&sctxt->sc_stream,
+ 			      rpcrdma_fixed_maxsz * sizeof(*p));
+ 	if (!p)
+-		goto err0;
++		goto err1;
+ 
+ 	ret = svc_rdma_send_reply_chunk(rdma, rctxt, &rqstp->rq_res);
+ 	if (ret < 0)
+@@ -970,11 +970,11 @@ int svc_rdma_sendto(struct svc_rqst *rqstp)
+ 	*p = pcl_is_empty(&rctxt->rc_reply_pcl) ? rdma_msg : rdma_nomsg;
+ 
+ 	if (svc_rdma_encode_read_list(sctxt) < 0)
+-		goto err0;
++		goto err1;
+ 	if (svc_rdma_encode_write_list(rctxt, sctxt) < 0)
+-		goto err0;
++		goto err1;
+ 	if (svc_rdma_encode_reply_chunk(rctxt, sctxt, ret) < 0)
+-		goto err0;
++		goto err1;
+ 
+ 	ret = svc_rdma_send_reply_msg(rdma, sctxt, rctxt, rqstp);
+ 	if (ret < 0)
+-- 
+2.30.2
+
 
 
