@@ -2,183 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62AB438B724
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:17:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA9138B726
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 21:17:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238566AbhETTSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 15:18:36 -0400
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:53247 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239034AbhETTSZ (ORCPT
+        id S238594AbhETTSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 15:18:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36596 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238674AbhETTS2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 15:18:25 -0400
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id EB0D57840B;
-        Thu, 20 May 2021 22:17:00 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail202102; t=1621538221;
-        bh=niwQJAGy4HqQp2CPR0PYJM2g2+eSFOkJIfWiwuf5OpI=;
-        h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-        b=ziWTek96fcZLZQ4aK/R+FEdxYJKlijXKg8hrkSAcA8tyKaM1KcTArN7rK39S0SIMv
-         7o/ZFWKFk/nANjSfSNW/10W3IDecjWB8CFVeH+U7td7C6T8rrEnf4aZaL046ypWbZz
-         99urX2JQMa4hSnD4HeaInFcaP7g3FurNkn1qjXRHS4Cs2t4bThATSR6xqbCZQYwftI
-         qH4ItMROU8HcoLDEzIHegztGosJ7ASlPRSwMbiAx2w9D1GwUkkcO+6+KFHmLN9vb+Q
-         /Mj26hGsc7H28pwv55wtUCOchfo7UscyA9fXrzACELU8O9uI0tqM4eZgrLYEk6d2hp
-         LOZBDY+lclnHw==
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id A4535783DC;
-        Thu, 20 May 2021 22:17:00 +0300 (MSK)
-Received: from arseniy-pc.avp.ru (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.14; Thu, 20
- May 2021 22:16:59 +0300
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-To:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Arseny Krasnov <arseny.krasnov@kaspersky.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Norbert Slusarek <nslusarek@gmx.net>
-CC:     <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <oxffffaa@gmail.com>
-Subject: [PATCH v10 07/18] af_vsock: update comments for stream sockets
-Date:   Thu, 20 May 2021 22:16:51 +0300
-Message-ID: <20210520191655.1271540-1-arseny.krasnov@kaspersky.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
-References: <20210520191357.1270473-1-arseny.krasnov@kaspersky.com>
+        Thu, 20 May 2021 15:18:28 -0400
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 907D9C06138A
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:17:05 -0700 (PDT)
+Received: by mail-oi1-x231.google.com with SMTP id b25so17489198oic.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 12:17:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Du5kz67a/iQ6a/NjTr+Df2buicUv7+vIDaRHiI4Tcpc=;
+        b=WXsOHWQnfuFGEy/0apmg3pys11mvrLhSyFPuVqhVuh7E+rjuByzK56J+my50Jk/pEj
+         OReru0IMuPnzI1aZb2My0T191LPM4bid2i8FL78Wpz1/eYdYfVzZ1qExUnGDLikO1Pgi
+         KMvALHv7Mi8P1CJRvSqJRX+hQbk5EFGz4dmf3gJlQsNr0vXnpR+/QFo8Bc/ql3YUrTML
+         EehvuwxUgeYpKr4xU9Su+R/6A/xMgF9OSInuCWd+oKiJH2MUyYQ32MGjFw0UIO1z+tgH
+         nUZFaYMI9sJ3gK1sHEuGCiRiX5QIDGoWZmsGOrKzberNzmkexJLmikoP0bGWNENqF8mK
+         Gb6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=Du5kz67a/iQ6a/NjTr+Df2buicUv7+vIDaRHiI4Tcpc=;
+        b=UjnjFayjAxqILQLaA/TER9zuc1NdMmDD22IkYb+dNOV67WA72v7qGAc15IBnNa4D5R
+         ZSnmK3WP741kaKLdNOkF/NyUCMCHXgLHFg7Qcwy9O/rBdjKYnj6auHibdTPmQFdW15ur
+         +fpJVPqh77QrVQnsafsUT1vcZS7nunUrsiULVrU0uum/Hch5MVMH0xOwZd9t3L54H2SU
+         6Uxgz1MkYprHLqlFGBEvRDiqhyqoNDKWP+KX7kJnWy0Gc/4bv0hHOWWNM4ojjcfyt/6V
+         vCsvpqfccseZe/mmBvySeXqgU4Pv6zvAUgSq9I0uQbcg5UTzg3LYnfJVKzjwsrVaKR9d
+         O7Ew==
+X-Gm-Message-State: AOAM532rvIc839ETn5bYGHde1kYDduETugbS+4ZD7xhMm9t8RK8T8kh1
+        hd0Tc2LQCQTE77XyihNJ3GxqX3RcgIXeE37R7hE=
+X-Google-Smtp-Source: ABdhPJxdH46PVylAq5rTQ6Izow1yHwsSulVm3OW7d6kIYtHslqzWnlyagjo4KPAVAi6bcRGTXb2IYNf9hlUcE89yz7M=
+X-Received: by 2002:a05:6808:1592:: with SMTP id t18mr2477039oiw.123.1621538225046;
+ Thu, 20 May 2021 12:17:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/20/2021 18:58:27
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163818 [May 20 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Prob_from_in_msgid}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;arseniy-pc.avp.ru:7.1.1;kaspersky.com:7.1.1;127.0.0.199:7.1.2
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/20/2021 19:01:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 20.05.2021 14:47:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/05/20 17:27:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/05/20 14:47:00 #16622423
-X-KLMS-AntiVirus-Status: Clean, skipped
+References: <20210520120248.3464013-1-lee.jones@linaro.org>
+ <20210520120248.3464013-21-lee.jones@linaro.org> <c2b7cf7c-0b37-3581-4a9c-368ca0b89a36@amd.com>
+In-Reply-To: <c2b7cf7c-0b37-3581-4a9c-368ca0b89a36@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 20 May 2021 15:16:53 -0400
+Message-ID: <CADnq5_PJM7qiy-sK=KqgAjFKhwd7GPsVcsPfC4uOQw-2f+k1yA@mail.gmail.com>
+Subject: Re: [PATCH 20/38] drm/radeon/radeon_vm: Fix function naming disparities
+To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Cc:     Lee Jones <lee.jones@linaro.org>, David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace 'stream' to 'connection oriented' in comments as
-SEQPACKET is also connection oriented.
+Applied.  Thanks!
 
-Signed-off-by: Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
----
- net/vmw_vsock/af_vsock.c | 31 +++++++++++++++++--------------
- 1 file changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
-index eac3861d01cc..e657f433b2d7 100644
---- a/net/vmw_vsock/af_vsock.c
-+++ b/net/vmw_vsock/af_vsock.c
-@@ -415,8 +415,8 @@ static void vsock_deassign_transport(struct vsock_sock *vsk)
- 
- /* Assign a transport to a socket and call the .init transport callback.
-  *
-- * Note: for stream socket this must be called when vsk->remote_addr is set
-- * (e.g. during the connect() or when a connection request on a listener
-+ * Note: for connection oriented socket this must be called when vsk->remote_addr
-+ * is set (e.g. during the connect() or when a connection request on a listener
-  * socket is received).
-  * The vsk->remote_addr is used to decide which transport to use:
-  *  - remote CID == VMADDR_CID_LOCAL or g2h->local_cid or VMADDR_CID_HOST if
-@@ -470,10 +470,10 @@ int vsock_assign_transport(struct vsock_sock *vsk, struct vsock_sock *psk)
- 			return 0;
- 
- 		/* transport->release() must be called with sock lock acquired.
--		 * This path can only be taken during vsock_stream_connect(),
--		 * where we have already held the sock lock.
--		 * In the other cases, this function is called on a new socket
--		 * which is not assigned to any transport.
-+		 * This path can only be taken during vsock_connect(), where we
-+		 * have already held the sock lock. In the other cases, this
-+		 * function is called on a new socket which is not assigned to
-+		 * any transport.
- 		 */
- 		vsk->transport->release(vsk);
- 		vsock_deassign_transport(vsk);
-@@ -658,9 +658,10 @@ static int __vsock_bind_connectible(struct vsock_sock *vsk,
- 
- 	vsock_addr_init(&vsk->local_addr, new_addr.svm_cid, new_addr.svm_port);
- 
--	/* Remove stream sockets from the unbound list and add them to the hash
--	 * table for easy lookup by its address.  The unbound list is simply an
--	 * extra entry at the end of the hash table, a trick used by AF_UNIX.
-+	/* Remove connection oriented sockets from the unbound list and add them
-+	 * to the hash table for easy lookup by its address.  The unbound list
-+	 * is simply an extra entry at the end of the hash table, a trick used
-+	 * by AF_UNIX.
- 	 */
- 	__vsock_remove_bound(vsk);
- 	__vsock_insert_bound(vsock_bound_sockets(&vsk->local_addr), vsk);
-@@ -952,10 +953,10 @@ static int vsock_shutdown(struct socket *sock, int mode)
- 	if ((mode & ~SHUTDOWN_MASK) || !mode)
- 		return -EINVAL;
- 
--	/* If this is a STREAM socket and it is not connected then bail out
--	 * immediately.  If it is a DGRAM socket then we must first kick the
--	 * socket so that it wakes up from any sleeping calls, for example
--	 * recv(), and then afterwards return the error.
-+	/* If this is a connection oriented socket and it is not connected then
-+	 * bail out immediately.  If it is a DGRAM socket then we must first
-+	 * kick the socket so that it wakes up from any sleeping calls, for
-+	 * example recv(), and then afterwards return the error.
- 	 */
- 
- 	sk = sock->sk;
-@@ -1727,7 +1728,9 @@ static int vsock_connectible_sendmsg(struct socket *sock, struct msghdr *msg,
- 
- 	transport = vsk->transport;
- 
--	/* Callers should not provide a destination with stream sockets. */
-+	/* Callers should not provide a destination with connection oriented
-+	 * sockets.
-+	 */
- 	if (msg->msg_namelen) {
- 		err = sk->sk_state == TCP_ESTABLISHED ? -EISCONN : -EOPNOTSUPP;
- 		goto out;
--- 
-2.25.1
-
+On Thu, May 20, 2021 at 8:05 AM Christian K=C3=B6nig
+<christian.koenig@amd.com> wrote:
+>
+> Am 20.05.21 um 14:02 schrieb Lee Jones:
+> > Fixes the following W=3D1 kernel build warning(s):
+> >
+> >   drivers/gpu/drm/radeon/radeon_vm.c:61: warning: expecting prototype f=
+or radeon_vm_num_pde(). Prototype was for radeon_vm_num_pdes() instead
+> >   drivers/gpu/drm/radeon/radeon_vm.c:642: warning: expecting prototype =
+for radeon_vm_update_pdes(). Prototype was for radeon_vm_update_page_direct=
+ory() instead
+> >
+> > Cc: Alex Deucher <alexander.deucher@amd.com>
+> > Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> > Cc: David Airlie <airlied@linux.ie>
+> > Cc: Daniel Vetter <daniel@ffwll.ch>
+> > Cc: amd-gfx@lists.freedesktop.org
+> > Cc: dri-devel@lists.freedesktop.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+>
+> Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> > ---
+> >   drivers/gpu/drm/radeon/radeon_vm.c | 4 ++--
+> >   1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/radeon/radeon_vm.c b/drivers/gpu/drm/radeo=
+n/radeon_vm.c
+> > index 2dc9c9f98049b..36a38adaaea96 100644
+> > --- a/drivers/gpu/drm/radeon/radeon_vm.c
+> > +++ b/drivers/gpu/drm/radeon/radeon_vm.c
+> > @@ -51,7 +51,7 @@
+> >    */
+> >
+> >   /**
+> > - * radeon_vm_num_pde - return the number of page directory entries
+> > + * radeon_vm_num_pdes - return the number of page directory entries
+> >    *
+> >    * @rdev: radeon_device pointer
+> >    *
+> > @@ -626,7 +626,7 @@ static uint32_t radeon_vm_page_flags(uint32_t flags=
+)
+> >   }
+> >
+> >   /**
+> > - * radeon_vm_update_pdes - make sure that page directory is valid
+> > + * radeon_vm_update_page_directory - make sure that page directory is =
+valid
+> >    *
+> >    * @rdev: radeon_device pointer
+> >    * @vm: requested vm
+>
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
