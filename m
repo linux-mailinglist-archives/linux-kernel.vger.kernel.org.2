@@ -2,35 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6368838A462
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AA038A45B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235522AbhETKFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:05:16 -0400
+        id S235352AbhETKE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:04:56 -0400
 Received: from mail.kernel.org ([198.145.29.99]:32852 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235106AbhETJ7Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 05:59:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8A7D9616E8;
-        Thu, 20 May 2021 09:38:39 +0000 (UTC)
+        id S234770AbhETJ5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:57:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD0C2613AE;
+        Thu, 20 May 2021 09:37:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503520;
-        bh=XmTnRO0tUxq1mQAVmgbpfEFX1Y1/wMsQYo/kVpIRatg=;
+        s=korg; t=1621503478;
+        bh=U6sti/vTkvS38BdljLHSF5iL//TmOPR5G5sRrW9yB7M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=atPnf5+WAt0xeg7/pVjkMIxLxdL//QjII5jnX/65+HXwBzFy871lcjYepymrm521I
-         GONdGQloKt5p7n30kEL8HitqxOmCxJ6SjmDHIjOb31VGf2woQqbnoqthsSUyi4NjSp
-         jL7r9eL2hta9R6F+QWgEoV+K3YEAN5WB/Kp4b8rc=
+        b=JYkBs7J2Rb7GKZEDKr4SKIfBAD0NPKjuX/o25ygnEA7hT3C1JhNQyGK1NZgcudRxa
+         9ToYYd7IuUwTVtEC5gFo1I8T7JE6e+MbaZ5PXNXuguVCZrhO16ObD3gAN6wvKsyT2I
+         49zBBXvpziIoQwRFFmuJcd7usTrQmiCFL2mW6KWM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>,
-        syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 224/425] ttyprintk: Add TTY hangup callback.
-Date:   Thu, 20 May 2021 11:19:53 +0200
-Message-Id: <20210520092138.783405415@linuxfoundation.org>
+Subject: [PATCH 4.19 239/425] scsi: jazz_esp: Add IRQ check
+Date:   Thu, 20 May 2021 11:20:08 +0200
+Message-Id: <20210520092139.281738467@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -42,85 +40,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
 
-[ Upstream commit c0070e1e60270f6a1e09442a9ab2335f3eaeaad2 ]
+[ Upstream commit 38fca15c29db6ed06e894ac194502633e2a7d1fb ]
 
-syzbot is reporting hung task due to flood of
+The driver neglects to check the result of platform_get_irq()'s call and
+blithely passes the negative error codes to request_irq() (which takes
+*unsigned* IRQ #), causing it to fail with -EINVAL, overriding the real
+error code.  Stop calling request_irq() with the invalid IRQ #s.
 
-  tty_warn(tty, "%s: tty->count = 1 port count = %d\n", __func__,
-           port->count);
-
-message [1], for ioctl(TIOCVHANGUP) prevents tty_port_close() from
-decrementing port->count due to tty_hung_up_p() == true.
-
-----------
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
-
-int main(int argc, char *argv[])
-{
-	int i;
-	int fd[10];
-
-	for (i = 0; i < 10; i++)
-		fd[i] = open("/dev/ttyprintk", O_WRONLY);
-	ioctl(fd[0], TIOCVHANGUP);
-	for (i = 0; i < 10; i++)
-		close(fd[i]);
-	close(open("/dev/ttyprintk", O_WRONLY));
-	return 0;
-}
-----------
-
-When TTY hangup happens, port->count needs to be reset via
-"struct tty_operations"->hangup callback.
-
-[1] https://syzkaller.appspot.com/bug?id=39ea6caa479af471183997376dc7e90bc7d64a6a
-
-Reported-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-Reported-by: syzbot <syzbot+3ed715090790806d8b18@syzkaller.appspotmail.com>
-Tested-by: syzbot <syzbot+43e93968b964e369db0b@syzkaller.appspotmail.com>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Fixes: 24b4b67d17c308aa ("add ttyprintk driver")
-Link: https://lore.kernel.org/r/17e0652d-89b7-c8c0-fb53-e7566ac9add4@i-love.sakura.ne.jp
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Link: https://lore.kernel.org/r/594aa9ae-2215-49f6-f73c-33bd38989912@omprussia.ru
+Fixes: 352e921f0dd4 ("[SCSI] jazz_esp: converted to use esp_core")
+Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/char/ttyprintk.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ drivers/scsi/jazz_esp.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/char/ttyprintk.c b/drivers/char/ttyprintk.c
-index 774748497ace..e56ac5adb5fc 100644
---- a/drivers/char/ttyprintk.c
-+++ b/drivers/char/ttyprintk.c
-@@ -159,12 +159,23 @@ static int tpk_ioctl(struct tty_struct *tty,
- 	return 0;
- }
+diff --git a/drivers/scsi/jazz_esp.c b/drivers/scsi/jazz_esp.c
+index 6eb5ff3e2e61..7dfe4237e5e8 100644
+--- a/drivers/scsi/jazz_esp.c
++++ b/drivers/scsi/jazz_esp.c
+@@ -170,7 +170,9 @@ static int esp_jazz_probe(struct platform_device *dev)
+ 	if (!esp->command_block)
+ 		goto fail_unmap_regs;
  
-+/*
-+ * TTY operations hangup function.
-+ */
-+static void tpk_hangup(struct tty_struct *tty)
-+{
-+	struct ttyprintk_port *tpkp = tty->driver_data;
-+
-+	tty_port_hangup(&tpkp->port);
-+}
-+
- static const struct tty_operations ttyprintk_ops = {
- 	.open = tpk_open,
- 	.close = tpk_close,
- 	.write = tpk_write,
- 	.write_room = tpk_write_room,
- 	.ioctl = tpk_ioctl,
-+	.hangup = tpk_hangup,
- };
- 
- static const struct tty_port_operations null_ops = { };
+-	host->irq = platform_get_irq(dev, 0);
++	host->irq = err = platform_get_irq(dev, 0);
++	if (err < 0)
++		goto fail_unmap_command_block;
+ 	err = request_irq(host->irq, scsi_esp_intr, IRQF_SHARED, "ESP", esp);
+ 	if (err < 0)
+ 		goto fail_unmap_command_block;
 -- 
 2.30.2
 
