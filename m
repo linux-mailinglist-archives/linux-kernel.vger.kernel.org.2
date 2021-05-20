@@ -2,112 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A0C38B284
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:04:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F4338B288
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243512AbhETPFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:05:51 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:40445 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231464AbhETPFf (ORCPT
+        id S240443AbhETPGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:06:52 -0400
+Received: from mail-ej1-f41.google.com ([209.85.218.41]:43702 "EHLO
+        mail-ej1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231464AbhETPGu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:05:35 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.west.internal (Postfix) with ESMTP id 08C091656;
-        Thu, 20 May 2021 11:04:11 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Thu, 20 May 2021 11:04:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=vvhQSOUeUthBO
-        4iLrRAnd7BgS689N6pLnJOyMb4iqPk=; b=vIJJ0E5+tldPjmSpOGJ2w3NIF3Ehv
-        Zw0BbasNN9jxyzU0YD6xbZp1U8u91mRxoaX6uahPQg1RlcJ9JbNUrUej4939NG8K
-        otD3LCwtFd1EkzYMXztulVrQoMVF7qjbjhRQWbrKId3lWhMo76kIrxV04S4HDWr3
-        gR12bNbmFK6Nahc6N6c+XwrAwusk05/iKWQhYTnXtj4oOhMKHRkYMLJV87H1K4ET
-        Oji891WTutZLJVgnqVIMffkRacCplKJG4JqUN4SDw9B9HQg7TMDWCcmm+9qDavMk
-        gTU3Gy2JmHSh9UsWpMhta3loCZRgaVrOTByMV1rp4HaGLrZbLfLt9Ewvw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=vvhQSOUeUthBO4iLrRAnd7BgS689N6pLnJOyMb4iqPk=; b=DQlz09Bf
-        TR4EWvQvBHVQh081S8S57MnTEGIgP8qJsidLtXtTzRO7mqnGfPihauWeqjEzVoiv
-        cwwZbtJXa2R7TNkUdbYtNFq8fnuTOvbrRQ+nApe1BAdGVM2kzjs+blIjAohhdOZY
-        O8T387fxypMXR1tZxCjwwIHRWN2Hu9M8O/NzLkj9DA/zPkAYSqWwtCMxCxi6/QrC
-        v1MFOQo+9YwYtfyW6PGGEtOckTpckJhnLsOZxX+pf9BNKK+Wei8wqtgAYe7K9D7N
-        XdxXq6VUpHft+V/zFUs1ib25Xbg/gT80dv68L0CB35tR2VZH6t1IrRi9tlUrmeZ2
-        eJDju8Np+8QmqQ==
-X-ME-Sender: <xms:aXqmYKB3ZvLlWrxX7tPCG6CEgUulOi6vyH10R4xxgBk7buYI7cEfIA>
-    <xme:aXqmYEjLkJR-Wt-ZWa1kfDmzUQ-t_1pvtsf9nH6Fy5av-enZ_YZ-NZIo15r0pldPF
-    pwr8ZRzLvQIB3KRbDY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejuddgkeegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:aXqmYNmVCSalHFtdx8wQ7sK8paPCWwuycm-Hiy5w7SSmhNkXxjOL-A>
-    <xmx:aXqmYIwvpWUEnRM8p95wnmituuGOqjE_ZnojwYB6iShs6VKaOsMj0Q>
-    <xmx:aXqmYPTKYCl9Sw_CBT8CvRrAoC0acdOnd5mg_JTTTbWcxU6gz7vsSA>
-    <xmx:a3qmYNEhwgVVL6K5Un4vqA7Xcra8iqfjj8HPFxc3ywb-0x4-cW_8RRNdQX8>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 20 May 2021 11:04:09 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Eric Anholt <eric@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com, Ray Jui <rjui@broadcom.com>,
-        devicetree@vger.kernel.org, Scott Branden <sbranden@broadcom.com>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
-Subject: [PATCH 4/4] ARM: boot: dts: bcm2711: Add BCM2711 VEC compatible
-Date:   Thu, 20 May 2021 17:03:44 +0200
-Message-Id: <20210520150344.273900-5-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210520150344.273900-1-maxime@cerno.tech>
-References: <20210520150344.273900-1-maxime@cerno.tech>
+        Thu, 20 May 2021 11:06:50 -0400
+Received: by mail-ej1-f41.google.com with SMTP id l4so25801140ejc.10;
+        Thu, 20 May 2021 08:05:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=J0+ARndAuXCdmFIX0f+gwEMiBKr1+CtA3TI2Q0A3VZ0=;
+        b=tjgcFUHY08OoAXFT59Dk9L2YkycGm/YkE2GyX3qspzHJumla1xjTKzbSFrZeNMdJMW
+         MqLC42ChKfUGE0Cq5zbVZLvKqIadCmaIgieauRQiF49o4ZWjlYYq70b2rNICu+SOOjpt
+         Dggny3DpsbD24MLpg7tM0Fr627iZeHB1muuNvSDnVnsQteXX51fblP3/KzFnKOXCfbxp
+         g3HLbty/FTTuzW1nmsXtxEn/rTiI9PHzpGnaGkX4hqtvktffnh8RBhvQtOTLmwfCfX5Z
+         nsMozmYslsAdIPENRUpQN2EQLmMZotoGWvnWGzBXsEZfKlcFNMn1dVCpe7MIh7CYJZYb
+         7iUA==
+X-Gm-Message-State: AOAM531SGw4kbUPRt4FJfkvEHk+gFb0EF4KNal6wo5QQ0X0LT/bLx0if
+        7qa8856tFUQ4lAeEHtbnbg8=
+X-Google-Smtp-Source: ABdhPJzIH6GDrIJx8CBEaa9wHjXjPXzQvWcl7jILYFw5o6nmrQx3X8Bg+Eo8kETA5bZLXFGwthfYeQ==
+X-Received: by 2002:a17:907:2855:: with SMTP id el21mr5214067ejc.153.1621523127999;
+        Thu, 20 May 2021 08:05:27 -0700 (PDT)
+Received: from rocinante.localdomain ([95.155.85.46])
+        by smtp.gmail.com with ESMTPSA id m12sm1362275edc.40.2021.05.20.08.05.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 08:05:27 -0700 (PDT)
+Date:   Thu, 20 May 2021 17:05:26 +0200
+From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Bjorn Helgaas <bhelgaas@google.com>, alex.williamson@redhat.com,
+        raphael.norwitz@nutanix.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND v2 2/7] PCI: Add pcie_reset_flr to follow calling
+ convention of other reset methods
+Message-ID: <20210520150526.GB641812@rocinante.localdomain>
+References: <20210519235426.99728-1-ameynarkhede03@gmail.com>
+ <20210519235426.99728-3-ameynarkhede03@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210519235426.99728-3-ameynarkhede03@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
+Hi Amey,
 
-The BCM2711 has a slightly different VEC than the one found in the older
-SoCs. Now that we support the new variant, add its compatible to the
-device tree.
+[...]
+> +int pcie_reset_flr(struct pci_dev *dev, int probe)
+> +{
+> +	u32 cap;
+> +
+> +	if (dev->dev_flags & PCI_DEV_FLAGS_NO_FLR_RESET)
+> +		return -ENOTTY;
+> +
+> +	pcie_capability_read_dword(dev, PCI_EXP_DEVCAP, &cap);
+> +	if (!(cap & PCI_EXP_DEVCAP_FLR))
+> +		return -ENOTTY;
+> +
+> +	if (probe)
+> +		return 0;
+> +
+> +	return pcie_flr(dev);
+> +}
 
-Signed-off-by: Mateusz Kwiatkowski <kfyatek+publicgit@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- arch/arm/boot/dts/bcm2711.dtsi | 1 +
- 1 file changed, 1 insertion(+)
+Similarly to my suggestion in the first patch in the series, perhaps
+using a boolean here would be an option.
 
-diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-index 720beec54d61..0b6900815d19 100644
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -1087,5 +1087,6 @@ &usb {
- };
- 
- &vec {
-+	compatible = "brcm,bcm2711-vec";
- 	interrupts = <GIC_SPI 123 IRQ_TYPE_LEVEL_HIGH>;
- };
--- 
-2.31.1
+Having said that, the following existing functions aren't doing it, so
+for the sake of keeping things consistent it might not be the best
+option, as per:
 
+ static int pci_af_flr(struct pci_dev *dev, int probe)
+ int nvme_disable_and_flr(struct pci_dev *dev, int probe)
+
+Krzysztof
