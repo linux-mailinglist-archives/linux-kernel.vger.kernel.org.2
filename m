@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D648D38B585
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CAA838B589
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:52:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235698AbhETRx3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:53:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbhETRx2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:53:28 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3580C061574;
-        Thu, 20 May 2021 10:52:06 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0eb6009f35b1f88a592069.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:b600:9f35:b1f8:8a59:2069])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6A16B1EC064C;
-        Thu, 20 May 2021 19:52:05 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621533125;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=QjVcZjqm5/10ZZQkty/TinnzjR8RRiru1ikOMqd1Ri0=;
-        b=owNuv2xMy04KYoWQbdhnDa1orkCnNBBR3QKPzPJ2pOrqn01FoO7lMw8hmu062zokqFRuc7
-        8TdPjT+CGeRmDT7p5b0WR9sMUH5u+dDXiq8x+dtBe2DtmKVrQcd+ztYo+ulXA5o8/e1U02
-        SkYYPhbroDaJlvbQu/UILWw0tvWkO+Y=
-Date:   Thu, 20 May 2021 19:51:57 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Brijesh Singh <brijesh.singh@amd.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, jroedel@suse.de, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, mingo@redhat.com, dave.hansen@intel.com,
-        rientjes@google.com, seanjc@google.com, peterz@infradead.org,
-        hpa@zytor.com, tony.luck@intel.com
-Subject: Re: [PATCH Part1 RFC v2 10/20] x86/sev: Add a helper for the
- PVALIDATE instruction
-Message-ID: <YKahvUZ3hAgWViqd@zn.tnic>
-References: <20210430121616.2295-1-brijesh.singh@amd.com>
- <20210430121616.2295-11-brijesh.singh@amd.com>
- <4ecbed35-aca4-9e30-22d0-f5c46b67b70a@amd.com>
- <YKadOnfjaeffKwav@zn.tnic>
- <8e7f0a86-55e3-2974-75d6-50228ea179b3@amd.com>
+        id S235770AbhETRxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:53:40 -0400
+Received: from mga03.intel.com ([134.134.136.65]:36801 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232971AbhETRxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:53:39 -0400
+IronPort-SDR: yIA/z2fNjGleDFa3+8xaiF7X8a7xDrnos3A0Pax3U+5BYi9qgC/SbPhGmp2QeXA9aKxcftUDJZ
+ bMcRdOr1wK4Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201347985"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="201347985"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 10:52:17 -0700
+IronPort-SDR: ubV1dR23fZlDz8Sl4x063SQ54XDoUp+GTBJetaZzXSZU0o/60mTcOtrSvgH0x1hH7/ek3qQ6NG
+ boZITUeOglsA==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="475295383"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.209.167.234]) ([10.209.167.234])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 10:52:15 -0700
+Subject: Re: [PATCH v26 26/30] ELF: Introduce arch_setup_elf_property()
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-27-yu-cheng.yu@intel.com> <YKVUgzJ0MVNBgjDd@zn.tnic>
+ <c29348d8-caae-5226-d095-ae3992d88338@intel.com>
+ <YKaesoXCSBmCwD+4@casper.infradead.org>
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Message-ID: <89be0683-e1b3-d843-c4b4-ba351ede7427@intel.com>
+Date:   Thu, 20 May 2021 10:52:15 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8e7f0a86-55e3-2974-75d6-50228ea179b3@amd.com>
+In-Reply-To: <YKaesoXCSBmCwD+4@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 12:44:50PM -0500, Brijesh Singh wrote:
-> Hmm, I use the SIZEMISMATCH later in the patches.
+On 5/20/2021 10:38 AM, Matthew Wilcox wrote:
+> On Wed, May 19, 2021 at 03:14:58PM -0700, Yu, Yu-cheng wrote:
+>>>> +++ b/include/uapi/linux/elf.h
+>>>> @@ -455,4 +455,13 @@ typedef struct elf64_note {
+>>>>    /* Bits for GNU_PROPERTY_AARCH64_FEATURE_1_BTI */
+>>>>    #define GNU_PROPERTY_AARCH64_FEATURE_1_BTI	(1U << 0)
+>>>> +/* .note.gnu.property types for x86: */
+>>>> +#define GNU_PROPERTY_X86_FEATURE_1_AND		0xc0000002
+>>>
+>>> Why not 0xc0000001? ARM64 is 0xc0000000...
+>>>
+>>
+>> I just looked at the ABI document.
+>>
+>> ARM has GNU_PROPERTY_AARCH64_FEATURE_1_AND 0xc0000000
+>>
+>> X86 has:
+>> 	GNU_PROPERTY_X86_ISA_1_USED	0xc0000000
+>> 	GNU_PROPERTY_X86_ISA_1_NEEDED	0xc0000001
+>> 	GNU_PROPERTY_X86_FEATURE_1_AND	0xc0000002
+> 
+> Please add all three, not just the last one.
+> 
 
-You do, where? Maybe I don't see it.
-
-> Since I was introducing the pvalidate in separate patch so decided to
-> define all the return code.
-
-You can define them in a comment so that it is clear what PVALIDATE
-returns but not as defines when they're unused.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Ok!
