@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A2338A4C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:08:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8092A38A465
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:04:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235590AbhETKJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:09:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36316 "EHLO mail.kernel.org"
+        id S235613AbhETKF2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:05:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59060 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234779AbhETKDG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:03:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E4A661355;
-        Thu, 20 May 2021 09:40:01 +0000 (UTC)
+        id S235291AbhETJ7s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 05:59:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 278766162D;
+        Thu, 20 May 2021 09:38:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503601;
-        bh=OwNNNMlJTXqde6d5WppY9XmEQRQV1p6q8nba4xY4arw=;
+        s=korg; t=1621503526;
+        bh=8CW865KVytU24fiLS2p4+yfG6Txeuofcb6aQV21QHlU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0+jHMK1j2wFrX+OnT50BIY18mMP38nB3Z4ZogcEZryo1i1YhLf8q5kbUQYKKaOrCQ
-         uXTdDyJ6olMTZU1dHZJb+BeeG82tExKVHlvtKxLwM77zA2uI6pjnTfXgGhIOSe/q6M
-         AMvAhu1ktmlkLHTr7rV59XGnZf3pQ58DN7nEAfyA=
+        b=vWk34sMl0R9BjAU85Fd+gxmID8DiHHa2LaS1okr92UNjLRp6XVGo0aojux9U4yYcY
+         35cL/BZYvxNdu6cQ6Yay3ppF2Db2s4c2yC5z6eUM0ivKhNHCCJRcVdBysjAs54wzAi
+         LWYnwgzY3YH7AGLXWMnjG25JlrUwmanshmdS2vHA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Randy Dunlap <rdunlap@infradead.org>,
+        stable@vger.kernel.org, Johannes Berg <johannes.berg@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 261/425] powerpc: iommu: fix build when neither PCI or IBMVIO is set
-Date:   Thu, 20 May 2021 11:20:30 +0200
-Message-Id: <20210520092140.028656446@linuxfoundation.org>
+Subject: [PATCH 4.19 262/425] mac80211: bail out if cipher schemes are invalid
+Date:   Thu, 20 May 2021 11:20:31 +0200
+Message-Id: <20210520092140.061530159@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -41,42 +39,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Johannes Berg <johannes.berg@intel.com>
 
-[ Upstream commit b27dadecdf9102838331b9a0b41ffc1cfe288154 ]
+[ Upstream commit db878e27a98106a70315d264cc92230d84009e72 ]
 
-When neither CONFIG_PCI nor CONFIG_IBMVIO is set/enabled, iommu.c has a
-build error. The fault injection code is not useful in that kernel config,
-so make the FAIL_IOMMU option depend on PCI || IBMVIO.
+If any of the cipher schemes specified by the driver are invalid, bail
+out and fail the registration rather than just warning.  Otherwise, we
+might later crash when we try to use the invalid cipher scheme, e.g.
+if the hdr_len is (significantly) less than the pn_offs + pn_len, we'd
+have an out-of-bounds access in RX validation.
 
-Prevents this build error (warning escalated to error):
-../arch/powerpc/kernel/iommu.c:178:30: error: 'fail_iommu_bus_notifier' defined but not used [-Werror=unused-variable]
-  178 | static struct notifier_block fail_iommu_bus_notifier = {
-
-Fixes: d6b9a81b2a45 ("powerpc: IOMMU fault injection")
-Reported-by: kernel test robot <lkp@intel.com>
-Suggested-by: Michael Ellerman <mpe@ellerman.id.au>
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Acked-by: Randy Dunlap <rdunlap@infradead.org> # build-tested
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210404192623.10697-1-rdunlap@infradead.org
+Fixes: 2475b1cc0d52 ("mac80211: add generic cipher scheme support")
+Link: https://lore.kernel.org/r/20210408143149.38a3a13a1b19.I6b7f5790fa0958ed8049cf02ac2a535c61e9bc96@changeid
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig.debug | 1 +
- 1 file changed, 1 insertion(+)
+ net/mac80211/main.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig.debug b/arch/powerpc/Kconfig.debug
-index fd63cd914a74..ffe0cf0f0bea 100644
---- a/arch/powerpc/Kconfig.debug
-+++ b/arch/powerpc/Kconfig.debug
-@@ -350,6 +350,7 @@ config PPC_EARLY_DEBUG_CPM_ADDR
- config FAIL_IOMMU
- 	bool "Fault-injection capability for IOMMU"
- 	depends on FAULT_INJECTION
-+	depends on PCI || IBMVIO
- 	help
- 	  Provide fault-injection capability for IOMMU. Each device can
- 	  be selectively enabled via the fail_iommu property.
+diff --git a/net/mac80211/main.c b/net/mac80211/main.c
+index f44d00f35fe7..e8c4e9c0c5a0 100644
+--- a/net/mac80211/main.c
++++ b/net/mac80211/main.c
+@@ -1080,8 +1080,11 @@ int ieee80211_register_hw(struct ieee80211_hw *hw)
+ 	if (local->hw.wiphy->max_scan_ie_len)
+ 		local->hw.wiphy->max_scan_ie_len -= local->scan_ies_len;
+ 
+-	WARN_ON(!ieee80211_cs_list_valid(local->hw.cipher_schemes,
+-					 local->hw.n_cipher_schemes));
++	if (WARN_ON(!ieee80211_cs_list_valid(local->hw.cipher_schemes,
++					     local->hw.n_cipher_schemes))) {
++		result = -EINVAL;
++		goto fail_workqueue;
++	}
+ 
+ 	result = ieee80211_init_cipher_suites(local);
+ 	if (result < 0)
 -- 
 2.30.2
 
