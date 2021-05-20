@@ -2,88 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55CA138B524
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E55CA38B527
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:27:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233972AbhETR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:26:41 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4705 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233209AbhETR0f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:26:35 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmGl5110Gz16QXk;
-        Fri, 21 May 2021 01:22:25 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 01:25:11 +0800
-Received: from [10.47.87.246] (10.47.87.246) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 20 May
- 2021 18:25:09 +0100
-Subject: Re: [PATCH] scsi: core: Cap shost cmd_per_lun at can_queue
-To:     Bart Van Assche <bvanassche@acm.org>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <ming.lei@redhat.com>
-References: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
- <988856ad-8e89-97e4-f8fe-54c1ca1b4a93@acm.org>
- <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
- <439c6fb8-3799-bfae-7f44-9f8c26a7bf79@acm.org>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <457d23a9-deb0-4ee1-fe7f-5a63605d9686@huawei.com>
-Date:   Thu, 20 May 2021 18:24:02 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S233620AbhETR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:28:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231680AbhETR2n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 13:28:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 75DE860240;
+        Thu, 20 May 2021 17:27:18 +0000 (UTC)
+Date:   Thu, 20 May 2021 18:27:16 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
+Message-ID: <20210520172713.GF12251@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+ <20210517123239.8025-8-steven.price@arm.com>
+ <20210520120556.GC12251@arm.com>
+ <dd5ab3a0-5a74-b145-2485-d6d871be945b@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <439c6fb8-3799-bfae-7f44-9f8c26a7bf79@acm.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.87.246]
-X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd5ab3a0-5a74-b145-2485-d6d871be945b@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 17:57, Bart Van Assche wrote:
->> not be limited to 16b?
-> Maybe I'm missing something but it is not clear to me why different
-> structures in the SCSI headers use different data types for can_queue
-> and cmd_per_lun?
-
-For cmd_per_lun, is it related to SCSI task tag limit? SAM-3 says upto 
-64b for task tag, but then SAS uses 16b for TMF tag, so not sure.
-
-Someone with more SCSI spec knowledge than we can clarify this.
-
+On Thu, May 20, 2021 at 04:58:01PM +0100, Steven Price wrote:
+> On 20/05/2021 13:05, Catalin Marinas wrote:
+> > On Mon, May 17, 2021 at 01:32:38PM +0100, Steven Price wrote:
+> >> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >> index e89a5e275e25..4b6c83beb75d 100644
+> >> --- a/arch/arm64/kvm/arm.c
+> >> +++ b/arch/arm64/kvm/arm.c
+> >> @@ -1309,6 +1309,65 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
+> >>  	}
+> >>  }
+> >>  
+> >> +static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
+> >> +				      struct kvm_arm_copy_mte_tags *copy_tags)
+> >> +{
+> >> +	gpa_t guest_ipa = copy_tags->guest_ipa;
+> >> +	size_t length = copy_tags->length;
+> >> +	void __user *tags = copy_tags->addr;
+> >> +	gpa_t gfn;
+> >> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
+> >> +	int ret = 0;
+> >> +
+> >> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
+> >> +		return -EINVAL;
+> >> +
+> >> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
+> >> +		return -EINVAL;
+> >> +
+> >> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
+> >> +		return -EINVAL;
+> >> +
+> >> +	gfn = gpa_to_gfn(guest_ipa);
+> >> +
+> >> +	mutex_lock(&kvm->slots_lock);
+> >> +
+> >> +	while (length > 0) {
+> >> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
+> >> +		void *maddr;
+> >> +		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
+> >> +
+> >> +		if (is_error_noslot_pfn(pfn)) {
+> >> +			ret = -EFAULT;
+> >> +			goto out;
+> >> +		}
+> >> +
+> >> +		maddr = page_address(pfn_to_page(pfn));
+> >> +
+> >> +		if (!write) {
+> >> +			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
+> >> +			kvm_release_pfn_clean(pfn);
+> > 
+> > Do we need to check if PG_mte_tagged is set? If the page was not faulted
+> > into the guest address space but the VMM has the page, does the
+> > gfn_to_pfn_prot() guarantee that a kvm_set_spte_gfn() was called? If
+> > not, this may read stale tags.
 > 
-> $ git grep -nHEw '(cmd_per_lun|can_queue);' include/scsi
-> include/scsi/scsi_device.h:318:	unsigned int		can_queue;
-> include/scsi/scsi_host.h:372:	int can_queue;
-> include/scsi/scsi_host.h:425:	short cmd_per_lun;
-> include/scsi/scsi_host.h:612:	int can_queue;
-> include/scsi/scsi_host.h:613:	short cmd_per_lun;
+> Ah, I hadn't thought about that... No I don't believe gfn_to_pfn_prot()
+> will fault it into the guest.
+
+It doesn't indeed. What it does is a get_user_pages() but it's not of
+much help since the VMM pte wouldn't be tagged (we would have solved
+lots of problems if we required PROT_MTE in the VMM...)
+
+> >> +		} else {
+> >> +			num_tags = mte_copy_tags_from_user(maddr, tags,
+> >> +							   num_tags);
+> >> +			kvm_release_pfn_dirty(pfn);
+> >> +		}
+> > 
+> > Same question here, if the we can't guarantee the stage 2 pte being set,
+> > we'd need to set PG_mte_tagged.
 > 
->> It seems intentional that can_queue is int and cmd_per_lun is short.
-> Intentional? It is not clear to me why? Even high-performance drivers
-> like iSER and SRP set can_queue by default to a value that fits well in
-> a 16-bit variable (512 and 64 respectively). The highest value that I
-> found after a quick search is the following:
+> This is arguably worse as we'll be writing tags into the guest but
+> without setting PG_mte_tagged - so they'll be lost when the guest then
+> faults the pages in. Which sounds like it should break migration.
 > 
->   #define ISCSI_TOTAL_CMDS_MAX		4096
+> I think the below should be safe, and avoids the overhead of setting the
+> flag just for reads.
+> 
+> Thanks,
+> 
+> Steve
+> 
+> ----8<----
+> 		page = pfn_to_page(pfn);
+> 		maddr = page_address(page);
+> 
+> 		if (!write) {
+> 			if (test_bit(PG_mte_tagged, &page->flags))
+> 				num_tags = mte_copy_tags_to_user(tags, maddr,
+> 							MTE_GRANULES_PER_PAGE);
+> 			else
+> 				/* No tags in memory, so write zeros */
+> 				num_tags = MTE_GRANULES_PER_PAGE -
+> 					clear_user(tag, MTE_GRANULES_PER_PAGE);
+> 			kvm_release_pfn_clean(pfn);
 
-I guess int was used for can_queue as an arbitrarily big number.
+For ptrace we return a -EOPNOTSUPP if the address doesn't have VM_MTE
+but I don't think it makes sense here, so I'm fine with clearing the
+destination and assuming that the tags are zero (as they'd be on
+faulting into the guest.
 
-And if we try to use 16b for can_queue, reducing size of 
-variables/structure members sometimes breaks things, from my experience.
+Another thing I forgot to ask, what's guaranteeing that the page
+supports tags? Does this ioctl ensure that it would attempt the tag
+copying from some device mapping? Do we need some kvm_is_device_pfn()
+check? I guess ZONE_DEVICE memory we just refuse to map in an earlier
+patch.
 
-Thanks,
-John
+> 		} else {
+> 			num_tags = mte_copy_tags_from_user(maddr, tags,
+> 							MTE_GRANULES_PER_PAGE);
+> 			kvm_release_pfn_dirty(pfn);
+> 		}
+> 
+> 		if (num_tags != MTE_GRANULES_PER_PAGE) {
+> 			ret = -EFAULT;
+> 			goto out;
+> 		}
+> 
+> 		if (write)
+> 			test_and_set_bit(PG_mte_tagged, &page->flags);
 
+I think a set_bit() would do, I doubt it's any more efficient. But why
+not add it in the 'else' block above where we actually wrote the tags?
+The copy function may have failed part-way through. Maybe your logic is
+correct though, there are invalid tags in the page. Just add a comment.
 
-
+-- 
+Catalin
