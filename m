@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E573389EC3
+	by mail.lfdr.de (Postfix) with ESMTP id 77405389EC4
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230500AbhETHUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:20:41 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3441 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbhETHUk (ORCPT
+        id S231135AbhETHUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:20:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4764 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230505AbhETHUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:20:40 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fm1Hz3rdqzCrbC;
-        Thu, 20 May 2021 15:16:31 +0800 (CST)
+        Thu, 20 May 2021 03:20:42 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fm1H91xKvzqV4S;
+        Thu, 20 May 2021 15:15:49 +0800 (CST)
 Received: from dggpemm500004.china.huawei.com (7.185.36.219) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 20 May 2021 15:19:18 +0800
+ 15.1.2176.2; Thu, 20 May 2021 15:19:19 +0800
 Received: from huawei.com (10.174.28.241) by dggpemm500004.china.huawei.com
  (7.185.36.219) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 20 May
- 2021 15:19:18 +0800
+ 2021 15:19:19 +0800
 From:   Bixuan Cui <cuibixuan@huawei.com>
 To:     <will@kernel.org>, <robin.murphy@arm.com>
 CC:     <joro@8bytes.org>, <jean-philippe@linaro.org>,
         <Jonathan.Cameron@huawei.com>, <cuibixuan@huawei.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next 2/3] iommu/arm-smmu-v3: Change *array into *const array
-Date:   Thu, 20 May 2021 16:42:19 +0800
-Message-ID: <20210520084220.51684-3-cuibixuan@huawei.com>
+Subject: [PATCH -next 3/3] iommu/arm-smmu-v3: Prefer unsigned int to bare use of unsigned
+Date:   Thu, 20 May 2021 16:42:20 +0800
+Message-ID: <20210520084220.51684-4-cuibixuan@huawei.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210520084220.51684-1-cuibixuan@huawei.com>
 References: <20210520084220.51684-1-cuibixuan@huawei.com>
@@ -46,7 +46,7 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fix checkpatch warning in arm-smmu-v3.c:
-static const char * array should probably be static const char * const
+Prefer 'unsigned int' to bare use of 'unsigned'
 
 Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
 ---
@@ -54,18 +54,18 @@ Signed-off-by: Bixuan Cui <cuibixuan@huawei.com>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 4f184119c26d..51ce44fe550c 100644
+index 51ce44fe550c..725b099d0652 100644
 --- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
 +++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -354,7 +354,7 @@ static void arm_smmu_cmdq_build_sync_cmd(u64 *cmd, struct arm_smmu_device *smmu,
+@@ -1827,7 +1827,7 @@ static bool arm_smmu_capable(enum iommu_cap cap)
+ 	}
+ }
  
- static void arm_smmu_cmdq_skip_err(struct arm_smmu_device *smmu)
+-static struct iommu_domain *arm_smmu_domain_alloc(unsigned type)
++static struct iommu_domain *arm_smmu_domain_alloc(unsigned int type)
  {
--	static const char *cerror_str[] = {
-+	static const char * const cerror_str[] = {
- 		[CMDQ_ERR_CERROR_NONE_IDX]	= "No error",
- 		[CMDQ_ERR_CERROR_ILL_IDX]	= "Illegal command",
- 		[CMDQ_ERR_CERROR_ABT_IDX]	= "Abort on command fetch",
+ 	struct arm_smmu_domain *smmu_domain;
+ 
 -- 
 2.17.1
 
