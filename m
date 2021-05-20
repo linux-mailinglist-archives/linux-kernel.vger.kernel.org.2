@@ -2,175 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C29BF38AFEC
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:24:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C742C38AFF2
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 15:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243608AbhETNZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 09:25:34 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46902 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241122AbhETNZC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 09:25:02 -0400
-Date:   Thu, 20 May 2021 13:23:35 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621517016;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MD+RRM2Hf8d1p6G4wp3yGy1qQGNWhOfXaby141LBubw=;
-        b=a8cIvaJN8TtUM6/7zyM8zhdYgH8GYM+YnPTnYhoYBO05afvPwjQvGhbwtnNUKpdyu4bP1T
-        on+qyZSdFxlh1I7hlcfhVpN4UWOwhf8mupl7R/mZ0MrclSJtnQ/WRcDxmNo3DivqGAjM8a
-        yzyk3grMEcKnxxY2vpJ5O1DKk3SWAXvNlxqcqcmwr7R0JtVBr1w5lsJdnMGdfRgNPIErjc
-        nfBoMluILwmW7Fd0C3ODoGhGm2WGTfi4DRmo6wbO4tvpR6Df3s9L60sljSgM/X6syLvom0
-        CBiHLEwo02JREhjf0nVPAafQWYHnBszB76vFJW15tdUgX6P5QxvfokrEdiW7pw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621517016;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MD+RRM2Hf8d1p6G4wp3yGy1qQGNWhOfXaby141LBubw=;
-        b=jLXk1WPlthqJFbihkW3sZlasJF/Ikc5O1wJbnOAHJerjZ/IWxLGEFaKs5GUURx7swA4n9o
-        fRVs4wBPcgTflfAw==
-From:   "tip-bot2 for Masahiro Yamada" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/entry] x86/entry/x32: Rename __x32_compat_sys_* to
- __x64_compat_sys_*
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210517073815.97426-2-masahiroy@kernel.org>
-References: <20210517073815.97426-2-masahiroy@kernel.org>
+        id S237007AbhETN0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 09:26:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48036 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231733AbhETN0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 09:26:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D44566135A;
+        Thu, 20 May 2021 13:25:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621517120;
+        bh=ZGR0d1utfxvQm3s0niYerfupf8fQvgD1F1Vf6QEpFTQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IXW65ZzioDVPpl+gzUyMI7M0QoFYoDQ0n55Jigm9jcR1TrXz764f5RO555kqg1dgS
+         +59mcs5flYcU+0f1rFAoFe9rsMmFbdg6NdLm97gxNtobggpXUyFZrdolLMEiypJY5E
+         cKA3ALOxntTIfnBmr94MP95KzRU7w2Qj4WyArEzPGceHu6fcpBcJSUAzuhQEjeBIC0
+         HCw/kXVbZsToel77d5YBHK4zxdRsL9rbmbT6u1XtU4j4JiCqI9OMV5lsQbSElz+NJ/
+         sU4yw79M9FHu5fq9GK62cYcRgvw6/MUSq8M0chxk840k/b5ooVe+7hT0pbretYqesF
+         MjgN9G723EnIw==
+Received: by mail-ej1-f45.google.com with SMTP id i7so7449408ejc.5;
+        Thu, 20 May 2021 06:25:20 -0700 (PDT)
+X-Gm-Message-State: AOAM53030A9e5BQg0z0iBIVmjylPcFjc9VRSAWkjfT7X7/XH8knMDu3/
+        RFXWKnG0wf6rD3wgU4NpBylvngu/JHaHhi0T6g==
+X-Google-Smtp-Source: ABdhPJyYRw8Cvw8jFOxekcPR1d+Gtnv+Q16LLY5HiWSVWHW/5gWy/2iRMsHIUVSQpFkOEVzkI/Xk0CeumJ0LRI12PjY=
+X-Received: by 2002:a17:907:724b:: with SMTP id ds11mr4688567ejc.108.1621517119203;
+ Thu, 20 May 2021 06:25:19 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162151701543.29796.4894705972127916050.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20210517200907.1459182-1-dianders@chromium.org>
+ <20210517130450.v7.3.I98bf729846c37c4c143f6ab88b1e299280e2fe26@changeid>
+ <20210519200156.GA3535665@robh.at.kernel.org> <CAD=FV=XNaB8fVvwwHPgo8wPmG3EmJ68u_3o8qpPXn4YobNokAA@mail.gmail.com>
+In-Reply-To: <CAD=FV=XNaB8fVvwwHPgo8wPmG3EmJ68u_3o8qpPXn4YobNokAA@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 20 May 2021 08:25:06 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqL9p1nOQs5V5xN167E860Gm+3dTRaOwpv2X+AP=cM1Q_g@mail.gmail.com>
+Message-ID: <CAL_JsqL9p1nOQs5V5xN167E860Gm+3dTRaOwpv2X+AP=cM1Q_g@mail.gmail.com>
+Subject: Re: [PATCH v7 03/10] dt-bindings: drm/bridge: ti-sn65dsi86: Add
+ aux-bus child
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Lyude Paul <lyude@redhat.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus W <linus.walleij@linaro.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        Steev Klimaszewski <steev@kali.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/entry branch of tip:
+On Wed, May 19, 2021 at 4:06 PM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Hi,
+>
+> On Wed, May 19, 2021 at 1:02 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Mon, May 17, 2021 at 01:09:00PM -0700, Douglas Anderson wrote:
+> > > We want to be able to list an eDP panel as a child of a ti-sn65dsi86
+> > > node to represent the fact that the panel is connected to the bridge's
+> > > DP AUX bus. Though the panel and the bridge chip are connected in
+> > > several ways, the DP AUX bus is the primary control interface between
+> > > the two and thus makes the most sense to model in device tree
+> > > hierarchy.
+> > >
+> > > Listing a panel in this way makes it possible for the panel driver to
+> > > easily get access to the DP AUX bus that it resides on, which can be
+> > > useful to help in auto-detecting the panel and for turning on various
+> > > bits.
+> > >
+> > > NOTE: it's still possible to continue using the bridge chip and point
+> > > to a panel that _isn't_ listed as a child of the bridge chip (since
+> > > it's worked that way previously), but that should be deprecated since
+> > > there is no downside to listing the panel under the bridge chip.
+> > >
+> > > The idea for this bus's design was hashed out over IRC [1].
+> > >
+> > > [1] https://people.freedesktop.org/~cbrill/dri-log/?channel=dri-devel&date=2021-05-11
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > > Possibly we might want something fancier that could be included by
+> > > other eDP controller bindings. If we want to do this, I'd love to be
+> > > pointed at a good example to follow.
+> > >
+> > > Changes in v7:
+> > > - ti-sn65dsi86: Add aux-bus child patch new for v7.
+> > >
+> > >  .../bindings/display/bridge/ti,sn65dsi86.yaml | 22 ++++++++++++++++++-
+> > >  1 file changed, 21 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> > > index 26932d2e86ab..51f5a29e216c 100644
+> > > --- a/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> > > +++ b/Documentation/devicetree/bindings/display/bridge/ti,sn65dsi86.yaml
+> > > @@ -70,6 +70,11 @@ properties:
+> > >      const: 1
+> > >      description: See ../../pwm/pwm.yaml for description of the cell formats.
+> > >
+> > > +  aux-bus:
+> >
+> > As this is a node:
+> >
+> > type: object
+> >
+> > > +    description:
+> > > +      It is recommended that you place your panel under the aux-bus node
+> > > +      here to represent the control hierarchy.
+> > > +
+> > >    ports:
+> > >      $ref: /schemas/graph.yaml#/properties/ports
+> > >
+> > > @@ -201,11 +206,26 @@ examples:
+> > >
+> > >            port@1 {
+> > >              reg = <1>;
+> > > -            endpoint {
+> > > +            sn65dsi86_out: endpoint {
+> > >                remote-endpoint = <&panel_in_edp>;
+> > >              };
+> > >            };
+> > >          };
+> > > +
+> > > +        aux-bus {
+> > > +          panel {
+> >
+> > We should perhaps have a separate aux-bus schema.
+>
+> Yeah. Before spending lots of time digging into how to do this I
+> wanted to see if anyone was going to give me a big-old NAK on the
+> whole approach. ;-)
+>
+> I guess I'd make a file called "dp-aux-bus.yaml" (maybe right under
+> bindings/display?) and then I'd include it like this:
+>
+> aux-bus:
+>   $ref: "../dp-aux-bus.yaml#"
 
-Commit-ID:     2e958a8a510d956ec8528f0bd20e309b5bb5156c
-Gitweb:        https://git.kernel.org/tip/2e958a8a510d956ec8528f0bd20e309b5bb5156c
-Author:        Masahiro Yamada <masahiroy@kernel.org>
-AuthorDate:    Mon, 17 May 2021 16:38:09 +09:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 20 May 2021 15:03:58 +02:00
+Right.
 
-x86/entry/x32: Rename __x32_compat_sys_* to __x64_compat_sys_*
+> > Something should
+> > define the child node is 'panel' and nothing else.
+>
+> At the moment the code also requires that the node name is 'aux-bus'.
+> Any objections to that?
 
-The SYSCALL macros are mapped to symbols as follows:
+No. There's 2 ways to do that. The above does and adding $nodename in
+dp-aux-bus.yaml will. The latter also means the schema will be applied
+automatically to any node named 'aux-bus'. That means the schema will
+be applied twice unless you have 'select: false'. The main advantage
+of the latter case is it gets applied even without all the users
+converted to schema.
 
-  __SYSCALL_COMMON(nr, sym)  -->  __x64_<sym>
-  __SYSCALL_X32(nr, sym)     -->  __x32_<sym>
+> > Though perhaps
+> > connectors are valid too?
+>
+> They might be. We could always add it later?
 
-Originally, the syscalls in the x32 special range (512-547) were all
-compat.
+Sure.
 
-This assumption is now broken after the following commits:
-
-  55db9c0e8534 ("net: remove compat_sys_{get,set}sockopt")
-  5f764d624a89 ("fs: remove the compat readv/writev syscalls")
-  598b3cec831f ("fs: remove compat_sys_vmsplice")
-  c3973b401ef2 ("mm: remove compat_process_vm_{readv,writev}")
-
-Those commits redefined __x32_sys_* to __x64_sys_* because there is no stub
-like __x32_sys_*.
-
-Defining them as follows is more sensible and cleaner.
-
-  __SYSCALL_COMMON(nr, sym)  -->  __x64_<sym>
-  __SYSCALL_X32(nr, sym)     -->  __x64_<sym>
-
-This works because both x86_64 and x32 use the same ABI (RDI, RSI, RDX,
-R10, R8, R9)
-
-The ugly #define __x32_sys_* will go away.
-
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210517073815.97426-2-masahiroy@kernel.org
-
----
- arch/x86/entry/syscall_x32.c           | 16 ++--------------
- arch/x86/include/asm/syscall_wrapper.h | 10 +++++-----
- 2 files changed, 7 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/entry/syscall_x32.c b/arch/x86/entry/syscall_x32.c
-index f2fe0a3..3fea8fb 100644
---- a/arch/x86/entry/syscall_x32.c
-+++ b/arch/x86/entry/syscall_x32.c
-@@ -8,27 +8,15 @@
- #include <asm/unistd.h>
- #include <asm/syscall.h>
- 
--/*
-- * Reuse the 64-bit entry points for the x32 versions that occupy different
-- * slots in the syscall table.
-- */
--#define __x32_sys_readv		__x64_sys_readv
--#define __x32_sys_writev	__x64_sys_writev
--#define __x32_sys_getsockopt	__x64_sys_getsockopt
--#define __x32_sys_setsockopt	__x64_sys_setsockopt
--#define __x32_sys_vmsplice	__x64_sys_vmsplice
--#define __x32_sys_process_vm_readv	__x64_sys_process_vm_readv
--#define __x32_sys_process_vm_writev	__x64_sys_process_vm_writev
--
- #define __SYSCALL_64(nr, sym)
- 
--#define __SYSCALL_X32(nr, sym) extern long __x32_##sym(const struct pt_regs *);
-+#define __SYSCALL_X32(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #define __SYSCALL_COMMON(nr, sym) extern long __x64_##sym(const struct pt_regs *);
- #include <asm/syscalls_64.h>
- #undef __SYSCALL_X32
- #undef __SYSCALL_COMMON
- 
--#define __SYSCALL_X32(nr, sym) [nr] = __x32_##sym,
-+#define __SYSCALL_X32(nr, sym) [nr] = __x64_##sym,
- #define __SYSCALL_COMMON(nr, sym) [nr] = __x64_##sym,
- 
- asmlinkage const sys_call_ptr_t x32_sys_call_table[__NR_x32_syscall_max+1] = {
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index 80c08c7..6a2827d 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -17,7 +17,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-  * __x64_sys_*()         - 64-bit native syscall
-  * __ia32_sys_*()        - 32-bit native syscall or common compat syscall
-  * __ia32_compat_sys_*() - 32-bit compat syscall
-- * __x32_compat_sys_*()  - 64-bit X32 compat syscall
-+ * __x64_compat_sys_*()  - 64-bit X32 compat syscall
-  *
-  * The registers are decoded according to the ABI:
-  * 64-bit: RDI, RSI, RDX, R10, R8, R9
-@@ -166,17 +166,17 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
-  * with x86_64 obviously do not need such care.
-  */
- #define __X32_COMPAT_SYS_STUB0(name)					\
--	__SYS_STUB0(x32, compat_sys_##name)
-+	__SYS_STUB0(x64, compat_sys_##name)
- 
- #define __X32_COMPAT_SYS_STUBx(x, name, ...)				\
--	__SYS_STUBx(x32, compat_sys##name,				\
-+	__SYS_STUBx(x64, compat_sys##name,				\
- 		    SC_X86_64_REGS_TO_ARGS(x, __VA_ARGS__))
- 
- #define __X32_COMPAT_COND_SYSCALL(name)					\
--	__COND_SYSCALL(x32, compat_sys_##name)
-+	__COND_SYSCALL(x64, compat_sys_##name)
- 
- #define __X32_COMPAT_SYS_NI(name)					\
--	__SYS_NI(x32, compat_sys_##name)
-+	__SYS_NI(x64, compat_sys_##name)
- #else /* CONFIG_X86_X32 */
- #define __X32_COMPAT_SYS_STUB0(name)
- #define __X32_COMPAT_SYS_STUBx(x, name, ...)
+Rob
