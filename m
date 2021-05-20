@@ -2,34 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F215738A833
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:46:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D02EE38A838
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238376AbhETKrc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:47:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60482 "EHLO mail.kernel.org"
+        id S237238AbhETKsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:48:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60480 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237323AbhETKbm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:31:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 37A5B61C49;
-        Thu, 20 May 2021 09:52:18 +0000 (UTC)
+        id S237321AbhETKbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:31:41 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 659B261C30;
+        Thu, 20 May 2021 09:52:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504338;
-        bh=2GY01OsC7VGukOUeNRc8K8i7wEp992UsqrzLthKnV/Y=;
+        s=korg; t=1621504340;
+        bh=sEP+78M9DwHYbFIR814WP8GqfRmfhoaYsCHzC4LKNmo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dLc5fr1K7vgEdVooW4vG8V2A0FKq0farzRZ7yIg0ZTs0oRcGh3FWnUFwyhB91sOJY
-         q1+zc9wj3zo7JitnP2Ha8q7yO3aXJ6qip6ZMiKuUqIwPKPRLbc+wuHdDAJV18nyVu3
-         vyBRdDvxW7cN1LMIX9B/Vl9YepB/hhK5RHu6T/AM=
+        b=pFzOrKZijW7N8XzPlIyLApQfGOQjjvhwqbUmYebLR8+jZ48nIp4g9AJUNznJ2BVMH
+         TJCWSgDxBsa8Cfd6ej4r5k7uIuHQnyC1kvkJRci4YeQq5KhYhw7mdxqSIPQgy2b8eI
+         RWc4cFKHVm5nU9tZYT55tEeBRuNE3mzMzhfIuLjo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Chen Huang <chenhuang5@huawei.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        stable@vger.kernel.org, Jia Zhou <zhou.jia2@zte.com.cn>,
+        Yi Wang <wang.yi59@zte.com.cn>, Takashi Iwai <tiwai@suse.de>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 199/323] powerpc: Fix HAVE_HARDLOCKUP_DETECTOR_ARCH build configuration
-Date:   Thu, 20 May 2021 11:21:31 +0200
-Message-Id: <20210520092126.942607998@linuxfoundation.org>
+Subject: [PATCH 4.14 200/323] ALSA: core: remove redundant spin_lock pair in snd_card_disconnect
+Date:   Thu, 20 May 2021 11:21:32 +0200
+Message-Id: <20210520092126.984356107@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
 References: <20210520092120.115153432@linuxfoundation.org>
@@ -41,49 +40,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Huang <chenhuang5@huawei.com>
+From: Jia Zhou <zhou.jia2@zte.com.cn>
 
-[ Upstream commit 4fe529449d85e78972fa327999961ecc83a0b6db ]
+[ Upstream commit abc21649b3e5c34b143bf86f0c78e33d5815e250 ]
 
-When compiling the powerpc with the SMP disabled, it shows the issue:
+modification in commit 2a3f7221acdd ("ALSA: core: Fix card races between
+register and disconnect") resulting in this problem.
 
-arch/powerpc/kernel/watchdog.c: In function ‘watchdog_smp_panic’:
-arch/powerpc/kernel/watchdog.c:177:4: error: implicit declaration of function ‘smp_send_nmi_ipi’; did you mean ‘smp_send_stop’? [-Werror=implicit-function-declaration]
-  177 |    smp_send_nmi_ipi(c, wd_lockup_ipi, 1000000);
-      |    ^~~~~~~~~~~~~~~~
-      |    smp_send_stop
-cc1: all warnings being treated as errors
-make[2]: *** [scripts/Makefile.build:273: arch/powerpc/kernel/watchdog.o] Error 1
-make[1]: *** [scripts/Makefile.build:534: arch/powerpc/kernel] Error 2
-make: *** [Makefile:1980: arch/powerpc] Error 2
-make: *** Waiting for unfinished jobs....
-
-We found that powerpc used ipi to implement hardlockup watchdog, so the
-HAVE_HARDLOCKUP_DETECTOR_ARCH should depend on the SMP.
-
-Fixes: 2104180a5369 ("powerpc/64s: implement arch-specific hardlockup watchdog")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210327094900.938555-1-chenhuang5@huawei.com
+Fixes: 2a3f7221acdd ("ALSA: core: Fix card races between register and disconnect")
+Signed-off-by: Jia Zhou <zhou.jia2@zte.com.cn>
+Signed-off-by: Yi Wang <wang.yi59@zte.com.cn>
+Link: https://lore.kernel.org/r/1616989007-34429-1-git-send-email-wang.yi59@zte.com.cn
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/core/init.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index fff11a5bb805..3fcfa8534156 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -208,7 +208,7 @@ config PPC
- 	select HAVE_MEMBLOCK_NODE_MAP
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
--	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
-+	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if PPC64 && PPC_BOOK3S && SMP
- 	select HAVE_OPROFILE
- 	select HAVE_OPTPROBES			if PPC64
- 	select HAVE_PERF_EVENTS
+diff --git a/sound/core/init.c b/sound/core/init.c
+index dcb9199f5e4f..7fdeae4dc820 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -404,10 +404,8 @@ int snd_card_disconnect(struct snd_card *card)
+ 		return 0;
+ 	}
+ 	card->shutdown = 1;
+-	spin_unlock(&card->files_lock);
+ 
+ 	/* replace file->f_op with special dummy operations */
+-	spin_lock(&card->files_lock);
+ 	list_for_each_entry(mfile, &card->files_list, list) {
+ 		/* it's critical part, use endless loop */
+ 		/* we have no room to fail */
 -- 
 2.30.2
 
