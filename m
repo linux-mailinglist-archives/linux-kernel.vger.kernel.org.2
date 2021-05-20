@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B55D6389EF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:33:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41767389EFD
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 09:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230403AbhETHex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:34:53 -0400
-Received: from mga07.intel.com ([134.134.136.100]:17034 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229536AbhETHes (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:34:48 -0400
-IronPort-SDR: mHdxQ6z3QJTxA9FAS7yz/Fan8avejP/oaMsHU8ECaXll94aO2ao/LVbTkvd4bkW1eAlpKRJFLn
- aQrVq5iVAWyw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9989"; a="265079984"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="265079984"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:33:27 -0700
-IronPort-SDR: A2G2dULyX5u+hXjc1IsDi3pnqyRWa4YlPM1CfvPxBQNBuvpEpvJ+sDA7tnu/EP8a5WwR89GNw+
- cZ3sgBD7Kr0A==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="473880275"
-Received: from yhuang6-desk1.sh.intel.com ([10.239.13.1])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 00:33:20 -0700
-From:   Huang Ying <ying.huang@intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Andrea Parri <andrea.parri@amarulasolutions.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Omar Sandoval <osandov@fb.com>,
-        Paul McKenney <paulmck@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Miaohe Lin <linmiaohe@huawei.com>
-Subject: [PATCH -V2] mm, swap: Remove unnecessary smp_rmb() in swap_type_to_swap_info()
-Date:   Thu, 20 May 2021 15:33:01 +0800
-Message-Id: <20210520073301.1676294-1-ying.huang@intel.com>
-X-Mailer: git-send-email 2.30.2
+        id S230224AbhETHhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 03:37:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:56936 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229534AbhETHhC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 03:37:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621496141;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=c2GC6XfcAGM7klDITVVJQzbY0FDd+BlAJFrTDoANgwk=;
+        b=i3AZHTyrCrZ0+/w4ZhB1hQPD1w7N8dZp4b5hGYBAZLqinpMhUdsajaKxY9uOurc6mUoVGg
+        zAUztllzJu9SFlWS31rUv7qTgvLhx/rVq24H8KLZQ98uhMSccELzIFvHtZia6G7IcO/xb8
+        Bp3LwJM+SLFpl5TZQg1lE9i2i2UIdAU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-Dkbx3AwlO7GIgxa_uNblkA-1; Thu, 20 May 2021 03:35:40 -0400
+X-MC-Unique: Dkbx3AwlO7GIgxa_uNblkA-1
+Received: by mail-ej1-f69.google.com with SMTP id x20-20020a1709061354b02903cff4894505so4607201ejb.14
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 00:35:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c2GC6XfcAGM7klDITVVJQzbY0FDd+BlAJFrTDoANgwk=;
+        b=jwu9b9lBraCqPmPgyn3ltHkQNucrG3jOLAcIZWji6K2XkW9fGsczuLEPi7Qbcqi/7v
+         Er5wXpoI3gGmH8/xTTtGhZq6C8isJ12SVeV00Jol8IZ0l5gWG5/sA3ygEFDBa0XH/IAz
+         +OA5BtxQEBQ5+g+H+LAllURTAiKTASK9Lqbp0vz5gx/JBuTFcwqOqZ2dCmbVxbbIFRRY
+         b/r+JoFnr3NdEmKyxUcFt8LEYMo5wNuiqsq80bIsRwfe5Eh2fxu9fmVIr72Or+aacctZ
+         G8Jr7ODivEuZWACyKVD9pj5ItKQoTzM3xhA7k/ivbqAHqqNS96ibaTyvB6cY4bHyyNCE
+         zjsg==
+X-Gm-Message-State: AOAM533uIZt+bwhfTPzK13FXnNGiuwaqkpPCEzXomNpcH+5nHJvkXerk
+        S7wuLds62rjq/5U8JDmvzvCl3jcMUGCmV5OqvHwbclj5vKARxm5a8eN20rsGCdXp/stkhc/K1zi
+        hldV6wNQFS4WY0asu7/1DOVfa
+X-Received: by 2002:a17:906:5fd1:: with SMTP id k17mr3268852ejv.78.1621496138922;
+        Thu, 20 May 2021 00:35:38 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3yNqbBi9L1vw+iCsmEmnynKc2Wo1hueUUMZwRAIdxoVlgOwjm86mz7dHambL3NGBp2Mtvog==
+X-Received: by 2002:a17:906:5fd1:: with SMTP id k17mr3268844ejv.78.1621496138769;
+        Thu, 20 May 2021 00:35:38 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id ga3sm951545ejb.34.2021.05.20.00.35.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 00:35:38 -0700 (PDT)
+Date:   Thu, 20 May 2021 09:35:36 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Xianting Tian <xianting.tian@linux.alibaba.com>
+Cc:     mst@redhat.com, jasowang@redhat.com, davem@davemloft.net,
+        kuba@kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] virtio_net: Remove BUG() to aviod machine dead
+Message-ID: <20210520073536.wwt35gsz62bv27hm@steredhat>
+References: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <a351fbe1-0233-8515-2927-adc826a7fb94@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Before commit c10d38cc8d3e ("mm, swap: bounds check swap_info array
-accesses to avoid NULL derefs"), the typical code to reference the
-swap_info[] is as follows,
+If you need to respin, there is a typo in the title s/aviod/avoid/
 
-  type = swp_type(swp_entry);
-  if (type >= nr_swapfiles)
-          /* handle invalid swp_entry */;
-  p = swap_info[type];
-  /* access fields of *p.  OOPS! p may be NULL! */
+On Tue, May 18, 2021 at 05:46:56PM +0800, Xianting Tian wrote:
+>When met error, we output a print to avoid a BUG().
+>
+>Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+>---
+> drivers/net/virtio_net.c | 5 ++---
+> 1 file changed, 2 insertions(+), 3 deletions(-)
+>
+>diff --git a/drivers/net/virtio_net.c b/drivers/net/virtio_net.c
+>index c921ebf3ae82..a66174d13e81 100644
+>--- a/drivers/net/virtio_net.c
+>+++ b/drivers/net/virtio_net.c
+>@@ -1647,9 +1647,8 @@ static int xmit_skb(struct send_queue *sq, 
+>struct sk_buff *skb)
+> 		hdr = skb_vnet_hdr(skb);
+>
+> 	if (virtio_net_hdr_from_skb(skb, &hdr->hdr,
+>-				    virtio_is_little_endian(vi->vdev), false,
+>-				    0))
+>-		BUG();
+>+				virtio_is_little_endian(vi->vdev), false, 0))
+                                 ^
+                                 This change is not related.
 
-Because the ordering isn't guaranteed, it's possible that
-swap_info[type] is read before "nr_swapfiles".  And that may result
-in NULL pointer dereference.
-
-So after commit c10d38cc8d3e, the code becomes,
-
-  struct swap_info_struct *swap_type_to_swap_info(int type)
-  {
-	  if (type >= READ_ONCE(nr_swapfiles))
-		  return NULL;
-	  smp_rmb();
-	  return READ_ONCE(swap_info[type]);
-  }
-
-  /* users */
-  type = swp_type(swp_entry);
-  p = swap_type_to_swap_info(type);
-  if (!p)
-	  /* handle invalid swp_entry */;
-  /* dereference p */
-
-Where the value of swap_info[type] (that is, "p") is checked to be
-non-zero before being dereferenced.  So, the NULL deferencing
-becomes impossible even if "nr_swapfiles" is read after
-swap_info[type].  Therefore, the "smp_rmb()" becomes unnecessary.
-
-And, we don't even need to read "nr_swapfiles" here.  Because the
-non-zero checking for "p" is sufficient.  We just need to make sure we
-will not access out of the boundary of the array.  With the change,
-nr_swapfiles will only be accessed with swap_lock held, except in
-swapcache_free_entries().  Where the absolute correctness of the value
-isn't needed, as described in the comments.
-
-We still need to guarantee swap_info[type] is read before being
-dereferenced.  That can be satisfied via the data dependency ordering
-enforced by READ_ONCE(swap_info[type]).  This needs to be paired with
-proper write barriers.  So smp_store_release() is used in
-alloc_swap_info() to guarantee the fields of *swap_info[type] is
-initialized before swap_info[type] itself being written.  Note that
-the fields of *swap_info[type] is initialized to be 0 via kvzalloc()
-firstly.  The assignment and deferencing of swap_info[type] is like
-rcu_assign_pointer() and rcu_dereference().
-
-Signed-off-by: "Huang, Ying" <ying.huang@intel.com>
-Cc: Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Andrea Parri <andrea.parri@amarulasolutions.com>
-Cc: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Andi Kleen <ak@linux.intel.com>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Omar Sandoval <osandov@fb.com>
-Cc: Paul McKenney <paulmck@kernel.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Will Deacon <will.deacon@arm.com>
-Cc: Miaohe Lin <linmiaohe@huawei.com>
-
-v2:
-
-- Revise the patch description and comments per Peter's comments.
-
----
- mm/swapfile.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
-
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 2aad85751991..65dd979a0f94 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -100,11 +100,10 @@ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
- 
- static struct swap_info_struct *swap_type_to_swap_info(int type)
- {
--	if (type >= READ_ONCE(nr_swapfiles))
-+	if (type >= MAX_SWAPFILES)
- 		return NULL;
- 
--	smp_rmb();	/* Pairs with smp_wmb in alloc_swap_info. */
--	return READ_ONCE(swap_info[type]);
-+	return READ_ONCE(swap_info[type]); /* rcu_dereference() */
- }
- 
- static inline unsigned char swap_count(unsigned char ent)
-@@ -2884,14 +2883,12 @@ static struct swap_info_struct *alloc_swap_info(void)
- 	}
- 	if (type >= nr_swapfiles) {
- 		p->type = type;
--		WRITE_ONCE(swap_info[type], p);
- 		/*
--		 * Write swap_info[type] before nr_swapfiles, in case a
--		 * racing procfs swap_start() or swap_next() is reading them.
--		 * (We never shrink nr_swapfiles, we never free this entry.)
-+		 * Publish the swap_info_struct after initializing it.
-+		 * Note that kvzalloc() above zeroes all its fields.
- 		 */
--		smp_wmb();
--		WRITE_ONCE(nr_swapfiles, nr_swapfiles + 1);
-+		smp_store_release(&swap_info[type], p); /* rcu_assign_pointer() */
-+		nr_swapfiles++;
- 	} else {
- 		defer = p;
- 		p = swap_info[type];
--- 
-2.30.2
+>+		return -EPROTO;
+>
+> 	if (vi->mergeable_rx_bufs)
+> 		hdr->num_buffers = 0;
+>-- 
+>2.17.1
+>
 
