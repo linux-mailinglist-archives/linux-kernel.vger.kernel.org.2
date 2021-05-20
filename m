@@ -2,100 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE085389BA8
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93543389BC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 05:18:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229583AbhETDRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 23:17:38 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:10519 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhETDRh (ORCPT
+        id S230388AbhETDTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 23:19:12 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4760 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230253AbhETDTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 23:17:37 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 14K33WIl039595;
-        Thu, 20 May 2021 11:03:32 +0800 (GMT-8)
-        (envelope-from jamin_lin@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 20 May
- 2021 11:16:09 +0800
-Date:   Thu, 20 May 2021 11:16:08 +0800
-From:   Jamin Lin <jamin_lin@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     Brendan Higgins <brendanhiggins@google.com>,
-        Steven Lee <steven_lee@aspeedtech.com>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        "ChiaWei Wang" <chiawei_wang@aspeedtech.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        Troy Lee <troy_lee@aspeedtech.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH 3/3] dt-bindings: aspeed-i2c: Convert txt to yaml format
-Message-ID: <20210520031608.GA3601@aspeedtech.com>
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
- <20210519080436.18975-4-jamin_lin@aspeedtech.com>
- <1621438164.132520.3134233.nullmailer@robh.at.kernel.org>
+        Wed, 19 May 2021 23:19:11 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FlvwW0D9ZzqV75;
+        Thu, 20 May 2021 11:14:19 +0800 (CST)
+Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Thu, 20 May 2021 11:17:41 +0800
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Thu, 20 May 2021 11:17:41 +0800
+Subject: Re: [PATCH 1/2] f2fs: compress: fix to disallow wildcard extension
+ for hot/cold file
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>
+References: <20210518095458.99728-1-yuchao0@huawei.com>
+ <YKXHo0LAdE5fa77J@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <96cc500d-18df-e9b5-98aa-066a2acfacc9@huawei.com>
+Date:   Thu, 20 May 2021 11:17:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <1621438164.132520.3134233.nullmailer@robh.at.kernel.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 14K33WIl039595
+In-Reply-To: <YKXHo0LAdE5fa77J@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx703-chm.china.huawei.com (10.1.199.50) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/19/2021 15:29, Rob Herring wrote:
-> On Wed, 19 May 2021 16:04:29 +0800, Jamin Lin wrote:
-> > Add global-reg node for AST2600. Document the properties for
-> > "aspeed,ast2600-i2c-global" compatible node.
-> > 
-> > Signed-off-by: Jamin Lin <jamin_lin@aspeedtech.com>
-> > ---
-> >  .../devicetree/bindings/i2c/aspeed,i2c.yaml   | 89 +++++++++++++++++++
-> >  .../devicetree/bindings/i2c/i2c-aspeed.txt    | 49 ----------
-> >  2 files changed, 89 insertions(+), 49 deletions(-)
-> >  create mode 100644 Documentation/devicetree/bindings/i2c/aspeed,i2c.yaml
-> >  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-aspeed.txt
-> > 
+On 2021/5/20 10:21, Jaegeuk Kim wrote:
+> On 05/18, Chao Yu wrote:
+>> If all files are hot or cold, hot/cold separation is not needed anymore,
+>> so let's disallow configure wildcard extension.
 > 
-> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> We need to be able to set hot/cold on the fly?
+
+I got your concern, so do you prefer to keep "*" extension configuration
+for hot/cold file?
+
+Thanks,
+
 > 
-> yamllint warnings/errors:
+>>
+>> Fixes: 4c8ff7095bef ("f2fs: support data compression")
+>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>> ---
+>>   fs/f2fs/f2fs.h  |  1 +
+>>   fs/f2fs/namei.c | 12 ++++++++----
+>>   fs/f2fs/sysfs.c |  3 +++
+>>   3 files changed, 12 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>> index b753cc88c77e..ecb13c3b458d 100644
+>> --- a/fs/f2fs/f2fs.h
+>> +++ b/fs/f2fs/f2fs.h
+>> @@ -3322,6 +3322,7 @@ void f2fs_handle_failed_inode(struct inode *inode);
+>>   /*
+>>    * namei.c
+>>    */
+>> +bool f2fs_is_wildcard_char(const char *ext);
+>>   int f2fs_update_extension_list(struct f2fs_sb_info *sbi, const char *name,
+>>   							bool hot, bool set);
+>>   struct dentry *f2fs_get_parent(struct dentry *child);
+>> diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
+>> index a9cd9cf97229..8d78b96a8b3b 100644
+>> --- a/fs/f2fs/namei.c
+>> +++ b/fs/f2fs/namei.c
+>> @@ -153,15 +153,17 @@ static struct inode *f2fs_new_inode(struct inode *dir, umode_t mode)
+>>   	return ERR_PTR(err);
+>>   }
+>>   
+>> +bool f2fs_is_wildcard_char(const char *ext)
+>> +{
+>> +	return *ext == '*' && strlen(ext) == 1;
+>> +}
+>> +
+>>   static inline int is_extension_exist(const unsigned char *s, const char *sub)
+>>   {
+>>   	size_t slen = strlen(s);
+>>   	size_t sublen = strlen(sub);
+>>   	int i;
+>>   
+>> -	if (sublen == 1 && *sub == '*')
+>> -		return 1;
+>> -
+>>   	/*
+>>   	 * filename format of multimedia file should be defined as:
+>>   	 * "filename + '.' + extension + (optional: '.' + temp extension)".
+>> @@ -306,9 +308,11 @@ static void set_compress_inode(struct f2fs_sb_info *sbi, struct inode *inode,
+>>   	ext = F2FS_OPTION(sbi).extensions;
+>>   
+>>   	for (i = 0; i < ext_cnt; i++) {
+>> +		if (f2fs_is_wildcard_char(ext[i]))
+>> +			goto set_compress;
+>>   		if (!is_extension_exist(name, ext[i]))
+>>   			continue;
+>> -
+>> +set_compress:
+>>   		set_compress_context(inode);
+>>   		return;
+>>   	}
+>> diff --git a/fs/f2fs/sysfs.c b/fs/f2fs/sysfs.c
+>> index dc71bc968c72..ff5acb4de1b6 100644
+>> --- a/fs/f2fs/sysfs.c
+>> +++ b/fs/f2fs/sysfs.c
+>> @@ -343,6 +343,9 @@ static ssize_t __sbi_store(struct f2fs_attr *a,
+>>   		if (strlen(name) >= F2FS_EXTENSION_LEN)
+>>   			return -EINVAL;
+>>   
+>> +		if (f2fs_is_wildcard_char(name))
+>> +			return -EINVAL;
+>> +
+>>   		down_write(&sbi->sb_lock);
+>>   
+>>   		ret = f2fs_update_extension_list(sbi, name, hot, set);
+>> -- 
+>> 2.29.2
+> .
 > 
-> dtschema/dtc warnings/errors:
-> Documentation/devicetree/bindings/i2c/aspeed,i2c.example.dt.yaml:0:0: /example-0/i2c-global-regs@0: failed to match any schema with compatible: ['aspeed,ast2600-i2c-global', 'syscon']
-> 
-> See https://patchwork.ozlabs.org/patch/1480769
-> 
-> This check can fail if there are any dependencies. The base for a patch
-> series is generally the most recent rc1.
-> 
-> If you already ran 'make dt_binding_check' and didn't see the above
-> error(s), then make sure 'yamllint' is installed and dt-schema is up to
-> date:
-> 
-> pip3 install dtschema --upgrade
-> 
-> Please check and re-submit.
->
-Thanks for your review.
-yes, I did not add "DT_CHECKER_FLAGS" to check my patch.
-I will re-sent this patch.
-Thanks
