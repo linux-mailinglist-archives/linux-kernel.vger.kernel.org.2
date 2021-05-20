@@ -2,188 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E38389CC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:38:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 665D7389CB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 06:32:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhETEj0 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 20 May 2021 00:39:26 -0400
-Received: from p3plsmtp25-01-2.prod.phx3.secureserver.net ([216.69.139.12]:60080
-        "EHLO p3plwbeout25-01.prod.phx3.secureserver.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhETEjY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 00:39:24 -0400
-X-Greylist: delayed 467 seconds by postgrey-1.27 at vger.kernel.org; Thu, 20 May 2021 00:39:24 EDT
-Received: from outbound-gw.openxchange.ahost.me ([94.136.40.163])
-        by :WBEOUT: with ESMTP
-        id jaK6lMZiOgx69jaK7ljjF7; Wed, 19 May 2021 21:30:15 -0700
-X-CMAE-Analysis: v=2.4 cv=Nf4ja0P4 c=1 sm=1 tr=0 ts=60a5e5d8
- a=ExpeE9u7wY9QIRtJzA+xFA==:117 a=ExpeE9u7wY9QIRtJzA+xFA==:17
- a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=5FLXtPjwQuUA:10 a=S_-2Y0Uh84wA:10
- a=pGLkceISAAAA:8 a=FXvPX3liAAAA:8 a=T2fdhVjMfPcJot0J8BkA:9 a=QEXdDO2ut3YA:10
- a=UObqyxdv-6Yh2QiB9mM_:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-X-SID:  jaK6lMZiOgx69
-Received: from localhost ([127.0.0.1] helo=outbound-gw.openxchange.ahost.me)
-        by outbound-gw.openxchange.ahost.me with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384
-        (Exim 4.94)
-        (envelope-from <phillip@squashfs.org.uk>)
-        id 1ljaK6-0005lk-DN; Thu, 20 May 2021 05:30:14 +0100
-Date:   Thu, 20 May 2021 05:30:14 +0100 (BST)
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-To:     Pintu Agarwal <pintu.ping@gmail.com>
-Cc:     open list <linux-kernel@vger.kernel.org>, sean@geanix.com,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-Message-ID: <486335206.6969995.1621485014357@webmail.123-reg.co.uk>
-In-Reply-To: <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
-References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
- <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
- <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
- <1762403920.6716767.1621029029246@webmail.123-reg.co.uk>
- <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
-Subject: Re: [RESEND]: Kernel 4.14: SQUASHFS error: unable to read xattr id
- index table
+        id S229686AbhETEeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 00:34:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229449AbhETEeC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 00:34:02 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12707C061574;
+        Wed, 19 May 2021 21:32:42 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v13so8267224ple.9;
+        Wed, 19 May 2021 21:32:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=cQYpfba6b45enTj3AyckA3KCrMogX01g9zAcWVgY74Y=;
+        b=KYIAYWQZPaGStcbPGB+l6xjgBzN9uyRFtvkiburpX1xvyPdLLIDmsr5EotHXarO6MO
+         SOuq0wqBRPYhdiTd4u2/KBarX4FDilh6LZqpNI68FF3EsNUzUdyPd/JEAhh3CgXNcUUR
+         PtwaSCpFMMDbp0BuwsAAfLKbfW7pxOTuxwYrtBVT7boLkD37dTRNGRymMCR6SXevdiZL
+         5gh1Pxy5k4T68Su+9fIw0po90pcqRIXsucMIICZVsBBzx3f40ReW5koeh2uiNidv+/uZ
+         fcx6Cxfok074h9dsCvs7Td8SpfF4GKvoGCm8R4sTL7euAvEy9HYwKH0svI+uzESbtm0W
+         sFUA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=cQYpfba6b45enTj3AyckA3KCrMogX01g9zAcWVgY74Y=;
+        b=G/P9SS06HRQIgOkXHGPdLw29T34qEwJ2BegaKnj3i0hC8YI7cdbepIB2Y9BdItm9qt
+         h2t4h6dsbitzUEovEJSZTdY/k1/qQm28zMrIt/33ZJQaUL+XYy7SrO/ZOmJbtOJfnwrE
+         I9hGSldX9WIeEXQk5aCrqpJJIH1HldJ3EXSqBsd8YisWS8lThLoN0KRJnB9PzJAZYw1t
+         FPovSVRLmc6YPKZCOuUgCx6TpRiU0lSGFIJXH4QruJvoym9UXBReM1d6/RJex3+VnOj/
+         XY1DvxozcDH+CW6DZhUKbBgxFAw0IZ6XzPfi6S1AyccgW1HVYbKKvkYPaECMpg6R7BjU
+         5OCQ==
+X-Gm-Message-State: AOAM532j2juufwV6RL4ygE1dlWmnXgV4NLkkkeIXiH5OGLPff6EIkqnq
+        TMqYCuDM1M/Rb5DST3WdtkM=
+X-Google-Smtp-Source: ABdhPJxb6tqdqRNmXI4IrcfiNvb/0ih7xClJHARyMcBmcf9NvastOBLw60HtfxB1BE9y9c+g5L84Dw==
+X-Received: by 2002:a17:90a:6ace:: with SMTP id b14mr3115229pjm.142.1621485161203;
+        Wed, 19 May 2021 21:32:41 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id c3sm748887pfi.213.2021.05.19.21.32.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 19 May 2021 21:32:40 -0700 (PDT)
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH -rcu] Documentation/RCU: Fix emphasis markers
+Message-ID: <c680825b-380d-dca0-edcd-fb74603b5641@gmail.com>
+Date:   Thu, 20 May 2021 13:32:36 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v7.10.3-Rev22
-X-Originating-IP: 82.69.79.175
-X-Originating-Client: com.openexchange.ox.gui.dhtml
-X-Authenticated-As: phillip@squashfs.org.uk
-X-122-reg-Authenticated: phillip@squashfs.org.uk
-X-CMAE-Envelope: MS4xfOCmG3lER58/+OsQ8SAo7h16KE9Kv5FT4m1+HPnUFSpVz8b4RcOnAIGzSOnOYmSkzwythcWEqeb0CeoDAessXxeyTk33w1pzTDNw12WUH0JvmIDE/XiB
- LiL0k5d0q33CQ8Oi6RIlyV+C6ND6i6nyqwM96DZe45bm4f2gtHZ2tTpGug0s7bzAHXWU/L09I7CiKMpwPKftnSm23bbpmUVwvHF2+psOufhbwBbrTlohvEBG
- G502ve3bhSwrq/xBzmQds/X6N3Up5XHWOOBNe+77Yn0oovAa+qO87UCFo/F7vNmeSsWeyp2jCfpNb8xJ1hvmk/l/Xr/VDqWMjrsKMHQWi6JYp7QWFOi/RCbH
- 7J4zPdeX3DGPUaVSpXyEIJz4VV5rhQ==
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+"-foo-" does not work as emphasis in ReST markdown.
+Use "*foo*" instead.
 
-> On 17/05/2021 12:34 Pintu Agarwal <pintu.ping@gmail.com> wrote:
-> 
->  
-> On Sat, 15 May 2021 at 03:21, Phillip Lougher <phillip@squashfs.org.uk> wrote:
-> >
-> > Your kernel (4.14.170) was released on 5 Feb 2020, and so it won't
-> > contain any of the above commits. The xattr -id code in 4.14.170,
-> > was last updated in May 2011, and so it is much more likely the
-> > problem is elsewhere.
-> >
-> Okay this seems to be UBI volume flashing issue then. I will also try
-> with non-squashfs image (just ubifs).
-> See the result in the end.
-> 
-> > The xattr id index table is written to the end of the Squashfs filesystem,
-> > and it is the first table read on mounting.
-> >
-> Okay this gives me a clue that there are some corruptions while
-> writing the leftover blocks in the end.
-> 
-> > 1. Check the Squashfs filesystem for correctness before writing it to
-> > the flash. You can run Unsquashfs on the image and see if it reports
-> > any errors.
-> >
-> Can you give me some pointers on how to use unsquashfs ? I could not
-> find any unsquashfs command on my device.
-> Do we need to do it on the device or my Ubuntu PC ? Are there some
-> commands/utility available on ubuntu ?
-> 
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+Hi Paul,
 
-You should run Unsquashfs on the host Ubuntu PC to verify
-the integrity of the Squashfs image before transferring and
-flashing.
+This is relative to -rcu's dev branch.
+I've started learning how to do ReST markdown. ;-)
 
-Unsquashfs is in the squashfs-tools package on Ubuntu.  To install
-run as root
+For emphasis, both "*foo*" and "_bar_" work.
+I see several "*foo*" patterns in other .rst files under RCU/.
 
-% apt-get install squashfs-tools
+Yes, I have now sphinx installed in a container for "make htmldocs" to work.
+"make pdfdocs" does not work as expected at the moment, though.
 
-Then run it on your Squashfs image
+        Thanks, Akira
+--
+ Documentation/RCU/checklist.rst       | 24 ++++++++++++------------
+ Documentation/RCU/rcu_dereference.rst |  6 +++---
+ Documentation/RCU/stallwarn.rst       |  8 ++++----
+ 3 files changed, 19 insertions(+), 19 deletions(-)
 
-% unsquashfs <your image>
-
-If the image is uncorrupted, it will unpack the image into
-"squashfs-root".  If it is corrupted it will give error
-messages.
-
+diff --git a/Documentation/RCU/checklist.rst b/Documentation/RCU/checklist.rst
+index 1030119294d0..a71d3f134323 100644
+--- a/Documentation/RCU/checklist.rst
++++ b/Documentation/RCU/checklist.rst
+@@ -37,7 +37,7 @@ over a rather long period of time, but improvements are always welcome!
  
-> > 2. You need to check the filesystem for integrity after writing it to
-> > the flash. Compute a checksum, and compare it with the original
-> > checksum.
-> >
-> Can you also guide me with an example, how to do this as well ?
+ 1.	Does the update code have proper mutual exclusion?
+ 
+-	RCU does allow -readers- to run (almost) naked, but -writers- must
++	RCU does allow *readers* to run (almost) naked, but *writers* must
+ 	still use some sort of mutual exclusion, such as:
+ 
+ 	a.	locking,
+@@ -73,7 +73,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	critical section is every bit as bad as letting them leak out
+ 	from under a lock.  Unless, of course, you have arranged some
+ 	other means of protection, such as a lock or a reference count
+-	-before- letting them out of the RCU read-side critical section.
++	*before* letting them out of the RCU read-side critical section.
+ 
+ 3.	Does the update code tolerate concurrent accesses?
+ 
+@@ -101,7 +101,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	c.	Make updates appear atomic to readers.	For example,
+ 		pointer updates to properly aligned fields will
+ 		appear atomic, as will individual atomic primitives.
+-		Sequences of operations performed under a lock will -not-
++		Sequences of operations performed under a lock will *not*
+ 		appear to be atomic to RCU readers, nor will sequences
+ 		of multiple atomic primitives.
+ 
+@@ -320,7 +320,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	for example) may be omitted.
+ 
+ 10.	Conversely, if you are in an RCU read-side critical section,
+-	and you don't hold the appropriate update-side lock, you -must-
++	and you don't hold the appropriate update-side lock, you *must*
+ 	use the "_rcu()" variants of the list macros.  Failing to do so
+ 	will break Alpha, cause aggressive compilers to generate bad code,
+ 	and confuse people trying to read your code.
+@@ -346,12 +346,12 @@ over a rather long period of time, but improvements are always welcome!
+ 	callback pending, then that RCU callback will execute on some
+ 	surviving CPU.	(If this was not the case, a self-spawning RCU
+ 	callback would prevent the victim CPU from ever going offline.)
+-	Furthermore, CPUs designated by rcu_nocbs= might well -always-
++	Furthermore, CPUs designated by rcu_nocbs= might well *always*
+ 	have their RCU callbacks executed on some other CPUs, in fact,
+ 	for some  real-time workloads, this is the whole point of using
+ 	the rcu_nocbs= kernel boot parameter.
+ 
+-13.	Unlike other forms of RCU, it -is- permissible to block in an
++13.	Unlike other forms of RCU, it *is* permissible to block in an
+ 	SRCU read-side critical section (demarked by srcu_read_lock()
+ 	and srcu_read_unlock()), hence the "SRCU": "sleepable RCU".
+ 	Please note that if you don't need to sleep in read-side critical
+@@ -398,16 +398,16 @@ over a rather long period of time, but improvements are always welcome!
+ 14.	The whole point of call_rcu(), synchronize_rcu(), and friends
+ 	is to wait until all pre-existing readers have finished before
+ 	carrying out some otherwise-destructive operation.  It is
+-	therefore critically important to -first- remove any path
++	therefore critically important to *first* remove any path
+ 	that readers can follow that could be affected by the
+-	destructive operation, and -only- -then- invoke call_rcu(),
++	destructive operation, and *only then* invoke call_rcu(),
+ 	synchronize_rcu(), or friends.
+ 
+ 	Because these primitives only wait for pre-existing readers, it
+ 	is the caller's responsibility to guarantee that any subsequent
+ 	readers will execute safely.
+ 
+-15.	The various RCU read-side primitives do -not- necessarily contain
++15.	The various RCU read-side primitives do *not* necessarily contain
+ 	memory barriers.  You should therefore plan for the CPU
+ 	and the compiler to freely reorder code into and out of RCU
+ 	read-side critical sections.  It is the responsibility of the
+@@ -446,8 +446,8 @@ over a rather long period of time, but improvements are always welcome!
+ 	pass in a function defined within a loadable module, then it in
+ 	necessary to wait for all pending callbacks to be invoked after
+ 	the last invocation and before unloading that module.  Note that
+-	it is absolutely -not- sufficient to wait for a grace period!
+-	The current (say) synchronize_rcu() implementation is -not-
++	it is absolutely *not* sufficient to wait for a grace period!
++	The current (say) synchronize_rcu() implementation is *not*
+ 	guaranteed to wait for callbacks registered on other CPUs.
+ 	Or even on the current CPU if that CPU recently went offline
+ 	and came back online.
+@@ -457,7 +457,7 @@ over a rather long period of time, but improvements are always welcome!
+ 	-	call_rcu() -> rcu_barrier()
+ 	-	call_srcu() -> srcu_barrier()
+ 
+-	However, these barrier functions are absolutely -not- guaranteed
++	However, these barrier functions are absolutely *not* guaranteed
+ 	to wait for a grace period.  In fact, if there are no call_rcu()
+ 	callbacks waiting anywhere in the system, rcu_barrier() is within
+ 	its rights to return immediately.
+diff --git a/Documentation/RCU/rcu_dereference.rst b/Documentation/RCU/rcu_dereference.rst
+index f3e587acb4de..0b418a5b243c 100644
+--- a/Documentation/RCU/rcu_dereference.rst
++++ b/Documentation/RCU/rcu_dereference.rst
+@@ -43,7 +43,7 @@ Follow these rules to keep your RCU code working properly:
+ 	-	Set bits and clear bits down in the must-be-zero low-order
+ 		bits of that pointer.  This clearly means that the pointer
+ 		must have alignment constraints, for example, this does
+-		-not- work in general for char* pointers.
++		*not* work in general for char* pointers.
+ 
+ 	-	XOR bits to translate pointers, as is done in some
+ 		classic buddy-allocator algorithms.
+@@ -174,7 +174,7 @@ Follow these rules to keep your RCU code working properly:
+ 		Please see the "CONTROL DEPENDENCIES" section of
+ 		Documentation/memory-barriers.txt for more details.
+ 
+-	-	The pointers are not equal -and- the compiler does
++	-	The pointers are not equal *and* the compiler does
+ 		not have enough information to deduce the value of the
+ 		pointer.  Note that the volatile cast in rcu_dereference()
+ 		will normally prevent the compiler from knowing too much.
+@@ -360,7 +360,7 @@ in turn destroying the ordering between this load and the loads of the
+ return values.  This can result in "p->b" returning pre-initialization
+ garbage values.
+ 
+-In short, rcu_dereference() is -not- optional when you are going to
++In short, rcu_dereference() is *not* optional when you are going to
+ dereference the resulting pointer.
+ 
+ 
+diff --git a/Documentation/RCU/stallwarn.rst b/Documentation/RCU/stallwarn.rst
+index 7148e9be08c3..1cc944aec46f 100644
+--- a/Documentation/RCU/stallwarn.rst
++++ b/Documentation/RCU/stallwarn.rst
+@@ -32,7 +32,7 @@ warnings:
+ 
+ -	Booting Linux using a console connection that is too slow to
+ 	keep up with the boot-time console-message rate.  For example,
+-	a 115Kbaud serial console can be -way- too slow to keep up
++	a 115Kbaud serial console can be *way* too slow to keep up
+ 	with boot-time message rates, and will frequently result in
+ 	RCU CPU stall warning messages.  Especially if you have added
+ 	debug printk()s.
+@@ -105,7 +105,7 @@ warnings:
+ 	leading the realization that the CPU had failed.
+ 
+ The RCU, RCU-sched, and RCU-tasks implementations have CPU stall warning.
+-Note that SRCU does -not- have CPU stall warnings.  Please note that
++Note that SRCU does *not* have CPU stall warnings.  Please note that
+ RCU only detects CPU stalls when there is a grace period in progress.
+ No grace period, no CPU stall warnings.
+ 
+@@ -145,7 +145,7 @@ CONFIG_RCU_CPU_STALL_TIMEOUT
+ 	this parameter is checked only at the beginning of a cycle.
+ 	So if you are 10 seconds into a 40-second stall, setting this
+ 	sysfs parameter to (say) five will shorten the timeout for the
+-	-next- stall, or the following warning for the current stall
++	*next* stall, or the following warning for the current stall
+ 	(assuming the stall lasts long enough).  It will not affect the
+ 	timing of the next warning for the current stall.
+ 
+@@ -202,7 +202,7 @@ causing stalls, and that the stall was affecting RCU-sched.  This message
+ will normally be followed by stack dumps for each CPU.  Please note that
+ PREEMPT_RCU builds can be stalled by tasks as well as by CPUs, and that
+ the tasks will be indicated by PID, for example, "P3421".  It is even
+-possible for an rcu_state stall to be caused by both CPUs -and- tasks,
++possible for an rcu_state stall to be caused by both CPUs *and* tasks,
+ in which case the offending CPUs and tasks will all be called out in the list.
+ 
+ CPU 2's "(3 GPs behind)" indicates that this CPU has not interacted with
+-- 
+2.17.1
 
-I have not used the MTD subsystem for more than 13 years, and so
-this is best answered on linux-mtd.  There may be some specfic
-UBI/MTD tools available now to do integrity checking.
-
-But failing that, and presuming you have character device access
-to the flashed partition, you can "dd" the image out of the flash
-into a file, and then run a checksum program against it.
-
-You appear to be running busybox, and this has both support for
-"dd" and the "md5sum" checksum program.
-
-So do this
-
-% dd if=<your character device> of=img bs=1 count=<image size>
-
-Where <image size> is the size of the Squashfs image reported
-by "ls -l" or "stat".  You need to get the exact byte count
-right, otherwise the resultant checksum won't be right.
-
-Then run md5sum on the extracted "img" file.
-
-% md5sum img
-
-This will produce a checksum.
-
-You can then compare that with the result of "md5sum" on your
-original Squashfs image before flashing (produced on the host
-or the target).
-
-If the checksums differ then it is corrupted.
-
-> 
-> BTW, I also tried "rootfs" volume flashing using "ubifs" image (non
-> squashfs). Here are the results.
-> a) With ubifs image also, the device is not booting after flashing the volume.
-> b) But I can see that the "rootfs" volume could be mounted, but later
-> gives some other errors during read_node.
-> 
-> These are the boot up errors logs:
-> {{{
-> [ 4.600001] vreg_conn_pa: dis▒[ 4.712458] UBIFS (ubi0:0): UBIFS:
-> mounted UBI device 0, volume 0, name "rootfs", R/O mode
-> [ 4.712520] UBIFS (ubi0:0): LEB size: 253952 bytes (248 KiB),
-> min./max. I/O unit sizes: 4096 bytes/4096 bytes
-> [ 4.719823] UBIFS (ubi0:0): FS size: 113008640 bytes (107 MiB, 445
-> LEBs), journal size 9404416 bytes (8 MiB, 38 LEBs)
-> [ 4.729867] UBIFS (ubi0:0): reserved for root: 0 bytes (0 KiB)
-> [ 4.740400] UBIFS (ubi0:0): media format: w4/r0 (latest is w5/r0),
-> UUID xxxxxxxxx-xxxxxxxxxx, small LPT model
-> [ 4.748587] VFS: Mounted root (ubifs filesystem) readonly on device 0:16.
-> [ 4.759033] devtmpfs: mounted
-> [ 4.766803] Freeing unused kernel memory: 2048K
-> [ 4.805035] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type
-> (255 but expected 9)
-> [ 4.805097] UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at
-> LEB 336:250560, LEB mapping status 1
-> [ 4.812401] Not a node, first 24 bytes:
-> [ 4.812413] 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> ff ff ff ff ff ff ff ff ........................
-> }}}
-> 
-> Seems like there is some corruption in the first 24 bytes ??
-> 
-
-This implies there is corruption being introduced at the MTD level or
-below.
-
-Phillip
-
-> 
-> Thanks,
-> Pintu
