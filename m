@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F377738A726
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:36:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EDD038A75B
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:36:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237737AbhETKfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:35:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41856 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236066AbhETKVw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:21:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63FD5AC5B;
-        Thu, 20 May 2021 10:20:30 +0000 (UTC)
-Subject: Re: [PATCH v3] mm/page_alloc: bail out on fatal signal during
- reclaim/compaction retry attempt
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Aaron Tomlin <atomlin@redhat.com>
-Cc:     linux-mm@kvack.org, mhocko@suse.com, willy@infradead.org,
+        id S237267AbhETKh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:37:26 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:45948 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235967AbhETKXt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:23:49 -0400
+Date:   Thu, 20 May 2021 10:22:18 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621506139;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZagrcgFZectxiy1/3uvyt0uDezedS074rlpmvxtY4DQ=;
+        b=3xIo7UEBmxMtMQMX9TaUhsqixau3Gxed2cR9o93+FsABTxjKWV4D0fTQTHgZ9upt52Pw2w
+        7HmrLfYBh8AjHLrbYtG1ARiutxSyHqIfIdsaYyTah5eq5Ir7mgCubkuiGoTI23mC7Rr01G
+        afFURpA1zi2PAIJli/YG9vzyvyqW0FV4cDOCUdkdKz7tJlyuw0HvVsQooNZBaU4ggYEGkA
+        CTbUPnvkCad9rf1YOOkDkAP3qecdL5nO3YMmPDfCV+sv4TWyaYvo7J+9G/rvEAhT7y1Pol
+        ewJWOYgj4I7lJ6B/oDFrfGAt/GVt5X7QRElDeCBrKWUPqIPfIxnAknEl8s3OfQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621506139;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZagrcgFZectxiy1/3uvyt0uDezedS074rlpmvxtY4DQ=;
+        b=StpVGhK6ppJzC7yhwHmDjzySzTZE3rh3j+Tw995QL7ZfjrJJ6jvjjwjmSLTUnZ690wTf1A
+        q/ztyKV5FzuhmcDg==
+From:   "tip-bot2 for Joerg Roedel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/sev-es: Forward page-faults which happen during
+ emulation
+Cc:     Joerg Roedel <jroedel@suse.de>, Borislav Petkov <bp@suse.de>,
+        stable@vger.kernel.org, #@tip-bot2.tec.linutronix.de,
+        v5.10+@tip-bot2.tec.linutronix.de, x86@kernel.org,
         linux-kernel@vger.kernel.org
-References: <YKVn69o1UizH0kJD@casper.infradead.org>
- <20210519201743.3260890-1-atomlin@redhat.com>
- <20210519213455.97ff95f0124b4120787f8314@linux-foundation.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <9b11dcd8-bc3b-aae9-feb1-43543bf9e22f@suse.cz>
-Date:   Thu, 20 May 2021 12:20:29 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+In-Reply-To: <20210519135251.30093-3-joro@8bytes.org>
+References: <20210519135251.30093-3-joro@8bytes.org>
 MIME-Version: 1.0
-In-Reply-To: <20210519213455.97ff95f0124b4120787f8314@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <162150613865.29796.2348311879608249315.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 6:34 AM, Andrew Morton wrote:
-> On Wed, 19 May 2021 21:17:43 +0100 Aaron Tomlin <atomlin@redhat.com> wrote:
-> 
->> It does not make sense to retry compaction when a fatal signal is
->> pending.
-> 
-> Well, it might make sense.  Presumably it is beneficial to other tasks.
+The following commit has been merged into the x86/urgent branch of tip:
 
-Yeah but the compaction won't happen. compact_zone() will immediately detect it
-via __compact_finished() and bail out. So in that sense it does not make sense
-to retry :)
+Commit-ID:     c25bbdb564060adaad5c3a8a10765c13487ba6a3
+Gitweb:        https://git.kernel.org/tip/c25bbdb564060adaad5c3a8a10765c13487ba6a3
+Author:        Joerg Roedel <jroedel@suse.de>
+AuthorDate:    Wed, 19 May 2021 15:52:45 +02:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 19 May 2021 17:13:04 +02:00
 
->> In the context of try_to_compact_pages(), indeed COMPACT_SKIPPED can be
->> returned; albeit, not every zone, on the zone list, would be considered
->> in the case a fatal signal is found to be pending.
->> Yet, in should_compact_retry(), given the last known compaction result,
->> each zone, on the zone list, can be considered/or checked
->> (see compaction_zonelist_suitable()). For example, if a zone was found
->> to succeed, then reclaim/compaction would be tried again
->> (notwithstanding the above).
->> 
->> This patch ensures that compaction is not needlessly retried
->> irrespective of the last known compaction result e.g. if it was skipped,
->> in the unlikely case a fatal signal is found pending.
->> So, OOM is at least attempted.
-> 
-> What observed problems motivated this change?
-> 
-> What were the observed runtime effects of this change?
+x86/sev-es: Forward page-faults which happen during emulation
 
-Yep those details from the previous thread should be included here.
+When emulating guest instructions for MMIO or IOIO accesses, the #VC
+handler might get a page-fault and will not be able to complete. Forward
+the page-fault in this case to the correct handler instead of killing
+the machine.
 
+Fixes: 0786138c78e7 ("x86/sev-es: Add a Runtime #VC Exception Handler")
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org # v5.10+
+Link: https://lkml.kernel.org/r/20210519135251.30093-3-joro@8bytes.org
+---
+ arch/x86/kernel/sev.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/arch/x86/kernel/sev.c b/arch/x86/kernel/sev.c
+index 82bced8..1f428f4 100644
+--- a/arch/x86/kernel/sev.c
++++ b/arch/x86/kernel/sev.c
+@@ -1270,6 +1270,10 @@ static __always_inline void vc_forward_exception(struct es_em_ctxt *ctxt)
+ 	case X86_TRAP_UD:
+ 		exc_invalid_op(ctxt->regs);
+ 		break;
++	case X86_TRAP_PF:
++		write_cr2(ctxt->fi.cr2);
++		exc_page_fault(ctxt->regs, error_code);
++		break;
+ 	case X86_TRAP_AC:
+ 		exc_alignment_check(ctxt->regs, error_code);
+ 		break;
