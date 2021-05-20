@@ -2,80 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1BA238AD85
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC2638AE09
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:22:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242340AbhETMFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:05:37 -0400
-Received: from m1380.mail.163.com ([220.181.13.80]:44311 "EHLO
-        m1380.mail.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242067AbhETMFG (ORCPT
+        id S232359AbhETMXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:23:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232018AbhETMXG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:05:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=Lvxlv
-        /jbqFyHOx/iy1dvt7BdawmxAecjJiBDgIXlLmA=; b=bFATlEO229Lc5MhnJ2cWD
-        bDPdDP2CBejMrQCOq1N/9lUUDhBkiYcPFKxXLHEsxLxSSJZw2LkqefKhAQaHNBba
-        ZdrSnkhPHxMdW+iS5C0qspdwWoR1hkA8UqiyBNoviTzNG0aHSv3BeRnhl41yIeOY
-        pb89batFAlg564f1qwgcoA=
-Received: from wsj20369$163.com ( [120.197.196.176] ) by
- ajax-webmail-wmsvr80 (Coremail) ; Thu, 20 May 2021 19:16:40 +0800 (CST)
-X-Originating-IP: [120.197.196.176]
-Date:   Thu, 20 May 2021 19:16:40 +0800 (CST)
-From:   "Shujun Wang" <wsj20369@163.com>
-To:     bbhatt@codeaurora.org
-Cc:     mani@kernel.org, hemantk@codeaurora.org, loic.poulain@linaro.org,
-        jarvis.w.jiang@gmail.com, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re:Re: [PATCH RESEND,v2] bus: mhi: pci_generic: T99W175: update
- channel name from AT to DUN
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210104(ab8c30b6)
- Copyright (c) 2002-2021 www.mailtech.cn 163com
-In-Reply-To: <88d7754c381ba9eb927b4dd91e30ca35@codeaurora.org>
-References: <20210517095415.3626-1-wsj20369@163.com>
- <88d7754c381ba9eb927b4dd91e30ca35@codeaurora.org>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Thu, 20 May 2021 08:23:06 -0400
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B104C02802F
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:17:03 -0700 (PDT)
+Received: by mail-wm1-x329.google.com with SMTP id u133so8939500wmg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yx+H6sGvKvZ1+h7/FHdbh/ExAGjj5lQ+jgoR4DDOZ70=;
+        b=H8QxOOSaBCTdMFu68ay2mgGLL1LN0CBNKCF8GtN/bctB2bS9jC5Y5CEpGVTPCropIE
+         K6NQgmolkq35WNpQiS1w+vAuky69CLhY1/L0rQqVYI4jgfK5M77g35On91XRrcQ8FAix
+         Bpp2QASmxtI5NZ9Xwss0C9pLRIE40OXwHovZcRcYfhlijfoNu5agaV/cLmttOE89bl/r
+         dItwI2J7LYKBwn1OpG0AvsDogWsS4jjq+76V6y0VcZ+5ZIRnAfOke5FFXcdJWsqH2Db9
+         v31JDgmD55hfZW3pJLLj8IZzQW8xfN/RhISkSsu95HnxzudVWO04/ADStXPXHQLlt4Do
+         qwWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yx+H6sGvKvZ1+h7/FHdbh/ExAGjj5lQ+jgoR4DDOZ70=;
+        b=MH8GpqtmOGlIewHR5pg9QWVlBddtsdqC/ttuxRD1eGJtvKPn6zyhC/pZydZ/ge/ps2
+         e5OIZyjB4b10/ASu/RAJ3+rclynkcPx1O65Ijpb81SCkBdu52ytDm4q1v8KMl1RkKhxb
+         YfUezTRCDylyT3ZdVsHiLnwnRj/Idkg5N8A09u4fEzEMJbvPhS56ax0FKV/qI0pQig3V
+         y85PJVadDYJwC8lTAdzzBQJFFPxCjIrhPM507eWNRlSl/F6NPm/yOUNxltanxzcDYU7O
+         et86bdizbYDPfo85OJeoDavY4ZFITEdmDWIomYR+qtBRI22tiT1OW5LfKrQUXRIa85pg
+         jgvg==
+X-Gm-Message-State: AOAM530YyN7JvCJ4kreeV0t0IMHpH87lZV2Zq9vl3xJjjvFUCo3Ty7H4
+        QVOsc4X7aKR9WCFeJaKvOSrlAw==
+X-Google-Smtp-Source: ABdhPJyl/rBzjv6gpMQ32Rtdhwde6u6dVWQkPtQQ3xivTTNnE168I4ovRNuIuNkAaXjhralPvS5OPg==
+X-Received: by 2002:a05:600c:3553:: with SMTP id i19mr2397972wmq.159.1621509421823;
+        Thu, 20 May 2021 04:17:01 -0700 (PDT)
+Received: from localhost.localdomain ([88.160.162.107])
+        by smtp.gmail.com with ESMTPSA id a19sm2310757wmb.40.2021.05.20.04.17.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 04:17:01 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>
+Cc:     mkorpershoek@baylibre.com, Fabien Parent <fparent@baylibre.com>,
+        linux-crypto@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: rng: mediatek: convert to yaml schema
+Date:   Thu, 20 May 2021 13:16:55 +0200
+Message-Id: <20210520111656.66017-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Message-ID: <734feeda.5d5f.179897de742.Coremail.wsj20369@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: UMGowACHAzEZRaZgLrHkAA--.24290W
-X-CM-SenderInfo: hzvmjiqtwzqiywtou0bp/xtbBQwaYF1++LpAUPAABs8
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjEtMDUtMTggMDI6MDE6MTAsICJCaGF1bWlrIEJoYXR0IiA8YmJoYXR0QGNvZGVhdXJv
-cmEub3JnPiB3cm90ZToKPk9uIDIwMjEtMDUtMTcgMDI6NTQgQU0sIFNodWp1biBXYW5nIHdyb3Rl
-Ogo+PiBGcm9tOiBKYXJ2aXMgSmlhbmcgPGphcnZpcy53LmppYW5nQGdtYWlsLmNvbT4KPj4gCj4+
-IEFjY29yZGluZyB0byBNSEkgdjEuMSBzcGVjaWZpY2F0aW9uLCBjaGFuZ2UgdGhlIGNoYW5uZWwg
-bmFtZSBvZiBUOTlXMTc1Cj4+IGZyb20gIkFUIiB0byAiRFVOIiAoRGlhbC11cCBuZXR3b3JraW5n
-KSBmb3IgYm90aCBjaGFubmVsIDMyIGFuZCAzMywKPj4gc28gdGhhdCB0aGUgY2hhbm5lbHMgY2Fu
-IGJlIGJvdW5kIHRvIHRoZSBRY29tIFdXQU4gY29udHJvbCBkcml2ZXIsIGFuZAo+PiBkZXZpY2Ug
-bm9kZSBzdWNoIGFzIC9kZXYvd3dhbjBwM0FUIHdpbGwgYmUgZ2VuZXJhdGVkLCB3aGljaCBpcyB2
-ZXJ5IAo+PiB1c2VmdWwKPj4gZm9yIGRlYnVnZ2luZyBtb2RlbQo+PiAKPj4gRml4ZXM6IGFhYzQy
-NjU2MmY1NiAoImJ1czogbWhpOiBwY2lfZ2VuZXJpYzogSW50cm9kdWNlIEZveGNvbm4gVDk5VzE3
-NSAKPj4gc3VwcG9ydCIpCj4+IFNpZ25lZC1vZmYtYnk6IEphcnZpcyBKaWFuZyA8amFydmlzLncu
-amlhbmdAZ21haWwuY29tPgo+PiBTaWduZWQtb2ZmLWJ5OiBTaHVqdW4gV2FuZyA8d3NqMjAzNjlA
-MTYzLmNvbT4KPgo+UmV2aWV3ZWQtYnk6IEJoYXVtaWsgQmhhdHQgPGJiaGF0dEBjb2RlYXVyb3Jh
-Lm9yZz4KCkhpIEJoYXVtaWssCgpUaGFua3MgYSBsb3QuCgo+PiAtLS0KPj4gCj4+IHYyOiBBZGQ6
-IEZpeGVzOiBhYWM0MjY1NjJmNTYKPj4gCj4+ICBkcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMu
-YyB8IDQgKystLQo+PiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
-bnMoLSkKPj4gCj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYyAK
-Pj4gYi9kcml2ZXJzL2J1cy9taGkvcGNpX2dlbmVyaWMuYwo+PiBpbmRleCA3YzgxMGYwMmEyZWYu
-LjhjN2Y2NTc2ZTQyMSAxMDA2NDQKPj4gLS0tIGEvZHJpdmVycy9idXMvbWhpL3BjaV9nZW5lcmlj
-LmMKPj4gKysrIGIvZHJpdmVycy9idXMvbWhpL3BjaV9nZW5lcmljLmMKPj4gQEAgLTMxMSw4ICsz
-MTEsOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IG1oaV9jaGFubmVsX2NvbmZpZwo+PiBtaGlfZm94
-Y29ubl9zZHg1NV9jaGFubmVsc1tdID0gewo+PiAgCU1ISV9DSEFOTkVMX0NPTkZJR19ETCg1LCAi
-RElBRyIsIDMyLCAxKSwKPj4gIAlNSElfQ0hBTk5FTF9DT05GSUdfVUwoMTIsICJNQklNIiwgMzIs
-IDApLAo+PiAgCU1ISV9DSEFOTkVMX0NPTkZJR19ETCgxMywgIk1CSU0iLCAzMiwgMCksCj4+IC0J
-TUhJX0NIQU5ORUxfQ09ORklHX1VMKDMyLCAiQVQiLCAzMiwgMCksCj4+IC0JTUhJX0NIQU5ORUxf
-Q09ORklHX0RMKDMzLCAiQVQiLCAzMiwgMCksCj4+ICsJTUhJX0NIQU5ORUxfQ09ORklHX1VMKDMy
-LCAiRFVOIiwgMzIsIDApLAo+PiArCU1ISV9DSEFOTkVMX0NPTkZJR19ETCgzMywgIkRVTiIsIDMy
-LCAwKSwKPj4gIAlNSElfQ0hBTk5FTF9DT05GSUdfSFdfVUwoMTAwLCAiSVBfSFcwX01CSU0iLCAx
-MjgsIDIpLAo+PiAgCU1ISV9DSEFOTkVMX0NPTkZJR19IV19ETCgxMDEsICJJUF9IVzBfTUJJTSIs
-IDEyOCwgMyksCj4+ICB9Owo+Cj5UaGFua3MsCj5CaGF1bWlrCj4tLS0KPlRoZSBRdWFsY29tbSBJ
-bm5vdmF0aW9uIENlbnRlciwgSW5jLiBpcyBhIG1lbWJlciBvZiB0aGUgQ29kZSBBdXJvcmEgCj5G
-b3J1bSwKPmEgTGludXggRm91bmRhdGlvbiBDb2xsYWJvcmF0aXZlIFByb2plY3QK
+Convert the RNG binding for MediaTek to use YAML schema.
+
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+---
+
+v2: Write the compatibles in a more compact way
+
+ .../devicetree/bindings/rng/mtk-rng.txt       | 22 --------
+ .../devicetree/bindings/rng/mtk-rng.yaml      | 53 +++++++++++++++++++
+ 2 files changed, 53 insertions(+), 22 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.txt
+ create mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.yaml
+
+diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.txt b/Documentation/devicetree/bindings/rng/mtk-rng.txt
+deleted file mode 100644
+index dfdcb5cd2ea8..000000000000
+--- a/Documentation/devicetree/bindings/rng/mtk-rng.txt
++++ /dev/null
+@@ -1,22 +0,0 @@
+-Device-Tree bindings for Mediatek random number generator
+-found in MediaTek SoC family
+-
+-Required properties:
+-- compatible	    : Should be
+-			"mediatek,mt7622-rng", 	"mediatek,mt7623-rng" : for MT7622
+-			"mediatek,mt7629-rng",  "mediatek,mt7623-rng" : for MT7629
+-			"mediatek,mt7623-rng" : for MT7623
+-			"mediatek,mt8516-rng", "mediatek,mt7623-rng" : for MT8516
+-- clocks	    : list of clock specifiers, corresponding to
+-		      entries in clock-names property;
+-- clock-names	    : Should contain "rng" entries;
+-- reg 		    : Specifies base physical address and size of the registers
+-
+-Example:
+-
+-rng: rng@1020f000 {
+-	compatible = "mediatek,mt7623-rng";
+-	reg = <0 0x1020f000 0 0x1000>;
+-	clocks = <&infracfg CLK_INFRA_TRNG>;
+-	clock-names = "rng";
+-};
+diff --git a/Documentation/devicetree/bindings/rng/mtk-rng.yaml b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+new file mode 100644
+index 000000000000..4be5fc3c1409
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rng/mtk-rng.yaml
+@@ -0,0 +1,53 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/rng/mtk-rng.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: MediaTek Random number generator
++
++maintainers:
++  - Sean Wang <sean.wang@mediatek.com>
++
++properties:
++  $nodename:
++    pattern: "^rng@[0-9a-f]+$"
++
++  compatible:
++    oneOf:
++      - enum:
++          - mediatek,mt7623-rng
++      - items:
++          - enum:
++              - mediatek,mt7622-rng
++              - mediatek,mt7629-rng
++              - mediatek,mt8516-rng
++          - const: mediatek,mt7623-rng
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: rng
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - clock-names
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/mt2701-clk.h>
++    rng: rng@1020f000 {
++            compatible = "mediatek,mt7623-rng";
++            reg = <0x1020f000 0x1000>;
++            clocks = <&infracfg CLK_INFRA_TRNG>;
++            clock-names = "rng";
++    };
+-- 
+2.31.1
+
