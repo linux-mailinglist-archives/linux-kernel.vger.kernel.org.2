@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7744538B65F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:56:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37AA038B662
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 20:57:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236366AbhETS5W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 14:57:22 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:26694 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236298AbhETS5S (ORCPT
+        id S236325AbhETS7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 14:59:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233480AbhETS7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 14:57:18 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14KIXa5g114847;
-        Thu, 20 May 2021 14:55:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=/FWeYLLzKYJq+Mn97bIeKsGmP2E4KLkapDfWGqktG18=;
- b=Pab8dH6G7l8SVfh6jGE9A2ahAx5ob9nqvQO/Z14gj8NhSG0qrZUthU4Md1m0g48H9NIZ
- SnYmUcFFGDHHl6wh2XmLlBTAi0cjLwQMPrVyYm03QafNH9HbvED5WEmjHG6lXNiMXrL0
- 0X3+Ux/L8/vPjb/ZCZ30YUB4+wv0CL/7NBajn1L2rdt5IxFbbv3k3WBcONjbIMNoipLK
- vggEwdoB0ko8wooklIiS51o9gluplX4F2Ec4gd4g3L7Sn2doo1g+ltcm4TpxlOfm4Nqv
- 2Sc9Czszb9F15zLPwNzXrj4+fWWLcY7f5BEZGXr3WDc/H+KRswJ8IJNDX5PJLNB/cRnA WA== 
-Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38nvg3hxxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 14:55:50 -0400
-Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
-        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14KInA5B007814;
-        Thu, 20 May 2021 18:55:48 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma06ams.nl.ibm.com with ESMTP id 38j5jgtskc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 20 May 2021 18:55:48 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14KItkXG32506296
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 20 May 2021 18:55:46 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 385A211C05B;
-        Thu, 20 May 2021 18:55:46 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8FC8911C054;
-        Thu, 20 May 2021 18:55:44 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.39.138])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 20 May 2021 18:55:44 +0000 (GMT)
-Message-ID: <2804f10fa77b58b4992f56ea36a36d4f1e3f4b24.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 00/12] evm: Improve usability of portable signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>, mjg59@srcf.ucam.org
-Cc:     linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Thu, 20 May 2021 14:55:41 -0400
-In-Reply-To: <20210514152753.982958-1-roberto.sassu@huawei.com>
-References: <20210514152753.982958-1-roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: iLxvC9fF25kogA-DMlJ7ffq-1ywJmKXX
-X-Proofpoint-ORIG-GUID: iLxvC9fF25kogA-DMlJ7ffq-1ywJmKXX
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 20 May 2021 14:59:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1461AC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 11:57:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oevWNmxtffSxCjqta1H1kLzsbSTqSvnsERPDgpPJItE=; b=GY/JpBAjM7iZe8iwKocexyMAZC
+        defx/KniNfx0csWhLUTEoVP6wVCZep8aBJzCLdINxmEgm69yhsLqLoEdjEq8ovk2j1aj8IgbPGda2
+        UOMfW8ienzcGjumjtCwfOFLzlPPT0QWkZaACzXZOtA/ISiTfIL3WfmP4Dp0OE/nAHEv4ghIgo6JOs
+        IBdA+k57DZTTbc9b0T7V8koOCQP7lD6petklv1kznPIgkws+4YJm/CGL9kUOf/5qP+ctb4OcG/oI2
+        /C67w2X0JHS5CV8W2w8q91jGrn5jbPCMm0/4QVWrSi/Iv3KrRY+ytcBh+FzW4CC5v1bDqKX9geKcL
+        CrTxstzA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljnqW-00GJDe-2H; Thu, 20 May 2021 18:56:49 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7B5AB30022A;
+        Thu, 20 May 2021 20:56:31 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5740A30A5840F; Thu, 20 May 2021 20:56:31 +0200 (CEST)
+Date:   Thu, 20 May 2021 20:56:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Subject: Re: [PATCH 1/3] sched/topology: Allow archs to populate distance map
+Message-ID: <YKaw33d71FpHjGnR@hirez.programming.kicks-ass.net>
+References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
+ <20210520154427.1041031-2-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-20_05:2021-05-20,2021-05-20 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
- spamscore=0 lowpriorityscore=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 malwarescore=0 mlxscore=0 impostorscore=0
- suspectscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105200112
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520154427.1041031-2-srikar@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-14 at 17:27 +0200, Roberto Sassu wrote:
-> EVM portable signatures are particularly suitable for the protection of
-> metadata of immutable files where metadata is signed by a software vendor.
-> They can be used for example in conjunction with an IMA policy that
-> appraises only executed and memory mapped files.
+On Thu, May 20, 2021 at 09:14:25PM +0530, Srikar Dronamraju wrote:
+> Currently scheduler populates the distance map by looking at distance
+> of each node from all other nodes. This should work for most
+> architectures and platforms.
 > 
-> However, until now portable signatures can be properly installed only if
-> the EVM_ALLOW_METADATA_WRITES initialization flag is also set, which
-> disables metadata verification until an HMAC key is loaded. This will cause
-> metadata writes to be allowed even in the situations where they shouldn't
-> (metadata protected by a portable signature is immutable).
+> However there are some architectures like POWER that may not expose
+> the distance of nodes that are not yet onlined because those resources
+> are not yet allocated to the OS instance. Such architectures have
+> other means to provide valid distance data for the current platform.
 > 
-> The main reason why setting the flag is necessary is that the operations
-> necessary to install portable signatures and protected metadata would be
-> otherwise denied, despite being legitimate, due to the fact that the
-> decision logic has to avoid an unsafe recalculation of the HMAC that would
-> make the unsuccessfully verified metadata valid. However, the decision
-> logic is too coarse, and does not fully take into account all the possible
-> situations where metadata operations could be allowed.
+> For example distance info from numactl from a fully populated 8 node
+> system at boot may look like this.
 > 
-> For example, if the HMAC key is not loaded and it cannot be loaded in the
-> future due the EVM_SETUP_COMPLETE flag being set, it wouldn't be a problem
-> to allow metadata operations, as they wouldn't result in an HMAC being
-> recalculated.
+> node distances:
+> node   0   1   2   3   4   5   6   7
+>   0:  10  20  40  40  40  40  40  40
+>   1:  20  10  40  40  40  40  40  40
+>   2:  40  40  10  20  40  40  40  40
+>   3:  40  40  20  10  40  40  40  40
+>   4:  40  40  40  40  10  20  40  40
+>   5:  40  40  40  40  20  10  40  40
+>   6:  40  40  40  40  40  40  10  20
+>   7:  40  40  40  40  40  40  20  10
 > 
-> This patch set extends the decision logic and adds the necessary exceptions
-> to use portable signatures without turning off metadata verification and
-> deprecates the EVM_ALLOW_METADATA_WRITES flag.
+> However the same system when only two nodes are online at boot, then the
+> numa topology will look like
+> node distances:
+> node   0   1
+>   0:  10  20
+>   1:  20  10
+> 
+> It may be implementation dependent on what node_distance(0,3) where
+> node 0 is online and node 3 is offline. In POWER case, it returns
+> LOCAL_DISTANCE(10). Here at boot the scheduler would assume that the max
+> distance between nodes is 20. However that would not be true.
+> 
+> When Nodes are onlined and CPUs from those nodes are hotplugged,
+> the max node distance would be 40.
+> 
+> To handle such scenarios, let scheduler allow architectures to populate
+> the distance map. Architectures that like to populate the distance map
+> can overload arch_populate_distance_map().
 
-Thanks, Roberto.
+Why? Why can't your node_distance() DTRT? The arch interface is
+nr_node_ids and node_distance(), I don't see why we need something new
+and then replace one special use of it.
 
-Applied to: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-
-integrity.git 
-next-integrity-testing
-
-Mimi
-
-
+By virtue of you being able to actually implement this new hook, you
+supposedly can actually do node_distance() right too.
