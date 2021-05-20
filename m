@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BEC38AC6A
+	by mail.lfdr.de (Postfix) with ESMTP id 8960838AC6B
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241671AbhETLjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:39:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37898 "EHLO mail.kernel.org"
+        id S242187AbhETLjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:39:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240646AbhETLTF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:19:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D2FCE61D74;
-        Thu, 20 May 2021 10:10:14 +0000 (UTC)
+        id S240679AbhETLTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:19:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 120FE61D75;
+        Thu, 20 May 2021 10:10:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505415;
-        bh=KKdEGtLbQVimoWNf7Isk0LvVHXtIZBLsNRi3emaY43E=;
+        s=korg; t=1621505417;
+        bh=zxuLGrBTmBa/HsIIrpnILXloFIxoiESPmeAb8Nk0y74=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DcQD1FfIVoj07pLwmAviiWxETe/QKWpKyiU8aU89VT/ik/NmRnnJUOBRPce5OKFp9
-         SO2pDplQCLTpxPJihGtOCUlGyv8xUlco4GXSnUATvWtThSe7x75y0AB4TyZBiSMKtX
-         aHA9oGEuYZ+YfRO661uSSkAxUlZHEtccr4ptl8AE=
+        b=Gl8abSZVyKKcZ8kUbrHkLImax0XBIgNrQNmTtcd437x9BDoxqfOyGE8WbJX0Kvcoc
+         fTduQVG7698e2NcOvFDyFzpPPwxa9hBERNOcDB5HS26cCFb1OXuiRxAU5oUGi95EMw
+         tcmsFwibwMEk9kTwZFIRnBmBMd0iR8GOUrlNXEdY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 125/190] i2c: sh7760: fix IRQ error path
-Date:   Thu, 20 May 2021 11:23:09 +0200
-Message-Id: <20210520092106.341839895@linuxfoundation.org>
+        stable@vger.kernel.org, Lv Yunlong <lyl2019@mail.ustc.edu.cn>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.4 126/190] mwl8k: Fix a double Free in mwl8k_probe_hw
+Date:   Thu, 20 May 2021 11:23:10 +0200
+Message-Id: <20210520092106.371129919@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -39,36 +40,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
 
-[ Upstream commit 92dfb27240fea2776f61c5422472cb6defca7767 ]
+[ Upstream commit a8e083ee8e2a6c94c29733835adae8bf5b832748 ]
 
-While adding the invalid IRQ check after calling platform_get_irq(),
-I managed to overlook that the driver has a complex error path in its
-probe() method, thus a simple *return* couldn't be used.  Use a proper
-*goto* instead!
+In mwl8k_probe_hw, hw->priv->txq is freed at the first time by
+dma_free_coherent() in the call chain:
+if(!priv->ap_fw)->mwl8k_init_txqs(hw)->mwl8k_txq_init(hw, i).
 
-Fixes: e5b2e3e74201 ("i2c: sh7760: add IRQ check")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Then in err_free_queues of mwl8k_probe_hw, hw->priv->txq is freed
+at the second time by mwl8k_txq_deinit(hw, i)->dma_free_coherent().
+
+My patch set txq->txd to NULL after the first free to avoid the
+double free.
+
+Fixes: a66098daacee2 ("mwl8k: Marvell TOPDOG wireless driver")
+Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210402182627.4256-1-lyl2019@mail.ustc.edu.cn
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-sh7760.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/wireless/mwl8k.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/i2c/busses/i2c-sh7760.c b/drivers/i2c/busses/i2c-sh7760.c
-index 70e4437060d5..c836c53caa3f 100644
---- a/drivers/i2c/busses/i2c-sh7760.c
-+++ b/drivers/i2c/busses/i2c-sh7760.c
-@@ -473,7 +473,7 @@ static int sh7760_i2c_probe(struct platform_device *pdev)
+diff --git a/drivers/net/wireless/mwl8k.c b/drivers/net/wireless/mwl8k.c
+index 088429d0a634..d448480b8406 100644
+--- a/drivers/net/wireless/mwl8k.c
++++ b/drivers/net/wireless/mwl8k.c
+@@ -1459,6 +1459,7 @@ static int mwl8k_txq_init(struct ieee80211_hw *hw, int index)
+ 	txq->skb = kcalloc(MWL8K_TX_DESCS, sizeof(*txq->skb), GFP_KERNEL);
+ 	if (txq->skb == NULL) {
+ 		pci_free_consistent(priv->pdev, size, txq->txd, txq->txd_dma);
++		txq->txd = NULL;
+ 		return -ENOMEM;
+ 	}
  
- 	ret = platform_get_irq(pdev, 0);
- 	if (ret < 0)
--		return ret;
-+		goto out3;
- 	id->irq = ret;
- 
- 	id->adap.nr = pdev->id;
 -- 
 2.30.2
 
