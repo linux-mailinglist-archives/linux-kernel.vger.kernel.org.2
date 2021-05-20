@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DA6138AAD2
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0343238AAD6
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:17:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239896AbhETLRs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:17:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56958 "EHLO mail.kernel.org"
+        id S239923AbhETLSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:18:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239054AbhETK5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:57:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2AFA861CF9;
-        Thu, 20 May 2021 10:02:14 +0000 (UTC)
+        id S239153AbhETK5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:57:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5BB3E61CEF;
+        Thu, 20 May 2021 10:02:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504934;
-        bh=2fKbQnLZ9rcMKB/YD89KcbhKbvDanPeCFXWm9bkjNxA=;
+        s=korg; t=1621504936;
+        bh=bedJQkHEQhvq7MEj6i3khvs/huPyfJKwdj2eDVCKmfA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=r865FLRKgeWo6g73tYsBTj+VJzKh6fVxoLSDE7RP3eSShYFqee8+DCibKtHl0W6L5
-         sUEeTiJUS0ES94KpUro1hQ/KdjvctfEyDBik2KJbqakCc1Z0bKFYfqR11rOuJu1iL9
-         BBwwMwWaoSFyTBAq9VBrshQkYM7BR1eJ/tr19WbQ=
+        b=HWECSd3tk4op2dTAllBFNKx6pQhWwumRMq9Jog37/hrN+mP4SDLRJDRLMT5ho457Y
+         5mO41HN023jHvypYDnrsnzrYBTMxz4oNCm6F00wOIwzJMQJOQYRnjE1tu4Z5lv0AXY
+         khUtiWCa1EkSTSMawjb3Fb/Iznr1CkS+ZiCZVo0U=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Colin Ian King <colin.king@canonical.com>,
+        stable@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        Johan Hovold <johan@kernel.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 114/240] usb: gadget: r8a66597: Add missing null check on return from platform_get_resource
-Date:   Thu, 20 May 2021 11:21:46 +0200
-Message-Id: <20210520092112.501680277@linuxfoundation.org>
+Subject: [PATCH 4.9 115/240] USB: cdc-acm: fix unprivileged TIOCCSERIAL
+Date:   Thu, 20 May 2021 11:21:47 +0200
+Message-Id: <20210520092112.532434219@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,36 +40,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Johan Hovold <johan@kernel.org>
 
-[ Upstream commit 9c2076090c2815fe7c49676df68dde7e60a9b9fc ]
+[ Upstream commit dd5619582d60007139f0447382d2839f4f9e339b ]
 
-The call to platform_get_resource can potentially return a NULL pointer
-on failure, so add this check and return -EINVAL if it fails.
+TIOCSSERIAL is a horrid, underspecified, legacy interface which for most
+serial devices is only useful for setting the close_delay and
+closing_wait parameters.
 
-Fixes: c41442474a26 ("usb: gadget: R8A66597 peripheral controller support.")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Addresses-Coverity: ("Dereference null return")
-Link: https://lore.kernel.org/r/20210406184510.433497-1-colin.king@canonical.com
+A non-privileged user has only ever been able to set the since long
+deprecated ASYNC_SPD flags and trying to change any other *supported*
+feature should result in -EPERM being returned. Setting the current
+values for any supported features should return success.
+
+Fix the cdc-acm implementation which instead indicated that the
+TIOCSSERIAL ioctl was not even implemented when a non-privileged user
+set the current values.
+
+Fixes: ba2d8ce9db0a ("cdc-acm: implement TIOCSSERIAL to avoid blocking close(2)")
+Acked-by: Oliver Neukum <oneukum@suse.com>
+Signed-off-by: Johan Hovold <johan@kernel.org>
+Link: https://lore.kernel.org/r/20210408131602.27956-3-johan@kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/gadget/udc/r8a66597-udc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/usb/class/cdc-acm.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/gadget/udc/r8a66597-udc.c b/drivers/usb/gadget/udc/r8a66597-udc.c
-index 230e3248f386..80503c3604ca 100644
---- a/drivers/usb/gadget/udc/r8a66597-udc.c
-+++ b/drivers/usb/gadget/udc/r8a66597-udc.c
-@@ -1855,6 +1855,8 @@ static int r8a66597_probe(struct platform_device *pdev)
- 		return PTR_ERR(reg);
- 
- 	ires = platform_get_resource(pdev, IORESOURCE_IRQ, 0);
-+	if (!ires)
-+		return -EINVAL;
- 	irq = ires->start;
- 	irq_trigger = ires->flags & IRQF_TRIGGER_MASK;
- 
+diff --git a/drivers/usb/class/cdc-acm.c b/drivers/usb/class/cdc-acm.c
+index 97b5b021a220..a70d2341ada6 100644
+--- a/drivers/usb/class/cdc-acm.c
++++ b/drivers/usb/class/cdc-acm.c
+@@ -870,8 +870,6 @@ static int set_serial_info(struct acm *acm,
+ 		if ((new_serial.close_delay != old_close_delay) ||
+ 	            (new_serial.closing_wait != old_closing_wait))
+ 			retval = -EPERM;
+-		else
+-			retval = -EOPNOTSUPP;
+ 	} else {
+ 		acm->port.close_delay  = close_delay;
+ 		acm->port.closing_wait = closing_wait;
 -- 
 2.30.2
 
