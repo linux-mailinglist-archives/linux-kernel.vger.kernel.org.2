@@ -2,184 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6827038ACCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:50:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7689738AC56
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243103AbhETLtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:49:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41494 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240145AbhETLZ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:25:57 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C2B0C035430
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:06:43 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id x1so4858004uau.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 03:06:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=deviqon.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7QyAz/Y7sojLhm4WGgiSHyG7ZKRB6TQwfwV5kBelVWI=;
-        b=HM0C/fxgCgP9PqpIBs5RDFfOToJmqVddEeDOSQdQiFAZ0XmNj8tPrwEkz+wAzTxKbL
-         9wM1LXUkA4xetjxn3/1N8FZgv060Y/XtU52d2O98mkHuJi93Je4nJXZ5KvaglO3xm1L3
-         OC2mdYuBizLnhryJnABFdzoaW3hXnWa/gyCyeW/FZp19piowNWF+9FgaGN65jrsK5TkF
-         dwougd3a+a7hBIcQHMjLDVR2Q4uhQlsPwAgVhHLjrCw+zP9fj/3oZyCfD2y457RhS0CR
-         5bv3I1jYwawTDKdpiI4d7rjBQc1JtfDQZUKdKEgzgZqgmQlGi8PlX1uE8aovFyL0HzLo
-         4zkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7QyAz/Y7sojLhm4WGgiSHyG7ZKRB6TQwfwV5kBelVWI=;
-        b=YEOq6gQc9JZ0arxJgMQ3OIwma0xtMk7O6u/TBMvoed39XL3jEmWBpOOA88o/cb8Jdh
-         iF/kEA1cWSv2vdbox1t/23ZDD1/3ZcHn1LBiWbTZazLHtcUq9mc8T9EBbzgUW5VDEXch
-         VmYmWFCig38DkK4iryfTxsqQkKShfSXIckpZCsvy34WvmquopXfHifLwqbxXQxW6HhIJ
-         jH1QFVAPxxzbow0bUDrD3HV59LzTrneLFtuB0xHvs85toMRWCxhmcba6H2J18cS4zRVr
-         JssL0hsLGG++zP2bzsu88EaBAGUx05XcGfR1HejoIRJcGbkqcJYxEK6YIv26/Ofhhv51
-         sUbQ==
-X-Gm-Message-State: AOAM530RLLxDmDDDvyS3gat3eOPutfajwq0NoNYaO+Yd6LolH7CEWezI
-        IPDkKiN3vpIU6gNV62aRoflxBVecXmrm9uav1uJFcQ==
-X-Google-Smtp-Source: ABdhPJzy3ITiPckKdlsOzI9fCyc0onwPpPpVy562GHjplX8ZWe+S0MCOuc5oXcO1rwAgcmmS4rg2e6wmWmzJOhzxX68=
-X-Received: by 2002:ab0:14ce:: with SMTP id f14mr3285015uae.50.1621505202313;
- Thu, 20 May 2021 03:06:42 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210516061425.8757-1-aardelean@deviqon.com> <CAHp75VcesNFXCMoWbdBR2mFCt89p8aycWbheMhv9DnU8TBqNSA@mail.gmail.com>
-In-Reply-To: <CAHp75VcesNFXCMoWbdBR2mFCt89p8aycWbheMhv9DnU8TBqNSA@mail.gmail.com>
-From:   Alexandru Ardelean <aardelean@deviqon.com>
-Date:   Thu, 20 May 2021 13:06:30 +0300
-Message-ID: <CAASAkoa6btmLCj-XouKVj=hCG2euhT2MnNWWQAS7jorJBEoQEA@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-stmpe: fully use convert probe to device-managed
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
-        "alexandre.torgue@foss.st.com" <alexandre.torgue@foss.st.com>,
-        "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S242101AbhETLhg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:37:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240513AbhETLRM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:17:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E512C61D6A;
+        Thu, 20 May 2021 10:09:43 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1ljfcb-002Ul9-16; Thu, 20 May 2021 11:09:41 +0100
+Date:   Thu, 20 May 2021 11:09:40 +0100
+Message-ID: <8735uhvhqz.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v12 6/8] arm64: kvm: Expose KVM_ARM_CAP_MTE
+In-Reply-To: <4e1fc7b7-ea8c-a87c-9177-d9e03ff96cb8@arm.com>
+References: <20210517123239.8025-1-steven.price@arm.com>
+        <20210517123239.8025-7-steven.price@arm.com>
+        <87tun1tg1l.wl-maz@kernel.org>
+        <4e1fc7b7-ea8c-a87c-9177-d9e03ff96cb8@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Dave.Martin@arm.com, mark.rutland@arm.com, tglx@linutronix.de, qemu-devel@nongnu.org, quintela@redhat.com, dgilbert@redhat.com, richard.henderson@linaro.org, peter.maydell@linaro.org, Haibo.Xu@arm.com, drjones@redhat.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 09:40, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
->
->
->
-> On Sunday, May 16, 2021, Alexandru Ardelean <aardelean@deviqon.com> wrote:
->>
->> The driver doesn't look like it can be built as a kmod, so leaks cannot
->> happen via a rmmod mechanism.
->> The remove hook was removed via commit 3b52bb960ec6 ("gpio: stmpe: make
->> it explicitly non-modular").
->>
->> The IRQ is registered via devm_request_threaded_irq(), making the driver
->> only partially device-managed.
->>
->> In any case all resources should be made device-managed, mostly as a good
->> practice. That way at least the unwinding on error is happening in reverse
->> order (as the probe).
->>
->> This change also removes platform_set_drvdata() since the information is
->> never retrieved to be used in the driver.
->
->
-> Any driver can be unbind from device thru sysfs. The exception is when they (device drivers) specifically disable that.
+On Wed, 19 May 2021 14:26:31 +0100,
+Steven Price <steven.price@arm.com> wrote:
+> 
+> On 17/05/2021 18:40, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 13:32:37 +0100,
+> > Steven Price <steven.price@arm.com> wrote:
+> >>
+> >> It's now safe for the VMM to enable MTE in a guest, so expose the
+> >> capability to user space.
+> >>
+> >> Signed-off-by: Steven Price <steven.price@arm.com>
+> >> ---
+> >>  arch/arm64/kvm/arm.c      | 9 +++++++++
+> >>  arch/arm64/kvm/sys_regs.c | 3 +++
+> >>  2 files changed, 12 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> >> index 1cb39c0803a4..e89a5e275e25 100644
+> >> --- a/arch/arm64/kvm/arm.c
+> >> +++ b/arch/arm64/kvm/arm.c
+> >> @@ -93,6 +93,12 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
+> >>  		r = 0;
+> >>  		kvm->arch.return_nisv_io_abort_to_user = true;
+> >>  		break;
+> >> +	case KVM_CAP_ARM_MTE:
+> >> +		if (!system_supports_mte() || kvm->created_vcpus)
+> >> +			return -EINVAL;
+> >> +		r = 0;
+> >> +		kvm->arch.mte_enabled = true;
+> > 
+> > As far as I can tell from the architecture, this isn't valid for a
+> > 32bit guest.
+> 
+> Indeed, however the MTE flag is a property of the VM not of the vCPU.
+> And, unless I'm mistaken, it's technically possible to create a VM where
+> some CPUs are 32 bit and some 64 bit. Not that I can see much use of a
+> configuration like that.
 
-Oh, I see.
-Thanks for the info :)
+It looks that this is indeed a bug, and I'm on my way to squash it.
+Can't believe we allowed that for so long...
 
->
->>
->> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
->> ---
->>
->> I'm not sure if this should be marked with a Fixes tag.
->> But if so, it should probably be for commit 3b52bb960ec6 (also mentioned in
->> the comment above).
->>
->>  drivers/gpio/gpio-stmpe.c | 32 +++++++++++++-------------------
->>  1 file changed, 13 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/gpio/gpio-stmpe.c b/drivers/gpio/gpio-stmpe.c
->> index b94ef8181428..dd4d58b4ae49 100644
->> --- a/drivers/gpio/gpio-stmpe.c
->> +++ b/drivers/gpio/gpio-stmpe.c
->> @@ -449,6 +449,11 @@ static void stmpe_init_irq_valid_mask(struct gpio_chip *gc,
->>         }
->>  }
->>
->> +static void stmpe_gpio_disable(void *stmpe)
->> +{
->> +       stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
->> +}
->> +
->>  static int stmpe_gpio_probe(struct platform_device *pdev)
->>  {
->>         struct stmpe *stmpe = dev_get_drvdata(pdev->dev.parent);
->> @@ -461,7 +466,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
->>                 return -EINVAL;
->>         }
->>
->> -       stmpe_gpio = kzalloc(sizeof(*stmpe_gpio), GFP_KERNEL);
->> +       stmpe_gpio = devm_kzalloc(&pdev->dev, sizeof(*stmpe_gpio), GFP_KERNEL);
->>         if (!stmpe_gpio)
->>                 return -ENOMEM;
->>
->> @@ -489,7 +494,11 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
->>
->>         ret = stmpe_enable(stmpe, STMPE_BLOCK_GPIO);
->>         if (ret)
->> -               goto out_free;
->> +               return ret;
->> +
->> +       ret = devm_add_action_or_reset(&pdev->dev, stmpe_gpio_disable, stmpe);
->> +       if (ret)
->> +               return ret;
->>
->>         if (irq > 0) {
->>                 struct gpio_irq_chip *girq;
->> @@ -499,7 +508,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
->>                                 "stmpe-gpio", stmpe_gpio);
->>                 if (ret) {
->>                         dev_err(&pdev->dev, "unable to get irq: %d\n", ret);
->> -                       goto out_disable;
->> +                       return ret;
->>                 }
->>
->>                 girq = &stmpe_gpio->chip.irq;
->> @@ -514,22 +523,7 @@ static int stmpe_gpio_probe(struct platform_device *pdev)
->>                 girq->init_valid_mask = stmpe_init_irq_valid_mask;
->>         }
->>
->> -       ret = gpiochip_add_data(&stmpe_gpio->chip, stmpe_gpio);
->> -       if (ret) {
->> -               dev_err(&pdev->dev, "unable to add gpiochip: %d\n", ret);
->> -               goto out_disable;
->> -       }
->> -
->> -       platform_set_drvdata(pdev, stmpe_gpio);
->> -
->> -       return 0;
->> -
->> -out_disable:
->> -       stmpe_disable(stmpe, STMPE_BLOCK_GPIO);
->> -       gpiochip_remove(&stmpe_gpio->chip);
->> -out_free:
->> -       kfree(stmpe_gpio);
->> -       return ret;
->> +       return devm_gpiochip_add_data(&pdev->dev, &stmpe_gpio->chip, stmpe_gpio);
->>  }
->>
->>  static struct platform_driver stmpe_gpio_driver = {
->> --
->> 2.31.1
->>
->
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
+But the architecture clearly states:
+
+<quote>
+These features are supported in AArch64 state only.
+</quote>
+
+So I'd expect something like:
+
+diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
+index 956cdc240148..50635eacfa43 100644
+--- a/arch/arm64/kvm/reset.c
++++ b/arch/arm64/kvm/reset.c
+@@ -220,7 +220,8 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu)
+ 	switch (vcpu->arch.target) {
+ 	default:
+ 		if (test_bit(KVM_ARM_VCPU_EL1_32BIT, vcpu->arch.features)) {
+-			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1)) {
++			if (!cpus_have_const_cap(ARM64_HAS_32BIT_EL1) ||
++			    vcpu->kvm->arch.mte_enabled) {
+ 				ret = -EINVAL;
+ 				goto out;
+ 			}
+
+that makes it completely impossible to create 32bit CPUs within a
+MTE-enabled guest.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
