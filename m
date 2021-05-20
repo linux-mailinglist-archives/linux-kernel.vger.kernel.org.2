@@ -2,117 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA59938B931
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6FE238B93A
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230514AbhETVvI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 17:51:08 -0400
-Received: from mail-ej1-f42.google.com ([209.85.218.42]:36513 "EHLO
-        mail-ej1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230178AbhETVvH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 17:51:07 -0400
-Received: by mail-ej1-f42.google.com with SMTP id c20so27587251ejm.3;
-        Thu, 20 May 2021 14:49:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HYS+jyPXn/IZkXpqRRQGfz2nyMwZ8AwOrIg/GoY6f6k=;
-        b=n38RkA1ZV1lYvZaDMa89FJGOVw+vCU/mZQ7xSGG3X9T5OyTBJBjAxF1cjMyzlYLVoX
-         I+ocooJ6aDBBzG2SZmwcUNyZzoUNoAGSk4cLa9e0QuPn45bOp/UWUYKhf6wo/+QlDPDH
-         lNHee982ihiieN1Fqjs4exbK05s657XXBgkBh4zsPuX4vBAt/zmVGCXZGDBvFQ90Z4oC
-         XAZT7zFwD+Iv/tpnoYECJjTlQuAvs7lrguQqGmiFmWrqUCIHgJRAPfesiRkOjPZuZIO2
-         Euujpgnav4UGa88AppZ6nWwtwFNSl0Igf2lMSvCf0IE2l8RmsnF5/om6LesubVvZ2g5S
-         5uGA==
-X-Gm-Message-State: AOAM533y4Nh6qklKqRm/t8aGul+3DksRwE/AN+6cpPkT/ucS1BpeR4E0
-        OsLn2KydQ0u9q+HahDBJ6GPtiPDpkNie2k1Qt1Q=
-X-Google-Smtp-Source: ABdhPJzsshM0w0yH5TT8of2ZM+vR9qHCD0DOiJ+QZ+08sPqmOuzJ2WGuRFQQxs5bxDdButcMlHpn8uuHqOBk7HcHqG4=
-X-Received: by 2002:a17:906:c299:: with SMTP id r25mr6858899ejz.501.1621547384808;
- Thu, 20 May 2021 14:49:44 -0700 (PDT)
+        id S231126AbhETVxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:53:52 -0400
+Received: from gloria.sntech.de ([185.11.138.130]:48878 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230178AbhETVxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 17:53:51 -0400
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1ljqah-0001n2-4H; Thu, 20 May 2021 23:52:27 +0200
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     lee.jones@linaro.org, Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Max Schwarz <max.schwarz@online.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 12/16] i2c: busses: i2c-rk3x: Demote unworthy headers and help more complete ones
+Date:   Thu, 20 May 2021 23:52:26 +0200
+Message-ID: <6083609.GXAFRqVoOG@diego>
+In-Reply-To: <20210520190105.3772683-13-lee.jones@linaro.org>
+References: <20210520190105.3772683-1-lee.jones@linaro.org> <20210520190105.3772683-13-lee.jones@linaro.org>
 MIME-Version: 1.0
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
- <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de> <CAJvTdK=DCdwc86VdCVsCH+et6aGuAE3hi-wKmE5769SA0g1H-Q@mail.gmail.com>
- <87h7ixaxs9.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87h7ixaxs9.ffs@nanos.tec.linutronix.de>
-From:   Len Brown <lenb@kernel.org>
-Date:   Thu, 20 May 2021 17:49:33 -0400
-Message-ID: <CAJvTdKmC3dY3BZafPvh1M880kGAusViCAZNBQ3NoLvOQgWuuBA@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 5:41 PM Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Len,
->
-> On Thu, May 20 2021 at 17:22, Len Brown wrote:
-> > On Thu, May 20, 2021 at 4:54 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> >> > AMX is analogous to the multiplier used by AVX-512.
-> >> > The architectural state must exist on every CPU, including HT siblings.
-> >> > Today, the HT siblings share the same execution unit,
-> >> > and I have no reason to expect that will change.
-> >>
-> >> I'm well aware that HT siblings share the same execution unit for
-> >> AVX.
-> >>
-> >> Though AMX is if I remember the discussions two years ago correctly
-> >> shared by more than the HT siblings which makes things worse.
-> >
-> > I regret that we were unable to get together in the last year to have
-> > an updated discussion.  I think if we had, then we would have saved
-> > a lot of mis-understanding and a lot of email!
-> >
-> > So let me emphasize here:
-> >
-> > There is one TMUL execution unit per core.
-> > It is shared by the HT siblings within that core.
-> >
-> > So the comparison to the AVX-512 multiplier is a good one.
->
-> Fine, but that does not at all change the facts that:
->
->   1) It's shared between logical CPUs
->
->   2) It has effects on power/thermal and therefore effects which reach
->      outside of the core scope
+Hi Lee,
 
-FWIW, this is true of *every* instruction in the CPU.
-Indeed, even when the CPU is executing *no* instructions at all,
-the C-state chosen by that CPU has power/thermal impacts on its peers.
+Am Donnerstag, 20. Mai 2021, 21:01:01 CEST schrieb Lee Jones:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/i2c/busses/i2c-rk3x.c:242: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/i2c/busses/i2c-rk3x.c:261: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/i2c/busses/i2c-rk3x.c:304: warning: Function parameter or member 'i2c' not described in 'rk3x_i2c_prepare_read'
+>  drivers/i2c/busses/i2c-rk3x.c:304: warning: expecting prototype for Setup a read according to i2c(). Prototype was for rk3x_i2c_prepare_read() instead
+>  drivers/i2c/busses/i2c-rk3x.c:335: warning: Function parameter or member 'i2c' not described in 'rk3x_i2c_fill_transmit_buf'
+>  drivers/i2c/busses/i2c-rk3x.c:335: warning: expecting prototype for Fill the transmit buffer with data from i2c(). Prototype was for rk3x_i2c_fill_transmit_buf() instead
+>  drivers/i2c/busses/i2c-rk3x.c:535: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/i2c/busses/i2c-rk3x.c:552: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/i2c/busses/i2c-rk3x.c:713: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/i2c/busses/i2c-rk3x.c:963: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  drivers/i2c/busses/i2c-rk3x.c:973: warning: Function parameter or member 'i2c' not described in 'rk3x_i2c_setup'
+> 
+> Cc: Heiko Stuebner <heiko@sntech.de>
+> Cc: Max Schwarz <max.schwarz@online.de>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-rockchip@lists.infradead.org
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/i2c/busses/i2c-rk3x.c | 18 +++++++++---------
+>  1 file changed, 9 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+> index 819ab4ee517e1..1dfbd1185aefc 100644
+> --- a/drivers/i2c/busses/i2c-rk3x.c
+> +++ b/drivers/i2c/busses/i2c-rk3x.c
+> @@ -238,7 +238,7 @@ static inline void rk3x_i2c_clean_ipd(struct rk3x_i2c *i2c)
+>  	i2c_writel(i2c, REG_INT_ALL, REG_IPD);
+>  }
+>  
+> -/**
+> +/*
+>   * Generate a START condition, which triggers a REG_INT_START interrupt.
+>   */
+>  static void rk3x_i2c_start(struct rk3x_i2c *i2c)
+> @@ -257,7 +257,7 @@ static void rk3x_i2c_start(struct rk3x_i2c *i2c)
+>  	i2c_writel(i2c, val, REG_CON);
+>  }
+>  
+> -/**
+> +/*
+>   * Generate a STOP condition, which triggers a REG_INT_STOP interrupt.
 
-Granted, high performance instructions such as AVX-512 and TMUL
-are the most extreme case.
+what made you decide between demoting and completing comments?
+I.e. here you demot the "static void rk3x_i2c_stop()", while below
+you for example complete the "static rk3x_i2c_get_spec()".
 
->   3) Your approach of making it unconditionally available via the
->      proposed #NM prevents the OS and subsequently the system admin /
->      system designer to implement fine grained control over that
->      resource.
->
->      And no, an opt-in approach by providing a non-mandatory
->      preallocation prctl does not solve that problem.
+So I somehow do not yet see the pattern ;-)
 
-I'm perfectly fine with making the explicit allocation (aka opt-in) mandatory,
-and enforcing it.
+Heiko
 
-Len Brown, Intel Open Source Technology Center
+
+>   *
+>   * @error: Error code to return in rk3x_i2c_xfer
+> @@ -297,7 +297,7 @@ static void rk3x_i2c_stop(struct rk3x_i2c *i2c, int error)
+>  	}
+>  }
+>  
+> -/**
+> +/*
+>   * Setup a read according to i2c->msg
+>   */
+>  static void rk3x_i2c_prepare_read(struct rk3x_i2c *i2c)
+> @@ -328,7 +328,7 @@ static void rk3x_i2c_prepare_read(struct rk3x_i2c *i2c)
+>  	i2c_writel(i2c, len, REG_MRXCNT);
+>  }
+>  
+> -/**
+> +/*
+>   * Fill the transmit buffer with data from i2c->msg
+>   */
+>  static void rk3x_i2c_fill_transmit_buf(struct rk3x_i2c *i2c)
+> @@ -532,7 +532,7 @@ static irqreturn_t rk3x_i2c_irq(int irqno, void *dev_id)
+>  }
+>  
+>  /**
+> - * Get timing values of I2C specification
+> + * rk3x_i2c_get_spec() - Get timing values of I2C specification
+>   *
+>   * @speed: Desired SCL frequency
+>   *
+> @@ -549,7 +549,7 @@ static const struct i2c_spec_values *rk3x_i2c_get_spec(unsigned int speed)
+>  }
+>  
+>  /**
+> - * Calculate divider values for desired SCL frequency
+> + * rk3x_i2c_v0_calc_timings() - Calculate divider values for desired SCL frequency
+>   *
+>   * @clk_rate: I2C input clock rate
+>   * @t: Known I2C timing information
+> @@ -710,7 +710,7 @@ static int rk3x_i2c_v0_calc_timings(unsigned long clk_rate,
+>  }
+>  
+>  /**
+> - * Calculate timing values for desired SCL frequency
+> + * rk3x_i2c_v1_calc_timings() - Calculate timing values for desired SCL frequency
+>   *
+>   * @clk_rate: I2C input clock rate
+>   * @t: Known I2C timing information
+> @@ -959,8 +959,8 @@ static int rk3x_i2c_clk_notifier_cb(struct notifier_block *nb, unsigned long
+>  	}
+>  }
+>  
+> -/**
+> - * Setup I2C registers for an I2C operation specified by msgs, num.
+> +/*
+> + * rk3x_i2c_setup() - Setup I2C registers for an I2C operation specified by msgs, num.
+>   *
+>   * Must be called with i2c->lock held.
+>   *
+> 
+
+
+
+
