@@ -2,34 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 419CB38AC33
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:34:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C05F38AC50
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:39:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241825AbhETLfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:35:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38286 "EHLO mail.kernel.org"
+        id S241431AbhETLhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:37:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37860 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239968AbhETLPS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:15:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E5CA061D60;
-        Thu, 20 May 2021 10:09:01 +0000 (UTC)
+        id S239773AbhETLRA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:17:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 192B26143D;
+        Thu, 20 May 2021 10:09:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505342;
-        bh=0IPhRDTX+qYV434FG0p+AicINTSDH8pdhGNikNitOQo=;
+        s=korg; t=1621505366;
+        bh=NOI1G9IKw5Z1wdia4o9essQLe4L23jHhFxQyjw7997s=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nGBBwU9IOXxi3l5Jr7MvUZD7EtXrUF1WC0hLMxT25YKHD+W2ucgMzVam+/ZPpHZlD
-         9f+R9LWQ1J70OVs21tnXXpd0OHUU4k6nMJS39F6nXxoK6IwuAs8lQNHvxVaofIeLIH
-         8WkPyBg1FuV7TbXDR5uFEfBVGhwZ8uK2T3zgH8XQ=
+        b=uLvBL5g/RGxJbNXMzUmi3meDXPoEvWw2s+zI/v18KY2ne935TxrqX5m1PleFZBMw9
+         vmlNJ/BFU+GJD2FEy2mYLysE8A85X3mR7g6nzjqdRjLfvhAg99oMGq1hRuv3FLVFSt
+         tR08Z3FS6r2uunguL8EJsPjPfVw0Ma/8jZZUeqVQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Thomas Huth <thuth@redhat.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>
-Subject: [PATCH 4.4 074/190] KVM: s390: split kvm_s390_real_to_abs
-Date:   Thu, 20 May 2021 11:22:18 +0200
-Message-Id: <20210520092104.636289067@linuxfoundation.org>
+        stable@vger.kernel.org, Iago Abal <mail@iagoabal.eu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH 4.4 075/190] usb: gadget: pch_udc: Revert d3cb25a12138 completely
+Date:   Thu, 20 May 2021 11:22:19 +0200
+Message-Id: <20210520092104.675379738@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -41,71 +39,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Claudio Imbrenda <imbrenda@linux.ibm.com>
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-commit c5d1f6b531e68888cbe6718b3f77a60115d58b9c upstream.
+commit 50a318cc9b54a36f00beadf77e578a50f3620477 upstream.
 
-A new function _kvm_s390_real_to_abs will apply prefixing to a real address
-with a given prefix value.
+The commit d3cb25a12138 ("usb: gadget: udc: fix spin_lock in pch_udc")
+obviously was not thought through and had made the situation even worse
+than it was before. Two changes after almost reverted it. but a few
+leftovers have been left as it. With this revert d3cb25a12138 completely.
 
-The old kvm_s390_real_to_abs becomes now a wrapper around the new function.
+While at it, narrow down the scope of unlocked section to prevent
+potential race when prot_stall is assigned.
 
-This is needed to avoid code duplication in vSIE.
-
-Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Reviewed-by: David Hildenbrand <david@redhat.com>
-Reviewed-by: Thomas Huth <thuth@redhat.com>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20210322140559.500716-2-imbrenda@linux.ibm.com
-Signed-off-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Fixes: d3cb25a12138 ("usb: gadget: udc: fix spin_lock in pch_udc")
+Fixes: 9903b6bedd38 ("usb: gadget: pch-udc: fix lock")
+Fixes: 1d23d16a88e6 ("usb: gadget: pch_udc: reorder spin_[un]lock to avoid deadlock")
+Cc: Iago Abal <mail@iagoabal.eu>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Link: https://lore.kernel.org/r/20210323153626.54908-5-andriy.shevchenko@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/s390/kvm/gaccess.h |   23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
+ drivers/usb/gadget/udc/pch_udc.c |   17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
 
---- a/arch/s390/kvm/gaccess.h
-+++ b/arch/s390/kvm/gaccess.h
-@@ -21,17 +21,14 @@
- 
- /**
-  * kvm_s390_real_to_abs - convert guest real address to guest absolute address
-- * @vcpu - guest virtual cpu
-+ * @prefix - guest prefix
-  * @gra - guest real address
-  *
-  * Returns the guest absolute address that corresponds to the passed guest real
-- * address @gra of a virtual guest cpu by applying its prefix.
-+ * address @gra of by applying the given prefix.
-  */
--static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
--						 unsigned long gra)
-+static inline unsigned long _kvm_s390_real_to_abs(u32 prefix, unsigned long gra)
+--- a/drivers/usb/gadget/udc/pch_udc.c
++++ b/drivers/usb/gadget/udc/pch_udc.c
+@@ -615,18 +615,22 @@ static void pch_udc_reconnect(struct pch
+ static inline void pch_udc_vbus_session(struct pch_udc_dev *dev,
+ 					  int is_active)
  {
--	unsigned long prefix  = kvm_s390_get_prefix(vcpu);
--
- 	if (gra < 2 * PAGE_SIZE)
- 		gra += prefix;
- 	else if (gra >= prefix && gra < prefix + 2 * PAGE_SIZE)
-@@ -40,6 +37,20 @@ static inline unsigned long kvm_s390_rea
++	unsigned long		iflags;
++
++	spin_lock_irqsave(&dev->lock, iflags);
+ 	if (is_active) {
+ 		pch_udc_reconnect(dev);
+ 		dev->vbus_session = 1;
+ 	} else {
+ 		if (dev->driver && dev->driver->disconnect) {
+-			spin_lock(&dev->lock);
++			spin_unlock_irqrestore(&dev->lock, iflags);
+ 			dev->driver->disconnect(&dev->gadget);
+-			spin_unlock(&dev->lock);
++			spin_lock_irqsave(&dev->lock, iflags);
+ 		}
+ 		pch_udc_set_disconnect(dev);
+ 		dev->vbus_session = 0;
+ 	}
++	spin_unlock_irqrestore(&dev->lock, iflags);
  }
  
  /**
-+ * kvm_s390_real_to_abs - convert guest real address to guest absolute address
-+ * @vcpu - guest virtual cpu
-+ * @gra - guest real address
-+ *
-+ * Returns the guest absolute address that corresponds to the passed guest real
-+ * address @gra of a virtual guest cpu by applying its prefix.
-+ */
-+static inline unsigned long kvm_s390_real_to_abs(struct kvm_vcpu *vcpu,
-+						 unsigned long gra)
-+{
-+	return _kvm_s390_real_to_abs(kvm_s390_get_prefix(vcpu), gra);
-+}
+@@ -1183,20 +1187,25 @@ static int pch_udc_pcd_selfpowered(struc
+ static int pch_udc_pcd_pullup(struct usb_gadget *gadget, int is_on)
+ {
+ 	struct pch_udc_dev	*dev;
++	unsigned long		iflags;
+ 
+ 	if (!gadget)
+ 		return -EINVAL;
 +
-+/**
-  * kvm_s390_logical_to_effective - convert guest logical to effective address
-  * @vcpu: guest virtual cpu
-  * @ga: guest logical address
+ 	dev = container_of(gadget, struct pch_udc_dev, gadget);
++
++	spin_lock_irqsave(&dev->lock, iflags);
+ 	if (is_on) {
+ 		pch_udc_reconnect(dev);
+ 	} else {
+ 		if (dev->driver && dev->driver->disconnect) {
+-			spin_lock(&dev->lock);
++			spin_unlock_irqrestore(&dev->lock, iflags);
+ 			dev->driver->disconnect(&dev->gadget);
+-			spin_unlock(&dev->lock);
++			spin_lock_irqsave(&dev->lock, iflags);
+ 		}
+ 		pch_udc_set_disconnect(dev);
+ 	}
++	spin_unlock_irqrestore(&dev->lock, iflags);
+ 
+ 	return 0;
+ }
 
 
