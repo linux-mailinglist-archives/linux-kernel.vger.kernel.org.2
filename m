@@ -2,77 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDE9338B7FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDED38B805
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 22:03:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238559AbhETUCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 16:02:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237013AbhETUCt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 16:02:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 231E3611ED;
-        Thu, 20 May 2021 20:01:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621540888;
-        bh=Q3csBOQeByhZjHPRLnlAU/yn4rf98Hq1cPTlQACOEGY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=sJlqMCivTi+HYwANuUOLXbrSiifmQfwCbJBUKJmV8lyBeVptW5rOvu4NQs9QEQZdz
-         yuV4yO6xYOOObpCGSVHbLEXrxQWU8IXzz7WDpTj6g0xidtXKddErT0tPD0QewqNb8m
-         xwC1zgXVC+MLK4vMwKoZ8lsIKtDN9r7nJ0EQfivzPYUf957k51y6x81fSTaU6j9J9E
-         hB77BWWQjH9QEgeyKnwrtxghqwJEABoHUWzsfHRFDTb124myMlm5auFzGrUmFa6I/D
-         0uOYBa39EWwccwjh0YbETh2gHGlh3Koqg1+dtnXpDUO9tIhcpHdE1uFCSa6KG8bnqc
-         nI9kOgInDnPwA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id DDF5C5C0343; Thu, 20 May 2021 13:01:27 -0700 (PDT)
-Date:   Thu, 20 May 2021 13:01:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        kernel-team@fb.com, mingo@kernel.org, tglx@linutronix.de,
-        elver@google.com, andreyknvl@google.com, glider@google.com,
-        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        gregkh@linuxfoundation.org, nathan@kernel.org, ojeda@kernel.org,
-        arnd@arndb.de
-Subject: [GIT PULL] kcsan: Fix debugfs initcall return type
-Message-ID: <20210520200127.GA2227122@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
+        id S240169AbhETUEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 16:04:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233592AbhETUEk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 16:04:40 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C54EC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:03:18 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id y14so16781152wrm.13
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 13:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FU0d7+kSraKdngkIyPIt5NSqznuzgSQmwjTFbIqh82I=;
+        b=d3Hei2jwKc/C87+dDBawCoVOIy25i8qyEpyU173i9Pjbt5Y20BvdCZ8F2ElivH/0zu
+         9AEo0+/d2oCPHGEXgs0wUj5fskkaNcF3sxm1lGfOnuv9EtgCvT7UuYR3GC3CDFtxqT1G
+         yp94Q2YMApSmYgq4UPNNxJ7so1vlyBp14sZfg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=FU0d7+kSraKdngkIyPIt5NSqznuzgSQmwjTFbIqh82I=;
+        b=KtU3Y6suhXfftUjOBGT6Lj+hwdUZKq0oxHL/XnNJO46RRvPAoMWfjom9ATFvrnftqy
+         6xAsl07tuhA4EQyBACRKiKPIfgBp3Vka6RxBIgoSgYkSf0e4q7UzPbJ8n2HHyQNTQfzt
+         hWTeClN5cv/rF7IUfZg4P+MwKcFRqMGdtp5ri3frWUCccwZICNTMVFj55oRPrBM79nHF
+         01YamiLHaNFtEL3qosN446RJc1uLR7YMUy0JYIRwD/jNkUN6kVLUuQJ8lnOMkiZ0J1Y8
+         abvm2OoDpMPRESTN5yLSXPR/wp8wo+QKXhIeJB634s5Lo64jOOUaEL9Rp4JnzPESOD6o
+         TwZA==
+X-Gm-Message-State: AOAM5314dbsEmhFXx7OL6fM+DIX1uPkirnet1Ded/NXNjjxm8nmgguOj
+        XGiKzUcRLf3ZXG25ceCx8Z5ahA==
+X-Google-Smtp-Source: ABdhPJz9rVlxy/Vj9yTBij7i/ZlVLzwSpGkTG/jrgEO2Fbi8ijXxMCLylcVrmu8o6ORVeKgxAsWApg==
+X-Received: by 2002:adf:f751:: with SMTP id z17mr5877306wrp.150.1621540996980;
+        Thu, 20 May 2021 13:03:16 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id c15sm4269990wro.21.2021.05.20.13.03.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 13:03:16 -0700 (PDT)
+Date:   Thu, 20 May 2021 22:03:14 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>
+Subject: Re: [PATCH 0/7] component: Make into an aggregate bus
+Message-ID: <YKbAgipp/rmSjOXn@phenom.ffwll.local>
+Mail-Followup-To: Stephen Boyd <swboyd@chromium.org>,
+        Saravana Kannan <saravanak@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Russell King <rmk+kernel@arm.linux.org.uk>
+References: <20210520002519.3538432-1-swboyd@chromium.org>
+ <CAGETcx-jK3pBNRYevPmRhw1TALHNjtM5dSxCdEuB+2sBH32rtQ@mail.gmail.com>
+ <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CAE-0n522QRUfQOSGmYS59AbFdx2kmtz-CNszdWfLnPCbMkCryA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Linus,
+On Wed, May 19, 2021 at 09:41:27PM -0400, Stephen Boyd wrote:
+> Quoting Saravana Kannan (2021-05-19 18:27:50)
+> > On Wed, May 19, 2021 at 5:25 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > This series is from discussion we had on reordering the device lists for
+> > > drm shutdown paths[1]. I've introduced an 'aggregate' bus that we put
+> > > the aggregate device onto and then we probe the device once all the
+> > > components are probed and call component_add(). The probe/remove hooks
+> > > are where the bind/unbind calls go, and then a shutdown hook is added
+> > > that can be used to shutdown the drm display pipeline at the right time.
+> > >
+> > > This works for me on my sc7180 board, but I'm currently struggling with
+> > > the last patch where we migrate the msm driver. It runs into a runtime
+> > > PM problem where the parent device isn't runtime PM enabled yet. I'm
+> > > still trying to figure out a clean solution there. Moving runtime PM
+> > > around breaks boot and I think that's because the power domain is off.
+> > >
+> > > Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> > > Cc: "Rafael J. Wysocki" <rafael@kernel.org>
+> > > Cc: Rob Clark <robdclark@gmail.com>
+> > > Cc: Russell King <rmk+kernel@arm.linux.org.uk>
+> > > Cc: Saravana Kannan <saravanak@google.com>
+> > >
+> > > [1] https://lore.kernel.org/r/20210508074118.1621729-1-swboyd@chromium.org
+> > >
+> >
+> > I skimmed through the series and in general the idea is good, but I'm
+> > not sure why each component user needs to be converted/"modern" before
+> > it can make use of the benefits of this series. Why not just have
+> > wrapper functions around the component ops that the new aggregate bus
+> > driver can just call? That'll give all the existing component users
+> > the new ability to use the new ops without having to have two
+> > versions.
+> 
+> The existing users can only have one or the other. Either use the ops
+> structure or use the struct aggregate_driver. What benefits of this
+> series are they not gaining?
+> 
+> > That'll also allow us to do other improvements (I have some
+> > in mind) that'll apply to all the component users instead of only the
+> > converted ones.
+> 
+> What do you have in mind? I didn't want to convert drivers over to the
+> new way of doing things without making them consciously change their
+> code. Otherwise I worry it will break things in random, subtle ways. The
+> last patch, as I mentioned above in the cover, causes warnings because
+> the display driver is enabling runtime PM in an odd spot as part of the
+> bind callback of the aggregate/master. That should move out of there and
+> into the msm_pdev driver that registers the aggregate from what I can
+> tell.
 
-This pull request provides a fix for a regression introduced in the v5.13
-merge window by commit e36299efe7d7 ("kcsan, debugfs: Move debugfs file
-creation out of early init").  The regression is not easy to trigger,
-requiring a KCSAN build using clang with CONFIG_LTO_CLANG=y.  The fix
-simply makes the kcsan_debugfs_init() function's type initcall-compatible.
-This fix has been posted to the relevant mailing lists:
+Hm yeah that's annoying. Another thing to check is that there's no locking
+issues with lockdep enabled. But there's plenty of other places that
+register/bind drivers within other drivers, so it should all work.
 
-https://lore.kernel.org/lkml/20210514140015.2944744-1-arnd@kernel.org/
-
-It has also been exposed to -next testing and has been subject to more
-than the usual number of reviews.
-
-The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
-
-  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git urgent.2021.05.20a
-
-for you to fetch changes up to 976aac5f882989e4f6c1b3a7224819bf0e801c6a:
-
-  kcsan: Fix debugfs initcall return type (2021-05-18 10:58:02 -0700)
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      kcsan: Fix debugfs initcall return type
-
- kernel/kcsan/debugfs.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I think this is a good reason why more drivers should be converted (in
+separate patches) so that we get a lot more testing and can find bugs in
+the design.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
