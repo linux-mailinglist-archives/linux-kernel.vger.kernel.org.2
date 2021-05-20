@@ -2,111 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B7C638B90D
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:38:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5D4E38B910
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 23:40:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhETVkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 17:40:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        id S230291AbhETVlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 17:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230257AbhETVkL (ORCPT
+        with ESMTP id S230273AbhETVlt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 17:40:11 -0400
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48215C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:38:47 -0700 (PDT)
-Received: by mail-lj1-x234.google.com with SMTP id c15so21580839ljr.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:38:47 -0700 (PDT)
+        Thu, 20 May 2021 17:41:49 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB308C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:40:27 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id h24so2533667qtm.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=goseYwTkzgMm+FX+KCZopTYXh0tzEbkX4x36YfbUrsw=;
-        b=EC5etK9i7fAPFZR2RrpV8bzGlnP0ytGmzkd7hkYjxPqb1E/JJAtuQXFeMofPFRcDHW
-         TPq5jkxO+jZnj7CC1E/kNocAD+1S0fRowDF0LOnTYbhWVPj7S/wIHTf5MfZSrbMqb+8p
-         4qoW9Fdgfss9Ruo6qfzHavqNe3aOeNjWyvu97aGzHVeVaIETa/yJYwkx7Qfahm1KLOes
-         NAUoGN1pybuE2UD7uuvQg6kQSxAUZ15V/0yAF8iqs/0ntH2olPZfBXvvzNhuPw8d4LD5
-         NWHpRb5OLMzCj8bb0YO1Wg8JXFcYByxSxl/kQDPA12IilD+EdlLjl9qL1m5nwLQEDAgJ
-         8gPA==
+        bh=ZIgxNeJtIZOCUu26nn+aGqgcAu9hM+yO4Nw/eB0jBeE=;
+        b=OQqXZJQ0WQrHpmGQhIiwMtNefwOL7yYcMbOia1kGiGWxNB3k8j/ikmE+Pgtt0Cqjuu
+         tmIdpKxL+hf08loIQOk+J8Fh/l4KYpp/jV7K+vvTqq+etwPRC5CLRJyHvtMQIRVdxm29
+         pSHqTAtKSinj4v9l/XhymSogCplDJ2+uHGogE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=goseYwTkzgMm+FX+KCZopTYXh0tzEbkX4x36YfbUrsw=;
-        b=qNW0ZFaBBLAJ1U4qyGOVl0UvwxS9NTenMb2WdyZ6Qo2Y6Hr9dJ+FNayVxD3k7nP9x1
-         8YwGdPUq43S6Wl7IgqGsRricAvTZfnnG3xsJz+7GfkH0xpDIOEhfHUlJldRWmd6er6vF
-         YDNlQYT82bPjurntIe2++aMkJSz6udRzpfXF0BNRarTUqSZn4cW0gc1+H6wECVokAcrs
-         xnu9SWatPjOEgQo24B/G4E0A3Zke7n+SV9m+15LgNcBOlhJpQctejdA6NnuzAcfWuqml
-         XG9YqMRPwt3Vpdr2viqbiB3Bc1iTJH/i0LwT8oKsfmYI3axdTUeQWbC6PLGYLp8f4bTR
-         Yv8g==
-X-Gm-Message-State: AOAM5335Zi8hUoBZVy+amST6+rQH+IJA/ZYYp60r0SPUwy2oP5I+1Jnh
-        0PS1flSXK47EPziO+JfSDBx6uUu7CsEN47FwZIv5Bw==
-X-Google-Smtp-Source: ABdhPJzwMrDBwob6pN+S2ilFdQh5N8EphMYiUtNUox7/axVceZ5jIphVm7b3994vHgkqA+TwbzuLpeYT6O39l9e/IaM=
-X-Received: by 2002:a2e:a54d:: with SMTP id e13mr2982312ljn.266.1621546725312;
- Thu, 20 May 2021 14:38:45 -0700 (PDT)
+        bh=ZIgxNeJtIZOCUu26nn+aGqgcAu9hM+yO4Nw/eB0jBeE=;
+        b=OeMoNWyzOmmbPlkSqC1VkpC/8xlVx2NKmVxLRVtstM15JVnJgV+AQ5BmHWrpZsDeRc
+         WYIEUIh2QB/iPKZjseZkPuQVoVxhe6eVlXmKIuwJXA/KdV1Sbe2v3a0O/pt0EKnd/X/l
+         A2OfJgzgBwoqY3jhFK90uV60NBJRZawSABYDpenYLk4RS60fEW75PsinPBm1CwJYBtof
+         FnHqC5OGPX4u8sXQ8TrjrkFaYRJsw3woNp8m7z/GGi5C+sDeyB+CPPxSkHVfyOrJSDUL
+         YtXs9GILS2GOOZDSc18FK30lGBUVZW23vXaCZrAj0OM4na4bGI+y+SHwtSyxbS21dPza
+         8w3Q==
+X-Gm-Message-State: AOAM531F/gc1dU3hgl7LFkQZt8FR3EozkJk/wrNPwM6+mm0K7kFKZTEI
+        jLgvCmiNxAMmuiOYk8ILiCfomi1jUVPUjw==
+X-Google-Smtp-Source: ABdhPJynaLedkQ6d1tjnLCotZSO5wbqjrFUNBIf9Hv9f4Qp5qFIUkWnZh2q36JBlXkL1NTTlCDN4ow==
+X-Received: by 2002:ac8:6b0a:: with SMTP id w10mr7416945qts.60.1621546826543;
+        Thu, 20 May 2021 14:40:26 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id 7sm3456890qtu.38.2021.05.20.14.40.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 14:40:25 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id r7so2705465ybs.10
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 14:40:25 -0700 (PDT)
+X-Received: by 2002:a25:80d4:: with SMTP id c20mr10916531ybm.345.1621546824581;
+ Thu, 20 May 2021 14:40:24 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520183614.1227046-1-posk@google.com> <87mtspm7fe.fsf@meer.lwn.net>
-In-Reply-To: <87mtspm7fe.fsf@meer.lwn.net>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Thu, 20 May 2021 14:38:33 -0700
-Message-ID: <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
+References: <20210513122429.25295-1-srivasam@codeaurora.org> <CAE-0n51jjHWSFiip-utVKjAQbaJuj+oKq0GPLgw2q2mG_9B=eg@mail.gmail.com>
+In-Reply-To: <CAE-0n51jjHWSFiip-utVKjAQbaJuj+oKq0GPLgw2q2mG_9B=eg@mail.gmail.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 20 May 2021 14:40:13 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=Uzg+a6ZrinAnq_=29103JPs0=oWTa3VkfTUbPRkvGyjw@mail.gmail.com>
+Message-ID: <CAD=FV=Uzg+a6ZrinAnq_=29103JPs0=oWTa3VkfTUbPRkvGyjw@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: Add wakeup delay for adau codec
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Judy Hsiao <judyhsiao@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rohit kumar <rohitkr@codeaurora.org>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 2:17 PM Jonathan Corbet <corbet@lwn.net> wrote:
+Hi,
+
+
+On Mon, May 17, 2021 at 3:44 PM Stephen Boyd <swboyd@chromium.org> wrote:
 >
-> Peter Oskolkov <posk@google.com> writes:
->
-> > As indicated earlier in the FUTEX_SWAP patchset:
+> Quoting Srinivasa Rao Mandadapu (2021-05-13 05:24:29)
+> > Add wakeup delay for fixing PoP noise during capture begin.
 > >
-> > https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
+> > Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+> > Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+> > ---
+> >  arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi | 1 +
+> >  1 file changed, 1 insertion(+)
 > >
-> > "Google Fibers" is a userspace scheduling framework
-> > used widely and successfully at Google to improve in-process workload
-> > isolation and response latencies. We are working on open-sourcing
-> > this framework, and UMCG (User-Managed Concurrency Groups) kernel
-> > patches are intended as the foundation of this.
+> > diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+> > index 4c6e433c8226..3eb8550da1fc 100644
+> > --- a/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor-coachz.dtsi
+> > @@ -23,6 +23,7 @@ / {
+> >         adau7002: audio-codec-1 {
+> >                 compatible = "adi,adau7002";
+> >                 IOVDD-supply = <&pp1800_l15a>;
+> > +               wakeup-delay-ms = <15>;
 >
-> So I have to ask...is there *any* documentation out there on what this
-> is and how people are supposed to use it?  Shockingly, typing "Google
-> fibers" into Google leads to a less than fully joyful outcome...  This
-> won't be easy for anybody to review if they have to start by
-> reverse-engineering what it's supposed to do.
+> Is this part of the binding?
 
-Hi Jonathan,
+It doesn't seem to be, but it's supported by the code. It's also in
+the generic "dmic" bindings. The bindings are pre-yaml. Seems like
+someone needs to take charge and clean those up, but I'm not sure we
+need to block this patch on it?
 
-There is this Linux Plumbers video: https://www.youtube.com/watch?v=KXuZi9aeGTw
-And the pdf: http://pdxplumbers.osuosl.org/2013/ocw//system/presentations/1653/original/LPC%20-%20User%20Threading.pdf
+Though I'm not an expert on audio stuff, assuming that this works OK
+I'm fine with:
 
-I did not reference them in the patchset because links to sites other
-than kernel.org are strongly discouraged... I will definitely add a
-documentation patch.
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-Feel free to reach out to me directly or through this LKML thread if
-you have any questions.
-
-Do you think a documentation patch would be useful at this point, as
-opposed to a free-form email discussion?
-
-Thanks,
-Peter
-
->
-> Thanks,
->
-> jon
+-Doug
