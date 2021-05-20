@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CB6638AA86
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:13:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD4038AA90
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:14:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238958AbhETLPL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:15:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52988 "EHLO mail.kernel.org"
+        id S240273AbhETLPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:15:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52986 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239321AbhETKyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S239322AbhETKyp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 06:54:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 70BD76186A;
-        Thu, 20 May 2021 10:01:10 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A35DA61CD9;
+        Thu, 20 May 2021 10:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621504870;
-        bh=wKomj3l3fSIjETEjvO5hN62qsN2OpWb+UZ7bgIg2lYE=;
+        s=korg; t=1621504873;
+        bh=W0/dNqm/kaKCm1AGdTHFv975kkgTSR20LvHF+6GkFLI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FvjotFY7y5Gu3Vpv/8wwisg3rwpaR+tCVsSSHZn9e0AfRiOEBPF+HmxzlTxxOPetz
-         hpJhjpQXVwZ8a9ZdYrh1VVHKBedPQGusgKS/xRBTUR7n3WytGhQL0SXj6IUdSYL5xI
-         cZYG7u15H4P/heRIyIZYYonx51vNisov9PzYIM5k=
+        b=oj9DQpSOvef82GT5kZsHx/GQ8xCAogkpFlxKGJE3qOedlKREFmBg0eOmwPkct2sLo
+         NegLZTTIqZpqCEwzv5KMDDTeIXXF8lCHL26bQkfZH/FzKkP/amqScwIqSgUH+desMb
+         YFC1rHtRWkEZWdiMCDeDr5z5GNlrG7bZxO88hEvM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ingo Molnar <mingo@kernel.org>,
-        Mike Travis <travis@sgi.com>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 119/240] x86/platform/uv: Fix !KEXEC build failure
-Date:   Thu, 20 May 2021 11:21:51 +0200
-Message-Id: <20210520092112.663373758@linuxfoundation.org>
+        stable@vger.kernel.org, Michael Kelley <mikelley@microsoft.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wei Liu <wei.liu@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 120/240] Drivers: hv: vmbus: Increase wait time for VMbus unload
+Date:   Thu, 20 May 2021 11:21:52 +0200
+Message-Id: <20210520092112.694255937@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
 References: <20210520092108.587553970@linuxfoundation.org>
@@ -39,59 +40,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ingo Molnar <mingo@kernel.org>
+From: Michael Kelley <mikelley@microsoft.com>
 
-[ Upstream commit c2209ea55612efac75de0a58ef5f7394fae7fa0f ]
+[ Upstream commit 77db0ec8b7764cb9b09b78066ebfd47b2c0c1909 ]
 
-When KEXEC is disabled, the UV build fails:
+When running in Azure, disks may be connected to a Linux VM with
+read/write caching enabled. If a VM panics and issues a VMbus
+UNLOAD request to Hyper-V, the response is delayed until all dirty
+data in the disk cache is flushed.  In extreme cases, this flushing
+can take 10's of seconds, depending on the disk speed and the amount
+of dirty data. If kdump is configured for the VM, the current 10 second
+timeout in vmbus_wait_for_unload() may be exceeded, and the UNLOAD
+complete message may arrive well after the kdump kernel is already
+running, causing problems.  Note that no problem occurs if kdump is
+not enabled because Hyper-V waits for the cache flush before doing
+a reboot through the BIOS/UEFI code.
 
-  arch/x86/platform/uv/uv_nmi.c:875:14: error: ‘uv_nmi_kexec_failed’ undeclared (first use in this function)
+Fix this problem by increasing the timeout in vmbus_wait_for_unload()
+to 100 seconds. Also output periodic messages so that if anyone is
+watching the serial console, they won't think the VM is completely
+hung.
 
-Since uv_nmi_kexec_failed is only defined in the KEXEC_CORE #ifdef branch,
-this code cannot ever have been build tested:
-
-	if (main)
-		pr_err("UV: NMI kdump: KEXEC not supported in this kernel\n");
-	atomic_set(&uv_nmi_kexec_failed, 1);
-
-Nor is this use possible in uv_handle_nmi():
-
-                atomic_set(&uv_nmi_kexec_failed, 0);
-
-These bugs were introduced in this commit:
-
-    d0a9964e9873: ("x86/platform/uv: Implement simple dump failover if kdump fails")
-
-Which added the uv_nmi_kexec_failed assignments to !KEXEC code, while making the
-definition KEXEC-only - apparently without testing the !KEXEC case.
-
-Instead of complicating the #ifdef maze, simplify the code by requiring X86_UV
-to depend on KEXEC_CORE. This pattern is present in other architectures as well.
-
-( We'll remove the untested, 7 years old !KEXEC complications from the file in a
-  separate commit. )
-
-Fixes: d0a9964e9873: ("x86/platform/uv: Implement simple dump failover if kdump fails")
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Cc: Mike Travis <travis@sgi.com>
-Cc: linux-kernel@vger.kernel.org
+Fixes: 911e1987efc8 ("Drivers: hv: vmbus: Add timeout to vmbus_wait_for_unload")
+Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+Link: https://lore.kernel.org/r/1618894089-126662-1-git-send-email-mikelley@microsoft.com
+Signed-off-by: Wei Liu <wei.liu@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/x86/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/hv/channel_mgmt.c | 30 +++++++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 80636caee07c..3ce5b5bd1dc4 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -495,6 +495,7 @@ config X86_UV
- 	depends on X86_EXTENDED_PLATFORM
- 	depends on NUMA
- 	depends on EFI
-+	depends on KEXEC_CORE
- 	depends on X86_X2APIC
- 	depends on PCI
- 	---help---
+diff --git a/drivers/hv/channel_mgmt.c b/drivers/hv/channel_mgmt.c
+index 7bf5e2fe1751..60c122b355ea 100644
+--- a/drivers/hv/channel_mgmt.c
++++ b/drivers/hv/channel_mgmt.c
+@@ -675,6 +675,12 @@ static void init_vp_index(struct vmbus_channel *channel, u16 dev_type)
+ 	channel->target_vp = hv_context.vp_index[cur_cpu];
+ }
+ 
++#define UNLOAD_DELAY_UNIT_MS	10		/* 10 milliseconds */
++#define UNLOAD_WAIT_MS		(100*1000)	/* 100 seconds */
++#define UNLOAD_WAIT_LOOPS	(UNLOAD_WAIT_MS/UNLOAD_DELAY_UNIT_MS)
++#define UNLOAD_MSG_MS		(5*1000)	/* Every 5 seconds */
++#define UNLOAD_MSG_LOOPS	(UNLOAD_MSG_MS/UNLOAD_DELAY_UNIT_MS)
++
+ static void vmbus_wait_for_unload(void)
+ {
+ 	int cpu;
+@@ -692,12 +698,17 @@ static void vmbus_wait_for_unload(void)
+ 	 * vmbus_connection.unload_event. If not, the last thing we can do is
+ 	 * read message pages for all CPUs directly.
+ 	 *
+-	 * Wait no more than 10 seconds so that the panic path can't get
+-	 * hung forever in case the response message isn't seen.
++	 * Wait up to 100 seconds since an Azure host must writeback any dirty
++	 * data in its disk cache before the VMbus UNLOAD request will
++	 * complete. This flushing has been empirically observed to take up
++	 * to 50 seconds in cases with a lot of dirty data, so allow additional
++	 * leeway and for inaccuracies in mdelay(). But eventually time out so
++	 * that the panic path can't get hung forever in case the response
++	 * message isn't seen.
+ 	 */
+-	for (i = 0; i < 1000; i++) {
++	for (i = 1; i <= UNLOAD_WAIT_LOOPS; i++) {
+ 		if (completion_done(&vmbus_connection.unload_event))
+-			break;
++			goto completed;
+ 
+ 		for_each_online_cpu(cpu) {
+ 			page_addr = hv_context.synic_message_page[cpu];
+@@ -717,9 +728,18 @@ static void vmbus_wait_for_unload(void)
+ 			vmbus_signal_eom(msg, message_type);
+ 		}
+ 
+-		mdelay(10);
++		/*
++		 * Give a notice periodically so someone watching the
++		 * serial output won't think it is completely hung.
++		 */
++		if (!(i % UNLOAD_MSG_LOOPS))
++			pr_notice("Waiting for VMBus UNLOAD to complete\n");
++
++		mdelay(UNLOAD_DELAY_UNIT_MS);
+ 	}
++	pr_err("Continuing even though VMBus UNLOAD did not complete\n");
+ 
++completed:
+ 	/*
+ 	 * We're crashing and already got the UNLOAD_RESPONSE, cleanup all
+ 	 * maybe-pending messages on all CPUs to be able to receive new
 -- 
 2.30.2
 
