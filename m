@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FE3838AE33
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F238938AE36
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 14:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233092AbhETMa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 08:30:27 -0400
+        id S232526AbhETMbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 08:31:13 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55306 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231661AbhETMaW (ORCPT
+        with ESMTP id S233367AbhETMbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 08:30:22 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87408C0BC531
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:27:31 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id k15so11625217pgb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 04:27:31 -0700 (PDT)
+        Thu, 20 May 2021 08:31:00 -0400
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF4AC04868F;
+        Thu, 20 May 2021 04:30:30 -0700 (PDT)
+Received: by mail-qk1-x730.google.com with SMTP id 124so3407320qkh.10;
+        Thu, 20 May 2021 04:30:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EI+b+kMn2ARemJx1hhgk9qIJtq1SC0cuuSNzLXUaFPU=;
-        b=wEs3r0ouOd/lAUnXDP4p7OBpP0bLz2MkWTm9RnzZlvb3k8SlaniCHZou/B6bXLJUou
-         qKeY3M0zgjVrJpwjahTjwchGWalIFju0xzY56kl74TMu9iqGooHSCF5NA27x4uQvPOVP
-         Tfa5XOlUtD4DY2Kkv2kh/jg3AAQ77lFb8hGMHZiNIpvg0+5mjzRT3QMrqirOLHPqqhMJ
-         Af2FbuSoK+fg3oJBYTIRKB0J0q36889Mjh2SK76h9BBsk8e7ZH+kLVF7mcchgIwHk6NZ
-         XzonvXOQmj+VYpv6zUhFXZlWwbd4bwSAIO416xqY+BrX8PVpjiTDbxJ0NV4W97uXXAVA
-         0+JQ==
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NaNY9SfYLqqOrW2ih6TU14/XllrmHd8SYORcWh3RyZY=;
+        b=cmjDK05PXVCAYDR2Ji2n7oXjUtL8UL7OWR/PRUU66VYPAP1OlYxBh7MB4GViCN5jWR
+         C+2pXnYcRfqqmuVqu5ClSzF3kfZHexXXZidXF3nIHIzwb/49LK8scOOre/Tp5J8GTvBi
+         G9Vx1RpCj0aoZ0LqryFtmhTaJ/x3wFIp9sTKZP1PaPNrHiZOBvoXHqJ04w+cJR1SO4Wy
+         UEKiwH9aW5/VtRP6X2YaymfRNemNKWLuz1qU2Je2+yoYnMvkZm1vSJQSEIXOdeOoNt5l
+         6WElm0r4v9gQM+0N5PDYjKBR137eNNojwX+VCaf2YTXcRj9mC0/oF/LgbD1cF+D2a+7N
+         lf3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=EI+b+kMn2ARemJx1hhgk9qIJtq1SC0cuuSNzLXUaFPU=;
-        b=eLJT7QkQaa8WGwiG1YDCq55BszoAG/+i+3tMUr7oi+C92gFefv3GD83ZUPvI+40xPh
-         pryqI3VXsrinvZhd9uTH97lwuDbnf3DuMAW6UoR6u4xCBAXYJrAvS/C8loBLYedofbMO
-         AOEwg94B+MnmNrLYftaMKXDcax0zkkC+J/GRssuUbLxpNzg2dOSyYFR1aSi87Ah+lvo5
-         bF6MuAKiH/nQGQcr4+CPDaiejmJ43ZyDfmcDCDQqai6IluIFiXLFu8r3S82YbtXlJlJt
-         89yeBDzwiu7jr2SLJQUGyiYiajJgijLqMWXUQGOUmza62/vfdwiMcq25dxPaMM2d2VUw
-         +rtA==
-X-Gm-Message-State: AOAM530QXDdkPNj7OccR3km+XldZLulnmQHrQPWlWxmNAIwhDHcTRi+9
-        N5n+7qkfyg2QBQHoOv7JMhz4yA==
-X-Google-Smtp-Source: ABdhPJzi22tlm64GcJo2fMw+xKw/F1NYXPw6xHE6ogmaJWAYectx12vaeq1PQkxYmLRC26QlSy5QlA==
-X-Received: by 2002:a63:df53:: with SMTP id h19mr4143142pgj.20.1621510050930;
-        Thu, 20 May 2021 04:27:30 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id d3sm6232477pjw.35.2021.05.20.04.27.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 04:27:30 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Vladimir Lypak <junak.pub@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: qcom_smd: Make pm8953_lnldo linear_ranges entries properly sorted
-Date:   Thu, 20 May 2021 19:27:19 +0800
-Message-Id: <20210520112719.1814396-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        bh=NaNY9SfYLqqOrW2ih6TU14/XllrmHd8SYORcWh3RyZY=;
+        b=iBebDgGqlzadw0q0KdDc4oDujN+/mEENwfrxuH39TFox6TkK2XYLVHuz2qLH766I5p
+         EPMOSfoFZz7NX3DDRpSzbdFht3XHu8SjYkhr9Qgu2VMYiUQDI/g4b78JAfi1xPFjYms9
+         eWrbRUrAR/N15g5apfIrf6p+K45lIWoaPP9ITLnD4FcKSENlNDqF2BR81ci3ejeB99zW
+         yWg9EIqaFdRA7f6f3jv47jDiGZQK9dHCN/XseR9SThq8JZgNB2Wo8UstcBQT4Xygcgqu
+         XHc+cneAhx7z+3M+8u0uhjZ5bKJqDPzvJ/TGjygo0mjpqZ/EtgnSENOlrmlCOnR5Yue1
+         tV9g==
+X-Gm-Message-State: AOAM532k9gFhXSzBemoYddOpj5bgUpoOAMfY9tVffLt0iBNVy2w3dNyj
+        +pml447TXScMURN47d5On/jXAcIarws=
+X-Google-Smtp-Source: ABdhPJywsut+2A7b/XF954BE45BCzr6KoOEEI307zQdcJEKvz9GeiMmvNgHQFgLXB1PXchUgLj/Ksw==
+X-Received: by 2002:a05:620a:2a0f:: with SMTP id o15mr4303779qkp.295.1621510229875;
+        Thu, 20 May 2021 04:30:29 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p14sm1756788qki.27.2021.05.20.04.30.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 04:30:29 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+References: <20210520092102.149300807@linuxfoundation.org>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 4.4 000/190] 4.4.269-rc1 review
+Message-ID: <cf63f39b-6323-4c11-8e53-d04532ed0b6a@roeck-us.net>
+Date:   Thu, 20 May 2021 04:30:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For better readability, make linear_ranges entries sort by selector.
+On 5/20/21 2:21 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.4.269 release.
+> There are 190 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+> Anything received after that time might be too late.
+> 
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/qcom_smd-regulator.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+All mips builds still fail.
 
-diff --git a/drivers/regulator/qcom_smd-regulator.c b/drivers/regulator/qcom_smd-regulator.c
-index 05df7b00e3b1..198fcc6551f6 100644
---- a/drivers/regulator/qcom_smd-regulator.c
-+++ b/drivers/regulator/qcom_smd-regulator.c
-@@ -449,8 +449,8 @@ static const struct regulator_desc pm8950_pldo = {
- 
- static const struct regulator_desc pm8953_lnldo = {
- 	.linear_ranges = (struct linear_range[]) {
--		REGULATOR_LINEAR_RANGE(1380000, 8, 15, 120000),
- 		REGULATOR_LINEAR_RANGE(690000, 0, 7, 60000),
-+		REGULATOR_LINEAR_RANGE(1380000, 8, 15, 120000),
- 	},
- 	.n_linear_ranges = 2,
- 	.n_voltages = 16,
--- 
-2.25.1
+Building mips:defconfig ... failed
+--------------
+Error log:
+In file included from include/linux/kernel.h:136,
+                  from include/asm-generic/bug.h:13,
+                  from arch/mips/include/asm/bug.h:41,
+                  from include/linux/bug.h:4,
+                  from include/linux/page-flags.h:9,
+                  from kernel/bounds.c:9:
+arch/mips/include/asm/div64.h:59:30: error: expected identifier or '(' before '{' token
+    59 | #define __div64_32(n, base) ({      \
+       |                              ^
+include/asm-generic/div64.h:35:17: note: in expansion of macro '__div64_32'
+    35 | extern uint32_t __div64_32(uint64_t *dividend, uint32_t divisor);
+       |                 ^~~~~~~~~~
 
+It looks like the changes conflict with the code in include/asm-generic/div64.h.
+That code is completely different in later kernel versions.
+
+Guenter
