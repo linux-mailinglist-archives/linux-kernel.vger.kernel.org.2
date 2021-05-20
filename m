@@ -2,203 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D529E389CF7
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:12:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED39F389CFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 07:13:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhETFNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 01:13:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42990 "EHLO
+        id S230354AbhETFPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 01:15:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230312AbhETFNg (ORCPT
+        with ESMTP id S229534AbhETFPD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 01:13:36 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055FFC061574
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:12:16 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id s68-20020a372c470000b0290305f75a7cecso11571271qkh.8
-        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:12:15 -0700 (PDT)
+        Thu, 20 May 2021 01:15:03 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A68B7C061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:13:42 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id m190so11029332pga.2
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 22:13:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=nSHjW7bKWecnxQu3kZC8W2cm3ydg9WYf51lZYtMzgOg=;
-        b=vMOyzNDeFx1M0xVAhwjqx0war39y6moGq+UKVlCCcBk5bnt3xZzpzsr6K88mh/0wj7
-         wXEchgKN2iwi7xQ7tWHAjUHHwBXHbSrBl0vRuLN9r99Qmf2kxpE4tGpNUqyjXXwmdci4
-         njMzdWq4Raas3wxwNTR+tcNWS5Puh5/l1qTNJBcjOX/4whGr4cKAGnDS49Yz/VqLP4G0
-         NFr6ItR7Kgs9jSeNbML8IXxwDuYUSAyqLfk7kKLH3LuYbY01EOYQTOfBu4auVNvpItaF
-         mNMxKkB9qFxCvRF70tqHDX+6zt/gOXaBR3kodT9H3MulXbyH+IBRYEhp7NZOtRf5dILG
-         Kw3A==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KaaO+rgq7za+Bh8Mhm+Si3DDC8n5bDNTzJDoNGn9P2E=;
+        b=qV4r0Jx+ks1W5hhnGC7jyO5rmXFsKRY4Pgr1mWgOKRw1DzOB6TnhK4cO8H9YulwoJp
+         scVEvxyMoKcCwMDZ73f6dENYbgrwcoFbwxWdFCViAmFErYHPTnI5494i/7mwrv7Py5uo
+         5qBnKBnALrOJK1MYSBjJyTjedIjVHOSRHye0goYVAm2p/tSSeoXIAcgcU5qhA/CSuCsP
+         FdRX1aqycFNbDs57ELfhvgTpbZp31CguhPLfPhzXJjsvi7C6AiRse45Nu5PbFN7kDOUT
+         sJidtSnKt2/ju5HY5VrHL67+gB+hdXB8vNAQmYKEfTuYYwofiEWcSof+XwKU4zuAQf3N
+         raLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=nSHjW7bKWecnxQu3kZC8W2cm3ydg9WYf51lZYtMzgOg=;
-        b=r0c06UvKH7nEMLXR+VmyFuFqCpqh+Ie1qW81xWpnP0IrkK5y6lvaVdPbPEwAGhTgSj
-         Fdgxn4Fr9PDIgXztshNkpw+X2f7exCnfLiUVLcHvbSDSrxK0mofHg5XY4yo+HU4t2ZoJ
-         PWwGps5KopJFmYYoiqaACblbu0SmD/RncJHHLHC1lkO78YZQeqaYBCoIZVmxiVxlKac9
-         HWJl64tpv2nI1fLZXV56K5HBH4Cpqh8e0KivD4ubAndukjR5RF/SkBY5lFHhoaXEW1Pt
-         v8rQEwAL1tjZmNngn931is9O9ThKV4N35oN4s+FIMJHxhOyOOdiYkhJ1c2HX/zWGTbJ4
-         i0Sg==
-X-Gm-Message-State: AOAM532UxSY/9UoZvTVojV7WmgrZy8ERf87j1Rco4ZvvjIbkWqwJFXlm
-        RTFQvRzlBEfxUtX0+95CbIfMVJsxdD+NzcfFRg==
-X-Google-Smtp-Source: ABdhPJwQy5bIy4FKavqab+Kx8aF2GTMz69DN1UlXuxvD3QCWzHsTrIWRlA/EWOV/vDw4aNXYNhXNIErpZY5ypI2XpA==
-X-Received: from howardchung-p920.tpe.corp.google.com ([2401:fa00:1:10:5827:f259:c0e8:5b1d])
- (user=howardchung job=sendgmr) by 2002:a0c:e34b:: with SMTP id
- a11mr3693793qvm.24.1621487535094; Wed, 19 May 2021 22:12:15 -0700 (PDT)
-Date:   Thu, 20 May 2021 13:12:09 +0800
-Message-Id: <20210520131145.v2.1.I69e82377dd94ad7cba0cde75bcac2dce62fbc542@changeid>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.751.gd2f1c929bd-goog
-Subject: [PATCH v2] Bluetooth: disable filter dup when scan for adv monitor
-From:   Howard Chung <howardchung@google.com>
-To:     linux-bluetooth@vger.kernel.org, marcel@holtmann.org
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        Yun-Hao Chung <howardchung@chromium.org>,
-        Archie Pusaka <apusaka@chromium.org>,
-        Manish Mandlik <mmandlik@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KaaO+rgq7za+Bh8Mhm+Si3DDC8n5bDNTzJDoNGn9P2E=;
+        b=TUMY9bACMTDeD4mWM1i+uC1vGvWcEGK39V0DSVDKbdfrynN4+2bNXgQEqQTmaaV2KW
+         pRRqo/oShEViW23AjMVyNq8HBWjdoe/5ky34IWTgsc6BeJ31xtdYgSD7dqJL93JiTN2k
+         jRWfJuIMtZvw+lGYTBfD3A7xclS3V/eFvz1Lry7n/enUnLOPHpQH9OsyizqHub3CiBCJ
+         /GeXfCcAES7QzH9zebtcb0bs5wfeJtjzgGGkze5qXMbZDl2c8IJDldye+fUGOaSlOg6I
+         KCTi0NjgzunecSO96DF88s0FP3cHi9gsBDtqBGVxHFBNEmbmrg6MvMJmdGZsnuIcaQEQ
+         TTLg==
+X-Gm-Message-State: AOAM5335EMmydEXMh7rMo39OhmmgDzzPXPOzMjBlD6PIf+0wpmi56HgO
+        octAASMwbdq6XdiyhzIU4jlGG2Whq2zJY+ITY8uxGQ==
+X-Google-Smtp-Source: ABdhPJzOHTOmxl+VFUBauY9/0vq0OrnBaQUC1Sr+Oh0R3kHarioCsMUpiIKAF0Mxi7BBfX5ogHaw6+GY9NYaiRwT30A=
+X-Received: by 2002:a65:5288:: with SMTP id y8mr2747587pgp.31.1621487622186;
+ Wed, 19 May 2021 22:13:42 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210520025949.1866-1-songmuchun@bytedance.com> <20210519212412.5653163f94904b141d5d74ce@linux-foundation.org>
+In-Reply-To: <20210519212412.5653163f94904b141d5d74ce@linux-foundation.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 20 May 2021 13:13:05 +0800
+Message-ID: <CAMZfGtVKgfc7Gxf_07038SOJKDbi--9u0Jhwk7fTdrpkXu0m_Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: migrate: fix missing update
+ page_private to hugetlb_page_subpool
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal Hocko <mhocko@suse.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        zhengqi.arch@bytedance.com, fam.zheng@bytedance.com,
+        Anshuman Khandual <anshuman.khandual@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yun-Hao Chung <howardchung@chromium.org>
+On Thu, May 20, 2021 at 12:24 PM Andrew Morton
+<akpm@linux-foundation.org> wrote:
+>
+> On Thu, 20 May 2021 10:59:49 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> > Since commit d6995da31122 ("hugetlb: use page.private for hugetlb specific
+> > page flags") converts page.private for hugetlb specific page flags. We
+> > should use hugetlb_page_subpool() to get the subpool pointer instead of
+> > page_private(). The commit forgot to update it in the page migration
+> > routine. So fix it.
+> >
+> > ...
+> >
+> > --- a/mm/migrate.c
+> > +++ b/mm/migrate.c
+> > @@ -1290,7 +1290,7 @@ static int unmap_and_move_huge_page(new_page_t get_new_page,
+> >        * page_mapping() set, hugetlbfs specific move page routine will not
+> >        * be called and we could leak usage counts for subpools.
+> >        */
+> > -     if (page_private(hpage) && !page_mapping(hpage)) {
+> > +     if (hugetlb_page_subpool(hpage) && !page_mapping(hpage)) {
+> >               rc = -EBUSY;
+> >               goto out_unlock;
+> >       }
+>
+> So it uses the wrong page*, so this isn't just a cosmetic fix.  One
+> cannot tell from this changelog.
+>
+> Please describe the runtime effects of this bug.  Please always include
+> this information when fixing bugs.  And when adding them.
 
-Disable duplicates filter when scanning for advertisement monitor for
-the following reasons. The scanning includes active scan and passive
-scan.
+OK. I should update the commit log in the next version.
 
-For HW pattern filtering (ex. MSFT), Realtek and Qualcomm controllers
-ignore RSSI_Sampling_Period when the duplicates filter is enabled.
-
-For SW pattern filtering, when we're not doing interleaved scanning, it
-is necessary to disable duplicates filter, otherwise hosts can only
-receive one advertisement and it's impossible to know if a peer is still
-in range.
-
-Reviewed-by: Archie Pusaka <apusaka@chromium.org>
-Reviewed-by: Manish Mandlik <mmandlik@chromium.org>
-
-Signed-off-by: Yun-Hao Chung <howardchung@chromium.org>
-
----
-
-Changes in v2:
-- include the vendor name in the comment and commit messages
-
- net/bluetooth/hci_request.c | 46 +++++++++++++++++++++++++++++++++----
- 1 file changed, 41 insertions(+), 5 deletions(-)
-
-diff --git a/net/bluetooth/hci_request.c b/net/bluetooth/hci_request.c
-index fa9125b782f85..3465862429fb5 100644
---- a/net/bluetooth/hci_request.c
-+++ b/net/bluetooth/hci_request.c
-@@ -932,7 +932,7 @@ static bool scan_use_rpa(struct hci_dev *hdev)
- 
- static void hci_req_start_scan(struct hci_request *req, u8 type, u16 interval,
- 			       u16 window, u8 own_addr_type, u8 filter_policy,
--			       bool addr_resolv)
-+			       bool filter_dup, bool addr_resolv)
- {
- 	struct hci_dev *hdev = req->hdev;
- 
-@@ -997,7 +997,7 @@ static void hci_req_start_scan(struct hci_request *req, u8 type, u16 interval,
- 
- 		memset(&ext_enable_cp, 0, sizeof(ext_enable_cp));
- 		ext_enable_cp.enable = LE_SCAN_ENABLE;
--		ext_enable_cp.filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
-+		ext_enable_cp.filter_dup = filter_dup;
- 
- 		hci_req_add(req, HCI_OP_LE_SET_EXT_SCAN_ENABLE,
- 			    sizeof(ext_enable_cp), &ext_enable_cp);
-@@ -1016,7 +1016,7 @@ static void hci_req_start_scan(struct hci_request *req, u8 type, u16 interval,
- 
- 		memset(&enable_cp, 0, sizeof(enable_cp));
- 		enable_cp.enable = LE_SCAN_ENABLE;
--		enable_cp.filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
-+		enable_cp.filter_dup = filter_dup;
- 		hci_req_add(req, HCI_OP_LE_SET_SCAN_ENABLE, sizeof(enable_cp),
- 			    &enable_cp);
- 	}
-@@ -1053,6 +1053,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 	u8 own_addr_type;
- 	u8 filter_policy;
- 	u16 window, interval;
-+	/* Default is to enable duplicates filter */
-+	u8 filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
- 	/* Background scanning should run with address resolution */
- 	bool addr_resolv = true;
- 
-@@ -1106,6 +1108,20 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 	} else if (hci_is_adv_monitoring(hdev)) {
- 		window = hdev->le_scan_window_adv_monitor;
- 		interval = hdev->le_scan_int_adv_monitor;
-+
-+		/* Disable duplicates filter when scanning for advertisement
-+		 * monitor for the following reasons.
-+		 *
-+		 * For HW pattern filtering (ex. MSFT), Realtek and Qualcomm
-+		 * controllers ignore RSSI_Sampling_Period when the duplicates
-+		 * filter is enabled.
-+		 *
-+		 * For SW pattern filtering, when we're not doing interleaved
-+		 * scanning, it is necessary to disable duplicates filter,
-+		 * otherwise hosts can only receive one advertisement and it's
-+		 * impossible to know if a peer is still in range.
-+		 */
-+		filter_dup = LE_SCAN_FILTER_DUP_DISABLE;
- 	} else {
- 		window = hdev->le_scan_window;
- 		interval = hdev->le_scan_interval;
-@@ -1113,7 +1129,8 @@ void hci_req_add_le_passive_scan(struct hci_request *req)
- 
- 	bt_dev_dbg(hdev, "LE passive scan with whitelist = %d", filter_policy);
- 	hci_req_start_scan(req, LE_SCAN_PASSIVE, interval, window,
--			   own_addr_type, filter_policy, addr_resolv);
-+			   own_addr_type, filter_policy, filter_dup,
-+			   addr_resolv);
- }
- 
- static bool adv_instance_is_scannable(struct hci_dev *hdev, u8 instance)
-@@ -3135,6 +3152,8 @@ static int active_scan(struct hci_request *req, unsigned long opt)
- 	u8 own_addr_type;
- 	/* White list is not used for discovery */
- 	u8 filter_policy = 0x00;
-+	/* Default is to enable duplicates filter */
-+	u8 filter_dup = LE_SCAN_FILTER_DUP_ENABLE;
- 	/* Discovery doesn't require controller address resolution */
- 	bool addr_resolv = false;
- 	int err;
-@@ -3159,9 +3178,26 @@ static int active_scan(struct hci_request *req, unsigned long opt)
- 	if (err < 0)
- 		own_addr_type = ADDR_LE_DEV_PUBLIC;
- 
-+	if (hci_is_adv_monitoring(hdev)) {
-+		/* Duplicate filter should be disabled when some advertisement
-+		 * monitor is activated, otherwise AdvMon can only receive one
-+		 * advertisement for one peer(*) during active scanning, and
-+		 * might report loss to these peers.
-+		 *
-+		 * Note that different controllers have different meanings of
-+		 * |duplicate|. Some of them consider packets with the same
-+		 * address as duplicate, and others consider packets with the
-+		 * same address and the same RSSI as duplicate. Although in the
-+		 * latter case we don't need to disable duplicate filter, but
-+		 * it is common to have active scanning for a short period of
-+		 * time, the power impact should be neglectable.
-+		 */
-+		filter_dup = LE_SCAN_FILTER_DUP_DISABLE;
-+	}
-+
- 	hci_req_start_scan(req, LE_SCAN_ACTIVE, interval,
- 			   hdev->le_scan_window_discovery, own_addr_type,
--			   filter_policy, addr_resolv);
-+			   filter_policy, filter_dup, addr_resolv);
- 	return 0;
- }
- 
--- 
-2.31.1.751.gd2f1c929bd-goog
-
+Thanks.
