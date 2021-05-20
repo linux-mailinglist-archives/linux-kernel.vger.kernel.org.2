@@ -2,279 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61C3C38B359
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:36:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4FC738B35E
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:36:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243578AbhETPhZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:37:25 -0400
-Received: from mail-vi1eur05on2090.outbound.protection.outlook.com ([40.107.21.90]:8577
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S240517AbhETPhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:37:15 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eYA6Nat/v0kXeJhRUqNIDMbD023sPi5pXVKadTSOzDhMeNOuBoIbe0ug0NCoBQ8HNro67+boMUD3SdifbbsK28tosblO9dCGCbPWS//9pQn3p4vxmrvZ3GtYY4CI9TvMRmeignHcNUDqwICqsHWb7VC9zYvlM+1hCxcH8f6xlOyRR6DJ2vQNNg3cZnkX277XnYNyRioCpWRqfzhsQHKOSSyZkuxRbMYd3PeWUmmcdzqiWSikzx+bce5YU7hBN1xc5bWU5rICvpq67RhaGSby2UigoDIlnfA6GJksx3uXUnW0EqebYfo5U82bNebouT9YEaAeTEDnZ1KNd+k8RoHEKg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=05sY2SRMHPIV4oXtcsnvXFpQaIN1643PIPcK1mV8zyo=;
- b=I3TVmGrEX2o3Rg+6mG+TsUipiLH14e1oKyEkPOI4feRajtyGuP3F8vSCuH0elY8xw4fpfzhps0qwIFbmO0P5cL0RNnKEJF6xr1Ww/JQ9oXibWdNcW3qxKBr0IGby9YhUHMxAh5SBhrsysaBqvsLzqtLw3ZLtaEyIYr5jdEfnlRP13XfuW9fLeUn7WBs09pr7DAyTIe8lWYPiw9qLm7eaoHlfBKMmx7AJOIzi0Vam08a4rl0k7Fj7qWO3PbckbGzrUgnxHXUDskxrfw6EmoV5Ww8jYoY7GBYdmt8V44Xr2ciwLIklr59mCr28cvQ9E5JtcE8BL+0NAuLSUuemcnpKfA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=plvision.eu; dmarc=pass action=none header.from=plvision.eu;
- dkim=pass header.d=plvision.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plvision.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=05sY2SRMHPIV4oXtcsnvXFpQaIN1643PIPcK1mV8zyo=;
- b=XVMXhaVJcDz4FIHedaXAyM15VllUm9CwmVc7438Eo29IjruX0JyIGIYpL0/OYZups840E1yZoxndAPMkAL+mPGKOzYXdLRmG+FWsbJTFzAxr+0YwakbvJpozgir+3PHi+CRhVyfdrN38bxvkH2lA1soMJDe8YCHe/+NfA5akoVc=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none header.from=plvision.eu;
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:56::28) by
- HE1P190MB0268.EURP190.PROD.OUTLOOK.COM (2603:10a6:7:62::24) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4129.28; Thu, 20 May 2021 15:35:47 +0000
-Received: from HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::edb4:ae92:2efe:8c8a]) by HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- ([fe80::edb4:ae92:2efe:8c8a%5]) with mapi id 15.20.4129.033; Thu, 20 May 2021
- 15:35:46 +0000
-From:   Vadym Kochan <vadym.kochan@plvision.eu>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     Vadym Kochan <vadym.kochan@plvision.eu>,
-        Taras Chornyi <tchornyi@marvell.com>,
-        linux-kernel@vger.kernel.org,
-        Mickey Rachamim <mickeyr@marvell.com>,
-        Vadym Kochan <vkochan@marvell.com>
-Subject: [RFC net-next v2 4/4] net: marvell: prestera: try to load previous fw version
-Date:   Thu, 20 May 2021 18:35:00 +0300
-Message-Id: <20210520153500.22930-5-vadym.kochan@plvision.eu>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210520153500.22930-1-vadym.kochan@plvision.eu>
-References: <20210520153500.22930-1-vadym.kochan@plvision.eu>
-Content-Type: text/plain
-X-Originating-IP: [217.20.186.93]
-X-ClientProxiedBy: AM4PR0101CA0065.eurprd01.prod.exchangelabs.com
- (2603:10a6:200:41::33) To HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
- (2603:10a6:7:56::28)
+        id S232441AbhETPiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:38:02 -0400
+Received: from mail-il1-f172.google.com ([209.85.166.172]:42846 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232136AbhETPhw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 11:37:52 -0400
+Received: by mail-il1-f172.google.com with SMTP id h11so15595105ili.9;
+        Thu, 20 May 2021 08:36:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8VfQrs6a4Y7ppU0xIKRfb7qnrLFvac9XNiiNfh1302E=;
+        b=h+VsOcH4YdGp3F1lKhuQpG297FqPkf2PC8yyvFWTEkWtD1Q5+q/oeC0jSEDODd159t
+         w/IljteEnA4K4V+K6p3Zi+DN9hE4FB9yczN+LiB0vxZ2fbh/VkDGkAP+KyOnxRtCJnuf
+         9vQhPbSJeWVbd64gPpGsPggTHBXUdbMJfhliixK9yQae+RTM5ALiz74v4DPbr18yqC1z
+         yHkSetRbei5npEoPJN3M6FFW9xQT4hVm2yFU7ffVHREqCwO02jFpLa4nRa+fCK+aSgjY
+         a0va4m6EVQ2efp0jw22SPEsjsLDB3ohbxFqKIfuMBRMyWhsnf3ErD0v7zMZXGmmCd9OF
+         4MuA==
+X-Gm-Message-State: AOAM532upocHQAFrsThkoIxB4hzlAIQpcWaPGC30S/PZtbT9TPUMmhRz
+        OZPbbv1a9hguUMn5ld6ajQ1GDaCa0BW9UmKdW4E=
+X-Google-Smtp-Source: ABdhPJzs3Emj3Jb4mK3XgTEj+frqBNXJkhzs91AdHGmWunPoKGHENUnqY0pTOgY4+Tr8BS10NN6kSMIEa1Bv5UCTJQ8=
+X-Received: by 2002:a92:cf45:: with SMTP id c5mr6267683ilr.182.1621524989346;
+ Thu, 20 May 2021 08:36:29 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from pc60716vkochan.x.ow.s (217.20.186.93) by AM4PR0101CA0065.eurprd01.prod.exchangelabs.com (2603:10a6:200:41::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Thu, 20 May 2021 15:35:46 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1cd24824-bfde-4859-5f50-08d91ba4f024
-X-MS-TrafficTypeDiagnostic: HE1P190MB0268:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1P190MB02684679A1AE4158DBFB38BD952A9@HE1P190MB0268.EURP190.PROD.OUTLOOK.COM>
-X-MS-Oob-TLC-OOBClassifiers: OLM:216;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RP571Y7hY8CRi2HhaGVjk45hcTdbVjblgkmPLjQTfvC5UzZ4VlJHvYtHNkyuOSpgb6a6pLNnUU+GGdklq1h5kxorHPAKzj4250tA9JVMj3pQS57Bibdoo29VDvjsxgOVlEsr//Psm3ZofG4vjrOb7ar5OrjSVveU8ubcWVFPfY0no3iNt7SG1tRcoc0K167L3W0eJKMIgeKrc4iNw1DtMP+4UHOsoZvnOQYxzSaNIlFrDQhlciELP7hwRQR/g7okxpEplk7aV7eVZYhuHGymuMloRBHMNoYMFXsznu6FUKOOgl6v36dgUz/C89zVSmuxL2Oj5/HZC3WUYC3cmAYx34ZRJHEFKMsSlqVhHzq9LQ71z9Kpr3f0gwuexTnt+0c7zp8rHuQpINL9Ac1cknOgt9y021frBXp2kYSe2oWD/4h+Ifh6pAofLIkvmUCxlkEJLs7akCoh01iKVVCjPGNJ9ZEEA6zq2puHvSupIYmV75bJH1c8Or46yWDYieMxu32uZXSA/uNEbj1THsNQiuXSUFuNfVv5L8mxXBD2srjfTOfn1LE0i9+IJnH2cyoRs12p+Qf5wFZsroEdPnI0/oF43MSRVWOPEN4p7mGEkASHlu3oA1TwapROf03lWOxe3YZzYGxDNnmEUZ36dBb01Giz+Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P190MB0539.EURP190.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(396003)(136003)(376002)(39830400003)(346002)(366004)(6666004)(26005)(5660300002)(4326008)(6512007)(66476007)(8676002)(66946007)(316002)(66556008)(110136005)(956004)(54906003)(36756003)(186003)(16526019)(52116002)(1076003)(2906002)(8936002)(83380400001)(38100700002)(38350700002)(86362001)(2616005)(44832011)(6506007)(6486002)(478600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?+PRCXYixVFsl1z9024c/9hf3FhWTTRk6rIrdJHVe1hVtkpDM7JVGpMXVNYxB?=
- =?us-ascii?Q?YH7fn2ff5ixTSEsXbSmTGyULDm28MCTPf8ixPGKJB7gD19BVIvwCZVT4wcH1?=
- =?us-ascii?Q?dl0QIY8jW526uMQ7NITkJGtW1cjIKQaPoTnat0SyA7IxfGNum5Eht01nvkqP?=
- =?us-ascii?Q?A4+sBFO1bvJzWlNzVKlDV0y+pKgRfKm8iPNO54axyyk3tSDqfL6Z/h9JUaHK?=
- =?us-ascii?Q?DCY8oQlmmD3ZaKE8huYTGn+5pBq6uUeRgsvd4V8IuEbT8wbh4tQhWImANBTt?=
- =?us-ascii?Q?Yv40zpii/cwCxUS9QScLHqHofygngdI0KdEwR768dc1I/Pq6d/M4sX+9Cxi6?=
- =?us-ascii?Q?5NxKaLfRkiZ2wly4omYRmgaWappweY8MWdXIattRAsSnWQI0V8jKSE3F+6pq?=
- =?us-ascii?Q?OvhuTRdTbTcSylWoA4pyMcdIf/jFKF+plzMi3Rz7BbEUZCZlXa2ujLGr0//Y?=
- =?us-ascii?Q?EKt1V+X+64k5Nt2A82EZQn16zZf2xFbSHnRq58Y52yudcVT3+W54tPiOAbye?=
- =?us-ascii?Q?dFdoq+R3ajiCUijc4qcyP/lcMUWjKhsU+WKH0ZEo/jLPAQla0NqIaaaTOrMp?=
- =?us-ascii?Q?ZAQMADMaNLFjtNS7CCH1KUyz/q3WrnLP0E06TPjL+C91EECvC8iYpu6alqj7?=
- =?us-ascii?Q?2+4nc2nmcb5IOKpNxXPyYGfYpZozSlvRkyaeXFSWvYXtIpDrkYH/pOHdipUL?=
- =?us-ascii?Q?xrxNS5YbvafojqZemy1HBg7qyzoml6nWYTyJk0E5fxSqIQJbFWuqXb9tDT19?=
- =?us-ascii?Q?PQGRTp+4dAvBqVFzmEkyROGcYu+4ALXY+94UxXJ0Zbll6MKr9WaO5wKBuyh5?=
- =?us-ascii?Q?2bTZ95nXNcXiSoWvdXRoZrRqhIHv4nQK0SOUEp3VO0lsWiTRk14vgHXQn4qV?=
- =?us-ascii?Q?NUfBH9MYxapsE8gukLpjWVnjJXfGFRvnp/8ysmP7IktSFBqi8N2VwUOapMMC?=
- =?us-ascii?Q?bTBBb3XlWXbskHr25BrqpTpJWS8pfCQVE8bVAs1/LFLkGc0Av77kbstXh5uw?=
- =?us-ascii?Q?JUKJQbLfDf5PJMQOwYl8crOs9OUpeGynokvMjjZQ58TsY3AKs9+0Mmx22B+3?=
- =?us-ascii?Q?3qyY4mt5HO5NG1HuwYPj5wOYuo0qaMxG+v2cAKZcAX3vK9z657T7mEhZ41tj?=
- =?us-ascii?Q?OUwLsJAHqpue5pm6Obe+/vZTdmuXEH9gaRnjpD/plnEIGAF2P73bFmjQf0zK?=
- =?us-ascii?Q?ncU4EDrrRZ4oMaa3RVyQydfMi6Smi9amQCi5L2Xi6ySLYqGv3Rh8ecDndF+I?=
- =?us-ascii?Q?bo/SYouK5ePHxgGvwYQSsk3c02qTYhLRZfzHGKCEz9Db4TugCvrh31XHvkQ2?=
- =?us-ascii?Q?N0xm+zmErEn0D64A6f4eIPK5?=
-X-OriginatorOrg: plvision.eu
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1cd24824-bfde-4859-5f50-08d91ba4f024
-X-MS-Exchange-CrossTenant-AuthSource: HE1P190MB0539.EURP190.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 May 2021 15:35:46.8617
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 03707b74-30f3-46b6-a0e0-ff0a7438c9c4
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PnHXb9956wO/qEdoq3KNgzta8gBX1C4TTRmj6faQL2otzDMqIsbjYuXCd8i2WNq0JrZBtt49yI1HiIl3GpTX2kxIDq/cbVIaaD8lqMtoCEk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P190MB0268
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <874kf11yoz.ffs@nanos.tec.linutronix.de>
+From:   Len Brown <lenb@kernel.org>
+Date:   Thu, 20 May 2021 11:35:53 -0400
+Message-ID: <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Florian Weimer <fweimer@redhat.com>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vadym Kochan <vkochan@marvell.com>
+Hi Thomas,
 
-Lets try to load previous fw version in case the latest one is missing on
-existing system.
+On Mon, May 17, 2021 at 5:45 AM Thomas Gleixner <tglx@linutronix.de> wrote:
 
-Signed-off-by: Vadym Kochan <vkochan@marvell.com>
----
+> AMX (or whatever comes next) is nothing else than a device and it
+> just should be treated as such. The fact that it is not exposed
+> via a driver and a device node does not matter at all.
 
-Notes:
-    RFCv2:
-        1) Get rid of automatic decrementing of
-           major version but hard code it.
-    
-        2) Print error message with file path if
-           previous FW could not be loaded.
+TMM registers are part of the CPU architectural state.
+If TMM registers exist for one logical CPU, they exist for all CPUs --
+including HT siblings.
+(Intel supports only homogeneous ISA)
 
- .../ethernet/marvell/prestera/prestera_pci.c  | 83 ++++++++++++++-----
- 1 file changed, 61 insertions(+), 22 deletions(-)
+Ditto for the instructions that access and operate on TMM registers.
 
-diff --git a/drivers/net/ethernet/marvell/prestera/prestera_pci.c b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-index 5edd4d2ac672..a250d394da38 100644
---- a/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-+++ b/drivers/net/ethernet/marvell/prestera/prestera_pci.c
-@@ -17,6 +17,9 @@
- #define PRESTERA_SUPP_FW_MAJ_VER	3
- #define PRESTERA_SUPP_FW_MIN_VER	0
- 
-+#define PRESTERA_PREV_FW_MAJ_VER	2
-+#define PRESTERA_PREV_FW_MIN_VER	0
-+
- #define PRESTERA_FW_PATH_FMT	"mrvl/prestera/mvsw_prestera_fw-v%u.%u.img"
- 
- #define PRESTERA_FW_HDR_MAGIC		0x351D9D06
-@@ -172,6 +175,8 @@ struct prestera_fw_evtq {
- };
- 
- struct prestera_fw {
-+	struct prestera_fw_rev rev_supp;
-+	const struct firmware *bin;
- 	struct workqueue_struct *wq;
- 	struct prestera_device dev;
- 	u8 __iomem *ldr_regs;
-@@ -595,25 +600,24 @@ static void prestera_fw_rev_parse(const struct prestera_fw_header *hdr,
- static int prestera_fw_rev_check(struct prestera_fw *fw)
- {
- 	struct prestera_fw_rev *rev = &fw->dev.fw_rev;
--	u16 maj_supp = PRESTERA_SUPP_FW_MAJ_VER;
--	u16 min_supp = PRESTERA_SUPP_FW_MIN_VER;
- 
--	if (rev->maj == maj_supp && rev->min >= min_supp)
-+	if (rev->maj == fw->rev_supp.maj && rev->min >= fw->rev_supp.min)
- 		return 0;
- 
- 	dev_err(fw->dev.dev, "Driver supports FW version only '%u.%u.x'",
--		PRESTERA_SUPP_FW_MAJ_VER, PRESTERA_SUPP_FW_MIN_VER);
-+		fw->rev_supp.maj, fw->rev_supp.min);
- 
- 	return -EINVAL;
- }
- 
--static int prestera_fw_hdr_parse(struct prestera_fw *fw,
--				 const struct firmware *img)
-+static int prestera_fw_hdr_parse(struct prestera_fw *fw)
- {
--	struct prestera_fw_header *hdr = (struct prestera_fw_header *)img->data;
- 	struct prestera_fw_rev *rev = &fw->dev.fw_rev;
-+	struct prestera_fw_header *hdr;
- 	u32 magic;
- 
-+	hdr = (struct prestera_fw_header *)fw->bin->data;
-+
- 	magic = be32_to_cpu(hdr->magic_number);
- 	if (magic != PRESTERA_FW_HDR_MAGIC) {
- 		dev_err(fw->dev.dev, "FW img hdr magic is invalid");
-@@ -628,11 +632,52 @@ static int prestera_fw_hdr_parse(struct prestera_fw *fw,
- 	return prestera_fw_rev_check(fw);
- }
- 
-+static int prestera_fw_get(struct prestera_fw *fw)
-+{
-+	int ver_maj = PRESTERA_SUPP_FW_MAJ_VER;
-+	int ver_min = PRESTERA_SUPP_FW_MIN_VER;
-+	char fw_path[128];
-+	int err;
-+
-+pick_fw_ver:
-+	snprintf(fw_path, sizeof(fw_path), PRESTERA_FW_PATH_FMT,
-+		 ver_maj, ver_min);
-+
-+	err = request_firmware_direct(&fw->bin, fw_path, fw->dev.dev);
-+	if (err) {
-+		if (ver_maj == PRESTERA_SUPP_FW_MAJ_VER) {
-+			ver_maj = PRESTERA_PREV_FW_MAJ_VER;
-+			ver_min = PRESTERA_PREV_FW_MIN_VER;
-+
-+			dev_warn(fw->dev.dev,
-+				 "missing latest %s firmware, fall-back to previous %u.%u version\n",
-+				 fw_path, ver_maj, ver_min);
-+
-+			goto pick_fw_ver;
-+		} else {
-+			dev_err(fw->dev.dev, "failed to request previous firmware: %s\n",
-+				fw_path);
-+			return err;
-+		}
-+	}
-+
-+	dev_info(fw->dev.dev, "Loading %s ...", fw_path);
-+
-+	fw->rev_supp.maj = ver_maj;
-+	fw->rev_supp.min = ver_min;
-+	fw->rev_supp.sub = 0;
-+
-+	return 0;
-+}
-+
-+static void prestera_fw_put(struct prestera_fw *fw)
-+{
-+	release_firmware(fw->bin);
-+}
-+
- static int prestera_fw_load(struct prestera_fw *fw)
- {
- 	size_t hlen = sizeof(struct prestera_fw_header);
--	const struct firmware *f;
--	char fw_path[128];
- 	int err;
- 
- 	err = prestera_ldr_wait_reg32(fw, PRESTERA_LDR_READY_REG,
-@@ -651,30 +696,24 @@ static int prestera_fw_load(struct prestera_fw *fw)
- 
- 	fw->ldr_wr_idx = 0;
- 
--	snprintf(fw_path, sizeof(fw_path), PRESTERA_FW_PATH_FMT,
--		 PRESTERA_SUPP_FW_MAJ_VER, PRESTERA_SUPP_FW_MIN_VER);
--
--	err = request_firmware_direct(&f, fw_path, fw->dev.dev);
--	if (err) {
--		dev_err(fw->dev.dev, "failed to request firmware file\n");
-+	err = prestera_fw_get(fw);
-+	if (err)
- 		return err;
--	}
- 
--	err = prestera_fw_hdr_parse(fw, f);
-+	err = prestera_fw_hdr_parse(fw);
- 	if (err) {
- 		dev_err(fw->dev.dev, "FW image header is invalid\n");
- 		goto out_release;
- 	}
- 
--	prestera_ldr_write(fw, PRESTERA_LDR_IMG_SIZE_REG, f->size - hlen);
-+	prestera_ldr_write(fw, PRESTERA_LDR_IMG_SIZE_REG, fw->bin->size - hlen);
- 	prestera_ldr_write(fw, PRESTERA_LDR_CTL_REG, PRESTERA_LDR_CTL_DL_START);
- 
--	dev_info(fw->dev.dev, "Loading %s ...", fw_path);
--
--	err = prestera_ldr_fw_send(fw, f->data + hlen, f->size - hlen);
-+	err = prestera_ldr_fw_send(fw, fw->bin->data + hlen,
-+				   fw->bin->size - hlen);
- 
- out_release:
--	release_firmware(f);
-+	prestera_fw_put(fw);
- 	return err;
- }
- 
--- 
-2.17.1
+One can reasonably predict, that like Intel has done for all other registers,
+there will be future instructions added to the ISA to operate on TMM registers,
+including in combination with non-TMM registers that are also part
+of the architectural state.
 
+It is an unfortunate word choice that some documentation calls the
+TMUL instruction
+an "accelerator".  It isn't.  It is part of the ISA, like any other instruction.
+
+I agree that a device interface may make sense for real accelerators
+that don't run x86 instructions, I don't see long term viability for attempting
+to carve a sub-set of x86 instructions into a device, particularly when
+the set of instructions will continue to evolve.
+
+> Not doing so requires this awkward buffer allocation issue via #NM with
+> all it's downsides; it's just wrong to force the kernel to manage
+> resources of a user space task without being able to return a proper
+> error code.
+
+The hardware #NM support for fault on first use is a feature to allow the OS
+to optimize space so that pages do not have to be dedicated to back registers
+unless/until they are actually used.
+
+There is absolutely no requirement that a particular
+OS take advantage of that feature.  If you think that this optimization is
+awkward, we can easily delete/disable it and simply statically allocate buffers
+for all threads at initialization time.  Though you'll have to convince me
+why the word "awkward" applies, rather than "elegant".
+
+Regarding error return for allocation failures.
+
+I'm not familiar with the use-case where vmalloc would be likely to fail today,
+and I'd be interested if anybody can detail that use-case.
+But even if there is none today, I grate that Linux could evolve to make vmalloc
+fail in the future, and so an interface to reqeust pre-allocation of buffers
+is reasonable insurance.  Chang has implemented this prctl in v5
+of the TMUL patch series.
+
+> It also prevents fine grained control over access to this
+> functionality. As AMX is clearly a shared resource which is not per HT
+> thread (maybe not even per core) and it has impact on power/frequency it
+> is important to be able to restrict access on a per process/cgroup
+> scope.
+
+AMX is analogous to the multiplier used by AVX-512.
+The architectural state must exist on every CPU, including HT siblings.
+Today, the HT siblings share the same execution unit,
+and I have no reason to expect that will change.
+
+I thought we already addressed the FUD surrounding power/frequency.
+As with every kind of instruction -- those that use
+more power will leave less power for their peers, and there is a mechanism
+to track that power budget.  I acknowledge that the mechanism was overly
+conservative and slow to recover in initial AVX-512 systems, and that issue
+persists even with the latest publically available hardware today.
+I acknowledge that you do not trust that Intel has addressed this
+(for both AVX-512 and AMX) in the first hardware that supports AMX.
+
+> Having a proper interface (syscall, prctl) which user space can use to
+> ask for permission and allocation of the necessary buffer(s) is clearly
+> avoiding the downsides and provides the necessary mechanisms for proper
+> control and failure handling.
+>
+> It's not the end of the world if something which wants to utilize this
+> has do issue a syscall during detection. It does not matter whether
+> that's a library or just the application code itself.
+>
+> That's a one off operation and every involved entity can cache the
+> result in TLS.
+>
+> AVX512 has already proven that XSTATE management is fragile and error
+> prone, so we really have to stop this instead of creating yet another
+> half baked solution.
+
+We fixed the glibc ABI issue.  It is available now and production
+release is this summer.
+Yes, it should have been addressed when AVX-512 was deployed.
+
+thanks
+Len Brown, Intel Open Source Technology Center
