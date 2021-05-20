@@ -2,149 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A876389E84
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:59:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 706F6389E81
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 08:58:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhETHAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 03:00:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:55964 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229978AbhETHAI (ORCPT
+        id S230342AbhETG75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 02:59:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38968 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230350AbhETG7y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 03:00:08 -0400
-Received: from 36-229-229-74.dynamic-ip.hinet.net ([36.229.229.74] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1ljcdi-0003qu-An; Thu, 20 May 2021 06:58:39 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        rodrigo.vivi@intel.com, ville.syrjala@linux.intel.com
-Cc:     Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, Takashi Iwai <tiwai@suse.de>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4] drm/i915: Invoke another _DSM to enable MUX on HP Workstation laptops
-Date:   Thu, 20 May 2021 14:58:20 +0800
-Message-Id: <20210520065832.614245-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 20 May 2021 02:59:54 -0400
+Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3CD4C061574;
+        Wed, 19 May 2021 23:58:32 -0700 (PDT)
+Received: by mail-yb1-xb2c.google.com with SMTP id b13so20013281ybk.4;
+        Wed, 19 May 2021 23:58:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OOnCvrmBVmZJvIgFsTp0MHGvpgi/wTmOhJpH9VAETjw=;
+        b=Lm4gDSJqG2vlLHYaqIzBqUjvv3o692GWvO3G47R0akkLAgEXRBwntlShNPZmt74ghm
+         nws0+SLM+qiy4bca7mi2DahPnFGPuN9bXp1mjqJ7jTj0+9UJr9it1fikC0MT1RwXQyhf
+         AvWFeQcfKcCTO26z3HIJWcScl5mkyPehCDMCQn3pn0z51W8UVPJgLoe7vu8zZXaQmO+W
+         I6gCZEvmUBu7FwaAtgBiraaYHRTz/g6SjOAvTepYvn0pTMJXxgw+M+IIBN7g0EOH7ior
+         +kx+EwuOgYjt2NRVY4oLlPESzbteXcaR+EA/VKD9F2X5dUf0Sx/FkDkZZ8uX5R34dsak
+         /wxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OOnCvrmBVmZJvIgFsTp0MHGvpgi/wTmOhJpH9VAETjw=;
+        b=lD4xAaZnFEX/IOWz+mXAzCCUmr/fmxxXrX4DR5GXG4b35TqGTZSyRIj4FrSWZVfG2n
+         KelCs0e0Oj4ffHenZlPJNZBKIE/qu4iSEpXHPRojJMcaq6CqiPaARl6WDsWCKEYaY8f1
+         80fKOjTN55CBb1JNl/d0iB0v52nbErpqUeJBz1Z5IMekIjqzPckH/kuqvqdTkSMxqIkn
+         XwAkFWxTdqYfqdNGZT9YUDFAw1pgv5YB52CTgXfQi21d0gfvObOGiOrbKlRuCU1JDike
+         aaGidBhz2DnoKftXVcsHFSVPGjah1ZbI7poiwEgpOQLT7EmevdpsSMBuytRHpheJrpFo
+         V1ow==
+X-Gm-Message-State: AOAM531mcTlR6lBbnJe8MUAxb+nw/7R/dTJ73NlB9lh5tDI9QoBzgP9d
+        zl30q4cmrDPdei5BkXHBi7rXQabOatO6BY1vadY=
+X-Google-Smtp-Source: ABdhPJzes7jm5YzVxbSEXeWNu/17oBVCUgxdbC4mNsKxCn3j7Xc8THnPTTi32iNdIu7wBIbjGyiP4k7v2+VxuuZP+3M=
+X-Received: by 2002:a25:5d08:: with SMTP id r8mr4651409ybb.464.1621493911937;
+ Wed, 19 May 2021 23:58:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210520015704.489737-1-andrew@aj.id.au>
+In-Reply-To: <20210520015704.489737-1-andrew@aj.id.au>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Thu, 20 May 2021 08:58:21 +0200
+Message-ID: <CAKXUXMxTnz6edBLpBgqOo6uUiSGm8rULH9P8G24xx2OhP_Yb6A@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: checkpatch: Tweak BIT() macro include
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        openbmc@lists.ozlabs.org, Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On HP Fury G7 Workstations, graphics output is re-routed from Intel GFX
-to discrete GFX after S3. This is not desirable, because userspace will
-treat connected display as a new one, losing display settings.
+On Thu, May 20, 2021 at 3:57 AM Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> include/linux/bits.h in [1]. Since [1] BIT() has moved again into
+> include/vdso/bits.h via [2].
+>
+> I think the move to the vDSO header can be considered a implementation
+> detail, so for now update the checkpatch documentation to recommend use
+> of include/linux/bits.h.
+>
+> [1] commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file")
+> [2] commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO")
+>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-The expected behavior is to let discrete GFX drives all external
-displays.
+Looks sound to me.
 
-The platform in question uses ACPI method \_SB.PCI0.HGME to enable MUX.
-The method is inside the another _DSM, so add the _DSM and call it
-accordingly.
+I would prefer a bit of word-smithing the commit message by just
+removing the references:
 
-I also tested some MUX-less and iGPU only laptops with that _DSM, no
-regression was found.
+So:
 
-v4:
- - Rebase.
- - Change the DSM name to avoid confusion.
- - Move the function call to intel_opregion.
+> While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic: Move some macros from <linux/bitops.h> to a new <linux/bits.h> file"). Since that commit, BIT() has moved again into
+> include/vdso/bits.h via commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
+>
+> I think the move to the vDSO header can be considered a implementation
+> detail, so for now update the checkpatch documentation to recommend use
+> of include/linux/bits.h.
+>
 
-v3:
- - Remove BXT from names.
- - Change the parameter type.
- - Fold the function into intel_modeset_init_hw().
+And then drop references [1] and [2].
 
-v2:
- - Forward declare struct pci_dev.
+Andrew, what do you think?
 
-Closes: https://gitlab.freedesktop.org/drm/intel/-/issues/3113
-References: https://lore.kernel.org/intel-gfx/1460040732-31417-4-git-send-email-animesh.manna@intel.com/
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
- drivers/gpu/drm/i915/display/intel_acpi.c     | 19 +++++++++++++++++++
- drivers/gpu/drm/i915/display/intel_acpi.h     |  3 +++
- drivers/gpu/drm/i915/display/intel_opregion.c |  3 +++
- 3 files changed, 25 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.c b/drivers/gpu/drm/i915/display/intel_acpi.c
-index 833d0c1be4f1..7cfe91fc05f2 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.c
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.c
-@@ -19,6 +19,12 @@ static const guid_t intel_dsm_guid =
- 	GUID_INIT(0x7ed873d3, 0xc2d0, 0x4e4f,
- 		  0xa8, 0x54, 0x0f, 0x13, 0x17, 0xb0, 0x1c, 0x2c);
- 
-+#define INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED 0 /* No args */
-+
-+static const guid_t intel_dsm_guid2 =
-+	GUID_INIT(0x3e5b41c6, 0xeb1d, 0x4260,
-+		  0x9d, 0x15, 0xc7, 0x1f, 0xba, 0xda, 0xe4, 0x14);
-+
- static char *intel_dsm_port_name(u8 id)
- {
- 	switch (id) {
-@@ -176,6 +182,19 @@ void intel_unregister_dsm_handler(void)
- {
- }
- 
-+void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915)
-+{
-+	struct pci_dev *pdev = to_pci_dev(i915->drm.dev);
-+	acpi_handle dhandle;
-+
-+	dhandle = ACPI_HANDLE(&pdev->dev);
-+	if (!dhandle)
-+		return;
-+
-+	acpi_evaluate_dsm(dhandle, &intel_dsm_guid2, INTEL_DSM_REVISION_ID,
-+			  INTEL_DSM_FN_GET_BIOS_DATA_FUNCS_SUPPORTED, NULL);
-+}
-+
- /*
-  * ACPI Specification, Revision 5.0, Appendix B.3.2 _DOD (Enumerate All Devices
-  * Attached to the Display Adapter).
-diff --git a/drivers/gpu/drm/i915/display/intel_acpi.h b/drivers/gpu/drm/i915/display/intel_acpi.h
-index e8b068661d22..9f197401c313 100644
---- a/drivers/gpu/drm/i915/display/intel_acpi.h
-+++ b/drivers/gpu/drm/i915/display/intel_acpi.h
-@@ -11,11 +11,14 @@ struct drm_i915_private;
- #ifdef CONFIG_ACPI
- void intel_register_dsm_handler(void);
- void intel_unregister_dsm_handler(void);
-+void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915);
- void intel_acpi_device_id_update(struct drm_i915_private *i915);
- #else
- static inline void intel_register_dsm_handler(void) { return; }
- static inline void intel_unregister_dsm_handler(void) { return; }
- static inline
-+void intel_dsm_get_bios_data_funcs_supported(struct drm_i915_private *i915) { return; }
-+static inline
- void intel_acpi_device_id_update(struct drm_i915_private *i915) { return; }
- #endif /* CONFIG_ACPI */
- 
-diff --git a/drivers/gpu/drm/i915/display/intel_opregion.c b/drivers/gpu/drm/i915/display/intel_opregion.c
-index dfd724e506b5..3855fba70980 100644
---- a/drivers/gpu/drm/i915/display/intel_opregion.c
-+++ b/drivers/gpu/drm/i915/display/intel_opregion.c
-@@ -1078,6 +1078,9 @@ void intel_opregion_resume(struct drm_i915_private *i915)
- 		opregion->asle->ardy = ASLE_ARDY_READY;
- 	}
- 
-+	/* Some platforms abuse the _DSM to enable MUX */
-+	intel_dsm_get_bios_data_funcs_supported(i915);
-+
- 	intel_opregion_notify_adapter(i915, PCI_D0);
- }
- 
--- 
-2.31.1
-
+Lukas
