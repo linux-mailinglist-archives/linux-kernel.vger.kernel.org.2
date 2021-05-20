@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A686038A493
+	by mail.lfdr.de (Postfix) with ESMTP id EFD3F38A494
 	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 12:05:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235189AbhETKGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 06:06:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35472 "EHLO mail.kernel.org"
+        id S235206AbhETKGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 06:06:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234672AbhETKAW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 06:00:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC3206141E;
-        Thu, 20 May 2021 09:39:03 +0000 (UTC)
+        id S234492AbhETKAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 06:00:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EF478613CB;
+        Thu, 20 May 2021 09:39:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621503544;
-        bh=os3IdbjtmowGQlAp1NLTz3BkNBLLRVYjWB6eNY2ukH4=;
+        s=korg; t=1621503546;
+        bh=03+9eMx7MuugkvL3VbqTibyPzQJwSWfXjP0G3pkTcpw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xh0UKHLuG7HE0Okpt+vOiqpG5mO/jZJDRfYeMmZEQHOSwnM1DC7mxxhpceHp1v3O6
-         DVPQMZiPx6ARhKhhj4Ip8A31cD3bA6vnc37aI6Y5UGaW2sO3W3KNrzka4+DR1ZAWkf
-         9QIgXk5IgJTf3hNlQER2kFuE8WYbljPqS6cdNugE=
+        b=JGAaP+bXQ8BAhEvnrdJKka+ZBoAHTmn5p4DGRDAq9U66weMRvQ6I9YmMDi3f3yxjv
+         g/ULkER6VlquWDxKh1oxs0vHqRG7x0EwtViqc7mw09Va3mU5pHvA7VvItQ4RhA+hnd
+         SqEnd4c84PZRV+nUCF7kzz6dU2pWD0Kki681+y7g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omprussia.ru>,
-        Wolfram Sang <wsa@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.19 270/425] i2c: sh7760: add IRQ check
-Date:   Thu, 20 May 2021 11:20:39 +0200
-Message-Id: <20210520092140.316154444@linuxfoundation.org>
+        stable@vger.kernel.org, Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.19 271/425] ASoC: ak5558: correct reset polarity
+Date:   Thu, 20 May 2021 11:20:40 +0200
+Message-Id: <20210520092140.347388850@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
 References: <20210520092131.308959589@linuxfoundation.org>
@@ -39,40 +40,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sergey Shtylyov <s.shtylyov@omprussia.ru>
+From: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-[ Upstream commit e5b2e3e742015dd2aa6bc7bcef2cb59b2de1221c ]
+[ Upstream commit 0b93bbc977af55fd10687f2c96c807cba95cb927 ]
 
-The driver neglects to check the result of platform_get_irq()'s call and
-blithely passes the negative error codes to devm_request_irq() (which
-takes *unsigned* IRQ #), causing it to fail with -EINVAL, overriding
-an original error code.  Stop calling devm_request_irq() with invalid
-IRQ #s.
+Reset (aka power off) happens when the reset gpio is made active.
+The reset gpio is GPIO_ACTIVE_LOW
 
-Fixes: a26c20b1fa6d ("i2c: Renesas SH7760 I2C master driver")
-Signed-off-by: Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Signed-off-by: Wolfram Sang <wsa@kernel.org>
+Fixes: 920884777480 ("ASoC: ak5558: Add support for AK5558 ADC driver")
+Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+Link: https://lore.kernel.org/r/1618382024-31725-1-git-send-email-shengjiu.wang@nxp.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/i2c/busses/i2c-sh7760.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ak5558.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/i2c/busses/i2c-sh7760.c b/drivers/i2c/busses/i2c-sh7760.c
-index c2005c789d2b..c79c9f542c5a 100644
---- a/drivers/i2c/busses/i2c-sh7760.c
-+++ b/drivers/i2c/busses/i2c-sh7760.c
-@@ -471,7 +471,10 @@ static int sh7760_i2c_probe(struct platform_device *pdev)
- 		goto out2;
- 	}
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index 73c418517f8d..dda165b14222 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -271,7 +271,7 @@ static void ak5558_power_off(struct ak5558_priv *ak5558)
+ 	if (!ak5558->reset_gpiod)
+ 		return;
  
--	id->irq = platform_get_irq(pdev, 0);
-+	ret = platform_get_irq(pdev, 0);
-+	if (ret < 0)
-+		return ret;
-+	id->irq = ret;
+-	gpiod_set_value_cansleep(ak5558->reset_gpiod, 0);
++	gpiod_set_value_cansleep(ak5558->reset_gpiod, 1);
+ 	usleep_range(1000, 2000);
+ }
  
- 	id->adap.nr = pdev->id;
- 	id->adap.algo = &sh7760_i2c_algo;
+@@ -280,7 +280,7 @@ static void ak5558_power_on(struct ak5558_priv *ak5558)
+ 	if (!ak5558->reset_gpiod)
+ 		return;
+ 
+-	gpiod_set_value_cansleep(ak5558->reset_gpiod, 1);
++	gpiod_set_value_cansleep(ak5558->reset_gpiod, 0);
+ 	usleep_range(1000, 2000);
+ }
+ 
 -- 
 2.30.2
 
