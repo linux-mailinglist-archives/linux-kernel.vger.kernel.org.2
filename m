@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBAF38AC9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA0C38ACA1
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 13:44:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241829AbhETLnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 07:43:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43254 "EHLO mail.kernel.org"
+        id S240640AbhETLnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 07:43:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43412 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239551AbhETLWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 07:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 76E0661962;
-        Thu, 20 May 2021 10:11:42 +0000 (UTC)
+        id S240300AbhETLW0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 07:22:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E4CEE61CF8;
+        Thu, 20 May 2021 10:11:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621505502;
-        bh=GZ3C6n59e3n9ghMP7G81j0IE013CKYeByUyEE0SyP0I=;
+        s=korg; t=1621505507;
+        bh=GgrLl6uBq4OvXt0I0ec1fvwloYaMRa2/9eAwroYI6aM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bbFR+ltlmjm57AGjsGHU6gl0EScd1DI4rzQmCTjHKzrx7KngRMcD8xD3r+aKT8sWn
-         3yaTN2QC1yR1ltWFC5FOcQa0/rHDtLxo/PHZy12Ns5Dh2owy386ljE9OdrCX36GnQi
-         /LJZXjLjYvq1eL4WpDiV3yo9RWsMNIfIvbpg56To=
+        b=O+0BmuWSlEsayLcyy4gL1HwknvSVS9PQGsLpnPhIpxnt9xb4fH/q7RyzcuK1c2goS
+         d2fpRPU44VldIAUG1UpbiJMtnCTaxRRQhmrdBmsEw4mIraB8/RYzRsN9HAssd/5x3g
+         VrBzPkUcaDVGoAWHbDGGtgTmN8uxU6A14YH3qwoU=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 165/190] usb: fotg210-hcd: Fix an error message
-Date:   Thu, 20 May 2021 11:23:49 +0200
-Message-Id: <20210520092107.625502040@linuxfoundation.org>
+        stable@vger.kernel.org, Maximilian Luz <luzmaximilian@gmail.com>,
+        Mathias Nyman <mathias.nyman@linux.intel.com>
+Subject: [PATCH 4.4 166/190] usb: xhci: Increase timeout for HC halt
+Date:   Thu, 20 May 2021 11:23:50 +0200
+Message-Id: <20210520092107.663247523@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210520092102.149300807@linuxfoundation.org>
 References: <20210520092102.149300807@linuxfoundation.org>
@@ -40,53 +39,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Maximilian Luz <luzmaximilian@gmail.com>
 
-[ Upstream commit a60a34366e0d09ca002c966dd7c43a68c28b1f82 ]
+commit ca09b1bea63ab83f4cca3a2ae8bc4f597ec28851 upstream.
 
-'retval' is known to be -ENODEV here.
-This is a hard-coded default error code which is not useful in the error
-message. Moreover, another error message is printed at the end of the
-error handling path. The corresponding error code (-ENOMEM) is more
-informative.
+On some devices (specifically the SC8180x based Surface Pro X with
+QCOM04A6) HC halt / xhci_halt() times out during boot. Manually binding
+the xhci-hcd driver at some point later does not exhibit this behavior.
+To work around this, double XHCI_MAX_HALT_USEC, which also resolves this
+issue.
 
-So remove simplify the first error message.
-
-While at it, also remove the useless initialization of 'retval'.
-
-Fixes: 7d50195f6c50 ("usb: host: Faraday fotg210-hcd driver")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/94531bcff98e46d4f9c20183a90b7f47f699126c.1620333419.git.christophe.jaillet@wanadoo.fr
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
+Link: https://lore.kernel.org/r/20210512080816.866037-5-mathias.nyman@linux.intel.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/fotg210-hcd.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/usb/host/xhci-ext-caps.h |    5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-index 11b3a8c57eab..5dacc3076efd 100644
---- a/drivers/usb/host/fotg210-hcd.c
-+++ b/drivers/usb/host/fotg210-hcd.c
-@@ -5610,7 +5610,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
- 	struct usb_hcd *hcd;
- 	struct resource *res;
- 	int irq;
--	int retval = -ENODEV;
-+	int retval;
- 	struct fotg210_hcd *fotg210;
+--- a/drivers/usb/host/xhci-ext-caps.h
++++ b/drivers/usb/host/xhci-ext-caps.h
+@@ -19,8 +19,9 @@
+  * along with this program; if not, write to the Free Software Foundation,
+  * Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+  */
+-/* Up to 16 ms to halt an HC */
+-#define XHCI_MAX_HALT_USEC	(16*1000)
++
++/* HC should halt within 16 ms, but use 32 ms as some hosts take longer */
++#define XHCI_MAX_HALT_USEC	(32 * 1000)
+ /* HC not running - set to 1 when run/stop bit is cleared. */
+ #define XHCI_STS_HALT		(1<<0)
  
- 	if (usb_disabled())
-@@ -5630,7 +5630,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
- 	hcd = usb_create_hcd(&fotg210_fotg210_hc_driver, dev,
- 			dev_name(dev));
- 	if (!hcd) {
--		dev_err(dev, "failed to create hcd with err %d\n", retval);
-+		dev_err(dev, "failed to create hcd\n");
- 		retval = -ENOMEM;
- 		goto fail_create_hcd;
- 	}
--- 
-2.30.2
-
 
 
