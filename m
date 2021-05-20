@@ -2,137 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5740E38B51F
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:23:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CA138B524
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 19:25:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234027AbhETRYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 13:24:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38928 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233209AbhETRYf (ORCPT
+        id S233972AbhETR0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 13:26:41 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4705 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233209AbhETR0f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 13:24:35 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC35C061574;
-        Thu, 20 May 2021 10:23:13 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id r8so23823770ybb.9;
-        Thu, 20 May 2021 10:23:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4hrfGNdJQviYTDIwq5pUkBSs0ZaBMgTRXGDnod5Fzc0=;
-        b=KhegAMuT9sFAWj7axrgLKAaUtMgQ+9poV+P6OTsDOd7VrgwOJWp0EBjG8+p8BxYn5G
-         h8j0cXcY2I93Aa6G2hk2E/GORIpWWrFfVklKMhFv6iVvGp3qPw/5FdU/MICi01s8VDYl
-         QI+vLxMcYLDutOnZvETUeqMMAodNQDTuFbiJTZbeDzr0OttaWJ+jPyIZ8HEbIeU1PYm/
-         2hiobsJLWkL52pP7Tk5tQHoUpVYYnxVdKnNq0Ncfe+Lm8/l+MeHtKwV7A6MDCcAqQWJs
-         g6WZqaj4r4xLqFTT2qWCEZXMG8lWag3JPBKN2+q/mVMpFoWtdvpM74TS/gXI+Wq2+Gll
-         tsJg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4hrfGNdJQviYTDIwq5pUkBSs0ZaBMgTRXGDnod5Fzc0=;
-        b=pq9s5w3eTv/nKRXyPOkcZzBM9CAd+RjOTN8htq7KoDUqITSMlCPtTyAmISJu1GDM6M
-         u6VA5OURPxSHaOMANwzICBF5QKV3I1NplF1UWgjzZbwnyhkOq2hyZQ7Lm4IPx8t49Hnb
-         7n7Z128/kfUnJ8TKSGzI2Zc45ptN/HF+itSrsggGh6wg0vagrpa4oCnyheSA0KeVmWCq
-         Gf1ouFR1VwPjwokpzRkHIjQjnL/+gxx8rCuoPxKBVVLTJzx/y01i/EIfz6XO61vntyR+
-         LyzOJV82dPk9UTIb1j+5A3mK5GRjiDVv1YRwePWwAtTdeGLcNoVVAJzB0zQuKK9mUXdD
-         yfCw==
-X-Gm-Message-State: AOAM531tQhVoqbtPGlVh/egoCfqBh0SKWI6GFCjKn6Tvb8c8TzXcPC/0
-        THy3/lo85kEr6roeMH/r9Oqjq5tob6XOJGMGTv7w5EjE
-X-Google-Smtp-Source: ABdhPJzO32iRUOnxZkOFDn/AZEdv2T6RB6HUMeONEAaTqfy5AOpyGoZdXJGbe4j2onx6yFTAm3z61gyvGQ9BC5jpbdI=
-X-Received: by 2002:a25:7246:: with SMTP id n67mr8682179ybc.510.1621531392491;
- Thu, 20 May 2021 10:23:12 -0700 (PDT)
+        Thu, 20 May 2021 13:26:35 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmGl5110Gz16QXk;
+        Fri, 21 May 2021 01:22:25 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 01:25:11 +0800
+Received: from [10.47.87.246] (10.47.87.246) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 20 May
+ 2021 18:25:09 +0100
+Subject: Re: [PATCH] scsi: core: Cap shost cmd_per_lun at can_queue
+To:     Bart Van Assche <bvanassche@acm.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <ming.lei@redhat.com>
+References: <1621434662-173079-1-git-send-email-john.garry@huawei.com>
+ <988856ad-8e89-97e4-f8fe-54c1ca1b4a93@acm.org>
+ <a838c8e2-6513-a266-f145-5bcaed0a4f96@huawei.com>
+ <439c6fb8-3799-bfae-7f44-9f8c26a7bf79@acm.org>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <457d23a9-deb0-4ee1-fe7f-5a63605d9686@huawei.com>
+Date:   Thu, 20 May 2021 18:24:02 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-References: <cover.1621424513.git.asml.silence@gmail.com> <94134844a6f4be2e0da2c518cb0e2e9ebb1d71b0.1621424513.git.asml.silence@gmail.com>
- <CAEf4BzZU_QySZFHA1J0jr5Fi+gOFFKzTyxrvCUt1_Gn2H6hxLA@mail.gmail.com> <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
-In-Reply-To: <d86035d9-66f0-de37-42ef-8eaa4d849651@gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Thu, 20 May 2021 10:23:01 -0700
-Message-ID: <CAEf4BzbLPxNo--P7mCxS_miagFHF4fyoec1VOkpL=uY=oNqpVg@mail.gmail.com>
-Subject: Re: [PATCH 18/23] libbpf: support io_uring
-To:     Pavel Begunkov <asml.silence@gmail.com>
-Cc:     io-uring@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <439c6fb8-3799-bfae-7f44-9f8c26a7bf79@acm.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.87.246]
+X-ClientProxiedBy: lhreml745-chm.china.huawei.com (10.201.108.195) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 2:58 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->
-> On 5/19/21 6:38 PM, Andrii Nakryiko wrote:
-> > On Wed, May 19, 2021 at 7:14 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
-> >>
-> >> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-> >> ---
-> >>  tools/lib/bpf/libbpf.c | 7 +++++++
-> >>  1 file changed, 7 insertions(+)
-> >>
-> >> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> >> index 4181d178ee7b..de5d1508f58e 100644
-> >> --- a/tools/lib/bpf/libbpf.c
-> >> +++ b/tools/lib/bpf/libbpf.c
-> >> @@ -13,6 +13,10 @@
-> >>  #ifndef _GNU_SOURCE
-> >>  #define _GNU_SOURCE
-> >>  #endif
-> >> +
-> >> +/* hack, use local headers instead of system-wide */
-> >> +#include "../../../include/uapi/linux/bpf.h"
-> >> +
-> >
-> > libbpf is already using the latest UAPI headers, so you don't need
-> > this hack. You just haven't synced include/uapi/linux/bpf.h into
-> > tools/include/uapi/linux/bpf.h
->
-> It's more convenient to keep it local to me while RFC, surely will
-> drop it later.
->
-> btw, I had a problem with find_sec_def() successfully matching
-> "iouring.s" string with "iouring", because section_defs[i].len
-> doesn't include final \0 and so does a sort of prefix comparison.
-> That's why "iouring/". Can we fix it? Are compatibility concerns?
+On 20/05/2021 17:57, Bart Van Assche wrote:
+>> not be limited to 16b?
+> Maybe I'm missing something but it is not clear to me why different
+> structures in the SCSI headers use different data types for can_queue
+> and cmd_per_lun?
 
-If you put "iouring.s" before "iouring" it will be matched first,
-libbpf matches them in order, so more specific prefix should go first.
-It is currently always treated as a prefix, not exact match,
-unfortunately. I have a work planned to revamp this logic quite a bit
-for libbpf 1.0, so this should be improved as part of that work.
+For cmd_per_lun, is it related to SCSI task tag limit? SAM-3 says upto 
+64b for task tag, but then SAS uses 16b for TMF tag, so not sure.
+
+Someone with more SCSI spec knowledge than we can clarify this.
+
+> 
+> $ git grep -nHEw '(cmd_per_lun|can_queue);' include/scsi
+> include/scsi/scsi_device.h:318:	unsigned int		can_queue;
+> include/scsi/scsi_host.h:372:	int can_queue;
+> include/scsi/scsi_host.h:425:	short cmd_per_lun;
+> include/scsi/scsi_host.h:612:	int can_queue;
+> include/scsi/scsi_host.h:613:	short cmd_per_lun;
+> 
+>> It seems intentional that can_queue is int and cmd_per_lun is short.
+> Intentional? It is not clear to me why? Even high-performance drivers
+> like iSER and SRP set can_queue by default to a value that fits well in
+> a 16-bit variable (512 and 64 respectively). The highest value that I
+> found after a quick search is the following:
+> 
+>   #define ISCSI_TOTAL_CMDS_MAX		4096
+
+I guess int was used for can_queue as an arbitrarily big number.
+
+And if we try to use 16b for can_queue, reducing size of 
+variables/structure members sometimes breaks things, from my experience.
+
+Thanks,
+John
 
 
 
->
-> >
-> >>  #include <stdlib.h>
-> >>  #include <stdio.h>
-> >>  #include <stdarg.h>
-> >> @@ -8630,6 +8634,9 @@ static const struct bpf_sec_def section_defs[] = {
-> >>         BPF_PROG_SEC("struct_ops",              BPF_PROG_TYPE_STRUCT_OPS),
-> >>         BPF_EAPROG_SEC("sk_lookup/",            BPF_PROG_TYPE_SK_LOOKUP,
-> >>                                                 BPF_SK_LOOKUP),
-> >> +       SEC_DEF("iouring/",                     IOURING),
-> >> +       SEC_DEF("iouring.s/",                   IOURING,
-> >> +               .is_sleepable = true),
-> >>  };
-> >>
-> >>  #undef BPF_PROG_SEC_IMPL
-> >> --
-> >> 2.31.1
-> >>
->
-> --
-> Pavel Begunkov
