@@ -2,118 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B190389B06
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC4A389B07
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 03:47:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbhETBrU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 19 May 2021 21:47:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36236 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229808AbhETBrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 19 May 2021 21:47:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 173306023C;
-        Thu, 20 May 2021 01:45:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621475159;
-        bh=QVDdQASuS8d9nfiPodUILwkkCeDcq435J2Gdpya1/ks=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=aph4t/OpytN2td2rihSkPJpvAJmj3uRO97MpUkypnltNuu65Hws5hw0roDgsvXnoe
-         C1rB8CAqcXJeDT4LXV44wliD6TUvEB5QZKJhEo0nKPvqU2Yg75uf/qKgwz66wnE+83
-         V8Oenk4Kv29uKcK56VKcJAN0cxw4AfW2JNBjtM8DCYH2Wr3nQEHgHQBPB0A4Wl1IHP
-         A4B6iKVTsPD6rAhRBh02GZ3LYknkrvap1HdQLSa81EH8egwbdYSLzcObSKu2bHhIyM
-         NW3kdhC4/S8F4G1/xtDqCPZVVcyLr/Gd3YI+TWCkMfNpQwHe4EdeZ/tywUm+dXO9Za
-         OJ6M2+obNBfPQ==
-Received: by mail-lf1-f52.google.com with SMTP id v8so16979995lft.8;
-        Wed, 19 May 2021 18:45:58 -0700 (PDT)
-X-Gm-Message-State: AOAM530n/RtSz1pAZYdux+cz+jcI2SBE8e1XTHLWiwWOMRTqpjQkbxJd
-        AjA3l7Td5r9j5MlNbpnKZF9lrGNs1Tv/Vxn94dI=
-X-Google-Smtp-Source: ABdhPJxvtxM93jgsgXbzFfEJugjs4lSYYrFCIibVxmW1z4FBvYEZG3re1CeFqZabsg3qTIpZ9JXvpLiBbrRPU2sVGHY=
-X-Received: by 2002:a19:ccc:: with SMTP id 195mr1668868lfm.24.1621475157363;
- Wed, 19 May 2021 18:45:57 -0700 (PDT)
+        id S230218AbhETBsr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 19 May 2021 21:48:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229498AbhETBsO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 19 May 2021 21:48:14 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6528AC061574
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 18:46:53 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id k4so3649972qkd.0
+        for <linux-kernel@vger.kernel.org>; Wed, 19 May 2021 18:46:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Z5/RTi1IdELulsUQK1tP18vsyEvr0MuQXrwyi68livE=;
+        b=XuIo6OyTgGqSqeFiFhs+TCjPq3TZr2r6LFqHNPmZ6H8wQfpyGQ4BGCAoG3HoD8moOm
+         PuNcqFKBgYLelkK1tuU7LvDhc+OJF0bJyxHBYj5pmcxwZFnHEo5XBwf5bMadjgMXO7u7
+         OsP8yglY39zCzP8VneQ7j1UcKQHeI4ZKgvDtE62gRlkBDfIqCKVSmQkz0a9D6Y40JwXs
+         IbQVsP3Iir7N0LOmz1S8m87Q1VcoWIwxHsGjnjGyQ2oUAcIUOf3KmP6fBApzrRsHGi+o
+         rxdh97PEIC2c8h47CzQz+5ez9FJbswG/hslJxWjM8pOBkcKp3VnfY6Ak14420ygy/PVI
+         owkg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Z5/RTi1IdELulsUQK1tP18vsyEvr0MuQXrwyi68livE=;
+        b=nfgxGw6tMJrdD4/GkyNf/KLjt5QCJtzdlgOFFglENKdDxAZXbkH5OPxrdmhsQaXl6Z
+         zHufqp+3bkRPWbr1Jkg5OsVRodkZrgMSd1RAPGURINMWmYBYt2by0E1Bg+zr1MdNrAlg
+         fObZIq0g1ADZQOzv9qGLhgFlByKR9BnuwIlrfms9SMGsGulnT/f7GtMhKZAkEs2MxzuI
+         EQ7aWTcsKB7gR6gRUasrcabuw6PmplpcwjX9E5gXeZkwW59jXrLOf9KLJCuYN2Tsc0BL
+         WCxyizhA7X2vz/bx6ECpz1GfjlQGEnt2rVZk0WuTP2XLs8IX91dNaqzX9yFaW7fvc/dp
+         CBkw==
+X-Gm-Message-State: AOAM5333zhpZA9tFbtcSh47bSlOXDkWTQZ0gs65WlcoMWcRwhtp0TaHa
+        2I5aUFgmeyUe/qYfrcA+51SNdA==
+X-Google-Smtp-Source: ABdhPJykrI/hzK2ExP8boMVXmTf2YcpzghBnUv61y/ZLIHwNqzdAocB0zZcHivGXl8S9bGVrsyrW3g==
+X-Received: by 2002:a37:6514:: with SMTP id z20mr2649165qkb.11.1621475212414;
+        Wed, 19 May 2021 18:46:52 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id d16sm931619qtw.23.2021.05.19.18.46.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 May 2021 18:46:51 -0700 (PDT)
+Date:   Wed, 19 May 2021 21:46:51 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Peter Xu <peterx@redhat.com>, Hugh Dickins <hughd@google.com>,
+        Mel Gorman <mgorman@suse.de>, Rik van Riel <riel@surriel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH] mm: move idle swap cache pages to the tail of LRU after
+ COW
+Message-ID: <YKW/ix3Yg5HRuBaC@cmpxchg.org>
+References: <20210519013313.1274454-1-ying.huang@intel.com>
+ <YKUlfeAiq/vv+dHl@cmpxchg.org>
+ <87r1i28ahm.fsf@yhuang6-desk1.ccr.corp.intel.com>
 MIME-Version: 1.0
-References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
- <20210519052048.GA24853@lst.de> <CAJF2gTTjwB4U-NxCtfgMA5aR2HzoQtA8a51W5UM1LHGRbjz9pg@mail.gmail.com>
- <20210519064435.GA3076809@x1> <20210519065352.GA31590@lst.de>
-In-Reply-To: <20210519065352.GA31590@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 20 May 2021 09:45:45 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
-Message-ID: <CAJF2gTR4FXRbp7oky-ypdVJba6btFHpp-+dPyJStRaQX_-5rzg@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Drew Fustini <drew@beagleboard.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
-        lazyparser@gmail.com,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Benjamin Koch <snowball@c3pb.de>,
-        Matteo Croce <mcroce@linux.microsoft.com>,
-        Wei Fu <tekkamanninja@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87r1i28ahm.fsf@yhuang6-desk1.ccr.corp.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 2:53 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, May 18, 2021 at 11:44:35PM -0700, Drew Fustini wrote:
-> > This patch series looks like it might be useful for the StarFive JH7100
-> > [1] [2] too as it has peripherals on a non-coherent interconnect. GMAC,
-> > USB and SDIO require that the L2 cache must be manually flushed after
-> > DMA operations if the data is intended to be shared with U74 cores [2].
->
-> Not too much, given that the SiFive lineage CPUs have an uncached
-> window, that is a totally different way to allocate uncached memory.
-It's a very big MIPS smell. What's the attribute of the uncached
-window? (uncached + strong-order/ uncached + weak, most vendors still
-use AXI interconnect, how to deal with a bufferable attribute?) In
-fact, customers' drivers use different ways to deal with DMA memory in
-non-coherent SOC. Most riscv SOC vendors are from ARM, so giving them
-the same way in DMA memory is a smart choice. So using PTE attributes
-is more suitable.
+On Thu, May 20, 2021 at 09:22:45AM +0800, Huang, Ying wrote:
+> Johannes Weiner <hannes@cmpxchg.org> writes:
+> 
+> > On Wed, May 19, 2021 at 09:33:13AM +0800, Huang Ying wrote:
+> >> diff --git a/mm/memory.c b/mm/memory.c
+> >> index b83f734c4e1d..2b6847f4c03e 100644
+> >> --- a/mm/memory.c
+> >> +++ b/mm/memory.c
+> >> @@ -3012,6 +3012,11 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+> >>  				munlock_vma_page(old_page);
+> >>  			unlock_page(old_page);
+> >>  		}
+> >> +		if (page_copied && PageSwapCache(old_page) &&
+> >> +		    !page_mapped(old_page) && trylock_page(old_page)) {
+> >> +			try_to_free_idle_swapcache(old_page);
+> >> +			unlock_page(old_page);
+> >
+> > If there are no more swap or pte references, can we just attempt to
+> > free the page right away, like we do during regular unmap?
+> >
+> > 		if (page_copied)
+> > 			free_swap_cache(old_page);
+> > 		put_page(old_page);
+> 
+> A previous version of the patch does roughly this.
+> 
+> https://lore.kernel.org/lkml/20210113024241.179113-1-ying.huang@intel.com/
+> 
+> But Linus has concerns with the overhead introduced in the hot COW path.
 
-See: https://github.com/riscv/virtual-memory/blob/main/specs/611-virtual-memory-diff.pdf
-4.4.1
-The draft supports custom attribute bits in PTE.
+Sorry, I had missed that thread.
 
-Although I do not agree with uncached windows, this patchset does not
-conflict with SiFive uncached windows.
+It sounds like there were the same concerns about the LRU shuffling
+overhead in the COW page. Now we have numbers for that, but not the
+free_swap_cache version. Would you be able to run the numbers for that
+as well? It would be interesting to see how much the additional code
+complexity buys us.
 
->
-> > There is the RISC-V Cache Management Operation, or CMO, task group [3]
-> > but I am not sure if that can help the SoC's that have already been
-> > fabbed like the the D1 and the JH7100.
->
-> It does, because unimplemented instructions trap into M-mode, where they
-> can be emulated.
->
-> Or to summarize things.  Non-coherent DMA (and not coherent as title in
-> this series) requires two things:
->
->  1) allocating chunks of memory that is marked as not cachable
->  2) instructions to invalidate and/or writeback cache lines
-Maybe sbi_ecall (dma_sync) is enough and let the vendor deal with it
-in opensbi. From a hardware view, CMO instruction only could deal with
-one cache line, then CMO-trap is not a good idea.
+> Another possibility is to move the idle swap cache page to the tail of
+> the file LRU list.  But the question is how to identify the page.
 
->
-> none of which currently exists in RISV-V.  Hacking vendor specific
-> cruft into the kernel doesn't scale, as shown perfectly by this
-> series which requires to hard code vendor-specific non-standardized
-> extensions in a kernel that makes it specific to that implementation.
->
-> What we need to do is to standardize a way to do this properly, and then
-> after that figure out a way to quirk in non-compliant implementations
-> in a way that does not harm the general kernel.
-
-
--- 
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
+The LRU type is identified by PG_swapbacked, and we do clear that for
+anon pages to implement MADV_FREE. It may work here too. But I'm
+honestly a bit skeptical about the ROI on this...
