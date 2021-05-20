@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9CC38B218
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E64138B21F
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 16:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240492AbhETOnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 10:43:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231246AbhETOmp (ORCPT
+        id S230361AbhETOox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 10:44:53 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:51482 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231391AbhETOni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 10:42:45 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32245C06135D
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 07:40:02 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id w1so11812382ybt.1
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 07:40:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9wizOY0EarwWfoT8sBSAOULyiMZlua8eTWF9dLcnBQo=;
-        b=D5sKWuHddAS6wsMF0yqrzBm8O73rmgG9E6k2rGGSsgrHqiz3X4sJH9MzGZlLHljfZp
-         TSlo3reO9Tx+GiS256/5L3pL7Myy3vXOvSe8YImblN2uNqQoqScgvXzJhSSzcIH4gUn9
-         96Pn9IwKKR4hRxINmz/4aBVxsm+CJKyx0KWlGZk9X/qjfOquBzSsFJ0bMHevFPmuNjRX
-         4mdye2AQMYcpE+aU5ugeUU2tM5kCVCEm7twjK7c0/AqP0TYaH3H4Pezz1NmsaVVOvdNr
-         TFm1CdOlc3kkH5thL3BgUhqS3+e6Q0ete9R0WV1t+8PvLqaUrduM2OovkhCSsc6KTzLf
-         79Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9wizOY0EarwWfoT8sBSAOULyiMZlua8eTWF9dLcnBQo=;
-        b=rNhc2wdrzWcbqWBSmHbd9n117Z8LnXRhIHN5dgNM4reoT57VEEQq3MG9EFnYP/KdBy
-         Kaxsooa1ztVqyuNFmiNAITjvAjH7k4I4vBZLYTl0CATuPrcfEjcHXA8YK9FPFMqvTCMs
-         GtCM8ryWoGDOdK4IDF2qnQGgxNE0e1Di2hlTC7onVQ1HiXG1POoJ0UWRWj8RMtFFGHdJ
-         TULHdRgILSvivWAyriQ0CJWHUUmFjJX+wiTxMAng5kCDhy6c73PAsH1++0MFs10+OC8G
-         U85RKC1gBLhUaGUzVqlpNUtbrBKDYxfDqLju0O+CmCqtW88tosxU03ri8pQH7JwunvOA
-         fWbw==
-X-Gm-Message-State: AOAM530qpNzTHrtpV6fFDKOrw/FTpQXHdDxrNk1UP8yiE/yplqTzjnz0
-        B96sFMBSu2cy8HeLVwlDAHo0l8za983ax25gYnEqWA==
-X-Google-Smtp-Source: ABdhPJy1e4N2uZPMyL8hA7V2j6huim5DdDIrfgl2SUEmC46MEQW8QddIKklxeLSX46+xAN1d6tP2LZq+f3U+LVAZc/I=
-X-Received: by 2002:a25:287:: with SMTP id 129mr7557117ybc.312.1621521601487;
- Thu, 20 May 2021 07:40:01 -0700 (PDT)
+        Thu, 20 May 2021 10:43:38 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14KEg4Qt064654;
+        Thu, 20 May 2021 09:42:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621521724;
+        bh=KXJRdD9vsdXDVEZ3u/jDm1YqTGEWtAtg3jh5wuKXpQk=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=YkNu734l+g6KJM7nL10UyQz7jJsm37eoQ5rna1rXi8jhO3PS1ShXqzafEQ6/fuKiB
+         fq7oluX3FUp6Mun2sCiUTnq5A2cSgX+zk5Tg3wQVJwNj6+P4qUlP+Up2/4RxHv3dTN
+         wPHVLFdI/p1M637LlzojtZZYmxDTLHPsM+iK4qsQ=
+Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14KEg4Sb130945
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 20 May 2021 09:42:04 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Thu, 20
+ May 2021 09:42:04 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Thu, 20 May 2021 09:42:04 -0500
+Received: from [10.250.234.143] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14KEfxrw075781;
+        Thu, 20 May 2021 09:42:00 -0500
+Subject: Re: [PATCH 1/6] dt-bindings: mfd: ti,j721e-system-controller: Fix mux
+ node errors
+To:     Rob Herring <robh@kernel.org>, <devicetree@vger.kernel.org>,
+        Peter Rosin <peda@axentia.se>, Wolfram Sang <wsa@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Jacopo Mondi <jacopo+renesas@jmondi.org>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Niklas_S=c3=b6derlund?= 
+        <niklas.soderlund+renesas@ragnatech.se>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20210518232858.1535403-1-robh@kernel.org>
+ <20210518232858.1535403-2-robh@kernel.org>
+From:   Kishon Vijay Abraham I <kishon@ti.com>
+Message-ID: <72b27bc0-838c-fd7d-32f8-bc00f8508d1d@ti.com>
+Date:   Thu, 20 May 2021 20:11:58 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210518155013.45622-1-andriy.shevchenko@linux.intel.com>
- <20210518232451.GA7362@sol> <YKTCDNcyUlrgE0Y4@smile.fi.intel.com>
- <20210519080434.GA22854@sol> <YKTMninSSY3MK6Hf@smile.fi.intel.com>
- <CAMpxmJVJBx2J87bS0CUYPyJkHKt=nvFw65y_+iG-5JbVekuaqw@mail.gmail.com> <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
-In-Reply-To: <CAHp75VdZ3aws3G=4_r82LMfuMNmNdLoBpqRsfF_ogZ7c=vyTsQ@mail.gmail.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Thu, 20 May 2021 16:39:50 +0200
-Message-ID: <CAMpxmJVy12at1+37iPiqTXe6mvodUpjDKCkFQO02Cu=u5_sp_A@mail.gmail.com>
-Subject: Re: [PATCH v1 1/2] gpiolib: Never return internal error codes to user space
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Kent Gibson <warthog618@gmail.com>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Suresh Balakrishnan <suresh.balakrishnan@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210518232858.1535403-2-robh@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 3:15 PM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
->
-> On Thu, May 20, 2021 at 4:08 PM Bartosz Golaszewski
-> <bgolaszewski@baylibre.com> wrote:
-> > On Wed, May 19, 2021 at 10:30 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Wed, May 19, 2021 at 04:04:34PM +0800, Kent Gibson wrote:
-> > > > On Wed, May 19, 2021 at 10:45:16AM +0300, Andy Shevchenko wrote:
-> > > > > On Wed, May 19, 2021 at 07:24:51AM +0800, Kent Gibson wrote:
-> > > > > > On Tue, May 18, 2021 at 06:50:12PM +0300, Andy Shevchenko wrote:
->
-> ...
->
-> > > > > > > Fixes: d7c51b47ac11 ("gpio: userspace ABI for reading/writing GPIO lines")
-> > > > > > > Fixes: 61f922db7221 ("gpio: userspace ABI for reading GPIO line events")
-> > > > > > > Fixes: 3c0d9c635ae2 ("gpiolib: cdev: support GPIO_V2_GET_LINE_IOCTL and GPIO_V2_LINE_GET_VALUES_IOCTL")
->
-> ...
->
-> > > > > > You immediately revert this patch in patch 2.
-> > > > > > My understanding is that is not allowed within a patch set.
-> > > > >
-> > > > > > Why split the patches instead of going direct to the new helper?
-> > > > >
-> > > > > It's for backporting to make it easier. (I deliberately left the context above)
-> > > > >
-> > > > > I can fold them if maintainers think it's okay to do.
-> > > > >
-> > > >
-> > > > Not sure what the constraints are on backporting, but wouldn't it be
-> > > > simpler and cleaner to backport the new helper?
-> > >
-> > > Logically (and ideally) it would be three different patches:
-> > >  1) introduce helper
-> > >  2) use helper
-> > >  3) fix places where it's needed to be done
-> > >
-> > > But the above scheme doesn't fit backporting idea (we don't backport new
-> > > features and APIs without really necessity). So, the options left are:
-> > >
-> > > Option a: One patch (feels a bit like above)
-> > > Option b: Two patches like in this series (yes, you are correct about
-> > >           disadvantages)
-> > >
-> > > > But, as you say, it is the maintainers' call.
->
-> > Third option is to backport this patch but apply the helper
-> > immediately to master.
->
-> If I got you correctly, you want to have two patches, one for
-> backporting and one for current, correct? But how can we backport
-> something which has never been upstreamed?
->
+Hi Rob,
 
-Well we would not technically backport anything - there would be one
-patch for mainline and a separate fix for stable.
+On 19/05/21 4:58 am, Rob Herring wrote:
+> The ti,j721e-system-controller binding does not follow the standard mux
+> controller node name 'mux-controller' and the example is incomplete. Fix
+> these to avoid schema errors before the mux controller binding is
+> converted to schema.
+> 
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Kishon Vijay Abraham I <kishon@ti.com>
+> Cc: Roger Quadros <rogerq@ti.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  .../mfd/ti,j721e-system-controller.yaml       | 19 +++++++++++++------
+>  1 file changed, 13 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+> index 19fcf59fd2fe..272832e9f8f2 100644
+> --- a/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+> +++ b/Documentation/devicetree/bindings/mfd/ti,j721e-system-controller.yaml
+> @@ -43,12 +43,10 @@ properties:
+>  
+>  patternProperties:
+>    # Optional children
+> -  "^serdes-ln-ctrl@[0-9a-f]+$":
+> +  "^mux-controller@[0-9a-f]+$":
+>      type: object
+> -    description: |
+> -      This is the SERDES lane control mux. It should follow the bindings
+> -      specified in
+> -      Documentation/devicetree/bindings/mux/reg-mux.txt
+> +    description:
+> +      This is the SERDES lane control mux.
+>  
+>  required:
+>    - compatible
+> @@ -68,9 +66,18 @@ examples:
+>          #size-cells = <1>;
+>          ranges;
+>  
+> -        serdes_ln_ctrl: serdes-ln-ctrl@4080 {
+> +        serdes_ln_ctrl: mux-controller@4080 {
+>              compatible = "mmio-mux";
+>              reg = <0x00004080 0x50>;
 
-Bart
+"mmio-mux" compatible doesn't define using "reg" property. But a system
+can have multiple mux-controllers which would require us to use
+mux-controller@0, mux-controller@1,..
+
+And IIRC if we have "@", 'reg' will be a required required property.
+Would it be an issue here?
+
+Thanks
+Kishon
