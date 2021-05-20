@@ -2,168 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1BF38B2F5
-	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:21:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1B838B2FF
+	for <lists+linux-kernel@lfdr.de>; Thu, 20 May 2021 17:22:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243800AbhETPXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 11:23:08 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:40617 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235472AbhETPW5 (ORCPT
+        id S243888AbhETPXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 11:23:19 -0400
+Received: from smtprelay0080.hostedemail.com ([216.40.44.80]:34956 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S243786AbhETPXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 11:22:57 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 445162224A;
-        Thu, 20 May 2021 17:21:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1621524094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4mZw769Li8RrpESRx7xXi26AWpGToFQSlDv5uLSxVFM=;
-        b=YVH55aXL69KVBr8AcSFoOJFg7ZZ+rkD3sy6OEZEzRbixvcBB4jlK1QJsFfgkM8XyBKHgTC
-        cInnYQEtKLnVrRMgVNAW0ObrDII/MUUZDytqJHjDyceirt+yCfJ6r1nr7Dk0jUtHImjvrh
-        VwdLapQiaYOUZHPPm5gHdoPHbIObdK4=
+        Thu, 20 May 2021 11:23:07 -0400
+Received: from omf01.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3155B181CC1BF;
+        Thu, 20 May 2021 15:21:43 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf01.hostedemail.com (Postfix) with ESMTPA id C005517275;
+        Thu, 20 May 2021 15:21:41 +0000 (UTC)
+Message-ID: <3173f7f10e0c212c8c828d9ca4450927f757e7d2.camel@perches.com>
+Subject: Re: [PATCH 6/9] tty: hvc_console: Fix coding style issues of block
+ comments
+From:   Joe Perches <joe@perches.com>
+To:     Johan Hovold <johan@kernel.org>,
+        Xiaofei Tan <tanxiaofei@huawei.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linuxarm@openeuler.org
+Date:   Thu, 20 May 2021 08:21:39 -0700
+In-Reply-To: <YKYcFfKiHT39Gyey@hovoldconsulting.com>
+References: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
+         <1621233433-27094-7-git-send-email-tanxiaofei@huawei.com>
+         <YKJ6ZjT8o5xJmBCr@hovoldconsulting.com>
+         <e88b6fcd-bfe1-9812-905a-862825f420ce@huawei.com>
+         <YKYcFfKiHT39Gyey@hovoldconsulting.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 20 May 2021 17:21:34 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: Re: [PATCH v2] mtd: spi-nor: implement OTP erase for Winbond and
- similar flashes
-In-Reply-To: <20210520134940.fpyt52mwpdotrp4a@ti.com>
-References: <20210510202056.30000-1-michael@walle.cc>
- <20210520122256.fhkzpqmu7nxwjoqt@ti.com>
- <20a7e9725d54c9566ca06c062c15f015@walle.cc>
- <20210520134940.fpyt52mwpdotrp4a@ti.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <bdf79e0b9cbe291a48ab27b69f15eb04@walle.cc>
-X-Sender: michael@walle.cc
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: C005517275
+X-Spam-Status: No, score=-2.90
+X-Stat-Signature: gpzyzddmarn4jdsor9ep6g1wg5gtmhrf
+X-Rspamd-Server: rspamout03
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18KqlcSav5TvmdBlRG1J6AisdTKuL2Xz9w=
+X-HE-Tag: 1621524101-433904
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-20 15:49, schrieb Pratyush Yadav:
-> On 20/05/21 03:20PM, Michael Walle wrote:
->> Am 2021-05-20 14:22, schrieb Pratyush Yadav:
->> > On 10/05/21 10:20PM, Michael Walle wrote:
-..
->> > > +int spi_nor_otp_erase_secr(struct spi_nor *nor, loff_t addr)
->> > > +{
->> > > +	int ret;
->> > > +
->> > > +	ret = spi_nor_write_enable(nor);
->> > > +	if (ret)
->> > > +		return ret;
->> > > +
->> > > +	if (nor->spimem) {
->> > > +		struct spi_mem_op op =
->> > > +			SPI_MEM_OP(SPI_MEM_OP_CMD(SPINOR_OP_ESECR, 0),
->> > > +				   SPI_MEM_OP_ADDR(3, addr, 0),
->> >
->> > Only 3 address bytes needed? Can the OTP region ever require 4 byte
->> > addressing? For example, say the flash is switched to 4 byte addressing
->> > for the main region. Would it still expect 3 byte addressing for OTP
->> > ops?
->> 
->> It seems you're right. Looking at larger flashes there are sometimes
->> 4 bytes. See for example ch 8.2.44
->> 
->> https://www.winbond.com/resource-files/w25m512jwxiq%20spi%20rev%20c%2012242018.pdf
->> 
->> Thus it seems it should be fixed for the programming and reading,
->> too. Unfortunately, I cannot test any of this.
+On Thu, 2021-05-20 at 10:21 +0200, Johan Hovold wrote:
+> On Tue, May 18, 2021 at 12:01:22PM +0800, Xiaofei Tan wrote:
+> > On 2021/5/17 22:15, Johan Hovold wrote:
+> > > On Mon, May 17, 2021 at 02:37:10PM +0800, Xiaofei Tan wrote:
+> > > > Fix coding style issues of block comments, reported by checkpatch.pl.
+> > > > Besides, add a period at the end of the sentenses.
+[]
+> > > > diff --git a/drivers/tty/hvc/hvc_console.c b/drivers/tty/hvc/hvc_console.c
+[]
+> > > > @@ -177,7 +177,8 @@ static void hvc_console_print(struct console *co, const char *b,
+> > > >  			r = cons_ops[index]->put_chars(vtermnos[index], c, i);
+> > > >  			if (r <= 0) {
+> > > >  				/* throw away characters on error
+> > > > -				 * but spin in case of -EAGAIN */
+> > > > +				 * but spin in case of -EAGAIN.
+> > > > +				 */
+> > > 
+> > > How is this an improvement? First, the multi-line comment style is
+> > > 
+> > > 	/*
+> > > 	 * ...
+> > > 	 */
+> > > 
+> > 
+> > Yes, mostly we use this style. I can follow it if new version is needed.
 > 
-> I don't think any such flash is supported currently, right? So in that
-> case we won't at least introduce any new regressions when making this
-> untested change. Whenever someone adds support for one of these 
-> flashes,
-> we can ask them to test this as well.
-
-yep.
-
-..
-
->> > > +static int spi_nor_mtd_otp_lock_erase(struct mtd_info *mtd, loff_t
->> > > from,
->> >
->> > spi_nor_mtd_otp_lock_or_erase()? Or would it make it too long?
->> 
->> I'm fine with both, its just that the read/write doesn't have an
->> "or" neither ;)
->> 
->> > Anyway, maybe I am bikeshedding too much, but I don't like that you
->> > combine two completely independent operations into the same function
->> > because they have some common parts. You should make them two separate
->> > functions and see how many of the common parts can be split into
->> > independent subroutines.
->> 
->> Given that the whole boilerplate before and after the erase/lock is
->> exactly the same, even the while loop is the same, I don't see how
->> it can easily be split. Well, you could rename the function to some
->> generic spi_nor_mtd_walk() - which would imply it might also be
->> used for read/write, which is not true - and provide a callback
->> function. But I don't see how this is would make it easier to read.
->> And this is just an implemention local to this module.
+> This is the preferred style outside of networking.
 > 
-> My suggestion was to make two copies of the same code, and then see if
-> you can consolidate some in a clean subroutine. If that is not 
-> possible,
-> then you can just leave the code duplicated in two places. It is not
-> that much duplication so it should be fine IMO.
+> > BTW, How about add the '/*' check into checkpatch.pl?
 > 
-> But I won't press too much on this point. I will leave it to your
-> judgement on what works better. Just want to make sure you understand 
-> my
-> point completely.
+> Checkpatch already has too many checks IMO
 
-I get your point. But I really don't like the code duplication.
+I sometimes agree.  What checkpatch messages do you think are excessive?
 
->> > > +				      size_t len, bool is_erase)
->> > >  {
->> > >  	struct spi_nor *nor = mtd_to_spi_nor(mtd);
->> > >  	const struct spi_nor_otp_ops *ops = nor->params->otp.ops;
->> > >  	const size_t rlen = spi_nor_otp_region_len(nor);
->> > >  	unsigned int region;
->> > > +	loff_t rstart;
->> > >  	int ret;
->> > >
->> > >  	if (from < 0 || (from + len) > spi_nor_otp_size(nor))
->> > > @@ -337,7 +382,13 @@ static int spi_nor_mtd_otp_lock(struct mtd_info
->> > > *mtd, loff_t from, size_t len)
->> > >
->> > >  	while (len) {
->> > >  		region = spi_nor_otp_offset_to_region(nor, from);
->> > > -		ret = ops->lock(nor, region);
->> > > +
->> > > +		if (is_erase) {
->> > > +			rstart = spi_nor_otp_region_start(nor, region);
->> > > +			ret = ops->erase(nor, rstart);
->> >
->> > This further highlights my point. There are subtle differences between
->> > erase and lock and having them in the same function might not be the
->> > best idea.
+> and I'm a bit surprised that
+> it doesn't check this already. Perhaps it's because you used the -f to
+> run checkpatch on in-kernel code, which you should not.
 
-Maybe the argument for the locking is wrong. Future will tell. The
-start address of a region and the number of a region is actually
-equivalent. So maybe ->lock should also take the start address.
-But then you'd go from address -> region -> address -> region.
+Likely not.  If it was run on a suggested patch, checkpatch doesn't emit
+many messages on unmodified patch context lines.  And it shouldn't.
 
-At the moment its modelled after how winbond and macronix flashes
-implement these ops.
+> it's just that you
+> introduce noise in the logs and do pointless changes of context which
+> makes it harder to use tools like git blame and makes backporting harder
+> for no good reason.
 
-See here for an old version of the support for macronix(-like)
-flashes:
-https://lore.kernel.org/linux-mtd/20200911222634.31804-4-michael@walle.cc/
+Pretty pointless metric IMO.  Context changes in comments are mostly harmless.
+IMO: backporting of these sorts non-bug fix changes is done _far_ too often.
 
--michael
