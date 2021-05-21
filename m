@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4B4138C284
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:02:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E87E38C285
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234774AbhEUJDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:03:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46108 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234424AbhEUJD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:03:29 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 16978AAA6;
-        Fri, 21 May 2021 09:02:06 +0000 (UTC)
-From:   "Ivan T. Ivanov" <iivanov@suse.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] pinctrl: bcm2835: Accept fewer than expected IRQs
-Date:   Fri, 21 May 2021 12:01:58 +0300
-Message-Id: <20210521090158.26932-1-iivanov@suse.de>
-X-Mailer: git-send-email 2.31.1
+        id S235118AbhEUJDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:03:52 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:45282 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234881AbhEUJDv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 05:03:51 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14L8uHmB012397;
+        Fri, 21 May 2021 04:02:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=FDnjBuJeyguLnnjPWZeo1wOjjCJFYx4qwcu4iSKlwYw=;
+ b=oyZfRdIwiat22s+G46RMfM/1Dh0JNxPj47VabllPDanT48obqP+FrgoS1R303v7nsavH
+ +5zzT91qOzSWACeg+Tl5XMn6JSuBilZpq7/JPdtiz5ie6fsQmu5woIGtgegikkiuQzdL
+ lPAR35jMYuNDb8lOZ2DQG9N1izIBqQ+c/IFnVuXMJSZ7hJkB3b4c5jCv4Fp2RCNkZeKW
+ PtNstKXUdXXFR0+kLnb17WZeod7x98okGbtEyEvSXXQpp6H1EIiMxDoJcQbyknRH1iZX
+ 4wrGqFG6TMx05UrwExX6sRy+UGGH9oail1oqlweqnP1JVvjxYXMVMHCwoX9zYZB4XjVW 0Q== 
+Received: from ediex01.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 38p6err6qb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 21 May 2021 04:02:28 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 21 May
+ 2021 10:02:26 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 21 May 2021 10:02:26 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 59EEC11CD;
+        Fri, 21 May 2021 09:02:26 +0000 (UTC)
+Date:   Fri, 21 May 2021 09:02:26 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@opensource.wolfsonmicro.com>,
+        <patches@opensource.cirrus.com>
+Subject: Re: [PATCH 1/7] mfd: wm831x-core: Fix incorrect function name
+ wm831x_reg_unlock()
+Message-ID: <20210521090226.GJ64205@ediswmail.ad.cirrus.com>
+References: <20210520120820.3465562-1-lee.jones@linaro.org>
+ <20210520120820.3465562-2-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210520120820.3465562-2-lee.jones@linaro.org>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: Vh4oMtzRk1w_XtU7f_nVlUmfbMjstQe_
+X-Proofpoint-ORIG-GUID: Vh4oMtzRk1w_XtU7f_nVlUmfbMjstQe_
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
+ spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=999 clxscore=1015
+ bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105210059
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Phil Elwell <phil@raspberrypi.com>
+On Thu, May 20, 2021 at 01:08:14PM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/mfd/wm831x-core.c:121: warning: expecting prototype for wm831x_reg_unlock(). Prototype was for wm831x_reg_lock() instead
+> 
+> Cc: Lee Jones <lee.jones@linaro.org>
+> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
+> Cc: patches@opensource.cirrus.com
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
 
-The downstream .dts files only request two GPIO IRQs. Truncate the
-array of parent IRQs when irq_of_parse_and_map returns 0.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
----
- drivers/pinctrl/bcm/pinctrl-bcm2835.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/pinctrl/bcm/pinctrl-bcm2835.c b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-index 1d21129f7751..2c87af1180c4 100644
---- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-+++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-@@ -1274,9 +1274,13 @@ static int bcm2835_pinctrl_probe(struct platform_device *pdev)
- 		char *name;
- 
- 		girq->parents[i] = irq_of_parse_and_map(np, i);
--		if (!is_7211)
-+		if (!is_7211) {
-+			if (!girq->parents[i]) {
-+				girq->num_parents = i;
-+				break;
-+			}
- 			continue;
--
-+		}
- 		/* Skip over the all banks interrupts */
- 		pc->wake_irq[i] = irq_of_parse_and_map(np, i +
- 						       BCM2835_NUM_IRQS + 1);
--- 
-2.31.1
-
+Thanks,
+Charles
