@@ -2,72 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA0D38C369
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81EBB38C370
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:40:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236717AbhEUJka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:40:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:20432 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233977AbhEUJk2 (ORCPT
+        id S236771AbhEUJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:41:48 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:54784 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233006AbhEUJlr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:40:28 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-48-ACZyF3WhMFusJGlOpJA7Qw-1; Fri, 21 May 2021 10:39:03 +0100
-X-MC-Unique: ACZyF3WhMFusJGlOpJA7Qw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 21 May 2021 10:39:01 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 21 May 2021 10:39:01 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Marco Elver' <elver@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "glider@google.com" <glider@google.com>,
-        "dvyukov@google.com" <dvyukov@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
-        Mel Gorman <mgorman@suse.de>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] kfence: use TASK_IDLE when awaiting allocation
-Thread-Topic: [PATCH] kfence: use TASK_IDLE when awaiting allocation
-Thread-Index: AQHXThvT1D7AluRty02nSL8F2LU+eKrtrQGA
-Date:   Fri, 21 May 2021 09:39:01 +0000
-Message-ID: <bc14f4f1a3874e55bef033246768a775@AcuMS.aculab.com>
-References: <20210521083209.3740269-1-elver@google.com>
-In-Reply-To: <20210521083209.3740269-1-elver@google.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+        Fri, 21 May 2021 05:41:47 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UZbOECL_1621590016;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UZbOECL_1621590016)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 21 May 2021 17:40:21 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     andrew@lunn.ch
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] net: phy: Fix inconsistent indenting
+Date:   Fri, 21 May 2021 17:40:14 +0800
+Message-Id: <1621590014-66912-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWFyY28gRWx2ZXINCj4gU2VudDogMjEgTWF5IDIwMjEgMDk6MzINCj4gDQo+IFNpbmNl
-IHdhaXRfZXZlbnQoKSB1c2VzIFRBU0tfVU5JTlRFUlJVUFRJQkxFIGJ5IGRlZmF1bHQsIHdhaXRp
-bmcgZm9yIGFuDQo+IGFsbG9jYXRpb24gY291bnRzIHRvd2FyZHMgbG9hZC4gSG93ZXZlciwgZm9y
-IEtGRU5DRSwgdGhpcyBkb2VzIG5vdCBtYWtlDQo+IGFueSBzZW5zZSwgc2luY2UgdGhlcmUgaXMg
-bm8gYnVzeSB3b3JrIHdlJ3JlIGF3YWl0aW5nLg0KPiANCj4gSW5zdGVhZCwgdXNlIFRBU0tfSURM
-RSB2aWEgd2FpdF9ldmVudF9pZGxlKCkgdG8gbm90IGNvdW50IHRvd2FyZHMgbG9hZC4NCg0KRG9l
-c24ndCB0aGF0IGxldCB0aGUgcHJvY2VzcyBiZSBpbnRlcnJ1cHRpYmxlIGJ5IGEgc2lnbmFsLg0K
-V2hpY2ggaXMgcHJvYmFibHkgbm90IGRlc2lyYWJsZS4NCg0KVGhlcmUgcmVhbGx5IG91Z2h0IHRv
-IGJlIGEgd2F5IG9mIHNsZWVwaW5nIHdpdGggVEFTS19VTklOVEVSUlVQVElCTEUNCndpdGhvdXQg
-Y2hhbmdpbmcgdGhlIGxvYWQtYXZlcmFnZS4NCg0KSUlSQyB0aGUgbG9hZC1hdmVyYWdlIGlzIHJl
-YWxseSBpbnRlbmRlZCB0byBpbmNsdWRlIHByb2Nlc3Nlcw0KdGhhdCBhcmUgd2FpdGluZyBmb3Ig
-ZGlzayAtIGVzcGVjaWFsbHkgZm9yIHN3YXAuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
-ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
-TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+Eliminate the follow smatch warning:
+
+drivers/net/phy/phy_device.c:2886 phy_probe() warn: inconsistent
+indenting.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ drivers/net/phy/phy_device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 0a2d8be..1539ea0 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2883,7 +2883,7 @@ static int phy_probe(struct device *dev)
+ 	/* Disable the interrupt if the PHY doesn't support it
+ 	 * but the interrupt is still a valid one
+ 	 */
+-	 if (!phy_drv_supports_irq(phydrv) && phy_interrupt_is_valid(phydev))
++	if (!phy_drv_supports_irq(phydrv) && phy_interrupt_is_valid(phydev))
+ 		phydev->irq = PHY_POLL;
+ 
+ 	if (phydrv->flags & PHY_IS_INTERNAL)
+-- 
+1.8.3.1
 
