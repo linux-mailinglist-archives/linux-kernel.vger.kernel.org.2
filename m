@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EA0B38C0B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:25:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A46BE38C0B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:26:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbhEUH0t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:26:49 -0400
-Received: from foss.arm.com ([217.140.110.172]:40262 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232281AbhEUH0s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:26:48 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D747511B3;
-        Fri, 21 May 2021 00:25:25 -0700 (PDT)
-Received: from [10.163.81.51] (unknown [10.163.81.51])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ECC053F73D;
-        Fri, 21 May 2021 00:25:21 -0700 (PDT)
-Subject: Re: [PATCH v2] mm: migrate: fix missing update page_private to
- hugetlb_page_subpool
-To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
-        osalvador@suse.de, mike.kravetz@oracle.com, mhocko@suse.com,
-        david@redhat.com, willy@infradead.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        duanxiongchun@bytedance.com, zhengqi.arch@bytedance.com,
-        fam.zheng@bytedance.com, Randy Dunlap <rdunlap@infradead.org>
-References: <20210521022747.35736-1-songmuchun@bytedance.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <c528e29d-c395-1651-4943-27642b9e5168@arm.com>
-Date:   Fri, 21 May 2021 12:56:06 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210521022747.35736-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235861AbhEUH2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:28:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234293AbhEUH2O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:28:14 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6144C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:26:51 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id i14-20020a0cf10e0000b02901eeced6480dso14410602qvl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:26:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=JoxX3vq44wLNgaQOrg3pQOcd8r/g5YBPrzj4+4KLU0o=;
+        b=ARASCsMpesYMn32qIslFtKuh5MusyNHMqxDu/DiZ30m6y4jL2kvAz+w577BTsMwWhQ
+         kt+amSaNu+1SJVc4HLg98sZ/u70WPKff0AgrWWxaHuhongV2Kmf8o65TGJP/E7Cnz9HP
+         LgmSRwpMwDRdkRIWUPOlDe3xvyJX78zuIqin17FpeOLj+h9VJr2LObaCAInNWJVrf30q
+         8B8w8PJNUkJzKRl4AkK6fx6cU+8GYy/6dqU1vdIYJ/VJ8PhdnjdnOY5XnO0JYEWftvHp
+         rm3akIs1cRssrwDh43vYplSkJgx3Q8LIW7GWRC/FlsCAc0PvjQQLmDw0X9/AonIkCWaM
+         2Pdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=JoxX3vq44wLNgaQOrg3pQOcd8r/g5YBPrzj4+4KLU0o=;
+        b=gZwlcLr5gQCgEc0/QVbj/iVwNcSbWun9IB87zVEMvtQdc+PLaFvIniuvZbjXiYrdJe
+         Q/OK+b9Ikt8mbrzdVw+/EP3WRYOO80BEix0fgnIobKE5AMbkWK/gyFcAm0yv2yk8bS74
+         MUt8TNVgKd1X9YtXTQZErbzGPnP1Wh49YYJTxTCVz7/XOhUxHLHJxlPcGza3EYF5YGTG
+         KEJIn2YLyOqyJV3SUAk1qUdMdyigMdMSQzXBWD8d0Waxoa+tqRXmRIUJXIBXLbHEUPO6
+         cCkWim7eWptngGrR2wZIQtgYyhSKRZezSgWvnVi0i4nysJFMYO8QMVCkFOORU+iK/iBz
+         VdUQ==
+X-Gm-Message-State: AOAM5306va/LqtOzDf9amYrs1X+1EZzCRsfTiDMQs8U+yATII1CYtoKp
+        ERx+cyQ5kD8xwlFehbylwKMSVa2pjw==
+X-Google-Smtp-Source: ABdhPJwmGbSuVl1Wagqi/NbNdmfD2fIY9dly6u0ayHOhdr1CMWrMpYxn/TQ9YJY5gN17oOLG4jc0dqvSvQ==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:a932:cdd6:7230:17ba])
+ (user=elver job=sendgmr) by 2002:ad4:4184:: with SMTP id e4mr11204870qvp.13.1621582010735;
+ Fri, 21 May 2021 00:26:50 -0700 (PDT)
+Date:   Fri, 21 May 2021 09:26:10 +0200
+Message-Id: <20210521072610.2880286-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH] init: verify that function is initcall_t at compile-time
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com
+Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
+        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
+        akpm@linux-foundation.org, masahiroy@kernel.org, joe@perches.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the spirit of making it hard to misuse an interface, add a
+compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
+to verify the initcall function matches initcall_t, because the inline
+asm bypasses any type-checking the compiler would otherwise do. This
+will help developers catch incorrect API use in all configurations.
 
+A recent example of this is:
+https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
 
-On 5/21/21 7:57 AM, Muchun Song wrote:
-> Since commit d6995da31122 ("hugetlb: use page.private for hugetlb specific
-> page flags") converts page.private for hugetlb specific page flags. We
-> should use hugetlb_page_subpool() to get the subpool pointer instead of
-> page_private().
-> 
-> This 'could' prevent the migration of hugetlb pages. page_private(hpage)
-> is now used for hugetlb page specific flags.  At migration time, the
-> only flag which could be set is HPageVmemmapOptimized.  This flag will
-> only be set if the new vmemmap reduction feature is enabled.  In
-> addition, !page_mapping() implies an anonymous mapping.  So, this will
-> prevent migration of hugetb pages in anonymous mappings if the vmemmap
-> reduction feature is enabled.
-> 
-> In addition, that if statement checked for the rare race condition of a
-> page being migrated while in the process of being freed.  Since that
-> check is now wrong, we could leak hugetlb subpool usage counts.
-> 
-> The commit forgot to update it in the page migration routine. So fix it.
-> 
-> Fixes: d6995da31122 ("hugetlb: use page.private for hugetlb specific page flags")
-> Reported-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+Signed-off-by: Marco Elver <elver@google.com>
+Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Tested-by: Nathan Chancellor <nathan@kernel.org>
+---
+ include/linux/init.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Tested on all page size configs and HugeTLB migrations work as expected.
+diff --git a/include/linux/init.h b/include/linux/init.h
+index 045ad1650ed1..d82b4b2e1d25 100644
+--- a/include/linux/init.h
++++ b/include/linux/init.h
+@@ -242,7 +242,8 @@ extern bool initcall_debug;
+ 	asm(".section	\"" __sec "\", \"a\"		\n"	\
+ 	    __stringify(__name) ":			\n"	\
+ 	    ".long	" __stringify(__stub) " - .	\n"	\
+-	    ".previous					\n");
++	    ".previous					\n");	\
++	static_assert(__same_type(initcall_t, &fn));
+ #else
+ #define ____define_initcall(fn, __unused, __name, __sec)	\
+ 	static initcall_t __name __used 			\
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
-Tested-by: Anshuman Khandual <anshuman.khandual@arm.com> #arm64
