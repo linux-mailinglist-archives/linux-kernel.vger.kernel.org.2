@@ -2,117 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A2E38CBDF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A19638CBE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238137AbhEURTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:19:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46190 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230014AbhEURTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:19:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED51E6109F;
-        Fri, 21 May 2021 17:18:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621617492;
-        bh=vkbnUCjalAV9JIDorYwWjpk0vHbw6VNs/bfMmImD4qo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FG7uyuUnmYoAejnNMJ9jxpsW7EWIvoK3HBjV3oga9yZYWsis6nh9Uga5//RH+RwJT
-         0QykYE9l/e3tpfkl0NnOVgs6IuxMv1/YgcQNsNgBiDAIEYID5e/KejQ3h7fG0jwzWk
-         PDpPUjLXRohXOBEYdWit2l30+wAn4EKFs1hCpXP/s6qeVLQWnCDL89E19Yxz7fstfE
-         kdCCA63/6yZAGoFX52hocCMvEFCXHG7TEPgrnJj2zcADNDlpAm4cAU1nweskKw36Zj
-         U1bRfunKYBD8kXeESyrT38Jer8LiykDquU0aGGdhq+lJvIRA4BSDF0YRBVyTswUppE
-         mk9pmRIZv1uKg==
-Date:   Fri, 21 May 2021 18:18:08 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 0/2] arm64: Stack trace reliability checks in the
- unwinder
-Message-ID: <20210521171808.GC5825@sirena.org.uk>
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
+        id S230262AbhEURTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238150AbhEURTn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:19:43 -0400
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7722C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:18:19 -0700 (PDT)
+Received: by mail-oi1-x232.google.com with SMTP id x15so20264555oic.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:18:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mwxoM60YVpuuxxpLWPRnHvcEPjCapnvSBgj+Dy7snG0=;
+        b=jualahogEVesPIS1gieZtC1DETW5VCcI+hWyJqH0Kdjum2lD+UwbPEbKgqxu7GcmRI
+         pHz3Gd6XgJQGv0HVfnMeiKuAAmPge4eHFybgu34Ra+YEqSSGRQ7w5SNmzzTlkAEn8uJT
+         wSXoTlG2XmtPpOywIe803JpKMa8vjwuDJ7zTX6z1K431z68kCNBsqNKz76tKz43AxutL
+         uDNyXegyJ2L9vg2x5VWLFNkw1+SJF/GTMXvWehvvKArrotqAf2ofM+M4Q1Ib+jAx0B+u
+         +vo7SWqkp9zwx/QWUyhMHfr5OZfjGlHaEoUL/25wAGR0kRG9Q6vLurVTiTzPMlA/r4DF
+         80zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mwxoM60YVpuuxxpLWPRnHvcEPjCapnvSBgj+Dy7snG0=;
+        b=NwaSyw3q1ybS8CLQYz1m6DQrjKCj8srk7wMSSeu3ItyuxZLNdWuYBLas5BnuTKX9T8
+         /uS+d9Is4i5LJ3pufvpNlPRT6OYo5B+lQT48HntTnom8cdvjlPFK7P7MTWzx5OUeRxVH
+         wV61wX3NklWnsj6QUtWlY5EWzHPTxmilGiACUiydY1OwzqR8nrwALHvaDwsUM8mmEFwT
+         Sz0LWNQVrP9M6ZlW2Abgrpg7mDobE8IfJ/43OK8rrrTJlzJwjcT7gj7N6rlIOV03ogB0
+         Nq2peu858KqjePmbcXv7RquASfhwEpUsVtvAaHQeOAVN73ntJc7B4JyCIcXV7swI5z5o
+         8AVA==
+X-Gm-Message-State: AOAM531VezCzK+d1/GdUwL5G7vRHa8ke7p03AQaM6KYAXA/qTkNdX8jc
+        4aU8Nv4Twe2xI/24IRrDfTnKcQ==
+X-Google-Smtp-Source: ABdhPJwgfHYqvQ5wMl38vkWZL9zz0zUQ+NMWGofTkepeO9trJy2uIAEJzA/Kkl4P5rhSVJIkkVUw9w==
+X-Received: by 2002:a05:6808:4c2:: with SMTP id a2mr2930417oie.150.1621617499278;
+        Fri, 21 May 2021 10:18:19 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id w198sm1215089oie.26.2021.05.21.10.18.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 10:18:18 -0700 (PDT)
+Date:   Fri, 21 May 2021 12:18:16 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        robdclark@gmail.com, swboyd@chromium.org, vinod.koul@linaro.org,
+        dianders@chromium.org, khsieh@codeaurora.org, robh+dt@kernel.org,
+        sean@poorly.run, robh@kernel.org
+Subject: Re: [PATCH v17 3/4] dt-bindings: msm: dsi: add yaml schemas for DSI
+ PHY bindings
+Message-ID: <20210521171816.GD2484@yoga>
+References: <1621592844-6414-1-git-send-email-mkrishn@codeaurora.org>
+ <1621592844-6414-3-git-send-email-mkrishn@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jousvV0MzM2p6OtC"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210516040018.128105-1-madvenka@linux.microsoft.com>
-X-Cookie: Do not write below this line.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1621592844-6414-3-git-send-email-mkrishn@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri 21 May 05:27 CDT 2021, Krishna Manikandan wrote:
 
---jousvV0MzM2p6OtC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Add YAML schema for the device tree bindings for DSI PHY.
+> 
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+> 
+> Changes in v1:
+>    - Merge dsi-phy.yaml and dsi-phy-10nm.yaml (Stephen Boyd)
+>    - Remove qcom,dsi-phy-regulator-ldo-mode (Stephen Boyd)
+>    - Add clock cells properly (Stephen Boyd)
+>    - Remove unnecessary decription from clock names (Stephen Boyd)
+>    - Add pin names for the supply entries for 10nm phy which is
+>      used in sc7180 and sdm845 (Stephen Boyd)
+>    - Remove unused header files from examples (Stephen Boyd)
+>    - Drop labels for display nodes and correct node name (Stephen Boyd)
+> 
+> Changes in v2:
+>    - Drop maxItems for clock (Stephen Boyd)
+>    - Add vdds supply pin information for sdm845 (Stephen Boyd)
+>    - Add examples for 14nm, 20nm and 28nm phy yaml files (Stephen Boyd)
+>    - Keep child nodes directly under soc node (Stephen Boyd)
+> 
+> Changes in v3:
+>    - Use a separate yaml file to describe the common properties
+>      for all the dsi phy versions (Stephen Boyd)
+>    - Remove soc from examples (Stephen Boyd)
+>    - Add description for register property
+> 
+> Changes in v4:
+>    - Modify the title for all the phy versions (Stephen Boyd)
+>    - Drop description for all the phy versions (Stephen Boyd)
+>    - Modify the description for register property (Stephen Boyd)
+> 
+> Changes in v5:
+>    - Remove unused properties from common dsi phy file
+>    - Add clock-cells and phy-cells to required property
+>      list (Stephen Boyd)
+> 
+> Changes in v6:
+>    - Add proper compatible string in example
+> ---
+>  .../bindings/display/msm/dsi-phy-10nm.yaml         | 68 +++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-14nm.yaml         | 66 ++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-20nm.yaml         | 71 ++++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-28nm.yaml         | 68 +++++++++++++++++++++
+>  .../bindings/display/msm/dsi-phy-common.yaml       | 40 ++++++++++++
+>  5 files changed, 313 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-20nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-common.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml b/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
+> new file mode 100644
+> index 0000000..4a26bef
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/msm/dsi-phy-10nm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Display DSI 10nm PHY
+> +
+> +maintainers:
+> +  - Krishna Manikandan <mkrishn@codeaurora.org>
+> +
+> +allOf:
+> +  - $ref: dsi-phy-common.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: qcom,dsi-phy-10nm
+> +      - const: qcom,dsi-phy-10nm-8998
+> +
+> +  reg:
+> +    items:
+> +      - description: dsi phy register set
+> +      - description: dsi phy lane register set
+> +      - description: dsi pll register set
+> +
+> +  reg-names:
+> +    items:
+> +      - const: dsi_phy
+> +      - const: dsi_phy_lane
+> +      - const: dsi_pll
+> +
+> +  vdds-supply:
+> +    description: |
+> +      Connected to DSI0_MIPI_DSI_PLL_VDDA0P9 pin for sc7180 target and
+> +      connected to VDDA_MIPI_DSI_0_PLL_0P9 pin for sdm845 target
 
-On Sat, May 15, 2021 at 11:00:16PM -0500, madvenka@linux.microsoft.com wrot=
-e:
+"Reference to the 0.9V supply for the PLL." would have been sufficient.
 
-> Special cases
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> Some special cases need to be mentioned:
+But overall I think the patch looks good.
 
-I think it'd be good if more of this cover letter, especially sections
-like this which cover the tricky bits, ended up in the code somehow -
-it's recorded here and will be in the list archive but that's not the
-most discoverable place so increases the maintainance burden.  It'd be
-great to be able to compare the code directly with the reliable
-stacktrace requirements document and see everything getting ticked off,
-actually going all the way there might be too much and loose the code in
-the comments but I think we can get closer to it than we are.  Given
-that a lot of this stuff rests on the denylist perhaps some comments
-just before it's called would be a good place to start?
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-> 	- EL1 interrupt and exception handlers end up in sym_code_ranges[].
-> 	  So, all EL1 interrupt and exception stack traces will be considered
-> 	  unreliable. This the correct behavior as interrupts and exceptions
-
-This stuff about exceptions and preemption is a big one, rejecting any
-exceptions makes a whole host of things easier (eg, Mark Rutland raised
-interactions between non-AAPCS code and PLTs as being an issue but if
-we're able to reliably reject stacks featuring any kind of preemption
-anyway that should sidestep the issue).
-
-> Performance
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-> Currently, unwinder_blacklisted() does a linear search through
-> sym_code_functions[]. If reviewers prefer, I could sort the
-> sym_code_functions[] array and perform a binary search for better
-> performance. There are about 80 entries in the array.
-
-If people are trying to live patch a very busy/big system then this
-could be an issue, equally there's probably more people focused on
-getting boot times as fast as possible than live patching.  Deferring
-the initialisation to first use would help boot times with or without
-sorting, without numbers I don't actually know that sorting is worth the
-effort or needs doing immediately - obvious correctness is also a
-benefit!  My instinct is that for now it's probably OK leaving it as a
-linear scan and then revisiting if it's not adequately performant, but
-I'd defer to actual users there.
-
---jousvV0MzM2p6OtC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCn608ACgkQJNaLcl1U
-h9D0Zwf/QFxtuWGQtSmtAJiy3Fib/vh2CLbcYP0qvM25Ius+2M2/EcCvVEUrUyRH
-fOgOy1PnzRQi/kQUiXia7XI5gT+0dhCm95ZqlNgXdMxDst0UPDgI3VTzA6Qc7NFq
-RN0hZEei67BuAH0oLm3ZNQOxlhIas4JXZwf75un8C2rxT37sUSELBT17KqrooFJl
-jgml5qc6jXo7uQk7uMzdv9zLYs/a2JYypEkF/FLLYZFVxWsOdAuWHxh8xUz65Rik
-COA/k9MiAWZspXgnjIYnhL3864GtYwIArij1uM4uarq6uD2nav0ZVLgDMc63nTHb
-basklX2I4DuTE2DVPIX6DNTpWcAK2g==
-=hgtS
------END PGP SIGNATURE-----
-
---jousvV0MzM2p6OtC--
+Regards,
+Bjorn
