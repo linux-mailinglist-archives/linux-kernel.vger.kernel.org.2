@@ -2,123 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3892538CA21
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6E5538CA3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:33:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237472AbhEUPdh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:33:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55864 "EHLO
+        id S237329AbhEUPfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:35:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbhEUPdg (ORCPT
+        with ESMTP id S231901AbhEUPfM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:33:36 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BBE7C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:32:13 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j14so19741732wrq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:32:12 -0700 (PDT)
+        Fri, 21 May 2021 11:35:12 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC5BAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:33:47 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id v12so21486029wrq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:33:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=date:from:to:cc:subject:message-id:mail-followup-to:references
          :mime-version:content-disposition:in-reply-to;
-        bh=CNMKcijQVquaMBJ+WGo20PjbrA43l1fqxKOe5bq3x5g=;
-        b=F9unqGpK9ZQWLu39xhVuEsxgo/Cbu5rApxCHVDojuxkO9F4/RQCxzbo8HGlGB9Dwu5
-         sM9mNN3i5SwK9YGrVlkvXFAxgPngSsy9cqNGKYFZDGruGE0vZ1KPnWms9rkNWPMq86ue
-         LNYGJnmtkyvjXNUO8651tNd4MS/Gs8LBCpzKk=
+        bh=hSIZxyk96SLY1XQc0ujDhUeuMAPOJDJS58v+vou3vqU=;
+        b=Sbw/57As09mDpcBGYQp3lkC801L3fY2gN/R6txd/32+cNs0LPsc9ddXDYBbIhaCsvg
+         9fulOrU0ivZ8C4UDpYFNvK/sMe3ht6NLXkjpdzFPdPwycNvhvgGpfKVntFngOC4vmZJn
+         Rox2+8t2qTDE+tGikX+8G2REPunu79FyIW0rs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id
          :mail-followup-to:references:mime-version:content-disposition
          :in-reply-to;
-        bh=CNMKcijQVquaMBJ+WGo20PjbrA43l1fqxKOe5bq3x5g=;
-        b=JCQfDhVZgGhW8ypDYpMKEFeC0ZVyp9cuZIJUwJeaPdcCcQO9GJ0AoStPjRSAIV9SjU
-         dLlEJjndScY7lNkSE8CJJTLg+YW2AtMge+qZU2ceWrN+f5UseNWHIr9EFM8LyPiJtHE2
-         m+HCuqDZWEgrocRZEn17VcJDXHfX/AzwZTn+CieCYmvY7VEQ06NN0VCcMz/ZgngnsRUQ
-         8lEkC0RdGYDk/ujkoWkCyvXi5GhgbVxY1YPP9zt9R2DkQpMFwlNCAHrT5dofZ9fhdPVs
-         l/WCAUPQicReT1+ozrYvN8+52g0I8iSXtfPR5DCXArmM0f0y3OafUF54bxzKHcu99jn+
-         mCvw==
-X-Gm-Message-State: AOAM530jUF7sW9AmXi55UxCKPkR87FWHBKCgh3OQ8n0sGhzOev24I5f5
-        M3IG61iGsaevSRgbkkqD7mK+mQ==
-X-Google-Smtp-Source: ABdhPJy7hNKHarTmPB2N61OrXBmySG8p0l/JeTOBfBGdkOtjecHjbovid48JSrymvCZOc64qF7pPxA==
-X-Received: by 2002:adf:e4c8:: with SMTP id v8mr10338485wrm.345.1621611131705;
-        Fri, 21 May 2021 08:32:11 -0700 (PDT)
+        bh=hSIZxyk96SLY1XQc0ujDhUeuMAPOJDJS58v+vou3vqU=;
+        b=K1JGI3gTEphOK6OjJZS+Kzu1q3xFd02IydSTBfhHm3jjMkDiIb8at+gyuB4IKtqP+5
+         ONQytmIOVPsflfQ5GikfuLt0v1iRJ5NnghZxhXfPtTHZRFpq71nRTBwl1RHPzaIIIGTa
+         5nC1hbccne4GhWrEHKHZJKJpPw6Xbn6TKXTPfW3d5tbu2IBekgX+m0rkHGYpvbv1aeWS
+         krU8n+OBwEU6gRl5ZWR0K8pvMwVDph6/FSlyKzp9Og4O0xEJjoWKdNN5q9W+EfxrQy4M
+         LWvDRmZxepyxzFWJ2B4iLB5K4iFKibCYtwXxYfDmZnoWVvFusBtmEiyddXFAlvlNCLti
+         yRpw==
+X-Gm-Message-State: AOAM5313lTkFVlUP5eqwJDRhLZs5r4oJTvKk9CCC/NSCI8e85dnqvO8J
+        yRrcQ2KVskb5tkC8W27Dif/bGw==
+X-Google-Smtp-Source: ABdhPJyFAxjYLwd3JRLG1+e5wLLBwZ5a4eoEosj6V0G47O1d5wSUaiR91EvP476eAX0cwRU7w4HuPA==
+X-Received: by 2002:a5d:5301:: with SMTP id e1mr10197031wrv.36.1621611226499;
+        Fri, 21 May 2021 08:33:46 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q1sm12703589wmq.48.2021.05.21.08.32.10
+        by smtp.gmail.com with ESMTPSA id c6sm2528654wru.50.2021.05.21.08.33.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 08:32:11 -0700 (PDT)
-Date:   Fri, 21 May 2021 17:32:09 +0200
+        Fri, 21 May 2021 08:33:45 -0700 (PDT)
+Date:   Fri, 21 May 2021 17:33:44 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Zou Wei <zou_wei@huawei.com>
-Cc:     a.hajda@samsung.com, narmstrong@baylibre.com,
-        robert.foss@linaro.org, Laurent.pinchart@ideasonboard.com,
-        jonas@kwiboo.se, jernej.skrabec@gmail.com, airlied@linux.ie,
-        daniel@ffwll.ch, emma@anholt.net, mripard@kernel.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] drm: Fix PM reference leak
-Message-ID: <YKfSeS1vvqKNSRSH@phenom.ffwll.local>
-Mail-Followup-To: Zou Wei <zou_wei@huawei.com>, a.hajda@samsung.com,
-        narmstrong@baylibre.com, robert.foss@linaro.org,
-        Laurent.pinchart@ideasonboard.com, jonas@kwiboo.se,
-        jernej.skrabec@gmail.com, airlied@linux.ie, emma@anholt.net,
-        mripard@kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <1621602186-74786-1-git-send-email-zou_wei@huawei.com>
+To:     Javier Martinez Canillas <javierm@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
+Message-ID: <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+Mail-Followup-To: Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org
+References: <20210521131910.3000689-1-javierm@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621602186-74786-1-git-send-email-zou_wei@huawei.com>
+In-Reply-To: <20210521131910.3000689-1-javierm@redhat.com>
 X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 09:03:06PM +0800, Zou Wei wrote:
-> pm_runtime_get_sync will increment pm usage counter even it failed.
-> Forgetting to putting operation will result in reference leak here.
-> Fix it by replacing it with pm_runtime_resume_and_get to keep usage
-> counter balanced.
+On Fri, May 21, 2021 at 03:19:10PM +0200, Javier Martinez Canillas wrote:
+> Framebuffer devices that are registered by DRM drivers for fbdev emulation
+> have a "drmfb" suffix in their name. But makes them to be quite confusing
+> if a driver already has "drm" in its name:
 > 
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> $ cat /proc/fb
+> 0 rockchipdrmdrmfb
+> 
+> $ cat /proc/fb
+> 0 simpledrmdrmfb
+> 
+> Instead, let's just add a "-fb" suffix to denote that are DRM drivers FB:
+> 
+> $ cat /proc/fb
+> 0 rockchipdrm-fb
+> 
+> $ cat /proc/fb
+> 0 simpledrm-fb
+> 
+> Suggested-by: Peter Robinson <pbrobinson@gmail.com>
+> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 
-Looks good, but can you pls split this up into a patch per driver (vc and
-bridge/cdns-dsi here)?
-
-Thanks, Daniel
+So what with all the drivers which do _not_ have drm in their name? Also
+I'm never sure how much these are uapi or not ...
+-Daniel
 
 > ---
->  drivers/gpu/drm/bridge/cdns-dsi.c | 2 +-
->  drivers/gpu/drm/vc4/vc4_hdmi.c    | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
-> index 76373e3..b31281f 100644
-> --- a/drivers/gpu/drm/bridge/cdns-dsi.c
-> +++ b/drivers/gpu/drm/bridge/cdns-dsi.c
-> @@ -1028,7 +1028,7 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
->  	struct mipi_dsi_packet packet;
->  	int ret, i, tx_len, rx_len;
+>  drivers/gpu/drm/drm_fb_helper.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_helper.c
+> index f6baa204612..bbaff92c509 100644
+> --- a/drivers/gpu/drm/drm_fb_helper.c
+> +++ b/drivers/gpu/drm/drm_fb_helper.c
+> @@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *info,
+>  			       sizes->fb_width, sizes->fb_height);
 >  
-> -	ret = pm_runtime_get_sync(host->dev);
-> +	ret = pm_runtime_resume_and_get(host->dev);
->  	if (ret < 0)
->  		return ret;
+>  	info->par = fb_helper;
+> -	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
+> +	snprintf(info->fix.id, sizeof(info->fix.id), "%s-fb",
+>  		 fb_helper->dev->driver->name);
 >  
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index c27b287..f20a65b 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -798,7 +798,7 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
->  	unsigned long pixel_rate, hsm_rate;
->  	int ret;
->  
-> -	ret = pm_runtime_get_sync(&vc4_hdmi->pdev->dev);
-> +	ret = pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev);
->  	if (ret < 0) {
->  		DRM_ERROR("Failed to retain power domain: %d\n", ret);
->  		return;
+>  }
 > -- 
-> 2.6.2
+> 2.31.1
 > 
 
 -- 
