@@ -2,97 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F93938BB66
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15C3B38BB69
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236460AbhEUBQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:16:01 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:58119 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S236106AbhEUBP7 (ORCPT
+        id S236534AbhEUBQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:16:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3635 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236106AbhEUBQX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:15:59 -0400
-Received: (qmail 1224919 invoked by uid 1000); 20 May 2021 21:14:36 -0400
-Date:   Thu, 20 May 2021 21:14:36 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        devicetree@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        linux-usb@vger.kernel.org, Peter Chen <peter.chen@kernel.org>,
-        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        Ravi Chandra Sadineni <ravisadineni@chromium.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bastien Nocera <hadess@hadess.net>,
-        Al Cooper <alcooperx@gmail.com>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: Re: [PATCH v10 2/5] USB: misc: Add onboard_usb_hub driver
-Message-ID: <20210521011436.GA1224757@rowland.harvard.edu>
-References: <20210511225223.550762-1-mka@chromium.org>
- <20210511155152.v10.2.I7c9a1f1d6ced41dd8310e8a03da666a32364e790@changeid>
- <YKPz7a68duMyXU5x@google.com>
- <20210518194511.GA1137841@rowland.harvard.edu>
- <YKQ0XxhIWaN37HMr@google.com>
- <20210519144356.GB1165692@rowland.harvard.edu>
- <YKWaJdrpj1ixx9+v@google.com>
- <20210520020521.GB1186755@rowland.harvard.edu>
- <YKZnA2bifn346bPa@google.com>
- <YKbRJylHrDiuSRGH@google.com>
+        Thu, 20 May 2021 21:16:23 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FmT9k1rJDzmWpV;
+        Fri, 21 May 2021 09:12:42 +0800 (CST)
+Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 09:14:59 +0800
+Received: from [10.136.110.154] (10.136.110.154) by
+ dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 21 May 2021 09:14:58 +0800
+Subject: Re: [PATCH -next] erofs: fix error return code in
+ erofs_read_superblock()
+To:     Gao Xiang <xiang@kernel.org>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Wei Yongjun <weiyongjun1@huawei.com>
+CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        "Hulk Robot" <hulkci@huawei.com>, <linux-erofs@lists.ozlabs.org>
+References: <20210519141657.3062715-1-weiyongjun1@huawei.com>
+ <20210520053226.GB1955@kadam>
+ <20210520084023.GA5720@hsiangkao-HP-ZHAN-66-Pro-G1>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <9f96b12f-b05b-c118-4391-448f780702ff@huawei.com>
+Date:   Fri, 21 May 2021 09:14:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKbRJylHrDiuSRGH@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210520084023.GA5720@hsiangkao-HP-ZHAN-66-Pro-G1>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-ClientProxiedBy: dggemx704-chm.china.huawei.com (10.1.199.51) To
+ dggemx753-chm.china.huawei.com (10.0.44.37)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 02:14:15PM -0700, Matthias Kaehlcke wrote:
-> On Thu, May 20, 2021 at 06:41:23AM -0700, Matthias Kaehlcke wrote:
-> > On Wed, May 19, 2021 at 10:05:21PM -0400, Alan Stern wrote:
-> > > On Wed, May 19, 2021 at 04:07:17PM -0700, Matthias Kaehlcke wrote:
-> > > > On Wed, May 19, 2021 at 10:43:56AM -0400, Alan Stern wrote:
-> > > > > On Tue, May 18, 2021 at 02:40:47PM -0700, Matthias Kaehlcke wrote:
-> > > > > > 
-> > > > > > Could you also have a look at "[4/5] usb: host: xhci-plat:
-> > > > > > Create platform device for onboard hubs in probe()"
-> > > > > > (https://lore.kernel.org/patchwork/patch/1425453/)? It's a
-> > > > > > relatively short patch that creates the platform device for
-> > > > > > the driver from xhci-plat as you suggested in the v4
-> > > > > > discussion.
-> > > > > 
-> > > > > I'm not the maintainer for xhci-related drivers.
-> > > > > 
-> > > > > However, there is at least one thing about this patch which looks 
-> > > > > suspicious: Adding the onboard_hub_dev pointer to struct usb_hcd instead 
-> > > > > of to struct xhci_plat_priv, where it would make a lot more sense.
-> > > > 
-> > > > I can move it to struct usb_hcd if that's preferred
-> > > 
-> > > Thinko: The patch already has it in struct usb_hcd.  I suggested moving 
-> > > it to struct xhci_plat_priv.
-> > 
-> > Ah, didn't actively recall to which struct I added it to, it has been a
-> > while since I wrote that patch ;-)
+On 2021/5/20 16:40, Gao Xiang wrote:
+> Hi Yongjun and Dan,
 > 
-> > Agreed that struct xhci_plat_priv is a better place.
+> On Thu, May 20, 2021 at 08:32:26AM +0300, Dan Carpenter wrote:
+>> On Wed, May 19, 2021 at 02:16:57PM +0000, Wei Yongjun wrote:
+>>> 'ret' will be overwritten to 0 if erofs_sb_has_sb_chksum() return true,
+>>> thus 0 will return in some error handling cases. Fix to return negative
+>>> error code -EINVAL instead of 0.
+>>>
+>>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+>>
+>> You need to add Fixes tags to bug fix patches and you need to ensure
+>> that the authors of the Fixes commit are CC'd so they can review your
+>> fix.  get_maintainer.pl will add the author automatically, but normally
+>> I like to put them in the To header to make sure they see it.
+>>
+>> Fixes: b858a4844cfb ("erofs: support superblock checksum")
 > 
-> Or not, xhci_plat_priv is optional, which doesn't make it a good candidate
-> for holding a field that could be used by any xHCI controller.
+> The commit and the tag look good to me (sorry for a bit delay on this),
+> 
+> Fixes: b858a4844cfb ("erofs: support superblock checksum")
+> Cc: stable <stable@vger.kernel.org> # 5.5+
+> Reviewed-by: Gao Xiang <xiang@kernel.org>
 
-You could always allocate an xhci_plat_priv structure in cases where an 
-onboard-hub device is present, if one doesn't exist already.
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
 
-> Should I move the field to struct xhci_hcd instead?
+Thanks,
 
-That's another option.
-
-Look, I'm not the person you should be asking about this.  What I say 
-doesn't matter -- you need to get approval from Mathias Nyman, the 
-xhci-hcd maintainer.
-
-Alan Stern
+> 
+> (will apply to dev-test for a while and then to -next.)
+> 
+> Thanks,
+> Gao Xiang
+> 
+> .
+> 
