@@ -2,177 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8918338C201
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:37:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97F0C38C217
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235298AbhEUIiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:38:21 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:59484 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229581AbhEUIiP (ORCPT
+        id S233352AbhEUIkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230379AbhEUIkJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:38:15 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id BEF4F1F43E90
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-To:     joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, xxm@rock-chips.com, robin.murphy@arm.com
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Subject: [PATCH v5 4/4] iommu: rockchip: Add support for iommu v2
-Date:   Fri, 21 May 2021 10:36:37 +0200
-Message-Id: <20210521083637.3221304-5-benjamin.gaignard@collabora.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210521083637.3221304-1-benjamin.gaignard@collabora.com>
-References: <20210521083637.3221304-1-benjamin.gaignard@collabora.com>
+        Fri, 21 May 2021 04:40:09 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2897C061574;
+        Fri, 21 May 2021 01:38:46 -0700 (PDT)
+Received: from miraculix.mork.no (fwa191.mork.no [192.168.9.191])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 14L8caPj019527
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Fri, 21 May 2021 10:38:37 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1621586318; bh=Q01SFkcr9Wi5BGak8NCE7jrjuH8xhWe3fF05ul/qluE=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=kOu6oDQXoHqXn1uru7t3jgxj9m9x8BwlHzLTFyMT89s0CrPtYak3FUZ19ysgw64Li
+         /6GRSAZ/ZkuLT7cLyHz/Re+ruEors5mhgvy3YGUeXKQRMkXAyqaydhSutjWTA6892D
+         KsoJfj+QM0ZLPF8cZPz58B78aekVBJSUsZJwIHpo=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94.2)
+        (envelope-from <bjorn@mork.no>)
+        id 1lk0g0-0004qS-0I; Fri, 21 May 2021 10:38:36 +0200
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com
+Subject: Re: [PATCH v2 2/3] gpio: gpio-regmap: Use devm_add_action()
+Organization: m
+References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+        <e3d3e704804668d1403f3630c181010b34409c8f.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+        <12bb40f022be0378ed493e7ad33122b0@walle.cc>
+Date:   Fri, 21 May 2021 10:38:35 +0200
+In-Reply-To: <12bb40f022be0378ed493e7ad33122b0@walle.cc> (Michael Walle's
+        message of "Fri, 21 May 2021 10:10:39 +0200")
+Message-ID: <87a6ooh46s.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.4 at canardo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This second version of the hardware block has a different bits
-mapping for page table entries.
-Add the ops matching to this new mapping.
-Define a new compatible to distinguish it from the first version.
+Michael Walle <michael@walle.cc> writes:
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
----
-version 5:
- - Use internal ops to support v2 hardware block
- - Use GENMASK macro.
- - Keep rk_dte_pt_address() and rk_dte_pt_address_v2() separated
-   because I believe that is more readable like this.
- - Do not duplicate code.
+> Am 2021-05-21 08:28, schrieb Matti Vaittinen:
+>> Slightly simplify the devm_gpio_regmap_register() by using the
+>> devm_add_action().
+>
+> Hm, nice, but what bothers me a bit is that no other subsystem
+> does it that way, eg. hwmon/hwmon.c or watchdog/watchdog_core.c.
+> They also store just one pointer, thus could be simplified in the
+> same way. What I don't know is if devm_add_action() was intended
+> to be used this way. So I can't say much for this patch ;)
 
- drivers/iommu/rockchip-iommu.c | 78 ++++++++++++++++++++++++++++++++++
- 1 file changed, 78 insertions(+)
+There are some examples.  Like:
 
-diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-index e7b9bcf174b1..23253a2f269e 100644
---- a/drivers/iommu/rockchip-iommu.c
-+++ b/drivers/iommu/rockchip-iommu.c
-@@ -189,6 +189,33 @@ static inline phys_addr_t rk_dte_pt_address(u32 dte)
- 	return (phys_addr_t)dte & RK_DTE_PT_ADDRESS_MASK;
- }
- 
-+/*
-+ * In v2:
-+ * 31:12 - PT address bit 31:0
-+ * 11: 8 - PT address bit 35:32
-+ *  7: 4 - PT address bit 39:36
-+ *  3: 1 - Reserved
-+ *     0 - 1 if PT @ PT address is valid
-+ */
-+#define RK_DTE_PT_ADDRESS_MASK_V2 GENMASK_ULL(31, 4)
-+#define DTE_HI_MASK1	GENMASK(11, 8)
-+#define DTE_HI_MASK2	GENMASK(7, 4)
-+#define DTE_HI_SHIFT1	24 /* shift bit 8 to bit 32 */
-+#define DTE_HI_SHIFT2	32 /* shift bit 4 to bit 36 */
-+#define PAGE_DESC_HI_MASK1	GENMASK_ULL(39, 36)
-+#define PAGE_DESC_HI_MASK2	GENMASK_ULL(35, 32)
-+
-+static inline phys_addr_t rk_dte_pt_address_v2(u32 dte)
-+{
-+	u64 dte_v2 = dte;
-+
-+	dte_v2 = ((dte_v2 & DTE_HI_MASK2) << DTE_HI_SHIFT2) |
-+		 ((dte_v2 & DTE_HI_MASK1) << DTE_HI_SHIFT1) |
-+		 (dte_v2 & RK_DTE_PT_ADDRESS_MASK);
-+
-+	return (phys_addr_t)dte_v2;
-+}
-+
- static inline bool rk_dte_is_pt_valid(u32 dte)
- {
- 	return dte & RK_DTE_PT_VALID;
-@@ -199,6 +226,15 @@ static inline u32 rk_mk_dte(dma_addr_t pt_dma)
- 	return (pt_dma & RK_DTE_PT_ADDRESS_MASK) | RK_DTE_PT_VALID;
- }
- 
-+static inline u32 rk_mk_dte_v2(dma_addr_t pt_dma)
-+{
-+	pt_dma = (pt_dma & RK_DTE_PT_ADDRESS_MASK) |
-+		 ((pt_dma & PAGE_DESC_HI_MASK1) >> DTE_HI_SHIFT1) |
-+		 (pt_dma & PAGE_DESC_HI_MASK2) >> DTE_HI_SHIFT2;
-+
-+	return (pt_dma & RK_DTE_PT_ADDRESS_MASK_V2) | RK_DTE_PT_VALID;
-+}
-+
- /*
-  * Each PTE has a Page address, some flags and a valid bit:
-  * +---------------------+---+-------+-+
-@@ -240,6 +276,29 @@ static u32 rk_mk_pte(phys_addr_t page, int prot)
- 	return page | flags | RK_PTE_PAGE_VALID;
- }
- 
-+/*
-+ * In v2:
-+ * 31:12 - Page address bit 31:0
-+ *  11:9 - Page address bit 34:32
-+ *   8:4 - Page address bit 39:35
-+ *     3 - Security
-+ *     2 - Readable
-+ *     1 - Writable
-+ *     0 - 1 if Page @ Page address is valid
-+ */
-+#define RK_PTE_PAGE_READABLE_V2      BIT(2)
-+#define RK_PTE_PAGE_WRITABLE_V2      BIT(1)
-+
-+static u32 rk_mk_pte_v2(phys_addr_t page, int prot)
-+{
-+	u32 flags = 0;
-+
-+	flags |= (prot & IOMMU_READ) ? RK_PTE_PAGE_READABLE_V2 : 0;
-+	flags |= (prot & IOMMU_WRITE) ? RK_PTE_PAGE_WRITABLE_V2 : 0;
-+
-+	return rk_mk_dte_v2(page) | flags ;
-+}
-+
- static u32 rk_mk_pte_invalid(u32 pte)
- {
- 	return pte & ~RK_PTE_PAGE_VALID;
-@@ -480,6 +539,14 @@ static inline phys_addr_t rk_dte_addr_phys(phys_addr_t addr)
- 	return addr;
- }
- 
-+#define DT_HI_MASK GENMASK_ULL(39, 32)
-+#define DT_SHIFT   28
-+
-+static inline phys_addr_t rk_dte_addr_phys_v2(phys_addr_t addr)
-+{
-+	return (addr & RK_DTE_PT_ADDRESS_MASK) | ((addr & DT_HI_MASK) << DT_SHIFT);
-+}
-+
- static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
- {
- 	void __iomem *base = iommu->bases[index];
-@@ -1305,10 +1372,21 @@ static struct rk_iommu_ops iommu_data_ops_v1 = {
- 	.pt_address_mask = RK_DTE_PT_ADDRESS_MASK,
- };
- 
-+static struct rk_iommu_ops iommu_data_ops_v2 = {
-+	.pt_address = &rk_dte_pt_address_v2,
-+	.mk_dtentries = &rk_mk_dte_v2,
-+	.mk_ptentries = &rk_mk_pte_v2,
-+	.dte_addr_phys = &rk_dte_addr_phys_v2,
-+	.pt_address_mask = RK_DTE_PT_ADDRESS_MASK_V2,
-+};
-+
- static const struct of_device_id rk_iommu_dt_ids[] = {
- 	{	.compatible = "rockchip,iommu",
- 		.data = &iommu_data_ops_v1,
- 	},
-+	{	.compatible = "rockchip,rk3568-iommu",
-+		.data = &iommu_data_ops_v2,
-+	},
- 	{ /* sentinel */ }
- };
- MODULE_DEVICE_TABLE(of, rk_iommu_dt_ids);
--- 
-2.25.1
+int devm_i2c_add_adapter(struct device *dev, struct i2c_adapter *adapter)
+{
+        int ret;
 
+        ret =3D i2c_add_adapter(adapter);
+        if (ret)
+                return ret;
+
+        return devm_add_action_or_reset(dev, devm_i2c_del_adapter, adapter);
+}
+
+
+You should probably use the devm_add_action_or_reset() wrapper here too,
+catching the unlikely devm_add_action() alloc failure.
+
+
+Bj=C3=B8rn
