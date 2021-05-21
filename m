@@ -2,155 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DBC838C948
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:34:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E93538C949
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:35:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234477AbhEUOgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:36:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43392 "EHLO mx2.suse.de"
+        id S236850AbhEUOhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:37:00 -0400
+Received: from mga05.intel.com ([192.55.52.43]:19794 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236812AbhEUOgP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:36:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D6BFAAC8F;
-        Fri, 21 May 2021 14:34:50 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-scsi@vger.kernel.org
-Cc:     GR-QLogic-Storage-Upstream@marvell.com,
+        id S231986AbhEUOg7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 10:36:59 -0400
+IronPort-SDR: f3+ONlg6gIt6GNHAGSRdt0Jvfse6UWxwsBrHlB9RwjNfcLw2+YxfY8FYzHd0lCAfeBFh/8cN0x
+ IVtq3+hNtJSw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="287037704"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="287037704"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 07:35:35 -0700
+IronPort-SDR: +r3rZj66TZT9PCWgUTx4FUvQkiIZ6dEeFsFvajIIo4NZhufvw1CZsuwhcN+PTmMBpetbBvfR3J
+ 97GSaOvHwwBA==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="462507742"
+Received: from spattipa-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.212.113.231])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 07:35:34 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
         linux-kernel@vger.kernel.org,
-        Saurav Kashyap <skashyap@marvell.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        Javed Hasan <jhasan@marvell.com>
-Subject: [PATCH] scsi: qedf: Do not put host in qedf_vport_create unconditionally
-Date:   Fri, 21 May 2021 16:34:40 +0200
-Message-Id: <20210521143440.84816-1-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [RFC v2-fix-v2 1/1] x86/boot: Avoid #VE during boot for TDX platforms
+Date:   Fri, 21 May 2021 07:35:24 -0700
+Message-Id: <20210521143524.2527690-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <b1aafcbb-c5db-efa5-0343-014585e73191@intel.com>
+References: <b1aafcbb-c5db-efa5-0343-014585e73191@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do not drop reference count on vn_port->host in qedf_vport_create()
-unconditionally. Instead drop the reference count in
-qedf_vport_destroy().
+From: Sean Christopherson <sean.j.christopherson@intel.com>
 
-Reported-by: Javed Hasan <jhasan@marvell.com>
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
+Avoid operations which will inject #VE during boot process.
+They're easy to avoid and it is less complex than handling
+the exceptions.
+
+There are a few MSRs and control register bits which the
+kernel normally needs to modify during boot.  But, TDX
+disallows modification of these registers to help provide
+consistent security guarantees ( and avoid generating #VE
+when updating them). Fortunately, TDX ensures that these are
+all in the correct state before the kernel loads, which means
+the kernel has no need to modify them.
+
+The conditions we need to avoid are:
+
+  * Any writes to the EFER MSR
+  * Clearing CR0.NE
+  * Clearing CR3.MCE
+
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 ---
 
- refcount_t: underflow; use-after-free.
- WARNING: CPU: 29 PID: 15713 at ../lib/refcount.c:28 refcount_warn_saturate+0x8d/0xf0
- Modules linked in: xt_tcpudp(E) ip6table_filter(E) ip6_tables(E) iptable_filter(E) ip_tables(E) x_tables(E) bpfilter(E) af_packet(E) bridge(E) stp(E) llc(E) iscsi_ibft(E) iscsi_boot_sysfs(E) rfkill(E) nls_iso8859_1(E) nls_cp437(E) vfat(E) fat(E) rpcrdma(E) sunrpc(E) rdma_ucm(E) ib_iser(E) rdma_cm(E) iw_cm(E) ib_cm(E) libiscsi(E) edac_mce_amd(E) scsi_transport_iscsi(E) kvm_amd(E) kvm(E) ipmi_ssif(E) irqbypass(E) crc32_pclmul(E) ghash_clmulni_intel(E) aesni_intel(E) qedr(E) aes_x86_64(E) crypto_simd(E) ib_uverbs(E) cryptd(E) glue_helper(E) joydev(E) pcspkr(E) ses(E) enclosure(E) tg3(E) ib_core(E) k10temp(E) ccp(E) i2c_piix4(E) libphy(E) hpwdt(E) hpilo(E) ipmi_si(E) ipmi_devintf(E) ipmi_msghandler(E) acpi_cpufreq(E) button(E) fuse(E) configfs(E) xfs(E) libcrc32c(E) uas(E) usb_storage(E) hid_generic(E) usbhid(E) dm_service_time(E) sd_mod(E) crc32c_intel(E) mgag200(E) drm_vram_helper(E) ttm(E) i2c_algo_bit(E) drm_kms_helper(E) syscopyarea(E) sysfillrect(E) sysimgblt(E) qedf(E)
-  smartpqi(E) xhci_pci(E) fb_sys_fops(E) ehci_pci(E) scsi_transport_sas(E) xhci_hcd(E) ehci_hcd(E) qede(E) libfcoe(E) drm(E) usbcore(E) qed(E) libfc(E) crc8(E) scsi_transport_fc(E) wmi(E) dm_mirror(E) dm_region_hash(E) dm_log(E) sg(E) dm_multipath(E) dm_mod(E) scsi_dh_rdac(E) scsi_dh_emc(E) scsi_dh_alua(E) scsi_mod(E) msr(E) efivarfs(E)
- Supported: No, Unreleased kernel
- CPU: 29 PID: 15713 Comm: bash Kdump: loaded Tainted: G            E       5.3.18-0.g8d8fa3b-default #1 SLE15-SP2 (unreleased)
- Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/17/2020
- RIP: 0010:refcount_warn_saturate+0x8d/0xf0
- Code: 05 3e 8f 17 01 01 e8 62 32 c3 ff 0f 0b c3 80 3d 31 8f 17 01 00 75 ad 48 c7 c7 b0 2c b4 9b c6 05 21 8f 17 01 01 e8 43 32 c3 ff <0f> 0b c3 80 3d 15 8f 17 01 00 75 8e 48 c7 c7 58 2c b4 9b c6 05 05
- RSP: 0018:ffffa3f62386fe08 EFLAGS: 00010282
- RAX: 0000000000000000 RBX: ffff8fd90e0807c8 RCX: 0000000000000006
- RDX: 0000000000000007 RSI: 0000000000000082 RDI: ffff8fe521d99890
- RBP: ffff8fd925780ae0 R08: 00000000000009ee R09: 0000000000000001
- R10: 0000000000000034 R11: 0000000000000001 R12: 0000000000000022
- R13: ffff8fd924f74e48 R14: ffff8fd924f74800 R15: ffff8fe51f4c1160
- FS:  00007f311e174b80(0000) GS:ffff8fe521d80000(0000) knlGS:0000000000000000
- CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
- CR2: 0000556949270788 CR3: 000000044ecdc000 CR4: 00000000003406e0
- Call Trace:
-  qedf_vport_destroy+0xae/0xe0 [qedf]
-  fc_vport_terminate+0x3e/0x150 [scsi_transport_fc]
-  store_fc_host_vport_delete+0x131/0x170 [scsi_transport_fc]
-  kernfs_fop_write+0x113/0x1a0
-  vfs_write+0xad/0x1b0
-  ksys_write+0xa1/0xe0
-  do_syscall_64+0x5b/0x1e0
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7f311d834c03
- Code: 2d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b3 0f 1f 80 00 00 00 00 64 8b 04 25 18 00 00 00 85 c0 75 14 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 55 f3 c3 0f 1f 00 41 54 55 49 89 d4 53 48 89
- RSP: 002b:00007ffcde861258 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
- RAX: ffffffffffffffda RBX: 0000000000000022 RCX: 00007f311d834c03
- RDX: 0000000000000022 RSI: 00005569492718a0 RDI: 0000000000000001
- RBP: 00005569492718a0 R08: 000000000000000a R09: 0000000000000000
- R10: 00007f311d74b468 R11: 0000000000000246 R12: 00007f311db13500
- R13: 0000000000000022 R14: 00007f311db13700 R15: 0000000000000022
+Changes since RFC v2-fix:
+ * Fixed commit and comments as per Dave and Dan's suggestions.
+ * Merged CR0.NE related change in pa_trampoline_compat() from patch
+   titled "x86/boot: Add a trampoline for APs booting in 64-bit mode"
+   to this patch. It belongs in this patch.
+ * Merged TRAMPOLINE_32BIT_CODE_SIZE related change from patch titled
+   "x86/boot: Add a trampoline for APs booting in 64-bit mode" to this
+   patch (since it was wrongly merged to that patch during patch split).
 
+ arch/x86/boot/compressed/head_64.S   | 16 ++++++++++++----
+ arch/x86/boot/compressed/pgtable.h   |  2 +-
+ arch/x86/kernel/head_64.S            | 20 ++++++++++++++++++--
+ arch/x86/realmode/rm/trampoline_64.S | 23 +++++++++++++++++++----
+ 4 files changed, 50 insertions(+), 11 deletions(-)
 
- drivers/scsi/qedf/qedf_main.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 69f7784233f9..3513f3eabbc0 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -1825,22 +1825,20 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 		fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Failed to create vport, "
- 			   "WWPN (0x%s) already exists.\n", buf);
--		goto err1;
-+		return rc;
- 	}
+diff --git a/arch/x86/boot/compressed/head_64.S b/arch/x86/boot/compressed/head_64.S
+index e94874f4bbc1..f848569e3fb0 100644
+--- a/arch/x86/boot/compressed/head_64.S
++++ b/arch/x86/boot/compressed/head_64.S
+@@ -616,12 +616,20 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
+ 	btsl	$_EFER_LME, %eax
++	/* Avoid writing EFER if no change was made (for TDX guest) */
++	jc	1f
+ 	wrmsr
+-	popl	%edx
++1:	popl	%edx
+ 	popl	%ecx
  
- 	if (atomic_read(&base_qedf->link_state) != QEDF_LINK_UP) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Cannot create vport "
- 			   "because link is not up.\n");
--		rc = -EIO;
--		goto err1;
-+		return -EIO;
- 	}
+ 	/* Enable PAE and LA57 (if required) paging modes */
+-	movl	$X86_CR4_PAE, %eax
++	movl	%cr4, %eax
++	/*
++	 * Clear all bits except CR4.MCE, which is preserved.
++	 * Clearing CR4.MCE will #VE in TDX guests.
++	 */
++	andl	$X86_CR4_MCE, %eax
++	orl	$X86_CR4_PAE, %eax
+ 	testl	%edx, %edx
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
+@@ -635,8 +643,8 @@ SYM_CODE_START(trampoline_32bit_src)
+ 	pushl	$__KERNEL_CS
+ 	pushl	%eax
  
- 	vn_port = libfc_vport_create(vport, sizeof(struct qedf_ctx));
- 	if (!vn_port) {
- 		QEDF_WARN(&(base_qedf->dbg_ctx), "Could not create lport "
- 			   "for vport.\n");
--		rc = -ENOMEM;
--		goto err1;
-+		return -ENOMEM;
- 	}
+-	/* Enable paging again */
+-	movl	$(X86_CR0_PG | X86_CR0_PE), %eax
++	/* Enable paging again. Avoid clearing X86_CR0_NE for TDX */
++	movl	$(X86_CR0_PG | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
  
- 	fcoe_wwn_to_str(vport->port_name, buf, sizeof(buf));
-@@ -1864,7 +1862,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_ERR(&(base_qedf->dbg_ctx), "Could not allocate memory "
- 		    "for lport stats.\n");
--		goto err2;
-+		goto err;
- 	}
+ 	lret
+diff --git a/arch/x86/boot/compressed/pgtable.h b/arch/x86/boot/compressed/pgtable.h
+index 6ff7e81b5628..cc9b2529a086 100644
+--- a/arch/x86/boot/compressed/pgtable.h
++++ b/arch/x86/boot/compressed/pgtable.h
+@@ -6,7 +6,7 @@
+ #define TRAMPOLINE_32BIT_PGTABLE_OFFSET	0
  
- 	fc_set_wwnn(vn_port, vport->node_name);
-@@ -1882,7 +1880,7 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	if (rc) {
- 		QEDF_WARN(&base_qedf->dbg_ctx,
- 			  "Error adding Scsi_Host rc=0x%x.\n", rc);
--		goto err2;
-+		goto err;
- 	}
+ #define TRAMPOLINE_32BIT_CODE_OFFSET	PAGE_SIZE
+-#define TRAMPOLINE_32BIT_CODE_SIZE	0x70
++#define TRAMPOLINE_32BIT_CODE_SIZE	0x80
  
- 	/* Set default dev_loss_tmo based on module parameter */
-@@ -1923,9 +1921,10 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	vport_qedf->dbg_ctx.host_no = vn_port->host->host_no;
- 	vport_qedf->dbg_ctx.pdev = base_qedf->pdev;
+ #define TRAMPOLINE_32BIT_STACK_END	TRAMPOLINE_32BIT_SIZE
  
--err2:
-+	return 0;
-+
-+err:
- 	scsi_host_put(vn_port->host);
--err1:
- 	return rc;
- }
+diff --git a/arch/x86/kernel/head_64.S b/arch/x86/kernel/head_64.S
+index 04bddaaba8e2..6cf8d126b80a 100644
+--- a/arch/x86/kernel/head_64.S
++++ b/arch/x86/kernel/head_64.S
+@@ -141,7 +141,13 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 1:
  
-@@ -1966,8 +1965,7 @@ static int qedf_vport_destroy(struct fc_vport *vport)
- 	fc_lport_free_stats(vn_port);
+ 	/* Enable PAE mode, PGE and LA57 */
+-	movl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
++	movq	%cr4, %rcx
++	/*
++	 * Clear all bits except CR4.MCE, which is preserved.
++	 * Clearing CR4.MCE will #VE in TDX guests.
++	 */
++	andl	$X86_CR4_MCE, %ecx
++	orl	$(X86_CR4_PAE | X86_CR4_PGE), %ecx
+ #ifdef CONFIG_X86_5LEVEL
+ 	testl	$1, __pgtable_l5_enabled(%rip)
+ 	jz	1f
+@@ -229,13 +235,23 @@ SYM_INNER_LABEL(secondary_startup_64_no_verify, SYM_L_GLOBAL)
+ 	/* Setup EFER (Extended Feature Enable Register) */
+ 	movl	$MSR_EFER, %ecx
+ 	rdmsr
++	/*
++	 * Preserve current value of EFER for comparison and to skip
++	 * EFER writes if no change was made (for TDX guest)
++	 */
++	movl    %eax, %edx
+ 	btsl	$_EFER_SCE, %eax	/* Enable System Call */
+ 	btl	$20,%edi		/* No Execute supported? */
+ 	jnc     1f
+ 	btsl	$_EFER_NX, %eax
+ 	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
+-1:	wrmsr				/* Make changes effective */
  
- 	/* Release Scsi_Host */
--	if (vn_port->host)
--		scsi_host_put(vn_port->host);
-+	scsi_host_put(vn_port->host);
++	/* Avoid writing EFER if no change was made (for TDX guest) */
++1:	cmpl	%edx, %eax
++	je	1f
++	xor	%edx, %edx
++	wrmsr				/* Make changes effective */
++1:
+ 	/* Setup cr0 */
+ 	movl	$CR0_STATE, %eax
+ 	/* Make changes effective */
+diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
+index 957bb21ce105..cf14d0326a48 100644
+--- a/arch/x86/realmode/rm/trampoline_64.S
++++ b/arch/x86/realmode/rm/trampoline_64.S
+@@ -143,13 +143,27 @@ SYM_CODE_START(startup_32)
+ 	movl	%eax, %cr3
  
- out:
- 	return 0;
+ 	# Set up EFER
++	movl	$MSR_EFER, %ecx
++	rdmsr
++	/*
++	 * Skip writing to EFER if the register already has desiered
++	 * value (to avoid #VE for TDX guest).
++	 */
++	cmp	pa_tr_efer, %eax
++	jne	.Lwrite_efer
++	cmp	pa_tr_efer + 4, %edx
++	je	.Ldone_efer
++.Lwrite_efer:
+ 	movl	pa_tr_efer, %eax
+ 	movl	pa_tr_efer + 4, %edx
+-	movl	$MSR_EFER, %ecx
+ 	wrmsr
+ 
+-	# Enable paging and in turn activate Long Mode
+-	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_PE), %eax
++.Ldone_efer:
++	/*
++	 * Enable paging and in turn activate Long Mode. Avoid clearing
++	 * X86_CR0_NE for TDX.
++	 */
++	movl	$(X86_CR0_PG | X86_CR0_WP | X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 
+ 	/*
+@@ -169,7 +183,8 @@ SYM_CODE_START(pa_trampoline_compat)
+ 	movl	$rm_stack_end, %esp
+ 	movw	$__KERNEL_DS, %dx
+ 
+-	movl	$X86_CR0_PE, %eax
++	/* Avoid clearing X86_CR0_NE for TDX */
++	movl	$(X86_CR0_NE | X86_CR0_PE), %eax
+ 	movl	%eax, %cr0
+ 	ljmpl   $__KERNEL32_CS, $pa_startup_32
+ SYM_CODE_END(pa_trampoline_compat)
 -- 
-2.29.2
+2.25.1
 
