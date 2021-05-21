@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D27438C17B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:12:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 346CC38C17D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:13:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230244AbhEUINq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:13:46 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:19214 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhEUINi (ORCPT
+        id S230280AbhEUIOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:14:35 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:17224 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229629AbhEUIOb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:13:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1621584692; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=px0a8MPK74qUXfzV5oznTizuZ6wSYWw1PnTyWPCWdSDm/VNlPpcX9mJnG6EcNy9+al
-    IrLqSd+SHTUy+MUh4/hS/NujOZyXCwe5HSxvwd14I4cIgw7AXjiqrNMEjfoNtHxIys+M
-    a14YcQqlLi/YEf8/g4X4ZGU/AalgcmEhdVB1NzRcUZHOqu2GPZZa5cXxBMD4g12p5vTr
-    1ZuiaGzrocf8qKnkp/grY2j8Mk/T8asPYHcGr9U72ssFsDrf0PwyrMIcLvz2THFrDc1E
-    Q0RN+6nMx63661R9AByJ0js93R8df2y6lfNya9k+aTx+RhVCKBFHq6sggs8ml9fW/Mm+
-    GM3Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621584692;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=P7QD5eRHBuT1lh8i7wzUly3dzKODxjJ0OhwZcPAUEZs=;
-    b=qOvPJEGTxcu4ftC0OhXI8oXRU/fO3ZYD1+OJWQuXaRw0/0pVx5jb5rJU6Tdvzny/1t
-    q9kdVB/kSfoQheuv6mQ2ldYRUjTTQWfloUKYv3uVD0uaGqjs/fn7oRNK+GbfNjfg7Xvc
-    oUwGQB8uW6oqv/0EjOr4ISA5eEP8c1nv/XkFEjtEDjcj6fHN0WqmL1pno8Ifjy2Nd4K3
-    NdgKAgA3gzct4XSyv4PdgbwS4wJseRljsozSAgx2sM2h8w9XhYASEBzMbh0TPkqJ1at7
-    r35/EciNY0gCLtIMeKlIFzHsRjCNrgxe50OG6ghPv/pdNOM+7tuATln42+LmxkY73GCk
-    MHaA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621584692;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=P7QD5eRHBuT1lh8i7wzUly3dzKODxjJ0OhwZcPAUEZs=;
-    b=DqIzGoyybqPjiuFKLTxGZ6dWr/44ExmlF0FdJwNkGyMj6i0q4h4RS5yv5ONtvUEhMS
-    UB0osp8RELueRhSHyAG5nZgDxXvuGtfICJE1uWislHsnMqjyaoixsw9e0L2IB7+Z3uIW
-    RQtga13/EQTxsVG5KS78sR+Kfez1hbP5UGPbr7omd2Z31kDFcdrTBCDtWtX2TPhwj/eh
-    0XHq1pF8QHpkCFwA9SryKT0kGu9MW/fI/sqNvv1N+EVOA2jnEP92M667faGDxbN8Y4Pz
-    PyaZDAzCgW4Hd4v8hXWa0dly72EjDd9Fi45Fze1iyvh4hrfANIvuems9VscDkHxCxDia
-    JaFQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j8IcvEBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.26.1 DYNA|AUTH)
-    with ESMTPSA id 2037acx4L8BW0Pp
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 21 May 2021 10:11:32 +0200 (CEST)
-Date:   Fri, 21 May 2021 10:11:30 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH v3 03/17] dt-bindings: qcom-bam: Add 'iommus' to required
- properties
-Message-ID: <YKdrMoSFAh1bR3xT@gerhold.net>
-References: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
- <20210519143700.27392-4-bhupesh.sharma@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519143700.27392-4-bhupesh.sharma@linaro.org>
+        Fri, 21 May 2021 04:14:31 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210521081307epoutp027a5e91012215cdbad5212697be26dbac~BBsXEMaPB3086830868epoutp02X
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:13:07 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210521081307epoutp027a5e91012215cdbad5212697be26dbac~BBsXEMaPB3086830868epoutp02X
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1621584787;
+        bh=oLATn9iM4wIMKYl3x4+8ERAYHMUVpCqKFCJByrenAcY=;
+        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
+        b=oD2WlRN5mz4Xdi8pdGNM6N1ye723kF+j+TZR+ep99FyyPpoFmFlYKbagjEme9YUdL
+         ljAQ1mYVlJ90fOu53OhTVO4dhKoJvKvZm37p+2JCh4TMX2dd+a01HiHaypz2+eFsAX
+         NtYP0tqqLEZuxxin4vWMkhfrz5IEeBWZ1jL22PHs=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20210521081306epcas2p180a06718eec1fe8610b2245c3798f0d9~BBsWBx2DN0947909479epcas2p1D;
+        Fri, 21 May 2021 08:13:06 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4FmfVm6lWRz4x9Q6; Fri, 21 May
+        2021 08:13:04 +0000 (GMT)
+X-AuditID: b6c32a47-f4bff700000024d9-bc-60a76b8f716a
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        E8.9F.09433.F8B67A06; Fri, 21 May 2021 17:13:03 +0900 (KST)
+Mime-Version: 1.0
+Subject: RE: RE: [PATCH v34 4/4] scsi: ufs: Add HPB 2.0 support
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     Avri Altman <Avri.Altman@wdc.com>,
+        Daejun Park <daejun7.park@samsung.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
+        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
+        "cang@codeaurora.org" <cang@codeaurora.org>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "huobean@gmail.com" <huobean@gmail.com>,
+        ALIM AKHTAR <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        JinHwan Park <jh.i.park@samsung.com>,
+        Javier Gonzalez <javier.gonz@samsung.com>,
+        Sung-Jun Park <sungjun07.park@samsung.com>,
+        Jinyoung CHOI <j-young.choi@samsung.com>,
+        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
+        Keoseong Park <keosung.park@samsung.com>,
+        Jaemyung Lee <jaemyung.lee@samsung.com>,
+        Jieon Seol <jieon.seol@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+In-Reply-To: <DM6PR04MB65755AE3D9217FA3C0C3455AFC2A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210521081302epcms2p45e2a734f7f14046d6caab2ab16a2d94c@epcms2p4>
+Date:   Fri, 21 May 2021 17:13:02 +0900
+X-CMS-MailID: 20210521081302epcms2p45e2a734f7f14046d6caab2ab16a2d94c
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+X-CPGSPASS: Y
+X-CPGSPASS: Y
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGJsWRmVeSWpSXmKPExsWy7bCmuW5/9vIEgy/LlSwezNvGZrG37QS7
+        xcufV9kspn34yWzxaf0yVouXhzQtdh08yGax6kG4RfPi9WwWc842MFn09m9ls9h8cAOzxeM7
+        n9ktFt3YxmTR/6+dxWLbZ0GL4yffMVpc3jWHzaL7+g42i+XH/zFZLN16k9Gic/oaFgcxj8tX
+        vD0u9/UyeeycdZfdY8KiA4we++euYfdoObmfxePj01ssHn1bVjF6fN4k59F+oJspgCsqxyYj
+        NTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6E0lhbLEnFKg
+        UEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhYYFecWJucWleul5yfq6VoYGBkSlQZUJOxox9
+        LxkLvrNWnOufxNjAOIGli5GTQ0LARGLa1qNsILaQwA5Gic2HA7oYOTh4BQQl/u4QBgkLC9hL
+        7O0/yAxRoiSx/uIsdoi4nsSth2sYQWw2AR2J6SfuA8W5OEQEHrJL9M9uYYOYzysxo/0p1C5p
+        ie3Lt4I1cArESsx5vAIqriHxY1kvM4QtKnFz9Vt2GPv9sfmMELaIROu9s1A1ghIPfu6GiktK
+        HNv9gQnCrpfYeucXI8gREgI9jBKHd95ihUjoS1zr2Ai2jFfAV2L+m3Vgx7EIqEpsP/8M6ggX
+        iRdfPoINZRaQl9j+dg4zKCCYBTQl1u/SBzElBJQljtxigXmrYeNvdnQ2swCfRMfhv3DxHfOe
+        QJ2mJrHu53omiDEyErfmMU5gVJqFCOhZSNbOQli7gJF5FaNYakFxbnpqsVGBMXLUbmIEJ3gt
+        9x2MM95+0DvEyMTBeIhRgoNZSYSX23F5ghBvSmJlVWpRfnxRaU5q8SFGU6CHJzJLiSbnA3NM
+        Xkm8oamRmZmBpamFqZmRhZI478/UugQhgfTEktTs1NSC1CKYPiYOTqkGpr2WKpvc1naY79nl
+        w/+w8MBVJjuHiyYvzz+d4jVry/+2qrn2d9ZVMfgFnv98TUTA6cLTz0bdTJpb6pXK1n0JLf+g
+        93D3ZuU7oiriU7UqHq0JCJ3EY5h2ZK3J0TP/uw9uEg975rW16/+rKRELtW4rfJFVrOtcLO/1
+        xWaJ576DubO/hl90W/VoEucKufTniXd9zzoGTF7R9e70v/WZUp2Rh/79qlS3v75zeXL9pR0H
+        GnboNTczcqwVZ/n0Yu4X88UZBcvDX7benHRUJGrvvJunJMqmz5a1Nj5aU/TfhWOeD0cUd62g
+        oEZk6HOzxYITd1hKzT3Z2+Skmrcy1LlLP/KxylSp/blXOI3ee7K37N3R9EOJpTgj0VCLuag4
+        EQAkHyjNeQQAAA==
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb
+References: <DM6PR04MB65755AE3D9217FA3C0C3455AFC2A9@DM6PR04MB6575.namprd04.prod.outlook.com>
+        <20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p8>
+        <20210428232534epcms2p4830e22a86cc78c3319075059fa223540@epcms2p4>
+        <CGME20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p4>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Avri,
 
-On Wed, May 19, 2021 at 08:06:46PM +0530, Bhupesh Sharma wrote:
-> Add the missing required property - 'iommus' to the
-> device-tree binding documentation for qcom-bam DMA IP.
+>> +       /* for pre_req */
+>> +       hpb->pre_req_min_tr_len = hpb_dev_info->max_hpb_single_cmd + 1;
+>> +
+>> +       if (ufshpb_is_legacy(hba))
+>> +               hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
+>> +       else
+>> +               hpb->pre_req_max_tr_len = max(HPB_MULTI_CHUNK_HIGH,
+>> +                                             hpb->pre_req_min_tr_len);
+>I think this should only be
+>else
+>        hpb->pre_req_max_tr_len = HPB_MULTI_CHUNK_HIGH;
 > 
-> This property describes the phandle(s) to apps_smmu node with sid mask.
+>where HPB_MULTI_CHUNK_HIGH should fit into a single byte,
+>regardless of bMAX_ DATA_SIZE_FOR_HPB_SINGLE_CMD,
+>which being an attribute (u32) can be significantly larger.
+
+I will fix it as suggested.
+
+Thank you.
+
 > 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  .../devicetree/bindings/dma/qcom_bam_dma.yaml         | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>Thanks,
+>Avri
 > 
-> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> index d2900616006c..2479862a3654 100644
-> --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> @@ -55,6 +55,12 @@ properties:
->    interconnect-names:
->      const: memory
+> 
+> 
+> 
 >  
-> +  iommus:
-> +    minItems: 1
-> +    maxItems: 8
-> +    description: |
-> +      phandle to apps_smmu node with sid mask.
-> +
->    qcom,ee:
->      $ref: /schemas/types.yaml#/definitions/uint8
->      description:
-> @@ -81,6 +87,7 @@ required:
->    - clocks
->    - clock-names
->    - "#dma-cells"
-> +  - iommus
-
-I don't think we can make this required, older SoCs don't use "iommus"
-for bam_dma.
-
-arch/arm64/boot/dts/qcom/apq8016-sbc.dt.yaml: dma-controller@7884000: 'iommus' is a required property
-        From schema: Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-
-Stephan
