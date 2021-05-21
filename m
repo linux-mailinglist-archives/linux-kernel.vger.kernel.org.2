@@ -2,121 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E241E38D178
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:26:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDFF38D17A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230060AbhEUW1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbhEUW1t (ORCPT
+        id S230013AbhEUW3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:29:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:45834 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229526AbhEUW3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:27:49 -0400
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EFBAC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:26:25 -0700 (PDT)
-Received: by mail-io1-xd33.google.com with SMTP id a11so21691513ioo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:26:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/XkWG9p3vuThMnzF5+jHBK0yD8kKyiYj1CsPVcIZG2k=;
-        b=NbxYYDnKLkoxAba68BqL9ZpD3lb2ScBJAQcY7Ca85CXetGoTwjl6vkFeBlTcN0YXWC
-         cakB/2NABQKb7tNbJ2MKqdWXSJWkXwDc/wdJ8H7ra+iLPE55/qTgRwSHMrd07MrYUY75
-         Kgl+MdH4q6qoh3P/D/eA9hwhI9aygyHy6++nMr5XZJFn3YbAGBkxb+ubQgrwI1dJD3OY
-         9vRWqUhp82BhFUfhdlge9Gw7weWCJYd2vfR0waS4FJhMBieNYCihC9+e4aQthIz0cPw7
-         nPcq/dSyh3TQ2iYZM3164IV6Hk3xNVVeEtw/KweHzEb/39DcVr+NmfeTkJfTD0gaB7bH
-         HDpg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/XkWG9p3vuThMnzF5+jHBK0yD8kKyiYj1CsPVcIZG2k=;
-        b=rZmcJhEfDov4OTavZbj9VOm+8hA4FRlqoNc74jMSDyKKwq9dIvPWzPvQB62O5sMCFQ
-         N7wpYRgUVH2qKmjbTs3f2mxPx9GZBg9/BGqGDH9uTvUwNMFt/wTrYr2FfOYiWbJ9IizM
-         FohzEa6kC9MteiscOSoEIkYuHmhL8fOio54DZu0fuejKnzggtsRiyuvjHkem/WKtNgv0
-         qKifdUH/ugOs+FqE+YhLDwNH/BJA7EQ5Ku4yKSZHAJ1x1eBavVhiMDjSl5A0OaHhzphi
-         EnAZ7x+4O0jI2uIXb8rOFVZTDt5ZwwaqvUInNgwDNoVKBpNkzX9aLj+s6nYtHanlmgxL
-         Taaw==
-X-Gm-Message-State: AOAM531DN5mtVxHVkFUooN7lDc5JbilHePMX0g/zJujsAdBMUCsWdsCT
-        VBOeXybBLIm/PG2MGj0Q2Be4bJce5OUas+IhaFpwpw==
-X-Google-Smtp-Source: ABdhPJzlwY4snWFXpxBlNWlDJVr5O/yWYAqwfXJReVJK7U77qf3035eHhy3r6Qq2WuRy8RNFs9VDtvKPjIC+Z+H1LKQ=
-X-Received: by 2002:a02:aa85:: with SMTP id u5mr7968024jai.75.1621635984233;
- Fri, 21 May 2021 15:26:24 -0700 (PDT)
+        Fri, 21 May 2021 18:29:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621636065; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=sAUYM5V3gq+ufKbiwhke5LyxwcnPMFHcCcu9hhiqJwI=;
+ b=g1pexXELdFa0g60nVwb3OBUbQOElGdGPakj3s2Z48tvHZ25Iqj72JKb+vTjLk4PTctc2sgs1
+ OMVe4/Zct3LJnQVXjSK2OzxHV7g7Ox0sEbq5ym04A77QAhC/CdMkyJuPpaYYR76SGumxVvfG
+ ZzH6N+qK7GZQIXKGllWvAwTHxwY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 60a833d52bff04e53b037e8d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 22:27:33
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 25471C4323A; Fri, 21 May 2021 22:27:33 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0C921C433D3;
+        Fri, 21 May 2021 22:27:31 +0000 (UTC)
 MIME-Version: 1.0
-References: <20210521221211.29077-1-yu-cheng.yu@intel.com> <20210521221211.29077-14-yu-cheng.yu@intel.com>
-In-Reply-To: <20210521221211.29077-14-yu-cheng.yu@intel.com>
-From:   Axel Rasmussen <axelrasmussen@google.com>
-Date:   Fri, 21 May 2021 15:25:47 -0700
-Message-ID: <CAJHvVcjsecq-nOVE1ew1ctG2UpK0F0d0MjNncUgK0L=R4eyDqA@mail.gmail.com>
-Subject: Re: [PATCH v27 13/31] mm: Move VM_UFFD_MINOR_BIT from 37 to 38
-To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
-Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>, linux-arch@vger.kernel.org,
-        linux-api@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>,
-        Peter Xu <peterx@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 15:27:31 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
+ correctly
+In-Reply-To: <CAE-0n53WW0jqorW2MPaTczmJP+d+_qaRBcwmoJBP2dL4x8_DqA@mail.gmail.com>
+References: <1621455753-28966-1-git-send-email-khsieh@codeaurora.org>
+ <CAE-0n53WW0jqorW2MPaTczmJP+d+_qaRBcwmoJBP2dL4x8_DqA@mail.gmail.com>
+Message-ID: <955c69a5fe7bfee9380faf3d2b71a728@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This seems reasonable to me. The particular bit used isn't so
-important from my perspective. I can't think of a way this would break
-backward compatibility or such. So:
-
-Reviewed-by: Axel Rasmussen <axelrasmussen@google.com>
-
-On Fri, May 21, 2021 at 3:13 PM Yu-cheng Yu <yu-cheng.yu@intel.com> wrote:
->
-> To introduce VM_SHADOW_STACK as VM_HIGH_ARCH_BIT (37), and make all
-> VM_HIGH_ARCH_BITs stay together, move VM_UFFD_MINOR_BIT from 37 to 38.
->
-> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-> Cc: Axel Rasmussen <axelrasmussen@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Cc: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  include/linux/mm.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index c274f75efcf9..923f89b9f1b5 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -373,7 +373,7 @@ extern unsigned int kobjsize(const void *objp);
->  #endif
->
->  #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
-> -# define VM_UFFD_MINOR_BIT     37
-> +# define VM_UFFD_MINOR_BIT     38
->  # define VM_UFFD_MINOR         BIT(VM_UFFD_MINOR_BIT)  /* UFFD minor faults */
->  #else /* !CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
->  # define VM_UFFD_MINOR         VM_NONE
-> --
-> 2.21.0
->
+On 2021-05-21 14:56, Stephen Boyd wrote:
+> Quoting Kuogee Hsieh (2021-05-19 13:22:33)
+>> irq_hpd interrupt should be handled after dongle plugged in and
+>> before dongle unplugged. Hence irq_hpd interrupt is enabled at
+>> the end of the plugin handle and disabled at the beginning of
+>> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+>> handled same as the dongle unplugged which tears down the mainlink
+>> and disables the phy. This patch fixes this problem by only tearing
+>> down the mainlink but keeping phy enabled at irq_hpd with
+>> sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
+>> handled by setup mainlink only. This patch also set dongle into D3
+>> (power off) state at end of handling irq_hpd with sink_count = 0.
+>> 
+>> Changes in v2:
+>> -- add ctrl->phy_Power_count
+>> 
+>> Changes in v3:
+>> -- del ctrl->phy_Power_count
+>> -- add phy_power_off to dp_ctrl_off_link_stream()
+>> 
+>> Changes in v4:
+>> -- return immediately if clock disable failed at 
+>> dp_ctrl_off_link_stream()
+>> 
+>> Changes in v5:
+>> -- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
+>> 
+>> Changes in v6:
+>> -- add Fixes tag
+>> 
+>> Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up 
+>> and pm_resume")
+>> 
+>> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+>> ---
+> 
+> Tested-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> 
+> We can resolve the lingering dual irq issue later on if you don't want
+> to send another round of this. Also, the title says 1/2 so I wonder if
+> there's another patch? Doesn't look like there is but I have to ask. If
+> not, please generate patches with the right -<N> argument or revision
+> range.
+new v6 uploaded
