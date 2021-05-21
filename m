@@ -2,57 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FCF338C6CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:47:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0900B38C6D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhEUMtG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:49:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234312AbhEUMtB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:49:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B2A2613CC;
-        Fri, 21 May 2021 12:47:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621601258;
-        bh=ENTtycla6YwFTERpKa9JcOnfx4HXvBKAO7BqN7/IJVY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c+cYJi7ka1r4587j8Le1eVmc3OfKYDJ7sZ2wxGfmOkdmoH4W0/09mF253SE4LijO/
-         bcs0onyPuINzEJSSpKWCKxdOBz873WimMdKpbMocHj1qVggOj8KEnvCRDqQbYH67eW
-         W63Kl7geq1iKXj8JN4mg3h7DhIkc0IpfeTAZLwGI=
-Date:   Fri, 21 May 2021 14:47:36 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Nathan Lynch <nathanl@linux.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, mpe@ellerman.id.au,
-        linux-kernel@vger.kernel.org, jirislaby@kernel.org
-Subject: Re: [PATCH] powerpc/udbg_hvc: retry putc on -EAGAIN
-Message-ID: <YKer6KPaHDgaWS8k@kroah.com>
-References: <20210514214422.3019105-1-nathanl@linux.ibm.com>
+        id S230006AbhEUMuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:50:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230081AbhEUMua (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:50:30 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D3AC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:49:07 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id m124so14105073pgm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:49:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGuPc/FWKOVvjhaHRN43mHg/w+5OJaPMhcuzSdmouas=;
+        b=SsyTMFiRSBaxbEGOPNJk2PsZEN+4hTeX/8abTCA5DUXF83GqcbK4L3mi2tLPQj9Ep0
+         8DJYTXH9XZC5Vp+ZWOASmVWucLMA9lLwn9jpYZhfS6LawydoUt8UUoHcpIPdXbicVgxH
+         VIXprSTWEfwWNINvuSYOPa/Zw0vOS4aGrZizqs8TZEHV2CBobhxoyif/muGrupWz2+Wo
+         HBDNKFTaRf1Gpa3WomeNKwqgwdQkpRQq5cR9bxtX4ZSRLubqhiG9zMWxCCEiCWVBeajQ
+         KqxYjAMCBCJnTTxsqPAACqw1zv4yHPqeJnPJpaXGxv9IIHS1tw/zqchHq1kYFKXsklPk
+         T/XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pGuPc/FWKOVvjhaHRN43mHg/w+5OJaPMhcuzSdmouas=;
+        b=kRQUTCGsXfuli9+UgIuuK6x4vx6B/6y2i3OepbhhpjmZDVcP4Pkp8xcFITFGA7o1RW
+         4t5X1yp5AtImG2b5V6UPsUhubSEKJfFp4KgOs1BsG4TiO0/4XGLRfLRqEbiBVH1+oYnW
+         aTnKEKfft6qBqOvAwONTF1KYfabZLyQD1UCqQIs8aBtGsaDDML8IXd+n569tI/xo8eMT
+         4tS0N0tvtploAwiTmLkHz+/j/MIMJxdx+TqYsMCpIIQh7yUFxHnhrWCwAPPK1b1oYRT1
+         BulX7HS8jSj8o7jcJjS2oRMUHFRMzHEF84TAh22mFNcJZgfVQ/ZV9wdqJz7i5CU22JjR
+         d5sw==
+X-Gm-Message-State: AOAM531GihjWl4x/h9bTY0C9wsrGvPERsrMCeCqJtewDwb6spy6gkMV5
+        6g5hSf84O/NDV0CvrWPAJ8Ll2w==
+X-Google-Smtp-Source: ABdhPJx4ca0fPgEFRiDgD2lJUNF0Ana9vfd7DuRLBFrZ5qcbxuD40fXoDaL43ZLv/B0Q7cEo2irrPw==
+X-Received: by 2002:a62:bd14:0:b029:2de:8bf7:2df8 with SMTP id a20-20020a62bd140000b02902de8bf72df8mr10185713pff.60.1621601346960;
+        Fri, 21 May 2021 05:49:06 -0700 (PDT)
+Received: from hsinchu02.internal.sifive.com (59-124-168-89.HINET-IP.hinet.net. [59.124.168.89])
+        by smtp.gmail.com with ESMTPSA id d10sm4271419pfo.65.2021.05.21.05.49.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 05:49:06 -0700 (PDT)
+From:   Zong Li <zong.li@sifive.com>
+To:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
+        davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, schwab@linux-m68k.org, sboyd@kernel.org,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com,
+        geert@linux-m68k.org, yixun.lan@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Cc:     Zong Li <zong.li@sifive.com>
+Subject: [PATCH] net: macb: ensure the device is available before accessing GEMGXL control registers
+Date:   Fri, 21 May 2021 20:48:59 +0800
+Message-Id: <20210521124859.101012-1-zong.li@sifive.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514214422.3019105-1-nathanl@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 04:44:22PM -0500, Nathan Lynch wrote:
-> hvterm_raw_put_chars() calls hvc_put_chars(), which may return -EAGAIN
-> when the underlying hcall returns a "busy" status, but udbg_hvc_putc()
-> doesn't handle this. When using xmon on a PowerVM guest, this can
-> result in incomplete or garbled output when printing relatively large
-> amounts of data quickly, such as when dumping the kernel log buffer.
-> 
-> Call again on -EAGAIN.
-> 
-> Signed-off-by: Nathan Lynch <nathanl@linux.ibm.com>
-> ---
->  drivers/tty/hvc/hvc_vio.c | 2 +-
+If runtime power menagement is enabled, the gigabit ethernet PLL would
+be disabled after macb_probe(). During this period of time, the system
+would hang up if we try to access GEMGXL control registers.
 
-Subject line does not match up with this file name.
+We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
+sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
+function called from invalid context"). Add the similar flag to ensure
+the device is available before accessing GEMGXL device.
 
-Don't you want "tty" and "hvc" in there somewhere?
+Signed-off-by: Zong Li <zong.li@sifive.com>
+---
+ drivers/net/ethernet/cadence/macb.h      | 2 ++
+ drivers/net/ethernet/cadence/macb_main.c | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
-thanks,
+diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
+index d8d87213697c..acf5242ce715 100644
+--- a/drivers/net/ethernet/cadence/macb.h
++++ b/drivers/net/ethernet/cadence/macb.h
+@@ -1309,6 +1309,8 @@ struct macb {
+ 
+ 	u32	rx_intr_mask;
+ 
++	unsigned int is_opened;
++
+ 	struct macb_pm_data pm_data;
+ 	const struct macb_usrio_config *usrio;
+ };
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index 6bc7d41d519b..e079ed10ad91 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -2781,6 +2781,8 @@ static int macb_open(struct net_device *dev)
+ 	if (bp->ptp_info)
+ 		bp->ptp_info->ptp_init(dev);
+ 
++	bp->is_opened = 1;
++
+ 	return 0;
+ 
+ reset_hw:
+@@ -2818,6 +2820,8 @@ static int macb_close(struct net_device *dev)
+ 	if (bp->ptp_info)
+ 		bp->ptp_info->ptp_remove(dev);
+ 
++	bp->is_opened = 0;
++
+ 	pm_runtime_put(&bp->pdev->dev);
+ 
+ 	return 0;
+@@ -2867,6 +2871,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
+ 	struct gem_stats *hwstat = &bp->hw_stats.gem;
+ 	struct net_device_stats *nstat = &bp->dev->stats;
+ 
++	if (!bp->is_opened)
++		return nstat;
++
+ 	gem_update_stats(bp);
+ 
+ 	nstat->rx_errors = (hwstat->rx_frame_check_sequence_errors +
+-- 
+2.31.1
 
-greg k-h
