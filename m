@@ -2,142 +2,310 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C752138D171
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:24:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4063D38D172
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230087AbhEUWZ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:25:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:36984 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229990AbhEUWZn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:25:43 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14LMOHfS121856;
-        Fri, 21 May 2021 17:24:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621635857;
-        bh=NT4BVJLwt6+rL5z9zo/97lTrFfejjwhzjEemRY1V8xA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=a2mLyzLAVgOp6jgkbcky9HGIeni68GXpJFBkXfWnCPV6SM7OULy1hVuaRPRKTC0q4
-         WlTh4YQaRm2AGQZ/lBMVLfwHuxxsuGoMZ5rmfznSVb9y1cKL+y35LL54rL+/Raffgy
-         PvkI5A6sWfdG363EUp+JxgEIwQ9szaEKrIgpuMAg=
-Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14LMOHhs105296
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 21 May 2021 17:24:17 -0500
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
- May 2021 17:24:17 -0500
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 21 May 2021 17:24:17 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14LMOGSx097646;
-        Fri, 21 May 2021 17:24:17 -0500
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-To:     Tony Lindgren <tony@atomide.com>
-CC:     <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>
-Subject: [PATCH 3/3] ARM: dts: am335x: fix ti,no-reset-on-init flag for gpios
-Date:   Sat, 22 May 2021 01:24:11 +0300
-Message-ID: <20210521222411.17547-4-grygorii.strashko@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210521222411.17547-1-grygorii.strashko@ti.com>
-References: <20210521222411.17547-1-grygorii.strashko@ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        id S230018AbhEUW1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:27:17 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:45271 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229865AbhEUW1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 18:27:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621635953; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=AYbOgwbChI5rvlsBei4mmaY0nKq1z4ofewnO/Kfy8Xc=; b=IKgCJ/h5kR5wHQINa28qGBVMMKU8hEiT+8Ddlrt16uScjyR1M1muOVTGjRypUTLWTynWYG+G
+ /MVy9aiFwFF8lgoFYV69fbETuQ4mzuz7RakLWmwLvjnApT0jrBQeOgaAiXA7e5582dUpWESy
+ 3PjB48Si0mDhSCRkSXHUl6SWML0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60a8336860c53c8c9d052334 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 22:25:44
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 463ADC4338A; Fri, 21 May 2021 22:25:43 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CA133C433F1;
+        Fri, 21 May 2021 22:25:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CA133C433F1
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
+From:   Kuogee Hsieh <khsieh@codeaurora.org>
+To:     robdclark@gmail.com, sean@poorly.run, swboyd@chromium.org,
+        vkoul@kernel.org, agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
+        khsieh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
+Date:   Fri, 21 May 2021 15:25:30 -0700
+Message-Id: <1621635930-30161-1-git-send-email-khsieh@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ti,no-reset-on-init flag need to be at the interconnect target module
-level for the modules that have it defined.
-The ti-sysc driver handles this case, but produces warning, not a critical
-issue.
+irq_hpd interrupt should be handled after dongle plugged in and
+before dongle unplugged. Hence irq_hpd interrupt is enabled at
+the end of the plugin handle and disabled at the beginning of
+unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
+handled same as the dongle unplugged which tears down the mainlink
+and disables the phy. This patch fixes this problem by only tearing
+down the mainlink but keeping phy enabled at irq_hpd with
+sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
+handled by setup mainlink only. This patch also set dongle into D3
+(power off) state at end of handling irq_hpd with sink_count = 0.
 
-Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
+Changes in v2:
+-- add ctrl->phy_Power_count
+
+Changes in v3:
+-- del ctrl->phy_Power_count
+-- add phy_power_off to dp_ctrl_off_link_stream()
+
+Changes in v4:
+-- return immediately if clock disable failed at dp_ctrl_off_link_stream()
+
+Changes in v5:
+-- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
+
+Changes in v6:
+-- add Fixes tag
+
+Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and pm_resume")
+
+Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
 ---
- arch/arm/boot/dts/am335x-baltos.dtsi              | 4 ++--
- arch/arm/boot/dts/am335x-evmsk.dts                | 2 +-
- arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi | 2 +-
- arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi | 2 +-
- arch/arm/boot/dts/am33xx-l4.dtsi                  | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/gpu/drm/msm/dp/dp_catalog.c |  5 ++--
+ drivers/gpu/drm/msm/dp/dp_ctrl.c    | 55 +++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/dp/dp_ctrl.h    |  2 ++
+ drivers/gpu/drm/msm/dp/dp_display.c | 57 +++++++++++++++++++++++++++----------
+ 4 files changed, 101 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm/boot/dts/am335x-baltos.dtsi b/arch/arm/boot/dts/am335x-baltos.dtsi
-index 3ea286180382..1103a2cb836f 100644
---- a/arch/arm/boot/dts/am335x-baltos.dtsi
-+++ b/arch/arm/boot/dts/am335x-baltos.dtsi
-@@ -393,10 +393,10 @@
- 	status = "okay";
- };
+diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
+index b1a9b1b..f4f53f2 100644
+--- a/drivers/gpu/drm/msm/dp/dp_catalog.c
++++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
+@@ -582,10 +582,9 @@ void dp_catalog_ctrl_hpd_config(struct dp_catalog *dp_catalog)
  
--&gpio0 {
-+&gpio0_target {
- 	ti,no-reset-on-init;
- };
+ 	u32 reftimer = dp_read_aux(catalog, REG_DP_DP_HPD_REFTIMER);
  
--&gpio3 {
-+&gpio3_target {
- 	ti,no-reset-on-init;
- };
-diff --git a/arch/arm/boot/dts/am335x-evmsk.dts b/arch/arm/boot/dts/am335x-evmsk.dts
-index d5f8d5e2eb5d..45bf0273ecd8 100644
---- a/arch/arm/boot/dts/am335x-evmsk.dts
-+++ b/arch/arm/boot/dts/am335x-evmsk.dts
-@@ -646,7 +646,7 @@
- 	status = "okay";
- };
+-	/* enable HPD interrupts */
++	/* enable HPD plug and unplug interrupts */
+ 	dp_catalog_hpd_config_intr(dp_catalog,
+-		DP_DP_HPD_PLUG_INT_MASK | DP_DP_IRQ_HPD_INT_MASK
+-		| DP_DP_HPD_UNPLUG_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
++		DP_DP_HPD_PLUG_INT_MASK | DP_DP_HPD_UNPLUG_INT_MASK, true);
  
--&gpio0 {
-+&gpio0_target {
- 	ti,no-reset-on-init;
- };
+ 	/* Configure REFTIMER and enable it */
+ 	reftimer |= DP_DP_HPD_REFTIMER_ENABLE;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+index 8d59eb9..dbd8943 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
+@@ -1811,6 +1811,61 @@ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl)
+ 	return ret;
+ }
  
-diff --git a/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi b/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
-index 4e90f9c23d2e..8121a199607c 100644
---- a/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
-+++ b/arch/arm/boot/dts/am335x-moxa-uc-2100-common.dtsi
-@@ -150,7 +150,7 @@
- 	status = "okay";
- };
++int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
++	int ret;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	/* set dongle to D3 (power off) mode */
++	dp_link_psm_config(ctrl->link, &ctrl->panel->link_info, true);
++
++	dp_catalog_ctrl_mainlink_ctrl(ctrl->catalog, false);
++
++	ret = dp_power_clk_enable(ctrl->power, DP_STREAM_PM, false);
++	if (ret) {
++		DRM_ERROR("Failed to disable pixel clocks. ret=%d\n", ret);
++		return ret;
++	}
++
++	ret = dp_power_clk_enable(ctrl->power, DP_CTRL_PM, false);
++	if (ret) {
++		DRM_ERROR("Failed to disable link clocks. ret=%d\n", ret);
++		return ret;
++	}
++
++	phy_power_off(phy);
++
++	/* aux channel down, reinit phy */
++	phy_exit(phy);
++	phy_init(phy);
++
++	DRM_DEBUG_DP("DP off link/stream done\n");
++	return ret;
++}
++
++void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl)
++{
++	struct dp_ctrl_private *ctrl;
++	struct dp_io *dp_io;
++	struct phy *phy;
++
++	ctrl = container_of(dp_ctrl, struct dp_ctrl_private, dp_ctrl);
++	dp_io = &ctrl->parser->io;
++	phy = dp_io->phy;
++
++	dp_catalog_ctrl_reset(ctrl->catalog);
++
++	phy_exit(phy);
++
++	DRM_DEBUG_DP("DP off phy done\n");
++}
++
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl)
+ {
+ 	struct dp_ctrl_private *ctrl;
+diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.h b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+index a836bd3..25e4f75 100644
+--- a/drivers/gpu/drm/msm/dp/dp_ctrl.h
++++ b/drivers/gpu/drm/msm/dp/dp_ctrl.h
+@@ -23,6 +23,8 @@ int dp_ctrl_host_init(struct dp_ctrl *dp_ctrl, bool flip, bool reset);
+ void dp_ctrl_host_deinit(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_on_stream(struct dp_ctrl *dp_ctrl);
++int dp_ctrl_off_link_stream(struct dp_ctrl *dp_ctrl);
++void dp_ctrl_off_phy(struct dp_ctrl *dp_ctrl);
+ int dp_ctrl_off(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_push_idle(struct dp_ctrl *dp_ctrl);
+ void dp_ctrl_isr(struct dp_ctrl *dp_ctrl);
+diff --git a/drivers/gpu/drm/msm/dp/dp_display.c b/drivers/gpu/drm/msm/dp/dp_display.c
+index 0ba71c7..b2a282a 100644
+--- a/drivers/gpu/drm/msm/dp/dp_display.c
++++ b/drivers/gpu/drm/msm/dp/dp_display.c
+@@ -337,6 +337,12 @@ static int dp_display_process_hpd_high(struct dp_display_private *dp)
+ 	dp->dp_display.max_pclk_khz = DP_MAX_PIXEL_CLK_KHZ;
+ 	dp->dp_display.max_dp_lanes = dp->parser->max_dp_lanes;
  
--&gpio0 {
-+&gpio0_target {
- 	ti,no-reset-on-init;
- };
++	/*
++	 * set sink to normal operation mode -- D0
++	 * before dpcd read
++	 */
++	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
++
+ 	dp_link_reset_phy_params_vx_px(dp->link);
+ 	rc = dp_ctrl_on_link(dp->ctrl);
+ 	if (rc) {
+@@ -405,11 +411,6 @@ static int dp_display_usbpd_configure_cb(struct device *dev)
  
-diff --git a/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi b/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi
-index 98d8ed4ad967..39e5d2ce600a 100644
---- a/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi
-+++ b/arch/arm/boot/dts/am335x-moxa-uc-8100-common.dtsi
-@@ -353,7 +353,7 @@
- 	status = "okay";
- };
+ 	dp_display_host_init(dp, false);
  
--&gpio0 {
-+&gpio0_target {
- 	ti,no-reset-on-init;
- };
+-	/*
+-	 * set sink to normal operation mode -- D0
+-	 * before dpcd read
+-	 */
+-	dp_link_psm_config(dp->link, &dp->panel->link_info, false);
+ 	rc = dp_display_process_hpd_high(dp);
+ end:
+ 	return rc;
+@@ -570,6 +571,10 @@ static int dp_hpd_plug_handle(struct dp_display_private *dp, u32 data)
+ 		dp_add_event(dp, EV_CONNECT_PENDING_TIMEOUT, 0, tout);
+ 	}
  
-diff --git a/arch/arm/boot/dts/am33xx-l4.dtsi b/arch/arm/boot/dts/am33xx-l4.dtsi
-index 039a9ab4c7ea..dcce5e3e001e 100644
---- a/arch/arm/boot/dts/am33xx-l4.dtsi
-+++ b/arch/arm/boot/dts/am33xx-l4.dtsi
-@@ -1789,7 +1789,7 @@
- 			};
- 		};
++	/* enable HDP irq_hpd/replug interrupt */
++	dp_catalog_hpd_config_intr(dp->catalog,
++		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, true);
++
+ 	mutex_unlock(&dp->event_mutex);
  
--		target-module@ae000 {			/* 0x481ae000, ap 56 3a.0 */
-+		gpio3_target: target-module@ae000 {		/* 0x481ae000, ap 56 3a.0 */
- 			compatible = "ti,sysc-omap2", "ti,sysc";
- 			reg = <0xae000 0x4>,
- 			      <0xae010 0x4>,
+ 	/* uevent will complete connection part */
+@@ -619,7 +624,26 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	mutex_lock(&dp->event_mutex);
+ 
+ 	state = dp->hpd_state;
+-	if (state == ST_DISCONNECT_PENDING || state == ST_DISCONNECTED) {
++
++	/* disable irq_hpd/replug interrupts */
++	dp_catalog_hpd_config_intr(dp->catalog,
++		DP_DP_IRQ_HPD_INT_MASK | DP_DP_HPD_REPLUG_INT_MASK, false);
++
++	/* unplugged, no more irq_hpd handle */
++	dp_del_event(dp, EV_IRQ_HPD_INT);
++
++	if (state == ST_DISCONNECTED) {
++		/* triggered by irq_hdp with sink_count = 0 */
++		if (dp->link->sink_count == 0) {
++			dp_ctrl_off_phy(dp->ctrl);
++			hpd->hpd_high = 0;
++			dp->core_initialized = false;
++		}
++		mutex_unlock(&dp->event_mutex);
++		return 0;
++	}
++
++	if (state == ST_DISCONNECT_PENDING) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -633,9 +657,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	dp->hpd_state = ST_DISCONNECT_PENDING;
+ 
+-	/* disable HPD plug interrupt until disconnect is done */
+-	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK
+-				| DP_DP_IRQ_HPD_INT_MASK, false);
++	/* disable HPD plug interrupts */
++	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, false);
+ 
+ 	hpd->hpd_high = 0;
+ 
+@@ -652,8 +675,8 @@ static int dp_hpd_unplug_handle(struct dp_display_private *dp, u32 data)
+ 	reinit_completion(&dp->audio_comp);
+ 	dp_display_handle_plugged_change(g_dp_display, false);
+ 
+-	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK |
+-					DP_DP_IRQ_HPD_INT_MASK, true);
++	/* enable HDP plug interrupt to prepare for next plugin */
++	dp_catalog_hpd_config_intr(dp->catalog, DP_DP_HPD_PLUG_INT_MASK, true);
+ 
+ 	/* uevent will complete disconnection part */
+ 	mutex_unlock(&dp->event_mutex);
+@@ -684,7 +707,7 @@ static int dp_irq_hpd_handle(struct dp_display_private *dp, u32 data)
+ 
+ 	/* irq_hpd can happen at either connected or disconnected state */
+ 	state =  dp->hpd_state;
+-	if (state == ST_DISPLAY_OFF) {
++	if (state == ST_DISPLAY_OFF || state == ST_SUSPENDED) {
+ 		mutex_unlock(&dp->event_mutex);
+ 		return 0;
+ 	}
+@@ -903,9 +926,13 @@ static int dp_display_disable(struct dp_display_private *dp, u32 data)
+ 
+ 	dp_display->audio_enabled = false;
+ 
+-	dp_ctrl_off(dp->ctrl);
+-
+-	dp->core_initialized = false;
++	/* triggered by irq_hpd with sink_count = 0 */
++	if (dp->link->sink_count == 0) {
++		dp_ctrl_off_link_stream(dp->ctrl);
++	} else {
++		dp_ctrl_off(dp->ctrl);
++		dp->core_initialized = false;
++	}
+ 
+ 	dp_display->power_on = false;
+ 
 -- 
-2.17.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
