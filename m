@@ -2,79 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4121338C382
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:41:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E159138C373
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:40:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236875AbhEUJmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:42:16 -0400
-Received: from lucky1.263xmail.com ([211.157.147.135]:44174 "EHLO
-        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236804AbhEUJmI (ORCPT
+        id S236794AbhEUJmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:42:01 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39220 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236786AbhEUJl7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:42:08 -0400
-Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id B6D4FACB15;
-        Fri, 21 May 2021 17:40:34 +0800 (CST)
-X-MAIL-GRAY: 0
-X-MAIL-DELIVERY: 1
-X-ADDR-CHECKED: 0
-X-ANTISPAM-LEVEL: 2
-X-ABS-CHECKED: 0
-Received: from localhost.localdomain (unknown [124.126.19.250])
-        by smtp.263.net (postfix) whith ESMTP id P30810T139673781389056S1621590030498168_;
-        Fri, 21 May 2021 17:40:35 +0800 (CST)
-X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <d404d14de4cdd58d56efdd6ff2dadb5b>
-X-RL-SENDER: zhaoxiao@uniontech.com
-X-SENDER: zhaoxiao@uniontech.com
-X-LOGIN-NAME: zhaoxiao@uniontech.com
-X-FST-TO: robh+dt@kernel.org
-X-RCPT-COUNT: 9
-X-SENDER-IP: 124.126.19.250
-X-ATTACHMENT-NUM: 0
-X-System-Flag: 0
-From:   zhaoxiao <zhaoxiao@uniontech.com>
-To:     robh+dt@kernel.org, tsbogend@alpha.franken.de
-Cc:     maoxiaochuan@loongson.cn, jiaxun.yang@flygoat.com,
-        zhangqing@loongson.cn, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH 4/5] mips: dts: loongson: fix DTC unit name warnings
-Date:   Fri, 21 May 2021 17:40:27 +0800
-Message-Id: <cbdf316ac85c9cdcb63929b2a8fa47f169077af2.1621586643.git.zhaoxiao@uniontech.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1621586643.git.zhaoxiao@uniontech.com>
-References: <cover.1621586643.git.zhaoxiao@uniontech.com>
+        Fri, 21 May 2021 05:41:59 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lk1dv-0004pf-E5; Fri, 21 May 2021 09:40:31 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Joe Thornber <ejt@redhat.com>
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] dm space maps: Fix uninitialized variable r2
+Date:   Fri, 21 May 2021 10:40:31 +0100
+Message-Id: <20210521094031.42356-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
-arch/mips/boot/dts/loongson/ls7a-pch.dtsi:410.7-415.5: Warning (unit_address_vs_reg): /bus@10000000/isa: node has a reg or ranges property, but no unit name
-arch/mips/boot/dts/loongson/ls7a-pch.dtsi:410.7-415.5: Warning (simple_bus_reg): /bus@10000000/isa: simple-bus unit address format error, expected "18000000"
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
+In the case where recursing(mm) is true variable r2 is not
+inintialized and an uninitialized value is being used in the
+call combine_errors later on. Fix this by setting r2 to zero.
+
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: def6a7a9a7f0 ("dm space maps: improve performance with inc/dec on ranges of blocks")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/md/persistent-data/dm-space-map-metadata.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index f99a7a11fded..d66e1037fba5 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -407,7 +407,7 @@
- 			};
- 		};
+diff --git a/drivers/md/persistent-data/dm-space-map-metadata.c b/drivers/md/persistent-data/dm-space-map-metadata.c
+index 3b70ee861cf5..5be5ef4c831f 100644
+--- a/drivers/md/persistent-data/dm-space-map-metadata.c
++++ b/drivers/md/persistent-data/dm-space-map-metadata.c
+@@ -432,9 +432,10 @@ static int sm_metadata_dec_blocks(struct dm_space_map *sm, dm_block_t b, dm_bloc
+ 	int32_t nr_allocations;
+ 	struct sm_metadata *smm = container_of(sm, struct sm_metadata, sm);
  
--		isa {
-+		isa@18000000 {
- 			compatible = "isa";
- 			#address-cells = <2>;
- 			#size-cells = <1>;
+-	if (recursing(smm))
++	if (recursing(smm)) {
+ 		r = add_bop(smm, BOP_DEC, b, e);
+-	else {
++		r2 = 0;
++	} else {
+ 		in(smm);
+ 		r = sm_ll_dec(&smm->ll, b, e, &nr_allocations);
+ 		r2 = out(smm);
 -- 
-2.20.1
-
-
+2.31.1
 
