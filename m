@@ -2,128 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0165F38D149
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:18:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECDE38D14B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:19:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230022AbhEUWTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:19:44 -0400
-Received: from mga05.intel.com ([192.55.52.43]:55754 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229507AbhEUWTW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:19:22 -0400
-IronPort-SDR: E/ubeBjDuZp58I9y8NlF+xuEp7dpZONLLsUcAhuIoDkZ/y+yofvpNlH87Wp8yRyerCjIFjtLd9
- r/vcHD/NwdeQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="287124422"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="287124422"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 15:16:30 -0700
-IronPort-SDR: 1l69DAZyY78End//6ty+lXDAXAR/M4LFGsFa5D08zBRC6f/uigwN86g4Ts7u9QzSGnVqiSUIaU
- Py/4i8avNqnA==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="441269472"
-Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 15:16:30 -0700
-From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
-To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>
-Subject: [PATCH v27 10/10] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
-Date:   Fri, 21 May 2021 15:15:31 -0700
-Message-Id: <20210521221531.30168-11-yu-cheng.yu@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20210521221531.30168-1-yu-cheng.yu@intel.com>
-References: <20210521221531.30168-1-yu-cheng.yu@intel.com>
+        id S229693AbhEUWVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:21:04 -0400
+Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:48596 "EHLO
+        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229503AbhEUWVC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 18:21:02 -0400
+Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
+        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LMI6cH025938;
+        Fri, 21 May 2021 22:19:35 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
+ bh=q8QhXGTfWElVKM98+dODFF6vgoKg7xIj/f6m9TTGGAg=;
+ b=ANsYwupGaCf7fHujCp8EiOmIj4kzAj5+U7KtflGUtmgADLVbgsU1lqzV2gyHVeFf6y4X
+ Tg32G6k7CNmxJprVfEtdGXDmkQSyhppPpUgx9xdhHwsTo5xmVRBleDrW/LNyeHbD+sYw
+ 7llU5sslCj3QhVtQgHMASJ72fKUR7ZMceGd+MeTUAqC7VsEOgPFdDgINHrB29B0e1HFE
+ JX0at13GkTdkmKPVWWWtyQkAGaoFouW9NsIfj7vd8hs7i/9FJHwDNobuNAga8zQLoHDg
+ tyKd56f0sJ8grsc/9JGTdNQDBwmOxXJk34hlf/MeATbv7EkIP+0ud591wcGuLlCI84ua yQ== 
+Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
+        by mx0b-002e3701.pphosted.com with ESMTP id 38p0dcsw44-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 22:19:35 +0000
+Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
+        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 9BC316F;
+        Fri, 21 May 2021 22:19:34 +0000 (UTC)
+Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
+        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 6B9894A;
+        Fri, 21 May 2021 22:19:34 +0000 (UTC)
+Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 48777)
+        id 17E9E302F481D; Fri, 21 May 2021 17:19:34 -0500 (CDT)
+From:   Kyle Meyer <kyle.meyer@hpe.com>
+To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        linux-kernel@vger.kernel.org
+Cc:     linux-pm@vger.kernel.org, linux-acpi@vegr.kernel.org,
+        Kyle Meyer <kyle.meyer@hpe.com>
+Subject: [PATCH] acpi-cpufreq: Skip initialization if a cpufreq driver exists
+Date:   Fri, 21 May 2021 17:19:06 -0500
+Message-Id: <20210521221906.199436-1-kyle.meyer@hpe.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-GUID: f3wzvZwN-ZLyGF8xOXh0LB-SAt38UjiY
+X-Proofpoint-ORIG-GUID: f3wzvZwN-ZLyGF8xOXh0LB-SAt38UjiY
+X-HPE-SCL: -1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-21_11:2021-05-20,2021-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
+ malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
+ spamscore=0 adultscore=0 mlxscore=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105210122
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
-component of CET.  IBT prevents attacks by ensuring that (most) indirect
-branches and function calls may only land at ENDBR instructions.  Branches
-that don't follow the rules will result in control flow (#CF) exceptions.
+Revert part of commit 75c0758137c7a
+("acpi-cpufreq: Fail initialization if driver cannot be registered").
 
-ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
-instructions are inserted automatically by the compiler, but branch
-targets written in assembly must have ENDBR added manually.
+acpi-cpufreq is mutually exclusive with intel_pstate, however,
+acpi-cpufreq is loaded multiple times during startup while intel_pstate is
+enabled. On systems using systemd the kernel triggers one uevent for each
+device as a result of systemd-udev-trigger.service. The service exists to
+retrigger all devices as uevents sent by the kernel before systemd-udevd
+is running are missed. The delay caused by systemd-udevd repeatedly loading
+the driver, getting a fail return, and unloading the driver twice per
+logical CPU has a significant impact on the startup time, and can cause
+some devices to be unavailable after reaching the root login prompt.
 
-Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
+Load the driver once but skip initialization if a cpufreq driver exists by
+changing the return value of cpufreq_get_current_driver() from -EEXIST to
+0.
 
-Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Cc: Andy Lutomirski <luto@kernel.org>
-Cc: Borislav Petkov <bp@alien8.de>
-Cc: Dave Hansen <dave.hansen@linux.intel.com>
-Cc: Jarkko Sakkinen <jarkko@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
 ---
- arch/x86/entry/vdso/vsgx.S | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/cpufreq/acpi-cpufreq.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
-index 99dafac992e2..c7cb85d57b3f 100644
---- a/arch/x86/entry/vdso/vsgx.S
-+++ b/arch/x86/entry/vdso/vsgx.S
-@@ -4,6 +4,7 @@
- #include <asm/export.h>
- #include <asm/errno.h>
- #include <asm/enclu.h>
-+#include <asm/vdso.h>
+diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
+index 7e7450453714..e79a945369d1 100644
+--- a/drivers/cpufreq/acpi-cpufreq.c
++++ b/drivers/cpufreq/acpi-cpufreq.c
+@@ -1003,7 +1003,7 @@ static int __init acpi_cpufreq_init(void)
  
- #include "extable.h"
+ 	/* don't keep reloading if cpufreq_driver exists */
+ 	if (cpufreq_get_current_driver())
+-		return -EEXIST;
++		return 0;
  
-@@ -27,6 +28,7 @@
- SYM_FUNC_START(__vdso_sgx_enter_enclave)
- 	/* Prolog */
- 	.cfi_startproc
-+	ENDBR64
- 	push	%rbp
- 	.cfi_adjust_cfa_offset	8
- 	.cfi_rel_offset		%rbp, 0
-@@ -62,6 +64,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
- .Lasync_exit_pointer:
- .Lenclu_eenter_eresume:
- 	enclu
-+	ENDBR64
+ 	pr_debug("%s\n", __func__);
  
- 	/* EEXIT jumps here unless the enclave is doing something fancy. */
- 	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
-@@ -91,6 +94,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
- 	jmp	.Lout
- 
- .Lhandle_exception:
-+	ENDBR64
- 	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
- 
- 	/* Set the exception info. */
 -- 
-2.21.0
+2.26.2
 
