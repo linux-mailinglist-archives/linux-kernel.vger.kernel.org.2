@@ -2,102 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E511838CDC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6C438CDC7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232319AbhEUSvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:51:24 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:41900 "EHLO mail.skyhub.de"
+        id S232695AbhEUSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:55:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42948 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231494AbhEUSvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:51:23 -0400
-Received: from zn.tnic (p200300ec2f0ea400fbcd5718c7a034c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a400:fbcd:5718:c7a0:34c2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BEBD81EC06F0;
-        Fri, 21 May 2021 20:49:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621622998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=3LJAZhxKWmjimDmIEpS1OanKuj4fPuQC6Ji2my1ffes=;
-        b=LhfojBS1PUhodfjrWgeTAsonPiAiCqCd5Qw+d14N+N+2WZLh9Y31jKKS0w2FYp/RjaIfbz
-        rcoKwns8hndz4ox1V1miUKrT+cJtA1H6A9J59ERyre1a2ABx2qzoS6JsBCQhC14gGfazQV
-        ET0gfdk8nnGDaIpBMXAP3jjtV4hwOkI=
-Date:   Fri, 21 May 2021 20:49:58 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tom Lendacky <thomas.lendacky@amd.com>
-Cc:     "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
-Message-ID: <YKgA1od/SqycWWds@zn.tnic>
-References: <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
- <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
- <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
- <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
- <YJm5QY8omAvdpBO9@google.com>
- <YJpP/S8MajKNhBl4@zn.tnic>
- <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
- <YKfPLlulaqwypNkO@zn.tnic>
- <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
+        id S231174AbhEUSzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:55:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621623237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mu9RUQYcbTZWSg9MNLdZB/1p1jix9ar6G5s93tv5TuI=;
+        b=Yn/6ZaZZ15sui+JPvQFtzgD8FZw+ZQcxjTlwNXep1Co+KKWQify4H2GdHz1+7a6io9Kfcd
+        66mOS6Vl8kdHZ00Bs9g8MUUjybLNLl5G1hu7iESZYR0kUIGmkxYR7jVEPIUWmL5A2GFrHk
+        LlkDiEWLGWzXdxG0Z6oEMgy45bOlLis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621623237;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mu9RUQYcbTZWSg9MNLdZB/1p1jix9ar6G5s93tv5TuI=;
+        b=/xJuVYkDe9HZQFmMu6K2QILVLiS1Ij1/zT1X+EWGGkdktVhW8c/6tS0bhb2dF1M05fO0vq
+        86a1wFcAKAzoFWDg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D1012AAFD;
+        Fri, 21 May 2021 18:53:57 +0000 (UTC)
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20210521131910.3000689-1-javierm@redhat.com>
+ <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+ <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
+ <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
+Message-ID: <fc6540fa-1945-a15d-239d-e87bb4d3fa9e@suse.de>
+Date:   Fri, 21 May 2021 20:53:56 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
+In-Reply-To: <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 11:19:15AM -0500, Tom Lendacky wrote:
-> In arch/x86/mm/mem_encrypt.c, sme_early_init() (should have renamed that
-> when SEV support was added), we do:
-> 	if (sev_active())
-> 		swiotlb_force = SWIOTLB_FORCE;
-> 
-> TDX should be able to do a similar thing without having to touch
-> arch/x86/kernel/pci-swiotlb.c.
-> 
-> That would remove any confusion over SME being part of a
-> protected_guest_has() call.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y
+Content-Type: multipart/mixed; boundary="BjyfcwIr0k6GaL1qcfPb2KgkCqS9B41Da";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
+ David Airlie <airlied@linux.ie>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
+Message-ID: <fc6540fa-1945-a15d-239d-e87bb4d3fa9e@suse.de>
+Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
+References: <20210521131910.3000689-1-javierm@redhat.com>
+ <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+ <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
+ <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
+In-Reply-To: <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
 
-Even better.
+--BjyfcwIr0k6GaL1qcfPb2KgkCqS9B41Da
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-> I kinda like the separate function, though.
+Hi
 
-Only if you clean it up and get rid of the inverted logic and drop that
-silly switch-case.
+Am 21.05.21 um 19:18 schrieb Javier Martinez Canillas:
+> On 5/21/21 6:53 PM, Thomas Zimmermann wrote:
+>=20
+> [snip]
+>=20
+>>>
+>>> So what with all the drivers which do _not_ have drm in their name? A=
+lso
+>>> I'm never sure how much these are uapi or not ...
+>>
+>=20
+> That someone could threat as an uapi is a fair point indeed.
+>  =20
+>> Why do we need a suffix anyway?
+>>
+>=20
+> Yes, I thought the same and was torn about posting a patch to just remo=
+ve
+> the suffix. I don't think users care that much if is a fb device from a=
 
-> Except mem_encrypt_active() covers both SME and SEV, so
-> protected_guest_has() would be confusing.
+> fbdev driver or a DRM driver using the fbdev emulation.
 
-I don't understand - the AMD-specific function amd_protected_guest_has()
-would return sme_me_mask just like mem_encrypt_active() does and we can
-get rid of latter.
+Yup. I don't see how anything in userspace would depend on the exact=20
+name; especially since fbdev emulation only provides basic features.=20
+(I'd welcome a counter examples that proves me wrong.)
 
-Or do you have a problem with the name protected_guest_has() containing
-"guest" while we're talking about SME here?
+IMHO we can risk it to remove the suffix entirely. But that needs an ack =
 
-If so, feel free to suggest a better one - the name does not have to
-have "guest" in it.
+from Daniel or Dave.
 
-Thx.
+Best regards
+Thomas
+
+>=20
+>>> -Daniel
+>>>
+>=20
+> Best regards,
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
--- 
-Regards/Gruss,
-    Boris.
+--BjyfcwIr0k6GaL1qcfPb2KgkCqS9B41Da--
 
-https://people.kernel.org/tglx/notes-about-netiquette
+--Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCoAcUFAwAAAAAACgkQlh/E3EQov+Bz
+ihAAtKYtsAnGL/Q5knCfNp64XOjCmO2fc7BtgUcWJsOYZHE26YUP9WYd3vxxPUgPd6M9JA87R0vH
+X+Xlgq6qBKD3m4TyKHf/JZs+do/Hzx5jFRYZauz5LuslmNKP/uUKfKQ23aY/pBvgfwHaDSkuQoeS
+jNzuqRkRTXwFbJHtoutPKX+ctbHWB2EyzkRHpqJ6NhiyRAexuvPKpvRWMrtGu0HCp/HYd9OvoLG0
+pLJs0lHxYU4aaJ5b+TkMwCAhy8f96k5gNnJ+mgZJJbowEKPGTvXC866u0/FxZHAr7QdRuzQaXW+p
+prmmnk2hDvjRcV0vx9r8zCY90qMze0cB3WHGv0TEbSYB65hnKAZSrpRhznXC8HfeS7cyCZY+HRKB
+PoedwQUT62zJ+Ae9+ZfosXQbT46yzRWWCZKpdWWgSQ2QUooXMbOuiQ/LUNJlOo6IngmKK+fuA/vP
+uVNCQZ5N/kOHQFPhQIghHPAjnl0hP+4W1YOq6/LYbQbq/jV7Nl13IEIDVhOhbKQ/E0rig11yuF+K
+r15mug3jtferVysuDCokzkG0UinJgqtY/bPdOGpA58bte7UNpBXVAU08Cbs91DqQ+U1oufA8CJj3
+gvSaMey9S0viQVU/F2+kLyVuhfsvUL+cZ5jpmvUJnBBvFsSMzQZlzGQHUFB/02wzmbARRlmebSz+
+V7o=
+=G6g2
+-----END PGP SIGNATURE-----
+
+--Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y--
