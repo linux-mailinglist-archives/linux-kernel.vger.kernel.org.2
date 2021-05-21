@@ -2,108 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E281838C0CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:34:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4FA338C0DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236116AbhEUHgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230050AbhEUHgL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:36:11 -0400
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65920C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:34:48 -0700 (PDT)
-Received: by mail-ej1-x635.google.com with SMTP id u21so28990922ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:34:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=3bx94lkdjWXmg0ashKOaRNNQdgDpv0IsHnwWt7kOQLM=;
-        b=VJm50whTiqsWA6fXyPpeQxHpZcw2PjFL0YVpYXWXhY9X8mLiF0YNDMC4q4PYQOO9Lr
-         sSeiW/NnymkrR2hwsFStxHbwyfGsDaN6XMRnTEnUYZM2abgLWVxLT+Hmy0u9QJzYeUu1
-         OXtg61aD4f4HDYsK8MHaM7pZaoAec8d61jXNU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=3bx94lkdjWXmg0ashKOaRNNQdgDpv0IsHnwWt7kOQLM=;
-        b=QUDNim9o2Ht4xlR0Ga1n9nIE7N/SFZ+UWfCCwLkSk9j89GoCFbnGfZIJDzIzO8jLd3
-         gGRFtA9qxU0rCqt88OdaESxTsaVvg3M52F2HKreYG3vbb3nJNzOgBJuVIOYHTxGVdp0I
-         mOgRjg4/UwiuS++Pz4XukmzAJ7jY3aV+WC8mpLQOHs0G84caSP1c96BqhOFTHxf1Uip/
-         +JEksc9TSthGDLXJt/7Hk0X35ygx8QTUxIRiJt4sZfGlZCjuJj37Ir9mn4xAEpkked4p
-         1qBEK9NGhljIoxnZHcLwR/KY/etYRDdfcyxDCeDeH8KOkuj0ukiKVS52bKNGCuyawMli
-         cRzA==
-X-Gm-Message-State: AOAM530N+solbEvnGTsAPe4pbrnE8GVBKYBA3VbVQyYAkrJ+e/1Y92pB
-        SGABqYGr9OeGSwD++I2BDnQ6ifldWeAWow==
-X-Google-Smtp-Source: ABdhPJwYgpKJt+dIA5fCrVd1RSjNpSAgnVsFT2wGKXiBIFWPVlKVy0gxi/yXaFrY+/BpUQgeItkObA==
-X-Received: by 2002:a17:906:fccc:: with SMTP id qx12mr8984387ejb.21.1621582486780;
-        Fri, 21 May 2021 00:34:46 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id q26sm2939087ejc.3.2021.05.21.00.34.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 00:34:46 -0700 (PDT)
-Subject: Re: [PATCH] init/main.c: silence some -Wunused-parameter warnings
-To:     Andrew Halaney <ahalaney@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210519162341.1275452-1-ahalaney@redhat.com>
- <20210519213731.fd8699098bf79bfd23c73090@linux-foundation.org>
- <20210520130330.hqejx2xw6kbdibil@halaneylaptop>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <f06b8308-645b-031b-f9c6-b92400a269aa@rasmusvillemoes.dk>
-Date:   Fri, 21 May 2021 09:34:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235268AbhEUHn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:43:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232255AbhEUHny (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:43:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 493D761163;
+        Fri, 21 May 2021 07:42:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621582951;
+        bh=cnSCVJ7/n3My2yNLmHEPhkdhOVoAxhx7WZMlAs//3PA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hu+Rh4Hf52BJ4jFmOSPsfQxgKn3SMltfq6bu3pu6JJXJAonQZFaKt6RWkAEotk3yB
+         HPDhmwRSkaC6rmeSoQKGv89CmYJdQ7O0gvnIVQRkw4Y3kUwNcnPtr9VRWlx0RWUbMJ
+         EMtB2LF/XHn3wJtnaiV+QhzKvTBu+xzBeT7Ioibs=
+Date:   Fri, 21 May 2021 09:42:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Bob Picco <robert.picco@hp.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
+        "cs.c" <support.linux@omnikey.com>,
+        Dave Safford <safford@watson.ibm.com>,
+        David Airlie <airlied@linux.ie>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Harald Welte <laforge@gnumonks.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Jerome Glisse <j.glisse@gmail.com>,
+        Kanoj Sarcar <kanoj@sgi.com>, Kylene Hall <kjhall@us.ibm.com>,
+        Lijun Pan <ljp@linux.ibm.com>,
+        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
+        <linux-crypto@vger.kernel.org>, linux-integrity@vger.kernel.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Matt Mackall <mpm@selenic.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Michael Neuling <mikey@neuling.org>,
+        Paul Fulghum <paulkf@microgate.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Peter Huewe <peterhuewe@gmx.de>,
+        Reiner Sailer <sailer@watson.ibm.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
+        Tyrel Datwyler <tyreld@linux.ibm.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
+        van Doorn <leendert@watson.ibm.com>
+Subject: Re: [PATCH 00/16] Rid W=1 warnings from Char
+Message-ID: <YKdkZdvN+uu6lu0g@kroah.com>
+References: <20210520121347.3467794-1-lee.jones@linaro.org>
+ <CAK8P3a0VujuG8eU_CEVSvzbk4nAJz8fStedM5eMUrLAr9EJxDQ@mail.gmail.com>
+ <20210521072236.GX2549456@dell>
 MIME-Version: 1.0
-In-Reply-To: <20210520130330.hqejx2xw6kbdibil@halaneylaptop>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521072236.GX2549456@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 15.03, Andrew Halaney wrote:
-> On Wed, May 19, 2021 at 09:37:31PM -0700, Andrew Morton wrote:
->> On Wed, 19 May 2021 11:23:41 -0500 Andrew Halaney <ahalaney@redhat.com> wrote:
->>
+On Fri, May 21, 2021 at 08:22:36AM +0100, Lee Jones wrote:
+> On Thu, 20 May 2021, Arnd Bergmann wrote:
+> 
+> > On Thu, May 20, 2021 at 2:13 PM Lee Jones <lee.jones@linaro.org> wrote:
+> > >
+> > > This set is part of a larger effort attempting to clean-up W=1
+> > > kernel builds, which are currently overwhelmingly riddled with
+> > > niggly little warnings.
+> > >
+> > > Lee Jones (16):
+> > >   char: pcmcia: cm4000_cs: Remove unused variable 'tmp'
+> > >   char: pcmcia: cm4040_cs: Remove unused variable 'uc'
+> > >   char: random: Include header containing our prototypes
+> > >   char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
+> > >   char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
+> > >   char: applicom: Remove 3 unused variables 'ret' and 2 instances of
+> > >     'byte_reset_it'
+> > >   char: tpm: tpm1-cmd: Fix a couple of misnamed functions
+> > >   char: tpm: tpm_ftpm_tee: Fix a couple of kernel-doc misdemeanours
+> > >   char: agp: backend: Demote some non-conformant kernel-doc headers
+> > >   char: agp: frontend: Include header file containing our prototypes
+> > >   char: agp: via-agp: Remove unused variable 'current_size'
+> > >   char: hpet: Remove unused variable 'm'
+> > >   char: agp: generic: Place braces around optimised out function in if()
+> > >   char: agp: uninorth-agp: Remove unused variable 'size'
+> > >   char: hw_random: pseries-rng: Demote non-conformant kernel-doc header
+> > >   char: mem: Provide local prototype for non-static function
+> > 
+> > Thanks a lot!
+> > 
+> > I've looked all the patches now and commented on patches 6 and 16.
+> > With my comments addressed
+> > 
+> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> 
+> Thanks Arnd.
+> 
+> Would it be possible for the remaining 14 patches to be taken in
+> please?  I will work on the 2 Arnd commented on in due course and
+> resubmit them independently.
 
-> If we decide we don't care about such warnings then feel free to ignore
-> this patch, but since I was playing around here anyways I thought I'd
-> clean it up a little. My preference would be to care, but the output is
-> so loud it is easy to make the argument that it is too late to start
-> caring.
+Yes, I can queue them up, thanks.
 
-Those always-unused annotations are quite verbose. Could we instead
-allow both int (*)(char *) and int (*)(void) functions via some macro
-magic, say extending __setup_param to something like (entirely untested)
-
-#define __setup_param(str, unique_id, fn, early)                    \
-        static const char __setup_str_##unique_id[] __initconst     \
-                __aligned(1) = str;                                 \
-+       static_assert(same_type(&fn, int (*)(char *)) || same_type(&fn,
-int (*)(void)));
-        static struct obs_kernel_param __setup_##unique_id          \
-                __used __section(".init.setup")                     \
-                __aligned(__alignof__(struct obs_kernel_param))     \
--                = { __setup_str_##unique_id, fn, early }
-+                = { __setup_str_##unique_id, (int (*)(char *)fn, early }
-
-That would still require modifying each callback, but then it would be
-to the more plain-C
-
-int foo(void) // yeah, this doesn't use any parameters
-
-I checked, the transparent_union trick doesn't work for static
-initialization.
-
-But really, the compiler should have some heuristic that said "hm, ok,
-the address of this function was taken so it probably has that prototype
-because it has to be that way". I bet that would remove 90% of the
-Wunused-parameter noise.
-
-Rasmus
+greg k-h
