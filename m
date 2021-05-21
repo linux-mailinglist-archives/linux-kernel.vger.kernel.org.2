@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 906CF38C9C5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:08:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C77A738C9C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:08:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237279AbhEUPJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:09:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49262 "EHLO mail.kernel.org"
+        id S237310AbhEUPJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:09:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232206AbhEUPJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:09:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AA0D613CC;
-        Fri, 21 May 2021 15:08:07 +0000 (UTC)
+        id S232206AbhEUPJe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 11:09:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F0F7613CB;
+        Fri, 21 May 2021 15:08:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621609688;
-        bh=63ae20Ui0Z8uUIJTvxDkH6YhZBlZIrr97WYnPYcu/k8=;
+        s=k20201202; t=1621609691;
+        bh=+s3tbWsUsJ09qhWtcfTtaWKIFSjqWd/CEMzp6/HYzbY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YiCkkeJBMBXuK6pds27sl55gJoM906kz7ty8QCWB0or3y5Nk3t++jR6F/9vqrBrYQ
-         rw/Nx2TInBI1YCHYFVUQqX4EqCita4LbWp9ljmZ+yvQQVgv8voPHNos9x3Sp1/en6v
-         vIBgI3Xj+DWLu0INZo+DEoIKf2hLSF8bdQfQT3KTCfEQvED3P/UKdb5lq198KyBQI9
-         wY7PzLNvRPkDZD/55k63jzjw5l0IzovBaLv490bl97IzJeVAkM4gw60drll0bNZcgX
-         xZDs5RiTOerb8VqJeeLeUmgVk7jTJ/ZR89heUN6BT01gE6PLkSUqszDAiGnrnrjEo2
-         UDN6Gny121q3Q==
+        b=ogm/5ZQld7rsZ/9TfQAff2RHEDW8OVM39rnphBcnTamJind06DP1tBjVo5zNHBGy4
+         KIeeQdnHzwt/a1czwHEiM4jywDNn6gkVVB8ii5Zvou9dxNtN4vemj1gYmjk86uwWpB
+         03J/fxJ3eKGYNiNUnbr75jgAlr8H6oos14jcUhE4y9EIbTFLDFax8LjG8oXiCQ4Hnq
+         bnhi70IkNbh4yGczKoq136z6SZrA2nrB2hVAnuXvFIlIMz8NZrmFa1UbZAHNwC5fEM
+         ON4RTHp6H4sYL9PfDc9q9Qfw6xo4W9KtdeaJdUXIlm/Gyqvltc5GOG060H15PiwPDW
+         jCPf+SBmG15Iw==
 From:   Mark Brown <broonie@kernel.org>
-To:     daniel@zonque.org, Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     Mark Brown <broonie@kernel.org>, haojian.zhuang@gmail.com,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-spi@vger.kernel.org, robert.jarzmik@free.fr
-Subject: Re: [PATCH] spi: pxa2xx: Fix inconsistent indenting
-Date:   Fri, 21 May 2021 16:08:00 +0100
-Message-Id: <162160967729.10785.7445217035686493697.b4-ty@kernel.org>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org,
+        Banajit Goswami <bgoswami@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] ASoC: qcom: lpass-cpu: Use optional clk APIs
+Date:   Fri, 21 May 2021 16:08:01 +0100
+Message-Id: <162160953475.10636.11463749705483843535.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <1621590465-73594-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-References: <1621590465-73594-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+In-Reply-To: <20210520014807.3749797-1-swboyd@chromium.org>
+References: <20210520014807.3749797-1-swboyd@chromium.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,20 +42,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 17:47:45 +0800, Jiapeng Chong wrote:
-> Eliminate the follow smatch warning:
+On Wed, 19 May 2021 18:48:07 -0700, Stephen Boyd wrote:
+> This driver spits out a warning for me at boot:
 > 
-> drivers/spi/spi-pxa2xx-pci.c:260 pxa2xx_spi_pci_probe() warn:
-> inconsistent indenting.
+>  sc7180-lpass-cpu 62f00000.lpass: asoc_qcom_lpass_cpu_platform_probe() error getting optional null: -2
+> 
+> but it looks like it is all an optional clk. Use the optional clk APIs
+> here so that we don't see this message and everything else is the same.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] spi: pxa2xx: Fix inconsistent indenting
-      commit: dbfac814bb73624613f47d6e70391053ab6b8960
+[1/1] ASoC: qcom: lpass-cpu: Use optional clk APIs
+      commit: af2702549d68519ac78228e915d9b2c199056787
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
