@@ -2,84 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B26F338CC38
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2267438CC43
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:36:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238200AbhEUReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:34:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
+        id S235737AbhEURha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:37:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49372 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233220AbhEUReT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:34:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8166B611AD;
-        Fri, 21 May 2021 17:32:56 +0000 (UTC)
+        id S233220AbhEURh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:37:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BEB0261168;
+        Fri, 21 May 2021 17:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621618376;
-        bh=vE9z1/gR4km7YRN6OoWPExYDHukNHQL46kKLJXMBM6g=;
+        s=k20201202; t=1621618565;
+        bh=4aOxbiHGvShE6QjDYszuUr7TvUl6/VFWQI8sBfUysUU=;
         h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=trcQTNil6rYL18WGMg/3X5Mc9187u9mMsxQoleo8RVmBhwvYTiG0aLQ5hSUyVKhQ7
-         rSm6MCATjhvx9bvN+r5ef4qb8NKTF5C0tWy9QU9nuUHPfsczg6u098CEtSqSj4Vm9x
-         iMebfbo/5L4/q21SDg/TXPNqc9ozFEFqGAOnRqA5IwUxgUY9RJlsnoVqshPhZ8skmx
-         0QSPy+O+J/u6f5pOvAGBDf7bSz6YBK9ujFujRlAuUvZoWhdlddMFgoNvw4Mz+335xn
-         l8GC6U+SJ3LTgkyz/KW/3t0Y3e47O/lUbFxodgtRMXryeF5XDa77cqZnUkLtOrPQwG
-         boeWzGd0/na/g==
+        b=hi/W261FoFNP/QGvNDUiE95mXNskFLc5lTf+X6+xBckoXCXTUbFgBWOs+mNSEimqc
+         BECCpY4bBmHV9tLiHbfx+KXp4E63V22HCPy0T6uV/K2UYGY2ePy9x1kylXpk2K7muk
+         yStUy+YvZw89WdmyeBt5bXCI1yJkcaypO2RAc9T9MUCIQDJni65alU1znT8iCKiMmU
+         JzrsPKJO+ZpUWot7kc3/bMwwNuGag2n3kAsl71E/apkcFjZXbK2Tf3zylLniNoISFz
+         kEt6RDV6MEVncFpP0DTRAtzEz8msJ1TNDFsQPC6LgjAhnSj57wx9rk6roxQkD3+d6i
+         Jl97pgwyVSl7w==
 Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 4384D5C0164; Fri, 21 May 2021 10:32:55 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:32:55 -0700
+        id 89EBE5C0164; Fri, 21 May 2021 10:36:05 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:36:05 -0700
 From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
-        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
-        akpm@linux-foundation.org, masahiroy@kernel.org, joe@perches.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <nathan@kernel.org>
-Subject: Re: [PATCH] init: verify that function is initcall_t at compile-time
-Message-ID: <20210521173255.GZ4441@paulmck-ThinkPad-P17-Gen-1>
+To:     Akira Yokosawa <akiyks@gmail.com>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -rcu] Documentation/RCU: Fix nested inline markup
+Message-ID: <20210521173605.GA4441@paulmck-ThinkPad-P17-Gen-1>
 Reply-To: paulmck@kernel.org
-References: <20210521072610.2880286-1-elver@google.com>
+References: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521072610.2880286-1-elver@google.com>
+In-Reply-To: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 09:26:10AM +0200, Marco Elver wrote:
-> In the spirit of making it hard to misuse an interface, add a
-> compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
-> to verify the initcall function matches initcall_t, because the inline
-> asm bypasses any type-checking the compiler would otherwise do. This
-> will help developers catch incorrect API use in all configurations.
+On Fri, May 21, 2021 at 11:16:04AM +0900, Akira Yokosawa wrote:
+> To avoid the ``foo`` markup inside the `bar`__ hyperlink marker,
+> use the "replace" directive [1].
 > 
-> A recent example of this is:
-> https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
+> This should restore the intended appearance of the link.
 > 
-> Signed-off-by: Marco Elver <elver@google.com>
-> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+> Tested with sphinx versions 1.7.9 and 2.4.4.
+> 
+> [1]: https://docutils.sourceforge.io/docs/ref/rst/directives.html#replace
+> 
+> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
+Queued, thank you!  Or if this should instead go via the Documentation
+tree:
+
+Acked-by: Paul E. McKenney <paulmck@kernel.org>
 
 > ---
->  include/linux/init.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Hi Paul,
 > 
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index 045ad1650ed1..d82b4b2e1d25 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -242,7 +242,8 @@ extern bool initcall_debug;
->  	asm(".section	\"" __sec "\", \"a\"		\n"	\
->  	    __stringify(__name) ":			\n"	\
->  	    ".long	" __stringify(__stub) " - .	\n"	\
-> -	    ".previous					\n");
-> +	    ".previous					\n");	\
-> +	static_assert(__same_type(initcall_t, &fn));
->  #else
->  #define ____define_initcall(fn, __unused, __name, __sec)	\
->  	static initcall_t __name __used 			\
+> This fixes broken-looking cross reference in section
+> "Publish/Subscribe Guarantee" at:
+> 
+> https://www.kernel.org/doc/html/latest/RCU/Design/Requirements/Requirements.html#publish-subscribe-guarantee
+> 
+> To-be-replaced macro string can be much shorter.
+> I preserved the whole string considering the readability of .rst.
+
+And completely agreed on keeping the .rst readable.
+
+							Thanx, Paul
+
+>         Thanks, Akira
+> --
+>  Documentation/RCU/Design/Requirements/Requirements.rst | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+> index 38a39476fc24..45278e2974c0 100644
+> --- a/Documentation/RCU/Design/Requirements/Requirements.rst
+> +++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+> @@ -362,9 +362,8 @@ do_something_gp() uses rcu_dereference() to fetch from ``gp``:
+>        12 }
+>  
+>  The rcu_dereference() uses volatile casts and (for DEC Alpha) memory
+> -barriers in the Linux kernel. Should a `high-quality implementation of
+> -C11 ``memory_order_consume``
+> -[PDF] <http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__
+> +barriers in the Linux kernel. Should a |high-quality implementation of
+> +C11 memory_order_consume [PDF]|_
+>  ever appear, then rcu_dereference() could be implemented as a
+>  ``memory_order_consume`` load. Regardless of the exact implementation, a
+>  pointer fetched by rcu_dereference() may not be used outside of the
+> @@ -374,6 +373,9 @@ element has been passed from RCU to some other synchronization
+>  mechanism, most commonly locking or `reference
+>  counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
+>  
+> +.. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
+> +.. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
+> +
+>  In short, updaters use rcu_assign_pointer() and readers use
+>  rcu_dereference(), and these two RCU API elements work together to
+>  ensure that readers have a consistent view of newly added data elements.
 > -- 
-> 2.31.1.818.g46aad6cb9e-goog
+> 2.17.1
 > 
