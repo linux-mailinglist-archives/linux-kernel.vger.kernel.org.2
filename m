@@ -2,88 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97F0C38C217
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:38:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1585838C219
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:39:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbhEUIkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbhEUIkJ (ORCPT
+        id S233365AbhEUIk6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 04:40:58 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:57573 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230379AbhEUIk4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:40:09 -0400
-Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2897C061574;
-        Fri, 21 May 2021 01:38:46 -0700 (PDT)
-Received: from miraculix.mork.no (fwa191.mork.no [192.168.9.191])
-        (authenticated bits=0)
-        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 14L8caPj019527
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
-        Fri, 21 May 2021 10:38:37 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
-        t=1621586318; bh=Q01SFkcr9Wi5BGak8NCE7jrjuH8xhWe3fF05ul/qluE=;
-        h=From:To:Cc:Subject:References:Date:Message-ID:From;
-        b=kOu6oDQXoHqXn1uru7t3jgxj9m9x8BwlHzLTFyMT89s0CrPtYak3FUZ19ysgw64Li
-         /6GRSAZ/ZkuLT7cLyHz/Re+ruEors5mhgvy3YGUeXKQRMkXAyqaydhSutjWTA6892D
-         KsoJfj+QM0ZLPF8cZPz58B78aekVBJSUsZJwIHpo=
-Received: from bjorn by miraculix.mork.no with local (Exim 4.94.2)
-        (envelope-from <bjorn@mork.no>)
-        id 1lk0g0-0004qS-0I; Fri, 21 May 2021 10:38:36 +0200
-From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
-To:     Michael Walle <michael@walle.cc>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com
-Subject: Re: [PATCH v2 2/3] gpio: gpio-regmap: Use devm_add_action()
-Organization: m
-References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
-        <e3d3e704804668d1403f3630c181010b34409c8f.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
-        <12bb40f022be0378ed493e7ad33122b0@walle.cc>
-Date:   Fri, 21 May 2021 10:38:35 +0200
-In-Reply-To: <12bb40f022be0378ed493e7ad33122b0@walle.cc> (Michael Walle's
-        message of "Fri, 21 May 2021 10:10:39 +0200")
-Message-ID: <87a6ooh46s.fsf@miraculix.mork.no>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        Fri, 21 May 2021 04:40:56 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-439-2qxIbDPeMrixVUQP_btX0g-1; Fri, 21 May 2021 04:39:31 -0400
+X-MC-Unique: 2qxIbDPeMrixVUQP_btX0g-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87F65106BB24;
+        Fri, 21 May 2021 08:39:30 +0000 (UTC)
+Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 665FA10013D6;
+        Fri, 21 May 2021 08:39:22 +0000 (UTC)
+Date:   Fri, 21 May 2021 10:39:21 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
+Message-ID: <20210521103921.153a243d@bahia.lan>
+In-Reply-To: <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
+References: <20210520154654.1791183-1-groug@kaod.org>
+        <20210520154654.1791183-5-groug@kaod.org>
+        <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Virus-Scanned: clamav-milter 0.102.4 at canardo
-X-Virus-Status: Clean
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Michael Walle <michael@walle.cc> writes:
+On Fri, 21 May 2021 10:26:27 +0200
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-> Am 2021-05-21 08:28, schrieb Matti Vaittinen:
->> Slightly simplify the devm_gpio_regmap_register() by using the
->> devm_add_action().
->
-> Hm, nice, but what bothers me a bit is that no other subsystem
-> does it that way, eg. hwmon/hwmon.c or watchdog/watchdog_core.c.
-> They also store just one pointer, thus could be simplified in the
-> same way. What I don't know is if devm_add_action() was intended
-> to be used this way. So I can't say much for this patch ;)
+> On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
+> >
+> > All submounts share the same virtio-fs device instance as the root
+> > mount. If the same virtiofs filesystem is mounted again, sget_fc()
+> > is likely to pick up any of these submounts and reuse it instead of
+> > the root mount.
+> >
+> > On the server side:
+> >
+> > # mkdir ${some_dir}
+> > # mkdir ${some_dir}/mnt1
+> > # mount -t tmpfs none ${some_dir}/mnt1
+> > # touch ${some_dir}/mnt1/THIS_IS_MNT1
+> > # mkdir ${some_dir}/mnt2
+> > # mount -t tmpfs none ${some_dir}/mnt2
+> > # touch ${some_dir}/mnt2/THIS_IS_MNT2
+> >
+> > On the client side:
+> >
+> > # mkdir /mnt/virtiofs1
+> > # mount -t virtiofs myfs /mnt/virtiofs1
+> > # ls /mnt/virtiofs1
+> > mnt1 mnt2
+> > # grep virtiofs /proc/mounts
+> > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> >
+> > And now remount it again:
+> >
+> > # mount -t virtiofs myfs /mnt/virtiofs2
+> > # grep virtiofs /proc/mounts
+> > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
+> > # ls /mnt/virtiofs2
+> > THIS_IS_MNT2
+> >
+> > Submount mnt2 was picked-up instead of the root mount.
+> 
 
-There are some examples.  Like:
+> Why is this a problem?
+> 
 
-int devm_i2c_add_adapter(struct device *dev, struct i2c_adapter *adapter)
-{
-        int ret;
+It seems very weird to mount the same filesystem again
+and to end up in one of its submounts. We should have:
 
-        ret =3D i2c_add_adapter(adapter);
-        if (ret)
-                return ret;
+# ls /mnt/virtiofs2
+mnt1 mnt2
 
-        return devm_add_action_or_reset(dev, devm_i2c_del_adapter, adapter);
-}
+> Thanks,
+> Miklos
 
-
-You should probably use the devm_add_action_or_reset() wrapper here too,
-catching the unlikely devm_add_action() alloc failure.
-
-
-Bj=C3=B8rn
