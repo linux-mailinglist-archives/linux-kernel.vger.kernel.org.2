@@ -2,174 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE89338C88F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:43:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC6F38C891
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:44:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234422AbhEUNpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59698 "EHLO
+        id S235795AbhEUNpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:45:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhEUNpG (ORCPT
+        with ESMTP id S233544AbhEUNpU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:45:06 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9FD0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:43:42 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id c20so30600557ejm.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:43:42 -0700 (PDT)
+        Fri, 21 May 2021 09:45:20 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6496CC061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:43:57 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id f9so27539957ybo.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:43:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=C3MV1Vf5iX+LkY9NKtecXOx3swTIZmEHhmIkAQBX6v8=;
-        b=YH4t7Oeqyqc5PtUrO40l9ux8vc0c8vsAoVKaqdbjr6dufpIeMwRYuopgQgNcHO4A4T
-         PcDl1in24Rnjhgz1knNxT+0ih2sGpwSrziBeq7WQTnO/u43GK5+Wlc+js4CJVLBM3Hpi
-         9HjZ74As9LDOpBntcNIS4SBg9sTji0/85Nv+HetQGAGxkwP1q4Fw+hH2ZWyuSjtFtDJo
-         5m01iFtAiFZISjRjI6zaQB0prEDkBrC6Sk1iYcXWumD1QAjTIWme64RnVCUAm5W0Hlre
-         JMd2j3NVGmjIya1L8TU19LR8T208fipBdu8yJggv/s484X2UeFhDjsHxE3lEu3/2veQ4
-         C5kw==
+         :cc;
+        bh=e1Z0ywcEnLesLDpbMsUglm1cxDyFirVMWiC0YS2MSSY=;
+        b=MSOE+NChq7kxNkclQJjyDdmo6vpy4A0zAbkj3976n5BijWSPVYyTZdmenDEnyZClZh
+         Gwd0rc16XriieqiVvee0REF2paZz3fHqoRRWkMO59Lpj/cZHiQp8CoKmt74/h3UXYn5b
+         brfe6XnvH69ggPz8HGwkcfTK/ziOoXJAH1UBzVVHCPeUVz79Zzp3XWKpGYMPfDoDTszS
+         nrC2JXyyiC9LrRWx/o7tkdB4zhvZEugW1wXanvM5pQIzhPqHk6PDFBpKnBhj7gIKQLxK
+         IvBXu8tOgJPdqf1TVgrNdvoiuDzwkGUtY9AnFQY7wAwI65xiZu4sno//T7tmfQSffnzo
+         Hc9Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=C3MV1Vf5iX+LkY9NKtecXOx3swTIZmEHhmIkAQBX6v8=;
-        b=TiVjyzxFXRslutRtK+alUQoSIac1U8ZNMUNebk9hU104Ftol2pVhy+AdyykVrQnMXu
-         KBaxMfnkWUIQBEKz+Fhnci8zQsp2JBqp1VVS035ro1LVOermVj7VW24TMhtzKNGAvxUr
-         GyOJ1bJ7tWJtv+AhSqgIOlWo3VlWTnESkZl0E1B6wn0boNc1DYA0f8YQKhWWPmVwdmbT
-         Rpn4uiEFggJlRc00M7YpvmoyRE7zVjBeHvRsYPrsE1iBD5OP+ByPc/FwEbjdem4Vfw8u
-         6U3Kw/g6EsvGCrWagvqPwyYnP9Hzc6NqRW6Td56kkbXIppxrZMSbvDxOS98z09ZoFOw6
-         s5cA==
-X-Gm-Message-State: AOAM532+JRb2888t5sHIhLX76vfTMrN+0oeeLP+/okmDvIVImVyJb7B0
-        lok1tiumZ6o+zYnxQrFKH6U3Ty19w3lFQy9qJeg=
-X-Google-Smtp-Source: ABdhPJwHIgjcYGnsRmn9KmY5QdPTI3MoLqfhEV2zt0JarasVYgL4OTTnDt6sq21oSyLUGwC5faswpAc/S9+pb7lsH9E=
-X-Received: by 2002:a17:906:18b2:: with SMTP id c18mr10338162ejf.160.1621604621169;
- Fri, 21 May 2021 06:43:41 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=e1Z0ywcEnLesLDpbMsUglm1cxDyFirVMWiC0YS2MSSY=;
+        b=FNK1iYkXCKt8MyozK//Dwc4qC2mbdqEMhzWaG1w+y68W0egn6hJ2tDsmJIj6y3kxi8
+         cEhS32LAGGMR3VzDOrhnpmuVMwzR5UZP6X3X6YwT5SSREwP5ctCxwTz72Fzpczc1TJmC
+         4ANG1XlLKThBmPUvzBidGCDMzG9uDqDuzLAoh4DE4dMq5q7fRzwOh6rVDIqtwCZMPPsL
+         KjydfodjuxjI9Km1mVUch888NkpuodCuj/+2a6fVKS9G2M0TJpErf1MAczPs5TBXm0UI
+         JyZgvm6TIcg1iOSd4RmQIBhp7Q41GxtdZocl6yXXitgtztxTkakqqeOk4Zqu5WQmgwAq
+         NxOA==
+X-Gm-Message-State: AOAM530XNaDBdbASiC+o0XTvGQX/uMBCcHCDmSUTd/31mxdx7IxSI03q
+        XnB9nz7tlQSup2lkhCvi7L2e27B8HT7jAaTXpEzs2xOkbV+e+UeS
+X-Google-Smtp-Source: ABdhPJwvNF9RaUZ4oFPqDsscRPRDdmb0kXnZMJBC9kHQTgvaWTsqHCSeKyA0qZLt+6LMFEU1cwNjunLlHVH4M9UQAOY=
+X-Received: by 2002:a25:bd04:: with SMTP id f4mr15819498ybk.302.1621604636706;
+ Fri, 21 May 2021 06:43:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521120811.516339-1-mudongliangabcd@gmail.com>
- <YKelBRkGsLFz4byw@kroah.com> <CAD-N9QUgYy4j3wnJX1gwq902ggarFaQPBQ3cyUAArYxv22Q-bQ@mail.gmail.com>
- <YKeyl6DL9rZylbKw@kroah.com>
-In-Reply-To: <YKeyl6DL9rZylbKw@kroah.com>
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Fri, 21 May 2021 21:42:32 +0800
-Message-ID: <CAD-N9QX+5aeugkPDVmZkFUG-Oup3pXWV2uvOOYK1WfJCKnt6Zg@mail.gmail.com>
-Subject: Re: [PATCH] staging: rtl8712: Fix memory leak in r8712_init_recv_priv
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        rkovhaev@gmail.com, straube.linux@gmail.com,
-        linux-staging@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
+References: <20210514092614.21047-1-aardelean@deviqon.com>
+In-Reply-To: <20210514092614.21047-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 21 May 2021 15:43:45 +0200
+Message-ID: <CAMpxmJVVMuAM4LQd1SwQnwdqOqXum+N57uysynKneg8M8XGqNQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-bd9571mwv: remove platform_set_drvdata() +
+ cleanup probe
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        marek.vasut+renesas@gmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 9:16 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Fri, May 14, 2021 at 11:26 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
 >
-> On Fri, May 21, 2021 at 08:24:58PM +0800, =E6=85=95=E5=86=AC=E4=BA=AE wro=
-te:
-> > On Fri, May 21, 2021 at 8:18 PM Greg KH <gregkh@linuxfoundation.org> wr=
-ote:
-> > >
-> > > On Fri, May 21, 2021 at 08:08:11PM +0800, Dongliang Mu wrote:
-> > > > r871xu_dev_remove failed to call r8712_free_drv_sw() and free the
-> > > > resource (e.g., struct urb) due to the failure of firmware loading.
-> > > >
-> > > > Fix this by invoking r8712_free_drv_sw at the failure site.
-> > > >
-> > > > Reported-by: syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
-> > > > Fixes: b4383c971bc5 ("staging: rtl8712: handle firmware load failur=
-e")
-> > > > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> > > > ---
-> > > >  drivers/staging/rtl8712/usb_intf.c | 13 ++++++++++---
-> > > >  1 file changed, 10 insertions(+), 3 deletions(-)
-> > > >
-> > > > diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/r=
-tl8712/usb_intf.c
-> > > > index dc21e7743349..a5190b4250ce 100644
-> > > > --- a/drivers/staging/rtl8712/usb_intf.c
-> > > > +++ b/drivers/staging/rtl8712/usb_intf.c
-> > > > @@ -589,7 +589,7 @@ static int r871xu_drv_init(struct usb_interface=
- *pusb_intf,
-> > > >   */
-> > > >  static void r871xu_dev_remove(struct usb_interface *pusb_intf)
-> > > >  {
-> > > > -     struct net_device *pnetdev =3D usb_get_intfdata(pusb_intf);
-> > > > +     struct net_device *pnetdev, *newpnetdev =3D usb_get_intfdata(=
-pusb_intf);
-> > > >       struct usb_device *udev =3D interface_to_usbdev(pusb_intf);
-> > > >
-> > > >       if (pnetdev) {
-> > >
-> > > Did you test this?
-> >
-> > For now, I only tested this patch in my local workspace. The memory
-> > leak does not occur any more.
-> >
-> > I have pushed a patch testing onto the syzbot dashboard [1]. Now it is
-> > in the pending state.
-> >
-> > [1] https://syzkaller.appspot.com/bug?id=3D3a325b8389fc41c1bc94de0f4ac4=
-37ed13cce584
-> >
-> > >
-> > > I think you just broke the code right here :(
-> >
-> > If I broke any code logic, I am sorry. However, this patch only adds
-> > some code to deallocate some resources when failing to load firmware.
-> >
-> > Do you mean that I replace pnetdev with the variable - newpnetdev?
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
 >
-> Yes, and then the first thing the code does is check the value of
-> pnetdev which is totally undefined :(
-
-You are right. Apology for the previous patch. I test my old patch
-below in the local workspace, it works.
-
----------------------------------------------------------------------------=
----------------------------------------------
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -597,9 +597,9 @@ static void r871xu_dev_remove(struct usb_interface
-*pusb_intf)
-
-  /* never exit with a firmware callback pending */
-  wait_for_completion(&padapter->rtl8712_fw_ready);
-- pnetdev =3D usb_get_intfdata(pusb_intf);
-+ struct net_device *newpnetdev =3D usb_get_intfdata(pusb_intf);
-  usb_set_intfdata(pusb_intf, NULL);
-- if (!pnetdev)
-+ if (!newpnetdev)
-  goto firmware_load_fail;
-  release_firmware(padapter->fw);
-  if (drvpriv.drv_registered)
-@@ -625,6 +625,14 @@ static void r871xu_dev_remove(struct
-usb_interface *pusb_intf)
-  */
-  if (udev->state !=3D USB_STATE_NOTATTACHED)
-  usb_reset_device(udev);
-+ if (pnetdev) {
-+ struct _adapter *padapter =3D netdev_priv(pnetdev);
-+ /* Stop driver mlme relation timer */
-+ //r8712_stop_drv_timers(padapter);
-+ //r871x_dev_unload(padapter);
-+ r8712_free_drv_sw(padapter);
-+ /* udev is already freed in failed fireware loading */
-+ }
- }
----------------------------------------------------------------------------=
----------------------------------------------
-
-However, the compiler complains the declaration of newpnetdev. So I
-moved the declaration to the beginning, but I forget to initialize
-both two variables. :(
-
-I will revise this problem and test it in my local workspace. If it
-works, I will resend a v2 patch.
-
-BTW, should I uncomment "r8712_stop_drv_timers" and
-"r871x_dev_unload"? I am not very sure about its functionability.
-
+> If this is removed, we can also just do a direct return on
+> devm_gpiochip_add_data(). We don't need to print that this call failed as
+> there are other ways to log/see this during probe.
 >
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/gpio/gpio-bd9571mwv.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-bd9571mwv.c b/drivers/gpio/gpio-bd9571mwv.c
+> index df6102b57734..9a4d55f703bb 100644
+> --- a/drivers/gpio/gpio-bd9571mwv.c
+> +++ b/drivers/gpio/gpio-bd9571mwv.c
+> @@ -97,25 +97,16 @@ static const struct gpio_chip template_chip = {
+>  static int bd9571mwv_gpio_probe(struct platform_device *pdev)
+>  {
+>         struct bd9571mwv_gpio *gpio;
+> -       int ret;
+>
+>         gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+>         if (!gpio)
+>                 return -ENOMEM;
+>
+> -       platform_set_drvdata(pdev, gpio);
+> -
+>         gpio->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+>         gpio->chip = template_chip;
+>         gpio->chip.parent = pdev->dev.parent;
+>
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       return 0;
+> +       return devm_gpiochip_add_data(&pdev->dev, &gpio->chip, gpio);
+>  }
+>
+>  static const struct platform_device_id bd9571mwv_gpio_id_table[] = {
+> --
+> 2.31.1
+>
+
+Applied, thanks!
+Bartosz
