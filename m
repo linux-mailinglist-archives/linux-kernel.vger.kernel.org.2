@@ -2,235 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4C6D38BDDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BBD038BDDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:26:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbhEUFZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:25:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhEUFZD (ORCPT
+        id S230140AbhEUF1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:27:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44606 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229548AbhEUF1V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:25:03 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A498C061763
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:23:39 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id s22so28444988ejv.12
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:23:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6Pu9OKZH4OqgD2+pMd/e1QNIreaf+pm8UlgvYX0fZ5w=;
-        b=U5BEe3O6zjWT0JLJGatCONCJ5rfUDb7/T21/f7Jn3pTHOT8ZeY0R0s6vVw31ItVEp6
-         KaRLt68UqeRmGoCEsgHyx8qN6799WJaN+X7/KQY9pboMnRi8cw0fjGC5BKX/YdDG98IC
-         m+EihlMtmgdfR3qG+680tCRtb6/LV0734ly7wrUQxLgfPv1dlgxvfbGffzuDnOpaOHd0
-         ZT3eaOUG01oWbW/8awoz1LOs9mqWXzixcFOXgQoekL8g3myA4h7RFYj+gMs9imY7yHZm
-         ar0KH9NLyAbnId1RsuSspWs2WLt074Tj1lQjMnk159A1mG4JZe8N9+QHXizaIt9ndHxh
-         b3rQ==
+        Fri, 21 May 2021 01:27:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621574758;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NN95LuSG9lt6UBs1OZNbmtIU5UiQ0VNWpg97nfPRDng=;
+        b=h+JknRU4aufXddGScpDwIyQnvGDZ9v1Ot8A89liXULljcZH4DG18atx7vqZ5FYwEJcqXhv
+        QhY/ejudtqsXmRtPSaBsFxJaozurUCjkmLpr3sujq0qJIEqK3M5boR+460IYSze936fAtO
+        okx8+2oq2JPgKf7u4NBgHYM0FdAkFIo=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-343-gN4j7SbzNqKll50gL61seQ-1; Fri, 21 May 2021 01:25:56 -0400
+X-MC-Unique: gN4j7SbzNqKll50gL61seQ-1
+Received: by mail-ed1-f70.google.com with SMTP id w22-20020a05640234d6b029038d04376b6aso10663999edc.21
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:25:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6Pu9OKZH4OqgD2+pMd/e1QNIreaf+pm8UlgvYX0fZ5w=;
-        b=U2zPZ4GoMfgDQjgrsBEsd+lzbp9oQXtVC6CoKafu+w13SkQJdSB3JEao7ktiXWDL/m
-         m8eMPEggYkjrfd7u4hPL2TkQRxM2P0iMPdSSp6ebushdv7D2CmTDMGxw2y3tZ1cLQfUB
-         vfqjcCX+AvKbX7uIFfRz8X4RRxP/zYoLZa6v1moFsSxJ1CGuFJF1M2JZBXSOTGugHTRh
-         BERkm61lD/dbwFFIv9V7FfMDbEkL1Hp9z0YJ8YXybLnOSO57QkQWMnohWVkxzGrbNVbr
-         QMCJa5RRqbHUxQPWmJPPVGsj55PxYbUQTSQF1DtGylQlFIsvyu9kiHfsha+zEZLNow3a
-         ig0A==
-X-Gm-Message-State: AOAM533fIsQyUhFl0G312DudImi1PNmTuMI41S7Z2M61k2oaH9NiprfE
-        XGuGKCeQek+lA1GMmSiTiDfPSYvR6wa9QfRedqBA9gnpscDzhene
-X-Google-Smtp-Source: ABdhPJz3F/dE07QvRWSh5dsyHL1J+wl9nvaCqLseX0b8QQO9d2q+uEZJqaTO/eh+pofiqzG1C+XCp4vAwV3803XwC8U=
-X-Received: by 2002:a17:906:4e59:: with SMTP id g25mr8445733ejw.133.1621574617939;
- Thu, 20 May 2021 22:23:37 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NN95LuSG9lt6UBs1OZNbmtIU5UiQ0VNWpg97nfPRDng=;
+        b=tQeDHRUvx4CThXEWeLVd7ciRlJ2ochFvlwqG4zuKz2rHMd6Jt1emIbgCuWWr0ogG2j
+         UaojYJqXrj0BK7YMh144/lINejt8K8n/JfzaxYJL80cMB4s9u+ong+rzM9+aNhn8XQ41
+         s9YpTiajQ4eRRM6uzvRdbP4GueJkoffk7Dou6Nf7MANattI1u+MEMwNs56wlPmhRcLxM
+         Vz7EgNJuc3Iek702Fh4KYnpqAgI6CgraH7XBjzP9Xm72Kgbu0fzX9Us4V0OOYh8NXBC8
+         /jwacsWToQr7Eo8ES2/11neR1ryuFzxmbw+kQzecM8TR5aOLbfam+z+x0Tgkoh4S4S9j
+         pqeA==
+X-Gm-Message-State: AOAM532VfUKobtAwlX/qzIaAE4kpoYeMByDUF71jukF61WHl7X64yRmw
+        LlMSz2T2dlcxNXPkAN3y6yi5jIsV+Svu+NMnFk49S6mznIXSYbX92trSimxqo2y2YegbNAVvjOl
+        s9xcbzwjscK3ti7I3s4aAWE0E
+X-Received: by 2002:a05:6402:5201:: with SMTP id s1mr9159622edd.86.1621574754960;
+        Thu, 20 May 2021 22:25:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwDj2qLE+eU39++y33z008QMpxv+OzxdP+Z0YeDDYLpbTGKarkq8rqlJ9w1DYybMGwzhh4fWQ==
+X-Received: by 2002:a05:6402:5201:: with SMTP id s1mr9159602edd.86.1621574754772;
+        Thu, 20 May 2021 22:25:54 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.18.58])
+        by smtp.gmail.com with ESMTPSA id c3sm3217847edn.16.2021.05.20.22.25.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 22:25:54 -0700 (PDT)
+Date:   Fri, 21 May 2021 07:25:51 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
+ SCHED_DEADLINE
+Message-ID: <YKdEX9uaQXy8g/S/@localhost.localdomain>
+References: <YKOU9onXUxVLPGaB@google.com>
+ <20210518102833.GA7770@willie-the-truck>
+ <YKObZ1GcfVIVWRWt@google.com>
+ <20210518105951.GC7770@willie-the-truck>
+ <YKO+9lPLQLPm4Nwt@google.com>
+ <YKYoQ0ezahSC/RAg@localhost.localdomain>
+ <20210520101640.GA10065@willie-the-truck>
+ <YKY7FvFeRlXVjcaA@google.com>
+ <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
+ <20210520180138.GA10523@willie-the-truck>
 MIME-Version: 1.0
-References: <20210520092052.265851579@linuxfoundation.org>
-In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 21 May 2021 10:53:26 +0530
-Message-ID: <CA+G9fYvpCtdExtHqhv2K0+O3dxCVs5BaujkTYs6Ed7fKmqfNvw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/37] 5.4.121-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520180138.GA10523@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 14:58, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.4.121 release.
-> There are 37 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.121-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 20/05/21 19:01, Will Deacon wrote:
+> On Thu, May 20, 2021 at 02:38:55PM +0200, Daniel Bristot de Oliveira wrote:
+> > On 5/20/21 12:33 PM, Quentin Perret wrote:
+> > > On Thursday 20 May 2021 at 11:16:41 (+0100), Will Deacon wrote:
+> > >> Ok, thanks for the insight. In which case, I'll go with what we discussed:
+> > >> require admission control to be disabled for sched_setattr() but allow
+> > >> execve() to a 32-bit task from a 64-bit deadline task with a warning (this
+> > >> is probably similar to CPU hotplug?).
+> > > 
+> > > Still not sure that we can let execve go through ... It will break AC
+> > > all the same, so it should probably fail as well if AC is on IMO
+> > > 
+> > 
+> > If the cpumask of the 32-bit task is != of the 64-bit task that is executing it,
+> > the admission control needs to be re-executed, and it could fail. So I see this
+> > operation equivalent to sched_setaffinity(). This will likely be true for future
+> > schedulers that will allow arbitrary affinities (AC should run on affinity
+> > change, and could fail).
+> > 
+> > I would vote with Juri: "I'd go with fail hard if AC is on, let it
+> > pass if AC is off (supposedly the user knows what to do)," (also hope nobody
+> > complains until we add better support for affinity, and use this as a motivation
+> > to get back on this front).
+> 
+> I can have a go at implementing it, but I don't think it's a great solution
+> and here's why:
+> 
+> Failing an execve() is _very_ likely to be fatal to the application. It's
+> also very likely that the task calling execve() doesn't know whether the
+> program it's trying to execute is 32-bit or not. Consequently, if we go
+> with failing execve() then all that will happen is that people will disable
+> admission control altogether. That has a negative impact on "pure" 64-bit
+> applications and so I think we end up with the tail wagging the dog because
+> admission control will be disabled for everybody just because there is a
+> handful of 32-bit programs which may get executed. I understand that it
+> also means that RT throttling would be disabled.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Completely understand your perplexity. But how can the kernel still give
+guarantees to "pure" 64-bit applications if there are 32-bit
+applications around that essentially broke admission control when they
+were restricted to a subset of cores?
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Allowing the execve() to continue with a warning is very similar to the
+> case in which all the 64-bit CPUs are hot-unplugged at the point of
+> execve(), and this is much closer to the illusion that this patch series
+> intends to provide.
 
-## Build
-* kernel: 5.4.121-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.4.y
-* git commit: d1968aee6ca982be479b6584d449c4d9b749f244
-* git describe: v5.4.120-38-gd1968aee6ca9
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
-20-38-gd1968aee6ca9
+So, for hotplug we currently have a check that would make hotplug
+operations fail if removing a CPU would mean not enough bandwidth to run
+the currently admitted set of DEADLINE tasks.
 
-## No regressions (compared to v5.4.120)
+> So, personally speaking, I would prefer the behaviour where we refuse to
+> admit 32-bit tasks vioa sched_set_attr() if the root domain contains
+> 64-bit CPUs, but we _don't_ fail execve() of a 32-bit program from a
+> 64-bit deadline task.
 
-## No fixes (compared to v5.4.120)
+OK, this is interesting and I guess a very valid alternative. That would
+force users to create exclusive domains for 32-bit tasks, right?
 
-## Test result summary
- total: 77107, pass: 62518, fail: 1864, skip: 11921, xfail: 804,
+> However, you're the deadline experts so ultimately I'll implement what
+> you prefer. I just wanted to explain why I think it's a poor interface.
+> 
+> Have I changed anybody's mind?
 
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 192 total, 192 passed, 0 failed
-* arm64: 26 total, 26 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 15 total, 15 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 26 total, 26 passed, 0 failed
+Partly! :)
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+Thanks a lot for the discussion so far.
 
---
-Linaro LKFT
-https://lkft.linaro.org
+Juri
+
