@@ -2,163 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 135A038CBA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:12:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D461038CBAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:13:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238033AbhEURON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:14:13 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:41941 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229865AbhEUROM (ORCPT
+        id S238046AbhEURPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238038AbhEURPO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:14:12 -0400
-Received: by mail-ot1-f51.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so18626366oth.8;
-        Fri, 21 May 2021 10:12:48 -0700 (PDT)
+        Fri, 21 May 2021 13:15:14 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D216C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:13:49 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id v14so12007520pgi.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:13:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=p2CM4MP1hrRU7+fp/2zo1m41ON9YEIddlJq9crMKEbQ=;
+        b=WvhGtpTtoEx7HB0OPZ9XjTR7ilqHsmcVhV+jR+vZfFiYg2FnMLwOVPsXw2ZRiUvu2E
+         m77gyRAWP89uByNmIR+cp2s3sOXUCFlP99iU0AXmwEH5nhyFkLQOwZD6VSQrDz6p154/
+         M9tl5at5CemBY3QVAgugGPnO9jRnkotNdtIJO4tSIIZkBtRCV8/W5W/BOlgxTpfEMY9L
+         cgSSHs3P94wNf0C7r3iM9TmE35DtyuUo0RUxd2LIPiZW6WovaLsD3kBhjnURNVN/IhZc
+         psscXncnndby1OpwTWGEsWTQpD2jn7h4m2nMr0L1nMeutBoiPkp4c8GzMv5ueoTfDGQk
+         gfnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=obHOlKZL09uU+qPoBP6006mkXZuAoZ/LaIj7RYAF8cQ=;
-        b=kX4XNFKRgzU4fC3tmU+pOpIf/YsDKq/t46cRcLoKin86fdj/NWdRn/EUHp4z9AG8Wr
-         VF2NFe0NhLWuG9VZAhg1PlEROqchCPLoQI/AnSmcEsS3+9M55gHrYFlTtBoCNsy09/yU
-         a1uIpNr4U/V3I6ZwMysFHuYJgZI82Qfth2ugGjTLiWewKrE80f9Kg5TGRBBu12QrKosc
-         2Fr+Fe5+6WxRNFL7FglxY85GA1UNe4ZVTxkx9GUi0phJsATj9A9diQ7/fB+6HzMHC2dp
-         scRF7GP5F0mWRfNFlZG4JL0exfByQktgCVf+MHversq0w2sUnI2cZki+hNRa2PM5Y8UC
-         x/QA==
-X-Gm-Message-State: AOAM531M39NcV9jzYi3WUHNzeg6uC9DWuIOXxEU2o21H8gol21oRSM41
-        HXtxqo8AZOuEmuchKMukykckQGuZfvimQnIrlNQ=
-X-Google-Smtp-Source: ABdhPJzk0YM9gb8r+sadtgHjxe9CQw9ZN+/5upwi7PF+TNQGfJaoALaBY9S5Qb5kXQryBJLPlEXppwZL9i6gw9Y6b6M=
-X-Received: by 2002:a05:6830:164c:: with SMTP id h12mr1756059otr.321.1621617167705;
- Fri, 21 May 2021 10:12:47 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210518034119.2116555-1-srinivas.pandruvada@linux.intel.com>
- <CAJZ5v0ivv9ouf065aYyLqN_JtjR5vomUumAQtGHPunze0BdUmQ@mail.gmail.com> <025db5b34f40d250331184daee38a0acf8f765b4.camel@linux.intel.com>
-In-Reply-To: <025db5b34f40d250331184daee38a0acf8f765b4.camel@linux.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 21 May 2021 19:12:36 +0200
-Message-ID: <CAJZ5v0iBNyi6kCw11Vj2YAJeCQHajf0ubRf+hOFjPfViMdJDsQ@mail.gmail.com>
-Subject: Re: [PATCH v2] ACPI: DPTF: Add new PCH FIVR methods
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=p2CM4MP1hrRU7+fp/2zo1m41ON9YEIddlJq9crMKEbQ=;
+        b=MhgVi/AgahVvJBezQcQWkxCfIxAi1hNYU0JZvAAmRFWL8e4fdVvbrfnIgEyB1TbJXJ
+         VhylGpIKxhY0whpDh/+Zaro3pHkTRngkBF8Aw1KvYm62tm1ZH3n1OzvEcbpNVNAXoMXs
+         kfsRnDps0/GUh7ZZSoN1ZtVwvaZ7JtftSe9XDSCCKqJ0YsGp7wmTk7iKx4L+1ZyL1f7G
+         EXg/U288CgdkOKRcbQZVyM8ABz0d09+Wz12vm5ypQRyXB2xAQ+7EH0Afubg7uaIc5fyV
+         iMZSpWiBcSmOe7aNoa1a6nK6CJDpcm50xAScf8pOjwReackh3GAGzQ/uqEAuaE6Fmd0m
+         lExA==
+X-Gm-Message-State: AOAM531uKY8aucVpzAa5BaFI6+gx0pxkNgz2H4RKwxIxmj3wYsso5txE
+        s030x7Y6bY5EKSifJsCVwB8xzQ==
+X-Google-Smtp-Source: ABdhPJxYjG9nF0PMWTIKJobyACxcr+CiJtN8Wg/U81ISLixNQutYplHEzFii5EAQKwfd9K0GA4torQ==
+X-Received: by 2002:a65:6256:: with SMTP id q22mr10962068pgv.391.1621617228692;
+        Fri, 21 May 2021 10:13:48 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id ci2sm4624395pjb.56.2021.05.21.10.13.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 10:13:47 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:13:47 -0700 (PDT)
+X-Google-Original-Date: Fri, 21 May 2021 10:13:45 PDT (-0700)
+Subject:     Re: [PATCH v18 00/18] KVM RISC-V Support
+In-Reply-To: <YKUZbb6OK+UYAq+t@kroah.com>
+CC:     pbonzini@redhat.com, anup@brainfault.org,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, corbet@lwn.net, graf@amazon.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Message-ID: <mhng-37377fcb-af8f-455c-be08-db1cd5d4b092@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 12:27 PM Srinivas Pandruvada
-<srinivas.pandruvada@linux.intel.com> wrote:
+On Wed, 19 May 2021 06:58:05 PDT (-0700), Greg KH wrote:
+> On Wed, May 19, 2021 at 03:29:24PM +0200, Paolo Bonzini wrote:
+>> On 19/05/21 14:23, Greg Kroah-Hartman wrote:
+>> > > - the code could be removed if there's no progress on either changing the
+>> > > RISC-V acceptance policy or ratifying the spec
+>> >
+>> > I really do not understand the issue here, why can this just not be
+>> > merged normally?
+>>
+>> Because the RISC-V people only want to merge code for "frozen" or "ratified"
+>> processor extensions, and the RISC-V foundation is dragging their feet in
+>> ratifying the hypervisor extension.
+>>
+>> It's totally a self-inflicted pain on part of the RISC-V maintainers; see
+>> Documentation/riscv/patch-acceptance.rst:
+>>
+>>   We'll only accept patches for new modules or extensions if the
+>>   specifications for those modules or extensions are listed as being
+>>   "Frozen" or "Ratified" by the RISC-V Foundation.  (Developers may, of
+>>   course, maintain their own Linux kernel trees that contain code for
+>>   any draft extensions that they wish.)
+>>
+>> (Link: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/riscv/patch-acceptance.rst)
 >
-> On Tue, 2021-05-18 at 11:36 +0200, Rafael J. Wysocki wrote:
-> > On Tue, May 18, 2021 at 5:42 AM Srinivas Pandruvada
-> > <srinivas.pandruvada@linux.intel.com> wrote:
-> > >
-> > > Some additional information is required for updating PCH FIVR
-> > > values
-> > > upon WiFi channel changes.
-> > >
-> > > New attributes added to the existing sysfs:
-> > > fivr_switching_freq_mhz : Get the FIVR switching control frequency
-> > >                           using ACPI method GFCS. Refer to the
-> > >                           documentation for the equation.
-> > > fivr_switching_fault_status: Read the FIVR switching frequency
-> > > control
-> > >                         fault status. Uses ACPI method GFFS
-> > >
-> > > ssc_clock_info : Presents SSC (spread spectrum clock) information
-> > > for EMI
-> > > (Electro magnetic interference) control. Use ACPI method GEMI.
-> > > Refer
-> > > to the description of GEMI method below.
-> > >
-> > > GFFS
-> > > This ACPI method is used to read the FIVR switching frequency
-> > > control
-> > > fault status.
-> > > Bits    Description
-> > > [0:0]   Fault status when set to 1
-> > > [31:1]  Reserved
-> > >
-> > > GFCS
-> > > This ACPI method is used to read the FIVR switching control
-> > > frequency.
-> > > Bits    Description
-> > > [11:0]  Actual Frequency = value * XTAL_FREQ / 128
-> > > [31:12] Reserved
-> > >
-> > > GEMI
-> > > This ACPI method is used to read the programmed register value for
-> > > EMI
-> > > (Electro magnetic interference) control.
-> > >
-> > > Bits    Description
-> > > [7:0]   Sets clock spectrum spread percentage:
-> > >         0x00=0.2% , 0x3F=10%
-> > >         1 LSB = 0.1% increase in spread (for
-> > >         settings 0x01 thru 0x1C)
-> > >         1 LSB = 0.2% increase in spread (for
-> > >         settings 0x1E thru 0x3F)
-> > > [8]     When set to 1, enables spread
-> > >         spectrum clock
-> > > [9]     0: Triangle mode. FFC frequency
-> > >         walks around the Fcenter in a linear
-> > >         fashion
-> > >         1: Random walk mode. FFC frequency
-> > >         changes randomly within the SSC
-> > >         (Spread spectrum clock) range
-> > > [10]    0: No white noise. 1: Add white noise
-> > >         to spread waveform
-> > > [11]    When 1, future writes are ignored.
-> > >
-> > > Signed-off-by: Srinivas Pandruvada <
-> > > srinivas.pandruvada@linux.intel.com>
-> > > ---
-> > > v2
-> > >         Update documentation for fivr_switching_freq_mhz
-> > >
-> > >  Documentation/ABI/testing/sysfs-platform-dptf | 42
-> > > +++++++++++++++++++
-> > >  drivers/acpi/dptf/dptf_pch_fivr.c             |  9 ++++
-> > >  2 files changed, 51 insertions(+)
-> > >
-> > > diff --git a/Documentation/ABI/testing/sysfs-platform-dptf
-> > > b/Documentation/ABI/testing/sysfs-platform-dptf
-> > > index 141834342a4d..fe62f024eb93 100644
-> > > --- a/Documentation/ABI/testing/sysfs-platform-dptf
-> > > +++ b/Documentation/ABI/testing/sysfs-platform-dptf
-> > > @@ -111,3 +111,45 @@ Contact:   linux-acpi@vger.kernel.org
-> > >  Description:
-> > >                 (RW) The PCH FIVR (Fully Integrated Voltage
-> > > Regulator) switching frequency in MHz,
-> > >                 when FIVR clock is 38.4MHz.
-> > > +
-> > > +What:
-> > > /sys/bus/platform/devices/INTC1045:00/pch_fivr_switch_frequency/fiv
-> > > r_switching_freq_mhz
-> > > +Date:          June, 2021
-> > > +KernelVersion: v5.14
-> > > +Contact:       linux-acpi@vger.kernel.org
-> > > +Description:
-> > > +               (RO) Get the FIVR switching control frequency in
-> > > MHz after applying equation
-> > > +               "fivr_switching_freq_mhz * XTAL_FREQ / 128". Here
-> > > XTAL_FREQ is Crystal Oscillator frequency
-> > > +               in MHz, which is product specific.
-> >
-> > IMO it would be sufficient to say the following here:
-> >
-> > +               (RO) PCH FIVR switching control frequency in the
-> > units
-> > of XTAL_FREQ / 128,
-> > +               where XTAL_FREQ is the Crystal Oscillator frequency
-> > (product specific).
-> >
-> > This means that it needs to be multiplied by XTAL_FREQ / 128 to get
-> > the frequency in the whatever units XTAL_FREQ is expressed.
-> >
-> Looks good.
+> Lovely, and how is that going to work for code that lives outside of the
+> riscv "arch" layer?  Like all drivers?
+>
+> And what exactly is "not ratified" that these patches take advantage of?
+> If there is hardware out there with these features, well, Linux needs to
+> run on it, so we need to support that.  No external committee rules
+> should be relevant here.
+>
+> Now if this is for hardware that is not "real", then that's a different
+> story.  In that case, who cares, no one can use it, so why not take it?
+>
+> So what exactly is this trying to "protect" Linux from?
+>
+>> > All staging drivers need a TODO list that shows what needs to be done in
+>> > order to get it out of staging.  All I can tell so far is that the riscv
+>> > maintainers do not want to take this for "unknown reasons" so let's dump
+>> > it over here for now where we don't have to see it.
+>> >
+>> > And that's not good for developers or users, so perhaps the riscv rules
+>> > are not very good?
+>>
+>> I agree wholeheartedly.
+>>
+>> I have heard contrasting opinions on conflict of interest where the
+>> employers of the maintainers benefit from slowing down the integration of
+>> code in Linus's tree.  I find these allegations believable, but even if that
+>> weren't the case, the policy is (to put it kindly) showing its limits.
+>
+> Slowing down code merges is horrible, again, if there's hardware out
+> there, and someone sends code to support it, and wants to maintain it,
+> then we should not be rejecting it.
+>
+> Otherwise we are not doing our job as an operating system kernel, our
+> role is to make hardware work.  We don't get to just ignore code because
+> we don't like the hardware (oh if only we could!), if a user wants to
+> use it, our role is to handle that.
+>
+>> > > Of course there should have been a TODO file explaining the situation. But
+>> > > if you think this is not the right place, I totally understand; if my
+>> > > opinion had any weight in this, I would just place it in arch/riscv/kvm.
+>> > >
+>> > > The RISC-V acceptance policy as is just doesn't work, and the fact that
+>> > > people are trying to work around it is proving it.  There are many ways to
+>> > > improve it:
+>> >
+>> > What is this magical acceptance policy that is preventing working code
+>> > from being merged?  And why is it suddenly the rest of the kernel
+>> > developer's problems because of this?
+>>
+>> It is my problem because I am trying to help Anup merging some perfectly
+>> good KVM code; when a new KVM port comes up, I coordinate merging the first
+>> arch/*/kvm bits with the arch/ maintainers and from that point on that
+>> directory becomes "mine" (or my submaintainers').
+>
+> Agreed, but the riscv maintainers should not be forcing this "problem"
+> onto all of us, like it seems is starting to happen :(
+>
+> Ok, so, Paul, Palmer, and Albert, what do we do here?  Why can't we take
+> working code like this into the kernel if someone is willing to support
+> and maintain it over time?
 
-So applied as 5.14 material, thanks!
+I don't view this code as being in a state where it can be maintained, 
+at least to the standards we generally set within the kernel.  The ISA 
+extension in question is still subject to change, it says so right at 
+the top of the H extension 
+<https://github.com/riscv/riscv-isa-manual/blob/master/src/hypervisor.tex#L4>
+
+    {\bf Warning! This draft specification may change before being
+    accepted as standard by the RISC-V Foundation.}
+
+That means we really can't rely on any of this to be compatible with 
+what is eventually ratified and (hopefully, because this is really 
+important stuff) widely implemented in hardware.  We've already had 
+isuses with other specifications where drafts were propossed as being 
+ready for implemnetation, software was ported, and the future drafts 
+were later incompatible -- we had this years ago with the debug support, 
+which was a huge headache to deal with, and we're running into it again 
+with these v-0.7.1 chips coming out.  I don't want to get stuck in a 
+spot where we're forced to either deal with some old draft extension 
+forever or end up breaking users.
+
+Ultimately the whole RISC-V thing is only going to work out if we can 
+get to the point where vendors can agree on a shared ISA.  I understand 
+that there's been a lot of frustration WRT the timelines on the H 
+extension, it's been frustrating for me as well.  There are clearly 
+issues with how the ISA development process is being run and while those 
+are coming to a head in other areas (the V extension and non-coherent 
+devices, for example) I really don't think that's the case here because 
+as far as I know we don't actually have any real hardware that 
+implements the H extension.
+
+All I really care about is getting to the point where we have real 
+RISC-V systems running software that's as close to upstream as is 
+reasonable.  As it currently stands, I don't know of anything this is 
+blocking: there's some RTL implementation floating around, but that's a 
+very long way from being real hardware.  Something of this complexity 
+isn't suitable for a soft core, and RTL alone doesn't fix the 
+fundamental problem of having a stable platform to run on (it needs a 
+complex FPGA environment, and even then it's very limited in 
+functionality).  I'm not sure where exactly the line for real hardware 
+is, but for something like this it would at least involve some chip that 
+is widely availiable and needs the H extension to be useful.  Such a 
+system existing without a ratified extension would obviously be a major 
+failing on the specification side, and while I think that's happening 
+now for some systems (some of these V-0.7.1 chips, and the non-coherent 
+systems) I just don't see that as the case for the H extension.  We've 
+got to get to the point where the ISA extensions can be ratified in a 
+timely fashion, but circumventing that process by merging code early 
+doesn't fix the problem.  This really needs to be fixed at the RISC-V 
+foundation, not papered over in software.
+￼
+We have lots of real RISC-V hardware right now that's going to require a 
+huge amount of work to support, trying to chase around a draft extension 
+that may not even end up in hardware is just going to make headaches we 
+don't have the time for.
