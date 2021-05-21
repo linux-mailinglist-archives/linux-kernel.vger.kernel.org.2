@@ -2,115 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2903638C6BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A25338C6C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234111AbhEUMrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:47:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60100 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhEUMrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:47:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB6EB613AC;
-        Fri, 21 May 2021 12:45:34 +0000 (UTC)
-Date:   Fri, 21 May 2021 18:15:30 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Baochen Qiang <bqiang@codeaurora.org>
-Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH] mhi: add MHI_STATE_M2 to resume success criteria
-Message-ID: <20210521124530.GF70095@thinkpad>
-References: <20210420035339.282963-1-bqiang@codeaurora.org>
+        id S234173AbhEUMsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46334 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhEUMr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:47:58 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEA39C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:46:32 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id d14so19356633ybe.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:46:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uJtv8tO+srMCLhjCuMBBHQBC6gQTo/DB8dTOrmtQwz0=;
+        b=u3Q+sm3on6BmPGIfpRvuXdbC9eMKxaBuvgYy1JWnnzsycj2cZfrZU371lePTA11gtu
+         +SE8wjEYS/h6moT8fj80cqELiBU9lIcOjUu7wN1poP1BOvEYLD52cImhNzreVJApnRJZ
+         vXk7Vg5oXpnj/qUiaAThRHYJKPqPnKCtpTsVzsVPSdISWQaTzxIupYxa5U2p9c+9+6QA
+         c9MU/drup9paSSjoteh8IbFJHeOpLLKGCboKFwNUAObbMrxoJiBTL5xWl9eioou7ZmbE
+         XEJuZZsBZzzA/SY7dj8PcotdPEIfLOSA4uxuLMReaUCNlChAvXgK3qEry3bnmfIW4CyC
+         DsGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uJtv8tO+srMCLhjCuMBBHQBC6gQTo/DB8dTOrmtQwz0=;
+        b=B7zM+GcLFYo1RSC548/qoyouzOSQEmJcRoGiTk0s2fFHPTuJfzaA2iPmWFPFRbj40G
+         k6243QB0pTEa2lxYaNFkINSsGtlnHLwyWxLYj2BsfE9vU99RNq0PklUNe6o5qy0AeRFq
+         PafTX+U3fG9QSbANlZ/7JxtC1HeGE40e1s8yb5KtKiEmBsk0CnjRnYuoRf6G0lcTL/+w
+         3ZOsft3UG334XOPRlB+JxIJQtRSZR9Xibku4Wjv/AfDlubLq65mn3iLdfrhaEzVHxWoA
+         Mw7CWLqMlDdjvNd1dWl79wQ2Lx23uJJofZ2KsJKkscW1qGKIzheHy9OL4xOiGNhX3Yhn
+         wbUA==
+X-Gm-Message-State: AOAM530aJXHO3KNFMauPgya5WReZpgN0QBAA+RTZ/jRsWgswyQxW5oyc
+        DYwdVPq3izcr3Gy6BEh8JU0IoJ7uB1rG0Wv2rAvflQ==
+X-Google-Smtp-Source: ABdhPJwo1Fd1OhhBBCEBsJ5ei5vOtm0WPuwFHnpGY6cC1UHbm4x8mSHDgVoSMHyd+1f34eFkkO5eRsYDpPANBBfQc/o=
+X-Received: by 2002:a05:6902:1026:: with SMTP id x6mr13499261ybt.23.1621601191892;
+ Fri, 21 May 2021 05:46:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210420035339.282963-1-bqiang@codeaurora.org>
+References: <20210514092332.19966-1-aardelean@deviqon.com>
+In-Reply-To: <20210514092332.19966-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 21 May 2021 14:46:21 +0200
+Message-ID: <CAMpxmJX=nrx6FQ2XVONf+mQWa_HsnQkEk4S-beqgTpxXi80FMQ@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-da9055: remove platform_set_drvdata() +
+ cleanup probe
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Support Opensource <support.opensource@diasemi.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-The patch subject should be,
-
-"bus: mhi: Wait for M2 state during system resume"
-
-We follow "bus: mhi:" prefix for all MHI patches. Also, the subject should
-clearly portray what the patch is intend to do.
-
-On Tue, Apr 20, 2021 at 11:53:39AM +0800, Baochen Qiang wrote:
-> During system resume, mhi driver triggers M3->M0 transition and then waits
-
-s/mhi driver/MHI host
-
-> for target device to enter M0 state. Once done, the device queues a state
-> change event into ctrl event ring and notify mhi dirver by raising an
-
-s/notify/notifies and s/mhi dirver/MHI host. MHI driver is somewhat confusing
-since we have the MHI device driver (QRTR etc...) as well. So just use MHI host
-everywhere.
-
-> interrupt, where a tasklet is scheduled to process this event. In most cases,
-> the taklet is served timely and wait operation succeeds.
-> 
-
-s/taklet/tasklet
-
-> However, there are cases where CPU is busy and can not serve this tasklet
-
-a/can not/cannot
-
-> for some time. Once delay goes long enough, the device moves itself to M1
-> state and also interrupts mhi driver after inserting a new state change
-> event to ctrl ring. Later CPU finally has time to process the ring, however
-> there are two events in it now:
-> 	1. for M3->M0 event, which is processed first as queued first,
-> 	   tasklet handler updates device state to M0 and wakes up the task,
-> 	   i.e., the mhi driver.
-> 	2. for M0->M1 event, which is processed later, tasklet handler
-> 	   triggers M1->M2 transition and updates device state to M2 directly,
-> 	   then wakes up the mhi driver(if still sleeping on this wait queue).
-> Note that although mhi driver has been woken up while processing the first
-> event, it may still has no chance to run before the second event is processed.
-> In other words, mhi driver has to keep waiting till timeout cause the M0 state
-> has been missed.
-> 
-> kernel log here:
-> ...
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
-> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
-> ...
-> 
-> Fix this issue by simply adding M2 as a valid state for resume.
-> 
-> Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
-> 
-> Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
-
-Could you please add a fixes tag as well? And this patch should be backported to
-stable kernels also, so please CC stable@vger.kernel.org.
-
-Thanks,
-Mani
-
+On Fri, May 14, 2021 at 11:23 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
+>
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
+>
+> If this is removed, we can also just do a direct return on
+> devm_gpiochip_add_data(). We don't need to print that this call failed as
+> there are other ways to log/see this during probe.
+>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 > ---
->  drivers/bus/mhi/core/pm.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index ce73cfa63cb3..ca5f2feed9d5 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -900,6 +900,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
->  
->  	ret = wait_event_timeout(mhi_cntrl->state_event,
->  				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
-> +				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
->  				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
->  				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
->  
-> -- 
-> 2.25.1
-> 
+>  drivers/gpio/gpio-da9055.c | 11 +----------
+>  1 file changed, 1 insertion(+), 10 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-da9055.c b/drivers/gpio/gpio-da9055.c
+> index 6ad0c37b862e..49446a030f10 100644
+> --- a/drivers/gpio/gpio-da9055.c
+> +++ b/drivers/gpio/gpio-da9055.c
+> @@ -133,7 +133,6 @@ static int da9055_gpio_probe(struct platform_device *pdev)
+>  {
+>         struct da9055_gpio *gpio;
+>         struct da9055_pdata *pdata;
+> -       int ret;
+>
+>         gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
+>         if (!gpio)
+> @@ -146,15 +145,7 @@ static int da9055_gpio_probe(struct platform_device *pdev)
+>         if (pdata && pdata->gpio_base)
+>                 gpio->gp.base = pdata->gpio_base;
+>
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       platform_set_drvdata(pdev, gpio);
+> -
+> -       return 0;
+> +       return devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
+>  }
+>
+>  static struct platform_driver da9055_gpio_driver = {
+> --
+> 2.31.1
+>
+
+Patch applied, thanks!
+
+Bart
