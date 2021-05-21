@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FC1938C555
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:59:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0DA338C558
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233736AbhEULAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:00:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44578 "EHLO mail.kernel.org"
+        id S233791AbhEULBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:01:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44922 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232812AbhEULA2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:00:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA124611AD;
-        Fri, 21 May 2021 10:59:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621594745;
-        bh=zglt8lwAJE+2sgcpfmhLh1Vdez/O/6l085XdndnYaMc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EhCGmIp70pd2iRfQ0k5QrbyhXqOcny1ctvsqeNaf8YyvACq5p2EaO1cZibtf3CbJe
-         XKaKFzdd7AvChLjyzijGN66EVltLMYSpmYFxv7aszO8B24581ZIipL4dlmG32eLg7y
-         V76qnWx//5yZ6filfgOs9Y59YdUk9lqbdHNbMnVU=
-Date:   Fri, 21 May 2021 12:59:01 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Yu Kuai <yukuai3@huawei.com>
-Cc:     laforge@gnumonks.org, arnd@arndb.de, akpm@osdl.org,
-        linux-kernel@vger.kernel.org, yi.zhang@huawei.com
-Subject: Re: [PATCH] char: pcmcia: fix possible array index out of bounds in
- set_protocol()
-Message-ID: <YKeSdYJiVMO9NKV4@kroah.com>
-References: <20210521100705.28234-1-yukuai3@huawei.com>
+        id S231299AbhEULBh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:01:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0DDB61164;
+        Fri, 21 May 2021 11:00:11 +0000 (UTC)
+Date:   Fri, 21 May 2021 12:00:09 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 05/21] arm64: Advertise CPUs capable of running 32-bit
+ applications in sysfs
+Message-ID: <20210521110008.GG6675@arm.com>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-6-will@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521100705.28234-1-yukuai3@huawei.com>
+In-Reply-To: <20210518094725.7701-6-will@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 06:07:05PM +0800, Yu Kuai wrote:
-> The length of array 'pts_reply' is 4, and the loop in set_protocol()
-> will access array element from 0 to num_bytes_read - 1. Thus if
-> io_read_num_rec_bytes() gets 'num_bytes_read' more than 4, it will
-> cause index out of bounds errors.
+On Tue, May 18, 2021 at 10:47:09AM +0100, Will Deacon wrote:
+> Since 32-bit applications will be killed if they are caught trying to
+> execute on a 64-bit-only CPU in a mismatched system, advertise the set
+> of 32-bit capable CPUs to userspace in sysfs.
+> 
+> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
 
-And how can num_bytes_read be greater than 4?
-
-Ah, it is tested, but you might want to error out if that happens, as
-obviously something went wrong.
-
-Do you have this hardware to test these changes?
-
-thanks,
-
-greg k-h
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
