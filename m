@@ -2,143 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17B7A38CE53
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:42:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF1438CE57
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239193AbhEUTnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:43:22 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48848 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234945AbhEUTnV (ORCPT
+        id S239112AbhEUTrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:47:15 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:34063 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229518AbhEUTrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:43:21 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 81D2120B7188;
-        Fri, 21 May 2021 12:41:57 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 81D2120B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621626118;
-        bh=sVvcxbQSfAemZf/h/BWHu58ipxMHsNFFKvAp7FMao3I=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=NI/hYFDEvvsCn23V5INEa9b8dTn2BppIDjflkBxVCslto7/I7DbLEs2m9XN5og4yC
-         oHP5is8Jke0hB6M2MISMT2cjSTuef18UEjo+FwH+/YQU1DLlSOTA032lcn4cZ4uoBC
-         FBpmEg7f1Xy2eFtvPKyJiYl6l5sDLEOC0CYv3TPg=
-Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Mark Brown <broonie@kernel.org>, mark.rutland@arm.com,
-        ardb@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
-        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-2-madvenka@linux.microsoft.com>
- <20210521161117.GB5825@sirena.org.uk>
- <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
- <20210521174242.GD5825@sirena.org.uk>
- <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
- <20210521175318.GF5825@sirena.org.uk>
- <20210521184817.envdg232b2aeyprt@treble>
- <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
- <20210521191140.4aezpvm2kruztufi@treble>
- <20210521191608.f24sldzhpg3hyq32@treble>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <bf3a5289-8199-b665-0327-ed8240dd7827@linux.microsoft.com>
-Date:   Fri, 21 May 2021 14:41:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 21 May 2021 15:47:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621626350; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=zFQeR15yIV/MRBDjlnj5bg2b1g+GsEMnzWlVJyF+4vU=;
+ b=LRtgzonz1+7yegnd+UHUaW8nwUWDkLz1+/Ot00hDDBQ16kvXMkJ7sdb0eGetyev13s+QXRbw
+ cqVUG+64mobHmGKkT+kem3j5lyscLu/1yJDIBEH0i7h3NBVvdzvVd805dLuIi69vxmzoFNbH
+ 75QFqtZJ3BD7IIdXvvNc87chwH8=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60a80de0c229adfeff6ea01d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 19:45:36
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id CB70AC4323A; Fri, 21 May 2021 19:45:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3AA00C4338A;
+        Fri, 21 May 2021 19:45:35 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210521191608.f24sldzhpg3hyq32@treble>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 12:45:35 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
+        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
+        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
+ correctly
+In-Reply-To: <CAE-0n50BOV6UofBzqqb+KzcOR7W=h3VD2g4CzeqB6+a0v-aZUQ@mail.gmail.com>
+References: <1621013713-6860-1-git-send-email-khsieh@codeaurora.org>
+ <c1a3ced9ac4682bae310712a11576322@codeaurora.org>
+ <CAE-0n50yRCA00ck_FtXwzKw_R8UcocMzTh8V7NOe4ob__3G3bg@mail.gmail.com>
+ <e071434531947e5c4275a1a14b77b2c3@codeaurora.org>
+ <CAE-0n52rBrjy-=dpqK+dae2GNk1rAaQnKqCjzdqiAoS13gHpSQ@mail.gmail.com>
+ <f476d82d0798e0d7eb9e12949aa2c8f1@codeaurora.org>
+ <CAE-0n51+mbCAqWWTOMDA4Rx_=96V4tK8g+UWVZ-nnp50dFzRPA@mail.gmail.com>
+ <5d341df202facb3240a72cfb35e18167@codeaurora.org>
+ <CAE-0n50u-qGvqzJThc+ggghv6ZErPr8g8dhvgequBm5CWOR2Kw@mail.gmail.com>
+ <1e9970ee1a7109e336bc6ed51e727442@codeaurora.org>
+ <CAE-0n50BOV6UofBzqqb+KzcOR7W=h3VD2g4CzeqB6+a0v-aZUQ@mail.gmail.com>
+Message-ID: <fc6542f2e760fa92aef73fdb9a789b2d@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/21/21 2:16 PM, Josh Poimboeuf wrote:
-> On Fri, May 21, 2021 at 02:11:45PM -0500, Josh Poimboeuf wrote:
->> On Fri, May 21, 2021 at 01:59:16PM -0500, Madhavan T. Venkataraman wrote:
->>>
->>>
->>> On 5/21/21 1:48 PM, Josh Poimboeuf wrote:
->>>> On Fri, May 21, 2021 at 06:53:18PM +0100, Mark Brown wrote:
->>>>> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
->>>>>> On 5/21/21 12:42 PM, Mark Brown wrote:
->>>>>
->>>>>>> Like I say we may come up with some use for the flag in error cases in
->>>>>>> future so I'm not opposed to keeping the accounting there.
->>>>>
->>>>>> So, should I leave it the way it is now? Or should I not set reliable = false
->>>>>> for errors? Which one do you prefer?
->>>>>
->>>>>> Josh,
->>>>>
->>>>>> Are you OK with not flagging reliable = false for errors in unwind_frame()?
->>>>>
->>>>> I think it's fine to leave it as it is.
->>>>
->>>> Either way works for me, but if you remove those 'reliable = false'
->>>> statements for stack corruption then, IIRC, the caller would still have
->>>> some confusion between the end of stack error (-ENOENT) and the other
->>>> errors (-EINVAL).
->>>>
->>>
->>> I will leave it the way it is. That is, I will do reliable = false on errors
->>> like you suggested.
->>>
->>>> So the caller would have to know that -ENOENT really means success.
->>>> Which, to me, seems kind of flaky.
->>>>
->>>
->>> Actually, that is why -ENOENT was introduced - to indicate successful
->>> stack trace termination. A return value of 0 is for continuing with
->>> the stack trace. A non-zero value is for terminating the stack trace.
->>>
->>> So, either we return a positive value (say 1) to indicate successful
->>> termination. Or, we return -ENOENT to say no more stack frames left.
->>> I guess -ENOENT was chosen.
->>
->> I see.  So it's a tri-state return value, and frame->reliable is
->> intended to be a private interface not checked by the callers.
+On 2021-05-21 12:18, Stephen Boyd wrote:
+> Quoting khsieh@codeaurora.org (2021-05-21 08:21:58)
+>> >
+>> > Ok. So you're saying that we want to put both events on the queue
+>> > regardless, and put IRQ_HPD there first because we want to check the
+>> > status bit? Doesn't reading the status bit require the dongle to be
+>> > connected though? So if an unplug came in along with an irq_hpd we may
+>> > queue both the irq_hpd and the unplug, but when it comes time to
+>> > process
+>> > the irq_hpd in the kthread the link will be gone and so trying the dpcd
+>> > read for the link status will fail?
+>> >
+>> yes,
+>> we had a previous bug with this scenarios already.
+>> https://partnerissuetracker.corp.google.com/issues/170598152
+>> At this case, dongle produce two interrupts, irq_hpd followed by 
+>> unplug
+>> immediately (not presented at isr status register at same time), at 
+>> the
+>> time dongle unplugged form DTU.
+>> But due to dp ctrl reset at handling irq_hpd which cause unplug mask 
+>> bit
+>> be cleared so that unplug interrupt got lost.
+>> 
 > 
-> Or is frame->reliable supposed to be checked after all?  Looking at the
-> code again, I'm not sure.
-> 
-> Either way it would be good to document the interface more clearly in a
-> comment above the function.
-> 
+> Again, wouldn't that be too late if the hardirq handler is delayed to
+> the point that the two irqs are pending in the isr status register?
 
-So, arch_stack_walk_reliable() would do this:
-
-	start_backtrace(frame);
-
-	while (...) {
-		if (!frame->reliable)
-			return error;
-
-		consume_entry(...);
-
-		ret = unwind_frame(...);
-
-		if (ret)
-			break;
-	}
-
-	if (ret == -ENOENT)
-		return success;
-	return error;
-
-
-Something like that.
-
-I will add a comment about all of this in the unwinder.
-
-Thanks!
-
-Madhavan
-
+yes,
+but that not much dp driver can do.
+As long as DP driver can recovery (shut down gracefully) and ready for 
+next plugin, then i think it should be fine.
 
 
