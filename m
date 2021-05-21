@@ -2,151 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 506E438CF37
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 920EE38CF3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229817AbhEUUpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:45:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41954 "EHLO
+        id S229962AbhEUUqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:46:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229554AbhEUUpe (ORCPT
+        with ESMTP id S229939AbhEUUq3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:45:34 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C7BCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:44:10 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id f12so25469596ljp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:44:09 -0700 (PDT)
+        Fri, 21 May 2021 16:46:29 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089EAC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:45:06 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id u7so3040643plq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:45:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HBeodYY2Z6u1fLnq0vAjJboMG5Q47PXwcvj3JybNYOE=;
-        b=tDdOpNSUHvr8Gn6//uRLY42Rg35jF49VOuwoGXQ8cWeWks3VAmvx52Jb7Bdj/74uIG
-         VeuP92MB7Iyf9PEkj7kTZuJlyOtmjCEj+bO0R4dMTSAOvimiQlhg1PIkxB59M2XyXzc1
-         vIE9Pei2bmRVCIfwJJ+rJwrmc0sCJZl/lcSWH+qlzTkv2JYFDRIt0CO7XBaX+ZDfLBWj
-         AJdSBO3mLQhK3ZImPNwGO+fh0WToEcocIWpOsnyrNniktggla6NxnqUGlnvk75MCtHWS
-         rQ5SWfCPqg3CUuS4PdplD2IXSsYjiZlnStbcKTZAy16+7PxnFHPHLPMfpKUw2it7hocz
-         THSg==
+        bh=igzFIccuiFriowe2kh28IcK5gIIDPMZQzahZDG5tSm0=;
+        b=LETZk6m+q6FDNRsX65WTrupTI3FZ/EaQiq9mZPlX5+fjhzMiZjoJ72TwI78eYo6ABF
+         v0xtJzjuccrXPBC9B64tc2CjjeLeRuLBm+FxFhV8kp92IknNf3COW34W3dCYecvXC4nB
+         PXWpx9tg4j5vGdXj8AyC9eRqGeMHTCOLfYumo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HBeodYY2Z6u1fLnq0vAjJboMG5Q47PXwcvj3JybNYOE=;
-        b=ARU8ss8bXU9JFkjxYxQ5T1/CMpPrY+S3tV8TaqLJLgCzlOhPImThTk5BFgqR2gBubj
-         QAuIhufnSUsQvyGlRTI3D2pdGirtxzHYCjPcVIJygb/9gSP/3nTvJt6ziaJDGjoCYKVx
-         +8xg2+CK2Dw0mL2USBy8REDMjZYPyFhyauDHWpKSxSHCKYXNmmLMMkUXMhchSuEY7D6K
-         pkhKUbC+DogkWNtN5p+0grt9vkFukNzWebFbG1yxTLQmLqNY4clZPBVLFdF+2AnTVPPk
-         c8+pcrvxUfZMt9WKD4Nr49MdvbWYBUEAjfKDlg/XyWg1+oaGqHt8HR18XSmosDrVOeJf
-         KSOA==
-X-Gm-Message-State: AOAM53339J6DYC11JzCDx+XHj+Jg/92I8n8eSoGMHiR6rIsDmFKZAUN5
-        ZJ0VR+cR/z3ztfHtRniscHE=
-X-Google-Smtp-Source: ABdhPJxhcvvA7AVABrYgNxrl7zZ6WFCjRoasT4fWxfJpiD1S7okt8GMdq1kV65u1D8WGsWzQFi+05Q==
-X-Received: by 2002:a2e:9605:: with SMTP id v5mr5153141ljh.501.1621629847871;
-        Fri, 21 May 2021 13:44:07 -0700 (PDT)
-Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
-        by smtp.gmail.com with ESMTPSA id v25sm734768lfe.60.2021.05.21.13.44.07
+        bh=igzFIccuiFriowe2kh28IcK5gIIDPMZQzahZDG5tSm0=;
+        b=L3A/2ZgNrPF2QSwvO3D3llKtsJNq5+3sTdc/vzEgJGENU6nk1FQ81BiLEk0uUO6ttl
+         PVKj0W1sRA/EEpcJTgf4n3gAaXAC28847f0g1sveRKS8BF46Zd0nYpyjDAP+GnDAvLfR
+         DOjZq0j8WEVBxGwPSLNSbPy2MWzZGWQEUkm2wY4iou6yMqHriQASNQlsxztrYPzQH5rs
+         xH5nlvQACMFvUK+Yb4z6gVyDIqZA3M/wm3WbfAzPv2hCfa2SCYe0cHM78r+pIOwe0gGS
+         Ca4SnWmsPOG09gPSfAfvsOzQF/yFKLXlIDPrl8bHV3o2LGdGf8lOukS+wtcJEy6WRFnp
+         YHLw==
+X-Gm-Message-State: AOAM530FV3hJfoE8pTHeobie4MnOmZeS2X8TprthHvUlqgPSPht2MxPx
+        8e2bTTxVpRXUj60nEUb9Zwrt4Q==
+X-Google-Smtp-Source: ABdhPJzEXBe5JUzWzzVD3OosgBi3Fy0tnzMkpWBbZNYCt+43ceoVpbNONzCVkf3CCwPmNOWfgN/XXA==
+X-Received: by 2002:a17:902:db09:b029:f4:8d37:8d12 with SMTP id m9-20020a170902db09b02900f48d378d12mr14481362plx.52.1621629905561;
+        Fri, 21 May 2021 13:45:05 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:10e9:a6cd:727f:561e])
+        by smtp.gmail.com with ESMTPSA id l62sm5055928pfl.88.2021.05.21.13.45.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 13:44:07 -0700 (PDT)
-From:   "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Uladzislau Rezki <urezki@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH] mm/vmalloc: Remove quoted string split across lines
-Date:   Fri, 21 May 2021 22:43:59 +0200
-Message-Id: <20210521204359.19943-1-urezki@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Fri, 21 May 2021 13:45:05 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Niklas Cassel <niklas.cassel@linaro.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Niklas Cassel <nks@flawful.org>, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: [PATCH v2] PM: AVS: qcom-cpr: Use nvmem_cell_read_variable_le_u32()
+Date:   Fri, 21 May 2021 13:44:53 -0700
+Message-Id: <20210521134437.v2.1.Id1c70158722750aec0673d60c12e46a9c66bbfed@changeid>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A checkpatch.pl script complains on splitting a text across
-lines. It is because if a user wants to find an entire string
-he or she will not succeeded.
+Let's delete the private function cpr_read_efuse() since it does the
+basically the same thing as the new API call
+nvmem_cell_read_variable_le_u32().
 
-<snip>
-WARNING: quoted string split across lines
-+               "vmalloc size %lu allocation failure: "
-+               "page order %u allocation failed",
+Differences between the new API call and the old private function:
+* less error printing (I assume this is OK).
+* will give an error if the value doesn't fit in 32-bits (the old code
+  would have truncated silently).
 
-total: 0 errors, 1 warnings, 10 lines checked
-<snip>
-
-Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
- mm/vmalloc.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+I haven't done any more than compile-test this. Mostly I'm just
+writing this patch because it helped provide inspiration for the
+general API function.
 
-diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 7765af7b1e9c..5749fa7b991f 100644
---- a/mm/vmalloc.c
-+++ b/mm/vmalloc.c
-@@ -2830,9 +2830,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+Changes in v2:
+- Resending v1 as a singleton patch; dependency is merged in mainline.
+
+ drivers/soc/qcom/cpr.c | 43 +++++-------------------------------------
+ 1 file changed, 5 insertions(+), 38 deletions(-)
+
+diff --git a/drivers/soc/qcom/cpr.c b/drivers/soc/qcom/cpr.c
+index b24cc77d1889..4ce8e816154f 100644
+--- a/drivers/soc/qcom/cpr.c
++++ b/drivers/soc/qcom/cpr.c
+@@ -801,38 +801,6 @@ static int cpr_set_performance_state(struct generic_pm_domain *domain,
+ 	return ret;
+ }
  
- 	if (!area->pages) {
- 		warn_alloc(gfp_mask, NULL,
--			   "vmalloc size %lu allocation failure: "
--			   "page array size %lu allocation failed",
--			   nr_small_pages * PAGE_SIZE, array_size);
-+			"vmalloc error: size %lu, failed to allocated page array size %lu",
-+			nr_small_pages * PAGE_SIZE, array_size);
- 		free_vm_area(area);
- 		return NULL;
- 	}
-@@ -2851,8 +2850,7 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+-static int cpr_read_efuse(struct device *dev, const char *cname, u32 *data)
+-{
+-	struct nvmem_cell *cell;
+-	ssize_t len;
+-	char *ret;
+-	int i;
+-
+-	*data = 0;
+-
+-	cell = nvmem_cell_get(dev, cname);
+-	if (IS_ERR(cell)) {
+-		if (PTR_ERR(cell) != -EPROBE_DEFER)
+-			dev_err(dev, "undefined cell %s\n", cname);
+-		return PTR_ERR(cell);
+-	}
+-
+-	ret = nvmem_cell_read(cell, &len);
+-	nvmem_cell_put(cell);
+-	if (IS_ERR(ret)) {
+-		dev_err(dev, "can't read cell %s\n", cname);
+-		return PTR_ERR(ret);
+-	}
+-
+-	for (i = 0; i < len; i++)
+-		*data |= ret[i] << (8 * i);
+-
+-	kfree(ret);
+-	dev_dbg(dev, "efuse read(%s) = %x, bytes %zd\n", cname, *data, len);
+-
+-	return 0;
+-}
+-
+ static int
+ cpr_populate_ring_osc_idx(struct cpr_drv *drv)
+ {
+@@ -843,8 +811,7 @@ cpr_populate_ring_osc_idx(struct cpr_drv *drv)
+ 	int ret;
+ 
+ 	for (; fuse < end; fuse++, fuses++) {
+-		ret = cpr_read_efuse(drv->dev, fuses->ring_osc,
+-				     &data);
++		ret = nvmem_cell_read_variable_le_u32(drv->dev, fuses->ring_osc, &data);
+ 		if (ret)
+ 			return ret;
+ 		fuse->ring_osc_idx = data;
+@@ -863,7 +830,7 @@ static int cpr_read_fuse_uV(const struct cpr_desc *desc,
+ 	u32 bits = 0;
+ 	int ret;
+ 
+-	ret = cpr_read_efuse(drv->dev, init_v_efuse, &bits);
++	ret = nvmem_cell_read_variable_le_u32(drv->dev, init_v_efuse, &bits);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -932,7 +899,7 @@ static int cpr_fuse_corner_init(struct cpr_drv *drv)
+ 		}
+ 
+ 		/* Populate target quotient by scaling */
+-		ret = cpr_read_efuse(drv->dev, fuses->quotient, &fuse->quot);
++		ret = nvmem_cell_read_variable_le_u32(drv->dev, fuses->quotient, &fuse->quot);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -1001,7 +968,7 @@ static int cpr_calculate_scaling(const char *quot_offset,
+ 	prev_fuse = fuse - 1;
+ 
+ 	if (quot_offset) {
+-		ret = cpr_read_efuse(drv->dev, quot_offset, &quot_diff);
++		ret = nvmem_cell_read_variable_le_u32(drv->dev, quot_offset, &quot_diff);
+ 		if (ret)
+ 			return ret;
+ 
+@@ -1701,7 +1668,7 @@ static int cpr_probe(struct platform_device *pdev)
+ 	 * initialized after attaching to the power domain,
+ 	 * since it depends on the CPU's OPP table.
  	 */
- 	if (area->nr_pages != nr_small_pages) {
- 		warn_alloc(gfp_mask, NULL,
--			"vmalloc size %lu allocation failure: "
--			"page order %u allocation failed",
-+			"vmalloc error: size %lu, page order %u, failed to allocate pages",
- 			area->nr_pages * PAGE_SIZE, page_order);
- 		goto fail;
- 	}
-@@ -2860,9 +2858,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
- 	if (vmap_pages_range(addr, addr + size, prot, area->pages,
- 			page_shift) < 0) {
- 		warn_alloc(gfp_mask, NULL,
--			   "vmalloc size %lu allocation failure: "
--			   "failed to map pages",
--			   area->nr_pages * PAGE_SIZE);
-+			"vmalloc error: size %lu, failed to map pages",
-+			area->nr_pages * PAGE_SIZE);
- 		goto fail;
- 	}
- 
-@@ -2907,8 +2904,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 
- 	if ((size >> PAGE_SHIFT) > totalram_pages()) {
- 		warn_alloc(gfp_mask, NULL,
--			   "vmalloc size %lu allocation failure: "
--			   "exceeds total pages", real_size);
-+			"vmalloc error: size %lu, exceeds total pages",
-+			real_size);
- 		return NULL;
- 	}
- 
-@@ -2939,8 +2936,8 @@ void *__vmalloc_node_range(unsigned long size, unsigned long align,
- 				vm_flags, start, end, node, gfp_mask, caller);
- 	if (!area) {
- 		warn_alloc(gfp_mask, NULL,
--			   "vmalloc size %lu allocation failure: "
--			   "vm_struct allocation failed", real_size);
-+			"vmalloc error: size %lu, vm_struct allocation failed",
-+			real_size);
- 		goto fail;
- 	}
+-	ret = cpr_read_efuse(dev, "cpr_fuse_revision", &cpr_rev);
++	ret = nvmem_cell_read_variable_le_u32(dev, "cpr_fuse_revision", &cpr_rev);
+ 	if (ret)
+ 		return ret;
  
 -- 
-2.20.1
+2.31.1.818.g46aad6cb9e-goog
 
