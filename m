@@ -2,204 +2,495 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C466538C9AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:02:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8114238C9B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:03:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237250AbhEUPEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:04:00 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47391 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237218AbhEUPD4 (ORCPT
+        id S237255AbhEUPEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:04:33 -0400
+Received: from mail-vk1-f180.google.com ([209.85.221.180]:35520 "EHLO
+        mail-vk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230282AbhEUPEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:03:56 -0400
-Received: from mail-vk1-f199.google.com ([209.85.221.199])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lk6fX-0004ur-Nn
-        for linux-kernel@vger.kernel.org; Fri, 21 May 2021 15:02:31 +0000
-Received: by mail-vk1-f199.google.com with SMTP id e7-20020a1f1e070000b02901ffbfb6bcd1so1864169vke.22
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:02:31 -0700 (PDT)
+        Fri, 21 May 2021 11:04:30 -0400
+Received: by mail-vk1-f180.google.com with SMTP id n7so4342089vkl.2;
+        Fri, 21 May 2021 08:03:07 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+DCiOMUmNCEbgSGkeFS7cL87hlbtrGvRjWxrSQX4kzE=;
-        b=rIxva0txm/NT9qaTGlmKUbW9FKWkNBMJovCb4v0+HBBAiB1cotX77ZpW7BYmhhCcdZ
-         dgOdefa3fJ7Tr9R9YbGQKU+J2fc3Oglqg9SGVI8qZpH/U5lp0Xv7qhQxp0496HujIPyt
-         H20OT5GNj7BUbItZ6g233fWyNIYETZqU01TGFtIhK/s7E9+5DvjD4wVZ8b6v+qcSao4U
-         aM72EHoHz8R1b6TLVJ6y1VOAG1AbspUIMm7Bj/T9VIBDj29R+T0WvzhGVKL5CiK/fBEo
-         HCjMhqm2CealKtw87ZYhTEu6mBqhK+DhiKgpuV+7TaJXZK98aUAAu6E30nayTyRrcpCc
-         HYhg==
-X-Gm-Message-State: AOAM532I5IWx3SCIxZAPDRacQ4GIqoUxhE7hi4aUh9CPCOOCU/e6QG3J
-        F4P8prweKzSmWT9oz0lEfssNuilBdQxakqk8K5GwbRvJSuXm8Vy2fQpo6UkkR1Yz/KtB33n3Roj
-        6GofagXwnM/20FNLBbNWGxUOuvZwKuG8Mi1BaJ6A45w==
-X-Received: by 2002:a67:2c85:: with SMTP id s127mr10899683vss.7.1621609350806;
-        Fri, 21 May 2021 08:02:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwYOKseqJxYk2UWSPChMwThTlFDmszEx95gPDhbTYvYA69GPIuuets65Whjsz6E6dNkOxW1Fw==
-X-Received: by 2002:a67:2c85:: with SMTP id s127mr10899652vss.7.1621609350576;
-        Fri, 21 May 2021 08:02:30 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.48.6])
-        by smtp.gmail.com with ESMTPSA id f65sm960175vke.43.2021.05.21.08.02.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 08:02:30 -0700 (PDT)
-Subject: Re: [linux-nfc] Re: [PATCH 2/2] nfc: s3fwrn5: i2c: Enable optional
- clock from device tree
-To:     Bongsu Jeon <bongsu.jeon2@gmail.com>
-Cc:     Stephan Gerhold <stephan@gerhold.net>,
-        Bongsu Jeon <bongsu.jeon@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-nfc@lists.01.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
-References: <20210518133935.571298-1-stephan@gerhold.net>
- <20210518133935.571298-2-stephan@gerhold.net>
- <ac04821e-359d-aaaa-7e07-280156f64036@canonical.com>
- <YKPWgSnz7STV4u+c@gerhold.net>
- <8b14159f-dca9-a213-031f-83ab2b3840a4@canonical.com>
- <YKTHXzUhcYa5YJIs@gerhold.net>
- <10b3a50e-877c-d5b1-3e35-e5dff4ef53d8@canonical.com>
- <CACwDmQCQQpLKeaRxfxXYqSty3YhpZ9y7LNxgkKCBQ=YJiAk1cg@mail.gmail.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <20c1367d-a8c7-603e-2b07-ec3ddcd89a38@canonical.com>
-Date:   Fri, 21 May 2021 11:02:26 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AsUpcAbE1LpfPJXhSpy6toR3kQg1h9PRIuDeSpPtK44=;
+        b=Vi4fkyJaslBsIYypGgK49b1SjhogmXYmWtFlCP5qaWssUfYhO5EpUzynXBejzNv3Bc
+         Ri3eyYCOeltzDpD0nfCrAsHrZ5yQEFQ8uQMq2pnwvu5B0LDOWmY9MCnYiI036Vdyj0iP
+         Sn2hKmgGkthcEBkBG0CpRGbxM1a5FVrIsWvUWZvVrIRYXwB2VNjEVGvxpjXxayYGUGMK
+         Q7AFk6IaZy72n5BqZXgPbRoOkARCpZN61nLxUQppS2cweF8bBvlnI0yang3IfQRiU5Bm
+         kK3kuEUJAtrgWIZq0Vq2qor+var98elDnmog+tXJTmOQXdAxUSUlgohcUBVcNGBkXfXt
+         5UBA==
+X-Gm-Message-State: AOAM533J+pvLuquufDrmZgLCvJfDiFDCks0RP4bh9m1XNgdMVZ60jFdq
+        1dwBVaMF/+xK92JdM3horKsbKABCyXg9HkzCHGw=
+X-Google-Smtp-Source: ABdhPJzHUXw5QJ3bzwByG6ggvWnoL2grdUvySxz1UzElw8NLOh0sqfV80msXTw9qoeAknqWtZmPSb7DHiFFqynxh2oM=
+X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr10223104vkg.1.1621609383515;
+ Fri, 21 May 2021 08:03:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CACwDmQCQQpLKeaRxfxXYqSty3YhpZ9y7LNxgkKCBQ=YJiAk1cg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210514192218.13022-14-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 May 2021 17:02:51 +0200
+Message-ID: <CAMuHMdWApLaGCcD_hpCz-+MhuXAyMx+bhHCWvHq81R+5JxsGFw@mail.gmail.com>
+Subject: Re: [PATCH 13/16] clk: renesas: Add CPG core wrapper for RZ/G2L SoC
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 07:40, Bongsu Jeon wrote:
-> On Thu, May 20, 2021 at 12:58 AM Krzysztof Kozlowski
-> <krzysztof.kozlowski@canonical.com> wrote:
->>
->> On 19/05/2021 04:07, Stephan Gerhold wrote:
->>> On Tue, May 18, 2021 at 11:25:55AM -0400, Krzysztof Kozlowski wrote:
->>>> On 18/05/2021 11:00, Stephan Gerhold wrote:
->>>>> On Tue, May 18, 2021 at 10:30:43AM -0400, Krzysztof Kozlowski wrote:
->>>>>> On 18/05/2021 09:39, Stephan Gerhold wrote:
->>>>>>> s3fwrn5 has a NFC_CLK_REQ output GPIO, which is asserted whenever
->>>>>>> the clock is needed for the current operation. This GPIO can be either
->>>>>>> connected directly to the clock provider, or must be monitored by
->>>>>>> this driver.
->>>>>>>
->>>>>>> As an example for the first case, on many Qualcomm devices the
->>>>>>> NFC clock is provided by the main PMIC. The clock can be either
->>>>>>> permanently enabled (clocks = <&rpmcc RPM_SMD_BB_CLK2>) or enabled
->>>>>>> only when requested through a special input pin on the PMIC
->>>>>>> (clocks = <&rpmcc RPM_SMD_BB_CLK2_PIN>).
->>>>>>>
->>>>>>> On the Samsung Galaxy A3/A5 (2015, Qualcomm MSM8916) this mechanism
->>>>>>> is used with S3FWRN5's NFC_CLK_REQ output GPIO to enable the clock
->>>>>>> only when necessary. However, to make that work the s3fwrn5 driver
->>>>>>> must keep the RPM_SMD_BB_CLK2_PIN clock enabled.
->>>>>>
->>>>>> This contradicts the code. You wrote that pin should be kept enabled
->>>>>> (somehow... by driver? by it's firmware?) but your code requests the
->>>>>> clock from provider.
->>>>>>
->>>>>
->>>>> Yeah, I see how that's a bit confusing. Let me try to explain it a bit
->>>>> better. So the Samsung Galaxy A5 (2015) has a "S3FWRN5XS1-YF30", some
->>>>> variant of S3FWRN5 I guess. That S3FWRN5 has a "XI" and "XO" pin in the
->>>>> schematics. "XO" seems to be floating, but "XI" goes to "BB_CLK2"
->>>>> on PM8916 (the main PMIC).
->>>>>
->>>>> Then, there is "GPIO2/NFC_CLK_REQ" on the S3FWRN5. This goes to
->>>>> GPIO_2_NFC_CLK_REQ on PM8916. (Note: I'm talking about two different
->>>>> GPIO2 here, one on S3FWRN5 and one on PM8916, they just happen to have
->>>>> the same number...)
->>>>>
->>>>> So in other words, S3FWRN5 gets some clock from BB_CLK2 on PM8916,
->>>>> and can tell PM8916 that it needs the clock via GPIO2/NFC_CLK_REQ.
->>>>>
->>>>> Now the confusing part is that the rpmcc/clk-smd-rpm driver has two
->>>>> clocks that represent BB_CLK2 (see include/dt-bindings/clock/qcom,rpmcc.h):
->>>>>
->>>>>   - RPM_SMD_BB_CLK2
->>>>>   - RPM_SMD_BB_CLK2_PIN
->>>>>
->>>>> (There are also *_CLK2_A variants but they are even more confusing
->>>>>  and not needed here...)
->>>>>
->>>>> Those end up in different register settings in PM8916. There is one bit
->>>>> to permanently enable BB_CLK2 (= RPM_SMD_BB_CLK2), and one bit to enable
->>>>> BB_CLK2 based on the status of GPIO_2_NFC_CLK_REQ on PM8916
->>>>> (= RPM_SMD_BB_CLK2_PIN).
->>>>>
->>>>> So there is indeed some kind of "AND" inside PM8916 (the register bit
->>>>> and "NFC_CLK_REQ" input pin). To make that "AND" work I need to make
->>>>> some driver (here: the s3fwrn5 driver) enable the clock so the register
->>>>> bit in PM8916 gets set.
->>>>
->>>> Thanks for the explanation, it sounds good. The GPIO2 (or how you call
->>>> it NFC_CLK_REQ) on S3FWRN5 looks like non-configurable from Linux point
->>>> of view. Probably the device firmware plays with it always or at least
->>>> handles it in an unknown way for us.
->>>>
->>>
->>> FWIW, I was looking at some more s3fwrn5 code yesterday and came
->>> across this (in s3fwrn5_nci_rf_configure()):
->>>
->>>       /* Set default clock configuration for external crystal */
->>>       fw_cfg.clk_type = 0x01;
->>>       fw_cfg.clk_speed = 0xff;
->>>       fw_cfg.clk_req = 0xff;
->>>       ret = nci_prop_cmd(info->ndev, NCI_PROP_FW_CFG,
->>>               sizeof(fw_cfg), (__u8 *)&fw_cfg);
->>>       if (ret < 0)
->>>               goto out;
->>>
->>> It does look quite suspiciously like that configures how s3fwrn5 expects
->>> the clock and possibly (fw_cfg.clk_req?) how GPIO2 behaves. But it's not
->>> particularly useful without some documentation for the magic numbers.
->>
->> Right, without documentation of FW protocol there is not much we can
->> deduct here. There is no proof even that the comment matches actual code.
->>
->> Dear Bongsu,
->> Maybe you could share some details about clock selection?
-> 
-> These configuration values depend on the HW circuit for NFC.
-> 
-> There are  two types of fw_cfg.clk_type for N5.
-> 0x01 : external XTAL ( don't need to control the clock because XTAL
-> always supplies
-> the NFC clock automatically.)
-> 0x00 : PLL clock (need to control clock. )
-> 
-> There are three types of fw_cfg.clk_speed for N5.
-> 0xFF : for external XTAL
-> 0x00 : 24M for PLL.
-> 0x01 : 19.12M for PLL.
-> 
-> There are two types of fw_cfg.clk_req for N5.
-> 0xFF: NFC firmware controls CLK Req when NFC needs the external clock.
-> 0xF0: NFC firmware doesn't control CLK Req.
-> 
->>
->>>
->>> Personally, I just skip all firmware/RF configuration (which works thanks
->>> to commit 4fb7b98c7be3 ("nfc: s3fwrn5: skip the NFC bootloader mode")).
->>> That way, S3FWRN5 just continues using the proper configuration
->>> that was loaded by the vendor drivers at some point. :)
->>
->> But isn't that configuration lost after power off?
->>
-> 
-> If you skip all firmware/RF configuration, you can use  the preserved
-> firmware and
-> RF configuration on the chip.
+Hi Prabhakar,
 
-Thank you for sharing these details. Much appreciated!
+On Fri, May 14, 2021 at 9:24 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add CPG core wrapper for RZ/G2L family.
+>
+> Based on a patch in the BSP by Binh Nguyen
+> <binh.nguyen.jz@renesas.com>.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+
+Thanks for your patch!
+
+> --- a/drivers/clk/renesas/Kconfig
+> +++ b/drivers/clk/renesas/Kconfig
+> @@ -34,6 +34,10 @@ config CLK_RENESAS
+>         select CLK_R9A06G032 if ARCH_R9A06G032
+>         select CLK_SH73A0 if ARCH_SH73A0
+>
+> +config CLK_RENESAS_RZG2L
+> +       bool "Renesas RZ/G2L SoC clock support" if COMPILE_TEST && !ARCH_RENESAS
+> +       default y if ARCH_RENESAS
+
+Why do you need this symbol here, and why does it default to y?
+
+I guess the plan is to share this by the RZ/G2L(C) and RZ/G2UL clock
+drivers, so probably you want to move it to the family-specific
+section below, like CLK_RCAR_GEN3_CPG.
+
+> +
+>  if CLK_RENESAS
+>
+>  # SoC
+> diff --git a/drivers/clk/renesas/Makefile b/drivers/clk/renesas/Makefile
+> index ef0d2bba92bf..e4f3d7fab67c 100644
+> --- a/drivers/clk/renesas/Makefile
+> +++ b/drivers/clk/renesas/Makefile
+> @@ -36,6 +36,7 @@ obj-$(CONFIG_CLK_RCAR_CPG_LIB)                += rcar-cpg-lib.o
+>  obj-$(CONFIG_CLK_RCAR_GEN2_CPG)                += rcar-gen2-cpg.o
+>  obj-$(CONFIG_CLK_RCAR_GEN3_CPG)                += rcar-gen3-cpg.o
+>  obj-$(CONFIG_CLK_RCAR_USB2_CLOCK_SEL)  += rcar-usb2-clock-sel.o
+> +obj-$(CONFIG_CLK_RENESAS_RZG2L)                += renesas-rzg2l-cpg.o
+
+As CLK_RENESAS_RZG2L defaults to y, this is compiled by
+default on ARCH_RENESAS.
+
+>
+>  # Generic
+>  obj-$(CONFIG_CLK_RENESAS_CPG_MSSR)     += renesas-cpg-mssr.o
+> diff --git a/drivers/clk/renesas/renesas-rzg2l-cpg.c b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+> new file mode 100644
+> index 000000000000..dc54ffc6114c
+> --- /dev/null
+> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.c
+> @@ -0,0 +1,958 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * RZ/G2L Clock Pulse Generator
+> + *
+> + * Copyright (C) 2021 Renesas Electronics Corp.
+> + *
+> + * Based on renesas-cpg-mssr.c
+> + *
+> + * Copyright (C) 2015 Glider bvba
+> + * Copyright (C) 2013 Ideas On Board SPRL
+> + * Copyright (C) 2015 Renesas Electronics Corp.
+> + */
+> +
+> +#include <linux/clk.h>
+> +#include <linux/clk-provider.h>
+> +#include <linux/clk/renesas.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/init.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pm_clock.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/psci.h>
+
+Unused
+
+> +#include <linux/reset-controller.h>
+> +#include <linux/slab.h>
+> +
+> +#include <dt-bindings/clock/renesas-cpg-mssr.h>
+> +
+> +#include "renesas-rzg2l-cpg.h"
+> +
+> +#ifdef DEBUG
+> +#define WARN_DEBUG(x)  WARN_ON(x)
+> +#else
+> +#define WARN_DEBUG(x)  do { } while (0)
+> +#endif
+> +
+> +#define DIV_RSMASK(v, s, m)    ((v >> s) & m)
+> +#define GET_REG(val)           ((val >> 20) & 0xfff)
+> +#define GET_SHIFT(val)         ((val >> 12) & 0xff)
+> +#define GET_WIDTH(val)         ((val >> 8) & 0xf)
+> +
+> +#define KDIV(val)              DIV_RSMASK(val, 16, 0xffff)
+> +#define MDIV(val)              DIV_RSMASK(val, 6, 0x3ff)
+> +#define PDIV(val)              DIV_RSMASK(val, 0, 0x3f)
+> +#define SDIV(val)              DIV_RSMASK(val, 0, 0x7)
+> +#define REFDIV(val)            DIV_RSMASK(val, 8, 0x3f)
+> +#define POSTDIV1(val)          DIV_RSMASK(val, 0, 0x7)
+> +#define POSTDIV2(val)          DIV_RSMASK(val, 4, 0x7)
+> +#define FRACIN(val)            DIV_RSMASK(val, 8, 0xffffff)
+> +#define INITIN(val)            DIV_RSMASK(val, 16, 0xfff)
+> +
+> +/**
+> + * Clock Pulse Generator Private Data
+
+struct cpg_mssr_priv - Clock Pulse Generator Private Data
+
+> + *
+> + * @rcdev: Optional reset controller entity
+> + * @dev: CPG/MSSR device
+
+CPG?
+
+> + * @base: CPG/MSSR register block base address
+
+CPG?
+
+> + * @rmw_lock: protects RMW register accesses
+> + * @clks: Array containing all Core and Module Clocks
+> + * @num_core_clks: Number of Core Clocks in clks[]
+> + * @num_mod_clks: Number of Module Clocks in clks[]
+> + * @last_dt_core_clk: ID of the last Core Clock exported to DT
+> + * @notifiers: Notifier chain to save/restore clock state for system resume
+> + * @info: Pointer to platform data
+> + */
+> +struct cpg_mssr_priv {
+
+rzg2l_cpg_priv?
+
+> +#ifdef CONFIG_RESET_CONTROLLER
+> +       struct reset_controller_dev rcdev;
+> +#endif
+> +       struct device *dev;
+> +       void __iomem *base;
+> +       spinlock_t rmw_lock;
+> +
+> +       struct clk **clks;
+> +       unsigned int num_core_clks;
+> +       unsigned int num_mod_clks;
+> +       unsigned int last_dt_core_clk;
+> +
+> +       struct raw_notifier_head notifiers;
+> +       const struct cpg_mssr_info *info;
+> +};
 
 
-Best regards,
-Krzysztof
+> +struct div2_clk {
+> +       struct clk_hw hw;
+> +       unsigned int conf;
+> +       const struct clk_div_table *dtable;
+> +       unsigned int confs;
+> +       const struct clk_div_table *dtables;
+
+Please don't interleave pointers and integers on a 64-bit platform,
+as it requires padding to keep the pointers naturally aligned.
+Same for struct pll_clk below.
+
+> +       void __iomem *base;
+> +       struct cpg_mssr_priv *priv;
+> +};
+> +
+> +#define to_d2clk(_hw)  container_of(_hw, struct div2_clk, hw)
+> +
+> +static unsigned int div2_clock_get_div(unsigned int val,
+> +                                      const struct clk_div_table *t,
+> +                                      int length)
+
+unsigned int
+
+> +{
+> +       int i;
+
+unsigned int (for all positive loop counters)
+
+> +
+> +       for (i = 0; i <= length; i++)
+> +               if (val == t[i].val)
+> +                       return t[i].div;
+> +
+> +       /* return div=1 if failed */
+> +       return 1;
+> +}
+
+> +static long rzg2l_cpg_div2_clk_round_rate(struct clk_hw *hw,
+> +                                         unsigned long rate,
+> +                                         unsigned long *parent_rate)
+
+Please implement .determine_rate() instead of .round_rate() in new
+drivers.
+
+> +{
+> +       unsigned long best_diff = (unsigned long)-1;
+> +       unsigned int best_div, best_divs, div, divs;
+> +       struct div2_clk *d2clk = to_d2clk(hw);
+> +       unsigned long diff;
+> +       int i, j, n, ns;
+> +
+> +       n = BIT(GET_WIDTH(d2clk->conf)) - 1;
+> +       ns = BIT(GET_WIDTH(d2clk->confs)) - 1;
+> +       for (i = 0; i <= n; i++) {
+> +               for (j = 0; j <= ns; j++) {
+> +                       div = div2_clock_get_div(i, d2clk->dtable, n);
+> +                       divs = div2_clock_get_div(j, d2clk->dtables, ns);
+> +                       diff = abs(*parent_rate - (rate * div * divs));
+> +                       if (best_diff > diff) {
+> +                               best_diff = diff;
+> +                               best_div = div;
+> +                               best_divs = divs;
+> +                       }
+> +               }
+> +       }
+> +
+> +       return DIV_ROUND_CLOSEST_ULL((u64)*parent_rate, best_div * best_divs);
+> +}
+
+> +/**
+> + * struct mstp_clock - MSTP gating clock
+> + * @hw: handle between common and hardware-specific interfaces
+> + * @bit: 16bits register offset, 8bits ON/MON, 8bits RESET
+> + * @priv: CPG/MSSR private data
+> + */
+> +struct mstp_clock {
+> +       struct clk_hw hw;
+> +       u32 bit;
+
+I think the code accessing this field can be simplified by not packing
+everything into a 32-bit value:
+
+    u16 off;
+    u8 onoff;
+    u8 reset;
+
+> +       struct cpg_mssr_priv *priv;
+> +};
+
+> diff --git a/drivers/clk/renesas/renesas-rzg2l-cpg.h b/drivers/clk/renesas/renesas-rzg2l-cpg.h
+> new file mode 100644
+> index 000000000000..8dce6b5546b1
+> --- /dev/null
+> +++ b/drivers/clk/renesas/renesas-rzg2l-cpg.h
+> @@ -0,0 +1,221 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * RZ/G2L Clock Pulse Generator
+> + *
+> + * Copyright (C) 2021 Renesas Electronics Corp.
+> + *
+> + */
+> +
+> +#ifndef __RENESAS_RZG2L_CPG_H__
+> +#define __RENESAS_RZG2L_CPG_H__
+> +
+> +/* Register offset */
+> +/* n : 0, 1, 2 : PLL1, PLL4, PLL6 */
+> +#define PLL146_CLK1_R(n)       (0x04 + (16 * n))
+> +#define PLL146_CLK2_R(n)       (0x08 + (16 * n))
+> +#define PLL146_MON_R(n)                (0x0C + (16 * n))
+> +#define PLL146_STBY_R(n)       (0x00 + (16 * n))
+> +
+> +/* n : 0, 1, 2 : PLL2, PLL3, PLL5 */
+> +#define PLL235_CLK1_R(n)       (0x104 + (32 * n))
+> +#define PLL235_CLK3_R(n)       (0x10c + (32 * n))
+> +#define PLL235_CLK4_R(n)       (0x110 + (32 * n))
+> +#define PLL235_MON_R(n)                (0x11C + (32 * n))
+> +#define PLL235_STBY_R(n)       (0x100 + (32 * n))
+> +
+> +#define PLL1_DIV_R             (0x200)
+> +#define PLL2_DIV_R             (0x204)
+> +#define PLL3A_DIV_R            (0x208)
+> +#define PLL3B_DIV_R            (0x20c)
+> +#define PLL6_DIV_R             (0x210)
+> +#define PL2SDHI_SEL_R          (0x218)
+> +#define CLK_STATUS_R           (0x280)
+> +#define CA55_SSEL_R            (0x400)
+> +#define PL2_SSEL_R             (0x404)
+> +#define PL3_SSEL_R             (0x408)
+> +#define PL4_DSEL_R             (0x21C)
+> +#define PL5_SSEL_R             (0x410)
+> +#define PL6_SSEL_R             (0x414)
+> +#define PL6_ETH_SSEL_R         (0x418)
+> +#define PL5_SDIV_R             (0x420)
+> +#define OTHERFUNC1_R           (0xBE8)
+> +#define CLK_ON_R(reg)          (0x500 + reg)
+> +#define CLK_MON_R(reg)         (0x680 + reg)
+> +#define CLK_RST_R(reg)         (0x800 + reg)
+> +#define CLK_MRST_R(reg)                (0x980 + reg)
+
+The register offsets are only used by renesas-rzg2l-cpg.c, so they
+can be moved there.
+
+> +
+> +#define SEL_PLL1       (CA55_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL2_1     (PL2_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL2_2     (PL2_SSEL_R << 20 | 4 << 12 | 1 << 8)
+> +#define SEL_PLL3_1     (PL3_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL3_2     (PL3_SSEL_R << 20 | 4 << 12 | 1 << 8)
+> +#define SEL_PLL3_3     (PL3_SSEL_R << 20 | 8 << 12 | 1 << 8)
+> +#define SEL_PLL4       (PL4_DSEL_R << 20 | 8 << 12 | 1 << 8)
+> +#define SEL_PLL5_1     (PL5_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL5_2     (PL5_SSEL_R << 20 | 4 << 12 | 1 << 8)
+> +#define SEL_PLL5_3     (PL5_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL5_4     (OTHERFUNC1_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL6_1     (PL6_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_PLL6_2     (PL6_ETH_SSEL_R << 20 | 0 << 12 | 1 << 8)
+> +#define SEL_ETH                (PL6_ETH_SSEL_R << 20 | 4 << 12 | 1 << 8)
+> +#define SEL_G1_1       (PL6_SSEL_R << 20 | 4 << 12 | 1 << 8)
+> +#define SEL_G1_2       (PL6_SSEL_R << 20 | 8 << 12 | 1 << 8)
+> +#define SEL_G2         (PL6_SSEL_R << 20 | 12 << 12 | 1 << 8)
+> +#define SEL_SDHI0      (PL2SDHI_SEL_R << 20 | 0 << 12 | 2 << 8)
+> +#define SEL_SDHI1      (PL2SDHI_SEL_R << 20 | 4 << 12 | 2 << 8)
+> +#define DIVPL1         (PLL1_DIV_R << 20 | 0 << 12 | 2 << 8)
+> +#define DIVPL2A                (PLL2_DIV_R << 20 | 0 << 12 | 3 << 8)
+> +#define DIVPL2B                (PLL2_DIV_R << 20 | 4 << 12 | 3 << 8)
+> +#define DIVPL2C                (PLL2_DIV_R << 20 | 8 << 12 | 3 << 8)
+> +#define DIVDSILPCL     (PLL2_DIV_R << 20 | 12 << 12 | 2 << 8)
+> +#define DIVPL3A                (PLL3A_DIV_R << 20 | 0 << 12 | 3 << 8)
+> +#define DIVPL3B                (PLL3A_DIV_R << 20 | 4 << 12 | 3 << 8)
+> +#define DIVPL3C                (PLL3A_DIV_R << 20 | 8 << 12 | 3 << 8)
+> +#define DIVPL3CLK200FIX        (PLL3B_DIV_R << 20 | 0 << 12 | 3 << 8)
+> +#define DIVGPU         (PLL6_DIV_R << 20 | 0 << 12 | 2 << 8)
+> +#define DIVDSIB                (PL5_SDIV_R << 20 | 8 << 12 | 4 << 8)
+> +#define DIVDSIA                (PL5_SDIV_R << 20 | 0 << 12 | 2 << 8)
+> +
+> +#define PLL146_STBY(n) (PLL146_STBY_R(n) << 20 | 2 << 16 | 0 << 12)
+> +#define PLL146_MON(n)  (PLL146_MON_R(n) << 20 | 4 << 16 | 0 << 12)
+> +#define PLL235_STBY(n) (PLL235_STBY_R(n) << 20 | 2 << 16 | 0 << 12)
+> +#define PLL235_MON(n)  (PLL235_MON_R(n) << 20 | 4 << 16 | 0 << 12)
+> +
+> +#define PLL146_CONF(n) (PLL146_CLK1_R(n) << 22 | PLL146_CLK2_R(n) << 12 | 0)
+> +#define PLL235_CONF(n) (PLL235_CLK1_R(n) << 22 | PLL235_CLK3_R(n) << 12 | PLL235_CLK4_R(n))
+> +
+> +#define GET_REG1(val)  ((val >> 22) & 0x3ff)
+> +#define GET_REG2(val)  ((val >> 12) & 0x3ff)
+> +#define GET_REG3(val)  (val & 0x3ff)
+
+The GET_REG() macros are only used by renesas-rzg2l-cpg.c.
+
+> +
+> +#define MSSR(off, on, res)     ((off & 0xffff) << 16 | \
+> +                                (on & 0xff) << 8 | (res & 0xff))
+> +#define MSSR_OFF(val)  ((val >> 16) & 0xffff)
+> +#define MSSR_ON(val)   ((val >> 8) & 0xff)
+> +#define MSSR_RES(val)  (val & 0xff)
+
+Can be removed after mstp_clock.bit split.
+
+> +/*
+> + * Definitions of Module Clocks
+> + * @name: handle between common and hardware-specific interfaces
+> + * @id: clock index in array containing all Core and Module Clocks
+> + * @parent: id of parent clock
+> + * @bit: 16bits register offset, 8bits ON/MON, 8bits RESET
+> + */
+> +struct mssr_mod_clk {
+
+rzg2l_mod_clk?
+
+> +       const char *name;
+> +       unsigned int id;
+> +       unsigned int parent;
+> +       unsigned int bit;
+
+Same comment as for mstp_clock.bit.
+
+> +};
+> +
+> +#define DEF_MOD(_name, _id, _parent, _bit)     \
+> +       { .name = _name, .id = MOD_CLK_BASE + _id, .parent = _parent,\
+> +       .bit = _bit }
+> +
+> +/**
+> + * SoC-specific CPG/MSSR Description
+> + *
+> + * @core_clks: Array of Core Clock definitions
+> + * @num_core_clks: Number of entries in core_clks[]
+> + * @last_dt_core_clk: ID of the last Core Clock exported to DT
+> + * @num_total_core_clks: Total number of Core Clocks (exported + internal)
+> + *
+> + * @pll_info: array of PLL register info
+> + * @pll_info_size: Total number of PLL registers info
+> + *
+> + * @mod_clks: Array of Module Clock definitions
+> + * @num_mod_clks: Number of entries in mod_clks[]
+> + * @num_hw_mod_clks: Number of Module Clocks supported by the hardware
+> + *
+> + * @crit_mod_clks: Array with Module Clock IDs of critical clocks that
+> + *                 should not be disabled without a knowledgeable driver
+> + * @num_crit_mod_clks: Number of entries in crit_mod_clks[]
+> + */
+> +struct cpg_mssr_info {
+
+rzg2l_cpg_info?
+
+> +       /* Core Clocks */
+> +       const struct cpg_core_clk *core_clks;
+> +       unsigned int num_core_clks;
+> +       unsigned int last_dt_core_clk;
+> +       unsigned int num_total_core_clks;
+> +
+> +       /* Module Clocks */
+> +       const struct mssr_mod_clk *mod_clks;
+> +       unsigned int num_mod_clks;
+> +       unsigned int num_hw_mod_clks;
+> +
+> +       /* Critical Module Clocks that should not be disabled */
+> +       const unsigned int *crit_mod_clks;
+> +       unsigned int num_crit_mod_clks;
+> +};
+> +
+> +#endif
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
