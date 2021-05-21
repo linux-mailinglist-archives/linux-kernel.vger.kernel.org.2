@@ -2,72 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D3238BBA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:36:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6631A38BBA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:37:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236983AbhEUBhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:37:42 -0400
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:46065 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236767AbhEUBhk (ORCPT
+        id S237050AbhEUBir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:38:47 -0400
+Received: from mail-ot1-f48.google.com ([209.85.210.48]:38667 "EHLO
+        mail-ot1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237001AbhEUBiq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:37:40 -0400
-Received: by mail-ot1-f51.google.com with SMTP id t10-20020a05683022eab0290304ed8bc759so16614020otc.12;
-        Thu, 20 May 2021 18:36:17 -0700 (PDT)
+        Thu, 20 May 2021 21:38:46 -0400
+Received: by mail-ot1-f48.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so5460661otk.5;
+        Thu, 20 May 2021 18:37:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ET1FSInmi9xWe6G3649W8hSLkl02LpJjSYxXmmaIbsg=;
-        b=PWdaHL9Fpl3KuU0sHfj66axILqlsr1rl28gReSnE+Xau2qfAujOjeBKllqkTAOgBfx
-         +TkWvTEx+ET13cvvBLGojiOrl8Z0iqbrA1TQsPo1Hkvgahzu7FLwtbSHkz7FbXDbXzem
-         sJBjdgCX+s9CwkN764l4YNKqXH0fDwGFUgivEAtRw10fcrzyDP+ZyBjt0WOPDhi7p/+U
-         j7UZw+o+g5t5DCjU78083CTCKX3waX8P/qFBTPL+nURRa4NYScSvl/P7nR452AQKIjxJ
-         uLw2wXfjDNYNdSTLcbKIXjBnmCJCENZbU5qpKiswnhq8q2KwrlzubuG1an6lgUPO//xp
-         6Clg==
-X-Gm-Message-State: AOAM530Zc663KiPNmoivbLizcTOITQyFuMaFRvl9rC2vvMbQ9Daum3xa
-        2/srSDAkGw43MtEwBiUKrw==
-X-Google-Smtp-Source: ABdhPJwf6HtOpo1GD+1h2f2qQ2grSAw426WIcg+cZz8R77ZcBEjj4AxNJ2lkRUXhXpnBcx++hkbJfw==
-X-Received: by 2002:a9d:62d2:: with SMTP id z18mr6152926otk.78.1621560977453;
-        Thu, 20 May 2021 18:36:17 -0700 (PDT)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=PU0wqAPlfXa5ioTwymYq6yRTqRxt/LLzW8WseVv/Exo=;
+        b=OnOtA/et5fM4nxVYg+tzAMcAJz+RkA8+gPpa0KT2EWbeXoRplAFRJCdQSs0IjofrQQ
+         C0b5jO71wymfHnGesiT87nET8YVTETC/S5qDlStO8nhBxII4cJAZYF3r/KB818hEA1gs
+         tXsqYsaLjeVHy3FxANpe5bFwu6qFna3NbrqP4OzMUgHQWo8iNCRcflrXCx/96q9SOAoQ
+         COmyXOd1FS4/HA7GwvazzX7WzZUGBotFDHQUkWHFHOF3gRk/VbKozQTREsiTryHRUfSe
+         fOQ5V2Gkcv2U71eACO9lIfUQ8tvj6gjEPm5d2cwHvyrP0j7hWAl1cHnq2fjMpztpg/gu
+         +ZiA==
+X-Gm-Message-State: AOAM531gi9KpopRP+u7yvi2vbKnqwgtjDd3ixZ/Ud345erLvuIVtSjHe
+        M1z1l3kwA+sDRpyblv+GTw==
+X-Google-Smtp-Source: ABdhPJzLevEdXk1J/LS6sp90IY4zxHV2okOGcnhpXvtdzFZ2I7YcOpoKuJRUBf4lqNmPYoivs6uhpw==
+X-Received: by 2002:a9d:470e:: with SMTP id a14mr6173715otf.236.1621561043894;
+        Thu, 20 May 2021 18:37:23 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s85sm913372oos.4.2021.05.20.18.36.16
+        by smtp.gmail.com with ESMTPSA id f8sm857214oos.33.2021.05.20.18.37.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 18:36:16 -0700 (PDT)
-Received: (nullmailer pid 2453887 invoked by uid 1000);
-        Fri, 21 May 2021 01:36:16 -0000
-Date:   Thu, 20 May 2021 20:36:16 -0500
+        Thu, 20 May 2021 18:37:23 -0700 (PDT)
+Received: (nullmailer pid 2455951 invoked by uid 1000);
+        Fri, 21 May 2021 01:37:22 -0000
+Date:   Thu, 20 May 2021 20:37:22 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     linux-input@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        kernel@pengutronix.de, Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        David Jander <david@protonic.nl>, linux-kernel@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 4/5] dt-bindings: touchscreen: resistive-adc-touch:
- add support for z1 and z2 channels
-Message-ID: <20210521013616.GA2453857@robh.at.kernel.org>
-References: <20210519094221.27792-1-o.rempel@pengutronix.de>
- <20210519094221.27792-5-o.rempel@pengutronix.de>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org,
+        Ash Logan <ash@heyquark.com>,
+        Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.ne@posteo.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: nintendo-otp: Document the Wii and
+ Wii U OTP support
+Message-ID: <20210521013722.GA2454145@robh.at.kernel.org>
+References: <20210519095044.4109-1-linkmauve@linkmauve.fr>
+ <20210519095044.4109-3-linkmauve@linkmauve.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210519094221.27792-5-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210519095044.4109-3-linkmauve@linkmauve.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 11:42:20 +0200, Oleksij Rempel wrote:
-> For pressure calculation based on plates resistance we need some additional
-> properties:
-> - z1 and z2 channels with additional measurements between plates
-> - actual resistance of the touchscreen. Currently we use only
->   X-resistance.
+On Wed, May 19, 2021 at 11:50:42AM +0200, Emmanuel Gil Peyrot wrote:
+> Both of these consoles use the exact same two registers, even at the
+> same address, but the Wii U has eight banks of 128 bytes memory while
+> the Wii only has one, hence the two compatible strings.
 > 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 > ---
->  .../input/touchscreen/resistive-adc-touch.yaml   | 16 ++++++++++++++++
->  1 file changed, 16 insertions(+)
-> 
+>  .../devicetree/bindings/nvmem/nintendo-otp.txt     | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/nvmem/nintendo-otp.txt
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Bindings should be in DT schema format now.
+
+> 
+> diff --git a/Documentation/devicetree/bindings/nvmem/nintendo-otp.txt b/Documentation/devicetree/bindings/nvmem/nintendo-otp.txt
+> new file mode 100644
+> index 000000000000..b26d705ec52d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/nvmem/nintendo-otp.txt
+> @@ -0,0 +1,14 @@
+> +Nintendo Wii and Wii U OTP
+> +
+> +Required Properties:
+> +- compatible: depending on the console this should be one of:
+> +	- "nintendo,hollywood-otp" for the Wii
+> +	- "nintendo,latte-otp" for the Wii U
+> +- reg: base address and size of the OTP registers
+> +
+> +
+> +Example:
+> +	otp@d8001ec {
+> +		compatible = "nintendo,latte-otp";
+> +		reg = <0x0d8001ec 0x8>;
+> +	};
+> -- 
+> 2.31.1
+> 
