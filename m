@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 776B638C4EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B34B538C4F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234783AbhEUKby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:31:54 -0400
-Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:59129 "EHLO
-        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230410AbhEUKaM (ORCPT
+        id S231269AbhEUKcD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:32:03 -0400
+Received: from outbound-smtp25.blacknight.com ([81.17.249.193]:42577 "EHLO
+        outbound-smtp25.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231484AbhEUKaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:30:12 -0400
+        Fri, 21 May 2021 06:30:20 -0400
 Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id E9C061C3BF5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:28:46 +0100 (IST)
-Received: (qmail 22048 invoked from network); 21 May 2021 10:28:46 -0000
+        by outbound-smtp25.blacknight.com (Postfix) with ESMTPS id 14F0FCAC4E
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:28:57 +0100 (IST)
+Received: (qmail 22629 invoked from network); 21 May 2021 10:28:56 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPA; 21 May 2021 10:28:46 -0000
+  by 81.17.254.9 with ESMTPA; 21 May 2021 10:28:56 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
@@ -27,9 +27,9 @@ Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         Nicholas Piggin <npiggin@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 1/6] mm/page_alloc: Delete vm.percpu_pagelist_fraction
-Date:   Fri, 21 May 2021 11:28:21 +0100
-Message-Id: <20210521102826.28552-2-mgorman@techsingularity.net>
+Subject: [PATCH 2/6] mm/page_alloc: Disassociate the pcp->high from pcp->batch
+Date:   Fri, 21 May 2021 11:28:22 +0100
+Message-Id: <20210521102826.28552-3-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210521102826.28552-1-mgorman@techsingularity.net>
 References: <20210521102826.28552-1-mgorman@techsingularity.net>
@@ -39,195 +39,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The vm.percpu_pagelist_fraction is used to increase the batch and high
-limits for the per-cpu page allocator (PCP). The intent behind the sysctl
-is to reduce zone lock acquisition when allocating/freeing pages but it has
-a problem. While it can decrease contention, it can also increase latency
-on the allocation side due to unreasonably large batch sizes. This leads
-to games where an administrator adjusts percpu_pagelist_fraction on the
-fly to work around contention and allocation latency problems.
+The pcp high watermark is based on the batch size but there is no
+relationship between them other than it is convenient to use early in
+boot.
 
-This series aims to alleviate the problems with zone lock contention while
-avoiding the allocation-side latency problems. For the purposes of review,
-it's easier to remove this sysctl now and reintroduce a similar sysctl
-later in the series that deals only with pcp->high.
+This patch takes the first step and bases pcp->high on the zone low
+watermark split across the number of CPUs local to a zone while the batch
+size remains the same to avoid increasing allocation latencies. The intent
+behind the default pcp->high is "set the number of PCP pages such that
+if they are all full that background reclaim is not started prematurely".
+
+Note that in this patch the pcp->high values are adjusted after memory
+hotplug events, min_free_kbytes adjustments and watermark scale factor
+adjustments but not CPU hotplug events.
+
+On a test KVM instance;
+
+Before grep -E "high:|batch" /proc/zoneinfo | tail -2
+              high:  378
+              batch: 63
+
+After grep -E "high:|batch" /proc/zoneinfo | tail -2
+              high:  649
+              batch: 63
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- Documentation/admin-guide/sysctl/vm.rst | 19 ---------
- include/linux/mmzone.h                  |  3 --
- kernel/sysctl.c                         |  8 ----
- mm/page_alloc.c                         | 55 ++-----------------------
- 4 files changed, 4 insertions(+), 81 deletions(-)
+ mm/page_alloc.c | 53 ++++++++++++++++++++++++++++++++-----------------
+ 1 file changed, 35 insertions(+), 18 deletions(-)
 
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index 586cd4b86428..2fcafccb53a8 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -64,7 +64,6 @@ files can be found in mm/swap.c.
- - overcommit_ratio
- - page-cluster
- - panic_on_oom
--- percpu_pagelist_fraction
- - stat_interval
- - stat_refresh
- - numa_stat
-@@ -790,24 +789,6 @@ panic_on_oom=2+kdump gives you very strong tool to investigate
- why oom happens. You can get snapshot.
- 
- 
--percpu_pagelist_fraction
--========================
--
--This is the fraction of pages at most (high mark pcp->high) in each zone that
--are allocated for each per cpu page list.  The min value for this is 8.  It
--means that we don't allow more than 1/8th of pages in each zone to be
--allocated in any single per_cpu_pagelist.  This entry only changes the value
--of hot per cpu pagelists.  User can specify a number like 100 to allocate
--1/100th of each zone to each per cpu page list.
--
--The batch value of each per cpu pagelist is also updated as a result.  It is
--set to pcp->high/4.  The upper limit of batch is (PAGE_SHIFT * 8)
--
--The initial value is zero.  Kernel does not use this value at boot time to set
--the high water marks for each per cpu page list.  If the user writes '0' to this
--sysctl, it will revert to this default behavior.
--
--
- stat_interval
- =============
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index d7740c97b87e..b449151745d7 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1038,15 +1038,12 @@ int watermark_scale_factor_sysctl_handler(struct ctl_table *, int, void *,
- extern int sysctl_lowmem_reserve_ratio[MAX_NR_ZONES];
- int lowmem_reserve_ratio_sysctl_handler(struct ctl_table *, int, void *,
- 		size_t *, loff_t *);
--int percpu_pagelist_fraction_sysctl_handler(struct ctl_table *, int,
--		void *, size_t *, loff_t *);
- int sysctl_min_unmapped_ratio_sysctl_handler(struct ctl_table *, int,
- 		void *, size_t *, loff_t *);
- int sysctl_min_slab_ratio_sysctl_handler(struct ctl_table *, int,
- 		void *, size_t *, loff_t *);
- int numa_zonelist_order_handler(struct ctl_table *, int,
- 		void *, size_t *, loff_t *);
--extern int percpu_pagelist_fraction;
- extern char numa_zonelist_order[];
- #define NUMA_ZONELIST_ORDER_LEN	16
- 
-diff --git a/kernel/sysctl.c b/kernel/sysctl.c
-index 14edf84cc571..4e5ac50a1af0 100644
---- a/kernel/sysctl.c
-+++ b/kernel/sysctl.c
-@@ -2889,14 +2889,6 @@ static struct ctl_table vm_table[] = {
- 		.extra1		= SYSCTL_ONE,
- 		.extra2		= &one_thousand,
- 	},
--	{
--		.procname	= "percpu_pagelist_fraction",
--		.data		= &percpu_pagelist_fraction,
--		.maxlen		= sizeof(percpu_pagelist_fraction),
--		.mode		= 0644,
--		.proc_handler	= percpu_pagelist_fraction_sysctl_handler,
--		.extra1		= SYSCTL_ZERO,
--	},
- 	{
- 		.procname	= "page_lock_unfairness",
- 		.data		= &sysctl_page_lock_unfairness,
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ff8f706839ea..a48f305f0381 100644
+index a48f305f0381..bf5cdc466e6c 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -120,7 +120,6 @@ typedef int __bitwise fpi_t;
+@@ -2163,14 +2163,6 @@ void __init page_alloc_init_late(void)
+ 	/* Block until all are initialised */
+ 	wait_for_completion(&pgdat_init_all_done_comp);
  
- /* prevent >1 _updater_ of zone percpu pageset ->high and ->batch fields */
- static DEFINE_MUTEX(pcp_batch_high_lock);
--#define MIN_PERCPU_PAGELIST_FRACTION	(8)
+-	/*
+-	 * The number of managed pages has changed due to the initialisation
+-	 * so the pcpu batch and high limits needs to be updated or the limits
+-	 * will be artificially small.
+-	 */
+-	for_each_populated_zone(zone)
+-		zone_pcp_update(zone);
+-
+ 	/*
+ 	 * We initialized the rest of the deferred pages.  Permanently disable
+ 	 * on-demand struct page initialization.
+@@ -6594,13 +6586,12 @@ static int zone_batchsize(struct zone *zone)
+ 	int batch;
  
- struct pagesets {
- 	local_lock_t lock;
-@@ -182,7 +181,6 @@ EXPORT_SYMBOL(_totalram_pages);
- unsigned long totalreserve_pages __read_mostly;
- unsigned long totalcma_pages __read_mostly;
+ 	/*
+-	 * The per-cpu-pages pools are set to around 1000th of the
+-	 * size of the zone.
++	 * The number of pages to batch allocate is either 0.1%
++	 * of the zone or 1MB, whichever is smaller. The batch
++	 * size is striking a balance between allocation latency
++	 * and zone lock contention.
+ 	 */
+-	batch = zone_managed_pages(zone) / 1024;
+-	/* But no more than a meg. */
+-	if (batch * PAGE_SIZE > 1024 * 1024)
+-		batch = (1024 * 1024) / PAGE_SIZE;
++	batch = min(zone_managed_pages(zone) >> 10, (1024 * 1024) / PAGE_SIZE);
+ 	batch /= 4;		/* We effectively *= 4 below */
+ 	if (batch < 1)
+ 		batch = 1;
+@@ -6637,6 +6628,27 @@ static int zone_batchsize(struct zone *zone)
+ #endif
+ }
  
--int percpu_pagelist_fraction;
- gfp_t gfp_allowed_mask __read_mostly = GFP_BOOT_MASK;
- DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_ALLOC_DEFAULT_ON, init_on_alloc);
- EXPORT_SYMBOL(init_on_alloc);
-@@ -6696,22 +6694,15 @@ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long h
- 
++static int zone_highsize(struct zone *zone)
++{
++#ifdef CONFIG_MMU
++	int high;
++	int nr_local_cpus;
++
++	/*
++	 * The high value of the pcp is based on the zone low watermark
++	 * when reclaim is potentially active spread across the online
++	 * CPUs local to a zone. Note that early in boot that CPUs may
++	 * not be online yet.
++	 */
++	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone))));
++	high = low_wmark_pages(zone) / nr_local_cpus;
++
++	return high;
++#else
++	return 0;
++#endif
++}
++
  /*
-  * Calculate and set new high and batch values for all per-cpu pagesets of a
-- * zone, based on the zone's size and the percpu_pagelist_fraction sysctl.
-+ * zone based on the zone's size.
+  * pcp->high and pcp->batch values are related and generally batch is lower
+  * than high. They are also related to pcp->count such that count is lower
+@@ -6698,11 +6710,10 @@ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long h
   */
  static void zone_set_pageset_high_and_batch(struct zone *zone)
  {
- 	unsigned long new_high, new_batch;
+-	unsigned long new_high, new_batch;
++	int new_high, new_batch;
  
--	if (percpu_pagelist_fraction) {
--		new_high = zone_managed_pages(zone) / percpu_pagelist_fraction;
--		new_batch = max(1UL, new_high / 4);
--		if ((new_high / 4) > (PAGE_SHIFT * 8))
--			new_batch = PAGE_SHIFT * 8;
--	} else {
--		new_batch = zone_batchsize(zone);
--		new_high = 6 * new_batch;
--		new_batch = max(1UL, 1 * new_batch);
--	}
-+	new_batch = zone_batchsize(zone);
-+	new_high = 6 * new_batch;
-+	new_batch = max(1UL, 1 * new_batch);
+-	new_batch = zone_batchsize(zone);
+-	new_high = 6 * new_batch;
+-	new_batch = max(1UL, 1 * new_batch);
++	new_batch = max(1, zone_batchsize(zone));
++	new_high = zone_highsize(zone);
  
  	if (zone->pageset_high == new_high &&
  	    zone->pageset_batch == new_batch)
-@@ -8377,44 +8368,6 @@ int lowmem_reserve_ratio_sysctl_handler(struct ctl_table *table, int write,
- 	return 0;
- }
+@@ -8170,6 +8181,12 @@ static void __setup_per_zone_wmarks(void)
+ 		zone->_watermark[WMARK_LOW]  = min_wmark_pages(zone) + tmp;
+ 		zone->_watermark[WMARK_HIGH] = min_wmark_pages(zone) + tmp * 2;
  
--/*
-- * percpu_pagelist_fraction - changes the pcp->high for each zone on each
-- * cpu.  It is the fraction of total pages in each zone that a hot per cpu
-- * pagelist can have before it gets flushed back to buddy allocator.
-- */
--int percpu_pagelist_fraction_sysctl_handler(struct ctl_table *table, int write,
--		void *buffer, size_t *length, loff_t *ppos)
--{
--	struct zone *zone;
--	int old_percpu_pagelist_fraction;
--	int ret;
--
--	mutex_lock(&pcp_batch_high_lock);
--	old_percpu_pagelist_fraction = percpu_pagelist_fraction;
--
--	ret = proc_dointvec_minmax(table, write, buffer, length, ppos);
--	if (!write || ret < 0)
--		goto out;
--
--	/* Sanity checking to avoid pcp imbalance */
--	if (percpu_pagelist_fraction &&
--	    percpu_pagelist_fraction < MIN_PERCPU_PAGELIST_FRACTION) {
--		percpu_pagelist_fraction = old_percpu_pagelist_fraction;
--		ret = -EINVAL;
--		goto out;
--	}
--
--	/* No change? */
--	if (percpu_pagelist_fraction == old_percpu_pagelist_fraction)
--		goto out;
--
--	for_each_populated_zone(zone)
--		zone_set_pageset_high_and_batch(zone);
--out:
--	mutex_unlock(&pcp_batch_high_lock);
--	return ret;
--}
--
- #ifndef __HAVE_ARCH_RESERVED_KERNEL_PAGES
- /*
-  * Returns the number of pages that arch has reserved but
++		/*
++		 * The watermark size have changed so update the pcpu batch
++		 * and high limits or the limits may be inappropriate.
++		 */
++		zone_set_pageset_high_and_batch(zone);
++
+ 		spin_unlock_irqrestore(&zone->lock, flags);
+ 	}
+ 
 -- 
 2.26.2
 
