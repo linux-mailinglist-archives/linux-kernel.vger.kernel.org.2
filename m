@@ -2,91 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C4D838CD5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6102B38CD61
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234310AbhEUS0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37834 "EHLO mail.kernel.org"
+        id S232969AbhEUS1f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:27:35 -0400
+Received: from foss.arm.com ([217.140.110.172]:53366 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhEUS0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:26:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D3049613E2;
-        Fri, 21 May 2021 18:25:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621621526;
-        bh=9AcZJfeo0xf1euRFblZG0MfqbBmLwbiLEIEackPiTqA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0LBTP5aGzuiN5qYxA5cNt6W4SscUFYtUHumwamPn5Ztt1ht4YhL0u1ltJnjB1YUcx
-         Omlw2tyXOaYoH+f7UwfsC2EQ2dUPcDcVkYUFJ3KfXUxzFp9WptKLX3fXamJ5dkGMuK
-         +5FhSMdxVEDIsBv/267cHa1UzuZg2WeNhKH75vKI=
-Date:   Fri, 21 May 2021 20:25:23 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Palmer Dabbelt <palmerdabbelt@google.com>
-Cc:     pbonzini@redhat.com, anup@brainfault.org,
-        Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, corbet@lwn.net, graf@amazon.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-Message-ID: <YKf7E4YfLrcfgCoi@kroah.com>
-References: <YKfyR5jUu3HMvYg5@kroah.com>
- <mhng-122345f7-47d9-4509-8ae6-ce1da912fc00@palmerdabbelt-glaptop>
+        id S229762AbhEUS1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:27:34 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE76F1424;
+        Fri, 21 May 2021 11:26:10 -0700 (PDT)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 272F03F73D;
+        Fri, 21 May 2021 11:26:10 -0700 (PDT)
+Date:   Fri, 21 May 2021 19:26:02 +0100
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Axel Lin <axel.lin@ingics.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] regulator: scmi: Fix off-by-one for linear regulators
+ .n_voltages setting
+Message-ID: <20210521182602.GM28060@e120937-lin>
+References: <20210521073020.1944981-1-axel.lin@ingics.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <mhng-122345f7-47d9-4509-8ae6-ce1da912fc00@palmerdabbelt-glaptop>
+In-Reply-To: <20210521073020.1944981-1-axel.lin@ingics.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 11:08:15AM -0700, Palmer Dabbelt wrote:
-> On Fri, 21 May 2021 10:47:51 PDT (-0700), Greg KH wrote:
-> > On Fri, May 21, 2021 at 07:21:12PM +0200, Paolo Bonzini wrote:
-> > > On 21/05/21 19:13, Palmer Dabbelt wrote:
-> > > > >
-> > > >
-> > > > I don't view this code as being in a state where it can be
-> > > > maintained, at least to the standards we generally set within the
-> > > > kernel.  The ISA extension in question is still subject to change, it
-> > > > says so right at the top of the H extension <https://github.com/riscv/riscv-isa-manual/blob/master/src/hypervisor.tex#L4>
-> > > >
-> > > >   {\bf Warning! This draft specification may change before being
-> > > > accepted as standard by the RISC-V Foundation.}
-> > > 
-> > > To give a complete picture, the last three relevant changes have been in
-> > > August 2019, November 2019 and May 2020.  It seems pretty frozen to me.
-> > > 
-> > > In any case, I think it's clear from the experience with Android that
-> > > the acceptance policy cannot succeed.  The only thing that such a policy
-> > > guarantees, is that vendors will use more out-of-tree code.  Keeping a
-> > > fully-developed feature out-of-tree for years is not how Linux is run.
-> > > 
-> > > > I'm not sure where exactly the line for real hardware is, but for
-> > > > something like this it would at least involve some chip that is
-> > > > widely availiable and needs the H extension to be useful
-> > > 
-> > > Anup said that "quite a few people have already implemented RISC-V
-> > > H-extension in hardware as well and KVM RISC-V works on real HW as well".
-> > > Those people would benefit from having KVM in the Linus tree.
-> > 
-> > Great, but is this really true?  If so, what hardware has this?  I have
-> > a new RISC-V device right here next to me, what would I need to do to
-> > see if this is supported in it or not?
+Hi,
+
+On Fri, May 21, 2021 at 03:30:20PM +0800, Axel Lin wrote:
+> For linear regulators, the .n_voltages is (max_uv - min_uv) / uv_step + 1.
 > 
-> You can probe the misa register, it should have the H bit set if it supports
-> the H extension.
+> Fixes: 0fbeae70ee7c ("regulator: add SCMI driver")
+> Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> ---
 
-To let everyone know, based on our private chat we had off-list, no, the
-device I have does not support this extension, so unless someone can
-point me at real hardware, I don't think this code needs to be
-considered for merging anywhere just yet.
+Right. Good catch.
 
-thanks,
+Reviewed-by: Cristian Marussi <cristian.marussi@arm.com>
 
-greg k-h
+Thanks,
+Cristian
+
+>  drivers/regulator/scmi-regulator.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/regulator/scmi-regulator.c b/drivers/regulator/scmi-regulator.c
+> index bbadf72b94e8..1f02f60ad136 100644
+> --- a/drivers/regulator/scmi-regulator.c
+> +++ b/drivers/regulator/scmi-regulator.c
+> @@ -173,7 +173,7 @@ scmi_config_linear_regulator_mappings(struct scmi_regulator *sreg,
+>  		sreg->desc.uV_step =
+>  			vinfo->levels_uv[SCMI_VOLTAGE_SEGMENT_STEP];
+>  		sreg->desc.linear_min_sel = 0;
+> -		sreg->desc.n_voltages = delta_uV / sreg->desc.uV_step;
+> +		sreg->desc.n_voltages = (delta_uV / sreg->desc.uV_step) + 1;
+>  		sreg->desc.ops = &scmi_reg_linear_ops;
+>  	}
+>  
+> -- 
+> 2.25.1
+> 
