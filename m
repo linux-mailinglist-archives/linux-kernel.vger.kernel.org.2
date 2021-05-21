@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876AA38C846
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEC0238C836
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:35:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbhEUNip (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:38:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
+        id S234880AbhEUNhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:37:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235772AbhEUNih (ORCPT
+        with ESMTP id S231601AbhEUNhS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:38:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF38AC061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EYC/9ctrfQvAEBBAKsb7gJESMa1uCEoqi9UattPV9Xo=; b=m3FRsszyBLlzGEw05BO4uPMu9f
-        PY8X+6lpkbRJKeAgtF6owyZ878nepODs1cMLYRRtzFmyCO1SwpTEbzutDeigngGMTyuImw1dZUsdB
-        qzNjsA5h8kMlcLNt1AvdMB5SAFALh6rY0cIHQPE8fV56kgkQ++3iGZEJgs5fbcp4vEJjgznj9u8eU
-        h4TeIi/aSYbyGml5bfIG27+x8IOAZf2vpjw6PHJdltTP3J0mgMe8wmC4hQVoxzVi4VpXVVZLJNk/Z
-        D8TSse1HDs38bWF/HgVLrNVOhYoOmdYMDm2LBADXiv97xNWOtNWlx4Q3maipFI2FSPsHkaVy2cyPX
-        yrzmvrCg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lk5Hi-00GzXq-RY; Fri, 21 May 2021 13:34:53 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 0DE4930022A;
-        Fri, 21 May 2021 15:33:50 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E90DB30BCEBEB; Fri, 21 May 2021 15:33:49 +0200 (CEST)
-Date:   Fri, 21 May 2021 15:33:49 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: config SCHED_CORE
-Message-ID: <YKe2vVvq9oSsNsTD@hirez.programming.kicks-ass.net>
-References: <alpine.LSU.2.11.2105201954180.6100@eggly.anvils>
- <YKdm69K8k/ztd6BM@hirez.programming.kicks-ass.net>
- <CAEXW_YRxOqQCF2FgXAjL3xkZhRD4rdFuxvyPd-ESXYQQ78cyfQ@mail.gmail.com>
+        Fri, 21 May 2021 09:37:18 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A444C061574;
+        Fri, 21 May 2021 06:35:55 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id h16so23345063edr.6;
+        Fri, 21 May 2021 06:35:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=CQNC5tcnBn2sqXfCRtfQO1Epq9bHKf0uPXF2miAwK8c=;
+        b=fLsWWbaiDOqeBWiqz6Z+lTChhnRdQXJhHKLIfA8sFTt4eb1cfC4Lt3RrcQ21kaW+jW
+         OHIxj5PhomewXQVDOd/NF4aWy9+nfK225wjSgNf4pICpSZapsAFD8LYus0KDiKKUuQ8g
+         q29dSw99YdnCWDV0xwHNcRcX6NgiJpwFfWk5fk2Ot7V6FoTtgokzv/SI1lCWzOgnr2Lc
+         FU/z2kh1YvgJfgjqA275Qr3tRFOI5QZVbtUGtxUdON110xwRCN7lFaz+JPDs9sgDLpka
+         7E+Uyoi5ddadvNEHHi1V3c2eC9DHyCLuYNLje5KHnohs/PqXiQcNWWZsqQZnDUp3ltdP
+         CmMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=CQNC5tcnBn2sqXfCRtfQO1Epq9bHKf0uPXF2miAwK8c=;
+        b=Xbs/h5BxGbIWmNsR3xWwO7KvMJD3ESoqQR1WJxpimhPapkWtDNTUkkn9VwJYQyg6ey
+         6oHwhl5yjR/TZTHz+VZ/w+bbqmfIWyrHVrFiz9jiPWLlVIPByphNf66cxUW1T5eKZtyD
+         W8LA36oyezv7UAmavRC63hAN0/FrWh26VtgaaQ9JZrmzopyRjcGAbmluHhJk7OO0RsLx
+         9yj4+a7BTbAGOk99fm0FqfxMJl/Apegku4+t6yRbJ0JOCbeKjw/H21aklaqc1mol741A
+         XYYl8Czv4SHhLC8DuJVlfj4ProseQ7bL6BeEIRRVcA3SlkrsEcdhBiEKvGL/cBDgwCyR
+         iBoA==
+X-Gm-Message-State: AOAM531heNX0cazn2q/OgUQK5q4PG8bRB12WC1/U9Ow2NkOaA4DJHdR/
+        DlwbQK02X4UiCPHC6LXUTOAuetXVAjo=
+X-Google-Smtp-Source: ABdhPJyPW3mc2rl6LjDNVIo7U/7GXPuRodp/tiEJiegxksa2IqC/S5vF1kHBS0G+Zgd1fxT0kjpidw==
+X-Received: by 2002:aa7:d550:: with SMTP id u16mr9565282edr.72.1621604153975;
+        Fri, 21 May 2021 06:35:53 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:b48f:ff97:fb4c:5b1d? ([2a02:908:1252:fb60:b48f:ff97:fb4c:5b1d])
+        by smtp.gmail.com with ESMTPSA id df8sm3942018edb.58.2021.05.21.06.35.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 06:35:52 -0700 (PDT)
+Subject: Re: [PATCH] drm/amdgpu: Fix inconsistent indenting
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
+        alexander.deucher@amd.com
+Cc:     airlied@linux.ie, Xinhui.Pan@amd.com, linux-kernel@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, sumit.semwal@linaro.org,
+        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
+        daniel@ffwll.ch, christian.koenig@amd.com,
+        linux-media@vger.kernel.org
+References: <1621590628-75988-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <09e40764-1d3a-0dfe-b278-5b5ce04670a9@gmail.com>
+Date:   Fri, 21 May 2021 15:35:51 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAEXW_YRxOqQCF2FgXAjL3xkZhRD4rdFuxvyPd-ESXYQQ78cyfQ@mail.gmail.com>
+In-Reply-To: <1621590628-75988-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 07:57:35AM -0400, Joel Fernandes wrote:
+Am 21.05.21 um 11:50 schrieb Jiapeng Chong:
+> Eliminate the follow smatch warning:
+>
+> drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c:449
+> sdma_v5_0_ring_emit_mem_sync() warn: inconsistent indenting.
+>
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 
-> > ---
-> >  kernel/Kconfig.preempt | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-> > index ea1e3331c0ba..3c4566cd20ef 100644
-> > --- a/kernel/Kconfig.preempt
-> > +++ b/kernel/Kconfig.preempt
-> > @@ -104,4 +104,16 @@ config SCHED_CORE
-> >         bool "Core Scheduling for SMT"
-> >         default y
-> >         depends on SCHED_SMT
-> > -
-> > +       help
-> > +         This option enables Core scheduling, a means of coordinated task
-> > +         selection across SMT siblings with the express purpose of creating a
-> > +         Core wide privilidge boundary. When enabled -- see prctl(PR_SCHED_CORE)
-> > +         -- task selection will ensure all SMT siblings will execute a task
-> > +         from the same 'core group', forcing idle when no matching task is found.
-> > +
-> > +         This provides means of mitigation against a number of SMT side-channels;
-> > +         but is, on its own, insufficient to mitigate all known side-channels.
-> > +         Notable: the MDS class of attacks require more.
-> > +
-> > +         Default enabled for anything that has SCHED_SMT, when unused there should
-> > +         be no impact on performance.
-> 
-> This description sort of makes it sound like security is the only
-> usecase. Perhaps we can also add here that core-scheduling can help
-> performance of workloads where hyperthreading is undesired, such as
-> when VM providers don't want to share hyperthreads.
-> 
-> Thoughts?
+Reviewed-by: Christian König <christian.koenig@amd.com>
 
-You're right. And there's this whole class of people who want to use
-this to eliminate SMT interference. I'll see if I can work that in
-without turning the whole thing into a novella or so ;-/
+> ---
+>   drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c | 13 ++++++-------
+>   1 file changed, 6 insertions(+), 7 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+> index 75d7310..c45e1b0 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
+> @@ -440,20 +440,19 @@ static void sdma_v5_0_ring_emit_ib(struct amdgpu_ring *ring,
+>    */
+>   static void sdma_v5_0_ring_emit_mem_sync(struct amdgpu_ring *ring)
+>   {
+> -    uint32_t gcr_cntl =
+> -		    SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB | SDMA_GCR_GLM_INV |
+> -			SDMA_GCR_GL1_INV | SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
+> -			SDMA_GCR_GLI_INV(1);
+> +	uint32_t gcr_cntl = SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB | SDMA_GCR_GLM_INV |
+> +			    SDMA_GCR_GL1_INV | SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
+> +			    SDMA_GCR_GLI_INV(1);
+>   
+>   	/* flush entire cache L0/L1/L2, this can be optimized by performance requirement */
+>   	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_GCR_REQ));
+>   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD1_BASE_VA_31_7(0));
+>   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD2_GCR_CONTROL_15_0(gcr_cntl) |
+> -			SDMA_PKT_GCR_REQ_PAYLOAD2_BASE_VA_47_32(0));
+> +			  SDMA_PKT_GCR_REQ_PAYLOAD2_BASE_VA_47_32(0));
+>   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD3_LIMIT_VA_31_7(0) |
+> -			SDMA_PKT_GCR_REQ_PAYLOAD3_GCR_CONTROL_18_16(gcr_cntl >> 16));
+> +			  SDMA_PKT_GCR_REQ_PAYLOAD3_GCR_CONTROL_18_16(gcr_cntl >> 16));
+>   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD4_LIMIT_VA_47_32(0) |
+> -			SDMA_PKT_GCR_REQ_PAYLOAD4_VMID(0));
+> +			  SDMA_PKT_GCR_REQ_PAYLOAD4_VMID(0));
+>   }
+>   
+>   /**
+
