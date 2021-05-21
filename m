@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69BA638BB70
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A6338BB72
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236582AbhEUBSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:18:09 -0400
-Received: from mga05.intel.com ([192.55.52.43]:7826 "EHLO mga05.intel.com"
+        id S236607AbhEUBVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:21:39 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:44939 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236106AbhEUBSJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:18:09 -0400
-IronPort-SDR: uld/+0IcC8+8SmsZgMI2ge9uSk9ImWiiaVZOUrJFn3gbnltIWI3uKW4tMX/XIzNeglkSm6EHOT
- F3bZd+isfSPA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="286912549"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="286912549"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:16:47 -0700
-IronPort-SDR: kT0dl8QXMYpMO4bmZ5wKL3yaMljJoy3BE5IJ3y3CNyxIx+8vF1l+aoc4diSy/lxpKUSubHPnpR
- AAyFymdK6lLQ==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="474287141"
-Received: from xingzhen-mobl.ccr.corp.intel.com (HELO [10.238.5.220]) ([10.238.5.220])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:16:45 -0700
-Subject: Re: [LKP] [ext4] 05c2c00f37: aim7.jobs-per-min -11.8% regression
-To:     Jan Kara <jack@suse.cz>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        lkp@intel.com
-References: <20210227120804.GB22871@xsang-OptiPlex-9020>
- <a8947cee-11f5-8d59-a3ff-1c516276592e@linux.intel.com>
- <20210520095119.GA18952@quack2.suse.cz>
-From:   Xing Zhengjun <zhengjun.xing@linux.intel.com>
-Message-ID: <e9f776c4-1ade-42a6-54c4-7fe3442e2392@linux.intel.com>
-Date:   Fri, 21 May 2021 09:16:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S236106AbhEUBVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:21:38 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmTLQ2qMxz9sWl;
+        Fri, 21 May 2021 11:20:14 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621560014;
+        bh=MnxSzSE5uzgMvgSTQKJkCe/Jdj5UFiYpk9Dz0cH+S28=;
+        h=Date:From:To:Cc:Subject:From;
+        b=GsBB9ji4GXJ9Hs5Vjfs8EmC5OYHwwr58hstuEub83fhPs2nleWgXpAFLZby0Ppp64
+         gmeP5DltwZ9Zm3VmG4z1bIHPQS0pVIaG7IgGUWg6XkI5tv7ZpwttzhxVyyzQL2fp/i
+         viGl8M5RODGGdHNtB7hyMP8RQsAeDwGkri97vxyc34/Cs1SN6HXkwradaG33IXlc/x
+         m2KYckj1niWIjDsFBuwbgtR6uFj4DCo1QbKl5KpCQTojmsFtjke2FXiALolByipgXR
+         DWm4snbk37p1ximKGRIOVLguXsyYrSdEtZDlUu1m2Egyx3Q1FFtvoFnVSYuCCxr+P/
+         FOD92izmI85zQ==
+Date:   Fri, 21 May 2021 11:20:13 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the amdgpu tree with the drm-misc tree
+Message-ID: <20210521112013.1f10e61f@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210520095119.GA18952@quack2.suse.cz>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/nglW1/rJqHeC2FSoBdtO2gF";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jan,
+--Sig_/nglW1/rJqHeC2FSoBdtO2gF
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 5/20/2021 5:51 PM, Jan Kara wrote:
-> Hello!
-> 
-> On Thu 20-05-21 15:13:20, Xing Zhengjun wrote:
->>
->>       Do you have time to look at this? The regression still existed in the
->> latest Linux mainline v5.13-rc2.
-> 
-> Thanks for verification and for the ping! I had a look into this and I
-> think the regression is caused by the changes in orphan handling. The load
-> runs multiple tasks all creating and deleting files. This generally
-> contends on the orphan locking with fast storage (which is your case
-> because you use ramdisk as a backing store AFAICT). And the changes I did
-> move superblock checksum computation under the orphan lock so the lock hold
-> times are now higher.
-> 
-> Sadly it is not easy to move checksum update from under the orphan lock and
-> maintain checksum consistency since the checksum has to be recomputed
-> consistently with the changes of superblock state. But I have one idea how
-> we could maybe improve the situation. Can you check whether attached patch
-> recovers the regression? Because that's about how good it could get when we
-> are more careful when writing out superblock.
-> 
-> 								Honza
-> 
+Hi all,
 
-I apply the patch based on v5.13-rc2 and test, it can not recover the 
-regression and the regression became more serious(-45.7%).
+Today's linux-next merge of the amdgpu tree got a conflict in:
 
-=========================================================================================
-tbox_group/testcase/rootfs/kconfig/compiler/disk/md/fs/test/load/cpufreq_governor/ucode:
- 
-lkp-csl-2sp9/aim7/debian-10.4-x86_64-20200603.cgz/x86_64-rhel-8.3/gcc-9/4BRD_12G/RAID1/ext4/creat-clo/1000/performance/0x5003006
+  drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
 
-commit:
-   4392fbc4bab57db3760f0fb61258cb7089b37665
-   05c2c00f3769abb9e323fcaca70d2de0b48af7ba
-   v5.13-rc2
-   2a1eb1a2fc08daaaf76a5aa8ffa355b5a5013d86    (the test patch)
+between commit:
 
-4392fbc4bab57db3 05c2c00f3769abb9e323fcaca70                   v5.13-rc2 
-2a1eb1a2fc08daaaf76a5aa8ffa
----------------- --------------------------- --------------------------- 
----------------------------
-          %stddev     %change         %stddev     %change 
-%stddev     %change         %stddev
-              \          |                \          |                \ 
-          |                \
-      13342           -11.8%      11771 ±  2%     -14.2%      11450 
-       -45.7%       7240 ±  3%  aim7.jobs-per-min
+  f89f8c6bafd0 ("drm/amdgpu: Guard against write accesses after device remo=
+val")
 
+from the drm-misc tree and commit:
 
+  0ccc3ccf5b3a ("drm/amdgpu: re-apply "use the new cursor in the VM code" v=
+2")
 
--- 
-Zhengjun Xing
+from the amdgpu tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+index 90c34491f85d,57a6ad04118c..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
+@@@ -1594,23 -1618,21 +1620,24 @@@ static int amdgpu_vm_update_ptes(struc
+   * Returns:
+   * 0 for success, -EINVAL for failure.
+   */
+- static int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
+- 				       struct amdgpu_device *bo_adev,
+- 				       struct amdgpu_vm *vm, bool immediate,
+- 				       bool unlocked, struct dma_resv *resv,
+- 				       uint64_t start, uint64_t last,
+- 				       uint64_t flags, uint64_t offset,
+- 				       struct drm_mm_node *nodes,
+- 				       dma_addr_t *pages_addr,
+- 				       struct dma_fence **fence)
++ int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
++ 				struct amdgpu_device *bo_adev,
++ 				struct amdgpu_vm *vm, bool immediate,
++ 				bool unlocked, struct dma_resv *resv,
++ 				uint64_t start, uint64_t last,
++ 				uint64_t flags, uint64_t offset,
++ 				struct ttm_resource *res,
++ 				dma_addr_t *pages_addr,
++ 				struct dma_fence **fence,
++ 				bool *table_freed)
+  {
+  	struct amdgpu_vm_update_params params;
++ 	struct amdgpu_res_cursor cursor;
+  	enum amdgpu_sync_mode sync_mode;
+- 	uint64_t pfn;
+ -	int r;
+ +	int r, idx;
+ +
+ +	if (!drm_dev_enter(&adev->ddev, &idx))
+ +		return -ENODEV;
+ =20
+  	memset(&params, 0, sizeof(params));
+  	params.adev =3D adev;
+@@@ -1717,9 -1722,11 +1727,12 @@@
+ =20
+  	r =3D vm->update_funcs->commit(&params, fence);
+ =20
++ 	if (table_freed)
++ 		*table_freed =3D params.table_freed;
++=20
+  error_unlock:
+  	amdgpu_vm_eviction_unlock(vm);
+ +	drm_dev_exit(idx);
+  	return r;
+  }
+ =20
+
+--Sig_/nglW1/rJqHeC2FSoBdtO2gF
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnCs0ACgkQAVBC80lX
+0GzVZwf/Y3NFPIHY8jz3M+QIuKffIjL0IMt/Oo6mTxvpzMv3Rkn0T0xjwz1dAeSp
+YyKuLx/x/9HixXpK61Ya4ua+b1YORFOUMXjRTGt+Wgl+eDEaZF9Pwe/edlKqVwDp
+Zs2OIvbRJCJz4pqXUKUan/LIUgKKIb9FXK0iGfvP3xLGQMrpj/mdSM/3+KHLeS45
+vcKPLQ/C62bWEw4lBL32x8ygQcLEb3NqsKkHIePVjV+CM27eBz4ybs4N4niWogf1
+HYW7/Mbgx+xDo5/uKAUnxnIbsBy7+R/vfMk/pJKz0V2xzxgXjL+QY3VEorzq1fgx
+hWOZrzqqcmUsRkoYKgQKy2G6kXXxfw==
+=wrkb
+-----END PGP SIGNATURE-----
+
+--Sig_/nglW1/rJqHeC2FSoBdtO2gF--
