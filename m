@@ -2,156 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8896738C352
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC20338C339
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:34:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236603AbhEUJjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:39:13 -0400
-Received: from foss.arm.com ([217.140.110.172]:42896 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhEUJjL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:39:11 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEF5C101E;
-        Fri, 21 May 2021 02:28:55 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49AE43F73D;
-        Fri, 21 May 2021 02:28:53 -0700 (PDT)
-Subject: Re: [PATCH v12 4/8] arm64: kvm: Introduce MTE VM feature
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-5-steven.price@arm.com> <20210520115426.GB12251@arm.com>
- <5f0996d6-0a6e-ebcd-afcd-8290faba6780@arm.com>
- <20210520175037.GG12251@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <21629fb6-4287-88b2-2287-2a63496cff79@arm.com>
-Date:   Fri, 21 May 2021 10:28:52 +0100
+        id S236569AbhEUJf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:35:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232906AbhEUJfY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 05:35:24 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC57AC061574;
+        Fri, 21 May 2021 02:34:00 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id d11so20348503wrw.8;
+        Fri, 21 May 2021 02:34:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=imeCbusdpJ8n4ZoOyUiUylLuf21SNxjoYsk0+9mvpX8=;
+        b=ov8OOZbvhaT7oXctO9aUDR0w6cl67+mD52rMqgqC+qkb4SpIptFivLQ9NrJ5PT5hkV
+         a9bsRKpn/f6/5h/NJMf1cEmpvVSNK6PGfqtRbba/yWf6MQAgj5EMZ7EHMSaC0xtuitiu
+         1WGDR/pg7NpTg6JcmbPxbnGnuJWX0A+4ZM9VUpaSvDOBeJBvcxXo9EimnNw3CDDwkKcu
+         WNCV53VRtIWLGzSChSbdS+xruU1qquVqdZDJOv4SFh+KZCo4mWsBJJ3jmuawf+aW6VAZ
+         M4sYMduI9WVU2PdHeDdJz/v8yUiEPq04WSPkipiSC490pREnCMcDkySmQU62O1uEw2J9
+         u4uQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=imeCbusdpJ8n4ZoOyUiUylLuf21SNxjoYsk0+9mvpX8=;
+        b=qAhr2fetPRuWGpf4HHJE9HVTa0MxGRdgV1kva3z0AI7RfRwlTPuR+/XSNMf3EYxcdS
+         nPHmVpYPMrqAwcQq09b8Q2gPsa9RH8q8ovD9AXJ90Im6b7kBvMd7ZSDCEVAbbCRURv7A
+         eKjhxlPySurxS9TZ+3ndvYs/yhl5x+FKzm4S//XO2Tq7e0YFUm2tVa7xtMuEUhtYj7yx
+         UV5a0ztQOqRGKZ3HYrol5RKWvKrB00apx3Tlzi/rydbtZbEBfhbqEo3d+mpnKnqj4Q7Y
+         mtnZlsYWggZmP6nRG8D4Y/rQvdBB9cmrIBkZPAJ7yAKrYpLhksXHoF/Ly1VQAstMjPF8
+         P3Tw==
+X-Gm-Message-State: AOAM533+XzNCDOmM1Q3J4HewB2uAf2E4RGGBrJ5B+j1eBPouw73nrFmO
+        TyjNAYDGBDJJUkJrvIUnttrMy4dVl1O9gc0jnrQ=
+X-Google-Smtp-Source: ABdhPJzuO7pAw76NCPCBzlt+kNUCh9XZZ7T+7qLd29OuyC1fRjNYDvzgD2Z3dSe7CCgyQMXJhorLzw==
+X-Received: by 2002:adf:f751:: with SMTP id z17mr8525694wrp.150.1621589639610;
+        Fri, 21 May 2021 02:33:59 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.236.182])
+        by smtp.gmail.com with ESMTPSA id x13sm1448649wro.31.2021.05.21.02.33.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 02:33:59 -0700 (PDT)
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     io-uring@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
+        Christian Dietrich <stettberger@dokucode.de>
+References: <cover.1621424513.git.asml.silence@gmail.com>
+ <8ec8373d406d1fcb41719e641799dcc5c0455db3.1621424513.git.asml.silence@gmail.com>
+ <20210521010752.lky4pz7zipefrfr7@ast-mbp>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH 15/23] io_uring: enable BPF to submit SQEs
+Message-ID: <a5cc80c8-5dea-031f-703e-cc18d6625ad6@gmail.com>
+Date:   Fri, 21 May 2021 10:33:50 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210520175037.GG12251@arm.com>
+In-Reply-To: <20210521010752.lky4pz7zipefrfr7@ast-mbp>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 18:50, Catalin Marinas wrote:
-> On Thu, May 20, 2021 at 04:05:46PM +0100, Steven Price wrote:
->> On 20/05/2021 12:54, Catalin Marinas wrote:
->>> On Mon, May 17, 2021 at 01:32:35PM +0100, Steven Price wrote:
->>>> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
->>>> index c5d1f3c87dbd..8660f6a03f51 100644
->>>> --- a/arch/arm64/kvm/mmu.c
->>>> +++ b/arch/arm64/kvm/mmu.c
->>>> @@ -822,6 +822,31 @@ transparent_hugepage_adjust(struct kvm_memory_slot *memslot,
->>>>  	return PAGE_SIZE;
->>>>  }
->>>>  
->>>> +static int sanitise_mte_tags(struct kvm *kvm, unsigned long size,
->>>> +			     kvm_pfn_t pfn)
->>>> +{
->>>> +	if (kvm_has_mte(kvm)) {
->>>> +		/*
->>>> +		 * The page will be mapped in stage 2 as Normal Cacheable, so
->>>> +		 * the VM will be able to see the page's tags and therefore
->>>> +		 * they must be initialised first. If PG_mte_tagged is set,
->>>> +		 * tags have already been initialised.
->>>> +		 */
->>>> +		unsigned long i, nr_pages = size >> PAGE_SHIFT;
->>>> +		struct page *page = pfn_to_online_page(pfn);
->>>> +
->>>> +		if (!page)
->>>> +			return -EFAULT;
->>>
->>> IIRC we ended up with pfn_to_online_page() to reject ZONE_DEVICE pages
->>> that may be mapped into a guest and we have no idea whether they support
->>> MTE. It may be worth adding a comment, otherwise, as Marc said, the page
->>> wouldn't disappear.
->>
->> I'll add a comment.
->>
->>>> +
->>>> +		for (i = 0; i < nr_pages; i++, page++) {
->>>> +			if (!test_and_set_bit(PG_mte_tagged, &page->flags))
->>>> +				mte_clear_page_tags(page_address(page));
->>>
->>> We started the page->flags thread and ended up fixing it for the host
->>> set_pte_at() as per the first patch:
->>>
->>> https://lore.kernel.org/r/c3293d47-a5f2-ea4a-6730-f5cae26d8a7e@arm.com
->>>
->>> Now, can we have a race between the stage 2 kvm_set_spte_gfn() and a
->>> stage 1 set_pte_at()? Only the latter takes a lock. Or between two
->>> kvm_set_spte_gfn() in different VMs? I think in the above thread we
->>> concluded that there's only a problem if the page is shared between
->>> multiple VMMs (MAP_SHARED). How realistic is this and what's the
->>> workaround?
->>>
->>> Either way, I think it's worth adding a comment here on the race on
->>> page->flags as it looks strange that here it's just a test_and_set_bit()
->>> while set_pte_at() uses a spinlock.
->>>
->>
->> Very good point! I should have thought about that. I think splitting the
->> test_and_set_bit() in two (as with the cache flush) is sufficient. While
->> there technically still is a race which could lead to user space tags
->> being clobbered:
->>
->> a) It's very odd for a VMM to be doing an mprotect() after the fact to
->> add PROT_MTE, or to be sharing the memory with another process which
->> sets PROT_MTE.
->>
->> b) The window for the race is incredibly small and the VMM (generally)
->> needs to be robust against the guest changing tags anyway.
->>
->> But I'll add a comment here as well:
->>
->> 	/*
->> 	 * There is a potential race between sanitising the
->> 	 * flags here and user space using mprotect() to add
->> 	 * PROT_MTE to access the tags, however by splitting
->> 	 * the test/set the only risk is user space tags
->> 	 * being overwritten by the mte_clear_page_tags() call.
->> 	 */
+On 5/21/21 2:07 AM, Alexei Starovoitov wrote:
+> On Wed, May 19, 2021 at 03:13:26PM +0100, Pavel Begunkov wrote:
+>>  
+>> +BPF_CALL_3(io_bpf_queue_sqe, struct io_bpf_ctx *,		bpf_ctx,
+>> +			     const struct io_uring_sqe *,	sqe,
+>> +			     u32,				sqe_len)
+>> +{
+>> +	struct io_ring_ctx *ctx = bpf_ctx->ctx;
+>> +	struct io_kiocb *req;
+>> +
+>> +	if (sqe_len != sizeof(struct io_uring_sqe))
+>> +		return -EINVAL;
+>> +
+>> +	req = io_alloc_req(ctx);
 > 
-> I think (well, I haven't re-checked), an mprotect() in the VMM ends up
-> calling set_pte_at_notify() which would call kvm_set_spte_gfn() and that
-> will map the page in the guest. So the problem only appears between
-> different VMMs sharing the same page. In principle they can be
-> MAP_PRIVATE but they'd be CoW so the race wouldn't matter. So it's left
-> with MAP_SHARED between multiple VMMs.
+> that is GFP_KERNEL allocation.
+> It's only allowed from sleepable bpf progs and further down
+> there is a correct check for it, so all good.
+> But submitting sqe is a fundemntal io_uring operation,
+> so what is the use case for non-sleepable?
+> In other words why bother? Allow sleepable only and simplify the code?
 
-mprotect.c only has a call to set_pte_at() not set_pte_at_notify(). And
-AFAICT the MMU notifiers are called to invalidate only in
-change_pmd_range(). So the stage 2 mappings would be invalidated rather
-than populated. However I believe this should cause synchronisation
-because of the KVM mmu_lock. So from my reading you are right an
-mprotect() can't race.
+Actual submission may be moved out of BPF, so enabling it for both, but
+the question I wonder about is what are the plans for sleepable
+programs? E.g. if it's a marginal features much limited in
+functionality, e.g. iirc as it's not allowed to use some BPF data
+types, it may not worth doing.
 
-MAP_SHARED between multiple VMs is then the only potential problem.
-
-> I think we should just state that this is unsafe and they can delete
-> each-others tags. If we are really worried, we can export that lock you
-> added in mte.c.
 > 
+>> +	if (unlikely(!req))
+>> +		return -ENOMEM;
+>> +	if (!percpu_ref_tryget_many(&ctx->refs, 1)) {
+>> +		kmem_cache_free(req_cachep, req);
+>> +		return -EAGAIN;
+>> +	}
+>> +	percpu_counter_add(&current->io_uring->inflight, 1);
+>> +	refcount_add(1, &current->usage);
+>> +
+>> +	/* returns number of submitted SQEs or an error */
+>> +	return !io_submit_sqe(ctx, req, sqe);
+> 
+> A buggy bpf prog will be able to pass junk sizeof(struct io_uring_sqe)
+> as 'sqe' here.
+> What kind of validation io_submit_sqe() does to avoid crashing the kernel?
 
-I'll just update the comment for now.
+It works on memory rw shared with userspace, so it already assumes
+the worst
+ 
+> General comments that apply to all patches:
+> - commit logs are way too terse. Pls expand with details.
+> - describe new bpf helpers in comments in bpf.h. Just adding them to an enum is not enough.
+> - selftest/bpf are mandatory for all new bpf features.
+> - consider bpf_link style of attaching bpf progs. We had enough issues with progs
+>   that get stuck due to application bugs. Auto-detach saves the day more often than not.
 
-Thanks,
+Thanks for taking a look! I have no idea what bpf_link is, need
+to check it out
 
-Steve
+-- 
+Pavel Begunkov
