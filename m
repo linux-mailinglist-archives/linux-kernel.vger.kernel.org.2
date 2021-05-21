@@ -2,66 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9ABCE38C43F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3651B38C43A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhEUKBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:01:15 -0400
-Received: from m12-15.163.com ([220.181.12.15]:40767 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233290AbhEUKAN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:00:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=dYX1o
-        +aSL622HsiL7bI048V16tlR+t072uYzyHtC3AM=; b=IUsU5aBklxAKyk7FM87zn
-        1aYl0r1xlliVWAEp9i8/MF2IETkYkOixfR1voXYPtPAU88Hh7HIB6+EV4od9xh3z
-        7jFih+RwwyI/S0K61uhY6haEn/A4dfy/bWofMY+9yDyu7XBnBtv4vGLwZdUfhkAg
-        sWkTAo5KWPThxd/jYy4SCs=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp11 (Coremail) with SMTP id D8CowADHzQkjhKdgg3plBg--.89S2;
-        Fri, 21 May 2021 17:58:04 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     gregkh@linuxfoundation.org, info@metux.net
-Cc:     accessrunner-general@lists.sourceforge.net,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] usb:atm: Fix typo
-Date:   Fri, 21 May 2021 17:58:04 +0800
-Message-Id: <20210521095804.773-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S233532AbhEUKA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:00:26 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3467 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233130AbhEUJ64 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 05:58:56 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fmhm35jJWzCsGb;
+        Fri, 21 May 2021 17:54:43 +0800 (CST)
+Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 17:57:31 +0800
+Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
+ (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
+ May 2021 17:57:31 +0800
+From:   Yu Kuai <yukuai3@huawei.com>
+To:     <laforge@gnumonks.org>, <arnd@arndb.de>,
+        <gregkh@linuxfoundation.org>, <akpm@osdl.org>
+CC:     <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
+        <yi.zhang@huawei.com>
+Subject: [PATCH] char: pcmcia: fix possible array index out of bounds in set_protocol()
+Date:   Fri, 21 May 2021 18:07:05 +0800
+Message-ID: <20210521100705.28234-1-yukuai3@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowADHzQkjhKdgg3plBg--.89S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUra0mUUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiHgyZiVSIurei1AAAsl
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggema762-chm.china.huawei.com (10.1.198.204)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+The length of array 'pts_reply' is 4, and the loop in set_protocol()
+will access array element from 0 to num_bytes_read - 1. Thus if
+io_read_num_rec_bytes() gets 'num_bytes_read' more than 4, it will
+cause index out of bounds errors.
 
-Change 'contol' to 'control'.
-
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
+Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 ---
- drivers/usb/atm/cxacru.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/char/pcmcia/cm4000_cs.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/usb/atm/cxacru.c b/drivers/usb/atm/cxacru.c
-index 4d39474..4ce7cba 100644
---- a/drivers/usb/atm/cxacru.c
-+++ b/drivers/usb/atm/cxacru.c
-@@ -180,7 +180,7 @@ struct cxacru_data {
- 	struct mutex poll_state_serialize;
- 	enum cxacru_poll_state poll_state;
+diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
+index 89681f07bc78..86b7c8e44198 100644
+--- a/drivers/char/pcmcia/cm4000_cs.c
++++ b/drivers/char/pcmcia/cm4000_cs.c
+@@ -564,16 +564,15 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
  
--	/* contol handles */
-+	/* control handles */
- 	struct mutex cm_serialize;
- 	u8 *rcv_buf;
- 	u8 *snd_buf;
+ 	/* Read PPS reply */
+ 	DEBUGP(5, dev, "Read PPS reply\n");
+-	for (i = 0; i < num_bytes_read; i++) {
++	for (i = 0; i < 4; i++) {
+ 		xoutb(i, REG_BUF_ADDR(iobase));
+ 		pts_reply[i] = inb(REG_BUF_DATA(iobase));
+ 	}
+ 
+ #ifdef CM4000_DEBUG
+ 	DEBUGP(2, dev, "PTSreply: ");
+-	for (i = 0; i < num_bytes_read; i++) {
++	for (i = 0; i < 4; i++)
+ 		pr_debug("0x%.2x ", pts_reply[i]);
+-	}
+ 	pr_debug("\n");
+ #endif	/* CM4000_DEBUG */
+ 
 -- 
-1.9.1
+2.25.4
 
