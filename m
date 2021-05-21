@@ -2,103 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6A7438CDB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 110ED38CDB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238974AbhEUSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
+        id S238981AbhEUSow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:44:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhEUSoq (ORCPT
+        with ESMTP id S238979AbhEUSou (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:44:46 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC404C061574;
-        Fri, 21 May 2021 11:43:21 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id r5so31086080lfr.5;
-        Fri, 21 May 2021 11:43:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fuy4eXWPqUUba10mtYw0ydLr89ZV2AWylPLaoR+Jdl4=;
-        b=DQa6aM0lePceIRpuhRStqIbL+0JixghBlOWL6jmxditypPGSFAVvbu27mIad8oVCF0
-         jcEEToZJ1ntmf24pqZaqhwZQdb2qpi6Elm7gp9UBxDOM8MoYJJlXw+ANSRsD2jBKZhtx
-         +2iNnQ1+JsxHImxts70WdWW5FAYQF3MK3/jR5wzN96uhnNQoe1ISZ0e3puYKlam2ps3V
-         QmeUd0WcY/N8O1bWcoLnhzYNqPlNv4wUoHs406rh+b6ObEOONTwOcq1+b1sjCpoabXYr
-         RemqN3HYXDkP+HM5UOzO0z4CqhWSTW7CKKVZYKmqxwHgg4U1nmg7hwQsggEGNN3WiiSJ
-         e1WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fuy4eXWPqUUba10mtYw0ydLr89ZV2AWylPLaoR+Jdl4=;
-        b=gdqKuvDo2e9ua58rV/CyZp3h2Sg4HfFACH7KpBsExqQYXmD5Lf9oodCceq7Af5Ydt4
-         ly0/lWvIqbR+gWN4I0v1rtbqYIQdrVhfWNgPW5kuULvU4ArkgzggpikWLpbUUfEKaXUx
-         WIyx/azV2uKkyZhz8KKIfJnXORsLeLy1F1PyIBIj/oSwlJwACS55ZO6TWKYDkih9NqmB
-         resC9FO2s8TCudCHFEOMRZ7WsNfDdOye7YdZ7qBZ0xq00EZVmrGZrOY7SySgHSJ+tVUh
-         UWnC0+oEGaSYT6jO0ygaAIfI6iDICursj2WTtNOpi7MNYPfj5cXZouyRD/jaHQviMfiG
-         xatA==
-X-Gm-Message-State: AOAM530xjgU2K1FolQB6Cq97DKGhVwDsszwoH/O9orxWxP0IcVAtnlvm
-        nsvoC2lRf21XkBclzBSw6EiZEzdqcgU=
-X-Google-Smtp-Source: ABdhPJykY/D5oofYHxfJOnXrtAfrHO/SJq42rpPqSjtNPr7PXXaNRmaOHopXk0tiOH+2TZLNuWwWUw==
-X-Received: by 2002:ac2:539b:: with SMTP id g27mr3123732lfh.534.1621622600111;
-        Fri, 21 May 2021 11:43:20 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-100.dynamic.spd-mgts.ru. [109.252.193.100])
-        by smtp.googlemail.com with ESMTPSA id s17sm767044ljo.117.2021.05.21.11.43.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 11:43:19 -0700 (PDT)
-Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
-To:     Jaroslav Kysela <perex@perex.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210520175054.28308-1-digetx@gmail.com>
- <20210520175054.28308-3-digetx@gmail.com>
- <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <1752b39e-d693-50c0-55c9-dab18a2fd499@gmail.com>
-Date:   Fri, 21 May 2021 21:43:17 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 21 May 2021 14:44:50 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B30C061574;
+        Fri, 21 May 2021 11:43:25 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ea400fbcd5718c7a034c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a400:fbcd:5718:c7a0:34c2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 87CDF1EC071E;
+        Fri, 21 May 2021 20:43:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621622604;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=vFVTqBpUpF5lkAZTvKtHNXOqH6JbT1bVaIWzNcF9VCc=;
+        b=dlCubREL4UKZBjnpzC3sdwbWEX30Y3DMl3RVW3wCw3kiQoX9kpB3uEJEp2i+cEk5vNtGZN
+        OBeMn4w/ZyQCPysR+CZh5Ep2ks8Kk8EN+tU8T4PYayDin9VOVsXRe5SbHWVw7sMz+ywH6d
+        0COejeCpRPS0HP5y19suAo0V1U6+O/w=
+Date:   Fri, 21 May 2021 20:43:23 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wei Huang <wei.huang2@amd.com>, David Bartley <andareed@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-x86_64@vger.kernel.org
+Subject: Re: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
+Message-ID: <YKf/SwCD1Efsn4nV@zn.tnic>
+References: <20210520174130.94954-1-andareed@gmail.com>
+ <YKeHBI757jX65ULa@zn.tnic>
+ <2ba654b5-1c08-85da-b932-9d5a92d5c930@amd.com>
+ <13e9db0f-a1d7-8699-a7d9-90246c7df553@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+In-Reply-To: <13e9db0f-a1d7-8699-a7d9-90246c7df553@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-20.05.2021 22:02, Jaroslav Kysela пишет:
-> Dne 20. 05. 21 v 19:50 Dmitry Osipenko napsal(a):
->> Squash all machine drivers into a single-universal one. This reduces
->> code duplication, eases addition of a new drivers and upgrades older
->> code to a modern Linux kernel APIs.
->>
-> 
-> 
->> +static struct snd_soc_card snd_soc_tegra_wm9712 = {
->> +	.dai_link = &tegra_wm9712_dai,
->> +	.num_links = 1,
->> +	.fully_routed = true,
->> +};
-> Please, could you also initialize snd_soc_card->components? It may be useful
-> to pass the codec identification to the user space like:
-> 
-> .components = "codec:wm9712"
-> 
-> The passed information should be consistent. You may look into the Intel ASoC
-> drivers for the examples (card->components initialization). There are also
-> hints about the number of connected microphones ("cfg-mic:2" - configuration
-> with 2 microphones) or the codec purpose ("hs:rt711" - headset codec is RT711)
-> etc.
+On Fri, May 21, 2021 at 10:45:53AM -0700, Guenter Roeck wrote:
+> Yes, it does [1]. Fine with me though to define it locally there.
+> I personally find that easier since it would avoid the recurring
+> "I don't see this define used anywhere else besides xxx".
+> Someone else can clean that up later if so desired.
 
-Alright, I see why you're wanting this. It may allow us to have more
-generic UCMs and group them together.
+Or someone can ask first or maybe even get CCed on both patches so that
+someone can see the full picture. :-)
+
+Anyway, I'll commit it as-is.
+
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
