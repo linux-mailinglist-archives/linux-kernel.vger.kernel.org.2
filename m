@@ -2,89 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6000038BB30
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:03:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 517F838BB35
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:04:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235867AbhEUBFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbhEUBFN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:05:13 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 142D7C061574;
-        Thu, 20 May 2021 18:03:51 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id x8so18249384qkl.2;
-        Thu, 20 May 2021 18:03:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ftgW/ZD8hun6+efsEtYDnA9Z/1i+HqiNXuFWOiDlQFo=;
-        b=QPKFh7XF+JNfRZNGyb2vQYDAF3gVeLGE3CxuxR50/IxP9jDGhwd6wrNZ2S5UI9MLZc
-         6bcHkedpFoUp2IJ8MYtf/hN0W2LGsDJVOqEAJbxOOwkaHwvRyMlkXZchrvJhjn/7mFrg
-         A6lIdiAz7aNseKSQyxyGK9ReNFcWd9Wzh3wZM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ftgW/ZD8hun6+efsEtYDnA9Z/1i+HqiNXuFWOiDlQFo=;
-        b=OfHy+SiSHyvStlIkQWDnR93dhsr23B+eQPai7JwXYiXkI4z+krMTjZ0/VlNgflAmJ0
-         MxCD/YF/G79UKD0T9kQVp6DuWFSMLtsltJzFh5Q1z8/8IjSi4RYHhZvzo5waqxMZ0NPy
-         ioCdSRn5+sAmt+0PHYnF6v/9TFegyzlCKYvdfvVfQmH3OcTb/8aL1ZTCARhM8ABPPAJn
-         OpoaJSlCJJihRElFNTth5U2Fc6PzzKQJUKzD59IjhgST0pM9QC+nSeTxazHv2IpfUNLa
-         XQqkIGba9Q6HSOqB9u4veAoa4OiFzPX50FilOqB5CpSVA6yCLKN8JDlJQV26POh5CKpL
-         paiQ==
-X-Gm-Message-State: AOAM531g9VwbRiwhsxqfrcjW1oynx5aZIjIBTUbF06yiUkKsGv4xe5Ha
-        QEHMUqmPCkksOfEZsniSvggJiY5vLqOqIMIMB9c=
-X-Google-Smtp-Source: ABdhPJyaSVhXFsyvFeOh0RKA2a79cq/wrF4SvXOaYGZXtEvafHPjqPwFM7IFU8bTSbbb0lHxfL58adnE2J7TQcDbKe0=
-X-Received: by 2002:a05:620a:704:: with SMTP id 4mr7844434qkc.66.1621559030068;
- Thu, 20 May 2021 18:03:50 -0700 (PDT)
+        id S235874AbhEUBFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:05:31 -0400
+Received: from mga07.intel.com ([134.134.136.100]:8071 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234754AbhEUBFa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:05:30 -0400
+IronPort-SDR: 5Gvjak9R317aY0z+vOK9gjSLqgIAmzKTqwtZvoyOEV7K3R1DIF6HCDyi5bnsYmo9y8IwoqHbxf
+ IMTvqRlqPQxg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265286808"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="265286808"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:04:07 -0700
+IronPort-SDR: LT6WZ0G985tf2QKgG7ftzmk9cw4TZzXXFREpujtH01leyDn7uz/RPtu1rR7U7PoSVgH4YyWCUQ
+ tjUsiK5YfcXQ==
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="395120270"
+Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.50.218])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:04:07 -0700
+From:   Russ Weight <russell.h.weight@intel.com>
+To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        richard.gong@intel.com, Russ Weight <russell.h.weight@intel.com>
+Subject: [PATCH v1 0/3] fpga: Use standard class dev_release function
+Date:   Thu, 20 May 2021 18:03:56 -0700
+Message-Id: <20210521010359.635717-1-russell.h.weight@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210520101346.16772-1-steven_lee@aspeedtech.com> <20210520101346.16772-3-steven_lee@aspeedtech.com>
-In-Reply-To: <20210520101346.16772-3-steven_lee@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 21 May 2021 01:03:38 +0000
-Message-ID: <CACPK8Xfw8UH-4-oVqcFFMQmfrLqDbdYuACT9Rij62SBLU0+56Q@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] ARM: dts: aspeed: ast2600evb: Add phase correction
- for emmc controller.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 10:16, Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> Set MMC timing-phase register by adding the phase correction binding in the
-> device tree.
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> Acked-by: Andrew Jeffery <andrew@aj.id.au>
+The FPGA framework has a convention of using managed resource
+functions to allow parent drivers to manage the data structures
+allocated by the class drivers. They use an empty *_dev_release()
+function to satisfy the class driver.
 
-As the aspeed maintainer:
+This is inconsistent with linux driver model.
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+These changes remove the managed resource functions and populate
+the class dev_release callback functions. They also merge the
+create and register functions into a single register function for
+each of the fpga-mgr, fpga-region, and fpga-bridge class drivers.
 
-I don't mind if this gets applied directly by the mmc maintainers (I
-do not anticpiate any conflicts).
+For more context, refer to this email thread:
 
-Cheers,
+https://marc.info/?l=linux-fpga&m=162127412218557&w=2
 
-Joel
+I turned on the configs assocated with each of the modified files,
+but I must have been missing some dependencies, because not all
+of them compiled. I did a run-time test specifically with the
+dfl-fme infrastructure. This would have exercised the region,
+bridge, and fpga-mgr frameworks.
+
+- Russ
+
+Russ Weight (3):
+  fpga: mgr: Use standard dev_release for class driver
+  fpga: bridge: Use standard dev_release for class driver
+  fpga: region: Use standard dev_release for class driver
+
+ drivers/fpga/altera-cvp.c           |  12 +-
+ drivers/fpga/altera-fpga2sdram.c    |  12 +-
+ drivers/fpga/altera-freeze-bridge.c |  10 +-
+ drivers/fpga/altera-hps2fpga.c      |  12 +-
+ drivers/fpga/altera-pr-ip-core.c    |   6 +-
+ drivers/fpga/altera-ps-spi.c        |   8 +-
+ drivers/fpga/dfl-fme-br.c           |  10 +-
+ drivers/fpga/dfl-fme-mgr.c          |  10 +-
+ drivers/fpga/dfl-fme-region.c       |  10 +-
+ drivers/fpga/dfl.c                  |  10 +-
+ drivers/fpga/fpga-bridge.c          | 113 ++++--------------
+ drivers/fpga/fpga-mgr.c             | 177 ++++------------------------
+ drivers/fpga/fpga-region.c          |  97 +++------------
+ drivers/fpga/ice40-spi.c            |   8 +-
+ drivers/fpga/machxo2-spi.c          |   8 +-
+ drivers/fpga/of-fpga-region.c       |  10 +-
+ drivers/fpga/socfpga-a10.c          |  16 +--
+ drivers/fpga/socfpga.c              |   8 +-
+ drivers/fpga/stratix10-soc.c        |  15 +--
+ drivers/fpga/ts73xx-fpga.c          |   8 +-
+ drivers/fpga/xilinx-pr-decoupler.c  |  17 +--
+ drivers/fpga/xilinx-spi.c           |  10 +-
+ drivers/fpga/zynq-fpga.c            |  16 +--
+ drivers/fpga/zynqmp-fpga.c          |   8 +-
+ include/linux/fpga/fpga-bridge.h    |  12 +-
+ include/linux/fpga/fpga-mgr.h       |  14 +--
+ include/linux/fpga/fpga-region.h    |  12 +-
+ 27 files changed, 150 insertions(+), 499 deletions(-)
+
+-- 
+2.25.1
+
