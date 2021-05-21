@@ -2,166 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78F5138C3CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D56F938C3C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234762AbhEUJt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:49:58 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.111.102]:30841 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234235AbhEUJtW (ORCPT
+        id S233171AbhEUJtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233946AbhEUJtM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:49:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1621590475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8ZyAxvMFgWs6EJXFu+Zq2hdJYtyXyWr1IaGuLgafRf4=;
-        b=CAA5/dE53e6oyJ2cFjTdxKM8DbUtXcY1LN7hyndv750s1qp7x6f/BPJ9qcmOrENVEsRFI6
-        WQsbHbzHyUxD4s2GKC6ji12l/MsJUkBbT1cKHGIP1Of/+GhlGcW0ZGjUrXhzlC86JpIC1N
-        cFJmlEdz1q19xUpffRaGP19u+w+cqrM=
-Received: from EUR03-DB5-obe.outbound.protection.outlook.com
- (mail-db5eur03lp2054.outbound.protection.outlook.com [104.47.10.54]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-12-zSrJDQncOuqKnFmUIYRwjg-1; Fri, 21 May 2021 11:47:54 +0200
-X-MC-Unique: zSrJDQncOuqKnFmUIYRwjg-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Sy5VhtnJuwaNg+putE9gK+hxgWcjM1KuCLDBMC3VWvEP/d5Sqw74CNVesRVrz3h9g0oLcDmN+ZyAJY3DX4ozNvmjKow+IwYfltOscqFGNNVR/mNJ+kJhQTHLjbyeeXq3euznR4HFEcvY6jojBY5R4slc1UXRLWJbVQcX+nr9+UMjrIu9NHDIdL7JkXgGfp1ZPWzFiCA3+sKLSeF5iyjYiRVazsbIB8L+zvZsZFl57AvWz0pG/MnlXAHhSIFRb2ffshsOe38c+T6r/GKfIg9DHZRRYuQJXRGRufkqVf8DJ/Sp00dwtHG0u5v9CxQA+qN2vluCXbEUjMddac1hilpOoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8ZyAxvMFgWs6EJXFu+Zq2hdJYtyXyWr1IaGuLgafRf4=;
- b=ItYWE2iiW2A3vBerjZkBnakxz/Hkl3q/TP743nkNdQwJL7xjEXj7Tvl+asgGxBayo03tszKYpgujHRXwUFo3LZV7fkGFzLEnIJ6R7GpQXUKZHocDhW3BLYQX3TDj6ieQdn777pDDpgRM+LfhJQh/Bdx/hJ0h4j/hD9oZddxKmRs1dKKiiPplPINUl6nLPRUuDtmrDL/sjdz4DyysBTbCuCJy9ILzSaFXfPCmChZCnWNFQlvx2Lihr7Zt0uO0jT0p9dJUFp6DHIC4scd1sMKJM0HXnHJbkHKUN4uDHjIkqbopy9k/+FHcF6/zWQcx8kswQweHn0kgucYYEWFRccDxzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: suse.com; dkim=none (message not signed)
- header.d=none;suse.com; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB7102.eurprd04.prod.outlook.com (2603:10a6:800:124::12)
- by VI1PR0402MB3871.eurprd04.prod.outlook.com (2603:10a6:803:16::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Fri, 21 May
- 2021 09:47:52 +0000
-Received: from VI1PR04MB7102.eurprd04.prod.outlook.com
- ([fe80::e0f8:e927:79f:232a]) by VI1PR04MB7102.eurprd04.prod.outlook.com
- ([fe80::e0f8:e927:79f:232a%3]) with mapi id 15.20.4129.033; Fri, 21 May 2021
- 09:47:52 +0000
-Date:   Fri, 21 May 2021 17:47:36 +0800
-From:   joeyli <jlee@suse.com>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Malte Gell <malte.gell@gmx.de>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] PKCS#7: Check codeSigning EKU for kernel module and
- kexec pe verification
-Message-ID: <20210521094736.GP32436@linux-l9pv.suse>
-References: <20210409024656.8083-1-jlee@suse.com>
- <20210409024656.8083-3-jlee@suse.com>
- <27e7e83b-5754-956c-c314-9d4d0ae605b0@suse.com>
- <20210420062228.GA19927@linux-l9pv.suse>
+        Fri, 21 May 2021 05:49:12 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA3AFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:47:48 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id v12so20409514wrq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=U9YtYqD1zOgwTQj4rwYUvRL9M+o9cBUdkDhNiVVCqT4=;
+        b=BZ4SRa8E72pIovSE18ljTyIk2ivJUsYWo9ncs4s+AUTe7AfeOrjVSvSYJl1UbHRusi
+         Ld35Jm+qOEjR20p/6AwlCZuhzuMgxtI2qlOl2r/Gl+5Fst3A7O/rAbr9Z38clmQauWx8
+         7uuzUSSCfJd75Lzdf1+r/4C0KBhxubEkFbGiodGEPVCtFhOY7gIQZpVsCVdf3XhxeYWS
+         PAzFgu+3Y7xUioY78vkJwf+Vkzfq/cE/kqh1cY3619P875D3p5UrB66wbXGghNxMenkr
+         TLtAGTFCQAZEV0w5JcKiPvmG7Yp08KpI2Yyma1nyUXQ4ZJzOqf+V+e68JCXMPpb5tJrJ
+         7Nlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=U9YtYqD1zOgwTQj4rwYUvRL9M+o9cBUdkDhNiVVCqT4=;
+        b=Ow5hZ0nKZ6Emiu+TOVP3RXHwTFyaVSrXt204AdIRm0oeFSsBUz2psqs/ox9Oiwq1hp
+         s6M3UUAD28pJFFSaxJtzQifiCiNEARcC7GsZUPZELlF/psGX6lTo3L06WlorOInHPmjT
+         bDJVsNccb4RrnRJjrfAbfzEpWSFvVQrOrn3M07n84Ki+MQLotfB7hNnAPr8o15G3dyif
+         Bi9DqPgvDlMBRaukUfh4TooiOXtkiLXBjBJ0Z6YYozk0nIwgTn2NeU6ngUkeVT9LLg8v
+         p7JIEjYDdWH/Xvi6KCrDTolHU4Ak2zyM3+K2gj8YkPkh/AB3WmHcYzXKpubKv5teQ/Ai
+         mdDw==
+X-Gm-Message-State: AOAM533elaachQoxZnopnR3MdN+YWBud3DC/+wpqtv5U22hArggCSH2y
+        QVp4wnS+EPkAhD5e/ZfSvhnWRg==
+X-Google-Smtp-Source: ABdhPJzAu9UcriKavTjt1us34Dgaviz7nsPsgGwSihi9yme6I9Rax5zBNoxlLILEiu19iO3Tq7OjWg==
+X-Received: by 2002:adf:aad8:: with SMTP id i24mr8716047wrc.0.1621590467086;
+        Fri, 21 May 2021 02:47:47 -0700 (PDT)
+Received: from elver.google.com ([2a00:79e0:15:13:a932:cdd6:7230:17ba])
+        by smtp.gmail.com with ESMTPSA id t7sm1429438wrs.87.2021.05.21.02.47.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 02:47:46 -0700 (PDT)
+Date:   Fri, 21 May 2021 11:47:41 +0200
+From:   Marco Elver <elver@google.com>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "glider@google.com" <glider@google.com>,
+        "dvyukov@google.com" <dvyukov@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "kasan-dev@googlegroups.com" <kasan-dev@googlegroups.com>,
+        Mel Gorman <mgorman@suse.de>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: Re: [PATCH] kfence: use TASK_IDLE when awaiting allocation
+Message-ID: <YKeBvR0sZGTqX4fG@elver.google.com>
+References: <20210521083209.3740269-1-elver@google.com>
+ <bc14f4f1a3874e55bef033246768a775@AcuMS.aculab.com>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210420062228.GA19927@linux-l9pv.suse>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [124.11.22.254]
-X-ClientProxiedBy: HKAPR03CA0028.apcprd03.prod.outlook.com
- (2603:1096:203:c9::15) To VI1PR04MB7102.eurprd04.prod.outlook.com
- (2603:10a6:800:124::12)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-l9pv.suse (124.11.22.254) by HKAPR03CA0028.apcprd03.prod.outlook.com (2603:1096:203:c9::15) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4173.12 via Frontend Transport; Fri, 21 May 2021 09:47:48 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 14b127c6-a6fe-460b-7cfd-08d91c3d807a
-X-MS-TrafficTypeDiagnostic: VI1PR0402MB3871:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR0402MB3871258852981529065B0A80A3299@VI1PR0402MB3871.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: t/zh6OxJRntjCHBDmpkp2kceC4yYx+C3gYZDqrP7Gr0o+s15RWMdRA10JIIQXpg4i54Atzpn9i2VsdZ7OeyhpT7cf+9YaNmqHQCIADGdBuunWNfDpb5rz/AlHuU9+lnV4/PviKxLVvLocd8dfFOFp55tBsfUDrGr6nN8u1P3NcyW304wpfguH8RN2fv65u5Uw4zHbAp5CLnpxS2JPmC8gIfyB6YZQgj5sDg2+U0WhNdNPn30UTNOznD+kToLvyoUhzRhUeWQpNfoMrXM4KW3oHtpKFo9FOA6yRG8SGvyxFn0qE4Rv/EeFcZd/Pv8VHlKaSIcat5hlJSaPEeGINqyob1V5mK/XXaSCHtz9ozdp9pxSI/y4vJI0OOXDyOZKICn1Oj31anTtA1wlR9v4zoyD9838/2QU+FSXkZCVz/jXFATTC/ViepElfZwJdadTIL9j0K98m0G2DO8/RxEiIkG2Re580i5y3G5UOg8zAWaYF3+NEoo9lhkLaodh8vE9NEgnigRkpTyuvEeCIGJqc3bwcxZtE1i46Jk802nQV8j0PeI9er8nz3tK5/bKOUENwgsQXRYPX6UzKJsXR7AgIwKAgD/TJZIbHtK6w4TCZ9eRYNrLCikOABmhFR5vk/Zu/JOxnrmQI4lEu40qc1T9aTahgu1JrgIruRX1aJ8cHxXNV0=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7102.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(39860400002)(376002)(346002)(6506007)(53546011)(83380400001)(7696005)(15650500001)(956004)(2906002)(86362001)(52116002)(33656002)(6666004)(7416002)(26005)(8886007)(6636002)(478600001)(55016002)(38350700002)(5660300002)(38100700002)(8936002)(36756003)(66556008)(16526019)(6862004)(316002)(186003)(54906003)(4326008)(9686003)(1076003)(66476007)(66946007)(8676002)(43062005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?w4swQ1Ca6LpYT8Re79Q4YCgWmbs1+ewe0+IxQiYsQXq5jKqmimrkjf4jrIZL?=
- =?us-ascii?Q?0B8JKTCwG4EPqebmA4znPOxt40M9a+he7FHl2zIDOCf/koNpqASqsLZsPpG0?=
- =?us-ascii?Q?T7a6Nq9muUcmocc5Nnk9VDmPvobgNoyEwWxg8o917OjSqbUnZyzMDabNpr+B?=
- =?us-ascii?Q?fbyQuBK78a8zBu8Fw7g39QH82pjxaIK0qb0ij3dM6WDOPTaxEe2NiO6Ut2OQ?=
- =?us-ascii?Q?FEj3y1yInIOpaG/2y0trmbjsITs7E55giRw3RwNSdreAutZsqkjn/vkgIO7n?=
- =?us-ascii?Q?sJjnAF6JeJJjfHfQvPoivM+OMZfjgOO4sheaA8XEfwyhZBA8+k5Ap+BTJLM8?=
- =?us-ascii?Q?FUQ86Er5oj3AXqVcPn8UgzeaZRXtDJtx9GeFx+xrgvsDlgRMgUjD6d9evtIQ?=
- =?us-ascii?Q?RLwCa1EtCocEZbFPfSNgLoCAsZgckuJB9UBpiMD1m1CnFF0ly8EUPIPOgAid?=
- =?us-ascii?Q?doAB9rQBREN2xTRBIYsu+klu831x6j1xKSpK0pWXZy0nvW1954G2Hy1nZFoM?=
- =?us-ascii?Q?28bfjk5mct87fqQZHe/ZW4glvWd50468SfVNHDp5OADhl4+zTCErCKLzNnUp?=
- =?us-ascii?Q?xOI3BoII2d3oLy2N9K95roPYACfIKjQYCHc6r5UfGn//C3vFwIcHKWS0Wqy6?=
- =?us-ascii?Q?SlEfih/JnHzRJ/yItAgeSsT8b4V7SdB5vw7RCvWwQaDwuKSzE/xWynI4ZGDp?=
- =?us-ascii?Q?SAoUWkknXzv46hF6uOl80fIhIAoviSqPzyYercT2IK3KnFnrvAsp2Cp3SVmZ?=
- =?us-ascii?Q?CCkY+v8xQUFTWih7Rot7U+kEygSGxikdcyicSDINuznOdK5kAVf0ozpeAINA?=
- =?us-ascii?Q?9mh9Nba/fvouDzyRSG7WHTSd7wunl5+7jYpVqltOV28FIL9B6XeI/uzn2rmN?=
- =?us-ascii?Q?d7j9DeVxAi6wS/umW10CdK2pIqHwUgRzSvdQwia4suTuJRt0zpdeXMBCIbKt?=
- =?us-ascii?Q?XC7k8tGkmEbytXfuBXS4zGnS1DHQVeHiUO/oViojw3qqhbWgt8wRaom89adU?=
- =?us-ascii?Q?ervzenVDUQwBOMIHNYniig2xJTvJnFzIyLAJIpuK1EfXcROt+Qew44VTWwDE?=
- =?us-ascii?Q?LLURI6tu+WgVifPY5MMxohd2f7bVnH9ilZLioJPoIgIViJDIrN+s3+K98afp?=
- =?us-ascii?Q?lIAC7n8+WsqmMjnn0WNVObj/e8LNmCPWgi/hZjPrAU3rzyCEG+/6D5HO+gyH?=
- =?us-ascii?Q?txeiL0Lc38hFPfQ5ol22IpB3v7gfdjIDn9iGuiPi5qGX4pZ3eW7DZZIxKyvz?=
- =?us-ascii?Q?WBFBY8VqqP/TlyQgnHZTq+F/N1GWMORex8Do4IbGLae/WNoxU7+YGSHiGibU?=
- =?us-ascii?Q?wpUKnuQ9Zmqm9bX9jedJChSo?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 14b127c6-a6fe-460b-7cfd-08d91c3d807a
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB7102.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2021 09:47:52.5949
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: WoQSY9pNt1kk1vMofHZ0neZ5aMbwLvAQGH9rtkLv1L/Qd7imUgwETGjSL/Ab/JJy
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3871
+In-Reply-To: <bc14f4f1a3874e55bef033246768a775@AcuMS.aculab.com>
+User-Agent: Mutt/2.0.5 (2021-01-21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Varad,
-
-On Tue, Apr 20, 2021 at 02:22:28PM +0800, Joey Lee wrote:
-> Hi Varad,
-> 
-> Thanks for your review!
-> 
-> On Thu, Apr 15, 2021 at 02:08:32PM +0200, Varad Gautam wrote:
-> > Hi Joey,
+On Fri, May 21, 2021 at 09:39AM +0000, David Laight wrote:
+> From: Marco Elver
+> > Sent: 21 May 2021 09:32
 > > 
-> > On 4/9/21 4:46 AM, Lee, Chun-Yi wrote:
-> > > This patch adds the logic for checking the CodeSigning extended
-> > > key usage when verifying signature of kernel module or
-> > > kexec PE binary in PKCS#7.
-> > > 
-> > > Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
-> > > ---
-> > >  certs/system_keyring.c               |  2 +-
-> > >  crypto/asymmetric_keys/Kconfig       |  9 +++++++++
-> > >  crypto/asymmetric_keys/pkcs7_trust.c | 37 +++++++++++++++++++++++++++++++++---
-> > >  include/crypto/pkcs7.h               |  3 ++-
-> > >  4 files changed, 46 insertions(+), 5 deletions(-)
-[...snip]
-> > >  
-> > >  matched:
-> > > +	if (!check_codesign_eku(key, usage)) {
+> > Since wait_event() uses TASK_UNINTERRUPTIBLE by default, waiting for an
+> > allocation counts towards load. However, for KFENCE, this does not make
+> > any sense, since there is no busy work we're awaiting.
 > > 
-> > Perhaps this can be a generic check_eku_usage() call, with codesigning as one of the
-> > things it can check for.
-> >
+> > Instead, use TASK_IDLE via wait_event_idle() to not count towards load.
 > 
-> Because only codesign EKU be checked now. So I prefer to keep it
-> as my current implementation until there have other EKU requirement. 
+> Doesn't that let the process be interruptible by a signal.
+> Which is probably not desirable.
+> 
+> There really ought to be a way of sleeping with TASK_UNINTERRUPTIBLE
+> without changing the load-average.
 
-I have reworked this patch for a bug be found by kernel test robot. I think
-that your suggestion is good. So I change the function name to a more generic
-name check_eku_by_usage() in my v7 patch set.
+That's what TASK_IDLE is:
 
-Thanks a lot!
-Joey Lee
+	include/linux/sched.h:#define TASK_IDLE                 (TASK_UNINTERRUPTIBLE | TASK_NOLOAD)
 
+See https://lore.kernel.org/lkml/alpine.LFD.2.11.1505112154420.1749@ja.home.ssi.bg/T/
+
+Thanks,
+-- Marco
+
+> IIRC the load-average is really intended to include processes
+> that are waiting for disk - especially for swap.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
