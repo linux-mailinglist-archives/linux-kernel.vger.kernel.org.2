@@ -2,197 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE9C738CAB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:12:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4EC138CAB7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237430AbhEUQOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:14:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:22520 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236522AbhEUQN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:13:59 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621613556; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=JBNjKRUr1tE/SpZsz0PTWtWzyb4OvafTBwnzC/mARrY=;
- b=b/+W2OUTjXKp5bkPNG2e3x7A3dtP+jrlkMHQUWcQKATTQpcC9ExHKfovjEp2b35oC+ZkZho9
- KOBnCExvIQNXo6K/CXIi5wpkXrGBY8OuN45Nwn3UAKv+iuyoQJY2IIbjq41Rr+/KkSJhPuOx
- ESv1wyfAFyxWw7K0likFMO8HjCI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60a7dbd32bff04e53bb086af (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 16:12:03
- GMT
-Sender: rojay=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 79E72C4360C; Fri, 21 May 2021 16:12:03 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: rojay)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A055C433D3;
-        Fri, 21 May 2021 16:12:02 +0000 (UTC)
+        id S237534AbhEUQPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:15:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31229 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S237439AbhEUQOz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:14:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621613611;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0dYw+1ty9M4F1TS3R0pdrlfe9TmD8aidnu0vhpgiO6k=;
+        b=S1ahRIpkt1JFtDf/awzvZ3bugymB/yeeVEVzstjJhD/yKnmVi1HnCMyzFxGYtLwAnTy94t
+        03/t8/HEZVgUn+HCVYGDckExSAq3Fd1UyCE7jvoNhCDBhV4Yqn11GWjLa0z2qLGdbVlC71
+        4f8LnYaYgqaYH36U9MhnW7NcH+s7Pfw=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-427-kGqli1clMDChazkxSg4h4w-1; Fri, 21 May 2021 12:13:28 -0400
+X-MC-Unique: kGqli1clMDChazkxSg4h4w-1
+Received: by mail-lf1-f69.google.com with SMTP id d26-20020a194f1a0000b02902390d1deb9dso4505340lfb.18
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:13:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0dYw+1ty9M4F1TS3R0pdrlfe9TmD8aidnu0vhpgiO6k=;
+        b=IgK4TF50yBXCEc2u1pS7x9jNu7AQH7rtHRLIpbPpTRtbkUEigfb1D4Nb6MJ4/MHBt2
+         rmlb+jmIT4g6R545SBbDaL2EEmsG1p76ElMK3d/16UjXekjwsM+y2BTzlHeJWrp1KGjb
+         IIeKuAdf9lJ+bnnWTArDeOdHxAt01tn8tyJBe6Bty4y8Y+qIF4raYON1M1buz4cXa9uI
+         cGWt/oWYahRreHhhecp9I+ISOLdP2AxMs+zimt9HRe5PG9to+f2uNAnd5OdAP3elEM7u
+         EkN3l/tCRiWsjObcqSJUxbIjMwvG2cSsy4TQog3/wUjiXqIFs3kqEoByFp+AZARZCyDR
+         XtVQ==
+X-Gm-Message-State: AOAM533Q1AlXG2wgwkImL/9RzaZ8eLDpSfFUJHiWh3PRzuQgXA9yoYgB
+        WZdBwsKcN+p/5BoKqp9UmNphr4AuI3Z9JL57YrLuj1Huj1dNy+LpikYJoihgJPAfHHlzgaS4xLA
+        Id0jQ6FX6ZXWdVqZgGakdgOPUtWhnF6Cd8RNWM0Q0
+X-Received: by 2002:a19:6a13:: with SMTP id u19mr2632862lfu.252.1621613606477;
+        Fri, 21 May 2021 09:13:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxcQ1NWe596jnGhcNjYe2J09TkPUM7blmWDbIf1NVN1FdeURq8gjDCG56i3qI32jqqzyZ4Ad08J+veH32YL/kw=
+X-Received: by 2002:a19:6a13:: with SMTP id u19mr2632844lfu.252.1621613606258;
+ Fri, 21 May 2021 09:13:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 21 May 2021 21:42:02 +0530
-From:   rojay@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     wsa@kernel.org, dianders@chromium.org,
-        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
-        mka@chromium.org, skananth@codeaurora.org,
-        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
-        rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH V10] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-In-Reply-To: <CAE-0n50o1XRnV3HSAM7uhfS8M3kf_m0DrTkqCfYGdnSjpF6Xfg@mail.gmail.com>
-References: <20210512082220.7137-1-rojay@codeaurora.org>
- <CAE-0n52D-K1T0QgxA-S7BXxE3Qk807F9edNyR+2RL4YxRyigMg@mail.gmail.com>
- <70a90d229551bcec21ed74cfd1350b9b@codeaurora.org>
- <CAE-0n50o1XRnV3HSAM7uhfS8M3kf_m0DrTkqCfYGdnSjpF6Xfg@mail.gmail.com>
-Message-ID: <79fdd08e974d6f6e35f0042c98a9415c@codeaurora.org>
-X-Sender: rojay@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+ <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
+ <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
+ <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
+ <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+ <87zgwo9u79.ffs@nanos.tec.linutronix.de> <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87wnrs9tvp.ffs@nanos.tec.linutronix.de>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Fri, 21 May 2021 12:13:15 -0400
+Message-ID: <CAFki+LkqBHnVYB5VBx_8Ch0u8RfXrJsRzxyuDfHhbR-dCeN3Lg@mail.gmail.com>
+Subject: Re: [PATCH] genirq: Provide new interfaces for affinity hints
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-20 13:45, Stephen Boyd wrote:
-> Quoting rojay@codeaurora.org (2021-05-16 23:32:50)
->> Hi Stephen,
->> 
->> Now, I have made the changes, calling i2c_mark_adapter_suspended() in
->> shutdown() and i2c_mark_adapter_suspended()/_resumed() from runtime
->> suspend/resume also and validated the changes. I have also picked
->> your patch [1] for this validation.
->> 
->> During the device boot up I am seeing multiple traces shown below.
->> Are these expected now and needs to be fixed from rt5682/respective
->> client driver?
->> 
->> Trace1:
->> [   11.709477] i2c i2c-9: Transfer while suspended
->> [   11.905595] Call trace:
->> [   11.908124]  __i2c_transfer+0xb8/0x38c
->> [   11.911984]  i2c_transfer+0xa0/0xf4
->> [   11.915569]  i2c_transfer_buffer_flags+0x68/0x9c
->> [   11.920314]  regmap_i2c_write+0x34/0x64
->> [   11.924255]  _regmap_raw_write_impl+0x4e8/0x7bc
->> [   11.928911]  _regmap_bus_raw_write+0x70/0x8c
->> [   11.933301]  _regmap_write+0x100/0x150
->> [   11.937152]  regmap_write+0x54/0x78
->> [   11.940744]  soc_component_write_no_lock+0x34/0xa8
->> [   11.945666]  snd_soc_component_write+0x3c/0x5c
->> [   11.950242]  rt5682_set_component_pll+0x1e4/0x2b4 [snd_soc_rt5682]
->> [   11.956588]  snd_soc_component_set_pll+0x50/0xa8
->> [   11.961328]  snd_soc_dai_set_pll+0x74/0xc8
->> [   11.965542]  sc7180_snd_startup+0x9c/0x120 [snd_soc_sc7180]
->> [   11.971262]  snd_soc_link_startup+0x34/0x88
->> [   11.975557]  soc_pcm_open+0x100/0x538
->> [   11.979323]  snd_pcm_open_substream+0x530/0x704
->> [   11.983980]  snd_pcm_open+0xc8/0x210
->> [   11.987653]  snd_pcm_playback_open+0x50/0x80
->> [   11.992049]  snd_open+0x120/0x150
->> [   11.995462]  chrdev_open+0xb8/0x1a4
->> [   11.999056]  do_dentry_open+0x238/0x358
->> [   12.003001]  vfs_open+0x34/0x40
->> [   12.006235]  path_openat+0x9e8/0xd60
->> [   12.009913]  do_filp_open+0x90/0x10c
->> [   12.013587]  do_sys_open+0x148/0x314
->> [   12.017260]  __arm64_compat_sys_openat+0x28/0x34
->> [   12.022009]  el0_svc_common+0xa4/0x16c
->> [   12.025860]  el0_svc_compat_handler+0x2c/0x40
->> [   12.030337]  el0_svc_compat+0x8/0x10
->> [   12.034018] ---[ end trace 745ead557fcbb5dc ]---
-> 
-> Ah I see. Maybe it isn't correct to mark the device as suspended in
-> runtime PM operations because the bus will be resumed during the
-> transfer? So only mark it suspended during system wide suspend/resume
-> transitions?
-> 
-> -Stephen
-> 
+On Fri, May 21, 2021 at 8:03 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> The discussion about removing the side effect of irq_set_affinity_hint() of
+> actually applying the cpumask (if not NULL) as affinity to the interrupt,
+> unearthed a few unpleasantries:
+>
+>   1) The modular perf drivers rely on the current behaviour for the very
+>      wrong reasons.
+>
+>   2) While none of the other drivers prevents user space from changing
+>      the affinity, a cursorily inspection shows that there are at least
+>      expectations in some drivers.
+>
+> #1 needs to be cleaned up anyway, so that's not a problem
+>
+> #2 might result in subtle regressions especially when irqbalanced (which
+>    nowadays ignores the affinity hint) is disabled.
+>
+> Provide new interfaces:
+>
+>   irq_update_affinity_hint() - Only sets the affinity hint pointer
+>   irq_apply_affinity_hint()  - Set the pointer and apply the affinity to
+>                                the interrupt
+>
 
-Yes, we cannot mark device as suspended/resumed during
-runtime PM operations. Bus will be resumed during i2c
-transfers and before transfer initiation, in __i2c_transfer()
-from i2c-core-base.c there is a check to see whether the device
-is marked as suspended with "__i2c_check_suspended(adap)" call,
-which is "true" in this case and returning from there.
+Any reason why you ruled out the usage of irq_set_affinity_and_hint()?
+IMHO the latter makes it very clear what the function is meant to do.
 
-To mark it only suspended during system wide suspend/resume
-transitions, currently our geni i2c driver has only
-system_suspend implemented (geni_i2c_suspend_noirq()) and
-does not have system_resume implemented, which again causes i2c
-transfers to fail during system_resume after system_suspend.
 
-Shall I go ahead with marking device suspended during
-shutdown() only?
+> Make irq_set_affinity_hint() a wrapper around irq_apply_affinity_hint() and
+> document it to be phased out.
 
--Roja
+Right, so eventually we will be only left with the following APIs that
+the driver will use:
+irq_set_affinity()- for drivers that only wants to set the affinity mask
+irq_apply_affinity_hint/irq_set_affinity_and_hint() - for drivers that
+wants to set same affinity and hint mask
+irq_update_affinity_hint() - for drivers that only wants to update the hint mask
 
->> [   12.040151] rt5682 9-001a: ASoC: error at 
->> soc_component_write_no_lock
->> on rt5682.9-001a: -108
->> [   12.049055] rt5682 9-001a: ASoC: error at 
->> soc_component_write_no_lock
->> on rt5682.9-001a: -108
->> [   12.057742] rt5682 9-001a: ASoC: error at
->> snd_soc_component_update_bits on rt5682.9-001a: -108
->> 
->> Trace2:
->> [    3.515390] i2c i2c-2: Transfer while suspended
->> [    3.606749] Call trace:
->> [    3.606751]  __i2c_transfer+0xb8/0x38c
->> [    3.606752]  i2c_transfer+0xa0/0xf4
->> [    3.606754]  i2c_transfer_buffer_flags+0x68/0x9c
->> [    3.639599] hub 2-1.4:1.0: USB hub found
->> [    3.644375]  regmap_i2c_write+0x34/0x64
->> [    3.644376]  _regmap_raw_write_impl+0x4e8/0x7bc
->> [    3.644378]  _regmap_bus_raw_write+0x70/0x8c
->> [    3.644379]  _regmap_write+0x100/0x150
->> [    3.644381]  regmap_write+0x54/0x78
->> [    3.644383]  ti_sn_aux_transfer+0x90/0x244
->> [    3.650695] hub 2-1.4:1.0: 4 ports detected
->> [    3.655288]  drm_dp_dpcd_access+0x8c/0x11c
->> [    3.655289]  drm_dp_dpcd_read+0x64/0x10c
->> [    3.655290]  ti_sn_bridge_enable+0x5c/0x824
->> [    3.655292]  drm_atomic_bridge_chain_enable+0x78/0xa0
->> [    3.655294]  drm_atomic_helper_commit_modeset_enables+0x198/0x238
->> [    3.655295]  msm_atomic_commit_tail+0x324/0x714
->> [    3.655297]  commit_tail+0xa4/0x108
->> [    3.664985] usb 1-1.4: new high-speed USB device number 4 using
->> xhci-hcd
->> [    3.666204]  drm_atomic_helper_commit+0xf4/0xfc
->> [    3.666205]  drm_atomic_commit+0x50/0x5c
->> [    3.666206]  drm_atomic_helper_set_config+0x64/0x98
->> [    3.666208]  drm_mode_setcrtc+0x26c/0x590
->> [    3.666209]  drm_ioctl_kernel+0x9c/0x114
->> [    3.701074] hub 2-1.4:1.0: USB hub found
->> [    3.703347]  drm_ioctl+0x288/0x420
->> [    3.703349]  drm_compat_ioctl+0xd0/0xe0
->> [    3.703351]  __arm64_compat_sys_ioctl+0x100/0x2108
->> [    3.703354]  el0_svc_common+0xa4/0x16c
->> [    3.708499] hub 2-1.4:1.0: 4 ports detected
->> [    3.711588]  el0_svc_compat_handler+0x2c/0x40
->> [    3.711590]  el0_svc_compat+0x8/0x10
->> [    3.711591] ---[ end trace 745ead557fcbb5db ]---
->> [    3.772120] usb 1-1.4: New USB device found, idVendor=0bda,
->> idProduct=5411, bcdDevice= 1.04
->> [    3.794990] ti_sn65dsi86 2-002d: [drm:ti_sn_bridge_enable] *ERROR*
->> Can't read lane count (-108); assuming 4
->> 
->> [1]
->> https://lore.kernel.org/r/20210508075151.1626903-2-swboyd@chromium.org
->> 
+Thanks for clearing this.
+
+>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Link: https://lore.kernel.org/r/20210501021832.743094-1-jesse.brandeburg@intel.com
+> ---
+> Applies on:
+>    git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+> ---
+>  include/linux/interrupt.h |   41 ++++++++++++++++++++++++++++++++++++++++-
+>  kernel/irq/manage.c       |    8 ++++----
+>  2 files changed, 44 insertions(+), 5 deletions(-)
+>
+> --- a/include/linux/interrupt.h
+> +++ b/include/linux/interrupt.h
+> @@ -328,7 +328,46 @@ extern int irq_force_affinity(unsigned i
+>  extern int irq_can_set_affinity(unsigned int irq);
+>  extern int irq_select_affinity(unsigned int irq);
+>
+> -extern int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m);
+> +extern int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
+> +                                    bool setaffinity);
+> +
+> +/**
+> + * irq_update_affinity_hint - Update the affinity hint
+> + * @irq:       Interrupt to update
+> + * @cpumask:   cpumask pointer (NULL to clear the hint)
+> + *
+> + * Updates the affinity hint, but does not change the affinity of the interrupt.
+> + */
+> +static inline int
+> +irq_update_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +{
+> +       return __irq_apply_affinity_hint(irq, m, true);
+> +}
+> +
+> +/**
+> + * irq_apply_affinity_hint - Update the affinity hint and apply the provided
+> + *                          cpumask to the interrupt
+> + * @irq:       Interrupt to update
+> + * @cpumask:   cpumask pointer (NULL to clear the hint)
+> + *
+> + * Updates the affinity hint and if @cpumask is not NULL it applies it as
+> + * the affinity of that interrupt.
+> + */
+> +static inline int
+> +irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +{
+> +       return __irq_apply_affinity_hint(irq, m, true);
+> +}
+> +
+> +/*
+> + * Deprecated. Use irq_update_affinity_hint() or irq_apply_affinity_hint()
+> + * instead.
+> + */
+> +static inline int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +{
+> +       return irq_apply_affinity_hint(irq, cpumask);
+> +}
+> +
+>  extern int irq_update_affinity_desc(unsigned int irq,
+>                                     struct irq_affinity_desc *affinity);
+>
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -487,7 +487,8 @@ int irq_force_affinity(unsigned int irq,
+>  }
+>  EXPORT_SYMBOL_GPL(irq_force_affinity);
+>
+> -int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
+> +int __irq_apply_affinity_hint(unsigned int irq, const struct cpumask *m,
+> +                             bool setaffinity)
+>  {
+>         unsigned long flags;
+>         struct irq_desc *desc = irq_get_desc_lock(irq, &flags, IRQ_GET_DESC_CHECK_GLOBAL);
+> @@ -496,12 +497,11 @@ int irq_set_affinity_hint(unsigned int i
+>                 return -EINVAL;
+>         desc->affinity_hint = m;
+>         irq_put_desc_unlock(desc, flags);
+> -       /* set the initial affinity to prevent every interrupt being on CPU0 */
+> -       if (m)
+> +       if (m && setaffinity)
+>                 __irq_set_affinity(irq, m, false);
+>         return 0;
+>  }
+> -EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
+> +EXPORT_SYMBOL_GPL(__irq_apply_affinity_hint);
+>
+>  static void irq_affinity_notify(struct work_struct *work)
+>  {
+>
+
+
+--
+Nitesh
+
