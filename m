@@ -2,81 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0870338C73D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A6D8038C742
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:57:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232569AbhEUM5p convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 08:57:45 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:56575 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231795AbhEUM5B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:57:01 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-219-LgHmD7NGNGu8CptD9BGd7A-1; Fri, 21 May 2021 13:55:32 +0100
-X-MC-Unique: LgHmD7NGNGu8CptD9BGd7A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Fri, 21 May 2021 13:55:30 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Fri, 21 May 2021 13:55:30 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Austin Kim' <austindh.kim@gmail.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "tj@kernel.org" <tj@kernel.org>, "neilb@suse.de" <neilb@suse.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "austin.kim@lge.com" <austin.kim@lge.com>
-Subject: RE: [PATCH] kernfs: move return value check after kmalloc()
-Thread-Topic: [PATCH] kernfs: move return value check after kmalloc()
-Thread-Index: AQHXTezGW1ASuOoVY06iiixFMRipz6rt467w
-Date:   Fri, 21 May 2021 12:55:30 +0000
-Message-ID: <b698a7530ce747d180e93967572d3d88@AcuMS.aculab.com>
-References: <20210521025525.GA1379@raspberrypi>
-In-Reply-To: <20210521025525.GA1379@raspberrypi>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S229912AbhEUM60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:58:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37218 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232290AbhEUM6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:58:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB1FF613D8;
+        Fri, 21 May 2021 12:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621601797;
+        bh=nLiWIiuQ0kxuVgZbeKOWUyyPgYrR77UCzFAel1jg22c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GWyNqRI73z76a3BP9cwhI1q4Y2hipTP6tw1R5/sCn21TJVTrA/u3S3/8OmIuokl/p
+         7lhzcQXLFM7jnJb1M6CwO/lMY58asJZn02RBlqMc2p+S6Ff2SyzdLqDJ/n6qlF0YnC
+         zrdXsEan6JTyXOxKqqHt5Pzd20nDEyZS5JK1+CUTbSpjdMCocMiKeSLgS/A7Dae1vP
+         IfwiX9FcCA1jZyxxjuDaNIhsAPXDPVoK17dQrkVfTC+FDbqtHE/Oj3z46pBzeXt9oy
+         X0OA0gCIoUkjxPIGYB3+VDpUU9KVO/t8gmExjUrW6+FlwNWXdavIPXYiTM9r96iawz
+         EKd8+0iy5bwQw==
+Received: by mail-ej1-f44.google.com with SMTP id et19so23273786ejc.4;
+        Fri, 21 May 2021 05:56:37 -0700 (PDT)
+X-Gm-Message-State: AOAM530LqUzEJjDG2TSEQpSMs71whYBkcHLzYSJxgcKEjDXYLv/mNp5N
+        o1cjdpNviEUrorV7U5GtfX6aKyrGr2qJnr2h4g==
+X-Google-Smtp-Source: ABdhPJzGaRvL+nvTQl0kfwM8PUcvI9A4QA9o8klAsKUu1HJYM2XvDEwapQ8O+ycaVUA1fNgEjfi/YaJxUfqe3vlaai0=
+X-Received: by 2002:a17:907:76e8:: with SMTP id kg8mr9610299ejc.130.1621601796326;
+ Fri, 21 May 2021 05:56:36 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210511090122.6995-1-a-govindraju@ti.com> <20210517221513.GA3263368@robh.at.kernel.org>
+ <861cefe2-7bb6-c435-ab0d-483155852876@ti.com>
+In-Reply-To: <861cefe2-7bb6-c435-ab0d-483155852876@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 21 May 2021 07:56:24 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKyuXYJocBMLGXL6aXuK0YnrW7qdLugV2bxdP-LJ=2+cg@mail.gmail.com>
+Message-ID: <CAL_JsqKyuXYJocBMLGXL6aXuK0YnrW7qdLugV2bxdP-LJ=2+cg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Aswath Govindraju <a-govindraju@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Austin Kim
-> Sent: 21 May 2021 03:55
-> 
-> With 414985ae23c0 ("sysfs, kernfs: move file core code to fs/kernfs/file.c"),
-> 'return -ENOMEM' is executed when kmalloc() returns NULL.
-> 
-> Since 'commit 4ef67a8c95f3 ("sysfs/kernfs: make read requests on pre-alloc
-> files use the buffer.")', 'return -ENOMEM' statement is not properly located.
+On Fri, May 21, 2021 at 3:32 AM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
+>
+> Hi Rob, All
+>
+> On 18/05/2021 01:15, Rob Herring wrote:
+> > On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
+> >> Convert gpio-davinci dt-binding documentation from txt to yaml format.
+> >>
+> >> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> >> ---
+> >>   .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
+> >>   .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
+> >>   MAINTAINERS                                   |   2 +-
+> >>   3 files changed, 194 insertions(+), 168 deletions(-)
+> >>   delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> >>   create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt b/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> >> deleted file mode 100644
+> >> index 696ea46227d1..000000000000
+> >> --- a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> >> +++ /dev/null
+> >> @@ -1,167 +0,0 @@
+> >> -Davinci/Keystone GPIO controller bindings
+> >> -
+> >> -Required Properties:
+> >> -- compatible: should be "ti,dm6441-gpio": for Davinci da850 SoCs
+> >> -                    "ti,keystone-gpio": for Keystone 2 66AK2H/K, 66AK2L,
+> >> -                                            66AK2E SoCs
+> >> -                    "ti,k2g-gpio", "ti,keystone-gpio": for 66AK2G
+> >> -                    "ti,am654-gpio", "ti,keystone-gpio": for TI K3 AM654
+> >> -                    "ti,j721e-gpio", "ti,keystone-gpio": for J721E SoCs
+> >> -                    "ti,am64-gpio", "ti,keystone-gpio": for AM64 SoCs
+> >> -
+>
+> [...]
+>
+> >> -};
+> >> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+> >> new file mode 100644
+> >> index 000000000000..1e16172669c7
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+> >> @@ -0,0 +1,193 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/gpio/gpio-davinci.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: GPIO controller for Davinci and keystone devices
+> >> +
+> >> +maintainers:
+> >> +  - Keerthy <j-keerthy@ti.com>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    oneOf:
+> >> +      - items:
+> >> +          - enum:
+> >> +              - ti,k2g-gpio
+> >> +              - ti,am654-gpio
+> >> +              - ti,j721e-gpio
+> >> +              - ti,am64-gpio
+> >> +          - const: ti,keystone-gpio
+> >> +
+> >> +      - items:
+> >> +          - const: ti,dm6441-gpio
+> >> +      - items:
+> >> +          - const: ti,keystone-gpio
+> >
+> > These 2 can be expressed as an 'enum'.
+> >
+> >> +
+> >> +  reg:
+> >> +    maxItems: 1
+> >> +    description:
+> >> +      Physical base address of the controller and the size of memory mapped registers.
+> >
+> > Drop. That's every 'reg' property.
+> >
+> >> +
+> >> +  gpio-controller: true
+> >> +
+> >> +  gpio-ranges: true
+> >> +
+> >> +  gpio-line-names:
+> >> +    description: strings describing the names of each gpio line.
+> >
+> > Any constraints like min/max number of lines?
+> >
+> >> +
+> >> +  "#gpio-cells":
+> >> +    const: 2
+> >> +    description:
+> >> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
+> >> +
+> >> +  interrupts:
+> >> +    description:
+> >> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
+> >
+> > Needs constraints. How many items and what are they?
+> >
+> >> +
+> >> +  ti,ngpio:
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +    description: The number of GPIO pins supported consecutively.
+> >> +    minimum: 1
+> >> +
+> >> +  ti,davinci-gpio-unbanked:
+> >> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >> +    description: The number of GPIOs that have an individual interrupt line to processor.
+> >> +    minimum: 0
+> >> +
+> >> +  clocks:
+> >> +    maxItems: 1
+> >> +    description:
+> >> +      clock-specifier to represent input to the GPIO controller.
+> >
+> > Drop description.
+> >
+> >> +
+> >> +  clock-names:
+> >> +    const: gpio
+> >> +
+> >> +  interrupt-controller: true
+> >> +
+> >> +  power-domains:
+> >> +    maxItems: 1
+> >> +    description:
+> >> +      Phandle to the power domain provider node.
+> >
+> > Drop.
+> >
+> >> +
+> >> +  "#interrupt-cells":
+> >> +    const: 2
+> >> +
+> >> +patternProperties:
+> >> +  "-hog$":
+> >> +    type: object
+> >> +    properties:
+> >> +      gpios: true
+> >> +      gpio-hog: true
+> >> +      input: true
+> >> +      output-high: true
+> >> +      output-low: true
+> >> +      line-name: true
+> >> +
+> >> +    required:
+> >> +      - gpio-hog
+> >> +      - gpios
+>
+> I see that gpio-hog.yaml dtschema has been added.
+> Can it be reused here and how?
 
-Much more interesting is that the read is bounded to PAGE_SIZE
-but the buffer is of->atomic_write_len bytes long.
+It's applied to any node containing 'gpio-hog' property, so all you need is:
 
-Seems far too easy for the read() function to overwrite the buffer.
-Either that, or you can have files longer than PAGE_SIZE that you
-can write but not read all of!
-
-There is also the question of whether the atomic operations
-needed lock and unlock the preallocated buffer are actually
-slower than kmalloc removing a buffer from a cpu-local list.
-
-And, of course, kmalloc(PAGE_SIZE + 1, ) is horrid...
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+required:
+  - gpio-hog
