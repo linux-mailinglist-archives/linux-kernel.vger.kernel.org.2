@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D41238CB69
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36D4338CB6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:58:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235403AbhEUQ6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:58:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20223 "EHLO
+        id S237278AbhEUQ7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:59:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25878 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234189AbhEUQ6U (ORCPT
+        by vger.kernel.org with ESMTP id S234370AbhEUQ7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:58:20 -0400
+        Fri, 21 May 2021 12:59:34 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621616216;
+        s=mimecast20190719; t=1621616290;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NBEhSmItW1IYNtD9GY2PDr4mhgfEoe+usv31WhGIy1Q=;
-        b=Xtw5CJvlhY3j3h7OJZ7cuEI/YQBLWSAieZU77678FkuujVO+Kp30BOI3WIbt57Huvf6Cru
-        dEScFyvwzrMpvRp78aCDHJ75/fm25qBYA7C1597UoJl0UEmZWI2qjdUXJu4b0OFy8FaNp1
-        NAbwaH9SYiFeqNF7FnfXLGR3pbwMgxo=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-261-vKAwC29XMraZ62vm9oAmqg-1; Fri, 21 May 2021 12:56:54 -0400
-X-MC-Unique: vKAwC29XMraZ62vm9oAmqg-1
-Received: by mail-ed1-f69.google.com with SMTP id u6-20020aa7d0c60000b029038d7337e633so5466568edo.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:56:54 -0700 (PDT)
+        bh=VojTeZKFK9PJGOUd3X9HN/meFrWzT9f62q8BuQnov1w=;
+        b=AgQaOxE2kvp5/DMA0YpN/3ghIYdxONnlQm91FXzXZI5BAWlZa7ywvk0tGidMqOs349en8x
+        q+vbrZn4NQAyM9KqUUt/0hFA228hPY2gw5x4shN9OXI3Yamq5nfxB8hF/UGa4y8MgCCJpE
+        4YWrhrRIqFlTc+Bcb4B1o3ZZ/1UVCHg=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-39-Z27OxJMeN3ChfiVKPkrTkQ-1; Fri, 21 May 2021 12:58:08 -0400
+X-MC-Unique: Z27OxJMeN3ChfiVKPkrTkQ-1
+Received: by mail-ed1-f70.google.com with SMTP id h18-20020a05640250d2b029038cc3938914so11663701edb.17
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:58:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=NBEhSmItW1IYNtD9GY2PDr4mhgfEoe+usv31WhGIy1Q=;
-        b=UWW0JDxkv/JKmmk3leup7x1lVftBGCo1Q1kaO4WBPNKBPGnOz2LuLJuWHx4pEBbB/U
-         ONuZDrJl+73PLNb+Q8b1W7u/xhP+UjZkQlY7aLUXv+zzWiRtfjI63zRlDUcJU6yfEjyq
-         ouPgPAPjWCuoxtvf82QxLxYu2BOQQHLR/rnNd+YbMQrd7/yxirpncG9H8+zIA/QgRr1O
-         L0WaDZiTtQMM+F7F/0BZ4eH4QjHp0SekoIvacFMFl/3qAgzu9rSyzHw0r1AWZYvNd5gI
-         9LdQfJ8j5Pb3rlqiSNzkqwJo6bHD3GlFS0IDo8wPnsImYjDtzjq6rz7ih/C0Y2da/RCL
-         z25A==
-X-Gm-Message-State: AOAM531uKAgn7QRuzfVL2FSY9rsp40rpvRmrQYR6miKmAzNkpSAfsTND
-        uGlG72GJvvUYTyT61kq1SXQAtoNmw1ZlMwfXeVUNXE6tMyzEuIzqp6y9vFv5TTv7XeBtQYUdarn
-        pzX8OhMIRFXUFd98diKRLvF93
-X-Received: by 2002:a17:906:d7ac:: with SMTP id pk12mr11553239ejb.143.1621616213248;
-        Fri, 21 May 2021 09:56:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxCWCDVomytJPfa86MwluYPw4QKWppPo0ioZ/nqTfx41wEQP0/qPljMMPxW+0CBwRb6um6ctQ==
-X-Received: by 2002:a17:906:d7ac:: with SMTP id pk12mr11553223ejb.143.1621616213110;
-        Fri, 21 May 2021 09:56:53 -0700 (PDT)
+        bh=VojTeZKFK9PJGOUd3X9HN/meFrWzT9f62q8BuQnov1w=;
+        b=SEDpy4ztx5/5Yq3FaXjMpL6Wo2OZqYTx8THuiQGTQyVd8Ed5bmfFXvwP9PiOb4+7NS
+         ZCyhh7OxtFwLIXGhIVt9R9fjcP4phEDQR4sTEvXzkW7jxkLOxlTNvWHCDec25x+iH0S9
+         UlEzk6ToWy+6wvdAF5K0qWzkPR3PB2Hs0D7NTmMr0XU3fnUg4P+CkBdP+zGh/JycDok0
+         /YDniswUL0GPDCatHv3bOtpu9AEBYwFmSP8ifLuW0qxzpufBJpJMplQk96B4x4wEbPHu
+         A1U7hDMRiU3Lt68Q0svrEgH+PN3XDUPxF2bvbbFGwhJY8QO8h60CNYZlZT6eXDlObg2E
+         63Qw==
+X-Gm-Message-State: AOAM531qz3tFDr7g8SVFt3f5p4XhHs5HZEO8zkFrrFExYJYzmNhgveuv
+        uLM3OwliZGLg5RYkfl6y1SaU5q8JGNTCudJDkLjb3Xqf96G12wn2/JfDMpnh43CWKLvISkXvO2s
+        htZF4KX0IcarsYHBDqoExcbHcYe52QSQps59QdHFCsL6Gf1QlnQ4tVzWR16awO1nNnbMG0NlttA
+        RL
+X-Received: by 2002:a05:6402:17d9:: with SMTP id s25mr12139970edy.337.1621616287450;
+        Fri, 21 May 2021 09:58:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy98pEvLlP1FzPi912wf+uy7l7QAd8jCgg1bs5C8GAUzcIzy3jEbDdR6gOp1ZH05CFh139jaA==
+X-Received: by 2002:a05:6402:17d9:: with SMTP id s25mr12139954edy.337.1621616287262;
+        Fri, 21 May 2021 09:58:07 -0700 (PDT)
 Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id d25sm3878425ejd.59.2021.05.21.09.56.52
+        by smtp.gmail.com with ESMTPSA id a21sm3947276ejy.85.2021.05.21.09.58.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 09:56:52 -0700 (PDT)
-Subject: Re: [PATCH v1 1/1] platform/x86: Add PWM platform data for Merrifield
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pwm@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
-        Lee Jones <lee.jones@linaro.org>
-References: <20210521135516.64727-1-andriy.shevchenko@linux.intel.com>
- <CAHp75VcS5UBeJ9eq3dv_8EHwfjdBSBbC4kdmuKyrxCPj+gQ5hA@mail.gmail.com>
+        Fri, 21 May 2021 09:58:06 -0700 (PDT)
+Subject: Re: [PATCH 0/2] Remove GA14/15 quirks to acpi/video_detect
+To:     Luke Jones <luke@ljones.dev>
+Cc:     corentin.chary@gmail.com, acpi4asus-user@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210419074915.393433-1-luke@ljones.dev>
+ <3559f449-7d43-bf6f-0047-3138fd303db8@redhat.com>
+ <HEDGTQ.IHJJLIVNVMJ21@ljones.dev>
 From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <e0e58e79-318c-8251-0d01-9abd754dde80@redhat.com>
-Date:   Fri, 21 May 2021 18:56:52 +0200
+Message-ID: <1e25d42c-005b-dcc5-a016-06f0d698de73@redhat.com>
+Date:   Fri, 21 May 2021 18:58:06 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VcS5UBeJ9eq3dv_8EHwfjdBSBbC4kdmuKyrxCPj+gQ5hA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <HEDGTQ.IHJJLIVNVMJ21@ljones.dev>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -79,20 +76,23 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On 5/21/21 4:02 PM, Andy Shevchenko wrote:
-> On Fri, May 21, 2021 at 4:55 PM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
->>
->> PWM is not functional since it requires pins to be muxed and configured
->> properly. Add pinctrl mapping to platform initialization code. The pins will
->> be configured properly whenever PWM driver is probed successfully.
+On 5/21/21 12:35 PM, Luke Jones wrote:
+> Oh, thanks Hans. I wasn't sure how a git revert was meant to work and assumed that
+> whatever git did was fine.
 > 
-> Sorry guys for the noise, this has been mistakenly out here.
-> Nothing really for upstream.
+> I am absolutely happy for you to take care of those issues and push ahead.
 
-Ok, I've dropped this from my patch-queue now.
+Ok, I've pushed these 2 patches to pdx86/for-next now.
 
 Regards,
 
 Hans
+
+
+> On Fri, May 21 2021 at 12:24:13 +0200, Hans de Goede <hdegoede@redhat.com> wrote:
+>> Hi Luke, On 4/19/21 9:49 AM, Luke D. Jones wrote:
+>>
+>>     Revert two commits to allow a patch to acpi/video_detect to correctly set the backlight control as native. Luke D. Jones (2): Revert "platform/x86: asus-nb-wmi: Drop duplicate DMI quirk structures" Revert "platform/x86: asus-nb-wmi: add support for ASUS ROG Zephyrus G14 and G15" 
+>>
+>> Thank you, since the matching drivers/acpi/video_detect.c have been merged by Rafael, I've added these to my review-hans branch now. But there is one problem, these miss a: Signed-off-by: Luke D. Jones <luke@ljones.dev <mailto:luke@ljones.dev>> In their commit message, I assume this was an oversight, so I've added this. If you can let me know if this is ok, then I can push these to for-next. I've also rewritten the commit messages to explain why things are being reverted, see: https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans <https://git.kernel.org/pub/scm/linux/kernel/git/pdx86/platform-drivers-x86.git/log/?h=review-hans> Regards, Hans 
 
