@@ -2,85 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D9BE38CDA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:42:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E461B38CDAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238743AbhEUSnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:43:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229986AbhEUSnY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:43:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8983961164;
-        Fri, 21 May 2021 18:41:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621622520;
-        bh=mHstAhsNVLcZ4YwoT78zqNPxk9UDVraUls14kh/fRLs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sq53wPGHO7XC6TzWDYnBz1YRQ8xUMhmOXPUQeKf6R0pWYKOi4kIW7wE/81Rbg+lpD
-         whs/SCN8tPP+DMDKUrKAK7cWXMg+uecuohQg3rU0m4MFm7fSWKEiEwM1tVeYJmzjc5
-         m25fpPyrUroHo2TzgA/96BDE+YcklpHU0nUrxxTc=
-Date:   Fri, 21 May 2021 20:41:57 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Heiner Kallweit <hkallweit1@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] sysfs: Add helper BIN_ATTRIBUTE_GROUPS
-Message-ID: <YKf+9W1BcLGkVRPF@kroah.com>
-References: <66e9f6e5-fdee-6963-6131-228c69705350@gmail.com>
- <e20db248-ed30-cf5d-a37c-b538dceaa5b2@gmail.com>
- <YKVFO4bmW/hkoUnx@kroah.com>
- <1facebe2-1368-9b52-e0a1-f7a6eafc91ea@gmail.com>
- <YKf+2KY9ssWc999p@kroah.com>
+        id S238956AbhEUSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:44:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229755AbhEUSo0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:44:26 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C084BC061574;
+        Fri, 21 May 2021 11:43:01 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id r7so6699844ybs.10;
+        Fri, 21 May 2021 11:43:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FWtdDuSKaLUXcujU5F4tqzi/gqM6kON5tve8kEsdyNo=;
+        b=oFxbMftNWJ/GrWSWgc0sb7gWv1HTAhWnUuVXEKqalJyRj62kNebG8XmVsnB0Q2PS1Y
+         MHYLKuqkAlkmBWwr0rUN5kymp0o6uzPZQ2AZO66bxFqOcFYyfJoTNlL73/G9VfGaotyb
+         7dTe82F6XHdtAHbM+AvVsd7Hc/rJkLZWy8DUMUTCz3AWaHIF5fxxJiACB7ogLzcaV+Nn
+         ZYOAqZduCavvmh8KmnkSvXKhdptCHamimTmDSIMBl22f3enWC3tetrvrN5dgiwWth6Db
+         ixsMDKq6NyHbwQF/3cJuepUEmLVnSWcPu1u4NMX2SiBW/+Q6lqGaZMR1usc0FgTR4V0l
+         MrpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FWtdDuSKaLUXcujU5F4tqzi/gqM6kON5tve8kEsdyNo=;
+        b=TDtdITLeM4Ag5Byo8CGC1XHV/YmBleZqO36P8RTl0a9v/S292BW7Fvk76qYGC2U2UB
+         lhouZGz/vmLW+L+1p9Zkw/jugLkYDrdKwObq1iOVW5e22OpJ4ndGQN/fmS/9upDYrrbi
+         vjZcfdVuq7f+5WMkHbXHh4uH9qdgrjI+2DxIBcgkOU8HWcDpfCP9n2/aRSOGC/Qq6nh3
+         fkZjsauRYfBqxRJrEQZyWl9Lo7JMkPNS1B7BF0fuYWISYmE3AGlxFGKLdrbBVONoNcoT
+         7szedb6ndBvkfKOLNj/3OziStjaNY0Z9+FU+n9PXqUmBSse8kuNmm/ngp0e6IfJ38U39
+         kpiQ==
+X-Gm-Message-State: AOAM532mE1MJxnoTFfjTiOnX6CRuX4AhU4BR8bzV9xRlXYnOy0SKbGcI
+        WMMVT0AUZ9Jj/UxXQ9FHp86H9/xFacgOLKko2pA=
+X-Google-Smtp-Source: ABdhPJw7Ho+BnwKzS9opX/ah1rN3NfhTEL7mMbkREE72S2PvJVZGoSa1QSqPlIv08eHOhsje4FZ4s7m5L9h8qEttD3A=
+X-Received: by 2002:a25:208:: with SMTP id 8mr15530089ybc.47.1621622581067;
+ Fri, 21 May 2021 11:43:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKf+2KY9ssWc999p@kroah.com>
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-12-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUqpycW5mkX3nNn=q9TCp9gS9EZKTs0qwUAW+T+Ggh=8A@mail.gmail.com>
+In-Reply-To: <CAMuHMdUqpycW5mkX3nNn=q9TCp9gS9EZKTs0qwUAW+T+Ggh=8A@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 21 May 2021 19:42:35 +0100
+Message-ID: <CA+V-a8u-dqrzsVfZ2MiBrANM+=RaBG=rZLcbG38Rc--wEpOaCg@mail.gmail.com>
+Subject: Re: [PATCH 11/16] dt-bindings: clock: renesas: Document RZ/G2L SoC
+ CPG driver
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 08:41:28PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, May 19, 2021 at 09:02:47PM +0200, Heiner Kallweit wrote:
-> > On 19.05.2021 19:04, Greg Kroah-Hartman wrote:
-> > > On Wed, May 19, 2021 at 06:33:14PM +0200, Heiner Kallweit wrote:
-> > >> New helper BIN_ATTRIBUTE_GROUPS() does the same as ATTRIBUTE_GROUPS(),
-> > >> just for binary attributes.
-> > >>
-> > >> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> > >> ---
-> > >>  include/linux/sysfs.h | 6 ++++++
-> > >>  1 file changed, 6 insertions(+)
-> > >>
-> > >> diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
-> > >> index d76a1ddf8..a12556a4b 100644
-> > >> --- a/include/linux/sysfs.h
-> > >> +++ b/include/linux/sysfs.h
-> > >> @@ -162,6 +162,12 @@ static const struct attribute_group _name##_group = {		\
-> > >>  };								\
-> > >>  __ATTRIBUTE_GROUPS(_name)
-> > >>  
-> > >> +#define BIN_ATTRIBUTE_GROUPS(_name)				\
-> > >> +static const struct attribute_group _name##_group = {		\
-> > >> +	.bin_attrs = _name##_attrs,				\
-> > >> +};								\
-> > >> +__ATTRIBUTE_GROUPS(_name)
-> > > 
-> > > Is this really needed by more than just 1 driver?
-> > > 
-> > Few more use case I saw:
-> > devcd_dev_groups in drivers/base/devcoredump.c
-> > w1_f3a_group in drivers/w1/slaves/w1_ds2413.c
-> > w1_slave_default_groups in drivers/w1/w1.c
-> 
-> Ok, might as well, can't hurt to add this :)
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Hi Geert,
 
-Oh wait, I'm the maintainer of the other file that uses this, I'll take
-both of these then :)
+Thank you for the review.
 
-thanks,
+On Fri, May 21, 2021 at 4:04 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Document the device tree bindings of the Renesas RZ/G2L SoC clock
+> > driver in Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
+> > @@ -0,0 +1,80 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: "http://devicetree.org/schemas/clock/renesas,rzg2l-cpg.yaml#"
+> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> > +
+> > +title: Renesas RZ/G2L Clock Pulse Generator / Module Stop and Software Reset
+>
+> (Module Standby Mode
+> > +
+> > +maintainers:
+> > +  - Geert Uytterhoeven <geert+renesas@glider.be>
+> > +
+> > +description: |
+> > +  On Renesas RZ/G2L SoC, the CPG (Clock Pulse Generator) and MSTP
+> > +  (Module Stop and Software Reset) share the same register block.
+> > +
+> > +  They provide the following functionalities:
+> > +    - The CPG block generates various core clocks,
+> > +    - The MSTP block provides two functions:
+> > +        1. Module Stop, providing a Clock Domain to control the clock supply
+> > +           to individual SoC devices,
+> > +        2. Reset Control, to perform a software reset of individual SoC devices.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: renesas,r9a07g044l-cpg  # RZ/G2L
+>
+> renesas,r9a07g044-cpg?
+>
+As some IP blocks present in RZ/G2L aren't present in RZ/G2LC clock
+handling will differ so as a result SoC specific compatible string is
+added.
 
-greg k-h
+> I believe it's the same block on RZ/G2L ('044l) and RZ/G2LC ('044c).
+>
+> > +  '#clock-cells':
+> > +    description: |
+> > +      - For CPG core clocks, the two clock specifier cells must be "CPG_CORE"
+> > +        and a core clock reference, as defined in
+> > +        <dt-bindings/clock/*-cpg-mssr.h>
+>
+> <dt-bindings/clock/r9a07g044l-cpg.h>
+>
+Indeed
+
+> > +      - For module clocks, the two clock specifier cells must be "CPG_MOD" and
+> > +        a module number, as defined in the datasheet.
+>
+> Also in <dt-bindings/clock/r9a07g044l-cpg.h>?
+>
+Agreed.
+
+> > +    const: 2
+> > +
+> > +  '#power-domain-cells':
+> > +    description:
+> > +      SoC devices that are part of the CPG/MSTP Clock Domain and can be
+> > +      power-managed through Module Stop should refer to the CPG device node
+> > +      in their "power-domains" property, as documented by the generic PM Domain
+> > +      bindings in Documentation/devicetree/bindings/power/power-domain.yaml.
+> > +    const: 0
+> > +
+> > +  '#reset-cells':
+> > +    description:
+> > +      The single reset specifier cell must be the module number, as defined in
+> > +      the datasheet.
+>
+> Also in <dt-bindings/clock/r9a07g044l-cpg.h>?
+>
+Agreed.
+
+Cheers,
+Prabhakar
+
+> > +    const: 1
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
