@@ -2,95 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3109238CDA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:40:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00E5A38CDA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:40:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231475AbhEUSlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:41:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229554AbhEUSlX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:41:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CC6461175;
-        Fri, 21 May 2021 18:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621622398;
-        bh=cKlhK4oF+JIPygA7+E3iHHJ+pDcFtN/HU+w+6N04Jo8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ozG5QQLzvsBiSf10UCDjLEXwLfGQM5OrjG07smaQ8tDTRf6iggrxrYP14499ITq+V
-         vYWZDEvUZwrIFVosCJsjT8BzzeuRFqDK7uKwNOPxYy5iw2gNjWvFJn79sWdd1XZC92
-         HcrG46/ScQ+UMAt3fwXtVlEQKK7gDDM9VRHO6gQc=
-Date:   Fri, 21 May 2021 20:39:56 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>,
+        id S234420AbhEUSmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhEUSmL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:42:11 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85FE1C061574;
+        Fri, 21 May 2021 11:40:48 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0ea400fbcd5718c7a034c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a400:fbcd:5718:c7a0:34c2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id AFE9D1EC06F6;
+        Fri, 21 May 2021 20:40:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621622445;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=xkROTNt6AI31m2jdBOyiECteV9VsPpyw0WnUQpk+Wzc=;
+        b=VaADoicO3S+yFEcIUtcM3sOjNaJE0WZ+C0kd7zHM3NhGF6PJSn5GjYz2Si/yXNYyn+xuPE
+        Yjpcj0qOk95X1N65SeP8DvLIA2jvzUiMMIOlr4cobPuJN3EvD0c0YoQVE4zqjWaqGVRoXK
+        yz9AePJ4Z/wC7pgXgLxPK4UBY8FQDeE=
+Date:   Fri, 21 May 2021 20:40:39 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
         Arnd Bergmann <arnd@arndb.de>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] misc: xilinx-sdfec: Check if file->private_data is
- NULL
-Message-ID: <YKf+fJBXXyvIFrZF@kroah.com>
-References: <20210520170150.1615956-1-linux@roeck-us.net>
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v26 24/30] x86/cet/shstk: Introduce shadow stack token
+ setup/verify routines
+Message-ID: <YKf+pyW+WXtnPFfp@zn.tnic>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-25-yu-cheng.yu@intel.com>
+ <YKIfIEyW+sR+bDCk@zn.tnic>
+ <c9121ca1-83cb-1c37-1a8e-edaafaa6fda2@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210520170150.1615956-1-linux@roeck-us.net>
+In-Reply-To: <c9121ca1-83cb-1c37-1a8e-edaafaa6fda2@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:01:50AM -0700, Guenter Roeck wrote:
-> container_of() only returns NULL if the passed pointer is NULL _and_
-> the embedded element is the first element of the structure. Even if that
-> is the case, testing against it is misleading and possibly dangerous
-> because the position of the embedded element may change. Explicitly
-> check if the parameter is NULL and bail out if so instead of checking
-> the result of container_of().
-> 
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> RFC:
-> 
-> The NULL check in the poll function is likely unnecessary. Interestingly,
-> there is no NULL check in the ioctl function, even though there is a
-> similar container_of() in that function. However, I do not feel
-> comfortable enough to change the functionality of this code and drop
-> the check entirely.
-> 
->  drivers/misc/xilinx_sdfec.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
-> index 23c8448a9c3b..0a3721d31dea 100644
-> --- a/drivers/misc/xilinx_sdfec.c
-> +++ b/drivers/misc/xilinx_sdfec.c
-> @@ -1011,11 +1011,11 @@ static __poll_t xsdfec_poll(struct file *file, poll_table *wait)
->  	__poll_t mask = 0;
->  	struct xsdfec_dev *xsdfec;
->  
-> -	xsdfec = container_of(file->private_data, struct xsdfec_dev, miscdev);
-> -
-> -	if (!xsdfec)
-> +	if (!file->private_data)
->  		return EPOLLNVAL | EPOLLHUP;
->  
-> +	xsdfec = container_of(file->private_data, struct xsdfec_dev, miscdev);
-> +
->  	poll_wait(file, &xsdfec->waitq, wait);
->  
->  	/* XSDFEC ISR detected an error */
-> -- 
-> 2.25.1
-> 
+On Fri, May 21, 2021 at 09:17:24AM -0700, Yu, Yu-cheng wrote:
+> If !IS_ALIGNED(ssp, 4), then certainly !IS_ALIGNED(ssp, 8).
 
+... but the reverse is true: when it is aligned by 8, it is already
+aligned by 4. Whoops, that's tricky. Pls put a comment over it so that
+we don't forget.
 
-It should be safe not to check this for NULL as the misc device sets the
-pointer in the open, and removes it in release.  poll or ioctl can not
-be called if release has already happened.
+Thx.
 
-So feel free to drop the check here, xsdfec_dev_ioctl() looks correct.
+-- 
+Regards/Gruss,
+    Boris.
 
-thanks,
-
-greg k-h
+https://people.kernel.org/tglx/notes-about-netiquette
