@@ -2,161 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBD038BDDD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C17E38BDE1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230140AbhEUF1X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:27:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44606 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229548AbhEUF1V (ORCPT
+        id S233115AbhEUF2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:28:41 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:33314 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229548AbhEUF2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:27:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621574758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NN95LuSG9lt6UBs1OZNbmtIU5UiQ0VNWpg97nfPRDng=;
-        b=h+JknRU4aufXddGScpDwIyQnvGDZ9v1Ot8A89liXULljcZH4DG18atx7vqZ5FYwEJcqXhv
-        QhY/ejudtqsXmRtPSaBsFxJaozurUCjkmLpr3sujq0qJIEqK3M5boR+460IYSze936fAtO
-        okx8+2oq2JPgKf7u4NBgHYM0FdAkFIo=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-343-gN4j7SbzNqKll50gL61seQ-1; Fri, 21 May 2021 01:25:56 -0400
-X-MC-Unique: gN4j7SbzNqKll50gL61seQ-1
-Received: by mail-ed1-f70.google.com with SMTP id w22-20020a05640234d6b029038d04376b6aso10663999edc.21
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:25:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NN95LuSG9lt6UBs1OZNbmtIU5UiQ0VNWpg97nfPRDng=;
-        b=tQeDHRUvx4CThXEWeLVd7ciRlJ2ochFvlwqG4zuKz2rHMd6Jt1emIbgCuWWr0ogG2j
-         UaojYJqXrj0BK7YMh144/lINejt8K8n/JfzaxYJL80cMB4s9u+ong+rzM9+aNhn8XQ41
-         s9YpTiajQ4eRRM6uzvRdbP4GueJkoffk7Dou6Nf7MANattI1u+MEMwNs56wlPmhRcLxM
-         Vz7EgNJuc3Iek702Fh4KYnpqAgI6CgraH7XBjzP9Xm72Kgbu0fzX9Us4V0OOYh8NXBC8
-         /jwacsWToQr7Eo8ES2/11neR1ryuFzxmbw+kQzecM8TR5aOLbfam+z+x0Tgkoh4S4S9j
-         pqeA==
-X-Gm-Message-State: AOAM532VfUKobtAwlX/qzIaAE4kpoYeMByDUF71jukF61WHl7X64yRmw
-        LlMSz2T2dlcxNXPkAN3y6yi5jIsV+Svu+NMnFk49S6mznIXSYbX92trSimxqo2y2YegbNAVvjOl
-        s9xcbzwjscK3ti7I3s4aAWE0E
-X-Received: by 2002:a05:6402:5201:: with SMTP id s1mr9159622edd.86.1621574754960;
-        Thu, 20 May 2021 22:25:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwDj2qLE+eU39++y33z008QMpxv+OzxdP+Z0YeDDYLpbTGKarkq8rqlJ9w1DYybMGwzhh4fWQ==
-X-Received: by 2002:a05:6402:5201:: with SMTP id s1mr9159602edd.86.1621574754772;
-        Thu, 20 May 2021 22:25:54 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.18.58])
-        by smtp.gmail.com with ESMTPSA id c3sm3217847edn.16.2021.05.20.22.25.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 22:25:54 -0700 (PDT)
-Date:   Fri, 21 May 2021 07:25:51 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <YKdEX9uaQXy8g/S/@localhost.localdomain>
-References: <YKOU9onXUxVLPGaB@google.com>
- <20210518102833.GA7770@willie-the-truck>
- <YKObZ1GcfVIVWRWt@google.com>
- <20210518105951.GC7770@willie-the-truck>
- <YKO+9lPLQLPm4Nwt@google.com>
- <YKYoQ0ezahSC/RAg@localhost.localdomain>
- <20210520101640.GA10065@willie-the-truck>
- <YKY7FvFeRlXVjcaA@google.com>
- <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
- <20210520180138.GA10523@willie-the-truck>
+        Fri, 21 May 2021 01:28:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1621574836; x=1653110836;
+  h=date:from:to:cc:message-id:references:mime-version:
+   in-reply-to:subject;
+  bh=kDiMVanU/J46MBpWtTAkHD58jSy5mLoyYAH1XvH7tTU=;
+  b=cGJtZxMCkCe4MQXsKizox2Im7O10DMSFVoBd7YGsYz6hcX5x4m8ZcFZG
+   vD/BchT9PugvZB0vANu9JdsrHYv+95DrKxmK1M5dYfgC3wuiu2TqT83bM
+   Wjy4QoWucejVmxe8U+ixOoxwm7sHbhL8kREZnQTaa1qbUmPruhO45DraG
+   k=;
+X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
+   d="scan'208";a="2533323"
+Subject: Re: [PATCH v3 01/11] xen/manage: keep track of the on-going suspend mode
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 21 May 2021 05:27:14 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
+        by email-inbound-relay-1a-e34f1ddc.us-east-1.amazon.com (Postfix) with ESMTPS id 84D9AA1E62;
+        Fri, 21 May 2021 05:27:07 +0000 (UTC)
+Received: from EX13D07UWA004.ant.amazon.com (10.43.160.32) by
+ EX13MTAUWA001.ant.amazon.com (10.43.160.58) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 21 May 2021 05:26:51 +0000
+Received: from EX13MTAUWA001.ant.amazon.com (10.43.160.58) by
+ EX13D07UWA004.ant.amazon.com (10.43.160.32) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 21 May 2021 05:26:51 +0000
+Received: from dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com
+ (172.22.96.68) by mail-relay.amazon.com (10.43.160.118) with Microsoft SMTP
+ Server id 15.0.1497.18 via Frontend Transport; Fri, 21 May 2021 05:26:51
+ +0000
+Received: by dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com (Postfix, from userid 4335130)
+        id F1AC340124; Fri, 21 May 2021 05:26:50 +0000 (UTC)
+Date:   Fri, 21 May 2021 05:26:50 +0000
+From:   Anchal Agarwal <anchalag@amazon.com>
+To:     <boris.ostrovsky@oracle.com>
+CC:     "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "hpa@zytor.com" <hpa@zytor.com>,
+        "jgross@suse.com" <jgross@suse.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "sstabellini@kernel.org" <sstabellini@kernel.org>,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        "roger.pau@citrix.com" <roger.pau@citrix.com>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <Woodhouse@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>,
+        David <dwmw@amazon.co.uk>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        <anchalag@amazon.com>, <aams@amazon.com>
+Message-ID: <20210521052650.GA19056@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+References: <5f1e4772-7bd9-e6c0-3fe6-eef98bb72bd8@oracle.com>
+ <20200921215447.GA28503@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <e3e447e5-2f7a-82a2-31c8-10c2ffcbfb2c@oracle.com>
+ <20200922231736.GA24215@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <20200925190423.GA31885@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <274ddc57-5c98-5003-c850-411eed1aea4c@oracle.com>
+ <20200925222826.GA11755@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <cc738014-6a79-a5ae-cb2a-a02ff15b4582@oracle.com>
+ <20200930212944.GA3138@dev-dsk-anchalag-2a-9c2d1d96.us-west-2.amazon.com>
+ <8cd59d9c-36b1-21cf-e59f-40c5c20c65f8@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210520180138.GA10523@willie-the-truck>
+In-Reply-To: <8cd59d9c-36b1-21cf-e59f-40c5c20c65f8@oracle.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/21 19:01, Will Deacon wrote:
-> On Thu, May 20, 2021 at 02:38:55PM +0200, Daniel Bristot de Oliveira wrote:
-> > On 5/20/21 12:33 PM, Quentin Perret wrote:
-> > > On Thursday 20 May 2021 at 11:16:41 (+0100), Will Deacon wrote:
-> > >> Ok, thanks for the insight. In which case, I'll go with what we discussed:
-> > >> require admission control to be disabled for sched_setattr() but allow
-> > >> execve() to a 32-bit task from a 64-bit deadline task with a warning (this
-> > >> is probably similar to CPU hotplug?).
-> > > 
-> > > Still not sure that we can let execve go through ... It will break AC
-> > > all the same, so it should probably fail as well if AC is on IMO
-> > > 
-> > 
-> > If the cpumask of the 32-bit task is != of the 64-bit task that is executing it,
-> > the admission control needs to be re-executed, and it could fail. So I see this
-> > operation equivalent to sched_setaffinity(). This will likely be true for future
-> > schedulers that will allow arbitrary affinities (AC should run on affinity
-> > change, and could fail).
-> > 
-> > I would vote with Juri: "I'd go with fail hard if AC is on, let it
-> > pass if AC is off (supposedly the user knows what to do)," (also hope nobody
-> > complains until we add better support for affinity, and use this as a motivation
-> > to get back on this front).
+On Thu, Oct 01, 2020 at 08:43:58AM -0400, boris.ostrovsky@oracle.com wrote:
+> CAUTION: This email originated from outside of the organization. Do not click links or open attachments unless you can confirm the sender and know the content is safe.
 > 
-> I can have a go at implementing it, but I don't think it's a great solution
-> and here's why:
 > 
-> Failing an execve() is _very_ likely to be fatal to the application. It's
-> also very likely that the task calling execve() doesn't know whether the
-> program it's trying to execute is 32-bit or not. Consequently, if we go
-> with failing execve() then all that will happen is that people will disable
-> admission control altogether. That has a negative impact on "pure" 64-bit
-> applications and so I think we end up with the tail wagging the dog because
-> admission control will be disabled for everybody just because there is a
-> handful of 32-bit programs which may get executed. I understand that it
-> also means that RT throttling would be disabled.
-
-Completely understand your perplexity. But how can the kernel still give
-guarantees to "pure" 64-bit applications if there are 32-bit
-applications around that essentially broke admission control when they
-were restricted to a subset of cores?
-
-> Allowing the execve() to continue with a warning is very similar to the
-> case in which all the 64-bit CPUs are hot-unplugged at the point of
-> execve(), and this is much closer to the illusion that this patch series
-> intends to provide.
-
-So, for hotplug we currently have a check that would make hotplug
-operations fail if removing a CPU would mean not enough bandwidth to run
-the currently admitted set of DEADLINE tasks.
-
-> So, personally speaking, I would prefer the behaviour where we refuse to
-> admit 32-bit tasks vioa sched_set_attr() if the root domain contains
-> 64-bit CPUs, but we _don't_ fail execve() of a 32-bit program from a
-> 64-bit deadline task.
-
-OK, this is interesting and I guess a very valid alternative. That would
-force users to create exclusive domains for 32-bit tasks, right?
-
-> However, you're the deadline experts so ultimately I'll implement what
-> you prefer. I just wanted to explain why I think it's a poor interface.
 > 
-> Have I changed anybody's mind?
+> >>>>>>> Also, wrt KASLR stuff, that issue is still seen sometimes but I haven't had
+> >>>>>>> bandwidth to dive deep into the issue and fix it.
+> >>>> So what's the plan there? You first mentioned this issue early this year and judged by your response it is not clear whether you will ever spend time looking at it.
+> >>>>
+> >>> I do want to fix it and did do some debugging earlier this year just haven't
+> >>> gotten back to it. Also, wanted to understand if the issue is a blocker to this
+> >>> series?
+> >>
+> >> Integrating code with known bugs is less than ideal.
+> >>
+> > So for this series to be accepted, KASLR needs to be fixed along with other
+> > comments of course?
+> 
+> 
+> Yes, please.
+> 
+> 
+> 
+> >>> I had some theories when debugging around this like if the random base address picked by kaslr for the
+> >>> resuming kernel mismatches the suspended kernel and just jogging my memory, I didn't find that as the case.
+> >>> Another hunch was if physical address of registered vcpu info at boot is different from what suspended kernel
+> >>> has and that can cause CPU's to get stuck when coming online.
+> >>
+> >> I'd think if this were the case you'd have 100% failure rate. And we are also re-registering vcpu info on xen restore and I am not aware of any failures due to KASLR.
+> >>
+> > What I meant there wrt VCPU info was that VCPU info is not unregistered during hibernation,
+> > so Xen still remembers the old physical addresses for the VCPU information, created by the
+> > booting kernel. But since the hibernation kernel may have different physical
+> > addresses for VCPU info and if mismatch happens, it may cause issues with resume.
+> > During hibernation, the VCPU info register hypercall is not invoked again.
+> 
+> 
+> I still don't think that's the cause but it's certainly worth having a look.
+> 
+Hi Boris,
+Apologies for picking this up after last year. 
+I did some dive deep on the above statement and that is indeed the case that's happening. 
+I did some debugging around KASLR and hibernation using reboot mode.
+I observed in my debug prints that whenever vcpu_info* address for secondary vcpu assigned 
+in xen_vcpu_setup at boot is different than what is in the image, resume gets stuck for that vcpu
+in bringup_cpu(). That means we have different addresses for &per_cpu(xen_vcpu_info, cpu) at boot and after
+control jumps into the image. 
 
-Partly! :)
+I failed to get any prints after it got stuck in bringup_cpu() and
+I do not have an option to send a sysrq signal to the guest or rather get a kdump.
+This change is not observed in every hibernate-resume cycle. I am not sure if this is a bug or an 
+expected behavior. 
+Also, I am contemplating the idea that it may be a bug in xen code getting triggered only when
+KASLR is enabled but I do not have substantial data to prove that.
+Is this a coincidence that this always happens for 1st vcpu?
+Moreover, since hypervisor is not aware that guest is hibernated and it looks like a regular shutdown to dom0 during reboot mode,
+will re-registering vcpu_info for secondary vcpu's even plausible? I could definitely use some advice to debug this further.
 
-Thanks a lot for the discussion so far.
+ 
+Some printk's from my debugging:
 
-Juri
+At Boot:
 
+xen_vcpu_setup: xen_have_vcpu_info_placement=1 cpu=1, vcpup=0xffff9e548fa560e0, info.mfn=3996246 info.offset=224,
+
+Image Loads:
+It ends up in the condition:
+ xen_vcpu_setup()
+ {
+ ...
+ if (xen_hvm_domain()) {
+        if (per_cpu(xen_vcpu, cpu) == &per_cpu(xen_vcpu_info, cpu))
+                return 0; 
+ }
+ ...
+ }
+
+xen_vcpu_setup: checking mfn on resume cpu=1, info.mfn=3934806 info.offset=224, &per_cpu(xen_vcpu_info, cpu)=0xffff9d7240a560e0
+
+This is tested on c4.2xlarge [8vcpu 15GB mem] instance with 5.10 kernel running
+in the guest.
+
+Thanks,
+Anchal.
+> 
+> -boris
+> 
+> 
