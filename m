@@ -2,62 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D590438C667
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:22:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3C8C38C671
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232716AbhEUMYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:24:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230437AbhEUMXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:23:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF4B76108B;
-        Fri, 21 May 2021 12:22:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621599748;
-        bh=hZB5mRvFhvekBVKyrmsMnvBvDkupZwGcOAedXMe34CQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=B105qBG9k+unX7Qa7omnzMl0M5PGM/H7CTtJfg1HEiucvEZWktl/TLnKU2Qm53QwC
-         4rLHaWM97akaxshQbVvTH8XrxkNMMtnhKO2zqu3yar6PiP1nQmsrJqm8YynwIx5rNm
-         BM0fvqTg8J9dpqtKxcO2Pl/NyNqaN6I9wrwQqLjU=
-Date:   Fri, 21 May 2021 14:22:26 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] USB: serial: buffer-callback clean ups
-Message-ID: <YKemAh63ldwGUWBh@kroah.com>
-References: <20210519092006.9775-1-johan@kernel.org>
+        id S232990AbhEUMYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:24:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:60590 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232174AbhEUMYl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:24:41 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621599798; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=RLZE+bZ7ki1GXmnh6NsT82bZ77r++gqhEjntmVGOlBs=;
+ b=huNyHlHWe0x8+zfKwSniU/JLceb3keWjxepIAxbV8Jx6KE99jG5JvK76IZISDPc/uH99INeF
+ 8aH4w9/chb7RzMHduk9Ewvin84DXOBT+/hjGikFkuenAPVf4NU4K0kC5erZkgHzX+i4LngwF
+ 5+Eq8ntkiheHPc9y6QPRQX6dXms=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 60a7a620f752fca668c21fe7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 12:22:56
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 46DF6C43144; Fri, 21 May 2021 12:22:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03C83C4338A;
+        Fri, 21 May 2021 12:22:54 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519092006.9775-1-johan@kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 17:52:54 +0530
+From:   skakit@codeaurora.org
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Matthias Kaehlcke <mka@chromium.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, kgunda@codeaurora.org
+Subject: Re: [RESEND PATCH V4 3/8] arm64: dts: qcom: pm7325: Add pm7325 base
+ dts file
+In-Reply-To: <YKYNrKFrGQlfUf4S@vkoul-mobl.Dlink>
+References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
+ <1621318822-29332-4-git-send-email-skakit@codeaurora.org>
+ <YKOpE1V25rdDj4Tk@vkoul-mobl.Dlink> <YKPua2M6t9yIJ5uy@google.com>
+ <52d277a8598277716f37ad0c1f724845@codeaurora.org>
+ <YKYNrKFrGQlfUf4S@vkoul-mobl.Dlink>
+Message-ID: <f6086a960c1aa1717125b2c7d7f1f7b3@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:20:00AM +0200, Johan Hovold wrote:
-> This series clean up a few things related to the chars_in_buffer and
-> write_room callbacks that were found during review of the recent
-> conversion to have these callbacks return an unsigned int.
+On 2021-05-20 12:50, Vinod Koul wrote:
+> On 20-05-21, 12:02, skakit@codeaurora.org wrote:
+>> On 2021-05-18 22:12, Matthias Kaehlcke wrote:
+>> > On Tue, May 18, 2021 at 05:16:27PM +0530, Vinod Koul wrote:
+>> > > On 18-05-21, 11:50, satya priya wrote:
+>> > > > Add base DTS file for pm7325 along with GPIOs and temp-alarm nodes.
+>> > > >
+>> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
+>> > > > Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>> > > > ---
+>> > > > Changes in RESEND V4:
+>> > > >  - No Changes.
+>> > > >
+>> > > >  arch/arm64/boot/dts/qcom/pm7325.dtsi | 53 ++++++++++++++++++++++++++++++++++++
+>> > > >  1 file changed, 53 insertions(+)
+>> > > >  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > > >
+>> > > > diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > > > new file mode 100644
+>> > > > index 0000000..e7f64a9
+>> > > > --- /dev/null
+>> > > > +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
+>> > > > @@ -0,0 +1,53 @@
+>> > > > +// SPDX-License-Identifier: BSD-3-Clause
+>> > > > +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
+>> > > > +
+>> > > > +#include <dt-bindings/interrupt-controller/irq.h>
+>> > > > +#include <dt-bindings/spmi/spmi.h>
+>> > > > +
+>> > > > +&spmi_bus {
+>> > > > +	pm7325: pmic@1 {
+>> > > > +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
+>> > >
+>> > > where is qcom,pm7325 documented?
+>> 
+>> >
+>> > good point, I missed that one.
+>> >
+>> 
+>> Actually this point was discussed during V2(
+>> https://lore.kernel.org/patchwork/patch/1406186/#1607321 ).
+>> As far as I understand it is not mandatory to add "qcom,pm7325" as we 
+>> are
+>> adding "qcom,spmi-pmic". It is just a good to have change.
+>> I could not find the documentation for pm8350c, pmk8350 and pmr735a as 
+>> well.
 > 
-> Johan
+> Yes that is a miss too, IMO all of these should be added to
+> Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt or the yaml
+> file replacing this
 > 
-> 
-> Johan Hovold (6):
->   USB: serial: digi_acceleport: reduce chars_in_buffer over-reporting
->   USB: serial: digi_acceleport: add chars_in_buffer locking
->   USB: serial: io_edgeport: drop buffer-callback sanity checks
->   USB: serial: mos7720: drop buffer-callback sanity checks
->   USB: serial: mos7840: drop buffer-callback return-value comments
->   USB: serial: drop irq-flags initialisations
-> 
->  drivers/usb/serial/digi_acceleport.c | 34 ++++++++++++++--------------
->  drivers/usb/serial/io_edgeport.c     | 27 +---------------------
->  drivers/usb/serial/metro-usb.c       | 12 +++++-----
->  drivers/usb/serial/mos7720.c         | 17 ++------------
->  drivers/usb/serial/mos7840.c         |  5 ----
->  drivers/usb/serial/quatech2.c        |  2 +-
->  6 files changed, 27 insertions(+), 70 deletions(-)
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Okay, will add those four pmics to qcom,spmi-pmic.txt.
+
+> Thanks
