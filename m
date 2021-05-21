@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759E038C57F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:14:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A27EF38C57B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:12:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234384AbhEULPj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:15:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
+        id S234217AbhEULNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhEULPh (ORCPT
+        with ESMTP id S233569AbhEULNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:15:37 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30506C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:14:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=0/gKbT4XPFGT8RdAbzxdXpYucSr4PKIBU2GcTbdSPyY=; b=jp67YWLBHzZUsrUc2u4j6lk9GK
-        P1lQ502wb5oOwh9upczZ9udmH9BARgepMuAH9kP4ue2C6qM5E5gM7i3cR+0hFXgPN+ez6F0+aYTFa
-        2kjneMcqYZs+9lZhRUlTULdQicq6fASyE5w4lZiP3r0QtxRPUPq3qFafWIfbygOrSSXuCL9EMbXAV
-        aq3yeNUk9rAnJ3SMPVJq/RI6Nmu91Hvxmo2rLfM0E2ieKaiOmyk7Rk+d8bE8TaBUMP2R/+y3kjXl5
-        JXTIrEkTKz4p/tWTxm9M7gf9p4Ps6aF9cUIDhRRQv5LY8jWtERADBteB7FzRWlW5+h9i0TNT39EpC
-        M9rc3odQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lk34B-00Gu9m-2w; Fri, 21 May 2021 11:12:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B4082300103;
-        Fri, 21 May 2021 13:11:42 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A33743119BA4F; Fri, 21 May 2021 13:11:42 +0200 (CEST)
-Date:   Fri, 21 May 2021 13:11:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] notifier: Return non-null when callback already
- registered
-Message-ID: <YKeVbsLnAdpVUwAa@hirez.programming.kicks-ass.net>
-References: <20210520202033.23851-1-bp@alien8.de>
+        Fri, 21 May 2021 07:13:54 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C66C061574;
+        Fri, 21 May 2021 04:12:30 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so6934084wmf.1;
+        Fri, 21 May 2021 04:12:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=n8fWTjwngjiSk3H/kdYOG+eQP4cKieGjb3pqjd4aMnE=;
+        b=E4wn+gV8v4Ko1F8GmJsyTwtr9xh66WZDX+5D97cv7T+0Bk0FyKNuk/JswU24XlIN7K
+         0cE/fqPFFoeHfylUkHqBz12yvUzU6rbFzEE1zk73/+rEiY0y5xtNlGM2vduWe9eqIcJH
+         oXK6zaPNT4HZ4PhzhqUm9WBLtgOFq6ocgeMrr8ObNhiXekdtfmRLfl/dmOPNlIr3fidT
+         WVsqEdxSZvVAx/Wa7clHCP4peXhw+0jD09l8D8tN4hnbhEL8ECq2V0iyMfFNfXKxWt1c
+         HN1ImVpkSZmO9LqTPZUb+DgeXTelzCFiRpQl9A9PCyHEOcklN7Wf4pDnN/IgnuUIR70A
+         MEfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=n8fWTjwngjiSk3H/kdYOG+eQP4cKieGjb3pqjd4aMnE=;
+        b=OO2w8H3FxzIvAvEam/YhwuwkPZojbKz4vVz4t/Y+CT/zpjhafAXQV/G8GSja+TPzPJ
+         4skfW4EjqGDKBM2WsSZZuYc2DqdwcRZ7Equ6NToml/v83FYWsEpU++eeOuu8EwQSSJEu
+         hQ2x/OTwJsaLD6JkFC5yyrVb7V5vqtd+pZKGEizLOfZWSYVO2rwGJln7N3AzAOzx2G/K
+         4ZK84vY6r7p276UERVOUZxT6jp9IIJc4/t7vMA9eZ6RgobkosC4zC/r76mohA6d2N7Tw
+         rneGbL3QUTXljIQKKA3ziDoB1ikDqV+NhW5sujWsONICpdoJXalqw8BOV6YLFDRqNa2/
+         bktQ==
+X-Gm-Message-State: AOAM532Nw4L6AUdxxPWv2XwoZ/mbrbbdXBvAEkuUipDc2SkyxL2hVuoK
+        BVm2QL8BxDTJu/cgmnq9IWE=
+X-Google-Smtp-Source: ABdhPJybP6O5484MyiP/NQzPPYoJgE+bRR5MtrjEoKprcszbr9E8WsD+qysLidQPe9jm/L2M0r4jew==
+X-Received: by 2002:a7b:c93a:: with SMTP id h26mr8593158wml.141.1621595548880;
+        Fri, 21 May 2021 04:12:28 -0700 (PDT)
+Received: from [192.168.43.70] ([46.222.120.224])
+        by smtp.gmail.com with ESMTPSA id i5sm1804932wrw.29.2021.05.21.04.12.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 04:12:28 -0700 (PDT)
+Subject: Re: [PATCH v3] bpf.2: Use standard types and attributes
+To:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        mtk.manpages@gmail.com
+Cc:     linux-man@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Zack Weinberg <zackw@panix.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Joseph Myers <joseph@codesourcery.com>,
+        Florian Weimer <fweimer@redhat.com>
+References: <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
+ <20210515190116.188362-1-alx.manpages@gmail.com>
+ <9df36138-f622-49a6-8310-85ff0470ccd6@gmail.com>
+ <521cd198-fea2-c2a8-ed96-5848ae39b6f2@iogearbox.net>
+From:   Alejandro Colomar <alx.mailinglists@gmail.com>
+Message-ID: <c2d0c73e-20d8-f624-8d72-8b00e9309463@gmail.com>
+Date:   Fri, 21 May 2021 13:12:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520202033.23851-1-bp@alien8.de>
+In-Reply-To: <521cd198-fea2-c2a8-ed96-5848ae39b6f2@iogearbox.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:20:33PM +0200, Borislav Petkov wrote:
-> From: Borislav Petkov <bp@suse.de>
-> 
-> The notifier registration routine doesn't return a proper error value
-> when a callback has already been registered, leading people to track
-> whether that regisration has happened at the call site:
-> 
->   https://lore.kernel.org/amd-gfx/20210512013058.6827-1-mukul.joshi@amd.com/
-> 
-> Which is unnecessary.
-> 
-> Return a non-null to signal that case so that callers can act
-> accordingly.
-> 
-> Signed-off-by: Borislav Petkov <bp@suse.de>
-> ---
->  kernel/notifier.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/notifier.c b/kernel/notifier.c
-> index 1b019cbca594..ff7a3198c5fc 100644
-> --- a/kernel/notifier.c
-> +++ b/kernel/notifier.c
-> @@ -25,7 +25,7 @@ static int notifier_chain_register(struct notifier_block **nl,
->  	while ((*nl) != NULL) {
->  		if (unlikely((*nl) == n)) {
->  			WARN(1, "double register detected");
+Hello Daniel,
 
-That should give a big clue^
+On 5/17/21 8:56 PM, Daniel Borkmann wrote:
+> On 5/16/21 11:16 AM, Alejandro Colomar (man-pages) wrote:
+>>>
+>>> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+>> Discussion: 
+>> <https://lore.kernel.org/linux-man/6740a229-842e-b368-86eb-defc786b3658@gmail.com/T/> 
+>>
+>>> Nacked-by: Alexei Starovoitov <ast@kernel.org>
+>>> Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> 
+> You forgot to retain my ...
+> 
+> Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
 
-> -			return 0;
-> +			return 1;
+Yup! Sorry, I forgot :)
 
-How about -EBUSY here?
+Thanks,
+
+Alex
+
+> 
+>>> Acked-by: Zack Weinberg <zackw@panix.com>
+>>> Cc: LKML <linux-kernel@vger.kernel.org>
+>>> Cc: glibc <libc-alpha@sourceware.org>
+>>> Cc: GCC <gcc-patches@gcc.gnu.org>
+>>> Cc: bpf <bpf@vger.kernel.org>
+>>> Cc: David Laight <David.Laight@ACULAB.COM>
+>>> Cc: Joseph Myers <joseph@codesourcery.com>
+>>> Cc: Florian Weimer <fweimer@redhat.com>
+>>> Cc: Daniel Borkmann <daniel@iogearbox.net>
+>>> ---
+>>>   man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
+>>>   1 file changed, 24 insertions(+), 25 deletions(-)
+>>>
+
