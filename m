@@ -2,145 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0CD38CBFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:21:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABDC438CBFA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:21:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231245AbhEURXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:23:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52490 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhEURW7 (ORCPT
+        id S230517AbhEURWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:22:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57317 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230048AbhEURWl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:22:59 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD3AC061574;
-        Fri, 21 May 2021 10:21:35 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id g38so28413914ybi.12;
-        Fri, 21 May 2021 10:21:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SSt6zYcmfrW8VRHKDZwqwYPhG1/8NCxmTwtrQFl+xI8=;
-        b=IgEt9OlHc77C1gVVvtwwENks34nttH0X1zD1bzNVPa3LLp8NLPtLfes6clpPJ0Zs5g
-         281PzVP/mhZZ9Bk/6zsO3VCe6mSmC0Y9qGbi6e1MXCal40++K7HKL/b1bZFZXFtcfmtx
-         a80gvpDVA7FIrt4BJj6FHf/ycr1NRxo0kDzPlfLYTAZktLbNzuYzki/tGodor095+B4R
-         yw1dtr7QvycgtL7O4gKVaEom4ouY4i0jzYgQ1zT5N8uLLl0LG6Ohb7Um8a0EJNQSfat3
-         7OEP2AUanD3AeugImIX9421M4ywHxKAWXu162ebalr30yuvtwFKskPeznd1hcT9XtopQ
-         cesg==
+        Fri, 21 May 2021 13:22:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621617677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qwR/0GNmU1erDIzfTwdpHCjLZxYNU+OZQVJXmXfAYfM=;
+        b=W5fWme5Hd+Jcv5dARmQY20ECe0ju151UZ2O4BRqkF9W7SpHktRUhD452X9/vUAxRBtNVxy
+        kCb+SSt1RjAeP0VBG0j9twQuC+M0EKckf8fiOi48pwgVw77eUXZd04NbKtCIAZJYgBch0d
+        i6gzM/MpCDuLtqoC/M1TI39U0pQ/UiE=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-246-iVqz53gPOHShsLFeiK43ew-1; Fri, 21 May 2021 13:21:16 -0400
+X-MC-Unique: iVqz53gPOHShsLFeiK43ew-1
+Received: by mail-ej1-f72.google.com with SMTP id jz28-20020a17090775fcb02903dc26615f46so1793829ejc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:21:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SSt6zYcmfrW8VRHKDZwqwYPhG1/8NCxmTwtrQFl+xI8=;
-        b=FISmMutNAv/dTeVlUtYfK/tTvwg8SS+He89u/do546wKSwm5AWCuQNTdTeSyRrExNC
-         uvuNQWL4XEIH8JgNn6CzNDDSIFjH3FWbhEE10xigjZjUmq398nRTCdwsSzx/WNqTuQoi
-         nWPf8TiHQPXKtVHsZJrWPkWo1mFXnT5dorMtJEeVNj9+3VWp9nmLAiWkzEOMV6S12wy9
-         QlRSsOglR8+hC34BwVjgKaBXfdtObSDcIgd9XXUB0iqBVF2rfyAssfX1N2AlY34zj3h4
-         qzo/YVP1qC+s7+EfCKNjPGt+Hm7fXhnxCPtSKp+joRovHvQUr1aKMjiLQR/1TOgM+LXV
-         8Mxg==
-X-Gm-Message-State: AOAM532EhrFCpAy0z35GxJaE3x1DpMx2InZel/ooMZxTwnBgnFYizUai
-        3rpZRvUi0kQ5LAzogEB1E3YqBN1X1Rg8DIZ7Ba0=
-X-Google-Smtp-Source: ABdhPJwzhoGli6kwjHJBWYuxjCMjfCMslBCXvlDHF8usa+Cqez/ZjREqBiiGBy3lczIp8NrQQ+PYvZM7JcAvcZ4b/jg=
-X-Received: by 2002:a25:50c2:: with SMTP id e185mr3417747ybb.222.1621617694555;
- Fri, 21 May 2021 10:21:34 -0700 (PDT)
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=qwR/0GNmU1erDIzfTwdpHCjLZxYNU+OZQVJXmXfAYfM=;
+        b=MTk3LyyPZwI8oymEc3PvzUNVNb1t89reLnEPRc9SBPrYl86BFBWlUtArXH9OLtJkhO
+         +sV5RZyJnF31u0BdNvvGujV/1Ep8xSufNy5ejUSADWIpIrYJ9AzWRxBg1/m275/4HCtg
+         14n3zwIX9bcV6O5JC3RshWRS/WkfnXhCPnLMj4PP3qwGwWtqfGWmF5qiencdXGpYmmHy
+         YURdjIXMN4dqlABVta2ETYBBglhVuQkpBMi8HSbHDfQovYmXaKdWTnBfSG+sG/kETQ7Z
+         6XrlKgE+mVfdvx4vQnn2xuJs3UE+5c9YFjisX8cyllgjn+cyJ84uUMaL7obmFaO14Ezp
+         uAHQ==
+X-Gm-Message-State: AOAM532UEwrr+ph2tkp2YA03XFs74jzaJHCfO9O9ltrwD2b9AAXWA0Dy
+        CyFse3YkAnBlYuhS+HXL+KLgpgra8We/Mj+x6JG0oBBHFHB6rbWEcGibASqa9t0M6LYa7e80WC5
+        aDQXbZmmFKc+pvUK9+0fcTTZB
+X-Received: by 2002:aa7:cd03:: with SMTP id b3mr12350061edw.206.1621617675165;
+        Fri, 21 May 2021 10:21:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxs1PPEtRit2YsbPl3fyEJzFG+BMaVTPI5cJbO+TcDqnJ8UNSbmnYU1JgZsPGIv6fh/e498XA==
+X-Received: by 2002:aa7:cd03:: with SMTP id b3mr12350048edw.206.1621617675016;
+        Fri, 21 May 2021 10:21:15 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id m12sm4079494edc.40.2021.05.21.10.21.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 10:21:14 -0700 (PDT)
+To:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     anup@brainfault.org, Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, corbet@lwn.net, graf@amazon.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+References: <mhng-37377fcb-af8f-455c-be08-db1cd5d4b092@palmerdabbelt-glaptop>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
+Message-ID: <ff55329c-709d-c1a5-a807-1942f515bba7@redhat.com>
+Date:   Fri, 21 May 2021 19:21:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210514192218.13022-5-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVOTfV9XBo0t0CxGU1=Zo3VjFioDaDU1rdX8Hb6Pvz-Zw@mail.gmail.com>
-In-Reply-To: <CAMuHMdVOTfV9XBo0t0CxGU1=Zo3VjFioDaDU1rdX8Hb6Pvz-Zw@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 21 May 2021 18:21:08 +0100
-Message-ID: <CA+V-a8to86aG-1eB38OfaydJ7U0g4p1x8biRfBSnOa1S2g3bvA@mail.gmail.com>
-Subject: Re: [PATCH 04/16] soc: renesas: Add ARCH_R9A07G044{L,LC} for the new
- RZ/G2{L,LC} SoC's
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <mhng-37377fcb-af8f-455c-be08-db1cd5d4b092@palmerdabbelt-glaptop>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On 21/05/21 19:13, Palmer Dabbelt wrote:
+>> 
+> 
+> I don't view this code as being in a state where it can be
+> maintained, at least to the standards we generally set within the
+> kernel.  The ISA extension in question is still subject to change, it
+> says so right at the top of the H extension 
+> <https://github.com/riscv/riscv-isa-manual/blob/master/src/hypervisor.tex#L4>
+> 
+>   {\bf Warning! This draft specification may change before being 
+>   accepted as standard by the RISC-V Foundation.}
 
-Thank you for the review.
+To give a complete picture, the last three relevant changes have been in
+August 2019, November 2019 and May 2020.  It seems pretty frozen to me.
 
-On Fri, May 21, 2021 at 2:25 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Add ARCH_R9A07G044{L,LC} as a configuration symbol for the new Renesas
-> > RZ/G2{L,LC} SoC's.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/soc/renesas/Kconfig
-> > +++ b/drivers/soc/renesas/Kconfig
-> > @@ -279,6 +279,16 @@ config ARCH_R8A774B1
-> >         help
-> >           This enables support for the Renesas RZ/G2N SoC.
-> >
-> > +config ARCH_R9A07G044L
-> > +       bool "ARM64 Platform support for RZ/G2L SoC"
->
-> Please drop the "SoC", for consistency with other entries.
->
-Oops will do that.
+In any case, I think it's clear from the experience with Android that
+the acceptance policy cannot succeed.  The only thing that such a policy
+guarantees, is that vendors will use more out-of-tree code.  Keeping a
+fully-developed feature out-of-tree for years is not how Linux is run.
 
-> > +       help
-> > +         This enables support for the Renesas RZ/G2L SoC.
-> > +
-> > +config ARCH_R9A07G044LC
-> > +       bool "ARM64 Platform support for RZ/G2LC SoC"
->
-> Likewise.
->
-will do.
+> I'm not sure where exactly the line for real hardware is, but for
+> something like this it would at least involve some chip that is
+> widely availiable and needs the H extension to be useful
 
-> > +       help
-> > +         This enables support for the Renesas RZ/G2LC SoC.
-> > +
-> >  endif # ARM64
->
-> Given LSI DEVID is the same, do we need both, or can we do with a
-> single ARCH_R9A07G044?
->
-The reason behind adding separate configs was in case if we wanted to
-just build an image for RZ/G2L and not RZ/G2LC this would increase
-image size and also build unneeded dtb's.
+Anup said that "quite a few people have already implemented RISC-V
+H-extension in hardware as well and KVM RISC-V works on real HW as 
+well".  Those people would benefit from having KVM in the Linus tree.
 
-Cheers,
-Prabhakar
+Paolo
 
-> Gr{oetje,eeting}s,
->
->                         Geert
->
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
