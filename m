@@ -2,107 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9021238CDD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:59:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7EF38CDD6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbhEUTAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:00:43 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:43496 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233291AbhEUTAl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:00:41 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A2E5920B7188;
-        Fri, 21 May 2021 11:59:17 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A2E5920B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621623558;
-        bh=s5fPPm7/cgoV4/kCfN3NJ1VijEprrtU3LGotGcg2ExM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=s+Xm95umlPDQltd3npd8+AG2+Ec9OFKHWzKtF0vsQBp1dbpksxO65Q0dJhiz91Z4r
-         1e6zH1/3pKKCrCzwkrpf1KFS+wwEcW43/YBJdphKf/5ZY3+eJSQ5JiRouVZvsjTlJe
-         Wcbye1F4bG/A4sd0NBJJ9T7bJBg9+ux4MA3mkgEE=
-Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, ardb@kernel.org, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-2-madvenka@linux.microsoft.com>
- <20210521161117.GB5825@sirena.org.uk>
- <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
- <20210521174242.GD5825@sirena.org.uk>
- <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
- <20210521175318.GF5825@sirena.org.uk>
- <20210521184817.envdg232b2aeyprt@treble>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
-Date:   Fri, 21 May 2021 13:59:16 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233788AbhEUTDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:03:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53228 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231354AbhEUTDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:03:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D98D613AD;
+        Fri, 21 May 2021 19:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621623743;
+        bh=PwYVEBdAYioTg9dJDanRYBbNY1d6VzNe8pGxwNgHwts=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Z6pBlx9PqRwpvhLSpS84t22o70Jagai7OtGqHdaPV+fIYO5XMz1N/8T7Y09nXFFpg
+         9Xe5GPyKesQTFirhUtEyFp9Npa+tHN0GMPSt7EenGDbQQHnqdziXFuFisgd6Y80mPd
+         B4je9HWSH56F2nC/Y0A26eeB/lnq93i2W13D55snJP0FdJkX5L+32CcFJlNm2HvDn8
+         iDlr191ukjmJm70oPL+tERx5bJdf+WHDklvTUbY6ur8+zYQ5ISdjaLfeTQUOncryiN
+         Zb+yuh9HETAuuTca0yIUZS8OoJvCMQ4r3awG/SqYztbThqjVNubiKub4axbdq4xH3C
+         ZNNCtxofktY3Q==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH 1/2] f2fs: immutable file can have null address in compressed chunk
+Date:   Fri, 21 May 2021 12:02:16 -0700
+Message-Id: <20210521190217.2484099-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
-In-Reply-To: <20210521184817.envdg232b2aeyprt@treble>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+If we released compressed blocks having an immutable bit, we can see less
+number of compressed block addresses. Let's fix wrong BUG_ON.
 
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ fs/f2fs/compress.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-On 5/21/21 1:48 PM, Josh Poimboeuf wrote:
-> On Fri, May 21, 2021 at 06:53:18PM +0100, Mark Brown wrote:
->> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
->>> On 5/21/21 12:42 PM, Mark Brown wrote:
->>
->>>> Like I say we may come up with some use for the flag in error cases in
->>>> future so I'm not opposed to keeping the accounting there.
->>
->>> So, should I leave it the way it is now? Or should I not set reliable = false
->>> for errors? Which one do you prefer?
->>
->>> Josh,
->>
->>> Are you OK with not flagging reliable = false for errors in unwind_frame()?
->>
->> I think it's fine to leave it as it is.
-> 
-> Either way works for me, but if you remove those 'reliable = false'
-> statements for stack corruption then, IIRC, the caller would still have
-> some confusion between the end of stack error (-ENOENT) and the other
-> errors (-EINVAL).
-> 
+diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
+index d4f7371fb0d8..1189740aa141 100644
+--- a/fs/f2fs/compress.c
++++ b/fs/f2fs/compress.c
+@@ -927,7 +927,8 @@ static int __f2fs_cluster_blocks(struct inode *inode,
+ 			}
+ 		}
+ 
+-		f2fs_bug_on(F2FS_I_SB(inode), !compr && ret != cluster_size);
++		f2fs_bug_on(F2FS_I_SB(inode),
++			!compr && ret != cluster_size && !IS_IMMUTABLE(inode));
+ 	}
+ fail:
+ 	f2fs_put_dnode(&dn);
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
-I will leave it the way it is. That is, I will do reliable = false on errors
-like you suggested.
-
-> So the caller would have to know that -ENOENT really means success.
-> Which, to me, seems kind of flaky.
-> 
-
-Actually, that is why -ENOENT was introduced - to indicate successful
-stack trace termination. A return value of 0 is for continuing with
-the stack trace. A non-zero value is for terminating the stack trace.
-
-So, either we return a positive value (say 1) to indicate successful
-termination. Or, we return -ENOENT to say no more stack frames left.
-I guess -ENOENT was chosen.
-
-> BTW, not sure if you've seen what we do in x86, but we have a
-> 'frame->error' which gets set for an error, and which is cumulative
-> across frames.  So non-fatal reliable-type errors don't necessarily have
-> to stop the unwind.  The end result is the same as your patch, but it
-> seems less confusing to me because the 'error' is cumulative.  But that
-> might be personal preference and I'd defer to the arm64 folks.
-> 
-
-OK. I will wait to see if any arm64 folks have an opinion on this.
-I am fine with any approach.
-
-Madhavan
