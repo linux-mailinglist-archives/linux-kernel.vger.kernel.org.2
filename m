@@ -2,185 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C257638CB0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:31:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14CE38CB00
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236139AbhEUQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:32:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4575 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236020AbhEUQc2 (ORCPT
+        id S235667AbhEUQbS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:31:18 -0400
+Received: from mail-ed1-f53.google.com ([209.85.208.53]:40491 "EHLO
+        mail-ed1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231621AbhEUQbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:32:28 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FmsV52nN2zsSbs;
-        Sat, 22 May 2021 00:28:13 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 22 May 2021 00:31:00 +0800
-Received: from localhost (10.52.125.126) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
- 2021 17:30:58 +0100
-Date:   Fri, 21 May 2021 17:29:11 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rob Herring <robh@kernel.org>, <kernel@pengutronix.de>,
-        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
-        David Jander <david@protonic.nl>, <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v5 5/8] dt-bindings: touchscreen: Convert
- resistive-adc-touch binding to json schema
-Message-ID: <20210521172911.00001624@Huawei.com>
-In-Reply-To: <20210521044525.7397-6-o.rempel@pengutronix.de>
-References: <20210521044525.7397-1-o.rempel@pengutronix.de>
-        <20210521044525.7397-6-o.rempel@pengutronix.de>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Fri, 21 May 2021 12:31:15 -0400
+Received: by mail-ed1-f53.google.com with SMTP id t3so23954274edc.7;
+        Fri, 21 May 2021 09:29:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1baM0zqRLo4eZvgxJKx9Stnzz6oHz6lIg0FwM2ooeyw=;
+        b=mMHzuGE0+np2peBsDZrfkVvODpWES2Br6wx4+md58GIguh8aw8/JoGY63rJD7qAqkP
+         C3+MNbuq8nI7OJPaRNDIDzFYcyltQ34ycEVx7Zb7f2eV0aUts1QCYma7cDHzwYif2Qw+
+         rpsCYL9d/dnCHiox+QJ1BIVGdSla4fA4Caz9H4BVjLkyDb/3lq419+w0otap6nbFg+Fm
+         CtuSZW1+i9pfC53OjcL8mf2HqR78WrO7CHbKHOk1wmiLOSwkGMjgZlVSOqmCabJ9dYvl
+         bxfMSuMpudZAparEqYmYVYkEHHQmB+DL9iC2WU16RZS7QA/JtQxcmBbO0RNzDTPneIlS
+         mbzA==
+X-Gm-Message-State: AOAM533likE2f+DYmkTIigPdjjU6nd5z2u2u+YFFZrgQhmw4CwHzzVDi
+        iRZP0zvHssCjpHMIIRTZfc73f5/s4HIDK34hLM8=
+X-Google-Smtp-Source: ABdhPJy8wWvFIw2z6q3UTOyxrRzzX9vAEy/ime+Byc9f7G5gzFpP2diXVvJIY6pSfmg4SEUhaNbbySjlMNE3D+JlOFE=
+X-Received: by 2002:aa7:c818:: with SMTP id a24mr12147002edt.310.1621614590763;
+ Fri, 21 May 2021 09:29:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.125.126]
-X-ClientProxiedBy: lhreml746-chm.china.huawei.com (10.201.108.196) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de> <87pmxpk7jo.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <87pmxpk7jo.fsf@oldenburg.str.redhat.com>
+From:   Len Brown <lenb@kernel.org>
+Date:   Fri, 21 May 2021 12:29:39 -0400
+Message-ID: <CAJvTdK=suyVdH5U4WAdAmsJcnZbRx4tOot-Eu_SV4LSwLwP+zw@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, X86 ML <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 06:45:22 +0200
-Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+On Mon, May 17, 2021 at 5:56 AM Florian Weimer <fweimer@redhat.com> wrote:
 
-> Convert the resistive-adc-touch binding to DT schema format using json-schema.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Rob Herring <robh@kernel.org>
-Looks good to me.
+> How expensive is checking XCR0 via XGETBV instead, on the AMX path?
 
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+XGETBV takes about the same number of cycles as RDTSC (ie. it is
+relatively fast)
 
-> ---
->  .../input/touchscreen/resistive-adc-touch.txt | 33 ---------
->  .../touchscreen/resistive-adc-touch.yaml      | 70 +++++++++++++++++++
->  2 files changed, 70 insertions(+), 33 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
-> deleted file mode 100644
-> index af5223bb5bdd..000000000000
-> --- a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.txt
-> +++ /dev/null
-> @@ -1,33 +0,0 @@
-> -Generic resistive touchscreen ADC
-> -
-> -Required properties:
-> -
-> - - compatible: must be "resistive-adc-touch"
-> -The device must be connected to an ADC device that provides channels for
-> -position measurement and optional pressure.
-> -Refer to
-> -https://github.com/devicetree-org/dt-schema/blob/master/schemas/iio/iio-consumer.yaml
-> -for details
-> -
-> - - iio-channels: must have at least two channels connected to an ADC device.
-> -These should correspond to the channels exposed by the ADC device and should
-> -have the right index as the ADC device registers them. These channels
-> -represent the relative position on the "x" and "y" axes.
-> - - iio-channel-names: must have all the channels' names. Mandatory channels
-> -are "x" and "y".
-> -
-> -Optional properties:
-> - - iio-channels: The third channel named "pressure" is optional and can be
-> -used if the ADC device also measures pressure besides position.
-> -If this channel is missing, pressure will be ignored and the touchscreen
-> -will only report position.
-> - - iio-channel-names: optional channel named "pressure".
-> -
-> -Example:
-> -
-> -	resistive_touch: resistive_touch {
-> -		compatible = "resistive-adc-touch";
-> -		touchscreen-min-pressure = <50000>;
-> -		io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
-> -		io-channel-names = "x", "y", "pressure";
-> -	};
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
-> new file mode 100644
-> index 000000000000..38b4cbee9429
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/resistive-adc-touch.yaml
-> @@ -0,0 +1,70 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/resistive-adc-touch.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Generic resistive touchscreen ADC
-> +
-> +maintainers:
-> +  - Oleksij Rempel <o.rempel@pengutronix.de>
-> +
-> +description: |
-> +  Generic ADC based resistive touchscreen controller
-> +  The device must be connected to an ADC device that provides channels for
-> +  position measurement and optional pressure.
-> +
-> +allOf:
-> +  - $ref: touchscreen.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: resistive-adc-touch
-> +
-> +  io-channels:
-> +    minItems: 2
-> +    items:
-> +      - description: x
-> +      - description: y
-> +      - description: pressure (optional)
-> +
-> +  io-channel-names:
-> +    oneOf:
-> +      - items:
-> +          - enum: [x, y]
-> +          - enum: [x, y]
-> +      - items:
-> +          - enum: [x, y, pressure]
-> +          - enum: [x, y, pressure]
-> +          - enum: [x, y, pressure]
-> +
-> +  touchscreen-size-x: true
-> +  touchscreen-size-y: true
-> +  touchscreen-fuzz-x: true
-> +  touchscreen-fuzz-y: true
-> +  touchscreen-inverted-x: true
-> +  touchscreen-inverted-y: true
-> +  touchscreen-swapped-x-y: true
-> +  touchscreen-min-pressure: true
-> +
-> +additionalProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - io-channels
-> +  - io-channel-names
-> +
-> +examples:
-> +  - |
-> +    touchscreen {
-> +      compatible = "resistive-adc-touch";
-> +      io-channels = <&adc 24>, <&adc 25>;
-> +      io-channel-names = "y", "x";
-> +    };
-> +  - |
-> +    touchscreen {
-> +      compatible = "resistive-adc-touch";
-> +      touchscreen-min-pressure = <50000>;
-> +      io-channels = <&adc 24>, <&adc 25>, <&adc 26>;
-> +      io-channel-names = "y", "pressure", "x";
-> +    };
-
+Len Brown, Intel Open Source Technology Center
