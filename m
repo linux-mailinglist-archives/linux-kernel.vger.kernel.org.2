@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B122338BBC8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:42:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D80038BBCB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237499AbhEUBoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:44:01 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:45029 "EHLO ozlabs.org"
+        id S237541AbhEUBoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:44:21 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50340 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237311AbhEUBoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:44:00 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmTrD23Djz9sPf;
-        Fri, 21 May 2021 11:42:36 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621561356;
-        bh=NBPy0katuLaiq6HfjHUfCP+UbzPEkChk6oOJ+Kv8W9Y=;
-        h=Date:From:To:Cc:Subject:From;
-        b=d4pGBhhzPoc7bV5S1aKKCJFZhh1xLKOEqKwGL7irZfseHPUFbLT802VtxwH/Tk0rp
-         AN3krvv2i3IY/9ZdVu/6iwJ2LslJ/KU3v9l0I8aKkHVxavLHTLb8ia/Fkr9o9Am7ir
-         uE5IDt0yf6+QpGDchDkD7S1ty0xsqI+HDwtRY8ujVTvSCflrwMvEhd37cReCWl7Lt9
-         iCI0ZWrhmNF/jyL1CqjtCK/93+b4LWtEe5o8fJ8inXCxdWnkTSdOBkN18r0K8susQ1
-         ix8ofMIJf/ESyyINauEmJDspTSdJyxPOP/3mUhpxFG+yalCGMVBYtIr4x8+IDCn8X/
-         iJIDKrEYZfL4g==
-Date:   Fri, 21 May 2021 11:42:35 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Philip Yang <Philip.Yang@amd.com>
-Subject: linux-next: manual merge of the amdgpu tree with the drm-misc tree
-Message-ID: <20210521114235.1a93dc84@canb.auug.org.au>
+        id S237311AbhEUBoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:44:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=c+XCuLEAL9tyzjer230+dzuUWAppVl3JEe2dMavLJEc=; b=GR
+        e4C4SUPoVgjD1y/T6PfFPFpKX7ifxo3EtyHuyheN88JkYx5vUZqVC8acWMU8OqfULpKpVLd9+3L/v
+        qXbpkyXbupL0X/dlb03YwP0BRuJwKz/+k88h/GYLCZQSZ0URU35zkvzjIrSkuI082rIg+oIcXCNR8
+        1NpDm10jDV1kmLA=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ljuBj-005CPk-9y; Fri, 21 May 2021 03:42:55 +0200
+Date:   Fri, 21 May 2021 03:42:55 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 mvebu + mvebu/dt64 2/2] arm64: dts: marvell:
+ armada-37xx: move firmware node to generic dtsi file
+Message-ID: <YKcQH9ApRwL6SnWI@lunn.ch>
+References: <20210308153703.23097-1-kabel@kernel.org>
+ <20210520113844.32319-1-pali@kernel.org>
+ <20210520113844.32319-3-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/2nmcL0k5P3rGcxbDxz1_kb=";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520113844.32319-3-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/2nmcL0k5P3rGcxbDxz1_kb=
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, May 20, 2021 at 01:38:44PM +0200, Pali Rohár wrote:
+> Move the turris-mox-rwtm firmware node from Turris MOX' device tree into
+> the generic armada-37xx.dtsi file and use the generic compatible string
+> 'marvell,armada-3700-rwtm-firmware' instead of the current one.
+> 
+> Turris MOX DTS file contains also old compatible string for backward
+> compatibility.
+> 
+> The Turris MOX rWTM firmware can be used on any Armada 37xx device,
+> giving them access to the rWTM hardware random number generator, which
+> is otherwise unavailable.
+> 
+> This change allows Linux to load the turris-mox-rwtm.ko module on these
+> boards.
+> 
+> Tested on ESPRESSObin v5 with both default Marvell WTMI firmware and
+> CZ.NIC's firmware. With default WTMI firmware the turris-mox-rwtm fails
+> to probe, while with CZ.NIC's firmware it registers the HW random number
+> generator.
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Signed-off-by: Marek Behún <kabel@kernel.org>
+> Cc: <stable@vger.kernel.org> # 5.4+: 46d2f6d0c99f ("arm64: dts: armada-3720-turris-mox: add firmware node")
 
-Hi all,
+Please drop stable. It is a new feature, not a fix.
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
+Otherwise
 
-  drivers/gpu/drm/amd/amdkfd/kfd_device.c
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-between commit:
-
-  e9669fb78262 ("drm/amdgpu: Add early fini callback")
-
-from the drm-misc tree and commit:
-
-  814ab9930cfd ("drm/amdkfd: register HMM device private zone")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdkfd/kfd_device.c
-index b066aa009b6f,80015e866498..000000000000
---- a/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-+++ b/drivers/gpu/drm/amd/amdkfd/kfd_device.c
-@@@ -861,6 -891,8 +891,7 @@@ out
-  void kgd2kfd_device_exit(struct kfd_dev *kfd)
-  {
-  	if (kfd->init_complete) {
- -		kgd2kfd_suspend(kfd, false);
-+ 		svm_migrate_fini((struct amdgpu_device *)kfd->kgd);
-  		device_queue_manager_uninit(kfd->dqm);
-  		kfd_interrupt_exit(kfd);
-  		kfd_topology_remove_device(kfd);
-
---Sig_/2nmcL0k5P3rGcxbDxz1_kb=
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnEAsACgkQAVBC80lX
-0GwbGgf9Fk1L6PTwLhwv/ZSbDY2fR/t1hlUJs/K4w8YCIMpLzm8k8CT0NAf1LCi+
-3FCSD1MQVYUJSswkePHNK9+a7fJBCnOaucwma0NfB+2it4gQGRsPARGtslFPxwgj
-BNnJXTECGnj2n98EvETF1WFyTHhYkAM9AA0vKz2ImhKYf7Yma4zqlLSV4WhIKSfd
-+3S+JaLQ6pdL1+xzUBXD1LuP0l5vcJ8p8NKHjpp0WXHdDYZ898XHXYmeJa3c8dZa
-PuC9zhfYLTupfWBuVe+oXumu7HC8JW2YFTdDdyISBLvT9pnuz1SAoSQjP1+WiZvj
-lQf+DRW3X12HZGhfwW123OoMMPmByQ==
-=PfAS
------END PGP SIGNATURE-----
-
---Sig_/2nmcL0k5P3rGcxbDxz1_kb=--
+    Andrew
