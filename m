@@ -2,302 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192DA38BC4E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B57C338BC51
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238430AbhEUCNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
+        id S238446AbhEUCQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:16:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238410AbhEUCNU (ORCPT
+        with ESMTP id S232979AbhEUCQe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:13:20 -0400
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CFA2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:11:56 -0700 (PDT)
-Received: by mail-qk1-x734.google.com with SMTP id c20so18370874qkm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:11:56 -0700 (PDT)
+        Thu, 20 May 2021 22:16:34 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257C4C061574;
+        Thu, 20 May 2021 19:15:12 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id i5so13168051pgm.0;
+        Thu, 20 May 2021 19:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=aBM+iI0qSzAgR4v/IlJ1mhN5B469z/KN8UZgQ8XD1ec=;
-        b=Pd8QHT9I9ZzCAyXCQOGSN4z8Qrt29+k82+Pq2c7Er2DGM07zP8Se/eYuazzBGmSVUX
-         EEWdiRc4S/oVJeokMqAqgrhUzt/xk29XlDocVXV2VK3x2N3wPoN3GtEnjqjE8hNnA3Ut
-         G5uvdBTSwLEqu8qdkV8vQj/GnOyuyQjKvA57egZgiuFhn++8QSDqQS03Lbf3xTd4VTVn
-         IyzO3GhNv01zS2W+en7umdXccMKj18VVo+dIiYqBDE6AA3danMD38Ig8Untp/YyRzl7o
-         Xx+tMco1pQ+MhYtM/LbTEYlU9Dv9j8RmVYLNhNe4y6DdTMV5t/Ai4oWUJ4IEmFdT7nfh
-         61Ig==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=dLz7aGadF+Xv8kztA4v+2siux99sGnYrpna00jPGZa8=;
+        b=KfeFyY1X93WLYvQD5maNBWuyjPmwAHN94p00zMt3KkNC8Ite9P0I9CVAoItqpBM4Ej
+         g0AIdkX4hO6gyksRyv1r5qOyXy3+D2cKGM4yt419UZ2ohEKdw01GgPdGBcZ04Gc9BZXo
+         u4PGL31HI8FXy16OaZz18h+0Sf1rrVvr2p4JaJ3wu/Ty8wWYUu8I6/jx7k17esthOYRl
+         pO1U3/W8456/4CgAlYUkf2Tx/IsC2BaDPPiu8PHI0XoE8dBe56V1Qt/U50kwZUYtzadu
+         wvG+R9HeLqjUiT/FJzrB9/g7Mz6yIJxKf84/yVqt4LM/+xZL1Ha+z0YVospFGAdsSv71
+         eOaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=aBM+iI0qSzAgR4v/IlJ1mhN5B469z/KN8UZgQ8XD1ec=;
-        b=hT+iwN/5WEaYP6SwHGpUy3BE+jOo29Ts1ZQtUbxAO25DhzGHzJ8vqGDWUDFG6jcDry
-         zQ3WmzVtaDjTpDf7fQ1oWnD5KdZ/HX4M1vRKv/KmxyovE3DyFoL5tb3RxKmFAGyDQTEn
-         31GYMewe1g3pfbtpgTT3b2i5aG8XzQQ40Tox916XJMG7OcAxAVLgYNuruicRO2rriEnl
-         awf25OlpIZZGNmjt0uEGM9PWv5xWYjVGNpEgnwzr8p23xj8c9sMvwgLpfKwyuAwT+2r9
-         m9RqS1zFOoieKV+SUiHDmGbbq4g96XxVYx07CrXrkNPZ39F+D16yivPQ7+LxExd0+YjA
-         zbyA==
-X-Gm-Message-State: AOAM530TXs76XlXbeo4k+MSD4Tald4NTyH88RxGvxEebLcTonuZ36gvh
-        nzsm1vHByTJehAfBO6VGpMYmhw==
-X-Google-Smtp-Source: ABdhPJwUF9ChpTwtKJPB8FzviVnCFCgvQeNTzJZjYLfqL7nUynVm01d3MiGRwFGjo4Zm+uQ9n9RZWQ==
-X-Received: by 2002:a05:620a:4043:: with SMTP id i3mr8772288qko.380.1621563115682;
-        Thu, 20 May 2021 19:11:55 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id m22sm3780687qkk.65.2021.05.20.19.11.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 19:11:55 -0700 (PDT)
-Subject: Re: [PATCH v3 13/17] crypto: qce: core: Make clocks optional
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-References: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
- <20210519143700.27392-14-bhupesh.sharma@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <125e1f83-e340-9cd3-91a8-cd1ee3ee8b7f@linaro.org>
-Date:   Thu, 20 May 2021 22:11:53 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=dLz7aGadF+Xv8kztA4v+2siux99sGnYrpna00jPGZa8=;
+        b=QwmEvdMixa5iCG8cTmJDBMc4jkrGRAeVBpTNFepcOvGgK5wDuP9z/b2sqT4QxU8M1s
+         Puk+w655/T7e+fxcLx8o7ZR3IGqyTwOkJ8wsgzvK1/KzMlnQr2TNnq7Mry6tRqHnbaSm
+         6/o8P3OH6QSrJhT/ZA6dBGn6HcsZGifGY1EXAmdspYB1RS/vyUeNb1bpUNswqoitE+BE
+         mQtyZT7pZ3U+/p2IGgE0XXr6DlEL5ze1qr80VlyzisF/NDD3cVIBlo8qJvovUvmEY4dV
+         YqEzIEWdkGdN8aajke9j/QBuaRtLmzfV0eR9GdQffNsAc46570vxCzDs6UoAFZIg2WgE
+         jUwQ==
+X-Gm-Message-State: AOAM531EvW74N3NQVLNjo+cR1tdyrjTk+SvN7+EI6uGhDIW079eW/Gpq
+        ffaTwmWJj7KsTRgtRomqxH4R9psolWy8F0eC
+X-Google-Smtp-Source: ABdhPJzvtWdnQpDzsPFcvca+oidldFST5RqHZtrj3v/QvQZ3M6NhLldggj/UtI1x3jn4lwAbfS312Q==
+X-Received: by 2002:a05:6a00:b51:b029:2d5:874a:6bd7 with SMTP id p17-20020a056a000b51b02902d5874a6bd7mr7922656pfo.6.1621563311585;
+        Thu, 20 May 2021 19:15:11 -0700 (PDT)
+Received: from yanshuaijun.ccdomain.com ([103.220.76.197])
+        by smtp.gmail.com with ESMTPSA id a23sm2474346pjo.21.2021.05.20.19.15.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 19:15:10 -0700 (PDT)
+From:   Herman <herman.yim88@gmail.com>
+X-Google-Original-From: Herman <yanshuaijun@yulong.com>
+To:     mikhail.ulyanov@cogentembedded.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herman <yanshuaijun@yulong.com>
+Subject: [PATCH] drivers/media/platform/Rcar_jpu.c : fix typo issues
+Date:   Fri, 21 May 2021 10:14:57 +0800
+Message-Id: <20210521021457.6977-1-yanshuaijun@yulong.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210519143700.27392-14-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhupesh,
+change 'requerment' into 'requirement'
+change 'quantanization' into 'quantization'
+change 'qantization' into 'quantization'
 
-On 5/19/21 10:36 AM, Bhupesh Sharma wrote:
-> From: Thara Gopinath <thara.gopinath@linaro.org>
-> 
-> On certain Snapdragon processors, the crypto engine clocks are enabled by
-> default by security firmware and the driver need not handle the
-> clocks. Make acquiring of all the clocks optional in crypto enginer driver
-> so that the driver intializes properly even if no clocks are specified in
-> the dt.
-> 
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
-> [ bhupesh.sharma@linaro.org: Make clock enablement optional only for qcom parts where
->    firmware has already initialized them, using a bool variable and fix
->    error paths ]
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->   drivers/crypto/qce/core.c | 89 +++++++++++++++++++++++++--------------
->   drivers/crypto/qce/core.h |  2 +
->   2 files changed, 59 insertions(+), 32 deletions(-)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index 905378906ac7..8c3c68ba579e 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -9,6 +9,7 @@
->   #include <linux/interrupt.h>
->   #include <linux/module.h>
->   #include <linux/mod_devicetable.h>
-> +#include <linux/of_device.h>
->   #include <linux/platform_device.h>
->   #include <linux/spinlock.h>
->   #include <linux/types.h>
-> @@ -184,10 +185,20 @@ static int qce_check_version(struct qce_device *qce)
->   	return 0;
->   }
->   
-> +static const struct of_device_id qce_crypto_of_match[] = {
-> +	{ .compatible = "qcom,ipq6018-qce", },
-> +	{ .compatible = "qcom,sdm845-qce", },
-> +	{ .compatible = "qcom,sm8250-qce", },
+Signed-off-by: Herman <yanshuaijun@yulong.com>
+---
+ drivers/media/platform/rcar_jpu.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-Adding qcom,sm8250-qce does not belong in this patch. It deserves a 
-separate patch of it's own.
-
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
-> +
->   static int qce_crypto_probe(struct platform_device *pdev)
->   {
->   	struct device *dev = &pdev->dev;
->   	struct qce_device *qce;
-> +	const struct of_device_id *of_id =
-> +			of_match_device(qce_crypto_of_match, &pdev->dev);
->   	int ret;
->   
->   	qce = devm_kzalloc(dev, sizeof(*qce), GFP_KERNEL);
-> @@ -198,45 +209,65 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	platform_set_drvdata(pdev, qce);
->   
->   	qce->base = devm_platform_ioremap_resource(pdev, 0);
-> -	if (IS_ERR(qce->base))
-> -		return PTR_ERR(qce->base);
-> +	if (IS_ERR(qce->base)) {
-> +		ret = PTR_ERR(qce->base);
-> +		goto err_out;
-> +	}
-
-I don't see the reason for change in error handling here or below. But 
-,for whatever reason this is changed, it has to be a separate patch.
-
->   
->   	ret = dma_set_mask_and_coherent(dev, DMA_BIT_MASK(32));
->   	if (ret < 0)
-> -		return ret;
-> +		goto err_out;
->   
->   	qce->mem_path = devm_of_icc_get(qce->dev, "memory");
->   	if (IS_ERR(qce->mem_path))
->   		return dev_err_probe(dev, PTR_ERR(qce->mem_path),
->   				     "Failed to get mem path\n");
->   
-> -	qce->core = devm_clk_get(qce->dev, "core");
-> -	if (IS_ERR(qce->core))
-> -		return PTR_ERR(qce->core);
-> -
-> -	qce->iface = devm_clk_get(qce->dev, "iface");
-> -	if (IS_ERR(qce->iface))
-> -		return PTR_ERR(qce->iface);
-> -
-> -	qce->bus = devm_clk_get(qce->dev, "bus");
-> -	if (IS_ERR(qce->bus))
-> -		return PTR_ERR(qce->bus);
-> -
->   	ret = icc_set_bw(qce->mem_path, QCE_DEFAULT_MEM_BANDWIDTH, QCE_DEFAULT_MEM_BANDWIDTH);
->   	if (ret)
-> -		return ret;
-> +		goto err_out;
->   
-> -	ret = clk_prepare_enable(qce->core);
-> -	if (ret)
-> -		return ret;
-> +	/* On some qcom parts the crypto clocks are already configured by
-> +	 * the firmware running before linux. In such cases we don't need to
-> +	 * enable/configure them again. Check here for the same.
-> +	 */
-> +	if (!strcmp(of_id->compatible, "qcom,ipq6018-qce") ||
-> +	    !strcmp(of_id->compatible, "qcom,sdm845-qce"))
-
-You can avoid this and most of this patch by using 
-devm_clk_get_optional. This patch can be like just three lines of code 
-change. clk_prepare_enable returns 0 if the clock is null. There is no 
-need to check for the compatibles above. Use devm_clk_get_optional 
-instead of devm_clk_get and everything else can be left as is.
-
-Warm Regards
-Thara
-
-> +		qce->clks_configured_by_fw = false;
-> +	else
-> +		qce->clks_configured_by_fw = true;
-> +
-> +	if (!qce->clks_configured_by_fw) {
-> +		qce->core = devm_clk_get(qce->dev, "core");
-> +		if (IS_ERR(qce->core)) {
-> +			ret = PTR_ERR(qce->core);
-> +			goto err_out;
-> +		}
-> +
-> +		qce->iface = devm_clk_get(qce->dev, "iface");
-> +		if (IS_ERR(qce->iface)) {
-> +			ret = PTR_ERR(qce->iface);
-> +			goto err_out;
-> +		}
-> +
-> +		qce->bus = devm_clk_get(qce->dev, "bus");
-> +		if (IS_ERR(qce->bus)) {
-> +			ret = PTR_ERR(qce->bus);
-> +			goto err_out;
-> +		}
-> +
-> +		ret = clk_prepare_enable(qce->core);
-> +		if (ret)
-> +			goto err_out;
->   
-> -	ret = clk_prepare_enable(qce->iface);
-> -	if (ret)
-> -		goto err_clks_core;
-> +		ret = clk_prepare_enable(qce->iface);
-> +		if (ret)
-> +			goto err_clks_core;
->   
-> -	ret = clk_prepare_enable(qce->bus);
-> -	if (ret)
-> -		goto err_clks_iface;
-> +		ret = clk_prepare_enable(qce->bus);
-> +		if (ret)
-> +			goto err_clks_iface;
-> +	}
->   
->   	ret = qce_dma_request(qce->dev, &qce->dma);
->   	if (ret)
-> @@ -268,6 +299,7 @@ static int qce_crypto_probe(struct platform_device *pdev)
->   	clk_disable_unprepare(qce->iface);
->   err_clks_core:
->   	clk_disable_unprepare(qce->core);
-> +err_out:
->   	return ret;
->   }
->   
-> @@ -284,13 +316,6 @@ static int qce_crypto_remove(struct platform_device *pdev)
->   	return 0;
->   }
->   
-> -static const struct of_device_id qce_crypto_of_match[] = {
-> -	{ .compatible = "qcom,ipq6018-qce", },
-> -	{ .compatible = "qcom,sdm845-qce", },
-> -	{}
-> -};
-> -MODULE_DEVICE_TABLE(of, qce_crypto_of_match);
-> -
->   static struct platform_driver qce_crypto_driver = {
->   	.probe = qce_crypto_probe,
->   	.remove = qce_crypto_remove,
-> diff --git a/drivers/crypto/qce/core.h b/drivers/crypto/qce/core.h
-> index 228fcd69ec51..d9bf05babecc 100644
-> --- a/drivers/crypto/qce/core.h
-> +++ b/drivers/crypto/qce/core.h
-> @@ -23,6 +23,7 @@
->    * @dma: pointer to dma data
->    * @burst_size: the crypto burst size
->    * @pipe_pair_id: which pipe pair id the device using
-> + * @clks_configured_by_fw: clocks are already configured by fw
->    * @async_req_enqueue: invoked by every algorithm to enqueue a request
->    * @async_req_done: invoked by every algorithm to finish its request
->    */
-> @@ -39,6 +40,7 @@ struct qce_device {
->   	struct qce_dma_data dma;
->   	int burst_size;
->   	unsigned int pipe_pair_id;
-> +	bool clks_configured_by_fw;
->   	int (*async_req_enqueue)(struct qce_device *qce,
->   				 struct crypto_async_request *req);
->   	void (*async_req_done)(struct qce_device *qce, int ret);
-> 
-
+diff --git a/drivers/media/platform/rcar_jpu.c b/drivers/media/platform/rcar_jpu.c
+index a7c198c17deb..f57158bf2b11 100644
+--- a/drivers/media/platform/rcar_jpu.c
++++ b/drivers/media/platform/rcar_jpu.c
+@@ -42,7 +42,7 @@
+ 
+ /*
+  * Align JPEG header end to cache line to make sure we will not have any issues
+- * with cache; additionally to requerment (33.3.27 R01UH0501EJ0100 Rev.1.00)
++ * with cache; additionally to requirement (33.3.27 R01UH0501EJ0100 Rev.1.00)
+  */
+ #define JPU_JPEG_HDR_SIZE		(ALIGN(0x258, L1_CACHE_BYTES))
+ #define JPU_JPEG_MAX_BYTES_PER_PIXEL	2	/* 16 bit precision format */
+@@ -121,7 +121,7 @@
+ #define JCCMD_JEND	(1 << 2)
+ #define JCCMD_JSRT	(1 << 0)
+ 
+-/* JPEG code quantanization table number register */
++/* JPEG code quantization table number register */
+ #define JCQTN	0x0c
+ #define JCQTN_SHIFT(t)		(((t) - 1) << 1)
+ 
+@@ -1644,7 +1644,7 @@ static int jpu_probe(struct platform_device *pdev)
+ 		goto device_register_rollback;
+ 	}
+ 
+-	/* fill in qantization and Huffman tables for encoder */
++	/* fill in quantization and Huffman tables for encoder */
+ 	for (i = 0; i < JPU_MAX_QUALITY; i++)
+ 		jpu_generate_hdr(i, (unsigned char *)jpeg_hdrs[i]);
+ 
+-- 
+2.25.1
 
