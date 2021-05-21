@@ -2,81 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54D4B38CEAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:13:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DA038CEB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230035AbhEUUPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:15:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35450 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229455AbhEUUPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:15:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621628028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=FF/j55GfQl57arjqXTMUh9IA8X9Sg5o3NkTPqiHMnFM=;
-        b=YBXOLP76l/8OebEdTj+QBfeXkzop2bTAvmQJ7L3/GifV17AfGH0FyD/LucWO+C2cWYqsM1
-        QkChEIXRGlm2qoKXCvjR+J7S7YXD9UqI1GdB4puZxVlZBfgvEwx0HULzsJYQaz6vpyACWL
-        phPnAaFiWRmirUJo6IwJ1VlH9D9c7Fg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0E36AAA6;
-        Fri, 21 May 2021 20:13:48 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 47868DA72C; Fri, 21 May 2021 22:11:14 +0200 (CEST)
-From:   David Sterba <dsterba@suse.com>
-To:     torvalds@linux-foundation.org
-Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        id S229724AbhEUURq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:17:46 -0400
+Received: from mail-pl1-f180.google.com ([209.85.214.180]:40924 "EHLO
+        mail-pl1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229455AbhEUURo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:17:44 -0400
+Received: by mail-pl1-f180.google.com with SMTP id n8so6351201plf.7;
+        Fri, 21 May 2021 13:16:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=4sAcdTInN18w5aIaTL3XxT9sMpoGjfDrBAcsxUKgHPQ=;
+        b=pp2SURSg4qtVjI8PxYgCKuoO2WV4GNF/hn1AZXxHvAgvEdt41PX/rTRUCWfxewdLKZ
+         s33A9TgqC7CPvOYRwelROG9SuO7+yKirQxp+3jeeKyqoeoXJUN4y8qB1CIso/BKo4BlK
+         CrQwjV/mJzInriCp70WmwbJqmG4MFokzRY9OvbqY+uJu3XN2loOXW9kW3Cwnj2vU+mFu
+         9wn6hOgibqlZEOYwV0Z239GH8aptYL0jAKQtVYIZVCZmlrKFiFELLrPcRYuu+kdBMwJD
+         tqrsq+t9upkQxuhQMd8iU1MnkUE0ycRX7TPwFFOVhpTzmcYa44f/dggATa2VVg2ksxHa
+         hstg==
+X-Gm-Message-State: AOAM5339ySr2TdBHcLS/jxSzQIdlzSGOX/N3yVHWTclnQsy7qrww/SN8
+        5+hQ1qC5k0qfMCNjtlz7XSk=
+X-Google-Smtp-Source: ABdhPJxGlmtIIiR/TrUrmDKXT2/j648am8tJAQfWjQBd88Vnr3oPQa4J6t61UDWFu8VrYektkexT8Q==
+X-Received: by 2002:a17:90a:d201:: with SMTP id o1mr13039617pju.230.1621628180914;
+        Fri, 21 May 2021 13:16:20 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id 125sm4904349pfg.52.2021.05.21.13.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 13:16:19 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id C71A8423A3; Fri, 21 May 2021 20:16:18 +0000 (UTC)
+Date:   Fri, 21 May 2021 20:16:18 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Hannes Reinecke <hare@suse.de>,
+        Douglas Gilbert <dgilbert@interlog.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for v5.13-rc3, part 2
-Date:   Fri, 21 May 2021 22:11:13 +0200
-Message-Id: <cover.1621627293.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.29.2
+Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
+Message-ID: <20210521201618.GX4332@42.do-not-panic.com>
+References: <20210423011108.11988-1-mcgrof@kernel.org>
+ <YKVwZVcbZBNXUpKm@google.com>
+ <20210519202023.GU4332@42.do-not-panic.com>
+ <YKgRsCzwp2O2mYcp@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKgRsCzwp2O2mYcp@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, May 21, 2021 at 10:01:52PM +0200, Greg Kroah-Hartman wrote:
+> On Wed, May 19, 2021 at 08:20:23PM +0000, Luis Chamberlain wrote:
+> > Greg,
+> > 
+> > your feedback would be appreciated here.
+> 
+> Appreciated where?  This is a zram patchset, what do I need to mess with
+> it for?
 
-a few more fixes. Please pull, thanks.
+This patchset has 2 issues which I noted in the last series that are
+generic, and could best be dealt with on sysfs, and suggested
+how this could actually be dealt with on sysfs / kernfs.
 
-- fix unaligned compressed writes in zoned mode
+> > Greg, can you comment on technical levels why a general core fix is not
+> > desirable upstream for those two issues?
+> 
+> What issues exactly?
 
-- fix false positive lockdep warning when cloning inline extent
+When I suggested the generic way to fix this your main argument against
+a generic solution was that we don't support module removal. Given that
+argument did not seem to hold any water it begs the question if you
+still would rather not see this fixed in sysfs / kernfs.
 
-- remove wrong BUG_ON in tree-log error handling
+If you however are more open to it now, I can instead take that work, and
+send a proper patch for review.
 
-----------------------------------------------------------------
-The following changes since commit 54a40fc3a1da21b52dbf19f72fdc27a2ec740760:
-
-  btrfs: fix removed dentries still existing after log is synced (2021-05-14 01:23:04 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
-
-for you to fetch changes up to 764c7c9a464b68f7c6a5a9ec0b923176a05e8e8f:
-
-  btrfs: zoned: fix parallel compressed writes (2021-05-20 15:51:07 +0200)
-
-----------------------------------------------------------------
-Filipe Manana (1):
-      btrfs: release path before starting transaction when cloning inline extent
-
-Johannes Thumshirn (2):
-      btrfs: zoned: pass start block to btrfs_use_zone_append
-      btrfs: zoned: fix parallel compressed writes
-
-Josef Bacik (1):
-      btrfs: do not BUG_ON in link_to_fixup_dir
-
- fs/btrfs/compression.c | 42 ++++++++++++++++++++++++++++++++++++++----
- fs/btrfs/extent_io.c   |  2 +-
- fs/btrfs/inode.c       |  2 +-
- fs/btrfs/reflink.c     |  5 +++++
- fs/btrfs/tree-log.c    |  2 --
- fs/btrfs/zoned.c       |  4 ++--
- fs/btrfs/zoned.h       |  5 ++---
- 7 files changed, 49 insertions(+), 13 deletions(-)
+ Luis
