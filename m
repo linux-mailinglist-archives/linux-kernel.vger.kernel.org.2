@@ -2,311 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A4A138CFF4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CC938CFF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbhEUVfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 17:35:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53260 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhEUVfG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 17:35:06 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6822AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:33:42 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id s25so25575897ljo.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zyrprtW2QamK4gFOEunR1ZTMhYBbJ3wML0weQ98mhNY=;
-        b=MI1rErf9yr8tQWYuoeDd3BajFPCY3TwGaUZR5YKGYwJ+i6HC8gYiR8FB82lpTW8T4D
-         4zodJNQmFw7xgiQavKcTmqi2psJXhXXzCJieNv16dPt5UTxyFyEzOzgRNBeHxvdyj1KH
-         1ZUp7jqTWNjWmbYBA/VlNWPgb3zzNk8xp5XLnHyHNyLYv8apiJIyspeAN4v81k26b0BD
-         7tyf3IjAlfoMjNn0HkLKdWDFwM43AL5G4I4NMU7vz9NjqRdVzEYUJ7SMiJl9Bwz5vfmA
-         NKoVe728Pdq8w2cnuo/4kkgAy+KyPPkhvBWz0EZ1K1wULJRjST6XW8JTgmE6eII/HA1N
-         v8eg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zyrprtW2QamK4gFOEunR1ZTMhYBbJ3wML0weQ98mhNY=;
-        b=DbqhWw5CK8I1WBm8huT1H3ssSUty5xdxhm71Gcz0/vHQ1boVh/RseuxCsYZbwkecKT
-         l6ErOcvXGDmjxVvNhOPl9FqkdhHIycv39BXsGleq7Ar7/tjasCAGSkp/+Bl/q4weqepL
-         AT8PRsLvXcUUaaPdyAlNqKPBOXeQq+GlQtQLcVaBCTC862Jjfc8BLznA3iYUp6llxjL2
-         1n4vyn6ISCy7KCqJa+eHc0uir47H5z2XNjPuAnnAzhbKhy2ExeTd+wUf5eqPyYz7ArT8
-         NVRuXlgeOYjdF14ovUtFONbtwo4UO6ejTOyDrii6XF1x37n3aTl++PCoOStU73h2CnXl
-         tKfA==
-X-Gm-Message-State: AOAM531JLokS470IVZP/thYXPozs2OQ+iItwidFmiTiBSP0mpx47U9YX
-        p3IAYnyqQdBagsc6eW2xgyqQ5QvB3Zty2u2xfi0zwQ==
-X-Google-Smtp-Source: ABdhPJy2Eu6LAR7rUesSrhVFRu7IO9jL8LQWgwVuaF20M2SfbDBELb+5ks5r4SbdL+qUh8CqRGRoiaq01jPdtDHdbaM=
-X-Received: by 2002:a2e:9c91:: with SMTP id x17mr8231363lji.385.1621632820496;
- Fri, 21 May 2021 14:33:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210520183614.1227046-1-posk@google.com> <20210520183614.1227046-5-posk@google.com>
-In-Reply-To: <20210520183614.1227046-5-posk@google.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Fri, 21 May 2021 23:33:14 +0200
-Message-ID: <CAG48ez3Ur61rpOZduQRFabB9R=RbSin9Th+=0=z9FUpcZ21C=w@mail.gmail.com>
-Subject: Re: [RFC PATCH v0.1 4/9] sched/umcg: implement core UMCG API
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        id S229532AbhEUVi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 17:38:27 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:45213 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhEUVi1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 17:38:27 -0400
+Received: from tazenda.hos.anvin.org ([IPv6:2601:646:8602:8be0:7285:c2ff:fefb:fd4])
+        (authenticated bits=0)
+        by mail.zytor.com (8.16.1/8.15.2) with ESMTPSA id 14LLagD2290060
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 21 May 2021 14:36:43 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 14LLagD2290060
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2021042801; t=1621633003;
+        bh=FE5Ro4/Df02Yj2Nr/OVNSwT2t3v7nd7g7yirN11+GkI=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=SEujZ2h6Qg34/Roxk6uljZzzeWP6YXqdswfVkOb1vlNlRUaAvYj5vbQGUYSEu1PlM
+         ePPGcLv5KfcUgo2MI8cHLDlcHr9KpupXvwsNzKLQI3Exi9POPiSICFqVvcafOoctfK
+         o27ClV7lS+v8F3uEiHMZftm74NSdEn0LDgI6YqqHk+9MQFuuLMxqYlSWmPjA7l46/h
+         sbOT36G+tVe5vfp1ZWxjGlRXcUxB+fLLmQzpCqnGTAPmfAfnS4Cg0GVDQu1YHWt3Lq
+         4OwAbhoYGUNZpR6g49vCxm6UW2NXF6t1u5NJubVDd6GGRsVI3dGnRpkNNoInhcpwLu
+         VSqzWMWOMC0eQ==
+Subject: Re: [PATCH v4 6/6] x86/syscall: use int everywhere for system call
+ numbers
+To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andy Lutomirski <luto@kernel.org>,
+        Borislav Petkov <bp@alien8.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210518191303.4135296-1-hpa@zytor.com>
+ <20210518191303.4135296-7-hpa@zytor.com>
+ <87zgwpbxby.ffs@nanos.tec.linutronix.de>
+From:   "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <e43577cf-ab35-1de2-818a-ccc2e2fb99b8@zytor.com>
+Date:   Fri, 21 May 2021 14:36:37 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
+In-Reply-To: <87zgwpbxby.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 8:36 PM Peter Oskolkov <posk@google.com> wrote:
-> Implement version 1 of core UMCG API (wait/wake/swap).
->
-> As has been outlined in
-> https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/,
-> efficient and synchronous on-CPU context switching is key
-> to enabling two broad use cases: in-process M:N userspace scheduling
-> and fast X-process RPCs for security wrappers.
->
-> High-level design considerations/approaches used:
-> - wait & wake can race with each other;
-> - offload as much work as possible to libumcg in tools/lib/umcg,
->   specifically:
->   - most state changes, e.g. RUNNABLE <=> RUNNING, are done in
->     the userspace (libumcg);
->   - retries are offloaded to the userspace.
-[...]
-> diff --git a/kernel/sched/umcg.c b/kernel/sched/umcg.c
-[...]
-> +static int get_state(struct umcg_task __user *ut, u32 *state)
-> +{
-> +       return get_user(*state, (u32 __user *)ut);
-
-Why the cast instead of get_user(*state, &ut->state)?
-And maybe do this inline instead of adding a separate helper for it?
-
-> +}
-> +
-> +static int put_state(struct umcg_task __user *ut, u32 state)
-> +{
-> +       return put_user(state, (u32 __user *)ut);
-> +}
-[...]
-> +static int do_context_switch(struct task_struct *next)
-> +{
-> +       struct umcg_task_data *utd = rcu_access_pointer(current->umcg_task_data);
-> +
-> +       /*
-> +        * It is important to set_current_state(TASK_INTERRUPTIBLE) before
-> +        * waking @next, as @next may immediately try to wake current back
-> +        * (e.g. current is a server, @next is a worker that immediately
-> +        * blocks or waits), and this next wakeup must not be lost.
-> +        */
-> +       set_current_state(TASK_INTERRUPTIBLE);
-> +
-> +       WRITE_ONCE(utd->in_wait, true);
-> +
-> +       if (!try_to_wake_up(next, TASK_NORMAL, WF_CURRENT_CPU))
-> +               return -EAGAIN;
-> +
-> +       freezable_schedule();
-> +
-> +       WRITE_ONCE(utd->in_wait, false);
-> +
-> +       if (signal_pending(current))
-> +               return -EINTR;
-
-What is this -EINTR supposed to tell userspace? We can't tell whether
-we were woken up by a signal or by do_context_switch() or the
-umcg_wake syscall, right? If we're woken by another thread calling
-do_context_switch() and then get a signal immediately afterwards,
-can't that lead to a lost wakeup?
-
-I don't know whether trying to track the origin of the wakeup is a
-workable approach here; you might have to instead do cmpxchg() on the
-->in_wait field and give it three states (default, waiting-for-wake
-and successfully-woken)?
-Or you give up on trying to figure out who woke you, just always
-return zero, and let userspace deal with figuring out whether the
-wakeup was real or not. I don't know whether that'd be acceptable.
-
-> +       return 0;
-> +}
-> +
-> +static int do_wait(void)
-> +{
-> +       struct umcg_task_data *utd = rcu_access_pointer(current->umcg_task_data);
-> +
-> +       if (!utd)
-> +               return -EINVAL;
-> +
-> +       WRITE_ONCE(utd->in_wait, true);
-> +
-> +       set_current_state(TASK_INTERRUPTIBLE);
-> +       freezable_schedule();
-> +
-> +       WRITE_ONCE(utd->in_wait, false);
-> +
-> +       if (signal_pending(current))
-> +               return -EINTR;
-> +
-> +       return 0;
->  }
->
->  /**
-> @@ -90,7 +228,23 @@ SYSCALL_DEFINE1(umcg_unregister_task, u32, flags)
->  SYSCALL_DEFINE2(umcg_wait, u32, flags,
->                 const struct __kernel_timespec __user *, timeout)
->  {
-> -       return -ENOSYS;
-> +       struct umcg_task_data *utd;
-> +
-> +       if (flags)
-> +               return -EINVAL;
-> +       if (timeout)
-> +               return -EOPNOTSUPP;
-> +
-> +       rcu_read_lock();
-> +       utd = rcu_dereference(current->umcg_task_data);
-> +       if (!utd) {
-> +               rcu_read_unlock();
-> +               return -EINVAL;
-> +       }
-> +
-> +       rcu_read_unlock();
-
-rcu_access_pointer() instead of the locking and unlocking?
-
-> +       return do_wait();
->  }
->
->  /**
-> @@ -110,7 +264,39 @@ SYSCALL_DEFINE2(umcg_wait, u32, flags,
->   */
->  SYSCALL_DEFINE2(umcg_wake, u32, flags, u32, next_tid)
->  {
-> -       return -ENOSYS;
-> +       struct umcg_task_data *next_utd;
-> +       struct task_struct *next;
-> +       int ret = -EINVAL;
-> +
-> +       if (!next_tid)
-> +               return -EINVAL;
-> +       if (flags)
-> +               return -EINVAL;
-> +
-> +       next = find_get_task_by_vpid(next_tid);
-> +       if (!next)
-> +               return -ESRCH;
-> +       rcu_read_lock();
-
-Wouldn't it be more efficient to replace the last 4 lines with the following?
-
-rcu_read_lock();
-next = find_task_by_vpid(next_tid);
-if (!next) {
-  err = -ESRCH;
-  goto out;
-}
-
-Then you don't need to use refcounting here...
-
-> +       next_utd = rcu_dereference(next->umcg_task_data);
-> +       if (!next_utd)
-> +               goto out;
-> +
-> +       if (!READ_ONCE(next_utd->in_wait)) {
-> +               ret = -EAGAIN;
-> +               goto out;
-> +       }
-> +
-> +       ret = wake_up_process(next);
-> +       put_task_struct(next);
-
-... and you'd be able to drop this put_task_struct(), too.
-
-> +       if (ret)
-> +               ret = 0;
-> +       else
-> +               ret = -EAGAIN;
-> +
-> +out:
-> +       rcu_read_unlock();
-> +       return ret;
->  }
->
->  /**
-> @@ -139,5 +325,44 @@ SYSCALL_DEFINE2(umcg_wake, u32, flags, u32, next_tid)
->  SYSCALL_DEFINE4(umcg_swap, u32, wake_flags, u32, next_tid, u32, wait_flags,
->                 const struct __kernel_timespec __user *, timeout)
->  {
-> -       return -ENOSYS;
-> +       struct umcg_task_data *curr_utd;
-> +       struct umcg_task_data *next_utd;
-> +       struct task_struct *next;
-> +       int ret = -EINVAL;
-> +
-> +       rcu_read_lock();
-> +       curr_utd = rcu_dereference(current->umcg_task_data);
-> +
-> +       if (!next_tid || wake_flags || wait_flags || !curr_utd)
-> +               goto out;
-> +
-> +       if (timeout) {
-> +               ret = -EOPNOTSUPP;
-> +               goto out;
-> +       }
-> +
-> +       next = find_get_task_by_vpid(next_tid);
-> +       if (!next) {
-> +               ret = -ESRCH;
-> +               goto out;
-> +       }
-
-There isn't any type of access check here, right? Any task can wake up
-any other task? That feels a bit weird to me - and if you want to keep
-it as-is, it should probably at least be documented that any task on
-the system can send you spurious wakeups if you opt in to umcg.
-
-In contrast, shared futexes can avoid this because they get their
-access control implicitly from the VMA.
-
-> +       next_utd = rcu_dereference(next->umcg_task_data);
-> +       if (!next_utd) {
-> +               ret = -EINVAL;
-> +               goto out;
-> +       }
-> +
-> +       if (!READ_ONCE(next_utd->in_wait)) {
-> +               ret = -EAGAIN;
-> +               goto out;
-> +       }
-> +
-> +       rcu_read_unlock();
-> +
-> +       return do_context_switch(next);
-
-It looks like the refcount of the target task is incremented but never
-decremented, so this probably currently leaks references?
-
-I'd maybe try to split do_context_switch() into two parts, one that
-does the non-blocking waking of another task and one that does the
-sleeping. Then you can avoid taking a reference on the task as above -
-this is supposed to be a really hot fastpath, so it's a good idea to
-avoid atomic instructions if possible, right?
 
 
+On 5/20/21 1:53 AM, Thomas Gleixner wrote:
+> On Tue, May 18 2021 at 12:13, H. Peter Anvin wrote:
+>> +static __always_inline bool do_syscall_x64(struct pt_regs *regs, int nr)
+>> +{
+>> +	/*
+>> +	 * Convert negative numbers to very high and thus out of range
+>> +	 * numbers for comparisons. Use unsigned long to slightly
+>> +	 * improve the array_index_nospec() generated code.
+> 
+> How is that actually improving the generated code?
+> 
+> unsigned long:
+> 
+>   104:	48 81 fa bf 01 00 00 	cmp    $0x1bf,%rdx
+>   10b:	48 19 c0             	sbb    %rax,%rax
+>   10e:	48 21 c2             	and    %rax,%rdx
+>   111:	48 89 df             	mov    %rbx,%rdi
+>   114:	48 8b 04 d5 00 00 00 	mov    0x0(,%rdx,8),%rax
+>   11b:	00
+>   11c:	e8 00 00 00 00       	callq  121 <do_syscall_64+0x41>
+> 
+> unsigned int:
+> 
+>    f1:	48 81 fa bf 01 00 00 	cmp    $0x1bf,%rdx
+>    f8:	48 19 d2             	sbb    %rdx,%rdx
+>    fb:	21 d0                	and    %edx,%eax
+>    fd:	48 89 df             	mov    %rbx,%rdi
+>   100:	48 8b 04 c5 00 00 00 	mov    0x0(,%rax,8),%rax
+>   107:	00
+>   108:	e8 00 00 00 00       	callq  10d <do_syscall_64+0x3d>
+> 
+> Text size increases with that unsigned long cast.
+> 
+> I must be missing something.
+> 
 
-> +out:
-> +       rcu_read_unlock();
-> +       return ret;
->  }
+"unsigned long" gave slightly better code than "int", but as you 
+correctly point out here, "unsigned int" is even better.
+
+Thanks for catching that.
+
+	-hpa
+
