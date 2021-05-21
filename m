@@ -2,74 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0ABD638BC32
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:01:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C29638BC39
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238172AbhEUCC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:02:57 -0400
-Received: from mga09.intel.com ([134.134.136.24]:26311 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236669AbhEUCCz (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:02:55 -0400
-IronPort-SDR: m1ezLXxe1MFeWAYjHVwnvCRE0LR3BVbPeRkvuhoT9hwzJKQN/1sKBQH0HXpcw2g92WFpxIwVkv
- s/lfJ+VlCKsw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201420721"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="201420721"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 19:01:32 -0700
-IronPort-SDR: rigVA7Q/aPSiE264jR7xaZrh6RqH4tRt56/1o/KI1Zh2TuttrCfjt/wZL/76TujDv7XWRp82zK
- ge1yWtu8s5dg==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="440848069"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.238.4.82]) ([10.238.4.82])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 19:01:29 -0700
-Subject: Re: [PATCH 3/4] perf vendor events: Add metrics for Icelake Server
-To:     Ian Rogers <irogers@google.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
-References: <20210510012438.6293-1-yao.jin@linux.intel.com>
- <20210510012438.6293-4-yao.jin@linux.intel.com>
- <CAP-5=fUWh4_vzd5QxvLvJD=R-_VFfzjs556VBtd1ZZHEnpmOxw@mail.gmail.com>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <cdaaf99f-d1d5-af69-9256-cd5ce0cc8034@linux.intel.com>
-Date:   Fri, 21 May 2021 10:01:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S238205AbhEUCEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:04:55 -0400
+Received: from mail-oi1-f171.google.com ([209.85.167.171]:46987 "EHLO
+        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235427AbhEUCEv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 22:04:51 -0400
+Received: by mail-oi1-f171.google.com with SMTP id x15so18247033oic.13;
+        Thu, 20 May 2021 19:03:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WhAeh+dZi9+3yK3kntKir0Vq+lwI30Bn7MsSEyHVbZU=;
+        b=eSL3Dq5saR/VLfdjH7XP2GkiOAGWKElrYSpIdojm2lTA6j2oRAt9dNq91sx+wdZ2K0
+         eowuNWqcMVfdSI0+P+UwCNuRwLTNnIoAFN0I1g1kW7//Z41e7L8Y1PxlgKrN/z9Rki80
+         LXabCue4B8GwLzlSqs37VOJr3y5YmM90ADB87nxYmeNCsKCQHh51Jmduobzjx7GyWvef
+         KGsml7WhJXNN4Z+SGeE6RKzu9Xz4aTMes/+ZgW+/75Ngi7j8LVj+rCKAF3FIUn6TnWhF
+         PKd7jPKh+0ytLok3KlE8k+MdXsiD15XeeL+w4zBrBzdKC01AMBCH0ygtNeeNgmvz0MOK
+         WYpw==
+X-Gm-Message-State: AOAM530jycmH+LmEf7aNfR/5/8jVpEc+ZYW2L8832BvmaS/peQcWTh9p
+        x9w+mGrvF0JD4NgkVYf11g==
+X-Google-Smtp-Source: ABdhPJyQqDX59bgvgmDRWgwVJcOyJeV8oVHeEjcOjQRXCo0m49J2PqCCHAFfmM3cT0row6pVQGk9MA==
+X-Received: by 2002:a05:6808:f90:: with SMTP id o16mr315450oiw.163.1621562607986;
+        Thu, 20 May 2021 19:03:27 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e21sm919703oie.32.2021.05.20.19.03.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 19:03:27 -0700 (PDT)
+Received: (nullmailer pid 2505823 invoked by uid 1000);
+        Fri, 21 May 2021 02:03:26 -0000
+Date:   Thu, 20 May 2021 21:03:26 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     dillon.minfei@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, sboyd@kernel.org,
+        hverkuil-cisco@xs4all.nl, mchehab@kernel.org,
+        alexandre.torgue@foss.st.com, patrice.chotard@foss.st.com,
+        mchehab+huawei@kernel.org, pihsun@chromium.org, gnurou@gmail.com,
+        mturquette@baylibre.com, robh+dt@kernel.org,
+        mcoquelin.stm32@gmail.com, linux-clk@vger.kernel.org,
+        linux-media@vger.kernel.org, ezequiel@collabora.com,
+        devicetree@vger.kernel.org, hugues.fruchet@foss.st.com
+Subject: Re: [PATCH 2/7] media: dt-bindings: media: add document for STM32
+ DMA2D bindings
+Message-ID: <20210521020326.GA2505733@robh.at.kernel.org>
+References: <1621508727-24486-1-git-send-email-dillon.minfei@gmail.com>
+ <1621508727-24486-3-git-send-email-dillon.minfei@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUWh4_vzd5QxvLvJD=R-_VFfzjs556VBtd1ZZHEnpmOxw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621508727-24486-3-git-send-email-dillon.minfei@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
-
-On 5/21/2021 12:40 AM, Ian Rogers wrote:
-> On Sun, May 9, 2021 at 6:26 PM Jin Yao<yao.jin@linux.intel.com>  wrote:
->> Add JSON metrics for Icelake Server to perf.
->>
->> Based on TMA metrics 4.21 at 01.org.
->> https://download.01.org/perfmon/
-> Acked-by: Ian Rogers<irogers@google.com>
+On Thu, 20 May 2021 19:05:22 +0800, dillon.minfei@gmail.com wrote:
+> From: Dillon Min <dillon.minfei@gmail.com>
 > 
-> Could you update ratio_column here:
-> https://github.com/intel/event-converter-for-linux-perf/blob/master/extract-tmam-metrics.py#L81
-> as currently this can't be generated.
+> This adds documentation of device tree bindings for the STM32 DMA2D
 > 
-> Thanks,
-> Ian
+> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> ---
+>  .../devicetree/bindings/media/st,stm32-dma2d.yaml  | 71 ++++++++++++++++++++++
+>  1 file changed, 71 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/st,stm32-dma2d.yaml
 > 
 
-Sure, also updated for ICL. I will push the updates to the repo.
-
-Thanks
-Jin Yao
+Reviewed-by: Rob Herring <robh@kernel.org>
