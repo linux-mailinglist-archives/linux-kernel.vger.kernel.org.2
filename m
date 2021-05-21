@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E952B38BCEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 05:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D5238BCFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 05:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238888AbhEUDWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 23:22:52 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5710 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233224AbhEUDWa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 23:22:30 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmWxq0CwdzqVTj;
-        Fri, 21 May 2021 11:17:35 +0800 (CST)
-Received: from dggeme766-chm.china.huawei.com (10.3.19.112) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 11:21:06 +0800
-Received: from huawei.com (10.175.113.133) by dggeme766-chm.china.huawei.com
- (10.3.19.112) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
- May 2021 11:21:05 +0800
-From:   Wang Hai <wanghai38@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <j.vosburgh@gmail.com>,
-        <vfalico@gmail.com>, <andy@greyhouse.net>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH net-next] net: bonding: bond_alb: Fix some typos in bond_alb.c
-Date:   Fri, 21 May 2021 11:31:35 +0800
-Message-ID: <20210521033135.32014-1-wanghai38@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        id S237876AbhEUDeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 23:34:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60228 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236995AbhEUDeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 23:34:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 12E64AB64;
+        Fri, 21 May 2021 03:32:50 +0000 (UTC)
+Date:   Thu, 20 May 2021 20:32:32 -0700
+From:   Davidlohr Bueso <dave@stgolabs.net>
+To:     Liam Howlett <liam.howlett@oracle.com>
+Cc:     "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <michel@lespinasse.org>
+Subject: Re: [PATCH 01/22] mm: Add vma_lookup()
+Message-ID: <20210521033232.dyams2dziycp4hv7@offworld>
+Mail-Followup-To: Liam Howlett <liam.howlett@oracle.com>,
+        "maple-tree@lists.infradead.org" <maple-tree@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Song Liu <songliubraving@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Laurent Dufour <ldufour@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Rik van Riel <riel@surriel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Michel Lespinasse <michel@lespinasse.org>
+References: <20210510165839.2692974-1-Liam.Howlett@Oracle.com>
+ <20210510165839.2692974-2-Liam.Howlett@Oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.175.113.133]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme766-chm.china.huawei.com (10.3.19.112)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210510165839.2692974-2-Liam.Howlett@Oracle.com>
+User-Agent: NeoMutt/20201120
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/becase/because/
-s/reqeusts/requests/
-s/funcions/functions/
-s/addreses/addresses/
+On Mon, 10 May 2021, Liam Howlett wrote:
 
-Signed-off-by: Wang Hai <wanghai38@huawei.com>
----
- drivers/net/bonding/bond_alb.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+>Many places in the kernel use find_vma() to get a vma and then check the
+>start address of the vma to ensure the next vma was not returned.
+>
+>Other places use the find_vma_intersection() call with add, addr + 1 as
+>the range; looking for just the vma at a specific address.
+>
+>The third use of find_vma() is by developers who do not know that the
+>function starts searching at the provided address upwards for the next
+>vma.  This results in a bug that is often overlooked for a long time.
+>
+>Adding the new vma_lookup() function will allow for cleaner code by
+>removing the find_vma() calls which check limits, making
+>find_vma_intersection() calls of a single address to be shorter, and
+>potentially reduce the incorrect uses of find_vma().
+>
+>Signed-off-by: Liam R. Howlett <Liam.Howlett@Oracle.com>
+>---
+> include/linux/mm.h | 18 ++++++++++++++++++
+> 1 file changed, 18 insertions(+)
+>
+>diff --git a/include/linux/mm.h b/include/linux/mm.h
+>index 25b9041f9925..5f2a15e702ff 100644
+>--- a/include/linux/mm.h
+>+++ b/include/linux/mm.h
+>@@ -2689,6 +2689,24 @@ static inline struct vm_area_struct * find_vma_intersection(struct mm_struct * m
+>	return vma;
+> }
 
-diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
-index 3455f2cc13f2..ddc416323867 100644
---- a/drivers/net/bonding/bond_alb.c
-+++ b/drivers/net/bonding/bond_alb.c
-@@ -228,7 +228,7 @@ static struct slave *tlb_choose_channel(struct bonding *bond, u32 hash_index,
- {
- 	struct slave *tx_slave;
- 
--	/* We don't need to disable softirq here, becase
-+	/* We don't need to disable softirq here, because
- 	 * tlb_choose_channel() is only called by bond_alb_xmit()
- 	 * which already has softirq disabled.
- 	 */
-@@ -608,7 +608,7 @@ static struct slave *rlb_choose_channel(struct sk_buff *skb,
- 
- 		client_info->ip_src = arp->ip_src;
- 		client_info->ip_dst = arp->ip_dst;
--		/* arp->mac_dst is broadcast for arp reqeusts.
-+		/* arp->mac_dst is broadcast for arp requests.
- 		 * will be updated with clients actual unicast mac address
- 		 * upon receiving an arp reply.
- 		 */
-@@ -1268,7 +1268,7 @@ static int alb_set_mac_address(struct bonding *bond, void *addr)
- 	return res;
- }
- 
--/************************ exported alb funcions ************************/
-+/************************ exported alb functions ************************/
- 
- int bond_alb_initialize(struct bonding *bond, int rlb_enabled)
- {
-@@ -1547,7 +1547,7 @@ void bond_alb_monitor(struct work_struct *work)
- 
- 		bond_for_each_slave_rcu(bond, slave, iter) {
- 			/* If updating current_active, use all currently
--			 * user mac addreses (!strict_match).  Otherwise, only
-+			 * user mac addresses (!strict_match).  Otherwise, only
- 			 * use mac of the slave device.
- 			 * In RLB mode, we always use strict matches.
- 			 */
--- 
-2.17.1
+While at it can we clean up find_vma_intersection? I'm not particularly
+user/fan of checkpatch.pl, but this one is kind of ridiculous.
 
+Thanks,
+Davidlohr
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index c274f75efcf9..16eddedf783f 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2678,9 +2678,14 @@ extern struct vm_area_struct * find_vma(struct mm_struct * mm, unsigned long add
+  extern struct vm_area_struct * find_vma_prev(struct mm_struct * mm, unsigned long addr,
+					     struct vm_area_struct **pprev);
+
+-/* Look up the first VMA which intersects the interval start_addr..end_addr-1,
+-   NULL if none.  Assume start_addr < end_addr. */
+-static inline struct vm_area_struct * find_vma_intersection(struct mm_struct * mm, unsigned long start_addr, unsigned long end_addr)
++/*
++ * Look up the first VMA which intersects the interval start_addr..end_addr-1,
++ * NULL if none.  Assume start_addr < end_addr.
++ */
++static inline
++struct vm_area_struct *find_vma_intersection(struct mm_struct * mm,
++                                            unsigned long start_addr,
++                                            unsigned long end_addr)
+  {
+	struct vm_area_struct * vma = find_vma(mm,start_addr);
