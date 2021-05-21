@@ -2,102 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2CB38BD2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 06:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265DE38BD31
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 06:17:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhEUESD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 00:18:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44212 "EHLO
+        id S238980AbhEUES7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 00:18:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231337AbhEUESC (ORCPT
+        with ESMTP id S238062AbhEUES5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 00:18:02 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA063C061574;
-        Thu, 20 May 2021 21:16:39 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id g24so10283498pji.4;
-        Thu, 20 May 2021 21:16:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding:user-agent;
-        bh=WRc2dTi2j0cBWfnXOzygB7tUMf1PqONoKF2ltQXZk5A=;
-        b=IK/scQupUFUmZjR7WuCGM6VOzTsQumSseCKgqsBz8Xe1hZs8LqKU6eJJK5/JbOi795
-         31SOmQ/u1ZzVMIgSLlt48shW/KmfwvZZtpuj/Ak3XRva/PWAiJZNkBA0ytIj3SAus8t3
-         r9h/9XecJ0H64ZTpw6hiNM0eHkCt6DiXZf2UeFPp76kYGBR9e82PPMG9FBb3pSXj2QVv
-         DUIxBQstCsvASLkpBBFWy1p7/G+SvGn4wwzAYPeP9h2NAly84bTvRVfCE6x7jBI6GLot
-         Jcrr2+bnrGsLIfb/48vg1jWMgN3uu04o/8+KgAFmuqszZmuXgwtVPO/yCShsqxjlkZ/U
-         gz4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding:user-agent;
-        bh=WRc2dTi2j0cBWfnXOzygB7tUMf1PqONoKF2ltQXZk5A=;
-        b=J6l2M05jKHTu7iFl3DNpr7T9HqhiGejzuTibLHqo5cFrX7tn5oSsPz3K7uMwuHAXoJ
-         BY+mY//m9IKNYzJFwMdppAe6fp9KxzNdPYI4rzY8GdLpQ5Kqr9Hv/FkU5N2qs/9R4X6w
-         OyFwn8PxqlxQqJnIXct0nvm8BgK4oZkK1aijS7rGkw1UR5I9SSammM7a52J3f6c18wTj
-         LJzqRGRx2Q9Hq0ifI7QaABDOQZbhZq7siFIK4t23j18PB5oLVKDCPhib3yjVPzZFnppq
-         MIwwUcRmYWSmIe6Gtbsobhp3YchgVVy2xxIZ/1f9yVAi2b3O0yoGGsFF1L9+84qbKzq8
-         jxxg==
-X-Gm-Message-State: AOAM531q1nOHUQSFuWWOcHOEOyR8zYJgrDbaXzJPHR745QmCHu/aZ+Ly
-        Goe5y35pPqz6ZGWZKjOrrjM=
-X-Google-Smtp-Source: ABdhPJx3niu1eWdFCijc4XeXW5ERpS0VFjddRYJZU8IqE4xiyvqKJatzCvGlkGOew4J3H+ZvEKGw9A==
-X-Received: by 2002:a17:902:da86:b029:ef:70fa:7b39 with SMTP id j6-20020a170902da86b02900ef70fa7b39mr9780905plx.81.1621570599116;
-        Thu, 20 May 2021 21:16:39 -0700 (PDT)
-Received: from raspberrypi ([125.141.84.155])
-        by smtp.gmail.com with ESMTPSA id y64sm3103960pfy.204.2021.05.20.21.16.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 21:16:38 -0700 (PDT)
-Date:   Fri, 21 May 2021 05:16:33 +0100
-From:   Austin Kim <austindh.kim@gmail.com>
-To:     robdclark@gmail.com, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, angelogioacchino.delregno@somainline.org,
-        dmitry.baryshkov@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        autindh.kim@gmail.com, kernel-team@lge.com
-Subject: [PATCH] drm/msm/dpu: remove unused variable cmd_enc
-Message-ID: <20210521041633.GA1747@raspberrypi>
+        Fri, 21 May 2021 00:18:57 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8B1C061574;
+        Thu, 20 May 2021 21:17:34 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmYGx511fz9sRK;
+        Fri, 21 May 2021 14:17:29 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621570651;
+        bh=dpPnY8Gd2VHW7NF/ujHUlfzp8fRXOyyt2N7y0oMimwk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=coCPu9rSQzlXw/Y/KD6uSh6jLUSjb3OMmS9zVbO+2ZGf9dAcwObiS5u/JRUO2b6xT
+         SjknpNBAXGqeF6MBEIJ0L8NLruldgcJuSWlOz7zfZuhNQCB1qLSlGvbQb7gbHIISlW
+         +rkiUcntXMy8AECal/DIwy9GNDfICcC3qnJ2/MNh7v9oqukrtvg8RtfqGFwMyujG+O
+         HD5K5OxSrCRTqjEbAX1qutGlcoVT1xkkQbT9bU0LAzSl0Rmi1HyTaNEt34h1LByBEo
+         9ovmiBVNAQSHG/Wed3oryjxR9mfRiQpHLjmrWAd1uSd+4edqZuz2RmNaN8fJeDMm0o
+         nsY8GJUF+8+kA==
+Date:   Fri, 21 May 2021 14:17:28 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Subject: linux-next: manual merge of the pinctrl tree with the jc_docs tree
+Message-ID: <20210521141728.6f5e3621@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: multipart/signed; boundary="Sig_/ILC.JW1zqbgeVmk_dLIjm8_";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After the call to to_dpu_encoder_phys_cmd() is made,
-'cmd_enc' is not used. Where to_dpu_encoder_phys_cmd() is simply replaced with
-container_of(x, struct dpu_encoder_phys_cmd, base) by compiler.
+--Sig_/ILC.JW1zqbgeVmk_dLIjm8_
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-So it had better remove W=1 kernel build warning(s):
+Hi all,
 
-  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c: In function
- ‘dpu_encoder_phys_cmd_wait_for_commit_done’:
-  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c:688:31: warning:
-  variable ‘cmd_enc’ set but not used
+Today's linux-next merge of the pinctrl tree got a conflict in:
 
-Signed-off-by: Austin Kim <austindh.kim@gmail.com>
----
- drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c | 4 ----
- 1 file changed, 4 deletions(-)
+  include/linux/pinctrl/pinconf-generic.h
 
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-index b2be39b9144e..088900841bf8 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c
-@@ -685,10 +685,6 @@ static int dpu_encoder_phys_cmd_wait_for_tx_complete(
- static int dpu_encoder_phys_cmd_wait_for_commit_done(
- 		struct dpu_encoder_phys *phys_enc)
- {
--	struct dpu_encoder_phys_cmd *cmd_enc;
--
--	cmd_enc = to_dpu_encoder_phys_cmd(phys_enc);
--
- 	/* only required for master controller */
- 	if (!dpu_encoder_phys_cmd_is_master(phys_enc))
- 		return 0;
--- 
-2.20.1
+between commit:
 
+  4b0c9948a4c2 ("docs: update pin-control.rst references")
+
+from the jc_docs tree and commit:
+
+  57b55eeb7552 ("pinctrl: Keep enum pin_config_param ordered by name (part =
+2)")
+
+from the pinctrl tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc include/linux/pinctrl/pinconf-generic.h
+index 5a96602a3316,98ed5959ca9a..000000000000
+--- a/include/linux/pinctrl/pinconf-generic.h
++++ b/include/linux/pinctrl/pinconf-generic.h
+@@@ -81,6 -81,10 +81,10 @@@ struct pinctrl_map
+   *	passed in the argument on a custom form, else just use argument 1
+   *	to indicate low power mode, argument 0 turns low power mode off.
+   * @PIN_CONFIG_MODE_PWM: this will configure the pin for PWM
++  * @PIN_CONFIG_OUTPUT: this will configure the pin as an output and drive=
+ a
++  * 	value on the line. Use argument 1 to indicate high level, argument 0 =
+to
+ - *	indicate low level. (Please see Documentation/driver-api/pinctl.rst,
+++ *	indicate low level. (Please see Documentation/driver-api/pin-control.r=
+st,
++  *	section "GPIO mode pitfalls" for a discussion around this parameter.)
+   * @PIN_CONFIG_OUTPUT_ENABLE: this will enable the pin's output mode
+   * 	without driving a value there. For most platforms this reduces to
+   * 	enable the output buffers and then let the pin controller current
+
+--Sig_/ILC.JW1zqbgeVmk_dLIjm8_
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnNFgACgkQAVBC80lX
+0GyumQf/XG0UzCwx/IDZCdvTjduy5hLiqBPYNu7GzAWgw8IBqkEoqNchJdLPCLaa
+v+JuQiv0i90IXXFOwwMcdwMkivFBNt8jktBy9L8JGyuqYu6Pvs2WZ7zHO2AFaiRC
+4ru1v7KMYeGsWr1guaVX2i2Hbk4DWuszFBSZ9P05ZtYam6ZXK8wtfawofoovl1wq
+pb7e80RlG2QqXoaUdH4pJd4MM6Nk3a1AP4WM9yE2R7yYdP/AFN0KdxngBO8BwMAa
+3CIg8QkzvQKBXy5mF4Ws3FAVtKJ2bLytMsG2UZOPKekpwif5BpRKx2ElFMNLPc7M
+/7bWvXXP2uR8W4WhF/8FjIxhkBjV0Q==
+=aMfU
+-----END PGP SIGNATURE-----
+
+--Sig_/ILC.JW1zqbgeVmk_dLIjm8_--
