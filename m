@@ -2,64 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A848F38C6CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:47:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3143D38C6B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:42:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbhEUMtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:49:01 -0400
-Received: from mailgw.kylinos.cn ([123.150.8.42]:43804 "EHLO nksmu.kylinos.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234145AbhEUMs6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:48:58 -0400
-X-Greylist: delayed 304 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 May 2021 08:48:37 EDT
-X-UUID: c72d25bcf0b54f778f2a912c437cfc23-20210521
-X-UUID: c72d25bcf0b54f778f2a912c437cfc23-20210521
-X-User: luriwen@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by nksmu.kylinos.cn
-        (envelope-from <luriwen@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1469929180; Fri, 21 May 2021 20:42:08 +0800
-From:   Riwen Lu <luriwen@kylinos.cn>
-To:     jdelvare@suse.com, linux@roeck-us.net
-Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Riwen Lu <luriwen@kylinos.cn>, Xin Chen <chenxin@kylinos.cn>
-Subject: [PATCH v1] hwmon: (scpi-hwmon) shows the negative temperature properly
-Date:   Fri, 21 May 2021 20:42:04 +0800
-Message-Id: <20210521124204.22263-1-luriwen@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        id S233608AbhEUMn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:43:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231377AbhEUMnv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:43:51 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F461C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:42:27 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id h202so6672278ybg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:42:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+/Oecpa/9B6poHryXo2Ss657/x8VcGaDiINXjZStR3M=;
+        b=p2Xeg/ick8nPMzaDEjBiN7SZ9HRJosstDsZqnMbRdTciey3uuzrocdoX0UbSDNKRQA
+         YASWhp3l7LHkuGXff4QKovu20I8CdYFZLXFTpC9dj1oHQaQKX/oaBnwAlnaA/U4aDF35
+         XAqCbxiTAY79mUF3nQG4TD3tlGVgsAltZSVhbUNxJU83BrjcG1glP6VUdrQ1gRo91L/r
+         FP4H0qUvKZ7+3XLuGAdgzMB3LZJdj1WdcwyXf9bC86Iyrg3U+2pL3PYQyB4FugAM/Zi6
+         5JtUdrHiGjTFN7xTY8xd/JhzCAt5B4RqN0kWjP1TNbiYlCrqFBu5DTxrMsscVLzfG5tu
+         eYFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+/Oecpa/9B6poHryXo2Ss657/x8VcGaDiINXjZStR3M=;
+        b=PLSONAJasd747OCwm86DcyEXbUG+7771fOV9qvcomxfWjte1ePN5zgqJCcaGVCe1Qi
+         2oNUpZFozsSUDEGlK+Dwp9kp+KVVUJdYO1dtx7gu5r87VcynIXIPBKqq/R/Jw3FA/EvZ
+         iDFlxoiDwJKv6l0ZTEgN7taofZsUT15eUn1JCjrneBXV9N9HJCq96npXB4YVjDuiKXe+
+         ZL5J7vnmRIgRosLXVqMRqMHQ0LSjtWW/B2YiBC1FsBF5kI+Nuox7ZvaINPh02iQhv0+V
+         gJVk0lfr98UkqvNK9WR3pBKJ3/Wd6ui6LMxZHK2jvJcGM4etGgRX0OD9221aMtKQMHvj
+         ta7A==
+X-Gm-Message-State: AOAM531o4cj8gcTtvj2p+GsKX31yWjD5zw6MAPS1H86NcjPHWT0i+GTR
+        IHjoZicUxLwIUrhLoDq+DyEFD8xWa6XriWuXr+BzWQ==
+X-Google-Smtp-Source: ABdhPJw8NSAh8QNT84J6otnyIWfXxOPOsTCOyvaPX/caUJfnFQc3Pj0sluJsHos7SGDAJfOig2tB9KwO7ObuEreAodo=
+X-Received: by 2002:a25:9d86:: with SMTP id v6mr14285722ybp.366.1621600946680;
+ Fri, 21 May 2021 05:42:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210516061425.8757-1-aardelean@deviqon.com>
+In-Reply-To: <20210516061425.8757-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 21 May 2021 14:42:15 +0200
+Message-ID: <CAMpxmJVeZ2zASLN-TqasWHDvLbWN1K=4ZFTzw36_KTs6N7S-5g@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-stmpe: fully use convert probe to device-managed
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        alexandre.torgue@foss.st.com,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The scpi hwmon shows the sub-zero temperature in an unsigned integer,
-which would confuse the users when the machine works in low temperature
-environment. This shows the sub-zero temperature in an signed value and
-users can get it properly from sensors.
+On Sun, May 16, 2021 at 8:14 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
+>
+> The driver doesn't look like it can be built as a kmod, so leaks cannot
+> happen via a rmmod mechanism.
+> The remove hook was removed via commit 3b52bb960ec6 ("gpio: stmpe: make
+> it explicitly non-modular").
+>
+> The IRQ is registered via devm_request_threaded_irq(), making the driver
+> only partially device-managed.
+>
+> In any case all resources should be made device-managed, mostly as a good
+> practice. That way at least the unwinding on error is happening in reverse
+> order (as the probe).
+>
+> This change also removes platform_set_drvdata() since the information is
+> never retrieved to be used in the driver.
+>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 
-Signed-off-by: Riwen Lu <luriwen@kylinos.cn>
-Tested-by: Xin Chen <chenxin@kylinos.cn>
----
- drivers/hwmon/scpi-hwmon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I applied the patch and tweaked the commit message because as Andy
+pointed out - this driver can be unbound over sysfs.
 
-diff --git a/drivers/hwmon/scpi-hwmon.c b/drivers/hwmon/scpi-hwmon.c
-index 25aac40f2764..583a600bc82d 100644
---- a/drivers/hwmon/scpi-hwmon.c
-+++ b/drivers/hwmon/scpi-hwmon.c
-@@ -99,7 +99,7 @@ scpi_show_sensor(struct device *dev, struct device_attribute *attr, char *buf)
- 
- 	scpi_scale_reading(&value, sensor);
- 
--	return sprintf(buf, "%llu\n", value);
-+	return sprintf(buf, "%lld\n", value);
- }
- 
- static ssize_t
--- 
-2.25.1
-
-
-No virus found
-		Checked by Hillstone Network AntiVirus
+Bart
