@@ -2,100 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9788B38CA5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:46:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1C038CA69
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:50:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237491AbhEUPrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:47:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57210 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237439AbhEUPrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:47:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35C1D61401;
-        Fri, 21 May 2021 15:45:34 +0000 (UTC)
-Date:   Fri, 21 May 2021 17:45:32 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>, containers@lists.linux.dev,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Andy Lutomirski <luto@kernel.org>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Mauricio =?utf-8?Q?V=C3=A1squez?= Bernal <mauricio@kinvolk.io>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: Re: [PATCH v2 3/4] seccomp: Support atomic "addfd + send reply"
-Message-ID: <20210521154532.utttvofngdg6qeob@wittgenstein>
-References: <20210517193908.3113-1-sargun@sargun.me>
- <20210517193908.3113-4-sargun@sargun.me>
+        id S234391AbhEUPvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:51:49 -0400
+Received: from mail-pl1-f172.google.com ([209.85.214.172]:46018 "EHLO
+        mail-pl1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233331AbhEUPvr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 11:51:47 -0400
+Received: by mail-pl1-f172.google.com with SMTP id s4so9640101plg.12;
+        Fri, 21 May 2021 08:50:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=60o19uG3Uo5g6e87CzW4o+uDrYBj0/S1vmD5UQ1AMh8=;
+        b=BcPb2ZYFGHMwI57v8DfG8TnTUu/LFuGBhV9GyBDuL2AcuKhvCrnojSnLO05mVHAAc+
+         93m7atneA2z/j471PZbwnYcmBqf9J60MNVhqus9JrNhtCsjlf1jn2nGB7N1fOPF6Q7aZ
+         Umi/NEVMJ95nBKFe1SxcU8citQZTXWMqiYyDXXRij6xIAK8E9c5Elc/heon/BLNHKQi5
+         pGcgwWuRgFFyIPRZf96kGo6gKi9W1yMdU31XtdGe01JIjaaw6B+ldPT8KudIl1hHNN7T
+         G+1yA08U6ARKRF/l3E2Vcbb00+VKv3a31zoGIwK5cima3ip2iI1Z8v7WFLhp1L4OQ3tW
+         X+ug==
+X-Gm-Message-State: AOAM531xCx3gTZUbqluyI/8ySVrseTAVhv+C1mtyKMxZ3m7X4JtFTl5n
+        F4cPZPZFnQtmLWiQ0hdOAfo=
+X-Google-Smtp-Source: ABdhPJwrzncsvoLgqoiG5aI4Dng/0cs1R2ml4bkxiQ8CBKjM+V91ysl5hL/y33lWJAZbc/JP1o68rg==
+X-Received: by 2002:a17:90a:c284:: with SMTP id f4mr11308629pjt.83.1621612222493;
+        Fri, 21 May 2021 08:50:22 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id a9sm4699642pfl.57.2021.05.21.08.50.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 08:50:21 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id A2173402D7; Fri, 21 May 2021 15:50:20 +0000 (UTC)
+Date:   Fri, 21 May 2021 15:50:20 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     Menglong Dong <menglong8.dong@gmail.com>
+Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>, song@kernel.org,
+        neilb@suse.de, Andrew Morton <akpm@linux-foundation.org>,
+        wangkefeng.wang@huawei.com, f.fainelli@gmail.com, arnd@arndb.de,
+        Barret Rhoden <brho@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, vbabka@suse.cz,
+        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
+        Chris Down <chris@chrisdown.name>, ebiederm@xmission.com,
+        jojing64@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        palmerdabbelt@google.com, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [PATCH RESEND] init/initramfs.c: make initramfs support
+ pivot_root
+Message-ID: <20210521155020.GW4332@42.do-not-panic.com>
+References: <20210520154244.20209-1-dong.menglong@zte.com.cn>
+ <20210520214111.GV4332@42.do-not-panic.com>
+ <CADxym3axowrQWz3OgimK4iGqP-RbO8U=HPODEhJRrcXUAsWXew@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210517193908.3113-4-sargun@sargun.me>
+In-Reply-To: <CADxym3axowrQWz3OgimK4iGqP-RbO8U=HPODEhJRrcXUAsWXew@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 12:39:07PM -0700, Sargun Dhillon wrote:
-> From: Rodrigo Campos <rodrigo@kinvolk.io>
+On Fri, May 21, 2021 at 08:41:55AM +0800, Menglong Dong wrote:
+> Hello!
 > 
-> Alban Crequy reported a race condition userspace faces when we want to
-> add some fds and make the syscall return them[1] using seccomp notify.
+> Thanks for your reply!
 > 
-> The problem is that currently two different ioctl() calls are needed by
-> the process handling the syscalls (agent) for another userspace process
-> (target): SECCOMP_IOCTL_NOTIF_ADDFD to allocate the fd and
-> SECCOMP_IOCTL_NOTIF_SEND to return that value. Therefore, it is possible
-> for the agent to do the first ioctl to add a file descriptor but the
-> target is interrupted (EINTR) before the agent does the second ioctl()
-> call.
+> On Fri, May 21, 2021 at 5:41 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
+> >
+> > Can't docker instead allow to create containers prior to creating
+> > your local docker network namespace? Not that its a great solution,
+> > but just worth noting.
+> >
 > 
-> This patch adds a flag to the ADDFD ioctl() so it adds the fd and
-> returns that value atomically to the target program, as suggested by
-> Kees Cook[2]. This is done by simply allowing
-> seccomp_do_user_notification() to add the fd and return it in this case.
-> Therefore, in this case the target wakes up from the wait in
-> seccomp_do_user_notification() either to interrupt the syscall or to add
-> the fd and return it.
-> 
-> This "allocate an fd and return" functionality is useful for syscalls
-> that return a file descriptor only, like connect(2). Other syscalls that
-> return a file descriptor but not as return value (or return more than
-> one fd), like socketpair(), pipe(), recvmsg with SCM_RIGHTs, will not
-> work with this flag.
-> 
-> This effectively combines SECCOMP_IOCTL_NOTIF_ADDFD and
-> SECCOMP_IOCTL_NOTIF_SEND into an atomic opteration. The notification's
-> return value, nor error can be set by the user. Upon successful invocation
-> of the SECCOMP_IOCTL_NOTIF_ADDFD ioctl with the SECCOMP_ADDFD_FLAG_SEND
-> flag, the notifying process's errno will be 0, and the return value will
-> be the file descriptor number that was installed.
-> 
-> [1]: https://lore.kernel.org/lkml/CADZs7q4sw71iNHmV8EOOXhUKJMORPzF7thraxZYddTZsxta-KQ@mail.gmail.com/
-> [2]: https://lore.kernel.org/lkml/202012011322.26DCBC64F2@keescook/
-> 
-> Signed-off-by: Rodrigo Campos <rodrigo@kinvolk.io>
-> Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-> Acked-by: Tycho Andersen <tycho@tycho.pizza>
-> ---
->  .../userspace-api/seccomp_filter.rst          | 12 +++++
->  include/uapi/linux/seccomp.h                  |  1 +
->  kernel/seccomp.c                              | 49 +++++++++++++++++--
->  3 files changed, 58 insertions(+), 4 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/seccomp_filter.rst b/Documentation/userspace-api/seccomp_filter.rst
-> index 6efb41cc8072..d61219889e49 100644
-> --- a/Documentation/userspace-api/seccomp_filter.rst
-> +++ b/Documentation/userspace-api/seccomp_filter.rst
-> @@ -259,6 +259,18 @@ and ``ioctl(SECCOMP_IOCTL_NOTIF_SEND)`` a response, indicating what should be
->  returned to userspace. The ``id`` member of ``struct seccomp_notif_resp`` should
->  be the same ``id`` as in ``struct seccomp_notif``.
->  
-> +Userspace can also add file descriptors to the notifying process via
-> +``ioctl(SECCOMP_IOCTL_NOTIF_ADDFD)``. The ``id`` member of
-> +``struct seccomp_notif_addfd`` should be the same ``id`` as in
-> +``struct seccomp_notif``. The ``newfd_flags`` flag may be used to set flags
-> +like O_EXEC on the file descriptor in the notifying process. If the supervisor
+> That's a solution, but I don't think it is feasible. Users may create many
+> containers, and you can't make docker create all the containers first
+> and create network namespace later, as you don't know if there are any
+> containers to create later.
 
-nit:
-s/O_EXEC/O_CLOEXEC/
+It doesn't seem impossible, but worth noting why inside the commit log
+this was not a preferred option.
+
+> > >  struct file_system_type rootfs_fs_type = {
+> > >       .name           = "rootfs",
+> > > -     .init_fs_context = rootfs_init_fs_context,
+> > > +     .init_fs_context = ramfs_init_fs_context,
+> >
+> > Why is this always static now? Why is that its correct
+> > now for init_mount_tree() always to use the ramfs context?
+> 
+> Because the root mount in init_mount_tree() is not used as rootfs any more.
+
+We still have:
+
+start_kernel() --> vfs_caches_init() --> mnt_init() --> 
+
+mnt_init()
+{
+	...
+	shmem_init();                                                           
+	init_rootfs();                                                          
+	init_mount_tree(); 
+}
+
+You've now modified init_rootfs() to essentially just set the new user_root,
+and that's it. But we stil call init_mount_tree() even if we did set the
+rootfs to use tmpfs.
+
+> In do_populate_ro
+> tmpfs, and that's the real rootfs for initramfs. And I call this root
+> as 'user_root',
+> because it is created for user space.
+> 
+> int __init mount_user_root(void)
+> {
+>        return do_mount_root(user_root->dev_name,
+>                             user_root->fs_name,
+>                             root_mountflags,
+>                             root_mount_data);
+>  }
+> 
+> In other words, I moved the realization of 'rootfs_fs_type' here to
+> do_populate_rootfs(), and fixed this 'rootfs_fs_type' with
+> ramfs_init_fs_context, as it is a fake root now.
+
+do_populate_rootfs() is called from populate_rootfs() and that in turn
+is a:
+
+rootfs_initcall(populate_rootfs);
+
+In fact the latest changes have made this to schedule asynchronously as
+well. And so indeed, init_mount_tree() always kicks off first. So its
+still unclear to me why the first mount now always has a fs context of
+ramfs_init_fs_context, even if we did not care for a ramdisk.
+
+Are you suggesting it can be arbitrary now?
+
+> Now, the rootfs that user space used is separated with the init_task,
+> and that's exactly what a block root file system does.
+
+The secondary effort is a bit clearer, its the earlier part that is not
+so clear yet to me at least.
+
+Regardless, to help make the changes easier to review, I wonder if it
+makes sense to split up your work into a few patches. First do what you
+have done for init_rootfs() and the structure you added to replace the
+is_tmpfs bool, and let initialization use it and the context. And then
+as a second patch introduce the second mount effort.
+
+  Luis
