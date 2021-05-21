@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CA4A38CB80
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:02:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C5138CB84
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:06:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237929AbhEURDf convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 13:03:35 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50663 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237830AbhEURDd (ORCPT
+        id S237890AbhEURHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:07:25 -0400
+Received: from mail-ot1-f53.google.com ([209.85.210.53]:40712 "EHLO
+        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233990AbhEURHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:03:33 -0400
-Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <jay.vosburgh@canonical.com>)
-        id 1lk8XG-00067P-L1; Fri, 21 May 2021 17:02:06 +0000
-Received: by famine.localdomain (Postfix, from userid 1000)
-        id 22E795FDD5; Fri, 21 May 2021 10:02:05 -0700 (PDT)
-Received: from famine (localhost [127.0.0.1])
-        by famine.localdomain (Postfix) with ESMTP id 1CA9CA040C;
-        Fri, 21 May 2021 10:02:05 -0700 (PDT)
-From:   Jay Vosburgh <jay.vosburgh@canonical.com>
-To:     Jarod Wilson <jarod@redhat.com>
-cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 3/4] bonding/balance-alb: don't tx balance multicast traffic either
-In-reply-to: <20210521132756.1811620-4-jarod@redhat.com>
-References: <20210518210849.1673577-1-jarod@redhat.com> <20210521132756.1811620-1-jarod@redhat.com> <20210521132756.1811620-4-jarod@redhat.com>
-Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
-   message dated "Fri, 21 May 2021 09:27:55 -0400."
-X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+        Fri, 21 May 2021 13:07:24 -0400
+Received: by mail-ot1-f53.google.com with SMTP id 80-20020a9d08560000b0290333e9d2b247so8086847oty.7;
+        Fri, 21 May 2021 10:05:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VhGZ7NI9ZeLvK46YxnKVRZc/2Rywq66p60+gUbU2hm0=;
+        b=LI3Ci57yN6m3XY+/dp1HHXYDIKeswQ9b/5EODViU6DhjUE7St72cUh4LiZHD4+dg7t
+         1l3COT5qjI3+sWsEcfKl9kYerfSZFqeH4/1nRjGEX97RH0r/6DyGAvZeTAf7e4dQaVAo
+         10WU3DNDvaQiH5fR9h6rCN+YE4U8U1Mjr7XNzTcG07wBBi0alXWHPgb2B7a9LZqPW+7Z
+         b86jDTa+aCmuzxr1twR5m+JqIdB97AVe0WotborAqoBkq/nwVkBiPCEKw3L550kjwu6V
+         QwpWTSZYUohgi5I3+L8cduKaGcmoEVwFVhT8ElqsvDdwcrW3wBZHHqFxqZnAGV8B6lM+
+         MtQA==
+X-Gm-Message-State: AOAM5333Y7HBunQrGOTVtP3rXajFcAkgluTBeObLmqg2LslbfaGZOWrB
+        EybtFaCyTkF1fSdG3W2gDacNrScqxFHdlymSNYM=
+X-Google-Smtp-Source: ABdhPJxQPk6S3dm3u0ToWhctkV6q8gSUbtc+5SXPBvA7ZPeyeHTNSjtUcqKtH7hajH4ufwToKT4eIYY8gWFt7IYAzCc=
+X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr9576270otc.206.1621616759559;
+ Fri, 21 May 2021 10:05:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <18964.1621616525.1@famine>
-Content-Transfer-Encoding: 8BIT
-Date:   Fri, 21 May 2021 10:02:05 -0700
-Message-ID: <18965.1621616525@famine>
+References: <20210517232312.GA43474@embeddedor>
+In-Reply-To: <20210517232312.GA43474@embeddedor>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 21 May 2021 19:05:48 +0200
+Message-ID: <CAJZ5v0ivxriijonzQP=8Z-ctHaFMYw4ro4DGMeBcExLv1RDnEw@mail.gmail.com>
+Subject: Re: [PATCH][next] ACPI: Fix fall-through warning for Clang
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jarod Wilson <jarod@redhat.com> wrote:
-
->Multicast traffic going out the non-primary interface can come back in
->through the primary interface in alb mode. When there's a bridge sitting
->on top of the bond, with virtual machines behind it, attached to vnetX
->interfaces also acting as bridge ports, this can cause problems. The
->looped frame has the source MAC of the VM behind the bridge, and ends up
->rewriting the bridge forwarding database entries, replacing a vnetX entry
->in the fdb with the bond instead, at which point, we lose traffic. If we
->don't tx balance multicast traffic, we don't break connectivity.
+On Tue, May 18, 2021 at 1:22 AM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
 >
->Cc: Jay Vosburgh <j.vosburgh@gmail.com>
->Cc: Veaceslav Falico <vfalico@gmail.com>
->Cc: Andy Gospodarek <andy@greyhouse.net>
->Cc: "David S. Miller" <davem@davemloft.net>
->Cc: Jakub Kicinski <kuba@kernel.org>
->Cc: Thomas Davis <tadavis@lbl.gov>
->Cc: netdev@vger.kernel.org
->Signed-off-by: Jarod Wilson <jarod@redhat.com>
-
-Acked-by: Jay Vosburgh <jay.vosburgh@canonical.com>
-
-
->---
-> drivers/net/bonding/bond_alb.c | 4 ++--
-> 1 file changed, 2 insertions(+), 2 deletions(-)
+> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
+> fallthrough warning by simply dropping the empty default case at
+> the bottom.
 >
->diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
->index c57f62e43328..cddc4d8b2519 100644
->--- a/drivers/net/bonding/bond_alb.c
->+++ b/drivers/net/bonding/bond_alb.c
->@@ -1418,7 +1418,7 @@ struct slave *bond_xmit_alb_slave_get(struct bonding *bond,
-> 	case ETH_P_IP: {
-> 		const struct iphdr *iph;
-> 
->-		if (is_broadcast_ether_addr(eth_data->h_dest) ||
->+		if (is_multicast_ether_addr(eth_data->h_dest) ||
-> 		    !pskb_network_may_pull(skb, sizeof(*iph))) {
-> 			do_tx_balance = false;
-> 			break;
->@@ -1438,7 +1438,7 @@ struct slave *bond_xmit_alb_slave_get(struct bonding *bond,
-> 		/* IPv6 doesn't really use broadcast mac address, but leave
-> 		 * that here just in case.
-> 		 */
->-		if (is_broadcast_ether_addr(eth_data->h_dest)) {
->+		if (is_multicast_ether_addr(eth_data->h_dest)) {
-> 			do_tx_balance = false;
-> 			break;
-> 		}
->-- 
->2.30.2
+> This contributes to the ongoing efforts to globally enable
+> -Wimplicit-fallthrough for Clang.
 >
+> Link: https://github.com/KSPP/linux/issues/115
+> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
+> Link: https://lore.kernel.org/lkml/CAJZ5v0hLYWKX__oZdcCY0D20pNqpw8SkiTPOCNOtpqe--QLp4Q@mail.gmail.com/
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  drivers/acpi/sbshc.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/acpi/sbshc.c b/drivers/acpi/sbshc.c
+> index 53c2862c4c75..5c021c3b81d9 100644
+> --- a/drivers/acpi/sbshc.c
+> +++ b/drivers/acpi/sbshc.c
+> @@ -231,7 +231,6 @@ static int smbus_alarm(void *context)
+>                 case ACPI_SBS_BATTERY:
+>                         acpi_os_execute(OSL_NOTIFY_HANDLER,
+>                                         acpi_smbus_callback, hc);
+> -               default:;
+>         }
+>         mutex_unlock(&hc->lock);
+>         return 0;
+> --
+
+Applied as 5.14 material, thanks!
