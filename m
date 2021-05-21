@@ -2,224 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFA138C959
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:40:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A8638C95C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235977AbhEUOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:41:23 -0400
-Received: from mga14.intel.com ([192.55.52.115]:45989 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233979AbhEUOlT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:41:19 -0400
-IronPort-SDR: Kvcyg0E7IbD6CTm6TmN7VBzKj4PIrtYhjrWy54Mz8CaqsIHyOkO5ihdP412UNZgeBk5KiZR6cA
- Y68rpPER2M8Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201207685"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="201207685"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 07:39:56 -0700
-IronPort-SDR: Flp03eSk5CPvBmnbK+6X9MZz0bCp72Rvp5SeupXtlGKA016CR0qhndu+3U/pTsZL9KTNKS+On+
- 1C6aWj5O86wQ==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="613271939"
-Received: from spattipa-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.212.113.231])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 07:39:55 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC v2-fix-v2 1/1] x86/boot: Add a trampoline for APs booting in 64-bit mode
-Date:   Fri, 21 May 2021 07:39:40 -0700
-Message-Id: <20210521143941.2528475-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <2977129b-c568-8ce5-9a85-31473096719f@linux.intel.com>
-References: <2977129b-c568-8ce5-9a85-31473096719f@linux.intel.com>
+        id S235524AbhEUOn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230336AbhEUOnZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 10:43:25 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24FCDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:42:01 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id f18so680344ejq.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:42:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J9SKo3NdGGBNovIrQCqMGuOHB6KkkTbrheBEMJXD0tM=;
+        b=erkxw1RrQ11ukOtS5y3enOxrVQWqCFSEhTWhvRZpHralUu9dmOLzlpFi+RDUjqGbP8
+         kqm84lzHdle7KSnSUpPVoHzSdZpuZDdyBt6outjt56jJvBTN8m31IjlKbwOLV4XlM+KD
+         7h2fIAc1gRm2faPrEwRKlaEOH2wR+WA9FhiTdfQ6wSD10/D3Ly5jvgjazXkH9AjDbTnM
+         ga+cs8q7gR7m7IPzxLbYUyN19vPa6PAyR88XAVh44gxXOqrVpL/JtygEjTh+QRKCkREu
+         AfW6TE5f8n/6CIIeQxQvhsaihhSCmze+9pNREoINpYMkyl6S0IL6GYmwXS1k+YzyzKxr
+         R+gw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=J9SKo3NdGGBNovIrQCqMGuOHB6KkkTbrheBEMJXD0tM=;
+        b=JZ7K2TkKDr5IyKp8JXXgk6+Gi0G+J4kFfOlK5XMFim5eNXSlbUA4bdMyM7G3G5cMFC
+         AAHdk3xLGpU+DdupD3CotcYBlwKiNLO1n5/+i3CcP013Zrc4cbhcQUuiPz92VgxacCaY
+         gRTqJxEd5px5iYPKAQmqFs0CwqUFCdCb83Zh0h4SWCTrulF1AR6iDRhvHGJHUCpE5Dmj
+         SoZXiuR3+8zLw/4YNKVquSkZEnHz/8q7zRaOLvgDTGWCwZfD0SttuLQxc7nMt8tjBQBb
+         EirG/DneXdpvNc0HwInXw3c4yR3ko1LZyO5Hx4JwAvz9TN2aXn0VZk/qSvmniDQTNtPX
+         IL/g==
+X-Gm-Message-State: AOAM532HCAtJc/G6ZX/7mfip1GwVc6IW0V/O3Uzmb/kobl0JycHJmeZX
+        21Nzh0H6xYceXeiu2YrUNKI=
+X-Google-Smtp-Source: ABdhPJy3GwopMX6WLD88OU2cJB+4XnpgJlTQanXQbXIFkP2XDHec7z0Dqseiqxm3tfvID0UzEOdyWg==
+X-Received: by 2002:a17:906:13db:: with SMTP id g27mr10795477ejc.88.1621608119699;
+        Fri, 21 May 2021 07:41:59 -0700 (PDT)
+Received: from agape ([109.52.244.91])
+        by smtp.gmail.com with ESMTPSA id dk21sm3672277ejb.54.2021.05.21.07.41.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 07:41:59 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] staging: rtl8723bs: moved contexts for arc4 encryption in struct security_priv
+Date:   Fri, 21 May 2021 16:41:58 +0200
+Message-Id: <20210521144158.2440-1-fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sean Christopherson <sean.j.christopherson@intel.com>
+moved struct arc4_ctx in struct security_priv to avoid stack allocation
+inside encryption routines.
 
-Add a trampoline for booting APs in 64-bit mode via a software handoff
-with BIOS, and use the new trampoline for the ACPI MP wake protocol used
-by TDX. You can find MADT MP wake protocol details in ACPI specification
-r6.4, sec 5.2.12.19.
+this has been done to fix the following 0-DAY issues:
 
-Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
-mode.  For the GDT pointer, create a new entry as the existing storage
-for the pointer occupies the zero entry in the GDT itself.
+>> drivers/staging/rtl8723bs/core/rtw_security.c:89:6: warning:
+stack frame size of 1120 bytes in function 'rtw_wep_encrypt'
+[-Wframe-$
+   void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+        ^
+>> drivers/staging/rtl8723bs/core/rtw_security.c:145:6:
+warning: stack frame size of 1088 bytes in function 'rtw_wep_decrypt'
+[-Wframe$
+   void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+        ^
+>> drivers/staging/rtl8723bs/core/rtw_security.c:514:5:
+warning: stack frame size of 1136 bytes in function 'rtw_tkip_encrypt'
+[-Wfram$
+   u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+       ^
+>> drivers/staging/rtl8723bs/core/rtw_security.c:586:5:
+warning: stack frame size of 1104 bytes in function 'rtw_tkip_decrypt'
+[-Wfram$
+   u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+       ^
 
-Reported-by: Kai Huang <kai.huang@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
+ drivers/staging/rtl8723bs/core/rtw_security.c | 41 +++++++++----------
+ .../staging/rtl8723bs/include/rtw_security.h  |  3 ++
+ 2 files changed, 23 insertions(+), 21 deletions(-)
 
-Changes since RFC v2-fix:
- * Passed rmh as argument to get_trampoline_start_ip().
- * Added a comment line for get_trampoline_start_ip().
- * Moved X86_CR0_NE change from pa_trampoline_compat() to patch
-   "x86/boot: Avoid #VE during boot for TDX platforms".
- * Fixed comments for tr_idt as per Dan's comments.
- * Moved TRAMPOLINE_32BIT_CODE_SIZE change to "x86/boot: Avoid #VE
-   during boot for TDX platforms" patch.
-
- arch/x86/include/asm/realmode.h          | 11 +++++++
- arch/x86/kernel/smpboot.c                |  2 +-
- arch/x86/realmode/rm/header.S            |  1 +
- arch/x86/realmode/rm/trampoline_64.S     | 38 ++++++++++++++++++++++++
- arch/x86/realmode/rm/trampoline_common.S | 12 +++++++-
- 5 files changed, 62 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/realmode.h b/arch/x86/include/asm/realmode.h
-index 5db5d083c873..0f707521b797 100644
---- a/arch/x86/include/asm/realmode.h
-+++ b/arch/x86/include/asm/realmode.h
-@@ -25,6 +25,7 @@ struct real_mode_header {
- 	u32	sev_es_trampoline_start;
- #endif
- #ifdef CONFIG_X86_64
-+	u32	trampoline_start64;
- 	u32	trampoline_pgd;
- #endif
- 	/* ACPI S3 wakeup */
-@@ -88,6 +89,16 @@ static inline void set_real_mode_mem(phys_addr_t mem)
- 	real_mode_header = (struct real_mode_header *) __va(mem);
- }
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index 5ff8926c1865..a99f439328f1 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -8,7 +8,6 @@
+ #include <drv_types.h>
+ #include <rtw_debug.h>
+ #include <crypto/aes.h>
+-#include <crypto/arc4.h>
  
-+/* Common helper function to get start IP address */
-+static inline unsigned long get_trampoline_start_ip(struct real_mode_header *rmh)
-+{
-+#ifdef CONFIG_X86_64
-+	if (is_tdx_guest())
-+		return rmh->trampoline_start64;
-+#endif
-+	return rmh->trampoline_start;
-+}
-+
- void reserve_real_mode(void);
+ static const char * const _security_type_str[] = {
+ 	"N/A",
+@@ -38,7 +37,6 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ {																	/*  exclude ICV */
  
- #endif /* __ASSEMBLY__ */
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 16703c35a944..659e8d011fe6 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1031,7 +1031,7 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle,
- 		       int *cpu0_nmi_registered)
+ 	unsigned char crc[4];
+-	struct arc4_ctx	mycontext;
+ 
+ 	signed int	curfragnum, length;
+ 	u32 keylength;
+@@ -49,6 +47,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 	struct pkt_attrib *pattrib = &((struct xmit_frame *)pxmitframe)->attrib;
+ 	struct security_priv *psecuritypriv = &padapter->securitypriv;
+ 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
++	struct arc4_ctx *ctx = &psecuritypriv->xmit_arc4_ctx;
+ 
+ 	if (((struct xmit_frame *)pxmitframe)->buf_addr == NULL)
+ 		return;
+@@ -72,16 +71,16 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 
+ 				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
+ 
+-				arc4_setkey(&mycontext, wepkey, 3 + keylength);
+-				arc4_crypt(&mycontext, payload, payload, length);
+-				arc4_crypt(&mycontext, payload + length, crc, 4);
++				arc4_setkey(ctx, wepkey, 3 + keylength);
++				arc4_crypt(ctx, payload, payload, length);
++				arc4_crypt(ctx, payload + length, crc, 4);
+ 
+ 			} else {
+ 				length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+ 				*((__le32 *)crc) = ~crc32_le(~0, payload, length);
+-				arc4_setkey(&mycontext, wepkey, 3 + keylength);
+-				arc4_crypt(&mycontext, payload, payload, length);
+-				arc4_crypt(&mycontext, payload + length, crc, 4);
++				arc4_setkey(ctx, wepkey, 3 + keylength);
++				arc4_crypt(ctx, payload, payload, length);
++				arc4_crypt(ctx, payload + length, crc, 4);
+ 
+ 				pframe += pxmitpriv->frag_len;
+ 				pframe = (u8 *)round_up((SIZE_PTR)(pframe), 4);
+@@ -94,13 +93,13 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
  {
- 	/* start_ip had better be page-aligned! */
--	unsigned long start_ip = real_mode_header->trampoline_start;
-+	unsigned long start_ip = get_trampoline_start_ip(real_mode_header);
+ 	/*  exclude ICV */
+ 	u8 crc[4];
+-	struct arc4_ctx	 mycontext;
+ 	signed int	length;
+ 	u32 keylength;
+ 	u8 *pframe, *payload, *iv, wepkey[16];
+ 	u8  keyindex;
+ 	struct	rx_pkt_attrib	 *prxattrib = &(((union recv_frame *)precvframe)->u.hdr.attrib);
+ 	struct	security_priv *psecuritypriv = &padapter->securitypriv;
++	struct arc4_ctx *ctx = &psecuritypriv->recv_arc4_ctx;
  
- 	unsigned long boot_error = 0;
- 	unsigned long timeout;
-diff --git a/arch/x86/realmode/rm/header.S b/arch/x86/realmode/rm/header.S
-index 8c1db5bf5d78..2eb62be6d256 100644
---- a/arch/x86/realmode/rm/header.S
-+++ b/arch/x86/realmode/rm/header.S
-@@ -24,6 +24,7 @@ SYM_DATA_START(real_mode_header)
- 	.long	pa_sev_es_trampoline_start
- #endif
- #ifdef CONFIG_X86_64
-+	.long	pa_trampoline_start64
- 	.long	pa_trampoline_pgd;
- #endif
- 	/* ACPI S3 wakeup */
-diff --git a/arch/x86/realmode/rm/trampoline_64.S b/arch/x86/realmode/rm/trampoline_64.S
-index 84c5d1b33d10..957bb21ce105 100644
---- a/arch/x86/realmode/rm/trampoline_64.S
-+++ b/arch/x86/realmode/rm/trampoline_64.S
-@@ -161,6 +161,19 @@ SYM_CODE_START(startup_32)
- 	ljmpl	$__KERNEL_CS, $pa_startup_64
- SYM_CODE_END(startup_32)
+ 	pframe = (unsigned char *)((union recv_frame *)precvframe)->u.hdr.rx_data;
  
-+SYM_CODE_START(pa_trampoline_compat)
-+	/*
-+	 * In compatibility mode.  Prep ESP and DX for startup_32, then disable
-+	 * paging and complete the switch to legacy 32-bit mode.
-+	 */
-+	movl	$rm_stack_end, %esp
-+	movw	$__KERNEL_DS, %dx
-+
-+	movl	$X86_CR0_PE, %eax
-+	movl	%eax, %cr0
-+	ljmpl   $__KERNEL32_CS, $pa_startup_32
-+SYM_CODE_END(pa_trampoline_compat)
-+
- 	.section ".text64","ax"
- 	.code64
- 	.balign 4
-@@ -169,6 +182,20 @@ SYM_CODE_START(startup_64)
- 	jmpq	*tr_start(%rip)
- SYM_CODE_END(startup_64)
+@@ -118,8 +117,8 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
+ 		payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
  
-+SYM_CODE_START(trampoline_start64)
-+	/*
-+	 * APs start here on a direct transfer from 64-bit BIOS with identity
-+	 * mapped page tables.  Load the kernel's GDT in order to gear down to
-+	 * 32-bit mode (to handle 4-level vs. 5-level paging), and to (re)load
-+	 * segment registers.  Load the zero IDT so any fault triggers a
-+	 * shutdown instead of jumping back into BIOS.
-+	 */
-+	lidt	tr_idt(%rip)
-+	lgdt	tr_gdt64(%rip)
-+
-+	ljmpl	*tr_compat(%rip)
-+SYM_CODE_END(trampoline_start64)
-+
- 	.section ".rodata","a"
- 	# Duplicate the global descriptor table
- 	# so the kernel can live anywhere
-@@ -182,6 +209,17 @@ SYM_DATA_START(tr_gdt)
- 	.quad	0x00cf93000000ffff	# __KERNEL_DS
- SYM_DATA_END_LABEL(tr_gdt, SYM_L_LOCAL, tr_gdt_end)
+ 		/* decrypt payload include icv */
+-		arc4_setkey(&mycontext, wepkey, 3 + keylength);
+-		arc4_crypt(&mycontext, payload, payload,  length);
++		arc4_setkey(ctx, wepkey, 3 + keylength);
++		arc4_crypt(ctx, payload, payload,  length);
  
-+SYM_DATA_START(tr_gdt64)
-+	.short	tr_gdt_end - tr_gdt - 1	# gdt limit
-+	.long	pa_tr_gdt
-+	.long	0
-+SYM_DATA_END(tr_gdt64)
-+
-+SYM_DATA_START(tr_compat)
-+	.long	pa_trampoline_compat
-+	.short	__KERNEL32_CS
-+SYM_DATA_END(tr_compat)
-+
- 	.bss
- 	.balign	PAGE_SIZE
- SYM_DATA(trampoline_pgd, .space PAGE_SIZE)
-diff --git a/arch/x86/realmode/rm/trampoline_common.S b/arch/x86/realmode/rm/trampoline_common.S
-index 5033e640f957..4331c32c47f8 100644
---- a/arch/x86/realmode/rm/trampoline_common.S
-+++ b/arch/x86/realmode/rm/trampoline_common.S
-@@ -1,4 +1,14 @@
- /* SPDX-License-Identifier: GPL-2.0 */
- 	.section ".rodata","a"
- 	.balign	16
--SYM_DATA_LOCAL(tr_idt, .fill 1, 6, 0)
-+
-+/*
-+ * When a bootloader hands off to the kernel in 32-bit mode an
-+ * IDT with a 2-byte limit and 4-byte base is needed. When a boot
-+ * loader hands off to a kernel 64-bit mode the base address
-+ * extends to 8-bytes. Reserve enough space for either scenario.
-+ */
-+SYM_DATA_START_LOCAL(tr_idt)
-+	.short  0
-+	.quad   0
-+SYM_DATA_END(tr_idt)
+ 		/* calculate icv and compare the icv */
+ 		*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
+@@ -467,7 +466,6 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 	u8   ttkey[16];
+ 	u8 crc[4];
+ 	u8   hw_hdr_offset = 0;
+-	struct arc4_ctx mycontext;
+ 	signed int			curfragnum, length;
+ 
+ 	u8 *pframe, *payload, *iv, *prwskey;
+@@ -475,6 +473,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 	struct pkt_attrib *pattrib = &((struct xmit_frame *)pxmitframe)->attrib;
+ 	struct security_priv *psecuritypriv = &padapter->securitypriv;
+ 	struct xmit_priv *pxmitpriv = &padapter->xmitpriv;
++	struct arc4_ctx *ctx = &psecuritypriv->xmit_arc4_ctx;
+ 	u32 res = _SUCCESS;
+ 
+ 	if (((struct xmit_frame *)pxmitframe)->buf_addr == NULL)
+@@ -509,17 +508,17 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
+ 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+ 					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
+ 
+-					arc4_setkey(&mycontext, rc4key, 16);
+-					arc4_crypt(&mycontext, payload, payload, length);
+-					arc4_crypt(&mycontext, payload + length, crc, 4);
++					arc4_setkey(ctx, rc4key, 16);
++					arc4_crypt(ctx, payload, payload, length);
++					arc4_crypt(ctx, payload + length, crc, 4);
+ 
+ 				} else {
+ 					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
+ 					*((__le32 *)crc) = ~crc32_le(~0, payload, length);
+ 
+-					arc4_setkey(&mycontext, rc4key, 16);
+-					arc4_crypt(&mycontext, payload, payload, length);
+-					arc4_crypt(&mycontext, payload + length, crc, 4);
++					arc4_setkey(ctx, rc4key, 16);
++					arc4_crypt(ctx, payload, payload, length);
++					arc4_crypt(ctx, payload + length, crc, 4);
+ 
+ 					pframe += pxmitpriv->frag_len;
+ 					pframe = (u8 *)round_up((SIZE_PTR)(pframe), 4);
+@@ -539,7 +538,6 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+ 	u8   rc4key[16];
+ 	u8   ttkey[16];
+ 	u8 crc[4];
+-	struct arc4_ctx mycontext;
+ 	signed int			length;
+ 
+ 	u8 *pframe, *payload, *iv, *prwskey;
+@@ -547,6 +545,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+ 	struct sta_info *stainfo;
+ 	struct rx_pkt_attrib *prxattrib = &((union recv_frame *)precvframe)->u.hdr.attrib;
+ 	struct security_priv *psecuritypriv = &padapter->securitypriv;
++	struct arc4_ctx *ctx = &psecuritypriv->recv_arc4_ctx;
+ 	u32 res = _SUCCESS;
+ 
+ 	pframe = (unsigned char *)((union recv_frame *)precvframe)->u.hdr.rx_data;
+@@ -616,8 +615,8 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
+ 
+ 			/* 4 decrypt payload include icv */
+ 
+-			arc4_setkey(&mycontext, rc4key, 16);
+-			arc4_crypt(&mycontext, payload, payload, length);
++			arc4_setkey(ctx, rc4key, 16);
++			arc4_crypt(ctx, payload, payload, length);
+ 
+ 			*((u32 *)crc) = le32_to_cpu(~crc32_le(~0, payload, length - 4));
+ 
+diff --git a/drivers/staging/rtl8723bs/include/rtw_security.h b/drivers/staging/rtl8723bs/include/rtw_security.h
+index 83b711c5df0b..a68b73858462 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_security.h
++++ b/drivers/staging/rtl8723bs/include/rtw_security.h
+@@ -7,6 +7,7 @@
+ #ifndef __RTW_SECURITY_H_
+ #define __RTW_SECURITY_H_
+ 
++#include <crypto/arc4.h>
+ 
+ #define _NO_PRIVACY_		0x0
+ #define _WEP40_				0x1
+@@ -127,6 +128,8 @@ struct security_priv {
+ 	u8 wps_ie[MAX_WPS_IE_LEN];/* added in assoc req */
+ 	int wps_ie_len;
+ 
++	struct arc4_ctx xmit_arc4_ctx;
++	struct arc4_ctx recv_arc4_ctx;
+ 
+ 	u8 binstallGrpkey;
+ 	u8 binstallBIPkey;
 -- 
-2.25.1
+2.20.1
 
