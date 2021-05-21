@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB7F38C619
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:56:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06DFF38C628
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:02:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234581AbhEUL6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:58:19 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5655 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230280AbhEUL6J (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:58:09 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmlPc3N9Fz1BPR7;
-        Fri, 21 May 2021 19:53:56 +0800 (CST)
-Received: from dggema762-chm.china.huawei.com (10.1.198.204) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 19:56:44 +0800
-Received: from huawei.com (10.175.127.227) by dggema762-chm.china.huawei.com
- (10.1.198.204) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
- May 2021 19:56:43 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <laforge@gnumonks.org>, <arnd@arndb.de>,
-        <gregkh@linuxfoundation.org>, <akpm@osdl.org>
-CC:     <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH V2] char: pcmcia: error out if 'num_bytes_read' is greater than 4 in set_protocol()
-Date:   Fri, 21 May 2021 20:06:17 +0800
-Message-ID: <20210521120617.138396-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <YKecuUjrQRAmBnss@kroah.com>
-References: <YKecuUjrQRAmBnss@kroah.com>
+        id S233689AbhEUMEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:04:04 -0400
+Received: from mga12.intel.com ([192.55.52.136]:33813 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229512AbhEUMEA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:04:00 -0400
+IronPort-SDR: X/buWrz5u4i3jCj29A2ch7GP900Z9J2JB6Nlwm6QSS84JuswF3CEB9JetDbz7Ryh4VBc2KMl8S
+ LQoGBzURDG4Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="181078792"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="181078792"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 05:02:15 -0700
+IronPort-SDR: KV+7S5Plh5E5Qs4JvsHLaF2a4JpNQYVNUTBaLNLl557BLxepRNe+zNWuORARXlRfrW6cbbgPIz
+ LauFKMTKn2xA==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="474496344"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 05:02:13 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lk3r1-00Dhc5-6S; Fri, 21 May 2021 15:02:11 +0300
+Date:   Fri, 21 May 2021 15:02:11 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc:     linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v1 1/1] kernel.h: split out panic and oops helpers (ia64
+ fix)
+Message-ID: <YKehQyAn7rgXL9Bb@smile.fi.intel.com>
+References: <20210520130557.55277-1-andriy.shevchenko@linux.intel.com>
+ <f2420178-53d7-a1e4-eea7-5e1773835411@physik.fu-berlin.de>
+ <YKZhcKqomWxH3eph@smile.fi.intel.com>
+ <41bbace7-1b09-8464-a082-e4152f07fdb4@physik.fu-berlin.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema762-chm.china.huawei.com (10.1.198.204)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <41bbace7-1b09-8464-a082-e4152f07fdb4@physik.fu-berlin.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Theoretically, it will cause index out of bounds error if
-'num_bytes_read' is greater than 4. As we expect it(and was tested)
-never to be greater than 4, error out if it happens.
+On Fri, May 21, 2021 at 09:24:08AM +0200, John Paul Adrian Glaubitz wrote:
+> On 5/20/21 3:17 PM, Andy Shevchenko wrote:
+> > On Thu, May 20, 2021 at 03:12:24PM +0200, John Paul Adrian Glaubitz wrote:
+> >> On 5/20/21 3:05 PM, Andy Shevchenko wrote:
+> >>> Note, this patch is untested. I have no ia64 compiler at hand.
+> > 
+> >> I can test it later today.
+> > 
+> > Appreciate it, thanks!
+> > 
+> > This is against Linux Next (where Andrew's patches are sitting for a while).
+> 
+> I just pulled linux-next and was able to build a kernel for my RX-2600 without any
+> problems. Since your patch is already in the tree, I assume it's correct.
+> 
+> Do you want me to test anything else? I can test-boot the kernel later, but I want
+> to avoid that now since I don't want to turn on the noisy server while at home :-)
 
-Fixes: c1986ee9bea3 ("[PATCH] New Omnikey Cardman 4000 driver")
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
----
- drivers/char/pcmcia/cm4000_cs.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Nothing is required anymore, thanks for your help with testing!
 
-diff --git a/drivers/char/pcmcia/cm4000_cs.c b/drivers/char/pcmcia/cm4000_cs.c
-index 89681f07bc78..9468e9520cee 100644
---- a/drivers/char/pcmcia/cm4000_cs.c
-+++ b/drivers/char/pcmcia/cm4000_cs.c
-@@ -544,6 +544,10 @@ static int set_protocol(struct cm4000_dev *dev, struct ptsreq *ptsreq)
- 		io_read_num_rec_bytes(iobase, &num_bytes_read);
- 		if (num_bytes_read >= 4) {
- 			DEBUGP(2, dev, "NumRecBytes = %i\n", num_bytes_read);
-+			if (num_bytes_read > 4) {
-+				rc = -EIO;
-+				goto exit_setprotocol;
-+			}
- 			break;
- 		}
- 		usleep_range(10000, 11000);
 -- 
-2.25.4
+With Best Regards,
+Andy Shevchenko
+
 
