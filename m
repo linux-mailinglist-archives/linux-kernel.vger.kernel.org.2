@@ -2,206 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1437138BDB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0722A38BDBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239369AbhEUFIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:08:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55496 "EHLO
+        id S239396AbhEUFJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238873AbhEUFIE (ORCPT
+        with ESMTP id S239361AbhEUFJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:08:04 -0400
-Received: from mail-oo1-xc29.google.com (mail-oo1-xc29.google.com [IPv6:2607:f8b0:4864:20::c29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E782C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:06:42 -0700 (PDT)
-Received: by mail-oo1-xc29.google.com with SMTP id v13-20020a4aa40d0000b02902052145a469so4318085ool.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:06:42 -0700 (PDT)
+        Fri, 21 May 2021 01:09:57 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40751C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:08:35 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id et19so21567796ejc.4
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:08:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=s+VuTlZeIH9o28vK8h9TdUYDVV++CmHp4RflpswR/6E=;
-        b=NPSQFL2WVD8VlBGL5MZ1DCIGCJXNfmnRQUdbWcSRoGqjhIAMMzj6G4gUmKeJH74EWD
-         zNvQWqUtywM7js7hYzUZ99reYPH8Endr8EJR2Lb2Hhulz4qlopgnAT/7j8TTnu77q/YP
-         bDOeMpjHaRN7EHz5T8DTifvMQfR3C/n+lMa2Io5inus4cHxUmsGRNrOWJlIeYpdzmDrd
-         YA63NQeweCZzIx668dZXOOVXxKZCz6RZQ+3R5pRvTWr4XHxMQE8EZ5XHMPMfI/qHmfDd
-         TOdZ4CsC2UL1erjQ2RdMAdW26kW7ZhvdwIkQNnvO5UQwdIamhV8FdLsUffzpMNGCLrGR
-         EVpg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=wcL2zERN8tGWMzDUDJGSV7xck7rOdmcSxv4uw0QgULY=;
+        b=oB6zwNfe3OE3SJcJ4TBVcb34PoQGBTFt0sd98nCU+uVHRmcEpF//Pm5xnGI0tXSfCS
+         /80qS2/mYmUVB6kXxygWMJVx4T/p2EgGSARC6Vhkr3pXOZhaeGW1AY0VQd5rHniItve5
+         nD4I9Ysz+iFWACyJh2L6b5jahM6/rOEz/P7k8VETY97ul+n3mm1HArgpGTdU+xX0ACtC
+         ZR8FnDZHmhzhAS3fAQXNth2MsgnSrOqyx1vrWZjI3u7F4G+6CKWQlF9KHuR9bV0/WVj+
+         YADwq6rtB1Xucfh/MBe+Ynu5wgFJFuHNz0ZcVdCsz9Wmt3yGaAD9Yfn85iZemSI/5jib
+         Gekw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=s+VuTlZeIH9o28vK8h9TdUYDVV++CmHp4RflpswR/6E=;
-        b=YBjPUncg4r7G6tYgeIJ/P8C6KO87OaVVV2slIKDnceB7o6piB9Y7o1yKasPAnqM0Q1
-         rdo87bgBRUAfRAz6K4l//1+vAXlD3+sULMcH7xtmJddUOX49K0QUwigmbG+mcNDbII2e
-         eNbDxMHZ3hn0RLlxKAsgLRO4H27mS3l7WdICN0lxrLQ0q3JrEXB8QCaSJpzBYfKdrCQX
-         WZrPoulHWzD7bbXqSISEKmL/WU4nvSWv1SP3Lf1QxC3uQyYK9zPpTpDv78FZn/AIHPVW
-         mnv/If2CW4j7nD6ysFlEsHvu+1vZzsINGRu0JsvSTVDOgmA/eaGwssmHGWjn+bqW6N37
-         XSRg==
-X-Gm-Message-State: AOAM5322s7BVksGorh6THjMnWHQ4Xgjlziakj0vmIEWDw5LHpA+ZnFa7
-        kiPVXBkuIarKeRxkg66FQEhg+w==
-X-Google-Smtp-Source: ABdhPJwAkuQMTYRc+nOSsO4fKCKFlpc6ELjC3Fq4YKhgX//o3ZesTZrDZSDGGLy9EDXWaE/yrzCX2A==
-X-Received: by 2002:a4a:d41a:: with SMTP id n26mr6689565oos.66.1621573601095;
-        Thu, 20 May 2021 22:06:41 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w10sm1028951ott.75.2021.05.20.22.06.40
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 20 May 2021 22:06:40 -0700 (PDT)
-Date:   Thu, 20 May 2021 22:06:29 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Yang Shi <shy828301@gmail.com>
-cc:     ziy@nvidia.com, kirill.shutemov@linux.intel.com,
-        wangyugui@e16-tech.com, hughd@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [v2 PATCH] mm: thp: check total_mapcount instead of
- page_mapcount
-In-Reply-To: <20210513212334.217424-1-shy828301@gmail.com>
-Message-ID: <alpine.LSU.2.11.2105202120220.6466@eggly.anvils>
-References: <20210513212334.217424-1-shy828301@gmail.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=wcL2zERN8tGWMzDUDJGSV7xck7rOdmcSxv4uw0QgULY=;
+        b=BQxnqI78D7qWKk4AvRJyqeQf4X1CkUMpwCWoiGoUsra8AW5bQb492r0z9/vXZIRzqx
+         SnI+2g1pUskSovtRs2jMc48PP4jciYMXW8BE+bCcechK19usAfUVSfJF3cLT6PDwMGsM
+         +1nBEerExrQ9UuxrFd3kawdH/nAszEkGPKAZjYhu1oYT5GtfHz7z0mx8+UwJnwCLmwSj
+         Tmg9Is7hzZHwO7nDPKLzSUDyrqNVLxOC2tA/lpEuVd0satIEFC4UqNjt3dCC2oEiptro
+         mtVdVFj3aJFINKwXIffnj7rKF8Ju7gKsNeTYG/Vrn9McU9mqBrRxbOS2LgL6OXn2B/0n
+         71Mg==
+X-Gm-Message-State: AOAM531lGb2d7WsA4fNijOGg8nTefUwv4z1D/6J5vFV4LIkOUO9K24bw
+        sshzBWruY+N69IbtYfiB+1yUYAVciOAqqGHp8UHfJ0WLiKU6rVXB
+X-Google-Smtp-Source: ABdhPJxCC9P62cbJBI32to41/EZ3fyxk1WOsfbAC/srj+y+t5/HfQWHxPidlHSTsk6fia8EWpkQM5Tywo4ejGJ0hUEw=
+X-Received: by 2002:a17:907:37b:: with SMTP id rs27mr8669826ejb.287.1621573713465;
+ Thu, 20 May 2021 22:08:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20210520152240.517446848@linuxfoundation.org>
+In-Reply-To: <20210520152240.517446848@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 May 2021 10:38:22 +0530
+Message-ID: <CA+G9fYvg7MLGLX2koUv4uemL4WCoomQKixBVj45st7841ToeNw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/45] 5.10.39-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021, Yang Shi wrote:
+On Thu, 20 May 2021 at 20:53, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.39 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 22 May 2021 15:22:29 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.39-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-> When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
-> return false positive for PTE-mapped THP since page_mapcount() is used
-> to check if the THP is unmapped, but it just checks compound mapount and
-> head page's mapcount.  If the THP is PTE-mapped and head page is not
-> mapped, it may return false positive.
-> 
-> Use total_mapcount() instead of page_mapcount() for try_to_unmap() and
-> do so for the VM_BUG_ON_PAGE in split_huge_page_to_list as well.
-> 
-> This changed the semantic of try_to_unmap(), but I don't see there is
-> any usecase that expects try_to_unmap() just unmap one subpage of a huge
-> page.  So using page_mapcount() seems like a bug.
-> 
-> [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I don't object to this patch, I've no reason to NAK it; but I'll
-point out a few deficiencies which might make you want to revisit it.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> ---
-> v2: Removed dead code and updated the comment of try_to_unmap() per Zi
->     Yan.
-> 
->  mm/huge_memory.c | 11 +----------
->  mm/rmap.c        | 10 ++++++----
->  2 files changed, 7 insertions(+), 14 deletions(-)
-> 
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 63ed6b25deaa..3b08b9ba1578 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2348,7 +2348,6 @@ static void unmap_page(struct page *page)
->  		ttu_flags |= TTU_SPLIT_FREEZE;
->  
->  	unmap_success = try_to_unmap(page, ttu_flags);
-> -	VM_BUG_ON_PAGE(!unmap_success, page);
+## Build
+* kernel: 5.10.39-rc2
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: 4313768a0a3ef0847c2ca31ca95acbe4727fba10
+* git describe: v5.10.38-46-g4313768a0a3e
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.38-46-g4313768a0a3e
 
-The unused variable unmap_success has already been reported and
-dealt with.  But I couldn't tell what you intended: why change
-try_to_unmap()'s output, if you then ignore it?
+## No regressions (compared to v5.10.38-48-ge244ebb2de00)
 
->  }
->  
->  static void remap_page(struct page *page, unsigned int nr)
-> @@ -2718,7 +2717,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  	}
->  
->  	unmap_page(head);
-> -	VM_BUG_ON_PAGE(compound_mapcount(head), head);
-> +	VM_BUG_ON_PAGE(total_mapcount(head), head);
+## No fixes (compared to v5.10.38-48-ge244ebb2de00)
 
-And having forced try_to_unmap() to do the expensive-on-a-THP
-total_mapcount() calculation, you now repeat it here.  Better
-to stick with the previous VM_BUG_ON_PAGE(!unmap_success).
+## Test result summary
+ total: 78427, pass: 64145, fail: 2569, skip: 11054, xfail: 659,
 
-Or better a VM_WARN_ONCE(), accompanied by dump_page()s as before,
-to get some perhaps useful info out, which this patch has deleted.
-Probably better inside unmap_page() than cluttering up here.
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
 
-VM_WARN_ONCE() because nothing in this patch fixes whatever Wang
-Yugui is suffering from; and (aside from the BUG()) it's harmless,
-because there are other ways in which the page_ref_freeze() can fail,
-and that is allowed for.  We would like to know when this problem
-occurs: there is something wrong, but no reason to crash.
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
->  
->  	/* block interrupt reentry in xa_lock and spinlock */
->  	local_irq_disable();
-> @@ -2758,14 +2757,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  		__split_huge_page(page, list, end);
->  		ret = 0;
->  	} else {
-> -		if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
-> -			pr_alert("total_mapcount: %u, page_count(): %u\n",
-> -					mapcount, count);
-> -			if (PageTail(page))
-> -				dump_page(head, NULL);
-> -			dump_page(page, "total_mapcount(head) > 0");
-> -			BUG();
-> -		}
-
-This has always looked ugly (as if Kirill had hit an unsolved case),
-so it is nice to remove it; but you're losing the dump_page() info,
-and not really gaining anything more than a cosmetic cleanup.
-
->  		spin_unlock(&ds_queue->split_queue_lock);
->  fail:		if (mapping)
->  			xa_unlock(&mapping->i_pages);
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index 693a610e181d..f52825b1330d 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1742,12 +1742,14 @@ static int page_not_mapped(struct page *page)
->  }
->  
->  /**
-> - * try_to_unmap - try to remove all page table mappings to a page
-> - * @page: the page to get unmapped
-> + * try_to_unmap - try to remove all page table mappings to a page and the
-> + *                compound page it belongs to
-> + * @page: the page or the subpages of compound page to get unmapped
->   * @flags: action and flags
->   *
->   * Tries to remove all the page table entries which are mapping this
-> - * page, used in the pageout path.  Caller must hold the page lock.
-> + * page and the compound page it belongs to, used in the pageout path.
-> + * Caller must hold the page lock.
->   *
->   * If unmap is successful, return true. Otherwise, false.
->   */
-> @@ -1777,7 +1779,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
->  	else
->  		rmap_walk(page, &rwc);
->  
-> -	return !page_mapcount(page) ? true : false;
-> +	return !total_mapcount(page) ? true : false;
-
-That always made me wince: "return !total_mapcount(page);" surely.
-
-Or slightly better, "return !page_mapped(page);", since at least that
-one breaks out as soon as it sees a mapcount.  Though I guess I'm
-being silly there, since that case should never occur, so both
-total_mapcount() and page_mapped() scan through all pages.
-
-Or better, change try_to_unmap() to void: most callers ignore its
-return value anyway, and make their own decisions; the remaining
-few could be changed to do the same.  Though again, I may be
-being silly, since the expensive THP case is not the common case.
-
->  }
->  
->  /**
-> -- 
-> 2.26.2
+--
+Linaro LKFT
+https://lkft.linaro.org
