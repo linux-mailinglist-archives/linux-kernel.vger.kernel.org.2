@@ -2,63 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3BC38CCF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4A2238CCD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:01:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238627AbhEUSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:09:59 -0400
-Received: from 13.mo3.mail-out.ovh.net ([188.165.33.202]:46518 "EHLO
-        13.mo3.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238624AbhEUSJ5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:09:57 -0400
-X-Greylist: delayed 917 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 May 2021 14:09:57 EDT
-Received: from player726.ha.ovh.net (unknown [10.108.4.183])
-        by mo3.mail-out.ovh.net (Postfix) with ESMTP id 4F05728B54E
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:53:16 +0200 (CEST)
-Received: from milecki.pl (apn-37-248-218-55.dynamic.gprs.plus.pl [37.248.218.55])
-        (Authenticated sender: rafal@milecki.pl)
-        by player726.ha.ovh.net (Postfix) with ESMTPSA id CB0301E50B410;
-        Fri, 21 May 2021 17:53:05 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-98R002b7378bfe-4074-4308-8238-a0549ece8f55,
-                    4CBC7BFF0D712EF435A3407F9D93963C24D256AC) smtp.auth=rafal@milecki.pl
-X-OVh-ClientIp: 37.248.218.55
-Subject: Re: [PATCH net] net: dsa: bcm_sf2: Fix bcm_sf2_reg_rgmii_cntrl() call
- for non-RGMII port
-To:     Florian Fainelli <f.fainelli@gmail.com>, netdev@vger.kernel.org
-Cc:     zajec5@gmail.com, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20210521174614.2535824-1-f.fainelli@gmail.com>
-From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Message-ID: <e972abcb-54ef-19fa-d7a8-f7b98eeaa4bc@milecki.pl>
-Date:   Fri, 21 May 2021 19:53:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.1
+        id S237988AbhEUSCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232931AbhEUSCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:02:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1129461004;
+        Fri, 21 May 2021 18:01:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621620088;
+        bh=I1mPSruZJKQMN8Q9puFaJiMHWUrjaOtRwC2UztdGKwE=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=dwu3rnHipJmAWYZyEDTLrK3sYp4T7XLhXIa3lb21Aef+4TTUrNDMLkXooWk9medC4
+         b3xKxAAGxqE/botcquDFf77EBUZgl7enSHZtdkbn+r6mQJJf+xu5yLKDCc487nHv7F
+         hN0L/xE+0icaGOsWH+g1cOV9yxqjtESHKH0M/yWX3ANEpDlbWadulH3miQRb12lFk+
+         InyrUpuHNZuVRipt2MVnJ35tEPBfFyGlSl9WI/HUS7vHLcpLK1nOhoJpfuoHE6/1Uy
+         BYPeIpEH6otyhT0XA+hxhiHYb92BtE91gteaePElc0cF/7NXW0SxCQJeKRqsEZW9Lp
+         R/78csACn40CA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id E2C2D5C018D; Fri, 21 May 2021 11:01:27 -0700 (PDT)
+Date:   Fri, 21 May 2021 11:01:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
+Message-ID: <20210521180127.GD4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210521155624.174524-1-senozhatsky@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <20210521174614.2535824-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 17549401848744807959
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdejfedguddukecutefuodetggdotefrodftvfcurfhrohhfihhlvgemucfqggfjpdevjffgvefmvefgnecuuegrihhlohhuthemucehtddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpeftrghfrghlucfoihhlvggtkhhiuceorhgrfhgrlhesmhhilhgvtghkihdrphhlqeenucggtffrrghtthgvrhhnpeekudehjeehffdufefhgffhgeejjeelteekveeuleevgeekhffhffeiheellefgveenucfkpheptddrtddrtddrtddpfeejrddvgeekrddvudekrdehheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejvdeirdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521155624.174524-1-senozhatsky@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.05.2021 19:46, Florian Fainelli wrote:
-> We cannot call bcm_sf2_reg_rgmii_cntrl() for a port that is not RGMII,
-> yet we do that in bcm_sf2_sw_mac_link_up() irrespective of the port's
-> interface. Move that read until we have properly qualified the PHY
-> interface mode. This avoids triggering a warning on 7278 platforms that
-> have GMII ports.
+On Sat, May 22, 2021 at 12:56:23AM +0900, Sergey Senozhatsky wrote:
+> Soft watchdog timer function checks if a virtual machine
+> was suspended and hence what looks like a lockup in fact
+> is a false positive.
 > 
-> Fixes: 55cfeb396965 ("net: dsa: bcm_sf2: add function finding RGMII register")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> This is what kvm_check_and_clear_guest_paused() does: it
+> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
+> and if it's set then we need to touch all watchdogs and bail
+> out.
+> 
+> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
+> check works fine.
+> 
+> There is, however, one more watchdog that runs from IRQ, so
+> watchdog timer fn races with it, and that watchdog is not aware
+> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
+> 
+> apic_timer_interrupt()
+>  smp_apic_timer_interrupt()
+>   hrtimer_interrupt()
+>    __hrtimer_run_queues()
+>     tick_sched_timer()
+>      tick_sched_handle()
+>       update_process_times()
+>        rcu_sched_clock_irq()
+> 
+> This triggers RCU stalls on our devices during VM resume.
+> 
+> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
+> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
+> then there is nothing on this VCPU that touches watchdogs and
+> RCU reads stale gp stall timestamp and new jiffies value, which
+> makes it think that RCU has stalled.
+> 
+> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
+> don't report RCU stalls when we resume the VM.
+> 
+> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
 
-Acked-by: Rafał Miłecki <rafal@milecki.pl>
+I have queued both for testing and further review, thank you!
+
+							Thanx, Paul
+
+> ---
+> 
+> v2: fixed powerpc build breakage
+> 
+>  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index d574e3bbd929..bc689911a81d 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -7,6 +7,8 @@
+>   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+>   */
+>  
+> +#include <linux/kvm_para.h>
+> +
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
+>  // Controlling CPU stall warnings, including delay calculation.
+> @@ -698,6 +700,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
+>  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+>  
+> +		/*
+> +		 * If a virtual machine is stopped by the host it can look to
+> +		 * the watchdog like an RCU stall. Check to see if the host
+> +		 * stopped the vm.
+> +		 */
+> +		if (kvm_check_and_clear_guest_paused())
+> +			return;
+> +
+>  		/* We haven't checked in, so go dump stack. */
+>  		print_cpu_stall(gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> @@ -707,6 +717,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
+>  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
+>  		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
+>  
+> +		/*
+> +		 * If a virtual machine is stopped by the host it can look to
+> +		 * the watchdog like an RCU stall. Check to see if the host
+> +		 * stopped the vm.
+> +		 */
+> +		if (kvm_check_and_clear_guest_paused())
+> +			return;
+> +
+>  		/* They had a few time units to dump stack, so complain. */
+>  		print_other_cpu_stall(gs2, gps);
+>  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
+> -- 
+> 2.31.1.818.g46aad6cb9e-goog
+> 
