@@ -2,75 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0C3D38BF44
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 562AE38BF32
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:22:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhEUG1r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:27:47 -0400
-Received: from mail.buaa.edu.cn ([106.39.41.192]:45480 "HELO
-        mailgw2.buaa.edu.cn" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with SMTP id S230217AbhEUG1p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 02:27:45 -0400
-X-Greylist: delayed 376 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 May 2021 02:27:44 EDT
-Received: from tq-G3-3579.tsinghua.edu.cn (unknown [183.173.48.61])
-        by mailgw1.buaa.edu.cn (Maildata Gateway V2.8) with ESMTPSA id 67E1DC776FC50;
-        Fri, 21 May 2021 14:19:55 +0800 (CST)
-X-MD-Sfrom: tq17373059@buaa.edu.cn
-X-MD-SrcIP: 183.173.48.61
-From:   tq17373059@buaa.edu.cn
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        baijiaju@tsinghua.edu.cn, Qi Teng <tq17373059@buaa.edu.cn>,
-        TOTE Robot <oslab@tsinghua.edu.cn>
-Subject: [PATCH] iio: adf4350: fix a possible divided-by-zero bug in adf4350_set_freq()
-Date:   Fri, 21 May 2021 14:19:53 +0800
-Message-Id: <20210521061953.35873-1-tq17373059@buaa.edu.cn>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231892AbhEUGYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:24:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51258 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231540AbhEUGYH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 02:24:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 64CF2613B6;
+        Fri, 21 May 2021 06:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621578165;
+        bh=j32Fr6T+MmMXcheT4XMEXRjvwY2kAnZ0pgTlhrxSqnQ=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Ora9y2gbL4DPDrAj+J4Ud1ijs79htl3ix3+pHhoGjEpOe0jA7teLESTMC4G705Ti0
+         rvxl3enqX3yIiOTou1CpYIPzPqsVBxr3u1aVRfoId1UG7p7JiQTMYkC6XIfmOGiJBB
+         v9ZWaTDj+LQuCjUkWOnwWXLRpHGw79N2Sh65Jq6zKlocXbVxyPnbfkzlB0TdCt7Pkr
+         3mcL+l3QCrb6kCS3lzgqBESVccYcst37k/EO3g/96+tddho7jOXQbYW5qZuw2g+bQM
+         9OBhHlB0tjVyNBTo/CR/wP41d8c1lJCobx1niWdECSp9ZKywjuqxifU4Gf+cCG+Bc3
+         Fj5b9bL0PEs3Q==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5166860967;
+        Fri, 21 May 2021 06:22:45 +0000 (UTC)
+Subject: Re: [git pull] drm fixes for 5.13-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAPM=9tzqfc9Xx9bpbp2fKKij=+YYGYG=pSzeVQG=H1pmZf0tBA@mail.gmail.com>
+References: <CAPM=9tzqfc9Xx9bpbp2fKKij=+YYGYG=pSzeVQG=H1pmZf0tBA@mail.gmail.com>
+X-PR-Tracked-List-Id: Direct Rendering Infrastructure - Development
+ <dri-devel.lists.freedesktop.org>
+X-PR-Tracked-Message-Id: <CAPM=9tzqfc9Xx9bpbp2fKKij=+YYGYG=pSzeVQG=H1pmZf0tBA@mail.gmail.com>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-05-21-1
+X-PR-Tracked-Commit-Id: dd6ad0516ee38112321e99ce368fddd49ee3b9db
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 79a106fc6585979022012e65a1e45e3d2d28b77b
+Message-Id: <162157816526.23556.3348095363542917867.pr-tracker-bot@kernel.org>
+Date:   Fri, 21 May 2021 06:22:45 +0000
+To:     Dave Airlie <airlied@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qi Teng <tq17373059@buaa.edu.cn>
+The pull request you sent on Fri, 21 May 2021 14:31:53 +1000:
 
-The variable st->r1_mod is checked in:
-  if (st->r0_fract && st->r1_mod)
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-05-21-1
 
-This indicates that st->r1_mod can be zero. Its value is the same as
-that in:
-  st->r0_fract = do_div(tmp, st->r1_mod);
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/79a106fc6585979022012e65a1e45e3d2d28b77b
 
-However, st->r1_mod performs as a divisor in this statement, which
-implies a possible divided-by-zero bug.
+Thank you!
 
-To fix this possible bug, st->r1_mod is checked before the division
-operation. If it is zero, st->r0_fract is set to zero instead of
-do_div(tmp, st->r1_mod).
-
-Reported-by: TOTE Robot <oslab@tsinghua.edu.cn> 
-Signed-off-by: Qi Teng <tq17373059@buaa.edu.cn>
----
- drivers/iio/frequency/adf4350.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/iio/frequency/adf4350.c b/drivers/iio/frequency/adf4350.c
-index 99c6f260cc21..1462a6a5bc6d 100644
---- a/drivers/iio/frequency/adf4350.c
-+++ b/drivers/iio/frequency/adf4350.c
-@@ -182,10 +182,7 @@ static int adf4350_set_freq(struct adf4350_state *st, unsigned long long freq)
- 
- 		tmp = freq * (u64)st->r1_mod + (st->fpfd >> 1);
- 		do_div(tmp, st->fpfd); /* Div round closest (n + d/2)/d */
--		if (st->r1_mod)
--			st->r0_fract = do_div(tmp, st->r1_mod);
--		else
--			st->r0_fract = 0;
-+		st->r0_fract = do_div(tmp, st->r1_mod);
- 		st->r0_int = tmp;
- 	} while (mdiv > st->r0_int);
- 
 -- 
-2.25.1
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
