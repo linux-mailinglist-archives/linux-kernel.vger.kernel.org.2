@@ -2,181 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FF038CCCC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:58:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C92438CCCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237212AbhEUR7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:59:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231681AbhEUR7s (ORCPT
+        id S237667AbhEUSA2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 14:00:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52016 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231531AbhEUSA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:59:48 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 602ADC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:58:24 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id q5so21875497wrs.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z4UPkdAETElY8CE5R1/XdSazK5Qz+lJk4BEU0MOMZSI=;
-        b=b+kvebj13rLEmw+fxFi1/ebO2RLXB62bwasf0W8fck9af45XdYb87TjB0NIG13ZQXX
-         ZV2pa1hpIQXAkz37IHuJjd/H3D7pxXMUL0aklHPm28wWYcOpoRJlKP0WY2cW/o9B9C5d
-         GlepTRpJasKxkAGfzjTKfo6E6zE1ayu79tktEmZbR+pqtY3OUV/Unoc132tun3gv51Xc
-         kxJka0onSj+SKKRYaSTZb3oIjmxooyQc/rpF4Myul72Hv1b5K/sJ9kOmhbi0AFPghpHW
-         CEDnLLyPwaOBF6QHV+IHmR8WXmSUoSdLae5vyqJVDlX3H0i5rKRS2vQki2VidMN3xV7Q
-         OrdQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z4UPkdAETElY8CE5R1/XdSazK5Qz+lJk4BEU0MOMZSI=;
-        b=Q0eWSpfgclNaJYYg+jDHswpSNBOOjrjrU1Fiy/grha4x+Lqv/DbYgQV0oI4CPVzNP/
-         OoBqGLzG+rUuzOv/+gbLDzoFQZeGbfSPAjvfNGDbWP5Jo5nY2tmHKih9hOi6vVyxXRu0
-         hzW0x1Iln7iWc45phWZnYC5Hj+g2kOiPXStSthzSAiUnZBywqHqjyg3+InXaW7mhHlNo
-         A3wbs1I67s71TQn02uYRHPebpfZc3m+NH3LRNF/b4JpZrWonFGjNoo7UpO4UM7QEo8up
-         xYeZBEkCYyz2Hr56BYQzoo1Wf3DlIp80RR1crH5MM68dPbyfj40Ded01ZR3zi8wThlEo
-         PY+g==
-X-Gm-Message-State: AOAM530BZ3ADPIvvTiSTOHLoWTTGK7/GtyFNZLvOq51D7gi4GfcgRw73
-        mjBwGXVBEpSj7P5pcQPvfH/lLeo+Ivt2lOIj+ZwUSCJaH4BfUg==
-X-Google-Smtp-Source: ABdhPJz0OURHGGTLgcEshabcsCSN10Z5JJOefPXqXbtqa7/XYh303oD8IqGr6x4WAjJiIqFblb//uXxSrKDJiGrO/kc=
-X-Received: by 2002:a5d:618f:: with SMTP id j15mr10644394wru.273.1621619903001;
- Fri, 21 May 2021 10:58:23 -0700 (PDT)
+        Fri, 21 May 2021 14:00:27 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1lk9QJ-0001wv-IG; Fri, 21 May 2021 17:58:59 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id BE7BF5FDD5; Fri, 21 May 2021 10:58:57 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id B6766A040C;
+        Fri, 21 May 2021 10:58:57 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Jarod Wilson <jarod@redhat.com>
+cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 2/4] bonding/balance-lb: don't rewrite bridged non-local MACs
+In-reply-to: <20210521132756.1811620-3-jarod@redhat.com>
+References: <20210518210849.1673577-1-jarod@redhat.com> <20210521132756.1811620-1-jarod@redhat.com> <20210521132756.1811620-3-jarod@redhat.com>
+Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
+   message dated "Fri, 21 May 2021 09:27:54 -0400."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-References: <20210507150515.257424-1-maxime@cerno.tech> <20210507150515.257424-6-maxime@cerno.tech>
-In-Reply-To: <20210507150515.257424-6-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 21 May 2021 18:58:06 +0100
-Message-ID: <CAPY8ntDCv-+1AUz_dcKmjxRe6sxEyDABhY6OnKBWeBJGtf3o1A@mail.gmail.com>
-Subject: Re: [PATCH v4 05/12] drm/vc4: crtc: Lookup the encoder from the
- register at boot
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <21328.1621619937.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Fri, 21 May 2021 10:58:57 -0700
+Message-ID: <21329.1621619937@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Maxime
+Jarod Wilson <jarod@redhat.com> wrote:
 
-On Fri, 7 May 2021 at 16:05, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> At boot, we can't rely on the vc4_get_crtc_encoder since we don't have a
-> state yet and thus will not be able to figure out which connector is
-> attached to our CRTC.
->
-> However, we have a muxing bit in the CRTC register we can use to get the
-> encoder currently connected to the pixelvalve. We can thus read that
-> register, lookup the associated register through the vc4_pv_data
-> structure, and then pass it to vc4_crtc_disable so that we can perform
-> the proper operations.
->
-> Fixes: 875a4d536842 ("drm/vc4: drv: Disable the CRTC at boot time")
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+>With a virtual machine behind a bridge that directly incorporates a
+>balance-alb bond as one of its ports, outgoing traffic should retain the
+>VM's source MAC. That works fine most of the time, until doing a failover,
+>and then the MAC gets rewritten to the bond slave's MAC, and the return
+>traffic gets dropped. If we don't rewrite the MAC there, we don't lose the
+>traffic.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+	Comparing the description above to the patch, is the erroneous
+behavior really related to failover (i.e., bond slave goes down, bond
+reshuffles various things as it is wont to do), or is it related to
+either a TX side rebalance or even simply that specific traffic is being
+sent on a slave that isn't the curr_active_slave?
 
-> ---
->  drivers/gpu/drm/vc4/vc4_crtc.c | 38 ++++++++++++++++++++++++++++++----
->  1 file changed, 34 insertions(+), 4 deletions(-)
+	One more comment, below.
+
+>Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>Cc: Veaceslav Falico <vfalico@gmail.com>
+>Cc: Andy Gospodarek <andy@greyhouse.net>
+>Cc: "David S. Miller" <davem@davemloft.net>
+>Cc: Jakub Kicinski <kuba@kernel.org>
+>Cc: Thomas Davis <tadavis@lbl.gov>
+>Cc: netdev@vger.kernel.org
+>Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>---
+> drivers/net/bonding/bond_alb.c | 20 +++++++++++++++++++-
+> 1 file changed, 19 insertions(+), 1 deletion(-)
 >
-> diff --git a/drivers/gpu/drm/vc4/vc4_crtc.c b/drivers/gpu/drm/vc4/vc4_crtc.c
-> index 36ea684a349b..f715648f89dd 100644
-> --- a/drivers/gpu/drm/vc4/vc4_crtc.c
-> +++ b/drivers/gpu/drm/vc4/vc4_crtc.c
-> @@ -413,11 +413,10 @@ static void require_hvs_enabled(struct drm_device *dev)
->  }
->
->  static int vc4_crtc_disable(struct drm_crtc *crtc,
-> +                           struct drm_encoder *encoder,
->                             struct drm_atomic_state *state,
->                             unsigned int channel)
->  {
-> -       struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-> -                                                          drm_atomic_get_old_connector_state);
->         struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
->         struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
->         struct drm_device *dev = crtc->dev;
-> @@ -458,10 +457,29 @@ static int vc4_crtc_disable(struct drm_crtc *crtc,
->         return 0;
->  }
->
-> +static struct drm_encoder *vc4_crtc_get_encoder_by_type(struct drm_crtc *crtc,
-> +                                                       enum vc4_encoder_type type)
-> +{
-> +       struct drm_encoder *encoder;
-> +
-> +       drm_for_each_encoder(encoder, crtc->dev) {
-> +               struct vc4_encoder *vc4_encoder = to_vc4_encoder(encoder);
-> +
-> +               if (vc4_encoder->type == type)
-> +                       return encoder;
-> +       }
-> +
-> +       return NULL;
-> +}
-> +
->  int vc4_crtc_disable_at_boot(struct drm_crtc *crtc)
->  {
->         struct drm_device *drm = crtc->dev;
->         struct vc4_crtc *vc4_crtc = to_vc4_crtc(crtc);
-> +       enum vc4_encoder_type encoder_type;
-> +       const struct vc4_pv_data *pv_data;
-> +       struct drm_encoder *encoder;
-> +       unsigned encoder_sel;
->         int channel;
->
->         if (!(of_device_is_compatible(vc4_crtc->pdev->dev.of_node,
-> @@ -480,7 +498,17 @@ int vc4_crtc_disable_at_boot(struct drm_crtc *crtc)
->         if (channel < 0)
->                 return 0;
->
-> -       return vc4_crtc_disable(crtc, NULL, channel);
-> +       encoder_sel = VC4_GET_FIELD(CRTC_READ(PV_CONTROL), PV_CONTROL_CLK_SELECT);
-> +       if (WARN_ON(encoder_sel != 0))
-> +               return 0;
-> +
-> +       pv_data = vc4_crtc_to_vc4_pv_data(vc4_crtc);
-> +       encoder_type = pv_data->encoder_types[encoder_sel];
-> +       encoder = vc4_crtc_get_encoder_by_type(crtc, encoder_type);
-> +       if (WARN_ON(!encoder))
-> +               return 0;
-> +
-> +       return vc4_crtc_disable(crtc, encoder, NULL, channel);
->  }
->
->  static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
-> @@ -489,6 +517,8 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
->         struct drm_crtc_state *old_state = drm_atomic_get_old_crtc_state(state,
->                                                                          crtc);
->         struct vc4_crtc_state *old_vc4_state = to_vc4_crtc_state(old_state);
-> +       struct drm_encoder *encoder = vc4_get_crtc_encoder(crtc, state,
-> +                                                          drm_atomic_get_old_connector_state);
->         struct drm_device *dev = crtc->dev;
->
->         require_hvs_enabled(dev);
-> @@ -496,7 +526,7 @@ static void vc4_crtc_atomic_disable(struct drm_crtc *crtc,
->         /* Disable vblank irq handling before crtc is disabled. */
->         drm_crtc_vblank_off(crtc);
->
-> -       vc4_crtc_disable(crtc, state, old_vc4_state->assigned_channel);
-> +       vc4_crtc_disable(crtc, encoder, state, old_vc4_state->assigned_channel);
->
->         /*
->          * Make sure we issue a vblank event after disabling the CRTC if
-> --
-> 2.31.1
->
+>diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
+>index 3455f2cc13f2..c57f62e43328 100644
+>--- a/drivers/net/bonding/bond_alb.c
+>+++ b/drivers/net/bonding/bond_alb.c
+>@@ -1302,6 +1302,23 @@ void bond_alb_deinitialize(struct bonding *bond)
+> 		rlb_deinitialize(bond);
+> }
+> 
+>+static bool bond_alb_bridged_mac(struct bonding *bond, struct ethhdr *eth_data)
+>+{
+>+	if (BOND_MODE(bond) != BOND_MODE_ALB)
+>+		return false;
+>+
+>+	/* Don't modify source MACs that do not originate locally
+>+	 * (e.g.,arrive via a bridge).
+>+	 */
+>+	if (!netif_is_bridge_port(bond->dev))
+>+		return false;
+
+	Repeating my comment (from my response to the v1 patch) that
+hasn't been addressed:
+
+	I believe this logic will fail if the plumbing is, e.g., bond ->
+vlan -> bridge, as netif_is_bridge_port() would not return true for the
+bond in that case.
+
+	Making this reliable is tricky at best, and may be impossible to
+be correct for all possible cases.  As such, I think the comment above
+should reflect the limited scope of what is actually being checked here
+(i.e., the bond itself is directly a bridge port).
+
+	Ideally, the bonding.rst documentation should describe the
+special behaviors of alb mode when configured as a bridge port.
+
+	-J
+
+>+
+>+	if (bond_slave_has_mac_rx(bond, eth_data->h_source))
+>+		return false;
+>+
+>+	return true;
+>+}
+>+
+> static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
+> 				    struct slave *tx_slave)
+> {
+>@@ -1316,7 +1333,8 @@ static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
+> 	}
+> 
+> 	if (tx_slave && bond_slave_can_tx(tx_slave)) {
+>-		if (tx_slave != rcu_access_pointer(bond->curr_active_slave)) {
+>+		if (tx_slave != rcu_access_pointer(bond->curr_active_slave) &&
+>+		    !bond_alb_bridged_mac(bond, eth_data)) {
+> 			ether_addr_copy(eth_data->h_source,
+> 					tx_slave->dev->dev_addr);
+> 		}
+>-- 
+>2.30.2
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
