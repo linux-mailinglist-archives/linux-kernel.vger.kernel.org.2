@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6713B38CD95
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:37:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9A138CD9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238195AbhEUSjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:39:20 -0400
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:36714 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235978AbhEUSjS (ORCPT
+        id S238944AbhEUSjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:39:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229554AbhEUSjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:39:18 -0400
-Received: by mail-oi1-f170.google.com with SMTP id t24so5029109oiw.3;
-        Fri, 21 May 2021 11:37:54 -0700 (PDT)
+        Fri, 21 May 2021 14:39:48 -0400
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E1CC061574;
+        Fri, 21 May 2021 11:38:24 -0700 (PDT)
+Received: by mail-yb1-xb2a.google.com with SMTP id y2so28715963ybq.13;
+        Fri, 21 May 2021 11:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=olQZoZywvM5Y52kkIexHOvGtbXaTwbR42GcPh6oe6xs=;
+        b=UgzUkAWR+ddmD0U+NcVtqPFVk+5y+o2fEFxfbeRjGOLPg42jie6iU6hxBD4+/ewgVq
+         UIBmBNZutkxKVW1a0l2HbXMI4d3F9upe04/M5fXSARDHDkwHR2fMBdlsK+m4qHwy1NLU
+         bzSVvdWHMJgpB/rgwlw+zrG/glpvwtIvymRKm7pJkxLgx1fRPkQrWrfugYIbjv2sSrjl
+         c4J42fysX2yNsq6LrGoXqNV3hU2oYR38KW04JLXfzn9qISlLyuRcSh8NybDeMDo5axQU
+         mHTnDY7PS5inh94o6TYa+/2qvcN6RxRpMy+2LI6nCqgJwIPMdsX82IHmt+3KsUdV8qkh
+         uJpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EcrkVcsgqQ0ZrJZJ5NdVvHpUDgnz1xVwfcl1R/5LgFk=;
-        b=SU+K6Ty3uRLHt00KqZm2663d2Ae9Od0yur7yGtEA6apaL1XCKSVMJxeRAX0RqTTr4u
-         6xqTxl5pztCfSjbwTAuJcvsBQXJm7jwmt/BiHsa3g++IsYHmg1NlcLw3BVCtSueLCdmP
-         XciwAvuPfb4J51Ay+ZSMGBe3e8sfwYAgxfhNbCg+Pw5WfjdjABghrMg4wJfq4gWKUmId
-         vPh7F7BvislW2skSyerJ6EfTbAdlHHc0TovUxcnCkQZ65tjJKjztc+lODJwxD98JG1Zz
-         9MR0hvjAlb+eaS3jxuhdXhzG5BVBJCt9tT6FDuzNbDYyNc1Xw7AWU1XSgtV5H9Dk3cun
-         pApg==
-X-Gm-Message-State: AOAM530CxIgU2sNWKy6+7eHjKInxYA4HNpwM+5f/alctmNVdjwfgbRlB
-        RXgaxfSfVcbFlIgmDlKFWg==
-X-Google-Smtp-Source: ABdhPJyGW8FC1t+HJJPb75LnLdqG2Dy4aj9s50YmFM5qVud7SCTQuy/B3kAEP23VC/Vscifzd5SzJw==
-X-Received: by 2002:aca:2b16:: with SMTP id i22mr3182531oik.121.1621622274420;
-        Fri, 21 May 2021 11:37:54 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id a7sm1356744ooo.9.2021.05.21.11.37.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 11:37:53 -0700 (PDT)
-Received: (nullmailer pid 178646 invoked by uid 1000);
-        Fri, 21 May 2021 18:37:52 -0000
-Date:   Fri, 21 May 2021 13:37:52 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     freedreno@lists.freedesktop.org, dianders@chromium.org,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, swboyd@chromium.org, sean@poorly.run,
-        vinod.koul@linaro.org, Chandan Uddaraju <chandanu@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, robh+dt@kernel.org,
-        tanmay@codeaurora.org, kalyan_t@codeaurora.org,
-        Vara Reddy <varar@codeaurora.org>, bjorn.andersson@linaro.org,
-        abhinavk@codeaurora.org, khsieh@codeaurora.org
-Subject: Re: [PATCH v17 4/4] dt-bindings: msm/dp: Add bindings of MSM
- DisplayPort controller
-Message-ID: <20210521183752.GA178583@robh.at.kernel.org>
-References: <1621592844-6414-1-git-send-email-mkrishn@codeaurora.org>
- <1621592844-6414-4-git-send-email-mkrishn@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=olQZoZywvM5Y52kkIexHOvGtbXaTwbR42GcPh6oe6xs=;
+        b=hr76vgyhKbJJLjLV056djo4asoNl+k/MhscTPecwIV12sITGH8MtwpS8BVdHxL4Lag
+         LlCOkqfiWnN6pztVXZDSG3pRiox/on9HP99DTncNpCcY21SNTbWfEZK0jWtVISZn4UCd
+         2h723z2guZvhyHjAhIf+NgEgboEwOu60u8BwICQVrFAh6w4EUWQbafmQoLuX+69sb6/0
+         Cn4qAP1Kc0s6EtdUmBeAO/w4OoXmMoNobVux7Zl5kkoPDGCMQLF+cyEPmLAvz0muoyhE
+         i4lQ90RcPZw9MVPbZU7TlAvE4O7SKZeZK41HTQIwJfzBO/Sbhe466y+99KW/F5w+3CfZ
+         9VJQ==
+X-Gm-Message-State: AOAM532uQh4rJ7gOz7D91njPDCdd3Ir4Ll/Da+enXgtXK9se4skZy7vU
+        IXWdTz2iyon81G89KLaFcBFABDM4ELMJS2R5j8c=
+X-Google-Smtp-Source: ABdhPJwtnKYsildB4JiaI/0BdF9vgryKdln/lTVgnl/dt7wD6r5Eet/3fFCECsk4pa9QTbYmSy4lKYeJ0NE3zo2Bh1I=
+X-Received: by 2002:a25:a522:: with SMTP id h31mr18133967ybi.426.1621622304013;
+ Fri, 21 May 2021 11:38:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621592844-6414-4-git-send-email-mkrishn@codeaurora.org>
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-13-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXPfpp3omsx8MjQ9W4mFmW0KJ1GcHXx+y5DcXobxLcw_A@mail.gmail.com>
+In-Reply-To: <CAMuHMdXPfpp3omsx8MjQ9W4mFmW0KJ1GcHXx+y5DcXobxLcw_A@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 21 May 2021 19:37:58 +0100
+Message-ID: <CA+V-a8u17VLbHEL2PBUU-9sDuvgpW8zoCO5tCDd=K-eRLNhRUg@mail.gmail.com>
+Subject: Re: [PATCH 12/16] clk: renesas: Define RZ/G2L CPG Clock Definitions
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 15:57:24 +0530, Krishna Manikandan wrote:
-> Add bindings for Snapdragon DisplayPort controller driver.
-> 
-> Signed-off-by: Chandan Uddaraju <chandanu@codeaurora.org>
-> Signed-off-by: Vara Reddy <varar@codeaurora.org>
-> Signed-off-by: Tanmay Shah <tanmay@codeaurora.org>
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> 
-> Changes in V2:
-> -Provide details about sel-gpio
-> 
-> Changes in V4:
-> -Provide details about max dp lanes
-> -Change the commit text
-> 
-> Changes in V5:
-> -moved dp.txt to yaml file
-> 
-> Changes in v6:
-> - Squash all AUX LUT properties into one pattern Property
-> - Make aux-cfg[0-9]-settings properties optional
-> - Remove PLL/PHY bindings from DP controller dts
-> - Add DP clocks description
-> - Remove _clk suffix from clock names
-> - Rename pixel clock to stream_pixel
-> - Remove redundant bindings (GPIO, PHY, HDCP clock, etc..)
-> - Fix indentation
-> - Add Display Port as interface of DPU in DPU bindings
->   and add port mapping accordingly.
-> 
-> Chages in v7:
-> - Add dp-controller.yaml file common between multiple SOC
-> - Rename dp-sc7180.yaml to dp-controller-sc7180.yaml
-> - change compatible string and add SOC name to it.
-> - Remove Root clock generator for pixel clock
-> - Add assigned-clocks and assigned-clock-parents bindings
-> - Remove redundant properties, descriptions and blank lines
-> - Add DP port in DPU bindings
-> - Update depends-on tag in commit message and rebase change accordingly
-> 
-> Changes in v8:
-> - Add MDSS AHB clock in bindings
-> 
-> Changes in v9:
-> - Remove redundant reg-name property
-> - Change assigned-clocks and assigned-clocks-parents counts to 2
-> - Use IRQ flags in example dts
-> 
-> Changes in v10:
-> - Change title of this patch as it does not contain PLL bindings anymore
-> - Remove redundant properties
-> - Remove use of IRQ flag
-> - Fix ports property
-> 
-> Changes in v11:
-> - add ports required of both #address-cells and  #size-cells
-> - add required operating-points-v2
-> - add required #sound-dai-cells
-> - add required power-domains
-> - update maintainer list
-> 
-> Changes in v12:
-> - remove soc node from examples (Stephen Boyd)
-> - split dpu-sc7180.yaml changes to separate patch (Stephen Boyd)
-> 
-> Changes in v13:
-> - add assigned-clocks
-> - add assigned-clock-parents
-> 
-> Changes in v14:
-> - add reference for ports (Rob Herring)
-> 
-> Changes in v15:
-> - drop common properties from ports (Rob Herring)
-> ---
->  .../bindings/display/msm/dp-controller.yaml        | 146 +++++++++++++++++++++
->  1 file changed, 146 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dp-controller.yaml
-> 
+Hi Geert,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Thank you for the review.
+
+On Fri, May 21, 2021 at 4:19 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Define RZ/G2L (R9A07G044) Clock Pulse Generator Core Clock
+> > and module clock outputs.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > ---
+> >  include/dt-bindings/clock/r9a07g044l-cpg.h | 89 ++++++++++++++++++++++
+> >  1 file changed, 89 insertions(+)
+> >  create mode 100644 include/dt-bindings/clock/r9a07g044l-cpg.h
+> >
+> > diff --git a/include/dt-bindings/clock/r9a07g044l-cpg.h b/include/dt-bindings/clock/r9a07g044l-cpg.h
+> > new file mode 100644
+> > index 000000000000..2bc13f4e575b
+> > --- /dev/null
+> > +++ b/include/dt-bindings/clock/r9a07g044l-cpg.h
+>
+> I think the filename should be r9a07g044-cpg.h, as this is
+> shared by RZ/G2L ('044l) and RZ/G2LC ('044c).
+>
+Agreed will rename that.
+
+Cheers,
+Prabhakar
+
+> > @@ -0,0 +1,89 @@
+> > +/* SPDX-License-Identifier: GPL-2.0
+> > + *
+> > + * Copyright (C) 2021 Renesas Electronics Corp.
+> > + */
+> > +#ifndef __DT_BINDINGS_CLOCK_R9A07G044_CPG_H__
+> > +#define __DT_BINDINGS_CLOCK_R9A07G044_CPG_H__
+>
+> The include guards are fine ;-)
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
