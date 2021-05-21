@@ -2,142 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C5338C801
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:27:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35D2838C802
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:28:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhEUN2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:28:50 -0400
-Received: from mail-vk1-f174.google.com ([209.85.221.174]:42624 "EHLO
-        mail-vk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233813AbhEUN2V (ORCPT
+        id S234911AbhEUN3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:29:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27457 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231601AbhEUN3d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:28:21 -0400
-Received: by mail-vk1-f174.google.com with SMTP id m129so4284671vkh.9;
-        Fri, 21 May 2021 06:26:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nALjNO1NNzuBgJsBKkuRLfzdmUfp2pocRq1SvmK+pwE=;
-        b=YUJFx5Zmykk5cG0kxcCgQY0g0TaNYgRTnTOEDLcZLbsfElzudVxkBfN/p4W1BBCWAx
-         J4a0JCxtrPS0YKnTmlQuAFoVOMpEcCzBQaBegg3BsWL4V8WzHUAiJkTLV/2UKL1GxvnQ
-         /q7CsSabHnonJqyBHsjIYyJKdMLt8gamDNjMyD8+KrSx6GK8TJWK5sneQXO2OAGqMbfN
-         IqClszA5uXHGTYZ8d9I/oUo+C4kX/2Fm8E7y+/GAOYsbRQHqANYYoef/uyEBL2ez1GZU
-         PBA7qDIazQWIEAvZrDl+LE/wlBhULbnev2xjs61eqmHORxungV5VwOlpmFPPKkmBvzxZ
-         3q3A==
-X-Gm-Message-State: AOAM533PeIEcix13lrA26nenKW2clpCJnAOVMBHofBTa/j9YrPMcZwOn
-        W35+GsqV+wNxSP2MeuYFTV5FaSEJtoYi5cD5110=
-X-Google-Smtp-Source: ABdhPJygoEQwq7jd+zWCduTRNR1S0jH3r5s+WptgfvrzjUs6HpafzgXjDNeh7jnILhWaxTadyffP3VHnsfRzwl6y/KY=
-X-Received: by 2002:a1f:d8c3:: with SMTP id p186mr9636190vkg.1.1621603617121;
- Fri, 21 May 2021 06:26:57 -0700 (PDT)
+        Fri, 21 May 2021 09:29:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621603689;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGLBV8K7x2fEQpqwhoWVH4NFN4drtGHGFPA8dLbVVYE=;
+        b=ByRrE0MbmZmQy3oaVKhyYo4tnU8n8FW+RD0Andw8NlhYPHtpLzpZ/nOLn4chxg0KpWNBuj
+        ggzk6XkLfW2w2PX7PQlS9EAKwzSvvaXIQQnIi99ezyV783vwoQPNawOQRv5rQWPbYAxpuA
+        yw9YntKruCeSNhdxm3WxWX9O6x2i+w8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-559-M-M_s5czMuGilSWDtBYllg-1; Fri, 21 May 2021 09:28:07 -0400
+X-MC-Unique: M-M_s5czMuGilSWDtBYllg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B5F0D107ACC7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:28:06 +0000 (UTC)
+Received: from f33vm.wilsonet.com.wilsonet.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D2588100AE43;
+        Fri, 21 May 2021 13:28:02 +0000 (UTC)
+From:   Jarod Wilson <jarod@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Jarod Wilson <jarod@redhat.com>
+Subject: [PATCH net-next v2 0/4] bonding/balance-alb: support VMs behind bridges better
+Date:   Fri, 21 May 2021 09:27:52 -0400
+Message-Id: <20210521132756.1811620-1-jarod@redhat.com>
+In-Reply-To: <20210518210849.1673577-1-jarod@redhat.com>
+References: <20210518210849.1673577-1-jarod@redhat.com>
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-11-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210514192218.13022-11-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 May 2021 15:26:45 +0200
-Message-ID: <CAMuHMdXNzvTW920fJ2fKDWe=+CppfRdThKudTh51EW4fY2eRFg@mail.gmail.com>
-Subject: Re: [PATCH 10/16] serial: sh-sci: Add support for RZ/G2L SoC
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Chris Brandt <Chris.Brandt@renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+I've been further educated on a use case, where a bridge sits on top of
+a bond, with multiple vnetX interfaces attached to virtual machines,
+also acting as ports of the bridge. Each leg of the bond goes to a
+different switch, but there is NO mlag/vpc in play, the bonding driver
+has to handle traffic that loops back appropriately to avoid breaking
+transmission. Rather than adding some sort of mac filtering to
+balance-xor mode, we switched to using balance-alb, which already does
+some of this, and with the tweaks provided in this series, empirically
+seems to behave as desired in actual operation.
 
-On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> From: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Add serial support for RZ/G2L SoC with earlycon and
-> extended mode register support.
->
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+v2 attempts to support srcmac-only hashing via a modparam instead of by
+adding yet another hashing mode, as well as cleaning up and clarifying
+commit messages.
 
-Thanks for your patch!
+Jarod Wilson (4):
+  bonding: add pure source-mac-based tx hashing option
+  bonding/balance-lb: don't rewrite bridged non-local MACs
+  bonding/balance-alb: don't tx balance multicast traffic either
+  bonding/balance-alb: put all slaves into promisc
 
-> --- a/drivers/tty/serial/sh-sci.c
-> +++ b/drivers/tty/serial/sh-sci.c
-> @@ -306,6 +306,7 @@ static const struct sci_port_params sci_port_params[SCIx_NR_REGTYPES] = {
->                         [SCFDR]         = { 0x0E, 16 },
->                         [SCSPTR]        = { 0x10, 16 },
->                         [SCLSR]         = { 0x12, 16 },
-> +                       [SEMR]          = { 0x14, 8 },
+ Documentation/networking/bonding.rst | 13 +++++++++++++
+ drivers/net/bonding/bond_alb.c       | 24 +++++++++++++++++++++---
+ drivers/net/bonding/bond_main.c      | 23 +++++++++++++++--------
+ 3 files changed, 49 insertions(+), 11 deletions(-)
 
-This is the parameter section for RZ/T and RZ/A2.  Please update the
-comments above, to say this also applies to RZ/G2L.
-I can confirm the documentation for RZ/T1 and RZ/A2 agrees about the
-existence and behavior of SEMR.
+-- 
+2.30.2
 
->                 },
->                 .fifosize = 16,
->                 .overrun_reg = SCLSR,
-> @@ -2527,6 +2528,8 @@ static void sci_set_termios(struct uart_port *port, struct ktermios *termios,
->                         case 27: smr_val |= SCSMR_SRC_27; break;
->                         }
->                 smr_val |= cks;
-> +               if (sci_getreg(port, SEMR)->size)
-> +                       serial_port_out(port, SEMR, 0);
-
-As this is done in both branches of the if() statement, I think it
-should be moved up.
-
->                 serial_port_out(port, SCSCR, scr_val | s->hscif_tot);
->                 serial_port_out(port, SCSMR, smr_val);
->                 serial_port_out(port, SCBRR, brr);
-> @@ -2561,6 +2564,8 @@ static void sci_set_termios(struct uart_port *port, struct ktermios *termios,
->                 scr_val = s->cfg->scscr & (SCSCR_CKE1 | SCSCR_CKE0);
->                 smr_val |= serial_port_in(port, SCSMR) &
->                            (SCSMR_CKEDG | SCSMR_SRC_MASK | SCSMR_CKS);
-> +               if (sci_getreg(port, SEMR)->size)
-> +                       serial_port_out(port, SEMR, 0);
-
-(else branch)
-
->                 serial_port_out(port, SCSCR, scr_val | s->hscif_tot);
->                 serial_port_out(port, SCSMR, smr_val);
->         }
-> @@ -3170,6 +3175,10 @@ static const struct of_device_id of_sci_match[] = {
->                 .compatible = "renesas,scif-r7s9210",
->                 .data = SCI_OF_DATA(PORT_SCIF, SCIx_RZ_SCIFA_REGTYPE),
->         },
-> +       {
-> +               .compatible = "renesas,scif-r9a07g044",
-> +               .data = SCI_OF_DATA(PORT_SCIF, SCIx_RZ_SCIFA_REGTYPE),
-> +       },
->         /* Family-specific types */
->         {
->                 .compatible = "renesas,rcar-gen1-scif",
-
-The rest looks good to me.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
