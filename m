@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B0838D063
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:58:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2D5138D069
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:00:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhEUWAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:00:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58946 "EHLO
+        id S229790AbhEUWBY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:01:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhEUWAP (ORCPT
+        with ESMTP id S229503AbhEUWBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:00:15 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D3FC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:58:52 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id e17so5288231pfl.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:58:52 -0700 (PDT)
+        Fri, 21 May 2021 18:01:23 -0400
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92245C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:59:59 -0700 (PDT)
+Received: by mail-pg1-x52b.google.com with SMTP id j12so15285632pgh.7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fZVsdD5w5dtbGbEEJ61BTCXnjeAcPQ5ciZkXFGTTwac=;
-        b=kIfjc8CrfmKYbfTMMlU4WT1c20OGxulKRNlpfMkt2Fe1V5wrobpSh0DOXQDgZQRNp3
-         I2vzHrrBfeBmvokmGjtoU3g6ARWz+b7/3GXd8Cd2Q4DT4xXcSD3lPQXpgbyIZmkPOzj4
-         nyo2uuj6aUa5lkvl3obu0QD9/zkrJK0y7mXh0=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=a5OnOgOOmWpMxKvaJfHdYnxsVHFmf/RGX8LXSt1tTYI=;
+        b=QsemvWtvaAVUPew3IHPYLY11CPb8ipFmb6oOvD/sjkrcvdnEl/q+r98ITP2gQ8WujF
+         JWYiSc2g4yGPbVRkO11usYX6ynylrCOijGH9eD9M+MawnNyueBzgXC60au4xUwnLYfpK
+         tUfY5AEC9T33rCel6vpRoOvO5jn3eHvVdcK9c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=fZVsdD5w5dtbGbEEJ61BTCXnjeAcPQ5ciZkXFGTTwac=;
-        b=naukiYy941MJC3zZz7T/4qJoC7qsFrmUgOqPZ12+e54fjU3pViixjOO0I3bO8mY+bO
-         e7q1fZyOWxW2HiyCANbIThaB5B6FXE8WPw9xnhN+6oHf7OjKYe+MEKdpdX0Qt/TF2R5d
-         UgtX19O3vzx2JFYx2ZeKEaE8mhpGqBtM9DG69S0SUIC129h2uOMDCiVRUdqJs1tvIFLe
-         3HAqxmm5TjzaU3jPwqN8PM3zZkPazUraOmC4E9cYCrn7R9PQH74R999xkQrvubeZF1OO
-         j7KJBPwJ+Q8yrCMc2xlASIySoamtX2Ogr8ksn1uC3S+Li7aTc+HN0lrHVthTnB18HHZX
-         Yc0g==
-X-Gm-Message-State: AOAM530mRpqiq/UEbgryOVxPEDxdPgbqFyjCdHKCv6yEEB4McywGYL8U
-        PpH0ymHHHfWi0FH/QQSWAak5yA==
-X-Google-Smtp-Source: ABdhPJwotZClCOCfN/A5TcF4NmLnxWrS4mDUkcKdUN2PVVtqamZYxDVB1UBsora2T4defngVpOwHUw==
-X-Received: by 2002:a05:6a00:2ad:b029:2dc:900f:1c28 with SMTP id q13-20020a056a0002adb02902dc900f1c28mr11986089pfs.67.1621634331957;
-        Fri, 21 May 2021 14:58:51 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=a5OnOgOOmWpMxKvaJfHdYnxsVHFmf/RGX8LXSt1tTYI=;
+        b=dnslgcUiG3lb+aOLgv1J9Cr8GaWd48EXyk2IzgdkcE7u+Ma2xzjONeVLvFIznp05j5
+         3JisUyaYRClwr4tENEt+yBV3AJuHXgB9kY72/tkg4BdJcb5yzGe3UnHbIbHFErGoeac/
+         dpofzIf9GMLUWsLPxXIbdhfVTqm1UHvTijpwmcVTr50RNPCuNpWbFqefGcEcP6DnA9LG
+         xuYSaLbNpo/XQBDmcZAdma0KhPK3uiqBgDmok0YcfF9j7YFLhUySJac/rEt0tl0/D8Nh
+         E/1Xo+BNb3DYHShsp4XhSxh/zT7l/yNRsMLbGu5ibsB4QDqJ3tnXLb9CSF3L+/DRVlih
+         VNxQ==
+X-Gm-Message-State: AOAM530dRamrMesyiG74UgdvkVl4L3CF+7DNqOLCa/STPWBpAyiABvkf
+        RsY3vC9M5HxovSo7dV6zzxMPDg==
+X-Google-Smtp-Source: ABdhPJy1wX0IIztVh3UB/sVZQXtLZrQzqNk7XiYWYOIQqGKZadHcvBhWlOZrQbsK3X/dDCg1CS0uEw==
+X-Received: by 2002:aa7:88d6:0:b029:2e3:b74b:2a5b with SMTP id k22-20020aa788d60000b02902e3b74b2a5bmr9160641pff.4.1621634399153;
+        Fri, 21 May 2021 14:59:59 -0700 (PDT)
 Received: from sujitka-glaptop.hsd1.ca.comcast.net ([2601:646:8e00:b2f0:22bd:8c3f:584d:d265])
-        by smtp.gmail.com with ESMTPSA id h8sm4590835pfv.60.2021.05.21.14.58.50
+        by smtp.gmail.com with ESMTPSA id h8sm4590835pfv.60.2021.05.21.14.59.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 14:58:51 -0700 (PDT)
+        Fri, 21 May 2021 14:59:58 -0700 (PDT)
 From:   Sujit Kautkar <sujitka@chromium.org>
 To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <bjorn.andersson@linaro.org>,
@@ -56,34 +56,367 @@ Cc:     Doug Anderson <dianders@chromium.org>,
         Mark Rutland <mark.rutland@arm.com>,
         devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/2] Update sd card pinconf for sc7180 DT
-Date:   Fri, 21 May 2021 14:58:39 -0700
-Message-Id: <20210521215841.2017349-1-sujitka@chromium.org>
+Subject: [PATCH v2 1/2] arm64: dts: qcom: sc7180: Move sdc pinconf to board specific DT files
+Date:   Fri, 21 May 2021 14:58:42 -0700
+Message-Id: <20210521145824.v2.1.Ia83c80aec3b9535f01441247b6c3fb6f80b0ec7f@changeid>
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+In-Reply-To: <20210521215841.2017349-1-sujitka@chromium.org>
+References: <20210521215841.2017349-1-sujitka@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series contains change to move sdc pinconf from SoC specific
-DT file to board specific DT file. It also contain change to set sdc
-GPIO pin to bias-pull up
+Move sdc1/sdc2 pinconf from SoC specific DT file to board specific DT
+files
 
-Tested sd card working on sc7180 based board
+Signed-off-by: Sujit Kautkar <sujitka@chromium.org>
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Changes in v2:
-- added pull-up for IDP
-
-Sujit Kautkar (2):
-  arm64: dts: qcom: sc7180: Move sdc pinconf to board specific DT files
-  arm64: dts: qcom: sc7180: trogdor: SD-card GPIO pin set bias-pull up
+(no changes since v1)
 
  arch/arm64/boot/dts/qcom/sc7180-idp.dts      | 102 +++++++++++++++++++
  arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 102 +++++++++++++++++++
  arch/arm64/boot/dts/qcom/sc7180.dtsi         | 102 -------------------
  3 files changed, 204 insertions(+), 102 deletions(-)
 
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-idp.dts b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+index e77a7926034a7..07133e0af581a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-idp.dts
++++ b/arch/arm64/boot/dts/qcom/sc7180-idp.dts
+@@ -598,4 +598,106 @@ pinconf-rx {
+ 			bias-pull-up;
+ 		};
+ 	};
++
++	sdc1_on: sdc1-on {
++		pinconf-clk {
++			pins = "sdc1_clk";
++			bias-disable;
++			drive-strength = <16>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc1_cmd";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-data {
++			pins = "sdc1_data";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-rclk {
++			pins = "sdc1_rclk";
++			bias-pull-down;
++		};
++	};
++
++	sdc1_off: sdc1-off {
++		pinconf-clk {
++			pins = "sdc1_clk";
++			bias-disable;
++			drive-strength = <2>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc1_cmd";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-data {
++			pins = "sdc1_data";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-rclk {
++			pins = "sdc1_rclk";
++			bias-pull-down;
++		};
++	};
++
++	sdc2_on: sdc2-on {
++		pinconf-clk {
++			pins = "sdc2_clk";
++			bias-disable;
++			drive-strength = <16>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc2_cmd";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-data {
++			pins = "sdc2_data";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-sd-cd {
++			pins = "gpio69";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++	};
++
++	sdc2_off: sdc2-off {
++		pinconf-clk {
++			pins = "sdc2_clk";
++			bias-disable;
++			drive-strength = <2>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc2_cmd";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-data {
++			pins = "sdc2_data";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-sd-cd {
++			pins = "gpio69";
++			bias-disable;
++			drive-strength = <2>;
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index 609f0ceafd095..d128a0ed6ad3a 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -1540,4 +1540,106 @@ pinconf {
+ 			drive-strength = <2>;
+ 		};
+ 	};
++
++	sdc1_on: sdc1-on {
++		pinconf-clk {
++			pins = "sdc1_clk";
++			bias-disable;
++			drive-strength = <16>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc1_cmd";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-data {
++			pins = "sdc1_data";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-rclk {
++			pins = "sdc1_rclk";
++			bias-pull-down;
++		};
++	};
++
++	sdc1_off: sdc1-off {
++		pinconf-clk {
++			pins = "sdc1_clk";
++			bias-disable;
++			drive-strength = <2>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc1_cmd";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-data {
++			pins = "sdc1_data";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-rclk {
++			pins = "sdc1_rclk";
++			bias-pull-down;
++		};
++	};
++
++	sdc2_on: sdc2-on {
++		pinconf-clk {
++			pins = "sdc2_clk";
++			bias-disable;
++			drive-strength = <16>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc2_cmd";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-data {
++			pins = "sdc2_data";
++			bias-pull-up;
++			drive-strength = <10>;
++		};
++
++		pinconf-sd-cd {
++			pins = "gpio69";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++	};
++
++	sdc2_off: sdc2-off {
++		pinconf-clk {
++			pins = "sdc2_clk";
++			bias-disable;
++			drive-strength = <2>;
++		};
++
++		pinconf-cmd {
++			pins = "sdc2_cmd";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-data {
++			pins = "sdc2_data";
++			bias-pull-up;
++			drive-strength = <2>;
++		};
++
++		pinconf-sd-cd {
++			pins = "gpio69";
++			bias-disable;
++			drive-strength = <2>;
++		};
++	};
+ };
+diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+index 1fc328ba0403e..0630a9c410b58 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
+@@ -1872,108 +1872,6 @@ pinmux {
+ 					function = "lpass_ext";
+ 				};
+ 			};
+-
+-			sdc1_on: sdc1-on {
+-				pinconf-clk {
+-					pins = "sdc1_clk";
+-					bias-disable;
+-					drive-strength = <16>;
+-				};
+-
+-				pinconf-cmd {
+-					pins = "sdc1_cmd";
+-					bias-pull-up;
+-					drive-strength = <10>;
+-				};
+-
+-				pinconf-data {
+-					pins = "sdc1_data";
+-					bias-pull-up;
+-					drive-strength = <10>;
+-				};
+-
+-				pinconf-rclk {
+-					pins = "sdc1_rclk";
+-					bias-pull-down;
+-				};
+-			};
+-
+-			sdc1_off: sdc1-off {
+-				pinconf-clk {
+-					pins = "sdc1_clk";
+-					bias-disable;
+-					drive-strength = <2>;
+-				};
+-
+-				pinconf-cmd {
+-					pins = "sdc1_cmd";
+-					bias-pull-up;
+-					drive-strength = <2>;
+-				};
+-
+-				pinconf-data {
+-					pins = "sdc1_data";
+-					bias-pull-up;
+-					drive-strength = <2>;
+-				};
+-
+-				pinconf-rclk {
+-					pins = "sdc1_rclk";
+-					bias-pull-down;
+-				};
+-			};
+-
+-			sdc2_on: sdc2-on {
+-				pinconf-clk {
+-					pins = "sdc2_clk";
+-					bias-disable;
+-					drive-strength = <16>;
+-				};
+-
+-				pinconf-cmd {
+-					pins = "sdc2_cmd";
+-					bias-pull-up;
+-					drive-strength = <10>;
+-				};
+-
+-				pinconf-data {
+-					pins = "sdc2_data";
+-					bias-pull-up;
+-					drive-strength = <10>;
+-				};
+-
+-				pinconf-sd-cd {
+-					pins = "gpio69";
+-					bias-pull-up;
+-					drive-strength = <2>;
+-				};
+-			};
+-
+-			sdc2_off: sdc2-off {
+-				pinconf-clk {
+-					pins = "sdc2_clk";
+-					bias-disable;
+-					drive-strength = <2>;
+-				};
+-
+-				pinconf-cmd {
+-					pins = "sdc2_cmd";
+-					bias-pull-up;
+-					drive-strength = <2>;
+-				};
+-
+-				pinconf-data {
+-					pins = "sdc2_data";
+-					bias-pull-up;
+-					drive-strength = <2>;
+-				};
+-
+-				pinconf-sd-cd {
+-					pins = "gpio69";
+-					bias-disable;
+-					drive-strength = <2>;
+-				};
+-			};
+ 		};
+ 
+ 		remoteproc_mpss: remoteproc@4080000 {
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
