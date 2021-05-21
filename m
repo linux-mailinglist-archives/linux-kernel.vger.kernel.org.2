@@ -2,104 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1905338C9C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:08:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E21638C9CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:09:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237299AbhEUPJq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:09:46 -0400
-Received: from ms.lwn.net ([45.79.88.28]:42832 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230420AbhEUPJp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:09:45 -0400
-Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 6D149153;
-        Fri, 21 May 2021 15:08:21 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 6D149153
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1621609701; bh=V2vNepzONuwsPQWA23na/dx6eiWDxiiBVf3jQVQnBdM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=C+qfue6OZlEqHcXt1khYxZ4Cz/ChTOUbztfvYb0q2eOMpt5er1SUbdzcMDE596FMN
-         Lf2Hdky4qdCaWkZi1nLRLGKEFCg2ikADuP9MlCo8T3APwnO/2gBp6eVj5D2zg0OJnl
-         3dpLZTjsvVmxkOqH2uEWUzLvtfySwUBp+u/XfqjEU0FGvL1GczFSTtlLhZquuFSJlS
-         FHDMVRLiZ4Fd5J8s73p6fJMhxHHjRam+C/SebSXWd7r6A4LBWhR3SZ/kmDOiOctnwa
-         I68x3kKw6np7AiV8MSncLpJlkhVJegHuaSTgw9/xRM92I6n9sbUG86WL+zQcbP6Oip
-         OiEl6llM6rqog==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-In-Reply-To: <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
-References: <20210520183614.1227046-1-posk@google.com>
- <87mtspm7fe.fsf@meer.lwn.net>
- <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
-Date:   Fri, 21 May 2021 09:08:20 -0600
-Message-ID: <87eee0m8ez.fsf@meer.lwn.net>
+        id S237322AbhEUPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:10:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230420AbhEUPKV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 11:10:21 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A289BC061574;
+        Fri, 21 May 2021 08:08:57 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso7335014pji.0;
+        Fri, 21 May 2021 08:08:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ZK5vDUvIgC6bF48AUmy/OX+Gvz7Keg1NucsMNX6Zy4o=;
+        b=Dx9XkbBe/GmK+FqmIbzp0hVenlj7MFt21Nz/kQwk43TKsYOEi/sCG+pnhjucrJlB4q
+         jRqOR4U2z9qArpH/YOhny/fD/vxBvpic0qZS2jCRM50tbrp1x2/nAUbFVLP7Qi19JCNn
+         qE+wcRC2PDchPNCgBK/kplZ23l4XdAGwwvK+devv43Tmy2PXYdX97oc1fqD8wahEWSJM
+         S61yrAdAUsXDHexNw5S8uDNv9I5m5zDfnwbBzysVhBp7QDRB17vjUxauVdwpiCZ5QOm6
+         GSKGV9qn/UZSHH/cHz1QKfJLUx8l+eGWf0kuCA7n9SDNwDoPDs6CXjEoCKn+r8OWexA7
+         I/nA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ZK5vDUvIgC6bF48AUmy/OX+Gvz7Keg1NucsMNX6Zy4o=;
+        b=bmrpmCHmBaOz+symqFd7oSYAKOpoLGfqoqbjM8ahu0rSYeC6RY+fBow7tWNih7BK9x
+         7iyvi/RscY5wVgPxV/4L/SQBJPBu6ClH9r4/+AapALXvJGBZoUq9U3quKEuqK3jb9861
+         ljPG6ig5dOgZqLrD1holSUXGnlaFyGBmGHU+GiiI7n1S7ZQf20XZF3fZyKx6ziZJkhLk
+         5REVHrOiYJO5MJmau0qW5+wJU35bJWVxV7zClo0AHVpXuPy3Cxbt6ht6zSE09A8ttAX+
+         KS5Ud+RDTiZ6awfJMybmYCp33eq2WzIUe3cY4rpihOtYRPuaWe64FqfLmwjq0ADQgejE
+         f+Gg==
+X-Gm-Message-State: AOAM532n8/P+/jvWTjig3VQj8RWNofulxwe5zzqzPKwFbngKpfhbeP9e
+        PS5oF1GlcfSo7kTcKXyhfT6yHfFsa5s=
+X-Google-Smtp-Source: ABdhPJwCvPiXdUhwh8fr71RC4veZs/oxr51w/F6wONFAA1gyWJCkV4ltIEByJrdN3ZMeHTUqHNOGzQ==
+X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr1458823pjh.111.1621609736739;
+        Fri, 21 May 2021 08:08:56 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id h26sm4443160pfo.203.2021.05.21.08.08.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 08:08:56 -0700 (PDT)
+Subject: Re: [PATCH] pinctrl: bcm2835: Accept fewer than expected IRQs
+To:     "Ivan T. Ivanov" <iivanov@suse.de>,
+        Linus Walleij <linus.walleij@linaro.org>
+Cc:     Phil Elwell <phil@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210521090158.26932-1-iivanov@suse.de>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <47bf2b41-d42f-fb25-ee9e-5527f3324b17@gmail.com>
+Date:   Fri, 21 May 2021 08:08:47 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210521090158.26932-1-iivanov@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Oskolkov <posk@google.com> writes:
 
-> On Thu, May 20, 2021 at 2:17 PM Jonathan Corbet <corbet@lwn.net> wrote:
->>
->> Peter Oskolkov <posk@google.com> writes:
->>
->> > As indicated earlier in the FUTEX_SWAP patchset:
->> >
->> > https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
->> >
->> > "Google Fibers" is a userspace scheduling framework
->> > used widely and successfully at Google to improve in-process workload
->> > isolation and response latencies. We are working on open-sourcing
->> > this framework, and UMCG (User-Managed Concurrency Groups) kernel
->> > patches are intended as the foundation of this.
->>
->> So I have to ask...is there *any* documentation out there on what this
->> is and how people are supposed to use it?  Shockingly, typing "Google
->> fibers" into Google leads to a less than fully joyful outcome...  This
->> won't be easy for anybody to review if they have to start by
->> reverse-engineering what it's supposed to do.
->
-> Hi Jonathan,
->
-> There is this Linux Plumbers video: https://www.youtube.com/watch?v=KXuZi9aeGTw
-> And the pdf: http://pdxplumbers.osuosl.org/2013/ocw//system/presentations/1653/original/LPC%20-%20User%20Threading.pdf
->
-> I did not reference them in the patchset because links to sites other
-> than kernel.org are strongly discouraged... I will definitely add a
-> documentation patch.
 
-I did look at those - but a presentation from 2013 is going to be of
-limited relevance for a 2021 patch set.  In particular, the syscall API
-appears to have evolved considerably since then.
+On 5/21/2021 2:01 AM, Ivan T. Ivanov wrote:
+> From: Phil Elwell <phil@raspberrypi.com>
+> 
+> The downstream .dts files only request two GPIO IRQs. Truncate the
+> array of parent IRQs when irq_of_parse_and_map returns 0.
+> 
+> Signed-off-by: Phil Elwell <phil@raspberrypi.com>
+> Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
+> ---
+>  drivers/pinctrl/bcm/pinctrl-bcm2835.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm2835.c b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+> index 1d21129f7751..2c87af1180c4 100644
+> --- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+> +++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
+> @@ -1274,9 +1274,13 @@ static int bcm2835_pinctrl_probe(struct platform_device *pdev)
+>  		char *name;
+>  
+>  		girq->parents[i] = irq_of_parse_and_map(np, i);
+> -		if (!is_7211)
+> +		if (!is_7211) {
+> +			if (!girq->parents[i]) {
+> +				girq->num_parents = i;
+> +				break;
+> +			}
+>  			continue;
 
-> Feel free to reach out to me directly or through this LKML thread if
-> you have any questions.
->
-> Do you think a documentation patch would be useful at this point, as
-> opposed to a free-form email discussion?
+This assumes that interrupts are specified in an ordered way and skipped
+in an ordered way as well, however given that we just hand
+girq->parents[] to the GPIOLIB core, I don't really see a better solution:
 
-Documentation patches can help to guide that discussion; they also need
-to be reviewed as well.  So yes, I think they should be present from the
-beginning.  But then, that's the position I'm supposed to take :)  This
-is a big change to the kernel's system-call API, I don't think that
-there can be a proper discussion of that without a description of what
-you're trying to do.
-
-Thanks,
-
-jon
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
