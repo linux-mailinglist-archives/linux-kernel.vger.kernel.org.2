@@ -2,91 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73E138CE0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:17:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D593138CE0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:19:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236225AbhEUTTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:19:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50686 "EHLO
+        id S237959AbhEUTUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:20:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234961AbhEUTTT (ORCPT
+        with ESMTP id S234961AbhEUTU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:19:19 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8357C061574;
-        Fri, 21 May 2021 12:17:55 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d:444a:d152:279d:1dbb])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 77D8A2F3;
-        Fri, 21 May 2021 19:17:55 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 77D8A2F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1621624675; bh=Xm2ZcunaeMCF59JtFhGKPUZwAFVrpYPgk1Cgjmzkh1I=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=ZGM71Y0RHRY3Aa13dkY1orOEI6svm5gyj0gNAeBF5zJaeQjaHREOoHM8uWL9AozyT
-         tcsef9Ma5zjbbYrpNKwkNv7ykW2H2wWM6V6s/Jlb4A1IipfLVZRiuy/HCZFe/MBz3R
-         LjAX8N7uf6FXP1goGPBZDBVCMySM497mrLdpM/6DNHhdxIyuAzhMGAAFIJq0AuOgY7
-         e9Ev1Mcmo9W4eBoENrq/Od2LF+NqaRqEKIl6rVAtZf4unZX5oNr58HwOBSW7KoxDlz
-         mxF/pLWMXrCTg8pqnZQTSj670XhL2Nxe5cIXMbr7YqiYls/iqvQpn1hEC6S+Ib2B01
-         U8tQext7fuj0g==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Peter Oskolkov <posk@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-In-Reply-To: <CAPNVh5fhkgscs44Lpj3DPBrA9NrhFohUpRwpT2iMM1BDBcLW4A@mail.gmail.com>
-References: <20210520183614.1227046-1-posk@google.com>
- <87mtspm7fe.fsf@meer.lwn.net>
- <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
- <87eee0m8ez.fsf@meer.lwn.net>
- <CAPNVh5fhkgscs44Lpj3DPBrA9NrhFohUpRwpT2iMM1BDBcLW4A@mail.gmail.com>
-Date:   Fri, 21 May 2021 13:17:55 -0600
-Message-ID: <87wnrrlwv0.fsf@meer.lwn.net>
+        Fri, 21 May 2021 15:20:27 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71F2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:19:03 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id s6so24442797edu.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:19:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=A0bOSvQvIFoNvuO08SOXCaee1LAs7SSvjM47STchOkk=;
+        b=WAEzSBCnxT/1BObN8G+M1p7trniZRWUzovbAuER9lI+APkD3WYl8njHOV/oXKOxw3v
+         0lB64Ddw4sJEzRgVDXDMlb7dD2kb6SYtLv3aE6gWzYJKDQD8vlzOHQ3oR+kq8M20bMYe
+         1DFpsArMo4hjTgYaR2rqa0Z2WZ5z/uOhNsqa+XtZGW7n9hEHOKZhC3uizie/oWSSE+fX
+         9RjZAXPcYoRDHHd7shIiGCqGsicxzGh0pHIcxPLfBGxRCX+PDTJyn3oOWnKdia77gdyC
+         oIocvnVDfp0VxvUZo0sQJ+EMkvXt5A1cYaZzKYpDoNXrncDGlTznW9IQ1uLB4yiUjnGF
+         hKxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=A0bOSvQvIFoNvuO08SOXCaee1LAs7SSvjM47STchOkk=;
+        b=EHxET+5ihuX+wgkp8dsvVSurWV5zQTzce4eUbwJe3AKICL8U23eP9Y0gmqJ+0L88f3
+         Pt1bPYfZa5t82VvjT8SFZ9zW+s4Rzfl8HvcB1Yui3T/Y3G0+tqrRh1nTfEaVFSkoUMjL
+         c9huZlFe5rkj2rYAQXdBiS33g1XJBSL5jPeC7K9VOxIUa+DwaCVe+LY7AItX7YAm6Fsr
+         o02fvZdMydBl45sBZyX9FMzR/rG7I31ohIXiOtvf9P9Pwm1Dj+YtPsZkKGv232V2HwYl
+         RMgDvHavnpySHb0bMRxPnRSWaUyoLxupPMqX2YQro7i37QoeRWVZKUrdNT2ClCeUpZC3
+         TCWw==
+X-Gm-Message-State: AOAM532jgHBfxw6jHBQP1rC9njnQTrAJpJOhCzieGc1Yz5CznNNhkbdU
+        zRrWvYIL6SHocdG0E3Qw9kHnh7gmVywEYpBL/JBl2MTgQegHTCrK
+X-Google-Smtp-Source: ABdhPJxy/tsOlhxVkaev+BLzhjxfSBrGKeHQy2re7EosrmSkiZQ/auNR0gOHbYIynQVu4ilnreNrudnMgRqMkD8Z2S8=
+X-Received: by 2002:aa7:d893:: with SMTP id u19mr13027947edq.258.1621624742282;
+ Fri, 21 May 2021 12:19:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20210518090658.9519-1-amanieu@gmail.com> <20210518090658.9519-9-amanieu@gmail.com>
+ <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
+ <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com>
+ <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com> <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
+ <1c2bd27a-1c96-f154-ed18-f33630b109b1@arm.com>
+In-Reply-To: <1c2bd27a-1c96-f154-ed18-f33630b109b1@arm.com>
+From:   "Amanieu d'Antras" <amanieu@gmail.com>
+Date:   Fri, 21 May 2021 20:18:25 +0100
+Message-ID: <CA+y5pbSbky2kS+O5j9bn57nROdYaYeHcd2R-46X1cc388PKOvg@mail.gmail.com>
+Subject: Re: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat syscalls
+To:     Steven Price <steven.price@arm.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Oskolkov <posk@google.com> writes:
-
-> On Fri, May 21, 2021 at 8:08 AM Jonathan Corbet <corbet@lwn.net> wrote:
+On Fri, May 21, 2021 at 9:51 AM Steven Price <steven.price@arm.com> wrote:
+> >> In those cases to correctly emulate seccomp, isn't Tango is going to
+> >> have to implement the seccomp filter in user space?
+> >
+> > I have not implemented user-mode seccomp emulation because it can
+> > trivially be bypassed by spawning a 64-bit child process which runs
+> > outside Tango. Even when spawning another translated process, the
+> > user-mode filter will not be preserved across an execve.
 >
-> [...]
->> Documentation patches can help to guide that discussion; they also need
->> to be reviewed as well.  So yes, I think they should be present from the
->> beginning.  But then, that's the position I'm supposed to take :)  This
->> is a big change to the kernel's system-call API, I don't think that
->> there can be a proper discussion of that without a description of what
->> you're trying to do.
+> Clearly if you have user-mode seccomp emulation then you'd hook execve
+> and either install the real BPF filter (if spawning a 64 bit child
+> outside Tango) or ensure that the user-mode emulation is passed on to
+> the child (if running within Tango).
+
+Spawning another process is just an example. Fundamentally, Tango is
+not intended or designed to be a sandbox around the 32-bit code. For
+example, many of the newer ioctls use u64 instead of a pointer type to
+avoid the need for a compat_ioctl handler. This means that such ioctls
+could be abused to read/write any address in the process address
+space, including the code that is performing the usermode seccomp
+emulation.
+
+> You already have a potential 'issue' here of a 64 bit process setting up
+> a seccomp filter and then execve()ing a 32 bit (Tango'd) process. The
+> set of syscalls needed for the system which supports AArch32 natively is
+> going to be different from the syscalls needed for Tango. (Fundamentally
+> this is a major limitation with the whole seccomp syscall filtering
+> approach).
+
+The specific example I had in mind here is Android which installs a
+global seccomp filter on the zygote process from which app processes
+are forked from. This filter is designed for mixed arm32/arm64 systems
+and therefore has syscall whitelists for both AArch32 and AArch64.
+This filter allows 32-bit processes to spawn 64-bit processes and
+vice-versa: for example, many 32-bit apps will invoke another 32-bit
+executable via system() which uses a 64-bit /system/bin/sh.
+
+> >> I guess the question comes down to how big a hole is
+> >> syscall_in_tango_whitelist() - if Tango only requires a small set of
+> >> syscalls then there is still some security benefit, but otherwise this
+> >> doesn't seem like a particularly big benefit considering you're already
+> >> going to need the BPF infrastructure in user space.
+> >
+> > Currently Tango only whitelists ~50 syscalls, which is small enough to
+> > provide security benefits and definitely better than not supporting
+> > seccomp at all.
 >
-> Hi Jon,
->
-> There are doc comments in patches 2 and 7 in umcg.c documenting the
-> new syscalls. That said, I'll prepare a separate doc patch - I guess
-> I'll add Documentation/scheduler/umcg.rst, unless you tell me there is
-> a better place to do that. ETA mid-to-late next week.
+> Agreed, and I don't want to imply that this approach is necessarily
+> wrong. But given that the approach of getting the kernel to do the
+> compat syscall filtering is not perfect, I'm not sure in itself it's a
+> great justification for needing the kernel to support all the compat
+> syscalls.
 
-Yes, I saw those; they are a bit terse at best.  What are the "worker
-states"?  What's a "UMCG group"?  Yes, all this can be worked out by
-pounding one's head against the code for long enough, but you're asking
-a fair amount of your reviewers.
+I feel that exposing all compat syscalls to 64-bit processes is better
+than the alternative of only exposing a subset of them. Of the top of
+my head I can think of quite a few compat syscalls that cannot be
+fully emulated in userspace and would need to be exposed in the
+kernel:
+- mmap/mremap/shmat/io_setup: anything that allocates VM space needs
+to return a pointer in the low 4GB.
+- ioctl: too many variants to reasonably maintain a separate compat
+layer in userspace.
+- getdents/lseek: ext4 uses 32-bit directory offsets for 32-bit processes.
+- get_robust_list/set_robust_list: different in-memory ABI for
+32/64-bit processes.
+- open: don't force O_LARGEFILE for 32-bit processes.
+- io_uring_create: different in-memory ABI for 32/64-bit processes.
+- (and possibly many others)
 
-A good overall description would be nice, perhaps for the userspace-api
-book.  But *somebody* is also going to have to write real man pages for
-all these system calls; if you provided those, the result should be a
-good description of how you expect this subsystem to work.
+Also consider the churn involved when adding a new syscall which
+behaves differently in compat processes: rather than just using
+in_compat_syscall() or wiring up a COMPAT_SYSCALL_DEFINE, a compat
+variant of this syscall would also need to be added to the 64-bit
+syscall table to support translation layers like Tango and FEX.
 
-Thanks,
+> One other thought: I suspect in practise there aren't actually many
+> variations in the BPF programs used with seccomp. It may well be quite
+> possible to convert the 32-bit syscall filtering programs to filter the
+> equivalent 64-bit syscalls that Tango would use. Sadly this would be
+> fragile if a program used a BPF program which didn't follow the "normal"
+> pattern.
 
-jon
+This might work for simple filters that only look at the syscall
+number, but becomes much harder when the filter also inspects the
+syscall arguments.
