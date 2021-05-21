@@ -2,177 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36A6838BC46
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C454D38BC45
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:06:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238379AbhEUCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:08:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232774AbhEUCIr (ORCPT
+        id S238334AbhEUCHc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:07:32 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:39736 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232774AbhEUCH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:08:47 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A11BC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:07:24 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso4728810pjb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:07:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=XQC3eHTZZ2Kq4lpuBmx7B6rPqlssJUOcU0MyknfHKdM=;
-        b=CowNc6SaX8w7shKBJtCWz0yby6+fx0kHgH2xxqs2NT6uzhiPBi+xJhtHFOJ8EbFb5W
-         g2VH9VaG1fWl9gFGvqf5poGOgQ5SY7ZM37PCMZk8UiViQs/andX4LzYtsQLPJxHXkyuZ
-         O8VKv19PBqbdnYvv1T8HdBsVU/uBveyivy1bNr5d2fnLVPgHSNCSzLsPRo/6AHLstYEG
-         E8YRaU/sDNOeKwf67ljcrCmTLs1Qq3/7t6o6RQ3zziyeP4PeWrnG3Eb1IGPgl0/ZpikT
-         FBFUnL64P2+B305nGT6U9TnfV/tM3GtwUqX4OaQry2vJIBgRH6CutFHhmCtrsLUeQDVg
-         FpWQ==
+        Thu, 20 May 2021 22:07:27 -0400
+Received: by mail-oi1-f177.google.com with SMTP id y76so9026640oia.6;
+        Thu, 20 May 2021 19:06:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=XQC3eHTZZ2Kq4lpuBmx7B6rPqlssJUOcU0MyknfHKdM=;
-        b=rChWafSp2DTye8EWHkWy9WO/JvOyaKqcEQqvYR1kIkj2+6r5sNaNxCX8EWp4R237w3
-         a21JRRzQrwFLbfgPV9JRYzGyXU8FQ6ue5ejDngznF2ueMozpbcjfMOY/RQV8Q1cKoyiZ
-         XkmSvPaFRmN4ciKgD9+j29QqVhLNA9eQajFMyzWGpHFvBhySt6WZHNu+owR2iNLDFsn7
-         MAazGAuwhvcS2vvkqdp9okQZWODt8rTALW6s6qG3dEE1rcOQ0TTPFYjjEmqM98t1iaZG
-         EJ2V6fn1Wld28suRp/0xgmKyG3j5u7PZZrzVWDAMQJGzPnF68hluBLPZ8otZ7s/WsJQ2
-         FiBg==
-X-Gm-Message-State: AOAM532w//KSSMe2KZkispLVlEq4zb3Cy88bWJ5XsMawwc7kwGeMas3y
-        46EI3u0E7KU+17UkHJHix5Y=
-X-Google-Smtp-Source: ABdhPJxQZ0rHtYTza1uhQ/LjwYtFsrjh8lL0C72Mepiyu3qf1tZRYVSa8LWmzuVDvVSCK/yCRBGm+g==
-X-Received: by 2002:a17:903:2289:b029:f6:a853:c4f5 with SMTP id b9-20020a1709032289b02900f6a853c4f5mr3499399plh.51.1621562843606;
-        Thu, 20 May 2021 19:07:23 -0700 (PDT)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id a15sm2791224pff.128.2021.05.20.19.07.18
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 May 2021 19:07:23 -0700 (PDT)
-From:   Huangzhaoyang <huangzhaoyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH v6] psi: fix race between psi_trigger_create/destroy
-Date:   Fri, 21 May 2021 10:05:54 +0800
-Message-Id: <1621562754-8158-1-git-send-email-huangzhaoyang@gmail.com>
-X-Mailer: git-send-email 1.7.9.5
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0H2GF3uZl9zixyhg0W0KnFuUJPM2Rk1J1IN+ADFK40U=;
+        b=UzFUzb5kpMDjqT/Y8QpHp5Hw4lOkQMv25nVKSZBMDV0ys2j3oCdXfxbPGIprEoK0MF
+         ks7HVnlR7aFK7lKZ9F4Eveyt1yGKOXFiveM72qFkiKKG2cY/HTcx5jhTXzKodD/GwM+m
+         Y74bz/cRAGNd3cUEA4o7CUxbw6FA1jfkwZjKcWEGjR9VmnaaeMKAoyahREfLAc68h+sD
+         /Yt1lcdJAgjzvnNBFNH391XCjO0VbvV6rzSlOv26YG5P29V3pCxltv4r9r/Gw1urAsrw
+         KLKVtXVkg3mFmIm+JTZpJ+/N/109JpN2v7d9xk2UXewyHOzQ/cWx3CpKrcK2R7TyXU3W
+         FaIQ==
+X-Gm-Message-State: AOAM530nEDhj1wh2OT4nIs7wnAEzw2np3fRmNRJ2JKZxINEnDKkcg+Gx
+        R8yTXVWleW2FOVtOTk3ZMQ==
+X-Google-Smtp-Source: ABdhPJz+5f1gkMvE4v4jEv06iH0gUMgzqhdrEaSOKD8ncFB0zOV9GqCmIQY/fouffssoUw73lkgECQ==
+X-Received: by 2002:aca:df55:: with SMTP id w82mr346256oig.25.1621562763584;
+        Thu, 20 May 2021 19:06:03 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 19sm870524oiy.11.2021.05.20.19.06.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 19:06:02 -0700 (PDT)
+Received: (nullmailer pid 2510861 invoked by uid 1000);
+        Fri, 21 May 2021 02:06:01 -0000
+Date:   Thu, 20 May 2021 21:06:01 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Qii Wang <qii.wang@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        mkorpershoek@baylibre.com, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/4] dt-bindings: i2c: i2c-mt65xx: convert doc to yaml
+ schema format
+Message-ID: <20210521020601.GA2507824@robh.at.kernel.org>
+References: <20210520112106.77190-1-fparent@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520112106.77190-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+On Thu, May 20, 2021 at 01:21:02PM +0200, Fabien Parent wrote:
+> Convert the binding documentation for i2c-mt65xx driver to the
+> YAML schema format.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+> 
+> v2:
+> 	* write compatibles in a more compact way
+> 	* set the node pattern to be "^i2c@[0-9a-f]+$" instead of
+> 		"^i2c[0-9]*@[0-9a-f]+"$
+> 
+>  .../devicetree/bindings/i2c/i2c-mt65xx.txt    | 49 ----------
+>  .../devicetree/bindings/i2c/i2c-mt65xx.yaml   | 93 +++++++++++++++++++
+>  2 files changed, 93 insertions(+), 49 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+>  create mode 100644 Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+> deleted file mode 100644
+> index 7f0194fdd0cc..000000000000
+> --- a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.txt
+> +++ /dev/null
+> @@ -1,49 +0,0 @@
+> -* MediaTek's I2C controller
+> -
+> -The MediaTek's I2C controller is used to interface with I2C devices.
+> -
+> -Required properties:
+> -  - compatible: value should be either of the following.
+> -      "mediatek,mt2701-i2c", "mediatek,mt6577-i2c": for MediaTek MT2701
+> -      "mediatek,mt2712-i2c": for MediaTek MT2712
+> -      "mediatek,mt6577-i2c": for MediaTek MT6577
+> -      "mediatek,mt6589-i2c": for MediaTek MT6589
+> -      "mediatek,mt6797-i2c", "mediatek,mt6577-i2c": for MediaTek MT6797
+> -      "mediatek,mt7622-i2c": for MediaTek MT7622
+> -      "mediatek,mt7623-i2c", "mediatek,mt6577-i2c": for MediaTek MT7623
+> -      "mediatek,mt7629-i2c", "mediatek,mt2712-i2c": for MediaTek MT7629
+> -      "mediatek,mt8173-i2c": for MediaTek MT8173
+> -      "mediatek,mt8183-i2c": for MediaTek MT8183
+> -      "mediatek,mt8192-i2c": for MediaTek MT8192
+> -      "mediatek,mt8516-i2c", "mediatek,mt2712-i2c": for MediaTek MT8516
+> -  - reg: physical base address of the controller and dma base, length of memory
+> -    mapped region.
+> -  - interrupts: interrupt number to the cpu.
+> -  - clock-div: the fixed value for frequency divider of clock source in i2c
+> -    module. Each IC may be different.
+> -  - clocks: clock name from clock manager
+> -  - clock-names: Must include "main" and "dma", "arb" is for multi-master that
+> -    one bus has more than two i2c controllers, if enable have-pmic need include
+> -    "pmic" extra.
+> -
+> -Optional properties:
+> -  - clock-frequency: Frequency in Hz of the bus when transfer, the default value
+> -    is 100000.
+> -  - mediatek,have-pmic: platform can control i2c form special pmic side.
+> -    Only mt6589 and mt8135 support this feature.
+> -  - mediatek,use-push-pull: IO config use push-pull mode.
+> -
+> -Example:
+> -
+> -	i2c0: i2c@1100d000 {
+> -			compatible = "mediatek,mt6577-i2c";
+> -			reg = <0x1100d000 0x70>,
+> -			      <0x11000300 0x80>;
+> -			interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_LOW>;
+> -			clock-frequency = <400000>;
+> -			mediatek,have-pmic;
+> -			clock-div = <16>;
+> -			clocks = <&i2c0_ck>, <&ap_dma_ck>;
+> -			clock-names = "main", "dma";
+> -	};
+> -
+> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
+> new file mode 100644
+> index 000000000000..41cedb4930de
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/i2c/i2c-mt65xx.yaml
+> @@ -0,0 +1,93 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/i2c/i2c-mt65xx.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: MediaTek I2C Controller
+> +
+> +maintainers:
+> +  - Qii Wang <qii.wang@mediatek.com>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+> +
+> +allOf:
+> +  - $ref: /schemas/i2c/i2c-controller.yaml#
+> +
+> +properties:
+> +  $nodename:
+> +    pattern: "^i2c@[0-9a-f]+$"
+> +
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - mediatek,mt2712-i2c
+> +          - mediatek,mt6577-i2c
+> +          - mediatek,mt6589-i2c
+> +          - mediatek,mt7622-i2c
+> +          - mediatek,mt8173-i2c
+> +          - mediatek,mt8183-i2c
+> +          - mediatek,mt8192-i2c
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt2701-i2c
+> +              - mediatek,mt6797-i2c
+> +              - mediatek,mt7623-i2c
+> +          - const: mediatek,mt6577-i2c
+> +      - items:
+> +          - enum:
+> +              - mediatek,mt7629-i2c
+> +              - mediatek,mt8516-i2c
+> +          - const: mediatek,mt2712-i2c
+> +
+> +  clocks:
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - description: Controller clock
+> +      - description: DMA clock
+> +      - description: ARB clock for multi-master when a bus has more than
+> +          one i2c controllers
+> +      - description: PMIC clock. Only when mediatek,have-pmic is set.
+> +
+> +  clock-names:
+> +    minItems: 2
+> +    maxItems: 4
+> +    items:
+> +      - const: main
+> +      - const: dma
+> +      - const: arb
+> +      - const: pmic
+> +
+> +  mediatek,have-pmic:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: Platform can control I2C from the PMIC
+> +
+> +  mediatek,use-push-pull:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description: IO config use push-pull mode.
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - clock-div
 
-Race detected between psi_trigger_destroy/create as shown below, which
-cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
-and psi_system->poll_timer->entry->next. Under this modification, the
-race window is removed by initialising poll_wait and poll_timer in
-group_init which are executed only once at beginning.
+This isn't documented.
 
-psi_trigger_destroy                      psi_trigger_create
-mutex_lock(trigger_lock);
-rcu_assign_pointer(poll_task, NULL);
-mutex_unlock(trigger_lock);
-					mutex_lock(trigger_lock);
-					if (!rcu_access_pointer(group->poll_task)) {
-
-						timer_setup(poll_timer, poll_timer_fn, 0);
-
-						rcu_assign_pointer(poll_task, task);
-					}
-					mutex_unlock(trigger_lock);
-
-synchronize_rcu();
-del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
-psi_trigger_create
-
-So, trigger_lock/RCU correctly protects destruction of group->poll_task but
-misses this race affecting poll_timer and poll_wait.
-
-Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger
-scheduling mechanism")
-
-Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
-Signed-off-by: ke.wang <ke.wang@unisoc.com>
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
-v2: change del_timer_sync to del_timer in psi_trigger_destroy
-v3: remove timer_setup within psi_tirgger_create
-    protect del_timer by extending the critical section of mutex_lock
-v4: amend fix information on comment
-v5: delete the poll_timer while assigning the task to NULL
-v6: update subject and comments as Suren's suggestion
----
----
- kernel/sched/psi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3c..58b36d1 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -182,6 +182,8 @@ struct psi_group psi_system = {
- 
- static void psi_avgs_work(struct work_struct *work);
- 
-+static void poll_timer_fn(struct timer_list *t);
-+
- static void group_init(struct psi_group *group)
- {
- 	int cpu;
-@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
- 	memset(group->polling_total, 0, sizeof(group->polling_total));
- 	group->polling_next_update = ULLONG_MAX;
- 	group->polling_until = 0;
-+	init_waitqueue_head(&group->poll_wait);
-+	timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 	rcu_assign_pointer(group->poll_task, NULL);
- }
- 
-@@ -1157,9 +1161,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
- 			return ERR_CAST(task);
- 		}
- 		atomic_set(&group->poll_wakeup, 0);
--		init_waitqueue_head(&group->poll_wait);
- 		wake_up_process(task);
--		timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 		rcu_assign_pointer(group->poll_task, task);
- 	}
- 
-@@ -1211,6 +1213,7 @@ static void psi_trigger_destroy(struct kref *ref)
- 					group->poll_task,
- 					lockdep_is_held(&group->trigger_lock));
- 			rcu_assign_pointer(group->poll_task, NULL);
-+			del_timer(&group->poll_timer);
- 		}
- 	}
- 
-@@ -1223,17 +1226,14 @@ static void psi_trigger_destroy(struct kref *ref)
- 	 */
- 	synchronize_rcu();
- 	/*
--	 * Destroy the kworker after releasing trigger_lock to prevent a
-+	 * Stop kthread 'psimon' after releasing trigger_lock to prevent a
- 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
- 	 */
- 	if (task_to_destroy) {
- 		/*
- 		 * After the RCU grace period has expired, the worker
- 		 * can no longer be found through group->poll_task.
--		 * But it might have been already scheduled before
--		 * that - deschedule it cleanly before destroying it.
- 		 */
--		del_timer_sync(&group->poll_timer);
- 		kthread_stop(task_to_destroy);
- 	}
- 	kfree(t);
--- 
-1.9.1
-
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    i2c0: i2c@1100d000 {
+> +            compatible = "mediatek,mt6577-i2c";
+> +            reg = <0x1100d000 0x70>,
+> +                  <0x11000300 0x80>;
+> +            interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_LOW>;
+> +            clock-frequency = <400000>;
+> +            mediatek,have-pmic;
+> +            clock-div = <16>;
+> +            clocks = <&i2c0_ck>, <&ap_dma_ck>;
+> +            clock-names = "main", "dma";
+> +    };
+> -- 
+> 2.31.1
+> 
