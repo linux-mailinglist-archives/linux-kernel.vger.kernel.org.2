@@ -2,121 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85CEE38BC62
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:23:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6A4938BC67
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238555AbhEUCY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238532AbhEUCY1 (ORCPT
+        id S238569AbhEUCYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:24:44 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:4706 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238546AbhEUCYk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:24:27 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A657BC061761
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:23:05 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id c12so2220517pfl.3
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:23:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=YemI85O9bLI0m8MkylkyR0IUfS+oZy6kYsON+ubb8mg=;
-        b=gEabH7HEBFV1nPdVQ6FrQc/idUFaL/V5OxiMA1LI2BpttADEiH2k7vALxIDizC3MSG
-         gSgQMRLfRy3FJ0npyYj5LwrxlIvuF3MQ2h2kese9zmgcI9w+x8PEBOBOFIN9cqlmmWWs
-         YWBG2iCbiuzEI6wasXPpTSOLeoZFizR2a0ZXlmZYIKoUvJOSg7zhgh+AuQK2q+EyhL0T
-         bb4dzsW7mUgo878zXUzNcyoh419is9FMpDsZtuf1oO4z3uZlf9rBnv399PqOj2nK6UlG
-         WPj4JZVo6Wsh9P3URTV0gh/fgI++wQETs2AIn3RAOzMk/RopmHAfBYy0i16WlbxpkMWG
-         3UDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=YemI85O9bLI0m8MkylkyR0IUfS+oZy6kYsON+ubb8mg=;
-        b=Ji91lG+X8kK8G7MeqzFB+W57y6hK4QEaVUFNXj20PJ2owqP5loyoNq1B5vRD01uLkH
-         HuZ0q4F7RCnYhOJh73b7klUOq2ynFrGDFLIg/5HacQuuBbR9sjbWHAtccXjghE88inIy
-         xhtCjFYqkvb8TIpxzuhpRfgoIRM0bdX4Mo1Ly79tfKyn7V7GwPN+YGo4CwpFF4Z3SggF
-         OxilSfTzLmSywb5N4nB6N+isVr853X/3P6SbjhGM1QUeoYmUJ/1bjqB6y314oh2xtUCi
-         HY5HcPF7UWnqJITq4kDjpEzc0sn2WWvII+zuwyfeLnc2vQgDgxU05oAFHAdQ3BG+hO2O
-         cCjg==
-X-Gm-Message-State: AOAM531Hotu1n8iT7X+CpiuA7IadPAFXS+hQ0LfVoEuffIAjODqUMqXG
-        WQ3nnEYDekCZ3aaF/NgOBs+j6uHXYOUNwa5fqxJXig==
-X-Google-Smtp-Source: ABdhPJz39htdi++DEibwiL3THTiqt0knG3d1uKGkXu73GOwwzQNM1rZ8VXwFKoMc7Y2smXEQir4jGlEcmlrwzsON4+A=
-X-Received: by 2002:a05:6a00:2493:b029:2c4:b6dd:d389 with SMTP id
- c19-20020a056a002493b02902c4b6ddd389mr7694639pfv.2.1621563785247; Thu, 20 May
- 2021 19:23:05 -0700 (PDT)
+        Thu, 20 May 2021 22:24:40 -0400
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmVgx0sJhz16PtQ;
+        Fri, 21 May 2021 10:20:29 +0800 (CST)
+Received: from dggpemm500001.china.huawei.com (7.185.36.107) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 10:23:16 +0800
+Received: from [127.0.0.1] (10.40.192.162) by dggpemm500001.china.huawei.com
+ (7.185.36.107) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
+ 2021 10:23:16 +0800
+Subject: Re: [PATCH 6/9] tty: hvc_console: Fix coding style issues of block
+ comments
+To:     Johan Hovold <johan@kernel.org>
+References: <1621233433-27094-1-git-send-email-tanxiaofei@huawei.com>
+ <1621233433-27094-7-git-send-email-tanxiaofei@huawei.com>
+ <YKJ6ZjT8o5xJmBCr@hovoldconsulting.com>
+ <e88b6fcd-bfe1-9812-905a-862825f420ce@huawei.com>
+ <YKYcFfKiHT39Gyey@hovoldconsulting.com>
+ <7e63a708-64c4-b369-066b-7f83d65bf178@huawei.com>
+ <YKZpi8cmH3mtXT99@hovoldconsulting.com>
+CC:     <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linuxarm@openeuler.org>
+From:   Xiaofei Tan <tanxiaofei@huawei.com>
+Message-ID: <07453180-0aa4-e260-a50d-23d27973907b@huawei.com>
+Date:   Fri, 21 May 2021 10:23:15 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-References: <20210520065918.KsmugQp47%akpm@linux-foundation.org> <8e1de6c2-27af-f612-7467-a7d1f1a31bff@infradead.org>
-In-Reply-To: <8e1de6c2-27af-f612-7467-a7d1f1a31bff@infradead.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 21 May 2021 10:22:28 +0800
-Message-ID: <CAMZfGtW=jgjJPUNk4jxFXWZ91wuYEm4q3x7NUVSjGpu0Xjc7hA@mail.gmail.com>
-Subject: Re: [External] Re: mmotm 2021-05-19-23-58 uploaded (mm/migrate.c)
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        mhocko@suse.cz, mm-commits@vger.kernel.org,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YKZpi8cmH3mtXT99@hovoldconsulting.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.40.192.162]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpemm500001.china.huawei.com (7.185.36.107)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 6:21 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 5/19/21 11:59 PM, akpm@linux-foundation.org wrote:
-> > The mm-of-the-moment snapshot 2021-05-19-23-58 has been uploaded to
-> >
-> >    https://www.ozlabs.org/~akpm/mmotm/
-> >
-> > mmotm-readme.txt says
-> >
-> > README for mm-of-the-moment:
-> >
-> > https://www.ozlabs.org/~akpm/mmotm/
-> >
-> > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
-> > more than once a week.
-> >
-> > You will need quilt to apply these patches to the latest Linus release =
-(5.x
-> > or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated=
- in
-> > https://ozlabs.org/~akpm/mmotm/series
-> >
-> > The file broken-out.tar.gz contains two datestamp files: .DATE and
-> > .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss=
-,
-> > followed by the base kernel version against which this patch series is =
-to
-> > be applied.
-> >
-> > This tree is partially included in linux-next.  To see which patches ar=
-e
-> > included in linux-next, consult the `series' file.  Only the patches
-> > within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included i=
-n
-> > linux-next.
->
-> on x86_64:
->
-> ../mm/migrate.c: In function =E2=80=98unmap_and_move_huge_page=E2=80=99:
-> ../mm/migrate.c:1295:6: error: implicit declaration of function =E2=80=98=
-hugetlb_page_subpool=E2=80=99; did you mean =E2=80=98hugetlb_count_sub=E2=
-=80=99? [-Werror=3Dimplicit-function-declaration]
->   if (hugetlb_page_subpool(hpage) && !page_mapping(hpage)) {
->       ^~~~~~~~~~~~~~~~~~~~
->
-> Full randconfig file is attached.
 
-Thanks. I'll fix it in the next version.
+Hi Johan,
 
+On 2021/5/20 21:52, Johan Hovold wrote:
+> On Thu, May 20, 2021 at 09:21:25PM +0800, Xiaofei Tan wrote:
 >
-> --
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>>> Checkpatch already has too many checks IMO and I'm a bit surprised that
+>>> it doesn't check this already. Perhaps it's because you used the -f to
+>>> run checkpatch on in-kernel code, which you should not.
+>>>
+>>>>> Second, that sentence is not capitalised so why do add a period?
+>>>>>
+>>>>
+>>>> How about capitalize the sentence, or just remove the period ?
+>>>
+>>> How about just leaving this unchanged?
+>>
+>> OK
+>> And I will keep the patch 8/9, and combine space issues into
+>> one new patch, and remove the others.
 >
+> Yeah, 8/9 is arguably a fix even if it's for a very minor issue
+> (repeated words in a comment).
+>
+> It doesn't look like any of the white space issues are worth fixing,
+> though. Such pedantry can usually be addressed when the code in question
+> is being modified for other reasons.
+>
+
+OK, it is reasonable. thanks.
+
+> Johan
+>
+> .
+>
+
