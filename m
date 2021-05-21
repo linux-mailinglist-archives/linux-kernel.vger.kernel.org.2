@@ -2,90 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D8B38C75D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A74DB38C6BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232284AbhEUNCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:02:34 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:48464 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhEUNC2 (ORCPT
+        id S233715AbhEUMpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:45:52 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3619 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhEUMpo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:02:28 -0400
-Received: from localhost (127.0.0.1) (HELO v370.home.net.pl)
- by /usr/run/smtp (/usr/run/postfix/private/idea_relay_lmtp) via UNIX with SMTP (IdeaSmtpServer 2.0.5)
- id 510932329d31bd57; Fri, 21 May 2021 15:01:04 +0200
-Received: from kreacher.localnet (89-64-82-20.dynamic.chello.pl [89.64.82.20])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by v370.home.net.pl (Postfix) with ESMTPSA id 701CD6696D3;
-        Fri, 21 May 2021 15:01:03 +0200 (CEST)
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     viresh.kumar@linaro.org, linux-kernel@vger.kernel.org,
-        kyle.meyer@hpe.com
-Cc:     Kyle Meyer <kyle.meyer@hpe.com>
-Subject: Re: [PATCH] acpi-cpufreq: Skip initialization if a cpufreq driver exists
-Date:   Fri, 21 May 2021 15:01:02 +0200
-Message-ID: <4656572.31r3eYUQgx@kreacher>
-In-Reply-To: <20210518193455.192796-1-kyle.meyer@hpe.com>
-References: <20210518193455.192796-1-kyle.meyer@hpe.com>
+        Fri, 21 May 2021 08:45:44 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FmmRg3dlpzQqgB;
+        Fri, 21 May 2021 20:40:47 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 20:44:19 +0800
+Received: from linux-lmwb.huawei.com (10.175.103.112) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 21 May 2021 20:44:18 +0800
+From:   Zou Wei <zou_wei@huawei.com>
+To:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
+        <robert.foss@linaro.org>, <Laurent.pinchart@ideasonboard.com>,
+        <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <airlied@linux.ie>,
+        <daniel@ffwll.ch>, <emma@anholt.net>, <mripard@kernel.org>
+CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
+        Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] drm: Fix PM reference leak
+Date:   Fri, 21 May 2021 21:03:06 +0800
+Message-ID: <1621602186-74786-1-git-send-email-zou_wei@huawei.com>
+X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="UTF-8"
-X-CLIENT-IP: 89.64.82.20
-X-CLIENT-HOSTNAME: 89-64-82-20.dynamic.chello.pl
-X-VADE-SPAMSTATE: clean
-X-VADE-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdejfedgiedtucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecujffqoffgrffnpdggtffipffknecuuegrihhlohhuthemucduhedtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjughrpefhvffufffkjghfggfgtgesthfuredttddtjeenucfhrhhomhepfdftrghfrggvlhculfdrucghhihsohgtkhhifdcuoehrjhifsehrjhifhihsohgtkhhirdhnvghtqeenucggtffrrghtthgvrhhnpedvjeelgffhiedukedtleekkedvudfggefhgfegjefgueekjeelvefggfdvledutdenucfkphepkeelrdeigedrkedvrddvtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeekledrieegrdekvddrvddtpdhhvghlohepkhhrvggrtghhvghrrdhlohgtrghlnhgvthdpmhgrihhlfhhrohhmpedftfgrfhgrvghlucflrdcuhgihshhotghkihdfuceorhhjfiesrhhjfiihshhotghkihdrnhgvtheqpdhrtghpthhtohepvhhirhgvshhhrdhkuhhmrghrsehlihhnrghrohdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkhihlvgdrmhgvhigvrheshhhpvgdrtghomh
-X-DCC--Metrics: v370.home.net.pl 1024; Body=4 Fuz1=4 Fuz2=4
+Content-Type: text/plain
+X-Originating-IP: [10.175.103.112]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, May 18, 2021 9:34:55 PM CEST kyle.meyer@hpe.com wrote:
-> From: Kyle Meyer <kyle.meyer@hpe.com>
-> 
-> Revert part of commit 75c0758137c7a
-> ("acpi-cpufreq: Fail initialization if driver cannot be registered").
-> 
-> acpi-cpufreq is mutually exclusive with intel_pstate, however,
-> acpi-cpufreq is loaded multiple times during startup while intel_pstate is
-> enabled. On systems using systemd the kernel triggers one uevent for each
-> device as a result of systemd-udev-trigger.service. The service exists to
-> retrigger all devices as uevents sent by the kernel before systemd-udevd
-> is running are missed. The delay caused by systemd-udevd repeatedly loading
-> the driver, getting a fail return, and unloading the driver twice per
-> logical CPU has a significant impact on the startup time, and can cause
-> some devices to be unavailable after reaching the root login prompt.
-> 
-> Load the driver once but skip initialization if a cpufreq driver exists by
-> changing the return value of cpufreq_get_current_driver() from -EEXIST to
-> 0.
-> 
-> Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
-> ---
->  drivers/cpufreq/acpi-cpufreq.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-> index 7e7450453714..e79a945369d1 100644
-> --- a/drivers/cpufreq/acpi-cpufreq.c
-> +++ b/drivers/cpufreq/acpi-cpufreq.c
-> @@ -1003,7 +1003,7 @@ static int __init acpi_cpufreq_init(void)
->  
->  	/* don't keep reloading if cpufreq_driver exists */
->  	if (cpufreq_get_current_driver())
-> -		return -EEXIST;
-> +		return 0;
->  
->  	pr_debug("%s\n", __func__);
->  
-> 
+pm_runtime_get_sync will increment pm usage counter even it failed.
+Forgetting to putting operation will result in reference leak here.
+Fix it by replacing it with pm_runtime_resume_and_get to keep usage
+counter balanced.
 
-Please resend this with CCs to linux-pm@vger.kernel.org and linux-acpi@vegr.kernel.org.
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zou Wei <zou_wei@huawei.com>
+---
+ drivers/gpu/drm/bridge/cdns-dsi.c | 2 +-
+ drivers/gpu/drm/vc4/vc4_hdmi.c    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Thanks!
-
-
-
+diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
+index 76373e3..b31281f 100644
+--- a/drivers/gpu/drm/bridge/cdns-dsi.c
++++ b/drivers/gpu/drm/bridge/cdns-dsi.c
+@@ -1028,7 +1028,7 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
+ 	struct mipi_dsi_packet packet;
+ 	int ret, i, tx_len, rx_len;
+ 
+-	ret = pm_runtime_get_sync(host->dev);
++	ret = pm_runtime_resume_and_get(host->dev);
+ 	if (ret < 0)
+ 		return ret;
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
+index c27b287..f20a65b 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.c
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
+@@ -798,7 +798,7 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
+ 	unsigned long pixel_rate, hsm_rate;
+ 	int ret;
+ 
+-	ret = pm_runtime_get_sync(&vc4_hdmi->pdev->dev);
++	ret = pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev);
+ 	if (ret < 0) {
+ 		DRM_ERROR("Failed to retain power domain: %d\n", ret);
+ 		return;
+-- 
+2.6.2
 
