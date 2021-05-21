@@ -2,96 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE71D38BCAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29DBA38BCBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 05:02:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238573AbhEUDBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 23:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55730 "EHLO
+        id S238748AbhEUDD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 23:03:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233706AbhEUDBQ (ORCPT
+        with ESMTP id S232853AbhEUDD0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 23:01:16 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1B17C061574;
-        Thu, 20 May 2021 19:59:53 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y15so2483521pfn.13;
-        Thu, 20 May 2021 19:59:53 -0700 (PDT)
+        Thu, 20 May 2021 23:03:26 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D7BBC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 20:02:04 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso6329674pjx.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 20:02:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bNbYR9JbwfZkXn8zhgxSPHGRk+wq1MKkziL+l6LqDPg=;
-        b=ajZiMQH14DX2f8eFpjpv6INp+MxcSxkanvspV5UPP0SUBoWwoOpvmVNZ38RuL5Kl2G
-         VhoSyjDBMe/MvRCiPBDiinNmP+860EELmWie4TmnpftFJ//2XdLSMS2hAKEx5GQv9RhP
-         xmWjjmNmjP/ZTHBh48k9nXKn88w8OwNV4HpPYisDDfxIgHZuef9gWL8RZx1GRUTTxWXQ
-         NBMbcD4Sz8/Wbr5R3EXhmhH9JYn1K7Pj1kPbMiSq+j2ksB6SqZuxVVYD8uVfEaHYSiMF
-         RMuSP+AwuRrltoNH7sGgQM22SjI8ay+BWQPyKdJKIdE6k88xOhdHeeCDqcaYI36anZF3
-         98wA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wDCqTxRCvKvq40fcsT0cEmcZyjzoY19iElps9bxazFU=;
+        b=qFRo/g1wdeTiNOvWl41zLpPnlJGxEd0bOEtofJ9l9r2rpdrjAO/1NWvIbEaPe1dvrV
+         JG0j85+OqBTOCMxtXwHbctWye+1eDlVBsO11Fx7qykYNzRw/RhGNbHX/dHTBql4A88HF
+         ZEtKi+zi1zOg6XGTXBODzZQZ3NH/6NDwYVwkI2beEmcv0N5UsgKZKJS78DkuTCMMAqgo
+         e3mozQJAnVnrC7bAKWVx/wPrGJmUmY071uz/XJzd0MikbPW2BHSsl+SoqilG1ci7LSzI
+         Q7dkhAzCfyX7IERiLFnodX8CEzHW0mx+1Ze7GvRyBQ7OKFZnl8lFuBscL/V0FmvkfUzV
+         7SGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bNbYR9JbwfZkXn8zhgxSPHGRk+wq1MKkziL+l6LqDPg=;
-        b=cB6X1qvxbUyahzGXaE+c3b/4EFIZlIHBUOEvZRj6T8Z2ihFng8Kv1v5LcpDs+8Sc5u
-         AdwEV5/xqylFdM9V4iZC7/P8nxVOCkCcmTOjWE1GR9Z0lr847MkQXwLXnsju0yTloAZw
-         KtDic3lbJHG+oDQTt5s1CUZa5EFF9JuwXSks8BKiPbKuRaeyppX7CxNAM1O4dE9ZMIQf
-         h488479T5LuV5HZyqZPHGjshuv7Iwc59h3fUKu3wI8l9vW3EN22DXmUjip4bKMhG/7zc
-         sy7ocdWkonvwky4wyKGdxMidbp0xR2CY3K/kS039VoCtEDAmxpGRGRbbDp7nqIv+6fcZ
-         7DTA==
-X-Gm-Message-State: AOAM531bCpO6Y6pJGitOrtnGaNOqRWbzIXFnp8pSI7fTa0QwXRcslI9j
-        kpTYMSak/VFvQAAeJwYcE4dSdCfZq2FBV8/IvNs=
-X-Google-Smtp-Source: ABdhPJzeRIgNVMmtqCUFR4GUjPqKdMdD2zybgZ3+xdcvECerOxgxbpnDciqXgp3lJheKEpOt3A+U1w==
-X-Received: by 2002:a63:cd01:: with SMTP id i1mr4723979pgg.294.1621565993099;
-        Thu, 20 May 2021 19:59:53 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id 128sm3048945pfy.194.2021.05.20.19.59.52
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 May 2021 19:59:52 -0700 (PDT)
-Date:   Thu, 20 May 2021 19:59:44 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
-        Amithash Prasad <amithash@fb.com>
-Subject: Re: [PATCH] watchdog: aspeed: fix hardware timeout calculation
-Message-ID: <20210521025944.GA3450@taoren-ubuntu-R90MNF91>
-References: <20210417034249.5978-1-rentao.bupt@gmail.com>
- <20210417042048.GA109800@roeck-us.net>
- <20210521015153.GA19153@taoren-ubuntu-R90MNF91>
- <20210521024412.GA3004726@roeck-us.net>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wDCqTxRCvKvq40fcsT0cEmcZyjzoY19iElps9bxazFU=;
+        b=f/BaG136J+sEc2HoabiWM4/mAQu2tFO0e1He9XXEUHeh7q05ThiEqx5wT2O8/v/vjS
+         6nehZ38hVkg0yo6FxL84rnEsf6SCMAF3pZzS7MDPRUtyyoKFUeZrbuHtVnm7kDXSaXTS
+         K02ipdGWbi3r0fXVFjTmHYrRUNH77Q0SLdy8CykTGkkigW/dfLuXsL4+G94m02Tn86GD
+         IGHg4r8uUnDfhK/JSZzMuchNJiunJULJyZCaPAKJ4oNpioWABy1BcyIa3IiTIGnubMcV
+         RBlnhReuPhkxR3Se9VhUBIVvKZX0wBXGESAluzPa9EOAZnlpqFb3e2PMyDRlRRHeNrP3
+         LNOg==
+X-Gm-Message-State: AOAM532TbMT9db4cI4eR+1eOG2olw6JC8SVZy36yQrNmt+293pS0/adR
+        jVWzNxQeHVDBMak45mxtdQ==
+X-Google-Smtp-Source: ABdhPJxMvDDX75j1xA1E1unnWCRQaaxFQgeb+gKhDQ0f5nHjCfIUuFopGJxc2W4PIz9c7VUOT1lsuQ==
+X-Received: by 2002:a17:902:b68c:b029:eb:6c82:60da with SMTP id c12-20020a170902b68cb02900eb6c8260damr9534824pls.25.1621566123765;
+        Thu, 20 May 2021 20:02:03 -0700 (PDT)
+Received: from localhost.localdomain (h175-177-040-153.catv02.itscom.jp. [175.177.40.153])
+        by smtp.gmail.com with ESMTPSA id 191sm2959677pfx.121.2021.05.20.20.02.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 20:02:03 -0700 (PDT)
+From:   Naoya Horiguchi <nao.horiguchi@gmail.com>
+To:     linux-mm@kvack.org, Tony Luck <tony.luck@intel.com>,
+        Aili Yao <yaoaili@kingsoft.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Jue Wang <juew@google.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] mm,hwpoison: fix sending SIGBUS for Action Required MCE
+Date:   Fri, 21 May 2021 12:01:53 +0900
+Message-Id: <20210521030156.2612074-1-nao.horiguchi@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521024412.GA3004726@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 07:44:12PM -0700, Guenter Roeck wrote:
-> On Thu, May 20, 2021 at 06:51:53PM -0700, Tao Ren wrote:
-> > Hi Wim,
-> > 
-> > Not sure if I looked at the wrong repository/branch, and looks like the
-> > patch is not included. Do you have any further suggestions? Or should I
-> > send out v2 in case it's missed?
-> > 
-> 
-> Wim didn't send a pull request in this release cycle. I have the patch in
-> my watchdog-next branch, so he'll hopefully pick it up from there at some
-> point.
-> 
-> Resending the patch would just create noise at this point; please don't
-> do that.
-> 
-> Guenter
+I updated the series again with the following changes based on the discussion
+over v4:
 
-Got it. Thanks Guenter.
+  - separated v4's 2/2 into two as done in the former version,
+  - switched to "first found" approach in getting error virtual address,
+    which could report wrong error address to applications but that's rare
+    and not critical,
+  - rebased onto v5.13-rc2.
 
-- Tao
+v1: https://lore.kernel.org/linux-mm/20210412224320.1747638-1-nao.horiguchi@gmail.com/T
+v2 (only 3/3 is posted): https://lore.kernel.org/linux-mm/20210419023658.GA1962954@u2004/
+v3: https://lore.kernel.org/linux-mm/20210421005728.1994268-1-nao.horiguchi@gmail.com/T
+v4: https://lore.kernel.org/linux-mm/20210427062953.2080293-1-nao.horiguchi@gmail.com/T
+
+Thanks,
+Naoya Horiguchi
+
+--- quote from cover letter of v1 ---
+
+I wrote this patchset to materialize what I think is the current
+allowable solution mentioned by the previous discussion [1].
+I simply borrowed Tony's mutex patch and Aili's return code patch,
+then I queued another one to find error virtual address in the best
+effort manner.  I know that this is not a perfect solution, but
+should work for some typical case.
+
+[1]: https://lore.kernel.org/linux-mm/20210331192540.2141052f@alex-virtual-machine/
+---
+Summary:
+
+Aili Yao (1):
+      mm,hwpoison: Return -EHWPOISON to denote that the page has already been poisoned
+
+Naoya Horiguchi (1):
+      mm,hwpoison: Send SIGBUS with error virutal address
+
+Tony Luck (1):
+      mm/memory-failure: Use a mutex to avoid memory_failure() races
+
+ arch/x86/kernel/cpu/mce/core.c |  13 ++-
+ include/linux/swapops.h        |   5 ++
+ mm/memory-failure.c            | 188 ++++++++++++++++++++++++++++++++++++++---
+ 3 files changed, 190 insertions(+), 16 deletions(-)
