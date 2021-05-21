@@ -2,136 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C92438CCCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72C1B38CCD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:59:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237667AbhEUSA2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 14:00:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52016 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbhEUSA1 (ORCPT
+        id S237779AbhEUSBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:01:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232931AbhEUSBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:00:27 -0400
-Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <jay.vosburgh@canonical.com>)
-        id 1lk9QJ-0001wv-IG; Fri, 21 May 2021 17:58:59 +0000
-Received: by famine.localdomain (Postfix, from userid 1000)
-        id BE7BF5FDD5; Fri, 21 May 2021 10:58:57 -0700 (PDT)
-Received: from famine (localhost [127.0.0.1])
-        by famine.localdomain (Postfix) with ESMTP id B6766A040C;
-        Fri, 21 May 2021 10:58:57 -0700 (PDT)
-From:   Jay Vosburgh <jay.vosburgh@canonical.com>
-To:     Jarod Wilson <jarod@redhat.com>
-cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 2/4] bonding/balance-lb: don't rewrite bridged non-local MACs
-In-reply-to: <20210521132756.1811620-3-jarod@redhat.com>
-References: <20210518210849.1673577-1-jarod@redhat.com> <20210521132756.1811620-1-jarod@redhat.com> <20210521132756.1811620-3-jarod@redhat.com>
-Comments: In-reply-to Jarod Wilson <jarod@redhat.com>
-   message dated "Fri, 21 May 2021 09:27:54 -0400."
-X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
+        Fri, 21 May 2021 14:01:08 -0400
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551D4C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:59:45 -0700 (PDT)
+Received: by mail-pj1-x1034.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so7758984pjb.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:59:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=WvnbS4IVZhECF51z6O+EfBBe87ZTqf6cbpg5WnJxJSc=;
+        b=dRa+q4djh2zWgsZsG80B8J00y/BYlEh4KnODAALlDl6ALDWnGO2ZWZvDRGfrs948mW
+         IdQF3TyoEgErcIHsHN/PQIcBxYgYdxfvYktPTaZJ6arZDaRW7Wxqid4ZxuyunuxU39Kk
+         rsYiltUpO/o400ktq/z/L2SyyiawsfLpXN4xg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=WvnbS4IVZhECF51z6O+EfBBe87ZTqf6cbpg5WnJxJSc=;
+        b=EhNmbdTTY8XsyyJhu6SYEGghIqKcUJ8Tm5bPeZWZcfHiHEecEHRz5IkhkfFwIuVApF
+         irw93uwCJUQqZGoQl4vPwxgBAB3S7XE9gly/rGuaWu0K9J+Uypw3KBl/rUQjflR56x/W
+         AETYRGfhdlK5gZK1LSWX20u+2lOdTbOWpqtsCmTiMwMJ2rPYRKGvOVM9vBdvCip4RryQ
+         SCtIl8Em7dFX1bPru6Djy4U8+d1lCrjRatjo6NUD50TfOZsDKBlTJG1+UHDzoAmpous2
+         nkZZK8MPPoB68bp+rsYf9L2Jfwwy0WwVXqsAc/rdNunUgY7cUvIC7AAI4ZJO7c+wNLhK
+         YgVA==
+X-Gm-Message-State: AOAM530tg12ZlZny0BHjJX7a05HKedL/jjT9o0rIlY6KvMR1iQbzpiiD
+        O6Hhk3Khg5elaptAaZmG7zYaDg==
+X-Google-Smtp-Source: ABdhPJzBxhmutnAM94ho9VxOqH7WslOekEyezmP+aJAEVSUnTsp8WNLP0bzekNRAJeF64PcP78udBg==
+X-Received: by 2002:a17:90a:9d88:: with SMTP id k8mr12209792pjp.64.1621619984833;
+        Fri, 21 May 2021 10:59:44 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id s5sm206280pjo.10.2021.05.21.10.59.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 10:59:44 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com,
+        Anthony Ruhier <aruhier@mailbox.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86: Fix location of '-plugin-opt=' flags
+Date:   Fri, 21 May 2021 10:59:10 -0700
+Message-Id: <162161994470.2028902.331062863146834934.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210518190106.60935-1-nathan@kernel.org>
+References: <20210518190106.60935-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <21328.1621619937.1@famine>
-Content-Transfer-Encoding: 8BIT
-Date:   Fri, 21 May 2021 10:58:57 -0700
-Message-ID: <21329.1621619937@famine>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jarod Wilson <jarod@redhat.com> wrote:
-
->With a virtual machine behind a bridge that directly incorporates a
->balance-alb bond as one of its ports, outgoing traffic should retain the
->VM's source MAC. That works fine most of the time, until doing a failover,
->and then the MAC gets rewritten to the bond slave's MAC, and the return
->traffic gets dropped. If we don't rewrite the MAC there, we don't lose the
->traffic.
-
-	Comparing the description above to the patch, is the erroneous
-behavior really related to failover (i.e., bond slave goes down, bond
-reshuffles various things as it is wont to do), or is it related to
-either a TX side rebalance or even simply that specific traffic is being
-sent on a slave that isn't the curr_active_slave?
-
-	One more comment, below.
-
->Cc: Jay Vosburgh <j.vosburgh@gmail.com>
->Cc: Veaceslav Falico <vfalico@gmail.com>
->Cc: Andy Gospodarek <andy@greyhouse.net>
->Cc: "David S. Miller" <davem@davemloft.net>
->Cc: Jakub Kicinski <kuba@kernel.org>
->Cc: Thomas Davis <tadavis@lbl.gov>
->Cc: netdev@vger.kernel.org
->Signed-off-by: Jarod Wilson <jarod@redhat.com>
->---
-> drivers/net/bonding/bond_alb.c | 20 +++++++++++++++++++-
-> 1 file changed, 19 insertions(+), 1 deletion(-)
->
->diff --git a/drivers/net/bonding/bond_alb.c b/drivers/net/bonding/bond_alb.c
->index 3455f2cc13f2..c57f62e43328 100644
->--- a/drivers/net/bonding/bond_alb.c
->+++ b/drivers/net/bonding/bond_alb.c
->@@ -1302,6 +1302,23 @@ void bond_alb_deinitialize(struct bonding *bond)
-> 		rlb_deinitialize(bond);
-> }
+On Tue, 18 May 2021 12:01:06 -0700, Nathan Chancellor wrote:
+> Commit b33fff07e3e3 ("x86, build: allow LTO to be selected") added a
+> couple of '-plugin-opt=' flags to KBUILD_LDFLAGS because the code model
+> and stack alignment are not stored in LLVM bitcode. However, these flags
+> were added to KBUILD_LDFLAGS prior to the emulation flag assignment,
+> which uses ':=', so they were overwritten and never added to $(LD)
+> invocations. The absence of these flags caused misalignment issues in
+> the AMDGPU driver when compiling with CONFIG_LTO_CLANG, resulting in
+> general protection faults.
 > 
->+static bool bond_alb_bridged_mac(struct bonding *bond, struct ethhdr *eth_data)
->+{
->+	if (BOND_MODE(bond) != BOND_MODE_ALB)
->+		return false;
->+
->+	/* Don't modify source MACs that do not originate locally
->+	 * (e.g.,arrive via a bridge).
->+	 */
->+	if (!netif_is_bridge_port(bond->dev))
->+		return false;
+> [...]
 
-	Repeating my comment (from my response to the v1 patch) that
-hasn't been addressed:
+(I've slightly adjusted the title.)
 
-	I believe this logic will fail if the plumbing is, e.g., bond ->
-vlan -> bridge, as netif_is_bridge_port() would not return true for the
-bond in that case.
+Applied to for-next/clang/features, thanks!
 
-	Making this reliable is tricky at best, and may be impossible to
-be correct for all possible cases.  As such, I think the comment above
-should reflect the limited scope of what is actually being checked here
-(i.e., the bond itself is directly a bridge port).
+[1/1] x86: lto: Fix location of '-plugin-opt=' flags
+      https://git.kernel.org/kees/c/5d6c8592ee5f
 
-	Ideally, the bonding.rst documentation should describe the
-special behaviors of alb mode when configured as a bridge port.
+-- 
+Kees Cook
 
-	-J
-
->+
->+	if (bond_slave_has_mac_rx(bond, eth_data->h_source))
->+		return false;
->+
->+	return true;
->+}
->+
-> static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
-> 				    struct slave *tx_slave)
-> {
->@@ -1316,7 +1333,8 @@ static netdev_tx_t bond_do_alb_xmit(struct sk_buff *skb, struct bonding *bond,
-> 	}
-> 
-> 	if (tx_slave && bond_slave_can_tx(tx_slave)) {
->-		if (tx_slave != rcu_access_pointer(bond->curr_active_slave)) {
->+		if (tx_slave != rcu_access_pointer(bond->curr_active_slave) &&
->+		    !bond_alb_bridged_mac(bond, eth_data)) {
-> 			ether_addr_copy(eth_data->h_source,
-> 					tx_slave->dev->dev_addr);
-> 		}
->-- 
->2.30.2
-
----
-	-Jay Vosburgh, jay.vosburgh@canonical.com
