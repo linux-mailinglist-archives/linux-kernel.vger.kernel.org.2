@@ -2,122 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D177638C647
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:10:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA2AF38C64B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:11:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231521AbhEUMLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:11:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
+        id S233189AbhEUMNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:13:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhEUMLl (ORCPT
+        with ESMTP id S230325AbhEUMM6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:11:41 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AB03C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:10:17 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id k14so26651348eji.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:10:17 -0700 (PDT)
+        Fri, 21 May 2021 08:12:58 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333DDC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:11:31 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id x7so1241403wrt.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:11:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WEQXur4fHHNCbUkGisN9Mvm9Bkhht++DmG49GXVjdxc=;
-        b=cS38JkZ2B1xj4stQHt9WIoVyEm4CvkrCowRF5mW7jIhrI/xCuBSRdZz+V0tvtFsG3+
-         mMdcO+9h875uFiTKgfRa9kUWCM6xIBX8T+VJuKURTVYxLudIJaqkzP0FXgWCmGXuDHGu
-         DAn2gI0aB9kfFMxiTB0ZZgWEMphBbQxLS37UBf9yrrNyuHwUTQLeFEDpAaFRHrWOZzUw
-         9lfjwH1YvaO1xoTnhjiKMJMm+syivYt6EkS9Lu4AFn4V1OCL2LYweI2bG18lEgXUYTbT
-         gqk5HfnqNxBHP0SdDBEvgaA4SEKUbPuxr5Kz4fg9NfK/hItQ9iHiPhQzpy/7c3vZ4zu6
-         HK9Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ml9aXgYWsxmLMe303aemuEkZuwFy+qH+s0r1NMT4fd0=;
+        b=G/y47iLV9zx1VyEIaxEgrqDGsn62RsNLQqEpjLroeGdYnN6Qtn3rQH+gX5cZBdaEpv
+         wPar/LUQLrM+8TGApiAaIbFAPgBWFuggukQMtECP5+bahU5Di8h4R+lSr5Tiko2/rpuR
+         GcvuDNhfGEmZeY/JzKn8m+flnUdGinGHX3ihLFXqpPArO74ezylDdv3b1vrs4M4gl63S
+         RynlKm2daNsDvVtfX0ln0DkYJXI/cx/SHvZVJnTOUUhvYs5HK5yUBZyCwHxQKnV0URxL
+         7cx15SnBT3Oog83WwenE29Z4icoTrgklovwy91BbMslPQH27KfpWnAZwlzNsydJXa9zs
+         aAyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WEQXur4fHHNCbUkGisN9Mvm9Bkhht++DmG49GXVjdxc=;
-        b=pgWhsEJTqzZluBFSIQ28NpLAV00JFClSRIfHbRQNX9Col+ssCXMEKcnqdfcDkWlzWl
-         JNjll2AMMNbBk0u4PSfQNmhDWXx9wMLcfyc/H4LOzbXQkwDgnmI1aSbCie6gG7JNXOIR
-         i2GFc+kwfxPUTMtqnvwr13MEevfjZg1wCEHnQl/93u54LBYGStVO6k3TsWnmevV+DxED
-         0Rf7Q+vN7Uzd3DkPcRXxxO3rKy/YMYplOZDwLZ1D8ILE1BXMF4eB61jmFiPvnncDNZi4
-         Fq0KMaJvER7AL1KqrUTtYiXZVGIFlg8JRLAf/pbQ59NRSHFnby1bGOgarEH6BIOp8ulb
-         woqw==
-X-Gm-Message-State: AOAM531U0TL9nasv9DMlC020E0yNnVCWQB8dHdlA+NzvVZ5PFPM3nV8L
-        tGijKHR3fTWBLMdSZEaZqOjDPwMllpb0TdRTrbQ=
-X-Google-Smtp-Source: ABdhPJxpNIzxd0YSkyamu5BEICCA7WZg2tqHLkDC/8e8LLRGzP8jqqSCC7ckt81BZ7FJ21mfAmlRIXnciFPZ90E/U8c=
-X-Received: by 2002:a17:907:1002:: with SMTP id ox2mr9782899ejb.337.1621599015504;
- Fri, 21 May 2021 05:10:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ml9aXgYWsxmLMe303aemuEkZuwFy+qH+s0r1NMT4fd0=;
+        b=aw8q4nZDoE+7YPlykUgyzGuqIuETZJpnpt/h10rN0GOGMXXFxhtwq3yVsfMaYK58Un
+         g8bAhrSJlsfs3Ns5zIU2IbPGtjsjiEhk1pkMzAxVkN3mfSMnRMrg9RJohMZ4eqX8OYII
+         onz3b36eXjyN51OCO4MrpSqOnow6i1gOa9en2N6sw8oJkikTlLA7AP353sO6gZHlGV9w
+         kb+4H+HW3Z0Bgc9CAd5lCVFTKuvHy3g59nv4+Yo+hZ/ANy6/5h9lVMRbe+BME4t6dN/d
+         +DXR2rvHlGJJNQySZkcztIEIgzoB1XatEy/SoV7bfhOZSdQT4zsie1/IMvsWpjc55nNo
+         GF0g==
+X-Gm-Message-State: AOAM5332/yKlOu2wcUUrpCajNSavYUEMU9oCFiWwTqJY9PULPXqk4WCh
+        pT84yxReBPzqlUT6ny788ko=
+X-Google-Smtp-Source: ABdhPJyARzQ5c2zgj9Ij37sb3vRqmocu60KNmQ5m0huB27J8Uo/pGQO62NjtYRLFuHqtdGD698zp8Q==
+X-Received: by 2002:a5d:648e:: with SMTP id o14mr9037494wri.27.1621599089846;
+        Fri, 21 May 2021 05:11:29 -0700 (PDT)
+Received: from oliver-Z170M-D3H.cuni.cz ([2001:718:1e03:5128:e010:8b67:85b8:dc89])
+        by smtp.gmail.com with ESMTPSA id c64sm3339401wma.15.2021.05.21.05.11.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 05:11:29 -0700 (PDT)
+From:   glittao@gmail.com
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        faiyazm@codeaurora.org, Oliver Glitta <glittao@gmail.com>
+Subject: [RFC 1/3] mm/slub: aggregate objects in cache by stack trace
+Date:   Fri, 21 May 2021 14:11:25 +0200
+Message-Id: <20210521121127.24653-1-glittao@gmail.com>
+X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
 MIME-Version: 1.0
-References: <20210521120811.516339-1-mudongliangabcd@gmail.com>
-In-Reply-To: <20210521120811.516339-1-mudongliangabcd@gmail.com>
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Fri, 21 May 2021 20:09:06 +0800
-Message-ID: <CAD-N9QX4A2dsDxS+oKvahHS8CC_Rt1iYCMABUEtR4NGJH5m1YQ@mail.gmail.com>
-Subject: Re: [PATCH] staging: rtl8712: Fix memory leak in r8712_init_recv_priv
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        Greg KH <gregkh@linuxfoundation.org>, rkovhaev@gmail.com,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Cc:     syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 8:08 PM Dongliang Mu <mudongliangabcd@gmail.com> wrote:
->
-> r871xu_dev_remove failed to call r8712_free_drv_sw() and free the
-> resource (e.g., struct urb) due to the failure of firmware loading.
->
-> Fix this by invoking r8712_free_drv_sw at the failure site.
->
-> Reported-by: syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
-> Fixes: b4383c971bc5 ("staging: rtl8712: handle firmware load failure")
-> Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
-> ---
->  drivers/staging/rtl8712/usb_intf.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
-> index dc21e7743349..a5190b4250ce 100644
-> --- a/drivers/staging/rtl8712/usb_intf.c
-> +++ b/drivers/staging/rtl8712/usb_intf.c
-> @@ -589,7 +589,7 @@ static int r871xu_drv_init(struct usb_interface *pusb_intf,
->   */
->  static void r871xu_dev_remove(struct usb_interface *pusb_intf)
->  {
-> -       struct net_device *pnetdev = usb_get_intfdata(pusb_intf);
-> +       struct net_device *pnetdev, *newpnetdev = usb_get_intfdata(pusb_intf);
->         struct usb_device *udev = interface_to_usbdev(pusb_intf);
->
->         if (pnetdev) {
-> @@ -597,9 +597,9 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
->
->                 /* never exit with a firmware callback pending */
->                 wait_for_completion(&padapter->rtl8712_fw_ready);
-> -               pnetdev = usb_get_intfdata(pusb_intf);
-> +               newpnetdev = usb_get_intfdata(pusb_intf);
->                 usb_set_intfdata(pusb_intf, NULL);
-> -               if (!pnetdev)
-> +               if (!newpnetdev)
->                         goto firmware_load_fail;
->                 release_firmware(padapter->fw);
->                 if (drvpriv.drv_registered)
-> @@ -625,6 +625,13 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
->          */
->         if (udev->state != USB_STATE_NOTATTACHED)
->                 usb_reset_device(udev);
-> +       if (pnetdev) {
-> +               struct _adapter *padapter = netdev_priv(pnetdev);
-> +               /* Stop driver mlme relation timer */
-> +               //r8712_stop_drv_timers(padapter);
-> +               //r871x_dev_unload(padapter);
+From: Oliver Glitta <glittao@gmail.com>
 
-I am not sure if I should add those deallocation functions in this
-branch. I will appreciate it if anyone can give some advice here.
+Aggregate objects in slub cache by stack trace in addition to caller
+address during alloc_calls and free_calls implementation
+in debugfs. Add stack trace to output.
 
-> +               r8712_free_drv_sw(padapter);
-> +       }
->  }
->
->  static int __init r8712u_drv_entry(void)
-> --
-> 2.25.1
->
+Add all_objects implementation to debugfs to print information
+about all objects.
+
+Signed-off-by: Oliver Glitta <glittao@gmail.com>
+---
+Based on next-20210518 and
+https://lore.kernel.org/r/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
+
+ mm/slub.c | 30 ++++++++++++++++++++++++++++--
+ 1 file changed, 28 insertions(+), 2 deletions(-)
+
+diff --git a/mm/slub.c b/mm/slub.c
+index e9b84eddc50d..d5ed6ed7d68b 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -4770,6 +4770,7 @@ EXPORT_SYMBOL(validate_slab_cache);
+  */
+
+ struct location {
++	depot_stack_handle_t handle;
+ 	unsigned long count;
+ 	unsigned long addr;
+ 	long long sum_time;
+@@ -4822,9 +4823,15 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
+ {
+ 	long start, end, pos;
+ 	struct location *l;
+-	unsigned long caddr;
++	unsigned long caddr, chandle;
+ 	unsigned long age = jiffies - track->when;
++	depot_stack_handle_t handle;
+
++#ifdef CONFIG_STACKDEPOT
++	handle = READ_ONCE(track->handle);
++#else
++	handle = 0;
++#endif
+ 	start = -1;
+ 	end = t->count;
+
+@@ -4839,7 +4846,8 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
+ 			break;
+
+ 		caddr = t->loc[pos].addr;
+-		if (track->addr == caddr) {
++		chandle = t->loc[pos].handle;
++		if ((track->addr == caddr) && (handle == chandle)) {
+
+ 			l = &t->loc[pos];
+ 			l->count++;
+@@ -4864,6 +4872,8 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
+
+ 		if (track->addr < caddr)
+ 			end = pos;
++		else if (track->addr == caddr && handle < chandle)
++			end = pos;
+ 		else
+ 			start = pos;
+ 	}
+@@ -4886,6 +4896,7 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
+ 	l->max_time = age;
+ 	l->min_pid = track->pid;
+ 	l->max_pid = track->pid;
++	l->handle = handle;
+ 	cpumask_clear(to_cpumask(l->cpus));
+ 	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
+ 	nodes_clear(l->nodes);
+@@ -5837,6 +5848,21 @@ static int slab_debugfs_show(struct seq_file *seq, void *v)
+ 			seq_printf(seq, " nodes=%*pbl",
+ 				 nodemask_pr_args(&l->nodes));
+
++#ifdef CONFIG_STACKDEPOT
++		{
++			depot_stack_handle_t handle;
++			unsigned long *entries;
++			unsigned int nr_entries, j;
++
++			handle = READ_ONCE(l->handle);
++			if (handle) {
++				nr_entries = stack_depot_fetch(handle, &entries);
++				seq_puts(seq, "\n");
++				for (j = 0; j < nr_entries; j++)
++					seq_printf(seq, "\t%pS\n", (void *)entries[j]);
++			}
++		}
++#endif
+ 		seq_puts(seq, "\n");
+ 	}
+
+--
+2.31.1.272.g89b43f80a5
+
