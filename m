@@ -2,106 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB45438CF3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34DF438CF42
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:46:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229916AbhEUUq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:46:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55576 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229805AbhEUUq0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:46:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 43F4061057;
-        Fri, 21 May 2021 20:45:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621629902;
-        bh=dBtJPUN27yn1jdn6pT1FgfxJTpAhtUkIalvXAWXaQ9w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nqr3GPWqf47A1mgxeCi7tGC1wge27Kkw6lpjXDv2axY0wonq553ob+pg6ZwU8Uy2c
-         6CU7KQTdXKpITcRe2dawwSfa5irggEmitsFSvN1TRHrulR0JudDglp27+s5OCAQIUM
-         Mb3fVYMolOn0szRmRWaK6JfsvL6BJSEnKs0Aj5pQ=
-Date:   Fri, 21 May 2021 22:45:00 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Minchan Kim <minchan@kernel.org>, Hannes Reinecke <hare@suse.de>,
-        Douglas Gilbert <dgilbert@interlog.com>, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
+        id S229955AbhEUUrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229939AbhEUUrY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:47:24 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F6A1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:46:01 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id s19so13520346pfe.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qc/OISeLg533se0Ov/+qOFnvI05ew7O5rEcNf/rVX1Y=;
+        b=nC0UhFlm212CnyrWNvtpu6kE4mWwHySnKzDUPQtf26R7PkPF3sEaIawFgxiZDnjE5+
+         XuCnVcokB8yonlU/uLTQRrsmuDfyHP3LsE6xgP46I7yj2qYekBw37sqpR1BXXO1wtp/5
+         nD7wVwtKmtqaU23+De1xsc0EeoyHYNqvlPD0o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qc/OISeLg533se0Ov/+qOFnvI05ew7O5rEcNf/rVX1Y=;
+        b=LwOXwjmfbYpO+mexMHvt0GiMH0hhEFVIgqcLFXqQuBCACoPXSL7wsZJX9GL8mkqrYs
+         Dc1EjSYy/7o1n0KAILxJk1xeVDfkhP2KGetBYooQudYShAw2Xw2HR6OHtc+H0e+7q9p3
+         +J97A2x3auCx5gokFWnhq2v2w5iCiIgmhfQ7X07Rcpn7k6ko0jGqoi8pnEuOPRE71Xj+
+         bofNy6KfmjptQ5zhmBwPkXoPgoC6DCF0UcsbMHBKTEizjMJWq9AcgpLF0DOWNGtpu8V0
+         0GFQBN12SDinoUjbZr40qG5mSKF4veRBhgrOlr+o7punGJjF8oVMP6A6vdJw7Xun+b6X
+         GOzQ==
+X-Gm-Message-State: AOAM533Ar4G61Pe1/ae1gJkez4GiYHAz0ETLMfjdwPXRnCiiT9dj94x6
+        qbFjaak9RDHJJSTR7M3Nlmj2ag==
+X-Google-Smtp-Source: ABdhPJyuVEaAW1PGylYq3ioVKFB2/Cb+DhaAneOsAuDfXLhYsdtUdaTbycQanmvelf0UhoTAzWM3vg==
+X-Received: by 2002:a63:ed41:: with SMTP id m1mr616385pgk.252.1621629960856;
+        Fri, 21 May 2021 13:46:00 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:10e9:a6cd:727f:561e])
+        by smtp.gmail.com with ESMTPSA id mv15sm4839635pjb.25.2021.05.21.13.45.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 13:46:00 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>, swboyd@chromium.org,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
-Message-ID: <YKgbzO0AkYN4J7Ye@kroah.com>
-References: <20210423011108.11988-1-mcgrof@kernel.org>
- <YKVwZVcbZBNXUpKm@google.com>
- <20210519202023.GU4332@42.do-not-panic.com>
- <YKgRsCzwp2O2mYcp@kroah.com>
- <20210521201618.GX4332@42.do-not-panic.com>
+Subject: [PATCH v2] drm/msm: Use nvmem_cell_read_variable_le_u32() to read speed bin
+Date:   Fri, 21 May 2021 13:45:50 -0700
+Message-Id: <20210521134516.v2.1.Id496c6fea0cb92ff6ea8ef1faf5d468eb09465e3@changeid>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521201618.GX4332@42.do-not-panic.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 08:16:18PM +0000, Luis Chamberlain wrote:
-> On Fri, May 21, 2021 at 10:01:52PM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, May 19, 2021 at 08:20:23PM +0000, Luis Chamberlain wrote:
-> > > Greg,
-> > > 
-> > > your feedback would be appreciated here.
-> > 
-> > Appreciated where?  This is a zram patchset, what do I need to mess with
-> > it for?
-> 
-> This patchset has 2 issues which I noted in the last series that are
-> generic, and could best be dealt with on sysfs, and suggested
-> how this could actually be dealt with on sysfs / kernfs.
-> 
-> > > Greg, can you comment on technical levels why a general core fix is not
-> > > desirable upstream for those two issues?
-> > 
-> > What issues exactly?
-> 
-> When I suggested the generic way to fix this your main argument against
-> a generic solution was that we don't support module removal. Given that
-> argument did not seem to hold any water it begs the question if you
-> still would rather not see this fixed in sysfs / kernfs.
-> 
-> If you however are more open to it now, I can instead take that work, and
-> send a proper patch for review.
+Let's use the newly-added nvmem_cell_read_variable_le_u32() to future
+proof ourselves a little bit.
 
-I looked at the last patch here and I really do not see the issue.
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+The patch that this depends on is now in mainline so it can be merged
+at will. I'm just sending this as a singleton patch to make it obvious
+that there are no dependencies now.
 
-In order for the module to be removed, zram_exit() has to return, right?
-And that function calls destroy_devices() which will then remove all
-devices in sysfs that are associated with this driver.  At that point in
-time, sysfs detaches the attributes from kernfs so that any open file
-handle that happened to be around for an attribute file will not call
-back into the show/store function for that device.
+Changes in v2:
+- Rebased
 
-Then destroy_devices() returns, and zram_exit() returns, and the module
-is unloaded.
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-So how can a show/store function in zram_drv.c be called after
-destroy_devices() returns?
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index b4d8e1b01ee4..a07214157ad3 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -1403,10 +1403,10 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+ {
+ 	struct opp_table *opp_table;
+ 	u32 supp_hw = UINT_MAX;
+-	u16 speedbin;
++	u32 speedbin;
+ 	int ret;
+ 
+-	ret = nvmem_cell_read_u16(dev, "speed_bin", &speedbin);
++	ret = nvmem_cell_read_variable_le_u32(dev, "speed_bin", &speedbin);
+ 	/*
+ 	 * -ENOENT means that the platform doesn't support speedbin which is
+ 	 * fine
+@@ -1419,7 +1419,6 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+ 			      ret);
+ 		goto done;
+ 	}
+-	speedbin = le16_to_cpu(speedbin);
+ 
+ 	supp_hw = fuse_to_supp_hw(dev, revn, speedbin);
+ 
+-- 
+2.31.1.818.g46aad6cb9e-goog
 
-The changelog text in patch 4/4 is odd, destroy_devices() shouldn't be
-racing with anything as devices have reference counts in order to
-protect this type of thing from happening, right?  How can a store
-function be called when a device is somehow removed from memory at the
-same time?  Don't we properly incremement/decrement the device
-structure's reference count?  If not, wouldn't that be the simplest
-solution here?
-
-And who is ripping out zram drivers while the system is running anyway?
-What workflow causes this to happen so much so that the sysfs files need
-to be "protected"?  What tool/script/whatever is hammering on those
-sysfs files so much while someone wants to unload the module?
-
-What am I missing?
-
-thanks,
-
-greg k-h
