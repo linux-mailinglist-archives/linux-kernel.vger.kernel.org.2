@@ -2,107 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CE938C81A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:29:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F6CE38C823
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235668AbhEUNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:30:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58940 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234235AbhEUNaq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:30:46 -0400
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LDMnAg129094;
-        Fri, 21 May 2021 09:29:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : content-transfer-encoding : mime-version; s=pp1;
- bh=qbyLSEYxo2Punq/yUmuYxrOa5tjum0XaNxmcY8b1kuE=;
- b=JvkNwQlDVciNu1YieagyjI1rbmChdtQT/5FwACSpAhcHSBATSBxvMwvZ3kv4poyBmQIb
- VkjB3FYCyr05i0U+M37F09hY3kafHuCPp6b8K4w0dSKrCygQQ5jPzuiiJQmX27PDUqvm
- sZ4IuYmICKiebPme3sVcE2hEnE13lbnfgcKcS2VFaptCtdUOlVQngdv/jCSSlwhUnKuG
- uErbbfq6GyHLDaJ+cKtFSF/h8zprg/MGcqwr5+ohQJVnq1KXRzy9O8c+Dweu+erKz8w3
- PL8fUFJWNAxVHtTQf8nAgdVz/dKdEAhxolVZhM5onkptUPC0hz1zMq+ED9d8yNlB74Jb AQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38pdpsr44b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 09:29:19 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LDSkCH031653;
-        Fri, 21 May 2021 13:29:17 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma03ams.nl.ibm.com with ESMTP id 38j5x7u5uh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 13:29:17 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LDTEx729557180
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 13:29:14 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 449F842047;
-        Fri, 21 May 2021 13:29:14 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id F04DE4204B;
-        Fri, 21 May 2021 13:29:13 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 13:29:13 +0000 (GMT)
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-To:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Karsten Graul <kgraul@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        linux-netdev <netdev@vger.kernel.org>,
-        Julian Wiedmann <jwi@linux.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] MAINTAINERS: s390/net: add netdev list
-Date:   Fri, 21 May 2021 15:28:56 +0200
-Message-Id: <20210521132856.1573533-1-jwi@linux.ibm.com>
-X-Mailer: git-send-email 2.25.1
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: XXimO-eE9j9LHoGF5cy1zlAMOpeMVLx_
-X-Proofpoint-GUID: XXimO-eE9j9LHoGF5cy1zlAMOpeMVLx_
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S235573AbhEUNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:31:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232172AbhEUNbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:31:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 061EF610CB;
+        Fri, 21 May 2021 13:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621603829;
+        bh=DgSfnqgX8iAJF8CgJVRj6UxP6HXcUcoeisNmrM46YX8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=g7OtleNjz6iGFBsYuSb4zRjfyQz9uUglSD21ywr0RyMPosjj6n5UlIP54yur6orbo
+         E2lzAOQzz43sex9CLMHDPZnu6Ar9+Jwm6tpNYQInhIxDJyzN34XxSnSIEcNXPE/M2J
+         Atf7YvlkvzPkbvwtlhXNndUeKLlYR+rchs7mb8yN/NnpcyRDTCkJAZ2Fq5+H7Va1M2
+         CpOukwWo3RGWl40nh5f5cLaFLB3vvGeyhrODLrG/UwUtdxwml/JBCEq6UTRbQzWDu5
+         /1CZPykn3tdxUF2qg5j0glxpdr4nVHZE/lQR5K5HwNDBRAvB1sc1gD399MdwmMf0rX
+         x6/X3jI4Dykdw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lk5EU-0004Vh-44; Fri, 21 May 2021 15:30:30 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] mmc: vub3000: fix control-request direction
+Date:   Fri, 21 May 2021 15:30:26 +0200
+Message-Id: <20210521133026.17296-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_04:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
- lowpriorityscore=0 suspectscore=0 mlxscore=0 mlxlogscore=703 clxscore=1011
- adultscore=0 impostorscore=0 priorityscore=1501 malwarescore=0 spamscore=0
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210077
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Discussions for network-related code should include the netdev list.
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+Fix the SET_ROM_WAIT_STATES request which erroneously used
+usb_rcvctrlpipe().
+
+Fixes: 88095e7b473a ("mmc: Add new VUB300 USB-to-SD/SDIO/MMC driver")
+Cc: stable@vger.kernel.org      # 3.0
+Signed-off-by: Johan Hovold <johan@kernel.org>
 ---
- MAINTAINERS | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/mmc/host/vub300.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index c1cb2e38ae2e..88722efd94a1 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -15944,6 +15944,7 @@ S390 IUCV NETWORK LAYER
- M:	Julian Wiedmann <jwi@linux.ibm.com>
- M:	Karsten Graul <kgraul@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
-+L:	netdev@vger.kernel.org
- S:	Supported
- W:	http://www.ibm.com/developerworks/linux/linux390/
- F:	drivers/s390/net/*iucv*
-@@ -15954,6 +15955,7 @@ S390 NETWORK DRIVERS
- M:	Julian Wiedmann <jwi@linux.ibm.com>
- M:	Karsten Graul <kgraul@linux.ibm.com>
- L:	linux-s390@vger.kernel.org
-+L:	netdev@vger.kernel.org
- S:	Supported
- W:	http://www.ibm.com/developerworks/linux/linux390/
- F:	drivers/s390/net/
+diff --git a/drivers/mmc/host/vub300.c b/drivers/mmc/host/vub300.c
+index 739cf63ef6e2..4950d10d3a19 100644
+--- a/drivers/mmc/host/vub300.c
++++ b/drivers/mmc/host/vub300.c
+@@ -2279,7 +2279,7 @@ static int vub300_probe(struct usb_interface *interface,
+ 	if (retval < 0)
+ 		goto error5;
+ 	retval =
+-		usb_control_msg(vub300->udev, usb_rcvctrlpipe(vub300->udev, 0),
++		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+ 				SET_ROM_WAIT_STATES,
+ 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+ 				firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
 -- 
-2.25.1
+2.26.3
 
