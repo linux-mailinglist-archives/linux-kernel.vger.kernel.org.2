@@ -2,107 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C9338BD39
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 06:24:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA32838BD65
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 06:25:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239016AbhEUEZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 00:25:34 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:52861 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233608AbhEUEZd (ORCPT
+        id S239039AbhEUE0l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 00:26:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238633AbhEUE0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 00:25:33 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621571050; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=U5lBnv0BhH6sVkqljkunOjMLccN8yb0A8j9YRbLa+zc=; b=AY8CBijqDlUUckdhfUOQS+4HhH5hmEyQCBxjxfMtgvKiOE3W07cYz/3P+pBucHAa2Tih9pcz
- /tocPIafzMDH1TC4oqMIPiFrCgGr4y8HAz2k0sq54KZLHvbPuzP3FfksCTC5WGU9vzUH0wYb
- mW3hapwymKyWaL5LTStuiA119Xc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60a735e25f788b52a50cca62 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 04:24:02
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 4FB99C43460; Fri, 21 May 2021 04:24:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 37C34C433F1;
-        Fri, 21 May 2021 04:24:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 37C34C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH] usb: dwc3: gadget: Disable gadget IRQ during pullup disable
-Date:   Thu, 20 May 2021 21:23:57 -0700
-Message-Id: <1621571037-1424-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 21 May 2021 00:26:39 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 247EDC061574;
+        Thu, 20 May 2021 21:25:16 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id h20-20020a17090aa894b029015db8f3969eso5858253pjq.3;
+        Thu, 20 May 2021 21:25:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=YInGmwtN+gHNeJbff1aTTrGySsHgiB3luVCQXcJiocE=;
+        b=eooEX9XzMsFo2wFwyUbiJ7EqLcn/KI9iwBubbiPU5/io7tbF40Lpy41Tk+AXOPjRtx
+         rV7+uyeLtcpwYQWaBatboLYzfKsNW4gpv7MQxsHJJ/bvLeAJcqMa/ex4ezUbixZuJiCr
+         sNK+ZDpmR0qIUhY9mZc36fD+erimiTZKittAZyByV+kwbdlBlYAvnQZ4N1+3rqM1/mP5
+         AnQfqOEQNgRKgRUERLFG0Z2Y9kUX0bntYcWdyUZMj4xUdft+hMwbJSchz7EuojpB+seB
+         mZbgmDCV5RPPiaLKA22Tkuvmj9C98BsbvBVMQt842zaqjec0VhUw2NoG2RxINsVG6Ps7
+         xMeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=YInGmwtN+gHNeJbff1aTTrGySsHgiB3luVCQXcJiocE=;
+        b=VvO36OQWi6o+P0Y/oT8YQCGpW+yguqC4XJaDAc+MXqMbXTydT3lk7UYuUMB3VX35hu
+         j1voU9UccMwbOdfy3qRDawvA5P+xdT5GBiIU1dJXsa85WZ7VJdltPP6dKLnO8G8AXTMO
+         tidb/gDNCR5Z1Hux64oiJchD8k6p0SoJ/PMgvPDJ0+aZcWQHedA6BG8Ia1PyRI8/bU2O
+         2YBYGzuF5YioUjoxvyj+PeF8ig5G56CL47KSQwBUuTe8aEJnUWtN+e8RxAe0Zhe25cFy
+         bRSKBmt7/PwNI1cD4QOxdkAPPgNZzEg5qLzXe2mNRhEEucVUii+zn4pyI2DUZg3D3AdH
+         Z0Fg==
+X-Gm-Message-State: AOAM533uz9yyrd4sIDHPR4WAz3GmrrP3Qyra3LVQGvraX0iKiRoESlZP
+        4PYkoVYE7L3LGj7drzIOZquHKekRmTw=
+X-Google-Smtp-Source: ABdhPJy3WVmBg/Pmc6soyaj0LyXC1lCfl1Ib70RaJcjTjM+fHasJMUCl93dfwFdPhcg1WKids4aL6w==
+X-Received: by 2002:a17:902:cec3:b029:f6:276b:a2b1 with SMTP id d3-20020a170902cec3b02900f6276ba2b1mr6447568plg.71.1621571115269;
+        Thu, 20 May 2021 21:25:15 -0700 (PDT)
+Received: from [10.230.29.202] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id o24sm3155878pgl.55.2021.05.20.21.25.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 21:25:14 -0700 (PDT)
+Subject: Re: [PATCH 5.10 00/45] 5.10.39-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210520152240.517446848@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <28a13d4c-4d44-d051-f201-c5e0547e3e23@gmail.com>
+Date:   Thu, 20 May 2021 21:25:06 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.10.2
+MIME-Version: 1.0
+In-Reply-To: <20210520152240.517446848@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current sequence utilizes dwc3_gadget_disable_irq() alongside
-synchronize_irq() to ensure that no further DWC3 events are generated.
-However, the dwc3_gadget_disable_irq() API only disables device
-specific events.  Endpoint events can still be generated.  Briefly
-disable the interrupt line, so that the cleanup code can run to
-prevent device and endpoint events. (i.e. __dwc3_gadget_stop() and
-dwc3_stop_active_transfers() respectively)
 
-Without doing so, it can lead to both the interrupt handler and the
-pullup disable routine both writing to the GEVNTCOUNT register, which
-will cause an incorrect count being read from future interrupts.
 
-Fixes: ae7e86108b12 ("usb: dwc3: Stop active transfers before halting the controller")
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/usb/dwc3/gadget.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+On 5/20/2021 8:23 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.39 release.
+> There are 45 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 22 May 2021 15:22:29 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.39-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index 49ca5da..89aa9ac 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -2260,13 +2260,10 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 	}
- 
- 	/*
--	 * Synchronize any pending event handling before executing the controller
--	 * halt routine.
-+	 * Synchronize and disable any further event handling while controller
-+	 * is being enabled/disabled.
- 	 */
--	if (!is_on) {
--		dwc3_gadget_disable_irq(dwc);
--		synchronize_irq(dwc->irq_gadget);
--	}
-+	disable_irq(dwc->irq_gadget);
- 
- 	spin_lock_irqsave(&dwc->lock, flags);
- 
-@@ -2304,6 +2301,8 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
- 
- 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
- 	spin_unlock_irqrestore(&dwc->lock, flags);
-+	enable_irq(dwc->irq_gadget);
-+
- 	pm_runtime_put(dwc->dev);
- 
- 	return ret;
+
+On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+Florian
