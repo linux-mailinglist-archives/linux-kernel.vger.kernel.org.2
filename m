@@ -2,172 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9203838CB51
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4556238CB54
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237771AbhEUQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:54:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47662 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233815AbhEUQyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:54:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621616000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GtBZJNmfi/v/kAisjZU0tr49hHMPjKyZXZ+HZ0R8LGI=;
-        b=PFExVpoIcbcqZHMSZkPDe5oDiXHUkHs6N0Hd0+krIQx3VwRSl/QlnuIev1usID2EGX0mi4
-        6MW6kSUv42biO9jiebY8R7GuNLUfP2GqrDJJKy8aecVa3AGpeo/+51Usle6o1d0VthW/34
-        Qo2mJlzGoSZZl8KJju4eDC+FPP0B/3Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621616000;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GtBZJNmfi/v/kAisjZU0tr49hHMPjKyZXZ+HZ0R8LGI=;
-        b=AoQHMNJOczhuvH22t6Y8ts690eBjuRCNud0FQYaKBWVrs/IP99JkMvAObAIEpgsf2NWRyI
-        eL7R3XsIWJbYO0AQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D0234AB64;
-        Fri, 21 May 2021 16:53:19 +0000 (UTC)
-Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20210521131910.3000689-1-javierm@redhat.com>
- <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
-Date:   Fri, 21 May 2021 18:53:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S237784AbhEUQyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:54:53 -0400
+Received: from m32-153.88.com ([43.250.32.153]:14500 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S237780AbhEUQyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:54:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=CfzEGnSaMANS+q038pdfLfw6YqCcAOmc/lwy0
+        RmS2CQ=; b=C51hqHV3uDpgnyNbU3E6rNDeSze0yCRSJYP8jmY48Bk0/JPDcsII+
+        sEfmCbPaKZDqxF3W+4MNWa570lPgAhsmnruRP5SZgaVK1itL24i5Sa/CQqfcJIz0
+        RdFnIWclVdRiEKywJZwHa7yUAumouQUS6wCButJOP0yyCykBM9E9hA=
+Received: from bobwxc.top (unknown [120.238.248.9])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAHV1l_5adggQ9AAA--.29093S2;
+        Sat, 22 May 2021 00:53:21 +0800 (CST)
+Date:   Sat, 22 May 2021 00:53:19 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Hu Haowen <src.res@email.cn>
+Cc:     alexs@kernel.org, corbet@lwn.net, bernard@vivo.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs/zh_CN: update a translation in zh_CN/dev-tools/gcov
+Message-ID: <20210521165319.GA18245@bobwxc.top>
+References: <20210521155551.29176-1-src.res@email.cn>
 MIME-Version: 1.0
-In-Reply-To: <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
+Content-Disposition: inline
+In-Reply-To: <20210521155551.29176-1-src.res@email.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgAHV1l_5adggQ9AAA--.29093S2
+X-Coremail-Antispam: 1UD129KBjvJXoWrZr1xGFWDuF1DCFW7WFWkCrg_yoW8JryDpr
+        WkKryxG3WIvry5C3y8GF17tr18uFyxWw4UK3W0q3ZYqrnxXrsYkr47tr90gFyfXrWrZFWr
+        AF4F9Fyruw1jk3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgm1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28E
+        F7xvwVC2z280aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wASzI
+        0EjI02j7AqF2xKxwAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1U
+        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I
+        1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkE
+        bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
+        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
+        42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
+        IF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2
+        KfnxnUUI43ZEXa7VU0mhF7UUUUU==
+X-Originating-IP: [120.238.248.9]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI
-Content-Type: multipart/mixed; boundary="Q5rdZSZKGaRlX38IpcwB0qqlARh7fYvgO";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
- David Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
-Message-ID: <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
-Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
-References: <20210521131910.3000689-1-javierm@redhat.com>
- <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
-In-Reply-To: <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
 
---Q5rdZSZKGaRlX38IpcwB0qqlARh7fYvgO
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+--qDbXVdCdHGoSgWSk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi
-
-Am 21.05.21 um 17:33 schrieb Daniel Vetter:
-> On Fri, May 21, 2021 at 03:19:10PM +0200, Javier Martinez Canillas wrot=
-e:
->> Framebuffer devices that are registered by DRM drivers for fbdev emula=
-tion
->> have a "drmfb" suffix in their name. But makes them to be quite confus=
-ing
->> if a driver already has "drm" in its name:
->>
->> $ cat /proc/fb
->> 0 rockchipdrmdrmfb
->>
->> $ cat /proc/fb
->> 0 simpledrmdrmfb
->>
->> Instead, let's just add a "-fb" suffix to denote that are DRM drivers =
-FB:
->>
->> $ cat /proc/fb
->> 0 rockchipdrm-fb
->>
->> $ cat /proc/fb
->> 0 simpledrm-fb
->>
->> Suggested-by: Peter Robinson <pbrobinson@gmail.com>
->> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+On Fri, May 21, 2021 at 11:55:51PM +0800, Hu Haowen wrote:
+> The original file has added some words in commit c797997a244cd2c58908
+> ("Documentation: dev-tools: Add Testing Overview"), hence update the
+> Chinese translation of them.
 >=20
-> So what with all the drivers which do _not_ have drm in their name? Als=
-o
-> I'm never sure how much these are uapi or not ...
-
-Why do we need a suffix anyway?
-
-> -Daniel
+> Signed-off-by: Hu Haowen <src.res@email.cn>
+> ---
+>  Documentation/translations/zh_CN/dev-tools/index.rst | 3 +++
+>  1 file changed, 3 insertions(+)
 >=20
->> ---
->>
->>   drivers/gpu/drm/drm_fb_helper.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_=
-helper.c
->> index f6baa204612..bbaff92c509 100644
->> --- a/drivers/gpu/drm/drm_fb_helper.c
->> +++ b/drivers/gpu/drm/drm_fb_helper.c
->> @@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *inf=
-o,
->>   			       sizes->fb_width, sizes->fb_height);
->>  =20
->>   	info->par =3D fb_helper;
->> -	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
->> +	snprintf(info->fix.id, sizeof(info->fix.id), "%s-fb",
->>   		 fb_helper->dev->driver->name);
->>  =20
->>   }
->> --=20
->> 2.31.1
->>
->=20
+> diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Docum=
+entation/translations/zh_CN/dev-tools/index.rst
+> index fd73c479917b..7ba02fc392a6 100644
+> --- a/Documentation/translations/zh_CN/dev-tools/index.rst
+> +++ b/Documentation/translations/zh_CN/dev-tools/index.rst
+> @@ -11,6 +11,9 @@
+>  =E7=9B=AE=E5=89=8D=E8=BF=99=E4=BA=9B=E6=96=87=E6=A1=A3=E5=B7=B2=E7=BB=8F=
+=E6=95=B4=E7=90=86=E5=9C=A8=E4=B8=80=E8=B5=B7=EF=BC=8C=E4=B8=8D=E9=9C=80=E8=
+=A6=81=E5=86=8D=E8=8A=B1=E8=B4=B9=E9=A2=9D=E5=A4=96=E7=9A=84=E7=B2=BE=E5=8A=
+=9B=E3=80=82
+>  =E6=AC=A2=E8=BF=8E=E4=BB=BB=E4=BD=95=E8=A1=A5=E4=B8=81=E3=80=82
+> =20
+> +=E6=9C=89=E5=85=B3=E6=B5=8B=E8=AF=95=E4=B8=93=E7=94=A8=E5=B7=A5=E5=85=B7=
+=E7=9A=84=E7=AE=80=E8=A6=81=E6=A6=82=E8=BF=B0=EF=BC=8C=E5=8F=82=E8=A7=81
+> +Documentation/dev-tools/testing-overview.rst
+> +
+>  .. class:: toc-title
+> =20
+>  	   =E7=9B=AE=E5=BD=95
+> --=20
+> 2.25.1
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+Looks not bad.
+Are you already working on translating testing-overview.rst?
+If not, please also add todo entry of testing-overview.rst with v2.
+
+Acked-by: Wu XiangCheng <bobwxc@email.cn>
+
+Thanks,
+Wu X.C.
 
 
---Q5rdZSZKGaRlX38IpcwB0qqlARh7fYvgO--
-
---TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+--qDbXVdCdHGoSgWSk
+Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCn5X4FAwAAAAAACgkQlh/E3EQov+AB
-sRAAmuKXo2SiiIcXp1PwrjztYN4Iv7mttdjAGCUa+M1Vjxxo9SkHlnZFlOLOelWngNO4l+t+rDVe
-cL6iaQUf2rOA8x/hGIiVgR8E88PVZmVwa15mFescVa38sE8xnvGcnSELeOL2v49CR+lSyzvmkVaE
-DwmKhdHBuslxqo24qOllX+w3FVEJDMpi7LPkXURsO2jP7c9csPeXgTi/an9Lc2TYqu9nzM3MKC97
-hFTSYaMOgODak/3s+/4cg9B8rMgKWNkqheTKrGhrpEqCNA1Q7Bif0QhgVM/cBn3LoHQwpCdLBaGV
-AVcTCRQjjFznHnvy1d9iL8bG4/ANDpdYh1IgDV76ZbVrEqEAI/i6p7Dsfvr0d8ruO9eSNZt2duDw
-jD6mhx64c7g7oWNHOa/M9dFrsNi6D/+Sh6KcJTjtM3Is+Q86Tsa/ydTpfD0hgI6Zd5Z9nEBtODsX
-MBqlAt3OGKDbgvICMBMqdXF/5Bmgv8mfI1o9E3AZJ4GB+ZOPfp7SRjo2hdMAKnNSs9WYDVxN/ovL
-rxWmvakHRzUPI7njWhBHOPf0Oh/zfwWv6k0GDYS/XfNofAPHw7/Lk9ISvvChjkrmK8ySkefqiuUO
-LltWGSe7TA6aXI7QMLfzJ0AV1kE+i7oj/9Y/Hq5OPu3kGrw6K3OUB9g5uu5xAF4051YJqf+JOYyY
-hxg=
-=C3jq
+iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmCn5XMACgkQtlsoEiKC
+sIUU7QwAlUwBZNaB2V5Fy7LRjfAK44OeexjGKjsZAEOBfTtDFMiZ558R/ZvQohWk
+37oOQSReyoe4d/Rb3itaFSMfIUAZQWDCaclxUojZGq03EO6yKNMlaCWF/tYHbFZG
+ZXpXDiy20E1TJLcJas4YjIovjnOJ6ztca6rZkcn10YTKItWjjCEPDwHvKnDmsosx
+OjmFoAxpXI+0HDrbkPWuGR4bZVh9hGh/P8TR+lhPdxicBLSjAJ1lv2zcppyys9h/
+Uw9YCqiacvmrSKcD6KdPfQoknHt/vGB8FHQjLEvqkZT1KbLLMbWQRJhJCz1uXIgx
+f7WnG6cjXCws26lY3uWOfXqKQrvBrYeMEZRHE3+bM0BczOE5Ywc1qGeZNDfNOYHS
+kUP1eRzHIDA61PGt4lKU5ffjCd8OxdexrXz0Zwgj38QB3NRfvqjUrawzcKaRgiXR
+wdfjfU99OQOnkbnAaiHJ7u3QoXVbK10tMzogLyafrfwxJ+fCL58x0+PX2bXrQGNX
+OUcQJnVg
+=ftgU
 -----END PGP SIGNATURE-----
 
---TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI--
+--qDbXVdCdHGoSgWSk--
+
