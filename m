@@ -2,190 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B937538C858
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3224638C85A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236028AbhEUNjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:39:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236176AbhEUNjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:13 -0400
-Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5058DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:50 -0700 (PDT)
-Received: by mail-io1-xd2b.google.com with SMTP id e17so7617629iol.7
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NttNeLhcm02+oiWbzzzzBiDUNeT7wjZHq2cUEjZv6s0=;
-        b=v/KE6bfT6VCJYrnenvpz9zBGLCOpXfwLGaZk0v9Et0MttdvDk73dgEJXveraNR9+HX
-         unAm2j2b4tweIPStl854Ty91CNZ4IATbtN30Hdlt/F9+O2Svl3Z3S5y5WCTgpx94AReE
-         i7RJVe2ginenu3xnZAAnJE6i13f7bF9YRyqyVPIKJANH8TlhBrHYcJHjCSkW2pWbMUHN
-         ekoIRlbQcYZbGZKbs+jpMEcUm64QeoI6u+ZCy4uuCGvHtDW4eVhePs2RskuLfrouVAYj
-         UzhtkojWigfj4Np34KD4duWwqLdXu95eTnsWv25YY84Ape7heW8ImGamJvIJVeOouU5m
-         Yhtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NttNeLhcm02+oiWbzzzzBiDUNeT7wjZHq2cUEjZv6s0=;
-        b=ZsWMrlNbMs4C7X44kOzoGiN/A+zSV4tf86fRWfFqdMqsY54NT7u8xp4dRS0uqaMcse
-         6LvNXI3UHte/Ha/UcY/aYykgoiGNH7cscfSTrx7Ny5ljqyVjZRJ1pMY44pZAttz5Jwn6
-         uxVU1R23cVsR1cIouWKpU1umaFT8FbgMuO656N1xhrXj/p6jvbvrotbrygzfMlgJj7pp
-         AilB/Guz0nQxu5wccAfBUEZA/A3IAGHaYTeh9mPTJSYmniIjzGH6N9RS0pS0r9DSn3jf
-         K9zLTFPcvEf+LfDXE9ScrpDzCpXIeLrrycqkZ0DdPmksg8N7zxQTCj/ZLSAxPRUJD4v6
-         juaA==
-X-Gm-Message-State: AOAM531jIAyA9VaU0XARuRLDGIxOCqyUwrJazqsEmTPsGg/F69RhP9aQ
-        AAbNyIMAnKAv9nHz9FECrl97ebEvO/5MBMxO04VzcA==
-X-Google-Smtp-Source: ABdhPJzEUGA0KMOrUAL9TbTil30C8ZfAEdpL4JFWkP9cEMg7KMBktxOSGrCkZNOGkkC4qfUWFxJqStq3Uq8d5/TlmRs=
-X-Received: by 2002:a02:a81a:: with SMTP id f26mr4621472jaj.110.1621604269444;
- Fri, 21 May 2021 06:37:49 -0700 (PDT)
+        id S236160AbhEUNjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:39:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49084 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236214AbhEUNjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:39:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 218C3610CB;
+        Fri, 21 May 2021 13:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621604272;
+        bh=Iyc54z2GL+y1O/CEr+PlPVkGPRLHa2YqH4M20ibrNpo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=s6SEzprvCGMKKMNV6Q8mk1MmEvbc0U5Dy4KNagStbTUmpirTUiuXaYeWlXOL2hIe/
+         +1gJImR5q0D7msX4YN+/IXgkMCe8ke3dHBraCC1omlrE9UwcVsc/TKojXUtM9YChNg
+         8QekZeLdXWNuEaPit5s9efY89T6TLbL2QXVCZ4hDFnvSXxvadVT0gtkAOOtRxSenkP
+         xrNzKMxszjeoZxGRrSrOCzRUeepn5S4Fbg5Mc2F3yB4Sa7ORv7jxFMFT97T03DVgpC
+         0UFX0yragJgGvh5ZxDr3rG4l8RxSim7uvdvpI5k3DREYAZavJC1ObN4bWQPXw5qqI9
+         /D9eJStattLgw==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lk5Ld-0004ig-5f; Fri, 21 May 2021 15:37:53 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Takashi Iwai <tiwai@suse.com>
+Cc:     Jaroslav Kysela <perex@perex.cz>, "Geoffrey D. Bennett" <g@b4.vu>,
+        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] ALSA: usb-audio: fix control-request direction
+Date:   Fri, 21 May 2021 15:37:42 +0200
+Message-Id: <20210521133742.18098-1-johan@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
-References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-7-acourbot@chromium.org>
-In-Reply-To: <20210519143011.1175546-7-acourbot@chromium.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 21 May 2021 21:37:38 +0800
-Message-ID: <CA+Px+wV2N9uRuMGBzZDibCYqPVigPb5K40Q1BuLa58K2RY_eaA@mail.gmail.com>
-Subject: Re: [PATCH v5 06/14] media: mtk-vcodec: vdec: move stateful ops into
- their own file
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
-<acourbot@chromium.org> wrote:
-> diff --git a/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-> new file mode 100644
-> index 000000000000..ed4b1308a0e4
-> --- /dev/null
-> +++ b/drivers/media/platform/mtk-vcodec/mtk_vcodec_dec_stateful.c
-> @@ -0,0 +1,667 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <media/v4l2-event.h>
-> +#include <media/v4l2-mem2mem.h>
-> +#include <media/videobuf2-dma-contig.h>
-> +
-> +#include "mtk_vcodec_drv.h"
-> +#include "mtk_vcodec_dec.h"
-> +#include "mtk_vcodec_intr.h"
-> +#include "mtk_vcodec_util.h"
-> +#include "vdec_drv_if.h"
-> +#include "mtk_vcodec_dec_pm.h"
+The direction of the pipe argument must match the request-type direction
+bit or control requests may fail depending on the host-controller-driver
+implementation.
 
-Would be good practice to sort them.
+Fix the UAC2_CS_CUR request which erroneously used usb_sndctrlpipe().
 
-> +static struct vb2_buffer *get_display_buffer(struct mtk_vcodec_ctx *ctx)
-> +{
-> +       struct vdec_fb *disp_frame_buffer = NULL;
-> +       struct mtk_video_dec_buf *dstbuf;
-> +       struct vb2_v4l2_buffer *vb;
-> +
-> +       mtk_v4l2_debug(3, "[%d]", ctx->id);
-> +       if (vdec_if_get_param(ctx,
-> +                       GET_PARAM_DISP_FRAME_BUFFER,
-> +                       &disp_frame_buffer)) {
-> +               mtk_v4l2_err("[%d]Cannot get param : GET_PARAM_DISP_FRAME_BUFFER",
-> +                       ctx->id);
-> +               return NULL;
-> +       }
-> +
-> +       if (disp_frame_buffer == NULL) {
+Fixes: 93db51d06b32 ("ALSA: usb-audio: Check valid altsetting at parsing rates for UAC2/3")
+Cc: stable@vger.kernel.org      # 5.10
+Signed-off-by: Johan Hovold <johan@kernel.org>
+---
 
-Although this is a move refactor, to be neat, !disp_frame_buffer.
+There's a related bug in sound/usb/mixer_scarlett_gen2.c, which
+Geoffrey reported and said he was preparing a patch for here:
 
-> +static struct vb2_buffer *get_free_buffer(struct mtk_vcodec_ctx *ctx)
-> +{
-> +       struct mtk_video_dec_buf *dstbuf;
-> +       struct vdec_fb *free_frame_buffer = NULL;
-> +       struct vb2_v4l2_buffer *vb;
-> +
-> +       if (vdec_if_get_param(ctx,
-> +                               GET_PARAM_FREE_FRAME_BUFFER,
-> +                               &free_frame_buffer)) {
-> +               mtk_v4l2_err("[%d] Error!! Cannot get param", ctx->id);
-> +               return NULL;
-> +       }
-> +       if (free_frame_buffer == NULL) {
+	https://lore.kernel.org/r/20210520180819.GA95348@m.b4.vu
 
-The same concern as above.
+Johan
 
-> +static void clean_display_buffer(struct mtk_vcodec_ctx *ctx)
-> +{
-> +       struct vb2_buffer *framptr;
-> +
-> +       do {
-> +               framptr = get_display_buffer(ctx);
-> +       } while (framptr);
-> +}
-> +
-> +static void clean_free_buffer(struct mtk_vcodec_ctx *ctx)
-> +{
-> +       struct vb2_buffer *framptr;
-> +
-> +       do {
-> +               framptr = get_free_buffer(ctx);
-> +       } while (framptr);
-> +}
 
-while (get_display_buffer(ctx)) ;
-and
-while (get_free_buffer(ctx)) ;
-looks better.
+ sound/usb/format.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> +static int mtk_vdec_flush_decoder(struct mtk_vcodec_ctx *ctx)
-> +{
-> +       bool res_chg;
-> +       int ret = 0;
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index e6ff317a6785..2287f8c65315 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -436,7 +436,7 @@ static bool check_valid_altsetting_v2v3(struct snd_usb_audio *chip, int iface,
+ 	if (snd_BUG_ON(altsetting >= 64 - 8))
+ 		return false;
+ 
+-	err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
++	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
+ 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
+ 			      UAC2_AS_VAL_ALT_SETTINGS << 8,
+ 			      iface, &raw_data, sizeof(raw_data));
+-- 
+2.26.3
 
-No need to initialize.
-
-> +static void mtk_vdec_worker(struct work_struct *work)
-> +{
-> +       struct mtk_vcodec_ctx *ctx = container_of(work, struct mtk_vcodec_ctx,
-> +                               decode_work);
-> +       struct mtk_vcodec_dev *dev = ctx->dev;
-> +       struct vb2_v4l2_buffer *src_buf, *dst_buf;
-> +       struct mtk_vcodec_mem buf;
-> +       struct vdec_fb *pfb;
-> +       bool res_chg = false;
-> +       int ret;
-> +       struct mtk_video_dec_buf *dst_buf_info, *src_buf_info;
-> +
-> +       src_buf = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
-> +       if (src_buf == NULL) {
-
-To neat, !src_buf.
-
-> +       dst_buf = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
-> +       if (dst_buf == NULL) {
-
-To neat, !dst_buf.
-
-> +static void vb2ops_vdec_stateful_buf_queue(struct vb2_buffer *vb)
-> +{
-> +       struct vb2_v4l2_buffer *src_buf;
-> +       struct mtk_vcodec_mem src_mem;
-> +       bool res_chg = false;
-> +       int ret = 0;
-> +       unsigned int dpbsize = 1, i = 0;
-> +       struct mtk_vcodec_ctx *ctx = vb2_get_drv_priv(vb->vb2_queue);
-> +       struct vb2_v4l2_buffer *vb2_v4l2 = NULL;
-
-ret, i, and vb2_v4l2 are obviously no need to initialize.
