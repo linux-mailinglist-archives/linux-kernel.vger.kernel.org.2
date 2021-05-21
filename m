@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E21638C9CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EA638C9CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:09:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237322AbhEUPK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:10:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230420AbhEUPKV (ORCPT
+        id S237332AbhEUPLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:11:14 -0400
+Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:38778 "EHLO
+        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230420AbhEUPLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:10:21 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A289BC061574;
-        Fri, 21 May 2021 08:08:57 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso7335014pji.0;
-        Fri, 21 May 2021 08:08:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZK5vDUvIgC6bF48AUmy/OX+Gvz7Keg1NucsMNX6Zy4o=;
-        b=Dx9XkbBe/GmK+FqmIbzp0hVenlj7MFt21Nz/kQwk43TKsYOEi/sCG+pnhjucrJlB4q
-         jRqOR4U2z9qArpH/YOhny/fD/vxBvpic0qZS2jCRM50tbrp1x2/nAUbFVLP7Qi19JCNn
-         qE+wcRC2PDchPNCgBK/kplZ23l4XdAGwwvK+devv43Tmy2PXYdX97oc1fqD8wahEWSJM
-         S61yrAdAUsXDHexNw5S8uDNv9I5m5zDfnwbBzysVhBp7QDRB17vjUxauVdwpiCZ5QOm6
-         GSKGV9qn/UZSHH/cHz1QKfJLUx8l+eGWf0kuCA7n9SDNwDoPDs6CXjEoCKn+r8OWexA7
-         I/nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ZK5vDUvIgC6bF48AUmy/OX+Gvz7Keg1NucsMNX6Zy4o=;
-        b=bmrpmCHmBaOz+symqFd7oSYAKOpoLGfqoqbjM8ahu0rSYeC6RY+fBow7tWNih7BK9x
-         7iyvi/RscY5wVgPxV/4L/SQBJPBu6ClH9r4/+AapALXvJGBZoUq9U3quKEuqK3jb9861
-         ljPG6ig5dOgZqLrD1holSUXGnlaFyGBmGHU+GiiI7n1S7ZQf20XZF3fZyKx6ziZJkhLk
-         5REVHrOiYJO5MJmau0qW5+wJU35bJWVxV7zClo0AHVpXuPy3Cxbt6ht6zSE09A8ttAX+
-         KS5Ud+RDTiZ6awfJMybmYCp33eq2WzIUe3cY4rpihOtYRPuaWe64FqfLmwjq0ADQgejE
-         f+Gg==
-X-Gm-Message-State: AOAM532n8/P+/jvWTjig3VQj8RWNofulxwe5zzqzPKwFbngKpfhbeP9e
-        PS5oF1GlcfSo7kTcKXyhfT6yHfFsa5s=
-X-Google-Smtp-Source: ABdhPJwCvPiXdUhwh8fr71RC4veZs/oxr51w/F6wONFAA1gyWJCkV4ltIEByJrdN3ZMeHTUqHNOGzQ==
-X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr1458823pjh.111.1621609736739;
-        Fri, 21 May 2021 08:08:56 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id h26sm4443160pfo.203.2021.05.21.08.08.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 08:08:56 -0700 (PDT)
-Subject: Re: [PATCH] pinctrl: bcm2835: Accept fewer than expected IRQs
-To:     "Ivan T. Ivanov" <iivanov@suse.de>,
-        Linus Walleij <linus.walleij@linaro.org>
-Cc:     Phil Elwell <phil@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-gpio@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210521090158.26932-1-iivanov@suse.de>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <47bf2b41-d42f-fb25-ee9e-5527f3324b17@gmail.com>
-Date:   Fri, 21 May 2021 08:08:47 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Fri, 21 May 2021 11:11:12 -0400
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LF6weW004704;
+        Fri, 21 May 2021 10:09:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=vb3caAt/tKr79nkmDUGEd2unVM3Vh/hFlp4bXuoFTXo=;
+ b=NACigRTXcoFNMy5gvvel/FK2kHfv2VsCyXohh12TaHxXFtC8z2LLCL4IwIEmlG5dLykv
+ +NrwgP6QjmAtPPDlW5is0TIrdj6DcJjZ5eqYxeYiqvaWqYW5x2MFAP466dF71j7T84zC
+ UEUonuQdEDxOJGqqCEyxiKzcy+l3eXA36JOYk+zcv761HYam2sfvmixbkYVu0/W3WS5D
+ ippFR0SZItfCITc5GeRuSgkKOWI4wKiZQ7J8Bzde0wmykumx7rC9XqdP8IBOS1wjG0lp
+ lrZaL03Fsw/srHyMGBcLm3mybiMO+fIAdexA5w2c4Ruy1/gTwVMtuTq7STWAy6JoKBYG BA== 
+Received: from ediex02.ad.cirrus.com ([87.246.76.36])
+        by mx0b-001ae601.pphosted.com with ESMTP id 38p6errkag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 21 May 2021 10:09:37 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 21 May
+ 2021 16:09:35 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
+ Transport; Fri, 21 May 2021 16:09:35 +0100
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9A1BB11D6;
+        Fri, 21 May 2021 15:09:35 +0000 (UTC)
+Date:   Fri, 21 May 2021 15:09:35 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+CC:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        <alsa-devel@alsa-project.org>
+Subject: Re: [PATCH] mfd: arizona: Allow building arizona MFD-core as module
+Message-ID: <20210521150935.GL64205@ediswmail.ad.cirrus.com>
+References: <20210521135023.192688-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521090158.26932-1-iivanov@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210521135023.192688-1-hdegoede@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: _ZjdkWqRT1n5vZnloVNu9f9e3IUvFRPt
+X-Proofpoint-ORIG-GUID: _ZjdkWqRT1n5vZnloVNu9f9e3IUvFRPt
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
+ spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=874 clxscore=1015
+ bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105210083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/21/2021 2:01 AM, Ivan T. Ivanov wrote:
-> From: Phil Elwell <phil@raspberrypi.com>
+On Fri, May 21, 2021 at 03:50:23PM +0200, Hans de Goede wrote:
+> There is no reason why the arizona core,irq and codec model specific
+> regmap bits cannot be build as a module. All they do is export symbols
+> which are used by the arizona-spi/i2c and arizona-codec modules, which
+> themselves can be built as module.
 > 
-> The downstream .dts files only request two GPIO IRQs. Truncate the
-> array of parent IRQs when irq_of_parse_and_map returns 0.
+> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
+> can be built as a module.
 > 
-> Signed-off-by: Phil Elwell <phil@raspberrypi.com>
-> Signed-off-by: Ivan T. Ivanov <iivanov@suse.de>
+> This is especially useful on x86 platforms with a WM5102 codec, this
+> allows the arizona MFD driver necessary for the WM5102 codec to be
+> enabled in generic distro-kernels without growing the base kernel-image
+> size.
+> 
+> Note this also adds an explicit "depends on MFD_ARIZONA" to all the
+> arizona codec Kconfig options. The codec drivers use functions from mfd
+> arizona-core. These new depends are necessary to disallow the codec
+> drivers being builtin when the arizona-core is build as a module,
+> otherwise we end up with missing symbol errors when building vmlinuz.
+> 
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
->  drivers/pinctrl/bcm/pinctrl-bcm2835.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/pinctrl/bcm/pinctrl-bcm2835.c b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-> index 1d21129f7751..2c87af1180c4 100644
-> --- a/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-> +++ b/drivers/pinctrl/bcm/pinctrl-bcm2835.c
-> @@ -1274,9 +1274,13 @@ static int bcm2835_pinctrl_probe(struct platform_device *pdev)
->  		char *name;
->  
->  		girq->parents[i] = irq_of_parse_and_map(np, i);
-> -		if (!is_7211)
-> +		if (!is_7211) {
-> +			if (!girq->parents[i]) {
-> +				girq->num_parents = i;
-> +				break;
-> +			}
->  			continue;
 
-This assumes that interrupts are specified in an ordered way and skipped
-in an ordered way as well, however given that we just hand
-girq->parents[] to the GPIOLIB core, I don't really see a better solution:
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+Thanks,
+Charles
