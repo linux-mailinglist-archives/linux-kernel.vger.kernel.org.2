@@ -2,132 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52DF738BAEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:44:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33BB338BAEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:43:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhEUApK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:45:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53424 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235175AbhEUApD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:45:03 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EC1FC061574;
-        Thu, 20 May 2021 17:43:40 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id z130so10176038wmg.2;
-        Thu, 20 May 2021 17:43:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=wzTHc9qf/9Gyj2F7Jjof+103i3haRjLIlfKVYMSi9f0=;
-        b=m1+n9Zpe/GNJi20fwahH90vZPELe8PJfHMnZE5GY/JT0yAPJDy/Tb0arMFLQMBbBKC
-         Fzqs16ct/00k/jVHEdr7lQP7NPDhYoo3J+Ry+wnrPpH4YYJJV06HxwJh/dP4HUTbKq/O
-         DGOZBlz4Mf5KaU9/45r0l6u5aho9HWiswY9Dfp74hPkb24flcut6fmkqKNHaI6AJideK
-         gzkjyZeeWaN/agSXXl7dnQjMj2peUDAmZGLJT7U40BTRYrmTKWfQYxpmGmeE9UATdxQN
-         uqve+49l66WWJiirjBm8z0ra1rp+Vml1z6RTdWXxEHW0T7RyNjSALT98QtDSGyp9XHug
-         fG5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=wzTHc9qf/9Gyj2F7Jjof+103i3haRjLIlfKVYMSi9f0=;
-        b=WsVY4NYQVdj8ZrynDZL+kzQ/TmhUuF0Kx9AsOFHUL5GznCMvOYfF+KCAT9CjVHFazy
-         /RM96ClLMpSFVvUunE45d8fYCDP5946HI+RbOacYzYsGdiRs6nuaISK4kcWuUUsQZDO3
-         h+MLv6Nsk1Ep3me6QdMu8OjR7zgenQJvMWH8b2HTUBSRpG1fgtePKl5j3lsAR9RLkKhv
-         LwQnQ1OMuNytlxK1FSRdt04Ge0oAwptunEi2riZjDPUal2NMA1/Ewz2bpRF0wBNRdgP/
-         eGR6Ut05VbSjW2PyvkHNLbwj7g8QO7teZt6wv3f9YwYzHOoohng9wx0JfYgKZUT7/9HA
-         EPWw==
-X-Gm-Message-State: AOAM533ZiLvpqny3Zcb3T3khyIeHLGtMVT0XdfqR8pbagG+XnM2XUSuT
-        z/229uOyAX5yiscnHKcGRhk=
-X-Google-Smtp-Source: ABdhPJyK0Kh76kLnAgOjLQY+kUei7T+tqBnuq8EFjDlzihkAPjP76LNvtOD0tWnU4jygDTYXU6QH9Q==
-X-Received: by 2002:a05:600c:2dc8:: with SMTP id e8mr4477858wmh.72.1621557819043;
-        Thu, 20 May 2021 17:43:39 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.182])
-        by smtp.gmail.com with ESMTPSA id h14sm164161wrq.45.2021.05.20.17.43.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 17:43:38 -0700 (PDT)
-Subject: Re: [PATCH 13/23] io_uring: implement bpf prog registration
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-References: <cover.1621424513.git.asml.silence@gmail.com>
- <c246d3736b9440532f3e82199a616e3f74d1b8ba.1621424513.git.asml.silence@gmail.com>
- <E5C654FA-1F38-43C4-940D-80563A3B2647@fb.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <2ae0fcbf-fe4a-b2e6-5e7a-4f62c8e91d7e@gmail.com>
-Date:   Fri, 21 May 2021 01:43:30 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <E5C654FA-1F38-43C4-940D-80563A3B2647@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+        id S235338AbhEUApG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:45:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232540AbhEUApC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 20:45:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 93C8C6135B;
+        Fri, 21 May 2021 00:43:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621557820;
+        bh=cKzMCTcCiLeDf0/kfL8bnIfDepUDMFHJ7mkh2sW9roA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=HW0Ssyz6twMFNp+XTvYVqfU2ycpoW0fMXokZ8nQs/bUAa+Aoh6UeNoM61dogBsbhD
+         lbt5l4swKoJlFRP5LWx93aWxGf5PB8PvnB3QdjTJS6t2cgy2xUWZEpa9FHoX4kqhM/
+         GwQTOG69ww5i8QLUXncjBSoqKCaboAuVJ1rjKAwWkwHGfpK9wrV7iQhyl8AXoKGkeq
+         Mx7/+9DpKa3u1eZ3Zh7TTmS4BlW27U9np6ejvYNiXdf+cEhp+duNQGW+3vXy18SJRb
+         6PYuCNnWAvuc/N+cb818N8dUu15lJMRbEF5mLiuSlWd2QjWy782/rq9XCU5E2mlxbV
+         XoiYgrNP+6cRw==
+Date:   Fri, 21 May 2021 09:43:37 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Devin Moore <devinmoore@google.com>
+Subject: Re: [PATCH 1/4] bootconfig: Change array value to use child node
+Message-Id: <20210521094337.c5086a551fcbb6a71ec3948d@kernel.org>
+In-Reply-To: <162117693103.9011.18172892676114426345.stgit@devnote2>
+References: <162117692155.9011.16682190750100804269.stgit@devnote2>
+        <162117693103.9011.18172892676114426345.stgit@devnote2>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 12:45 AM, Song Liu wrote:
->> On May 19, 2021, at 7:13 AM, Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> [de]register BPF programs through io_uring_register() with new
->> IORING_ATTACH_BPF and IORING_DETACH_BPF commands.
->>
->> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> ---
->> fs/io_uring.c                 | 81 +++++++++++++++++++++++++++++++++++
->> include/uapi/linux/io_uring.h |  2 +
->> 2 files changed, 83 insertions(+)
->>
->> diff --git a/fs/io_uring.c b/fs/io_uring.c
->> index 882b16b5e5eb..b13cbcd5c47b 100644
->> --- a/fs/io_uring.c
->> +++ b/fs/io_uring.c
->> @@ -78,6 +78,7 @@
->> #include <linux/task_work.h>
->> #include <linux/pagemap.h>
->> #include <linux/io_uring.h>
->> +#include <linux/bpf.h>
->>
->> #define CREATE_TRACE_POINTS
->> #include <trace/events/io_uring.h>
->> @@ -103,6 +104,8 @@
->> #define IORING_MAX_RESTRICTIONS	(IORING_RESTRICTION_LAST + \
->> 				 IORING_REGISTER_LAST + IORING_OP_LAST)
->>
->> +#define IORING_MAX_BPF_PROGS	100
-> 
-> Is 100 a realistic number here? 
+Hi,
 
-Arbitrary test value, will update
+Devin reported that I forgot to update /proc/bootconfig.
+Let me update the series. (including the description)
 
+Thank you,
+
+On Sun, 16 May 2021 23:55:31 +0900
+Masami Hiramatsu <mhiramat@kernel.org> wrote:
+
+> Change array value to use child node of the xbc_node tree
+> instead of next node.
 > 
->> +
->> #define SQE_VALID_FLAGS	(IOSQE_FIXED_FILE|IOSQE_IO_DRAIN|IOSQE_IO_LINK|	\
->> 				IOSQE_IO_HARDLINK | IOSQE_ASYNC | \
->> 				IOSQE_BUFFER_SELECT)
->> @@ -266,6 +269,10 @@ struct io_restriction {
->> 	bool registered;
->> };
->>
+> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+> ---
+>  tools/bootconfig/main.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> [...]
+> diff --git a/include/linux/bootconfig.h b/include/linux/bootconfig.h
+> index 2696eb0fc149..3178a31fdabc 100644
+> --- a/include/linux/bootconfig.h
+> +++ b/include/linux/bootconfig.h
+> @@ -71,7 +71,7 @@ static inline __init bool xbc_node_is_key(struct xbc_node *node)
+>   */
+>  static inline __init bool xbc_node_is_array(struct xbc_node *node)
+>  {
+> -	return xbc_node_is_value(node) && node->next != 0;
+> +	return xbc_node_is_value(node) && node->child != 0;
+>  }
+>  
+>  /**
+> @@ -140,7 +140,7 @@ static inline struct xbc_node * __init xbc_find_node(const char *key)
+>   */
+>  #define xbc_array_for_each_value(anode, value)				\
+>  	for (value = xbc_node_get_data(anode); anode != NULL ;		\
+> -	     anode = xbc_node_get_next(anode),				\
+> +	     anode = xbc_node_get_child(anode),				\
+>  	     value = anode ? xbc_node_get_data(anode) : NULL)
+>  
+>  /**
+> @@ -171,7 +171,7 @@ static inline struct xbc_node * __init xbc_find_node(const char *key)
+>   */
+>  #define xbc_node_for_each_array_value(node, key, anode, value)		\
+>  	for (value = xbc_node_find_value(node, key, &anode); value != NULL; \
+> -	     anode = xbc_node_get_next(anode),				\
+> +	     anode = xbc_node_get_child(anode),				\
+>  	     value = anode ? xbc_node_get_data(anode) : NULL)
+>  
+>  /**
+> diff --git a/lib/bootconfig.c b/lib/bootconfig.c
+> index 9f8c70a98fcf..44dcdcbd746a 100644
+> --- a/lib/bootconfig.c
+> +++ b/lib/bootconfig.c
+> @@ -367,6 +367,14 @@ static inline __init struct xbc_node *xbc_last_sibling(struct xbc_node *node)
+>  	return node;
+>  }
+>  
+> +static inline __init struct xbc_node *xbc_last_child(struct xbc_node *node)
+> +{
+> +	while (node->child)
+> +		node = xbc_node_get_child(node);
+> +
+> +	return node;
+> +}
+> +
+>  static struct xbc_node * __init xbc_add_sibling(char *data, u32 flag)
+>  {
+>  	struct xbc_node *sib, *node = xbc_add_node(data, flag);
+> @@ -517,17 +525,20 @@ static int __init xbc_parse_array(char **__v)
+>  	char *next;
+>  	int c = 0;
+>  
+> +	if (last_parent->child)
+> +		last_parent = xbc_node_get_child(last_parent);
+> +
+>  	do {
+>  		c = __xbc_parse_value(__v, &next);
+>  		if (c < 0)
+>  			return c;
+>  
+> -		node = xbc_add_sibling(*__v, XBC_VALUE);
+> +		node = xbc_add_child(*__v, XBC_VALUE);
+>  		if (!node)
+>  			return -ENOMEM;
+>  		*__v = next;
+>  	} while (c == ',');
+> -	node->next = 0;
+> +	node->child = 0;
+>  
+>  	return c;
+>  }
+> @@ -615,8 +626,12 @@ static int __init xbc_parse_kv(char **k, char *v, int op)
+>  
+>  	if (op == ':' && child) {
+>  		xbc_init_node(child, v, XBC_VALUE);
+> -	} else if (!xbc_add_sibling(v, XBC_VALUE))
+> -		return -ENOMEM;
+> +	} else {
+> +		if (op == '+' && child)
+> +			last_parent = xbc_last_child(child);
+> +		if (!xbc_add_sibling(v, XBC_VALUE))
+> +			return -ENOMEM;
+> +	}
+>  
+>  	if (c == ',') {	/* Array */
+>  		c = xbc_parse_array(&next);
+> diff --git a/tools/bootconfig/main.c b/tools/bootconfig/main.c
+> index 7362bef1a368..aaa4fec1c431 100644
+> --- a/tools/bootconfig/main.c
+> +++ b/tools/bootconfig/main.c
+> @@ -27,7 +27,7 @@ static int xbc_show_value(struct xbc_node *node, bool semicolon)
+>  			q = '\'';
+>  		else
+>  			q = '"';
+> -		printf("%c%s%c%s", q, val, q, node->next ? ", " : eol);
+> +		printf("%c%s%c%s", q, val, q, node->child ? ", " : eol);
+>  		i++;
+>  	}
+>  	return i;
 > 
+
 
 -- 
-Pavel Begunkov
+Masami Hiramatsu <mhiramat@kernel.org>
