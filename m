@@ -2,103 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 099A938CC7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:44:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BAB38CC85
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238347AbhEURqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238091AbhEURp6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:45:58 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B98DC061574;
-        Fri, 21 May 2021 10:44:35 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id a7so2674224plh.3;
-        Fri, 21 May 2021 10:44:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o4QkVSOOszVdWrPvz94pBsy6ZfYgC+/HXfwmVhL8xGw=;
-        b=TwWyEx5iTKVucRdNH6zhy2eSM0O1FrCPfAxQkDrk0ThM1Cp0fCpPRmM+d0Kq0ylVgP
-         8+xwoes439gAgC/wh4YVGUgMZ6xB00ur0bjG+vKWPE5lNKXh+8OfhaoYaqxuRinnGn/e
-         72he3zYpVjns46fabfxVp2qaYW6kaPzy9BGXwcmfY8JgBxRY9jundRjINv4zQfBYJjS1
-         wvycUl8Lgq6/5Z7o7fJqwj7BlcX9XUfkrD14vKpKvWo55uscLIWyAJr70gg4xwT5N3Y6
-         qz60aIpna76PH8RsNyPgbNuQDDPvb3Pn4Jnwb4Alk7oI3gyW2jiztvCc4D1xLZWrVqkq
-         oO7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=o4QkVSOOszVdWrPvz94pBsy6ZfYgC+/HXfwmVhL8xGw=;
-        b=fZI6xtFceQJMe24dDFclGC09fhOp+rpqJTwRK/s9XWAqYa724ZeG0JL/k7u9P1ZuPO
-         p2UfeKyabWpcPV902u3v+okOGXzS+14yB6qBh7Pibs40H/j6Sh2FQzsMvEzEr6AJjoNp
-         1O24fy/u8RL/o71gHAmk9WTH00HwxyzjsZV5CshmHMm7t1Ekug11iOGRjpwvuTwDulOM
-         sU4AVdSlFONg2xGEI71MSwoPZGPOofYGp0w790gpGRSg6JomYHVTJuwv7Zqdc+mu5XI9
-         1OE57ummSlPB2rTxAed6X4H+NElc/jfZPokljv3Er7cHZDQfAMCmDeZMRUcdpd3KL6U0
-         CVoA==
-X-Gm-Message-State: AOAM5310qrjqoTBtdUbIpbyZPugqALJEts8MlREFj9Qe+cb4zpmolMq2
-        hibUFSw5nPmfL3U928iMUsQ=
-X-Google-Smtp-Source: ABdhPJwCvHRA3jCLNwvQyiOuvcz8bWdjIu8uz7Jx0o+d/sOcGZUFarfKrJPz7v8dynGbUF7uIhRs7Q==
-X-Received: by 2002:a17:902:d2ce:b029:f4:4a5:9a8b with SMTP id n14-20020a170902d2ceb02900f404a59a8bmr13159671plc.70.1621619074605;
-        Fri, 21 May 2021 10:44:34 -0700 (PDT)
-Received: from google.com ([2620:15c:211:201:2a07:5416:42d3:6c55])
-        by smtp.gmail.com with ESMTPSA id p6sm4681894pfh.166.2021.05.21.10.44.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 10:44:34 -0700 (PDT)
-Sender: Minchan Kim <minchan.kim@gmail.com>
-Date:   Fri, 21 May 2021 10:44:32 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Yue Hu <zbestahu@gmail.com>, akpm@linux-foundation.org
-Cc:     ngupta@vflare.org, senozhatsky@chromium.org, axboe@kernel.dk,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        huyue2@yulong.com, zbestahu@163.com,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Subject: Re: [PATCH][RESEND] zram: move backing_dev under macro
- CONFIG_ZRAM_WRITEBACK
-Message-ID: <YKfxgGe6evFf7dr+@google.com>
-References: <20210521060544.2385-1-zbestahu@gmail.com>
+        id S238368AbhEURrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:47:12 -0400
+Received: from foss.arm.com ([217.140.110.172]:52618 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235399AbhEURrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:47:11 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 904FD1424;
+        Fri, 21 May 2021 10:45:47 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 445AC3F73D;
+        Fri, 21 May 2021 10:45:45 -0700 (PDT)
+Date:   Fri, 21 May 2021 18:45:42 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 00/21] Add support for 32-bit tasks on asymmetric
+ AArch32 systems
+Message-ID: <20210521174542.2kojxgzrgdl6nqpx@e107158-lin.cambridge.arm.com>
+References: <20210518094725.7701-1-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210521060544.2385-1-zbestahu@gmail.com>
+In-Reply-To: <20210518094725.7701-1-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 02:05:44PM +0800, Yue Hu wrote:
-> From: Yue Hu <huyue2@yulong.com>
-> 
-> backing_dev is never used when not enable CONFIG_ZRAM_WRITEBACK and
-> it's introduced from writeback feature. So it's needless also affect
-> readability in that case.
-> 
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
-> Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-> Acked-by: Minchan Kim <minchan@kernel.org>
+Hi Will
 
-Andrew, could you pick?
+On 05/18/21 10:47, Will Deacon wrote:
+> Hi folks,
+> 
+> This is the long-awaited v6 of these patches which I last posted at the
+> end of last year:
+> 
+>   v1: https://lore.kernel.org/r/20201027215118.27003-1-will@kernel.org
+>   v2: https://lore.kernel.org/r/20201109213023.15092-1-will@kernel.org
+>   v3: https://lore.kernel.org/r/20201113093720.21106-1-will@kernel.org
+>   v4: https://lore.kernel.org/r/20201124155039.13804-1-will@kernel.org
+>   v5: https://lore.kernel.org/r/20201208132835.6151-1-will@kernel.org
+> 
+> There was also a nice LWN writeup in case you've forgotten what this is
+> about:
+> 
+> 	https://lwn.net/Articles/838339/
+> 
+> It's taken me a while to get a v6 of this together, partly due to
+> addressing the review feedback on v5, but also because this has now seen
+> testing on real hardware which threw up some surprises in suspend/resume,
+> SCHED_DEADLINE and compat hwcap reporting. Thanks to Quentin for helping
+> me to debug those issues.
+> 
+> The aim of this series is to allow 32-bit ARM applications to run on
+> arm64 SoCs where not all of the CPUs support the 32-bit instruction set.
+> Unfortunately, such SoCs are real and will continue to be productised
+> over the next few years at least. I can assure you that I'm not just
+> doing this for fun.
+> 
+> Changes in v6 include:
+> 
+>   * Save/restore the affinity mask across execve() to 32-bit and back to
+>     64-bit again.
+> 
+>   * Allow 32-bit deadline tasks, but skip straight to fallback path when
+>     determining new affinity mask on execve().
+> 
+>   * Fixed resume-from-suspend path when the resuming CPU is 64-bit-only
+>     by deferring wake-ups for 32-bit tasks until the secondary CPUs are
+>     back online.
+> 
+>   * Bug fixes (compat hwcaps, memory leak, cpuset fallback path).
+> 
+>   * Documentation for arm64. It's in the divisive .rst format, but please
+>     take a look anyway!
+> 
+> I'm pretty happy with this now and it seems to do the right thing,
+> although the new patches in this revision would certainly benefit from
+> review. Series based on v5.13-rc1.
 
-> ---
->  drivers/block/zram/zram_drv.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/block/zram/zram_drv.h b/drivers/block/zram/zram_drv.h
-> index 419a7e8..6e73dc3 100644
-> --- a/drivers/block/zram/zram_drv.h
-> +++ b/drivers/block/zram/zram_drv.h
-> @@ -113,8 +113,8 @@ struct zram {
->  	 * zram is claimed so open request will be failed
->  	 */
->  	bool claim; /* Protected by bdev->bd_mutex */
-> -	struct file *backing_dev;
->  #ifdef CONFIG_ZRAM_WRITEBACK
-> +	struct file *backing_dev;
->  	spinlock_t wb_limit_lock;
->  	bool wb_limit_enable;
->  	u64 bd_wb_limit;
-> -- 
-> 1.9.1
-> 
+It's late Fri and I'm off next week (I'm starting to sense an omen here, it's
+the 2nd or 3rd time the post syncs with my holiday), so a bit of a rushed
+review but the series looks good to me. Feel free to stick my Reviewed-by for
+the series, except patch 13 where I skipped it, given the few comments I had
+are addressed.
+
+I did test v5, but not this version. I think it had found better victims to
+test it now :-P
+
+Thanks!
+
+--
+Qais Yousef
