@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F039E38C1CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD84F38C1CC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:28:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhEUI3o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:29:44 -0400
-Received: from m12-16.163.com ([220.181.12.16]:41450 "EHLO m12-16.163.com"
+        id S231329AbhEUIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:30:16 -0400
+Received: from m12-14.163.com ([220.181.12.14]:48956 "EHLO m12-14.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231650AbhEUI3l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:29:41 -0400
+        id S229659AbhEUIaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:30:15 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=S2Aqv
-        fimJwk19/jxLaWoFTY8zWl28dhMVj/NQdnFLb8=; b=WtcnqoNG/yBjHN2zgw5mm
-        oXRzKna4PbXnuFy5yeyQ+Vqung++L3buTUxh4BVZ0sEl1TD5fTLxP7qyUCguk+v6
-        wskN9BTadntKLS255sgon1xzLNBzDPDqOE6lHh4G86UX8l2yqbUIeeR6sc/J+6eN
-        Si2vLTBu1wMuxyzHnmKKC8=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowAAnLloOb6dgvLrGsQ--.31617S2;
-        Fri, 21 May 2021 16:28:02 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     jejb@linux.ibm.com, martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] scsi: Fix typo
-Date:   Fri, 21 May 2021 16:28:08 +0800
-Message-Id: <20210521082808.1925-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=m/4ob
+        kjV8lIhm04fJfncJB1YfWCrR+GPtUWQsPNwOVU=; b=C5Bk4S752HQeVlomogWdr
+        RQr+H67TtBMnBy9nl7CODAQguak/fI5oCqBZqRx8xqIuR+dJrUYXagA8grargGNL
+        kDDmXU0rnUa/9Mnc961TZV211/Did8JupZhZno3x6yLT+SVOERElFJxkUqeKjlN2
+        Dqvai5jub9wr5BMGeE2by4=
+Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
+        by smtp10 (Coremail) with SMTP id DsCowADX5089b6dgyf2LKA--.17856S2;
+        Fri, 21 May 2021 16:28:46 +0800 (CST)
+From:   dingsenjie@163.com
+To:     colyli@suse.de, kent.overstreet@gmail.com
+Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ding Senjie <dingsenjie@yulong.com>
+Subject: [PATCH] md: bcache: Fix spelling of 'acquire'
+Date:   Fri, 21 May 2021 16:28:25 +0800
+Message-Id: <20210521082825.21736-1-dingsenjie@163.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowAAnLloOb6dgvLrGsQ--.31617S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFy8ZF4DXF1fuF4Duw1kGrg_yoWfWrg_Gw
-        1DX3s7WF12vFn2yF13JwsxZrZY93Z7uws5Ca90qayfu3yxZw4rWwnrWFnrZwsxGF45u3sx
-        Zw1vqF9Iyr4DGjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU81xRDUUUUU==
+X-CM-TRANSID: DsCowADX5089b6dgyf2LKA--.17856S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7GF4fKFW3CF47KrWUKFWfXwb_yoWfGrc_ua
+        1Sqay29w45Kr1xXr13Gw4fZrW0qw1kurn5Jan7JrW3uF15Zr47Wry3Wr1UXr15ua18C3Zr
+        Ar1jgr45tw1xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8UKsUUUUUU==
 X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiThuXiVUDJkBsQwACsW
+X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipR6ZyFUMeOko1gAAsc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+From: Ding Senjie <dingsenjie@yulong.com>
 
-Change "avaibale" and "avaible" to "available".
+acqurie -> acquire
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
+Signed-off-by: Ding Senjie <dingsenjie@yulong.com>
 ---
- drivers/scsi/pmcraid.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/md/bcache/super.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/scsi/pmcraid.h b/drivers/scsi/pmcraid.h
-index 6d36deb..bbb7531 100644
---- a/drivers/scsi/pmcraid.h
-+++ b/drivers/scsi/pmcraid.h
-@@ -47,8 +47,8 @@
- /*
-  * MAX_CMD          : maximum commands that can be outstanding with IOA
-  * MAX_IO_CMD       : command blocks available for IO commands
-- * MAX_HCAM_CMD     : command blocks avaibale for HCAMS
-- * MAX_INTERNAL_CMD : command blocks avaible for internal commands like reset
-+ * MAX_HCAM_CMD     : command blocks available for HCAMS
-+ * MAX_INTERNAL_CMD : command blocks available for internal commands like reset
-  */
- #define PMCRAID_MAX_CMD				1024
- #define PMCRAID_MAX_IO_CMD			1020
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 2047a9c..c8d5942 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -2752,7 +2752,7 @@ static int bcache_reboot(struct notifier_block *n, unsigned long code, void *x)
+ 		 * The reason bch_register_lock is not held to call
+ 		 * bch_cache_set_stop() and bcache_device_stop() is to
+ 		 * avoid potential deadlock during reboot, because cache
+-		 * set or bcache device stopping process will acqurie
++		 * set or bcache device stopping process will acquire
+ 		 * bch_register_lock too.
+ 		 *
+ 		 * We are safe here because bcache_is_reboot sets to
 -- 
 1.9.1
-
 
