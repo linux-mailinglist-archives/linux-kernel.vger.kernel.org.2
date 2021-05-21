@@ -2,179 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3968F38C770
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE6938C777
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:07:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232203AbhEUNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
+        id S231504AbhEUNIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230137AbhEUNFk (ORCPT
+        with ESMTP id S229571AbhEUNIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:05:40 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8D7C061574;
-        Fri, 21 May 2021 06:04:16 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ot16so8998455pjb.3;
-        Fri, 21 May 2021 06:04:16 -0700 (PDT)
+        Fri, 21 May 2021 09:08:47 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 376FAC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:07:23 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id v5so23842497ljg.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:07:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KazFp94vGYmH79BEM/aZY06cbYtJj9Pb42I1kTX5ais=;
-        b=A1vN4FGQLVWObKaTYn4XZNkCnS0cW7/YlaWSyX7nhnMjI8f+poG6AzkoHKcytcHMm2
-         efBoGGct11QNH6W0lWdNqGUkrEo27SFpR10Ou5o050AzxqPjUh1J58d7Gh+q3OJfaoIk
-         b9TmXmMf9ca7kgAYauSPZGdmpGypj9DQ1vnzozi/Q7T9I6W5qagZGGRwpIofpR6X4cnI
-         yUXzLF0FK6WFUGK4DMWN2RaKXUUlg6sVYIIX9UUpDsEWNrlLvIxalP3Qvd8GgRrIE64G
-         u6pQ2Mv28VsV/SbYshLS/dCo6ne5frT40pIbpbp/MiXijwFR05VwgXMaWg2/a7V5X8/i
-         DlRQ==
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=XR01GIQvJskVOVw5IqfA2lCJ3o70uuemnirl8BXtsUM=;
+        b=plf+BbYAfzrs7YDrXURCX0WGuEVkGgwzqE9Y/jcLL1y0X/cc+y9YZ3bfWBOqrVxO7L
+         PfYoCxKChfa8SmUiws+wxkZdpqelXtWWXdbGcIcrlyeoQiJUPkYvzeHFIgo+vEHGZm0f
+         qZ/aj34x/8iuOxWIwydutXpeQwxm/D64HOqb4pglgybjxaYV3K3m62bOWus08o3ec13Y
+         3YMIzYA0QC+QQysYz3NDWJ5a/uPu5Je7t51mJ5wiCMmA6z/5v5vzRYuUR55R616ftGOJ
+         mVPlqqh+lpl+/FbqLU22pWThOUgDwni+ObBxRJdg/rwgyUFRN5qBbffDYEsYB8sIhiTt
+         u57Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KazFp94vGYmH79BEM/aZY06cbYtJj9Pb42I1kTX5ais=;
-        b=BLnxtatWezAUQjT8pVpBO3kD7OqXMRVzeA2J0QOVoF2vxpGYffUTAnRz6Metr9fbyB
-         qZ/XUezGDqXBqMRhC7swFM1Czr3td8ChlDTMCRycTJbyzuFiDY4bZMTNXO+YYsHVgyoY
-         en78naDu7k/pUwPHX8yHRg6Tj49zgLNKUwsLwhO4BAyw/nTDin0HL3eG6er9Xsw9ujB5
-         rnIWGyxoU97Rn4iSpDsVXYBva6GVvJn0qSYpd6TqZ1qesEb+JDPsyQnWmT1G+c52kiUF
-         ZcNEdg10dfzyyz0vr0qOi6rJLRFyNQR/afmpOPQo/uv09Zl1lNURgYAeXhBLgbqEsGOJ
-         8ziQ==
-X-Gm-Message-State: AOAM530lCqT/7PeA+y8IedBk1XoZhciNgBYHSAmBSPg3vlOGFNdz4dwb
-        hgF54Xu+XNY2Nfl4KoMoBi7iOLBkhhs=
-X-Google-Smtp-Source: ABdhPJz/m8bP3ZeWer2qhsavubfZnJpDs1oXVTSQNN2C3kjXoTxbrt6W01I+O9baCBGJyu+Lk/35CQ==
-X-Received: by 2002:a17:902:9b83:b029:ef:4dd5:beab with SMTP id y3-20020a1709029b83b02900ef4dd5beabmr11851112plp.76.1621602255851;
-        Fri, 21 May 2021 06:04:15 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id y64sm4246179pfy.204.2021.05.21.06.04.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 06:04:15 -0700 (PDT)
-Subject: Re: [PATCH] docs: sphinx-pre-install: Reword warning on installing
- cjk font
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <c5652bb4-0bb0-9efa-2b80-a79793a8efa8@gmail.com>
- <20210521095442.33957ff3@coco.lan>
- <0c33f48f-150d-caa9-d18b-f1267f679f26@gmail.com>
- <20210521141952.2c575cbe@coco.lan>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Message-ID: <12a4169e-5c50-b6c3-64df-37a9d05199b3@gmail.com>
-Date:   Fri, 21 May 2021 22:04:12 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=XR01GIQvJskVOVw5IqfA2lCJ3o70uuemnirl8BXtsUM=;
+        b=sxFL7Qt0+O6MQkYJ7EczwPdvFnxxxh/nPa/zgUXZIvCNcU0CjK5yOSTTnI9AoQ2YMC
+         ZkU7M1Mo0v75S6m6aaDBpqKhXDvIr24ZLdyaj31YIXO8k5Cmid7dC8RnS1G2xSb4IClj
+         oxzT16D8tSYM1fYYWmKJ+w292rlfmHGtSRVvDkplEMz8CXYypTehorbpnawGuvQ7NQJy
+         Nmc/wvqBhE0aEeQcpJ5cxz2ZckQR65UaYJgT95KscCSVBKCA4okY0ec46Qvn/KPOnaKM
+         ksofT5SE4VrfV6D5uwG9DcaAZupPUOslYp5qd/J4un+l+B5APxWMFDhrAge5PW16yals
+         yjlg==
+X-Gm-Message-State: AOAM531M1KzcDoLukV13tnc14miYUHbngPvUHwb8rCxCXJTBMVQy44QW
+        1kDHNA4TMmPNTBpy5eaS9ik=
+X-Google-Smtp-Source: ABdhPJwwOBXRIuQOu0kr5gK2Cb5i5ajWMWZBL/dvDgw4g+II6O1pUtAic6AhWpf70aNBPKRTkVM45g==
+X-Received: by 2002:a2e:805a:: with SMTP id p26mr6538651ljg.495.1621602441472;
+        Fri, 21 May 2021 06:07:21 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id x24sm660924lfe.230.2021.05.21.06.07.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 06:07:21 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Fri, 21 May 2021 15:07:18 +0200
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH] mm/vmalloc: Fallback to a single page allocator
+Message-ID: <20210521130718.GA17882@pc638.lan>
+References: <20210521111033.2243-1-urezki@gmail.com>
+ <YKecydxDtWLTDuKg@casper.infradead.org>
+ <20210521125509.GA2442@pc638.lan>
 MIME-Version: 1.0
-In-Reply-To: <20210521141952.2c575cbe@coco.lan>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521125509.GA2442@pc638.lan>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 14:19:52 +0200, Mauro Carvalho Chehab wrote:
-> Em Fri, 21 May 2021 18:00:00 +0900
-> Akira Yokosawa <akiyks@gmail.com> escreveu:
+On Fri, May 21, 2021 at 02:55:09PM +0200, Uladzislau Rezki wrote:
+> > On Fri, May 21, 2021 at 01:10:33PM +0200, Uladzislau Rezki (Sony) wrote:
+> > > +static inline unsigned int
+> > > +vm_area_alloc_pages(gfp_t gfp, int nid, unsigned int page_order,
+> > > +	unsigned long nr_small_pages, struct page **pages)
+> > 
+> > (at least) two tabs here, please, otherwise the argument list is at
+> > the same indentation as the code which trips up my parser.  some people
+> > like to match the opening bracket, but that always feels like more work
+> > than it's worth.  fwiw, i'd format it like this:
+> > 
+> > static inline unsigned int vm_area_alloc_pages(gfp_t gfp, int nid,
+> > 		unsigned int order, unsigned long nr_pages, struct page **pages)
+> > {
+> > ...
+> >
+> No problem. Will fix it.
 > 
->> Hi Mauro,
->>
->> On Fri, 21 May 2021 09:54:42 +0200, Mauro Carvalho Chehab wrote:
->>> HI Akira,
->>>
->>> Em Fri, 21 May 2021 16:14:19 +0900
->>> Akira Yokosawa <akiyks@gmail.com> escreveu:
->>>   
->>>> Installing a ckj font as recommended by the warning message causes
->>>> generated latex code to have:
->>>>
->>>> 	% This is needed for translations
->>>> 	\usepackage{xeCJK}
->>>> 	\setCJKmainfont{Noto Sans CJK SC}
->>>>
->>>> in its preamble even for an English document.  
->>>
->>> Yes. The same LaTeX configuration is applied to all documents.
->>>
->>> While the standard Sphinx logic allows just one conf.py, there's
->>> a logic on Linux that allows a per-directory configuration.
->>> Perhaps it would be possible to set the font just for translations.
->>>
->>> Yet, this can't be easily done per-translation - Italian
->>> translation for instance doesn't need CJK fonts.  
->>
->> Yes, the Italian part looks ugly with xeCJK.
->>
->>>   
->>>> The package "xeCJK" changes wide characters' appearance including
->>>> apostrophe (single quote) and double quotes, and it changes line-break
->>>> behavior with regard to the boundary of narrow and wide characters.
->>>>
->>>> This greatly degrades readability of English PDFs typeset by xelatex.  
->>>
->>> Hmm... could you give an example where it looks ugly?
->>>
->>> At least on the documents I use to check the PDF output, I was unable
->>> to see any big issue.  
->>
->> Appended are screenshots from RCU.pdf built with and without xeCJK.
->>
->> They are built on Ubuntu Bionic based container with sphinx 2.4.4.
->>
->> I think you can see the difference of how apostrophes are rendered.
->> Line-break points are also affected by the widths of apostrophes.
->>
->> Can you spot the difference?
+> > 
+> > (yes, i renamed some of the variables there; overly long variable names
+> > are painful)
+> > 
+> > The rest of the patch looks good.
+> > 
+> > Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Thank you!
 > 
-> Ok, now I understand what you're meaning. We need to double check
-> what's wrong there, as it doesn't make much sense to have a
-> "`  " character instead of "`" on those places, nor to change
-> the word's hyphenation logic.
-
-No, I'm afraid you don't get the point yet.
-
-The point is, just commenting out the lines:
-
- 	% This is needed for translations
-% 	\usepackage{xeCJK}
-% 	\setCJKmainfont{Noto Sans CJK SC}
-
-, xelatex renders both UTF8 and ASCII apostrophe characters in the
-same way.
-
-On the contrary, with xeCJK, UTF and ASCII code are handled
-differently.
-The reason is that in CJK typesetting, line breaks are permitted almost
-anywhere in the text, with a few exceptions specific to each language.
-
-So, sphinx is doing nothing wrong when it converts ASCII apostrophe in
-.rst into the UTF8 in latex code.
-
-Enabling xeCJK in English document is the very wrong thing to do in the
-first place.
-
-I hope I have made my point clear enough.
-
-        Thanks, Akira
-
+> I will re-spin the patch and send a v2.
 > 
->>
->> BTW, on current docs-next, wich the CJK font installed, "make pdfdocs"
->> stops while building s390.pdf.
-> 
-> That's weird.
-> 
->> I needed to manually run "make latexdocs", then run
->> "latexmk -xelatex RCU.tex" under Documentation/output/latex/ to get
->> RCU.pdf.
-> 
-> Well, you can pass some options to latexmk when building a
-> pdf via an environment var (LATEXMKOPTS), like (untested):
-> 
-> 	LATEXMKOPTS="-interaction=nonstopmode" make pdfdocs.
-> 
-> or change it to interactive mode, in order to show what part
-> of the s390.tex is causing the issue.
-> 
-> Thanks,
-> Mauro
-> 
+
+From 6537bc97b5550f17b0813caf02ce0ec1865fa94e Mon Sep 17 00:00:00 2001
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+Date: Thu, 20 May 2021 14:13:23 +0200
+Subject: [PATCH v2] mm/vmalloc: Fallback to a single page allocator
+
+Currently for order-0 pages we use a bulk-page allocator to get
+set of pages. From the other hand not allocating all pages is
+something that might occur. In that case we should fallbak to
+the single-page allocator trying to get missing pages, because
+it is more permissive(direct reclaim, etc).
+
+Introduce a vm_area_alloc_pages() function where the described
+logic is implemented.
+
+Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+---
+ mm/vmalloc.c | 81 +++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 52 insertions(+), 29 deletions(-)
+
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index b2a0cbfa37c1..7765af7b1e9c 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -2756,6 +2756,54 @@ void *vmap_pfn(unsigned long *pfns, unsigned int count, pgprot_t prot)
+ EXPORT_SYMBOL_GPL(vmap_pfn);
+ #endif /* CONFIG_VMAP_PFN */
+ 
++static inline unsigned int
++vm_area_alloc_pages(gfp_t gfp, int nid,
++		unsigned int order, unsigned long nr_pages, struct page **pages)
++{
++	unsigned int nr_allocated = 0;
++
++	/*
++	 * For order-0 pages we make use of bulk allocator, if
++	 * the page array is partly or not at all populated due
++	 * to fails, fallback to a single page allocator that is
++	 * more permissive.
++	 */
++	if (!order)
++		nr_allocated = alloc_pages_bulk_array_node(
++			gfp, nid, nr_pages, pages);
++	else
++		/*
++		 * Compound pages required for remap_vmalloc_page if
++		 * high-order pages.
++		 */
++		gfp |= __GFP_COMP;
++
++	/* High-order pages or fallback path if "bulk" fails. */
++	while (nr_allocated < nr_pages) {
++		struct page *page;
++		int i;
++
++		page = alloc_pages_node(nid, gfp, order);
++		if (unlikely(!page))
++			break;
++
++		/*
++		 * Careful, we allocate and map page-order pages, but
++		 * tracking is done per PAGE_SIZE page so as to keep the
++		 * vm_struct APIs independent of the physical/mapped size.
++		 */
++		for (i = 0; i < (1U << order); i++)
++			pages[nr_allocated + i] = page + i;
++
++		if (gfpflags_allow_blocking(gfp))
++			cond_resched();
++
++		nr_allocated += 1U << order;
++	}
++
++	return nr_allocated;
++}
++
+ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 				 pgprot_t prot, unsigned int page_shift,
+ 				 int node)
+@@ -2789,37 +2837,11 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		return NULL;
+ 	}
+ 
+-	area->nr_pages = 0;
+ 	set_vm_area_page_order(area, page_shift - PAGE_SHIFT);
+ 	page_order = vm_area_page_order(area);
+ 
+-	if (!page_order) {
+-		area->nr_pages = alloc_pages_bulk_array_node(
+-			gfp_mask, node, nr_small_pages, area->pages);
+-	} else {
+-		/*
+-		 * Careful, we allocate and map page_order pages, but tracking is done
+-		 * per PAGE_SIZE page so as to keep the vm_struct APIs independent of
+-		 * the physical/mapped size.
+-		 */
+-		while (area->nr_pages < nr_small_pages) {
+-			struct page *page;
+-			int i;
+-
+-			/* Compound pages required for remap_vmalloc_page */
+-			page = alloc_pages_node(node, gfp_mask | __GFP_COMP, page_order);
+-			if (unlikely(!page))
+-				break;
+-
+-			for (i = 0; i < (1U << page_order); i++)
+-				area->pages[area->nr_pages + i] = page + i;
+-
+-			if (gfpflags_allow_blocking(gfp_mask))
+-				cond_resched();
+-
+-			area->nr_pages += 1U << page_order;
+-		}
+-	}
++	area->nr_pages = vm_area_alloc_pages(gfp_mask, node,
++		page_order, nr_small_pages, area->pages);
+ 
+ 	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+ 
+@@ -2835,7 +2857,8 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 		goto fail;
+ 	}
+ 
+-	if (vmap_pages_range(addr, addr + size, prot, area->pages, page_shift) < 0) {
++	if (vmap_pages_range(addr, addr + size, prot, area->pages,
++			page_shift) < 0) {
+ 		warn_alloc(gfp_mask, NULL,
+ 			   "vmalloc size %lu allocation failure: "
+ 			   "failed to map pages",
+-- 
+2.20.1
+
+--
+Vlad Rezki
