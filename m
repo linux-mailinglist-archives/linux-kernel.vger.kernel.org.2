@@ -2,163 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77DE038C121
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:56:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B947E38C126
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:58:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235159AbhEUH6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37324 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhEUH6B (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:58:01 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC26EC061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:56:37 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id a4so20113133wrr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=ZBzGJGY3Lfdn2lNHI2teoZpXLD66Uih3j/hx8ThIHi4=;
-        b=DYK4allmsvbOxhLePej2gQFrRaKHJlch3k0v7mM00MGfmxSAWTMg/3INJhD+1Rc3tU
-         9mOKiKUjmwPEf4GRDSP8kNtQuJDR5Y+ZpoiZMFHtiReax+43X/DrDH7OYo0+/5D7/STR
-         uRRZGHQQgnENF2IGZZW38nUi3XD0QEUGfclsvQs5VCyM5/Kb9GX/SnyiQU+Y6BIvzFQf
-         GX0L5Sgxj9RvgHFJFANgnVk4UYQvTAYi5z4Q5wXF1c4tRGb1sqe9ZeDJ0vXhwCiuZvQK
-         yYqwZDP6IcXMQDVHvaLwSV915BV14jdKWLHO0eqPTq1w1tXxRe249C+gWXeC+7JSej3I
-         vO8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ZBzGJGY3Lfdn2lNHI2teoZpXLD66Uih3j/hx8ThIHi4=;
-        b=d7dF9knmAB7kF/+ConAYQmedZ7ODx+VWbIfBeHqV5Qc8GjM7AWiS8YKW5ax5oiFhIs
-         6Sr7x8TLS4MkJd+T5YXNhmRRidfbaWXVYjgyw6FweXV6/Vm3GN+aPUYZJI14IPBhSLcn
-         3J8l2glvagVUJcz71WcreTlwyFnWpo/jIY/ggLrBbIZxLRT/yM/wmN6rtfxND7/ZaLtz
-         uzwcDOygTpYb1bMhQzDLapLG2u5Mz+yV9/VDf47z4hHdyDa00hLb6kuf43jd1xxbjR5e
-         YmA8t66PSiZcJ5afo58L7LZsbe1rMIazO9twgQqppXkmkMB5HKlr9YgTsK1knKjU0+60
-         9o6w==
-X-Gm-Message-State: AOAM530S5/CsRZB5dj73Xpj63IetjrDVpypYvKfG6IygevTmPrCmidmo
-        I8ikt4pAgiis8Svg1rCf1Q90Xg==
-X-Google-Smtp-Source: ABdhPJwx8/gIMGjk4t/5kik01FomXtSQYBs+juxRo4HxzZoCKemokseJo7KzkcOXTh/L7jhS9L6uHA==
-X-Received: by 2002:adf:f109:: with SMTP id r9mr8360005wro.251.1621583796406;
-        Fri, 21 May 2021 00:56:36 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id g11sm1133714wri.59.2021.05.21.00.56.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 00:56:35 -0700 (PDT)
-Date:   Fri, 21 May 2021 08:56:33 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Bob Picco <robert.picco@hp.com>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        "C. Scott Ananian" <cananian@alumni.princeton.edu>,
-        "cs.c" <support.linux@omnikey.com>,
-        Dave Safford <safford@watson.ibm.com>,
-        David Airlie <airlied@linux.ie>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Harald Welte <laforge@gnumonks.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Jerome Glisse <j.glisse@gmail.com>,
-        Kanoj Sarcar <kanoj@sgi.com>, Kylene Hall <kjhall@us.ibm.com>,
-        Lijun Pan <ljp@linux.ibm.com>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>, linux-integrity@vger.kernel.org,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Matt Mackall <mpm@selenic.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
-        Paul Fulghum <paulkf@microgate.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Reiner Sailer <sailer@watson.ibm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>,
-        van Doorn <leendert@watson.ibm.com>
-Subject: Re: [PATCH 00/16] Rid W=1 warnings from Char
-Message-ID: <20210521075633.GB2549456@dell>
-References: <20210520121347.3467794-1-lee.jones@linaro.org>
- <CAK8P3a0VujuG8eU_CEVSvzbk4nAJz8fStedM5eMUrLAr9EJxDQ@mail.gmail.com>
- <20210521072236.GX2549456@dell>
- <YKdkZdvN+uu6lu0g@kroah.com>
- <YKdk2NYHysgTGlRt@kroah.com>
+        id S229586AbhEUH7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:59:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49766 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229455AbhEUH7p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:59:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621583902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2MfCuK8zXiUfS4x7BpQYH57RVEmWBdaLQ5ye3Gim4ps=;
+        b=AuvKwq/s6EAq2b2l8dwrgkqtC+32CxFIHpWu4HYjgXzuDb0+GeRXnhpg7692Uo0TfTZxOC
+        Xx9ZxqcncbC25ytmcnqBL4LfZIxmzIMIcdfonF/Ncu3Hyq9bERRrCGwKpD8wVNpr1MQc3L
+        ePWh/YeZ0nFcwiN2666EiXjMRHT/6Ec=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BF605AD5C;
+        Fri, 21 May 2021 07:58:21 +0000 (UTC)
+Message-ID: <4e27adf7df5de525b9a4af9afbb3ca88ec3d09a4.camel@suse.com>
+Subject: Re: [PATCH] Move VMEnter and VMExit tracepoints closer to the
+ actual event
+From:   Dario Faggioli <dfaggioli@suse.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Stefano De Venuto <stefano.devenuto99@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, x86@kernel.org,
+        hpa@zytor.com, kvm@vger.kernel.org, rostedt@goodmis.org,
+        y.karadz@gmail.com
+Date:   Fri, 21 May 2021 09:58:17 +0200
+In-Reply-To: <ab44e5b1-4448-d6c8-6cda-5e41866f69f1@redhat.com>
+References: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
+         <YKaBEn6oUXaVAb0K@google.com>
+         <ab44e5b1-4448-d6c8-6cda-5e41866f69f1@redhat.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-SuF+Jf1Vs/AnRIDVyYCD"
+User-Agent: Evolution 3.40.1 (by Flathub.org) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YKdk2NYHysgTGlRt@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021, Greg Kroah-Hartman wrote:
 
-> On Fri, May 21, 2021 at 09:42:29AM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, May 21, 2021 at 08:22:36AM +0100, Lee Jones wrote:
-> > > On Thu, 20 May 2021, Arnd Bergmann wrote:
-> > > 
-> > > > On Thu, May 20, 2021 at 2:13 PM Lee Jones <lee.jones@linaro.org> wrote:
-> > > > >
-> > > > > This set is part of a larger effort attempting to clean-up W=1
-> > > > > kernel builds, which are currently overwhelmingly riddled with
-> > > > > niggly little warnings.
-> > > > >
-> > > > > Lee Jones (16):
-> > > > >   char: pcmcia: cm4000_cs: Remove unused variable 'tmp'
-> > > > >   char: pcmcia: cm4040_cs: Remove unused variable 'uc'
-> > > > >   char: random: Include header containing our prototypes
-> > > > >   char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
-> > > > >   char: pcmcia: synclink_cs: Fix a bunch of kernel-doc issues
-> > > > >   char: applicom: Remove 3 unused variables 'ret' and 2 instances of
-> > > > >     'byte_reset_it'
-> > > > >   char: tpm: tpm1-cmd: Fix a couple of misnamed functions
-> > > > >   char: tpm: tpm_ftpm_tee: Fix a couple of kernel-doc misdemeanours
-> > > > >   char: agp: backend: Demote some non-conformant kernel-doc headers
-> > > > >   char: agp: frontend: Include header file containing our prototypes
-> > > > >   char: agp: via-agp: Remove unused variable 'current_size'
-> > > > >   char: hpet: Remove unused variable 'm'
-> > > > >   char: agp: generic: Place braces around optimised out function in if()
-> > > > >   char: agp: uninorth-agp: Remove unused variable 'size'
-> > > > >   char: hw_random: pseries-rng: Demote non-conformant kernel-doc header
-> > > > >   char: mem: Provide local prototype for non-static function
-> > > > 
-> > > > Thanks a lot!
-> > > > 
-> > > > I've looked all the patches now and commented on patches 6 and 16.
-> > > > With my comments addressed
-> > > > 
-> > > > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> > > 
-> > > Thanks Arnd.
-> > > 
-> > > Would it be possible for the remaining 14 patches to be taken in
-> > > please?  I will work on the 2 Arnd commented on in due course and
-> > > resubmit them independently.
-> > 
-> > Yes, I can queue them up, thanks.
-> 
-> Wait, I can take the ones for code that I maintain, not for others.
-> drivers/char/ is "fun" in that some subdirs have active
-> trees/maintainers that are not me and Arnd so they go to Linus through
-> other ways.  I'll queue up the ones that I am "allowed" to and you will
-> get the emails from that.
+--=-SuF+Jf1Vs/AnRIDVyYCD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Understood, thanks.
+Hi!
 
-Hopefully the other maintainers will be as on the ball as you are.
+On Thu, 2021-05-20 at 18:18 +0200, Paolo Bonzini wrote:
+> On 20/05/21 17:32, Sean Christopherson wrote:
+> > On VMX, I think the tracepoint can be moved below the VMWRITEs
+> > without much
+> > contention (though doing so is likely a nop), but moving it below
+> > kvm_load_guest_xsave_state() requires a bit more discussion.
+>=20
+> Indeed; as a rule of thumb, the tracepoint on SVM could match the=20
+> clgi/stgi region, and on VMX it could be placed in a similar
+> location.
+>=20
+Ok. So, if this is uncontroversial enough, we're more than happy to go
+for it... For now. :-)
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Let us try it, and see how things end up looking.
+
+Thanks and Regards
+--=20
+Dario Faggioli, Ph.D
+http://about.me/dario.faggioli
+Virtualization Software Engineer
+SUSE Labs, SUSE https://www.suse.com/
+-------------------------------------------------------------------
+<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+
+--=-SuF+Jf1Vs/AnRIDVyYCD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmCnaBkACgkQFkJ4iaW4
+c+7TYw//Yd4x4luYqBBLERLVz7tLFs96a4KjeAjIp/ydzphAy9LtZbv1tU3ZU5T/
+cxvsKeuTobr5AHX9sZEETzhKVzyBBFEbANsqMiPg8VK7i8IyS3r6mB16syVlkBmQ
+9ZfV3Jmlpbv+/b4w6rfdb1XohhE62NFMyhlS4C3fahLp1bljGs0FgkL8tBeusIJd
+3pORdrqFuOtqTbLZhixhLxOS//svOUKEYriBwVB1Bo74H6ktPX0lalrdbmHC5U2m
+KEjjp+saZWGo2vNP5OufB/DuHy5ORd3WMMVqoX8AyOZZPjXEZ95EXdSb0iWE1nIU
+ByxLLLv/o/xwr7Ls9wb00o5+8G7Z5y+nwWkC7Hc7wUQdara0YG2I0C55iTpAJpPQ
+qV/vsDHQsLP5VhEGk7KxYXM4xeBDofUtRbDyLXtC3VwON7qdvsYp8Es+t0vE7AFK
+6IwvkH224FqjZcs8VSvfpiVblYspyGKK7yDMkwxsI1QCw/VeA/nTSzpmZjs3o85G
+wrvlrQ2VSiSLAuXBeELRoPUsu0eCQGl5S2BNXQQ5LKLdzLLDCx63vzmxWbgFEF2M
+g4VLOM+qNQHgUvpez0Wy8/0fE2HGzMe75qAvHheJyw58hNJMC3Ibh6qkZPHBmf0H
+n4sm+iTcDn3rmFeltv37zXbiolqHQMGAbdnFliezt8RTIAEqzDw=
+=+B3i
+-----END PGP SIGNATURE-----
+
+--=-SuF+Jf1Vs/AnRIDVyYCD--
+
