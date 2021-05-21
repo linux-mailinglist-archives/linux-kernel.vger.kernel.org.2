@@ -2,63 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7EF38CDD6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:02:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C9D238CDD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbhEUTDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:03:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53228 "EHLO mail.kernel.org"
+        id S236111AbhEUTDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:03:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhEUTDq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:03:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D98D613AD;
-        Fri, 21 May 2021 19:02:23 +0000 (UTC)
+        id S231354AbhEUTDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:03:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED6FE613AE;
+        Fri, 21 May 2021 19:02:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621623743;
-        bh=PwYVEBdAYioTg9dJDanRYBbNY1d6VzNe8pGxwNgHwts=;
-        h=From:To:Cc:Subject:Date:From;
-        b=Z6pBlx9PqRwpvhLSpS84t22o70Jagai7OtGqHdaPV+fIYO5XMz1N/8T7Y09nXFFpg
-         9Xe5GPyKesQTFirhUtEyFp9Npa+tHN0GMPSt7EenGDbQQHnqdziXFuFisgd6Y80mPd
-         B4je9HWSH56F2nC/Y0A26eeB/lnq93i2W13D55snJP0FdJkX5L+32CcFJlNm2HvDn8
-         iDlr191ukjmJm70oPL+tERx5bJdf+WHDklvTUbY6ur8+zYQ5ISdjaLfeTQUOncryiN
-         Zb+yuh9HETAuuTca0yIUZS8OoJvCMQ4r3awG/SqYztbThqjVNubiKub4axbdq4xH3C
-         ZNNCtxofktY3Q==
+        s=k20201202; t=1621623745;
+        bh=9dAAYfGKlNm1d/kBz0TkpkWwC4KouaitkPn8vJ/1a6Q=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Xt5vcR/DDiR1T1LcTgnw5qeu+MizIbc/PNjevzEC6oIny+YrIjO4cJvD7fNr7tr8W
+         wIPRURguKitlWE2VUmV2gl3XnVjAUEzrataJSmrraPhoI64QOKf2yCuvP8cK/EZNxR
+         dt0JPWjLns7EikxKTL7/NNf9cExiEDpZjdlcYdLUXKrajRNmfPowt+AkcM1a4ULb19
+         KG3DSRRyt5hhlJjwdtHDWPhEGhYxE+I4I2Oi2VzoZ/UGRO9E2LHWYRZrYkILfi2SW2
+         ykEsPO+/e0SsJ+/LWaLQSm4TjEqNUk+jqQuW+uGhEKZ1Qt97RLAG91F/UShxLBefFt
+         r8+LC3UQOfQjw==
 From:   Jaegeuk Kim <jaegeuk@kernel.org>
 To:     linux-kernel@vger.kernel.org,
         linux-f2fs-devel@lists.sourceforge.net
 Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 1/2] f2fs: immutable file can have null address in compressed chunk
-Date:   Fri, 21 May 2021 12:02:16 -0700
-Message-Id: <20210521190217.2484099-1-jaegeuk@kernel.org>
+Subject: [PATCH 2/2] f2fs: support RO feature
+Date:   Fri, 21 May 2021 12:02:17 -0700
+Message-Id: <20210521190217.2484099-2-jaegeuk@kernel.org>
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+In-Reply-To: <20210521190217.2484099-1-jaegeuk@kernel.org>
+References: <20210521190217.2484099-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If we released compressed blocks having an immutable bit, we can see less
-number of compressed block addresses. Let's fix wrong BUG_ON.
+Given RO feature in superblock, we don't need to check provisioning/reserve
+spaces and SSA area.
 
 Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 ---
- fs/f2fs/compress.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/f2fs/f2fs.h    |  2 ++
+ fs/f2fs/segment.c |  3 +++
+ fs/f2fs/super.c   | 35 +++++++++++++++++++++++++++++++----
+ 3 files changed, 36 insertions(+), 4 deletions(-)
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index d4f7371fb0d8..1189740aa141 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -927,7 +927,8 @@ static int __f2fs_cluster_blocks(struct inode *inode,
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index c0bead0df66a..2c6913261586 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -168,6 +168,7 @@ struct f2fs_mount_info {
+ #define F2FS_FEATURE_SB_CHKSUM		0x0800
+ #define F2FS_FEATURE_CASEFOLD		0x1000
+ #define F2FS_FEATURE_COMPRESSION	0x2000
++#define F2FS_FEATURE_RO			0x4000
+ 
+ #define __F2FS_HAS_FEATURE(raw_super, mask)				\
+ 	((raw_super->feature & cpu_to_le32(mask)) != 0)
+@@ -939,6 +940,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
+ #define	NR_CURSEG_DATA_TYPE	(3)
+ #define NR_CURSEG_NODE_TYPE	(3)
+ #define NR_CURSEG_INMEM_TYPE	(2)
++#define NR_CURSEG_RO_TYPE	(2)
+ #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
+ #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
+ 
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index 8668df7870d0..67cec8f858a2 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -4674,6 +4674,9 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
+ {
+ 	int i;
+ 
++	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
++		return 0;
++
+ 	/*
+ 	 * In LFS/SSR curseg, .next_blkoff should point to an unused blkaddr;
+ 	 * In LFS curseg, all blkaddr after .next_blkoff should be unused.
+diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
+index b29de80ab60e..312bfab54693 100644
+--- a/fs/f2fs/super.c
++++ b/fs/f2fs/super.c
+@@ -1819,7 +1819,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
+ static void default_options(struct f2fs_sb_info *sbi)
+ {
+ 	/* init some FS parameters */
+-	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
++	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
++		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
++	else
++		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
++
+ 	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
+ 	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
+ 	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
+@@ -1994,6 +1998,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
+ 	err = parse_options(sb, data, true);
+ 	if (err)
+ 		goto restore_opts;
++
++	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
++					!(*flags & SB_RDONLY))
++		goto restore_opts;
++
+ 	checkpoint_changed =
+ 			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
+ 
+@@ -3137,16 +3146,18 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
+ 	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
+ 
++	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
++		goto no_reserved;
+ 	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
+ 			ovp_segments == 0 || reserved_segments == 0)) {
+ 		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
+ 		return 1;
+ 	}
+-
++no_reserved:
+ 	user_block_count = le64_to_cpu(ckpt->user_block_count);
+ 	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
+ 	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
+-	if (!user_block_count || user_block_count >=
++	if (!user_block_count || user_block_count >
+ 			segment_count_main << log_blocks_per_seg) {
+ 		f2fs_err(sbi, "Wrong user_block_count: %u",
+ 			 user_block_count);
+@@ -3175,6 +3186,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
+ 			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
+ 			return 1;
++
++		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
++			goto check_data;
++
+ 		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
+ 			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
+ 				le32_to_cpu(ckpt->cur_node_segno[j])) {
+@@ -3185,10 +3200,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
  			}
  		}
- 
--		f2fs_bug_on(F2FS_I_SB(inode), !compr && ret != cluster_size);
-+		f2fs_bug_on(F2FS_I_SB(inode),
-+			!compr && ret != cluster_size && !IS_IMMUTABLE(inode));
  	}
- fail:
- 	f2fs_put_dnode(&dn);
++check_data:
+ 	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
+ 		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
+ 			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
+ 			return 1;
++
++		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
++			goto skip_cross;
++
+ 		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
+ 			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
+ 				le32_to_cpu(ckpt->cur_data_segno[j])) {
+@@ -3210,7 +3230,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
+ 			}
+ 		}
+ 	}
+-
++skip_cross:
+ 	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
+ 	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
+ 
+@@ -3703,6 +3723,13 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
+ 	if (err)
+ 		goto free_options;
+ 
++	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
++					!f2fs_readonly(sbi->sb)) {
++		f2fs_info(sbi, "Allow to mount readonly mode only");
++		err = -EINVAL;
++		goto free_options;
++	}
++
+ 	sb->s_maxbytes = max_file_blocks(NULL) <<
+ 				le32_to_cpu(raw_super->log_blocksize);
+ 	sb->s_max_links = F2FS_LINK_MAX;
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
