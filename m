@@ -2,152 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A6338BB72
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E03038BB75
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:20:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236607AbhEUBVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:21:39 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:44939 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236106AbhEUBVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:21:38 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmTLQ2qMxz9sWl;
-        Fri, 21 May 2021 11:20:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621560014;
-        bh=MnxSzSE5uzgMvgSTQKJkCe/Jdj5UFiYpk9Dz0cH+S28=;
-        h=Date:From:To:Cc:Subject:From;
-        b=GsBB9ji4GXJ9Hs5Vjfs8EmC5OYHwwr58hstuEub83fhPs2nleWgXpAFLZby0Ppp64
-         gmeP5DltwZ9Zm3VmG4z1bIHPQS0pVIaG7IgGUWg6XkI5tv7ZpwttzhxVyyzQL2fp/i
-         viGl8M5RODGGdHNtB7hyMP8RQsAeDwGkri97vxyc34/Cs1SN6HXkwradaG33IXlc/x
-         m2KYckj1niWIjDsFBuwbgtR6uFj4DCo1QbKl5KpCQTojmsFtjke2FXiALolByipgXR
-         DWm4snbk37p1ximKGRIOVLguXsyYrSdEtZDlUu1m2Egyx3Q1FFtvoFnVSYuCCxr+P/
-         FOD92izmI85zQ==
-Date:   Fri, 21 May 2021 11:20:13 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
-        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: manual merge of the amdgpu tree with the drm-misc tree
-Message-ID: <20210521112013.1f10e61f@canb.auug.org.au>
+        id S236652AbhEUBVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:21:42 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:37628 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236106AbhEUBVk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:21:40 -0400
+Received: by mail-ot1-f44.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so16607488otp.4;
+        Thu, 20 May 2021 18:20:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=L8yBjYQAgys656MK8UvpdfNfI8yFhToVlmHgAetNSy4=;
+        b=Yk27UfrnX26WZ1G5byKd7VhaPj+8W2NQbwhc7uRuBQHm3E9/SW9JQL8HyS/zzopvM7
+         qhkb30T45UyKXUpjlPdoS2STEQctwt/QXvvgfI4+0TrXUM3am7eeqVBMuGC3fUwN5dq2
+         vIiGaewAP3mGDJj1/hnJdgIRtsiH+EldfV7H3BmOQBivmnnSAUpzpxgIu2fRIXGJYTTL
+         KtCLBWvXjRRaBTaM0hsQjIF3DgIojbJIWTgZV8RNo/6Dj8lkCXiYjbY9ukW1JZFWeMhv
+         7IYQOyh5IQ+/Yos3d7YGJJfBhgc4QVyD2ghLJ6sIDMANccQBOPoJiMY9zOX8wNUVJ04B
+         9XNg==
+X-Gm-Message-State: AOAM533HtHug4OgrlkEYb1Ckkm8ttag1Z2ozqT2Izzfvf7NkwbMFEvRW
+        Q/tDwbwjCKoab8AOtGJdbg==
+X-Google-Smtp-Source: ABdhPJwloniGyDrtyyk8GwSUBgwJrVccusdGH8bFeLm/IkJVIgSlu1dAYGnYt1qlN/bRKbEy1r88CA==
+X-Received: by 2002:a9d:721e:: with SMTP id u30mr6028225otj.250.1621560017968;
+        Thu, 20 May 2021 18:20:17 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id v19sm1000293otq.35.2021.05.20.18.20.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 18:20:17 -0700 (PDT)
+Received: (nullmailer pid 2424374 invoked by uid 1000);
+        Fri, 21 May 2021 01:20:16 -0000
+Date:   Thu, 20 May 2021 20:20:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        mkorpershoek@baylibre.com, linux-pwm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] dt-bindings: pwm: pwm-mtk-disp: convert to YAML
+ schema
+Message-ID: <20210521012016.GA2421079@robh.at.kernel.org>
+References: <20210518175422.2678665-1-fparent@baylibre.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/nglW1/rJqHeC2FSoBdtO2gF";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518175422.2678665-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/nglW1/rJqHeC2FSoBdtO2gF
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Tue, May 18, 2021 at 07:54:19PM +0200, Fabien Parent wrote:
+> Convert the dt-binding documentation for pwm-mtk-disp to YAML.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  .../devicetree/bindings/pwm/pwm-mtk-disp.txt  | 44 ----------
+>  .../devicetree/bindings/pwm/pwm-mtk-disp.yaml | 83 +++++++++++++++++++
+>  2 files changed, 83 insertions(+), 44 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
+>  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
+> deleted file mode 100644
+> index 902b271891ae..000000000000
+> --- a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
+> +++ /dev/null
+> @@ -1,44 +0,0 @@
+> -MediaTek display PWM controller
+> -
+> -Required properties:
+> - - compatible: should be "mediatek,<name>-disp-pwm":
+> -   - "mediatek,mt2701-disp-pwm": found on mt2701 SoC.
+> -   - "mediatek,mt6595-disp-pwm": found on mt6595 SoC.
+> -   - "mediatek,mt8167-disp-pwm", "mediatek,mt8173-disp-pwm": found on mt8167 SoC.
+> -   - "mediatek,mt8173-disp-pwm": found on mt8173 SoC.
+> - - reg: physical base address and length of the controller's registers.
+> - - #pwm-cells: must be 2. See pwm.yaml in this directory for a description of
+> -   the cell format.
+> - - clocks: phandle and clock specifier of the PWM reference clock.
+> - - clock-names: must contain the following:
+> -   - "main": clock used to generate PWM signals.
+> -   - "mm": sync signals from the modules of mmsys.
+> - - pinctrl-names: Must contain a "default" entry.
+> - - pinctrl-0: One property must exist for each entry in pinctrl-names.
+> -   See pinctrl/pinctrl-bindings.txt for details of the property values.
+> -
+> -Example:
+> -	pwm0: pwm@1401e000 {
+> -		compatible = "mediatek,mt8173-disp-pwm",
+> -			     "mediatek,mt6595-disp-pwm";
+> -		reg = <0 0x1401e000 0 0x1000>;
+> -		#pwm-cells = <2>;
+> -		clocks = <&mmsys CLK_MM_DISP_PWM026M>,
+> -			 <&mmsys CLK_MM_DISP_PWM0MM>;
+> -		clock-names = "main", "mm";
+> -		pinctrl-names = "default";
+> -		pinctrl-0 = <&disp_pwm0_pins>;
+> -	};
+> -
+> -	backlight_lcd: backlight_lcd {
+> -		compatible = "pwm-backlight";
+> -		pwms = <&pwm0 0 1000000>;
+> -		brightness-levels = <
+> -			  0  16  32  48  64  80  96 112
+> -			128 144 160 176 192 208 224 240
+> -			255
+> -		>;
+> -		default-brightness-level = <9>;
+> -		power-supply = <&mt6397_vio18_reg>;
+> -		enable-gpios = <&pio 95 GPIO_ACTIVE_HIGH>;
+> -	};
+> diff --git a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml
+> new file mode 100644
+> index 000000000000..0f016c81cd53
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml
+> @@ -0,0 +1,83 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: "http://devicetree.org/schemas/pwm/pwm-mtk-disp.yaml#"
+> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
+> +
+> +title: MediaTek display PWM controller
+> +
+> +maintainers:
+> +  - Thierry Reding <thierry.reding@gmail.com>
+> +  - Lee Jones <lee.jones@linaro.org>
+> +  - Matthias Brugger <matthias.bgg@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - mediatek,mt2701-disp-pwm
+> +          - mediatek,mt6595-disp-pwm
+> +          - mediatek,mt8173-disp-pwm
+> +      - items:
+> +          - const: mediatek,mt8167-disp-pwm
+> +          - const: mediatek,mt8173-disp-pwm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: clock used to generate PWM signals
+> +      - description: sync signal from the mmsys module
+> +
+> +  clock-names:
+> +    items:
+> +      - const: main
+> +      - const: mm
+> +
+> +  "#pwm-cells":
+> +    const: 2
+> +
+> +  power-domains:
+> +    description:
+> +      List of phandles and PM domain specifiers, as defined by bindings of the
+> +      PM domain provider (see also ../power_domain.txt).
 
-Hi all,
+Don't need to define what the common property is. You need to say how 
+many.
 
-Today's linux-next merge of the amdgpu tree got a conflict in:
-
-  drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-
-between commit:
-
-  f89f8c6bafd0 ("drm/amdgpu: Guard against write accesses after device remo=
-val")
-
-from the drm-misc tree and commit:
-
-  0ccc3ccf5b3a ("drm/amdgpu: re-apply "use the new cursor in the VM code" v=
-2")
-
-from the amdgpu tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-index 90c34491f85d,57a6ad04118c..000000000000
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_vm.c
-@@@ -1594,23 -1618,21 +1620,24 @@@ static int amdgpu_vm_update_ptes(struc
-   * Returns:
-   * 0 for success, -EINVAL for failure.
-   */
-- static int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
-- 				       struct amdgpu_device *bo_adev,
-- 				       struct amdgpu_vm *vm, bool immediate,
-- 				       bool unlocked, struct dma_resv *resv,
-- 				       uint64_t start, uint64_t last,
-- 				       uint64_t flags, uint64_t offset,
-- 				       struct drm_mm_node *nodes,
-- 				       dma_addr_t *pages_addr,
-- 				       struct dma_fence **fence)
-+ int amdgpu_vm_bo_update_mapping(struct amdgpu_device *adev,
-+ 				struct amdgpu_device *bo_adev,
-+ 				struct amdgpu_vm *vm, bool immediate,
-+ 				bool unlocked, struct dma_resv *resv,
-+ 				uint64_t start, uint64_t last,
-+ 				uint64_t flags, uint64_t offset,
-+ 				struct ttm_resource *res,
-+ 				dma_addr_t *pages_addr,
-+ 				struct dma_fence **fence,
-+ 				bool *table_freed)
-  {
-  	struct amdgpu_vm_update_params params;
-+ 	struct amdgpu_res_cursor cursor;
-  	enum amdgpu_sync_mode sync_mode;
-- 	uint64_t pfn;
- -	int r;
- +	int r, idx;
- +
- +	if (!drm_dev_enter(&adev->ddev, &idx))
- +		return -ENODEV;
- =20
-  	memset(&params, 0, sizeof(params));
-  	params.adev =3D adev;
-@@@ -1717,9 -1722,11 +1727,12 @@@
- =20
-  	r =3D vm->update_funcs->commit(&params, fence);
- =20
-+ 	if (table_freed)
-+ 		*table_freed =3D params.table_freed;
-+=20
-  error_unlock:
-  	amdgpu_vm_eviction_unlock(vm);
- +	drm_dev_exit(idx);
-  	return r;
-  }
- =20
-
---Sig_/nglW1/rJqHeC2FSoBdtO2gF
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnCs0ACgkQAVBC80lX
-0GzVZwf/Y3NFPIHY8jz3M+QIuKffIjL0IMt/Oo6mTxvpzMv3Rkn0T0xjwz1dAeSp
-YyKuLx/x/9HixXpK61Ya4ua+b1YORFOUMXjRTGt+Wgl+eDEaZF9Pwe/edlKqVwDp
-Zs2OIvbRJCJz4pqXUKUan/LIUgKKIb9FXK0iGfvP3xLGQMrpj/mdSM/3+KHLeS45
-vcKPLQ/C62bWEw4lBL32x8ygQcLEb3NqsKkHIePVjV+CM27eBz4ybs4N4niWogf1
-HYW7/Mbgx+xDo5/uKAUnxnIbsBy7+R/vfMk/pJKz0V2xzxgXjL+QY3VEorzq1fgx
-hWOZrzqqcmUsRkoYKgQKy2G6kXXxfw==
-=wrkb
------END PGP SIGNATURE-----
-
---Sig_/nglW1/rJqHeC2FSoBdtO2gF--
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/mt8173-clk.h>
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    pwm0: pwm@1401e000 {
+> +      compatible = "mediatek,mt8173-disp-pwm";
+> +      reg = <0x1401e000 0x1000>;
+> +      #pwm-cells = <2>;
+> +      clocks = <&mmsys CLK_MM_DISP_PWM026M>,
+> +               <&mmsys CLK_MM_DISP_PWM0MM>;
+> +      clock-names = "main", "mm";
+> +      pinctrl-names = "default";
+> +      pinctrl-0 = <&disp_pwm0_pins>;
+> +    };
+> +
+> +    backlight_lcd: backlight_lcd {
+> +      compatible = "pwm-backlight";
+> +      pwms = <&pwm0 0 1000000>;
+> +      brightness-levels = <
+> +        0  16  32  48  64  80  96 112
+> +        128 144 160 176 192 208 224 240
+> +        255
+> +      >;
+> +      default-brightness-level = <9>;
+> +      power-supply = <&mt6397_vio18_reg>;
+> +      enable-gpios = <&pio 95 GPIO_ACTIVE_HIGH>;
+> +    };
+> -- 
+> 2.31.1
+> 
