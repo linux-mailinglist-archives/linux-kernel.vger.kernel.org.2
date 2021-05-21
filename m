@@ -2,74 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E6DD38C5E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAB4B38C5F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232627AbhEULpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:45:10 -0400
-Received: from mail.ispras.ru ([83.149.199.84]:32918 "EHLO mail.ispras.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231377AbhEULpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:45:06 -0400
-Received: from localhost.localdomain (unknown [10.10.2.182])
-        by mail.ispras.ru (Postfix) with ESMTPS id 8083940755E0;
-        Fri, 21 May 2021 11:43:40 +0000 (UTC)
-From:   Evgeny Novikov <novikov@ispras.ru>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Evgeny Novikov <novikov@ispras.ru>,
-        Johan Hovold <johan@kernel.org>,
-        Nikolay Kyx <knv418@gmail.com>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Abheek Dhawan <adawesomeguy222@gmail.com>,
-        Lee Gibson <leegib@gmail.com>, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
-Subject: [PATCH] staging: fwserial: Fix potential NULL pointer dereferences
-Date:   Fri, 21 May 2021 14:43:39 +0300
-Message-Id: <20210521114339.8469-1-novikov@ispras.ru>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
+        id S233136AbhEULrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:47:01 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14202 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S232499AbhEULq4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:46:56 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LBYGi7030377;
+        Fri, 21 May 2021 07:45:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=63ZT8sa41e7r+0vT3qTkmsUgDavSFDDoI2d81uQ2iMY=;
+ b=L9hSyLAje48wYxW3XW+8ES3yr7V8wd6tVNIGWlhhBKVSzXWQfWbGOrOqdDQAGPc+xF8B
+ 0TOk2Sj1hFs4U8ngOXS+DBS8VeJXX/KVaT8jESAOqlGnYTb8S191nLdWIry4hA9i+Fcn
+ YYT6hUZI7zgDY8x9CohTVg8kwXNCIdAKBRiACkZOYmqWE+/PjQgvDrDZU9U/G6plMPWW
+ EEhc2TvDAzupZBGaBAzBi8B1yXf9NM349P9W8A2IqneONV5hiJ+eKrqOW1dntt2Zrkl9
+ OACz+sPX1Ka/Yl30N1ohAruJYanL+NDzIiyqpC1sC1wipuif19C0QjQkZLmEkvCZrM1G Yg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38pbek19e8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 07:45:02 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14LBYx1u035761;
+        Fri, 21 May 2021 07:45:02 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38pbek19da-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 07:45:02 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LBS1p1016558;
+        Fri, 21 May 2021 11:45:00 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8b48p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 11:44:59 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LBiTTG22544752
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 May 2021 11:44:29 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 608B952050;
+        Fri, 21 May 2021 11:44:57 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.6.127])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id BB0145204F;
+        Fri, 21 May 2021 11:44:53 +0000 (GMT)
+Message-ID: <fd0e91c43cf0dc14aeeda4e7095416c77df0d0cc.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH 0/3] Add additional MOK vars
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Eric Snowberg <eric.snowberg@oracle.com>, keyrings@vger.kernel.org,
+        linux-integrity <linux-integrity@vger.kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        dmitry.kasatkin@gmail.com, James Morris <jmorris@namei.org>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        torvalds@linux-foundation.org,
+        "Serge E . Hallyn" <serge@hallyn.com>,
+        James Bottomley <James.Bottomley@HansenPartnership.com>,
+        pjones@redhat.com, glin@suse.com,
+        "konrad.wilk@oracle.com" <konrad.wilk@oracle.com>,
+        Patrick Uiterwijk <patrick@puiterwijk.org>
+Date:   Fri, 21 May 2021 07:44:52 -0400
+In-Reply-To: <4A887886-BDB2-4F88-9D83-73B9BC9E641F@oracle.com>
+References: <20210517225714.498032-1-eric.snowberg@oracle.com>
+         <fdb42621e7145ce81a34840cbcf0914874c78913.camel@linux.ibm.com>
+         <7F861393-7971-43AB-A741-223B8A50FFA0@oracle.com>
+         <c134ad45d924e8b719f8abb6d36b426b889e9394.camel@linux.ibm.com>
+         <4A887886-BDB2-4F88-9D83-73B9BC9E641F@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: MUe8apbdE6APMT7MJ6YxnSMPparGVqMz
+X-Proofpoint-GUID: ZBXZkRp-Z9LqJLD5ntEtu9DO5rW3R11j
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-21_04:2021-05-20,2021-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 spamscore=0 priorityscore=1501 phishscore=0 suspectscore=0
+ bulkscore=0 impostorscore=0 malwarescore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105210071
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If fwtty_install() will be invoked with such tty->index that will be
-not less than MAX_TOTAL_PORTS then fwtty_port_get() will return NULL and
-fwtty_install() will either assign it to tty->driver_data or dereference
-in fwtty_port_put() (if tty_standard_install() will fail). The similar
-situation is with fwloop_install(). The patch fixes both cases.
+[Cc'ing Patrick Uiterwijk]
 
-Found by Linux Driver Verification project (linuxtesting.org).
+On Thu, 2021-05-20 at 14:37 -0600, Eric Snowberg wrote:
+> > On May 20, 2021, at 6:22 AM, Mimi Zohar <zohar@linux.ibm.com> wrote:
 
-Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
----
- drivers/staging/fwserial/fwserial.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> > I really do understand the need for extending the root of trust beyond
+> > the builtin keys and allowing end user keys to be loaded onto a kernel
+> > keyring, but it needs to be done safely.  The first step might include
+> > locally signing the MOK keys being loaded onto the secondary keyring
+> > and then somehow safely providing the local-CA key id to the kernel.
+> 
+> If the machine owner and Linux distributor are independent of one another,
+> I don’t see how MOK key signing could work.  There wouldn’t be a way for
+> the kernel to verify the end-user supplied signed MOK key.  An end-user 
+> choosing a Linux distro is trusting the company/organization building the 
+> kernel, but the trust doesn’t go the other way.  Do you have a solution 
+> in mind on how this would be possible? If you do, I’m happy to move in
+> a different direction to solve this problem.
 
-diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
-index 1ee6382cafc4..d0810896511e 100644
---- a/drivers/staging/fwserial/fwserial.c
-+++ b/drivers/staging/fwserial/fwserial.c
-@@ -1069,6 +1069,9 @@ static int fwtty_install(struct tty_driver *driver, struct tty_struct *tty)
- 	struct fwtty_port *port = fwtty_port_get(tty->index);
- 	int err;
+We are working with the distros to address this problem.  The first
+attempt at extending the secondary keyring's root of trust relied on a
+TPM2 NV Index[1].
+
+Using MOK is a possible alternative, if it can be done safely.  For
+example, if the boot command line could be protected from modification,
+the end-user could enroll a key in MOK and identify the specific MOK
+key on the boot command line[2].  The boot command line would then
+become an additional root of trust source.
+
+The root of trust for loading keys on the different trusted keyrings
+are self documenting -  restrict_link_by_builtin_trusted,
+restrict_link_by_builtin_and_secondary_trusted().  A new function would
+need to be defined to include the boot command line as a new or
+additional root of trust source.
  
-+	if (!port)
-+		return -ENODEV;
-+
- 	err = tty_standard_install(driver, tty);
- 	if (!err)
- 		tty->driver_data = port;
-@@ -1082,6 +1085,9 @@ static int fwloop_install(struct tty_driver *driver, struct tty_struct *tty)
- 	struct fwtty_port *port = fwtty_port_get(table_idx(tty->index));
- 	int err;
- 
-+	if (!port)
-+		return -ENODEV;
-+
- 	err = tty_standard_install(driver, tty);
- 	if (!err)
- 		tty->driver_data = port;
--- 
-2.26.2
+thanks,
+
+Mimi
+
+[1] https://lore.kernel.org/linux-integrity/20210225203229.363302-1-patrick@puiterwijk.org/
+[2] Perhaps extend the existing "ca_keys" boot command line option.
 
