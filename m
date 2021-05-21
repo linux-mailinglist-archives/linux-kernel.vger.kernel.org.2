@@ -2,105 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858E738C97F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDFEA38C983
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237089AbhEUOuN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46162 "EHLO
+        id S237103AbhEUOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233403AbhEUOuM (ORCPT
+        with ESMTP id S232057AbhEUOvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:50:12 -0400
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D66C061574;
-        Fri, 21 May 2021 07:48:49 -0700 (PDT)
-Received: by mail-oi1-x230.google.com with SMTP id x15so19824765oic.13;
-        Fri, 21 May 2021 07:48:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=208ZZBKRifYnxuxMP2w4ve9AZ2rMPAavL1VC++KA8QE=;
-        b=cCYGWy3Ny94d9ovau1vmRsJgV9GEsxt4ifEeTgu912X9alBGmjgcYt2CIm/cv0rpJk
-         WhKh35/48ADp712mreQ/qTrCqdnE4VlEm4y2rmwUTauI24KpSShQnU8YotRrznV+rdEy
-         WJE295fsqzSuXBRlAgbGpEFCiaNgLjhOsh3E9qKgtZLrFwflTXy5LhAOvWNK+0n/IKz6
-         yfOMxkzfCTaq6QVWniJQXDgN7uDkNxIcWhsmacLPOH+xYwBmO6Jcd7yqsJd6ge9Y+52r
-         IhceRVinSKvgmem8/RyJtnqN65hkTKUUAxiNVBq5u/SMOPG8LzL+bMFk+kGtuwBsmwR+
-         G8tA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=208ZZBKRifYnxuxMP2w4ve9AZ2rMPAavL1VC++KA8QE=;
-        b=WWswknnLCTcK7dTAz0JBPjB2jYiu7inWkIh/nxkZaPXQ7MgBubCc99ZmasCdz+ux5+
-         fvnxM88M1jZzNZpAkT+njD6/FM3KQ3haaFdl8yjaZJd1hX1lTpPL+0KMIsFvaKZbOQ4L
-         1X5eg8dLK8cCN3BvPXC8/EKMy/JIehfO56JS4XTaHiaJP3w0AM8kQUksFGeNXU8O4Doo
-         FMSIu92k9dYXYigFDymqTM44Cj92ARSxQOxo02NlRG2g9sV2F/y4uSc51bnltkOFyJ9m
-         QnxGv4LoCli+MAb5rUcNDkScVYBlnAw6jeuWBZcy05/B1MwUA0K8wqxt0mCzNZvTrPZQ
-         KXWw==
-X-Gm-Message-State: AOAM531W0FTZ+kmUr1WixQxpumT9iTrcoVQdvVh3KxtLiyv/J2l1ok6s
-        c72r92EujTa3LhljzyHJbmMa4Ctap+Y=
-X-Google-Smtp-Source: ABdhPJxwNb/wwSFo32fLx/qIXKnHktLoRFguHQZx0wUgYdh66ESuc3Wo1Kx2IhPnbFrgxwMz3HqSqQ==
-X-Received: by 2002:a54:4183:: with SMTP id 3mr2465968oiy.165.1621608528617;
-        Fri, 21 May 2021 07:48:48 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a12sm1328594oti.12.2021.05.21.07.48.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 07:48:48 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 2/2] usb: typec: tcpm: Respond Not_Supported if no snk_vdo
-To:     Kyle Tso <kyletso@google.com>, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210521130121.1470334-1-kyletso@google.com>
- <20210521130121.1470334-3-kyletso@google.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <b3466420-f062-51d6-2d00-73078a2e4d7b@roeck-us.net>
-Date:   Fri, 21 May 2021 07:48:46 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 21 May 2021 10:51:12 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66B70C061574;
+        Fri, 21 May 2021 07:49:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ALbn5lDFGLmOae7t1+VXfI4tB9A+uk2BFLNOfo90rDI=; b=MiZuaH47ebEV3px0iHZfjsGtUf
+        fIa/bT8qo86+Xj/otzNB0/fs5q7hAb6rTtqxfDmq6/F33H0hGJZ2j3usmoNfnnLzRGhu03FRYOwuQ
+        gR43d+PdjVqSRd9RgEb83MnvBtxMJrbbmGh1qlFsABzu97ilJaT/zXLcr2VUmn7MaacykgrNkYqvF
+        UQNvLKqV/PY10mXk6dbXBsM9e9bWBGiHrhjNK3TUyJ6NTWpXEXA9GCapn7+tWQcEWdNBMy1M142Mw
+        ekBF+739VztnZU5vUMgMknt3CxcDhWbmM5NSDwdnKu9IBWXMXhl9pdYEqRiogc/QZFGl8pszLgPcZ
+        IyqRTeYg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lk6Sp-005pTi-NA; Fri, 21 May 2021 14:49:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9F0CE300264;
+        Fri, 21 May 2021 16:49:22 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F28F30D9D883; Fri, 21 May 2021 16:49:22 +0200 (CEST)
+Date:   Fri, 21 May 2021 16:49:22 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Len Brown <lenb@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Willy Tarreau <w@1wt.eu>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
+ features
+Message-ID: <YKfIct+DhpEBbaCQ@hirez.programming.kicks-ass.net>
+References: <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic>
+ <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de>
+ <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de>
+ <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+ <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
+ <87pmxk87th.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521130121.1470334-3-kyletso@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87pmxk87th.fsf@oldenburg.str.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 6:01 AM, Kyle Tso wrote:
-> If snk_vdo is not populated from fwnode, it implies the port does not
-> support responding to SVDM commands. Not_Supported Message shall be sent
-> if the contract is in PD3. And for PD2, the port shall ignore the
-> commands.
-> 
-> Fixes: 193a68011fdc ("staging: typec: tcpm: Respond to Discover Identity commands")
-> Signed-off-by: Kyle Tso <kyletso@google.com>
+On Fri, May 21, 2021 at 04:44:58PM +0200, Florian Weimer wrote:
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> And we added an interface for querying x86 CPU features to glibc 2.33
+> which is completely incompatible with this because it assumes that CPU
+> features do not change during the lifetime of a process. 8-(
 
-> ---
->   drivers/usb/typec/tcpm/tcpm.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-> index deb8a9d01f73..d32caa875d9a 100644
-> --- a/drivers/usb/typec/tcpm/tcpm.c
-> +++ b/drivers/usb/typec/tcpm/tcpm.c
-> @@ -2430,7 +2430,10 @@ static void tcpm_pd_data_request(struct tcpm_port *port,
->   					   NONE_AMS);
->   		break;
->   	case PD_DATA_VENDOR_DEF:
-> -		tcpm_handle_vdm_request(port, msg->payload, cnt);
-> +		if (tcpm_vdm_ams(port) || port->nr_snk_vdo)
-> +			tcpm_handle_vdm_request(port, msg->payload, cnt);
-> +		else if (port->negotiated_rev > PD_REV20)
-> +			tcpm_pd_handle_msg(port, PD_MSG_CTRL_NOT_SUPP, NONE_AMS);
->   		break;
->   	case PD_DATA_BIST:
->   		port->bist_request = le32_to_cpu(msg->payload[0]);
-> 
-
+How many x86 kernel maintainers signed off on that patch?
