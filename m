@@ -2,175 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93E4438CA96
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64CA538CA9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234416AbhEUQG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:06:58 -0400
-Received: from mail-bn7nam10on2058.outbound.protection.outlook.com ([40.107.92.58]:62688
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229586AbhEUQG5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:06:57 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nXtPlNUBqMpMe5NEKLUR54P8EcEBnUbhN1jdJYlhb+q0TKtl1akhr1Yj4IJc8ChN5wIO3aNNULcNhi+nLtB3mgazZ8LCtjvKN1/oewhCr/+JZ/rIks+o2qc5XwLkmxfc0nN9SH38CvAfjgXzO7hc3TXV+O4QlsIqzjtkxBGeTaU+bYh5U2NciMct7AnmaGfhAZHC6a354Kc/Vf8zyWQO786N5JNNallP7NcEgKrq8D91VKvSBalXEI7dnDGiQYxsJGsXgbFnuLFG/Y+qLtyeh6UxvDoJmQH4dHnt2h5PWdOrZpVa5sLJskk0/tT8uqb3REg+rosXGF8cbfYmxM+goQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B29+sS4RAbUIy/Jq9by0ZOc1dStTH5PWB6tZ9KiMHdE=;
- b=eRbcOFleS9hbtPVQ0PEFYG0xfNSI0KWGa+h55bgXL9hiZdbdmXy7zDXxHyZqtt3CAOThQqhQ3ZohNAP1WDxHq2DG1LQdoMpo6ygmhq/oNCDK3fzUJoihv9Gjv8HRv39pmndHjy+pJKzJgS1PccCBwj+whfZHZWGEoNMwc8A2f57j0zA3OMFLr1XcH7+57AWSqJPA7Bbv0CxIDBuhCHjRFFbWMIahEM0v3ZrfgJT3XkPJ0jU7gtSKHLa+P9YgA5vYXFV8FTMPMFtGJtAd+wgD9SgBMi/UwAsV/TQSva76m0MjeQaFfyzeXItr/5g8mVRod1Ql4M5O4mbxsQKA/3XjxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=B29+sS4RAbUIy/Jq9by0ZOc1dStTH5PWB6tZ9KiMHdE=;
- b=qrWemh0ofu89razkjIVZw//QgN08boivmP6U6xQYEGKk1kvDFrPVt4jaFxWk5bt1M0A2qy4rZdtwldNql7wq8J5SZjY5TKirNTnUZLzzoq5ySpdhJlZFkePd+m3QQEevbR9lH7vy9N95tzOS6RaQy2z4qUQymhFiQTA7zR2lfLw=
-Authentication-Results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21)
- by DM6PR12MB4338.namprd12.prod.outlook.com (2603:10b6:5:2a2::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Fri, 21 May
- 2021 16:05:32 +0000
-Received: from DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::2833:2120:ed9f:c3e4]) by DM5PR1201MB0201.namprd12.prod.outlook.com
- ([fe80::2833:2120:ed9f:c3e4%4]) with mapi id 15.20.4129.035; Fri, 21 May 2021
- 16:05:32 +0000
-Subject: Re: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
-To:     Borislav Petkov <bp@alien8.de>, David Bartley <andareed@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-x86_64@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>
-References: <20210520174130.94954-1-andareed@gmail.com>
- <YKeHBI757jX65ULa@zn.tnic>
-From:   Wei Huang <wei.huang2@amd.com>
-Message-ID: <2ba654b5-1c08-85da-b932-9d5a92d5c930@amd.com>
-Date:   Fri, 21 May 2021 11:05:29 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-In-Reply-To: <YKeHBI757jX65ULa@zn.tnic>
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S234900AbhEUQIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:08:11 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:38704 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhEUQIK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:08:10 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14LG6jgt109831;
+        Fri, 21 May 2021 11:06:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1621613205;
+        bh=Vnl0RIBt1/tJ/Jb31YFm3Zit66WXm3me49iZt/tJsW8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Pu8V3stltZVLya0k/HKI/Ed9AT0SKZ/krdE7auA69tcPcICVJhXeJMbAXb6teil1L
+         /xcP/R1sgHmxqImJuACRzf5ZVtiwdMNcKp6uCuMCoRIEy7utV4lTrmYIG2418xEU8V
+         q/vj+8bvF2hvkBgZsxZNunvbQ3hobZj23nzfMmvU=
+Received: from DLEE114.ent.ti.com (dlee114.ent.ti.com [157.170.170.25])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14LG6jw3112768
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 May 2021 11:06:45 -0500
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
+ May 2021 11:06:45 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 21 May 2021 11:06:45 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14LG6gEY020893;
+        Fri, 21 May 2021 11:06:43 -0500
+Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
+To:     Rob Herring <robh@kernel.org>
+CC:     Aswath Govindraju <a-govindraju@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210511090122.6995-1-a-govindraju@ti.com>
+ <20210517221513.GA3263368@robh.at.kernel.org>
+ <861cefe2-7bb6-c435-ab0d-483155852876@ti.com>
+ <CAL_JsqKyuXYJocBMLGXL6aXuK0YnrW7qdLugV2bxdP-LJ=2+cg@mail.gmail.com>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <42ec7cbd-1364-8dfe-c652-79b16bb6b87c@ti.com>
+Date:   Fri, 21 May 2021 19:06:43 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <CAL_JsqKyuXYJocBMLGXL6aXuK0YnrW7qdLugV2bxdP-LJ=2+cg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.77.11]
-X-ClientProxiedBy: SA0PR11CA0122.namprd11.prod.outlook.com
- (2603:10b6:806:131::7) To DM5PR1201MB0201.namprd12.prod.outlook.com
- (2603:10b6:4:5b::21)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.31.10.87] (165.204.77.11) by SA0PR11CA0122.namprd11.prod.outlook.com (2603:10b6:806:131::7) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Fri, 21 May 2021 16:05:31 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 463fa79e-89ce-4423-37bf-08d91c7242b4
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4338:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB43384F95D365DF39CB471AA6CF299@DM6PR12MB4338.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /rXKPofD8MX0O/lFfN+bi09Nh6hQsiV8wCsZ59IoLUD8EznDUGYrWHz0xNf5sLOPWpyriGL/yhCImEj102Et+gjMTKWAZx6uDVmrRB4W1oDKtdknaHa7FPHYh1qr6G9uU5WA2rSHql/uX1X2Z1FkHVKuVLMY4UxY6DgFnuBA14edIA9TZ0Kz8ZajFCOZ2vJ2npnwKR8ibOKvx+f78ZJKRN5gQjzCqL894pbEnFLYDMNibLBqbSwMpYkV+FjMNoU+qRsW/fLnGxbT0JceS+9pt6LdRrrVVYsRzaZQABH7WvdHB/ODIcRkZf9Y6G125aNxD+sbmGFXeA/bKpaU7SmQjWjHlUtSC8BYO4qy4buLM7jTTIByxTa02HEti7XzgRfj6bQD1rZ3L5fwijbP/72AeeDL+XkCIltZZKIWBrS6TGYStxvACvcUCGk8HdCQym1i3FkIIH6Go3d7a5sunXtH0CnGupI9MZejTVAWPWIrFo5pcXEroQldu4QRxi+SOPzRg6OrER5QuQMdexNbOuWvkd4583uvpI0ntTtMuSU3k0VPLLlTXf2Hb5Hpr+kAwBnn+JZ3A2tvWYjgRn2Qr2Ybzadwm3IjuY1BNXR+hwSGOtM5jaFMyoNTTzGlxtM4U/DSLQyPMhSlY6l5tApZ0Wcx/FiTsOYdWj5sJPbAFoTV2AsZlKMeeLAnSdbza3hjUzrV6DrLF4hROLW7/qzT32sRCQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR1201MB0201.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(396003)(366004)(346002)(956004)(2616005)(316002)(86362001)(110136005)(52116002)(38100700002)(31686004)(16526019)(38350700002)(4326008)(5660300002)(36756003)(478600001)(8936002)(8676002)(2906002)(31696002)(53546011)(16576012)(186003)(66946007)(6486002)(66476007)(66556008)(26005)(83380400001)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?M3g0NVphQzRsdTlkYk9udERZWE9BQXVNNVR4R2h4SHEyeFRxZURmM2ZQM2xr?=
- =?utf-8?B?c1pnNUc0VGY4VWtPbk1GTU1ReW0ybGhlVGpsRm00OERMYjVmOW12RTB3NEJr?=
- =?utf-8?B?NmVIeVMrbGZmSEJ4NGt4YWRtM3RQYzVpbXpDb1BQd2UyMFpaZEx0NXNCUCtW?=
- =?utf-8?B?MGx6VkUxUEJoQVJQbzNLVjl4SkhnenNGMkN0bzRWc1NLU2JIRFlMSlEvcEpW?=
- =?utf-8?B?V2lOdEFFU3hGeXdsOHF3RHYxSVZkUmNPUXFKVlZCMUVjSU1JaDZGajk5SDEx?=
- =?utf-8?B?SDlhUnFGVVRyNjhCUVo5QlNkRXM2MDc2bHlQTW9BR0tFUmR2U1l5R2NFSG9K?=
- =?utf-8?B?bUVheUlzZnlxdFF5ZTdwTTVDTUtSdHRXSVlUZ2dCVy9xRjdlK1VFWEYxY0wx?=
- =?utf-8?B?OU90aWFQWTVtQUFCdisrYVhrYkEvckxmSm54TDU1ZGVEdjJxZU9NMUpjeXNs?=
- =?utf-8?B?ODlMbzhhT010aVM5czI4YzhDWUxkWm1aWlU1Njl2RTY5dlRvY0NDWW1IMEow?=
- =?utf-8?B?dlJ3ZFd2OUswRTNXYy9sWkhvMDZzd1duamo1R2RvRWd0R2FBY2VtZnhMZDRR?=
- =?utf-8?B?R0NnanpmVHpTQksrSFNnZEpTU0MwZlUyaWpWQkxoMjd4cGtNTTdDTmpoSEVW?=
- =?utf-8?B?NVJHeWthWlExNytaSlRtblMvbkU4ZExnd0ZqdHlYOHJpL2trRWFOa2dFZXRn?=
- =?utf-8?B?NWF3TlFtVkUwbkFQUk1UOUlVMnBZZG9sSUUwMnRQL0FPclloS1h4RTdrSWto?=
- =?utf-8?B?QmNPNE5kYlVxeVVzOU5XRDJ3dmo3K2EvNHQ2NUwzY2ZNZ3hRam5Dclo1N1Ay?=
- =?utf-8?B?RE4vVWNHUlpwSGdESCtsR05iYzAzMituZW5lZVZwemZoMWtnRDNYVStBQU5l?=
- =?utf-8?B?KzlWZG5xVlVPeHhkcW1kVkdaYm5ZeE9BUWR5Ly8rTFpGQUNpMkVaUmNNdEZj?=
- =?utf-8?B?SUF3MUhOTThmYkVENmFDV1BDVWhXb2F2cUthKytBNCt6K3BzcWxVSHFrM20z?=
- =?utf-8?B?VTJSN01kenFkNU12MjE1TEdaRTRiK2lLVkUvcGJKaWJQVFYrc1A1c2EvaCt4?=
- =?utf-8?B?c2g3dVRGeno0K1pVbzVCclNJb0NBN2IzRnNlakN2U01ObDU2bDJKcTNIME1a?=
- =?utf-8?B?bk9xbmkyYkN6Q0dlcHpMREo3VlVtSjh4ZE50ZnpTMjNVRGFaL1RSV2FRYy9t?=
- =?utf-8?B?WVFEMzlEV3NKOERYNmdiU1Ureml3cU9JZERUT0dsMHVzb0Q3VDh3T09EODVV?=
- =?utf-8?B?aERXeGZQd05kRyt2WFI0RlNuMEg3blNYNzhUV1crQlJjUW8wNkVYSVdTRk92?=
- =?utf-8?B?djBucklFTVVOdnJ6ZlZaYXU0UXR6SmZURUxySWREWVF5UzlhYlBUQ2xSTWJl?=
- =?utf-8?B?VWF5NzRnaWpYT3o4R3lSc1ltQ3JFa0hKYmhpNGJacXNTRXM3WlMwWUhzVi94?=
- =?utf-8?B?RHkxeXpGb2lvZ3gxV0hXNDFiOWxZUUhxcUU3YlRGZlZJVlViRmJXdXFqSmNh?=
- =?utf-8?B?OUQ0Q292SDhsQWVVVnhua2diYnNSWEdVUjZ6TDFnWHZ2VUtwSEY3dnVUUHFr?=
- =?utf-8?B?cXlhMGoySUR5a09RTVRkMlVpd202VjBkc0MyUVcySTZLd2NmZlNHYXd4OWx6?=
- =?utf-8?B?RnFheE5aKy9EOVNmWGdHWUZIdTc3OHgrZDdlQ1NCa3VRYkY1QmltRjZlbWVQ?=
- =?utf-8?B?L05pL1NWWWxxaDYrUm9TMVpWcUM4YzdFVTEwVVN2QVFWRGVuWmpGTXo4NS9s?=
- =?utf-8?Q?lQwHWJW9hiVQjPzUIr5E2RaGcnyISdFWHVJ82h7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 463fa79e-89ce-4423-37bf-08d91c7242b4
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR1201MB0201.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2021 16:05:32.2381
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6MHxI6aOlg7p7UDOjP/bRpydhvjoEjj2Px91kVDd8QagdUHDOBL9JnJ2qZf61dlP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4338
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
-
-On 5/21/21 5:10 AM, Borislav Petkov wrote:
-> On Thu, May 20, 2021 at 10:41:30AM -0700, David Bartley wrote:
->> This is required to support Zen3 APUs in k10temp.
+On 21/05/2021 15:56, Rob Herring wrote:
+> On Fri, May 21, 2021 at 3:32 AM Grygorii Strashko
+> <grygorii.strashko@ti.com> wrote:
 >>
->> Signed-off-by: David Bartley <andareed@gmail.com>
->> ---
->>   arch/x86/kernel/amd_nb.c | 3 +++
->>   include/linux/pci_ids.h  | 1 +
->>   2 files changed, 4 insertions(+)
+>> Hi Rob, All
 >>
->> diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
->> index 09083094eb57..23dda362dc0f 100644
->> --- a/arch/x86/kernel/amd_nb.c
->> +++ b/arch/x86/kernel/amd_nb.c
->> @@ -25,6 +25,7 @@
->>   #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F4 0x144c
->>   #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F4 0x1444
->>   #define PCI_DEVICE_ID_AMD_19H_DF_F4	0x1654
->> +#define PCI_DEVICE_ID_AMD_19H_M50H_DF_F4 0x166e
->>   
->>   /* Protect the PCI config register pairs used for SMN and DF indirect access. */
->>   static DEFINE_MUTEX(smn_mutex);
->> @@ -57,6 +58,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F3) },
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F3) },
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F3) },
->> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F3) },
->>   	{}
->>   };
->>   
->> @@ -72,6 +74,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M60H_DF_F4) },
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F4) },
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F4) },
->> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F4) },
->>   	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
->>   	{}
->>   };
->> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
->> index 4c3fa5293d76..5356ccf1c275 100644
->> --- a/include/linux/pci_ids.h
->> +++ b/include/linux/pci_ids.h
->> @@ -555,6 +555,7 @@
->>   #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
->>   #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
->>   #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
->> +#define PCI_DEVICE_ID_AMD_19H_M50H_DF_F3 0x166d
+>> On 18/05/2021 01:15, Rob Herring wrote:
+>>> On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
+>>>> Convert gpio-davinci dt-binding documentation from txt to yaml format.
+>>>>
+>>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+>>>> ---
+>>>>    .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
+>>>>    .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
+>>>>    MAINTAINERS                                   |   2 +-
+>>>>    3 files changed, 194 insertions(+), 168 deletions(-)
+>>>>    delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+>>>>    create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt b/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+>>>> deleted file mode 100644
+>>>> index 696ea46227d1..000000000000
+>>>> --- a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+>>>> +++ /dev/null
+>>>> @@ -1,167 +0,0 @@
+>>>> -Davinci/Keystone GPIO controller bindings
+>>>> -
+>>>> -Required Properties:
+>>>> -- compatible: should be "ti,dm6441-gpio": for Davinci da850 SoCs
+>>>> -                    "ti,keystone-gpio": for Keystone 2 66AK2H/K, 66AK2L,
+>>>> -                                            66AK2E SoCs
+>>>> -                    "ti,k2g-gpio", "ti,keystone-gpio": for 66AK2G
+>>>> -                    "ti,am654-gpio", "ti,keystone-gpio": for TI K3 AM654
+>>>> -                    "ti,j721e-gpio", "ti,keystone-gpio": for J721E SoCs
+>>>> -                    "ti,am64-gpio", "ti,keystone-gpio": for AM64 SoCs
+>>>> -
+>>
+>> [...]
+>>
+>>>> -};
+>>>> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+>>>> new file mode 100644
+>>>> index 000000000000..1e16172669c7
+>>>> --- /dev/null
+>>>> +++ b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+>>>> @@ -0,0 +1,193 @@
+>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>>> +%YAML 1.2
+>>>> +---
+>>>> +$id: http://devicetree.org/schemas/gpio/gpio-davinci.yaml#
+>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>>> +
+>>>> +title: GPIO controller for Davinci and keystone devices
+>>>> +
+>>>> +maintainers:
+>>>> +  - Keerthy <j-keerthy@ti.com>
+>>>> +
+>>>> +properties:
+>>>> +  compatible:
+>>>> +    oneOf:
+>>>> +      - items:
+>>>> +          - enum:
+>>>> +              - ti,k2g-gpio
+>>>> +              - ti,am654-gpio
+>>>> +              - ti,j721e-gpio
+>>>> +              - ti,am64-gpio
+>>>> +          - const: ti,keystone-gpio
+>>>> +
+>>>> +      - items:
+>>>> +          - const: ti,dm6441-gpio
+>>>> +      - items:
+>>>> +          - const: ti,keystone-gpio
+>>>
+>>> These 2 can be expressed as an 'enum'.
+>>>
+>>>> +
+>>>> +  reg:
+>>>> +    maxItems: 1
+>>>> +    description:
+>>>> +      Physical base address of the controller and the size of memory mapped registers.
+>>>
+>>> Drop. That's every 'reg' property.
+>>>
+>>>> +
+>>>> +  gpio-controller: true
+>>>> +
+>>>> +  gpio-ranges: true
+>>>> +
+>>>> +  gpio-line-names:
+>>>> +    description: strings describing the names of each gpio line.
+>>>
+>>> Any constraints like min/max number of lines?
+>>>
+>>>> +
+>>>> +  "#gpio-cells":
+>>>> +    const: 2
+>>>> +    description:
+>>>> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
+>>>> +
+>>>> +  interrupts:
+>>>> +    description:
+>>>> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
+>>>
+>>> Needs constraints. How many items and what are they?
+>>>
+>>>> +
+>>>> +  ti,ngpio:
+>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>> +    description: The number of GPIO pins supported consecutively.
+>>>> +    minimum: 1
+>>>> +
+>>>> +  ti,davinci-gpio-unbanked:
+>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>>>> +    description: The number of GPIOs that have an individual interrupt line to processor.
+>>>> +    minimum: 0
+>>>> +
+>>>> +  clocks:
+>>>> +    maxItems: 1
+>>>> +    description:
+>>>> +      clock-specifier to represent input to the GPIO controller.
+>>>
+>>> Drop description.
+>>>
+>>>> +
+>>>> +  clock-names:
+>>>> +    const: gpio
+>>>> +
+>>>> +  interrupt-controller: true
+>>>> +
+>>>> +  power-domains:
+>>>> +    maxItems: 1
+>>>> +    description:
+>>>> +      Phandle to the power domain provider node.
+>>>
+>>> Drop.
+>>>
+>>>> +
+>>>> +  "#interrupt-cells":
+>>>> +    const: 2
+>>>> +
+>>>> +patternProperties:
+>>>> +  "-hog$":
+>>>> +    type: object
+>>>> +    properties:
+>>>> +      gpios: true
+>>>> +      gpio-hog: true
+>>>> +      input: true
+>>>> +      output-high: true
+>>>> +      output-low: true
+>>>> +      line-name: true
+>>>> +
+>>>> +    required:
+>>>> +      - gpio-hog
+>>>> +      - gpios
+>>
+>> I see that gpio-hog.yaml dtschema has been added.
+>> Can it be reused here and how?
 > 
-> I don't see this define used anywhere else besides amd_nb.c. If there's
-> no use for it outside of that file, I'm moving it there...?
+> It's applied to any node containing 'gpio-hog' property, so all you need is:
 > 
-> Or does it need to get added to that k10temp_id_table in k10temp.c too?
-
-[+Guenter]
-
-I think it needs to be added to k10temp.c as well. In the meanwhile, 
-k10temp_probe() shall be extended with support for family 19h, model 0x5x.
-
+> required:
+>    - gpio-hog
 > 
+Thanks for you comments. But I'd like to clarify the Hog child node definition - will work as below?
+
+patternProperties:
+   "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
+     type: object
+
+     properties:
+       gpio-hog: true
+
+     required:
+       - gpio-hog
+
+In general, patternProperties duplicates $nodename in gpio-hog dtschema.
+
+-- 
+Best regards,
+grygorii
