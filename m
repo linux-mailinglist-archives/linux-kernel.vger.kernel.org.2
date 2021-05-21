@@ -2,91 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 795D238BB52
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:11:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C6B2038BB5B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:13:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236373AbhEUBMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:12:47 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5708 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236065AbhEUBMj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:12:39 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmT405cFczqVWS;
-        Fri, 21 May 2021 09:07:44 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 09:11:16 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 21 May 2021 09:11:15 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 6/6] net: wan: add necessary () to macro argument
-Date:   Fri, 21 May 2021 09:08:17 +0800
-Message-ID: <1621559297-9651-7-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621559297-9651-1-git-send-email-huangguangbin2@huawei.com>
-References: <1621559297-9651-1-git-send-email-huangguangbin2@huawei.com>
+        id S236239AbhEUBOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:14:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51074 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235906AbhEUBOm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:14:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5E2960FEF;
+        Fri, 21 May 2021 01:13:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621559600;
+        bh=iidsKDzZJma0pYDtc53iw4RxEtwWIyBb9HtkkfDF2Xw=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V/ORjQxoV0z/KlCNcZ8EuQZK7qJC7KEA+10B/eXO9RZJcIJlK0qUm0x4V+X1RvU59
+         ZLtSYfkCwlQNewYSUXfdp6VWeLnUeA8MgrmYyoieT1bqxZ6uIKjC0P1UqMGMDMAsDi
+         iu2xOIZbBWwWl5QIiwWC9yUdcsdMthedx7zM3OZ4w84AGYGf3yy/DYmKDuAoqcUybn
+         stNENRxkB+vqLQIOcPFo5up4ynA1Kf/3JHa2qCjaz6wTfdr9PXvJj6tszuIiVUfQH5
+         tRCyPCMvyW+cdXvPOo/L8iaTM1OVbuFwmfCIqUFIWRGc7bLAd7KXC4IsuZrcvH8Igj
+         I7RIsTZ0sL4MA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Brian Cain <bcain@codeaurora.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        linux-hexagon@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: [PATCH 0/3] hexagon: Fix build error with CONFIG_STACKDEPOT and select CONFIG_ARCH_WANT_LD_ORPHAN_WARN
+Date:   Thu, 20 May 2021 18:12:36 -0700
+Message-Id: <20210521011239.1332345-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.32.0.rc0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+Hi all,
 
-Macro argument 'card' and 'port' may be better as
-'(card)' and '(port)' to avoid precedence issues.
+This series fixes an error with ARCH=hexagon that was pointed out by
+the patch "mm/slub: use stackdepot to save stack trace in objects",
+which is in -mm/-next.
 
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
----
- drivers/net/wan/hd64572.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+The first patch fixes that error by handling the '.irqentry.text' and
+'.softirqentry.text' sections.
 
-diff --git a/drivers/net/wan/hd64572.c b/drivers/net/wan/hd64572.c
-index 7fccf23c8bef..b89b03a6aba7 100644
---- a/drivers/net/wan/hd64572.c
-+++ b/drivers/net/wan/hd64572.c
-@@ -41,16 +41,16 @@
- 
- #define NAPI_WEIGHT		16
- 
--#define get_msci(port)	  (port->chan ?   MSCI1_OFFSET :   MSCI0_OFFSET)
--#define get_dmac_rx(port) (port->chan ? DMAC1RX_OFFSET : DMAC0RX_OFFSET)
--#define get_dmac_tx(port) (port->chan ? DMAC1TX_OFFSET : DMAC0TX_OFFSET)
--
--#define sca_in(reg, card)	     readb(card->scabase + (reg))
--#define sca_out(value, reg, card)    writeb(value, card->scabase + (reg))
--#define sca_inw(reg, card)	     readw(card->scabase + (reg))
--#define sca_outw(value, reg, card)   writew(value, card->scabase + (reg))
--#define sca_inl(reg, card)	     readl(card->scabase + (reg))
--#define sca_outl(value, reg, card)   writel(value, card->scabase + (reg))
-+#define get_msci(port)	  ((port)->chan ?   MSCI1_OFFSET :   MSCI0_OFFSET)
-+#define get_dmac_rx(port) ((port)->chan ? DMAC1RX_OFFSET : DMAC0RX_OFFSET)
-+#define get_dmac_tx(port) ((port)->chan ? DMAC1TX_OFFSET : DMAC0TX_OFFSET)
-+
-+#define sca_in(reg, card)	     readb((card)->scabase + (reg))
-+#define sca_out(value, reg, card)    writeb(value, (card)->scabase + (reg))
-+#define sca_inw(reg, card)	     readw((card)->scabase + (reg))
-+#define sca_outw(value, reg, card)   writew(value, (card)->scabase + (reg))
-+#define sca_inl(reg, card)	     readl((card)->scabase + (reg))
-+#define sca_outl(value, reg, card)   writel(value, (card)->scabase + (reg))
- 
- static int sca_poll(struct napi_struct *napi, int budget);
- 
+The second patch switches Hexagon over to the common DISCARDS macro,
+which should have been done when Hexagon was merged into the tree to
+match commit 023bf6f1b8bf ("linker script: unify usage of discard
+definition").
+
+The third patch selects CONFIG_ARCH_WANT_LD_ORPHAN_WARN so that
+something like this does not happen again.
+
+Nathan Chancellor (3):
+  hexagon: Handle {,SOFT}IRQENTRY_TEXT in linker script
+  hexagon: Use common DISCARDS macro
+  hexagon: Select ARCH_WANT_LD_ORPHAN_WARN
+
+ arch/hexagon/Kconfig              | 1 +
+ arch/hexagon/kernel/vmlinux.lds.S | 9 +++------
+ 2 files changed, 4 insertions(+), 6 deletions(-)
+
+
+base-commit: 7a42b92b6d30c3f09629c7d5ada9e3de2aba01af
 -- 
-2.8.1
+2.32.0.rc0
 
