@@ -2,82 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C83638CEA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:10:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54D4B38CEAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhEUULn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:11:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49388 "EHLO mail.kernel.org"
+        id S230035AbhEUUPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:15:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35450 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229547AbhEUULl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:11:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAC936101B;
-        Fri, 21 May 2021 20:10:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621627818;
-        bh=XA1ABq8YonEMJwPvBO1DQSpN/DaawZg01skDnn4XKy0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nk8p/uRVoQkyXFgDNR3qCjnQE3Bc3RDtc44yobAR7eEX26P3DvPkcprq7rX6f9sSz
-         9dmXDru2OE3+EFy8xhMU8Q4q6SPqn+CpFGE7RuBE9tjbDg53+shoN/sNU7g/n5T7j/
-         tpUiBSQV6ZZwXOerVMQULr9rIlbBmwl685ScmC90=
-Date:   Fri, 21 May 2021 22:10:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Rajat Jain <rajatja@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-usb@vger.kernel.org, helgaas@kernel.org,
-        Oliver Neukum <oneukum@suse.com>,
-        David Laight <David.Laight@aculab.com>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
-Subject: Re: [PATCH v4 1/2] driver core: Move the "removable" attribute from
- USB to core
-Message-ID: <YKgTp00l1pRI4DTd@kroah.com>
-References: <20210513232701.411773-1-rajatja@google.com>
+        id S229455AbhEUUPN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:15:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1621628028; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=FF/j55GfQl57arjqXTMUh9IA8X9Sg5o3NkTPqiHMnFM=;
+        b=YBXOLP76l/8OebEdTj+QBfeXkzop2bTAvmQJ7L3/GifV17AfGH0FyD/LucWO+C2cWYqsM1
+        QkChEIXRGlm2qoKXCvjR+J7S7YXD9UqI1GdB4puZxVlZBfgvEwx0HULzsJYQaz6vpyACWL
+        phPnAaFiWRmirUJo6IwJ1VlH9D9c7Fg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D0E36AAA6;
+        Fri, 21 May 2021 20:13:48 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 47868DA72C; Fri, 21 May 2021 22:11:14 +0200 (CEST)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for v5.13-rc3, part 2
+Date:   Fri, 21 May 2021 22:11:13 +0200
+Message-Id: <cover.1621627293.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513232701.411773-1-rajatja@google.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 04:27:00PM -0700, Rajat Jain wrote:
-> Move the "removable" attribute from USB to core in order to allow it to be
-> supported by other subsystem / buses. Individual buses that want to support
-> this attribute can populate the removable property of the device while
-> enumerating it with the 3 possible values -
->  - "unknown"
->  - "fixed"
->  - "removable"
-> Leaving the field unchanged (i.e. "not supported") would mean that the
-> attribute would not show up in sysfs for that device. The UAPI (location,
-> symantics etc) for the attribute remains unchanged.
-> 
-> Signed-off-by: Rajat Jain <rajatja@google.com>
-> ---
-> v4: - instead of devicce_type->supports_removable, add 1 more value in
->       device_removable_enum
->     - documentation update.
->     - Remove "Acked-by" and "Reviewed-by" tags from previous versions.
-> v3: - Minor commit log / comments updated.
->     - use sysfs_emit()
->     - Rename local variable name (state -> loc)
->     - change supports_removable flag from bool to bitfield.
-> v2: Add documentation
+Hi,
 
-This looks good to me, I have no further objection to it at all, nice
-cleanups.
+a few more fixes. Please pull, thanks.
 
-I can take this in my driver-core tree, so that other busses can use it
-(and can create a tag to pull from if needed), or I can also take the
-PCI patch (patch 2/2 here), if Bjorn gives his reviewed-by: for it.
+- fix unaligned compressed writes in zoned mode
 
-Are there other busses besides PCI that you want to enable this soon
-(i.e. before 5.14-rc1)?
+- fix false positive lockdep warning when cloning inline extent
 
-thanks,
+- remove wrong BUG_ON in tree-log error handling
 
-greg k-h
+----------------------------------------------------------------
+The following changes since commit 54a40fc3a1da21b52dbf19f72fdc27a2ec740760:
+
+  btrfs: fix removed dentries still existing after log is synced (2021-05-14 01:23:04 +0200)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
+
+for you to fetch changes up to 764c7c9a464b68f7c6a5a9ec0b923176a05e8e8f:
+
+  btrfs: zoned: fix parallel compressed writes (2021-05-20 15:51:07 +0200)
+
+----------------------------------------------------------------
+Filipe Manana (1):
+      btrfs: release path before starting transaction when cloning inline extent
+
+Johannes Thumshirn (2):
+      btrfs: zoned: pass start block to btrfs_use_zone_append
+      btrfs: zoned: fix parallel compressed writes
+
+Josef Bacik (1):
+      btrfs: do not BUG_ON in link_to_fixup_dir
+
+ fs/btrfs/compression.c | 42 ++++++++++++++++++++++++++++++++++++++----
+ fs/btrfs/extent_io.c   |  2 +-
+ fs/btrfs/inode.c       |  2 +-
+ fs/btrfs/reflink.c     |  5 +++++
+ fs/btrfs/tree-log.c    |  2 --
+ fs/btrfs/zoned.c       |  4 ++--
+ fs/btrfs/zoned.h       |  5 ++---
+ 7 files changed, 49 insertions(+), 13 deletions(-)
