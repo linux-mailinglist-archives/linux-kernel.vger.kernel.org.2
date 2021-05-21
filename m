@@ -2,291 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D3838C178
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:11:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C56F38C167
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:10:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236558AbhEUIMa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:12:30 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:12475 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236508AbhEUIMG (ORCPT
+        id S236423AbhEUIMG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 04:12:06 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:50488 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236425AbhEUIK0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:12:06 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1621584509; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=WnStYCS0s6bErnovsJDk1gugRQyu9VwuOWhwjPZb2ay5EuIVqpteFehdFfnBTDa3lt
-    LRpWeL1NzTZ+J3k3LjW0Yo3Ad6lF9reSSArRA9g7EGJbt+OERjnhsEQY3+6rDzBAIBIq
-    Erjc47MEQxKvtFTqUWiiIwbamNaJKW0EPyb7yyAUSyg4SlsPy6aQ8DFsx/vR/J39Txe1
-    sxYPuTYNBDXaMRXSaT8ECoS6UjxtRuYdQVXj/JjHo/dE460nqe+0ZHy3cJ0qBeMf3kUD
-    yYlsgP8lJNZ6jx0cnl042aLG9QaFnTJn3SVhB/vZLkL55oFGDl1InSb+2rOsCB3omLfC
-    8MJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1621584509;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=MwwA+IfVWfIO/BBfDy71s/uZxMJCnYrLsxZz67Xo1pk=;
-    b=rI0QN8RN9CGnqzt7aw5VqajcOJT5g6pkrz5Lt1aJ5T9vO0XEcd4adkQz9cO10odCj4
-    GuSfGrHr1kIQ3+IH6TQLi8or67aP/Rb3anWTXtmvhrC9znWAvz4SY7VWhCTbIfHrL4Es
-    XRF/Xic7h6KfNaX4Z0zNtJxKVBvKjX7fHz9dAfAfeVZQSZCipS+Wz9epefVGhpL9NWMH
-    3nmUVldz51LwELTRruBSQlrKMRAONsnTwSJJ7VbUKAob+E/hdi56xXS9wnH0LS3WZWWw
-    6Hf6IXnsdn3aqp3ZkFHLBJx861UMwekI5FbFHo+LrTTzpIs/spEjnxQmUtM7kBHYVPiA
-    wbtA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1621584509;
-    s=strato-dkim-0002; d=gerhold.net;
-    h=In-Reply-To:References:Message-ID:Subject:Cc:To:From:Date:Cc:Date:
-    From:Subject:Sender;
-    bh=MwwA+IfVWfIO/BBfDy71s/uZxMJCnYrLsxZz67Xo1pk=;
-    b=Vpv5DAGhIr6m1ehEr/6ramNSVMl3B+sCLfIlj8hPcuOhDZ9SzTPmE5bikFMl8Kt7O5
-    f0vLUwC7NHnNJVQCBwzHvNGmoq/rq/sc53MsSthyvl2ihynTgza/bhgHRfJzFw2yadAu
-    2H40DN4nMCv65hpA7HyoTATKkwrFm8lYj8VX0Jnp9IrHIdjjl/cxbw0eRzRH58p372nK
-    hndVO9DgU1SneOaJH92rR5sWyhGRCGa70AcIenvlaWeCvO0vxTyFDf9XRyjfu/huMYjj
-    lJHR6DdhEogPIzDI32iwTetXDpLKEE0WNxqPoNQOvQcKqTaKjXx0Y0dD5GMuvupaaD2S
-    xzZQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":P3gBZUipdd93FF5ZZvYFPugejmSTVR2nRPhVOQ/OcYgojyw4j34+u26zEodhPgRDZ8j8IcvEBg=="
-X-RZG-CLASS-ID: mo00
-Received: from gerhold.net
-    by smtp.strato.de (RZmta 47.26.1 DYNA|AUTH)
-    with ESMTPSA id 2037acx4L88R0Oi
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Fri, 21 May 2021 10:08:27 +0200 (CEST)
-Date:   Fri, 21 May 2021 10:08:23 +0200
-From:   Stephan Gerhold <stephan@gerhold.net>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH v3 01/17] dt-bindings: qcom-bam: Convert binding to YAML
-Message-ID: <YKdqd6nreHwCV3te@gerhold.net>
-References: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
- <20210519143700.27392-2-bhupesh.sharma@linaro.org>
+        Fri, 21 May 2021 04:10:26 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-436-ZvW3bxJ4O5CppUscs7yADQ-1; Fri, 21 May 2021 04:08:46 -0400
+X-MC-Unique: ZvW3bxJ4O5CppUscs7yADQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 621E3BD124;
+        Fri, 21 May 2021 08:08:45 +0000 (UTC)
+Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 743A15C1C4;
+        Fri, 21 May 2021 08:08:36 +0000 (UTC)
+Date:   Fri, 21 May 2021 10:08:35 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Miklos Szeredi <miklos@szeredi.hu>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <virtio-fs@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v4 1/5] fuse: Fix leak in fuse_dentry_automount() error
+ path
+Message-ID: <20210521100835.52506623@bahia.lan>
+In-Reply-To: <YKa8SZ8s6QeKZ4XP@zeniv-ca.linux.org.uk>
+References: <20210520154654.1791183-1-groug@kaod.org>
+        <20210520154654.1791183-2-groug@kaod.org>
+        <YKa8SZ8s6QeKZ4XP@zeniv-ca.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210519143700.27392-2-bhupesh.sharma@linaro.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 20 May 2021 19:45:13 +0000
+Al Viro <viro@zeniv.linux.org.uk> wrote:
 
-On Wed, May 19, 2021 at 08:06:44PM +0530, Bhupesh Sharma wrote:
-> Convert Qualcomm BAM DMA devicetree binding to YAML.
+> On Thu, May 20, 2021 at 05:46:50PM +0200, Greg Kurz wrote:
+> > Some rollback was forgotten during the addition of crossmounts.
 > 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> ---
->  .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 ----------
->  .../devicetree/bindings/dma/qcom_bam_dma.yaml | 91 +++++++++++++++++++
->  2 files changed, 91 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
->  create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> deleted file mode 100644
-> index cf5b9e44432c..000000000000
-> --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-> +++ /dev/null
-> @@ -1,50 +0,0 @@
-> -QCOM BAM DMA controller
-> -
-> -Required properties:
-> -- compatible: must be one of the following:
-> - * "qcom,bam-v1.4.0" for MSM8974, APQ8074 and APQ8084
-> - * "qcom,bam-v1.3.0" for APQ8064, IPQ8064 and MSM8960
-> - * "qcom,bam-v1.7.0" for MSM8916
-> -- reg: Address range for DMA registers
-> -- interrupts: Should contain the one interrupt shared by all channels
-> -- #dma-cells: must be <1>, the cell in the dmas property of the client device
-> -  represents the channel number
-> -- clocks: required clock
-> -- clock-names: must contain "bam_clk" entry
-> -- qcom,ee : indicates the active Execution Environment identifier (0-7) used in
-> -  the secure world.
-> -- qcom,controlled-remotely : optional, indicates that the bam is controlled by
-> -  remote proccessor i.e. execution environment.
-> -- num-channels : optional, indicates supported number of DMA channels in a
-> -  remotely controlled bam.
-> -- qcom,num-ees : optional, indicates supported number of Execution Environments
-> -  in a remotely controlled bam.
-> -
-> -Example:
-> -
-> -	uart-bam: dma@f9984000 = {
-> -		compatible = "qcom,bam-v1.4.0";
-> -		reg = <0xf9984000 0x15000>;
-> -		interrupts = <0 94 0>;
-> -		clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
-> -		clock-names = "bam_clk";
-> -		#dma-cells = <1>;
-> -		qcom,ee = <0>;
-> -	};
-> -
-> -DMA clients must use the format described in the dma.txt file, using a two cell
-> -specifier for each channel.
-> -
-> -Example:
-> -	serial@f991e000 {
-> -		compatible = "qcom,msm-uart";
-> -		reg = <0xf991e000 0x1000>
-> -			<0xf9944000 0x19000>;
-> -		interrupts = <0 108 0>;
-> -		clocks = <&gcc GCC_BLSP1_UART2_APPS_CLK>,
-> -			<&gcc GCC_BLSP1_AHB_CLK>;
-> -		clock-names = "core", "iface";
-> -
-> -		dmas = <&uart-bam 0>, <&uart-bam 1>;
-> -		dma-names = "rx", "tx";
-> -	};
-> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> new file mode 100644
-> index 000000000000..173e4d7508a6
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-> @@ -0,0 +1,91 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/dma/qcom_bam_dma.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: QCOM BAM DMA controller binding
-> +
-> +maintainers:
-> +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
-> +
-> +description: |
-> +  This document defines the binding for the BAM DMA controller
-> +  found on Qualcomm parts.
-> +
-> +allOf:
-> +  - $ref: "dma-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - qcom,bam-v1.4.0
-> +      - qcom,bam-v1.3.0
-> +      - qcom,bam-v1.7.0
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: Address range of the DMA registers.
-> +
-> +  clocks:
-> +    minItems: 1
-> +    maxItems: 8
-> +
-> +  clock-names:
-> +    const: bam_clk
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: Single interrupt line shared by all channels.
-> +
-> +  num-channels:
-> +    maxItems: 31
+> Have you actually tested that?  Because I strongly suspect that
+> by that point the ownership of fc and fm is with sb and those
+> should be taken care of by deactivate_locked_super().
 
-maxItems doesn't seem right here, since num-channels isn't an array.
-Perhaps you meant maximum: 31?
+My bad, I didn't test but now I did and the issue is actually
+worse than just a memory leak. This error path crashes upstream
+without this patch:
 
-Can you check your bindings on the existing device trees with
-"make dtbs_check" and make sure that only reasonable errors remain?
-
-This fails on pretty much every device tree:
-
-arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml: dma-controller@9184000: num-channels: [[31]] is too short
-        From schema: Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-
-> +    description: |
-> +      Indicates supported number of DMA channels in a remotely controlled bam.
-> +
-> +  "#dma-cells":
-> +    const: 1
-> +    description: The single cell represents the channel index.
-> +
-> +  qcom,ee:
-> +    $ref: /schemas/types.yaml#/definitions/uint8
-> +    description:
-> +      Indicates the active Execution Environment identifier (0-7)
-> +      used in the secure world.
-> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
-> +
-
-bam_dma.c reads this as uint32 and all existing device tree specify it
-as uint32. I don't think adding the /bits/ 8 to all existing device
-trees is really worth it.
-
-arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml: dma-controller@9184000: qcom,ee: missing size tag in [[1]]
-        From schema: Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+[   26.206673] BUG: kernel NULL pointer dereference, address: 0000000000000000
+[   26.209560] #PF: supervisor read access in kernel mode
+[   26.211699] #PF: error_code(0x0000) - not-present page
+[   26.214574] PGD 0 P4D 0 
+[   26.216016] Oops: 0000 [#1] SMP PTI
+[   26.217451] CPU: 0 PID: 3380 Comm: ls Kdump: loaded Not tainted 5.13.0-virtio-fs-sync+ #30
+[   26.220839] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.14.0-0-g155821a1990b-prebuilt.qemu.org 04/01/2014
+[   26.226362] RIP: 0010:__list_del_entry_valid+0x25/0x90
+[   26.228449] Code: c3 0f 1f 40 00 48 8b 17 4c 8b 47 08 48 b8 00 01 00 00 00 00 ad de 48 39 c2 74 26 48 b8 22 01 00 00 00 00 ad de 49 39 c0 74 2b <49> 8b 30 48 39 fe 75 3a 48 8b 52 08 48 39 f2 75 48 b8 01 00 00 00
+[   26.234256] RSP: 0018:ffffaa37006cbb18 EFLAGS: 00010217
+[   26.235473] RAX: dead000000000122 RBX: ffff8f6844098200 RCX: 0000000000000000
+[   26.236922] RDX: 0000000000000000 RSI: ffffffff99264e92 RDI: ffff8f6844098210
+[   26.238401] RBP: ffff8f68420b3c00 R08: 0000000000000000 R09: 000000000000002a
+[   26.239852] R10: 0000000000000000 R11: ffff8f6840402480 R12: ffff8f6844098210
+[   26.241160] R13: ffff8f68420b3da8 R14: ffff8f6844098200 R15: 0000000000000000
+[   26.242398] FS:  00007f547b93f200(0000) GS:ffff8f687bc00000(0000) knlGS:0000000000000000
+[   26.243698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   26.244693] CR2: 0000000000000000 CR3: 0000000104e50000 CR4: 00000000000006f0
+[   26.245936] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[   26.246961] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[   26.247938] Call Trace:
+[   26.248300]  fuse_mount_remove+0x2c/0x70 [fuse]
+[   26.248892]  virtio_kill_sb+0x22/0x160 [virtiofs]
+[   26.249487]  deactivate_locked_super+0x36/0xa0
+[   26.250077]  fuse_dentry_automount+0x178/0x1a0 [fuse]
 
 
-> +  qcom,controlled-remotely:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description:
-> +      Indicates that the bam is controlled by remote proccessor i.e.
-> +      execution environment.
-> +
-> +  qcom,num-ees:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Indicates supported number of Execution Environments in a
-> +      remotely controlled bam.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
+The crash happens because we're assuming fm was already added to
+fc->mounts...
 
-clocks is often missing if qcom,controlled-remotely is set, e.g.
+bool fuse_mount_remove(struct fuse_mount *fm)
+{
+	struct fuse_conn *fc = fm->fc;
+	bool last = false;
 
-		slimbam: dma-controller@9184000 {
-			compatible = "qcom,bam-v1.7.0";
-			qcom,controlled-remotely;
-			reg = <0x09184000 0x32000>;
-			num-channels  = <31>;
-			interrupts = <0 164 IRQ_TYPE_LEVEL_HIGH>;
-			#dma-cells = <1>;
-			qcom,ee = <1>;
-			qcom,num-ees = <2>;
-		};
+	down_write(&fc->killsb);
+	list_del_init(&fm->fc_entry); <=== HERE
+	if (list_empty(&fc->mounts))
+		last = true;
+	up_write(&fc->killsb);
 
-arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml: dma-controller@9184000: 'clocks' is a required property
-        From schema: Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
-arch/arm64/boot/dts/qcom/apq8096-db820c.dt.yaml: dma-controller@9184000: 'clock-names' is a required property
-        From schema: Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+	return last;
+}
 
-You might be able to encode this with an if: statement (clocks required
-if qcom,controlled-remotely not specified), not sure.
+but fm is added to fc->mounts much later after the superblock is fully
+configured. Looking again at what is done for the root mount in
+virtio_fs_get_tree(), I now realize sb->s_fs_info is used as a flag
+to decide whether fuse_mount_remove() should be called:
 
-Stephan
+static int virtio_fs_get_tree(struct fs_context *fsc)
+{
+...
+	if (!sb->s_root) {
+		err = virtio_fs_fill_super(sb, fsc);
+		if (err) {
+			fuse_conn_put(fc);
+			kfree(fm);
+CLEARED HERE =>		sb->s_fs_info = NULL;
+			deactivate_locked_super(sb);
+			return err;
+		}
+
+		sb->s_flags |= SB_ACTIVE;
+	}
+...
+}
+
+static void virtio_kill_sb(struct super_block *sb)
+{
+	struct fuse_mount *fm = get_fuse_mount_super(sb);
+
+I.E. sb->s_fs_info
+
+	bool last;
+
+	/* If mount failed, we can still be called without any fc */
+	if (fm) {
+
+TESTED HERE ^^
+
+		last = fuse_mount_remove(fm);
+		if (last)
+			virtio_fs_conn_destroy(fm);
+	}
+	kill_anon_super(sb);
+}
+
+The natural fix is to do the same in the automount case : take
+back the ownership on fm by clearing sb->s_fs_info, which thus
+implies to do the freeing.
+
