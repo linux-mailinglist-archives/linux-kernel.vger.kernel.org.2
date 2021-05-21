@@ -2,96 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D5038C020
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:57:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D1638C021
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:57:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234462AbhEUG5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51660 "EHLO
+        id S231356AbhEUG6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229704AbhEUG46 (ORCPT
+        with ESMTP id S234556AbhEUG6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 02:56:58 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74A3C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 23:55:35 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id b7so6296191plg.0
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 23:55:35 -0700 (PDT)
+        Fri, 21 May 2021 02:58:24 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82DD0C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 23:56:18 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id t206so10519475wmf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 23:56:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sGftOaEMxAoYeBKooh8f+t1rZ93tjBzFcXOOUrUF3hc=;
-        b=LvIPfyFY37mZfyjLZ0WxsgIv4TtcDWISXAc/FqL7SoFKxBM7gSHSofLSnDWUs2aDPb
-         61FFh8P1OPi874NqarRGsIBXzwYgfgVkgNYnz5y6l1DWVA5VYCe3/wJ/x3yVHNlfiO/1
-         lUeRfLpanMX/jbkyVBDKBx3puP3JdbL/KQMgBut6qxhgHZURlpd7MK+x+ODu9bQl9lpt
-         Prgm2V2+8gPmo58a8IcEruDb9IX3TgteKK+R+7mB0RHWrGg/OCFELJrBZgF0I8/fZsJ7
-         QF297DqV8PTt0luGt5bocpXVNIzKzouLjkfgZPPCIFQJ/Ksp4PDOJb8/Hwk/UpmeWbgS
-         Fjpg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=QRBJ/Eb2aRuCWOAm83HDyHJya7fTP6YfpnFgiFNwPwY=;
+        b=PeB4Jp8JKHMH5uEQrwTX9WwWGGtnm7DtrV2kA/LjtL5tSI0bfgpJOGSAo6u/0IEVk6
+         h67RCcAk6TFLUZJSDdwCTNfXVi73dC17V+hpbVHefQNFzVOBvUdH1/N5KmxOn12tmY1S
+         sJ74M26xKin7dgkNXa+nKfk65zowil1gx+FAc0TkcRI9fqC8+xWrW334zT6BFC5aRGjQ
+         uT1DhyO9IGLX+Ork1BJWUEbtE6ya8RJvL+Gk1zuIqb39hVFqKXkY0mho/0FNVKI9X2Wa
+         hiMyhy6KRtpY/UpnYUJOx6n7u2otwDen6HiRiuvxqyJxt2hR2M4HLO3YCfZIdxwGQliP
+         hN1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sGftOaEMxAoYeBKooh8f+t1rZ93tjBzFcXOOUrUF3hc=;
-        b=muDvG/1I3sjMMHZemOug7cK/uSf0z2FdI8n8ithYdpyCY7wV+KGDcgLNCLu+vhjuC4
-         k+W8sEWYF7kQHUhysIoK5cA6rsh3dJdUcpWNBcokUhkp5MwIRQ6quT2b0lpQhmmAm3b1
-         oBzAsdr0dCFtjd63fVPy16GNXq22y8MipwSdeCpSK4mkonu9K6BNuKODfDUeNo1PAQUD
-         VtGuMgw9DqDhfHajgLv4HHUwK5D5NBqQRKbvoSVXTi1ZMD5CdTI0LUyuisyXo9mcvFNg
-         etV2J9wgSVXOKpiWCMmNPLhXI8qM/FEZuNx4+XQxpFkkyfdM1hOxAdIDIb+pJc9qNlFG
-         UMsw==
-X-Gm-Message-State: AOAM5331xhTezG008G9vjaa4nsnRKOVn9tcGpivB5w9OXQDoLWL2aLFK
-        DTQh6fZEm28GlGLmTlZ9c0jws8h/y3Q/16S03/s=
-X-Google-Smtp-Source: ABdhPJwg+ge+8h91ygHZcQG0IWbYNvlkKsz5qePK3xDDkglzD69jmx3qJkFmjyVKin69eeREh0cqoKY23HPKbNIHVhM=
-X-Received: by 2002:a17:90b:4ac2:: with SMTP id mh2mr9725466pjb.33.1621580135214;
- Thu, 20 May 2021 23:55:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=QRBJ/Eb2aRuCWOAm83HDyHJya7fTP6YfpnFgiFNwPwY=;
+        b=q3/OBnE2pDfuFRKGq2RS4z6cPMV45sLMFBHHyo89OFS6M3DIgmxNpFCu0gqtbZbdyW
+         +jSfLbGui9QD0f+wpJhimC43uklaNLnPG/QdaW2dWBU9UUEfQb2wQEjwhqldv7og+F6t
+         yKpx0tO9bLzZ4lYkHAF3mSf40YVJY+JYEHpnex3FuU4mzwuKbvwU4JeMKuUBPX2PGt8T
+         frCx+pUHegvteJQjuyA8ST2QJw0VxNoLsUzhXmtuVDXIh49Bncle7TZAhF/72m5hTc2s
+         GoVv8MWZnR5W/ikrZvcL2am0beIH30+cXk3dt984HSTIV037Fx2pVBrzAAFWhHgVewIF
+         rvRw==
+X-Gm-Message-State: AOAM530fQUB1d7yvfzDATAKZ30pPF8MO1bc0oUXae12tiPdrmJau5O0F
+        eDWCT7eBLXuJCleLSb7N2JseWw==
+X-Google-Smtp-Source: ABdhPJyzLV7PPC84rvHhmIYLTph0ydZ+uf3f187PRPoIE3KWZx/cnNqbMnbz3GJLjExZVWUmgwHnNw==
+X-Received: by 2002:a1c:6a0f:: with SMTP id f15mr5064918wmc.29.1621580177144;
+        Thu, 20 May 2021 23:56:17 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id n13sm960902wrg.75.2021.05.20.23.56.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 23:56:16 -0700 (PDT)
+Date:   Fri, 21 May 2021 07:56:14 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+Cc:     linux-kernel@vger.kernel.org, Max Schwarz <max.schwarz@online.de>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 12/16] i2c: busses: i2c-rk3x: Demote unworthy headers and
+ help more complete ones
+Message-ID: <20210521065614.GO2549456@dell>
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+ <20210520190105.3772683-13-lee.jones@linaro.org>
+ <6083609.GXAFRqVoOG@diego>
 MIME-Version: 1.0
-References: <20210521025525.GA1379@raspberrypi> <YKc5jLVhw8+Oy165@kroah.com>
-In-Reply-To: <YKc5jLVhw8+Oy165@kroah.com>
-From:   Austin Kim <austindh.kim@gmail.com>
-Date:   Fri, 21 May 2021 15:55:23 +0900
-Message-ID: <CADLLry5J5GqB_Rw7n0aKcWgYPJZDOQP89mvyWT-GnB8KAiQrBA@mail.gmail.com>
-Subject: Re: [PATCH] kernfs: move return value check after kmalloc()
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     tj@kernel.org, neilb@suse.de, linux-kernel@vger.kernel.org,
-        =?UTF-8?B?6rmA64+Z7ZiE?= <austin.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6083609.GXAFRqVoOG@diego>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2021=EB=85=84 5=EC=9B=94 21=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 1:39, G=
-reg KH <gregkh@linuxfoundation.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Fri, May 21, 2021 at 03:55:25AM +0100, Austin Kim wrote:
-> > With 414985ae23c0 ("sysfs, kernfs: move file core code to fs/kernfs/fil=
-e.c"),
-> > 'return -ENOMEM' is executed when kmalloc() returns NULL.
-> >
-> > Since 'commit 4ef67a8c95f3 ("sysfs/kernfs: make read requests on pre-al=
-loc
-> > files use the buffer.")', 'return -ENOMEM' statement is not properly lo=
-cated.
-> >
-> > Fix it by moving 'return -ENOMEM' after return from kmalloc().
-> >
-> > Fixes: 4ef67a8c95f3 ("sysfs/kernfs: make read requests on pre-alloc fil=
-es use the buffer.")
-> > Signed-off-by: Austin Kim <austindh.kim@gmail.com>
-[...]
->
-> Like Neil said, I don't see the "bug" you are fixing here.  What is
-> currently wrong with the existing code?
+On Thu, 20 May 2021, Heiko Stübner wrote:
 
-I just found something to improve a little, which has nothing to do with 'B=
-ug'.
-(of->prealloc_buf is allocated ahead of kernfs_file_read_iter().)
+> Hi Lee,
+> 
+> Am Donnerstag, 20. Mai 2021, 21:01:01 CEST schrieb Lee Jones:
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >  drivers/i2c/busses/i2c-rk3x.c:242: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> >  drivers/i2c/busses/i2c-rk3x.c:261: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> >  drivers/i2c/busses/i2c-rk3x.c:304: warning: Function parameter or member 'i2c' not described in 'rk3x_i2c_prepare_read'
+> >  drivers/i2c/busses/i2c-rk3x.c:304: warning: expecting prototype for Setup a read according to i2c(). Prototype was for rk3x_i2c_prepare_read() instead
+> >  drivers/i2c/busses/i2c-rk3x.c:335: warning: Function parameter or member 'i2c' not described in 'rk3x_i2c_fill_transmit_buf'
+> >  drivers/i2c/busses/i2c-rk3x.c:335: warning: expecting prototype for Fill the transmit buffer with data from i2c(). Prototype was for rk3x_i2c_fill_transmit_buf() instead
+> >  drivers/i2c/busses/i2c-rk3x.c:535: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> >  drivers/i2c/busses/i2c-rk3x.c:552: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> >  drivers/i2c/busses/i2c-rk3x.c:713: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> >  drivers/i2c/busses/i2c-rk3x.c:963: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+> >  drivers/i2c/busses/i2c-rk3x.c:973: warning: Function parameter or member 'i2c' not described in 'rk3x_i2c_setup'
+> > 
+> > Cc: Heiko Stuebner <heiko@sntech.de>
+> > Cc: Max Schwarz <max.schwarz@online.de>
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-rockchip@lists.infradead.org
+> > Cc: linux-i2c@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >  drivers/i2c/busses/i2c-rk3x.c | 18 +++++++++---------
+> >  1 file changed, 9 insertions(+), 9 deletions(-)
+> > 
+> > diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
+> > index 819ab4ee517e1..1dfbd1185aefc 100644
+> > --- a/drivers/i2c/busses/i2c-rk3x.c
+> > +++ b/drivers/i2c/busses/i2c-rk3x.c
+> > @@ -238,7 +238,7 @@ static inline void rk3x_i2c_clean_ipd(struct rk3x_i2c *i2c)
+> >  	i2c_writel(i2c, REG_INT_ALL, REG_IPD);
+> >  }
+> >  
+> > -/**
+> > +/*
+> >   * Generate a START condition, which triggers a REG_INT_START interrupt.
+> >   */
+> >  static void rk3x_i2c_start(struct rk3x_i2c *i2c)
+> > @@ -257,7 +257,7 @@ static void rk3x_i2c_start(struct rk3x_i2c *i2c)
+> >  	i2c_writel(i2c, val, REG_CON);
+> >  }
+> >  
+> > -/**
+> > +/*
+> >   * Generate a STOP condition, which triggers a REG_INT_STOP interrupt.
+> 
+> what made you decide between demoting and completing comments?
+> I.e. here you demot the "static void rk3x_i2c_stop()", while below
+> you for example complete the "static rk3x_i2c_get_spec()".
+> 
+> So I somehow do not yet see the pattern ;-)
 
-Should be cautious of adding 'Fixes' tag.
+Completeness.  This one is missing parameter descriptions, the one I
+provided the function name to below, is otherwise complete.
 
-Thanks
-
->
-> thanks,
->
-> greg k-h
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
