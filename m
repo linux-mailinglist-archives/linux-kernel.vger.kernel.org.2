@@ -2,172 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FFE38C6A5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD3C38C6A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:38:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233890AbhEUMjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        id S234050AbhEUMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:39:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231429AbhEUMjB (ORCPT
+        with ESMTP id S230511AbhEUMj2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:39:01 -0400
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE3FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:37:37 -0700 (PDT)
-Received: by mail-vs1-xe36.google.com with SMTP id f15so8960255vsq.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:37:37 -0700 (PDT)
+        Fri, 21 May 2021 08:39:28 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23827C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:38:04 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id m11so29484794lfg.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:38:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=njboqj4vUiFzE7pfQXxgggntztlAq5fmF71S0Jmw2oQ=;
-        b=o2FmGmPxL+Xvpp+r18WUv09psrrIut/NYqQB3YFjQL9E1TT7mh4pdsVVPwqQH7Y/Ab
-         TMX+iuBpk+EWuIfSLMZvI4p3HBhgtvfuaQLE74dfPsLbnmj4GNNtFILQq4xonXECs2Xg
-         luwBtWTPdmJTlDepwYV6YfzlXhHdnCg+CG5mI=
+        bh=ZXva6/Yqd6IA9/jgqhzQ7W+jI1PpNOShUWjkaZh4eNg=;
+        b=UO7OnFKW+cPB2rAq5pwSBGynYvW9d+KTX4VcKj+eDu4Ewh8UKm6/64i3qCm28ZzArB
+         lG7M1a2COavXBwDHvV2rJmXzg2os/APTEPYFB2bzNvUHwdgz5nepaLqGQIq6VLbEa5gZ
+         c1FQQHh6DFIbPbAwqA6UFiLvh0ty4mq4UT8lCMSp1n6il/CPP9vQQHphhDC70O6KTu/f
+         j+3nx0Hfw+kgYFppUvHbmWFhNgwwgYKAjTO87HbW7gkcb6PqCWaqtpAZ89FK+HmGr4w5
+         8lZvS6Wg45qQgoxhV4lfTXYDhnCYyuAG4Fc3dLH9t4r5bESskiMYt/BQ6C3+h1MITP7M
+         WirA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=njboqj4vUiFzE7pfQXxgggntztlAq5fmF71S0Jmw2oQ=;
-        b=aZfaAbLNcaKXqygfz/gQ92iEtpusrUfCxVSXkyMnyLgiUd+e2YyF9MkeaMFYi7YJxS
-         pSGb4e6bLnbnbysh+mAgAuNcsqiVHj2Cdrulf3npEZ2lCU8KDnKNIfxbI2Y2XuSCZ2Hv
-         zvmvsCMzZXZzqS7JzZyz/NZ7g+49M1EOL0TInKrybQF0kF9+SAQO5/x5bVITvIU9yjVi
-         ZIyhm4yxPSUPfLDv5AcoLVBSqiy0zdlherQ07uWz9Y2NcZap48H/r+mxxOXEyuQdw6Zu
-         yr6vTsy6p6WbrZunI6iMlB3Nzu1ekdLszmqIvav1X1RwlLMf0X5fidlbcmDgjnQ7O0ez
-         pHmg==
-X-Gm-Message-State: AOAM5312pElr/SHQFWQRBAoKfF8UmskqqJeo+O9KbI95hsh5toC7xEAA
-        NNQBwf3IFduN4P8j/xjiyMZRP46xHxH8HWAJzEQ+nA==
-X-Google-Smtp-Source: ABdhPJyas05tLLIDBA3UJ9G3HlWZ9Viz/tUcF4iiOb4gQdzkbues8ByWakkKXBysdgZ9B4lVGBn673e1F17hVqL4zW0=
-X-Received: by 2002:a67:ebcd:: with SMTP id y13mr10057804vso.9.1621600656516;
- Fri, 21 May 2021 05:37:36 -0700 (PDT)
+        bh=ZXva6/Yqd6IA9/jgqhzQ7W+jI1PpNOShUWjkaZh4eNg=;
+        b=Ri9b7jqHpO00TKAR3SS1SfC2DJI2xZJwjFrEHkvTn0ftk8f1dIsZIQ7CsoiLMAmoJE
+         EGpwLtluYwUMWVGM0YQOIPB3wKlM8Yo8ErMK+cISgHn8b4luhYQmjSPmEn/hJx2JatiQ
+         dnJZtvBa482p5GX0wZRdAZvbubuZjMwIN05W4IoN6hUWrZdvR9X/ykPui2dxDpIwQHFX
+         mMtvYQx6JxXlTxQbrjTYO/FnO3rAAxwxxvER/Kae85xY3mruiC1ZrWJplvNu3XYqVlDv
+         VItJ4QA/ErUWbKYDp4Ql03QjbkHjE72QNVibxKOXhbX5+KlKLqvWiFJBC/LZvC3mTo1t
+         2MCw==
+X-Gm-Message-State: AOAM531cQlyjyP+anYsm32d1xmNFLQ8Q4NyPE/r9PFHB9Q4VPCfMjsQc
+        OUNdNgJLAYNJswN/9+eQrTIFvossuxK9EkcyEe+MCQ==
+X-Google-Smtp-Source: ABdhPJxgGC1b8+jhKTozMjwnLX1ipgmvs6YDDUByMXhF8iJxQvNESI0oivilElV9+bRWCZC+i32bfb3EgGLZajom8Jg=
+X-Received: by 2002:a19:e017:: with SMTP id x23mr2067772lfg.254.1621600682459;
+ Fri, 21 May 2021 05:38:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-5-groug@kaod.org>
- <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
- <20210521103921.153a243d@bahia.lan> <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
- <20210521120616.49d52565@bahia.lan>
-In-Reply-To: <20210521120616.49d52565@bahia.lan>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 21 May 2021 14:37:25 +0200
-Message-ID: <CAJfpegvBB-zRuZAM0m7fxMFCfw=CzN3uT3CqoQrRgizaTH4sOw@mail.gmail.com>
-Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
-To:     Greg Kurz <groug@kaod.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+References: <20210513074027.543926-1-srikar@linux.vnet.ibm.com> <20210513074027.543926-7-srikar@linux.vnet.ibm.com>
+In-Reply-To: <20210513074027.543926-7-srikar@linux.vnet.ibm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Fri, 21 May 2021 14:37:51 +0200
+Message-ID: <CAKfTPtB05dxcXPX_hZOFXHYaW98sdcykxVYnWdNdMOBHqLMBow@mail.gmail.com>
+Subject: Re: [PATCH v3 6/8] sched/idle: Move busy_cpu accounting to idle callback
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 at 12:06, Greg Kurz <groug@kaod.org> wrote:
+On Thu, 13 May 2021 at 09:41, Srikar Dronamraju
+<srikar@linux.vnet.ibm.com> wrote:
 >
-> On Fri, 21 May 2021 10:50:34 +0200
-> Miklos Szeredi <miklos@szeredi.hu> wrote:
+> Currently we account nr_busy_cpus in no_hz idle functions.
+> There is no reason why nr_busy_cpus should updated be in NO_HZ_COMMON
+> configs only. Also scheduler can mark a CPU as non-busy as soon as an
+> idle class task starts to run. Scheduler can then mark a CPU as busy
+> as soon as its woken up from idle or a new task is placed on it's
+> runqueue.
 >
-> > On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
-> > >
-> > > On Fri, 21 May 2021 10:26:27 +0200
-> > > Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > >
-> > > > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
-> > > > >
-> > > > > All submounts share the same virtio-fs device instance as the root
-> > > > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
-> > > > > is likely to pick up any of these submounts and reuse it instead of
-> > > > > the root mount.
-> > > > >
-> > > > > On the server side:
-> > > > >
-> > > > > # mkdir ${some_dir}
-> > > > > # mkdir ${some_dir}/mnt1
-> > > > > # mount -t tmpfs none ${some_dir}/mnt1
-> > > > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
-> > > > > # mkdir ${some_dir}/mnt2
-> > > > > # mount -t tmpfs none ${some_dir}/mnt2
-> > > > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
-> > > > >
-> > > > > On the client side:
-> > > > >
-> > > > > # mkdir /mnt/virtiofs1
-> > > > > # mount -t virtiofs myfs /mnt/virtiofs1
-> > > > > # ls /mnt/virtiofs1
-> > > > > mnt1 mnt2
-> > > > > # grep virtiofs /proc/mounts
-> > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > > >
-> > > > > And now remount it again:
-> > > > >
-> > > > > # mount -t virtiofs myfs /mnt/virtiofs2
-> > > > > # grep virtiofs /proc/mounts
-> > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
-> > > > > # ls /mnt/virtiofs2
-> > > > > THIS_IS_MNT2
-> > > > >
-> > > > > Submount mnt2 was picked-up instead of the root mount.
-> > > >
-> > >
-> > > > Why is this a problem?
-> > > >
-> > >
-> > > It seems very weird to mount the same filesystem again
-> > > and to end up in one of its submounts. We should have:
-> > >
-> > > # ls /mnt/virtiofs2
-> > > mnt1 mnt2
-> >
-> > Okay, sorry, I understand the problem.  The solution is wrong,
-> > however: the position of the submount on that list is no indication
-> > that it's the right one (it's possible that the root sb will go away
-> > and only a sub-sb will remain).
-> >
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+> Cc: Parth Shah <parth@linux.ibm.com>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
+> Cc: Valentin Schneider <valentin.schneider@arm.com>
+> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Vincent Guittot <vincent.guittot@linaro.org>
+> Cc: Rik van Riel <riel@surriel.com>
+> Cc: Aubrey Li <aubrey.li@linux.intel.com>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+> ---
+>  kernel/sched/fair.c     |  6 ++++--
+>  kernel/sched/idle.c     | 29 +++++++++++++++++++++++++++--
+>  kernel/sched/sched.h    |  1 +
+>  kernel/sched/topology.c |  2 ++
+>  4 files changed, 34 insertions(+), 4 deletions(-)
 >
-> Ah... I had myself convinced this could not happen, i.e. you can't
-> unmount a parent sb with a sub-sb still mounted.
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 0dfe01de22d6..8f86359efdbd 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10410,7 +10410,10 @@ static void set_cpu_sd_state_busy(int cpu)
+>                 goto unlock;
+>         sd->nohz_idle = 0;
+>
+> -       atomic_inc(&sd->shared->nr_busy_cpus);
+> +       if (sd && per_cpu(is_idle, cpu)) {
+> +               atomic_add_unless(&sd->shared->nr_busy_cpus, 1, per_cpu(sd_llc_size, cpu));
+> +               per_cpu(is_idle, cpu) = 0;
+> +       }
+>  unlock:
+>         rcu_read_unlock();
+>  }
+> @@ -10440,7 +10443,6 @@ static void set_cpu_sd_state_idle(int cpu)
+>                 goto unlock;
+>         sd->nohz_idle = 1;
+>
+> -       atomic_dec(&sd->shared->nr_busy_cpus);
+>  unlock:
+>         rcu_read_unlock();
+>  }
+> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
+> index a9f5a8ace59e..c13105fe06b3 100644
+> --- a/kernel/sched/idle.c
+> +++ b/kernel/sched/idle.c
+> @@ -431,12 +431,25 @@ static void check_preempt_curr_idle(struct rq *rq, struct task_struct *p, int fl
+>
+>  static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
+>  {
+> -#ifdef CONFIG_SCHED_SMT
+> +#ifdef CONFIG_SMP
+> +       struct sched_domain_shared *sds;
+>         int cpu = rq->cpu;
+>
+> +#ifdef CONFIG_SCHED_SMT
+>         if (static_branch_likely(&sched_smt_present))
+>                 set_core_busy(cpu);
+>  #endif
+> +
+> +       rcu_read_lock();
+> +       sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
+> +       if (sds) {
+> +               if (per_cpu(is_idle, cpu)) {
+> +                       atomic_inc(&sds->nr_busy_cpus);
+> +                       per_cpu(is_idle, cpu) = 0;
+> +               }
+> +       }
+> +       rcu_read_unlock();
+> +#endif
+>  }
+>
+>  static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
+> @@ -448,9 +461,21 @@ static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool fir
+>  struct task_struct *pick_next_task_idle(struct rq *rq)
+>  {
+>         struct task_struct *next = rq->idle;
+> +#ifdef CONFIG_SMP
+> +       struct sched_domain_shared *sds;
+> +       int cpu = rq->cpu;
+>
+> -       set_next_task_idle(rq, next, true);
+> +       rcu_read_lock();
+> +       sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
+> +       if (sds) {
+> +               atomic_add_unless(&sds->nr_busy_cpus, -1, 0);
+> +               per_cpu(is_idle, cpu) = 1;
+> +       }
 
-No, but it's possible for sub-sb to continue existing after it's no
-longer a submount of original mount.
+One reason to update nr_busy_cpus only during tick is and not at each
+and every single sleep/wakeup to limit the number of atomic_inc/dec in
+case of storm of short running tasks. Because at the end , you waste
+more time trying to accurately follow the current state of the CPU
+than doing work
+
 >
-> How can this happen ?
-
-E.g. move the submount out of the way, then unmount the parent, or
-detach submount (umount -l) while keeping something open in there and
-umount the parent.
-
-> > Even just setting a flag in the root, indicating that it's the root
-> > isn't fully going to solve the problem.
-> >
-> > Here's issue in full:
-> >
-> > case 1:  no connection for "myfs" exists
-> >     - need to create fuse_conn, sb
-> >
-> > case 2: connection for "myfs" exists but only sb for submount
+> +       rcu_read_unlock();
+> +#endif
+> +
+> +       set_next_task_idle(rq, next, true);
+>         return next;
+>  }
 >
-> How would we know this sb isn't a root sb ?
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 98c3cfbc5d26..b66c4dad5fd2 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1496,6 +1496,7 @@ DECLARE_PER_CPU(int, sd_llc_id);
+>  #ifdef CONFIG_SCHED_SMT
+>  DECLARE_PER_CPU(int, smt_id);
+>  #endif
+> +DECLARE_PER_CPU(int, is_idle);
+>  DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+>  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+>  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 232fb261dfc2..730252937712 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -647,6 +647,7 @@ DEFINE_PER_CPU(int, sd_llc_id);
+>  #ifdef CONFIG_SCHED_SMT
+>  DEFINE_PER_CPU(int, smt_id);
+>  #endif
+> +DEFINE_PER_CPU(int, is_idle);
+>  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
+>  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
+> @@ -673,6 +674,7 @@ static void update_top_cache_domain(int cpu)
+>  #ifdef CONFIG_SCHED_SMT
+>         per_cpu(smt_id, cpu) = cpumask_first(cpu_smt_mask(cpu));
+>  #endif
+> +       per_cpu(is_idle, cpu) = 1;
+>         rcu_assign_pointer(per_cpu(sd_llc_shared, cpu), sds);
 >
-> >     - only create sb for root, reuse fuse_conn
-> >
-> > case 3: connection for "myfs" as well as root sb exists
-> >    - reuse sb
-> >
-> > I'll think about how to fix this properly, it's probably going to be
-> > rather more involved...
-> >
+>         sd = lowest_flag_domain(cpu, SD_NUMA);
+> --
+> 2.18.2
 >
-> Sure. BTW I'm wondering why we never reuse sbs for submounts ?
-
-Right, same general issue.
-
-An sb can be identified by its root nodeid, so I guess the proper fix
-to make the root nodeid be the key for virtio_fs_test_super().
-
-Thanks,
-Miklos
