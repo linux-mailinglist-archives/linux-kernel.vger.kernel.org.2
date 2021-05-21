@@ -2,91 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7C338C96D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2274438C96E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:45:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236986AbhEUOrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:47:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46431 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236906AbhEUOqe (ORCPT
+        id S236903AbhEUOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:47:10 -0400
+Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:59128 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236911AbhEUOrE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:46:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621608310;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=UzfrhhjYSYiIuzBU0H2YNGGzT9stjrQrZgCfIc9Eyrw=;
-        b=X7SjMra7JnYv8MCotiw/eICiF+y7diEz2xPmap63D6tKly6x5+6ysO8E7iLOSkkPpov6a2
-        pmIQGzausFHK3nBpK/MB+vk2NXvR9dZlZ7s/Ynr4dpAlzg6HsnQVkaN20bGTE1Ql+zpQ+p
-        xbHEMRlBJeLf8ANLMELErMxelwfHkHM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-vKGhCmr3Nfek4CE7RcWfvA-1; Fri, 21 May 2021 10:45:07 -0400
-X-MC-Unique: vKGhCmr3Nfek4CE7RcWfvA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 43C78107ACC7;
-        Fri, 21 May 2021 14:45:05 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-113-228.ams2.redhat.com [10.36.113.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B410260D4B;
-        Fri, 21 May 2021 14:45:00 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>
-Cc:     Len Brown <lenb@kernel.org>, Dave Hansen <dave.hansen@intel.com>,
-        Rich Felker <dalias@libc.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
-        Andy Lutomirski <luto@kernel.org>,
+        Fri, 21 May 2021 10:47:04 -0400
+Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BE128D218;
+        Fri, 21 May 2021 14:45:37 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 74ED713D95;
+        Fri, 21 May 2021 14:45:25 +0000 (UTC)
+Message-ID: <9d8659fc8bc0729dd255c20234fb1a4210847ce9.camel@perches.com>
+Subject: Re: [PATCH v2 7/7] checkpatch: suggest _BITULL() and _BITUL() for
+ UAPI headers
+From:   Joe Perches <joe@perches.com>
+To:     Joe Richey <joerichey94@gmail.com>, trivial@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Joe Richey <joerichey@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related
- features
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
-        <20210415054713.GB6318@zn.tnic>
-        <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
-        <20210419141454.GE9093@zn.tnic>
-        <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
-        <20210419191539.GH9093@zn.tnic>
-        <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
-        <20210419215809.GJ9093@zn.tnic>
-        <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
-        <YIMmwhEr46VPAZa4@zn.tnic>
-        <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
-        <874kf11yoz.ffs@nanos.tec.linutronix.de>
-        <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
-        <87k0ntazyn.ffs@nanos.tec.linutronix.de>
-        <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
-        <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
-        <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
-Date:   Fri, 21 May 2021 16:44:58 +0200
-Message-ID: <87pmxk87th.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Sasha Levin <sashal@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Andi Kleen <ak@linux.intel.com>, Peter Xu <peterx@redhat.com>,
+        Lei Cao <lei.cao@stratus.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Zaibo Xu <xuzaibo@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org
+Date:   Fri, 21 May 2021 07:45:23 -0700
+In-Reply-To: <20210521085849.37676-8-joerichey94@gmail.com>
+References: <20210520104343.317119-1-joerichey94@gmail.com>
+         <20210521085849.37676-1-joerichey94@gmail.com>
+         <20210521085849.37676-8-joerichey94@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: qn5g8k3jtqoj4kuui4tsua91y1s1o8zk
+X-Rspamd-Server: rspamout04
+X-Rspamd-Queue-Id: 74ED713D95
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1/+/DrG8NEx+1xztaZeFya67FR2cEwvbqU=
+X-HE-Tag: 1621608325-902736
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Dave Hansen via Libc-alpha:
+On Fri, 2021-05-21 at 01:58 -0700, Joe Richey wrote:
+> From: Joe Richey <joerichey@google.com>
+> 
+> Instead of just ignoring UAPI headers, reccomend the UAPI compatible
+> macros if a user adds something that looks like (1 << n). Normal kernel
+> code will continue to get BIT_ULL() and BIT() reccomended.
+> 
+> This change also modifies the $realfile regex to match headers that have
+> "include/uapi" anywhere in their path so paths like:
+>     tools/include/uapi/linux/kvm.h
+>     arch/x86/include/uapi/asm/hwcap2.h
+> get recognized as UAPI headers.
+[]
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+[]
+> @@ -7020,15 +7020,17 @@ sub process {
+>  			}
+>  		}
+>  
+> 
+> -# check for #defines like: 1 << <digit> that could be BIT(digit), it is not exported to uapi
+> -		if ($realfile !~ m@^include/uapi/@ &&
+> -		    $line =~ /#\s*define\s+\w+\s+\(?\s*1\s*([ulUL]*)\s*\<\<\s*(?:\d+|$Ident)\s*\)?/) {
+> -			my $ull = "";
+> -			$ull = "_ULL" if (defined($1) && $1 =~ /ll/i);
+> +# check for #defines like: 1 << <digit> that could be BIT(digit) or similar
+> +		if ($line =~ /#\s*define\s+\w+\s+\(?\s*1\s*([ulUL]*)\s*\<\<\s*(?:\d+|$Ident)\s*\)?/) {
+> +			my $ull = (defined($1) && $1 =~ /ll/i);
+> +			my $macroname = $ull ? "BIT_ULL" : "BIT";
+> +			if ($realfile =~ m@include/uapi/@) {
 
-> Our system calls are *REALLY* fast.  We can even do a vsyscall for this
-> if we want to get the overhead down near zero.  Userspace can also cache
-> the "I did the prctl()" state in thread-local storage if it wants to
-> avoid the syscall.
+Likely better with \b
+			if ($realfile =~ m@\binclude/uapi/@) {
 
-Why can't userspace look at XCR0 to make the decision?
+> +				$macroname = $ull ? "_BITULL" : "_BITUL";
+> +			}
+>  			if (CHK("BIT_MACRO",
+> -				"Prefer using the BIT$ull macro\n" . $herecurr) &&
+> +				"Prefer using the $macroname macro\n" . $herecurr) &&
+>  			    $fix) {
+> -				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/BIT${ull}($1)/;
+> +				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/${macroname}($1)/;
 
-And we added an interface for querying x86 CPU features to glibc 2.33
-which is completely incompatible with this because it assumes that CPU
-features do not change during the lifetime of a process. 8-(
+Doesn't need braces
+				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/$macroname($1)/;
 
-Thanks,
-Florian
+Otherwise, fine by me.
 
