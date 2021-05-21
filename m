@@ -2,284 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D6EC38D1E6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 01:25:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7526138D1F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 01:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229940AbhEUX0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 19:26:54 -0400
-Received: from mail-ed1-f42.google.com ([209.85.208.42]:37483 "EHLO
-        mail-ed1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbhEUX0w (ORCPT
+        id S230188AbhEUX1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 19:27:46 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:12087 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230175AbhEUX1m (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 19:26:52 -0400
-Received: by mail-ed1-f42.google.com with SMTP id g7so12906311edm.4;
-        Fri, 21 May 2021 16:25:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aiikKG+tFeQmADV1dZ8/8SQyBQJ6TxAvGSh04p41B4M=;
-        b=MKBJKPtc6+m2NndKrEILgxkhvJPGeYaj/HRzjIwfk3K/jzPNLm/C4AShsvqq/67fml
-         9vtXLVyUT9zj9OXk3sp72C4cmlvj/1392ZVtFtlZXoQ6PO/hlelNn6wqTqX+E6etd29l
-         ZwgEt1cwl4lZ/0bnXUpZzDxkkZd1zQ6yhNaKZu4dQOstlbOPsWrHV1AhAYKlAy2GAc9p
-         7oxww8ZXslkXYRtmAAiKtJ7TDjblF3u7QQgAaiLvaKFe0GTsBMl9Wk7yk3ZxPHQPVzuv
-         BKhveWkqyBOvNx4QFd4NaLi/8BSUga4k7F9mws+slMI20SEuzuwasu5ffAKFO7X+RrCh
-         ww8g==
-X-Gm-Message-State: AOAM533PNEsOlCHTSvP27Xks3w+MuvP71WpcySxtytvSq3VagbTuxRbt
-        ONpKYN5KLD0m1KDDnqKj2zg=
-X-Google-Smtp-Source: ABdhPJwEP5guoNj5fyZui+bkriIwr0Fzg4huj5Yypl+a6V+mrDdupjvI0Yn9ZdWQA1jCVL+bquyJgw==
-X-Received: by 2002:a05:6402:684:: with SMTP id f4mr14029013edy.25.1621639526951;
-        Fri, 21 May 2021 16:25:26 -0700 (PDT)
-Received: from rocinante.localdomain ([95.155.85.46])
-        by smtp.gmail.com with ESMTPSA id cf15sm5004602edb.62.2021.05.21.16.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 16:25:26 -0700 (PDT)
-Date:   Sat, 22 May 2021 01:25:25 +0200
-From:   Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        lorenzo.pieralisi@arm.com, robh@kernel.org, bhelgaas@google.com,
-        pankaj.dubey@samsung.com, p.rajanbabu@samsung.com,
-        hari.tv@samsung.com, niyas.ahmed@samsung.com, l.mehra@samsung.com
-Subject: Re: [PATCH 2/3] PCI: debugfs: Add support for RAS framework in DWC
-Message-ID: <20210521232525.GA79835@rocinante.localdomain>
-References: <20210518174618.42089-1-shradha.t@samsung.com>
- <CGME20210518173823epcas5p1cb9f93e209ca4055365048287ec43ee8@epcas5p1.samsung.com>
- <20210518174618.42089-3-shradha.t@samsung.com>
+        Fri, 21 May 2021 19:27:42 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621639576; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=MQjZZTznmIzLxACeImlgWQKlmNBvEGN7+1JvqdoN7cc=;
+ b=CMWcv0FQZTfC6Xn1QroyQTmLPld3xUY1LhIEEmm2dJc7utyif0u4x9Z1xiPpRi58VNtGDF7E
+ UMKDVwKnRE0hna8M189PRiHeRw6GJaJ6ApPVYXT2irdmnhVmhGHZL6qJbWzeiGJSBiitM7nU
+ 3xY32yxRsMo24iJjWx0kjCi0RXg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60a841947b5af81b5c7e5aec (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 23:26:12
+ GMT
+Sender: khsieh=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7CDD6C433F1; Fri, 21 May 2021 23:26:12 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: khsieh)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 25451C4338A;
+        Fri, 21 May 2021 23:26:11 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210518174618.42089-3-shradha.t@samsung.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 16:26:11 -0700
+From:   khsieh@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        aravindh@codeaurora.org, Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH 0/3] drm/msm/dp: Simplify aux code
+In-Reply-To: <CAE-0n53jA7xPctEU9TkBf=eot4SGs85gpGMjUiDn_ZiMvVLvKw@mail.gmail.com>
+References: <20210507212505.1224111-1-swboyd@chromium.org>
+ <CAE-0n53jA7xPctEU9TkBf=eot4SGs85gpGMjUiDn_ZiMvVLvKw@mail.gmail.com>
+Message-ID: <be37b36782a747f350ea512f69393c57@codeaurora.org>
+X-Sender: khsieh@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shradha,
-
-Thank you for this working on this!  Looks very nice!
-
-A few suggestions below.
-
-> +config PCIE_DW_DEBUGFS
-> +	bool "DWC PCIe debugfs entries"
-> +	default n
-
-No need to add this default for "no" answer, and this is the Kconfig's
-default, so you can omit it here.
-
-> +static int open(struct inode *inode, struct file *file)
-> +{
-> +	file->private_data = inode->i_private;
-> +
-> +	return 0;
-> +}
-
-Why custom callback?  This seem to almost copy what simple_open() does,
-as per:
-
-  int simple_open(struct inode *inode, struct file *file)
-  {
-  	if (inode->i_private)
-  		file->private_data = inode->i_private;
-  	return 0;
-  }
-
-You seem to be using simple_open() everywhere else.
-
-> + * set_event_number: Function to set event number based on filename
-> + *
-> + * This function is called from the common read and write function
-> + * written for all event counters. Using the debugfs filname, the
-> + * group number and event number for the counter is extracted and
-> + * then programmed into the control register.
-> + *
-> + * @file: file pointer to the debugfs entry
-> + *
-> + * Return: void
-> + */
-
-About this and other functions comments - did you intend to format this
-and the others as kernel-doc compliant? At the first glance it does look
-very similar, as per:
-
-  https://www.kernel.org/doc/html/latest/doc-guide/kernel-doc.html
-
-[...]
-> +/*
-> + * ras_event_counter_en_read: Function to get if counter is enable
-> + *
-> + * This function is invoked when the following command is made:
-> + * cat /sys/kernel/debug/dwc_pcie_plat/ras_des_counter/<name>/counter_enable
-
-You don't really need to explain when the read() function evokes.  This
-is also true for other such comments.
-
-> + * It returns whether the counter is enabled or not
-
-Nit pick: missing period at the end of the sentence (also true in other
-code comments and sentences throughout).
-
-[...]
-> +	u32 ret;
-> +	u32 val;
-> +	u32 lane;
-> +	struct dw_pcie *pci = (struct dw_pcie *) file->private_data;
-> +
-> +	ret = kstrtou32_from_user(buf, count, 0, &lane);
-> +	if (ret)
-> +		return ret;
-> +
-> +	set_event_number(file);
-
-You could add a newline here so that this is easier to read and also
-consistent with other functions.
-
-[...]
-> +	err_num = get_error_inj_number(file);
-> +	inj_num = (err_num & 0xFF);
-
-Surplus parenthesis above.  This could also be moved to the top where
-you declare all the variables.
-
-[...]
-> +	err_num = get_error_inj_number(file);
-> +	inj_num = (err_num & 0xFF);
-> +	err_num = (err_num >> 8);
-
-Surplus parenthesis here too.  Also, you could probably move some of
-these to the top, if possible.
-
-[...]
-> +static const struct file_operations rx_valid_fops = {
-> +	.open = open,
-> +	.read = rx_valid_read,
-> +	.write = lane_selection_write
-
-Just to make sure - this "lane_selection_write" here is intended?
-
-[...]
-> +	if (!pci) {
-> +		pr_err("pcie struct is NULL\n");
-> +		return -ENODEV;
-> +	}
-
-I think, given this particular case should the "pci" be a NULL pointer,
-then we ought to have a much worse problems, if you think about this.
-
-Thus, I am not sure if returning here would be better over letting
-things crash properly (which might not be ideal either), as if at this
-point "pci" is invalid and we still use it here, then something is
-potentially has gone really bad somewhere.
-
-Regardless of the approach here, the pr_err() message is not very
-helpful in its current wording.
-
-> +
-> +	dev = pci->dev;
-
-You can move this to the top where you declare your variable, so that
-you would define it at the same time, for example:
-
-  struct device *dev = pci->dev;
-
-[...]
-> +	/* Create main directory for each platform driver */
-> +	dir = debugfs_create_dir(dirname, NULL);
-> +	if (dir == NULL) {
-> +		pr_err("error creating directory: %s\n", dirname);
-> +		return -ENODEV;
-> +	}
-
-A small suggestion about the above: you could perhaps rely on the
-following approach:
-
-  if (IS_ERR(dir)) {
-  	dev_err(dev, ...);
-  	return PTR_ERR(dir);
-  }
-
-Unless you want to return -ENODEV for everything, regardless of what the
-underlying error code might have been (such as i.e., -EPERM, for
-example).  If so, then perhaps the IS_ERR_OR_NULL() macro could be
-useful?
-
-Note that debugfs_create_dir() and many other debugfs functions
-correctly return -ENODEV if debugfs is not enabled.
-
-Having said that, perhaps this approach would be an overkill.
-
-> +	/* Create sub dirs for Debug, Error injection, Statistics */
-> +	ras_des_debug_regs = debugfs_create_dir("ras_des_debug_regs", dir);
-> +	if (ras_des_debug_regs == NULL) {
-> +		pr_err("error creating directory: %s\n", dirname);
-> +		ret = -ENODEV;
-> +		goto remove_debug_file;
-> +	}
-> +
-> +	ras_des_error_inj = debugfs_create_dir("ras_des_error_inj", dir);
-> +	if (ras_des_error_inj == NULL) {
-> +		pr_err("error creating directory: %s\n", dirname);
-> +		ret = -ENODEV;
-> +		goto remove_debug_file;
-> +	}
-> +
-> +	ras_des_event_counter = debugfs_create_dir("ras_des_counter", dir);
-> +	if (ras_des_event_counter == NULL) {
-> +		pr_err("error creating directory: %s\n", dirname);
-> +		ret = -ENODEV;
-> +		goto remove_debug_file;
-> +	}
-
-I believe you don't necessary need to print an error message for each
-sub-directory created under the root directory "dir".  Why? Technically,
-if you can create the root, then you should be able to create all the
-sub-directories without issues.
-
-Also, each of the subsequent error messages would print the same name
-being the root directory "dir" regardless of which one has failed to be
-created.
-
-[...]
-> +	/* Create debugfs files for Debug subdirectory */
-> +	lane_detection = debugfs_create_file("lane_detection", 0644,
-> +					     ras_des_debug_regs, pci,
-> +					     &lane_detection_fops);
-> +
-> +	rx_valid = debugfs_create_file("rx_valid", 0644,
-> +					     ras_des_debug_regs, pci,
-> +					     &lane_detection_fops);
-> +
-> +	/* Create debugfs files for Error injection sub dir */
-
-Nit pick: to be consistent, if you could keep using "subdirectory"
-everywhere where you use "sub dir".
-
-[...]
-> +int create_debugfs_files(struct dw_pcie *pci)
-> +{
-> +	/* No OP */
-> +	return 0;
-> +}
-> +
-> +void remove_debugfs_files(void)
-> +{
-> +	/* No OP */
-> +}
-[...]
-
-No need for the "No OP" comment.  Also, you could potentially fit
-everything on a single line, for example:
-
-  int create_debugfs_files(struct dw_pcie *pci) { return 0; }
-  void remove_debugfs_files(void) {}
-
-But this is a matter of style, so I leave it up to you.
-
-Having said that, both of these functions could use less generic names,
-so that any potential current or future symbol name clash would be
-avoided, especially since these have global scope.  Thus, adding
-a prefix such as e.g., "ras_", or "dw_", etc., I am not sure which one
-would be more appropriate.
-
-	Krzysztof
+On 2021-05-21 14:57, Stephen Boyd wrote:
+> Quoting Stephen Boyd (2021-05-07 14:25:02)
+>> Here's a few patches that simplify the aux handling code and bubble up
+>> timeouts and nacks to the upper DRM layers. The goal is to get DRM to
+>> know that the other side isn't there or that there's been a timeout,
+>> instead of saying that everything is fine and putting some error 
+>> message
+>> into the logs.
+>> 
+>> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+>> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+>> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+>> Cc: aravindh@codeaurora.org
+>> Cc: Sean Paul <sean@poorly.run>
+>> 
+> 
+> Kuogee, have you had a change to review this series?
+> 
+Sorry  missed this one.
+Will review it now.
+>> Stephen Boyd (3):
+>>   drm/msm/dp: Simplify aux irq handling code
+>>   drm/msm/dp: Shrink locking area of dp_aux_transfer()
+>>   drm/msm/dp: Handle aux timeouts, nacks, defers
+>> 
+>>  drivers/gpu/drm/msm/dp/dp_aux.c     | 181 
+>> ++++++++++++----------------
+>>  drivers/gpu/drm/msm/dp/dp_aux.h     |   8 --
+>>  drivers/gpu/drm/msm/dp/dp_catalog.c |   2 +-
+>>  drivers/gpu/drm/msm/dp/dp_catalog.h |   2 +-
+>>  4 files changed, 80 insertions(+), 113 deletions(-)
+>> 
+>> 
+>> base-commit: 51595e3b4943b0079638b2657f603cf5c8ea3a66
+>> --
+>> https://chromeos.dev
+>> 
