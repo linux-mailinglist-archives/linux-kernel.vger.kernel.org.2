@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04BAC38C5F9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:47:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E6DD38C5E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:43:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231933AbhEULtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:49:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhEULs6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:48:58 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4902EC061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:47:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7zi9Mu6WcsowR0XFLEPxmhm73QEFbxhQlh8Qiw0zCGA=; b=DQJS4wmrZMw88UhIzP8UpdE5Zt
-        oENnC+faFOhr3f/cC+vrqBpwZ8by5m4fC5aiIzZ4HTBC18hjY7ptrH9T0z9nNzEnbrRuM73O1T1vF
-        OHYGQTk6mzITPIASr5FgiKlzbGD4UhEZ82fyxowZ9YgtQLepwJfPyIUpJd1vTfWvKrxoIFMQySP8o
-        vmaCISID4N+eXhyHEWAO5S4Ppppw9Ny5ytz0S3cP9Iqt2iCU1ayquCH0KLQs9wkTYUI+3SLHDWOza
-        1ZEuarvxhfpal02MJtOLlqD7uR98O8Oww2jl89vZjoOxymT3LZ8HJmtoB665Y0X7HTS9yAHsYTBgz
-        FBRs/1XA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lk3YX-00GvKt-G6; Fri, 21 May 2021 11:43:37 +0000
-Date:   Fri, 21 May 2021 12:43:05 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     "Uladzislau Rezki (Sony)" <urezki@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Christoph Hellwig <hch@infradead.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Hillf Danton <hdanton@sina.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH] mm/vmalloc: Fallback to a single page allocator
-Message-ID: <YKecydxDtWLTDuKg@casper.infradead.org>
-References: <20210521111033.2243-1-urezki@gmail.com>
+        id S232627AbhEULpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:45:10 -0400
+Received: from mail.ispras.ru ([83.149.199.84]:32918 "EHLO mail.ispras.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231377AbhEULpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:45:06 -0400
+Received: from localhost.localdomain (unknown [10.10.2.182])
+        by mail.ispras.ru (Postfix) with ESMTPS id 8083940755E0;
+        Fri, 21 May 2021 11:43:40 +0000 (UTC)
+From:   Evgeny Novikov <novikov@ispras.ru>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Evgeny Novikov <novikov@ispras.ru>,
+        Johan Hovold <johan@kernel.org>,
+        Nikolay Kyx <knv418@gmail.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Lee Gibson <leegib@gmail.com>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: [PATCH] staging: fwserial: Fix potential NULL pointer dereferences
+Date:   Fri, 21 May 2021 14:43:39 +0300
+Message-Id: <20210521114339.8469-1-novikov@ispras.ru>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521111033.2243-1-urezki@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 01:10:33PM +0200, Uladzislau Rezki (Sony) wrote:
-> +static inline unsigned int
-> +vm_area_alloc_pages(gfp_t gfp, int nid, unsigned int page_order,
-> +	unsigned long nr_small_pages, struct page **pages)
+If fwtty_install() will be invoked with such tty->index that will be
+not less than MAX_TOTAL_PORTS then fwtty_port_get() will return NULL and
+fwtty_install() will either assign it to tty->driver_data or dereference
+in fwtty_port_put() (if tty_standard_install() will fail). The similar
+situation is with fwloop_install(). The patch fixes both cases.
 
-(at least) two tabs here, please, otherwise the argument list is at
-the same indentation as the code which trips up my parser.  some people
-like to match the opening bracket, but that always feels like more work
-than it's worth.  fwiw, i'd format it like this:
+Found by Linux Driver Verification project (linuxtesting.org).
 
-static inline unsigned int vm_area_alloc_pages(gfp_t gfp, int nid,
-		unsigned int order, unsigned long nr_pages, struct page **pages)
-{
-...
+Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
+---
+ drivers/staging/fwserial/fwserial.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-(yes, i renamed some of the variables there; overly long variable names
-are painful)
+diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
+index 1ee6382cafc4..d0810896511e 100644
+--- a/drivers/staging/fwserial/fwserial.c
++++ b/drivers/staging/fwserial/fwserial.c
+@@ -1069,6 +1069,9 @@ static int fwtty_install(struct tty_driver *driver, struct tty_struct *tty)
+ 	struct fwtty_port *port = fwtty_port_get(tty->index);
+ 	int err;
+ 
++	if (!port)
++		return -ENODEV;
++
+ 	err = tty_standard_install(driver, tty);
+ 	if (!err)
+ 		tty->driver_data = port;
+@@ -1082,6 +1085,9 @@ static int fwloop_install(struct tty_driver *driver, struct tty_struct *tty)
+ 	struct fwtty_port *port = fwtty_port_get(table_idx(tty->index));
+ 	int err;
+ 
++	if (!port)
++		return -ENODEV;
++
+ 	err = tty_standard_install(driver, tty);
+ 	if (!err)
+ 		tty->driver_data = port;
+-- 
+2.26.2
 
-The rest of the patch looks good.
-
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
