@@ -2,107 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 476F638C80E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:29:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CE938C81A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:29:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235522AbhEUNaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:30:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235582AbhEUNaY (ORCPT
+        id S235668AbhEUNaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:30:55 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:58940 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234235AbhEUNaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:30:24 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3DCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:29:00 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id r8so27442572ybb.9
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:29:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sBLaqlBTFPOgBNOZr3tcgcclIIzA01Ts0Y/T64t4ZMo=;
-        b=WntCVajMnMxJSVEzbfQNzL+D6cBhgKTk1KsyYUEMEbCGfQiPxblXgCRFUuznbGiIke
-         xYMAbS2KIscS7b20PYzWLbLhMF0NWaroMl0pLuL3yR6ZKsIIRh/gT3mKUHZbBjVykA4V
-         JqJZu4hDXUjsLnGhZGLLGitU+G4oE/kOKaeJdVPdRQG8MxG+WtXxu0lIp0kbSt6n1GKW
-         oRlN3Zor+v9nv8DIuVIPwUvSIk36WPrtFkB832wsxTcNVJeLzb4i5CL0XFL8BzWMeNf9
-         A3tA02t37TmuGSIyhK1PQeeTYYAKBbMB/RpKFVVle3u88MwXIMinfApV2HF8zSb7TQgG
-         xkbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sBLaqlBTFPOgBNOZr3tcgcclIIzA01Ts0Y/T64t4ZMo=;
-        b=b3de+dlBzh2048L8NrLTRHfb1YqumkQqXRIoNtbk1XuDRJYMwh1lvKqBAqwuo8DpIC
-         r6Ian7sWHrqDlWVAyhp6wnHfwtO+P80dPsD0UQ82QyYMGzBaEzZtSsR01R+BCZWPKJ57
-         XlUh87B67ZwIkObYpvuieJUhtSqhvGNERT8mNk2cw7e6zL6hAzUQxWID7ro5QQcb9cMv
-         WzeoC9Pt04e2FEW85Jlz3GsXsjFUyX77jSbEoWzPJGfnFjwcdNtGPMCH+0WFTuwwrTQC
-         q/EzfO9SoWg3R7SzNRDh4qYrcnWCQPzCodztdGXSkJXFYqKX92YnYKamPGQ+fcTMSlJY
-         wnpw==
-X-Gm-Message-State: AOAM532j6qBrzzxfw0Rkv7cVpPigXTDVlEKhre+kTkoqHP9WPc4GJolk
-        RjpBNrd2uNvPJ+RfFI19/exjytrhELydzYevTt8+zw==
-X-Google-Smtp-Source: ABdhPJxay81cEvaBngTuMlfSDYGrnj5r7VfKb2wUOgjA6/d3ncTTxypla17sldq0pBciLGzxcJB3WLkQ6MslmqeDRvA=
-X-Received: by 2002:a25:e08e:: with SMTP id x136mr10813650ybg.0.1621603740260;
- Fri, 21 May 2021 06:29:00 -0700 (PDT)
+        Fri, 21 May 2021 09:30:46 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LDMnAg129094;
+        Fri, 21 May 2021 09:29:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=qbyLSEYxo2Punq/yUmuYxrOa5tjum0XaNxmcY8b1kuE=;
+ b=JvkNwQlDVciNu1YieagyjI1rbmChdtQT/5FwACSpAhcHSBATSBxvMwvZ3kv4poyBmQIb
+ VkjB3FYCyr05i0U+M37F09hY3kafHuCPp6b8K4w0dSKrCygQQ5jPzuiiJQmX27PDUqvm
+ sZ4IuYmICKiebPme3sVcE2hEnE13lbnfgcKcS2VFaptCtdUOlVQngdv/jCSSlwhUnKuG
+ uErbbfq6GyHLDaJ+cKtFSF/h8zprg/MGcqwr5+ohQJVnq1KXRzy9O8c+Dweu+erKz8w3
+ PL8fUFJWNAxVHtTQf8nAgdVz/dKdEAhxolVZhM5onkptUPC0hz1zMq+ED9d8yNlB74Jb AQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38pdpsr44b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 09:29:19 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LDSkCH031653;
+        Fri, 21 May 2021 13:29:17 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma03ams.nl.ibm.com with ESMTP id 38j5x7u5uh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 13:29:17 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LDTEx729557180
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 May 2021 13:29:14 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 449F842047;
+        Fri, 21 May 2021 13:29:14 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F04DE4204B;
+        Fri, 21 May 2021 13:29:13 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 21 May 2021 13:29:13 +0000 (GMT)
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+To:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Karsten Graul <kgraul@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        linux-netdev <netdev@vger.kernel.org>,
+        Julian Wiedmann <jwi@linux.ibm.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] MAINTAINERS: s390/net: add netdev list
+Date:   Fri, 21 May 2021 15:28:56 +0200
+Message-Id: <20210521132856.1573533-1-jwi@linux.ibm.com>
+X-Mailer: git-send-email 2.25.1
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: XXimO-eE9j9LHoGF5cy1zlAMOpeMVLx_
+X-Proofpoint-GUID: XXimO-eE9j9LHoGF5cy1zlAMOpeMVLx_
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210514085500.10761-1-aardelean@deviqon.com>
-In-Reply-To: <20210514085500.10761-1-aardelean@deviqon.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 21 May 2021 15:28:49 +0200
-Message-ID: <CAMpxmJX4DjZ9NE_8BH7kB4jYA+LyLJ=zbXbh7cg37Jaw52ppKQ@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-visconti: remove platform_set_drvdata() +
- cleanup probe
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-21_04:2021-05-20,2021-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0
+ lowpriorityscore=0 suspectscore=0 mlxscore=0 mlxlogscore=703 clxscore=1011
+ adultscore=0 impostorscore=0 priorityscore=1501 malwarescore=0 spamscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105210077
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 10:55 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
->
-> The platform_set_drvdata() call is only useful if we need to retrieve back
-> the private information.
-> Since the driver doesn't do that, it's not useful to have it.
->
-> If this is removed, we can also just do a direct return on
-> devm_gpiochip_add_data(). We don't need to print that this call failed as
-> there are other ways to log/see this during probe.
->
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/gpio/gpio-visconti.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-visconti.c b/drivers/gpio/gpio-visconti.c
-> index 0e3d19828eb1..47455810bdb9 100644
-> --- a/drivers/gpio/gpio-visconti.c
-> +++ b/drivers/gpio/gpio-visconti.c
-> @@ -187,15 +187,7 @@ static int visconti_gpio_probe(struct platform_device *pdev)
->         girq->default_type = IRQ_TYPE_NONE;
->         girq->handler = handle_level_irq;
->
-> -       ret = devm_gpiochip_add_data(dev, &priv->gpio_chip, priv);
-> -       if (ret) {
-> -               dev_err(dev, "failed to add GPIO chip\n");
-> -               return ret;
-> -       }
-> -
-> -       platform_set_drvdata(pdev, priv);
-> -
-> -       return ret;
-> +       return devm_gpiochip_add_data(dev, &priv->gpio_chip, priv);
->  }
->
->  static const struct of_device_id visconti_gpio_of_match[] = {
-> --
-> 2.31.1
->
+Discussions for network-related code should include the netdev list.
 
-Applied, thanks!
+Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+---
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Bartosz
+diff --git a/MAINTAINERS b/MAINTAINERS
+index c1cb2e38ae2e..88722efd94a1 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15944,6 +15944,7 @@ S390 IUCV NETWORK LAYER
+ M:	Julian Wiedmann <jwi@linux.ibm.com>
+ M:	Karsten Graul <kgraul@linux.ibm.com>
+ L:	linux-s390@vger.kernel.org
++L:	netdev@vger.kernel.org
+ S:	Supported
+ W:	http://www.ibm.com/developerworks/linux/linux390/
+ F:	drivers/s390/net/*iucv*
+@@ -15954,6 +15955,7 @@ S390 NETWORK DRIVERS
+ M:	Julian Wiedmann <jwi@linux.ibm.com>
+ M:	Karsten Graul <kgraul@linux.ibm.com>
+ L:	linux-s390@vger.kernel.org
++L:	netdev@vger.kernel.org
+ S:	Supported
+ W:	http://www.ibm.com/developerworks/linux/linux390/
+ F:	drivers/s390/net/
+-- 
+2.25.1
+
