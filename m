@@ -2,109 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89A4738C064
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:08:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE3FD38C069
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbhEUHJD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:09:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54428 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235171AbhEUHIv (ORCPT
+        id S235664AbhEUHJI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 03:09:08 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3092 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235326AbhEUHIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 May 2021 03:08:51 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C86E4C061346
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:07:20 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id t9so2025354ply.6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:07:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fvdGa2W6OZw/8qxLvD+ODbIG5yXPMASpgnmjBv0KFYg=;
-        b=LfUV8jky5sez+lV6LBBxjR6j//RTUAB7gRqIHldrM1y9zrapoHULxXCg2yfmCFg28o
-         +jiJ8sYvxdVgBnWLSrpCEp2PpK3R7bhelKJfEl5R3fR2HRtf2BBP2DJhMvYgPdPY+34E
-         ApQY6p4IAHU2SjjrGLiRmsTKo0uSZbylw1aUkTgQdOmw1wANg/bhrGCRDLiXbHOqr+dI
-         OieDVmBIYFdpvyoWoxH4Cu9pUmsB1P+HpovshrWpaRq7lih9ApyAKzM6bjLMvk9CGdgJ
-         VRKm6+ufztaNXlAaam0PkOZNZYc6jQ1uKEY7kErk+l98KJi8uU3fy6DfbafXwgunzNoc
-         ig/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fvdGa2W6OZw/8qxLvD+ODbIG5yXPMASpgnmjBv0KFYg=;
-        b=D7wF8tkLUkobevgCUtniqut9bf+kGLyKfgztj4bOHSRmcsQLj4PUwxMbGUrpKsZ8o3
-         MpIWSQsvcrXD8izu6wzIUecH7u0EWtZKBMWByT9X90bdklS2BqlE/4epMpASuNoqkkzO
-         9GQMqjD2eQ19q10QNeyIgPzVTEdSYxe00C4M0FON9W5oubTX72Bt/AUlTE6/guvjqHgZ
-         0+o4NZ/tGeojqmcMbJLrQ16xAGSnCF5RW/wTQgOUoizkFVT93+vUbJT2iz5+XejJODJK
-         OGvrOi8KDRzdYv/yFpCzQMebBATl1g45CVsK4gUCkBKIx2WBQlTz82vfifu4Yw0W46zP
-         SJRQ==
-X-Gm-Message-State: AOAM530C2nOnvVIInA59QTuLu/Knxnde1WApg8Vv+yanm0bA2PZW5mt5
-        a8UhOJZqVqDjF0GtIZ1KSVmZKBYVFnFIEbuwJw8S9w==
-X-Google-Smtp-Source: ABdhPJyOgFYIsz++rTquSbrKidXOaZ1MVIXBLwb/aKF11GJv12HKYkYTcfLnuWskvaTvzU81A+hLb/gevmBViXZsQt8=
-X-Received: by 2002:a17:90b:1185:: with SMTP id gk5mr9092828pjb.168.1621580840163;
- Fri, 21 May 2021 00:07:20 -0700 (PDT)
+Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FmcnD1ghMz6842m;
+        Fri, 21 May 2021 14:55:28 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 09:07:14 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Fri, 21 May 2021 09:07:14 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@srcf.ucam.org" <mjg59@srcf.ucam.org>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v7 00/12] evm: Improve usability of portable signatures
+Thread-Topic: [PATCH v7 00/12] evm: Improve usability of portable signatures
+Thread-Index: AQHXSNW+s9pGdic160Kc6WkU36Axf6rsoEOAgADsKvA=
+Date:   Fri, 21 May 2021 07:07:14 +0000
+Message-ID: <a316bc5ec316446c8b07134c33b06d77@huawei.com>
+References: <20210514152753.982958-1-roberto.sassu@huawei.com>
+ <2804f10fa77b58b4992f56ea36a36d4f1e3f4b24.camel@linux.ibm.com>
+In-Reply-To: <2804f10fa77b58b4992f56ea36a36d4f1e3f4b24.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-3-seanjc@google.com>
- <CAAeT=FyNo1CGvnamc3_J9EEQUn6WcdkMp50-QgmLYYVCFA2fZA@mail.gmail.com> <YKVdUtvSg7/I7Ses@google.com>
-In-Reply-To: <YKVdUtvSg7/I7Ses@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Fri, 21 May 2021 00:07:04 -0700
-Message-ID: <CAAeT=FxvS_hzcZbZQ_jQnWwX+xDT0SqQoHKELeviqu_QvvnbYg@mail.gmail.com>
-Subject: Re: [PATCH 02/43] KVM: VMX: Set EDX at INIT with CPUID.0x1, Family-Model-Stepping
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 11:47 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, May 18, 2021, Reiji Watanabe wrote:
-> > > @@ -4504,7 +4505,11 @@ static void vmx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
-> > >
-> > >         vmx->msr_ia32_umwait_control = 0;
-> > >
-> > > -       vmx->vcpu.arch.regs[VCPU_REGS_RDX] = get_rdx_init_val();
-> > > +       eax = 1;
-> > > +       if (!kvm_cpuid(vcpu, &eax, &dummy, &dummy, &dummy, true))
-> > > +               eax = get_rdx_init_val();
-> > > +       kvm_rdx_write(vcpu, eax);
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Thursday, May 20, 2021 8:56 PM
+> On Fri, 2021-05-14 at 17:27 +0200, Roberto Sassu wrote:
+> > EVM portable signatures are particularly suitable for the protection of
+> > metadata of immutable files where metadata is signed by a software vendor.
+> > They can be used for example in conjunction with an IMA policy that
+> > appraises only executed and memory mapped files.
 > >
-> > Reviewed-by: Reiji Watanabe <reijiw@google.com>
+> > However, until now portable signatures can be properly installed only if
+> > the EVM_ALLOW_METADATA_WRITES initialization flag is also set, which
+> > disables metadata verification until an HMAC key is loaded. This will cause
+> > metadata writes to be allowed even in the situations where they shouldn't
+> > (metadata protected by a portable signature is immutable).
 > >
-> > For RESET, I assume that rdx should be set by userspace
-> > when userspace changes CPUID.0x1.EAX.
->
-> Ya, although the ideal solution is to add a proper RESET ioctl() so userspace can
-> configure the vCPU model and then pull RESET#.
+> > The main reason why setting the flag is necessary is that the operations
+> > necessary to install portable signatures and protected metadata would be
+> > otherwise denied, despite being legitimate, due to the fact that the
+> > decision logic has to avoid an unsafe recalculation of the HMAC that would
+> > make the unsuccessfully verified metadata valid. However, the decision
+> > logic is too coarse, and does not fully take into account all the possible
+> > situations where metadata operations could be allowed.
+> >
+> > For example, if the HMAC key is not loaded and it cannot be loaded in the
+> > future due the EVM_SETUP_COMPLETE flag being set, it wouldn't be a
+> problem
+> > to allow metadata operations, as they wouldn't result in an HMAC being
+> > recalculated.
+> >
+> > This patch set extends the decision logic and adds the necessary exceptions
+> > to use portable signatures without turning off metadata verification and
+> > deprecates the EVM_ALLOW_METADATA_WRITES flag.
+> 
+> Thanks, Roberto.
+> 
+> Applied to: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-
+> integrity.git
+> next-integrity-testing
 
-Thank you so much for the answer !
-It sounds like a good idea in terms of userspace handling as well
-as KVM implementation (I assume it would be something similar to
-KVM_ARM_VCPU_INIT).
+Hi Mimi
 
+could you please take the newer version of patch 5/12, which also adds
+an exception for the INTEGRITY_UNKNOWN error (it occurs when xattrs
+are not supported)?
 
-> > BTW, I would think having a default CPUID for CPUID.(EAX=0x1) would be better
-> > for consistency of a vCPU state for RESET.  I would think it doesn't matter
-> > practically anyway though.
->
-> Probably, but that would require defining default values for all of CPUID.0x0 and
-> CPUID.0x1, which is a can of worms I'd rather not open.  E.g. vendor info, basic
-> feature set, APIC ID, etc... would all need default values.  On the other hand,
-> the EDX value stuffing predates CPUID, so using 0x600 isn't provably wrong, just
-> a bit anachronistic. :-)
+https://lore.kernel.org/linux-integrity/6d7e059876b64f249b9a01d8b7696e29@huawei.com/T/#m58442ec12e47d9d457bef9b438809a6a132b7512
 
-I see... Then I don't think it's worth doing...
-Just out of curiosity, can't we simply use a vcpu_id for the APIC ID ?
-Also, can't we simply use the same values that KVM_GET_SUPPORTED_CPUID
-provides for other CPUID fields ?
+Thanks
 
-Thanks,
-Reiji
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
