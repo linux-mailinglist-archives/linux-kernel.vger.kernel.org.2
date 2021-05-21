@@ -2,103 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171A038CE8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:05:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EF5838CE93
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229780AbhEUUGZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:06:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32972 "EHLO
+        id S231838AbhEUUH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:07:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230095AbhEUUGY (ORCPT
+        with ESMTP id S231417AbhEUUHV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:06:24 -0400
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E37FC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:05:01 -0700 (PDT)
-Received: by mail-oo1-xc2b.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so4841283oop.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:05:01 -0700 (PDT)
+        Fri, 21 May 2021 16:07:21 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E0E2C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:05:57 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso6151471pjb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:05:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=Lzg66wuzASaMfTHwEiQwg/u8XktLpASuIJjQt1N/kuo=;
-        b=FU7oXsN5JQzdq5+zP80ciK7QmQ2OmK8b5yQw+iS0awapeC953l4vgk7lLliC5boEZ3
-         Ip3Qh0tGWljGWIvwxVCLUzPDvzSJqANt8vy0VRi7P4ocTh8EGgJcsaZtEoJgcAct8PAA
-         DDQ99sBgV+90JPclFqmFF5Rj9mwu+EnEqsFrmwJlVmpIlyiqlycjVAoU9e0NEoa0evwA
-         DMZkyZMTi2sOLYg4k3xd647o2GG7+UmRnEoA4y6TF63/LR8cdH4kB4JeOIDIAlr0jy+H
-         zjeBTPITF8m29liEhvIxP0eMLxo+1yfFkLZGEnhQ/1e/otMHXjEjncETKapC+7UGqdWa
-         Q93A==
+        bh=ybXypeyea8Cf9kwFCSJgN0ItJkY4+UPXl7JyFWq2ns4=;
+        b=gvizpSBJ+apVKVlvGSXBZj2gEs1knSeRCxVXdN3vtGCGuh0shDb201I84svqrga0q5
+         uX0JPqks5j4LZz+18rZ/lbNlLgVxjOPNcvhpUIOGJFxgSOGBLVHP9VgULuSrvy1abr3+
+         NBYnw9w9w/vub/ZSfFkg831gtYAHt7j9EAO1s=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Lzg66wuzASaMfTHwEiQwg/u8XktLpASuIJjQt1N/kuo=;
-        b=DpJIMDuih+3/FVJ0Vrj3oqRjKo5krU5fYft9tjXMUIZ15BJpmwkC3qjF03Sb/f2uBu
-         BSrbmDQRCkQkheX5Jc4oJfnhol8PuIvXYt6odMv+ZX9VzKJKhWHDLNzI5T+9rdHoI9Kn
-         uiOZXZ0wf+n7D7elsx+/Hs4FzFpCFbR+ZxNc+1YNWe5mPd/wHDQ8zilQw9P2nyCX5HB/
-         R+NhI7K7DS0WfDOLJAQDtHLBoCMVaPnWo0zcucTM4XA7P/o8DHv40h8+WW2VflOLpgll
-         9TTLOsuaFTKr2pdxTEfbwqsMC4NlvDU8UWQ4L2HxuR9byEDFWrSAbDbUE+1k3Zw735lo
-         je6Q==
-X-Gm-Message-State: AOAM530D3UftddPtGrn2c5PT5SZoic+jHNaf4/7tVlDbmLp6NxmOGxog
-        tYBtBBkGgX6n0U941C+9DIA=
-X-Google-Smtp-Source: ABdhPJxl9/Nm+6svLD2w6ZD46nm3ERoRNVnBbWJYVzq32/FZkh6HNexRG5Hi7Xgoz3ASHBFoZefBmg==
-X-Received: by 2002:a05:6820:54e:: with SMTP id n14mr9556416ooj.49.1621627500369;
-        Fri, 21 May 2021 13:05:00 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d67sm1292501oia.56.2021.05.21.13.04.59
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ybXypeyea8Cf9kwFCSJgN0ItJkY4+UPXl7JyFWq2ns4=;
+        b=mFaWsdOrRZJF+mBCoU5Bop6wjpu5E/3uDqBEvCQQD3CipAjhqVDMUZcppBseBa4Orz
+         7sQMcvMG/KihmDC3v2yi4yfyYRYPxXQwIE80QFefUDP/Z0KSEXwBfXtXV49lOwkQxVBz
+         60+Y8WNGE4vxoeLijpCajwGGxe1GBTSpyPEZDNzL/KPFwopCNvTtHI2y7FkfjbWk6f0R
+         9OCwLSV7OzfwqZknFkEH2e5B5tx8V7Oi+Fb4Jc0m2ILPGovqyua58u3dvHgPBcVdmAbx
+         y6fLQmrDNn5SuH3AeZ0kesPtJrUU5F6RRbSTPjGDMjbjdnuoAMTJp2hwqhUa/CgUl9w2
+         iI9Q==
+X-Gm-Message-State: AOAM531+y/rnCiBNiYE/NrG+H9Mv7fLlh2F8oZEDj0fbvZTNjt1jx5Dz
+        IxroW8pBptK54xLOEA0p2Ic4Jw==
+X-Google-Smtp-Source: ABdhPJzhy4xTRi3QdYIYW790JHpwnfEydljuE/FpMrNWeq4/SEl0a4KL/tU7v+aalWjydp3F/uLpOQ==
+X-Received: by 2002:a17:90b:11cf:: with SMTP id gv15mr12620696pjb.26.1621627557050;
+        Fri, 21 May 2021 13:05:57 -0700 (PDT)
+Received: from sujitka-glaptop.hsd1.ca.comcast.net ([2601:646:8e00:b2f0:22bd:8c3f:584d:d265])
+        by smtp.gmail.com with ESMTPSA id z19sm4550614pjn.0.2021.05.21.13.05.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 13:04:59 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Derek Kiernan <derek.kiernan@xilinx.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Michal Simek <michal.simek@xilinx.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Guenter Roeck <linux@roeck-us.net>,
-        Dragan Cvetic <dragan.cvetic@xilinx.com>
-Subject: [PATCH] misc: xilinx-sdfec: Drop unnecessary NULL check after container_of
-Date:   Fri, 21 May 2021 13:04:57 -0700
-Message-Id: <20210521200457.2112041-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Fri, 21 May 2021 13:05:56 -0700 (PDT)
+From:   Sujit Kautkar <sujitka@chromium.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Sibi Sankar <sibis@codeaurora.org>,
+        Doug Anderson <dianders@chromium.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        Sujit Kautkar <sujitka@chromium.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 0/2] Update sd card pinconf for sc7180 DT
+Date:   Fri, 21 May 2021 13:05:27 -0700
+Message-Id: <20210521200529.1991729-1-sujitka@chromium.org>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-container_of() only returns NULL if the passed pointer is NULL _and_ if
-the embedded element is the first element of the structure. Even if that
-is the case, testing against it is misleading and possibly dangerous
-because the position of the embedded element may change. In this case,
-the check is unnecessary since it is known that file->private_data is
-never NULL for an open file, and container_of() will therefore also
-never be NULL. Drop the check.
+This patch series contains change to move sdc pinconf from SoC specific
+DT file to board specific DT file. It also contain change to set sdc
+GPIO pin to bias-pull up
 
-Acked-by: Dragan Cvetic <dragan.cvetic@xilinx.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
-change since RFC:
-	Dropped check for the result of container_of() result instead of
-	checking if file->private_data is NULL.
+Tested sd card working on sc7180 based board
 
- drivers/misc/xilinx_sdfec.c | 3 ---
- 1 file changed, 3 deletions(-)
+Sujit Kautkar (2):
+  arm64: dts: qcom: sc7180: Move sdc pinconf to board specific DT files
+  arm64: dts: qcom: sc7180: trogdor: SD-card GPIO pin set bias-pull up
 
-diff --git a/drivers/misc/xilinx_sdfec.c b/drivers/misc/xilinx_sdfec.c
-index 23c8448a9c3b..d6e3c650bd11 100644
---- a/drivers/misc/xilinx_sdfec.c
-+++ b/drivers/misc/xilinx_sdfec.c
-@@ -1013,9 +1013,6 @@ static __poll_t xsdfec_poll(struct file *file, poll_table *wait)
- 
- 	xsdfec = container_of(file->private_data, struct xsdfec_dev, miscdev);
- 
--	if (!xsdfec)
--		return EPOLLNVAL | EPOLLHUP;
--
- 	poll_wait(file, &xsdfec->waitq, wait);
- 
- 	/* XSDFEC ISR detected an error */
+ arch/arm64/boot/dts/qcom/sc7180-idp.dts      | 102 +++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 102 +++++++++++++++++++
+ arch/arm64/boot/dts/qcom/sc7180.dtsi         | 102 -------------------
+ 3 files changed, 204 insertions(+), 102 deletions(-)
+
 -- 
-2.25.1
+2.31.1.818.g46aad6cb9e-goog
 
