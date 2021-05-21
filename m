@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E6C438CDC7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:54:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9021238CDD0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:59:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232695AbhEUSzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:55:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42948 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231174AbhEUSzW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:55:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621623237; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mu9RUQYcbTZWSg9MNLdZB/1p1jix9ar6G5s93tv5TuI=;
-        b=Yn/6ZaZZ15sui+JPvQFtzgD8FZw+ZQcxjTlwNXep1Co+KKWQify4H2GdHz1+7a6io9Kfcd
-        66mOS6Vl8kdHZ00Bs9g8MUUjybLNLl5G1hu7iESZYR0kUIGmkxYR7jVEPIUWmL5A2GFrHk
-        LlkDiEWLGWzXdxG0Z6oEMgy45bOlLis=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621623237;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mu9RUQYcbTZWSg9MNLdZB/1p1jix9ar6G5s93tv5TuI=;
-        b=/xJuVYkDe9HZQFmMu6K2QILVLiS1Ij1/zT1X+EWGGkdktVhW8c/6tS0bhb2dF1M05fO0vq
-        86a1wFcAKAzoFWDg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D1012AAFD;
-        Fri, 21 May 2021 18:53:57 +0000 (UTC)
-To:     Javier Martinez Canillas <javierm@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Robinson <pbrobinson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        dri-devel@lists.freedesktop.org
-References: <20210521131910.3000689-1-javierm@redhat.com>
- <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
- <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
- <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
-Message-ID: <fc6540fa-1945-a15d-239d-e87bb4d3fa9e@suse.de>
-Date:   Fri, 21 May 2021 20:53:56 +0200
+        id S234969AbhEUTAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:00:43 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43496 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233291AbhEUTAl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:00:41 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id A2E5920B7188;
+        Fri, 21 May 2021 11:59:17 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A2E5920B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621623558;
+        bh=s5fPPm7/cgoV4/kCfN3NJ1VijEprrtU3LGotGcg2ExM=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=s+Xm95umlPDQltd3npd8+AG2+Ec9OFKHWzKtF0vsQBp1dbpksxO65Q0dJhiz91Z4r
+         1e6zH1/3pKKCrCzwkrpf1KFS+wwEcW43/YBJdphKf/5ZY3+eJSQ5JiRouVZvsjTlJe
+         Wcbye1F4bG/A4sd0NBJJ9T7bJBg9+ux4MA3mkgEE=
+Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, ardb@kernel.org, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-2-madvenka@linux.microsoft.com>
+ <20210521161117.GB5825@sirena.org.uk>
+ <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
+ <20210521174242.GD5825@sirena.org.uk>
+ <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
+ <20210521175318.GF5825@sirena.org.uk>
+ <20210521184817.envdg232b2aeyprt@treble>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
+Date:   Fri, 21 May 2021 13:59:16 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y"
+In-Reply-To: <20210521184817.envdg232b2aeyprt@treble>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y
-Content-Type: multipart/mixed; boundary="BjyfcwIr0k6GaL1qcfPb2KgkCqS9B41Da";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Javier Martinez Canillas <javierm@redhat.com>,
- linux-kernel@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
- David Airlie <airlied@linux.ie>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
-Message-ID: <fc6540fa-1945-a15d-239d-e87bb4d3fa9e@suse.de>
-Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
-References: <20210521131910.3000689-1-javierm@redhat.com>
- <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
- <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
- <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
-In-Reply-To: <bfd6fa47-497a-64bc-c2fc-a081bd41d5ec@redhat.com>
 
---BjyfcwIr0k6GaL1qcfPb2KgkCqS9B41Da
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
 
-Hi
-
-Am 21.05.21 um 19:18 schrieb Javier Martinez Canillas:
-> On 5/21/21 6:53 PM, Thomas Zimmermann wrote:
->=20
-> [snip]
->=20
->>>
->>> So what with all the drivers which do _not_ have drm in their name? A=
-lso
->>> I'm never sure how much these are uapi or not ...
+On 5/21/21 1:48 PM, Josh Poimboeuf wrote:
+> On Fri, May 21, 2021 at 06:53:18PM +0100, Mark Brown wrote:
+>> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
+>>> On 5/21/21 12:42 PM, Mark Brown wrote:
 >>
->=20
-> That someone could threat as an uapi is a fair point indeed.
->  =20
->> Why do we need a suffix anyway?
+>>>> Like I say we may come up with some use for the flag in error cases in
+>>>> future so I'm not opposed to keeping the accounting there.
 >>
->=20
-> Yes, I thought the same and was torn about posting a patch to just remo=
-ve
-> the suffix. I don't think users care that much if is a fb device from a=
+>>> So, should I leave it the way it is now? Or should I not set reliable = false
+>>> for errors? Which one do you prefer?
+>>
+>>> Josh,
+>>
+>>> Are you OK with not flagging reliable = false for errors in unwind_frame()?
+>>
+>> I think it's fine to leave it as it is.
+> 
+> Either way works for me, but if you remove those 'reliable = false'
+> statements for stack corruption then, IIRC, the caller would still have
+> some confusion between the end of stack error (-ENOENT) and the other
+> errors (-EINVAL).
+> 
 
-> fbdev driver or a DRM driver using the fbdev emulation.
+I will leave it the way it is. That is, I will do reliable = false on errors
+like you suggested.
 
-Yup. I don't see how anything in userspace would depend on the exact=20
-name; especially since fbdev emulation only provides basic features.=20
-(I'd welcome a counter examples that proves me wrong.)
+> So the caller would have to know that -ENOENT really means success.
+> Which, to me, seems kind of flaky.
+> 
 
-IMHO we can risk it to remove the suffix entirely. But that needs an ack =
+Actually, that is why -ENOENT was introduced - to indicate successful
+stack trace termination. A return value of 0 is for continuing with
+the stack trace. A non-zero value is for terminating the stack trace.
 
-from Daniel or Dave.
+So, either we return a positive value (say 1) to indicate successful
+termination. Or, we return -ENOENT to say no more stack frames left.
+I guess -ENOENT was chosen.
 
-Best regards
-Thomas
+> BTW, not sure if you've seen what we do in x86, but we have a
+> 'frame->error' which gets set for an error, and which is cumulative
+> across frames.  So non-fatal reliable-type errors don't necessarily have
+> to stop the unwind.  The end result is the same as your patch, but it
+> seems less confusing to me because the 'error' is cumulative.  But that
+> might be personal preference and I'd defer to the arm64 folks.
+> 
 
->=20
->>> -Daniel
->>>
->=20
-> Best regards,
->=20
+OK. I will wait to see if any arm64 folks have an opinion on this.
+I am fine with any approach.
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---BjyfcwIr0k6GaL1qcfPb2KgkCqS9B41Da--
-
---Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCoAcUFAwAAAAAACgkQlh/E3EQov+Bz
-ihAAtKYtsAnGL/Q5knCfNp64XOjCmO2fc7BtgUcWJsOYZHE26YUP9WYd3vxxPUgPd6M9JA87R0vH
-X+Xlgq6qBKD3m4TyKHf/JZs+do/Hzx5jFRYZauz5LuslmNKP/uUKfKQ23aY/pBvgfwHaDSkuQoeS
-jNzuqRkRTXwFbJHtoutPKX+ctbHWB2EyzkRHpqJ6NhiyRAexuvPKpvRWMrtGu0HCp/HYd9OvoLG0
-pLJs0lHxYU4aaJ5b+TkMwCAhy8f96k5gNnJ+mgZJJbowEKPGTvXC866u0/FxZHAr7QdRuzQaXW+p
-prmmnk2hDvjRcV0vx9r8zCY90qMze0cB3WHGv0TEbSYB65hnKAZSrpRhznXC8HfeS7cyCZY+HRKB
-PoedwQUT62zJ+Ae9+ZfosXQbT46yzRWWCZKpdWWgSQ2QUooXMbOuiQ/LUNJlOo6IngmKK+fuA/vP
-uVNCQZ5N/kOHQFPhQIghHPAjnl0hP+4W1YOq6/LYbQbq/jV7Nl13IEIDVhOhbKQ/E0rig11yuF+K
-r15mug3jtferVysuDCokzkG0UinJgqtY/bPdOGpA58bte7UNpBXVAU08Cbs91DqQ+U1oufA8CJj3
-gvSaMey9S0viQVU/F2+kLyVuhfsvUL+cZ5jpmvUJnBBvFsSMzQZlzGQHUFB/02wzmbARRlmebSz+
-V7o=
-=G6g2
------END PGP SIGNATURE-----
-
---Jgx8DprSxJqi78CATLaATuaOAirN5CN0Y--
+Madhavan
