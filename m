@@ -2,174 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDC038CAA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9C738CAB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:12:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237097AbhEUQNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:13:06 -0400
-Received: from mga11.intel.com ([192.55.52.93]:12553 "EHLO mga11.intel.com"
+        id S237430AbhEUQOE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:14:04 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:22520 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229586AbhEUQNF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:13:05 -0400
-IronPort-SDR: lRJmwh/H3Wm5zhNGve59golWKJ9eCoxtnGn7l26unzvk+eJfNrv7SVgjskBNMjWdo9Ao7EEwZT
- PSKOl+xzkEMA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="198433378"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="198433378"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 09:11:42 -0700
-IronPort-SDR: N2wRmQ4YpHad6kE8Lb6o+s/pL6HM2ZRul2ah+AD1P8YG9VWci6vKCUaFRyIAx+SkqM8gaZPlmU
- y4XQlooFFOfw==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="613304857"
-Received: from pburton-mobl.amr.corp.intel.com (HELO [10.209.36.169]) ([10.209.36.169])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 09:11:41 -0700
-Subject: Re: [RFC v2-fix-v2 1/1] x86/boot: Avoid #VE during boot for TDX
- platforms
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <b1aafcbb-c5db-efa5-0343-014585e73191@intel.com>
- <20210521143524.2527690-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f33c63b2-7b41-4c99-abd6-b47a8e7a4e26@intel.com>
-Date:   Fri, 21 May 2021 09:11:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S236522AbhEUQN7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:13:59 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621613556; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=JBNjKRUr1tE/SpZsz0PTWtWzyb4OvafTBwnzC/mARrY=;
+ b=b/+W2OUTjXKp5bkPNG2e3x7A3dtP+jrlkMHQUWcQKATTQpcC9ExHKfovjEp2b35oC+ZkZho9
+ KOBnCExvIQNXo6K/CXIi5wpkXrGBY8OuN45Nwn3UAKv+iuyoQJY2IIbjq41Rr+/KkSJhPuOx
+ ESv1wyfAFyxWw7K0likFMO8HjCI=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 60a7dbd32bff04e53bb086af (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 16:12:03
+ GMT
+Sender: rojay=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 79E72C4360C; Fri, 21 May 2021 16:12:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rojay)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2A055C433D3;
+        Fri, 21 May 2021 16:12:02 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210521143524.2527690-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 21:42:02 +0530
+From:   rojay@codeaurora.org
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     wsa@kernel.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, skananth@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V10] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+In-Reply-To: <CAE-0n50o1XRnV3HSAM7uhfS8M3kf_m0DrTkqCfYGdnSjpF6Xfg@mail.gmail.com>
+References: <20210512082220.7137-1-rojay@codeaurora.org>
+ <CAE-0n52D-K1T0QgxA-S7BXxE3Qk807F9edNyR+2RL4YxRyigMg@mail.gmail.com>
+ <70a90d229551bcec21ed74cfd1350b9b@codeaurora.org>
+ <CAE-0n50o1XRnV3HSAM7uhfS8M3kf_m0DrTkqCfYGdnSjpF6Xfg@mail.gmail.com>
+Message-ID: <79fdd08e974d6f6e35f0042c98a9415c@codeaurora.org>
+X-Sender: rojay@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Avoid operations which will inject #VE during boot process.
-> They're easy to avoid and it is less complex than handling
-> the exceptions.
-
-This puts the solution before the problem.  I'd also make sure to
-clearly connect this solution to the problem.  For instance, if you
-refer to register "modification", ensure that you reflect that language
-here.  Don't call them "modifications" in one part of the changelog and
-"operations" here.  I'd also qualify them as "superfluous".
-
-Please reorder this in the following form:
-
-1. Background
-2. Problem
-3. Solution
-
-Please do this for all of your patches.
-
-> There are a few MSRs and control register bits which the
-> kernel normally needs to modify during boot.  But, TDX
-> disallows modification of these registers to help provide
-> consistent security guarantees ( and avoid generating #VE
-> when updating them).
-
-No, the TDX architecture does not avoid generating #VE.  The *kernel*
-does that.  This sentence conflates those two things.
-
-> Fortunately, TDX ensures that these are
-> all in the correct state before the kernel loads, which means
-> the kernel has no need to modify them.
+On 2021-05-20 13:45, Stephen Boyd wrote:
+> Quoting rojay@codeaurora.org (2021-05-16 23:32:50)
+>> Hi Stephen,
+>> 
+>> Now, I have made the changes, calling i2c_mark_adapter_suspended() in
+>> shutdown() and i2c_mark_adapter_suspended()/_resumed() from runtime
+>> suspend/resume also and validated the changes. I have also picked
+>> your patch [1] for this validation.
+>> 
+>> During the device boot up I am seeing multiple traces shown below.
+>> Are these expected now and needs to be fixed from rt5682/respective
+>> client driver?
+>> 
+>> Trace1:
+>> [   11.709477] i2c i2c-9: Transfer while suspended
+>> [   11.905595] Call trace:
+>> [   11.908124]  __i2c_transfer+0xb8/0x38c
+>> [   11.911984]  i2c_transfer+0xa0/0xf4
+>> [   11.915569]  i2c_transfer_buffer_flags+0x68/0x9c
+>> [   11.920314]  regmap_i2c_write+0x34/0x64
+>> [   11.924255]  _regmap_raw_write_impl+0x4e8/0x7bc
+>> [   11.928911]  _regmap_bus_raw_write+0x70/0x8c
+>> [   11.933301]  _regmap_write+0x100/0x150
+>> [   11.937152]  regmap_write+0x54/0x78
+>> [   11.940744]  soc_component_write_no_lock+0x34/0xa8
+>> [   11.945666]  snd_soc_component_write+0x3c/0x5c
+>> [   11.950242]  rt5682_set_component_pll+0x1e4/0x2b4 [snd_soc_rt5682]
+>> [   11.956588]  snd_soc_component_set_pll+0x50/0xa8
+>> [   11.961328]  snd_soc_dai_set_pll+0x74/0xc8
+>> [   11.965542]  sc7180_snd_startup+0x9c/0x120 [snd_soc_sc7180]
+>> [   11.971262]  snd_soc_link_startup+0x34/0x88
+>> [   11.975557]  soc_pcm_open+0x100/0x538
+>> [   11.979323]  snd_pcm_open_substream+0x530/0x704
+>> [   11.983980]  snd_pcm_open+0xc8/0x210
+>> [   11.987653]  snd_pcm_playback_open+0x50/0x80
+>> [   11.992049]  snd_open+0x120/0x150
+>> [   11.995462]  chrdev_open+0xb8/0x1a4
+>> [   11.999056]  do_dentry_open+0x238/0x358
+>> [   12.003001]  vfs_open+0x34/0x40
+>> [   12.006235]  path_openat+0x9e8/0xd60
+>> [   12.009913]  do_filp_open+0x90/0x10c
+>> [   12.013587]  do_sys_open+0x148/0x314
+>> [   12.017260]  __arm64_compat_sys_openat+0x28/0x34
+>> [   12.022009]  el0_svc_common+0xa4/0x16c
+>> [   12.025860]  el0_svc_compat_handler+0x2c/0x40
+>> [   12.030337]  el0_svc_compat+0x8/0x10
+>> [   12.034018] ---[ end trace 745ead557fcbb5dc ]---
 > 
-> The conditions we need to avoid are:
+> Ah I see. Maybe it isn't correct to mark the device as suspended in
+> runtime PM operations because the bus will be resumed during the
+> transfer? So only mark it suspended during system wide suspend/resume
+> transitions?
 > 
->   * Any writes to the EFER MSR
->   * Clearing CR0.NE
->   * Clearing CR3.MCE
-
-Sathya, there have been repeated issues in your changelogs with "we's".
- Remember, speak in imperative voice.  Please fix this in your tooling
-to find these so that reviewers don't have to.
-
-> +	/*
-> +	 * Preserve current value of EFER for comparison and to skip
-> +	 * EFER writes if no change was made (for TDX guest)
-> +	 */
-> +	movl    %eax, %edx
->  	btsl	$_EFER_SCE, %eax	/* Enable System Call */
->  	btl	$20,%edi		/* No Execute supported? */
->  	jnc     1f
->  	btsl	$_EFER_NX, %eax
->  	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
-> -1:	wrmsr				/* Make changes effective */
->  
-> +	/* Avoid writing EFER if no change was made (for TDX guest) */
-> +1:	cmpl	%edx, %eax
-> +	je	1f
-> +	xor	%edx, %edx
-> +	wrmsr				/* Make changes effective */
-> +1:
-
-Just curious, but what if this goes wrong?  Say the TDX firmware didn't
-set up EFER correctly and this code does the WRMSR.  What ends up
-happening?  Do we get anything out on the console, or is it essentially
-undebuggable?
-
+> -Stephen
 > 
-> +	/*
-> +	 * Skip writing to EFER if the register already has desiered
-> +	 * value (to avoid #VE for TDX guest).
-> +	 */
 
+Yes, we cannot mark device as suspended/resumed during
+runtime PM operations. Bus will be resumed during i2c
+transfers and before transfer initiation, in __i2c_transfer()
+from i2c-core-base.c there is a check to see whether the device
+is marked as suspended with "__i2c_check_suspended(adap)" call,
+which is "true" in this case and returning from there.
 
-							spelling ^
+To mark it only suspended during system wide suspend/resume
+transitions, currently our geni i2c driver has only
+system_suspend implemented (geni_i2c_suspend_noirq()) and
+does not have system_resume implemented, which again causes i2c
+transfers to fail during system_resume after system_suspend.
 
-There are lots of editors that can do spell checking, even in C
-comments.  You might want to look into that for your editor.
+Shall I go ahead with marking device suspended during
+shutdown() only?
+
+-Roja
+
+>> [   12.040151] rt5682 9-001a: ASoC: error at 
+>> soc_component_write_no_lock
+>> on rt5682.9-001a: -108
+>> [   12.049055] rt5682 9-001a: ASoC: error at 
+>> soc_component_write_no_lock
+>> on rt5682.9-001a: -108
+>> [   12.057742] rt5682 9-001a: ASoC: error at
+>> snd_soc_component_update_bits on rt5682.9-001a: -108
+>> 
+>> Trace2:
+>> [    3.515390] i2c i2c-2: Transfer while suspended
+>> [    3.606749] Call trace:
+>> [    3.606751]  __i2c_transfer+0xb8/0x38c
+>> [    3.606752]  i2c_transfer+0xa0/0xf4
+>> [    3.606754]  i2c_transfer_buffer_flags+0x68/0x9c
+>> [    3.639599] hub 2-1.4:1.0: USB hub found
+>> [    3.644375]  regmap_i2c_write+0x34/0x64
+>> [    3.644376]  _regmap_raw_write_impl+0x4e8/0x7bc
+>> [    3.644378]  _regmap_bus_raw_write+0x70/0x8c
+>> [    3.644379]  _regmap_write+0x100/0x150
+>> [    3.644381]  regmap_write+0x54/0x78
+>> [    3.644383]  ti_sn_aux_transfer+0x90/0x244
+>> [    3.650695] hub 2-1.4:1.0: 4 ports detected
+>> [    3.655288]  drm_dp_dpcd_access+0x8c/0x11c
+>> [    3.655289]  drm_dp_dpcd_read+0x64/0x10c
+>> [    3.655290]  ti_sn_bridge_enable+0x5c/0x824
+>> [    3.655292]  drm_atomic_bridge_chain_enable+0x78/0xa0
+>> [    3.655294]  drm_atomic_helper_commit_modeset_enables+0x198/0x238
+>> [    3.655295]  msm_atomic_commit_tail+0x324/0x714
+>> [    3.655297]  commit_tail+0xa4/0x108
+>> [    3.664985] usb 1-1.4: new high-speed USB device number 4 using
+>> xhci-hcd
+>> [    3.666204]  drm_atomic_helper_commit+0xf4/0xfc
+>> [    3.666205]  drm_atomic_commit+0x50/0x5c
+>> [    3.666206]  drm_atomic_helper_set_config+0x64/0x98
+>> [    3.666208]  drm_mode_setcrtc+0x26c/0x590
+>> [    3.666209]  drm_ioctl_kernel+0x9c/0x114
+>> [    3.701074] hub 2-1.4:1.0: USB hub found
+>> [    3.703347]  drm_ioctl+0x288/0x420
+>> [    3.703349]  drm_compat_ioctl+0xd0/0xe0
+>> [    3.703351]  __arm64_compat_sys_ioctl+0x100/0x2108
+>> [    3.703354]  el0_svc_common+0xa4/0x16c
+>> [    3.708499] hub 2-1.4:1.0: 4 ports detected
+>> [    3.711588]  el0_svc_compat_handler+0x2c/0x40
+>> [    3.711590]  el0_svc_compat+0x8/0x10
+>> [    3.711591] ---[ end trace 745ead557fcbb5db ]---
+>> [    3.772120] usb 1-1.4: New USB device found, idVendor=0bda,
+>> idProduct=5411, bcdDevice= 1.04
+>> [    3.794990] ti_sn65dsi86 2-002d: [drm:ti_sn_bridge_enable] *ERROR*
+>> Can't read lane count (-108); assuming 4
+>> 
+>> [1]
+>> https://lore.kernel.org/r/20210508075151.1626903-2-swboyd@chromium.org
+>> 
