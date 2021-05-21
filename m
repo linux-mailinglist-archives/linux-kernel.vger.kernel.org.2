@@ -2,69 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74E538C8EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:06:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A662038C8DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:01:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236558AbhEUOHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhEUOHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:07:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06E72C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:06:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=PhExRqklmWNSYFA2NeQrWGtVr2foNSqvGdEdZMWTZOA=; b=M7PpjtsImOdcUp+qdQAftJFJOd
-        wX7zwtnH9sgoMdTcQKyphoWa76Q/3FJCpCW6OPOwF+FMAA4Ni+qax4qxFiK1ZcIiEhGOJl91UgdLe
-        +pExS2Rv1uU9zL6ANoP9dPUe5OdOk9X+EEiHxNiUPADI7q2fcz26KQSTudALNkacVTSmihAVTdX+I
-        7Z3vjP3jeDdYZNHluYcG1Ty83RBuM1V7KDmPhxfqeGlqoCQDOjutCpGTC6HrCp77ISztFQJty+6uD
-        NT98tHGWoudkOw1GSQRJLPmeRbJwBOtpQwteNRnEbBV9dfevimEEZfE8xCjCt6FWsxLrPtstCUphp
-        CL3aR5Cg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lk5i8-00H0p6-2y; Fri, 21 May 2021 14:01:37 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B2E743001D0;
-        Fri, 21 May 2021 16:01:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A1BAA30D63CA1; Fri, 21 May 2021 16:01:07 +0200 (CEST)
-Date:   Fri, 21 May 2021 16:01:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Huaixin Chang <changhuaixin@linux.alibaba.com>
-Cc:     bsegall@google.com, dietmar.eggemann@arm.com,
-        dtcccc@linux.alibaba.com, juri.lelli@redhat.com,
-        khlebnikov@yandex-team.ru, linux-kernel@vger.kernel.org,
-        mgorman@suse.de, mingo@redhat.com, odin@uged.al, odin@ugedal.com,
-        pauld@redhead.com, pjt@google.com, rostedt@goodmis.org,
-        shanpeic@linux.alibaba.com, tj@kernel.org,
-        vincent.guittot@linaro.org, xiyou.wangcong@gmail.com
-Subject: Re: [PATCH v5 2/3] sched/fair: Add cfs bandwidth burst statistics
-Message-ID: <YKe9I5YfgRWvYmFn@hirez.programming.kicks-ass.net>
-References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
- <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
+        id S236441AbhEUODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:03:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232587AbhEUODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 10:03:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D0574600CC;
+        Fri, 21 May 2021 14:01:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621605709;
+        bh=4NU3L/wRMJdaIM1lpW4/qgGxrymlw6Y10w9dSIEXwHg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=k0aXQLcppBc724fUuHCe8op2TXc4CanDDbbLvjvCE5wNC9UWY6gV2O96k4/vExpQ6
+         dBWxwqNxS2vznmWLyuIaTROH/FOqw/hGNAwA7AZy+LvODPk578qrIAS7/Bw4V2gunk
+         eH1767xBA0VL5/aOcLBwFOnQO53LrvzF5uK0gbR4KSmQU/UlgsoT39Ttp15YD9B33K
+         e7oUmMYn8ALCmu3DsrJwklZTSbtrkQkW7VP0/p6LMsyQVFsV0fJwZhq4pFMIMXeGeh
+         cTYn8v+22Qpb7vx2u9ZPd2sU2neE26jgzlJeAUKVoscCwpeOKEXLio40mFRYQaYKsH
+         PQeuHh2aaYIwg==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 94CF75C033C; Fri, 21 May 2021 07:01:49 -0700 (PDT)
+Date:   Fri, 21 May 2021 07:01:49 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
+Message-ID: <20210521140149.GV4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210516102716.689596-1-senozhatsky@chromium.org>
+ <YKdU0U0aHKm2x3Y7@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
+In-Reply-To: <YKdU0U0aHKm2x3Y7@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 08:34:18PM +0800, Huaixin Chang wrote:
-> When using cfs_b and meeting with some throttled periods, users shall
-> use burst buffer to allow bursty workloads. Apart from configuring some
-> burst buffer and watch whether throttled periods disappears, some
-> statistics on burst buffer using are also helpful. Thus expose the
-> following statistics into cpu.stat file:
+On Fri, May 21, 2021 at 03:36:01PM +0900, Sergey Senozhatsky wrote:
+> On (21/05/16 19:27), Sergey Senozhatsky wrote:
+> >  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
+> >  1 file changed, 18 insertions(+)
+> > 
+> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> > index 59b95cc5cbdf..cb233c79f0bc 100644
+> > --- a/kernel/rcu/tree_stall.h
+> > +++ b/kernel/rcu/tree_stall.h
+> > @@ -7,6 +7,8 @@
+> >   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+> >   */
+> >  
+> > +#include <asm/kvm_para.h>
+> > +
 > 
+> D'oh, why did I do this...
+> 
+> Paul, I've a trivial fixup. How do you want to handle it?
 
-Helpful how.. the above is a bunch of words without any actual
-justification for any of this.
+I dropped your earlier patch due to the warning and also because it
+looked like you might have a different approach.
+
+So please just send the fixed-up patch and I will pull it in and see
+how it does.
+
+							Thanx, Paul
+
+> ---
+> 
+> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
+> index cd815b19740a..b9b52f91e5b8 100644
+> --- a/kernel/rcu/tree_stall.h
+> +++ b/kernel/rcu/tree_stall.h
+> @@ -7,7 +7,7 @@
+>   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
+>   */
+>  
+> -#include <asm/kvm_para.h>
+> +#include <linux/kvm_para.h>
+>  
+>  //////////////////////////////////////////////////////////////////////////////
+>  //
