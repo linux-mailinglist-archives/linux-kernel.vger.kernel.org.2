@@ -2,90 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A9638CA11
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:27:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 016DB38CA16
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237440AbhEUP2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:28:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51784 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232199AbhEUP2c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:28:32 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 376ED60698;
-        Fri, 21 May 2021 15:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621610828;
-        bh=y0/BKPJwQLkNi3YAcK0p7D1L9xBZFof1RF/D30J9cTE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=E70Kqbt68unJFcXvSfnVm4cXes1iIVtvo8/iEaXyo9JkZ/jKPdzTe6KYiTz+6Z9IA
-         D/Vu5HDnQyUENgWh5tAnPjHkP4A/w7PoPwtK6yT1FpXHnheB2GTUWHQEX+VDQiRahH
-         PI6J1OWBsoUDsV5uZvp9QgVwfe5prBqgja3A7jOOdz8rIgC0H0h3hXchlwkObkx3/5
-         PRDjxNsNDz1b4T5hpWeZPmTWKt7pl4Ai9qrvYUsHitO/+ACW00jGGAkfyKt6pQB1KB
-         BToRgyjWmsgkhGx61Tw+F2vehmzxnhhvN2ZvtW1oy8FXgjW0sH7W1lKzoy82X/ZmOa
-         gHC9lgBXLF2FA==
-Date:   Sat, 22 May 2021 00:27:02 +0900
-From:   Keith Busch <kbusch@kernel.org>
-To:     Daniel Wagner <dwagner@suse.de>
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>,
-        Sagi Grimberg <sagi@grimberg.me>
-Subject: Re: [PATCH] nvme: Use NN for max_namespaces if MNAN is zero
-Message-ID: <20210521152702.GB29013@redsun51.ssa.fujisawa.hgst.com>
-References: <20210521144734.90044-1-dwagner@suse.de>
- <20210521145306.ld7jc6alchimyzny@beryllium.lan>
+        id S237449AbhEUP3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:29:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232199AbhEUP3p (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 11:29:45 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6741C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:28:20 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id 22so14764415pfv.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:28:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=oPQ0WnpZS7sQjm0jySdRKiIFkASQYZuINbenVMidsQE=;
+        b=kPraeU7i1keDTG3M4v8EV1gDxMm5N4/gL9Bu+jMvDUIOHHYosVCkIPSiT/7PRilvUj
+         K3dHq/V+ahl8FL8qFNzlcovHvxxhWoX/YE45wEQsF1FvwdetZZEbkNbvBOAe8uRJF8G6
+         y9ZgIwiXrl2zsi/oLMzxP9gfUR8/ZbVbAAajzlZdoS9At664CrzX1NCcxXFVuWblpQEW
+         hq5k4PmeG8U+1d/yQa/XVsY5axZK3FDPCH2d2ZAJGCrM75OKaqEvRRs8wTmE5o5JB28u
+         yxzNvm+KlKHXtMV0amfRNHNVNG/pY1p14gUjttgGIOJ9etzHBQonSuGwBkrmxXPmunsB
+         x4XA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=oPQ0WnpZS7sQjm0jySdRKiIFkASQYZuINbenVMidsQE=;
+        b=Li4D8hadCDabDrYuh7KlJndtVH1WR6Cfwxz6eyIkkXiWn3FTnu9kPNU/T0BpH8uZJC
+         GBuFoXqax1UUv7a+oU93FCI0bSsOCebuy5BcgpFRCZtDk//IdabNQ5Oju/uLB+3mK5Aj
+         F8WI8fSBoQhuxsUdRvriBgiwlj04r6wNFQ2aZvXTZBf0G7o3EKIlTn8VXHqJAwjyOkHR
+         RUV2Nb0/02gd9/jSkNSbjNRl3WqXYv3Z22P/4mhDUWnLEuTPrK+CFQ/H9WNHVzdYrVer
+         uS++qkHVUcT2s7fFPm5qV79pTl2rX8SBi9b2Gt2t7w55GJhV3VmNsWwUkovLyifOBf6c
+         4IIw==
+X-Gm-Message-State: AOAM530ViETYaRxKuz8r0B+4X4vq/V5011Pa6bnkj+TDOL9gzfYhF5z0
+        UqnaTd3CCiPwh1ifwk6U33NuzA==
+X-Google-Smtp-Source: ABdhPJyNwl4L0LAqQxcu4P2/JopvQN/kvMqdeiKhwquGCSmxH06eqIsAs2U0b3jaPXs8oKWMXOh7xw==
+X-Received: by 2002:a63:338b:: with SMTP id z133mr10495627pgz.442.1621610900180;
+        Fri, 21 May 2021 08:28:20 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 13sm4737555pfz.91.2021.05.21.08.28.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 08:28:19 -0700 (PDT)
+Date:   Fri, 21 May 2021 15:28:15 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Reiji Watanabe <reijiw@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 02/43] KVM: VMX: Set EDX at INIT with CPUID.0x1,
+ Family-Model-Stepping
+Message-ID: <YKfRj+I2Wa+t//lb@google.com>
+References: <20210424004645.3950558-1-seanjc@google.com>
+ <20210424004645.3950558-3-seanjc@google.com>
+ <CAAeT=FyNo1CGvnamc3_J9EEQUn6WcdkMp50-QgmLYYVCFA2fZA@mail.gmail.com>
+ <YKVdUtvSg7/I7Ses@google.com>
+ <CAAeT=FxvS_hzcZbZQ_jQnWwX+xDT0SqQoHKELeviqu_QvvnbYg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210521145306.ld7jc6alchimyzny@beryllium.lan>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAAeT=FxvS_hzcZbZQ_jQnWwX+xDT0SqQoHKELeviqu_QvvnbYg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 04:53:06PM +0200, Daniel Wagner wrote:
-> On Fri, May 21, 2021 at 04:47:34PM +0200, Daniel Wagner wrote:
-> > NVMe 1.4 states that MNAN might be zero, in which case we should
-> > evaluate NN to get the number of supported namespaces.
-> > 
-> > Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> > ---
+On Fri, May 21, 2021, Reiji Watanabe wrote:
+> On Wed, May 19, 2021 at 11:47 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Tue, May 18, 2021, Reiji Watanabe wrote:
+> > > BTW, I would think having a default CPUID for CPUID.(EAX=0x1) would be better
+> > > for consistency of a vCPU state for RESET.  I would think it doesn't matter
+> > > practically anyway though.
+> >
+> > Probably, but that would require defining default values for all of CPUID.0x0 and
+> > CPUID.0x1, which is a can of worms I'd rather not open.  E.g. vendor info, basic
+> > feature set, APIC ID, etc... would all need default values.  On the other hand,
+> > the EDX value stuffing predates CPUID, so using 0x600 isn't provably wrong, just
+> > a bit anachronistic. :-)
 > 
-> Forgot to mention: During testing dynamically adding namespaces it was
-> possible to trigger the WARNINGs in the nvme_parse_ana_log(). Initially
-> the subsystem started with 8 namespaces and during runtime another 8
-> namespaces was added.
+> I see... Then I don't think it's worth doing...
+> Just out of curiosity, can't we simply use a vcpu_id for the APIC ID ?
 
-The controller is required to have a non-zero MNAN value if it supports
-ANA: 
+That would mostly work, but theoretically we could overflow the 8 bit field
+because max vCPUs is 288.  Thanks Larrabee.
 
-  If the controller supports Asymmetric Namespace Access Reporting, then
-  this field shall be set to a non-zero value that is less than or equal
-  to the NN value.
+  commit 682f732ecf7396e9d6fe24d44738966699fae6c0
+  Author: Radim Krčmář <rkrcmar@redhat.com>
+  Date:   Tue Jul 12 22:09:29 2016 +0200
 
->  WARNING: CPU: 3 PID: 3990 at ../drivers/nvme/host/multipath.c:464 nvme_parse_ana_log+0x15f/0x180 [nvme_core]
->  Modules linked in: nls_utf8 isofs af_packet iscsi_ibft iscsi_boot_sysfs rfkill intel_rapl_msr iTCO_wdt intel_pmc_bxt iTCO_vendor_support dcdbas(XX) intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel nls_iso8859_1 nls_cp437 vfat fat xfs kvm irqbypass crc32_pclmul ghash_clmulni_intel aesni_intel crypto_simd cryptd glue_helper pcspkr mgag200 joydev drm_kms_helper cec rc_core syscopyarea sysfillrect sysimgblt fb_sys_fops ipmi_ssif mei_me mei igb lpc_ich i2c_algo_bit dca ipmi_si ipmi_devintf ipmi_msghandler button drm fuse btrfs libcrc32c xor raid6_pq sr_mod cdrom sd_mod hid_generic usbhid uas usb_storage lpfc(OEXX) nvmet_fc nvmet configfs ehci_pci ehci_hcd nvme_fc ahci nvme_fabrics libahci nvme_core crc32c_intel libata usbcore scsi_transport_fc megaraid_sas t10_pi wmi sg dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua scsi_mod msr efivarfs
->  Supported: Yes, External
->  CPU: 3 PID: 3990 Comm: kworker/u82:4 Kdump: loaded Tainted: G           OE  X    5.3.18-56-default #1 SLE15-SP3
->  Hardware name: Dell Inc. PowerEdge R630/0CNCJW, BIOS 2.11.0 11/02/2019
->  Workqueue: nvme-wq nvme_scan_work [nvme_core]
->  RIP: 0010:nvme_parse_ana_log+0x15f/0x180 [nvme_core]
->  Code: 48 83 c4 08 b8 ea ff ff ff 5b 5d 41 5c 41 5d 41 5e 41 5f c3 0f 0b 48 83 c4 08 b8 ea ff ff ff 5b 5d 41 5c 41 5d 41 5e 41 5f c3 <0f> 0b 48 83 c4 08 b8 ea ff ff ff 5b 5d 41 5c 41 5d 41 5e 41 5f c3
->  RSP: 0018:ffffa59f495cbca0 EFLAGS: 00010283
->  RAX: 0000000000000010 RBX: ffff98bacb7bd470 RCX: 0000000000000028
->  RDX: 0000000000000001 RSI: ffffa59f495cbce0 RDI: ffff98bacb7bd470
->  RBP: 0000000000000030 R08: 0000000000000001 R09: 0000000000000228
->  R10: ffff98c2b1caaa10 R11: 000000000001d900 R12: 0000000000000040
->  R13: 0000000000000000 R14: ffffffffc02a9000 R15: ffff98c2b1caaa00
->  FS:  0000000000000000(0000) GS:ffff98c2ff840000(0000) knlGS:0000000000000000
->  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->  CR2: 000055a303a6a5e0 CR3: 00000006e820a004 CR4: 00000000001706e0
->  Call Trace:
->   nvme_mpath_add_disk+0x81/0x100 [nvme_core]
->   nvme_validate_ns+0x3d4/0x900 [nvme_core]
->   nvme_scan_work+0x155/0x2d0 [nvme_core]
->   process_one_work+0x1f4/0x3e0
->   worker_thread+0x2d/0x3e0
->   ? process_one_work+0x3e0/0x3e0
->   kthread+0x10d/0x130
->   ? kthread_park+0xa0/0xa0
->   ret_from_fork+0x35/0x40
+    KVM: x86: bump MAX_VCPUS to 288
+
+    288 is in high demand because of Knights Landing CPU.
+    We cannot set the limit to 640k, because that would be wasting space.
+
+> Also, can't we simply use the same values that KVM_GET_SUPPORTED_CPUID
+> provides for other CPUID fields ?
+
+Yes, that would mostly work.  It's certainly possible to have a moderately sane
+default, but there's essentially zero benefit in doing so since practically
+speaking all userspace VMMs will override CPUID anyways.  KVM could completely
+default to the host CPUID, but again, it wouldn't provide any meaningful benefit,
+while doing so would step on userspace's toes since KVM's approach is that KVM is
+"just" an accelerator, while userspace defines the CPU model, devices, etc...
+And it would also mean KVM has to start worrying about silly corner cases like
+the max vCPUs thing.  That's why I say it's a can of worms :-)
