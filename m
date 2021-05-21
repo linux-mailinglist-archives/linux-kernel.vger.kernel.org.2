@@ -2,169 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8025338C8F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE77B38C903
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:14:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbhEUOL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:11:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37402 "EHLO
+        id S236620AbhEUOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:15:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233556AbhEUOLY (ORCPT
+        with ESMTP id S232170AbhEUOPe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:11:24 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F2E5C061574;
-        Fri, 21 May 2021 07:10:00 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id k132so6651873iof.4;
-        Fri, 21 May 2021 07:10:00 -0700 (PDT)
+        Fri, 21 May 2021 10:15:34 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD775C061574;
+        Fri, 21 May 2021 07:14:10 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id lz27so30687757ejb.11;
+        Fri, 21 May 2021 07:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rgp+As3KlbEBKSyVtxsdvRFYlyX0rJUqDcyGgOG4188=;
-        b=rCvHAT1e9N+Z+rjcivIbW+yWiuaTrYUO4h7otm2/sRCHaUk8pHxU4B3+PkmI3d0ZRJ
-         2tAzBYA0FogjgbAW9UHIPwWHSJqgoogcJk+KIxo9bKBoFrhp5PDLOIkEL9pExfV5qjoo
-         WgzhYo/qWms4xYCdozWOV/TKQivldqCSJmrbLDXIAazejM/OtE+9GQCH4nacmJzStpjG
-         BjJf4OjkQJ44BYLrYcH1vgch1bc9kA1cg2kKmfMtI/+126z7oFd71CzcEoYOufDuYUy2
-         yk0jOfGH+/6HiIgsfUp30JWLGgCVUWja0/QtiKJ8pn7eVEIIW2BgHxpDpAUalZn3IwKh
-         vAUw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
+        b=oXrPFbj/F4QzgIwh7EPXBwVXmfNwLpxjxJ8zrD47PK9mL/aHImNzJakNOsj+lGlnC5
+         3uvms4VIUXbLD2/aJUKzTO+6SmVuoulZAZfLa5N1xjjxPcy2sK/uf4S+IRe3qhJILdlu
+         YjTA1/odtMmIxzvxB9P/5iRtIkrEfCTJP7Yuz8XL1rTjNriUSXwPmNGuKgYhxUrFe3DN
+         nIyLv/kpqyTzM0FaOgwdKS3byWirSTBnkxmy4pygSkYHlI38+MkO/2rRx/G6pamrlRxq
+         lCKtZE0xXNXtE4WWdgtADhO4iPu+fJZnfuWDcaDBxMC8jKiVRdHDKjKhEk+dcNUfPZBs
+         V+Tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rgp+As3KlbEBKSyVtxsdvRFYlyX0rJUqDcyGgOG4188=;
-        b=bMoRJJI/2q1nWU+pUZDfna3VUH34dGYpuw78JefGPYcls95IyuOBAJrLsCVHXo/W9K
-         2KBgB7Oiuvzs3SCV4aKfN28eV9UKg4M9FggpxC4aDU/V7ttEyhAod77f/6GhCB07Je3y
-         mnhOy0La2MToybsWV3/wLi9gNbU0H+LHolyUdgsCgV1TiNlR1oPZRClJMudfIocFK53g
-         39ePn9gSvOTbpx9itQE59H/Jc4BLXcUaJxs0JX+lMPXOkyISbjQkng0+88US5gaKJnTr
-         rKbSckP1NHlKRlvPObwjpcQddZr7UDmfKZQ7R6ueHXbeOPnTS1xRn0JzlOZJIUaOhPE3
-         e65w==
-X-Gm-Message-State: AOAM530CI9uNd9T//gYt4wEM1VtwRCDxkCZKzb4HlziO68wvdaRs29Bm
-        7Ec4X2GRwN7NCtTPqacrQgDRS9f3UQTIKsEjTbrpWHqL
-X-Google-Smtp-Source: ABdhPJx963ZKIoMW0yX6SSKHV7v9iBzcVj51DKJpySvD2v+xqvtzSsBZXXpCXXZJOjbXRyJqMGA75GXapMiUzwK9shY=
-X-Received: by 2002:a05:6602:14c8:: with SMTP id b8mr11637904iow.209.1621606199837;
- Fri, 21 May 2021 07:09:59 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
+        b=oAKyS2WabClHUe3hBWwHdBKsPOG+yp/g1Ko/Tfi9jv5sMhBq6tAYHsOTgx2fRQkyHb
+         iSN6viIw4whQ5U3L2tz0aS77CqW+ktyq72ps7pjqG6wyVZvfscc+up+VUl5Q1AMcqzh6
+         avUFJ0mfBW3p63x5kat3RbNzu0wpmFvoOMhdKxkKfh4N7S3I+HoA0OFsSFCeojbWMLOo
+         1Y2qLoqUHrkUWh9X3D0PtbkJ4df3mWnS0RA8b2OEqUgfsh3vd39TksT6Ezc0QQ/XqbEn
+         Kb031jub8m3Fc+VBpl7yG+qSTz8KPg7t1swD99WHbJcyPzdKXVNrjhlHA9aRdyZD9IVV
+         Y/WQ==
+X-Gm-Message-State: AOAM531Gn+DzwpkO2dxKedVMAKhw9rx6zDjytyokGlkf+j0XsuWNTVzb
+        76sV4wyQGKjx/Gg/HtwT4SY=
+X-Google-Smtp-Source: ABdhPJxlz9dC5l2beVI0RR8Y4plsZ6zJ1KUqmT/4uqPHe135qkehopOjM9gv55t4tHtyvNX8lBqRuQ==
+X-Received: by 2002:a17:906:c9cf:: with SMTP id hk15mr10403984ejb.445.1621606449227;
+        Fri, 21 May 2021 07:14:09 -0700 (PDT)
+Received: from skbuf ([188.26.52.84])
+        by smtp.gmail.com with ESMTPSA id gu16sm3610416ejb.88.2021.05.21.07.14.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 07:14:08 -0700 (PDT)
+Date:   Fri, 21 May 2021 17:14:06 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, a.fatoum@pengutronix.de,
+        vladimir.oltean@nxp.com, ast@kernel.org, daniel@iogearbox.net,
+        andriin@fb.com, edumazet@google.com, weiwan@google.com,
+        cong.wang@bytedance.com, ap420073@gmail.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxarm@openeuler.org, mkl@pengutronix.de,
+        linux-can@vger.kernel.org, jhs@mojatatu.com,
+        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
+        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
+        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
+        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
+        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
+        jgross@suse.com, JKosina@suse.com, mkubecek@suse.cz,
+        bjorn@kernel.org, alobakin@pm.me
+Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
+ qdisc
+Message-ID: <20210521141406.mmxv4ikfp4zfkcwo@skbuf>
+References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
+ <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
+ <20210520134652.2sw6gzfdzsqeedzz@skbuf>
 MIME-Version: 1.0
-References: <20210521124946.3617862-1-vkoul@kernel.org>
-In-Reply-To: <20210521124946.3617862-1-vkoul@kernel.org>
-From:   Jeffrey Hugo <jeffrey.l.hugo@gmail.com>
-Date:   Fri, 21 May 2021 08:09:49 -0600
-Message-ID: <CAOCk7Nqep_Db+z3fr5asHZ1u0j8+6fKkPFs2Ai8CbA_zGqV6ZA@mail.gmail.com>
-Subject: Re: [Freedreno] [RFC PATCH 00/13] drm/msm: Add Display Stream
- Compression Support
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>, DTML <devicetree@vger.kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        David Airlie <airlied@linux.ie>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        freedreno <freedreno@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520134652.2sw6gzfdzsqeedzz@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 6:50 AM Vinod Koul <vkoul@kernel.org> wrote:
->
-> Display Stream Compression (DSC) compresses the display stream in host which
-> is later decoded by panel. This series enables this for Qualcomm msm driver.
-> This was tested on Google Pixel3 phone which use LGE SW43408 panel.
->
-> The changes include adding DT properties for DSC then hardware blocks support
-> required in DPU1 driver and support in encoder. We also add support in DSI
-> and introduce required topology changes.
->
-> In order for panel to set the DSC parameters we add dsc in drm_panel and set
-> it from the msm driver.
->
-> Complete changes which enable this for Pixel3 along with panel driver (not
-> part of this series) and DT changes can be found at:
-> git.linaro.org/people/vinod.koul/kernel.git pixel/dsc_rfc
->
-> Comments welcome!
+On Thu, May 20, 2021 at 04:46:52PM +0300, Vladimir Oltean wrote:
+> Hi Yunsheng,
+> 
+> On Thu, May 20, 2021 at 05:45:14PM +0800, Yunsheng Lin wrote:
+> > On 2021/5/20 17:27, Yunsheng Lin wrote:
+> > > Patch 1: remove unnecessary seqcount operation.
+> > > Patch 2: implement TCQ_F_CAN_BYPASS.
+> > > Patch 3: remove qdisc->empty.
+> > > 
+> > > RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
+> > >         qdisc, and add patch 1 and 3.
+> > 
+> > @Vladimir, Ahmad
+> > It would be good to run your testcase to see if there are any
+> > out of order for this version, because this version has used
+> > STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
+> > thanks.
+> > 
+> > It is based on newest net branch with qdisc stuck patchset.
+> > 
+> > Some performance data as below:
+> > 
+> > pktgen + dummy netdev:
+> >  threads  without+this_patch   with+this_patch      delta
+> >     1       2.60Mpps            3.18Mpps             +22%
+> >     2       3.84Mpps            5.72Mpps             +48%
+> >     4       5.52Mpps            5.52Mpps             +0.0%
+> >     8       2.77Mpps            2.81Mpps             +1.4%
+> >    16       2.24Mpps            2.29Mpps             +2.2%
+> > 
+> > IP forward testing: 1.05Mpps increases to 1.15Mpps
+> 
+> I will start the regression test with the flexcan driver on LS1028A and
+> let you know tomorrow or so if there is any TX reordering issue.
 
-This feels backwards to me.  I've only skimmed this series, and the DT
-changes didn't come through for me, so perhaps I have an incomplete
-view.
-
-DSC is not MSM specific.  There is a standard for it.  Yet it looks
-like everything is implemented in a MSM specific way, and then pushed
-to the panel.  So, every vendor needs to implement their vendor
-specific way to get the DSC info, and then push it to the panel?
-Seems wrong, given there is an actual standard for this feature.
-
-Additionally, we define panel properties (resolution, BPP, etc) at the
-panel, and have the display drivers pull it from the panel.  However,
-for DSC, you do the reverse (define it in the display driver, and push
-it to the panel).  If the argument is that DSC properties can be
-dynamic, well, so can resolution.  Every panel for MSM MTPs supports
-multiple resolutions, yet we define that with the panel in Linux.
-
-Finally, I haven't seen the DT bits, but I'm concerned about using DT
-for this.  It inherently excludes ACPI systems.  You appear to have
-sdm845 support in this series, but what about ACPI boot on the Lenovo
-C630 for example?  Or any of the 8cx laptops?  We don't read the panel
-resolution, etc from DT, so why the DSC?
-
-I'm glad that work is being done to add DSC to Linux, it's something I
-struggled with when working on the 8998 mtp, and I realize this is a
-bit of a drive-by review.  However, it seems like there should be a
-better way.
-
->
-> Vinod Koul (13):
->   drm/dsc: Add dsc pps header init function
->   dt-bindings: msm/dsi: Document Display Stream Compression (DSC)
->     parameters
->   drm/msm/dsi: add support for dsc data
->   drm/msm/disp/dpu1: Add support for DSC
->   drm/msm/disp/dpu1: Add support for DSC in pingpong block
->   drm/msm/disp/dpu1: Add DSC support in RM
->   drm/msm/disp/dpu1: Add DSC for SDM845 to hw_catalog
->   drm/msm/disp/dpu1: Add DSC support in hw_ctl
->   drm/msm/disp/dpu1: Don't use DSC with mode_3d
->   drm/msm/disp/dpu1: Add support for DSC in encoder
->   drm/msm/disp/dpu1: Add support for DSC in topology
->   drm/msm/dsi: Add support for DSC configuration
->   drm/msm/dsi: Pass DSC params to drm_panel
->
->  .../devicetree/bindings/display/msm/dsi.txt   |  15 +
->  drivers/gpu/drm/drm_dsc.c                     |  11 +
->  drivers/gpu/drm/msm/Makefile                  |   1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 204 +++++++++++-
->  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |  11 +
->  .../drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c  |   2 +
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |  22 ++
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  26 ++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c    |  12 +-
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h    |   2 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 221 +++++++++++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  79 +++++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 +
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   |  32 ++
->  .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h   |  14 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |   1 +
->  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c        |  32 ++
->  drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h        |   1 +
->  drivers/gpu/drm/msm/dsi/dsi.xml.h             |  10 +
->  drivers/gpu/drm/msm/dsi/dsi_host.c            | 293 +++++++++++++++++-
->  drivers/gpu/drm/msm/msm_drv.h                 |  32 ++
->  include/drm/drm_dsc.h                         |  16 +
->  include/drm/drm_panel.h                       |   7 +
->  23 files changed, 1043 insertions(+), 14 deletions(-)
->  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
->  create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
->
-> --
-> 2.26.3
->
-> _______________________________________________
-> Freedreno mailing list
-> Freedreno@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/freedreno
+14 million CAN frames later, I did not observe any TX reordering at all.
