@@ -2,120 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEC0238C836
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:35:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDB38C83B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234880AbhEUNhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:37:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231601AbhEUNhS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:37:18 -0400
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A444C061574;
-        Fri, 21 May 2021 06:35:55 -0700 (PDT)
-Received: by mail-ed1-x52a.google.com with SMTP id h16so23345063edr.6;
-        Fri, 21 May 2021 06:35:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=CQNC5tcnBn2sqXfCRtfQO1Epq9bHKf0uPXF2miAwK8c=;
-        b=fLsWWbaiDOqeBWiqz6Z+lTChhnRdQXJhHKLIfA8sFTt4eb1cfC4Lt3RrcQ21kaW+jW
-         OHIxj5PhomewXQVDOd/NF4aWy9+nfK225wjSgNf4pICpSZapsAFD8LYus0KDiKKUuQ8g
-         q29dSw99YdnCWDV0xwHNcRcX6NgiJpwFfWk5fk2Ot7V6FoTtgokzv/SI1lCWzOgnr2Lc
-         FU/z2kh1YvgJfgjqA275Qr3tRFOI5QZVbtUGtxUdON110xwRCN7lFaz+JPDs9sgDLpka
-         7E+Uyoi5ddadvNEHHi1V3c2eC9DHyCLuYNLje5KHnohs/PqXiQcNWWZsqQZnDUp3ltdP
-         CmMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=CQNC5tcnBn2sqXfCRtfQO1Epq9bHKf0uPXF2miAwK8c=;
-        b=Xbs/h5BxGbIWmNsR3xWwO7KvMJD3ESoqQR1WJxpimhPapkWtDNTUkkn9VwJYQyg6ey
-         6oHwhl5yjR/TZTHz+VZ/w+bbqmfIWyrHVrFiz9jiPWLlVIPByphNf66cxUW1T5eKZtyD
-         W8LA36oyezv7UAmavRC63hAN0/FrWh26VtgaaQ9JZrmzopyRjcGAbmluHhJk7OO0RsLx
-         9yj4+a7BTbAGOk99fm0FqfxMJl/Apegku4+t6yRbJ0JOCbeKjw/H21aklaqc1mol741A
-         XYYl8Czv4SHhLC8DuJVlfj4ProseQ7bL6BeEIRRVcA3SlkrsEcdhBiEKvGL/cBDgwCyR
-         iBoA==
-X-Gm-Message-State: AOAM531heNX0cazn2q/OgUQK5q4PG8bRB12WC1/U9Ow2NkOaA4DJHdR/
-        DlwbQK02X4UiCPHC6LXUTOAuetXVAjo=
-X-Google-Smtp-Source: ABdhPJyPW3mc2rl6LjDNVIo7U/7GXPuRodp/tiEJiegxksa2IqC/S5vF1kHBS0G+Zgd1fxT0kjpidw==
-X-Received: by 2002:aa7:d550:: with SMTP id u16mr9565282edr.72.1621604153975;
-        Fri, 21 May 2021 06:35:53 -0700 (PDT)
-Received: from ?IPv6:2a02:908:1252:fb60:b48f:ff97:fb4c:5b1d? ([2a02:908:1252:fb60:b48f:ff97:fb4c:5b1d])
-        by smtp.gmail.com with ESMTPSA id df8sm3942018edb.58.2021.05.21.06.35.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 06:35:52 -0700 (PDT)
-Subject: Re: [PATCH] drm/amdgpu: Fix inconsistent indenting
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>,
-        alexander.deucher@amd.com
-Cc:     airlied@linux.ie, Xinhui.Pan@amd.com, linux-kernel@vger.kernel.org,
-        amd-gfx@lists.freedesktop.org, sumit.semwal@linaro.org,
-        linaro-mm-sig@lists.linaro.org, dri-devel@lists.freedesktop.org,
-        daniel@ffwll.ch, christian.koenig@amd.com,
-        linux-media@vger.kernel.org
-References: <1621590628-75988-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <09e40764-1d3a-0dfe-b278-5b5ce04670a9@gmail.com>
-Date:   Fri, 21 May 2021 15:35:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235470AbhEUNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:37:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231601AbhEUNhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:37:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECA056023D;
+        Fri, 21 May 2021 13:36:08 +0000 (UTC)
+Date:   Fri, 21 May 2021 19:06:04 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v4 1/6] bus: mhi: core: Set BHI/BHIe offsets on power up
+ preparation
+Message-ID: <20210521133604.GI70095@thinkpad>
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+ <1620330705-40192-2-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-In-Reply-To: <1621590628-75988-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620330705-40192-2-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 21.05.21 um 11:50 schrieb Jiapeng Chong:
-> Eliminate the follow smatch warning:
->
-> drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c:449
-> sdma_v5_0_ring_emit_mem_sync() warn: inconsistent indenting.
->
-> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+On Thu, May 06, 2021 at 12:51:40PM -0700, Bhaumik Bhatt wrote:
+> Set the BHI and/or BHIe offsets in mhi_prepare_for_power_up(),
+> rearrange the function, and remove the equivalent from
+> mhi_async_power_up(). This helps consolidate multiple checks
+> in different parts of the driver and can help MHI fail early on
+> before power up begins if the offsets are not read correctly.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-Reviewed-by: Christian König <christian.koenig@amd.com>
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+
+Thanks,
+Mani
 
 > ---
->   drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c | 13 ++++++-------
->   1 file changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-> index 75d7310..c45e1b0 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/sdma_v5_0.c
-> @@ -440,20 +440,19 @@ static void sdma_v5_0_ring_emit_ib(struct amdgpu_ring *ring,
->    */
->   static void sdma_v5_0_ring_emit_mem_sync(struct amdgpu_ring *ring)
->   {
-> -    uint32_t gcr_cntl =
-> -		    SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB | SDMA_GCR_GLM_INV |
-> -			SDMA_GCR_GL1_INV | SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
-> -			SDMA_GCR_GLI_INV(1);
-> +	uint32_t gcr_cntl = SDMA_GCR_GL2_INV | SDMA_GCR_GL2_WB | SDMA_GCR_GLM_INV |
-> +			    SDMA_GCR_GL1_INV | SDMA_GCR_GLV_INV | SDMA_GCR_GLK_INV |
-> +			    SDMA_GCR_GLI_INV(1);
->   
->   	/* flush entire cache L0/L1/L2, this can be optimized by performance requirement */
->   	amdgpu_ring_write(ring, SDMA_PKT_HEADER_OP(SDMA_OP_GCR_REQ));
->   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD1_BASE_VA_31_7(0));
->   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD2_GCR_CONTROL_15_0(gcr_cntl) |
-> -			SDMA_PKT_GCR_REQ_PAYLOAD2_BASE_VA_47_32(0));
-> +			  SDMA_PKT_GCR_REQ_PAYLOAD2_BASE_VA_47_32(0));
->   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD3_LIMIT_VA_31_7(0) |
-> -			SDMA_PKT_GCR_REQ_PAYLOAD3_GCR_CONTROL_18_16(gcr_cntl >> 16));
-> +			  SDMA_PKT_GCR_REQ_PAYLOAD3_GCR_CONTROL_18_16(gcr_cntl >> 16));
->   	amdgpu_ring_write(ring, SDMA_PKT_GCR_REQ_PAYLOAD4_LIMIT_VA_47_32(0) |
-> -			SDMA_PKT_GCR_REQ_PAYLOAD4_VMID(0));
-> +			  SDMA_PKT_GCR_REQ_PAYLOAD4_VMID(0));
->   }
->   
->   /**
-
+>  drivers/bus/mhi/core/init.c | 42 +++++++++++++++++++++++-------------------
+>  drivers/bus/mhi/core/pm.c   | 28 ++++------------------------
+>  2 files changed, 27 insertions(+), 43 deletions(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index c81b377..11c7a3d 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -1063,7 +1063,7 @@ EXPORT_SYMBOL_GPL(mhi_free_controller);
+>  int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  {
+>  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
+> -	u32 bhie_off;
+> +	u32 bhi_off, bhie_off;
+>  	int ret;
+>  
+>  	mutex_lock(&mhi_cntrl->pm_mutex);
+> @@ -1072,29 +1072,36 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  	if (ret)
+>  		goto error_dev_ctxt;
+>  
+> -	/*
+> -	 * Allocate RDDM table if specified, this table is for debugging purpose
+> -	 */
+> -	if (mhi_cntrl->rddm_size) {
+> -		mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->rddm_image,
+> -				     mhi_cntrl->rddm_size);
+> +	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIOFF, &bhi_off);
+> +	if (ret) {
+> +		dev_err(dev, "Error getting BHI offset\n");
+> +		goto error_reg_offset;
+> +	}
+> +	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
+>  
+> -		/*
+> -		 * This controller supports RDDM, so we need to manually clear
+> -		 * BHIE RX registers since POR values are undefined.
+> -		 */
+> +	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
+>  		ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIEOFF,
+>  				   &bhie_off);
+>  		if (ret) {
+>  			dev_err(dev, "Error getting BHIE offset\n");
+> -			goto bhie_error;
+> +			goto error_reg_offset;
+>  		}
+> -
+>  		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
+> +	}
+> +
+> +	if (mhi_cntrl->rddm_size) {
+> +		/*
+> +		 * This controller supports RDDM, so we need to manually clear
+> +		 * BHIE RX registers since POR values are undefined.
+> +		 */
+>  		memset_io(mhi_cntrl->bhie + BHIE_RXVECADDR_LOW_OFFS,
+>  			  0, BHIE_RXVECSTATUS_OFFS - BHIE_RXVECADDR_LOW_OFFS +
+>  			  4);
+> -
+> +		/*
+> +		 * Allocate RDDM table for debugging purpose if specified
+> +		 */
+> +		mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->rddm_image,
+> +				     mhi_cntrl->rddm_size);
+>  		if (mhi_cntrl->rddm_image)
+>  			mhi_rddm_prepare(mhi_cntrl, mhi_cntrl->rddm_image);
+>  	}
+> @@ -1103,11 +1110,8 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  
+>  	return 0;
+>  
+> -bhie_error:
+> -	if (mhi_cntrl->rddm_image) {
+> -		mhi_free_bhie_table(mhi_cntrl, mhi_cntrl->rddm_image);
+> -		mhi_cntrl->rddm_image = NULL;
+> -	}
+> +error_reg_offset:
+> +	mhi_deinit_dev_ctxt(mhi_cntrl);
+>  
+>  error_dev_ctxt:
+>  	mutex_unlock(&mhi_cntrl->pm_mutex);
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index e2e59a3..adf426c 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -1066,28 +1066,8 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+>  	if (ret)
+>  		goto error_setup_irq;
+>  
+> -	/* Setup BHI offset & INTVEC */
+> +	/* Setup BHI INTVEC */
+>  	write_lock_irq(&mhi_cntrl->pm_lock);
+> -	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIOFF, &val);
+> -	if (ret) {
+> -		write_unlock_irq(&mhi_cntrl->pm_lock);
+> -		goto error_bhi_offset;
+> -	}
+> -
+> -	mhi_cntrl->bhi = mhi_cntrl->regs + val;
+> -
+> -	/* Setup BHIE offset */
+> -	if (mhi_cntrl->fbc_download) {
+> -		ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIEOFF, &val);
+> -		if (ret) {
+> -			write_unlock_irq(&mhi_cntrl->pm_lock);
+> -			dev_err(dev, "Error reading BHIE offset\n");
+> -			goto error_bhi_offset;
+> -		}
+> -
+> -		mhi_cntrl->bhie = mhi_cntrl->regs + val;
+> -	}
+> -
+>  	mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
+>  	mhi_cntrl->pm_state = MHI_PM_POR;
+>  	mhi_cntrl->ee = MHI_EE_MAX;
+> @@ -1098,7 +1078,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+>  	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
+>  		dev_err(dev, "Not a valid EE for power on\n");
+>  		ret = -EIO;
+> -		goto error_bhi_offset;
+> +		goto error_async_power_up;
+>  	}
+>  
+>  	state = mhi_get_mhi_state(mhi_cntrl);
+> @@ -1117,7 +1097,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+>  		if (!ret) {
+>  			ret = -EIO;
+>  			dev_info(dev, "Failed to reset MHI due to syserr state\n");
+> -			goto error_bhi_offset;
+> +			goto error_async_power_up;
+>  		}
+>  
+>  		/*
+> @@ -1139,7 +1119,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
+>  
+>  	return 0;
+>  
+> -error_bhi_offset:
+> +error_async_power_up:
+>  	mhi_deinit_free_irq(mhi_cntrl);
+>  
+>  error_setup_irq:
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
