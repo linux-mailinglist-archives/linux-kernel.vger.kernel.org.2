@@ -2,112 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60F7538CDC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:48:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E511838CDC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:50:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232210AbhEUStt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:49:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28623 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231620AbhEUStr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:49:47 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621622903;
+        id S232319AbhEUSvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:51:24 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:41900 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231494AbhEUSvX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:51:23 -0400
+Received: from zn.tnic (p200300ec2f0ea400fbcd5718c7a034c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a400:fbcd:5718:c7a0:34c2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BEBD81EC06F0;
+        Fri, 21 May 2021 20:49:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621622998;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=RabyVfBo+mpfsjY1+7E6nJCVxTgd3EWR2ZAwlRxq+pc=;
-        b=VQPBkvE+0XwgqUqltnAnYBMvT/7iETOu/lT6VEavQl171JGd55cdjNNjwbDKLHQSHwGwCk
-        3iBFLZdv+Eav8G3UVS6mh5S0SWoG/5urj6fE+eD1+S7wka2qEB1n3zsq2FYje+tvdA2KUM
-        xaainYeoMNddqvLqFOJKH8G537RAJZQ=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-A2EiMt6ZN5W6Z4_K5jrWPQ-1; Fri, 21 May 2021 14:48:20 -0400
-X-MC-Unique: A2EiMt6ZN5W6Z4_K5jrWPQ-1
-Received: by mail-qv1-f72.google.com with SMTP id bc3-20020ad456830000b02901f47dbd7ef6so7975719qvb.6
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:48:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RabyVfBo+mpfsjY1+7E6nJCVxTgd3EWR2ZAwlRxq+pc=;
-        b=e5HMKepEJIOIiTJJBk0FT2svHzQbjDd1LRBLtpTjQf1zy2I8VKsH1xYIVXK/FxxY/p
-         pbJ6CmMVGhby3Mpnj+tjgY3vngqtcxFZpbi++sn83xLrqtU8EzeXKtVoBsxxvaeafv/r
-         7i/v5vDv2vzGYTpnRQZiTOTzBI/VqFKnqGeJVEz3Ifn0VsmciC6OQU+dO4qWHzekWRy7
-         1c/LcU5ZZVsmQDwHjCOhinibHRpdv9IrMtYZjYIM7VS+GxE7LKGKfNUWVT1LixBgCQL2
-         Ekn8WMaBAo9Enye0L9cOa33qr4nU9IBPmO2kM+QKjFEfRxUJDvHpjMEoWiYKsn9A9ij6
-         VUyQ==
-X-Gm-Message-State: AOAM530RRU041lvhhH04wxDmWJ1sIcVkSfkdll6xHlZgfmPzVYu+uPuk
-        irtCtAs8wTi6ceefv6X/ftkTRwHTdZqi2HAiFPVim8RbwQyE+Trk3vKb6ulIl2mFcP2W+vK4CAz
-        /lDG1EIGrcNnZLynq4lM76JU3
-X-Received: by 2002:a37:a751:: with SMTP id q78mr12984101qke.482.1621622900180;
-        Fri, 21 May 2021 11:48:20 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxHUdKGd/QZYK8u/xAP/LmgxaXU5otdxg4YYZcyca15w45dlnEX1TLWZZcpl0Zm9M20jsvUSA==
-X-Received: by 2002:a37:a751:: with SMTP id q78mr12984080qke.482.1621622899919;
-        Fri, 21 May 2021 11:48:19 -0700 (PDT)
-Received: from treble ([68.52.236.68])
-        by smtp.gmail.com with ESMTPSA id b17sm4762548qtb.78.2021.05.21.11.48.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 11:48:19 -0700 (PDT)
-Date:   Fri, 21 May 2021 13:48:17 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>,
-        mark.rutland@arm.com, ardb@kernel.org, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-Message-ID: <20210521184817.envdg232b2aeyprt@treble>
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-2-madvenka@linux.microsoft.com>
- <20210521161117.GB5825@sirena.org.uk>
- <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
- <20210521174242.GD5825@sirena.org.uk>
- <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
- <20210521175318.GF5825@sirena.org.uk>
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=3LJAZhxKWmjimDmIEpS1OanKuj4fPuQC6Ji2my1ffes=;
+        b=LhfojBS1PUhodfjrWgeTAsonPiAiCqCd5Qw+d14N+N+2WZLh9Y31jKKS0w2FYp/RjaIfbz
+        rcoKwns8hndz4ox1V1miUKrT+cJtA1H6A9J59ERyre1a2ABx2qzoS6JsBCQhC14gGfazQV
+        ET0gfdk8nnGDaIpBMXAP3jjtV4hwOkI=
+Date:   Fri, 21 May 2021 20:49:58 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
+Message-ID: <YKgA1od/SqycWWds@zn.tnic>
+References: <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
+ <312879fb-d201-a16d-2568-150152044c54@linux.intel.com>
+ <797c95bf-9516-8aee-59d0-f5259d77bb75@linux.intel.com>
+ <5b4b4fc0-aaa8-3407-6602-537d59572bc1@intel.com>
+ <YJm5QY8omAvdpBO9@google.com>
+ <YJpP/S8MajKNhBl4@zn.tnic>
+ <0e233779-9c10-11df-b527-ef61e003ea35@linux.intel.com>
+ <YKfPLlulaqwypNkO@zn.tnic>
+ <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210521175318.GF5825@sirena.org.uk>
+In-Reply-To: <f5e64c61-7f3c-3936-1b8e-7874ec81d83e@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 06:53:18PM +0100, Mark Brown wrote:
-> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
-> > On 5/21/21 12:42 PM, Mark Brown wrote:
+On Fri, May 21, 2021 at 11:19:15AM -0500, Tom Lendacky wrote:
+> In arch/x86/mm/mem_encrypt.c, sme_early_init() (should have renamed that
+> when SEV support was added), we do:
+> 	if (sev_active())
+> 		swiotlb_force = SWIOTLB_FORCE;
 > 
-> > > Like I say we may come up with some use for the flag in error cases in
-> > > future so I'm not opposed to keeping the accounting there.
+> TDX should be able to do a similar thing without having to touch
+> arch/x86/kernel/pci-swiotlb.c.
 > 
-> > So, should I leave it the way it is now? Or should I not set reliable = false
-> > for errors? Which one do you prefer?
-> 
-> > Josh,
-> 
-> > Are you OK with not flagging reliable = false for errors in unwind_frame()?
-> 
-> I think it's fine to leave it as it is.
+> That would remove any confusion over SME being part of a
+> protected_guest_has() call.
 
-Either way works for me, but if you remove those 'reliable = false'
-statements for stack corruption then, IIRC, the caller would still have
-some confusion between the end of stack error (-ENOENT) and the other
-errors (-EINVAL).
+Even better.
 
-So the caller would have to know that -ENOENT really means success.
-Which, to me, seems kind of flaky.
+> I kinda like the separate function, though.
 
-BTW, not sure if you've seen what we do in x86, but we have a
-'frame->error' which gets set for an error, and which is cumulative
-across frames.  So non-fatal reliable-type errors don't necessarily have
-to stop the unwind.  The end result is the same as your patch, but it
-seems less confusing to me because the 'error' is cumulative.  But that
-might be personal preference and I'd defer to the arm64 folks.
+Only if you clean it up and get rid of the inverted logic and drop that
+silly switch-case.
+
+> Except mem_encrypt_active() covers both SME and SEV, so
+> protected_guest_has() would be confusing.
+
+I don't understand - the AMD-specific function amd_protected_guest_has()
+would return sme_me_mask just like mem_encrypt_active() does and we can
+get rid of latter.
+
+Or do you have a problem with the name protected_guest_has() containing
+"guest" while we're talking about SME here?
+
+If so, feel free to suggest a better one - the name does not have to
+have "guest" in it.
+
+Thx.
+
 
 -- 
-Josh
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
