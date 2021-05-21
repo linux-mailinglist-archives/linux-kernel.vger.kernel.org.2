@@ -2,134 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98BD938CC35
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:32:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0395238CC37
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:32:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233696AbhEURd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:33:29 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58102 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233220AbhEURdZ (ORCPT
+        id S234953AbhEUReS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:34:18 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:59448 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233220AbhEUReR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:33:25 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LH47Iv033808;
-        Fri, 21 May 2021 13:31:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=L5aXyblV4MweJE7kliRjqe7BHKoS8cOQrVYDSV0UtSs=;
- b=n1/9CKvD0UU+OSGRXsf782Sb1jT//72bWMwiZ12djVIIYNjSu60Gi9qKbDE6HM1MweP6
- 8xwoSyuE9i9lKdK0Qe7hiBk0x+/F6K0OhP0XLBJwcjC1BHhu3uebKhoVESde/3dVtKsD
- fNnJAbV7ZCPERQXNvNWT+a30suHPYL55uLLts0xk13uau7+3GZBD4fZcYQVVT60SNThs
- nGVGXSwOWK/MjnlKuuhiUsi5lhhxFEPK02ls1QYpqW8Vh7qoSGdYjjuJR28/tgjrsiX0
- NwwapRaRM/9+Oq3yzZZlyOMlPzTjI3ZSfjYL5DZHgQfdD5FGgtLJeNbil3dU/B46bNTT Wg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38pgwv0p9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 13:31:52 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LHSHXa006975;
-        Fri, 21 May 2021 17:31:51 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8b96s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 17:31:50 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LHVm9933227098
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 17:31:48 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 65CC811C058;
-        Fri, 21 May 2021 17:31:48 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1319F11C04C;
-        Fri, 21 May 2021 17:31:47 +0000 (GMT)
-Received: from sig-9-65-215-195.ibm.com (unknown [9.65.215.195])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 17:31:46 +0000 (GMT)
-Message-ID: <7a52753c709499edbdf755abcd55a4ddf98503f1.camel@linux.ibm.com>
-Subject: Re: [PATCH v7 00/12] evm: Improve usability of portable signatures
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Roberto Sassu <roberto.sassu@huawei.com>,
-        "mjg59@srcf.ucam.org" <mjg59@srcf.ucam.org>
-Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Date:   Fri, 21 May 2021 13:31:46 -0400
-In-Reply-To: <a316bc5ec316446c8b07134c33b06d77@huawei.com>
-References: <20210514152753.982958-1-roberto.sassu@huawei.com>
-         <2804f10fa77b58b4992f56ea36a36d4f1e3f4b24.camel@linux.ibm.com>
-         <a316bc5ec316446c8b07134c33b06d77@huawei.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 59QOAR-obJ1YIk9sNTw3UuSxgGTKQjfG
-X-Proofpoint-GUID: 59QOAR-obJ1YIk9sNTw3UuSxgGTKQjfG
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Fri, 21 May 2021 13:34:17 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8C68120B7188;
+        Fri, 21 May 2021 10:32:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8C68120B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621618374;
+        bh=kx/ub+OL0PzoQ/hT2KpbKriy7vxNbuz0bztaoHmRMxA=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=pY1l80FOiOGwYYaK4/exjyN+IR65hI3sJUmLEcnLo+vTzCDtaGAdxamRYNs8HlR6F
+         0lc0twNVrQJvOfgDoSx03OxrZ90ak643peCTp1xyrmDNHB2farqYT5Oaly2vFev1hH
+         4gMM8lSxEOHmv1ITHi/rDmUXK9laQMDpP2W/K0Uo=
+Subject: Re: [RFC PATCH v4 0/2] arm64: Stack trace reliability checks in the
+ unwinder
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210521171808.GC5825@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <654dde25-e6a2-a1e7-c2d7-e2692bc11528@linux.microsoft.com>
+Date:   Fri, 21 May 2021 12:32:52 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_07:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- phishscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 impostorscore=0
- malwarescore=0 clxscore=1015 suspectscore=0 lowpriorityscore=0 mlxscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210090
+In-Reply-To: <20210521171808.GC5825@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-21 at 07:07 +0000, Roberto Sassu wrote:
-> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> > Sent: Thursday, May 20, 2021 8:56 PM
-> > On Fri, 2021-05-14 at 17:27 +0200, Roberto Sassu wrote:
-> > > EVM portable signatures are particularly suitable for the protection of
-> > > metadata of immutable files where metadata is signed by a software vendor.
-> > > They can be used for example in conjunction with an IMA policy that
-> > > appraises only executed and memory mapped files.
-> > >
-> > > However, until now portable signatures can be properly installed only if
-> > > the EVM_ALLOW_METADATA_WRITES initialization flag is also set, which
-> > > disables metadata verification until an HMAC key is loaded. This will cause
-> > > metadata writes to be allowed even in the situations where they shouldn't
-> > > (metadata protected by a portable signature is immutable).
-> > >
-> > > The main reason why setting the flag is necessary is that the operations
-> > > necessary to install portable signatures and protected metadata would be
-> > > otherwise denied, despite being legitimate, due to the fact that the
-> > > decision logic has to avoid an unsafe recalculation of the HMAC that would
-> > > make the unsuccessfully verified metadata valid. However, the decision
-> > > logic is too coarse, and does not fully take into account all the possible
-> > > situations where metadata operations could be allowed.
-> > >
-> > > For example, if the HMAC key is not loaded and it cannot be loaded in the
-> > > future due the EVM_SETUP_COMPLETE flag being set, it wouldn't be a
-> > problem
-> > > to allow metadata operations, as they wouldn't result in an HMAC being
-> > > recalculated.
-> > >
-> > > This patch set extends the decision logic and adds the necessary exceptions
-> > > to use portable signatures without turning off metadata verification and
-> > > deprecates the EVM_ALLOW_METADATA_WRITES flag.
-> > 
-> > Thanks, Roberto.
-> > 
-> > Applied to: git://git.kernel.org/pub/scm/linux/kernel/git/zohar/linux-
-> > integrity.git
-> > next-integrity-testing
+
+
+On 5/21/21 12:18 PM, Mark Brown wrote:
+> On Sat, May 15, 2021 at 11:00:16PM -0500, madvenka@linux.microsoft.com wrote:
 > 
-> Hi Mimi
+>> Special cases
+>> =============
+>>
+>> Some special cases need to be mentioned:
 > 
-> could you please take the newer version of patch 5/12, which also adds
-> an exception for the INTEGRITY_UNKNOWN error (it occurs when xattrs
-> are not supported)?
+> I think it'd be good if more of this cover letter, especially sections
+> like this which cover the tricky bits, ended up in the code somehow -
+> it's recorded here and will be in the list archive but that's not the
+> most discoverable place so increases the maintainance burden.  It'd be
+> great to be able to compare the code directly with the reliable
+> stacktrace requirements document and see everything getting ticked off,
+> actually going all the way there might be too much and loose the code in
+> the comments but I think we can get closer to it than we are.  Given
+> that a lot of this stuff rests on the denylist perhaps some comments
+> just before it's called would be a good place to start?
+> 
 
-Thank you for catching it.  I'd appreciate your checking once more. 
-FYI, get-lore-mbox.py moved "Cc: stable" to the end.
+I will add more comments in the code to make it clear.
 
-thanks,
+>> 	- EL1 interrupt and exception handlers end up in sym_code_ranges[].
+>> 	  So, all EL1 interrupt and exception stack traces will be considered
+>> 	  unreliable. This the correct behavior as interrupts and exceptions
+> 
+> This stuff about exceptions and preemption is a big one, rejecting any
+> exceptions makes a whole host of things easier (eg, Mark Rutland raised
+> interactions between non-AAPCS code and PLTs as being an issue but if
+> we're able to reliably reject stacks featuring any kind of preemption
+> anyway that should sidestep the issue).
+> 
 
-Mimi
+Yes. I will include this in the code comments.
 
+>> Performance
+>> ===========
+> 
+>> Currently, unwinder_blacklisted() does a linear search through
+>> sym_code_functions[]. If reviewers prefer, I could sort the
+>> sym_code_functions[] array and perform a binary search for better
+>> performance. There are about 80 entries in the array.
+> 
+> If people are trying to live patch a very busy/big system then this
+> could be an issue, equally there's probably more people focused on
+> getting boot times as fast as possible than live patching.  Deferring
+> the initialisation to first use would help boot times with or without
+> sorting, without numbers I don't actually know that sorting is worth the
+> effort or needs doing immediately - obvious correctness is also a
+> benefit!  My instinct is that for now it's probably OK leaving it as a
+> linear scan and then revisiting if it's not adequately performant, but
+> I'd defer to actual users there.
+
+I have followed the example in the Kprobe deny list. I place the section
+in initdata so it can be unloaded during boot. This means that I need to
+copy the information before that in early_initcall().
+
+If the initialization must be performed on first use, I probably have to
+move SYM_CODE_FUNCTIONS from initdata to some other place where it will
+be retained.
+
+If you prefer this, I could do it this way.
+
+Thanks!
+
+Madhavan
