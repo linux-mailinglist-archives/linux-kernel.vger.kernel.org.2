@@ -2,119 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2274438C96E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70D0738C971
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236903AbhEUOrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:47:10 -0400
-Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:59128 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236911AbhEUOrE (ORCPT
+        id S236992AbhEUOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:47:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236978AbhEUOrO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:47:04 -0400
-Received: from omf03.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BE128D218;
-        Fri, 21 May 2021 14:45:37 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 74ED713D95;
-        Fri, 21 May 2021 14:45:25 +0000 (UTC)
-Message-ID: <9d8659fc8bc0729dd255c20234fb1a4210847ce9.camel@perches.com>
-Subject: Re: [PATCH v2 7/7] checkpatch: suggest _BITULL() and _BITUL() for
- UAPI headers
-From:   Joe Perches <joe@perches.com>
-To:     Joe Richey <joerichey94@gmail.com>, trivial@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Joe Richey <joerichey@google.com>,
+        Fri, 21 May 2021 10:47:14 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDAFC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:45:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=KE2XWIQJa7QyffRG2NB7ooMjea4/CmI8Kv+hx71I77k=; b=fbAP5/5ZhNwG63zBx/bbZ85ZOC
+        B1Zu5XrHoYNkCCWMZ60dzNFpkwWP5wMGkTrxy116RMti0Wgob1GvOxfSnfJ9gzUb9P1GmoSLlL+z9
+        QDBDUkGlSH4ebv1QvFTvO7UuGhPd9GnR15MqmWOtPBykdzyRhSyVFtdgDkjZd3Alh8VJYkhfji6PS
+        fNzAorv6ZwLB1o3AebT3gkK5NBty1llFhZup7EjmHb9kgN3yUf3PjgM5l8WK7QI2KBqOFrUjc1RgU
+        44t+bsgCPLS2h+MAkHs2s84azz5ObP0Jk0MpkrhaexEMASN5XC4Ss+If4U9LOj6wPIhFEp/IBkf32
+        sGX7CS4w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lk6P8-005o7P-5d; Fri, 21 May 2021 14:45:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 277703001D0;
+        Fri, 21 May 2021 16:45:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D74D930D9D87B; Fri, 21 May 2021 16:45:30 +0200 (CEST)
+Date:   Fri, 21 May 2021 16:45:30 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        Andy Whitcroft <apw@canonical.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Sasha Levin <sashal@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>,
-        Andi Kleen <ak@linux.intel.com>, Peter Xu <peterx@redhat.com>,
-        Lei Cao <lei.cao@stratus.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Zaibo Xu <xuzaibo@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org
-Date:   Fri, 21 May 2021 07:45:23 -0700
-In-Reply-To: <20210521085849.37676-8-joerichey94@gmail.com>
-References: <20210520104343.317119-1-joerichey94@gmail.com>
-         <20210521085849.37676-1-joerichey94@gmail.com>
-         <20210521085849.37676-8-joerichey94@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andi Kleen <ak@linux.intel.com>
+Subject: Re: [PATCH v4 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up
+ support
+Message-ID: <YKfHiu/a/V/0DS3V@hirez.programming.kicks-ass.net>
+References: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
+ <20210513213732.418398-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: qn5g8k3jtqoj4kuui4tsua91y1s1o8zk
-X-Rspamd-Server: rspamout04
-X-Rspamd-Queue-Id: 74ED713D95
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1/+/DrG8NEx+1xztaZeFya67FR2cEwvbqU=
-X-HE-Tag: 1621608325-902736
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513213732.418398-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-21 at 01:58 -0700, Joe Richey wrote:
-> From: Joe Richey <joerichey@google.com>
-> 
-> Instead of just ignoring UAPI headers, reccomend the UAPI compatible
-> macros if a user adds something that looks like (1 << n). Normal kernel
-> code will continue to get BIT_ULL() and BIT() reccomended.
-> 
-> This change also modifies the $realfile regex to match headers that have
-> "include/uapi" anywhere in their path so paths like:
->     tools/include/uapi/linux/kvm.h
->     arch/x86/include/uapi/asm/hwcap2.h
-> get recognized as UAPI headers.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -7020,15 +7020,17 @@ sub process {
->  			}
->  		}
->  
-> 
-> -# check for #defines like: 1 << <digit> that could be BIT(digit), it is not exported to uapi
-> -		if ($realfile !~ m@^include/uapi/@ &&
-> -		    $line =~ /#\s*define\s+\w+\s+\(?\s*1\s*([ulUL]*)\s*\<\<\s*(?:\d+|$Ident)\s*\)?/) {
-> -			my $ull = "";
-> -			$ull = "_ULL" if (defined($1) && $1 =~ /ll/i);
-> +# check for #defines like: 1 << <digit> that could be BIT(digit) or similar
-> +		if ($line =~ /#\s*define\s+\w+\s+\(?\s*1\s*([ulUL]*)\s*\<\<\s*(?:\d+|$Ident)\s*\)?/) {
-> +			my $ull = (defined($1) && $1 =~ /ll/i);
-> +			my $macroname = $ull ? "BIT_ULL" : "BIT";
-> +			if ($realfile =~ m@include/uapi/@) {
+On Thu, May 13, 2021 at 02:37:32PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+> +{
+> +	u8 timeout = 0xFF;
+> +
+> +	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
+> +	if (physids_empty(apic_id_wakemap))
+> +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
+> +						sizeof(*acpi_mp_wake_mailbox),
+> +						MEMREMAP_WB);
 
-Likely better with \b
-			if ($realfile =~ m@\binclude/uapi/@) {
+{ } for being multi-line
 
-> +				$macroname = $ull ? "_BITULL" : "_BITUL";
-> +			}
->  			if (CHK("BIT_MACRO",
-> -				"Prefer using the BIT$ull macro\n" . $herecurr) &&
-> +				"Prefer using the $macroname macro\n" . $herecurr) &&
->  			    $fix) {
-> -				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/BIT${ull}($1)/;
-> +				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/${macroname}($1)/;
+> +	/*
+> +	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
+> +	 * mailbox-based wakeup mechanism cannot be used more than once
+> +	 * for the same CPU, so skip sending wake commands to already
+> +	 * awake CPU.
+> +	 */
+> +	if (physid_isset(apicid, apic_id_wakemap)) {
+> +		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
+> +		       apicid);
+> +		return -EINVAL;
+> +	}
+> +
+> +
+> +	/*
+> +	 * Mailbox memory is shared between firmware and OS. Firmware will
+> +	 * listen on mailbox command address, and once it receives the wakeup
+> +	 * command, CPU associated with the given apicid will be booted. So,
+> +	 * the value of apic_id and wakeup_vector has to be set before updating
+> +	 * the wakeup command. So use WRITE_ONCE to let the compiler know about
+> +	 * it and preserve the order of writes.
+> +	 */
+> +	WRITE_ONCE(acpi_mp_wake_mailbox->apic_id, apicid);
+> +	WRITE_ONCE(acpi_mp_wake_mailbox->wakeup_vector, start_ip);
+> +	WRITE_ONCE(acpi_mp_wake_mailbox->command, ACPI_MP_WAKE_COMMAND_WAKEUP);
 
-Doesn't need braces
-				$fixed[$fixlinenr] =~ s/\(?\s*1\s*[ulUL]*\s*<<\s*(\d+|$Ident)\s*\)?/$macroname($1)/;
+Do those want to be smp_store_release(), in addition to being a volatile
+write, those also include compiler barriers to make sure the compiler
+doesn't lift stuff around.
 
-Otherwise, fine by me.
+> +
+> +	/*
+> +	 * After writing wakeup command, wait for maximum timeout of 0xFF
+> +	 * for firmware to reset the command address back zero to indicate
+> +	 * the successful reception of command.
+> +	 * NOTE: 255 as timeout value is decided based on our experiments.
+> +	 *
+> +	 * XXX: Change the timeout once ACPI specification comes up with
+> +	 *      standard maximum timeout value.
+> +	 */
+> +	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
+> +		cpu_relax();
 
+What's the unit of the timeout? The mailbox reads, the PAUSE
+instruction?
+
+> +
+> +	if (timeout) {
+> +		/*
+> +		 * If the CPU wakeup process is successful, store the
+> +		 * status in apic_id_wakemap to prevent re-wakeup
+> +		 * requests.
+> +		 */
+> +		physid_set(apicid, apic_id_wakemap);
+> +		return 0;
+> +	}
+> +
+> +	/* If timed out (timeout == 0), return error */
+> +	return -EIO;
+> +}
+> +
+>  #endif				/*CONFIG_X86_LOCAL_APIC */
