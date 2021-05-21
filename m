@@ -2,99 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE3938C468
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 690AB38C46A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:11:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233824AbhEUKMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:12:00 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:60558 "EHLO mail.skyhub.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhEUKL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:11:58 -0400
-Received: from zn.tnic (p200300ec2f0ea40053fd7160b74f4551.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a400:53fd:7160:b74f:4551])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 6868C1EC06D7;
-        Fri, 21 May 2021 12:10:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621591834;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=6qW0rzkEjcD4Goq+LyMDUMIQFlIjR27WlxE0n1UIRu4=;
-        b=bYm9kIW+wsHVhAZnP1J8G7MYuBQKrCKoPI7foVOcgOdPrhqgBKvCSBqSTkY7SFenrNQmi/
-        MFBgTh+erRKYvi06M4/8FIvprEfvagD/uLmuhNZhZLTm/pXJg0LH9yQA2bWz0A52v5zg42
-        GAFstdrYT4lVPrYMzimvIbkWvpN3kYQ=
-Date:   Fri, 21 May 2021 12:10:25 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     David Bartley <andareed@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-x86_64@vger.kernel.org,
-        Wei Huang <wei.huang2@amd.com>
-Subject: Re: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
-Message-ID: <YKeHBI757jX65ULa@zn.tnic>
-References: <20210520174130.94954-1-andareed@gmail.com>
+        id S234052AbhEUKMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:12:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229915AbhEUKMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 06:12:19 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ACDAC061574;
+        Fri, 21 May 2021 03:10:56 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id 22so14168059pfv.11;
+        Fri, 21 May 2021 03:10:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IaqwQSeNH4Jy+ZwQZhmfsK64+hoPYxaUL9CpBze2Naw=;
+        b=ZWTYbKj2HfDy2TDW20FyjOsA40JL53p0uSDWgPNU278uPIU8JYSB3L9VAai9utDQW8
+         FMWfNTHC3zEylUEWeyiVf+6WVcSQiDvUeSmbAHwuAQiuRp+QFUOiGbuuSpwicoX8YXB8
+         76I9K1LAZBdgf3MLvp0J69LrcXCREeigcL7Iqk69txCm0Y/v7dMXrKgCsbfFFU2K+CIx
+         l78WskIi2PwmciOFkETUjU8mphjCgw3NizSvKpMiApB25CNZjgWgjVCl1d3QAXvqHVNB
+         eNH+5jU/oolEcz0/+kS8zBGamlI1ssxM/GCZTBx33OHkheHRxgCdcmNJsSp53jFKD7mk
+         0yXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IaqwQSeNH4Jy+ZwQZhmfsK64+hoPYxaUL9CpBze2Naw=;
+        b=KqoIadBhqf6p02DObNRf5xFhAi+71kcnsMZt9Ob2z79TmdtKj1HMhejz1iaAWVnjGk
+         m/TmT4ueokxKAWJl2QBLHgUYmT5oefvlUYwG5Tw3WP3sfWtM1kB7ctQqA6o2+hRMwQ51
+         AZMG+bW6ZkqDvrstYpxS7Ik22ErRI28zWlVnyqaPllJ+uAZs0idpd0BmWgoiBNO2Q2KV
+         r6oQ3LQCnXdbevCvW7vrJFGGi9dVDGVD6coV8qJIobqQ9F448VFKIFa9FxdSkL1HBZcg
+         76R1CmxTW30r4GKbypZsdxu+LoZqoHspPI8RFhDXDhD3Xn9BSr+i2DhINUBssG64rQdH
+         hlag==
+X-Gm-Message-State: AOAM530998bxHlHT0R+8q2DNnI07/c+bfwV/gX88OqGxT9QqbzXdVqQB
+        4qBKg900FBRq3xbR+eEhgetrKFb/NNGB0uzCy4k=
+X-Google-Smtp-Source: ABdhPJzaRyDiqepdYYUgZ2TB1T80ZWK5ak0P7QcNdrW07F/XFw1Rt8QvuBtLJTdew2Sv5vl6pu5gwOVgKzOYiN5Pj2I=
+X-Received: by 2002:a63:79c3:: with SMTP id u186mr9162451pgc.203.1621591856041;
+ Fri, 21 May 2021 03:10:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210520174130.94954-1-andareed@gmail.com>
+References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com> <e3d3e704804668d1403f3630c181010b34409c8f.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+In-Reply-To: <e3d3e704804668d1403f3630c181010b34409c8f.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 21 May 2021 13:10:39 +0300
+Message-ID: <CAHp75VfgQw09KJ5pMNz7fnia-pzK8sMGKn6NJkmNEWLzo5GffA@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] gpio: gpio-regmap: Use devm_add_action()
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michael Walle <michael@walle.cc>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:41:30AM -0700, David Bartley wrote:
-> This is required to support Zen3 APUs in k10temp.
-> 
-> Signed-off-by: David Bartley <andareed@gmail.com>
+On Fri, May 21, 2021 at 12:54 PM Matti Vaittinen
+<matti.vaittinen@fi.rohmeurope.com> wrote:
+>
+> Slightly simplify the devm_gpio_regmap_register() by using the
+> devm_add_action().
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 > ---
->  arch/x86/kernel/amd_nb.c | 3 +++
->  include/linux/pci_ids.h  | 1 +
->  2 files changed, 4 insertions(+)
-> 
-> diff --git a/arch/x86/kernel/amd_nb.c b/arch/x86/kernel/amd_nb.c
-> index 09083094eb57..23dda362dc0f 100644
-> --- a/arch/x86/kernel/amd_nb.c
-> +++ b/arch/x86/kernel/amd_nb.c
-> @@ -25,6 +25,7 @@
->  #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F4 0x144c
->  #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F4 0x1444
->  #define PCI_DEVICE_ID_AMD_19H_DF_F4	0x1654
-> +#define PCI_DEVICE_ID_AMD_19H_M50H_DF_F4 0x166e
->  
->  /* Protect the PCI config register pairs used for SMN and DF indirect access. */
->  static DEFINE_MUTEX(smn_mutex);
-> @@ -57,6 +58,7 @@ static const struct pci_device_id amd_nb_misc_ids[] = {
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F3) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F3) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F3) },
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F3) },
->  	{}
->  };
->  
-> @@ -72,6 +74,7 @@ static const struct pci_device_id amd_nb_link_ids[] = {
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M60H_DF_F4) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_17H_M70H_DF_F4) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_DF_F4) },
-> +	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_19H_M50H_DF_F4) },
->  	{ PCI_DEVICE(PCI_VENDOR_ID_AMD, PCI_DEVICE_ID_AMD_CNB17H_F4) },
->  	{}
->  };
-> diff --git a/include/linux/pci_ids.h b/include/linux/pci_ids.h
-> index 4c3fa5293d76..5356ccf1c275 100644
-> --- a/include/linux/pci_ids.h
-> +++ b/include/linux/pci_ids.h
-> @@ -555,6 +555,7 @@
->  #define PCI_DEVICE_ID_AMD_17H_M60H_DF_F3 0x144b
->  #define PCI_DEVICE_ID_AMD_17H_M70H_DF_F3 0x1443
->  #define PCI_DEVICE_ID_AMD_19H_DF_F3	0x1653
-> +#define PCI_DEVICE_ID_AMD_19H_M50H_DF_F3 0x166d
+> Changelog:
+>   - New patch at v2
+>
+>  drivers/gpio/gpio-regmap.c | 20 ++++++--------------
+>  1 file changed, 6 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-regmap.c
+> index c05370e984b9..4555e59f916e 100644
+> --- a/drivers/gpio/gpio-regmap.c
+> +++ b/drivers/gpio/gpio-regmap.c
+> @@ -341,9 +341,9 @@ void gpio_regmap_unregister(struct gpio_regmap *gpio)
+>  }
+>  EXPORT_SYMBOL_GPL(gpio_regmap_unregister);
+>
+> -static void devm_gpio_regmap_unregister(struct device *dev, void *res)
+> +static void devm_gpio_regmap_unregister(void *res)
+>  {
+> -       gpio_regmap_unregister(*(struct gpio_regmap **)res);
+> +       gpio_regmap_unregister(res);
+>  }
+>
+>  /**
+> @@ -360,20 +360,12 @@ static void devm_gpio_regmap_unregister(struct device *dev, void *res)
+>  struct gpio_regmap *devm_gpio_regmap_register(struct device *dev,
+>                                               const struct gpio_regmap_config *config)
+>  {
+> -       struct gpio_regmap **ptr, *gpio;
+> -
+> -       ptr = devres_alloc(devm_gpio_regmap_unregister, sizeof(*ptr),
+> -                          GFP_KERNEL);
+> -       if (!ptr)
+> -               return ERR_PTR(-ENOMEM);
+> +       struct gpio_regmap *gpio;
+>
+>         gpio = gpio_regmap_register(config);
+> -       if (!IS_ERR(gpio)) {
+> -               *ptr = gpio;
+> -               devres_add(dev, ptr);
+> -       } else {
+> -               devres_free(ptr);
+> -       }
+> +
+> +       if (!IS_ERR(gpio))
+> +               devm_add_action(dev, devm_gpio_regmap_unregister, gpio);
+>
+>         return gpio;
+>  }
+> --
+> 2.25.4
+>
+>
+> --
+> Matti Vaittinen, Linux device drivers
+> ROHM Semiconductors, Finland SWDC
+> Kiviharjunlenkki 1E
+> 90220 OULU
+> FINLAND
+>
+> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+> Simon says - in Latin please.
+> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+> Thanks to Simon Glass for the translation =]
 
-I don't see this define used anywhere else besides amd_nb.c. If there's
-no use for it outside of that file, I'm moving it there...?
 
-Or does it need to get added to that k10temp_id_table in k10temp.c too?
 
 -- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+With Best Regards,
+Andy Shevchenko
