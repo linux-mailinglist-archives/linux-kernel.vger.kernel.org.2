@@ -2,103 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C096838BABE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:16:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0A7138BABC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234971AbhEUARW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:17:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234612AbhEUARV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:17:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E201C061574;
-        Thu, 20 May 2021 17:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=o3zZXuheU23WahGAvIMKDA7Rb1yHjXqZyPacGw/Lpzs=; b=tC4dgnm1SR0y4T2wtg5Tazjnq2
-        o9WBCBV40BIrEG2eGh6piTokKfOQAm7kHMfvsDSmQmP0bUXnH1wKDoiNxEqT4D9rDrZlkB3pxuSnG
-        vMDUKlUbBDwzoL0NR9SSoLaeXvWcbhPlB7mcyTGnnHw73jHArcAaSoXdFNKguzyOll/fI+yjazmzS
-        gqY3UmBYyAEigh9keOEB3ct0PpE1u6GPASil0ye/vV4QqcyJ19RiXhvvj+q91YT2R4HCqaLEuuAFX
-        nP6RPh6jNUZR9swhwJPc+IlkJEi+t1aqgB8aXC+4izt2/rdpdIz58EAOxz/hRyHCRPYwx36c/HBhH
-        56h6o/1w==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljspT-00GjDV-84; Fri, 21 May 2021 00:15:51 +0000
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-To:     Peter Oskolkov <posk@google.com>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
+        id S234935AbhEUARQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:17:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234612AbhEUARN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 20:17:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D794F6109F;
+        Fri, 21 May 2021 00:15:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621556151;
+        bh=KN/xo1lyoIiciG9V+VqlWx19KUfp8J5f+WyREaqusoU=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=e6JBFVBMjMOtGuOw3ilgjfYaLUsfqnviBEew5unIppvInUsZXyizRTMSrQSWvYHuA
+         kkfJktbLa2XxBrODrZqhxlrG66hNiDXSWcoK/krfiry6dPQb7t121a5YirPmzeJc2E
+         s9qv2ejQWrwtmnPTvyeDV6eMta/yfZgNRvkJBPw/KBtlCe9W9o+FjbovdfnZdk3e0n
+         uY9l2hRjQTvbKvrnhcN9OieseLRnBSJByVwTT88p6RRizfqwvhJ6XfoP7WE0fZ3E9J
+         nx3b37oSJdq51xp/fOly1Opm6vCbxnVEj2OC21F5xFj/wP0xUYMZNbuVIS+DsNkeGu
+         EE783aWZleRCA==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id A05D15C023D; Thu, 20 May 2021 17:15:51 -0700 (PDT)
+Date:   Thu, 20 May 2021 17:15:51 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
         Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
-References: <20210520183614.1227046-1-posk@google.com>
- <87mtspm7fe.fsf@meer.lwn.net>
- <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <c924d722-eee0-03ee-991d-c977089ecdbc@infradead.org>
-Date:   Thu, 20 May 2021 17:15:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
+Message-ID: <20210521001551.GS4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210516102716.689596-1-senozhatsky@chromium.org>
+ <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKMbQQ0qBAixXC5p@google.com>
+ <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKX4ueNIabfd1DAD@google.com>
+ <20210520145708.GK4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKbkAXELPxXJcsHA@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKbkAXELPxXJcsHA@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 2:38 PM, Peter Oskolkov wrote:
-> On Thu, May 20, 2021 at 2:17 PM Jonathan Corbet <corbet@lwn.net> wrote:
->>
->> Peter Oskolkov <posk@google.com> writes:
->>
->>> As indicated earlier in the FUTEX_SWAP patchset:
->>>
->>> https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
->>>
->>> "Google Fibers" is a userspace scheduling framework
->>> used widely and successfully at Google to improve in-process workload
->>> isolation and response latencies. We are working on open-sourcing
->>> this framework, and UMCG (User-Managed Concurrency Groups) kernel
->>> patches are intended as the foundation of this.
->>
->> So I have to ask...is there *any* documentation out there on what this
->> is and how people are supposed to use it?  Shockingly, typing "Google
->> fibers" into Google leads to a less than fully joyful outcome...  This
->> won't be easy for anybody to review if they have to start by
->> reverse-engineering what it's supposed to do.
+On Fri, May 21, 2021 at 07:34:41AM +0900, Sergey Senozhatsky wrote:
+> On (21/05/20 07:57), Paul E. McKenney wrote:
+> > > 
+> > > Sounds good. I can cook a patch and run some tests.
+> > > Or do you want to send a patch?
+> > 
+> > Given that you have the test setup, things might go faster if you do
+> > the patch, especially taking timezones into consideration.  Of course,
+> > if you run into difficulties, you know where to find me.
 > 
-> Hi Jonathan,
+> OK. Sounds good to me.
 > 
-> There is this Linux Plumbers video: https://www.youtube.com/watch?v=KXuZi9aeGTw
-> And the pdf: http://pdxplumbers.osuosl.org/2013/ocw//system/presentations/1653/original/LPC%20-%20User%20Threading.pdf
+> > > While VCPU-2 has PVCLOCK_GUEST_STOPPED set (resuming) and is in
+> > > check_cpu_stall(), the VCPU-3 is executing:
+> > > 
+> > > 	apic_timer_interrupt()
+> > > 	 tick_irq_enter()
+> > > 	  tick_do_update_jiffies64()
+> > > 	   do_timer()
+> > 
+> > OK, but the normal grace period time is way less than one second, and
+> > the stall timeout in mainline is 21 seconds, so that would be a -lot-
+> > of jiffies of skew.  Or does the restarting really take that long a time?
 > 
-> I did not reference them in the patchset because links to sites other
-> than kernel.org are strongly discouraged... I will definitely add a
-> documentation patch.
+> That's a good question. I see huge jiffies spike in the logs.
+> I suspect that resuming a VM can take some time, especially on a "not
+> powerful at all" overcommitted host (more virtual CPUs than physical
+> ones).
 
-Certainly for links to email, we prefer to use lore.kernel.org archives.
-Are links to other sites discouraged?  If so, that's news to me.
+I really am just asking the question.  ;-)
 
+After all, if restarting a VM can take that long, then it can take
+that long.
 
-> Feel free to reach out to me directly or through this LKML thread if
-> you have any questions.
-> 
-> Do you think a documentation patch would be useful at this point, as
-> opposed to a free-form email discussion?
-
-thanks.
--- 
-~Randy
-
+							Thanx, Paul
