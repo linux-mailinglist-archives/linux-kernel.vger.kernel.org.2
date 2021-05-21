@@ -2,202 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4550238C2AA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:08:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E6F38C2A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235795AbhEUJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:09:54 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:50320 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235567AbhEUJJu (ORCPT
+        id S235599AbhEUJJv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 05:09:51 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:15269 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235439AbhEUJJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:09:50 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14L98DFE0010562, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14L98DFE0010562
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 21 May 2021 17:08:13 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 21 May 2021 17:08:12 +0800
-Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 21 May
- 2021 17:08:01 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     <kuba@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>
-Subject: [PATCH net] r8152: check the informaton of the device
-Date:   Fri, 21 May 2021 17:07:34 +0800
-Message-ID: <1394712342-15778-363-Taiwan-albertk@realtek.com>
-X-Mailer: Microsoft Office Outlook 11
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.177.102]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/21/2021 08:46:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjEgpFekyCAwMzo1MDowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjEgpFekyCAwNzozMTowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/21/2021 08:44:16
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163823 [May 21 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Headers: Prob_stat_susp_url_only, url2}
-X-KSE-AntiSpam-Info: {Tracking_one_url, url3}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;syzkaller.appspot.com:7.1.1
-X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/21/2021 08:46:00
+        Fri, 21 May 2021 05:09:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UZb8F1R_1621588096;
+Received: from 30.240.99.2(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UZb8F1R_1621588096)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 21 May 2021 17:08:17 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
+Date:   Fri, 21 May 2021 17:09:55 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <447D741B-F430-4502-BCA6-C2A12118A2D2@linux.alibaba.com>
+References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
+ <20210520123419.8039-2-changhuaixin@linux.alibaba.com>
+ <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
+To:     Odin Ugedal <odin@uged.al>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verify some fields of the USB descriptor to make sure the driver
-could be used by the device.
 
-BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
-Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
----
- drivers/net/usb/r8152.c | 71 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 69 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 136ea06540ff..f348350f5da1 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -8107,6 +8107,69 @@ static void r8156b_init(struct r8152 *tp)
- 	tp->coalesce = 15000;	/* 15 us */
- }
- 
-+static bool rtl_check_vendor_ok(struct usb_interface *intf)
-+{
-+	struct usb_host_interface *alt = intf->cur_altsetting;
-+	struct usb_host_endpoint *in = NULL, *out = NULL, *intr = NULL;
-+	unsigned int ep;
-+
-+	if (alt->desc.bNumEndpoints < 3) {
-+		dev_err(&intf->dev, "Unexpected bNumEndpoints %d\n", alt->desc.bNumEndpoints);
-+		return false;
-+	}
-+
-+	for (ep = 0; ep < alt->desc.bNumEndpoints; ep++) {
-+		struct usb_host_endpoint *e;
-+
-+		e = alt->endpoint + ep;
-+
-+		/* ignore endpoints which cannot transfer data */
-+		if (!usb_endpoint_maxp(&e->desc))
-+			continue;
-+
-+		switch (e->desc.bmAttributes) {
-+		case USB_ENDPOINT_XFER_INT:
-+			if (!usb_endpoint_dir_in(&e->desc))
-+				continue;
-+			if (!intr)
-+				intr = e;
-+			break;
-+		case USB_ENDPOINT_XFER_BULK:
-+			if (usb_endpoint_dir_in(&e->desc)) {
-+				if (!in)
-+					in = e;
-+			} else if (!out) {
-+				out = e;
-+			}
-+			break;
-+		default:
-+			continue;
-+		}
-+	}
-+
-+	if (!in || !out || !intr) {
-+		dev_err(&intf->dev, "Miss Endpoints\n");
-+		return false;
-+	}
-+
-+	if ((in->desc.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != 1) {
-+		dev_err(&intf->dev, "Invalid Rx Endpoints\n");
-+		return false;
-+	}
-+
-+	if ((out->desc.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != 2) {
-+		dev_err(&intf->dev, "Invalid Tx Endpoints\n");
-+		return false;
-+	}
-+
-+	if ((intr->desc.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != 3) {
-+		dev_err(&intf->dev, "Invalid interrupt Endpoints\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static bool rtl_vendor_mode(struct usb_interface *intf)
- {
- 	struct usb_host_interface *alt = intf->cur_altsetting;
-@@ -8115,12 +8178,15 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
- 	int i, num_configs;
- 
- 	if (alt->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC)
--		return true;
-+		return rtl_check_vendor_ok(intf);
- 
- 	/* The vendor mode is not always config #1, so to find it out. */
- 	udev = interface_to_usbdev(intf);
- 	c = udev->config;
- 	num_configs = udev->descriptor.bNumConfigurations;
-+	if (num_configs < 2)
-+		return false;
-+
- 	for (i = 0; i < num_configs; (i++, c++)) {
- 		struct usb_interface_descriptor	*desc = NULL;
- 
-@@ -8135,7 +8201,8 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
- 		}
- 	}
- 
--	WARN_ON_ONCE(i == num_configs);
-+	if (i == num_configs)
-+		dev_err(&intf->dev, "Unexpected Device\n");
- 
- 	return false;
- }
--- 
-2.26.3
+> On May 20, 2021, at 10:00 PM, Odin Ugedal <odin@uged.al> wrote:
+> 
+> Hi,
+> 
+> Here are some more thoughts and questions:
+> 
+>> The benefit of burst is seen when testing with schbench:
+>> 
+>>        echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+>>        echo 600000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+>>        echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_period_us
+>>        echo 400000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+>> 
+>>        # The average CPU usage is around 500%, which is 200ms CPU time
+>>        # every 40ms.
+>>        ./schbench -m 1 -t 30 -r 10 -c 10000 -R 500
+>> 
+>>        Without burst:
+>> 
+>>        Latency percentiles (usec)
+>>        50.0000th: 7
+>>        75.0000th: 8
+>>        90.0000th: 9
+>>        95.0000th: 10
+>>        *99.0000th: 933
+>>        99.5000th: 981
+>>        99.9000th: 3068
+>>        min=0, max=20054
+>>        rps: 498.31 p95 (usec) 10 p99 (usec) 933 p95/cputime 0.10% p99/cputime 9.33%
+> 
+> It should be noted that this was running on a 64 core machine (if that was
+> the case, ref. your previous patch).
+> 
+> I am curious how much you have tried tweaking both the period and the quota
+> for this workload. I assume a longer period can help such bursty application,
+> and from the small slowdowns, a slightly higher quota could also help
+> I guess. I am
+> not saying this is a bad idea, but that we need to understand what it
+> fixes, and how,
+> in order to be able to understand how/if to use it.
+> 
+
+Yeah, it is a well tuned workload and configuration. I did this because for benchmarks
+like schbench, workloads are generated in a fixed pattern without burst. So I set schbench
+params carefully to generate burst during each 100ms periods, to show burst works. Longer
+period or higher quota helps indeed, in which case more workloads can be used to generate
+tail latency then.
+
+In my view, burst is like the cfsb way of token bucket. For the present cfsb, bucket capacity
+is strictly limited to quota. And that is changed into quota + burst now. And it shall be used when
+tasks get throttled and CPU is under utilized for the whole system.
+
+> Also, what value of the sysctl kernel.sched_cfs_bandwidth_slice_us are
+> you using?
+> What CONFIG_HZ you are using is also interesting, due to how bw is
+> accounted for.
+> There is some more info about it here: Documentation/scheduler/sched-bwc.rst. I
+> assume a smaller slice value may also help, and it would be interesting to see
+> what implications it gives. A high threads to (quota/period) ratio, together
+> with a high bandwidth_slice will probably cause some throttling, so one has
+> to choose between precision and overhead.
+> 
+
+Default value of kernel.sched_cfs_bandwidth_slice_us(5ms) and CONFIG_HZ(1000) is used.
+
+The following case might be used to prevent getting throttled from many threads and high bandwidth
+slice:
+
+mkdir /sys/fs/cgroup/cpu/test
+echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+
+./schbench -m 1 -t 3 -r 20 -c 80000 -R 20
+
+On my machine, two workers work for 80ms and sleep for 120ms in each round. The average utilization is
+around 80%. This will work on a two-core system. It is recommended to  try it multiple times as getting
+throttled doesn't necessarily cause tail latency for schbench.
+
+
+> Also, here you give a burst of 66% the quota. Would that be a typical value
+> for a cgroup, or is it just a result of testing? As I understand this
+
+Yeah, it is not a typical value, and tuned for this test.
+
+> patchset, your example
+> would allow 600% constant CPU load, then one period with 1000% load,
+> then another
+> "long set" of periods with 600% load. Have you discussed a way of limiting how
+> long burst can be "saved" before expiring?
+
+Haven't thought about it much. It is interesting but I doubt the need to do that.
+
+> 
+>> @@ -9427,7 +9478,8 @@ static int cpu_max_show(struct seq_file *sf, void *v)
+>> {
+>>        struct task_group *tg = css_tg(seq_css(sf));
+>> 
+>> -       cpu_period_quota_print(sf, tg_get_cfs_period(tg), tg_get_cfs_quota(tg));
+>> +       cpu_period_quota_print(sf, tg_get_cfs_period(tg), tg_get_cfs_quota(tg),
+>> +                              tg_get_cfs_burst(tg));
+>>        return 0;
+>> }
+> 
+> The current cgroup v2 docs say the following:
+> 
+>>  cpu.max
+>>    A read-write two value file which exists on non-root cgroups.
+>>    The default is "max 100000".
+> 
+> This will become a "three value file", and I know a few user space projects
+> who parse this file by splitting on the middle space. I am not sure if they are
+> "wrong", but I don't think we usually break such things. Not sure what
+> Tejun thinks about this.
+> 
+
+Thanks, it will be modified in the way Tejun suggests.
+
+> Thanks
+> Odin
 
