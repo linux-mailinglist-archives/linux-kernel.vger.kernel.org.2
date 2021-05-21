@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4777938CEA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:08:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC0A338CE9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhEUUJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:09:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49126 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231295AbhEUUJl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:09:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 891A961164;
-        Fri, 21 May 2021 20:08:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621627697;
-        bh=L0AZm036/M2K55AooynLRoN6JnWPfVJLPizHslblkdE=;
-        h=In-Reply-To:References:Date:From:To:Cc:Subject:From;
-        b=bdia2dNXMChRT1FrUhPyrH5YTyAz24zzWD6MGdmhXx6rJFOkWOcENC5UuFoJkONpu
-         ZRtfuzTVnzfOs8+bisqRrW4QQD0rKBqnxuyNU38TTQo5msofB7NShv3JNEchxjJDKI
-         ja5Ne1KwNDdZItIPe+qCrciyDBbEydTNGj6pzSyeis5cqyMERDh+SftNzKqCQJUzDe
-         x7J7OzkPGZGUvjj+JLEeMdIelxSRjLzl4rHKjIw/vGElRUpA5chWwXhXPKhmB72en7
-         MNtyhWmCl6a3v09I8Owow5kOEnhnuA28ShIzddvKEDSFquLsazf0Y1M2ngPjgmXVY4
-         EkNCKmKQdUtIg==
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 9660027C0054;
-        Fri, 21 May 2021 16:08:15 -0400 (EDT)
-Received: from imap21 ([10.202.2.71])
-  by compute2.internal (MEProxy); Fri, 21 May 2021 16:08:15 -0400
-X-ME-Sender: <xms:LROoYMdFsaVNQlbxxYvrJi_TWd47kgTyAa6KrfywLf0FnfG-BMhf2g>
-    <xme:LROoYOOblf6yrd54RqI054F--HFw198aw8LAf396OJVvO3tY4w93ob-vWNrOCDs3B
-    ItUqFJuspPudhK2vgg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejfedgudeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdet
-    nhguhicunfhuthhomhhirhhskhhifdcuoehluhhtoheskhgvrhhnvghlrdhorhhgqeenuc
-    ggtffrrghtthgvrhhnpedvleehjeejvefhuddtgeegffdtjedtffegveethedvgfejieev
-    ieeufeevuedvteenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpegrnhguhidomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqudduiedu
-    keehieefvddqvdeifeduieeitdekqdhluhhtoheppehkvghrnhgvlhdrohhrgheslhhinh
-    hugidrlhhuthhordhush
-X-ME-Proxy: <xmx:LROoYNipZVZhRxJs1KNGaE0iBAwot-rCCEy7BHv0xTWwxkIyWOiE9w>
-    <xmx:LROoYB_N5EfQKoUkBzmR4m4P266lyLfUiBLuall6dHH9Xi_iVhJn-Q>
-    <xmx:LROoYIv0jGOqUOZmyuNsdWNqfcKv261uuPsJHFfZv9Vfnfg4yCAq8g>
-    <xmx:LxOoYJFKjiodfvx0MIoHTcq5VslWol0HG2xxKAVNl40dizKJDmfZ0EGsnL8waZ6cCQmL9Q>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A9E8F51C0060; Fri, 21 May 2021 16:08:13 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <6c9c4597-a1af-4cbb-9dc8-424999d04793@www.fastmail.com>
-In-Reply-To: <87k0nraonu.ffs@nanos.tec.linutronix.de>
-References: <20210415044258.GA6318@zn.tnic> <20210415054713.GB6318@zn.tnic>
- <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic>
- <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic>
- <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic>
- <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic>
- <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de>
- <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de>
- <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
- <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
- <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
- <87pmxk87th.fsf@oldenburg.str.redhat.com>
- <939ec057-3851-d8fb-7b45-993fa07c4cb5@intel.com>
- <87r1i06ow2.fsf@oldenburg.str.redhat.com>
- <263a58a9-26d5-4e55-b3e1-3718baf1b81d@www.fastmail.com>
- <87k0nraonu.ffs@nanos.tec.linutronix.de>
-Date:   Fri, 21 May 2021 13:07:52 -0700
-From:   "Andy Lutomirski" <luto@kernel.org>
-To:     "Thomas Gleixner" <tglx@linutronix.de>,
-        "Florian Weimer" <fweimer@redhat.com>,
-        "Dave Hansen" <dave.hansen@intel.com>
-Cc:     "Dave Hansen via Libc-alpha" <libc-alpha@sourceware.org>,
-        "Len Brown" <lenb@kernel.org>, "Rich Felker" <dalias@libc.org>,
-        "Linux API" <linux-api@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "Kyle Huey" <me@kylehuey.com>, "Borislav Petkov" <bp@alien8.de>,
-        "Keno Fischer" <keno@juliacomputing.com>,
-        "Arjan van de Ven" <arjan@linux.intel.com>,
-        "Willy Tarreau" <w@1wt.eu>
-Subject: =?UTF-8?Q?Re:_Candidate_Linux_ABI_for_Intel_AMX_and_hypothetical_new_rel?=
- =?UTF-8?Q?ated_features?=
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        id S230450AbhEUUJg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:09:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51963 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229451AbhEUUJe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:09:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621627691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6SLlOvYcpJb9PnH2v8qQWMs/sPrQdiipYeANWUm+37s=;
+        b=ivdMdBP8O0cxRvV2wEKYfo8GcnjzfXA7DUFbLjidd3HpehhdrAqVpkgSUDux4YzLcZFxHc
+        bZl8fm2GNpZbPjQiaUc1fAmqygVwudJ8wWHlpqoP7L3z0bI11ONVEgBT1EbCUjwPC5NRdA
+        +vBdYAtyTfE6JKnnqD5qjuylVUN9JD8=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-88-bbDC2A12ML6A72IVDnK4jQ-1; Fri, 21 May 2021 16:08:09 -0400
+X-MC-Unique: bbDC2A12ML6A72IVDnK4jQ-1
+Received: by mail-qv1-f72.google.com with SMTP id n12-20020a0cdc8c0000b02901efdf8d3bc7so15418159qvk.23
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:08:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6SLlOvYcpJb9PnH2v8qQWMs/sPrQdiipYeANWUm+37s=;
+        b=smDGUYp1Nbkc31uoVV7qyolQa0b9oiekC2KOk7GYDoj7BA6dDqDIaEucBS7Gc1JuAw
+         aAjtIbvaNI5IepQQDkHTzkd/Uy4pprt9OqCbY2cNY67990aP7M6+7aPPd3OBlMEGO2xG
+         kEf1NpWmX1/71NNVQydFabWb8TFWTAwpOmAgWnIer3O2l3QRb1qvLUnPjuY6UpzCS0ga
+         DKmKS3tjMFSk+pqx+i9KCDLIVfzClGvaRjSBt8dLgPDtJ4+SP7wOdi9S4jpQv8ffPWeb
+         gXwO6oqUWOGEmZJV7yHUcAiX02br+hqlKh7O5cUPAIJf2oGSOjQphMgKW99p+aTtt/YF
+         YQKg==
+X-Gm-Message-State: AOAM532d663PmYmhsVXic774gp6LWSdWGss+2M3fReDlfK7cGFOvqSQR
+        FZbRI1jOadXfuvHr9X59drJlJ0rHE6vBgqaiTfHnsfzRkO2FQak44/TsTu1AkMhAUr6cZoBRe6m
+        8pUnOxniwvIfmE/D0G7L5gUqB
+X-Received: by 2002:ad4:5f07:: with SMTP id fo7mr14729651qvb.54.1621627688942;
+        Fri, 21 May 2021 13:08:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzzSaiCm9wXeWJHd3potrPtUisr0+MximgUPLbaSdQjQsFQj8zMXuNhj2iGG7ireBg86+TEw==
+X-Received: by 2002:ad4:5f07:: with SMTP id fo7mr14729622qvb.54.1621627688639;
+        Fri, 21 May 2021 13:08:08 -0700 (PDT)
+Received: from treble ([68.52.236.68])
+        by smtp.gmail.com with ESMTPSA id y8sm5334555qtn.61.2021.05.21.13.08.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 13:08:08 -0700 (PDT)
+Date:   Fri, 21 May 2021 15:08:06 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     Mark Brown <broonie@kernel.org>, mark.rutland@arm.com,
+        ardb@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+Message-ID: <20210521200806.nk3m7aldelmi3l2r@treble>
+References: <20210521161117.GB5825@sirena.org.uk>
+ <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
+ <20210521174242.GD5825@sirena.org.uk>
+ <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
+ <20210521175318.GF5825@sirena.org.uk>
+ <20210521184817.envdg232b2aeyprt@treble>
+ <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
+ <20210521191140.4aezpvm2kruztufi@treble>
+ <20210521191608.f24sldzhpg3hyq32@treble>
+ <bf3a5289-8199-b665-0327-ed8240dd7827@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <bf3a5289-8199-b665-0327-ed8240dd7827@linux.microsoft.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 21, 2021 at 02:41:56PM -0500, Madhavan T. Venkataraman wrote:
+> > Or is frame->reliable supposed to be checked after all?  Looking at the
+> > code again, I'm not sure.
+> > 
+> > Either way it would be good to document the interface more clearly in a
+> > comment above the function.
+> > 
+> 
+> So, arch_stack_walk_reliable() would do this:
+> 
+> 	start_backtrace(frame);
+> 
+> 	while (...) {
+> 		if (!frame->reliable)
+> 			return error;
+> 
+> 		consume_entry(...);
+> 
+> 		ret = unwind_frame(...);
+> 
+> 		if (ret)
+> 			break;
+> 	}
+> 
+> 	if (ret == -ENOENT)
+> 		return success;
+> 	return error;
+> 
+> 
+> Something like that.
+
+I see.  So basically there are six possible combinations of return
+states:
+
+  1) No error		frame->reliable
+  2) No error		!frame->reliable
+  3) -ENOENT		frame->reliable
+  5) -ENOENT		!frame->reliable (doesn't happen in practice)
+  4) Other error	frame->reliable  (doesn't happen in practice)
+  6) Other error	!frame->reliable
 
 
-On Fri, May 21, 2021, at 12:10 PM, Thomas Gleixner wrote:
-> On Fri, May 21 2021 at 09:31, Andy Lutomirski wrote:
-> > arch_prctl(SET_XSTATE_INIT_ON_FIRST_USE, TILE_STUFF);?
-> >
-> > As long as this is allowed to fail, I don=E2=80=99t have a huge prob=
-lem with
-> > it.
->=20
-> I'm fine with that. It's still controlled by the OS and can return
-> -EPERM.
->=20
-> If allowed then the application would also accept to be insta killed i=
-f
-> that #NM allocation fails. Any bug report vs. that will be ignored.
->=20
-> > I think several things here are regrettable:
-> >
-> > 1. Legacy XSTATE code might assume that XCR0 is a constant.
-> >
-> > 2. Intel virt really doesn=E2=80=99t like us context switching XCR0,=
- although
-> > we might say that this is Intel=E2=80=99s fault and therefore Intel=E2=
-=80=99s
-> > problem. AMD hardware doesn=E2=80=99t appear to have this issue.
-> >
-> > 3. AMX bring tangled up in XSTATE is unfortunate.  The whole XSTATE
-> > mechanism is less than amazing.
-> >
-> > IMO the best we can make of this whole situation is to make XCR0
-> > dynamic, but the legacy compatibility issues are potentially
-> > problematic.
->=20
-> Why? The bit can be enabled and #NM catches the violation of the ABI
-> contract if the application did not request usage. No XCR0 fiddling on=
+On x86 we have fewer combinations:
 
-> context switch required.
->=20
-> Thanks,
->=20
->         tglx
->=20
->=20
->=20
+  1) No error		state->error
+  2) No error		!state->error
+  3) Error		state->error
+  4) Error		!state->error (doesn't happen in practice)
 
-XFD does nothing about signals.  It also doesn=E2=80=99t help give appli=
-cations a non-Linux-specific way to ask if AMX is available. The SDM say=
-s that one can read XCR0.  Sure, we can use it, but cross platform libra=
-ries seem likely to get it wrong.
+
+I think the x86 interface seems more robust, because it's more narrow
+and has fewer edge cases.  Also it doesn't have to distinguish between
+error enums, which can get hairy if a downstream callee happens to
+return -ENOENT for a different reason.
+
+-- 
+Josh
+
