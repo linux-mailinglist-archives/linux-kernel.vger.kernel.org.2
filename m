@@ -2,90 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C9F38C7EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A38D938C7E5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:25:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235115AbhEUN1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:27:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44780 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235214AbhEUN1A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234947AbhEUN1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 21 May 2021 09:27:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A6A5613EB;
-        Fri, 21 May 2021 13:25:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621603536;
-        bh=+v0/KSHe8/QCCcMSvhEpsTDVCUNBQhlWaeoDCNnhHVI=;
-        h=From:To:Cc:Subject:Date:From;
-        b=iDnAlD1kScLtyQhrAR2eIQjeIzWAoIc0Ma5K1rLOSXxSLOfo9ULPxTAsGsbu/H765
-         PbfBj5eSV0eESxg2x1rl6wB5mJyBKCbc4BT7Fwy7RT+ok6zPWJeLPgrKHbI92zcdnv
-         HfVm2U9GmppkWDUHRZ6m+YJ1q94QoebMICIrzT+ylbkuXidQ+Csyjj5IP2dQDZ9X7J
-         NT2DuXilo3N9b6536gYOQA0rf7Vj1gDfWKQvTmd/Zp3k0DqpqBfRHFovAUR1T1UXvc
-         iaQUE3vblNp2w7zWkmNKZBXYd1KKUEp0p/BZ+zmfSGO1N6dD+lf0mtldWD1KuIA78o
-         nF4p8QshezlXA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lk59k-0004RA-QW; Fri, 21 May 2021 15:25:37 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] Input: usbtouchscreen - fix control-request directions
-Date:   Fri, 21 May 2021 15:25:03 +0200
-Message-Id: <20210521132503.17013-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
+Received: from mail-ua1-f44.google.com ([209.85.222.44]:39680 "EHLO
+        mail-ua1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235065AbhEUN0t (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:26:49 -0400
+Received: by mail-ua1-f44.google.com with SMTP id f20so2645685uax.6;
+        Fri, 21 May 2021 06:25:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qRbyj4hnpbc3k4A+KkiBSK4Wsj0BDOQJgU/wtF8JLXs=;
+        b=ZMJDUr9wrzvQ01Ap2KydoU1IRPUxTJJfxNuWvEAClHKvAbxQ+YdGEg32F4Iu8vCCgD
+         KVVRICXM/PCRmnFb+A1YueR8y2Nxf3ZV3qodbMiYIQqGJ1V5KD3hgilSGtJq0L0IAP0u
+         wR+H2sAKy43fTjQyUNc8lje9AolJFroHevCP278WMdHWEv2JJyFEKGlFeIP2hrOniDWp
+         SjZMYBsF367rtoPZyE/ytCQKVSFfg2gnteC1xkbNrFoHojU7yItK42OawFlZAET9mb8q
+         IsF+3QTFeka9g3Z9AVmVRSl+ij28L/D4t/oystWrkB4es61CeIVSH37jq3KJn2xiROUf
+         k0RA==
+X-Gm-Message-State: AOAM533XeeQFH3A50lDhqYF/sulOzs8Q2vS2E8BxV3/R0mb5xCZ2FQ1Q
+        c6qN91DG+6LRORxbHqTdfoUQOyPR5Y+pHOqzUF4=
+X-Google-Smtp-Source: ABdhPJyU3JXc2pJRQaqnYUFEIxzdDLSIk2Lov0ZJRGoLvieGJIGh6qYVS7spCooqh0dW7Qf4KPPcxKvwjlON0x8ake4=
+X-Received: by 2002:ab0:f5:: with SMTP id 108mr10706159uaj.106.1621603525425;
+ Fri, 21 May 2021 06:25:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210514192218.13022-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 May 2021 15:25:13 +0200
+Message-ID: <CAMuHMdVOTfV9XBo0t0CxGU1=Zo3VjFioDaDU1rdX8Hb6Pvz-Zw@mail.gmail.com>
+Subject: Re: [PATCH 04/16] soc: renesas: Add ARCH_R9A07G044{L,LC} for the new
+ RZ/G2{L,LC} SoC's
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+Hi Prabhakar,
 
-Fix the three control requests which erroneously used usb_rcvctrlpipe().
+On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add ARCH_R9A07G044{L,LC} as a configuration symbol for the new Renesas
+> RZ/G2{L,LC} SoC's.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Fixes: 1d3e20236d7a ("[PATCH] USB: usbtouchscreen: unified USB touchscreen driver")
-Fixes: 24ced062a296 ("usbtouchscreen: add support for DMC TSC-10/25 devices")
-Cc: stable@vger.kernel.org      # 2.6.17
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/input/touchscreen/usbtouchscreen.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks for your patch!
 
-diff --git a/drivers/input/touchscreen/usbtouchscreen.c b/drivers/input/touchscreen/usbtouchscreen.c
-index c847453a03c2..7c47fedd555d 100644
---- a/drivers/input/touchscreen/usbtouchscreen.c
-+++ b/drivers/input/touchscreen/usbtouchscreen.c
-@@ -531,7 +531,7 @@ static int mtouch_init(struct usbtouch_usb *usbtouch)
- 	if (ret)
- 		return ret;
- 
--	ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
-+	ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 	                      MTOUCHUSB_RESET,
- 	                      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 	                      1, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
-@@ -543,7 +543,7 @@ static int mtouch_init(struct usbtouch_usb *usbtouch)
- 	msleep(150);
- 
- 	for (i = 0; i < 3; i++) {
--		ret = usb_control_msg(udev, usb_rcvctrlpipe(udev, 0),
-+		ret = usb_control_msg(udev, usb_sndctrlpipe(udev, 0),
- 				      MTOUCHUSB_ASYNC_REPORT,
- 				      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				      1, 1, NULL, 0, USB_CTRL_SET_TIMEOUT);
-@@ -722,7 +722,7 @@ static int dmc_tsc10_init(struct usbtouch_usb *usbtouch)
- 	}
- 
- 	/* start sending data */
--	ret = usb_control_msg(dev, usb_rcvctrlpipe (dev, 0),
-+	ret = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
- 	                      TSC10_CMD_DATA1,
- 	                      USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 	                      0, 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
--- 
-2.26.3
+> --- a/drivers/soc/renesas/Kconfig
+> +++ b/drivers/soc/renesas/Kconfig
+> @@ -279,6 +279,16 @@ config ARCH_R8A774B1
+>         help
+>           This enables support for the Renesas RZ/G2N SoC.
+>
+> +config ARCH_R9A07G044L
+> +       bool "ARM64 Platform support for RZ/G2L SoC"
 
+Please drop the "SoC", for consistency with other entries.
+
+> +       help
+> +         This enables support for the Renesas RZ/G2L SoC.
+> +
+> +config ARCH_R9A07G044LC
+> +       bool "ARM64 Platform support for RZ/G2LC SoC"
+
+Likewise.
+
+> +       help
+> +         This enables support for the Renesas RZ/G2LC SoC.
+> +
+>  endif # ARM64
+
+Given LSI DEVID is the same, do we need both, or can we do with a
+single ARCH_R9A07G044?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
