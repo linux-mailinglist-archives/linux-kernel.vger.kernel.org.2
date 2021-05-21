@@ -2,96 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A46BE38C0B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:26:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1ADC38C0B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235861AbhEUH2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:28:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58882 "EHLO
+        id S235837AbhEUH2C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:28:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234293AbhEUH2O (ORCPT
+        with ESMTP id S232281AbhEUH2B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:28:14 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6144C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:26:51 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id i14-20020a0cf10e0000b02901eeced6480dso14410602qvl.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:26:51 -0700 (PDT)
+        Fri, 21 May 2021 03:28:01 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84B3C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:26:38 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id p7so16260829wru.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:26:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=JoxX3vq44wLNgaQOrg3pQOcd8r/g5YBPrzj4+4KLU0o=;
-        b=ARASCsMpesYMn32qIslFtKuh5MusyNHMqxDu/DiZ30m6y4jL2kvAz+w577BTsMwWhQ
-         kt+amSaNu+1SJVc4HLg98sZ/u70WPKff0AgrWWxaHuhongV2Kmf8o65TGJP/E7Cnz9HP
-         LgmSRwpMwDRdkRIWUPOlDe3xvyJX78zuIqin17FpeOLj+h9VJr2LObaCAInNWJVrf30q
-         8B8w8PJNUkJzKRl4AkK6fx6cU+8GYy/6dqU1vdIYJ/VJ8PhdnjdnOY5XnO0JYEWftvHp
-         rm3akIs1cRssrwDh43vYplSkJgx3Q8LIW7GWRC/FlsCAc0PvjQQLmDw0X9/AonIkCWaM
-         2Pdw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=wHJsiC5bAPMJ/JK2F8/kAPqQTZHzq5ny0YRHjZNAtPg=;
+        b=D9Q+TP0/xYt4iQ45TGcwC580vJ0ZoowBEIqSbX9KoF301h+z+xAJAjXYNPkmhcmO3e
+         zgy8E4COS7RDsbiucJ8FlmM7gnHuo/tVxwxKnSuTnfWx7uRMZFWkONcGL/Z4kp67mBFd
+         +BnwEy2t7VMOC5CB1PKqSyOdh022za9V8pMv7R+5xMLKhsHhnU+5ObBAXKY4z8y/z96D
+         j8VsK3FcOyNuElRe11Uw4MSYYWTFG/lDwZJudfhwDtpsZ7558q8GbrerDk67+Nwb0u3F
+         8ztbk2Uyee+zWrCrQoirq+/r9tPtihNRW9BEl1cAAPqcqBxrsYTnsNaI3S9qaJGvh07Y
+         N4tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=JoxX3vq44wLNgaQOrg3pQOcd8r/g5YBPrzj4+4KLU0o=;
-        b=gZwlcLr5gQCgEc0/QVbj/iVwNcSbWun9IB87zVEMvtQdc+PLaFvIniuvZbjXiYrdJe
-         Q/OK+b9Ikt8mbrzdVw+/EP3WRYOO80BEix0fgnIobKE5AMbkWK/gyFcAm0yv2yk8bS74
-         MUt8TNVgKd1X9YtXTQZErbzGPnP1Wh49YYJTxTCVz7/XOhUxHLHJxlPcGza3EYF5YGTG
-         KEJIn2YLyOqyJV3SUAk1qUdMdyigMdMSQzXBWD8d0Waxoa+tqRXmRIUJXIBXLbHEUPO6
-         cCkWim7eWptngGrR2wZIQtgYyhSKRZezSgWvnVi0i4nysJFMYO8QMVCkFOORU+iK/iBz
-         VdUQ==
-X-Gm-Message-State: AOAM5306va/LqtOzDf9amYrs1X+1EZzCRsfTiDMQs8U+yATII1CYtoKp
-        ERx+cyQ5kD8xwlFehbylwKMSVa2pjw==
-X-Google-Smtp-Source: ABdhPJwmGbSuVl1Wagqi/NbNdmfD2fIY9dly6u0ayHOhdr1CMWrMpYxn/TQ9YJY5gN17oOLG4jc0dqvSvQ==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:a932:cdd6:7230:17ba])
- (user=elver job=sendgmr) by 2002:ad4:4184:: with SMTP id e4mr11204870qvp.13.1621582010735;
- Fri, 21 May 2021 00:26:50 -0700 (PDT)
-Date:   Fri, 21 May 2021 09:26:10 +0200
-Message-Id: <20210521072610.2880286-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH] init: verify that function is initcall_t at compile-time
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com
-Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
-        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
-        akpm@linux-foundation.org, masahiroy@kernel.org, joe@perches.com,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wHJsiC5bAPMJ/JK2F8/kAPqQTZHzq5ny0YRHjZNAtPg=;
+        b=iDCKaX3aOI8Z9bnBjAl352ULO+A4CU6gC979nycZipljKG0AUJ3zWfvJYaYKTH0Q8s
+         0HCJM+YwXnhGKUlPPuVBk40OYK5itmhAhZGoWSNpX9RVW0qVXyRlLgIySL/VsqAJUSb7
+         cbW+rjDIE/J/MlDxCecDliiFQd6vtcpvwMVrWmDVTANrY0fcV8ctm9eJH+9qroPIJW6i
+         c5AWpszGOinbm8kKDcOmWRWoI3DkAnU8+B8XUTn/N+J2wiwLUCaUWMOIZ5QXOx+KFa8o
+         MAfbQX+7RQNqpwec8MgtT77/+zewug36pAdyMqXoOb4KNR7SCi06O49PzdkCEcXPNpNQ
+         y/mg==
+X-Gm-Message-State: AOAM533JPeuiz1FfccVE3tD4PA6aW8yLyPmdEcRK+zonMoOhJDB8Tqrt
+        lMbfnicotvV8odP+Y25F2TQk3g==
+X-Google-Smtp-Source: ABdhPJzESohZioxALYLgYLF5Uhkx1nAY0R/4gNgHpibC0XIoL2X2pIn9HQvSnSr0YfBD+4gAM9qgjg==
+X-Received: by 2002:a5d:688d:: with SMTP id h13mr7927610wru.362.1621581997336;
+        Fri, 21 May 2021 00:26:37 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id c6sm1032177wru.50.2021.05.21.00.26.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 00:26:36 -0700 (PDT)
+Date:   Fri, 21 May 2021 08:26:35 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Ian Abbott <abbotti@mev.co.uk>
+Cc:     linux-kernel@vger.kernel.org,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "David A. Schleef" <ds@schleef.org>,
+        Mori Hess <fmhess@users.sourceforge.net>,
+        Truxton Fulton <trux@truxton.com>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
+ 'range_ni_E_ao_ext' to where it is used
+Message-ID: <20210521072635.GY2549456@dell>
+References: <20210520122538.3470259-1-lee.jones@linaro.org>
+ <20210520122538.3470259-6-lee.jones@linaro.org>
+ <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the spirit of making it hard to misuse an interface, add a
-compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
-to verify the initcall function matches initcall_t, because the inline
-asm bypasses any type-checking the compiler would otherwise do. This
-will help developers catch incorrect API use in all configurations.
+On Thu, 20 May 2021, Ian Abbott wrote:
 
-A recent example of this is:
-https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
+> On 20/05/2021 13:25, Lee Jones wrote:
+> > ... and mark it as __maybe_unused since not all users of the
+> > header file reference it.
+> > 
+> > Fixes the following W=1 kernel build warning(s):
+> > 
+> >   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
+> > 
+> > Cc: Ian Abbott <abbotti@mev.co.uk>
+> > Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: "David A. Schleef" <ds@schleef.org>
+> > Cc: Mori Hess <fmhess@users.sourceforge.net>
+> > Cc: Truxton Fulton <trux@truxton.com>
+> > Cc: linux-staging@lists.linux.dev
+> > Cc: linux-pwm@vger.kernel.org
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > ---
+> >   drivers/comedi/drivers/ni_mio_common.c | 9 ---------
+> >   drivers/comedi/drivers/ni_stc.h        | 9 ++++++++-
+> >   2 files changed, 8 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
+> > index 4f80a4991f953..37615b4e2c10d 100644
+> > --- a/drivers/comedi/drivers/ni_mio_common.c
+> > +++ b/drivers/comedi/drivers/ni_mio_common.c
+> > @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
+> >   	}
+> >   };
+> > -static const struct comedi_lrange range_ni_E_ao_ext = {
+> > -	4, {
+> > -		BIP_RANGE(10),
+> > -		UNI_RANGE(10),
+> > -		RANGE_ext(-1, 1),
+> > -		RANGE_ext(0, 1)
+> > -	}
+> > -};
+> > -
+> >   static const struct comedi_lrange *const ni_range_lkup[] = {
+> >   	[ai_gain_16] = &range_ni_E_ai,
+> >   	[ai_gain_8] = &range_ni_E_ai_limited,
+> > diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_stc.h
+> > index fbc0b753a0f59..0822e65f709dd 100644
+> > --- a/drivers/comedi/drivers/ni_stc.h
+> > +++ b/drivers/comedi/drivers/ni_stc.h
+> > @@ -1137,6 +1137,13 @@ struct ni_private {
+> >   	u8 rgout0_usage;
+> >   };
+> > -static const struct comedi_lrange range_ni_E_ao_ext;
+> > +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
+> > +	4, {
+> > +		BIP_RANGE(10),
+> > +		UNI_RANGE(10),
+> > +		RANGE_ext(-1, 1),
+> > +		RANGE_ext(0, 1)
+> > +	}
+> > +};
+> >   #endif /* _COMEDI_NI_STC_H */
+> > 
+> 
+> The "ni_stc.h" header is also included by "ni_mio_cs.c" which doesn't need
+> `range_ni_E_ao_ext` (admittedly, it was already pulling in a "tentative"
+> definition of the variable).
+> 
+> Thinking about it, I think it's probably better to move `range_ni_E_ao_ext`
+> from "ni_mio_common.c" into *both* "ni_atmio.c" and "ni_pcimio.c" (I think
+> we can live with the small amount of duplication), and to remove the
+> tentative definition from "ni_stc.h".
 
-Signed-off-by: Marco Elver <elver@google.com>
-Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
----
- include/linux/init.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Happy to rework.
 
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 045ad1650ed1..d82b4b2e1d25 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -242,7 +242,8 @@ extern bool initcall_debug;
- 	asm(".section	\"" __sec "\", \"a\"		\n"	\
- 	    __stringify(__name) ":			\n"	\
- 	    ".long	" __stringify(__stub) " - .	\n"	\
--	    ".previous					\n");
-+	    ".previous					\n");	\
-+	static_assert(__same_type(initcall_t, &fn));
- #else
- #define ____define_initcall(fn, __unused, __name, __sec)	\
- 	static initcall_t __name __used 			\
+Am I taking this or Uwe's suggestion?
+
 -- 
-2.31.1.818.g46aad6cb9e-goog
-
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
