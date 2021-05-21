@@ -2,622 +2,506 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B33BB38BF60
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:30:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BCE4B38BF7A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:37:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232513AbhEUGcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:32:12 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:54349 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231895AbhEUGcK (ORCPT
+        id S232891AbhEUGiv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:38:51 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:40075 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232078AbhEUGhQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 02:32:10 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 20 May 2021 23:30:48 -0700
-X-QCInternal: smtphost
-Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 20 May 2021 23:30:45 -0700
-X-QCInternal: smtphost
-Received: from c-skakit-linux.ap.qualcomm.com (HELO c-skakit-linux.qualcomm.com) ([10.242.51.242])
-  by ironmsg01-blr.qualcomm.com with ESMTP; 21 May 2021 12:00:21 +0530
-Received: by c-skakit-linux.qualcomm.com (Postfix, from userid 2344709)
-        id C99974F23; Fri, 21 May 2021 12:00:19 +0530 (IST)
-From:   satya priya <skakit@codeaurora.org>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     kgunda@codeaurora.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, satya priya <skakit@codeaurora.org>
-Subject: [PATCH V4] dt-bindings: pinctrl: qcom-pmic-gpio: Convert qcom pmic gpio bindings to YAML
-Date:   Fri, 21 May 2021 12:00:15 +0530
-Message-Id: <1621578615-4613-1-git-send-email-skakit@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 21 May 2021 02:37:16 -0400
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210521063552epoutp03aa6f1e5d07644741e8453311f547bfbf~BAXcjghTL2792627926epoutp03g
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:35:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210521063552epoutp03aa6f1e5d07644741e8453311f547bfbf~BAXcjghTL2792627926epoutp03g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1621578952;
+        bh=BNjfcqCqpEb6fzt5HK2N0VHKYZvCoRCYtqJDiKT3shM=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=dm/fJGZgqHOUFQyH1UwgAFcwztGxbarxKu4VP0Ge37reoZZB7Noxz/1UAhy4VyRu5
+         AsKCOya0F0Ani2ZLUiYK0svXLagbcaXo4JX49LqXfMIjfWq67fdZ5jlOW9dgLftrAM
+         CmWUOu2GBvNETpz8mMme/vbLGJkQKy6zuCfqP5CM=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210521063551epcas1p35214ecda9ee4ef2d06ca68e29309dec7~BAXcE7OWF1461614616epcas1p3f;
+        Fri, 21 May 2021 06:35:51 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.165]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4FmcLZ3pyJz4x9Pr; Fri, 21 May
+        2021 06:35:50 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        42.25.09578.6C457A06; Fri, 21 May 2021 15:35:50 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20210521063549epcas1p204e171a2ba5a06d1b50e490f5e742b25~BAXaoP7nP1105811058epcas1p2m;
+        Fri, 21 May 2021 06:35:49 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210521063549epsmtrp182929cf5ad7d5a090e2b71073dddacf0~BAXanP9dg3157231572epsmtrp1I;
+        Fri, 21 May 2021 06:35:49 +0000 (GMT)
+X-AuditID: b6c32a35-58cdfa800000256a-34-60a754c6cadf
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        07.4E.08163.5C457A06; Fri, 21 May 2021 15:35:49 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.89.31.111]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210521063549epsmtip1de27b21ba2d7d31a6214d88968ef4252~BAXaUiu-m1754917549epsmtip1e;
+        Fri, 21 May 2021 06:35:49 +0000 (GMT)
+From:   Namjae Jeon <namjae.jeon@samsung.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-cifs@vger.kernel.org
+Cc:     linux-cifsd-devel@lists.sourceforge.net, smfrench@gmail.com,
+        senozhatsky@chromium.org, hyc.lee@gmail.com,
+        viro@zeniv.linux.org.uk, hch@lst.de, hch@infradead.org,
+        ronniesahlberg@gmail.com, aurelien.aptel@gmail.com,
+        aaptel@suse.com, sandeen@sandeen.net, dan.carpenter@oracle.com,
+        willy@infradead.org, Namjae Jeon <namjae.jeon@samsung.com>
+Subject: [PATCH v3 00/10] cifsd: introduce new SMB3 kernel server
+Date:   Fri, 21 May 2021 15:26:27 +0900
+Message-Id: <20210521062637.31347-1-namjae.jeon@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDJsWRmVeSWpSXmKPExsWy7bCmvu6xkOUJBh0HpS0a355msTj++i+7
+        xet/01ksTk9YxGSxcvVRJotr99+zW7z4v4vZ4uf/74wWe/aeZLG4vGsOm8WP6fUWvX2fWC1a
+        r2hZ7N64iM3izYvDbBbn/x5ntfj9Yw6bg6DH7IaLLB47Z91l99i8Qstj94LPTB67bzaweXx8
+        eovFo2/LKkaPLYsfMnms33KVxePzJjmPTU/eMgVwR+XYZKQmpqQWKaTmJeenZOal2yp5B8c7
+        x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl5gD9pKRQlphTChQKSCwuVtK3synKLy1JVcjILy6x
+        VUotSMkpMDQo0CtOzC0uzUvXS87PtTI0MDAyBapMyMm4tWcje8HhKYwVU1ZdZWpg7MrqYuTg
+        kBAwkbi1NK6LkYtDSGAHo8SqWXPZIJxPjBInf3xihXA+M0r8vr6HvYuRE6xj3qbpTCC2kMAu
+        Romv5xjhOk4c+8EEMpZNQFvizxZRkBoRgViJGzteM4PUMAvcY5KY/62XBSQhLOAo8al5DiuI
+        zSKgKrH33H2wobwCNhKfPr5nhlgmL7F6wwGwZgmBpRwSz960skIkXCQaP4DcCmILS7w6vgXq
+        OimJl/1tUHa5xImTv5gg7BqJDfP2sUP8bCzR86IExGQW0JRYv0sfokJRYufvuYwgNrMAn8S7
+        rz2sENW8Eh1tQhAlqhJ9lw5DDZSW6Gr/ALXIQ+J18wxmSJDEShz+u4hpAqPsLIQFCxgZVzGK
+        pRYU56anFhsWGCLH0SZGcDLVMt3BOPHtB71DjEwcjIcYJTiYlUR4uR2XJwjxpiRWVqUW5ccX
+        leakFh9iNAUG10RmKdHkfGA6zyuJNzQ1MjY2tjAxMzczNVYS5013rk4QEkhPLEnNTk0tSC2C
+        6WPi4JRqYJp566u128TZj5auZWnp6N3TvCvgf8B9j5Jl0Ydtlj6XDrXNKNU9eEizYlf0jHW7
+        +f94VpnN5Ja4ahT2eoLImnlrffNy/+50DFZZd+YP61GBPUGWbRO2J6kWddz/+Ltysq7Pg6YD
+        Z3kvfF58f8vl7Flzvx7f8txPMPIZM0ul5PpP60sOcWvM9rWpqp7pwX5Y0vViSeOTNubLLUZi
+        vQ7LLZ/xOh8QPrmaZ1X9lB/uUxPmGex6I/Pr0yf+8zWTSiL+P9H1ikndbMylUs589cPqO9wb
+        Dp19ZDmrS/VSh3D50ywRgY2dlrdXXly079YWoacXtvHMStO7aXE4c/OzILfftvk1J54VCKye
+        +TM0PE16bp6rEktxRqKhFnNRcSIAY6CR8S8EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrNLMWRmVeSWpSXmKPExsWy7bCSnO7RkOUJBlvvGlg0vj3NYnH89V92
+        i9f/prNYnJ6wiMli5eqjTBbX7r9nt3jxfxezxc//3xkt9uw9yWJxedccNosf0+stevs+sVq0
+        XtGy2L1xEZvFmxeH2SzO/z3OavH7xxw2B0GP2Q0XWTx2zrrL7rF5hZbH7gWfmTx232xg8/j4
+        9BaLR9+WVYweWxY/ZPJYv+Uqi8fnTXIem568ZQrgjuKySUnNySxLLdK3S+DKuLVnI3vB4SmM
+        FVNWXWVqYOzK6mLk5JAQMJGYt2k6UxcjF4eQwA5GifuL+xghEtISx06cYe5i5ACyhSUOHy6G
+        qPnAKLFr7S12kDibgLbEny2iIOUiAvESNxtus4DYzALvmCSuXMsBsYUFHCU+Nc9hBbFZBFQl
+        9p67zwRi8wrYSHz6+J4ZYpW8xOoNB5gnMPIsYGRYxSiZWlCcm55bbFhglJdarlecmFtcmpeu
+        l5yfu4kRHN5aWjsY96z6oHeIkYmD8RCjBAezkggvt+PyBCHelMTKqtSi/Pii0pzU4kOM0hws
+        SuK8F7pOxgsJpCeWpGanphakFsFkmTg4pRqYtrxsv33wqdRDR6nzC5t6jnAc6XgaJzu7aHpe
+        T+RLyz2bbzpskFIUb7tY86Lg/DveK6Xp8oLq3t5PZPx2/1osb+fCsr88QCKlLei0i6D77dKr
+        Orxzr8eknDjx//bC7Y+nPuvVMlf6vP3bA5MFnd7b1hRrbT7LI24cZMj08lAe4/32j0XfzDkV
+        f96R0J4nEjs1Qn1PjfnPe2nBliW+OjtXni/QUzu1c0NMmb1SFkPM8hmxrre5JlgIOft+azAM
+        bGcwii2KVdpppyGyvO3IUeGap0oiMibnPkl6icUdMFr1Z+ch/wrrc+bf1LewzJTdK1CQE2q9
+        6m7pnVjPk44pwdJN3+rc9O8s/L84zMlqF78SS3FGoqEWc1FxIgAwbSa+3gIAAA==
+X-CMS-MailID: 20210521063549epcas1p204e171a2ba5a06d1b50e490f5e742b25
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210521063549epcas1p204e171a2ba5a06d1b50e490f5e742b25
+References: <CGME20210521063549epcas1p204e171a2ba5a06d1b50e490f5e742b25@epcas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Qualcomm PMIC GPIO bindings from .txt to .yaml format.
+This is the patch series for cifsd(ksmbd) kernel server.
 
-Signed-off-by: satya priya <skakit@codeaurora.org>
----
-Changes in V2:
- - As per Rob's comments fixed bot erros.
- - Moved this patch to end of the series so that other patches are not
-   blocked on this.
+What is cifsd(ksmbd) ?
+======================
 
-Changes in V3:
- - As per Rob's comments, added maxItems for reg and interrupts.
-   Added reference of "pinmux-node.yaml" and "pincfg-node.yaml".
-   Made 'additionalProperties' as false.
+The SMB family of protocols is the most widely deployed
+network filesystem protocol, the default on Windows and Macs (and even
+on many phones and tablets), with clients and servers on all major
+operating systems, but lacked a kernel server for Linux. For many
+cases the current userspace server choices were suboptimal
+either due to memory footprint, performance or difficulty integrating
+well with advanced Linux features.
 
-Changes in V4:
- - As per Rob's comments, added description for interrupts, defined
-   constraints for "qcom,drive-strength", dropped description for function
-   property.
+ksmbd is a new kernel module which implements the server-side of the SMB3 protocol.
+The target is to provide optimized performance, GPLv2 SMB server, better
+lease handling (distributed caching). The bigger goal is to add new
+features more rapidly (e.g. RDMA aka "smbdirect", and recent encryption
+and signing improvements to the protocol) which are easier to develop
+on a smaller, more tightly optimized kernel server than for example
+in Samba.  The Samba project is much broader in scope (tools, security services,
+LDAP, Active Directory Domain Controller, and a cross platform file server
+for a wider variety of purposes) but the user space file server portion
+of Samba has proved hard to optimize for some Linux workloads, including
+for smaller devices. This is not meant to replace Samba, but rather be
+an extension to allow better optimizing for Linux, and will continue to
+integrate well with Samba user space tools and libraries where appropriate.
+Working with the Samba team we have already made sure that the configuration
+files and xattrs are in a compatible format between the kernel and
+user space server.
 
- .../devicetree/bindings/pinctrl/qcom,pmic-gpio.txt | 286 ---------------------
- .../bindings/pinctrl/qcom,pmic-gpio.yaml           | 256 ++++++++++++++++++
- 2 files changed, 256 insertions(+), 286 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
- create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-deleted file mode 100644
-index f6a97605..0000000
---- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.txt
-+++ /dev/null
-@@ -1,286 +0,0 @@
--Qualcomm PMIC GPIO block
--
--This binding describes the GPIO block(s) found in the 8xxx series of
--PMIC's from Qualcomm.
--
--- compatible:
--	Usage: required
--	Value type: <string>
--	Definition: must be one of:
--		    "qcom,pm8005-gpio"
--		    "qcom,pm8018-gpio"
--		    "qcom,pm8038-gpio"
--		    "qcom,pm8058-gpio"
--		    "qcom,pm8916-gpio"
--		    "qcom,pm8917-gpio"
--		    "qcom,pm8921-gpio"
--		    "qcom,pm8941-gpio"
--		    "qcom,pm8950-gpio"
--		    "qcom,pm8994-gpio"
--		    "qcom,pm8998-gpio"
--		    "qcom,pma8084-gpio"
--		    "qcom,pmi8950-gpio"
--		    "qcom,pmi8994-gpio"
--		    "qcom,pmi8998-gpio"
--		    "qcom,pms405-gpio"
--		    "qcom,pm660-gpio"
--		    "qcom,pm660l-gpio"
--		    "qcom,pm8150-gpio"
--		    "qcom,pm8150b-gpio"
--		    "qcom,pm8350-gpio"
--		    "qcom,pm8350b-gpio"
--		    "qcom,pm8350c-gpio"
--		    "qcom,pmk8350-gpio"
--		    "qcom,pmr735a-gpio"
--		    "qcom,pmr735b-gpio"
--		    "qcom,pm6150-gpio"
--		    "qcom,pm6150l-gpio"
--		    "qcom,pm8008-gpio"
--		    "qcom,pmx55-gpio"
--
--		    And must contain either "qcom,spmi-gpio" or "qcom,ssbi-gpio"
--		    if the device is on an spmi bus or an ssbi bus respectively
--
--- reg:
--	Usage: required
--	Value type: <prop-encoded-array>
--	Definition: Register base of the GPIO block and length.
--
--- interrupts:
--	Usage: required
--	Value type: <prop-encoded-array>
--	Definition: Must contain an array of encoded interrupt specifiers for
--		    each available GPIO
--
--- gpio-controller:
--	Usage: required
--	Value type: <none>
--	Definition: Mark the device node as a GPIO controller
--
--- #gpio-cells:
--	Usage: required
--	Value type: <u32>
--	Definition: Must be 2;
--		    the first cell will be used to define gpio number and the
--		    second denotes the flags for this gpio
--
--Please refer to ../gpio/gpio.txt and ../interrupt-controller/interrupts.txt for
--a general description of GPIO and interrupt bindings.
--
--Please refer to pinctrl-bindings.txt in this directory for details of the
--common pinctrl bindings used by client devices, including the meaning of the
--phrase "pin configuration node".
--
--The pin configuration nodes act as a container for an arbitrary number of
--subnodes. Each of these subnodes represents some desired configuration for a
--pin or a list of pins. This configuration can include the
--mux function to select on those pin(s), and various pin configuration
--parameters, as listed below.
--
--
--SUBNODES:
--
--The name of each subnode is not important; all subnodes should be enumerated
--and processed purely based on their content.
--
--Each subnode only affects those parameters that are explicitly listed. In
--other words, a subnode that lists a mux function but no pin configuration
--parameters implies no information about any pin configuration parameters.
--Similarly, a pin subnode that describes a pullup parameter implies no
--information about e.g. the mux function.
--
--The following generic properties as defined in pinctrl-bindings.txt are valid
--to specify in a pin configuration subnode:
--
--- pins:
--	Usage: required
--	Value type: <string-array>
--	Definition: List of gpio pins affected by the properties specified in
--		    this subnode.  Valid pins are:
--		    gpio1-gpio4 for pm8005
--		    gpio1-gpio6 for pm8018
--		    gpio1-gpio12 for pm8038
--		    gpio1-gpio40 for pm8058
--		    gpio1-gpio4 for pm8916
--		    gpio1-gpio38 for pm8917
--		    gpio1-gpio44 for pm8921
--		    gpio1-gpio36 for pm8941
--		    gpio1-gpio8 for pm8950 (hole on gpio3)
--		    gpio1-gpio22 for pm8994
--		    gpio1-gpio26 for pm8998
--		    gpio1-gpio22 for pma8084
--		    gpio1-gpio2 for pmi8950
--		    gpio1-gpio10 for pmi8994
--		    gpio1-gpio12 for pms405 (holes on gpio1, gpio9 and gpio10)
--		    gpio1-gpio10 for pm8150 (holes on gpio2, gpio5, gpio7
--					     and gpio8)
--		    gpio1-gpio12 for pm8150b (holes on gpio3, gpio4, gpio7)
--		    gpio1-gpio12 for pm8150l (hole on gpio7)
--		    gpio1-gpio10 for pm8350
--		    gpio1-gpio8 for pm8350b
--		    gpio1-gpio9 for pm8350c
--		    gpio1-gpio4 for pmk8350
--		    gpio1-gpio4 for pmr735a
--		    gpio1-gpio4 for pmr735b
--		    gpio1-gpio10 for pm6150
--		    gpio1-gpio12 for pm6150l
--		    gpio1-gpio2 for pm8008
--		    gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
--					    and gpio11)
--
--- function:
--	Usage: required
--	Value type: <string>
--	Definition: Specify the alternative function to be configured for the
--		    specified pins.  Valid values are:
--		    "normal",
--		    "paired",
--		    "func1",
--		    "func2",
--		    "dtest1",
--		    "dtest2",
--		    "dtest3",
--		    "dtest4",
--		    And following values are supported by LV/MV GPIO subtypes:
--		    "func3",
--		    "func4"
--
--- bias-disable:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins should be configured as no pull.
--
--- bias-pull-down:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins should be configured as pull down.
--
--- bias-pull-up:
--	Usage: optional
--	Value type: <empty>
--	Definition: The specified pins should be configured as pull up.
--
--- qcom,pull-up-strength:
--	Usage: optional
--	Value type: <u32>
--	Definition: Specifies the strength to use for pull up, if selected.
--		    Valid values are; as defined in
--		    <dt-bindings/pinctrl/qcom,pmic-gpio.h>:
--		    1: 30uA                     (PMIC_GPIO_PULL_UP_30)
--		    2: 1.5uA                    (PMIC_GPIO_PULL_UP_1P5)
--		    3: 31.5uA                   (PMIC_GPIO_PULL_UP_31P5)
--		    4: 1.5uA + 30uA boost       (PMIC_GPIO_PULL_UP_1P5_30)
--		    If this property is omitted 30uA strength will be used if
--		    pull up is selected
--
--- bias-high-impedance:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins will put in high-Z mode and disabled.
--
--- input-enable:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are put in input mode.
--
--- output-high:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are configured in output mode, driven
--		    high.
--
--- output-low:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are configured in output mode, driven
--		    low.
--
--- power-source:
--	Usage: optional
--	Value type: <u32>
--	Definition: Selects the power source for the specified pins. Valid
--		    power sources are defined per chip in
--		    <dt-bindings/pinctrl/qcom,pmic-gpio.h>
--
--- qcom,drive-strength:
--	Usage: optional
--	Value type: <u32>
--	Definition: Selects the drive strength for the specified pins. Value
--		    drive strengths are:
--		    0: no (PMIC_GPIO_STRENGTH_NO)
--		    1: high (PMIC_GPIO_STRENGTH_HIGH) 0.9mA @ 1.8V - 1.9mA @ 2.6V
--		    2: medium (PMIC_GPIO_STRENGTH_MED) 0.6mA @ 1.8V - 1.25mA @ 2.6V
--		    3: low (PMIC_GPIO_STRENGTH_LOW) 0.15mA @ 1.8V - 0.3mA @ 2.6V
--		    as defined in <dt-bindings/pinctrl/qcom,pmic-gpio.h>
--
--- drive-push-pull:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are configured in push-pull mode.
--
--- drive-open-drain:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are configured in open-drain mode.
--
--- drive-open-source:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are configured in open-source mode.
--
--- qcom,analog-pass:
--	Usage: optional
--	Value type: <none>
--	Definition: The specified pins are configured in analog-pass-through mode.
--
--- qcom,atest:
--	Usage: optional
--	Value type: <u32>
--	Definition: Selects ATEST rail to route to GPIO when it's configured
--		    in analog-pass-through mode.
--		    Valid values are 1-4 corresponding to ATEST1 to ATEST4.
--
--- qcom,dtest-buffer:
--	Usage: optional
--	Value type: <u32>
--	Definition: Selects DTEST rail to route to GPIO when it's configured
--		    as digital input.
--		    Valid values are 1-4 corresponding to DTEST1 to DTEST4.
--
--Example:
--
--	pm8921_gpio: gpio@150 {
--		compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
--		reg = <0x150 0x160>;
--		interrupts = <192 1>, <193 1>, <194 1>,
--			     <195 1>, <196 1>, <197 1>,
--			     <198 1>, <199 1>, <200 1>,
--			     <201 1>, <202 1>, <203 1>,
--			     <204 1>, <205 1>, <206 1>,
--			     <207 1>, <208 1>, <209 1>,
--			     <210 1>, <211 1>, <212 1>,
--			     <213 1>, <214 1>, <215 1>,
--			     <216 1>, <217 1>, <218 1>,
--			     <219 1>, <220 1>, <221 1>,
--			     <222 1>, <223 1>, <224 1>,
--			     <225 1>, <226 1>, <227 1>,
--			     <228 1>, <229 1>, <230 1>,
--			     <231 1>, <232 1>, <233 1>,
--			     <234 1>, <235 1>;
--
--		gpio-controller;
--		#gpio-cells = <2>;
--
--		pm8921_gpio_keys: gpio-keys {
--			volume-keys {
--				pins = "gpio20", "gpio21";
--				function = "normal";
--
--				input-enable;
--				bias-pull-up;
--				drive-push-pull;
--				qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
--				power-source = <PM8921_GPIO_S4>;
--			};
--		};
--	};
-diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-new file mode 100644
-index 0000000..d9024eb
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
-@@ -0,0 +1,256 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/qcom,pmic-gpio.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm PMIC GPIO block
-+
-+maintainers:
-+  - Bjorn Andersson <bjorn.andersson@sonymobile.com>
-+
-+description: |
-+  This binding describes the GPIO block(s) found in the 8xxx series of
-+  PMIC's from Qualcomm.
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - qcom,pm8005-gpio
-+          - qcom,pm8018-gpio
-+          - qcom,pm8038-gpio
-+          - qcom,pm8058-gpio
-+          - qcom,pm8916-gpio
-+          - qcom,pm8917-gpio
-+          - qcom,pm8921-gpio
-+          - qcom,pm8941-gpio
-+          - qcom,pm8950-gpio
-+          - qcom,pm8994-gpio
-+          - qcom,pm8998-gpio
-+          - qcom,pma8084-gpio
-+          - qcom,pmi8950-gpio
-+          - qcom,pmi8994-gpio
-+          - qcom,pmi8998-gpio
-+          - qcom,pms405-gpio
-+          - qcom,pm660-gpio
-+          - qcom,pm660l-gpio
-+          - qcom,pm8150-gpio
-+          - qcom,pm8150b-gpio
-+          - qcom,pm8350-gpio
-+          - qcom,pm8350b-gpio
-+          - qcom,pm8350c-gpio
-+          - qcom,pmk8350-gpio
-+          - qcom,pm6150-gpio
-+          - qcom,pm6150l-gpio
-+          - qcom,pm7325-gpio
-+          - qcom,pmr735a-gpio
-+          - qcom,pmr735b-gpio
-+          - qcom,pm8008-gpio
-+          - qcom,pmx55-gpio
-+
-+      - enum:
-+          - qcom,spmi-gpio
-+          - qcom,ssbi-gpio
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 1
-+    maxItems: 44
-+    description: |
-+        Must contain an array of encoded interrupt specifiers for
-+        each available GPIO
-+
-+  '#interrupt-cells':
-+    const: 2
-+
-+  interrupt-controller: true
-+
-+  gpio-controller: true
-+
-+  gpio-ranges:
-+    maxItems: 1
-+
-+  '#gpio-cells':
-+    const: 2
-+    description: |
-+        The first cell will be used to define gpio number and the
-+        second denotes the flags for this gpio
-+
-+  gpio-keys:
-+    type: object
-+    properties:
-+      volume-keys:
-+        type: object
-+        anyOf:
-+          - $ref: "pinmux-node.yaml"
-+          - $ref: "pincfg-node.yaml"
-+        properties:
-+          pins:
-+            description: |
-+                List of gpio pins affected by the properties specified in
-+                this subnode.  Valid pins are
-+                     - gpio1-gpio4 for pm8005
-+                     - gpio1-gpio6 for pm8018
-+                     - gpio1-gpio12 for pm8038
-+                     - gpio1-gpio40 for pm8058
-+                     - gpio1-gpio4 for pm8916
-+                     - gpio1-gpio38 for pm8917
-+                     - gpio1-gpio44 for pm8921
-+                     - gpio1-gpio36 for pm8941
-+                     - gpio1-gpio8 for pm8950 (hole on gpio3)
-+                     - gpio1-gpio22 for pm8994
-+                     - gpio1-gpio26 for pm8998
-+                     - gpio1-gpio22 for pma8084
-+                     - gpio1-gpio2 for pmi8950
-+                     - gpio1-gpio10 for pmi8994
-+                     - gpio1-gpio12 for pms405 (holes on gpio1, gpio9
-+                                                and gpio10)
-+                     - gpio1-gpio10 for pm8150 (holes on gpio2, gpio5,
-+                                                gpio7 and gpio8)
-+                     - gpio1-gpio12 for pm8150b (holes on gpio3, gpio4
-+                                                 and gpio7)
-+                     - gpio1-gpio12 for pm8150l (hole on gpio7)
-+                     - gpio1-gpio10 for pm8350
-+                     - gpio1-gpio8 for pm8350b
-+                     - gpio1-gpio9 for pm8350c
-+                     - gpio1-gpio4 for pmk8350
-+                     - gpio1-gpio10 for pm6150
-+                     - gpio1-gpio12 for pm6150l
-+                     - gpio1-gpio10 for pm7325
-+                     - gpio1-gpio4 for pmr735a
-+                     - gpio1-gpio4 for pmr735b
-+                     - gpio1-gpio2 for pm8008
-+                     - gpio1-gpio11 for pmx55 (holes on gpio3, gpio7, gpio10
-+                                                and gpio11)
-+
-+            items:
-+              pattern: "^gpio([0-9]+)$"
-+
-+          function:
-+            items:
-+              - enum:
-+                  - normal
-+                  - paired
-+                  - func1
-+                  - func2
-+                  - dtest1
-+                  - dtest2
-+                  - dtest3
-+                  - dtest4
-+                  - func3  # supported by LV/MV GPIO subtypes
-+                  - func4  # supported by LV/MV GPIO subtypes
-+
-+          bias-disable: true
-+
-+          bias-pull-down: true
-+
-+          bias-pull-up: true
-+
-+          qcom,pull-up-strength:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: |
-+                Specifies the strength to use for pull up, if selected.
-+                Valid values are defined in
-+                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+                If this property is omitted 30uA strength will be used
-+                if pull up is selected
-+
-+          bias-high-impedance: true
-+
-+          input-enable: true
-+
-+          output-high: true
-+
-+          output-low: true
-+
-+          power-source: true
-+
-+          qcom,drive-strength:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: |
-+                Selects the drive strength for the specified pins
-+                Valid drive strength values are defined in
-+                <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+            enum: [0, 1, 2, 3]
-+
-+          drive-push-pull: true
-+
-+          drive-open-drain: true
-+
-+          drive-open-source: true
-+
-+          qcom,analog-pass:
-+            $ref: /schemas/types.yaml#/definitions/flag
-+            description: |
-+                The specified pins are configured in
-+                analog-pass-through mode.
-+
-+          qcom,atest:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: |
-+                Selects ATEST rail to route to GPIO when it's
-+                configured in analog-pass-through mode.
-+            enum: [1, 2, 3, 4]
-+
-+          qcom,dtest-buffer:
-+            $ref: /schemas/types.yaml#/definitions/uint32
-+            description: |
-+                Selects DTEST rail to route to GPIO when it's
-+                configured as digital input.
-+            enum: [1, 2, 3, 4]
-+
-+        required:
-+          - pins
-+          - function
-+
-+        additionalProperties: false
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+
-+examples:
-+  - |
-+    #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
-+
-+    pm8921_gpio: gpio@150 {
-+      compatible = "qcom,pm8921-gpio", "qcom,ssbi-gpio";
-+      reg = <0x150 0x160>;
-+      interrupts = <192 1>, <193 1>, <194 1>,
-+                   <195 1>, <196 1>, <197 1>,
-+                   <198 1>, <199 1>, <200 1>,
-+                   <201 1>, <202 1>, <203 1>,
-+                   <204 1>, <205 1>, <206 1>,
-+                   <207 1>, <208 1>, <209 1>,
-+                   <210 1>, <211 1>, <212 1>,
-+                   <213 1>, <214 1>, <215 1>,
-+                   <216 1>, <217 1>, <218 1>,
-+                   <219 1>, <220 1>, <221 1>,
-+                   <222 1>, <223 1>, <224 1>,
-+                   <225 1>, <226 1>, <227 1>,
-+                   <228 1>, <229 1>, <230 1>,
-+                   <231 1>, <232 1>, <233 1>,
-+                   <234 1>, <235 1>;
-+
-+      gpio-controller;
-+      #gpio-cells = <2>;
-+
-+      pm8921_gpio_keys: gpio-keys {
-+        volume-keys {
-+          pins = "gpio20", "gpio21";
-+          function = "normal";
-+
-+          input-enable;
-+          bias-pull-up;
-+          drive-push-pull;
-+          qcom,drive-strength = <PMIC_GPIO_STRENGTH_NO>;
-+          power-source = <PM8921_GPIO_S4>;
-+        };
-+      };
-+    };
-+...
+Architecture
+============
+
+               |--- ...
+       --------|--- ksmbd/3 - Client 3
+       |-------|--- ksmbd/2 - Client 2
+       |       |         ____________________________________________________
+       |       |        |- Client 1                                          |
+<--- Socket ---|--- ksmbd/1   <<= Authentication : NTLM/NTLM2, Kerberos      |
+       |       |      | |     <<= SMB engine : SMB2, SMB2.1, SMB3, SMB3.0.2, |
+       |       |      | |                SMB3.1.1                            |
+       |       |      | |____________________________________________________|
+       |       |      |
+       |       |      |--- VFS --- Local Filesystem
+       |       |
+KERNEL |--- ksmbd/0(forker kthread)
+---------------||---------------------------------------------------------------
+USER           ||
+               || communication using NETLINK
+               ||  ______________________________________________
+               || |                                              |
+        ksmbd.mountd <<= DCE/RPC(srvsvc, wkssvc, samr, lsarpc)   |
+               ^  |  <<= configure shares setting, user accounts |
+               |  |______________________________________________|
+               |
+               |------ smb.conf(config file)
+               |
+               |------ ksmbdpwd.db(user account/password file)
+                            ^
+  ksmbd.adduser ------------|
+
+The subset of performance related operations(open/read/write/close etc.) belong
+in kernelspace(ksmbd) and the other subset which belong to operations(DCE/RPC,
+user account/share database) which are not really related with performance are
+handled in userspace(ksmbd.mountd).
+
+When the ksmbd.mountd is started, It starts up a forker thread at initialization
+time and opens a dedicated port 445 for listening to SMB requests. Whenever new
+clients make request, Forker thread will accept the client connection and fork
+a new thread for dedicated communication channel between the client and
+the server.
+
+
+ksmbd feature status
+====================
+
+============================== =================================================
+Feature name                   Status
+============================== =================================================
+Dialects                       Supported. SMB2.1 SMB3.0, SMB3.1.1 dialects
+                               (intentionally excludes security vulnerable SMB1 dialect).
+Auto Negotiation               Supported.
+Compound Request               Supported.
+Oplock Cache Mechanism         Supported.
+SMB2 leases(v1 lease)          Supported.
+Directory leases(v2 lease)     Planned for future.
+Multi-credits                  Supported.
+NTLM/NTLMv2                    Supported.
+HMAC-SHA256 Signing            Supported.
+Secure negotiate               Supported.
+Signing Update                 Supported.
+Pre-authentication integrity   Supported.
+SMB3 encryption(CCM, GCM)      Supported. (CCM and GCM128 supported, GCM256 in progress)
+SMB direct(RDMA)               Partially Supported. SMB3 Multi-channel is required
+                               to connect to Windows client.
+SMB3 Multi-channel             In Progress.
+SMB3.1.1 POSIX extension       Supported.
+ACLs                           Partially Supported. only DACLs available, SACLs
+                               (auditing) is planned for the future. For
+                               ownership (SIDs) ksmbd generates random subauth
+                               values(then store it to disk) and use uid/gid
+                               get from inode as RID for local domain SID.
+                               The current acl implementation is limited to
+                               standalone server, not a domain member.
+                               Integration with Samba tools is being worked on to
+                               allow future support for running as a domain member.
+Kerberos                       Supported.
+Durable handle v1,v2           Planned for future.
+Persistent handle              Planned for future.
+SMB2 notify                    Planned for future.
+Sparse file support            Supported.
+DCE/RPC support                Partially Supported. a few calls(NetShareEnumAll,
+                               NetServerGetInfo, SAMR, LSARPC) that are needed 
+                               for file server handled via netlink interface from
+                               ksmbd.mountd. Additional integration with Samba
+                               tools and libraries via upcall is being investigated
+                               to allow support for additional DCE/RPC management
+                               calls (and future support for Witness protocol e.g.)
+ksmbd/nfsd interoperability    Planned for future. The features that ksmbd
+                               support are Leases, Notify, ACLs and Share modes.
+============================== =================================================
+
+All features required as file server are currently implemented in ksmbd.
+In particular, the implementation of SMB Direct(RDMA) is only currently
+possible with ksmbd (among Linux servers)
+
+
+Stability
+=========
+
+It has been proved to be stable. A significant amount of xfstests pass and
+are run regularly from Linux to Linux:
+
+  http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/8/builds/36
+
+In addition regression tests using the broadest SMB3 functional test suite
+(Samba's "smbtorture") are run on every checkin. 
+It has already been used by many other open source toolkits and commercial companies
+that need NAS functionality. Their issues have been fixed and contributions are
+applied into ksmbd. Ksmbd has been well tested and verified in the field and market.
+
+
+Mailing list and repositories
+=============================
+ - linux-cifsd-devel@lists.sourceforge.net
+ - https://github.com/smfrench/smb3-kernel/tree/cifsd-for-next
+ - https://github.com/cifsd-team/cifsd (out-of-tree)
+ - https://github.com/cifsd-team/ksmbd-tools
+
+
+How to run ksmbd 
+================
+
+   a. Download ksmbd-tools and compile them.
+	- https://github.com/cifsd-team/ksmbd-tools
+
+   b. Create user/password for SMB share.
+
+	# mkdir /etc/ksmbd/
+	# ksmbd.adduser -a <Enter USERNAME for SMB share access>
+
+   c. Create /etc/ksmbd/smb.conf file, add SMB share in smb.conf file
+	- Refer smb.conf.example and Documentation/configuration.txt
+	  in ksmbd-tools
+
+   d. Insert ksmbd.ko module
+
+	# insmod ksmbd.ko
+
+   e. Start ksmbd user space daemon
+	# ksmbd.mountd
+
+   f. Access share from Windows or Linux using SMB 
+       e.g. "mount -t cifs //server/share /mnt ..."
+
+
+v3:
+ - fix boolreturn.cocci warnings. (kernel test robot)
+ - fix xfstests generic/504 test failure.
+ - do not use 0 or 0xFFFFFFFF for TreeID. (Marios Makassikis)
+ - add support for FSCTL_DUPLICATE_EXTENTS_TO_FILE.
+ - fix build error without CONFIG_OID_REGISTRY. (Wei Yongjun)
+ - fix invalid memory access in smb2_write(). (Coverity Scan)
+ - add support for AES256 encryption.
+ - fix potential null-ptr-deref in destroy_previous_session(). (Marios Makassikis).
+ - update out_buf_len in smb2_populate_readdir_entry(). (Marios Makassikis)
+ - handle ksmbd_session_rpc_open() failure in create_smb2_pipe(). (Marios Makassikis)
+ - call smb2_set_err_rsp() in smb2_read/smb2_write error path. (Marios Makassikis)
+ - add ksmbd/nfsd interoperability to feature table. (Amir Goldstein)
+ - fix regression in smb2_get_info. (Sebastian Gottschall)
+ - remove is_attributes_write_allowed() wrapper. (Marios Makassikis)
+ - update access check in set_file_allocation_info/set_end_of_file_info. (Marios Makassikis)
+
+v2:
+ - fix an error code in smb2_read(). (Dan Carpenter)
+ - fix error handling in ksmbd_server_init() (Dan Carpenter)
+ - remove redundant assignment to variable err. (Colin Ian King)
+ - remove unneeded macros.
+ - fix wrong use of rw semaphore in __session_create().
+ - use kmalloc() for small allocations.
+ - add the check to work file lock and rename behaviors like Windows
+   unless POSIX extensions are negotiated.
+ - clean-up codes using chechpatch.pl --strict.
+ - merge time_wrappers.h into smb_common.h.
+ - fix wrong prototype in comment (kernel test robot).
+ - fix implicit declaration of function 'groups_alloc' (kernel test robot).
+ - fix implicit declaration of function 'locks_alloc_lock' (kernel test robot).
+ - remove smack inherit leftovers.
+ - remove calling d_path in error paths.
+ - handle unhashed dentry in ksmbd_vfs_mkdir.
+ - use file_inode() instead of d_inode().
+ - remove useless error handling in ksmbd_vfs_read.
+ - use xarray instead of linked list for tree connect list.
+ - remove stale prototype and variables.
+ - fix memory leak when loop ends (coverity-bot, Muhammad Usama Anjum).
+ - use kfree to free memory allocated by kmalloc or kzalloc (Muhammad Usama Anjum).
+ - fix memdup.cocci warnings (kernel test robot)
+ - remove wrappers of kvmalloc/kvfree.
+ - change the reference to configuration.txt (Mauro Carvalho Chehab).
+ - prevent a integer overflow in wm_alloc().
+ - select SG_POOL for SMB_SERVER_SMBDIRECT. (Zhang Xiaoxu).
+ - remove unused including <linux/version.h> (Tian Tao).
+ - declare ida statically.
+ - add the check if parent is stable by unexpected rename.
+ - get parent dentry from child in ksmbd_vfs_remove_file().
+ - re-implement ksmbd_vfs_kern_path.
+ - fix reference count decrement of unclaimed file in __ksmbd_lookup_fd.
+ - remove smb2_put_name(). (Marios Makassikis).
+ - remove unused smberr.h, nterr.c and netmisc.c.
+ - fix potential null-ptr-deref in smb2_open() (Marios Makassikis).
+ - use d_inode().
+ - remove the dead code of unimplemented durable handle.
+ - use the generic one in lib/asn1_decoder.c
+
+v1:
+ - fix a handful of spelling mistakes (Colin Ian King)
+ - fix a precedence bug in parse_dacl() (Dan Carpenter)
+ - fix a IS_ERR() vs NULL bug (Dan Carpenter)
+ - fix a use after free on error path  (Dan Carpenter)
+ - update cifsd.rst Documentation
+ - remove unneeded FIXME comments
+ - fix static checker warnings (Dan Carpenter)
+ - fix WARNING: unmet direct dependencies detected for CRYPTO_ARC4 (Randy Dunlap)
+ - uniquify extract_sharename() (Stephen Rothwell)
+ - fix WARNING: document isn't included in any toctree (Stephen Rothwell)
+ - fix WARNING: Title overline too short (Stephen Rothwell)
+ - fix warning: variable 'total_ace_size' and 'posix_ccontext'set but not used (kernel test rotbot)
+ - fix incorrect function comments (kernel test robot)
+
+Namjae Jeon (10):
+  cifsd: add document
+  cifsd: add server handler
+  cifsd: add trasport layers
+  cifsd: add authentication
+  cifsd: add smb3 engine part 1
+  cifsd: add smb3 engine part 2
+  cifsd: add oplock/lease cache mechanism
+  cifsd: add file operations
+  cifsd: add Kconfig and Makefile
+  MAINTAINERS: add cifsd kernel server
+
+ Documentation/filesystems/cifs/cifsd.rst |  164 +
+ Documentation/filesystems/cifs/index.rst |   10 +
+ Documentation/filesystems/index.rst      |    2 +-
+ MAINTAINERS                              |   12 +-
+ fs/Kconfig                               |    1 +
+ fs/Makefile                              |    1 +
+ fs/cifsd/Kconfig                         |   68 +
+ fs/cifsd/Makefile                        |   17 +
+ fs/cifsd/asn1.c                          |  352 +
+ fs/cifsd/asn1.h                          |   29 +
+ fs/cifsd/auth.c                          | 1344 ++++
+ fs/cifsd/auth.h                          |   90 +
+ fs/cifsd/buffer_pool.c                   |  264 +
+ fs/cifsd/buffer_pool.h                   |   20 +
+ fs/cifsd/connection.c                    |  411 ++
+ fs/cifsd/connection.h                    |  208 +
+ fs/cifsd/crypto_ctx.c                    |  286 +
+ fs/cifsd/crypto_ctx.h                    |   77 +
+ fs/cifsd/glob.h                          |   64 +
+ fs/cifsd/ksmbd_server.h                  |  283 +
+ fs/cifsd/ksmbd_work.c                    |   93 +
+ fs/cifsd/ksmbd_work.h                    |  110 +
+ fs/cifsd/mgmt/ksmbd_ida.c                |   46 +
+ fs/cifsd/mgmt/ksmbd_ida.h                |   34 +
+ fs/cifsd/mgmt/share_config.c             |  239 +
+ fs/cifsd/mgmt/share_config.h             |   81 +
+ fs/cifsd/mgmt/tree_connect.c             |  122 +
+ fs/cifsd/mgmt/tree_connect.h             |   56 +
+ fs/cifsd/mgmt/user_config.c              |   70 +
+ fs/cifsd/mgmt/user_config.h              |   66 +
+ fs/cifsd/mgmt/user_session.c             |  328 +
+ fs/cifsd/mgmt/user_session.h             |  103 +
+ fs/cifsd/misc.c                          |  340 +
+ fs/cifsd/misc.h                          |   44 +
+ fs/cifsd/ndr.c                           |  347 +
+ fs/cifsd/ndr.h                           |   21 +
+ fs/cifsd/nterr.h                         |  545 ++
+ fs/cifsd/ntlmssp.h                       |  169 +
+ fs/cifsd/oplock.c                        | 1667 +++++
+ fs/cifsd/oplock.h                        |  133 +
+ fs/cifsd/server.c                        |  631 ++
+ fs/cifsd/server.h                        |   60 +
+ fs/cifsd/smb2misc.c                      |  435 ++
+ fs/cifsd/smb2ops.c                       |  300 +
+ fs/cifsd/smb2pdu.c                       | 8151 ++++++++++++++++++++++
+ fs/cifsd/smb2pdu.h                       | 1664 +++++
+ fs/cifsd/smb_common.c                    |  652 ++
+ fs/cifsd/smb_common.h                    |  544 ++
+ fs/cifsd/smbacl.c                        | 1317 ++++
+ fs/cifsd/smbacl.h                        |  201 +
+ fs/cifsd/smbfsctl.h                      |   91 +
+ fs/cifsd/smbstatus.h                     | 1822 +++++
+ fs/cifsd/spnego_negtokeninit.asn1        |   43 +
+ fs/cifsd/spnego_negtokentarg.asn1        |   19 +
+ fs/cifsd/transport_ipc.c                 |  881 +++
+ fs/cifsd/transport_ipc.h                 |   54 +
+ fs/cifsd/transport_rdma.c                | 2034 ++++++
+ fs/cifsd/transport_rdma.h                |   61 +
+ fs/cifsd/transport_tcp.c                 |  618 ++
+ fs/cifsd/transport_tcp.h                 |   13 +
+ fs/cifsd/unicode.c                       |  383 +
+ fs/cifsd/unicode.h                       |  356 +
+ fs/cifsd/uniupr.h                        |  268 +
+ fs/cifsd/vfs.c                           | 1995 ++++++
+ fs/cifsd/vfs.h                           |  274 +
+ fs/cifsd/vfs_cache.c                     |  683 ++
+ fs/cifsd/vfs_cache.h                     |  185 +
+ 67 files changed, 32050 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/filesystems/cifs/cifsd.rst
+ create mode 100644 Documentation/filesystems/cifs/index.rst
+ create mode 100644 fs/cifsd/Kconfig
+ create mode 100644 fs/cifsd/Makefile
+ create mode 100644 fs/cifsd/asn1.c
+ create mode 100644 fs/cifsd/asn1.h
+ create mode 100644 fs/cifsd/auth.c
+ create mode 100644 fs/cifsd/auth.h
+ create mode 100644 fs/cifsd/buffer_pool.c
+ create mode 100644 fs/cifsd/buffer_pool.h
+ create mode 100644 fs/cifsd/connection.c
+ create mode 100644 fs/cifsd/connection.h
+ create mode 100644 fs/cifsd/crypto_ctx.c
+ create mode 100644 fs/cifsd/crypto_ctx.h
+ create mode 100644 fs/cifsd/glob.h
+ create mode 100644 fs/cifsd/ksmbd_server.h
+ create mode 100644 fs/cifsd/ksmbd_work.c
+ create mode 100644 fs/cifsd/ksmbd_work.h
+ create mode 100644 fs/cifsd/mgmt/ksmbd_ida.c
+ create mode 100644 fs/cifsd/mgmt/ksmbd_ida.h
+ create mode 100644 fs/cifsd/mgmt/share_config.c
+ create mode 100644 fs/cifsd/mgmt/share_config.h
+ create mode 100644 fs/cifsd/mgmt/tree_connect.c
+ create mode 100644 fs/cifsd/mgmt/tree_connect.h
+ create mode 100644 fs/cifsd/mgmt/user_config.c
+ create mode 100644 fs/cifsd/mgmt/user_config.h
+ create mode 100644 fs/cifsd/mgmt/user_session.c
+ create mode 100644 fs/cifsd/mgmt/user_session.h
+ create mode 100644 fs/cifsd/misc.c
+ create mode 100644 fs/cifsd/misc.h
+ create mode 100644 fs/cifsd/ndr.c
+ create mode 100644 fs/cifsd/ndr.h
+ create mode 100644 fs/cifsd/nterr.h
+ create mode 100644 fs/cifsd/ntlmssp.h
+ create mode 100644 fs/cifsd/oplock.c
+ create mode 100644 fs/cifsd/oplock.h
+ create mode 100644 fs/cifsd/server.c
+ create mode 100644 fs/cifsd/server.h
+ create mode 100644 fs/cifsd/smb2misc.c
+ create mode 100644 fs/cifsd/smb2ops.c
+ create mode 100644 fs/cifsd/smb2pdu.c
+ create mode 100644 fs/cifsd/smb2pdu.h
+ create mode 100644 fs/cifsd/smb_common.c
+ create mode 100644 fs/cifsd/smb_common.h
+ create mode 100644 fs/cifsd/smbacl.c
+ create mode 100644 fs/cifsd/smbacl.h
+ create mode 100644 fs/cifsd/smbfsctl.h
+ create mode 100644 fs/cifsd/smbstatus.h
+ create mode 100644 fs/cifsd/spnego_negtokeninit.asn1
+ create mode 100644 fs/cifsd/spnego_negtokentarg.asn1
+ create mode 100644 fs/cifsd/transport_ipc.c
+ create mode 100644 fs/cifsd/transport_ipc.h
+ create mode 100644 fs/cifsd/transport_rdma.c
+ create mode 100644 fs/cifsd/transport_rdma.h
+ create mode 100644 fs/cifsd/transport_tcp.c
+ create mode 100644 fs/cifsd/transport_tcp.h
+ create mode 100644 fs/cifsd/unicode.c
+ create mode 100644 fs/cifsd/unicode.h
+ create mode 100644 fs/cifsd/uniupr.h
+ create mode 100644 fs/cifsd/vfs.c
+ create mode 100644 fs/cifsd/vfs.h
+ create mode 100644 fs/cifsd/vfs_cache.c
+ create mode 100644 fs/cifsd/vfs_cache.h
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
 
