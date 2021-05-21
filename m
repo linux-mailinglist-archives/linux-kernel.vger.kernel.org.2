@@ -2,72 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ACF338C3C7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAFD538C3CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:49:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233856AbhEUJtk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:49:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:39428 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234146AbhEUJtQ (ORCPT
+        id S231248AbhEUJuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234888AbhEUJuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:49:16 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lk1l2-0005Rc-FH; Fri, 21 May 2021 09:47:52 +0000
-Subject: NAK: [PATCH][next] dm space maps: Fix uninitialized variable r2
-From:   Colin Ian King <colin.king@canonical.com>
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Joe Thornber <ejt@redhat.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210521094031.42356-1-colin.king@canonical.com>
-Message-ID: <fe127847-f8ee-20aa-5613-19b8a110c712@canonical.com>
-Date:   Fri, 21 May 2021 10:47:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 21 May 2021 05:50:05 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BFDC06138E
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:48:38 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id n2so29537106ejy.7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=eisF7/tvHZBRL69+5MCh0dy7rhokDrpqCcqSKT/Yj3c=;
+        b=VsgTIZFo++ZXlzyfDeZJV0cPRwqofdSPQeW2AtfPzQGJXxNzgxZK8bkFehpNDFgfRU
+         +mpOeeGoBp0RX1Ua3oKmQEihRKhlkyXnwRVBhoUeqjxtYWRQSSnlvstJuo/Y9RMXBeHI
+         jrO8OemCG3wBVHvTUNEd6RGa8VOLUCPAnOfMyglZ7DizDcuD5r1BxsMDw9nCkJiUCMPW
+         WTCMDzv6m5q4j472uuj8WRVjK4IPtp5Ts6VppqwL13kwSIiDDMvMoe2pEmaI3uKefj0q
+         kFgzHLuN4U5zkK52WCEq6V6MOFnt0hbSrqHqlIOmG7wtdvkrsoSkUbVihvH+4dll0WNr
+         Mzhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=eisF7/tvHZBRL69+5MCh0dy7rhokDrpqCcqSKT/Yj3c=;
+        b=GhAiKFx7teecrMKMgtuhiDDRgJlv31HwNGVxaGi2yqAtG+suyO8M4NdI0e/eUXEnXE
+         F0c7hNhaDvs4+lOhDKvN1/yzbkPK78KU85/XWSps3SqwNuq2Vlhmsw4SIiyzvUqM6EfQ
+         9TcD1F7sxlj8UxmsOudmYf0q41VvanlBCj5vcM2DYnZX9Sm5PDgqdNAlF4MsZH4krPTL
+         gb+7gSQ5/LM1VISpdZfHB6IIK6auJzeYrsa6hDQbZTaeiPFPgamS2iHWXDcC4b5K1eM4
+         9j838tPGQP3tm+OLgqXSWfiDhGJsC1eojKhOEjFyxwJiFIpUrQslmrILrY7+/XhAaaCJ
+         Iy6A==
+X-Gm-Message-State: AOAM5324igaRkMf6dGmaQ9xa0+L3/MlUPXHosKHnVplsPa5KlJb10mTk
+        ek8Sq2cJJbZi49upbohE2R5u0VeZvKyFoUOxENIKpQ==
+X-Google-Smtp-Source: ABdhPJwlZqxM1Lk3AZ8NzbbXE3xQsIO0ye5wXxOCX2WKDrcaYB0b6dJmUQ0nQzo+9kxW1e3KgMV8Vqhk34bNrHf0rAI=
+X-Received: by 2002:a17:906:f896:: with SMTP id lg22mr8501020ejb.170.1621590516547;
+ Fri, 21 May 2021 02:48:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210521094031.42356-1-colin.king@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210520092108.587553970@linuxfoundation.org>
+In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 May 2021 15:18:25 +0530
+Message-ID: <CA+G9fYtrt_wSX2LZF-GYa0ngk5nixoky+F5ErrfNheLZJzubgw@mail.gmail.com>
+Subject: Re: [PATCH 4.9 000/240] 4.9.269-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/2021 10:40, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> In the case where recursing(mm) is true variable r2 is not
-> inintialized and an uninitialized value is being used in the
-> call combine_errors later on. Fix this by setting r2 to zero.
-> 
-> Addresses-Coverity: ("Uninitialized scalar variable")
-> Fixes: def6a7a9a7f0 ("dm space maps: improve performance with inc/dec on ranges of blocks")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
->  drivers/md/persistent-data/dm-space-map-metadata.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/md/persistent-data/dm-space-map-metadata.c b/drivers/md/persistent-data/dm-space-map-metadata.c
-> index 3b70ee861cf5..5be5ef4c831f 100644
-> --- a/drivers/md/persistent-data/dm-space-map-metadata.c
-> +++ b/drivers/md/persistent-data/dm-space-map-metadata.c
-> @@ -432,9 +432,10 @@ static int sm_metadata_dec_blocks(struct dm_space_map *sm, dm_block_t b, dm_bloc
->  	int32_t nr_allocations;
->  	struct sm_metadata *smm = container_of(sm, struct sm_metadata, sm);
->  
-> -	if (recursing(smm))
-> +	if (recursing(smm)) {
->  		r = add_bop(smm, BOP_DEC, b, e);
-> -	else {
-> +		r2 = 0;
-> +	} else {
->  		in(smm);
->  		r = sm_ll_dec(&smm->ll, b, e, &nr_allocations);
->  		r2 = out(smm);
-> 
+On Thu, 20 May 2021 at 15:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.9.269 release.
+> There are 240 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.269-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-There is a another occurrence of this, I'll send a V2 shortly
+
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 4.9.269-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.9.y
+* git commit: 8622fef5eee9e91d1ea0f1626802ac72a9cbee95
+* git describe: v4.9.268-241-g8622fef5eee9
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
+68-241-g8622fef5eee9
+
+## No regressions (compared to v4.9.268-223-g0394f1845ddb)
+
+## No fixes (compared to v4.9.268-223-g0394f1845ddb)
+
+
+## Test result summary
+ total: 59150, pass: 46996, fail: 1439, skip: 9788, xfail: 927,
+
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
