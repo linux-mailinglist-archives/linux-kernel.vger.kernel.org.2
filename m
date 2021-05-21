@@ -2,97 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63FA838C585
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:16:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC5738C589
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhEULSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:18:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54378 "EHLO
+        id S234478AbhEULT2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:19:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbhEULSC (ORCPT
+        with ESMTP id S234589AbhEULTU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:18:02 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C16BBC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:16:39 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id u9-20020a05620a4549b02902e956c2a3c8so15953877qkp.20
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:16:39 -0700 (PDT)
+        Fri, 21 May 2021 07:19:20 -0400
+Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB76C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:17:57 -0700 (PDT)
+Received: by mail-oo1-xc2b.google.com with SMTP id v13-20020a4ac00d0000b029020b43b918eeso4491449oop.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:17:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=+QJiicZEZmfMKgY/pq0Y5eLW/e6KZlrhFiiHdcX6gWY=;
-        b=SjYh/4Oeno4AVQ0LwbsTcjYcJhcRTY8VWO6h6DlXv1OFswWLALLNIR/vEtKlhnEdPs
-         MCNA5RMMnbZHlIANEoFDu9Pwx7BSo8eKYUy+1vV1vUIzqUegkp7vtXmPkueRrzloFTQg
-         wVA/VTcVXcHnUSMW9y4DRGbNKo6HSxGmzfwzoL/yxa5YwNyd8IkkbjfrgArikfvvMCyD
-         QrRekNbh+rZ7OhaUbrG12wGY22bY/466IoKcv/cQRtqbTD2aCiXx/is7OwXUirgi0AGg
-         C4RFrAVAxl9uvLGbYGcNhWbfac1BXCTzaveSGd9yK8XxMuXxFlUZJ060JpZ1I1iN8vFg
-         2hpg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EcIp8WA1WHrJEqMIlaVs2ij19F6h1FeNiLm8T3GjEDY=;
+        b=gFmVEQZvD+AQHMdUJsoBv5RTf3kX2ozOsQ823fwsAf3l6XUyw97ke6ACIhTPJKpBgh
+         wW9mdj6xBW9Aezn1Mzr+2ehoSfa27rNt5CGgwMz29mEoI4kptCCYhxnwOhTAdw5MlKZJ
+         hl/Vvobs56pvLesJ9xjlrYHVK4njrrcGWDkBP0o7mryY2zfOzCab22xSH2X6p5SCDH1d
+         2uUQ0lUt0PltMWGXkqOQwRUDnHdY7aX2wWwJOuaO6XWNCU3PFTAiZfDRAoYV8FjRhHU5
+         hpWGlwDegjoE4JaCzJY5K7RBY3lu7LGkASVYncb5IR2I1J+V9qAxv1CpRW2SrrKd7Aqo
+         g+1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=+QJiicZEZmfMKgY/pq0Y5eLW/e6KZlrhFiiHdcX6gWY=;
-        b=iQ9d72kTBkCBytqx+GCqfbg5CbhNf5BMs8TMAFFgTeNsYtzE2Z1WGsiapVF8iDZluJ
-         oNTApoSsMjnA9r3VWwZCT4x2xdnrDbWuc7WRf0PiSSXLg4c1KS91BEMSroQsNhgyMUs3
-         j3csQTt8PXAxXKp80x3FQ6kgNu7YZWl/eGnQN3TnSFVTfxMGNZQNWHvUdw1a4uHz0MuY
-         6hlLMIOzn9mTk2Ys4L51U2t/H7QD3lKBfOF/7SxSj7yDzOutT5jXMvSN+TxdCzBjlqOP
-         Zq+pTLejqxUZL0lQS8c8PsHrPm++FwJjven3dOG2bHlUbb++uxeKhsxlLr/c924wHn6c
-         wf1g==
-X-Gm-Message-State: AOAM5310iLgjYZSadiXTVnFxqY3/TKLK7yAz3pwEJt3tesqyzF9pPRfX
-        FInb/QPXHMES2o+Fux5HtKlNzht4DA==
-X-Google-Smtp-Source: ABdhPJwhXZ66s93o3N9GuOPp1PuhXBp5f6gVrIaPsVNiGS/i/YTpzrfxUWA9DXyLPx2iWgJOArZQbbfPhg==
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:a932:cdd6:7230:17ba])
- (user=elver job=sendgmr) by 2002:a0c:ba0c:: with SMTP id w12mr11900436qvf.41.1621595798787;
- Fri, 21 May 2021 04:16:38 -0700 (PDT)
-Date:   Fri, 21 May 2021 13:16:30 +0200
-Message-Id: <20210521111630.472579-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH] kfence: unconditionally use unbound work queue
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EcIp8WA1WHrJEqMIlaVs2ij19F6h1FeNiLm8T3GjEDY=;
+        b=MPZ7CN7v9hZ//CAUtwvyntVf+3y12bdLPYT3TJmIKCSKeUkGBNzYLt7yIEWJDFZFHh
+         RDCU2pmRj5Kv4xfMc8CVD7EaLaq4lltN55ZNz+wkOLQgjFdEQOTh4fwu5pvC89Vp3qew
+         71QlEEwwg1lxP2NDTV3rGmucTnJD5YnXdaPD/erfr34JIkdd7dUUww5667fYDgdvFbuE
+         aHHpbD6mc3muXdVAJDlRlop8r2ud7/7KZB76dnFQGocyiMkw3afTYBg57eb8ftZ9+0Br
+         vjG22kiw0wwSpqVoarwtaFosR/TTo3nv1gENIDvgID+Jh9Tj5b1/6kOD3yeKCvIFtQ0w
+         5HqQ==
+X-Gm-Message-State: AOAM532bX6d/Nm5ZJ2eyYQ50AbfxMGMuDjZn8uYOnF25HRhdye6XrXdL
+        ueUfkanBAVhJ14d3eMcSYGfQBCTlD1vX+UyzELmVJQ==
+X-Google-Smtp-Source: ABdhPJw8SJYXkQFKjdyvexxkcKn4vgnDN+xTtCy93UoM3eGHgFr6VjCvHqXfF8ZFZBoC62/obPHq3PSJt/HRt1kic/Q=
+X-Received: by 2002:a4a:cf15:: with SMTP id l21mr6404487oos.36.1621595876593;
+ Fri, 21 May 2021 04:17:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210521083209.3740269-1-elver@google.com> <20210521093715.1813-1-hdanton@sina.com>
+In-Reply-To: <20210521093715.1813-1-hdanton@sina.com>
 From:   Marco Elver <elver@google.com>
-To:     elver@google.com, akpm@linux-foundation.org
-Cc:     glider@google.com, dvyukov@google.com,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, Hillf Danton <hdanton@sina.com>
+Date:   Fri, 21 May 2021 13:17:44 +0200
+Message-ID: <CANpmjNMD58SJPeVnKrx1=mXoudPZFs+HoCsVujYomCtZ5K+DKQ@mail.gmail.com>
+Subject: Re: [PATCH] kfence: use TASK_IDLE when awaiting allocation
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Mel Gorman <mgorman@suse.de>, stable <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unconditionally use unbound work queue, and not just if
-wq_power_efficient is true. Because if the system is idle, KFENCE may
-wait, and by being run on the unbound work queue, we permit the
-scheduler to make better scheduling decisions and not require pinning
-KFENCE to the same CPU upon waking up.
+On Fri, 21 May 2021 at 11:37, Hillf Danton <hdanton@sina.com> wrote:
+> On Fri, 21 May 2021 10:32:09 +0200 Marco Elver wrote:
+> >Since wait_event() uses TASK_UNINTERRUPTIBLE by default, waiting for an
+> >allocation counts towards load. However, for KFENCE, this does not make
+> >any sense, since there is no busy work we're awaiting.
+>
+> Because of a blocking wq callback, kfence_timer should be queued on a
+> unbound workqueue in the first place. Feel free to add a followup to
+> replace system_power_efficient_wq with system_unbound_wq if it makes
+> sense to you that kfence behaves as correctly as expected independent of
+> CONFIG_WQ_POWER_EFFICIENT_DEFAULT given "system_power_efficient_wq is
+> identical to system_wq if 'wq_power_efficient' is disabled."
 
-Fixes: 36f0b35d0894 ("kfence: use power-efficient work queue to run delayed work")
-Reported-by: Hillf Danton <hdanton@sina.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
- mm/kfence/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/mm/kfence/core.c b/mm/kfence/core.c
-index 4d21ac44d5d3..d7666ace9d2e 100644
---- a/mm/kfence/core.c
-+++ b/mm/kfence/core.c
-@@ -636,7 +636,7 @@ static void toggle_allocation_gate(struct work_struct *work)
- 	/* Disable static key and reset timer. */
- 	static_branch_disable(&kfence_allocation_key);
- #endif
--	queue_delayed_work(system_power_efficient_wq, &kfence_timer,
-+	queue_delayed_work(system_unbound_wq, &kfence_timer,
- 			   msecs_to_jiffies(kfence_sample_interval));
- }
- static DECLARE_DELAYED_WORK(kfence_timer, toggle_allocation_gate);
-@@ -666,7 +666,7 @@ void __init kfence_init(void)
- 	}
- 
- 	WRITE_ONCE(kfence_enabled, true);
--	queue_delayed_work(system_power_efficient_wq, &kfence_timer, 0);
-+	queue_delayed_work(system_unbound_wq, &kfence_timer, 0);
- 	pr_info("initialized - using %lu bytes for %d objects at 0x%p-0x%p\n", KFENCE_POOL_SIZE,
- 		CONFIG_KFENCE_NUM_OBJECTS, (void *)__kfence_pool,
- 		(void *)(__kfence_pool + KFENCE_POOL_SIZE));
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+Thanks for pointing it out -- I think this makes sense, let's just use
+the unbound wq unconditionally. Since it's independent of this patch,
+I've sent it separately:
+https://lkml.kernel.org/r/20210521111630.472579-1-elver@google.com
