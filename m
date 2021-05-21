@@ -2,108 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7947838C8DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DCD938C8E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236450AbhEUODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:03:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
+        id S236514AbhEUOD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:03:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbhEUODP (ORCPT
+        with ESMTP id S232170AbhEUODv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:03:15 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699F5C061574;
-        Fri, 21 May 2021 07:01:52 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 70D1164E8; Fri, 21 May 2021 10:01:51 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 70D1164E8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1621605711;
-        bh=1/Aa6tGcfRlx1OajDMLRZKjRRqKDyYsBIASgiY6i/2I=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kjYVCNhysLus+gq0rnhEaruEwamgFiZFg8oh/9YNwgrc4UVjVaL4oL0jC32K+MtZ1
-         lFnIzDgXLnvLlY/2JnAyeKR/gEKko3hmVjIIi/Hc1ZRMqT+gem4kblLR8XvI3R7fnl
-         BsZqx41AauV+b0LlIWpUfs9eWGliB8fLprM72wXU=
-Date:   Fri, 21 May 2021 10:01:51 -0400
-From:   "J. Bruce Fields" <bfields@fieldses.org>
-To:     "Kornievskaia, Olga" <Olga.Kornievskaia@netapp.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: Signed-off-by missing for commit in the nfsd tree
-Message-ID: <20210521140151.GB30314@fieldses.org>
-References: <20210521080416.45f06cb8@canb.auug.org.au>
- <20210521135051.GA30314@fieldses.org>
- <EC2C4D09-8C52-4DDE-B21F-311219237DE4@netapp.com>
+        Fri, 21 May 2021 10:03:51 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98299C061574;
+        Fri, 21 May 2021 07:02:25 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id s20so11020689plr.13;
+        Fri, 21 May 2021 07:02:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DWPn98eC44k+PyyPgCpWoFhVf53fNK+DheW9P08B0H0=;
+        b=iUz/5i2acChphR26zt2ip+uqw31c9cj1M7DMK6S0VvYrEd6tpfGYgq8eRQbcX1C4XL
+         Qv6C9UqOYoDj+ElbWvUhOjU56bbfCVphozbFiwFTWPoSOUecYWBcLNfRJtcD4zfjWS9C
+         vkDKYqjD9slIiEw1irxgN1dZc4/OIaTNq7s3jJUoVcI9EvUmgaWN5DRayihIomNKXoUT
+         NtN5919kgfuSugbjTA0SnJnTHE0Z6l4niwHSY8olJCWhPjc8FEkuZRCgwicgWivNUTji
+         +I4AJ4JPRDv1HXh2hZ5BwW7nNwDbFgzsgkBXj9sdthRaU6LDfutlM9Efv3GX01YFK7hm
+         FKvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DWPn98eC44k+PyyPgCpWoFhVf53fNK+DheW9P08B0H0=;
+        b=Jp0srJUoAcTbM4FnpVlOA/wM+YNB+6khwx3AoJxF+v6/n0s/H5cdad7QZQWWybjG6P
+         USDDVVtukh5FyU+wR4SVla71XqW2Uu6btlGEBdY7vsrccjQgSvNO0OLgYm1ADwjBBSRD
+         HyObMDzq6bAMZNJKbs99lwhNgSGZNnLjYay0w3cbU9ZoSW6oVTY1BfWzA8n9An/iXPvq
+         5iF/n4SkrF3Wxxr6vQMPA8HLPD0hRk0dlEPAhnRcLUnrTN/zOvCStgwi4u9ka6YtEUwy
+         iEv8+rBA7oNzB6RhhvPQp1txcDeMZ8cep8dbaLZMEZyZ5nXu3ZrBferHU5hbytuRXNe6
+         oe0g==
+X-Gm-Message-State: AOAM5320/VeGQeV9rCTFFEq+YJ1ORrVq2kPZXJP5bvtv7VKgRHVpNRqc
+        GaKnNDExNgEoH2TpGGk9o1S5eJfsgLzr8+taDCMM8YD9C84=
+X-Google-Smtp-Source: ABdhPJxP9kJ9+yXHBekW5UQ68mGCeDaRL1L/0XQzUQZe65vGaDWcaJufUgT5JT9lhiID/vnaGIoek8eqosjwHNvgksI=
+X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr10967680pjq.228.1621605745017;
+ Fri, 21 May 2021 07:02:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <EC2C4D09-8C52-4DDE-B21F-311219237DE4@netapp.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20210521135516.64727-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210521135516.64727-1-andriy.shevchenko@linux.intel.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 21 May 2021 17:02:08 +0300
+Message-ID: <CAHp75VcS5UBeJ9eq3dv_8EHwfjdBSBbC4kdmuKyrxCPj+gQ5hA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] platform/x86: Add PWM platform data for Merrifield
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-pwm@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 01:55:03PM +0000, Kornievskaia, Olga wrote:
-> 
-> 
-> ﻿On 5/21/21, 9:51 AM, "J. Bruce Fields" <bfields@fieldses.org> wrote:
-> 
->     NetApp Security WARNING: This is an external email. Do not click links or open attachments unless you recognize the sender and know the content is safe.
-> 
-> 
-> 
-> 
->     On Fri, May 21, 2021 at 08:04:16AM +1000, Stephen Rothwell wrote:
->     > Hi all,
->     >
->     > Commit
->     >
->     >   ff78b9442926 ("NFSD add vfs_fsync after async copy is done")
->     >
->     > is missing a Signed-off-by from its author.
-> 
->     Olga, can I add
-> 
->             Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-> 
->     ?
-> 
-> [olga] But the post/patch contains that?
+On Fri, May 21, 2021 at 4:55 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> PWM is not functional since it requires pins to be muxed and configured
+> properly. Add pinctrl mapping to platform initialization code. The pins will
+> be configured properly whenever PWM driver is probed successfully.
 
-Whoops, you're right.
+Sorry guys for the noise, this has been mistakenly out here.
+Nothing really for upstream.
 
-> I don’t understand. Even attached file has it. I think what trips
-> these system is that I use gmail to submit patches but signed-off-by
-> is from my netapp email. Unfortunately, I have no way of submitting
-> them from netapp. So the patch is correct the automated system is
-> let's say is "too strict"?
-
-I'm using "git am -s" and that's not picking up your Signed-off-by line
-for some reason.  Looking at the mail....
-
-Oh, I see, your mail looked in part like:
-
-  However, in order to save the client doing a COMMIT as a separate
-  rpc, the server can reply back with NFS_FILE_SYNC copy. This patch
-  proposed to add vfs_fsync() call at the end of the async copy.
-  
-  --- v2: moved the committed argument into the nfsd4_copy structure
-  
-  Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
-  ---
-   fs/nfsd/nfs4proc.c | 14 +++++++++++++-
-    fs/nfsd/xdr4.h     |  1 +
-     2 files changed, 14 insertions(+), 1 deletion(-)
-
-But git uses "---" to mark the end of the changelog.  That allows you to
-include the diffstat, or any other notes that you want included in the
-mail but not in the final changelog.
-
-That "v2:" note is probably also something that belongs in the mail but
-not the changelog, so in future if you just move that kind of thing to
-after the Signed-off-by line, git-am will do the right thing.
-
---b.
+-- 
+With Best Regards,
+Andy Shevchenko
