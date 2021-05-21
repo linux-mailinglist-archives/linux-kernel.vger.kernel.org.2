@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B6838CE03
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:11:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87F5038CE06
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235048AbhEUTNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:13:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38365 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230339AbhEUTNM (ORCPT
+        id S235341AbhEUTPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:15:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235033AbhEUTPb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621624309;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nz98kMsw+FzS8L01GR0w0EVxwdrTPL2Z/BYSCEvqIsc=;
-        b=AgTjYRoCXt+viQH/qJRJYb9PrKJ06CJGgGIhtBqsK8q8VhawEmjDV2u5K4GusoDVeoBwOE
-        xPi0Clnc2Lk0Xe/KoTf9J9NRHyB64Vau5T3hq16Nvy21QZDV9BR9gqeClhE3Y1f5sW5Omy
-        owQj/lBmyHCW0j0JDYV0nbgr12rfYE8=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-600-wu2WDvsuOwSUHD5-CynVtg-1; Fri, 21 May 2021 15:11:45 -0400
-X-MC-Unique: wu2WDvsuOwSUHD5-CynVtg-1
-Received: by mail-qv1-f70.google.com with SMTP id e15-20020a0caa4f0000b02901eedbb09299so16431496qvb.15
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:11:45 -0700 (PDT)
+        Fri, 21 May 2021 15:15:31 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49268C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:14:08 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id b26so15190213lfq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:14:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5oPa6Xr9eac0PsBORLiu0TlT5LtjJE1rGnKDOXc4+iM=;
+        b=FZM+cOW+NzUZku+HiAJITJowouhCBpkNsWURcM63zHo2NSoOToXTS3DZjhq2R6Wjav
+         E2ermU9AUDzbpNaDUiC4sB+BRQM4xTB/aYH5SKsrbtsY5gtjMvevNm2yYe08TETvQXH1
+         0gwA/O1z7JgbtoM0VV+IHuQLgu9VlpQAuWOBI1N7jVp7Gpl0gZNACxp8cr33F1tVebC+
+         Bf+OYwEcZELBHbLtemvz/LWeYxZMfYY26CujM6Gy6zI4wtBFI/U3LpAbuTvavII8TgUm
+         idj2MxIqFX91k6blfy+u/YZOLK9mX2SAohMIUL63YpWIU/AoTHx40DEw0W9GOzJuxX6g
+         mnfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nz98kMsw+FzS8L01GR0w0EVxwdrTPL2Z/BYSCEvqIsc=;
-        b=lNq57mjtI+0RDEZgEG9YMnRng8DRp+O25/e4M7cjtqL+5/cXJX3M9BMntImP2QRuPY
-         kI0DcMH1nwpY6uPBosU7FjJLJ8eqKIaNdRQNm4n+FC9B589Ey8+aaQGB/2yfJSTP+QQW
-         x2W0MiaTy8DIUgw1dOm39T2GTGW8zc5tLrWPB8JkSvpNF+ReRiiNeINzxmeBY7GxtJij
-         vlC4zGEELlKDClXgBiu6Hznpys5Hd8AYNc1aVMWLxp/VorNjKw82uuljSGKw+hEyBSui
-         DWkSjMtSVdGr8GKmh8hIQhU1nJsLTIr1443Dqw6pYWWuFhMM7wYTHl3HtAA2qGUfpVKo
-         WK2w==
-X-Gm-Message-State: AOAM530X3xh84okt/bGCxH+Z8VDc0mnJt+RkiWqgqUoEG1B1Jeu9VVq0
-        VzF+wVyQTCvibWfZ0m15JEdLZJR+msq4LoiErtmsX7eUaIPEkuQEAF8p2COw+KPqdf9twD5R9jy
-        gYx4sCDoSWpOOMrGTzpV9ZJ4s
-X-Received: by 2002:ad4:5281:: with SMTP id v1mr14776333qvr.56.1621624305393;
-        Fri, 21 May 2021 12:11:45 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjZKT1phiUkfEYMYpJ5BVtH7F+86BAqoH6+mVzJaZJ5h4g+DjOWLKk81axhj747gk8xhKokw==
-X-Received: by 2002:ad4:5281:: with SMTP id v1mr14776295qvr.56.1621624305075;
-        Fri, 21 May 2021 12:11:45 -0700 (PDT)
-Received: from treble ([68.52.236.68])
-        by smtp.gmail.com with ESMTPSA id a27sm3922191qtn.97.2021.05.21.12.11.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 12:11:44 -0700 (PDT)
-Date:   Fri, 21 May 2021 14:11:40 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     Mark Brown <broonie@kernel.org>, mark.rutland@arm.com,
-        ardb@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
-        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
- checks in the unwinder
-Message-ID: <20210521191140.4aezpvm2kruztufi@treble>
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210516040018.128105-2-madvenka@linux.microsoft.com>
- <20210521161117.GB5825@sirena.org.uk>
- <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
- <20210521174242.GD5825@sirena.org.uk>
- <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
- <20210521175318.GF5825@sirena.org.uk>
- <20210521184817.envdg232b2aeyprt@treble>
- <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5oPa6Xr9eac0PsBORLiu0TlT5LtjJE1rGnKDOXc4+iM=;
+        b=iIyq98XJAt5R11XkoEB+2XC7iuUPF0W+xAaqZ6A5FJR+EDE81WwBdacYVBUaWaxWWi
+         1DuUee43dCk/g6wjoT/DPbp8AgjThkqAd69uKmYgMT2x24qeCfKRBvh2m3vBM6IBVfN2
+         pDv7rRliV7jlzTTiJSzzLs85fPSYAt9v5dzYYM/o9QGSH7guXr+hNJQLq75ooqtAaAwt
+         WmO55AY5XaeS2zlcIfkbT26Hhq8FCaHHITVkMdztKtWxCkMpjAsRR4zx4K/c1Y75LKi5
+         A2olvVaJ+sGUzp9v1WiShfQcYwPdd8IMRhwzS5BZ4DxKqYYNBIumZJ5pPW9pvjs/4uTv
+         bkSg==
+X-Gm-Message-State: AOAM531NXpwnTjzE7py2QouZ0izCUtLjnc2CHE5tp/aoFRfMpTb+7oEC
+        RhO9L8w+wBcmkZhFPpwnbodtT+KnT1pHiUkS52s7jw==
+X-Google-Smtp-Source: ABdhPJzljfo8EYXnQbOzQP0KViedCYWcKCDa8fpsepH7kKBan8/VjwxkEx2EQgztB54zdcBHuBWJfkDWZWrtedKqq38=
+X-Received: by 2002:ac2:520a:: with SMTP id a10mr3184843lfl.180.1621624446406;
+ Fri, 21 May 2021 12:14:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
+References: <20210520183614.1227046-1-posk@google.com> <CAEWA0a72SvpcuN4ov=98T3uWtExPCr7BQePOgjkqD1ofWKEASw@mail.gmail.com>
+In-Reply-To: <CAEWA0a72SvpcuN4ov=98T3uWtExPCr7BQePOgjkqD1ofWKEASw@mail.gmail.com>
+From:   Peter Oskolkov <posk@google.com>
+Date:   Fri, 21 May 2021 12:13:55 -0700
+Message-ID: <CAPNVh5d54HNYqVSGG==ozA7YjGdmkisg2M+wsYmdgGx2-p3Oog@mail.gmail.com>
+Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
+To:     Andrei Vagin <avagin@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-api <linux-api@vger.kernel.org>,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jim Newsome <jnewsome@torproject.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 01:59:16PM -0500, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 5/21/21 1:48 PM, Josh Poimboeuf wrote:
-> > On Fri, May 21, 2021 at 06:53:18PM +0100, Mark Brown wrote:
-> >> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
-> >>> On 5/21/21 12:42 PM, Mark Brown wrote:
-> >>
-> >>>> Like I say we may come up with some use for the flag in error cases in
-> >>>> future so I'm not opposed to keeping the accounting there.
-> >>
-> >>> So, should I leave it the way it is now? Or should I not set reliable = false
-> >>> for errors? Which one do you prefer?
-> >>
-> >>> Josh,
-> >>
-> >>> Are you OK with not flagging reliable = false for errors in unwind_frame()?
-> >>
-> >> I think it's fine to leave it as it is.
-> > 
-> > Either way works for me, but if you remove those 'reliable = false'
-> > statements for stack corruption then, IIRC, the caller would still have
-> > some confusion between the end of stack error (-ENOENT) and the other
-> > errors (-EINVAL).
-> > 
-> 
-> I will leave it the way it is. That is, I will do reliable = false on errors
-> like you suggested.
-> 
-> > So the caller would have to know that -ENOENT really means success.
-> > Which, to me, seems kind of flaky.
-> > 
-> 
-> Actually, that is why -ENOENT was introduced - to indicate successful
-> stack trace termination. A return value of 0 is for continuing with
-> the stack trace. A non-zero value is for terminating the stack trace.
-> 
-> So, either we return a positive value (say 1) to indicate successful
-> termination. Or, we return -ENOENT to say no more stack frames left.
-> I guess -ENOENT was chosen.
+On Fri, May 21, 2021 at 11:44 AM Andrei Vagin <avagin@google.com> wrote:
+>
+>
+>
+> On Thu, May 20, 2021 at 11:36 AM Peter Oskolkov <posk@google.com> wrote:
+>>
+>> As indicated earlier in the FUTEX_SWAP patchset:
+>>
+>> https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/
+>
+>
+> Hi Peter,
+>
+> Do you have benchmark results? How fast is it compared with futex_swap and the google switchto?
 
-I see.  So it's a tri-state return value, and frame->reliable is
-intended to be a private interface not checked by the callers.
+Hi Andrei,
 
-That makes sense, and probably fine, it's just perhaps a bit nonstandard
-compared to most Linux interfaces.
+I did not run benchmarks on the same machine/kernel, but umcg_swap
+between "core" tasks (your use case for gVisor) should be somewhat
+faster than futex_swap, as there is no reading from the userspace and
+no futex hash lookup/dequeue ops; umcg_swap should be slower than
+switchto_switch because umcg_swap does go through ttwu+schedule, which
+switchto_switch bypasses.
 
--- 
-Josh
+I expect that if UMCG is merged in a form similar to what I posted, we
+will explore how to make UMCG context switches faster in later
+patches.
 
+Thanks,
+Peter
+
+>
+> Thanks,
+> Andrei
