@@ -2,122 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84B7A38D1AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:46:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4927B38D1B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:54:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhEUWsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41690 "EHLO
+        id S229917AbhEUW4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbhEUWsH (ORCPT
+        with ESMTP id S229542AbhEUW4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:48:07 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EF0C061574;
-        Fri, 21 May 2021 15:46:43 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621637201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7AL4eSbRRfrL2LByAtHmtcseyv6XL+hFBItU0efUNQY=;
-        b=I7CGp5jnm8P1BsHpSC9A82tZ3cuS3c9nPvbb7LdqxvoMbVWcz5wJpDMo2A+fDOcZ8QcY4b
-        n9HP0ua0JyAKKM6hLbphS1de1YALzyaLxqsXZHJ5S8NOUIjN6ZNP5yl+dDWswpCI/gRLPB
-        oHKKobhOfYSodeCz7pCb81vRHnu32PyMqZbtb7zaGGebzeUzKI1L61jToCn7g7zf1eYzx6
-        IjbAHBLQdmXik4BMhHZyHU+uhRcFpora5hYqzjjpZy5svPICI9XQmMVB+Z4lDvi7TrPQ/f
-        1qPfBiTzmCDny0lMIDXEV32j3lQ/gDT9sNHi9hNr12sECZUfAA7Oux5DzZlo/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621637201;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7AL4eSbRRfrL2LByAtHmtcseyv6XL+hFBItU0efUNQY=;
-        b=HdOFBijiOOwEnDK506NEIaS/5VjPIOMEcDj018BpkIeJ+ZK+37B1sjpxz7F+15xHPXrx8+
-        wM3bXyBYBeOsVuDg==
-To:     Len Brown <lenb@kernel.org>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Willy Tarreau <w@1wt.eu>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-In-Reply-To: <CAJvTdK=A64DQXjYkZgPebWb-V_p_HAM+jTZRLTyi1qrP9kucMg@mail.gmail.com>
-References: <20210415044258.GA6318@zn.tnic> <20210419141454.GE9093@zn.tnic>
- <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic>
- <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic>
- <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic>
- <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de>
- <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de>
- <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
- <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
- <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com>
- <87pmxk87th.fsf@oldenburg.str.redhat.com>
- <939ec057-3851-d8fb-7b45-993fa07c4cb5@intel.com>
- <87r1i06ow2.fsf@oldenburg.str.redhat.com>
- <263a58a9-26d5-4e55-b3e1-3718baf1b81d@www.fastmail.com>
- <87k0nraonu.ffs@nanos.tec.linutronix.de>
- <CAJvTdK=A64DQXjYkZgPebWb-V_p_HAM+jTZRLTyi1qrP9kucMg@mail.gmail.com>
-Date:   Sat, 22 May 2021 00:46:41 +0200
-Message-ID: <878s47aeni.ffs@nanos.tec.linutronix.de>
+        Fri, 21 May 2021 18:56:01 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11AACC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:54:38 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so19433963oth.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=IUZ7Yk+LgTpwQPaOvRcB9XyT5Qk63J0G+73lhBj9gbY=;
+        b=XSPe/WHCQkseZkUepNqNBhKaLyU2YL1yeS1EXkfUU5q2x9k3BZPMZHygFZaihlwW6A
+         Z885CJgwgkJZxOTboQ4fnyG0r3cwrX7SZruVdIU84VFGyDgOWP3fJyy4Oa+jboo2uRNl
+         tqZf8GSeHldX6vllfWGYZwK6kKz9NcTVEUkYY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=IUZ7Yk+LgTpwQPaOvRcB9XyT5Qk63J0G+73lhBj9gbY=;
+        b=Dtxtr1d9x8K5Nu2UoDVy2xNMG8q3U90qV6YN+z+kKzJx4FA1BnwoR7V+okzz3Fzsx4
+         /MOn93Yq25AwQcID2ncABxFonpMt3FPG5iH2FUAC0B8LgMB0oMFzt+rgX87YDDM5W60G
+         3+bry70PH42iQNoxzkxPaw8++vdsQK77UVnAF/YTBaArgbQPwk4B/M4iYyZfvC39wlDD
+         WsZq28Lq375thg9x5sQiZMu+LXkFe8gYrIZHqF3IypHr9qptJdNjrkKBFAtP6X89ZVRJ
+         P+uFC1eB4PbsY+8wZsjXhgWjm0G3Rrn9cudHhrELo1fCuQljiWH7xiSRLnRm0D3BNxQq
+         pseA==
+X-Gm-Message-State: AOAM53224T2bzppGXqKRXbWXvpJmzpBP8WnL9sTib5RTFIMcsFY2fjeE
+        DCjR+1+YElyPTsp9zRovbcmyLx82BE4v8jC4IIRRJA==
+X-Google-Smtp-Source: ABdhPJybXzbqWtW1wiLeA2lnKG4jSNgNlDTUxwdwgeRUPrEmM149M/9WEzIGZQLx1iZ4eWKUv23Jy0/5DVmudHnP/jU=
+X-Received: by 2002:a05:6830:4a1:: with SMTP id l1mr10380949otd.25.1621637677330;
+ Fri, 21 May 2021 15:54:37 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 21 May 2021 15:54:36 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <CAD=FV=XfwoNZ13TAq=vd1Am8jLwOS5c3R0z_wsydL4NLo7WtkA@mail.gmail.com>
+References: <20210521134516.v2.1.Id496c6fea0cb92ff6ea8ef1faf5d468eb09465e3@changeid>
+ <CAE-0n52xEDak4-vuJQ6SQz83F54-oTm+TjeVJ_0GoezG8O_M5Q@mail.gmail.com> <CAD=FV=XfwoNZ13TAq=vd1Am8jLwOS5c3R0z_wsydL4NLo7WtkA@mail.gmail.com>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 21 May 2021 15:54:36 -0700
+Message-ID: <CAE-0n50SMVk4x4Z-90WGx4oC+hdRXTEJnyDwAMV_ysbTdC2CMQ@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm: Use nvmem_cell_read_variable_le_u32() to read
+ speed bin
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21 2021 at 18:07, Len Brown wrote:
-> On Fri, May 21, 2021 at 3:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> Regarding pre-allocation vs on-demand allocation, consider two scenarios:
+Quoting Doug Anderson (2021-05-21 15:35:33)
+> Hi,
 >
-> 1. Synchronous.  At process or thread start up time, prctl()
-> synchronously allocates 8K context switch buffers.  Return code is 0
-> -- good go go!  10 seconds later the program decides to create
-> additional threads.  Woops. vmalloc failed, and the process
-> synchronously dies.  bug filed.
-
-No. pthread_create() will fail with -ENOMEM. A return value of
--ENOMEM is not a bug. 
-
-If the application fails to check the error code then it's not the
-kernels problem and not a kernel bug either.
-
-> 2. On demand.  Same scenario, except vmalloc failure upon creation of
-> those additional threads sends a SIGSEGV at the instruction where AMX
-> is touched.  bug filed.
+> On Fri, May 21, 2021 at 3:02 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Quoting Douglas Anderson (2021-05-21 13:45:50)
+> > > Let's use the newly-added nvmem_cell_read_variable_le_u32() to future
+> > > proof ourselves a little bit.
+> > >
+> > > Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> > > ---
+> > > The patch that this depends on is now in mainline so it can be merged
+> > > at will. I'm just sending this as a singleton patch to make it obvious
+> > > that there are no dependencies now.
+> > >
+> > > Changes in v2:
+> > > - Rebased
+> > >
+> > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 5 ++---
+> > >  1 file changed, 2 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > > index b4d8e1b01ee4..a07214157ad3 100644
+> > > --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > > +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> > > @@ -1403,10 +1403,10 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+> > >  {
+> > >         struct opp_table *opp_table;
+> > >         u32 supp_hw = UINT_MAX;
+> > > -       u16 speedbin;
+> > > +       u32 speedbin;
+> > >         int ret;
+> > >
+> > > -       ret = nvmem_cell_read_u16(dev, "speed_bin", &speedbin);
+> > > +       ret = nvmem_cell_read_variable_le_u32(dev, "speed_bin", &speedbin);
+> >
+> > I missed the review of this API, sorry.
 >
-> Why ignore the 2nd bug and not ignore the 1st bug?
+> You commented on the patch that added it, though? Oddly I can't find
+> your commit on lore.kernel.org (?), but it's in my inbox...
 
-See above.
+Must be brain fog on my end!
 
-> My concern about synchronous allocation is that it will be very easy
-> to abuse.  programs and threads can ask for buffers they will never
-> use.  With on-demand allocation, we allocate buffers only if they are
-> actually needed.
+>
+>
+> > I wonder why it doesn't return
+> > the value into an __le32 pointer. Then the caller could use
+> > le32_to_cpu() like other places in the kernel and we know that code is
+> > properly converting the little endian value to CPU native order. Right
+> > now the API doesn't express the endianess of the bits in the return
+> > value because it uses u32, so from a static checker perspective (sparse)
+> > those bits are CPU native order, not little endian.
+>
+> I think it's backwards of what you're saying? This function is for
+> when the value is stored in nvram in little endian but returned to the
+> caller in CPU native order. It would be really awkward _not_ to
+> convert this value from LE to native order in the
+> nvmem_cell_read_variable_le_u32() function because that functions
+> handles the fact that the cell could be specified as several different
+> sizes (as long as it's less than 32-bits).
+>
 
-Programs ask for memory in various ways. The buffer is not any different
-than any other memory allocation of the application/thread. It's
-accounted for and when the limits are reached the allocation fails.
+Ah ok. I was looking at the name of the API and thinking it was an le32;
+happily glossing over that _u between le and 32. So it's "nvmem cell read
+variable little endian to cpu u32"?
 
-But it fails in a way which can be acted upon at the application level
-and not in a way where the kernel has no other choice than killing the
-whole process.
-
-So where is the problem? 
-
-Thanks,
-
-        tglx
+Reviewed-by: Stephen Boyd <swboyd@chromium.org>
