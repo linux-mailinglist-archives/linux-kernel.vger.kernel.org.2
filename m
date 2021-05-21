@@ -2,120 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAAAD38C070
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:10:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4E538C077
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbhEUHLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:11:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55140 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233208AbhEUHLj (ORCPT
+        id S235516AbhEUHMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:12:25 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:58303 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235464AbhEUHMY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:11:39 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F117C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:10:16 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id j14so18209049wrq.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:10:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=pXr3oFzANmcGgyCrUaaQgcSjUAbiwbF7giTakGIiEpQ=;
-        b=uMzGQMRfihuosCJL97x9+ScHvFGXK5Es7iO3ThAwSGj+dccNs7f16EBz1+5itartBe
-         N4jgLnyrfsDsTJGONdqYNWtNG7I9iLYo/qpotCMlX7b4fsp+TxY+DOe8W5pYWzLnixEE
-         X9iuT4a8vOwbTKs2fp0QSnWD2M7+Z9OZHkgBOjPB4cZrS6Zt1jeWbGLQUIWaHGaT8fR+
-         dJSRb7Sb1gvjPgqzGhuOAdi2mGGcjBGPfS6VZNGsRmtUX3sQXt16WM7shCU5Ib5diGNW
-         DhYEb6f2R6qxgOX4HFblfhga1IkaaR0NYGPvLQ7m3/WysqvBum6fmmFPcbyYnF8BYSuq
-         BxMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=pXr3oFzANmcGgyCrUaaQgcSjUAbiwbF7giTakGIiEpQ=;
-        b=hLOty6em5wN3fXvQs8uMXpWiE8azJ6Bb+oOjoFX5p/r+aYjlR7IznwblpFTcg0UnMM
-         9PAlCNfnqVGO9A7Hu5yZQYrqZ143dH4bw/3Clk98sFo0QNfhDLV23dWVSe+aLy4QAw5P
-         GRJeAxUTg5YpXwGXaMnMPRdEXFdO46CjwFEuEhsokbSXVo5l0Ja0q9cdGjmPLptA6AlL
-         PGNbM09XtfW9MItXaE6vTrVqv6tPVND+rObZN2N72gKWZagj2DVZ//EUlbIXK6Su5U/R
-         NptgZzLTbwIaFuagBEjJaIRkcdjK3YdIB20VZJxW1hG93OmdVF8k9yFc2S/p/hYp48et
-         NuyA==
-X-Gm-Message-State: AOAM5306dn5r1tyf9GfKiM5tAD0fJNlvMLMFgVtIi+jmnhV1WFgRdCxa
-        WXLb1qA6XUsDPI3VeZFYpL4dTwhB5eepobnS
-X-Google-Smtp-Source: ABdhPJwE0viepO5e4IIyz1lTctOknX7d+QtwA8ta4C51lrclzTdniX/yTH1dNb4HCvL+/+JfzBTJZQ==
-X-Received: by 2002:adf:f5c5:: with SMTP id k5mr704324wrp.81.1621581014981;
-        Fri, 21 May 2021 00:10:14 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id a11sm949666wrx.38.2021.05.21.00.10.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 00:10:14 -0700 (PDT)
-Date:   Fri, 21 May 2021 08:10:12 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Hawking Zhang <Hawking.Zhang@amd.com>
-Subject: Re: [PATCH 38/38] drm/amd/amdgpu/smuio_v13_0: Realign
- 'smuio_v13_0_is_host_gpu_xgmi_supported()' header
-Message-ID: <20210521071012.GT2549456@dell>
-References: <20210520120248.3464013-1-lee.jones@linaro.org>
- <20210520120248.3464013-39-lee.jones@linaro.org>
- <CADnq5_NLnfGYuoz8+1z=q1Y90Re_XCkDHREoMZW2so0gk-hwwA@mail.gmail.com>
+        Fri, 21 May 2021 03:12:24 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 5A79122234;
+        Fri, 21 May 2021 09:10:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621581059;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hL5RWGHgC+f5boTILisjTi8oPmHUeP7PXAuRFqWVXfY=;
+        b=Qzq7HPPQv5LhsqDMTEOG36cExdmVjWCoGX30H3IYZjA90KR9bpde/WPXuwW7GAG11d/XBP
+        kJXUmigQacS1/qmnoV5hlvHoaTZxr4/murgQyP9SErTaUSu4ZKF1QeInPMz9PnapfTgQwW
+        7bs3kchRLX3Tl0peiUwVeKJvP7cc9Z0=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CADnq5_NLnfGYuoz8+1z=q1Y90Re_XCkDHREoMZW2so0gk-hwwA@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 09:10:57 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     linux-power <linux-power@fi.rohmeurope.com>,
+        linux-gpio@vger.kernel.org, bgolaszewski@baylibre.com,
+        linux-kernel@vger.kernel.org, linus.walleij@linaro.org
+Subject: Re: [PATCH 1/2] gpio: regmap: Support few IC specific operations
+In-Reply-To: <7a76b454ddb4b143021dfea504608d9db67f33af.camel@fi.rohmeurope.com>
+References: <09091e75157ea28dcad1605008532016304356a4.1621509932.git.matti.vaittinen@fi.rohmeurope.com>
+ <7d6f71e0a79e6ccd2a9f69be189993a9@walle.cc>
+ <c6acc28e87d43973561a66bdb4d78905882f2940.camel@fi.rohmeurope.com>
+ <689539b24f9dc57ec0bfc92fdd9d3464@walle.cc>
+ <7a76b454ddb4b143021dfea504608d9db67f33af.camel@fi.rohmeurope.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <75c35a7d5561ec3b206351849e2b89f2@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021, Alex Deucher wrote:
+Am 2021-05-20 14:42, schrieb Vaittinen, Matti:
+> On Thu, 2021-05-20 at 14:22 +0200, Michael Walle wrote:
+>> Am 2021-05-20 14:00, schrieb Matti Vaittinen:
+>> > On Thu, 2021-05-20 at 13:42 +0200, Michael Walle wrote:
+>> > > Am 2021-05-20 13:28, schrieb Matti Vaittinen:
+>> > > > The set_config and init_valid_mask GPIO operations are usually
+>> > > > very
+>> > > > IC
+>> > > > specific. Allow IC drivers to provide these custom operations
+>> > > > at
+>> > > > gpio-regmap registration.
+>> > > >
+>> > > > Signed-off-by: Matti Vaittinen <
+>> > > > matti.vaittinen@fi.rohmeurope.com>
+>> > > > ---
+>> > > >  drivers/gpio/gpio-regmap.c  | 49
+>> > > > +++++++++++++++++++++++++++++++++++++
+>> > > >  include/linux/gpio/regmap.h | 13 ++++++++++
+>> > > >  2 files changed, 62 insertions(+)
+>> > > >
+>> > > > diff --git a/drivers/gpio/gpio-regmap.c b/drivers/gpio/gpio-
+>> > > > regmap.c
+>> > > > index 134cedf151a7..315285cacd3f 100644
+>> > > > --- a/drivers/gpio/gpio-regmap.c
+>> > > > +++ b/drivers/gpio/gpio-regmap.c
+>> > > > @@ -27,6 +27,10 @@ struct gpio_regmap {
+>> > > >  	int (*reg_mask_xlate)(struct gpio_regmap *gpio,
+>> > > > unsigned int
+>> > > > base,
+>> > > >  			      unsigned int offset, unsigned int
+>> > > > *reg,
+>> > > >  			      unsigned int *mask);
+>> > > > +	int (*set_config)(struct regmap *regmap, void *drvdata,
+>> > > > +			  unsigned int offset, unsigned long
+>> > > > config);
+>> > > > +	int (*init_valid_mask)(struct regmap *regmap, void
+>> > > > *drvdata,
+>> > > > +				unsigned long *valid_mask,
+>> > > > unsigned int
+>> > > > ngpios);
+>> > >
+>> > > Maybe we should also make the first argument a "struct
+>> > > gpio_regmap"
+>> > > and provide a new gpio_regmap_get_regmap(struct gpio_regmap).
+>> > > Thus
+>> > > having a similar api as for the reg_mask_xlate(). Andy?
+>> >
+>> > I don't really see the reason of making this any more complicated
+>> > for
+>> > IC drivers. If we don't open the struct gpio_regmap to IC drivers -
+>> > then they never need the struct gpio_regmap pointer itself but each
+>> > IC
+>> > driver would need to do some unnecessary function call
+>> > (gpio_regmap_get_regmap() in this case). I'd say that would be
+>> > unnecessary bloat.
+>> 
+>> If there is ever the need of additional parameters, you'll have to
+>> modify that parameter list. Otherwise you'll just have to add a new
+>> function. Thus might be more future proof.
+> 
+> I do hope the "void *drvdata" allows enough flexibility so that there
+> is no need to add new parameters.
 
-> Applied.  Thanks!
+Thats for information passed from the user of gpio_regmap to the
+callbacks.
 
-Thanks again Alex.
+> And if there is, then I don't see how
+> the struct gpio_regmap pointer would have saved us - unless we open the
+> contents of struct gpio_regmap to IC drivers. (Which might make sense
+> because that already contains plenty of register details which may need
+> to be duplicated to drvdata for some IC-specific callbacks. Here we
+> again have analogy to regulator_desc - which I have often used also in
+> IC-specific custom callbacks. But as long as we hope to keep the struct
+> gpio_regmap private I would not add it in arguments).
 
-> On Thu, May 20, 2021 at 8:03 AM Lee Jones <lee.jones@linaro.org> wrote:
-> >
-> > Fixes the following W=1 kernel build warning(s):
-> >
-> >  drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c:99: warning: expecting prototype for smuio_v13_0_supports_host_gpu_xgmi(). Prototype was for smuio_v13_0_is_host_gpu_xgmi_supported() instead
-> >
-> > Cc: Alex Deucher <alexander.deucher@amd.com>
-> > Cc: "Christian König" <christian.koenig@amd.com>
-> > Cc: David Airlie <airlied@linux.ie>
-> > Cc: Daniel Vetter <daniel@ffwll.ch>
-> > Cc: Hawking Zhang <Hawking.Zhang@amd.com>
-> > Cc: amd-gfx@lists.freedesktop.org
-> > Cc: dri-devel@lists.freedesktop.org
-> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > ---
-> >  drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c b/drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c
-> > index 3c47c94846d6d..39b7c206770f6 100644
-> > --- a/drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c
-> > +++ b/drivers/gpu/drm/amd/amdgpu/smuio_v13_0.c
-> > @@ -106,7 +106,7 @@ static u32 smuio_v13_0_get_socket_id(struct amdgpu_device *adev)
-> >  }
-> >
-> >  /**
-> > - * smuio_v13_0_supports_host_gpu_xgmi - detect xgmi interface between cpu and gpu/s.
-> > + * smuio_v13_0_is_host_gpu_xgmi_supported - detect xgmi interface between cpu and gpu/s.
-> >   *
-> >   * @adev: amdgpu device pointer
-> >   *
-> >
+Because that (opaque) argument is then used for the helper functions
+of gpio_regmap.
 
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+-michael
