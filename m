@@ -2,127 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A63EE38BC53
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:16:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C82A38BC55
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237941AbhEUCRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46080 "EHLO
+        id S238458AbhEUCSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:18:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbhEUCRd (ORCPT
+        with ESMTP id S232347AbhEUCSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:17:33 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B45AC061574;
-        Thu, 20 May 2021 19:16:09 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id s20so10148769plr.13;
-        Thu, 20 May 2021 19:16:09 -0700 (PDT)
+        Thu, 20 May 2021 22:18:38 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE58BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:17:16 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id 69-20020a9d0a4b0000b02902ed42f141e1so16710385otg.2
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:17:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=fVzR5OVqDH21+KakLyQ1BmjTZqyPl6/nk9rsewhpUsQ=;
-        b=M+zeTEoLI1/GYxmn5GOJHv/QEEKYeQxcWuZj9YJ9XB5FVShC3Q37jZR+nMsUOWQRPa
-         tjc8ticmX6XmY+Fhq4+mCG/l5uwbyEtTG3Iex5XLkKeoqq6+eN21lYPnGaQNoixJi77r
-         c/xZbyLgrMC263s59XTEuLtVwfWvY3fa+1ox3lOXnshpmLfe0102gK/JEz3yjfC8PSBR
-         eD8XIBye5XZESvp1EV6EeHwI4kITe6qFuU0IpEpVfrioRks5WznTBJbPPU+3VT2jf998
-         kyer0otHWNcpAgDo6NlOtARlTHVhc9vWjt+FfKsCiuQRpRbzzFnUBu199WPfVCc26Lgs
-         TNZA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=t/w/mdGLNnOXLQYr7jv5WVlJPz9gV76Ic4ZwCQsYHQU=;
+        b=HzVlX4/PKsp5/djiXIBO3cFtOzAIgz8yEz+K3cDYNdeO77HnFJFieGJJMSGKm5p0CC
+         FhNKkQyJNAMlSSR29Qe1EAXeal+tpq1B7m0ZwRTwQRePfoOXQTUT0L9zpm5R+Y249nDM
+         5HenaywadS5Hzq2C6dtkZqPPbAnMIbj/G03hWtzch+U5hHaG+T6Ru/WsebK5mevSwLuq
+         /3xYj3gaiw432cb8q39+bhuiAyAQNGbF8iIsNWr4oTy1pqQRQo+X4YbLDQEVOeb2krZL
+         SM64vSXO+xZaBmTbg8EjRUTUNq4ookKlYJdzQzBh0fHDTOlkG/9Y2iOIVQk1uTSPhLR+
+         Iqfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language:content-transfer-encoding;
-        bh=fVzR5OVqDH21+KakLyQ1BmjTZqyPl6/nk9rsewhpUsQ=;
-        b=g7j2BXhCdBGGJssixRev8Ur2hbTwVDhwxFHu6jdZ668GrEHK8PsgipunvMcyETqM1Y
-         2ePb7VtIijzXsqMJG/EcRA+gMbGVmHAmTzs8ZISeM2G0FE6kpeyx89TA1hFTaSCg3sxw
-         UnU0voz/90XsrhWNg9KrzQGWKQCfRrLpRYdix3gRJgS3QoRe6kvMIOQvCcpnNZyI9thM
-         8A57mWV5zkkymznWnLi36yLB+5uuIMWXjqBeKlmZRjzS3IUxJABB/W1p4RSE+mu9FVNZ
-         /P3l2IXp5STml09sKhMGL7ud5P/UdsMvrfJ8t2YUkWCb5xMRSOB+9rWTF94EiNDXAotN
-         Eqrg==
-X-Gm-Message-State: AOAM530kdFG+RZiQNob/ZvEakFaXvWq9qEN80vm6U/muUZRszpGukSIe
-        1l93mui3lA8JqlgyfQvReIc=
-X-Google-Smtp-Source: ABdhPJz1/Z+AXBrAyurv/F0sH5f5HiGnIKoys49PW6W/IZ8autG8bmKbnH7X5qNzegikiUxhACOmHQ==
-X-Received: by 2002:a17:902:65:b029:ef:abd6:477f with SMTP id 92-20020a1709020065b02900efabd6477fmr9291652pla.77.1621563368879;
-        Thu, 20 May 2021 19:16:08 -0700 (PDT)
-Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
-        by smtp.gmail.com with ESMTPSA id o3sm3016891pgh.22.2021.05.20.19.16.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 19:16:08 -0700 (PDT)
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Akira Yokosawa <akiyks@gmail.com>
-From:   Akira Yokosawa <akiyks@gmail.com>
-Subject: [PATCH -rcu] Documentation/RCU: Fix nested inline markup
-Message-ID: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
-Date:   Fri, 21 May 2021 11:16:04 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=t/w/mdGLNnOXLQYr7jv5WVlJPz9gV76Ic4ZwCQsYHQU=;
+        b=OVhBYwQ7GO6jx5HXkaPYPwTWJML+40So2nxYVtPOrQXe3IJiOIiLMjZsI6wk7v4m6X
+         7qEgjy8tWouFk3tHLbO8xyIWtElmuhh/qjTXFQkCEhMo9pvOgXH4pwytUJVFNOpED7x9
+         JQGdS2VQZYuMJmMpBh1TnCdXHznfFZs4Dhb4NxcXAhcTyC6XahVkCHs+HQ6/xaT5scnv
+         LlbKoR3DlYjamSUjr8j4HvBtox9ShZ9gGIpAepPgHwcR/f/XprwTDGD/VaGheuOCtErQ
+         +A4xWYTpF1j/NJqDoHJxLjd3de6xC3jkxrqLHR7KLumjeSCBejI8hiFAmXQ8swOpaiPf
+         lsGQ==
+X-Gm-Message-State: AOAM5320wNbsKyubb/t6oOaBEv9KQXdAELUkDnjC3Xb2YMtmfNaI09Vw
+        rQ6mqiHxjUly8+DvpgyUx7UmJw==
+X-Google-Smtp-Source: ABdhPJyPe5NNa0oHjXXPCVjOcLXSuJznZBJixxDYKqVRO/BeBB3wxknifz63gY1s4kmcrkYCmgAAlQ==
+X-Received: by 2002:a9d:6081:: with SMTP id m1mr6206081otj.226.1621563435953;
+        Thu, 20 May 2021 19:17:15 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id p5sm904983oip.35.2021.05.20.19.17.14
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 20 May 2021 19:17:15 -0700 (PDT)
+Date:   Thu, 20 May 2021 19:17:04 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/thp: Update mm_struct's MM_ANONPAGES stat for huge
+ zero pages
+In-Reply-To: <1621313300-1118-1-git-send-email-anshuman.khandual@arm.com>
+Message-ID: <alpine.LSU.2.11.2105201852230.5752@eggly.anvils>
+References: <1621313300-1118-1-git-send-email-anshuman.khandual@arm.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To avoid the ``foo`` markup inside the `bar`__ hyperlink marker,
-use the "replace" directive [1].
+On Tue, 18 May 2021, Anshuman Khandual wrote:
 
-This should restore the intended appearance of the link.
+> Although the zero huge page is being shared across various processes, each
+> mapping needs to update its mm_struct's MM_ANONPAGES stat by HPAGE_PMD_NR
+> to be consistent. This just updates the stats in set_huge_zero_page() after
+> the mapping gets created and in zap_huge_pmd() when mapping gets destroyed.
+> 
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Zi Yan <ziy@nvidia.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-Tested with sphinx versions 1.7.9 and 2.4.4.
+NAK.
 
-[1]: https://docutils.sourceforge.io/docs/ref/rst/directives.html#replace
+For consistency with what? In the all the years that the huge zero page
+has existed, it has been intentionally exempted from rss accounting:
+consistent with the small zero page, which itself has always been
+intentionally exempted from rss accounting. In fact, that's a good part
+of the reason the huge zero page was introduced (see 4a6c1297268c).
 
-Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
----
-Hi Paul,
+To change that now will break any users depending on it.
 
-This fixes broken-looking cross reference in section
-"Publish/Subscribe Guarantee" at:
+Not to mention the
+BUG: Bad rss-counter state mm:00000000aa61ef82 type:MM_ANONPAGES val:512
+I just got from mmotm.
 
-https://www.kernel.org/doc/html/latest/RCU/Design/Requirements/Requirements.html#publish-subscribe-guarantee
+Hugh
 
-To-be-replaced macro string can be much shorter.
-I preserved the whole string considering the readability of .rst.
-
-        Thanks, Akira
---
- Documentation/RCU/Design/Requirements/Requirements.rst | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 38a39476fc24..45278e2974c0 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -362,9 +362,8 @@ do_something_gp() uses rcu_dereference() to fetch from ``gp``:
-       12 }
- 
- The rcu_dereference() uses volatile casts and (for DEC Alpha) memory
--barriers in the Linux kernel. Should a `high-quality implementation of
--C11 ``memory_order_consume``
--[PDF] <http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__
-+barriers in the Linux kernel. Should a |high-quality implementation of
-+C11 memory_order_consume [PDF]|_
- ever appear, then rcu_dereference() could be implemented as a
- ``memory_order_consume`` load. Regardless of the exact implementation, a
- pointer fetched by rcu_dereference() may not be used outside of the
-@@ -374,6 +373,9 @@ element has been passed from RCU to some other synchronization
- mechanism, most commonly locking or `reference
- counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
- 
-+.. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
-+.. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
-+
- In short, updaters use rcu_assign_pointer() and readers use
- rcu_dereference(), and these two RCU API elements work together to
- ensure that readers have a consistent view of newly added data elements.
--- 
-2.17.1
-
+> ---
+> This applies on v5.13-rc2.
+> 
+> Changes in V1:
+> 
+> - Updated MM_ANONPAGES stat in zap_huge_pmd()
+> - Updated the commit message
+> 
+> Changes in RFC:
+> 
+> https://lore.kernel.org/linux-mm/1620890438-9127-1-git-send-email-anshuman.khandual@arm.com/
+> 
+>  mm/huge_memory.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 63ed6b25deaa..306d0a41bf75 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -706,6 +706,7 @@ static void set_huge_zero_page(pgtable_t pgtable, struct mm_struct *mm,
+>  	if (pgtable)
+>  		pgtable_trans_huge_deposit(mm, pmd, pgtable);
+>  	set_pmd_at(mm, haddr, pmd, entry);
+> +	add_mm_counter(mm, MM_ANONPAGES, HPAGE_PMD_NR);
+>  	mm_inc_nr_ptes(mm);
+>  }
+>  
+> @@ -1678,6 +1679,7 @@ int zap_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+>  			tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+>  	} else if (is_huge_zero_pmd(orig_pmd)) {
+>  		zap_deposited_table(tlb->mm, pmd);
+> +		add_mm_counter(tlb->mm, MM_ANONPAGES, -HPAGE_PMD_NR);
+>  		spin_unlock(ptl);
+>  		tlb_remove_page_size(tlb, pmd_page(orig_pmd), HPAGE_PMD_SIZE);
+>  	} else {
+> -- 
+> 2.20.1
