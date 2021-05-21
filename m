@@ -2,176 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4361B38CD79
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:31:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F14738CD7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:32:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235155AbhEUSc6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:32:58 -0400
-Received: from mga07.intel.com ([134.134.136.100]:18032 "EHLO mga07.intel.com"
+        id S235332AbhEUSdY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:33:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41338 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232583AbhEUSc5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:32:57 -0400
-IronPort-SDR: Jg2CGNSkzbgLpsmSvm8N6RuwKadZmOvyPr7hkg7dzTrguqps+bsrwltcPz6YwLMUIM5xuzoP29
- 8TDLijtxm/RQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="265454097"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="265454097"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 11:31:32 -0700
-IronPort-SDR: eyYK8ErqfcJQIa0PIa3TYUy9WIkLtNYJjtNwF9kW98MxelC0La13YapBBYsH02BPqVzMRk3ctc
- KCKmFV1gZNiQ==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="441193658"
-Received: from orxpovpvmu02.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.181.51])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 11:31:32 -0700
-Subject: Re: [RFC v2-fix-v2 1/1] x86/boot: Avoid #VE during boot for TDX
- platforms
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>
-Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <b1aafcbb-c5db-efa5-0343-014585e73191@intel.com>
- <20210521143524.2527690-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <f33c63b2-7b41-4c99-abd6-b47a8e7a4e26@intel.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <f1d61f01-3b50-9a75-bd83-5b8d385b8459@linux.intel.com>
-Date:   Fri, 21 May 2021 11:31:29 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S232583AbhEUSdX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:33:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ACD8961163;
+        Fri, 21 May 2021 18:31:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621621919;
+        bh=W8ZFnZ6K3bOgQrFcSo55/C7NzWOnuNznfcybWALo6YU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WceCxk/9f5UBFse+HmJ7rgt0dcvUYp13RTHjPUudWyPk7YCNBXcPuhATDVj5Z7gRI
+         iV7hmQftGvAjw0NVlzLYCyfhqMzH6lUJnFwvZ8UMHCnAx2AP3iPK0NvHzO7H+fH6cw
+         0PVz87hSFDKk91MYFK7ivhB3VXgi0ETkvpLRbV7udGegis+a5pXvfgbIOR8FDNamMP
+         6kVCT8Eny4Ty5cLaSWlUMcGNLx0uzG3pMvq3CsRCCQDUB4qu27NLyjuntc/vj0+BjK
+         00UqqRpuJtUUh8qkCaDg1QLBoWQa+r35pB0XPe8LMiHQMl9IjLhzVXcYbgcp2dO8fU
+         HjTen3/t6nMRQ==
+Date:   Fri, 21 May 2021 11:31:54 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        clang-built-linux@googlegroups.com,
+        Anthony Ruhier <aruhier@mailbox.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH] x86: Fix location of '-plugin-opt=' flags
+Message-ID: <YKf8mvg4diHLSJDt@archlinux-ax161>
+References: <20210518190106.60935-1-nathan@kernel.org>
+ <162161994470.2028902.331062863146834934.b4-ty@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <f33c63b2-7b41-4c99-abd6-b47a8e7a4e26@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162161994470.2028902.331062863146834934.b4-ty@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/21/21 9:11 AM, Dave Hansen wrote:
->> Avoid operations which will inject #VE during boot process.
->> They're easy to avoid and it is less complex than handling
->> the exceptions.
+On Fri, May 21, 2021 at 10:59:10AM -0700, Kees Cook wrote:
+> On Tue, 18 May 2021 12:01:06 -0700, Nathan Chancellor wrote:
+> > Commit b33fff07e3e3 ("x86, build: allow LTO to be selected") added a
+> > couple of '-plugin-opt=' flags to KBUILD_LDFLAGS because the code model
+> > and stack alignment are not stored in LLVM bitcode. However, these flags
+> > were added to KBUILD_LDFLAGS prior to the emulation flag assignment,
+> > which uses ':=', so they were overwritten and never added to $(LD)
+> > invocations. The absence of these flags caused misalignment issues in
+> > the AMDGPU driver when compiling with CONFIG_LTO_CLANG, resulting in
+> > general protection faults.
+> > 
+> > [...]
 > 
-> This puts the solution before the problem.  I'd also make sure to
-> clearly connect this solution to the problem.  For instance, if you
-> refer to register "modification", ensure that you reflect that language
-> here.  Don't call them "modifications" in one part of the changelog and
-> "operations" here.  I'd also qualify them as "superfluous".
+> (I've slightly adjusted the title.)
 > 
-> Please reorder this in the following form:
+> Applied to for-next/clang/features, thanks!
 > 
-> 1. Background
-> 2. Problem
-> 3. Solution
-> 
-> Please do this for all of your patches.
-> 
->> There are a few MSRs and control register bits which the
->> kernel normally needs to modify during boot.  But, TDX
->> disallows modification of these registers to help provide
->> consistent security guarantees ( and avoid generating #VE
->> when updating them).
-> 
-> No, the TDX architecture does not avoid generating #VE.  The *kernel*
-> does that.  This sentence conflates those two things.
-> 
->> Fortunately, TDX ensures that these are
->> all in the correct state before the kernel loads, which means
->> the kernel has no need to modify them.
->>
->> The conditions we need to avoid are:
->>
->>    * Any writes to the EFER MSR
->>    * Clearing CR0.NE
->>    * Clearing CR3.MCE
-> 
-> Sathya, there have been repeated issues in your changelogs with "we's".
->   Remember, speak in imperative voice.  Please fix this in your tooling
-> to find these so that reviewers don't have to.
-
-How about the following commit log?
-
-In TDX guests, Virtualization Exceptions (#VE) are delivered
-to TDX guests due to specific guest actions like MSR writes,
-CPUID leaf accesses or I/O access. But in early boot code, #VE
-cannot be allowed because the required exception handler setup
-support code is missing. If #VE is triggered without proper
-handler support, it would lead to triple fault or kernel hang.
-So, avoid operations which will inject #VE during boot process.
-They're easy to avoid and it is less complex than handling the
-exceptions.
-
-There are a few MSRs and control register bits which the kernel
-normally needs to modify during boot. But, TDX disallows
-modification of these registers to help provide consistent
-security guarantees. Fortunately, TDX ensures that these are all
-in the correct state before the kernel loads, which means the
-kernel has no need to modify them.
-
-The conditions to avoid are:
-
-   * Any writes to the EFER MSR
-   * Clearing CR0.NE
-   * Clearing CR3.MCE
-
-If above conditions are not avoided, it would lead to triple
-fault or kernel hang.
-
-> 
->> +	/*
->> +	 * Preserve current value of EFER for comparison and to skip
->> +	 * EFER writes if no change was made (for TDX guest)
->> +	 */
->> +	movl    %eax, %edx
->>   	btsl	$_EFER_SCE, %eax	/* Enable System Call */
->>   	btl	$20,%edi		/* No Execute supported? */
->>   	jnc     1f
->>   	btsl	$_EFER_NX, %eax
->>   	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
->> -1:	wrmsr				/* Make changes effective */
->>   
->> +	/* Avoid writing EFER if no change was made (for TDX guest) */
->> +1:	cmpl	%edx, %eax
->> +	je	1f
->> +	xor	%edx, %edx
->> +	wrmsr				/* Make changes effective */
->> +1:
-> 
-> Just curious, but what if this goes wrong?  Say the TDX firmware didn't
-> set up EFER correctly and this code does the WRMSR.  What ends up
-> happening? 
-
-It would lead to triple fault.
-
-  Do we get anything out on the console, or is it essentially
-> undebuggable?
+> [1/1] x86: lto: Fix location of '-plugin-opt=' flags
+>       https://git.kernel.org/kees/c/5d6c8592ee5f
 > 
 
-We can still get logs with debug TDX module. So it is still debugable.
+Ingo picked this up in x86/urgent so you should not need to carry it.
 
->>
->> +	/*
->> +	 * Skip writing to EFER if the register already has desiered
->> +	 * value (to avoid #VE for TDX guest).
->> +	 */
-> 
-> 
-> 							spelling ^
-> 
-> There are lots of editors that can do spell checking, even in C
-> comments.  You might want to look into that for your editor.
-> 
+https://git.kernel.org/tip/0024430e920f2900654ad83cd081cf52e02a3ef5
 
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Cheers,
+Nathan
