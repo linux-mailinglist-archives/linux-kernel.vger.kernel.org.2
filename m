@@ -2,141 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C8838C247
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:51:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76F7C38C248
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:51:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233999AbhEUIwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:52:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49750 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233909AbhEUIwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:52:23 -0400
-Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0C3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:50:45 -0700 (PDT)
-Received: by mail-vs1-xe2d.google.com with SMTP id j12so4934899vsq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:50:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mFPnGBBo9uPK7q1bx3/OHNBziL1VS1FaR/jW/45G8No=;
-        b=Zk2iAnAYEgvulBteJzqiLG+YcF0Ge6ONYvZ2Cwv9EegLGu04xZ46iosv1yP+M/Cwo1
-         gDqkELTiUclVGOOcOD5+zDlFcEvVuobHjKQetErpTDXYmOrE9yyPHTnsmet7bty32vgX
-         vD4peK29KWDUju0YLfeYstIJQiIln2ZJvkO0o=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mFPnGBBo9uPK7q1bx3/OHNBziL1VS1FaR/jW/45G8No=;
-        b=P2R9iqxxoVRrpr6jiQAjREEueBKg9t1U4YCvjgmJIrlofl/ywbLvaixGYoilQV6aUS
-         eTWYRJ8oSLt4kSxkVS7tikeKEFm/CVNaC7FOxWc6Yzl1RFaiwzqKZuF7lF1saduukWaS
-         kU8AQ4GZAQMAqYfzQjzRpnw316Cv7B8SZXgZzoNIimfS/pc40e86/wF5E1HdIiO9Gpng
-         ei+8Xevjrvp3g63RUeRpO6lt9FvOEFtCM+uZ/A4BscRJ05bkqPa77gUK1wTh5tC2rKHE
-         uwYw51h7f08jhwINfoN5SQtR7RDDh1OJLDiUNrDokRSJcYgVP9VXRIZkSuGvxxK5BKYm
-         rILw==
-X-Gm-Message-State: AOAM533UbsY6W+daFnAdggnbAKu/1SdGl5vXfoIwKjKCYa1Bx05Ow/cf
-        Mh7UqQQNJ/Iz/peOa8eXmgXG1I9ScCOOuBPmsihmmA==
-X-Google-Smtp-Source: ABdhPJzP8cEKt6HEzMuSAdCnzlwE1Q7BGhy6FcshRLFe8hP1JWwWgnnZk9hiwMntEVdIPB7+uiVNg8pi50V7JB0yuDw=
-X-Received: by 2002:a05:6102:3239:: with SMTP id x25mr8079662vsf.47.1621587044884;
- Fri, 21 May 2021 01:50:44 -0700 (PDT)
+        id S234015AbhEUIw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:52:29 -0400
+Received: from foss.arm.com ([217.140.110.172]:41828 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233909AbhEUIw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:52:28 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C9D511B3;
+        Fri, 21 May 2021 01:51:04 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DE19F3F73D;
+        Fri, 21 May 2021 01:51:02 -0700 (PDT)
+Subject: Re: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat
+ syscalls
+To:     Amanieu d'Antras <amanieu@gmail.com>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Laight <David.Laight@aculab.com>,
+        Mark Brown <broonie@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210518090658.9519-1-amanieu@gmail.com>
+ <20210518090658.9519-9-amanieu@gmail.com>
+ <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
+ <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com>
+ <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
+ <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <1c2bd27a-1c96-f154-ed18-f33630b109b1@arm.com>
+Date:   Fri, 21 May 2021 09:51:01 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-5-groug@kaod.org>
- <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com> <20210521103921.153a243d@bahia.lan>
-In-Reply-To: <20210521103921.153a243d@bahia.lan>
-From:   Miklos Szeredi <miklos@szeredi.hu>
-Date:   Fri, 21 May 2021 10:50:34 +0200
-Message-ID: <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
-Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
-To:     Greg Kurz <groug@kaod.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
->
-> On Fri, 21 May 2021 10:26:27 +0200
-> Miklos Szeredi <miklos@szeredi.hu> wrote:
->
-> > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
-> > >
-> > > All submounts share the same virtio-fs device instance as the root
-> > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
-> > > is likely to pick up any of these submounts and reuse it instead of
-> > > the root mount.
-> > >
-> > > On the server side:
-> > >
-> > > # mkdir ${some_dir}
-> > > # mkdir ${some_dir}/mnt1
-> > > # mount -t tmpfs none ${some_dir}/mnt1
-> > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
-> > > # mkdir ${some_dir}/mnt2
-> > > # mount -t tmpfs none ${some_dir}/mnt2
-> > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
-> > >
-> > > On the client side:
-> > >
-> > > # mkdir /mnt/virtiofs1
-> > > # mount -t virtiofs myfs /mnt/virtiofs1
-> > > # ls /mnt/virtiofs1
-> > > mnt1 mnt2
-> > > # grep virtiofs /proc/mounts
-> > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > >
-> > > And now remount it again:
-> > >
-> > > # mount -t virtiofs myfs /mnt/virtiofs2
-> > > # grep virtiofs /proc/mounts
-> > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
-> > > # ls /mnt/virtiofs2
-> > > THIS_IS_MNT2
-> > >
-> > > Submount mnt2 was picked-up instead of the root mount.
-> >
->
-> > Why is this a problem?
-> >
->
-> It seems very weird to mount the same filesystem again
-> and to end up in one of its submounts. We should have:
->
-> # ls /mnt/virtiofs2
-> mnt1 mnt2
+On 19/05/2021 17:14, Amanieu d'Antras wrote:
+> On Wed, May 19, 2021 at 4:30 PM Steven Price <steven.price@arm.com> wrote:
+>> Perhaps I'm missing something, but surely some syscalls that would be
+>> native on 32 bit will have to be translated by Tango to 64 bit syscalls
+>> to do the right thing? E.g. from the previous patch compat sigreturn
+>> isn't available.
+> 
+> That's correct.
+> 
+> Tango handles syscalls in 3 different ways:
+> - ~20 syscalls are completely emulated in userspace or through 64-bit
+> syscalls. E.g. sigaction, sigreturn, clone, exit.
+> - Another ~50 syscalls have various forms of pre/post-processing, but
+> are otherwise passed on to the kernel compat syscall handler. E.g.
+> open, mmap, ptrace.
+> - The remaining syscalls are passed on to the kernel compat syscall
+> handler directly.
+> 
+> The first group of ~20 syscalls will effectively bypass the
+> user-specified seccomp filter: any 64-bit syscalls used to emulate
+> them will be whitelisted. I consider this an acceptable limitation to
+> Tango's seccomp support since I see no viable way of supporting
+> seccomp filtering for these syscalls.
 
-Okay, sorry, I understand the problem.  The solution is wrong,
-however: the position of the submount on that list is no indication
-that it's the right one (it's possible that the root sb will go away
-and only a sub-sb will remain).
+I agree it's difficult - the only 'solution' I can see is like I said to
+emulate the BPF code in user space.
 
-Even just setting a flag in the root, indicating that it's the root
-isn't fully going to solve the problem.
+>> In those cases to correctly emulate seccomp, isn't Tango is going to
+>> have to implement the seccomp filter in user space?
+> 
+> I have not implemented user-mode seccomp emulation because it can
+> trivially be bypassed by spawning a 64-bit child process which runs
+> outside Tango. Even when spawning another translated process, the
+> user-mode filter will not be preserved across an execve.
 
-Here's issue in full:
+Clearly if you have user-mode seccomp emulation then you'd hook execve
+and either install the real BPF filter (if spawning a 64 bit child
+outside Tango) or ensure that the user-mode emulation is passed on to
+the child (if running within Tango).
 
-case 1:  no connection for "myfs" exists
-    - need to create fuse_conn, sb
+You already have a potential 'issue' here of a 64 bit process setting up
+a seccomp filter and then execve()ing a 32 bit (Tango'd) process. The
+set of syscalls needed for the system which supports AArch32 natively is
+going to be different from the syscalls needed for Tango. (Fundamentally
+this is a major limitation with the whole seccomp syscall filtering
+approach).
 
-case 2: connection for "myfs" exists but only sb for submount
-    - only create sb for root, reuse fuse_conn
+>> I guess the question comes down to how big a hole is
+>> syscall_in_tango_whitelist() - if Tango only requires a small set of
+>> syscalls then there is still some security benefit, but otherwise this
+>> doesn't seem like a particularly big benefit considering you're already
+>> going to need the BPF infrastructure in user space.
+> 
+> Currently Tango only whitelists ~50 syscalls, which is small enough to
+> provide security benefits and definitely better than not supporting
+> seccomp at all.
 
-case 3: connection for "myfs" as well as root sb exists
-   - reuse sb
+Agreed, and I don't want to imply that this approach is necessarily
+wrong. But given that the approach of getting the kernel to do the
+compat syscall filtering is not perfect, I'm not sure in itself it's a
+great justification for needing the kernel to support all the compat
+syscalls.
 
-I'll think about how to fix this properly, it's probably going to be
-rather more involved...
+One other thought: I suspect in practise there aren't actually many
+variations in the BPF programs used with seccomp. It may well be quite
+possible to convert the 32-bit syscall filtering programs to filter the
+equivalent 64-bit syscalls that Tango would use. Sadly this would be
+fragile if a program used a BPF program which didn't follow the "normal"
+pattern.
 
-Thanks,
-Miklos
+Steve
