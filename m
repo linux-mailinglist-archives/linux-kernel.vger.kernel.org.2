@@ -2,99 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75B5B38BEB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42A838BEBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:56:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236159AbhEUFza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37788 "EHLO
+        id S233593AbhEUF5f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:57:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232901AbhEUFz3 (ORCPT
+        with ESMTP id S230488AbhEUF5d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:55:29 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72D3EC061574;
-        Thu, 20 May 2021 22:54:06 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmbQJ47VDz9sW4;
-        Fri, 21 May 2021 15:54:00 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621576442;
-        bh=1p/g3esLUbcvdLnzE2tozxtLFTwXslBVpqrNvl8pxsI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NHmNYL6h0OsJLgBuVZ+CFU4WlOO5tfLzqAYpS9a6wrn9ijiF1PebQvRbdXR3CUs6D
-         Jagc7/5sBkKmwsL10X36rxE/p5/F9XecMjLsO8xZMAPN2vFHYzibCqQwg9LSao9l0x
-         5AcW6wVOxIMSRFGL3ePyuSg0rFU9iZvoB0yy00yHu9YrnPefwub/596uvIyQXZz2nZ
-         VR3YEPdiXNW+TZkhXLU3LEeohqoIxMOOwmuRJUcjKsUq6V+KfejtwVUjiyhnwDFgs+
-         I0Pk2UsR98J5c4MSR5k53ALBzNZ1mz2oUY6g/QpltfDU65VDB5nsdxbLc22l2lIxr3
-         feNqrkPr861Ug==
-Date:   Fri, 21 May 2021 15:53:59 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Xiongchun Duan <duanxiongchun@bytedance.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the akpm-current tree
-Message-ID: <20210521155359.13b023ff@canb.auug.org.au>
+        Fri, 21 May 2021 01:57:33 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 930CEC061763
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:56:10 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id df21so22000502edb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:56:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=TnbgULocZzNUVdlq8Rf9e1lWbujlXBlBHINrOtXv0b0=;
+        b=HU451tR2rKQ1YJ2oTUugYhCaeZeWn0T3aqzgQ/EmfwB4jjdYBsUK84GoGDHxhf7JDF
+         4CcrOcnkf41He6LbNvCChu4vPBmnJ9MXqS+FZCzsHt9C+8a/pTJFsEmeSHknpfZPFmTI
+         y+2WkZDjHwSXbj9Nn9Sre6AfkOgUB9ft+JLedkz/VF/87X98Rkl2UEk+Zq9NETl94e4n
+         Dza82TU+2f72ydw4lRekzIuBodOGaHjW9hzJH2P6GCHceK8BlQHFMUz3Xgwb7THRUJBz
+         nJMvcmWCnsXZNir4NIM7oC4drgE/4X4Yf0+DHRNsZupfviVar2o3jn/IHqM2cDjlZUI5
+         AVzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=TnbgULocZzNUVdlq8Rf9e1lWbujlXBlBHINrOtXv0b0=;
+        b=Tc7E8OrFsQIs2rVr2v9J4yTTKu3Xsb8SF/zeMy1ntuxgYqkCWSs2nQPV9VJQDJeyYM
+         X1Gdj36ItwFcij5UGNMZwtWqpxKMihRFifGduIbl11ou+ICNhvUgrN5lOZtFyVgs33Zb
+         nGLfWT9yfiiX+eAM6mDN5NCrDi0OsuWeBF/n0kgwcNN0bWQYuAjxcqyLaQM2JW0MihDM
+         2wD/5vWAQ4uNKk3qJHxTkK1986YKOFA4NgNTE1t+JLov9ou6PJdI8zUVv/o/WaIK6P3t
+         B3myWR+xsr4EVbX9/qYAQ6O7qOKZiHNpbwms4Q+NoMOIim1ywcx0HiEACqX02qgYpUGt
+         Qnsg==
+X-Gm-Message-State: AOAM530ZEwPBKaRrlWVTxIFrfiXgyS2GVyUHndArpBo6DNSE4TUjXr/Q
+        XCaOVSY1MKbfwXsWYTzMphB6NzSAVgPPc/jeqzpN7Q==
+X-Google-Smtp-Source: ABdhPJzrqI3jQDTENrBDI/Yml4+wQDRCrUtBHkEZlAzQnLrekXTOEwHJYIrqOs4Xkjloh7hwODIOptylXhEtIYmYx7g=
+X-Received: by 2002:a50:fd11:: with SMTP id i17mr9130867eds.23.1621576568940;
+ Thu, 20 May 2021 22:56:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9dchpohPRgL++mVnmDhoiDb";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210520092120.115153432@linuxfoundation.org>
+In-Reply-To: <20210520092120.115153432@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 May 2021 11:25:57 +0530
+Message-ID: <CA+G9fYsOjoBuj_YPaj+iWJhpLpzwjjedua-5NcEKnv2d4+A2mA@mail.gmail.com>
+Subject: Re: [PATCH 4.14 000/323] 4.14.233-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9dchpohPRgL++mVnmDhoiDb
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Thu, 20 May 2021 at 15:16, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.14.233 release.
+> There are 323 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.14.233-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.14.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Hi all,
 
-After merging the akpm-current tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-mm/migrate.c: In function 'unmap_and_move_huge_page':
-mm/migrate.c:1295:6: error: implicit declaration of function 'hugetlb_page_=
-subpool' [-Werror=3Dimplicit-function-declaration]
- 1295 |  if (hugetlb_page_subpool(hpage) && !page_mapping(hpage)) {
-      |      ^~~~~~~~~~~~~~~~~~~~
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Caused by commit
+## Build
+* kernel: 4.14.233-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.14.y
+* git commit: 7c5a6946da4494648bedd0ff4d3282d2c96f3ff2
+* git describe: v4.14.232-324-g7c5a6946da44
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14.y/build/v4.14=
+.232-324-g7c5a6946da44
 
-  b63794a67ae2 ("mm: migrate: fix missing update page_private to hugetlb_pa=
-ge_subpool")
+## No Regressions (compared to v4.14.232-301-g6b85a7ccd6ab)
 
-CONFIG_HUGETLB_PAGE is not defined for this build.
+## No fixes (compared to v4.14.232-301-g6b85a7ccd6ab)
 
-I have reverted that commit for today.
+## Test result summary
+ total: 62446, pass: 49885, fail: 1550, skip: 10128, xfail: 883,
 
---=20
-Cheers,
-Stephen Rothwell
+## Build Summary
+* arm: 97 total, 97 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 14 total, 14 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 36 total, 36 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
 
---Sig_/9dchpohPRgL++mVnmDhoiDb
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnSvcACgkQAVBC80lX
-0GxGIwf/dgD3N3pEjxcvmuBD/TB3ECQ2iorgEorKLDXbskl2qJs8A3zw7QBaKGIv
-hF0ayFLFJXgCMBt17h/NLGMEbLqOflcyrBkbU1ZV9+or8FPGsIozoG4H/Z9dIp+b
-pRMu5G7tnt8HTgTQmmx75gqIdo7w85ypoPjUfD5XzMgeuwpXUFHecGaUgue9UWZd
-BysYAghM+ckviciGFZC5aI30OezCzJ4sHDNYs492kpm3vi72hDhQdgvzo7Ba4UZn
-bYWTyDVEtoe4KyTBBDDRpBepsDPYK/791oyvU8GfSoggBM8WisVvnAdnmUy7JMZo
-aEU0DQNv9l7uWeZ6YbYnMjjMMffv5A==
-=skJw
------END PGP SIGNATURE-----
-
---Sig_/9dchpohPRgL++mVnmDhoiDb--
+--
+Linaro LKFT
+https://lkft.linaro.org
