@@ -2,168 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF2338C185
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BD038C191
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:19:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhEUIRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:17:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S230452AbhEUIUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:20:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230295AbhEUIRT (ORCPT
+        with ESMTP id S230360AbhEUIUD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:17:19 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA419C061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:15:56 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id r12so20137741wrp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:15:56 -0700 (PDT)
+        Fri, 21 May 2021 04:20:03 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E02A1C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:17:32 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id y14so18056768wrm.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zT8e7kYg29cZEuKphVTHl2YAXUXxdO63nOwX3vqV14Y=;
-        b=EVReti+ELiL60IzYNerOImeZoNrTo83zejaiKbh35740R15r3ck28CuPj/O/Iwe2wO
-         ZiC1bwucPd/WNnTvpho3Us6X5BZzayEU59+S5QTZWuf0abCU1HO9gFsmdOBaFiJiddK0
-         4Bq33NVWEXFRAuh7E2azfiWZE4tU2HzwmvFDhfDInI+znqAK4dsbmtfiVL549fVvoNxJ
-         5UE5jCQhOCkcejAR+thHZ/8rC8EqEA52MMktCRR4xNtMNjp7tfPiFTj/MhqKyS+xkxlL
-         eCx42D0f+ifqe+avdh8Df7FN/u9YxLO5habZhFEWD+CY3SJy0oyXP7ZsPk/ZoyWB5wL6
-         Vauw==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=jdABYnMZGkgeB+5iHaRfg/8FA1WJ/QjBj3/r591woE4=;
+        b=GVEuqrZtG2fRv0UbDERCnhXIqsgeD+bjv+/Cmq78Bx0w8IrIyqvBFjhRtE8flRllPs
+         t9ly/QUL8z+MR9OjFFyhLE12DCZsGj/xYvu7z8+EnS8/09qdleR1DH4DfbUaCP1D9fYZ
+         /KLITDMo3AEurNvnzJDwNABeYPmzYlw2iVLHuc21B4rbFXI7P9lURt0T3l4P++wk2cpa
+         NxIAq9FBK7iYM6LSZmvvh1yYlr0i0+S7gVvr5FA2QvL5tDn9lh8XpFtGR3ZxzFUYG3xF
+         b56PtbnqgSTV+OStQnm5dAjFdddNslFXj0VIIq/Gj0A6WXKjCRkupcJZVBn6uP9spcul
+         xhag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zT8e7kYg29cZEuKphVTHl2YAXUXxdO63nOwX3vqV14Y=;
-        b=J229NFMWKEz+2Igkk2sqP1Z2T9wT1+tyewGBoKcbNbsHkLAOGmOiPtdVh50Q5yO64n
-         p7ViHMA1YAzQtH3aofiD73jKk13Q374m+LyBN2Bhcy6GdT+5CZS4urFB4ZHzW5hrET+R
-         76tH77sGWYudbkofttLOy5PUnAivqUCf0O7yQe6iZiN7eg1OrmuzAjbGou9neKcim7lj
-         TwbXk5ZgWfuR3lTp12CnmHdXK2ISuzOVZ2YgmJYL1cO4zojBLU1XNchlKAwaMJMQDE5m
-         kUmZ/EofWqzwd0BqxNugHQ0rd2LqWeuzeDpopooK5+XO5wXXDJqndB++N6yH1vjh9dbb
-         tUwA==
-X-Gm-Message-State: AOAM533Ky7TVfM1MDqjQPMQ0XRsYnyrmr8V2Khl7gXIwHJChfy3YIVek
-        g9hEosg3JwawKone+ORNPDkbgA==
-X-Google-Smtp-Source: ABdhPJyaHV6Z9gNyiik1g5x3E8QnahnNsRAei/IuEo3VgJ8sjRloFFLXTBxaK8sGkYW9DAmQ/tNLXw==
-X-Received: by 2002:adf:fc4a:: with SMTP id e10mr7956183wrs.375.1621584955270;
-        Fri, 21 May 2021 01:15:55 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id t16sm1261347wrb.66.2021.05.21.01.15.54
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=jdABYnMZGkgeB+5iHaRfg/8FA1WJ/QjBj3/r591woE4=;
+        b=kDqhx9+qytWy0SI64RYh6BWtzNsW6FGtCBo1DMmIIZG+P2I66gaGCr22/DRsqzQGyo
+         nquTtZjAcrVRz9wO18SEuP8UZ5JXmYxh4CSLCfavAjBfbcIKYfJJYoRZ4UKn257oqHCI
+         l6dSegvTTQMVpeA2gwG77O+UgtMFBbb+FC4Qjps+vL4Xmw20O4jhl67/f4p80X14MpqR
+         vTK7/kZwHXRFChZK6TEfLJYwRP8V5npXG345y1KM8ObkGRTIaFPToVukLKWT/7Jm4n8y
+         IwT8/MdlxKy+ugfaqfOLLvvGXcpLlB6gUg7rmPbgo2Vb3lwRUV/VMeS4sb0yzqSjU9FR
+         pHIA==
+X-Gm-Message-State: AOAM531LiAvVvtuPQURTWHs0/fzEOlE6t1Xo36q3HQ0hlGMzbA2R7RkD
+        Frm4SS3jLVnzP6yl2j14QrVqiQ==
+X-Google-Smtp-Source: ABdhPJwSTJRxhRvwqqNfLgwzZAGb7Y/OqMhJXJvLa0/rlJt289PPRhkCboovQHDRJ5lNEvdBy9hSbg==
+X-Received: by 2002:a5d:4bd2:: with SMTP id l18mr8180056wrt.197.1621585051546;
+        Fri, 21 May 2021 01:17:31 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id s83sm5265147wms.16.2021.05.21.01.17.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 01:15:54 -0700 (PDT)
-Date:   Fri, 21 May 2021 08:15:52 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <YKdsOBCjASzFSzLm@google.com>
-References: <20210518102833.GA7770@willie-the-truck>
- <YKObZ1GcfVIVWRWt@google.com>
- <20210518105951.GC7770@willie-the-truck>
- <YKO+9lPLQLPm4Nwt@google.com>
- <YKYoQ0ezahSC/RAg@localhost.localdomain>
- <20210520101640.GA10065@willie-the-truck>
- <YKY7FvFeRlXVjcaA@google.com>
- <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
- <20210520180138.GA10523@willie-the-truck>
- <YKdEX9uaQXy8g/S/@localhost.localdomain>
+        Fri, 21 May 2021 01:17:31 -0700 (PDT)
+Date:   Fri, 21 May 2021 09:17:29 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        paulkf@microgate.com
+Subject: Re: [PATCH 05/16] char: pcmcia: synclink_cs: Fix a bunch of
+ kernel-doc issues
+Message-ID: <20210521081729.GC2549456@dell>
+References: <20210520121347.3467794-1-lee.jones@linaro.org>
+ <20210520121347.3467794-6-lee.jones@linaro.org>
+ <YKdqxYsVineUqqFf@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YKdEX9uaQXy8g/S/@localhost.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKdqxYsVineUqqFf@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 21 May 2021 at 07:25:51 (+0200), Juri Lelli wrote:
-> On 20/05/21 19:01, Will Deacon wrote:
-> > On Thu, May 20, 2021 at 02:38:55PM +0200, Daniel Bristot de Oliveira wrote:
-> > > On 5/20/21 12:33 PM, Quentin Perret wrote:
-> > > > On Thursday 20 May 2021 at 11:16:41 (+0100), Will Deacon wrote:
-> > > >> Ok, thanks for the insight. In which case, I'll go with what we discussed:
-> > > >> require admission control to be disabled for sched_setattr() but allow
-> > > >> execve() to a 32-bit task from a 64-bit deadline task with a warning (this
-> > > >> is probably similar to CPU hotplug?).
-> > > > 
-> > > > Still not sure that we can let execve go through ... It will break AC
-> > > > all the same, so it should probably fail as well if AC is on IMO
-> > > > 
-> > > 
-> > > If the cpumask of the 32-bit task is != of the 64-bit task that is executing it,
-> > > the admission control needs to be re-executed, and it could fail. So I see this
-> > > operation equivalent to sched_setaffinity(). This will likely be true for future
-> > > schedulers that will allow arbitrary affinities (AC should run on affinity
-> > > change, and could fail).
-> > > 
-> > > I would vote with Juri: "I'd go with fail hard if AC is on, let it
-> > > pass if AC is off (supposedly the user knows what to do)," (also hope nobody
-> > > complains until we add better support for affinity, and use this as a motivation
-> > > to get back on this front).
+On Fri, 21 May 2021, Greg Kroah-Hartman wrote:
+
+> On Thu, May 20, 2021 at 01:13:36PM +0100, Lee Jones wrote:
+> > Fixes the following W=1 kernel build warning(s):
 > > 
-> > I can have a go at implementing it, but I don't think it's a great solution
-> > and here's why:
+> >  drivers/char/pcmcia/synclink_cs.c:4068: warning: Function parameter or member 'dev' not described in 'hdlcdev_ioctl'
+> >  drivers/char/pcmcia/synclink_cs.c:4068: warning: Function parameter or member 'ifr' not described in 'hdlcdev_ioctl'
+> >  drivers/char/pcmcia/synclink_cs.c:4068: warning: Function parameter or member 'cmd' not described in 'hdlcdev_ioctl'
+> >  drivers/char/pcmcia/synclink_cs.c:4068: warning: expecting prototype for called by network layer to process IOCTL call to network device(). Prototype was for hdlcdev_ioctl() instead
+> >  drivers/char/pcmcia/synclink_cs.c:4173: warning: Function parameter or member 'txqueue' not described in 'hdlcdev_tx_timeout'
 > > 
-> > Failing an execve() is _very_ likely to be fatal to the application. It's
-> > also very likely that the task calling execve() doesn't know whether the
-> > program it's trying to execute is 32-bit or not. Consequently, if we go
-> > with failing execve() then all that will happen is that people will disable
-> > admission control altogether.
-
-Right, but only on these dumb 32bit asymmetric systems, and only if we
-care about running 32bits deadline tasks -- which I seriously doubt for
-the Android use-case.
-
-Note that running deadline tasks is also a privileged operation, it
-can't be done by random apps.
-
-> > That has a negative impact on "pure" 64-bit
-> > applications and so I think we end up with the tail wagging the dog because
-> > admission control will be disabled for everybody just because there is a
-> > handful of 32-bit programs which may get executed. I understand that it
-> > also means that RT throttling would be disabled.
+> > Cc: Lee Jones <lee.jones@linaro.org>
+> > Cc: paulkf@microgate.com
+> > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+> > ---
+> >  drivers/char/pcmcia/synclink_cs.c | 12 +++++++-----
+> >  1 file changed, 7 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/char/pcmcia/synclink_cs.c b/drivers/char/pcmcia/synclink_cs.c
+> > index 4a1e63911b279..b004abac61542 100644
+> > --- a/drivers/char/pcmcia/synclink_cs.c
+> > +++ b/drivers/char/pcmcia/synclink_cs.c
+> > @@ -4054,11 +4054,12 @@ static int hdlcdev_close(struct net_device *dev)
+> >  }
+> >  
+> >  /**
+> > - * called by network layer to process IOCTL call to network device
+> > + * hdlcdev_ioctl() - called by network layer to process IOCTL call
+> > + *                   to network device
+> >   *
+> > - * dev  pointer to network device structure
+> > - * ifr  pointer to network interface request structure
+> > - * cmd  IOCTL command code
+> > + * @dev:  pointer to network device structure
+> > + * @ifr:  pointer to network interface request structure
+> > + * @cmd:  IOCTL command code
+> >   *
+> >   * returns 0 if success, otherwise error code
+> >   */
+> > @@ -4165,7 +4166,8 @@ static int hdlcdev_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
+> >   * hdlcdev_tx_timeout() - called by network layer when transmit timeout
+> >   *                        is detected
+> >   *
+> > - * @dev:  pointer to network device structure
+> > + * @dev:      pointer to network device structure
+> > + * @txqueue:  unused
+> >   */
+> >  static void hdlcdev_tx_timeout(struct net_device *dev, unsigned int txqueue)
+> >  {
 > 
-> Completely understand your perplexity. But how can the kernel still give
-> guarantees to "pure" 64-bit applications if there are 32-bit
-> applications around that essentially broke admission control when they
-> were restricted to a subset of cores?
-> 
-> > Allowing the execve() to continue with a warning is very similar to the
-> > case in which all the 64-bit CPUs are hot-unplugged at the point of
-> > execve(), and this is much closer to the illusion that this patch series
-> > intends to provide.
-> 
-> So, for hotplug we currently have a check that would make hotplug
-> operations fail if removing a CPU would mean not enough bandwidth to run
-> the currently admitted set of DEADLINE tasks.
+> This one did not apply to my tree :(
 
-Aha, wasn't aware. Any pointers to that check for my education?
+It's based on yesterday's -next.
 
-> > So, personally speaking, I would prefer the behaviour where we refuse to
-> > admit 32-bit tasks vioa sched_set_attr() if the root domain contains
-> > 64-bit CPUs, but we _don't_ fail execve() of a 32-bit program from a
-> > 64-bit deadline task.
-> 
-> OK, this is interesting and I guess a very valid alternative. That would
-> force users to create exclusive domains for 32-bit tasks, right?
+I'll re-rebase any that are left.
 
-FWIW this is not practical at all for our use-cases, the implications of
-splitting the system in independent root-domains are way too important
-for us to be able to recommend that. Disabling AC, OTOH, sounds simple
-enough. The RT throttling part is the only 'worrying' part, but even
-that may not be the end of the world.
-
-Thanks!
-Quentin
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
