@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A27EF38C57B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59BBF38C57C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234217AbhEULNz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53450 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233569AbhEULNy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:13:54 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35C66C061574;
-        Fri, 21 May 2021 04:12:30 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id f75-20020a1c1f4e0000b0290171001e7329so6934084wmf.1;
-        Fri, 21 May 2021 04:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=n8fWTjwngjiSk3H/kdYOG+eQP4cKieGjb3pqjd4aMnE=;
-        b=E4wn+gV8v4Ko1F8GmJsyTwtr9xh66WZDX+5D97cv7T+0Bk0FyKNuk/JswU24XlIN7K
-         0cE/fqPFFoeHfylUkHqBz12yvUzU6rbFzEE1zk73/+rEiY0y5xtNlGM2vduWe9eqIcJH
-         oXK6zaPNT4HZ4PhzhqUm9WBLtgOFq6ocgeMrr8ObNhiXekdtfmRLfl/dmOPNlIr3fidT
-         WVsqEdxSZvVAx/Wa7clHCP4peXhw+0jD09l8D8tN4hnbhEL8ECq2V0iyMfFNfXKxWt1c
-         HN1ImVpkSZmO9LqTPZUb+DgeXTelzCFiRpQl9A9PCyHEOcklN7Wf4pDnN/IgnuUIR70A
-         MEfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=n8fWTjwngjiSk3H/kdYOG+eQP4cKieGjb3pqjd4aMnE=;
-        b=OO2w8H3FxzIvAvEam/YhwuwkPZojbKz4vVz4t/Y+CT/zpjhafAXQV/G8GSja+TPzPJ
-         4skfW4EjqGDKBM2WsSZZuYc2DqdwcRZ7Equ6NToml/v83FYWsEpU++eeOuu8EwQSSJEu
-         hQ2x/OTwJsaLD6JkFC5yyrVb7V5vqtd+pZKGEizLOfZWSYVO2rwGJln7N3AzAOzx2G/K
-         4ZK84vY6r7p276UERVOUZxT6jp9IIJc4/t7vMA9eZ6RgobkosC4zC/r76mohA6d2N7Tw
-         rneGbL3QUTXljIQKKA3ziDoB1ikDqV+NhW5sujWsONICpdoJXalqw8BOV6YLFDRqNa2/
-         bktQ==
-X-Gm-Message-State: AOAM532Nw4L6AUdxxPWv2XwoZ/mbrbbdXBvAEkuUipDc2SkyxL2hVuoK
-        BVm2QL8BxDTJu/cgmnq9IWE=
-X-Google-Smtp-Source: ABdhPJybP6O5484MyiP/NQzPPYoJgE+bRR5MtrjEoKprcszbr9E8WsD+qysLidQPe9jm/L2M0r4jew==
-X-Received: by 2002:a7b:c93a:: with SMTP id h26mr8593158wml.141.1621595548880;
-        Fri, 21 May 2021 04:12:28 -0700 (PDT)
-Received: from [192.168.43.70] ([46.222.120.224])
-        by smtp.gmail.com with ESMTPSA id i5sm1804932wrw.29.2021.05.21.04.12.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 04:12:28 -0700 (PDT)
-Subject: Re: [PATCH v3] bpf.2: Use standard types and attributes
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
-        mtk.manpages@gmail.com
-Cc:     linux-man@vger.kernel.org, Alexei Starovoitov <ast@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Zack Weinberg <zackw@panix.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Joseph Myers <joseph@codesourcery.com>,
-        Florian Weimer <fweimer@redhat.com>
-References: <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
- <20210515190116.188362-1-alx.manpages@gmail.com>
- <9df36138-f622-49a6-8310-85ff0470ccd6@gmail.com>
- <521cd198-fea2-c2a8-ed96-5848ae39b6f2@iogearbox.net>
-From:   Alejandro Colomar <alx.mailinglists@gmail.com>
-Message-ID: <c2d0c73e-20d8-f624-8d72-8b00e9309463@gmail.com>
-Date:   Fri, 21 May 2021 13:12:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S234311AbhEULOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:14:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233569AbhEULOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:14:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6FE461175;
+        Fri, 21 May 2021 11:13:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621595592;
+        bh=XecTnxnidRExLolqDJJY/zckaN8k3VUJhb3X5jF9uVM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pKUnJkSjMi5Wy54HbnwnNUReVRRa/B2BPn0FV4ENTYt+FTAylbh5DLLkDpUG9XkIy
+         ApEk/eF/FyHtpB7DWDlBLDOFZWtNa6JZ66nrfulsklSNZZw5A7kVKUB5XQMpxTOf9Q
+         cGUf1epQNxVOXBG3aQgymN52rhWfl5McXHRVL9T0=
+Date:   Fri, 21 May 2021 13:13:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Quentin Perret <qperret@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Matthias Maennich <maennich@google.com>,
+        Giuliano Procida <gprocida@google.com>, kernel-team@android.com
+Subject: Re: [PATCH] export: Make CRCs robust to symbol trimming
+Message-ID: <YKeVxpXOeaBFS5r6@kroah.com>
+References: <20210408180105.2496212-1-qperret@google.com>
+ <YJkJ21n71SIkUppu@google.com>
+ <CAF2Aj3iJ3jGCSTaO0p8WT2TrRX--QxQT0bD6iH1+OGbx5H-muQ@mail.gmail.com>
+ <YKePWull0E86SXpm@kroah.com>
+ <20210521110206.GE2549456@dell>
 MIME-Version: 1.0
-In-Reply-To: <521cd198-fea2-c2a8-ed96-5848ae39b6f2@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521110206.GE2549456@dell>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Daniel,
-
-On 5/17/21 8:56 PM, Daniel Borkmann wrote:
-> On 5/16/21 11:16 AM, Alejandro Colomar (man-pages) wrote:
->>>
->>> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
->> Discussion: 
->> <https://lore.kernel.org/linux-man/6740a229-842e-b368-86eb-defc786b3658@gmail.com/T/> 
->>
->>> Nacked-by: Alexei Starovoitov <ast@kernel.org>
->>> Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Fri, May 21, 2021 at 12:02:06PM +0100, Lee Jones wrote:
+> On Fri, 21 May 2021, Greg Kroah-Hartman wrote:
 > 
-> You forgot to retain my ...
+> > On Fri, May 21, 2021 at 10:57:44AM +0100, Lee Jones wrote:
+> > > On Mon, 10 May 2021 at 11:25, Quentin Perret <qperret@google.com> wrote:
+> > > 
+> > > > Hi,
+> > > >
+> > > > On Thursday 08 Apr 2021 at 18:01:05 (+0000), Quentin Perret wrote:
+> > > > > The CRC calculation done by genksyms is triggered when the parser hits
+> > > > > EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
+> > > > > types, and uses that as the input for the CRC calculation. In the case
+> > > > > of forward-declared structs, the type expands to 'UNKNOWN'. Next, the
+> > > > > result of the expansion of each type is cached, and is re-used when/if
+> > > > > the same type is seen again for another exported symbol in the file.
+> > > > >
+> > > > > Unfortunately, this can cause CRC 'stability' issues when a struct
+> > > > > definition becomes visible in the middle of a C file. For example, let's
+> > > > > assume code with the following pattern:
+> > > > >
+> > > > >     struct foo;
+> > > > >
+> > > > >     int bar(struct foo *arg)
+> > > > >     {
+> > > > >       /* Do work ... */
+> > > > >     }
+> > > > >     EXPORT_SYMBOL_GPL(bar);
+> > > > >
+> > > > >     /* This contains struct foo's definition */
+> > > > >     #include "foo.h"
+> > > > >
+> > > > >     int baz(struct foo *arg)
+> > > > >     {
+> > > > >       /* Do more work ... */
+> > > > >     }
+> > > > >     EXPORT_SYMBOL_GPL(baz);
+> > > > >
+> > > > > Here, baz's CRC will be computed using the expansion of struct foo that
+> > > > > was cached after bar's CRC calculation ('UNKOWN' here). But if
+> > > > > EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
+> > > > > trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
+> > > > > late, during baz's CRC calculation, which now has visibility over the
+> > > > > full struct definition, hence resulting in a different CRC for baz.
+> > > > >
+> > > > > This can cause annoying issues for distro kernel (such as the Android
+> > > > > Generic Kernel Image) which use CONFIG_UNUSED_KSYMS_WHITELIST. Indeed,
+> > > > > as per the above, adding a symbol to the whitelist can change the CRC of
+> > > > > symbols that are already kept exported. As such, modules built against a
+> > > > > kernel with a trimmed ABI may not load against the same kernel built
+> > > > > with an extended whitelist, even though they are still strictly binary
+> > > > > compatible. While rebuilding the modules would obviously solve the
+> > > > > issue, I believe this classifies as an odd genksyms corner case, and it
+> > > > > gets in the way of kernel updates in the GKI context.
+> > > > >
+> > > > > To work around the issue, make sure to keep issuing the
+> > > > > __GENKSYMS_EXPORT_SYMBOL macros for all trimmed symbols, hence making
+> > > > > the genksyms parsing insensitive to symbol trimming.
+> > > > >
+> > > > > Signed-off-by: Quentin Perret <qperret@google.com>
+> > > >
+> > > > Gentle ping.
+> > > >
+> > > > Is there anything else I should do in this one?
+> > > >
+> > > 
+> > > With Greg's Ack and ~6 weeks on the list, you're probably golden.
+> > > 
+> > > I *could* pick this up, but seems wrong somehow.
+> > > 
+> > > Greg, is this something you're prepared to merge?  If not, who's the
+> > > g{uy,al}?
+> > 
+> > What does get_maintainer.pl show?
 > 
-> Nacked-by: Daniel Borkmann <daniel@iogearbox.net>
-
-Yup! Sorry, I forgot :)
-
-Thanks,
-
-Alex
-
+> It doesn't [0], which is why I commented in this way. :)
 > 
->>> Acked-by: Zack Weinberg <zackw@panix.com>
->>> Cc: LKML <linux-kernel@vger.kernel.org>
->>> Cc: glibc <libc-alpha@sourceware.org>
->>> Cc: GCC <gcc-patches@gcc.gnu.org>
->>> Cc: bpf <bpf@vger.kernel.org>
->>> Cc: David Laight <David.Laight@ACULAB.COM>
->>> Cc: Joseph Myers <joseph@codesourcery.com>
->>> Cc: Florian Weimer <fweimer@redhat.com>
->>> Cc: Daniel Borkmann <daniel@iogearbox.net>
->>> ---
->>>   man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
->>>   1 file changed, 24 insertions(+), 25 deletions(-)
->>>
+> [0]:
+> 
+>  Jessica Yu <jeyu@kernel.org> (commit_signer:2/5=40%)
+>  Emil Velikov <emil.l.velikov@gmail.com> (commit_signer:2/5=40%)
+>  Miroslav Benes <mbenes@suse.cz> (commit_signer:2/5=40%)
+>  Nick Desaulniers <ndesaulniers@google.com> (commit_signer:2/5=40%,authored:1/5=20%,added_lines:1/7=14%,removed_lines:1/11=9%)
+>  Greg Kroah-Hartman <gregkh@linuxfoundation.org> (commit_signer:1/5=20%)
+>  Quentin Perret <qperret@google.com> (authored:1/5=20%,added_lines:5/7=71%)
+>  Joe Perches <joe@perches.com> (authored:1/5=20%,added_lines:1/7=14%,removed_lines:1/11=9%)
+>  linux-kernel@vger.kernel.org (open list)
 
+Bah, ok, fine, I'll scoop it up now :)
+
+greg k-h
