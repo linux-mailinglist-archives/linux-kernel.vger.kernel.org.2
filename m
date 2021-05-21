@@ -2,70 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB73D38CBD0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:17:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F6238CBD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:18:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238109AbhEURSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:18:35 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:38604 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230194AbhEURSd (ORCPT
+        id S238119AbhEURTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:19:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230014AbhEURTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:18:33 -0400
-Received: by mail-ot1-f44.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so7493259otk.5;
-        Fri, 21 May 2021 10:17:10 -0700 (PDT)
+        Fri, 21 May 2021 13:19:30 -0400
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE72C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:18:05 -0700 (PDT)
+Received: by mail-lf1-x130.google.com with SMTP id v8so25789349lft.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:18:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cfCe3Mmq/4WfJ6JanDJbmMfZ9bv2HspViLWfH/Y54Xs=;
+        b=FcvGu3T3fRXsNR7QX3Co2QAv4UikUqzYXXlHq185LEqZvIFy5NkPw0QgYsYCuSOnnG
+         pTQyEBEAV9aGyHJbjfcPoC7sp89ceeUFUfEgTsbQ7TgsevG00JCKTd0mnFc2ktsgiDKl
+         CRU8bfVI4mrSog0S7TTE9rusQGcQXE3dUzKdc7JtJT8Lc/+S0rQbzQRoSfenSdhkZVuG
+         iNNQnGCJPcZLDsG+axlF+8HgRAYBpkuyazVG0QU6s0ilcGo7UHBoEHZGkjyL6lfcJ0ev
+         lJHuFCyQdI0SoeLyGYTwaf/xWC3LyGTvHFK5lcn2VpIm6RbnpOaQYAJrYfxVGz4y1i/5
+         D1nA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gWRJRfF5WrMUuECU4YlIjOs9P+KdJ4LyClxNyp4ruw0=;
-        b=Mpab85FW3FKJE7xl1LCGFeRS4V++NOAKifP16fz8Ah/OaZAEuIZ8wfgtga3LOwPr9I
-         sf4wsaiVYlZyBj3rPNePh4dlZQt10Vcq7Km4czVrOtDDEU3ZdPisfIe5u3P4kT359+oc
-         pgC1E42Jg3QitG7hyQ7M9IBrNItBQXRi5EkZSLJHLk9b4P9dvLWyBe2smtFgveHzMAFp
-         U/7NBQ2FUwV5r9WOfdRa0SaOEpp4tqzSBD1NqgHKw8AISH1IkMx12JIZrUyCOD5ISipy
-         5Np6+V3PNMQSqzJ6/OiDrlJIttR4MJB78EavijGJ2H1UXH/HKo/Ud4dIA80G/IrGtOlz
-         kfCA==
-X-Gm-Message-State: AOAM531xL4ZGD/k9RGTne2QK/SuyKEDfupYy3DJ9u2iB5ZYFvrGY9/kA
-        EhK0ceDpHdzU7OmJJdpukGKV3459Sg==
-X-Google-Smtp-Source: ABdhPJzfn2v0kjIRcoekHdll+etbLCHQTJj/xt9xYjIBklx0tvQZNE9QXGRqRYAk1Suqfi9s/oWz2A==
-X-Received: by 2002:a9d:bc3:: with SMTP id 61mr9036884oth.7.1621617430251;
-        Fri, 21 May 2021 10:17:10 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u14sm1253947oif.41.2021.05.21.10.17.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 10:17:09 -0700 (PDT)
-Received: (nullmailer pid 30750 invoked by uid 1000);
-        Fri, 21 May 2021 17:17:08 -0000
-Date:   Fri, 21 May 2021 12:17:08 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        kernel@pengutronix.de, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, David Jander <david@protonic.nl>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH v5 3/8] dt-bindings: input: touchscreen: goodix: chnage
- node name to pass validation
-Message-ID: <20210521171708.GA16279@robh.at.kernel.org>
-References: <20210521044525.7397-1-o.rempel@pengutronix.de>
- <20210521044525.7397-4-o.rempel@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cfCe3Mmq/4WfJ6JanDJbmMfZ9bv2HspViLWfH/Y54Xs=;
+        b=uY6tXKUMAXBvwQwZo8WeW2YFWud7Wzx1dKTiyW/guVp5su8O/7PL1cOuDnCjda2yoC
+         OajrOchuF4vhGdj8Y5Nk1crq3nLgwIHzZlKgCU0mthdJs9m6Bnas1mJ6d7RXP2MXGuGx
+         OL2nP0/s5a3TPP7Nym90R6L1TnuOQMSHN5eDj4uTbtX/zLuMdkoGPdQMHn8UrmozhZRR
+         x32P3DL2CckSlJOEvbRgD2t8v+KBtYiEX52raYTdkjo5dBdNF6NzaLooHxL/kYy3DrcD
+         +R0X5b30/a0j6CI1+ZRbeQKkgTQ0lofiN0viudzu9tV46stOCOWIQ0Btj81PTuj9M723
+         dClg==
+X-Gm-Message-State: AOAM5315yt6Qg5tRIBB4f2sskeLLZ/prz8OOccytRaQAsXylM45wxeZ/
+        +QNO94F82wANXmX4smR3Fhu/iIi+Ns9GfK4KzYNKdg==
+X-Google-Smtp-Source: ABdhPJwkLMwohjT56g4aif8wI04ge/Qt9cUd62JqBCc3C2k5S6oQ//ILEe95kwYJo8d9Zs35JnoCMivKLV8yo7m3WqY=
+X-Received: by 2002:a05:6512:220c:: with SMTP id h12mr2986001lfu.374.1621617483757;
+ Fri, 21 May 2021 10:18:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521044525.7397-4-o.rempel@pengutronix.de>
+References: <20210520231821.12272-1-maciej.falkowski9@gmail.com> <20210520231821.12272-2-maciej.falkowski9@gmail.com>
+In-Reply-To: <20210520231821.12272-2-maciej.falkowski9@gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 21 May 2021 10:17:52 -0700
+Message-ID: <CAKwvOd=32_yNvAWRjyczOoEjsWje9SfaB=S1s9kS1bRFZhuU8g@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Makefile: clang-tools: Omit printing stack trace when
+ KeyboardInterrupt is raised
+To:     Maciej Falkowski <maciej.falkowski9@gmail.com>
+Cc:     Nathan Chancellor <natechancellor@gmail.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 06:45:20AM +0200, Oleksij Rempel wrote:
-> Change node name from gt928 -> touchscreen to pass dt_binding_check.
+On Thu, May 20, 2021 at 4:18 PM Maciej Falkowski
+<maciej.falkowski9@gmail.com> wrote:
+>
+> When user terminates the script (also implicitly through for example
+> `make clang-analyzer`) by using
+> Ctrl+C (or sending SIGINT more generally) the KeyboardInterrupt
+> is raised printing stack trace of the execution as shown below:
+>
+> $ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
+> ^CTraceback (most recent call last):
+>   File "./scripts/clang-tools/run-clang-tools.py", line 74, in <module>
+>     main()
+>   File "./scripts/clang-tools/run-clang-tools.py", line 70, in main
+>     pool.map(run_analysis, datastore)
+>   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 364, in map
+>     return self._map_async(func, iterable, mapstar, chunksize).get()
+>   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 765, in get
+>     self.wait(timeout)
+>   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 762, in wait
+>     self._event.wait(timeout)
+>   File "/usr/lib64/python3.8/threading.py", line 558, in wait
+> Process ForkPoolWorker-6:
+> Process ForkPoolWorker-1:
+> Process ForkPoolWorker-5:
+> Process ForkPoolWorker-7:
+> Process ForkPoolWorker-2:
+> Process ForkPoolWorker-3:
+> Process ForkPoolWorker-4:
+> Process ForkPoolWorker-8:
+>     signaled = self._cond.wait(timeout)
+>   File "/usr/lib64/python3.8/threading.py", line 302, in wait
+>     waiter.acquire()
+> KeyboardInterrupt
 
-Well, at least you were consistent on the subject. :)
+With this applied,
+$ make LLVM=1 LLVM_IAS=1 -j72 clang-analyzer
+^C
+Process ForkPoolWorker-5:
+make: *** [Makefile:1902: clang-analyzer] Error 130
 
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+
+Thanks for the patch!
+
+> The patch handles the raise of the KeyboardInterrupt and exits when occurred
+> with code 130 as documented in: https://tldp.org/LDP/abs/html/exitcodes.html
+>
+> Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
 > ---
->  Documentation/devicetree/bindings/input/touchscreen/goodix.yaml | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  scripts/clang-tools/run-clang-tools.py | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
+> index 38fc311d2e03..eb0e0ecfce24 100755
+> --- a/scripts/clang-tools/run-clang-tools.py
+> +++ b/scripts/clang-tools/run-clang-tools.py
+> @@ -77,4 +77,7 @@ def main():
+>
+>
+>  if __name__ == "__main__":
+> -    main()
+> +    try:
+> +        main()
+> +    except KeyboardInterrupt:
+> +        sys.exit(130)
+> --
+> 2.26.3
+>
 
-Acked-by: Rob Herring <robh@kernel.org>
+
+-- 
+Thanks,
+~Nick Desaulniers
