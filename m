@@ -2,203 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA7638C395
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:42:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4C5538C3A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:43:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236941AbhEUJnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:43:55 -0400
-Received: from foss.arm.com ([217.140.110.172]:43010 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236947AbhEUJng (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:43:36 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8973C101E;
-        Fri, 21 May 2021 02:42:13 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C139D3F73D;
-        Fri, 21 May 2021 02:42:10 -0700 (PDT)
-Subject: Re: [PATCH v12 7/8] KVM: arm64: ioctl to fetch/store tags in a guest
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210517123239.8025-1-steven.price@arm.com>
- <20210517123239.8025-8-steven.price@arm.com> <20210520120556.GC12251@arm.com>
- <dd5ab3a0-5a74-b145-2485-d6d871be945b@arm.com>
- <20210520172713.GF12251@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <5eec330f-63c0-2af8-70f8-ba9b643e2558@arm.com>
-Date:   Fri, 21 May 2021 10:42:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210520172713.GF12251@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S236993AbhEUJou (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:44:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33416 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237002AbhEUJoY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 05:44:24 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83DD7C061574;
+        Fri, 21 May 2021 02:43:00 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id 27so12490498pgy.3;
+        Fri, 21 May 2021 02:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=KZgfiEzIPvsgTFxoIStVxbrN1vw78Fru0mAoJ7v9Q38=;
+        b=KJkka3pOqaaPrpeHGbn/5qJgNS7ejHBSZ04McsUUJTogdMBAjzZHGA2mimzEl9RzEL
+         xqnqMNAS7mSXVPF3onxn48E8Br7a89j5cGo2+Z/K06LBcsvMc7gZcKJ2DCiH3FtWhXEL
+         YIlDr29Jeis0iwcbQEhBpcnm0HwgqeScX3zW502DJHCRJcGtEIf3oEmB1tEop1KyKG4d
+         CkWMTjCb5d+gZQZdmvggnKYnDyd9/L++XGKi7khuNSqEu7dkMvshuanwLvCHhFoqgf+l
+         R2Tl975qVDswKyTSKaWOoRzvu2dRmAMGl0qhVAdQ8fR1X14gH096OayPYAxJof80cqN8
+         gLfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=KZgfiEzIPvsgTFxoIStVxbrN1vw78Fru0mAoJ7v9Q38=;
+        b=eSwX3DZHRRvm+p87MG62hU20GrGJK63Wcyoe0FlX/9DcdGd9pksWArDBMtnGT7tYAd
+         lLR07uYx1XcVRt5X9TwXhYh9BI4VuvvbQ8F2K7W23MMmr9BonhGv2G0QASj907RtZ7f2
+         sMvOfVHg1+IEOKr+SK7yedxfFWHoMaZOwBBpHvmdvNqxDfsY8MFIWlRN+amoMma7B83X
+         w+XCf1dhM5PWeqLEp+htPf0vneSXMakKkO7hSgVG7QGnge6gr4D8Y3MmU8BGiI4bTdOt
+         svzk8vlqKh5HOMsfEva4ZKSyI9GutOEUUL/MYgoZKEGXLLDIqMlOwsf72gwAu0bQWG4i
+         /ygw==
+X-Gm-Message-State: AOAM530xVPkso/ieeRgM/7KI8jmlfLtGFP8SVXSV3sV9jOuTfLZ2H5zD
+        I4ZgG7rLsJqXjsTo7PNE1M0=
+X-Google-Smtp-Source: ABdhPJwP2eDcCNOHj+jbX58H/KMkHnEV1mkrlpdFs13/Y4d0vhEg0tcECDTbxxEeUxCr2wSLODYBfg==
+X-Received: by 2002:a62:d447:0:b029:291:19f7:ddcd with SMTP id u7-20020a62d4470000b029029119f7ddcdmr9437698pfl.54.1621590180094;
+        Fri, 21 May 2021 02:43:00 -0700 (PDT)
+Received: from linux-l9pv.suse ([124.11.22.254])
+        by smtp.gmail.com with ESMTPSA id g202sm4091931pfb.54.2021.05.21.02.42.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 21 May 2021 02:42:59 -0700 (PDT)
+From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
+X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Ben Boeckel <me@benboeckel.net>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Malte Gell <malte.gell@gmx.de>,
+        Varad Gautam <varad.gautam@suse.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        "Lee, Chun-Yi" <jlee@suse.com>
+Subject: [PATCH v7 0/4] Check codeSigning extended key usage extension
+Date:   Fri, 21 May 2021 17:42:16 +0800
+Message-Id: <20210521094220.1238-1-jlee@suse.com>
+X-Mailer: git-send-email 2.12.3
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/05/2021 18:27, Catalin Marinas wrote:
-> On Thu, May 20, 2021 at 04:58:01PM +0100, Steven Price wrote:
->> On 20/05/2021 13:05, Catalin Marinas wrote:
->>> On Mon, May 17, 2021 at 01:32:38PM +0100, Steven Price wrote:
->>>> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
->>>> index e89a5e275e25..4b6c83beb75d 100644
->>>> --- a/arch/arm64/kvm/arm.c
->>>> +++ b/arch/arm64/kvm/arm.c
->>>> @@ -1309,6 +1309,65 @@ static int kvm_vm_ioctl_set_device_addr(struct kvm *kvm,
->>>>  	}
->>>>  }
->>>>  
->>>> +static int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
->>>> +				      struct kvm_arm_copy_mte_tags *copy_tags)
->>>> +{
->>>> +	gpa_t guest_ipa = copy_tags->guest_ipa;
->>>> +	size_t length = copy_tags->length;
->>>> +	void __user *tags = copy_tags->addr;
->>>> +	gpa_t gfn;
->>>> +	bool write = !(copy_tags->flags & KVM_ARM_TAGS_FROM_GUEST);
->>>> +	int ret = 0;
->>>> +
->>>> +	if (copy_tags->reserved[0] || copy_tags->reserved[1])
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (copy_tags->flags & ~KVM_ARM_TAGS_FROM_GUEST)
->>>> +		return -EINVAL;
->>>> +
->>>> +	if (length & ~PAGE_MASK || guest_ipa & ~PAGE_MASK)
->>>> +		return -EINVAL;
->>>> +
->>>> +	gfn = gpa_to_gfn(guest_ipa);
->>>> +
->>>> +	mutex_lock(&kvm->slots_lock);
->>>> +
->>>> +	while (length > 0) {
->>>> +		kvm_pfn_t pfn = gfn_to_pfn_prot(kvm, gfn, write, NULL);
->>>> +		void *maddr;
->>>> +		unsigned long num_tags = PAGE_SIZE / MTE_GRANULE_SIZE;
->>>> +
->>>> +		if (is_error_noslot_pfn(pfn)) {
->>>> +			ret = -EFAULT;
->>>> +			goto out;
->>>> +		}
->>>> +
->>>> +		maddr = page_address(pfn_to_page(pfn));
->>>> +
->>>> +		if (!write) {
->>>> +			num_tags = mte_copy_tags_to_user(tags, maddr, num_tags);
->>>> +			kvm_release_pfn_clean(pfn);
->>>
->>> Do we need to check if PG_mte_tagged is set? If the page was not faulted
->>> into the guest address space but the VMM has the page, does the
->>> gfn_to_pfn_prot() guarantee that a kvm_set_spte_gfn() was called? If
->>> not, this may read stale tags.
->>
->> Ah, I hadn't thought about that... No I don't believe gfn_to_pfn_prot()
->> will fault it into the guest.
-> 
-> It doesn't indeed. What it does is a get_user_pages() but it's not of
-> much help since the VMM pte wouldn't be tagged (we would have solved
-> lots of problems if we required PROT_MTE in the VMM...)
+NIAP PP_OS certification requests that the OS shall validate the
+CodeSigning extended key usage extension field for integrity
+verifiction of exectable code:
 
-Sadly it solves some problems and creates others :(
+    https://www.niap-ccevs.org/MMO/PP/-442-/
+        FIA_X509_EXT.1.1
 
->>>> +		} else {
->>>> +			num_tags = mte_copy_tags_from_user(maddr, tags,
->>>> +							   num_tags);
->>>> +			kvm_release_pfn_dirty(pfn);
->>>> +		}
->>>
->>> Same question here, if the we can't guarantee the stage 2 pte being set,
->>> we'd need to set PG_mte_tagged.
->>
->> This is arguably worse as we'll be writing tags into the guest but
->> without setting PG_mte_tagged - so they'll be lost when the guest then
->> faults the pages in. Which sounds like it should break migration.
->>
->> I think the below should be safe, and avoids the overhead of setting the
->> flag just for reads.
->>
->> Thanks,
->>
->> Steve
->>
->> ----8<----
->> 		page = pfn_to_page(pfn);
->> 		maddr = page_address(page);
->>
->> 		if (!write) {
->> 			if (test_bit(PG_mte_tagged, &page->flags))
->> 				num_tags = mte_copy_tags_to_user(tags, maddr,
->> 							MTE_GRANULES_PER_PAGE);
->> 			else
->> 				/* No tags in memory, so write zeros */
->> 				num_tags = MTE_GRANULES_PER_PAGE -
->> 					clear_user(tag, MTE_GRANULES_PER_PAGE);
->> 			kvm_release_pfn_clean(pfn);
-> 
-> For ptrace we return a -EOPNOTSUPP if the address doesn't have VM_MTE
-> but I don't think it makes sense here, so I'm fine with clearing the
-> destination and assuming that the tags are zero (as they'd be on
-> faulting into the guest.
+This patchset adds the logic for parsing the codeSigning EKU extension
+field in X.509. And checking the CodeSigning EKU when verifying
+signature of kernel module or kexec PE binary in PKCS#7.
 
-Yeah - conceptually all pages in an MTE-enabled guest have tags. It's
-just we don't actually populate the physical memory until the guest
-tries to touch them. So it makes sense to just return zeros here.
-Alternatively we could populate the physical tags but that seems
-unnecessary.
+v7:
+- Fixed the broken function call in is_key_on_revocation_list().
+  (be found by kernel test robot)
+- Use a general name check_eku_by_usage() instead of check_codesign_eku().
 
-> Another thing I forgot to ask, what's guaranteeing that the page
-> supports tags? Does this ioctl ensure that it would attempt the tag
-> copying from some device mapping? Do we need some kvm_is_device_pfn()
-> check? I guess ZONE_DEVICE memory we just refuse to map in an earlier
-> patch.
+v6:
+- Add more length checking when parsing extKeyUsage and EKU's OID blob.
+- Add 'usage' parameter to the comment of pkcs7_validate_trust function.
 
-Hmm, nothing much. While reads are now fine (the memory won't have
-PG_mte_tagged), writes could potentially happen on ZONE_DEVICE memory.
+v5:
+Fixed the wording in module-signing.rst.
 
-The fix is to just replace pfn_to_page() with pfn_to_online_page() and
-handle the error.
+v4:
+Fixed the wording in patch description.
 
->> 		} else {
->> 			num_tags = mte_copy_tags_from_user(maddr, tags,
->> 							MTE_GRANULES_PER_PAGE);
->> 			kvm_release_pfn_dirty(pfn);
->> 		}
->>
->> 		if (num_tags != MTE_GRANULES_PER_PAGE) {
->> 			ret = -EFAULT;
->> 			goto out;
->> 		}
->>
->> 		if (write)
->> 			test_and_set_bit(PG_mte_tagged, &page->flags);
-> 
-> I think a set_bit() would do, I doubt it's any more efficient. But why
+v3:
+- Add codeSigning EKU to x509.genkey key generation config.
+- Add openssl command option example for generating CodeSign EKU to
+  module-signing.rst document.
 
-I'd seen test_and_set_bit() used elsewhere (I forget where now) as a
-slightly more efficient approach. It complies down to a READ_ONCE and a
-conditional atomic, vs a single non-conditional atomic. But I don't have
-any actual data on the performance and this isn't a hot path, so I'll
-switch to the more obvious set_bit().
+v2:
+Changed the help wording in the Kconfig.
 
-> not add it in the 'else' block above where we actually wrote the tags?
-> The copy function may have failed part-way through. Maybe your logic is
-> correct though, there are invalid tags in the page. Just add a comment.
+Lee, Chun-Yi (4):
+  X.509: Add CodeSigning extended key usage parsing
+  PKCS#7: Check codeSigning EKU for kernel module and kexec pe
+    verification
+  modsign: Add codeSigning EKU when generating X.509 key generation
+    config
+  Documentation/admin-guide/module-signing.rst: add openssl command
+    option example for CodeSign EKU
 
-Yeah it's in case the write fails part way through - we don't want to
-expose the tags which were not written. I'll add a comment to explain that.
+ Documentation/admin-guide/module-signing.rst |  6 ++++
+ certs/Makefile                               |  1 +
+ certs/blacklist.c                            |  6 ++--
+ certs/system_keyring.c                       |  4 +--
+ crypto/asymmetric_keys/Kconfig               |  9 ++++++
+ crypto/asymmetric_keys/pkcs7_trust.c         | 43 ++++++++++++++++++++++++++--
+ crypto/asymmetric_keys/x509_cert_parser.c    | 25 ++++++++++++++++
+ include/crypto/pkcs7.h                       |  4 ++-
+ include/crypto/public_key.h                  |  1 +
+ include/keys/system_keyring.h                |  7 +++--
+ include/linux/oid_registry.h                 |  5 ++++
+ 11 files changed, 101 insertions(+), 10 deletions(-)
 
-Steve
+-- 
+2.16.4
+
