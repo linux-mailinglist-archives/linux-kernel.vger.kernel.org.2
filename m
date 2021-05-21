@@ -2,147 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B61D338C45E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:07:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C390B38C45C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233920AbhEUKIW convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 06:08:22 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:23308 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233631AbhEUKIC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:08:02 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-321-nzPTwh8TNoKqhAUNAmkdWg-1; Fri, 21 May 2021 06:06:33 -0400
-X-MC-Unique: nzPTwh8TNoKqhAUNAmkdWg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 703E56D241;
-        Fri, 21 May 2021 10:06:32 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CFCBB1964B;
-        Fri, 21 May 2021 10:06:17 +0000 (UTC)
-Date:   Fri, 21 May 2021 12:06:16 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
-Message-ID: <20210521120616.49d52565@bahia.lan>
-In-Reply-To: <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
-References: <20210520154654.1791183-1-groug@kaod.org>
-        <20210520154654.1791183-5-groug@kaod.org>
-        <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
-        <20210521103921.153a243d@bahia.lan>
-        <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
+        id S233482AbhEUKIG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:08:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44528 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231995AbhEUKHo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 06:07:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 09393AAA6;
+        Fri, 21 May 2021 10:06:20 +0000 (UTC)
+Date:   Fri, 21 May 2021 12:06:19 +0200
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, Rudolf Marek <r.marek@assembler.cz>,
+        linux-i2c@vger.kernel.org
+Subject: Re: [PATCH 03/16] i2c: busses: i2c-ali1563: File headers are not
+ good candidates for kernel-doc
+Message-ID: <20210521120619.503cb7d9@endymion>
+In-Reply-To: <20210520190105.3772683-4-lee.jones@linaro.org>
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+        <20210520190105.3772683-4-lee.jones@linaro.org>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 10:50:34 +0200
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+Hi Lee,
 
-> On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
-> >
-> > On Fri, 21 May 2021 10:26:27 +0200
-> > Miklos Szeredi <miklos@szeredi.hu> wrote:
-> >
-> > > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
-> > > >
-> > > > All submounts share the same virtio-fs device instance as the root
-> > > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
-> > > > is likely to pick up any of these submounts and reuse it instead of
-> > > > the root mount.
-> > > >
-> > > > On the server side:
-> > > >
-> > > > # mkdir ${some_dir}
-> > > > # mkdir ${some_dir}/mnt1
-> > > > # mount -t tmpfs none ${some_dir}/mnt1
-> > > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
-> > > > # mkdir ${some_dir}/mnt2
-> > > > # mount -t tmpfs none ${some_dir}/mnt2
-> > > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
-> > > >
-> > > > On the client side:
-> > > >
-> > > > # mkdir /mnt/virtiofs1
-> > > > # mount -t virtiofs myfs /mnt/virtiofs1
-> > > > # ls /mnt/virtiofs1
-> > > > mnt1 mnt2
-> > > > # grep virtiofs /proc/mounts
-> > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > >
-> > > > And now remount it again:
-> > > >
-> > > > # mount -t virtiofs myfs /mnt/virtiofs2
-> > > > # grep virtiofs /proc/mounts
-> > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
-> > > > # ls /mnt/virtiofs2
-> > > > THIS_IS_MNT2
-> > > >
-> > > > Submount mnt2 was picked-up instead of the root mount.
-> > >
-> >
-> > > Why is this a problem?
-> > >
-> >
-> > It seems very weird to mount the same filesystem again
-> > and to end up in one of its submounts. We should have:
-> >
-> > # ls /mnt/virtiofs2
-> > mnt1 mnt2
+On Thu, 20 May 2021 20:00:52 +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
 > 
-> Okay, sorry, I understand the problem.  The solution is wrong,
-> however: the position of the submount on that list is no indication
-> that it's the right one (it's possible that the root sb will go away
-> and only a sub-sb will remain).
+>  drivers/i2c/busses/i2c-ali1563.c:24: warning: expecting prototype for i2c(). Prototype was for ALI1563_MAX_TIMEOUT() instead
+
+Thanks for taking care of the warnings. I agree that a clean W=1 build
+would be very nice to have.
+
+> Cc: Jean Delvare <jdelvare@suse.com>
+> Cc: Rudolf Marek <r.marek@assembler.cz>
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/i2c/busses/i2c-ali1563.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
+> diff --git a/drivers/i2c/busses/i2c-ali1563.c b/drivers/i2c/busses/i2c-ali1563.c
+> index 4d12e3da12f0d..55a9e93fbfeb5 100644
+> --- a/drivers/i2c/busses/i2c-ali1563.c
+> +++ b/drivers/i2c/busses/i2c-ali1563.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+> -/**
+> +/*
+>   *	i2c-ali1563.c - i2c driver for the ALi 1563 Southbridge
+>   *
+>   *	Copyright (C) 2004 Patrick Mochel
 
-Ah... I had myself convinced this could not happen, i.e. you can't
-unmount a parent sb with a sub-sb still mounted.
+Reviewed-by: Jean Delvare <jdelvare@suse.de>
 
-How can this happen ?
-
-> Even just setting a flag in the root, indicating that it's the root
-> isn't fully going to solve the problem.
-> 
-> Here's issue in full:
-> 
-> case 1:  no connection for "myfs" exists
->     - need to create fuse_conn, sb
-> 
-> case 2: connection for "myfs" exists but only sb for submount
-
-How would we know this sb isn't a root sb ?
-
->     - only create sb for root, reuse fuse_conn
-> 
-> case 3: connection for "myfs" as well as root sb exists
->    - reuse sb
-> 
-> I'll think about how to fix this properly, it's probably going to be
-> rather more involved...
-> 
-
-Sure. BTW I'm wondering why we never reuse sbs for submounts ?
-
-> Thanks,
-> Miklos
-
+-- 
+Jean Delvare
+SUSE L3 Support
