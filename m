@@ -2,93 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FFB938CAF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:26:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B093938CAF8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:28:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235465AbhEUQ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:28:05 -0400
-Received: from mx0a-00069f02.pphosted.com ([205.220.165.32]:61610 "EHLO
-        mx0a-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234894AbhEUQ2C (ORCPT
+        id S235482AbhEUQ3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:29:39 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3621 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233568AbhEUQ3g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:28:02 -0400
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LGGfZK005253;
-        Fri, 21 May 2021 16:26:14 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=GHIetxucry4oeX0E7HvayQYx8BwaNq2x10h1Wyx1DhA=;
- b=qrRhTOwTI4CuiBXJujSfBKr9hYfEx7F0ZreCVm7e/JtkD5TKiZ3JVP2tlA4V07xedEXG
- jQxJyEht09lID+fq9lRLBxdyvKg7jO0/dlYe3y68CGwYnhHhu354lH2jGXA+x3WMQGnR
- baC3J7SjVV8A8P92taeqadqAG4EMNGBOKD/AIHZA/MIOWfNBHBPte3s/hi0u3+VkRpuh
- fW1PGvV4oS9y0qfdE5Ve4dvLlZMhD1K8By3keygHvsM8XJLpVvEpSm2PMUX4dtHrXo4e
- cOBninGp5wOqDnr8sY7ryyaRcxDnGnHHTlECuMoGu+zLMlzcmYnU32WOyr4UWD87FhtX jA== 
-Received: from oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38n4utryjk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 16:26:14 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14LGQDWv135675;
-        Fri, 21 May 2021 16:26:13 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38meehw3ed-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 16:26:13 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14LGQCBQ135654;
-        Fri, 21 May 2021 16:26:13 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 38meehw3e1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 16:26:12 +0000
-Received: from abhmp0011.oracle.com (abhmp0011.oracle.com [141.146.116.17])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 14LGQ2Qe013102;
-        Fri, 21 May 2021 16:26:06 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 21 May 2021 09:26:02 -0700
-Date:   Fri, 21 May 2021 19:25:54 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Lee Jones <lee.jones@linaro.org>, Ian Abbott <abbotti@mev.co.uk>,
-        linux-kernel@vger.kernel.org,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        "David A. Schleef" <ds@schleef.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        Truxton Fulton <trux@linode1.truxton.com>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
- 'range_ni_E_ao_ext' to where it is used
-Message-ID: <20210521162554.GL1955@kadam>
-References: <20210520122538.3470259-1-lee.jones@linaro.org>
- <20210520122538.3470259-6-lee.jones@linaro.org>
- <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
- <20210521072635.GY2549456@dell>
- <20210521115431.GK1955@kadam>
- <20210521143925.xjmwluaoyer322lg@pengutronix.de>
+        Fri, 21 May 2021 12:29:36 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FmsPx0W5vzQqZq;
+        Sat, 22 May 2021 00:24:37 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 22 May 2021 00:28:09 +0800
+Received: from localhost (10.52.125.126) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
+ 2021 17:28:06 +0100
+Date:   Fri, 21 May 2021 17:26:20 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <kernel@pengutronix.de>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        David Jander <david@protonic.nl>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v5 1/8] dt-bindings: input: touchscreen: iqs626a: chnage
+ node name to pass validation
+Message-ID: <20210521172620.00006f66@Huawei.com>
+In-Reply-To: <20210521044525.7397-2-o.rempel@pengutronix.de>
+References: <20210521044525.7397-1-o.rempel@pengutronix.de>
+        <20210521044525.7397-2-o.rempel@pengutronix.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210521143925.xjmwluaoyer322lg@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: ocPfLC0V13jGaBf9DUdU3_v6bNB5Rwna
-X-Proofpoint-ORIG-GUID: ocPfLC0V13jGaBf9DUdU3_v6bNB5Rwna
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.126]
+X-ClientProxiedBy: lhreml746-chm.china.huawei.com (10.201.108.196) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 04:39:25PM +0200, Uwe Kleine-König wrote:
+Change typo in title.
+
+
+On Fri, 21 May 2021 06:45:18 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
+
+> Change node name from iqs626a -> touchscreen to pass dt_binding_check.
 > 
-> and it built for me.
-
-You're right.  I appologize.  I thought the linker would fail if we
-had the same variable in two files but I was wrong.
-
-regards,
-dan carpenter
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/input/iqs626a.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/input/iqs626a.yaml b/Documentation/devicetree/bindings/input/iqs626a.yaml
+> index 0cb736c541c9..ea4f04e2d3ad 100644
+> --- a/Documentation/devicetree/bindings/input/iqs626a.yaml
+> +++ b/Documentation/devicetree/bindings/input/iqs626a.yaml
+> @@ -751,7 +751,7 @@ examples:
+>              #address-cells = <1>;
+>              #size-cells = <0>;
+>  
+> -            iqs626a@44 {
+> +            touchscreen@44 {
+>                      #address-cells = <1>;
+>                      #size-cells = <0>;
+>  
 
