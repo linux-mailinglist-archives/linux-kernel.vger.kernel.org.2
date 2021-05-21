@@ -2,161 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03BE538BDB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C16A538BDB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:02:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239325AbhEUFB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:01:57 -0400
-Received: from mga03.intel.com ([134.134.136.65]:34744 "EHLO mga03.intel.com"
+        id S239354AbhEUFDc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:03:32 -0400
+Received: from foss.arm.com ([217.140.110.172]:38036 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238873AbhEUFB4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:01:56 -0400
-IronPort-SDR: UDq9nFI15Kccb2O1rQ0ezvwg1hQBpef4WTncvGvPkQHizVkZ9+hdMOFprc2nM/RhhwwwDmweBv
- b0YvGMLxCveA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="201457746"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="201457746"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 22:00:33 -0700
-IronPort-SDR: DgtSuAZdFJ6aRxoFYMPgVGSvPadLs51GygIBa5QtP20YdjNaIQ/Vu7jW/JIJkkkOFFgXF2TXVU
- VPOgGkmmnS+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="475531542"
-Received: from fmsmsx606.amr.corp.intel.com ([10.18.126.86])
-  by fmsmga002.fm.intel.com with ESMTP; 20 May 2021 22:00:33 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx606.amr.corp.intel.com (10.18.126.86) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Thu, 20 May 2021 22:00:32 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4
- via Frontend Transport; Thu, 20 May 2021 22:00:32 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.172)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2242.4; Thu, 20 May 2021 22:00:31 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=coNATxs55I/utkWj4kqdV1tNKd0qS7EXcMg2vkUt88kEGeEe6ZCh5VxzEwtxurgjecHlbIJ5DPyOODbUmQj1kl5XrMRyWqWIbStAif2YpFqIL64TUPyc5yS58XN2eX/WEkyEQ2A3cnPn6cXXT90UB0LnXs6rvhnXqY3ILUdIzqEFydV1c0cVXKiwMEHNYjzBnFEVe6FyqSVpEaiz9pzvUVg48ecchFV2fOv+sYafvswKktcWfT9yiFfCWyp8yHsSRE+FDHrz1psmc5yb1lfgSJvyb4a+vm/Ey3+FUQZh9iOV3/AIM/t1pu17dCR1Z12+qxDJ9ZFpqOR117l1eE1cGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QaH92Sl201bZXT24dVyXMNyFYjnoqR4pOqs31qj6SRE=;
- b=FldyViUkO3jLql7PfZh6cmh92khPvAmcf+eotFuogDgE1gDS1CM8PyWORslmwfQ0V/ejxA7X9HexcVjv0pPCl7P6Brx4cCiKCEpmUwpfji7U2ggRVw871YorxQPF93ze63ins+zL68k65nroZCpMJLDTZYWZ9dMv0p5fo9nxQ0JefaZUOHZMTyyPdyXsiG4HqL4a/rCF6TRYQDwFmf/fRUsUAvCXyaRNNFGS/BQoZwsN+PPUI1kzgP/El+lcLQ4oMg4ZhCGBzrZ1zZH5MvIYEQpkexQCcXlI+l4RgWaWyxPxVytv5jTnriFJ5JpXmmS5f9Yt0n4af/AVPllLQsNBuQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QaH92Sl201bZXT24dVyXMNyFYjnoqR4pOqs31qj6SRE=;
- b=nN7Ssk0JFPa9JxWfOKXgOBOEhKsz1M+x3DVlocfKvabfeewpcxyz7laVel5nhXmRRdCSR77oj05mjbcvcaqHPVoQSXIM6W3QONZngxOQdq76/quAgRhf4N7ngpDDUirTXJLK50eTYO8vGEK0orDw14rinOK9Ycf590Q0Cg56BOA=
-Received: from BYAPR11MB3448.namprd11.prod.outlook.com (2603:10b6:a03:76::21)
- by BYAPR11MB2534.namprd11.prod.outlook.com (2603:10b6:a02:c2::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Fri, 21 May
- 2021 05:00:29 +0000
-Received: from BYAPR11MB3448.namprd11.prod.outlook.com
- ([fe80::713c:a1f6:aae4:19fc]) by BYAPR11MB3448.namprd11.prod.outlook.com
- ([fe80::713c:a1f6:aae4:19fc%5]) with mapi id 15.20.4129.035; Fri, 21 May 2021
- 05:00:29 +0000
-From:   "Verma, Vishal L" <vishal.l.verma@intel.com>
-To:     "kbusch@kernel.org" <kbusch@kernel.org>,
-        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>
-CC:     "hch@lst.de" <hch@lst.de>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "Schofield, Alison" <alison.schofield@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Weiny, Ira" <ira.weiny@intel.com>,
-        "Widawsky, Ben" <ben.widawsky@intel.com>
-Subject: [BISECTED] nvme probe failure with v5.13-rc1
-Thread-Topic: [BISECTED] nvme probe failure with v5.13-rc1
-Thread-Index: AQHXTf44RymihtVr+UGY7aRawigtfA==
-Date:   Fri, 21 May 2021 05:00:29 +0000
-Message-ID: <40071b11108987556d0473f9d968fe7dcd3f304a.camel@intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.40.1 (3.40.1-1.fc34) 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [134.134.139.74]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e6f54fdc-56ea-444a-ad6c-08d91c155b13
-x-ms-traffictypediagnostic: BYAPR11MB2534:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB2534C1BD0C8FD7C3699880A9C7299@BYAPR11MB2534.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3044;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Xm8zi8vkJyswfonMfD1dq0ItmODskJxK1VRVzJI/SR+afFjDVTPquXLT0CpxR7516RIoMQW3qC+1V+B6k/KLiyYQU4tf3NraUxQzLARN9x1GkLR+YDhjGwgxXP5XVwx1Dsyqw2ut9io+9Hfu0OhdlsrIOj0KcQPbI4TvW7Sb91m1diThNVBn9/sqPyBYi9tpRYMJScgEXGal0h4G49qMk8LS1U1yP8pTLOhiqb6GCK1NjHX6jQzbY+X/7JjDB1MshRmf5f/Ak6jZTfVsD8JrFwho2sm+hC+YhzR7xLBZG5hgJUGNRZ8W8mY5ljEZiWldr4fRSGkB99O/UbaOKCIzT7VQ4g17wpbO16nQot2Aqw9cfGg91hzlc23XGcCsGroimCIMyWT5wBDUB8Q5NxuQ23CTtVdMxWVCCJ1CG26TFzhMxm/aWkCVTzocpwibCvL07kieJATywlwvLUmcqdLiul1ol5Ro0hgHW2IorES7+3MDUeahALWbCkv8x4qJiojUfDo0mUwn8662jCjVbyn3J0LcWEzDauWbC0RSZoUIesvv4QZQvF2wBrIg3fbqYIfFUPRECFcofsCuL6CApUeHQGBkZaeBpNR/AJ5NgLqsWJU=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB3448.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(376002)(136003)(346002)(6512007)(8936002)(66556008)(8676002)(26005)(6486002)(83380400001)(66946007)(36756003)(2906002)(66476007)(76116006)(64756008)(478600001)(4326008)(54906003)(71200400001)(5660300002)(316002)(2616005)(186003)(38100700002)(4744005)(86362001)(66446008)(110136005)(6506007)(122000001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?V0R6VTZWdk9uSXlVZDVkdkxvTERrU3UrR0pKbVJMTTFmM1cxb3Q3ZE16YjBD?=
- =?utf-8?B?NFZBMG9kV0w2VzU1NEdkeWdaK0swZTlVWnJoQzdraFV4L1JDRnNvZ3graEZR?=
- =?utf-8?B?bzdtMkJzT2NUaVhUcFpsajRXQUFFWWdEVnhKaFNOWlZtYmN2cnZPSFJoVWlE?=
- =?utf-8?B?SGxpdW5WWlVrQkR3L3EyaFVoWnoyVlVYN2MrNHdZL253T1h6UCtPYXk1RE9y?=
- =?utf-8?B?YWJRUERDcXZpeVFvcnlzWm9iaFpoMC8wRVJETUFuVjlsc0FGalFCUDY5MWJN?=
- =?utf-8?B?Mi9lbHFPS3pheHBZZ1ZSb25sbXZDNE5Mbm5pZ3JTSjJZQXMrZXVDTHBTcWRs?=
- =?utf-8?B?ZklPWlF5Rlo3d3RtS3I5TEEzYW1RVDhmdHg3ZFVlcDRJNmxBRW4xdGxDTlJQ?=
- =?utf-8?B?R3loY0J4VmxoeENNUWppd3g5L3BUU3JoMjNpMkNKYVNIQmxPdXVSeU1TV24x?=
- =?utf-8?B?Nkl3NytkRjJoTFF5OWczaWd6OW5WZU50citOemtHeXl5blRpY1d4UVMzRVJT?=
- =?utf-8?B?ZkY5R3VrR0pZaW9EazVUWlBpMTB2SXRZNXArOFk4eUdGcVErQ2lwSnlLVENa?=
- =?utf-8?B?MDB4K1ZJNEYrZlB0ZTVrdXE2Z21BVysxMzREVWtFMmpJZjdjMDI2ZVBWaVpy?=
- =?utf-8?B?QWNaZ21SUFFFREllVG9UT0xpcGhyaEtUZHp6eDg3MERjY1kxRDVPQXM2SlZs?=
- =?utf-8?B?akNHMUF5U29VV3o5TDFOVGNLaWV0alp6SFFYUHlqd1hFeGUra1d1ckNBMGx2?=
- =?utf-8?B?MzlzSWNvNEZBNG80NU1LRWRuQ2tHZllwZlZVcWtLN1ZRYVpNcTNJT0liSjIy?=
- =?utf-8?B?NmpYMEJncHdrMmpWK1FRV2gyb0ZzNDd4em1Xbm56YVF0amxWQ3k5OGFzdXRK?=
- =?utf-8?B?czJmREMvMUFmdisyalpjVThrZzhMcjNnUUdVelVJdmc2cThsOWczQ1l6WUdK?=
- =?utf-8?B?UVY0bGFYL3B0SHAwWGZSS0lXK2dlVEtFeHY4OGhPa29GM21rbEM0M1NVSTlw?=
- =?utf-8?B?RGxwdHRGZkVaeXRZTnJHeW4zM2YzaEVxTkxPdzh4Z3Y3Y08zdndnaW1JblRB?=
- =?utf-8?B?YmRJTG1KejhYVUJrTEM5YnBheHVSZ05hVnRLQlArQnBLYnNRdnJTYVk5c3BX?=
- =?utf-8?B?bUxaRm9Qd3RHYlVJYUZMbDgyOTNvY1RwK2JtaWpjaEZMUElQQXZ3ZkdnM0sz?=
- =?utf-8?B?ZzZWeWRCUmFhc2ZvU0FjSnFtbHlGbFpNYXZ0T25PaHJKLzVNM1hleThYdXZM?=
- =?utf-8?B?VDE2UytOMEhpYXZaSk9FWUkvclZTUnZYc3psL1YvVUN4YkZjcUMrbks0SzlL?=
- =?utf-8?B?ZG84VUlvT1JndFNRc2pKMFFyRVpOeGorK05SVE4wT1dSdE9sbWtOQXBSSjF2?=
- =?utf-8?B?YlA0YlJRV3AxWWtKamRJSjNjVS9NempuZ2thSXhUUHV2YnVUZTF4bEZjYnlC?=
- =?utf-8?B?Y1BYRCtVWW9rbkEwWFByS3NueEV0cklCT3lOMDFPcnB1VUkzY3VkU0RPcThD?=
- =?utf-8?B?RVRrc1FIcmIyaW1xYkQreXJNWGt6Qkt4cjYwVmhKaytTREVTRGhZbEpPRUZo?=
- =?utf-8?B?bVdBWjVmRFhjVDZvT01rVVhVdjBORWR4RDVpWFlFb1pPaTh2bDREYVRGS3A2?=
- =?utf-8?B?MUpIMUozS3VJOUhKWXlvVjBTZGpMU2VMT0Zma1RQbDZuNkdUSkpzaFRON2Nz?=
- =?utf-8?B?ekpGY1RjREU0N3RITnVYNUZyYjJlUFpGaGxMc3FoMENKVlRkOTN4cVlDT3py?=
- =?utf-8?B?NWZyVFArU1RHNEp5d3QyVlhCKzY4ZnpmSW1LNm95azRvUjBNaUpTRngwUXp5?=
- =?utf-8?B?VENEbEE1UHZUeDQvbkF1QT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <90B9244D948950418CBEE0B19E8CC3ED@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S238873AbhEUFDb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 01:03:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 58546101E;
+        Thu, 20 May 2021 22:02:03 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D73833F719;
+        Thu, 20 May 2021 22:01:57 -0700 (PDT)
+Subject: Re: [PATCH] arm64: mm: hugetlb: add support for free vmemmap pages of
+ HugeTLB
+To:     David Hildenbrand <david@redhat.com>,
+        Muchun Song <songmuchun@bytedance.com>, will@kernel.org,
+        akpm@linux-foundation.org, bodeddub@amazon.com, osalvador@suse.de,
+        mike.kravetz@oracle.com, rientjes@google.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, duanxiongchun@bytedance.com,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        Mark Rutland <mark.rutland@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        James Morse <james.morse@arm.com>
+References: <20210518091826.36937-1-songmuchun@bytedance.com>
+ <1b9d008a-7544-cc85-5c2f-532b984eb5b5@arm.com>
+ <88114091-fbb2-340d-b69b-a572fa340265@redhat.com>
+ <df8a0fd5-2389-6ef0-b8e2-1c56663e7868@arm.com>
+ <45c1a368-3d31-e92d-f120-4dca0eb2111d@redhat.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <b8cdc9c8-853c-8392-a2fa-4f1a8f02057a@arm.com>
+Date:   Fri, 21 May 2021 10:32:41 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB3448.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6f54fdc-56ea-444a-ad6c-08d91c155b13
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 05:00:29.6083
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: KhcMkW6AKQUzLbyDidzk153w2tGT2BFerjQIx/1l9SZa5EOltnYuYrIvgL6W9JB4gynZZj1bkIN5FabszjdNtLdIYJl0NkEwcUkyctDlMlk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2534
-X-OriginatorOrg: intel.com
+In-Reply-To: <45c1a368-3d31-e92d-f120-4dca0eb2111d@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksDQoNCkkgcmFuIGludG8gdGhpcyBmYWlsdXJlIHRvIHByb2JlIGFuIG52bWUgZGV2aWNlIGlu
-IGFuIGVtdWxhdG9yDQooc2ltaWNzKS4gSXQgbG9va3MgbGlrZSB0aGVyZSBpcyBhIH42MCBzZWNv
-bmQgd2FpdCBmb2xsb3dlZCBieSBhDQp0aW1lb3V0IGFuZCBhIGZhaWx1cmUgdG8gYm9vdCAodGhl
-IHJvb3QgZGV2aWNlIGlzIGFuIG52bWUgZGlzaykgd2l0aA0KdGhlc2UgbWVzc2FnZXMgaW4gdGhl
-IGxvZzoNCg0KICAgWyAgIDY3LjE3NDAxMF0gbnZtZSBudm1lMDogSS9PIDUgUUlEIDAgdGltZW91
-dCwgZGlzYWJsZSBjb250cm9sbGVyDQogICBbICAgNjcuMTc1NzkzXSBudm1lIG52bWUwOiBSZW1v
-dmluZyBhZnRlciBwcm9iZSBmYWlsdXJlIHN0YXR1czogLTQNCg0KSSBiaXNlY3RlZCB0aGlzIHRv
-Og0KICAgNWJlZmM3YzI2ZTVhICgibnZtZTogaW1wbGVtZW50IG5vbi1tZHRzIGNvbW1hbmQgbGlt
-aXRzIikgDQoNCkl0J3Mgbm90IGltbWVkaWF0ZWx5IG9idmlvdXMgdG8gbWUgd2hhdCdzIGNhdXNp
-bmcgdGhlIHByb2JsZW0uDQpSZXZlcnRpbmcgdGhlIGFib3ZlIGNvbW1pdCBmaXhlcyBpdC4gSXQg
-aXMgZWFzaWx5IHJlcHJvZHVjaWJsZSAtIEknZCBiZQ0KaGFwcHkgdG8gcHJvdmlkZSBtb3JlIGlu
-Zm8gYWJvdXQgdGhlIGVtdWxhdGVkIGRldmljZSBvciB0ZXN0IG91dA0KcGF0Y2hlcyBvciB0aGVv
-cmllcy4NCg0KSXQgaXMgb2YgY291cnNlIHBvc3NpYmxlIHRoYXQgdGhlIGVtdWxhdGVkIGRldmlj
-ZSBpcyBiZWhhdmluZyBpbiBzb21lDQpub24gc3BlYy1jb21wbGlhbnQgd2F5LCBpbiB3aGljaCBj
-YXNlIEknZCBhcHByZWNpYXRlIGFueSBoZWxwIGZpZ3VyaW5nDQpvdXQgd2hhdCB0aGF0IGlzLg0K
-DQpUaGFua3MsDQotVmlzaGFsDQo=
+
+
+On 5/20/21 5:29 PM, David Hildenbrand wrote:
+> On 20.05.21 13:54, Anshuman Khandual wrote:
+>>
+>> On 5/19/21 5:33 PM, David Hildenbrand wrote:
+>>> On 19.05.21 13:45, Anshuman Khandual wrote:
+>>>>
+>>>>
+>>>> On 5/18/21 2:48 PM, Muchun Song wrote:
+>>>>> The preparation of supporting freeing vmemmap associated with each
+>>>>> HugeTLB page is ready, so we can support this feature for arm64.
+>>>>>
+>>>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>>>>> ---
+>>>>>    arch/arm64/mm/mmu.c | 5 +++++
+>>>>>    fs/Kconfig          | 2 +-
+>>>>>    2 files changed, 6 insertions(+), 1 deletion(-)
+>>>>>
+>>>>> diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+>>>>> index 5d37e461c41f..967b01ce468d 100644
+>>>>> --- a/arch/arm64/mm/mmu.c
+>>>>> +++ b/arch/arm64/mm/mmu.c
+>>>>> @@ -23,6 +23,7 @@
+>>>>>    #include <linux/mm.h>
+>>>>>    #include <linux/vmalloc.h>
+>>>>>    #include <linux/set_memory.h>
+>>>>> +#include <linux/hugetlb.h>
+>>>>>      #include <asm/barrier.h>
+>>>>>    #include <asm/cputype.h>
+>>>>> @@ -1134,6 +1135,10 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
+>>>>>        pmd_t *pmdp;
+>>>>>          WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+>>>>> +
+>>>>> +    if (is_hugetlb_free_vmemmap_enabled() && !altmap)
+>>>>> +        return vmemmap_populate_basepages(start, end, node, altmap);
+>>>>
+>>>> Not considering the fact that this will force the kernel to have only
+>>>> base page size mapping for vmemmap (unless altmap is also requested)
+>>>> which might reduce the performance, it also enables vmemmap mapping to
+>>>> be teared down or build up at runtime which could potentially collide
+>>>> with other kernel page table walkers like ptdump or memory hotremove
+>>>> operation ! How those possible collisions are protected right now ?
+>>>
+>>> Hi Anshuman,
+>>>
+>>> Memory hotremove is not an issue IIRC. At the time memory is removed, all huge pages either have been migrated away or dissolved; the vmemmap is stable.
+>>
+>> But what happens when a hot remove section's vmemmap area (which is being
+>> teared down) is nearby another vmemmap area which is either created or
+>> being destroyed for HugeTLB alloc/free purpose. As you mentioned HugeTLB
+>> pages inside the hot remove section might be safe. But what about other
+>> HugeTLB areas whose vmemmap area shares page table entries with vmemmap
+>> entries for a section being hot removed ? Massive HugeTLB alloc/use/free
+>> test cycle using memory just adjacent to a memory hotplug area, which is
+>> always added and removed periodically, should be able to expose this problem.
+>>
+>> IIUC unlike vmalloc(), vmemap mapping areas in the kernel page table were
+>> always constant unless there are hotplug add or remove operations which
+>> are protected with a hotplug lock. Now with this change, we could have
+>> simultaneous walking and add or remove of the vmemap areas without any
+>> synchronization. Is not this problematic ?
+>>
+>> On arm64 memory hot remove operation empties free portions of the vmemmap
+>> table after clearing them. Hence all concurrent walkers (hugetlb_vmemmap,
+>> hot remove, ptdump etc) need to be synchronized against hot remove.
+>>
+>>  From arch/arm64/mm/mmu.c
+>>
+>> void vmemmap_free(unsigned long start, unsigned long end,
+>>                  struct vmem_altmap *altmap)
+>> {
+>> #ifdef CONFIG_MEMORY_HOTPLUG
+>>          WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
+>>
+>>          unmap_hotplug_range(start, end, true, altmap);
+>>          free_empty_tables(start, end, VMEMMAP_START, VMEMMAP_END);
+>> #endif
+>> }
+> 
+> You are right, however, AFAIR
+> 
+> 1) We always populate base pages, meaning we only modify PTEs and not actually add/remove page tables when creating/destroying a hugetlb page. Page table walkers should be fine and not suddenly run into a use-after-free.
+> 
+> 2) For pfn_to_page() users to never fault, we have to do an atomic exchange of PTES, meaning, someone traversing a page table looking for pte_none() entries (like free_empty_tables() in your example) should never get a false positive.
+> 
+> Makes sense, or am I missing something?
+> 
+>>
+>>>
+>>> vmemmap access (accessing the memmap via a virtual address) itself is not an issue. Manually walking (vmemmap) page tables might behave
+>>
+>> Right.
+>>
+>> differently, not sure if ptdump would require any synchronization.
+>>
+>> Dumping an wrong value is probably okay but crashing because a page table
+>> entry is being freed after ptdump acquired the pointer is bad. On arm64,
+>> ptdump() is protected against hotremove via [get|put]_online_mems().
+> 
+> Okay, and as the feature in question only exchanges PTEs, we should be fine.
+
+Adding Mark, Catalin and James here in case I might have missed
+something regarding possible vmemmap collision.
