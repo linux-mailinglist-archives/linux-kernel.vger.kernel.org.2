@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E596238BAE3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:40:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 552DB38BAE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhEUAlo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:41:44 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60045 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232540AbhEUAln (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:41:43 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmSSH0r84z9sRR;
-        Fri, 21 May 2021 10:40:14 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621557615;
-        bh=vBKMqCwBk2HtMoeBtjmKqqI8UDOboTNtAi40AX+gfhU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=VKiS0Lv9ni9tFxcj8glnu8RTDC8XZKZfCp/E1U7Z7ybk+vS/cjJIRbWV23VIRCLp8
-         AmTwC13Q6S2P4CWV9uFYNghvSX5MQwbYndPI9yxVVRNvNUslUBTn4w2HIENzivlhS2
-         JobadMhu7DQL8fMNdaMvO8AawxD7uV4MLEbmkIrwbn1s0Cxp9iJadHZnGYCQq1N4ID
-         RkhtHQaIQ57MaVo2pGqDv1+/rBUeVdT92Q9Qr9F6Yziyi2GhCySehU2UURf1NIPkJQ
-         D2RPqq7dEyXBRby3x3yFn27aljZCCm6C3jo1QBOZ9kFVBZsEWq5IIk0lMOD2HxPwk7
-         +V9BGKCinhe1A==
-Date:   Fri, 21 May 2021 10:40:14 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Fabio Estevam <festevam@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the usb tree
-Message-ID: <20210521104014.796734bb@canb.auug.org.au>
-In-Reply-To: <YIa3u0RCcOf+tZMu@kroah.com>
-References: <20210426224413.2ce59504@canb.auug.org.au>
-        <YIa3u0RCcOf+tZMu@kroah.com>
+        id S235259AbhEUAne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:43:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232540AbhEUAnb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 20:43:31 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0398C061574;
+        Thu, 20 May 2021 17:42:08 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id m11so27186518lfg.3;
+        Thu, 20 May 2021 17:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+liHBLYLKvUnhVp+88fCYfRk1ncEY6YQF1v7EXNmXqo=;
+        b=ixwDR/GoDwCYkEoMD2jfBGCkYT7BHfCLbapBdjCEDg6hAiCQXkc0EnRCNfd2QXnmsr
+         GhuCbSzZNwld8wMdAtmcCf5hpyko1VgBYWUfjw2M/8dJaAZUuvg8DPxcwm1Q79SRT1x9
+         rR2f2I39hEIz0UfCKDSItxXol0+yq4mcVquwi5mXWBPEHGxU+XoikOsr6wqozotj4tC+
+         wkFzDp+ezM1n7WDKXIXNNeKgjcUtz1BZx+zLCA8dn/VlPU+/975VQ0GHeVMMSfDPSP/1
+         dv2cxxDkqUSVy/fZF2XajbDLSNyM7DsrVFuG13Un4r/y07hvDvkQvkSBqWVOSvRWXpn5
+         Ie3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+liHBLYLKvUnhVp+88fCYfRk1ncEY6YQF1v7EXNmXqo=;
+        b=LwOmZS0X4vT3sTeZUwvSstSxh6KVVOTbVLmQA9z0/33dhVBNz2vgRQIyizwIZYqV3A
+         cum0RHWnLkrbL3VsGCVc0PBdtRoDdM8FSuSt2sljuzt3VsiTfAzri5JXvomVUBbuFzcN
+         Q78POs9Rs6+zPLaQwsSBOVlqKNQ7qk9kZhOKydtjfB+4y1/6xzH1Emqmdbiels7TsDJx
+         CigDzXemMq6nf/HtK8Zbt/9TlgiDGYVu76NNS68pE98S8lpttM55t8fIzK5AzlYz8ghV
+         Kht6bDoort/TrXdZo1daFLWoj8hzaJWJlNdYJ6H2/enaRosGkYVFw6U2SyGECauLm/+b
+         DwzQ==
+X-Gm-Message-State: AOAM533nRco6enu9KjVbrM4J0vPZLqMHglklek5wukZQ8ODOL+yRa1lF
+        NJ82xmqN4IlYrbqEbTXnMsH25Ljos/iXIvM3674=
+X-Google-Smtp-Source: ABdhPJx3CEuqBNDrhcpRpG4nooZL3zEDmot3v0keGCw+Ow9EjG7BUy0KkXppKTtjln+F6/GWEb+A6NDiaj36ITFtVBA=
+X-Received: by 2002:a05:6512:3772:: with SMTP id z18mr120135lft.423.1621557726764;
+ Thu, 20 May 2021 17:42:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/Z+m6_ik_cwa2s5T5EWAWMWZ";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210520154244.20209-1-dong.menglong@zte.com.cn> <20210520214111.GV4332@42.do-not-panic.com>
+In-Reply-To: <20210520214111.GV4332@42.do-not-panic.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Fri, 21 May 2021 08:41:55 +0800
+Message-ID: <CADxym3axowrQWz3OgimK4iGqP-RbO8U=HPODEhJRrcXUAsWXew@mail.gmail.com>
+Subject: Re: [PATCH RESEND] init/initramfs.c: make initramfs support pivot_root
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>, song@kernel.org,
+        neilb@suse.de, Andrew Morton <akpm@linux-foundation.org>,
+        wangkefeng.wang@huawei.com, f.fainelli@gmail.com, arnd@arndb.de,
+        Barret Rhoden <brho@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, vbabka@suse.cz,
+        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
+        Chris Down <chris@chrisdown.name>, ebiederm@xmission.com,
+        jojing64@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        palmerdabbelt@google.com, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/Z+m6_ik_cwa2s5T5EWAWMWZ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello!
 
-Hi all,
+Thanks for your reply!
 
-On Mon, 26 Apr 2021 14:53:15 +0200 Greg KH <greg@kroah.com> wrote:
+On Fri, May 21, 2021 at 5:41 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
 >
-> On Mon, Apr 26, 2021 at 10:44:13PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> >=20
-> > After merging the usb tree, today's linux-next build (htlmdocs) produced
-> > this warning:
-> >=20
-> > Documentation/driver-api/usb/writing_usb_driver.rst:129: WARNING: undef=
-ined label: usb_header
-> >=20
-> > Presumably introduced by commit
-> >=20
-> >   caa93d9bd2d7 ("usb: Fix up movement of USB core kerneldoc location") =
-=20
->=20
-> Ugh, we'll get this right yet, there's been updates posted, I'll pick
-> them up after 5.13-rc1 is out.
+> Can't docker instead allow to create containers prior to creating
+> your local docker network namespace? Not that its a great solution,
+> but just worth noting.
+>
 
-I am still seeing this warning.
+That's a solution, but I don't think it is feasible. Users may create many
+containers, and you can't make docker create all the containers first
+and create network namespace later, as you don't know if there are any
+containers to create later.
 
---=20
-Cheers,
-Stephen Rothwell
+> >
+> >  struct file_system_type rootfs_fs_type = {
+> >       .name           = "rootfs",
+> > -     .init_fs_context = rootfs_init_fs_context,
+> > +     .init_fs_context = ramfs_init_fs_context,
+>
+> Why is this always static now? Why is that its correct
+> now for init_mount_tree() always to use the ramfs context?
 
---Sig_/Z+m6_ik_cwa2s5T5EWAWMWZ
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Because the root mount in init_mount_tree() is not used as rootfs any more.
+In do_populate_rootfs(), I mounted a second rootfs, which can be ramfs or
+tmpfs, and that's the real rootfs for initramfs. And I call this root
+as 'user_root',
+because it is created for user space.
 
------BEGIN PGP SIGNATURE-----
+int __init mount_user_root(void)
+{
+       return do_mount_root(user_root->dev_name,
+                            user_root->fs_name,
+                            root_mountflags,
+                            root_mount_data);
+ }
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnAW4ACgkQAVBC80lX
-0GyqYwf+PgQJ6UAVDzwK05vlObNDypVzOsC6zna83subH+DKWx5NDHGK/Kpi6H8P
-XWSVgDRNxxV/iiZboKjA/5KUTgCzqGlPT6XqpDhlH27twUPdK2uk7VwWzo7XVRJN
-d20KEHTu1WSS3xuMl6iyQMCMXsZ++mV0xM6rhEMsUjgm0mUoaYNkpeEf6e2KnCCs
-w/kBPU41ryJT2L4hbFOicyeXYf+D3AY1PjScOcLgUYNzBe54ehQICIjRAflX6ys+
-lI7Is8zh6ROHZ+QqcgxcXiNeffaDZaKw2hFEkWs7bA2aziW6s2On+hKkriAg7Fax
-fotQR9L9yAlskeDDWZO2MDWnBN4+0w==
-=O2sl
------END PGP SIGNATURE-----
+In other words, I moved the realization of 'rootfs_fs_type' here to
+do_populate_rootfs(), and fixed this 'rootfs_fs_type' with
+ramfs_init_fs_context, as it is a fake root now.
 
---Sig_/Z+m6_ik_cwa2s5T5EWAWMWZ--
+Now, the rootfs that user space used is separated with the init_task,
+and that's exactly what a block root file system does.
+
+Thanks!
+Menglong Dong
