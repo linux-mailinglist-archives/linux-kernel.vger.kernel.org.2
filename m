@@ -2,238 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0722A38BDBC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:08:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BA7338BDBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239396AbhEUFJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55914 "EHLO
+        id S239402AbhEUFKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:10:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239361AbhEUFJ5 (ORCPT
+        with ESMTP id S238672AbhEUFKq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:09:57 -0400
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40751C061763
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:08:35 -0700 (PDT)
-Received: by mail-ej1-x62e.google.com with SMTP id et19so21567796ejc.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:08:35 -0700 (PDT)
+        Fri, 21 May 2021 01:10:46 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E10BDC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:09:23 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id z4so8139818plg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:09:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=wcL2zERN8tGWMzDUDJGSV7xck7rOdmcSxv4uw0QgULY=;
-        b=oB6zwNfe3OE3SJcJ4TBVcb34PoQGBTFt0sd98nCU+uVHRmcEpF//Pm5xnGI0tXSfCS
-         /80qS2/mYmUVB6kXxygWMJVx4T/p2EgGSARC6Vhkr3pXOZhaeGW1AY0VQd5rHniItve5
-         nD4I9Ysz+iFWACyJh2L6b5jahM6/rOEz/P7k8VETY97ul+n3mm1HArgpGTdU+xX0ACtC
-         ZR8FnDZHmhzhAS3fAQXNth2MsgnSrOqyx1vrWZjI3u7F4G+6CKWQlF9KHuR9bV0/WVj+
-         YADwq6rtB1Xucfh/MBe+Ynu5wgFJFuHNz0ZcVdCsz9Wmt3yGaAD9Yfn85iZemSI/5jib
-         Gekw==
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=sIJ+ck9inauVoMXTHlkoSKGLlKdMtcnMhxWkHbhJf5k=;
+        b=T4y/y9pdazVNkasOKow36SKrzJur/5Kbx0MU55uxDrU8It+jbuiOn7qq1BAgRPZxbS
+         B9042o5JKlqKTHj93EqMNDEQpbY5IZHTMwCtMVMALEIF52nfygBs4y5qhjoumyp1G7K+
+         H/pw+s1yyplHwk4EyMII440SddaguwhsKqqKd2T9luSYw66mtciQvaLPlGdUBX4UjC4y
+         O/Yvl5cvgTikJ7C+8gCeRj0K19hcbelvvGJ8RCJ1KxDfrHlAJI0prkxlN4c53a1ZBb7v
+         odDU5fpR103xMQOm2Ldh6VJ6XUJGs6E00N/A8uYaQSy1cNsj4TCRvpMYkv3dq/YOOvYI
+         iaHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=wcL2zERN8tGWMzDUDJGSV7xck7rOdmcSxv4uw0QgULY=;
-        b=BQxnqI78D7qWKk4AvRJyqeQf4X1CkUMpwCWoiGoUsra8AW5bQb492r0z9/vXZIRzqx
-         SnI+2g1pUskSovtRs2jMc48PP4jciYMXW8BE+bCcechK19usAfUVSfJF3cLT6PDwMGsM
-         +1nBEerExrQ9UuxrFd3kawdH/nAszEkGPKAZjYhu1oYT5GtfHz7z0mx8+UwJnwCLmwSj
-         Tmg9Is7hzZHwO7nDPKLzSUDyrqNVLxOC2tA/lpEuVd0satIEFC4UqNjt3dCC2oEiptro
-         mtVdVFj3aJFINKwXIffnj7rKF8Ju7gKsNeTYG/Vrn9McU9mqBrRxbOS2LgL6OXn2B/0n
-         71Mg==
-X-Gm-Message-State: AOAM531lGb2d7WsA4fNijOGg8nTefUwv4z1D/6J5vFV4LIkOUO9K24bw
-        sshzBWruY+N69IbtYfiB+1yUYAVciOAqqGHp8UHfJ0WLiKU6rVXB
-X-Google-Smtp-Source: ABdhPJxCC9P62cbJBI32to41/EZ3fyxk1WOsfbAC/srj+y+t5/HfQWHxPidlHSTsk6fia8EWpkQM5Tywo4ejGJ0hUEw=
-X-Received: by 2002:a17:907:37b:: with SMTP id rs27mr8669826ejb.287.1621573713465;
- Thu, 20 May 2021 22:08:33 -0700 (PDT)
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=sIJ+ck9inauVoMXTHlkoSKGLlKdMtcnMhxWkHbhJf5k=;
+        b=AAI6KSHBHE/imIKMaXHXxVKp5SmFXyjTHMFnJbvlX8S3pBgKfF6f5zeFcPtIVGNB98
+         Zt4PvKFaoCOI65zL/VdiyGuRrDbEjdJbw541QRU03hzyQ2n6Zbb3jD5CzX7pP/KYYMSr
+         5WrsZEu7xy4cjjBvo5wjdXtd9qqtb2dS+Q6ugq9FEn/36CjvQGfynAkncEp7uq2HstLK
+         yQX46JBvuHQ3390FVAavaJxkyLF54DqN2AmEo37W3LJPmDul2Lyrc6sbqXZKB7EZj6po
+         XuWiXGpHspvKrNqTczjR/wUqV+Oh50tB5rz1Ifgby8vVZp3c1SdQa5FvPWHHgfWAac0o
+         7clg==
+X-Gm-Message-State: AOAM533FRfqdNkNRkunXjUS5b2MVKD09GdLBga09uFTIaqDmSxCaQo2n
+        sJSlv7gdwDxDdn77ZVZSEEAXitRdnZShWQolLzgfjnd6pv/TSg==
+X-Google-Smtp-Source: ABdhPJz6upwGfuPR0FFGQ1Qa4CKLlL6/YoNCTF4IXpZl1taWZKGwEhnY7YHQU7jRW+i+0tRUQa0JiLpYN1H3WM9DTC0=
+X-Received: by 2002:a17:902:7407:b029:ef:a78c:a385 with SMTP id
+ g7-20020a1709027407b02900efa78ca385mr10042788pll.16.1621573763208; Thu, 20
+ May 2021 22:09:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520152240.517446848@linuxfoundation.org>
-In-Reply-To: <20210520152240.517446848@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 21 May 2021 10:38:22 +0530
-Message-ID: <CA+G9fYvg7MLGLX2koUv4uemL4WCoomQKixBVj45st7841ToeNw@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/45] 5.10.39-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+From:   Yiyuan guo <yguoaz@gmail.com>
+Date:   Fri, 21 May 2021 13:09:13 +0800
+Message-ID: <CAM7=BFoktwgy=T0GK6Mpmp2gYToCUs=CrM29MRWw8O7TPypQ8w@mail.gmail.com>
+Subject: A divide by zero bug in lib/math/rational.c (with triggering input)
+To:     linux-kernel@vger.kernel.org
+Cc:     andy@kernel.org, tpiepho@gmail.com, akpm@linux-foundation.org,
+        oskar@scara.com, Yiyuan guo <yguoaz@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 20:53, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.39 release.
-> There are 45 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 22 May 2021 15:22:29 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.39-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+In the file lib/math/rational.c, the function
+rational_best_approximation has the following
+code:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+void rational_best_approximation(
+    unsigned long given_numerator, unsigned long given_denominator,
+    unsigned long max_numerator, unsigned long max_denominator,
+    unsigned long *best_numerator, unsigned long *best_denominator) {
+   ...
+   if ((n2 > max_numerator) || (d2 > max_denominator)) {
+            unsigned long t = min((max_numerator - n0) / n1,
+                          (max_denominator - d0) / d1);
+   ...
+}
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+d1 may be equal to zero when performing the division, leading to a
+divide by zero problem.
 
-## Build
-* kernel: 5.10.39-rc2
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.10.y
-* git commit: 4313768a0a3ef0847c2ca31ca95acbe4727fba10
-* git describe: v5.10.38-46-g4313768a0a3e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
-.38-46-g4313768a0a3e
-
-## No regressions (compared to v5.10.38-48-ge244ebb2de00)
-
-## No fixes (compared to v5.10.38-48-ge244ebb2de00)
-
-## Test result summary
- total: 78427, pass: 64145, fail: 2569, skip: 11054, xfail: 659,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+One input  to trigger the divide by zero bug is:
+rational_best_approximation(31415, 100, (1 << 8) - 1, (1 << 5) - 1, &n, &d)
