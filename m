@@ -2,225 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 886AA38C76A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3968F38C770
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233688AbhEUNEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:04:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        id S232203AbhEUNFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:05:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233352AbhEUNDa (ORCPT
+        with ESMTP id S230137AbhEUNFk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:03:30 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B50C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:02:06 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id z85-20020a1c7e580000b029017a76f3afbaso4582395wmc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:02:06 -0700 (PDT)
+        Fri, 21 May 2021 09:05:40 -0400
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C8D7C061574;
+        Fri, 21 May 2021 06:04:16 -0700 (PDT)
+Received: by mail-pj1-x102d.google.com with SMTP id ot16so8998455pjb.3;
+        Fri, 21 May 2021 06:04:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=UNcu1gnGvN2oxqT95bOBswNHvPMphanY7lKyhZ21jHY=;
-        b=nuWu1qhayIJu7AWE6lkwfPs5YgxewndlzjeUHpG73kOziPhiTbWkF6vTuriZwEPFMZ
-         XqadNeGOaE4d0Gx7YfEKaSOMi7mPa1IJRiYyqEn1tqeMg8uEvpdfeGUASLDQFzkdkd8x
-         bfB9Z0jXQj30tjyr46zCxTXFkC+jfzcmWnFrXU1IL4vRYafvMJ/DS9wwiTiw39ZJBvr8
-         AHBZbtXgJq86Oh0Sa9li/3PE6d7itTFFymEFx973yaJbEH38DBWLIobPIuOlK/UhOiRO
-         z+9mA45Sg1sT8JZgOiTgEp1LvilPMv/v0vIhxERLVDakMkQGdKruaoExweNdi2mgy3s2
-         w1lQ==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=KazFp94vGYmH79BEM/aZY06cbYtJj9Pb42I1kTX5ais=;
+        b=A1vN4FGQLVWObKaTYn4XZNkCnS0cW7/YlaWSyX7nhnMjI8f+poG6AzkoHKcytcHMm2
+         efBoGGct11QNH6W0lWdNqGUkrEo27SFpR10Ou5o050AzxqPjUh1J58d7Gh+q3OJfaoIk
+         b9TmXmMf9ca7kgAYauSPZGdmpGypj9DQ1vnzozi/Q7T9I6W5qagZGGRwpIofpR6X4cnI
+         yUXzLF0FK6WFUGK4DMWN2RaKXUUlg6sVYIIX9UUpDsEWNrlLvIxalP3Qvd8GgRrIE64G
+         u6pQ2Mv28VsV/SbYshLS/dCo6ne5frT40pIbpbp/MiXijwFR05VwgXMaWg2/a7V5X8/i
+         DlRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=UNcu1gnGvN2oxqT95bOBswNHvPMphanY7lKyhZ21jHY=;
-        b=gumz083CS+zjEIE89/FlBWbzoyAWtzu1cTouAzlFDDlg6ecnTkECamnElrQJL948Y8
-         4G91uePzaAxA9KiTN+3VNHbQ8bzfcnDACf3hHEzvyZpkexumoBNPXtV1uF1PzEWfaU5+
-         7ZdwxGTI6aVxRkD1+xldgW+H2wit7xvE5QReS3ifkWI4QNVjAe0ZE0lI1v0NrFX6BSB1
-         SVia7PCUqaTl0e6tSi5VcWoP0MFWPupY2b/naSD399hwDcZmiftFgf3rQJ/D9g6T4moO
-         Mm+cMcCmaigpCpGtP4X59Zf1E7VbpKLBL1sHGdeTlxepg6k6zhwM/jyXk7j9EGdEuH4A
-         XTXQ==
-X-Gm-Message-State: AOAM532nSShItw4kYdugN4oVHhgqVt4QSZb7qjj13b60Og+XRcmB3aq5
-        IiFHu3tUrGbf4n1qL/VnXqQnXQ==
-X-Google-Smtp-Source: ABdhPJyScHKztdg9UQFgMBxbRd0FUAkNEY4SwwrXQF1IbF6hPKlDuMyOWPhrSvUFkcAgWefNU0cjQA==
-X-Received: by 2002:a1c:ed0a:: with SMTP id l10mr8651931wmh.151.1621602124678;
-        Fri, 21 May 2021 06:02:04 -0700 (PDT)
-Received: from google.com (105.168.195.35.bc.googleusercontent.com. [35.195.168.105])
-        by smtp.gmail.com with ESMTPSA id t17sm1967572wrp.89.2021.05.21.06.02.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 06:02:04 -0700 (PDT)
-Date:   Fri, 21 May 2021 13:02:01 +0000
-From:   Quentin Perret <qperret@google.com>
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
- SCHED_DEADLINE
-Message-ID: <YKevSSLHjdRvrJ2i@google.com>
-References: <YKYoQ0ezahSC/RAg@localhost.localdomain>
- <20210520101640.GA10065@willie-the-truck>
- <YKY7FvFeRlXVjcaA@google.com>
- <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
- <20210520180138.GA10523@willie-the-truck>
- <YKdEX9uaQXy8g/S/@localhost.localdomain>
- <YKdsOBCjASzFSzLm@google.com>
- <YKdxxDfu81W28n1A@localhost.localdomain>
- <20210521103724.GA11680@willie-the-truck>
- <3620bad5-2a27-0f9e-f1f0-70036997d33c@arm.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=KazFp94vGYmH79BEM/aZY06cbYtJj9Pb42I1kTX5ais=;
+        b=BLnxtatWezAUQjT8pVpBO3kD7OqXMRVzeA2J0QOVoF2vxpGYffUTAnRz6Metr9fbyB
+         qZ/XUezGDqXBqMRhC7swFM1Czr3td8ChlDTMCRycTJbyzuFiDY4bZMTNXO+YYsHVgyoY
+         en78naDu7k/pUwPHX8yHRg6Tj49zgLNKUwsLwhO4BAyw/nTDin0HL3eG6er9Xsw9ujB5
+         rnIWGyxoU97Rn4iSpDsVXYBva6GVvJn0qSYpd6TqZ1qesEb+JDPsyQnWmT1G+c52kiUF
+         ZcNEdg10dfzyyz0vr0qOi6rJLRFyNQR/afmpOPQo/uv09Zl1lNURgYAeXhBLgbqEsGOJ
+         8ziQ==
+X-Gm-Message-State: AOAM530lCqT/7PeA+y8IedBk1XoZhciNgBYHSAmBSPg3vlOGFNdz4dwb
+        hgF54Xu+XNY2Nfl4KoMoBi7iOLBkhhs=
+X-Google-Smtp-Source: ABdhPJz/m8bP3ZeWer2qhsavubfZnJpDs1oXVTSQNN2C3kjXoTxbrt6W01I+O9baCBGJyu+Lk/35CQ==
+X-Received: by 2002:a17:902:9b83:b029:ef:4dd5:beab with SMTP id y3-20020a1709029b83b02900ef4dd5beabmr11851112plp.76.1621602255851;
+        Fri, 21 May 2021 06:04:15 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id y64sm4246179pfy.204.2021.05.21.06.04.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 06:04:15 -0700 (PDT)
+Subject: Re: [PATCH] docs: sphinx-pre-install: Reword warning on installing
+ cjk font
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <c5652bb4-0bb0-9efa-2b80-a79793a8efa8@gmail.com>
+ <20210521095442.33957ff3@coco.lan>
+ <0c33f48f-150d-caa9-d18b-f1267f679f26@gmail.com>
+ <20210521141952.2c575cbe@coco.lan>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Message-ID: <12a4169e-5c50-b6c3-64df-37a9d05199b3@gmail.com>
+Date:   Fri, 21 May 2021 22:04:12 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3620bad5-2a27-0f9e-f1f0-70036997d33c@arm.com>
+In-Reply-To: <20210521141952.2c575cbe@coco.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 21 May 2021 at 13:23:55 (+0200), Dietmar Eggemann wrote:
-> On 21/05/2021 12:37, Will Deacon wrote:
-> > On Fri, May 21, 2021 at 10:39:32AM +0200, Juri Lelli wrote:
-> >> On 21/05/21 08:15, Quentin Perret wrote:
-> >>> On Friday 21 May 2021 at 07:25:51 (+0200), Juri Lelli wrote:
-> >>>> On 20/05/21 19:01, Will Deacon wrote:
-> >>>>> On Thu, May 20, 2021 at 02:38:55PM +0200, Daniel Bristot de Oliveira wrote:
-> >>>>>> On 5/20/21 12:33 PM, Quentin Perret wrote:
-> >>>>>>> On Thursday 20 May 2021 at 11:16:41 (+0100), Will Deacon wrote:
-> >>>>>>>> Ok, thanks for the insight. In which case, I'll go with what we discussed:
-> >>>>>>>> require admission control to be disabled for sched_setattr() but allow
-> >>>>>>>> execve() to a 32-bit task from a 64-bit deadline task with a warning (this
-> >>>>>>>> is probably similar to CPU hotplug?).
-> >>>>>>>
-> >>>>>>> Still not sure that we can let execve go through ... It will break AC
-> >>>>>>> all the same, so it should probably fail as well if AC is on IMO
-> >>>>>>>
-> >>>>>>
-> >>>>>> If the cpumask of the 32-bit task is != of the 64-bit task that is executing it,
-> >>>>>> the admission control needs to be re-executed, and it could fail. So I see this
-> >>>>>> operation equivalent to sched_setaffinity(). This will likely be true for future
-> >>>>>> schedulers that will allow arbitrary affinities (AC should run on affinity
-> >>>>>> change, and could fail).
-> >>>>>>
-> >>>>>> I would vote with Juri: "I'd go with fail hard if AC is on, let it
-> >>>>>> pass if AC is off (supposedly the user knows what to do)," (also hope nobody
-> >>>>>> complains until we add better support for affinity, and use this as a motivation
-> >>>>>> to get back on this front).
-> >>>>>
-> >>>>> I can have a go at implementing it, but I don't think it's a great solution
-> >>>>> and here's why:
-> >>>>>
-> >>>>> Failing an execve() is _very_ likely to be fatal to the application. It's
-> >>>>> also very likely that the task calling execve() doesn't know whether the
-> >>>>> program it's trying to execute is 32-bit or not. Consequently, if we go
-> >>>>> with failing execve() then all that will happen is that people will disable
-> >>>>> admission control altogether.
-> >>>
-> >>> Right, but only on these dumb 32bit asymmetric systems, and only if we
-> >>> care about running 32bits deadline tasks -- which I seriously doubt for
-> >>> the Android use-case.
-> >>>
-> >>> Note that running deadline tasks is also a privileged operation, it
-> >>> can't be done by random apps.
-> >>>
-> >>>>> That has a negative impact on "pure" 64-bit
-> >>>>> applications and so I think we end up with the tail wagging the dog because
-> >>>>> admission control will be disabled for everybody just because there is a
-> >>>>> handful of 32-bit programs which may get executed. I understand that it
-> >>>>> also means that RT throttling would be disabled.
-> >>>>
-> >>>> Completely understand your perplexity. But how can the kernel still give
-> >>>> guarantees to "pure" 64-bit applications if there are 32-bit
-> >>>> applications around that essentially broke admission control when they
-> >>>> were restricted to a subset of cores?
-> >>>>
-> >>>>> Allowing the execve() to continue with a warning is very similar to the
-> >>>>> case in which all the 64-bit CPUs are hot-unplugged at the point of
-> >>>>> execve(), and this is much closer to the illusion that this patch series
-> >>>>> intends to provide.
-> >>>>
-> >>>> So, for hotplug we currently have a check that would make hotplug
-> >>>> operations fail if removing a CPU would mean not enough bandwidth to run
-> >>>> the currently admitted set of DEADLINE tasks.
-> >>>
-> >>> Aha, wasn't aware. Any pointers to that check for my education?
-> >>
-> >> Hotplug ends up calling dl_cpu_busy() (after the cpu being hotplugged out
-> >> got removed), IIRC. So, if that fails the operation in undone.
-> > 
-> > Interesting, thanks. Thinking about this some more, it strikes me that with
-> > these silly asymmetric systems there could be an interesting additional
-> > problem with hotplug and deadline tasks. Imagine the following sequence of
-> > events:
-> > 
-> >   1. All online CPUs are 32-bit-capable
-> >   2. sched_setattr() admits a 32-bit deadline task
-> >   3. A 64-bit-only CPU is onlined
-> >   4. Some of the 32-bit-capable CPUs are offlined
-> > 
-> > I wonder if we can get into a situation where we think we have enough
-> > bandwidth available, but in reality the 32-bit task is in trouble because
-> > it can't make use of the 64-bit-only CPU.
-> > 
-> > If so, then it seems to me that admission control is really just
-> > "best-effort" for 32-bit deadline tasks on these systems because it's based
-> > on a snapshot in time of the available resources.
+On Fri, 21 May 2021 14:19:52 +0200, Mauro Carvalho Chehab wrote:
+> Em Fri, 21 May 2021 18:00:00 +0900
+> Akira Yokosawa <akiyks@gmail.com> escreveu:
 > 
-> IMHO DL AC is per root domain (rd). So if we have e.g. an 8 CPU system
-> with aarch32_el0 eq. [0-3] then we would need 2 exclusive cpusets ([0-3]
-> and [4-7]) to admit 32-bit DL tasks into [0-3] (i.e. to pass the `if
-> (!cpumask_subset(span, p->cpus_ptr) ...` test in __sched_setscheduler().
+>> Hi Mauro,
+>>
+>> On Fri, 21 May 2021 09:54:42 +0200, Mauro Carvalho Chehab wrote:
+>>> HI Akira,
+>>>
+>>> Em Fri, 21 May 2021 16:14:19 +0900
+>>> Akira Yokosawa <akiyks@gmail.com> escreveu:
+>>>   
+>>>> Installing a ckj font as recommended by the warning message causes
+>>>> generated latex code to have:
+>>>>
+>>>> 	% This is needed for translations
+>>>> 	\usepackage{xeCJK}
+>>>> 	\setCJKmainfont{Noto Sans CJK SC}
+>>>>
+>>>> in its preamble even for an English document.  
+>>>
+>>> Yes. The same LaTeX configuration is applied to all documents.
+>>>
+>>> While the standard Sphinx logic allows just one conf.py, there's
+>>> a logic on Linux that allows a per-directory configuration.
+>>> Perhaps it would be possible to set the font just for translations.
+>>>
+>>> Yet, this can't be easily done per-translation - Italian
+>>> translation for instance doesn't need CJK fonts.  
+>>
+>> Yes, the Italian part looks ugly with xeCJK.
+>>
+>>>   
+>>>> The package "xeCJK" changes wide characters' appearance including
+>>>> apostrophe (single quote) and double quotes, and it changes line-break
+>>>> behavior with regard to the boundary of narrow and wide characters.
+>>>>
+>>>> This greatly degrades readability of English PDFs typeset by xelatex.  
+>>>
+>>> Hmm... could you give an example where it looks ugly?
+>>>
+>>> At least on the documents I use to check the PDF output, I was unable
+>>> to see any big issue.  
+>>
+>> Appended are screenshots from RCU.pdf built with and without xeCJK.
+>>
+>> They are built on Ubuntu Bionic based container with sphinx 2.4.4.
+>>
+>> I think you can see the difference of how apostrophes are rendered.
+>> Line-break points are also affected by the widths of apostrophes.
+>>
+>> Can you spot the difference?
 > 
-> Trying to admit too many 32-bit DL tasks or trying to hp out a CPU[0-3]
-> would lead to `Device or resource busy` in case the rd bw wouldn't be
-> sufficient anymore for the set of admitted tasks. But the [0-3] DL AC
-> wouldn't care about hp on CPU[4-7].
+> Ok, now I understand what you're meaning. We need to double check
+> what's wrong there, as it doesn't make much sense to have a
+> "`  " character instead of "`" on those places, nor to change
+> the word's hyphenation logic.
 
-So I think Will has a point since, IIRC, the root domains get rebuilt
-during hotplug. So you can imagine a case with a single root domain, but
-CPUs 4-7 are offline. In this case, sched_setattr() will happily promote
-a task to DL as long as its affinity mask is a superset of the rd span,
-but things may get ugly when CPUs are plugged back in later on.
+No, I'm afraid you don't get the point yet.
 
-This looks like an existing bug though. I just tried the following on a
-system with 4 CPUs:
+The point is, just commenting out the lines:
 
-    // Create a task affined to CPU [0-2]
-    > while true; do echo "Hi" > /dev/null; done &
-    [1] 560
-    > mypid=$!
-    > taskset -p 7 $mypid
-    pid 560's current affinity mask: f
-    pid 560's new affinity mask: 7
+ 	% This is needed for translations
+% 	\usepackage{xeCJK}
+% 	\setCJKmainfont{Noto Sans CJK SC}
 
-    // Try to move it DL, this should fail because of the affinity
-    > chrt -d -T 5000000 -P 16666666 -p 0 $mypid
-    chrt: failed to set pid 560's policy: Operation not permitted
+, xelatex renders both UTF8 and ASCII apostrophe characters in the
+same way.
 
-    // Offline CPU 3, so the rd now covers CPUs 0-2 only
-    > echo 0 > /sys/devices/system/cpu/cpu3/online
-    [  400.843830] CPU3: shutdown
-    [  400.844100] psci: CPU3 killed (polled 0 ms)
+On the contrary, with xeCJK, UTF and ASCII code are handled
+differently.
+The reason is that in CJK typesetting, line breaks are permitted almost
+anywhere in the text, with a few exceptions specific to each language.
 
-    // Try to admit the task again, which now succeeds
-    > chrt -d -T 5000000 -P 16666666 -p 0 $mypid
+So, sphinx is doing nothing wrong when it converts ASCII apostrophe in
+.rst into the UTF8 in latex code.
 
-    // Plug CPU3 back online
-    > echo 1 > /sys/devices/system/cpu/cpu3/online
-    [  408.819337] Detected PIPT I-cache on CPU3
-    [  408.819642] GICv3: CPU3: found redistributor 3 region 0:0x0000000008100000
-    [  408.820165] CPU3: Booted secondary processor 0x0000000003 [0x410fd083]
+Enabling xeCJK in English document is the very wrong thing to do in the
+first place.
 
-I don't see any easy way to fix this w/o iterating over all deadline
-tasks in the rd when hotplugging a CPU back on, and blocking the hotplug
-operation if it'll cause affinity issues. Urgh.
+I hope I have made my point clear enough.
+
+        Thanks, Akira
+
+> 
+>>
+>> BTW, on current docs-next, wich the CJK font installed, "make pdfdocs"
+>> stops while building s390.pdf.
+> 
+> That's weird.
+> 
+>> I needed to manually run "make latexdocs", then run
+>> "latexmk -xelatex RCU.tex" under Documentation/output/latex/ to get
+>> RCU.pdf.
+> 
+> Well, you can pass some options to latexmk when building a
+> pdf via an environment var (LATEXMKOPTS), like (untested):
+> 
+> 	LATEXMKOPTS="-interaction=nonstopmode" make pdfdocs.
+> 
+> or change it to interactive mode, in order to show what part
+> of the s390.tex is causing the issue.
+> 
+> Thanks,
+> Mauro
+> 
