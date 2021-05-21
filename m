@@ -2,83 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7AF38C6A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:36:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17FFE38C6A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233997AbhEUMiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:38:16 -0400
-Received: from smtp02.smtpout.orange.fr ([80.12.242.124]:17855 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233963AbhEUMiI (ORCPT
+        id S233890AbhEUMjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:39:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44344 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231429AbhEUMjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:38:08 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d78 with ME
-        id 7Qcg2500H21Fzsu03Qchxh; Fri, 21 May 2021 14:36:44 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 21 May 2021 14:36:44 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     ulf.hansson@linaro.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, wsa+renesas@sang-engineering.com,
-        dianders@chromium.org, rmfrfs@gmail.com, cjb@laptop.org,
-        linux-arm-kernel@lists.infradead.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] mmc: mxs-mmc: Disable the 'reg_vmmc' regulator when needed
-Date:   Fri, 21 May 2021 14:36:39 +0200
-Message-Id: <d05074c11962a046ff9c2f457c240432ca8a7194.1621600443.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Fri, 21 May 2021 08:39:01 -0400
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE3FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:37:37 -0700 (PDT)
+Received: by mail-vs1-xe36.google.com with SMTP id f15so8960255vsq.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=njboqj4vUiFzE7pfQXxgggntztlAq5fmF71S0Jmw2oQ=;
+        b=o2FmGmPxL+Xvpp+r18WUv09psrrIut/NYqQB3YFjQL9E1TT7mh4pdsVVPwqQH7Y/Ab
+         TMX+iuBpk+EWuIfSLMZvI4p3HBhgtvfuaQLE74dfPsLbnmj4GNNtFILQq4xonXECs2Xg
+         luwBtWTPdmJTlDepwYV6YfzlXhHdnCg+CG5mI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=njboqj4vUiFzE7pfQXxgggntztlAq5fmF71S0Jmw2oQ=;
+        b=aZfaAbLNcaKXqygfz/gQ92iEtpusrUfCxVSXkyMnyLgiUd+e2YyF9MkeaMFYi7YJxS
+         pSGb4e6bLnbnbysh+mAgAuNcsqiVHj2Cdrulf3npEZ2lCU8KDnKNIfxbI2Y2XuSCZ2Hv
+         zvmvsCMzZXZzqS7JzZyz/NZ7g+49M1EOL0TInKrybQF0kF9+SAQO5/x5bVITvIU9yjVi
+         ZIyhm4yxPSUPfLDv5AcoLVBSqiy0zdlherQ07uWz9Y2NcZap48H/r+mxxOXEyuQdw6Zu
+         yr6vTsy6p6WbrZunI6iMlB3Nzu1ekdLszmqIvav1X1RwlLMf0X5fidlbcmDgjnQ7O0ez
+         pHmg==
+X-Gm-Message-State: AOAM5312pElr/SHQFWQRBAoKfF8UmskqqJeo+O9KbI95hsh5toC7xEAA
+        NNQBwf3IFduN4P8j/xjiyMZRP46xHxH8HWAJzEQ+nA==
+X-Google-Smtp-Source: ABdhPJyas05tLLIDBA3UJ9G3HlWZ9Viz/tUcF4iiOb4gQdzkbues8ByWakkKXBysdgZ9B4lVGBn673e1F17hVqL4zW0=
+X-Received: by 2002:a67:ebcd:: with SMTP id y13mr10057804vso.9.1621600656516;
+ Fri, 21 May 2021 05:37:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-5-groug@kaod.org>
+ <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
+ <20210521103921.153a243d@bahia.lan> <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
+ <20210521120616.49d52565@bahia.lan>
+In-Reply-To: <20210521120616.49d52565@bahia.lan>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 21 May 2021 14:37:25 +0200
+Message-ID: <CAJfpegvBB-zRuZAM0m7fxMFCfw=CzN3uT3CqoQrRgizaTH4sOw@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
+To:     Greg Kurz <groug@kaod.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 'reg_vmmc' regulator is never disabled. Neither in the error handling
-of the probe, nor in the remove function.
+On Fri, 21 May 2021 at 12:06, Greg Kurz <groug@kaod.org> wrote:
+>
+> On Fri, 21 May 2021 10:50:34 +0200
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
+> > >
+> > > On Fri, 21 May 2021 10:26:27 +0200
+> > > Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > >
+> > > > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
+> > > > >
+> > > > > All submounts share the same virtio-fs device instance as the root
+> > > > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
+> > > > > is likely to pick up any of these submounts and reuse it instead of
+> > > > > the root mount.
+> > > > >
+> > > > > On the server side:
+> > > > >
+> > > > > # mkdir ${some_dir}
+> > > > > # mkdir ${some_dir}/mnt1
+> > > > > # mount -t tmpfs none ${some_dir}/mnt1
+> > > > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
+> > > > > # mkdir ${some_dir}/mnt2
+> > > > > # mount -t tmpfs none ${some_dir}/mnt2
+> > > > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
+> > > > >
+> > > > > On the client side:
+> > > > >
+> > > > > # mkdir /mnt/virtiofs1
+> > > > > # mount -t virtiofs myfs /mnt/virtiofs1
+> > > > > # ls /mnt/virtiofs1
+> > > > > mnt1 mnt2
+> > > > > # grep virtiofs /proc/mounts
+> > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > > >
+> > > > > And now remount it again:
+> > > > >
+> > > > > # mount -t virtiofs myfs /mnt/virtiofs2
+> > > > > # grep virtiofs /proc/mounts
+> > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
+> > > > > # ls /mnt/virtiofs2
+> > > > > THIS_IS_MNT2
+> > > > >
+> > > > > Submount mnt2 was picked-up instead of the root mount.
+> > > >
+> > >
+> > > > Why is this a problem?
+> > > >
+> > >
+> > > It seems very weird to mount the same filesystem again
+> > > and to end up in one of its submounts. We should have:
+> > >
+> > > # ls /mnt/virtiofs2
+> > > mnt1 mnt2
+> >
+> > Okay, sorry, I understand the problem.  The solution is wrong,
+> > however: the position of the submount on that list is no indication
+> > that it's the right one (it's possible that the root sb will go away
+> > and only a sub-sb will remain).
+> >
+>
+> Ah... I had myself convinced this could not happen, i.e. you can't
+> unmount a parent sb with a sub-sb still mounted.
 
-Add a managed action to do the required clean-up before a 'regulator_put()'
-call.
+No, but it's possible for sub-sb to continue existing after it's no
+longer a submount of original mount.
+>
+> How can this happen ?
 
-Fixes: 4dc5a79f1350 ("mmc: mxs-mmc: enable regulator for mmc slot")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/mmc/host/mxs-mmc.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+E.g. move the submount out of the way, then unmount the parent, or
+detach submount (umount -l) while keeping something open in there and
+umount the parent.
 
-diff --git a/drivers/mmc/host/mxs-mmc.c b/drivers/mmc/host/mxs-mmc.c
-index 947581de7860..b043d53dd728 100644
---- a/drivers/mmc/host/mxs-mmc.c
-+++ b/drivers/mmc/host/mxs-mmc.c
-@@ -552,6 +552,13 @@ static const struct of_device_id mxs_mmc_dt_ids[] = {
- };
- MODULE_DEVICE_TABLE(of, mxs_mmc_dt_ids);
- 
-+static void regulator_disable_action(void *_data)
-+{
-+	struct regulator *regulator = _data;
-+
-+	regulator_disable(regulator);
-+}
-+
- static int mxs_mmc_probe(struct platform_device *pdev)
- {
- 	struct device_node *np = pdev->dev.of_node;
-@@ -591,6 +598,10 @@ static int mxs_mmc_probe(struct platform_device *pdev)
- 				"Failed to enable vmmc regulator: %d\n", ret);
- 			goto out_mmc_free;
- 		}
-+		ret = devm_add_action_or_reset(&pdev->dev,
-+					regulator_disable_action, reg_vmmc);
-+		if (ret)
-+			goto out_mmc_free;
- 	}
- 
- 	ssp->clk = devm_clk_get(&pdev->dev, NULL);
--- 
-2.30.2
+> > Even just setting a flag in the root, indicating that it's the root
+> > isn't fully going to solve the problem.
+> >
+> > Here's issue in full:
+> >
+> > case 1:  no connection for "myfs" exists
+> >     - need to create fuse_conn, sb
+> >
+> > case 2: connection for "myfs" exists but only sb for submount
+>
+> How would we know this sb isn't a root sb ?
+>
+> >     - only create sb for root, reuse fuse_conn
+> >
+> > case 3: connection for "myfs" as well as root sb exists
+> >    - reuse sb
+> >
+> > I'll think about how to fix this properly, it's probably going to be
+> > rather more involved...
+> >
+>
+> Sure. BTW I'm wondering why we never reuse sbs for submounts ?
 
+Right, same general issue.
+
+An sb can be identified by its root nodeid, so I guess the proper fix
+to make the root nodeid be the key for virtio_fs_test_super().
+
+Thanks,
+Miklos
