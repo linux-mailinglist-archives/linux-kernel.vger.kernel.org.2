@@ -2,212 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5415C38CB32
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:41:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 290AC38CB37
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236563AbhEUQmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:42:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:51282 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233011AbhEUQma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:42:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 869721424;
-        Fri, 21 May 2021 09:41:06 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 357A53F73B;
-        Fri, 21 May 2021 09:41:04 -0700 (PDT)
-Date:   Fri, 21 May 2021 17:41:01 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 11/21] sched: Split the guts of sched_setaffinity()
- into a helper function
-Message-ID: <20210521164101.lwq5wr4mbb32co6l@e107158-lin.cambridge.arm.com>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-12-will@kernel.org>
+        id S237690AbhEUQnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233011AbhEUQnL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:43:11 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360A7C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:41:48 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id z130so11471847wmg.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:41:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OLxd9YqwRbx5TAGpuwAdW+dDcsysFyUkXYIgfcZaWGs=;
+        b=gvBm+bAPQJhIJkIPOpTN+KeA385rCs8o23N7ZLIpgz2N0UIEeEmFRKRIid8GClx02G
+         uXdiryJMyuMK5PQL5I8LkD8AylRYmto6bOSH3T3uItp0Hzfa0EXhJcrlcoKp1EM3G3yc
+         sz/GesrbNn45upRo/U4KirwtmthyAKg/AmglaHcZktFtqlpHb6bCJ/MWL42Dog1pXr61
+         vbUIGw3ywbVSiu6rBLmafBzhRqWSA9EXs7daCO9H3RvP6dE5r1veSSW4/m3edo/x0Fvx
+         R6kxEbIMcl7K7OYc16kaIhvYMkkUyxTV3rRkq7gSsJ5xxOG29RehcVhYMPUxS0WHXzx+
+         8ZeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OLxd9YqwRbx5TAGpuwAdW+dDcsysFyUkXYIgfcZaWGs=;
+        b=FR038AgyER9z6BCPtNmBAyoCYfkayAO59j8qDd/nbiqPq6KJxM/9y795S8Dt758QM/
+         M3L+0/m2olG48JeGY7ARFrCpIdgUXmbd2eeaUagWBVJiGf9hD/d6mu4VLgFhmXWHgAfr
+         REuYCAaMYntoQNKy1EB2JamErzWV43TwBGpRDPGJNRDqATMHXVY21pn7l0HGZfnOzwTF
+         fD3I2exjA8y3LqRxDARlIzSkumcXm7mCTw2Zym59OVejzzB8Q8A/VsX3YvYRNIQFOCl1
+         inh7cfv5lhUFQz442cUNO0aFhBVncU/SyoqxYykBE695KkTqJtp3a8YQEMZxqTvfXqix
+         DAbw==
+X-Gm-Message-State: AOAM533xaC/ULeM2zMq6NOffovND47RuYhouzpDqfuxLFtMVtNmOqt5m
+        /t6hy5+a4foV5Pv26xLJOSD+dpTXTBVg9zXE
+X-Google-Smtp-Source: ABdhPJzKat2eJCvNinu9ngsupD0zvKZM+O7J40OVu7kqwVW2AFI2slPVZ76+AQOyI8zKX9ElikBWaA==
+X-Received: by 2002:a1c:b003:: with SMTP id z3mr10116748wme.7.1621615306863;
+        Fri, 21 May 2021 09:41:46 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
+        by smtp.gmail.com with ESMTPSA id g11sm2662072wri.59.2021.05.21.09.41.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 09:41:46 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL] gpio: fixes for v5.13-rc3
+Date:   Fri, 21 May 2021 18:41:39 +0200
+Message-Id: <20210521164139.25088-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210518094725.7701-12-will@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/18/21 10:47, Will Deacon wrote:
-> In preparation for replaying user affinity requests using a saved mask,
-> split sched_setaffinity() up so that the initial task lookup and
-> security checks are only performed when the request is coming directly
-> from userspace.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  kernel/sched/core.c | 110 +++++++++++++++++++++++---------------------
->  1 file changed, 58 insertions(+), 52 deletions(-)
-> 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 9512623d5a60..808bbe669a6d 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -6788,9 +6788,61 @@ SYSCALL_DEFINE4(sched_getattr, pid_t, pid, struct sched_attr __user *, uattr,
->  	return retval;
->  }
->  
-> -long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
-> +static int
-> +__sched_setaffinity(struct task_struct *p, const struct cpumask *mask)
->  {
-> +	int retval;
->  	cpumask_var_t cpus_allowed, new_mask;
-> +
-> +	if (!alloc_cpumask_var(&cpus_allowed, GFP_KERNEL))
-> +		return -ENOMEM;
-> +
-> +	if (!alloc_cpumask_var(&new_mask, GFP_KERNEL))
-> +		return -ENOMEM;
+Linus,
 
-Shouldn't we free cpus_allowed first?
+please pull the following three fixes for the GPIO subsystem.
 
-Cheers
+Best Regards,
+Bartosz
 
---
-Qais Yousef
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-> +
-> +	cpuset_cpus_allowed(p, cpus_allowed);
-> +	cpumask_and(new_mask, mask, cpus_allowed);
-> +
-> +	/*
-> +	 * Since bandwidth control happens on root_domain basis,
-> +	 * if admission test is enabled, we only admit -deadline
-> +	 * tasks allowed to run on all the CPUs in the task's
-> +	 * root_domain.
-> +	 */
-> +#ifdef CONFIG_SMP
-> +	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
-> +		rcu_read_lock();
-> +		if (!cpumask_subset(task_rq(p)->rd->span, new_mask)) {
-> +			retval = -EBUSY;
-> +			rcu_read_unlock();
-> +			goto out_free_masks;
-> +		}
-> +		rcu_read_unlock();
-> +	}
-> +#endif
-> +again:
-> +	retval = __set_cpus_allowed_ptr(p, new_mask, SCA_CHECK);
-> +	if (retval)
-> +		goto out_free_masks;
-> +
-> +	cpuset_cpus_allowed(p, cpus_allowed);
-> +	if (!cpumask_subset(new_mask, cpus_allowed)) {
-> +		/*
-> +		 * We must have raced with a concurrent cpuset update.
-> +		 * Just reset the cpumask to the cpuset's cpus_allowed.
-> +		 */
-> +		cpumask_copy(new_mask, cpus_allowed);
-> +		goto again;
-> +	}
-> +
-> +out_free_masks:
-> +	free_cpumask_var(new_mask);
-> +	free_cpumask_var(cpus_allowed);
-> +	return retval;
-> +}
-> +
-> +long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
-> +{
->  	struct task_struct *p;
->  	int retval;
->  
-> @@ -6810,68 +6862,22 @@ long sched_setaffinity(pid_t pid, const struct cpumask *in_mask)
->  		retval = -EINVAL;
->  		goto out_put_task;
->  	}
-> -	if (!alloc_cpumask_var(&cpus_allowed, GFP_KERNEL)) {
-> -		retval = -ENOMEM;
-> -		goto out_put_task;
-> -	}
-> -	if (!alloc_cpumask_var(&new_mask, GFP_KERNEL)) {
-> -		retval = -ENOMEM;
-> -		goto out_free_cpus_allowed;
-> -	}
-> -	retval = -EPERM;
-> +
->  	if (!check_same_owner(p)) {
->  		rcu_read_lock();
->  		if (!ns_capable(__task_cred(p)->user_ns, CAP_SYS_NICE)) {
->  			rcu_read_unlock();
-> -			goto out_free_new_mask;
-> +			retval = -EPERM;
-> +			goto out_put_task;
->  		}
->  		rcu_read_unlock();
->  	}
->  
->  	retval = security_task_setscheduler(p);
->  	if (retval)
-> -		goto out_free_new_mask;
-> -
-> -
-> -	cpuset_cpus_allowed(p, cpus_allowed);
-> -	cpumask_and(new_mask, in_mask, cpus_allowed);
-> -
-> -	/*
-> -	 * Since bandwidth control happens on root_domain basis,
-> -	 * if admission test is enabled, we only admit -deadline
-> -	 * tasks allowed to run on all the CPUs in the task's
-> -	 * root_domain.
-> -	 */
-> -#ifdef CONFIG_SMP
-> -	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
-> -		rcu_read_lock();
-> -		if (!cpumask_subset(task_rq(p)->rd->span, new_mask)) {
-> -			retval = -EBUSY;
-> -			rcu_read_unlock();
-> -			goto out_free_new_mask;
-> -		}
-> -		rcu_read_unlock();
-> -	}
-> -#endif
-> -again:
-> -	retval = __set_cpus_allowed_ptr(p, new_mask, SCA_CHECK);
-> +		goto out_put_task;
->  
-> -	if (!retval) {
-> -		cpuset_cpus_allowed(p, cpus_allowed);
-> -		if (!cpumask_subset(new_mask, cpus_allowed)) {
-> -			/*
-> -			 * We must have raced with a concurrent cpuset
-> -			 * update. Just reset the cpus_allowed to the
-> -			 * cpuset's cpus_allowed
-> -			 */
-> -			cpumask_copy(new_mask, cpus_allowed);
-> -			goto again;
-> -		}
-> -	}
-> -out_free_new_mask:
-> -	free_cpumask_var(new_mask);
-> -out_free_cpus_allowed:
-> -	free_cpumask_var(cpus_allowed);
-> +	retval = __sched_setaffinity(p, in_mask);
->  out_put_task:
->  	put_task_struct(p);
->  	return retval;
-> -- 
-> 2.31.1.751.gd2f1c929bd-goog
-> 
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git tags/gpio-fixes-for-v5.13-rc3
+
+for you to fetch changes up to bdbe871ef0caa660e16461a2a94579d9f9ef7ba4:
+
+  gpio: tegra186: Don't set parent IRQ affinity (2021-05-12 13:56:43 +0200)
+
+----------------------------------------------------------------
+gpio fixes for v5.13-rc3
+
+- add missing MODULE_DEVICE_TABLE in gpio-cadence
+- fix a kernel doc validator error in gpio-xilinx
+- don't set parent IRQ affinity in gpio-tegra186
+
+----------------------------------------------------------------
+Andy Shevchenko (1):
+      gpio: xilinx: Correct kernel doc for xgpio_probe()
+
+Jon Hunter (1):
+      gpio: tegra186: Don't set parent IRQ affinity
+
+Zou Wei (1):
+      gpio: cadence: Add missing MODULE_DEVICE_TABLE
+
+ drivers/gpio/gpio-cadence.c  |  1 +
+ drivers/gpio/gpio-tegra186.c | 11 -----------
+ drivers/gpio/gpio-xilinx.c   |  2 +-
+ 3 files changed, 2 insertions(+), 12 deletions(-)
