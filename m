@@ -2,172 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 918F038C83E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27AD638C843
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235671AbhEUNiH convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 09:38:07 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:34096 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235424AbhEUNiF (ORCPT
+        id S235767AbhEUNil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:38:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235564AbhEUNid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:38:05 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-209-AAhjg02-MbOkPEdfh6xR_Q-1; Fri, 21 May 2021 09:36:38 -0400
-X-MC-Unique: AAhjg02-MbOkPEdfh6xR_Q-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AA011007B14;
-        Fri, 21 May 2021 13:36:37 +0000 (UTC)
-Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E40696A03C;
-        Fri, 21 May 2021 13:36:15 +0000 (UTC)
-Date:   Fri, 21 May 2021 15:36:14 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs-list <virtio-fs@redhat.com>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
-Message-ID: <20210521153614.061b0005@bahia.lan>
-In-Reply-To: <CAJfpegvBB-zRuZAM0m7fxMFCfw=CzN3uT3CqoQrRgizaTH4sOw@mail.gmail.com>
-References: <20210520154654.1791183-1-groug@kaod.org>
-        <20210520154654.1791183-5-groug@kaod.org>
-        <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
-        <20210521103921.153a243d@bahia.lan>
-        <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
-        <20210521120616.49d52565@bahia.lan>
-        <CAJfpegvBB-zRuZAM0m7fxMFCfw=CzN3uT3CqoQrRgizaTH4sOw@mail.gmail.com>
+        Fri, 21 May 2021 09:38:33 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AAB0C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:10 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id l15so13072722iln.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aOxukUP4jIrT4sl1iFyJVxJdWx5J7pFUcynvJLSMuxM=;
+        b=c1dx51qHrwD5aaCshUIp6eeEm5WABOQk4ytjO09vCI4TEEK7opgsVS+XHPnEunkJ7F
+         w13th/NxTytTPbVBSewh40x8g8OQx4xTpImb8PblIt6tAcfGRE13hTZXlP67q9qG1fgn
+         QLhgjjB7gz0WDz3O4dZ/mDh/lkSc7Cvlg8y1J80G6/5xct40gLUMQzjEgoyOyg+X9aLC
+         gYFPg6Msv/chUf67TngUnnXsk5g8WB/3zx4ECYOOiPP3WawGE77DBwTn81kYkcNFU4zJ
+         2OdQhWbO5Nbl4nWXqaMYTUIbUXS72HUg2RI58+LZ4L6H5Xi2qce+1+LUf4N/TBqPa946
+         PI+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aOxukUP4jIrT4sl1iFyJVxJdWx5J7pFUcynvJLSMuxM=;
+        b=kdQAdOg9Jl7YzpWi0kKkPLporMrtKvTcZQUfXnyHDSc58ne0wIFxAkEdxAoDN4WHYg
+         fPqmdrROyxzcmHKVu5+avO7XZaSMTyqa3VGB0DcwNIpXchlRwph4bwNdE3n0HpqMDrXH
+         bSML2BRjNlpHsOAB5rTPHQLQOIKyxChUm/TEY1o/qCjId3bsxx4gkuwQ9B36cpNWDKdq
+         bSAq800pIp790kLeVugQVeRicWtjKS4KdRRw2x45dE9haFtRnCPRC2vw8grgPTRcUTbN
+         D0Q8JNmBwG9FdqTQJ1PISszIJse5GDMah19VF3ENpkbaFWB43gGRo5h2uo4uk73XZqNn
+         5i8A==
+X-Gm-Message-State: AOAM531hDcuDElQowZaggr7NrQBI0a+Vp5RyQkfKIooZTJ48wlIIzlH5
+        tAhsSOBquFa3CIxIDHSEdYnHtr1ooPGNRvPcIexT2A==
+X-Google-Smtp-Source: ABdhPJzEiyCios8dWI/Acg2dtT/0zWtA9aBNoDZXPirEUp2D/T+FjiXdNJf5mkQUXPKh50k3T9wd7lZpe5lr8WVOUow=
+X-Received: by 2002:a05:6e02:92f:: with SMTP id o15mr13043037ilt.127.1621604229383;
+ Fri, 21 May 2021 06:37:09 -0700 (PDT)
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: kaod.org
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: 8BIT
+References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-2-acourbot@chromium.org>
+In-Reply-To: <20210519143011.1175546-2-acourbot@chromium.org>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Fri, 21 May 2021 21:36:58 +0800
+Message-ID: <CA+Px+wV8_rCxH=OuwjeUsVpL5Vk5kN_BymA5QRjwhDOUn-iT6Q@mail.gmail.com>
+Subject: Re: [PATCH v5 01/14] media: mtk-vcodec: vdec: Support H264 profile control
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Hirokazu Honda <hiroh@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 14:37:25 +0200
-Miklos Szeredi <miklos@szeredi.hu> wrote:
+On Wed, May 19, 2021 at 10:30 PM Alexandre Courbot
+<acourbot@chromium.org> wrote:
+> Signed-off-by: Hirokazu Honda <hiroh@chromium.org>
+> [acourbot: fix commit log a bit, move to mtk_vcodec_dec.c]
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 
-> On Fri, 21 May 2021 at 12:06, Greg Kurz <groug@kaod.org> wrote:
-> >
-> > On Fri, 21 May 2021 10:50:34 +0200
-> > Miklos Szeredi <miklos@szeredi.hu> wrote:
-> >
-> > > On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
-> > > >
-> > > > On Fri, 21 May 2021 10:26:27 +0200
-> > > > Miklos Szeredi <miklos@szeredi.hu> wrote:
-> > > >
-> > > > > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
-> > > > > >
-> > > > > > All submounts share the same virtio-fs device instance as the root
-> > > > > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
-> > > > > > is likely to pick up any of these submounts and reuse it instead of
-> > > > > > the root mount.
-> > > > > >
-> > > > > > On the server side:
-> > > > > >
-> > > > > > # mkdir ${some_dir}
-> > > > > > # mkdir ${some_dir}/mnt1
-> > > > > > # mount -t tmpfs none ${some_dir}/mnt1
-> > > > > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
-> > > > > > # mkdir ${some_dir}/mnt2
-> > > > > > # mount -t tmpfs none ${some_dir}/mnt2
-> > > > > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
-> > > > > >
-> > > > > > On the client side:
-> > > > > >
-> > > > > > # mkdir /mnt/virtiofs1
-> > > > > > # mount -t virtiofs myfs /mnt/virtiofs1
-> > > > > > # ls /mnt/virtiofs1
-> > > > > > mnt1 mnt2
-> > > > > > # grep virtiofs /proc/mounts
-> > > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > > > >
-> > > > > > And now remount it again:
-> > > > > >
-> > > > > > # mount -t virtiofs myfs /mnt/virtiofs2
-> > > > > > # grep virtiofs /proc/mounts
-> > > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
-> > > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
-> > > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
-> > > > > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
-> > > > > > # ls /mnt/virtiofs2
-> > > > > > THIS_IS_MNT2
-> > > > > >
-> > > > > > Submount mnt2 was picked-up instead of the root mount.
-> > > > >
-> > > >
-> > > > > Why is this a problem?
-> > > > >
-> > > >
-> > > > It seems very weird to mount the same filesystem again
-> > > > and to end up in one of its submounts. We should have:
-> > > >
-> > > > # ls /mnt/virtiofs2
-> > > > mnt1 mnt2
-> > >
-> > > Okay, sorry, I understand the problem.  The solution is wrong,
-> > > however: the position of the submount on that list is no indication
-> > > that it's the right one (it's possible that the root sb will go away
-> > > and only a sub-sb will remain).
-> > >
-> >
-> > Ah... I had myself convinced this could not happen, i.e. you can't
-> > unmount a parent sb with a sub-sb still mounted.
-> 
-> No, but it's possible for sub-sb to continue existing after it's no
-> longer a submount of original mount.
-> >
-> > How can this happen ?
-> 
-> E.g. move the submount out of the way, then unmount the parent, or
-> detach submount (umount -l) while keeping something open in there and
-> umount the parent.
-> 
-
-Ok, I get it now. Thanks for the clarification.
-
-> > > Even just setting a flag in the root, indicating that it's the root
-> > > isn't fully going to solve the problem.
-> > >
-> > > Here's issue in full:
-> > >
-> > > case 1:  no connection for "myfs" exists
-> > >     - need to create fuse_conn, sb
-> > >
-> > > case 2: connection for "myfs" exists but only sb for submount
-> >
-> > How would we know this sb isn't a root sb ?
-> >
-> > >     - only create sb for root, reuse fuse_conn
-> > >
-> > > case 3: connection for "myfs" as well as root sb exists
-> > >    - reuse sb
-> > >
-> > > I'll think about how to fix this properly, it's probably going to be
-> > > rather more involved...
-> > >
-> >
-> > Sure. BTW I'm wondering why we never reuse sbs for submounts ?
-> 
-> Right, same general issue.
-> 
-> An sb can be identified by its root nodeid, so I guess the proper fix
-> to make the root nodeid be the key for virtio_fs_test_super().
-> 
-
-Cool, I was thinking about doing this exactly. :)
-
-> Thanks,
-> Miklos
-
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
