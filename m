@@ -2,89 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86AD338CA8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5AB38CA8F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232094AbhEUQEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:04:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhEUQEq (ORCPT
+        id S233394AbhEUQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:05:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51540 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S229586AbhEUQFF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:04:46 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12AB5C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:03:21 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id q3so269567lfu.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:03:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yiSHm/i0ntIC7XV9xeKxtIeUyYju4T+JD0ZeRfIjKFo=;
-        b=pqRuS9toNOMN69IxAEDNhxeuDceaDJikh7Bd9vsb5rOXAkMuzb6Lp0xwKixYtSucz4
-         On6UNZ4deHHb1i0M3LzSaYQfA7kIvKWCB99LZx92cM0p+krKQ8Zokd4uiwEMhz3Cn1MV
-         zzBh3tP35+2CiLcY/YR3pXRE1+ICooRpQMA7HewKmDPH2aMnxJS7hDdieFteC4gnxEbG
-         TBCpDqjgzCjBi/dYIq4geI4rUyZS+Bkv5g06oMAH+mzcoN73Xh56oIIsXuscPPOuRM2H
-         Xvviqoq1CQGRCmrGvLcEoJhzjFpKBwaIZJODSWnVX0w72c9HyhCJ8sn1+qFynfamm0jD
-         EZHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yiSHm/i0ntIC7XV9xeKxtIeUyYju4T+JD0ZeRfIjKFo=;
-        b=EADqWrnqzME04LKNy76dYbJ/RAYq8z7ZIHwMnZm9gF4CWIvs2DAQg8UCfNzX1FX4VX
-         gwSQUSt6yeQJtxjUEnq8yKd0w7rLMxg2VqRW3evk2vZHMRGsyiOLVZB277knhhbMqKvB
-         LgzUGH67m/p+vgd93oZQ2Zc8kdVpo2mnVVakFMxf+6DWYzHzx2oDUriSCzuymq68sCqV
-         8BpcREVbfAdv3q+ObYWDA6++UhceMI7B/pGBEufmG5+PC6Hqev/sHM6mIaFH37/+McRt
-         7u0VUWC/4S+yUDgsqwICGb+hywLnkoit+eQbcVa32TEMuSksybpunWx/tVT4Ahj5fVTp
-         7wUA==
-X-Gm-Message-State: AOAM530HWqYxzzhQRTA+zuXaIBU0suMNnPSUSXhPY4jKH//xkcOiU7M2
-        4GowuwlBQZp0pSYMCxXmP/pECx6ewJHk+u+PgNXfvg==
-X-Google-Smtp-Source: ABdhPJxXq0B6Vn9HMEOppK94x/UHgrXEDhu0rEkT2EJkihbrQyKoQ2ii57nIv7CFq4aUMptuOh6rwPZwTt1/EL3b/+U=
-X-Received: by 2002:ac2:520a:: with SMTP id a10mr2710768lfl.180.1621612999247;
- Fri, 21 May 2021 09:03:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210520183614.1227046-1-posk@google.com> <87mtspm7fe.fsf@meer.lwn.net>
- <CAPNVh5eV+CtY74_JMv6_Bm5aCVBh_F9hkWLT6v3BT=H0UwodUg@mail.gmail.com> <87eee0m8ez.fsf@meer.lwn.net>
-In-Reply-To: <87eee0m8ez.fsf@meer.lwn.net>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Fri, 21 May 2021 09:03:07 -0700
-Message-ID: <CAPNVh5fhkgscs44Lpj3DPBrA9NrhFohUpRwpT2iMM1BDBcLW4A@mail.gmail.com>
-Subject: Re: [RFC PATCH v0.1 0/9] UMCG early preview/RFC patchset
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-api <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
+        Fri, 21 May 2021 12:05:05 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LG3TJf048686;
+        Fri, 21 May 2021 12:03:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=NWkg5whIEVwVMkgRIGlgWyJUA+SgTZHOp0Nbt8P//bY=;
+ b=PufsNEtPfEYnffaoQw0CxtuYA55Asl5kkuO4LJ5flhZZdwkSXfDXhn8uDIgxdemVARps
+ focxG9bcHx/vDM0HUP2iDcoPHAtke1YlNC+W9y0gNsDr9TPrFni4cejBLhtWdldVdAdc
+ +oN+MDctjCUQQ0ut6KIdfnSF1S+Aj2Rw8sHfpLx0Ob0LO+77w5cn29cxge97S2phowfn
+ GRfc7+r+eE6ymTrJR4J6uXDQk9h1f+XLvLlHeQzuqLmxaqwvipccyJlAXsGmE8WfO2xD
+ PpWE5+2C3c6ptwubaG4qmDq3lczIavaRL5cEaZfOCRm1oze5E/Cuj2tyeegp+3nsuvMd rA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38pfar1avs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 12:03:32 -0400
+Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14LG3VVL048913;
+        Fri, 21 May 2021 12:03:31 -0400
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38pfar1avh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 12:03:31 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LFtE6s024491;
+        Fri, 21 May 2021 16:03:30 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma05wdc.us.ibm.com with ESMTP id 38j7tbrbe9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 16:03:30 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LG3Two10551732
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 May 2021 16:03:29 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E4B9878063;
+        Fri, 21 May 2021 16:03:28 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E085D78066;
+        Fri, 21 May 2021 16:03:24 +0000 (GMT)
+Received: from jarvis.int.hansenpartnership.com (unknown [9.80.208.94])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Fri, 21 May 2021 16:03:24 +0000 (GMT)
+Message-ID: <d6b991603d79cfbaf05c93f8b662860b865d861b.camel@linux.ibm.com>
+Subject: Re: [RFC PATCH 0/3] Allow access to confidential computing secret
+ area
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     Brijesh Singh <brijesh.singh@amd.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
+        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Jim Cadden <jcadden@ibm.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Laszlo Ersek <lersek@redhat.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 21 May 2021 09:03:23 -0700
+In-Reply-To: <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
+References: <20210513062634.2481118-1-dovmurik@linux.ibm.com>
+         <2c8ae998-6dd0-bcb9-f735-e90da05ab9d9@amd.com> <YKZAUdbikp2Pt0XV@work-vm>
+         <ccdf0059-7e39-7895-2733-412dbe4b13f1@linux.intel.com>
+         <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: J3eWov5232J_lTh8NNUvrd0Rb9wuA-eT
+X-Proofpoint-ORIG-GUID: mAG4Un5fk-XPLIHybX4tnpxaPXgowfWu
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-21_07:2021-05-20,2021-05-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ clxscore=1011 mlxscore=0 adultscore=0 spamscore=0 impostorscore=0
+ suspectscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105210084
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 8:08 AM Jonathan Corbet <corbet@lwn.net> wrote:
-
+On Fri, 2021-05-21 at 10:56 -0500, Brijesh Singh wrote:
 [...]
-> Documentation patches can help to guide that discussion; they also need
-> to be reviewed as well.  So yes, I think they should be present from the
-> beginning.  But then, that's the position I'm supposed to take :)  This
-> is a big change to the kernel's system-call API, I don't think that
-> there can be a proper discussion of that without a description of what
-> you're trying to do.
+> In case of the SEV-SNP and TDX, the guest OS participates during the
+> attestation flow; the driver working on the behalf of userspace and
+> does not have access to the secret, so it cannot populate the file
+> with the secrets in it.
 
-Hi Jon,
+OK, so for a simple encrypted VM using root on luks, how in SNP does
+the boot loader obtain the disk passphrase?
 
-There are doc comments in patches 2 and 7 in umcg.c documenting the
-new syscalls. That said, I'll prepare a separate doc patch - I guess
-I'll add Documentation/scheduler/umcg.rst, unless you tell me there is
-a better place to do that. ETA mid-to-late next week.
+In the non SNP case, it's already upstream: OVMF finds the secret page
+and converts it to an EFI config table, which is passed into grub. 
+It's starting to sound like we'll need a new grub module for SNP which
+will do an active attestation and receive the passphrase over some
+channel secure against the cloud provider.  Could you give us an
+example of how you think this flow will work?
 
 Thanks,
-Peter
+
+James
+
+
