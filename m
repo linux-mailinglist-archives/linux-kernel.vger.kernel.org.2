@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9EF038BF73
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:35:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A01738BF74
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhEUGgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:36:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55516 "EHLO mail.kernel.org"
+        id S232810AbhEUGg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:36:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55592 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232764AbhEUGgR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 02:36:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8109F613C4;
-        Fri, 21 May 2021 06:34:54 +0000 (UTC)
+        id S232783AbhEUGgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 02:36:25 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 889C1613B6;
+        Fri, 21 May 2021 06:35:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621578895;
-        bh=/AkyYMBWlTA6G5Cm36+jQhlcRYLFU3nwA5Jw1zR2vbA=;
+        s=k20201202; t=1621578903;
+        bh=xQC7WGE+155P8uQ6aYYnmapY86KbOycguF9S3ZNJuXs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kfZiursP0D5XPn6TvWqYVSfkrQVNszTxst4/RLY+aOR6mPNS3j8vBkNbI/DMJ1hJy
-         4NxZIOUlTrWUJbGDrgaLzVv/aTyWs0e0R84Ybz/eDqqE3mGKj4Iuzz7ZHVWKeKGqz6
-         PkitFfQ2D0f7FPNZYbLu5LBDJG6y9vGvRpuOZydNyxkvn0e85WMR3eXLHdE86Rz7aK
-         h5Goam0YrshA3YsYYsb/FMFeVSnLxlveXdTllG59t6Ws1zt51hKlaMqAcLvmvsYA/3
-         b4TwGmRrP/d3BL6UaXs61QUoSRKzFCVhmXBwaDGOUTjrrQbGBSzaqMXKzda4zuiOpt
-         REEzIFE6RgkQQ==
+        b=bG12sn1D2spk5297gnqioSYItOsEBnDHdUkKEB8/oeCLYwSFW4uMWxt2gA7P/Pg2s
+         MBSQcSYFneN8KNUQyyAVg7mGPerSXW5VucAZyF5ECIfxtW+YkK7YRuMKshz0jvAVNV
+         MTrYwdY1QBBKaU3yp+YoAXxQjnWlaZM3Fn5ASTEpaxmHAgxBTG7/p6+56JN5yUFQCM
+         3+69Icv/9aIAjpk33FLzDwk2hQejYYaj1subqFMvB/oHyc/EIKJjtx9g3K+RuBNhw5
+         eP4mCs2VHNB9iShFb5Go9s7Y+cESwCRslxdE3m2XrjGphMdv7hiTCRuMj6RHz80FdP
+         NJldnsnYi7ssA==
 From:   Masami Hiramatsu <mhiramat@kernel.org>
 To:     Steven Rostedt <rostedt@goodmis.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Ingo Molnar <mingo@kernel.org>,
         Devin Moore <devinmoore@google.com>
-Subject: [PATCH v2 3/4] tools/bootconfig: Support mixed value and subkey test cases
-Date:   Fri, 21 May 2021 15:34:52 +0900
-Message-Id: <162157889223.78209.16105784168655179243.stgit@devnote2>
+Subject: [PATCH v2 4/4] docs: bootconfig: Update for mixing value and subkeys
+Date:   Fri, 21 May 2021 15:35:00 +0900
+Message-Id: <162157890064.78209.16783417415944826941.stgit@devnote2>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <162157886618.78209.11141970623539574861.stgit@devnote2>
 References: <162157886618.78209.11141970623539574861.stgit@devnote2>
@@ -42,114 +42,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update test case to support mixed value and subkey on a key.
+Update document for the mixing value and subkeys on a key.
 
 Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
 ---
- tools/bootconfig/samples/bad-mixed-kv1.bconf       |    3 ---
- tools/bootconfig/samples/bad-mixed-kv2.bconf       |    3 ---
- tools/bootconfig/samples/bad-override.bconf        |    3 ---
- tools/bootconfig/samples/bad-override2.bconf       |    3 ---
- tools/bootconfig/samples/good-mixed-append.bconf   |    4 ++++
- tools/bootconfig/samples/good-mixed-kv1.bconf      |    3 +++
- tools/bootconfig/samples/good-mixed-kv2.bconf      |    3 +++
- tools/bootconfig/samples/good-mixed-kv3.bconf      |    6 ++++++
- tools/bootconfig/samples/good-mixed-override.bconf |    4 ++++
- 9 files changed, 20 insertions(+), 12 deletions(-)
- delete mode 100644 tools/bootconfig/samples/bad-mixed-kv1.bconf
- delete mode 100644 tools/bootconfig/samples/bad-mixed-kv2.bconf
- delete mode 100644 tools/bootconfig/samples/bad-override.bconf
- delete mode 100644 tools/bootconfig/samples/bad-override2.bconf
- create mode 100644 tools/bootconfig/samples/good-mixed-append.bconf
- create mode 100644 tools/bootconfig/samples/good-mixed-kv1.bconf
- create mode 100644 tools/bootconfig/samples/good-mixed-kv2.bconf
- create mode 100644 tools/bootconfig/samples/good-mixed-kv3.bconf
- create mode 100644 tools/bootconfig/samples/good-mixed-override.bconf
+ Changes in v2:
+  - Update an example of mixing value and subkeys.
+---
+ Documentation/admin-guide/bootconfig.rst |   30 ++++++++++++++++++++++++++----
+ 1 file changed, 26 insertions(+), 4 deletions(-)
 
-diff --git a/tools/bootconfig/samples/bad-mixed-kv1.bconf b/tools/bootconfig/samples/bad-mixed-kv1.bconf
-deleted file mode 100644
-index 1761547dd05c..000000000000
---- a/tools/bootconfig/samples/bad-mixed-kv1.bconf
-+++ /dev/null
-@@ -1,3 +0,0 @@
--# value -> subkey pattern
--key = value
--key.subkey = another-value
-diff --git a/tools/bootconfig/samples/bad-mixed-kv2.bconf b/tools/bootconfig/samples/bad-mixed-kv2.bconf
-deleted file mode 100644
-index 6b32e0c3878c..000000000000
---- a/tools/bootconfig/samples/bad-mixed-kv2.bconf
-+++ /dev/null
-@@ -1,3 +0,0 @@
--# subkey -> value pattern
--key.subkey = value
--key = another-value
-diff --git a/tools/bootconfig/samples/bad-override.bconf b/tools/bootconfig/samples/bad-override.bconf
-deleted file mode 100644
-index fde6c561512e..000000000000
---- a/tools/bootconfig/samples/bad-override.bconf
-+++ /dev/null
-@@ -1,3 +0,0 @@
--key.subkey = value
--# We can not override pre-defined subkeys with value
--key := value
-diff --git a/tools/bootconfig/samples/bad-override2.bconf b/tools/bootconfig/samples/bad-override2.bconf
-deleted file mode 100644
-index 688587cb023c..000000000000
---- a/tools/bootconfig/samples/bad-override2.bconf
-+++ /dev/null
-@@ -1,3 +0,0 @@
--key = value
--# We can not override pre-defined value with subkey
--key.subkey := value
-diff --git a/tools/bootconfig/samples/good-mixed-append.bconf b/tools/bootconfig/samples/good-mixed-append.bconf
-new file mode 100644
-index 000000000000..b99a089a05f5
---- /dev/null
-+++ b/tools/bootconfig/samples/good-mixed-append.bconf
-@@ -0,0 +1,4 @@
-+key = foo
-+keyx.subkey = value
-+key += bar
+diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
+index 452b7dcd7f6b..6a79f2e59396 100644
+--- a/Documentation/admin-guide/bootconfig.rst
++++ b/Documentation/admin-guide/bootconfig.rst
+@@ -89,13 +89,35 @@ you can use ``+=`` operator. For example::
+ 
+ In this case, the key ``foo`` has ``bar``, ``baz`` and ``qux``.
+ 
+-However, a sub-key and a value can not co-exist under a parent key.
+-For example, following config is NOT allowed.::
++Moreover, sub-keys and a value can coexist under a parent key.
++For example, following config is allowed.::
+ 
+  foo = value1
+- foo.bar = value2 # !ERROR! subkey "bar" and value "value1" can NOT co-exist
+- foo.bar := value2 # !ERROR! even with the override operator, this is NOT allowed.
++ foo.bar = value2
++ foo := value3 # This will update foo's value.
 +
-diff --git a/tools/bootconfig/samples/good-mixed-kv1.bconf b/tools/bootconfig/samples/good-mixed-kv1.bconf
-new file mode 100644
-index 000000000000..1761547dd05c
---- /dev/null
-+++ b/tools/bootconfig/samples/good-mixed-kv1.bconf
-@@ -0,0 +1,3 @@
-+# value -> subkey pattern
-+key = value
-+key.subkey = another-value
-diff --git a/tools/bootconfig/samples/good-mixed-kv2.bconf b/tools/bootconfig/samples/good-mixed-kv2.bconf
-new file mode 100644
-index 000000000000..6b32e0c3878c
---- /dev/null
-+++ b/tools/bootconfig/samples/good-mixed-kv2.bconf
-@@ -0,0 +1,3 @@
-+# subkey -> value pattern
-+key.subkey = value
-+key = another-value
-diff --git a/tools/bootconfig/samples/good-mixed-kv3.bconf b/tools/bootconfig/samples/good-mixed-kv3.bconf
-new file mode 100644
-index 000000000000..2ce2b02224b8
---- /dev/null
-+++ b/tools/bootconfig/samples/good-mixed-kv3.bconf
-@@ -0,0 +1,6 @@
-+# mixed key and subkeys with braces
-+key = value
-+key {
-+	subkey1
-+	subkey2 = foo
-+}
-diff --git a/tools/bootconfig/samples/good-mixed-override.bconf b/tools/bootconfig/samples/good-mixed-override.bconf
-new file mode 100644
-index 000000000000..18195b2873b6
---- /dev/null
-+++ b/tools/bootconfig/samples/good-mixed-override.bconf
-@@ -0,0 +1,4 @@
-+key.foo = bar
-+key = value
-+# mixed key value can be overridden
-+key := value2
++Note, since there is no syntax to put a raw value directly under a
++structured key, you have to define it outside of the brace. For example::
++
++ foo {
++     bar = value1
++     bar {
++         baz = value2
++         qux = value3
++     }
++ }
++
++Also, the order of the value node under a key is fixed. If there
++are a value and subkeys, the value is always the first child node
++of the key. Thus if user specifies subkeys first, e.g.::
++
++ foo.bar = value1
++ foo = value2
++
++In the program (and /proc/bootconfig), it will be shown as below::
+ 
++ foo = value2
++ foo.bar = value1
+ 
+ Comments
+ --------
 
