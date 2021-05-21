@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8CB38C148
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB12A38C14C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:06:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232336AbhEUIH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        id S234635AbhEUIHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhEUIH1 (ORCPT
+        with ESMTP id S232744AbhEUIHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:07:27 -0400
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D29C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:06:04 -0700 (PDT)
-Received: by mail-io1-xd2f.google.com with SMTP id b25so962036iot.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:06:04 -0700 (PDT)
+        Fri, 21 May 2021 04:07:47 -0400
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C6F9C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:06:24 -0700 (PDT)
+Received: by mail-il1-x129.google.com with SMTP id e10so15882531ilu.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:06:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nLgutOYMl1GMr2L+DWd3t+nM78vyp11ue7Ti9kGh5WY=;
-        b=RLCkpSbUTDgmL0IUkNKkbmahQomlAqn9LVv4OjtlEGPKEwf/we89iYS8PkEh7NMqj3
-         IAneffvJZrHAvht8if9QuBmdyHhvk2UDoSq1UvZpkI8SQDeMytix6Oq+ys82P4DA7qNd
-         I3tazjWsnnIEfHimQYEFmcdmjmKEylDeeam+tOPNbq6OKawmBRtMkgc4/ai1bAA9Gmus
-         Xe8Uj8dpmbD22hxVasY9Z+UH9ixx3pb0kr09WVsc5qI3+fYKN7JLXHncK4ZnUgmOonEb
-         bWzKeZtQtZncb4z1KUPGbi/0rpc1JLKRSYLFNhFoV/XFQtYRwHp66ut8KjOGy/mVAgQk
-         qJOQ==
+        bh=WAoGYY/IZ06EOl2sgqeBHp4au5PF0E3H2r0EKWA9o4I=;
+        b=RSqrkjnpNv3xOnHZ57xV85Uq945ViwHco45Lb/nK/s/aRNbcF9pCLsb4Y/mHIA3IYC
+         Je32opFAc0+tjj+OFJinHjPHi+Z6Eveu98JACjdv/T0YIZTwGfNRfn7QoGIU6u0xBgi4
+         kZo5mUmgF8CHehv0XiTKyEvKYc3YNgsBDXDqbt+kjVgG15OM/j8KAkYcu+n2T5Os1kyD
+         Agszq5EsRdHn8bEYnTwe5g9ZABpyl2rZxFP9/FXYrB10YlXSEICIC4Ov2ahNXLmk9rhP
+         4D6bQthjeF7dN4B8gfI0pGsqR0GP8sWzQM0lVItc/wBdFGwnlSuFFl5ZbnMiyviYnEL3
+         lwSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nLgutOYMl1GMr2L+DWd3t+nM78vyp11ue7Ti9kGh5WY=;
-        b=SGzV6z95STJO2LqkAc/jGqoWh6p/KLBN30iySsGvPh1SXUovBgJ/7T9nKBwtjOV/kp
-         AIb6aJzB+xMTaLR8ucQtCbwZy0/HV2aj6nQxvfZf1yqby1SoSBhWjPgZcRAO7uSA+6h1
-         0OS/0+sk+QDk5Pv8tF2Vvh+7XzJFzKggPwI/bbq6EiSgiaThbNDT6OsJPAcyWUqu0m1g
-         fAKQK8Gkj2BLgs8cy2L1Ka5TIisIHDtA0R7AfwmpLbkEJFH/ZE+iodbRhbgxux3OcXgN
-         sMpGOyLaLdYFZiLsDMssIJR8BOoaR6GvgHWBqQfiBAZzIDCcs2woq1Wvp9a0rYVQmrdM
-         Q6+A==
-X-Gm-Message-State: AOAM530Ils3B6/Hy8tk8KZ4PrYSjhooGyJoT4IDO+HABE5AYruHVP+ca
-        OliwPZyl+7CW6inYgra8Xjp/hUbm5tT7E2qXvu9c7Q==
-X-Google-Smtp-Source: ABdhPJw8QQBmq3fEOwfOK/ErgYCCLNXidUnXXUKXQuBmy4OkSx4beXK+d27kBMvufIEEpLJJ2b2A29KuaUHg7Fqdpzg=
-X-Received: by 2002:a6b:e00a:: with SMTP id z10mr10832250iog.109.1621584363791;
- Fri, 21 May 2021 01:06:03 -0700 (PDT)
+        bh=WAoGYY/IZ06EOl2sgqeBHp4au5PF0E3H2r0EKWA9o4I=;
+        b=jEQM9uGAh434tp6NBfKuLKt3D7yiwEyC6n037CwRIKWpnW7rvfUMKTsB24pgCm9Ms2
+         eRS2FPfhns4mBPUwn8dI4SW8PP+cfx1lPlz88SEkm6KNHMLMW/bXN24o8A8wHRWnHFzo
+         JdXxQjgm/JKB8iYZso++11N4820AUqSWCkOSUqC4nMHNAxKMuCct3laRSbIkk2JWNQ9b
+         lOyAMdOg8VhLg9hgfpPYfh0VI1xRXdGLA61FPjHv3mnmZj0w0R5bC2QngN8MWCkJRgVa
+         AsRFNTb2IvoT5T+2F7e06WRz/Te/AVYmznoCNh49u+rNOyTneX4mosKL8xlv+yzRqZYy
+         +BiA==
+X-Gm-Message-State: AOAM531ufS32Goud87jGFOpaMNiwGYHclrFXjDwMc9RxUHVoDZwnjANz
+        HColigYY+5eO72MpsfuPwebtsBlMmMBPTw0hxK0e2A==
+X-Google-Smtp-Source: ABdhPJw3h/Rdza5ih9pjbFjbrw/o2STJYHbm+xddgxIMSH3QaWhkLzFTbyk3TsjrO8vCypKIDZQWFwj1Tvz/HMgWS40=
+X-Received: by 2002:a92:520e:: with SMTP id g14mr10448898ilb.218.1621584383431;
+ Fri, 21 May 2021 01:06:23 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521070139.20644-1-irui.wang@mediatek.com> <20210521070139.20644-2-irui.wang@mediatek.com>
-In-Reply-To: <20210521070139.20644-2-irui.wang@mediatek.com>
+References: <20210521070139.20644-1-irui.wang@mediatek.com> <20210521070139.20644-4-irui.wang@mediatek.com>
+In-Reply-To: <20210521070139.20644-4-irui.wang@mediatek.com>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 21 May 2021 16:05:52 +0800
-Message-ID: <CA+Px+wWzRHP1mdG57UDbT7_A61kT7Ef4JVVtjey4quFXq=PebQ@mail.gmail.com>
-Subject: Re: [PATCH v4,1/6] media: mtk-vcodec: venc: remove redundant code
+Date:   Fri, 21 May 2021 16:06:12 +0800
+Message-ID: <CA+Px+wXkn2ih0JdgKBOoHZU1=QqO=vE1MAP5tauHvRe=rtjg7g@mail.gmail.com>
+Subject: Re: [PATCH v4,3/6] media: mtk-vcodec: Support 4GB~8GB range iova
+ space for venc
 To:     Irui Wang <irui.wang@mediatek.com>
 Cc:     Alexandre Courbot <acourbot@chromium.org>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
@@ -83,21 +84,14 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri, May 21, 2021 at 3:02 PM Irui Wang <irui.wang@mediatek.com> wrote:
->
-> From: Alexandre Courbot <acourbot@chromium.org>
->
-> vidioc_try_fmt() does clamp height and width when called on the OUTPUT
-> queue, so clamping them prior to calling this function is redundant. Set
-> the queue's parameters after calling vidioc_try_fmt() so we can use the
-> values it computed.
->
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> +       if (of_get_property(pdev->dev.of_node, "dma-ranges", NULL))
+> +               dma_set_mask_and_coherent(&pdev->dev, DMA_BIT_MASK(34));
+> +
 
-From the guideline[1]:
-Notably, the last Signed-off-by: must always be that of the developer
-submitting the patch
+From your previous dt-bindings patch[1], it has 4 banks.
+> 0~4G; 4G~8G; 8G~12G; 12G~16G.
 
-You should provide your signed-off.
+But, the code treats it as a boolean.  I.e. 0~4GB if non-existent;
+otherwise, 4GB~8GB.
 
-
-[1]: https://www.kernel.org/doc/html/latest/process/submitting-patches.html#when-to-use-acked-by-cc-and-co-developed-by
+[1]: https://patchwork.linuxtv.org/project/linux-media/patch/20210521070139.20644-3-irui.wang@mediatek.com/
