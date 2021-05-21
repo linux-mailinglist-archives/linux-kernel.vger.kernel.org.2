@@ -2,232 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5778238CB9F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:11:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C6838CBA2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238021AbhEURND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:13:03 -0400
-Received: from foss.arm.com ([217.140.110.172]:51910 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229565AbhEURNB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S238030AbhEURNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50130 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229865AbhEURNB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 May 2021 13:13:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 519DA1424;
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 305F5C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:11:38 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so18623238oth.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:11:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=e9JeVn1G8IdnIeIesci3+Ayk5EovOq0M3s+2FeKNFK0=;
+        b=pvPG2IpXF0bJcf/z/J6X/Jv/vHW0axAut+lT9rP4IJIFi/HUxPlCmpuFAhpJqpu8Qm
+         UKWNsaKRLrau75GJcP1RCp9U6Bjer9Z9dXkVlW74husfn10xGO2KrszYfsxXxprr0EXz
+         Q2X7i3RQzM2yfE8HcE4/cfKQAUwL2f62pg9Q0FhUV3JfqIc6uD4J9EW7h4TLe5UwbpdY
+         Ra3rqKrtZRBn9HfWadnIHfQ7Dz/cBqOK+eNhoShTmjYFetUdRqVcXACMtXFJFVv6gm2H
+         /lpBq543BSbByfrbXjd1cCNvgLCnoxoVovGQfv96UBW+qBRctQ0R7dbuxielpsvbVPP/
+         Qqng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=e9JeVn1G8IdnIeIesci3+Ayk5EovOq0M3s+2FeKNFK0=;
+        b=O5olDignrzEOLTY9pZ3nRIoBKAC0diUyaZv43rRXpViAp/1zo1fMsBmecWLAlCiL1q
+         1HrXq18PI7EsDQdc1YJb9WSz9NMQLSB4cUZcsgDFno6a6Ld57a63qSSNVV4Tz8YTiqfH
+         mhpoT7Rr1fE4FSwOUCdPphrlDnBRnAZ06wEl3SS5wcRJZ89VnQ9TbTjrYtzHgbQsseYF
+         lBykEkq2X2NLI4OmAMZWvhTZFcwK2ytT8VA7vkW7a/ot8mX7vamvzMZ8TQ73P3551RNn
+         I4JJ+2UJEL1TAdC+X5jLNC/DnRlkfmQKLEu5hGQUg85Zd9k2YBvDxeunY7xG4PoQ4ppM
+         qz0w==
+X-Gm-Message-State: AOAM531lvU4mlTcGJqcVoQakA7zKCWZRBkOMt0/l4bwJwKnezFsIclKy
+        fdksxyaJZemxnk7olYEiLReuew==
+X-Google-Smtp-Source: ABdhPJyr6YEiNQNOwzD5WfXzXxLiSfPTTV2nKIC0FlJZRbbESbv1j2UsCVQtzVFeDjV+o96hBm31nQ==
+X-Received: by 2002:a9d:453:: with SMTP id 77mr9684827otc.31.1621617097435;
         Fri, 21 May 2021 10:11:37 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 069013F73D;
-        Fri, 21 May 2021 10:11:34 -0700 (PDT)
-Date:   Fri, 21 May 2021 18:11:32 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 12/21] sched: Allow task CPU affinity to be restricted
- on asymmetric systems
-Message-ID: <20210521171132.ev56j4isuxtf2zqa@e107158-lin.cambridge.arm.com>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-13-will@kernel.org>
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id e26sm1209578oig.9.2021.05.21.10.11.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 10:11:36 -0700 (PDT)
+Date:   Fri, 21 May 2021 12:11:34 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        robdclark@gmail.com, swboyd@chromium.org, vinod.koul@linaro.org,
+        dianders@chromium.org, khsieh@codeaurora.org, robh+dt@kernel.org,
+        sean@poorly.run, robh@kernel.org
+Subject: Re: [PATCH v17 1/4] dt-bindings: msm: disp: add yaml schemas for DPU
+ bindings
+Message-ID: <20210521171134.GB2484@yoga>
+References: <1621592844-6414-1-git-send-email-mkrishn@codeaurora.org>
+ <20210521160029.GA2484@yoga>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518094725.7701-13-will@kernel.org>
+In-Reply-To: <20210521160029.GA2484@yoga>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/18/21 10:47, Will Deacon wrote:
-> Asymmetric systems may not offer the same level of userspace ISA support
-> across all CPUs, meaning that some applications cannot be executed by
-> some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
-> not feature support for 32-bit applications on both clusters.
+On Fri 21 May 11:00 CDT 2021, Bjorn Andersson wrote:
+
+> On Fri 21 May 05:27 CDT 2021, Krishna Manikandan wrote:
+> > diff --git a/Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml b/Documentation/devicetree/bindings/display/msm/dpu-sc7180.yaml
+> [..]
+> > +      ports:
+> > +        $ref: /schemas/graph.yaml#/properties/ports
+> > +        description: |
+> > +          Contains the list of output ports from DPU device. These ports
+> > +          connect to interfaces that are external to the DPU hardware,
+> > +          such as DSI, DP etc. Each output port contains an endpoint that
+> > +          describes how it is connected to an external interface.
+> > +
+> > +        properties:
+> > +          port@0:
+> > +            $ref: /schemas/graph.yaml#/properties/port
+> > +            description: DPU_INTF1 (DSI1)
+> > +
+> > +          port@2:
+> > +            $ref: /schemas/graph.yaml#/properties/port
+> > +            description: DPU_INTF0 (DP)
 > 
-> Although userspace can carefully manage the affinity masks for such
-> tasks, one place where it is particularly problematic is execve()
-> because the CPU on which the execve() is occurring may be incompatible
-> with the new application image. In such a situation, it is desirable to
-> restrict the affinity mask of the task and ensure that the new image is
-> entered on a compatible CPU. From userspace's point of view, this looks
-> the same as if the incompatible CPUs have been hotplugged off in the
-> task's affinity mask. Similarly, if a subsequent execve() reverts to
-> a compatible image, then the old affinity is restored if it is still
-> valid.
+> Why is port@0 INTF1 and why is port@2 INTF0? In the binding you're
+> translating the two ports that are described are 0 and 1, representing
+> INTF1 and INTF2, or DSI1 and DSI2, respectively.
 > 
-> In preparation for restricting the affinity mask for compat tasks on
-> arm64 systems without uniform support for 32-bit applications, introduce
-> {force,relax}_compatible_cpus_allowed_ptr(), which respectively restrict
-> and restore the affinity mask for a task based on the compatible CPUs.
+> Further more, I have a need for somehow describing the pairing of 4 DP
+> INTFs (INTF 0, 3, 4 and 5) and how they are connected to the 3+1 DP+eDP
+> controllers.
 > 
-> Reviewed-by: Quentin Perret <qperret@google.com>
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  include/linux/sched.h |   2 +
->  kernel/sched/core.c   | 165 ++++++++++++++++++++++++++++++++++++++----
->  kernel/sched/sched.h  |   1 +
->  3 files changed, 152 insertions(+), 16 deletions(-)
+> Downstream this seems to be handled by adding cell-index to the DP
+> controllers and then matching that against the numbering in the driver's
+> INTF array. But rather than adding cell-index to map this, can't we
+> define that the port index is the INTF-number here?
 > 
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index db32d4f7e5b3..91a6cfeae242 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1691,6 +1691,8 @@ extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new
->  extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
->  extern int dup_user_cpus_ptr(struct task_struct *dst, struct task_struct *src, int node);
->  extern void release_user_cpus_ptr(struct task_struct *p);
-> +extern void force_compatible_cpus_allowed_ptr(struct task_struct *p);
-> +extern void relax_compatible_cpus_allowed_ptr(struct task_struct *p);
->  #else
->  static inline void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
->  {
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 808bbe669a6d..ba66bcf8e812 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -2357,26 +2357,21 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
->  }
->  
->  /*
-> - * Change a given task's CPU affinity. Migrate the thread to a
-> - * proper CPU and schedule it away if the CPU it's executing on
-> - * is removed from the allowed bitmask.
-> - *
-> - * NOTE: the caller must have a valid reference to the task, the
-> - * task must not exit() & deallocate itself prematurely. The
-> - * call is not atomic; no spinlocks may be held.
-> + * Called with both p->pi_lock and rq->lock held; drops both before returning.
->   */
-> -static int __set_cpus_allowed_ptr(struct task_struct *p,
-> -				  const struct cpumask *new_mask,
-> -				  u32 flags)
-> +static int __set_cpus_allowed_ptr_locked(struct task_struct *p,
-> +					 const struct cpumask *new_mask,
-> +					 u32 flags,
-> +					 struct rq *rq,
-> +					 struct rq_flags *rf)
-> +	__releases(rq->lock)
-> +	__releases(p->pi_lock)
->  {
->  	const struct cpumask *cpu_valid_mask = cpu_active_mask;
->  	const struct cpumask *cpu_allowed_mask = task_cpu_possible_mask(p);
->  	unsigned int dest_cpu;
-> -	struct rq_flags rf;
-> -	struct rq *rq;
->  	int ret = 0;
->  
-> -	rq = task_rq_lock(p, &rf);
->  	update_rq_clock(rq);
->  
->  	if (p->flags & PF_KTHREAD || is_migration_disabled(p)) {
-> @@ -2430,20 +2425,158 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->  
->  	__do_set_cpus_allowed(p, new_mask, flags);
->  
-> -	return affine_move_task(rq, p, &rf, dest_cpu, flags);
-> +	if (flags & SCA_USER)
-> +		release_user_cpus_ptr(p);
+> 
+> This would obviously break compatibility with existing DTBs, but we
+> could start by doing it selectively for the new compatibles, fix up the
+> existing dts files and then drop the selective application after 1 or 2
+> LTS releases.
+> 
 
-Why do we need to release the pointer here?
+In a chat with Rob I realized that my feedback here is unrelated to the
+yaml conversion and any conclusions of this discussion should be a
+separate patch anyways.
 
-Doesn't this mean if a 32bit task requests to change its affinity, then we'll
-lose this info and a subsequent execve() to a 64bit application means we won't
-be able to restore the original mask?
+So with the two style issues below resolve you have my:
 
-ie:
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-	p0-64bit
-	  execve(32bit_app)
-	    // p1-32bit created
-	    p1-32bit.change_affinity()
-	      relase_user_cpus_ptr()
-	    execve(64bit_app)           // lost info about p0 affinity?
+[..]
+> > +examples:
+[..]
+> > +                   ports {
+> > +                           #address-cells = <1>;
+> > +                           #size-cells = <0>;
+> > +
+> > +                           port@0 {
+> > +                                   reg = <0>;
+> > +                                   dpu_intf1_out: endpoint {
+> > +                                                  remote-endpoint = <&dsi0_in>;
+> > +                                   };
+> > +                           };
+> > +
+> > +                            port@2 {
+> > +                                    reg = <2>;
+> > +                                    dpu_intf0_out: endpoint {
+> > +                                                   remote-endpoint = <&dp_in>;
+> > +                                    };
+> > +                            };
+> 
+> The indentation is inconsistent among the ports.
+> 
+> > +                   };
+> > +         };
+> > +    };
+> > +...
+> > diff --git a/Documentation/devicetree/bindings/display/msm/dpu-sdm845.yaml b/Documentation/devicetree/bindings/display/msm/dpu-sdm845.yaml
+[..]
+> > +      operating-points-v2: true
+> 
+> You have a blank line between all other properties, but not here.
+> 
+> > +      ports:
 
-Hmm I think this helped me to get the answer. p1 changed its affinity, then
-there's nothing to be inherited by a new execve(), so yes we no longer need
-this info.
-
-> +
-> +	return affine_move_task(rq, p, rf, dest_cpu, flags);
->  
->  out:
-> -	task_rq_unlock(rq, p, &rf);
-> +	task_rq_unlock(rq, p, rf);
->  
->  	return ret;
->  }
-
-[...]
-
-> +/*
-> + * Change a given task's CPU affinity to the intersection of its current
-> + * affinity mask and @subset_mask, writing the resulting mask to @new_mask
-> + * and pointing @p->user_cpus_ptr to a copy of the old mask.
-> + * If the resulting mask is empty, leave the affinity unchanged and return
-> + * -EINVAL.
-> + */
-> +static int restrict_cpus_allowed_ptr(struct task_struct *p,
-> +				     struct cpumask *new_mask,
-> +				     const struct cpumask *subset_mask)
-> +{
-> +	struct rq_flags rf;
-> +	struct rq *rq;
-> +	int err;
-> +	struct cpumask *user_mask = NULL;
-> +
-> +	if (!p->user_cpus_ptr)
-> +		user_mask = kmalloc(cpumask_size(), GFP_KERNEL);
-> +
-> +	rq = task_rq_lock(p, &rf);
-> +
-> +	/*
-> +	 * We're about to butcher the task affinity, so keep track of what
-> +	 * the user asked for in case we're able to restore it later on.
-> +	 */
-> +	if (user_mask) {
-> +		cpumask_copy(user_mask, p->cpus_ptr);
-> +		p->user_cpus_ptr = user_mask;
-> +	}
-> +
-> +	/*
-> +	 * Forcefully restricting the affinity of a deadline task is
-> +	 * likely to cause problems, so fail and noisily override the
-> +	 * mask entirely.
-> +	 */
-> +	if (task_has_dl_policy(p) && dl_bandwidth_enabled()) {
-> +		err = -EPERM;
-> +		goto err_unlock;
-
-free(user_mark) first?
-
-> +	}
-> +
-> +	if (!cpumask_and(new_mask, &p->cpus_mask, subset_mask)) {
-> +		err = -EINVAL;
-> +		goto err_unlock;
-
-ditto
-
-> +	}
-> +
-> +	return __set_cpus_allowed_ptr_locked(p, new_mask, false, rq, &rf);
-> +
-> +err_unlock:
-> +	task_rq_unlock(rq, p, &rf);
-> +	return err;
-> +}
-
-Thanks
-
---
-Qais Yousef
+Regards,
+Bjorn
