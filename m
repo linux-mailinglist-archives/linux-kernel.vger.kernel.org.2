@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6E5438C8A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:48:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C5338C8A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235917AbhEUNuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231349AbhEUNuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:50:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 744DE60C3E;
-        Fri, 21 May 2021 13:48:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621604928;
-        bh=uUYri9y6jUODf1ugzxdQCJl1zNbfbn1EgEalzAcKuWQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=JYkCHzGpnmeOvqTV0TUhGbazPhjv0EZ14Q8T2AuyIhg/246GaiAertmegNGSOyKh5
-         8zaK5wGsVyQ4qx5wC9WtiAdXkrkoNVFqCfcUZWQKgOidXv1X1nKyjhcTM/yleiu6L4
-         P3qnaIAL82+ulpcV3q3B8hpViha8yh43xMlJ+t6yEy+86ruBaki+h0DDZ/8TT5ywAd
-         ktUM7dyKgj4Xw2zuCqAvsNxz/ACWx0xDowes3Pbg5Sisgv4WaApEqBu29nFQJwR5pw
-         vojX/9+2Y3C8SBlzmmHxqDgkAl9yCI4eOCvcPMEvb+op1nnnY/DqGFOzaYHFPjjNOu
-         lYTutn0vpLRnA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lk5WD-0002qt-Uf; Fri, 21 May 2021 15:48:50 +0200
-Date:   Fri, 21 May 2021 15:48:49 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/6] USB: serial: buffer-callback clean ups
-Message-ID: <YKe6QTPlwBS578JY@hovoldconsulting.com>
-References: <20210519092006.9775-1-johan@kernel.org>
- <YKemAh63ldwGUWBh@kroah.com>
+        id S236021AbhEUNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:51:04 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:54146 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233028AbhEUNvD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:51:03 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621604979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCaRskSS01bIv3f54A3vpRo8CfM3PmECUijGdGwwaZM=;
+        b=tsNUav2Duagwr1OktGXOly/chOAYD2bmyTPog0/54KKIKgYWZsSj/KoA1Do9CIlOHdRrAy
+        l8Wckg+es45UV29dbhRXSgApo2+AA7VfG6Kv4QP5t2xotRhoPFrD14s879TsrebIlT2oHp
+        bmNW0TCc/ml3Cs7HILsyp5pOHK9OrPtqv5Y8e3lTC7X0YK987RaccdtTlPYiwjKqO4KpMq
+        +WnGTkwEG6unkbj+4hC1rK180OyD1MXnnm3yMzvzH3FbMRvu0BIFrhKb1Y5k0eOTUagNu9
+        AbR2TCX062iTP9D1yquicr4ZkyTLQ/IxM5ro0kAK9v0hx2uk7VbtIo+KNQZieQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621604979;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HCaRskSS01bIv3f54A3vpRo8CfM3PmECUijGdGwwaZM=;
+        b=rnSbMyottTAmrHZEvgHBOGGBmuadQg48n9AQwtQ/zr3dDfwTnr15r9+PCVzal5FQ9yr1WI
+        vVjVECQFwutUJeDg==
+To:     Will Deacon <will@kernel.org>,
+        Mika =?utf-8?Q?Penttil=C3=A4?= <mika.penttila@nextfour.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Lorenzo Colitti <lorenzo@google.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>, kernel-team@android.com
+Subject: Re: [PATCH 3/5] tick/broadcast: Prefer per-cpu oneshot wakeup timers to broadcast
+In-Reply-To: <20210521112503.GA11850@willie-the-truck>
+References: <20210520184705.10845-1-will@kernel.org> <20210520184705.10845-4-will@kernel.org> <a269c869-b966-75d5-5fe1-6ed6921c1b83@nextfour.com> <20210521112503.GA11850@willie-the-truck>
+Date:   Fri, 21 May 2021 15:49:39 +0200
+Message-ID: <87tumw9oy4.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKemAh63ldwGUWBh@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 02:22:26PM +0200, Greg Kroah-Hartman wrote:
-> On Wed, May 19, 2021 at 11:20:00AM +0200, Johan Hovold wrote:
-> > This series clean up a few things related to the chars_in_buffer and
-> > write_room callbacks that were found during review of the recent
-> > conversion to have these callbacks return an unsigned int.
-> > 
-> > Johan
-> > 
-> > 
-> > Johan Hovold (6):
-> >   USB: serial: digi_acceleport: reduce chars_in_buffer over-reporting
-> >   USB: serial: digi_acceleport: add chars_in_buffer locking
-> >   USB: serial: io_edgeport: drop buffer-callback sanity checks
-> >   USB: serial: mos7720: drop buffer-callback sanity checks
-> >   USB: serial: mos7840: drop buffer-callback return-value comments
-> >   USB: serial: drop irq-flags initialisations
-> > 
-> >  drivers/usb/serial/digi_acceleport.c | 34 ++++++++++++++--------------
-> >  drivers/usb/serial/io_edgeport.c     | 27 +---------------------
-> >  drivers/usb/serial/metro-usb.c       | 12 +++++-----
-> >  drivers/usb/serial/mos7720.c         | 17 ++------------
-> >  drivers/usb/serial/mos7840.c         |  5 ----
-> >  drivers/usb/serial/quatech2.c        |  2 +-
-> >  6 files changed, 27 insertions(+), 70 deletions(-)
-> 
-> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+On Fri, May 21 2021 at 12:25, Will Deacon wrote:
+> On Fri, May 21, 2021 at 05:25:41AM +0300, Mika Penttil=C3=A4 wrote:
+>> On 20.5.2021 21.47, Will Deacon wrote:
+>> >   /*
+>> >    * Conditionally install/replace broadcast device
+>> >    */
+>> > -void tick_install_broadcast_device(struct clock_event_device *dev)
+>> > +void tick_install_broadcast_device(struct clock_event_device *dev, in=
+t cpu)
+>> >   {
+>> >   	struct clock_event_device *cur =3D tick_broadcast_device.evtdev;
+>> > +	if (tick_set_oneshot_wakeup_device(dev, cpu))
+>> > +		return;
+>> > +
+>> >   	if (!tick_check_broadcast_device(cur, dev))
+>> >   		return;
+>>=20
+>> Does this disable hpet registering as a global broadcast device on x86 ?=
+ I
+>> think it starts with cpumask =3D cpu0 so it qualifies for a percpu wakeup
+>> timer.
+>
+> Well spotted, I think you're probably right. I'll try to reproduce on my
+> laptop to confirm, but I hadn't noticed the tricks played with the cpumask
+> on x86.
+>
+> I'll probably need to rework things so that we install the broadcast timer
+> first, but prefer global devices.
 
-Thanks for reviewing. Now applied.
+HPET has cpumask(0) but does not have CLOCK_EVT_FEAT_PERCPU set. The
+feature flag is a clear indicator for per cpu.
 
-Johan
+Thanks,
+
+        tglx
