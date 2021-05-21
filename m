@@ -2,154 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C90D38BA99
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 01:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FFC38BAA3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:04:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234666AbhETX6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 19:58:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233104AbhETX6O (ORCPT
+        id S234733AbhEUAFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:05:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37120 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231628AbhEUAFQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 19:58:14 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DB2C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 16:56:52 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id p20so21882183ljj.8
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 16:56:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lWlNFmJ79w+TkVknTxM+4nCh7KlLiCGXQa0Fg/YBlH0=;
-        b=E7vGMVD+dkYS2CIfXp6POZ+DEQ2YU+qEJteMLMwDGK7Jh7xasDtQFyde+5bLKqZ43D
-         /X3+ARQ+gPFX62DriE7Dqhy0FNXFHgqFYglQmW803E1Et8bg6A/z21KyEZLtH7pho1XM
-         YZs/1u6TulQ6rbmIaqJ2zJEj4Y+jr1ij1INLKU2NfNYUu4ZixOwj4OpTX0IDLxSyhr31
-         nlK+tXed7EKpYNtBWljvY9dRwg8otn+JhsM/TzQlhyLU4OB3txilikvhGkf0tt821vCz
-         JO97v+GmFIscHpbVLKi5Qvi1icK9/PNLV+XtdloSb7J0+3CBTBBQmDEEh78Wr5pE+a87
-         VMAA==
+        Thu, 20 May 2021 20:05:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621555433;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=yY5C4rKyGeidFpZPaRAHZm77aYdXwBLOJbXSDp6aeQo=;
+        b=IrF0hc4kWrKQ0HfMBePMYtrv1LzTPUzpMXaTAaM9UgunaJOVidXYLwFdHiXsIbo2cnV5Zc
+        4A7N6jrR0lN3sBpg66gThLjuicMSzrwCLIrMp2SMChKvKcH4CFMFi/nB0RXPNpoC6CB5cb
+        4W/UKf+3RFix6/cU2dyGIFOASk9EFgI=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-528-2n40PGZiP16_vmcwtu3qlw-1; Thu, 20 May 2021 20:03:52 -0400
+X-MC-Unique: 2n40PGZiP16_vmcwtu3qlw-1
+Received: by mail-lf1-f69.google.com with SMTP id z1-20020a195e410000b0290229c07c3305so4316401lfi.11
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 17:03:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=lWlNFmJ79w+TkVknTxM+4nCh7KlLiCGXQa0Fg/YBlH0=;
-        b=U3NdDCgB5Cr31bCYb/ercg7sT81Am5iZ+lbO9nVL9e+dwCDXH1vcft+BDbHIuUnadl
-         VR7QFFyQb9WLjZkF8mMWIKyHprMDaSHymZJIDA46d/2hYsRyFCrJm50QkWLg0JWunQ/D
-         4Ex0+lYjNWIlW/cM0/p5ZM/UAuf6FaikgGYTkawZpHsweP8DnueAPurB6AhgLOGxBrYv
-         CoZqEFX81UspxzDAj0Q7XynXeOPWtj3KpgToP4jCiNz7qgwD5YDYlrxowb+t6T+5Jke8
-         PSkgzs4k84/1Vq72O0hEw8+Jd3ZFQZ+MwyQ8u+V2/Bha1H5OwezfRlzm6K+ZTY/brwm0
-         pcFg==
-X-Gm-Message-State: AOAM5306f5DT5zO+KHl+ncTO5aUAf0NT4hReaGjJVivT/JLBMVjCijCv
-        ubPVoinjog6BnX4R5HpJEFdG1hB9wU06yEIkrOa8Sg==
-X-Google-Smtp-Source: ABdhPJwoa5D9Ge6nfRq0cQ6H8ADf8Ge1uO66SK+0rnJusjrVGOb1FgKLOkd4o3KinhhvQsqkprnEIjKthJkNS5/QqfE=
-X-Received: by 2002:a2e:805a:: with SMTP id p26mr4445306ljg.495.1621555010593;
- Thu, 20 May 2021 16:56:50 -0700 (PDT)
+        bh=yY5C4rKyGeidFpZPaRAHZm77aYdXwBLOJbXSDp6aeQo=;
+        b=I1xcwFlS8vqsqmJ7gtFdd+4VIBduQ1meS3bfTjRO/uci4+I+cmhdHucDVDjSzR0k+e
+         ugydsljtXXEzrKo4xruQHqeyL6bzHcBAla24jfxNo487WQjOdIkOJedZZRVkUfoND4Fv
+         mU1cqvtev4vfEMkRhwNV5VJQi+BH4sl9zizB9cQpfzy9kVeSp1kkq1+d5hndtCgtzJy2
+         oV/tePqJz0Ap481jKls4cslYvcikSguDfgNnyjstg3Z8Q7cKrMJ7AU8wtl8STuT1XCb/
+         nA4Nyg1vF1k4/dr4utpdhw4BNQ1mP5Bp+KjX5lelL6C4dnoyYfkGbLIqfXLZvByNTtQN
+         VC4w==
+X-Gm-Message-State: AOAM531w1qYgxdmNhVcTWyMtmhw8XHN9sJI3Gu0gouGX3mXOwk0I5wHV
+        DZxKlxyfD7LZ90veuMAvaQaHo6C9hu/+Mfp5PTelKhNtCeGZRI4UnaqCIMnyzyStNzc/M8bwFi0
+        3ssH1owcNaTeCVHtt9AyceJYNoYsRi0MRVoUlcPQv
+X-Received: by 2002:a2e:1405:: with SMTP id u5mr4619206ljd.137.1621555430595;
+        Thu, 20 May 2021 17:03:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzPZc4H2Y4hAkVPTqEKOh1WdHXnKldKsyeMgCwEjITdNxHORoiwVToMhx6cyuK2hIWrTSLfeJEl7lCMqoeGy/c=
+X-Received: by 2002:a2e:1405:: with SMTP id u5mr4619179ljd.137.1621555430294;
+ Thu, 20 May 2021 17:03:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520231821.12272-1-maciej.falkowski9@gmail.com>
-In-Reply-To: <20210520231821.12272-1-maciej.falkowski9@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 20 May 2021 16:56:39 -0700
-Message-ID: <CAKwvOdnONTfTQiv-oDK9y6bQetZdaMOYZ16MVNO4npbhEsUcsQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] Makefile: clang-tools: Print information when
- clang-tidy tool is missing
-To:     Maciej Falkowski <maciej.falkowski9@gmail.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Huckleberry <nhuck15@gmail.com>
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
+ <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
+ <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
+ <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
+In-Reply-To: <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
+From:   Nitesh Lal <nilal@redhat.com>
+Date:   Thu, 20 May 2021 20:03:38 -0400
+Message-ID: <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
+ setting the hint
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic@kernel.org" <frederic@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 4:18 PM Maciej Falkowski
-<maciej.falkowski9@gmail.com> wrote:
+On Thu, May 20, 2021 at 5:57 PM Nitesh Lal <nilal@redhat.com> wrote:
 >
-> When `clang-tidy` tool is missing in the system, the FileNotFoundError
-> exception is raised in the program reporting a stack trace to the user:
+> On Mon, May 17, 2021 at 8:23 PM Nitesh Lal <nilal@redhat.com> wrote:
+> >
+> > On Mon, May 17, 2021 at 8:04 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > >
+> > > On Mon, May 17 2021 at 18:44, Nitesh Lal wrote:
+> > > > On Mon, May 17, 2021 at 4:48 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > >> The hint was added so that userspace has a better understanding where it
+> > > >> should place the interrupt. So if irqbalanced ignores it anyway, then
+> > > >> what's the point of the hint? IOW, why is it still used drivers?
+> > > >>
+> > > > Took a quick look at the irqbalance repo and saw the following commit:
+> > > >
+> > > > dcc411e7bf    remove affinity_hint infrastructure
+> > > >
+> > > > The commit message mentions that "PJ is redesiging how affinity hinting
+> > > > works in the kernel, the future model will just tell us to ignore an IRQ,
+> > > > and the kernel will handle placement for us.  As such we can remove the
+> > > > affinity_hint recognition entirely".
+> > >
+> > > No idea who PJ is. I really love useful commit messages. Maybe Neil can
+> > > shed some light on that.
+> > >
+> > > > This does indicate that apparently, irqbalance moved away from the usage of
+> > > > affinity_hint. However, the next question is what was this future
+> > > > model?
+> > >
+> > > I might have missed something in the last 5 years, but that's the first
+> > > time I hear about someone trying to cleanup that thing.
+> > >
+> > > > I don't know but I can surely look into it if that helps or maybe someone
+> > > > here already knows about it?
+> > >
+> > > I CC'ed Neil :)
+> >
+> > Thanks, I have added PJ Waskiewicz as well who I think was referred in
+> > that commit message as PJ.
+> >
+> > >
+> > > >> Now there is another aspect to that. What happens if irqbalanced does
+> > > >> not run at all and a driver relies on the side effect of the hint
+> > > >> setting the initial affinity. Bah...
+> > > >>
+> > > >
+> > > > Right, but if they only rely on this API so that the IRQs are spread across
+> > > > all the CPUs then that issue is already resolved and these other drivers
+> > > > should not regress because of changing this behavior. Isn't it?
+> > >
+> > > Is that true for all architectures?
+> >
+> > Unfortunately, I don't know and that's probably why we have to be careful.
 >
-> $ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
-> multiprocessing.pool.RemoteTraceback:
-> """
-> Traceback (most recent call last):
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 125, in worker
->     result = (True, func(*args, **kwds))
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 48, in mapstar
->     return list(map(*args))
->   File "./scripts/clang-tools/run-clang-tools.py", line 54, in run_analysis
->     p = subprocess.run(["clang-tidy", "-p", args.path, checks, entry["file"]],
->   File "/usr/lib64/python3.8/subprocess.py", line 489, in run
->     with Popen(*popenargs, **kwargs) as process:
->   File "/usr/lib64/python3.8/subprocess.py", line 854, in __init__
->     self._execute_child(args, executable, preexec_fn, close_fds,
->   File "/usr/lib64/python3.8/subprocess.py", line 1702, in _execute_child
->     raise child_exception_type(errno_num, err_msg, err_filename)
-> FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
-> """
+> I think here to ensure that we are not breaking any of the drivers we have
+> to first analyze all the existing drivers and understand how they are using
+> this API.
+> AFAIK there are three possible scenarios:
 >
-> The above exception was the direct cause of the following exception:
->
-> Traceback (most recent call last):
->   File "./scripts/clang-tools/run-clang-tools.py", line 74, in <module>
->     main()
->   File "./scripts/clang-tools/run-clang-tools.py", line 70, in main
->     pool.map(run_analysis, datastore)
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 364, in map
->     return self._map_async(func, iterable, mapstar, chunksize).get()
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 771, in get
->     raise self._value
-> FileNotFoundError: [Errno 2] No such file or directory: 'clang-tidy'
->
-> The patch adds more user-friendly information on the missing tool by
-> catching FileNotFoundError for `clang-tidy` file and raising exception
-> again for possible other files:
->
-> $ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
-> Command `clang-tidy` is missing in the system.
+> - A driver use this API to spread the IRQs
+>   + For this case we should be safe considering the spreading is naturally
+>     done from the IRQ subsystem itself.
 
-This is much nicer when I run:
-$ make LLVM=1 LLVM_IAS=1 -j72 clang-analyzer
-without clang-tidy built or installed locally, thank you for the patch.
-
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Please make sure to include the results from running
-./scripts/get_maintainer.pl on your patch files for the CC list.
+Forgot to mention another thing in the above case is to determine whether
+it is true for all architectures or not as Thomas mentioned.
 
 >
-> Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1342
-> ---
->  scripts/clang-tools/run-clang-tools.py | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+> - A driver use this API to actually set the hint
+>   + These drivers should have no functional impact because of this revert
 >
-> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-> index fa7655c7cec0..38fc311d2e03 100755
-> --- a/scripts/clang-tools/run-clang-tools.py
-> +++ b/scripts/clang-tools/run-clang-tools.py
-> @@ -67,7 +67,13 @@ def main():
->      # Read JSON data into the datastore variable
->      with open(args.path, "r") as f:
->          datastore = json.load(f)
-> -        pool.map(run_analysis, datastore)
-> +        try:
-> +            pool.map(run_analysis, datastore)
-> +        except FileNotFoundError as not_found:
-> +            if not_found.filename == 'clang-tidy':
-> +                print('Command `clang-tidy` is missing in the system.')
-> +            else:
-> +                raise not_found
+> - Driver use this API to force a certain affinity mask
+>   + In this case we have to replace the API with the irq_force_affinity()
 >
+> I can start looking into the individual drivers, however, testing them will
+> be a challenge.
 >
->  if __name__ == "__main__":
+> Any thoughts?
+>
 > --
-> 2.26.3
->
+> Thanks
+> Nitesh
+
 
 
 -- 
-Thanks,
-~Nick Desaulniers
+Thanks
+Nitesh
+
