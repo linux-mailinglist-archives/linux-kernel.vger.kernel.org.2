@@ -2,69 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ACA138C8B8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:52:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E395238C8BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbhEUNxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52594 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231349AbhEUNxs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:53:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 191086008E;
-        Fri, 21 May 2021 13:52:21 +0000 (UTC)
-Date:   Fri, 21 May 2021 19:22:18 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH v4 5/6] bus: mhi: pci_generic: Set register access length
- for MHI driver
-Message-ID: <20210521135218.GM70095@thinkpad>
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
- <1620330705-40192-6-git-send-email-bbhatt@codeaurora.org>
+        id S236258AbhEUNyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:54:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236275AbhEUNyD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:54:03 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C03C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:52:40 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id y36so10967159ybi.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:52:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hYyazQCV7o9/2ffX8oGQlM25PnfYmuFFZClG9zAHqJc=;
+        b=j/wmMDvq3difoHoU5SX0tyjbMB5bynTLuxWgfvvtxkWX6KYClGT/XVAMt+3Q221+BW
+         hUBbNCQPDDiVyNNOFrjU/y69OQOzSs1NaBK4JJBul8oUQeBXOJtlD1kCpP6/0QLVyM4Q
+         cLUhO6zRZwgHZ+/SM1SlF0Ab7t9ZusWM/sobTQmE22BaPG9LA1kbUGv6uHwsvL59iO3A
+         t3SzLIAoDbfUGdW9OctPBQ9pVE3QvVDxvFitxOktBTd9NjGiPn0+Y3f9qTa93h8BbxkD
+         xhue1VzAJhcaoSGbx636t1B8FHniYtFHwrfUQliTMKRgi2TZ53L8X7WNs3AtQa4inNmO
+         6S+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hYyazQCV7o9/2ffX8oGQlM25PnfYmuFFZClG9zAHqJc=;
+        b=QYFl/TGKHp9xfLj3z5LtDT4rT0RQQzWorPANMYceLY+wKQo1gLdGnt/lr9g3XxGEUC
+         wgJC0YCr9opqBma7DhFD7Qa65OJylRDuTCdXXO1erMmdYjVvvS0iDbhLZvua5Hd4KhcB
+         xdrhUTrjBc5tYoQwBf6mPVhT4maPGhSXWpVf3Vy05xoUxRG2nSCaAsZDBvUdg8NpGob6
+         szHiQvvxGVuQTOJYP5q9syd/UDyKeCtuJ5cPCzjsr5w3my7jgVgmpO/VXhGBcWJOYYTt
+         q5Fp3KIE0CnSgdeTIYMmRT25ohU28fsAkOitO07Yck5PbLXHA+hmuYYcO0yc1NlQcTTy
+         m1dg==
+X-Gm-Message-State: AOAM533wKJUtYUiPrwy1Xl1FpAUPDsNZ0jRlYAi4o68l1MYotz3cgxow
+        CnsEZbAYHQCbnMAGIZfmSsWrKila/ho7NZvzBT9EgISF3XFaeEaM
+X-Google-Smtp-Source: ABdhPJy3kkuAHHd98B11lrxrq9K6DHkYZ0z6vF25s6RHXk7bi60FZKix45bdB3moE7LYh9l8X2S/jPZOAZ3Bp/en79A=
+X-Received: by 2002:a25:bd04:: with SMTP id f4mr15874966ybk.302.1621605159628;
+ Fri, 21 May 2021 06:52:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620330705-40192-6-git-send-email-bbhatt@codeaurora.org>
+References: <20210514094108.28890-1-aardelean@deviqon.com>
+In-Reply-To: <20210514094108.28890-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 21 May 2021 15:52:29 +0200
+Message-ID: <CAMpxmJWmc-8cCZ5EQcnBKSAmXPbcVUnX7GdhKgKWFp5i=B6y1w@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-tps68470: remove platform_set_drvdata() +
+ cleanup probe
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 12:51:44PM -0700, Bhaumik Bhatt wrote:
-> MHI driver requires register space length to add range checks and
-> prevent memory region accesses outside of that for MMIO space.
-> Set it from the PCI generic controller driver before registering
-> the MHI controller.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+On Fri, May 14, 2021 at 11:41 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
+>
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
+>
+> If this is removed, we can also just do a direct return on
+> devm_gpiochip_add_data(). We don't need to print that this call failed as
+> there are other ways to log/see this during probe.
+>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/gpio/gpio-tps68470.c | 12 +-----------
+>  1 file changed, 1 insertion(+), 11 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-tps68470.c b/drivers/gpio/gpio-tps68470.c
+> index f7f5f770e0fb..423b7bc30ae8 100644
+> --- a/drivers/gpio/gpio-tps68470.c
+> +++ b/drivers/gpio/gpio-tps68470.c
+> @@ -125,7 +125,6 @@ static const char *tps68470_names[TPS68470_N_GPIO] = {
+>  static int tps68470_gpio_probe(struct platform_device *pdev)
+>  {
+>         struct tps68470_gpio_data *tps68470_gpio;
+> -       int ret;
+>
+>         tps68470_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps68470_gpio),
+>                                      GFP_KERNEL);
+> @@ -146,16 +145,7 @@ static int tps68470_gpio_probe(struct platform_device *pdev)
+>         tps68470_gpio->gc.base = -1;
+>         tps68470_gpio->gc.parent = &pdev->dev;
+>
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc,
+> -                                    tps68470_gpio);
+> -       if (ret < 0) {
+> -               dev_err(&pdev->dev, "Failed to register gpio_chip: %d\n", ret);
+> -               return ret;
+> -       }
+> -
+> -       platform_set_drvdata(pdev, tps68470_gpio);
+> -
+> -       return ret;
+> +       return devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc, tps68470_gpio);
+>  }
+>
+>  static struct platform_driver tps68470_gpio_driver = {
+> --
+> 2.31.1
+>
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Applied. I got confused by the dev_get_drvdata() call earlier in probe
+but this one's for the parent.
 
 Thanks,
-Mani
-
-> ---
->  drivers/bus/mhi/pci_generic.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 7c810f0..fb7889f 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -463,6 +463,7 @@ static int mhi_pci_claim(struct mhi_controller *mhi_cntrl,
->  		return err;
->  	}
->  	mhi_cntrl->regs = pcim_iomap_table(pdev)[bar_num];
-> +	mhi_cntrl->reg_len = pci_resource_len(pdev, bar_num);
->  
->  	err = pci_set_dma_mask(pdev, dma_mask);
->  	if (err) {
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Bart
