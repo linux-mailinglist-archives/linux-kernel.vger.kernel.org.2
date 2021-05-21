@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A74DB38C6BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2EE938C6CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:47:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233715AbhEUMpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:45:52 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3619 "EHLO
+        id S234250AbhEUMsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:48:38 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3620 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229915AbhEUMpo (ORCPT
+        with ESMTP id S229915AbhEUMse (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:45:44 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FmmRg3dlpzQqgB;
-        Fri, 21 May 2021 20:40:47 +0800 (CST)
+        Fri, 21 May 2021 08:48:34 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FmmVx4b81zQqdl;
+        Fri, 21 May 2021 20:43:37 +0800 (CST)
 Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 20:44:19 +0800
+ 15.1.2176.2; Fri, 21 May 2021 20:47:07 +0800
 Received: from linux-lmwb.huawei.com (10.175.103.112) by
  dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 21 May 2021 20:44:18 +0800
+ 15.1.2176.2; Fri, 21 May 2021 20:47:06 +0800
 From:   Zou Wei <zou_wei@huawei.com>
-To:     <a.hajda@samsung.com>, <narmstrong@baylibre.com>,
-        <robert.foss@linaro.org>, <Laurent.pinchart@ideasonboard.com>,
-        <jonas@kwiboo.se>, <jernej.skrabec@gmail.com>, <airlied@linux.ie>,
-        <daniel@ffwll.ch>, <emma@anholt.net>, <mripard@kernel.org>
-CC:     <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        Zou Wei <zou_wei@huawei.com>
-Subject: [PATCH -next] drm: Fix PM reference leak
-Date:   Fri, 21 May 2021 21:03:06 +0800
-Message-ID: <1621602186-74786-1-git-send-email-zou_wei@huawei.com>
+To:     <marek.vasut+renesas@gmail.com>,
+        <yoshihiro.shimoda.uh@renesas.com>, <lorenzo.pieralisi@arm.com>,
+        <robh@kernel.org>, <kw@linux.com>, <bhelgaas@google.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-renesas-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Zou Wei <zou_wei@huawei.com>
+Subject: [PATCH -next] PCI: rcar: Fix PM reference leak in rcar_pcie_ep_probe()
+Date:   Fri, 21 May 2021 21:05:54 +0800
+Message-ID: <1621602354-109955-1-git-send-email-zou_wei@huawei.com>
 X-Mailer: git-send-email 2.6.2
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.175.103.112]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggemi762-chm.china.huawei.com (10.1.198.148)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -52,36 +51,22 @@ counter balanced.
 Reported-by: Hulk Robot <hulkci@huawei.com>
 Signed-off-by: Zou Wei <zou_wei@huawei.com>
 ---
- drivers/gpu/drm/bridge/cdns-dsi.c | 2 +-
- drivers/gpu/drm/vc4/vc4_hdmi.c    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/pci/controller/pcie-rcar-ep.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/cdns-dsi.c b/drivers/gpu/drm/bridge/cdns-dsi.c
-index 76373e3..b31281f 100644
---- a/drivers/gpu/drm/bridge/cdns-dsi.c
-+++ b/drivers/gpu/drm/bridge/cdns-dsi.c
-@@ -1028,7 +1028,7 @@ static ssize_t cdns_dsi_transfer(struct mipi_dsi_host *host,
- 	struct mipi_dsi_packet packet;
- 	int ret, i, tx_len, rx_len;
+diff --git a/drivers/pci/controller/pcie-rcar-ep.c b/drivers/pci/controller/pcie-rcar-ep.c
+index b4a288e..8a8c46c 100644
+--- a/drivers/pci/controller/pcie-rcar-ep.c
++++ b/drivers/pci/controller/pcie-rcar-ep.c
+@@ -492,7 +492,7 @@ static int rcar_pcie_ep_probe(struct platform_device *pdev)
+ 	pcie->dev = dev;
  
--	ret = pm_runtime_get_sync(host->dev);
-+	ret = pm_runtime_resume_and_get(host->dev);
- 	if (ret < 0)
- 		return ret;
- 
-diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index c27b287..f20a65b 100644
---- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-+++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -798,7 +798,7 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
- 	unsigned long pixel_rate, hsm_rate;
- 	int ret;
- 
--	ret = pm_runtime_get_sync(&vc4_hdmi->pdev->dev);
-+	ret = pm_runtime_resume_and_get(&vc4_hdmi->pdev->dev);
- 	if (ret < 0) {
- 		DRM_ERROR("Failed to retain power domain: %d\n", ret);
- 		return;
+ 	pm_runtime_enable(dev);
+-	err = pm_runtime_get_sync(dev);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err < 0) {
+ 		dev_err(dev, "pm_runtime_get_sync failed\n");
+ 		goto err_pm_disable;
 -- 
 2.6.2
 
