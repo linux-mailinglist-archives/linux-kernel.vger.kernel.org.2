@@ -2,181 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BDF838CB25
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:35:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A48DA38CB28
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235362AbhEUQhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:37:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25117 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235810AbhEUQhC (ORCPT
+        id S237705AbhEUQh2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:37:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236590AbhEUQh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:37:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621614939;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HZlyA2fykG9/ItrhE3JKOBw8IERquxE+qww/yqJgdxs=;
-        b=EVfldzmQF9/pbQH14Jf0HlPngBLovtyTmD8ZCgV8811pFuiY8pkBHboHU9+9fcekdnWDto
-        i3jdznWHjri4+wbb4zSmxx937rk0oQ8aFwqDGO/bkqMq36eMT0ZKFKfRqdN25zFMJ+9OPA
-        e7/FZT8q/3Q78vF+G/9AjASkq5Gjl2M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-60-nriD3aWLNDK0n9nMY9sEnA-1; Fri, 21 May 2021 12:35:35 -0400
-X-MC-Unique: nriD3aWLNDK0n9nMY9sEnA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 96A621020C3A;
-        Fri, 21 May 2021 16:35:33 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.40.192.49])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 9143E6A03D;
-        Fri, 21 May 2021 16:35:28 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 21 May 2021 18:35:33 +0200 (CEST)
-Date:   Fri, 21 May 2021 18:35:27 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     akpm@linux-foundation.org
-Cc:     bp@suse.de, davidchao@google.com, jenhaochen@google.com,
-        jkosina@suse.cz, josh@joshtriplett.org, liumartin@google.com,
-        mhocko@suse.cz, mingo@redhat.com, mm-commits@vger.kernel.org,
-        nathan@kernel.org, ndesaulniers@google.com,
-        paulmck@linux.vnet.ibm.com, peterz@infradead.org, pmladek@suse.com,
-        rostedt@goodmis.org, stable@vger.kernel.org, tglx@linutronix.de,
-        tj@kernel.org, vbabka@suse.cz, linux-kernel@vger.kernel.org
-Subject: Re: +
- kthread-fix-kthread_mod_delayed_work-vs-kthread_cancel_delayed_work_sync-race.patch
- added to -mm tree
-Message-ID: <20210521163526.GA17916@redhat.com>
-References: <20210520214737.MrGGKbPrJ%akpm@linux-foundation.org>
+        Fri, 21 May 2021 12:37:26 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17648C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:36:02 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id d14so20330918ybe.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:36:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=1dOqFSSZPpQ9Fgo3UhWdWkVJF/jVeCSjCFheVI4a2ik=;
+        b=RoTVA2NgHUbxRJhBJ/luJ49b3as6mCmRsiOebUYm7u0Af1Dv4jYhCFuxRUolVEHw5k
+         Rh/Hm5ZrO40SNvD0NOyzH7CNaLyrCAjFz1XR+jT5yQajxGx61DlJIX3hlc1Kjl/Vduw8
+         zSM2qx65ETxEx6K6IrATwctFyiuiB7zv5ZHqvrdCPjYLG/cVnHMbCFi/wW59xMkp3P18
+         kcfDMAF7VXuyXLUOE4e5E76wvPsWKP2M+YVKBX0mr5GwHoFdQRJ+FPfMc700uBzIK+Bd
+         F/MvTVIke6bfpVCwcMli5uF5HEY99M7WI09Ov33IjJztIYA4lH6ke2vhSvJUBIlEkrWg
+         wm3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1dOqFSSZPpQ9Fgo3UhWdWkVJF/jVeCSjCFheVI4a2ik=;
+        b=ZSAbVeSPBA6DE+l019QkiYoyJTeKd+6m+8AhVfeLadGy9loW8Y84S8nPz/3cwH6we0
+         VGE0bY6hhJlIAYw1VrI7/0YYDcNtVaOkRUmJON0j0mpak5qzMSlY35aUDL5ecns/zI5p
+         qmobPqhSeLAA/gwsBqDnB/C7pmpXafcuRZ7ibusmuxhdiD9/HV7admuVJyQyV/0uCVoL
+         MfqAZ5/SrKzIDsM+e5/m1kYaSmNXdv1yCf7q3EjWTGn1d+5rjjjRCaJm/2k4+FoOoqqb
+         +L4F10jcZ6t/VwrSHtmdu+TRnJuk9wc7VKBv1dYoLzBOPzwWqMaNwyWR10hOXuDf2h6f
+         ULTw==
+X-Gm-Message-State: AOAM533mSF+B28D0n9f4rRPewsm4/xoB/bUL794FmDJzliavGJqvKlBk
+        c3YrskibFHmeJz2YUT9QMWQ+GQYkvv/nDP/FLBRWCA==
+X-Google-Smtp-Source: ABdhPJzcuGIGx/pxw8hsmVSOoMBfMrfo9cnaLqQndAXSfql50m/o1R/dwloSkOOvXmhlfSpY7l2MnV0Osiziuq3zeLE=
+X-Received: by 2002:a25:287:: with SMTP id 129mr16144124ybc.312.1621614961384;
+ Fri, 21 May 2021 09:36:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520214737.MrGGKbPrJ%akpm@linux-foundation.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+ <e3d3e704804668d1403f3630c181010b34409c8f.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+ <12bb40f022be0378ed493e7ad33122b0@walle.cc> <87a6ooh46s.fsf@miraculix.mork.no>
+ <d6bb1e458d5aa6a32f31f7731e1a6097a225d634.camel@fi.rohmeurope.com>
+In-Reply-To: <d6bb1e458d5aa6a32f31f7731e1a6097a225d634.camel@fi.rohmeurope.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 21 May 2021 18:35:50 +0200
+Message-ID: <CAMpxmJXkYZ7mZA426Jgm_zL+L1ZFB1ToRf2L8oGmyBuOHQo=UQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] gpio: gpio-regmap: Use devm_add_action()
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     "michael@walle.cc" <michael@walle.cc>,
+        "bjorn@mork.no" <bjorn@mork.no>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/20, Andrew Morton wrote:
+On Fri, May 21, 2021 at 12:31 PM Vaittinen, Matti
+<Matti.Vaittinen@fi.rohmeurope.com> wrote:
 >
-> --- a/kernel/kthread.c~kthread-fix-kthread_mod_delayed_work-vs-kthread_cancel_delayed_work_sync-race
-> +++ a/kernel/kthread.c
-> @@ -1181,6 +1181,19 @@ bool kthread_mod_delayed_work(struct kth
->  		goto out;
 >
->  	ret = __kthread_cancel_work(work, true, &flags);
-> +
-> +	/*
-> +	 * Canceling could run in parallel from kthread_cancel_delayed_work_sync
-> +	 * and change work's canceling count as the spinlock is released and regain
-> +	 * in __kthread_cancel_work so we need to check the count again. Otherwise,
-> +	 * we might incorrectly queue the dwork and further cause
-> +	 * cancel_delayed_work_sync thread waiting for flush dwork endlessly.
-> +	 */
-> +	if (work->canceling) {
-> +		ret = false;
-> +		goto out;
-> +	}
-> +
->  fast_queue:
->  	__kthread_queue_delayed_work(worker, dwork, delay);
+> On Fri, 2021-05-21 at 10:38 +0200, Bj=C3=B8rn Mork wrote:
+> > Michael Walle <michael@walle.cc> writes:
+> >
+> > > Am 2021-05-21 08:28, schrieb Matti Vaittinen:
+> > > > Slightly simplify the devm_gpio_regmap_register() by using the
+> > > > devm_add_action().
+> > >
+> > > Hm, nice, but what bothers me a bit is that no other subsystem
+> > > does it that way, eg. hwmon/hwmon.c or watchdog/watchdog_core.c.
+> > > They also store just one pointer, thus could be simplified in the
+> > > same way. What I don't know is if devm_add_action() was intended
+> > > to be used this way. So I can't say much for this patch ;)
+> >
+> > There are some examples.  Like:
+> >
+> > int devm_i2c_add_adapter(struct device *dev, struct i2c_adapter
+> > *adapter)
+> > {
+> >         int ret;
+> >
+> >         ret =3D i2c_add_adapter(adapter);
+> >         if (ret)
+> >                 return ret;
+> >
+> >         return devm_add_action_or_reset(dev, devm_i2c_del_adapter,
+> > adapter);
+> > }
+> >
+> >
+> > You should probably use the devm_add_action_or_reset() wrapper here
+> > too,
+> > catching the unlikely devm_add_action() alloc failure.
+> >
+>
+> I was thinking of it but as the gpio registration succeeded I was
+> thinking that we could go on with it - (which means we can proceed but
+> the gpio is never released.)
+>
+> I am not sure how much difference it makes in the case of small alloc
+> failure ;)
+>
+> But as it seems I am in any case re-spinning this I can change this to
+> the devm_add_action_or_reset() and fail the gpio_regmap registration if
+> alloc fails.
+>
+> Best Regards
+>         Matti Vaittinen
 
-Never looked at this code before, can't review...
+Hi Matti,
 
-but note that another caller of __kthread_queue_delayed_work() needs to
-check work->canceling too. So perhaps we should simply add queuing_blocked()
-into __kthread_queue_delayed_work() ?
+Please use the reset variant. We always want to roll-back the changes
+done in a function before the failure and propagate the error code.
 
-Something like below, uncompiled/untested, most probably incorrect.
-
-Either way, this comment
-
-	 * Return: %true if @dwork was pending and its timer was modified,
-	 * %false otherwise.
-
-above kthread_mod_delayed_work looks obviously wrong. Currently it returns
-true if this work was pending. With your patch it returns true if it was
-pending and not canceling.
-
-With the patch below it returns true if the work was (re)queued successfully,
-and this makes more sense to me. But again, I can easily misread this code.
-
-In any case, even if my patch is correct, I won't insist, your fix is
-much simpler.
-
-Oleg.
-
---- x/kernel/kthread.c
-+++ x/kernel/kthread.c
-@@ -977,7 +977,7 @@ void kthread_delayed_work_timer_fn(struc
- }
- EXPORT_SYMBOL(kthread_delayed_work_timer_fn);
- 
--static void __kthread_queue_delayed_work(struct kthread_worker *worker,
-+static bool __kthread_queue_delayed_work(struct kthread_worker *worker,
- 					 struct kthread_delayed_work *dwork,
- 					 unsigned long delay)
- {
-@@ -987,6 +987,9 @@ static void __kthread_queue_delayed_work
- 	WARN_ON_FUNCTION_MISMATCH(timer->function,
- 				  kthread_delayed_work_timer_fn);
- 
-+	if (queuing_blocked(worker, work))
-+		return false;
-+
- 	/*
- 	 * If @delay is 0, queue @dwork->work immediately.  This is for
- 	 * both optimization and correctness.  The earliest @timer can
-@@ -995,7 +998,7 @@ static void __kthread_queue_delayed_work
- 	 */
- 	if (!delay) {
- 		kthread_insert_work(worker, work, &worker->work_list);
--		return;
-+		return true;
- 	}
- 
- 	/* Be paranoid and try to detect possible races already now. */
-@@ -1005,6 +1008,7 @@ static void __kthread_queue_delayed_work
- 	work->worker = worker;
- 	timer->expires = jiffies + delay;
- 	add_timer(timer);
-+	return true;
- }
- 
- /**
-@@ -1028,16 +1032,12 @@ bool kthread_queue_delayed_work(struct k
- {
- 	struct kthread_work *work = &dwork->work;
- 	unsigned long flags;
--	bool ret = false;
-+	bool ret;
- 
- 	raw_spin_lock_irqsave(&worker->lock, flags);
--
--	if (!queuing_blocked(worker, work)) {
--		__kthread_queue_delayed_work(worker, dwork, delay);
--		ret = true;
--	}
--
-+	ret = __kthread_queue_delayed_work(worker, dwork, delay);
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
-+
- 	return ret;
- }
- EXPORT_SYMBOL_GPL(kthread_queue_delayed_work);
-@@ -1180,9 +1180,9 @@ bool kthread_mod_delayed_work(struct kth
- 	if (work->canceling)
- 		goto out;
- 
--	ret = __kthread_cancel_work(work, true, &flags);
-+	__kthread_cancel_work(work, true, &flags);
- fast_queue:
--	__kthread_queue_delayed_work(worker, dwork, delay);
-+	ret = __kthread_queue_delayed_work(worker, dwork, delay);
- out:
- 	raw_spin_unlock_irqrestore(&worker->lock, flags);
- 	return ret;
-
+Bart
