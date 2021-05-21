@@ -2,174 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FFC38BAA3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB42F38BAA9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:04:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234733AbhEUAFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:05:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37120 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231628AbhEUAFQ (ORCPT
+        id S234795AbhEUAGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:06:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231628AbhEUAGO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:05:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621555433;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yY5C4rKyGeidFpZPaRAHZm77aYdXwBLOJbXSDp6aeQo=;
-        b=IrF0hc4kWrKQ0HfMBePMYtrv1LzTPUzpMXaTAaM9UgunaJOVidXYLwFdHiXsIbo2cnV5Zc
-        4A7N6jrR0lN3sBpg66gThLjuicMSzrwCLIrMp2SMChKvKcH4CFMFi/nB0RXPNpoC6CB5cb
-        4W/UKf+3RFix6/cU2dyGIFOASk9EFgI=
-Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
- [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-528-2n40PGZiP16_vmcwtu3qlw-1; Thu, 20 May 2021 20:03:52 -0400
-X-MC-Unique: 2n40PGZiP16_vmcwtu3qlw-1
-Received: by mail-lf1-f69.google.com with SMTP id z1-20020a195e410000b0290229c07c3305so4316401lfi.11
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 17:03:51 -0700 (PDT)
+        Thu, 20 May 2021 20:06:14 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BABAC061574;
+        Thu, 20 May 2021 17:04:51 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id x188so13586294pfd.7;
+        Thu, 20 May 2021 17:04:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+WD1bA7qEE56Fcg4L44BJACIdsdydoY9l3pDTKqewqc=;
+        b=EGakKBwPKC/CpT1NEr2Vt8BM4b1JRvz0hHMeKJl4aNi13WSiwMzF4iyCkuwSlwGxur
+         Zpu0qGXMDEF4timdIZ8B9Z3wK+lSwmwoTap9ceJfP7CyaBZ0l3GoTiNoSkV6rNvhNzAI
+         Uq/7WdQOISrGud4e5hWWbh1KThzII/ZPZcGxsYNTM/3JhcPGolSImLRlv1z5ndWZS95/
+         lrJVfk8nCmX4GBrlna9c8zq2oJrByhF3s7aTx071JnV7RTdNZtw/IXUwur4/IO9+pPeJ
+         xPEaeptQTq5bBaCpOwcvav5W3Mw6kguRClbAtrODO5UStKJFQqHetShoH/QFWTWbxxFK
+         HosA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yY5C4rKyGeidFpZPaRAHZm77aYdXwBLOJbXSDp6aeQo=;
-        b=I1xcwFlS8vqsqmJ7gtFdd+4VIBduQ1meS3bfTjRO/uci4+I+cmhdHucDVDjSzR0k+e
-         ugydsljtXXEzrKo4xruQHqeyL6bzHcBAla24jfxNo487WQjOdIkOJedZZRVkUfoND4Fv
-         mU1cqvtev4vfEMkRhwNV5VJQi+BH4sl9zizB9cQpfzy9kVeSp1kkq1+d5hndtCgtzJy2
-         oV/tePqJz0Ap481jKls4cslYvcikSguDfgNnyjstg3Z8Q7cKrMJ7AU8wtl8STuT1XCb/
-         nA4Nyg1vF1k4/dr4utpdhw4BNQ1mP5Bp+KjX5lelL6C4dnoyYfkGbLIqfXLZvByNTtQN
-         VC4w==
-X-Gm-Message-State: AOAM531w1qYgxdmNhVcTWyMtmhw8XHN9sJI3Gu0gouGX3mXOwk0I5wHV
-        DZxKlxyfD7LZ90veuMAvaQaHo6C9hu/+Mfp5PTelKhNtCeGZRI4UnaqCIMnyzyStNzc/M8bwFi0
-        3ssH1owcNaTeCVHtt9AyceJYNoYsRi0MRVoUlcPQv
-X-Received: by 2002:a2e:1405:: with SMTP id u5mr4619206ljd.137.1621555430595;
-        Thu, 20 May 2021 17:03:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzPZc4H2Y4hAkVPTqEKOh1WdHXnKldKsyeMgCwEjITdNxHORoiwVToMhx6cyuK2hIWrTSLfeJEl7lCMqoeGy/c=
-X-Received: by 2002:a2e:1405:: with SMTP id u5mr4619179ljd.137.1621555430294;
- Thu, 20 May 2021 17:03:50 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=+WD1bA7qEE56Fcg4L44BJACIdsdydoY9l3pDTKqewqc=;
+        b=Cv21GVS9aOk76yKK6T6FMBFGUT6c31Olequr9IUCMWz+F52Fh29CCoKaoSOqfTs9sb
+         CA7v0TUCJ8hbri+PLXMmYndZ36lOnXUIXkIA6MBWMAHc40wJDApH6TiyJgvT0jr2KQp1
+         /F6keUoj1gQ1csdRSofv7w+wtie32mF9apZ5J4EjTTbRnPdbxsTEkX62MRSgHStGJ68i
+         yjpklN+ocuD5YGgbPs4kP0t9eVwxsHLZKcHySRotPj7+QyPux1uVBc4cbsh5rFq7FalI
+         W4Ho23ImE92XmyyQAIYxuVeqVvWYsn/ExRnjT9ucoNeszGQpJr5W/flLU4m9eRqV0FTG
+         GGug==
+X-Gm-Message-State: AOAM532aAWOWgwlnSPbllhYd3UjDTERbOmg1uwmwdFqdvwZi4gwPX5zL
+        qM8bUrsINpPa4gzXPtkw4nfnC8w/aNxy/w==
+X-Google-Smtp-Source: ABdhPJzyXixnJwT3dIdVGaBn1fJ2Fdw9+FACZ1FT4k74jrqH5GUqcCD/2IbwMorrUqcLQ6vpe/E9EQ==
+X-Received: by 2002:a65:4689:: with SMTP id h9mr6909294pgr.347.1621555490434;
+        Thu, 20 May 2021 17:04:50 -0700 (PDT)
+Received: from kelvin-System-Product-Name.lan ([117.173.227.56])
+        by smtp.gmail.com with ESMTPSA id t22sm2736016pfl.50.2021.05.20.17.04.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 17:04:49 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kelvin Cheung <keguang.zhang@gmail.com>
+Subject: [PATCH 0/3] MIPS: Loongson1B: Add dmaengine and NAND device
+Date:   Fri, 21 May 2021 08:04:02 +0800
+Message-Id: <20210521000405.4387-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de>
- <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com>
- <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com>
- <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
-In-Reply-To: <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Thu, 20 May 2021 20:03:38 -0400
-Message-ID: <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
- setting the hint
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Alex Belits <abelits@marvell.com>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 5:57 PM Nitesh Lal <nilal@redhat.com> wrote:
->
-> On Mon, May 17, 2021 at 8:23 PM Nitesh Lal <nilal@redhat.com> wrote:
-> >
-> > On Mon, May 17, 2021 at 8:04 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > >
-> > > On Mon, May 17 2021 at 18:44, Nitesh Lal wrote:
-> > > > On Mon, May 17, 2021 at 4:48 PM Thomas Gleixner <tglx@linutronix.de> wrote:
-> > > >> The hint was added so that userspace has a better understanding where it
-> > > >> should place the interrupt. So if irqbalanced ignores it anyway, then
-> > > >> what's the point of the hint? IOW, why is it still used drivers?
-> > > >>
-> > > > Took a quick look at the irqbalance repo and saw the following commit:
-> > > >
-> > > > dcc411e7bf    remove affinity_hint infrastructure
-> > > >
-> > > > The commit message mentions that "PJ is redesiging how affinity hinting
-> > > > works in the kernel, the future model will just tell us to ignore an IRQ,
-> > > > and the kernel will handle placement for us.  As such we can remove the
-> > > > affinity_hint recognition entirely".
-> > >
-> > > No idea who PJ is. I really love useful commit messages. Maybe Neil can
-> > > shed some light on that.
-> > >
-> > > > This does indicate that apparently, irqbalance moved away from the usage of
-> > > > affinity_hint. However, the next question is what was this future
-> > > > model?
-> > >
-> > > I might have missed something in the last 5 years, but that's the first
-> > > time I hear about someone trying to cleanup that thing.
-> > >
-> > > > I don't know but I can surely look into it if that helps or maybe someone
-> > > > here already knows about it?
-> > >
-> > > I CC'ed Neil :)
-> >
-> > Thanks, I have added PJ Waskiewicz as well who I think was referred in
-> > that commit message as PJ.
-> >
-> > >
-> > > >> Now there is another aspect to that. What happens if irqbalanced does
-> > > >> not run at all and a driver relies on the side effect of the hint
-> > > >> setting the initial affinity. Bah...
-> > > >>
-> > > >
-> > > > Right, but if they only rely on this API so that the IRQs are spread across
-> > > > all the CPUs then that issue is already resolved and these other drivers
-> > > > should not regress because of changing this behavior. Isn't it?
-> > >
-> > > Is that true for all architectures?
-> >
-> > Unfortunately, I don't know and that's probably why we have to be careful.
->
-> I think here to ensure that we are not breaking any of the drivers we have
-> to first analyze all the existing drivers and understand how they are using
-> this API.
-> AFAIK there are three possible scenarios:
->
-> - A driver use this API to spread the IRQs
->   + For this case we should be safe considering the spreading is naturally
->     done from the IRQ subsystem itself.
+From: Kelvin Cheung <keguang.zhang@gmail.com>
 
-Forgot to mention another thing in the above case is to determine whether
-it is true for all architectures or not as Thomas mentioned.
+This patchset is to add dmaengine and NAND device
+for Loongson1B.
 
->
-> - A driver use this API to actually set the hint
->   + These drivers should have no functional impact because of this revert
->
-> - Driver use this API to force a certain affinity mask
->   + In this case we have to replace the API with the irq_force_affinity()
->
-> I can start looking into the individual drivers, however, testing them will
-> be a challenge.
->
-> Any thoughts?
->
-> --
-> Thanks
-> Nitesh
+This applies on top of mips-next.
+
+Kelvin Cheung (3):
+  MIPS: Loongson1B: Add dma_slave_map to DMA platform data
+  MIPS: Loongson1B: Add Loongson1 dmaengine device
+  MIPS: Loongson1B: Add Loongson1 NAND device
+
+ arch/mips/include/asm/mach-loongson32/dma.h   |  7 ++-
+ arch/mips/include/asm/mach-loongson32/nand.h  |  4 --
+ .../include/asm/mach-loongson32/platform.h    |  4 ++
+ arch/mips/loongson32/common/platform.c        | 63 +++++++++++++++++++
+ arch/mips/loongson32/ls1b/board.c             | 37 ++++++++++-
+ 5 files changed, 107 insertions(+), 8 deletions(-)
 
 
-
+base-commit: 33ae8f801ad8bec48e886d368739feb2816478f2
 -- 
-Thanks
-Nitesh
+2.30.2
 
