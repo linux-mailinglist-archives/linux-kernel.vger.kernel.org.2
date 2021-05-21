@@ -2,123 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B5AB38CA8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D89B38CA92
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhEUQFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:05:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:51540 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229586AbhEUQFF (ORCPT
+        id S234139AbhEUQGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:06:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhEUQGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:05:05 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LG3TJf048686;
-        Fri, 21 May 2021 12:03:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=NWkg5whIEVwVMkgRIGlgWyJUA+SgTZHOp0Nbt8P//bY=;
- b=PufsNEtPfEYnffaoQw0CxtuYA55Asl5kkuO4LJ5flhZZdwkSXfDXhn8uDIgxdemVARps
- focxG9bcHx/vDM0HUP2iDcoPHAtke1YlNC+W9y0gNsDr9TPrFni4cejBLhtWdldVdAdc
- +oN+MDctjCUQQ0ut6KIdfnSF1S+Aj2Rw8sHfpLx0Ob0LO+77w5cn29cxge97S2phowfn
- GRfc7+r+eE6ymTrJR4J6uXDQk9h1f+XLvLlHeQzuqLmxaqwvipccyJlAXsGmE8WfO2xD
- PpWE5+2C3c6ptwubaG4qmDq3lczIavaRL5cEaZfOCRm1oze5E/Cuj2tyeegp+3nsuvMd rA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38pfar1avs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 12:03:32 -0400
-Received: from m0098420.ppops.net (m0098420.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14LG3VVL048913;
-        Fri, 21 May 2021 12:03:31 -0400
-Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38pfar1avh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 12:03:31 -0400
-Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
-        by ppma05wdc.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LFtE6s024491;
-        Fri, 21 May 2021 16:03:30 GMT
-Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
-        by ppma05wdc.us.ibm.com with ESMTP id 38j7tbrbe9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 16:03:30 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LG3Two10551732
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 16:03:29 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E4B9878063;
-        Fri, 21 May 2021 16:03:28 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E085D78066;
-        Fri, 21 May 2021 16:03:24 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.80.208.94])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 16:03:24 +0000 (GMT)
-Message-ID: <d6b991603d79cfbaf05c93f8b662860b865d861b.camel@linux.ibm.com>
-Subject: Re: [RFC PATCH 0/3] Allow access to confidential computing secret
- area
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Brijesh Singh <brijesh.singh@amd.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>
-Cc:     Dov Murik <dovmurik@linux.ibm.com>, linux-efi@vger.kernel.org,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Laszlo Ersek <lersek@redhat.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Fri, 21 May 2021 09:03:23 -0700
-In-Reply-To: <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
-References: <20210513062634.2481118-1-dovmurik@linux.ibm.com>
-         <2c8ae998-6dd0-bcb9-f735-e90da05ab9d9@amd.com> <YKZAUdbikp2Pt0XV@work-vm>
-         <ccdf0059-7e39-7895-2733-412dbe4b13f1@linux.intel.com>
-         <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 21 May 2021 12:06:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 264B8C061574;
+        Fri, 21 May 2021 09:04:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=rOUSMzUazFVWTtdtGXWIZ9Ml1r75lqXoNz586zbgxOE=; b=nNRqUIHd25G1YFdETP5KXvxo6m
+        5UQvVEciIApRzCglIzquESH/jC97Kr9NVZNfUWodXMc0XYBhYYrSBZK29fE3tH5VFXKXGyQJZ1juI
+        ryVsHOxYFrH5q7LISOk3/00iqTR6hq/Q3cgCBzjzpzCgY9j7TeaNk1LM+DGNRlTqA6UJffy8w7T0B
+        +ee/iyr//K8+EcY5cIcWU3DldmkaGWfm3mjEvXVZyPnuQ8L6QFiVHgUlDFxen1TeeeJulIIY3ohqt
+        5ZQcHdEVSR+Ww2IGDuMCmEOxKR4/dGyVJCrik7zYMcX+SyWOGC8sRZ6WO5/FY4HJn9QNWg1U5C3Xs
+        QYVuzQRw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lk7co-0003fs-5O; Fri, 21 May 2021 16:03:49 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D90FE981F05; Fri, 21 May 2021 18:03:44 +0200 (CEST)
+Date:   Fri, 21 May 2021 18:03:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 06/21] sched: Introduce task_cpu_possible_mask() to
+ limit fallback rq selection
+Message-ID: <20210521160344.GJ5618@worktop.programming.kicks-ass.net>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-7-will@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: J3eWov5232J_lTh8NNUvrd0Rb9wuA-eT
-X-Proofpoint-ORIG-GUID: mAG4Un5fk-XPLIHybX4tnpxaPXgowfWu
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_07:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 mlxscore=0 adultscore=0 spamscore=0 impostorscore=0
- suspectscore=0 mlxlogscore=999 phishscore=0 priorityscore=1501
- malwarescore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518094725.7701-7-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-21 at 10:56 -0500, Brijesh Singh wrote:
-[...]
-> In case of the SEV-SNP and TDX, the guest OS participates during the
-> attestation flow; the driver working on the behalf of userspace and
-> does not have access to the secret, so it cannot populate the file
-> with the secrets in it.
+On Tue, May 18, 2021 at 10:47:10AM +0100, Will Deacon wrote:
+> diff --git a/include/linux/mmu_context.h b/include/linux/mmu_context.h
+> index 03dee12d2b61..bc4ac3c525e6 100644
+> --- a/include/linux/mmu_context.h
+> +++ b/include/linux/mmu_context.h
+> @@ -14,4 +14,12 @@
+>  static inline void leave_mm(int cpu) { }
+>  #endif
+>  
+> +/*
+> + * CPUs that are capable of running task @p. By default, we assume a sane,
+> + * homogeneous system. Must contain at least one active CPU.
+> + */
+> +#ifndef task_cpu_possible_mask
+> +# define task_cpu_possible_mask(p)	cpu_possible_mask
+> +#endif
 
-OK, so for a simple encrypted VM using root on luks, how in SNP does
-the boot loader obtain the disk passphrase?
+#ifndef task_cpu_possible_mask
+# define task_cpu_possible_mask(p)	cpu_possible_mask
+# define task_cpu_possible(cpu, p)	true
+#else
+# define task_cpu_possible(cpu, p)	cpumask_test_cpu((cpu), task_cpu_possible_mask(p))
+#endif
 
-In the non SNP case, it's already upstream: OVMF finds the secret page
-and converts it to an EFI config table, which is passed into grub. 
-It's starting to sound like we'll need a new grub module for SNP which
-will do an active attestation and receive the passphrase over some
-channel secure against the cloud provider.  Could you give us an
-example of how you think this flow will work?
+> +
+>  #endif
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 5226cc26a095..482f7fdca0e8 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1813,8 +1813,11 @@ static inline bool is_cpu_allowed(struct task_struct *p, int cpu)
+>  		return cpu_online(cpu);
+>  
+>  	/* Non kernel threads are not allowed during either online or offline. */
+>  	if (!(p->flags & PF_KTHREAD))
+> -		return cpu_active(cpu);
++		return cpu_active(cpu) && task_cpu_possible(cpu, p);
 
-Thanks,
+>  	/* KTHREAD_IS_PER_CPU is always allowed. */
+>  	if (kthread_is_per_cpu(p))
 
-James
-
-
+Would something like that make sense?
