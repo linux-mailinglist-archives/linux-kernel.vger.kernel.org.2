@@ -2,157 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03E4C38BC44
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:06:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A6838BC46
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238326AbhEUCHa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:07:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43850 "EHLO
+        id S238379AbhEUCIs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231520AbhEUCH0 (ORCPT
+        with ESMTP id S232774AbhEUCIr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:07:26 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66841C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:06:03 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id 69so10150884plc.5
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:06:03 -0700 (PDT)
+        Thu, 20 May 2021 22:08:47 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A11BC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:07:24 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso4728810pjb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:07:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pHsoSdXDoBgVt5ifSJzNWOLZxLWzbSBEL6tWMupQiKE=;
-        b=Yx011/9eFDb5C4Y3NgsxdifLXakfccVGr5EY0Eny6o4tzN9mIIU6dWpbwPPhG0F1bc
-         EyTGPJ+DiQu3fnzwSL+SlgnZ4HsNfKDSZ4DJbtR98SZNSnNUoRxBaUR6wsFgVuig+S1p
-         LePxOXVqFTyMNs/wn0J6wO1LP2oKXrEw6I4oNRgdWCL66cskP5mVmimjSGd9BTwXR1gH
-         boA4lB7iKRrVRYqi9+W+iFXmFMKpI6iwY4TS5CU6uu1fmkQ0P1RIutyhdOBizFZCAjRP
-         7TaE/C98RKV0P7DO2lou6j0HaJOe2z8eVQc1MTz5JM3l4yTfkEE2qcXeEbuf7rlHv0fj
-         HLuQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=XQC3eHTZZ2Kq4lpuBmx7B6rPqlssJUOcU0MyknfHKdM=;
+        b=CowNc6SaX8w7shKBJtCWz0yby6+fx0kHgH2xxqs2NT6uzhiPBi+xJhtHFOJ8EbFb5W
+         g2VH9VaG1fWl9gFGvqf5poGOgQ5SY7ZM37PCMZk8UiViQs/andX4LzYtsQLPJxHXkyuZ
+         O8VKv19PBqbdnYvv1T8HdBsVU/uBveyivy1bNr5d2fnLVPgHSNCSzLsPRo/6AHLstYEG
+         E8YRaU/sDNOeKwf67ljcrCmTLs1Qq3/7t6o6RQ3zziyeP4PeWrnG3Eb1IGPgl0/ZpikT
+         FBFUnL64P2+B305nGT6U9TnfV/tM3GtwUqX4OaQry2vJIBgRH6CutFHhmCtrsLUeQDVg
+         FpWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pHsoSdXDoBgVt5ifSJzNWOLZxLWzbSBEL6tWMupQiKE=;
-        b=LqlWP3CA6f0iCxu+Bi6hy+/7UEWfZus1W8um3UqEOSdZwtbMmpGhEjTEOxZpRBdxZ9
-         RHdUlwcYmi9Kwo9MhmfzUOh/PnpA7CQRlZePtVCAMBHdmZ7/Q1iYMaD9aYAntrXg1P5v
-         gnVuhP6BeIkSgIQtQ+p6LkwoBCB3EoTY0jA4VcEliZsLfUukVgHAqAO0tDlTXrmxkdZv
-         8qiZBNgC8/xBZYB1oJdinWS68IUDkC5aDt/6ZJg2bnXk+Xd5TagFES+CVtHsSaVdMDsA
-         GvWe135JlAk2wQ6cO6/DQV4PHfxh3AUjRkC/HxAxkQf9xJFrcQQcDHglJeZ2e7xFC1NF
-         9D4w==
-X-Gm-Message-State: AOAM532wN+MVSwD87reH5Zm8aFEM0sZsxwltauxPRjWK3CIxg9WGObay
-        +ZWLgWT3nLTGymWWEVFRy1jgELSbLst7O8rtFbYmvw==
-X-Google-Smtp-Source: ABdhPJwWV7tQAt4/AAohsYPwYwLS23El1UDsc3ooDjQM/g07Vm6EmVq9NMt2Wm/IQZwWumNEgRpDgoiNEabzJeWUULA=
-X-Received: by 2002:a17:90a:1a:: with SMTP id 26mr8200181pja.187.1621562762563;
- Thu, 20 May 2021 19:06:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513234309.366727-1-almasrymina@google.com>
- <CAHS8izNkBvS9gkSjy8FbWBOPDynwr8PXXXbMHt_2=5sZJsa6-Q@mail.gmail.com>
- <09dc0712-48e8-8ba2-f170-4c2febcfff83@oracle.com> <CAHS8izN3+DwCMnVotW7UoiROKEpBh=i+n2jb+oMJQwbKeegx7Q@mail.gmail.com>
- <CAHS8izNECN6U4KDLS-jrtni6WMszK6rF1XjcWwwGAByb3pEr8A@mail.gmail.com>
- <61c78897-27a2-768b-f4fe-04e24b617ab6@oracle.com> <CAHS8izOHs0ZYR-0FCsDS6nxYbnNfYJFzWKGwB_utBJ_9bswjkA@mail.gmail.com>
-In-Reply-To: <CAHS8izOHs0ZYR-0FCsDS6nxYbnNfYJFzWKGwB_utBJ_9bswjkA@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 20 May 2021 19:05:51 -0700
-Message-ID: <CAHS8izNhJRvAAWOBWG0E5hTOkLC4xSmsesnNYgZ+Feg+ZUzANg@mail.gmail.com>
-Subject: Re: [PATCH] mm, hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Axel Rasmussen <axelrasmussen@google.com>,
-        Peter Xu <peterx@redhat.com>, Linux-MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=XQC3eHTZZ2Kq4lpuBmx7B6rPqlssJUOcU0MyknfHKdM=;
+        b=rChWafSp2DTye8EWHkWy9WO/JvOyaKqcEQqvYR1kIkj2+6r5sNaNxCX8EWp4R237w3
+         a21JRRzQrwFLbfgPV9JRYzGyXU8FQ6ue5ejDngznF2ueMozpbcjfMOY/RQV8Q1cKoyiZ
+         XkmSvPaFRmN4ciKgD9+j29QqVhLNA9eQajFMyzWGpHFvBhySt6WZHNu+owR2iNLDFsn7
+         MAazGAuwhvcS2vvkqdp9okQZWODt8rTALW6s6qG3dEE1rcOQ0TTPFYjjEmqM98t1iaZG
+         EJ2V6fn1Wld28suRp/0xgmKyG3j5u7PZZrzVWDAMQJGzPnF68hluBLPZ8otZ7s/WsJQ2
+         FiBg==
+X-Gm-Message-State: AOAM532w//KSSMe2KZkispLVlEq4zb3Cy88bWJ5XsMawwc7kwGeMas3y
+        46EI3u0E7KU+17UkHJHix5Y=
+X-Google-Smtp-Source: ABdhPJxQZ0rHtYTza1uhQ/LjwYtFsrjh8lL0C72Mepiyu3qf1tZRYVSa8LWmzuVDvVSCK/yCRBGm+g==
+X-Received: by 2002:a17:903:2289:b029:f6:a853:c4f5 with SMTP id b9-20020a1709032289b02900f6a853c4f5mr3499399plh.51.1621562843606;
+        Thu, 20 May 2021 19:07:23 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id a15sm2791224pff.128.2021.05.20.19.07.18
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 May 2021 19:07:23 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: [PATCH v6] psi: fix race between psi_trigger_create/destroy
+Date:   Fri, 21 May 2021 10:05:54 +0800
+Message-Id: <1621562754-8158-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 1:31 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> On Thu, May 20, 2021 at 1:00 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >
-> > On 5/20/21 12:21 PM, Mina Almasry wrote:
-> > > On Thu, May 20, 2021 at 12:18 PM Mina Almasry <almasrymina@google.com> wrote:
-> > >>
-> > >> On Thu, May 13, 2021 at 5:14 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> > >>>
-> > >>> How about this approach?
-> > >>> - Keep the check for hugetlbfs_pagecache_present in hugetlb_mcopy_atomic_pte
-> > >>>   that you added.  That will catch the race where the page was added to
-> > >>>   the cache before entering the routine.
-> > >>> - With the above check in place, we only need to worry about the case
-> > >>>   where copy_huge_page_from_user fails and we must drop locks.  In this
-> > >>>   case we:
-> > >>>   - Free the page previously allocated.
-> > >>>   - Allocate a 'temporary' huge page without consuming reserves.  I'm
-> > >>>     thinking of something similar to page migration.
-> > >>>   - Drop the locks and let the copy_huge_page_from_user be done to the
-> > >>>     temporary page.
-> > >>>   - When reentering hugetlb_mcopy_atomic_pte after dropping locks (the
-> > >>>     *pagep case) we need to once again check
-> > >>>     hugetlbfs_pagecache_present.
-> > >>>   - We then try to allocate the huge page which will consume the
-> > >>>     reserve.  If successful, copy contents of temporary page to newly
-> > >>>     allocated page.  Free temporary page.
-> > >>>
-> > >>> There may be issues with this, and I have not given it deep thought.  It
-> > >>> does abuse the temporary huge page concept, but perhaps no more than
-> > >>> page migration.  Things do slow down if the extra page allocation and
-> > >>> copy is required, but that would only be the case if copy_huge_page_from_user
-> > >>> needs to be done without locks.  Not sure, but hoping that is rare.
-> > >>
-> > >> Just following up this a bit: I've implemented this approach locally,
-> > >> and with it it's passing the test as-is. When I hack the code such
-> > >> that the copy in hugetlb_mcopy_atomic_pte() always fails, I run into
-> > >> this edge case, which causes resv_huge_pages to underflow again (this
-> > >> time permemantly):
-> > >>
-> > >> - hugetlb_no_page() is called on an index and a page is allocated and
-> > >> inserted into the cache consuming the reservation.
-> > >> - remove_huge_page() is called on this index and the page is removed from cache.
-> > >> - hugetlb_mcopy_atomic_pte() is called on this index, we do not find
-> > >> the page in the cache and we trigger this code patch and the copy
-> > >> fails.
-> > >> - The allocations in this code path seem to double consume the
-> > >> reservation and resv_huge_pages underflows.
-> > >>
-> > >> I'm looking at this edge case to understand why a prior
-> > >> remove_huge_page() causes my code to underflow resv_huge_pages.
-> > >>
-> > >
-> > > I should also mention, without a prior remove_huge_page() this code
-> > > path works fine, so it seems the fact that the reservation is consumed
-> > > before causes trouble, but I'm not sure why yet.
-> > >
-> >
-> > Hi Mina,
-> >
-> > How about quickly posting the code?  I may be able to provide more
-> > suggestions if I can see the actual code.
->
-> Sure thing, attached my patch so far. It's quite messy with prints
-> everywhere and VM_BUG_ON() in error paths that I'm not handling yet.
-> I've also hacked the code so that the hugetlb_mcopy_atomic_pte() copy
-> always fails so I exercise that code path.
->
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Of course right after I send out my patch, I figure out what's wrong.
-It turns out freeing the allocated page when the copy fails is
-extremely complicated (or complicated to figure out why it's broken).
-Turns out I need to:
+Race detected between psi_trigger_destroy/create as shown below, which
+cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+and psi_system->poll_timer->entry->next. Under this modification, the
+race window is removed by initialising poll_wait and poll_timer in
+group_init which are executed only once at beginning.
 
-restore_page_on_error()
-if (!HPageRestoreReserves(page)) {
-    hugetlb_unreserve_pages(mapping, idx, idx + 1, 1);
-}
-put_page(page);
+psi_trigger_destroy                      psi_trigger_create
+mutex_lock(trigger_lock);
+rcu_assign_pointer(poll_task, NULL);
+mutex_unlock(trigger_lock);
+					mutex_lock(trigger_lock);
+					if (!rcu_access_pointer(group->poll_task)) {
 
-This is because even though we always allocate asking for a page from
-the reserves, the page may not come from the reserves if the VM
-doesn't have reservation for this index (which is the case if the page
-has been allocated by hugetlb_no_page() and then removed with
-remove_huge_page()). So, we need to correctly handle both cases.
+						timer_setup(poll_timer, poll_timer_fn, 0);
 
-Sorry for the noise but this was hard to track down. Patch should be
-incoming soon unless I run into other issues with a closer look.
+						rcu_assign_pointer(poll_task, task);
+					}
+					mutex_unlock(trigger_lock);
 
-> > --
-> > Mike Kravetz
+synchronize_rcu();
+del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
+psi_trigger_create
+
+So, trigger_lock/RCU correctly protects destruction of group->poll_task but
+misses this race affecting poll_timer and poll_wait.
+
+Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger
+scheduling mechanism")
+
+Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+Signed-off-by: ke.wang <ke.wang@unisoc.com>
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+v2: change del_timer_sync to del_timer in psi_trigger_destroy
+v3: remove timer_setup within psi_tirgger_create
+    protect del_timer by extending the critical section of mutex_lock
+v4: amend fix information on comment
+v5: delete the poll_timer while assigning the task to NULL
+v6: update subject and comments as Suren's suggestion
+---
+---
+ kernel/sched/psi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3c..58b36d1 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+ 
+ static void psi_avgs_work(struct work_struct *work);
+ 
++static void poll_timer_fn(struct timer_list *t);
++
+ static void group_init(struct psi_group *group)
+ {
+ 	int cpu;
+@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+ 	memset(group->polling_total, 0, sizeof(group->polling_total));
+ 	group->polling_next_update = ULLONG_MAX;
+ 	group->polling_until = 0;
++	init_waitqueue_head(&group->poll_wait);
++	timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 	rcu_assign_pointer(group->poll_task, NULL);
+ }
+ 
+@@ -1157,9 +1161,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 			return ERR_CAST(task);
+ 		}
+ 		atomic_set(&group->poll_wakeup, 0);
+-		init_waitqueue_head(&group->poll_wait);
+ 		wake_up_process(task);
+-		timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 		rcu_assign_pointer(group->poll_task, task);
+ 	}
+ 
+@@ -1211,6 +1213,7 @@ static void psi_trigger_destroy(struct kref *ref)
+ 					group->poll_task,
+ 					lockdep_is_held(&group->trigger_lock));
+ 			rcu_assign_pointer(group->poll_task, NULL);
++			del_timer(&group->poll_timer);
+ 		}
+ 	}
+ 
+@@ -1223,17 +1226,14 @@ static void psi_trigger_destroy(struct kref *ref)
+ 	 */
+ 	synchronize_rcu();
+ 	/*
+-	 * Destroy the kworker after releasing trigger_lock to prevent a
++	 * Stop kthread 'psimon' after releasing trigger_lock to prevent a
+ 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
+ 	 */
+ 	if (task_to_destroy) {
+ 		/*
+ 		 * After the RCU grace period has expired, the worker
+ 		 * can no longer be found through group->poll_task.
+-		 * But it might have been already scheduled before
+-		 * that - deschedule it cleanly before destroying it.
+ 		 */
+-		del_timer_sync(&group->poll_timer);
+ 		kthread_stop(task_to_destroy);
+ 	}
+ 	kfree(t);
+-- 
+1.9.1
+
