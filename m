@@ -2,89 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15C3B38BB69
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:15:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C092838BB6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:16:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236534AbhEUBQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:16:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3635 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236106AbhEUBQX (ORCPT
+        id S236511AbhEUBSA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:18:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236106AbhEUBR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:16:23 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FmT9k1rJDzmWpV;
-        Fri, 21 May 2021 09:12:42 +0800 (CST)
-Received: from dggemx753-chm.china.huawei.com (10.0.44.37) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 09:14:59 +0800
-Received: from [10.136.110.154] (10.136.110.154) by
- dggemx753-chm.china.huawei.com (10.0.44.37) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 21 May 2021 09:14:58 +0800
-Subject: Re: [PATCH -next] erofs: fix error return code in
- erofs_read_superblock()
-To:     Gao Xiang <xiang@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Wei Yongjun <weiyongjun1@huawei.com>
-CC:     <kernel-janitors@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        "Hulk Robot" <hulkci@huawei.com>, <linux-erofs@lists.ozlabs.org>
-References: <20210519141657.3062715-1-weiyongjun1@huawei.com>
- <20210520053226.GB1955@kadam>
- <20210520084023.GA5720@hsiangkao-HP-ZHAN-66-Pro-G1>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <9f96b12f-b05b-c118-4391-448f780702ff@huawei.com>
-Date:   Fri, 21 May 2021 09:14:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Thu, 20 May 2021 21:17:57 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91309C061574;
+        Thu, 20 May 2021 18:16:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmTG80RMQz9sV5;
+        Fri, 21 May 2021 11:16:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1621559793;
+        bh=0WNkIgrA5cfmh3dmtALKkENB1bfAKE9i33zwcoPdfNE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=naCHoUABSw8zQLb3bEhbRCRnS5kjvp2zFRi5996J338KmrLaOpEZ4Vajaq+XBrq2/
+         HaITpAVVYsZMtFLd2qZuaQfIeANZtVAHAeDIqf8XOU1ntu7DRaD/MGa3KAT/FO7fCy
+         gT974IUryYPpxWR9LRO5AXgtroikkExXyMtO9MZgWfVLZR6AmRvdTOZfGcJNs2iQ9r
+         hb+l56TkvayW+/9LViPn+jwt2dT2dP5Z5go5xjp2+s5KsDPFtdYJmk5ST0xT8ByFfn
+         IC1RcjEqSQr77qkhsCilDsFBd02o1aIUezVEM00985l+9Fa0hCy9LAeFmSs3HN9T5s
+         x7t9zUL5FMpjQ==
+Date:   Fri, 21 May 2021 11:16:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the amdgpu tree with the drm-misc tree
+Message-ID: <20210521111631.76bc1636@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210520084023.GA5720@hsiangkao-HP-ZHAN-66-Pro-G1>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-ClientProxiedBy: dggemx704-chm.china.huawei.com (10.1.199.51) To
- dggemx753-chm.china.huawei.com (10.0.44.37)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/GIQsj9oI_7T=LGV07W5ScTp";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/20 16:40, Gao Xiang wrote:
-> Hi Yongjun and Dan,
-> 
-> On Thu, May 20, 2021 at 08:32:26AM +0300, Dan Carpenter wrote:
->> On Wed, May 19, 2021 at 02:16:57PM +0000, Wei Yongjun wrote:
->>> 'ret' will be overwritten to 0 if erofs_sb_has_sb_chksum() return true,
->>> thus 0 will return in some error handling cases. Fix to return negative
->>> error code -EINVAL instead of 0.
->>>
->>> Reported-by: Hulk Robot <hulkci@huawei.com>
->>> Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
->>
->> You need to add Fixes tags to bug fix patches and you need to ensure
->> that the authors of the Fixes commit are CC'd so they can review your
->> fix.  get_maintainer.pl will add the author automatically, but normally
->> I like to put them in the To header to make sure they see it.
->>
->> Fixes: b858a4844cfb ("erofs: support superblock checksum")
-> 
-> The commit and the tag look good to me (sorry for a bit delay on this),
-> 
-> Fixes: b858a4844cfb ("erofs: support superblock checksum")
-> Cc: stable <stable@vger.kernel.org> # 5.5+
-> Reviewed-by: Gao Xiang <xiang@kernel.org>
+--Sig_/GIQsj9oI_7T=LGV07W5ScTp
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Hi all,
 
-Thanks,
+Today's linux-next merge of the amdgpu tree got a conflict in:
 
-> 
-> (will apply to dev-test for a while and then to -next.)
-> 
-> Thanks,
-> Gao Xiang
-> 
-> .
-> 
+  drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+
+between commit:
+
+  35bba8313b95 ("drm/amdgpu: Convert driver sysfs attributes to static attr=
+ibutes")
+
+from the drm-misc tree and commit:
+
+  a614b336f1c1 ("drm/amdgpu: fix coding style and documentation in amdgpu_g=
+tt_mgr.c")
+
+from the amdgpu tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+index a4404da8ca6d,8860545344c7..000000000000
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c
+@@@ -75,75 -80,6 +80,16 @@@ static DEVICE_ATTR(mem_info_gtt_total,=20
+  static DEVICE_ATTR(mem_info_gtt_used, S_IRUGO,
+  	           amdgpu_mem_info_gtt_used_show, NULL);
+ =20
+ +static struct attribute *amdgpu_gtt_mgr_attributes[] =3D {
+ +	&dev_attr_mem_info_gtt_total.attr,
+ +	&dev_attr_mem_info_gtt_used.attr,
+ +	NULL
+ +};
+ +
+ +const struct attribute_group amdgpu_gtt_mgr_attr_group =3D {
+ +	.attrs =3D amdgpu_gtt_mgr_attributes
+ +};
+ +
+- static const struct ttm_resource_manager_func amdgpu_gtt_mgr_func;
+- /**
+-  * amdgpu_gtt_mgr_init - init GTT manager and DRM MM
+-  *
+-  * @adev: amdgpu_device pointer
+-  * @gtt_size: maximum size of GTT
+-  *
+-  * Allocate and initialize the GTT manager.
+-  */
+- int amdgpu_gtt_mgr_init(struct amdgpu_device *adev, uint64_t gtt_size)
+- {
+- 	struct amdgpu_gtt_mgr *mgr =3D &adev->mman.gtt_mgr;
+- 	struct ttm_resource_manager *man =3D &mgr->manager;
+- 	uint64_t start, size;
+-=20
+- 	man->use_tt =3D true;
+- 	man->func =3D &amdgpu_gtt_mgr_func;
+-=20
+- 	ttm_resource_manager_init(man, gtt_size >> PAGE_SHIFT);
+-=20
+- 	start =3D AMDGPU_GTT_MAX_TRANSFER_SIZE * AMDGPU_GTT_NUM_TRANSFER_WINDOWS;
+- 	size =3D (adev->gmc.gart_size >> PAGE_SHIFT) - start;
+- 	drm_mm_init(&mgr->mm, start, size);
+- 	spin_lock_init(&mgr->lock);
+- 	atomic64_set(&mgr->available, gtt_size >> PAGE_SHIFT);
+-=20
+- 	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_TT, &mgr->manager);
+- 	ttm_resource_manager_set_used(man, true);
+- 	return 0;
+- }
+-=20
+- /**
+-  * amdgpu_gtt_mgr_fini - free and destroy GTT manager
+-  *
+-  * @adev: amdgpu_device pointer
+-  *
+-  * Destroy and free the GTT manager, returns -EBUSY if ranges are still
+-  * allocated inside it.
+-  */
+- void amdgpu_gtt_mgr_fini(struct amdgpu_device *adev)
+- {
+- 	struct amdgpu_gtt_mgr *mgr =3D &adev->mman.gtt_mgr;
+- 	struct ttm_resource_manager *man =3D &mgr->manager;
+- 	int ret;
+-=20
+- 	ttm_resource_manager_set_used(man, false);
+-=20
+- 	ret =3D ttm_resource_manager_evict_all(&adev->mman.bdev, man);
+- 	if (ret)
+- 		return;
+-=20
+- 	spin_lock(&mgr->lock);
+- 	drm_mm_takedown(&mgr->mm);
+- 	spin_unlock(&mgr->lock);
+-=20
+- 	ttm_resource_manager_cleanup(man);
+- 	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_TT, NULL);
+- }
+-=20
+  /**
+   * amdgpu_gtt_mgr_has_gart_addr - Check if mem has address space
+   *
+@@@ -306,3 -249,76 +259,61 @@@ static const struct ttm_resource_manage
+  	.free =3D amdgpu_gtt_mgr_del,
+  	.debug =3D amdgpu_gtt_mgr_debug
+  };
++=20
++ /**
++  * amdgpu_gtt_mgr_init - init GTT manager and DRM MM
++  *
++  * @adev: amdgpu_device pointer
++  * @gtt_size: maximum size of GTT
++  *
++  * Allocate and initialize the GTT manager.
++  */
++ int amdgpu_gtt_mgr_init(struct amdgpu_device *adev, uint64_t gtt_size)
++ {
++ 	struct amdgpu_gtt_mgr *mgr =3D &adev->mman.gtt_mgr;
++ 	struct ttm_resource_manager *man =3D &mgr->manager;
++ 	uint64_t start, size;
+ -	int ret;
++=20
++ 	man->use_tt =3D true;
++ 	man->func =3D &amdgpu_gtt_mgr_func;
++=20
++ 	ttm_resource_manager_init(man, gtt_size >> PAGE_SHIFT);
++=20
++ 	start =3D AMDGPU_GTT_MAX_TRANSFER_SIZE * AMDGPU_GTT_NUM_TRANSFER_WINDOWS;
++ 	size =3D (adev->gmc.gart_size >> PAGE_SHIFT) - start;
++ 	drm_mm_init(&mgr->mm, start, size);
++ 	spin_lock_init(&mgr->lock);
++ 	atomic64_set(&mgr->available, gtt_size >> PAGE_SHIFT);
++=20
+ -	ret =3D device_create_file(adev->dev, &dev_attr_mem_info_gtt_total);
+ -	if (ret) {
+ -		DRM_ERROR("Failed to create device file mem_info_gtt_total\n");
+ -		return ret;
+ -	}
+ -	ret =3D device_create_file(adev->dev, &dev_attr_mem_info_gtt_used);
+ -	if (ret) {
+ -		DRM_ERROR("Failed to create device file mem_info_gtt_used\n");
+ -		return ret;
+ -	}
+ -
++ 	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_TT, &mgr->manager);
++ 	ttm_resource_manager_set_used(man, true);
++ 	return 0;
++ }
++=20
++ /**
++  * amdgpu_gtt_mgr_fini - free and destroy GTT manager
++  *
++  * @adev: amdgpu_device pointer
++  *
++  * Destroy and free the GTT manager, returns -EBUSY if ranges are still
++  * allocated inside it.
++  */
++ void amdgpu_gtt_mgr_fini(struct amdgpu_device *adev)
++ {
++ 	struct amdgpu_gtt_mgr *mgr =3D &adev->mman.gtt_mgr;
++ 	struct ttm_resource_manager *man =3D &mgr->manager;
++ 	int ret;
++=20
++ 	ttm_resource_manager_set_used(man, false);
++=20
++ 	ret =3D ttm_resource_manager_evict_all(&adev->mman.bdev, man);
++ 	if (ret)
++ 		return;
++=20
++ 	spin_lock(&mgr->lock);
++ 	drm_mm_takedown(&mgr->mm);
++ 	spin_unlock(&mgr->lock);
++=20
+ -	device_remove_file(adev->dev, &dev_attr_mem_info_gtt_total);
+ -	device_remove_file(adev->dev, &dev_attr_mem_info_gtt_used);
+ -
++ 	ttm_resource_manager_cleanup(man);
++ 	ttm_set_driver_manager(&adev->mman.bdev, TTM_PL_TT, NULL);
++ }
+
+--Sig_/GIQsj9oI_7T=LGV07W5ScTp
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnCe8ACgkQAVBC80lX
+0GwKIwgAhjuZMVGTmOGOWLUbWqTbS90TLgG+5O1tgSLqsHhxQuJ7OuX2TXivSEQ9
+7WrzDwBVJOtEsz0mBk02/XHYjBW/mdpSCjb0so92d3GnIC+FtSeztwbl5dY5jgur
+CnKWE0QI7V/z9ckGH+cgfgUE3QNgzjRzLdTjebRn5pKYP4gh1FWujBCS3g96BK3U
+EEBjRtSwWiccwejdjbqZz/gfhWX+jJ/m/bH6N3J5stYUINgY9hyH8fVSw2z8PgrX
+kFWRirmVbGAu6KCG7W2qLT5yha/jA9im7m28mXh616v6wY0YFCxWdRnmH8CnCAIp
+r6hNVjLCvObBYMS2c7Mux4H08qF6Dw==
+=3Byw
+-----END PGP SIGNATURE-----
+
+--Sig_/GIQsj9oI_7T=LGV07W5ScTp--
