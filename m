@@ -2,90 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79C5338C8A9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:49:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2737738C8AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:50:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236021AbhEUNvE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:51:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:54146 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233028AbhEUNvD (ORCPT
+        id S236075AbhEUNwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:52:04 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44222 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231758AbhEUNwD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:51:03 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621604979;
+        Fri, 21 May 2021 09:52:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621605039;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HCaRskSS01bIv3f54A3vpRo8CfM3PmECUijGdGwwaZM=;
-        b=tsNUav2Duagwr1OktGXOly/chOAYD2bmyTPog0/54KKIKgYWZsSj/KoA1Do9CIlOHdRrAy
-        l8Wckg+es45UV29dbhRXSgApo2+AA7VfG6Kv4QP5t2xotRhoPFrD14s879TsrebIlT2oHp
-        bmNW0TCc/ml3Cs7HILsyp5pOHK9OrPtqv5Y8e3lTC7X0YK987RaccdtTlPYiwjKqO4KpMq
-        +WnGTkwEG6unkbj+4hC1rK180OyD1MXnnm3yMzvzH3FbMRvu0BIFrhKb1Y5k0eOTUagNu9
-        AbR2TCX062iTP9D1yquicr4ZkyTLQ/IxM5ro0kAK9v0hx2uk7VbtIo+KNQZieQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621604979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HCaRskSS01bIv3f54A3vpRo8CfM3PmECUijGdGwwaZM=;
-        b=rnSbMyottTAmrHZEvgHBOGGBmuadQg48n9AQwtQ/zr3dDfwTnr15r9+PCVzal5FQ9yr1WI
-        vVjVECQFwutUJeDg==
-To:     Will Deacon <will@kernel.org>,
-        Mika =?utf-8?Q?Penttil=C3=A4?= <mika.penttila@nextfour.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH 3/5] tick/broadcast: Prefer per-cpu oneshot wakeup timers to broadcast
-In-Reply-To: <20210521112503.GA11850@willie-the-truck>
-References: <20210520184705.10845-1-will@kernel.org> <20210520184705.10845-4-will@kernel.org> <a269c869-b966-75d5-5fe1-6ed6921c1b83@nextfour.com> <20210521112503.GA11850@willie-the-truck>
-Date:   Fri, 21 May 2021 15:49:39 +0200
-Message-ID: <87tumw9oy4.ffs@nanos.tec.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=V1gxdxAqE5/3jzNTtDShs24ciotxYSKj3fPo7ElvmCQ=;
+        b=NSWkQJ5qHVUFvV0fwkvqY7O557SZVIG7ax+fgPs1YhNunTZUSBB2Lbr1gsRpK1LWzMHeRg
+        QXunpBIrhGVFBlV1XcF0tsjKvth+dWGgTyykKkEi39N3oaBZxmu9+Z3YXIHj40LiDZ2rJz
+        a9vbc4FGufvKObKLuqpbldT9cXJlmzI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-SUnhcu_BOSGsfXalEPfgww-1; Fri, 21 May 2021 09:50:33 -0400
+X-MC-Unique: SUnhcu_BOSGsfXalEPfgww-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8B8A4A40C5;
+        Fri, 21 May 2021 13:50:31 +0000 (UTC)
+Received: from x1.localdomain (ovpn-114-187.ams2.redhat.com [10.36.114.187])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7CA0410013D6;
+        Fri, 21 May 2021 13:50:29 +0000 (UTC)
+From:   Hans de Goede <hdegoede@redhat.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     Hans de Goede <hdegoede@redhat.com>, linux-kernel@vger.kernel.org,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        patches@opensource.cirrus.com, alsa-devel@alsa-project.org
+Subject: [PATCH] mfd: arizona: Allow building arizona MFD-core as module
+Date:   Fri, 21 May 2021 15:50:23 +0200
+Message-Id: <20210521135023.192688-1-hdegoede@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21 2021 at 12:25, Will Deacon wrote:
-> On Fri, May 21, 2021 at 05:25:41AM +0300, Mika Penttil=C3=A4 wrote:
->> On 20.5.2021 21.47, Will Deacon wrote:
->> >   /*
->> >    * Conditionally install/replace broadcast device
->> >    */
->> > -void tick_install_broadcast_device(struct clock_event_device *dev)
->> > +void tick_install_broadcast_device(struct clock_event_device *dev, in=
-t cpu)
->> >   {
->> >   	struct clock_event_device *cur =3D tick_broadcast_device.evtdev;
->> > +	if (tick_set_oneshot_wakeup_device(dev, cpu))
->> > +		return;
->> > +
->> >   	if (!tick_check_broadcast_device(cur, dev))
->> >   		return;
->>=20
->> Does this disable hpet registering as a global broadcast device on x86 ?=
- I
->> think it starts with cpumask =3D cpu0 so it qualifies for a percpu wakeup
->> timer.
->
-> Well spotted, I think you're probably right. I'll try to reproduce on my
-> laptop to confirm, but I hadn't noticed the tricks played with the cpumask
-> on x86.
->
-> I'll probably need to rework things so that we install the broadcast timer
-> first, but prefer global devices.
+There is no reason why the arizona core,irq and codec model specific
+regmap bits cannot be build as a module. All they do is export symbols
+which are used by the arizona-spi/i2c and arizona-codec modules, which
+themselves can be built as module.
 
-HPET has cpumask(0) but does not have CLOCK_EVT_FEAT_PERCPU set. The
-feature flag is a clear indicator for per cpu.
+Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
+can be built as a module.
 
-Thanks,
+This is especially useful on x86 platforms with a WM5102 codec, this
+allows the arizona MFD driver necessary for the WM5102 codec to be
+enabled in generic distro-kernels without growing the base kernel-image
+size.
 
-        tglx
+Note this also adds an explicit "depends on MFD_ARIZONA" to all the
+arizona codec Kconfig options. The codec drivers use functions from mfd
+arizona-core. These new depends are necessary to disallow the codec
+drivers being builtin when the arizona-core is build as a module,
+otherwise we end up with missing symbol errors when building vmlinuz.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Changes in v2:
+- Add explicit "depends on MFD_ARIZONA" to all the arizona codec Kconfigs
+---
+ drivers/mfd/Kconfig        |  2 +-
+ drivers/mfd/Makefile       | 14 +++++++-------
+ drivers/mfd/arizona-core.c |  2 ++
+ sound/soc/codecs/Kconfig   | 10 +++++-----
+ 4 files changed, 15 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+index 5c7f2b100191..3fb048361b11 100644
+--- a/drivers/mfd/Kconfig
++++ b/drivers/mfd/Kconfig
+@@ -1788,7 +1788,7 @@ config MFD_ARIZONA
+ 	select REGMAP
+ 	select REGMAP_IRQ
+ 	select MFD_CORE
+-	bool
++	tristate
+ 
+ config MFD_ARIZONA_I2C
+ 	tristate "Cirrus Logic/Wolfson Microelectronics Arizona platform with I2C"
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index 4f6d2b8a5f76..ebc9b6704e87 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -41,24 +41,24 @@ obj-$(CONFIG_MFD_TQMX86)	+= tqmx86.o
+ 
+ obj-$(CONFIG_MFD_LOCHNAGAR)	+= lochnagar-i2c.o
+ 
+-obj-$(CONFIG_MFD_ARIZONA)	+= arizona-core.o
+-obj-$(CONFIG_MFD_ARIZONA)	+= arizona-irq.o
++arizona-objs			:= arizona-core.o arizona-irq.o
++obj-$(CONFIG_MFD_ARIZONA)	+= arizona.o
+ obj-$(CONFIG_MFD_ARIZONA_I2C)	+= arizona-i2c.o
+ obj-$(CONFIG_MFD_ARIZONA_SPI)	+= arizona-spi.o
+ ifeq ($(CONFIG_MFD_WM5102),y)
+-obj-$(CONFIG_MFD_ARIZONA)	+= wm5102-tables.o
++arizona-objs			+= wm5102-tables.o
+ endif
+ ifeq ($(CONFIG_MFD_WM5110),y)
+-obj-$(CONFIG_MFD_ARIZONA)	+= wm5110-tables.o
++arizona-objs			+= wm5110-tables.o
+ endif
+ ifeq ($(CONFIG_MFD_WM8997),y)
+-obj-$(CONFIG_MFD_ARIZONA)	+= wm8997-tables.o
++arizona-objs			+= wm8997-tables.o
+ endif
+ ifeq ($(CONFIG_MFD_WM8998),y)
+-obj-$(CONFIG_MFD_ARIZONA)	+= wm8998-tables.o
++arizona-objs			+= wm8998-tables.o
+ endif
+ ifeq ($(CONFIG_MFD_CS47L24),y)
+-obj-$(CONFIG_MFD_ARIZONA)	+= cs47l24-tables.o
++arizona-objs			+= cs47l24-tables.o
+ endif
+ obj-$(CONFIG_MFD_WCD934X)	+= wcd934x.o
+ obj-$(CONFIG_MFD_WM8400)	+= wm8400-core.o
+diff --git a/drivers/mfd/arizona-core.c b/drivers/mfd/arizona-core.c
+index ce6fe6de34f8..9323b1e3a69e 100644
+--- a/drivers/mfd/arizona-core.c
++++ b/drivers/mfd/arizona-core.c
+@@ -1447,3 +1447,5 @@ int arizona_dev_exit(struct arizona *arizona)
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(arizona_dev_exit);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 2a7b3e363069..45aa92598066 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -689,7 +689,7 @@ config SND_SOC_CS47L15
+ 
+ config SND_SOC_CS47L24
+ 	tristate
+-	depends on MFD_CS47L24
++	depends on MFD_CS47L24 && MFD_ARIZONA
+ 
+ config SND_SOC_CS47L35
+ 	tristate
+@@ -1558,11 +1558,11 @@ config SND_SOC_WM5100
+ 
+ config SND_SOC_WM5102
+ 	tristate
+-	depends on MFD_WM5102
++	depends on MFD_WM5102 && MFD_ARIZONA
+ 
+ config SND_SOC_WM5110
+ 	tristate
+-	depends on MFD_WM5110
++	depends on MFD_WM5110 && MFD_ARIZONA
+ 
+ config SND_SOC_WM8350
+ 	tristate
+@@ -1727,11 +1727,11 @@ config SND_SOC_WM8996
+ 
+ config SND_SOC_WM8997
+ 	tristate
+-	depends on MFD_WM8997
++	depends on MFD_WM8997 && MFD_ARIZONA
+ 
+ config SND_SOC_WM8998
+ 	tristate
+-	depends on MFD_WM8998
++	depends on MFD_WM8998 && MFD_ARIZONA
+ 
+ config SND_SOC_WM9081
+ 	tristate
+-- 
+2.31.1
+
