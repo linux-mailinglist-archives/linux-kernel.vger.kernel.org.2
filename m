@@ -2,44 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2E6438CF87
+	by mail.lfdr.de (Postfix) with ESMTP id 6F70B38CF86
 	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230071AbhEUVBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 17:01:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60384 "EHLO mail.kernel.org"
+        id S230033AbhEUVBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 17:01:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229613AbhEUVBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S229600AbhEUVBe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 May 2021 17:01:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AB3B5613F6;
+Received: by mail.kernel.org (Postfix) with ESMTPS id A85AE613F4;
         Fri, 21 May 2021 21:00:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621630810;
-        bh=ghms6Xnact060zD3RhnBzr4n4P4odAXZYYmUVGHLzyI=;
+        bh=bMj/KDHcFbGcixKv9GMVMC3HxsbX/A0IwIBURwsp0wQ=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=bNn7NK3jX1Bg5Zc53+7xYzAvjMjubuWVByN6ZqwzYCxJ+5DM5W3s2+xK0FpLy5zzr
-         nKFNH4U/p35g2acE9E1svh1iwNq19XZZipNAg5gaAiDDWTHLItRydDxHw8zj0lo+81
-         KKIF3G0JJLJ7eYoTLQsSp4ut+AH9U7R0uVgJ0ylHPGXGwBjQZ7tlMdcZeVq4y7NBnY
-         RVGCUvWBy8UQiKQjsz6ms5PadCH4SmfgoTIdHId78TKdtSVkLmL7BRjUACcy3JpvNT
-         W+fVodY7+Ulwm0OGUfWB5YXwUm9puShgAmRktxmBFROPFL/XlEjDLsND62Fymq5FGI
-         JNJTqkHqjftXg==
+        b=us2CQvj8tHgiz8TdQxoNESKtegeZFhBk23EVF0yCm2gw7tgrNwVnP0vq9BSHwiy5c
+         rq+APmm9OEhUXg8G/nbcwnPz2iyuP3Mg1SFDEQ7SlpLuPp+2nd/XMNkgAz2vsx5IZa
+         tDRCgyh2jLAO5zFF9Ut5uOD7DoVPuqkAPK9r1HUSJ6vgFKIU14fcTqOxdBtldVnK9L
+         4iUAB5ZVwyrelnsWp0ZLDtuw+RajiCdpSMakRe+wg1z1V7SE84R4O7MaiNWQ/LVoGi
+         QjoeMKZSqX5jLz9EyEF/zK0yHDTrW8dQGWpLhHQojqLKUcSNyKIjeUk7439cz8KUXS
+         vfw2yRtWUx8aA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A294360BCF;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 987B560BFB;
         Fri, 21 May 2021 21:00:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH][next] net: hns3: Fix return of uninitialized variable ret
+Subject: Re: [PATCH -next v2] sfc: farch: fix compile warning in
+ efx_farch_dimension_resources()
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162163081066.24690.18151834351101510648.git-patchwork-notify@kernel.org>
+Message-Id: <162163081061.24690.5378264514355192742.git-patchwork-notify@kernel.org>
 Date:   Fri, 21 May 2021 21:00:10 +0000
-References: <20210521100146.42980-1-colin.king@canonical.com>
-In-Reply-To: <20210521100146.42980-1-colin.king@canonical.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     yisen.zhuang@huawei.com, salil.mehta@huawei.com,
-        davem@davemloft.net, kuba@kernel.org, tanhuazhong@huawei.com,
-        chenhao288@hisilicon.com, netdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210521035721.1015333-1-yangyingliang@huawei.com>
+In-Reply-To: <20210521035721.1015333-1-yangyingliang@huawei.com>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        davem@davemloft.net, ecree.xilinx@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,19 +47,20 @@ Hello:
 
 This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Fri, 21 May 2021 11:01:46 +0100 you wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On Fri, 21 May 2021 11:57:21 +0800 you wrote:
+> Fix the following kernel build warning when CONFIG_SFC_SRIOV is disabled:
 > 
-> In the unlikely event that rule_cnt is zero the variable ret is
-> not assigned a value and function hclge_dbg_dump_fd_tcam can end
-> up returning an unitialized value in ret. Fix this by explicitly
-> setting ret to zero before the for-loop.
+>   drivers/net/ethernet/sfc/farch.c: In function ‘efx_farch_dimension_resources’:
+>   drivers/net/ethernet/sfc/farch.c:1671:21: warning: variable ‘buftbl_min’ set but not used [-Wunused-but-set-variable]
+>     unsigned vi_count, buftbl_min, total_tx_channels;
+> 
+> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [next] net: hns3: Fix return of uninitialized variable ret
-    https://git.kernel.org/netdev/net-next/c/030c8198d744
+  - [-next,v2] sfc: farch: fix compile warning in efx_farch_dimension_resources()
+    https://git.kernel.org/netdev/net-next/c/31d990cb2628
 
 You are awesome, thank you!
 --
