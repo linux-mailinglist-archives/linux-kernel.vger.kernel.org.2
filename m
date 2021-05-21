@@ -2,145 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1A138BC1B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5102438BC27
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:00:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238067AbhEUB7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:59:39 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51195 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238017AbhEUB7i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:59:38 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmVBF1pGXz9sVt;
-        Fri, 21 May 2021 11:58:13 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621562294;
-        bh=YKiJJ5vfpxMNe5T8vLLSeZo6uiKw1uqUqAKy5C3g0rg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=u/6hc///Ob7Uue0j64OZ0pz1rKWyMZ/ilIbQI/7eYU4yX8+6+fJNbECEoGOsV8o5D
-         betMX8bOEhu9gGAr+UNy1wGDW765hIUDKHbtOPMKnyF+zJsEbemD9BuoA48ZBmKgvL
-         wxobz9VZC+v8i6ZdtFpqRC7krAoPnv/mtjB2QAz5ornitKBdLyZ2qSeFwHyPLt+APf
-         TcyW7rcOcD15Yo5dBojNGBtAZKtt3efz2uYCKqBSZz3v41ro/SdoYCR7B9vwxAiLas
-         bwyuv04/t/C/Ej+zZyJIg96jeQWN5Aim4hkb5eCNLzTZtONjsb9KaD/2GZErwrttWv
-         ZDRLlrQ4NX5gA==
-Date:   Fri, 21 May 2021 11:58:12 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>
-Cc:     Anusha Srivatsa <anusha.srivatsa@intel.com>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the drm-intel tree
-Message-ID: <20210521115812.1f8680bf@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/X_1rq9i10KBI.rsWyD/3wED";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S238029AbhEUCB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:01:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237368AbhEUCBy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 22:01:54 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5708DC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:00:32 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id x18so9483207pfi.9
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:00:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=g+YS7h4l6QuSOjaD3+CpMVe7LGzJXRPA6F3sn/LTdRM=;
+        b=B6k4mT2xFCfUMNk3s6g5dC/uWSa+ptn3NXUHwqm5v5DUe4cGEC9jczDlqVEuK6rrEq
+         /WATzP3lkdN6a1a4ZoUSgdeAarFV+USnIyLT/ee/FLe+SPwqM70rjGzkDO/sQewAGJsq
+         Vw8ZEaFLlASikx4pKTX97c0MJRa0o1LEDtyjT+x0rIZRNwvUlOBSHLCXgNjbY76j1sBg
+         JGJwDpf3COS6OhE7+jiZK4MCShBNuPq/CYFMM0Ou5+YsITa3gGDbKS1cAhNLbnGqZ/ho
+         jYUNEduH1FEovZSZ9uXQO2LnPdiY80OwB59HDt91Wo0H9Xffga8ECKtnCkio+rpc5LVY
+         HvkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=g+YS7h4l6QuSOjaD3+CpMVe7LGzJXRPA6F3sn/LTdRM=;
+        b=t0Nz/i2vBNMrpBX0b2TWEeMsK/0lHpvqN/6ks5Hmfxg+WvLrohc3cZhfUfXu4sV2PS
+         Ef3S/BLm8owDTLNgd68rJqCpkSci2VBcXzqjog72G1f+h7N0+HrroZsZAqKxC6NRf6Uk
+         VwVonabwniIvQLwaEbuiY44GbGnP0S6hpeOZtX7FPiJu0ZA5uipZpCB95B1GmFRHG72o
+         TSPiUfimKNff9Z9ZfIHP9mqQ5j9jHgxgtti6+ttIq4FNXPk6UrP9mdx1YENm35VumOYC
+         UWE6UBEYDuYiLU0iaiifKF4ZD8JVNpdn7bzWZttjR7ERDwZtUqg9shq5jYXEwhFYfY2A
+         mqkg==
+X-Gm-Message-State: AOAM532lw9hw0hzp/WrzDdRW4+c9BDhv7RDyUX9a759LkRgWMOIYiX4F
+        vIn+qv7Epq6nSq2OxktoM1w=
+X-Google-Smtp-Source: ABdhPJxxjNnv1ayjbijXuQ8TmCNBbxr9/IUwonar+7tw9bO5N6zC76zsO22mdHgFLgWjIIP0slZeBg==
+X-Received: by 2002:aa7:8491:0:b029:2dc:b1cc:5532 with SMTP id u17-20020aa784910000b02902dcb1cc5532mr7666187pfn.3.1621562431808;
+        Thu, 20 May 2021 19:00:31 -0700 (PDT)
+Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
+        by smtp.gmail.com with ESMTPSA id y14sm7375547pjr.51.2021.05.20.19.00.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 May 2021 19:00:30 -0700 (PDT)
+From:   Huangzhaoyang <huangzhaoyang@gmail.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
+        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: [PATCH v5] psi: fix race between psi_trigger_create and psimon
+Date:   Fri, 21 May 2021 09:59:03 +0800
+Message-Id: <1621562343-8033-1-git-send-email-huangzhaoyang@gmail.com>
+X-Mailer: git-send-email 1.7.9.5
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/X_1rq9i10KBI.rsWyD/3wED
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Hi all,
+Race detected between psi_trigger_destroy/create as shown below, which
+cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
+and psi_system->poll_timer->entry->next. Under this modification, the
+race window is removed by initialising poll_wait and poll_timer in
+group_init which are executed only once at beginning.
 
-After merging the drm-intel tree, today's linux-next build (x86_64
-allmodconfig) failed like this:
+psi_trigger_destroy                      psi_trigger_create
+mutex_lock(trigger_lock);
+rcu_assign_pointer(poll_task, NULL);
+mutex_unlock(trigger_lock);
+					mutex_lock(trigger_lock);
+					if (!rcu_access_pointer(group->poll_task)) {
 
-drivers/gpu/drm/i915/gvt/handlers.c: In function 'init_skl_mmio_info':
-drivers/gpu/drm/i915/gvt/handlers.c:3345:9: error: 'CSR_SSP_BASE' undeclare=
-d (first use in this function); did you mean 'DMC_SSP_BASE'?
- 3345 |  MMIO_D(CSR_SSP_BASE, D_SKL_PLUS);
-      |         ^~~~~~~~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:2120:48: note: in definition of macro '=
-MMIO_F'
- 2120 |  ret =3D new_mmio_info(gvt, i915_mmio_reg_offset(reg), \
-      |                                                ^~~
-drivers/gpu/drm/i915/gvt/handlers.c:3345:2: note: in expansion of macro 'MM=
-IO_D'
- 3345 |  MMIO_D(CSR_SSP_BASE, D_SKL_PLUS);
-      |  ^~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:3345:9: note: each undeclared identifie=
-r is reported only once for each function it appears in
- 3345 |  MMIO_D(CSR_SSP_BASE, D_SKL_PLUS);
-      |         ^~~~~~~~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:2120:48: note: in definition of macro '=
-MMIO_F'
- 2120 |  ret =3D new_mmio_info(gvt, i915_mmio_reg_offset(reg), \
-      |                                                ^~~
-drivers/gpu/drm/i915/gvt/handlers.c:3345:2: note: in expansion of macro 'MM=
-IO_D'
- 3345 |  MMIO_D(CSR_SSP_BASE, D_SKL_PLUS);
-      |  ^~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:3346:9: error: 'CSR_HTP_SKL' undeclared=
- (first use in this function); did you mean 'DMC_HTP_SKL'?
- 3346 |  MMIO_D(CSR_HTP_SKL, D_SKL_PLUS);
-      |         ^~~~~~~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:2120:48: note: in definition of macro '=
-MMIO_F'
- 2120 |  ret =3D new_mmio_info(gvt, i915_mmio_reg_offset(reg), \
-      |                                                ^~~
-drivers/gpu/drm/i915/gvt/handlers.c:3346:2: note: in expansion of macro 'MM=
-IO_D'
- 3346 |  MMIO_D(CSR_HTP_SKL, D_SKL_PLUS);
-      |  ^~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:3347:9: error: 'CSR_LAST_WRITE' undecla=
-red (first use in this function); did you mean 'DMC_LAST_WRITE'?
- 3347 |  MMIO_D(CSR_LAST_WRITE, D_SKL_PLUS);
-      |         ^~~~~~~~~~~~~~
-drivers/gpu/drm/i915/gvt/handlers.c:2120:48: note: in definition of macro '=
-MMIO_F'
- 2120 |  ret =3D new_mmio_info(gvt, i915_mmio_reg_offset(reg), \
-      |                                                ^~~
-drivers/gpu/drm/i915/gvt/handlers.c:3347:2: note: in expansion of macro 'MM=
-IO_D'
- 3347 |  MMIO_D(CSR_LAST_WRITE, D_SKL_PLUS);
-      |  ^~~~~~
-In file included from drivers/gpu/drm/i915/i915_drv.h:64,
-                 from drivers/gpu/drm/i915/gvt/handlers.c:39:
-drivers/gpu/drm/i915/gvt/handlers.c: At top level:
-drivers/gpu/drm/i915/gvt/handlers.c:3658:21: error: 'CSR_MMIO_START_RANGE' =
-undeclared here (not in a function); did you mean 'DMC_MMIO_START_RANGE'?
- 3658 |  {D_SKL_PLUS, _MMIO(CSR_MMIO_START_RANGE), 0x3000, NULL, NULL},
-      |                     ^~~~~~~~~~~~~~~~~~~~
-drivers/gpu/drm/i915/i915_reg.h:185:47: note: in definition of macro '_MMIO'
-  185 | #define _MMIO(r) ((const i915_reg_t){ .reg =3D (r) })
-      |                                               ^
+						timer_setup(poll_timer, poll_timer_fn, 0);
 
-Caused by commit
+						rcu_assign_pointer(poll_task, task);
+					}
+					mutex_unlock(trigger_lock);
 
-  0633cdcbaa77 ("drm/i915/dmc: Rename macro names containing csr")
+synchronize_rcu();
+del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
+psi_trigger_create
 
-I have used the drm-intel tree from next-20210520 for today.
+So, trigger_lock/RCU correctly protects destruction of group->poll_task but
+misses this race affecting poll_timer and poll_wait.
 
---=20
-Cheers,
-Stephen Rothwell
+Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger
+scheduling mechanism")
 
---Sig_/X_1rq9i10KBI.rsWyD/3wED
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
+Signed-off-by: ke.wang <ke.wang@unisoc.com>
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+v2: change del_timer_sync to del_timer in psi_trigger_destroy
+v3: remove timer_setup within psi_tirgger_create
+    protect del_timer by extending the critical section of mutex_lock
+v4: amend fix information on comment
+v5: delete the poll_timer while assigning the task to NULL
+---
+---
+ kernel/sched/psi.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc25a3c..075501e 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -182,6 +182,8 @@ struct psi_group psi_system = {
+ 
+ static void psi_avgs_work(struct work_struct *work);
+ 
++static void poll_timer_fn(struct timer_list *t);
++
+ static void group_init(struct psi_group *group)
+ {
+ 	int cpu;
+@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
+ 	memset(group->polling_total, 0, sizeof(group->polling_total));
+ 	group->polling_next_update = ULLONG_MAX;
+ 	group->polling_until = 0;
++	init_waitqueue_head(&group->poll_wait);
++	timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 	rcu_assign_pointer(group->poll_task, NULL);
+ }
+ 
+@@ -1157,9 +1161,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 			return ERR_CAST(task);
+ 		}
+ 		atomic_set(&group->poll_wakeup, 0);
+-		init_waitqueue_head(&group->poll_wait);
+ 		wake_up_process(task);
+-		timer_setup(&group->poll_timer, poll_timer_fn, 0);
+ 		rcu_assign_pointer(group->poll_task, task);
+ 	}
+ 
+@@ -1211,6 +1213,7 @@ static void psi_trigger_destroy(struct kref *ref)
+ 					group->poll_task,
+ 					lockdep_is_held(&group->trigger_lock));
+ 			rcu_assign_pointer(group->poll_task, NULL);
++			del_timer(&group->poll_timer);
+ 		}
+ 	}
+ 
+@@ -1223,17 +1226,14 @@ static void psi_trigger_destroy(struct kref *ref)
+ 	 */
+ 	synchronize_rcu();
+ 	/*
+-	 * Destroy the kworker after releasing trigger_lock to prevent a
++	 * Destroy psimon after releasing trigger_lock to prevent a
+ 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
+ 	 */
+ 	if (task_to_destroy) {
+ 		/*
+ 		 * After the RCU grace period has expired, the worker
+ 		 * can no longer be found through group->poll_task.
+-		 * But it might have been already scheduled before
+-		 * that - deschedule it cleanly before destroying it.
+ 		 */
+-		del_timer_sync(&group->poll_timer);
+ 		kthread_stop(task_to_destroy);
+ 	}
+ 	kfree(t);
+-- 
+1.9.1
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnE7QACgkQAVBC80lX
-0GyWKgf9FhTLYXrDxj5B3cqWCYudB70j1lqfCiwVHuma5A/C3D+owuO1kDRVHau4
-8Anq+qZIxU+Po1kIXSCi4HTSfn4sZRRDtbrVIpJZ/nR1T2bDgZVdpSQWsGJKnetw
-BRuZRHyu2S/PT27P7PnSs0ye6s9KxcdZm4MKb0PQRAVaTsBojgcSEKIyAqwks3ux
-SPpcUqyVtfnDUExXKU4SaCNHVLNFvtdnDtjXJzNvmG6xTgI4vieePaC8LCMYtEYb
-CpcHIIOYCdwETcUPdvYB2wrvg81l95qoam1UBS2zK/6egxNn7FfkRop3ENXQ4lPO
-gEwy3peESSNX1u8x2wzrVMctVsKy/g==
-=+Gw7
------END PGP SIGNATURE-----
-
---Sig_/X_1rq9i10KBI.rsWyD/3wED--
