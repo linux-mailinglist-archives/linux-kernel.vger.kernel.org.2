@@ -2,239 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2D338BB96
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0388638BB99
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236826AbhEUBc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:32:57 -0400
-Received: from mga01.intel.com ([192.55.52.88]:42900 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236147AbhEUBcz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:32:55 -0400
-IronPort-SDR: NRGKnrpnsG2DLD39rUgxpF/UuHB7gs4I02/P1KaaCDr6TTdXAOhWwFP9yPzcwP/fkesEx3a+PI
- cPhN5YtgIaUQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="222485431"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="222485431"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:31:32 -0700
-IronPort-SDR: KGHnfZlEB9KZB8Eqdh8WAcPY+5FdBVEoUHNRxs8sj8e0A87sSEeGs2s2fusACGH+u5+gVwYMRJ
- 6iuNRTNey36w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="412399363"
-Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by orsmga002.jf.intel.com with ESMTP; 20 May 2021 18:31:30 -0700
-Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lju0f-0000tG-V0; Fri, 21 May 2021 01:31:29 +0000
-Date:   Fri, 21 May 2021 09:31:14 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/entry] BUILD SUCCESS
- b337b4965e3a3e567f11828a9e3fe3fb3faefa47
-Message-ID: <60a70d62.nzEj/UKIsMywbqir%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S236868AbhEUBdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:33:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236829AbhEUBdi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:33:38 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 517F2C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 18:32:15 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id w7so8689712lji.6
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 18:32:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=i6+GU1989dc+c/4pBqXP2ejMJrlEQH+40HXELyyCBFg=;
+        b=sUQIEChif+iFRYvkbiyr/AA8zebUW1MBFkmvXgAqKoB1NtWATeTE9VUk4/gFePidHc
+         V8AItxPmghNp2WiiqVXB/V29GS448Pa9SR+6G3D8upmpyPS/dqQ9IqelVI8VfbCiTKxG
+         AA1fZoN+IRJGkIHK2yvKDYdkR8+3DBf9yFjNHRJnl3NtKbE4FRWpZ88rRgpRi+J/KG/k
+         dmzBKeTOtZhXJwg0xUyAOE1TwklQ4kgh3c/CamKCwOU3EVsDP1IuGl7NlfVkf0sNNmjl
+         lYOU3SCHrCO65TE+5hJcUo3RYuWw0cfaObbrWIpuKHRPX5cfCvUqfzRccbnfxSKiueP4
+         b8UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=i6+GU1989dc+c/4pBqXP2ejMJrlEQH+40HXELyyCBFg=;
+        b=gIjEeYwScUR1G6ShocVcib6qlNU/QuxyUr0GVN/3mL0tUg/f/3ja1JvTGGWCoy5GCe
+         FDHWv9kFd5ceCjGFMY3T1UTlai5k5Uu1kAjOkxKR39gTe34x2eJBKMJqHqMJqcR2lBn7
+         H4fd8qHdArEcbsNFqS6t/5ovMjVvg5p09cwPMh5EI0s1ZtfnryJFa0783zEm1ex3HqGb
+         Et7KlLfYLDm8aHgy9w4jzDayhBIA7h/H5JgoTzVYPcqW3cWHM2fR+g4VKrB0R8Utr37w
+         RFqDFCx7hZdWkjE9XPe0jvYndp4kbm8/TJmSaoRyBvWk7GdZ0DPWzEpzSMDXgD1VIbD5
+         qfXg==
+X-Gm-Message-State: AOAM532eli9xpo844uR1UNlz31/P/t51IsuoR7c3rzwYrt4Xa1WsEFk6
+        BEO5M7YcUa9C/xkkxCbX+ZktsAtwgzBzts15RFV8lw==
+X-Google-Smtp-Source: ABdhPJyZNWeEBlPshz3dE96QWqsEPAkawS8AVDk1QHNfZh/n9URQWtLLDiAuePsk2NDxqDFWl/lOJAp8uk6RvkmSB8w=
+X-Received: by 2002:a2e:880f:: with SMTP id x15mr4814880ljh.503.1621560733358;
+ Thu, 20 May 2021 18:32:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210413010252.2255812-1-lzye@google.com> <a2be79bcf1ce93096d6843a0856927cda65d4842.camel@hadess.net>
+ <CAFFudd+ULT9TLEeXZ43J2dhk3de7aMr1nX6swsD0A8uNC8TQQg@mail.gmail.com>
+In-Reply-To: <CAFFudd+ULT9TLEeXZ43J2dhk3de7aMr1nX6swsD0A8uNC8TQQg@mail.gmail.com>
+From:   Chris Ye <lzye@google.com>
+Date:   Thu, 20 May 2021 18:32:02 -0700
+Message-ID: <CAFFuddKreeKEUWWn2emOCP1vTL0wc5y4Y+9O2kLn16M1hYkxQQ@mail.gmail.com>
+Subject: Re: [PATCH] [v4] Input: Add "Select" button to Microsoft Xbox One controller.
+To:     Bastien Nocera <hadess@hadess.net>
+Cc:     =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
+        Benjamin Valentin <benpicco@googlemail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
+        Sanjay Govind <sanjay.govind9@gmail.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        linux-input <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
+        kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/entry
-branch HEAD: b337b4965e3a3e567f11828a9e3fe3fb3faefa47  x86/entry: Treat out of range and gap system calls the same
+Hi Bastien,
+  Please check v5 for the patch let me know if you still have any comment.
+Thanks!
+Chris
 
-elapsed time: 720m
-
-configs tested: 177
-configs skipped: 3
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     mpc5200_defconfig
-openrisc                         alldefconfig
-powerpc                      walnut_defconfig
-mips                      malta_kvm_defconfig
-mips                           mtx1_defconfig
-sh                         microdev_defconfig
-arm                  colibri_pxa300_defconfig
-powerpc                      mgcoge_defconfig
-mips                      bmips_stb_defconfig
-mips                        jmr3927_defconfig
-sh                           se7343_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                           sunxi_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                           ci20_defconfig
-arc                        nsimosci_defconfig
-arm                         shannon_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      pasemi_defconfig
-powerpc                     powernv_defconfig
-mips                        qi_lb60_defconfig
-arm                          badge4_defconfig
-openrisc                  or1klitex_defconfig
-arc                     haps_hs_smp_defconfig
-arm                        mvebu_v5_defconfig
-arm                     am200epdkit_defconfig
-mips                          rb532_defconfig
-powerpc                         ps3_defconfig
-powerpc                     tqm5200_defconfig
-m68k                       m5275evb_defconfig
-sh                          lboxre2_defconfig
-mips                         tb0287_defconfig
-arm                         hackkit_defconfig
-powerpc                     ep8248e_defconfig
-mips                           ip27_defconfig
-powerpc                      ep88xc_defconfig
-arm                        spear6xx_defconfig
-arm                       aspeed_g5_defconfig
-um                                  defconfig
-powerpc                     tqm8541_defconfig
-powerpc                      pcm030_defconfig
-m68k                       m5475evb_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                    mvme5100_defconfig
-ia64                             allmodconfig
-powerpc                     pq2fads_defconfig
-xtensa                    xip_kc705_defconfig
-sparc                       sparc64_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         s5pv210_defconfig
-powerpc                 mpc8315_rdb_defconfig
-sh                            hp6xx_defconfig
-sh                           se7721_defconfig
-sh                           se7722_defconfig
-powerpc               mpc834x_itxgp_defconfig
-sh                         apsh4a3a_defconfig
-arm                         cm_x300_defconfig
-mips                           ip28_defconfig
-powerpc                     asp8347_defconfig
-powerpc                 mpc834x_mds_defconfig
-powerpc                      makalu_defconfig
-arm                            zeus_defconfig
-parisc                generic-64bit_defconfig
-arm                           viper_defconfig
-powerpc                 mpc836x_rdk_defconfig
-sh                           se7206_defconfig
-arc                        nsim_700_defconfig
-xtensa                  audio_kc705_defconfig
-arm                       omap2plus_defconfig
-powerpc                       ebony_defconfig
-arm                         palmz72_defconfig
-arm                             ezx_defconfig
-arm                  colibri_pxa270_defconfig
-ia64                                defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-mips                     loongson2k_defconfig
-sh                           se7751_defconfig
-arm                          lpd270_defconfig
-powerpc                      chrp32_defconfig
-nios2                         3c120_defconfig
-nds32                             allnoconfig
-sh                               j2_defconfig
-sh                             espt_defconfig
-powerpc                      obs600_defconfig
-mips                           jazz_defconfig
-arm                        keystone_defconfig
-mips                   sb1250_swarm_defconfig
-s390                       zfcpdump_defconfig
-arc                                 defconfig
-powerpc                        warp_defconfig
-powerpc                     tqm8548_defconfig
-mips                            gpr_defconfig
-arc                    vdk_hs38_smp_defconfig
-openrisc                 simple_smp_defconfig
-mips                        vocore2_defconfig
-arc                          axs101_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                     stx_gp3_defconfig
-x86_64                            allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210520
-x86_64               randconfig-a006-20210520
-x86_64               randconfig-a005-20210520
-x86_64               randconfig-a003-20210520
-x86_64               randconfig-a004-20210520
-x86_64               randconfig-a002-20210520
-i386                 randconfig-a001-20210520
-i386                 randconfig-a005-20210520
-i386                 randconfig-a002-20210520
-i386                 randconfig-a006-20210520
-i386                 randconfig-a004-20210520
-i386                 randconfig-a003-20210520
-i386                 randconfig-a016-20210520
-i386                 randconfig-a011-20210520
-i386                 randconfig-a015-20210520
-i386                 randconfig-a012-20210520
-i386                 randconfig-a014-20210520
-i386                 randconfig-a013-20210520
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210520
-x86_64               randconfig-a013-20210520
-x86_64               randconfig-a014-20210520
-x86_64               randconfig-a012-20210520
-x86_64               randconfig-a016-20210520
-x86_64               randconfig-a015-20210520
-x86_64               randconfig-a011-20210520
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Tue, Apr 13, 2021 at 9:41 PM Chris Ye <lzye@google.com> wrote:
+>
+> That line was using tab + 4 spaces on the left and was reformatted to
+> use 2 tabs.
+> If you don't like it I've uploaded patch v5 not touching that line.
+>
+>
+> On Tue, Apr 13, 2021 at 5:34 AM Bastien Nocera <hadess@hadess.net> wrote:
+> >
+> > On Tue, 2021-04-13 at 01:02 +0000, Chris Ye wrote:
+> > > Add "Select" button input capability and input event mapping for
+> > > Microsoft Xbox One controller. From product site this is also
+> > > referred as
+> > > "Share" button.
+> > > Fixed Microsoft Xbox One controller select button not working under
+> > > USB
+> > > connection.
+> > >
+> > > Signed-off-by: Chris Ye <lzye@google.com>
+> > > ---
+> > >  drivers/input/joystick/xpad.c | 8 +++++++-
+> > >  1 file changed, 7 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/drivers/input/joystick/xpad.c
+> > > b/drivers/input/joystick/xpad.c
+> > > index 9f0d07dcbf06..99cb8bb78570 100644
+> > > --- a/drivers/input/joystick/xpad.c
+> > > +++ b/drivers/input/joystick/xpad.c
+> > > @@ -79,6 +79,7 @@
+> > >  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
+> > >  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
+> > >  #define MAP_STICKS_TO_NULL             (1 << 2)
+> > > +#define MAP_SELECT_BUTTON              (1 << 3)
+> > >  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS
+> > > |                  \
+> > >                                 MAP_TRIGGERS_TO_BUTTONS |
+> > > MAP_STICKS_TO_NULL)
+> > >
+> > > @@ -130,6 +131,7 @@ static const struct xpad_device {
+> > >         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0,
+> > > XTYPE_XBOXONE },
+> > >         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0,
+> > > XTYPE_XBOXONE },
+> > >         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver",
+> > > MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
+> > > +       { 0x045e, 0x0b12, "Microsoft Xbox One X pad",
+> > > MAP_SELECT_BUTTON, XTYPE_XBOXONE },
+> > >         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360
+> > > },
+> > >         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360
+> > > },
+> > >         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360
+> > > },
+> > > @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct
+> > > usb_xpad *xpad, u16 cmd, unsigned char
+> > >         /* menu/view buttons */
+> > >         input_report_key(dev, BTN_START,  data[4] & 0x04);
+> > >         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
+> > > +       if (xpad->mapping & MAP_SELECT_BUTTON)
+> > > +               input_report_key(dev, KEY_RECORD, data[22] & 0x01);
+> > >
+> > >         /* buttons A,B,X,Y */
+> > >         input_report_key(dev, BTN_A,    data[4] & 0x10);
+> > > @@ -1669,9 +1673,11 @@ static int xpad_init_input(struct usb_xpad
+> > > *xpad)
+> > >
+> > >         /* set up model-specific ones */
+> > >         if (xpad->xtype == XTYPE_XBOX360 || xpad->xtype ==
+> > > XTYPE_XBOX360W ||
+> > > -           xpad->xtype == XTYPE_XBOXONE) {
+> > > +               xpad->xtype == XTYPE_XBOXONE) {
+> >
+> > Why the indentation change here?
+> >
+> > >                 for (i = 0; xpad360_btn[i] >= 0; i++)
+> > >                         input_set_capability(input_dev, EV_KEY,
+> > > xpad360_btn[i]);
+> > > +               if (xpad->mapping & MAP_SELECT_BUTTON)
+> > > +                       input_set_capability(input_dev, EV_KEY,
+> > > KEY_RECORD);
+> > >         } else {
+> > >                 for (i = 0; xpad_btn[i] >= 0; i++)
+> > >                         input_set_capability(input_dev, EV_KEY,
+> > > xpad_btn[i]);
+> >
+> >
