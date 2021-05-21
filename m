@@ -2,187 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C9D238CDD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4E438CDDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:03:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236111AbhEUTDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:03:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53244 "EHLO mail.kernel.org"
+        id S236828AbhEUTFD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:05:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53710 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231354AbhEUTDs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:03:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ED6FE613AE;
-        Fri, 21 May 2021 19:02:24 +0000 (UTC)
+        id S231354AbhEUTE6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:04:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 84F89613AD;
+        Fri, 21 May 2021 19:03:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621623745;
-        bh=9dAAYfGKlNm1d/kBz0TkpkWwC4KouaitkPn8vJ/1a6Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xt5vcR/DDiR1T1LcTgnw5qeu+MizIbc/PNjevzEC6oIny+YrIjO4cJvD7fNr7tr8W
-         wIPRURguKitlWE2VUmV2gl3XnVjAUEzrataJSmrraPhoI64QOKf2yCuvP8cK/EZNxR
-         dt0JPWjLns7EikxKTL7/NNf9cExiEDpZjdlcYdLUXKrajRNmfPowt+AkcM1a4ULb19
-         KG3DSRRyt5hhlJjwdtHDWPhEGhYxE+I4I2Oi2VzoZ/UGRO9E2LHWYRZrYkILfi2SW2
-         ykEsPO+/e0SsJ+/LWaLQSm4TjEqNUk+jqQuW+uGhEKZ1Qt97RLAG91F/UShxLBefFt
-         r8+LC3UQOfQjw==
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
-Subject: [PATCH 2/2] f2fs: support RO feature
-Date:   Fri, 21 May 2021 12:02:17 -0700
-Message-Id: <20210521190217.2484099-2-jaegeuk@kernel.org>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-In-Reply-To: <20210521190217.2484099-1-jaegeuk@kernel.org>
-References: <20210521190217.2484099-1-jaegeuk@kernel.org>
+        s=k20201202; t=1621623815;
+        bh=Lb4zWukxynJKdO2B6fwy3BzW7bBXcRFkXw0A4mCRUHQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=G1VmxBiFqfMxKCZgUxm5/dufKpsN8UooefbIEeO+qjKy8iJR9nZ5AyV6zhRALRsXR
+         80XmULrvhGK4sQmdheZYFU2czJEzljEQZqEFOZdA0nq0/OeBbwhaEHkM7EpLq8WYsR
+         L54ePSUyOqlooWI2ug0A+/Lv+6cZw8YAhpRY4zZzzfRwTEJG+ocKZC10rZtv/V1kOX
+         KpK4q29X3FCc5i3zZ5l2tDdpnxEbk+YREHCkQdzrNQYjPwiNd4ovuKHSaAnq9+PtcR
+         2v9HI0MZQ0uOQOyST+x61zP9qjTNaQQC5YDsZOJshzsn78twFLYVYga2dEjwUFMMVm
+         15TWWEw8mCQ4w==
+Received: by mail-ej1-f46.google.com with SMTP id l1so31968800ejb.6;
+        Fri, 21 May 2021 12:03:35 -0700 (PDT)
+X-Gm-Message-State: AOAM5325Puhpvisc6Tsd6MkvyarV5X490DdccACmc41EPGbdAfdhgEgn
+        SUO9bmWJgKe4IDaQdijDWI1g4mWnjCmhNzEuHg==
+X-Google-Smtp-Source: ABdhPJzTd/Izr3P8oRUa1vk5tbtMeKhoGatTazTM5IQhKTJl5fJ+reQP7EFsCN74T8NNpYBMngBLD9DRlthlOPfJv7s=
+X-Received: by 2002:a17:907:76b8:: with SMTP id jw24mr11708266ejc.359.1621623814193;
+ Fri, 21 May 2021 12:03:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
+In-Reply-To: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 21 May 2021 14:03:23 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJep2rpPN8r8PzT5fv32mmjMvg+k-=jzLp4S1QzC+LcLg@mail.gmail.com>
+Message-ID: <CAL_JsqJep2rpPN8r8PzT5fv32mmjMvg+k-=jzLp4S1QzC+LcLg@mail.gmail.com>
+Subject: Re: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI devices
+To:     Wang Xingang <wangxingang5@huawei.com>
+Cc:     Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux IOMMU <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, xieyingtai@huawei.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Given RO feature in superblock, we don't need to check provisioning/reserve
-spaces and SSA area.
+On Thu, May 20, 2021 at 10:03 PM Wang Xingang <wangxingang5@huawei.com> wrote:
+>
+> From: Xingang Wang <wangxingang5@huawei.com>
+>
+> When booting with devicetree, the pci_request_acs() is called after the
+> enumeration and initialization of PCI devices, thus the ACS is not
+> enabled. And ACS should be enabled when IOMMU is detected for the
+> PCI host bridge, so add check for IOMMU before probe of PCI host and call
+> pci_request_acs() to make sure ACS will be enabled when enumerating PCI
+> devices.
+>
+> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+> configuring IOMMU linkage")
+> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+> ---
+>  drivers/iommu/of_iommu.c | 1 -
+>  drivers/pci/of.c         | 8 +++++++-
+>  2 files changed, 7 insertions(+), 2 deletions(-)
 
-Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
----
- fs/f2fs/f2fs.h    |  2 ++
- fs/f2fs/segment.c |  3 +++
- fs/f2fs/super.c   | 35 +++++++++++++++++++++++++++++++----
- 3 files changed, 36 insertions(+), 4 deletions(-)
+Reviewed-by: Rob Herring <robh@kernel.org>
 
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index c0bead0df66a..2c6913261586 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -168,6 +168,7 @@ struct f2fs_mount_info {
- #define F2FS_FEATURE_SB_CHKSUM		0x0800
- #define F2FS_FEATURE_CASEFOLD		0x1000
- #define F2FS_FEATURE_COMPRESSION	0x2000
-+#define F2FS_FEATURE_RO			0x4000
- 
- #define __F2FS_HAS_FEATURE(raw_super, mask)				\
- 	((raw_super->feature & cpu_to_le32(mask)) != 0)
-@@ -939,6 +940,7 @@ static inline void set_new_dnode(struct dnode_of_data *dn, struct inode *inode,
- #define	NR_CURSEG_DATA_TYPE	(3)
- #define NR_CURSEG_NODE_TYPE	(3)
- #define NR_CURSEG_INMEM_TYPE	(2)
-+#define NR_CURSEG_RO_TYPE	(2)
- #define NR_CURSEG_PERSIST_TYPE	(NR_CURSEG_DATA_TYPE + NR_CURSEG_NODE_TYPE)
- #define NR_CURSEG_TYPE		(NR_CURSEG_INMEM_TYPE + NR_CURSEG_PERSIST_TYPE)
- 
-diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-index 8668df7870d0..67cec8f858a2 100644
---- a/fs/f2fs/segment.c
-+++ b/fs/f2fs/segment.c
-@@ -4674,6 +4674,9 @@ static int sanity_check_curseg(struct f2fs_sb_info *sbi)
- {
- 	int i;
- 
-+	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
-+		return 0;
-+
- 	/*
- 	 * In LFS/SSR curseg, .next_blkoff should point to an unused blkaddr;
- 	 * In LFS curseg, all blkaddr after .next_blkoff should be unused.
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index b29de80ab60e..312bfab54693 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -1819,7 +1819,11 @@ static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
- static void default_options(struct f2fs_sb_info *sbi)
- {
- 	/* init some FS parameters */
--	F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-+	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
-+		F2FS_OPTION(sbi).active_logs = NR_CURSEG_RO_TYPE;
-+	else
-+		F2FS_OPTION(sbi).active_logs = NR_CURSEG_PERSIST_TYPE;
-+
- 	F2FS_OPTION(sbi).inline_xattr_size = DEFAULT_INLINE_XATTR_ADDRS;
- 	F2FS_OPTION(sbi).whint_mode = WHINT_MODE_OFF;
- 	F2FS_OPTION(sbi).alloc_mode = ALLOC_MODE_DEFAULT;
-@@ -1994,6 +1998,11 @@ static int f2fs_remount(struct super_block *sb, int *flags, char *data)
- 	err = parse_options(sb, data, true);
- 	if (err)
- 		goto restore_opts;
-+
-+	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
-+					!(*flags & SB_RDONLY))
-+		goto restore_opts;
-+
- 	checkpoint_changed =
- 			disable_checkpoint != test_opt(sbi, DISABLE_CHECKPOINT);
- 
-@@ -3137,16 +3146,18 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 	ovp_segments = le32_to_cpu(ckpt->overprov_segment_count);
- 	reserved_segments = le32_to_cpu(ckpt->rsvd_segment_count);
- 
-+	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
-+		goto no_reserved;
- 	if (unlikely(fsmeta < F2FS_MIN_META_SEGMENTS ||
- 			ovp_segments == 0 || reserved_segments == 0)) {
- 		f2fs_err(sbi, "Wrong layout: check mkfs.f2fs version");
- 		return 1;
- 	}
--
-+no_reserved:
- 	user_block_count = le64_to_cpu(ckpt->user_block_count);
- 	segment_count_main = le32_to_cpu(raw_super->segment_count_main);
- 	log_blocks_per_seg = le32_to_cpu(raw_super->log_blocks_per_seg);
--	if (!user_block_count || user_block_count >=
-+	if (!user_block_count || user_block_count >
- 			segment_count_main << log_blocks_per_seg) {
- 		f2fs_err(sbi, "Wrong user_block_count: %u",
- 			 user_block_count);
-@@ -3175,6 +3186,10 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 		if (le32_to_cpu(ckpt->cur_node_segno[i]) >= main_segs ||
- 			le16_to_cpu(ckpt->cur_node_blkoff[i]) >= blocks_per_seg)
- 			return 1;
-+
-+		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
-+			goto check_data;
-+
- 		for (j = i + 1; j < NR_CURSEG_NODE_TYPE; j++) {
- 			if (le32_to_cpu(ckpt->cur_node_segno[i]) ==
- 				le32_to_cpu(ckpt->cur_node_segno[j])) {
-@@ -3185,10 +3200,15 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 			}
- 		}
- 	}
-+check_data:
- 	for (i = 0; i < NR_CURSEG_DATA_TYPE; i++) {
- 		if (le32_to_cpu(ckpt->cur_data_segno[i]) >= main_segs ||
- 			le16_to_cpu(ckpt->cur_data_blkoff[i]) >= blocks_per_seg)
- 			return 1;
-+
-+		if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO))
-+			goto skip_cross;
-+
- 		for (j = i + 1; j < NR_CURSEG_DATA_TYPE; j++) {
- 			if (le32_to_cpu(ckpt->cur_data_segno[i]) ==
- 				le32_to_cpu(ckpt->cur_data_segno[j])) {
-@@ -3210,7 +3230,7 @@ int f2fs_sanity_check_ckpt(struct f2fs_sb_info *sbi)
- 			}
- 		}
- 	}
--
-+skip_cross:
- 	sit_bitmap_size = le32_to_cpu(ckpt->sit_ver_bitmap_bytesize);
- 	nat_bitmap_size = le32_to_cpu(ckpt->nat_ver_bitmap_bytesize);
- 
-@@ -3703,6 +3723,13 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
- 	if (err)
- 		goto free_options;
- 
-+	if (__F2FS_HAS_FEATURE(sbi->raw_super, F2FS_FEATURE_RO) &&
-+					!f2fs_readonly(sbi->sb)) {
-+		f2fs_info(sbi, "Allow to mount readonly mode only");
-+		err = -EINVAL;
-+		goto free_options;
-+	}
-+
- 	sb->s_maxbytes = max_file_blocks(NULL) <<
- 				le32_to_cpu(raw_super->log_blocksize);
- 	sb->s_max_links = F2FS_LINK_MAX;
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index a9d2df001149..54a14da242cc 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>                         .np = master_np,
+>                 };
+>
+> -               pci_request_acs();
+>                 err = pci_for_each_dma_alias(to_pci_dev(dev),
+>                                              of_pci_iommu_init, &info);
+>         } else {
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index da5b414d585a..2313c3f848b0 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
+>
+>  int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
+>  {
+> -       if (!dev->of_node)
+> +       struct device_node *node = dev->of_node;
+> +
+> +       if (!node)
+>                 return 0;
+>
+> +       /* Detect IOMMU and make sure ACS will be enabled */
+> +       if (of_property_read_bool(node, "iommu-map"))
+> +               pci_request_acs();
+> +
+>         bridge->swizzle_irq = pci_common_swizzle;
+>         bridge->map_irq = of_irq_parse_and_map_pci;
+>
+> --
+> 2.19.1
+>
