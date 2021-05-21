@@ -2,89 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A7138BABC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:16:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C390D38BAC2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:19:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234935AbhEUARQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:17:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52870 "EHLO mail.kernel.org"
+        id S234988AbhEUAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:20:54 -0400
+Received: from mga06.intel.com ([134.134.136.31]:53515 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234612AbhEUARN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:17:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D794F6109F;
-        Fri, 21 May 2021 00:15:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621556151;
-        bh=KN/xo1lyoIiciG9V+VqlWx19KUfp8J5f+WyREaqusoU=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=e6JBFVBMjMOtGuOw3ilgjfYaLUsfqnviBEew5unIppvInUsZXyizRTMSrQSWvYHuA
-         kkfJktbLa2XxBrODrZqhxlrG66hNiDXSWcoK/krfiry6dPQb7t121a5YirPmzeJc2E
-         s9qv2ejQWrwtmnPTvyeDV6eMta/yfZgNRvkJBPw/KBtlCe9W9o+FjbovdfnZdk3e0n
-         uY9l2hRjQTvbKvrnhcN9OieseLRnBSJByVwTT88p6RRizfqwvhJ6XfoP7WE0fZ3E9J
-         nx3b37oSJdq51xp/fOly1Opm6vCbxnVEj2OC21F5xFj/wP0xUYMZNbuVIS+DsNkeGu
-         EE783aWZleRCA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id A05D15C023D; Thu, 20 May 2021 17:15:51 -0700 (PDT)
-Date:   Thu, 20 May 2021 17:15:51 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <20210521001551.GS4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
- <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
- <YKMbQQ0qBAixXC5p@google.com>
- <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
- <YKX4ueNIabfd1DAD@google.com>
- <20210520145708.GK4441@paulmck-ThinkPad-P17-Gen-1>
- <YKbkAXELPxXJcsHA@google.com>
+        id S234612AbhEUAUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 20:20:53 -0400
+IronPort-SDR: QqV+58HlbPc6BNDKDAjO3NTLrWSV1Zn3cVWVOMn3I7QrsLSS9tdCo6ktVRQPDQmErNTsPPuHl3
+ pM9n/AjtnVoQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="262590889"
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="262590889"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 17:19:30 -0700
+IronPort-SDR: C905/yuGUlD1R0k+mBjEsSzRmVTbyHcoGp4pjW3IoJgxO19ompNzRbTKdpFxdDbdaM2jLYQDoE
+ J3irdkqdTasQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
+   d="scan'208";a="543826126"
+Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 20 May 2021 17:19:29 -0700
+Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1ljssy-0000rr-QX; Fri, 21 May 2021 00:19:28 +0000
+Date:   Fri, 21 May 2021 08:19:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 76fe8dec9bca0a1144de28d70e6a6c1a0dcd892e
+Message-ID: <60a6fc89.ISuNnUcYoLNIga5J%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKbkAXELPxXJcsHA@google.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 07:34:41AM +0900, Sergey Senozhatsky wrote:
-> On (21/05/20 07:57), Paul E. McKenney wrote:
-> > > 
-> > > Sounds good. I can cook a patch and run some tests.
-> > > Or do you want to send a patch?
-> > 
-> > Given that you have the test setup, things might go faster if you do
-> > the patch, especially taking timezones into consideration.  Of course,
-> > if you run into difficulties, you know where to find me.
-> 
-> OK. Sounds good to me.
-> 
-> > > While VCPU-2 has PVCLOCK_GUEST_STOPPED set (resuming) and is in
-> > > check_cpu_stall(), the VCPU-3 is executing:
-> > > 
-> > > 	apic_timer_interrupt()
-> > > 	 tick_irq_enter()
-> > > 	  tick_do_update_jiffies64()
-> > > 	   do_timer()
-> > 
-> > OK, but the normal grace period time is way less than one second, and
-> > the stall timeout in mainline is 21 seconds, so that would be a -lot-
-> > of jiffies of skew.  Or does the restarting really take that long a time?
-> 
-> That's a good question. I see huge jiffies spike in the logs.
-> I suspect that resuming a VM can take some time, especially on a "not
-> powerful at all" overcommitted host (more virtual CPUs than physical
-> ones).
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 76fe8dec9bca0a1144de28d70e6a6c1a0dcd892e  Merge branch 'x86/urgent'
 
-I really am just asking the question.  ;-)
+elapsed time: 722m
 
-After all, if restarting a VM can take that long, then it can take
-that long.
+configs tested: 176
+configs skipped: 2
 
-							Thanx, Paul
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                     mpc5200_defconfig
+openrisc                         alldefconfig
+powerpc                      walnut_defconfig
+mips                      malta_kvm_defconfig
+mips                           mtx1_defconfig
+sh                         microdev_defconfig
+powerpc                  mpc885_ads_defconfig
+mips                           gcw0_defconfig
+powerpc                 mpc834x_itx_defconfig
+arm                           sunxi_defconfig
+mips                         tb0219_defconfig
+powerpc                       ebony_defconfig
+mips                      pistachio_defconfig
+microblaze                      mmu_defconfig
+mips                      maltasmvp_defconfig
+openrisc                    or1ksim_defconfig
+mips                malta_qemu_32r6_defconfig
+mips                           ci20_defconfig
+arc                        nsimosci_defconfig
+arm                         shannon_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                      pasemi_defconfig
+powerpc                     powernv_defconfig
+mips                        qi_lb60_defconfig
+arm                          badge4_defconfig
+openrisc                  or1klitex_defconfig
+arc                     haps_hs_smp_defconfig
+arm                        mvebu_v5_defconfig
+arm                     am200epdkit_defconfig
+mips                          rb532_defconfig
+sh                           se7343_defconfig
+sh                         ap325rxa_defconfig
+arm                         socfpga_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                           sama5_defconfig
+m68k                       bvme6000_defconfig
+xtensa                    xip_kc705_defconfig
+mips                           jazz_defconfig
+h8300                            alldefconfig
+mips                   sb1250_swarm_defconfig
+mips                         tb0287_defconfig
+arm                         hackkit_defconfig
+powerpc                     ep8248e_defconfig
+arm                    vt8500_v6_v7_defconfig
+arm                       aspeed_g4_defconfig
+m68k                         amcore_defconfig
+arc                          axs103_defconfig
+powerpc                     tqm8541_defconfig
+powerpc                      pcm030_defconfig
+m68k                       m5475evb_defconfig
+powerpc                 mpc832x_rdb_defconfig
+powerpc                    mvme5100_defconfig
+xtensa                         virt_defconfig
+m68k                       m5275evb_defconfig
+sh                   rts7751r2dplus_defconfig
+powerpc                     pq2fads_defconfig
+sparc                       sparc64_defconfig
+powerpc                      ppc6xx_defconfig
+arm                         s5pv210_defconfig
+powerpc                 mpc8315_rdb_defconfig
+arc                                 defconfig
+sh                            hp6xx_defconfig
+sh                           se7721_defconfig
+sh                           se7206_defconfig
+sh                          r7780mp_defconfig
+mips                  cavium_octeon_defconfig
+arm                        mini2440_defconfig
+powerpc                     tqm8548_defconfig
+um                            kunit_defconfig
+arm                            zeus_defconfig
+arm                       aspeed_g5_defconfig
+parisc                generic-64bit_defconfig
+arm                           viper_defconfig
+powerpc                 mpc836x_rdk_defconfig
+mips                        jmr3927_defconfig
+arc                        nsim_700_defconfig
+xtensa                  audio_kc705_defconfig
+arm                       omap2plus_defconfig
+powerpc               mpc834x_itxgp_defconfig
+arm                         palmz72_defconfig
+arm                             ezx_defconfig
+arm                  colibri_pxa270_defconfig
+ia64                                defconfig
+um                             i386_defconfig
+x86_64                              defconfig
+nios2                         3c120_defconfig
+arm                         lubbock_defconfig
+arm                          iop32x_defconfig
+arm                         orion5x_defconfig
+powerpc                      obs600_defconfig
+arm                        keystone_defconfig
+s390                       zfcpdump_defconfig
+powerpc                        warp_defconfig
+mips                            gpr_defconfig
+um                                  defconfig
+arc                          axs101_defconfig
+sh                          kfr2r09_defconfig
+powerpc                 mpc8313_rdb_defconfig
+arm                        mvebu_v7_defconfig
+powerpc                     stx_gp3_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a001-20210520
+x86_64               randconfig-a006-20210520
+x86_64               randconfig-a005-20210520
+x86_64               randconfig-a003-20210520
+x86_64               randconfig-a004-20210520
+x86_64               randconfig-a002-20210520
+i386                 randconfig-a001-20210520
+i386                 randconfig-a005-20210520
+i386                 randconfig-a002-20210520
+i386                 randconfig-a006-20210520
+i386                 randconfig-a004-20210520
+i386                 randconfig-a003-20210520
+i386                 randconfig-a016-20210520
+i386                 randconfig-a011-20210520
+i386                 randconfig-a015-20210520
+i386                 randconfig-a012-20210520
+i386                 randconfig-a014-20210520
+i386                 randconfig-a013-20210520
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-b001-20210520
+x86_64               randconfig-a013-20210520
+x86_64               randconfig-a014-20210520
+x86_64               randconfig-a012-20210520
+x86_64               randconfig-a016-20210520
+x86_64               randconfig-a015-20210520
+x86_64               randconfig-a011-20210520
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
