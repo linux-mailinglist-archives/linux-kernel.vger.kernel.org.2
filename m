@@ -2,71 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526C038CE71
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:59:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20A2338CE73
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbhEUUAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:00:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47112 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229539AbhEUUAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:00:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C47F2613E9;
-        Fri, 21 May 2021 19:58:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621627137;
-        bh=sYtJ34rQzfKqTQGaf9eGQyLJQSxp3CXvjwj1CofMlEU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZwV1iKFE1dEjAxVX3YJpk8hoh5FqhWGxVH4scPIsdiRExKEM514dvLfuCU1Qc4liy
-         qKFn9D63kIl1+bJBhK5KygejE79ELg7s9apt5byyjpoHlx2hlDubOlFT9tA9u91kU/
-         57LkY2pNNA6cC+oxX1AmRB2gC/DY4rQWqVQ4MojPTajpxfHQUThpcjqub4AYJChYI5
-         pLcZe36/efZ5B0r7EUdyA1dvVUyuZGDJrwBmA5kVteMT7tyAMJRk2n/lHSMbctoSzk
-         yopAyMlAnjwYJ9FzAF9AmdumbjvWcYUY0DXaC9nDlOHE15x/iwVSLg3pDO1q/Ix26N
-         rgFHWNV7/3ZVw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 9FCB24011C; Fri, 21 May 2021 16:58:55 -0300 (-03)
-Date:   Fri, 21 May 2021 16:58:55 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
-        Matt Fleming <matt.fleming@intel.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org
-Subject: Re: [PATCH 2/2] perf tests: Drop __maybe_unused on x86 test
- declarations
-Message-ID: <YKgQ/+JExJSezFHg@kernel.org>
-References: <20210513174614.2242210-1-robh@kernel.org>
- <20210513174614.2242210-2-robh@kernel.org>
- <YJ48xSO7fnj4wmtj@krava>
+        id S230024AbhEUUAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229932AbhEUUAp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:00:45 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8626C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:59:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=PlWT/h/uFlRbuF6+X3hEtWq9PabKtBmphm+LVJuqNQk=; b=mumXUlDrNRn9c9v9ouEjIXw0o1
+        xf4CMIfuWVLlKf3dE7YR5RC4Q8pdRXyYILl+uyGZe2aHLImdsqeC3OsUcybEuwRZPDJ/4Bgq6Bv+T
+        BGJahU7pUTHDy7waI3PIBUXg/xmEg3Eoqp0xyMjt5w15uukc+F6bXVPhaEfjVgAsFW3C2u81PL4rJ
+        rVJlIfBBCjKaC7n0RhWVN7hWBC2vRtfsMaINu7xFf7LUQ7mWtb3tB/gHLeGRYY53IpHDKz31ppLoP
+        mSFSYNIaXgNNYC3J1pIRNKwswQ16If/a5/Hutq7TN+W8uanGH7XSrPB32ADneHGrC9SLYFnCDufmD
+        KYbrPpeA==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lkBIl-00HOY7-M2; Fri, 21 May 2021 19:59:19 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Mel Gorman <mgorman@techsingularity.net>
+Subject: [PATCH] x86: fixmap: use CONFIG_NR_CPUS instead of NR_CPUS
+Date:   Fri, 21 May 2021 12:59:18 -0700
+Message-Id: <20210521195918.2183-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJ48xSO7fnj4wmtj@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, May 14, 2021 at 11:03:01AM +0200, Jiri Olsa escreveu:
-> On Thu, May 13, 2021 at 12:46:14PM -0500, Rob Herring wrote:
-> > Function declarations don't need __maybe_unused annotations, only the
-> > implementations do. Drop them on the perf x86 tests.
-> 
-> for both patches:
-> 
-> Acked-by: Jiri Olsa <jolsa@kernel.org>
+Use CONFIG_NR_CPUS instead of NR_CPUS for an enum entry item.
+(Alternatively, #include <linux/threads.h> unconditionally instead of
+conditionally.)
 
-Thanks, applied.
+This fixes 100+ build errors like so:
 
-- Arnaldo
+In file included from ../include/asm-generic/early_ioremap.h:6:0,
+                 from ./arch/x86/include/generated/asm/early_ioremap.h:1,
+                 from ../arch/x86/include/asm/io.h:44,
+                 from ../include/linux/io.h:13,
+                 from ../mm/early_ioremap.c:13:
+../arch/x86/include/asm/fixmap.h:103:48: error: ‘NR_CPUS’ undeclared here (not in a function); did you mean ‘NR_OPEN’?
+  FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
 
+Fixes: e972c2511967 ("mm/early_ioremap: add prototype for early_memremap_pgprot_adjust")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: Mel Gorman <mgorman@techsingularity.net>
+---
+ arch/x86/include/asm/fixmap.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- linux-next-20210521.orig/arch/x86/include/asm/fixmap.h
++++ linux-next-20210521/arch/x86/include/asm/fixmap.h
+@@ -100,7 +100,7 @@ enum fixed_addresses {
+ #endif
+ #ifdef CONFIG_KMAP_LOCAL
+ 	FIX_KMAP_BEGIN,	/* reserved pte's for temporary kernel mappings */
+-	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * NR_CPUS) - 1,
++	FIX_KMAP_END = FIX_KMAP_BEGIN + (KM_MAX_IDX * CONFIG_NR_CPUS) - 1,
+ #ifdef CONFIG_PCI_MMCONFIG
+ 	FIX_PCIE_MCFG,
+ #endif
