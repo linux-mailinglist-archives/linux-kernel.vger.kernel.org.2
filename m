@@ -2,111 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9A838CCE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F6D38CCE8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237564AbhEUSHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:07:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234740AbhEUSHf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:07:35 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CC9C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:06:11 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d11so21877266wrw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:06:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=D5LwmNVFsSfy6EyRs7Ealr4gzA97VJM1KuOHtzH0Li0=;
-        b=VE0HakH5HjuuQJKCxvKI5+8hyL5a8G9LX7e9Rjffwcw2UeJqvG6j3fhS10puSV5X73
-         CzlMG7QORuLeT3EXZg9T8bZIkO8xrHlT2wpEP4OnnbJoc0oPrrWSgA+q5wH7tZAkEPEI
-         Teb+xPMKbuRZkdkwfW3WTLZWr+hC8Q5tG1i79mkvCsjSMt5yoou1NHoE53Ch4NCuv4bJ
-         +eZyR5P+TZLyyHfG5boD/jGH6HdO+Uw2wRoiFdKyjn2X1cUuY6cUb03Zuh4aOh9ZjjYt
-         76J1DYOvCEVREhQe7M3CagXt/C7/CwqijicoI/cX4WWJ0ntUZpy1nIbU0CQ6TkW/E9k7
-         8wYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D5LwmNVFsSfy6EyRs7Ealr4gzA97VJM1KuOHtzH0Li0=;
-        b=DDYQnRWDLZ9UwXW8txUfvm34njqDVVhm8zRiwFLCmbl9rSXwrqjB2ptJlf+ohoiMQ0
-         MmnaR2aSHc38GG1J6OcwHJbsvB3KjRAq2zU3bLR8u+5gzVa36nz3j0ctRYTsN6DNG8tG
-         PjU48KH39MQ9p3ULb2uafc5ivyr8/89+YdYMS9+tWd3K0sy9Rq+dIZdDyHCbZ0W099EZ
-         IlSK/6OERj4XqLY09wLDGXOppzImzM8jxfPukmk3L/MI1AX+u5qaZv6RDMgc9pDWPY5X
-         eYFRiesHWnBRn6KX/F15egUzn+faldjTKDHp5lIh932aJWHK2VNGIbaQgLWgkwTQbw9Z
-         eWig==
-X-Gm-Message-State: AOAM533o8078uGDbQVVG1ll87PjWdHkGC1XKBl2qrO0mara4c95pgIKo
-        7kA1e9MPzCj8uZ1rutH5W7PG9j3DAuh7rxcaG8tq8g==
-X-Google-Smtp-Source: ABdhPJzX2Eq4rQeY4gzgDvqnd7rQnzuIshDnGr5EuwboV/EfaHrQg8AH54RsVMdP1TD5pJIaYTw1SphxHZ1NIv/2R+c=
-X-Received: by 2002:a5d:4351:: with SMTP id u17mr10693936wrr.47.1621620370129;
- Fri, 21 May 2021 11:06:10 -0700 (PDT)
+        id S238525AbhEUSHl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:07:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238505AbhEUSHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:07:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15A51613CB;
+        Fri, 21 May 2021 18:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621620375;
+        bh=PGlP4iraJhEmtFARuI90AqejPX1/fQS9paNMLEY2w+Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iz450FZH/5bpTdyYLCWpyUOLw72CFhgN2ndPP3/YgWcYOR8Jkfl95UxlVx/K+Av6g
+         f5ijoFD/NawtnO+gJA2BAiHN2iZROdpHLjIyjMrHUXwB+/hR6E53cP3Qk/wowOSo+B
+         a4bUrLbrIfYkcP4jIqjDPr38Ofe7e4S+HAie+dPE=
+Date:   Fri, 21 May 2021 20:06:13 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Thierry Reding <treding@nvidia.com>
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Lee Jones <lee.jones@linaro.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH v2 3/3] Revert "usb: common: usb-conn-gpio: Make VBUS
+ supply optional"
+Message-ID: <YKf2ldQhJCVbR3N8@kroah.com>
+References: <1621406386-18838-1-git-send-email-chunfeng.yun@mediatek.com>
+ <1621406386-18838-3-git-send-email-chunfeng.yun@mediatek.com>
+ <YKezl0nlWFQhLyf/@orome.fritz.box>
 MIME-Version: 1.0
-References: <20210507150515.257424-1-maxime@cerno.tech> <20210507150515.257424-7-maxime@cerno.tech>
-In-Reply-To: <20210507150515.257424-7-maxime@cerno.tech>
-From:   Dave Stevenson <dave.stevenson@raspberrypi.com>
-Date:   Fri, 21 May 2021 19:05:53 +0100
-Message-ID: <CAPY8ntACvEvvEgRY_Y-fHANLW+0K9iariwpicDGOVM+Xje_CeQ@mail.gmail.com>
-Subject: Re: [PATCH v4 06/12] drm/vc4: hdmi: Prevent clock unbalance
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com,
-        linux-rpi-kernel@lists.infradead.org,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKezl0nlWFQhLyf/@orome.fritz.box>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 at 16:05, Maxime Ripard <maxime@cerno.tech> wrote:
->
-> Since we fixed the hooks to disable the encoder at boot, we now have an
-> unbalanced clk_disable call at boot since we never enabled them in the
-> first place.
->
-> Let's mimic the state of the hardware and enable the clocks at boot if
-> the controller is enabled to get the use-count right.
->
-> Cc: <stable@vger.kernel.org> # v5.10+
-> Fixes: 09c438139b8f ("drm/vc4: hdmi: Implement finer-grained hooks")
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+On Fri, May 21, 2021 at 03:20:23PM +0200, Thierry Reding wrote:
+> On Wed, May 19, 2021 at 02:39:46PM +0800, Chunfeng Yun wrote:
+> > Vbus is already an optional supply, if the vbus-supply is not
+> > provided in DTS, will use a dummy regulator,
+> 
+> That statement is not entirely correct. The dummy regulator is
+> substituted only if the supply is in fact not optional. The idea behind
+> that is to allow DTS files that don't specify all required regulators to
+> get away with it, based on the assumption that the supply is one of
+> those always-on supplies that are often not described in DTS.
+> 
+> > the warning log is as below:
+> > "supply vbus not found, using dummy regulator"
+> 
+> And the reason why we get that warning is to point out that the DTS has
+> a bug and that it should be fixed (by adding a proper regulator to take
+> the place of the dummy).
+> 
+> > This reverts commit 4ddf1ac79e5f082451cd549283d2eb7559ab6ca9.
+> 
+> But if you read the description of that commit, the purpose of that
+> patch was in fact to make the supply completely optional in the case
+> where we already have the VBUS supply specified for the USB port that
+> the connector is parented to.
+> 
+> So in that case the DTS doesn't have the bug because the VBUS supply is
+> already specified for the USB port and therefore it doesn't have to be
+> specified in the USB connector again. In fact, specifying it twice can
+> lead to a situation where the USB port may not be able to switch the
+> VBUS supply on or off because the setting might conflict with that of
+> the USB connector.
+> 
+> So unless there's a real reason why this is needed, I don't think this
+> should be applied.
 
-Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
+I've dropped this from my tree now, thanks.
 
-> ---
->  drivers/gpu/drm/vc4/vc4_hdmi.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> index 1fda574579af..9c919472ae84 100644
-> --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
-> +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-> @@ -1995,6 +1995,14 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
->         if (vc4_hdmi->variant->reset)
->                 vc4_hdmi->variant->reset(vc4_hdmi);
->
-> +       if ((of_device_is_compatible(dev->of_node, "brcm,bcm2711-hdmi0") ||
-> +            of_device_is_compatible(dev->of_node, "brcm,bcm2711-hdmi1")) &&
-> +           HDMI_READ(HDMI_VID_CTL) & VC4_HD_VID_CTL_ENABLE) {
-> +               clk_prepare_enable(vc4_hdmi->pixel_clock);
-> +               clk_prepare_enable(vc4_hdmi->hsm_clock);
-> +               clk_prepare_enable(vc4_hdmi->pixel_bvb_clock);
-> +       }
-> +
->         pm_runtime_enable(dev);
->
->         drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_TMDS);
-> --
-> 2.31.1
->
+greg k-h
