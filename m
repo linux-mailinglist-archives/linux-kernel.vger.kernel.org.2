@@ -2,58 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81EBB38C370
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:40:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C61AE38C381
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236771AbhEUJls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:41:48 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:54784 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233006AbhEUJlr (ORCPT
+        id S236861AbhEUJmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:42:14 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:50470 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236802AbhEUJmH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:41:47 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UZbOECL_1621590016;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UZbOECL_1621590016)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 21 May 2021 17:40:21 +0800
-From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     andrew@lunn.ch
-Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] net: phy: Fix inconsistent indenting
-Date:   Fri, 21 May 2021 17:40:14 +0800
-Message-Id: <1621590014-66912-1-git-send-email-jiapeng.chong@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Fri, 21 May 2021 05:42:07 -0400
+Received: from localhost (unknown [192.168.167.32])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 63FC9BA13F;
+        Fri, 21 May 2021 17:40:31 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P30810T139673781389056S1621590030498168_;
+        Fri, 21 May 2021 17:40:30 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <e63f602441e10634e28226d0f633528c>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: robh+dt@kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     robh+dt@kernel.org, tsbogend@alpha.franken.de
+Cc:     maoxiaochuan@loongson.cn, jiaxun.yang@flygoat.com,
+        zhangqing@loongson.cn, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH 0/5] mips: dts: loongson: fix DTC unit name warnings 
+Date:   Fri, 21 May 2021 17:40:23 +0800
+Message-Id: <cover.1621586643.git.zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Eliminate the follow smatch warning:
+*** BLURB HERE ***
 
-drivers/net/phy/phy_device.c:2886 phy_probe() warn: inconsistent
-indenting.
+zhaoxiao (5):
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
----
- drivers/net/phy/phy_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi       | 2 +-
+ arch/mips/boot/dts/loongson/loongson64g-package.dtsi     | 4 ++--
+ arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts | 2 +-
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi                | 2 +-
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi              | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
-index 0a2d8be..1539ea0 100644
---- a/drivers/net/phy/phy_device.c
-+++ b/drivers/net/phy/phy_device.c
-@@ -2883,7 +2883,7 @@ static int phy_probe(struct device *dev)
- 	/* Disable the interrupt if the PHY doesn't support it
- 	 * but the interrupt is still a valid one
- 	 */
--	 if (!phy_drv_supports_irq(phydrv) && phy_interrupt_is_valid(phydev))
-+	if (!phy_drv_supports_irq(phydrv) && phy_interrupt_is_valid(phydev))
- 		phydev->irq = PHY_POLL;
- 
- 	if (phydrv->flags & PHY_IS_INTERNAL)
 -- 
-1.8.3.1
+2.20.1
+
+
 
