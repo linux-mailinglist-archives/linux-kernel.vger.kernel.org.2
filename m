@@ -2,329 +2,458 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7963038C750
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E27638C757
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:00:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhEUNAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:00:33 -0400
-Received: from foss.arm.com ([217.140.110.172]:46724 "EHLO foss.arm.com"
+        id S230511AbhEUNBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:01:36 -0400
+Received: from mga07.intel.com ([134.134.136.100]:7668 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230196AbhEUNAa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:00:30 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2CD311B3;
-        Fri, 21 May 2021 05:59:06 -0700 (PDT)
-Received: from [10.57.73.64] (unknown [10.57.73.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EA5FF3F719;
-        Fri, 21 May 2021 05:59:04 -0700 (PDT)
-Subject: Re: [PATCH v5 3/4] iommu: rockchip: Add internal ops to handle
- variants
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, xxm@rock-chips.com
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com
-References: <20210521083637.3221304-1-benjamin.gaignard@collabora.com>
- <20210521083637.3221304-4-benjamin.gaignard@collabora.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <e709c99c-02c4-69e1-0ae1-f12da9b2f915@arm.com>
-Date:   Fri, 21 May 2021 13:58:59 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S229571AbhEUNBc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:01:32 -0400
+IronPort-SDR: uvQI6JwshaS7IUVDOFYEnJEhUHlx3zLvm+Kccb84a7gGoDuErZXyGIT2Z39U+Z5TQ2S3QnSLxL
+ /1EzCQPMzgDA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265384859"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="265384859"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 06:00:04 -0700
+IronPort-SDR: 9uZZgidSCHewBqHjNgygfVBZ6R1rM61TLx3shjT1QxSKgxjrdh5JW+3sGiF2V+sR5LWdy1N19W
+ /aIHGDNWIF2Q==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="545377946"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 05:59:58 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1lk4ks-00DiAb-Ko; Fri, 21 May 2021 15:59:54 +0300
+Date:   Fri, 21 May 2021 15:59:54 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Maximilian Luz <luzmaximilian@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-i2c@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        devel@acpica.org, Len Brown <lenb@kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Robert Moore <robert.moore@intel.com>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        laurent.pinchart@ideasonboard.com, kieran.bingham@ideasonboard.com
+Subject: Re: [PATCH v4 1/8] ACPI: scan: Extend acpi_walk_dep_device_list()
+Message-ID: <YKeuymElxGT7Fe7q@smile.fi.intel.com>
+References: <20210520140928.3252671-1-djrscally@gmail.com>
+ <20210520140928.3252671-2-djrscally@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521083637.3221304-4-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520140928.3252671-2-djrscally@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-21 09:36, Benjamin Gaignard wrote:
-> Add internal ops to be able to handle incoming variant v2.
-> The goal is to keep the overall structure of the framework but
-> to allow to add the evolution of this hardware block.
-> 
-> The ops are global for a SoC because iommu domains are not
-> attached to a specific devices if they are for a virtuel device like
-> drm. Use a global variable shouldn't be since SoC usually doesn't
-> embedded different versions of the iommu hardware block.
-> If that happen one day a WARN_ON will be displayed at probe time.
+On Thu, May 20, 2021 at 03:09:21PM +0100, Daniel Scally wrote:
+> The acpi_walk_dep_device_list() is not as generalisable as its name
+> implies, serving only to decrement the dependency count for each
+> dependent device of the input. Extend the function to instead accept
+> a callback which can be applied to all the dependencies in acpi_dep_list.
+> Replace all existing calls to the function with calls to a wrapper, passing
+> a callback that applies the same dependency reduction.
 
-IMO it would be a grievous error if such a "virtual device" ever gets 
-near the IOMMU API, so personally I wouldn't use that as a justification 
-for anything :)
+Good for me as well.
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-FWIW you should be OK to handle things on a per-instance basis, it just 
-means you have to defer some of the domain setup to .attach_dev time, 
-like various other drivers do. That said, there's nothing wrong with the 
-global if we do expect instances to be consistent across any given 
-Rockchip SoC (and my gut feeling is that we probably should).
-
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 > ---
-> version 5:
->   - Use of_device_get_match_data()
->   - Add internal ops inside the driver
+> changes since v3:
 > 
->   drivers/iommu/rockchip-iommu.c | 69 ++++++++++++++++++++++++----------
->   1 file changed, 50 insertions(+), 19 deletions(-)
+> 	- Most of the functions got renamed
+> 	- acpi_dev_get_dependent_dev() was altered to take a struct acpi_device
+> 	This had some repurcussions in the other files, mostly switching from
+> 	ACPI_HANDLE() to ACPI_COMPANION().
+> 	- acpi_walk_dep_device_list() was altered to check the return value of
+> 	the callback on each iteration of the loop, to allow for error handling
+> 	of the callbacks or breaking the loop early to save time. Andy, Wolfram,
+> 	I thought this change was significant enough to drop your R-b and Ack.
 > 
-> diff --git a/drivers/iommu/rockchip-iommu.c b/drivers/iommu/rockchip-iommu.c
-> index 7a2932772fdf..e7b9bcf174b1 100644
-> --- a/drivers/iommu/rockchip-iommu.c
-> +++ b/drivers/iommu/rockchip-iommu.c
-> @@ -19,6 +19,7 @@
->   #include <linux/iopoll.h>
->   #include <linux/list.h>
->   #include <linux/mm.h>
-> +#include <linux/module.h>
-
-This seems to be an unrelated and unnecessary change.
-
->   #include <linux/init.h>
->   #include <linux/of.h>
->   #include <linux/of_iommu.h>
-> @@ -96,6 +97,14 @@ static const char * const rk_iommu_clocks[] = {
->   	"aclk", "iface",
->   };
->   
-> +struct rk_iommu_ops {
-> +	phys_addr_t (*pt_address)(u32 dte);
-> +	u32 (*mk_dtentries)(dma_addr_t pt_dma);
-> +	u32 (*mk_ptentries)(phys_addr_t page, int prot);
-> +	phys_addr_t (*dte_addr_phys)(phys_addr_t addr);
-> +	u32 pt_address_mask;
-> +};
-> +
->   struct rk_iommu {
->   	struct device *dev;
->   	void __iomem **bases;
-> @@ -116,6 +125,7 @@ struct rk_iommudata {
->   };
->   
->   static struct device *dma_dev;
-> +static const struct rk_iommu_ops *rk_ops;
->   
->   static inline void rk_table_flush(struct rk_iommu_domain *dom, dma_addr_t dma,
->   				  unsigned int count)
-> @@ -215,11 +225,6 @@ static inline u32 rk_mk_dte(dma_addr_t pt_dma)
->   #define RK_PTE_PAGE_READABLE      BIT(1)
->   #define RK_PTE_PAGE_VALID         BIT(0)
->   
-> -static inline phys_addr_t rk_pte_page_address(u32 pte)
-> -{
-> -	return (phys_addr_t)pte & RK_PTE_PAGE_ADDRESS_MASK;
-> -}
+>  drivers/acpi/ec.c                             |  2 +-
+>  drivers/acpi/pmic/intel_pmic_chtdc_ti.c       |  2 +-
+>  drivers/acpi/scan.c                           | 69 ++++++++++++++-----
+>  drivers/gpio/gpiolib-acpi.c                   | 10 +--
+>  drivers/i2c/i2c-core-acpi.c                   |  8 +--
+>  drivers/platform/surface/aggregator/core.c    |  6 +-
+>  drivers/platform/surface/surface3_power.c     | 22 +++---
+>  .../platform/surface/surface_acpi_notify.c    |  7 +-
+>  include/acpi/acpi_bus.h                       |  7 ++
+>  include/linux/acpi.h                          |  4 +-
+>  10 files changed, 90 insertions(+), 47 deletions(-)
+> 
+> diff --git a/drivers/acpi/ec.c b/drivers/acpi/ec.c
+> index 13565629ce0a..3f7680a007a3 100644
+> --- a/drivers/acpi/ec.c
+> +++ b/drivers/acpi/ec.c
+> @@ -1627,7 +1627,7 @@ static int acpi_ec_add(struct acpi_device *device)
+>  	WARN(!ret, "Could not request EC cmd io port 0x%lx", ec->command_addr);
+>  
+>  	/* Reprobe devices depending on the EC */
+> -	acpi_walk_dep_device_list(ec->handle);
+> +	acpi_dev_clear_dependencies(device);
+>  
+>  	acpi_handle_debug(ec->handle, "enumerated.\n");
+>  	return 0;
+> diff --git a/drivers/acpi/pmic/intel_pmic_chtdc_ti.c b/drivers/acpi/pmic/intel_pmic_chtdc_ti.c
+> index a5101b07611a..fef7831d0d63 100644
+> --- a/drivers/acpi/pmic/intel_pmic_chtdc_ti.c
+> +++ b/drivers/acpi/pmic/intel_pmic_chtdc_ti.c
+> @@ -117,7 +117,7 @@ static int chtdc_ti_pmic_opregion_probe(struct platform_device *pdev)
+>  		return err;
+>  
+>  	/* Re-enumerate devices depending on PMIC */
+> -	acpi_walk_dep_device_list(ACPI_HANDLE(pdev->dev.parent));
+> +	acpi_dev_clear_dependencies(ACPI_COMPANION(pdev->dev.parent));
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index 453eff8ec8c3..195635c3462b 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -47,12 +47,6 @@ static DEFINE_MUTEX(acpi_hp_context_lock);
+>   */
+>  static u64 spcr_uart_addr;
+>  
+> -struct acpi_dep_data {
+> -	struct list_head node;
+> -	acpi_handle supplier;
+> -	acpi_handle consumer;
+> -};
 > -
->   static inline bool rk_pte_is_page_valid(u32 pte)
->   {
->   	return pte & RK_PTE_PAGE_VALID;
-> @@ -451,7 +456,7 @@ static int rk_iommu_force_reset(struct rk_iommu *iommu)
->   		rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR, DTE_ADDR_DUMMY);
->   
->   		dte_addr = rk_iommu_read(iommu->bases[i], RK_MMU_DTE_ADDR);
-> -		if (dte_addr != (DTE_ADDR_DUMMY & RK_DTE_PT_ADDRESS_MASK)) {
-> +		if (dte_addr != (DTE_ADDR_DUMMY & rk_ops->pt_address_mask)) {
-
-Nit: might it make more sense to do something like:
-
-		dte_addr = rk_ops->pt_address(... DTE_ADDR_DUMMY);
-		rk_iommu_write(... dte_addr)
-		if (rk_iommu_read(...) != dte_addr)
-
-so that you don't need to bother defining ->pt_address_mask for just 
-this one sanity-check?
-
->   			dev_err(iommu->dev, "Error during raw reset. MMU_DTE_ADDR is not functioning\n");
->   			return -EFAULT;
->   		}
-> @@ -470,6 +475,11 @@ static int rk_iommu_force_reset(struct rk_iommu *iommu)
->   	return 0;
->   }
->   
-> +static inline phys_addr_t rk_dte_addr_phys(phys_addr_t addr)
-
-The argument type here should be u32, since it's a DTE, not a physical 
-address...
-
-> +{
-> +	return addr;
+>  void acpi_scan_lock_acquire(void)
+>  {
+>  	mutex_lock(&acpi_scan_lock);
+> @@ -2111,30 +2105,69 @@ static void acpi_bus_attach(struct acpi_device *device, bool first_pass)
+>  		device->handler->hotplug.notify_online(device);
+>  }
+>  
+> -void acpi_walk_dep_device_list(acpi_handle handle)
+> +static int acpi_scan_clear_dep(struct acpi_dep_data *dep, void *data)
+>  {
+> -	struct acpi_dep_data *dep, *tmp;
+>  	struct acpi_device *adev;
+>  
+> +	acpi_bus_get_device(dep->consumer, &adev);
+> +
+> +	if (adev) {
+> +		adev->dep_unmet--;
+> +		if (!adev->dep_unmet)
+> +			acpi_bus_attach(adev, true);
+> +	}
+> +
+> +	list_del(&dep->node);
+> +	kfree(dep);
+> +
+> +	return 0;
 > +}
 > +
->   static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
->   {
->   	void __iomem *base = iommu->bases[index];
-> @@ -489,7 +499,7 @@ static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
->   	page_offset = rk_iova_page_offset(iova);
->   
->   	mmu_dte_addr = rk_iommu_read(base, RK_MMU_DTE_ADDR);
-> -	mmu_dte_addr_phys = (phys_addr_t)mmu_dte_addr;
-> +	mmu_dte_addr_phys = rk_ops->dte_addr_phys((phys_addr_t)mmu_dte_addr);
-
-...and the cast here should not be here, since it *is* the conversion 
-that the called function is supposed to be performing.
-
->   	dte_addr_phys = mmu_dte_addr_phys + (4 * dte_index);
->   	dte_addr = phys_to_virt(dte_addr_phys);
-> @@ -498,14 +508,14 @@ static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t iova)
->   	if (!rk_dte_is_pt_valid(dte))
->   		goto print_it;
->   
-> -	pte_addr_phys = rk_dte_pt_address(dte) + (pte_index * 4);
-> +	pte_addr_phys = rk_ops->pt_address(dte) + (pte_index * 4);
->   	pte_addr = phys_to_virt(pte_addr_phys);
->   	pte = *pte_addr;
->   
->   	if (!rk_pte_is_page_valid(pte))
->   		goto print_it;
->   
-> -	page_addr_phys = rk_pte_page_address(pte) + page_offset;
-> +	page_addr_phys = rk_ops->pt_address(pte) + page_offset;
->   	page_flags = pte & RK_PTE_PAGE_FLAGS_MASK;
->   
->   print_it:
-> @@ -601,13 +611,13 @@ static phys_addr_t rk_iommu_iova_to_phys(struct iommu_domain *domain,
->   	if (!rk_dte_is_pt_valid(dte))
->   		goto out;
->   
-> -	pt_phys = rk_dte_pt_address(dte);
-> +	pt_phys = rk_ops->pt_address(dte);
->   	page_table = (u32 *)phys_to_virt(pt_phys);
->   	pte = page_table[rk_iova_pte_index(iova)];
->   	if (!rk_pte_is_page_valid(pte))
->   		goto out;
->   
-> -	phys = rk_pte_page_address(pte) + rk_iova_page_offset(iova);
-> +	phys = rk_ops->pt_address(pte) + rk_iova_page_offset(iova);
->   out:
->   	spin_unlock_irqrestore(&rk_domain->dt_lock, flags);
->   
-> @@ -679,14 +689,14 @@ static u32 *rk_dte_get_page_table(struct rk_iommu_domain *rk_domain,
->   		return ERR_PTR(-ENOMEM);
->   	}
->   
-> -	dte = rk_mk_dte(pt_dma);
-> +	dte = rk_ops->mk_dtentries(pt_dma);
->   	*dte_addr = dte;
->   
->   	rk_table_flush(rk_domain, pt_dma, NUM_PT_ENTRIES);
->   	rk_table_flush(rk_domain,
->   		       rk_domain->dt_dma + dte_index * sizeof(u32), 1);
->   done:
-> -	pt_phys = rk_dte_pt_address(dte);
-> +	pt_phys = rk_ops->pt_address(dte);
->   	return (u32 *)phys_to_virt(pt_phys);
->   }
->   
-> @@ -728,7 +738,7 @@ static int rk_iommu_map_iova(struct rk_iommu_domain *rk_domain, u32 *pte_addr,
->   		if (rk_pte_is_page_valid(pte))
->   			goto unwind;
->   
-> -		pte_addr[pte_count] = rk_mk_pte(paddr, prot);
-> +		pte_addr[pte_count] = rk_ops->mk_ptentries(paddr, prot);
->   
->   		paddr += SPAGE_SIZE;
->   	}
-> @@ -750,7 +760,7 @@ static int rk_iommu_map_iova(struct rk_iommu_domain *rk_domain, u32 *pte_addr,
->   			    pte_count * SPAGE_SIZE);
->   
->   	iova += pte_count * SPAGE_SIZE;
-> -	page_phys = rk_pte_page_address(pte_addr[pte_count]);
-> +	page_phys = rk_ops->pt_address(pte_addr[pte_count]);
->   	pr_err("iova: %pad already mapped to %pa cannot remap to phys: %pa prot: %#x\n",
->   	       &iova, &page_phys, &paddr, prot);
->   
-> @@ -785,7 +795,8 @@ static int rk_iommu_map(struct iommu_domain *domain, unsigned long _iova,
->   	dte_index = rk_domain->dt[rk_iova_dte_index(iova)];
->   	pte_index = rk_iova_pte_index(iova);
->   	pte_addr = &page_table[pte_index];
-> -	pte_dma = rk_dte_pt_address(dte_index) + pte_index * sizeof(u32);
+> +/**
+> + * acpi_walk_dep_device_list - Apply a callback to every entry in acpi_dep_list
+> + * @handle:	The ACPI handle of the supplier device
+> + * @callback:	Pointer to the callback function to apply
+> + * @data:	Pointer to some data to pass to the callback
+> + *
+> + * The return value of the callback determines this function's behaviour. If 0
+> + * is returned we continue to iterate over acpi_dep_list. If a positive value
+> + * is returned then the loop is broken but this function returns 0. If a
+> + * negative value is returned by the callback then the loop is broken and that
+> + * value is returned as the final error.
+> + */
+> +int acpi_walk_dep_device_list(acpi_handle handle,
+> +			      int (*callback)(struct acpi_dep_data *, void *),
+> +			      void *data)
+> +{
+> +	struct acpi_dep_data *dep, *tmp;
+> +	int ret;
 > +
-> +	pte_dma = rk_ops->pt_address(dte_index) + pte_index * sizeof(u32);
->   	ret = rk_iommu_map_iova(rk_domain, pte_addr, pte_dma, iova,
->   				paddr, size, prot);
->   
-> @@ -821,7 +832,7 @@ static size_t rk_iommu_unmap(struct iommu_domain *domain, unsigned long _iova,
->   		return 0;
->   	}
->   
-> -	pt_phys = rk_dte_pt_address(dte);
-> +	pt_phys = rk_ops->pt_address(dte);
->   	pte_addr = (u32 *)phys_to_virt(pt_phys) + rk_iova_pte_index(iova);
->   	pte_dma = pt_phys + rk_iova_pte_index(iova) * sizeof(u32);
->   	unmap_size = rk_iommu_unmap_iova(rk_domain, pte_addr, pte_dma, size);
-> @@ -1037,7 +1048,7 @@ static void rk_iommu_domain_free(struct iommu_domain *domain)
->   	for (i = 0; i < NUM_DT_ENTRIES; i++) {
->   		u32 dte = rk_domain->dt[i];
->   		if (rk_dte_is_pt_valid(dte)) {
-> -			phys_addr_t pt_phys = rk_dte_pt_address(dte);
-> +			phys_addr_t pt_phys = rk_ops->pt_address(dte);
->   			u32 *page_table = phys_to_virt(pt_phys);
->   			dma_unmap_single(dma_dev, pt_phys,
->   					 SPAGE_SIZE, DMA_TO_DEVICE);
-> @@ -1138,6 +1149,15 @@ static int rk_iommu_probe(struct platform_device *pdev)
->   	iommu->dev = dev;
->   	iommu->num_mmu = 0;
->   
-> +	if (!rk_ops)
-> +		rk_ops = of_device_get_match_data(dev);
+>  	mutex_lock(&acpi_dep_list_lock);
+>  	list_for_each_entry_safe(dep, tmp, &acpi_dep_list, node) {
+>  		if (dep->supplier == handle) {
+> -			acpi_bus_get_device(dep->consumer, &adev);
+> -
+> -			if (adev) {
+> -				adev->dep_unmet--;
+> -				if (!adev->dep_unmet)
+> -					acpi_bus_attach(adev, true);
+> -			}
+> -
+> -			list_del(&dep->node);
+> -			kfree(dep);
+> +			ret = callback(dep, data);
+> +			if (ret)
+> +				break;
+>  		}
+>  	}
+>  	mutex_unlock(&acpi_dep_list_lock);
 > +
-> +	/*
-> +	 * That should not happen unless different versions of the
-> +	 * hardware block are embedded the same SoC
-> +	 */
-> +	WARN_ON(rk_ops != of_device_get_match_data(dev));
-
-Nit: calling of_device_get_match_data() twice seems rather untidy - how 
-about something like:
-
-	ops = of_device_get_match_data(dev);
-	if (!rk_ops)
-		rk_ops = ops;
-	else if (WARN_ON(rk_ops != ops))
-		return -EINVAL;
-
-Either way I think it would be good to treat unexpected inconsistentcy 
-as an actual error, rather than second-guessing the DT and carrying on 
-under the assumption the device is something other than it claimed to be.
-
+> +	return ret > 0 ? 0 : ret;
+>  }
+>  EXPORT_SYMBOL_GPL(acpi_walk_dep_device_list);
+>  
+> +/**
+> + * acpi_dev_clear_dependencies - Inform consumers that the device is now active
+> + * @supplier: Pointer to the supplier &struct acpi_device
+> + *
+> + * Clear dependencies on the given device.
+> + */
+> +void acpi_dev_clear_dependencies(struct acpi_device *supplier)
+> +{
+> +	acpi_walk_dep_device_list(supplier->handle, acpi_scan_clear_dep, NULL);
+> +}
+> +EXPORT_SYMBOL_GPL(acpi_dev_clear_dependencies);
 > +
->   	iommu->bases = devm_kcalloc(dev, num_res, sizeof(*iommu->bases),
->   				    GFP_KERNEL);
->   	if (!iommu->bases)
-> @@ -1277,10 +1297,21 @@ static const struct dev_pm_ops rk_iommu_pm_ops = {
->   				pm_runtime_force_resume)
->   };
->   
-> +static struct rk_iommu_ops iommu_data_ops_v1 = {
-> +	.pt_address = &rk_dte_pt_address,
-> +	.mk_dtentries = &rk_mk_dte,
-> +	.mk_ptentries = &rk_mk_pte,
-> +	.dte_addr_phys = &rk_dte_addr_phys,
-> +	.pt_address_mask = RK_DTE_PT_ADDRESS_MASK,
+>  /**
+>   * acpi_bus_scan - Add ACPI device node objects in a given namespace scope.
+>   * @handle: Root of the namespace scope to scan.
+> diff --git a/drivers/gpio/gpiolib-acpi.c b/drivers/gpio/gpiolib-acpi.c
+> index 3ef22a3c104d..5b4111e4be3f 100644
+> --- a/drivers/gpio/gpiolib-acpi.c
+> +++ b/drivers/gpio/gpiolib-acpi.c
+> @@ -1233,14 +1233,14 @@ static void acpi_gpiochip_scan_gpios(struct acpi_gpio_chip *achip)
+>  void acpi_gpiochip_add(struct gpio_chip *chip)
+>  {
+>  	struct acpi_gpio_chip *acpi_gpio;
+> -	acpi_handle handle;
+> +	struct acpi_device *adev;
+>  	acpi_status status;
+>  
+>  	if (!chip || !chip->parent)
+>  		return;
+>  
+> -	handle = ACPI_HANDLE(chip->parent);
+> -	if (!handle)
+> +	adev = ACPI_COMPANION(chip->parent);
+> +	if (!adev)
+>  		return;
+>  
+>  	acpi_gpio = kzalloc(sizeof(*acpi_gpio), GFP_KERNEL);
+> @@ -1254,7 +1254,7 @@ void acpi_gpiochip_add(struct gpio_chip *chip)
+>  	INIT_LIST_HEAD(&acpi_gpio->events);
+>  	INIT_LIST_HEAD(&acpi_gpio->deferred_req_irqs_list_entry);
+>  
+> -	status = acpi_attach_data(handle, acpi_gpio_chip_dh, acpi_gpio);
+> +	status = acpi_attach_data(adev->handle, acpi_gpio_chip_dh, acpi_gpio);
+>  	if (ACPI_FAILURE(status)) {
+>  		dev_err(chip->parent, "Failed to attach ACPI GPIO chip\n");
+>  		kfree(acpi_gpio);
+> @@ -1263,7 +1263,7 @@ void acpi_gpiochip_add(struct gpio_chip *chip)
+>  
+>  	acpi_gpiochip_request_regions(acpi_gpio);
+>  	acpi_gpiochip_scan_gpios(acpi_gpio);
+> -	acpi_walk_dep_device_list(handle);
+> +	acpi_dev_clear_dependencies(adev);
+>  }
+>  
+>  void acpi_gpiochip_remove(struct gpio_chip *chip)
+> diff --git a/drivers/i2c/i2c-core-acpi.c b/drivers/i2c/i2c-core-acpi.c
+> index 8ceaa88dd78f..6f0aa0ed3241 100644
+> --- a/drivers/i2c/i2c-core-acpi.c
+> +++ b/drivers/i2c/i2c-core-acpi.c
+> @@ -259,8 +259,8 @@ static acpi_status i2c_acpi_add_device(acpi_handle handle, u32 level,
+>   */
+>  void i2c_acpi_register_devices(struct i2c_adapter *adap)
+>  {
+> +	struct acpi_device *adev;
+>  	acpi_status status;
+> -	acpi_handle handle;
+>  
+>  	if (!has_acpi_companion(&adap->dev))
+>  		return;
+> @@ -275,11 +275,11 @@ void i2c_acpi_register_devices(struct i2c_adapter *adap)
+>  	if (!adap->dev.parent)
+>  		return;
+>  
+> -	handle = ACPI_HANDLE(adap->dev.parent);
+> -	if (!handle)
+> +	adev = ACPI_COMPANION(adap->dev.parent);
+> +	if (!adev)
+>  		return;
+>  
+> -	acpi_walk_dep_device_list(handle);
+> +	acpi_dev_clear_dependencies(adev);
+>  }
+>  
+>  static const struct acpi_device_id i2c_acpi_force_400khz_device_ids[] = {
+> diff --git a/drivers/platform/surface/aggregator/core.c b/drivers/platform/surface/aggregator/core.c
+> index 8dc2c267bcd6..517f774a6e60 100644
+> --- a/drivers/platform/surface/aggregator/core.c
+> +++ b/drivers/platform/surface/aggregator/core.c
+> @@ -621,8 +621,8 @@ static const struct acpi_gpio_mapping ssam_acpi_gpios[] = {
+>  
+>  static int ssam_serial_hub_probe(struct serdev_device *serdev)
+>  {
+> +	struct acpi_device *ssh = ACPI_COMPANION(&serdev->dev);
+>  	struct ssam_controller *ctrl;
+> -	acpi_handle *ssh = ACPI_HANDLE(&serdev->dev);
+>  	acpi_status astatus;
+>  	int status;
+>  
+> @@ -652,7 +652,7 @@ static int ssam_serial_hub_probe(struct serdev_device *serdev)
+>  	if (status)
+>  		goto err_devopen;
+>  
+> -	astatus = ssam_serdev_setup_via_acpi(ssh, serdev);
+> +	astatus = ssam_serdev_setup_via_acpi(ssh->handle, serdev);
+>  	if (ACPI_FAILURE(astatus)) {
+>  		status = -ENXIO;
+>  		goto err_devinit;
+> @@ -706,7 +706,7 @@ static int ssam_serial_hub_probe(struct serdev_device *serdev)
+>  	 *       For now let's thus default power/wakeup to false.
+>  	 */
+>  	device_set_wakeup_capable(&serdev->dev, true);
+> -	acpi_walk_dep_device_list(ssh);
+> +	acpi_dev_clear_dependencies(ssh);
+>  
+>  	return 0;
+>  
+> diff --git a/drivers/platform/surface/surface3_power.c b/drivers/platform/surface/surface3_power.c
+> index cc4f9cba6856..dea82aa1abd4 100644
+> --- a/drivers/platform/surface/surface3_power.c
+> +++ b/drivers/platform/surface/surface3_power.c
+> @@ -446,12 +446,12 @@ mshw0011_space_handler(u32 function, acpi_physical_address command,
+>  
+>  static int mshw0011_install_space_handler(struct i2c_client *client)
+>  {
+> -	acpi_handle handle;
+> +	struct acpi_device *adev;
+>  	struct mshw0011_handler_data *data;
+>  	acpi_status status;
+>  
+> -	handle = ACPI_HANDLE(&client->dev);
+> -	if (!handle)
+> +	adev = ACPI_COMPANION(&client->dev);
+> +	if (!adev)
+>  		return -ENODEV;
+>  
+>  	data = kzalloc(sizeof(struct mshw0011_handler_data),
+> @@ -460,25 +460,25 @@ static int mshw0011_install_space_handler(struct i2c_client *client)
+>  		return -ENOMEM;
+>  
+>  	data->client = client;
+> -	status = acpi_bus_attach_private_data(handle, (void *)data);
+> +	status = acpi_bus_attach_private_data(adev->handle, (void *)data);
+>  	if (ACPI_FAILURE(status)) {
+>  		kfree(data);
+>  		return -ENOMEM;
+>  	}
+>  
+> -	status = acpi_install_address_space_handler(handle,
+> -				ACPI_ADR_SPACE_GSBUS,
+> -				&mshw0011_space_handler,
+> -				NULL,
+> -				data);
+> +	status = acpi_install_address_space_handler(adev->handle,
+> +						    ACPI_ADR_SPACE_GSBUS,
+> +						    &mshw0011_space_handler,
+> +						    NULL,
+> +						    data);
+>  	if (ACPI_FAILURE(status)) {
+>  		dev_err(&client->dev, "Error installing i2c space handler\n");
+> -		acpi_bus_detach_private_data(handle);
+> +		acpi_bus_detach_private_data(adev->handle);
+>  		kfree(data);
+>  		return -ENOMEM;
+>  	}
+>  
+> -	acpi_walk_dep_device_list(handle);
+> +	acpi_dev_clear_dependencies(adev);
+>  	return 0;
+>  }
+>  
+> diff --git a/drivers/platform/surface/surface_acpi_notify.c b/drivers/platform/surface/surface_acpi_notify.c
+> index ef9c1f8e8336..8339988d95c1 100644
+> --- a/drivers/platform/surface/surface_acpi_notify.c
+> +++ b/drivers/platform/surface/surface_acpi_notify.c
+> @@ -798,7 +798,7 @@ static int san_consumer_links_setup(struct platform_device *pdev)
+>  
+>  static int san_probe(struct platform_device *pdev)
+>  {
+> -	acpi_handle san = ACPI_HANDLE(&pdev->dev);
+> +	struct acpi_device *san = ACPI_COMPANION(&pdev->dev);
+>  	struct ssam_controller *ctrl;
+>  	struct san_data *data;
+>  	acpi_status astatus;
+> @@ -821,7 +821,8 @@ static int san_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, data);
+>  
+> -	astatus = acpi_install_address_space_handler(san, ACPI_ADR_SPACE_GSBUS,
+> +	astatus = acpi_install_address_space_handler(san->handle,
+> +						     ACPI_ADR_SPACE_GSBUS,
+>  						     &san_opreg_handler, NULL,
+>  						     &data->info);
+>  	if (ACPI_FAILURE(astatus))
+> @@ -835,7 +836,7 @@ static int san_probe(struct platform_device *pdev)
+>  	if (status)
+>  		goto err_install_dev;
+>  
+> -	acpi_walk_dep_device_list(san);
+> +	acpi_dev_clear_dependencies(san);
+>  	return 0;
+>  
+>  err_install_dev:
+> diff --git a/include/acpi/acpi_bus.h b/include/acpi/acpi_bus.h
+> index 3a82faac5767..0b2c4f170f4d 100644
+> --- a/include/acpi/acpi_bus.h
+> +++ b/include/acpi/acpi_bus.h
+> @@ -280,6 +280,12 @@ struct acpi_device_power {
+>  	struct acpi_device_power_state states[ACPI_D_STATE_COUNT];	/* Power states (D0-D3Cold) */
+>  };
+>  
+> +struct acpi_dep_data {
+> +	struct list_head node;
+> +	acpi_handle supplier;
+> +	acpi_handle consumer;
 > +};
 > +
->   static const struct of_device_id rk_iommu_dt_ids[] = {
-> -	{ .compatible = "rockchip,iommu" },
-> +	{	.compatible = "rockchip,iommu",
-> +		.data = &iommu_data_ops_v1,
-> +	},
->   	{ /* sentinel */ }
->   };
-> +MODULE_DEVICE_TABLE(of, rk_iommu_dt_ids);
-
-As before, unrelated and unnecessary since this driver is still bool in 
-the Kconfig. If you do want to support modular builds you'll also need 
-to ensure rk_iommu_ops.owner is set, but do it all as a separate patch 
-please.
-
-Thanks,
-Robin.
-
->   
->   static struct platform_driver rk_iommu_driver = {
->   	.probe = rk_iommu_probe,
+>  /* Performance Management */
+>  
+>  struct acpi_device_perf_flags {
+> @@ -685,6 +691,7 @@ static inline bool acpi_device_can_poweroff(struct acpi_device *adev)
+>  
+>  bool acpi_dev_hid_uid_match(struct acpi_device *adev, const char *hid2, const char *uid2);
+>  
+> +void acpi_dev_clear_dependencies(struct acpi_device *supplier);
+>  struct acpi_device *
+>  acpi_dev_get_next_match_dev(struct acpi_device *adev, const char *hid, const char *uid, s64 hrv);
+>  struct acpi_device *
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index c60745f657e9..170b9bebdb2b 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -666,7 +666,9 @@ extern bool acpi_driver_match_device(struct device *dev,
+>  				     const struct device_driver *drv);
+>  int acpi_device_uevent_modalias(struct device *, struct kobj_uevent_env *);
+>  int acpi_device_modalias(struct device *, char *, int);
+> -void acpi_walk_dep_device_list(acpi_handle handle);
+> +int acpi_walk_dep_device_list(acpi_handle handle,
+> +			      int (*callback)(struct acpi_dep_data *, void *),
+> +			      void *data);
+>  
+>  struct platform_device *acpi_create_platform_device(struct acpi_device *,
+>  						    struct property_entry *);
+> -- 
+> 2.25.1
 > 
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
