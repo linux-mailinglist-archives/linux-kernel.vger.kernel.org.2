@@ -2,139 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 346CC38C17D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC6838C17F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230280AbhEUIOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:14:35 -0400
-Received: from mailout2.samsung.com ([203.254.224.25]:17224 "EHLO
-        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbhEUIOb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:14:31 -0400
-Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20210521081307epoutp027a5e91012215cdbad5212697be26dbac~BBsXEMaPB3086830868epoutp02X
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 08:13:07 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20210521081307epoutp027a5e91012215cdbad5212697be26dbac~BBsXEMaPB3086830868epoutp02X
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1621584787;
-        bh=oLATn9iM4wIMKYl3x4+8ERAYHMUVpCqKFCJByrenAcY=;
-        h=Subject:Reply-To:From:To:In-Reply-To:Date:References:From;
-        b=oD2WlRN5mz4Xdi8pdGNM6N1ye723kF+j+TZR+ep99FyyPpoFmFlYKbagjEme9YUdL
-         ljAQ1mYVlJ90fOu53OhTVO4dhKoJvKvZm37p+2JCh4TMX2dd+a01HiHaypz2+eFsAX
-         NtYP0tqqLEZuxxin4vWMkhfrz5IEeBWZ1jL22PHs=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
-        20210521081306epcas2p180a06718eec1fe8610b2245c3798f0d9~BBsWBx2DN0947909479epcas2p1D;
-        Fri, 21 May 2021 08:13:06 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.187]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4FmfVm6lWRz4x9Q6; Fri, 21 May
-        2021 08:13:04 +0000 (GMT)
-X-AuditID: b6c32a47-f4bff700000024d9-bc-60a76b8f716a
-Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        E8.9F.09433.F8B67A06; Fri, 21 May 2021 17:13:03 +0900 (KST)
-Mime-Version: 1.0
-Subject: RE: RE: [PATCH v34 4/4] scsi: ufs: Add HPB 2.0 support
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     Avri Altman <Avri.Altman@wdc.com>,
-        Daejun Park <daejun7.park@samsung.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>,
-        "cang@codeaurora.org" <cang@codeaurora.org>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "huobean@gmail.com" <huobean@gmail.com>,
-        ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        JinHwan Park <jh.i.park@samsung.com>,
-        Javier Gonzalez <javier.gonz@samsung.com>,
-        Sung-Jun Park <sungjun07.park@samsung.com>,
-        Jinyoung CHOI <j-young.choi@samsung.com>,
-        Dukhyun Kwon <d_hyun.kwon@samsung.com>,
-        Keoseong Park <keosung.park@samsung.com>,
-        Jaemyung Lee <jaemyung.lee@samsung.com>,
-        Jieon Seol <jieon.seol@samsung.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-In-Reply-To: <DM6PR04MB65755AE3D9217FA3C0C3455AFC2A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210521081302epcms2p45e2a734f7f14046d6caab2ab16a2d94c@epcms2p4>
-Date:   Fri, 21 May 2021 17:13:02 +0900
-X-CMS-MailID: 20210521081302epcms2p45e2a734f7f14046d6caab2ab16a2d94c
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrGJsWRmVeSWpSXmKPExsWy7bCmuW5/9vIEgy/LlSwezNvGZrG37QS7
-        xcufV9kspn34yWzxaf0yVouXhzQtdh08yGax6kG4RfPi9WwWc842MFn09m9ls9h8cAOzxeM7
-        n9ktFt3YxmTR/6+dxWLbZ0GL4yffMVpc3jWHzaL7+g42i+XH/zFZLN16k9Gic/oaFgcxj8tX
-        vD0u9/UyeeycdZfdY8KiA4we++euYfdoObmfxePj01ssHn1bVjF6fN4k59F+oJspgCsqxyYj
-        NTEltUghNS85PyUzL91WyTs43jne1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMH6E0lhbLEnFKg
-        UEBicbGSvp1NUX5pSapCRn5xia1SakFKToGhYYFecWJucWleul5yfq6VoYGBkSlQZUJOxox9
-        LxkLvrNWnOufxNjAOIGli5GTQ0LARGLa1qNsILaQwA5Gic2HA7oYOTh4BQQl/u4QBgkLC9hL
-        7O0/yAxRoiSx/uIsdoi4nsSth2sYQWw2AR2J6SfuA8W5OEQEHrJL9M9uYYOYzysxo/0p1C5p
-        ie3Lt4I1cArESsx5vAIqriHxY1kvM4QtKnFz9Vt2GPv9sfmMELaIROu9s1A1ghIPfu6GiktK
-        HNv9gQnCrpfYeucXI8gREgI9jBKHd95ihUjoS1zr2Ai2jFfAV2L+m3Vgx7EIqEpsP/8M6ggX
-        iRdfPoINZRaQl9j+dg4zKCCYBTQl1u/SBzElBJQljtxigXmrYeNvdnQ2swCfRMfhv3DxHfOe
-        QJ2mJrHu53omiDEyErfmMU5gVJqFCOhZSNbOQli7gJF5FaNYakFxbnpqsVGBMXLUbmIEJ3gt
-        9x2MM95+0DvEyMTBeIhRgoNZSYSX23F5ghBvSmJlVWpRfnxRaU5q8SFGU6CHJzJLiSbnA3NM
-        Xkm8oamRmZmBpamFqZmRhZI478/UugQhgfTEktTs1NSC1CKYPiYOTqkGpr2WKpvc1naY79nl
-        w/+w8MBVJjuHiyYvzz+d4jVry/+2qrn2d9ZVMfgFnv98TUTA6cLTz0bdTJpb6pXK1n0JLf+g
-        93D3ZuU7oiriU7UqHq0JCJ3EY5h2ZK3J0TP/uw9uEg975rW16/+rKRELtW4rfJFVrOtcLO/1
-        xWaJ576DubO/hl90W/VoEucKufTniXd9zzoGTF7R9e70v/WZUp2Rh/79qlS3v75zeXL9pR0H
-        GnboNTczcqwVZ/n0Yu4X88UZBcvDX7benHRUJGrvvJunJMqmz5a1Nj5aU/TfhWOeD0cUd62g
-        oEZk6HOzxYITd1hKzT3Z2+Skmrcy1LlLP/KxylSp/blXOI3ee7K37N3R9EOJpTgj0VCLuag4
-        EQAkHyjNeQQAAA==
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb
-References: <DM6PR04MB65755AE3D9217FA3C0C3455AFC2A9@DM6PR04MB6575.namprd04.prod.outlook.com>
-        <20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p8>
-        <20210428232534epcms2p4830e22a86cc78c3319075059fa223540@epcms2p4>
-        <CGME20210428232257epcms2p8602b29d63529fca8a06010a21157d5cb@epcms2p4>
+        id S230289AbhEUIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:15:30 -0400
+Received: from helcar.hmeau.com ([216.24.177.18]:55980 "EHLO deadmen.hmeau.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229629AbhEUIP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:15:29 -0400
+Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
+        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
+        id 1lk0IA-0004pW-RG; Fri, 21 May 2021 16:13:58 +0800
+Received: from herbert by gondobar with local (Exim 4.89)
+        (envelope-from <herbert@gondor.apana.org.au>)
+        id 1lk0I8-0005ur-GX; Fri, 21 May 2021 16:13:56 +0800
+Date:   Fri, 21 May 2021 16:13:56 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Hui Tang <tanghui20@huawei.com>
+Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
+        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
+        linux-kernel@vger.kernel.org, Stephan Mueller <smueller@chronox.de>
+Subject: Re: [PATCH 1/3] crypto: ecdh - fix 'ecdh_init'
+Message-ID: <20210521081356.3bnytzdxhjkgzb7g@gondor.apana.org.au>
+References: <1620801602-49287-1-git-send-email-tanghui20@huawei.com>
+ <1620801602-49287-2-git-send-email-tanghui20@huawei.com>
+ <20210521074553.w6qtqv5nnbdbqycx@gondor.apana.org.au>
+ <2a5bcd22-455d-6348-9a72-dc5a7ab49ca6@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2a5bcd22-455d-6348-9a72-dc5a7ab49ca6@huawei.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Avri,
+On Fri, May 21, 2021 at 04:08:10PM +0800, Hui Tang wrote:
+> 
+> On 2021/5/21 15:45, Herbert Xu wrote:
+> > On Wed, May 12, 2021 at 02:40:00PM +0800, Hui Tang wrote:
+> > > NIST P192 is not unregistered if failed to register NIST P256,
+> > > actually it need to unregister the algorithms already registered.
+> > > 
+> > > Signed-off-by: Hui Tang <tanghui20@huawei.com>
+> > > ---
+> > >  crypto/ecdh.c | 11 ++++++++++-
+> > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > 
+> > Thanks for catching this.  The variable ecdh_nist_p192_registered
+> > is bogus.  You should just make it so that if p192 fails to
+> > register then the init function aborts.  There would then be
+> > no need to check for the registered state in the exit function.
+> 
+> Okay, I will fix it in next version, and 'ecdsa_init' should
+> do the same thing too?
 
->> +       /* for pre_req */
->> +       hpb->pre_req_min_tr_len = hpb_dev_info->max_hpb_single_cmd + 1;
->> +
->> +       if (ufshpb_is_legacy(hba))
->> +               hpb->pre_req_max_tr_len = HPB_LEGACY_CHUNK_HIGH;
->> +       else
->> +               hpb->pre_req_max_tr_len = max(HPB_MULTI_CHUNK_HIGH,
->> +                                             hpb->pre_req_min_tr_len);
->I think this should only be
->else
->        hpb->pre_req_max_tr_len = HPB_MULTI_CHUNK_HIGH;
-> 
->where HPB_MULTI_CHUNK_HIGH should fit into a single byte,
->regardless of bMAX_ DATA_SIZE_FOR_HPB_SINGLE_CMD,
->which being an attribute (u32) can be significantly larger.
+Actually, it looks like it is needed for FIPS.  We should add
+a comment that p192 will fail to register in FIPS mode and that's
+why there is a check for it.
 
-I will fix it as suggested.
+Funnily enough, ecdsa has the FIPS comment but testmgr doesn't
+set fips_allowed for any of them while ecdh is set but has no
+comment.
 
-Thank you.
+Stephan, can you confirm that both ecdh-nist-p192 and ecdsa-nist-p192
+should be disabled in FIPS mode?
 
-> 
->Thanks,
->Avri
-> 
-> 
-> 
-> 
->  
+Also, we should fix ecdh-nist-p192's entry in testmgr by removing
+the ifdefs and not setting fips_allowed.
+
+Cheers,
+-- 
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
