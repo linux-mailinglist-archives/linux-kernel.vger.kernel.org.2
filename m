@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F25F38C85B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162C738C85C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236214AbhEUNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:39:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        id S236153AbhEUNjp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:39:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236279AbhEUNjW (ORCPT
+        with ESMTP id S236361AbhEUNj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:22 -0400
-Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CB4C061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:59 -0700 (PDT)
-Received: by mail-il1-x12d.google.com with SMTP id g11so14235486ilq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:59 -0700 (PDT)
+        Fri, 21 May 2021 09:39:27 -0400
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6ED9C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:03 -0700 (PDT)
+Received: by mail-io1-xd2c.google.com with SMTP id r4so19418571iol.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
         bh=enWZHbTX+1ralsrB94tU0j8mRNIc2ViVpX6p57Tm5zE=;
-        b=q8LFiLJgz4erZaFk6fj4JM/AmedcsEm3aD+Osbe6jj0ySryG5lhha91+zewIWEJt3d
-         UM0xdVW/ax/BEOt22B871ZJjSoA7uVKzGl+K0LYup0myRmKy0OTLtyGatHZrvhopvcYr
-         x7pzJmuc5eQ2oBeQnp7JAt84/JjAYYqjGiUjzcy6SMN6bSaVxVca3VN8lSgEH/iOEp6o
-         IbWODivDaA1mXl6UczSvfR2+HqwUxnkO/LXvjlSVCFJtq9pkPXLLnYMFSobb75QcAqFW
-         /DGPOMj7yTGq8rlfo7gGKMaNQvAPX3IHlSl7C4qgLqf54lMlSxIveOOZHKHbrJow9wv8
-         sZ6A==
+        b=KtETHqZDAe0bJjmaAIYzTN/XHe7zUKB4VbFuegX6nBkxmWG5ohFKpBq8WIAM4LXtdS
+         7QemHJe42YQXMZdex6MBXYh5wnhr363+ZnRQBUyg/UDkHhdTqJKaR0BBPhsjIGBU7dRd
+         nhzszn98cpFyveOVBYMaiBR25mix2cYwQlxzgxlnIMUyVp7QMgG6RamNqkyCsU8HyRF5
+         NiL2J9z+S9m++uMBY2ci8baBBo7xNe5pz0utcvSR9g/2y3oYoB8LndiQzNguoMIpTHo1
+         H+NRK4f3O9T4nOkH8ZYODufUe7qifKUTQtVP+hB8i6JNA4jfYOX9ZK7LMZrUgfKLn1bz
+         Gshw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
         bh=enWZHbTX+1ralsrB94tU0j8mRNIc2ViVpX6p57Tm5zE=;
-        b=UIu0cchltttAwl6zxsOCHh5z8p8/3crTRxYW23/KntEQWu/FlSsnPyrC1b8+la6V4G
-         hN7HjPiEpMiv1KNXYFW+1r5/wXJR3JT8Xtzf7wuX1OWIWSJq2btx+D7tBdxQlN9IdXA+
-         2s1VoKnzi50zEXSkkyM0MLytxXRZhmsouE5qe0iua6TaiHdnjp3SN+cWHu9/d0Se1RZW
-         YRn7291YE4YpnCjDKAhoPjXaCW/7gE5YwIKfocwz/bsd6lo/KA0sa92Q/AkpkaFLf8lT
-         TNYblRgkljRpKcPssZuSubX0NLp0kTEX2Qi6qj3mECXQm9dWqWgCl9vDEfzweWeMiJVj
-         3gOg==
-X-Gm-Message-State: AOAM530kGh8gJt3mnG3hoR1EHE/Gs0o2dVhkrBRlsQKJZU7fH6RHgOzD
-        YvVLsKUmadsJcHABcBNtFcXlxtFsvG5PruZ+gCqXxg==
-X-Google-Smtp-Source: ABdhPJzQgYOhfJwS+6mJoi9CYzpcQz7dqQ+cPJ0vJ+ySWWNPgClzxGdsXTiVO2tXclv8vakUGfjzP783wYoVtgk2NGU=
-X-Received: by 2002:a92:520e:: with SMTP id g14mr12213261ilb.218.1621604279076;
- Fri, 21 May 2021 06:37:59 -0700 (PDT)
+        b=GkKs1H1Cgp75g+h4NeoBfYOYVwKEzas1jw8kiLBkE8kMVxg37xFvPO2ZJ+HeT+87g5
+         GMNTTCnnFmH20ZHKq0a0FrZ4cHVTo/ELp4K46zrs+DBiix7M/UewpwWYm2cPf1IPUUaq
+         tqyV7wM45KmCZF0Z9S3QvMdFwUOtdHVbRzH6685oMBM4BcXIj2VxY3RT5U1GDHu1iBxf
+         tON3LvAKcEuS3+9Z2qRoJJ41DJAswb0DtR9dg2QJLq5JCNbtXgHNmJm5EiVQdFerAP6Q
+         XzLqV1xzFPL6O1hZV41DmmnVdtE66P7VTurGJVAR0uESsBAG6YgnQRmEV6XLBPeyn8X/
+         isdA==
+X-Gm-Message-State: AOAM5335NGHSOORpoAKNZP5GbYhO3jDsM4qtmw3ELimH6l3BIFAxdVHv
+        IO5aBGLx4xtE250QVdD9dex9PfkruWEv1oslwZjZCw==
+X-Google-Smtp-Source: ABdhPJxjJ3OhiEaMgnj0+LP0FY7WxmjA9Xv80M0Ki+88S6bhxNx6ra6pMlVDuKgWNIA6QOd4QDCiQsFR0wThZxSrLtI=
+X-Received: by 2002:a05:6638:44b:: with SMTP id r11mr4423545jap.85.1621604283084;
+ Fri, 21 May 2021 06:38:03 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-8-acourbot@chromium.org>
-In-Reply-To: <20210519143011.1175546-8-acourbot@chromium.org>
+References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-9-acourbot@chromium.org>
+In-Reply-To: <20210519143011.1175546-9-acourbot@chromium.org>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 21 May 2021 21:37:48 +0800
-Message-ID: <CA+Px+wVj45oozC01RKcnvwLLWdSmFtoOC9rrLAbCVCmrYWKBdA@mail.gmail.com>
-Subject: Re: [PATCH v5 07/14] media: mtk-vcodec: vdec: handle firmware version field
+Date:   Fri, 21 May 2021 21:37:52 +0800
+Message-ID: <CA+Px+wWod_E9_UcytNwybrvPGujMVV+XUkJQXQKJsUjO9t1yNQ@mail.gmail.com>
+Subject: Re: [PATCH v5 08/14] media: mtk-vcodec: support version 2 of decoder
+ firmware ABI
 To:     Alexandre Courbot <acourbot@chromium.org>
 Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
