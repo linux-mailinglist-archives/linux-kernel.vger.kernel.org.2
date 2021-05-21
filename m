@@ -2,152 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57DE038C2A4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:07:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4550238C2AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:08:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235512AbhEUJIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:08:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235439AbhEUJIT (ORCPT
+        id S235795AbhEUJJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:09:54 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:50320 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235567AbhEUJJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:08:19 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF181C061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:06:55 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id s7so3348884iov.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:06:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Blq7G9mzB3hHpQKtwZ3S4wZgfLIsx29Hl5GOAjTVfiY=;
-        b=nO68vVW9QHUttI2oQdlt/vmb0t4+UKIEdA4QBK2eT4RQ1KNgN9tbNIXSBYsJJNDgy7
-         vCnqBU24iO6SHIqe5EPOX2RQ/EZEcceHUui5oGMlHK3I6HxamRkVgOAjAQa9mw/6FILB
-         Oud+PAaJ9/H/jVZaSvSP9gutZAjJupKWFLVGuLqKtVBjvOzwNkvKav0L+A560wULPOBL
-         E9qnclzj0S6wrXyVZk8PQwfJAD5JxJ4BLFxpPmTf3hUS9JfsPPnPu4lRGeoIAvMxYPai
-         ennFh2/SOqP+k6wYhphtq6b1qfm/ywQfzFNyuxND27E9dG/Xw5CZP3y5g7bou+4fYw78
-         WTyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Blq7G9mzB3hHpQKtwZ3S4wZgfLIsx29Hl5GOAjTVfiY=;
-        b=LZ2dtQ+C5izj+nrwb+jhlY5QY+CB6ZQQN+GVMJpuMORCxhltZFn/1P1ybCDetMj+xh
-         RTKdb7fI0KIKyCX83GTriv895P5CNl80Iio3GKhzZGSB8XLtRKPVPhWkH2kS+FkB/B4c
-         0pv7OTR+ejSuhL3uG9+mhtWS31PHOMxj2AXQYf9nktt12eCc1oRzepPcDAF/gsKT0lGS
-         B3yLEp3jEliMJu4lw8djO7Ky1JHMA1D/dVSUFiiIItb5fUThl73vegoYSFD3nihbI4xf
-         vVR6IrQh3+FacBtcnWxI52B8o+fA6N1nvB7pwPouqj1oMQtyhQ7Pj4nwGoHpfs+0VIEa
-         dpTg==
-X-Gm-Message-State: AOAM533F32c4YCiQvPH6z/EjAgFvVVdFyRc9BOxswaodzZFaElwbeCkD
-        tBpCFlOE3mjAx9FgSksVnfaI/uUg03aWXxDGp7iRbg==
-X-Google-Smtp-Source: ABdhPJyerN6/E5/qWHR1DKRoc6VGmFkzhhN9wmq5HxK2huJFfcWHjP7H4X6dNm57RehUsIQKwu42TKelMmt2JUWemnQ=
-X-Received: by 2002:a05:6602:134c:: with SMTP id i12mr10839236iov.175.1621588014963;
- Fri, 21 May 2021 02:06:54 -0700 (PDT)
+        Fri, 21 May 2021 05:09:50 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14L98DFE0010562, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
+        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14L98DFE0010562
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 21 May 2021 17:08:13 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 21 May 2021 17:08:12 +0800
+Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Fri, 21 May
+ 2021 17:08:01 +0800
+From:   Hayes Wang <hayeswang@realtek.com>
+To:     <kuba@kernel.org>, <davem@davemloft.net>
+CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
+        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>
+Subject: [PATCH net] r8152: check the informaton of the device
+Date:   Fri, 21 May 2021 17:07:34 +0800
+Message-ID: <1394712342-15778-363-Taiwan-albertk@realtek.com>
+X-Mailer: Microsoft Office Outlook 11
 MIME-Version: 1.0
-References: <20210430123511.116057-1-robert.marko@sartura.hr>
- <af4923ef1ed0693fcd67d7986348b164@walle.cc> <CA+HBbNHCnpg9qCzZbT9KVNqX-daC68iaJKNdyEf7do3w98miWw@mail.gmail.com>
- <0f28cabf858154842819935000f32bc2@walle.cc> <20210520064929.GM2549456@dell>
- <CA+HBbNG62bJC4ZiH0WRVYnN1AC=J5eJQPo_46tS67xNzP1L0DQ@mail.gmail.com> <20210521090357.GD2549456@dell>
-In-Reply-To: <20210521090357.GD2549456@dell>
-From:   Robert Marko <robert.marko@sartura.hr>
-Date:   Fri, 21 May 2021 11:06:44 +0200
-Message-ID: <CA+HBbNH9BMbV9G_Emc4qfoKkdK3YYRmY16cNd_Hu5h1Ch0wctw@mail.gmail.com>
-Subject: Re: [PATCH 1/6] mfd: Add Delta TN48M CPLD driver
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Michael Walle <michael@walle.cc>, robh+dt@kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        bgolaszewski@baylibre.com, jdelvare@suse.com,
-        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
-        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
-        Donald Buczek <buczek@molgen.mpg.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.177.102]
+X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: trusted connection
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/21/2021 08:46:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjEgpFekyCAwMzo1MDowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjEgpFekyCAwNzozMTowMA==?=
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
+X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/21/2021 08:44:16
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 10
+X-KSE-AntiSpam-Info: Lua profiles 163823 [May 21 2021]
+X-KSE-AntiSpam-Info: Version: 5.9.20.0
+X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
+X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
+X-KSE-AntiSpam-Info: {Headers: Prob_stat_susp_url_only, url2}
+X-KSE-AntiSpam-Info: {Tracking_one_url, url3}
+X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;syzkaller.appspot.com:7.1.1
+X-KSE-AntiSpam-Info: {Track_Chinese_Simplified, headers_charset}
+X-KSE-AntiSpam-Info: Rate: 10
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 05/21/2021 08:46:00
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 11:04 AM Lee Jones <lee.jones@linaro.org> wrote:
->
-> On Fri, 21 May 2021, Robert Marko wrote:
->
-> > On Thu, May 20, 2021 at 8:49 AM Lee Jones <lee.jones@linaro.org> wrote:
-> > >
-> > > On Wed, 19 May 2021, Michael Walle wrote:
-> > >
-> > > > Hi,
-> > > >
-> > > > Am 2021-05-19 13:53, schrieb Robert Marko:
-> > > > > On Thu, May 6, 2021 at 6:34 PM Michael Walle <michael@walle.cc> w=
-rote:
-> > > > > > Am 2021-04-30 14:35, schrieb Robert Marko:
-> > > > > > > Delta TN48M switches have a Lattice CPLD that serves
-> > > > > > > multiple purposes including being a GPIO expander.
-> > > > > > > So lets add the MFD core driver for it.
-> > > > > >
-> > > > > > Did you have a look at mfd/simple-mfd-i2c.c?
-> > > > >
-> > > > > Yes, that was my first idea but we have a requirement to expose C=
-PLD
-> > > > > information via debugfs as there are userspace applications using=
- it.
-> > > > > And simple-mfd-i2c does not allow us to do so.
-> > > >
-> > > > Mh, last time Lee wasn't very fond of having a driver that just pop=
-ulates
-> > > > sub-drivers while doing almost nothing itself. See
-> > > > https://lore.kernel.org/lkml/20200605065709.GD3714@dell/
-> > >
-> > > Right.  I still feel that way.
-> > >
-> > > > That being said, I'd also like to expose our CPLD version, but unti=
-l now
-> > > > haven't found a good solution.
-> > >
-> > > Why though?  Does S/W *need* it?
-> > Because we have userspace S/W that uses it as the same CPLD is in
-> > multiple variants of the board but the correct board model is set durin=
-g
-> > manufacturing and we can read it from the CPLD.
-> >
-> > We also have information about PSU1 and PSU2(Some models only)
-> > power good, whether they are present and some other info that I need
-> > to expose as these are monitored in userspace.
-> >
-> > I planned to do that via the hwmon driver but according to Guenther the=
-y
-> > are not hwmon attributes and I agree.
-> >
-> > Would it be possible to have a dedicated driver that would only expose
-> > the required information via debugfs?
-> > Then I could simply use the simple I2C MFD driver with only a GPIO
-> > driver on top of it.
->
-> Yes, I was going to suggest that.
->
-> It should probably live in drivers/misc.
+Verify some fields of the USB descriptor to make sure the driver
+could be used by the device.
 
-OK, that works for me.
-I will then rework this for v2.
+BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
+Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
+Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
+Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+---
+ drivers/net/usb/r8152.c | 71 +++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 69 insertions(+), 2 deletions(-)
 
-Regards,
-Robert
->
-> --
-> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
-> Senior Technical Lead - Developer Services
-> Linaro.org =E2=94=82 Open source software for Arm SoCs
-> Follow Linaro: Facebook | Twitter | Blog
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 136ea06540ff..f348350f5da1 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -8107,6 +8107,69 @@ static void r8156b_init(struct r8152 *tp)
+ 	tp->coalesce = 15000;	/* 15 us */
+ }
+ 
++static bool rtl_check_vendor_ok(struct usb_interface *intf)
++{
++	struct usb_host_interface *alt = intf->cur_altsetting;
++	struct usb_host_endpoint *in = NULL, *out = NULL, *intr = NULL;
++	unsigned int ep;
++
++	if (alt->desc.bNumEndpoints < 3) {
++		dev_err(&intf->dev, "Unexpected bNumEndpoints %d\n", alt->desc.bNumEndpoints);
++		return false;
++	}
++
++	for (ep = 0; ep < alt->desc.bNumEndpoints; ep++) {
++		struct usb_host_endpoint *e;
++
++		e = alt->endpoint + ep;
++
++		/* ignore endpoints which cannot transfer data */
++		if (!usb_endpoint_maxp(&e->desc))
++			continue;
++
++		switch (e->desc.bmAttributes) {
++		case USB_ENDPOINT_XFER_INT:
++			if (!usb_endpoint_dir_in(&e->desc))
++				continue;
++			if (!intr)
++				intr = e;
++			break;
++		case USB_ENDPOINT_XFER_BULK:
++			if (usb_endpoint_dir_in(&e->desc)) {
++				if (!in)
++					in = e;
++			} else if (!out) {
++				out = e;
++			}
++			break;
++		default:
++			continue;
++		}
++	}
++
++	if (!in || !out || !intr) {
++		dev_err(&intf->dev, "Miss Endpoints\n");
++		return false;
++	}
++
++	if ((in->desc.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != 1) {
++		dev_err(&intf->dev, "Invalid Rx Endpoints\n");
++		return false;
++	}
++
++	if ((out->desc.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != 2) {
++		dev_err(&intf->dev, "Invalid Tx Endpoints\n");
++		return false;
++	}
++
++	if ((intr->desc.bEndpointAddress & USB_ENDPOINT_NUMBER_MASK) != 3) {
++		dev_err(&intf->dev, "Invalid interrupt Endpoints\n");
++		return false;
++	}
++
++	return true;
++}
++
+ static bool rtl_vendor_mode(struct usb_interface *intf)
+ {
+ 	struct usb_host_interface *alt = intf->cur_altsetting;
+@@ -8115,12 +8178,15 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
+ 	int i, num_configs;
+ 
+ 	if (alt->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC)
+-		return true;
++		return rtl_check_vendor_ok(intf);
+ 
+ 	/* The vendor mode is not always config #1, so to find it out. */
+ 	udev = interface_to_usbdev(intf);
+ 	c = udev->config;
+ 	num_configs = udev->descriptor.bNumConfigurations;
++	if (num_configs < 2)
++		return false;
++
+ 	for (i = 0; i < num_configs; (i++, c++)) {
+ 		struct usb_interface_descriptor	*desc = NULL;
+ 
+@@ -8135,7 +8201,8 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
+ 		}
+ 	}
+ 
+-	WARN_ON_ONCE(i == num_configs);
++	if (i == num_configs)
++		dev_err(&intf->dev, "Unexpected Device\n");
+ 
+ 	return false;
+ }
+-- 
+2.26.3
 
-
-
---=20
-Robert Marko
-Staff Embedded Linux Engineer
-Sartura Ltd.
-Lendavska ulica 16a
-10000 Zagreb, Croatia
-Email: robert.marko@sartura.hr
-Web: www.sartura.hr
