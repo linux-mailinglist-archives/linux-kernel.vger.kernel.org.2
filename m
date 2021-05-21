@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F08A138CDBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF3338CDBF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:45:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239054AbhEUSqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:46:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbhEUSqh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:46:37 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF9D3C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:45:13 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id b7so11036757wmh.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:45:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rJGJXprpTKILrZaxFSGW7s+yTHWLxKatKlSr8cuQGgM=;
-        b=QmC+zfCDoxapBeWsj/1Kp3xCVqHKtdsW7aDJfzuXvw2u2iuNgfMOJEId2VME6+10aT
-         phjOwMSbFqAn8PUGnp+zuPQCRR4TPw0hoODk2sB1OGD20bhsthamnTgD17fkBHG4Oiif
-         xY9+dUjv5V+DpFbB8BNelqNj1bP47fBcsKurPzJ+OjlPuiQH/l9se8fMYfPpmU+Hpxqr
-         kCUlSZS1qCvqoU5jF3aCMNcFJTpvTHavessBjkj0kt2HEZH5IvPNfsqRZvB28bXhRq1q
-         9Jvg8+nQVvfjXnota3LZMClvEN0inBRfBuRlsYj+JLlm06jhd6BeW45bXmOQcHKUMiqS
-         U3qQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rJGJXprpTKILrZaxFSGW7s+yTHWLxKatKlSr8cuQGgM=;
-        b=WemF1XCWaKZQf68plK55qKP4TkmdQya76/HzdChaRvGn8r65hE5+j7O9p7Gy1BRZBX
-         M/AeAZTyY4Cr5KsN1zz2skml3UFP719oZ97TDvWzcClVPeueRq5No6MoqMxsOZu9JHpY
-         tKRkgN3jJPHTCt6F5dANoyQ3Ff40VgrKOMlHo1zLMsx+AFvW/hfHRc3xehclPNyvE82B
-         fZZd8Q1mvDbPCSYK4/f0D4As9/i4l334b/51rN8zvjJEOyk8Hk+XBifkugiNHjrVC2Iw
-         d0jTLFg9K+18cQ8IK2efT5lBoPgqly7sJK/lllZWSVeoXDQP2m86PvERS32x7ptaOASr
-         s4KA==
-X-Gm-Message-State: AOAM532f9vDCvm0JrrU07SnAyxkXGyzimePdOudaN2WSwTs1dUXwjmFS
-        ErbXlyPvJVf8S6H0+TbHkuWQm0ENat0=
-X-Google-Smtp-Source: ABdhPJySEB2vLauRw1fX4DCpSwxDOz6LEcupt1GWmNV05JV/wqot+4M4OL+ihQJW2Wt9esIvnNuvzA==
-X-Received: by 2002:a1c:cc05:: with SMTP id h5mr10358192wmb.92.1621622712094;
-        Fri, 21 May 2021 11:45:12 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f38:4600:3901:4092:a56:60d4? (p200300ea8f384600390140920a5660d4.dip0.t-ipconnect.de. [2003:ea:8f38:4600:3901:4092:a56:60d4])
-        by smtp.googlemail.com with ESMTPSA id n6sm326906wmq.34.2021.05.21.11.45.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 11:45:11 -0700 (PDT)
-Subject: Re: [PATCH 1/2] sysfs: Add helper BIN_ATTRIBUTE_GROUPS
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <66e9f6e5-fdee-6963-6131-228c69705350@gmail.com>
- <e20db248-ed30-cf5d-a37c-b538dceaa5b2@gmail.com> <YKVFO4bmW/hkoUnx@kroah.com>
- <1facebe2-1368-9b52-e0a1-f7a6eafc91ea@gmail.com> <YKf+2KY9ssWc999p@kroah.com>
- <YKf+9W1BcLGkVRPF@kroah.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Message-ID: <eec73690-1f86-5e21-bd3f-bb4cffcfedb5@gmail.com>
-Date:   Fri, 21 May 2021 20:45:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        id S239062AbhEUSqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:46:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48024 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230475AbhEUSqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:46:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBF161163;
+        Fri, 21 May 2021 18:45:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621622722;
+        bh=Nm8Cfc8aRBpj9UuxNsnBPYL/hKeRFeJTjmPOBDEyCZ4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=COaStRG7C2aYJGo0+x+V8wBNuuiGgV/jNEaUd245CM5uVyshAIUfo2fYp0kTpovW7
+         sc/y2VFnLDURfTEhlQWz9U4MkzUpxmrE7VA94YgpG1mxIHj3wIieBAsZUIE/QHMd41
+         FZ+MW6bzcekTup397MEdXsmLACeQeGaLwL9WkTGE=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] debugfs: remove return value of debugfs_create_bool()
+Date:   Fri, 21 May 2021 20:45:19 +0200
+Message-Id: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <YKf+9W1BcLGkVRPF@kroah.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.05.2021 20:41, Greg Kroah-Hartman wrote:
-> On Fri, May 21, 2021 at 08:41:28PM +0200, Greg Kroah-Hartman wrote:
->> On Wed, May 19, 2021 at 09:02:47PM +0200, Heiner Kallweit wrote:
->>> On 19.05.2021 19:04, Greg Kroah-Hartman wrote:
->>>> On Wed, May 19, 2021 at 06:33:14PM +0200, Heiner Kallweit wrote:
->>>>> New helper BIN_ATTRIBUTE_GROUPS() does the same as ATTRIBUTE_GROUPS(),
->>>>> just for binary attributes.
->>>>>
->>>>> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>>>> ---
->>>>>  include/linux/sysfs.h | 6 ++++++
->>>>>  1 file changed, 6 insertions(+)
->>>>>
->>>>> diff --git a/include/linux/sysfs.h b/include/linux/sysfs.h
->>>>> index d76a1ddf8..a12556a4b 100644
->>>>> --- a/include/linux/sysfs.h
->>>>> +++ b/include/linux/sysfs.h
->>>>> @@ -162,6 +162,12 @@ static const struct attribute_group _name##_group = {		\
->>>>>  };								\
->>>>>  __ATTRIBUTE_GROUPS(_name)
->>>>>  
->>>>> +#define BIN_ATTRIBUTE_GROUPS(_name)				\
->>>>> +static const struct attribute_group _name##_group = {		\
->>>>> +	.bin_attrs = _name##_attrs,				\
->>>>> +};								\
->>>>> +__ATTRIBUTE_GROUPS(_name)
->>>>
->>>> Is this really needed by more than just 1 driver?
->>>>
->>> Few more use case I saw:
->>> devcd_dev_groups in drivers/base/devcoredump.c
->>> w1_f3a_group in drivers/w1/slaves/w1_ds2413.c
->>> w1_slave_default_groups in drivers/w1/w1.c
->>
->> Ok, might as well, can't hurt to add this :)
->>
->> Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> 
-> Oh wait, I'm the maintainer of the other file that uses this, I'll take
-> both of these then :)
-> 
-Even better, thanks!
+No one checks the return value of debugfs_create_bool(), as it's not
+needed, so make the return value void, so that no one tries to do so in
+the future.
 
-> thanks,
-> 
-> greg k-h
-> 
-Heiner
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ Documentation/filesystems/debugfs.rst |  4 ++--
+ fs/debugfs/file.c                     | 15 +++------------
+ include/linux/debugfs.h               | 12 ++++--------
+ 3 files changed, 9 insertions(+), 22 deletions(-)
+
+diff --git a/Documentation/filesystems/debugfs.rst b/Documentation/filesystems/debugfs.rst
+index 0f2292e367e6..71b1fee56d2a 100644
+--- a/Documentation/filesystems/debugfs.rst
++++ b/Documentation/filesystems/debugfs.rst
+@@ -120,8 +120,8 @@ and hexadecimal::
+ 
+ Boolean values can be placed in debugfs with::
+ 
+-    struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+-				       struct dentry *parent, bool *value);
++    void debugfs_create_bool(const char *name, umode_t mode,
++                             struct dentry *parent, bool *value);
+ 
+ A read on the resulting file will yield either Y (for non-zero values) or
+ N, followed by a newline.  If written to, it will accept either upper- or
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index d513d5465c89..6ede714cb551 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -836,20 +836,11 @@ static const struct file_operations fops_bool_wo = {
+  * This function creates a file in debugfs with the given name that
+  * contains the value of the variable @value.  If the @mode variable is so
+  * set, it can be read from, and written to.
+- *
+- * This function will return a pointer to a dentry if it succeeds.  This
+- * pointer must be passed to the debugfs_remove() function when the file is
+- * to be removed (no automatic cleanup happens if your module is unloaded,
+- * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
+- * returned.
+- *
+- * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
+- * be returned.
+  */
+-struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+-				   struct dentry *parent, bool *value)
++void debugfs_create_bool(const char *name, umode_t mode, struct dentry *parent,
++			 bool *value)
+ {
+-	return debugfs_create_mode_unsafe(name, mode, parent, value, &fops_bool,
++	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_bool,
+ 				   &fops_bool_ro, &fops_bool_wo);
+ }
+ EXPORT_SYMBOL_GPL(debugfs_create_bool);
+diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
+index 4e82f2b1fa62..c869f1e73d75 100644
+--- a/include/linux/debugfs.h
++++ b/include/linux/debugfs.h
+@@ -126,8 +126,8 @@ void debugfs_create_size_t(const char *name, umode_t mode,
+ 			   struct dentry *parent, size_t *value);
+ void debugfs_create_atomic_t(const char *name, umode_t mode,
+ 			     struct dentry *parent, atomic_t *value);
+-struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+-				  struct dentry *parent, bool *value);
++void debugfs_create_bool(const char *name, umode_t mode, struct dentry *parent,
++			 bool *value);
+ void debugfs_create_str(const char *name, umode_t mode,
+ 			struct dentry *parent, char **value);
+ 
+@@ -291,12 +291,8 @@ static inline void debugfs_create_atomic_t(const char *name, umode_t mode,
+ 					   atomic_t *value)
+ { }
+ 
+-static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
+-						 struct dentry *parent,
+-						 bool *value)
+-{
+-	return ERR_PTR(-ENODEV);
+-}
++static inline void debugfs_create_bool(const char *name, umode_t mode,
++				       struct dentry *parent, bool *value) { }
+ 
+ static inline void debugfs_create_str(const char *name, umode_t mode,
+ 				      struct dentry *parent,
+-- 
+2.31.1
+
