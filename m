@@ -2,64 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CED038C543
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C089638C54C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:55:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233120AbhEUKyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:54:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:41080 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230442AbhEUKyD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:54:03 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1lk2lg-0002DN-DI; Fri, 21 May 2021 10:52:36 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Joe Thornber <ejt@redhat.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] dm btree: Fix potential read of array with negative index i
-Date:   Fri, 21 May 2021 11:52:36 +0100
-Message-Id: <20210521105236.43860-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.31.1
+        id S233332AbhEUK5G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:57:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229813AbhEUK5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 06:57:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5F49A6108D;
+        Fri, 21 May 2021 10:55:39 +0000 (UTC)
+Date:   Fri, 21 May 2021 11:55:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 04/21] arm64: Kill 32-bit applications scheduled on
+ 64-bit-only CPUs
+Message-ID: <20210521105536.GF6675@arm.com>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-5-will@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518094725.7701-5-will@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On Tue, May 18, 2021 at 10:47:08AM +0100, Will Deacon wrote:
+> Scheduling a 32-bit application on a 64-bit-only CPU is a bad idea.
+> 
+> Ensure that 32-bit applications always take the slow-path when returning
+> to userspace on a system with mismatched support at EL0, so that we can
+> avoid trying to run on a 64-bit-only CPU and force a SIGKILL instead.
+> 
+> Signed-off-by: Will Deacon <will@kernel.org>
 
-The call to lower_bound can return -1 if the key is not found
-with the bsearch, leading to a negative index access into
-array node->keys[]. Ensure this cannot occur by checking for
-a negative index before reading from the array.
-
-Addresses-Coverity: ("Negative array index read")
-Fixes: d69e2e7e28bd ("dm btree: improve btree residency")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- drivers/md/persistent-data/dm-btree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/md/persistent-data/dm-btree.c b/drivers/md/persistent-data/dm-btree.c
-index b8d21b6e2953..266deaea5eea 100644
---- a/drivers/md/persistent-data/dm-btree.c
-+++ b/drivers/md/persistent-data/dm-btree.c
-@@ -1048,7 +1048,7 @@ static bool contains_key(struct btree_node *node, uint64_t key)
- {
- 	int i = lower_bound(node, key);
- 
--	if (le64_to_cpu(node->keys[i]) == key)
-+	if (i >= 0 && le64_to_cpu(node->keys[i]) == key)
- 		return true;
- 
- 	return false;
--- 
-2.31.1
-
+Reviewed-by: Catalin Marinas <catalin.marinas@arm.com>
