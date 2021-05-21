@@ -2,69 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEEE338CE34
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E51038CE36
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239078AbhEUTdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:33:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40784 "EHLO mail.kernel.org"
+        id S239089AbhEUTdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:33:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41036 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236901AbhEUTdD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:33:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A8B8F60FE7;
-        Fri, 21 May 2021 19:31:39 +0000 (UTC)
+        id S236901AbhEUTdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:33:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C52B613DB
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:32:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621625499;
-        bh=3vCpW8xLXbUSD5frK0Eu7sWnc7qIC9I7pcYAKP07bg4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QMrLG5PROURLFYbK7RzyZfYbGb75ubxs8HhTXBcjvDvKvYHBArre7/IEDPTVSuDBJ
-         wDHOwILtoHETm0DIXBr+ZlZMcT/PURbvpD9SSpUxu4+7Ur2Ms7R9P1apt58bayTXpy
-         M+VyXb6xJyF0R2tk1PMmtS9paMBhDRZ0zEId8ZR6L+UoCF/2IBR5euNl2AWiavmw2q
-         RTZvv6kKNdGb3JxrvWg9QkisSm6/SMGaJ8QU6p4QcoBbDpt3lSvf6oTRvf1Rq4U1fE
-         VfTBb2+T3dqLfMb/ABCXNG7rEEUuetlsG0WwlOpzmgqM4z7tucKJUqmVDICaP33nYw
-         vwfTnY9Pd4PvA==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id E6B614011C; Fri, 21 May 2021 16:31:36 -0300 (-03)
-Date:   Fri, 21 May 2021 16:31:36 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] perf scripts python: exported-sql-viewer.py: Minor
- fixes
-Message-ID: <YKgKmMQ90gH3196S@kernel.org>
-References: <20210521092053.25683-1-adrian.hunter@intel.com>
+        s=k20201202; t=1621625540;
+        bh=jOeW49R3D0Xy2MYiigIe+4z2oWaYZOxfJxbogqAUeQg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=c4BD7AloCgBm56PmefVxQyf6soTh2DAU9qMfGz868gWnF23EP949zWfAt+Ew0BPHT
+         u+Q2kWlyzJzd4aNbZ8du2ydCEiEf2rnY0+KlhGr7D35l+6mu0AunSThHZy99ysTIvF
+         4mTPdmPZqhYii2P9ZUMp+wIyxk+qTpZG3my61++UCIiZ8u5xi76m5UUS8M5zOn+h0m
+         3/8zDdUP28Xt954AM3ykTM9Q6glnGF1ZV92noMzq3GXkBn0mJACYRA5Dyj3Z8rWw8R
+         E4GoarrvP1tSnuDElnKALoIRlfJSg4xbbvmFM7DVxDXAU/EOnKyDDNMXvwXYzPFeXY
+         sMjbOf1fl7gFg==
+Received: by mail-ed1-f44.google.com with SMTP id r11so24468983edt.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:32:20 -0700 (PDT)
+X-Gm-Message-State: AOAM5330yClBFinGKOyLqAwuJzJf1LzanYL6GA54jD1+ewBbd/1SSp5R
+        7EFjHlHehm+9Aq3eUKYLmU+GQh6Hsb+BFpL/SWn/iA==
+X-Google-Smtp-Source: ABdhPJymY0D4EZweyfuHuPn+GXWKUbV4mm81DjwQWS/Fppjj/RBVIj5orTVVxZwikuPCXSbDsXn6I/3H3h0L+EV3D7M=
+X-Received: by 2002:a05:6402:4313:: with SMTP id m19mr12643717edc.263.1621625538643;
+ Fri, 21 May 2021 12:32:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521092053.25683-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+References: <20210520183614.1227046-1-posk@google.com> <20210520183614.1227046-5-posk@google.com>
+In-Reply-To: <20210520183614.1227046-5-posk@google.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 21 May 2021 12:32:07 -0700
+X-Gmail-Original-Message-ID: <CALCETrXo=5r+i6f3qvSp4mEHcR93U3F0S0kFr8d5JGU6WetSqw@mail.gmail.com>
+Message-ID: <CALCETrXo=5r+i6f3qvSp4mEHcR93U3F0S0kFr8d5JGU6WetSqw@mail.gmail.com>
+Subject: Re: [RFC PATCH v0.1 4/9] sched/umcg: implement core UMCG API
+To:     Peter Oskolkov <posk@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
+        Peter Oskolkov <posk@posk.io>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrei Vagin <avagin@google.com>,
+        Jim Newsome <jnewsome@torproject.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, May 21, 2021 at 12:20:50PM +0300, Adrian Hunter escreveu:
-> Hi
-> 
-> Here are 3 minor fixes for stable.
-> 
+On Thu, May 20, 2021 at 11:36 AM Peter Oskolkov <posk@google.com> wrote:
+>
+> Implement version 1 of core UMCG API (wait/wake/swap).
+>
+> As has been outlined in
+> https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/,
+> efficient and synchronous on-CPU context switching is key
+> to enabling two broad use cases: in-process M:N userspace scheduling
+> and fast X-process RPCs for security wrappers.
+>
+> High-level design considerations/approaches used:
+> - wait & wake can race with each other;
+> - offload as much work as possible to libumcg in tools/lib/umcg,
+>   specifically:
+>   - most state changes, e.g. RUNNABLE <=> RUNNING, are done in
+>     the userspace (libumcg);
+>   - retries are offloaded to the userspace.
 
-Thanks, applied.
+Do you have some perf numbers as to how long a UMCG context switch
+takes compared to a normal one?
 
-- Arnaldo
-
- 
-> Adrian Hunter (3):
->       perf scripts python: exported-sql-viewer.py: Fix copy to clipboard from Top Calls by elapsed Time report
->       perf scripts python: exported-sql-viewer.py: Fix Array TypeError
->       perf scripts python: exported-sql-viewer.py: Fix warning display
-> 
->  tools/perf/scripts/python/exported-sql-viewer.py | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> 
-> Regards
-> Adrian
-
--- 
-
-- Arnaldo
+--Andy
