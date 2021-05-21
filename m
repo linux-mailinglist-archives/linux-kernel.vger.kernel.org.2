@@ -2,112 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB55F38C532
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:45:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30FB138C537
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:46:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232018AbhEUKrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:47:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38312 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230480AbhEUKrL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:47:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 60AF86008E;
-        Fri, 21 May 2021 10:45:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621593948;
-        bh=AouORxPeos/y+srTBjjykWrp10gH9l+EJwzDVaBiOsg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Pwl/YLjmbbmCHYM/4vkJnO4I9Xq5kU+l5NYkEjGdbPDx7Q2Uy5sr1HCjPDGq/Kifb
-         5WNYRdL7oSDo6bi58PSRQHTJK29fktEFhr3UT41QSaSPo+dvGT4Lu3wtIPAF8TTazG
-         sac01OBCJb29sqDlCrzbFNlcHyUgXU8Xzqtbj+TQ=
-Date:   Fri, 21 May 2021 12:45:46 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Quentin Perret <qperret@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Matthias Maennich <maennich@google.com>,
-        Giuliano Procida <gprocida@google.com>, kernel-team@android.com
-Subject: Re: [PATCH] export: Make CRCs robust to symbol trimming
-Message-ID: <YKePWull0E86SXpm@kroah.com>
-References: <20210408180105.2496212-1-qperret@google.com>
- <YJkJ21n71SIkUppu@google.com>
- <CAF2Aj3iJ3jGCSTaO0p8WT2TrRX--QxQT0bD6iH1+OGbx5H-muQ@mail.gmail.com>
+        id S232550AbhEUKr7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:47:59 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:52331 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232694AbhEUKr4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 06:47:56 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 58F492224A;
+        Fri, 21 May 2021 12:46:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621593989;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=it9Lh4qTlHTGIG1OLO3qNDZWs9VfXzGs2bZWUH5AgQo=;
+        b=SFkJistXQkn9Z58NhlcLjUhQmBnfbng/LoGIWWamCHGsu1Y6eIclIFbhQ9QblEznSmJFSL
+        YsKSDPhwkD6h3/awcJ8rKjQUzckImCxl3SwY+gkfKVt8RcOrvrmXEdC1Byi38OFezAz2Fs
+        Cyu/zaeO/lvZE6M/IOLcR+5x2CKJPl4=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF2Aj3iJ3jGCSTaO0p8WT2TrRX--QxQT0bD6iH1+OGbx5H-muQ@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 12:46:29 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Cc:     andy.shevchenko@gmail.com,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        linux-gpio@vger.kernel.org, bgolaszewski@baylibre.com,
+        linux-kernel@vger.kernel.org, linus.walleij@linaro.org
+Subject: Re: [PATCH v2 1/3] gpio: regmap: Support few IC specific operations
+In-Reply-To: <ff905a32b736a0b03fb4c74b7e876c764a561106.camel@fi.rohmeurope.com>
+References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+ <6e319c22b41747e3911c7a5cad877134cabc9231.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VcZwYdA5R=peC+8jHVT6UDsAT9msSs=W6C7rgfyjGPtXA@mail.gmail.com>
+ <8c048bda0ace591d7e91c07ed9155338@walle.cc>
+ <ff905a32b736a0b03fb4c74b7e876c764a561106.camel@fi.rohmeurope.com>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <26eb6b95805840dca05e0135e0555b42@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 10:57:44AM +0100, Lee Jones wrote:
-> On Mon, 10 May 2021 at 11:25, Quentin Perret <qperret@google.com> wrote:
+Am 2021-05-21 12:25, schrieb Vaittinen, Matti:
+> On Fri, 2021-05-21 at 12:19 +0200, Michael Walle wrote:
+>> Am 2021-05-21 12:09, schrieb Andy Shevchenko:
+>> > On Fri, May 21, 2021 at 12:53 PM Matti Vaittinen
+>> > <matti.vaittinen@fi.rohmeurope.com> wrote:
+>> > > Changelog v2: (based on suggestions by Michael Walle)
+>> > >   - drop gpio_regmap_set_drvdata()
+>> >
+>> > But why do we have gpio_regmap_get_drvdata() and why is it
+>> > different
+>> > now to the new member handling?
+>> 
+>> Eg. the reg_mask_xlate() callback is just passed a "struct
+>> gpio_regmap*".
+>> If someone needs to access private data there,
+>> gpio_regmap_get_drvdata()
+>> is used. At least that was its intention.
 > 
-> > Hi,
-> >
-> > On Thursday 08 Apr 2021 at 18:01:05 (+0000), Quentin Perret wrote:
-> > > The CRC calculation done by genksyms is triggered when the parser hits
-> > > EXPORT_SYMBOL*() macros. At this point, genksyms recursively expands the
-> > > types, and uses that as the input for the CRC calculation. In the case
-> > > of forward-declared structs, the type expands to 'UNKNOWN'. Next, the
-> > > result of the expansion of each type is cached, and is re-used when/if
-> > > the same type is seen again for another exported symbol in the file.
-> > >
-> > > Unfortunately, this can cause CRC 'stability' issues when a struct
-> > > definition becomes visible in the middle of a C file. For example, let's
-> > > assume code with the following pattern:
-> > >
-> > >     struct foo;
-> > >
-> > >     int bar(struct foo *arg)
-> > >     {
-> > >       /* Do work ... */
-> > >     }
-> > >     EXPORT_SYMBOL_GPL(bar);
-> > >
-> > >     /* This contains struct foo's definition */
-> > >     #include "foo.h"
-> > >
-> > >     int baz(struct foo *arg)
-> > >     {
-> > >       /* Do more work ... */
-> > >     }
-> > >     EXPORT_SYMBOL_GPL(baz);
-> > >
-> > > Here, baz's CRC will be computed using the expansion of struct foo that
-> > > was cached after bar's CRC calculation ('UNKOWN' here). But if
-> > > EXPORT_SYMBOL_GPL(bar) is removed from the file (because of e.g. symbol
-> > > trimming using CONFIG_TRIM_UNUSED_KSYMS), struct foo will be expanded
-> > > late, during baz's CRC calculation, which now has visibility over the
-> > > full struct definition, hence resulting in a different CRC for baz.
-> > >
-> > > This can cause annoying issues for distro kernel (such as the Android
-> > > Generic Kernel Image) which use CONFIG_UNUSED_KSYMS_WHITELIST. Indeed,
-> > > as per the above, adding a symbol to the whitelist can change the CRC of
-> > > symbols that are already kept exported. As such, modules built against a
-> > > kernel with a trimmed ABI may not load against the same kernel built
-> > > with an extended whitelist, even though they are still strictly binary
-> > > compatible. While rebuilding the modules would obviously solve the
-> > > issue, I believe this classifies as an odd genksyms corner case, and it
-> > > gets in the way of kernel updates in the GKI context.
-> > >
-> > > To work around the issue, make sure to keep issuing the
-> > > __GENKSYMS_EXPORT_SYMBOL macros for all trimmed symbols, hence making
-> > > the genksyms parsing insensitive to symbol trimming.
-> > >
-> > > Signed-off-by: Quentin Perret <qperret@google.com>
-> >
-> > Gentle ping.
-> >
-> > Is there anything else I should do in this one?
-> >
-> 
-> With Greg's Ack and ~6 weeks on the list, you're probably golden.
-> 
-> I *could* pick this up, but seems wrong somehow.
-> 
-> Greg, is this something you're prepared to merge?  If not, who's the
-> g{uy,al}?
+> I would help the IC driver here too and just directly provide the
+> drvdata pointer as argument. I don't see much value in providing the
+> regmap_gpio pointer as IC driver can not dereference it.
 
-What does get_maintainer.pl show?
+What is it with the "it's useless if one cannot dereference it"? You're
+also passing "struct regmap *" which you cannot dereference. It's an
+opaque pointer you need to pass to gpio_regmap to call a function there.
+
+What is the problem with letting gpio_regmap derefence its internal data
+structure and return the value for you?
+
+Adding the drvdata to reg_mask_xlate() highlights my former concern; you
+need to keep chaning the users to add another parameter. What if xlate()
+needs the regmap, too? Then you need to change it again. Granted this is
+a silly example, but you should get my point. It is by far more easy to
+just add another new gpio_regmap_*(struct gpio_regmap *) function and
+you don't have to change existing users.
+
+Also what if gpio_regmap provides some useful helper function in the
+future, it will likely need its internal data struct.
+
+-michael
