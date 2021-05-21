@@ -2,103 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E564538D059
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:56:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0AB038D05C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:57:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbhEUV5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 17:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58350 "EHLO
+        id S229686AbhEUV6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 17:58:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhEUV5i (ORCPT
+        with ESMTP id S229472AbhEUV6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 17:57:38 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED48EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:56:13 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id j75so20974268oih.10
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:56:13 -0700 (PDT)
+        Fri, 21 May 2021 17:58:35 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63823C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:57:12 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id 80-20020a9d08560000b0290333e9d2b247so8807428oty.7
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:57:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=mime-version:in-reply-to:references:from:user-agent:date:message-id
          :subject:to:cc;
-        bh=EZmyDabN3hOTcpj4naZ+cZ/b9gf93PvDS23AI6xYe4c=;
-        b=cPBVT0ifSVUFR1izGTb+sffRmg+26NqMLywpEHiLlckjtQJb3tLTsSaiPSH/NpjgMe
-         7GaPhUaflL05DW/o5GXI059ApnWvXURWnsatGEImzjH1wol1MQy9FbRVSOneSj9KUHiJ
-         EtVVWJ8EZ5AKCQ8SLlQqi9qAVZHHTfub00n3U=
+        bh=Pd7ky5cxDb+qxzJPiCzfS73ME9CuHoqRQM37v+k83B4=;
+        b=hEWVM/nvf00TFCvYEtUvgRbGojwxiR3Xlb4OIR6nUJv/kcZu76ZTGZ7ogyUEeilbIC
+         tZYDOwLEzD9l2dpBfqePGUkwUp2OYTw16Kip9gbdyR0H1OKM42auzXMCFM+47ulZUuph
+         6Lym33huSHkbIkeNSWu3+jZgbAA1er/HDgAug=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:in-reply-to:references:from
          :user-agent:date:message-id:subject:to:cc;
-        bh=EZmyDabN3hOTcpj4naZ+cZ/b9gf93PvDS23AI6xYe4c=;
-        b=WMj8BV1fDoZT1kZqHkM21KSesJoWbnIgDRkL9VpW6t35Zt7v/foUhzkfpxNhFQ+TXY
-         6I/YZivFq40wjYBkV6qNfFWoHjBSocX89e39o1N3GRT75UGt8HmKDJCaHzbsPA0A/aLw
-         M+kTsGV5dwN94EzriDV9QJJwcqa/JEE/O6WJZVSdw+qq35zzfxTI5RaFJkXNrG6GkLH4
-         sdk2V+98uZa1hkXxJnJ2egxCSnIhL418gHKJnjSDzv2cUC4gn5Nzs51WvawsNAc9E+0Q
-         DyZUHU47OcFEtl7a9bzayZ7cQr2ElF1hhnEp/wJOT968lzaOfNU3Zm38mysiuDrcHnAp
-         3txw==
-X-Gm-Message-State: AOAM532/SiomwJjWhmjFkH5yJOIgwtRB4PnmDIGdFCJnEH62rloSoyG2
-        sTg9hcp5cBq6r+0r6dIgqeTph+T3tdFzQcx4uxboIQ==
-X-Google-Smtp-Source: ABdhPJysDKVUU7DFJvnwkX9aokBDwCJJlkC4zdeGIRL3E1EdGE6tYOBoopnxXzvN5ViV2dw/dkOUTdrY42b0dQcypxg=
-X-Received: by 2002:a54:4501:: with SMTP id l1mr3700527oil.19.1621634173394;
- Fri, 21 May 2021 14:56:13 -0700 (PDT)
+        bh=Pd7ky5cxDb+qxzJPiCzfS73ME9CuHoqRQM37v+k83B4=;
+        b=Vbz2QtP5b1NOiR2HoVComR5wlcLIGbLfAToXY9Gd0K+IvT+ZlQC12IW5hgMqUTZlNm
+         6GblSkY8ujv7lxKanR+bKFxMTRvD1dqT0hpP9J67ukEC1KFpOzeB4ZFHAlIBIntKITnn
+         uUieIBmLiZNgVipFVlMKIrSL21/inHqUPGgiSIIAE935ofw5wxRO6+1cKudJ33lwRTIC
+         XARj5LVItWXk7OK70469VpAsPhSEy1DKAT6rw2f8mYMNeWkj8oCa42h2NyNjsDYePDbH
+         EXogCdjM3n+34pXHHfYDwxkWfDKHEAyddLQ9a5VXfkh5hkNW7wVebHK4mtbUGWkgGJoY
+         wreA==
+X-Gm-Message-State: AOAM5309dMQA2Ww5DWLraMyDaUwZe35T6OEqt9v5bm2q47rBEmqU8hvh
+        Wg2KIIk9waIYtwtu5z9HAN76UE0ZLhDKCYTU/2YuoA==
+X-Google-Smtp-Source: ABdhPJyjbsrGqouAWtP/zueb6T/6vS7R8/wyCxfqpPAl8atKW0srTtbu4Y125oTZNM8SGNMwKaikdSMQ7jjhuRI9rTw=
+X-Received: by 2002:a05:6830:4a1:: with SMTP id l1mr10235034otd.25.1621634231832;
+ Fri, 21 May 2021 14:57:11 -0700 (PDT)
 Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Fri, 21 May 2021 14:56:12 -0700
+ HTTPREST; Fri, 21 May 2021 14:57:11 -0700
 MIME-Version: 1.0
-In-Reply-To: <1621455753-28966-1-git-send-email-khsieh@codeaurora.org>
-References: <1621455753-28966-1-git-send-email-khsieh@codeaurora.org>
+In-Reply-To: <20210507212505.1224111-1-swboyd@chromium.org>
+References: <20210507212505.1224111-1-swboyd@chromium.org>
 From:   Stephen Boyd <swboyd@chromium.org>
 User-Agent: alot/0.9.1
-Date:   Fri, 21 May 2021 14:56:12 -0700
-Message-ID: <CAE-0n53WW0jqorW2MPaTczmJP+d+_qaRBcwmoJBP2dL4x8_DqA@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0 correctly
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, agross@kernel.org,
-        bjorn.andersson@linaro.org, robdclark@gmail.com, sean@poorly.run,
-        vkoul@kernel.org
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Fri, 21 May 2021 14:57:11 -0700
+Message-ID: <CAE-0n53jA7xPctEU9TkBf=eot4SGs85gpGMjUiDn_ZiMvVLvKw@mail.gmail.com>
+Subject: Re: [PATCH 0/3] drm/msm/dp: Simplify aux code
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Kuogee Hsieh <khsieh@codeaurora.org>, aravindh@codeaurora.org,
+        Sean Paul <sean@poorly.run>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-05-19 13:22:33)
-> irq_hpd interrupt should be handled after dongle plugged in and
-> before dongle unplugged. Hence irq_hpd interrupt is enabled at
-> the end of the plugin handle and disabled at the beginning of
-> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
-> handled same as the dongle unplugged which tears down the mainlink
-> and disables the phy. This patch fixes this problem by only tearing
-> down the mainlink but keeping phy enabled at irq_hpd with
-> sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
-> handled by setup mainlink only. This patch also set dongle into D3
-> (power off) state at end of handling irq_hpd with sink_count = 0.
+Quoting Stephen Boyd (2021-05-07 14:25:02)
+> Here's a few patches that simplify the aux handling code and bubble up
+> timeouts and nacks to the upper DRM layers. The goal is to get DRM to
+> know that the other side isn't there or that there's been a timeout,
+> instead of saying that everything is fine and putting some error message
+> into the logs.
 >
-> Changes in v2:
-> -- add ctrl->phy_Power_count
+> Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Cc: Abhinav Kumar <abhinavk@codeaurora.org>
+> Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+> Cc: aravindh@codeaurora.org
+> Cc: Sean Paul <sean@poorly.run>
 >
-> Changes in v3:
-> -- del ctrl->phy_Power_count
-> -- add phy_power_off to dp_ctrl_off_link_stream()
->
-> Changes in v4:
-> -- return immediately if clock disable failed at dp_ctrl_off_link_stream()
->
-> Changes in v5:
-> -- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
->
-> Changes in v6:
-> -- add Fixes tag
->
-> Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up and pm_resume")
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
-> ---
 
-Tested-by: Stephen Boyd <swboyd@chromium.org>
-Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+Kuogee, have you had a change to review this series?
 
-We can resolve the lingering dual irq issue later on if you don't want
-to send another round of this. Also, the title says 1/2 so I wonder if
-there's another patch? Doesn't look like there is but I have to ask. If
-not, please generate patches with the right -<N> argument or revision
-range.
+> Stephen Boyd (3):
+>   drm/msm/dp: Simplify aux irq handling code
+>   drm/msm/dp: Shrink locking area of dp_aux_transfer()
+>   drm/msm/dp: Handle aux timeouts, nacks, defers
+>
+>  drivers/gpu/drm/msm/dp/dp_aux.c     | 181 ++++++++++++----------------
+>  drivers/gpu/drm/msm/dp/dp_aux.h     |   8 --
+>  drivers/gpu/drm/msm/dp/dp_catalog.c |   2 +-
+>  drivers/gpu/drm/msm/dp/dp_catalog.h |   2 +-
+>  4 files changed, 80 insertions(+), 113 deletions(-)
+>
+>
+> base-commit: 51595e3b4943b0079638b2657f603cf5c8ea3a66
+> --
+> https://chromeos.dev
+>
