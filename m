@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8970038BC5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:20:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CEE38BC62
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:23:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238515AbhEUCVt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:21:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47036 "EHLO
+        id S238555AbhEUCY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:24:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232347AbhEUCVs (ORCPT
+        with ESMTP id S238532AbhEUCY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:21:48 -0400
-Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A71F5C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:20:25 -0700 (PDT)
-Received: by mail-qt1-x82d.google.com with SMTP id g8so6827424qtp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:20:25 -0700 (PDT)
+        Thu, 20 May 2021 22:24:27 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A657BC061761
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:23:05 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id c12so2220517pfl.3
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:23:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BntUTk2lgUaVRx3XfqIWsYNjn7+mAoD2nScSXE9jiwA=;
-        b=T4RGJuz5B5MhypwYcf1R0iOdPjScW8Xk/y6359xcpiwRkX/TwSQUdEsQeFyS895GMC
-         UF63zqkWlWh2QN20BoegqBJuX/kyFbpTbUOzBr0Sfp2IuVKL6Jtz2kEu4sNPSTPpSWtm
-         dFGyDidqbBtfMTu2Djc2ZVASUDCjFZH08wPPFVVHh2jNhuv3VGjOTSZJFpVJkSnliZ5M
-         iPNxymcUpZVGQRwqwe9OQ37+0We3DuwOX6m+HOz+dtTQMUN5Rm4zZ0WMMLuZ/lkVpq91
-         sNQeMBvVBDZRYJ77QsAZ2w0oJ/IEmj/SS5Lw69y/SBN3HVEgdc3w6b38hvOVSKWXodp9
-         k1fw==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YemI85O9bLI0m8MkylkyR0IUfS+oZy6kYsON+ubb8mg=;
+        b=gEabH7HEBFV1nPdVQ6FrQc/idUFaL/V5OxiMA1LI2BpttADEiH2k7vALxIDizC3MSG
+         gSgQMRLfRy3FJ0npyYj5LwrxlIvuF3MQ2h2kese9zmgcI9w+x8PEBOBOFIN9cqlmmWWs
+         YWBG2iCbiuzEI6wasXPpTSOLeoZFizR2a0ZXlmZYIKoUvJOSg7zhgh+AuQK2q+EyhL0T
+         bb4dzsW7mUgo878zXUzNcyoh419is9FMpDsZtuf1oO4z3uZlf9rBnv399PqOj2nK6UlG
+         WPj4JZVo6Wsh9P3URTV0gh/fgI++wQETs2AIn3RAOzMk/RopmHAfBYy0i16WlbxpkMWG
+         3UDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BntUTk2lgUaVRx3XfqIWsYNjn7+mAoD2nScSXE9jiwA=;
-        b=QdaBwHHqCsrNUgQ9+xxm1npOfugS2a2RVLoba7VcJ9cVKxhJ8EURIObmH8XTwX5myI
-         MTEb168s2zD5YHw1zTjT41BYwOK/EMW5XhHqjXTrlO2buKlDa9tIU2uqZgEVDzP9fHO1
-         izMnyFL5qX+pN0iulVANlemhA2jWsxuGW/b1Yl5VQ81GFxjagCjKvff2hTd1Gj5SV3N1
-         mo+8wVUhK167cEvijl37vRMIyRxeGmgGFbqxcVIwMegYbxjAmqLWHzmIJs7pqPm//zF8
-         2P3Q3QdPp/5xQkjD7NDcXOUKChKQefD6rYagDx68XoU4CZs6ElcrwMKOPUmGsd/+lieA
-         xGwA==
-X-Gm-Message-State: AOAM533S2z18YVrD3K0Qz8B9AZfqLOjdasuNQ2PouP/ZJhnT5LyKoCmX
-        5q2vd4tt7jlIzcphd4KjgaMNmw==
-X-Google-Smtp-Source: ABdhPJy+XPBwr+htW+iK1t8MG66Z2iLE9lfu88KpTDT0EkLxC8cZgvFdKVYsLWgGrc0ILOxUw/KtiA==
-X-Received: by 2002:ac8:5bc2:: with SMTP id b2mr8646967qtb.220.1621563624783;
-        Thu, 20 May 2021 19:20:24 -0700 (PDT)
-Received: from pop-os.fios-router.home (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.googlemail.com with ESMTPSA id f12sm3496691qtj.26.2021.05.20.19.20.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 19:20:24 -0700 (PDT)
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: [PATCH] crypto: qce: skcipher: Fix incorrect sg count for dma transfers
-Date:   Thu, 20 May 2021 22:20:23 -0400
-Message-Id: <20210521022023.1237148-1-thara.gopinath@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=YemI85O9bLI0m8MkylkyR0IUfS+oZy6kYsON+ubb8mg=;
+        b=Ji91lG+X8kK8G7MeqzFB+W57y6hK4QEaVUFNXj20PJ2owqP5loyoNq1B5vRD01uLkH
+         HuZ0q4F7RCnYhOJh73b7klUOq2ynFrGDFLIg/5HacQuuBbR9sjbWHAtccXjghE88inIy
+         xhtCjFYqkvb8TIpxzuhpRfgoIRM0bdX4Mo1Ly79tfKyn7V7GwPN+YGo4CwpFF4Z3SggF
+         OxilSfTzLmSywb5N4nB6N+isVr853X/3P6SbjhGM1QUeoYmUJ/1bjqB6y314oh2xtUCi
+         HY5HcPF7UWnqJITq4kDjpEzc0sn2WWvII+zuwyfeLnc2vQgDgxU05oAFHAdQ3BG+hO2O
+         cCjg==
+X-Gm-Message-State: AOAM531Hotu1n8iT7X+CpiuA7IadPAFXS+hQ0LfVoEuffIAjODqUMqXG
+        WQ3nnEYDekCZ3aaF/NgOBs+j6uHXYOUNwa5fqxJXig==
+X-Google-Smtp-Source: ABdhPJz39htdi++DEibwiL3THTiqt0knG3d1uKGkXu73GOwwzQNM1rZ8VXwFKoMc7Y2smXEQir4jGlEcmlrwzsON4+A=
+X-Received: by 2002:a05:6a00:2493:b029:2c4:b6dd:d389 with SMTP id
+ c19-20020a056a002493b02902c4b6ddd389mr7694639pfv.2.1621563785247; Thu, 20 May
+ 2021 19:23:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210520065918.KsmugQp47%akpm@linux-foundation.org> <8e1de6c2-27af-f612-7467-a7d1f1a31bff@infradead.org>
+In-Reply-To: <8e1de6c2-27af-f612-7467-a7d1f1a31bff@infradead.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 21 May 2021 10:22:28 +0800
+Message-ID: <CAMZfGtW=jgjJPUNk4jxFXWZ91wuYEm4q3x7NUVSjGpu0Xjc7hA@mail.gmail.com>
+Subject: Re: [External] Re: mmotm 2021-05-19-23-58 uploaded (mm/migrate.c)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, broonie@kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        mhocko@suse.cz, mm-commits@vger.kernel.org,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the sg count returned by dma_map_sg to call into
-dmaengine_prep_slave_sg rather than using the original sg count. dma_map_sg
-can merge consecutive sglist entries, thus making the original sg count
-wrong. This is a fix for memory coruption issues observed while testing
-encryption/decryption of large messages using libkcapi framework.
+On Fri, May 21, 2021 at 6:21 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 5/19/21 11:59 PM, akpm@linux-foundation.org wrote:
+> > The mm-of-the-moment snapshot 2021-05-19-23-58 has been uploaded to
+> >
+> >    https://www.ozlabs.org/~akpm/mmotm/
+> >
+> > mmotm-readme.txt says
+> >
+> > README for mm-of-the-moment:
+> >
+> > https://www.ozlabs.org/~akpm/mmotm/
+> >
+> > This is a snapshot of my -mm patch queue.  Uploaded at random hopefully
+> > more than once a week.
+> >
+> > You will need quilt to apply these patches to the latest Linus release =
+(5.x
+> > or 5.x-rcY).  The series file is in broken-out.tar.gz and is duplicated=
+ in
+> > https://ozlabs.org/~akpm/mmotm/series
+> >
+> > The file broken-out.tar.gz contains two datestamp files: .DATE and
+> > .DATE-yyyy-mm-dd-hh-mm-ss.  Both contain the string yyyy-mm-dd-hh-mm-ss=
+,
+> > followed by the base kernel version against which this patch series is =
+to
+> > be applied.
+> >
+> > This tree is partially included in linux-next.  To see which patches ar=
+e
+> > included in linux-next, consult the `series' file.  Only the patches
+> > within the #NEXT_PATCHES_START/#NEXT_PATCHES_END markers are included i=
+n
+> > linux-next.
+>
+> on x86_64:
+>
+> ../mm/migrate.c: In function =E2=80=98unmap_and_move_huge_page=E2=80=99:
+> ../mm/migrate.c:1295:6: error: implicit declaration of function =E2=80=98=
+hugetlb_page_subpool=E2=80=99; did you mean =E2=80=98hugetlb_count_sub=E2=
+=80=99? [-Werror=3Dimplicit-function-declaration]
+>   if (hugetlb_page_subpool(hpage) && !page_mapping(hpage)) {
+>       ^~~~~~~~~~~~~~~~~~~~
+>
+> Full randconfig file is attached.
 
-Patch has been tested further by running full suite of tcrypt.ko tests
-including fuzz tests.
+Thanks. I'll fix it in the next version.
 
-Signed-off-by: Thara Gopinath <thara.gopinath@linaro.org>
----
- drivers/crypto/qce/skcipher.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
-
-diff --git a/drivers/crypto/qce/skcipher.c b/drivers/crypto/qce/skcipher.c
-index c0a0d8c4fce1..259418479227 100644
---- a/drivers/crypto/qce/skcipher.c
-+++ b/drivers/crypto/qce/skcipher.c
-@@ -72,7 +72,7 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	struct scatterlist *sg;
- 	bool diff_dst;
- 	gfp_t gfp;
--	int ret;
-+	int dst_nents, src_nents, ret;
- 
- 	rctx->iv = req->iv;
- 	rctx->ivsize = crypto_skcipher_ivsize(skcipher);
-@@ -123,21 +123,22 @@ qce_skcipher_async_req_handle(struct crypto_async_request *async_req)
- 	sg_mark_end(sg);
- 	rctx->dst_sg = rctx->dst_tbl.sgl;
- 
--	ret = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
--	if (ret < 0)
-+	dst_nents = dma_map_sg(qce->dev, rctx->dst_sg, rctx->dst_nents, dir_dst);
-+	if (dst_nents < 0)
- 		goto error_free;
- 
- 	if (diff_dst) {
--		ret = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
--		if (ret < 0)
-+		src_nents = dma_map_sg(qce->dev, req->src, rctx->src_nents, dir_src);
-+		if (src_nents < 0)
- 			goto error_unmap_dst;
- 		rctx->src_sg = req->src;
- 	} else {
- 		rctx->src_sg = rctx->dst_sg;
-+		src_nents = dst_nents - 1;
- 	}
- 
--	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, rctx->src_nents,
--			       rctx->dst_sg, rctx->dst_nents,
-+	ret = qce_dma_prep_sgs(&qce->dma, rctx->src_sg, src_nents,
-+			       rctx->dst_sg, dst_nents,
- 			       qce_skcipher_done, async_req);
- 	if (ret)
- 		goto error_unmap_src;
--- 
-2.25.1
-
+>
+> --
+> ~Randy
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+>
