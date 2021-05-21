@@ -2,151 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8061638C36C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:39:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3CE38C364
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:38:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236743AbhEUJky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:40:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60762 "EHLO
+        id S236687AbhEUJkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233901AbhEUJkv (ORCPT
+        with ESMTP id S236639AbhEUJkR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:40:51 -0400
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58FDCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:39:28 -0700 (PDT)
-Received: by mail-qk1-x735.google.com with SMTP id i5so11837199qkf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:39:28 -0700 (PDT)
+        Fri, 21 May 2021 05:40:17 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7FA9C061763;
+        Fri, 21 May 2021 02:38:54 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id t21so10691233plo.2;
+        Fri, 21 May 2021 02:38:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3X1vaIVC//iTRofgRsPkEvi0MlPPJAR3fKEDO/5WqBw=;
-        b=cvzpBW0tXfh5kVERzbaSFuFUeHAHFC5Ycuc4ZuuoHJ1H7dSXzPKqFgEg9znaPEdcIT
-         MzIiqbSOoevDwnWVClrHL2GVz9gMAnaSymRBhkosPDh1HGdH7ucylxTeoOI8GhKeFpaV
-         2cCEeCTWm1KRaC5YA5n0LPGMRAjob9EmqNyKbkCxY+rEGPDF77amBEcBDqeioneiscE5
-         hdbEFMZfRkSZYvQy/Sc8CLEqzDq8kNADIn6QFNQ/jITWgyklNzHMrXq2X8LsKKKQyNxD
-         U9Ee3NzfMhyIZb39p7/NepxkmroQCj5E5xS7S6nyoqw5NrDf6gJMlCOgVWvxa8UEBquq
-         v+gQ==
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=EkiQuoyo34HE9ENeuU8ekv0irucFjDvs39Ey7LGlUns=;
+        b=ZlxArrIWqKd4ZPPMwIAWtw87GQTXq64LfRgLKk02s8qXAYNTGOyIN3bOswWa5YXETD
+         q7UQnPEQ7pyFk7o1XL/mJqoMl3rrNsKmDs4aUIoYiZp0TRrveLM1p+j+e9EgcGK4v+BV
+         dAnRdWXmurY+peaExIwJw4zR8q92G5NSxiEHzwpktKknL7wp5zP6+gTKYOzg2Fu26c/h
+         G9rMtfCvAJ9Pr2zJJbICWd847FI5Ac55HO1GqblUEdrBdj3ibk41KS+zBvS1bDZZQDWs
+         J56BtYrwZ8ftZxZt/p1KYQssY6aeU71BTnscoC2yz5hEW/cBA2JWg8TZlAClpwAZe8op
+         LH9g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3X1vaIVC//iTRofgRsPkEvi0MlPPJAR3fKEDO/5WqBw=;
-        b=nURT128xtg3S0JTeg7ZuHqzMkzob6HtznU5atXWV0Takpn7cv1IDH4XH5zrjl1QQgc
-         BxYjGs9TOAOmwbpm1PvOsNof/JnQP2IWViaqREjpuqZiscx7ngFSMzyg6Pm+7xuIaixp
-         /rm85yhTntCAQzUnCigdewJHLRJAUrPeyfb1B2RYN9iGoyuYADnTl3bec9jnsg84206K
-         6klgdd9/BUEG+0NGm3cWY5q3At3ffpKhv/YMd1N57neQHuD6z6EhWLiOue8ffwhmieg4
-         4Rmc4g7OIqzWmRosBVyiYEVzY2x3i2XXabDWSw0BjrU6V2Ef7DGTAVXbT20giEEbzYYF
-         p1kQ==
-X-Gm-Message-State: AOAM5330APx+XkIy9RDk36W5oizLSb3E3qQ8/sFl+PcvePbqSL7mohK4
-        6cUQ/DNRdA+ePER3kup1cgPHQoQb3Y5sST4k4RaWWA==
-X-Google-Smtp-Source: ABdhPJyTVxFQ3jfgPZJUj9DUbhxqd/oCI+iKVCRS8M5xMv/TKrSl0tU2q5IOQRvKT+jBmulhqyj/XE6XQzwLy2CPQ8U=
-X-Received: by 2002:a37:e10e:: with SMTP id c14mr10997428qkm.209.1621589967448;
- Fri, 21 May 2021 02:39:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
- <20210520123419.8039-2-changhuaixin@linux.alibaba.com> <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
- <447D741B-F430-4502-BCA6-C2A12118A2D2@linux.alibaba.com>
-In-Reply-To: <447D741B-F430-4502-BCA6-C2A12118A2D2@linux.alibaba.com>
-From:   Odin Ugedal <odin@uged.al>
-Date:   Fri, 21 May 2021 11:38:50 +0200
-Message-ID: <CAFpoUr3nUEWYZjAj+cJp_FL7csOMMS-LE73sb-jjfRNY2fEBDA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
-To:     changhuaixin <changhuaixin@linux.alibaba.com>
-Cc:     Odin Ugedal <odin@uged.al>, Benjamin Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
-        khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Shanpei Chen <shanpeic@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=EkiQuoyo34HE9ENeuU8ekv0irucFjDvs39Ey7LGlUns=;
+        b=TFb11Pi1tvhSOleZGAZ7XtCz1MsmsqiL+MrsvwB/wKPUMhyix0lZyh6W+n0XTqdWVm
+         HhbjtEhY3oKJOswAWT3pCeVwreVgUd70Pdvr5iAHRYyRJ+2NR2NulFzovNdXBGDA35RZ
+         oj7h1KWAWT1UjezJIhA/ZT0qewud8rs5iZqzSD77Eh6WDqwgKqn+/YuWjl3W0qSEtT69
+         435gy0xiOJUWZOkpqZTwneWBkaP+XxwiIw0Liogni37RippfmZMO0F0qQyTR7VcIF+J6
+         DjINLQ27MTrNosJn6+KR+HlaZQ2l1lPfy09GXlftqdWZstfyePdHtQajeAuHjm1HQvT3
+         B36A==
+X-Gm-Message-State: AOAM533oo/DjISSB793j9UoO5WAtZyFWGq1pFDeXP3vRrf0MdsrIe5DA
+        LfOtsbkiDNmTvGer6px5u22ltgNU0TqHZASZEP6rPg==
+X-Google-Smtp-Source: ABdhPJwwhQhISOmGwipYeJlP5MoSnmzi2pxPP+J3qKqprMXVdAvxg4d6BZHKDoFZ9/aFVpqMMkSxFA==
+X-Received: by 2002:a17:902:7795:b029:f2:63cb:ab16 with SMTP id o21-20020a1709027795b02900f263cbab16mr11109720pll.7.1621589933975;
+        Fri, 21 May 2021 02:38:53 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id g15sm3706047pfv.127.2021.05.21.02.38.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 02:38:53 -0700 (PDT)
+Message-ID: <60a77fad.1c69fb81.829b5.d5ca@mx.google.com>
+Date:   Fri, 21 May 2021 02:38:53 -0700 (PDT)
+X-Google-Original-Date: Fri, 21 May 2021 09:38:51 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210520152254.218537944@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 00/43] 5.12.6-rc2 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, 20 May 2021 17:23:29 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.6 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Sat, 22 May 2021 15:22:43 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.6-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-> Yeah, it is a well tuned workload and configuration. I did this because for benchmarks
-> like schbench, workloads are generated in a fixed pattern without burst. So I set schbench
-> params carefully to generate burst during each 100ms periods, to show burst works. Longer
-> period or higher quota helps indeed, in which case more workloads can be used to generate
-> tail latency then.
+5.12.6-rc2 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-Yeah, that makes sense. When it comes to fairness (you are talking
-about generating tail
-latency), I think configuration of cpu shares/weight between cgroups
-is more relevant.
-
-How much more tail latency will a cgroup be able to "create" when
-doubling the period?
-
-
-> In my view, burst is like the cfsb way of token bucket. For the present cfsb, bucket capacity
-> is strictly limited to quota. And that is changed into quota + burst now. And it shall be used when
-> tasks get throttled and CPU is under utilized for the whole system.
-
-Well, it is as strict as we can make it, depending on how one looks at it. We
-cannot guarantee anything more strict than the length of a jiffy or
-kernel.sched_cfs_bandwidth_slice_us (simplified ofc.), especially since we allow
-runtime from one period to be used in another. I think there is a
-"big" distinction between
-runtime transferred from the cfs_bw to cfs_rq's in a period compared
-to the actual runtime used.
-
-> Default value of kernel.sched_cfs_bandwidth_slice_us(5ms) and CONFIG_HZ(1000) is used.
-
-You should mention that in the msg then, since it is highly relevant
-to the results. Can you try to tweak
-kernel.sched_cfs_bandwidth_slice_us to something like 1ms, and see
-what the result will be?
-
-For such a workload and high cfs_bw_slice, a smaller CONFIG_HZ might
-also be beneficial (although
-there are many things to consider when talking about that, and a lot
-of people know more about that than me).
-
-> The following case might be used to prevent getting throttled from many threads and high bandwidth
-> slice:
->
-> mkdir /sys/fs/cgroup/cpu/test
-> echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
-> echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
-> echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
->
-> ./schbench -m 1 -t 3 -r 20 -c 80000 -R 20
->
-> On my machine, two workers work for 80ms and sleep for 120ms in each round. The average utilization is
-> around 80%. This will work on a two-core system. It is recommended to  try it multiple times as getting
-> throttled doesn't necessarily cause tail latency for schbench.
-
-When I run this, I get the following results without cfs bandwidth enabled.
-
-$ time ./schbench -m 1 -t 3 -r 20 -c 80000 -R 20
-Latency percentiles (usec) runtime 20 (s) (398 total samples)
-        50.0th: 22 (201 samples)
-        75.0th: 50 (158 samples)
-        90.0th: 50 (0 samples)
-        95.0th: 51 (38 samples)
-        *99.0th: 51 (0 samples)
-        99.5th: 51 (0 samples)
-        99.9th: 52 (1 samples)
-        min=5, max=52
-rps: 19900000.00 p95 (usec) 51 p99 (usec) 51 p95/cputime 0.06% p99/cputime 0.06%
-./schbench -m 1 -t 3 -r 20 -c 80000 -R 20  31.85s user 0.00s system
-159% cpu 20.021 total
-
-In this case, I see 80% load on two cores, ending at a total of 160%. If setting
-period: 100ms and quota: 100ms (aka. 1 cpu), throttling is what
-you would expect, or?. In this case, burst wouldn't matter?
-
-
-Thanks
-Odin
