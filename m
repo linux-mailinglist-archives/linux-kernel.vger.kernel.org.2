@@ -2,228 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAFD538C3CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:49:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C091338C3D1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231248AbhEUJuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234888AbhEUJuF (ORCPT
+        id S231486AbhEUJvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:51:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:45813 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230458AbhEUJvI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:50:05 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25BFDC06138E
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:48:38 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id n2so29537106ejy.7
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=eisF7/tvHZBRL69+5MCh0dy7rhokDrpqCcqSKT/Yj3c=;
-        b=VsgTIZFo++ZXlzyfDeZJV0cPRwqofdSPQeW2AtfPzQGJXxNzgxZK8bkFehpNDFgfRU
-         +mpOeeGoBp0RX1Ua3oKmQEihRKhlkyXnwRVBhoUeqjxtYWRQSSnlvstJuo/Y9RMXBeHI
-         jrO8OemCG3wBVHvTUNEd6RGa8VOLUCPAnOfMyglZ7DizDcuD5r1BxsMDw9nCkJiUCMPW
-         WTCMDzv6m5q4j472uuj8WRVjK4IPtp5Ts6VppqwL13kwSIiDDMvMoe2pEmaI3uKefj0q
-         kFgzHLuN4U5zkK52WCEq6V6MOFnt0hbSrqHqlIOmG7wtdvkrsoSkUbVihvH+4dll0WNr
-         Mzhg==
+        Fri, 21 May 2021 05:51:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621590585;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IjVI8NV63LFnPGjIGDVYVcxDE8c9QMm9DxXJ2CvIadY=;
+        b=AVHe7j1yI9ft5TGKocM2gXTZB+uNzl233tyjcQmn/HJevnwzHT78bINGV6L3+nDlKKFpvb
+        eQEWanqDVAi6TJiF/jRb5APtw52uank29gyHOOwx6rb56NjRIxxCwtaUQe4SODIGKDpllx
+        F68B1ROfFqtaYLKlh5YkeJ/m9KA11qQ=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510--VEU9objOKCPa8aKjb685Q-1; Fri, 21 May 2021 05:49:44 -0400
+X-MC-Unique: -VEU9objOKCPa8aKjb685Q-1
+Received: by mail-ed1-f70.google.com with SMTP id c21-20020a0564021015b029038c3f08ce5aso11150636edu.18
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:49:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eisF7/tvHZBRL69+5MCh0dy7rhokDrpqCcqSKT/Yj3c=;
-        b=GhAiKFx7teecrMKMgtuhiDDRgJlv31HwNGVxaGi2yqAtG+suyO8M4NdI0e/eUXEnXE
-         F0c7hNhaDvs4+lOhDKvN1/yzbkPK78KU85/XWSps3SqwNuq2Vlhmsw4SIiyzvUqM6EfQ
-         9TcD1F7sxlj8UxmsOudmYf0q41VvanlBCj5vcM2DYnZX9Sm5PDgqdNAlF4MsZH4krPTL
-         gb+7gSQ5/LM1VISpdZfHB6IIK6auJzeYrsa6hDQbZTaeiPFPgamS2iHWXDcC4b5K1eM4
-         9j838tPGQP3tm+OLgqXSWfiDhGJsC1eojKhOEjFyxwJiFIpUrQslmrILrY7+/XhAaaCJ
-         Iy6A==
-X-Gm-Message-State: AOAM5324igaRkMf6dGmaQ9xa0+L3/MlUPXHosKHnVplsPa5KlJb10mTk
-        ek8Sq2cJJbZi49upbohE2R5u0VeZvKyFoUOxENIKpQ==
-X-Google-Smtp-Source: ABdhPJwlZqxM1Lk3AZ8NzbbXE3xQsIO0ye5wXxOCX2WKDrcaYB0b6dJmUQ0nQzo+9kxW1e3KgMV8Vqhk34bNrHf0rAI=
-X-Received: by 2002:a17:906:f896:: with SMTP id lg22mr8501020ejb.170.1621590516547;
- Fri, 21 May 2021 02:48:36 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IjVI8NV63LFnPGjIGDVYVcxDE8c9QMm9DxXJ2CvIadY=;
+        b=D0lbqeEfPTbqHTtGXnqTpUx8+NtuP60zK3UzpmlGujuk3yO4nCM3k+JkYLos9fWHMc
+         kUbDpEBD3FcKM7mfAlLrECeI2vLQphkMv6nz6A0v5jSeJi2VsSNOQE6z+q2T+DX/bVDi
+         Mz+hPeMxiKkgYu0voJeMmheLEgxcoQKeO/qdshPjI58eT743ahfpxzF+l291HVHxq6xJ
+         CE6tIlWlwEgBF4LyeylgaDVe545n/AR4/YtsByQsE82mZOrKX7A7p0NYQJpqtEj9CHQg
+         5py8nrj3xOJh34uBRr0Li1XB1IRPbhyGLgAooV9DxopiyFBIJM9PjhdUlUbgz0K/CWQK
+         xa5w==
+X-Gm-Message-State: AOAM533vsJCL4UCNB8nadV/MlYRwA6zyNxwvp22EFCh6a9asT4b7xq0H
+        OTqVZUqmNGZfdPPpx6o7uq2nZjGq1X1scOQNmBuErg0uoF8CLiNRQu2KOayQ7kpH81L0k01/iGE
+        ib4JxUH7E57W5NsqEg1bLgEaF
+X-Received: by 2002:a50:9549:: with SMTP id v9mr5774801eda.312.1621590583170;
+        Fri, 21 May 2021 02:49:43 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxGCWJDbkwFAmEbqh+wdMCPdSMdHGIeh58ElK08TuCsv7fsjYCeXL6Z9Y7Ni3bPbEWS1QxI7A==
+X-Received: by 2002:a50:9549:: with SMTP id v9mr5774787eda.312.1621590582999;
+        Fri, 21 May 2021 02:49:42 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id by3sm3715628edb.38.2021.05.21.02.49.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 02:49:42 -0700 (PDT)
+Subject: Re: [PATCH] platform/x86: thinkpad_acpi: Fix inconsistent indenting
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>, hmh@hmh.eng.br
+Cc:     mgross@linux.intel.com, jdelvare@suse.com, linux@roeck-us.net,
+        ibm-acpi-devel@lists.sourceforge.net,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org
+References: <1621589904-64475-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <00c331bb-17ec-89c0-6dd0-ffe2933df07b@redhat.com>
+Date:   Fri, 21 May 2021 11:49:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210520092108.587553970@linuxfoundation.org>
-In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 21 May 2021 15:18:25 +0530
-Message-ID: <CA+G9fYtrt_wSX2LZF-GYa0ngk5nixoky+F5ErrfNheLZJzubgw@mail.gmail.com>
-Subject: Re: [PATCH 4.9 000/240] 4.9.269-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <1621589904-64475-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 15:37, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.269 release.
-> There are 240 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.269-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Hi,
 
+On 5/21/21 11:38 AM, Jiapeng Chong wrote:
+> Eliminate the follow smatch warning:
+> 
+> drivers/platform/x86/thinkpad_acpi.c:7942 volume_write() warn:
+> inconsistent indenting.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  drivers/platform/x86/thinkpad_acpi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
+> index dd60c93..d0aa566 100644
+> --- a/drivers/platform/x86/thinkpad_acpi.c
+> +++ b/drivers/platform/x86/thinkpad_acpi.c
+> @@ -7939,7 +7939,7 @@ static int volume_write(char *buf)
+>  			} else if (sscanf(cmd, "level %u", &l) == 1 &&
+>  				   l >= 0 && l <= TP_EC_VOLUME_MAX) {
+>  					new_level = l;
+> -				continue;
+> +					continue;
+>  			}
+>  		}
+>  		if (strlencmp(cmd, "mute") == 0)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Thank you for your patch, but actually the indentation of the "new_level = l;"
+is wrong, it is indented one level too much.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Please send a new version changing (reducing) the indentation of the
+"new_level = l;" statement instead.
 
-## Build
-* kernel: 4.9.269-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.9.y
-* git commit: 8622fef5eee9e91d1ea0f1626802ac72a9cbee95
-* git describe: v4.9.268-241-g8622fef5eee9
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.y/build/v4.9.2=
-68-241-g8622fef5eee9
+Regards,
 
-## No regressions (compared to v4.9.268-223-g0394f1845ddb)
+Hans
 
-## No fixes (compared to v4.9.268-223-g0394f1845ddb)
-
-
-## Test result summary
- total: 59150, pass: 46996, fail: 1439, skip: 9788, xfail: 927,
-
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 24 total, 24 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 36 total, 36 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 14 total, 14 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
