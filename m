@@ -2,186 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E461B38CDAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6A7438CDB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238956AbhEUSo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S238974AbhEUSor (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:44:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229755AbhEUSo0 (ORCPT
+        with ESMTP id S229755AbhEUSoq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:44:26 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C084BC061574;
-        Fri, 21 May 2021 11:43:01 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id r7so6699844ybs.10;
-        Fri, 21 May 2021 11:43:01 -0700 (PDT)
+        Fri, 21 May 2021 14:44:46 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC404C061574;
+        Fri, 21 May 2021 11:43:21 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id r5so31086080lfr.5;
+        Fri, 21 May 2021 11:43:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FWtdDuSKaLUXcujU5F4tqzi/gqM6kON5tve8kEsdyNo=;
-        b=oFxbMftNWJ/GrWSWgc0sb7gWv1HTAhWnUuVXEKqalJyRj62kNebG8XmVsnB0Q2PS1Y
-         MHYLKuqkAlkmBWwr0rUN5kymp0o6uzPZQ2AZO66bxFqOcFYyfJoTNlL73/G9VfGaotyb
-         7dTe82F6XHdtAHbM+AvVsd7Hc/rJkLZWy8DUMUTCz3AWaHIF5fxxJiACB7ogLzcaV+Nn
-         ZYOAqZduCavvmh8KmnkSvXKhdptCHamimTmDSIMBl22f3enWC3tetrvrN5dgiwWth6Db
-         ixsMDKq6NyHbwQF/3cJuepUEmLVnSWcPu1u4NMX2SiBW/+Q6lqGaZMR1usc0FgTR4V0l
-         MrpQ==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fuy4eXWPqUUba10mtYw0ydLr89ZV2AWylPLaoR+Jdl4=;
+        b=DQa6aM0lePceIRpuhRStqIbL+0JixghBlOWL6jmxditypPGSFAVvbu27mIad8oVCF0
+         jcEEToZJ1ntmf24pqZaqhwZQdb2qpi6Elm7gp9UBxDOM8MoYJJlXw+ANSRsD2jBKZhtx
+         +2iNnQ1+JsxHImxts70WdWW5FAYQF3MK3/jR5wzN96uhnNQoe1ISZ0e3puYKlam2ps3V
+         QmeUd0WcY/N8O1bWcoLnhzYNqPlNv4wUoHs406rh+b6ObEOONTwOcq1+b1sjCpoabXYr
+         RemqN3HYXDkP+HM5UOzO0z4CqhWSTW7CKKVZYKmqxwHgg4U1nmg7hwQsggEGNN3WiiSJ
+         e1WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FWtdDuSKaLUXcujU5F4tqzi/gqM6kON5tve8kEsdyNo=;
-        b=TDtdITLeM4Ag5Byo8CGC1XHV/YmBleZqO36P8RTl0a9v/S292BW7Fvk76qYGC2U2UB
-         lhouZGz/vmLW+L+1p9Zkw/jugLkYDrdKwObq1iOVW5e22OpJ4ndGQN/fmS/9upDYrrbi
-         vjZcfdVuq7f+5WMkHbXHh4uH9qdgrjI+2DxIBcgkOU8HWcDpfCP9n2/aRSOGC/Qq6nh3
-         fkZjsauRYfBqxRJrEQZyWl9Lo7JMkPNS1B7BF0fuYWISYmE3AGlxFGKLdrbBVONoNcoT
-         7szedb6ndBvkfKOLNj/3OziStjaNY0Z9+FU+n9PXqUmBSse8kuNmm/ngp0e6IfJ38U39
-         kpiQ==
-X-Gm-Message-State: AOAM532mE1MJxnoTFfjTiOnX6CRuX4AhU4BR8bzV9xRlXYnOy0SKbGcI
-        WMMVT0AUZ9Jj/UxXQ9FHp86H9/xFacgOLKko2pA=
-X-Google-Smtp-Source: ABdhPJw7Ho+BnwKzS9opX/ah1rN3NfhTEL7mMbkREE72S2PvJVZGoSa1QSqPlIv08eHOhsje4FZ4s7m5L9h8qEttD3A=
-X-Received: by 2002:a25:208:: with SMTP id 8mr15530089ybc.47.1621622581067;
- Fri, 21 May 2021 11:43:01 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fuy4eXWPqUUba10mtYw0ydLr89ZV2AWylPLaoR+Jdl4=;
+        b=gdqKuvDo2e9ua58rV/CyZp3h2Sg4HfFACH7KpBsExqQYXmD5Lf9oodCceq7Af5Ydt4
+         ly0/lWvIqbR+gWN4I0v1rtbqYIQdrVhfWNgPW5kuULvU4ArkgzggpikWLpbUUfEKaXUx
+         WIyx/azV2uKkyZhz8KKIfJnXORsLeLy1F1PyIBIj/oSwlJwACS55ZO6TWKYDkih9NqmB
+         resC9FO2s8TCudCHFEOMRZ7WsNfDdOye7YdZ7qBZ0xq00EZVmrGZrOY7SySgHSJ+tVUh
+         UWnC0+oEGaSYT6jO0ygaAIfI6iDICursj2WTtNOpi7MNYPfj5cXZouyRD/jaHQviMfiG
+         xatA==
+X-Gm-Message-State: AOAM530xjgU2K1FolQB6Cq97DKGhVwDsszwoH/O9orxWxP0IcVAtnlvm
+        nsvoC2lRf21XkBclzBSw6EiZEzdqcgU=
+X-Google-Smtp-Source: ABdhPJykY/D5oofYHxfJOnXrtAfrHO/SJq42rpPqSjtNPr7PXXaNRmaOHopXk0tiOH+2TZLNuWwWUw==
+X-Received: by 2002:ac2:539b:: with SMTP id g27mr3123732lfh.534.1621622600111;
+        Fri, 21 May 2021 11:43:20 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-100.dynamic.spd-mgts.ru. [109.252.193.100])
+        by smtp.googlemail.com with ESMTPSA id s17sm767044ljo.117.2021.05.21.11.43.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 11:43:19 -0700 (PDT)
+Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
+To:     Jaroslav Kysela <perex@perex.cz>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
+        Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210520175054.28308-1-digetx@gmail.com>
+ <20210520175054.28308-3-digetx@gmail.com>
+ <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <1752b39e-d693-50c0-55c9-dab18a2fd499@gmail.com>
+Date:   Fri, 21 May 2021 21:43:17 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20210514192218.13022-12-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdUqpycW5mkX3nNn=q9TCp9gS9EZKTs0qwUAW+T+Ggh=8A@mail.gmail.com>
-In-Reply-To: <CAMuHMdUqpycW5mkX3nNn=q9TCp9gS9EZKTs0qwUAW+T+Ggh=8A@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 21 May 2021 19:42:35 +0100
-Message-ID: <CA+V-a8u-dqrzsVfZ2MiBrANM+=RaBG=rZLcbG38Rc--wEpOaCg@mail.gmail.com>
-Subject: Re: [PATCH 11/16] dt-bindings: clock: renesas: Document RZ/G2L SoC
- CPG driver
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+20.05.2021 22:02, Jaroslav Kysela пишет:
+> Dne 20. 05. 21 v 19:50 Dmitry Osipenko napsal(a):
+>> Squash all machine drivers into a single-universal one. This reduces
+>> code duplication, eases addition of a new drivers and upgrades older
+>> code to a modern Linux kernel APIs.
+>>
+> 
+> 
+>> +static struct snd_soc_card snd_soc_tegra_wm9712 = {
+>> +	.dai_link = &tegra_wm9712_dai,
+>> +	.num_links = 1,
+>> +	.fully_routed = true,
+>> +};
+> Please, could you also initialize snd_soc_card->components? It may be useful
+> to pass the codec identification to the user space like:
+> 
+> .components = "codec:wm9712"
+> 
+> The passed information should be consistent. You may look into the Intel ASoC
+> drivers for the examples (card->components initialization). There are also
+> hints about the number of connected microphones ("cfg-mic:2" - configuration
+> with 2 microphones) or the codec purpose ("hs:rt711" - headset codec is RT711)
+> etc.
 
-Thank you for the review.
-
-On Fri, May 21, 2021 at 4:04 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Document the device tree bindings of the Renesas RZ/G2L SoC clock
-> > driver in Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml.
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/renesas,rzg2l-cpg.yaml
-> > @@ -0,0 +1,80 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: "http://devicetree.org/schemas/clock/renesas,rzg2l-cpg.yaml#"
-> > +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> > +
-> > +title: Renesas RZ/G2L Clock Pulse Generator / Module Stop and Software Reset
->
-> (Module Standby Mode
-> > +
-> > +maintainers:
-> > +  - Geert Uytterhoeven <geert+renesas@glider.be>
-> > +
-> > +description: |
-> > +  On Renesas RZ/G2L SoC, the CPG (Clock Pulse Generator) and MSTP
-> > +  (Module Stop and Software Reset) share the same register block.
-> > +
-> > +  They provide the following functionalities:
-> > +    - The CPG block generates various core clocks,
-> > +    - The MSTP block provides two functions:
-> > +        1. Module Stop, providing a Clock Domain to control the clock supply
-> > +           to individual SoC devices,
-> > +        2. Reset Control, to perform a software reset of individual SoC devices.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: renesas,r9a07g044l-cpg  # RZ/G2L
->
-> renesas,r9a07g044-cpg?
->
-As some IP blocks present in RZ/G2L aren't present in RZ/G2LC clock
-handling will differ so as a result SoC specific compatible string is
-added.
-
-> I believe it's the same block on RZ/G2L ('044l) and RZ/G2LC ('044c).
->
-> > +  '#clock-cells':
-> > +    description: |
-> > +      - For CPG core clocks, the two clock specifier cells must be "CPG_CORE"
-> > +        and a core clock reference, as defined in
-> > +        <dt-bindings/clock/*-cpg-mssr.h>
->
-> <dt-bindings/clock/r9a07g044l-cpg.h>
->
-Indeed
-
-> > +      - For module clocks, the two clock specifier cells must be "CPG_MOD" and
-> > +        a module number, as defined in the datasheet.
->
-> Also in <dt-bindings/clock/r9a07g044l-cpg.h>?
->
-Agreed.
-
-> > +    const: 2
-> > +
-> > +  '#power-domain-cells':
-> > +    description:
-> > +      SoC devices that are part of the CPG/MSTP Clock Domain and can be
-> > +      power-managed through Module Stop should refer to the CPG device node
-> > +      in their "power-domains" property, as documented by the generic PM Domain
-> > +      bindings in Documentation/devicetree/bindings/power/power-domain.yaml.
-> > +    const: 0
-> > +
-> > +  '#reset-cells':
-> > +    description:
-> > +      The single reset specifier cell must be the module number, as defined in
-> > +      the datasheet.
->
-> Also in <dt-bindings/clock/r9a07g044l-cpg.h>?
->
-Agreed.
-
-Cheers,
-Prabhakar
-
-> > +    const: 1
->
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Alright, I see why you're wanting this. It may allow us to have more
+generic UCMs and group them together.
