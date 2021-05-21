@@ -2,89 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE6938BDC4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:10:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9757E38BDD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:13:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239433AbhEUFLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:11:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
+        id S234686AbhEUFPJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:15:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239415AbhEUFLa (ORCPT
+        with ESMTP id S230176AbhEUFPI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:11:30 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F4BC061574;
-        Thu, 20 May 2021 22:10:07 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id t24so3099942oiw.3;
-        Thu, 20 May 2021 22:10:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/6OeTIPD5d8+6QhQeDTSSu4pXpzUgcgHUDk9Koberlc=;
-        b=TQedDVNsFVntkEo6UHAGyWqOMGsGp+bIEzoxmBF33H6amp9RmsLn7EedixL/lv7RuL
-         Pmb1N2OfeeM1ExO/Hh+Bi7U1F1nZiSJFg0GWhKBDd2r2cW6jLPObtYKw3X5QMMmAgfyP
-         kldSf9aXASXFjsVglb9VNFhCyxG7nka6Hivuv5y063lDGgeTowkomoeXktlaa0/e6R2v
-         i4LG8u8vJFHUWPf0Y+jKVyOkKXRPDN3G2t3OArGIJRUJr6vkhpLs7q4/4BifiCjE7x5f
-         NcYNtYrqTGUc17lCVGKYaUcBRx9WT+DMLPEmlMLDYC4at0IH74QFO68N+rNHLS1MRF6p
-         VU6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/6OeTIPD5d8+6QhQeDTSSu4pXpzUgcgHUDk9Koberlc=;
-        b=Om8wAaqfdiyL2dNnwxxstflhyrtAG0fyJ06fjIiCt3u+FEt0N9WSE+mrQVq10LHWzH
-         AiAyl+I8H4Qs07ODdWiG4WbnfcFNsNQEocmXmkpPH/IczxGcRj51u8NbvJfo7XhaCMNb
-         0dyhsDz42v8xq75JMu26pbmXQqsEJq3cA0UoQo7rSSSSGK3BqA4WQuE2lpzVbnKxSUCC
-         no7+eMB8da4HqlEazNlLcCQ+WAgvCee/hYyP+xiq02whGjZSmIRQhZ9MBKsPnBod69iM
-         XSAk56ArdU2iAjjptrGtwK/J6fkjI3ZbmqZ757Dd2oij6ajWt5izIqMgwYSKfMBF/Ivq
-         k2OQ==
-X-Gm-Message-State: AOAM531PcgcbMeRm0WGNzMbq/8132oaeDKWetjdJ8ouLAiMqoMf8Axea
-        i6RjgcJwXs+yv8x6T8Fz7h7jS4Ln5a+rxx8EXw==
-X-Google-Smtp-Source: ABdhPJzGNHgvjfx2/SJv1V29F1ki+uaDoYT0B4fiVVGLTAEu7ihjU5PkR+9TGYgsragEQR6DWK/GUn6ijoE2nM07Rxg=
-X-Received: by 2002:a54:4690:: with SMTP id k16mr790538oic.57.1621573807131;
- Thu, 20 May 2021 22:10:07 -0700 (PDT)
+        Fri, 21 May 2021 01:15:08 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22195C061574;
+        Thu, 20 May 2021 22:13:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=cPuODHn3Uj81CuVdCh94AAqqpvQg+E4P822iNSf3Cpc=; b=xwbgJ5kHBE1m5bZU/wfA018OiZ
+        kq9KLm+uWUqkAevhmWnsOPYH3kAwl9GxClubDV+bd7hE/vBwYNmctJZ03ukCSMqdoA4qkxo4jKrXk
+        Lkn7M1LXEV/nGskZVhDsrhJ/fCfbALc0q+PyKoVQqMG7imQc+9DaYBgYqGJrwOvJYAK9IXwbsA2s1
+        bre1wzv+xCbxzGx4i/wgGfUEECykvA8YhwwJowPYglVx8DU3OGMHINSj6U54uERKeQ62taVr0psVx
+        jDN5z9qg5SN3TZQgo/z9BP5Nxdpg2CP7n9EgZjp0RNeOkFBMYm9Lohx/4/zq/qA+9Kg+S1MHFBa8B
+        p4I0WKEw==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljxTk-00Gp89-Kf; Fri, 21 May 2021 05:13:44 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: [PATCH] MIPS: launch.h: add include guard to prevent build errors
+Date:   Thu, 20 May 2021 22:13:43 -0700
+Message-Id: <20210521051343.20059-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <1620991027-25856-1-git-send-email-zheyuma97@gmail.com> <YKZybdcwoI1eMbzj@kroah.com>
-In-Reply-To: <YKZybdcwoI1eMbzj@kroah.com>
-From:   Zheyu Ma <zheyuma97@gmail.com>
-Date:   Fri, 21 May 2021 13:09:55 +0800
-Message-ID: <CAMhUBjmtkDfbgVR9iPuVPC249h1Gx57kzNpo2j=hWkiFj5B9Jg@mail.gmail.com>
-Subject: Re: [PATCH] serial: rp2: disable interrupt in rp2_probe():
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     cernekee@gmail.com, jirislaby@kernel.org,
-        linux-serial@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:30 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Fri, May 14, 2021 at 11:17:07AM +0000, Zheyu Ma wrote:
-> > In 'rp2_probe', the driver registers 'rp2_uart_interrupt' then calls
-> > 'rp2_fw_cb' through 'request_firmware_nowait'. In 'rp2_fw_cb', if the
-> > firmware don't exists, function just return without initializing ports
-> > of 'rp2_card'. But now the interrupt handler function has been registered,
-> > and when an interrupt comes('rp2' may shares an interrupt line with other
-> > devices), 'rp2_uart_interrupt' may access those ports then causing NULL
-> > pointer dereference or other bugs.
-> >
-> > Fix this by disabling interrupt after registering 'rp2_uart_interrupt',
-> > and enable it in 'rp2_uart_startup'.
->
-> What prevents an interrupt from coming in right after callin
-> rp2_uart_interrupt()?  The driver has to be able to handle that.  Why is
-> the interrupt being registered before the firmware is loaded?  That
-> should be the proper fix as once you register an interrupt, the driver
-> HAS to be able to properly handle it.
->
-> thanks,
->
-> greg k-h
+arch/mips/include/asm/mips-boards/launch.h needs an include guard
+to prevent it from being #included more than once.
+Prevents these build errors:
 
-Thanks for your comments, I will reconsider this patch and send the
-second version of the patch.
+In file included from ../arch/mips/mti-malta/malta-amon.c:16:
+../arch/mips/include/asm/mips-boards/launch.h:8:8: error: redefinition of 'struct cpulaunch'
+    8 | struct cpulaunch {
+      |        ^~~~~~~~~
+In file included from ../arch/mips/include/asm/mips-cps.h:13,
+                 from ../arch/mips/include/asm/smp-ops.h:16,
+                 from ../arch/mips/include/asm/smp.h:21,
+                 from ../include/linux/smp.h:114,
+                 from ../arch/mips/mti-malta/malta-amon.c:12:
+../arch/mips/include/asm/mips-boards/launch.h:8:8: note: originally defined here
+    8 | struct cpulaunch {
+      |        ^~~~~~~~~
+make[3]: [../scripts/Makefile.build:273: arch/mips/mti-malta/malta-amon.o] Error 1 (ignored)
 
-Zheyu Ma
+Fixes: 6decd1aad15f ("MIPS: add support for buggy MT7621S core detection")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+---
+ arch/mips/include/asm/mips-boards/launch.h |    5 +++++
+ 1 file changed, 5 insertions(+)
+
+--- linux-next-20210520.orig/arch/mips/include/asm/mips-boards/launch.h
++++ linux-next-20210520/arch/mips/include/asm/mips-boards/launch.h
+@@ -3,6 +3,9 @@
+  *
+  */
+ 
++#ifndef _ASM_MIPS_BOARDS_LAUNCH_H
++#define _ASM_MIPS_BOARDS_LAUNCH_H
++
+ #ifndef _ASSEMBLER_
+ 
+ struct cpulaunch {
+@@ -34,3 +37,5 @@ struct cpulaunch {
+ 
+ /* Polling period in count cycles for secondary CPU's */
+ #define LAUNCHPERIOD	10000
++
++#endif /* _ASM_MIPS_BOARDS_LAUNCH_H */
