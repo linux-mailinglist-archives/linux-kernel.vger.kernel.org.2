@@ -2,99 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2CD38C446
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:01:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A6BE38C44B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:02:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233200AbhEUKDA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:03:00 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3468 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232211AbhEUKCW (ORCPT
+        id S232732AbhEUKDj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:03:39 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:39738 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233340AbhEUKDT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:02:22 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fmhr1622czCvSg;
-        Fri, 21 May 2021 17:58:09 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 18:00:52 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
- 2021 18:00:52 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH 2/2] crypto: hisilicon/qm - fix the process of VF's list adding
-Date:   Fri, 21 May 2021 17:57:50 +0800
-Message-ID: <1621591070-15652-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621591070-15652-1-git-send-email-yekai13@huawei.com>
-References: <1621591070-15652-1-git-send-email-yekai13@huawei.com>
+        Fri, 21 May 2021 06:03:19 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <colin.king@canonical.com>)
+        id 1lk1yU-0006X0-CW; Fri, 21 May 2021 10:01:46 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        Hao Chen <chenhao288@hisilicon.com>, netdev@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] net: hns3: Fix return of uninitialized variable ret
+Date:   Fri, 21 May 2021 11:01:46 +0100
+Message-Id: <20210521100146.42980-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If Kunpeng 920 enabled the sva mode, the "qm alg register" process will
-return directly. So the list of VF wasn't added to QM list.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
+In the unlikely event that rule_cnt is zero the variable ret is
+not assigned a value and function hclge_dbg_dump_fd_tcam can end
+up returning an unitialized value in ret. Fix this by explicitly
+setting ret to zero before the for-loop.
+
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: b5a0b70d77b9 ("net: hns3: refactor dump fd tcam of debugfs")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/crypto/hisilicon/qm.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index deb104e..c671f94 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -4256,17 +4256,17 @@ int hisi_qm_alg_register(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
- 	int flag = 0;
- 	int ret = 0;
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+index dd9eb6e6f5a7..0b7c6838d905 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_debugfs.c
+@@ -1519,6 +1519,7 @@ static int hclge_dbg_dump_fd_tcam(struct hclge_dev *hdev, char *buf, int len)
+ 		goto out;
+ 	}
  
--	if (qm->ver <= QM_HW_V2 && qm->use_sva) {
--		dev_info(dev, "HW V2 not both use uacce sva mode and hardware crypto algs.\n");
--		return 0;
--	}
--
- 	mutex_lock(&qm_list->lock);
- 	if (list_empty(&qm_list->list))
- 		flag = 1;
- 	list_add_tail(&qm->list, &qm_list->list);
- 	mutex_unlock(&qm_list->lock);
- 
-+	if (qm->ver <= QM_HW_V2 && qm->use_sva) {
-+		dev_info(dev, "HW V2 not both use uacce sva mode and hardware crypto algs.\n");
-+		return 0;
-+	}
-+
- 	if (flag) {
- 		ret = qm_list->register_to_crypto(qm);
- 		if (ret) {
-@@ -4291,13 +4291,13 @@ EXPORT_SYMBOL_GPL(hisi_qm_alg_register);
-  */
- void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
- {
--	if (qm->ver <= QM_HW_V2 && qm->use_sva)
--		return;
--
- 	mutex_lock(&qm_list->lock);
- 	list_del(&qm->list);
- 	mutex_unlock(&qm_list->lock);
- 
-+	if (qm->ver <= QM_HW_V2 && qm->use_sva)
-+		return;
-+
- 	if (list_empty(&qm_list->list))
- 		qm_list->unregister_from_crypto(qm);
- }
++	ret = 0;
+ 	for (i = 0; i < rule_cnt; i++) {
+ 		tcam_msg.stage = HCLGE_FD_STAGE_1;
+ 		tcam_msg.loc = rule_locs[i];
 -- 
-2.8.1
+2.31.1
 
