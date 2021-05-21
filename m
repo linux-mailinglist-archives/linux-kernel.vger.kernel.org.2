@@ -2,160 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B69338CEDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:19:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 458F338CED3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:19:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230505AbhEUUUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36276 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhEUUUp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:20:45 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CF17C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:19:21 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id gb17so14190689ejc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:19:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aVEzTQ8I4J/3yp3MgA3FQPj62TME7oEjwi3UB54+9j4=;
-        b=y5acabY0hHaFulLVyRw96Upc3Tfg5b6Vkr2way0sktzbQKqkTD9yR07FT7pm2dbtK2
-         OmIX/Fgm2xBpq1gKrI2N3x9jMvF7NuA98vf/xJIjcCcJndHdWK2E02xm9dExvkQ5GvlT
-         h0DXHodT+NB8JKTBfAsvxDtMdKm5KcxkiQcmBzjtyoKUWgK2oHjZtxvU8b6+lwdlDQjc
-         D5hZyeGTTzmQ2/4wUyAApkMxFk9M65r/4JDnrXFYNPAeRoAD80OVIQWfeFAH/8N1BNVg
-         qn061UVWCxSDmBHw6mCcH4UI/nRyNhP8vsZk5WokXPfE22Hielso21jzz8/mj0UnuA1U
-         Ha5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aVEzTQ8I4J/3yp3MgA3FQPj62TME7oEjwi3UB54+9j4=;
-        b=DBK5Pvo8Rpz/73Zj+X/MKyfgZRhh4bc1aMxNpdK8DcP/Ih2G4DtIfMvV7aFGPGib2P
-         43oyepKAscTIlBRl1jKQHv+ONdnPoqEr7yB+eJf6GeZCUO2/4PbfrR5cz4Or8KpCei5b
-         oHSnfpRDkfLwnp/at7Eqfu8VQlSpZIqrja9Ho6jgSY8N90CyqK6ixTzNe/3NJoTJCSec
-         gi3nrSlzny6L0INGEPhNGp7CPwRGHjucYYXXrg1GMOVfIIKVDmcD8uyuF///GzdxHboK
-         mYiH7KHP4AJIkBXpiA/eTbb7NirgigW4+Rsk4ivyk7rzQY8qLKpcAs6cowShLgikgls8
-         VTnw==
-X-Gm-Message-State: AOAM531M3ON2Hp9tgpDhW3Z86PhedwCLILMKi5vO+fCBRXdlMBrwxJNa
-        gOMW+pNwN5Fize9QA6X+2w9VPjWpbTiFjLF1ch8p
-X-Google-Smtp-Source: ABdhPJziKJYfK7MvqTrwnHeo+NPoz2FUDF+4sST5fBaH9Y8+nll4YIEPRA92LUzjYQjCfkAjrte8Kmy6TkEhHB1xuyQ=
-X-Received: by 2002:a17:906:7e0f:: with SMTP id e15mr11771196ejr.398.1621628359745;
- Fri, 21 May 2021 13:19:19 -0700 (PDT)
+        id S230355AbhEUUUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:20:43 -0400
+Received: from tux.runtux.com ([176.9.82.136]:39680 "EHLO tux.runtux.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230297AbhEUUUm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:20:42 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by tux.runtux.com (Postfix) with ESMTP id DE1E96F00A;
+        Fri, 21 May 2021 22:19:15 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
+Received: from tux.runtux.com ([127.0.0.1])
+        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id idEQAUquvFTc; Fri, 21 May 2021 22:19:14 +0200 (CEST)
+Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
+        (Authenticated sender: postmaster@runtux.com)
+        by tux.runtux.com (Postfix) with ESMTPSA id EBA096EF63;
+        Fri, 21 May 2021 22:19:13 +0200 (CEST)
+Received: by bee.priv.zoo (Postfix, from userid 1002)
+        id 9233046E; Fri, 21 May 2021 22:19:13 +0200 (CEST)
+Date:   Fri, 21 May 2021 22:19:13 +0200
+From:   Ralf Schlatterbeck <rsc@runtux.com>
+To:     Andre Przywara <andre.przywara@arm.com>
+Cc:     Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Mirko Vogt <mirko-dev|linux@nanl.de>
+Subject: [PATCH 1/1] spi-sun6i: Fix chipselect/clock bug
+Message-ID: <20210521201913.2gapcmrzynxekro7@runtux.com>
+References: <20210520100656.rgkdexdvrddt3upy@runtux.com>
+ <20210521173011.1c602682@slackpad.fritz.box>
 MIME-Version: 1.0
-References: <20210513200807.15910-1-casey@schaufler-ca.com>
- <20210513200807.15910-15-casey@schaufler-ca.com> <202105141218.21BDA22F@keescook>
- <c1ab101a-7ee3-6d20-c8b1-cff5bcdfe98c@schaufler-ca.com>
-In-Reply-To: <c1ab101a-7ee3-6d20-c8b1-cff5bcdfe98c@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 21 May 2021 16:19:08 -0400
-Message-ID: <CAHC9VhScDhmr2k5RpNhj1=6FpO_xPN1C6_qFqbXb6SWUbBiENA@mail.gmail.com>
-Subject: Re: [PATCH v26 14/25] LSM: Specify which LSM to display
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Kees Cook <keescook@chromium.org>, casey.schaufler@intel.com,
-        James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, john.johansen@canonical.com,
-        penguin-kernel@i-love.sakura.ne.jp,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-kernel@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-api@vger.kernel.org, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521173011.1c602682@slackpad.fritz.box>
+X-ray:  beware
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 3:53 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
-> On 5/14/2021 12:23 PM, Kees Cook wrote:
-> > On Thu, May 13, 2021 at 01:07:56PM -0700, Casey Schaufler wrote:
-> >> Create a new entry "interface_lsm" in the procfs attr directory for
-> >> controlling which LSM security information is displayed for a
-> >> process. A process can only read or write its own display value.
-> >>
-> >> The name of an active LSM that supplies hooks for
-> >> human readable data may be written to "interface_lsm" to set the
-> >> value. The name of the LSM currently in use can be read from
-> >> "interface_lsm". At this point there can only be one LSM capable
-> >> of display active. A helper function lsm_task_ilsm() is
-> >> provided to get the interface lsm slot for a task_struct.
-> >>
-> >> Setting the "interface_lsm" requires that all security modules using
-> >> setprocattr hooks allow the action. Each security module is
-> >> responsible for defining its policy.
-> >>
-> >> AppArmor hook provided by John Johansen <john.johansen@canonical.com>
-> >> SELinux hook provided by Stephen Smalley <stephen.smalley.work@gmail.com>
-> >>
-> >> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> >> Cc: Kees Cook <keescook@chromium.org>
-> >> Cc: Stephen Smalley <stephen.smalley.work@gmail.com>
-> >> Cc: Paul Moore <paul@paul-moore.com>
-> >> Cc: John Johansen <john.johansen@canonical.com>
-> >> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >> Cc: linux-api@vger.kernel.org
-> >> Cc: linux-doc@vger.kernel.org
-> >> ---
-> >>  .../ABI/testing/procfs-attr-lsm_display       |  22 +++
-> >>  Documentation/security/lsm.rst                |  14 ++
-> >>  fs/proc/base.c                                |   1 +
-> >>  include/linux/lsm_hooks.h                     |  17 ++
-> >>  security/apparmor/include/apparmor.h          |   3 +-
-> >>  security/apparmor/lsm.c                       |  32 ++++
-> >>  security/security.c                           | 166 ++++++++++++++++--
-> >>  security/selinux/hooks.c                      |  11 ++
-> >>  security/selinux/include/classmap.h           |   2 +-
-> >>  security/smack/smack_lsm.c                    |   7 +
-> >>  10 files changed, 256 insertions(+), 19 deletions(-)
-> >>  create mode 100644 Documentation/ABI/testing/procfs-attr-lsm_display
+From: Mirko Vogt <mirko-dev|linux@nanl.de>
 
-...
+The current sun6i SPI implementation initializes the transfer too early,
+resulting in SCK going high before the transfer. When using an additional
+(gpio) chipselect with sun6i, the chipselect is asserted at a time when
+clock is high, making the SPI transfer fail.
 
-> >> @@ -2171,23 +2203,110 @@ int security_getprocattr(struct task_struct *p, const char *lsm, char *name,
-> >>                              char **value)
-> >>  {
-> >>      struct security_hook_list *hp;
-> >> +    int ilsm = lsm_task_ilsm(current);
-> >> +    int slot = 0;
-> >> +
-> >> +    if (!strcmp(name, "interface_lsm")) {
-> >> +            /*
-> >> +             * lsm_slot will be 0 if there are no displaying modules.
-> >> +             */
-> >> +            if (lsm_slot == 0)
-> >> +                    return -EINVAL;
-> >> +
-> >> +            /*
-> >> +             * Only allow getting the current process' interface_lsm.
-> >> +             * There are too few reasons to get another process'
-> >> +             * interface_lsm and too many LSM policy issues.
-> >> +             */
-> >> +            if (current != p)
-> >> +                    return -EINVAL;
-> > ... but context isn't established by just checking "current", as this
-> > file handle may have been given to another process.
-> >
-> > I suspect the security_get/setprocattr needs to gain a pointer to "file"
-> > so that the f_cred struct can be examined[1] (i.e. compare opener
-> > against reader/writer).
-> >
-> > [1] https://www.kernel.org/doc/html/latest/security/credentials.html#open-file-credentials
->
-> It's not credentials being checked here. The check is whether the task that
-> would be affected is "current". Process A can't open /proc/B/attr/interface_lsm
-> with write access. The only process that can open it for write access is B.
-> If process B opens /proc/B/attr/interface_lsm for write access it could send
-> the file handle to process A, but process A can't write to the file because
-> (current != p) that is, (A != B).
+This is due to SUN6I_GBL_CTL_BUS_ENABLE being written into
+SUN6I_GBL_CTL_REG at an early stage. Moving that to the transfer
+function, hence, right before the transfer starts, mitigates that
+problem.
 
-Agreed.
+Signed-off-by: Mirko Vogt <mirko-dev|linux@nanl.de>
+Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
+---
+Updated patch with suggested improvements by Andre Przywara
+For oscilloscope screenshots with/without the patch, see my blog post
+https://blog.runtux.com/posts/2019/04/18/
+or the discussion in the armbian forum at
+https://forum.armbian.com/topic/4330-spi-gpio-chip-select-support/
+(my logo there is a penguin).
 
-Acked-by: Paul Moore <paul@paul-moore.com>
+ drivers/spi/spi-sun6i.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index cc8401980125..23ad052528db 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -379,6 +379,10 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	}
+ 
+ 	sun6i_spi_write(sspi, SUN6I_CLK_CTL_REG, reg);
++	/* Finally enable the bus - doing so before might raise SCK to HIGH */
++	reg = sun6i_spi_read(sspi, SUN6I_GBL_CTL_REG);
++	reg |= SUN6I_GBL_CTL_BUS_ENABLE;
++	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG, reg);
+ 
+ 	/* Setup the transfer now... */
+ 	if (sspi->tx_buf)
+@@ -504,7 +508,7 @@ static int sun6i_spi_runtime_resume(struct device *dev)
+ 	}
+ 
+ 	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
+-			SUN6I_GBL_CTL_BUS_ENABLE | SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
++			SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
+ 
+ 	return 0;
+ 
+-- 
+2.20.1
 
---
-paul moore
-www.paul-moore.com
