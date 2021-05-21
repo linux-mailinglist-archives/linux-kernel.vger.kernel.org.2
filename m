@@ -2,143 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A2238CCD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 127BC38CCD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:01:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237988AbhEUSCw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:02:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232931AbhEUSCv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:02:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1129461004;
-        Fri, 21 May 2021 18:01:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621620088;
-        bh=I1mPSruZJKQMN8Q9puFaJiMHWUrjaOtRwC2UztdGKwE=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dwu3rnHipJmAWYZyEDTLrK3sYp4T7XLhXIa3lb21Aef+4TTUrNDMLkXooWk9medC4
-         b3xKxAAGxqE/botcquDFf77EBUZgl7enSHZtdkbn+r6mQJJf+xu5yLKDCc487nHv7F
-         hN0L/xE+0icaGOsWH+g1cOV9yxqjtESHKH0M/yWX3ANEpDlbWadulH3miQRb12lFk+
-         InyrUpuHNZuVRipt2MVnJ35tEPBfFyGlSl9WI/HUS7vHLcpLK1nOhoJpfuoHE6/1Uy
-         BYPeIpEH6otyhT0XA+hxhiHYb92BtE91gteaePElc0cF/7NXW0SxCQJeKRqsEZW9Lp
-         R/78csACn40CA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id E2C2D5C018D; Fri, 21 May 2021 11:01:27 -0700 (PDT)
-Date:   Fri, 21 May 2021 11:01:27 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2 1/2] rcu/tree: handle VM stoppage in stall detection
-Message-ID: <20210521180127.GD4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210521155624.174524-1-senozhatsky@chromium.org>
+        id S238239AbhEUSDR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 14:03:17 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52044 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232931AbhEUSDQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:03:16 -0400
+Received: from 1.general.jvosburgh.us.vpn ([10.172.68.206] helo=famine.localdomain)
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <jay.vosburgh@canonical.com>)
+        id 1lk9T1-00025v-Vq; Fri, 21 May 2021 18:01:48 +0000
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 554A85FDD5; Fri, 21 May 2021 11:01:46 -0700 (PDT)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id 46D90A040C;
+        Fri, 21 May 2021 11:01:46 -0700 (PDT)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+cc:     Jarod Wilson <jarod@redhat.com>, linux-kernel@vger.kernel.org,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 1/4] bonding: add pure source-mac-based tx hashing option
+In-reply-to: <cfdef650-265c-19fb-de91-0f1ad0fed3e5@nvidia.com>
+References: <20210518210849.1673577-1-jarod@redhat.com> <20210521132756.1811620-1-jarod@redhat.com> <20210521132756.1811620-2-jarod@redhat.com> <cfdef650-265c-19fb-de91-0f1ad0fed3e5@nvidia.com>
+Comments: In-reply-to Nikolay Aleksandrov <nikolay@nvidia.com>
+   message dated "Fri, 21 May 2021 16:39:20 +0300."
+X-Mailer: MH-E 8.6+git; nmh 1.6; GNU Emacs 27.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521155624.174524-1-senozhatsky@chromium.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <21483.1621620106.1@famine>
+Content-Transfer-Encoding: 8BIT
+Date:   Fri, 21 May 2021 11:01:46 -0700
+Message-ID: <21484.1621620106@famine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 12:56:23AM +0900, Sergey Senozhatsky wrote:
-> Soft watchdog timer function checks if a virtual machine
-> was suspended and hence what looks like a lockup in fact
-> is a false positive.
-> 
-> This is what kvm_check_and_clear_guest_paused() does: it
-> tests guest PVCLOCK_GUEST_STOPPED (which is set by the host)
-> and if it's set then we need to touch all watchdogs and bail
-> out.
-> 
-> Watchdog timer function runs from IRQ, so PVCLOCK_GUEST_STOPPED
-> check works fine.
-> 
-> There is, however, one more watchdog that runs from IRQ, so
-> watchdog timer fn races with it, and that watchdog is not aware
-> of PVCLOCK_GUEST_STOPPED - RCU stall detector.
-> 
-> apic_timer_interrupt()
->  smp_apic_timer_interrupt()
->   hrtimer_interrupt()
->    __hrtimer_run_queues()
->     tick_sched_timer()
->      tick_sched_handle()
->       update_process_times()
->        rcu_sched_clock_irq()
-> 
-> This triggers RCU stalls on our devices during VM resume.
-> 
-> If tick_sched_handle()->rcu_sched_clock_irq() runs on a VCPU
-> before watchdog_timer_fn()->kvm_check_and_clear_guest_paused()
-> then there is nothing on this VCPU that touches watchdogs and
-> RCU reads stale gp stall timestamp and new jiffies value, which
-> makes it think that RCU has stalled.
-> 
-> Make RCU stall watchdog aware of PVCLOCK_GUEST_STOPPED and
-> don't report RCU stalls when we resume the VM.
-> 
-> Signed-off-by: Sergey Senozhatsky <senozhatsky@chromium.org>
+Nikolay Aleksandrov <nikolay@nvidia.com> wrote:
 
-I have queued both for testing and further review, thank you!
+>On 21/05/2021 16:27, Jarod Wilson wrote:
+>> As it turns out, a pure source-mac only tx hash has a place for some VM
+>> setups. The previously added vlan+srcmac hash doesn't work as well for a
+>> VM with a single MAC and multiple vlans -- these types of setups path
+>> traffic more efficiently if the load is split by source mac alone. Enable
+>> this by way of an extra module parameter, rather than adding yet another
+>> hashing method in the tx fast path.
+>> 
+>> Cc: Jay Vosburgh <j.vosburgh@gmail.com>
+>> Cc: Veaceslav Falico <vfalico@gmail.com>
+>> Cc: Andy Gospodarek <andy@greyhouse.net>
+>> Cc: "David S. Miller" <davem@davemloft.net>
+>> Cc: Jakub Kicinski <kuba@kernel.org>
+>> Cc: Thomas Davis <tadavis@lbl.gov>
+>> Cc: Nikolay Aleksandrov <nikolay@nvidia.com>
+>> Cc: netdev@vger.kernel.org
+>> Signed-off-by: Jarod Wilson <jarod@redhat.com>
+>> ---
+>>  Documentation/networking/bonding.rst | 13 +++++++++++++
+>>  drivers/net/bonding/bond_main.c      | 18 ++++++++++++------
+>>  2 files changed, 25 insertions(+), 6 deletions(-)
+>> 
+>
+>Hi,
+>You seem to be missing netlink support for the new option. Code-wise the rest seems fine,
+>my personal preference is still to make a configurable hash option and perhaps default to
+>srcmac+vlan, i.e. it can be aliased with this hash option. I don't mind either way, but
+>please add netlink support if it will be a new option as it's the preferred way for
+>configuring.
 
-							Thanx, Paul
+	FWIW, I'm in agreement with Nik here; netlink support is
+mandatory for any new options.
 
-> ---
-> 
-> v2: fixed powerpc build breakage
-> 
->  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index d574e3bbd929..bc689911a81d 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -7,6 +7,8 @@
->   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
->   */
->  
-> +#include <linux/kvm_para.h>
-> +
->  //////////////////////////////////////////////////////////////////////////////
->  //
->  // Controlling CPU stall warnings, including delay calculation.
-> @@ -698,6 +700,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  	    (READ_ONCE(rnp->qsmask) & rdp->grpmask) &&
->  	    cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
->  
-> +		/*
-> +		 * If a virtual machine is stopped by the host it can look to
-> +		 * the watchdog like an RCU stall. Check to see if the host
-> +		 * stopped the vm.
-> +		 */
-> +		if (kvm_check_and_clear_guest_paused())
-> +			return;
-> +
->  		/* We haven't checked in, so go dump stack. */
->  		print_cpu_stall(gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-> @@ -707,6 +717,14 @@ static void check_cpu_stall(struct rcu_data *rdp)
->  		   ULONG_CMP_GE(j, js + RCU_STALL_RAT_DELAY) &&
->  		   cmpxchg(&rcu_state.jiffies_stall, js, jn) == js) {
->  
-> +		/*
-> +		 * If a virtual machine is stopped by the host it can look to
-> +		 * the watchdog like an RCU stall. Check to see if the host
-> +		 * stopped the vm.
-> +		 */
-> +		if (kvm_check_and_clear_guest_paused())
-> +			return;
-> +
->  		/* They had a few time units to dump stack, so complain. */
->  		print_other_cpu_stall(gs2, gps);
->  		if (READ_ONCE(rcu_cpu_stall_ftrace_dump))
-> -- 
-> 2.31.1.818.g46aad6cb9e-goog
-> 
+	-J
+
+>Thanks,
+> Nik
+>
+>> diff --git a/Documentation/networking/bonding.rst b/Documentation/networking/bonding.rst
+>> index 62f2aab8eaec..767dbb49018b 100644
+>> --- a/Documentation/networking/bonding.rst
+>> +++ b/Documentation/networking/bonding.rst
+>> @@ -707,6 +707,13 @@ mode
+>>  		swapped with the new curr_active_slave that was
+>>  		chosen.
+>>  
+>> +novlan_srcmac
+>> +
+>> +	When using the vlan+srcmac xmit_hash_policy, there may be cases where
+>> +	omitting the vlan from the hash is beneficial. This can be done with
+>> +	an extra module parameter here. The default value is 0 to include
+>> +	vlan ID in the transmit hash.
+>> +
+>>  num_grat_arp,
+>>  num_unsol_na
+>>  
+>> @@ -964,6 +971,12 @@ xmit_hash_policy
+>>  
+>>  		hash = (vlan ID) XOR (source MAC vendor) XOR (source MAC dev)
+>>  
+>> +		Optionally, if the module parameter novlan_srcmac=1 is set,
+>> +		the vlan ID is omitted from the hash and only the source MAC
+>> +		address is used, reducing the hash to
+>> +
+>> +		hash = (source MAC vendor) XOR (source MAC dev)
+>> +
+>>  	The default value is layer2.  This option was added in bonding
+>>  	version 2.6.3.  In earlier versions of bonding, this parameter
+>>  	does not exist, and the layer2 policy is the only policy.  The
+>> diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+>> index 20bbda1b36e1..32785e9d0295 100644
+>> --- a/drivers/net/bonding/bond_main.c
+>> +++ b/drivers/net/bonding/bond_main.c
+>> @@ -107,6 +107,7 @@ static char *lacp_rate;
+>>  static int min_links;
+>>  static char *ad_select;
+>>  static char *xmit_hash_policy;
+>> +static int novlan_srcmac;
+>>  static int arp_interval;
+>>  static char *arp_ip_target[BOND_MAX_ARP_TARGETS];
+>>  static char *arp_validate;
+>> @@ -168,6 +169,9 @@ MODULE_PARM_DESC(xmit_hash_policy, "balance-alb, balance-tlb, balance-xor, 802.3
+>>  				   "0 for layer 2 (default), 1 for layer 3+4, "
+>>  				   "2 for layer 2+3, 3 for encap layer 2+3, "
+>>  				   "4 for encap layer 3+4, 5 for vlan+srcmac");
+>> +module_param(novlan_srcmac, int, 0);
+>> +MODULE_PARM_DESC(novlan_srcmac, "include vlan ID in vlan+srcmac xmit_hash_policy or not; "
+>> +			      "0 to include it (default), 1 to exclude it");
+>>  module_param(arp_interval, int, 0);
+>>  MODULE_PARM_DESC(arp_interval, "arp interval in milliseconds");
+>>  module_param_array(arp_ip_target, charp, NULL, 0);
+>> @@ -3523,9 +3527,9 @@ static bool bond_flow_ip(struct sk_buff *skb, struct flow_keys *fk,
+>>  
+>>  static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+>>  {
+>> -	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+>> +	struct ethhdr *mac_hdr = eth_hdr(skb);
+>>  	u32 srcmac_vendor = 0, srcmac_dev = 0;
+>> -	u16 vlan;
+>> +	u32 hash;
+>>  	int i;
+>>  
+>>  	for (i = 0; i < 3; i++)
+>> @@ -3534,12 +3538,14 @@ static u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+>>  	for (i = 3; i < ETH_ALEN; i++)
+>>  		srcmac_dev = (srcmac_dev << 8) | mac_hdr->h_source[i];
+>>  
+>> -	if (!skb_vlan_tag_present(skb))
+>> -		return srcmac_vendor ^ srcmac_dev;
+>> +	hash = srcmac_vendor ^ srcmac_dev;
+>> +
+>> +	if (novlan_srcmac || !skb_vlan_tag_present(skb))
+>> +		return hash;
+>>  
+>> -	vlan = skb_vlan_tag_get(skb);
+>> +	hash ^= skb_vlan_tag_get(skb);
+>>  
+>> -	return vlan ^ srcmac_vendor ^ srcmac_dev;
+>> +	return hash;
+>>  }
+>>  
+>>  /* Extract the appropriate headers based on bond's xmit policy */
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
