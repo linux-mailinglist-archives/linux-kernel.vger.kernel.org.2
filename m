@@ -2,216 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E03038BB75
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:20:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0643738BB7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236652AbhEUBVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:21:42 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:37628 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236106AbhEUBVk (ORCPT
+        id S236687AbhEUBXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:23:48 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:43684 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236106AbhEUBXr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:21:40 -0400
-Received: by mail-ot1-f44.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so16607488otp.4;
-        Thu, 20 May 2021 18:20:18 -0700 (PDT)
+        Thu, 20 May 2021 21:23:47 -0400
+Received: by mail-oi1-f174.google.com with SMTP id j75so18175507oih.10;
+        Thu, 20 May 2021 18:22:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=L8yBjYQAgys656MK8UvpdfNfI8yFhToVlmHgAetNSy4=;
-        b=Yk27UfrnX26WZ1G5byKd7VhaPj+8W2NQbwhc7uRuBQHm3E9/SW9JQL8HyS/zzopvM7
-         qhkb30T45UyKXUpjlPdoS2STEQctwt/QXvvgfI4+0TrXUM3am7eeqVBMuGC3fUwN5dq2
-         vIiGaewAP3mGDJj1/hnJdgIRtsiH+EldfV7H3BmOQBivmnnSAUpzpxgIu2fRIXGJYTTL
-         KtCLBWvXjRRaBTaM0hsQjIF3DgIojbJIWTgZV8RNo/6Dj8lkCXiYjbY9ukW1JZFWeMhv
-         7IYQOyh5IQ+/Yos3d7YGJJfBhgc4QVyD2ghLJ6sIDMANccQBOPoJiMY9zOX8wNUVJ04B
-         9XNg==
-X-Gm-Message-State: AOAM533HtHug4OgrlkEYb1Ckkm8ttag1Z2ozqT2Izzfvf7NkwbMFEvRW
-        Q/tDwbwjCKoab8AOtGJdbg==
-X-Google-Smtp-Source: ABdhPJwloniGyDrtyyk8GwSUBgwJrVccusdGH8bFeLm/IkJVIgSlu1dAYGnYt1qlN/bRKbEy1r88CA==
-X-Received: by 2002:a9d:721e:: with SMTP id u30mr6028225otj.250.1621560017968;
-        Thu, 20 May 2021 18:20:17 -0700 (PDT)
+        bh=k4KWGlvK3qGaxYX6Np3iLLA0ulq4Lc64J8obvuCRFos=;
+        b=jWAVLfBmhX6ThekBj9xd7TMnxW4eStR8T0RI4CsDJbeeiS6zEeGNInMmiRKMIvCCHx
+         67j1fd/Q0sFRVzJupf6fpbH21ECwREqWkEmMToMNnj8uaQwfTsyVrbwgGa3wnlbVuNva
+         VDcUOVe31Xt2DMo/F581sed3doUi7nJMi/hl7v6bKr6vl7vK3YaCChSuTJaqgGc6UgOi
+         VFg6liVDzxo4w8/YBS/c4dGvXUyuGP3jMn5yZeJWIHxyn5GReh9egsPI1YCVJNHEL8le
+         URTwvgYsYnRpDRS+EW6HtN5Av34bn2xsyGz2caAX259BdqxTPDrLa7mjmIiZMGvJ5Bsg
+         Gd0Q==
+X-Gm-Message-State: AOAM532VNkJjriL0CbZ6B+Iq73xj9zhxO3wX81FzX7E9RXYR+DMkIhMx
+        1fGFJsp3+VaKfXbj0sy91g==
+X-Google-Smtp-Source: ABdhPJyzqzC2yzSopZN40GRzbx7jDSy385pnzcAhmj1QfM9zVNed5J3r2LqLiVNYyYjjCim8ELXLVQ==
+X-Received: by 2002:aca:dd86:: with SMTP id u128mr214796oig.155.1621560144175;
+        Thu, 20 May 2021 18:22:24 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v19sm1000293otq.35.2021.05.20.18.20.16
+        by smtp.gmail.com with ESMTPSA id f2sm960015otp.77.2021.05.20.18.22.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 18:20:17 -0700 (PDT)
-Received: (nullmailer pid 2424374 invoked by uid 1000);
-        Fri, 21 May 2021 01:20:16 -0000
-Date:   Thu, 20 May 2021 20:20:16 -0500
+        Thu, 20 May 2021 18:22:23 -0700 (PDT)
+Received: (nullmailer pid 2428345 invoked by uid 1000);
+        Fri, 21 May 2021 01:22:22 -0000
+Date:   Thu, 20 May 2021 20:22:22 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Fabien Parent <fparent@baylibre.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        mkorpershoek@baylibre.com, linux-pwm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: pwm: pwm-mtk-disp: convert to YAML
- schema
-Message-ID: <20210521012016.GA2421079@robh.at.kernel.org>
-References: <20210518175422.2678665-1-fparent@baylibre.com>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Weiyi Lu <weiyi.lu@mediatek.com>, mkorpershoek@baylibre.com,
+        Matthias Brugger <mbrugger@suse.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/2] dt-bindings: power: Add MT8365 power domains
+Message-ID: <20210521012222.GA2426808@robh.at.kernel.org>
+References: <20210518194008.2921469-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518175422.2678665-1-fparent@baylibre.com>
+In-Reply-To: <20210518194008.2921469-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 07:54:19PM +0200, Fabien Parent wrote:
-> Convert the dt-binding documentation for pwm-mtk-disp to YAML.
+On Tue, May 18, 2021 at 09:40:07PM +0200, Fabien Parent wrote:
+> Add power domains dt-bindings for MT8365.
 > 
 > Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
->  .../devicetree/bindings/pwm/pwm-mtk-disp.txt  | 44 ----------
->  .../devicetree/bindings/pwm/pwm-mtk-disp.yaml | 83 +++++++++++++++++++
->  2 files changed, 83 insertions(+), 44 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
->  create mode 100644 Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml
+>  .../power/mediatek,power-controller.yaml      |  2 ++
+>  include/dt-bindings/power/mt8365-power.h      | 20 +++++++++++++++++++
+>  2 files changed, 22 insertions(+)
+>  create mode 100644 include/dt-bindings/power/mt8365-power.h
 > 
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
-> deleted file mode 100644
-> index 902b271891ae..000000000000
-> --- a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.txt
-> +++ /dev/null
-> @@ -1,44 +0,0 @@
-> -MediaTek display PWM controller
-> -
-> -Required properties:
-> - - compatible: should be "mediatek,<name>-disp-pwm":
-> -   - "mediatek,mt2701-disp-pwm": found on mt2701 SoC.
-> -   - "mediatek,mt6595-disp-pwm": found on mt6595 SoC.
-> -   - "mediatek,mt8167-disp-pwm", "mediatek,mt8173-disp-pwm": found on mt8167 SoC.
-> -   - "mediatek,mt8173-disp-pwm": found on mt8173 SoC.
-> - - reg: physical base address and length of the controller's registers.
-> - - #pwm-cells: must be 2. See pwm.yaml in this directory for a description of
-> -   the cell format.
-> - - clocks: phandle and clock specifier of the PWM reference clock.
-> - - clock-names: must contain the following:
-> -   - "main": clock used to generate PWM signals.
-> -   - "mm": sync signals from the modules of mmsys.
-> - - pinctrl-names: Must contain a "default" entry.
-> - - pinctrl-0: One property must exist for each entry in pinctrl-names.
-> -   See pinctrl/pinctrl-bindings.txt for details of the property values.
-> -
-> -Example:
-> -	pwm0: pwm@1401e000 {
-> -		compatible = "mediatek,mt8173-disp-pwm",
-> -			     "mediatek,mt6595-disp-pwm";
-> -		reg = <0 0x1401e000 0 0x1000>;
-> -		#pwm-cells = <2>;
-> -		clocks = <&mmsys CLK_MM_DISP_PWM026M>,
-> -			 <&mmsys CLK_MM_DISP_PWM0MM>;
-> -		clock-names = "main", "mm";
-> -		pinctrl-names = "default";
-> -		pinctrl-0 = <&disp_pwm0_pins>;
-> -	};
-> -
-> -	backlight_lcd: backlight_lcd {
-> -		compatible = "pwm-backlight";
-> -		pwms = <&pwm0 0 1000000>;
-> -		brightness-levels = <
-> -			  0  16  32  48  64  80  96 112
-> -			128 144 160 176 192 208 224 240
-> -			255
-> -		>;
-> -		default-brightness-level = <9>;
-> -		power-supply = <&mt6397_vio18_reg>;
-> -		enable-gpios = <&pio 95 GPIO_ACTIVE_HIGH>;
-> -	};
-> diff --git a/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml
+> diff --git a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> index f234a756c193..9a26a2cee7fb 100644
+> --- a/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> +++ b/Documentation/devicetree/bindings/power/mediatek,power-controller.yaml
+> @@ -27,6 +27,7 @@ properties:
+>        - mediatek,mt8173-power-controller
+>        - mediatek,mt8183-power-controller
+>        - mediatek,mt8192-power-controller
+> +      - mediatek,mt8365-power-controller
+>  
+>    '#power-domain-cells':
+>      const: 1
+> @@ -64,6 +65,7 @@ patternProperties:
+>                "include/dt-bindings/power/mt8173-power.h" - for MT8173 type power domain.
+>                "include/dt-bindings/power/mt8183-power.h" - for MT8183 type power domain.
+>                "include/dt-bindings/power/mt8192-power.h" - for MT8192 type power domain.
+> +              "include/dt-bindings/power/mt8365-power.h" - for MT8365 type power domain.
+>          maxItems: 1
+>  
+>        clocks:
+> diff --git a/include/dt-bindings/power/mt8365-power.h b/include/dt-bindings/power/mt8365-power.h
 > new file mode 100644
-> index 000000000000..0f016c81cd53
+> index 000000000000..352440c4b5dd
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/pwm/pwm-mtk-disp.yaml
-> @@ -0,0 +1,83 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: "http://devicetree.org/schemas/pwm/pwm-mtk-disp.yaml#"
-> +$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-> +
-> +title: MediaTek display PWM controller
-> +
-> +maintainers:
-> +  - Thierry Reding <thierry.reding@gmail.com>
-> +  - Lee Jones <lee.jones@linaro.org>
-> +  - Matthias Brugger <matthias.bgg@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - enum:
-> +          - mediatek,mt2701-disp-pwm
-> +          - mediatek,mt6595-disp-pwm
-> +          - mediatek,mt8173-disp-pwm
-> +      - items:
-> +          - const: mediatek,mt8167-disp-pwm
-> +          - const: mediatek,mt8173-disp-pwm
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: clock used to generate PWM signals
-> +      - description: sync signal from the mmsys module
-> +
-> +  clock-names:
-> +    items:
-> +      - const: main
-> +      - const: mm
-> +
-> +  "#pwm-cells":
-> +    const: 2
-> +
-> +  power-domains:
-> +    description:
-> +      List of phandles and PM domain specifiers, as defined by bindings of the
-> +      PM domain provider (see also ../power_domain.txt).
+> +++ b/include/dt-bindings/power/mt8365-power.h
+> @@ -0,0 +1,20 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
 
-Don't need to define what the common property is. You need to say how 
-many.
+What about non-GPL users of DT? Dual license please.
 
+> +/*
+> + * Copyright (c) 2021 MediaTek Inc.
+> + */
 > +
-> +  interrupts:
-> +    maxItems: 1
+> +#ifndef _DT_BINDINGS_POWER_MT8365_POWER_H
+> +#define _DT_BINDINGS_POWER_MT8365_POWER_H
 > +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - clocks
-> +  - clock-names
+> +#define MT8365_POWER_DOMAIN_DISP	0
+> +#define MT8365_POWER_DOMAIN_CONN	1
+> +#define MT8365_POWER_DOMAIN_MFG		2
+> +#define MT8365_POWER_DOMAIN_AUDIO	3
+> +#define MT8365_POWER_DOMAIN_CAM		4
+> +#define MT8365_POWER_DOMAIN_DSP		5
+> +#define MT8365_POWER_DOMAIN_VDEC	6
+> +#define MT8365_POWER_DOMAIN_VENC	7
+> +#define MT8365_POWER_DOMAIN_APU		8
 > +
-> +additionalProperties: false
+> +#endif /* _DT_BINDINGS_POWER_MT8365_POWER_H */
 > +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/mt8173-clk.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +    pwm0: pwm@1401e000 {
-> +      compatible = "mediatek,mt8173-disp-pwm";
-> +      reg = <0x1401e000 0x1000>;
-> +      #pwm-cells = <2>;
-> +      clocks = <&mmsys CLK_MM_DISP_PWM026M>,
-> +               <&mmsys CLK_MM_DISP_PWM0MM>;
-> +      clock-names = "main", "mm";
-> +      pinctrl-names = "default";
-> +      pinctrl-0 = <&disp_pwm0_pins>;
-> +    };
-> +
-> +    backlight_lcd: backlight_lcd {
-> +      compatible = "pwm-backlight";
-> +      pwms = <&pwm0 0 1000000>;
-> +      brightness-levels = <
-> +        0  16  32  48  64  80  96 112
-> +        128 144 160 176 192 208 224 240
-> +        255
-> +      >;
-> +      default-brightness-level = <9>;
-> +      power-supply = <&mt6397_vio18_reg>;
-> +      enable-gpios = <&pio 95 GPIO_ACTIVE_HIGH>;
-> +    };
 > -- 
 > 2.31.1
 > 
