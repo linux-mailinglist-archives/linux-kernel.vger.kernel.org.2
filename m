@@ -2,99 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECDE38D14B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:19:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4F4038D155
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229693AbhEUWVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:21:04 -0400
-Received: from mx0b-002e3701.pphosted.com ([148.163.143.35]:48596 "EHLO
-        mx0b-002e3701.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229503AbhEUWVC (ORCPT
+        id S229807AbhEUWXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:23:18 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:36143 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229503AbhEUWXR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:21:02 -0400
-Received: from pps.filterd (m0150244.ppops.net [127.0.0.1])
-        by mx0b-002e3701.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LMI6cH025938;
-        Fri, 21 May 2021 22:19:35 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hpe.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pps0720;
- bh=q8QhXGTfWElVKM98+dODFF6vgoKg7xIj/f6m9TTGGAg=;
- b=ANsYwupGaCf7fHujCp8EiOmIj4kzAj5+U7KtflGUtmgADLVbgsU1lqzV2gyHVeFf6y4X
- Tg32G6k7CNmxJprVfEtdGXDmkQSyhppPpUgx9xdhHwsTo5xmVRBleDrW/LNyeHbD+sYw
- 7llU5sslCj3QhVtQgHMASJ72fKUR7ZMceGd+MeTUAqC7VsEOgPFdDgINHrB29B0e1HFE
- JX0at13GkTdkmKPVWWWtyQkAGaoFouW9NsIfj7vd8hs7i/9FJHwDNobuNAga8zQLoHDg
- tyKd56f0sJ8grsc/9JGTdNQDBwmOxXJk34hlf/MeATbv7EkIP+0ud591wcGuLlCI84ua yQ== 
-Received: from g4t3427.houston.hpe.com (g4t3427.houston.hpe.com [15.241.140.73])
-        by mx0b-002e3701.pphosted.com with ESMTP id 38p0dcsw44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 22:19:35 +0000
-Received: from g9t2301.houston.hpecorp.net (g9t2301.houston.hpecorp.net [16.220.97.129])
-        by g4t3427.houston.hpe.com (Postfix) with ESMTP id 9BC316F;
-        Fri, 21 May 2021 22:19:34 +0000 (UTC)
-Received: from dog.eag.rdlabs.hpecorp.net (dog.eag.rdlabs.hpecorp.net [128.162.243.181])
-        by g9t2301.houston.hpecorp.net (Postfix) with ESMTP id 6B9894A;
-        Fri, 21 May 2021 22:19:34 +0000 (UTC)
-Received: by dog.eag.rdlabs.hpecorp.net (Postfix, from userid 48777)
-        id 17E9E302F481D; Fri, 21 May 2021 17:19:34 -0500 (CDT)
-From:   Kyle Meyer <kyle.meyer@hpe.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
+        Fri, 21 May 2021 18:23:17 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9EE545C0255;
+        Fri, 21 May 2021 18:21:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Fri, 21 May 2021 18:21:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=HprtPpMhZPJmDlJYV2vvwIuW3Xh
+        ypTk3HvX2jemPm8I=; b=LkI3WILXtfFuMxzWvJNef0Sr8gYyo2saSzIvJBVzQ+d
+        yd8G5BXzvpHlBuFDAIdAeU9myE0+jcRwLMdljEcSZLb2EOnNTHnixMa+q7mIvU/h
+        7IFOv2DW9WD0NAf1zKqOoJDU1QRBGFmnLH2i2Ys8sqd4n2ASOI3gd//JTn0RxeTl
+        xLmHuMbr/+yDDXkuGfw+m5Int4pbaD32NCiI1OJu/WrjSxcEZ09RJIqF3Np9ZYVY
+        DkZwsY4k512Y81zIrojP7MKlF6o9XZUqE/KoPC7GGvPxt2q2h8dTpZGsCgSZPrme
+        /oc/mPO8SKmHgi05RNskhXMBl8boC3WpLZfDvoXDKTQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=HprtPp
+        MhZPJmDlJYV2vvwIuW3XhypTk3HvX2jemPm8I=; b=ud4jTohy2a+Da9jXGiwC8s
+        g/ikCoNIGxf51EKQdW6u7B8WhUezjBzXIwqDGQw5XI3YLmUpVexNPYHJfK0RkeRu
+        QqvJyQUj19DGjwDvpxFFbUl0FgPCEcEFxO2NoEbY2ygE7/gX2hBuq3udpmJcsZaZ
+        CMttXnVP0sWRC8ehgNsktACtMpQon4Smn2K2BlBJZfdffr9i0PgkSqm43SvisWgA
+        cw/6LhVYDUMwn87kMsLYd67luqW+Zp/2jtozu+1cx9lEfcfN4XU2sQ7PJlXzQk1C
+        MKrX0xC71LQLLRWWTxUYrYD2wIJ52PTdrIboNZ5AQHK0m/LAF3of8dLksqRYMkcQ
+        ==
+X-ME-Sender: <xms:fzKoYKw9skYHzzqLy70dR3A-hPrCS_iIhoNV5D-vl4YdFKbjCFg3UQ>
+    <xme:fzKoYGTm0oem5gu7_-QAThgCV98AUoNjrAfEAUFWgQN5U9rxNYYTDhD00DaYSF6Va
+    CMri12lEV_7uI9Nz_o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejgedgtdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeejgeeifeeuveeufeeigeegjeelvdfgjeegffejgfdv
+    keelhefgtdefteejleekjeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecukfhppe
+    dugedrfedrieehrddujeehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:fzKoYMVIWmMTgrXq0M1CGZ382_iMkSVs5ngIxBWtduSRWcqW9KjUiQ>
+    <xmx:fzKoYAhmUZua3gr1RVgd2v2ZsGdT4OS5Ki5BpEw32Kg6XoNj6Fr7HA>
+    <xmx:fzKoYMBl934ir2pPZSzH6rF9DaO3XpFB5FR1rNA-c8hanz6_2nMYXQ>
+    <xmx:gTKoYL540uhhHNo7o6zuVA9kb-BHj1a5ckL0dULXUCHjVNuGgr30hQ>
+Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Fri, 21 May 2021 18:21:49 -0400 (EDT)
+Date:   Sat, 22 May 2021 07:21:46 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     Takashi Iwai <tiwai@suse.de>,
+        Colin King <colin.king@canonical.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err
+ issue
+Message-ID: <20210521222146.GA10202@workstation>
+Mail-Followup-To: Takashi Iwai <tiwai@suse.de>,
+        Colin King <colin.king@canonical.com>,
+        Clemens Ladisch <clemens@ladisch.de>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     linux-pm@vger.kernel.org, linux-acpi@vegr.kernel.org,
-        Kyle Meyer <kyle.meyer@hpe.com>
-Subject: [PATCH] acpi-cpufreq: Skip initialization if a cpufreq driver exists
-Date:   Fri, 21 May 2021 17:19:06 -0500
-Message-Id: <20210521221906.199436-1-kyle.meyer@hpe.com>
-X-Mailer: git-send-email 2.26.2
+References: <20210520083424.6685-1-colin.king@canonical.com>
+ <s5hh7ixh9qn.wl-tiwai@suse.de>
+ <20210520130409.GA170303@workstation>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-GUID: f3wzvZwN-ZLyGF8xOXh0LB-SAt38UjiY
-X-Proofpoint-ORIG-GUID: f3wzvZwN-ZLyGF8xOXh0LB-SAt38UjiY
-X-HPE-SCL: -1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_11:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1011
- malwarescore=0 bulkscore=0 priorityscore=1501 lowpriorityscore=0
- spamscore=0 adultscore=0 mlxscore=0 phishscore=0 suspectscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210122
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520130409.GA170303@workstation>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Revert part of commit 75c0758137c7a
-("acpi-cpufreq: Fail initialization if driver cannot be registered").
+Hi,
 
-acpi-cpufreq is mutually exclusive with intel_pstate, however,
-acpi-cpufreq is loaded multiple times during startup while intel_pstate is
-enabled. On systems using systemd the kernel triggers one uevent for each
-device as a result of systemd-udev-trigger.service. The service exists to
-retrigger all devices as uevents sent by the kernel before systemd-udevd
-is running are missed. The delay caused by systemd-udevd repeatedly loading
-the driver, getting a fail return, and unloading the driver twice per
-logical CPU has a significant impact on the startup time, and can cause
-some devices to be unavailable after reaching the root login prompt.
+On Thu, May 20, 2021 at 10:04:09PM +0900, Takashi Sakamoto wrote:
+> Hi,
+> 
+> On Thu, May 20, 2021 at 02:26:24PM +0200, Takashi Iwai wrote:
+> > On Thu, 20 May 2021 10:34:24 +0200,
+> > Colin King wrote:
+> > > 
+> > > From: Colin Ian King <colin.king@canonical.com>
+> > > 
+> > > Currently in the case where the payload_length is less than the
+> > > cip_header_size the error return variable err is not being set
+> > > and function parse_ir_ctx_header can return an uninitialized
+> > > error return value. Fix this by setting err to zero.
+> > > 
+> > > Addresses-Coverity: ("Uninitialized scalar variable")
+> > > Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+> > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > 
+> > Just a bikeshed, IMO, it'd be more proper to initialize err at the
+> > beginning than setting 0 at every branch, e.g.
+> > 
+> > --- a/sound/firewire/amdtp-stream.c
+> > +++ b/sound/firewire/amdtp-stream.c
+> > @@ -652,7 +652,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+> >  	unsigned int payload_length;
+> >  	const __be32 *cip_header;
+> >  	unsigned int cip_header_size;
+> > -	int err;
+> > +	int err = 0;
+> >  
+> >  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+> >  
+> > @@ -683,7 +683,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+> >  		}
+> >  	} else {
+> >  		cip_header = NULL;
+> > -		err = 0;
+> >  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
+> >  		*syt = 0;
+> 
+> Thanks for the patches.
+> 
+> The error check is just done for the case to process CIP header, thus we
+> can put the auto variable into the branch.
+> 
+> ======== 8< --------
+> From 3fcca0062297e937c665f1c8e3a117e1187f4115 Mon Sep 17 00:00:00 2001
+> From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Date: Thu, 20 May 2021 21:59:50 +0900
+> Subject: [PATCH] ALSA: firewire-lib: Fix uninitialized variable err issue
+> 
+> The check of error is just done for the case that CIP header is available.
+> 
+> This commit moves auto variable into the branch to process CIP header.
+> 
+> Addresses-Coverity: ("Uninitialized scalar variable")
+> Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
+> Suggested-by: Colin Ian King <colin.king@canonical.com>
+> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> ---
+>  sound/firewire/amdtp-stream.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+> index 37c8de8a..11ae4e88 100644
+> --- a/sound/firewire/amdtp-stream.c
+> +++ b/sound/firewire/amdtp-stream.c
+> @@ -748,7 +748,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  	unsigned int payload_length;
+>  	const __be32 *cip_header;
+>  	unsigned int cip_header_size;
+> -	int err;
+>  
+>  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
+>  
+> @@ -766,6 +765,8 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  
+>  	if (cip_header_size > 0) {
+>  		if (payload_length >= cip_header_size) {
+> +			int err;
+> +
+>  			cip_header = ctx_header + IR_CTX_HEADER_DEFAULT_QUADLETS;
+>  			err = check_cip_header(s, cip_header, payload_length - cip_header_size,
+>  					       data_blocks, data_block_counter, syt);
+> @@ -779,7 +780,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  		}
+>  	} else {
+>  		cip_header = NULL;
+> -		err = 0;
+>  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
+>  		*syt = 0;
+>  
+> @@ -790,7 +790,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
+>  	trace_amdtp_packet(s, cycle, cip_header, payload_length, *data_blocks,
+>  			   *data_block_counter, packet_index, index);
+>  
+> -	return err;
+> +	return 0;
+>  }
+>  
+>  // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
+> -- 
+> 2.27.0
+> ======== 8< --------
 
-Load the driver once but skip initialization if a cpufreq driver exists by
-changing the return value of cpufreq_get_current_driver() from -EEXIST to
-0.
+Thanks for applying the patch but the commit in your tree includes
+duplicated From/Data/Subject lines and causes failure of git-am for the
+patch simply generated by git-am. Is it possible for you to modify
+history of your for-next branch with enough correction?
 
-Signed-off-by: Kyle Meyer <kyle.meyer@hpe.com>
----
- drivers/cpufreq/acpi-cpufreq.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ * https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?id=b493305483cb609abcf24c56f7415746c7e6939a
 
-diff --git a/drivers/cpufreq/acpi-cpufreq.c b/drivers/cpufreq/acpi-cpufreq.c
-index 7e7450453714..e79a945369d1 100644
---- a/drivers/cpufreq/acpi-cpufreq.c
-+++ b/drivers/cpufreq/acpi-cpufreq.c
-@@ -1003,7 +1003,7 @@ static int __init acpi_cpufreq_init(void)
- 
- 	/* don't keep reloading if cpufreq_driver exists */
- 	if (cpufreq_get_current_driver())
--		return -EEXIST;
-+		return 0;
- 
- 	pr_debug("%s\n", __func__);
- 
--- 
-2.26.2
+Regards
 
+Takashi Sakamoto
