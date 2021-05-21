@@ -2,81 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E87E38C285
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FC1D38C28D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbhEUJDw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:03:52 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:45282 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234881AbhEUJDv (ORCPT
+        id S235270AbhEUJF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233884AbhEUJFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:03:51 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14L8uHmB012397;
-        Fri, 21 May 2021 04:02:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=FDnjBuJeyguLnnjPWZeo1wOjjCJFYx4qwcu4iSKlwYw=;
- b=oyZfRdIwiat22s+G46RMfM/1Dh0JNxPj47VabllPDanT48obqP+FrgoS1R303v7nsavH
- +5zzT91qOzSWACeg+Tl5XMn6JSuBilZpq7/JPdtiz5ie6fsQmu5woIGtgegikkiuQzdL
- lPAR35jMYuNDb8lOZ2DQG9N1izIBqQ+c/IFnVuXMJSZ7hJkB3b4c5jCv4Fp2RCNkZeKW
- PtNstKXUdXXFR0+kLnb17WZeod7x98okGbtEyEvSXXQpp6H1EIiMxDoJcQbyknRH1iZX
- 4wrGqFG6TMx05UrwExX6sRy+UGGH9oail1oqlweqnP1JVvjxYXMVMHCwoX9zYZB4XjVW 0Q== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 38p6err6qb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 21 May 2021 04:02:28 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 21 May
- 2021 10:02:26 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 21 May 2021 10:02:26 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 59EEC11CD;
-        Fri, 21 May 2021 09:02:26 +0000 (UTC)
-Date:   Fri, 21 May 2021 09:02:26 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@opensource.wolfsonmicro.com>,
-        <patches@opensource.cirrus.com>
-Subject: Re: [PATCH 1/7] mfd: wm831x-core: Fix incorrect function name
- wm831x_reg_unlock()
-Message-ID: <20210521090226.GJ64205@ediswmail.ad.cirrus.com>
-References: <20210520120820.3465562-1-lee.jones@linaro.org>
- <20210520120820.3465562-2-lee.jones@linaro.org>
+        Fri, 21 May 2021 05:05:24 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63A72C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:04:01 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id x8so20265116wrq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 02:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=NVeFvnslJm0NrUQoEG65cVcipY5NIH0ZF36v3zq0FTg=;
+        b=og2k8/CLk2k/C88E/bMpECPEveew+ihVAZE8yefd7VEVD6xcfUaGDOwdZzpdgLH1kf
+         BeEQy5oj++ccKoLUpvj7ToMHYdPUh0JfHZW7djmv4yUAlGLKRHyyFb62n4kT49s7iCiN
+         PTPT1m4f2VYtK2k7wWHcUyV9D1wsRu3SrC7ziGkG33pSquRv64HnYxqU3mvPu9t+/VNF
+         yG74Ob9PIhSkuY0hPGgLCofWkjFQW7ghmIrmkyLcB6xEQpZHJltAPRAGUeaph+NcPB7y
+         nsVCtYr4y7srRTBBGgZjeYMca2NCUq2Db1O+GEdSLovs/gsmVwIi8qv8PiMOE/2EQ+hq
+         uzbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=NVeFvnslJm0NrUQoEG65cVcipY5NIH0ZF36v3zq0FTg=;
+        b=Ia6yj5bqhrUdPMsQFDVMKgFi7+CYrNTy27AtWpPWBBJc9rPfiYhqvDfm5I3puRN9PX
+         7Wsf10gxWT17OSmEnRDpT9q3JOJU2RRJvu0jcQZ2LlYG8vGRb2eQcBLmy2vCssAWzo3w
+         gumu/aQwUwEXGkOYOcK9eYRskJKH7HkBILVPe5VgtO98TaAiy8Dml6ZDvGrUJAC53KPL
+         doUdcrkKo3OMOpDtv+e8UTx7WdLqFhVJCNLEUF2flIzHqcm8hSYlVGeo2Y2K+ZYxOXNO
+         URTFJ0/s4DCBaCNljEtXVpx13Z6nz3GKhyEJEVcjKtkJX7NtAUafVtjIvmAZrIZhyFbY
+         lyrQ==
+X-Gm-Message-State: AOAM530Ey5iYgxiUDKGhxmU8aFkd/NkrF7CupuUOKJDlx6LxM/j8JRHS
+        ntnvUCDmbAkesleIHJfsWY7BjA==
+X-Google-Smtp-Source: ABdhPJxGMHN79aI1VciSmLzY53Q40z6lvTHZkKTHQkNh6HslHR8WvnxN8dBCYdTzhlEpg1Wt5zLUHw==
+X-Received: by 2002:a5d:58d0:: with SMTP id o16mr8407362wrf.420.1621587839871;
+        Fri, 21 May 2021 02:03:59 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id k7sm1349133wro.8.2021.05.21.02.03.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 02:03:59 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:03:57 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Robert Marko <robert.marko@sartura.hr>
+Cc:     Michael Walle <michael@walle.cc>, robh+dt@kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, jdelvare@suse.com,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
+        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Subject: Re: [PATCH 1/6] mfd: Add Delta TN48M CPLD driver
+Message-ID: <20210521090357.GD2549456@dell>
+References: <20210430123511.116057-1-robert.marko@sartura.hr>
+ <af4923ef1ed0693fcd67d7986348b164@walle.cc>
+ <CA+HBbNHCnpg9qCzZbT9KVNqX-daC68iaJKNdyEf7do3w98miWw@mail.gmail.com>
+ <0f28cabf858154842819935000f32bc2@walle.cc>
+ <20210520064929.GM2549456@dell>
+ <CA+HBbNG62bJC4ZiH0WRVYnN1AC=J5eJQPo_46tS67xNzP1L0DQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210520120820.3465562-2-lee.jones@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: Vh4oMtzRk1w_XtU7f_nVlUmfbMjstQe_
-X-Proofpoint-ORIG-GUID: Vh4oMtzRk1w_XtU7f_nVlUmfbMjstQe_
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=999 clxscore=1015
- bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105210059
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CA+HBbNG62bJC4ZiH0WRVYnN1AC=J5eJQPo_46tS67xNzP1L0DQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 01:08:14PM +0100, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
-> 
->  drivers/mfd/wm831x-core.c:121: warning: expecting prototype for wm831x_reg_unlock(). Prototype was for wm831x_reg_lock() instead
-> 
-> Cc: Lee Jones <lee.jones@linaro.org>
-> Cc: Mark Brown <broonie@opensource.wolfsonmicro.com>
-> Cc: patches@opensource.cirrus.com
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
+On Fri, 21 May 2021, Robert Marko wrote:
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> On Thu, May 20, 2021 at 8:49 AM Lee Jones <lee.jones@linaro.org> wrote:
+> >
+> > On Wed, 19 May 2021, Michael Walle wrote:
+> >
+> > > Hi,
+> > >
+> > > Am 2021-05-19 13:53, schrieb Robert Marko:
+> > > > On Thu, May 6, 2021 at 6:34 PM Michael Walle <michael@walle.cc> wrote:
+> > > > > Am 2021-04-30 14:35, schrieb Robert Marko:
+> > > > > > Delta TN48M switches have a Lattice CPLD that serves
+> > > > > > multiple purposes including being a GPIO expander.
+> > > > > > So lets add the MFD core driver for it.
+> > > > >
+> > > > > Did you have a look at mfd/simple-mfd-i2c.c?
+> > > >
+> > > > Yes, that was my first idea but we have a requirement to expose CPLD
+> > > > information via debugfs as there are userspace applications using it.
+> > > > And simple-mfd-i2c does not allow us to do so.
+> > >
+> > > Mh, last time Lee wasn't very fond of having a driver that just populates
+> > > sub-drivers while doing almost nothing itself. See
+> > > https://lore.kernel.org/lkml/20200605065709.GD3714@dell/
+> >
+> > Right.  I still feel that way.
+> >
+> > > That being said, I'd also like to expose our CPLD version, but until now
+> > > haven't found a good solution.
+> >
+> > Why though?  Does S/W *need* it?
+> Because we have userspace S/W that uses it as the same CPLD is in
+> multiple variants of the board but the correct board model is set during
+> manufacturing and we can read it from the CPLD.
+> 
+> We also have information about PSU1 and PSU2(Some models only)
+> power good, whether they are present and some other info that I need
+> to expose as these are monitored in userspace.
+> 
+> I planned to do that via the hwmon driver but according to Guenther they
+> are not hwmon attributes and I agree.
+> 
+> Would it be possible to have a dedicated driver that would only expose
+> the required information via debugfs?
+> Then I could simply use the simple I2C MFD driver with only a GPIO
+> driver on top of it.
 
-Thanks,
-Charles
+Yes, I was going to suggest that.
+
+It should probably live in drivers/misc.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
