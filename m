@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7AD38CCB3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:51:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93BEA38CCBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:53:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237032AbhEURwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:52:39 -0400
-Received: from mga01.intel.com ([192.55.52.88]:60783 "EHLO mga01.intel.com"
+        id S235427AbhEURys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:54:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232017AbhEURwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:52:31 -0400
-IronPort-SDR: iW4/CVHGfjIXi234N4zA2eKY+91o1QdC/7WGTzT3wrLCWYbdNVy3ZiXl5Buof11Jox4BfXs822
- DSAnrE6Kw17A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="222648851"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="222648851"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 10:51:03 -0700
-IronPort-SDR: MLCcEIQGRTK11MVoTgPMXLLXzTPDyU/6qt38J1p58s+COtJq/F0HbHGlI+q+Bs5TQ5aBC5wIRt
- kWyhvN0W2aQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="441182358"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by fmsmga008.fm.intel.com with ESMTP; 21 May 2021 10:51:01 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] perf script: Add missing PERF_IP_FLAG_CHARS for VM-Entry and VM-Exit
-Date:   Fri, 21 May 2021 20:51:27 +0300
-Message-Id: <20210521175127.27264-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S234912AbhEURyq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:54:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B65DC608FE;
+        Fri, 21 May 2021 17:53:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621619602;
+        bh=d4iEeT3kENazUfx6vj5fy6JPv4wS8jBR0cwrDXv+FYk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WggyX5pUYy1jsxw7nVsbfw7cZlt5OajIOd+gRsgSNRX/LokMp+maZhTvwQwBfeV7C
+         PrLpRO5zbAKj2sbs1rrzeRg17b/qWLI6ak/nDhp4nl1eA298HJ8gFcK6HTYyZq/iAB
+         qPnNHk5Lt8r4l/uixt4RgjfzdLcw8evif1M8UNUlThuoFukpWcARi5SqmXCAXG6ld4
+         7jL9irJQw33Tt9bf2a5RnL4gmH+3/gyHRCAfdDrD3BTeuCKX5kFK/Fv/bHSJaRFFkW
+         ZQSEgLs3wowyzkveJNAQmsku6Llw6+fCSEuABO0yZ6z0Cc12VGB1cDToc6p/fCcqNR
+         rSDHF/Rs8r0OQ==
+Date:   Fri, 21 May 2021 18:53:18 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+Message-ID: <20210521175318.GF5825@sirena.org.uk>
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-2-madvenka@linux.microsoft.com>
+ <20210521161117.GB5825@sirena.org.uk>
+ <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
+ <20210521174242.GD5825@sirena.org.uk>
+ <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1Ow488MNN9B9o/ov"
+Content-Disposition: inline
+In-Reply-To: <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
+X-Cookie: Do not write below this line.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'g' (guest) for VM-Entry and 'h' (host) for VM-Exit.
 
-Fixes: c025d46cd932c ("perf script: Add branch types for VM-Entry and VM-Exit")
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/Documentation/perf-intel-pt.txt | 6 +++---
- tools/perf/Documentation/perf-script.txt   | 7 ++++---
- tools/perf/util/event.h                    | 2 +-
- 3 files changed, 8 insertions(+), 7 deletions(-)
+--1Ow488MNN9B9o/ov
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-index 8d6cce062a5f..e382dbd4ff0a 100644
---- a/tools/perf/Documentation/perf-intel-pt.txt
-+++ b/tools/perf/Documentation/perf-intel-pt.txt
-@@ -108,9 +108,9 @@ displayed as follows:
- 
- 	perf script --itrace=ibxwpe -F+flags
- 
--The flags are "bcrosyiABEx" which stand for branch, call, return, conditional,
--system, asynchronous, interrupt, transaction abort, trace begin, trace end, and
--in transaction, respectively.
-+The flags are "bcrosyiABExgh" which stand for branch, call, return, conditional,
-+system, asynchronous, interrupt, transaction abort, trace begin, trace end,
-+in transaction, VM-entry, and VM-exit respectively.
- 
- perf script also supports higher level ways to dump instruction traces:
- 
-diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
-index 5b8b61075039..48a5f5b26dd4 100644
---- a/tools/perf/Documentation/perf-script.txt
-+++ b/tools/perf/Documentation/perf-script.txt
-@@ -183,14 +183,15 @@ OPTIONS
- 	At this point usage is displayed, and perf-script exits.
- 
- 	The flags field is synthesized and may have a value when Instruction
--	Trace decoding. The flags are "bcrosyiABEx" which stand for branch,
-+	Trace decoding. The flags are "bcrosyiABExgh" which stand for branch,
- 	call, return, conditional, system, asynchronous, interrupt,
--	transaction abort, trace begin, trace end, and in transaction,
-+	transaction abort, trace begin, trace end, in transaction, VM-Entry, and VM-Exit
- 	respectively. Known combinations of flags are printed more nicely e.g.
- 	"call" for "bc", "return" for "br", "jcc" for "bo", "jmp" for "b",
- 	"int" for "bci", "iret" for "bri", "syscall" for "bcs", "sysret" for "brs",
- 	"async" for "by", "hw int" for "bcyi", "tx abrt" for "bA", "tr strt" for "bB",
--	"tr end" for "bE". However the "x" flag will be display separately in those
-+	"tr end" for "bE", "vmentry" for "bcg", "vmexit" for "bch".
-+	However the "x" flag will be displayed separately in those
- 	cases e.g. "jcc     (x)" for a condition branch within a transaction.
- 
- 	The callindent field is synthesized and may have a value when
-diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-index 8a62fb39e365..19ad64f2bd83 100644
---- a/tools/perf/util/event.h
-+++ b/tools/perf/util/event.h
-@@ -100,7 +100,7 @@ enum {
- 	PERF_IP_FLAG_VMEXIT		= 1ULL << 12,
- };
- 
--#define PERF_IP_FLAG_CHARS "bcrosyiABEx"
-+#define PERF_IP_FLAG_CHARS "bcrosyiABExgh"
- 
- #define PERF_BRANCH_MASK		(\
- 	PERF_IP_FLAG_BRANCH		|\
--- 
-2.17.1
+On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
+> On 5/21/21 12:42 PM, Mark Brown wrote:
 
+> > Like I say we may come up with some use for the flag in error cases in
+> > future so I'm not opposed to keeping the accounting there.
+
+> So, should I leave it the way it is now? Or should I not set reliable = false
+> for errors? Which one do you prefer?
+
+> Josh,
+
+> Are you OK with not flagging reliable = false for errors in unwind_frame()?
+
+I think it's fine to leave it as it is.
+
+--1Ow488MNN9B9o/ov
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCn840ACgkQJNaLcl1U
+h9B64Af+PKOojLf3mxi8xJnWbYRZtZbrmPoHiSiT/enzT0Y/XjSubDQOp0pxbeJT
+ah0rvSPhTYWO7uUm2SmBcaWUN0eidHRotNWCvPadRISC6JwLGcS3qmAnTdZ8JNXE
+4NT3oyLC8yAFI6vv5NXf9SwFW+puPPWS7quktVWiJ5Xb12vd+5x+n5lPcrMinImi
+5sWIcINkCXrthJTudokrCtuaNLp0aDQVTwQTmLBQ7q2fjAxfiylvxi6J556/YUFQ
+UvtgW9zT7JjhFuEoeiO3/QekwUijHzelN0inaw0kX8rtaD3FrPqSI8JYaBXDEC4u
+/zkIcbJJEvSDyZG8v/yUD+CeN+9CwA==
+=yZ+q
+-----END PGP SIGNATURE-----
+
+--1Ow488MNN9B9o/ov--
