@@ -2,177 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A47A938C8BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:53:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D9438C8C3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:54:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236287AbhEUNyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:54:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232778AbhEUNyq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:54:46 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887BCC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:53:23 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id z137-20020a1c7e8f0000b02901774f2a7dc4so6853007wmc.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:53:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=or2n56rchUUN+O0Ey3IVBmf3hNw4ShOy6t6olT7Yts8=;
-        b=kXvV09+x2hRrzcATNswB8+rrGsAVBOokL9TwVkrtw8xXa9K4ik9WqPLHHBDppD1mwp
-         7VQ613T1gisYwYQ+QOBfOnLhM0exnAbNgRcuXXMYd4/cNU5nOgRuCtEocCGoOQM+R5dH
-         gpiDYfU2AuIkHnIiI+b/F+/+Hfe3zGwqeuZPxK+zSizY1LF9pAkseLT30IclfRycC0zl
-         J4pPu++Qz3A/TeJSS1XsRNhLPjSYtLgkpKN5THHd589XPhx1hbWQOCWv8Z8dVvz0tOVg
-         K9zAYcLTHpkwdfS5yUWVMKH24cY+yKBuBqmjZa2WxuQY+sPGeUZWZxZ8rwBN45D8fS7O
-         Fb3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=or2n56rchUUN+O0Ey3IVBmf3hNw4ShOy6t6olT7Yts8=;
-        b=txLCWfBTyAPRVXk9frCs8Itkl68RpOBtN0UhY20t1LyPr/h00rOWIxRATV0C4UKzdD
-         uOpmu4gveC77kb4O8dCe2I2zppYcXiUrFXr11UEoORYrE+xahhJ7Zsm/62mTDggzc7BV
-         MYfHdE3On2E6TRfIipp5G4fRnQg0HFisa69doABbAYjKGfah/4epx7nOIPo0v+atFVgr
-         tQNk4X4TEnrSsxWag3CJu2tuKZ6ZFa1uCmEK4oOQ2U3exq8YiTImvrV0BWL+xKhOhaPC
-         oGSywx7vTfD1ZhGN9N3XaDX7PMKbMW3/TN7YSa5mP1wCZMVURiyQXMb9seLEn3wmwZQC
-         qwzg==
-X-Gm-Message-State: AOAM531Yhdy5ToAL1wcTa/9Hp4Vne68eU1juUqNLJ6Je/zIVlBnvz22i
-        zeI04Y7f5OHiPk33ZirEIu6/oQ==
-X-Google-Smtp-Source: ABdhPJwN7lE7w0omdAhf4mqhxLHo8pWY3JTt0XBG0Zpfm4KWIl26MB8LtrMB/fF2hgz/ZaTk3X0SQw==
-X-Received: by 2002:a7b:c444:: with SMTP id l4mr8873126wmi.36.1621605202105;
-        Fri, 21 May 2021 06:53:22 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id c64sm3596361wma.15.2021.05.21.06.53.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 06:53:21 -0700 (PDT)
-Date:   Fri, 21 May 2021 14:53:19 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "David A. Schleef" <ds@schleef.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        Truxton Fulton <trux@linode1.truxton.com>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
- 'range_ni_E_ao_ext' to where it is used
-Message-ID: <20210521135319.GH2549456@dell>
-References: <20210520122538.3470259-1-lee.jones@linaro.org>
- <20210520122538.3470259-6-lee.jones@linaro.org>
- <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
- <20210521072635.GY2549456@dell>
- <20210521115431.GK1955@kadam>
+        id S236196AbhEUN4K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:56:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53022 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231707AbhEUN4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:56:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66940611AD;
+        Fri, 21 May 2021 13:54:42 +0000 (UTC)
+Date:   Fri, 21 May 2021 19:24:37 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v4 6/6] bus: mhi: core: Add range checks for BHI and BHIe
+Message-ID: <20210521135437.GN70095@thinkpad>
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+ <1620330705-40192-7-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210521115431.GK1955@kadam>
+In-Reply-To: <1620330705-40192-7-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021, Dan Carpenter wrote:
-
-> On Fri, May 21, 2021 at 08:26:35AM +0100, Lee Jones wrote:
-> > On Thu, 20 May 2021, Ian Abbott wrote:
-> > 
-> > > On 20/05/2021 13:25, Lee Jones wrote:
-> > > > ... and mark it as __maybe_unused since not all users of the
-> > > > header file reference it.
-> > > > 
-> > > > Fixes the following W=1 kernel build warning(s):
-> > > > 
-> > > >   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
-> > > > 
-> > > > Cc: Ian Abbott <abbotti@mev.co.uk>
-> > > > Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
-> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > > > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> > > > Cc: Lee Jones <lee.jones@linaro.org>
-> > > > Cc: "David A. Schleef" <ds@schleef.org>
-> > > > Cc: Mori Hess <fmhess@users.sourceforge.net>
-> > > > Cc: Truxton Fulton <trux@truxton.com>
-> > > > Cc: linux-staging@lists.linux.dev
-> > > > Cc: linux-pwm@vger.kernel.org
-> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > > ---
-> > > >   drivers/comedi/drivers/ni_mio_common.c | 9 ---------
-> > > >   drivers/comedi/drivers/ni_stc.h        | 9 ++++++++-
-> > > >   2 files changed, 8 insertions(+), 10 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-> > > > index 4f80a4991f953..37615b4e2c10d 100644
-> > > > --- a/drivers/comedi/drivers/ni_mio_common.c
-> > > > +++ b/drivers/comedi/drivers/ni_mio_common.c
-> > > > @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
-> > > >   	}
-> > > >   };
-> > > > -static const struct comedi_lrange range_ni_E_ao_ext = {
-> > > > -	4, {
-> > > > -		BIP_RANGE(10),
-> > > > -		UNI_RANGE(10),
-> > > > -		RANGE_ext(-1, 1),
-> > > > -		RANGE_ext(0, 1)
-> > > > -	}
-> > > > -};
-> > > > -
-> > > >   static const struct comedi_lrange *const ni_range_lkup[] = {
-> > > >   	[ai_gain_16] = &range_ni_E_ai,
-> > > >   	[ai_gain_8] = &range_ni_E_ai_limited,
-> > > > diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_stc.h
-> > > > index fbc0b753a0f59..0822e65f709dd 100644
-> > > > --- a/drivers/comedi/drivers/ni_stc.h
-> > > > +++ b/drivers/comedi/drivers/ni_stc.h
-> > > > @@ -1137,6 +1137,13 @@ struct ni_private {
-> > > >   	u8 rgout0_usage;
-> > > >   };
-> > > > -static const struct comedi_lrange range_ni_E_ao_ext;
-> > > > +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
-> > > > +	4, {
-> > > > +		BIP_RANGE(10),
-> > > > +		UNI_RANGE(10),
-> > > > +		RANGE_ext(-1, 1),
-> > > > +		RANGE_ext(0, 1)
-> > > > +	}
-> > > > +};
-> > > >   #endif /* _COMEDI_NI_STC_H */
-> > > > 
-> > > 
-> > > The "ni_stc.h" header is also included by "ni_mio_cs.c" which doesn't need
-> > > `range_ni_E_ao_ext` (admittedly, it was already pulling in a "tentative"
-> > > definition of the variable).
-> > > 
-> > > Thinking about it, I think it's probably better to move `range_ni_E_ao_ext`
-> > > from "ni_mio_common.c" into *both* "ni_atmio.c" and "ni_pcimio.c" (I think
-> > > we can live with the small amount of duplication), and to remove the
-> > > tentative definition from "ni_stc.h".
-> > 
-> > Happy to rework.
-> > 
-> > Am I taking this or Uwe's suggestion?
+On Thu, May 06, 2021 at 12:51:45PM -0700, Bhaumik Bhatt wrote:
+> When obtaining the BHI or BHIe offsets during the power up
+> preparation phase, range checks are missing. These can help
+> controller drivers avoid accessing any address outside of the
+> MMIO region. Ensure that mhi_cntrl->reg_len is set before MHI
+> registration as it is a required field and range checks will
+> fail without it.
 > 
-> You should probably take Ian's suggestion because he is the maintainer
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
 
-I think you missed my point.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-Now there are 2 options; I'd like Ian to tell me which one to implement.
+Thanks,
+Mani
 
-> and I really doubt Uwe's will build.  :P  But Uwe is right that
-> including .c files is ugly.
-
-No one is disputing that. :)
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+> ---
+>  drivers/bus/mhi/core/init.c | 18 +++++++++++++++++-
+>  1 file changed, 17 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
+> index 1cc2f22..aeb1e3c 100644
+> --- a/drivers/bus/mhi/core/init.c
+> +++ b/drivers/bus/mhi/core/init.c
+> @@ -885,7 +885,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
+>  	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
+>  	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
+>  	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
+> -	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
+> +	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs ||
+> +	    !mhi_cntrl->irq || !mhi_cntrl->reg_len)
+>  		return -EINVAL;
+>  
+>  	ret = parse_config(mhi_cntrl, config);
+> @@ -1077,6 +1078,13 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  		dev_err(dev, "Error getting BHI offset\n");
+>  		goto error_reg_offset;
+>  	}
+> +
+> +	if (bhi_off >= mhi_cntrl->reg_len) {
+> +		dev_err(dev, "BHI offset: 0x%x is out of range: 0x%zx\n",
+> +			bhi_off, mhi_cntrl->reg_len);
+> +		ret = -EINVAL;
+> +		goto error_reg_offset;
+> +	}
+>  	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
+>  
+>  	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
+> @@ -1086,6 +1094,14 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
+>  			dev_err(dev, "Error getting BHIE offset\n");
+>  			goto error_reg_offset;
+>  		}
+> +
+> +		if (bhie_off >= mhi_cntrl->reg_len) {
+> +			dev_err(dev,
+> +				"BHIe offset: 0x%x is out of range: 0x%zx\n",
+> +				bhie_off, mhi_cntrl->reg_len);
+> +			ret = -EINVAL;
+> +			goto error_reg_offset;
+> +		}
+>  		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
+>  	}
+>  
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
