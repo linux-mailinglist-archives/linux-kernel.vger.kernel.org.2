@@ -2,103 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C54FC38CAA2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:10:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21DC238CAA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:11:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236259AbhEUQMR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:12:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229586AbhEUQMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:12:10 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAABAC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:10:47 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id x188so15237107pfd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:10:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Ihp+ytTiUWgyI29GTYcg+5bxVmDMKZK1zsaXkk3K4xE=;
-        b=p2tBg1d9u/a3/D4ni57yw6Qr8GncJ0y7CdjDH308OVSvY/9/JJLSnbtj5AiTlJztes
-         HHHW/CtPYfQDSeOURZwbfnOoeFiCBsrJruqgDTN+N1YBeYvWz+B6NQPM6KGS/Ac2fwfC
-         RtjZz1CkZr0QvdxDey79m51T7EOznEYxc4nUUG+qZr9gf3cmV5L9fUxnNQR2f6/s+eHd
-         5qfUiDUxZwWH2djNBMGeWdDSZWMrsnfy09Stf3O1hSYGKVK34O5+ms9IDGNR1VkdWz/E
-         3JllUJiQ3C5Gf5tXqdgw3ULARPsG/uupOzCKRMdXG6BYLehdFF7dVHYgY6hMw4m/EBcI
-         9hjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Ihp+ytTiUWgyI29GTYcg+5bxVmDMKZK1zsaXkk3K4xE=;
-        b=qSz4vDAEPDCg75SGpTa5Vjb7GuUjDTIWGPPvRz3s6mS34ZQs+rAFTQxpvypL+ejECV
-         VbOqCB7OIhXh/VJJbVz5aOzcNYSucF9SY466y6aN4sacPWo9FjgXd3wgn7KEj7lg6mAQ
-         KfNfZQmk+rfqZ1fFmxRUAVBGvI3HqW3r/s9jC2yeK0CxI8bf4sa9ZcWlnkpjgQqEbA6D
-         nK5T6UBpsjNdmqiW3viuO8x6RSusomMfyNQ/39rScZMQPDNedU8YOfx0gR7gQlFqYphe
-         rb+xz2aJ9LKZB1ejnCyvA8Z0BbkZnvvY1HdkC+3Powr0eZvAFQsSxuAWTo3ef5Dm5vXa
-         oBCA==
-X-Gm-Message-State: AOAM531ZnClPl5PhwXj6HIhl1NPq5qQDzciVCVELMUtPSx4fX5ORM96/
-        ev8pgy2VrDDwZmNEL1MGYXxCnQ==
-X-Google-Smtp-Source: ABdhPJyKjFkdsHzy5Q4L+90L82Uu4TBusygqvXkQ96AYJo3A0jmoD68prbWof+A26qXxLMlLGxOChw==
-X-Received: by 2002:a05:6a00:224c:b029:28e:6004:d0a5 with SMTP id i12-20020a056a00224cb029028e6004d0a5mr11014805pfu.1.1621613447355;
-        Fri, 21 May 2021 09:10:47 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id s8sm4723599pfe.112.2021.05.21.09.10.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 09:10:46 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:10:44 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Subject: Re: [PATCH v1 1/1] coresight: core: Switch to krealloc_array()
-Message-ID: <20210521161044.GA997016@xps15>
-References: <20210520135041.56163-1-andriy.shevchenko@linux.intel.com>
+        id S236820AbhEUQMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:12:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33266 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229586AbhEUQMn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:12:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BC12613DB;
+        Fri, 21 May 2021 16:11:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621613480;
+        bh=FNm3jXDRWoCbHZUTEZ8FokhLVtkukv3XsTG0pBzmCNU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pzjPEFKSOYGIVYk5X+06MjnSj+zbF9uPA3+xtNQf31RQJJqJ8JVI5nwbY4d+SYK9u
+         nv/8OayJ21Sztmy0ci0rAku1MnBOHXrgzRHFn1v0yhUjLNSL5AU679ECBfG8VaqwlG
+         l4/zpYHHvBW+CpXy/02qwPlf9EGtdftKNAaAEzxkPU8vQDpFW/m/i57FU3aXo2v2I5
+         79ErOLvQQD7beWhlcZkMGbINB7Lx7W7B2NhG/iUXGJzZz6tOD0K/ZK+28PXppHqhls
+         fNONnG/6uDG61qsBMapKZjVYjmrKh1jwavLZZ4Iim8rRPda8fyx8vVyyRLArwAmtuW
+         aP7sf32GFf+cA==
+Date:   Fri, 21 May 2021 17:11:17 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+Message-ID: <20210521161117.GB5825@sirena.org.uk>
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-2-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rJwd6BRFiFCcLxzm"
 Content-Disposition: inline
-In-Reply-To: <20210520135041.56163-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20210516040018.128105-2-madvenka@linux.microsoft.com>
+X-Cookie: Do not write below this line.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:50:41PM +0300, Andy Shevchenko wrote:
-> Let the krealloc_array() check for multiplication overflow.
-> 
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> ---
->  drivers/hwtracing/coresight/coresight-core.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
-> index 6c68d34d956e..a7971c68b0be 100644
-> --- a/drivers/hwtracing/coresight/coresight-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-core.c
-> @@ -1730,9 +1730,9 @@ char *coresight_alloc_device_name(struct coresight_dev_list *dict,
->  	if (idx < 0) {
->  		/* Make space for the new entry */
->  		idx = dict->nr_idx;
-> -		list = krealloc(dict->fwnode_list,
-> -				(idx + 1) * sizeof(*dict->fwnode_list),
-> -				GFP_KERNEL);
-> +		list = krealloc_array(dict->fwnode_list,
-> +				      idx + 1, sizeof(*dict->fwnode_list),
-> +				      GFP_KERNEL);
 
-Applied - thanks.
+--rJwd6BRFiFCcLxzm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Mathieu
+On Sat, May 15, 2021 at 11:00:17PM -0500, madvenka@linux.microsoft.com wrote:
 
->  		if (ZERO_OR_NULL_PTR(list)) {
->  			idx = -ENOMEM;
->  			goto done;
-> -- 
-> 2.30.2
-> 
+> Other reliability checks will be added in the future.
+
+...
+
+> +	frame->reliable = true;
+> +
+
+All these checks are good checks but as you say there's more stuff that
+we need to add (like your patch 2 here) so I'm slightly nervous about
+actually setting the reliable flag here without even a comment.  Equally
+well there's no actual use of this until arch_stack_walk_reliable() gets
+implemented so it's not like it's causing any problems and it gives us
+the structure to start building up the rest of the checks.
+
+The other thing I guess is the question of if we want to bother flagging
+frames as unrelaible when we return an error; I don't see an issue with
+it and it may turn out to make it easier to do something in the future
+so I'm fine with that.
+
+--rJwd6BRFiFCcLxzm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCn26QACgkQJNaLcl1U
+h9BRjwf+NUkllMR4DUBzihQYZz8gFCBdrphJycb1capE54XA922TiNiSHdNs6Un2
+og9xrHSmjkris4pNB4/EoZ8drNtDgp3x8Rwgg7RbRhA0xujYmOoWGJuhdEuUEjID
+jlkGNpt3oRJgBtEl3evUCSmXW0GK5a3emGmYA1yzUtuCFNIU4IfwO6r0d9R4Vc0U
+koUUak44PssXvqETo+iCX8BFh1dCVB8hTrPQJRpTjxHUcljYUxRK5/7aT1pj2L/R
+viAnHaZVX5h7RHy4oc/kKUG5jEY4WWdZembkRUhVjbYy+tNc5SLGNi9Gd3G8BxJw
+YGsb0HGPBSkXuoM3WVDdcHpNRe3/Hw==
+=FYp0
+-----END PGP SIGNATURE-----
+
+--rJwd6BRFiFCcLxzm--
