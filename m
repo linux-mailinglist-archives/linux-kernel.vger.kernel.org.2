@@ -2,75 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB0138CCAF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F07D638CCB2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:51:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238908AbhEURvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:51:16 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33412 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238628AbhEURt6 (ORCPT
+        id S237083AbhEURwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:52:25 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46560 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237375AbhEURwV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:49:58 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id A2F2A20B7188;
-        Fri, 21 May 2021 10:48:34 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com A2F2A20B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621619315;
-        bh=vU/JTuWi3C5fB8RNIolLlnI9ipYsWSFq874acAyf40w=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=VbNgyb8BxOjzNrhqJ1+kLXKgpAdDz0/s4fsSb5gh6kosis6ztaDaiL82PhCuKiRPP
-         48ZhbmMBBUPNIZi8+/Cr6rsLxZ7cibrDZSGtL0OAMObMfxaF3d9NrUkBLg17VGZ7Pz
-         oRpzGr3BjYbst42wOW9ZN1L+zKbLHhowyOPtQIJI=
-Subject: Re: [RFC PATCH v4 0/2] arm64: Stack trace reliability checks in the
- unwinder
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210521171808.GC5825@sirena.org.uk>
- <654dde25-e6a2-a1e7-c2d7-e2692bc11528@linux.microsoft.com>
- <20210521174702.GE5825@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <1feec2ba-538b-e28d-1e03-ac9c1af43842@linux.microsoft.com>
-Date:   Fri, 21 May 2021 12:48:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 21 May 2021 13:52:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1621619458; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=kQaQKFs6n4n0HHe6bOtHoF4nMeAkLmDV9FsNtdNYbos=;
+ b=CANqLwcD+RmYhkBN66TGP+Mll4QHRzbFoR9C9cTX2S7RJ1yO3t8bwILu0vjWG5St5BJ07ylP
+ a5+GQERx2OuutJglPkXaBzo83uej+x8oiA574WTh+zYeZgoQ0smaK+acB2FNdyoNpBvye56V
+ YpCDBGWbaCRk1v9YI4MIAlNEvNg=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 60a7f2ee0d60c09896f3136d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 17:50:38
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3AA29C43147; Fri, 21 May 2021 17:50:36 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C85FC4338A;
+        Fri, 21 May 2021 17:50:34 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210521174702.GE5825@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 21 May 2021 10:50:33 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Pavel Machek <pavel@denx.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>, quic_jhugo@quicinc.com
+Subject: Re: [PATCH 5.10 002/299] bus: mhi: core: Clear configuration from
+ channel context during reset
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <20210511061623.GA8651@thinkpad>
+References: <20210510102004.821838356@linuxfoundation.org>
+ <20210510102004.900838842@linuxfoundation.org> <20210510205650.GA17966@amd>
+ <20210511061623.GA8651@thinkpad>
+Message-ID: <64a8ebbdc9fc7de48b25b9e2bc896d47@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021-05-10 11:17 PM, Manivannan Sadhasivam wrote:
+> Hi Pavel,
+> 
+> On Mon, May 10, 2021 at 10:56:50PM +0200, Pavel Machek wrote:
+>> Hi!
+>> 
+>> > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> >
+>> > commit 47705c08465931923e2f2b506986ca0bdf80380d upstream.
+>> >
+>> > When clearing up the channel context after client drivers are
+>> > done using channels, the configuration is currently not being
+>> > reset entirely. Ensure this is done to appropriately handle
+>> > issues where clients unaware of the context state end up calling
+>> > functions which expect a context.
+>> 
+>> > +++ b/drivers/bus/mhi/core/init.c
+>> > @@ -544,6 +544,7 @@ void mhi_deinit_chan_ctxt(struct mhi_con
+>> > +	u32 tmp;
+>> > @@ -554,7 +555,19 @@ void mhi_deinit_chan_ctxt(struct mhi_con
+>> ...
+>> > +	tmp = chan_ctxt->chcfg;
+>> > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
+>> > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
+>> > +	chan_ctxt->chcfg = tmp;
+>> > +
+>> > +	/* Update to all cores */
+>> > +	smp_wmb();
+>> >  }
+>> 
+>> This is really interesting code; author was careful to make sure chcfg
+>> is updated atomically, but C compiler is free to undo that. Plus, this
+>> will make all kinds of checkers angry.
+>> 
+>> Does the file need to use READ_ONCE and WRITE_ONCE?
+>> 
+> 
+> Thanks for looking into this.
+> 
+> I agree that the order could be mangled between chcfg read & write and
+> using READ_ONCE & WRITE_ONCE seems to be a good option.
+> 
+> Bhaumik, can you please submit a patch and tag stable?
+> 
+> Thanks,
+> Mani
+> 
+>> Best regards,
+>> 								Pavel
+>> --
+>> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+>> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
+Hi Pavel/Mani,
 
-On 5/21/21 12:47 PM, Mark Brown wrote:
-> On Fri, May 21, 2021 at 12:32:52PM -0500, Madhavan T. Venkataraman wrote:
-> 
->> I have followed the example in the Kprobe deny list. I place the section
->> in initdata so it can be unloaded during boot. This means that I need to
->> copy the information before that in early_initcall().
-> 
->> If the initialization must be performed on first use, I probably have to
->> move SYM_CODE_FUNCTIONS from initdata to some other place where it will
->> be retained.
-> 
->> If you prefer this, I could do it this way.
-> 
-> No, I think if people are fine with this for kprobes they should be fine
-> with it here too and if not we can always incrementally improve
-> performance - let's just keep things simple and easy to understand for
-> now.
-> 
+Hemant and I went over this patch and we noticed this particular 
+function is
+already being called with the channel mutex lock held. This would take 
+care of
+the atomicity and we also probably don't need the smp_wmb() barrier as 
+the mutex
+unlock will implicitly take care of it.
 
-OK.
+To the point of compiler re-ordering, we would need some help to 
+understand the
+purpose of READ_ONCE()/WRITE_ONCE() for these dependent statements:
 
-Madhavan
+> +	tmp = chan_ctxt->chcfg;
+> +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
+> +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
+> +	chan_ctxt->chcfg = tmp;
+
+Since RMW operation means that the chan_ctxt->chcfg is copied to a local
+variable (tmp) and the _same_ is being written back to chan_ctxt->chcfg, 
+can
+compiler reorder these dependent statements and cause a different 
+result?
+
+Thanks,
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
