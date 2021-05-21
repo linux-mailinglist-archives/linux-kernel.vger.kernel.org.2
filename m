@@ -2,106 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 201F038CB29
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:36:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBD7C38CB2B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:37:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237710AbhEUQht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42148 "EHLO
+        id S236488AbhEUQjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:39:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbhEUQhs (ORCPT
+        with ESMTP id S233762AbhEUQjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:37:48 -0400
-Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53C6C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:36:23 -0700 (PDT)
-Received: by mail-yb1-xb2f.google.com with SMTP id g38so28230563ybi.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:36:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PpKwvjbA34GT8TUG22JN9qkVwoh1EUba8E0GHkNoJmQ=;
-        b=em0mpm2yxRHrbVKZJHw81smO2VkQ9WjqoJopTyCk4SqJWcGpmTNpP78rSdPKRktyoY
-         lOeRxGxmCvDkgoJ0IipkVaeIOja96VuOBZ8sFpBRc/EAZhB1V6YN7d9FOSgagx9aAc2R
-         hJEVKM9bvGL6/DEAuW8p85sv67hEzppiQbZJkx4QKUBI4p8L2Va050y3NU6xyyZrTAzG
-         Jw/s6+Y9fAo3ktpu0WkF4KtK32uK9B+K1RNeWhCxiHgxbK1EWSv6yLNiqRaD6ejq8okz
-         vyfclJXdfFdoYBnaoB/fk4h0K5/YrDzUADdT9edoHnhIOx36C43X8jNl8R+AbJ+IG9Op
-         5BrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PpKwvjbA34GT8TUG22JN9qkVwoh1EUba8E0GHkNoJmQ=;
-        b=JXsVX2tJei6CA+JWpZ7vP8xuqhsajJX0nL6K+HNXTDzIfUQkYGE8kUcB75ub2Z2IBN
-         behNLcfzpS7Lw6hhMOuMCeGqFGFFGtzdPHy7pnta1MQlJ+MTB2eMnJGmq9q2LkFRFyBP
-         AZ51CQTKwEXkmRdKuXj0id4lb19DDjuYCHqrJz0P1NL0p1tHhEYYPhmzhfCLI9noGTd/
-         VApuHeVfzqZya4SO1M/xJnYS8r29gEo12moqh8m4B2EsALBtjsJPd7N2xVlx0shqJThv
-         eTzA7sYQ/BFdw+Ov8bmtvZsq94UGSIcNsbGv4iEH3nCfIwms2LXkPOTCWYY1I0TGNSBm
-         jUoA==
-X-Gm-Message-State: AOAM530wWe+qRyF1MJKejxYRathLpOPyt4ChjiQg38u6xNLrpuQSbRCW
-        P77AUMGL+3ge4uxQEalddUGneh1DFO0mbPxJiUSDm70Ovr0=
-X-Google-Smtp-Source: ABdhPJx3+clJGySLK9JidPyGF19/d9TDQINrAuj2Aj9Ysvg873MvjtPP3qfiXIzcHX/4f8BRMsq29XaeGNkWamRXG8g=
-X-Received: by 2002:a5b:386:: with SMTP id k6mr16200616ybp.235.1621614982594;
- Fri, 21 May 2021 09:36:22 -0700 (PDT)
+        Fri, 21 May 2021 12:39:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 596F8C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:37:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=IHfNDbo3bgzbKAqWdiJLeIIrKO4kOIvM8kvSz8Cnzsw=; b=JQnU7VbOuBaqcY8oa/BCFtn2i0
+        eO7El38EC0NTQ+zUXRUmgrb+knNgQ/AF4b+oeht46HjPQxN50qRVf+8ZJnnhWhtbKFgCUKK7uLNES
+        Gxu1gabrjdq072pcaBp/ojNpQOQwisMS4bb2eQ8I9nkW8rcAA7vjFEz2JmioPcKML56DTvtVGQPhQ
+        qaQ+Mxa4G4TY/Kld1HBjbTqmQ4yuY430pMJaA/ckTo9mflYbpgMr+uJ3fPDyPsGDWzF2hJqvUagz0
+        zZOd/vzSHYBRBhqy2zHdMO+n12BNXVl83utKCH+DLJyF6EOdeJd/8UK5JESPCCDdDD86i5AkmVx4X
+        vbIJF1IQ==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lk89f-00HHdy-GA; Fri, 21 May 2021 16:37:43 +0000
+Subject: Re: [PATCH] hungtask: add filter kthread/check comm
+To:     chenguanyou <chenguanyou9338@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     akpm@linux-foundation.org, keescook@chromium.org, mhocko@suse.com,
+        lukas.bulwahn@gmail.com, vbabka@suse.cz, gpiccoli@canonical.com,
+        chenguanyou <chenguanyou@xiaomi.com>
+References: <20210521132503.19740-1-chenguanyou@xiaomi.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <2421c8ea-de79-90df-08b6-51f15e859657@infradead.org>
+Date:   Fri, 21 May 2021 09:37:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210521072610.2880286-1-elver@google.com>
-In-Reply-To: <20210521072610.2880286-1-elver@google.com>
-From:   Sami Tolvanen <samitolvanen@google.com>
-Date:   Fri, 21 May 2021 09:36:11 -0700
-Message-ID: <CABCJKue8=HO+E596=LkMqFD2wN1=6vB_0+ZRSEnG8tqOz7s2Uw@mail.gmail.com>
-Subject: Re: [PATCH] init: verify that function is initcall_t at compile-time
-To:     Marco Elver <elver@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>, ojeda@kernel.org,
-        johan@kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Joe Perches <joe@perches.com>, Arnd Bergmann <arnd@arndb.de>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210521132503.19740-1-chenguanyou@xiaomi.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Marco,
-
-On Fri, May 21, 2021 at 12:26 AM Marco Elver <elver@google.com> wrote:
->
-> In the spirit of making it hard to misuse an interface, add a
-> compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
-> to verify the initcall function matches initcall_t, because the inline
-> asm bypasses any type-checking the compiler would otherwise do. This
-> will help developers catch incorrect API use in all configurations.
->
-> A recent example of this is:
-> https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
->
-> Signed-off-by: Marco Elver <elver@google.com>
-> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Tested-by: Nathan Chancellor <nathan@kernel.org>
+On 5/21/21 6:25 AM, chenguanyou wrote:
+> Some kernel threads are always in D state, when we enable hung_task,
+> it will misjudge, we should skip these to narrow the scope.
+> 
+> exp mtk mobilephone:
+> root            420   420      2       0      0 kwdt_thread         0 D wdtk-0
+> root            421   421      2       0      0 kwdt_thread         0 D wdtk-1
+> root            422   422      2       0      0 kwdt_thread         0 D wdtk-2
+> root            423   423      2       0      0 kwdt_thread         0 D wdtk-3
+> root            424   424      2       0      0 kwdt_thread         0 D wdtk-4
+> root            425   425      2       0      0 kwdt_thread         0 D wdtk-5
+> root            426   426      2       0      0 kwdt_thread         0 D wdtk-6
+> root            427   427      2       0      0 kwdt_thread         0 D wdtk-7
+> root            435   435      2       0      0 mtk_lpm_monitor_thread 0 D LPM-0
+> root            436   436      2       0      0 mtk_lpm_monitor_thread 0 D LPM-1
+> root            437   437      2       0      0 mtk_lpm_monitor_thread 0 D LPM-2
+> root            438   438      2       0      0 mtk_lpm_monitor_thread 0 D LPM-3
+> root            439   439      2       0      0 mtk_lpm_monitor_thread 0 D LPM-4
+> root            440   440      2       0      0 mtk_lpm_monitor_thread 0 D LPM-5
+> root            441   441      2       0      0 mtk_lpm_monitor_thread 0 D LPM-6
+> root            442   442      2       0      0 mtk_lpm_monitor_thread 0 D LPM-7
+> 
+> Signed-off-by: chenguanyou <chenguanyou@xiaomi.com>
 > ---
->  include/linux/init.h | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/include/linux/init.h b/include/linux/init.h
-> index 045ad1650ed1..d82b4b2e1d25 100644
-> --- a/include/linux/init.h
-> +++ b/include/linux/init.h
-> @@ -242,7 +242,8 @@ extern bool initcall_debug;
->         asm(".section   \"" __sec "\", \"a\"            \n"     \
->             __stringify(__name) ":                      \n"     \
->             ".long      " __stringify(__stub) " - .     \n"     \
-> -           ".previous                                  \n");
-> +           ".previous                                  \n");   \
-> +       static_assert(__same_type(initcall_t, &fn));
+>  include/linux/sched/sysctl.h |  4 ++++
+>  kernel/hung_task.c           | 17 +++++++++++++++++
+>  kernel/sysctl.c              | 16 ++++++++++++++++
+>  lib/Kconfig.debug            | 24 ++++++++++++++++++++++++
+>  4 files changed, 61 insertions(+)
+> 
+> diff --git a/include/linux/sched/sysctl.h b/include/linux/sched/sysctl.h
+> index 3c31ba88aca5..e8a9a28215bf 100644
+> --- a/include/linux/sched/sysctl.h
+> +++ b/include/linux/sched/sysctl.h
+> @@ -14,11 +14,15 @@ extern unsigned int sysctl_hung_task_all_cpu_backtrace;
+>  #define sysctl_hung_task_all_cpu_backtrace 0
+>  #endif /* CONFIG_SMP */
+>  
+> +#define TASK_COMM_LEN 16
+> +
+>  extern int	     sysctl_hung_task_check_count;
+>  extern unsigned int  sysctl_hung_task_panic;
+>  extern unsigned long sysctl_hung_task_timeout_secs;
+>  extern unsigned long sysctl_hung_task_check_interval_secs;
+>  extern int sysctl_hung_task_warnings;
+> +extern unsigned int sysctl_hung_task_filter_kthread;
+> +extern char sysctl_hung_task_check_comm[TASK_COMM_LEN];
+>  int proc_dohung_task_timeout_secs(struct ctl_table *table, int write,
+>  		void *buffer, size_t *lenp, loff_t *ppos);
 >  #else
->  #define ____define_initcall(fn, __unused, __name, __sec)       \
->         static initcall_t __name __used                         \
+> diff --git a/kernel/hung_task.c b/kernel/hung_task.c
+> index 396ebaebea3f..e018563d4882 100644
+> --- a/kernel/hung_task.c
+> +++ b/kernel/hung_task.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/sched/sysctl.h>
+>  
+>  #include <trace/events/sched.h>
+> +#include <linux/string.h>
+>  
+>  /*
+>   * The number of tasks checked:
+> @@ -48,6 +49,16 @@ unsigned long __read_mostly sysctl_hung_task_timeout_secs = CONFIG_DEFAULT_HUNG_
+>   */
+>  unsigned long __read_mostly sysctl_hung_task_check_interval_secs;
+>  
+> +/*
+> + * Non zero means no checking kthread
 
-This looks like a nice improvement, thank you for sending the patch!
+      Non-zero
 
-Reviewed-by: Sami Tolvanen <samitolvanen@google.com>
+(also mentioned in v1 review, whereas this is v2, I guess, although
+it doesn't say that it is v2, but it should say that.)
 
-Sami
+> + */
+> +unsigned int __read_mostly sysctl_hung_task_filter_kthread = CONFIG_DEFAULT_HUNG_TASK_FILTER_KTHREAD;
+> +
+> +/*
+> + * Only one
+> + */
+> +char __read_mostly sysctl_hung_task_check_comm[TASK_COMM_LEN] = CONFIG_DEFAULT_HUNG_TASK_CHECK_COMM;
+> +
+>  int __read_mostly sysctl_hung_task_warnings = 10;
+>  
+>  static int __read_mostly did_panic;
+> @@ -88,6 +99,12 @@ static void check_hung_task(struct task_struct *t, unsigned long timeout)
+>  {
+>  	unsigned long switch_count = t->nvcsw + t->nivcsw;
+>  
+> +	if (unlikely(strlen(sysctl_hung_task_check_comm) && !strstr(t->comm, sysctl_hung_task_check_comm)))
+> +		return;
+> +
+> +	if (unlikely(sysctl_hung_task_filter_kthread && t->flags & PF_KTHREAD))
+> +		return;
+> +
+>  	/*
+>  	 * Ensure the task is not frozen.
+>  	 * Also, skip vfork and any other user process that freezer should skip.
+> diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+> index 62fbd09b5dc1..1daede87c88d 100644
+> --- a/kernel/sysctl.c
+> +++ b/kernel/sysctl.c
+> @@ -2519,6 +2519,22 @@ static struct ctl_table kern_table[] = {
+>  		.proc_handler	= proc_dointvec_minmax,
+>  		.extra1		= &neg_one,
+>  	},
+> +	{
+> +		.procname	= "hung_task_filter_kthread",
+> +		.data		= &sysctl_hung_task_filter_kthread,
+> +		.maxlen		= sizeof(int),
+> +		.mode		= 0644,
+> +		.proc_handler   = proc_dointvec_minmax,
+> +		.extra1		= SYSCTL_ZERO,
+> +		.extra2		= SYSCTL_ONE,
+> +	},
+> +	{
+> +		.procname	= "hung_task_check_comm",
+> +		.data		= &sysctl_hung_task_check_comm,
+> +		.maxlen		= TASK_COMM_LEN,
+> +		.mode		= 0644,
+> +		.proc_handler	= proc_dostring,
+> +	},
+
+(copy-paste from v1 review:)
+
+These new sysctls should be documented in Documentation/admin-guide/sysctl/kernel.rst.
+
+
+>  #endif
+>  #ifdef CONFIG_RT_MUTEXES
+>  	{
+> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+> index 2c7f46b366f1..6eab8cf0c37f 100644
+> --- a/lib/Kconfig.debug
+> +++ b/lib/Kconfig.debug
+> @@ -1101,6 +1101,30 @@ config DEFAULT_HUNG_TASK_TIMEOUT
+>  	  A timeout of 0 disables the check.  The default is two minutes.
+>  	  Keeping the default should be fine in most cases.
+>  
+> +config DEFAULT_HUNG_TASK_FILTER_KTHREAD
+> +	int "Default filter kthread for hung task"
+> +	depends on DETECT_HUNG_TASK
+> +	range 0 1
+> +	default 0
+> +	help
+> +	  This option controls filter kthread used to determine when
+
+(again:)
+	                                      uses
+
+> +	  a kernel task has become "state=TASK_UNINTERRUPTIBLE" and should be skip.
+
+(again:)
+	                                                                      skipped.
+
+> +
+> +	  It can be adjusted at runtime via the kernel.hung_task_filter_kthread
+> +	  sysctl or by writing a value to
+> +	  /proc/sys/kernel/hung_task_filter_kthread.
+> +
+> +	  A filter of 1 disables the check
+
+(again:)
+	                             check.
+
+> +
+> +config DEFAULT_HUNG_TASK_CHECK_COMM
+> +	string "Default check only one comm"
+> +	depends on DETECT_HUNG_TASK
+> +	default ""
+> +	help
+> +	  It can be adjusted at runtime via the kernel.hung_task_check_comm
+> +	  sysctl or by writing a value to
+> +	  /proc/sys/kernel/hung_task_check_comm.
+> +
+
+(again:)
+That help text doesn't tell how the Kconfig symbol is used.
+
+>  config BOOTPARAM_HUNG_TASK_PANIC
+>  	bool "Panic (Reboot) On Hung Tasks"
+>  	depends on DETECT_HUNG_TASK
+> 
+
+
+-- 
+~Randy
