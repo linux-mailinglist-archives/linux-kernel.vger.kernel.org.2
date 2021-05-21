@@ -2,176 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5102438BC27
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:00:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 765EC38BC2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:00:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhEUCB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42592 "EHLO
+        id S238090AbhEUCCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:02:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237368AbhEUCBy (ORCPT
+        with ESMTP id S238093AbhEUCCB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:01:54 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5708DC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:00:32 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id x18so9483207pfi.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 19:00:32 -0700 (PDT)
+        Thu, 20 May 2021 22:02:01 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42C4C061763;
+        Thu, 20 May 2021 19:00:39 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id n8so4915191plf.7;
+        Thu, 20 May 2021 19:00:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=g+YS7h4l6QuSOjaD3+CpMVe7LGzJXRPA6F3sn/LTdRM=;
-        b=B6k4mT2xFCfUMNk3s6g5dC/uWSa+ptn3NXUHwqm5v5DUe4cGEC9jczDlqVEuK6rrEq
-         /WATzP3lkdN6a1a4ZoUSgdeAarFV+USnIyLT/ee/FLe+SPwqM70rjGzkDO/sQewAGJsq
-         Vw8ZEaFLlASikx4pKTX97c0MJRa0o1LEDtyjT+x0rIZRNwvUlOBSHLCXgNjbY76j1sBg
-         JGJwDpf3COS6OhE7+jiZK4MCShBNuPq/CYFMM0Ou5+YsITa3gGDbKS1cAhNLbnGqZ/ho
-         jYUNEduH1FEovZSZ9uXQO2LnPdiY80OwB59HDt91Wo0H9Xffga8ECKtnCkio+rpc5LVY
-         HvkA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9fB9txKIQZNMl67yv7ERq72Q+6wcnvrLhnIU26tnTf4=;
+        b=An1xKWU/mWO08cY0cP24LyKkNnOv5zCCLUdnglRtraCTvQQzxVh9tTfYP1YanUjoR8
+         gFtYTxBnypDtTZJxyxQ1tMDJtzdMMTs5rHApnAEd/aQWzVn+hLHmzuypSaML2xrdpRCW
+         +atdTnZ2DCoPjdD9qdm1EhlEDGaoVnmocolZmRF7sErnz5ofewaQGpXASxT8QxwUiUai
+         nj86+/F36GPfLpYIIDyoKPdhyetIbbr07I+lFT1YwrnBmgBe0t2Svn7GZ5BNKqRlLY2/
+         CGzlvZ+aIKnYSNNGv4xYAR9uUG2Ao2Igzhd1uppZXRCZB6hTlZNwDp4EPHaQ6nKsT/a/
+         loIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=g+YS7h4l6QuSOjaD3+CpMVe7LGzJXRPA6F3sn/LTdRM=;
-        b=t0Nz/i2vBNMrpBX0b2TWEeMsK/0lHpvqN/6ks5Hmfxg+WvLrohc3cZhfUfXu4sV2PS
-         Ef3S/BLm8owDTLNgd68rJqCpkSci2VBcXzqjog72G1f+h7N0+HrroZsZAqKxC6NRf6Uk
-         VwVonabwniIvQLwaEbuiY44GbGnP0S6hpeOZtX7FPiJu0ZA5uipZpCB95B1GmFRHG72o
-         TSPiUfimKNff9Z9ZfIHP9mqQ5j9jHgxgtti6+ttIq4FNXPk6UrP9mdx1YENm35VumOYC
-         UWE6UBEYDuYiLU0iaiifKF4ZD8JVNpdn7bzWZttjR7ERDwZtUqg9shq5jYXEwhFYfY2A
-         mqkg==
-X-Gm-Message-State: AOAM532lw9hw0hzp/WrzDdRW4+c9BDhv7RDyUX9a759LkRgWMOIYiX4F
-        vIn+qv7Epq6nSq2OxktoM1w=
-X-Google-Smtp-Source: ABdhPJxxjNnv1ayjbijXuQ8TmCNBbxr9/IUwonar+7tw9bO5N6zC76zsO22mdHgFLgWjIIP0slZeBg==
-X-Received: by 2002:aa7:8491:0:b029:2dc:b1cc:5532 with SMTP id u17-20020aa784910000b02902dcb1cc5532mr7666187pfn.3.1621562431808;
-        Thu, 20 May 2021 19:00:31 -0700 (PDT)
-Received: from bj03382pcu.spreadtrum.com ([117.18.48.102])
-        by smtp.gmail.com with ESMTPSA id y14sm7375547pjr.51.2021.05.20.19.00.26
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 20 May 2021 19:00:30 -0700 (PDT)
-From:   Huangzhaoyang <huangzhaoyang@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Zhaoyang Huang <zhaoyang.huang@unisoc.com>,
-        Ziwei Dai <ziwei.dai@unisoc.com>, Ke Wang <ke.wang@unisoc.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: [PATCH v5] psi: fix race between psi_trigger_create and psimon
-Date:   Fri, 21 May 2021 09:59:03 +0800
-Message-Id: <1621562343-8033-1-git-send-email-huangzhaoyang@gmail.com>
-X-Mailer: git-send-email 1.7.9.5
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9fB9txKIQZNMl67yv7ERq72Q+6wcnvrLhnIU26tnTf4=;
+        b=rGDRJXOnkNPwOFcApTQTF4Rik5rpOF5f5VX5RGPBomGki5XoA9LO/x8nFPHMPFAell
+         lH+OYtMX6j7EqntVxFRCYfsgjmpqXAtVSHMfCAsTBVyjGESzMe8e0KcGLnnpHvVjwF7+
+         6xGKOO4LblKmkjb2gaOX9JIOu+Z0DWeygM4AuWBP27kAApEKJhTyrLnzWtB1meIDCMfR
+         u6BGW3q6q21E1yYvQ1h8JsrszPWtpsos8h3kIjOt+IhIQVRFqYXaoU9w327qPmPGZxDa
+         W7xFQeAV9rZGptnmpXmU/8UqXet0WEqwxrYZ86T/A4akD530eC9n9K3kt0Nd5WlbFPuZ
+         Mw3w==
+X-Gm-Message-State: AOAM53199GkBLg4N9iRGWnv27o9l/XKa3/iT6PG36TxTc7d/Y9MVbY7b
+        KneKbwIDzCDBrD/3FcM+JJY=
+X-Google-Smtp-Source: ABdhPJwBofzBAXoo5pDmXX4ye8/TsvSpB7pKcMIb3pVYhLkIdagqbQ5wvHtXHUJZRNsbTl2FgNx8tA==
+X-Received: by 2002:a17:90a:f811:: with SMTP id ij17mr8130069pjb.63.1621562439317;
+        Thu, 20 May 2021 19:00:39 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id w74sm2869555pfd.209.2021.05.20.19.00.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 May 2021 19:00:39 -0700 (PDT)
+Date:   Thu, 20 May 2021 19:00:34 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Jamin Lin <jamin_lin@aspeedtech.com>
+Cc:     Joel Stanley <joel@jms.id.au>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Rayn Chen <rayn_chen@aspeedtech.com>,
+        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
+        Steven Lee <steven_lee@aspeedtech.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
+ AST2600
+Message-ID: <20210521020033.GB19153@taoren-ubuntu-R90MNF91>
+References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
+ <20210519080436.18975-2-jamin_lin@aspeedtech.com>
+ <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
+ <20210520033140.GA3656@aspeedtech.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520033140.GA3656@aspeedtech.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Hi Jamin,
 
-Race detected between psi_trigger_destroy/create as shown below, which
-cause panic by accessing invalid psi_system->poll_wait->wait_queue_entry
-and psi_system->poll_timer->entry->next. Under this modification, the
-race window is removed by initialising poll_wait and poll_timer in
-group_init which are executed only once at beginning.
+On Thu, May 20, 2021 at 11:31:41AM +0800, Jamin Lin wrote:
+> The 05/19/2021 22:59, Joel Stanley wrote:
+> > On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
+> > >
+> > > The register definition between AST2600 A2 and A3 is different.
+> > > This patch avoid new registers definition of AST2600 to use
+> > > this driver. We will submit the path for the new registers
+> > > definition of AST2600.
+> > 
+> > The AST2600 v9 datasheet says that bit 2 selects between old and new
+> > register sets, and that the old register set is the default.
+> > 
+> > Has the default changed for the A3?, and the datasheet is incorrect?
+> > 
+> > Does the A3 still support the old register set?
+> > 
+> We suggest user to use the new i2c driver for AST2600 and we will sumbit
+> it. This driver is used to AST2500 and AST2400 SOCs. Change this
+> driver to check global register of i2c to avoid user build the wrong driver. 
 
-psi_trigger_destroy                      psi_trigger_create
-mutex_lock(trigger_lock);
-rcu_assign_pointer(poll_task, NULL);
-mutex_unlock(trigger_lock);
-					mutex_lock(trigger_lock);
-					if (!rcu_access_pointer(group->poll_task)) {
+If I understand correctly, the answer implies old register set is still
+supported in A3 although aspeed suggest people using the new driver/mode?
 
-						timer_setup(poll_timer, poll_timer_fn, 0);
+Can you please share more context behind the suggestion? Such as new
+register mode has better performance? Or some known issues that were
+deteted in old mode are fixed in new register mode?
 
-						rcu_assign_pointer(poll_task, task);
-					}
-					mutex_unlock(trigger_lock);
 
-synchronize_rcu();
-del_timer_sync(poll_timer); <-- poll_timer has been reinitialized by
-psi_trigger_create
+Cheers,
 
-So, trigger_lock/RCU correctly protects destruction of group->poll_task but
-misses this race affecting poll_timer and poll_wait.
-
-Fixes: 461daba06bdc ("psi: eliminate kthread_worker from psi trigger
-scheduling mechanism")
-
-Signed-off-by: ziwei.dai <ziwei.dai@unisoc.com>
-Signed-off-by: ke.wang <ke.wang@unisoc.com>
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
----
-v2: change del_timer_sync to del_timer in psi_trigger_destroy
-v3: remove timer_setup within psi_tirgger_create
-    protect del_timer by extending the critical section of mutex_lock
-v4: amend fix information on comment
-v5: delete the poll_timer while assigning the task to NULL
----
----
- kernel/sched/psi.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-index cc25a3c..075501e 100644
---- a/kernel/sched/psi.c
-+++ b/kernel/sched/psi.c
-@@ -182,6 +182,8 @@ struct psi_group psi_system = {
- 
- static void psi_avgs_work(struct work_struct *work);
- 
-+static void poll_timer_fn(struct timer_list *t);
-+
- static void group_init(struct psi_group *group)
- {
- 	int cpu;
-@@ -201,6 +203,8 @@ static void group_init(struct psi_group *group)
- 	memset(group->polling_total, 0, sizeof(group->polling_total));
- 	group->polling_next_update = ULLONG_MAX;
- 	group->polling_until = 0;
-+	init_waitqueue_head(&group->poll_wait);
-+	timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 	rcu_assign_pointer(group->poll_task, NULL);
- }
- 
-@@ -1157,9 +1161,7 @@ struct psi_trigger *psi_trigger_create(struct psi_group *group,
- 			return ERR_CAST(task);
- 		}
- 		atomic_set(&group->poll_wakeup, 0);
--		init_waitqueue_head(&group->poll_wait);
- 		wake_up_process(task);
--		timer_setup(&group->poll_timer, poll_timer_fn, 0);
- 		rcu_assign_pointer(group->poll_task, task);
- 	}
- 
-@@ -1211,6 +1213,7 @@ static void psi_trigger_destroy(struct kref *ref)
- 					group->poll_task,
- 					lockdep_is_held(&group->trigger_lock));
- 			rcu_assign_pointer(group->poll_task, NULL);
-+			del_timer(&group->poll_timer);
- 		}
- 	}
- 
-@@ -1223,17 +1226,14 @@ static void psi_trigger_destroy(struct kref *ref)
- 	 */
- 	synchronize_rcu();
- 	/*
--	 * Destroy the kworker after releasing trigger_lock to prevent a
-+	 * Destroy psimon after releasing trigger_lock to prevent a
- 	 * deadlock while waiting for psi_poll_work to acquire trigger_lock
- 	 */
- 	if (task_to_destroy) {
- 		/*
- 		 * After the RCU grace period has expired, the worker
- 		 * can no longer be found through group->poll_task.
--		 * But it might have been already scheduled before
--		 * that - deschedule it cleanly before destroying it.
- 		 */
--		del_timer_sync(&group->poll_timer);
- 		kthread_stop(task_to_destroy);
- 	}
- 	kfree(t);
--- 
-1.9.1
-
+Tao
