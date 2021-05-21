@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE41A38BBB9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8143938BBBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:40:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237270AbhEUBlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:41:12 -0400
-Received: from mail-oo1-f47.google.com ([209.85.161.47]:46666 "EHLO
-        mail-oo1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237113AbhEUBlK (ORCPT
+        id S237333AbhEUBl1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:41:27 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46835 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237113AbhEUBlZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:41:10 -0400
-Received: by mail-oo1-f47.google.com with SMTP id o14-20020a4a384e0000b029020ec48a2358so2148827oof.13;
-        Thu, 20 May 2021 18:39:47 -0700 (PDT)
+        Thu, 20 May 2021 21:41:25 -0400
+Received: by mail-ot1-f43.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso16598329otb.13;
+        Thu, 20 May 2021 18:40:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=twIIkTMnAszhUEiU17DepvUWRNVDKbFl4+4yGD34k5k=;
-        b=IFTIgrxA9FhPDyIn2Z/WxKtmcyV5NZg1tPY3chg+OlQgAe6tOCwFRA6L91DpIQxqqA
-         peqhIow9MYjyXDwm8wwnGOmgNJGI9XXM2m34ft9Vg1vrwSRkBxvFGjIRlGwl4PS4zFXn
-         KSJbDy6hp8F4HTd3daoZWh7jIiGXVuHsxXhMqNbrvYwOC0HqxWXn4ukEsKZ2OmnM+OkH
-         CzoNCud0g3cDJFpZt1GZQ9sbzmmDcD2qthU29SlyaGSyByYp2tZtcrIIlhQMtv6Fu2pb
-         Vf+TkYDtxBLipuWtjw1SaAsXqtIuX985iaQIounXPR5J2qLxo0VS7ZCmxpOqCxKIYqxf
-         V7Ww==
-X-Gm-Message-State: AOAM532uDmaaTEf2UQ+33XCUbOwXLxMasW7sJUV9EuSUnsnMfme46K3s
-        gtwed24kmXqOO4hbuIiyTW7NMA4Jkg==
-X-Google-Smtp-Source: ABdhPJywIEAjV6PJzo8otOaFuoJTJP8F5lzBvqeWyHUM5mp/ztXEA4AwjUCsGAT4m4e2e6pn3Bu5gQ==
-X-Received: by 2002:a4a:88f2:: with SMTP id q47mr5943925ooh.30.1621561186891;
-        Thu, 20 May 2021 18:39:46 -0700 (PDT)
+        bh=KrS2ImoxDpLOQ8y1v+DGJnRWn9kr/DL7TH/0NzkYf1Y=;
+        b=QA1pYtxBip1P+ZNnVBKT2oGHKVBxsubQmYIGyVdTVtwbTM4ShkpRqrX6/TPk/dSQJ3
+         B1REkDDyN+4pfy/4aRDTfgTUp6fYculJhkRIlgtTkc6MhcEc/lf+Cm2QkccEfMjcjXss
+         srPmxLDp/y3ogkOCoM1RHgYers53+YKahjkxrPpW9qljDQZmbjKaAdQDy8QUs51VZDKX
+         az4gLpvwsMuv9qm0+tBi6FJp58TlcdVuvrBcPT7fUNvhZimSTPIeM6VKYjtjHHI3ry74
+         kbqEbxrz6yKLSCyWqnaW3Ra3JTIPDT9YEmAOJ/HlzxwT3ZsFxB2oFGGVYaNwEm508mOS
+         RXXg==
+X-Gm-Message-State: AOAM531eOqkrlU/wLWJcaXb5njJxVVypPoSkaShbw1sIVD8XIrAW6gte
+        vCMN4MHsk/BAoUHo+fQzHQ==
+X-Google-Smtp-Source: ABdhPJwCzBEmJz6ZaXDHHd0Fn7AUQ1EMmLZj85T2DCBDFNRlzZ658/eVTfiZ2OBYENpSkiw25M8MWA==
+X-Received: by 2002:a05:6830:40a4:: with SMTP id x36mr5950611ott.342.1621561203225;
+        Thu, 20 May 2021 18:40:03 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id n11sm615941oom.1.2021.05.20.18.39.45
+        by smtp.gmail.com with ESMTPSA id d67sm873550oia.56.2021.05.20.18.40.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 18:39:46 -0700 (PDT)
-Received: (nullmailer pid 2460455 invoked by uid 1000);
-        Fri, 21 May 2021 01:39:45 -0000
-Date:   Thu, 20 May 2021 20:39:45 -0500
+        Thu, 20 May 2021 18:40:02 -0700 (PDT)
+Received: (nullmailer pid 2461072 invoked by uid 1000);
+        Fri, 21 May 2021 01:40:01 -0000
+Date:   Thu, 20 May 2021 20:40:01 -0500
 From:   Rob Herring <robh@kernel.org>
 To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
-        Samuel Holland <samuel@sholland.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Ondrej Jirman <megous@megous.com>, devicetree@vger.kernel.org,
-        Chen-Yu Tsai <wens@csie.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Maxime Ripard <mripard@kernel.org>,
+Cc:     "David S . Miller" <davem@davemloft.net>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v6 03/17] dt-bindings: rtc: sun6i: Add H616 compatible
- string
-Message-ID: <20210521013945.GA2460400@robh.at.kernel.org>
+        Chen-Yu Tsai <wens@csie.org>, netdev@vger.kernel.org,
+        linux-sunxi@lists.linux.dev, devicetree@vger.kernel.org,
+        Samuel Holland <samuel@sholland.org>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-kernel@vger.kernel.org, Icenowy Zheng <icenowy@aosc.io>,
+        Ondrej Jirman <megous@megous.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>
+Subject: Re: [PATCH v6 06/17] dt-bindings: net: sun8i-emac: Add H616
+ compatible string
+Message-ID: <20210521014001.GA2461016@robh.at.kernel.org>
 References: <20210519104152.21119-1-andre.przywara@arm.com>
- <20210519104152.21119-4-andre.przywara@arm.com>
+ <20210519104152.21119-7-andre.przywara@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210519104152.21119-4-andre.przywara@arm.com>
+In-Reply-To: <20210519104152.21119-7-andre.przywara@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 11:41:38 +0100, Andre Przywara wrote:
-> Add the obvious compatible name to the existing RTC binding.
-> The actual RTC part of the device uses a different day/month/year
-> storage scheme, so it's not compatible with the previous devices.
+On Wed, 19 May 2021 11:41:41 +0100, Andre Przywara wrote:
+> Add the obvious compatible name to the existing EMAC binding, and pair
+> it with the existing A64 fallback compatible string, as the devices are
+> compatible.
+> 
+> On the way use enums to group the compatible devices together.
 > 
 > Signed-off-by: Andre Przywara <andre.przywara@arm.com>
 > ---
->  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml     | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+>  .../devicetree/bindings/net/allwinner,sun8i-a83t-emac.yaml    | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
