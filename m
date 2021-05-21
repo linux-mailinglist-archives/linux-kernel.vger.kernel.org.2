@@ -2,108 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3989F38C861
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DBE038C862
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233446AbhEUNj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236245AbhEUNjm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:42 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DD4C06138B
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:18 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id a11so20182770ioo.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zXInqLwOOkmxw3FAtCSHWSift3iK7/sFcDERc9LRSF4=;
-        b=P+50PGwtRDOoeSEvb4QqD//5T0XqcThBfJTGTyXGa/7fVf0cA8hIb1SmGHWRm+npTW
-         xzGND2Pva4PPpWL9EM+uqUvGKNxk4RBqy0YJwKPing7Ye6LW+mxzR+hPkOXQc59KYeP5
-         zztM/HFZ1Vo17VrxhVyGBPxqobjIOPl37JteeOoC69VXt7LCvsCtAmRZyt0WQmp7BQ3J
-         7jrOyzncZCqVfT+arDqQ7g2VuNValU4gSjobpj4PMND6JrPwvgOW2/F0KyBYpgRMMnho
-         Yjrnb6S5eth7mVkI+IbYDNlxFbp0pm7uw6QfsR+up+JH8EXkwDovI1IfdUtODb4W7KCr
-         LJgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zXInqLwOOkmxw3FAtCSHWSift3iK7/sFcDERc9LRSF4=;
-        b=iiPOwnOrkaq9efVA0GlPewiu+o0CJ20h5oM1jnEh0C4dDCUapxf/sXCgLEli9AL3wD
-         Pv6YMVfKOszZxwm5RVpHE+AYI75wZx7txfOfOYlGTnqwr/9FfQYv8JmvFMQsLvZf17Tg
-         GSYnG4vsVY1TOuUCZ4Tz58IZmaL1PqBcVzGKJ6qWe/FDj83wGDzKtYR4Fp3egwhITHJ9
-         TuNIgBZ0qc9RY52KLmDd9XIbdTWVLETxQwTqUwHVUI9rwK82ZzhUCZw/CJm3ahZpxrbe
-         VeSukJ4R9tyZCI64MIYCU0Vl7rbuJYgIQcU6TLb1H3M5NdFcKwGXG2b4hoxnJ5YN8cFc
-         GrZg==
-X-Gm-Message-State: AOAM533M+NPhbPRDU+nFmzMqYvOY9ObEsJIu5UMZ3CQetDx0mmt0O5XS
-        +EMwGNOOU4ceb9rKQxqUDrJn9DRcrsOuDSnNmNZHHw==
-X-Google-Smtp-Source: ABdhPJzDCg3SDubz4fjQvEgSqB/x9Z08rEIowfTPC3zW+FVgcUW8kQxymOjjU9gFknfrlouULiZyZcawYJnd45GtWDg=
-X-Received: by 2002:a02:5409:: with SMTP id t9mr4611825jaa.50.1621604297789;
- Fri, 21 May 2021 06:38:17 -0700 (PDT)
+        id S236329AbhEUNkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:40:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49426 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236157AbhEUNjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:39:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 962636109F;
+        Fri, 21 May 2021 13:38:17 +0000 (UTC)
+Date:   Fri, 21 May 2021 19:08:12 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v4 3/6] bus: mhi: Add MMIO region length to controller
+ structure
+Message-ID: <20210521133812.GK70095@thinkpad>
+References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+ <1620330705-40192-4-git-send-email-bbhatt@codeaurora.org>
 MIME-Version: 1.0
-References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-11-acourbot@chromium.org>
-In-Reply-To: <20210519143011.1175546-11-acourbot@chromium.org>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 21 May 2021 21:38:06 +0800
-Message-ID: <CA+Px+wUWncvepPMhRZ7qdMzdeQr+0jnJRPYRY57qedVPM_8+wg@mail.gmail.com>
-Subject: Re: [PATCH v5 10/14] media: mtk-vcodec: vdec: support stateless API
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620330705-40192-4-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
-<acourbot@chromium.org> wrote:
-> +#include "media/videobuf2-v4l2.h"
-> +#include <media/videobuf2-dma-contig.h>
-> +#include <media/v4l2-event.h>
-> +#include <media/v4l2-mem2mem.h>
-> +#include <linux/module.h>
-> +
-> +#include "mtk_vcodec_drv.h"
-> +#include "mtk_vcodec_dec.h"
-> +#include "mtk_vcodec_intr.h"
-> +#include "mtk_vcodec_util.h"
-> +#include "vdec_drv_if.h"
-> +#include "mtk_vcodec_dec_pm.h"
+On Thu, May 06, 2021 at 12:51:42PM -0700, Bhaumik Bhatt wrote:
+> Make controller driver specify the MMIO register region length
+> for range checking of BHI or BHIe space. This can help validate
+> that offsets are in acceptable memory region or not and avoid any
+> boot-up issues due to BHI or BHIe memory accesses.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-Would be good practice to separate <...> and "..." inclusion and sort them.
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-> +static void mtk_vdec_worker(struct work_struct *work)
-> +{
-> +       struct mtk_vcodec_ctx *ctx =
-> +               container_of(work, struct mtk_vcodec_ctx, decode_work);
-> +       struct mtk_vcodec_dev *dev = ctx->dev;
-> +       struct vb2_v4l2_buffer *vb2_v4l2_src, *vb2_v4l2_dst;
-> +       struct vb2_buffer *vb2_src;
-> +       struct mtk_vcodec_mem *bs_src;
-> +       struct mtk_video_dec_buf *dec_buf_src;
-> +       struct media_request *src_buf_req;
-> +       struct vdec_fb *dst_buf;
-> +       bool res_chg = false;
-> +       int ret;
-> +
-> +       vb2_v4l2_src = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
-> +       if (vb2_v4l2_src == NULL) {
+Thanks,
+Mani
 
-To be neat, !vb2_v4l2_src.
-
-> +       vb2_v4l2_dst = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
-> +       if (vb2_v4l2_dst == NULL) {
-
-To be neat, !vb2_v4l2_dst.
+> ---
+>  include/linux/mhi.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+> index 944aa3a..9c347f5 100644
+> --- a/include/linux/mhi.h
+> +++ b/include/linux/mhi.h
+> @@ -303,6 +303,7 @@ struct mhi_controller_config {
+>   * @rddm_size: RAM dump size that host should allocate for debugging purpose
+>   * @sbl_size: SBL image size downloaded through BHIe (optional)
+>   * @seg_len: BHIe vector size (optional)
+> + * @reg_len: Length of the MHI MMIO region (required)
+>   * @fbc_image: Points to firmware image buffer
+>   * @rddm_image: Points to RAM dump buffer
+>   * @mhi_chan: Points to the channel configuration table
+> @@ -386,6 +387,7 @@ struct mhi_controller {
+>  	size_t rddm_size;
+>  	size_t sbl_size;
+>  	size_t seg_len;
+> +	size_t reg_len;
+>  	struct image_info *fbc_image;
+>  	struct image_info *rddm_image;
+>  	struct mhi_chan *mhi_chan;
+> -- 
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+> 
