@@ -2,76 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C29638BC39
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC9838BC3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:04:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238205AbhEUCEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:04:55 -0400
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:46987 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235427AbhEUCEv (ORCPT
+        id S238221AbhEUCFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:05:30 -0400
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:39594 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234496AbhEUCF2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:04:51 -0400
-Received: by mail-oi1-f171.google.com with SMTP id x15so18247033oic.13;
-        Thu, 20 May 2021 19:03:28 -0700 (PDT)
+        Thu, 20 May 2021 22:05:28 -0400
+Received: by mail-oi1-f174.google.com with SMTP id y76so9023060oia.6;
+        Thu, 20 May 2021 19:04:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=WhAeh+dZi9+3yK3kntKir0Vq+lwI30Bn7MsSEyHVbZU=;
-        b=eSL3Dq5saR/VLfdjH7XP2GkiOAGWKElrYSpIdojm2lTA6j2oRAt9dNq91sx+wdZ2K0
-         eowuNWqcMVfdSI0+P+UwCNuRwLTNnIoAFN0I1g1kW7//Z41e7L8Y1PxlgKrN/z9Rki80
-         LXabCue4B8GwLzlSqs37VOJr3y5YmM90ADB87nxYmeNCsKCQHh51Jmduobzjx7GyWvef
-         KGsml7WhJXNN4Z+SGeE6RKzu9Xz4aTMes/+ZgW+/75Ngi7j8LVj+rCKAF3FIUn6TnWhF
-         PKd7jPKh+0ytLok3KlE8k+MdXsiD15XeeL+w4zBrBzdKC01AMBCH0ygtNeeNgmvz0MOK
-         WYpw==
-X-Gm-Message-State: AOAM530jycmH+LmEf7aNfR/5/8jVpEc+ZYW2L8832BvmaS/peQcWTh9p
-        x9w+mGrvF0JD4NgkVYf11g==
-X-Google-Smtp-Source: ABdhPJyQqDX59bgvgmDRWgwVJcOyJeV8oVHeEjcOjQRXCo0m49J2PqCCHAFfmM3cT0row6pVQGk9MA==
-X-Received: by 2002:a05:6808:f90:: with SMTP id o16mr315450oiw.163.1621562607986;
-        Thu, 20 May 2021 19:03:27 -0700 (PDT)
+        bh=9fdH0SN9VUeMUbSb8aDt83HzmkEYcJr78YUXp4lCmeA=;
+        b=iGreE/gqKVRNNPNvstSzPIqhHpnkFqqpe7ueOvSJXN4bUw6CeBHkvuP+fyG/nu8wIK
+         M+ipeeT3oki75LVhVRQE3j4bNb6H265tGYBzonk9QBHPMZ9ERsuQ63hl0MXYEbzWSstZ
+         5nX7DVKhApIDYEEwmc+W/v8+SBU7pQpcwkaPgY0LHVm03K8Shh8VOVRpfz+jUx6SvDEl
+         QcNHDH+8bTIwr9WL7URdFsqy0slG1yRmZL+d08Vxde/LyQuse7/vGNRc0dijhFVpprP/
+         TgM3DakPEDiAkw5e7WcnULiBHYJPC8qrK8X29m1Im9VYwNh7+VHD35+aFC8L0EN829Qq
+         OL9g==
+X-Gm-Message-State: AOAM531PZfc76QpeLZvLjwn0CNmTcdO825wTvP4GZUlsI+TZG2XCvyOy
+        jYzWnGkSl6a9e4PmD9wQ1A==
+X-Google-Smtp-Source: ABdhPJz5I+8jM3jJcv60seXotXjXJjLle5BdrNuMwFhPVT8jv3yjwueMfTmo+aLKNGdUJ1++iFKrwg==
+X-Received: by 2002:a05:6808:309:: with SMTP id i9mr356643oie.14.1621562646140;
+        Thu, 20 May 2021 19:04:06 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e21sm919703oie.32.2021.05.20.19.03.26
+        by smtp.gmail.com with ESMTPSA id l20sm922057oop.3.2021.05.20.19.04.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 19:03:27 -0700 (PDT)
-Received: (nullmailer pid 2505823 invoked by uid 1000);
-        Fri, 21 May 2021 02:03:26 -0000
-Date:   Thu, 20 May 2021 21:03:26 -0500
+        Thu, 20 May 2021 19:04:05 -0700 (PDT)
+Received: (nullmailer pid 2507147 invoked by uid 1000);
+        Fri, 21 May 2021 02:04:04 -0000
+Date:   Thu, 20 May 2021 21:04:04 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     dillon.minfei@gmail.com
-Cc:     linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, sboyd@kernel.org,
-        hverkuil-cisco@xs4all.nl, mchehab@kernel.org,
-        alexandre.torgue@foss.st.com, patrice.chotard@foss.st.com,
-        mchehab+huawei@kernel.org, pihsun@chromium.org, gnurou@gmail.com,
-        mturquette@baylibre.com, robh+dt@kernel.org,
-        mcoquelin.stm32@gmail.com, linux-clk@vger.kernel.org,
-        linux-media@vger.kernel.org, ezequiel@collabora.com,
-        devicetree@vger.kernel.org, hugues.fruchet@foss.st.com
-Subject: Re: [PATCH 2/7] media: dt-bindings: media: add document for STM32
- DMA2D bindings
-Message-ID: <20210521020326.GA2505733@robh.at.kernel.org>
-References: <1621508727-24486-1-git-send-email-dillon.minfei@gmail.com>
- <1621508727-24486-3-git-send-email-dillon.minfei@gmail.com>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-kernel@vger.kernel.org, mkorpershoek@baylibre.com,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sean Wang <sean.wang@mediatek.com>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>, linux-crypto@vger.kernel.org,
+        Matt Mackall <mpm@selenic.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: rng: mediatek: convert to yaml schema
+Message-ID: <20210521020404.GA2507117@robh.at.kernel.org>
+References: <20210520111656.66017-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621508727-24486-3-git-send-email-dillon.minfei@gmail.com>
+In-Reply-To: <20210520111656.66017-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 19:05:22 +0800, dillon.minfei@gmail.com wrote:
-> From: Dillon Min <dillon.minfei@gmail.com>
+On Thu, 20 May 2021 13:16:55 +0200, Fabien Parent wrote:
+> Convert the RNG binding for MediaTek to use YAML schema.
 > 
-> This adds documentation of device tree bindings for the STM32 DMA2D
-> 
-> Signed-off-by: Dillon Min <dillon.minfei@gmail.com>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
->  .../devicetree/bindings/media/st,stm32-dma2d.yaml  | 71 ++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/st,stm32-dma2d.yaml
+> 
+> v2: Write the compatibles in a more compact way
+> 
+>  .../devicetree/bindings/rng/mtk-rng.txt       | 22 --------
+>  .../devicetree/bindings/rng/mtk-rng.yaml      | 53 +++++++++++++++++++
+>  2 files changed, 53 insertions(+), 22 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.txt
+>  create mode 100644 Documentation/devicetree/bindings/rng/mtk-rng.yaml
 > 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Applied, thanks!
