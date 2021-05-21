@@ -2,121 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF3338CDBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:45:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1023B38CDC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239062AbhEUSqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48024 "EHLO mail.kernel.org"
+        id S239069AbhEUSrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:47:05 -0400
+Received: from mga18.intel.com ([134.134.136.126]:48945 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230475AbhEUSqq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:46:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EBF161163;
-        Fri, 21 May 2021 18:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621622722;
-        bh=Nm8Cfc8aRBpj9UuxNsnBPYL/hKeRFeJTjmPOBDEyCZ4=;
-        h=From:To:Cc:Subject:Date:From;
-        b=COaStRG7C2aYJGo0+x+V8wBNuuiGgV/jNEaUd245CM5uVyshAIUfo2fYp0kTpovW7
-         sc/y2VFnLDURfTEhlQWz9U4MkzUpxmrE7VA94YgpG1mxIHj3wIieBAsZUIE/QHMd41
-         FZ+MW6bzcekTup397MEdXsmLACeQeGaLwL9WkTGE=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH] debugfs: remove return value of debugfs_create_bool()
-Date:   Fri, 21 May 2021 20:45:19 +0200
-Message-Id: <20210521184519.1356639-1-gregkh@linuxfoundation.org>
-X-Mailer: git-send-email 2.31.1
+        id S230475AbhEUSrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:47:03 -0400
+IronPort-SDR: EMNIrF9KjjvYBBB7VPsJgSBwbF2hV21Cez5vQxBJ1P/87TBzfJydmdR0XQz6bbi3JSo6pNIhHk
+ qstQo3GcOWpg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="188945231"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="188945231"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 11:45:38 -0700
+IronPort-SDR: zYtKor2tIH9weos2UI9ud325LLu8UaEUYPQjPmBo7Xw8lJTZjyB/HzMlPCrQE5mN1uIH7sMu8k
+ 57wpSyhcfCMQ==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="441197292"
+Received: from orxpovpvmu02.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.181.51])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 11:45:38 -0700
+Subject: Re: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <3573599f-56bc-f21e-7a7e-0d441ab9d68e@linux.intel.com>
+Date:   Fri, 21 May 2021 11:45:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No one checks the return value of debugfs_create_bool(), as it's not
-needed, so make the return value void, so that no one tries to do so in
-the future.
+Hi Dave,
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- Documentation/filesystems/debugfs.rst |  4 ++--
- fs/debugfs/file.c                     | 15 +++------------
- include/linux/debugfs.h               | 12 ++++--------
- 3 files changed, 9 insertions(+), 22 deletions(-)
+On 5/17/21 5:09 PM, Kuppuswamy Sathyanarayanan wrote:
+> From: "Kirill A. Shutemov"<kirill.shutemov@linux.intel.com>
+> 
+> Virtualization Exceptions (#VE) are delivered to TDX guests due to
+> specific guest actions which may happen in either user space or the kernel:
+> 
+>   * Specific instructions (WBINVD, for example)
+>   * Specific MSR accesses
+>   * Specific CPUID leaf accesses
+>   * Access to TD-shared memory, which includes MMIO
+> 
+> In the settings that Linux will run in, virtual exceptions are never
+> generated on accesses to normal, TD-private memory that has been
+> accepted.
+> 
+> The entry paths do not access TD-shared memory, MMIO regions or use
+> those specific MSRs, instructions, CPUID leaves that might generate #VE.
+> In addition, all interrupts including NMIs are blocked by the hardware
+> starting with #VE delivery until TDGETVEINFO is called.  This eliminates
+> the chance of a #VE during the syscall gap or paranoid entry paths and
+> simplifies #VE handling.
+> 
+> After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
+> although we don't expect it to happen because we don't expect NMIs to
+> trigger #VEs. Another case where they could happen is if the #VE
+> exception panics, but in this case there are no guarantees on anything
+> anyways.
+> 
+> If a guest kernel action which would normally cause a #VE occurs in the
+> interrupt-disabled region before TDGETVEINFO, a #DF is delivered to the
+> guest which will result in an oops (and should eventually be a panic, as
+> we would like to set panic_on_oops to 1 for TDX guests).
+> 
+> Add basic infrastructure to handle any #VE which occurs in the kernel or
+> userspace.  Later patches will add handling for specific #VE scenarios.
+> 
+> Convert unhandled #VE's (everything, until later in this series) so that
+> they appear just like a #GP by calling ve_raise_fault() directly.
+> ve_raise_fault() is similar to #GP handler and is responsible for
+> sending SIGSEGV to userspace and cpu die and notifying debuggers and
+> other die chain users.
+> 
+> Co-developed-by: Sean Christopherson<sean.j.christopherson@intel.com>
+> Signed-off-by: Sean Christopherson<sean.j.christopherson@intel.com>
+> Signed-off-by: Kirill A. Shutemov<kirill.shutemov@linux.intel.com>
+> Reviewed-by: Andi Kleen<ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan<sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
 
-diff --git a/Documentation/filesystems/debugfs.rst b/Documentation/filesystems/debugfs.rst
-index 0f2292e367e6..71b1fee56d2a 100644
---- a/Documentation/filesystems/debugfs.rst
-+++ b/Documentation/filesystems/debugfs.rst
-@@ -120,8 +120,8 @@ and hexadecimal::
- 
- Boolean values can be placed in debugfs with::
- 
--    struct dentry *debugfs_create_bool(const char *name, umode_t mode,
--				       struct dentry *parent, bool *value);
-+    void debugfs_create_bool(const char *name, umode_t mode,
-+                             struct dentry *parent, bool *value);
- 
- A read on the resulting file will yield either Y (for non-zero values) or
- N, followed by a newline.  If written to, it will accept either upper- or
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index d513d5465c89..6ede714cb551 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -836,20 +836,11 @@ static const struct file_operations fops_bool_wo = {
-  * This function creates a file in debugfs with the given name that
-  * contains the value of the variable @value.  If the @mode variable is so
-  * set, it can be read from, and written to.
-- *
-- * This function will return a pointer to a dentry if it succeeds.  This
-- * pointer must be passed to the debugfs_remove() function when the file is
-- * to be removed (no automatic cleanup happens if your module is unloaded,
-- * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
-- * returned.
-- *
-- * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
-- * be returned.
-  */
--struct dentry *debugfs_create_bool(const char *name, umode_t mode,
--				   struct dentry *parent, bool *value)
-+void debugfs_create_bool(const char *name, umode_t mode, struct dentry *parent,
-+			 bool *value)
- {
--	return debugfs_create_mode_unsafe(name, mode, parent, value, &fops_bool,
-+	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_bool,
- 				   &fops_bool_ro, &fops_bool_wo);
- }
- EXPORT_SYMBOL_GPL(debugfs_create_bool);
-diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
-index 4e82f2b1fa62..c869f1e73d75 100644
---- a/include/linux/debugfs.h
-+++ b/include/linux/debugfs.h
-@@ -126,8 +126,8 @@ void debugfs_create_size_t(const char *name, umode_t mode,
- 			   struct dentry *parent, size_t *value);
- void debugfs_create_atomic_t(const char *name, umode_t mode,
- 			     struct dentry *parent, atomic_t *value);
--struct dentry *debugfs_create_bool(const char *name, umode_t mode,
--				  struct dentry *parent, bool *value);
-+void debugfs_create_bool(const char *name, umode_t mode, struct dentry *parent,
-+			 bool *value);
- void debugfs_create_str(const char *name, umode_t mode,
- 			struct dentry *parent, char **value);
- 
-@@ -291,12 +291,8 @@ static inline void debugfs_create_atomic_t(const char *name, umode_t mode,
- 					   atomic_t *value)
- { }
- 
--static inline struct dentry *debugfs_create_bool(const char *name, umode_t mode,
--						 struct dentry *parent,
--						 bool *value)
--{
--	return ERR_PTR(-ENODEV);
--}
-+static inline void debugfs_create_bool(const char *name, umode_t mode,
-+				       struct dentry *parent, bool *value) { }
- 
- static inline void debugfs_create_str(const char *name, umode_t mode,
- 				      struct dentry *parent,
+You have any other comments on this patch? If not, can you reply with your
+Reviewed-by tag?
+
 -- 
-2.31.1
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
