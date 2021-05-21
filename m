@@ -2,100 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84AED38C5B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:27:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47E7538C5BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:31:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234836AbhEUL2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:28:36 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:58527 "EHLO m43-7.mailgun.net"
+        id S231892AbhEULcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:32:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56172 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233846AbhEUL2X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:28:23 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621596420; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=yORL87zvs/JIbf2DwMLuAJGpDpo+Yql7ebK1r5sG3kM=; b=pZBqoAYdlNBJGN43VabLZ2SFHW66GMBR3xvKkHiwoW9m/2S0mWtiKfk7AC3gWjpuTYvfIMnp
- SVB8f7idxNrSAyO/kBF+xy9X9G54piYwtjXf9Ruazv3SCoOuNSxf4CLxVYI0Rm7pWErS/d2s
- 2V4xIlVo9YgLPn6hZsvmD8vSfsI=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60a799010d60c09896712436 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 11:26:57
- GMT
-Sender: mkshah=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C5360C4338A; Fri, 21 May 2021 11:26:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from mkshah-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: mkshah)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id D57C1C43217;
-        Fri, 21 May 2021 11:26:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D57C1C43217
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=mkshah@codeaurora.org
-From:   Maulik Shah <mkshah@codeaurora.org>
-To:     swboyd@chromium.org, mka@chromium.org, evgreen@chromium.org,
-        bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org, dianders@chromium.org, linux@roeck-us.net,
-        rnayak@codeaurora.org, lsrao@codeaurora.org,
-        Maulik Shah <mkshah@codeaurora.org>, devicetree@vger.kernel.org
-Subject: [PATCH v8 5/5] arm64: dts: qcom: sc7280: Enable SoC sleep stats
-Date:   Fri, 21 May 2021 16:56:11 +0530
-Message-Id: <1621596371-26482-6-git-send-email-mkshah@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
-References: <1621596371-26482-1-git-send-email-mkshah@codeaurora.org>
+        id S229991AbhEULca (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:32:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4DAF613DA;
+        Fri, 21 May 2021 11:31:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621596667;
+        bh=XCW+h8GxyRMMPHetbkEqtfnjz33mh3sQXexOSdqhuy4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ONWDyYeVs/0J4Vkz+ueCYV0mSFQu9dZ6ray+woDOk8ypSUcoMX6Tw4aQZ3M2eq1da
+         wouGyDIgIDRtX3zrdMpVRBUZS2hL6f0PSp9DUlX7FDqpAviYiNx/nER4LuMFzqxqgX
+         +wEmCOIz4t+QuO9vJE1Tz0RiQbNwgTCxxyNwgV4A=
+Date:   Fri, 21 May 2021 13:31:04 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zheyu Ma <zheyuma97@gmail.com>
+Cc:     cernekee@gmail.com, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] serial: rp2: use 'request_firmware' instead of
+ 'request_firmware_nowait'
+Message-ID: <YKeZ+JMvlQ8YvDuw@kroah.com>
+References: <1621577323-1541-1-git-send-email-zheyuma97@gmail.com>
+ <YKdYZF8zDGl0hxeX@kroah.com>
+ <CAMhUBjkeXn=Yf+dsdKo5_H1Tko3Qhfr+y=9b47XtHA04k2smXg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMhUBjkeXn=Yf+dsdKo5_H1Tko3Qhfr+y=9b47XtHA04k2smXg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device node for SoC sleep stats driver which provides various
-low power mode stats.
+On Fri, May 21, 2021 at 07:15:21PM +0800, Zheyu Ma wrote:
+> On Fri, May 21, 2021 at 2:51 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Fri, May 21, 2021 at 06:08:43AM +0000, Zheyu Ma wrote:
+> > > In 'rp2_probe', the driver registers 'rp2_uart_interrupt' then calls
+> > > 'rp2_fw_cb' through 'request_firmware_nowait'. In 'rp2_fw_cb', if the
+> > > firmware don't exists, function just return without initializing ports
+> > > of 'rp2_card'. But now the interrupt handler function has been
+> > > registered, and when an interrupt comes, 'rp2_uart_interrupt' may access
+> > > those ports then causing NULL pointer dereference or other bugs.
+> > >
+> > > Because the driver does some initialization work in 'rp2_fw_cb', in
+> > > order to make the driver ready to handle interrupts, 'request_firmware'
+> > > should be used instead of asynchronous 'request_firmware_nowait'.
+> >
+> > You just now slowed down the probe function.  Are you _sure_ this is ok?
+> 
+> Sorry, I'm not an expert in the field, but from my point of view, the
+> previous function 'rp2_fw_cb' does some initialization work that is
+> not suitable for asynchronous execution. Because after these initial
+> work, the driver can work normally (including preparing to handle
+> interrupts).
+> 
+> > Do you have this hardware to test this?  If so, what is the init time
+> > before and after this change?
+> 
+> To be honest, I don't have real hardware, I tested it with QEMU. I
+> made a total of 5 attempts. Before this change, the average boot time
+> required by kernel is 6.382s, the time required for insmoding this
+> module is 0.139s; After this change, the average boot time required by
+> kernel is 6.426s, the time required for insmoding this module is
+> 0.160s. This change really slowed down the probe function.
 
-Also update the reg size of aoss_qmp device to 0x400.
+Ok, at least you've tested it :)
 
-Cc: devicetree@vger.kernel.org
-Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
----
- arch/arm64/boot/dts/qcom/sc7280.dtsi | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+I'll take a slower init over a broken init any day.  I'll go queue this
+up, thanks.
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-index 2cc4785..47afca8 100644
---- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
-@@ -827,7 +827,7 @@
- 
- 		aoss_qmp: power-controller@c300000 {
- 			compatible = "qcom,sc7280-aoss-qmp";
--			reg = <0 0x0c300000 0 0x100000>;
-+			reg = <0 0x0c300000 0 0x400>;
- 			interrupts-extended = <&ipcc IPCC_CLIENT_AOP
- 						     IPCC_MPROC_SIGNAL_GLINK_QMP
- 						     IRQ_TYPE_EDGE_RISING>;
-@@ -838,6 +838,11 @@
- 			#power-domain-cells = <1>;
- 		};
- 
-+		rpmh-sleep-stats@c3f0000 {
-+			compatible = "qcom,rpmh-sleep-stats";
-+			reg = <0 0x0c3f0000 0 0x400>;
-+		};
-+
- 		spmi_bus: spmi@c440000 {
- 			compatible = "qcom,spmi-pmic-arb";
- 			reg = <0 0x0c440000 0 0x1100>,
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
-of Code Aurora Forum, hosted by The Linux Foundation
-
+greg k-h
