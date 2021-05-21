@@ -2,121 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4140938CB05
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84F3538CB08
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:30:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235856AbhEUQcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:32:00 -0400
-Received: from foss.arm.com ([217.140.110.172]:51098 "EHLO foss.arm.com"
+        id S236014AbhEUQcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:32:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231621AbhEUQb4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:31:56 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C39B81480;
-        Fri, 21 May 2021 09:30:32 -0700 (PDT)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 401B73F93E;
-        Fri, 21 May 2021 09:30:31 -0700 (PDT)
-Date:   Fri, 21 May 2021 17:30:11 +0100
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Ralf Schlatterbeck <rsc@runtux.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Mirko Vogt <mirko-dev|linux@nanl.de>
-Subject: Re: [PATCH 1/1] spi-sun6i: Fix chipselect/clock bug
-Message-ID: <20210521173011.1c602682@slackpad.fritz.box>
-In-Reply-To: <20210520100656.rgkdexdvrddt3upy@runtux.com>
-References: <20210520100656.rgkdexdvrddt3upy@runtux.com>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+        id S231621AbhEUQcN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:32:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E8D03613AF;
+        Fri, 21 May 2021 16:30:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621614649;
+        bh=Gsz7yuXP5bdGbG2AnmimRSB7YwtOJcRdSaqp/btEGw0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=R1aPYV3AboHfwqgvwSrIYkEOtSq8IJUtLv6v3MnEFHbdTedstbQv/ASUkWkrWLoMB
+         VdAOFsbuD26jPmTnO3v3udF3+iBw1GFAQSDVlZZNkMTbQo4lPzstGVwuct/150lOx6
+         ZmSUtVww6eeMzjcmF97vzYqOhfEziJr8jlAo+wnNbhH/00kSHqzU7Hwshz+hVY7pmz
+         Le+Ko1iXXMIP5llGBfmMUU1FuUSHX7NLtV8Ls9qBCzmbB39r+cJHGe0CozP1yTvKM+
+         iJseRFTMqiY0k5oC/mJwIXJomz+/3k+6orUfUaIW2UH0VBOcH7E9ybmuCa/gavVtFg
+         NsevhRKSHbXgA==
+Received: by mail-ej1-f41.google.com with SMTP id s22so31143304ejv.12;
+        Fri, 21 May 2021 09:30:49 -0700 (PDT)
+X-Gm-Message-State: AOAM533VKRSj6h7kPfi0V1WoEtXq7fuHIgZJO8RckIg1CNB5Fr8fuamF
+        yzCe2UlnNBH6bsB+DbhozwAskhvS6icgnoDbKA==
+X-Google-Smtp-Source: ABdhPJw+7EoEUERdDMupKIrRfpxIOGAi4+3ULLAqX5gbaNn8ZXyzBAgUw9pdrRhJ0k/uWh8i5J7Cjfm4C2xM6j/dGJo=
+X-Received: by 2002:a17:907:76b8:: with SMTP id jw24mr11141962ejc.359.1621614648460;
+ Fri, 21 May 2021 09:30:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210511090122.6995-1-a-govindraju@ti.com> <20210517221513.GA3263368@robh.at.kernel.org>
+ <861cefe2-7bb6-c435-ab0d-483155852876@ti.com> <CAL_JsqKyuXYJocBMLGXL6aXuK0YnrW7qdLugV2bxdP-LJ=2+cg@mail.gmail.com>
+ <42ec7cbd-1364-8dfe-c652-79b16bb6b87c@ti.com>
+In-Reply-To: <42ec7cbd-1364-8dfe-c652-79b16bb6b87c@ti.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 21 May 2021 11:30:35 -0500
+X-Gmail-Original-Message-ID: <CAL_Jsq+Ft0V8d_3GJ6cgb2g5uocKL-Xn5WUsfPbn+mFmWHDhuw@mail.gmail.com>
+Message-ID: <CAL_Jsq+Ft0V8d_3GJ6cgb2g5uocKL-Xn5WUsfPbn+mFmWHDhuw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Aswath Govindraju <a-govindraju@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Lokesh Vutla <lokeshvutla@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Keerthy <j-keerthy@ti.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 12:06:56 +0200
-Ralf Schlatterbeck <rsc@runtux.com> wrote:
+On Fri, May 21, 2021 at 11:06 AM Grygorii Strashko
+<grygorii.strashko@ti.com> wrote:
+>
+> Hi Rob,
+>
+> On 21/05/2021 15:56, Rob Herring wrote:
+> > On Fri, May 21, 2021 at 3:32 AM Grygorii Strashko
+> > <grygorii.strashko@ti.com> wrote:
+> >>
+> >> Hi Rob, All
+> >>
+> >> On 18/05/2021 01:15, Rob Herring wrote:
+> >>> On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
+> >>>> Convert gpio-davinci dt-binding documentation from txt to yaml format.
+> >>>>
+> >>>> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> >>>> ---
+> >>>>    .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
+> >>>>    .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
+> >>>>    MAINTAINERS                                   |   2 +-
+> >>>>    3 files changed, 194 insertions(+), 168 deletions(-)
+> >>>>    delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> >>>>    create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+> >>>>
+> >>>> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt b/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> >>>> deleted file mode 100644
+> >>>> index 696ea46227d1..000000000000
+> >>>> --- a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> >>>> +++ /dev/null
+> >>>> @@ -1,167 +0,0 @@
+> >>>> -Davinci/Keystone GPIO controller bindings
+> >>>> -
+> >>>> -Required Properties:
+> >>>> -- compatible: should be "ti,dm6441-gpio": for Davinci da850 SoCs
+> >>>> -                    "ti,keystone-gpio": for Keystone 2 66AK2H/K, 66AK2L,
+> >>>> -                                            66AK2E SoCs
+> >>>> -                    "ti,k2g-gpio", "ti,keystone-gpio": for 66AK2G
+> >>>> -                    "ti,am654-gpio", "ti,keystone-gpio": for TI K3 AM654
+> >>>> -                    "ti,j721e-gpio", "ti,keystone-gpio": for J721E SoCs
+> >>>> -                    "ti,am64-gpio", "ti,keystone-gpio": for AM64 SoCs
+> >>>> -
+> >>
+> >> [...]
+> >>
+> >>>> -};
+> >>>> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+> >>>> new file mode 100644
+> >>>> index 000000000000..1e16172669c7
+> >>>> --- /dev/null
+> >>>> +++ b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
+> >>>> @@ -0,0 +1,193 @@
+> >>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> >>>> +%YAML 1.2
+> >>>> +---
+> >>>> +$id: http://devicetree.org/schemas/gpio/gpio-davinci.yaml#
+> >>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >>>> +
+> >>>> +title: GPIO controller for Davinci and keystone devices
+> >>>> +
+> >>>> +maintainers:
+> >>>> +  - Keerthy <j-keerthy@ti.com>
+> >>>> +
+> >>>> +properties:
+> >>>> +  compatible:
+> >>>> +    oneOf:
+> >>>> +      - items:
+> >>>> +          - enum:
+> >>>> +              - ti,k2g-gpio
+> >>>> +              - ti,am654-gpio
+> >>>> +              - ti,j721e-gpio
+> >>>> +              - ti,am64-gpio
+> >>>> +          - const: ti,keystone-gpio
+> >>>> +
+> >>>> +      - items:
+> >>>> +          - const: ti,dm6441-gpio
+> >>>> +      - items:
+> >>>> +          - const: ti,keystone-gpio
+> >>>
+> >>> These 2 can be expressed as an 'enum'.
+> >>>
+> >>>> +
+> >>>> +  reg:
+> >>>> +    maxItems: 1
+> >>>> +    description:
+> >>>> +      Physical base address of the controller and the size of memory mapped registers.
+> >>>
+> >>> Drop. That's every 'reg' property.
+> >>>
+> >>>> +
+> >>>> +  gpio-controller: true
+> >>>> +
+> >>>> +  gpio-ranges: true
+> >>>> +
+> >>>> +  gpio-line-names:
+> >>>> +    description: strings describing the names of each gpio line.
+> >>>
+> >>> Any constraints like min/max number of lines?
+> >>>
+> >>>> +
+> >>>> +  "#gpio-cells":
+> >>>> +    const: 2
+> >>>> +    description:
+> >>>> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
+> >>>> +
+> >>>> +  interrupts:
+> >>>> +    description:
+> >>>> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
+> >>>
+> >>> Needs constraints. How many items and what are they?
+> >>>
+> >>>> +
+> >>>> +  ti,ngpio:
+> >>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >>>> +    description: The number of GPIO pins supported consecutively.
+> >>>> +    minimum: 1
+> >>>> +
+> >>>> +  ti,davinci-gpio-unbanked:
+> >>>> +    $ref: /schemas/types.yaml#/definitions/uint32
+> >>>> +    description: The number of GPIOs that have an individual interrupt line to processor.
+> >>>> +    minimum: 0
+> >>>> +
+> >>>> +  clocks:
+> >>>> +    maxItems: 1
+> >>>> +    description:
+> >>>> +      clock-specifier to represent input to the GPIO controller.
+> >>>
+> >>> Drop description.
+> >>>
+> >>>> +
+> >>>> +  clock-names:
+> >>>> +    const: gpio
+> >>>> +
+> >>>> +  interrupt-controller: true
+> >>>> +
+> >>>> +  power-domains:
+> >>>> +    maxItems: 1
+> >>>> +    description:
+> >>>> +      Phandle to the power domain provider node.
+> >>>
+> >>> Drop.
+> >>>
+> >>>> +
+> >>>> +  "#interrupt-cells":
+> >>>> +    const: 2
+> >>>> +
+> >>>> +patternProperties:
+> >>>> +  "-hog$":
+> >>>> +    type: object
+> >>>> +    properties:
+> >>>> +      gpios: true
+> >>>> +      gpio-hog: true
+> >>>> +      input: true
+> >>>> +      output-high: true
+> >>>> +      output-low: true
+> >>>> +      line-name: true
+> >>>> +
+> >>>> +    required:
+> >>>> +      - gpio-hog
+> >>>> +      - gpios
+> >>
+> >> I see that gpio-hog.yaml dtschema has been added.
+> >> Can it be reused here and how?
+> >
+> > It's applied to any node containing 'gpio-hog' property, so all you need is:
+> >
+> > required:
+> >    - gpio-hog
+> >
+> Thanks for you comments. But I'd like to clarify the Hog child node definition - will work as below?
 
-Hi Ralf,
+Yes, but...
 
-many thanks for taking care of upstreaming this!
+> patternProperties:
+>    "^(hog-[0-9]+|.+-hog(-[0-9]+)?)$":
+>      type: object
+>
+>      properties:
+>        gpio-hog: true
 
-> The current sun6i SPI implementation initializes the transfer too early,
-> resulting in SCK going high before the transfer. When using an additional
-> (gpio) chipselect with sun6i, the chipselect is asserted at a time when
-> clock is high, making the SPI transfer fail.
-> 
-> This is due to SUN6I_GBL_CTL_BUS_ENABLE being written into
-> SUN6I_GBL_CTL_REG at an early stage. Moving that to the transfer
-> function, hence, right before the transfer starts, mitigates that
-> problem.
-> 
-> Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
-> Signed-off-by: Mirko Vogt <mirko-dev|linux@nanl.de>
+Don't need this.
 
-So if I get your last email correctly, your intention was to make this
-Mirko's patch, which you just send?
-In this case the authorship should stay with him (git commit --amend
---author "..."), and you add your S-o-b (his first, your's next).
-If you use git format-patch & git send-email, it will take care of
-formatting this correctly (inserting a "From" line into the body).
+>
+>      required:
+>        - gpio-hog
+>
+> In general, patternProperties duplicates $nodename in gpio-hog dtschema.
 
-As for the technical part: I know as much about SPI to have quite some
-respect for the subtleties of the various modes. But your second
-oscilloscope shot looks much better, and matches the timing diagram in
-the manual (SS is the first to go down).
-So I trust you that's the right move.
+I'd hope you could be a bit stricter here and only support one form.
 
-One formatting thing below:
-
-> ---
-> For oscilloscope screenshots with/without the patch, see my blog post
-> https://blog.runtux.com/posts/2019/04/18/
-> or the discussion in the armbian forum at
-> https://forum.armbian.com/topic/4330-spi-gpio-chip-select-support/
-> (my logo there is a penguin).
-> 
->  drivers/spi/spi-sun6i.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
-> index cc8401980125..2db075c87f51 100644
-> --- a/drivers/spi/spi-sun6i.c
-> +++ b/drivers/spi/spi-sun6i.c
-> @@ -379,6 +379,10 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
->  	}
->  
->  	sun6i_spi_write(sspi, SUN6I_CLK_CTL_REG, reg);
-> +	/* Finally enable the bus - doing so before might raise SCK to HIGH */
-> +	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
-> +			sun6i_spi_read(sspi, SUN6I_GBL_CTL_REG)
-> +			| SUN6I_GBL_CTL_BUS_ENABLE);
-
-The "|" on the new line looks a bit odd. What about you utilise "reg"
-here, as the other access do, to make this more readable?
-	reg = sun6i_spi_read(...);
-	reg |= ...
-	sun6i_spi_write(..., reg);
-
-Cheers,
-Andre
-
->  
->  	/* Setup the transfer now... */
->  	if (sspi->tx_buf)
-> @@ -504,7 +508,7 @@ static int sun6i_spi_runtime_resume(struct device *dev)
->  	}
->  
->  	sun6i_spi_write(sspi, SUN6I_GBL_CTL_REG,
-> -			SUN6I_GBL_CTL_BUS_ENABLE | SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
-> +			SUN6I_GBL_CTL_MASTER | SUN6I_GBL_CTL_TP);
->  
->  	return 0;
->  
-
+Rob
