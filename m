@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0099638CE18
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC88238CE19
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:22:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236750AbhEUTXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:23:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S238465AbhEUTX4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:23:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232789AbhEUTXl (ORCPT
+        with ESMTP id S232789AbhEUTXz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:23:41 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A0C0C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:22:18 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id d11so22049031wrw.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:22:18 -0700 (PDT)
+        Fri, 21 May 2021 15:23:55 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD44BC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:22:31 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d78so14751922pfd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:22:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lCvDZboK+sgJocYbp6i5xIDHmRT6b8Yyjq3esu6gxfo=;
-        b=KjlQFn31EOeR8uVjczSkSfdI1+2/wSmUgLeUJMZgIwr5OzcG7OMv/nIxc6pDVx0FZK
-         tjOxIMTbX/stCi4U5Ettoq39FrFywIaRd2Z0moczt5aKcrJyIikf8Uo39xeJ5nvvqSNP
-         S67Id/Ema54u+5vvMuaPi+gjccOxGTMIVpP2WiegE7t39TEpWStXBXGiWDDWpyuZmRqn
-         MMogny6eDtr8RKXHLnrkblKER3Cuss3rw8D6IVasO2QAQ56XFE+NEYKFOMaWcjwtgAfQ
-         L1Nc+XXyIA4BPvLXoj9qsMtGeHMZNY1tft6B2wKRPjd/ZPoHebtU0TZFA7WxaRf2hNcX
-         8x6w==
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HPitddRtg4/TXAC9F1uqaZjw01XMepc1KCiYJ28+nDk=;
+        b=ezJ8H9SUYXgH1GqKIcsPsudxq6Mot+Y+nNDPRMNovXmkJw2dhvXGuaagsK6KQMmcKX
+         itZAdKrG8taKmzNFyf14KliztyuFJPwVrPNFJ+QcZlD1V6fQwF0mtNIkPFn9voyJtNo2
+         bldvnZNko7OMgToPmvzC3QD10o3RzlkJtD0VML7KSIU4WEkKZXLs6RtUgSuRtydAufbo
+         vcX/aXld3wlxeMVy0preZBOP9km+6qpihr1KJRmwn10+69R5QnIMZfa+3VEH2CnKg8az
+         9l1II+cvdEzT90cEt+7V+WrpAsCXww8f/p4+JurcMfZhvunUSF9Hkw8gK6zNANVCINu2
+         +Z/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lCvDZboK+sgJocYbp6i5xIDHmRT6b8Yyjq3esu6gxfo=;
-        b=tnDxLC8tn+vBfqDScBAFv4texbD2nSZd5dPXYjB+h8wB8JCx8FM3th5Z8pmyS0d5Zm
-         HBgiHALJ7EHA5GDd85USyOn+Hzes90JngzypvClbr7WFSaSYXxj8OzrKOtVCR6MMCDNG
-         VJKisnaZ5krPn13iU+S+DZUtTlVe8KLGei5nd64fLC6bxjQorPCYJpGtDaF7pM7y2u4i
-         Hh/q19z8t4bhX1vJbdUpfZ6WjFhHrWNefiyqfUcmwQnBmm1lPqpQDVqO0eW0Bh/Glxq9
-         nuFqvzj/QhHclDmGwm3X58bn/5olzbZ3oc1wdV7E1X37TLB9Nz8Nr8Oou9gxZSU/JFcF
-         6tUg==
-X-Gm-Message-State: AOAM530uxASWROBx6GSEOBQJ3Z7m2QyehSWLjS6RbPKGdK7Ql9BWZvqA
-        BgsWlU02z+1oomiwV2I7dHGrTw==
-X-Google-Smtp-Source: ABdhPJyha3zUIQVEPgrYCfHfXucNDkaW03LrDb+6HEy0gMi5M3PUND53o9t4gxQxxBnnlC8BxpL1sQ==
-X-Received: by 2002:a05:6000:104a:: with SMTP id c10mr11128983wrx.45.1621624936663;
-        Fri, 21 May 2021 12:22:16 -0700 (PDT)
-Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
-        by smtp.googlemail.com with ESMTPSA id s1sm478760wmj.8.2021.05.21.12.22.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 12:22:15 -0700 (PDT)
-From:   Corentin Labbe <clabbe@baylibre.com>
-To:     dmitry.torokhov@gmail.com, robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, fabio.estevam@freescale.com,
-        Corentin Labbe <clabbe@baylibre.com>
-Subject: [PATCH] dt-bindings: input: remove fsl-mma8450 which is handled by trivial-devices
-Date:   Fri, 21 May 2021 19:22:10 +0000
-Message-Id: <20210521192210.12839-1-clabbe@baylibre.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HPitddRtg4/TXAC9F1uqaZjw01XMepc1KCiYJ28+nDk=;
+        b=g+YN5O5G2hg/Gzrb8HgtgqZTm84WtTvX+Oi/BBLKoSrvSC7+kuVIJGolVfOM7tRWze
+         9SYS3Nbwy3tMQ0m2zkXaYrU9bYKwLxn0jQxAxluzjoeDQN0kQplpmT7gF0xRHpRFHqo5
+         ni0kcDl+YXu6secCcFEZFn+aAj9/GTMmhDijq9oPTznJgAohzfOxLDPM5YGQMjTLye+F
+         o2RFS1JsQ4v03cd6n6OaUkA4BEki312nj8KhXWoe5gCUpAx5+4BYSJrYuFRan+NWrm2Y
+         RZMKEAQKf99YeUG1EJVa1OxeCuDY6tQJVy30gunGmUt8v0SbbNxMXhK4Pibc2Yh7Trmy
+         zwpg==
+X-Gm-Message-State: AOAM530uLd+sCWnoLsmmknbh4z0wfflgSxVD6HCVVBhMETtFDaIgoyRP
+        BaCJrsLK26E2vBqQJYHB7SoC+niwO9b4bCatgJnRQQ==
+X-Google-Smtp-Source: ABdhPJyX5PWO/h7plHMPPKsl6NclubUVV3LC5h40BWnkvE+LAwFsiOA1pCdLxmYfSy/gbpx/RuMB/HgNauWu7CBTzd8=
+X-Received: by 2002:a63:521a:: with SMTP id g26mr240971pgb.279.1621624951373;
+ Fri, 21 May 2021 12:22:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <4fc32900-412d-fa10-520e-afa6caade33e@intel.com> <81c0f447-44b8-c2b6-ce41-a39ec0a1832b@linux.intel.com>
+In-Reply-To: <81c0f447-44b8-c2b6-ce41-a39ec0a1832b@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 21 May 2021 12:22:21 -0700
+Message-ID: <CAPcyv4i5a7ERZ8n=_Ucffx1cLru7C08xz3cB6X0iG+4yLTUYQQ@mail.gmail.com>
+Subject: Re: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-trivial-devices.yaml already provide bindings for fsl-mma8450.
-Since input/fsl-mma8450.txt provides no extra value, lets remove it.
+On Tue, May 18, 2021 at 8:45 AM Andi Kleen <ak@linux.intel.com> wrote:
+>
+>
+> On 5/18/2021 8:11 AM, Dave Hansen wrote:
+> > On 5/17/21 5:09 PM, Kuppuswamy Sathyanarayanan wrote:
+> >> After TDGETVEINFO #VE could happen in theory (e.g. through an NMI),
+> >> although we don't expect it to happen because we don't expect NMIs to
+> >> trigger #VEs. Another case where they could happen is if the #VE
+> >> exception panics, but in this case there are no guarantees on anything
+> >> anyways.
+> > This implies: "we do not expect any NMI to do MMIO".  Is that true?  Why?
+>
+> Only drivers that are not supported in TDX anyways could do it (mainly
+> watchdog drivers)
 
-Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
----
- .../devicetree/bindings/input/fsl-mma8450.txt        | 12 ------------
- 1 file changed, 12 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/input/fsl-mma8450.txt
-
-diff --git a/Documentation/devicetree/bindings/input/fsl-mma8450.txt b/Documentation/devicetree/bindings/input/fsl-mma8450.txt
-deleted file mode 100644
-index 0b96e5737d3a..000000000000
---- a/Documentation/devicetree/bindings/input/fsl-mma8450.txt
-+++ /dev/null
-@@ -1,12 +0,0 @@
--* Freescale MMA8450 3-Axis Accelerometer
--
--Required properties:
--- compatible : "fsl,mma8450".
--- reg: the I2C address of MMA8450
--
--Example:
--
--accelerometer: mma8450@1c {
--	compatible = "fsl,mma8450";
--	reg = <0x1c>;
--};
--- 
-2.26.3
-
+What about apei_{read,write}() for ACPI error handling? Those are
+called in NMI to do MMIO accesses. It's not just watchdog drivers.
