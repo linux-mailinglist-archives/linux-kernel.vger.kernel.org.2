@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C1A38C24D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5905638C250
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:54:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbhEUIyh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:54:37 -0400
-Received: from m12-16.163.com ([220.181.12.16]:41650 "EHLO m12-16.163.com"
+        id S233264AbhEUIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:55:56 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:48698 "EHLO mail1.perex.cz"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231997AbhEUIyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:54:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ZTzuX
-        fJn3QgTmYp1EYsez1K1U40m36RHdwnIyXbDqH4=; b=U0rZv6HCAKO3fYjxH/ey2
-        /7uHJMVDMRSIv/a4kJh3XmGtClVph3vcKf0gViksyZ+TG+WC6SxrK+PKRVn1SRQN
-        RtGiYyWtbaUZHF4HfiwyPnefnAMyQShEq7Yp7UTla4cfDW+1Jz2C5NIN4yYvlH4l
-        he7SwMfjJ80UPv0xOswg9E=
-Received: from COOL-20201210PM.ccdomain.com (unknown [218.94.48.178])
-        by smtp12 (Coremail) with SMTP id EMCowABndDXgdKdgAX7JsQ--.16448S2;
-        Fri, 21 May 2021 16:52:52 +0800 (CST)
-From:   zuoqilin1@163.com
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zuoqilin <zuoqilin@yulong.com>
-Subject: [PATCH] fs: Fix typo
-Date:   Fri, 21 May 2021 16:52:58 +0800
-Message-Id: <20210521085258.30-1-zuoqilin1@163.com>
-X-Mailer: git-send-email 2.28.0.windows.1
+        id S229726AbhEUIzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:55:53 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 285D9A0040;
+        Fri, 21 May 2021 10:54:29 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 285D9A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1621587269; bh=zfQOEPjPu+MFDsM+IqxZDl7MiSDjj91oZwdBebRzDIQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=DDPeR/46pKs/zk1DUIE1Zu8prrZuYOrkN89aymRWN08vVY6WDxfIFgvyJhyGb6kc7
+         kwSG5J7TKwAV8hr8jnLyqmhMYqTqQT/sRknV2IXmcd1W/1Fh/863M6inLMh0JvtTRe
+         SLPBAszbW8C9UPwjsbQhtDvhvlOib1poPJBsiQgY=
+Received: from p1gen2.localdomain (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Fri, 21 May 2021 10:54:18 +0200 (CEST)
+Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
+        Svyatoslav Ryhel <clamor95@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210520175054.28308-1-digetx@gmail.com>
+ <20210520175054.28308-3-digetx@gmail.com>
+ <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
+ <20210520190812.GF3962@sirena.org.uk>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <ef59dad1-b06e-1d90-5948-9bb6e79478a2@perex.cz>
+Date:   Fri, 21 May 2021 10:54:17 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EMCowABndDXgdKdgAX7JsQ--.16448S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU7FApUUUUU
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 52xr1xpolqiqqrwthudrp/1tbiZQSZiV8ZOoXrewAAsY
+In-Reply-To: <20210520190812.GF3962@sirena.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: zuoqilin <zuoqilin@yulong.com>
+Dne 20. 05. 21 v 21:08 Mark Brown napsal(a):
+> On Thu, May 20, 2021 at 09:02:49PM +0200, Jaroslav Kysela wrote:
+>> Dne 20. 05. 21 v 19:50 Dmitry Osipenko napsal(a):
+>>> Squash all machine drivers into a single-universal one. This reduces
+>>> code duplication, eases addition of a new drivers and upgrades older
+>>> code to a modern Linux kernel APIs.
+> 
+>>> +static struct snd_soc_card snd_soc_tegra_wm9712 = {
+>>> +	.dai_link = &tegra_wm9712_dai,
+>>> +	.num_links = 1,
+>>> +	.fully_routed = true,
+>>> +};
+> 
+>> Please, could you also initialize snd_soc_card->components? It may be useful
+>> to pass the codec identification to the user space like:
+> 
+>> .components = "codec:wm9712"
+> 
+> Hrm, if this is important to userspace shouldn't the core be doing
+> something by default given that it already knows all the components
+> going into the card?
 
-Change 'backwords' to 'backwards'.
+I don't think that we can pass the complex topology in the simple string (127
+chars). For the time, it's better to pass only the vital information which the
+user space requires for the fine-grained hw configuration detection and
+description.
 
-Signed-off-by: zuoqilin <zuoqilin@yulong.com>
----
- fs/exec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+For the above example, the "codec:" prefix may be replaced by the purpose
+string (like "hs:" - headset, "spk:" - speaker) etc. This information is not
+available in the ASoC components (purpose / location / exact I/O config etc.).
 
-diff --git a/fs/exec.c b/fs/exec.c
-index 18594f1..17c067a 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -536,7 +536,7 @@ static int copy_strings(int argc, struct user_arg_ptr argv,
- 		if (!valid_arg_len(bprm, len))
- 			goto out;
- 
--		/* We're going to work our way backwords. */
-+		/* We're going to work our way backwards. */
- 		pos = bprm->p;
- 		str += len;
- 		bprm->p -= len;
+>> The passed information should be consistent. You may look into the Intel ASoC
+>> drivers for the examples (card->components initialization). There are also
+>> hints about the number of connected microphones ("cfg-mic:2" - configuration
+>> with 2 microphones) or the codec purpose ("hs:rt711" - headset codec is RT711)
+>> etc.
+> 
+> This sort of stuff is more something that the card should layer on top.
+
+It would be nice to have this layer with the topology description, but until
+someone designs it, it's much easier to describe the configuration and hints
+in the simple string passed to the user space.
+
+Actually, for ACPI/PCI platforms, the information is gathered from the tables
+or detected by PCI IDs. For the device tree. It may be worth to allow to pass
+this string from the device tree, too. I believe that the DT config author has
+enough information to describe the hardware.
+
+						Jaroslav
+
 -- 
-1.9.1
-
-
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
