@@ -2,592 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67D9738CBBE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14B8038CBCA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:17:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238094AbhEURQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
+        id S238103AbhEURSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:18:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238076AbhEURQH (ORCPT
+        with ESMTP id S230194AbhEURST (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:16:07 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5406C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:14:43 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id e27-20020a056820061bb029020da48eed5cso4728255oow.10
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:14:43 -0700 (PDT)
+        Fri, 21 May 2021 13:18:19 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49B75C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:16:56 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id l1so31559224ejb.6
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=fpPvHacu4qS7mgwBTgwfMW9AkDew1H0FjffBU3OjUjA=;
-        b=vKqjy4EhKnvw0BtAmqm0mQm+NHtnAz5Z1Yx1nKyL3r66qI8bIbi1tga6KT0bObc+OW
-         ivI8TkMrbb6vVbC1l66C710C3jOmLXztiClsY6tFnAtuSTPqdu5QSE5/MWwMvDadup+c
-         ArixA7bWOeRlKkGv7XbletIAZs4u3Fli9h0a9Eo2lyiCUt1EPaP78EcimwkfqRdmCd4x
-         HGyAwWKZ5BcisyWJBJIVWNMcz4mH/DwBz0Ro4wDltPrjditEAkmRXjhCSYwb9aHdiano
-         ojdM1G7USyg9k/HAvia+SSkMN2GVk4p7Atd9Ylm2bfsBsl58jSBtWkYsBtYOg70iI3hg
-         vvag==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=h4/CwNk0FN5qvx+50wn7PTfWmi1N+v6lF6hq8B8Z0+M=;
+        b=KXVt6s5DY0WD87o/HNLXBpqqo1MqEcSRjiohfszAFUncp7HQiMkeAvjtkvqR3OPYN7
+         03qdYY4RnBnbrnovcyyrHXQ3a5LNSHilQlcKHkiuQsts7ajUohjhkw4RDTnnY2kljWb8
+         RA4aeTRK0BDFOHTeMQwLTWTDUOWNC2CZHxxrbJH9S1zkPgAzAhwRoCHLS2I5vCwl4mXz
+         OwnHAe1FOodgKpySSIxzWO02VxfKMc2W/Ho7if4QQ7gUrmOnKg3g5HcUeHeJ7crN6l4J
+         SaJ9kZO6ckVk96R5JK5c4gBI1y/WeZLLXJlTrzYqbxbQjUnUaDtoEjkZddYfKH6+6vY+
+         7RGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fpPvHacu4qS7mgwBTgwfMW9AkDew1H0FjffBU3OjUjA=;
-        b=WaMkcGW6Ghahhxk+C2GaW+ypM58bd+kdGVJvlWM53U/Dr4qjtXW/9Ojr7yZfU+nGHC
-         1QG1h4+zqMseHLl1+s1F1txcgGPQXNFU3iIqQVTtNyd/bG3+uiT36afWQEGbSwV3CNiv
-         jXmTBoyx8tkxdLjFmEqX2DksKxrp45Tmy5SS2ftFJel8W/Dn80ASdZ3GQD5c7bqwmAm2
-         5UBS7oLDN111X9h83G/VXPEYzDxyUFKQfliwg4isEXlwJ5XdPHP8CIN42HTM7/nJPjg/
-         DmFslEeOhu2OsrVbnf8HOBp+zRaFXZaZeOTgYtLsXWDFPYUa+VnUNUqWKZQdBpDqQtXf
-         C4wQ==
-X-Gm-Message-State: AOAM533yWnxaWqwHNnLcw2rBDq9q+Kbt9uv3gX+EFyJCfeZ/6AoyK5cO
-        GlHCn9K5EPcV5wmAc63kemJsiw==
-X-Google-Smtp-Source: ABdhPJz//CSUgO6Ljnn+iLSME7JbQ4J+LIzpfV7JL+2pWQLu3TjnvIPDFpT3qyABHSD9JXRqnEO8tA==
-X-Received: by 2002:a4a:ea2b:: with SMTP id y11mr9108219ood.42.1621617282800;
-        Fri, 21 May 2021 10:14:42 -0700 (PDT)
-Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id a11sm1229812oif.52.2021.05.21.10.14.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 10:14:42 -0700 (PDT)
-Date:   Fri, 21 May 2021 12:14:39 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        robdclark@gmail.com, swboyd@chromium.org, vinod.koul@linaro.org,
-        dianders@chromium.org, khsieh@codeaurora.org, robh+dt@kernel.org,
-        sean@poorly.run, robh@kernel.org
-Subject: Re: [PATCH v17 2/4] dt-bindings: msm: dsi: add yaml schemas for DSI
- bindings
-Message-ID: <20210521171439.GC2484@yoga>
-References: <1621592844-6414-1-git-send-email-mkrishn@codeaurora.org>
- <1621592844-6414-2-git-send-email-mkrishn@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=h4/CwNk0FN5qvx+50wn7PTfWmi1N+v6lF6hq8B8Z0+M=;
+        b=lhY2X8kOUiTiIu4fLnDuJXZmY3altquF5AU668V3+7uuhbnUGte27GU4s27br+kVRM
+         wahEcpI+2iRs2U3QBUK14DFaApXHRJ/OoLr/ksPeQdfXB5sZCVtX016+XMkmyBAYbsS5
+         0hqeapSDaQfQCE5nxf5MnnHlbSWcSarKro9YWIEhZ4HaGSl5JTCCxSWOzm/81/yQ5hyA
+         6PasjX8w/f8NHVQnTDKhThbBIUaQiGopEUoctailWpKKEwTQiMQYBdERgssJirmrp6Jy
+         n8cUPtBYBvThzCflLpXgN8YNLDfIbY7bqDmGzL+qKrm1aq/W1Tu9M+EnoHLVkjz0DCQ2
+         9CLA==
+X-Gm-Message-State: AOAM5323zMODkNXAwAXe/HE8wXqJrf9TVUuiFEm+9A5eVutYZSNI1c5a
+        lqx/ldfn5h20pcV1oT6CnYxN+2hY3wNbsEsYBPA=
+X-Google-Smtp-Source: ABdhPJwYPFLbDho6OUZa5Gd2kS+qNLXtO1L5UeCv1ZEkEBjMF2CDlJBrEwLVl/d5F2SQc/WNJuJFGpb79qnY8g+xCZg=
+X-Received: by 2002:a17:906:a51:: with SMTP id x17mr11482393ejf.25.1621617414570;
+ Fri, 21 May 2021 10:16:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621592844-6414-2-git-send-email-mkrishn@codeaurora.org>
+References: <20210513212334.217424-1-shy828301@gmail.com> <alpine.LSU.2.11.2105202120220.6466@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2105202120220.6466@eggly.anvils>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 21 May 2021 10:16:41 -0700
+Message-ID: <CAHbLzkpipqwZQfmJe0t3MxfPW-RvG8wXerffBqrUxZb3OHccGg@mail.gmail.com>
+Subject: Re: [v2 PATCH] mm: thp: check total_mapcount instead of page_mapcount
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Zi Yan <ziy@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 21 May 05:27 CDT 2021, Krishna Manikandan wrote:
+On Thu, May 20, 2021 at 10:06 PM Hugh Dickins <hughd@google.com> wrote:
+>
+> On Thu, 13 May 2021, Yang Shi wrote:
+>
+> > When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
+> > return false positive for PTE-mapped THP since page_mapcount() is used
+> > to check if the THP is unmapped, but it just checks compound mapount and
+> > head page's mapcount.  If the THP is PTE-mapped and head page is not
+> > mapped, it may return false positive.
+> >
+> > Use total_mapcount() instead of page_mapcount() for try_to_unmap() and
+> > do so for the VM_BUG_ON_PAGE in split_huge_page_to_list as well.
+> >
+> > This changed the semantic of try_to_unmap(), but I don't see there is
+> > any usecase that expects try_to_unmap() just unmap one subpage of a huge
+> > page.  So using page_mapcount() seems like a bug.
+> >
+> > [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+> >
+> > Signed-off-by: Yang Shi <shy828301@gmail.com>
+>
+> I don't object to this patch, I've no reason to NAK it; but I'll
+> point out a few deficiencies which might make you want to revisit it.
+>
+> > ---
+> > v2: Removed dead code and updated the comment of try_to_unmap() per Zi
+> >     Yan.
+> >
+> >  mm/huge_memory.c | 11 +----------
+> >  mm/rmap.c        | 10 ++++++----
+> >  2 files changed, 7 insertions(+), 14 deletions(-)
+> >
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 63ed6b25deaa..3b08b9ba1578 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -2348,7 +2348,6 @@ static void unmap_page(struct page *page)
+> >               ttu_flags |= TTU_SPLIT_FREEZE;
+> >
+> >       unmap_success = try_to_unmap(page, ttu_flags);
+> > -     VM_BUG_ON_PAGE(!unmap_success, page);
+>
+> The unused variable unmap_success has already been reported and
+> dealt with.  But I couldn't tell what you intended: why change
+> try_to_unmap()'s output, if you then ignore it?
 
-> Add YAML schema for the device tree bindings for DSI
-> 
+Because some other callers of try_to_unmap() check the output.
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>
+> >  }
+> >
+> >  static void remap_page(struct page *page, unsigned int nr)
+> > @@ -2718,7 +2717,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >       }
+> >
+> >       unmap_page(head);
+> > -     VM_BUG_ON_PAGE(compound_mapcount(head), head);
+> > +     VM_BUG_ON_PAGE(total_mapcount(head), head);
+>
+> And having forced try_to_unmap() to do the expensive-on-a-THP
+> total_mapcount() calculation, you now repeat it here.  Better
+> to stick with the previous VM_BUG_ON_PAGE(!unmap_success).
+>
+> Or better a VM_WARN_ONCE(), accompanied by dump_page()s as before,
+> to get some perhaps useful info out, which this patch has deleted.
+> Probably better inside unmap_page() than cluttering up here.
 
-Regards,
-Bjorn
+Moving the BUG or WARN into unmap_page() looks fine to me. IIUC,
+VM_BUG_ON_PAGE or VM_WARN_ON_PAGE does call dump_page(), so dumping
+something useful is not deleted.
 
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> 
-> Changes in v1:
->     - Separate dsi controller bindings to a separate patch (Stephen Boyd)
->     - Merge dsi-common-controller.yaml and dsi-controller-main.yaml to
->       a single file (Stephen Boyd)
->     - Drop supply entries and definitions from properties (Stephen Boyd)
->     - Modify phy-names property for dsi controller (Stephen Boyd)
->     - Remove boolean from description (Stephen Boyd)
->     - Drop pinctrl properties as they are standard entries (Stephen Boyd)
->     - Modify the description for ports property and keep the reference
->       to the generic binding where this is defined (Stephen Boyd)
->     - Add description to clock names (Stephen Boyd)
->     - Correct the indendation (Stephen Boyd)
->     - Drop the label for display dt nodes and correct the node
->       name (Stephen Boyd)
-> 
-> Changes in v2:
->     - Drop maxItems for clock (Stephen Boyd)
->     - Drop qcom,mdss-mdp-transfer-time-us as it is not used in upstream
->       dt file (Stephen Boyd)
->     - Keep child node directly under soc node (Stephen Boyd)
->     - Drop qcom,sync-dual-dsi as it is not used in upstream dt
-> 
-> Changes in v3:
->     - Add description for register property (Stephen Boyd)
-> 
-> Changes in v4:
->     - Add maxItems for phys property (Stephen Boyd)
->     - Add maxItems for reg property (Stephen Boyd)
->     - Add reference for data-lanes property (Stephen Boyd)
->     - Remove soc from example (Stephen Boyd)
-> 
-> Changes in v5:
->     - Modify title and description (Stephen Boyd)
->     - Add required properties for ports node (Stephen Boyd)
->     - Add data-lanes in the example (Stephen Boyd)
->     - Drop qcom,master-dsi property (Stephen Boyd)
-> 
-> Changes in v6:
->     - Add required properties for port@0, port@1 and corresponding
->       endpoints (Stephen Boyd)
->     - Add address-cells and size-cells for ports (Stephen Boyd)
->     - Use additionalProperties instead of unevaluatedProperties (Stephen Boyd)
-> 
-> Changes in v7:
->     - Add reference for ports and data-lanes (Rob Herring)
->     - Add maxItems and minItems for data-lanes (Rob Herring)
-> 
-> Changes in v8:
->     - Drop common properties and description from ports (Rob Herring)
->     - Add reference for endpoint (Rob Herring)
->     - Add correct reference for data-lanes (Rob Herring)
->     - Drop common properties from required list for ports (Rob Herring)
-> ---
->  .../bindings/display/msm/dsi-controller-main.yaml  | 185 +++++++++++++++
->  .../devicetree/bindings/display/msm/dsi.txt        | 249 ---------------------
->  2 files changed, 185 insertions(+), 249 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml
->  delete mode 100644 Documentation/devicetree/bindings/display/msm/dsi.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml b/Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml
-> new file mode 100644
-> index 0000000..df6a750
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml
-> @@ -0,0 +1,185 @@
-> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/msm/dsi-controller-main.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Qualcomm Display DSI controller
-> +
-> +maintainers:
-> +  - Krishna Manikandan <mkrishn@codeaurora.org>
-> +
-> +allOf:
-> +  - $ref: "../dsi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: qcom,mdss-dsi-ctrl
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  reg-names:
-> +    const: dsi_ctrl
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: Display byte clock
-> +      - description: Display byte interface clock
-> +      - description: Display pixel clock
-> +      - description: Display escape clock
-> +      - description: Display AHB clock
-> +      - description: Display AXI clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: byte
-> +      - const: byte_intf
-> +      - const: pixel
-> +      - const: core
-> +      - const: iface
-> +      - const: bus
-> +
-> +  phys:
-> +    maxItems: 1
-> +
-> +  phy-names:
-> +    const: dsi
-> +
-> +  "#address-cells": true
-> +
-> +  "#size-cells": true
-> +
-> +  syscon-sfpb:
-> +    description: A phandle to mmss_sfpb syscon node (only for DSIv2).
-> +    $ref: "/schemas/types.yaml#/definitions/phandle"
-> +
-> +  qcom,dual-dsi-mode:
-> +    type: boolean
-> +    description: |
-> +      Indicates if the DSI controller is driving a panel which needs
-> +      2 DSI links.
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  operating-points-v2: true
-> +
-> +  ports:
-> +    $ref: "/schemas/graph.yaml#/properties/ports"
-> +    description: |
-> +      Contains DSI controller input and output ports as children, each
-> +      containing one endpoint subnode.
-> +
-> +    properties:
-> +      port@0:
-> +        $ref: "/schemas/graph.yaml#/properties/port"
-> +        description: |
-> +          Input endpoints of the controller.
-> +        properties:
-> +          endpoint:
-> +            $ref: /schemas/media/video-interfaces.yaml#
-> +            properties:
-> +              data-lanes:
-> +                $ref: /schemas/types.yaml#/definitions/uint32-array
-> +                maxItems: 4
-> +                minItems: 4
-> +                items:
-> +                  enum: [ 0, 1, 2, 3 ]
-> +
-> +      port@1:
-> +        $ref: "/schemas/graph.yaml#/properties/port"
-> +        description: |
-> +          Output endpoints of the controller.
-> +        properties:
-> +          endpoint:
-> +            $ref: /schemas/media/video-interfaces.yaml#
-> +            properties:
-> +              data-lanes:
-> +                $ref: /schemas/types.yaml#/definitions/uint32-array
-> +                maxItems: 4
-> +                minItems: 4
-> +                items:
-> +                  enum: [ 0, 1, 2, 3 ]
-> +
-> +    required:
-> +      - port@0
-> +      - port@1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - interrupts
-> +  - clocks
-> +  - clock-names
-> +  - phys
-> +  - phy-names
-> +  - power-domains
-> +  - operating-points-v2
-> +  - ports
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +     #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +     #include <dt-bindings/clock/qcom,dispcc-sdm845.h>
-> +     #include <dt-bindings/clock/qcom,gcc-sdm845.h>
-> +     #include <dt-bindings/power/qcom-rpmpd.h>
-> +
-> +     dsi@ae94000 {
-> +           compatible = "qcom,mdss-dsi-ctrl";
-> +           reg = <0x0ae94000 0x400>;
-> +           reg-names = "dsi_ctrl";
-> +
-> +           #address-cells = <1>;
-> +           #size-cells = <0>;
-> +
-> +           interrupt-parent = <&mdss>;
-> +           interrupts = <4>;
-> +
-> +           clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
-> +                    <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
-> +                    <&dispcc DISP_CC_MDSS_PCLK0_CLK>,
-> +                    <&dispcc DISP_CC_MDSS_ESC0_CLK>,
-> +                    <&dispcc DISP_CC_MDSS_AHB_CLK>,
-> +                    <&dispcc DISP_CC_MDSS_AXI_CLK>;
-> +           clock-names = "byte",
-> +                         "byte_intf",
-> +                         "pixel",
-> +                         "core",
-> +                         "iface",
-> +                         "bus";
-> +
-> +           phys = <&dsi0_phy>;
-> +           phy-names = "dsi";
-> +
-> +           power-domains = <&rpmhpd SC7180_CX>;
-> +           operating-points-v2 = <&dsi_opp_table>;
-> +
-> +           ports {
-> +                  #address-cells = <1>;
-> +                  #size-cells = <0>;
-> +
-> +                  port@0 {
-> +                          reg = <0>;
-> +                          dsi0_in: endpoint {
-> +                                   remote-endpoint = <&dpu_intf1_out>;
-> +                          };
-> +                  };
-> +
-> +                  port@1 {
-> +                          reg = <1>;
-> +                          dsi0_out: endpoint {
-> +                                   remote-endpoint = <&sn65dsi86_in>;
-> +                                   data-lanes = <0 1 2 3>;
-> +                          };
-> +                  };
-> +           };
-> +     };
-> +...
-> diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt b/Documentation/devicetree/bindings/display/msm/dsi.txt
-> deleted file mode 100644
-> index b9a64d3..0000000
-> --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
-> +++ /dev/null
-> @@ -1,249 +0,0 @@
-> -Qualcomm Technologies Inc. adreno/snapdragon DSI output
-> -
-> -DSI Controller:
-> -Required properties:
-> -- compatible:
-> -  * "qcom,mdss-dsi-ctrl"
-> -- reg: Physical base address and length of the registers of controller
-> -- reg-names: The names of register regions. The following regions are required:
-> -  * "dsi_ctrl"
-> -- interrupts: The interrupt signal from the DSI block.
-> -- power-domains: Should be <&mmcc MDSS_GDSC>.
-> -- clocks: Phandles to device clocks.
-> -- clock-names: the following clocks are required:
-> -  * "mdp_core"
-> -  * "iface"
-> -  * "bus"
-> -  * "core_mmss"
-> -  * "byte"
-> -  * "pixel"
-> -  * "core"
-> -  For DSIv2, we need an additional clock:
-> -   * "src"
-> -  For DSI6G v2.0 onwards, we need also need the clock:
-> -   * "byte_intf"
-> -- assigned-clocks: Parents of "byte" and "pixel" for the given platform.
-> -- assigned-clock-parents: The Byte clock and Pixel clock PLL outputs provided
-> -  by a DSI PHY block. See [1] for details on clock bindings.
-> -- vdd-supply: phandle to vdd regulator device node
-> -- vddio-supply: phandle to vdd-io regulator device node
-> -- vdda-supply: phandle to vdda regulator device node
-> -- phys: phandle to DSI PHY device node
-> -- phy-names: the name of the corresponding PHY device
-> -- syscon-sfpb: A phandle to mmss_sfpb syscon node (only for DSIv2)
-> -- ports: Contains 2 DSI controller ports as child nodes. Each port contains
-> -  an endpoint subnode as defined in [2] and [3].
-> -
-> -Optional properties:
-> -- panel@0: Node of panel connected to this DSI controller.
-> -  See files in [4] for each supported panel.
-> -- qcom,dual-dsi-mode: Boolean value indicating if the DSI controller is
-> -  driving a panel which needs 2 DSI links.
-> -- qcom,master-dsi: Boolean value indicating if the DSI controller is driving
-> -  the master link of the 2-DSI panel.
-> -- qcom,sync-dual-dsi: Boolean value indicating if the DSI controller is
-> -  driving a 2-DSI panel whose 2 links need receive command simultaneously.
-> -- pinctrl-names: the pin control state names; should contain "default"
-> -- pinctrl-0: the default pinctrl state (active)
-> -- pinctrl-n: the "sleep" pinctrl state
-> -- ports: contains DSI controller input and output ports as children, each
-> -  containing one endpoint subnode.
-> -
-> -  DSI Endpoint properties:
-> -  - remote-endpoint: For port@0, set to phandle of the connected panel/bridge's
-> -    input endpoint. For port@1, set to the MDP interface output. See [2] for
-> -    device graph info.
-> -
-> -  - data-lanes: this describes how the physical DSI data lanes are mapped
-> -    to the logical lanes on the given platform. The value contained in
-> -    index n describes what physical lane is mapped to the logical lane n
-> -    (DATAn, where n lies between 0 and 3). The clock lane position is fixed
-> -    and can't be changed. Hence, they aren't a part of the DT bindings. See
-> -    [3] for more info on the data-lanes property.
-> -
-> -    For example:
-> -
-> -    data-lanes = <3 0 1 2>;
-> -
-> -    The above mapping describes that the logical data lane DATA0 is mapped to
-> -    the physical data lane DATA3, logical DATA1 to physical DATA0, logic DATA2
-> -    to phys DATA1 and logic DATA3 to phys DATA2.
-> -
-> -    There are only a limited number of physical to logical mappings possible:
-> -    <0 1 2 3>
-> -    <1 2 3 0>
-> -    <2 3 0 1>
-> -    <3 0 1 2>
-> -    <0 3 2 1>
-> -    <1 0 3 2>
-> -    <2 1 0 3>
-> -    <3 2 1 0>
-> -
-> -DSI PHY:
-> -Required properties:
-> -- compatible: Could be the following
-> -  * "qcom,dsi-phy-28nm-hpm"
-> -  * "qcom,dsi-phy-28nm-lp"
-> -  * "qcom,dsi-phy-20nm"
-> -  * "qcom,dsi-phy-28nm-8960"
-> -  * "qcom,dsi-phy-14nm"
-> -  * "qcom,dsi-phy-14nm-660"
-> -  * "qcom,dsi-phy-10nm"
-> -  * "qcom,dsi-phy-10nm-8998"
-> -  * "qcom,dsi-phy-7nm"
-> -  * "qcom,dsi-phy-7nm-8150"
-> -- reg: Physical base address and length of the registers of PLL, PHY. Some
-> -  revisions require the PHY regulator base address, whereas others require the
-> -  PHY lane base address. See below for each PHY revision.
-> -- reg-names: The names of register regions. The following regions are required:
-> -  For DSI 28nm HPM/LP/8960 PHYs and 20nm PHY:
-> -  * "dsi_pll"
-> -  * "dsi_phy"
-> -  * "dsi_phy_regulator"
-> -  For DSI 14nm, 10nm and 7nm PHYs:
-> -  * "dsi_pll"
-> -  * "dsi_phy"
-> -  * "dsi_phy_lane"
-> -- clock-cells: Must be 1. The DSI PHY block acts as a clock provider, creating
-> -  2 clocks: A byte clock (index 0), and a pixel clock (index 1).
-> -- power-domains: Should be <&mmcc MDSS_GDSC>.
-> -- clocks: Phandles to device clocks. See [1] for details on clock bindings.
-> -- clock-names: the following clocks are required:
-> -  * "iface"
-> -  * "ref" (only required for new DTS files/entries)
-> -  For 28nm HPM/LP, 28nm 8960 PHYs:
-> -- vddio-supply: phandle to vdd-io regulator device node
-> -  For 20nm PHY:
-> -- vddio-supply: phandle to vdd-io regulator device node
-> -- vcca-supply: phandle to vcca regulator device node
-> -  For 14nm PHY:
-> -- vcca-supply: phandle to vcca regulator device node
-> -  For 10nm and 7nm PHY:
-> -- vdds-supply: phandle to vdds regulator device node
-> -
-> -Optional properties:
-> -- qcom,dsi-phy-regulator-ldo-mode: Boolean value indicating if the LDO mode PHY
-> -  regulator is wanted.
-> -- qcom,mdss-mdp-transfer-time-us:	Specifies the dsi transfer time for command mode
-> -					panels in microseconds. Driver uses this number to adjust
-> -					the clock rate according to the expected transfer time.
-> -					Increasing this value would slow down the mdp processing
-> -					and can result in slower performance.
-> -					Decreasing this value can speed up the mdp processing,
-> -					but this can also impact power consumption.
-> -					As a rule this time should not be higher than the time
-> -					that would be expected with the processing at the
-> -					dsi link rate since anyways this would be the maximum
-> -					transfer time that could be achieved.
-> -					If ping pong split is enabled, this time should not be higher
-> -					than two times the dsi link rate time.
-> -					If the property is not specified, then the default value is 14000 us.
-> -
-> -[1] Documentation/devicetree/bindings/clock/clock-bindings.txt
-> -[2] Documentation/devicetree/bindings/graph.txt
-> -[3] Documentation/devicetree/bindings/media/video-interfaces.txt
-> -[4] Documentation/devicetree/bindings/display/panel/
-> -
-> -Example:
-> -	dsi0: dsi@fd922800 {
-> -		compatible = "qcom,mdss-dsi-ctrl";
-> -		qcom,dsi-host-index = <0>;
-> -		interrupt-parent = <&mdp>;
-> -		interrupts = <4 0>;
-> -		reg-names = "dsi_ctrl";
-> -		reg = <0xfd922800 0x200>;
-> -		power-domains = <&mmcc MDSS_GDSC>;
-> -		clock-names =
-> -			"bus",
-> -			"byte",
-> -			"core",
-> -			"core_mmss",
-> -			"iface",
-> -			"mdp_core",
-> -			"pixel";
-> -		clocks =
-> -			<&mmcc MDSS_AXI_CLK>,
-> -			<&mmcc MDSS_BYTE0_CLK>,
-> -			<&mmcc MDSS_ESC0_CLK>,
-> -			<&mmcc MMSS_MISC_AHB_CLK>,
-> -			<&mmcc MDSS_AHB_CLK>,
-> -			<&mmcc MDSS_MDP_CLK>,
-> -			<&mmcc MDSS_PCLK0_CLK>;
-> -
-> -		assigned-clocks =
-> -				 <&mmcc BYTE0_CLK_SRC>,
-> -				 <&mmcc PCLK0_CLK_SRC>;
-> -		assigned-clock-parents =
-> -				 <&dsi_phy0 0>,
-> -				 <&dsi_phy0 1>;
-> -
-> -		vdda-supply = <&pma8084_l2>;
-> -		vdd-supply = <&pma8084_l22>;
-> -		vddio-supply = <&pma8084_l12>;
-> -
-> -		phys = <&dsi_phy0>;
-> -		phy-names ="dsi-phy";
-> -
-> -		qcom,dual-dsi-mode;
-> -		qcom,master-dsi;
-> -		qcom,sync-dual-dsi;
-> -
-> -		qcom,mdss-mdp-transfer-time-us = <12000>;
-> -
-> -		pinctrl-names = "default", "sleep";
-> -		pinctrl-0 = <&dsi_active>;
-> -		pinctrl-1 = <&dsi_suspend>;
-> -
-> -		ports {
-> -			#address-cells = <1>;
-> -			#size-cells = <0>;
-> -
-> -			port@0 {
-> -				reg = <0>;
-> -				dsi0_in: endpoint {
-> -					remote-endpoint = <&mdp_intf1_out>;
-> -				};
-> -			};
-> -
-> -			port@1 {
-> -				reg = <1>;
-> -				dsi0_out: endpoint {
-> -					remote-endpoint = <&panel_in>;
-> -					data-lanes = <0 1 2 3>;
-> -				};
-> -			};
-> -		};
-> -
-> -		panel: panel@0 {
-> -			compatible = "sharp,lq101r1sx01";
-> -			reg = <0>;
-> -			link2 = <&secondary>;
-> -
-> -			power-supply = <...>;
-> -			backlight = <...>;
-> -
-> -			port {
-> -				panel_in: endpoint {
-> -					remote-endpoint = <&dsi0_out>;
-> -				};
-> -			};
-> -		};
-> -	};
-> -
-> -	dsi_phy0: dsi-phy@fd922a00 {
-> -		compatible = "qcom,dsi-phy-28nm-hpm";
-> -		qcom,dsi-phy-index = <0>;
-> -		reg-names =
-> -			"dsi_pll",
-> -			"dsi_phy",
-> -			"dsi_phy_regulator";
-> -		reg =   <0xfd922a00 0xd4>,
-> -			<0xfd922b00 0x2b0>,
-> -			<0xfd922d80 0x7b>;
-> -		clock-names = "iface";
-> -		clocks = <&mmcc MDSS_AHB_CLK>;
-> -		#clock-cells = <1>;
-> -		vddio-supply = <&pma8084_l12>;
-> -
-> -		qcom,dsi-phy-regulator-ldo-mode;
-> -	};
-> -- 
-> 2.7.4
-> 
+>
+> VM_WARN_ONCE() because nothing in this patch fixes whatever Wang
+> Yugui is suffering from; and (aside from the BUG()) it's harmless,
+> because there are other ways in which the page_ref_freeze() can fail,
+> and that is allowed for.  We would like to know when this problem
+> occurs: there is something wrong, but no reason to crash.
+
+Yes, it fixes nothing. I didn't figure out why try_to_unmap() failed.
+I agree BUG_ON could be relaxed.
+
+>
+> >
+> >       /* block interrupt reentry in xa_lock and spinlock */
+> >       local_irq_disable();
+> > @@ -2758,14 +2757,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> >               __split_huge_page(page, list, end);
+> >               ret = 0;
+> >       } else {
+> > -             if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+> > -                     pr_alert("total_mapcount: %u, page_count(): %u\n",
+> > -                                     mapcount, count);
+> > -                     if (PageTail(page))
+> > -                             dump_page(head, NULL);
+> > -                     dump_page(page, "total_mapcount(head) > 0");
+> > -                     BUG();
+> > -             }
+>
+> This has always looked ugly (as if Kirill had hit an unsolved case),
+> so it is nice to remove it; but you're losing the dump_page() info,
+> and not really gaining anything more than a cosmetic cleanup.
+
+As I mentioned above, IIUC VM_BUG_ON_PAGE and VM_WARN_ON_PAGE do call
+dump_page().
+
+>
+> >               spin_unlock(&ds_queue->split_queue_lock);
+> >  fail:                if (mapping)
+> >                       xa_unlock(&mapping->i_pages);
+> > diff --git a/mm/rmap.c b/mm/rmap.c
+> > index 693a610e181d..f52825b1330d 100644
+> > --- a/mm/rmap.c
+> > +++ b/mm/rmap.c
+> > @@ -1742,12 +1742,14 @@ static int page_not_mapped(struct page *page)
+> >  }
+> >
+> >  /**
+> > - * try_to_unmap - try to remove all page table mappings to a page
+> > - * @page: the page to get unmapped
+> > + * try_to_unmap - try to remove all page table mappings to a page and the
+> > + *                compound page it belongs to
+> > + * @page: the page or the subpages of compound page to get unmapped
+> >   * @flags: action and flags
+> >   *
+> >   * Tries to remove all the page table entries which are mapping this
+> > - * page, used in the pageout path.  Caller must hold the page lock.
+> > + * page and the compound page it belongs to, used in the pageout path.
+> > + * Caller must hold the page lock.
+> >   *
+> >   * If unmap is successful, return true. Otherwise, false.
+> >   */
+> > @@ -1777,7 +1779,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+> >       else
+> >               rmap_walk(page, &rwc);
+> >
+> > -     return !page_mapcount(page) ? true : false;
+> > +     return !total_mapcount(page) ? true : false;
+>
+> That always made me wince: "return !total_mapcount(page);" surely.
+
+But page_mapcount() seems not correct, it may return false positive,
+right? Or it is harmless?
+
+And I actually spotted a few other places which should use
+total_mapcount() but using page_mapcount() instead, for example, some
+madvise code check if the page is shared by using page_mapcount(),
+however it may return false negative (double mapped THP, but head page
+is not PTE-mapped, just like what Wang Yugui reported). It is not
+fatal, but not expected behavior. I understand total_mapcount() is
+expensive, so is it a trade-off between cost and correctness or just
+overlooked the false negative case in the first place? I can't tell.
+
+>
+> Or slightly better, "return !page_mapped(page);", since at least that
+> one breaks out as soon as it sees a mapcount.  Though I guess I'm
+> being silly there, since that case should never occur, so both
+> total_mapcount() and page_mapped() scan through all pages.
+>
+> Or better, change try_to_unmap() to void: most callers ignore its
+> return value anyway, and make their own decisions; the remaining
+> few could be changed to do the same.  Though again, I may be
+> being silly, since the expensive THP case is not the common case.
+
+I'd say half callers ignore its return value. But I think it should be
+worth doing. At least we could remove half unnecessary
+total_mapcount() or page_mapped() call.
+
+Thanks a lot for all the suggestions, will incorporate them in the new version.
+
+>
+> >  }
+> >
+> >  /**
+> > --
+> > 2.26.2
