@@ -2,97 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CDAF38C3B0
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:43:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D62ED38C3A0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 11:43:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237189AbhEUJpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 05:45:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33538 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236992AbhEUJot (ORCPT
+        id S233417AbhEUJoj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:44:39 -0400
+Received: from lucky1.263xmail.com ([211.157.147.130]:45740 "EHLO
+        lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236983AbhEUJoU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 05:44:49 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347D6C06138A;
-        Fri, 21 May 2021 02:43:26 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so7045442pjt.1;
-        Fri, 21 May 2021 02:43:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=wB1I6Nqq7AfdRuGhioLL2RWvT/EvSUrtBmeOoGNpC4c=;
-        b=VbK2759OZmIs9Uj0BIE0/1K+PyTaHDk8/CI8o3Tw9RUf+sUBvzmx1RoZwmvicUB8w4
-         cWUL/ZsVw7vRAmJCvC4VhiNIsSJRQYYsikPH6qbaYHehkr0CRO3OKSWQxKmb6zy+k6jm
-         jmZLloCR6zNCS2dzvfta5Jlm3frNi9a9FJnChKYfQXIYxFtdQHOhyNC4W+22ellojM20
-         Skq4dskAHXfBTFP6QuWtxAdAZbRnm6c/0uXkqiRgyKhoOkRcQpDO35mGSUT2woUaI93t
-         pKaSEnyq6hnVfe6qP/aGIx9o4jpQaixTfGMp/HVZ2jqtXEZsvZeYRLHo+41MajnhD45k
-         4Njw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=wB1I6Nqq7AfdRuGhioLL2RWvT/EvSUrtBmeOoGNpC4c=;
-        b=Hicv8axTr9OQEE1po/qjDXs/KlQtNCvDljzxgnbxl19mCVKqeMSQPce5A/N69pp+KU
-         heLewmoPvbGNfctNc0NCBHUq7RuGjb5l4ioluhOMgbK+/L6k0Z4shiK0c0KM82wBff+E
-         GG1LWgiYdSJQR22jdrU7zznUx9mR6IQ7v7Ag5UnXHH8Eg35hXvsOtXqjKFZrlZx7rUal
-         0j0gOnO0GBfuJbee25IC6+Q1vZa3sLzBSGRove3aeIysifJNwgXq3YRm6QcQhmAFQpHL
-         6SUSjALEuNhY7lCvFveetAl+mBjiIx2z1TDnurQqw8EaaRuOIjNGfPrZFfJbg6AAq6Q/
-         sQNg==
-X-Gm-Message-State: AOAM530sIFIpxeVUG1J3gymBdiDRfjlKQGRTa0IOBagTSFBrGxpoC5aI
-        nd395q21aRcd2wOrVDrToJg=
-X-Google-Smtp-Source: ABdhPJwhX4piJdAwEmZ+oCZlh/WxLpDJi8RzJnOuKqFfzfSMTnqDk3lxHJPub4ud5OefoN4ysVgZjw==
-X-Received: by 2002:a17:902:a3cd:b029:f3:d14:a17 with SMTP id q13-20020a170902a3cdb02900f30d140a17mr11232820plb.3.1621590205740;
-        Fri, 21 May 2021 02:43:25 -0700 (PDT)
-Received: from linux-l9pv.suse ([124.11.22.254])
-        by smtp.gmail.com with ESMTPSA id g202sm4091931pfb.54.2021.05.21.02.43.22
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 21 May 2021 02:43:25 -0700 (PDT)
-From:   "Lee, Chun-Yi" <joeyli.kernel@gmail.com>
-X-Google-Original-From: "Lee, Chun-Yi" <jlee@suse.com>
-To:     David Howells <dhowells@redhat.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Ben Boeckel <me@benboeckel.net>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Malte Gell <malte.gell@gmx.de>,
-        Varad Gautam <varad.gautam@suse.com>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Lee, Chun-Yi" <jlee@suse.com>
-Subject: [PATCH v7,4/4] Documentation/admin-guide/module-signing.rst: add openssl command option example for CodeSign EKU
-Date:   Fri, 21 May 2021 17:42:20 +0800
-Message-Id: <20210521094220.1238-5-jlee@suse.com>
-X-Mailer: git-send-email 2.12.3
-In-Reply-To: <20210521094220.1238-1-jlee@suse.com>
-References: <20210521094220.1238-1-jlee@suse.com>
+        Fri, 21 May 2021 05:44:20 -0400
+Received: from localhost (unknown [192.168.167.16])
+        by lucky1.263xmail.com (Postfix) with ESMTP id 0D7BFD1C96;
+        Fri, 21 May 2021 17:42:54 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED: 0
+X-ANTISPAM-LEVEL: 2
+X-ABS-CHECKED: 0
+Received: from localhost.localdomain (unknown [124.126.19.250])
+        by smtp.263.net (postfix) whith ESMTP id P32531T140356614080256S1621590174661695_;
+        Fri, 21 May 2021 17:42:54 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <497d9d64bde1557a321f80d0295321b8>
+X-RL-SENDER: zhaoxiao@uniontech.com
+X-SENDER: zhaoxiao@uniontech.com
+X-LOGIN-NAME: zhaoxiao@uniontech.com
+X-FST-TO: robh+dt@kernel.org
+X-RCPT-COUNT: 9
+X-SENDER-IP: 124.126.19.250
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+From:   zhaoxiao <zhaoxiao@uniontech.com>
+To:     robh+dt@kernel.org, tsbogend@alpha.franken.de
+Cc:     maoxiaochuan@loongson.cn, jiaxun.yang@flygoat.com,
+        zhangqing@loongson.cn, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhaoxiao <zhaoxiao@uniontech.com>
+Subject: [PATCH 5/5] mips: dts: loongson: fix DTC unit name warnings
+Date:   Fri, 21 May 2021 17:42:52 +0800
+Message-Id: <20210521094252.28446-1-zhaoxiao@uniontech.com>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add an openssl command option example for generating CodeSign extended
-key usage in X.509 when CONFIG_CHECK_CODESIGN_EKU is enabled.
+Fixes the following W=1 kernel build warning(s):
+arch/mips/boot/dts/loongson/rs780e-pch.dtsi:24.7-41.5: Warning (unit_address_vs_reg): /bus@10000000/isa: node has a reg or ranges property, but no unit name
+arch/mips/boot/dts/loongson/rs780e-pch.dtsi:24.7-41.5: Warning (simple_bus_reg): /bus@10000000/isa: simple-bus unit address format error, expected "18000000"
 
-Signed-off-by: "Lee, Chun-Yi" <jlee@suse.com>
+Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 ---
- Documentation/admin-guide/module-signing.rst | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/admin-guide/module-signing.rst b/Documentation/admin-guide/module-signing.rst
-index 7d7c7c8a545c..ca3b8f19466c 100644
---- a/Documentation/admin-guide/module-signing.rst
-+++ b/Documentation/admin-guide/module-signing.rst
-@@ -170,6 +170,12 @@ generate the public/private key files::
- 	   -config x509.genkey -outform PEM -out kernel_key.pem \
- 	   -keyout kernel_key.pem
+diff --git a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
+index 871c866e0423..6f459511e6c9 100644
+--- a/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/rs780e-pch.dtsi
+@@ -21,7 +21,7 @@
+ 				 <0x02000000 0 0x40000000 0 0x40000000 0 0x40000000>;
+ 		};
  
-+When ``CONFIG_CHECK_CODESIGN_EKU`` option is enabled, the following openssl
-+command option should be added where for generating CodeSign extended key usage
-+in X.509::
-+
-+        -addext "extendedKeyUsage=codeSigning"
-+
- The full pathname for the resulting kernel_key.pem file can then be specified
- in the ``CONFIG_MODULE_SIG_KEY`` option, and the certificate and key therein will
- be used instead of an autogenerated keypair.
+-		isa {
++		isa@18000000 {
+ 			compatible = "isa";
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
 -- 
-2.16.4
+2.20.1
+
+
 
