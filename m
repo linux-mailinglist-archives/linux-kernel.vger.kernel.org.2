@@ -2,92 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A70D038CEF5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:20:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A19F38CEE0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231239AbhEUUVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230409AbhEUUVM (ORCPT
+        id S230379AbhEUUVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:21:11 -0400
+Received: from mail-wr1-f48.google.com ([209.85.221.48]:41595 "EHLO
+        mail-wr1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230409AbhEUUUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:21:12 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33B06C06138A
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:19:39 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id et19so25177402ejc.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:19:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HdFvc7fptOa2U/lZENFnDrQgRiZEVZLgg6sKDbnUzyg=;
-        b=aG3bBjgVeg6slH6NXO/4ixHXPGXGELFb98HmduPBE+sk25y//o2bRRKcaARiDg1p7r
-         Ozu6MToPEGXm2IsakqX3NYJXJMtB2pgtfkj0HRlt/O3XV6FPK+ZmafBVMw397fb3siBV
-         Ym6c6OhgQ/BbBPgcaUrSg/ObB813tXqU6lqYivpVGYTSEyEAHMHc+9ExoYvMQSqhYrcp
-         qObmfIZLSwbX29/TiIs9l7krP5U/BWdae6GVoJKcyPw1I+PrcjPYoDRf4JWY0JWBa5z2
-         ArQYV3pvf/0S/Vh55fioWORYr/OIioK3LtSKT9AZIiY9Sd3ggrtQ9uqaKsfmhj95+znj
-         hpOA==
+        Fri, 21 May 2021 16:20:54 -0400
+Received: by mail-wr1-f48.google.com with SMTP id d11so22166174wrw.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:19:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HdFvc7fptOa2U/lZENFnDrQgRiZEVZLgg6sKDbnUzyg=;
-        b=Tu+IDqVxqm/cYcmM7Mrkrt4GO8grwsJaPlYirGrLTERdJVbrqwlO5woU5hi6WlKsKL
-         a95KhDwDNN5I+nH40M5dKoa0umvhfCwNFNo+fY7yRLDlrr4crMRweWNEYW8qT2YZDd2T
-         kQrdvuUVLv25vv3RCNvipwIU1DXolekTNS6uDhljGdln13nZiIfaw2cb+xOW9xfemZzM
-         3Y7Y5skanpPC/tSxc0HiqMjWXSWAnCFlcQDblmB7TYqsagXzaVjK5IPsaPf4sTwCbBw8
-         av0G1gZBvbkTcuP8wgFETzv2wX3SKqGAOXlzyn6LaItmxUYNZlt+/C/rucgnDCCgSQ1V
-         U11Q==
-X-Gm-Message-State: AOAM533otCHJFL818oxoY3jTunQs9WYK2JU+C9wcO9TngjgzE7h6TDIK
-        yLAvGRmzwReAWJ3cXq8yB0nXCUQLfbo98pox+2IVw6GeRA==
-X-Google-Smtp-Source: ABdhPJz6RI+DFTaAZKp1yYFkI36BapBPZgGOSGg8oZyqUJOh8WRI4wf9Oyp08Zz6Th80x+gDaI37+ox3yh/PXrCSCRM=
-X-Received: by 2002:a17:907:1749:: with SMTP id lf9mr12367624ejc.178.1621628377771;
- Fri, 21 May 2021 13:19:37 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=MOQFZcI+55Epu5CwRZbaQFCfIMzQkAmI2YuOFxHRHWY=;
+        b=sgorPtSkvrsAydZE2cZhaafGuJ5f8lKVZ8Eu25VL2bGUseeE5jpgyXZYhth8Ed/HJh
+         xgREQaFf0O0szUBA+W/gOL2p2yUTC3rWM1WS1LVAJdh+cltrzNCP0gQQ54hjFNaxI5xf
+         An6bc7+torHQywBFsiuYBrZGrSNG1ffi5MHAfY1BMjLw6rg5+TqgqXIyGPxMHC9PcGBy
+         ZnTBPCiw71bDG6p4Y+YZTempG4rypQOlIqsbTfSL8poNmk+PAXoEjp/orW7JH+ZQVq/d
+         j++tYMhJ6XNnBIy49SYvlphEHOuH3zSAW8D2Qu/XfjvKJhhJTtydtWPN46VO3rV/Ksos
+         xUxw==
+X-Gm-Message-State: AOAM530gccZO/N9FMd0CEre7oY0jgLwJ7D1n0/77UWg5GtRZM1vwQHHe
+        8g97j2c77fo6kE9RzJnlWsQ=
+X-Google-Smtp-Source: ABdhPJw3bqMk0JtrIdEyRpkFaLXGZ0x4srfJ3bzWVQ1HPHOK4rh2SFkXELrqJ5w5TSTAepr+oW5WvQ==
+X-Received: by 2002:a5d:6445:: with SMTP id d5mr11548210wrw.235.1621628369631;
+        Fri, 21 May 2021 13:19:29 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:66b2:1988:438b:4253? ([2601:647:4802:9070:66b2:1988:438b:4253])
+        by smtp.gmail.com with ESMTPSA id i11sm3221728wrq.26.2021.05.21.13.19.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 13:19:29 -0700 (PDT)
+Subject: Re: [PATCH] nvme: Use NN for max_namespaces if MNAN is zero
+To:     Keith Busch <kbusch@kernel.org>, Daniel Wagner <dwagner@suse.de>
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
+References: <20210521144734.90044-1-dwagner@suse.de>
+ <20210521145306.ld7jc6alchimyzny@beryllium.lan>
+ <20210521152702.GB29013@redsun51.ssa.fujisawa.hgst.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <f89bf79e-937c-96ba-4622-4a29fce00b0e@grimberg.me>
+Date:   Fri, 21 May 2021 13:19:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210513200807.15910-1-casey@schaufler-ca.com> <20210513200807.15910-22-casey@schaufler-ca.com>
-In-Reply-To: <20210513200807.15910-22-casey@schaufler-ca.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 21 May 2021 16:19:26 -0400
-Message-ID: <CAHC9VhSmAUg-mVrHpmgr3bF_+MeFd3p6W9N3b_kptzEY5YrsiA@mail.gmail.com>
-Subject: Re: [PATCH v26 21/25] audit: add support for non-syscall auxiliary records
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     casey.schaufler@intel.com, James Morris <jmorris@namei.org>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        linux-audit@redhat.com, keescook@chromium.org,
-        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-kernel@vger.kernel.org, Richard Guy Briggs <rgb@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210521152702.GB29013@redsun51.ssa.fujisawa.hgst.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 4:31 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
->
-> Standalone audit records have the timestamp and serial number generated
-> on the fly and as such are unique, making them standalone.  This new
-> function audit_alloc_local() generates a local audit context that will
-> be used only for a standalone record and its auxiliary record(s).  The
-> context is discarded immediately after the local associated records are
-> produced.
->
-> Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
-> Cc: linux-audit@redhat.com
-> To: Richard Guy Briggs <rgb@redhat.com>
-> ---
->  include/linux/audit.h |  8 ++++++++
->  kernel/audit.h        |  1 +
->  kernel/auditsc.c      | 33 ++++++++++++++++++++++++++++-----
->  3 files changed, 37 insertions(+), 5 deletions(-)
 
-At some point I suspect we will need to add filtering for these
-"local" records, but that is a problem for another day.
+>> Forgot to mention: During testing dynamically adding namespaces it was
+>> possible to trigger the WARNINGs in the nvme_parse_ana_log(). Initially
+>> the subsystem started with 8 namespaces and during runtime another 8
+>> namespaces was added.
+> 
+> The controller is required to have a non-zero MNAN value if it supports
+> ANA:
+> 
+>    If the controller supports Asymmetric Namespace Access Reporting, then
+>    this field shall be set to a non-zero value that is less than or equal
+>    to the NN value.
 
-Acked-by: Paul Moore <paul@paul-moore.com>
-
-
---
-paul moore
-www.paul-moore.com
+That was my thought exactly
