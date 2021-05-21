@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ECE338CA07
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:23:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30F1738CA0C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237427AbhEUPYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:24:24 -0400
-Received: from foss.arm.com ([217.140.110.172]:49722 "EHLO foss.arm.com"
+        id S237122AbhEUP0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:26:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:49778 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232199AbhEUPYX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:24:23 -0400
+        id S232199AbhEUP0D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 11:26:03 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CEEB211B3;
-        Fri, 21 May 2021 08:22:59 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (unknown [10.1.195.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7F8DD3F73B;
-        Fri, 21 May 2021 08:22:57 -0700 (PDT)
-Date:   Fri, 21 May 2021 16:22:55 +0100
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 02/21] arm64: Allow mismatched 32-bit EL0 support
-Message-ID: <20210521152255.tosr4jwok6cjg6sf@e107158-lin.cambridge.arm.com>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-3-will@kernel.org>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 30CDD11B3;
+        Fri, 21 May 2021 08:24:40 -0700 (PDT)
+Received: from bogus (unknown [10.57.72.88])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 51EF13F73B;
+        Fri, 21 May 2021 08:24:38 -0700 (PDT)
+Date:   Fri, 21 May 2021 16:24:31 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Hector Yuan <hector.yuan@mediatek.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v4] dt-bindings: dvfs: Add support for generic
+ performance domains
+Message-ID: <20210521152431.wspnsji3z7pmmdlf@bogus>
+References: <20210517155458.1016707-1-sudeep.holla@arm.com>
+ <1621284311.383362.3157708.nullmailer@robh.at.kernel.org>
+ <20210519112041.olwl35irvcbjxrka@bogus>
+ <CAL_JsqK-LpDQWh9RsLsGPEQ53n6s0+Q7ioVikSm1jZuoCWAgnA@mail.gmail.com>
+ <20210521040834.3rzsjkveoyugfotl@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210518094725.7701-3-will@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210521040834.3rzsjkveoyugfotl@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/18/21 10:47, Will Deacon wrote:
-> When confronted with a mixture of CPUs, some of which support 32-bit
-> applications and others which don't, we quite sensibly treat the system
-> as 64-bit only for userspace and prevent execve() of 32-bit binaries.
-> 
-> Unfortunately, some crazy folks have decided to build systems like this
-> with the intention of running 32-bit applications, so relax our
-> sanitisation logic to continue to advertise 32-bit support to userspace
-> on these systems and track the real 32-bit capable cores in a cpumask
-> instead. For now, the default behaviour remains but will be tied to
-> a command-line option in a later patch.
-> 
-> Signed-off-by: Will Deacon <will@kernel.org>
-> ---
->  arch/arm64/include/asm/cpucaps.h    |   3 +-
+On Fri, May 21, 2021 at 09:38:34AM +0530, Viresh Kumar wrote:
+> On 20-05-21, 14:43, Rob Herring wrote:
+> > Not allowed because I can't turn this check on by default until we get
+> > rid of the existing 80 or so. But it is a new check and Viresh already
+> > applied, so oh well.
+>
+> I can always drop it :)
+>
 
-Heads up. I just tried to apply this on 5.13-rc2 and it failed because cpucaps.
-was removed; it's autogenerated now.
+While I really don't care(evident by rate at which I worked on this 😉)
+I think Hector Yuan won't be happy to wait I guess. As a quick fix, you
+can update "qcom,cpufreq-hw" to "mediatek,cpufreq-hw". You will still
+get warning with this patch + update alone, but once you have Hector's
+mediatek cpufreq driver applied, the warnings must disappear.
 
-See commit 0c6c2d3615ef: ()"arm64: Generate cpucaps.h")
-
-Cheers
+What do you think ?
 
 --
-Qais Youesf
+Regards,
+Sudeep
