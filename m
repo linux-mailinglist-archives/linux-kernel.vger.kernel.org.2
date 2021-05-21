@@ -2,82 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C224138CD09
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7702F38CD10
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236538AbhEUSQE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:16:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236001AbhEUSP6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:15:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2950A613CB;
-        Fri, 21 May 2021 18:14:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621620875;
-        bh=3NXKf3VGTX9654EmU8d059WEgGJigpEZhXp3cpqBdTg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sJwFiXDqfuQB1p4OCL6C/cAPQI8sXFc0tg3qi/NGD3rBvXidg0Mh1vs8VwtktYPOl
-         URoyH4H8SDujR71h/4vUGyK/fa+oYeQoXctqjRREekyoE2L4CCScXh1T0wIuLS6JMT
-         6xNpsu1kQ/57+SvOseEtDYbkMQlqysZk9psIKkXo=
-Date:   Fri, 21 May 2021 20:14:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <uwe@kleine-koenig.org>
-Cc:     Ian Abbott <abbotti@mev.co.uk>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH] comedi: Make ni_mio_common a standalone module
-Message-ID: <YKf4iUkA+QzfoN0e@kroah.com>
-References: <20210521172749.579900-1-uwe@kleine-koenig.org>
+        id S235574AbhEUSSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:18:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231193AbhEUSSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:18:46 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76F5FC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:17:22 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id t15so24311538edr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:17:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=deviqon.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XMwmJaZ5GB+lc9fDld1NHW1/GpWNomISU7CUFQvXptE=;
+        b=ud67qYNHNNv6PvX4CkVUTYjRaZZ1DebaBV69n/s50r2RJRzy8pFK8e5gqafc/l5O6E
+         XcDPz1ZAEMM451j3sLjHEd6ZDOTSy1JSSnAOhH9pkUcBjdzjZ10mRLDA9SHLMcRAKYLe
+         vMuUJCmgP48jPy9n9Fa3l6zAeXOPTh9BCtmSl1OjDfkZjdlI21iyV3jVK7+7kiQ+vfbq
+         CNrbsOh+rOgUKlffBojLWvDv3foG4dNI1gSUS//KzSB1endfmw6rg0LdaIhBZW+7bp9R
+         Nx13ojLVFsm3A2GCXlpTz56grFWtHuTBhHxdDKA08WcvR+8a827TQmqS7zBmF57XhXyq
+         Ci8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XMwmJaZ5GB+lc9fDld1NHW1/GpWNomISU7CUFQvXptE=;
+        b=RpRevq+rEOssUbR6Q8HEY+64USs8CRLUaVJ599BzLtJLFrL8eJQPAbX67lWYdBGz0n
+         55FLIVMiXlIz4rEiUn0c0cLwuIREaAf195T1i2dTYgi8VYLHFfR+w0VyhPljfpPn81gB
+         6M079dx4lAw4czuGhRsrafVtSMmO5lFNOKoMrn739vr6Qs89k16ReGOv/SzruFqDnNoR
+         uf1pA1WpRJVsNxMBI71V/LBcktQA4Q4WVit6A00Sa8/6D1m1H3InXNLwKP8Xz+fYNc+F
+         HpJcIv1zymXdVC+sTLyQ3RQrQ03x/IEP/yWzRW+J75aflhr9hO38PHqKWVYuCOekFezl
+         c1ig==
+X-Gm-Message-State: AOAM530KBASas5owigAI25gqZgM5FU7rVKfb7q7T0HDeZ4bzGoUh7e2Q
+        IlcVbrAFoqRhWBK5BYXhrvJbwQ==
+X-Google-Smtp-Source: ABdhPJy/tnF3pLUYaUV6v59n/IifAXvOM0FdLnANaTYmbxBvSUkPNx+kbpX4k12ivW7Bcz86ie9Uaw==
+X-Received: by 2002:aa7:c845:: with SMTP id g5mr12775506edt.219.1621621040973;
+        Fri, 21 May 2021 11:17:20 -0700 (PDT)
+Received: from neptune.. ([188.27.131.122])
+        by smtp.gmail.com with ESMTPSA id h9sm4503438edr.10.2021.05.21.11.17.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 11:17:20 -0700 (PDT)
+From:   Alexandru Ardelean <aardelean@deviqon.com>
+To:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        Alexandru Ardelean <aardelean@deviqon.com>
+Subject: [PATCH] gpio: gpio-tps65910: remove platform_set_drvdata() + cleanup probe
+Date:   Fri, 21 May 2021 21:17:08 +0300
+Message-Id: <20210521181708.11524-1-aardelean@deviqon.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210521172749.579900-1-uwe@kleine-koenig.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 07:27:50PM +0200, Uwe Kleine-König wrote:
-> This allows to get rid of the ugly
-> 
-> 	#include "ni_mio_common.c"
-> 
-> in three modules.
-> 
-> For an amd64 allmodconfig this changed the size for the following object
-> files:
->                                        |  before |  after
-> drivers/comedi/drivers/ni_atmio.o      |  323944 |  20752
-> drivers/comedi/drivers/ni_mio_cs.o     |  318376 |  14920
-> drivers/comedi/drivers/ni_mio_common.o |       - | 324872
-> drivers/comedi/drivers/ni_pcimio.o     |  389344 |  48168
-> ---------------------------------------+---------+-------
->  sum                                   | 1031664 | 408712
-> 
-> So this results in a considerable decrease in binary size of more than
-> 600 KiB.
+The platform_set_drvdata() call is only useful if we need to retrieve back
+the private information.
+Since the driver doesn't do that, it's not useful to have it.
 
-Very nice!
+If this is removed, we can also just do a direct return on
+devm_gpiochip_add_data(). We don't need to print that this call failed as
+there are other ways to log/see this during probe.
 
-One tiny nit that I can see that might matter later on (not now):
+Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+---
+ drivers/gpio/gpio-tps65910.c | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
 
-> @@ -168,6 +173,7 @@ static const struct comedi_lrange range_ni_E_ao_ext = {
->  		RANGE_ext(0, 1)
->  	}
->  };
-> +EXPORT_SYMBOL_GPL(range_ni_E_ao_ext);
+diff --git a/drivers/gpio/gpio-tps65910.c b/drivers/gpio/gpio-tps65910.c
+index 0c0b445c75c0..7fa8c841081f 100644
+--- a/drivers/gpio/gpio-tps65910.c
++++ b/drivers/gpio/gpio-tps65910.c
+@@ -165,16 +165,8 @@ static int tps65910_gpio_probe(struct platform_device *pdev)
+ 	}
+ 
+ skip_init:
+-	ret = devm_gpiochip_add_data(&pdev->dev, &tps65910_gpio->gpio_chip,
+-				     tps65910_gpio);
+-	if (ret < 0) {
+-		dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
+-		return ret;
+-	}
+-
+-	platform_set_drvdata(pdev, tps65910_gpio);
+-
+-	return ret;
++	return devm_gpiochip_add_data(&pdev->dev, &tps65910_gpio->gpio_chip,
++				      tps65910_gpio);
+ }
+ 
+ static struct platform_driver tps65910_gpio_driver = {
+-- 
+2.31.1
 
-not the nicest global symbol, ideally these would all start with:
-	comedi_ni_...
-
-Oh wait, use the module namespace here!  Make a namespace for the NI
-comedi drivers to use and then we don't care so much about the names
-(within reason, 'allyesconfig' builds still will care).
-
-But that's an add-on patch, not needed here.
-
-thanks,
-
-greg k-h
