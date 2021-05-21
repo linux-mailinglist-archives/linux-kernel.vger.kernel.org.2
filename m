@@ -2,59 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F0238D203
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 01:32:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20DB938D20B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 01:39:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230091AbhEUXdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 19:33:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45330 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229937AbhEUXdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 19:33:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1B77061026;
-        Fri, 21 May 2021 23:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621639907;
-        bh=HXPclzjaKYZAgxTDeosb3i/LEGol6Rxqyo32K+ZRYog=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=hbd5aYMhf6MCOYQgEeISr51jpDK79zVfXKm/EY5cEhQma9wKbe3KUX4a/mHWJ/kaa
-         at3KVFa9DLCuQDC8PsOZ70NHuxBWrB4ECJD96XOO8xziqT4LRK9x6zb3m0Fx2bmJnG
-         2qhtAf3xPz+4HjLDhNIXT5/426lPeyIfkzW+YCbSxWvtgRc72ETt9Y0xiaSvi3f12U
-         5w9iYn191idRTgYicio4OBrU3ef0LhmJYa7bY0baphsS63w/RM/PwO+jNOi7aAhYDB
-         TvBvnzIPGhcqfXx0+en4UDK/RgQsGrEXe+0uBe4iO2C0pSCd6lrpQ3eyG8uKVNHDur
-         1a+sUvMsCW95g==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 1439360A2A;
-        Fri, 21 May 2021 23:31:47 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for v5.13-rc3, part 2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1621627293.git.dsterba@suse.com>
-References: <cover.1621627293.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1621627293.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
-X-PR-Tracked-Commit-Id: 764c7c9a464b68f7c6a5a9ec0b923176a05e8e8f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 45af60e7ced07ae3def41368c3d260dbf496fbce
-Message-Id: <162163990707.25567.9717741625796090238.pr-tracker-bot@kernel.org>
-Date:   Fri, 21 May 2021 23:31:47 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S230140AbhEUXlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 19:41:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhEUXlH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 19:41:07 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD610C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 16:39:42 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id w15so25855752ljo.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 16:39:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NsEYV15WJxVPhF1qW2qRsDL8347kj9miuk7JSi+TA4s=;
+        b=JlAxBcIhbeZBbdKctXu5+zydEdmu6ICFB4/jglKltcG+VQnqGjHihUu0djnOokpFhD
+         ZyREKqJ4/MwNfCc1lRXrjyTJ2pDyDG+8Qsa5ZQcgknDTzy5F/eIWqgVMFVVdLcH4MeNP
+         IfTOB3P0yZfaDcc3qZaW/BjADD+dqhBXu0bzYDC1yOQ+xB1IvV36ngoXREF40teQMKj/
+         nL56siSHLSg8DQ4XEm+Dr/+Js5J5JZQ1Uviot3slasoyrAp9k2Ra20EdsRlJwryE7WTP
+         iVmkIsu3+EqBQHvWSpj0fH1Hi2NRP5zVZfz2bF+TudRg9Imd9Ry4DXnAX/Zy7hmLxEoI
+         jqVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NsEYV15WJxVPhF1qW2qRsDL8347kj9miuk7JSi+TA4s=;
+        b=TBDQTo3pYPpVa6NmqWDmhkYRT3RjXCAsdWuAHKFSdwMcjNjJJssUUr+/8Ex4LnFdeM
+         CAr3V7vw0mK4ivMhur2gSaKzLgTimYmXtzlJhbQpTsvXshgSCoIlkkdY5dmmXI/KSJFd
+         iBX4fZ7rGGeHykpawR0TWbPVPcFs2XTS34pssrXIUSM4f7BdMyqqpLOrYZ4HIZL4a32y
+         2OhDiQie52U52uwl9Y89w+xphhqxENNbaQR6jwiJFxyu/y2DhYv1tGO/reWQAxYrO24c
+         lBLGwHn3EnUQTs4L3ZljRb9SKqJi4zoiuFYppZf+nS1/KTYITUrdxcQIY6bgvPAM3bjP
+         bQRA==
+X-Gm-Message-State: AOAM5320AF87epGK7he2DBMYIJD8zrokT1tSIkSe77p+ToRGhVBXIgCy
+        EQ3+YGg35LC3hx+KmsbeQxntEvDO5HUX8gnUXQnA1Wh96Lg=
+X-Google-Smtp-Source: ABdhPJyk6mAbNkK9lDoe2gUdi8CH/jRd0If067NLN7Kj824I9z0GAEBuI5mjukyJKcSbryJVnm5M3CVOWAuSseAN+As=
+X-Received: by 2002:a2e:81d0:: with SMTP id s16mr8947923ljg.74.1621640380923;
+ Fri, 21 May 2021 16:39:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210521193540.16164-1-clabbe@baylibre.com>
+In-Reply-To: <20210521193540.16164-1-clabbe@baylibre.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sat, 22 May 2021 01:39:28 +0200
+Message-ID: <CACRpkdYvp0AOuMrMN7ph9DxCErh5eW8QtNyzodGgaAa+otCPdg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] ARM: dts: gemini-dlink-dns-313: rename gpio-i2c to i2c
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 21 May 2021 22:11:13 +0200:
+On Fri, May 21, 2021 at 9:35 PM Corentin Labbe <clabbe@baylibre.com> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.13-rc2-tag
+> This fixes dtcheck warning:
+> arch/arm/boot/dts/gemini-dlink-dns-313.dt.yaml: gpio-i2c: $nodename:0: 'gpio-i2c' does not match '^i2c(@.*)?'
+>
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/45af60e7ced07ae3def41368c3d260dbf496fbce
+Patch applied!
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Yours,
+Linus Walleij
