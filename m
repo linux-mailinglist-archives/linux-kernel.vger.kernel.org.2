@@ -2,483 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB0F38CE24
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 222BD38CE27
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:27:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239029AbhEUT1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:27:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52454 "EHLO
+        id S238939AbhEUT24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:28:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238939AbhEUT1I (ORCPT
+        with ESMTP id S236596AbhEUT2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:27:08 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FF14C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:25:44 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so7725924wmh.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:25:44 -0700 (PDT)
+        Fri, 21 May 2021 15:28:51 -0400
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1221C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:27:27 -0700 (PDT)
+Received: by mail-ej1-x62c.google.com with SMTP id gb17so14016121ejc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:27:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZmKT0YhdfiCbhIMkJqqedNQtjVqFwHlXAnvfxWPTnYA=;
-        b=nwnq2MGlFpDTOem8Gr4UzT1fxlIMiHyx1YWb9Mn7RQeD8AeyNPXfxeYbbgkIO5jdLb
-         scE9daEixHObaOAFycg3JipmowQrJva8yy0l7FHsTtq9NGwO5tLwOEpyVvrQDLn1XpI7
-         rCIX6KZvD0KD7/Fv8IJCpiH7+qzGmxAvuTsD3T4ezXUXsOlmoyTvJ0rCCQHl1tcVLExh
-         eTjidzQXu0e7sNj39cu+aLIoMOExQRWhSubQJMRk9mRqzvdHfFJgzTMzoLCYLUohOnrk
-         IZyIb7HoRXLIGY5GC6nvqmw44aTP3DHfqKhIic/6sM7nlAH/gsjVml+AjdHQ4txwkWu5
-         AEjQ==
+        bh=p33zgO2dvO4T3zlpBknK48bHhSk8cDL/T5K7X55c9LA=;
+        b=Fmw3sIbNbdideQbu0Jt2y0/cgFto3i/P3elmBi/M1QfGnQX1tuLGkJiTCPwirANK29
+         kFjpbcyQEyri4rGDpIzkdphKhdJX0ydIDknuUgcGC8uc3wyGeJWfzGDrwWOuu3qhSg/U
+         kkkmGuW8Hyjn1thYJSEsRWXnU3tq4AVi5klgM/zQRS4BS3GaxnaU98L/yGoik8lrHxTW
+         X+Kt6Jcr6HEjAcmF7slCg3/yIecwc0lfRAhZOBsWmgKLYImB3vxSTy2pz3te4iJIQaTB
+         QGROV55ZQn8ejr4IvbcLmS3FqfQj3yfnt80FBKXiYI4n6u5n0VqLQ5tokFW+sgtIAysx
+         VfvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZmKT0YhdfiCbhIMkJqqedNQtjVqFwHlXAnvfxWPTnYA=;
-        b=CzEOgXjb1aZedYiQh9CH4zdfuWuy5a9LaGk+k14SS39EEBtOIvJ3q01hGlQdauAcxt
-         ngYaUvUX1OgwX5IyXGlTv51e4jy83icHaB2qr0Gtx01aIKiWDcIQ7qWbKGla8GZpv7YT
-         xWlEJwhMf9h3ih/yP6G8zpeQLru0uH8XiRD0Lj7nn3zBSUMu99j0hbgDaTDZDeyMxMdB
-         71yYg8e0Ks8Nbyc0kJSdEjMC3unsgvb51TylA5dee3n+Tj15gnoIXdtQGCOMNXNMbjvV
-         o4Xg/CMsKB2iQLlBKNQ+e1yjfwD9uzjYO8dK3Ete1vBxmyOFYuKiaBTbTbgE2LLBij+h
-         7ElA==
-X-Gm-Message-State: AOAM532td82apKSqvWQUMohgm4roR2bkqlYMpPay1jDGgLOBVi4DwbG4
-        dnlq+iAmWJjMks66xBocDQyWR9s3l8MvHwgeBX1tCw==
-X-Google-Smtp-Source: ABdhPJyA4XzgeWdT0CnUGJLp35x2mUov9iR6ML98MEaq4lMOjnanr99XTJ+DoaGadxgsXaEnPK1YdUIyHGUnSJnRGw4=
-X-Received: by 2002:a1c:7313:: with SMTP id d19mr10163655wmb.14.1621625142938;
- Fri, 21 May 2021 12:25:42 -0700 (PDT)
+        bh=p33zgO2dvO4T3zlpBknK48bHhSk8cDL/T5K7X55c9LA=;
+        b=exjaZj3/4F/uxqqB1ljVpQZzVeTT8HGzucC5bVTfWYdpdSVG3nnDguw816Ln+AxCe2
+         PKNjmtDlYWwts9o7yW4mrsIo5ZnadV55M1pfxMSGmtyCG4rI+YTse1GWC4ORgd5ltEfF
+         tPC8cDJCe1ykXEFh7+dz2MmahI+rIaBaf1qxhBrKPOCg9GNTCp4dzzJCbKx75UYJLe1B
+         7Qn9CIkKlcmyMgSDqRjFiam7CnEVumEWWbWCTO1KyP10XUk9F/mIhdS51Fo+a++t3ZsC
+         +4X1SEG+HCZp7LS2QX6S/b3JfmvvkVFqkVq/GyEgAlHG0a3hBHmwFKSad+ZzUJZeNT6R
+         cBUQ==
+X-Gm-Message-State: AOAM533MR4+OABaUfmujyuIiaU/BTfktMx6jHk60SU87xFrgnL8N5N8F
+        EinK6lx42NkRy1YSn4JgvM7Ym/IVA+gLaRERHfc=
+X-Google-Smtp-Source: ABdhPJxan+7gW+Zg554MZhYZ0zNINSTC/jvFQocK0naORdBpX2wvIbVgmqUi0sf5EZDX+lmDWCDwRTmE8nhMg2e22WA=
+X-Received: by 2002:a17:906:b7d6:: with SMTP id fy22mr11439547ejb.383.1621625246236;
+ Fri, 21 May 2021 12:27:26 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519210437.1688484-1-jthoughton@google.com> <CANgfPd-=+-0+UzXD+zpqX50SGEi_wCLVJfsv63Rq9GYR+4-dCw@mail.gmail.com>
-In-Reply-To: <CANgfPd-=+-0+UzXD+zpqX50SGEi_wCLVJfsv63Rq9GYR+4-dCw@mail.gmail.com>
-From:   James Houghton <jthoughton@google.com>
-Date:   Fri, 21 May 2021 15:25:31 -0400
-Message-ID: <CADrL8HU4Yj_uAWKCLanUmQoDS6rsoo1GJiJhiCY=e0Lwm_zyiw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] KVM: Deliver VM fault signals to userspace
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+References: <20210513212334.217424-1-shy828301@gmail.com> <alpine.LSU.2.11.2105202120220.6466@eggly.anvils>
+ <CAHbLzkpipqwZQfmJe0t3MxfPW-RvG8wXerffBqrUxZb3OHccGg@mail.gmail.com>
+In-Reply-To: <CAHbLzkpipqwZQfmJe0t3MxfPW-RvG8wXerffBqrUxZb3OHccGg@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Fri, 21 May 2021 12:27:13 -0700
+Message-ID: <CAHbLzkpWzs-ym2wS3r9g8gw+wTRoKQD_4rNmdCRjWQjJ981awA@mail.gmail.com>
+Subject: Re: [v2 PATCH] mm: thp: check total_mapcount instead of page_mapcount
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Zi Yan <ziy@nvidia.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Wang Yugui <wangyugui@e16-tech.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-mm@kvack.org,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Jue Wang <juew@google.com>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Ben.
-
-First I'd like to clarify that the 3-4x speedup was measured without
-KVM (calling UFFDIO_COPY from the signal handler, not signal-safe);
-with KVM it drops to about a 30% improvement (single vCPU). This isn't
-that important though, as the real purpose of the change is to allow
-userfaultfd page-ins to scale better. To test scaling, I've updated
-the KVM demand paging self-test to fix the non-partitioned userfaultfd
-case (I will send this out when I send a new patchset that addresses
-your concerns). It turns out that we contend on the threads'
-sighand->siglock (because pthread_create uses CLONE_SIGHAND). Needless
-to say, I need to do more testing.
-
-Removing the siglock contention should lead to better page-in
-performance at scale, but this patch won't be useful unless I can
-actually demonstrate this. There are a few couple benefits I forgot to
-mention in the commit message.
-1. NUMA locality for page-in threads is much easier to maintain when
-using UFFD_FEATURE_SIGBUS.
-2. The number of threads that perform page-ins automatically scales
-with the number of vCPUs.
-
-Regarding situations where the kernel is unable to return to
-userspace: thanks for pointing this out. If we can solve the signal
-contention problems with this approach, page-ins this way might end up
-being quite desirable, but only if we can actually exit to userspace.
-So we could implement a SIGBUS-like userfaultfd feature, where it
-returns VM_FAULT_SIGBUS if it knows the caller is ready to handle it
-(i.e., in this patchset, if a caller has passed a non-NULL
-`fault_error` to get_user_pages), otherwise continue with the
-handle_userfault path and put the thread to sleep. I'll work on this.
-
-- James
-
-
-On Wed, May 19, 2021 at 6:41 PM Ben Gardon <bgardon@google.com> wrote:
+On Fri, May 21, 2021 at 10:16 AM Yang Shi <shy828301@gmail.com> wrote:
 >
-> On Wed, May 19, 2021 at 2:04 PM James Houghton <jthoughton@google.com> wrote:
+> On Thu, May 20, 2021 at 10:06 PM Hugh Dickins <hughd@google.com> wrote:
 > >
-> > This patch has been written to support page-ins using userfaultfd's
-> > SIGBUS feature.  When a userfaultfd is created with UFFD_FEATURE_SIGBUS,
-> > `handle_userfault` will return VM_FAULT_SIGBUS instead of putting the
-> > calling thread to sleep. Normal (non-guest) threads that access memory
-> > that has been registered with a UFFD_FEATURE_SIGBUS userfaultfd receive
-> > a SIGBUS.
+> > On Thu, 13 May 2021, Yang Shi wrote:
 > >
-> > When a vCPU gets an EPT page fault in a userfaultfd-registered region,
-> > KVM calls into `handle_userfault` to resolve the page fault. With
-> > UFFD_FEATURE_SIGBUS, VM_FAULT_SIGBUS is returned, but a SIGBUS is never
-> > delivered to the userspace thread. This patch propagates the
-> > VM_FAULT_SIGBUS error up to KVM, where we then send the signal.
+> > > When debugging the bug reported by Wang Yugui [1], try_to_unmap() may
+> > > return false positive for PTE-mapped THP since page_mapcount() is used
+> > > to check if the THP is unmapped, but it just checks compound mapount and
+> > > head page's mapcount.  If the THP is PTE-mapped and head page is not
+> > > mapped, it may return false positive.
+> > >
+> > > Use total_mapcount() instead of page_mapcount() for try_to_unmap() and
+> > > do so for the VM_BUG_ON_PAGE in split_huge_page_to_list as well.
+> > >
+> > > This changed the semantic of try_to_unmap(), but I don't see there is
+> > > any usecase that expects try_to_unmap() just unmap one subpage of a huge
+> > > page.  So using page_mapcount() seems like a bug.
+> > >
+> > > [1] https://lore.kernel.org/linux-mm/20210412180659.B9E3.409509F4@e16-tech.com/
+> > >
+> > > Signed-off-by: Yang Shi <shy828301@gmail.com>
 > >
-> > Upon receiving a VM_FAULT_SIGBUS, the KVM_RUN ioctl will exit to
-> > userspace. This functionality already exists. This allows a hypervisor
-> > to do page-ins with UFFD_FEATURE_SIGBUS:
+> > I don't object to this patch, I've no reason to NAK it; but I'll
+> > point out a few deficiencies which might make you want to revisit it.
 > >
-> > 1. Setup a SIGBUS handler to save the address of the SIGBUS (to a
-> >    thread-local variable).
-> > 2. Enter the guest.
-> > 3. Immediately after KVM_RUN returns, check if the address has been set.
-> > 4. If an address has been set, we exited due to a page fault that we can
-> >    now handle.
-> > 5. Userspace can do anything it wants to make the memory available,
-> >    using MODE_NOWAKE for the UFFDIO memory installation ioctls.
-> > 6. Re-enter the guest. If the memory still isn't ready, this process
-> >    will repeat.
+> > > ---
+> > > v2: Removed dead code and updated the comment of try_to_unmap() per Zi
+> > >     Yan.
+> > >
+> > >  mm/huge_memory.c | 11 +----------
+> > >  mm/rmap.c        | 10 ++++++----
+> > >  2 files changed, 7 insertions(+), 14 deletions(-)
+> > >
+> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > index 63ed6b25deaa..3b08b9ba1578 100644
+> > > --- a/mm/huge_memory.c
+> > > +++ b/mm/huge_memory.c
+> > > @@ -2348,7 +2348,6 @@ static void unmap_page(struct page *page)
+> > >               ttu_flags |= TTU_SPLIT_FREEZE;
+> > >
+> > >       unmap_success = try_to_unmap(page, ttu_flags);
+> > > -     VM_BUG_ON_PAGE(!unmap_success, page);
 > >
-> > This style of demand paging is significantly faster than the standard
-> > poll/read/wake mechanism userfaultfd uses and completely bypasses the
-> > userfaultfd waitq. For a single vCPU, page-in throughput increases by
-> > about 3-4x.
+> > The unused variable unmap_success has already been reported and
+> > dealt with.  But I couldn't tell what you intended: why change
+> > try_to_unmap()'s output, if you then ignore it?
 >
-> Wow that's an awesome improvement! My impression is that the
-> improvement is even more significant with more vCPUs because we avoid
-> wait queue contention. Is that right?
->
-> How does this mode deal with situations where returning back to
-> userspace isn't feasible? For example, if we're buried deep in some
-> nested instruction emulation path, there may be no way to return back
-> to userspace without creating unintended side effects. Do we have the
-> facility to do a regular UFFD request in a case like that?
->
-> As an aside, if you can think of a way to split this patch it would be
-> easier to review. I realize most of the changes are propagating the
-> fault_error parameter around though, so splitting the patch might not
-> be easy.
+> Because some other callers of try_to_unmap() check the output.
 >
 > >
-> > Signed-off-by: James Houghton <jthoughton@google.com>
-> > Suggested-by: Jue Wang <juew@google.com>
-> > ---
-> >  include/linux/hugetlb.h |  2 +-
-> >  include/linux/mm.h      |  3 ++-
-> >  mm/gup.c                | 57 +++++++++++++++++++++++++++--------------
-> >  mm/hugetlb.c            |  5 +++-
-> >  virt/kvm/kvm_main.c     | 30 +++++++++++++++++++++-
-> >  5 files changed, 74 insertions(+), 23 deletions(-)
+> > >  }
+> > >
+> > >  static void remap_page(struct page *page, unsigned int nr)
+> > > @@ -2718,7 +2717,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> > >       }
+> > >
+> > >       unmap_page(head);
+> > > -     VM_BUG_ON_PAGE(compound_mapcount(head), head);
+> > > +     VM_BUG_ON_PAGE(total_mapcount(head), head);
 > >
-> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > index b92f25ccef58..a777fb254df0 100644
-> > --- a/include/linux/hugetlb.h
-> > +++ b/include/linux/hugetlb.h
-> > @@ -119,7 +119,7 @@ int copy_hugetlb_page_range(struct mm_struct *, struct mm_struct *, struct vm_ar
-> >  long follow_hugetlb_page(struct mm_struct *, struct vm_area_struct *,
-> >                          struct page **, struct vm_area_struct **,
-> >                          unsigned long *, unsigned long *, long, unsigned int,
-> > -                        int *);
-> > +                        int *, int *);
-> >  void unmap_hugepage_range(struct vm_area_struct *,
-> >                           unsigned long, unsigned long, struct page *);
-> >  void __unmap_hugepage_range_final(struct mmu_gather *tlb,
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index 322ec61d0da7..1dcd1ac81992 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -1824,7 +1824,8 @@ long get_user_pages_locked(unsigned long start, unsigned long nr_pages,
-> >  long pin_user_pages_locked(unsigned long start, unsigned long nr_pages,
-> >                     unsigned int gup_flags, struct page **pages, int *locked);
-> >  long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-> > -                   struct page **pages, unsigned int gup_flags);
-> > +                   struct page **pages, unsigned int gup_flags,
-> > +                   int *fault_error);
-> >  long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-> >                     struct page **pages, unsigned int gup_flags);
+> > And having forced try_to_unmap() to do the expensive-on-a-THP
+> > total_mapcount() calculation, you now repeat it here.  Better
+> > to stick with the previous VM_BUG_ON_PAGE(!unmap_success).
 > >
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 0697134b6a12..ab55a67aef78 100644
-> > --- a/mm/gup.c
-> > +++ b/mm/gup.c
-> > @@ -881,7 +881,8 @@ static int get_gate_page(struct mm_struct *mm, unsigned long address,
-> >   * is, *@locked will be set to 0 and -EBUSY returned.
-> >   */
-> >  static int faultin_page(struct vm_area_struct *vma,
-> > -               unsigned long address, unsigned int *flags, int *locked)
-> > +               unsigned long address, unsigned int *flags, int *locked,
-> > +               int *fault_error)
-> >  {
-> >         unsigned int fault_flags = 0;
-> >         vm_fault_t ret;
-> > @@ -906,6 +907,8 @@ static int faultin_page(struct vm_area_struct *vma,
-> >         }
+> > Or better a VM_WARN_ONCE(), accompanied by dump_page()s as before,
+> > to get some perhaps useful info out, which this patch has deleted.
+> > Probably better inside unmap_page() than cluttering up here.
+>
+> Moving the BUG or WARN into unmap_page() looks fine to me. IIUC,
+> VM_BUG_ON_PAGE or VM_WARN_ON_PAGE does call dump_page(), so dumping
+> something useful is not deleted.
+
+I misspelled the function name. There is *NOT* VM_WARN_ON_PAGE(), the
+name is VM_WARN_ON_ONCE_PAGE(). We may need to add VM_WARN_ON_PAGE()
+since I'd like this warning to be printed every time when it is met.
+
+>
 > >
-> >         ret = handle_mm_fault(vma, address, fault_flags, NULL);
-> > +       if (fault_error)
-> > +               *fault_error = ret;
-> >         if (ret & VM_FAULT_ERROR) {
-> >                 int err = vm_fault_to_errno(ret, *flags);
+> > VM_WARN_ONCE() because nothing in this patch fixes whatever Wang
+> > Yugui is suffering from; and (aside from the BUG()) it's harmless,
+> > because there are other ways in which the page_ref_freeze() can fail,
+> > and that is allowed for.  We would like to know when this problem
+> > occurs: there is something wrong, but no reason to crash.
+>
+> Yes, it fixes nothing. I didn't figure out why try_to_unmap() failed.
+> I agree BUG_ON could be relaxed.
+>
 > >
-> > @@ -996,6 +999,8 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
-> >   * @vmas:      array of pointers to vmas corresponding to each page.
-> >   *             Or NULL if the caller does not require them.
-> >   * @locked:     whether we're still with the mmap_lock held
-> > + * @fault_error: VM fault error from handle_mm_fault. NULL if the caller
-> > + *             does not require this error.
-> >   *
-> >   * Returns either number of pages pinned (which may be less than the
-> >   * number requested), or an error. Details about the return value:
-> > @@ -1040,6 +1045,13 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
-> >   * when it's been released.  Otherwise, it must be held for either
-> >   * reading or writing and will not be released.
-> >   *
-> > + * If @fault_error != NULL, __get_user_pages will return the VM fault error
-> > + * from handle_mm_fault() in this argument in the event of a VM fault error.
-> > + * On success (ret == nr_pages) fault_error is zero.
-> > + * On failure (ret != nr_pages) fault_error may still be 0 if the error did
-> > + * not originate from handle_mm_fault().
-> > + *
-> > + *
-> >   * In most cases, get_user_pages or get_user_pages_fast should be used
-> >   * instead of __get_user_pages. __get_user_pages should be used only if
-> >   * you need some special @gup_flags.
-> > @@ -1047,7 +1059,8 @@ static int check_vma_flags(struct vm_area_struct *vma, unsigned long gup_flags)
-> >  static long __get_user_pages(struct mm_struct *mm,
-> >                 unsigned long start, unsigned long nr_pages,
-> >                 unsigned int gup_flags, struct page **pages,
-> > -               struct vm_area_struct **vmas, int *locked)
-> > +               struct vm_area_struct **vmas, int *locked,
-> > +               int *fault_error)
-> >  {
-> >         long ret = 0, i = 0;
-> >         struct vm_area_struct *vma = NULL;
-> > @@ -1097,7 +1110,7 @@ static long __get_user_pages(struct mm_struct *mm,
-> >                         if (is_vm_hugetlb_page(vma)) {
-> >                                 i = follow_hugetlb_page(mm, vma, pages, vmas,
-> >                                                 &start, &nr_pages, i,
-> > -                                               gup_flags, locked);
-> > +                                               gup_flags, locked, fault_error);
-> >                                 if (locked && *locked == 0) {
-> >                                         /*
-> >                                          * We've got a VM_FAULT_RETRY
-> > @@ -1124,7 +1137,8 @@ static long __get_user_pages(struct mm_struct *mm,
+> > >
+> > >       /* block interrupt reentry in xa_lock and spinlock */
+> > >       local_irq_disable();
+> > > @@ -2758,14 +2757,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+> > >               __split_huge_page(page, list, end);
+> > >               ret = 0;
+> > >       } else {
+> > > -             if (IS_ENABLED(CONFIG_DEBUG_VM) && mapcount) {
+> > > -                     pr_alert("total_mapcount: %u, page_count(): %u\n",
+> > > -                                     mapcount, count);
+> > > -                     if (PageTail(page))
+> > > -                             dump_page(head, NULL);
+> > > -                     dump_page(page, "total_mapcount(head) > 0");
+> > > -                     BUG();
+> > > -             }
 > >
-> >                 page = follow_page_mask(vma, start, foll_flags, &ctx);
-> >                 if (!page) {
-> > -                       ret = faultin_page(vma, start, &foll_flags, locked);
-> > +                       ret = faultin_page(vma, start, &foll_flags, locked,
-> > +                                          fault_error);
-> >                         switch (ret) {
-> >                         case 0:
-> >                                 goto retry;
-> > @@ -1280,7 +1294,8 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
-> >                                                 struct page **pages,
-> >                                                 struct vm_area_struct **vmas,
-> >                                                 int *locked,
-> > -                                               unsigned int flags)
-> > +                                               unsigned int flags,
-> > +                                               int *fault_error)
-> >  {
-> >         long ret, pages_done;
-> >         bool lock_dropped;
-> > @@ -1311,7 +1326,7 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
-> >         lock_dropped = false;
-> >         for (;;) {
-> >                 ret = __get_user_pages(mm, start, nr_pages, flags, pages,
-> > -                                      vmas, locked);
-> > +                                      vmas, locked, fault_error);
-> >                 if (!locked)
-> >                         /* VM_FAULT_RETRY couldn't trigger, bypass */
-> >                         return ret;
-> > @@ -1371,7 +1386,7 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
+> > This has always looked ugly (as if Kirill had hit an unsolved case),
+> > so it is nice to remove it; but you're losing the dump_page() info,
+> > and not really gaining anything more than a cosmetic cleanup.
+>
+> As I mentioned above, IIUC VM_BUG_ON_PAGE and VM_WARN_ON_PAGE do call
+> dump_page().
+>
 > >
-> >                 *locked = 1;
-> >                 ret = __get_user_pages(mm, start, 1, flags | FOLL_TRIED,
-> > -                                      pages, NULL, locked);
-> > +                                      pages, NULL, locked, fault_error);
-> >                 if (!*locked) {
-> >                         /* Continue to retry until we succeeded */
-> >                         BUG_ON(ret != 0);
-> > @@ -1458,7 +1473,7 @@ long populate_vma_page_range(struct vm_area_struct *vma,
-> >          * not result in a stack expansion that recurses back here.
-> >          */
-> >         return __get_user_pages(mm, start, nr_pages, gup_flags,
-> > -                               NULL, NULL, locked);
-> > +                               NULL, NULL, locked, NULL);
-> >  }
+> > >               spin_unlock(&ds_queue->split_queue_lock);
+> > >  fail:                if (mapping)
+> > >                       xa_unlock(&mapping->i_pages);
+> > > diff --git a/mm/rmap.c b/mm/rmap.c
+> > > index 693a610e181d..f52825b1330d 100644
+> > > --- a/mm/rmap.c
+> > > +++ b/mm/rmap.c
+> > > @@ -1742,12 +1742,14 @@ static int page_not_mapped(struct page *page)
+> > >  }
+> > >
+> > >  /**
+> > > - * try_to_unmap - try to remove all page table mappings to a page
+> > > - * @page: the page to get unmapped
+> > > + * try_to_unmap - try to remove all page table mappings to a page and the
+> > > + *                compound page it belongs to
+> > > + * @page: the page or the subpages of compound page to get unmapped
+> > >   * @flags: action and flags
+> > >   *
+> > >   * Tries to remove all the page table entries which are mapping this
+> > > - * page, used in the pageout path.  Caller must hold the page lock.
+> > > + * page and the compound page it belongs to, used in the pageout path.
+> > > + * Caller must hold the page lock.
+> > >   *
+> > >   * If unmap is successful, return true. Otherwise, false.
+> > >   */
+> > > @@ -1777,7 +1779,7 @@ bool try_to_unmap(struct page *page, enum ttu_flags flags)
+> > >       else
+> > >               rmap_walk(page, &rwc);
+> > >
+> > > -     return !page_mapcount(page) ? true : false;
+> > > +     return !total_mapcount(page) ? true : false;
 > >
-> >  /*
-> > @@ -1524,7 +1539,7 @@ int __mm_populate(unsigned long start, unsigned long len, int ignore_errors)
-> >  static long __get_user_pages_locked(struct mm_struct *mm, unsigned long start,
-> >                 unsigned long nr_pages, struct page **pages,
-> >                 struct vm_area_struct **vmas, int *locked,
-> > -               unsigned int foll_flags)
-> > +               unsigned int foll_flags, int *fault_error)
-> >  {
-> >         struct vm_area_struct *vma;
-> >         unsigned long vm_flags;
-> > @@ -1590,7 +1605,8 @@ struct page *get_dump_page(unsigned long addr)
-> >         if (mmap_read_lock_killable(mm))
-> >                 return NULL;
-> >         ret = __get_user_pages_locked(mm, addr, 1, &page, NULL, &locked,
-> > -                                     FOLL_FORCE | FOLL_DUMP | FOLL_GET);
-> > +                                     FOLL_FORCE | FOLL_DUMP | FOLL_GET,
-> > +                                     NULL);
-> >         if (locked)
-> >                 mmap_read_unlock(mm);
+> > That always made me wince: "return !total_mapcount(page);" surely.
+>
+> But page_mapcount() seems not correct, it may return false positive,
+> right? Or it is harmless?
+>
+> And I actually spotted a few other places which should use
+> total_mapcount() but using page_mapcount() instead, for example, some
+> madvise code check if the page is shared by using page_mapcount(),
+> however it may return false negative (double mapped THP, but head page
+> is not PTE-mapped, just like what Wang Yugui reported). It is not
+> fatal, but not expected behavior. I understand total_mapcount() is
+> expensive, so is it a trade-off between cost and correctness or just
+> overlooked the false negative case in the first place? I can't tell.
+>
 > >
-> > @@ -1704,11 +1720,11 @@ static long __gup_longterm_locked(struct mm_struct *mm,
+> > Or slightly better, "return !page_mapped(page);", since at least that
+> > one breaks out as soon as it sees a mapcount.  Though I guess I'm
+> > being silly there, since that case should never occur, so both
+> > total_mapcount() and page_mapped() scan through all pages.
 > >
-> >         if (!(gup_flags & FOLL_LONGTERM))
-> >                 return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > -                                              NULL, gup_flags);
-> > +                                              NULL, gup_flags, NULL);
-> >         flags = memalloc_pin_save();
-> >         do {
-> >                 rc = __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> > -                                            NULL, gup_flags);
-> > +                                            NULL, gup_flags, NULL);
-> >                 if (rc <= 0)
-> >                         break;
-> >                 rc = check_and_migrate_movable_pages(rc, pages, gup_flags);
-> > @@ -1764,7 +1780,8 @@ static long __get_user_pages_remote(struct mm_struct *mm,
+> > Or better, change try_to_unmap() to void: most callers ignore its
+> > return value anyway, and make their own decisions; the remaining
+> > few could be changed to do the same.  Though again, I may be
+> > being silly, since the expensive THP case is not the common case.
+>
+> I'd say half callers ignore its return value. But I think it should be
+> worth doing. At least we could remove half unnecessary
+> total_mapcount() or page_mapped() call.
+>
+> Thanks a lot for all the suggestions, will incorporate them in the new version.
+>
 > >
-> >         return __get_user_pages_locked(mm, start, nr_pages, pages, vmas,
-> >                                        locked,
-> > -                                      gup_flags | FOLL_TOUCH | FOLL_REMOTE);
-> > +                                      gup_flags | FOLL_TOUCH | FOLL_REMOTE,
-> > +                                      NULL);
-> >  }
-> >
-> >  /**
-> > @@ -1941,7 +1958,7 @@ long get_user_pages_locked(unsigned long start, unsigned long nr_pages,
-> >
-> >         return __get_user_pages_locked(current->mm, start, nr_pages,
-> >                                        pages, NULL, locked,
-> > -                                      gup_flags | FOLL_TOUCH);
-> > +                                      gup_flags | FOLL_TOUCH, NULL);
-> >  }
-> >  EXPORT_SYMBOL(get_user_pages_locked);
-> >
-> > @@ -1961,7 +1978,8 @@ EXPORT_SYMBOL(get_user_pages_locked);
-> >   * (e.g. FOLL_FORCE) are not required.
-> >   */
-> >  long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-> > -                            struct page **pages, unsigned int gup_flags)
-> > +                            struct page **pages, unsigned int gup_flags,
-> > +                            int *fault_error)
-> >  {
-> >         struct mm_struct *mm = current->mm;
-> >         int locked = 1;
-> > @@ -1978,7 +1996,8 @@ long get_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-> >
-> >         mmap_read_lock(mm);
-> >         ret = __get_user_pages_locked(mm, start, nr_pages, pages, NULL,
-> > -                                     &locked, gup_flags | FOLL_TOUCH);
-> > +                                     &locked, gup_flags | FOLL_TOUCH,
-> > +                                     fault_error);
-> >         if (locked)
-> >                 mmap_read_unlock(mm);
-> >         return ret;
-> > @@ -2550,7 +2569,7 @@ static int __gup_longterm_unlocked(unsigned long start, int nr_pages,
-> >                 mmap_read_unlock(current->mm);
-> >         } else {
-> >                 ret = get_user_pages_unlocked(start, nr_pages,
-> > -                                             pages, gup_flags);
-> > +                                             pages, gup_flags, NULL);
-> >         }
-> >
-> >         return ret;
-> > @@ -2880,7 +2899,7 @@ long pin_user_pages_unlocked(unsigned long start, unsigned long nr_pages,
-> >                 return -EINVAL;
-> >
-> >         gup_flags |= FOLL_PIN;
-> > -       return get_user_pages_unlocked(start, nr_pages, pages, gup_flags);
-> > +       return get_user_pages_unlocked(start, nr_pages, pages, gup_flags, NULL);
-> >  }
-> >  EXPORT_SYMBOL(pin_user_pages_unlocked);
-> >
-> > @@ -2909,6 +2928,6 @@ long pin_user_pages_locked(unsigned long start, unsigned long nr_pages,
-> >         gup_flags |= FOLL_PIN;
-> >         return __get_user_pages_locked(current->mm, start, nr_pages,
-> >                                        pages, NULL, locked,
-> > -                                      gup_flags | FOLL_TOUCH);
-> > +                                      gup_flags | FOLL_TOUCH, NULL);
-> >  }
-> >  EXPORT_SYMBOL(pin_user_pages_locked);
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 3db405dea3dc..889ac33d57d5 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> > @@ -5017,7 +5017,8 @@ static void record_subpages_vmas(struct page *page, struct vm_area_struct *vma,
-> >  long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
-> >                          struct page **pages, struct vm_area_struct **vmas,
-> >                          unsigned long *position, unsigned long *nr_pages,
-> > -                        long i, unsigned int flags, int *locked)
-> > +                        long i, unsigned int flags, int *locked,
-> > +                        int  *fault_error)
-> >  {
-> >         unsigned long pfn_offset;
-> >         unsigned long vaddr = *position;
-> > @@ -5103,6 +5104,8 @@ long follow_hugetlb_page(struct mm_struct *mm, struct vm_area_struct *vma,
-> >                         }
-> >                         ret = hugetlb_fault(mm, vma, vaddr, fault_flags);
-> >                         if (ret & VM_FAULT_ERROR) {
-> > +                               if (fault_error)
-> > +                                       *fault_error = ret;
-> >                                 err = vm_fault_to_errno(ret, flags);
-> >                                 remainder = 0;
-> >                                 break;
-> > diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> > index 2799c6660cce..0a20d926ae32 100644
-> > --- a/virt/kvm/kvm_main.c
-> > +++ b/virt/kvm/kvm_main.c
-> > @@ -2004,6 +2004,30 @@ static bool hva_to_pfn_fast(unsigned long addr, bool write_fault,
-> >         return false;
-> >  }
-> >
-> > +static void kvm_send_vm_fault_signal(int fault_error, int errno,
-> > +                                    unsigned long address,
-> > +                                    struct task_struct *tsk)
-> > +{
-> > +       kernel_siginfo_t info;
-> > +
-> > +       clear_siginfo(&info);
-> > +
-> > +       if (fault_error == VM_FAULT_SIGBUS)
-> > +               info.si_signo = SIGBUS;
-> > +       else if (fault_error == VM_FAULT_SIGSEGV)
-> > +               info.si_signo = SIGSEGV;
-> > +       else
-> > +               // Other fault errors should not result in a signal.
-> > +               return;
-> > +
-> > +       info.si_errno = errno;
-> > +       info.si_code = BUS_ADRERR;
-> > +       info.si_addr = (void __user *)address;
-> > +       info.si_addr_lsb = PAGE_SHIFT;
-> > +
-> > +       send_sig_info(info.si_signo, &info, tsk);
-> > +}
-> > +
-> >  /*
-> >   * The slow path to get the pfn of the specified host virtual address,
-> >   * 1 indicates success, -errno is returned if error is detected.
-> > @@ -2014,6 +2038,7 @@ static int hva_to_pfn_slow(unsigned long addr, bool *async, bool write_fault,
-> >         unsigned int flags = FOLL_HWPOISON;
-> >         struct page *page;
-> >         int npages = 0;
-> > +       int fault_error;
-> >
-> >         might_sleep();
-> >
-> > @@ -2025,7 +2050,10 @@ static int hva_to_pfn_slow(unsigned long addr, bool *async, bool write_fault,
-> >         if (async)
-> >                 flags |= FOLL_NOWAIT;
-> >
-> > -       npages = get_user_pages_unlocked(addr, 1, &page, flags);
-> > +       npages = get_user_pages_unlocked(addr, 1, &page, flags, &fault_error);
-> > +       if (fault_error & VM_FAULT_ERROR)
-> > +               kvm_send_vm_fault_signal(fault_error, npages, addr, current);
-> > +
-> >         if (npages != 1)
-> >                 return npages;
-> >
-> > --
-> > 2.31.1.751.gd2f1c929bd-goog
-> >
+> > >  }
+> > >
+> > >  /**
+> > > --
+> > > 2.26.2
