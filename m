@@ -2,119 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6AD638CE51
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:41:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17B7A38CE53
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:42:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239171AbhEUTnT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:43:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42322 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234945AbhEUTnS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:43:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4B76613D8;
-        Fri, 21 May 2021 19:41:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621626114;
-        bh=lY6l1bcM56C5xaC0VQOKMH+TYbNysU9jlkdLIYOFVI8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=thSNW2lx97g+dEKEClLf0Ot+k35yCE2AHSqpT4nG6i57X5n5Z06qm5XGfN6zPZ/gX
-         NFnnawQTbubJwJpR8dlL0jB4hqaf7I5eqZauaW1O25u3tBs5dQcQ56ynrlMp1qyqb5
-         BCHUF1VxwLs7fY4p/8ClpBEqrczHM61IxCkG7vyuUK3r+Cq5UAuphiseW92k7JLagh
-         0ERW/BVnBRR9ZHkeFGH2XFLKJZerxYnnInHx6SwZT4BZj1+XFkfTsyXeh4uk0tua0p
-         h3aQejZnIgYBzJyxxdnLLZA8eEHUvHU+LiWLFr7n3s4S2hgGgY6XE+fwMkWjA7/r/v
-         DaLsODv4r1q2A==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id 3AEAD4011C; Fri, 21 May 2021 16:41:51 -0300 (-03)
-Date:   Fri, 21 May 2021 16:41:51 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Jiri Olsa <jolsa@redhat.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf script: Add missing PERF_IP_FLAG_CHARS for VM-Entry
- and VM-Exit
-Message-ID: <YKgM/yVofI1Wy3SU@kernel.org>
-References: <20210521175127.27264-1-adrian.hunter@intel.com>
+        id S239193AbhEUTnW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:43:22 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:48848 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234945AbhEUTnV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:43:21 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 81D2120B7188;
+        Fri, 21 May 2021 12:41:57 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 81D2120B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621626118;
+        bh=sVvcxbQSfAemZf/h/BWHu58ipxMHsNFFKvAp7FMao3I=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NI/hYFDEvvsCn23V5INEa9b8dTn2BppIDjflkBxVCslto7/I7DbLEs2m9XN5og4yC
+         oHP5is8Jke0hB6M2MISMT2cjSTuef18UEjo+FwH+/YQU1DLlSOTA032lcn4cZ4uoBC
+         FBpmEg7f1Xy2eFtvPKyJiYl6l5sDLEOC0CYv3TPg=
+Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Mark Brown <broonie@kernel.org>, mark.rutland@arm.com,
+        ardb@kernel.org, jthierry@redhat.com, catalin.marinas@arm.com,
+        will@kernel.org, jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-2-madvenka@linux.microsoft.com>
+ <20210521161117.GB5825@sirena.org.uk>
+ <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
+ <20210521174242.GD5825@sirena.org.uk>
+ <26c33633-029e-6374-16e6-e9418099da95@linux.microsoft.com>
+ <20210521175318.GF5825@sirena.org.uk>
+ <20210521184817.envdg232b2aeyprt@treble>
+ <74d12457-7590-bca2-d1ce-5ff82d7ab0d8@linux.microsoft.com>
+ <20210521191140.4aezpvm2kruztufi@treble>
+ <20210521191608.f24sldzhpg3hyq32@treble>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <bf3a5289-8199-b665-0327-ed8240dd7827@linux.microsoft.com>
+Date:   Fri, 21 May 2021 14:41:56 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521175127.27264-1-adrian.hunter@intel.com>
-X-Url:  http://acmel.wordpress.com
+In-Reply-To: <20210521191608.f24sldzhpg3hyq32@treble>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, May 21, 2021 at 08:51:27PM +0300, Adrian Hunter escreveu:
-> Add 'g' (guest) for VM-Entry and 'h' (host) for VM-Exit.
 
-Thanks, applied.
 
-- Arnaldo
-
- 
-> Fixes: c025d46cd932c ("perf script: Add branch types for VM-Entry and VM-Exit")
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/Documentation/perf-intel-pt.txt | 6 +++---
->  tools/perf/Documentation/perf-script.txt   | 7 ++++---
->  tools/perf/util/event.h                    | 2 +-
->  3 files changed, 8 insertions(+), 7 deletions(-)
+On 5/21/21 2:16 PM, Josh Poimboeuf wrote:
+> On Fri, May 21, 2021 at 02:11:45PM -0500, Josh Poimboeuf wrote:
+>> On Fri, May 21, 2021 at 01:59:16PM -0500, Madhavan T. Venkataraman wrote:
+>>>
+>>>
+>>> On 5/21/21 1:48 PM, Josh Poimboeuf wrote:
+>>>> On Fri, May 21, 2021 at 06:53:18PM +0100, Mark Brown wrote:
+>>>>> On Fri, May 21, 2021 at 12:47:13PM -0500, Madhavan T. Venkataraman wrote:
+>>>>>> On 5/21/21 12:42 PM, Mark Brown wrote:
+>>>>>
+>>>>>>> Like I say we may come up with some use for the flag in error cases in
+>>>>>>> future so I'm not opposed to keeping the accounting there.
+>>>>>
+>>>>>> So, should I leave it the way it is now? Or should I not set reliable = false
+>>>>>> for errors? Which one do you prefer?
+>>>>>
+>>>>>> Josh,
+>>>>>
+>>>>>> Are you OK with not flagging reliable = false for errors in unwind_frame()?
+>>>>>
+>>>>> I think it's fine to leave it as it is.
+>>>>
+>>>> Either way works for me, but if you remove those 'reliable = false'
+>>>> statements for stack corruption then, IIRC, the caller would still have
+>>>> some confusion between the end of stack error (-ENOENT) and the other
+>>>> errors (-EINVAL).
+>>>>
+>>>
+>>> I will leave it the way it is. That is, I will do reliable = false on errors
+>>> like you suggested.
+>>>
+>>>> So the caller would have to know that -ENOENT really means success.
+>>>> Which, to me, seems kind of flaky.
+>>>>
+>>>
+>>> Actually, that is why -ENOENT was introduced - to indicate successful
+>>> stack trace termination. A return value of 0 is for continuing with
+>>> the stack trace. A non-zero value is for terminating the stack trace.
+>>>
+>>> So, either we return a positive value (say 1) to indicate successful
+>>> termination. Or, we return -ENOENT to say no more stack frames left.
+>>> I guess -ENOENT was chosen.
+>>
+>> I see.  So it's a tri-state return value, and frame->reliable is
+>> intended to be a private interface not checked by the callers.
 > 
-> diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
-> index 8d6cce062a5f..e382dbd4ff0a 100644
-> --- a/tools/perf/Documentation/perf-intel-pt.txt
-> +++ b/tools/perf/Documentation/perf-intel-pt.txt
-> @@ -108,9 +108,9 @@ displayed as follows:
->  
->  	perf script --itrace=ibxwpe -F+flags
->  
-> -The flags are "bcrosyiABEx" which stand for branch, call, return, conditional,
-> -system, asynchronous, interrupt, transaction abort, trace begin, trace end, and
-> -in transaction, respectively.
-> +The flags are "bcrosyiABExgh" which stand for branch, call, return, conditional,
-> +system, asynchronous, interrupt, transaction abort, trace begin, trace end,
-> +in transaction, VM-entry, and VM-exit respectively.
->  
->  perf script also supports higher level ways to dump instruction traces:
->  
-> diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
-> index 5b8b61075039..48a5f5b26dd4 100644
-> --- a/tools/perf/Documentation/perf-script.txt
-> +++ b/tools/perf/Documentation/perf-script.txt
-> @@ -183,14 +183,15 @@ OPTIONS
->  	At this point usage is displayed, and perf-script exits.
->  
->  	The flags field is synthesized and may have a value when Instruction
-> -	Trace decoding. The flags are "bcrosyiABEx" which stand for branch,
-> +	Trace decoding. The flags are "bcrosyiABExgh" which stand for branch,
->  	call, return, conditional, system, asynchronous, interrupt,
-> -	transaction abort, trace begin, trace end, and in transaction,
-> +	transaction abort, trace begin, trace end, in transaction, VM-Entry, and VM-Exit
->  	respectively. Known combinations of flags are printed more nicely e.g.
->  	"call" for "bc", "return" for "br", "jcc" for "bo", "jmp" for "b",
->  	"int" for "bci", "iret" for "bri", "syscall" for "bcs", "sysret" for "brs",
->  	"async" for "by", "hw int" for "bcyi", "tx abrt" for "bA", "tr strt" for "bB",
-> -	"tr end" for "bE". However the "x" flag will be display separately in those
-> +	"tr end" for "bE", "vmentry" for "bcg", "vmexit" for "bch".
-> +	However the "x" flag will be displayed separately in those
->  	cases e.g. "jcc     (x)" for a condition branch within a transaction.
->  
->  	The callindent field is synthesized and may have a value when
-> diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
-> index 8a62fb39e365..19ad64f2bd83 100644
-> --- a/tools/perf/util/event.h
-> +++ b/tools/perf/util/event.h
-> @@ -100,7 +100,7 @@ enum {
->  	PERF_IP_FLAG_VMEXIT		= 1ULL << 12,
->  };
->  
-> -#define PERF_IP_FLAG_CHARS "bcrosyiABEx"
-> +#define PERF_IP_FLAG_CHARS "bcrosyiABExgh"
->  
->  #define PERF_BRANCH_MASK		(\
->  	PERF_IP_FLAG_BRANCH		|\
-> -- 
-> 2.17.1
+> Or is frame->reliable supposed to be checked after all?  Looking at the
+> code again, I'm not sure.
+> 
+> Either way it would be good to document the interface more clearly in a
+> comment above the function.
 > 
 
--- 
+So, arch_stack_walk_reliable() would do this:
 
-- Arnaldo
+	start_backtrace(frame);
+
+	while (...) {
+		if (!frame->reliable)
+			return error;
+
+		consume_entry(...);
+
+		ret = unwind_frame(...);
+
+		if (ret)
+			break;
+	}
+
+	if (ret == -ENOENT)
+		return success;
+	return error;
+
+
+Something like that.
+
+I will add a comment about all of this in the unwinder.
+
+Thanks!
+
+Madhavan
+
+
+
