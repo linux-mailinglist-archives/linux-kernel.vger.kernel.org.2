@@ -2,76 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D80038BBCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4975138BBD1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:43:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237541AbhEUBoV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:44:21 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:50340 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237311AbhEUBoU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:44:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
-        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
-        In-Reply-To:References; bh=c+XCuLEAL9tyzjer230+dzuUWAppVl3JEe2dMavLJEc=; b=GR
-        e4C4SUPoVgjD1y/T6PfFPFpKX7ifxo3EtyHuyheN88JkYx5vUZqVC8acWMU8OqfULpKpVLd9+3L/v
-        qXbpkyXbupL0X/dlb03YwP0BRuJwKz/+k88h/GYLCZQSZ0URU35zkvzjIrSkuI082rIg+oIcXCNR8
-        1NpDm10jDV1kmLA=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1ljuBj-005CPk-9y; Fri, 21 May 2021 03:42:55 +0200
-Date:   Fri, 21 May 2021 03:42:55 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 mvebu + mvebu/dt64 2/2] arm64: dts: marvell:
- armada-37xx: move firmware node to generic dtsi file
-Message-ID: <YKcQH9ApRwL6SnWI@lunn.ch>
-References: <20210308153703.23097-1-kabel@kernel.org>
- <20210520113844.32319-1-pali@kernel.org>
- <20210520113844.32319-3-pali@kernel.org>
+        id S237578AbhEUBoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:44:46 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:44824 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237548AbhEUBoo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:44:44 -0400
+Received: by mail-ot1-f44.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so16636342otp.11;
+        Thu, 20 May 2021 18:43:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9S9XS3Yg9GWaFqOj2PYCXeBhYEX4PcdUFzpuE9sqB4g=;
+        b=GjOKCVe3XUpMHF7f59Q8JC2KCyNmACD3u614tR1/qgY7b9rAVRl1fEO/HzAyepKJiN
+         YXvZ4MnLiu4WS3DyZ2KGaKbGC+s4wFLxgMV9XXt5Zf8t2gfXfZpyD3W1uAJNq1kZGj29
+         7XPGIof4v0xDYcULx051rIG8vQVzIotrTvYiI1QtZYWAr5jKXwQE/60nNj0jI9o8d/Tu
+         imVNd6oJ4lsuGzYQXunGfSs97vZzsLAZYoOZSsmMPxlscQgY16bn+T186t9xju1gf7Jf
+         rDGO1gxCOdSLNgGGHW9a4l95oDpB57jQYYyE9p4uofTRUhMUERMWXVCTMN7X+OFlaBzU
+         Y3GA==
+X-Gm-Message-State: AOAM5336UlGxQAp70TnHE6rQZkl0IlDOuiC2J1nXPuVxBqMHl4OdgVTD
+        fwpOPJrOeB3Br62VE9wwqQ==
+X-Google-Smtp-Source: ABdhPJzEANfqFxE4Om5iMLjsSLwh6xktkUCyClwjVw7r/DNw3lOe3BzOKAJKqe6s95hkV2bCtuDbDQ==
+X-Received: by 2002:a05:6830:1bed:: with SMTP id k13mr3959289otb.194.1621561398402;
+        Thu, 20 May 2021 18:43:18 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id y7sm999499oto.60.2021.05.20.18.43.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 18:43:17 -0700 (PDT)
+Received: (nullmailer pid 2467209 invoked by uid 1000);
+        Fri, 21 May 2021 01:43:16 -0000
+Date:   Thu, 20 May 2021 20:43:16 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhupesh.linux@gmail.com
+Subject: Re: [PATCH v3 01/17] dt-bindings: qcom-bam: Convert binding to YAML
+Message-ID: <20210521014316.GA2462277@robh.at.kernel.org>
+References: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
+ <20210519143700.27392-2-bhupesh.sharma@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210520113844.32319-3-pali@kernel.org>
+In-Reply-To: <20210519143700.27392-2-bhupesh.sharma@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 01:38:44PM +0200, Pali Rohár wrote:
-> Move the turris-mox-rwtm firmware node from Turris MOX' device tree into
-> the generic armada-37xx.dtsi file and use the generic compatible string
-> 'marvell,armada-3700-rwtm-firmware' instead of the current one.
+On Wed, May 19, 2021 at 08:06:44PM +0530, Bhupesh Sharma wrote:
+> Convert Qualcomm BAM DMA devicetree binding to YAML.
 > 
-> Turris MOX DTS file contains also old compatible string for backward
-> compatibility.
+> Cc: Thara Gopinath <thara.gopinath@linaro.org>
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Andy Gross <agross@kernel.org>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Stephen Boyd <sboyd@kernel.org>
+> Cc: Michael Turquette <mturquette@baylibre.com>
+> Cc: Vinod Koul <vkoul@kernel.org>
+> Cc: dmaengine@vger.kernel.org
+> Cc: linux-clk@vger.kernel.org
+> Cc: linux-crypto@vger.kernel.org
+> Cc: devicetree@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: bhupesh.linux@gmail.com
+> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> ---
+>  .../devicetree/bindings/dma/qcom_bam_dma.txt  | 50 ----------
+>  .../devicetree/bindings/dma/qcom_bam_dma.yaml | 91 +++++++++++++++++++
+>  2 files changed, 91 insertions(+), 50 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+>  create mode 100644 Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
 > 
-> The Turris MOX rWTM firmware can be used on any Armada 37xx device,
-> giving them access to the rWTM hardware random number generator, which
-> is otherwise unavailable.
-> 
-> This change allows Linux to load the turris-mox-rwtm.ko module on these
-> boards.
-> 
-> Tested on ESPRESSObin v5 with both default Marvell WTMI firmware and
-> CZ.NIC's firmware. With default WTMI firmware the turris-mox-rwtm fails
-> to probe, while with CZ.NIC's firmware it registers the HW random number
-> generator.
-> 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Signed-off-by: Marek Behún <kabel@kernel.org>
-> Cc: <stable@vger.kernel.org> # 5.4+: 46d2f6d0c99f ("arm64: dts: armada-3720-turris-mox: add firmware node")
+> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> deleted file mode 100644
+> index cf5b9e44432c..000000000000
+> --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
+> +++ /dev/null
+> @@ -1,50 +0,0 @@
+> -QCOM BAM DMA controller
+> -
+> -Required properties:
+> -- compatible: must be one of the following:
+> - * "qcom,bam-v1.4.0" for MSM8974, APQ8074 and APQ8084
+> - * "qcom,bam-v1.3.0" for APQ8064, IPQ8064 and MSM8960
+> - * "qcom,bam-v1.7.0" for MSM8916
+> -- reg: Address range for DMA registers
+> -- interrupts: Should contain the one interrupt shared by all channels
+> -- #dma-cells: must be <1>, the cell in the dmas property of the client device
+> -  represents the channel number
+> -- clocks: required clock
+> -- clock-names: must contain "bam_clk" entry
+> -- qcom,ee : indicates the active Execution Environment identifier (0-7) used in
+> -  the secure world.
+> -- qcom,controlled-remotely : optional, indicates that the bam is controlled by
+> -  remote proccessor i.e. execution environment.
+> -- num-channels : optional, indicates supported number of DMA channels in a
+> -  remotely controlled bam.
+> -- qcom,num-ees : optional, indicates supported number of Execution Environments
+> -  in a remotely controlled bam.
+> -
+> -Example:
+> -
+> -	uart-bam: dma@f9984000 = {
+> -		compatible = "qcom,bam-v1.4.0";
+> -		reg = <0xf9984000 0x15000>;
+> -		interrupts = <0 94 0>;
+> -		clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
+> -		clock-names = "bam_clk";
+> -		#dma-cells = <1>;
+> -		qcom,ee = <0>;
+> -	};
+> -
+> -DMA clients must use the format described in the dma.txt file, using a two cell
+> -specifier for each channel.
+> -
+> -Example:
+> -	serial@f991e000 {
+> -		compatible = "qcom,msm-uart";
+> -		reg = <0xf991e000 0x1000>
+> -			<0xf9944000 0x19000>;
+> -		interrupts = <0 108 0>;
+> -		clocks = <&gcc GCC_BLSP1_UART2_APPS_CLK>,
+> -			<&gcc GCC_BLSP1_AHB_CLK>;
+> -		clock-names = "core", "iface";
+> -
+> -		dmas = <&uart-bam 0>, <&uart-bam 1>;
+> -		dma-names = "rx", "tx";
+> -	};
+> diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> new file mode 100644
+> index 000000000000..173e4d7508a6
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.yaml
+> @@ -0,0 +1,91 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/dma/qcom_bam_dma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: QCOM BAM DMA controller binding
+> +
+> +maintainers:
+> +  - Bhupesh Sharma <bhupesh.sharma@linaro.org>
+> +
+> +description: |
+> +  This document defines the binding for the BAM DMA controller
+> +  found on Qualcomm parts.
+> +
+> +allOf:
+> +  - $ref: "dma-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,bam-v1.4.0
+> +      - qcom,bam-v1.3.0
+> +      - qcom,bam-v1.7.0
 
-Please drop stable. It is a new feature, not a fix.
+Can we keep the SoC association please.
 
-Otherwise
+> +
+> +  reg:
+> +    maxItems: 1
+> +    description: Address range of the DMA registers.
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+Drop description.
 
-    Andrew
+> +
+> +  clocks:
+> +    minItems: 1
+> +    maxItems: 8
+> +
+> +  clock-names:
+> +    const: bam_clk
+
+This is going to fail if you try more than 1 clock.
+
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +    description: Single interrupt line shared by all channels.
+
+Drop description
+
+> +
+> +  num-channels:
+> +    maxItems: 31
+> +    description: |
+> +      Indicates supported number of DMA channels in a remotely controlled bam.
+> +
+> +  "#dma-cells":
+> +    const: 1
+> +    description: The single cell represents the channel index.
+> +
+> +  qcom,ee:
+> +    $ref: /schemas/types.yaml#/definitions/uint8
+> +    description:
+> +      Indicates the active Execution Environment identifier (0-7)
+> +      used in the secure world.
+> +    enum: [0, 1, 2, 3, 4, 5, 6, 7]
+> +
+> +  qcom,controlled-remotely:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      Indicates that the bam is controlled by remote proccessor i.e.
+> +      execution environment.
+> +
+> +  qcom,num-ees:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      Indicates supported number of Execution Environments in a
+> +      remotely controlled bam.
+
+0-2^32 is valid?
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - "#dma-cells"
+> +  - qcom,ee
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/qcom,gcc-msm8974.h>
+> +    dma-controller@f9984000 {
+> +        compatible = "qcom,bam-v1.4.0";
+> +        reg = <0xf9984000 0x15000>;
+> +        interrupts = <0 94 0>;
+> +        clocks = <&gcc GCC_BAM_DMA_AHB_CLK>;
+> +        clock-names = "bam_clk";
+> +        #dma-cells = <1>;
+> +        qcom,ee = /bits/ 8 <0>;
+> +    };
+> -- 
+> 2.31.1
+> 
