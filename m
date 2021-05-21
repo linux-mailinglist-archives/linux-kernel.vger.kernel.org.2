@@ -2,130 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E69438BDD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C6D38BDDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:23:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233339AbhEUFVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:21:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58490 "EHLO
+        id S231901AbhEUFZE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:25:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230176AbhEUFVc (ORCPT
+        with ESMTP id S230176AbhEUFZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:21:32 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53174C061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:20:10 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id j12so13364180pgh.7
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:20:10 -0700 (PDT)
+        Fri, 21 May 2021 01:25:03 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A498C061763
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:23:39 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id s22so28444988ejv.12
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:23:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vIFxxwYlV9MeWU9exPU/QeZ0iOFgjcwohsSxCpudCh0=;
-        b=tdvKCKEn29Lt+RMvyjqEWsRZGBlFJRCPiht+uMCfYKmgDyefOHpNdYylsmhor0v0Bg
-         RvOFP8dVi8iVhzdOq2ZE6PgniqtCf7zzZsIZweSSqBb6xJWHzv2U+9RYzES4bmXHvuzC
-         XJEe6o9F6oKap/9Qn8sl9soEyxn38KcxyJJ9vO8QAzdcqIb7g2gBkXNCraht/FRhyKZN
-         M8ez7XSeEqVArCJBykfgg/cIp/onyUzSxOTATvrbngj465KTZAIPJy26O9yclGRfCc+S
-         E3VKulXAAHq9Spzh1sq3bg1RcT6vJBWrkwUiaq/L/FwkhnuTDWWzdFvbH70BvBEt3Txy
-         w2OQ==
+         :cc:content-transfer-encoding;
+        bh=6Pu9OKZH4OqgD2+pMd/e1QNIreaf+pm8UlgvYX0fZ5w=;
+        b=U5BEe3O6zjWT0JLJGatCONCJ5rfUDb7/T21/f7Jn3pTHOT8ZeY0R0s6vVw31ItVEp6
+         KaRLt68UqeRmGoCEsgHyx8qN6799WJaN+X7/KQY9pboMnRi8cw0fjGC5BKX/YdDG98IC
+         m+EihlMtmgdfR3qG+680tCRtb6/LV0734ly7wrUQxLgfPv1dlgxvfbGffzuDnOpaOHd0
+         ZT3eaOUG01oWbW/8awoz1LOs9mqWXzixcFOXgQoekL8g3myA4h7RFYj+gMs9imY7yHZm
+         ar0KH9NLyAbnId1RsuSspWs2WLt074Tj1lQjMnk159A1mG4JZe8N9+QHXizaIt9ndHxh
+         b3rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vIFxxwYlV9MeWU9exPU/QeZ0iOFgjcwohsSxCpudCh0=;
-        b=I5J8B0gnnCdQS3wWp4FfyFFTUxPUm80G4/JXGye43WGUHGKY10Udjn65hj2EKZhnj9
-         /bRnMgJz2Mmspm4eutiHnTKls7MD4I+EIoZ39puO4Hb2gWIzN9aVEuJ2qSOqiNQOjVfO
-         hIr1qXiui0buepjNmvYTzG/f2o0+mmvVicHUW0pl+rND7YTyu/qM7g338KU5573xBwgR
-         Y7gHuAyAz2xBrY1i1sXqumOkgi10ZltyqmNHpQdNzqHANlNdmiy/2PXGvBxGTy+Vi9Hy
-         638/hBQvrShR7elgqfKIRlfQXqBVGi29xydWJNRL7XuTV2qfI1DCsM5oBRDeKTMV7nC2
-         LlmA==
-X-Gm-Message-State: AOAM532jYzODsEMfIyZMG6dYnaFp+XPgza0W7bF4kM3e4G1ZvUoYLq78
-        SBnMnM+NF/IQK2TKf1PAEkaLZl9wGhKZyJOdBk/SxA==
-X-Google-Smtp-Source: ABdhPJxr7YCbDSxfJoEk0uo+BeRVOe2Z2bK/QVvKeMvdh2aJ1Wba+eYgeYXvZ8ycn5uvzdKi24DhLiGHNvvW8lqdeDE=
-X-Received: by 2002:a63:4f50:: with SMTP id p16mr8045052pgl.40.1621574409590;
- Thu, 20 May 2021 22:20:09 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6Pu9OKZH4OqgD2+pMd/e1QNIreaf+pm8UlgvYX0fZ5w=;
+        b=U2zPZ4GoMfgDQjgrsBEsd+lzbp9oQXtVC6CoKafu+w13SkQJdSB3JEao7ktiXWDL/m
+         m8eMPEggYkjrfd7u4hPL2TkQRxM2P0iMPdSSp6ebushdv7D2CmTDMGxw2y3tZ1cLQfUB
+         vfqjcCX+AvKbX7uIFfRz8X4RRxP/zYoLZa6v1moFsSxJ1CGuFJF1M2JZBXSOTGugHTRh
+         BERkm61lD/dbwFFIv9V7FfMDbEkL1Hp9z0YJ8YXybLnOSO57QkQWMnohWVkxzGrbNVbr
+         QMCJa5RRqbHUxQPWmJPPVGsj55PxYbUQTSQF1DtGylQlFIsvyu9kiHfsha+zEZLNow3a
+         ig0A==
+X-Gm-Message-State: AOAM533fIsQyUhFl0G312DudImi1PNmTuMI41S7Z2M61k2oaH9NiprfE
+        XGuGKCeQek+lA1GMmSiTiDfPSYvR6wa9QfRedqBA9gnpscDzhene
+X-Google-Smtp-Source: ABdhPJz3F/dE07QvRWSh5dsyHL1J+wl9nvaCqLseX0b8QQO9d2q+uEZJqaTO/eh+pofiqzG1C+XCp4vAwV3803XwC8U=
+X-Received: by 2002:a17:906:4e59:: with SMTP id g25mr8445733ejw.133.1621574617939;
+ Thu, 20 May 2021 22:23:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-36-seanjc@google.com>
- <CAAeT=Fx08jBjXoduko_O3v+q67a2fx6byU6z6gM=fBmSWFkt8g@mail.gmail.com> <YKQ1cO7XRJteY/AX@google.com>
-In-Reply-To: <YKQ1cO7XRJteY/AX@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Thu, 20 May 2021 22:19:53 -0700
-Message-ID: <CAAeT=Fy4_MKNw5DFiXswbm6Unbb0tARLH05hYtVJPnD6SRG45w@mail.gmail.com>
-Subject: Re: [PATCH 35/43] KVM: x86: Move setting of sregs during vCPU
- RESET/INIT to common x86
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <20210520092052.265851579@linuxfoundation.org>
+In-Reply-To: <20210520092052.265851579@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 21 May 2021 10:53:26 +0530
+Message-ID: <CA+G9fYvpCtdExtHqhv2K0+O3dxCVs5BaujkTYs6Ed7fKmqfNvw@mail.gmail.com>
+Subject: Re: [PATCH 5.4 00/37] 5.4.121-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 2:45 PM Sean Christopherson <seanjc@google.com> wrote:
+On Thu, 20 May 2021 at 14:58, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On Mon, May 17, 2021, Reiji Watanabe wrote:
-> > > --- a/arch/x86/kvm/svm/svm.c
-> > > +++ b/arch/x86/kvm/svm/svm.c
-> > > @@ -1204,12 +1204,6 @@ static void init_vmcb(struct kvm_vcpu *vcpu)
-> > >         init_sys_seg(&save->ldtr, SEG_TYPE_LDT);
-> > >         init_sys_seg(&save->tr, SEG_TYPE_BUSY_TSS16);
-> > >
-> > > -       svm_set_cr0(vcpu, X86_CR0_NW | X86_CR0_CD | X86_CR0_ET);
-> > > -       svm_set_cr4(vcpu, 0);
-> > > -       svm_set_efer(vcpu, 0);
-> > > -       kvm_set_rflags(vcpu, X86_EFLAGS_FIXED);
-> > > -       vcpu->arch.regs[VCPU_REGS_RIP] = 0x0000fff0;
-> >
-> > Reviewed-by: Reiji Watanabe <reijiw@google.com>
-> >
-> > Those your vCPU RESET/INIT changes look great.
-> >
-> > I think the change in init_vmcb() basically assumes that the
-> > function is called from kvm_vcpu_reset(via svm_vcpu_reset()).
-> > Although shutdown_interception() directly calls init_mcb(),
-> > I would think the change doesn't matter for the shutdown
-> > interception case.
-> >
-> > IMHO it would be a bit misleading that a function named 'init_vmcb',
-> > which is called from other than kvm_vcpu_reset (svm_vcpu_reset()),
-> > only partially resets the vmcb (probably just to me though).
+> This is the start of the stable review cycle for the 5.4.121 release.
+> There are 37 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> It's not just you, that code is funky.  If I could go back in time, I would lobby
-> to not automatically init the VMCB and instead put the vCPU into
-> KVM_MP_STATE_UNINITIALIZED and force userspace to explicitly INIT or RESET the
-> vCPU.  Even better would be to add KVM_MP_STATE_SHUTDOWN, since technically NMI
-> can break shutdown (and SMI on Intel CPUs).
+> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.4.121-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.4.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I see.  Adding KVM_MP_STATE_SHUTDOWN sounds right to me
-given the real CPU's behavior.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-> Anyways, that ship has sailed, but we might be able to get away with replacing
-> init_vmcb() with kvm_vcpu_reset(vcpu, true), i.e. effecting a full INIT.  That
-> would ensure the VMCB is consistent with KVM's software model, which I'm guessing
-> is not true with the direct init_vmcb() call.  It would also have some connection
-> to reality since there exist bare metal platforms that automatically INIT the CPU
-> if it hits shutdown (maybe only for the BSP?).
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Yes, calling kvm_vcpu_reset(vcpu, true) sounds better than
-the direct init_vmcb() call.
+## Build
+* kernel: 5.4.121-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.4.y
+* git commit: d1968aee6ca982be479b6584d449c4d9b749f244
+* git describe: v5.4.120-38-gd1968aee6ca9
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.4.y/build/v5.4.1=
+20-38-gd1968aee6ca9
 
+## No regressions (compared to v5.4.120)
 
-> Side topic, the NMI thing got me looking through init_vmcb() to see how it
-> handles the IDT and GDT, and surprise, surprise, it fails to zero IDTR.base and
-> GDTR.base.  I'll add a patch to fix that, and maybe try to consolidate the VMX
-> and SVM segmentation logic.
+## No fixes (compared to v5.4.120)
 
-That's surprising...
-It seems init_vmcb() was used only for RESET when the function was
-originally introduced and the entire vmcb was zero-cleared before
-init_vmcb() was called.  So, I would suspect init_vmcb() was originally
-implemented assuming that all the vmcb fields were zero.
+## Test result summary
+ total: 77107, pass: 62518, fail: 1864, skip: 11921, xfail: 804,
 
- https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6aa8b732ca01c3d7a54e93f4d701b8aabbe60fb7
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 192 total, 192 passed, 0 failed
+* arm64: 26 total, 26 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 15 total, 15 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 26 total, 26 passed, 0 failed
 
-Thanks,
-Reiji
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
