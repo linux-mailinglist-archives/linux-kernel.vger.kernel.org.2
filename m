@@ -2,74 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2105938C7D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:24:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5281338C7DE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:25:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235125AbhEUNZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:25:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234381AbhEUNZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:25:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF2E6613EC;
-        Fri, 21 May 2021 13:24:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621603443;
-        bh=H+w4vX7tF2iIyenYBI6epVpEEI7LBi6bD5GR38apUE0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=c/09CVsC3ymPZE2zRl7EjB2JhUbhtnnSz0bH9/rM+E1ZqHsFhv3v9rPGHWBn1lYGb
-         NBKf/UV00ynYGjaJ6HEsEVqsUVVTP8GuirVCbIBEh3b9Q93/j7kSFh8qg8O5+Idkwc
-         wQnj9z2i7Pwk8PqYMap4Zr8fnenhQjA/l6P3QCY5bQ/f811qZkKJTlj1wER0G7c6J9
-         55iec6CeQKFTyF+aZzDZgRudVrVGKlEiviXXPmXVwO8iN2UoCOil+UpxbfOtb5zMxT
-         b9cYWM0te5W7Cllt4Mk055vYYqNe8wWRs0GILnVZzUiHR/8GWl/7G8eEH9ijEQC+Sc
-         I1FG3Bhii7NJw==
-Date:   Fri, 21 May 2021 18:53:59 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Rob Clark <robdclark@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH 02/13] dt-bindings: msm/dsi: Document Display Stream
- Compression (DSC) parameters
-Message-ID: <YKe0b0hGN86E67iW@vkoul-mobl.Dlink>
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <20210521124946.3617862-3-vkoul@kernel.org>
- <CAL_JsqJqPwkzxVgAfS9VgEXcY=ZH5LOaaxzoPDBzuDxOZ_OLjw@mail.gmail.com>
+        id S234655AbhEUN0g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:26:36 -0400
+Received: from mail-vs1-f41.google.com ([209.85.217.41]:40557 "EHLO
+        mail-vs1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233797AbhEUN0b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:26:31 -0400
+Received: by mail-vs1-f41.google.com with SMTP id o192so10332784vsd.7;
+        Fri, 21 May 2021 06:25:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cN1SbxJ6jb3NaPylRh/NVFKU6vsuWdd5PlEtgCJN1oM=;
+        b=SMqcu7EEbOxuwsjUSrkqdw4zO0diCjZQsTcaofj2K28qxyJdUlK117LVhIC80OsYe5
+         WpWBkkuXJFYlAzmr/WREM3Q0wIOjb4FdqpDg6JOjLbuRarLUGxUsGYigGLUTZ5HG1011
+         V2oCuQPj7nWUTcWBJ2crrpFso4tEn5tXJRRgK2c19QNzgyhTZh9SPnXwipIku0txSzdV
+         vcwaDPg8lpEZELUdzXHHQXa+ANzJGxahYAe5ZkZEQ1Sk77bnRRHQ/P30SbC2CfEHcGvv
+         OOtjFxYml7qg9pSJbAeif8xW7jB6w7Cg7rnKyowtPkw+Ykjjm41x6NuDsVwZNTbmFzOo
+         +ONQ==
+X-Gm-Message-State: AOAM531WtGpc2qm9uGDcIKGDLpfRMSepUMvfU+sU/ipNoOqLTS4PeJj1
+        6Clhzqu2M8Q/67fuBvOkAWxyA5HOe+o02BHhElk=
+X-Google-Smtp-Source: ABdhPJyo82tIL2YL3mxccwXRX3dklKLv6XZakyPXfGfT903sNbH4qrlf2CO09NEUmgIi7KAU8a6XgqMPLXrwHzJKWqg=
+X-Received: by 2002:a67:3c2:: with SMTP id 185mr10012391vsd.42.1621603507423;
+ Fri, 21 May 2021 06:25:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJqPwkzxVgAfS9VgEXcY=ZH5LOaaxzoPDBzuDxOZ_OLjw@mail.gmail.com>
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20210514192218.13022-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 May 2021 15:24:56 +0200
+Message-ID: <CAMuHMdX=1QOtxp2Wa6bBdBLLL6QP8R8cofsO9etE-n+qBG3MtA@mail.gmail.com>
+Subject: Re: [PATCH 03/16] dt-bindings: arm: renesas: Document SMARC EVK
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-05-21, 08:18, Rob Herring wrote:
-> On Fri, May 21, 2021 at 7:50 AM Vinod Koul <vkoul@kernel.org> wrote:
-> >
-> > DSC enables streams to be compressed before we send to panel. This
-> > requires DSC enabled encoder and a panel to be present. So we add this
-> > information in board DTS and find if DSC can be enabled and the
-> > parameters required to configure DSC are added to binding document along
-> > with example
-> >
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >  .../devicetree/bindings/display/msm/dsi.txt       | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> 
-> This is getting converted to schema. Hopefully, v17 will be it. Sigh.
+Hi Prabhakar,
 
-I will update these on top, whenever that one gets merged... Any comments
-on the parameters added here?
+On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Document Renesas SMARC EVK boards which are based on RZ/G2L (R9A07G044L)
+> SoC. The SMARC EVK consists of RZ/G2L SoM module and SMARC carrier board,
+> the SoM module sits on top of carrier board.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+
+> --- a/Documentation/devicetree/bindings/arm/renesas.yaml
+> +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
+> @@ -310,6 +310,9 @@ properties:
+>
+>        - description: RZ/G2{L,LC} (R9A07G044)
+>          items:
+> +          - enum:
+> +              - renesas,smarc-r9a07g044l1 # SMARC EVK with single Cortex-A55
+> +              - renesas,smarc-r9a07g044l2 # SMARC EVK with dual Cortex-A55
+>            - enum:
+>                - renesas,r9a07g044c1 # Single Cortex-A55 RZ/G2LC
+>                - renesas,r9a07g044c2 # Dual Cortex-A55 RZ/G2LC
+
+Likewise, do we care (at the top level) if this is a board with an SoC
+die that has one or two Cortex-A55 cores enabled?
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-~Vinod
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
