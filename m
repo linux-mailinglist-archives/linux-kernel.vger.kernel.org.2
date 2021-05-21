@@ -2,199 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C240338CE84
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:04:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3D3538CE88
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230202AbhEUUFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:05:21 -0400
-Received: from mga18.intel.com ([134.134.136.126]:54862 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229780AbhEUUFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:05:19 -0400
-IronPort-SDR: TX+Iw0ypzHXamczdbxzXCI1g0jYNgrHF012KxEku7yZEX8mMLJzsNDnhdWGL+vbx7p2nAGznaM
- m85lIUGCSc/Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="188959064"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="188959064"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 13:03:55 -0700
-IronPort-SDR: IBeM0IXzsqaI1CpzPRHvUZf09sgZZ3x6P0C6+btIARsA706T4V2CZVqO1t+ue1xEEs8vi3dRkp
- 90W5LjXicbJw==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="613363289"
-Received: from dweeratu-mobl1.amr.corp.intel.com (HELO intel.com) ([10.254.1.200])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 13:03:52 -0700
-Date:   Fri, 21 May 2021 16:03:51 -0400
-From:   Rodrigo Vivi <rodrigo.vivi@intel.com>
-To:     Lyude Paul <lyude@redhat.com>, Jani Nikula <jani.nikula@intel.com>
-Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        nouveau@lists.freedesktop.org,
-        Rajeev Nandan <rajeevny@codeaurora.org>,
-        greg.depoire@gmail.com, David Airlie <airlied@linux.ie>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Dave Airlie <airlied@redhat.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>
-Subject: Re: [PATCH v6 1/9] drm/i915/dpcd_bl: Remove redundant AUX backlight
- frequency calculations
-Message-ID: <YKgSJ+0YtLYQnOQB@intel.com>
-References: <20210514181504.565252-1-lyude@redhat.com>
- <20210514181504.565252-2-lyude@redhat.com>
+        id S230263AbhEUUFm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:05:42 -0400
+Received: from mail-eopbgr1400123.outbound.protection.outlook.com ([40.107.140.123]:62886
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229780AbhEUUFk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:05:40 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gTfjBvhreif0YfWkdfBITM2YSCJdbYYJF0QhWyej+FtvOGzv8LQ45CqV3XNOPOIqAxvfE7qc0DQxewRWEzcbb+v5PdkUnu482Q0jxIRbPIKYectlhRCkXSeOHE9UY6NU4wtPu2QXLGmZwQ1B+iQEv+FllfEhX+PAsz2C7tzFiqVT21JAUWFhImRAR7QJJ3xOcelYUFvHAbi7QX7iP1fnCrSZYBxtY79YUBgm1VdDfSQYkPy8mirrUMc2ddpypaLJ4+vAAQh6YKy6lY2EugzlNnWhQBkFW9/QY3jwvT4Ts2klQvhEKtZidvH9pGtVI3QGy/QHgkMTfl0g7rtYv/EFLg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FON/dQjyh8cQLlJrr32r2OxkW9BnrCVLZu+HrSY48QI=;
+ b=OIeeu0afaOwmqxXU7pZc8jmq6Jp3hGn5XAvjCs4i/NRVhWI3DPrlvMI+qoVM69gzwnbrkI/4gYVI1tIWJ1PK0dNrasNstxIywxkGEXDDoDEZAsRZZ8wQ8ZYSLCKCOpIAIrhku+SmUYTlF4teiLvrQmQq69C1a3FJbO/+k1bLt20Rwv+zsEmUFJUgwgrJ/MakhqGUni39ZoWafSzKqxHhJJXhtc3jiwS4G6l2XLsl08xqW3WnbTogiA5KNxUWlEqvtLPYp0STktVu6qibV4KbITkaOl+fGCxjffOv64G4rYTffdTJJJDoKGDF26XLzCRsypV3uASyXMtgKV6s0DAfDQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
+ dkim=pass header.d=renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FON/dQjyh8cQLlJrr32r2OxkW9BnrCVLZu+HrSY48QI=;
+ b=ft/nCkBcKxWh+T6fatcYhmPyUrriVhCrsMVA52iWPz+S/aHX6U1VH77tXRSPxTEkVjuoHS9gU/kZPNm65leftQkvOLYrgEHrn3r8lb4yDSsZlUOjXCe1mtXvbIlXWuvIFQGoR4rscu++kdRgF/9lA82pocS/UQrjPtKKoa9wmfo=
+Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com (2603:1096:604:101::7)
+ by OSYPR01MB5446.jpnprd01.prod.outlook.com (2603:1096:604:88::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Fri, 21 May
+ 2021 20:04:14 +0000
+Received: from OS3PR01MB6593.jpnprd01.prod.outlook.com
+ ([fe80::6c45:c45:40f8:e4a2]) by OS3PR01MB6593.jpnprd01.prod.outlook.com
+ ([fe80::6c45:c45:40f8:e4a2%7]) with mapi id 15.20.4150.025; Fri, 21 May 2021
+ 20:04:14 +0000
+From:   Min Li <min.li.xe@renesas.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "grant.likely@linaro.org" <grant.likely@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: RE: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
+ (SMU) support
+Thread-Topic: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
+ (SMU) support
+Thread-Index: AQHXOtSPoxM3P4fkKEmDrY8StfrCU6rqloqAgAONlTCAAArCgIAAUn1Q
+Date:   Fri, 21 May 2021 20:04:14 +0000
+Message-ID: <OS3PR01MB6593B9868844AF3D6BB35453BA299@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+References: <1619466246-11198-1-git-send-email-min.li.xe@renesas.com>
+ <20210519080807.GH805368@dell>
+ <OS3PR01MB6593794BFE3A4A08C62E708BBA299@OS3PR01MB6593.jpnprd01.prod.outlook.com>
+ <20210521150209.GI2549456@dell>
+In-Reply-To: <20210521150209.GI2549456@dell>
+Accept-Language: en-CA, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=renesas.com;
+x-originating-ip: [72.140.114.230]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: bf77c216-930a-4d4b-418e-08d91c939b77
+x-ms-traffictypediagnostic: OSYPR01MB5446:
+x-microsoft-antispam-prvs: <OSYPR01MB5446CF16677A7632C9F7A4F7BA299@OSYPR01MB5446.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: yybdcwFiZd7Amv+ExFSyhoWQ/myYhmbe3kURIVhSTYdB5Uh4ynX1DzKqu4idnTmZkvLMzs3sdMiGeMixtQIg77SB6Ui2i6mI/9unwKU/biqRSoH0pYYOg1H5ABQ+d71omA6HccaIs5VqgiJ9/BMQJW8CNRr4WeqlxRs6PvJI1YkIII3VYdAhX86hJpIHDY34X1eq8DeRhFVihyUD5JSm8Y/X2ZdDVcw8vBpP2FnGjHwZIuM7gRs/1mhN3tyEfotOKmENHwlPQzUUJDEJeaPjZ2uoQZzxDHLU07v+QsVjSaP6f9U9wSx8I08dS96gqItfgoyBA4A9HJc2sMpyHiuWgQIyS136AM7q0dlNErtLgU2JDACbAT85vCKQZ4ANpHl5/Oue7ZntN6H+DICel/TVR4xxs5yBQcqJRQxNnRXvqpGjwy9tcmIgOhrgfIqSkkAv0J9EMM+xa/2hpgv8ke9mmjjZ/LNTXiZkSsL0i1QbkM9DDeH6RcGKrhNGe4z5ztGitLys6Nvo2ym5VA5wwJEWZ4phH271hiRetYjonsj/Pk7dyTf2RcPvIhs6OS37x1DtkEbJ4Uvvgvwyr9ubRPiSLvz7NdPBEQ04MCW/oJ4QTzY=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:OS3PR01MB6593.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(39850400004)(376002)(396003)(366004)(136003)(71200400001)(86362001)(122000001)(7696005)(26005)(6506007)(66476007)(66946007)(33656002)(76116006)(8676002)(66446008)(64756008)(316002)(66556008)(38100700002)(8936002)(4744005)(52536014)(186003)(54906003)(478600001)(55016002)(5660300002)(2906002)(9686003)(6916009)(4326008);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?WDhQblpDMzdUclRQMmlUUFNIeVVCL3ZMTVhwaUVVLytUM1RPeVh6Y01VcXpu?=
+ =?utf-8?B?VE95UlgySzVuUWZ1dG4vY0NsVGNKSTNYTGNybFhEVlREdmJIU25PT1B6Wk9M?=
+ =?utf-8?B?STZpS0pKRURYN0IvRE83Q3RWMFUrKzRSeXY1T3A0SW9QNHdlNkw1emI5Rm1a?=
+ =?utf-8?B?eDBDNzQxLy9ydjliOHgvK3RFTW1UMmxubjVtY1hOVUFMY2ZBSXZmemt2T0p6?=
+ =?utf-8?B?VGFCN2FZNU5lWG1xejlmMHlaM2RPbDhoMWw5RGhtQ09tb3dyT0dvSitET1cz?=
+ =?utf-8?B?QUUrOHRNbW02anJ4Q3dtVTVnVldjVCtQbnVHczBSUHpwVmF5NnU4SEVTUXJz?=
+ =?utf-8?B?UmxvQjB2NXJSaXZITWRmYXJNWXQyRElQdjRSZHJjanY0K3g0NjJHQk1FV3lG?=
+ =?utf-8?B?bk10ZmFPV01JQ214TkRvTkZLKzUzL2RFUndZNHRXdU1BVzE3TTZRR2RSMDNT?=
+ =?utf-8?B?L1FZa3dqZ1NYUWsrZkhqMnlzZG5IT2lObHBmcDU2WlF6OFRrTHJmenlEUU9R?=
+ =?utf-8?B?OHdzVmVRSzV5ZUVrSklqZWtNTkVORi9TTHdKR1p3ZURnT0JQWFJYNDZyd2tS?=
+ =?utf-8?B?MGZrV3lXbnlNNmo4c2tnRXcwR0xsYmR5cE1jblMwM0dyUkNURGVROFBEY2FZ?=
+ =?utf-8?B?TDdkUUozdTh4dHBWUHJaRjFVblhrRnpDM2R0byswUExJSk1wQk1BRkd2RVA0?=
+ =?utf-8?B?UDNOV2hMeWQrWURSZEZ2MndEdXhqdG10VlVnMTJka3BEZ0tiaUMzd3ZBWTQ2?=
+ =?utf-8?B?cXNkR3IzR1VBS2lIVzVwNDMxd1VUR3MvRVVJSFBiNkdZRHpiSjV3YUlmLzBJ?=
+ =?utf-8?B?cjI3NTQ0eWZBUHJNdTlReFd0OVE3UzZZTFllTnVidElMRG5oTS9RRVQxcWRW?=
+ =?utf-8?B?WnFSd2pqSDR1Z093Rlhtci91cmZDSk9NQ2NYdE9od2VnMHlDclNhV3RoQVRP?=
+ =?utf-8?B?KzZaNld2bVBwaWd1VXVvTll4a0Q3d1hhdDdXNlNockxTazJDL1pGV3NHYVU4?=
+ =?utf-8?B?OERGaktsTFM0NWxralYxbU9HdnpwbU85ZmxCcEV2VmdJM3lVcjk2dk0wcXZK?=
+ =?utf-8?B?YzdpdHNsV0lNbmtTc0VNd2IrY3pRdkVkSG82blMwSG5nZ0xHaVJ0cmV4aVE0?=
+ =?utf-8?B?RUdIZElIdCt1dHUrZXR0ZWxNT2RWNW01S2kyVkJaN2xKSmZwQjlHcmR4cCtT?=
+ =?utf-8?B?cUV1MVdVSlE5WC9lSEM1Z3FiYTBNUlVWeFRmYWZTVHB5UjBxaGk2QjVvTWE0?=
+ =?utf-8?B?TCs2VWV6aGhZdEpuRjVoeVp5T0JZQWxsUFgvYVZRUEgxT3h2TGRtQWJrU3lC?=
+ =?utf-8?B?bzZXSUNkdTBMcFlZT0k0K0UyOFNkMWpqaFI1SGl5NDV5TEVkMDJubGY0VVVP?=
+ =?utf-8?B?cjRXZ3RRZUhxVlA0ZmZMbDlmOEZjME91WEs1Y3BDUmNhRkxVei9OckFucTk4?=
+ =?utf-8?B?TzltdkRad1luV2U3L1VpbDYra0NoOFpacENqb0hRL3lFUVFDaTNmTlVkRHoz?=
+ =?utf-8?B?V0VkZGllVC9adDQxaEF1Z1o3dXpBRW1IQk1MaytBRkNKK1oyeXVJUWwwVHp5?=
+ =?utf-8?B?dGk3cTY1L0RHeE12dncxcmY1bEpjSlpqVm1GNlNFMkhiVGtJa2R4aDVSVkVQ?=
+ =?utf-8?B?QTFTSHUvUE9XMnhmMnNJcVlYbTVlcDNEaU1VcHpZT3p4UklpM3A3bUsxL2pl?=
+ =?utf-8?B?RklYQ054ZUhyR3dpSEdRbldDQzNVSDQyWEdZb3c4SlJOSXhwSFRkS0ExRjFp?=
+ =?utf-8?Q?Y+lufvLqlOL5LnQ3x24hmh2PUaU2vrLkS+qRFW/?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210514181504.565252-2-lyude@redhat.com>
+X-OriginatorOrg: renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: OS3PR01MB6593.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bf77c216-930a-4d4b-418e-08d91c939b77
+X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 20:04:14.1997
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: D+2PJR/v7dqyfbcMc8mSoaHUW5T28+4UxRQ9waLial5Y7VChAbNdN3EMiYNzvhqlmjHv4y1q+IBz+L9+9lxz0g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSYPR01MB5446
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 02:14:55PM -0400, Lyude Paul wrote:
-> Noticed this while moving all of the VESA backlight code in i915 over to
-> DRM helpers: it would appear that we calculate the frequency value we want
-> to write to DP_EDP_BACKLIGHT_FREQ_SET twice even though this value never
-> actually changes during runtime. So, let's simplify things by just caching
-> this value in intel_panel.backlight, and re-writing it as-needed.
-> 
-> Changes since v1:
-> * Wrap panel->backlight.edp.vesa.pwm_freq_pre_divider in
->   DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP check - Jani
-
-This looks okay to me now... Jani, agree?
-
-> 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Cc: Jani Nikula <jani.nikula@intel.com>
-> Cc: Dave Airlie <airlied@gmail.com>
-> Cc: greg.depoire@gmail.com
-> ---
->  .../drm/i915/display/intel_display_types.h    |  1 +
->  .../drm/i915/display/intel_dp_aux_backlight.c | 65 ++++++-------------
->  2 files changed, 20 insertions(+), 46 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-> index 9c0adfc60c6f..7054a37363fb 100644
-> --- a/drivers/gpu/drm/i915/display/intel_display_types.h
-> +++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-> @@ -311,6 +311,7 @@ struct intel_panel {
->  		union {
->  			struct {
->  				u8 pwmgen_bit_count;
-> +				u8 pwm_freq_pre_divider;
->  			} vesa;
->  			struct {
->  				bool sdr_uses_aux;
-> diff --git a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> index 8e9ac9ba1d38..68bfe50ada59 100644
-> --- a/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> +++ b/drivers/gpu/drm/i915/display/intel_dp_aux_backlight.c
-> @@ -373,50 +373,6 @@ intel_dp_aux_vesa_set_backlight(const struct drm_connector_state *conn_state,
->  	}
->  }
->  
-> -/*
-> - * Set PWM Frequency divider to match desired frequency in vbt.
-> - * The PWM Frequency is calculated as 27Mhz / (F x P).
-> - * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
-> - *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
-> - * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-> - *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-> - */
-> -static bool intel_dp_aux_vesa_set_pwm_freq(struct intel_connector *connector)
-> -{
-> -	struct drm_i915_private *dev_priv = to_i915(connector->base.dev);
-> -	struct intel_dp *intel_dp = intel_attached_dp(connector);
-> -	const u8 pn = connector->panel.backlight.edp.vesa.pwmgen_bit_count;
-> -	int freq, fxp, f, fxp_actual, fxp_min, fxp_max;
-> -
-> -	freq = dev_priv->vbt.backlight.pwm_freq_hz;
-> -	if (!freq) {
-> -		drm_dbg_kms(&dev_priv->drm,
-> -			    "Use panel default backlight frequency\n");
-> -		return false;
-> -	}
-> -
-> -	fxp = DIV_ROUND_CLOSEST(KHz(DP_EDP_BACKLIGHT_FREQ_BASE_KHZ), freq);
-> -	f = clamp(DIV_ROUND_CLOSEST(fxp, 1 << pn), 1, 255);
-> -	fxp_actual = f << pn;
-> -
-> -	/* Ensure frequency is within 25% of desired value */
-> -	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
-> -	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
-> -
-> -	if (fxp_min > fxp_actual || fxp_actual > fxp_max) {
-> -		drm_dbg_kms(&dev_priv->drm, "Actual frequency out of range\n");
-> -		return false;
-> -	}
-> -
-> -	if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> -			       DP_EDP_BACKLIGHT_FREQ_SET, (u8) f) < 0) {
-> -		drm_dbg_kms(&dev_priv->drm,
-> -			    "Failed to write aux backlight freq\n");
-> -		return false;
-> -	}
-> -	return true;
-> -}
-> -
->  static void
->  intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
->  				   const struct drm_connector_state *conn_state, u32 level)
-> @@ -459,9 +415,13 @@ intel_dp_aux_vesa_enable_backlight(const struct intel_crtc_state *crtc_state,
->  		break;
->  	}
->  
-> -	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
-> -		if (intel_dp_aux_vesa_set_pwm_freq(connector))
-> +	if (panel->backlight.edp.vesa.pwm_freq_pre_divider) {
-> +		if (drm_dp_dpcd_writeb(&intel_dp->aux, DP_EDP_BACKLIGHT_FREQ_SET,
-> +				       panel->backlight.edp.vesa.pwm_freq_pre_divider) == 1)
->  			new_dpcd_buf |= DP_EDP_BACKLIGHT_FREQ_AUX_SET_ENABLE;
-> +		else
-> +			drm_dbg_kms(&i915->drm, "Failed to write aux backlight frequency\n");
-> +	}
->  
->  	if (new_dpcd_buf != dpcd_buf) {
->  		if (drm_dp_dpcd_writeb(&intel_dp->aux,
-> @@ -482,6 +442,14 @@ static void intel_dp_aux_vesa_disable_backlight(const struct drm_connector_state
->  				  false);
->  }
->  
-> +/*
-> + * Compute PWM frequency divider value based off the frequency provided to us by the vbt.
-> + * The PWM Frequency is calculated as 27Mhz / (F x P).
-> + * - Where F = PWM Frequency Pre-Divider value programmed by field 7:0 of the
-> + *             EDP_BACKLIGHT_FREQ_SET register (DPCD Address 00728h)
-> + * - Where P = 2^Pn, where Pn is the value programmed by field 4:0 of the
-> + *             EDP_PWMGEN_BIT_COUNT register (DPCD Address 00724h)
-> + */
->  static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connector)
->  {
->  	struct drm_i915_private *i915 = to_i915(connector->base.dev);
-> @@ -533,8 +501,10 @@ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connecto
->  	pn_min &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
->  	pn_max &= DP_EDP_PWMGEN_BIT_COUNT_MASK;
->  
-> +	/* Ensure frequency is within 25% of desired value */
->  	fxp_min = DIV_ROUND_CLOSEST(fxp * 3, 4);
->  	fxp_max = DIV_ROUND_CLOSEST(fxp * 5, 4);
-> +
->  	if (fxp_min < (1 << pn_min) || (255 << pn_max) < fxp_max) {
->  		drm_dbg_kms(&i915->drm,
->  			    "VBT defined backlight frequency out of range\n");
-> @@ -555,7 +525,10 @@ static u32 intel_dp_aux_vesa_calc_max_backlight(struct intel_connector *connecto
->  			    "Failed to write aux pwmgen bit count\n");
->  		return max_backlight;
->  	}
-> +
->  	panel->backlight.edp.vesa.pwmgen_bit_count = pn;
-> +	if (intel_dp->edp_dpcd[2] & DP_EDP_BACKLIGHT_FREQ_AUX_SET_CAP)
-> +		panel->backlight.edp.vesa.pwm_freq_pre_divider = f;
->  
->  	max_backlight = (1 << pn) - 1;
->  
-> -- 
-> 2.31.1
-> 
+PiA+DQo+ID4gSGkgTGVlDQo+ID4NCj4gPiBUaGFua3MgZm9yIHRha2luZyB5b3VyIHRpbWUgdG8g
+cmV2aWV3IG15IGNvZGUuIEkgd2lsbCBzdGFydCB3b3JraW5nIG9uDQo+ID4gdGhlIGNvcmUgZHJp
+dmVyLiBCdXQgS2NvbmZpZyBpdGVtcyB3aWxsIHN0YXkgYXMgTUZEX1JTTVVfSTJDIGFuZA0KPiA+
+IE1GRF9SU01VX1NQSSBsaWtlIHRoZSBleGlzdGluZyBvbmVzDQo+ID4NCj4gPiBNRkRfTUFERVJB
+X1NQSQ0KPiA+IE1GRF9NQURFUkFfSTJDDQo+IA0KPiBBbmQgTUZEX01BREVSQQ0KPiANCj4gPiBN
+RkRfREE5MDUyX1NQSQ0KPiA+IE1GRF9EQTkwNTJfSTJDDQo+IA0KPiBBbmQgUE1JQ19EQTkwNTIN
+Cj4gDQo+ID4gTUZEX01DMTNYWFhfU1BJDQo+ID4gTUZEX01DMTNYWFhfSTJDDQo+IA0KPiBBbmQg
+TUZEX01DMTNYWFgNCj4gDQoNCkhpIExlZQ0KDQpJIHRoaW5rIEkgZG9uJ3QgbmVlZCBzZXBhcmF0
+ZSBLY29uZmlnIGl0ZW0gTUZEX1JTTVUgZm9yIGNvcmUgZHJpdmVyIHNpbmNlIGNvcmUgZHJpdmVy
+IGlzDQptZWFuaW5nbGVzcyB3aXRob3V0IGJ1cyB1bmRlcm5lYXRoLiBTbyBjYW4gSSBnbyB3aXRo
+IHRoZSBmb2xsb3dpbmcgZXhhbXBsZQ0KDQpyc211LWkyYy1vYmpzCQkJOj0gcnNtdV9jb3JlLm8g
+cnNtdV9pMmMubw0Kb2JqLSQoQ09ORklHXyBNRkRfUlNNVV9JMkMpCSs9IHJzbXUtaTJjLm8NCg0K
+VGhhbmtzDQoNCk1pbg0K
