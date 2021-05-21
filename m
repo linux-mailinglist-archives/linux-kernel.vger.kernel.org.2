@@ -2,136 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 955F938C115
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:54:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29C1C38C116
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232606AbhEUH4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:56:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231301AbhEUH4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:56:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA5636135B;
-        Fri, 21 May 2021 07:54:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621583685;
-        bh=q/Uy9Bki/OPO7BqB5Ad/aj1S8JOWQCXav+mJLUNTH3Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=bt/+atbMIe3qCOQt6SaZvqsnHyJB20KtXdG/eJH8hzxaIC2F+nZmGBFmr2uBQUGF5
-         Gr6PlXp5UdgEWirc06ibXZNfoDCTYnnJQWQxr2ZhLfM3KirlMwqY0F1Dy8GW+HIOb7
-         WqSDJsrPFUlYwLgV4gTIUzjzQrNOQErxoDokPUEFLhPRc201Hhn97CoukeiYz3p/qT
-         BNdiVZAvDyEUUiUCMu0QGAs1sDuQpuhgcStW0cRejJ+xywIMjrsRRBWWo7Y32fA8fl
-         AYCX3c8fTqSzlmPrN1bjoKJEYwp1Zt+eQ5fFs96x3evGUgaGWNcA1pxRvUYrgAFWkB
-         llvTxQOzl4q5A==
-Date:   Fri, 21 May 2021 09:54:42 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: sphinx-pre-install: Reword warning on installing
- cjk font
-Message-ID: <20210521095442.33957ff3@coco.lan>
-In-Reply-To: <c5652bb4-0bb0-9efa-2b80-a79793a8efa8@gmail.com>
-References: <c5652bb4-0bb0-9efa-2b80-a79793a8efa8@gmail.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S233628AbhEUH4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:56:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231301AbhEUH4g (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:56:36 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA79C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:55:12 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id k5so10555325pjj.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:55:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2xRdJqwa+tKO02MZjS283qIQAEmD7PgdimDaucBlw20=;
+        b=DuNCFTeyPEeTAG9UW5XVFg1fOtFdbwEVrKnOW7SQCKuLFDTzzcuQxsZ8/BT1KBpS6b
+         RycopGMhZBs5XT9pJn+YP7tXZJHG5UXez7n+iwrxzxIp1q4nCsQv693aNM/H6kAh4gIL
+         eGapL7PDsO9dd9ygtRW4u9BjCwW2exOfHvfeccH922HelA+B/7wj8UtNXPYX6vEBi0fV
+         ZbAFgx3rQWUL2OwvfrqInsKSxwVhQD/8bGpNNjrjSmaXqAo4K8WZ1usUvlJhyNdltWQp
+         Mbk/3jpDqyTn1WUwG12V0R0vq6KUSWsgYdRnrxKDWmC3se5gmJCTXW4YIqMMwlya4+jO
+         NL0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2xRdJqwa+tKO02MZjS283qIQAEmD7PgdimDaucBlw20=;
+        b=q6BIe8jouePCHjddi6JqWJixNKLOjydBDOWthe06A2aKW9SrIErVZ4g6tVztmJbemq
+         Sh3hZLqkLhYdlnKtbB0d96kHEfov94GCcBPArjbWBLNtZ277gmkUYh6XDxCdLRjy9PiK
+         qlSUxf8TS5HfMJ/EobJqo+W7DQ59+eb+lt+hmc/PdiDow/n+ZvedO4Wqc135yIpJt7ZX
+         6sBwtuU6iFX/b70HP3PQY1RRNoazhbdm4bWqL2gNclCQGcDFdyILO8Ar7wAArifbph0o
+         zrEZI/rpU1Jz34mKUMrhCwA+ns/YGKt+zEi2qaF9UX3hnOxukRckg/izExAVs6Se41WC
+         SkVQ==
+X-Gm-Message-State: AOAM530GePrNG2qVp/rillC/a/QG3QTozZteq43B240/UieiClDtxuHW
+        CpMa2xnKwuFspvlvVZu736pRh+Ebr3LJlVfheFQ=
+X-Google-Smtp-Source: ABdhPJzeYgb5VFA+42vVkrZWIgFVr47iAF5I7zw9JZawMJLD6pXnQM/KeD17NllAK22se4U/t5bildF3Nrbfh1+r+3k=
+X-Received: by 2002:a17:90b:90c:: with SMTP id bo12mr9589555pjb.10.1621583712424;
+ Fri, 21 May 2021 00:55:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CAM7=BFoktwgy=T0GK6Mpmp2gYToCUs=CrM29MRWw8O7TPypQ8w@mail.gmail.com>
+ <CAHp75Vf8kQ73w0R9ieDNjDVkxM-V83QRN9mc6BjRZA8xHpPNAA@mail.gmail.com> <CAHp75Vft8pnA+m0C=Ok7nRyjERAd2uJJ4q6HcN460j0Hir6Kaw@mail.gmail.com>
+In-Reply-To: <CAHp75Vft8pnA+m0C=Ok7nRyjERAd2uJJ4q6HcN460j0Hir6Kaw@mail.gmail.com>
+From:   Yiyuan guo <yguoaz@gmail.com>
+Date:   Fri, 21 May 2021 15:55:03 +0800
+Message-ID: <CAM7=BFoH7Q+YHvPFnHM4j72ORHQp4gTjHFjnfeLsV2-30ZLNYw@mail.gmail.com>
+Subject: Re: A divide by zero bug in lib/math/rational.c (with triggering input)
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "tpiepho@gmail.com" <tpiepho@gmail.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "oskar@scara.com" <oskar@scara.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HI Akira,
+Thanks for your timely response.
 
-Em Fri, 21 May 2021 16:14:19 +0900
-Akira Yokosawa <akiyks@gmail.com> escreveu:
+I am not familiar with the theorem. But any input satisfying the
+condition below will
+trigger a divide by zero at the first loop iteration:
 
-> Installing a ckj font as recommended by the warning message causes
-> generated latex code to have:
-> 
-> 	% This is needed for translations
-> 	\usepackage{xeCJK}
-> 	\setCJKmainfont{Noto Sans CJK SC}
-> 
-> in its preamble even for an English document.
+(given_numerator / given_denominator > max_numerator) || (1 +
+given_numerator / given_denominator > max_denominator)
 
-Yes. The same LaTeX configuration is applied to all documents.
+I think such a condition is rather complex and may not be enforced by
+all callers of this function.
 
-While the standard Sphinx logic allows just one conf.py, there's
-a logic on Linux that allows a per-directory configuration.
-Perhaps it would be possible to set the font just for translations.
-
-Yet, this can't be easily done per-translation - Italian
-translation for instance doesn't need CJK fonts.
-
-> The package "xeCJK" changes wide characters' appearance including
-> apostrophe (single quote) and double quotes, and it changes line-break
-> behavior with regard to the boundary of narrow and wide characters.
-> 
-> This greatly degrades readability of English PDFs typeset by xelatex.
-
-Hmm... could you give an example where it looks ugly?
-
-At least on the documents I use to check the PDF output, I was unable
-to see any big issue.
-
-Regards,
-Mauro
-
-> 
-> As a band-aid help, reword the message and let the user at least be
-> aware of the degradation.
-> 
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> ---
-> Hello,
-> 
-> I'm a newcomer to kernel-doc who started trying sphinx this week.
-> I have both sphinx 2.4.4 and 1.7.9 installed.
-> For pdfdocs, I use 2.4.4.
-> 
-> "make htmldocs" was fairly easy, but I struggled a while to get
-> PDFs as I expected.
-> 
-> The culprit turned out to be the "xeCJK" package mentioned above
-> in the change log.  It appears in all the generated latex files
-> due to the "Noto Sans CJK" font I have installed seeing the warning
-> message from sphinx-pre-install.
-> 
-> By uninstalling the font, I can now build the PDF as I expect.
-> 
-> The reworded message is just a band-aid help.
-> 
-> In the long term, I see that rst2pdf tool is your hope to avoid
-> LaTeX altogether.  But it would be nice if you can enable xeCJK only
-> for the translations document.  Can sphinx permit such language
-> choice per subdirectory (or hopefully per .rst file)?
-> 
->         Thanks, Akira
+On Fri, May 21, 2021 at 3:42 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+>
+>
+> On Friday, May 21, 2021, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+>>
+>>
+>>
+>> On Friday, May 21, 2021, Yiyuan guo <yguoaz@gmail.com> wrote:
+>>>
+>>> In the file lib/math/rational.c, the function
+>>> rational_best_approximation has the following
+>>> code:
+>>>
+>>> void rational_best_approximation(
+>>>     unsigned long given_numerator, unsigned long given_denominator,
+>>>     unsigned long max_numerator, unsigned long max_denominator,
+>>>     unsigned long *best_numerator, unsigned long *best_denominator) {
+>>>    ...
+>>>    if ((n2 > max_numerator) || (d2 > max_denominator)) {
+>>>             unsigned long t = min((max_numerator - n0) / n1,
+>>>                           (max_denominator - d0) / d1);
+>>>    ...
+>>> }
+>>>
+>>> d1 may be equal to zero when performing the division, leading to a
+>>> divide by zero problem.
+>>>
+>>> One input  to trigger the divide by zero bug is:
+>>> rational_best_approximation(31415, 100, (1 << 8) - 1, (1 << 5) - 1, &n, &d)
+>>
+>>
+>>
+>> Have you read a theorem about this? TL;DR; as far as I can see the input data is not suitable for this function.
+>>
+>
+>
+> I think we may add the proper check and saturate the output which in your case should be (255,1).
+>
+>>
+>>
+>> --
+>> With Best Regards,
+>> Andy Shevchenko
+>>
+>>
+>
+>
 > --
->  scripts/sphinx-pre-install | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
-> index fe92020d67e3..b3c7da2b8ad2 100755
-> --- a/scripts/sphinx-pre-install
-> +++ b/scripts/sphinx-pre-install
-> @@ -101,7 +101,12 @@ sub check_missing(%)
->  		}
->  
->  		if ($is_optional) {
-> -			print "Warning: better to also install \"$prog\".\n";
-> +			if ($prog =~ /cjk/ ) {
-> +				print "Warning: For translations PDF, better to install \"$prog\".\n";
-> +				print "However, doing so will *degrade* English PDF typesetting.\n";
-> +			} else {
-> +				print "Warning: better to also install \"$prog\".\n";
-> +			}
->  		} else {
->  			print "ERROR: please install \"$prog\", otherwise, build won't work.\n";
->  		}
-
-
-
-Thanks,
-Mauro
+> With Best Regards,
+> Andy Shevchenko
+>
+>
