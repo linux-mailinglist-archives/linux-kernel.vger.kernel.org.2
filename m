@@ -2,197 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EDB38C83B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 918F038C83E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbhEUNhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:37:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48416 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231601AbhEUNhg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:37:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ECA056023D;
-        Fri, 21 May 2021 13:36:08 +0000 (UTC)
-Date:   Fri, 21 May 2021 19:06:04 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH v4 1/6] bus: mhi: core: Set BHI/BHIe offsets on power up
- preparation
-Message-ID: <20210521133604.GI70095@thinkpad>
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
- <1620330705-40192-2-git-send-email-bbhatt@codeaurora.org>
+        id S235671AbhEUNiH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 09:38:07 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:34096 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235424AbhEUNiF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:38:05 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-AAhjg02-MbOkPEdfh6xR_Q-1; Fri, 21 May 2021 09:36:38 -0400
+X-MC-Unique: AAhjg02-MbOkPEdfh6xR_Q-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3AA011007B14;
+        Fri, 21 May 2021 13:36:37 +0000 (UTC)
+Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E40696A03C;
+        Fri, 21 May 2021 13:36:15 +0000 (UTC)
+Date:   Fri, 21 May 2021 15:36:14 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
+Message-ID: <20210521153614.061b0005@bahia.lan>
+In-Reply-To: <CAJfpegvBB-zRuZAM0m7fxMFCfw=CzN3uT3CqoQrRgizaTH4sOw@mail.gmail.com>
+References: <20210520154654.1791183-1-groug@kaod.org>
+        <20210520154654.1791183-5-groug@kaod.org>
+        <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
+        <20210521103921.153a243d@bahia.lan>
+        <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
+        <20210521120616.49d52565@bahia.lan>
+        <CAJfpegvBB-zRuZAM0m7fxMFCfw=CzN3uT3CqoQrRgizaTH4sOw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620330705-40192-2-git-send-email-bbhatt@codeaurora.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 12:51:40PM -0700, Bhaumik Bhatt wrote:
-> Set the BHI and/or BHIe offsets in mhi_prepare_for_power_up(),
-> rearrange the function, and remove the equivalent from
-> mhi_async_power_up(). This helps consolidate multiple checks
-> in different parts of the driver and can help MHI fail early on
-> before power up begins if the offsets are not read correctly.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+On Fri, 21 May 2021 14:37:25 +0200
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  drivers/bus/mhi/core/init.c | 42 +++++++++++++++++++++++-------------------
->  drivers/bus/mhi/core/pm.c   | 28 ++++------------------------
->  2 files changed, 27 insertions(+), 43 deletions(-)
+> On Fri, 21 May 2021 at 12:06, Greg Kurz <groug@kaod.org> wrote:
+> >
+> > On Fri, 21 May 2021 10:50:34 +0200
+> > Miklos Szeredi <miklos@szeredi.hu> wrote:
+> >
+> > > On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
+> > > >
+> > > > On Fri, 21 May 2021 10:26:27 +0200
+> > > > Miklos Szeredi <miklos@szeredi.hu> wrote:
+> > > >
+> > > > > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
+> > > > > >
+> > > > > > All submounts share the same virtio-fs device instance as the root
+> > > > > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
+> > > > > > is likely to pick up any of these submounts and reuse it instead of
+> > > > > > the root mount.
+> > > > > >
+> > > > > > On the server side:
+> > > > > >
+> > > > > > # mkdir ${some_dir}
+> > > > > > # mkdir ${some_dir}/mnt1
+> > > > > > # mount -t tmpfs none ${some_dir}/mnt1
+> > > > > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
+> > > > > > # mkdir ${some_dir}/mnt2
+> > > > > > # mount -t tmpfs none ${some_dir}/mnt2
+> > > > > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
+> > > > > >
+> > > > > > On the client side:
+> > > > > >
+> > > > > > # mkdir /mnt/virtiofs1
+> > > > > > # mount -t virtiofs myfs /mnt/virtiofs1
+> > > > > > # ls /mnt/virtiofs1
+> > > > > > mnt1 mnt2
+> > > > > > # grep virtiofs /proc/mounts
+> > > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > > > >
+> > > > > > And now remount it again:
+> > > > > >
+> > > > > > # mount -t virtiofs myfs /mnt/virtiofs2
+> > > > > > # grep virtiofs /proc/mounts
+> > > > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > > > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
+> > > > > > # ls /mnt/virtiofs2
+> > > > > > THIS_IS_MNT2
+> > > > > >
+> > > > > > Submount mnt2 was picked-up instead of the root mount.
+> > > > >
+> > > >
+> > > > > Why is this a problem?
+> > > > >
+> > > >
+> > > > It seems very weird to mount the same filesystem again
+> > > > and to end up in one of its submounts. We should have:
+> > > >
+> > > > # ls /mnt/virtiofs2
+> > > > mnt1 mnt2
+> > >
+> > > Okay, sorry, I understand the problem.  The solution is wrong,
+> > > however: the position of the submount on that list is no indication
+> > > that it's the right one (it's possible that the root sb will go away
+> > > and only a sub-sb will remain).
+> > >
+> >
+> > Ah... I had myself convinced this could not happen, i.e. you can't
+> > unmount a parent sb with a sub-sb still mounted.
 > 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index c81b377..11c7a3d 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -1063,7 +1063,7 @@ EXPORT_SYMBOL_GPL(mhi_free_controller);
->  int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
->  {
->  	struct device *dev = &mhi_cntrl->mhi_dev->dev;
-> -	u32 bhie_off;
-> +	u32 bhi_off, bhie_off;
->  	int ret;
->  
->  	mutex_lock(&mhi_cntrl->pm_mutex);
-> @@ -1072,29 +1072,36 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
->  	if (ret)
->  		goto error_dev_ctxt;
->  
-> -	/*
-> -	 * Allocate RDDM table if specified, this table is for debugging purpose
-> -	 */
-> -	if (mhi_cntrl->rddm_size) {
-> -		mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->rddm_image,
-> -				     mhi_cntrl->rddm_size);
-> +	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIOFF, &bhi_off);
-> +	if (ret) {
-> +		dev_err(dev, "Error getting BHI offset\n");
-> +		goto error_reg_offset;
-> +	}
-> +	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
->  
-> -		/*
-> -		 * This controller supports RDDM, so we need to manually clear
-> -		 * BHIE RX registers since POR values are undefined.
-> -		 */
-> +	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
->  		ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIEOFF,
->  				   &bhie_off);
->  		if (ret) {
->  			dev_err(dev, "Error getting BHIE offset\n");
-> -			goto bhie_error;
-> +			goto error_reg_offset;
->  		}
-> -
->  		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
-> +	}
-> +
-> +	if (mhi_cntrl->rddm_size) {
-> +		/*
-> +		 * This controller supports RDDM, so we need to manually clear
-> +		 * BHIE RX registers since POR values are undefined.
-> +		 */
->  		memset_io(mhi_cntrl->bhie + BHIE_RXVECADDR_LOW_OFFS,
->  			  0, BHIE_RXVECSTATUS_OFFS - BHIE_RXVECADDR_LOW_OFFS +
->  			  4);
-> -
-> +		/*
-> +		 * Allocate RDDM table for debugging purpose if specified
-> +		 */
-> +		mhi_alloc_bhie_table(mhi_cntrl, &mhi_cntrl->rddm_image,
-> +				     mhi_cntrl->rddm_size);
->  		if (mhi_cntrl->rddm_image)
->  			mhi_rddm_prepare(mhi_cntrl, mhi_cntrl->rddm_image);
->  	}
-> @@ -1103,11 +1110,8 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
->  
->  	return 0;
->  
-> -bhie_error:
-> -	if (mhi_cntrl->rddm_image) {
-> -		mhi_free_bhie_table(mhi_cntrl, mhi_cntrl->rddm_image);
-> -		mhi_cntrl->rddm_image = NULL;
-> -	}
-> +error_reg_offset:
-> +	mhi_deinit_dev_ctxt(mhi_cntrl);
->  
->  error_dev_ctxt:
->  	mutex_unlock(&mhi_cntrl->pm_mutex);
-> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-> index e2e59a3..adf426c 100644
-> --- a/drivers/bus/mhi/core/pm.c
-> +++ b/drivers/bus/mhi/core/pm.c
-> @@ -1066,28 +1066,8 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  	if (ret)
->  		goto error_setup_irq;
->  
-> -	/* Setup BHI offset & INTVEC */
-> +	/* Setup BHI INTVEC */
->  	write_lock_irq(&mhi_cntrl->pm_lock);
-> -	ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIOFF, &val);
-> -	if (ret) {
-> -		write_unlock_irq(&mhi_cntrl->pm_lock);
-> -		goto error_bhi_offset;
-> -	}
-> -
-> -	mhi_cntrl->bhi = mhi_cntrl->regs + val;
-> -
-> -	/* Setup BHIE offset */
-> -	if (mhi_cntrl->fbc_download) {
-> -		ret = mhi_read_reg(mhi_cntrl, mhi_cntrl->regs, BHIEOFF, &val);
-> -		if (ret) {
-> -			write_unlock_irq(&mhi_cntrl->pm_lock);
-> -			dev_err(dev, "Error reading BHIE offset\n");
-> -			goto error_bhi_offset;
-> -		}
-> -
-> -		mhi_cntrl->bhie = mhi_cntrl->regs + val;
-> -	}
-> -
->  	mhi_write_reg(mhi_cntrl, mhi_cntrl->bhi, BHI_INTVEC, 0);
->  	mhi_cntrl->pm_state = MHI_PM_POR;
->  	mhi_cntrl->ee = MHI_EE_MAX;
-> @@ -1098,7 +1078,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  	if (!MHI_IN_PBL(current_ee) && current_ee != MHI_EE_AMSS) {
->  		dev_err(dev, "Not a valid EE for power on\n");
->  		ret = -EIO;
-> -		goto error_bhi_offset;
-> +		goto error_async_power_up;
->  	}
->  
->  	state = mhi_get_mhi_state(mhi_cntrl);
-> @@ -1117,7 +1097,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  		if (!ret) {
->  			ret = -EIO;
->  			dev_info(dev, "Failed to reset MHI due to syserr state\n");
-> -			goto error_bhi_offset;
-> +			goto error_async_power_up;
->  		}
->  
->  		/*
-> @@ -1139,7 +1119,7 @@ int mhi_async_power_up(struct mhi_controller *mhi_cntrl)
->  
->  	return 0;
->  
-> -error_bhi_offset:
-> +error_async_power_up:
->  	mhi_deinit_free_irq(mhi_cntrl);
->  
->  error_setup_irq:
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> No, but it's possible for sub-sb to continue existing after it's no
+> longer a submount of original mount.
+> >
+> > How can this happen ?
 > 
+> E.g. move the submount out of the way, then unmount the parent, or
+> detach submount (umount -l) while keeping something open in there and
+> umount the parent.
+> 
+
+Ok, I get it now. Thanks for the clarification.
+
+> > > Even just setting a flag in the root, indicating that it's the root
+> > > isn't fully going to solve the problem.
+> > >
+> > > Here's issue in full:
+> > >
+> > > case 1:  no connection for "myfs" exists
+> > >     - need to create fuse_conn, sb
+> > >
+> > > case 2: connection for "myfs" exists but only sb for submount
+> >
+> > How would we know this sb isn't a root sb ?
+> >
+> > >     - only create sb for root, reuse fuse_conn
+> > >
+> > > case 3: connection for "myfs" as well as root sb exists
+> > >    - reuse sb
+> > >
+> > > I'll think about how to fix this properly, it's probably going to be
+> > > rather more involved...
+> > >
+> >
+> > Sure. BTW I'm wondering why we never reuse sbs for submounts ?
+> 
+> Right, same general issue.
+> 
+> An sb can be identified by its root nodeid, so I guess the proper fix
+> to make the root nodeid be the key for virtio_fs_test_super().
+> 
+
+Cool, I was thinking about doing this exactly. :)
+
+> Thanks,
+> Miklos
+
