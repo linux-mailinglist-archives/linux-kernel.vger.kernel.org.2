@@ -2,120 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 552DB38BAE5
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1358838BAEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:43:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235259AbhEUAne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53048 "EHLO
+        id S235300AbhEUAoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232540AbhEUAnb (ORCPT
+        with ESMTP id S232540AbhEUAo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:43:31 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0398C061574;
-        Thu, 20 May 2021 17:42:08 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id m11so27186518lfg.3;
-        Thu, 20 May 2021 17:42:08 -0700 (PDT)
+        Thu, 20 May 2021 20:44:29 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A692C061574;
+        Thu, 20 May 2021 17:43:07 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id y184-20020a1ce1c10000b02901769b409001so6224037wmg.3;
+        Thu, 20 May 2021 17:43:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+liHBLYLKvUnhVp+88fCYfRk1ncEY6YQF1v7EXNmXqo=;
-        b=ixwDR/GoDwCYkEoMD2jfBGCkYT7BHfCLbapBdjCEDg6hAiCQXkc0EnRCNfd2QXnmsr
-         GhuCbSzZNwld8wMdAtmcCf5hpyko1VgBYWUfjw2M/8dJaAZUuvg8DPxcwm1Q79SRT1x9
-         rR2f2I39hEIz0UfCKDSItxXol0+yq4mcVquwi5mXWBPEHGxU+XoikOsr6wqozotj4tC+
-         wkFzDp+ezM1n7WDKXIXNNeKgjcUtz1BZx+zLCA8dn/VlPU+/975VQ0GHeVMMSfDPSP/1
-         dv2cxxDkqUSVy/fZF2XajbDLSNyM7DsrVFuG13Un4r/y07hvDvkQvkSBqWVOSvRWXpn5
-         Ie3g==
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=biVpLbsE2ctahUajkeB/6fi6wXSoIR5li/nvuWvn9d8=;
+        b=UjNpwrnAsUs8iUYznG/uJcFpqpjvFOLMcgtc3Cv8SxlQrUZjTpAIgyZot8cymU2cfm
+         7cWuXg3Bt3Z8gQbkHkX7YB8HnYEcQtm6khHsmN/uc9AvkE7HjfsKKMPCWEznGN1jafxa
+         Fwn8oaT0KEB2Kmr/jC2dCBss2W49yIKV39CUvgOyNi+AGDxRQUcM67mcfjLqVjih1j8B
+         8INLjVzR1pODHnrZtGRdeF/L8iKbVD33Z2QXOAKURf0EQznePGcZssnuzwh3F1jTHDDa
+         GKhsOlSulHsi7PgdPZa8tZklVVZ9qXehDCWgrIXW6gj5VeQpt2sCGVh4rcAX4hHFJoph
+         +cYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+liHBLYLKvUnhVp+88fCYfRk1ncEY6YQF1v7EXNmXqo=;
-        b=LwOmZS0X4vT3sTeZUwvSstSxh6KVVOTbVLmQA9z0/33dhVBNz2vgRQIyizwIZYqV3A
-         cum0RHWnLkrbL3VsGCVc0PBdtRoDdM8FSuSt2sljuzt3VsiTfAzri5JXvomVUBbuFzcN
-         Q78POs9Rs6+zPLaQwsSBOVlqKNQ7qk9kZhOKydtjfB+4y1/6xzH1Emqmdbiels7TsDJx
-         CigDzXemMq6nf/HtK8Zbt/9TlgiDGYVu76NNS68pE98S8lpttM55t8fIzK5AzlYz8ghV
-         Kht6bDoort/TrXdZo1daFLWoj8hzaJWJlNdYJ6H2/enaRosGkYVFw6U2SyGECauLm/+b
-         DwzQ==
-X-Gm-Message-State: AOAM533nRco6enu9KjVbrM4J0vPZLqMHglklek5wukZQ8ODOL+yRa1lF
-        NJ82xmqN4IlYrbqEbTXnMsH25Ljos/iXIvM3674=
-X-Google-Smtp-Source: ABdhPJx3CEuqBNDrhcpRpG4nooZL3zEDmot3v0keGCw+Ow9EjG7BUy0KkXppKTtjln+F6/GWEb+A6NDiaj36ITFtVBA=
-X-Received: by 2002:a05:6512:3772:: with SMTP id z18mr120135lft.423.1621557726764;
- Thu, 20 May 2021 17:42:06 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=biVpLbsE2ctahUajkeB/6fi6wXSoIR5li/nvuWvn9d8=;
+        b=X1taC1f7c9lg9zeVe33b+SsLzUn42/AmSplFqkfm/oiO2Wy5lIoA0TmHVVOCTNi+mC
+         5bS4Hj5u+o9feHah8jhHUz5qZUOChfRFSsMVua9OidReEuqG4B7OjvJUOybNqcLSzA3l
+         EJWCCc6GWYGR0bbNQZb6FIOfZgH1pYeJpthJDvOVhvi5niCwxmvZlhzy1t3uqCyUGDYF
+         Ourg88NXSe0kxNf3lmavNi7Qh8lvmcj/VcHYz8LpZMWdV51bNa/sY57PMVN0888PZmHK
+         HSIsKAiz+oiu+3ZVC/zJV0UyXtIT8nGFT/ACmA1vEJIiyaPhzRjIinFLPHrCadagovGA
+         y+MQ==
+X-Gm-Message-State: AOAM532dV1R1vlPv+HH6XD2aHRt7WIXyOsL9HxIuNEHdydBF54z/moM0
+        AWSRdd0WvBz+OMZMYlXum3E=
+X-Google-Smtp-Source: ABdhPJwk51uW5xZbQfvUyc/qcZR8wkQ2j4UTZYWP0Gm/isGDMJAtx4lxaGK5ayoLS4DjKplisTNgwA==
+X-Received: by 2002:a1c:7501:: with SMTP id o1mr6115870wmc.65.1621557785713;
+        Thu, 20 May 2021 17:43:05 -0700 (PDT)
+Received: from [192.168.8.197] ([85.255.236.182])
+        by smtp.gmail.com with ESMTPSA id f12sm117667wre.88.2021.05.20.17.43.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 17:43:05 -0700 (PDT)
+Subject: Re: [PATCH 14/23] io_uring: add support for bpf requests
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     io-uring@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
+        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
+        Christian Dietrich <stettberger@dokucode.de>
+References: <cover.1621424513.git.asml.silence@gmail.com>
+ <cc2b848d112d86bd1f4ea3f2813d0a016e44a364.1621424513.git.asml.silence@gmail.com>
+Message-ID: <70ae2078-689f-79d3-e067-2bb720dc9fa5@gmail.com>
+Date:   Fri, 21 May 2021 01:42:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20210520154244.20209-1-dong.menglong@zte.com.cn> <20210520214111.GV4332@42.do-not-panic.com>
-In-Reply-To: <20210520214111.GV4332@42.do-not-panic.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Fri, 21 May 2021 08:41:55 +0800
-Message-ID: <CADxym3axowrQWz3OgimK4iGqP-RbO8U=HPODEhJRrcXUAsWXew@mail.gmail.com>
-Subject: Re: [PATCH RESEND] init/initramfs.c: make initramfs support pivot_root
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
-        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>, song@kernel.org,
-        neilb@suse.de, Andrew Morton <akpm@linux-foundation.org>,
-        wangkefeng.wang@huawei.com, f.fainelli@gmail.com, arnd@arndb.de,
-        Barret Rhoden <brho@google.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Kees Cook <keescook@chromium.org>, vbabka@suse.cz,
-        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
-        Chris Down <chris@chrisdown.name>, ebiederm@xmission.com,
-        jojing64@gmail.com, LKML <linux-kernel@vger.kernel.org>,
-        palmerdabbelt@google.com, linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cc2b848d112d86bd1f4ea3f2813d0a016e44a364.1621424513.git.asml.silence@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 5/19/21 3:13 PM, Pavel Begunkov wrote:
+> Wire up a new io_uring operation type IORING_OP_BPF, which executes a
+> specified BPF program from the registered prog table. It doesn't allow
+> to do anything useful for now, no BPF functions are allowed apart from
+> basic ones.
+> 
+> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+> ---
+>  fs/io_uring.c                 | 92 +++++++++++++++++++++++++++++++++++
+>  include/uapi/linux/io_uring.h |  1 +
+>  2 files changed, 93 insertions(+)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index b13cbcd5c47b..20fddc5945f2 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -682,6 +682,11 @@ struct io_unlink {
+>  	struct filename			*filename;
+>  };
+>  
+> +struct io_bpf {
+> +	struct file			*file;
+> +	struct bpf_prog			*prog;
+> +};
+> +
+>  struct io_completion {
+>  	struct file			*file;
+>  	struct list_head		list;
+> @@ -826,6 +831,7 @@ struct io_kiocb {
+>  		struct io_shutdown	shutdown;
+>  		struct io_rename	rename;
+>  		struct io_unlink	unlink;
+> +		struct io_bpf		bpf;
+>  		/* use only after cleaning per-op data, see io_clean_op() */
+>  		struct io_completion	compl;
+>  	};
+> @@ -875,6 +881,9 @@ struct io_defer_entry {
+>  	u32			seq;
+>  };
+>  
+> +struct io_bpf_ctx {
+> +};
+> +
+>  struct io_op_def {
+>  	/* needs req->file assigned */
+>  	unsigned		needs_file : 1;
+> @@ -1039,6 +1048,7 @@ static const struct io_op_def io_op_defs[] = {
+>  	},
+>  	[IORING_OP_RENAMEAT] = {},
+>  	[IORING_OP_UNLINKAT] = {},
+> +	[IORING_OP_BPF] = {},
+>  };
+>  
+>  static bool io_disarm_next(struct io_kiocb *req);
+> @@ -1070,6 +1080,7 @@ static void io_rsrc_put_work(struct work_struct *work);
+>  static void io_req_task_queue(struct io_kiocb *req);
+>  static void io_submit_flush_completions(struct io_comp_state *cs,
+>  					struct io_ring_ctx *ctx);
+> +static void io_bpf_run(struct io_kiocb *req, unsigned int issue_flags);
+>  static bool io_poll_remove_waitqs(struct io_kiocb *req);
+>  static int io_req_prep_async(struct io_kiocb *req);
+>  
+> @@ -3931,6 +3942,53 @@ static int io_openat(struct io_kiocb *req, unsigned int issue_flags)
+>  	return io_openat2(req, issue_flags);
+>  }
+>  
+> +static int io_bpf_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+> +{
+> +	struct io_ring_ctx *ctx = req->ctx;
+> +	struct bpf_prog *prog;
+> +	unsigned int idx;
+> +
+> +	if (unlikely(ctx->flags & (IORING_SETUP_IOPOLL|IORING_SETUP_SQPOLL)))
+> +		return -EINVAL;
+> +	if (unlikely(req->flags & (REQ_F_FIXED_FILE | REQ_F_BUFFER_SELECT)))
+> +		return -EINVAL;
+> +	if (sqe->ioprio || sqe->len || sqe->cancel_flags)
+> +		return -EINVAL;
+> +	if (sqe->addr)
+> +		return -EINVAL;
+> +
+> +	idx = READ_ONCE(sqe->off);
+> +	if (unlikely(idx >= ctx->nr_bpf_progs))
+> +		return -EFAULT;
+> +	idx = array_index_nospec(idx, ctx->nr_bpf_progs);
+> +	prog = ctx->bpf_progs[idx].prog;
+> +	if (!prog)
+> +		return -EFAULT;
+> +
+> +	req->bpf.prog = prog;
+> +	return 0;
+> +}
+> +
+> +static void io_bpf_run_task_work(struct callback_head *cb)
+> +{
+> +	struct io_kiocb *req = container_of(cb, struct io_kiocb, task_work);
+> +	struct io_ring_ctx *ctx = req->ctx;
+> +
+> +	mutex_lock(&ctx->uring_lock);
+> +	io_bpf_run(req, 0);
+> +	mutex_unlock(&ctx->uring_lock);
+> +}
+> +
+> +static int io_bpf(struct io_kiocb *req, unsigned int issue_flags)
+> +{
+> +	init_task_work(&req->task_work, io_bpf_run_task_work);
+> +	if (unlikely(io_req_task_work_add(req))) {
+> +		req_ref_get(req);
+> +		io_req_task_queue_fail(req, -ECANCELED);
+> +	}
+> +	return 0;
+> +}
+> +
+>  static int io_remove_buffers_prep(struct io_kiocb *req,
+>  				  const struct io_uring_sqe *sqe)
+>  {
+> @@ -6002,6 +6060,8 @@ static int io_req_prep(struct io_kiocb *req, const struct io_uring_sqe *sqe)
+>  		return io_renameat_prep(req, sqe);
+>  	case IORING_OP_UNLINKAT:
+>  		return io_unlinkat_prep(req, sqe);
+> +	case IORING_OP_BPF:
+> +		return io_bpf_prep(req, sqe);
+>  	}
+>  
+>  	printk_once(KERN_WARNING "io_uring: unhandled opcode %d\n",
+> @@ -6269,6 +6329,9 @@ static int io_issue_sqe(struct io_kiocb *req, unsigned int issue_flags)
+>  	case IORING_OP_UNLINKAT:
+>  		ret = io_unlinkat(req, issue_flags);
+>  		break;
+> +	case IORING_OP_BPF:
+> +		ret = io_bpf(req, issue_flags);
+> +		break;
+>  	default:
+>  		ret = -EINVAL;
+>  		break;
+> @@ -10303,6 +10366,35 @@ const struct bpf_verifier_ops bpf_io_uring_verifier_ops = {
+>  	.is_valid_access	= io_bpf_is_valid_access,
+>  };
+>  
+> +static void io_bpf_run(struct io_kiocb *req, unsigned int issue_flags)
+> +{
+> +	struct io_ring_ctx *ctx = req->ctx;
+> +	struct io_bpf_ctx bpf_ctx;
+> +	struct bpf_prog *prog;
+> +	int ret = -EAGAIN;
+> +
+> +	lockdep_assert_held(&req->ctx->uring_lock);
+> +
+> +	if (unlikely(percpu_ref_is_dying(&ctx->refs) ||
+> +		     atomic_read(&req->task->io_uring->in_idle)))
+> +		goto done;
+> +
+> +	memset(&bpf_ctx, 0, sizeof(bpf_ctx));
+> +	prog = req->bpf.prog;
+> +
+> +	if (prog->aux->sleepable) {
 
-Thanks for your reply!
+Looks forgot to amend, the condition should be inversed.
 
-On Fri, May 21, 2021 at 5:41 AM Luis Chamberlain <mcgrof@kernel.org> wrote:
->
-> Can't docker instead allow to create containers prior to creating
-> your local docker network namespace? Not that its a great solution,
-> but just worth noting.
->
+> +		rcu_read_lock();
+> +		bpf_prog_run_pin_on_cpu(req->bpf.prog, &bpf_ctx);
+> +		rcu_read_unlock();
+> +	} else {
+> +		bpf_prog_run_pin_on_cpu(req->bpf.prog, &bpf_ctx);
+> +	}
+> +
+> +	ret = 0;
+> +done:
+> +	__io_req_complete(req, issue_flags, ret, 0);
+> +}
+> +
+>  SYSCALL_DEFINE4(io_uring_register, unsigned int, fd, unsigned int, opcode,
+>  		void __user *, arg, unsigned int, nr_args)
+>  {
+> diff --git a/include/uapi/linux/io_uring.h b/include/uapi/linux/io_uring.h
+> index b450f41d7389..25ab804670e1 100644
+> --- a/include/uapi/linux/io_uring.h
+> +++ b/include/uapi/linux/io_uring.h
+> @@ -138,6 +138,7 @@ enum {
+>  	IORING_OP_SHUTDOWN,
+>  	IORING_OP_RENAMEAT,
+>  	IORING_OP_UNLINKAT,
+> +	IORING_OP_BPF,
+>  
+>  	/* this goes last, obviously */
+>  	IORING_OP_LAST,
+> 
 
-That's a solution, but I don't think it is feasible. Users may create many
-containers, and you can't make docker create all the containers first
-and create network namespace later, as you don't know if there are any
-containers to create later.
-
-> >
-> >  struct file_system_type rootfs_fs_type = {
-> >       .name           = "rootfs",
-> > -     .init_fs_context = rootfs_init_fs_context,
-> > +     .init_fs_context = ramfs_init_fs_context,
->
-> Why is this always static now? Why is that its correct
-> now for init_mount_tree() always to use the ramfs context?
-
-Because the root mount in init_mount_tree() is not used as rootfs any more.
-In do_populate_rootfs(), I mounted a second rootfs, which can be ramfs or
-tmpfs, and that's the real rootfs for initramfs. And I call this root
-as 'user_root',
-because it is created for user space.
-
-int __init mount_user_root(void)
-{
-       return do_mount_root(user_root->dev_name,
-                            user_root->fs_name,
-                            root_mountflags,
-                            root_mount_data);
- }
-
-In other words, I moved the realization of 'rootfs_fs_type' here to
-do_populate_rootfs(), and fixed this 'rootfs_fs_type' with
-ramfs_init_fs_context, as it is a fake root now.
-
-Now, the rootfs that user space used is separated with the init_task,
-and that's exactly what a block root file system does.
-
-Thanks!
-Menglong Dong
+-- 
+Pavel Begunkov
