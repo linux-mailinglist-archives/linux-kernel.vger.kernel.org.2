@@ -2,110 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABDC438CBFA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:21:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE2238CC0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbhEURWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:22:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:57317 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230048AbhEURWl (ORCPT
+        id S231441AbhEURZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:25:18 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:58268 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230301AbhEURZR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:22:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621617677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=qwR/0GNmU1erDIzfTwdpHCjLZxYNU+OZQVJXmXfAYfM=;
-        b=W5fWme5Hd+Jcv5dARmQY20ECe0ju151UZ2O4BRqkF9W7SpHktRUhD452X9/vUAxRBtNVxy
-        kCb+SSt1RjAeP0VBG0j9twQuC+M0EKckf8fiOi48pwgVw77eUXZd04NbKtCIAZJYgBch0d
-        i6gzM/MpCDuLtqoC/M1TI39U0pQ/UiE=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-246-iVqz53gPOHShsLFeiK43ew-1; Fri, 21 May 2021 13:21:16 -0400
-X-MC-Unique: iVqz53gPOHShsLFeiK43ew-1
-Received: by mail-ej1-f72.google.com with SMTP id jz28-20020a17090775fcb02903dc26615f46so1793829ejc.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:21:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qwR/0GNmU1erDIzfTwdpHCjLZxYNU+OZQVJXmXfAYfM=;
-        b=MTk3LyyPZwI8oymEc3PvzUNVNb1t89reLnEPRc9SBPrYl86BFBWlUtArXH9OLtJkhO
-         +sV5RZyJnF31u0BdNvvGujV/1Ep8xSufNy5ejUSADWIpIrYJ9AzWRxBg1/m275/4HCtg
-         14n3zwIX9bcV6O5JC3RshWRS/WkfnXhCPnLMj4PP3qwGwWtqfGWmF5qiencdXGpYmmHy
-         YURdjIXMN4dqlABVta2ETYBBglhVuQkpBMi8HSbHDfQovYmXaKdWTnBfSG+sG/kETQ7Z
-         6XrlKgE+mVfdvx4vQnn2xuJs3UE+5c9YFjisX8cyllgjn+cyJ84uUMaL7obmFaO14Ezp
-         uAHQ==
-X-Gm-Message-State: AOAM532UEwrr+ph2tkp2YA03XFs74jzaJHCfO9O9ltrwD2b9AAXWA0Dy
-        CyFse3YkAnBlYuhS+HXL+KLgpgra8We/Mj+x6JG0oBBHFHB6rbWEcGibASqa9t0M6LYa7e80WC5
-        aDQXbZmmFKc+pvUK9+0fcTTZB
-X-Received: by 2002:aa7:cd03:: with SMTP id b3mr12350061edw.206.1621617675165;
-        Fri, 21 May 2021 10:21:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxs1PPEtRit2YsbPl3fyEJzFG+BMaVTPI5cJbO+TcDqnJ8UNSbmnYU1JgZsPGIv6fh/e498XA==
-X-Received: by 2002:aa7:cd03:: with SMTP id b3mr12350048edw.206.1621617675016;
-        Fri, 21 May 2021 10:21:15 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id m12sm4079494edc.40.2021.05.21.10.21.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 10:21:14 -0700 (PDT)
-To:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     anup@brainfault.org, Anup Patel <Anup.Patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, corbet@lwn.net, graf@amazon.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        Alistair Francis <Alistair.Francis@wdc.com>,
-        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-staging@lists.linux.dev
-References: <mhng-37377fcb-af8f-455c-be08-db1cd5d4b092@palmerdabbelt-glaptop>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v18 00/18] KVM RISC-V Support
-Message-ID: <ff55329c-709d-c1a5-a807-1942f515bba7@redhat.com>
-Date:   Fri, 21 May 2021 19:21:12 +0200
+        Fri, 21 May 2021 13:25:17 -0400
+Received: from [192.168.254.32] (unknown [47.187.214.213])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 8EB9020B7188;
+        Fri, 21 May 2021 10:23:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8EB9020B7188
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1621617834;
+        bh=dsmQpGSpViASu2Lm8EpJourdT7RJuov0nXLCLji8uHw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=iX33lxGgvBIWRLXPXT/y9uGoHbgKy27qqVfF/Y/wnHBeBjXJNYIeos5+GVAWP3c4Q
+         +gy1NyQCSS/ip7vrI55Xbbx8vG19EyFK/FVXpzD08oKct5vo063qKdHzmLdR3FrefY
+         H5O2mLHz3Ic11/fRCT5wM/jo4OLE5+vlG5gjbtIc=
+Subject: Re: [RFC PATCH v4 1/2] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     Mark Brown <broonie@kernel.org>
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
+ <20210516040018.128105-2-madvenka@linux.microsoft.com>
+ <20210521161117.GB5825@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <a2a32666-c27e-3a0f-06b2-b7a2baa7e0f1@linux.microsoft.com>
+Date:   Fri, 21 May 2021 12:23:52 -0500
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <mhng-37377fcb-af8f-455c-be08-db1cd5d4b092@palmerdabbelt-glaptop>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210521161117.GB5825@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/21 19:13, Palmer Dabbelt wrote:
->> 
+
+
+On 5/21/21 11:11 AM, Mark Brown wrote:
+> On Sat, May 15, 2021 at 11:00:17PM -0500, madvenka@linux.microsoft.com wrote:
 > 
-> I don't view this code as being in a state where it can be
-> maintained, at least to the standards we generally set within the
-> kernel.  The ISA extension in question is still subject to change, it
-> says so right at the top of the H extension 
-> <https://github.com/riscv/riscv-isa-manual/blob/master/src/hypervisor.tex#L4>
+>> Other reliability checks will be added in the future.
 > 
->   {\bf Warning! This draft specification may change before being 
->   accepted as standard by the RISC-V Foundation.}
+> ...
+> 
+>> +	frame->reliable = true;
+>> +
+> 
+> All these checks are good checks but as you say there's more stuff that
+> we need to add (like your patch 2 here) so I'm slightly nervous about
+> actually setting the reliable flag here without even a comment.  Equally
+> well there's no actual use of this until arch_stack_walk_reliable() gets
+> implemented so it's not like it's causing any problems and it gives us
+> the structure to start building up the rest of the checks.
+> 
 
-To give a complete picture, the last three relevant changes have been in
-August 2019, November 2019 and May 2020.  It seems pretty frozen to me.
+OK. So how about changing the field from a flag to an enum that says exactly
+what happened with the frame?
 
-In any case, I think it's clear from the experience with Android that
-the acceptance policy cannot succeed.  The only thing that such a policy
-guarantees, is that vendors will use more out-of-tree code.  Keeping a
-fully-developed feature out-of-tree for years is not how Linux is run.
+enum {
+	FRAME_NORMAL = 0,
+	FRAME_UNALIGNED,
+	FRAME_NOT_ACCESSIBLE,
+	FRAME_RECURSION,
+	FRAME_GRAPH_ERROR,
+	FRAME_INVALID_TEXT_ADDRESS,
+	FRAME_UNRELIABLE_FUNCTION,
+	FRAME_NUM_STATUS,
+} frame_status;
 
-> I'm not sure where exactly the line for real hardware is, but for
-> something like this it would at least involve some chip that is
-> widely availiable and needs the H extension to be useful
+struct stackframe {
+	...
+	enum frame_status status;
+};
 
-Anup said that "quite a few people have already implemented RISC-V
-H-extension in hardware as well and KVM RISC-V works on real HW as 
-well".  Those people would benefit from having KVM in the Linus tree.
+unwind_frame()
+{
+	frame->status = FRAME_NORMAL;
 
-Paolo
+	Then, for each situation, change the status appropriately.
+}
 
+Eventually, arch_stack_walk_reliable() could just declare the stack trace
+as unreliable if status != FRAME_NORMAL.
+
+Also, the caller can get an exact idea of why the stack trace failed.
+
+Is that acceptable?
+
+> The other thing I guess is the question of if we want to bother flagging
+> frames as unrelaible when we return an error; I don't see an issue with
+> it and it may turn out to make it easier to do something in the future
+> so I'm fine with that
+Initially, I thought that there is no need to flag it for errors. But Josh
+had a comment that the stack trace is indeed unreliable on errors. Again, the
+word unreliable is the one causing the problem.
+
+The above enum-based solution addresses Josh's comment as well.
+
+Let me know if this is good.
+
+Thanks!
+
+Madhavan
