@@ -2,117 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E395238C8BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47A938C8BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236258AbhEUNyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:54:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33486 "EHLO
+        id S236287AbhEUNyv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236275AbhEUNyD (ORCPT
+        with ESMTP id S232778AbhEUNyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:54:03 -0400
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C03C061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:52:40 -0700 (PDT)
-Received: by mail-yb1-xb2e.google.com with SMTP id y36so10967159ybi.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:52:40 -0700 (PDT)
+        Fri, 21 May 2021 09:54:46 -0400
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 887BCC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:53:23 -0700 (PDT)
+Received: by mail-wm1-x332.google.com with SMTP id z137-20020a1c7e8f0000b02901774f2a7dc4so6853007wmc.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:53:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hYyazQCV7o9/2ffX8oGQlM25PnfYmuFFZClG9zAHqJc=;
-        b=j/wmMDvq3difoHoU5SX0tyjbMB5bynTLuxWgfvvtxkWX6KYClGT/XVAMt+3Q221+BW
-         hUBbNCQPDDiVyNNOFrjU/y69OQOzSs1NaBK4JJBul8oUQeBXOJtlD1kCpP6/0QLVyM4Q
-         cLUhO6zRZwgHZ+/SM1SlF0Ab7t9ZusWM/sobTQmE22BaPG9LA1kbUGv6uHwsvL59iO3A
-         t3SzLIAoDbfUGdW9OctPBQ9pVE3QvVDxvFitxOktBTd9NjGiPn0+Y3f9qTa93h8BbxkD
-         xhue1VzAJhcaoSGbx636t1B8FHniYtFHwrfUQliTMKRgi2TZ53L8X7WNs3AtQa4inNmO
-         6S+w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=or2n56rchUUN+O0Ey3IVBmf3hNw4ShOy6t6olT7Yts8=;
+        b=kXvV09+x2hRrzcATNswB8+rrGsAVBOokL9TwVkrtw8xXa9K4ik9WqPLHHBDppD1mwp
+         7VQ613T1gisYwYQ+QOBfOnLhM0exnAbNgRcuXXMYd4/cNU5nOgRuCtEocCGoOQM+R5dH
+         gpiDYfU2AuIkHnIiI+b/F+/+Hfe3zGwqeuZPxK+zSizY1LF9pAkseLT30IclfRycC0zl
+         J4pPu++Qz3A/TeJSS1XsRNhLPjSYtLgkpKN5THHd589XPhx1hbWQOCWv8Z8dVvz0tOVg
+         K9zAYcLTHpkwdfS5yUWVMKH24cY+yKBuBqmjZa2WxuQY+sPGeUZWZxZ8rwBN45D8fS7O
+         Fb3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hYyazQCV7o9/2ffX8oGQlM25PnfYmuFFZClG9zAHqJc=;
-        b=QYFl/TGKHp9xfLj3z5LtDT4rT0RQQzWorPANMYceLY+wKQo1gLdGnt/lr9g3XxGEUC
-         wgJC0YCr9opqBma7DhFD7Qa65OJylRDuTCdXXO1erMmdYjVvvS0iDbhLZvua5Hd4KhcB
-         xdrhUTrjBc5tYoQwBf6mPVhT4maPGhSXWpVf3Vy05xoUxRG2nSCaAsZDBvUdg8NpGob6
-         szHiQvvxGVuQTOJYP5q9syd/UDyKeCtuJ5cPCzjsr5w3my7jgVgmpO/VXhGBcWJOYYTt
-         q5Fp3KIE0CnSgdeTIYMmRT25ohU28fsAkOitO07Yck5PbLXHA+hmuYYcO0yc1NlQcTTy
-         m1dg==
-X-Gm-Message-State: AOAM533wKJUtYUiPrwy1Xl1FpAUPDsNZ0jRlYAi4o68l1MYotz3cgxow
-        CnsEZbAYHQCbnMAGIZfmSsWrKila/ho7NZvzBT9EgISF3XFaeEaM
-X-Google-Smtp-Source: ABdhPJy3kkuAHHd98B11lrxrq9K6DHkYZ0z6vF25s6RHXk7bi60FZKix45bdB3moE7LYh9l8X2S/jPZOAZ3Bp/en79A=
-X-Received: by 2002:a25:bd04:: with SMTP id f4mr15874966ybk.302.1621605159628;
- Fri, 21 May 2021 06:52:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=or2n56rchUUN+O0Ey3IVBmf3hNw4ShOy6t6olT7Yts8=;
+        b=txLCWfBTyAPRVXk9frCs8Itkl68RpOBtN0UhY20t1LyPr/h00rOWIxRATV0C4UKzdD
+         uOpmu4gveC77kb4O8dCe2I2zppYcXiUrFXr11UEoORYrE+xahhJ7Zsm/62mTDggzc7BV
+         MYfHdE3On2E6TRfIipp5G4fRnQg0HFisa69doABbAYjKGfah/4epx7nOIPo0v+atFVgr
+         tQNk4X4TEnrSsxWag3CJu2tuKZ6ZFa1uCmEK4oOQ2U3exq8YiTImvrV0BWL+xKhOhaPC
+         oGSywx7vTfD1ZhGN9N3XaDX7PMKbMW3/TN7YSa5mP1wCZMVURiyQXMb9seLEn3wmwZQC
+         qwzg==
+X-Gm-Message-State: AOAM531Yhdy5ToAL1wcTa/9Hp4Vne68eU1juUqNLJ6Je/zIVlBnvz22i
+        zeI04Y7f5OHiPk33ZirEIu6/oQ==
+X-Google-Smtp-Source: ABdhPJwN7lE7w0omdAhf4mqhxLHo8pWY3JTt0XBG0Zpfm4KWIl26MB8LtrMB/fF2hgz/ZaTk3X0SQw==
+X-Received: by 2002:a7b:c444:: with SMTP id l4mr8873126wmi.36.1621605202105;
+        Fri, 21 May 2021 06:53:22 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id c64sm3596361wma.15.2021.05.21.06.53.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 06:53:21 -0700 (PDT)
+Date:   Fri, 21 May 2021 14:53:19 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org,
+        H Hartley Sweeten <hsweeten@visionengravers.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        "David A. Schleef" <ds@schleef.org>,
+        Mori Hess <fmhess@users.sourceforge.net>,
+        Truxton Fulton <trux@linode1.truxton.com>,
+        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
+ 'range_ni_E_ao_ext' to where it is used
+Message-ID: <20210521135319.GH2549456@dell>
+References: <20210520122538.3470259-1-lee.jones@linaro.org>
+ <20210520122538.3470259-6-lee.jones@linaro.org>
+ <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
+ <20210521072635.GY2549456@dell>
+ <20210521115431.GK1955@kadam>
 MIME-Version: 1.0
-References: <20210514094108.28890-1-aardelean@deviqon.com>
-In-Reply-To: <20210514094108.28890-1-aardelean@deviqon.com>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Fri, 21 May 2021 15:52:29 +0200
-Message-ID: <CAMpxmJWmc-8cCZ5EQcnBKSAmXPbcVUnX7GdhKgKWFp5i=B6y1w@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-tps68470: remove platform_set_drvdata() +
- cleanup probe
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210521115431.GK1955@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 14, 2021 at 11:41 AM Alexandru Ardelean
-<aardelean@deviqon.com> wrote:
->
-> The platform_set_drvdata() call is only useful if we need to retrieve back
-> the private information.
-> Since the driver doesn't do that, it's not useful to have it.
->
-> If this is removed, we can also just do a direct return on
-> devm_gpiochip_add_data(). We don't need to print that this call failed as
-> there are other ways to log/see this during probe.
->
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
-> ---
->  drivers/gpio/gpio-tps68470.c | 12 +-----------
->  1 file changed, 1 insertion(+), 11 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-tps68470.c b/drivers/gpio/gpio-tps68470.c
-> index f7f5f770e0fb..423b7bc30ae8 100644
-> --- a/drivers/gpio/gpio-tps68470.c
-> +++ b/drivers/gpio/gpio-tps68470.c
-> @@ -125,7 +125,6 @@ static const char *tps68470_names[TPS68470_N_GPIO] = {
->  static int tps68470_gpio_probe(struct platform_device *pdev)
->  {
->         struct tps68470_gpio_data *tps68470_gpio;
-> -       int ret;
->
->         tps68470_gpio = devm_kzalloc(&pdev->dev, sizeof(*tps68470_gpio),
->                                      GFP_KERNEL);
-> @@ -146,16 +145,7 @@ static int tps68470_gpio_probe(struct platform_device *pdev)
->         tps68470_gpio->gc.base = -1;
->         tps68470_gpio->gc.parent = &pdev->dev;
->
-> -       ret = devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc,
-> -                                    tps68470_gpio);
-> -       if (ret < 0) {
-> -               dev_err(&pdev->dev, "Failed to register gpio_chip: %d\n", ret);
-> -               return ret;
-> -       }
-> -
-> -       platform_set_drvdata(pdev, tps68470_gpio);
-> -
-> -       return ret;
-> +       return devm_gpiochip_add_data(&pdev->dev, &tps68470_gpio->gc, tps68470_gpio);
->  }
->
->  static struct platform_driver tps68470_gpio_driver = {
-> --
-> 2.31.1
->
+On Fri, 21 May 2021, Dan Carpenter wrote:
 
-Applied. I got confused by the dev_get_drvdata() call earlier in probe
-but this one's for the parent.
+> On Fri, May 21, 2021 at 08:26:35AM +0100, Lee Jones wrote:
+> > On Thu, 20 May 2021, Ian Abbott wrote:
+> > 
+> > > On 20/05/2021 13:25, Lee Jones wrote:
+> > > > ... and mark it as __maybe_unused since not all users of the
+> > > > header file reference it.
+> > > > 
+> > > > Fixes the following W=1 kernel build warning(s):
+> > > > 
+> > > >   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
+> > > > 
+> > > > Cc: Ian Abbott <abbotti@mev.co.uk>
+> > > > Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
+> > > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > > > Cc: Thierry Reding <thierry.reding@gmail.com>
+> > > > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
+> > > > Cc: Lee Jones <lee.jones@linaro.org>
+> > > > Cc: "David A. Schleef" <ds@schleef.org>
+> > > > Cc: Mori Hess <fmhess@users.sourceforge.net>
+> > > > Cc: Truxton Fulton <trux@truxton.com>
+> > > > Cc: linux-staging@lists.linux.dev
+> > > > Cc: linux-pwm@vger.kernel.org
+> > > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> > > > ---
+> > > >   drivers/comedi/drivers/ni_mio_common.c | 9 ---------
+> > > >   drivers/comedi/drivers/ni_stc.h        | 9 ++++++++-
+> > > >   2 files changed, 8 insertions(+), 10 deletions(-)
+> > > > 
+> > > > diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
+> > > > index 4f80a4991f953..37615b4e2c10d 100644
+> > > > --- a/drivers/comedi/drivers/ni_mio_common.c
+> > > > +++ b/drivers/comedi/drivers/ni_mio_common.c
+> > > > @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
+> > > >   	}
+> > > >   };
+> > > > -static const struct comedi_lrange range_ni_E_ao_ext = {
+> > > > -	4, {
+> > > > -		BIP_RANGE(10),
+> > > > -		UNI_RANGE(10),
+> > > > -		RANGE_ext(-1, 1),
+> > > > -		RANGE_ext(0, 1)
+> > > > -	}
+> > > > -};
+> > > > -
+> > > >   static const struct comedi_lrange *const ni_range_lkup[] = {
+> > > >   	[ai_gain_16] = &range_ni_E_ai,
+> > > >   	[ai_gain_8] = &range_ni_E_ai_limited,
+> > > > diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_stc.h
+> > > > index fbc0b753a0f59..0822e65f709dd 100644
+> > > > --- a/drivers/comedi/drivers/ni_stc.h
+> > > > +++ b/drivers/comedi/drivers/ni_stc.h
+> > > > @@ -1137,6 +1137,13 @@ struct ni_private {
+> > > >   	u8 rgout0_usage;
+> > > >   };
+> > > > -static const struct comedi_lrange range_ni_E_ao_ext;
+> > > > +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
+> > > > +	4, {
+> > > > +		BIP_RANGE(10),
+> > > > +		UNI_RANGE(10),
+> > > > +		RANGE_ext(-1, 1),
+> > > > +		RANGE_ext(0, 1)
+> > > > +	}
+> > > > +};
+> > > >   #endif /* _COMEDI_NI_STC_H */
+> > > > 
+> > > 
+> > > The "ni_stc.h" header is also included by "ni_mio_cs.c" which doesn't need
+> > > `range_ni_E_ao_ext` (admittedly, it was already pulling in a "tentative"
+> > > definition of the variable).
+> > > 
+> > > Thinking about it, I think it's probably better to move `range_ni_E_ao_ext`
+> > > from "ni_mio_common.c" into *both* "ni_atmio.c" and "ni_pcimio.c" (I think
+> > > we can live with the small amount of duplication), and to remove the
+> > > tentative definition from "ni_stc.h".
+> > 
+> > Happy to rework.
+> > 
+> > Am I taking this or Uwe's suggestion?
+> 
+> You should probably take Ian's suggestion because he is the maintainer
 
-Thanks,
-Bart
+I think you missed my point.
+
+Now there are 2 options; I'd like Ian to tell me which one to implement.
+
+> and I really doubt Uwe's will build.  :P  But Uwe is right that
+> including .c files is ugly.
+
+No one is disputing that. :)
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
