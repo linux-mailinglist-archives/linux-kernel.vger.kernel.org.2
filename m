@@ -2,109 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5478638C194
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C776538C198
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230418AbhEUIVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42602 "EHLO
+        id S230424AbhEUIVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:21:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230401AbhEUIVR (ORCPT
+        with ESMTP id S230437AbhEUIVW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:21:17 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E78DC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:19:54 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id u21so29155609ejo.13
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:19:54 -0700 (PDT)
+        Fri, 21 May 2021 04:21:22 -0400
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4462FC061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:20:00 -0700 (PDT)
+Received: by mail-il1-x133.google.com with SMTP id j30so17527549ila.5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:20:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=szeredi.hu; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9BT3Hx3P3B8a0YB8xDWcQzYi30cUttNenzj/Q+a2BuE=;
-        b=ZHFefVH2NnwfN6qqSETR6RWg6qE1d8/n84IVK9M8F1u0akSKx5Q7ErkV1KbVW9x27l
-         7HFRXFibKZd8ahV6ZQDpItgA6t0mQgPNTf8kbuXC+4bTQW8iIJKVPqXdy3KpKqnIO12q
-         xIxpuQl4VdPbLn0x6bDDouPcKq/civ6NhsluI=
+        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=crfUFGTPalD4yXSTJwQEUnL2QL5B6TGLL3FiBmjfI84=;
+        b=2JogOMKudm0mxROFyquyt69B7PYnzHPTbHOAOutNWuvHCNn3QO0xdo4kQDYulHhLJO
+         bd9nIYQCpwjSqq5ZmRwFZnPgIjBvEhZcFWUYbveq4WRMu/1K6tf9Wb0rVi8I0OiQjpdb
+         mDjDZfv4zp2qkyHlwvtnjEg65lJ7IbEGBUX12YnRbEnC6xkpISPNmTK07uryUQKrpRPx
+         SmlQDd/Yyd345vY+kPP3ZDHS+nooBiXHiJkq/TggzOh7sNsJpHOWi9LOdKozkfNVzHUY
+         Q0TE/wsQlGuHq0/FOAfoViEwMoyKOwrVcZ8EGTth3Xgrr1WJX/0H1bUdlPKbZvXvsQka
+         ehfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9BT3Hx3P3B8a0YB8xDWcQzYi30cUttNenzj/Q+a2BuE=;
-        b=AKLDk8cMfVVYdW3la0bWf/OmLglM28Pi8IgP/UDaLZzLXkZwdkyIkSArHeQg8pLvM1
-         2lwH1tYBiveRc+uw9rQssfrjJzW3EzTKkIuSYm1XyQ8JfCPOU5BtXqi0vbj10NRsPUnP
-         7SHX+vv2KZPOi+UFnCyjBGZg3FUfSiSp1jomXC29216IovTfwZMYqKDwv2FmGyc0dC2p
-         7dLWOgzctrmkVHaD2GGLDfbMg5P3em08xvyOnFFJzy7Gqk/KgVVNANZnyr0Lp/AlLg5Y
-         nW9IxW7hyH4VwwPAGZTIZiNpkhiaH/MH2mg7j345+E+axQw03y4hdodv25alc3J5Lape
-         njig==
-X-Gm-Message-State: AOAM531k0XOeikIQX7DHDmu4DCr+0XfCFwkuY0spkz3fUecebrzTRCrY
-        rVbL466pnc4EZOtZ3OBeQSQ9Sw==
-X-Google-Smtp-Source: ABdhPJweDLurcYoAxJbcGquDPxDbAsqw+ElGRnNzi50Pf4B9Y5CiAUMwpvG4vz0XFzlw19EIQ7O+nA==
-X-Received: by 2002:a17:906:368e:: with SMTP id a14mr9079440ejc.366.1621585191245;
-        Fri, 21 May 2021 01:19:51 -0700 (PDT)
-Received: from miu.piliscsaba.redhat.com (catv-86-101-169-67.catv.broadband.hu. [86.101.169.67])
-        by smtp.gmail.com with ESMTPSA id l19sm3373181edv.17.2021.05.21.01.19.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 01:19:50 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:19:48 +0200
-From:   Miklos Szeredi <miklos@szeredi.hu>
-To:     Greg Kurz <groug@kaod.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        virtio-fs@redhat.com, Stefan Hajnoczi <stefanha@redhat.com>,
-        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
-Subject: Re: [PATCH v4 2/5] fuse: Call vfs_get_tree() for submounts
-Message-ID: <YKdtJCo/06q594pM@miu.piliscsaba.redhat.com>
-References: <20210520154654.1791183-1-groug@kaod.org>
- <20210520154654.1791183-3-groug@kaod.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=crfUFGTPalD4yXSTJwQEUnL2QL5B6TGLL3FiBmjfI84=;
+        b=OdL4mkJBb3GKEBiYqNMbk9N11ChdG0XZE87RYw6R91Q5EUuPSYQQ+XX7oVn37YRVnM
+         a3qa5jf0ftXiwDCQYeS1A/+suH4FMTkD/Qe2IqPVoy6LrmI3D43YwDnAfeS0R7tKr1bK
+         Mf6HKzpmLxUqfkyCjE9Qp9OL0xewHjKIgCJwn6MveVsWRwU0XgvNBtZJRYgjRpRB1aDj
+         YhkAmAlXQErotKJU+VJY1OuC8MGGCJg2rlAovKAOPGU9fwGdXS7HpErSibFI46ifZVmC
+         uPJcU8oSd7xz31i+vvG3Hi7qpKtbPsRHMZZO9/XHa9AaaBuyvTvgb7OhAobxIN8apDxe
+         1mJA==
+X-Gm-Message-State: AOAM533Gm52L+9hA9/nrNGI4yNKSu2HjFLFaIrWbGw2XtXVuwHcUa7rk
+        ZU10Q2XbesWsTgcHZ4LrQUPr9UE5wP/TH6at8fRMyg==
+X-Google-Smtp-Source: ABdhPJyau7+pJ3utV7hS4AIVYk+mKqhheG8tWJtpEQAkPNa4Ua+zo1rd0NNd6w5BdgqknR/MLa+2U3zQHY+C1Ajm2BI=
+X-Received: by 2002:a92:4b08:: with SMTP id m8mr9882070ilg.183.1621585199636;
+ Fri, 21 May 2021 01:19:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520154654.1791183-3-groug@kaod.org>
+References: <20210430123511.116057-1-robert.marko@sartura.hr>
+ <af4923ef1ed0693fcd67d7986348b164@walle.cc> <CA+HBbNHCnpg9qCzZbT9KVNqX-daC68iaJKNdyEf7do3w98miWw@mail.gmail.com>
+ <0f28cabf858154842819935000f32bc2@walle.cc> <20210520064929.GM2549456@dell>
+In-Reply-To: <20210520064929.GM2549456@dell>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Fri, 21 May 2021 10:19:49 +0200
+Message-ID: <CA+HBbNG62bJC4ZiH0WRVYnN1AC=J5eJQPo_46tS67xNzP1L0DQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mfd: Add Delta TN48M CPLD driver
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Michael Walle <michael@walle.cc>, robh+dt@kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        bgolaszewski@baylibre.com, jdelvare@suse.com,
+        Guenter Roeck <linux@roeck-us.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, Luka Perkov <luka.perkov@sartura.hr>,
+        jmp@epiphyte.org, Paul Menzel <pmenzel@molgen.mpg.de>,
+        Donald Buczek <buczek@molgen.mpg.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 05:46:51PM +0200, Greg Kurz wrote:
-> We don't set the SB_BORN flag on submounts superblocks. This is wrong
-> as these superblocks are then considered as partially constructed or
-> dying in the rest of the code and can break some assumptions.
-> 
-> One such case is when you have a virtiofs filesystem and you try to
-> mount it again : virtio_fs_get_tree() tries to obtain a superblock
-> with sget_fc(). The matching criteria in virtio_fs_test_super() is
-> the pointer of the underlying virtiofs device, which is shared by
-> the root mount and its submounts. This means that any submount can
-> be picked up instead of the root mount. This is itself a bug :
-> submounts should be ignored in this case. But, most importantly, it
-> then triggers an infinite loop in sget_fc() because it fails to grab
-> the superblock (very easy to reproduce).
-> 
-> The only viable solution is to set SB_BORN at some point. This
-> must be done with vfs_get_tree() because setting SB_BORN requires
-> special care, i.e. a memory barrier for super_cache_count() which
-> can check SB_BORN without taking any lock.
+On Thu, May 20, 2021 at 8:49 AM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> On Wed, 19 May 2021, Michael Walle wrote:
+>
+> > Hi,
+> >
+> > Am 2021-05-19 13:53, schrieb Robert Marko:
+> > > On Thu, May 6, 2021 at 6:34 PM Michael Walle <michael@walle.cc> wrote=
+:
+> > > > Am 2021-04-30 14:35, schrieb Robert Marko:
+> > > > > Delta TN48M switches have a Lattice CPLD that serves
+> > > > > multiple purposes including being a GPIO expander.
+> > > > > So lets add the MFD core driver for it.
+> > > >
+> > > > Did you have a look at mfd/simple-mfd-i2c.c?
+> > >
+> > > Yes, that was my first idea but we have a requirement to expose CPLD
+> > > information via debugfs as there are userspace applications using it.
+> > > And simple-mfd-i2c does not allow us to do so.
+> >
+> > Mh, last time Lee wasn't very fond of having a driver that just populat=
+es
+> > sub-drivers while doing almost nothing itself. See
+> > https://lore.kernel.org/lkml/20200605065709.GD3714@dell/
+>
+> Right.  I still feel that way.
+>
+> > That being said, I'd also like to expose our CPLD version, but until no=
+w
+> > haven't found a good solution.
+>
+> Why though?  Does S/W *need* it?
+Because we have userspace S/W that uses it as the same CPLD is in
+multiple variants of the board but the correct board model is set during
+manufacturing and we can read it from the CPLD.
 
-Looks correct, but...
+We also have information about PSU1 and PSU2(Some models only)
+power good, whether they are present and some other info that I need
+to expose as these are monitored in userspace.
 
-as an easily backportable and verifiable bugfix I'd still go with the
-simple two liner:
+I planned to do that via the hwmon driver but according to Guenther they
+are not hwmon attributes and I agree.
 
---- a/fs/fuse/dir.c
-+++ b/fs/fuse/dir.c
-@@ -351,6 +351,9 @@ static struct vfsmount *fuse_dentry_automount(struct path *path)
- 	list_add_tail(&fm->fc_entry, &fc->mounts);
- 	up_write(&fc->killsb);
- 
-+	smp_wmb();
-+	sb->s_flags |= SB_BORN;
-+
- 	/* Create the submount */
- 	mnt = vfs_create_mount(fsc);
- 	if (IS_ERR(mnt)) {
+Would it be possible to have a dedicated driver that would only expose
+the required information via debugfs?
+Then I could simply use the simple I2C MFD driver with only a GPIO
+driver on top of it.
 
-And have this patch be the cleanup.
+Regards,
+Robert
+>
+> --
+> Lee Jones [=E6=9D=8E=E7=90=BC=E6=96=AF]
+> Senior Technical Lead - Developer Services
+> Linaro.org =E2=94=82 Open source software for Arm SoCs
+> Follow Linaro: Facebook | Twitter | Blog
 
-Also we need Fixes: and a Cc: stable@... tags on that one.
 
-Thanks,
-Miklos
+
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
