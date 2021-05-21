@@ -2,116 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911EA38C916
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D00A38C91B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236653AbhEUOWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:22:16 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:36756 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229813AbhEUOWP (ORCPT
+        id S236668AbhEUOWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229581AbhEUOWg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:22:15 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LE3HAJ029157;
-        Fri, 21 May 2021 16:20:43 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
- cc : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=selector1; bh=zgoapCSxja5ggXz9KaCmLJKGtmXmExMPdEbxDJDwE7E=;
- b=0gJiJD7TIyT0tM1jMNkmfEmNfN5yrDSpGveFzqagAdcxRSI9LlVKpw3OXiMo7o/wcuWi
- bx8rsC6ay3fezqpmd3m3AAq9kyfmfq6Qa4b7KSwSzLsVRNl9TAUsTYfdw15UKkKta/7Q
- DZNlLFIN7nNnWn+TOVgvvmxqtmu1dcwPJGcrmSkQBI9pqRULKVxsnC7GddIMVyeVRkmK
- jgb+VOYIx4cOCOnS6umhf6TW16a6jr1KIUG+MM2xexokyc4sv3qBCPThLZivyJbXmAWw
- 2UE6izqAxPW7whNoFbHcrOce/fqatTmpEhrbkL66Ak3YHsIDs+cOWu7PfUhYRbS8pPzb Ng== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38p2tc3kv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 16:20:43 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 1903A10002A;
-        Fri, 21 May 2021 16:20:41 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 08D6221F0D2;
-        Fri, 21 May 2021 16:20:41 +0200 (CEST)
-Received: from gnbcxd0016.gnb.st.com (10.75.127.47) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 21 May
- 2021 16:20:40 +0200
-Date:   Fri, 21 May 2021 16:20:39 +0200
-From:   Alain Volmat <alain.volmat@foss.st.com>
-To:     Lee Jones <lee.jones@linaro.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Cedric Madianga <cedric.madianga@gmail.com>,
-        <linux-i2c@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 14/16] i2c: busses: i2c-stm32f4: Remove incorrectly
- placed ' ' from function name
-Message-ID: <20210521142039.GB17641@gnbcxd0016.gnb.st.com>
-Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
-        linux-kernel@vger.kernel.org,
-        Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Cedric Madianga <cedric.madianga@gmail.com>,
-        linux-i2c@vger.kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org
-References: <20210520190105.3772683-1-lee.jones@linaro.org>
- <20210520190105.3772683-15-lee.jones@linaro.org>
+        Fri, 21 May 2021 10:22:36 -0400
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3C08C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:21:11 -0700 (PDT)
+Received: by mail-wr1-x42c.google.com with SMTP id x8so21251239wrq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=wG9Dta0CaSLcShWSym55/bpGe6Fxr6HiM0MjsqM0GpA=;
+        b=RDX2hdnIo6f3DUh4nJ1K97BcaNQN8gpv0wjGqd3ja+QqP0Y9yzrTT2zz1IMk/Biyxm
+         x3Fwn1AO/sbgoy1cP2EoklOMdwh1IPMjOc3SeVCUUvEbftCzeBbec7peNNbL0p78q5q9
+         K8eXGg7lsqV7FacR6TtJQzQiV1Vi1VOKJc9BA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=wG9Dta0CaSLcShWSym55/bpGe6Fxr6HiM0MjsqM0GpA=;
+        b=I4CEIVbQJ5T4cRGmG9Zjk857Sgt7WBRBvE+9eyRWo544vLrlU8ZuVQZtX2pZwnWIbU
+         aNhWFJ7BKOUz6HEGzVcib9srKxxQiVW1Df4VphbyiygMnMXhXq3txacN2m3ORm2USua8
+         oAXWHvsAJ0a/S4KzJN7xcY3mZyQHHi0M1C42yHC2uosqKpT8hQ3IMo8Znf9nqDDjPDDU
+         KmFUuZsznaEixj5C/OjqYVK0szarEyhkVVvQVzPKUR2VP+zyEJcDH/T4VKgJGmXaGtP2
+         H1a85U1FF67Z+X0asD0+MpLJTPs0CcpBGly9T4EQXcpleT9ptkH+rgM8OSUQLZUx1uFb
+         6M6w==
+X-Gm-Message-State: AOAM530gTaqLTQlxXDRVH84roxYQLbNJrU21cO6l5JMe4wGPUJ4rvFAQ
+        6QwVxPWDpQlS7JOYDBh1JPEMDQ==
+X-Google-Smtp-Source: ABdhPJy4RupA0RXG/bNF7PD78NvJ0QKf6Vd2VyhKKxTlhoDXSliYWWTxh9uksBg5g2Gs/DhKchOnWw==
+X-Received: by 2002:a5d:5257:: with SMTP id k23mr9894401wrc.328.1621606870495;
+        Fri, 21 May 2021 07:21:10 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q62sm6358399wma.42.2021.05.21.07.21.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 07:21:09 -0700 (PDT)
+Date:   Fri, 21 May 2021 16:21:07 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Christian =?iso-8859-1?Q?K=F6nig?= 
+        <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@gmail.com>,
+        Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>
+Subject: Re: [Linaro-mm-sig] [RFC 1/3] dma-fence: Add boost fence op
+Message-ID: <YKfB06kpmrb56etU@phenom.ffwll.local>
+Mail-Followup-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <ckoenig.leichtzumerken@gmail.com>,
+        Rob Clark <robdclark@gmail.com>, Rob Clark <robdclark@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" <linaro-mm-sig@lists.linaro.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" <linux-media@vger.kernel.org>
+References: <20210519183855.1523927-2-robdclark@gmail.com>
+ <8dcdc8d5-176c-f0ad-0d54-6466e9e68a0a@amd.com>
+ <CAF6AEGtg_VnxYrj94AfbAfViK1v8U0ZJyfJjS4taVLMF=YVy+w@mail.gmail.com>
+ <d65acf46-4c3b-4903-6222-0b81915d355d@amd.com>
+ <CAF6AEGvm1tFwpfyJrX1bTGoHg_wzKKLQvSk2qLHf3XeqvEzDPA@mail.gmail.com>
+ <e8f3d71c-7025-deab-4dd7-14f3fa6a8810@gmail.com>
+ <YKaPf3VLfjoZJRw7@phenom.ffwll.local>
+ <4244879a-e2b8-7994-e3fb-f63c0e115a2c@amd.com>
+ <CAKMK7uHROqWzTaG-JDzd343WJJiJCbzEOCZ++oCmKrQJAQgo7A@mail.gmail.com>
+ <17f7e755-fce2-b7cf-dd6f-0a0dec618bba@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210520190105.3772683-15-lee.jones@linaro.org>
-X-Disclaimer: ce message est personnel / this message is private
-X-Originating-IP: [10.75.127.47]
-X-ClientProxiedBy: SFHDAG1NODE3.st.com (10.75.127.3) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_05:2021-05-20,2021-05-21 signatures=0
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17f7e755-fce2-b7cf-dd6f-0a0dec618bba@amd.com>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the patch. Looks fine for me.
+On Fri, May 21, 2021 at 09:43:59AM +0200, Christian König wrote:
+> Am 20.05.21 um 19:08 schrieb Daniel Vetter:
+> > [SNIP]
+> > > AH! So we are basically telling the fence backend that we have just
+> > > missed an event we waited for.
+> > > 
+> > > So what we want to know is how long the frontend wanted to wait instead
+> > > of how long the backend took for rendering.
+> > tbh I'm not sure the timestamp matters at all. What we do in i915 is
+> > boost quite aggressively, and then let the usual clock tuning wittle
+> > it down if we overshot. Plus soom cool-down to prevent
+> > abuse/continuous boosting. I think we also differentiate between
+> > display boost and userspace waits.
+> 
+> I was not thinking about time stamps here, but more like which information
+> we need at which place.
+> 
+> > On the display side we also wait until the vblank has passed we aimed
+> > for (atm always the next, we don't have target_frame support like
+> > amdgpu), to avoid boosting when there's no point.
+> > 
+> > > > So boosting right when you've missed your frame (not what Rob implements
+> > > > currently, but fixable) is the right semantics.
+> > > > 
+> > > > The other issue is that for cpu waits, we want to differentiate from fence
+> > > > waits that userspace does intentially (e.g. wait ioctl) and waits that
+> > > > random other things are doing within the kernel to keep track of progress.
+> > > > 
+> > > > For the former we know that userspace is stuck waiting for the gpu, and we
+> > > > probably want to boost. For the latter we most definitely do _not_ want to
+> > > > boost.
+> > > > 
+> > > > Otoh I do agree with you that the current api is a bit awkward, so perhaps
+> > > > we do need a dma_fence_userspace_wait wrapper which boosts automatically
+> > > > after a bit. And similarly perhaps a drm_vblank_dma_fence_wait, where you
+> > > > give it a vblank target, and if the fence isn't signalled by then, we kick
+> > > > it real hard.
+> > > Yeah, something like an use case driven API would be nice to have.
+> > > 
+> > > For this particular case I suggest that we somehow extend the enable
+> > > signaling callback.
+> > > 
+> > > > But otherwise yes this is absolutely a thing that matters a ton. If you
+> > > > look at Matt Brost's scheduler rfc, there's also a line item in there
+> > > > about adding this kind of boosting to drm/scheduler.
+> > > BTW: I still can't see this in my inbox.
+> > You've replied already:
+> > 
+> > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flore.kernel.org%2Fdri-devel%2F20210518235830.133834-1-matthew.brost%40intel.com%2F&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Ce4f3688b832842c4236e08d91bb1e148%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637571273080820910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=uk3Gs%2FW42BDqMuMJtujcAH5GvN8mOlDnmywK8x1I%2F0k%3D&amp;reserved=0
+> 
+> Yeah, but doesn't that also require some changes to the DRM scheduler?
+> 
+> I was expecting that this is a bit more than just two patches.
 
-Reviewed-by: Alain Volmat <alain.volmat@foss.st.com>
+It's just the rfc document, per the new rfc process:
 
-On Thu, May 20, 2021 at 08:01:03PM +0100, Lee Jones wrote:
-> Fixes the following W=1 kernel build warning(s):
+https://dri.freedesktop.org/docs/drm/gpu/rfc/
+
+It's rather obviously not any piece of code in there, but just meant to
+check rough direction before we go rewrite the entire i915 execbuf
+frontend.
+-Daniel
+
 > 
->  drivers/i2c/busses/i2c-stm32f4.c:321: warning: expecting prototype for stm32f4_i2c_write_ byte()(). Prototype was for stm32f4_i2c_write_byte() instead
+> Christian.
 > 
-> Cc: Pierre-Yves MORDRET <pierre-yves.mordret@foss.st.com>
-> Cc: Alain Volmat <alain.volmat@foss.st.com>
-> Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-> Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-> Cc: Philipp Zabel <p.zabel@pengutronix.de>
-> Cc: Cedric Madianga <cedric.madianga@gmail.com>
-> Cc: linux-i2c@vger.kernel.org
-> Cc: linux-stm32@st-md-mailman.stormreply.com
-> Cc: linux-arm-kernel@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/i2c/busses/i2c-stm32f4.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > It's just the big picture plan of what areas we're all trying to
+> > tackle with some why, so that everyone knows what's coming in the next
+> > half year at least. Probably longer until this is all sorted. I think
+> > Matt has some poc hacked-up pile, but nothing really to show.
+> > -Daniel
+> > 
+> > > Do you have a link?
+> > > 
+> > > Christian.
+> > > 
+> > > > -Daniel
+> > > > 
+> > > > 
+> > > > > Regards,
+> > > > > Christian.
+> > > > > 
+> > > > > > BR,
+> > > > > > -R
+> > > > > > 
+> > > > > > > Thanks,
+> > > > > > > Christian.
+> > > > > > > 
+> > > > > > > > BR,
+> > > > > > > > -R
+> > > > > > > > 
+> > > > > > > > > Christian.
+> > > > > > > > > 
+> > > > > > > > > Am 19.05.21 um 20:38 schrieb Rob Clark:
+> > > > > > > > > > From: Rob Clark <robdclark@chromium.org>
+> > > > > > > > > > 
+> > > > > > > > > > Add a way to hint to the fence signaler that a fence waiter has missed a
+> > > > > > > > > > deadline waiting on the fence.
+> > > > > > > > > > 
+> > > > > > > > > > In some cases, missing a vblank can result in lower gpu utilization,
+> > > > > > > > > > when really we want to go in the opposite direction and boost gpu freq.
+> > > > > > > > > > The boost callback gives some feedback to the fence signaler that we
+> > > > > > > > > > are missing deadlines, so it can take this into account in it's freq/
+> > > > > > > > > > utilization calculations.
+> > > > > > > > > > 
+> > > > > > > > > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > > > > > > > > ---
+> > > > > > > > > >       include/linux/dma-fence.h | 26 ++++++++++++++++++++++++++
+> > > > > > > > > >       1 file changed, 26 insertions(+)
+> > > > > > > > > > 
+> > > > > > > > > > diff --git a/include/linux/dma-fence.h b/include/linux/dma-fence.h
+> > > > > > > > > > index 9f12efaaa93a..172702521acc 100644
+> > > > > > > > > > --- a/include/linux/dma-fence.h
+> > > > > > > > > > +++ b/include/linux/dma-fence.h
+> > > > > > > > > > @@ -231,6 +231,17 @@ struct dma_fence_ops {
+> > > > > > > > > >           signed long (*wait)(struct dma_fence *fence,
+> > > > > > > > > >                               bool intr, signed long timeout);
+> > > > > > > > > > 
+> > > > > > > > > > +     /**
+> > > > > > > > > > +      * @boost:
+> > > > > > > > > > +      *
+> > > > > > > > > > +      * Optional callback, to indicate that a fence waiter missed a deadline.
+> > > > > > > > > > +      * This can serve as a signal that (if possible) whatever signals the
+> > > > > > > > > > +      * fence should boost it's clocks.
+> > > > > > > > > > +      *
+> > > > > > > > > > +      * This can be called in any context that can call dma_fence_wait().
+> > > > > > > > > > +      */
+> > > > > > > > > > +     void (*boost)(struct dma_fence *fence);
+> > > > > > > > > > +
+> > > > > > > > > >           /**
+> > > > > > > > > >            * @release:
+> > > > > > > > > >            *
+> > > > > > > > > > @@ -586,6 +597,21 @@ static inline signed long dma_fence_wait(struct dma_fence *fence, bool intr)
+> > > > > > > > > >           return ret < 0 ? ret : 0;
+> > > > > > > > > >       }
+> > > > > > > > > > 
+> > > > > > > > > > +/**
+> > > > > > > > > > + * dma_fence_boost - hint from waiter that it missed a deadline
+> > > > > > > > > > + *
+> > > > > > > > > > + * @fence: the fence that caused the missed deadline
+> > > > > > > > > > + *
+> > > > > > > > > > + * This function gives a hint from a fence waiter that a deadline was
+> > > > > > > > > > + * missed, so that the fence signaler can factor this in to device
+> > > > > > > > > > + * power state decisions
+> > > > > > > > > > + */
+> > > > > > > > > > +static inline void dma_fence_boost(struct dma_fence *fence)
+> > > > > > > > > > +{
+> > > > > > > > > > +     if (fence->ops->boost)
+> > > > > > > > > > +             fence->ops->boost(fence);
+> > > > > > > > > > +}
+> > > > > > > > > > +
+> > > > > > > > > >       struct dma_fence *dma_fence_get_stub(void);
+> > > > > > > > > >       u64 dma_fence_context_alloc(unsigned num);
+> > > > > > > > > > 
+> > > > > > _______________________________________________
+> > > > > > Linaro-mm-sig mailing list
+> > > > > > Linaro-mm-sig@lists.linaro.org
+> > > > > > https://nam11.safelinks.protection.outlook.com/?url=https%3A%2F%2Flists.linaro.org%2Fmailman%2Flistinfo%2Flinaro-mm-sig&amp;data=04%7C01%7Cchristian.koenig%40amd.com%7Ce4f3688b832842c4236e08d91bb1e148%7C3dd8961fe4884e608e11a82d994e183d%7C0%7C0%7C637571273080820910%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000&amp;sdata=lOOKD4J4h7byys2ifx0Ibn5vVr9gwZGGGsgrNmaymc4%3D&amp;reserved=0
+> > 
 > 
-> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-> index 4933fc8ce3fd1..eebce7ecef25b 100644
-> --- a/drivers/i2c/busses/i2c-stm32f4.c
-> +++ b/drivers/i2c/busses/i2c-stm32f4.c
-> @@ -313,7 +313,7 @@ static int stm32f4_i2c_wait_free_bus(struct stm32f4_i2c_dev *i2c_dev)
->  }
->  
->  /**
-> - * stm32f4_i2c_write_ byte() - Write a byte in the data register
-> + * stm32f4_i2c_write_byte() - Write a byte in the data register
->   * @i2c_dev: Controller's private data
->   * @byte: Data to write in the register
->   */
-> -- 
-> 2.31.1
-> 
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
