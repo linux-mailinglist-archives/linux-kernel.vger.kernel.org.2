@@ -2,135 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D0738C971
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B07138C970
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236992AbhEUOrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:47:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45462 "EHLO
+        id S236956AbhEUOrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:47:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236978AbhEUOrO (ORCPT
+        with ESMTP id S236925AbhEUOrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:47:14 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BDAFC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:45:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KE2XWIQJa7QyffRG2NB7ooMjea4/CmI8Kv+hx71I77k=; b=fbAP5/5ZhNwG63zBx/bbZ85ZOC
-        B1Zu5XrHoYNkCCWMZ60dzNFpkwWP5wMGkTrxy116RMti0Wgob1GvOxfSnfJ9gzUb9P1GmoSLlL+z9
-        QDBDUkGlSH4ebv1QvFTvO7UuGhPd9GnR15MqmWOtPBykdzyRhSyVFtdgDkjZd3Alh8VJYkhfji6PS
-        fNzAorv6ZwLB1o3AebT3gkK5NBty1llFhZup7EjmHb9kgN3yUf3PjgM5l8WK7QI2KBqOFrUjc1RgU
-        44t+bsgCPLS2h+MAkHs2s84azz5ObP0Jk0MpkrhaexEMASN5XC4Ss+If4U9LOj6wPIhFEp/IBkf32
-        sGX7CS4w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1lk6P8-005o7P-5d; Fri, 21 May 2021 14:45:34 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 277703001D0;
-        Fri, 21 May 2021 16:45:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D74D930D9D87B; Fri, 21 May 2021 16:45:30 +0200 (CEST)
-Date:   Fri, 21 May 2021 16:45:30 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: Re: [PATCH v4 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up
- support
-Message-ID: <YKfHiu/a/V/0DS3V@hirez.programming.kicks-ass.net>
-References: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
- <20210513213732.418398-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+        Fri, 21 May 2021 10:47:07 -0400
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61968C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:45:44 -0700 (PDT)
+Received: by mail-lj1-x236.google.com with SMTP id b12so17018352ljp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:45:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uOsFDhv1c3rYeM/biOU1mt6E1GzqKW1CDuSDPJ87gBg=;
+        b=n2qwyuP1LnEDqSwud8bOvkR68TEYaKqXc8oI/yr+qYo1V/9Y7mIX2FSlKzA192fIGi
+         6R9nTLo1mKi0Z4iB8pCvyOf2RZBFi0wFr/Gg1P73WEDCGXJHPLuCTa2fs3wBjmGZ7oF6
+         FyjzcW9iyakYrXjWjqP9cRvwkkjeloZ2tUrQ4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uOsFDhv1c3rYeM/biOU1mt6E1GzqKW1CDuSDPJ87gBg=;
+        b=jPa3n+XsyNMv2aSwfhqlyOW8nYQsbZRkUhmXc9IAioi7B1M3O3pXPbe2EVU026u2ps
+         SYTA3QwHxQgGWQ40JM/p/ebqknroaFHrfu84eKMyMzcjvhojHXBMhGXsb3DBDY+vlgUd
+         JxkCu0sNQRbmedX/1NtKPmWppKrpywB1XtNpnJWeRZdNhodQsbeOeDueaMSToOgiDRVD
+         84JUZqWdGP7AJuN53uHzUZTc95aiLcJq4UoHxbYsB+O8845PrBzLReB+wGmGBq2TPDcj
+         0iCZXpnxPFoXEr40S1x4wRs4B09U6HYKm+iuHdYl8hWKFDr3s6en/Hw3aXSKbBwn8yq6
+         RdYg==
+X-Gm-Message-State: AOAM532F2O2Ms9kVj1KuAFufQju0hML3EgojVCNAQI9QKzDKwPctlVL0
+        dS7qmuOZYvQqf3w7LtQU7X99/GEDrU7DULVoqyXthQ==
+X-Google-Smtp-Source: ABdhPJxANzTqCdHdUqkIIdiznQKltNQSijCrMEhvOw7yhFmeXbFanluhc0vMVcUKNnP3g3gOLA7OjrpUhlHnmL9o4SY=
+X-Received: by 2002:a2e:a554:: with SMTP id e20mr6930274ljn.23.1621608342766;
+ Fri, 21 May 2021 07:45:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210513213732.418398-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210521200038.v14.1.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+In-Reply-To: <20210521200038.v14.1.I9f45f5c1f975422d58b5904d11546349e9ccdc94@changeid>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Fri, 21 May 2021 22:45:31 +0800
+Message-ID: <CAGXv+5HX+Hw-S=8SQOy5hjMUxFM-oBFFESzh3LQTEVpy=54Aeg@mail.gmail.com>
+Subject: Re: [PATCH v14] arm64: dts: mt8183: Add node for the Mali GPU
+To:     Nicolas Boichat <drinkcat@chromium.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh@kernel.org>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Steven Price <steven.price@arm.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        hoegsberg@chromium.org, Tomeu Vizoso <tomeu.vizoso@collabora.com>,
+        boris.brezillon@collabora.com,
+        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
+        fshao@chromium.org, hsinyi@chromium.org,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 13, 2021 at 02:37:32PM -0700, Kuppuswamy Sathyanarayanan wrote:
-> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-> +{
-> +	u8 timeout = 0xFF;
-> +
-> +	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
-> +	if (physids_empty(apic_id_wakemap))
-> +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-> +						sizeof(*acpi_mp_wake_mailbox),
-> +						MEMREMAP_WB);
+(Resent to all recipients)
 
-{ } for being multi-line
+On Fri, May 21, 2021 at 8:01 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
+>
+> Add a basic GPU node for mt8183, as well as OPP table.
+>
+> Note that with the current panfrost driver, devfreq is not
+> actually functional, as the we do not have platform-specific
+> support for >1 supplies. Also, we are missing code to handle
+> frequency change, as the GPU frequency needs to be switched
+> away to a stable 26Mhz clock during the transition.
+>
+> Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
+> ---
+> The binding we use with out-of-tree Mali drivers includes more
+> clocks, this is used for devfreq: the out-of-tree driver switches
+> clk_mux to clk_sub_parent (26Mhz), adjusts clk_main_parent, then
+> switches clk_mux back to clk_main_parent:
+> (see https://chromium.googlesource.com/chromiumos/third_party/kernel/+/chromeos-4.19/drivers/gpu/arm/midgard/platform/mediatek/mali_kbase_runtime_pm.c#423)
+> clocks =
+>         <&topckgen CLK_TOP_MFGPLL_CK>,
+>         <&topckgen CLK_TOP_MUX_MFG>,
+>         <&clk26m>,
+>         <&mfgcfg CLK_MFG_BG3D>;
+> clock-names =
+>         "clk_main_parent",
+>         "clk_mux",
+>         "clk_sub_parent",
+>         "subsys_mfg_cg";
+> (based on discussions, this probably belongs in the clock core)
+>
+> This only matters for devfreq, that is disabled anyway as we don't
+> have platform-specific code to handle >1 supplies.
 
-> +	/*
-> +	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
-> +	 * mailbox-based wakeup mechanism cannot be used more than once
-> +	 * for the same CPU, so skip sending wake commands to already
-> +	 * awake CPU.
-> +	 */
-> +	if (physid_isset(apicid, apic_id_wakemap)) {
-> +		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
-> +		       apicid);
-> +		return -EINVAL;
-> +	}
-> +
-> +
-> +	/*
-> +	 * Mailbox memory is shared between firmware and OS. Firmware will
-> +	 * listen on mailbox command address, and once it receives the wakeup
-> +	 * command, CPU associated with the given apicid will be booted. So,
-> +	 * the value of apic_id and wakeup_vector has to be set before updating
-> +	 * the wakeup command. So use WRITE_ONCE to let the compiler know about
-> +	 * it and preserve the order of writes.
-> +	 */
-> +	WRITE_ONCE(acpi_mp_wake_mailbox->apic_id, apicid);
-> +	WRITE_ONCE(acpi_mp_wake_mailbox->wakeup_vector, start_ip);
-> +	WRITE_ONCE(acpi_mp_wake_mailbox->command, ACPI_MP_WAKE_COMMAND_WAKEUP);
+Yes. This can be done with clk_notifiers. See
 
-Do those want to be smp_store_release(), in addition to being a volatile
-write, those also include compiler barriers to make sure the compiler
-doesn't lift stuff around.
+    https://elixir.bootlin.com/linux/latest/source/drivers/clk/sunxi-ng/ccu_mux.c#L261
 
-> +
-> +	/*
-> +	 * After writing wakeup command, wait for maximum timeout of 0xFF
-> +	 * for firmware to reset the command address back zero to indicate
-> +	 * the successful reception of command.
-> +	 * NOTE: 255 as timeout value is decided based on our experiments.
-> +	 *
-> +	 * XXX: Change the timeout once ACPI specification comes up with
-> +	 *      standard maximum timeout value.
-> +	 */
-> +	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
-> +		cpu_relax();
+for such an example.
 
-What's the unit of the timeout? The mailbox reads, the PAUSE
-instruction?
 
-> +
-> +	if (timeout) {
-> +		/*
-> +		 * If the CPU wakeup process is successful, store the
-> +		 * status in apic_id_wakemap to prevent re-wakeup
-> +		 * requests.
-> +		 */
-> +		physid_set(apicid, apic_id_wakemap);
-> +		return 0;
-> +	}
-> +
-> +	/* If timed out (timeout == 0), return error */
-> +	return -EIO;
-> +}
-> +
->  #endif				/*CONFIG_X86_LOCAL_APIC */
+ChenYu
