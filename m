@@ -2,182 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BA0038BFBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F319638BFC0
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:42:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbhEUGnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:43:12 -0400
-Received: from mail-eopbgr70053.outbound.protection.outlook.com ([40.107.7.53]:48032
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233795AbhEUGlI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234255AbhEUGn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:43:27 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5713 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233796AbhEUGlI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 May 2021 02:41:08 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=A9Du33QSs1i1xYQ7rKV/LR3H0/2gqaShiPmWK1lFKvdi2Gbv+ZSMJ6LL9LkOusP58GRGMadhCx2Ur5/MWEdyw5+JTQq+MLsdct7eLtbwUxQHlTnnOQ1p+NLNfpARhYGnyrYQjiGZwIQDq/vpi+xRcI0/GlgvKYMexcqmOg4mT/HV98Z2/I/3FXI4TMyV+xQPC7POP6diICAjvGXvE5QJnxNdI8F6vbnI9mDqXcR1Kp0lJFbrV0pwTZ3uHP3gyXxJ7NoZs+sIVbn4zokOXN81audu54QIgQK4gnPo5T95FQxISGi1vEbGZok2kWgTsHmWt4DXW7vQRwMfivwB4Ou0aQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NHBNt/YkIvo0jGmkEM8V27v2ID/kaMQnLxV5fgjI5uk=;
- b=G5s2017r45CYQMWUCPRBg+kjcLyoyTgglb405yJl0+0VGkV0upoid2Ulr8hgzsw9roInITPEwd/GISnDrL7iURoCsG1oVr8HH71lfWgwi7Y5UHX5fjZKyEIztZNCwFpFHb2uyukOEY7OutQj8s6AHm9jkRYFuQPyvcLrPSKXkX/lFRQdfS9HGXvZbgI3f3cx5ol8ZTam0nG0z8LSjqsrZ9BVqyAdZz01GquMjSeM6GDYj7mUmoPRo2ThJS5wCN18IKg68bTAPhEwoLLSAWgYQTqpomB039Caz3Tat3cFcgtmsEJecFV1CfaJ60PWN6lEjMDOtkSETlJxgUf7LN7s1w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NHBNt/YkIvo0jGmkEM8V27v2ID/kaMQnLxV5fgjI5uk=;
- b=Xh5/0KC4zc7Ud5d6LuNsQgfPKD0oMBMjqYPMrT6ahqA9scbdkszBrobIG2T8W3sUudV0qRyZSsxU07aaB1QRur9TgYSnPVP1+xQPIrun6o2PNWS9eN2LpL0k3f4OrUKyFJ+uUAkpqjhghZrnQPdhdoOk9bX8XP+I+r92j8dXuNs=
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com (2603:10a6:20b:2::14)
- by AM6PR04MB4279.eurprd04.prod.outlook.com (2603:10a6:209:4a::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.28; Fri, 21 May
- 2021 06:38:51 +0000
-Received: from AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b]) by AM6PR04MB4966.eurprd04.prod.outlook.com
- ([fe80::b10a:ad0:a6f5:db9b%2]) with mapi id 15.20.4129.034; Fri, 21 May 2021
- 06:38:51 +0000
-From:   Aisheng Dong <aisheng.dong@nxp.com>
-To:     Clark Wang <xiaoning.wang@nxp.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "shawnguo@kernel.org" <shawnguo@kernel.org>,
-        "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-        "festevam@gmail.com" <festevam@gmail.com>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        dl-linux-imx <linux-imx@nxp.com>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
+Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmcL24pFkzqVZJ;
+        Fri, 21 May 2021 14:35:22 +0800 (CST)
+Received: from dggpemm500022.china.huawei.com (7.185.36.162) by
+ dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 14:38:54 +0800
+Received: from [10.174.187.155] (10.174.187.155) by
+ dggpemm500022.china.huawei.com (7.185.36.162) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 14:38:53 +0800
+Subject: Re: [RFC PATCH v3 2/8] vfio/type1: Add a page fault handler
+To:     Alex Williamson <alex.williamson@redhat.com>
+CC:     Cornelia Huck <cohuck@redhat.com>, Will Deacon <will@kernel.org>,
+        "Robin Murphy" <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
+        Eric Auger <eric.auger@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH V2 07/18] i2c: imx-lpi2c: manage irq resource
- request/release in runtime pm
-Thread-Topic: [PATCH V2 07/18] i2c: imx-lpi2c: manage irq resource
- request/release in runtime pm
-Thread-Index: AQHXKtinw+apF1/Em0yT/Q3VwnTl3artwHIg
-Date:   Fri, 21 May 2021 06:38:51 +0000
-Message-ID: <AM6PR04MB4966B89DE0BFD7C604035B9880299@AM6PR04MB4966.eurprd04.prod.outlook.com>
-References: <20210406113306.2633595-1-xiaoning.wang@nxp.com>
- <20210406113306.2633595-8-xiaoning.wang@nxp.com>
-In-Reply-To: <20210406113306.2633595-8-xiaoning.wang@nxp.com>
-Accept-Language: zh-CN, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nxp.com; dkim=none (message not signed)
- header.d=none;nxp.com; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.67]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f917b099-d36f-4bd3-e2fa-08d91c2318bc
-x-ms-traffictypediagnostic: AM6PR04MB4279:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB427952C38D16D828F8C36CFD80299@AM6PR04MB4279.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:935;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: MFbpBTmj03GAPq33t9ruG+UCihUrJ4hcBM8nDqtF7qMLjm8XtLizN04ArBVBOBtcGnUH5CckGVbLktUIRpLcDoyagBgTHjbNWEj44GLmy0szGbdO2jdQk6R1y56H96COntex3qXg6upPoFUag8jF1PwThG2CkHh3J5oBWAydpzQD7w+k36Fjn/EqS/iIM6VD0WaIb1YHwYpQMzjZe3LmZO7YPKhcJ2LarVRJI5wBASbXXhu0eC7crW/1yhFk7W12McWurCb11h6YqO4mjjCVt8ov9YIiML02lAnFoA5FgxbNn8k5AXwTFXkGnUhLiWiQtcwU/D6YO/jbzwKG3A7ciakTKTgy7c6IojP5Hfpw4gsgszSTCtJUQ5q4bkuj58GMIqfryPNtap5cS/k7cDIC9UPAZNRx6Hr9B50L4JV9W5BCvVvO1ze/ot91EpQWAKzdw9YJnIKA1iDjyeuth8tsOuRNZVrtulanYHqaHWVmmIV4hV3Qs6wzrmKatOXNTZojDU/2nYmySM3Iat9+K+3iIG5JjFlhph4NExXACnVVGH1/a57oHYEt99Svo3YAr/oWBcNhu4Q59Cy9ue7xeTNaRTkxhEXckhPOt9YcmqY30Rs=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4966.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(136003)(376002)(39860400002)(55016002)(8676002)(9686003)(33656002)(44832011)(478600001)(6506007)(52536014)(66476007)(26005)(66946007)(86362001)(186003)(4326008)(66446008)(66556008)(76116006)(71200400001)(64756008)(83380400001)(316002)(122000001)(5660300002)(110136005)(7696005)(54906003)(8936002)(2906002)(38100700002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?OHRETXNBY1IvMnlFbTR2bEFrYTNDQVE3ZXlsV05BaU1lTDFmSkFvR0dwN2Z0?=
- =?utf-8?B?NnlSOGJDNGp5R0FaWFZnMWRjZGFlUitvMWpsRkgrSnVrQnM1dnQrV09yVUR1?=
- =?utf-8?B?MGRoTCtDVGZvR2xmWWo1Y2FWYU9YQXErdE1Jai9SUDNML21kQXFiZWFYZW9a?=
- =?utf-8?B?L2thOXRpWldKeDVDa0FqRVdPYWVJOEFqeUg0SlNQVVNGRjhMYnpyaG43akZo?=
- =?utf-8?B?WThnQURuUWc4bGVsZ1AvcTB1ZU5zdmxBVktHZ2xzR215N2psOEdEVUZHVnFV?=
- =?utf-8?B?a0lpUzc4OEZ2Z0tGOE9tdEhMSDFqaEZLZlNFcWhoSSs0WjJQM2Q2U1hqUjdq?=
- =?utf-8?B?MEZ3Tmc1NzNma01JeHMxd2RQY2l6RVIyZjJiR0RFZHlwUEt0WmFqbmVBSG51?=
- =?utf-8?B?Q0QrQlRqNTBuZG44NjExVVFtdkRrMThLUW1mb25CN2k4b2lUN3h5b3pmQlpi?=
- =?utf-8?B?MnRQMVVRcWNUK2h2Ry9uUmFvdlZkUDMwRnBHcFpiN1I1T2tpTjJPS1VlbTJl?=
- =?utf-8?B?Y0o5NFVPa2NJTzRTUEduSFFQb3YwY0pXWFNiWjQzVys5M2VVMlZ3UnBmNnBZ?=
- =?utf-8?B?OFMrVURXMm1CejNOK3BIN1JCRlhxMGFIbzRlUlJJeGIxSUNUWDlCc3F5NFUr?=
- =?utf-8?B?SWExeHozQUF3MS9zVm84MkIzbEJjc2dEbVRJVlpwaFBYdEU0dUl1dis5Sllh?=
- =?utf-8?B?dUtodE5hRnhEeDVwMmJKc2RWdTBOSGJBazhVZmUzVGNJL1lHRmw3aE0zWXdL?=
- =?utf-8?B?em5qb1VqOUNiRUV5MWovYVpBRkZYOWlRVldicUdSN3dPb3EwcGRyak5zQ3dJ?=
- =?utf-8?B?UHdJMlF4dUVJbWgrY0h6RTYvd1Q5K1VlNXl6clNOUmh0eXJ0cFFnZEhhTXRw?=
- =?utf-8?B?OTRuV2Q0bm9aSXFVM3VQZGxJeGhCZ0RoSy8xZzVROWIyTDZJaC80MnNlcHM1?=
- =?utf-8?B?L0F2RFY2S25SZFBnYmtSOVhpMW9LRHZlckZ3SjhaZmQrOTUwaGRYa1RMOHAv?=
- =?utf-8?B?REREZ29UUGgxUUhmanZCNVZlNjExT2ltRVFGZE8vTy9MSDU5dThnMUhBUGEy?=
- =?utf-8?B?K2psa1UvSkpDZVpsNFVkblJhRklzZzFSNkVSREY0d0NpcHRxaFZXUEhEWXVi?=
- =?utf-8?B?UGNlem9YQkFubUszMWZqMTd5M2NVVUlGNmh2QlN6cHdyQURVL0NTNEN5ZWFR?=
- =?utf-8?B?K3JDZVo3S1hYdkZ5VUk3bFF2cU9iMW1DMnRmak10UWtxRG1MeVVyQTBUMUs4?=
- =?utf-8?B?NU4vdmlSSWtCMC9UQVA1azIyZ1JEL0RVSE1WNmF6cEYyRm55dFRLZ1VJY1VG?=
- =?utf-8?B?cGVjU1BIU2FXUEpRV1YxK3kxUVIxYy93Q21rdVUxUGUyditpMVkyQy9FTEtj?=
- =?utf-8?B?ZFRiSitRbGVZUEFqZ2hPcUlQcFBwUi9VNWVJcU00R0haa3BxY2RTcFF1UTdN?=
- =?utf-8?B?dHpiVDNFYlVoK2dseS9XOHltaEJwTlRhMWRtQTA3VE9LOVJJRWJwWkY3elNp?=
- =?utf-8?B?TWJPV094bjFpdVgxSzZxbzFsM2lZQU1GWXVCWjQxR2Qrd2FtZW1sQUxmRmNE?=
- =?utf-8?B?S3JZd3h2NjhMYmZyUTFIeDdxUzlpdFRxVVkvYytoVkd1WUhsS0tIRWRNbE5W?=
- =?utf-8?B?Q1YzYW1odkR5eW5nQlRhUjRudGFXYXkvdHV5WE9ua0g1cUwrUkYvMkVJbzFO?=
- =?utf-8?B?RUlHMTJMVHltYnhzLzF6RS96UjU0eTdhaDlVSmlmNE1UeDhkc3F1QkttclNS?=
- =?utf-8?Q?zF1+qvdDCsr+xMiNq7PbxErnmg4S9XTFIhM79v0?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        <iommu@lists.linux-foundation.org>, <linux-api@vger.kernel.org>,
+        Kevin Tian <kevin.tian@intel.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>, <yi.l.liu@intel.com>,
+        Christoph Hellwig <hch@infradead.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Barry Song" <song.bao.hua@hisilicon.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210409034420.1799-1-lushenming@huawei.com>
+ <20210409034420.1799-3-lushenming@huawei.com>
+ <20210518125837.6de73631.alex.williamson@redhat.com>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <e7e8562f-44a7-92e5-2c4c-974fa7c6cb84@huawei.com>
+Date:   Fri, 21 May 2021 14:38:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4966.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f917b099-d36f-4bd3-e2fa-08d91c2318bc
-X-MS-Exchange-CrossTenant-originalarrivaltime: 21 May 2021 06:38:51.3071
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: OnPnbk/YNSJVC2m5VuvgL/PJjjwlsV/vORMXkTf0HGGI+OOwnlSnABsqgynJtYTsVZuD26sTKtSnryN0QnnJJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB4279
+In-Reply-To: <20210518125837.6de73631.alex.williamson@redhat.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.187.155]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpemm500022.china.huawei.com (7.185.36.162)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBDbGFyayBXYW5nIDx4aWFvbmluZy53YW5nQG54cC5jb20+DQo+IFNlbnQ6IFR1ZXNk
-YXksIEFwcmlsIDYsIDIwMjEgNzozMyBQTQ0KPiANCj4gTWFuYWdlIGlycSByZXNvdXJjZSByZXF1
-ZXN0L3JlbGVhc2UgaW4gcnVudGltZSBwbSB0byBzYXZlIGlycSBkb21haW4ncw0KPiBwb3dlci4N
-Cj4gDQo+IFNpZ25lZC1vZmYtYnk6IEZyYW5rIExpIDxGcmFuay5MaUBueHAuY29tPg0KPiBTaWdu
-ZWQtb2ZmLWJ5OiBGdWdhbmcgRHVhbiA8ZnVnYW5nLmR1YW5AbnhwLmNvbT4NCj4gU2lnbmVkLW9m
-Zi1ieTogQ2xhcmsgV2FuZyA8eGlhb25pbmcud2FuZ0BueHAuY29tPg0KPiBSZXZpZXdlZC1ieTog
-RnJhbmsgTGkgPEZyYW5rLkxpQG54cC5jb20+DQoNClJldmlld2VkLWJ5OiBEb25nIEFpc2hlbmcg
-PGFpc2hlbmcuZG9uZ0BueHAuY29tPg0KDQpSZWdhcmRzDQpBaXNoZW5nDQoNCj4gLS0tDQo+IFYy
-IGNoYW5nZXM6DQo+ICAtIENoYW5nZSB0byB1c2UgcmVxdWVzdF9pcnEvZnJlZV9pcnEuDQo+IC0t
-LQ0KPiAgZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1pbXgtbHBpMmMuYyB8IDMwICsrKysrKysrKysr
-KysrKysrKy0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyks
-IDEyIGRlbGV0aW9ucygtKQ0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaTJjL2J1c3Nlcy9p
-MmMtaW14LWxwaTJjLmMNCj4gYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLWlteC1scGkyYy5jDQo+
-IGluZGV4IDg5YjdiMDc5NWY1MS4uMzMzMjA5YmE4MWMxIDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJz
-L2kyYy9idXNzZXMvaTJjLWlteC1scGkyYy5jDQo+ICsrKyBiL2RyaXZlcnMvaTJjL2J1c3Nlcy9p
-MmMtaW14LWxwaTJjLmMNCj4gQEAgLTk0LDYgKzk0LDcgQEAgZW51bSBscGkyY19pbXhfcGluY2Zn
-IHsNCj4gDQo+ICBzdHJ1Y3QgbHBpMmNfaW14X3N0cnVjdCB7DQo+ICAJc3RydWN0IGkyY19hZGFw
-dGVyCWFkYXB0ZXI7DQo+ICsJaW50CQkJaXJxOw0KPiAgCXN0cnVjdCBjbGsJCSpjbGtfcGVyOw0K
-PiAgCXN0cnVjdCBjbGsJCSpjbGtfaXBnOw0KPiAgCXZvaWQgX19pb21lbQkJKmJhc2U7DQo+IEBA
-IC01NzEsNyArNTcyLDcgQEAgc3RhdGljIGludCBscGkyY19pbXhfcHJvYmUoc3RydWN0IHBsYXRm
-b3JtX2RldmljZQ0KPiAqcGRldikgIHsNCj4gIAlzdHJ1Y3QgbHBpMmNfaW14X3N0cnVjdCAqbHBp
-MmNfaW14Ow0KPiAgCXVuc2lnbmVkIGludCB0ZW1wOw0KPiAtCWludCBpcnEsIHJldDsNCj4gKwlp
-bnQgcmV0Ow0KPiANCj4gIAlscGkyY19pbXggPSBkZXZtX2t6YWxsb2MoJnBkZXYtPmRldiwgc2l6
-ZW9mKCpscGkyY19pbXgpLCBHRlBfS0VSTkVMKTsNCj4gIAlpZiAoIWxwaTJjX2lteCkNCj4gQEAg
-LTU4MSw5ICs1ODIsOSBAQCBzdGF0aWMgaW50IGxwaTJjX2lteF9wcm9iZShzdHJ1Y3QgcGxhdGZv
-cm1fZGV2aWNlDQo+ICpwZGV2KQ0KPiAgCWlmIChJU19FUlIobHBpMmNfaW14LT5iYXNlKSkNCj4g
-IAkJcmV0dXJuIFBUUl9FUlIobHBpMmNfaW14LT5iYXNlKTsNCj4gDQo+IC0JaXJxID0gcGxhdGZv
-cm1fZ2V0X2lycShwZGV2LCAwKTsNCj4gLQlpZiAoaXJxIDwgMCkNCj4gLQkJcmV0dXJuIGlycTsN
-Cj4gKwlscGkyY19pbXgtPmlycSA9IHBsYXRmb3JtX2dldF9pcnEocGRldiwgMCk7DQo+ICsJaWYg
-KGxwaTJjX2lteC0+aXJxIDwgMCkNCj4gKwkJcmV0dXJuIGxwaTJjX2lteC0+aXJxOw0KPiANCj4g
-IAlscGkyY19pbXgtPmFkYXB0ZXIub3duZXIJPSBUSElTX01PRFVMRTsNCj4gIAlscGkyY19pbXgt
-PmFkYXB0ZXIuYWxnbwkJPSAmbHBpMmNfaW14X2FsZ287DQo+IEBAIC02MDksMTMgKzYxMCw2IEBA
-IHN0YXRpYyBpbnQgbHBpMmNfaW14X3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UNCj4gKnBk
-ZXYpDQo+ICAJaWYgKHJldCkNCj4gIAkJbHBpMmNfaW14LT5iaXRyYXRlID0gSTJDX01BWF9TVEFO
-REFSRF9NT0RFX0ZSRVE7DQo+IA0KPiAtCXJldCA9IGRldm1fcmVxdWVzdF9pcnEoJnBkZXYtPmRl
-diwgaXJxLCBscGkyY19pbXhfaXNyLCAwLA0KPiAtCQkJICAgICAgIHBkZXYtPm5hbWUsIGxwaTJj
-X2lteCk7DQo+IC0JaWYgKHJldCkgew0KPiAtCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJjYW4ndCBj
-bGFpbSBpcnEgJWRcbiIsIGlycSk7DQo+IC0JCXJldHVybiByZXQ7DQo+IC0JfQ0KPiAtDQo+ICAJ
-aTJjX3NldF9hZGFwZGF0YSgmbHBpMmNfaW14LT5hZGFwdGVyLCBscGkyY19pbXgpOw0KPiAgCXBs
-YXRmb3JtX3NldF9kcnZkYXRhKHBkZXYsIGxwaTJjX2lteCk7DQo+IA0KPiBAQCAtNjY4LDYgKzY2
-Miw3IEBAIHN0YXRpYyBpbnQgX19tYXliZV91bnVzZWQNCj4gbHBpMmNfcnVudGltZV9zdXNwZW5k
-KHN0cnVjdCBkZXZpY2UgKmRldikgIHsNCj4gIAlzdHJ1Y3QgbHBpMmNfaW14X3N0cnVjdCAqbHBp
-MmNfaW14ID0gZGV2X2dldF9kcnZkYXRhKGRldik7DQo+IA0KPiArCWZyZWVfaXJxKGxwaTJjX2lt
-eC0+aXJxLCBscGkyY19pbXgpOw0KPiAgCWxwaTJjX2lteF9jbG9ja3NfdW5wcmVwYXJlKGxwaTJj
-X2lteCk7DQo+ICAJcGluY3RybF9wbV9zZWxlY3Rfc2xlZXBfc3RhdGUoZGV2KTsNCj4gDQo+IEBA
-IC02NzcsMTAgKzY3MiwyMSBAQCBzdGF0aWMgaW50IF9fbWF5YmVfdW51c2VkDQo+IGxwaTJjX3J1
-bnRpbWVfc3VzcGVuZChzdHJ1Y3QgZGV2aWNlICpkZXYpICBzdGF0aWMgaW50IF9fbWF5YmVfdW51
-c2VkDQo+IGxwaTJjX3J1bnRpbWVfcmVzdW1lKHN0cnVjdCBkZXZpY2UgKmRldikgIHsNCj4gIAlz
-dHJ1Y3QgbHBpMmNfaW14X3N0cnVjdCAqbHBpMmNfaW14ID0gZGV2X2dldF9kcnZkYXRhKGRldik7
-DQo+ICsJaW50IHJldCA9IDA7DQo+IA0KPiAgCXBpbmN0cmxfcG1fc2VsZWN0X2RlZmF1bHRfc3Rh
-dGUoZGV2KTsNCj4gKwlyZXQgPSBscGkyY19pbXhfY2xvY2tzX3ByZXBhcmUobHBpMmNfaW14KTsN
-Cj4gKwlpZiAocmV0KQ0KPiArCQlyZXR1cm4gcmV0Ow0KPiANCj4gLQlyZXR1cm4gbHBpMmNfaW14
-X2Nsb2Nrc19wcmVwYXJlKGxwaTJjX2lteCk7DQo+ICsJcmV0ID0gcmVxdWVzdF9pcnEobHBpMmNf
-aW14LT5pcnEsIGxwaTJjX2lteF9pc3IsIDAsDQo+ICsJCQkgICAgICAgZGV2X25hbWUoZGV2KSwg
-bHBpMmNfaW14KTsNCj4gKwlpZiAocmV0KSB7DQo+ICsJCWRldl9lcnIoZGV2LCAiY2FuJ3QgY2xh
-aW0gaXJxICVkXG4iLCBscGkyY19pbXgtPmlycSk7DQo+ICsJCXJldHVybiByZXQ7DQo+ICsJfQ0K
-PiArDQo+ICsJcmV0dXJuIHJldDsNCj4gIH0NCj4gDQo+ICBzdGF0aWMgY29uc3Qgc3RydWN0IGRl
-dl9wbV9vcHMgbHBpMmNfcG1fb3BzID0gew0KPiAtLQ0KPiAyLjI1LjENCg0K
+On 2021/5/19 2:58, Alex Williamson wrote:
+> On Fri, 9 Apr 2021 11:44:14 +0800
+> Shenming Lu <lushenming@huawei.com> wrote:
+> 
+>> VFIO manages the DMA mapping itself. To support IOPF (on-demand paging)
+>> for VFIO (IOMMU capable) devices, we add a VFIO page fault handler to
+>> serve the reported page faults from the IOMMU driver.
+>>
+>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>> ---
+>>  drivers/vfio/vfio_iommu_type1.c | 114 ++++++++++++++++++++++++++++++++
+>>  1 file changed, 114 insertions(+)
+>>
+>> diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
+>> index 45cbfd4879a5..ab0ff60ee207 100644
+>> --- a/drivers/vfio/vfio_iommu_type1.c
+>> +++ b/drivers/vfio/vfio_iommu_type1.c
+>> @@ -101,6 +101,7 @@ struct vfio_dma {
+>>  	struct task_struct	*task;
+>>  	struct rb_root		pfn_list;	/* Ex-user pinned pfn list */
+>>  	unsigned long		*bitmap;
+>> +	unsigned long		*iopf_mapped_bitmap;
+>>  };
+>>  
+>>  struct vfio_batch {
+>> @@ -141,6 +142,16 @@ struct vfio_regions {
+>>  	size_t len;
+>>  };
+>>  
+>> +/* A global IOPF enabled group list */
+>> +static struct rb_root iopf_group_list = RB_ROOT;
+>> +static DEFINE_MUTEX(iopf_group_list_lock);
+>> +
+>> +struct vfio_iopf_group {
+>> +	struct rb_node		node;
+>> +	struct iommu_group	*iommu_group;
+>> +	struct vfio_iommu	*iommu;
+>> +};
+>> +
+>>  #define IS_IOMMU_CAP_DOMAIN_IN_CONTAINER(iommu)	\
+>>  					(!list_empty(&iommu->domain_list))
+>>  
+>> @@ -157,6 +168,10 @@ struct vfio_regions {
+>>  #define DIRTY_BITMAP_PAGES_MAX	 ((u64)INT_MAX)
+>>  #define DIRTY_BITMAP_SIZE_MAX	 DIRTY_BITMAP_BYTES(DIRTY_BITMAP_PAGES_MAX)
+>>  
+>> +#define IOPF_MAPPED_BITMAP_GET(dma, i)	\
+>> +			      ((dma->iopf_mapped_bitmap[(i) / BITS_PER_LONG]	\
+>> +			       >> ((i) % BITS_PER_LONG)) & 0x1)
+> 
+> 
+> Can't we just use test_bit()?
+
+Yeah, we can use it.
+
+> 
+> 
+>> +
+>>  #define WAITED 1
+>>  
+>>  static int put_pfn(unsigned long pfn, int prot);
+>> @@ -416,6 +431,34 @@ static int vfio_iova_put_vfio_pfn(struct vfio_dma *dma, struct vfio_pfn *vpfn)
+>>  	return ret;
+>>  }
+>>  
+>> +/*
+>> + * Helper functions for iopf_group_list
+>> + */
+>> +static struct vfio_iopf_group *
+>> +vfio_find_iopf_group(struct iommu_group *iommu_group)
+>> +{
+>> +	struct vfio_iopf_group *iopf_group;
+>> +	struct rb_node *node;
+>> +
+>> +	mutex_lock(&iopf_group_list_lock);
+>> +
+>> +	node = iopf_group_list.rb_node;
+>> +
+>> +	while (node) {
+>> +		iopf_group = rb_entry(node, struct vfio_iopf_group, node);
+>> +
+>> +		if (iommu_group < iopf_group->iommu_group)
+>> +			node = node->rb_left;
+>> +		else if (iommu_group > iopf_group->iommu_group)
+>> +			node = node->rb_right;
+>> +		else
+>> +			break;
+>> +	}
+>> +
+>> +	mutex_unlock(&iopf_group_list_lock);
+>> +	return node ? iopf_group : NULL;
+>> +}
+> 
+> This looks like a pretty heavy weight operation per DMA fault.
+> 
+> I'm also suspicious of this validity of this iopf_group after we've
+> dropped the locking, the ordering of patches makes this very confusing.
+
+My thought was to include the handling of DMA faults completely in the type1
+backend by introducing the vfio_iopf_group struct. But it seems that introducing
+a struct with an unknown lifecycle causes more problems...
+I will use the path from vfio-core as in the v2 for simplicity and validity.
+
+Sorry for the confusing, I will reconstruct the series later. :-)
+
+> 
+>> +
+>>  static int vfio_lock_acct(struct vfio_dma *dma, long npage, bool async)
+>>  {
+>>  	struct mm_struct *mm;
+>> @@ -3106,6 +3149,77 @@ static int vfio_iommu_type1_dirty_pages(struct vfio_iommu *iommu,
+>>  	return -EINVAL;
+>>  }
+>>  
+>> +/* VFIO I/O Page Fault handler */
+>> +static int vfio_iommu_type1_dma_map_iopf(struct iommu_fault *fault, void *data)
+> 
+>>From the comment, this seems like the IOMMU fault handler (the
+> construction of this series makes this difficult to follow) and
+> eventually it handles more than DMA mapping, for example transferring
+> faults to the device driver.  "dma_map_iopf" seems like a poorly scoped
+> name.
+
+Maybe just call it dev_fault_handler?
+
+> 
+>> +{
+>> +	struct device *dev = (struct device *)data;
+>> +	struct iommu_group *iommu_group;
+>> +	struct vfio_iopf_group *iopf_group;
+>> +	struct vfio_iommu *iommu;
+>> +	struct vfio_dma *dma;
+>> +	dma_addr_t iova = ALIGN_DOWN(fault->prm.addr, PAGE_SIZE);
+>> +	int access_flags = 0;
+>> +	unsigned long bit_offset, vaddr, pfn;
+>> +	int ret;
+>> +	enum iommu_page_response_code status = IOMMU_PAGE_RESP_INVALID;
+>> +	struct iommu_page_response resp = {0};
+>> +
+>> +	if (fault->type != IOMMU_FAULT_PAGE_REQ)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	iommu_group = iommu_group_get(dev);
+>> +	if (!iommu_group)
+>> +		return -ENODEV;
+>> +
+>> +	iopf_group = vfio_find_iopf_group(iommu_group);
+>> +	iommu_group_put(iommu_group);
+>> +	if (!iopf_group)
+>> +		return -ENODEV;
+>> +
+>> +	iommu = iopf_group->iommu;
+>> +
+>> +	mutex_lock(&iommu->lock);
+> 
+> Again, I'm dubious of our ability to grab this lock from an object with
+> an unknown lifecycle and races we might have with that group being
+> detached or DMA unmapped.  Also, how effective is enabling IOMMU page
+> faulting if we're serializing all faults within a container context?
+
+Did you mean "efficient"?
+I also worry about this as the mapping and unmapping of the faulting pages
+are all with the same lock...
+Is there a way to parallel them? Or could we have more fine grained lock
+control?
+
+> 
+>> +
+>> +	ret = vfio_find_dma_valid(iommu, iova, PAGE_SIZE, &dma);
+>> +	if (ret < 0)
+>> +		goto out_invalid;
+>> +
+>> +	if (fault->prm.perm & IOMMU_FAULT_PERM_READ)
+>> +		access_flags |= IOMMU_READ;
+>> +	if (fault->prm.perm & IOMMU_FAULT_PERM_WRITE)
+>> +		access_flags |= IOMMU_WRITE;
+>> +	if ((dma->prot & access_flags) != access_flags)
+>> +		goto out_invalid;
+>> +
+>> +	bit_offset = (iova - dma->iova) >> PAGE_SHIFT;
+>> +	if (IOPF_MAPPED_BITMAP_GET(dma, bit_offset))
+>> +		goto out_success;
+> 
+> If the page is mapped, why did we get a fault?  Should we be returning
+> success for a fault we shouldn't have received and did nothing to
+> resolve?  We're also referencing a bitmap that has only been declared
+> and never allocated at this point in the patch series.
+
+Image that we have two inflight page faults which target the same iova,
+shouldn't the later one just return SUCCESS since the previous one has
+been handled and the mapping has been established?
+
+I will allocate the bitmap first.
+
+Thanks,
+Shenming
+
+> 
+>> +
+>> +	vaddr = iova - dma->iova + dma->vaddr;
+>> +
+>> +	if (vfio_pin_page_external(dma, vaddr, &pfn, true))
+>> +		goto out_invalid;
+>> +
+>> +	if (vfio_iommu_map(iommu, iova, pfn, 1, dma->prot)) {
+>> +		if (put_pfn(pfn, dma->prot))
+>> +			vfio_lock_acct(dma, -1, true);
+>> +		goto out_invalid;
+>> +	}
+>> +
+>> +	bitmap_set(dma->iopf_mapped_bitmap, bit_offset, 1);
+>> +
+>> +out_success:
+>> +	status = IOMMU_PAGE_RESP_SUCCESS;
+>> +
+>> +out_invalid:
+>> +	mutex_unlock(&iommu->lock);
+>> +	resp.version		= IOMMU_PAGE_RESP_VERSION_1;
+>> +	resp.grpid		= fault->prm.grpid;
+>> +	resp.code		= status;
+>> +	iommu_page_response(dev, &resp);
+>> +	return 0;
+>> +}
+>> +
+>>  static long vfio_iommu_type1_ioctl(void *iommu_data,
+>>  				   unsigned int cmd, unsigned long arg)
+>>  {
+> 
+> .
+> 
