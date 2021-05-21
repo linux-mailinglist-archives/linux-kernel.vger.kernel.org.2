@@ -2,95 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4D738C245
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:50:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18C8838C247
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:51:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233184AbhEUIvg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:51:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S233999AbhEUIwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:52:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbhEUIve (ORCPT
+        with ESMTP id S233909AbhEUIwX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:51:34 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2629AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:50:09 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id cu11-20020a17090afa8bb029015d5d5d2175so6964314pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:50:09 -0700 (PDT)
+        Fri, 21 May 2021 04:52:23 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0C3C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:50:45 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id j12so4934899vsq.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:50:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z+pNd8iiKn7fyjmLzbAXru7lbppAXi9Y4DYZJ4cZYbI=;
-        b=QqKzCjwO7SBetuZ/52HQXYCXl65z6cjRzwx7dfDOuQKlPUjYl75GW/n7eXjrhzP4XK
-         7HH37dPidegrGSpLfV8dZoAvBRZXdohd5pPX4CZXCFKHQUi/yo8l7p6IxXGg3WLk5qAr
-         B0fB7eMQeoyV9T53XeSHQvypm6ONWvFmpEyqeK2BLWv3PurEzVSwX6CV8lApOpIJVDl9
-         YJvsqidILxlvBBQv6oky3Kdazrd0+CvqOH5IH/hjfv7PQr/dNkEzw5/LSkKesMXx/VHc
-         HNbpIGdoECoO9SjjmLg369x1uYxG7+XUe1ZLu/WIeIydJVtmYup5WV3/Uu0Nqk1wKQ+9
-         KmWg==
+        d=szeredi.hu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mFPnGBBo9uPK7q1bx3/OHNBziL1VS1FaR/jW/45G8No=;
+        b=Zk2iAnAYEgvulBteJzqiLG+YcF0Ge6ONYvZ2Cwv9EegLGu04xZ46iosv1yP+M/Cwo1
+         gDqkELTiUclVGOOcOD5+zDlFcEvVuobHjKQetErpTDXYmOrE9yyPHTnsmet7bty32vgX
+         vD4peK29KWDUju0YLfeYstIJQiIln2ZJvkO0o=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Z+pNd8iiKn7fyjmLzbAXru7lbppAXi9Y4DYZJ4cZYbI=;
-        b=It6N2nB6yl/essVUjB1iSBwgccQsD1qQk2fqpTX4D0ldQ2/a96r65WecClG3sffv2a
-         eY/X2j8ZlQRfdpedQ6ZsA8SD6paQTXs89B5jgFyV98PM/LB8iEQqSyxT3FKUP9+IKYv8
-         GCgsVq0KKoDqoxbdvQW2OD4Kic/9xv0B0z4gUzZtx7csJ8U6PFGteW3Y2SSMap0LMeOI
-         utpa0fNYZqw9f+vahHBmnH2YIw1/R8DOx5iSBEHhs32TFMF+8XoL289btXTxOG4xUS7Q
-         NXVDDbefOFu1Z3AglWuOjwkZ82mCg4L+U8ZdLDNAC2JCvBgoJ48IJrfdYyieMlwKr52C
-         xabQ==
-X-Gm-Message-State: AOAM531oiWjTVi3/qpFNdMklvZ32TYtfuAHMYzgHJnb5MK8sejBTOfTK
-        xL2l11sNEuJzBkc3AZ31Ja8qSQ==
-X-Google-Smtp-Source: ABdhPJxTH/EUjEEsKboooGZ1Xc0iz18xdDFrb5WRT5TAC3wWaXiQuV2kz2z5+VbiHKmItXbvREJh3w==
-X-Received: by 2002:a17:903:30c4:b029:ef:82f1:cb28 with SMTP id s4-20020a17090330c4b02900ef82f1cb28mr10984611plc.19.1621587008404;
-        Fri, 21 May 2021 01:50:08 -0700 (PDT)
-Received: from google.com ([2401:fa00:fc:202:f654:3898:11e:aa15])
-        by smtp.gmail.com with ESMTPSA id f13sm3796911pfa.207.2021.05.21.01.50.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 01:50:07 -0700 (PDT)
-Date:   Fri, 21 May 2021 16:50:00 +0800
-From:   Martin Liu <liumartin@google.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tejun Heo <tj@kernel.org>, minchan@google.com, www@google.com,
-        davidchao@google.com, jenhaochen@google.com,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] kthread: Fix kthread_mod_delayed_work vs
- kthread_cancel_delayed_work_sync race
-Message-ID: <YKd0OBB7dPoAYX7J@google.com>
-References: <20210513065458.941403-1-liumartin@google.com>
- <20210520144845.52755f3af700a902e07e2ee7@linux-foundation.org>
- <YKddXqLh6+Pj7wFW@alley>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mFPnGBBo9uPK7q1bx3/OHNBziL1VS1FaR/jW/45G8No=;
+        b=P2R9iqxxoVRrpr6jiQAjREEueBKg9t1U4YCvjgmJIrlofl/ywbLvaixGYoilQV6aUS
+         eTWYRJ8oSLt4kSxkVS7tikeKEFm/CVNaC7FOxWc6Yzl1RFaiwzqKZuF7lF1saduukWaS
+         kU8AQ4GZAQMAqYfzQjzRpnw316Cv7B8SZXgZzoNIimfS/pc40e86/wF5E1HdIiO9Gpng
+         ei+8Xevjrvp3g63RUeRpO6lt9FvOEFtCM+uZ/A4BscRJ05bkqPa77gUK1wTh5tC2rKHE
+         uwYw51h7f08jhwINfoN5SQtR7RDDh1OJLDiUNrDokRSJcYgVP9VXRIZkSuGvxxK5BKYm
+         rILw==
+X-Gm-Message-State: AOAM533UbsY6W+daFnAdggnbAKu/1SdGl5vXfoIwKjKCYa1Bx05Ow/cf
+        Mh7UqQQNJ/Iz/peOa8eXmgXG1I9ScCOOuBPmsihmmA==
+X-Google-Smtp-Source: ABdhPJzP8cEKt6HEzMuSAdCnzlwE1Q7BGhy6FcshRLFe8hP1JWwWgnnZk9hiwMntEVdIPB7+uiVNg8pi50V7JB0yuDw=
+X-Received: by 2002:a05:6102:3239:: with SMTP id x25mr8079662vsf.47.1621587044884;
+ Fri, 21 May 2021 01:50:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKddXqLh6+Pj7wFW@alley>
+References: <20210520154654.1791183-1-groug@kaod.org> <20210520154654.1791183-5-groug@kaod.org>
+ <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com> <20210521103921.153a243d@bahia.lan>
+In-Reply-To: <20210521103921.153a243d@bahia.lan>
+From:   Miklos Szeredi <miklos@szeredi.hu>
+Date:   Fri, 21 May 2021 10:50:34 +0200
+Message-ID: <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
+To:     Greg Kurz <groug@kaod.org>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 09:12:30AM +0200, Petr Mladek wrote:
-> On Thu 2021-05-20 14:48:45, Andrew Morton wrote:
-> > On Thu, 13 May 2021 14:54:57 +0800 Martin Liu <liumartin@google.com> wrote:
-> > 
-> > > We encountered a system hang issue while doing the tests. The callstack
-> > > is as following
+On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
+>
+> On Fri, 21 May 2021 10:26:27 +0200
+> Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
 > > >
-> > > ...
+> > > All submounts share the same virtio-fs device instance as the root
+> > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
+> > > is likely to pick up any of these submounts and reuse it instead of
+> > > the root mount.
 > > >
-> > > Fixes: 37be45d49dec2 ("kthread: allow to cancel kthread work")
-> > 
-> > Thanks.  I added a cc:stable to this and shall hold it in -mm for a
-> > couple of weeks to get exposure and testing before sending it to Linus
-> > for 5.13.
-> 
-> Sounds good to me. Thanks for taking care of it.
-> 
-> Best Regards,
-> Petr
+> > > On the server side:
+> > >
+> > > # mkdir ${some_dir}
+> > > # mkdir ${some_dir}/mnt1
+> > > # mount -t tmpfs none ${some_dir}/mnt1
+> > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
+> > > # mkdir ${some_dir}/mnt2
+> > > # mount -t tmpfs none ${some_dir}/mnt2
+> > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
+> > >
+> > > On the client side:
+> > >
+> > > # mkdir /mnt/virtiofs1
+> > > # mount -t virtiofs myfs /mnt/virtiofs1
+> > > # ls /mnt/virtiofs1
+> > > mnt1 mnt2
+> > > # grep virtiofs /proc/mounts
+> > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > >
+> > > And now remount it again:
+> > >
+> > > # mount -t virtiofs myfs /mnt/virtiofs2
+> > > # grep virtiofs /proc/mounts
+> > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
+> > > # ls /mnt/virtiofs2
+> > > THIS_IS_MNT2
+> > >
+> > > Submount mnt2 was picked-up instead of the root mount.
+> >
+>
+> > Why is this a problem?
+> >
+>
+> It seems very weird to mount the same filesystem again
+> and to end up in one of its submounts. We should have:
+>
+> # ls /mnt/virtiofs2
+> mnt1 mnt2
 
-Hi Petr, Andrew
+Okay, sorry, I understand the problem.  The solution is wrong,
+however: the position of the submount on that list is no indication
+that it's the right one (it's possible that the root sb will go away
+and only a sub-sb will remain).
 
-Thanks for your help! :)
+Even just setting a flag in the root, indicating that it's the root
+isn't fully going to solve the problem.
+
+Here's issue in full:
+
+case 1:  no connection for "myfs" exists
+    - need to create fuse_conn, sb
+
+case 2: connection for "myfs" exists but only sb for submount
+    - only create sb for root, reuse fuse_conn
+
+case 3: connection for "myfs" as well as root sb exists
+   - reuse sb
+
+I'll think about how to fix this properly, it's probably going to be
+rather more involved...
+
+Thanks,
+Miklos
