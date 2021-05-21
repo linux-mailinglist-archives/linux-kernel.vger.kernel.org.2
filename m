@@ -2,232 +2,301 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C849C38BDF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:47:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8D6838BDFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233939AbhEUFsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:48:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36088 "EHLO
+        id S234018AbhEUFtp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:49:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233812AbhEUFsM (ORCPT
+        with ESMTP id S232366AbhEUFtn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:48:12 -0400
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93DE3C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:46:49 -0700 (PDT)
-Received: by mail-ej1-x62c.google.com with SMTP id lg14so28695396ejb.9
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:46:49 -0700 (PDT)
+        Fri, 21 May 2021 01:49:43 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38F7BC061574;
+        Thu, 20 May 2021 22:48:20 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id f22so5757551pfn.0;
+        Thu, 20 May 2021 22:48:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=sSSVkkFFUQ6Cskr/VZlEF5ZDg9jXTSgymxzbW89Kiq8=;
-        b=rWpnCoVX79LejXTQWqRMyqbhUunXquUI+AGuSHwMVVRzTnzzEte/YYG4mt4nm+BbkG
-         +pJpu+xyTFkXz61TBhDHhl5oz/7NO6n7fYI12JNUvu0lZtxCvWUfRs9JHdysFLIMokhR
-         dvNTLFs4Spv4RgaeAXXArcOmpRaDMcsDkVD+5ErTsdYNjbIlBsp0zyBmv07T3RoeNbXJ
-         SDbbcnlhNqCdK9h5Mi4OHV6AzBcrIMfWtTikmO/iisgAaqqQ/Y3gS+XUSJdjj00REqHE
-         vR3KgdWBH7XF1RE5SfXt+XKy6NoUSH3lV0QUs3lL2veKXv1Bd97n55AUoW1u4d+wEPjE
-         ijrA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WyzWGEeYzzvpqZN1QCFWv+jHG4VPcbJh+9cEDFW/gA0=;
+        b=WbWWyNeTBBJm/+5k8GgdUmiGsoClJIZYRin0hwdlUL97wYZ/h180ci/TVg/pnsvtxp
+         YNSLRwWGPPKWCQaGoaAirGXWhd9rS/++6VaKEYLMfE20yGWdPp6DBjuf+ETade9qXwLA
+         HU+KKNWZEc8F6Juso5nMSeg5kurIro+wdTfzysLLHJLprpulJSsVs2IfVC+sKzSrxA2r
+         E/4LWrTgYf1I6r5xYcRGGJb9Lv85lix0Ml7K0E3HedexoIP4AYmrXofy3P+HMSUzSO5h
+         eJYpfm7207xXCnVkeOfIwOz0nbtexi9AEtl6RJTb9U4M8SSsQIs9fRYmxRigTzwwevFG
+         mJLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=sSSVkkFFUQ6Cskr/VZlEF5ZDg9jXTSgymxzbW89Kiq8=;
-        b=MlOLYsigXSuaWH+am6CAxDjxPH/aInDx8aZyO4Sei1BpsA26PRpuWXpa4GwYaZa6wL
-         nhcnJXDjK1+qYBroPjp3wd0ukoVEqyvF7SWFfpkTPaYQZHxqATPeA4NsE9w7fgTDZz5X
-         lc27WXmiGHOuxv05kUQqbfbW7xmRITlBPLgYe0Qz4koZ66feNKxI0SNy+M5uiumTr5Qp
-         KDlVrkpBGyfKCSMqLyD90G0xKPflA5sQiCJNPmXHfhSeP9GdZ247YhXIRH9FtITPLjhq
-         +7NDoZeaAo1u1dUpCYMmHT450cY8py2lH5apChDrPpxmlZ/vHodpGYeLjbyEsImQnRKG
-         6HNw==
-X-Gm-Message-State: AOAM532BeN4CykSZLM11ke4ddAvZtgcpL2c3noDoT8KZPdlk8zQvN1tL
-        30MCshWefNLDULXiS2ZHO+GiC8xeXVwcgmZE4NRWi+XNAstPXFBm
-X-Google-Smtp-Source: ABdhPJxBmGa9E5PI0i1vwkylcCRl2T5RaPGVBpD1QAymGJH3vdSV48CFT0KsGYp5f5zWF6Zh3P3QaFZSZfwl3Lhn/Io=
-X-Received: by 2002:a17:906:4089:: with SMTP id u9mr8510056ejj.18.1621576007982;
- Thu, 20 May 2021 22:46:47 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WyzWGEeYzzvpqZN1QCFWv+jHG4VPcbJh+9cEDFW/gA0=;
+        b=cgpJdE3EXn7oTgNkeDkhjALN0dajUhhAaDEC8Vo/y+0SEuqcOfpUPJR9rUMzrErXxg
+         GMlz6YKYWVkhtIXVBmFewzXrfST8jFnuW7U74yFfu6QAlxkHMAG3vyFn4c5KDBfm3B+x
+         XoHwmP5Gy/oLQUh+GrjnBy25syHXZQPBd+6+l2LkX/wqbuLbgM5X1i1HoR6iwMWdzEYb
+         6/rT1CLy/J6arf9tlXvBs6fZC4aZDikuCXwE5Wpb8XbL0WmPEkQ50ckEqROI4bjepjZW
+         Vzns9ta1C2qbThqFjpN6w2sYy8a+4j3cEpbL0U4ET5wpila48s5c/6QdFk9aaAYfVQBZ
+         vSOA==
+X-Gm-Message-State: AOAM531EKCATU5uHAakWJ7DywSKiTldmDipR2wj2HjgyxFNWaVLnfv5Q
+        fdlIG0hjghBBhGh0C4IC/iQ=
+X-Google-Smtp-Source: ABdhPJxPhENPmi/M0XXzNOPEvXgAS7q3LOPaCUQMONMv5rx/nJILGjuJfrzlm7gpXYslq5i4rh46WA==
+X-Received: by 2002:a63:aa48:: with SMTP id x8mr7933150pgo.359.1621576099711;
+        Thu, 20 May 2021 22:48:19 -0700 (PDT)
+Received: from localhost.localdomain ([139.167.194.135])
+        by smtp.gmail.com with ESMTPSA id 5sm7847234pjo.17.2021.05.20.22.48.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 22:48:19 -0700 (PDT)
+From:   aviral14112001 <shiv14112001@gmail.com>
+To:     viro@zeniv.linux.org.uk, shuah@kernal.org
+Cc:     aviral14112001 <shiv14112001@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH] This commit fixes the following checkpatch.pl errors and warnings : >>ERROR: switch and case should be at the same indent +    switch (whence) { +             case 1: [...] +         case 0: [...] +  default:
+Date:   Fri, 21 May 2021 11:18:57 +0530
+Message-Id: <20210521054857.7784-1-shiv14112001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210520092131.308959589@linuxfoundation.org>
-In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 21 May 2021 11:16:36 +0530
-Message-ID: <CA+G9fYs-sz=sgn_=yp39r+OqjDf_XtzvUeoQ4FgCujsmehnxPQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 000/425] 4.19.191-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 15:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.191 release.
-> There are 425 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.191-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+>>ERROR: code indent should use tabs where possible
++                              void (*callback)(struct dentry *))$
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+>>WARNING: Prefer [subsystem eg: netdev]_warn([subsystem]dev, ... then dev_warn(dev, ... then pr_warn(...  to printk(KERN_WARNING ...
++			printk(KERN_WARNING "%s: %s passed in a files array"
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>WARNING: break quoted strings at a space character
++			printk(KERN_WARNING "%s: %s passed in a files array"
++				"with an index of 1!\n", __func__,
 
-## Build
-* kernel: 4.19.191-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-4.19.y
-* git commit: 06c717b4df3acb666920610a100d04ebdc485e6c
-* git describe: v4.19.190-426-g06c717b4df3a
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
-.190-426-g06c717b4df3a
+>>WARNING: Symbolic permissions 'S_IRUSR | S_IWUSR' are not preferred. Consider using octal permissions '0600'.
++	root->i_mode = S_IFDIR | S_IRUSR | S_IWUSR;
 
-## No regressions (compared to v4.19.190-393-g3423fd68b29e)
+>>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
++			loff_t pos, unsigned len, unsigned flags,
 
-## No fixes (compared to v4.19.190-393-g3423fd68b29e)
+>>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
++			loff_t pos, unsigned len, unsigned flags,
 
-## Test result summary
- total: 67254, pass: 53425, fail: 2253, skip: 10797, xfail: 779,
+>>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
++		unsigned from = pos & (PAGE_SIZE - 1);
 
-## Build Summary
-* arm: 97 total, 97 passed, 0 failed
-* arm64: 25 total, 25 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 14 total, 14 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 39 total, 39 passed, 0 failed
-* s390: 9 total, 9 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 1 passed, 0 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 15 total, 15 passed, 0 failed
+>>WARNING: Block comments use a trailing */ on a separate line
++ * to set the attribute specific access operations. */
 
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
+>>WARNING: Symbolic permissions 'S_IRUGO | S_IXUGO' are not preferred. Consider using octal permissions '0555'.
++	inode->i_mode = S_IFDIR | S_IRUGO | S_IXUGO;
 
---
-Linaro LKFT
-https://lkft.linaro.org
+>>Several other warnings (WARNING: Missing a blank line after declarations)
+
+Signed-off-by: aviral14112001 <shiv14112001@gmail.com>
+---
+ fs/libfs.c | 66 ++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 37 insertions(+), 29 deletions(-)
+
+diff --git a/fs/libfs.c b/fs/libfs.c
+index e9b29c6ffccb..a3b6bd803b7d 100644
+--- a/fs/libfs.c
++++ b/fs/libfs.c
+@@ -32,6 +32,7 @@ int simple_getattr(struct user_namespace *mnt_userns, const struct path *path,
+ 		   unsigned int query_flags)
+ {
+ 	struct inode *inode = d_inode(path->dentry);
++
+ 	generic_fillattr(&init_user_ns, inode, stat);
+ 	stat->blocks = inode->i_mapping->nrpages << (PAGE_SHIFT - 9);
+ 	return 0;
+@@ -137,16 +138,17 @@ static struct dentry *scan_positives(struct dentry *cursor,
+ loff_t dcache_dir_lseek(struct file *file, loff_t offset, int whence)
+ {
+ 	struct dentry *dentry = file->f_path.dentry;
++
+ 	switch (whence) {
+-		case 1:
+-			offset += file->f_pos;
+-			fallthrough;
+-		case 0:
+-			if (offset >= 0)
+-				break;
+-			fallthrough;
+-		default:
+-			return -EINVAL;
++	case 1:
++		offset += file->f_pos;
++		fallthrough;
++	case 0:
++		if (offset >= 0)
++			break;
++		fallthrough;
++	default:
++		return -EINVAL;
+ 	}
+ 	if (offset != file->f_pos) {
+ 		struct dentry *cursor = file->private_data;
+@@ -251,6 +253,7 @@ static struct dentry *find_next_child(struct dentry *parent, struct dentry *prev
+ 	spin_lock(&parent->d_lock);
+ 	while ((p = p->next) != &parent->d_subdirs) {
+ 		struct dentry *d = container_of(p, struct dentry, d_child);
++
+ 		if (simple_positive(d)) {
+ 			spin_lock_nested(&d->d_lock, DENTRY_D_LOCK_NESTED);
+ 			if (simple_positive(d))
+@@ -266,9 +269,10 @@ static struct dentry *find_next_child(struct dentry *parent, struct dentry *prev
+ }
+ 
+ void simple_recursive_removal(struct dentry *dentry,
+-                              void (*callback)(struct dentry *))
++			void (*callback)(struct dentry *))
+ {
+ 	struct dentry *this = dget(dentry);
++
+ 	while (true) {
+ 		struct dentry *victim = NULL, *child;
+ 		struct inode *inode = this->d_inode;
+@@ -338,7 +342,7 @@ static int pseudo_fs_fill_super(struct super_block *s, struct fs_context *fc)
+ 	 * max_reserved of 1 to iunique).
+ 	 */
+ 	root->i_ino = 1;
+-	root->i_mode = S_IFDIR | S_IRUSR | S_IWUSR;
++	root->i_mode = S_IFDIR | 0600;
+ 	root->i_atime = root->i_mtime = root->i_ctime = current_time(root);
+ 	s->s_root = d_make_root(root);
+ 	if (!s->s_root)
+@@ -523,7 +527,7 @@ int simple_readpage(struct file *file, struct page *page)
+ EXPORT_SYMBOL(simple_readpage);
+ 
+ int simple_write_begin(struct file *file, struct address_space *mapping,
+-			loff_t pos, unsigned len, unsigned flags,
++			loff_t pos, unsigned int len, unsigned int flags,
+ 			struct page **pagep, void **fsdata)
+ {
+ 	struct page *page;
+@@ -538,7 +542,7 @@ int simple_write_begin(struct file *file, struct address_space *mapping,
+ 	*pagep = page;
+ 
+ 	if (!PageUptodate(page) && (len != PAGE_SIZE)) {
+-		unsigned from = pos & (PAGE_SIZE - 1);
++		unsigned int from = pos & (PAGE_SIZE - 1);
+ 
+ 		zero_user_segments(page, 0, from, from + len, PAGE_SIZE);
+ 	}
+@@ -549,12 +553,12 @@ EXPORT_SYMBOL(simple_write_begin);
+ /**
+  * simple_write_end - .write_end helper for non-block-device FSes
+  * @file: See .write_end of address_space_operations
+- * @mapping: 		"
+- * @pos: 		"
+- * @len: 		"
+- * @copied: 		"
+- * @page: 		"
+- * @fsdata: 		"
++ * @mapping:		"
++ * @pos:		"
++ * @len:		"
++ * @copied:		"
++ * @page:		"
++ * @fsdata:		"
+  *
+  * simple_write_end does the minimum needed for updating a page after writing is
+  * done. It has the same API signature as the .write_end of
+@@ -569,7 +573,7 @@ EXPORT_SYMBOL(simple_write_begin);
+  * Use *ONLY* with simple_readpage()
+  */
+ int simple_write_end(struct file *file, struct address_space *mapping,
+-			loff_t pos, unsigned len, unsigned copied,
++			loff_t pos, unsigned int len, unsigned int copied,
+ 			struct page *page, void *fsdata)
+ {
+ 	struct inode *inode = page->mapping->host;
+@@ -578,7 +582,7 @@ int simple_write_end(struct file *file, struct address_space *mapping,
+ 	/* zero the stale part of the page if we did a short copy */
+ 	if (!PageUptodate(page)) {
+ 		if (copied < len) {
+-			unsigned from = pos & (PAGE_SIZE - 1);
++			unsigned int from = pos & (PAGE_SIZE - 1);
+ 
+ 			zero_user(page, from + copied, len - copied);
+ 		}
+@@ -640,9 +644,8 @@ int simple_fill_super(struct super_block *s, unsigned long magic,
+ 
+ 		/* warn if it tries to conflict with the root inode */
+ 		if (unlikely(i == 1))
+-			printk(KERN_WARNING "%s: %s passed in a files array"
+-				"with an index of 1!\n", __func__,
+-				s->s_type->name);
++			pr_warn("%s: %s passed in a files array with an index of 1!\n"
++			, __func__, s->s_type->name);
+ 
+ 		dentry = d_alloc_name(root, files->name);
+ 		if (!dentry)
+@@ -673,6 +676,7 @@ static DEFINE_SPINLOCK(pin_fs_lock);
+ int simple_pin_fs(struct file_system_type *type, struct vfsmount **mount, int *count)
+ {
+ 	struct vfsmount *mnt = NULL;
++
+ 	spin_lock(&pin_fs_lock);
+ 	if (unlikely(!*mount)) {
+ 		spin_unlock(&pin_fs_lock);
+@@ -694,6 +698,7 @@ EXPORT_SYMBOL(simple_pin_fs);
+ void simple_release_fs(struct vfsmount **mount, int *count)
+ {
+ 	struct vfsmount *mnt;
++
+ 	spin_lock(&pin_fs_lock);
+ 	mnt = *mount;
+ 	if (!--*count)
+@@ -888,8 +893,10 @@ struct simple_attr {
+ 	struct mutex mutex;	/* protects access to these buffers */
+ };
+ 
+-/* simple_attr_open is called by an actual attribute open file operation
+- * to set the attribute specific access operations. */
++/*
++ * simple_attr_open is called by an actual attribute open file operation
++ * to set the attribute specific access operations.
++ */
+ int simple_attr_open(struct inode *inode, struct file *file,
+ 		     int (*get)(void *, u64 *), int (*set)(void *, u64),
+ 		     const char *fmt)
+@@ -1133,7 +1140,7 @@ EXPORT_SYMBOL(generic_file_fsync);
+  * block size of 2**@blocksize_bits) is addressable by the sector_t
+  * and page cache of the system.  Return 0 if so and -EFBIG otherwise.
+  */
+-int generic_check_addressable(unsigned blocksize_bits, u64 num_blocks)
++int generic_check_addressable(unsigned int blocksize_bits, u64 num_blocks)
+ {
+ 	u64 last_fs_block = num_blocks - 1;
+ 	u64 last_fs_page =
+@@ -1237,7 +1244,7 @@ struct inode *alloc_anon_inode(struct super_block *s)
+ 	 * that it already _is_ on the dirty list.
+ 	 */
+ 	inode->i_state = I_DIRTY;
+-	inode->i_mode = S_IRUSR | S_IWUSR;
++	inode->i_mode = 0600;
+ 	inode->i_uid = current_fsuid();
+ 	inode->i_gid = current_fsgid();
+ 	inode->i_flags |= S_PRIVATE;
+@@ -1303,6 +1310,7 @@ static int empty_dir_getattr(struct user_namespace *mnt_userns,
+ 			     u32 request_mask, unsigned int query_flags)
+ {
+ 	struct inode *inode = d_inode(path->dentry);
++
+ 	generic_fillattr(&init_user_ns, inode, stat);
+ 	return 0;
+ }
+@@ -1349,7 +1357,7 @@ static const struct file_operations empty_dir_operations = {
+ void make_empty_dir_inode(struct inode *inode)
+ {
+ 	set_nlink(inode, 2);
+-	inode->i_mode = S_IFDIR | S_IRUGO | S_IXUGO;
++	inode->i_mode = S_IFDIR | 0555;
+ 	inode->i_uid = GLOBAL_ROOT_UID;
+ 	inode->i_gid = GLOBAL_ROOT_GID;
+ 	inode->i_rdev = 0;
+-- 
+2.25.1
+
