@@ -2,307 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BED0538BB3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:04:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCBFE38BB3F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235932AbhEUBFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:05:44 -0400
-Received: from mga07.intel.com ([134.134.136.100]:8071 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235871AbhEUBFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:05:31 -0400
-IronPort-SDR: L39x4IsnKH/rROfNOJXb6/oHph2+/I8q7h5Qy5xnwPkJrvvdwVRXGpX6NCAoKaLcIGWHtPM3+d
- mUtNjLoqigug==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265286812"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="265286812"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:04:09 -0700
-IronPort-SDR: tXoE5YbkX+JTgxZ1FVGHVA3bbPjXGYraQIExzvt1G4OVhjSkXbKkHbOLLtJTfOZSPqEO2P7PGE
- 1KegwqwY7WNA==
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="395120298"
-Received: from rhweight-mobl2.amr.corp.intel.com (HELO rhweight-mobl2.ra.intel.com) ([10.209.50.218])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 18:04:08 -0700
-From:   Russ Weight <russell.h.weight@intel.com>
-To:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     trix@redhat.com, lgoncalv@redhat.com, yilun.xu@intel.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        richard.gong@intel.com, Russ Weight <russell.h.weight@intel.com>
-Subject: [PATCH v1 3/3] fpga: region: Use standard dev_release for class driver
-Date:   Thu, 20 May 2021 18:03:59 -0700
-Message-Id: <20210521010359.635717-4-russell.h.weight@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210521010359.635717-1-russell.h.weight@intel.com>
-References: <20210521010359.635717-1-russell.h.weight@intel.com>
+        id S236071AbhEUBFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:05:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235984AbhEUBFl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:05:41 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C53C0613ED;
+        Thu, 20 May 2021 18:04:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=sni9ETK0HEg7xDqRTRD+07GslmzE5y7OWzA5WJKcjKU=; b=u70b07TD062bdzcBCW7Xa9uMDu
+        Zvi3dzeWq3DXDEzDH3xRDl6oaTR5xq5coFv6GaME2vz1KEbDa3zSXlvSB4J2oR+UjWoxvBfKQyBS7
+        BBTv8m0jL9zS/zbF1qxxGoIDV9mujDnXmmc8ui/vlS3tA8T/Ewp5/aXKrIk0oOYxN1uPnfKtgTC2E
+        OpLrinbzCPhKfYv/UcSNjCiHOFVaAy+K9mbZxx+RxWFwgeLV64yAOLbyjpfzjLLrQhl6jK4/xEMCk
+        D+GPPpxqsYdARBIBjmbe6cSpPIzaZEKIYPcEPTqfKVZy5YMTXt6pMsw78MMxnaYxEM3JbaltbQyIc
+        Xdde8GPQ==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ljtaL-00Gjxw-1l; Fri, 21 May 2021 01:04:17 +0000
+Subject: Re: mmotm 2021-05-19-23-58 uploaded
+ (net/netfilter/nft_set_pipapo_avx2.c)
+To:     Stephen Rothwell <sfr@rothwell.id.au>
+Cc:     akpm@linux-foundation.org, broonie@kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
+        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Stefano Brivio <sbrivio@redhat.com>,
+        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
+References: <20210520065918.KsmugQp47%akpm@linux-foundation.org>
+ <3d718861-28bd-dd51-82d4-96b040aa1ab4@infradead.org>
+ <20210521090751.51afa10f@elm.ozlabs.ibm.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <6eb826b6-4279-8cf8-1c27-01aab0f83843@infradead.org>
+Date:   Thu, 20 May 2021 18:04:15 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
+In-Reply-To: <20210521090751.51afa10f@elm.ozlabs.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The FPGA region class driver data structure is being treated as a
-managed resource instead of using standard dev_release call-back
-to release the class data structure. This change removes the
-managed resource code and combines the create() and register()
-functions into a single register() function.
+On 5/20/21 4:07 PM, Stephen Rothwell wrote:
+> Hi Randy,
+> 
+> On Thu, 20 May 2021 15:40:54 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
+>>
+>> on x86_64:
+>> (from linux-next, not mmotm)
+> 
+> Yeah, this is caused by a bad merge resolution by me.
+> 
+>> ../net/netfilter/nft_set_pipapo_avx2.c: In function ‘nft_pipapo_avx2_lookup’:
+>> ../net/netfilter/nft_set_pipapo_avx2.c:1135:10: error: implicit declaration of function ‘nft_pipapo_lookup’; did you mean ‘nft_pipapo_avx2_lookup’? [-Werror=implicit-function-declaration]
+>>    return nft_pipapo_lookup(net, set, key, ext);
+>>           ^~~~~~~~~~~~~~~~~
+> 
+> I have added this to the merge resolution today:
+> 
+> diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter/nf_tables_core.h
+> index 789e9eadd76d..8652b2514e57 100644
+> --- a/include/net/netfilter/nf_tables_core.h
+> +++ b/include/net/netfilter/nf_tables_core.h
+> @@ -89,6 +89,8 @@ extern const struct nft_set_type nft_set_bitmap_type;
+>  extern const struct nft_set_type nft_set_pipapo_type;
+>  extern const struct nft_set_type nft_set_pipapo_avx2_type;
+>  
+> +bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+> +			    const u32 *key, const struct nft_set_ext **ext);
+>  #ifdef CONFIG_RETPOLINE
+>  bool nft_rhash_lookup(const struct net *net, const struct nft_set *set,
+>  		      const u32 *key, const struct nft_set_ext **ext);
+> @@ -101,8 +103,6 @@ bool nft_hash_lookup_fast(const struct net *net,
+>  			  const u32 *key, const struct nft_set_ext **ext);
+>  bool nft_hash_lookup(const struct net *net, const struct nft_set *set,
+>  		     const u32 *key, const struct nft_set_ext **ext);
+> -bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+> -			    const u32 *key, const struct nft_set_ext **ext);
+>  bool nft_set_do_lookup(const struct net *net, const struct nft_set *set,
+>  		       const u32 *key, const struct nft_set_ext **ext);
+>  #else
+> diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+> index 9addc0b447f7..dce866d93fee 100644
+> --- a/net/netfilter/nft_set_pipapo.c
+> +++ b/net/netfilter/nft_set_pipapo.c
+> @@ -408,7 +408,6 @@ int pipapo_refill(unsigned long *map, int len, int rules, unsigned long *dst,
+>   *
+>   * Return: true on match, false otherwise.
+>   */
+> -INDIRECT_CALLABLE_SCOPE
+>  bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
+>  		       const u32 *key, const struct nft_set_ext **ext)
+>  {
+> 
+> It should apply on top of next-20210520 if you want to test it (I
+> haven't tested it yet, but will later today).
 
-Signed-off-by: Russ Weight <russell.h.weight@intel.com>
----
- drivers/fpga/dfl-fme-region.c    | 10 +---
- drivers/fpga/dfl.c               | 10 +---
- drivers/fpga/fpga-region.c       | 97 ++++++--------------------------
- drivers/fpga/of-fpga-region.c    | 10 +---
- include/linux/fpga/fpga-region.h | 12 +---
- 5 files changed, 28 insertions(+), 111 deletions(-)
+Yes, that builds. Thanks.
 
-diff --git a/drivers/fpga/dfl-fme-region.c b/drivers/fpga/dfl-fme-region.c
-index 1eeb42af1012..631c8ce160e3 100644
---- a/drivers/fpga/dfl-fme-region.c
-+++ b/drivers/fpga/dfl-fme-region.c
-@@ -39,9 +39,9 @@ static int fme_region_probe(struct platform_device *pdev)
- 	if (IS_ERR(mgr))
- 		return -EPROBE_DEFER;
- 
--	region = devm_fpga_region_create(dev, mgr, fme_region_get_bridges);
--	if (!region) {
--		ret = -ENOMEM;
-+	region = fpga_region_register(dev, mgr, fme_region_get_bridges);
-+	if (IS_ERR(region)) {
-+		ret = PTR_ERR(region);
- 		goto eprobe_mgr_put;
- 	}
- 
-@@ -49,10 +49,6 @@ static int fme_region_probe(struct platform_device *pdev)
- 	region->compat_id = mgr->compat_id;
- 	platform_set_drvdata(pdev, region);
- 
--	ret = fpga_region_register(region);
--	if (ret)
--		goto eprobe_mgr_put;
--
- 	dev_dbg(dev, "DFL FME FPGA Region probed\n");
- 
- 	return 0;
-diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
-index 511b20ff35a3..2fb3a5bfe4df 100644
---- a/drivers/fpga/dfl.c
-+++ b/drivers/fpga/dfl.c
-@@ -1400,9 +1400,9 @@ dfl_fpga_feature_devs_enumerate(struct dfl_fpga_enum_info *info)
- 	if (!cdev)
- 		return ERR_PTR(-ENOMEM);
- 
--	cdev->region = devm_fpga_region_create(info->dev, NULL, NULL);
--	if (!cdev->region) {
--		ret = -ENOMEM;
-+	cdev->region = fpga_region_register(info->dev, NULL, NULL);
-+	if (IS_ERR(cdev->region)) {
-+		ret = PTR_ERR(cdev->region);
- 		goto free_cdev_exit;
- 	}
- 
-@@ -1410,10 +1410,6 @@ dfl_fpga_feature_devs_enumerate(struct dfl_fpga_enum_info *info)
- 	mutex_init(&cdev->lock);
- 	INIT_LIST_HEAD(&cdev->port_dev_list);
- 
--	ret = fpga_region_register(cdev->region);
--	if (ret)
--		goto free_cdev_exit;
--
- 	/* create and init build info for enumeration */
- 	binfo = devm_kzalloc(info->dev, sizeof(*binfo), GFP_KERNEL);
- 	if (!binfo) {
-diff --git a/drivers/fpga/fpga-region.c b/drivers/fpga/fpga-region.c
-index c3134b89c3fe..622b9d598758 100644
---- a/drivers/fpga/fpga-region.c
-+++ b/drivers/fpga/fpga-region.c
-@@ -185,23 +185,18 @@ ATTRIBUTE_GROUPS(fpga_region);
-  * @mgr: manager that programs this region
-  * @get_bridges: optional function to get bridges to a list
-  *
-- * The caller of this function is responsible for freeing the resulting region
-- * struct with fpga_region_free().  Using devm_fpga_region_create() instead is
-- * recommended.
-- *
-- * Return: struct fpga_region or NULL
-+ * Returns a struct fpga_region pointer on success, or ERR_PTR() on error.
-  */
--struct fpga_region
--*fpga_region_create(struct device *dev,
--		    struct fpga_manager *mgr,
--		    int (*get_bridges)(struct fpga_region *))
-+struct fpga_region *
-+fpga_region_register(struct device *dev, struct fpga_manager *mgr,
-+		     int (*get_bridges)(struct fpga_region *))
- {
- 	struct fpga_region *region;
- 	int id, ret = 0;
- 
- 	region = kzalloc(sizeof(*region), GFP_KERNEL);
- 	if (!region)
--		return NULL;
-+		return ERR_PTR(-ENOMEM);
- 
- 	id = ida_simple_get(&fpga_region_ida, 0, 0, GFP_KERNEL);
- 	if (id < 0)
-@@ -212,7 +207,6 @@ struct fpga_region
- 	mutex_init(&region->mutex);
- 	INIT_LIST_HEAD(&region->bridge_list);
- 
--	device_initialize(&region->dev);
- 	region->dev.class = fpga_region_class;
- 	region->dev.parent = dev;
- 	region->dev.of_node = dev->of_node;
-@@ -222,6 +216,12 @@ struct fpga_region
- 	if (ret)
- 		goto err_remove;
- 
-+	ret = device_register(&region->dev);
-+	if (ret) {
-+		put_device(&region->dev);
-+		return ERR_PTR(ret);
-+	}
-+
- 	return region;
- 
- err_remove:
-@@ -229,76 +229,7 @@ struct fpga_region
- err_free:
- 	kfree(region);
- 
--	return NULL;
--}
--EXPORT_SYMBOL_GPL(fpga_region_create);
--
--/**
-- * fpga_region_free - free a FPGA region created by fpga_region_create()
-- * @region: FPGA region
-- */
--void fpga_region_free(struct fpga_region *region)
--{
--	ida_simple_remove(&fpga_region_ida, region->dev.id);
--	kfree(region);
--}
--EXPORT_SYMBOL_GPL(fpga_region_free);
--
--static void devm_fpga_region_release(struct device *dev, void *res)
--{
--	struct fpga_region *region = *(struct fpga_region **)res;
--
--	fpga_region_free(region);
--}
--
--/**
-- * devm_fpga_region_create - create and initialize a managed FPGA region struct
-- * @dev: device parent
-- * @mgr: manager that programs this region
-- * @get_bridges: optional function to get bridges to a list
-- *
-- * This function is intended for use in a FPGA region driver's probe function.
-- * After the region driver creates the region struct with
-- * devm_fpga_region_create(), it should register it with fpga_region_register().
-- * The region driver's remove function should call fpga_region_unregister().
-- * The region struct allocated with this function will be freed automatically on
-- * driver detach.  This includes the case of a probe function returning error
-- * before calling fpga_region_register(), the struct will still get cleaned up.
-- *
-- * Return: struct fpga_region or NULL
-- */
--struct fpga_region
--*devm_fpga_region_create(struct device *dev,
--			 struct fpga_manager *mgr,
--			 int (*get_bridges)(struct fpga_region *))
--{
--	struct fpga_region **ptr, *region;
--
--	ptr = devres_alloc(devm_fpga_region_release, sizeof(*ptr), GFP_KERNEL);
--	if (!ptr)
--		return NULL;
--
--	region = fpga_region_create(dev, mgr, get_bridges);
--	if (!region) {
--		devres_free(ptr);
--	} else {
--		*ptr = region;
--		devres_add(dev, ptr);
--	}
--
--	return region;
--}
--EXPORT_SYMBOL_GPL(devm_fpga_region_create);
--
--/**
-- * fpga_region_register - register a FPGA region
-- * @region: FPGA region
-- *
-- * Return: 0 or -errno
-- */
--int fpga_region_register(struct fpga_region *region)
--{
--	return device_add(&region->dev);
-+	return ERR_PTR(ret);
- }
- EXPORT_SYMBOL_GPL(fpga_region_register);
- 
-@@ -316,6 +247,10 @@ EXPORT_SYMBOL_GPL(fpga_region_unregister);
- 
- static void fpga_region_dev_release(struct device *dev)
- {
-+	struct fpga_region *region = to_fpga_region(dev);
-+
-+	ida_simple_remove(&fpga_region_ida, region->dev.id);
-+	kfree(region);
- }
- 
- /**
-diff --git a/drivers/fpga/of-fpga-region.c b/drivers/fpga/of-fpga-region.c
-index e405309baadc..466e083654ae 100644
---- a/drivers/fpga/of-fpga-region.c
-+++ b/drivers/fpga/of-fpga-region.c
-@@ -405,16 +405,12 @@ static int of_fpga_region_probe(struct platform_device *pdev)
- 	if (IS_ERR(mgr))
- 		return -EPROBE_DEFER;
- 
--	region = devm_fpga_region_create(dev, mgr, of_fpga_region_get_bridges);
--	if (!region) {
--		ret = -ENOMEM;
-+	region = fpga_region_register(dev, mgr, of_fpga_region_get_bridges);
-+	if (IS_ERR(region)) {
-+		ret = PTR_ERR(region);
- 		goto eprobe_mgr_put;
- 	}
- 
--	ret = fpga_region_register(region);
--	if (ret)
--		goto eprobe_mgr_put;
--
- 	of_platform_populate(np, fpga_region_of_match, NULL, &region->dev);
- 	platform_set_drvdata(pdev, region);
- 
-diff --git a/include/linux/fpga/fpga-region.h b/include/linux/fpga/fpga-region.h
-index 27cb706275db..ca793f43af14 100644
---- a/include/linux/fpga/fpga-region.h
-+++ b/include/linux/fpga/fpga-region.h
-@@ -37,15 +37,9 @@ struct fpga_region *fpga_region_class_find(
- 
- int fpga_region_program_fpga(struct fpga_region *region);
- 
--struct fpga_region
--*fpga_region_create(struct device *dev, struct fpga_manager *mgr,
--		    int (*get_bridges)(struct fpga_region *));
--void fpga_region_free(struct fpga_region *region);
--int fpga_region_register(struct fpga_region *region);
-+struct fpga_region *
-+fpga_region_register(struct device *dev, struct fpga_manager *mgr,
-+		     int (*get_bridges)(struct fpga_region *));
- void fpga_region_unregister(struct fpga_region *region);
- 
--struct fpga_region
--*devm_fpga_region_create(struct device *dev, struct fpga_manager *mgr,
--			int (*get_bridges)(struct fpga_region *));
--
- #endif /* _FPGA_REGION_H */
 -- 
-2.25.1
-
+~Randy
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+https://people.kernel.org/tglx/notes-about-netiquette
