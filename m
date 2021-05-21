@@ -2,109 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5905638C250
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:54:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 202BB38C251
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:54:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233264AbhEUIz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:55:56 -0400
-Received: from mail1.perex.cz ([77.48.224.245]:48698 "EHLO mail1.perex.cz"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229726AbhEUIzx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:55:53 -0400
-Received: from mail1.perex.cz (localhost [127.0.0.1])
-        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 285D9A0040;
-        Fri, 21 May 2021 10:54:29 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 285D9A0040
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
-        t=1621587269; bh=zfQOEPjPu+MFDsM+IqxZDl7MiSDjj91oZwdBebRzDIQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=DDPeR/46pKs/zk1DUIE1Zu8prrZuYOrkN89aymRWN08vVY6WDxfIFgvyJhyGb6kc7
-         kwSG5J7TKwAV8hr8jnLyqmhMYqTqQT/sRknV2IXmcd1W/1Fh/863M6inLMh0JvtTRe
-         SLPBAszbW8C9UPwjsbQhtDvhvlOib1poPJBsiQgY=
-Received: from p1gen2.localdomain (unknown [192.168.100.98])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: perex)
-        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
-        Fri, 21 May 2021 10:54:18 +0200 (CEST)
-Subject: Re: [PATCH v2 2/2] ASoC: tegra: Unify ASoC machine drivers
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Takashi Iwai <tiwai@suse.com>, Ion Agorria <ion@agorria.com>,
-        Svyatoslav Ryhel <clamor95@gmail.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210520175054.28308-1-digetx@gmail.com>
- <20210520175054.28308-3-digetx@gmail.com>
- <8e5d4442-00a4-460b-d37a-8962960dd7ff@perex.cz>
- <20210520190812.GF3962@sirena.org.uk>
-From:   Jaroslav Kysela <perex@perex.cz>
-Message-ID: <ef59dad1-b06e-1d90-5948-9bb6e79478a2@perex.cz>
-Date:   Fri, 21 May 2021 10:54:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233909AbhEUI4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:56:16 -0400
+Received: from mail-vs1-f51.google.com ([209.85.217.51]:44934 "EHLO
+        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhEUI4P (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:56:15 -0400
+Received: by mail-vs1-f51.google.com with SMTP id i29so4262400vsr.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:54:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lI66EapJINQfVaC+bNRebZquzzxGjECYNjYDaBWb8as=;
+        b=VS30WhuNeQXuS8fnmZPdiJXbizgtmkvwXkIl3rvUliIooPO1aWJjUcAdsNz4zAZkCD
+         cWbNDhGnTcqc/eQWnNAk3OWwG6LmBnty3ZWBYad9K/IrUbvu/DCLfXUkvOKC6Qu0y74Y
+         qL+U9K4ngVcbcr6YpJ08au1IYYb4nde4XkUsDVCBWIiY3RGSoldZ6dreDtbcMOxNCSMg
+         qZpT4Rpr+oVUDcCpEtAmOp//IrqJYLCJf3KouUCGWCSvr7f2wMsOo3zJFYy85cn8CezS
+         +yRQ2V/cbh2kcRhZZZK6rEzGxT1GY4AtvUm7CEAmp9hN5WyW0O+BhpPsdyLevZit8mTh
+         ktwQ==
+X-Gm-Message-State: AOAM533+BQjtJXLMs2xMaKGPZ5gxdj1or9rF/XP5lopOINvUHbGUN/VC
+        qOByjCMo3OVsjifrEgshMEYzwfcnvLat2qsCDRk=
+X-Google-Smtp-Source: ABdhPJw4LyIepBROa4U+wefLkmkjzEuEKcZWmdgGY7RdxHNl5OwMOZpSP9YANdFrf8DxyCijj8ititq1NriKJlLNdQQ=
+X-Received: by 2002:a05:6102:392:: with SMTP id m18mr9313311vsq.40.1621587291613;
+ Fri, 21 May 2021 01:54:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210520190812.GF3962@sirena.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210520163751.27325-1-maz@kernel.org> <20210520163751.27325-28-maz@kernel.org>
+In-Reply-To: <20210520163751.27325-28-maz@kernel.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 21 May 2021 10:54:39 +0200
+Message-ID: <CAMuHMdVWunk7dUixTigJCkXAKcq6oTOUZoNFaR2_pz7iXw+OHQ@mail.gmail.com>
+Subject: Re: [PATCH 27/39] irqchip: Bulk conversion to generic_handle_domain_irq()
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Russell King <linux@armlinux.org.uk>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Clark <robdclark@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne 20. 05. 21 v 21:08 Mark Brown napsal(a):
-> On Thu, May 20, 2021 at 09:02:49PM +0200, Jaroslav Kysela wrote:
->> Dne 20. 05. 21 v 19:50 Dmitry Osipenko napsal(a):
->>> Squash all machine drivers into a single-universal one. This reduces
->>> code duplication, eases addition of a new drivers and upgrades older
->>> code to a modern Linux kernel APIs.
-> 
->>> +static struct snd_soc_card snd_soc_tegra_wm9712 = {
->>> +	.dai_link = &tegra_wm9712_dai,
->>> +	.num_links = 1,
->>> +	.fully_routed = true,
->>> +};
-> 
->> Please, could you also initialize snd_soc_card->components? It may be useful
->> to pass the codec identification to the user space like:
-> 
->> .components = "codec:wm9712"
-> 
-> Hrm, if this is important to userspace shouldn't the core be doing
-> something by default given that it already knows all the components
-> going into the card?
+On Thu, May 20, 2021 at 6:57 PM Marc Zyngier <maz@kernel.org> wrote:
+> Wherever possible, replace constructs that match either
+> generic_handle_irq(irq_find_mapping()) or
+> generic_handle_irq(irq_linear_revmap()) to a single call to
+> generic_handle_domain_irq().
+>
+> Signed-off-by: Marc Zyngier <maz@kernel.org>
 
-I don't think that we can pass the complex topology in the simple string (127
-chars). For the time, it's better to pass only the vital information which the
-user space requires for the fine-grained hw configuration detection and
-description.
+>  drivers/irqchip/irq-renesas-irqc.c     |  2 +-
 
-For the above example, the "codec:" prefix may be replaced by the purpose
-string (like "hs:" - headset, "spk:" - speaker) etc. This information is not
-available in the ASoC components (purpose / location / exact I/O config etc.).
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
->> The passed information should be consistent. You may look into the Intel ASoC
->> drivers for the examples (card->components initialization). There are also
->> hints about the number of connected microphones ("cfg-mic:2" - configuration
->> with 2 microphones) or the codec purpose ("hs:rt711" - headset codec is RT711)
->> etc.
-> 
-> This sort of stuff is more something that the card should layer on top.
+Gr{oetje,eeting}s,
 
-It would be nice to have this layer with the topology description, but until
-someone designs it, it's much easier to describe the configuration and hints
-in the simple string passed to the user space.
-
-Actually, for ACPI/PCI platforms, the information is gathered from the tables
-or detected by PCI IDs. For the device tree. It may be worth to allow to pass
-this string from the device tree, too. I believe that the DT config author has
-enough information to describe the hardware.
-
-						Jaroslav
+                        Geert
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
