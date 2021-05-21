@@ -2,221 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0341238C663
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:21:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D590438C667
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231925AbhEUMXD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:23:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230290AbhEUMW6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:22:58 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF07FC061763
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:21:33 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lk49k-0001uY-5Z; Fri, 21 May 2021 14:21:32 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lk49i-0000NB-Rf; Fri, 21 May 2021 14:21:30 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>
-Subject: [PATCH v1] ASoC: dt-bindings: Convert imx-audmux binding to json schema
-Date:   Fri, 21 May 2021 14:21:29 +0200
-Message-Id: <20210521122129.1371-1-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.29.2
+        id S232716AbhEUMYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:24:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53806 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230437AbhEUMXv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:23:51 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF4B76108B;
+        Fri, 21 May 2021 12:22:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621599748;
+        bh=hZB5mRvFhvekBVKyrmsMnvBvDkupZwGcOAedXMe34CQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=B105qBG9k+unX7Qa7omnzMl0M5PGM/H7CTtJfg1HEiucvEZWktl/TLnKU2Qm53QwC
+         4rLHaWM97akaxshQbVvTH8XrxkNMMtnhKO2zqu3yar6PiP1nQmsrJqm8YynwIx5rNm
+         BM0fvqTg8J9dpqtKxcO2Pl/NyNqaN6I9wrwQqLjU=
+Date:   Fri, 21 May 2021 14:22:26 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/6] USB: serial: buffer-callback clean ups
+Message-ID: <YKemAh63ldwGUWBh@kroah.com>
+References: <20210519092006.9775-1-johan@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519092006.9775-1-johan@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the imx-audmux binding to DT schema format using json-schema
+On Wed, May 19, 2021 at 11:20:00AM +0200, Johan Hovold wrote:
+> This series clean up a few things related to the chars_in_buffer and
+> write_room callbacks that were found during review of the recent
+> conversion to have these callbacks return an unsigned int.
+> 
+> Johan
+> 
+> 
+> Johan Hovold (6):
+>   USB: serial: digi_acceleport: reduce chars_in_buffer over-reporting
+>   USB: serial: digi_acceleport: add chars_in_buffer locking
+>   USB: serial: io_edgeport: drop buffer-callback sanity checks
+>   USB: serial: mos7720: drop buffer-callback sanity checks
+>   USB: serial: mos7840: drop buffer-callback return-value comments
+>   USB: serial: drop irq-flags initialisations
+> 
+>  drivers/usb/serial/digi_acceleport.c | 34 ++++++++++++++--------------
+>  drivers/usb/serial/io_edgeport.c     | 27 +---------------------
+>  drivers/usb/serial/metro-usb.c       | 12 +++++-----
+>  drivers/usb/serial/mos7720.c         | 17 ++------------
+>  drivers/usb/serial/mos7840.c         |  5 ----
+>  drivers/usb/serial/quatech2.c        |  2 +-
+>  6 files changed, 27 insertions(+), 70 deletions(-)
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- .../devicetree/bindings/sound/imx-audmux.txt  |  28 -----
- .../devicetree/bindings/sound/imx-audmux.yaml | 119 ++++++++++++++++++
- 2 files changed, 119 insertions(+), 28 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/imx-audmux.txt
- create mode 100644 Documentation/devicetree/bindings/sound/imx-audmux.yaml
-
-diff --git a/Documentation/devicetree/bindings/sound/imx-audmux.txt b/Documentation/devicetree/bindings/sound/imx-audmux.txt
-deleted file mode 100644
-index 2db4dcbee1b9..000000000000
---- a/Documentation/devicetree/bindings/sound/imx-audmux.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--Freescale Digital Audio Mux (AUDMUX) device
--
--Required properties:
--
--  - compatible		: "fsl,imx21-audmux" for AUDMUX version firstly used
--			  on i.MX21, or "fsl,imx31-audmux" for the version
--			  firstly used on i.MX31.
--
--  - reg			: Should contain AUDMUX registers location and length.
--
--An initial configuration can be setup using child nodes.
--
--Required properties of optional child nodes:
--
--  - fsl,audmux-port	: Integer of the audmux port that is configured by this
--			  child node.
--
--  - fsl,port-config	: List of configuration options for the specific port.
--			  For imx31-audmux and above, it is a list of tuples
--			  <ptcr pdcr>. For imx21-audmux it is a list of pcr
--			  values.
--
--Example:
--
--audmux@21d8000 {
--	compatible = "fsl,imx6q-audmux", "fsl,imx31-audmux";
--	reg = <0x021d8000 0x4000>;
--};
-diff --git a/Documentation/devicetree/bindings/sound/imx-audmux.yaml b/Documentation/devicetree/bindings/sound/imx-audmux.yaml
-new file mode 100644
-index 000000000000..6078ce13bd46
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/imx-audmux.yaml
-@@ -0,0 +1,119 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/imx-audmux.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale Digital Audio Mux device
-+
-+maintainers:
-+  - Oleksij Rempel <o.rempel@pengutronix.de>
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+        - enum:
-+          - fsl,imx27-audmux
-+        - const: fsl,imx21-audmux
-+      - items:
-+        - enum:
-+          - fsl,imx25-audmux
-+          - fsl,imx35-audmux
-+          - fsl,imx50-audmux
-+          - fsl,imx51-audmux
-+          - fsl,imx53-audmux
-+          - fsl,imx6q-audmux
-+          - fsl,imx6sl-audmux
-+          - fsl,imx6sll-audmux
-+          - fsl,imx6sx-audmux
-+        - const: fsl,imx31-audmux
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: audmux
-+
-+patternProperties:
-+  "^mux-[0-9a-z]*$":
-+    type: object
-+    properties:
-+      fsl,audmux-port:
-+        $ref: /schemas/types.yaml#/definitions/uint32
-+        description: |
-+          Integer of the audmux port that is configured by this child node
-+
-+      fsl,port-config:
-+        $ref: /schemas/types.yaml#/definitions/uint32-array
-+        description: |
-+          List of configuration options for the specific port.
-+          For imx31-audmux and above, it is a list of tuples ptcr pdcr.
-+          For imx21-audmux it is a list of pcr values.
-+
-+    required:
-+      - fsl,audmux-port
-+      - fsl,port-config
-+
-+    additionalProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    audmux@21d8000 {
-+        compatible = "fsl,imx6q-audmux", "fsl,imx31-audmux";
-+        reg = <0x021d8000 0x4000>;
-+    };
-+  - |
-+    audmux@10016000 {
-+        compatible = "fsl,imx27-audmux", "fsl,imx21-audmux";
-+        reg = <0x10016000 0x1000>;
-+        clocks = <&clks 1>;
-+        clock-names = "audmux";
-+
-+        mux-ssi0 {
-+            fsl,audmux-port = <0>;
-+            fsl,port-config = <0xcb205000>;
-+        };
-+
-+        mux-pins4 {
-+            fsl,audmux-port = <2>;
-+            fsl,port-config = <0x00001000>;
-+        };
-+    };
-+  - |
-+    #include <dt-bindings/sound/fsl-imx-audmux.h>
-+    audmux@21d8000 {
-+        compatible = "fsl,imx6q-audmux", "fsl,imx31-audmux";
-+        reg = <0x021d8000 0x4000>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pinctrl_audmux>;
-+
-+        mux-ssi1 {
-+            fsl,audmux-port = <0>;
-+            fsl,port-config = <
-+                IMX_AUDMUX_V2_PTCR_SYN		0
-+                IMX_AUDMUX_V2_PTCR_TFSEL(2)	0
-+                IMX_AUDMUX_V2_PTCR_TCSEL(2)	0
-+                IMX_AUDMUX_V2_PTCR_TFSDIR	0
-+                IMX_AUDMUX_V2_PTCR_TCLKDIR      IMX_AUDMUX_V2_PDCR_RXDSEL(2)
-+              >;
-+        };
-+
-+        mux-pins3 {
-+            fsl,audmux-port = <2>;
-+            fsl,port-config = <
-+                IMX_AUDMUX_V2_PTCR_SYN          IMX_AUDMUX_V2_PDCR_RXDSEL(0)
-+                0                               IMX_AUDMUX_V2_PDCR_TXRXEN
-+              >;
-+        };
-+    };
--- 
-2.29.2
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
