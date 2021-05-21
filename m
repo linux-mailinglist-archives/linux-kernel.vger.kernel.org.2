@@ -2,72 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6CE38C823
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24A8738C825
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:31:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235573AbhEUNbx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:31:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47658 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232172AbhEUNbw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:31:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 061EF610CB;
-        Fri, 21 May 2021 13:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621603829;
-        bh=DgSfnqgX8iAJF8CgJVRj6UxP6HXcUcoeisNmrM46YX8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=g7OtleNjz6iGFBsYuSb4zRjfyQz9uUglSD21ywr0RyMPosjj6n5UlIP54yur6orbo
-         E2lzAOQzz43sex9CLMHDPZnu6Ar9+Jwm6tpNYQInhIxDJyzN34XxSnSIEcNXPE/M2J
-         Atf7YvlkvzPkbvwtlhXNndUeKLlYR+rchs7mb8yN/NnpcyRDTCkJAZ2Fq5+H7Va1M2
-         CpOukwWo3RGWl40nh5f5cLaFLB3vvGeyhrODLrG/UwUtdxwml/JBCEq6UTRbQzWDu5
-         /1CZPykn3tdxUF2qg5j0glxpdr4nVHZE/lQR5K5HwNDBRAvB1sc1gD399MdwmMf0rX
-         x6/X3jI4Dykdw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lk5EU-0004Vh-44; Fri, 21 May 2021 15:30:30 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] mmc: vub3000: fix control-request direction
-Date:   Fri, 21 May 2021 15:30:26 +0200
-Message-Id: <20210521133026.17296-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
+        id S233003AbhEUNci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:32:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232172AbhEUNch (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:32:37 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2147DC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:31:14 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id n83so16622733ybg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:31:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FYTaWwfm3QROhcwX/aUHvjSyyM0wTPBO8vdBpVZtKz4=;
+        b=A55JpB1jUFRqlWxwgK1BVww09N9MwOR2hRPz1RqTYc2OKY7rDml7CD4ECC2ZiOizyh
+         SIZJL6KVlzT/7IoylesL0LXmiwqxawosLNbTxAn6iHU7BevrQM7hC5mypff0Hq04FgD+
+         aDyBBnbW/0jzJ9hW8zf6GSWbN8YnEaoSI64YasDOaYld0NnHJlTKJ7Di7huV6x5oik2y
+         FsxJns6A8hhjrpsZfLk4aTjbyOg9weudo1LwQJNizCMsTseNZYuKw2K53qm+28dd4Etr
+         QkNEiFaHOcv/6GqOgqvahWEv/1fmJ6OKKtxvs5qWNi8OymKOOX1KY+jA4xRNCZqNOVA1
+         71EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FYTaWwfm3QROhcwX/aUHvjSyyM0wTPBO8vdBpVZtKz4=;
+        b=dAJbqcamqvywpOJZigfVAxxKsWLJNhOpPvuJiesmN+gMSSblGgtNpYgFNB0041Lrgd
+         hwAzPqOsmRlEAv/X6XSXz1C+0OZnq0SqD1ZjTvYzCLyO80Sy7cUU/aNe5oB0g51dtB8b
+         kHUWvCFCrjgSdpKaK0JsRC/dW+2MoBunkhIkynUAziK2fy134Xsz9kMX/Yj3ap2PUjP3
+         UjBHnJfY4la3Cjzsn57hcMesZVPX1ts8YT/XjizjcikFH6eImjYVYjQUh3TtCfMzVKP2
+         lZ8iq8xG3RPc98NvXrbW0JfAi3g5a9Z3zfo8EeHl1WPmbjcQU/uTHZuScONV6aKZNvEc
+         I9Kw==
+X-Gm-Message-State: AOAM5311HdwC+IFXroRHOzKCeXQ8D2K7DIj/f0DAzalCCEIMA/wLJHxU
+        CwVaJmFmOpzTB3pHO3axsl3g2jBG9q82DSlKK1dzpg==
+X-Google-Smtp-Source: ABdhPJz0HweSawACq/CUdkjijXK0nu4odf0TqGCa9K8F8pOSgN2+YUXxO7Y1dMpQ7atIrdCSLgzb17hpJhNnIPmmxcw=
+X-Received: by 2002:a25:9d86:: with SMTP id v6mr14593522ybp.366.1621603873465;
+ Fri, 21 May 2021 06:31:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210514085627.11230-1-aardelean@deviqon.com>
+In-Reply-To: <20210514085627.11230-1-aardelean@deviqon.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Fri, 21 May 2021 15:31:02 +0200
+Message-ID: <CAMpxmJVL4Bxhj3mqaTDofVhd1mAt=wUwu51McOK=WMUSvH7gLg@mail.gmail.com>
+Subject: Re: [PATCH] gpio: gpio-adp5520: cleanup probe error path + remove platform_set_drvdata()
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Michael Hennerich <michael.hennerich@analog.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+On Fri, May 14, 2021 at 10:56 AM Alexandru Ardelean
+<aardelean@deviqon.com> wrote:
+>
+> The platform_set_drvdata() call is only useful if we need to retrieve back
+> the private information.
+> Since the driver doesn't do that, it's not useful to have it.
+>
+> This also means that the 'err' label can be removed and all goto statements
+> replaced with direct returns (with error codes).
+>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+> ---
+>  drivers/gpio/gpio-adp5520.c | 18 ++++--------------
+>  1 file changed, 4 insertions(+), 14 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-adp5520.c b/drivers/gpio/gpio-adp5520.c
+> index 0386ede53f3a..c55e821c63b6 100644
+> --- a/drivers/gpio/gpio-adp5520.c
+> +++ b/drivers/gpio/gpio-adp5520.c
+> @@ -113,10 +113,8 @@ static int adp5520_gpio_probe(struct platform_device *pdev)
+>                 if (pdata->gpio_en_mask & (1 << i))
+>                         dev->lut[gpios++] = 1 << i;
+>
+> -       if (gpios < 1) {
+> -               ret = -EINVAL;
+> -               goto err;
+> -       }
+> +       if (gpios < 1)
+> +               return -EINVAL;
+>
+>         gc = &dev->gpio_chip;
+>         gc->direction_input  = adp5520_gpio_direction_input;
+> @@ -148,18 +146,10 @@ static int adp5520_gpio_probe(struct platform_device *pdev)
+>
+>         if (ret) {
+>                 dev_err(&pdev->dev, "failed to write\n");
+> -               goto err;
+> +               return ret;
+>         }
+>
+> -       ret = devm_gpiochip_add_data(&pdev->dev, &dev->gpio_chip, dev);
+> -       if (ret)
+> -               goto err;
+> -
+> -       platform_set_drvdata(pdev, dev);
+> -       return 0;
+> -
+> -err:
+> -       return ret;
+> +       return devm_gpiochip_add_data(&pdev->dev, &dev->gpio_chip, dev);
+>  }
+>
+>  static struct platform_driver adp5520_gpio_driver = {
+> --
+> 2.31.1
+>
 
-Fix the SET_ROM_WAIT_STATES request which erroneously used
-usb_rcvctrlpipe().
-
-Fixes: 88095e7b473a ("mmc: Add new VUB300 USB-to-SD/SDIO/MMC driver")
-Cc: stable@vger.kernel.org      # 3.0
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
- drivers/mmc/host/vub300.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/mmc/host/vub300.c b/drivers/mmc/host/vub300.c
-index 739cf63ef6e2..4950d10d3a19 100644
---- a/drivers/mmc/host/vub300.c
-+++ b/drivers/mmc/host/vub300.c
-@@ -2279,7 +2279,7 @@ static int vub300_probe(struct usb_interface *interface,
- 	if (retval < 0)
- 		goto error5;
- 	retval =
--		usb_control_msg(vub300->udev, usb_rcvctrlpipe(vub300->udev, 0),
-+		usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
- 				SET_ROM_WAIT_STATES,
- 				USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
- 				firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
--- 
-2.26.3
-
+Applied, thanks!
+Bartosz
