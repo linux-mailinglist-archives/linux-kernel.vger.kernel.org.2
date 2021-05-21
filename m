@@ -2,100 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C75EE38D071
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEAF38D073
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbhEUWDD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:03:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59620 "EHLO
+        id S229651AbhEUWDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:03:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbhEUWDC (ORCPT
+        with ESMTP id S229472AbhEUWDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:03:02 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECF76C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:01:37 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id z13so31768782lft.1
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:01:37 -0700 (PDT)
+        Fri, 21 May 2021 18:03:50 -0400
+Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2628CC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:02:27 -0700 (PDT)
+Received: by mail-oi1-x22a.google.com with SMTP id u11so21030859oiv.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 15:02:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sDRzh2skEezJB6tv1yJRGOr/uzGzkIEh8BoTRD9XtfQ=;
-        b=njEm0YHjEkDY3e5Z9iKNNLGw1N5nZmsovWPzWhSA0ptWG7O96Nmq7/fCaevTZevbM8
-         dW/XV6EJfZ7IFcCYgUvwOsdsY6wiOoO+5QuknxvXSqFpFgl4kSzATgP8jd0WAW7HByJZ
-         /9Xj+CcKDBlRs/3JdWnUpF6fq8bYYxyizlPmh6aicRPJVPn5ItB1dYiViFF3ZC9NpGtR
-         nQlotkAAupdI2i6GTeM0STEG5XoWGcrDmspSDY9ryrBp5eLLcoadsoSncp2dP6i0NDOq
-         D3z1K0QVOhtqioHPk3Usm65vgwPUecPXWcu9lKEhe9coRDvHuL9qwZuKwSXyRRV8GBDZ
-         4F9g==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=BDWzJy96GRZhQjoib8vzzXu2wXMhgadWs9pgCSJ6fsU=;
+        b=ZL1P3RcabmCpSMTBuX3Ap/4eI2kv9YvrUkO90pGNBu364b+TOSAymdUKfVrGf2ExT0
+         OQamP4ycPJARM/qhO9HKpksIjM9e4rsAEgAseJOvcGiK6n0DzHYpXEsnAa9II2QZAYRQ
+         ofOyLBiRQhZLVQUj+hO7yuT6j5jJlnaEPr4XU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sDRzh2skEezJB6tv1yJRGOr/uzGzkIEh8BoTRD9XtfQ=;
-        b=oG5+ynu4Dr1a/64cfJXUxcWdJtPUKymq3fwKJv6+7U78dXlDapdSGQ7VBLXUPupmSn
-         WqM/dxEc7nNEnWUP6H+LKvcV+o6DO/OzzexE7SQD1yOXLK/Kfieh/IZ1/w+WizuEms76
-         6XuacSH1ka+8O4qEWGvNi6cQx0rXJo1rh5rEKu3DCW9Ee2bJb5giNDybbLg0VyJ/MI0R
-         LIB++mMCYpg3Z/1WiKWhzuDSSKiLePz0oL3gFgDXFWJTm9mlbrrz3LU81DHRy4yIacnO
-         YOI1oCzHoeRoFM2IWpNt9X6KCsK5cRJpqff5Ic4MV+SlnJFM3czUKcdHb+wdID5ZhqKC
-         Wglg==
-X-Gm-Message-State: AOAM531h2dG734C0W84lsEScDpHY/wTnEIUrizJ514DICg75dul1gu5j
-        Ny5PoWC8YNKzYxDihvrNwTMpHwQVOeoqxg/JuRGAuQ==
-X-Google-Smtp-Source: ABdhPJyR6ywlBKYouVLHwWJrlpr6+XJOhEYSGLkUcHGwnCqNN+FpE/iTjLRteYwFzMI3BV57vibtfcqiad+wEsgbCQ4=
-X-Received: by 2002:a05:6512:3a4:: with SMTP id v4mr3472319lfp.473.1621634496124;
- Fri, 21 May 2021 15:01:36 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=BDWzJy96GRZhQjoib8vzzXu2wXMhgadWs9pgCSJ6fsU=;
+        b=DNri7Sl4/ty9xdZc3p341gI/TO5FvATQt/M6zVSBzC0rNFMTrDV5zwuoAucRH/+0wO
+         8ai1JgyRCQdCl12zvkzr/cOebJ2Jzz4yVa1H8NqLvHSjIrGxmV+5ZItyrpzadXwwsesJ
+         BUkvBcEXEInKDBtD6tcxy2mwP9mfiMBZypC2uwrgBXRs8QVImjdPLA1ojgQdGESiuf99
+         /cMdiZsxJ6BsZv0irKkjHfI21pQgbVhB1jRAT+XT+TK1+7IyjnxAGGVVamQlJ1GKfCRK
+         BI0P7pBVbDiB9AiYUmajae3O1+mnvnCauWIaq42u5U110F28rlIIrNtimgIE6H0zcpGQ
+         jT+g==
+X-Gm-Message-State: AOAM531qDz7S3DCkxtcE9Lx4+VytenfmXnRE8wt23FpIPEtMxUMEFCr+
+        ZHsLTvIwDffiBBuS/3sSJKX0bmDQF22v3UQmcqSWsA==
+X-Google-Smtp-Source: ABdhPJxh0vu/e6eESsibJjJILbZzCRD/2LOT2bhTh71e3wvyG25ltZwaMoeOeDpKLlXreBvUibMN9KsYVsL5734xZFA=
+X-Received: by 2002:a54:4501:: with SMTP id l1mr3714709oil.19.1621634546583;
+ Fri, 21 May 2021 15:02:26 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 21 May 2021 15:02:26 -0700
 MIME-Version: 1.0
-References: <20210520183614.1227046-1-posk@google.com> <20210520183614.1227046-5-posk@google.com>
- <CALCETrXo=5r+i6f3qvSp4mEHcR93U3F0S0kFr8d5JGU6WetSqw@mail.gmail.com>
-In-Reply-To: <CALCETrXo=5r+i6f3qvSp4mEHcR93U3F0S0kFr8d5JGU6WetSqw@mail.gmail.com>
-From:   Peter Oskolkov <posk@google.com>
-Date:   Fri, 21 May 2021 15:01:24 -0700
-Message-ID: <CAPNVh5foSzWj3XHoONjvzmLLXOi9u3ojNmdfegohpufx1YYXgg@mail.gmail.com>
-Subject: Re: [RFC PATCH v0.1 4/9] sched/umcg: implement core UMCG API
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Paul Turner <pjt@google.com>, Ben Segall <bsegall@google.com>,
-        Peter Oskolkov <posk@posk.io>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@google.com>,
-        Jim Newsome <jnewsome@torproject.org>
+In-Reply-To: <20210521134516.v2.1.Id496c6fea0cb92ff6ea8ef1faf5d468eb09465e3@changeid>
+References: <20210521134516.v2.1.Id496c6fea0cb92ff6ea8ef1faf5d468eb09465e3@changeid>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 21 May 2021 15:02:26 -0700
+Message-ID: <CAE-0n52xEDak4-vuJQ6SQz83F54-oTm+TjeVJ_0GoezG8O_M5Q@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/msm: Use nvmem_cell_read_variable_le_u32() to read
+ speed bin
+To:     Douglas Anderson <dianders@chromium.org>,
+        Rob Clark <robdclark@gmail.com>
+Cc:     John Stultz <john.stultz@linaro.org>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Jordan Crouse <jordan@cosmicpenguin.net>,
+        linux-arm-msm@vger.kernel.org,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>, Eric Anholt <eric@anholt.net>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 12:32 PM Andy Lutomirski <luto@kernel.org> wrote:
+Quoting Douglas Anderson (2021-05-21 13:45:50)
+> Let's use the newly-added nvmem_cell_read_variable_le_u32() to future
+> proof ourselves a little bit.
 >
-> On Thu, May 20, 2021 at 11:36 AM Peter Oskolkov <posk@google.com> wrote:
-> >
-> > Implement version 1 of core UMCG API (wait/wake/swap).
-> >
-> > As has been outlined in
-> > https://lore.kernel.org/lkml/20200722234538.166697-1-posk@posk.io/,
-> > efficient and synchronous on-CPU context switching is key
-> > to enabling two broad use cases: in-process M:N userspace scheduling
-> > and fast X-process RPCs for security wrappers.
-> >
-> > High-level design considerations/approaches used:
-> > - wait & wake can race with each other;
-> > - offload as much work as possible to libumcg in tools/lib/umcg,
-> >   specifically:
-> >   - most state changes, e.g. RUNNABLE <=> RUNNING, are done in
-> >     the userspace (libumcg);
-> >   - retries are offloaded to the userspace.
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> The patch that this depends on is now in mainline so it can be merged
+> at will. I'm just sending this as a singleton patch to make it obvious
+> that there are no dependencies now.
 >
-> Do you have some perf numbers as to how long a UMCG context switch
-> takes compared to a normal one?
+> Changes in v2:
+> - Rebased
+>
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> index b4d8e1b01ee4..a07214157ad3 100644
+> --- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> +++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+> @@ -1403,10 +1403,10 @@ static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
+>  {
+>         struct opp_table *opp_table;
+>         u32 supp_hw = UINT_MAX;
+> -       u16 speedbin;
+> +       u32 speedbin;
+>         int ret;
+>
+> -       ret = nvmem_cell_read_u16(dev, "speed_bin", &speedbin);
+> +       ret = nvmem_cell_read_variable_le_u32(dev, "speed_bin", &speedbin);
 
-I'm not sure what is a "normal context switch" in this context. Futex
-wakeup on a remote idle CPU takes 5-10usec; an on-CPU UMCG context
-switch takes less than 1usec; futex wake + futex wait on the same CPU
-(taskset ***) takes about 1-1.5usec in my benchmarks.
+I missed the review of this API, sorry. I wonder why it doesn't return
+the value into an __le32 pointer. Then the caller could use
+le32_to_cpu() like other places in the kernel and we know that code is
+properly converting the little endian value to CPU native order. Right
+now the API doesn't express the endianess of the bits in the return
+value because it uses u32, so from a static checker perspective (sparse)
+those bits are CPU native order, not little endian.
 
->
-> --Andy
+>         /*
+>          * -ENOENT means that the platform doesn't support speedbin which is
+>          * fine
