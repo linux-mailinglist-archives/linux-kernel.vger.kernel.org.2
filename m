@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 202BB38C251
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:54:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CBEC38C25C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:55:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233909AbhEUI4Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:56:16 -0400
-Received: from mail-vs1-f51.google.com ([209.85.217.51]:44934 "EHLO
-        mail-vs1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhEUI4P (ORCPT
+        id S234160AbhEUI5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233621AbhEUI47 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:56:15 -0400
-Received: by mail-vs1-f51.google.com with SMTP id i29so4262400vsr.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:54:52 -0700 (PDT)
+        Fri, 21 May 2021 04:56:59 -0400
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4464BC0613CE;
+        Fri, 21 May 2021 01:55:36 -0700 (PDT)
+Received: by mail-qv1-xf2e.google.com with SMTP id eb9so10010121qvb.6;
+        Fri, 21 May 2021 01:55:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Kp/ysYVEmYIMLiNSKzfBzrR9z7OzmQLKQ2Sawak68LY=;
+        b=YPBVlWE4l2A4ezAJHFNC+Il1+5+5W12wlemT+PDD4ckOlhVCiC/+9aUy98jCR/BPV/
+         0Und1ZHWCRP7Cb3P+Zl7er4AFX0BtB9boljRfeWE6mwkdBV1ufM09WTLjigU3uLuAVur
+         Uu38UA4LotXZqXdVdEGUYLugFyufHcWfDwVJ/Q6bHtNO0UurK3fiSh0AhH2zhtLMdppZ
+         OjEdVtuVAafnBEwt9rWhYNH3QS6bJIKjYtquGrAaR8aT2lyoXjBsUBxGTD+xArspOX+p
+         cgf66olHRhaDmcwB91E5vFdWmXHRJ2BQCC3yA5TgWa4hvba/pPODIi0OyIu5cCGFx1vj
+         9nzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lI66EapJINQfVaC+bNRebZquzzxGjECYNjYDaBWb8as=;
-        b=VS30WhuNeQXuS8fnmZPdiJXbizgtmkvwXkIl3rvUliIooPO1aWJjUcAdsNz4zAZkCD
-         cWbNDhGnTcqc/eQWnNAk3OWwG6LmBnty3ZWBYad9K/IrUbvu/DCLfXUkvOKC6Qu0y74Y
-         qL+U9K4ngVcbcr6YpJ08au1IYYb4nde4XkUsDVCBWIiY3RGSoldZ6dreDtbcMOxNCSMg
-         qZpT4Rpr+oVUDcCpEtAmOp//IrqJYLCJf3KouUCGWCSvr7f2wMsOo3zJFYy85cn8CezS
-         +yRQ2V/cbh2kcRhZZZK6rEzGxT1GY4AtvUm7CEAmp9hN5WyW0O+BhpPsdyLevZit8mTh
-         ktwQ==
-X-Gm-Message-State: AOAM533+BQjtJXLMs2xMaKGPZ5gxdj1or9rF/XP5lopOINvUHbGUN/VC
-        qOByjCMo3OVsjifrEgshMEYzwfcnvLat2qsCDRk=
-X-Google-Smtp-Source: ABdhPJw4LyIepBROa4U+wefLkmkjzEuEKcZWmdgGY7RdxHNl5OwMOZpSP9YANdFrf8DxyCijj8ititq1NriKJlLNdQQ=
-X-Received: by 2002:a05:6102:392:: with SMTP id m18mr9313311vsq.40.1621587291613;
- Fri, 21 May 2021 01:54:51 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Kp/ysYVEmYIMLiNSKzfBzrR9z7OzmQLKQ2Sawak68LY=;
+        b=jX+IvVUny6nEatNS6SzKTvhbiE2sPVNHMzNjxC708TQeTwZXa9cgTc+QJMBmgu7d28
+         qZALV7H6MLe1cm8ZLjYqWj0+nwPMVI1AzIa/UyOhrJYUw6QRB8XXGlXwZhX0xDQexMKb
+         ofdwrzB4SDbiMYwBzry0fZX/nSv4vnh+nVJCV/Vv+CL8ESR/xp3VZmwbOLg0JIYu44FE
+         RnyC4iCeEV7DpAtqgzcJTUMK7k8REKg0y2CzXBRYoUOeQjG0sbiNnx95eBlhIbr7kOky
+         8hWZsKKmMkjO9F7OReGV6yey/0dUaX67f+PeuAgFGVO5Gubs0cggYbTfrUKN28Rgc07Y
+         98vQ==
+X-Gm-Message-State: AOAM533IcTJXPt7yKZMeQtSTu7RC9Gl4W5jDGN5Q5UfcI2v1Ywdbgt7r
+        QEnbDeGvzCZyvqdpQWiA94M=
+X-Google-Smtp-Source: ABdhPJxw7sz5aIuW4iLCr915B8yRlIiLDiAP9oofNv+2RTvcpwKIYwRj+m4cjAgJ02Nrlp/9gllK6g==
+X-Received: by 2002:a05:6214:391:: with SMTP id l17mr11269278qvy.22.1621587335199;
+        Fri, 21 May 2021 01:55:35 -0700 (PDT)
+Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
+        by smtp.gmail.com with ESMTPSA id w189sm4545620qkb.39.2021.05.21.01.55.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 01:55:34 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailauth.nyi.internal (Postfix) with ESMTP id D7F7D27C0054;
+        Fri, 21 May 2021 04:55:33 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Fri, 21 May 2021 04:55:33 -0400
+X-ME-Sender: <xms:hHWnYAyskXIZunEPr7pbZHwONJPXJFnD8eLq-qJzZprtyNChv1oPqg>
+    <xme:hHWnYEQln_O7b0fyjfkbM3AGoa-t676mJjP3L16hAKoFVqjJvnHgSL2o_lRJGS_bH
+    6V19LCaN45uCetEIg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejfedguddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvuffkfhggtggujgesthdtre
+    dttddtvdenucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehg
+    mhgrihhlrdgtohhmqeenucggtffrrghtthgvrhhnpedvleeigedugfegveejhfejveeuve
+    eiteejieekvdfgjeefudehfefhgfegvdegjeenucfkphepudefuddruddtjedruddrvdeh
+    geenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsoh
+    hquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedq
+    udejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmh
+    gvrdhnrghmvg
+X-ME-Proxy: <xmx:hHWnYCVOTgANXFIGudOCzU24BaVzd0oOoyFux7QVb2Te0ND3J3K1Hw>
+    <xmx:hHWnYOjvi-ASIsXvBePK82oucn2cjbSD_dHuFg1YG9hMA-dE3bDoYw>
+    <xmx:hHWnYCBaQ-twQ9KbfEUewKL3--UZJVkf9ktkj3e5M7duNpAkLdCITw>
+    <xmx:hXWnYICI7G6vBX8T_N6Djb9U7Xe6RkDmzIZQl5wEfk65A0nw9FpYsSdlaQw>
+Received: from localhost (unknown [131.107.1.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Fri, 21 May 2021 04:55:32 -0400 (EDT)
+Date:   Fri, 21 May 2021 16:55:05 +0800
+From:   Boqun Feng <boqun.feng@gmail.com>
+To:     Xiongwei Song <sxwjean@me.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
+        longman@redhat.com, corbet@lwn.net, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, Xiongwei Song <sxwjean@gmail.com>
+Subject: Re: [PATCH] docs: lockdep-design: correct the notation for writer
+Message-ID: <YKd1aVkojNsx4wrl@boqun-archlinux>
+References: <1621578594-13237-1-git-send-email-sxwjean@me.com>
 MIME-Version: 1.0
-References: <20210520163751.27325-1-maz@kernel.org> <20210520163751.27325-28-maz@kernel.org>
-In-Reply-To: <20210520163751.27325-28-maz@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 May 2021 10:54:39 +0200
-Message-ID: <CAMuHMdVWunk7dUixTigJCkXAKcq6oTOUZoNFaR2_pz7iXw+OHQ@mail.gmail.com>
-Subject: Re: [PATCH 27/39] irqchip: Bulk conversion to generic_handle_domain_irq()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1621578594-13237-1-git-send-email-sxwjean@me.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 6:57 PM Marc Zyngier <maz@kernel.org> wrote:
-> Wherever possible, replace constructs that match either
-> generic_handle_irq(irq_find_mapping()) or
-> generic_handle_irq(irq_linear_revmap()) to a single call to
-> generic_handle_domain_irq().
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+On Fri, May 21, 2021 at 02:29:54PM +0800, Xiongwei Song wrote:
+> From: Xiongwei Song <sxwjean@gmail.com>
+> 
+> The block condition matrix is using 'E' as the writer noation here, so it
+> would be better to use 'E' as the reminder rather than 'W'.
+> 
 
->  drivers/irqchip/irq-renesas-irqc.c     |  2 +-
+Good catch!
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
 
-Gr{oetje,eeting}s,
+Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
 
-                        Geert
+Regards,
+Boqun
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> ---
+>  Documentation/locking/lockdep-design.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
+> index 9f3cfca..c3b923a 100644
+> --- a/Documentation/locking/lockdep-design.rst
+> +++ b/Documentation/locking/lockdep-design.rst
+> @@ -462,7 +462,7 @@ Block condition matrix, Y means the row blocks the column, and N means otherwise
+>  	| R | Y | Y | N |
+>  	+---+---+---+---+
+>  
+> -	(W: writers, r: non-recursive readers, R: recursive readers)
+> +	(E: writers, r: non-recursive readers, R: recursive readers)
+>  
+>  
+>  acquired recursively. Unlike non-recursive read locks, recursive read locks
+> -- 
+> 2.7.4
+> 
