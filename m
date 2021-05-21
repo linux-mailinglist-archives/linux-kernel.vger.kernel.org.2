@@ -2,67 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 110ED38CDB4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C485638CDB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238981AbhEUSow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:44:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238979AbhEUSou (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:44:50 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B30C061574;
-        Fri, 21 May 2021 11:43:25 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0ea400fbcd5718c7a034c2.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:a400:fbcd:5718:c7a0:34c2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 87CDF1EC071E;
-        Fri, 21 May 2021 20:43:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1621622604;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=vFVTqBpUpF5lkAZTvKtHNXOqH6JbT1bVaIWzNcF9VCc=;
-        b=dlCubREL4UKZBjnpzC3sdwbWEX30Y3DMl3RVW3wCw3kiQoX9kpB3uEJEp2i+cEk5vNtGZN
-        OBeMn4w/ZyQCPysR+CZh5Ep2ks8Kk8EN+tU8T4PYayDin9VOVsXRe5SbHWVw7sMz+ywH6d
-        0COejeCpRPS0HP5y19suAo0V1U6+O/w=
-Date:   Fri, 21 May 2021 20:43:23 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wei Huang <wei.huang2@amd.com>, David Bartley <andareed@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-x86_64@vger.kernel.org
-Subject: Re: [PATCH] x86/amd_nb: add AMD family 19h model 50h PCI ids
-Message-ID: <YKf/SwCD1Efsn4nV@zn.tnic>
-References: <20210520174130.94954-1-andareed@gmail.com>
- <YKeHBI757jX65ULa@zn.tnic>
- <2ba654b5-1c08-85da-b932-9d5a92d5c930@amd.com>
- <13e9db0f-a1d7-8699-a7d9-90246c7df553@roeck-us.net>
+        id S239005AbhEUSpI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:45:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47446 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230462AbhEUSpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:45:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA43B61175;
+        Fri, 21 May 2021 18:43:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621622624;
+        bh=JGwzVWG0oaJPVbHUFXeJg85XoVr3cUq6OrUe8Vhri5M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SJA/q5OIvgx+IlAjUa/LdplP0J5HtRj2vVygrgv+gwA/K4zootbrLAEhidLHUsDrY
+         fNYB7sKjMOSqbqWBcRQOUQAz9Rj0udSTceQeSc+7f0+f/zSjq2+Xn3ITLN1EJmRotx
+         T5IbbGSwdWxGIlgRtpiBq1b9ANl28dGcPusgRm5I=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH] debugfs: remove return value of debugfs_create_ulong()
+Date:   Fri, 21 May 2021 20:43:40 +0200
+Message-Id: <20210521184340.1348539-1-gregkh@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <13e9db0f-a1d7-8699-a7d9-90246c7df553@roeck-us.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 10:45:53AM -0700, Guenter Roeck wrote:
-> Yes, it does [1]. Fine with me though to define it locally there.
-> I personally find that easier since it would avoid the recurring
-> "I don't see this define used anywhere else besides xxx".
-> Someone else can clean that up later if so desired.
+No one checks the return value of debugfs_create_ulong(), as it's not
+needed, so make the return value void, so that no one tries to do so in
+the future.
 
-Or someone can ask first or maybe even get CCed on both patches so that
-someone can see the full picture. :-)
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ fs/debugfs/file.c       | 18 ++++--------------
+ include/linux/debugfs.h | 14 +++++---------
+ 2 files changed, 9 insertions(+), 23 deletions(-)
 
-Anyway, I'll commit it as-is.
-
-Thx.
-
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index e813acfaa6e8..d513d5465c89 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -582,22 +582,12 @@ DEFINE_DEBUGFS_ATTRIBUTE(fops_ulong_wo, NULL, debugfs_ulong_set, "%llu\n");
+  * This function creates a file in debugfs with the given name that
+  * contains the value of the variable @value.  If the @mode variable is so
+  * set, it can be read from, and written to.
+- *
+- * This function will return a pointer to a dentry if it succeeds.  This
+- * pointer must be passed to the debugfs_remove() function when the file is
+- * to be removed (no automatic cleanup happens if your module is unloaded,
+- * you are responsible here.)  If an error occurs, ERR_PTR(-ERROR) will be
+- * returned.
+- *
+- * If debugfs is not enabled in the kernel, the value ERR_PTR(-ENODEV) will
+- * be returned.
+  */
+-struct dentry *debugfs_create_ulong(const char *name, umode_t mode,
+-				    struct dentry *parent, unsigned long *value)
++void debugfs_create_ulong(const char *name, umode_t mode, struct dentry *parent,
++			  unsigned long *value)
+ {
+-	return debugfs_create_mode_unsafe(name, mode, parent, value,
+-					&fops_ulong, &fops_ulong_ro,
+-					&fops_ulong_wo);
++	debugfs_create_mode_unsafe(name, mode, parent, value, &fops_ulong,
++				   &fops_ulong_ro, &fops_ulong_wo);
+ }
+ EXPORT_SYMBOL_GPL(debugfs_create_ulong);
+ 
+diff --git a/include/linux/debugfs.h b/include/linux/debugfs.h
+index 1fdb4343af9c..4e82f2b1fa62 100644
+--- a/include/linux/debugfs.h
++++ b/include/linux/debugfs.h
+@@ -112,8 +112,8 @@ void debugfs_create_u32(const char *name, umode_t mode, struct dentry *parent,
+ 			u32 *value);
+ void debugfs_create_u64(const char *name, umode_t mode, struct dentry *parent,
+ 			u64 *value);
+-struct dentry *debugfs_create_ulong(const char *name, umode_t mode,
+-				    struct dentry *parent, unsigned long *value);
++void debugfs_create_ulong(const char *name, umode_t mode, struct dentry *parent,
++			  unsigned long *value);
+ void debugfs_create_x8(const char *name, umode_t mode, struct dentry *parent,
+ 		       u8 *value);
+ void debugfs_create_x16(const char *name, umode_t mode, struct dentry *parent,
+@@ -266,13 +266,9 @@ static inline void debugfs_create_u32(const char *name, umode_t mode,
+ static inline void debugfs_create_u64(const char *name, umode_t mode,
+ 				      struct dentry *parent, u64 *value) { }
+ 
+-static inline struct dentry *debugfs_create_ulong(const char *name,
+-						umode_t mode,
+-						struct dentry *parent,
+-						unsigned long *value)
+-{
+-	return ERR_PTR(-ENODEV);
+-}
++static inline void debugfs_create_ulong(const char *name, umode_t mode,
++					struct dentry *parent,
++					unsigned long *value) { }
+ 
+ static inline void debugfs_create_x8(const char *name, umode_t mode,
+ 				     struct dentry *parent, u8 *value) { }
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
