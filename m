@@ -2,91 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 307B238C057
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:07:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9878538C05C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:07:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235099AbhEUHF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:05:29 -0400
-Received: from vps-vb.mhejs.net ([37.28.154.113]:46922 "EHLO vps-vb.mhejs.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234003AbhEUHFR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:05:17 -0400
-Received: from MUA
-        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94.2)
-        (envelope-from <mail@maciej.szmigiero.name>)
-        id 1ljzCG-000549-5O; Fri, 21 May 2021 09:03:48 +0200
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Igor Mammedov <imammedo@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
- <b8258ced64a81c7d90320c2921fe08b11eb47362.1621191551.git.maciej.szmigiero@oracle.com>
- <YKWB9bPyyFfo0uhf@google.com>
-From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
-Subject: Re: [PATCH v3 2/8] KVM: Integrate gfn_to_memslot_approx() into
- search_memslots()
-Message-ID: <4e24f674-6250-626d-48cd-4e0fe60defa4@maciej.szmigiero.name>
-Date:   Fri, 21 May 2021 09:03:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S235217AbhEUHI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235365AbhEUHIu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:08:50 -0400
+Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5874AC06138F
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:04:52 -0700 (PDT)
+Received: by mail-qt1-x82c.google.com with SMTP id y12so14607572qtx.11
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:04:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AEw/2V7/xpmVmNpjjOkVlxPAcJgRBwQ9KZP9S0+LhGs=;
+        b=vgb3uAFmlPGVXAd91EJa6J4LHy8LHu+U29axDVp5UZhMh+fe91loAj1CTq+Gdm3t9H
+         HDxcGhiah+7YPM/Hk6PLL4W0/2u1/z0X5YNxOVspAv2Ku8vnZPWkQti+J9JjowrHG7bI
+         z46AGqk0o6qyNmV3pBM2jC81hIDUfUkrkQXCDBc/ci7c8Fqt3LcLGF/q25GEFtJVbDQg
+         3TDJUYCgV+ROCX6L2zmMWVjPqOGLgLDwjeMTsS2XWhjM5OwAL2QoEzl17X1Kk5AzWcYs
+         8wXTqDa+d6CARDy0yZ8IJ7ZvbYrcC9aYEzH9LO7cWosbxY/dBTZeQz1MxNs7qKVEc5J7
+         TAKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AEw/2V7/xpmVmNpjjOkVlxPAcJgRBwQ9KZP9S0+LhGs=;
+        b=XWrKb5MhE8pZOOZs6Ga1rLubvuzNbXprSIs+g9GnusqewDsCxWMKpc9NUw5THyUzQe
+         Cjsp0qoltRBVNWKhzcCbQqXEMBrbGYtKkzOFIFqOs2WnTG4hx08BIG9W9bzxUmyTlw3i
+         sm5bozFuiw4mDFycRSLg01OzUEQ7tYelXSuo8ltzmCo+D4gMXnpJI9fSvS/YLviZZgw9
+         QmM3jlQB8KvO4PMMnkRwcABZs1QmwMA21ZgMeV/TquQVpyIJIjOyKQnTW5vvLSm6qPUI
+         /PMxWY9JLpGVxZ2hB6ewoQ60HVQlFdDh/UnnT4ghshAz4EL0pEvtAJCM7OaoI3MDKZcU
+         eg8g==
+X-Gm-Message-State: AOAM530ufwP06WjMfYvuvuC312wyle4drnEmKhqrx11rFiWJHS6IIIOy
+        rj7PdjjCkWrmfbdrqRJluFdqGeSiGcyxZu5BwuWVuw==
+X-Google-Smtp-Source: ABdhPJxBl69YJ2DivfUpEV1speNJDfx8ufFZ4oirpKc3gjTnIcoQhKPkIj8PsdvtwiF9BnwCBN/zC96sHLv1rhA0bxc=
+X-Received: by 2002:ac8:4e21:: with SMTP id d1mr9657232qtw.290.1621580691240;
+ Fri, 21 May 2021 00:04:51 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <YKWB9bPyyFfo0uhf@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <0000000000003687bd05c2b2401d@google.com> <CACT4Y+YJDGFN4q-aTPritnjjHEXiFovOm9eO6Ay4xC1YOa5z3w@mail.gmail.com>
+ <c545268c-fe62-883c-4c46-974b3bb3cea1@infradead.org> <CACT4Y+aEtYPAdrU7KkE303yDw__QiG7m1tWVJewV8C_Mt9=1qg@mail.gmail.com>
+ <208cd812-214f-ef2f-26ec-cc7a73953885@i-love.sakura.ne.jp>
+In-Reply-To: <208cd812-214f-ef2f-26ec-cc7a73953885@i-love.sakura.ne.jp>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Fri, 21 May 2021 09:04:39 +0200
+Message-ID: <CACT4Y+Y8KmaoEj0L8g=wX4owS38mjNLVMMLsjyoN8DU9n=FrrQ@mail.gmail.com>
+Subject: Re: [syzbot] BUG: MAX_LOCKDEP_KEYS too low! (2)
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Miller <davem@davemloft.net>,
+        syzbot <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        WireGuard mailing list <wireguard@lists.zx2c4.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.05.2021 23:24, Sean Christopherson wrote:
-> On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
->> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
->> index 8895b95b6a22..3c40c7d32f7e 100644
->> --- a/include/linux/kvm_host.h
->> +++ b/include/linux/kvm_host.h
->> @@ -1091,10 +1091,14 @@ bool kvm_arch_irqfd_allowed(struct kvm *kvm, struct kvm_irqfd *args);
->>    * gfn_to_memslot() itself isn't here as an inline because that would
->>    * bloat other code too much.
->>    *
->> + * With "approx" set returns the memslot also when the address falls
->> + * in a hole. In that case one of the memslots bordering the hole is
->> + * returned.
->> + *
->>    * IMPORTANT: Slots are sorted from highest GFN to lowest GFN!
->>    */
->>   static inline struct kvm_memory_slot *
->> -search_memslots(struct kvm_memslots *slots, gfn_t gfn)
->> +search_memslots(struct kvm_memslots *slots, gfn_t gfn, bool approx)
-> 
-> An alternative to modifying the PPC code would be to make the existing
-> search_memslots() a wrapper to __search_memslots(), with the latter taking
-> @approx.
+On Thu, May 20, 2021 at 7:02 AM Tetsuo Handa
+<penguin-kernel@i-love.sakura.ne.jp> wrote:
+>
+> On 2021/05/20 5:09, Dmitry Vyukov wrote:
+> > On Wed, May 19, 2021 at 9:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
+> >>
+> >> On 5/19/21 12:48 PM, Dmitry Vyukov wrote:
+> >>> On Wed, May 19, 2021 at 7:35 PM syzbot
+> >>> <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com> wrote:
+> >>>>
+> >>>> Hello,
+> >>>>
+> >>>> syzbot found the following issue on:
+> >>>>
+> >>>> HEAD commit:    b81ac784 net: cdc_eem: fix URL to CDC EEM 1.0 spec
+> >>>> git tree:       net
+> >>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a257c3d00000
+> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=5b86a12e0d1933b5
+> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a70a6358abd2c3f9550f
+> >>>>
+> >>>> Unfortunately, I don't have any reproducer for this issue yet.
+> >>>>
+> >>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> >>>> Reported-by: syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com
+> >>>>
+> >>>> BUG: MAX_LOCKDEP_KEYS too low!
+> >>>
+> >>
+> >> include/linux/lockdep.h
+> >>
+> >> #define MAX_LOCKDEP_KEYS_BITS           13
+> >> #define MAX_LOCKDEP_KEYS                (1UL << MAX_LOCKDEP_KEYS_BITS)
+> >
+> > Ouch, so it's not configurable yet :(
+>
+> I didn't try to make this value configurable, for
+>
+> > Unless, of course, we identify the offender that produced thousands of
+> > lock classes in the log and fix it.
+>
+> number of currently active locks should decrease over time.
+> If this message is printed, increasing this value unlikely helps.
+>
+> We have https://lkml.kernel.org/r/c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru
+> which seems to be unresolved.
+>
+> Regarding this report, cleanup of bonding device is too slow to catch up to
+> creation of bonding device?
+>
+> We might need to throttle creation of BPF, bonding etc. which involve WQ operation for clean up?
 
-I guess you mean that if search_memslots() only does an exact search
-(like the current code does) its 3 callers won't have to be modified.
-Will do it then.
+I see, thanks for digging into it.
 
-> We might also want to make this __always_inline to improve the likelihood of the
-> compiler optimizing away @approx.  I doubt it matters in practice...
+Unbounded asynchronous queueing is always a recipe for disaster... I
+assume such issues can affect production as well, if some program
+creates namespaces/devices in a loop. So I think ideally such things
+are throttled/restricted in the kernel, e.g. new namespaces/devices
+are not created if some threshold is reached.
 
-Sounds like a good idea, will do.
-
-Thanks,
-Maciej
+Potentially syzkaller could throttle creation of new
+namespaces/devices if we find a good and reliable way to monitor
+backlog. Something like the length of a particular workqueue. It may
+also help with OOMs. But so far I haven't found it.
