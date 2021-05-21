@@ -2,292 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4591E38C46F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:12:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D278C38C470
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234122AbhEUKN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:13:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        id S232568AbhEUKRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:17:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40810 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232409AbhEUKNx (ORCPT
+        with ESMTP id S230050AbhEUKQ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:13:53 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54219C061574;
-        Fri, 21 May 2021 03:12:30 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id 27so12543164pgy.3;
-        Fri, 21 May 2021 03:12:30 -0700 (PDT)
+        Fri, 21 May 2021 06:16:56 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47161C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 03:15:33 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so7087544pjt.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 03:15:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OhchZa7DVPUcXuy8VPSlCODqEh2K2rK3oQYzq2HCeoM=;
-        b=oDxU3dtm4b5UHRRsiFpEMI74xh8VEX5fBkcFrs35LzwYrsU4Xjb8uDEJva4NSyLaj5
-         isR2rYaYizTeIJx1y+FK2uMDWCQP8ZLQdvWtOa/pvb7CVj4QqIY7IJ+Am4koqQxQhAWP
-         +hl4kfgvwM6SrrwA7Q5l2TiIfN6XNVSbMAAXD3g5emhFiGpXfbf24gK0Gp+9SrNxfCvs
-         A1A0D48g28KOd6KQxv9+A2I3PRRWHA2VLE5ltktjwYQwAnALbKabTO4vu9DbXfO/vrH2
-         ShxsGLpxyUNzt5Kg8ZGa/irDuPZ1HI6kXTf2CGry13ue+ytdkqhWTyPAZ8m6g1NOP+i7
-         8tvw==
+        bh=n1UKW5UlxzKbk0NJW2nQB3WP1Q3DywulUf5siHzqJFU=;
+        b=HOUswS10DhLNpIZyKBkwrrTE1O4RGf+SieRNOyQOmS/VgbVUX9d4CgfdoQx4Yf/9SV
+         rqk24EDQ6AkSKnYpkkXH8seVIld5Tg3IJ9xm/G8jWSjkItjtjlktbBRz8bdPckQidBrm
+         2YO053sy1hquSKocZB0y0h+nOsWmY5iaCj5Fn5o0xAhisi8NWgMN2U/ZyBWEjWhDKuaL
+         RsW9gh3t82U7jYjYcBLZaEM5tUR+maCUr+/22JHu76v8U5uaIAhF0rTCyzw5BhVJQKxW
+         QRUWBxP8kY5HHlYsxVJU7GtIaHVQqLaWbDEkT3JzgXBJmWogy2sywieZ3vWx6bOFYizp
+         X24A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=OhchZa7DVPUcXuy8VPSlCODqEh2K2rK3oQYzq2HCeoM=;
-        b=PfevpkMFVnhVkoN37C2sIn//Iv6RUOmLfwm2uOvDV6r5ah3WePoJgOjX2gZAKIWbwP
-         F15GyxqiRMfXIyeWYJpVCEW66lEZFUCg4nRiXx4RsTXM2458Q9oIykJf0FHm0/43Zt+q
-         T9ovNiK/aL8pNxVAzj4pI0TiqufoRW2x/EtRBdBeobd+KFgALOL9a8L2diNQJAFme816
-         ulig9Sz2xJLzoRPc0xqOuQXh3zwqiWq/DFD3Hj/q6fFXV0dI8+NOTA7lxtbt75nuHC5w
-         juLAjQpEukKVvDcn9D4WtkXrPYtPyQ6K6YsuK3WnDzpTEA9yrnkB+9Z9rIrf2e/mqZIU
-         gniQ==
-X-Gm-Message-State: AOAM531bzo8wh+WAgPThWuc61p8NaTWzlcH7tRCk+fY5GnW0otn8eYAN
-        adJ9NkTN/OvKr8D5CWVcQqj0BHdRh6mkcBWhPX0=
-X-Google-Smtp-Source: ABdhPJwWgfZ6LZnsIVEWWWg5BeexZaWlOrNe9XTXXJmU67UYNaVRYaHiFd7yJk8lfJs0kyw7I4kmYNZZIm/s1hLhwuA=
-X-Received: by 2002:a62:bd07:0:b029:2df:2c0a:d5e9 with SMTP id
- a7-20020a62bd070000b02902df2c0ad5e9mr9312869pff.7.1621591949710; Fri, 21 May
- 2021 03:12:29 -0700 (PDT)
+        bh=n1UKW5UlxzKbk0NJW2nQB3WP1Q3DywulUf5siHzqJFU=;
+        b=MFOKN+OXSSccKnJqwa/pCkQFNAfccfG/UA/3IIKXXd6h3ZdzlUt2YYV1vPekcSyGMH
+         qnr/YySkUtXgGbXc1vgyGFT/VqIDt2sH4HM8tbfJpjMpc8XnKgIJhXBQ2XGFJ80Jqair
+         LRF0sUkq7BE9mxfU+zhF1W3867R8ZUC4yTrdIQfOTsihUxyxi2uB4yNx4piyJhdZNLD4
+         HkhRqtyEbJzKybIFuNCBhtbeKkDtI7+ylgn0FQEAlpKRpiPUXgOMLlAstuqx+pnhRW1c
+         PHR8UWhTokMtJ0LXlPQZTCruM/bgL+pg7z/6iMs2kUkRoGKqMsOSPSfHrhbTKLpzPtSO
+         BI/w==
+X-Gm-Message-State: AOAM532Mh1F8LKKoTTsGffNXPMAE1Fae6aOqGBwutJm00V36FzVzuAq+
+        ahaILXZ6f46QmqmOj7f6SE5eUCq33MLVkYtho+U=
+X-Google-Smtp-Source: ABdhPJxEq2HGN4A/zooK2iIxAxNgAMg0hC3KyE32B+t4tuu3PoY1myv+/tLVr+xtw18jx6Y3P5mBWEhkZbHjzGSpGdw=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr10403326pja.181.1621592132531;
+ Fri, 21 May 2021 03:15:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com> <9b040b3610a50e8c3c9579f5d28713af5a59942c.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
-In-Reply-To: <9b040b3610a50e8c3c9579f5d28713af5a59942c.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
+In-Reply-To: <20210511203716.117010-1-rikard.falkeborn@gmail.com>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 21 May 2021 13:12:13 +0300
-Message-ID: <CAHp75VctYvEOXep2-gtfsuTRp+yh+s_0EYubTO2cmh7YQ5OWYg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] gpio: bd71815: Use gpio-regmap
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     Matti Vaittinen <mazziesaccount@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michael Walle <michael@walle.cc>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+Date:   Fri, 21 May 2021 13:15:16 +0300
+Message-ID: <CAHp75Vd+YL2uhn5aHiWbvNu3DeT9OSa7wc+iY8uDnRjdTPc_uA@mail.gmail.com>
+Subject: Re: [PATCH] linux/bits.h: Fix compilation error with GENMASK
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Yury Norov <yury.norov@gmail.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-power <linux-power@fi.rohmeurope.com>
+        Ard Biesheuvel <ardb@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 12:54 PM Matti Vaittinen
-<matti.vaittinen@fi.rohmeurope.com> wrote:
+On Tue, May 11, 2021 at 11:41 PM Rikard Falkeborn
+<rikard.falkeborn@gmail.com> wrote:
 >
-> Utilize the gpio-regmap helper and drop the custom functions
+> GENMASK() has an input check which uses __builtin_choose_expr() to enable
+> a compile time sanity check of its inputs if they are known at compile
+> time. However, it turns out that __builtin_constant_p() does not always
+> return a compile time constant [0]. It was thought this problem was fixed
+> with gcc 4.9 [1], but apparently this is not the case [2].
+>
+> Switch to use __is_constexpr() instead which always returns a compile
+> time constant, regardless of its inputs.
+>
+> [0]: https://lore.kernel.org/lkml/42b4342b-aefc-a16a-0d43-9f9c0d63ba7a@rasmusvillemoes.dk
+> [1]: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=19449
+> [2]: https://lore.kernel.org/lkml/1ac7bbc2-45d9-26ed-0b33-bf382b8d858b@I-love.SAKURA.ne.jp
 
-I like the statistics of this change!
-FWIW,
+Thanks for fixing this issue!
+Since there is a consensus about the place, I have no objection either.
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+> Reported-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 > ---
-> Changelog:
->  - No changes
+> Feedback on placing __is_constexpr() in const.h is welcome, at least the
+> name is appropriate...
 >
->  drivers/gpio/Kconfig        |   1 +
->  drivers/gpio/gpio-bd71815.c | 106 ++++++++++--------------------------
->  2 files changed, 29 insertions(+), 78 deletions(-)
+>  include/linux/bits.h        |  2 +-
+>  include/linux/const.h       |  8 ++++++++
+>  include/linux/minmax.h      | 10 ++--------
+>  tools/include/linux/bits.h  |  2 +-
+>  tools/include/linux/const.h |  8 ++++++++
+>  5 files changed, 20 insertions(+), 10 deletions(-)
 >
-> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-> index 1dd0ec6727fd..97e1348cd410 100644
-> --- a/drivers/gpio/Kconfig
-> +++ b/drivers/gpio/Kconfig
-> @@ -1120,6 +1120,7 @@ config GPIO_BD70528
->  config GPIO_BD71815
->         tristate "ROHM BD71815 PMIC GPIO support"
->         depends on MFD_ROHM_BD71828
-> +       select GPIO_REGMAP
->         help
->           Support for GPO(s) on ROHM BD71815 PMIC. There are two GPOs
->           available on the ROHM PMIC.
-> diff --git a/drivers/gpio/gpio-bd71815.c b/drivers/gpio/gpio-bd71815.c
-> index 08ff2857256f..a241c01e08d1 100644
-> --- a/drivers/gpio/gpio-bd71815.c
-> +++ b/drivers/gpio/gpio-bd71815.c
-> @@ -9,6 +9,7 @@
->   */
+> diff --git a/include/linux/bits.h b/include/linux/bits.h
+> index 7f475d59a097..87d112650dfb 100644
+> --- a/include/linux/bits.h
+> +++ b/include/linux/bits.h
+> @@ -22,7 +22,7 @@
+>  #include <linux/build_bug.h>
+>  #define GENMASK_INPUT_CHECK(h, l) \
+>         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
+>  #else
+>  /*
+>   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+> diff --git a/include/linux/const.h b/include/linux/const.h
+> index 81b8aae5a855..435ddd72d2c4 100644
+> --- a/include/linux/const.h
+> +++ b/include/linux/const.h
+> @@ -3,4 +3,12 @@
 >
->  #include <linux/gpio/driver.h>
-> +#include <linux/gpio/regmap.h>
->  #include <linux/init.h>
->  #include <linux/irq.h>
->  #include <linux/module.h>
-> @@ -18,81 +19,33 @@
->  #include <linux/mfd/rohm-bd71815.h>
+>  #include <vdso/const.h>
 >
->  struct bd71815_gpio {
-> -       /* chip.parent points the MFD which provides DT node and regmap */
-> -       struct gpio_chip chip;
-> -       /* dev points to the platform device for devm and prints */
->         struct device *dev;
-> -       struct regmap *regmap;
->  };
->
-> -static int bd71815gpo_get(struct gpio_chip *chip, unsigned int offset)
-> -{
-> -       struct bd71815_gpio *bd71815 = gpiochip_get_data(chip);
-> -       int ret, val;
-> -
-> -       ret = regmap_read(bd71815->regmap, BD71815_REG_GPO, &val);
-> -       if (ret)
-> -               return ret;
-> -
-> -       return (val >> offset) & 1;
-> -}
-> -
-> -static void bd71815gpo_set(struct gpio_chip *chip, unsigned int offset,
-> -                          int value)
-> -{
-> -       struct bd71815_gpio *bd71815 = gpiochip_get_data(chip);
-> -       int ret, bit;
-> -
-> -       bit = BIT(offset);
-> -
-> -       if (value)
-> -               ret = regmap_set_bits(bd71815->regmap, BD71815_REG_GPO, bit);
-> -       else
-> -               ret = regmap_clear_bits(bd71815->regmap, BD71815_REG_GPO, bit);
-> -
-> -       if (ret)
-> -               dev_warn(bd71815->dev, "failed to toggle GPO\n");
-> -}
-> -
-> -static int bd71815_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
-> +static int bd71815_gpio_set_config(struct regmap *regmap, void *drvdata,
-> +                                  unsigned int offset,
->                                    unsigned long config)
->  {
-> -       struct bd71815_gpio *bdgpio = gpiochip_get_data(chip);
-> +       struct bd71815_gpio *bdgpio = (struct bd71815_gpio *)drvdata;
->
->         switch (pinconf_to_config_param(config)) {
->         case PIN_CONFIG_DRIVE_OPEN_DRAIN:
-> -               return regmap_update_bits(bdgpio->regmap,
-> +               return regmap_update_bits(regmap,
->                                           BD71815_REG_GPO,
->                                           BD71815_GPIO_DRIVE_MASK << offset,
->                                           BD71815_GPIO_OPEN_DRAIN << offset);
->         case PIN_CONFIG_DRIVE_PUSH_PULL:
-> -               return regmap_update_bits(bdgpio->regmap,
-> +               return regmap_update_bits(regmap,
->                                           BD71815_REG_GPO,
->                                           BD71815_GPIO_DRIVE_MASK << offset,
->                                           BD71815_GPIO_CMOS << offset);
->         default:
-> +               dev_err(bdgpio->dev, "Unsupported config (0x%lx)\n", config);
->                 break;
->         }
->         return -ENOTSUPP;
->  }
->
-> -/* BD71815 GPIO is actually GPO */
-> -static int bd71815gpo_direction_get(struct gpio_chip *gc, unsigned int offset)
-> -{
-> -       return GPIO_LINE_DIRECTION_OUT;
-> -}
-> -
-> -/* Template for GPIO chip */
-> -static const struct gpio_chip bd71815gpo_chip = {
-> -       .label                  = "bd71815",
-> -       .owner                  = THIS_MODULE,
-> -       .get                    = bd71815gpo_get,
-> -       .get_direction          = bd71815gpo_direction_get,
-> -       .set                    = bd71815gpo_set,
-> -       .set_config             = bd71815_gpio_set_config,
-> -       .can_sleep              = true,
-> -};
-> -
->  #define BD71815_TWO_GPIOS      GENMASK(1, 0)
->  #define BD71815_ONE_GPIO       BIT(0)
->
-> @@ -111,14 +64,16 @@ static const struct gpio_chip bd71815gpo_chip = {
->   * but allows using it by providing the DT property
->   * "rohm,enable-hidden-gpo".
->   */
-> -static int bd71815_init_valid_mask(struct gpio_chip *gc,
-> +static int bd71815_init_valid_mask(struct regmap *regmap, void *drvdata,
->                                    unsigned long *valid_mask,
->                                    unsigned int ngpios)
->  {
-> +       struct bd71815_gpio *bdgpio = (struct bd71815_gpio *)drvdata;
+> +/*
+> + * This returns a constant expression while determining if an argument is
+> + * a constant expression, most importantly without evaluating the argument.
+> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+> + */
+> +#define __is_constexpr(x) \
+> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
 > +
->         if (ngpios != 2)
->                 return 0;
+>  #endif /* _LINUX_CONST_H */
+> diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+> index c0f57b0c64d9..5433c08fcc68 100644
+> --- a/include/linux/minmax.h
+> +++ b/include/linux/minmax.h
+> @@ -2,6 +2,8 @@
+>  #ifndef _LINUX_MINMAX_H
+>  #define _LINUX_MINMAX_H
 >
-> -       if (gc->parent && device_property_present(gc->parent,
-> +       if (bdgpio->dev && device_property_present(bdgpio->dev->parent,
->                                                   "rohm,enable-hidden-gpo"))
->                 *valid_mask = BD71815_TWO_GPIOS;
->         else
-> @@ -127,9 +82,19 @@ static int bd71815_init_valid_mask(struct gpio_chip *gc,
->         return 0;
->  }
->
-> +/* Template for regmap gpio config */
-> +static const struct gpio_regmap_config gpio_cfg_template = {
-> +       .label                  = "bd71815",
-> +       .reg_set_base           = BD71815_REG_GPO,
-> +       .ngpio                  = 2,
-> +       .set_config             = bd71815_gpio_set_config,
-> +       .init_valid_mask        = bd71815_init_valid_mask,
-> +};
+> +#include <linux/const.h>
 > +
->  static int gpo_bd71815_probe(struct platform_device *pdev)
->  {
->         struct bd71815_gpio *g;
-> +       struct gpio_regmap_config cfg;
->         struct device *parent, *dev;
+>  /*
+>   * min()/max()/clamp() macros must accomplish three things:
+>   *
+> @@ -17,14 +19,6 @@
+>  #define __typecheck(x, y) \
+>         (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
 >
->         /*
-> @@ -144,30 +109,15 @@ static int gpo_bd71815_probe(struct platform_device *pdev)
->         if (!g)
->                 return -ENOMEM;
->
-> -       g->chip = bd71815gpo_chip;
+> -/*
+> - * This returns a constant expression while determining if an argument is
+> - * a constant expression, most importantly without evaluating the argument.
+> - * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+> - */
+> -#define __is_constexpr(x) \
+> -       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
 > -
-> -       /*
-> -        * FIXME: As writing of this the sysfs interface for GPIO control does
-> -        * not respect the valid_mask. Do not trust it but rather set the ngpios
-> -        * to 1 if "rohm,enable-hidden-gpo" is not given.
-> -        *
-> -        * This check can be removed later if the sysfs export is fixed and
-> -        * if the fix is backported.
-> -        *
-> -        * For now it is safest to just set the ngpios though.
-> -        */
-> -       if (device_property_present(parent, "rohm,enable-hidden-gpo"))
-> -               g->chip.ngpio = 2;
-> -       else
-> -               g->chip.ngpio = 1;
-> -
-> -       g->chip.init_valid_mask = bd71815_init_valid_mask;
-> -       g->chip.base = -1;
-> -       g->chip.parent = parent;
-> -       g->regmap = dev_get_regmap(parent, NULL);
->         g->dev = dev;
+>  #define __no_side_effects(x, y) \
+>                 (__is_constexpr(x) && __is_constexpr(y))
 >
-> -       return devm_gpiochip_add_data(dev, &g->chip, g);
-> +       cfg = gpio_cfg_template;
-> +       cfg.parent = parent;
-> +       cfg.regmap = dev_get_regmap(parent, NULL);
-> +       cfg.fwnode = dev_fwnode(dev);
-> +       cfg.drvdata = g;
+> diff --git a/tools/include/linux/bits.h b/tools/include/linux/bits.h
+> index 7f475d59a097..87d112650dfb 100644
+> --- a/tools/include/linux/bits.h
+> +++ b/tools/include/linux/bits.h
+> @@ -22,7 +22,7 @@
+>  #include <linux/build_bug.h>
+>  #define GENMASK_INPUT_CHECK(h, l) \
+>         (BUILD_BUG_ON_ZERO(__builtin_choose_expr( \
+> -               __builtin_constant_p((l) > (h)), (l) > (h), 0)))
+> +               __is_constexpr((l) > (h)), (l) > (h), 0)))
+>  #else
+>  /*
+>   * BUILD_BUG_ON_ZERO is not available in h files included from asm files,
+> diff --git a/tools/include/linux/const.h b/tools/include/linux/const.h
+> index 81b8aae5a855..435ddd72d2c4 100644
+> --- a/tools/include/linux/const.h
+> +++ b/tools/include/linux/const.h
+> @@ -3,4 +3,12 @@
+>
+>  #include <vdso/const.h>
+>
+> +/*
+> + * This returns a constant expression while determining if an argument is
+> + * a constant expression, most importantly without evaluating the argument.
+> + * Glory to Martin Uecker <Martin.Uecker@med.uni-goettingen.de>
+> + */
+> +#define __is_constexpr(x) \
+> +       (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
 > +
-> +       return PTR_ERR_OR_ZERO(devm_gpio_regmap_register(dev, &cfg));
->  }
->
->  static struct platform_driver gpo_bd71815_driver = {
+>  #endif /* _LINUX_CONST_H */
 > --
-> 2.25.4
+> 2.31.1
 >
->
-> --
-> Matti Vaittinen, Linux device drivers
-> ROHM Semiconductors, Finland SWDC
-> Kiviharjunlenkki 1E
-> 90220 OULU
-> FINLAND
->
-> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-> Simon says - in Latin please.
-> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-> Thanks to Simon Glass for the translation =]
-
 
 
 -- 
