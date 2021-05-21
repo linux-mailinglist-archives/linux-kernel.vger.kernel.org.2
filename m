@@ -2,117 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0395238CC37
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:32:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B26F338CC38
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234953AbhEUReS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:34:18 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59448 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233220AbhEUReR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:34:17 -0400
-Received: from [192.168.254.32] (unknown [47.187.214.213])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8C68120B7188;
-        Fri, 21 May 2021 10:32:53 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8C68120B7188
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1621618374;
-        bh=kx/ub+OL0PzoQ/hT2KpbKriy7vxNbuz0bztaoHmRMxA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=pY1l80FOiOGwYYaK4/exjyN+IR65hI3sJUmLEcnLo+vTzCDtaGAdxamRYNs8HlR6F
-         0lc0twNVrQJvOfgDoSx03OxrZ90ak643peCTp1xyrmDNHB2farqYT5Oaly2vFev1hH
-         4gMM8lSxEOHmv1ITHi/rDmUXK9laQMDpP2W/K0Uo=
-Subject: Re: [RFC PATCH v4 0/2] arm64: Stack trace reliability checks in the
- unwinder
-To:     Mark Brown <broonie@kernel.org>
-Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
-        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
-        jmorris@namei.org, pasha.tatashin@soleen.com,
-        linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <68eeda61b3e9579d65698a884b26c8632025e503>
- <20210516040018.128105-1-madvenka@linux.microsoft.com>
- <20210521171808.GC5825@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <654dde25-e6a2-a1e7-c2d7-e2692bc11528@linux.microsoft.com>
-Date:   Fri, 21 May 2021 12:32:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S238200AbhEUReV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:34:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233220AbhEUReT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:34:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8166B611AD;
+        Fri, 21 May 2021 17:32:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621618376;
+        bh=vE9z1/gR4km7YRN6OoWPExYDHukNHQL46kKLJXMBM6g=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=trcQTNil6rYL18WGMg/3X5Mc9187u9mMsxQoleo8RVmBhwvYTiG0aLQ5hSUyVKhQ7
+         rSm6MCATjhvx9bvN+r5ef4qb8NKTF5C0tWy9QU9nuUHPfsczg6u098CEtSqSj4Vm9x
+         iMebfbo/5L4/q21SDg/TXPNqc9ozFEFqGAOnRqA5IwUxgUY9RJlsnoVqshPhZ8skmx
+         0QSPy+O+J/u6f5pOvAGBDf7bSz6YBK9ujFujRlAuUvZoWhdlddMFgoNvw4Mz+335xn
+         l8GC6U+SJ3LTgkyz/KW/3t0Y3e47O/lUbFxodgtRMXryeF5XDa77cqZnUkLtOrPQwG
+         boeWzGd0/na/g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id 4384D5C0164; Fri, 21 May 2021 10:32:55 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:32:55 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Marco Elver <elver@google.com>
+Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
+        samitolvanen@google.com, ojeda@kernel.org, johan@kernel.org,
+        akpm@linux-foundation.org, masahiroy@kernel.org, joe@perches.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <nathan@kernel.org>
+Subject: Re: [PATCH] init: verify that function is initcall_t at compile-time
+Message-ID: <20210521173255.GZ4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210521072610.2880286-1-elver@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521171808.GC5825@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521072610.2880286-1-elver@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/21/21 12:18 PM, Mark Brown wrote:
-> On Sat, May 15, 2021 at 11:00:16PM -0500, madvenka@linux.microsoft.com wrote:
+On Fri, May 21, 2021 at 09:26:10AM +0200, Marco Elver wrote:
+> In the spirit of making it hard to misuse an interface, add a
+> compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
+> to verify the initcall function matches initcall_t, because the inline
+> asm bypasses any type-checking the compiler would otherwise do. This
+> will help developers catch incorrect API use in all configurations.
 > 
->> Special cases
->> =============
->>
->> Some special cases need to be mentioned:
+> A recent example of this is:
+> https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
 > 
-> I think it'd be good if more of this cover letter, especially sections
-> like this which cover the tricky bits, ended up in the code somehow -
-> it's recorded here and will be in the list archive but that's not the
-> most discoverable place so increases the maintainance burden.  It'd be
-> great to be able to compare the code directly with the reliable
-> stacktrace requirements document and see everything getting ticked off,
-> actually going all the way there might be too much and loose the code in
-> the comments but I think we can get closer to it than we are.  Given
-> that a lot of this stuff rests on the denylist perhaps some comments
-> just before it's called would be a good place to start?
+> Signed-off-by: Marco Elver <elver@google.com>
+> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
+> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> Tested-by: Nathan Chancellor <nathan@kernel.org>
+
+Tested-by: Paul E. McKenney <paulmck@kernel.org>
+
+> ---
+>  include/linux/init.h | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 > 
-
-I will add more comments in the code to make it clear.
-
->> 	- EL1 interrupt and exception handlers end up in sym_code_ranges[].
->> 	  So, all EL1 interrupt and exception stack traces will be considered
->> 	  unreliable. This the correct behavior as interrupts and exceptions
+> diff --git a/include/linux/init.h b/include/linux/init.h
+> index 045ad1650ed1..d82b4b2e1d25 100644
+> --- a/include/linux/init.h
+> +++ b/include/linux/init.h
+> @@ -242,7 +242,8 @@ extern bool initcall_debug;
+>  	asm(".section	\"" __sec "\", \"a\"		\n"	\
+>  	    __stringify(__name) ":			\n"	\
+>  	    ".long	" __stringify(__stub) " - .	\n"	\
+> -	    ".previous					\n");
+> +	    ".previous					\n");	\
+> +	static_assert(__same_type(initcall_t, &fn));
+>  #else
+>  #define ____define_initcall(fn, __unused, __name, __sec)	\
+>  	static initcall_t __name __used 			\
+> -- 
+> 2.31.1.818.g46aad6cb9e-goog
 > 
-> This stuff about exceptions and preemption is a big one, rejecting any
-> exceptions makes a whole host of things easier (eg, Mark Rutland raised
-> interactions between non-AAPCS code and PLTs as being an issue but if
-> we're able to reliably reject stacks featuring any kind of preemption
-> anyway that should sidestep the issue).
-> 
-
-Yes. I will include this in the code comments.
-
->> Performance
->> ===========
-> 
->> Currently, unwinder_blacklisted() does a linear search through
->> sym_code_functions[]. If reviewers prefer, I could sort the
->> sym_code_functions[] array and perform a binary search for better
->> performance. There are about 80 entries in the array.
-> 
-> If people are trying to live patch a very busy/big system then this
-> could be an issue, equally there's probably more people focused on
-> getting boot times as fast as possible than live patching.  Deferring
-> the initialisation to first use would help boot times with or without
-> sorting, without numbers I don't actually know that sorting is worth the
-> effort or needs doing immediately - obvious correctness is also a
-> benefit!  My instinct is that for now it's probably OK leaving it as a
-> linear scan and then revisiting if it's not adequately performant, but
-> I'd defer to actual users there.
-
-I have followed the example in the Kprobe deny list. I place the section
-in initdata so it can be unloaded during boot. This means that I need to
-copy the information before that in early_initcall().
-
-If the initialization must be performed on first use, I probably have to
-move SYM_CODE_FUNCTIONS from initdata to some other place where it will
-be retained.
-
-If you prefer this, I could do it this way.
-
-Thanks!
-
-Madhavan
