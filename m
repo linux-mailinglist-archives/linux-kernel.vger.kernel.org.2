@@ -2,98 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E3C38CB4C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9203838CB51
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237751AbhEUQxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:53:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230471AbhEUQxf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:53:35 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47111C061574;
-        Fri, 21 May 2021 09:52:12 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id t193so14694734pgb.4;
-        Fri, 21 May 2021 09:52:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=sBR5xoUghjI5pD1q2DU/lEgViJjimIWIoSDnpDdw488=;
-        b=HaGKUJ5ct2kaBr6w/8eKHKVo0NaC21UQWNXI+qKmIgPCQk+Arf4RxosNS4mIcdABpK
-         tg089PKhMqvhgvFq0JRbtBsLQy/FhKBmuNgBADqEup9JDesXULILmp7TIFjUOHHMNz5S
-         8MwM1ZtiQHKOe9w/CelHw16NdB0AQOVNa/jKgdw9ao0KeJo2AhqSOgIfZCWkBFfPpvT/
-         lKJ8beglGfmC516NYW68fwth1DhLJy7nofZArPDs0m2RsV9cByQUG4Sh/hItXoVHS0mt
-         0hIb+j/BR/o9DVjXMVJJW4QxZ4lenUYeQkSm7E3YnTjrpHh9PH3dcrFu9hj+sqevf+kA
-         wTkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=sBR5xoUghjI5pD1q2DU/lEgViJjimIWIoSDnpDdw488=;
-        b=Zi7ID3ZedQOARP0sf3W7rk8jCpuIjzWnqXOCZPbUOVaO9BCbQFFF+TXBGT8mjruqWl
-         atD2Cdsmg9HF6VeQgkbppgUy6ExrSI5y6AMUIrali3vOK1BsdgeC7WxaBAZCsMnbNaHb
-         4E9uxqTt6z8IftXa101rJSdAYoKGaRRyHJPWEokMPukRqRLjmRYwtlVh5JTZ5b2CfHv8
-         pS9++8RabH/vzxyFaPgVQUYMJqCBrwhYSffDMmd4DBRAh5OE7j5mZm8miJToN7k7POvk
-         mQw15i3jc5q8XZH5bbeIL0Mt8P2lzdZ6vAqC0n/RrTELyxm+AdYhwqhh3bPWrwY7Li6c
-         WM2g==
-X-Gm-Message-State: AOAM530iEqFOd3PImcdYA/ETRtSeRrSbXB97smZH6deW8wFJonFCrx4s
-        8LfryY7yu83JAB7I6pTIQCEWtzZ9fJs=
-X-Google-Smtp-Source: ABdhPJxFIE/gxP9Zp2jI7ThaahrO8JoHFr/5qw+Bb+IX6RYSrUI0lOnS95VMkhNxV7UvfQkUgLOjSw==
-X-Received: by 2002:aa7:8202:0:b029:2d8:c24d:841d with SMTP id k2-20020aa782020000b02902d8c24d841dmr11305315pfi.57.1621615931482;
-        Fri, 21 May 2021 09:52:11 -0700 (PDT)
-Received: from [10.230.29.202] ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id o4sm4732721pfk.15.2021.05.21.09.52.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 09:52:10 -0700 (PDT)
-Subject: Re: [PATCH 4.9 000/240] 4.9.269-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210520092108.587553970@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <a91b4e3d-0485-38e9-92e8-7d4f1c599b51@gmail.com>
-Date:   Fri, 21 May 2021 09:52:02 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        id S237771AbhEUQyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:54:44 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233815AbhEUQyo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:54:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621616000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GtBZJNmfi/v/kAisjZU0tr49hHMPjKyZXZ+HZ0R8LGI=;
+        b=PFExVpoIcbcqZHMSZkPDe5oDiXHUkHs6N0Hd0+krIQx3VwRSl/QlnuIev1usID2EGX0mi4
+        6MW6kSUv42biO9jiebY8R7GuNLUfP2GqrDJJKy8aecVa3AGpeo/+51Usle6o1d0VthW/34
+        Qo2mJlzGoSZZl8KJju4eDC+FPP0B/3Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621616000;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GtBZJNmfi/v/kAisjZU0tr49hHMPjKyZXZ+HZ0R8LGI=;
+        b=AoQHMNJOczhuvH22t6Y8ts690eBjuRCNud0FQYaKBWVrs/IP99JkMvAObAIEpgsf2NWRyI
+        eL7R3XsIWJbYO0AQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D0234AB64;
+        Fri, 21 May 2021 16:53:19 +0000 (UTC)
+Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Robinson <pbrobinson@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        dri-devel@lists.freedesktop.org
+References: <20210521131910.3000689-1-javierm@redhat.com>
+ <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
+Date:   Fri, 21 May 2021 18:53:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210520092108.587553970@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI
+Content-Type: multipart/mixed; boundary="Q5rdZSZKGaRlX38IpcwB0qqlARh7fYvgO";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org, Peter Robinson <pbrobinson@gmail.com>,
+ David Airlie <airlied@linux.ie>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, dri-devel@lists.freedesktop.org
+Message-ID: <3a6f9235-5375-b2cb-2d63-a47c5f9752bb@suse.de>
+Subject: Re: [PATCH] drm/fb-helper: improve DRM fbdev emulation device names
+References: <20210521131910.3000689-1-javierm@redhat.com>
+ <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+In-Reply-To: <YKfS2GDCXPJ/q8gT@phenom.ffwll.local>
+
+--Q5rdZSZKGaRlX38IpcwB0qqlARh7fYvgO
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+Am 21.05.21 um 17:33 schrieb Daniel Vetter:
+> On Fri, May 21, 2021 at 03:19:10PM +0200, Javier Martinez Canillas wrot=
+e:
+>> Framebuffer devices that are registered by DRM drivers for fbdev emula=
+tion
+>> have a "drmfb" suffix in their name. But makes them to be quite confus=
+ing
+>> if a driver already has "drm" in its name:
+>>
+>> $ cat /proc/fb
+>> 0 rockchipdrmdrmfb
+>>
+>> $ cat /proc/fb
+>> 0 simpledrmdrmfb
+>>
+>> Instead, let's just add a "-fb" suffix to denote that are DRM drivers =
+FB:
+>>
+>> $ cat /proc/fb
+>> 0 rockchipdrm-fb
+>>
+>> $ cat /proc/fb
+>> 0 simpledrm-fb
+>>
+>> Suggested-by: Peter Robinson <pbrobinson@gmail.com>
+>> Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>=20
+> So what with all the drivers which do _not_ have drm in their name? Als=
+o
+> I'm never sure how much these are uapi or not ...
+
+Why do we need a suffix anyway?
+
+> -Daniel
+>=20
+>> ---
+>>
+>>   drivers/gpu/drm/drm_fb_helper.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/drm_fb_helper.c b/drivers/gpu/drm/drm_fb_=
+helper.c
+>> index f6baa204612..bbaff92c509 100644
+>> --- a/drivers/gpu/drm/drm_fb_helper.c
+>> +++ b/drivers/gpu/drm/drm_fb_helper.c
+>> @@ -1737,7 +1737,7 @@ void drm_fb_helper_fill_info(struct fb_info *inf=
+o,
+>>   			       sizes->fb_width, sizes->fb_height);
+>>  =20
+>>   	info->par =3D fb_helper;
+>> -	snprintf(info->fix.id, sizeof(info->fix.id), "%sdrmfb",
+>> +	snprintf(info->fix.id, sizeof(info->fix.id), "%s-fb",
+>>   		 fb_helper->dev->driver->name);
+>>  =20
+>>   }
+>> --=20
+>> 2.31.1
+>>
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
-On 5/20/2021 2:19 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.9.269 release.
-> There are 240 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.269-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+--Q5rdZSZKGaRlX38IpcwB0qqlARh7fYvgO--
 
-On ARCH_BRCMSTB, using 32-bit and 64-bit ARM kernels:
+--TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCn5X4FAwAAAAAACgkQlh/E3EQov+AB
+sRAAmuKXo2SiiIcXp1PwrjztYN4Iv7mttdjAGCUa+M1Vjxxo9SkHlnZFlOLOelWngNO4l+t+rDVe
+cL6iaQUf2rOA8x/hGIiVgR8E88PVZmVwa15mFescVa38sE8xnvGcnSELeOL2v49CR+lSyzvmkVaE
+DwmKhdHBuslxqo24qOllX+w3FVEJDMpi7LPkXURsO2jP7c9csPeXgTi/an9Lc2TYqu9nzM3MKC97
+hFTSYaMOgODak/3s+/4cg9B8rMgKWNkqheTKrGhrpEqCNA1Q7Bif0QhgVM/cBn3LoHQwpCdLBaGV
+AVcTCRQjjFznHnvy1d9iL8bG4/ANDpdYh1IgDV76ZbVrEqEAI/i6p7Dsfvr0d8ruO9eSNZt2duDw
+jD6mhx64c7g7oWNHOa/M9dFrsNi6D/+Sh6KcJTjtM3Is+Q86Tsa/ydTpfD0hgI6Zd5Z9nEBtODsX
+MBqlAt3OGKDbgvICMBMqdXF/5Bmgv8mfI1o9E3AZJ4GB+ZOPfp7SRjo2hdMAKnNSs9WYDVxN/ovL
+rxWmvakHRzUPI7njWhBHOPf0Oh/zfwWv6k0GDYS/XfNofAPHw7/Lk9ISvvChjkrmK8ySkefqiuUO
+LltWGSe7TA6aXI7QMLfzJ0AV1kE+i7oj/9Y/Hq5OPu3kGrw6K3OUB9g5uu5xAF4051YJqf+JOYyY
+hxg=
+=C3jq
+-----END PGP SIGNATURE-----
+
+--TDC7z8OvM0VcFemQPSOA5LJHp8ZtIXAwI--
