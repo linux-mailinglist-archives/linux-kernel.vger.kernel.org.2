@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 265DE38BD31
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 06:17:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F5C738BD2F
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 06:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238980AbhEUES7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 00:18:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44422 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238062AbhEUES5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S238883AbhEUES5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 21 May 2021 00:18:57 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8B1C061574;
-        Thu, 20 May 2021 21:17:34 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FmYGx511fz9sRK;
-        Fri, 21 May 2021 14:17:29 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621570651;
-        bh=dpPnY8Gd2VHW7NF/ujHUlfzp8fRXOyyt2N7y0oMimwk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=coCPu9rSQzlXw/Y/KD6uSh6jLUSjb3OMmS9zVbO+2ZGf9dAcwObiS5u/JRUO2b6xT
-         SjknpNBAXGqeF6MBEIJ0L8NLruldgcJuSWlOz7zfZuhNQCB1qLSlGvbQb7gbHIISlW
-         +rkiUcntXMy8AECal/DIwy9GNDfICcC3qnJ2/MNh7v9oqukrtvg8RtfqGFwMyujG+O
-         HD5K5OxSrCRTqjEbAX1qutGlcoVT1xkkQbT9bU0LAzSl0Rmi1HyTaNEt34h1LByBEo
-         9ovmiBVNAQSHG/Wed3oryjxR9mfRiQpHLjmrWAd1uSd+4edqZuz2RmNaN8fJeDMm0o
-         nsY8GJUF+8+kA==
-Date:   Fri, 21 May 2021 14:17:28 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: linux-next: manual merge of the pinctrl tree with the jc_docs tree
-Message-ID: <20210521141728.6f5e3621@canb.auug.org.au>
+Received: from foss.arm.com ([217.140.110.172]:37490 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231337AbhEUESz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 00:18:55 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E6828101E;
+        Thu, 20 May 2021 21:17:32 -0700 (PDT)
+Received: from [192.168.0.130] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C5F2E3F719;
+        Thu, 20 May 2021 21:17:30 -0700 (PDT)
+Subject: Re: [PATCH] mm/thp: Update mm_struct's MM_ANONPAGES stat for huge
+ zero pages
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+        Yang Shi <shy828301@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <1621313300-1118-1-git-send-email-anshuman.khandual@arm.com>
+ <alpine.LSU.2.11.2105201852230.5752@eggly.anvils>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <8fa7fea6-4176-32fd-2c6a-abb6b73d0d13@arm.com>
+Date:   Fri, 21 May 2021 09:48:11 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ILC.JW1zqbgeVmk_dLIjm8_";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <alpine.LSU.2.11.2105201852230.5752@eggly.anvils>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ILC.JW1zqbgeVmk_dLIjm8_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi all,
 
-Today's linux-next merge of the pinctrl tree got a conflict in:
+On 5/21/21 7:47 AM, Hugh Dickins wrote:
+> On Tue, 18 May 2021, Anshuman Khandual wrote:
+> 
+>> Although the zero huge page is being shared across various processes, each
+>> mapping needs to update its mm_struct's MM_ANONPAGES stat by HPAGE_PMD_NR
+>> to be consistent. This just updates the stats in set_huge_zero_page() after
+>> the mapping gets created and in zap_huge_pmd() when mapping gets destroyed.
+>>
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Zi Yan <ziy@nvidia.com>
+>> Cc: linux-mm@kvack.org
+>> Cc: linux-kernel@vger.kernel.org
+>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> 
+> NAK.
+> 
+> For consistency with what? In the all the years that the huge zero page
 
-  include/linux/pinctrl/pinconf-generic.h
+Huge zero page after all is an anon mapping. Hence why it must not be
+counted for process rss MM_ANONPAGES accounting ? Is there a specific
+reason why zero huge pages should not counted for MM_ANONPAGES ? Does
+not it risk an inaccurate MM_ANONPAGES accounting for the processes
+using huge zero pages ?
 
-between commit:
+> has existed, it has been intentionally exempted from rss accounting:
+> consistent with the small zero page, which itself has always been
+> intentionally exempted from rss accounting. In fact, that's a good part
 
-  4b0c9948a4c2 ("docs: update pin-control.rst references")
+Why are small zero pages exempted from rss accounting which in turn
+might have caused huge zero page to take the same approach as well ?
 
-from the jc_docs tree and commit:
+> of the reason the huge zero page was introduced (see 4a6c1297268c).
 
-  57b55eeb7552 ("pinctrl: Keep enum pin_config_param ordered by name (part =
-2)")
+Huge zero page reduces memory consumption on read faults which is a
+definite advantage but would there be a problem if rss stat goes up
+for each huge zero page mapping instances. The commit mentioned here
+talks about increase in actual memory utilization as seen from the
+rss accounting stat, without huge zero page usage.
 
-from the pinctrl tree.
+I am wondering if actual memory usage remains the same (reduced with
+huge zero page usage), what could be the problem in an increased
+MM_ANONPAGES accounting for a given process. Dont we update the rss
+accounting for shared memory as well ?
 
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
+> 
+> To change that now will break any users depending on it.
 
---=20
-Cheers,
-Stephen Rothwell
+Just to understand it correctly, are rss accounting procedures/methods
+something which cannot be changed as users are currently dependent on
+it ? OR this proposal here is not a good enough reason to change it ?
 
-diff --cc include/linux/pinctrl/pinconf-generic.h
-index 5a96602a3316,98ed5959ca9a..000000000000
---- a/include/linux/pinctrl/pinconf-generic.h
-+++ b/include/linux/pinctrl/pinconf-generic.h
-@@@ -81,6 -81,10 +81,10 @@@ struct pinctrl_map
-   *	passed in the argument on a custom form, else just use argument 1
-   *	to indicate low power mode, argument 0 turns low power mode off.
-   * @PIN_CONFIG_MODE_PWM: this will configure the pin for PWM
-+  * @PIN_CONFIG_OUTPUT: this will configure the pin as an output and drive=
- a
-+  * 	value on the line. Use argument 1 to indicate high level, argument 0 =
-to
- - *	indicate low level. (Please see Documentation/driver-api/pinctl.rst,
-++ *	indicate low level. (Please see Documentation/driver-api/pin-control.r=
-st,
-+  *	section "GPIO mode pitfalls" for a discussion around this parameter.)
-   * @PIN_CONFIG_OUTPUT_ENABLE: this will enable the pin's output mode
-   * 	without driving a value there. For most platforms this reduces to
-   * 	enable the output buffers and then let the pin controller current
+> 
+> Not to mention the
+> BUG: Bad rss-counter state mm:00000000aa61ef82 type:MM_ANONPAGES val:512
+> I just got from mmotm.
 
---Sig_/ILC.JW1zqbgeVmk_dLIjm8_
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Okay, unfortunately some how did not see this problem while testing. Is
+there a specific test case which will be able to trigger this bug ?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCnNFgACgkQAVBC80lX
-0GyumQf/XG0UzCwx/IDZCdvTjduy5hLiqBPYNu7GzAWgw8IBqkEoqNchJdLPCLaa
-v+JuQiv0i90IXXFOwwMcdwMkivFBNt8jktBy9L8JGyuqYu6Pvs2WZ7zHO2AFaiRC
-4ru1v7KMYeGsWr1guaVX2i2Hbk4DWuszFBSZ9P05ZtYam6ZXK8wtfawofoovl1wq
-pb7e80RlG2QqXoaUdH4pJd4MM6Nk3a1AP4WM9yE2R7yYdP/AFN0KdxngBO8BwMAa
-3CIg8QkzvQKBXy5mF4Ws3FAVtKJ2bLytMsG2UZOPKekpwif5BpRKx2ElFMNLPc7M
-/7bWvXXP2uR8W4WhF/8FjIxhkBjV0Q==
-=aMfU
------END PGP SIGNATURE-----
-
---Sig_/ILC.JW1zqbgeVmk_dLIjm8_--
+- Anshuman
