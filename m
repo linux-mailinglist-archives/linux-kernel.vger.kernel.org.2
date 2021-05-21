@@ -2,69 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C1838CB92
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:09:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D855A38CB9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:10:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238003AbhEURK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:10:28 -0400
-Received: from mail-ot1-f42.google.com ([209.85.210.42]:44817 "EHLO
-        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229532AbhEURK0 (ORCPT
+        id S238010AbhEURLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:11:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49818 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229565AbhEURLk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:10:26 -0400
-Received: by mail-ot1-f42.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so18635162otp.11;
-        Fri, 21 May 2021 10:09:02 -0700 (PDT)
+        Fri, 21 May 2021 13:11:40 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26996C061574;
+        Fri, 21 May 2021 10:10:16 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id y36so11810403ybi.11;
+        Fri, 21 May 2021 10:10:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6PyJIHGnDYh6P31ntK4ge2w93dHWPRrD4kywlBEOeWc=;
+        b=kALmOtFCp+8NprW7sjYSuh7FbN7jOmHzc2LDU3WTB83s3Tg15h10xuq0HhjkatVjHN
+         ysLXDhTTxfvqOXFePbKR+zQixXEbSZhmvXlJ6JIs1lx/ciOHRkCcrz2WCP+pBeTRd8g9
+         wYYmb1xlOf8P3fOsC9XEGH+OD5R6cEDya+2sxrtlUfi6qQvGouMs5IMsBIntZxIL6gQJ
+         uk/+bl5osdAZNliiL71LhljwO15vgpd27tKxbk2xr7h1fK7nxGf12d2kVvgRD1uVSHnf
+         LKUAHNNO8DSPdaZ7Owpd+g3IJBxUkNEWzarO7NXMN7d2as1G0BKVOf1E3gu69nxi2WjE
+         +aeQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mRJIYEvwSU5XAcjia2ddVCeXSmZI9BsiVAypzVL9ZFA=;
-        b=UOlBzbV0wwDLQho9mcRhihvJOhF79wqqz5cITEFzpRRrMzMUYFeB5x9n4os/raXkSS
-         /vTgGLze163CIZpWa3A+uhFFEH9TJWq41mVtGWFdg0tg4X1mhGpB7xRUmfIAb5PELRDz
-         G9nI/p8j7kG+3L5cPs5Lb10kjosGnd87zZi2YNPdGsJaC9cYDjYz752f6wbGgXAV2cuC
-         ZaQu+xsvvWNhlb2TFRaGcFCU4+7zD0aoyX5+0hetFYVOMGWHm1E2O2i/u/nZfFU4eu1G
-         HR2NqwtftvofluUlYlDdfEssLebHLZh8dReT/eFSOifZnI454hrQCLOKyFSspq3E+x66
-         mYRw==
-X-Gm-Message-State: AOAM5310nv8W3m4+x+3xgnMuK4wYaChraz7XH1M75GDzrUKasz3jxWJd
-        xsBz5DGRMnZctU+7si+K/g==
-X-Google-Smtp-Source: ABdhPJwtUqDJ5/VPbVrfbwlUlQpmxXYNu9jVAKElMnrMCOF86tGp34DKHQz9r0BHtRENHveKE6zO2A==
-X-Received: by 2002:a9d:7410:: with SMTP id n16mr9138150otk.262.1621616942123;
-        Fri, 21 May 2021 10:09:02 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e21sm1256965oie.32.2021.05.21.10.09.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 10:09:01 -0700 (PDT)
-Received: (nullmailer pid 16080 invoked by uid 1000);
-        Fri, 21 May 2021 17:09:00 -0000
-Date:   Fri, 21 May 2021 12:09:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        kernel@pengutronix.de, David Jander <david@protonic.nl>
-Subject: Re: [PATCH v5 2/8] dt-bindings: input: touchscreen: edt-ft5x06:
- chnage node name to pass validation
-Message-ID: <20210521170900.GA16008@robh.at.kernel.org>
-References: <20210521044525.7397-1-o.rempel@pengutronix.de>
- <20210521044525.7397-3-o.rempel@pengutronix.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6PyJIHGnDYh6P31ntK4ge2w93dHWPRrD4kywlBEOeWc=;
+        b=RS6HVqZZVOzl2i0lJ6J4Tkd6btAMHVELzYD7xRDmIpgIEp6Sm4ihS+FFevLU2hOl6C
+         pPjLEYF+JtpfgrX8cXk9IzVyBY7vrb1+iRtL4ibbOqv74HY5bD9OzNPGTFMXXUTYzPY2
+         vEnZQYwwCGrms7rfttWqL/I/uAjBa6E3cZ5LSThQQet7PJ5/WgN/1I1/eUxiayGsLeBH
+         vlxPYuNqUMqBiFOcXn+2WGozPamKJ+gaTaV4ab9r+Sp1QtyhQjbqNCRO1s7EBpzFsimZ
+         9DRx2JozOGDT6FwagwSMGh8nUl2MTM5mdVrnr2mY1wmWcVe/u9x3vwzy1dTNGjHDspLp
+         W+wg==
+X-Gm-Message-State: AOAM532hd7rl0rusXlJm0q9/7XoUQnxhn+OWFXPsnRPn+Ajq8q9h0+BW
+        VpAgA/OOiWVAayXn1IByCmrbnJMJ9gKPOjdm/tcjUncyNQmrbw==
+X-Google-Smtp-Source: ABdhPJyOXBxBWPxL6sPBpuZzkIVbeixOcFk8AsstI46d5WBRX0C/zS1v0WAX4R7QQeEIpFsdCA9NPbGJ0Mjs72+mE44=
+X-Received: by 2002:a5b:54a:: with SMTP id r10mr16608668ybp.476.1621617015403;
+ Fri, 21 May 2021 10:10:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521044525.7397-3-o.rempel@pengutronix.de>
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-3-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdXdATYWRGL9PMkR_Fj-m-E5GUuPbHq0hZ_Mh=ceedF=RA@mail.gmail.com>
+In-Reply-To: <CAMuHMdXdATYWRGL9PMkR_Fj-m-E5GUuPbHq0hZ_Mh=ceedF=RA@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 21 May 2021 18:09:49 +0100
+Message-ID: <CA+V-a8uNB-RyyweQ--vjdiA1NRB7_-VRYBPq9YUxFT4pFRTKBA@mail.gmail.com>
+Subject: Re: [PATCH 02/16] dt-bindings: arm: renesas: Document Renesas
+ RZ/G2{L,LC} SoC variants
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 06:45:19 +0200, Oleksij Rempel wrote:
-> Change node name from edt-ft5x06 -> touchscreen to pass dt_binding_check.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  .../devicetree/bindings/input/touchscreen/edt-ft5x06.yaml       | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
+Hi Geert,
 
-Acked-by: Rob Herring <robh@kernel.org>
+Thank you for the review.
+
+On Fri, May 21, 2021 at 2:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hii Prabhakar,
+>
+> On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add device tree bindings documentation for Renesas RZ/G2{L,LC}
+> > SoC variants.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+>
+> > --- a/Documentation/devicetree/bindings/arm/renesas.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
+> > @@ -308,6 +308,15 @@ properties:
+> >                - renesas,r9a07g043u11 # Single Cortex-A55 RZ/G2UL
+> >            - const: renesas,r9a07g043
+> >
+> > +      - description: RZ/G2{L,LC} (R9A07G044)
+> > +        items:
+> > +          - enum:
+> > +              - renesas,r9a07g044c1 # Single Cortex-A55 RZ/G2LC
+> > +              - renesas,r9a07g044c2 # Dual Cortex-A55 RZ/G2LC
+> > +              - renesas,r9a07g044l1 # Single Cortex-A55 RZ/G2L
+> > +              - renesas,r9a07g044l2 # Dual Cortex-A55 RZ/G2L
+>
+> Given the LSI DEVID is the same for all four, and presumably they're
+> thus the same die with different packaging, do we need these four
+> compatible values?
+>
+Yes the LSI DEVID is the same for all the above, so as to
+differentiate between each SoC's, these compatible strings are added.
+* For example some IP blocks which are present on RZ/G2L aren't
+present in RZ/G2LC.
+* Adding this to DTS gives an opportunity to stop booting if the wrong
+DTB is loaded into the board.
+
+Cheers,
+Prabhakar
+
+> > +          - const: renesas,r9a07g044
+> > +
+> >  additionalProperties: true
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
