@@ -2,103 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE3B38D08A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8A838D08F
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229845AbhEUWIo convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 18:08:44 -0400
-Received: from mail-ej1-f45.google.com ([209.85.218.45]:33500 "EHLO
-        mail-ej1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbhEUWIn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:08:43 -0400
-Received: by mail-ej1-f45.google.com with SMTP id z12so31099108ejw.0;
-        Fri, 21 May 2021 15:07:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=nAZ3ctVppRd1U/MccQN84z1G3WIdv4u58Ovt2vtZEtA=;
-        b=HxeueTVh07FS/rPlaXpGAgh2YxU9bSqjViSbbVI5pE1QLFNrOBkkg0Y2TRTXDDL6+t
-         phvK9K+419Y/7bstTBIR0+g900muoHdY7txT6mr1C7w7x+QbcIzj5cgx+/cXWfDA/+TH
-         1x3zAio6vbEDQe9of75AWPffqqArM2zmJmn973OIatiWj2Oc3BUTpPDuJtN3HK0ZJkHe
-         Jq4SuRcAXnM79MUGIDJDyjxJxcF9INBzPHs6LBP5MaEi1A2TDBwXo3gmsrl132hPxKnd
-         WZwHMZPRuIUD4wwuag28b775UURJMka1P1WJjm9Anz4THiSWL2qnVktD4eo6GvA+ewOk
-         3wgA==
-X-Gm-Message-State: AOAM532qgjkvVXEk5H9L8FpCn0IsOctiF/qsS0wwZblk1DANZYbFF8Fx
-        eP0Jr9fC/PuvLmi8CH3J6baIQgCVG61MgXpYntQ5+zf1u3c=
-X-Google-Smtp-Source: ABdhPJxfnkKSzl5c7G/ekRtzAyy56ToLCT78WZHq6eht9dQb75JoSrmqsLa3qTaej9oOikziIMLlT6wvXS0CxElQhXU=
-X-Received: by 2002:a17:907:33d4:: with SMTP id zk20mr12157139ejb.330.1621634838469;
- Fri, 21 May 2021 15:07:18 -0700 (PDT)
+        id S229565AbhEUWK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:10:29 -0400
+Received: from mail-dm6nam11on2057.outbound.protection.outlook.com ([40.107.223.57]:48224
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229472AbhEUWK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 18:10:26 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aFnDHP060Z9YKIfb4M/9ayI2vlp7FDtzIfHKNBI8Fyj0Qm0cjnNWt39pE9DnLbOXIewBGD84rSNVg5188WugqD5+hCdD0dioKeRRgEZy2KYjNmL2uq54d7nEESy1/2U0xbm/URX341OcocWRyELhArgj1lsXf4P29B8T9N+QjqRnnWrK7BRJ+o94tnxxj+jYcBKFG6rwN5noyXOCmohn/k6K0JYho5gdXqJUXeOdQKwB+PtAJGafD9z5ElfvvWzm/VmN6Z9njsCnTNR7m/nJGBxh2L5X0rh8H1pqTrd6SwzGn+GwXhfBal1+2R3uKih2wNUvMWBWqiLR5ihgys2mmA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oj7EwLzv8zmJQ6OpJYURBUiltqTI2KH3cx4gqFCawNM=;
+ b=NX3VeZl7F7sN9zqYEnlps3vMfb40jI6sU4ECszT1R3BmLjUi1PWYd+Q3AjfYuKMthmnh46W4wJ7MpCmebYqWkBss8uXkU/kWWPxcwzRpItHdeCAWglkgM83dq6rgrZ3PxH6ILlfJhRwhkKw9I+jESgg4fyWxtzsguTAdsFgXXXX2S9MshA8Lw5LT2EDlH5GKfx4vZlEpvXl5387bG+2gYF+ISXLdpBBPE/arP6ORH/UapyxHcowukM5pfm1mktIYdkXnlPU1R1va9ibrOwFguBRk/R0PA12WcuxryrCma6bjCQXYcz9malKAmnHtIxyUPa25dihIfPL9JGw77Qz43Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oj7EwLzv8zmJQ6OpJYURBUiltqTI2KH3cx4gqFCawNM=;
+ b=ptmWzyGHMmxkjnFEftfPBw+FYrt21ZcaEg9BpDggMl/hrFSZLAob2jMn60IqaNLjtIE85hZMWZ8EY611SwYctCMgjmnM/b9SgMgjbeEeBJRWZfC/I55mbNKaIcvWzPUaN7cWwRp48M6s47y0hQYC4QzSmfyDTDA3WlIPTG9MH8E=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com (2603:10b6:408:136::12)
+ by BN9PR12MB5163.namprd12.prod.outlook.com (2603:10b6:408:11c::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Fri, 21 May
+ 2021 22:09:01 +0000
+Received: from BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd]) by BN9PR12MB5129.namprd12.prod.outlook.com
+ ([fe80::3c78:e58b:fba7:b8dd%6]) with mapi id 15.20.4129.034; Fri, 21 May 2021
+ 22:09:01 +0000
+Subject: Re: [PATCH] drm/amd/amdkfd: Drop unnecessary NULL check after
+ container_of
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210521150212.2076151-1-linux@roeck-us.net>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Message-ID: <ac17a916-f205-96b0-d49d-d45c06c01205@amd.com>
+Date:   Fri, 21 May 2021 18:08:59 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <20210521150212.2076151-1-linux@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [142.186.56.206]
+X-ClientProxiedBy: YTXPR0101CA0063.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::40) To BN9PR12MB5129.namprd12.prod.outlook.com
+ (2603:10b6:408:136::12)
 MIME-Version: 1.0
-References: <20210415044258.GA6318@zn.tnic> <20210415054713.GB6318@zn.tnic>
- <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
- <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
- <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
- <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
- <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
- <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
- <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
- <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
- <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com> <87pmxk87th.fsf@oldenburg.str.redhat.com>
- <939ec057-3851-d8fb-7b45-993fa07c4cb5@intel.com> <87r1i06ow2.fsf@oldenburg.str.redhat.com>
- <263a58a9-26d5-4e55-b3e1-3718baf1b81d@www.fastmail.com> <87k0nraonu.ffs@nanos.tec.linutronix.de>
-In-Reply-To: <87k0nraonu.ffs@nanos.tec.linutronix.de>
-From:   Len Brown <lenb@kernel.org>
-Date:   Fri, 21 May 2021 18:07:07 -0400
-Message-ID: <CAJvTdK=A64DQXjYkZgPebWb-V_p_HAM+jTZRLTyi1qrP9kucMg@mail.gmail.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
-        Keno Fischer <keno@juliacomputing.com>,
-        Arjan van de Ven <arjan@linux.intel.com>,
-        Willy Tarreau <w@1wt.eu>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.2.100] (142.186.56.206) by YTXPR0101CA0063.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:1::40) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.31 via Frontend Transport; Fri, 21 May 2021 22:09:01 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8eb4c450-5667-43e2-e3f2-08d91ca50a1a
+X-MS-TrafficTypeDiagnostic: BN9PR12MB5163:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN9PR12MB51631F0927AB794EF6BED25192299@BN9PR12MB5163.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2657;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LPPG8Z4H3sQpDShlh9IkCfcSTEPe5AF9bigha6+hVPj7Ftn9kT3vaNVvdQq5o6ettt8XeSmvklrtIpZ8l2mBKwEEElXcGqxbvGoddr8nxWQfs2wiElYYSapR9JMg9JrSQqmauHCQjcYGg76mJRgK/Waq6OtI1MVg+KrtnZpiHFUhiKuIufazDKtt0V8t17NDOm/Rio79io0ba4tLfbfm8rk61tKAiduT1Lxv9ndGfFs14/hM+/DOgsGbqu0GXQN7VAvQPyMp39DgXzlpW2GCfwMH6I/GcMsJSfqyI+Sr7zcB773Sd8iOuGzMI5ZCGdtAtU698wDRGh13vAllnQtlLecs/AuprBJ8JDbYvHH/fdqGc7tihz11+nSfqmZTRTTnhVuM/ztK3RaXwKi+xe38csHmOMVle+XTfYqcc+dchWnYqLajtrKCPuBy1IdNmfAEMgoLx1uvtFSDAhRnKfrXVvE9fwrPccA7CpaAB9IUIXDy5mi4AWmekZ2YNQi7+EV4Pbzq1JZxYsHMHw2MhsWYgRq8SymTFyPyp0XAjz4nu4lom76yaEqT7/BeE1lvnu5LvXrUhvw36/K55f9pUKl9dObXxkqstyvJF2Qli3SHc23dOfwQvV1od1NprtDv48k/zWvhOQs3+fWzwH3fmjsK9chu0DUe6ZRM6W3+YkC9EoE8pU4aK+vpD2K0U6/MFo7V
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR12MB5129.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(478600001)(66946007)(8676002)(956004)(2906002)(8936002)(2616005)(66476007)(5660300002)(54906003)(31686004)(16526019)(186003)(66556008)(26005)(31696002)(16576012)(6916009)(44832011)(6486002)(316002)(36756003)(83380400001)(4326008)(86362001)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cVhtcHpTOVhIZTcyaE8rNzA1Q24xWEl1a2pUb0N2TU9ScjNXcUtYNnNiSldO?=
+ =?utf-8?B?djdmWWx4K3BvZHVyNEg4SlJsR3dieWFkMXlzdmdSd3dxeUxXTW1BRmRvUjNy?=
+ =?utf-8?B?eEN2K2I3ajFGbEpXbStsaXR5ZlhFeGxKMkQ3LzcrNjl1NHlDazNCWVFzUlQ4?=
+ =?utf-8?B?MnRvS2hnMmM1Z1pmc0I3RXNZaHdvZWdpSFFuMDFYQ0NsQVJqd2xOOEVqeDQ5?=
+ =?utf-8?B?TDJHQWZNYWdOdm5scEJzUElEUlNENEorODRGTkNGcUM5T3k1cEcxNWt0b0tF?=
+ =?utf-8?B?OFB1RThCQVlEa1VUREdGcklraEVLUFhndEdUY3lpaE5VZFNQbmpuT2l4T2k5?=
+ =?utf-8?B?Vzg1ZG1GNno3cFpHQUdyYzFKUk9qcktmOWtaQlpVcEVlWGo4UkNDaVVyMHhE?=
+ =?utf-8?B?NmFHODBpZWUrZlVvejJ1Z0xBQU1WSFVUZ3E3WVFZaHhYYjVLOUhLTWdINm5G?=
+ =?utf-8?B?TU5DUmt3c0pMNlFTdzFYQnZGWWV2T3ZFNXE4T01EMUIrMGJsZnJ1MTkvOEFi?=
+ =?utf-8?B?ZFRob05qZUlnRnhiNnBVRk1YUjFidW03ZTJ6UlpGWkkvbmpiR1NUbmxqUXFx?=
+ =?utf-8?B?SEp1QUpXeWxFeVhTWFJoamRtQUVyL3c1Z0I3VllITmxjZ2RMUnplOFhYZ1A0?=
+ =?utf-8?B?TVNPK3ZQRkJtRHNaM2p6NWVKODl1YlZEKzFjbVB2RVY0RWFKVHlLU1o1YjRP?=
+ =?utf-8?B?ZUxEMHl6V2Z3MGY3ZzNTbXgrNnROUXh1ajNZZm5RQmVGM2YvSlZRbWxpWGwz?=
+ =?utf-8?B?YXY0ZEN6U3o0eFhZVFB4elZTditlWVJEQit1LzZ6RkNGVGd1QUM1b2pWQWZ5?=
+ =?utf-8?B?V1owSGg2ZTM4cXBUVSs1YlBaRk12MStnQkpuV0N1WXl5NTVreTBlelh6VW5z?=
+ =?utf-8?B?RCtXaTIzZ2VTakpIQkxUS28yd3psejgxWXM2SDNjaTBwSm8yK0VVb25sZjVk?=
+ =?utf-8?B?d0Zta2lKK3c0ckl6NVN0ZjFYcTdzbG1JOHhzbk11YjF6LzZrditCV0VyZm9Z?=
+ =?utf-8?B?NFZmbEFzaHhBRXRIbEQxbEV4UENaMllaQkppOUZUUnNsSUJWRzVLMmxHNzNr?=
+ =?utf-8?B?amFQcnozYllqczh4citMbTZESThWTGhFcTlTZmtVMStFWjRsVHBNdmI1Y015?=
+ =?utf-8?B?TmJUUEgvNzFCSkxNa3dna0xwWXJtVVA3M3JmdmNnQU9zOXFROEt0L1htYU1t?=
+ =?utf-8?B?S2VDS0NseDBLdW9nd29NTlREb0JiY0p5cDJRRnpYemhESW9KdkNYbGwrR2g2?=
+ =?utf-8?B?MUtjRzNremd3Nk1ncE1hM0ZpQkZuaEhvalZyb2hrVUxoMnhOb2JvZTdNdEJ4?=
+ =?utf-8?B?UlZhOElFNnNCYzdJc0ZxU0g2U3ZoWEtCN3dHVUpabHBYK0dQV3pOQWFhN2RH?=
+ =?utf-8?B?SjZlNGtTc3VrRUIvNDJDeXV4dlN0MGYweUZyVkpRZVdadUJYQkJoTmZaRG9X?=
+ =?utf-8?B?NTVnMFgwbDhYdSt5djZsMGg0UHpneGd3QW9wdjNWVkFjUTc1ZmJMT051blh3?=
+ =?utf-8?B?d3ZaZGlveVordG0xSFF5VGFCd29HZzhwNmNNOVpYaXpPVkpKOWw4dHVsUnlB?=
+ =?utf-8?B?dGlzMFpkY3JZM25jRHhVT213T25MR3BXRE81V1NwMUJCS0NKbC81clpPUXc0?=
+ =?utf-8?B?eitpMXV0dFlKK0Z5cUIwQmg3Q1lsUlRiQVZ1MnVxbnJSYjhXL3lscHNURDlP?=
+ =?utf-8?B?VVhYR0s3aVNET3J0MEhJNUlSbWw3cVdGcXlCYmV6YmtCRWRGOGU0WUR0RExW?=
+ =?utf-8?Q?dPPpNYosRixoQlciD5sJatF/ywF5DxfoCc2Rs1e?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8eb4c450-5667-43e2-e3f2-08d91ca50a1a
+X-MS-Exchange-CrossTenant-AuthSource: BN9PR12MB5129.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2021 22:09:01.5447
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: er0Wobt5rVQj+uzzYZgwZEg/FBAAECQssmkL8uUsVQT4GhE1S10keMrQh6FKwrVEl43HQTVXFwFUGMZMtnC4mg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 3:10 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+Am 2021-05-21 um 11:02 a.m. schrieb Guenter Roeck:
+> The first parameter passed to container_of() is the pointer to the work
+> structure passed to the worker and never NULL. The NULL check on the
+> result of container_of() is therefore unnecessary and misleading.
+> Remove it.
 >
-> On Fri, May 21 2021 at 09:31, Andy Lutomirski wrote:
-> > arch_prctl(SET_XSTATE_INIT_ON_FIRST_USE, TILE_STUFF);?
-> >
-> > As long as this is allowed to fail, I don’t have a huge problem with
-> > it.
+> This change was made automatically with the following Coccinelle script.
 >
-> I'm fine with that. It's still controlled by the OS and can return
-> -EPERM.
+> @@
+> type t;
+> identifier v;
+> statement s;
+> @@
 >
-> If allowed then the application would also accept to be insta killed if
-> that #NM allocation fails. Any bug report vs. that will be ignored.
+> <+...
+> (
+>   t v = container_of(...);
+> |
+>   v = container_of(...);
+> )
+>   ...
+>   when != v
+> - if (\( !v \| v == NULL \) ) s
+> ...+>
+>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-Regarding pre-allocation vs on-demand allocation, consider two scenarios:
+Thank you. The patch looks good to me. I caught a few such pointless
+checks in code review but must have missed this one. I'll apply your
+patch to amd-staging-drm-next. The patch is
 
-1. Synchronous.  At process or thread start up time, prctl()
-synchronously allocates 8K context switch buffers.  Return code is 0
--- good go go!  10 seconds later the program decides to create
-additional threads.  Woops. vmalloc failed, and the process
-synchronously dies.  bug filed.
+Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
 
-2. On demand.  Same scenario, except vmalloc failure upon creation of
-those additional threads sends a SIGSEGV at the instruction where AMX
-is touched.  bug filed.
 
-Why ignore the 2nd bug and not ignore the 1st bug?
-
-My concern about synchronous allocation is that it will be very easy
-to abuse.  programs and threads can ask for buffers they will never
-use.  With on-demand allocation, we allocate buffers only if they are
-actually needed.
-
-Len Brown, Intel Open Source Technology Center
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_process.c | 2 --
+>  1 file changed, 2 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_process.c b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> index 5b6c5669c03d..2f8d352e0069 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_process.c
+> @@ -110,8 +110,6 @@ static void kfd_sdma_activity_worker(struct work_struct *work)
+>  
+>  	workarea = container_of(work, struct kfd_sdma_activity_handler_workarea,
+>  				sdma_activity_work);
+> -	if (!workarea)
+> -		return;
+>  
+>  	pdd = workarea->pdd;
+>  	if (!pdd)
