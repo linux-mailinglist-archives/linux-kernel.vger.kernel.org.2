@@ -2,93 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAC0338C261
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A060038C268
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234275AbhEUI7D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:59:03 -0400
-Received: from mail-vs1-f52.google.com ([209.85.217.52]:40866 "EHLO
-        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234196AbhEUI7A (ORCPT
+        id S234393AbhEUJAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 05:00:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232523AbhEUJAk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:59:00 -0400
-Received: by mail-vs1-f52.google.com with SMTP id o192so9969084vsd.7
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:57:36 -0700 (PDT)
+        Fri, 21 May 2021 05:00:40 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CCDEC061574;
+        Fri, 21 May 2021 01:59:16 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id 69so10621788plc.5;
+        Fri, 21 May 2021 01:59:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3yVIvqG1JyVADZbEfVpibeclSnVPEq1FjsSnqb72wTc=;
+        b=caBpAi/U0Iw0NsZBGSpnZsUmuBjorpbNtdbB2BbnqIWsMc/AtMZOiQL7iWZ0JipP0a
+         tiOHopCpQ5nlzMNHuTzbFrT2HmQpo6K6JCoV1/FBEWNVIrFDD1Z8ZQjVCtNt7xy8SYLN
+         swknq+6kJOrd1jz6/AbBcSeFvsDPRTCMLvCeiCv1rVb2+lUOKt21TgUZVUNPKW9yK5xn
+         xP5q1+DU2ksBhFts+K8XsQKCPgp3L+YybMQYyJE15ISaXSH2xgKYM5JSvjelfqztMwrc
+         cQY97GJby/SdpBcPGfoSM0i8KUyFcAzND8MkcRU/BmYVLKnPybY1kDiQIpkShrac1nZm
+         fYRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U2kr3t6v6evb9JMX3TsVNw2P+BRoGWCMgAwqQMlTxdU=;
-        b=NI2WvZcDxTaC5gfOeBI8JiFHSzOO03edw1ZTdxXG3EyreobRitnC5ZVLjOPtW904+W
-         yWDIOfSn6QGV5dy3f65e7nPoBLK2849vAStMvlSCjFpW4i0MkI6KhhmwOvftfxjnVRwd
-         wdcyqehiJ0yIUGewA9dKi8j8Y+F4LQn2v7+OCggLYzeRqpR+Bm+abwQwmkCxrTx7r8Zb
-         l7E2hXD3H98zESKmQkzNHjBsGec9k9UKQYVJ3wIeaL0uU6tTVIUqrhRzttxI3ij/qxwj
-         6yiqghSTf4s4sF4ekbKfO7TOB5V03An/s1z7h1owXFozSinEcZZWk0akF0zHMnxQr6FW
-         vRaA==
-X-Gm-Message-State: AOAM530Je6zB8ycbs0GZsXfzv05MB/Mu7RMmmuadOqrYb7SM4AB1f+Fz
-        VJDX2j89jaTU8yvXDTV1XZ/LlktJ16/17AIJiCM=
-X-Google-Smtp-Source: ABdhPJyN39qgUdgGScGVhqxyha/ipuTqH1sY1//tvr6jZ11ExUjNgscIuePElMY3FpLhsnrF5Mqh7S97TNiSS6I6lwA=
-X-Received: by 2002:a67:3c2:: with SMTP id 185mr8932547vsd.42.1621587456585;
- Fri, 21 May 2021 01:57:36 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210520163751.27325-1-maz@kernel.org> <20210520163751.27325-31-maz@kernel.org>
-In-Reply-To: <20210520163751.27325-31-maz@kernel.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 May 2021 10:57:24 +0200
-Message-ID: <CAMuHMdXvupO2i+A7EaONXGashKPF3TuikH4Kkn3Xw1NJWLG4tw@mail.gmail.com>
-Subject: Re: [PATCH 30/39] PCI: Bulk conversion to generic_handle_domain_irq()
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3yVIvqG1JyVADZbEfVpibeclSnVPEq1FjsSnqb72wTc=;
+        b=nLFpCJN23lMtMegMLrOdfhAAA6Hh0CWRkSfGxbziK6XZF3ls1sauDozbQmCvmh97zX
+         ytoP1yuQWMe3A/ai+HDmGCPsfUvgvpbxs24FD/4J3w6cHT8HyXYSkykXBMnmBMa9zrjA
+         UuxTqQNfWdcVR2pz3OoHoIWmaUIvs0i9LE0RnB79SpStxLNxorw04O/0kHZpAsjUAqaP
+         2dVMY+ZLlT1TDYuLap5Rxcc4D8ZO6bX4jQOWx/qQxOtQljI7LtgUYiyV+4waIUR2kzS5
+         oNY/Egv4fFAqEbhVZR1NDBTYF1yP29l4fsS5ISjiG3MO1dK8AcxZBIRYTWc6g1iJPusU
+         VN9A==
+X-Gm-Message-State: AOAM5300ZCRVsSsDzP+kD3ZFDlZiKXN5x98wPP/tz9bFQbOdgMFGgJ0T
+        UIJN4f+ISIBVed/Fxw50S54=
+X-Google-Smtp-Source: ABdhPJxPN1UZLO0PXhLTlf5qR//s8n68GRwyK+x/ityD7Qg25LhfVT+kgYl0HAV2wRFoergfO/9U1Q==
+X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr20007pjh.111.1621587555532;
+        Fri, 21 May 2021 01:59:15 -0700 (PDT)
+Received: from pride.localdomain (c-174-61-140-56.hsd1.wa.comcast.net. [174.61.140.56])
+        by smtp.gmail.com with ESMTPSA id q3sm3914489pff.142.2021.05.21.01.59.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 01:59:15 -0700 (PDT)
+From:   Joe Richey <joerichey94@gmail.com>
+To:     trivial@kernel.org
+Cc:     Joe Richey <joerichey@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Robert Jarzmik <robert.jarzmik@free.fr>,
-        Russell King <linux@armlinux.org.uk>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Clark <robdclark@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Lee Jones <lee.jones@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
         Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Zhangfei Gao <zhangfei.gao@linaro.org>,
+        Zhou Wang <wangzhou1@hisilicon.com>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>,
+        Sasha Levin <sashal@kernel.org>, Peter Xu <peterx@redhat.com>,
+        Lei Cao <lei.cao@stratus.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Kenneth Lee <liguozhu@hisilicon.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
+        linux-accelerators@lists.ozlabs.org
+Subject: [PATCH v2 0/7] Don't use BIT() macro in UAPI headers
+Date:   Fri, 21 May 2021 01:58:41 -0700
+Message-Id: <20210521085849.37676-1-joerichey94@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210520104343.317119-1-joerichey94@gmail.com>
+References: <20210520104343.317119-1-joerichey94@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 6:57 PM Marc Zyngier <maz@kernel.org> wrote:
-> Wherever possible, replace constructs that match either
-> generic_handle_irq(irq_find_mapping()) or
-> generic_handle_irq(irq_linear_revmap()) to a single call to
-> generic_handle_domain_irq().
->
-> Signed-off-by: Marc Zyngier <maz@kernel.org>
+From: Joe Richey <joerichey@google.com>
 
->  drivers/pci/controller/pcie-rcar-host.c        |  8 +++-----
+The BIT(n) macro is used in the kernel as an alias for (1 << n).
+However, it is not defined in the UAPI headers, they should instead use
+the _BITUL(n) macro. This patch chages all existing usages in UAPI
+headers and updates ./scripts/checkpatch.pl to properly reccomend the
+correct macro depending on context.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Running the below commands shows no more incorrect macro usages:
+    rg "BIT\(" **/uapi/**
+    rg "BIT_ULL\(" **/uapi/**
 
-Gr{oetje,eeting}s,
+Tested by building a basic kernel. Changes are trivial.
 
-                        Geert
+I encountered this issue when compiling the following program:
+    #include <sys/auxv.h>
+    #include <asm/hwcap2.h>
+    // Detect if FSGSBASE instructions are enabled
+    int main() {
+        unsigned long val = getauxval(AT_HWCAP2);
+        return !(val & HWCAP2_FSGSBASE);
+    }
+
+Resulting in the following likner error:
+    /usr/bin/ld: /tmp/cceFpAdR.o: in function `main':
+    gs.c:(.text+0x21): undefined reference to `BIT'
+
+Changes from V1 to V2:
+  - Use _BITUL() macro instead of open-coding
+  - Fixup HWCAP2_RING3MWAIT as well
+  - Shorten commits and added "Fixes" per reviewer comments
+  - checkpatch: Broaden UAPI regex
+  - checkpatch: Reccomend _BITULL()/_BITUL() for UAPI headers
+
+Joe Richey (7):
+  x86/elf: Use _BITUL() macro in UAPI headers
+  KVM: X86: Use _BITUL() macro in UAPI headers
+  drivers: firmware: psci:  Use _BITUL() macro in UAPI headers
+  uacce: Use _BITUL() macro in UAPI headers
+  media: vicodec: Use _BITUL() macro in UAPI headers
+  tools headers UAPI: Sync pkt_sched.h with the kernel sources
+  checkpatch: suggest _BITULL() and _BITUL() for UAPI headers
+
+ arch/x86/include/uapi/asm/hwcap2.h   |   6 +-
+ include/uapi/linux/kvm.h             |   5 +-
+ include/uapi/linux/psci.h            |   4 +-
+ include/uapi/linux/v4l2-controls.h   |  23 ++---
+ include/uapi/misc/uacce/uacce.h      |   3 +-
+ scripts/checkpatch.pl                |  16 ++--
+ tools/include/uapi/linux/kvm.h       |   5 +-
+ tools/include/uapi/linux/pkt_sched.h | 122 ++++++++++++++++++++++++---
+ 8 files changed, 148 insertions(+), 36 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
