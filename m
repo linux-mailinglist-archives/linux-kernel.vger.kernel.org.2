@@ -2,541 +2,592 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E16B38CBAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:14:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D9738CBBE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:14:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238065AbhEURPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:15:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        id S238094AbhEURQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbhEURPj (ORCPT
+        with ESMTP id S238076AbhEURQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:15:39 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 927D8C061574;
-        Fri, 21 May 2021 10:14:16 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so18721391oto.0;
-        Fri, 21 May 2021 10:14:16 -0700 (PDT)
+        Fri, 21 May 2021 13:16:07 -0400
+Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5406C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:14:43 -0700 (PDT)
+Received: by mail-oo1-xc34.google.com with SMTP id e27-20020a056820061bb029020da48eed5cso4728255oow.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:14:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=i/DEH4XPlbQY/GAcAQLF1MiUOk01m9bUndu1B0Q0p2Q=;
-        b=BV5Dv0HT4uSHK02mYT6zN0hk40iQRR5Xpdfpu4QtHAAzKCSdM4Sis8Vs4vOJRFofzy
-         /T9hgsH2rtOW3syQQdWfe0/wR2rmHaVjlErceHDQ5D0k/XbrtWnkIG4SNpREJ9u9DZrL
-         QJuoAxvF2YbjE0vJc/CdH6vAyf/MS0wTgIxgSyzEJtYpbrVTjGyOYquNtKk+nXs/FjvJ
-         WJXi4IGrYKs0/B6x8UZVFyZDpTbPpglAnp37MeUdzu4p6JtDq9pIbZDLopSyNfFp4JZk
-         b1gh7vRTPD4rbovKIpBmqj/1pKGAhKAZ2tw7JUb7ZLUlbvptkcJYCyabMlYh0By0dpLV
-         UKqA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fpPvHacu4qS7mgwBTgwfMW9AkDew1H0FjffBU3OjUjA=;
+        b=vKqjy4EhKnvw0BtAmqm0mQm+NHtnAz5Z1Yx1nKyL3r66qI8bIbi1tga6KT0bObc+OW
+         ivI8TkMrbb6vVbC1l66C710C3jOmLXztiClsY6tFnAtuSTPqdu5QSE5/MWwMvDadup+c
+         ArixA7bWOeRlKkGv7XbletIAZs4u3Fli9h0a9Eo2lyiCUt1EPaP78EcimwkfqRdmCd4x
+         HGyAwWKZ5BcisyWJBJIVWNMcz4mH/DwBz0Ro4wDltPrjditEAkmRXjhCSYwb9aHdiano
+         ojdM1G7USyg9k/HAvia+SSkMN2GVk4p7Atd9Ylm2bfsBsl58jSBtWkYsBtYOg70iI3hg
+         vvag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=i/DEH4XPlbQY/GAcAQLF1MiUOk01m9bUndu1B0Q0p2Q=;
-        b=LKSntqzAMYN1WJpxjNIahvNLHRSm7gIPeI580EMIu/05fGHndo44X/qXK1ASQGQzgT
-         Sk6sxie5MI2CVECSTQ81QD2pR26FW5mzy8yyR1pbmmZqcU7LlUjz4MsUlLtuieGs7SH2
-         E9SkrKRDyzfXHbji57BprlaUOEAX3D52UEAUCUl+7IclWTdTZruFTfQcUGrjNiLUzWgO
-         ye/qO1HfyHnqKrwgAn3cihxfguosMxjN0qnOSPNL8YrHGLmke0h4yW6heXpo12Fb8efq
-         DPpI84rPnCVaxW/KYCuCRtx0AFMx22XmqLy61JBA8h+brL3+p9MiHoXTzfc6Nz7UbccU
-         ExHg==
-X-Gm-Message-State: AOAM533XUf+3XCu0LxOMfVzh+WhHlHssnj6ZBhDJrl54jyJgvEE1ESRA
-        AhtoJJUXiM0stJdBXd93gg==
-X-Google-Smtp-Source: ABdhPJzmHdxLbXoaJBp1/xmpAmOe0Q15yNBm3JriguNf2vFLBw/GS4NToO7dnR4UroPXKS2RE874yA==
-X-Received: by 2002:a9d:644f:: with SMTP id m15mr9364980otl.99.1621617255792;
-        Fri, 21 May 2021 10:14:15 -0700 (PDT)
-Received: from serve.minyard.net ([47.184.156.158])
-        by smtp.gmail.com with ESMTPSA id n13sm1286675oov.30.2021.05.21.10.14.14
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fpPvHacu4qS7mgwBTgwfMW9AkDew1H0FjffBU3OjUjA=;
+        b=WaMkcGW6Ghahhxk+C2GaW+ypM58bd+kdGVJvlWM53U/Dr4qjtXW/9Ojr7yZfU+nGHC
+         1QG1h4+zqMseHLl1+s1F1txcgGPQXNFU3iIqQVTtNyd/bG3+uiT36afWQEGbSwV3CNiv
+         jXmTBoyx8tkxdLjFmEqX2DksKxrp45Tmy5SS2ftFJel8W/Dn80ASdZ3GQD5c7bqwmAm2
+         5UBS7oLDN111X9h83G/VXPEYzDxyUFKQfliwg4isEXlwJ5XdPHP8CIN42HTM7/nJPjg/
+         DmFslEeOhu2OsrVbnf8HOBp+zRaFXZaZeOTgYtLsXWDFPYUa+VnUNUqWKZQdBpDqQtXf
+         C4wQ==
+X-Gm-Message-State: AOAM533yWnxaWqwHNnLcw2rBDq9q+Kbt9uv3gX+EFyJCfeZ/6AoyK5cO
+        GlHCn9K5EPcV5wmAc63kemJsiw==
+X-Google-Smtp-Source: ABdhPJz//CSUgO6Ljnn+iLSME7JbQ4J+LIzpfV7JL+2pWQLu3TjnvIPDFpT3qyABHSD9JXRqnEO8tA==
+X-Received: by 2002:a4a:ea2b:: with SMTP id y11mr9108219ood.42.1621617282800;
+        Fri, 21 May 2021 10:14:42 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id a11sm1229812oif.52.2021.05.21.10.14.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 10:14:14 -0700 (PDT)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:9c8f:21cb:3961:b550])
-        by serve.minyard.net (Postfix) with ESMTPSA id A826D180105;
-        Fri, 21 May 2021 17:14:13 +0000 (UTC)
-Date:   Fri, 21 May 2021 12:14:12 -0500
-From:   Corey Minyard <minyard@acm.org>
-To:     Andrew Jeffery <andrew@aj.id.au>
-Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
-        devicetree@vger.kernel.org, tmaimon77@gmail.com,
-        linux-aspeed@lists.ozlabs.org, avifishman70@gmail.com,
-        venture@google.com, linux-kernel@vger.kernel.org,
-        tali.perry1@gmail.com, robh+dt@kernel.org,
-        chiawei_wang@aspeedtech.com, linux-arm-kernel@lists.infradead.org,
-        benjaminfair@google.com, arnd@arndb.de, zweiss@equinix.com
-Subject: Re: [PATCH v3 05/16] ipmi: kcs_bmc: Turn the driver data-structures
- inside-out
-Message-ID: <20210521171412.GI2921206@minyard.net>
-Reply-To: minyard@acm.org
-References: <20210510054213.1610760-1-andrew@aj.id.au>
- <20210510054213.1610760-6-andrew@aj.id.au>
+        Fri, 21 May 2021 10:14:42 -0700 (PDT)
+Date:   Fri, 21 May 2021 12:14:39 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Krishna Manikandan <mkrishn@codeaurora.org>
+Cc:     dri-devel@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
+        freedreno@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kalyan_t@codeaurora.org,
+        tanmay@codeaurora.org, abhinavk@codeaurora.org,
+        robdclark@gmail.com, swboyd@chromium.org, vinod.koul@linaro.org,
+        dianders@chromium.org, khsieh@codeaurora.org, robh+dt@kernel.org,
+        sean@poorly.run, robh@kernel.org
+Subject: Re: [PATCH v17 2/4] dt-bindings: msm: dsi: add yaml schemas for DSI
+ bindings
+Message-ID: <20210521171439.GC2484@yoga>
+References: <1621592844-6414-1-git-send-email-mkrishn@codeaurora.org>
+ <1621592844-6414-2-git-send-email-mkrishn@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210510054213.1610760-6-andrew@aj.id.au>
+In-Reply-To: <1621592844-6414-2-git-send-email-mkrishn@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 10, 2021 at 03:12:02PM +0930, Andrew Jeffery wrote:
-> Make the KCS device drivers responsible for allocating their own memory.
-> 
-> Until now the private data for the device driver was allocated internal
-> to the private data for the chardev interface. This coupling required
-> the slightly awkward API of passing through the struct size for the
-> driver private data to the chardev constructor, and then retrieving a
-> pointer to the driver private data from the allocated chardev memory.
-> 
-> In addition to being awkward, the arrangement prevents the
-> implementation of alternative userspace interfaces as the device driver
-> private data is not independent.
-> 
-> Peel a layer off the onion and turn the data-structures inside out by
-> exploiting container_of() and embedding `struct kcs_device` in the
-> driver private data.
+On Fri 21 May 05:27 CDT 2021, Krishna Manikandan wrote:
 
-All in all a very nice cleanup.  A few nits inline.
-
+> Add YAML schema for the device tree bindings for DSI
 > 
-> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
-> Reviewed-by: Zev Weiss <zweiss@equinix.com>
+
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+
+Regards,
+Bjorn
+
+> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
+> 
+> Changes in v1:
+>     - Separate dsi controller bindings to a separate patch (Stephen Boyd)
+>     - Merge dsi-common-controller.yaml and dsi-controller-main.yaml to
+>       a single file (Stephen Boyd)
+>     - Drop supply entries and definitions from properties (Stephen Boyd)
+>     - Modify phy-names property for dsi controller (Stephen Boyd)
+>     - Remove boolean from description (Stephen Boyd)
+>     - Drop pinctrl properties as they are standard entries (Stephen Boyd)
+>     - Modify the description for ports property and keep the reference
+>       to the generic binding where this is defined (Stephen Boyd)
+>     - Add description to clock names (Stephen Boyd)
+>     - Correct the indendation (Stephen Boyd)
+>     - Drop the label for display dt nodes and correct the node
+>       name (Stephen Boyd)
+> 
+> Changes in v2:
+>     - Drop maxItems for clock (Stephen Boyd)
+>     - Drop qcom,mdss-mdp-transfer-time-us as it is not used in upstream
+>       dt file (Stephen Boyd)
+>     - Keep child node directly under soc node (Stephen Boyd)
+>     - Drop qcom,sync-dual-dsi as it is not used in upstream dt
+> 
+> Changes in v3:
+>     - Add description for register property (Stephen Boyd)
+> 
+> Changes in v4:
+>     - Add maxItems for phys property (Stephen Boyd)
+>     - Add maxItems for reg property (Stephen Boyd)
+>     - Add reference for data-lanes property (Stephen Boyd)
+>     - Remove soc from example (Stephen Boyd)
+> 
+> Changes in v5:
+>     - Modify title and description (Stephen Boyd)
+>     - Add required properties for ports node (Stephen Boyd)
+>     - Add data-lanes in the example (Stephen Boyd)
+>     - Drop qcom,master-dsi property (Stephen Boyd)
+> 
+> Changes in v6:
+>     - Add required properties for port@0, port@1 and corresponding
+>       endpoints (Stephen Boyd)
+>     - Add address-cells and size-cells for ports (Stephen Boyd)
+>     - Use additionalProperties instead of unevaluatedProperties (Stephen Boyd)
+> 
+> Changes in v7:
+>     - Add reference for ports and data-lanes (Rob Herring)
+>     - Add maxItems and minItems for data-lanes (Rob Herring)
+> 
+> Changes in v8:
+>     - Drop common properties and description from ports (Rob Herring)
+>     - Add reference for endpoint (Rob Herring)
+>     - Add correct reference for data-lanes (Rob Herring)
+>     - Drop common properties from required list for ports (Rob Herring)
 > ---
->  drivers/char/ipmi/kcs_bmc.c           | 19 +++++++--
->  drivers/char/ipmi/kcs_bmc.h           | 12 ++----
->  drivers/char/ipmi/kcs_bmc_aspeed.c    | 56 +++++++++++++------------
->  drivers/char/ipmi/kcs_bmc_cdev_ipmi.c | 60 ++++++++++++++++++---------
->  drivers/char/ipmi/kcs_bmc_npcm7xx.c   | 37 ++++++++++-------
->  5 files changed, 111 insertions(+), 73 deletions(-)
+>  .../bindings/display/msm/dsi-controller-main.yaml  | 185 +++++++++++++++
+>  .../devicetree/bindings/display/msm/dsi.txt        | 249 ---------------------
+>  2 files changed, 185 insertions(+), 249 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/display/msm/dsi.txt
 > 
-> diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
-> index ef5c48ffe74a..83da681bf49e 100644
-> --- a/drivers/char/ipmi/kcs_bmc.c
-> +++ b/drivers/char/ipmi/kcs_bmc.c
-> @@ -44,12 +44,23 @@ int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc)
->  }
->  EXPORT_SYMBOL(kcs_bmc_handle_event);
->  
-> -struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel);
-> -struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel)
-> +int kcs_bmc_ipmi_add_device(struct kcs_bmc *kcs_bmc);
-
-The above (and it's remove function) should be in an include file.
-
-> +void kcs_bmc_add_device(struct kcs_bmc *kcs_bmc)
-
-This should return an error so the probe can be failed and cleaned up
-and so confusing message don't get printed after this in one case.
-
->  {
-> -	return kcs_bmc_ipmi_alloc(dev, sizeof_priv, channel);
-> +	if (kcs_bmc_ipmi_add_device(kcs_bmc))
-> +		pr_warn("Failed to add device for KCS channel %d\n",
-> +			kcs_bmc->channel);
->  }
-> -EXPORT_SYMBOL(kcs_bmc_alloc);
-> +EXPORT_SYMBOL(kcs_bmc_add_device);
+> diff --git a/Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml b/Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml
+> new file mode 100644
+> index 0000000..df6a750
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/display/msm/dsi-controller-main.yaml
+> @@ -0,0 +1,185 @@
+> +# SPDX-License-Identifier: GPL-2.0-only or BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/display/msm/dsi-controller-main.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +int kcs_bmc_ipmi_remove_device(struct kcs_bmc *kcs_bmc);
-> +void kcs_bmc_remove_device(struct kcs_bmc *kcs_bmc)
-> +{
-> +	if (kcs_bmc_ipmi_remove_device(kcs_bmc))
-> +		pr_warn("Failed to remove device for KCS channel %d\n",
-> +			kcs_bmc->channel);
-> +}
-> +EXPORT_SYMBOL(kcs_bmc_remove_device);
->  
->  MODULE_LICENSE("GPL v2");
->  MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-> diff --git a/drivers/char/ipmi/kcs_bmc.h b/drivers/char/ipmi/kcs_bmc.h
-> index febea0c8deb4..b2e6b7a7fe62 100644
-> --- a/drivers/char/ipmi/kcs_bmc.h
-> +++ b/drivers/char/ipmi/kcs_bmc.h
-> @@ -67,6 +67,8 @@ struct kcs_ioreg {
->  };
->  
->  struct kcs_bmc {
-> +	struct device *dev;
+> +title: Qualcomm Display DSI controller
 > +
->  	spinlock_t lock;
->  
->  	u32 channel;
-> @@ -94,17 +96,11 @@ struct kcs_bmc {
->  	u8 *kbuffer;
->  
->  	struct miscdevice miscdev;
+> +maintainers:
+> +  - Krishna Manikandan <mkrishn@codeaurora.org>
+> +
+> +allOf:
+> +  - $ref: "../dsi-controller.yaml#"
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: qcom,mdss-dsi-ctrl
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  reg-names:
+> +    const: dsi_ctrl
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    items:
+> +      - description: Display byte clock
+> +      - description: Display byte interface clock
+> +      - description: Display pixel clock
+> +      - description: Display escape clock
+> +      - description: Display AHB clock
+> +      - description: Display AXI clock
+> +
+> +  clock-names:
+> +    items:
+> +      - const: byte
+> +      - const: byte_intf
+> +      - const: pixel
+> +      - const: core
+> +      - const: iface
+> +      - const: bus
+> +
+> +  phys:
+> +    maxItems: 1
+> +
+> +  phy-names:
+> +    const: dsi
+> +
+> +  "#address-cells": true
+> +
+> +  "#size-cells": true
+> +
+> +  syscon-sfpb:
+> +    description: A phandle to mmss_sfpb syscon node (only for DSIv2).
+> +    $ref: "/schemas/types.yaml#/definitions/phandle"
+> +
+> +  qcom,dual-dsi-mode:
+> +    type: boolean
+> +    description: |
+> +      Indicates if the DSI controller is driving a panel which needs
+> +      2 DSI links.
+> +
+> +  power-domains:
+> +    maxItems: 1
+> +
+> +  operating-points-v2: true
+> +
+> +  ports:
+> +    $ref: "/schemas/graph.yaml#/properties/ports"
+> +    description: |
+> +      Contains DSI controller input and output ports as children, each
+> +      containing one endpoint subnode.
+> +
+> +    properties:
+> +      port@0:
+> +        $ref: "/schemas/graph.yaml#/properties/port"
+> +        description: |
+> +          Input endpoints of the controller.
+> +        properties:
+> +          endpoint:
+> +            $ref: /schemas/media/video-interfaces.yaml#
+> +            properties:
+> +              data-lanes:
+> +                $ref: /schemas/types.yaml#/definitions/uint32-array
+> +                maxItems: 4
+> +                minItems: 4
+> +                items:
+> +                  enum: [ 0, 1, 2, 3 ]
+> +
+> +      port@1:
+> +        $ref: "/schemas/graph.yaml#/properties/port"
+> +        description: |
+> +          Output endpoints of the controller.
+> +        properties:
+> +          endpoint:
+> +            $ref: /schemas/media/video-interfaces.yaml#
+> +            properties:
+> +              data-lanes:
+> +                $ref: /schemas/types.yaml#/definitions/uint32-array
+> +                maxItems: 4
+> +                minItems: 4
+> +                items:
+> +                  enum: [ 0, 1, 2, 3 ]
+> +
+> +    required:
+> +      - port@0
+> +      - port@1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - reg-names
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +  - phys
+> +  - phy-names
+> +  - power-domains
+> +  - operating-points-v2
+> +  - ports
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +     #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +     #include <dt-bindings/clock/qcom,dispcc-sdm845.h>
+> +     #include <dt-bindings/clock/qcom,gcc-sdm845.h>
+> +     #include <dt-bindings/power/qcom-rpmpd.h>
+> +
+> +     dsi@ae94000 {
+> +           compatible = "qcom,mdss-dsi-ctrl";
+> +           reg = <0x0ae94000 0x400>;
+> +           reg-names = "dsi_ctrl";
+> +
+> +           #address-cells = <1>;
+> +           #size-cells = <0>;
+> +
+> +           interrupt-parent = <&mdss>;
+> +           interrupts = <4>;
+> +
+> +           clocks = <&dispcc DISP_CC_MDSS_BYTE0_CLK>,
+> +                    <&dispcc DISP_CC_MDSS_BYTE0_INTF_CLK>,
+> +                    <&dispcc DISP_CC_MDSS_PCLK0_CLK>,
+> +                    <&dispcc DISP_CC_MDSS_ESC0_CLK>,
+> +                    <&dispcc DISP_CC_MDSS_AHB_CLK>,
+> +                    <&dispcc DISP_CC_MDSS_AXI_CLK>;
+> +           clock-names = "byte",
+> +                         "byte_intf",
+> +                         "pixel",
+> +                         "core",
+> +                         "iface",
+> +                         "bus";
+> +
+> +           phys = <&dsi0_phy>;
+> +           phy-names = "dsi";
+> +
+> +           power-domains = <&rpmhpd SC7180_CX>;
+> +           operating-points-v2 = <&dsi_opp_table>;
+> +
+> +           ports {
+> +                  #address-cells = <1>;
+> +                  #size-cells = <0>;
+> +
+> +                  port@0 {
+> +                          reg = <0>;
+> +                          dsi0_in: endpoint {
+> +                                   remote-endpoint = <&dpu_intf1_out>;
+> +                          };
+> +                  };
+> +
+> +                  port@1 {
+> +                          reg = <1>;
+> +                          dsi0_out: endpoint {
+> +                                   remote-endpoint = <&sn65dsi86_in>;
+> +                                   data-lanes = <0 1 2 3>;
+> +                          };
+> +                  };
+> +           };
+> +     };
+> +...
+> diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt b/Documentation/devicetree/bindings/display/msm/dsi.txt
+> deleted file mode 100644
+> index b9a64d3..0000000
+> --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
+> +++ /dev/null
+> @@ -1,249 +0,0 @@
+> -Qualcomm Technologies Inc. adreno/snapdragon DSI output
 > -
-> -	unsigned long priv[];
->  };
->  
-> -static inline void *kcs_bmc_priv(struct kcs_bmc *kcs_bmc)
-> -{
-> -	return kcs_bmc->priv;
-> -}
+> -DSI Controller:
+> -Required properties:
+> -- compatible:
+> -  * "qcom,mdss-dsi-ctrl"
+> -- reg: Physical base address and length of the registers of controller
+> -- reg-names: The names of register regions. The following regions are required:
+> -  * "dsi_ctrl"
+> -- interrupts: The interrupt signal from the DSI block.
+> -- power-domains: Should be <&mmcc MDSS_GDSC>.
+> -- clocks: Phandles to device clocks.
+> -- clock-names: the following clocks are required:
+> -  * "mdp_core"
+> -  * "iface"
+> -  * "bus"
+> -  * "core_mmss"
+> -  * "byte"
+> -  * "pixel"
+> -  * "core"
+> -  For DSIv2, we need an additional clock:
+> -   * "src"
+> -  For DSI6G v2.0 onwards, we need also need the clock:
+> -   * "byte_intf"
+> -- assigned-clocks: Parents of "byte" and "pixel" for the given platform.
+> -- assigned-clock-parents: The Byte clock and Pixel clock PLL outputs provided
+> -  by a DSI PHY block. See [1] for details on clock bindings.
+> -- vdd-supply: phandle to vdd regulator device node
+> -- vddio-supply: phandle to vdd-io regulator device node
+> -- vdda-supply: phandle to vdda regulator device node
+> -- phys: phandle to DSI PHY device node
+> -- phy-names: the name of the corresponding PHY device
+> -- syscon-sfpb: A phandle to mmss_sfpb syscon node (only for DSIv2)
+> -- ports: Contains 2 DSI controller ports as child nodes. Each port contains
+> -  an endpoint subnode as defined in [2] and [3].
 > -
->  int kcs_bmc_handle_event(struct kcs_bmc *kcs_bmc);
-> -struct kcs_bmc *kcs_bmc_alloc(struct device *dev, int sizeof_priv, u32 channel);
-> +void kcs_bmc_add_device(struct kcs_bmc *kcs_bmc);
-> +void kcs_bmc_remove_device(struct kcs_bmc *kcs_bmc);
->  
->  u8 kcs_bmc_read_data(struct kcs_bmc *kcs_bmc);
->  void kcs_bmc_write_data(struct kcs_bmc *kcs_bmc, u8 data);
-> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> index 06628ca69750..5d433dea5714 100644
-> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
-> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
-> @@ -61,6 +61,8 @@
->  #define LPC_STR4             0x11C
->  
->  struct aspeed_kcs_bmc {
-> +	struct kcs_bmc kcs_bmc;
-> +
->  	struct regmap *map;
->  };
->  
-> @@ -69,9 +71,14 @@ struct aspeed_kcs_of_ops {
->  	int (*get_io_address)(struct platform_device *pdev);
->  };
->  
-> +static inline struct aspeed_kcs_bmc *to_aspeed_kcs_bmc(struct kcs_bmc *kcs_bmc)
-> +{
-> +	return container_of(kcs_bmc, struct aspeed_kcs_bmc, kcs_bmc);
-> +}
-> +
->  static u8 aspeed_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
->  {
-> -	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
->  	u32 val = 0;
->  	int rc;
->  
-> @@ -83,7 +90,7 @@ static u8 aspeed_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
->  
->  static void aspeed_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
->  {
-> -	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
->  	int rc;
->  
->  	rc = regmap_write(priv->map, reg, data);
-> @@ -92,7 +99,7 @@ static void aspeed_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
->  
->  static void aspeed_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 val)
->  {
-> -	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
->  	int rc;
->  
->  	rc = regmap_update_bits(priv->map, reg, mask, val);
-> @@ -114,7 +121,7 @@ static void aspeed_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 val
->   */
->  static void aspeed_kcs_set_address(struct kcs_bmc *kcs_bmc, u16 addr)
->  {
-> -	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
->  
->  	switch (kcs_bmc->channel) {
->  	case 1:
-> @@ -148,7 +155,7 @@ static void aspeed_kcs_set_address(struct kcs_bmc *kcs_bmc, u16 addr)
->  
->  static void aspeed_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
->  {
-> -	struct aspeed_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct aspeed_kcs_bmc *priv = to_aspeed_kcs_bmc(kcs_bmc);
->  
->  	switch (kcs_bmc->channel) {
->  	case 1:
-> @@ -323,17 +330,16 @@ static int aspeed_kcs_of_v2_get_io_address(struct platform_device *pdev)
->  static int aspeed_kcs_probe(struct platform_device *pdev)
->  {
->  	const struct aspeed_kcs_of_ops *ops;
-> -	struct device *dev = &pdev->dev;
->  	struct aspeed_kcs_bmc *priv;
->  	struct kcs_bmc *kcs_bmc;
->  	struct device_node *np;
->  	int rc, channel, addr;
->  
-> -	np = dev->of_node->parent;
-> +	np = pdev->dev.of_node->parent;
->  	if (!of_device_is_compatible(np, "aspeed,ast2400-lpc-v2") &&
->  	    !of_device_is_compatible(np, "aspeed,ast2500-lpc-v2") &&
->  	    !of_device_is_compatible(np, "aspeed,ast2600-lpc-v2")) {
-> -		dev_err(dev, "unsupported LPC device binding\n");
-> +		dev_err(&pdev->dev, "unsupported LPC device binding\n");
->  		return -ENODEV;
->  	}
->  	ops = of_device_get_match_data(&pdev->dev);
-> @@ -344,20 +350,22 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
->  	if (channel < 0)
->  		return channel;
->  
-> -	kcs_bmc = kcs_bmc_alloc(&pdev->dev, sizeof(struct aspeed_kcs_bmc), channel);
-> -	if (!kcs_bmc)
-> +	addr = ops->get_io_address(pdev);
-> +	if (addr < 0)
-> +		return addr;
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
->  		return -ENOMEM;
->  
-> +	kcs_bmc = &priv->kcs_bmc;
-> +	kcs_bmc->dev = &pdev->dev;
-> +	kcs_bmc->channel = channel;
->  	kcs_bmc->ioreg = ast_kcs_bmc_ioregs[channel - 1];
->  	kcs_bmc->io_inputb = aspeed_kcs_inb;
->  	kcs_bmc->io_outputb = aspeed_kcs_outb;
->  	kcs_bmc->io_updateb = aspeed_kcs_updateb;
->  
-> -	addr = ops->get_io_address(pdev);
-> -	if (addr < 0)
-> -		return addr;
+> -Optional properties:
+> -- panel@0: Node of panel connected to this DSI controller.
+> -  See files in [4] for each supported panel.
+> -- qcom,dual-dsi-mode: Boolean value indicating if the DSI controller is
+> -  driving a panel which needs 2 DSI links.
+> -- qcom,master-dsi: Boolean value indicating if the DSI controller is driving
+> -  the master link of the 2-DSI panel.
+> -- qcom,sync-dual-dsi: Boolean value indicating if the DSI controller is
+> -  driving a 2-DSI panel whose 2 links need receive command simultaneously.
+> -- pinctrl-names: the pin control state names; should contain "default"
+> -- pinctrl-0: the default pinctrl state (active)
+> -- pinctrl-n: the "sleep" pinctrl state
+> -- ports: contains DSI controller input and output ports as children, each
+> -  containing one endpoint subnode.
 > -
-> -	priv = kcs_bmc_priv(kcs_bmc);
->  	priv->map = syscon_node_to_regmap(pdev->dev.parent->of_node);
->  	if (IS_ERR(priv->map)) {
->  		dev_err(&pdev->dev, "Couldn't get regmap\n");
-> @@ -370,29 +378,23 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
->  	if (rc)
->  		return rc;
->  
-> -	dev_set_drvdata(dev, kcs_bmc);
-> +	platform_set_drvdata(pdev, priv);
->  
->  	aspeed_kcs_enable_channel(kcs_bmc, true);
->  
-> -	rc = misc_register(&kcs_bmc->miscdev);
-> -	if (rc) {
-> -		dev_err(dev, "Unable to register device\n");
-> -		return rc;
-> -	}
-> +	kcs_bmc_add_device(&priv->kcs_bmc);
->  
-> -	dev_dbg(&pdev->dev,
-> -		"Probed KCS device %d (IDR=0x%x, ODR=0x%x, STR=0x%x)\n",
-> -		kcs_bmc->channel, kcs_bmc->ioreg.idr, kcs_bmc->ioreg.odr,
-> -		kcs_bmc->ioreg.str);
-> +	dev_info(&pdev->dev, "Initialised channel %d at 0x%x\n", kcs_bmc->channel, addr);
->  
->  	return 0;
->  }
->  
->  static int aspeed_kcs_remove(struct platform_device *pdev)
->  {
-> -	struct kcs_bmc *kcs_bmc = dev_get_drvdata(&pdev->dev);
-> +	struct aspeed_kcs_bmc *priv = platform_get_drvdata(pdev);
-> +	struct kcs_bmc *kcs_bmc = &priv->kcs_bmc;
->  
-> -	misc_deregister(&kcs_bmc->miscdev);
-> +	kcs_bmc_remove_device(kcs_bmc);
->  
->  	return 0;
->  }
-> diff --git a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> index 82c77994e481..5060643bf530 100644
-> --- a/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> +++ b/drivers/char/ipmi/kcs_bmc_cdev_ipmi.c
-> @@ -382,7 +382,7 @@ static int kcs_bmc_ipmi_release(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> -static const struct file_operations kcs_bmc_fops = {
-> +static const struct file_operations kcs_bmc_ipmi_fops = {
->  	.owner          = THIS_MODULE,
->  	.open           = kcs_bmc_ipmi_open,
->  	.read           = kcs_bmc_ipmi_read,
-> @@ -392,36 +392,58 @@ static const struct file_operations kcs_bmc_fops = {
->  	.unlocked_ioctl = kcs_bmc_ipmi_ioctl,
->  };
->  
-> -struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel);
-> -struct kcs_bmc *kcs_bmc_ipmi_alloc(struct device *dev, int sizeof_priv, u32 channel)
-> +int kcs_bmc_ipmi_add_device(struct kcs_bmc *kcs_bmc);
-> +int kcs_bmc_ipmi_add_device(struct kcs_bmc *kcs_bmc)
->  {
-> -	struct kcs_bmc *kcs_bmc;
+> -  DSI Endpoint properties:
+> -  - remote-endpoint: For port@0, set to phandle of the connected panel/bridge's
+> -    input endpoint. For port@1, set to the MDP interface output. See [2] for
+> -    device graph info.
 > -
-> -	kcs_bmc = devm_kzalloc(dev, sizeof(*kcs_bmc) + sizeof_priv, GFP_KERNEL);
-> -	if (!kcs_bmc)
-> -		return NULL;
-> +	int rc;
->  
->  	spin_lock_init(&kcs_bmc->lock);
-> -	kcs_bmc->channel = channel;
+> -  - data-lanes: this describes how the physical DSI data lanes are mapped
+> -    to the logical lanes on the given platform. The value contained in
+> -    index n describes what physical lane is mapped to the logical lane n
+> -    (DATAn, where n lies between 0 and 3). The clock lane position is fixed
+> -    and can't be changed. Hence, they aren't a part of the DT bindings. See
+> -    [3] for more info on the data-lanes property.
 > -
->  	mutex_init(&kcs_bmc->mutex);
->  	init_waitqueue_head(&kcs_bmc->queue);
->  
-> -	kcs_bmc->data_in = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> -	kcs_bmc->data_out = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> -	kcs_bmc->kbuffer = devm_kmalloc(dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> +	kcs_bmc->data_in = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> +	kcs_bmc->data_out = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
-> +	kcs_bmc->kbuffer = devm_kmalloc(kcs_bmc->dev, KCS_MSG_BUFSIZ, GFP_KERNEL);
->  
->  	kcs_bmc->miscdev.minor = MISC_DYNAMIC_MINOR;
-> -	kcs_bmc->miscdev.name = devm_kasprintf(dev, GFP_KERNEL, "%s%u",
-> -					       DEVICE_NAME, channel);
-> +	kcs_bmc->miscdev.name = devm_kasprintf(kcs_bmc->dev, GFP_KERNEL, "%s%u",
-> +					       DEVICE_NAME, kcs_bmc->channel);
->  	if (!kcs_bmc->data_in || !kcs_bmc->data_out || !kcs_bmc->kbuffer ||
->  	    !kcs_bmc->miscdev.name)
-> -		return NULL;
-> -	kcs_bmc->miscdev.fops = &kcs_bmc_fops;
-> +		return -ENOMEM;
->  
-> -	return kcs_bmc;
-> +	kcs_bmc->miscdev.fops = &kcs_bmc_ipmi_fops;
-> +
-> +	rc = misc_register(&kcs_bmc->miscdev);
-> +	if (rc) {
-> +		dev_err(kcs_bmc->dev, "Unable to register device: %d\n", rc);
-> +		return rc;
-> +	}
-> +
-> +	dev_info(kcs_bmc->dev, "Initialised IPMI client for channel %d", kcs_bmc->channel);
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(kcs_bmc_ipmi_add_device);
-> +
-> +int kcs_bmc_ipmi_remove_device(struct kcs_bmc *kcs_bmc);
-> +int kcs_bmc_ipmi_remove_device(struct kcs_bmc *kcs_bmc)
-> +{
-> +	misc_deregister(&kcs_bmc->miscdev);
-> +
-> +	spin_lock_irq(&kcs_bmc->lock);
-> +	kcs_bmc->running = 0;
-> +	kcs_bmc_ipmi_force_abort(kcs_bmc);
-> +	spin_unlock_irq(&kcs_bmc->lock);
-> +
-> +	devm_kfree(kcs_bmc->dev, kcs_bmc->kbuffer);
-> +	devm_kfree(kcs_bmc->dev, kcs_bmc->data_out);
-> +	devm_kfree(kcs_bmc->dev, kcs_bmc->data_in);
-> +	devm_kfree(kcs_bmc->dev, kcs_bmc);
-> +
-> +	return 0;
->  }
-> -EXPORT_SYMBOL(kcs_bmc_ipmi_alloc);
-> +EXPORT_SYMBOL(kcs_bmc_ipmi_remove_device);
->  
->  MODULE_LICENSE("GPL v2");
->  MODULE_AUTHOR("Haiyue Wang <haiyue.wang@linux.intel.com>");
-> diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> index 1f44aadec9e8..f7b4e866f86e 100644
-> --- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> +++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
-> @@ -65,6 +65,8 @@ struct npcm7xx_kcs_reg {
->  };
->  
->  struct npcm7xx_kcs_bmc {
-> +	struct kcs_bmc kcs_bmc;
-> +
->  	struct regmap *map;
->  
->  	const struct npcm7xx_kcs_reg *reg;
-> @@ -76,9 +78,14 @@ static const struct npcm7xx_kcs_reg npcm7xx_kcs_reg_tbl[KCS_CHANNEL_MAX] = {
->  	{ .sts = KCS3ST, .dob = KCS3DO, .dib = KCS3DI, .ctl = KCS3CTL, .ie = KCS3IE },
->  };
->  
-> +static inline struct npcm7xx_kcs_bmc *to_npcm7xx_kcs_bmc(struct kcs_bmc *kcs_bmc)
-> +{
-> +	return container_of(kcs_bmc, struct npcm7xx_kcs_bmc, kcs_bmc);
-> +}
-> +
->  static u8 npcm7xx_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
->  {
-> -	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
->  	u32 val = 0;
->  	int rc;
->  
-> @@ -90,7 +97,7 @@ static u8 npcm7xx_kcs_inb(struct kcs_bmc *kcs_bmc, u32 reg)
->  
->  static void npcm7xx_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
->  {
-> -	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
->  	int rc;
->  
->  	rc = regmap_write(priv->map, reg, data);
-> @@ -99,7 +106,7 @@ static void npcm7xx_kcs_outb(struct kcs_bmc *kcs_bmc, u32 reg, u8 data)
->  
->  static void npcm7xx_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 data)
->  {
-> -	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
->  	int rc;
->  
->  	rc = regmap_update_bits(priv->map, reg, mask, data);
-> @@ -108,7 +115,7 @@ static void npcm7xx_kcs_updateb(struct kcs_bmc *kcs_bmc, u32 reg, u8 mask, u8 da
->  
->  static void npcm7xx_kcs_enable_channel(struct kcs_bmc *kcs_bmc, bool enable)
->  {
-> -	struct npcm7xx_kcs_bmc *priv = kcs_bmc_priv(kcs_bmc);
-> +	struct npcm7xx_kcs_bmc *priv = to_npcm7xx_kcs_bmc(kcs_bmc);
->  
->  	regmap_update_bits(priv->map, priv->reg->ctl, KCS_CTL_IBFIE,
->  			   enable ? KCS_CTL_IBFIE : 0);
-> @@ -155,11 +162,10 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
->  		return -ENODEV;
->  	}
->  
-> -	kcs_bmc = kcs_bmc_alloc(dev, sizeof(*priv), chan);
-> -	if (!kcs_bmc)
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
->  		return -ENOMEM;
->  
-> -	priv = kcs_bmc_priv(kcs_bmc);
->  	priv->map = syscon_node_to_regmap(dev->parent->of_node);
->  	if (IS_ERR(priv->map)) {
->  		dev_err(dev, "Couldn't get regmap\n");
-> @@ -167,6 +173,9 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
->  	}
->  	priv->reg = &npcm7xx_kcs_reg_tbl[chan - 1];
->  
-> +	kcs_bmc = &priv->kcs_bmc;
-> +	kcs_bmc->dev = &pdev->dev;
-> +	kcs_bmc->channel = chan;
->  	kcs_bmc->ioreg.idr = priv->reg->dib;
->  	kcs_bmc->ioreg.odr = priv->reg->dob;
->  	kcs_bmc->ioreg.str = priv->reg->sts;
-> @@ -174,31 +183,29 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
->  	kcs_bmc->io_outputb = npcm7xx_kcs_outb;
->  	kcs_bmc->io_updateb = npcm7xx_kcs_updateb;
->  
-> -	dev_set_drvdata(dev, kcs_bmc);
-> +	platform_set_drvdata(pdev, priv);
->  
->  	npcm7xx_kcs_enable_channel(kcs_bmc, true);
->  	rc = npcm7xx_kcs_config_irq(kcs_bmc, pdev);
->  	if (rc)
->  		return rc;
->  
-> -	rc = misc_register(&kcs_bmc->miscdev);
-> -	if (rc) {
-> -		dev_err(dev, "Unable to register device\n");
-> -		return rc;
-> -	}
->  
->  	pr_info("channel=%u idr=0x%x odr=0x%x str=0x%x\n",
->  		chan,
->  		kcs_bmc->ioreg.idr, kcs_bmc->ioreg.odr, kcs_bmc->ioreg.str);
->  
-> +	kcs_bmc_add_device(kcs_bmc);
-> +
->  	return 0;
->  }
->  
->  static int npcm7xx_kcs_remove(struct platform_device *pdev)
->  {
-> -	struct kcs_bmc *kcs_bmc = dev_get_drvdata(&pdev->dev);
-> +	struct npcm7xx_kcs_bmc *priv = platform_get_drvdata(pdev);
-> +	struct kcs_bmc *kcs_bmc = &priv->kcs_bmc;
->  
-> -	misc_deregister(&kcs_bmc->miscdev);
-> +	kcs_bmc_remove_device(kcs_bmc);
->  
->  	return 0;
->  }
+> -    For example:
+> -
+> -    data-lanes = <3 0 1 2>;
+> -
+> -    The above mapping describes that the logical data lane DATA0 is mapped to
+> -    the physical data lane DATA3, logical DATA1 to physical DATA0, logic DATA2
+> -    to phys DATA1 and logic DATA3 to phys DATA2.
+> -
+> -    There are only a limited number of physical to logical mappings possible:
+> -    <0 1 2 3>
+> -    <1 2 3 0>
+> -    <2 3 0 1>
+> -    <3 0 1 2>
+> -    <0 3 2 1>
+> -    <1 0 3 2>
+> -    <2 1 0 3>
+> -    <3 2 1 0>
+> -
+> -DSI PHY:
+> -Required properties:
+> -- compatible: Could be the following
+> -  * "qcom,dsi-phy-28nm-hpm"
+> -  * "qcom,dsi-phy-28nm-lp"
+> -  * "qcom,dsi-phy-20nm"
+> -  * "qcom,dsi-phy-28nm-8960"
+> -  * "qcom,dsi-phy-14nm"
+> -  * "qcom,dsi-phy-14nm-660"
+> -  * "qcom,dsi-phy-10nm"
+> -  * "qcom,dsi-phy-10nm-8998"
+> -  * "qcom,dsi-phy-7nm"
+> -  * "qcom,dsi-phy-7nm-8150"
+> -- reg: Physical base address and length of the registers of PLL, PHY. Some
+> -  revisions require the PHY regulator base address, whereas others require the
+> -  PHY lane base address. See below for each PHY revision.
+> -- reg-names: The names of register regions. The following regions are required:
+> -  For DSI 28nm HPM/LP/8960 PHYs and 20nm PHY:
+> -  * "dsi_pll"
+> -  * "dsi_phy"
+> -  * "dsi_phy_regulator"
+> -  For DSI 14nm, 10nm and 7nm PHYs:
+> -  * "dsi_pll"
+> -  * "dsi_phy"
+> -  * "dsi_phy_lane"
+> -- clock-cells: Must be 1. The DSI PHY block acts as a clock provider, creating
+> -  2 clocks: A byte clock (index 0), and a pixel clock (index 1).
+> -- power-domains: Should be <&mmcc MDSS_GDSC>.
+> -- clocks: Phandles to device clocks. See [1] for details on clock bindings.
+> -- clock-names: the following clocks are required:
+> -  * "iface"
+> -  * "ref" (only required for new DTS files/entries)
+> -  For 28nm HPM/LP, 28nm 8960 PHYs:
+> -- vddio-supply: phandle to vdd-io regulator device node
+> -  For 20nm PHY:
+> -- vddio-supply: phandle to vdd-io regulator device node
+> -- vcca-supply: phandle to vcca regulator device node
+> -  For 14nm PHY:
+> -- vcca-supply: phandle to vcca regulator device node
+> -  For 10nm and 7nm PHY:
+> -- vdds-supply: phandle to vdds regulator device node
+> -
+> -Optional properties:
+> -- qcom,dsi-phy-regulator-ldo-mode: Boolean value indicating if the LDO mode PHY
+> -  regulator is wanted.
+> -- qcom,mdss-mdp-transfer-time-us:	Specifies the dsi transfer time for command mode
+> -					panels in microseconds. Driver uses this number to adjust
+> -					the clock rate according to the expected transfer time.
+> -					Increasing this value would slow down the mdp processing
+> -					and can result in slower performance.
+> -					Decreasing this value can speed up the mdp processing,
+> -					but this can also impact power consumption.
+> -					As a rule this time should not be higher than the time
+> -					that would be expected with the processing at the
+> -					dsi link rate since anyways this would be the maximum
+> -					transfer time that could be achieved.
+> -					If ping pong split is enabled, this time should not be higher
+> -					than two times the dsi link rate time.
+> -					If the property is not specified, then the default value is 14000 us.
+> -
+> -[1] Documentation/devicetree/bindings/clock/clock-bindings.txt
+> -[2] Documentation/devicetree/bindings/graph.txt
+> -[3] Documentation/devicetree/bindings/media/video-interfaces.txt
+> -[4] Documentation/devicetree/bindings/display/panel/
+> -
+> -Example:
+> -	dsi0: dsi@fd922800 {
+> -		compatible = "qcom,mdss-dsi-ctrl";
+> -		qcom,dsi-host-index = <0>;
+> -		interrupt-parent = <&mdp>;
+> -		interrupts = <4 0>;
+> -		reg-names = "dsi_ctrl";
+> -		reg = <0xfd922800 0x200>;
+> -		power-domains = <&mmcc MDSS_GDSC>;
+> -		clock-names =
+> -			"bus",
+> -			"byte",
+> -			"core",
+> -			"core_mmss",
+> -			"iface",
+> -			"mdp_core",
+> -			"pixel";
+> -		clocks =
+> -			<&mmcc MDSS_AXI_CLK>,
+> -			<&mmcc MDSS_BYTE0_CLK>,
+> -			<&mmcc MDSS_ESC0_CLK>,
+> -			<&mmcc MMSS_MISC_AHB_CLK>,
+> -			<&mmcc MDSS_AHB_CLK>,
+> -			<&mmcc MDSS_MDP_CLK>,
+> -			<&mmcc MDSS_PCLK0_CLK>;
+> -
+> -		assigned-clocks =
+> -				 <&mmcc BYTE0_CLK_SRC>,
+> -				 <&mmcc PCLK0_CLK_SRC>;
+> -		assigned-clock-parents =
+> -				 <&dsi_phy0 0>,
+> -				 <&dsi_phy0 1>;
+> -
+> -		vdda-supply = <&pma8084_l2>;
+> -		vdd-supply = <&pma8084_l22>;
+> -		vddio-supply = <&pma8084_l12>;
+> -
+> -		phys = <&dsi_phy0>;
+> -		phy-names ="dsi-phy";
+> -
+> -		qcom,dual-dsi-mode;
+> -		qcom,master-dsi;
+> -		qcom,sync-dual-dsi;
+> -
+> -		qcom,mdss-mdp-transfer-time-us = <12000>;
+> -
+> -		pinctrl-names = "default", "sleep";
+> -		pinctrl-0 = <&dsi_active>;
+> -		pinctrl-1 = <&dsi_suspend>;
+> -
+> -		ports {
+> -			#address-cells = <1>;
+> -			#size-cells = <0>;
+> -
+> -			port@0 {
+> -				reg = <0>;
+> -				dsi0_in: endpoint {
+> -					remote-endpoint = <&mdp_intf1_out>;
+> -				};
+> -			};
+> -
+> -			port@1 {
+> -				reg = <1>;
+> -				dsi0_out: endpoint {
+> -					remote-endpoint = <&panel_in>;
+> -					data-lanes = <0 1 2 3>;
+> -				};
+> -			};
+> -		};
+> -
+> -		panel: panel@0 {
+> -			compatible = "sharp,lq101r1sx01";
+> -			reg = <0>;
+> -			link2 = <&secondary>;
+> -
+> -			power-supply = <...>;
+> -			backlight = <...>;
+> -
+> -			port {
+> -				panel_in: endpoint {
+> -					remote-endpoint = <&dsi0_out>;
+> -				};
+> -			};
+> -		};
+> -	};
+> -
+> -	dsi_phy0: dsi-phy@fd922a00 {
+> -		compatible = "qcom,dsi-phy-28nm-hpm";
+> -		qcom,dsi-phy-index = <0>;
+> -		reg-names =
+> -			"dsi_pll",
+> -			"dsi_phy",
+> -			"dsi_phy_regulator";
+> -		reg =   <0xfd922a00 0xd4>,
+> -			<0xfd922b00 0x2b0>,
+> -			<0xfd922d80 0x7b>;
+> -		clock-names = "iface";
+> -		clocks = <&mmcc MDSS_AHB_CLK>;
+> -		#clock-cells = <1>;
+> -		vddio-supply = <&pma8084_l12>;
+> -
+> -		qcom,dsi-phy-regulator-ldo-mode;
+> -	};
 > -- 
-> 2.27.0
+> 2.7.4
 > 
