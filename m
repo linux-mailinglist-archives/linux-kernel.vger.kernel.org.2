@@ -2,167 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 222AF38C60A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D33538C607
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:54:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233238AbhEUL4f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:56:35 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:1266 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229519AbhEUL4b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:56:31 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LBq2lM010665;
-        Fri, 21 May 2021 11:54:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=ICccCUcHiI/NlOQzcspv0EMIIWz3vxatBM7L10aSbYM=;
- b=lq97fxoNufNIKNMeMFskegEYhsQ6c2BQCU/TSKLYxwesQJ6gGVvJZKzusIvm7L/XWYx+
- 0m/XvLqFDoMRikaBjWAw5Lo9Jiv6V3gsq7piAsSDEgFJEEyRjBb990Zs8pNMCxg9cgX7
- o/rJ/5bocWFOrsFzB0gbvgUr2DzxlTIgM6hJhooZsZXJCS0M3K9sS5+l2m0Or7M6htQI
- R+G6IVHS5MnDd6vN74wbxd9+Ukh8E/TYZlqQBAIZFIdONtoswmojPK/6EFYjqLYgsr6u
- RUWEYd1tHgEVM8X4BpQdyQ35sT28tcXGHK7YbJ1wy7SPB4w85+3ONN/7KklNXPr6u4+0 lg== 
-Received: from oracle.com (userp3020.oracle.com [156.151.31.79])
-        by mx0b-00069f02.pphosted.com with ESMTP id 38n3dg0wvm-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 11:54:53 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.podrdrct (8.16.0.36/8.16.0.36) with SMTP id 14LBsq89015405;
-        Fri, 21 May 2021 11:54:52 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38n492pjng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 11:54:52 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 14LBspt8015386;
-        Fri, 21 May 2021 11:54:51 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 38n492pjnb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 11:54:51 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 14LBsebu029226;
-        Fri, 21 May 2021 11:54:44 GMT
-Received: from kadam (/41.212.42.34)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 21 May 2021 11:54:40 +0000
-Date:   Fri, 21 May 2021 14:54:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Ian Abbott <abbotti@mev.co.uk>, linux-kernel@vger.kernel.org,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        "David A. Schleef" <ds@schleef.org>,
-        Mori Hess <fmhess@users.sourceforge.net>,
-        Truxton Fulton <trux@linode1.truxton.com>,
-        linux-staging@lists.linux.dev, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH 5/6] comedi: drivers: ni_mio_common: Move
- 'range_ni_E_ao_ext' to where it is used
-Message-ID: <20210521115431.GK1955@kadam>
-References: <20210520122538.3470259-1-lee.jones@linaro.org>
- <20210520122538.3470259-6-lee.jones@linaro.org>
- <c69d39a0-bf9e-857d-93ba-73e2884fa4ad@mev.co.uk>
- <20210521072635.GY2549456@dell>
+        id S231752AbhEUL4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:56:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229519AbhEUL4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:56:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F1576100C;
+        Fri, 21 May 2021 11:54:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621598085;
+        bh=ybzBPw26Ot6D2BqBrLTh/riX7CZLmq7j5GozLVtLqZ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JaqPROlzaj4Jy7/wejYgvabg5YtkOmpvdHJEbTAtze8pbo7qsgCyLi6nSl80jk5BZ
+         uLWS+Vbl7SiOtjOeEygqzAW0hMTQENEdBIzGAFyqbOCV2Q0Kyc0WfFbyqSKHhbVtyL
+         hSr8lMYaDNrQ4c6uHMJt1V5wsTYNbOmKZk8MUn91M3wMgweKB4Aiv/1WV7bh/ccCVA
+         +qYy6zts4KZ8hac1dlK2oFLr4N7ESa7CzwI597qA8omwiB1PyW0nwPss4Ap2GGUHWH
+         5Hy73hWosg+uYWZjSQuJZfVIad6PDEPep50PpVBnD5dSIVP/MJ/j+3GwCZ4RzGKrz1
+         +ybV20IxR7nxQ==
+Date:   Fri, 21 May 2021 12:54:41 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     psodagud@codeaurora.org, will@kernel.org, Dave.Martin@arm.com,
+        amit.kachhap@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: sve_user_discard
+Message-ID: <20210521115441.GA5825@sirena.org.uk>
+References: <785d7bc29da6bff0dceeb712c24601fd@codeaurora.org>
+ <20210521091254.GA6675@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210521072635.GY2549456@dell>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: ekLLV8zzo3RnZAmO3YNxSVGBvOmQuO3f
-X-Proofpoint-GUID: ekLLV8zzo3RnZAmO3YNxSVGBvOmQuO3f
+In-Reply-To: <20210521091254.GA6675@arm.com>
+X-Cookie: Do not write below this line.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 08:26:35AM +0100, Lee Jones wrote:
-> On Thu, 20 May 2021, Ian Abbott wrote:
-> 
-> > On 20/05/2021 13:25, Lee Jones wrote:
-> > > ... and mark it as __maybe_unused since not all users of the
-> > > header file reference it.
-> > > 
-> > > Fixes the following W=1 kernel build warning(s):
-> > > 
-> > >   drivers/staging/comedi/drivers/ni_mio_common.c:163:35: warning: ‘range_ni_E_ao_ext’ defined but not used [-Wunused-const-variable=]
-> > > 
-> > > Cc: Ian Abbott <abbotti@mev.co.uk>
-> > > Cc: H Hartley Sweeten <hsweeten@visionengravers.com>
-> > > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > > Cc: Thierry Reding <thierry.reding@gmail.com>
-> > > Cc: "Uwe Kleine-König" <u.kleine-koenig@pengutronix.de>
-> > > Cc: Lee Jones <lee.jones@linaro.org>
-> > > Cc: "David A. Schleef" <ds@schleef.org>
-> > > Cc: Mori Hess <fmhess@users.sourceforge.net>
-> > > Cc: Truxton Fulton <trux@truxton.com>
-> > > Cc: linux-staging@lists.linux.dev
-> > > Cc: linux-pwm@vger.kernel.org
-> > > Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> > > ---
-> > >   drivers/comedi/drivers/ni_mio_common.c | 9 ---------
-> > >   drivers/comedi/drivers/ni_stc.h        | 9 ++++++++-
-> > >   2 files changed, 8 insertions(+), 10 deletions(-)
-> > > 
-> > > diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-> > > index 4f80a4991f953..37615b4e2c10d 100644
-> > > --- a/drivers/comedi/drivers/ni_mio_common.c
-> > > +++ b/drivers/comedi/drivers/ni_mio_common.c
-> > > @@ -160,15 +160,6 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
-> > >   	}
-> > >   };
-> > > -static const struct comedi_lrange range_ni_E_ao_ext = {
-> > > -	4, {
-> > > -		BIP_RANGE(10),
-> > > -		UNI_RANGE(10),
-> > > -		RANGE_ext(-1, 1),
-> > > -		RANGE_ext(0, 1)
-> > > -	}
-> > > -};
-> > > -
-> > >   static const struct comedi_lrange *const ni_range_lkup[] = {
-> > >   	[ai_gain_16] = &range_ni_E_ai,
-> > >   	[ai_gain_8] = &range_ni_E_ai_limited,
-> > > diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_stc.h
-> > > index fbc0b753a0f59..0822e65f709dd 100644
-> > > --- a/drivers/comedi/drivers/ni_stc.h
-> > > +++ b/drivers/comedi/drivers/ni_stc.h
-> > > @@ -1137,6 +1137,13 @@ struct ni_private {
-> > >   	u8 rgout0_usage;
-> > >   };
-> > > -static const struct comedi_lrange range_ni_E_ao_ext;
-> > > +static const struct comedi_lrange __maybe_unused range_ni_E_ao_ext = {
-> > > +	4, {
-> > > +		BIP_RANGE(10),
-> > > +		UNI_RANGE(10),
-> > > +		RANGE_ext(-1, 1),
-> > > +		RANGE_ext(0, 1)
-> > > +	}
-> > > +};
-> > >   #endif /* _COMEDI_NI_STC_H */
-> > > 
-> > 
-> > The "ni_stc.h" header is also included by "ni_mio_cs.c" which doesn't need
-> > `range_ni_E_ao_ext` (admittedly, it was already pulling in a "tentative"
-> > definition of the variable).
-> > 
-> > Thinking about it, I think it's probably better to move `range_ni_E_ao_ext`
-> > from "ni_mio_common.c" into *both* "ni_atmio.c" and "ni_pcimio.c" (I think
-> > we can live with the small amount of duplication), and to remove the
-> > tentative definition from "ni_stc.h".
-> 
-> Happy to rework.
-> 
-> Am I taking this or Uwe's suggestion?
 
-You should probably take Ian's suggestion because he is the maintainer
-and I really doubt Uwe's will build.  :P  But Uwe is right that
-including .c files is ugly.
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-regards,
-dan carpenter
+On Fri, May 21, 2021 at 10:12:54AM +0100, Catalin Marinas wrote:
+> On Thu, May 20, 2021 at 04:02:03PM -0700, psodagud@codeaurora.org wrote:
 
+> > This is regarding sve_user_disable(CPACR_EL1_ZEN_EL0EN) on every system
+> > call.  If a userspace task is using SVE instructions and making sys calls in
+> > between, it would impact the performance of the thread. On every SVE
+> > instructions after SVC/system call, it would trap to EL1.
+
+> > I think by setting CPACR_EL1_ZEN_EL0EN flag,  the processor faults when it
+> > runs an SVE instruction. This approach may be taken as part of FPSIMD
+> > registers switching optimizations.  Can below portion of the code use
+> > thread.fpsimd_cpu and fpsimd_last_state variables to avoid clearing
+> > CPACR_EL1_ZEN_EL0EN for this kind of use cases?
+
+This mail hasn't hit the lists yet so I've only got the quoted portions,
+missing some context like the "code below" referenced above so I don't
+know exactly what the proposal is.
+
+> There were attempts over the past couple of years to optimise the
+> syscall return use-case. I think the latest is this one:
+
+> https://lore.kernel.org/r/20201106193553.22946-2-broonie@kernel.org
+
+There's actually this more recently:
+
+    https://lore.kernel.org/linux-arm-kernel/20210512151131.27877-1-broonie@kernel.org/
+
+which does 90% of the optimisation in a lot less code, people seem a bit
+more enthusiastic about that version.
+
+> I'll let Mark comment on his plans for reviving the series. Do you
+> happen to have some realistic workload that would be improved by this?
+> We can always write a micro-benchmark but I wonder how much this matters
+> in the real world.
+
+Yeah, I'm not sure how much of a meaningful overhead there is from doing
+the sve_user_discard() vs testing to see if we need to do it while
+maintaining correctness.  Whatever overhead there is with the current
+code will only take effect if we're hitting a slow path anyway so it
+feels like it might be more trouble than it's worth.  If the proposal
+was to just leave SVE enabled for userspace then the issue there is that
+we'd have to context switch SVE even if the process isn't using it,
+there is nothing other than a syscall that lets us stop doing that.
+
+It will be interesting to look at this stuff as SVE hardware starts to
+become more widely available and used on a wider range of workloads on
+systems with various vector sizes, lazy restore might be worth looking
+at for example possibly in conjunction with always allowing SVE from
+userspace.
+
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCnn4EACgkQJNaLcl1U
+h9Dfhwf9GT73m0jO5ZzRlrEtKUQOuJbxTHfXQcrYcJd4jPG1568wQaW1LhtjmAWQ
+MLDZMD4inzrg+ez7KR6k5VI1YoTiOo6RDQdJ7DLVqIqKB87gF/XcMcDIb04mLfcg
+VNDva3uajrR+nR9tuk0ZrTNuj9PrAiJx4NPDmATYKPfxaZ7Is3nsFEbD3v4StTQ/
+Seens0oUqukeIH+ta1AjC/6+SuRYaSL1T3c5YKfKYGj4AoEdVCpc2hNXNiLTraq0
+/A715NKhqKZmFtrQAWGoq3NElV4QLAa8VT+1RmAEsCMj1OOPJegjIv2DCovu3kbG
+D04gBecD+r8uaynotl39ZLwTtvgqKg==
+=wIQZ
+-----END PGP SIGNATURE-----
+
+--WIyZ46R2i8wDzkSu--
