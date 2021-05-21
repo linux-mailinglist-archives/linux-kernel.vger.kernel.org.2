@@ -2,55 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C10638C866
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 466FC38C869
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236052AbhEUNkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:40:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        id S236195AbhEUNkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236261AbhEUNjy (ORCPT
+        with ESMTP id S236298AbhEUNkB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:54 -0400
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2EFC061344
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:25 -0700 (PDT)
-Received: by mail-io1-xd2a.google.com with SMTP id k132so6546778iof.4
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:25 -0700 (PDT)
+        Fri, 21 May 2021 09:40:01 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 919EAC061347
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:30 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id g11so14237029ilq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=P8K4c4I3E0ScqatNpdtAdPPA1ppP33415CwioITRQ28=;
-        b=WvVKiwzhtpchBrgwnrtu/VPArYkX35BZT0jVz2d3peS1iXg6p8KiiuIH8jzggDnNbr
-         yVrse6NVTrPmjE13XP0shAgyR6vrOPr4U+8BCzEgDpoetP1EvMdhiy01IkSobFcBO+tl
-         Mk2kr2gTuf9ODLYRqzppYHHEJGi6vKBENrmpg5YimFUu0StPEtOSKjdBlrr3PyXpgM63
-         x+f5H8Wbimx1f1jScGC0mXwSoguiTIz0BHscM9OXDPR6I7deEJDecbuSxOy5nisEi9On
-         gpn+r1UM7x/iX6z/r4bi1rMgMW3VtAEiVPGX6Ru1XTV/RByNIDbbQ887CRW3fpP7AOXd
-         4sUw==
+        bh=QraQWaDbrIyFsDMVDfzA8DAF+rb0LcMH/Egy8Qs4g6M=;
+        b=R461x5DK6Oy+M09t3cWQkEm9qrL5KcZdvIqarLkvpajChuPAlkpVwHWArHhhag+kNN
+         ZUbfsrYK7Xo22UI7ZiYZaBIwArR64x21Fic42DI3jbRhffIJB6XaXyDhNrFyv+2Qs4zm
+         iN+3hDGEbZIQeXEgXuMmoikSuWstvPWPqHHKuoy/kWqnlNiLKV2i+/zd6hVP7BJYpRDO
+         mGC7GcQ0zYXUp5zqpipVO4ojdGqa7D2LcsNFt3SpdYFOECkDUgX08qSsOdqTDNJlvgX2
+         rj5EMMWMo678I40ElCFzUaPcLoMmQL+dkfUzWc3IxeAE6JUDaf+SgmXSBY7QQwAQ2c3j
+         XSEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=P8K4c4I3E0ScqatNpdtAdPPA1ppP33415CwioITRQ28=;
-        b=l98zNpHbI0xPa1mmcYfF7j0CpoXGLwrBOXoB8JyU/RXadvRiGa7kNGnDv9DOJwYiS4
-         rsotuMXMAN/g86fP/D29kGjwGpgVidQq+SZ8EIrMG5ulWPomxrScjH1z4ehYq0UJVBar
-         4w1eR9V4FY9HOgREyDDNZMAVOTGvQNBLYjheNbcz0Ap7uhEc1ywrEK1CH23qMo9+IZ/y
-         c7/Eg7VFmQDSJTJYrg3hZbV6Rfz/JcmU8DEqVoiEcQ5EBsMTJIZFHBrCGrsQMHgbvQ0n
-         rD8dJLMYLoVjh/juuJ/zeF6gcv/KWpTD0h9D4ktsHZEuukhphAW7Rzydflek1W1BC6/v
-         v4Sw==
-X-Gm-Message-State: AOAM533OR5Yuh9ZorEWK4/+191UeXRHF221dnIZnjMkX9mXFb1/klw8L
-        gFFD9oOudniA462U3RyfHPQXaP0Zx5AgXgey6fF41g==
-X-Google-Smtp-Source: ABdhPJwGS5p1CUtc8MeJkM1M+YPLMW1IaLUnAfAAaV6/8vNhpyIeddCaWTRXOChcNDmTYv0D6x0Fsq6hZZ3HcEF0JCc=
-X-Received: by 2002:a05:6638:3010:: with SMTP id r16mr4601269jak.126.1621604304927;
- Fri, 21 May 2021 06:38:24 -0700 (PDT)
+        bh=QraQWaDbrIyFsDMVDfzA8DAF+rb0LcMH/Egy8Qs4g6M=;
+        b=b9EdbbOdUMCqcbBvGUCBHHXjoI69RG5v5UTgdJ0G9FsHkjGdojnUWrYjRX6YSoZSpp
+         lvO5e0uC3RIyRrrkTd9djsiT2WtL6ckedN0fq05aa9D3uOQxS9UXjaHtV8Ma/KMub8zX
+         KxeOuH+RColDxzlo2oLiM6XYx/fDbkBXvDTZpEXgZDxx3nkkg6D0tctB8Pkc611/5wzJ
+         ICt9uCLH5GXqGBgTb7cvo5v/TmxCU6Mc+BVOTBfgbj23ndQOFYE1Xzo/hq7eQM+GZcGK
+         E8hi5FlGa/ctyLyVXARL3ecIWorQBzY64SchJ5S9E193XByEynIwYHwiOH6K3REjjXZq
+         yGxg==
+X-Gm-Message-State: AOAM533Bg8WrKfmcBBeKGxw4UZVInBVd3M9o5ZteTBqWgSKB+W8uQqgs
+        01FLyzNoCEK+/aO9qFKHQElweKiplNKB48lyWnKe5A==
+X-Google-Smtp-Source: ABdhPJyIr36lrjSTCZAWI/wXVI6gkeLvcx9vdH9kY86wAPm6nJ+y4Bqp9zyM3RNpCdzm4Ydp/VZdmrTH0prPxSxav1g=
+X-Received: by 2002:a05:6e02:92f:: with SMTP id o15mr13051528ilt.127.1621604309819;
+ Fri, 21 May 2021 06:38:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-12-acourbot@chromium.org>
-In-Reply-To: <20210519143011.1175546-12-acourbot@chromium.org>
+References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-13-acourbot@chromium.org>
+In-Reply-To: <20210519143011.1175546-13-acourbot@chromium.org>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 21 May 2021 21:38:13 +0800
-Message-ID: <CA+Px+wXXtsmG2q4aJ4Em1pzFcA-mA6CuATfXKevNyEOuBq+zYw@mail.gmail.com>
-Subject: Re: [PATCH v5 11/14] media: mtk-vcodec: vdec: support stateless H.264 decoding
+Date:   Fri, 21 May 2021 21:38:18 +0800
+Message-ID: <CA+Px+wUBJ9xxf709Ze3npnUV-NOp1DT969GWQsGTg-WuVkF+nA@mail.gmail.com>
+Subject: Re: [PATCH v5 12/14] media: mtk-vcodec: vdec: add media device if
+ using stateless api
 To:     Alexandre Courbot <acourbot@chromium.org>
 Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -69,87 +70,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
 <acourbot@chromium.org> wrote:
-> +#include "../vdec_drv_if.h"
-> +#include "../mtk_vcodec_util.h"
-> +#include "../mtk_vcodec_dec.h"
-> +#include "../mtk_vcodec_intr.h"
-> +#include "../vdec_vpu_if.h"
-> +#include "../vdec_drv_base.h"
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+> [acourbot: refactor, cleanup and split]
+> Co-developed-by: Alexandre Courbot <acourbot@chromium.org>
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 
-Would be good practice to sort them.
-
-> +static int allocate_predication_buf(struct vdec_h264_slice_inst *inst)
-> +{
-> +       int err = 0;
-
-No need to initialize.  It will be overridden soon.
-
-> +static void free_predication_buf(struct vdec_h264_slice_inst *inst)
-> +{
-> +       struct mtk_vcodec_mem *mem = NULL;
-> +
-> +       mtk_vcodec_debug_enter(inst);
-> +
-> +       inst->vsi_ctx.pred_buf_dma = 0;
-> +       mem = &inst->pred_buf;
-
-Is it possible to inline to the variable declaration?  Or mem no need
-to initialize.
-
-> +static int alloc_mv_buf(struct vdec_h264_slice_inst *inst,
-> +       struct vdec_pic_info *pic)
-> +{
-> +       int i;
-> +       int err;
-> +       struct mtk_vcodec_mem *mem = NULL;
-
-No need to initialize.  It will be overridden soon.
-
-> +static void free_mv_buf(struct vdec_h264_slice_inst *inst)
-> +{
-> +       int i;
-> +       struct mtk_vcodec_mem *mem = NULL;
-
-No need to initialize.  It will be overridden soon.
-
-> +static int vdec_h264_slice_init(struct mtk_vcodec_ctx *ctx)
-> +{
-> +       struct vdec_h264_slice_inst *inst = NULL;
-
-No need to initialize.  It will be overridden soon.
-
-> +static void vdec_h264_slice_deinit(void *h_vdec)
-> +{
-> +       struct vdec_h264_slice_inst *inst =
-> +               (struct vdec_h264_slice_inst *)h_vdec;
-
-No need to cast from void *.
-
-> +static int vdec_h264_slice_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
-> +                                 struct vdec_fb *fb, bool *res_chg)
-> +{
-> +       struct vdec_h264_slice_inst *inst =
-> +               (struct vdec_h264_slice_inst *)h_vdec;
-
-No need to cast from void *.
-
-> +       const struct v4l2_ctrl_h264_decode_params *dec_params =
-> +               get_ctrl_ptr(inst->ctx, V4L2_CID_STATELESS_H264_DECODE_PARAMS);
-> +       struct vdec_vpu_inst *vpu = &inst->vpu;
-> +       uint32_t data[2];
-> +       uint64_t y_fb_dma;
-> +       uint64_t c_fb_dma;
-> +       int err;
-> +
-> +       /* bs NULL means flush decoder */
-> +       if (bs == NULL)
-
-To neat, !bs.
-
-> +static int vdec_h264_slice_get_param(void *h_vdec,
-> +                              enum vdec_get_param_type type, void *out)
-> +{
-> +       struct vdec_h264_slice_inst *inst =
-> +               (struct vdec_h264_slice_inst *)h_vdec;
-
-No need to cast from void *.
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
