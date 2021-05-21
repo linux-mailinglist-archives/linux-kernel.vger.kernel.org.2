@@ -2,82 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C5138CB84
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC2C138CB86
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237890AbhEURHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:07:25 -0400
-Received: from mail-ot1-f53.google.com ([209.85.210.53]:40712 "EHLO
-        mail-ot1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233990AbhEURHY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:07:24 -0400
-Received: by mail-ot1-f53.google.com with SMTP id 80-20020a9d08560000b0290333e9d2b247so8086847oty.7;
-        Fri, 21 May 2021 10:05:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VhGZ7NI9ZeLvK46YxnKVRZc/2Rywq66p60+gUbU2hm0=;
-        b=LI3Ci57yN6m3XY+/dp1HHXYDIKeswQ9b/5EODViU6DhjUE7St72cUh4LiZHD4+dg7t
-         1l3COT5qjI3+sWsEcfKl9kYerfSZFqeH4/1nRjGEX97RH0r/6DyGAvZeTAf7e4dQaVAo
-         10WU3DNDvaQiH5fR9h6rCN+YE4U8U1Mjr7XNzTcG07wBBi0alXWHPgb2B7a9LZqPW+7Z
-         b86jDTa+aCmuzxr1twR5m+JqIdB97AVe0WotborAqoBkq/nwVkBiPCEKw3L550kjwu6V
-         QwpWTSZYUohgi5I3+L8cduKaGcmoEVwFVhT8ElqsvDdwcrW3wBZHHqFxqZnAGV8B6lM+
-         MtQA==
-X-Gm-Message-State: AOAM5333Y7HBunQrGOTVtP3rXajFcAkgluTBeObLmqg2LslbfaGZOWrB
-        EybtFaCyTkF1fSdG3W2gDacNrScqxFHdlymSNYM=
-X-Google-Smtp-Source: ABdhPJxQPk6S3dm3u0ToWhctkV6q8gSUbtc+5SXPBvA7ZPeyeHTNSjtUcqKtH7hajH4ufwToKT4eIYY8gWFt7IYAzCc=
-X-Received: by 2002:a9d:3bcb:: with SMTP id k69mr9576270otc.206.1621616759559;
- Fri, 21 May 2021 10:05:59 -0700 (PDT)
+        id S237917AbhEURIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:08:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44026 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229896AbhEURIU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:08:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E74F1613E4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 17:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621616817;
+        bh=e9ywnrnCML4GuY8Z5sRM+jWxfmXjm8GdhfKjoo6MalM=;
+        h=From:To:Subject:Date:From;
+        b=XoCAvCC7RjKx3qSjJxerJCyQAtkE+uF23fzmqX3QgpgcAImaVJyzYOBaDP29VjC+j
+         BNOKiAYXXX59ee4OV5cO5PW1zvnZhzXT+34DjJIAXu8qtcjUjaKJGHAgJNMSWo3HX7
+         TF301cEuT4REvTT9n9S4Zwv5dyunnOiXDiANiCqMoltSyUTnowAnHvWLLiqgx48OTS
+         I7NqO6kRpqCTUBCWQi6xjIc2gz5l9W2VcU/BAC5VhoaWMw5ldk6Uab9PrIG5Svk41Y
+         cGDn9Qm4oPlhJHjY2n8Q93fRkg/W7BL7/aF8iz8b8IheCGqNNIEG6cOQCGHvTwmHWl
+         6BYzofVBB93+g==
+From:   Oded Gabbay <ogabbay@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] habanalabs: set memory scrubbing to disabled by default
+Date:   Fri, 21 May 2021 20:06:50 +0300
+Message-Id: <20210521170653.4700-1-ogabbay@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210517232312.GA43474@embeddedor>
-In-Reply-To: <20210517232312.GA43474@embeddedor>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 21 May 2021 19:05:48 +0200
-Message-ID: <CAJZ5v0ivxriijonzQP=8Z-ctHaFMYw4ro4DGMeBcExLv1RDnEw@mail.gmail.com>
-Subject: Re: [PATCH][next] ACPI: Fix fall-through warning for Clang
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hardening@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 1:22 AM Gustavo A. R. Silva
-<gustavoars@kernel.org> wrote:
->
-> In preparation to enable -Wimplicit-fallthrough for Clang, fix a
-> fallthrough warning by simply dropping the empty default case at
-> the bottom.
->
-> This contributes to the ongoing efforts to globally enable
-> -Wimplicit-fallthrough for Clang.
->
-> Link: https://github.com/KSPP/linux/issues/115
-> Suggested-by: Rafael J. Wysocki <rafael@kernel.org>
-> Link: https://lore.kernel.org/lkml/CAJZ5v0hLYWKX__oZdcCY0D20pNqpw8SkiTPOCNOtpqe--QLp4Q@mail.gmail.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/acpi/sbshc.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/drivers/acpi/sbshc.c b/drivers/acpi/sbshc.c
-> index 53c2862c4c75..5c021c3b81d9 100644
-> --- a/drivers/acpi/sbshc.c
-> +++ b/drivers/acpi/sbshc.c
-> @@ -231,7 +231,6 @@ static int smbus_alarm(void *context)
->                 case ACPI_SBS_BATTERY:
->                         acpi_os_execute(OSL_NOTIFY_HANDLER,
->                                         acpi_smbus_callback, hc);
-> -               default:;
->         }
->         mutex_unlock(&hc->lock);
->         return 0;
-> --
+Scrubbing memory after every unmap is very costly in terms of
+performance. If a user wants it he can enable it but the default
+should prioritize performance.
 
-Applied as 5.14 material, thanks!
+Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
+---
+ drivers/misc/habanalabs/common/habanalabs_drv.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/habanalabs/common/habanalabs_drv.c b/drivers/misc/habanalabs/common/habanalabs_drv.c
+index df1e91f810cc..339a1860c1e7 100644
+--- a/drivers/misc/habanalabs/common/habanalabs_drv.c
++++ b/drivers/misc/habanalabs/common/habanalabs_drv.c
+@@ -29,7 +29,7 @@ static DEFINE_MUTEX(hl_devs_idr_lock);
+ 
+ static int timeout_locked = 30;
+ static int reset_on_lockup = 1;
+-static int memory_scrub = 1;
++static int memory_scrub;
+ static ulong boot_error_status_mask = ULONG_MAX;
+ 
+ module_param(timeout_locked, int, 0444);
+@@ -42,7 +42,7 @@ MODULE_PARM_DESC(reset_on_lockup,
+ 
+ module_param(memory_scrub, int, 0444);
+ MODULE_PARM_DESC(memory_scrub,
+-	"Scrub device memory in various states (0 = no, 1 = yes, default yes)");
++	"Scrub device memory in various states (0 = no, 1 = yes, default no)");
+ 
+ module_param(boot_error_status_mask, ulong, 0444);
+ MODULE_PARM_DESC(boot_error_status_mask,
+-- 
+2.25.1
+
