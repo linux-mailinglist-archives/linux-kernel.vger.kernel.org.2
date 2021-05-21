@@ -2,137 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F6238CBD7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:18:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A2E38CBDF
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:18:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238119AbhEURTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230014AbhEURTa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:19:30 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE72C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:18:05 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id v8so25789349lft.8
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:18:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cfCe3Mmq/4WfJ6JanDJbmMfZ9bv2HspViLWfH/Y54Xs=;
-        b=FcvGu3T3fRXsNR7QX3Co2QAv4UikUqzYXXlHq185LEqZvIFy5NkPw0QgYsYCuSOnnG
-         pTQyEBEAV9aGyHJbjfcPoC7sp89ceeUFUfEgTsbQ7TgsevG00JCKTd0mnFc2ktsgiDKl
-         CRU8bfVI4mrSog0S7TTE9rusQGcQXE3dUzKdc7JtJT8Lc/+S0rQbzQRoSfenSdhkZVuG
-         iNNQnGCJPcZLDsG+axlF+8HgRAYBpkuyazVG0QU6s0ilcGo7UHBoEHZGkjyL6lfcJ0ev
-         lJHuFCyQdI0SoeLyGYTwaf/xWC3LyGTvHFK5lcn2VpIm6RbnpOaQYAJrYfxVGz4y1i/5
-         D1nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cfCe3Mmq/4WfJ6JanDJbmMfZ9bv2HspViLWfH/Y54Xs=;
-        b=uY6tXKUMAXBvwQwZo8WeW2YFWud7Wzx1dKTiyW/guVp5su8O/7PL1cOuDnCjda2yoC
-         OajrOchuF4vhGdj8Y5Nk1crq3nLgwIHzZlKgCU0mthdJs9m6Bnas1mJ6d7RXP2MXGuGx
-         OL2nP0/s5a3TPP7Nym90R6L1TnuOQMSHN5eDj4uTbtX/zLuMdkoGPdQMHn8UrmozhZRR
-         x32P3DL2CckSlJOEvbRgD2t8v+KBtYiEX52raYTdkjo5dBdNF6NzaLooHxL/kYy3DrcD
-         +R0X5b30/a0j6CI1+ZRbeQKkgTQ0lofiN0viudzu9tV46stOCOWIQ0Btj81PTuj9M723
-         dClg==
-X-Gm-Message-State: AOAM5315yt6Qg5tRIBB4f2sskeLLZ/prz8OOccytRaQAsXylM45wxeZ/
-        +QNO94F82wANXmX4smR3Fhu/iIi+Ns9GfK4KzYNKdg==
-X-Google-Smtp-Source: ABdhPJwkLMwohjT56g4aif8wI04ge/Qt9cUd62JqBCc3C2k5S6oQ//ILEe95kwYJo8d9Zs35JnoCMivKLV8yo7m3WqY=
-X-Received: by 2002:a05:6512:220c:: with SMTP id h12mr2986001lfu.374.1621617483757;
- Fri, 21 May 2021 10:18:03 -0700 (PDT)
+        id S238137AbhEURTi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:19:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230014AbhEURTf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:19:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED51E6109F;
+        Fri, 21 May 2021 17:18:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621617492;
+        bh=vkbnUCjalAV9JIDorYwWjpk0vHbw6VNs/bfMmImD4qo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FG7uyuUnmYoAejnNMJ9jxpsW7EWIvoK3HBjV3oga9yZYWsis6nh9Uga5//RH+RwJT
+         0QykYE9l/e3tpfkl0NnOVgs6IuxMv1/YgcQNsNgBiDAIEYID5e/KejQ3h7fG0jwzWk
+         PDpPUjLXRohXOBEYdWit2l30+wAn4EKFs1hCpXP/s6qeVLQWnCDL89E19Yxz7fstfE
+         kdCCA63/6yZAGoFX52hocCMvEFCXHG7TEPgrnJj2zcADNDlpAm4cAU1nweskKw36Zj
+         U1bRfunKYBD8kXeESyrT38Jer8LiykDquU0aGGdhq+lJvIRA4BSDF0YRBVyTswUppE
+         mk9pmRIZv1uKg==
+Date:   Fri, 21 May 2021 18:18:08 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     mark.rutland@arm.com, jpoimboe@redhat.com, ardb@kernel.org,
+        jthierry@redhat.com, catalin.marinas@arm.com, will@kernel.org,
+        jmorris@namei.org, pasha.tatashin@soleen.com,
+        linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v4 0/2] arm64: Stack trace reliability checks in the
+ unwinder
+Message-ID: <20210521171808.GC5825@sirena.org.uk>
+References: <68eeda61b3e9579d65698a884b26c8632025e503>
+ <20210516040018.128105-1-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-References: <20210520231821.12272-1-maciej.falkowski9@gmail.com> <20210520231821.12272-2-maciej.falkowski9@gmail.com>
-In-Reply-To: <20210520231821.12272-2-maciej.falkowski9@gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 21 May 2021 10:17:52 -0700
-Message-ID: <CAKwvOd=32_yNvAWRjyczOoEjsWje9SfaB=S1s9kS1bRFZhuU8g@mail.gmail.com>
-Subject: Re: [PATCH 2/2] Makefile: clang-tools: Omit printing stack trace when
- KeyboardInterrupt is raised
-To:     Maciej Falkowski <maciej.falkowski9@gmail.com>
-Cc:     Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jousvV0MzM2p6OtC"
+Content-Disposition: inline
+In-Reply-To: <20210516040018.128105-1-madvenka@linux.microsoft.com>
+X-Cookie: Do not write below this line.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 4:18 PM Maciej Falkowski
-<maciej.falkowski9@gmail.com> wrote:
->
-> When user terminates the script (also implicitly through for example
-> `make clang-analyzer`) by using
-> Ctrl+C (or sending SIGINT more generally) the KeyboardInterrupt
-> is raised printing stack trace of the execution as shown below:
->
-> $ ./scripts/clang-tools/run-clang-tools.py clang-tidy ./compile_commands.json
-> ^CTraceback (most recent call last):
->   File "./scripts/clang-tools/run-clang-tools.py", line 74, in <module>
->     main()
->   File "./scripts/clang-tools/run-clang-tools.py", line 70, in main
->     pool.map(run_analysis, datastore)
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 364, in map
->     return self._map_async(func, iterable, mapstar, chunksize).get()
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 765, in get
->     self.wait(timeout)
->   File "/usr/lib64/python3.8/multiprocessing/pool.py", line 762, in wait
->     self._event.wait(timeout)
->   File "/usr/lib64/python3.8/threading.py", line 558, in wait
-> Process ForkPoolWorker-6:
-> Process ForkPoolWorker-1:
-> Process ForkPoolWorker-5:
-> Process ForkPoolWorker-7:
-> Process ForkPoolWorker-2:
-> Process ForkPoolWorker-3:
-> Process ForkPoolWorker-4:
-> Process ForkPoolWorker-8:
->     signaled = self._cond.wait(timeout)
->   File "/usr/lib64/python3.8/threading.py", line 302, in wait
->     waiter.acquire()
-> KeyboardInterrupt
 
-With this applied,
-$ make LLVM=1 LLVM_IAS=1 -j72 clang-analyzer
-^C
-Process ForkPoolWorker-5:
-make: *** [Makefile:1902: clang-analyzer] Error 130
+--jousvV0MzM2p6OtC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
-Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+On Sat, May 15, 2021 at 11:00:16PM -0500, madvenka@linux.microsoft.com wrot=
+e:
 
-Thanks for the patch!
+> Special cases
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+> Some special cases need to be mentioned:
 
-> The patch handles the raise of the KeyboardInterrupt and exits when occurred
-> with code 130 as documented in: https://tldp.org/LDP/abs/html/exitcodes.html
->
-> Signed-off-by: Maciej Falkowski <maciej.falkowski9@gmail.com>
-> ---
->  scripts/clang-tools/run-clang-tools.py | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/clang-tools/run-clang-tools.py b/scripts/clang-tools/run-clang-tools.py
-> index 38fc311d2e03..eb0e0ecfce24 100755
-> --- a/scripts/clang-tools/run-clang-tools.py
-> +++ b/scripts/clang-tools/run-clang-tools.py
-> @@ -77,4 +77,7 @@ def main():
->
->
->  if __name__ == "__main__":
-> -    main()
-> +    try:
-> +        main()
-> +    except KeyboardInterrupt:
-> +        sys.exit(130)
-> --
-> 2.26.3
->
+I think it'd be good if more of this cover letter, especially sections
+like this which cover the tricky bits, ended up in the code somehow -
+it's recorded here and will be in the list archive but that's not the
+most discoverable place so increases the maintainance burden.  It'd be
+great to be able to compare the code directly with the reliable
+stacktrace requirements document and see everything getting ticked off,
+actually going all the way there might be too much and loose the code in
+the comments but I think we can get closer to it than we are.  Given
+that a lot of this stuff rests on the denylist perhaps some comments
+just before it's called would be a good place to start?
 
+> 	- EL1 interrupt and exception handlers end up in sym_code_ranges[].
+> 	  So, all EL1 interrupt and exception stack traces will be considered
+> 	  unreliable. This the correct behavior as interrupts and exceptions
 
--- 
-Thanks,
-~Nick Desaulniers
+This stuff about exceptions and preemption is a big one, rejecting any
+exceptions makes a whole host of things easier (eg, Mark Rutland raised
+interactions between non-AAPCS code and PLTs as being an issue but if
+we're able to reliably reject stacks featuring any kind of preemption
+anyway that should sidestep the issue).
+
+> Performance
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+> Currently, unwinder_blacklisted() does a linear search through
+> sym_code_functions[]. If reviewers prefer, I could sort the
+> sym_code_functions[] array and perform a binary search for better
+> performance. There are about 80 entries in the array.
+
+If people are trying to live patch a very busy/big system then this
+could be an issue, equally there's probably more people focused on
+getting boot times as fast as possible than live patching.  Deferring
+the initialisation to first use would help boot times with or without
+sorting, without numbers I don't actually know that sorting is worth the
+effort or needs doing immediately - obvious correctness is also a
+benefit!  My instinct is that for now it's probably OK leaving it as a
+linear scan and then revisiting if it's not adequately performant, but
+I'd defer to actual users there.
+
+--jousvV0MzM2p6OtC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCn608ACgkQJNaLcl1U
+h9D0Zwf/QFxtuWGQtSmtAJiy3Fib/vh2CLbcYP0qvM25Ius+2M2/EcCvVEUrUyRH
+fOgOy1PnzRQi/kQUiXia7XI5gT+0dhCm95ZqlNgXdMxDst0UPDgI3VTzA6Qc7NFq
+RN0hZEei67BuAH0oLm3ZNQOxlhIas4JXZwf75un8C2rxT37sUSELBT17KqrooFJl
+jgml5qc6jXo7uQk7uMzdv9zLYs/a2JYypEkF/FLLYZFVxWsOdAuWHxh8xUz65Rik
+COA/k9MiAWZspXgnjIYnhL3864GtYwIArij1uM4uarq6uD2nav0ZVLgDMc63nTHb
+basklX2I4DuTE2DVPIX6DNTpWcAK2g==
+=hgtS
+-----END PGP SIGNATURE-----
+
+--jousvV0MzM2p6OtC--
