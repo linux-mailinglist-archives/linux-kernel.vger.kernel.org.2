@@ -2,125 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3C8C38C671
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD6838C673
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:26:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbhEUMYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:24:46 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:60590 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232174AbhEUMYl (ORCPT
+        id S233006AbhEUM1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:27:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229457AbhEUM1c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:24:41 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621599798; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RLZE+bZ7ki1GXmnh6NsT82bZ77r++gqhEjntmVGOlBs=;
- b=huNyHlHWe0x8+zfKwSniU/JLceb3keWjxepIAxbV8Jx6KE99jG5JvK76IZISDPc/uH99INeF
- 8aH4w9/chb7RzMHduk9Ewvin84DXOBT+/hjGikFkuenAPVf4NU4K0kC5erZkgHzX+i4LngwF
- 5+Eq8ntkiheHPc9y6QPRQX6dXms=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60a7a620f752fca668c21fe7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 12:22:56
- GMT
-Sender: skakit=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 46DF6C43144; Fri, 21 May 2021 12:22:56 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: skakit)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03C83C4338A;
-        Fri, 21 May 2021 12:22:54 +0000 (UTC)
+        Fri, 21 May 2021 08:27:32 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E9BEC061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:26:09 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id a25so23081997edr.12
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:26:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o/SES9st0MMJCDzZsStAlcXxLW6LgDl8DlkoGljECP8=;
+        b=bL3nOloUg9ddy0iuHbn8BYu3mcEfrgPp/WVy7D4u+5AzXacck5TVjafZQ+Y/sW8emS
+         w+AAukft58C6NRVuLoQolOzsJpV62fcdwWS4o0j8apIId2bWQDAFoh1cNf8/4Ypvtks6
+         nenBks0sD3ZhIbs2mwTeMhDIq/WiwaUW1s5qIK9d8kFPpSAbBRFfQFm1KkqmE7JHS0Na
+         nFjjAXYCOlkQmwsfeABBG9a5GuEzhR+Rwq0RvriokJlONfFJU4A33JVSG/Uzrk4ws+LS
+         lTHze6Oa/6W6TA69iuQ35XiN0ADsCa1PylNE43lXFYks/dKwHfRJe/9ugy2tbhYmDQNk
+         2kVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o/SES9st0MMJCDzZsStAlcXxLW6LgDl8DlkoGljECP8=;
+        b=TJOQFpIb8w2qT4Ogv8ijNwiV10piLEXm6Yh+0Oe6Euj4ikpbIybxi8h9RW3ca3TJul
+         OzSdMYZHb7QT+uYb+jY8N93dqr/H/4b7Zbm2WHb0TGX83pevzvZi0LTJkBJhCaUElLs+
+         Lp2ov5lkkAu3bUYBt4+suFs/V9zN41rc5VaxvQGTqThqJpHWxwCyjjz6Rp4h5oMsE6Gs
+         i/A7mEqBWg8tusx9rrbZaDCeU/2Uze6TC7XSy0IrdpV6PDEAnuQTNcLlJApMiRffWipX
+         CFRe9ziAzB7Y9pdVbyFtpwICp9SqaMQQjrsDHj9yfYbPZ82Ez17qbsMdKvxWY4Sqqy+p
+         cN9Q==
+X-Gm-Message-State: AOAM530drjiPa/os00ET+wYAL75Xxj14AYWL40XpcPbh5ut4RI5hi6j0
+        MUeqg5kNpmmaBOS+9xwmbMdurQ/DzKBYxHpsP0SV9LS1i5wMcX+JNSlYoQ==
+X-Google-Smtp-Source: ABdhPJyVFoL4zM1kmrY/78qscmmvyrSNnnT//URUbsQPMqUwvwMJgoBSc7dbew1Ew9cgt1OFv8N9oCwh3Nk2Wi1MAZE=
+X-Received: by 2002:a05:6402:1109:: with SMTP id u9mr11149356edv.174.1621599967673;
+ Fri, 21 May 2021 05:26:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 21 May 2021 17:52:54 +0530
-From:   skakit@codeaurora.org
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Matthias Kaehlcke <mka@chromium.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [RESEND PATCH V4 3/8] arm64: dts: qcom: pm7325: Add pm7325 base
- dts file
-In-Reply-To: <YKYNrKFrGQlfUf4S@vkoul-mobl.Dlink>
-References: <1621318822-29332-1-git-send-email-skakit@codeaurora.org>
- <1621318822-29332-4-git-send-email-skakit@codeaurora.org>
- <YKOpE1V25rdDj4Tk@vkoul-mobl.Dlink> <YKPua2M6t9yIJ5uy@google.com>
- <52d277a8598277716f37ad0c1f724845@codeaurora.org>
- <YKYNrKFrGQlfUf4S@vkoul-mobl.Dlink>
-Message-ID: <f6086a960c1aa1717125b2c7d7f1f7b3@codeaurora.org>
-X-Sender: skakit@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <20210521120811.516339-1-mudongliangabcd@gmail.com> <YKelBRkGsLFz4byw@kroah.com>
+In-Reply-To: <YKelBRkGsLFz4byw@kroah.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Fri, 21 May 2021 20:24:58 +0800
+Message-ID: <CAD-N9QUgYy4j3wnJX1gwq902ggarFaQPBQ3cyUAArYxv22Q-bQ@mail.gmail.com>
+Subject: Re: [PATCH] staging: rtl8712: Fix memory leak in r8712_init_recv_priv
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        rkovhaev@gmail.com, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-20 12:50, Vinod Koul wrote:
-> On 20-05-21, 12:02, skakit@codeaurora.org wrote:
->> On 2021-05-18 22:12, Matthias Kaehlcke wrote:
->> > On Tue, May 18, 2021 at 05:16:27PM +0530, Vinod Koul wrote:
->> > > On 18-05-21, 11:50, satya priya wrote:
->> > > > Add base DTS file for pm7325 along with GPIOs and temp-alarm nodes.
->> > > >
->> > > > Signed-off-by: satya priya <skakit@codeaurora.org>
->> > > > Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
->> > > > ---
->> > > > Changes in RESEND V4:
->> > > >  - No Changes.
->> > > >
->> > > >  arch/arm64/boot/dts/qcom/pm7325.dtsi | 53 ++++++++++++++++++++++++++++++++++++
->> > > >  1 file changed, 53 insertions(+)
->> > > >  create mode 100644 arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > > >
->> > > > diff --git a/arch/arm64/boot/dts/qcom/pm7325.dtsi b/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > > > new file mode 100644
->> > > > index 0000000..e7f64a9
->> > > > --- /dev/null
->> > > > +++ b/arch/arm64/boot/dts/qcom/pm7325.dtsi
->> > > > @@ -0,0 +1,53 @@
->> > > > +// SPDX-License-Identifier: BSD-3-Clause
->> > > > +// Copyright (c) 2021, The Linux Foundation. All rights reserved.
->> > > > +
->> > > > +#include <dt-bindings/interrupt-controller/irq.h>
->> > > > +#include <dt-bindings/spmi/spmi.h>
->> > > > +
->> > > > +&spmi_bus {
->> > > > +	pm7325: pmic@1 {
->> > > > +		compatible = "qcom,pm7325", "qcom,spmi-pmic";
->> > >
->> > > where is qcom,pm7325 documented?
->> 
->> >
->> > good point, I missed that one.
->> >
->> 
->> Actually this point was discussed during V2(
->> https://lore.kernel.org/patchwork/patch/1406186/#1607321 ).
->> As far as I understand it is not mandatory to add "qcom,pm7325" as we 
->> are
->> adding "qcom,spmi-pmic". It is just a good to have change.
->> I could not find the documentation for pm8350c, pmk8350 and pmr735a as 
->> well.
-> 
-> Yes that is a miss too, IMO all of these should be added to
-> Documentation/devicetree/bindings/mfd/qcom,spmi-pmic.txt or the yaml
-> file replacing this
-> 
+On Fri, May 21, 2021 at 8:18 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, May 21, 2021 at 08:08:11PM +0800, Dongliang Mu wrote:
+> > r871xu_dev_remove failed to call r8712_free_drv_sw() and free the
+> > resource (e.g., struct urb) due to the failure of firmware loading.
+> >
+> > Fix this by invoking r8712_free_drv_sw at the failure site.
+> >
+> > Reported-by: syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
+> > Fixes: b4383c971bc5 ("staging: rtl8712: handle firmware load failure")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+> >  drivers/staging/rtl8712/usb_intf.c | 13 ++++++++++---
+> >  1 file changed, 10 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
+> > index dc21e7743349..a5190b4250ce 100644
+> > --- a/drivers/staging/rtl8712/usb_intf.c
+> > +++ b/drivers/staging/rtl8712/usb_intf.c
+> > @@ -589,7 +589,7 @@ static int r871xu_drv_init(struct usb_interface *pusb_intf,
+> >   */
+> >  static void r871xu_dev_remove(struct usb_interface *pusb_intf)
+> >  {
+> > -     struct net_device *pnetdev = usb_get_intfdata(pusb_intf);
+> > +     struct net_device *pnetdev, *newpnetdev = usb_get_intfdata(pusb_intf);
+> >       struct usb_device *udev = interface_to_usbdev(pusb_intf);
+> >
+> >       if (pnetdev) {
+>
+> Did you test this?
 
-Okay, will add those four pmics to qcom,spmi-pmic.txt.
+For now, I only tested this patch in my local workspace. The memory
+leak does not occur any more.
 
-> Thanks
+I have pushed a patch testing onto the syzbot dashboard [1]. Now it is
+in the pending state.
+
+[1] https://syzkaller.appspot.com/bug?id=3a325b8389fc41c1bc94de0f4ac437ed13cce584
+
+>
+> I think you just broke the code right here :(
+
+If I broke any code logic, I am sorry. However, this patch only adds
+some code to deallocate some resources when failing to load firmware.
+
+Do you mean that I replace pnetdev with the variable - newpnetdev?
+
+>
+> thanks,
+>
+> greg k-h
