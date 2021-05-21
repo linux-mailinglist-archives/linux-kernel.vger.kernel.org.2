@@ -2,107 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B57C338BC51
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A63EE38BC53
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:16:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238446AbhEUCQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:16:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45864 "EHLO
+        id S237941AbhEUCRf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232979AbhEUCQe (ORCPT
+        with ESMTP id S232347AbhEUCRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:16:34 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 257C4C061574;
-        Thu, 20 May 2021 19:15:12 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id i5so13168051pgm.0;
-        Thu, 20 May 2021 19:15:12 -0700 (PDT)
+        Thu, 20 May 2021 22:17:33 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B45AC061574;
+        Thu, 20 May 2021 19:16:09 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id s20so10148769plr.13;
+        Thu, 20 May 2021 19:16:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dLz7aGadF+Xv8kztA4v+2siux99sGnYrpna00jPGZa8=;
-        b=KfeFyY1X93WLYvQD5maNBWuyjPmwAHN94p00zMt3KkNC8Ite9P0I9CVAoItqpBM4Ej
-         g0AIdkX4hO6gyksRyv1r5qOyXy3+D2cKGM4yt419UZ2ohEKdw01GgPdGBcZ04Gc9BZXo
-         u4PGL31HI8FXy16OaZz18h+0Sf1rrVvr2p4JaJ3wu/Ty8wWYUu8I6/jx7k17esthOYRl
-         pO1U3/W8456/4CgAlYUkf2Tx/IsC2BaDPPiu8PHI0XoE8dBe56V1Qt/U50kwZUYtzadu
-         wvG+R9HeLqjUiT/FJzrB9/g7Mz6yIJxKf84/yVqt4LM/+xZL1Ha+z0YVospFGAdsSv71
-         eOaQ==
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=fVzR5OVqDH21+KakLyQ1BmjTZqyPl6/nk9rsewhpUsQ=;
+        b=M+zeTEoLI1/GYxmn5GOJHv/QEEKYeQxcWuZj9YJ9XB5FVShC3Q37jZR+nMsUOWQRPa
+         tjc8ticmX6XmY+Fhq4+mCG/l5uwbyEtTG3Iex5XLkKeoqq6+eN21lYPnGaQNoixJi77r
+         c/xZbyLgrMC263s59XTEuLtVwfWvY3fa+1ox3lOXnshpmLfe0102gK/JEz3yjfC8PSBR
+         eD8XIBye5XZESvp1EV6EeHwI4kITe6qFuU0IpEpVfrioRks5WznTBJbPPU+3VT2jf998
+         kyer0otHWNcpAgDo6NlOtARlTHVhc9vWjt+FfKsCiuQRpRbzzFnUBu199WPfVCc26Lgs
+         TNZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=dLz7aGadF+Xv8kztA4v+2siux99sGnYrpna00jPGZa8=;
-        b=QwmEvdMixa5iCG8cTmJDBMc4jkrGRAeVBpTNFepcOvGgK5wDuP9z/b2sqT4QxU8M1s
-         Puk+w655/T7e+fxcLx8o7ZR3IGqyTwOkJ8wsgzvK1/KzMlnQr2TNnq7Mry6tRqHnbaSm
-         6/o8P3OH6QSrJhT/ZA6dBGn6HcsZGifGY1EXAmdspYB1RS/vyUeNb1bpUNswqoitE+BE
-         mQtyZT7pZ3U+/p2IGgE0XXr6DlEL5ze1qr80VlyzisF/NDD3cVIBlo8qJvovUvmEY4dV
-         YqEzIEWdkGdN8aajke9j/QBuaRtLmzfV0eR9GdQffNsAc46570vxCzDs6UoAFZIg2WgE
-         jUwQ==
-X-Gm-Message-State: AOAM531EvW74N3NQVLNjo+cR1tdyrjTk+SvN7+EI6uGhDIW079eW/Gpq
-        ffaTwmWJj7KsTRgtRomqxH4R9psolWy8F0eC
-X-Google-Smtp-Source: ABdhPJzvtWdnQpDzsPFcvca+oidldFST5RqHZtrj3v/QvQZ3M6NhLldggj/UtI1x3jn4lwAbfS312Q==
-X-Received: by 2002:a05:6a00:b51:b029:2d5:874a:6bd7 with SMTP id p17-20020a056a000b51b02902d5874a6bd7mr7922656pfo.6.1621563311585;
-        Thu, 20 May 2021 19:15:11 -0700 (PDT)
-Received: from yanshuaijun.ccdomain.com ([103.220.76.197])
-        by smtp.gmail.com with ESMTPSA id a23sm2474346pjo.21.2021.05.20.19.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 19:15:10 -0700 (PDT)
-From:   Herman <herman.yim88@gmail.com>
-X-Google-Original-From: Herman <yanshuaijun@yulong.com>
-To:     mikhail.ulyanov@cogentembedded.com
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herman <yanshuaijun@yulong.com>
-Subject: [PATCH] drivers/media/platform/Rcar_jpu.c : fix typo issues
-Date:   Fri, 21 May 2021 10:14:57 +0800
-Message-Id: <20210521021457.6977-1-yanshuaijun@yulong.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=fVzR5OVqDH21+KakLyQ1BmjTZqyPl6/nk9rsewhpUsQ=;
+        b=g7j2BXhCdBGGJssixRev8Ur2hbTwVDhwxFHu6jdZ668GrEHK8PsgipunvMcyETqM1Y
+         2ePb7VtIijzXsqMJG/EcRA+gMbGVmHAmTzs8ZISeM2G0FE6kpeyx89TA1hFTaSCg3sxw
+         UnU0voz/90XsrhWNg9KrzQGWKQCfRrLpRYdix3gRJgS3QoRe6kvMIOQvCcpnNZyI9thM
+         8A57mWV5zkkymznWnLi36yLB+5uuIMWXjqBeKlmZRjzS3IUxJABB/W1p4RSE+mu9FVNZ
+         /P3l2IXp5STml09sKhMGL7ud5P/UdsMvrfJ8t2YUkWCb5xMRSOB+9rWTF94EiNDXAotN
+         Eqrg==
+X-Gm-Message-State: AOAM530kdFG+RZiQNob/ZvEakFaXvWq9qEN80vm6U/muUZRszpGukSIe
+        1l93mui3lA8JqlgyfQvReIc=
+X-Google-Smtp-Source: ABdhPJz1/Z+AXBrAyurv/F0sH5f5HiGnIKoys49PW6W/IZ8autG8bmKbnH7X5qNzegikiUxhACOmHQ==
+X-Received: by 2002:a17:902:65:b029:ef:abd6:477f with SMTP id 92-20020a1709020065b02900efabd6477fmr9291652pla.77.1621563368879;
+        Thu, 20 May 2021 19:16:08 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id o3sm3016891pgh.22.2021.05.20.19.16.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 May 2021 19:16:08 -0700 (PDT)
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Jonathan Corbet <corbet@lwn.net>, rcu@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH -rcu] Documentation/RCU: Fix nested inline markup
+Message-ID: <e23acc77-8b10-493e-63fa-76150be325f9@gmail.com>
+Date:   Fri, 21 May 2021 11:16:04 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-change 'requerment' into 'requirement'
-change 'quantanization' into 'quantization'
-change 'qantization' into 'quantization'
+To avoid the ``foo`` markup inside the `bar`__ hyperlink marker,
+use the "replace" directive [1].
 
-Signed-off-by: Herman <yanshuaijun@yulong.com>
+This should restore the intended appearance of the link.
+
+Tested with sphinx versions 1.7.9 and 2.4.4.
+
+[1]: https://docutils.sourceforge.io/docs/ref/rst/directives.html#replace
+
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
 ---
- drivers/media/platform/rcar_jpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Hi Paul,
 
-diff --git a/drivers/media/platform/rcar_jpu.c b/drivers/media/platform/rcar_jpu.c
-index a7c198c17deb..f57158bf2b11 100644
---- a/drivers/media/platform/rcar_jpu.c
-+++ b/drivers/media/platform/rcar_jpu.c
-@@ -42,7 +42,7 @@
+This fixes broken-looking cross reference in section
+"Publish/Subscribe Guarantee" at:
+
+https://www.kernel.org/doc/html/latest/RCU/Design/Requirements/Requirements.html#publish-subscribe-guarantee
+
+To-be-replaced macro string can be much shorter.
+I preserved the whole string considering the readability of .rst.
+
+        Thanks, Akira
+--
+ Documentation/RCU/Design/Requirements/Requirements.rst | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
+index 38a39476fc24..45278e2974c0 100644
+--- a/Documentation/RCU/Design/Requirements/Requirements.rst
++++ b/Documentation/RCU/Design/Requirements/Requirements.rst
+@@ -362,9 +362,8 @@ do_something_gp() uses rcu_dereference() to fetch from ``gp``:
+       12 }
  
- /*
-  * Align JPEG header end to cache line to make sure we will not have any issues
-- * with cache; additionally to requerment (33.3.27 R01UH0501EJ0100 Rev.1.00)
-+ * with cache; additionally to requirement (33.3.27 R01UH0501EJ0100 Rev.1.00)
-  */
- #define JPU_JPEG_HDR_SIZE		(ALIGN(0x258, L1_CACHE_BYTES))
- #define JPU_JPEG_MAX_BYTES_PER_PIXEL	2	/* 16 bit precision format */
-@@ -121,7 +121,7 @@
- #define JCCMD_JEND	(1 << 2)
- #define JCCMD_JSRT	(1 << 0)
+ The rcu_dereference() uses volatile casts and (for DEC Alpha) memory
+-barriers in the Linux kernel. Should a `high-quality implementation of
+-C11 ``memory_order_consume``
+-[PDF] <http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf>`__
++barriers in the Linux kernel. Should a |high-quality implementation of
++C11 memory_order_consume [PDF]|_
+ ever appear, then rcu_dereference() could be implemented as a
+ ``memory_order_consume`` load. Regardless of the exact implementation, a
+ pointer fetched by rcu_dereference() may not be used outside of the
+@@ -374,6 +373,9 @@ element has been passed from RCU to some other synchronization
+ mechanism, most commonly locking or `reference
+ counting <https://www.kernel.org/doc/Documentation/RCU/rcuref.txt>`__.
  
--/* JPEG code quantanization table number register */
-+/* JPEG code quantization table number register */
- #define JCQTN	0x0c
- #define JCQTN_SHIFT(t)		(((t) - 1) << 1)
- 
-@@ -1644,7 +1644,7 @@ static int jpu_probe(struct platform_device *pdev)
- 		goto device_register_rollback;
- 	}
- 
--	/* fill in qantization and Huffman tables for encoder */
-+	/* fill in quantization and Huffman tables for encoder */
- 	for (i = 0; i < JPU_MAX_QUALITY; i++)
- 		jpu_generate_hdr(i, (unsigned char *)jpeg_hdrs[i]);
- 
++.. |high-quality implementation of C11 memory_order_consume [PDF]| replace:: high-quality implementation of C11 ``memory_order_consume`` [PDF]
++.. _high-quality implementation of C11 memory_order_consume [PDF]: http://www.rdrop.com/users/paulmck/RCU/consume.2015.07.13a.pdf
++
+ In short, updaters use rcu_assign_pointer() and readers use
+ rcu_dereference(), and these two RCU API elements work together to
+ ensure that readers have a consistent view of newly added data elements.
 -- 
-2.25.1
+2.17.1
 
