@@ -2,120 +2,278 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F24E938CB30
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC3E38CB3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236549AbhEUQlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:41:06 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:51388 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233011AbhEUQlF (ORCPT
+        id S237720AbhEUQoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:44:00 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3648 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237702AbhEUQn6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:41:05 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lk8BX-000zLU-Nh; Fri, 21 May 2021 10:39:39 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lk8BW-00Ahr4-PK; Fri, 21 May 2021 10:39:39 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Sargun Dhillon <sargun@sargun.me>
-Cc:     Linux Containers <containers@lists.linux.dev>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Rodrigo Campos <rodrigo@kinvolk.io>,
-        Mauricio =?utf-8?Q?V=C3=A1squez?= Bernal <mauricio@kinvolk.io>
-References: <CAMp4zn93WRF5u=et=detunN7exhQNoFctr-7Qb8-a9=As8vaQw@mail.gmail.com>
-Date:   Fri, 21 May 2021 11:39:27 -0500
-In-Reply-To: <CAMp4zn93WRF5u=et=detunN7exhQNoFctr-7Qb8-a9=As8vaQw@mail.gmail.com>
-        (Sargun Dhillon's message of "Fri, 21 May 2021 09:23:52 -0700")
-Message-ID: <m1eee0xcqo.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Fri, 21 May 2021 12:43:58 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fmslx3T9FzmXVx;
+        Sat, 22 May 2021 00:40:13 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Sat, 22 May 2021 00:42:30 +0800
+Received: from localhost (10.52.125.126) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
+ 2021 17:42:27 +0100
+Date:   Fri, 21 May 2021 17:40:41 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+CC:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, <kernel@pengutronix.de>,
+        <linux-kernel@vger.kernel.org>, <linux-input@vger.kernel.org>,
+        David Jander <david@protonic.nl>, <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v5 8/8] Input: resistive-adc-touch: add support for z1
+ and z2 channels
+Message-ID: <20210521174041.000040da@Huawei.com>
+In-Reply-To: <20210521044525.7397-9-o.rempel@pengutronix.de>
+References: <20210521044525.7397-1-o.rempel@pengutronix.de>
+        <20210521044525.7397-9-o.rempel@pengutronix.de>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lk8BW-00Ahr4-PK;;;mid=<m1eee0xcqo.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX1/Qtp8BV6nWzxx0wp6SUitiWRpy1wcXxlk=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa06.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4336]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa06 1397; Body=1 Fuz1=1 Fuz2=1]
-X-Spam-DCC: XMission; sa06 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Sargun Dhillon <sargun@sargun.me>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 389 ms - load_scoreonly_sql: 0.33 (0.1%),
-        signal_user_changed: 12 (3.1%), b_tie_ro: 10 (2.6%), parse: 0.99
-        (0.3%), extract_message_metadata: 12 (3.1%), get_uri_detail_list: 1.29
-        (0.3%), tests_pri_-1000: 12 (3.2%), tests_pri_-950: 1.31 (0.3%),
-        tests_pri_-900: 1.08 (0.3%), tests_pri_-90: 67 (17.3%), check_bayes:
-        66 (16.9%), b_tokenize: 6 (1.6%), b_tok_get_all: 7 (1.9%),
-        b_comp_prob: 2.2 (0.6%), b_tok_touch_all: 47 (12.1%), b_finish: 0.76
-        (0.2%), tests_pri_0: 270 (69.4%), check_dkim_signature: 0.82 (0.2%),
-        check_dkim_adsp: 2.2 (0.6%), poll_dns_idle: 0.56 (0.1%), tests_pri_10:
-        2.2 (0.6%), tests_pri_500: 6 (1.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: Preemption Signal Management
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.125.126]
+X-ClientProxiedBy: lhreml746-chm.china.huawei.com (10.201.108.196) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sargun Dhillon <sargun@sargun.me> writes:
+On Fri, 21 May 2021 06:45:25 +0200
+Oleksij Rempel <o.rempel@pengutronix.de> wrote:
 
-> Andy pointed out that we need a mechanism to determine whether or
-> notifications are preempted. He suggested we use EPOLLPRI to indicate
-> whether or not notifications are preempted. My outstanding question is
-> whether or not we need to be able to get insight of what caused the
-> preemption, and to which notification.
+> This patch adds support for the z1 and z2 channels. These are used to
+> calculate the applied pressure. As there is no common order of the
+> individual channels of a resistive touch ADC, support for
+> io-channel-names is added (although the DT bindings stated the
+> driver already supports these).
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Can I have some context please?  Perhaps links to the previous
-conversations?
+One minor comment inline, but otherwise looks good to me.
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-The subject sounds like you are talking about those things that are
-delivered as the result of kill(2) but the rest does not.  What are
-notification ids?
+Would be nice at some point to make this handle channels that
+aren't 16 bits, but that can be a job for another day.
 
-Is this a seccomp design choice?
+Jonathan
 
-> In the past, Christian has suggested just background polling
-> notification IDs for validity, which is a fine mechanism to determine
-> that preemption has occurred. We could raise EPOLLPRI whenever a
-> notification has changed into the preempted state, but that would
-> require an O(n) operations across all outstanding notifications to
-> determine which one was preempted, and in addition, it doesn't give a
-> lot of information as to why the preemption occurred (fatal signal,
-> preemption?).
->
-> In order to try to break this into small parts, I suggest:
-> 1. We make it so EPOLLPRI is raised (always) on preempted notifications
-> 2. We allow the user to set a flag to "track" notifications. If they
-> specify this flag, they can then run a "stronger" ioctl -- let's say
-> SECCOMP_IOCTL_NOTIF_STATUS, which, if the flag was specified upon
-> receiving the notification will return the current state of the
-> notification and if a signal preempted it, it will always do that.
->
 > ---
-> Alternatively (and this is my preference), we add another filter flag,
-> like SECCOMP_FILTER_FLAG_NOTIF_PREEMPT, which changes the behaviour
-> to:
-> 1. Raise EPOLLPRI on preempted notifications
-> 2. All preemption notifications must be cleared via
-> SECCOMP_IOCTL_NOTIF_RECV_STATUS.
->
-> Opinions?
+>  .../input/touchscreen/resistive-adc-touch.c   | 142 ++++++++++++++++--
+>  1 file changed, 128 insertions(+), 14 deletions(-)
+> 
+> diff --git a/drivers/input/touchscreen/resistive-adc-touch.c b/drivers/input/touchscreen/resistive-adc-touch.c
+> index e50af30183f4..fa90005b7bc9 100644
+> --- a/drivers/input/touchscreen/resistive-adc-touch.c
+> +++ b/drivers/input/touchscreen/resistive-adc-touch.c
+> @@ -20,7 +20,18 @@
+>  
+>  #define DRIVER_NAME					"resistive-adc-touch"
+>  #define GRTS_DEFAULT_PRESSURE_MIN			50000
+> +#define GRTS_DEFAULT_PRESSURE_MAX			65535
+>  #define GRTS_MAX_POS_MASK				GENMASK(11, 0)
+> +#define GRTS_MAX_CHANNELS				4
+> +
+> +enum grts_ch_type {
+> +	GRTS_CH_NONE = 0,
+> +	GRTS_CH_X,
+> +	GRTS_CH_Y,
+> +	GRTS_CH_PRESSURE,
+> +	GRTS_CH_Z1,
+> +	GRTS_CH_Z2,
+> +};
+>  
+>  /**
+>   * struct grts_state - generic resistive touch screen information struct
+> @@ -33,24 +44,61 @@
+>   */
+>  struct grts_state {
+>  	u32				pressure_min;
+> +	u32				x_plate_ohms;
+>  	bool				pressure;
+>  	struct iio_channel		*iio_chans;
+>  	struct iio_cb_buffer		*iio_cb;
+>  	struct input_dev		*input;
+>  	struct touchscreen_properties	prop;
+> +	u8				ch[GRTS_MAX_CHANNELS];
+>  };
+>  
+>  static int grts_cb(const void *data, void *private)
+>  {
+>  	const u16 *touch_info = data;
+>  	struct grts_state *st = private;
+> -	unsigned int x, y, press = 0x0;
+> +	unsigned int x, y, press = 0, z1 = 0, z2;
+> +	unsigned int Rt, i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(st->ch) && st->ch[i] != GRTS_CH_NONE; i++) {
+> +		switch (st->ch[i]) {
+> +		case GRTS_CH_X:
+> +			x = touch_info[i];
+> +			break;
+> +		case GRTS_CH_Y:
+> +			y = touch_info[i];
+> +			break;
+> +		case GRTS_CH_PRESSURE:
+> +			press = touch_info[i];
+> +			break;
+> +		case GRTS_CH_Z1:
+> +			z1 = touch_info[i];
+> +			break;
+> +		case GRTS_CH_Z2:
+> +			z2 = touch_info[i];
+> +			break;
+> +		case GRTS_CH_NONE:
+
+Loop condition above prevents this.   I guess you might get a warning though
+so if this is just warning suppression then add a comment to say so to
+make sure it isn't removed.
+
+> +			break;
+> +		}
+> +	}
+>  
+> -	/* channel data coming in buffer in the order below */
+> -	x = touch_info[0];
+> -	y = touch_info[1];
+> -	if (st->pressure)
+> -		press = touch_info[2];
+> +	if (z1) {
+> +		Rt = z2;
+> +		Rt -= z1;
+> +		Rt *= st->x_plate_ohms;
+> +		Rt = DIV_ROUND_CLOSEST(Rt, 16);
+> +		Rt *= x;
+> +		Rt /= z1;
+> +		Rt = DIV_ROUND_CLOSEST(Rt, 256);
+> +		/*
+> +		 * On increased pressure the resistance (Rt) is decreasing
+> +		 * so, convert values to make it looks as real pressure.
+> +		 */
+> +		if (Rt < GRTS_DEFAULT_PRESSURE_MAX)
+> +			press = GRTS_DEFAULT_PRESSURE_MAX - Rt;
+> +		else
+> +			press = 0;
+> +	}
+>  
+>  	if ((!x && !y) || (st->pressure && (press < st->pressure_min))) {
+>  		/* report end of touch */
+> @@ -94,12 +142,77 @@ static void grts_disable(void *data)
+>  	iio_channel_release_all_cb(data);
+>  }
+>  
+> +static int grts_get_properties(struct grts_state *st, struct device *dev)
+> +{
+> +	int idx, error;
+> +
+> +	idx = device_property_match_string(dev, "io-channel-names", "x");
+> +	if (idx < 0)
+> +		return idx;
+> +
+> +	if (idx >= ARRAY_SIZE(st->ch))
+> +		return -EOVERFLOW;
+> +
+> +	st->ch[idx] = GRTS_CH_X;
+> +
+> +	idx = device_property_match_string(dev, "io-channel-names", "y");
+> +	if (idx < 0)
+> +		return idx;
+> +
+> +	if (idx >= ARRAY_SIZE(st->ch))
+> +		return -EOVERFLOW;
+> +
+> +	st->ch[idx] = GRTS_CH_Y;
+> +
+> +	/* pressure is optional */
+> +	idx = device_property_match_string(dev, "io-channel-names", "pressure");
+> +	if (idx >= 0) {
+> +		if (idx >= ARRAY_SIZE(st->ch))
+> +			return -EOVERFLOW;
+> +
+> +		st->ch[idx] = GRTS_CH_PRESSURE;
+> +		st->pressure = true;
+> +
+> +		return 0;
+> +	}
+> +
+> +	/* if no pressure is defined, try optional z1 + z2 */
+> +	idx = device_property_match_string(dev, "io-channel-names", "z1");
+> +	if (idx < 0)
+> +		return 0;
+> +
+> +	if (idx >= ARRAY_SIZE(st->ch))
+> +		return -EOVERFLOW;
+> +
+> +	st->ch[idx] = GRTS_CH_Z1;
+> +
+> +	/* if z1 is provided z2 is not optional */
+> +	idx = device_property_match_string(dev, "io-channel-names", "z2");
+> +	if (idx < 0)
+> +		return idx;
+> +
+> +	if (idx >= ARRAY_SIZE(st->ch))
+> +		return -EOVERFLOW;
+> +
+> +	st->ch[idx] = GRTS_CH_Z2;
+> +	st->pressure = true;
+> +
+> +	error = device_property_read_u32(dev,
+> +					 "touchscreen-x-plate-ohms",
+> +					 &st->x_plate_ohms);
+> +	if (error) {
+> +		dev_err(dev, "can't get touchscreen-x-plate-ohms property\n");
+> +		return error;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int grts_probe(struct platform_device *pdev)
+>  {
+>  	struct grts_state *st;
+>  	struct input_dev *input;
+>  	struct device *dev = &pdev->dev;
+> -	struct iio_channel *chan;
+>  	int error;
+>  
+>  	st = devm_kzalloc(dev, sizeof(struct grts_state), GFP_KERNEL);
+> @@ -115,12 +228,13 @@ static int grts_probe(struct platform_device *pdev)
+>  		return error;
+>  	}
+>  
+> -	chan = &st->iio_chans[0];
+> -	st->pressure = false;
+> -	while (chan && chan->indio_dev) {
+> -		if (!strcmp(chan->channel->datasheet_name, "pressure"))
+> -			st->pressure = true;
+> -		chan++;
+> +	if (!device_property_present(dev, "io-channel-names"))
+> +		return -ENODEV;
+> +
+> +	error = grts_get_properties(st, dev);
+> +	if (error) {
+> +		dev_err(dev, "Failed to parse properties\n");
+> +		return error;
+>  	}
+>  
+>  	if (st->pressure) {
+> @@ -148,7 +262,7 @@ static int grts_probe(struct platform_device *pdev)
+>  	input_set_abs_params(input, ABS_Y, 0, GRTS_MAX_POS_MASK - 1, 0, 0);
+>  	if (st->pressure)
+>  		input_set_abs_params(input, ABS_PRESSURE, st->pressure_min,
+> -				     0xffff, 0, 0);
+> +				     GRTS_DEFAULT_PRESSURE_MAX, 0, 0);
+>  
+>  	input_set_capability(input, EV_KEY, BTN_TOUCH);
+>  
+
