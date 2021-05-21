@@ -2,367 +2,666 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C9338CE41
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7AA938CE43
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239129AbhEUTi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:38:27 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:64344 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232214AbhEUTiW (ORCPT
+        id S239133AbhEUTio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:38:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50193 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238864AbhEUTim (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:38:22 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LJXMJs068122;
-        Fri, 21 May 2021 15:36:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=Fmp38c63X1f5SaQ9vWdFMWavj+ityeNPYfwbcTIYb88=;
- b=H/xm2lTzXFocWhD42F749KNzGcupleYQ6rcDSou/vTX1WA+9OmsIcblEL6d1Q+AYUOJR
- LP+yyrfcyvZs+CK2BZwn+Ih4YboYNGVpzkQTyd6iIRM8zadSOZ159+RYXolUy/hH/vAs
- kl9FEaoVOGEkiJ8FG8cfYIdu2hwc0+GWbou32yNtTIwA/06IhEyoTHqVI44CBjrdlfgh
- A9L01CXrxNzI4AjwOMrDXrGJ9IKB7zK5jAs4Z1v4GlUenBoALSk5b7H/z4JlrGBt4JGN
- TUQOdSB/1B7aI4WyRcv0MzqXeVlXgkbwAPQAZHAZHgY6J57KxdhiRN6It2OwkDbPJAcg vw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38pjw1gasw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 15:36:57 -0400
-Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14LJZd3l076819;
-        Fri, 21 May 2021 15:36:57 -0400
-Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38pjw1gasp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 15:36:57 -0400
-Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
-        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14LJa0Em013572;
-        Fri, 21 May 2021 19:36:56 GMT
-Received: from b03cxnp07029.gho.boulder.ibm.com (b03cxnp07029.gho.boulder.ibm.com [9.17.130.16])
-        by ppma03dal.us.ibm.com with ESMTP id 38j5xaen44-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 19:36:56 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07029.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14LJas1r33292738
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 19:36:55 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDE476E052;
-        Fri, 21 May 2021 19:36:54 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9D90A6E04C;
-        Fri, 21 May 2021 19:36:53 +0000 (GMT)
-Received: from cpe-172-100-179-72.stny.res.rr.com (unknown [9.85.177.219])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 19:36:53 +0000 (GMT)
-From:   Tony Krowiak <akrowiak@linux.ibm.com>
-To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     borntraeger@de.ibm.com, cohuck@redhat.com,
-        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com, jgg@nvidia.com,
-        alex.williamson@redhat.com, kwankhede@nvidia.com,
-        frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com,
-        hca@linux.ibm.com
-Subject: [PATCH v4 2/2] s390/vfio-ap: control access to PQAP(AQIC) interception handler
-Date:   Fri, 21 May 2021 15:36:48 -0400
-Message-Id: <20210521193648.940864-3-akrowiak@linux.ibm.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210521193648.940864-1-akrowiak@linux.ibm.com>
-References: <20210521193648.940864-1-akrowiak@linux.ibm.com>
+        Fri, 21 May 2021 15:38:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621625838;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=fa9C0WBJ+BnUNnfdYZgP3Jm6YVcpbeVEclTRzpQPr2o=;
+        b=Rx5hh864rOCu5BgRr3+cAPwtuwG64huwH73SNwaFWzc3rneY4CsfRMFkpCuPkY+O4NMMyw
+        jrGQ3D78Kciv5TNrpsNnXUPFlco4WJZyCU0w/fySo/SuNwP9ao4jRGOaVy6IM9qN4xCIoK
+        kNKvOOyhDsT5meLB+Idvv91btWQ+Dqw=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-479-3HFugwHWPn2Lz59K2i3E7A-1; Fri, 21 May 2021 15:37:16 -0400
+X-MC-Unique: 3HFugwHWPn2Lz59K2i3E7A-1
+Received: by mail-wm1-f70.google.com with SMTP id l15-20020a1ced0f0000b029017140e7436dso2965518wmh.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:37:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fa9C0WBJ+BnUNnfdYZgP3Jm6YVcpbeVEclTRzpQPr2o=;
+        b=jzdrKQ7VtGzaAQCo7Ex382GB0qB094pSXgsaam7OTzfnanx/PSTViYyRQzzuirJzyI
+         MDERAHBmXQ5ambD+NPt2DGc3kjg/BPzCz97HqOcoHEKBPbwkIUmJCGDZXHQED8YDcj70
+         EHo8F5B6K0JW55KpAzz/A3mzM8hDdphfiTtb2R9OPc36oAgOcNE8aCojGv/g+JgK55zS
+         6cTtJm/W2i9RRurKct1o9iDVFz2o/ryAP4NKziQ52D2A8jlCDgn25oXP0Tfj9bUYUhR5
+         NXOVtX0ADc/NH2zx5dhRK1gCH3bxrfKdO/+NWUZ3w+HubSfEPnIaIPHqEJCpMajccY0l
+         vmow==
+X-Gm-Message-State: AOAM532Fb7pp1ufgtC0KGTlwyBMNUISdt8ZTPmVZ19shfLx4hU6wPHlg
+        z/KaDTTniHYUjOBVcY7a0AdLDqj7JQQDT+Y1OMQ/t8TQ6PtGmiqpaMyyJZoVRLpH3FKjuKsD0Ut
+        8W5RK9EuxR8iTISACGJ+e5O0iO+91J0ONL7W2npIDfsugxn0X3n+aY/eBAjL7PspOgttze8eZGp
+        Q=
+X-Received: by 2002:adf:db42:: with SMTP id f2mr11191498wrj.5.1621625832138;
+        Fri, 21 May 2021 12:37:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3HfDJ+Myl8DK5jwFpKZQMElYR3LkrRBKtdRai0WCVmyZONtDS/OcsNp1IUI4McOUzKgde9w==
+X-Received: by 2002:adf:db42:: with SMTP id f2mr11191460wrj.5.1621625831732;
+        Fri, 21 May 2021 12:37:11 -0700 (PDT)
+Received: from minerva.home ([92.176.231.106])
+        by smtp.gmail.com with ESMTPSA id s11sm475226wmf.14.2021.05.21.12.37.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 12:37:11 -0700 (PDT)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Peter Robinson <pbrobinson@gmail.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        dri-devel@lists.freedesktop.org,
+        Javier Martinez Canillas <javierm@redhat.com>
+Subject: [PATCH 2/2] drivers/firmware: consolidate EFI framebuffer setup for all arches
+Date:   Fri, 21 May 2021 21:37:04 +0200
+Message-Id: <20210521193704.3042024-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 0CCahU1GVqt_PgEJzAm1SKIITG4vyJKL
-X-Proofpoint-ORIG-GUID: ZG-y-4d3eGW9P3zQZwNQy1OPJCDzfaiT
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_09:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 malwarescore=0 impostorscore=0 adultscore=0 spamscore=0
- bulkscore=0 suspectscore=0 phishscore=0 mlxlogscore=999 mlxscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105210103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The function pointer to the handler that processes interception of the
-PQAP instruction is contained in the mdev. If the mdev is removed and
-its storage de-allocated during the processing of the PQAP instruction,
-the function pointer could get wiped out before the function is called
-because there is currently nothing that controls access to it.
+The register_gop_device() function registers an "efi-framebuffer" platform
+device to match against the efifb driver, to have an early framebuffer for
+EFI platforms.
 
-This patch introduces two new functions:
-* The kvm_arch_crypto_register_hook() function registers a function pointer
-  for processing intercepted crypto instructions.
-* The kvm_arch_crypto_register_hook() function un-registers a function
-  pointer that was previously registered.
+But the Generic System Framebuffers (sysfb) already has support for this.
 
-Registration and unregistration of function pointers is protected by a
-mutex lock. This lock is also employed when the hook is retrieved and the
-hook function is called to protect against losing access to the function
-while an intercepted crypto instruction is being processed.
+Instead of having duplicated logic for x86 and other architectures using
+EFI, consolidate the two in sysfb and remove it from the EFI init logic.
 
-The PQAP instruction handler function pointer is registered at the time
-the vfio_ap module is loaded and unregistered when it is unloaded; so,
-the lifespan of the function pointer is concurrent with the lifespan of
-the vfio_ap module.
-
-Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
 ---
- arch/s390/include/asm/kvm_host.h      | 13 +++--
- arch/s390/kvm/priv.c                  | 70 +++++++++++++++++++++++++--
- drivers/s390/crypto/vfio_ap_ops.c     | 37 +++++++++++---
- drivers/s390/crypto/vfio_ap_private.h |  1 -
- 4 files changed, 105 insertions(+), 16 deletions(-)
 
-diff --git a/arch/s390/include/asm/kvm_host.h b/arch/s390/include/asm/kvm_host.h
-index 8925f3969478..d59b9309a6b8 100644
---- a/arch/s390/include/asm/kvm_host.h
-+++ b/arch/s390/include/asm/kvm_host.h
-@@ -803,14 +803,19 @@ struct kvm_s390_cpu_model {
- 	unsigned short ibc;
- };
+ arch/arm/Kconfig                  |  1 +
+ arch/arm/include/asm/efi.h        |  5 +-
+ arch/arm64/Kconfig                |  1 +
+ arch/arm64/include/asm/efi.h      |  5 +-
+ arch/riscv/Kconfig                |  1 +
+ arch/riscv/include/asm/efi.h      |  5 +-
+ drivers/firmware/Kconfig          |  7 ++-
+ drivers/firmware/Makefile         |  2 +-
+ drivers/firmware/efi/efi-init.c   | 90 -------------------------------
+ drivers/firmware/efi/sysfb_efi.c  | 77 +++++++++++++++++++++++++-
+ drivers/firmware/sysfb.c          | 40 +++++++++-----
+ drivers/firmware/sysfb_simplefb.c | 29 ++++++----
+ include/linux/sysfb.h             | 28 +++++-----
+ 13 files changed, 145 insertions(+), 146 deletions(-)
+
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index 24804f11302..30ba195ca72 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -127,6 +127,7 @@ config ARM
+ 	select PERF_USE_VMALLOC
+ 	select RTC_LIB
+ 	select SET_FS
++	select SYSFB
+ 	select SYS_SUPPORTS_APM_EMULATION
+ 	# Above selects are sorted alphabetically; please add new ones
+ 	# according to that.  Thanks.
+diff --git a/arch/arm/include/asm/efi.h b/arch/arm/include/asm/efi.h
+index 9de7ab2ce05..a6f3b179e8a 100644
+--- a/arch/arm/include/asm/efi.h
++++ b/arch/arm/include/asm/efi.h
+@@ -17,6 +17,7 @@
  
--struct kvm_s390_module_hook {
--	int (*hook)(struct kvm_vcpu *vcpu);
-+enum kvm_s390_crypto_hook_type {
-+	PQAP_HOOK
-+};
-+
-+struct kvm_s390_crypto_hook {
-+	enum kvm_s390_crypto_hook_type type;
- 	struct module *owner;
-+	int (*hook_fcn)(struct kvm_vcpu *vcpu);
-+	struct list_head node;
- };
+ #ifdef CONFIG_EFI
+ void efi_init(void);
++extern void efifb_setup_from_dmi(struct screen_info *si, const char *opt);
  
- struct kvm_s390_crypto {
- 	struct kvm_s390_crypto_cb *crycb;
--	struct kvm_s390_module_hook *pqap_hook;
- 	__u32 crycbd;
- 	__u8 aes_kw;
- 	__u8 dea_kw;
-@@ -996,6 +1001,8 @@ static inline void kvm_arch_async_page_present_queued(struct kvm_vcpu *vcpu) {}
- void kvm_arch_crypto_clear_masks(struct kvm *kvm);
- void kvm_arch_crypto_set_masks(struct kvm *kvm, unsigned long *apm,
- 			       unsigned long *aqm, unsigned long *adm);
-+extern int kvm_arch_crypto_register_hook(struct kvm_s390_crypto_hook *hook);
-+extern int kvm_arch_crypto_unregister_hook(struct kvm_s390_crypto_hook *hook);
+ int efi_create_mapping(struct mm_struct *mm, efi_memory_desc_t *md);
+ int efi_set_mapping_permissions(struct mm_struct *mm, efi_memory_desc_t *md);
+@@ -52,10 +53,6 @@ void efi_virtmap_unload(void);
+ struct screen_info *alloc_screen_info(void);
+ void free_screen_info(struct screen_info *si);
  
- extern int sie64a(struct kvm_s390_sie_block *, u64 *);
- extern char sie_exit;
-diff --git a/arch/s390/kvm/priv.c b/arch/s390/kvm/priv.c
-index 9928f785c677..1221c04f6f6a 100644
---- a/arch/s390/kvm/priv.c
-+++ b/arch/s390/kvm/priv.c
-@@ -12,6 +12,7 @@
- #include <linux/gfp.h>
- #include <linux/errno.h>
- #include <linux/compat.h>
-+#include <linux/list.h>
- #include <linux/mm_types.h>
- #include <linux/pgtable.h>
+-static inline void efifb_setup_from_dmi(struct screen_info *si, const char *opt)
+-{
+-}
+-
+ /*
+  * A reasonable upper bound for the uncompressed kernel size is 32 MBytes,
+  * so we will reserve that amount of memory. We have no easy way to tell what
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 9f1d8566bbf..20886eb48ab 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -1884,6 +1884,7 @@ config EFI
+ 	select EFI_RUNTIME_WRAPPERS
+ 	select EFI_STUB
+ 	select EFI_GENERIC_STUB
++	select SYSFB
+ 	imply IMA_SECURE_AND_OR_TRUSTED_BOOT
+ 	default y
+ 	help
+diff --git a/arch/arm64/include/asm/efi.h b/arch/arm64/include/asm/efi.h
+index 3578aba9c60..42d673a011c 100644
+--- a/arch/arm64/include/asm/efi.h
++++ b/arch/arm64/include/asm/efi.h
+@@ -14,6 +14,7 @@
  
-@@ -31,6 +32,63 @@
- #include "kvm-s390.h"
- #include "trace.h"
- 
-+DEFINE_MUTEX(crypto_hooks_lock);
-+static struct list_head crypto_hooks = { &(crypto_hooks), &(crypto_hooks) };
-+
-+static struct kvm_s390_crypto_hook
-+*kvm_arch_crypto_find_hook(enum kvm_s390_crypto_hook_type type)
-+{
-+	struct kvm_s390_crypto_hook *crypto_hook;
-+
-+	list_for_each_entry(crypto_hook, &crypto_hooks, node) {
-+		if (crypto_hook->type == type)
-+			return crypto_hook;
-+	}
-+
-+	return NULL;
-+}
-+
-+int kvm_arch_crypto_register_hook(struct kvm_s390_crypto_hook *hook)
-+{
-+	struct kvm_s390_crypto_hook *crypto_hook;
-+
-+	mutex_lock(&crypto_hooks_lock);
-+	crypto_hook = kvm_arch_crypto_find_hook(hook->type);
-+	if (crypto_hook) {
-+		if (crypto_hook->owner != hook->owner)
-+			return -EACCES;
-+		list_replace(&crypto_hook->node, &hook->node);
-+	} else {
-+		list_add(&hook->node, &crypto_hooks);
-+	}
-+	mutex_unlock(&crypto_hooks_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(kvm_arch_crypto_register_hook);
-+
-+int kvm_arch_crypto_unregister_hook(struct kvm_s390_crypto_hook *hook)
-+{
-+	struct kvm_s390_crypto_hook *crypto_hook;
-+
-+	mutex_lock(&crypto_hooks_lock);
-+	crypto_hook = kvm_arch_crypto_find_hook(hook->type);
-+
-+	if (crypto_hook) {
-+		if (crypto_hook->owner != hook->owner)
-+			return -EACCES;
-+		if (crypto_hook->hook_fcn != hook->hook_fcn)
-+			return -EFAULT;
-+		list_del(&crypto_hook->node);
-+	} else {
-+		return -ENODEV;
-+	}
-+	mutex_unlock(&crypto_hooks_lock);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(kvm_arch_crypto_unregister_hook);
-+
- static int handle_ri(struct kvm_vcpu *vcpu)
+ #ifdef CONFIG_EFI
+ extern void efi_init(void);
++extern void efifb_setup_from_dmi(struct screen_info *si, const char *opt);
+ #else
+ #define efi_init()
+ #endif
+@@ -85,10 +86,6 @@ static inline void free_screen_info(struct screen_info *si)
  {
- 	vcpu->stat.instruction_ri++;
-@@ -610,6 +668,7 @@ static int handle_io_inst(struct kvm_vcpu *vcpu)
- static int handle_pqap(struct kvm_vcpu *vcpu)
- {
- 	struct ap_queue_status status = {};
-+	struct kvm_s390_crypto_hook *pqap_hook;
- 	unsigned long reg0;
- 	int ret;
- 	uint8_t fc;
-@@ -657,15 +716,16 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	 * Verify that the hook callback is registered, lock the owner
- 	 * and call the hook.
- 	 */
--	if (vcpu->kvm->arch.crypto.pqap_hook) {
--		if (!try_module_get(vcpu->kvm->arch.crypto.pqap_hook->owner))
--			return -EOPNOTSUPP;
--		ret = vcpu->kvm->arch.crypto.pqap_hook->hook(vcpu);
--		module_put(vcpu->kvm->arch.crypto.pqap_hook->owner);
-+	mutex_lock(&crypto_hooks_lock);
-+	pqap_hook = kvm_arch_crypto_find_hook(PQAP_HOOK);
-+	if (pqap_hook) {
-+		ret = pqap_hook->hook_fcn(vcpu);
- 		if (!ret && vcpu->run->s.regs.gprs[1] & 0x00ff0000)
- 			kvm_s390_set_psw_cc(vcpu, 3);
-+		mutex_unlock(&crypto_hooks_lock);
- 		return ret;
- 	}
-+	mutex_unlock(&crypto_hooks_lock);
- 	/*
- 	 * A vfio_driver must register a hook.
- 	 * No hook means no driver to enable the SIE CRYCB and no queues.
-diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
-index f90c9103dac2..3466ceffc46a 100644
---- a/drivers/s390/crypto/vfio_ap_ops.c
-+++ b/drivers/s390/crypto/vfio_ap_ops.c
-@@ -64,6 +64,21 @@ static struct vfio_ap_queue *vfio_ap_get_queue(
- 	return q;
  }
  
-+static struct ap_matrix_mdev *vfio_ap_find_mdev_for_apqn(int apqn)
+-static inline void efifb_setup_from_dmi(struct screen_info *si, const char *opt)
+-{
+-}
+-
+ #define EFI_ALLOC_ALIGN		SZ_64K
+ 
+ /*
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index a8ad8eb7612..f4bc6736c4e 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -474,6 +474,7 @@ config EFI
+ 	select EFI_GENERIC_STUB
+ 	select EFI_RUNTIME_WRAPPERS
+ 	select RISCV_ISA_C
++	select SYSFB
+ 	depends on MMU
+ 	default y
+ 	help
+diff --git a/arch/riscv/include/asm/efi.h b/arch/riscv/include/asm/efi.h
+index 6d98cd99968..7a8f0d45b13 100644
+--- a/arch/riscv/include/asm/efi.h
++++ b/arch/riscv/include/asm/efi.h
+@@ -13,6 +13,7 @@
+ 
+ #ifdef CONFIG_EFI
+ extern void efi_init(void);
++extern void efifb_setup_from_dmi(struct screen_info *si, const char *opt);
+ #else
+ #define efi_init()
+ #endif
+@@ -39,10 +40,6 @@ static inline void free_screen_info(struct screen_info *si)
+ {
+ }
+ 
+-static inline void efifb_setup_from_dmi(struct screen_info *si, const char *opt)
+-{
+-}
+-
+ void efi_virtmap_load(void);
+ void efi_virtmap_unload(void);
+ 
+diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+index 396bd1d5cbf..cc1a61f6d57 100644
+--- a/drivers/firmware/Kconfig
++++ b/drivers/firmware/Kconfig
+@@ -253,9 +253,8 @@ config QCOM_SCM_DOWNLOAD_MODE_DEFAULT
+ 
+ config SYSFB
+ 	bool
+-	depends on X86
+ 
+-config X86_SYSFB
++config SYSFB_SIMPLEFB
+ 	bool "Mark VGA/VBE/EFI FB as generic system framebuffer"
+ 	depends on SYSFB
+ 	help
+@@ -263,10 +262,10 @@ config X86_SYSFB
+ 	  bootloader or kernel can show basic video-output during boot for
+ 	  user-guidance and debugging. Historically, x86 used the VESA BIOS
+ 	  Extensions and EFI-framebuffers for this, which are mostly limited
+-	  to x86.
++	  to x86 BIOS or EFI systems.
+ 	  This option, if enabled, marks VGA/VBE/EFI framebuffers as generic
+ 	  framebuffers so the new generic system-framebuffer drivers can be
+-	  used on x86. If the framebuffer is not compatible with the generic
++	  used instead. If the framebuffer is not compatible with the generic
+ 	  modes, it is advertised as fallback platform framebuffer so legacy
+ 	  drivers like efifb, vesafb and uvesafb can pick it up.
+ 	  If this option is not selected, all system framebuffers are always
+diff --git a/drivers/firmware/Makefile b/drivers/firmware/Makefile
+index ad78f78ffa8..6ac637e422b 100644
+--- a/drivers/firmware/Makefile
++++ b/drivers/firmware/Makefile
+@@ -19,7 +19,7 @@ obj-$(CONFIG_RASPBERRYPI_FIRMWARE) += raspberrypi.o
+ obj-$(CONFIG_FW_CFG_SYSFS)	+= qemu_fw_cfg.o
+ obj-$(CONFIG_QCOM_SCM)		+= qcom_scm.o qcom_scm-smc.o qcom_scm-legacy.o
+ obj-$(CONFIG_SYSFB)		+= sysfb.o
+-obj-$(CONFIG_X86_SYSFB)		+= sysfb_simplefb.o
++obj-$(CONFIG_SYSFB_SIMPLEFB)	+= sysfb_simplefb.o
+ obj-$(CONFIG_TI_SCI_PROTOCOL)	+= ti_sci.o
+ obj-$(CONFIG_TRUSTED_FOUNDATIONS) += trusted_foundations.o
+ obj-$(CONFIG_TURRIS_MOX_RWTM)	+= turris-mox-rwtm.o
+diff --git a/drivers/firmware/efi/efi-init.c b/drivers/firmware/efi/efi-init.c
+index a552a08a174..b19ce1a83f9 100644
+--- a/drivers/firmware/efi/efi-init.c
++++ b/drivers/firmware/efi/efi-init.c
+@@ -275,93 +275,3 @@ void __init efi_init(void)
+ 	}
+ #endif
+ }
+-
+-static bool efifb_overlaps_pci_range(const struct of_pci_range *range)
+-{
+-	u64 fb_base = screen_info.lfb_base;
+-
+-	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
+-		fb_base |= (u64)(unsigned long)screen_info.ext_lfb_base << 32;
+-
+-	return fb_base >= range->cpu_addr &&
+-	       fb_base < (range->cpu_addr + range->size);
+-}
+-
+-static struct device_node *find_pci_overlap_node(void)
+-{
+-	struct device_node *np;
+-
+-	for_each_node_by_type(np, "pci") {
+-		struct of_pci_range_parser parser;
+-		struct of_pci_range range;
+-		int err;
+-
+-		err = of_pci_range_parser_init(&parser, np);
+-		if (err) {
+-			pr_warn("of_pci_range_parser_init() failed: %d\n", err);
+-			continue;
+-		}
+-
+-		for_each_of_pci_range(&parser, &range)
+-			if (efifb_overlaps_pci_range(&range))
+-				return np;
+-	}
+-	return NULL;
+-}
+-
+-/*
+- * If the efifb framebuffer is backed by a PCI graphics controller, we have
+- * to ensure that this relation is expressed using a device link when
+- * running in DT mode, or the probe order may be reversed, resulting in a
+- * resource reservation conflict on the memory window that the efifb
+- * framebuffer steals from the PCIe host bridge.
+- */
+-static int efifb_add_links(struct fwnode_handle *fwnode)
+-{
+-	struct device_node *sup_np;
+-
+-	sup_np = find_pci_overlap_node();
+-
+-	/*
+-	 * If there's no PCI graphics controller backing the efifb, we are
+-	 * done here.
+-	 */
+-	if (!sup_np)
+-		return 0;
+-
+-	fwnode_link_add(fwnode, of_fwnode_handle(sup_np));
+-	of_node_put(sup_np);
+-
+-	return 0;
+-}
+-
+-static const struct fwnode_operations efifb_fwnode_ops = {
+-	.add_links = efifb_add_links,
+-};
+-
+-static struct fwnode_handle efifb_fwnode;
+-
+-static int __init register_gop_device(void)
+-{
+-	struct platform_device *pd;
+-	int err;
+-
+-	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI)
+-		return 0;
+-
+-	pd = platform_device_alloc("efi-framebuffer", 0);
+-	if (!pd)
+-		return -ENOMEM;
+-
+-	if (IS_ENABLED(CONFIG_PCI)) {
+-		fwnode_init(&efifb_fwnode, &efifb_fwnode_ops);
+-		pd->dev.fwnode = &efifb_fwnode;
+-	}
+-
+-	err = platform_device_add_data(pd, &screen_info, sizeof(screen_info));
+-	if (err)
+-		return err;
+-
+-	return platform_device_add(pd);
+-}
+-subsys_initcall(register_gop_device);
+diff --git a/drivers/firmware/efi/sysfb_efi.c b/drivers/firmware/efi/sysfb_efi.c
+index 9f035b15501..2814af6baf1 100644
+--- a/drivers/firmware/efi/sysfb_efi.c
++++ b/drivers/firmware/efi/sysfb_efi.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Generic System Framebuffers on x86
++ * Generic System Framebuffers
+  * Copyright (c) 2012-2013 David Herrmann <dh.herrmann@gmail.com>
+  *
+  * EFI Quirks Copyright (c) 2006 Edgar Hucek <gimli@dark-green.com>
+@@ -19,7 +19,9 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/mm.h>
++#include <linux/of_address.h>
+ #include <linux/pci.h>
++#include <linux/platform_device.h>
+ #include <linux/screen_info.h>
+ #include <linux/sysfb.h>
+ #include <video/vga.h>
+@@ -267,7 +269,72 @@ static const struct dmi_system_id efifb_dmi_swap_width_height[] __initconst = {
+ 	{},
+ };
+ 
+-__init void sysfb_apply_efi_quirks(void)
++static bool efifb_overlaps_pci_range(const struct of_pci_range *range)
 +{
-+	struct ap_matrix_mdev *matrix_mdev;
-+	unsigned long apid = AP_QID_CARD(apqn);
-+	unsigned long apqi = AP_QID_QUEUE(apqn);
++	u64 fb_base = screen_info.lfb_base;
 +
-+	list_for_each_entry(matrix_mdev, &matrix_dev->mdev_list, node) {
-+		if (test_bit_inv(apid, matrix_mdev->matrix.apm) &&
-+		    test_bit_inv(apqi, matrix_mdev->matrix.aqm))
-+			return matrix_mdev;
++	if (screen_info.capabilities & VIDEO_CAPABILITY_64BIT_BASE)
++		fb_base |= (u64)(unsigned long)screen_info.ext_lfb_base << 32;
++
++	return fb_base >= range->cpu_addr &&
++	       fb_base < (range->cpu_addr + range->size);
++}
++
++static struct device_node *find_pci_overlap_node(void)
++{
++	struct device_node *np;
++
++	for_each_node_by_type(np, "pci") {
++		struct of_pci_range_parser parser;
++		struct of_pci_range range;
++		int err;
++
++		err = of_pci_range_parser_init(&parser, np);
++		if (err) {
++			pr_warn("of_pci_range_parser_init() failed: %d\n", err);
++			continue;
++		}
++
++		for_each_of_pci_range(&parser, &range)
++			if (efifb_overlaps_pci_range(&range))
++				return np;
 +	}
-+
 +	return NULL;
 +}
 +
- /**
-  * vfio_ap_wait_for_irqclear
-  * @apqn: The AP Queue number
-@@ -287,13 +302,13 @@ static int handle_pqap(struct kvm_vcpu *vcpu)
- 	if (!(vcpu->arch.sie_block->eca & ECA_AIV))
- 		return -EOPNOTSUPP;
- 
++/*
++ * If the efifb framebuffer is backed by a PCI graphics controller, we have
++ * to ensure that this relation is expressed using a device link when
++ * running in DT mode, or the probe order may be reversed, resulting in a
++ * resource reservation conflict on the memory window that the efifb
++ * framebuffer steals from the PCIe host bridge.
++ */
++static int efifb_add_links(struct fwnode_handle *fwnode)
++{
++	struct device_node *sup_np;
 +
- 	apqn = vcpu->run->s.regs.gprs[0] & 0xffff;
- 	mutex_lock(&matrix_dev->lock);
- 
--	if (!vcpu->kvm->arch.crypto.pqap_hook)
-+	matrix_mdev = vfio_ap_find_mdev_for_apqn(apqn);
-+	if (!matrix_mdev)
- 		goto out_unlock;
--	matrix_mdev = container_of(vcpu->kvm->arch.crypto.pqap_hook,
--				   struct ap_matrix_mdev, pqap_hook);
- 
- 	/*
- 	 * If the KVM pointer is in the process of being set, wait until the
-@@ -353,8 +368,6 @@ static int vfio_ap_mdev_create(struct mdev_device *mdev)
- 	vfio_ap_matrix_init(&matrix_dev->info, &matrix_mdev->matrix);
- 	init_waitqueue_head(&matrix_mdev->wait_for_kvm);
- 	mdev_set_drvdata(mdev, matrix_mdev);
--	matrix_mdev->pqap_hook.hook = handle_pqap;
--	matrix_mdev->pqap_hook.owner = THIS_MODULE;
- 	mutex_lock(&matrix_dev->lock);
- 	list_add(&matrix_mdev->node, &matrix_dev->mdev_list);
- 	mutex_unlock(&matrix_dev->lock);
-@@ -1123,7 +1136,6 @@ static int vfio_ap_mdev_set_kvm(struct ap_matrix_mdev *matrix_mdev,
- 					  matrix_mdev->matrix.aqm,
- 					  matrix_mdev->matrix.adm);
- 		mutex_lock(&matrix_dev->lock);
--		kvm->arch.crypto.pqap_hook = &matrix_mdev->pqap_hook;
- 		matrix_mdev->kvm = kvm;
- 		matrix_mdev->kvm_busy = false;
- 		wake_up_all(&matrix_mdev->wait_for_kvm);
-@@ -1193,7 +1205,6 @@ static void vfio_ap_mdev_unset_kvm(struct ap_matrix_mdev *matrix_mdev)
- 		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
- 		mutex_lock(&matrix_dev->lock);
- 		vfio_ap_mdev_reset_queues(matrix_mdev->mdev);
--		matrix_mdev->kvm->arch.crypto.pqap_hook = NULL;
- 		kvm_put_kvm(matrix_mdev->kvm);
- 		matrix_mdev->kvm = NULL;
- 		matrix_mdev->kvm_busy = false;
-@@ -1433,14 +1444,26 @@ static const struct mdev_parent_ops vfio_ap_matrix_ops = {
- 	.ioctl			= vfio_ap_mdev_ioctl,
- };
- 
-+static struct kvm_s390_crypto_hook pqap_hook = {
-+	.type = PQAP_HOOK,
-+	.owner = THIS_MODULE,
-+	.hook_fcn = handle_pqap
++	sup_np = find_pci_overlap_node();
++
++	/*
++	 * If there's no PCI graphics controller backing the efifb, we are
++	 * done here.
++	 */
++	if (!sup_np)
++		return 0;
++
++	fwnode_link_add(fwnode, of_fwnode_handle(sup_np));
++	of_node_put(sup_np);
++
++	return 0;
++}
++
++static const struct fwnode_operations efifb_fwnode_ops = {
++	.add_links = efifb_add_links,
 +};
 +
- int vfio_ap_mdev_register(void)
++static struct fwnode_handle efifb_fwnode;
++
++__init void sysfb_apply_efi_quirks(struct platform_device *pd)
  {
-+	int ret;
- 	atomic_set(&matrix_dev->available_instances, MAX_ZDEV_ENTRIES_EXT);
+ 	if (screen_info.orig_video_isVGA != VIDEO_TYPE_EFI ||
+ 	    !(screen_info.capabilities & VIDEO_CAPABILITY_SKIP_QUIRKS))
+@@ -281,4 +348,10 @@ __init void sysfb_apply_efi_quirks(void)
+ 		screen_info.lfb_height = temp;
+ 		screen_info.lfb_linelength = 4 * screen_info.lfb_width;
+ 	}
++
++	if (screen_info.orig_video_isVGA == VIDEO_TYPE_EFI &&
++	    IS_ENABLED(CONFIG_PCI)) {
++		fwnode_init(&efifb_fwnode, &efifb_fwnode_ops);
++		pd->dev.fwnode = &efifb_fwnode;
++	}
+ }
+diff --git a/drivers/firmware/sysfb.c b/drivers/firmware/sysfb.c
+index 1337515963d..3ecd60a0215 100644
+--- a/drivers/firmware/sysfb.c
++++ b/drivers/firmware/sysfb.c
+@@ -1,11 +1,11 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Generic System Framebuffers on x86
++ * Generic System Framebuffers
+  * Copyright (c) 2012-2013 David Herrmann <dh.herrmann@gmail.com>
+  */
  
-+	ret = kvm_arch_crypto_register_hook(&pqap_hook);
+ /*
+- * Simple-Framebuffer support for x86 systems
++ * Simple-Framebuffer support
+  * Create a platform-device for any available boot framebuffer. The
+  * simple-framebuffer platform device is already available on DT systems, so
+  * this module parses the global "screen_info" object and creates a suitable
+@@ -16,12 +16,12 @@
+  * to pick these devices up without messing with simple-framebuffer drivers.
+  * The global "screen_info" is still valid at all times.
+  *
+- * If CONFIG_X86_SYSFB is not selected, we never register "simple-framebuffer"
++ * If CONFIG_SYSFB_SIMPLEFB is not selected, never register "simple-framebuffer"
+  * platform devices, but only use legacy framebuffer devices for
+  * backwards compatibility.
+  *
+  * TODO: We set the dev_id field of all platform-devices to 0. This allows
+- * other x86 OF/DT parsers to create such devices, too. However, they must
++ * other OF/DT parsers to create such devices, too. However, they must
+  * start at offset 1 for this to work.
+  */
+ 
+@@ -39,31 +39,43 @@ static __init int sysfb_init(void)
+ 	struct screen_info *si = &screen_info;
+ 	struct simplefb_platform_data mode;
+ 	struct platform_device *pd;
+-	const char *name;
+ 	bool compatible;
+ 	int ret;
+ 
+-	sysfb_apply_efi_quirks();
++	pd = platform_device_alloc("", 0);
++	if (!pd)
++		return -ENOMEM;
++
++	sysfb_apply_efi_quirks(pd);
+ 
+ 	/* try to create a simple-framebuffer device */
+-	compatible = parse_mode(si, &mode);
++	compatible = sysfb_parse_mode(si, &mode);
+ 	if (compatible) {
+-		ret = create_simplefb(si, &mode);
++		ret = sysfb_create_simplefb(si, &mode, pd);
+ 		if (!ret)
+ 			return 0;
+ 	}
+ 
+ 	/* if the FB is incompatible, create a legacy framebuffer device */
+ 	if (si->orig_video_isVGA == VIDEO_TYPE_EFI)
+-		name = "efi-framebuffer";
++		pd->name = "efi-framebuffer";
+ 	else if (si->orig_video_isVGA == VIDEO_TYPE_VLFB)
+-		name = "vesa-framebuffer";
++		pd->name = "vesa-framebuffer";
+ 	else
+-		name = "platform-framebuffer";
++		pd->name = "platform-framebuffer";
++
++	ret = platform_device_add_data(pd, si, sizeof(*si));
++	if (ret)
++		goto err;
++
++	ret = platform_device_add(pd);
++	if (ret)
++		goto err;
+ 
+-	pd = platform_device_register_resndata(NULL, name, 0,
+-					       NULL, 0, si, sizeof(*si));
+-	return PTR_ERR_OR_ZERO(pd);
++	return 0;
++err:
++	platform_device_put(pd);
++	return ret;
+ }
+ 
+ /* must execute after PCI subsystem for EFI quirks */
+diff --git a/drivers/firmware/sysfb_simplefb.c b/drivers/firmware/sysfb_simplefb.c
+index df892444ea1..cffff4283f3 100644
+--- a/drivers/firmware/sysfb_simplefb.c
++++ b/drivers/firmware/sysfb_simplefb.c
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-or-later
+ /*
+- * Generic System Framebuffers on x86
++ * Generic System Framebuffers
+  * Copyright (c) 2012-2013 David Herrmann <dh.herrmann@gmail.com>
+  */
+ 
+@@ -23,9 +23,9 @@
+ static const char simplefb_resname[] = "BOOTFB";
+ static const struct simplefb_format formats[] = SIMPLEFB_FORMATS;
+ 
+-/* try parsing x86 screen_info into a simple-framebuffer mode struct */
+-__init bool parse_mode(const struct screen_info *si,
+-		       struct simplefb_platform_data *mode)
++/* try parsing screen_info into a simple-framebuffer mode struct */
++__init bool sysfb_parse_mode(const struct screen_info *si,
++			     struct simplefb_platform_data *mode)
+ {
+ 	const struct simplefb_format *f;
+ 	__u8 type;
+@@ -57,13 +57,14 @@ __init bool parse_mode(const struct screen_info *si,
+ 	return false;
+ }
+ 
+-__init int create_simplefb(const struct screen_info *si,
+-			   const struct simplefb_platform_data *mode)
++__init int sysfb_create_simplefb(const struct screen_info *si,
++				 const struct simplefb_platform_data *mode,
++				 struct platform_device *pd)
+ {
+-	struct platform_device *pd;
+ 	struct resource res;
+ 	u64 base, size;
+ 	u32 length;
++	int ret;
+ 
+ 	/*
+ 	 * If the 64BIT_BASE capability is set, ext_lfb_base will contain the
+@@ -105,7 +106,15 @@ __init int create_simplefb(const struct screen_info *si,
+ 	if (res.end <= res.start)
+ 		return -EINVAL;
+ 
+-	pd = platform_device_register_resndata(NULL, "simple-framebuffer", 0,
+-					       &res, 1, mode, sizeof(*mode));
+-	return PTR_ERR_OR_ZERO(pd);
++	pd->name = "simple-framebuffer";
++
++	ret = platform_device_add_resources(pd, &res, 1);
 +	if (ret)
 +		return ret;
 +
- 	return mdev_register_device(&matrix_dev->device, &vfio_ap_matrix_ops);
++	ret = platform_device_add_data(pd, mode, sizeof(*mode));
++	if (ret)
++		return ret;
++
++	return platform_device_add(pd);
  }
+diff --git a/include/linux/sysfb.h b/include/linux/sysfb.h
+index 3e5355769dc..d97162f4b97 100644
+--- a/include/linux/sysfb.h
++++ b/include/linux/sysfb.h
+@@ -58,37 +58,39 @@ struct efifb_dmi_info {
+ #ifdef CONFIG_EFI
  
- void vfio_ap_mdev_unregister(void)
+ extern struct efifb_dmi_info efifb_dmi_list[];
+-void sysfb_apply_efi_quirks(void);
++void sysfb_apply_efi_quirks(struct platform_device *pd);
+ 
+ #else /* CONFIG_EFI */
+ 
+-static inline void sysfb_apply_efi_quirks(void)
++static inline void sysfb_apply_efi_quirks(struct platform_device *pd)
  {
-+	WARN_ON(kvm_arch_crypto_unregister_hook(&pqap_hook));
- 	mdev_unregister_device(&matrix_dev->device);
  }
-diff --git a/drivers/s390/crypto/vfio_ap_private.h b/drivers/s390/crypto/vfio_ap_private.h
-index f82a6396acae..542259b57972 100644
---- a/drivers/s390/crypto/vfio_ap_private.h
-+++ b/drivers/s390/crypto/vfio_ap_private.h
-@@ -86,7 +86,6 @@ struct ap_matrix_mdev {
- 	bool kvm_busy;
- 	wait_queue_head_t wait_for_kvm;
- 	struct kvm *kvm;
--	struct kvm_s390_module_hook pqap_hook;
- 	struct mdev_device *mdev;
- };
  
+ #endif /* CONFIG_EFI */
+ 
+-#ifdef CONFIG_X86_SYSFB
++#ifdef CONFIG_SYSFB_SIMPLEFB
+ 
+-bool parse_mode(const struct screen_info *si,
+-		struct simplefb_platform_data *mode);
+-int create_simplefb(const struct screen_info *si,
+-		    const struct simplefb_platform_data *mode);
++bool sysfb_parse_mode(const struct screen_info *si,
++		      struct simplefb_platform_data *mode);
++int sysfb_create_simplefb(const struct screen_info *si,
++			  const struct simplefb_platform_data *mode,
++			  struct platform_device *pd);
+ 
+-#else /* CONFIG_X86_SYSFB */
++#else /* CONFIG_SYSFB_SIMPLE */
+ 
+-static inline bool parse_mode(const struct screen_info *si,
+-			      struct simplefb_platform_data *mode)
++static inline bool sysfb_parse_mode(const struct screen_info *si,
++				    struct simplefb_platform_data *mode)
+ {
+ 	return false;
+ }
+ 
+-static inline int create_simplefb(const struct screen_info *si,
+-				  const struct simplefb_platform_data *mode)
++static inline int sysfb_create_simplefb(const struct screen_info *si,
++					 const struct simplefb_platform_data *mode,
++					 struct platform_device *pd)
+ {
+ 	return -EINVAL;
+ }
+ 
+-#endif /* CONFIG_X86_SYSFB */
++#endif /* CONFIG_SYSFB_SIMPLE */
+ 
+ #endif /* _LINUX_SYSFB_H */
 -- 
-2.30.2
+2.31.1
 
