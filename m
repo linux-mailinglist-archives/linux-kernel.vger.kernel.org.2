@@ -2,88 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B2238C57E
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:13:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F30C38C581
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:15:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233821AbhEULPT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:15:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56356 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229757AbhEULPQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:15:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 09F4FABB1;
-        Fri, 21 May 2021 11:13:52 +0000 (UTC)
-Subject: Re: [PATCH v6] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     Faiyaz Mohammed <faiyazm@codeaurora.org>, cl@linux.com,
-        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, glittao@gmail.com, greg@kroah.com
-Cc:     vinmenon@codeaurora.org
-References: <1621341949-26762-1-git-send-email-faiyazm@codeaurora.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <a8247d42-01d3-6d9c-678f-382ea1e02945@suse.cz>
-Date:   Fri, 21 May 2021 13:13:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234404AbhEULRB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:17:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229757AbhEULQ6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:16:58 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE2B8C061574;
+        Fri, 21 May 2021 04:15:33 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id h9so19352737oih.4;
+        Fri, 21 May 2021 04:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fF9cIbv0XdEChYVnnZY9YghC2MQwePrRjdawL10glgw=;
+        b=NB+K+bgtxnXkCQh6yXA+8mHsA2jFJsgLRgtRs6B7tlWXKGEgl2rHdi/q+OmWfigQ21
+         CFU1p0/bJ6VHXtvtUWE/IFgq3SbNR8fnVa1hZnRLyAYo3lzkM20Ir1KbQ9Jr0V7PBBXL
+         bPGY7bxE/bkj9A4ok3UdoEXNWB/+DkxK7QKHpazik9fVCE7TvLyjBUvfPUQT3xruqzJB
+         cEz6hCUqSzt1jNyg/kgGDHsWrKn+qVOYdORXefaytw/zUdYAbNh4sb0A1bIHVvnV1DTa
+         FOLcxVwz5dfK3VLmrIgOXoYJf5KeWxzfzAlqCT3aSGMEtD+3BAQVsMUa+ZF2XrrmYn2h
+         l7OA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fF9cIbv0XdEChYVnnZY9YghC2MQwePrRjdawL10glgw=;
+        b=qIpeBtp5dIcHmOTf2qeX8NCiysHhj6puk+/A86nhIhUdjo3fkhJ0d5M6kcQ9UylJa5
+         LLGloeeb4CiU47Lyv+GFfYsAn+mSFDdkD3wSkECwdfohmWqKZ/JN3/Bm2LQRcsKdsvOV
+         JpuJbU3IhgqHRFT6C8TySN/j28hEmvh1xj3rNHkqMbmcTRUvctRN7nvm0aKlJwVLr577
+         neZnObEDVXzXcBHdp8ceBrlWSpoyfaNzgfVyDIY8rFc0L9IiginvBlIY0APlhJ2gnNwG
+         L1jPsyYx7PlNlnhJZJ50ymNQoKQCx38UR9tkhdfTtdEd8cSL4M5FGuvDu7ms34ik51Lq
+         1AOg==
+X-Gm-Message-State: AOAM533K0PkbR/uLj1GC+x5YYdzg/0pqgS2c93Ta8SJa0Z+CPRUmhhNr
+        kADoZoit2ov2G+xyjXuzRxx7oGpQKgi5+nOg+6rvXdbVOJwsl5U=
+X-Google-Smtp-Source: ABdhPJzcE3nuvX+HfI8wMyL9k3Bfzzu7uyOzU124rppj95sBqX+4MdcjdCs4RtgItYWMYxd7JIO2ErgZ4MkC9+lFiDk=
+X-Received: by 2002:a54:4f91:: with SMTP id g17mr1797744oiy.15.1621595733354;
+ Fri, 21 May 2021 04:15:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1621341949-26762-1-git-send-email-faiyazm@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1621577323-1541-1-git-send-email-zheyuma97@gmail.com> <YKdYZF8zDGl0hxeX@kroah.com>
+In-Reply-To: <YKdYZF8zDGl0hxeX@kroah.com>
+From:   Zheyu Ma <zheyuma97@gmail.com>
+Date:   Fri, 21 May 2021 19:15:21 +0800
+Message-ID: <CAMhUBjkeXn=Yf+dsdKo5_H1Tko3Qhfr+y=9b47XtHA04k2smXg@mail.gmail.com>
+Subject: Re: [PATCH v2] serial: rp2: use 'request_firmware' instead of 'request_firmware_nowait'
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     cernekee@gmail.com, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/18/21 2:45 PM, Faiyaz Mohammed wrote:
-> alloc_calls and free_calls implementation in sysfs have two issues,
-> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
-> to "one value per file" rule.
-> 
-> To overcome this issues, move the alloc_calls and free_calls implemeation
-> to debugfs.
-> 
-> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
-> to be inline with what it does.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+On Fri, May 21, 2021 at 2:51 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, May 21, 2021 at 06:08:43AM +0000, Zheyu Ma wrote:
+> > In 'rp2_probe', the driver registers 'rp2_uart_interrupt' then calls
+> > 'rp2_fw_cb' through 'request_firmware_nowait'. In 'rp2_fw_cb', if the
+> > firmware don't exists, function just return without initializing ports
+> > of 'rp2_card'. But now the interrupt handler function has been
+> > registered, and when an interrupt comes, 'rp2_uart_interrupt' may access
+> > those ports then causing NULL pointer dereference or other bugs.
+> >
+> > Because the driver does some initialization work in 'rp2_fw_cb', in
+> > order to make the driver ready to handle interrupts, 'request_firmware'
+> > should be used instead of asynchronous 'request_firmware_nowait'.
+>
+> You just now slowed down the probe function.  Are you _sure_ this is ok?
 
+Sorry, I'm not an expert in the field, but from my point of view, the
+previous function 'rp2_fw_cb' does some initialization work that is
+not suitable for asynchronous execution. Because after these initial
+work, the driver can work normally (including preparing to handle
+interrupts).
 
-> @@ -5817,6 +5769,249 @@ static int __init slab_sysfs_init(void)
->  __initcall(slab_sysfs_init);
->  #endif /* CONFIG_SYSFS */
->  
-> +#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
-> +static int debugfs_slab_alias(struct kmem_cache *s, const char *name)
-> +{
-> +	struct saved_alias *al;
-> +	struct dentry *slab_cache_dir;
-> +
-> +	if (slab_state == FULL) {
-> +		/*
-> +		 * If we have a leftover link then remove it.
-> +		 */
-> +		slab_cache_dir = debugfs_lookup(s->name, slab_debugfs_root);
-> +		debugfs_remove(slab_cache_dir);
-> +		debugfs_create_symlink(name, slab_debugfs_root, NULL);
+> Do you have this hardware to test this?  If so, what is the init time
+> before and after this change?
 
-v6 got stuck on boot for me, unlike v5, seems like here you should return 0?
-That helped
+To be honest, I don't have real hardware, I tested it with QEMU. I
+made a total of 5 attempts. Before this change, the average boot time
+required by kernel is 6.382s, the time required for insmoding this
+module is 0.139s; After this change, the average boot time required by
+kernel is 6.426s, the time required for insmoding this module is
+0.160s. This change really slowed down the probe function.
 
-> +	}
-> +
-> +	al = kmalloc(sizeof(struct saved_alias), GFP_KERNEL);
-> +	if (!al)
-> +		return -ENOMEM;
-> +
-> +	al->s = s;
-> +	al->name = name;
-> +	al->next = alias_list;
-> +	alias_list = al;
-> +	return 0;
-> +}
-> +
+Thank you for your patient comments.
+
+Zheyu Ma
