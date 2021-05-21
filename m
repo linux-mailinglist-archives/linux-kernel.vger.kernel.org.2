@@ -2,179 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 613AF38BB88
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8D038BB8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:28:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236787AbhEUB3j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:29:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35148 "EHLO
+        id S236809AbhEUB3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:29:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236071AbhEUB3i (ORCPT
+        with ESMTP id S236789AbhEUB3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:29:38 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58D9CC061574;
-        Thu, 20 May 2021 18:28:16 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id 82so6894974qki.8;
-        Thu, 20 May 2021 18:28:16 -0700 (PDT)
+        Thu, 20 May 2021 21:29:49 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05050C061574;
+        Thu, 20 May 2021 18:28:27 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id e11so22023529ljn.13;
+        Thu, 20 May 2021 18:28:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Rs6thmgUaHVj6lO+92UyZl2hfWUhp6SVg7wcSk1xLCw=;
-        b=Sl1Wz/gv5tJHWD0z4jeICdsW+RE8XAfqAOSO/1BC93sOBPkZYhRKmHxgOZgzUDMmw2
-         GEnDmKkh8xIziJalEyTy5SClAFAcPCw92c1GMJwPWarH/4sMOE3DtXO8J23dTlKY6tws
-         ahB/4m7ZvKuIF53WudkhcLTgr4aE8oJS9ElOc=
+        bh=SrcJUNIlA2c/h4q1u3F3wJeheqbYGXHxdCgoYlNSiMM=;
+        b=VKJ3BKg/185/WdPwWFHE164edKfWgburJDhQKH97Pp+lZzcQKfCjNYiWyTJcT2k77B
+         jD1dFPuJnHHF4tSr+0YbIuaoDGJZ9I0bk8+8b4BwwZmpQ20EZyx7t9VoUTHRbfbg6cCf
+         wqk7LZLzR+6ExtNxBxX03bzTCQq1kR46rx8xVJLflRn/uE7+IbxaDdqf+MpCPthvyebS
+         wKDdM0Qk+tgauYLQLXkAa36OXNQWetMy5IqmE7va2TkvvfPGyKgZJOMZa28qNEq9WLaQ
+         aBF3JNg6LfLnT3eZ8exqpENZHnyFaPieF3d85cibp9OR78gy4Cie/lwXmAkAbmOrapvT
+         vi7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Rs6thmgUaHVj6lO+92UyZl2hfWUhp6SVg7wcSk1xLCw=;
-        b=rk4+xXjrKmYGls5IEz+T48qTavwIQo8UOuJzckNOoWCjMsDOusIHRYPLEfclI2cB9v
-         Jei56cWfL2mxKyA7zMazVGvQSAEWL8vG2tKgfyOlXV5fwT9MGXOJ9k/W72G5lxK+6H2g
-         BGAQJXgrUpzAsACx1ep2LUGLgJ0RT3qbTFK30x/fXFzsoXsZYb0c7MhMdxydtU6Bw/Qy
-         8fJNYb7RfnRBwAj9cFqxu2jqkKTc1o9iU9/V5uETOFkMTtwxjxviVmI13K+FqzW3rWNe
-         LJsD3m5iijNByjOszH3Hj+F5rGWqk99pqYMDOb6NDrxMIdQVixW1N6CeYwP/OE2JIkq4
-         LbJQ==
-X-Gm-Message-State: AOAM531cVodtlzS0jochiGRicN5u5xryB9vTyeEfpVMNaFtQHwCPkO43
-        djRK55TOa3xrJOsLpHMvBC4v4uh52b7PZMJtra8=
-X-Google-Smtp-Source: ABdhPJy4l49xEG6HNUsRy/adcsP5Eli0FTi8QH22aHxqC4c1gU4AN7/BSZ7Emt8VD9GxZPcrBMLUTFfORw5nqV3HKo0=
-X-Received: by 2002:a05:620a:704:: with SMTP id 4mr7956453qkc.66.1621560495404;
- Thu, 20 May 2021 18:28:15 -0700 (PDT)
+        bh=SrcJUNIlA2c/h4q1u3F3wJeheqbYGXHxdCgoYlNSiMM=;
+        b=erg2sfO02aAGGcWoqPfy1cdu9Zo111TOGCyHw88IittrjZ7SGhaA3FlvwwRA2rV2PZ
+         PQh2yn5n/6TYm37CRHaO0daO3Y10N7rpI0UjYdOxVani7yPX6//qPyrqr73lR/xzlamW
+         cHEgKoZkQaypD0G2DzfpUT15AAMUnDEZ31t3wYHhU6kKTWz7gpYPj4QIYxlXTo881c8Q
+         WDf7lAdCmukPFliGMnxd6WhPKJwJUKcUqFAxqwCndZs6Ifftetkz0gIzyxfSILAFjm4K
+         7aEzXlBqAVU+uYrqcDHZpJxlC/+JWN7eOIvfT/I6JHoBXJhjmwl7kvdS28QrLc8MUmbZ
+         DTQQ==
+X-Gm-Message-State: AOAM531YuJf68pt7VnFt+p1WhqROpLyB8ureh+KwM76rTnsPBXDuHUGJ
+        rQdul3uwOSGIZeQLugMXNmA4dsWdsed5yILTgGA=
+X-Google-Smtp-Source: ABdhPJxG8IZVu/Mx3xZaR6OSP/OrDuwE6+i2uVKRtMkBjLa6VP4ODhmwGNcrf8cJFJEQzHXvHYPny5kmFoJ8ThTMZmA=
+X-Received: by 2002:a05:651c:a06:: with SMTP id k6mr4887437ljq.347.1621560505339;
+ Thu, 20 May 2021 18:28:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210520101346.16772-1-steven_lee@aspeedtech.com> <20210520101346.16772-4-steven_lee@aspeedtech.com>
-In-Reply-To: <20210520101346.16772-4-steven_lee@aspeedtech.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 21 May 2021 01:28:03 +0000
-Message-ID: <CACPK8XfbNyAswQtpbc=Ymv2wNmh0MbJqQEibD1R-cU+FWcckMA@mail.gmail.com>
-Subject: Re: [PATCH v4 3/3] mmc: sdhci-of-aspeed: Configure the SDHCIs as
- specified by the devicetree.
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Andrew Jeffery <andrew@aj.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        Hongwei Zhang <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+References: <20210426224413.2ce59504@canb.auug.org.au> <YIa3u0RCcOf+tZMu@kroah.com>
+ <20210521104014.796734bb@canb.auug.org.au>
+In-Reply-To: <20210521104014.796734bb@canb.auug.org.au>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Thu, 20 May 2021 22:28:14 -0300
+Message-ID: <CAOMZO5CD_xhc0L1LC+jZypXASkPu_kFv6U5WRL5kJTFRE8oTnA@mail.gmail.com>
+Subject: Re: linux-next: build warning after merge of the usb tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Greg KH <greg@kroah.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 20 May 2021 at 10:16, Steven Lee <steven_lee@aspeedtech.com> wrote:
->
-> The hardware provides capability configuration registers for each SDHCI
-> in the global configuration space for the SD controller. Writes to the
-> global capability registers are mirrored to the capability registers in
-> the associated SDHCI. Configuration of the capabilities must be written
-> through the mirror registers prior to initialisation of the SDHCI.
->
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+Hi Stephen,
 
-Reviewed-by: Joel Stanley <joel@jms.id.au>
+On Thu, May 20, 2021 at 9:40 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-MMC maintainers, please ignore my other mail about taking the dts
-patch through your tree. I didn't realise there were two dts patches;
-I'll take them both through the aspeed tree once they are ready.
-Please don't let that review stop you from applying this patch.
+> I am still seeing this warning.
 
-Cheers,
+I will submit a fix for this warning.
 
-Joel
-
-> ---
->  drivers/mmc/host/sdhci-of-aspeed.c | 48 ++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
->
-> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-> index d001c51074a0..65b5685f6c15 100644
-> --- a/drivers/mmc/host/sdhci-of-aspeed.c
-> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
-> @@ -31,6 +31,11 @@
->  #define   ASPEED_SDC_S0_PHASE_OUT_EN   GENMASK(1, 0)
->  #define   ASPEED_SDC_PHASE_MAX         31
->
-> +/* SDIO{10,20} */
-> +#define ASPEED_SDC_CAP1_1_8V           (0 * 32 + 26)
-> +/* SDIO{14,24} */
-> +#define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
-> +
->  struct aspeed_sdc {
->         struct clk *clk;
->         struct resource *res;
-> @@ -72,6 +77,37 @@ struct aspeed_sdhci {
->         const struct aspeed_sdhci_phase_desc *phase_desc;
->  };
->
-> +/*
-> + * The function sets the mirror register for updating
-> + * capbilities of the current slot.
-> + *
-> + *   slot | capability  | caps_reg | mirror_reg
-> + *   -----|-------------|----------|------------
-> + *     0  | CAP1_1_8V   | SDIO140  |   SDIO10
-> + *     0  | CAP2_SDR104 | SDIO144  |   SDIO14
-> + *     1  | CAP1_1_8V   | SDIO240  |   SDIO20
-> + *     1  | CAP2_SDR104 | SDIO244  |   SDIO24
-> + */
-> +static void aspeed_sdc_set_slot_capability(struct sdhci_host *host, struct aspeed_sdc *sdc,
-> +                                          int capability, bool enable, u8 slot)
-> +{
-> +       u32 mirror_reg_offset;
-> +       u32 cap_val;
-> +       u8 cap_reg;
-> +
-> +       if (slot > 1)
-> +               return;
-> +
-> +       cap_reg = capability / 32;
-> +       cap_val = sdhci_readl(host, 0x40 + (cap_reg * 4));
-> +       if (enable)
-> +               cap_val |= BIT(capability % 32);
-> +       else
-> +               cap_val &= ~BIT(capability % 32);
-> +       mirror_reg_offset = ((slot + 1) * 0x10) + (cap_reg * 4);
-> +       writel(cap_val, sdc->regs + mirror_reg_offset);
-> +}
-> +
->  static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
->                                            struct aspeed_sdhci *sdhci,
->                                            bool bus8)
-> @@ -328,6 +364,7 @@ static inline int aspeed_sdhci_calculate_slot(struct aspeed_sdhci *dev,
->  static int aspeed_sdhci_probe(struct platform_device *pdev)
->  {
->         const struct aspeed_sdhci_pdata *aspeed_pdata;
-> +       struct device_node *np = pdev->dev.of_node;
->         struct sdhci_pltfm_host *pltfm_host;
->         struct aspeed_sdhci *dev;
->         struct sdhci_host *host;
-> @@ -372,6 +409,17 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
->
->         sdhci_get_of_property(pdev);
->
-> +       if (of_property_read_bool(np, "mmc-hs200-1_8v") ||
-> +           of_property_read_bool(np, "sd-uhs-sdr104")) {
-> +               aspeed_sdc_set_slot_capability(host, dev->parent, ASPEED_SDC_CAP1_1_8V,
-> +                                              true, slot);
-> +       }
-> +
-> +       if (of_property_read_bool(np, "sd-uhs-sdr104")) {
-> +               aspeed_sdc_set_slot_capability(host, dev->parent, ASPEED_SDC_CAP2_SDR104,
-> +                                              true, slot);
-> +       }
-> +
->         pltfm_host->clk = devm_clk_get(&pdev->dev, NULL);
->         if (IS_ERR(pltfm_host->clk))
->                 return PTR_ERR(pltfm_host->clk);
-> --
-> 2.17.1
->
+Thanks
