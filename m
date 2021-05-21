@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543E438CA4B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:38:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B3438CA4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237480AbhEUPjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:39:44 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:36353 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbhEUPjm (ORCPT
+        id S236855AbhEUPkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:40:16 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:42496 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232837AbhEUPkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:39:42 -0400
-Received: by mail-vs1-f50.google.com with SMTP id x2so4508569vss.3;
-        Fri, 21 May 2021 08:38:18 -0700 (PDT)
+        Fri, 21 May 2021 11:40:15 -0400
+Received: by mail-ot1-f42.google.com with SMTP id g7-20020a9d12870000b0290328b1342b73so10545434otg.9;
+        Fri, 21 May 2021 08:38:51 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=p+cQg0XqSw6N2gR6iurEXLJBxBLY4iIdtLsf7ZxFkHA=;
-        b=Gd33xmQjcPQLtCh31ouFnzrMC/ButHylb/kg7/ghIjXPlaNvoqBC6qDAbHMpfUFQHa
-         e37w0EKt1AvqrYoA11VN4iMlp09niV7CLQQOZ2oKGalJJ1uiLIIlHGn1M//TssvXxEPr
-         4N0hG5nEwxkbQdsdg7ur0zNjEZ7b3+fkJKzs1DkiB4iVVSGmL/3C2yu7iIlexoFtyxKs
-         +X1yMODpBAZwnFT/MGU6uO+FORRXQCreFzPtZW/4w2L5eSbjhKcJnZhVnrzNab8b/OFH
-         KD+1Y05rLn4mlD5lCVwY+X+yK37KZWYZT+jx667aUcv5i1aqVKHN/4T7/U5/gd5VNCK9
-         5lhw==
-X-Gm-Message-State: AOAM533Rq5PuHgCTpFFVjxMfqgtUcn5MK4nhD95DzZhE7RfQwTB2/QS8
-        EgtiDrQBbfCQSiFb2QCugjUcTZNvJckXHYFihqnHhVfqMQI=
-X-Google-Smtp-Source: ABdhPJzvJ6WAm5Hd6nkVmcmFxZ/wnRKHwpbIb8qxtfhirrBSKX76Fi7A4Ucyyvc1V2uDsyLj6XOuWg+ZbNvd5ylWB/0=
-X-Received: by 2002:a67:fb52:: with SMTP id e18mr11604406vsr.18.1621611498180;
- Fri, 21 May 2021 08:38:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=xDPtP33KT3xH91bry0p3EhN/oKeZgLH/JnhByp/Sv7o=;
+        b=V4+m/Tz6J15WYRJzZ/JtjPBP6qQHuG34svANYngnPP7/gv0vZ2GRSFjaKuWA4rESbQ
+         fi60cXhjQ+6gsyyyx8wFtUwnBeu1cqLQ1EGzGUinchrvu1QyhuhZK8ZXkQYBo1nTgVTO
+         2oAdsNL4ckOD/Onxi2q+RPZTFwMvdfzTc4X0pU/u5qcD7h2Up8jgCLJHKiLrz5QBILmr
+         qjfw+HimqSCBgr6pi8gGKBpTcgWMYht0zKm6cz5BXmd8HYoZHk5ENfJCbn5Ui8E48FGy
+         DBSmHXrKE0BESbYbedRziosx7kRl84+rN3J+BEwrST0eEQL7RJCeTF00tMIzOq5VnlBT
+         JA1w==
+X-Gm-Message-State: AOAM531IHeYIxMt28B4pxSHcotIfUIURPG2UxGeUIVavMdEr63KsWc1L
+        qJ2BgrlrYdlNz1v+SNS6kw==
+X-Google-Smtp-Source: ABdhPJxduyEgUWInbH2BMQ3j2yzOzwGqwf1gZ6h8WTQ5R0Db1P7PQUBIeXk0KU91PDRafkn1gOHHsA==
+X-Received: by 2002:a9d:600d:: with SMTP id h13mr8768854otj.259.1621611530886;
+        Fri, 21 May 2021 08:38:50 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f21sm1251047oou.24.2021.05.21.08.38.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 08:38:49 -0700 (PDT)
+Received: (nullmailer pid 4042837 invoked by uid 1000);
+        Fri, 21 May 2021 15:38:48 -0000
+Date:   Fri, 21 May 2021 10:38:48 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>
+Subject: [GIT PULL] Devicetree fixes for v5.13, take 2
+Message-ID: <20210521153848.GA4041054@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <20210518144935.15835-1-dsterba@suse.com> <alpine.DEB.2.22.394.2105200927570.1771368@ramsan.of.borg>
- <CAK8P3a3_O5CdbUqvJsnTh5p0RbSCsXyFhkO6afaLsnwf176Kiw@mail.gmail.com> <20210521151613.GN7604@twin.jikos.cz>
-In-Reply-To: <20210521151613.GN7604@twin.jikos.cz>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 May 2021 17:38:06 +0200
-Message-ID: <CAMuHMdWJC3PhD7ScnkG3kg_yjAh_UpfmyBOHrOq0e8dJ18ANew@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: scrub: per-device bandwidth control
-To:     David Sterba <dsterba@suse.cz>, Arnd Bergmann <arnd@arndb.de>,
-        David Sterba <dsterba@suse.com>,
-        linux-btrfs <linux-btrfs@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Linus,
 
-On Fri, May 21, 2021 at 5:18 PM David Sterba <dsterba@suse.cz> wrote:
-> On Thu, May 20, 2021 at 03:14:03PM +0200, Arnd Bergmann wrote:
-> > On Thu, May 20, 2021 at 9:43 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Tue, 18 May 2021, David Sterba wrote:
-> > > > +     /* Start new epoch, set deadline */
-> > > > +     now = ktime_get();
-> > > > +     if (sctx->throttle_deadline == 0) {
-> > > > +             sctx->throttle_deadline = ktime_add_ms(now, time_slice / div);
-> > >
-> > > ERROR: modpost: "__udivdi3" [fs/btrfs/btrfs.ko] undefined!
-> > >
-> > > div_u64(bwlimit, div)
-> >
-> > If 'time_slice' is in nanoseconds, the best interface to use
-> > is ktime_divns().
->
-> It's in miliseconds and the division above is int/int, the problematic
-> one is below.
+Please pull a few more DT fixes.
 
-Yep, sorry for the wrong pointer.
+Rob
 
-> >
-> > > > +             sctx->throttle_sent = 0;
-> > > > +     }
-> > > > +
-> > > > +     /* Still in the time to send? */
-> > > > +     if (ktime_before(now, sctx->throttle_deadline)) {
-> > > > +             /* If current bio is within the limit, send it */
-> > > > +             sctx->throttle_sent += sbio->bio->bi_iter.bi_size;
-> > > > +             if (sctx->throttle_sent <= bwlimit / div)
-> > > > +                     return;
-> >
-> > Doesn't this also need to be changed?
-> >
-> > > > +             /* We're over the limit, sleep until the rest of the slice */
-> > > > +             delta = ktime_ms_delta(sctx->throttle_deadline, now);
-> > > > +     } else {
-> > > > +             /* New request after deadline, start new epoch */
-> > > > +             delta = 0;
-> > > > +     }
-> > > > +
-> > > > +     if (delta)
-> > > > +             schedule_timeout_interruptible(delta * HZ / 1000);
-> > >
-> > > ERROR: modpost: "__divdi3" [fs/btrfs/btrfs.ko] undefined!
-> > >
-> > > I'm a bit surprised gcc doesn't emit code for the division by the
-> > > constant 1000, but emits a call to __divdi3().  So this has to become
-> > > div_u64(), too.
-> >
-> > There is schedule_hrtimeout(), which takes a ktime_t directly
-> > but has slightly different behavior. There is also an msecs_to_jiffies
-> > helper that should produce a fast division.
->
-> I'll use msecs_to_jiffies, thanks. If 'hr' in schedule_hrtimeout stands
-> for high resolution, it's not necessary here.
+The following changes since commit 6efb943b8616ec53a5e444193dccf1af9ad627b5:
 
-msecs_to_jiffies() takes (32-bit) "unsigned int", while delta is "s64".
+  Linux 5.13-rc1 (2021-05-09 14:17:44 -0700)
 
-Gr{oetje,eeting}s,
+are available in the Git repository at:
 
-                        Geert
+  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.13-2
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+for you to fetch changes up to c17611592d9635c443bedc9be901f4463f45c6d5:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+  dt-bindings: More removals of type references on common properties (2021-05-17 16:20:08 -0500)
+
+----------------------------------------------------------------
+Devicetree fixes for 5.13, take 2:
+
+- Another batch of removing unneeded type references in schemas
+
+- Fix some out of date filename references
+
+- Convert renesas,drif schema to use DT graph schema
+
+----------------------------------------------------------------
+Rob Herring (2):
+      dt-bindings: media: renesas,drif: Use graph schema
+      dt-bindings: More removals of type references on common properties
+
+Wan Jiabing (2):
+      dt-bindings: phy: cadence-torrent: update reference file of docs
+      leds: Fix reference file name of documentation
+
+ .../devicetree/bindings/clock/idt,versaclock5.yaml   |  2 --
+ .../bindings/iio/adc/st,stm32-dfsdm-adc.yaml         |  1 -
+ Documentation/devicetree/bindings/input/input.yaml   |  1 -
+ .../devicetree/bindings/interconnect/qcom,rpmh.yaml  |  1 -
+ .../devicetree/bindings/leds/leds-bcm6328.txt        |  4 ++--
+ .../devicetree/bindings/leds/leds-bcm6358.txt        |  2 +-
+ .../devicetree/bindings/media/renesas,drif.yaml      | 20 +++++++-------------
+ Documentation/devicetree/bindings/net/qcom,ipa.yaml  |  1 -
+ .../devicetree/bindings/phy/phy-cadence-torrent.yaml |  2 +-
+ .../bindings/power/supply/sc2731-charger.yaml        |  2 +-
+ .../devicetree/bindings/sound/fsl,rpmsg.yaml         |  2 +-
+ 11 files changed, 13 insertions(+), 25 deletions(-)
