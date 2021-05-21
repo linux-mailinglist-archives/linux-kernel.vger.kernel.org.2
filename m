@@ -2,111 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1EED38D113
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:16:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3609538D121
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 00:17:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhEUWRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 18:17:42 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:57527 "EHLO m43-7.mailgun.net"
+        id S229978AbhEUWSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 18:18:41 -0400
+Received: from mga05.intel.com ([192.55.52.43]:55706 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230123AbhEUWRC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 18:17:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621635339; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=XGg4XjJaanv9ZzeOXODhTUhbTYqAkq+3KJyFLjNKfFg=;
- b=xhSeBRspskKb33amIDvwoWbToG73/E497zm+80vhIkbPG2ZTW1oBVslesvIr/zoLBYd02zdK
- FFTPvFZQxsGD8C797TMJ1rvFaChdpNnhXICq6grCTgMbtJbnwSIecFZeVN2VXH6x8hD6aSLX
- M4k5WkloD2uwaOTJb5/zRpH1hUg=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60a830f07b5af81b5c5a44ff (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 22:15:12
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 305B6C0729F; Fri, 21 May 2021 22:15:12 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A90B6C43148;
-        Fri, 21 May 2021 22:15:09 +0000 (UTC)
+        id S229755AbhEUWSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 18:18:34 -0400
+IronPort-SDR: tQfxeu0W+ZZPw2AXVOtH6J2qVv6TW5D1yKvylTvBEF6BqoTMjIQHcKPb3gvFXCWjfc+zrzETHT
+ G9YALvtYDCFQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="287124411"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="287124411"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 15:16:28 -0700
+IronPort-SDR: VeDJ4dRZPoXJ0JOgGY9taVtnV4mxx/Xzdzs1Zjsnf7gLo4dyvn4SAHdMx3DD+KScH2JnQHV9v1
+ ZzN8ehK1AKSA==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="441269422"
+Received: from yyu32-desk.sc.intel.com ([143.183.136.146])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 15:16:28 -0700
+From:   Yu-cheng Yu <yu-cheng.yu@intel.com>
+To:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Cc:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Subject: [PATCH v27 00/10] Control-flow Enforcement: Indirect Branch Tracking
+Date:   Fri, 21 May 2021 15:15:21 -0700
+Message-Id: <20210521221531.30168-1-yu-cheng.yu@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 21 May 2021 15:15:09 -0700
-From:   khsieh@codeaurora.org
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, robdclark@gmail.com,
-        sean@poorly.run, vkoul@kernel.org, abhinavk@codeaurora.org,
-        aravindh@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] drm/msm/dp: handle irq_hpd with sink_count = 0
- correctly
-In-Reply-To: <CAE-0n53WW0jqorW2MPaTczmJP+d+_qaRBcwmoJBP2dL4x8_DqA@mail.gmail.com>
-References: <1621455753-28966-1-git-send-email-khsieh@codeaurora.org>
- <CAE-0n53WW0jqorW2MPaTczmJP+d+_qaRBcwmoJBP2dL4x8_DqA@mail.gmail.com>
-Message-ID: <1698de8065945746fb165cb7647548f7@codeaurora.org>
-X-Sender: khsieh@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-21 14:56, Stephen Boyd wrote:
-> Quoting Kuogee Hsieh (2021-05-19 13:22:33)
->> irq_hpd interrupt should be handled after dongle plugged in and
->> before dongle unplugged. Hence irq_hpd interrupt is enabled at
->> the end of the plugin handle and disabled at the beginning of
->> unplugged handle. Current irq_hpd with sink_count = 0 is wrongly
->> handled same as the dongle unplugged which tears down the mainlink
->> and disables the phy. This patch fixes this problem by only tearing
->> down the mainlink but keeping phy enabled at irq_hpd with
->> sink_count = 0 handle so that next irq_hpd with sink_count =1 can be
->> handled by setup mainlink only. This patch also set dongle into D3
->> (power off) state at end of handling irq_hpd with sink_count = 0.
->> 
->> Changes in v2:
->> -- add ctrl->phy_Power_count
->> 
->> Changes in v3:
->> -- del ctrl->phy_Power_count
->> -- add phy_power_off to dp_ctrl_off_link_stream()
->> 
->> Changes in v4:
->> -- return immediately if clock disable failed at 
->> dp_ctrl_off_link_stream()
->> 
->> Changes in v5:
->> -- set dongle to D3 (power off) state at dp_ctrl_off_link_stream()
->> 
->> Changes in v6:
->> -- add Fixes tag
->> 
->> Fixes: 94e58e2d06e3 ("drm/msm/dp: reset dp controller only at boot up 
->> and pm_resume")
->> 
->> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
->> ---
-> 
-> Tested-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> 
-> We can resolve the lingering dual irq issue later on if you don't want
-> to send another round of this. Also, the title says 1/2 so I wonder if
-> there's another patch? Doesn't look like there is but I have to ask. If
-> not, please generate patches with the right -<N> argument or revision
-> range.
-ok, thanks,
-Sorry, the 2nd patch is the xlog debug patch.
-I did not submit it.
+Control-flow Enforcement (CET) is a new Intel processor feature that blocks
+return/jump-oriented programming attacks.  Details are in "Intel 64 and
+IA-32 Architectures Software Developer's Manual" [1].
+
+This is the second part of CET and enables Indirect Branch Tracking (IBT).
+It is built on top of the shadow stack series.
+
+Changes in v27:
+- Use a ucontext flag to save/restore IBT status.
+- Disable IBT support for IA32.
+- Rebase to Linus tree v5.13-rc2.
+
+[1] Intel 64 and IA-32 Architectures Software Developer's Manual:
+
+    https://software.intel.com/en-us/download/intel-64-and-ia-32-
+    architectures-sdm-combined-volumes-1-2a-2b-2c-2d-3a-3b-3c-3d-and-4
+
+[2] Indirect Branch Tracking patches v26:
+
+    https://lore.kernel.org/r/20210427204720.25007-1-yu-cheng.yu@intel.com/
+
+H.J. Lu (3):
+  x86/cet/ibt: Update arch_prctl functions for Indirect Branch Tracking
+  x86/vdso: Insert endbr32/endbr64 to vDSO
+  x86/vdso/32: Add ENDBR to __kernel_vsyscall entry point
+
+Yu-cheng Yu (7):
+  x86/cet/ibt: Add Kconfig option for Indirect Branch Tracking
+  x86/cet/ibt: Add user-mode Indirect Branch Tracking support
+  x86/cet/ibt: Handle signals for Indirect Branch Tracking
+  x86/cet/ibt: Disable IBT for ia32
+  x86/cet/ibt: Update ELF header parsing for Indirect Branch Tracking
+  x86/vdso: Introduce ENDBR macro
+  x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
+
+ arch/x86/Kconfig                         | 19 +++++
+ arch/x86/entry/vdso/Makefile             |  4 +
+ arch/x86/entry/vdso/vdso32/system_call.S |  2 +
+ arch/x86/entry/vdso/vsgx.S               |  4 +
+ arch/x86/ia32/ia32_signal.c              | 22 +++++-
+ arch/x86/include/asm/cet.h               | 13 ++++
+ arch/x86/include/asm/disabled-features.h |  8 +-
+ arch/x86/include/asm/elf.h               | 13 +++-
+ arch/x86/include/asm/vdso.h              | 20 ++++-
+ arch/x86/include/uapi/asm/ucontext.h     |  5 ++
+ arch/x86/kernel/Makefile                 |  1 +
+ arch/x86/kernel/cet_prctl.c              |  5 ++
+ arch/x86/kernel/ibt.c                    | 95 ++++++++++++++++++++++++
+ arch/x86/kernel/process_64.c             |  8 ++
+ arch/x86/kernel/signal.c                 |  6 ++
+ 15 files changed, 219 insertions(+), 6 deletions(-)
+ create mode 100644 arch/x86/kernel/ibt.c
+
+-- 
+2.21.0
+
