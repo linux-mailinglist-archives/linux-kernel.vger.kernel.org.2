@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F165F38CFD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:22:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D15A38CFD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:23:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbhEUVYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 17:24:19 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56463 "EHLO
+        id S229973AbhEUVYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 17:24:46 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56510 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbhEUVYO (ORCPT
+        with ESMTP id S229613AbhEUVYi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 17:24:14 -0400
-Received: from mail-vs1-f72.google.com ([209.85.217.72])
+        Fri, 21 May 2021 17:24:38 -0400
+Received: from mail-ua1-f72.google.com ([209.85.222.72])
         by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
         (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lkCbY-00015F-J9
-        for linux-kernel@vger.kernel.org; Fri, 21 May 2021 21:22:48 +0000
-Received: by mail-vs1-f72.google.com with SMTP id w23-20020a67d1970000b029022afcb86374so7433053vsi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:22:48 -0700 (PDT)
+        id 1lkCbw-000191-Iw
+        for linux-kernel@vger.kernel.org; Fri, 21 May 2021 21:23:12 +0000
+Received: by mail-ua1-f72.google.com with SMTP id o7-20020ab01e870000b029020d37e3e144so7969577uak.1
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:23:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=jSKiGkFsHm8qeUwaLdynXEY7fptjk7YiH8pCxN+OTOM=;
-        b=QX83mB5N+abu5NQsbOEpGPFA8boqs9DXasssp+PABERELuROCNv+fa7Bah/u/CT0J1
-         DuRbodh4l6uzBDvtR72UUY8gI5Sui6g+RNoR3LcOlOwhXhtuSc6C9aj3mMiaergnWWTc
-         NVZtWFlrnH3jqiLUg0bO34l83Sa1I0fRP/iD+fYGh0hcXzrT3xPJPs9HKrmeaLbSmnm4
-         pWXmO8rCmiV/ZCWUShJP+ZM9zcDvapirjzM+N1Xq8AwMlH0RodboRS17uXek6zCZE4zD
-         b1BKjsZ2MSSs9wK8RR0wIgl/rgnXvJQfb4SLU38S3RJ59bJOtqwplsg+I594onFkK+au
-         INxQ==
-X-Gm-Message-State: AOAM533qx1m+Ry3GVLDgxD+kg+XUSctccsdPmaxF2L1YAs+m65T+qL2J
-        0vI7lOP4jx/kRs3GD5GeDq/ESSFndb7YfnW6KupeAtJLpJQ/cWz2ItWOaxT2mVOEV1krr+/de5y
-        RAilo9GshWcbAh0OWmlafxbagQuEYsoM/Ghlp2duuYA==
-X-Received: by 2002:ab0:63d4:: with SMTP id i20mr11750993uap.21.1621632167735;
-        Fri, 21 May 2021 14:22:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzvQ2l1U8szglgOD1N+hyDpgNDWEMA/0qq5+dQBkcYT64fZxhNQR94GbFgCi0ec6pzhy1FOKA==
-X-Received: by 2002:ab0:63d4:: with SMTP id i20mr11750968uap.21.1621632167595;
-        Fri, 21 May 2021 14:22:47 -0700 (PDT)
+        bh=fROMD6BYmf3h06oRhpwPZGf5qSe1v9Tji/Vc0NCzaJs=;
+        b=V5q3C+QpLnkWnKdsiaGdWmRQ+8+5+PMYiS+wM/u09Txss4JMfSrC3Eb0rp6sBEvR3H
+         72RH5Qid1ubo1kWdxPazKLiwZzgpkQcak4oG9RaG7cL184OvhEgn3KFf4pZqrMA6mzKO
+         DM8N/BxOsUn6v1PliQT76J2fc00dNOKLi/rEXj3Y7JXzWXIm1eJTwc7L0Gj6pseo7Etc
+         JDsJnZ41zcosn/h5HDEPWUeUtK+i25STo9L2jtUYoIlKMTUKjU/+HTipTsxydBUkOOEx
+         hVOxk3vicEbMx0CqtDhcTQwVJajJl9IcGbUDu46+FKZQDOM/6gtxH7oiqC/8LqX0/Ho3
+         2Byw==
+X-Gm-Message-State: AOAM531zGcTq/GXFkU2TNDjy2B0WI3hk61iQS/cxuhIXQy/IcZxLIdBb
+        CRPevbShe7k6N4TlbkVnYeeIQgpdHpEII31kINk/zCOFJiQR/IiERMqEDhCvr6p0Q6I+TTChCec
+        HAvK8xuhT63cs5dY6lA0c+lj67SUSulXESBM90aKXRA==
+X-Received: by 2002:a67:2c57:: with SMTP id s84mr13304961vss.32.1621632191790;
+        Fri, 21 May 2021 14:23:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAkzP0vI6cvbwXWhDnOK8BKrtLOqAAl/3T8yacV2iIbe5gMjJbANDaWCWgPJfJiZWzKX/R1Q==
+X-Received: by 2002:a67:2c57:: with SMTP id s84mr13304943vss.32.1621632191648;
+        Fri, 21 May 2021 14:23:11 -0700 (PDT)
 Received: from [192.168.1.4] ([45.237.48.5])
-        by smtp.gmail.com with ESMTPSA id 39sm798548uaq.5.2021.05.21.14.22.46
+        by smtp.gmail.com with ESMTPSA id r12sm825043uao.6.2021.05.21.14.23.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 21 May 2021 14:22:47 -0700 (PDT)
-Subject: Re: [PATCH v1 09/13] memory: tegra20-emc: Use
+        Fri, 21 May 2021 14:23:11 -0700 (PDT)
+Subject: Re: [PATCH v1 10/13] memory: tegra30-emc: Use
  devm_tegra_core_dev_init_opp_table()
 To:     Dmitry Osipenko <digetx@gmail.com>,
         Thierry Reding <thierry.reding@gmail.com>,
@@ -66,14 +66,14 @@ Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
         Nathan Chancellor <nathan@kernel.org>,
         linux-clk@vger.kernel.org
 References: <20210520230751.26848-1-digetx@gmail.com>
- <20210520230751.26848-10-digetx@gmail.com>
+ <20210520230751.26848-11-digetx@gmail.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <f24704bf-c9aa-1552-659f-a3eff9086ecc@canonical.com>
-Date:   Fri, 21 May 2021 17:22:45 -0400
+Message-ID: <670d0d27-867a-7a1a-db58-692429ec30d6@canonical.com>
+Date:   Fri, 21 May 2021 17:23:09 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210520230751.26848-10-digetx@gmail.com>
+In-Reply-To: <20210520230751.26848-11-digetx@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -85,11 +85,11 @@ On 20/05/2021 19:07, Dmitry Osipenko wrote:
 > Use common devm_tegra_core_dev_init_opp_table() helper for the OPP table
 > initialization.
 > 
-> Tested-by: Paul Fertser <fercerpav@gmail.com> # PAZ00 T20
-> Tested-by: Nicolas Chauvet <kwizart@gmail.com> # PAZ00 T20
+> Tested-by: Peter Geis <pgwipeout@gmail.com> # Ouya T30
+> Tested-by: Matt Merhar <mattmerhar@protonmail.com> # Ouya T30
 > Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  drivers/memory/tegra/tegra20-emc.c | 48 +++---------------------------
+>  drivers/memory/tegra/tegra30-emc.c | 48 +++---------------------------
 >  1 file changed, 4 insertions(+), 44 deletions(-)
 > 
 
