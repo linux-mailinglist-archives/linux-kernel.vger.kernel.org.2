@@ -2,115 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 765EC38BC2A
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:00:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6931938BC2D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:00:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238090AbhEUCCG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:02:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238093AbhEUCCB (ORCPT
+        id S238146AbhEUCCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:02:20 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:36570 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235233AbhEUCCT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:02:01 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42C4C061763;
-        Thu, 20 May 2021 19:00:39 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id n8so4915191plf.7;
-        Thu, 20 May 2021 19:00:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=9fB9txKIQZNMl67yv7ERq72Q+6wcnvrLhnIU26tnTf4=;
-        b=An1xKWU/mWO08cY0cP24LyKkNnOv5zCCLUdnglRtraCTvQQzxVh9tTfYP1YanUjoR8
-         gFtYTxBnypDtTZJxyxQ1tMDJtzdMMTs5rHApnAEd/aQWzVn+hLHmzuypSaML2xrdpRCW
-         +atdTnZ2DCoPjdD9qdm1EhlEDGaoVnmocolZmRF7sErnz5ofewaQGpXASxT8QxwUiUai
-         nj86+/F36GPfLpYIIDyoKPdhyetIbbr07I+lFT1YwrnBmgBe0t2Svn7GZ5BNKqRlLY2/
-         CGzlvZ+aIKnYSNNGv4xYAR9uUG2Ao2Igzhd1uppZXRCZB6hTlZNwDp4EPHaQ6nKsT/a/
-         loIg==
+        Thu, 20 May 2021 22:02:19 -0400
+Received: by mail-ot1-f54.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso16682342otn.3;
+        Thu, 20 May 2021 19:00:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=9fB9txKIQZNMl67yv7ERq72Q+6wcnvrLhnIU26tnTf4=;
-        b=rGDRJXOnkNPwOFcApTQTF4Rik5rpOF5f5VX5RGPBomGki5XoA9LO/x8nFPHMPFAell
-         lH+OYtMX6j7EqntVxFRCYfsgjmpqXAtVSHMfCAsTBVyjGESzMe8e0KcGLnnpHvVjwF7+
-         6xGKOO4LblKmkjb2gaOX9JIOu+Z0DWeygM4AuWBP27kAApEKJhTyrLnzWtB1meIDCMfR
-         u6BGW3q6q21E1yYvQ1h8JsrszPWtpsos8h3kIjOt+IhIQVRFqYXaoU9w327qPmPGZxDa
-         W7xFQeAV9rZGptnmpXmU/8UqXet0WEqwxrYZ86T/A4akD530eC9n9K3kt0Nd5WlbFPuZ
-         Mw3w==
-X-Gm-Message-State: AOAM53199GkBLg4N9iRGWnv27o9l/XKa3/iT6PG36TxTc7d/Y9MVbY7b
-        KneKbwIDzCDBrD/3FcM+JJY=
-X-Google-Smtp-Source: ABdhPJwBofzBAXoo5pDmXX4ye8/TsvSpB7pKcMIb3pVYhLkIdagqbQ5wvHtXHUJZRNsbTl2FgNx8tA==
-X-Received: by 2002:a17:90a:f811:: with SMTP id ij17mr8130069pjb.63.1621562439317;
-        Thu, 20 May 2021 19:00:39 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id w74sm2869555pfd.209.2021.05.20.19.00.37
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 May 2021 19:00:39 -0700 (PDT)
-Date:   Thu, 20 May 2021 19:00:34 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Jamin Lin <jamin_lin@aspeedtech.com>
-Cc:     Joel Stanley <joel@jms.id.au>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ARM/ASPEED I2C DRIVER" <openbmc@lists.ozlabs.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Rayn Chen <rayn_chen@aspeedtech.com>,
-        "open list:I2C SUBSYSTEM HOST DRIVERS" <linux-i2c@vger.kernel.org>,
-        Steven Lee <steven_lee@aspeedtech.com>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 1/3] i2c: aspeed: avoid new registers definition of
- AST2600
-Message-ID: <20210521020033.GB19153@taoren-ubuntu-R90MNF91>
-References: <20210519080436.18975-1-jamin_lin@aspeedtech.com>
- <20210519080436.18975-2-jamin_lin@aspeedtech.com>
- <CACPK8XdNXiGMQZOtsfMMK+w_PSvO20XT8B9MG+rGhdjYoV4ZuQ@mail.gmail.com>
- <20210520033140.GA3656@aspeedtech.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=eYAL0SQZfqse54W9hf+La4gHbbjMqJ8q2D/DcvhsGk8=;
+        b=EZsqwbW61EOQ3diRxrZY+DcxLnDhtnTo6xRHDeRu+0XKtYxqLkLQhI7j2PYb0Aypbc
+         BvLj8+uN7mYOuxp1p9DZUFMe/hfC4e+lwYLIS4icTlE5PkvdB/q4aS4mZ2SWv5nKigvT
+         LlQ8KfL2cVBkg0dgbog+//jbD7jXjuPzjfhqGlLpZqatiIRpf2tLQiDv0TGzaLS0d+Xb
+         DT+YIpXb9nx3tApDjjaK1Uzb1t0CXhEuV3awLT77mg7bkJf2LfVzVwLEWrR/r80rksbm
+         zQSF9opGXEXBivBANzDlucv5Sx4WwlgKLNVJMAMcicpFIgR2mfsdVAKztr52jiZ3w0Ou
+         5ftg==
+X-Gm-Message-State: AOAM530yI7L7XHyCDuywj49N4di1RLvGsm4UntT/paqYN5zQe8nUGOwH
+        SHKoimiH33JJ/SvesURjUQ==
+X-Google-Smtp-Source: ABdhPJwQri+efVDl5VKRU4Kwy8jU2xTma3SwAw/7SLFL+NLfmUmQFW5hE6CoCDkahmDE7XkVWVQahw==
+X-Received: by 2002:a05:6830:90f:: with SMTP id v15mr5965449ott.223.1621562456085;
+        Thu, 20 May 2021 19:00:56 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f2sm977768otp.77.2021.05.20.19.00.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 19:00:55 -0700 (PDT)
+Received: (nullmailer pid 2500985 invoked by uid 1000);
+        Fri, 21 May 2021 02:00:54 -0000
+Date:   Thu, 20 May 2021 21:00:54 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     robh+dt@kernel.org, ulli.kroll@googlemail.com,
+        linus.walleij@linaro.org, daniel@ffwll.ch,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie
+Subject: Re: [PATCH v2 1/3] dt-bindings: display: convert faraday,tve200
+Message-ID: <20210521020054.GA2500924@robh.at.kernel.org>
+References: <20210519203547.837237-1-clabbe@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210520033140.GA3656@aspeedtech.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210519203547.837237-1-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jamin,
+On Wed, 19 May 2021 20:35:45 +0000, Corentin Labbe wrote:
+> Converts display/faraday,tve200.txt to yaml.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+> Changes since v1:
+> - added two subsequent patchs fixing issue found when converting
+> - fixed all issues reported by Rob Herring
+>  .../bindings/display/faraday,tve200.txt       | 54 ---------------
+>  .../bindings/display/faraday,tve200.yaml      | 68 +++++++++++++++++++
+>  2 files changed, 68 insertions(+), 54 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/display/faraday,tve200.txt
+>  create mode 100644 Documentation/devicetree/bindings/display/faraday,tve200.yaml
+> 
 
-On Thu, May 20, 2021 at 11:31:41AM +0800, Jamin Lin wrote:
-> The 05/19/2021 22:59, Joel Stanley wrote:
-> > On Wed, 19 May 2021 at 08:05, Jamin Lin <jamin_lin@aspeedtech.com> wrote:
-> > >
-> > > The register definition between AST2600 A2 and A3 is different.
-> > > This patch avoid new registers definition of AST2600 to use
-> > > this driver. We will submit the path for the new registers
-> > > definition of AST2600.
-> > 
-> > The AST2600 v9 datasheet says that bit 2 selects between old and new
-> > register sets, and that the old register set is the default.
-> > 
-> > Has the default changed for the A3?, and the datasheet is incorrect?
-> > 
-> > Does the A3 still support the old register set?
-> > 
-> We suggest user to use the new i2c driver for AST2600 and we will sumbit
-> it. This driver is used to AST2500 and AST2400 SOCs. Change this
-> driver to check global register of i2c to avoid user build the wrong driver. 
-
-If I understand correctly, the answer implies old register set is still
-supported in A3 although aspeed suggest people using the new driver/mode?
-
-Can you please share more context behind the suggestion? Such as new
-register mode has better performance? Or some known issues that were
-deteted in old mode are fixed in new register mode?
-
-
-Cheers,
-
-Tao
+Reviewed-by: Rob Herring <robh@kernel.org>
