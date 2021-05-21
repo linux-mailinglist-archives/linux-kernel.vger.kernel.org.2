@@ -2,208 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B309D38CC29
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:29:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 297B838CC2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238146AbhEURay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:30:54 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:45862 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230048AbhEURaw (ORCPT
+        id S233002AbhEURbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:31:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54522 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232526AbhEURbg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:30:52 -0400
-Received: by mail-io1-f70.google.com with SMTP id w5-20020a6bf0050000b029043afd24a1b2so15625204ioc.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:29:29 -0700 (PDT)
+        Fri, 21 May 2021 13:31:36 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568B8C061574;
+        Fri, 21 May 2021 10:30:11 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so18674257oth.8;
+        Fri, 21 May 2021 10:30:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:reply-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3cHQshoSRpML0Ek6dpsO2JucuH3tmTIJE0nhspmFbUc=;
+        b=U8Xx32Z9nJRtwl0YWSnCCX0Zz8T4me4pKes/z19oTTrw9uDHwJQ2EoiHlhVz16ZrvE
+         0JgbouNGBTimn1XQHoXel4YOqaRd66kiiatXDnP6iIr0zc1ALRmwt/vUSUrUB+oUwBVQ
+         Aq6FgXa5WhitobphM1xTDoNHMfxsaropm1eqC13wgwcDKnk/6USk2HicrhtRLZd89XB5
+         4Z8heUrFQqheRprFQo3zIgWLPxdOAetR0FRq6BT7buUdKlFbCwGx5p45kgnbep/SzfCO
+         orLy8mFJCqm+2c/JZaUFhwKBhIKbEEya1iBOptjBmRG7D/hBBVkQTncVaW6tpTCmmo6e
+         dZ+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=0aQfBt3ao0BTqd+st7XGC1jU2R3P5r17YU2qEOvxQvQ=;
-        b=ufwaiy8khoGPCDszIh45txhR62ACuBSY8mMnLOwChmovLy46cAzr0Z0kpROQVJ0lGm
-         0dBrRn4jqJPEHQHBH6k/fXTQXlftoyFmLQ9rKdZ1lDEtglCiNEaTkW+OTnaHxvZzzxmv
-         +nQfkVWHL2WHX4n5rLTsQzHpmwXo9JTaFLwpvDFv90VHTVHEKZnSaudJtZGhV2UFhITv
-         rZsI+hvjWLNCKYQHqTlLcmaP22RXC1ElnO7j91tzMGxs76isnZIMiWv+5gE78r0RyWp2
-         bK8jIXz8r2ixmlxK+WbQJtP9ZoPTCsRDRu7J51Pqspc5AKYlK73mENVcxcJSJZ58FbUu
-         iuzA==
-X-Gm-Message-State: AOAM533OoovFqzSXIS0WlWuwEElWcQF5G68k1Yldc3TqffZEnfe3y4hj
-        jluF6qBgEwJYJNXf5dV0HoK9rCg/03mLI9AIIVB+SeWYFWZ8
-X-Google-Smtp-Source: ABdhPJygau1mI+CKQEdNyLZZFC3bGz6FndKLoRLvKhYcNFQ/BnqVE/1xeoMOlm11MpKThV74uYLO7wBvKDGcszipiZOyQKFp2Ok6
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :reply-to:references:mime-version:content-disposition:in-reply-to;
+        bh=3cHQshoSRpML0Ek6dpsO2JucuH3tmTIJE0nhspmFbUc=;
+        b=YiWhmDwLhKjRDaARcYbG2ovARb01D6zH6qBxfqPq9jpIPfrt2gaykYxcNOq+l2aty4
+         HKKXyUPxclIxWdBsKeZvd/7A8/sOI/DhF6qnXh8e+XKodCYJ15ms5oH43DxMw7v7OE+F
+         Yb4y/JIOsGKYL3KXvOiMJ7SAnSV8rwxiHcO1AF+FaKrEoiacshVfWAKbM6FaFI2E36K+
+         4CNRDPDOAoP9wqge5F13GFl8vriPOU8zgfH8uJKf1cQN1q8ayE07MdPAzNlQMIi0P9Yc
+         fXUVnyNmM3M8rNaLR3xQ5aOFjdboAQwjsms0pmvU7/8lYcNC0CHtCYZYGXbNY8n3IhdJ
+         jPHw==
+X-Gm-Message-State: AOAM531VEGJcI/LDWe9KtQo2tzo0WDS4kO1Ixsqin8+nfEJ2RZ8KVv4U
+        xBsYYi08mB1UT4pLr1XwOQ==
+X-Google-Smtp-Source: ABdhPJx0oSMzcOmTN5MQp5noq4fPcvpmE8RyTgX1v71H/r0d2w7fD0hm22YN8n1WZ0UC1Q1CrAEr6w==
+X-Received: by 2002:a9d:6548:: with SMTP id q8mr9359075otl.311.1621618210635;
+        Fri, 21 May 2021 10:30:10 -0700 (PDT)
+Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
+        by smtp.gmail.com with ESMTPSA id a18sm1013020oiy.24.2021.05.21.10.30.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 10:30:10 -0700 (PDT)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:9c8f:21cb:3961:b550])
+        by serve.minyard.net (Postfix) with ESMTPSA id 9F583180105;
+        Fri, 21 May 2021 17:30:08 +0000 (UTC)
+Date:   Fri, 21 May 2021 12:30:07 -0500
+From:   Corey Minyard <minyard@acm.org>
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     openipmi-developer@lists.sourceforge.net, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, tmaimon77@gmail.com,
+        linux-aspeed@lists.ozlabs.org, avifishman70@gmail.com,
+        venture@google.com, linux-kernel@vger.kernel.org,
+        tali.perry1@gmail.com, robh+dt@kernel.org,
+        chiawei_wang@aspeedtech.com, linux-arm-kernel@lists.infradead.org,
+        benjaminfair@google.com, arnd@arndb.de, zweiss@equinix.com
+Subject: Re: [PATCH v3 10/16] ipmi: kcs_bmc: Don't enforce single-open policy
+ in the kernel
+Message-ID: <20210521173007.GJ2921206@minyard.net>
+Reply-To: minyard@acm.org
+References: <20210510054213.1610760-1-andrew@aj.id.au>
+ <20210510054213.1610760-11-andrew@aj.id.au>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:14c4:: with SMTP id b4mr12723587iow.82.1621618169228;
- Fri, 21 May 2021 10:29:29 -0700 (PDT)
-Date:   Fri, 21 May 2021 10:29:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f034fc05c2da6617@google.com>
-Subject: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
-From:   syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
-        axboe@kernel.dk, bpf@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, john.fastabend@gmail.com, kafai@fb.com,
-        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, shakeelb@google.com, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510054213.1610760-11-andrew@aj.id.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, May 10, 2021 at 03:12:07PM +0930, Andrew Jeffery wrote:
+> Soon it will be possible for one KCS device to have multiple associated
+> chardevs exposed to userspace (for IPMI and raw-style access). However,
+> don't prevent userspace from:
+> 
+> 1. Opening more than one chardev at a time, or
+> 2. Opening the same chardev more than once.
+> 
+> System behaviour is undefined for both classes of multiple access, so
+> userspace must manage itself accordingly.
 
-syzbot found the following issue on:
+I don't understand why you want to allow this.  If the second open won't
+work right, then why allow it?  Why remove code that causes the second
+open to error?
 
-HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+-corey
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
-Read of size 1 at addr ffff88802767a05c by task rcu_tasks_trace/12
-
-CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
- __kasan_report mm/kasan/report.c:419 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
- check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
- rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
- rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Allocated by task 8477:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:428 [inline]
- __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
- kasan_slab_alloc include/linux/kasan.h:236 [inline]
- slab_post_alloc_hook mm/slab.h:524 [inline]
- slab_alloc_node mm/slub.c:2912 [inline]
- kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2948
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct kernel/fork.c:865 [inline]
- copy_process+0x5c8/0x7120 kernel/fork.c:1947
- kernel_clone+0xe7/0xab0 kernel/fork.c:2503
- __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Freed by task 12:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
- kasan_slab_free include/linux/kasan.h:212 [inline]
- slab_free_hook mm/slub.c:1581 [inline]
- slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
- slab_free mm/slub.c:3166 [inline]
- kmem_cache_free+0x8a/0x740 mm/slub.c:3182
- __put_task_struct+0x26f/0x400 kernel/fork.c:747
- trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
- check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
- rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
- rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
- release_task+0xca1/0x1690 kernel/exit.c:226
- wait_task_zombie kernel/exit.c:1108 [inline]
- wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
- do_wait_thread kernel/exit.c:1398 [inline]
- do_wait+0x724/0xd40 kernel/exit.c:1515
- kernel_wait4+0x14c/0x260 kernel/exit.c:1678
- __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-Second to last potentially related work creation:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
- __call_rcu kernel/rcu/tree.c:3038 [inline]
- call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
- put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
- context_switch kernel/sched/core.c:4342 [inline]
- __schedule+0x91e/0x23e0 kernel/sched/core.c:5147
- preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5307
- preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
- try_to_wake_up+0xa12/0x14b0 kernel/sched/core.c:3489
- wake_up_process kernel/sched/core.c:3552 [inline]
- wake_up_q+0x96/0x100 kernel/sched/core.c:597
- futex_wake+0x3e9/0x490 kernel/futex.c:1634
- do_futex+0x326/0x1780 kernel/futex.c:3738
- __do_sys_futex+0x2a2/0x470 kernel/futex.c:3796
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888027679c40
- which belongs to the cache task_struct of size 6976
-The buggy address is located 1052 bytes inside of
- 6976-byte region [ffff888027679c40, ffff88802767b780)
-The buggy address belongs to the page:
-page:ffffea00009d9e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88802767b880 pfn:0x27678
-head:ffffea00009d9e00 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
-raw: 00fff00000010200 ffffea000071e208 ffffea0000950808 ffff888140005140
-raw: ffff88802767b880 0000000000040003 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as allocated
-page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 243, ts 14372676818, free_ts 0
- prep_new_page mm/page_alloc.c:2358 [inline]
- get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
- __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
- alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
- alloc_slab_page mm/slub.c:1644 [inline]
- allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
- new_slab mm/slub.c:1847 [inline]
- new_slab_objects mm/slub.c:2593 [inline]
- ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
- __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
- slab_alloc_node mm/slub.c:2878 [inline]
- kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2948
- alloc_task_struct_node kernel/fork.c:171 [inline]
- dup_task_struct kernel/fork.c:865 [inline]
- copy_process+0x5c8/0x7120 kernel/fork.c:1947
- kernel_clone+0xe7/0xab0 kernel/fork.c:2503
- kernel_thread+0xb5/0xf0 kernel/fork.c:2555
- call_usermodehelper_exec_work kernel/umh.c:174 [inline]
- call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
- process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x3b1/0x4a0 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-page_owner free stack trace missing
-
-Memory state around the buggy address:
- ffff888027679f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888027679f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff88802767a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                                    ^
- ffff88802767a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff88802767a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> The implementation delivers IBF and OBF events to the first chardev
+> client to associate with the KCS device. An open on a related chardev
+> cannot associate its client with the KCS device and so will not
+> receive notification of events. However, any fd on any chardev may race
+> their accesses to the data and status registers.
+> 
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
+> ---
+>  drivers/char/ipmi/kcs_bmc.c         | 34 ++++++++++-------------------
+>  drivers/char/ipmi/kcs_bmc_aspeed.c  |  3 +--
+>  drivers/char/ipmi/kcs_bmc_npcm7xx.c |  3 +--
+>  3 files changed, 14 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/kcs_bmc.c b/drivers/char/ipmi/kcs_bmc.c
+> index 7081541bb6ce..ad9ff13ba831 100644
+> --- a/drivers/char/ipmi/kcs_bmc.c
+> +++ b/drivers/char/ipmi/kcs_bmc.c
+> @@ -55,24 +55,12 @@ EXPORT_SYMBOL(kcs_bmc_update_status);
+>  irqreturn_t kcs_bmc_handle_event(struct kcs_bmc_device *kcs_bmc)
+>  {
+>  	struct kcs_bmc_client *client;
+> -	irqreturn_t rc;
+> +	irqreturn_t rc = IRQ_NONE;
+>  
+>  	spin_lock(&kcs_bmc->lock);
+>  	client = kcs_bmc->client;
+> -	if (client) {
+> +	if (client)
+>  		rc = client->ops->event(client);
+> -	} else {
+> -		u8 status;
+> -
+> -		status = kcs_bmc_read_status(kcs_bmc);
+> -		if (status & KCS_BMC_STR_IBF) {
+> -			/* Ack the event by reading the data */
+> -			kcs_bmc_read_data(kcs_bmc);
+> -			rc = IRQ_HANDLED;
+> -		} else {
+> -			rc = IRQ_NONE;
+> -		}
+> -	}
+>  	spin_unlock(&kcs_bmc->lock);
+>  
+>  	return rc;
+> @@ -81,26 +69,28 @@ EXPORT_SYMBOL(kcs_bmc_handle_event);
+>  
+>  int kcs_bmc_enable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bmc_client *client)
+>  {
+> -	int rc;
+> -
+>  	spin_lock_irq(&kcs_bmc->lock);
+> -	if (kcs_bmc->client) {
+> -		rc = -EBUSY;
+> -	} else {
+> +	if (!kcs_bmc->client) {
+> +		u8 mask = KCS_BMC_EVENT_TYPE_IBF;
+> +
+>  		kcs_bmc->client = client;
+> -		rc = 0;
+> +		kcs_bmc_update_event_mask(kcs_bmc, mask, mask);
+>  	}
+>  	spin_unlock_irq(&kcs_bmc->lock);
+>  
+> -	return rc;
+> +	return 0;
+>  }
+>  EXPORT_SYMBOL(kcs_bmc_enable_device);
+>  
+>  void kcs_bmc_disable_device(struct kcs_bmc_device *kcs_bmc, struct kcs_bmc_client *client)
+>  {
+>  	spin_lock_irq(&kcs_bmc->lock);
+> -	if (client == kcs_bmc->client)
+> +	if (client == kcs_bmc->client) {
+> +		u8 mask = KCS_BMC_EVENT_TYPE_IBF | KCS_BMC_EVENT_TYPE_OBE;
+> +
+> +		kcs_bmc_update_event_mask(kcs_bmc, mask, 0);
+>  		kcs_bmc->client = NULL;
+> +	}
+>  	spin_unlock_irq(&kcs_bmc->lock);
+>  }
+>  EXPORT_SYMBOL(kcs_bmc_disable_device);
+> diff --git a/drivers/char/ipmi/kcs_bmc_aspeed.c b/drivers/char/ipmi/kcs_bmc_aspeed.c
+> index 8b223e58d900..8a0b1e18e945 100644
+> --- a/drivers/char/ipmi/kcs_bmc_aspeed.c
+> +++ b/drivers/char/ipmi/kcs_bmc_aspeed.c
+> @@ -414,8 +414,7 @@ static int aspeed_kcs_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, priv);
+>  
+> -	aspeed_kcs_irq_mask_update(kcs_bmc, (KCS_BMC_EVENT_TYPE_IBF | KCS_BMC_EVENT_TYPE_OBE),
+> -				   KCS_BMC_EVENT_TYPE_IBF);
+> +	aspeed_kcs_irq_mask_update(kcs_bmc, (KCS_BMC_EVENT_TYPE_IBF | KCS_BMC_EVENT_TYPE_OBE), 0);
+>  	aspeed_kcs_enable_channel(kcs_bmc, true);
+>  
+>  	kcs_bmc_add_device(&priv->kcs_bmc);
+> diff --git a/drivers/char/ipmi/kcs_bmc_npcm7xx.c b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+> index f8b7162fb830..ab4a8caf1270 100644
+> --- a/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+> +++ b/drivers/char/ipmi/kcs_bmc_npcm7xx.c
+> @@ -202,8 +202,7 @@ static int npcm7xx_kcs_probe(struct platform_device *pdev)
+>  	if (rc)
+>  		return rc;
+>  
+> -	npcm7xx_kcs_irq_mask_update(kcs_bmc, (KCS_BMC_EVENT_TYPE_IBF | KCS_BMC_EVENT_TYPE_OBE),
+> -				    KCS_BMC_EVENT_TYPE_IBF);
+> +	npcm7xx_kcs_irq_mask_update(kcs_bmc, (KCS_BMC_EVENT_TYPE_IBF | KCS_BMC_EVENT_TYPE_OBE), 0);
+>  	npcm7xx_kcs_enable_channel(kcs_bmc, true);
+>  
+>  	pr_info("channel=%u idr=0x%x odr=0x%x str=0x%x\n",
+> -- 
+> 2.27.0
+> 
