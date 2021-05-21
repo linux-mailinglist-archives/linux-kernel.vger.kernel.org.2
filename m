@@ -2,117 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CE9638BC00
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:52:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D418A38BC04
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:52:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237854AbhEUBxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:53:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237578AbhEUBxX (ORCPT
+        id S237873AbhEUBxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:53:55 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5709 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237578AbhEUBxv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:53:23 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEE9C061574;
-        Thu, 20 May 2021 18:52:01 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id s20so10123296plr.13;
-        Thu, 20 May 2021 18:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=TeR6dx8Rqr3ByExvzXzaPr3AoEZSg27P4QPA34TUl50=;
-        b=MGywRptRl4M03Loj0uWb0Q68foEF2W7FLLb6e2Y3yaSpAS41cQJOIlc+Yodwrt14+B
-         o5A8zY9VfTUFffOgbb7ZCroEftruHMd3VvG0Xksws27jXojgM5CKt9ZQ5MknLgvgetlm
-         Qozs9MN+rdGEoiOix5e5xIOU3ppyzW4RuIi+A7iMMzjkpBE9NtZLzOaIAVmamQr4RsCW
-         ft1FDBQy++SQwvzxEx/ipWcZ+SL7sMpanfO1ViUsK6G98HM469/Z48/lA6lPpBAdNbQw
-         bFaHu86UWSMGHMRuqp5UMqyqmk9RU9qLDXzaT4bnkhcZHGFh/CR3h1Z0NlgRXQu4zGzX
-         CrCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TeR6dx8Rqr3ByExvzXzaPr3AoEZSg27P4QPA34TUl50=;
-        b=IUecRMNJnYtLlUTaCneIIz/sTzUtvFoIWR2jeBnotvFHJHDFHULTtTJP6w9mlRnxi5
-         gYhJge+6ayR7EQSTSL/eGGf/XL7PUrP8QBQeP/VLab7TPfiCcy/2W8YkNx8umhx+/WTo
-         mpNW9Etrf8DNa+kZXaq2uOVxt+jjtpevOhrzgDsZhpTbXXdV1gd0jFn55RweIqhHZX1e
-         lZ462EsVpdR60GUYYmj62e9aUjyLO+sdAA5aJMt66G9Ni/lOyvK8Ru0MX6i3Dig4voeq
-         9JGojU5dSL3ypwuIcCVkUpTCvhCHcKr8vFxLWdASzPJxxiGC0qpmDSMwY7puZfHDznIo
-         7gYA==
-X-Gm-Message-State: AOAM530ccbGZ8jV6J+YEDRPZnLGN4dhfVqY7yJ+c0zaAUnaNCDj9c1ZF
-        QmRopnCSa6dwTRSbufihr0MCU95VIvaINJ9G
-X-Google-Smtp-Source: ABdhPJyIynOYYSDS+EbUq2ewNtwe4ZXjkjDPNl8WBvxs05rpGvv+SWNeotnMz6g0roHINjQ+ss8nrg==
-X-Received: by 2002:a17:90a:4404:: with SMTP id s4mr8354235pjg.218.1621561921013;
-        Thu, 20 May 2021 18:52:01 -0700 (PDT)
-Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
-        by smtp.gmail.com with ESMTPSA id u6sm2538958pjy.51.2021.05.20.18.51.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 20 May 2021 18:52:00 -0700 (PDT)
-Date:   Thu, 20 May 2021 18:51:53 -0700
-From:   Tao Ren <rentao.bupt@gmail.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        linux-watchdog@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
-        Amithash Prasad <amithash@fb.com>
-Subject: Re: [PATCH] watchdog: aspeed: fix hardware timeout calculation
-Message-ID: <20210521015153.GA19153@taoren-ubuntu-R90MNF91>
-References: <20210417034249.5978-1-rentao.bupt@gmail.com>
- <20210417042048.GA109800@roeck-us.net>
+        Thu, 20 May 2021 21:53:51 -0400
+Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmTzX2y5nzqVTp;
+        Fri, 21 May 2021 09:48:56 +0800 (CST)
+Received: from dggemi762-chm.china.huawei.com (10.1.198.148) by
+ dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Fri, 21 May 2021 09:52:25 +0800
+Received: from [10.174.178.208] (10.174.178.208) by
+ dggemi762-chm.china.huawei.com (10.1.198.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Fri, 21 May 2021 09:52:24 +0800
+Subject: Re: [PATCH 4.19 000/425] 4.19.191-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210520092131.308959589@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <12ec2f43-7e87-ce97-889c-740d4892b468@huawei.com>
+Date:   Fri, 21 May 2021 09:52:24 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417042048.GA109800@roeck-us.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210520092131.308959589@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggemi762-chm.china.huawei.com (10.1.198.148)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wim,
-
-Not sure if I looked at the wrong repository/branch, and looks like the
-patch is not included. Do you have any further suggestions? Or should I
-send out v2 in case it's missed?
 
 
-Thanks,
-
-Tao
-
-On Fri, Apr 16, 2021 at 09:20:48PM -0700, Guenter Roeck wrote:
-> On Fri, Apr 16, 2021 at 08:42:49PM -0700, rentao.bupt@gmail.com wrote:
-> > From: Tao Ren <rentao.bupt@gmail.com>
-> > 
-> > Fix hardware timeout calculation in aspeed_wdt_set_timeout function to
-> > ensure the reload value does not exceed the hardware limit.
-> > 
-> > Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
-> > Reported-by: Amithash Prasad <amithash@fb.com>
-> > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
+On 2021/5/20 17:16, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.191 release.
+> There are 425 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+> Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
+> Anything received after that time might be too late.
 > 
-> > ---
-> >  drivers/watchdog/aspeed_wdt.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-> > index 7e00960651fa..507fd815d767 100644
-> > --- a/drivers/watchdog/aspeed_wdt.c
-> > +++ b/drivers/watchdog/aspeed_wdt.c
-> > @@ -147,7 +147,7 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
-> >  
-> >  	wdd->timeout = timeout;
-> >  
-> > -	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
-> > +	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
-> >  
-> >  	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
-> >  	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
-> > -- 
-> > 2.17.1
-> > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.191-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+
+Tested on arm64 and x86 for 4.19.191-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.191-rc1
+Commit: 06c717b4df3acb666920610a100d04ebdc485e6c
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8855
+passed: 8855
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8855
+passed: 8855
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
