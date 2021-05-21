@@ -2,78 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FC6838C17F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:14:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D9738C190
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:18:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhEUIPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:15:30 -0400
-Received: from helcar.hmeau.com ([216.24.177.18]:55980 "EHLO deadmen.hmeau.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229629AbhEUIP3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:15:29 -0400
-Received: from gondobar.mordor.me.apana.org.au ([192.168.128.4] helo=gondobar)
-        by deadmen.hmeau.com with esmtp (Exim 4.92 #5 (Debian))
-        id 1lk0IA-0004pW-RG; Fri, 21 May 2021 16:13:58 +0800
-Received: from herbert by gondobar with local (Exim 4.89)
-        (envelope-from <herbert@gondor.apana.org.au>)
-        id 1lk0I8-0005ur-GX; Fri, 21 May 2021 16:13:56 +0800
-Date:   Fri, 21 May 2021 16:13:56 +0800
-From:   Herbert Xu <herbert@gondor.apana.org.au>
-To:     Hui Tang <tanghui20@huawei.com>
-Cc:     davem@davemloft.net, linux-crypto@vger.kernel.org,
-        xuzaibo@huawei.com, wangzhou1@hisilicon.com,
-        linux-kernel@vger.kernel.org, Stephan Mueller <smueller@chronox.de>
-Subject: Re: [PATCH 1/3] crypto: ecdh - fix 'ecdh_init'
-Message-ID: <20210521081356.3bnytzdxhjkgzb7g@gondor.apana.org.au>
-References: <1620801602-49287-1-git-send-email-tanghui20@huawei.com>
- <1620801602-49287-2-git-send-email-tanghui20@huawei.com>
- <20210521074553.w6qtqv5nnbdbqycx@gondor.apana.org.au>
- <2a5bcd22-455d-6348-9a72-dc5a7ab49ca6@huawei.com>
+        id S230387AbhEUIUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230354AbhEUIUD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:20:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999FFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:17:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mcRfy6HSmsu84isB+mxfm8MQNLT8UwDpMQi9nSI58SY=; b=GSPONVPzAhJ/4S+7ak09tygOuL
+        Aw7gbHwPg4KU7ghUSI6Lv+2mtx+vMH1pQkMq5i9of9CjUfVHs1le+kNKpCm8PkR07mV31WK7APHPY
+        0AWtt7/2dVLszkbmmu19v42JtbPrIJuhZ3TaWvZ22oXdvHc0DhcVr9j+YhGeHdwJDQ2sEO1T/0TiN
+        E43oBTaXEYDzV654UAOqjAT9lgeo66RWh0FKdi7mEHxRQuwu0sMvBWQQRcXAVV4UeJ5P6zQXpP10V
+        YHPOcTGo+rBaLyEqKaRzokVd+lBEfAUiJeI43NBGpikLZRyr4wngqHuGaHsr4y1IPI+1FaqSMgwKJ
+        /6HrTr3w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lk0IO-00Glzo-7N; Fri, 21 May 2021 08:14:34 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BFB92300103;
+        Fri, 21 May 2021 10:14:10 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7D2792C6D2B89; Fri, 21 May 2021 10:14:10 +0200 (CEST)
+Date:   Fri, 21 May 2021 10:14:10 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Subject: Re: [PATCH 1/3] sched/topology: Allow archs to populate distance map
+Message-ID: <YKdr0g6+eIHncqej@hirez.programming.kicks-ass.net>
+References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
+ <20210520154427.1041031-2-srikar@linux.vnet.ibm.com>
+ <YKaw33d71FpHjGnR@hirez.programming.kicks-ass.net>
+ <20210521023802.GE2633526@linux.vnet.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a5bcd22-455d-6348-9a72-dc5a7ab49ca6@huawei.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20210521023802.GE2633526@linux.vnet.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 04:08:10PM +0800, Hui Tang wrote:
+On Fri, May 21, 2021 at 08:08:02AM +0530, Srikar Dronamraju wrote:
+> * Peter Zijlstra <peterz@infradead.org> [2021-05-20 20:56:31]:
 > 
-> On 2021/5/21 15:45, Herbert Xu wrote:
-> > On Wed, May 12, 2021 at 02:40:00PM +0800, Hui Tang wrote:
-> > > NIST P192 is not unregistered if failed to register NIST P256,
-> > > actually it need to unregister the algorithms already registered.
+> > On Thu, May 20, 2021 at 09:14:25PM +0530, Srikar Dronamraju wrote:
+> > > Currently scheduler populates the distance map by looking at distance
+> > > of each node from all other nodes. This should work for most
+> > > architectures and platforms.
 > > > 
-> > > Signed-off-by: Hui Tang <tanghui20@huawei.com>
-> > > ---
-> > >  crypto/ecdh.c | 11 ++++++++++-
-> > >  1 file changed, 10 insertions(+), 1 deletion(-)
+> > > However there are some architectures like POWER that may not expose
+> > > the distance of nodes that are not yet onlined because those resources
+> > > are not yet allocated to the OS instance. Such architectures have
+> > > other means to provide valid distance data for the current platform.
+> > > 
+> > > For example distance info from numactl from a fully populated 8 node
+> > > system at boot may look like this.
+> > > 
+> > > node distances:
+> > > node   0   1   2   3   4   5   6   7
+> > >   0:  10  20  40  40  40  40  40  40
+> > >   1:  20  10  40  40  40  40  40  40
+> > >   2:  40  40  10  20  40  40  40  40
+> > >   3:  40  40  20  10  40  40  40  40
+> > >   4:  40  40  40  40  10  20  40  40
+> > >   5:  40  40  40  40  20  10  40  40
+> > >   6:  40  40  40  40  40  40  10  20
+> > >   7:  40  40  40  40  40  40  20  10
+> > > 
+> > > However the same system when only two nodes are online at boot, then the
+> > > numa topology will look like
+> > > node distances:
+> > > node   0   1
+> > >   0:  10  20
+> > >   1:  20  10
+> > > 
+> > > It may be implementation dependent on what node_distance(0,3) where
+> > > node 0 is online and node 3 is offline. In POWER case, it returns
+> > > LOCAL_DISTANCE(10). Here at boot the scheduler would assume that the max
+> > > distance between nodes is 20. However that would not be true.
+> > > 
+> > > When Nodes are onlined and CPUs from those nodes are hotplugged,
+> > > the max node distance would be 40.
+> > > 
+> > > To handle such scenarios, let scheduler allow architectures to populate
+> > > the distance map. Architectures that like to populate the distance map
+> > > can overload arch_populate_distance_map().
 > > 
-> > Thanks for catching this.  The variable ecdh_nist_p192_registered
-> > is bogus.  You should just make it so that if p192 fails to
-> > register then the init function aborts.  There would then be
-> > no need to check for the registered state in the exit function.
+> > Why? Why can't your node_distance() DTRT? The arch interface is
+> > nr_node_ids and node_distance(), I don't see why we need something new
+> > and then replace one special use of it.
+> > 
+> > By virtue of you being able to actually implement this new hook, you
+> > supposedly can actually do node_distance() right too.
 > 
-> Okay, I will fix it in next version, and 'ecdsa_init' should
-> do the same thing too?
+> Since for an offline node, arch interface code doesn't have the info.
+> As far as I know/understand, in POWER, unless there is an active memory or
+> CPU that's getting onlined, arch can't fetch the correct node distance.
+> 
+> Taking the above example: node 3 is offline, then node_distance of (3,X)
+> where X is anything other than 3, is not reliable. The moment node 3 is
+> onlined, the node distance is reliable.
+> 
+> This problem will not happen even on POWER if all the nodes have either
+> memory or CPUs active at the time of boot.
 
-Actually, it looks like it is needed for FIPS.  We should add
-a comment that p192 will fail to register in FIPS mode and that's
-why there is a check for it.
+But then how can you implement this new hook? Going by the fact that
+both nr_node_ids and distance_ref_points_depth are fixed, how many
+possible __node_distance() configurations are there left?
 
-Funnily enough, ecdsa has the FIPS comment but testmgr doesn't
-set fips_allowed for any of them while ecdh is set but has no
-comment.
+The example provided above does not suggest there's much room for
+alternatives, and hence for actual need of this new interface.
 
-Stephan, can you confirm that both ecdh-nist-p192 and ecdsa-nist-p192
-should be disabled in FIPS mode?
-
-Also, we should fix ecdh-nist-p192's entry in testmgr by removing
-the ifdefs and not setting fips_allowed.
-
-Cheers,
--- 
-Email: Herbert Xu <herbert@gondor.apana.org.au>
-Home Page: http://gondor.apana.org.au/~herbert/
-PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
