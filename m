@@ -2,208 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC8338D050
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D97E38D056
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhEUVyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 17:54:05 -0400
-Received: from mga11.intel.com ([192.55.52.93]:38663 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229457AbhEUVyE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 17:54:04 -0400
-IronPort-SDR: Uztdzq2D/SPLu2rXXqyMVzgEfnlAP4Qm5wjEcGO10lDYFMsdWrwsvFk9a2Ix5c5eDg1DOGOTtr
- Pmmr3X90o21g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="198497400"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="198497400"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 14:52:40 -0700
-IronPort-SDR: bgdQcUbvfsZiNpIBGMqZy6pcr0L3WBePzqj/o9s1GB0guGiI3/nF7oE3dgH5IYOmnJxwAeMFnI
- CX/LNDq0qwRA==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="613395099"
-Received: from pburton-mobl.amr.corp.intel.com (HELO [10.209.36.169]) ([10.209.36.169])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 14:52:39 -0700
-Subject: Re: [PATCH 2/6] mm/page_alloc: Disassociate the pcp->high from
- pcp->batch
-To:     Mel Gorman <mgorman@techsingularity.net>,
-        Linux-MM <linux-mm@kvack.org>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210521102826.28552-1-mgorman@techsingularity.net>
- <20210521102826.28552-3-mgorman@techsingularity.net>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <83ddf311-cdfb-34cf-d08f-70590420beff@intel.com>
-Date:   Fri, 21 May 2021 14:52:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229652AbhEUVzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 17:55:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhEUVz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 17:55:28 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B20C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:54:04 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id i14-20020a9d624e0000b029033683c71999so8178469otk.5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:54:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxtx.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kpSHAlmTyjqKXjNreeX4RJ0R5RIyCqOKxM6y2NS9SAs=;
+        b=VVaU9yY6bmYNivZITKipdcM5HIYIvQljL5VXEGt4jw1uQL7iqpraXxJ5ogFhgee5GO
+         NtnH4rIelCYDSLW5V0MHEfFop8ZmvInuc8IfFYoWqc0/Q8BBKj8pT+EJ6aLucswemQdT
+         kPkxv1qK65KjNLbc2M3O9bDlAU1ERET2RfAUw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kpSHAlmTyjqKXjNreeX4RJ0R5RIyCqOKxM6y2NS9SAs=;
+        b=ojOUwBpKff9QWeL8F4JQzHpS9XnbsrVNY7RFwf6zX/TYVbuTRNkfo+5Udr4sR7dXJ7
+         RZjM379dIx6GH+rlqKsxmBVWtjrmtBftrgEeIiI/I8FYP4DV7oVjTCzbJEk/kKR0A06B
+         P4B2S6/6d3xvAHuy5nKfdWlbQOUzQ2rOYrHgRtSvL/u8Mik1StivWb6a/kFwZltXxTI0
+         XXohxEtXSl4l+LBYnf1dOwxIgqlWl7whp9Oa2gNmXQm51eAKVXWuMnMw5n+31dlYzB4G
+         CDfAD3wJbsiPZ8yNAObyRtGf8YhRLCkhljvCz3LquA+qtwOvalDSdi+rKwEFOLQymfjg
+         M39Q==
+X-Gm-Message-State: AOAM532WE5ggtVTEmZRLbcJscot7wAgEAaF9absXT7unScBFJlBIF14b
+        nxnvt/EoGJTdav44FD4oRc0xI6JEiRD5abjd+rA=
+X-Google-Smtp-Source: ABdhPJxbIZJIy8DuURbkyPXiN2n+KRgE3x9INfSMsUnZICAfbdLyfhXsmbHUS1vhSkWsRIhzW/t0Uw==
+X-Received: by 2002:a9d:7e99:: with SMTP id m25mr10151099otp.37.1621634043496;
+        Fri, 21 May 2021 14:54:03 -0700 (PDT)
+Received: from fedora64.linuxtx.org (104-189-158-32.lightspeed.rcsntx.sbcglobal.net. [104.189.158.32])
+        by smtp.gmail.com with ESMTPSA id z15sm1559562otp.20.2021.05.21.14.54.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 14:54:02 -0700 (PDT)
+Date:   Fri, 21 May 2021 16:54:01 -0500
+From:   Justin Forbes <jmforbes@linuxtx.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.12 00/43] 5.12.6-rc2 review
+Message-ID: <YKgr+bK+sWypjxS/@fedora64.linuxtx.org>
+References: <20210520152254.218537944@linuxfoundation.org>
 MIME-Version: 1.0
-In-Reply-To: <20210521102826.28552-3-mgorman@techsingularity.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210520152254.218537944@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 3:28 AM, Mel Gorman wrote:
-> Note that in this patch the pcp->high values are adjusted after memory
-> hotplug events, min_free_kbytes adjustments and watermark scale factor
-> adjustments but not CPU hotplug events.
-
-Not that it was a long wait to figure it out, but I'd probably say:
-
-	"CPU hotplug events are handled later in the series".
-
-instead of just saying they're not handled.
-
-> Before grep -E "high:|batch" /proc/zoneinfo | tail -2
->               high:  378
->               batch: 63
+On Thu, May 20, 2021 at 05:23:29PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.6 release.
+> There are 43 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> After grep -E "high:|batch" /proc/zoneinfo | tail -2
->               high:  649
->               batch: 63
+> Responses should be made by Sat, 22 May 2021 15:22:43 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.6-rc2.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-You noted the relationship between pcp->high and zone lock contention.
-Larger ->high values mean less contention.  It's probably also worth
-noting the trend of having more logical CPUs per NUMA node.
+Tested rc2 against the Fedora build system (aarch64, armv7, ppc64le,
+s390x, x86_64), and boot tested x86_64. No regressions noted.
 
-I have the feeling when this was put in place it wasn't uncommon to have
-somewhere between 1 and 8 CPUs in a node pounding on a zone.
-
-Today, having ~60 is common.  I've occasionally resorted to recommending
-that folks enable hardware features like Sub-NUMA-Clustering [1] since
-it increases the number of zones and decreases the number of CPUs
-pounding on each zone lock.
-
-1.
-https://software.intel.com/content/www/us/en/develop/articles/intel-xeon-processor-scalable-family-technical-overview.html
-
-> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-> index a48f305f0381..bf5cdc466e6c 100644
-> --- a/mm/page_alloc.c
-> +++ b/mm/page_alloc.c
-> @@ -2163,14 +2163,6 @@ void __init page_alloc_init_late(void)
->  	/* Block until all are initialised */
->  	wait_for_completion(&pgdat_init_all_done_comp);
->  
-> -	/*
-> -	 * The number of managed pages has changed due to the initialisation
-> -	 * so the pcpu batch and high limits needs to be updated or the limits
-> -	 * will be artificially small.
-> -	 */
-> -	for_each_populated_zone(zone)
-> -		zone_pcp_update(zone);
-> -
->  	/*
->  	 * We initialized the rest of the deferred pages.  Permanently disable
->  	 * on-demand struct page initialization.
-> @@ -6594,13 +6586,12 @@ static int zone_batchsize(struct zone *zone)
->  	int batch;
->  
->  	/*
-> -	 * The per-cpu-pages pools are set to around 1000th of the
-> -	 * size of the zone.
-> +	 * The number of pages to batch allocate is either 0.1%
-
-Probably worth making that "~0.1%" just in case someone goes looking for
-the /1000 and can't find it.
-
-> +	 * of the zone or 1MB, whichever is smaller. The batch
-> +	 * size is striking a balance between allocation latency
-> +	 * and zone lock contention.
->  	 */
-> -	batch = zone_managed_pages(zone) / 1024;
-> -	/* But no more than a meg. */
-> -	if (batch * PAGE_SIZE > 1024 * 1024)
-> -		batch = (1024 * 1024) / PAGE_SIZE;
-> +	batch = min(zone_managed_pages(zone) >> 10, (1024 * 1024) / PAGE_SIZE);
->  	batch /= 4;		/* We effectively *= 4 below */
->  	if (batch < 1)
->  		batch = 1;
-> @@ -6637,6 +6628,27 @@ static int zone_batchsize(struct zone *zone)
->  #endif
->  }
->  
-> +static int zone_highsize(struct zone *zone)
-> +{
-> +#ifdef CONFIG_MMU
-> +	int high;
-> +	int nr_local_cpus;
-> +
-> +	/*
-> +	 * The high value of the pcp is based on the zone low watermark
-> +	 * when reclaim is potentially active spread across the online
-> +	 * CPUs local to a zone. Note that early in boot that CPUs may
-> +	 * not be online yet.
-> +	 */
-
-FWIW, I like the way the changelog talked about this a bit better, with
-the goal of avoiding background reclaim even in the face of a bunch of
-full pcp's.
-
-> +	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone))));
-> +	high = low_wmark_pages(zone) / nr_local_cpus;
-
-I'm a little concerned that this might get out of hand on really big
-nodes with no CPUs.  For persistent memory (which we *do* toss into the
-page allocator for volatile use), we can have multi-terabyte zones with
-no CPUs in the node.
-
-Also, while the CPUs which are on the node are the ones *most* likely to
-be hitting the ->high limit, we do *keep* a pcp for each possible CPU.
-So, the amount of memory which can actually be sequestered is
-num_online_cpus()*high.  Right?
-
-*That* might really get out of hand if we have nr_local_cpus=1.
-
-We might want some overall cap on 'high', or even to scale it
-differently for the zone-local cpus' pcps versus remote.
+Tested-by: Justin M. Forbes <jforbes@fedoraproject.org>
