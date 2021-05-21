@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD3838C85D
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3989F38C861
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236193AbhEUNju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:39:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
+        id S233446AbhEUNj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:39:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236385AbhEUNjb (ORCPT
+        with ESMTP id S236245AbhEUNjm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:31 -0400
-Received: from mail-il1-x12a.google.com (mail-il1-x12a.google.com [IPv6:2607:f8b0:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F294C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:08 -0700 (PDT)
-Received: by mail-il1-x12a.google.com with SMTP id g11so14235872ilq.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:08 -0700 (PDT)
+        Fri, 21 May 2021 09:39:42 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95DD4C06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:18 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id a11so20182770ioo.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=enWZHbTX+1ralsrB94tU0j8mRNIc2ViVpX6p57Tm5zE=;
-        b=sTqvwAiaNQ4KCzK/vupskNveTsjdzDadubdftpH4LLYWoPKuaOdUIo9U1xR5EVxbfJ
-         TRLkx3c8jK0PiM4IdWMl2eV+ZvnlcRKceTqZyBzMfE3/Fr/m83BxCdXZW81oUsRMgN9Y
-         NXxToywYDx+qZi956HpmR30FEbygoENjpDxQ+uBBvk+G//rz5LQIPbiqGenaIeIpQJXN
-         36IGvQRdFdKQx1P7EzP+Sz9hHYxU4fXiyCP5vJshd3WlG6nBK5zk/c3xjwov/fazOHBv
-         IS8AM5XuSQqsdhzx8I43U/SEY2vhO66Se9s8PSKLbPqPqbxfceokm87MEZGIv6GMPNQ9
-         x9dw==
+        bh=zXInqLwOOkmxw3FAtCSHWSift3iK7/sFcDERc9LRSF4=;
+        b=P+50PGwtRDOoeSEvb4QqD//5T0XqcThBfJTGTyXGa/7fVf0cA8hIb1SmGHWRm+npTW
+         xzGND2Pva4PPpWL9EM+uqUvGKNxk4RBqy0YJwKPing7Ye6LW+mxzR+hPkOXQc59KYeP5
+         zztM/HFZ1Vo17VrxhVyGBPxqobjIOPl37JteeOoC69VXt7LCvsCtAmRZyt0WQmp7BQ3J
+         7jrOyzncZCqVfT+arDqQ7g2VuNValU4gSjobpj4PMND6JrPwvgOW2/F0KyBYpgRMMnho
+         Yjrnb6S5eth7mVkI+IbYDNlxFbp0pm7uw6QfsR+up+JH8EXkwDovI1IfdUtODb4W7KCr
+         LJgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=enWZHbTX+1ralsrB94tU0j8mRNIc2ViVpX6p57Tm5zE=;
-        b=CJvbOMd+xQqaIDwEpEbW2+Unw+CoXubHAM2DW9fyJ2ozwjoEMyuILISgGfV3TFAL7h
-         LnsWkV96HKK30Ssi/d5amg2Jdnw+lRF2SoSArcwIQza0JPpcSz2ZGU1XnMWIDlw0CG9T
-         Qby5AapKVktIKYgqRclFru4OCQe28mwxMooSXibHWFgrx/YkdYeUHktKaCRemEMkw0rG
-         QrZC2wfK95wHG+qiAKU+7wMXB+DfOfNyT/cvxerPA8gGFbv+Odu2dMl5vc9DcfA/JbY6
-         IwNG66hfobNvRpnzjGWSWYuCQwP+CfzcRUISkO27lRJMmD/rGS8hE/rdrikBTGTALYXX
-         RSjw==
-X-Gm-Message-State: AOAM533HDhWZk79b8b7c1GkAHYnO2aZvn3sVQQaIZu9YIe1Lj4Tpa6Kb
-        e+Q9aE2u7RMM0qFUtYcfBZR/8ZkMDUchOYeOEyqpyA==
-X-Google-Smtp-Source: ABdhPJyaUbZvDwXtgI8l9+6HZmWpDoF/OCiE7D7LSvdnS5+eKPt7Yahz2r1YfmK06EAv4U7WFj6Zg7fgKtIaomcv92Y=
-X-Received: by 2002:a92:cdac:: with SMTP id g12mr11540753ild.72.1621604287338;
- Fri, 21 May 2021 06:38:07 -0700 (PDT)
+        bh=zXInqLwOOkmxw3FAtCSHWSift3iK7/sFcDERc9LRSF4=;
+        b=iiPOwnOrkaq9efVA0GlPewiu+o0CJ20h5oM1jnEh0C4dDCUapxf/sXCgLEli9AL3wD
+         Pv6YMVfKOszZxwm5RVpHE+AYI75wZx7txfOfOYlGTnqwr/9FfQYv8JmvFMQsLvZf17Tg
+         GSYnG4vsVY1TOuUCZ4Tz58IZmaL1PqBcVzGKJ6qWe/FDj83wGDzKtYR4Fp3egwhITHJ9
+         TuNIgBZ0qc9RY52KLmDd9XIbdTWVLETxQwTqUwHVUI9rwK82ZzhUCZw/CJm3ahZpxrbe
+         VeSukJ4R9tyZCI64MIYCU0Vl7rbuJYgIQcU6TLb1H3M5NdFcKwGXG2b4hoxnJ5YN8cFc
+         GrZg==
+X-Gm-Message-State: AOAM533M+NPhbPRDU+nFmzMqYvOY9ObEsJIu5UMZ3CQetDx0mmt0O5XS
+        +EMwGNOOU4ceb9rKQxqUDrJn9DRcrsOuDSnNmNZHHw==
+X-Google-Smtp-Source: ABdhPJzDCg3SDubz4fjQvEgSqB/x9Z08rEIowfTPC3zW+FVgcUW8kQxymOjjU9gFknfrlouULiZyZcawYJnd45GtWDg=
+X-Received: by 2002:a02:5409:: with SMTP id t9mr4611825jaa.50.1621604297789;
+ Fri, 21 May 2021 06:38:17 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-10-acourbot@chromium.org>
-In-Reply-To: <20210519143011.1175546-10-acourbot@chromium.org>
+References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-11-acourbot@chromium.org>
+In-Reply-To: <20210519143011.1175546-11-acourbot@chromium.org>
 From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Fri, 21 May 2021 21:37:56 +0800
-Message-ID: <CA+Px+wUXfT-agqaHB99nabLXeGxP5UCNRt0nV+wx+=vF=YcXAg@mail.gmail.com>
-Subject: Re: [PATCH v5 09/14] media: add Mediatek's MM21 format
+Date:   Fri, 21 May 2021 21:38:06 +0800
+Message-ID: <CA+Px+wUWncvepPMhRZ7qdMzdeQr+0jnJRPYRY57qedVPM_8+wg@mail.gmail.com>
+Subject: Re: [PATCH v5 10/14] media: mtk-vcodec: vdec: support stateless API
 To:     Alexandre Courbot <acourbot@chromium.org>
 Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
         Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
@@ -69,6 +69,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
 <acourbot@chromium.org> wrote:
-> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+> +#include "media/videobuf2-v4l2.h"
+> +#include <media/videobuf2-dma-contig.h>
+> +#include <media/v4l2-event.h>
+> +#include <media/v4l2-mem2mem.h>
+> +#include <linux/module.h>
+> +
+> +#include "mtk_vcodec_drv.h"
+> +#include "mtk_vcodec_dec.h"
+> +#include "mtk_vcodec_intr.h"
+> +#include "mtk_vcodec_util.h"
+> +#include "vdec_drv_if.h"
+> +#include "mtk_vcodec_dec_pm.h"
 
-Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+Would be good practice to separate <...> and "..." inclusion and sort them.
+
+> +static void mtk_vdec_worker(struct work_struct *work)
+> +{
+> +       struct mtk_vcodec_ctx *ctx =
+> +               container_of(work, struct mtk_vcodec_ctx, decode_work);
+> +       struct mtk_vcodec_dev *dev = ctx->dev;
+> +       struct vb2_v4l2_buffer *vb2_v4l2_src, *vb2_v4l2_dst;
+> +       struct vb2_buffer *vb2_src;
+> +       struct mtk_vcodec_mem *bs_src;
+> +       struct mtk_video_dec_buf *dec_buf_src;
+> +       struct media_request *src_buf_req;
+> +       struct vdec_fb *dst_buf;
+> +       bool res_chg = false;
+> +       int ret;
+> +
+> +       vb2_v4l2_src = v4l2_m2m_next_src_buf(ctx->m2m_ctx);
+> +       if (vb2_v4l2_src == NULL) {
+
+To be neat, !vb2_v4l2_src.
+
+> +       vb2_v4l2_dst = v4l2_m2m_next_dst_buf(ctx->m2m_ctx);
+> +       if (vb2_v4l2_dst == NULL) {
+
+To be neat, !vb2_v4l2_dst.
