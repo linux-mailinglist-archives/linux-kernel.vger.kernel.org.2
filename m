@@ -2,70 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673F338BDC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE6938BDC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 07:10:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239421AbhEUFLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 01:11:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56194 "EHLO
+        id S239433AbhEUFLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 01:11:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238672AbhEUFLK (ORCPT
+        with ESMTP id S239415AbhEUFLa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 01:11:10 -0400
-Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2388CC061574
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 22:09:48 -0700 (PDT)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 3976D2800B3CA;
-        Fri, 21 May 2021 07:09:46 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 2CCCD1EDD; Fri, 21 May 2021 07:09:46 +0200 (CEST)
-Date:   Fri, 21 May 2021 07:09:46 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Mark Brown <broonie@kernel.org>, kernel-team@android.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v2] spi: Don't have controller clean up spi device before
- driver unbind
-Message-ID: <20210521050946.GA26930@wunner.de>
-References: <20210505164734.175546-1-saravanak@google.com>
+        Fri, 21 May 2021 01:11:30 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0F4BC061574;
+        Thu, 20 May 2021 22:10:07 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id t24so3099942oiw.3;
+        Thu, 20 May 2021 22:10:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/6OeTIPD5d8+6QhQeDTSSu4pXpzUgcgHUDk9Koberlc=;
+        b=TQedDVNsFVntkEo6UHAGyWqOMGsGp+bIEzoxmBF33H6amp9RmsLn7EedixL/lv7RuL
+         Pmb1N2OfeeM1ExO/Hh+Bi7U1F1nZiSJFg0GWhKBDd2r2cW6jLPObtYKw3X5QMMmAgfyP
+         kldSf9aXASXFjsVglb9VNFhCyxG7nka6Hivuv5y063lDGgeTowkomoeXktlaa0/e6R2v
+         i4LG8u8vJFHUWPf0Y+jKVyOkKXRPDN3G2t3OArGIJRUJr6vkhpLs7q4/4BifiCjE7x5f
+         NcYNtYrqTGUc17lCVGKYaUcBRx9WT+DMLPEmlMLDYC4at0IH74QFO68N+rNHLS1MRF6p
+         VU6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/6OeTIPD5d8+6QhQeDTSSu4pXpzUgcgHUDk9Koberlc=;
+        b=Om8wAaqfdiyL2dNnwxxstflhyrtAG0fyJ06fjIiCt3u+FEt0N9WSE+mrQVq10LHWzH
+         AiAyl+I8H4Qs07ODdWiG4WbnfcFNsNQEocmXmkpPH/IczxGcRj51u8NbvJfo7XhaCMNb
+         0dyhsDz42v8xq75JMu26pbmXQqsEJq3cA0UoQo7rSSSSGK3BqA4WQuE2lpzVbnKxSUCC
+         no7+eMB8da4HqlEazNlLcCQ+WAgvCee/hYyP+xiq02whGjZSmIRQhZ9MBKsPnBod69iM
+         XSAk56ArdU2iAjjptrGtwK/J6fkjI3ZbmqZ757Dd2oij6ajWt5izIqMgwYSKfMBF/Ivq
+         k2OQ==
+X-Gm-Message-State: AOAM531PcgcbMeRm0WGNzMbq/8132oaeDKWetjdJ8ouLAiMqoMf8Axea
+        i6RjgcJwXs+yv8x6T8Fz7h7jS4Ln5a+rxx8EXw==
+X-Google-Smtp-Source: ABdhPJzGNHgvjfx2/SJv1V29F1ki+uaDoYT0B4fiVVGLTAEu7ihjU5PkR+9TGYgsragEQR6DWK/GUn6ijoE2nM07Rxg=
+X-Received: by 2002:a54:4690:: with SMTP id k16mr790538oic.57.1621573807131;
+ Thu, 20 May 2021 22:10:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505164734.175546-1-saravanak@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <1620991027-25856-1-git-send-email-zheyuma97@gmail.com> <YKZybdcwoI1eMbzj@kroah.com>
+In-Reply-To: <YKZybdcwoI1eMbzj@kroah.com>
+From:   Zheyu Ma <zheyuma97@gmail.com>
+Date:   Fri, 21 May 2021 13:09:55 +0800
+Message-ID: <CAMhUBjmtkDfbgVR9iPuVPC249h1Gx57kzNpo2j=hWkiFj5B9Jg@mail.gmail.com>
+Subject: Re: [PATCH] serial: rp2: disable interrupt in rp2_probe():
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     cernekee@gmail.com, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 09:47:34AM -0700, Saravana Kannan wrote:
-> When a spi device is unregistered and triggers a driver unbind, the
-> driver might need to access the spi device. So, don't have the
-> controller clean up the spi device before the driver is unbound. Clean
-> up the spi device after the driver is unbound.
-> 
-> Fixes: c7299fea6769 ("spi: Fix spi device unregister flow")
-> Reported-by: Lukas Wunner <lukas@wunner.de>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
-> 
-> v1->v2:
-> - Made the clean up more symmetric. 
-> 
-> Lukas,
-> 
-> Can you test this one your end to make sure you don't have issues
-> anymore?
+On Thu, May 20, 2021 at 10:30 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Fri, May 14, 2021 at 11:17:07AM +0000, Zheyu Ma wrote:
+> > In 'rp2_probe', the driver registers 'rp2_uart_interrupt' then calls
+> > 'rp2_fw_cb' through 'request_firmware_nowait'. In 'rp2_fw_cb', if the
+> > firmware don't exists, function just return without initializing ports
+> > of 'rp2_card'. But now the interrupt handler function has been registered,
+> > and when an interrupt comes('rp2' may shares an interrupt line with other
+> > devices), 'rp2_uart_interrupt' may access those ports then causing NULL
+> > pointer dereference or other bugs.
+> >
+> > Fix this by disabling interrupt after registering 'rp2_uart_interrupt',
+> > and enable it in 'rp2_uart_startup'.
+>
+> What prevents an interrupt from coming in right after callin
+> rp2_uart_interrupt()?  The driver has to be able to handle that.  Why is
+> the interrupt being registered before the firmware is loaded?  That
+> should be the proper fix as once you register an interrupt, the driver
+> HAS to be able to properly handle it.
+>
+> thanks,
+>
+> greg k-h
 
-Tested-by: Lukas Wunner <lukas@wunner.de>
+Thanks for your comments, I will reconsider this patch and send the
+second version of the patch.
 
-My apologies for the delay, yesterday I was finally able to set up a RasPi
-in my home office and test the patch.  I'm not seeing any issues when
-unloading/reloading the SPI controller module, so this LGTM.
-
-Thanks,
-
-Lukas
+Zheyu Ma
