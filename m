@@ -2,117 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBFE38BB3F
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9FCE38BB42
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236071AbhEUBFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:05:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235984AbhEUBFl (ORCPT
+        id S235984AbhEUBIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:08:37 -0400
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:37855 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235398AbhEUBIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:05:41 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01C53C0613ED;
-        Thu, 20 May 2021 18:04:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=sni9ETK0HEg7xDqRTRD+07GslmzE5y7OWzA5WJKcjKU=; b=u70b07TD062bdzcBCW7Xa9uMDu
-        Zvi3dzeWq3DXDEzDH3xRDl6oaTR5xq5coFv6GaME2vz1KEbDa3zSXlvSB4J2oR+UjWoxvBfKQyBS7
-        BBTv8m0jL9zS/zbF1qxxGoIDV9mujDnXmmc8ui/vlS3tA8T/Ewp5/aXKrIk0oOYxN1uPnfKtgTC2E
-        OpLrinbzCPhKfYv/UcSNjCiHOFVaAy+K9mbZxx+RxWFwgeLV64yAOLbyjpfzjLLrQhl6jK4/xEMCk
-        D+GPPpxqsYdARBIBjmbe6cSpPIzaZEKIYPcEPTqfKVZy5YMTXt6pMsw78MMxnaYxEM3JbaltbQyIc
-        Xdde8GPQ==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ljtaL-00Gjxw-1l; Fri, 21 May 2021 01:04:17 +0000
-Subject: Re: mmotm 2021-05-19-23-58 uploaded
- (net/netfilter/nft_set_pipapo_avx2.c)
-To:     Stephen Rothwell <sfr@rothwell.id.au>
-Cc:     akpm@linux-foundation.org, broonie@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@suse.cz,
-        mm-commits@vger.kernel.org, sfr@canb.auug.org.au,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Stefano Brivio <sbrivio@redhat.com>,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org
-References: <20210520065918.KsmugQp47%akpm@linux-foundation.org>
- <3d718861-28bd-dd51-82d4-96b040aa1ab4@infradead.org>
- <20210521090751.51afa10f@elm.ozlabs.ibm.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <6eb826b6-4279-8cf8-1c27-01aab0f83843@infradead.org>
-Date:   Thu, 20 May 2021 18:04:15 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210521090751.51afa10f@elm.ozlabs.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Thu, 20 May 2021 21:08:35 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D0ED2580B35;
+        Thu, 20 May 2021 21:07:10 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Thu, 20 May 2021 21:07:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=VqniBBYHeMtICu1bEyH03RfWAVnT/MX
+        E1EJ8GYbbaIU=; b=qS/t6oHcnBbQftMtJ0RQdmwgJfF+Viz1BLmU3fi7QLkzVBL
+        G0GMtJyc6L4tFuQIPl+SKBRuZRuAOOD9asnynSm1NhcKd2WBbiV/narmumRmd+2d
+        tZ1jAjs420Na9JZBvlEIROdhokOBLmFzdabEg1a0RkDQgCsJ8dbwG4eW60DPf4nt
+        bG8g3l31xwWMDvJmZ/FbND2x5B9FJdRyJlsa5dTqA9B5QJlZwXB3Dxzb9zQ+AGyF
+        1qJDNIrYYcdt1af/qxmvMrnwvP27xpaKoq8pmhrdr0qjdVs1z3E846W7o7K0sZx7
+        D2m88vjQCfTih0jydx7oMTUUrmgil8tXE9/5aLw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=VqniBB
+        YHeMtICu1bEyH03RfWAVnT/MXE1EJ8GYbbaIU=; b=ey5WlOZouTBGAdwhFpqyzX
+        jbGaUDMWEilCQk5crTx1sAnyUyraXVS7iCKyWbPFh6rStxCQrtN2ThiQMVy+jyIW
+        ZJ1lldtYvzqhrvLPELLGjiKjii1LEpbFkg5LbzxEhaIx7zrZZoEA9OlEOxZDzC2l
+        961TW0xLy4PafDCGlCyjBZIREoJcUrD+KkDO1NV0vn5Lh/HpwQrokKoe/yt0U/hy
+        c0w9pMQpw+bSrRTJyxL90PDlXCtwUkVLspU01fdEitFeaaB8z9bDDhYwM9YynjEN
+        Z8z1VFdaaCOFCrTs+8NnTHDpByL+YYTqX89yYgmtcjXAgP8E8SRxwlCwgNvdJBlA
+        ==
+X-ME-Sender: <xms:vQenYEIlsXuZBh4Yd4jeD___tJ3sNEw0cMzWi9klSCRxzlEYs4XL0Q>
+    <xme:vQenYEJFtK67hGFzbyFHqtVueQvPwkgOzgFBD29Lvk0FZQz7bYp9HKGuODgUH4oaN
+    VYjtE7XaMiMo5L-NQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejvddgfeekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreerjeenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepuddttdekueeggedvtddtueekiedutdfguedutdefieeuteefieelteet
+    vddthfeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    eprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:vQenYEshM2WB1_vWyH7_F5KCi6YeBvaFRFvtM2OA3UoLEU00G82U-w>
+    <xmx:vQenYBb7tQZSWWjOXowm6behOalL5Jh-nik9VtRZn73PPsVBzOMvQA>
+    <xmx:vQenYLZwnSMmEAXUSfAey6_wY7lzAO0A2xTw4Hz1a9bESlS1zncCow>
+    <xmx:vgenYJBE1A-ARSFCTP7n6FYY5LDfREejcxH6pZe5IDaBGeWq_R1G6Q>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 122C7A004B1; Thu, 20 May 2021 21:07:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <8fc49b36-256e-47ff-8834-bc60fb7a2450@www.fastmail.com>
+In-Reply-To: <20210520101346.16772-4-steven_lee@aspeedtech.com>
+References: <20210520101346.16772-1-steven_lee@aspeedtech.com>
+ <20210520101346.16772-4-steven_lee@aspeedtech.com>
+Date:   Fri, 21 May 2021 10:36:07 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>
+Cc:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>,
+        "Hongwei Zhang" <Hongweiz@ami.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v4_3/3]_mmc:_sdhci-of-aspeed:_Configure_the_SDHCIs_?=
+ =?UTF-8?Q?as_specified_by_the_devicetree.?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/20/21 4:07 PM, Stephen Rothwell wrote:
-> Hi Randy,
-> 
-> On Thu, 20 May 2021 15:40:54 -0700 Randy Dunlap <rdunlap@infradead.org> wrote:
->>
->> on x86_64:
->> (from linux-next, not mmotm)
-> 
-> Yeah, this is caused by a bad merge resolution by me.
-> 
->> ../net/netfilter/nft_set_pipapo_avx2.c: In function ‘nft_pipapo_avx2_lookup’:
->> ../net/netfilter/nft_set_pipapo_avx2.c:1135:10: error: implicit declaration of function ‘nft_pipapo_lookup’; did you mean ‘nft_pipapo_avx2_lookup’? [-Werror=implicit-function-declaration]
->>    return nft_pipapo_lookup(net, set, key, ext);
->>           ^~~~~~~~~~~~~~~~~
-> 
-> I have added this to the merge resolution today:
-> 
-> diff --git a/include/net/netfilter/nf_tables_core.h b/include/net/netfilter/nf_tables_core.h
-> index 789e9eadd76d..8652b2514e57 100644
-> --- a/include/net/netfilter/nf_tables_core.h
-> +++ b/include/net/netfilter/nf_tables_core.h
-> @@ -89,6 +89,8 @@ extern const struct nft_set_type nft_set_bitmap_type;
->  extern const struct nft_set_type nft_set_pipapo_type;
->  extern const struct nft_set_type nft_set_pipapo_avx2_type;
->  
-> +bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
-> +			    const u32 *key, const struct nft_set_ext **ext);
->  #ifdef CONFIG_RETPOLINE
->  bool nft_rhash_lookup(const struct net *net, const struct nft_set *set,
->  		      const u32 *key, const struct nft_set_ext **ext);
-> @@ -101,8 +103,6 @@ bool nft_hash_lookup_fast(const struct net *net,
->  			  const u32 *key, const struct nft_set_ext **ext);
->  bool nft_hash_lookup(const struct net *net, const struct nft_set *set,
->  		     const u32 *key, const struct nft_set_ext **ext);
-> -bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
-> -			    const u32 *key, const struct nft_set_ext **ext);
->  bool nft_set_do_lookup(const struct net *net, const struct nft_set *set,
->  		       const u32 *key, const struct nft_set_ext **ext);
->  #else
-> diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
-> index 9addc0b447f7..dce866d93fee 100644
-> --- a/net/netfilter/nft_set_pipapo.c
-> +++ b/net/netfilter/nft_set_pipapo.c
-> @@ -408,7 +408,6 @@ int pipapo_refill(unsigned long *map, int len, int rules, unsigned long *dst,
->   *
->   * Return: true on match, false otherwise.
->   */
-> -INDIRECT_CALLABLE_SCOPE
->  bool nft_pipapo_lookup(const struct net *net, const struct nft_set *set,
->  		       const u32 *key, const struct nft_set_ext **ext)
->  {
-> 
-> It should apply on top of next-20210520 if you want to test it (I
-> haven't tested it yet, but will later today).
 
-Yes, that builds. Thanks.
 
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
-https://people.kernel.org/tglx/notes-about-netiquette
+On Thu, 20 May 2021, at 19:43, Steven Lee wrote:
+> The hardware provides capability configuration registers for each SDHCI
+> in the global configuration space for the SD controller. Writes to the
+> global capability registers are mirrored to the capability registers in
+> the associated SDHCI. Configuration of the capabilities must be written
+> through the mirror registers prior to initialisation of the SDHCI.
+> 
+> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+
+Reviewed-by: Andrew Jeffery <andrew@aj.id.au>
