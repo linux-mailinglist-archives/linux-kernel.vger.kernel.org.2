@@ -2,70 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A96B38C6B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:44:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2903638C6BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233442AbhEUMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:45:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59316 "EHLO mail.kernel.org"
+        id S234111AbhEUMrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:47:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60100 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229915AbhEUMpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:45:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 09852613AC;
-        Fri, 21 May 2021 12:44:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621601055;
-        bh=+8u7Bzk+pS7SnmB3/zgIbs1kB0ko1X+1PDv2zvMy5rc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OAQBjQk781hK2nAwCB91P9kZUJVu9pWgJhBFj6bHcnhrGAAWY9i9WR7K96pHMnaYX
-         CpIuL/Luwr4NGHULMNN9VzIyMalC0GzBFiruF/JdJQh5kyRE3yIT6uYogSy2J/asRk
-         xhuqwAJ/koOQjIokjKVccDpA1CKHMgRztopYACXc=
-Date:   Fri, 21 May 2021 14:44:13 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Tong Zhang <ztong0001@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
-        Colin Ian King <colin.king@canonical.com>
-Subject: Re: [PATCH v4] misc: alcor_pci: fix null-ptr-deref when there is no
- PCI bridge
-Message-ID: <YKerHVMuqnRQmhMz@kroah.com>
-References: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
- <20210518192820.181500-1-ztong0001@gmail.com>
+        id S229915AbhEUMrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:47:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CB6EB613AC;
+        Fri, 21 May 2021 12:45:34 +0000 (UTC)
+Date:   Fri, 21 May 2021 18:15:30 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Baochen Qiang <bqiang@codeaurora.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH] mhi: add MHI_STATE_M2 to resume success criteria
+Message-ID: <20210521124530.GF70095@thinkpad>
+References: <20210420035339.282963-1-bqiang@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210518192820.181500-1-ztong0001@gmail.com>
+In-Reply-To: <20210420035339.282963-1-bqiang@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 03:28:18PM -0400, Tong Zhang wrote:
-> There is an issue with the ASPM(optional) capability checking function.
-> A device might be attached to root complex directly, in this case,
-> bus->self(bridge) will be NULL, thus priv->parent_pdev is NULL.
-> Since alcor_pci_init_check_aspm(priv->parent_pdev) checks the PCI link's
-> ASPM capability and populate parent_cap_off, which will be used later by
-> alcor_pci_aspm_ctrl() to dynamically turn on/off device, what we can do
-> here is to avoid checking the capability if we are on the root complex.
-> This will make pdev_cap_off 0 and alcor_pci_aspm_ctrl() will simply
-> return when bring called, effectively disable ASPM for the device.
+Hi,
+
+The patch subject should be,
+
+"bus: mhi: Wait for M2 state during system resume"
+
+We follow "bus: mhi:" prefix for all MHI patches. Also, the subject should
+clearly portray what the patch is intend to do.
+
+On Tue, Apr 20, 2021 at 11:53:39AM +0800, Baochen Qiang wrote:
+> During system resume, mhi driver triggers M3->M0 transition and then waits
+
+s/mhi driver/MHI host
+
+> for target device to enter M0 state. Once done, the device queues a state
+> change event into ctrl event ring and notify mhi dirver by raising an
+
+s/notify/notifies and s/mhi dirver/MHI host. MHI driver is somewhat confusing
+since we have the MHI device driver (QRTR etc...) as well. So just use MHI host
+everywhere.
+
+> interrupt, where a tasklet is scheduled to process this event. In most cases,
+> the taklet is served timely and wait operation succeeds.
 > 
-> [    1.246492] BUG: kernel NULL pointer dereference, address: 00000000000000c0
-> [    1.248731] RIP: 0010:pci_read_config_byte+0x5/0x40
-> [    1.253998] Call Trace:
-> [    1.254131]  ? alcor_pci_find_cap_offset.isra.0+0x3a/0x100 [alcor_pci]
-> [    1.254476]  alcor_pci_probe+0x169/0x2d5 [alcor_pci]
+
+s/taklet/tasklet
+
+> However, there are cases where CPU is busy and can not serve this tasklet
+
+a/can not/cannot
+
+> for some time. Once delay goes long enough, the device moves itself to M1
+> state and also interrupts mhi driver after inserting a new state change
+> event to ctrl ring. Later CPU finally has time to process the ring, however
+> there are two events in it now:
+> 	1. for M3->M0 event, which is processed first as queued first,
+> 	   tasklet handler updates device state to M0 and wakes up the task,
+> 	   i.e., the mhi driver.
+> 	2. for M0->M1 event, which is processed later, tasklet handler
+> 	   triggers M1->M2 transition and updates device state to M2 directly,
+> 	   then wakes up the mhi driver(if still sleeping on this wait queue).
+> Note that although mhi driver has been woken up while processing the first
+> event, it may still has no chance to run before the second event is processed.
+> In other words, mhi driver has to keep waiting till timeout cause the M0 state
+> has been missed.
 > 
-> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
-> Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Co-developed-by: Colin Ian King <colin.king@canonical.com>
+> kernel log here:
+> ...
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
+> ...
+> 
+> Fix this issue by simply adding M2 as a valid state for resume.
+> 
+> Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
+> 
+> Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
+
+Could you please add a fixes tag as well? And this patch should be backported to
+stable kernels also, so please CC stable@vger.kernel.org.
+
+Thanks,
+Mani
+
 > ---
-> v2: check before calling alcor_pci_find_cap_offset()
-> v3: Add comment. Enable the dev_dbg() output when priv->parent_pdev is NULL.
-> v4: fix inverted if statement, thanks to Colin <colin.king@canonical.com>
-
-Please just send a fix-up patch instead, I don't want to revert and then
-add this, that doesn't make any sense...
-
-thanks,
-
-greg k-h
+>  drivers/bus/mhi/core/pm.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index ce73cfa63cb3..ca5f2feed9d5 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -900,6 +900,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
+>  
+>  	ret = wait_event_timeout(mhi_cntrl->state_event,
+>  				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
+> +				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
+>  				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+>  				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>  
+> -- 
+> 2.25.1
+> 
