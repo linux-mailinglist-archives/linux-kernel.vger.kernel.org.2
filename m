@@ -2,115 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 73F4B38CAEE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:25:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 162E038CAED
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235066AbhEUQ1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:27:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234758AbhEUQ05 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S234885AbhEUQ05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 21 May 2021 12:26:57 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEBEC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:25:33 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id lx17-20020a17090b4b11b029015f3b32b8dbso5841503pjb.0
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 09:25:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lCj0Vj0/aEOSeqE1QBcXcL/Py2Jrh8/U+HcmsMEdhBE=;
-        b=T75N1lghG4u7QkKxhi4qohHgR1xioMjwOwJlcZq4twmw+bTpnVdRCZ1dPKaGxe1vuN
-         wY+YUXWtgnjIgMCtm8ShVyVVGlDgX2QyMtRuWElkh3J0q2/1OnPeUyq1uAQVUUgjbZ7m
-         O9VFBBDCUOY+rfByDhCVOnyGRGopnHEcTs/kL+a5QRtaor7GOGUioPJ3KgEuumV08maA
-         K6hU03jp9Wi6SEg2Ca+HRLnpOB9nPF6qkwPRCt8WkfmbOdGyASV88aN7D9jRq3cUYcJP
-         kFMMVgOfWC8C3wn5UHFRIaZ/9cFVegJSD+L/uUw2kmNRsMe2fmE201jy2uKaILXmAjZC
-         1jaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=lCj0Vj0/aEOSeqE1QBcXcL/Py2Jrh8/U+HcmsMEdhBE=;
-        b=IDw7QjpoQZqUoNdTzg8Z8eecv2hgLKJ8bC3k9ctawO6/V/s1jnE2SWAHhi3BvBDyKR
-         JYTj3DRGA7d7VaFrccLl3D1AldMVp5f4ULqycdwsa3ibn8uXBJlTRnOvl5uKhD06ODXw
-         3UqjhqdfVz9pllJkjLyDKm8Tg85wQPMBy8EMSDpe+7o3OjGSaXwOZt6LwZRRdtGgGqnx
-         aBKOrjbnAdOEOPMrEOXwIIVl4seT5dLMZHuCD0Ilt/2xiw51iF/SIvFz+LZf/kKINAlD
-         5LNgcZ2+4FknSSoV++C7YjB+otWXP/EDTYQ2QG2KB8pvXG7nxuezMXl5ZTmA7gi7PWrH
-         BRcw==
-X-Gm-Message-State: AOAM530vYWEuYqAZWx59OIsV7GXmY8XwBtAb4LVc6UHkhF8CLhyLHuwY
-        jqKsD7xGM7UQJ24DzJuDpV0=
-X-Google-Smtp-Source: ABdhPJwp6UIeyFlj1XdEPIz+zbSIck1hMoR25LSacMqM4MahKtAgw4IdcheGg6wMZjzKmnU6McALig==
-X-Received: by 2002:a17:902:728c:b029:f6:6aff:4d66 with SMTP id d12-20020a170902728cb02900f66aff4d66mr8229086pll.20.1621614333031;
-        Fri, 21 May 2021 09:25:33 -0700 (PDT)
-Received: from localhost.localdomain ([45.135.186.20])
-        by smtp.gmail.com with ESMTPSA id y17sm4544845pfb.183.2021.05.21.09.25.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 09:25:31 -0700 (PDT)
-From:   Dongliang Mu <mudongliangabcd@gmail.com>
-To:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-        gregkh@linuxfoundation.org, rkovhaev@gmail.com,
-        straube.linux@gmail.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Cc:     Dongliang Mu <mudongliangabcd@gmail.com>,
-        syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
-Subject: [PATCH v2] staging: rtl8712: Fix memory leak in r8712_init_recv_priv
-Date:   Sat, 22 May 2021 00:25:19 +0800
-Message-Id: <20210521162519.677074-1-mudongliangabcd@gmail.com>
-X-Mailer: git-send-email 2.25.1
+Received: from foss.arm.com ([217.140.110.172]:50960 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232200AbhEUQ0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:26:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 471EF1424;
+        Fri, 21 May 2021 09:25:29 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBD233F73B;
+        Fri, 21 May 2021 09:25:26 -0700 (PDT)
+Date:   Fri, 21 May 2021 17:25:24 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 08/21] cpuset: Honour task_cpu_possible_mask() in
+ guarantee_online_cpus()
+Message-ID: <20210521162524.22cwmrao3df7m4jb@e107158-lin.cambridge.arm.com>
+References: <20210518094725.7701-1-will@kernel.org>
+ <20210518094725.7701-9-will@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210518094725.7701-9-will@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-r871xu_dev_remove failed to call r8712_free_drv_sw() and free the
-resource (e.g., struct urb) due to the failure of firmware loading.
+On 05/18/21 10:47, Will Deacon wrote:
+> Asymmetric systems may not offer the same level of userspace ISA support
+> across all CPUs, meaning that some applications cannot be executed by
+> some CPUs. As a concrete example, upcoming arm64 big.LITTLE designs do
+> not feature support for 32-bit applications on both clusters.
+> 
+> Modify guarantee_online_cpus() to take task_cpu_possible_mask() into
+> account when trying to find a suitable set of online CPUs for a given
+> task. This will avoid passing an invalid mask to set_cpus_allowed_ptr()
+> during ->attach() and will subsequently allow the cpuset hierarchy to be
+> taken into account when forcefully overriding the affinity mask for a
+> task which requires migration to a compatible CPU.
+> 
+> Cc: Li Zefan <lizefan@huawei.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Will Deacon <will@kernel.org>
+> ---
+>  include/linux/cpuset.h |  2 +-
+>  kernel/cgroup/cpuset.c | 33 +++++++++++++++++++--------------
+>  2 files changed, 20 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index ed6ec677dd6b..414a8e694413 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -185,7 +185,7 @@ static inline void cpuset_read_unlock(void) { }
+>  static inline void cpuset_cpus_allowed(struct task_struct *p,
+>  				       struct cpumask *mask)
+>  {
+> -	cpumask_copy(mask, cpu_possible_mask);
+> +	cpumask_copy(mask, task_cpu_possible_mask(p));
+>  }
+>  
+>  static inline void cpuset_cpus_allowed_fallback(struct task_struct *p)
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 8c799260a4a2..b532a5333ff9 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -372,18 +372,26 @@ static inline bool is_in_v2_mode(void)
+>  }
+>  
+>  /*
+> - * Return in pmask the portion of a cpusets's cpus_allowed that
+> - * are online.  If none are online, walk up the cpuset hierarchy
+> - * until we find one that does have some online cpus.
+> + * Return in pmask the portion of a task's cpusets's cpus_allowed that
+> + * are online and are capable of running the task.  If none are found,
+> + * walk up the cpuset hierarchy until we find one that does have some
+> + * appropriate cpus.
+>   *
+>   * One way or another, we guarantee to return some non-empty subset
+>   * of cpu_online_mask.
+>   *
+>   * Call with callback_lock or cpuset_mutex held.
+>   */
+> -static void guarantee_online_cpus(struct cpuset *cs, struct cpumask *pmask)
+> +static void guarantee_online_cpus(struct task_struct *tsk,
+> +				  struct cpumask *pmask)
+>  {
+> -	while (!cpumask_intersects(cs->effective_cpus, cpu_online_mask)) {
+> +	struct cpuset *cs = task_cs(tsk);
 
-Fix this by invoking r8712_free_drv_sw at the failure site.
+task_cs() requires rcu_read_lock(), but I can't see how the lock is obtained
+from cpuset_attach() path, did I miss it? Running with lockdep should spill
+suspicious RCU usage warning.
 
-Reported-by: syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
-Fixes: b4383c971bc5 ("staging: rtl8712: handle firmware load failure")
-Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
----
-v1->v2: fix the initialization of pnetdev
+Maybe it makes more sense to move the rcu_read_lock() inside the function now
+with task_cs()?
 
- drivers/staging/rtl8712/usb_intf.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+Thanks
 
-diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
-index dc21e7743349..57e773464e18 100644
---- a/drivers/staging/rtl8712/usb_intf.c
-+++ b/drivers/staging/rtl8712/usb_intf.c
-@@ -593,13 +593,14 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
- 	struct usb_device *udev = interface_to_usbdev(pusb_intf);
- 
- 	if (pnetdev) {
-+		struct net_device *newpnetdev = NULL;
- 		struct _adapter *padapter = netdev_priv(pnetdev);
- 
- 		/* never exit with a firmware callback pending */
- 		wait_for_completion(&padapter->rtl8712_fw_ready);
--		pnetdev = usb_get_intfdata(pusb_intf);
-+		newpnetdev = usb_get_intfdata(pusb_intf);
- 		usb_set_intfdata(pusb_intf, NULL);
--		if (!pnetdev)
-+		if (!newpnetdev)
- 			goto firmware_load_fail;
- 		release_firmware(padapter->fw);
- 		if (drvpriv.drv_registered)
-@@ -625,6 +626,10 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
- 	 */
- 	if (udev->state != USB_STATE_NOTATTACHED)
- 		usb_reset_device(udev);
-+	if (pnetdev) {
-+		struct _adapter *padapter = netdev_priv(pnetdev);
-+		r8712_free_drv_sw(padapter);
-+	}
- }
- 
- static int __init r8712u_drv_entry(void)
--- 
-2.25.1
+--
+Qais Yousef
 
+> +	const struct cpumask *possible_mask = task_cpu_possible_mask(tsk);
+> +
+> +	if (WARN_ON(!cpumask_and(pmask, possible_mask, cpu_online_mask)))
+> +		cpumask_copy(pmask, cpu_online_mask);
+> +
+> +	while (!cpumask_intersects(cs->effective_cpus, pmask)) {
+>  		cs = parent_cs(cs);
+>  		if (unlikely(!cs)) {
+>  			/*
+> @@ -393,11 +401,10 @@ static void guarantee_online_cpus(struct cpuset *cs, struct cpumask *pmask)
+>  			 * cpuset's effective_cpus is on its way to be
+>  			 * identical to cpu_online_mask.
+>  			 */
+> -			cpumask_copy(pmask, cpu_online_mask);
+>  			return;
+>  		}
+>  	}
+> -	cpumask_and(pmask, cs->effective_cpus, cpu_online_mask);
+> +	cpumask_and(pmask, pmask, cs->effective_cpus);
+>  }
+>  
+>  /*
+> @@ -2199,15 +2206,13 @@ static void cpuset_attach(struct cgroup_taskset *tset)
+>  
+>  	percpu_down_write(&cpuset_rwsem);
+>  
+> -	/* prepare for attach */
+> -	if (cs == &top_cpuset)
+> -		cpumask_copy(cpus_attach, cpu_possible_mask);
+> -	else
+> -		guarantee_online_cpus(cs, cpus_attach);
+> -
+>  	guarantee_online_mems(cs, &cpuset_attach_nodemask_to);
+>  
+>  	cgroup_taskset_for_each(task, css, tset) {
+> +		if (cs != &top_cpuset)
+> +			guarantee_online_cpus(task, cpus_attach);
+> +		else
+> +			cpumask_copy(cpus_attach, task_cpu_possible_mask(task));
+>  		/*
+>  		 * can_attach beforehand should guarantee that this doesn't
+>  		 * fail.  TODO: have a better way to handle failure here
+> @@ -3303,7 +3308,7 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+>  
+>  	spin_lock_irqsave(&callback_lock, flags);
+>  	rcu_read_lock();
+> -	guarantee_online_cpus(task_cs(tsk), pmask);
+> +	guarantee_online_cpus(tsk, pmask);
+>  	rcu_read_unlock();
+>  	spin_unlock_irqrestore(&callback_lock, flags);
+>  }
+> -- 
+> 2.31.1.751.gd2f1c929bd-goog
+> 
