@@ -2,130 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0900B38C6D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63F1438C6DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbhEUMuc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:50:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230081AbhEUMua (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:50:30 -0400
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D3AC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:49:07 -0700 (PDT)
-Received: by mail-pg1-x531.google.com with SMTP id m124so14105073pgm.13
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:49:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pGuPc/FWKOVvjhaHRN43mHg/w+5OJaPMhcuzSdmouas=;
-        b=SsyTMFiRSBaxbEGOPNJk2PsZEN+4hTeX/8abTCA5DUXF83GqcbK4L3mi2tLPQj9Ep0
-         8DJYTXH9XZC5Vp+ZWOASmVWucLMA9lLwn9jpYZhfS6LawydoUt8UUoHcpIPdXbicVgxH
-         VIXprSTWEfwWNINvuSYOPa/Zw0vOS4aGrZizqs8TZEHV2CBobhxoyif/muGrupWz2+Wo
-         HBDNKFTaRf1Gpa3WomeNKwqgwdQkpRQq5cR9bxtX4ZSRLubqhiG9zMWxCCEiCWVBeajQ
-         KqxYjAMCBCJnTTxsqPAACqw1zv4yHPqeJnPJpaXGxv9IIHS1tw/zqchHq1kYFKXsklPk
-         T/XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pGuPc/FWKOVvjhaHRN43mHg/w+5OJaPMhcuzSdmouas=;
-        b=kRQUTCGsXfuli9+UgIuuK6x4vx6B/6y2i3OepbhhpjmZDVcP4Pkp8xcFITFGA7o1RW
-         4t5X1yp5AtImG2b5V6UPsUhubSEKJfFp4KgOs1BsG4TiO0/4XGLRfLRqEbiBVH1+oYnW
-         aTnKEKfft6qBqOvAwONTF1KYfabZLyQD1UCqQIs8aBtGsaDDML8IXd+n569tI/xo8eMT
-         4tS0N0tvtploAwiTmLkHz+/j/MIMJxdx+TqYsMCpIIQh7yUFxHnhrWCwAPPK1b1oYRT1
-         BulX7HS8jSj8o7jcJjS2oRMUHFRMzHEF84TAh22mFNcJZgfVQ/ZV9wdqJz7i5CU22JjR
-         d5sw==
-X-Gm-Message-State: AOAM531GihjWl4x/h9bTY0C9wsrGvPERsrMCeCqJtewDwb6spy6gkMV5
-        6g5hSf84O/NDV0CvrWPAJ8Ll2w==
-X-Google-Smtp-Source: ABdhPJx4ca0fPgEFRiDgD2lJUNF0Ana9vfd7DuRLBFrZ5qcbxuD40fXoDaL43ZLv/B0Q7cEo2irrPw==
-X-Received: by 2002:a62:bd14:0:b029:2de:8bf7:2df8 with SMTP id a20-20020a62bd140000b02902de8bf72df8mr10185713pff.60.1621601346960;
-        Fri, 21 May 2021 05:49:06 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (59-124-168-89.HINET-IP.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id d10sm4271419pfo.65.2021.05.21.05.49.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 05:49:06 -0700 (PDT)
-From:   Zong Li <zong.li@sifive.com>
-To:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, palmer@dabbelt.com,
-        paul.walmsley@sifive.com, schwab@linux-m68k.org, sboyd@kernel.org,
-        aou@eecs.berkeley.edu, mturquette@baylibre.com,
-        geert@linux-m68k.org, yixun.lan@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc:     Zong Li <zong.li@sifive.com>
-Subject: [PATCH] net: macb: ensure the device is available before accessing GEMGXL control registers
-Date:   Fri, 21 May 2021 20:48:59 +0800
-Message-Id: <20210521124859.101012-1-zong.li@sifive.com>
-X-Mailer: git-send-email 2.31.1
+        id S234312AbhEUMvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:51:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230081AbhEUMvW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:51:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE40E6128A;
+        Fri, 21 May 2021 12:49:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621601399;
+        bh=G6ouIauR05ZjrZdPDoLSgmtuQODfUpudDe0dhIJwxGg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RXyaAIs4G0Wi1Rot89jVxURym/6ZQSoS/jdA8GQctBWZDIgCvsVVQWExpQBN9oF+K
+         HMEy6DtuwtA6mmNjtELemlALcpBAOWrRfq0gKd47AjhhQKIsWMoN/FdlBHSBno+/xr
+         TP8FSI0GuhTUqrUYr0x6VMucqe0fv1oI9+6/NhuDPGdnxds2iSVdZuEU11Pubs3wou
+         B1fv4Y2XlkPjG9D5BQvEPUxQZH5x8p+vXQb6P8HR+IbcJQiD/tMogtphEyCoIeb9ED
+         LyqRj+2W2RVnyqc06wU879N3lQAw5wOoMnk8E/o+Ucla6GsnhUJQ0PVqfM4M3dwkpW
+         ZsgAu2R9CDXkQ==
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     linux-arm-msm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org
+Subject: [RFC PATCH 00/13] drm/msm: Add Display Stream Compression Support
+Date:   Fri, 21 May 2021 18:19:29 +0530
+Message-Id: <20210521124946.3617862-1-vkoul@kernel.org>
+X-Mailer: git-send-email 2.26.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If runtime power menagement is enabled, the gigabit ethernet PLL would
-be disabled after macb_probe(). During this period of time, the system
-would hang up if we try to access GEMGXL control registers.
+Display Stream Compression (DSC) compresses the display stream in host which
+is later decoded by panel. This series enables this for Qualcomm msm driver.
+This was tested on Google Pixel3 phone which use LGE SW43408 panel.
 
-We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
-sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
-function called from invalid context"). Add the similar flag to ensure
-the device is available before accessing GEMGXL device.
+The changes include adding DT properties for DSC then hardware blocks support
+required in DPU1 driver and support in encoder. We also add support in DSI
+and introduce required topology changes.
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
----
- drivers/net/ethernet/cadence/macb.h      | 2 ++
- drivers/net/ethernet/cadence/macb_main.c | 7 +++++++
- 2 files changed, 9 insertions(+)
+In order for panel to set the DSC parameters we add dsc in drm_panel and set
+it from the msm driver.
 
-diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
-index d8d87213697c..acf5242ce715 100644
---- a/drivers/net/ethernet/cadence/macb.h
-+++ b/drivers/net/ethernet/cadence/macb.h
-@@ -1309,6 +1309,8 @@ struct macb {
- 
- 	u32	rx_intr_mask;
- 
-+	unsigned int is_opened;
-+
- 	struct macb_pm_data pm_data;
- 	const struct macb_usrio_config *usrio;
- };
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 6bc7d41d519b..e079ed10ad91 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -2781,6 +2781,8 @@ static int macb_open(struct net_device *dev)
- 	if (bp->ptp_info)
- 		bp->ptp_info->ptp_init(dev);
- 
-+	bp->is_opened = 1;
-+
- 	return 0;
- 
- reset_hw:
-@@ -2818,6 +2820,8 @@ static int macb_close(struct net_device *dev)
- 	if (bp->ptp_info)
- 		bp->ptp_info->ptp_remove(dev);
- 
-+	bp->is_opened = 0;
-+
- 	pm_runtime_put(&bp->pdev->dev);
- 
- 	return 0;
-@@ -2867,6 +2871,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
- 	struct gem_stats *hwstat = &bp->hw_stats.gem;
- 	struct net_device_stats *nstat = &bp->dev->stats;
- 
-+	if (!bp->is_opened)
-+		return nstat;
-+
- 	gem_update_stats(bp);
- 
- 	nstat->rx_errors = (hwstat->rx_frame_check_sequence_errors +
+Complete changes which enable this for Pixel3 along with panel driver (not
+part of this series) and DT changes can be found at:
+git.linaro.org/people/vinod.koul/kernel.git pixel/dsc_rfc
+
+Comments welcome!
+
+Vinod Koul (13):
+  drm/dsc: Add dsc pps header init function
+  dt-bindings: msm/dsi: Document Display Stream Compression (DSC)
+    parameters
+  drm/msm/dsi: add support for dsc data
+  drm/msm/disp/dpu1: Add support for DSC
+  drm/msm/disp/dpu1: Add support for DSC in pingpong block
+  drm/msm/disp/dpu1: Add DSC support in RM
+  drm/msm/disp/dpu1: Add DSC for SDM845 to hw_catalog
+  drm/msm/disp/dpu1: Add DSC support in hw_ctl
+  drm/msm/disp/dpu1: Don't use DSC with mode_3d
+  drm/msm/disp/dpu1: Add support for DSC in encoder
+  drm/msm/disp/dpu1: Add support for DSC in topology
+  drm/msm/dsi: Add support for DSC configuration
+  drm/msm/dsi: Pass DSC params to drm_panel
+
+ .../devicetree/bindings/display/msm/dsi.txt   |  15 +
+ drivers/gpu/drm/drm_dsc.c                     |  11 +
+ drivers/gpu/drm/msm/Makefile                  |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c   | 204 +++++++++++-
+ .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h  |  11 +
+ .../drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c  |   2 +
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.c    |  22 ++
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_catalog.h    |  26 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c    |  12 +-
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.h    |   2 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c    | 221 +++++++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h    |  79 +++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_hw_mdss.h   |  13 +
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c   |  32 ++
+ .../gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.h   |  14 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_kms.h       |   1 +
+ drivers/gpu/drm/msm/disp/dpu1/dpu_rm.c        |  32 ++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_rm.h        |   1 +
+ drivers/gpu/drm/msm/dsi/dsi.xml.h             |  10 +
+ drivers/gpu/drm/msm/dsi/dsi_host.c            | 293 +++++++++++++++++-
+ drivers/gpu/drm/msm/msm_drv.h                 |  32 ++
+ include/drm/drm_dsc.h                         |  16 +
+ include/drm/drm_panel.h                       |   7 +
+ 23 files changed, 1043 insertions(+), 14 deletions(-)
+ create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.c
+ create mode 100644 drivers/gpu/drm/msm/disp/dpu1/dpu_hw_dsc.h
+
 -- 
-2.31.1
+2.26.3
 
