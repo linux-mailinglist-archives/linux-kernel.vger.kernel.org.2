@@ -2,85 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D558138C6B1
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A96B38C6B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234108AbhEUMm3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 08:42:29 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:48522 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231584AbhEUMmO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:42:14 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UZbu5W2_1621600848;
-Received: from 30.240.99.2(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UZbu5W2_1621600848)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 21 May 2021 20:40:49 +0800
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH v5 2/3] sched/fair: Add cfs bandwidth burst statistics
-From:   changhuaixin <changhuaixin@linux.alibaba.com>
-In-Reply-To: <CAFpoUr1GZspG1yKHf3D=+BZKfufWNNdu2Ccuj+YBo8EaJYRi8w@mail.gmail.com>
-Date:   Fri, 21 May 2021 20:42:27 +0800
-Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
-        Benjamin Segall <bsegall@google.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
-        khlebnikov@yandex-team.ru,
-        open list <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
-        Paul Turner <pjt@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        shanpeic@linux.alibaba.com, Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        xiyou.wangcong@gmail.com
-Content-Transfer-Encoding: 8BIT
-Message-Id: <E4AA746E-6608-4576-BF19-57589B2867FE@linux.alibaba.com>
-References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
- <20210520123419.8039-3-changhuaixin@linux.alibaba.com>
- <CAFpoUr1GZspG1yKHf3D=+BZKfufWNNdu2Ccuj+YBo8EaJYRi8w@mail.gmail.com>
-To:     Odin Ugedal <odin@uged.al>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S233442AbhEUMpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59316 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229915AbhEUMpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 08:45:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 09852613AC;
+        Fri, 21 May 2021 12:44:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621601055;
+        bh=+8u7Bzk+pS7SnmB3/zgIbs1kB0ko1X+1PDv2zvMy5rc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OAQBjQk781hK2nAwCB91P9kZUJVu9pWgJhBFj6bHcnhrGAAWY9i9WR7K96pHMnaYX
+         CpIuL/Luwr4NGHULMNN9VzIyMalC0GzBFiruF/JdJQh5kyRE3yIT6uYogSy2J/asRk
+         xhuqwAJ/koOQjIokjKVccDpA1CKHMgRztopYACXc=
+Date:   Fri, 21 May 2021 14:44:13 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+        Colin Ian King <colin.king@canonical.com>
+Subject: Re: [PATCH v4] misc: alcor_pci: fix null-ptr-deref when there is no
+ PCI bridge
+Message-ID: <YKerHVMuqnRQmhMz@kroah.com>
+References: <cb099c69-0d59-7a12-b0bc-2ce71264363e@canonical.com>
+ <20210518192820.181500-1-ztong0001@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210518192820.181500-1-ztong0001@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> On May 20, 2021, at 10:11 PM, Odin Ugedal <odin@uged.al> wrote:
+On Tue, May 18, 2021 at 03:28:18PM -0400, Tong Zhang wrote:
+> There is an issue with the ASPM(optional) capability checking function.
+> A device might be attached to root complex directly, in this case,
+> bus->self(bridge) will be NULL, thus priv->parent_pdev is NULL.
+> Since alcor_pci_init_check_aspm(priv->parent_pdev) checks the PCI link's
+> ASPM capability and populate parent_cap_off, which will be used later by
+> alcor_pci_aspm_ctrl() to dynamically turn on/off device, what we can do
+> here is to avoid checking the capability if we are on the root complex.
+> This will make pdev_cap_off 0 and alcor_pci_aspm_ctrl() will simply
+> return when bring called, effectively disable ASPM for the device.
 > 
-> I am a bit sceptical about both the nr_burst and burst_time as they are now.
+> [    1.246492] BUG: kernel NULL pointer dereference, address: 00000000000000c0
+> [    1.248731] RIP: 0010:pci_read_config_byte+0x5/0x40
+> [    1.253998] Call Trace:
+> [    1.254131]  ? alcor_pci_find_cap_offset.isra.0+0x3a/0x100 [alcor_pci]
+> [    1.254476]  alcor_pci_probe+0x169/0x2d5 [alcor_pci]
 > 
-> As an example; a control group using "99.9%" of the quota each period
-> and that is never throttled. Such group would with this patch with a burst of X
-> still get nr_throttled = 0 (as before), but it would get a nr_burst
-> and burst_time that
-> will keep increasing.
-> 
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> Co-developed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Co-developed-by: Colin Ian King <colin.king@canonical.com>
+> ---
+> v2: check before calling alcor_pci_find_cap_offset()
+> v3: Add comment. Enable the dev_dbg() output when priv->parent_pdev is NULL.
+> v4: fix inverted if statement, thanks to Colin <colin.king@canonical.com>
 
-Agreed, there are false positive and false negetive cases, as the current implementation
-uses cfs_b->runtime to judge instead of the actual runtime used.
+Please just send a fix-up patch instead, I don't want to revert and then
+add this, that doesn't make any sense...
 
-> I think there is a big difference between runtime moved/taken from
-> cfs_b->runtime to cfs_rq->runtime_remaining and the actual runtime used
-> in the period. Currently, cfs bw can only supply info the first one, and
-> not the latter.
-> 
-> I think that if people see nr_burst increasing, that they think they _have_
-> to use cfs burst in order to avoid being throttled, even though that might
-> not be the case. It is probably fine as is, as long as it is explicitly stated
+thanks,
 
-It can't be seeing nr_burst incresing first, and using cfs burst feature afterwards.
-Do you mean people see nr_throttled increasing and use cfs burst, while the actual usage
-is below quota? In that case, tasks get throttled because there are runtime to be returned from
-cfs_rq, and get unthrottled shortly. That is a false positive for nr_throttled. When users see that,
-using burst can help improve.
-
-> what the values mean and imply, and what they do not. I cannot see another
-> way to calculate it as it is now, but maybe someone else has some thoughts.
-> 
-> Thanks
-> Odin
-
+greg k-h
