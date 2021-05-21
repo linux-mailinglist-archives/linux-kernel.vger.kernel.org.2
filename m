@@ -2,240 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A1F38C1DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:32:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA3A38C1E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:32:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232089AbhEUId3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:33:29 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:43322 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232011AbhEUId2 (ORCPT
+        id S232167AbhEUIdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 04:33:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232011AbhEUIdn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:33:28 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 14L8W3ud053831;
-        Fri, 21 May 2021 03:32:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1621585923;
-        bh=MOUPIRXUwXmLPYczhUeKPgIWYaZIsJK7spC0Tb6vuTI=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=s6WFFiDHKxoceCE8FOc2HHpVjRjiPsgmcnlIremPUYWO5kjNorAhP/UjtBde1cKM6
-         9Sq41S+PlRSFbY9msc16UBOXKKMfCHm7f13GqT1tHKHTUGrJofOkcXPs7e3rJjoxPA
-         gmsJacbNZ1ybSJwS/uFlyANrLLVguFDaaeER+3sE=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 14L8W363115480
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 21 May 2021 03:32:03 -0500
-Received: from DFLE104.ent.ti.com (10.64.6.25) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 21
- May 2021 03:32:03 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE104.ent.ti.com
- (10.64.6.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Fri, 21 May 2021 03:32:03 -0500
-Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 14L8W0gb032440;
-        Fri, 21 May 2021 03:32:00 -0500
-Subject: Re: [PATCH] dt-bindings: gpio: gpio-davinci: Convert to json-schema
-To:     Rob Herring <robh@kernel.org>,
-        Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Keerthy <j-keerthy@ti.com>, <linux-gpio@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210511090122.6995-1-a-govindraju@ti.com>
- <20210517221513.GA3263368@robh.at.kernel.org>
-From:   Grygorii Strashko <grygorii.strashko@ti.com>
-Message-ID: <861cefe2-7bb6-c435-ab0d-483155852876@ti.com>
-Date:   Fri, 21 May 2021 11:31:56 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210517221513.GA3263368@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+        Fri, 21 May 2021 04:33:43 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A706EC061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:32:20 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id u126-20020a3792840000b02902e769005fe1so15572558qkd.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 01:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=eNYE7zpSOCj7plZZAyS+5aDrL5u+MfadoSDP0vm8/WQ=;
+        b=XraWczXc5cxxOBDBtVGGfGFtPPc7wcCkrF3GfJOY2jod0PMBW5S0idtcykIynrztOj
+         /8GPrUQbzqot1wTmeVWAetIzkEZC1/S5Vu+rB42C87I91OCbcj4/QLTjHI/aPfJDdCTP
+         EKWcZBs9XSVgYlFXMB5dMLRsOVyVLy1EghdzRqGbvvRj7PdWjT2UdYdOPZixtq183drw
+         ZFueMNvZ81RSFOJAehdyIKbW1168dtTXlz3Sfc+dU3I7Xj+0sk4N9kJkIhPwY56OJTjE
+         0sotraP2uChwuL7Oo1h5ZZT6BV+qihPMQ9SFXO73vCLDONZnkh/H0+3yWIa8J4paZ8pA
+         5BCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=eNYE7zpSOCj7plZZAyS+5aDrL5u+MfadoSDP0vm8/WQ=;
+        b=j9/N8fvaS8l7AjaJTeeG+31Q6xxdz2MgrzuLZXcEuQuomBOGZKZu5H5NMRDLYhd1Sx
+         i8Ai2LWqZDm75oD5RjI7EIlhVduhJGm7x3HyY0gI+AExSTUZ+nGpgGNaQN63zwXcpUjP
+         UDPsMFVE4u+r5BIyKnUQyy0QVZ5r+og6bSxvthyFMmIC3nxtI1XvNJijf2+Y7gtkNU2O
+         DQjwIvnNIU3tSA/nCesDg5TTSFkcxCyyZi+OxIjxmJSa6/hJvWgn/D3emyLXhE450i3y
+         Md7pWThBz0NOcqwDI9XKEiFnjWk+yVAB6I3lFgXcbe0pge5DYET5HVoYbqJ6BYwbBDdt
+         aBtg==
+X-Gm-Message-State: AOAM531SOg6/y+ZfOGlZO/I9zBdC3k8Qd2jH/lvKZfLXjIXue4+RCtpu
+        nT5tvoZuEH8EmbQGzEU7jFMLFENZRA==
+X-Google-Smtp-Source: ABdhPJxOtHW/s436pbUSNtX/1MJ9ezmdnT2dciQSffLNozLx/dfNTPZEQC900wdnfyRocBsiRRPvt7cIHg==
+X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:a932:cdd6:7230:17ba])
+ (user=elver job=sendgmr) by 2002:a0c:dc07:: with SMTP id s7mr11433864qvk.26.1621585939685;
+ Fri, 21 May 2021 01:32:19 -0700 (PDT)
+Date:   Fri, 21 May 2021 10:32:09 +0200
+Message-Id: <20210521083209.3740269-1-elver@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH] kfence: use TASK_IDLE when awaiting allocation
+From:   Marco Elver <elver@google.com>
+To:     elver@google.com, akpm@linux-foundation.org
+Cc:     glider@google.com, dvyukov@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kasan-dev@googlegroups.com, Mel Gorman <mgorman@suse.de>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob, All
+Since wait_event() uses TASK_UNINTERRUPTIBLE by default, waiting for an
+allocation counts towards load. However, for KFENCE, this does not make
+any sense, since there is no busy work we're awaiting.
 
-On 18/05/2021 01:15, Rob Herring wrote:
-> On Tue, May 11, 2021 at 02:31:20PM +0530, Aswath Govindraju wrote:
->> Convert gpio-davinci dt-binding documentation from txt to yaml format.
->>
->> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
->> ---
->>   .../devicetree/bindings/gpio/gpio-davinci.txt | 167 ---------------
->>   .../bindings/gpio/gpio-davinci.yaml           | 193 ++++++++++++++++++
->>   MAINTAINERS                                   |   2 +-
->>   3 files changed, 194 insertions(+), 168 deletions(-)
->>   delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.txt
->>   create mode 100644 Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt b/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
->> deleted file mode 100644
->> index 696ea46227d1..000000000000
->> --- a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
->> +++ /dev/null
->> @@ -1,167 +0,0 @@
->> -Davinci/Keystone GPIO controller bindings
->> -
->> -Required Properties:
->> -- compatible: should be "ti,dm6441-gpio": for Davinci da850 SoCs
->> -			"ti,keystone-gpio": for Keystone 2 66AK2H/K, 66AK2L,
->> -						66AK2E SoCs
->> -			"ti,k2g-gpio", "ti,keystone-gpio": for 66AK2G
->> -			"ti,am654-gpio", "ti,keystone-gpio": for TI K3 AM654
->> -			"ti,j721e-gpio", "ti,keystone-gpio": for J721E SoCs
->> -			"ti,am64-gpio", "ti,keystone-gpio": for AM64 SoCs
->> -
+Instead, use TASK_IDLE via wait_event_idle() to not count towards load.
 
-[...]
+BugLink: https://bugzilla.suse.com/show_bug.cgi?id=1185565
+Fixes: 407f1d8c1b5f ("kfence: await for allocation using wait_event")
+Signed-off-by: Marco Elver <elver@google.com>
+Cc: Mel Gorman <mgorman@suse.de>
+Cc: <stable@vger.kernel.org> # v5.12+
+---
+ mm/kfence/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
->> -};
->> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
->> new file mode 100644
->> index 000000000000..1e16172669c7
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/gpio/gpio-davinci.yaml
->> @@ -0,0 +1,193 @@
->> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/gpio/gpio-davinci.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: GPIO controller for Davinci and keystone devices
->> +
->> +maintainers:
->> +  - Keerthy <j-keerthy@ti.com>
->> +
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - items:
->> +          - enum:
->> +              - ti,k2g-gpio
->> +              - ti,am654-gpio
->> +              - ti,j721e-gpio
->> +              - ti,am64-gpio
->> +          - const: ti,keystone-gpio
->> +
->> +      - items:
->> +          - const: ti,dm6441-gpio
->> +      - items:
->> +          - const: ti,keystone-gpio
-> 
-> These 2 can be expressed as an 'enum'.
-> 
->> +
->> +  reg:
->> +    maxItems: 1
->> +    description:
->> +      Physical base address of the controller and the size of memory mapped registers.
-> 
-> Drop. That's every 'reg' property.
-> 
->> +
->> +  gpio-controller: true
->> +
->> +  gpio-ranges: true
->> +
->> +  gpio-line-names:
->> +    description: strings describing the names of each gpio line.
-> 
-> Any constraints like min/max number of lines?
-> 
->> +
->> +  "#gpio-cells":
->> +    const: 2
->> +    description:
->> +      first cell is the pin number and second cell is used to specify optional parameters (unused).
->> +
->> +  interrupts:
->> +    description:
->> +      Array of GPIO interrupt number. Only banked or unbanked IRQs are supported at a time.
-> 
-> Needs constraints. How many items and what are they?
-> 
->> +
->> +  ti,ngpio:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: The number of GPIO pins supported consecutively.
->> +    minimum: 1
->> +
->> +  ti,davinci-gpio-unbanked:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: The number of GPIOs that have an individual interrupt line to processor.
->> +    minimum: 0
->> +
->> +  clocks:
->> +    maxItems: 1
->> +    description:
->> +      clock-specifier to represent input to the GPIO controller.
-> 
-> Drop description.
-> 
->> +
->> +  clock-names:
->> +    const: gpio
->> +
->> +  interrupt-controller: true
->> +
->> +  power-domains:
->> +    maxItems: 1
->> +    description:
->> +      Phandle to the power domain provider node.
-> 
-> Drop.
-> 
->> +
->> +  "#interrupt-cells":
->> +    const: 2
->> +
->> +patternProperties:
->> +  "-hog$":
->> +    type: object
->> +    properties:
->> +      gpios: true
->> +      gpio-hog: true
->> +      input: true
->> +      output-high: true
->> +      output-low: true
->> +      line-name: true
->> +
->> +    required:
->> +      - gpio-hog
->> +      - gpios
-
-I see that gpio-hog.yaml dtschema has been added.
-Can it be reused here and how?
-
-
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +  - gpio-controller
->> +  - "#gpio-cells"
->> +  - interrupts
->> +  - ti,ngpio
->> +  - ti,davinci-gpio-unbanked
->> +  - clocks
->> +  - clock-names
->> +
->> +additionalProperties: false
->> +
-
-[...]
-
+diff --git a/mm/kfence/core.c b/mm/kfence/core.c
+index e18fbbd5d9b4..4d21ac44d5d3 100644
+--- a/mm/kfence/core.c
++++ b/mm/kfence/core.c
+@@ -627,10 +627,10 @@ static void toggle_allocation_gate(struct work_struct *work)
+ 		 * During low activity with no allocations we might wait a
+ 		 * while; let's avoid the hung task warning.
+ 		 */
+-		wait_event_timeout(allocation_wait, atomic_read(&kfence_allocation_gate),
+-				   sysctl_hung_task_timeout_secs * HZ / 2);
++		wait_event_idle_timeout(allocation_wait, atomic_read(&kfence_allocation_gate),
++					sysctl_hung_task_timeout_secs * HZ / 2);
+ 	} else {
+-		wait_event(allocation_wait, atomic_read(&kfence_allocation_gate));
++		wait_event_idle(allocation_wait, atomic_read(&kfence_allocation_gate));
+ 	}
+ 
+ 	/* Disable static key and reset timer. */
 -- 
-Best regards,
-grygorii
+2.31.1.818.g46aad6cb9e-goog
+
