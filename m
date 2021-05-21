@@ -2,153 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07D638CCB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:51:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7AD38CCB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237083AbhEURwZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 13:52:25 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:46560 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237375AbhEURwV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 13:52:21 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621619458; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=kQaQKFs6n4n0HHe6bOtHoF4nMeAkLmDV9FsNtdNYbos=;
- b=CANqLwcD+RmYhkBN66TGP+Mll4QHRzbFoR9C9cTX2S7RJ1yO3t8bwILu0vjWG5St5BJ07ylP
- a5+GQERx2OuutJglPkXaBzo83uej+x8oiA574WTh+zYeZgoQ0smaK+acB2FNdyoNpBvye56V
- YpCDBGWbaCRk1v9YI4MIAlNEvNg=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
- 60a7f2ee0d60c09896f3136d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 17:50:38
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3AA29C43147; Fri, 21 May 2021 17:50:36 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6C85FC4338A;
-        Fri, 21 May 2021 17:50:34 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 21 May 2021 10:50:33 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Pavel Machek <pavel@denx.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hemant Kumar <hemantk@codeaurora.org>, quic_jhugo@quicinc.com
-Subject: Re: [PATCH 5.10 002/299] bus: mhi: core: Clear configuration from
- channel context during reset
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <20210511061623.GA8651@thinkpad>
-References: <20210510102004.821838356@linuxfoundation.org>
- <20210510102004.900838842@linuxfoundation.org> <20210510205650.GA17966@amd>
- <20210511061623.GA8651@thinkpad>
-Message-ID: <64a8ebbdc9fc7de48b25b9e2bc896d47@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S237032AbhEURwj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 13:52:39 -0400
+Received: from mga01.intel.com ([192.55.52.88]:60783 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232017AbhEURwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 13:52:31 -0400
+IronPort-SDR: iW4/CVHGfjIXi234N4zA2eKY+91o1QdC/7WGTzT3wrLCWYbdNVy3ZiXl5Buof11Jox4BfXs822
+ DSAnrE6Kw17A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="222648851"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="222648851"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 10:51:03 -0700
+IronPort-SDR: MLCcEIQGRTK11MVoTgPMXLLXzTPDyU/6qt38J1p58s+COtJq/F0HbHGlI+q+Bs5TQ5aBC5wIRt
+ kWyhvN0W2aQA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="441182358"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by fmsmga008.fm.intel.com with ESMTP; 21 May 2021 10:51:01 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] perf script: Add missing PERF_IP_FLAG_CHARS for VM-Entry and VM-Exit
+Date:   Fri, 21 May 2021 20:51:27 +0300
+Message-Id: <20210521175127.27264-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-10 11:17 PM, Manivannan Sadhasivam wrote:
-> Hi Pavel,
-> 
-> On Mon, May 10, 2021 at 10:56:50PM +0200, Pavel Machek wrote:
->> Hi!
->> 
->> > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> >
->> > commit 47705c08465931923e2f2b506986ca0bdf80380d upstream.
->> >
->> > When clearing up the channel context after client drivers are
->> > done using channels, the configuration is currently not being
->> > reset entirely. Ensure this is done to appropriately handle
->> > issues where clients unaware of the context state end up calling
->> > functions which expect a context.
->> 
->> > +++ b/drivers/bus/mhi/core/init.c
->> > @@ -544,6 +544,7 @@ void mhi_deinit_chan_ctxt(struct mhi_con
->> > +	u32 tmp;
->> > @@ -554,7 +555,19 @@ void mhi_deinit_chan_ctxt(struct mhi_con
->> ...
->> > +	tmp = chan_ctxt->chcfg;
->> > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
->> > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
->> > +	chan_ctxt->chcfg = tmp;
->> > +
->> > +	/* Update to all cores */
->> > +	smp_wmb();
->> >  }
->> 
->> This is really interesting code; author was careful to make sure chcfg
->> is updated atomically, but C compiler is free to undo that. Plus, this
->> will make all kinds of checkers angry.
->> 
->> Does the file need to use READ_ONCE and WRITE_ONCE?
->> 
-> 
-> Thanks for looking into this.
-> 
-> I agree that the order could be mangled between chcfg read & write and
-> using READ_ONCE & WRITE_ONCE seems to be a good option.
-> 
-> Bhaumik, can you please submit a patch and tag stable?
-> 
-> Thanks,
-> Mani
-> 
->> Best regards,
->> 								Pavel
->> --
->> DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
->> HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Add 'g' (guest) for VM-Entry and 'h' (host) for VM-Exit.
 
-Hi Pavel/Mani,
-
-Hemant and I went over this patch and we noticed this particular 
-function is
-already being called with the channel mutex lock held. This would take 
-care of
-the atomicity and we also probably don't need the smp_wmb() barrier as 
-the mutex
-unlock will implicitly take care of it.
-
-To the point of compiler re-ordering, we would need some help to 
-understand the
-purpose of READ_ONCE()/WRITE_ONCE() for these dependent statements:
-
-> +	tmp = chan_ctxt->chcfg;
-> +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
-> +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
-> +	chan_ctxt->chcfg = tmp;
-
-Since RMW operation means that the chan_ctxt->chcfg is copied to a local
-variable (tmp) and the _same_ is being written back to chan_ctxt->chcfg, 
-can
-compiler reorder these dependent statements and cause a different 
-result?
-
-Thanks,
-Bhaumik
+Fixes: c025d46cd932c ("perf script: Add branch types for VM-Entry and VM-Exit")
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+ tools/perf/Documentation/perf-intel-pt.txt | 6 +++---
+ tools/perf/Documentation/perf-script.txt   | 7 ++++---
+ tools/perf/util/event.h                    | 2 +-
+ 3 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/tools/perf/Documentation/perf-intel-pt.txt b/tools/perf/Documentation/perf-intel-pt.txt
+index 8d6cce062a5f..e382dbd4ff0a 100644
+--- a/tools/perf/Documentation/perf-intel-pt.txt
++++ b/tools/perf/Documentation/perf-intel-pt.txt
+@@ -108,9 +108,9 @@ displayed as follows:
+ 
+ 	perf script --itrace=ibxwpe -F+flags
+ 
+-The flags are "bcrosyiABEx" which stand for branch, call, return, conditional,
+-system, asynchronous, interrupt, transaction abort, trace begin, trace end, and
+-in transaction, respectively.
++The flags are "bcrosyiABExgh" which stand for branch, call, return, conditional,
++system, asynchronous, interrupt, transaction abort, trace begin, trace end,
++in transaction, VM-entry, and VM-exit respectively.
+ 
+ perf script also supports higher level ways to dump instruction traces:
+ 
+diff --git a/tools/perf/Documentation/perf-script.txt b/tools/perf/Documentation/perf-script.txt
+index 5b8b61075039..48a5f5b26dd4 100644
+--- a/tools/perf/Documentation/perf-script.txt
++++ b/tools/perf/Documentation/perf-script.txt
+@@ -183,14 +183,15 @@ OPTIONS
+ 	At this point usage is displayed, and perf-script exits.
+ 
+ 	The flags field is synthesized and may have a value when Instruction
+-	Trace decoding. The flags are "bcrosyiABEx" which stand for branch,
++	Trace decoding. The flags are "bcrosyiABExgh" which stand for branch,
+ 	call, return, conditional, system, asynchronous, interrupt,
+-	transaction abort, trace begin, trace end, and in transaction,
++	transaction abort, trace begin, trace end, in transaction, VM-Entry, and VM-Exit
+ 	respectively. Known combinations of flags are printed more nicely e.g.
+ 	"call" for "bc", "return" for "br", "jcc" for "bo", "jmp" for "b",
+ 	"int" for "bci", "iret" for "bri", "syscall" for "bcs", "sysret" for "brs",
+ 	"async" for "by", "hw int" for "bcyi", "tx abrt" for "bA", "tr strt" for "bB",
+-	"tr end" for "bE". However the "x" flag will be display separately in those
++	"tr end" for "bE", "vmentry" for "bcg", "vmexit" for "bch".
++	However the "x" flag will be displayed separately in those
+ 	cases e.g. "jcc     (x)" for a condition branch within a transaction.
+ 
+ 	The callindent field is synthesized and may have a value when
+diff --git a/tools/perf/util/event.h b/tools/perf/util/event.h
+index 8a62fb39e365..19ad64f2bd83 100644
+--- a/tools/perf/util/event.h
++++ b/tools/perf/util/event.h
+@@ -100,7 +100,7 @@ enum {
+ 	PERF_IP_FLAG_VMEXIT		= 1ULL << 12,
+ };
+ 
+-#define PERF_IP_FLAG_CHARS "bcrosyiABEx"
++#define PERF_IP_FLAG_CHARS "bcrosyiABExgh"
+ 
+ #define PERF_BRANCH_MASK		(\
+ 	PERF_IP_FLAG_BRANCH		|\
+-- 
+2.17.1
+
