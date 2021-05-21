@@ -2,67 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD84F38C1CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAED38C1CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 10:29:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231329AbhEUIaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 04:30:16 -0400
-Received: from m12-14.163.com ([220.181.12.14]:48956 "EHLO m12-14.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229659AbhEUIaP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 04:30:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=m/4ob
-        kjV8lIhm04fJfncJB1YfWCrR+GPtUWQsPNwOVU=; b=C5Bk4S752HQeVlomogWdr
-        RQr+H67TtBMnBy9nl7CODAQguak/fI5oCqBZqRx8xqIuR+dJrUYXagA8grargGNL
-        kDDmXU0rnUa/9Mnc961TZV211/Did8JupZhZno3x6yLT+SVOERElFJxkUqeKjlN2
-        Dqvai5jub9wr5BMGeE2by4=
-Received: from COOL-20201222LC.ccdomain.com (unknown [218.94.48.178])
-        by smtp10 (Coremail) with SMTP id DsCowADX5089b6dgyf2LKA--.17856S2;
-        Fri, 21 May 2021 16:28:46 +0800 (CST)
-From:   dingsenjie@163.com
-To:     colyli@suse.de, kent.overstreet@gmail.com
-Cc:     linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ding Senjie <dingsenjie@yulong.com>
-Subject: [PATCH] md: bcache: Fix spelling of 'acquire'
-Date:   Fri, 21 May 2021 16:28:25 +0800
-Message-Id: <20210521082825.21736-1-dingsenjie@163.com>
-X-Mailer: git-send-email 2.21.0.windows.1
+        id S231862AbhEUIaY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 04:30:24 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:49092 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229659AbhEUIaW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 04:30:22 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-13-IzwURQWAMn2VOcSgFBBl0Q-1; Fri, 21 May 2021 04:28:45 -0400
+X-MC-Unique: IzwURQWAMn2VOcSgFBBl0Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B08B48042A8;
+        Fri, 21 May 2021 08:28:44 +0000 (UTC)
+Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 610C25D764;
+        Fri, 21 May 2021 08:28:35 +0000 (UTC)
+Date:   Fri, 21 May 2021 10:28:33 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs@redhat.com, Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v4 2/5] fuse: Call vfs_get_tree() for submounts
+Message-ID: <20210521102833.4a7595b7@bahia.lan>
+In-Reply-To: <YKdtJCo/06q594pM@miu.piliscsaba.redhat.com>
+References: <20210520154654.1791183-1-groug@kaod.org>
+        <20210520154654.1791183-3-groug@kaod.org>
+        <YKdtJCo/06q594pM@miu.piliscsaba.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: DsCowADX5089b6dgyf2LKA--.17856S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7GF4fKFW3CF47KrWUKFWfXwb_yoWfGrc_ua
-        1Sqay29w45Kr1xXr13Gw4fZrW0qw1kurn5Jan7JrW3uF15Zr47Wry3Wr1UXr15ua18C3Zr
-        Ar1jgr45tw1xCjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8UKsUUUUUU==
-X-Originating-IP: [218.94.48.178]
-X-CM-SenderInfo: 5glqw25hqmxvi6rwjhhfrp/1tbipR6ZyFUMeOko1gAAsc
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ding Senjie <dingsenjie@yulong.com>
+On Fri, 21 May 2021 10:19:48 +0200
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-acqurie -> acquire
+> On Thu, May 20, 2021 at 05:46:51PM +0200, Greg Kurz wrote:
+> > We don't set the SB_BORN flag on submounts superblocks. This is wrong
+> > as these superblocks are then considered as partially constructed or
+> > dying in the rest of the code and can break some assumptions.
+> > 
+> > One such case is when you have a virtiofs filesystem and you try to
+> > mount it again : virtio_fs_get_tree() tries to obtain a superblock
+> > with sget_fc(). The matching criteria in virtio_fs_test_super() is
+> > the pointer of the underlying virtiofs device, which is shared by
+> > the root mount and its submounts. This means that any submount can
+> > be picked up instead of the root mount. This is itself a bug :
+> > submounts should be ignored in this case. But, most importantly, it
+> > then triggers an infinite loop in sget_fc() because it fails to grab
+> > the superblock (very easy to reproduce).
+> > 
+> > The only viable solution is to set SB_BORN at some point. This
+> > must be done with vfs_get_tree() because setting SB_BORN requires
+> > special care, i.e. a memory barrier for super_cache_count() which
+> > can check SB_BORN without taking any lock.
+> 
+> Looks correct, but...
+> 
+> as an easily backportable and verifiable bugfix I'd still go with the
+> simple two liner:
+> 
+> --- a/fs/fuse/dir.c
+> +++ b/fs/fuse/dir.c
+> @@ -351,6 +351,9 @@ static struct vfsmount *fuse_dentry_automount(struct path *path)
+>  	list_add_tail(&fm->fc_entry, &fc->mounts);
+>  	up_write(&fc->killsb);
+>  
+> +	smp_wmb();
+> +	sb->s_flags |= SB_BORN;
+> +
 
-Signed-off-by: Ding Senjie <dingsenjie@yulong.com>
----
- drivers/md/bcache/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+plus the mandatory comment one must put to justify the
+need for a memory barrier.
 
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 2047a9c..c8d5942 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -2752,7 +2752,7 @@ static int bcache_reboot(struct notifier_block *n, unsigned long code, void *x)
- 		 * The reason bch_register_lock is not held to call
- 		 * bch_cache_set_stop() and bcache_device_stop() is to
- 		 * avoid potential deadlock during reboot, because cache
--		 * set or bcache device stopping process will acqurie
-+		 * set or bcache device stopping process will acquire
- 		 * bch_register_lock too.
- 		 *
- 		 * We are safe here because bcache_is_reboot sets to
--- 
-1.9.1
+>  	/* Create the submount */
+>  	mnt = vfs_create_mount(fsc);
+>  	if (IS_ERR(mnt)) {
+> 
+> And have this patch be the cleanup.
+> 
+
+Fair enough.
+
+> Also we need Fixes: and a Cc: stable@... tags on that one.
+> 
+
+Oops, I'll add these in the next round.
+
+> Thanks,
+> Miklos
 
