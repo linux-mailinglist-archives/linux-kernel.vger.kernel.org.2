@@ -2,120 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D95A38CD70
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:29:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F0ED38CD71
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234232AbhEUSbJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:31:09 -0400
-Received: from mail-oo1-f51.google.com ([209.85.161.51]:42503 "EHLO
-        mail-oo1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229762AbhEUSbI (ORCPT
+        id S234442AbhEUSbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:31:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229762AbhEUSbP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:31:08 -0400
-Received: by mail-oo1-f51.google.com with SMTP id v13-20020a4ac00d0000b029020b43b918eeso4781192oop.9;
-        Fri, 21 May 2021 11:29:43 -0700 (PDT)
+        Fri, 21 May 2021 14:31:15 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79991C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:29:52 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d78so14648683pfd.10
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:29:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zVAGOFSF6YX4fzp5t4usqdETybMxUdDVT7cktnfAI1E=;
+        b=eIPGpenNUYifYX2MzGp80iLDc2oVvPM4AkJDVqXaQEi7AhxOTflxEBuGFKP4Lb4OOp
+         1G37lVFX/nY4USIfupDhiCBdpEN7mLcidCQD7VaTAUNF4EM1mIFVw4L6s2IJkhs9q/Z2
+         KWkUcJd/WR+C1j5T/s//s2bGiM1f4ArX7Cke56o5MwD5j/lwlryx9p7WhNqVY6sPTxMK
+         +2ugPcHBygeIj82IF5alXjTswXDYE0Gt05bxU7qAMkiJDOnv3r79x9WAcBTpATCw4bhy
+         qT5Bt4Y3RdAOnbTcTPeSY5nHmW7PGVDyHwDFgVcuMkqIN8meF9DPuY92ttBoutskySLP
+         u48A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tz6qVE77xjQTgH3EvwvCGLs3nMgxHBUD5V9Eqv4sIOg=;
-        b=JMoW7VsKSvf8kAxjE5U6dLCN2Wbx8h1+UD5MIpw9fh1tSC5JGHfPWoIYFKDGFTXp31
-         izKLX4ay0dJnlAjZir7ZvSg8ag/He5VxjGfSJ00mrFea4F29RfH/sVHOfgiIsD97uYpr
-         mRZxAStxAYumQel+wIP+l/cwfuc065UibtHEJyzfTe7680g0nu7HG2LsoCuY41ZTcoyD
-         vWdR7DERpsjdkwyywAqDBk2W4nFQxqEmTKuOq//elhl7ISLDb8XzqJdZyz9RwWwOcIzV
-         TXdWOSCzu5/sGrh+W6nbtaxunf0jkEOly+cvmbyPlryWSfvyvJP5qkdTxCqMEaT5+USj
-         CAKw==
-X-Gm-Message-State: AOAM530l5XZQULEoi4wxxvJDFf1WHlqN2xwYr4qYCa1U+XekdARjlNHN
-        ZDz07UHUdFZ6bW/qIgwLWw==
-X-Google-Smtp-Source: ABdhPJwUaOQ3rcWENSb9U/Qt8wdNmQKm47UAKpPeq/0cATJVzmjSXBXOkw6hCj5jPwgDDocmleAxSw==
-X-Received: by 2002:a4a:6142:: with SMTP id u2mr9229182ooe.9.1621621783445;
-        Fri, 21 May 2021 11:29:43 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id l186sm1262215oih.55.2021.05.21.11.29.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 11:29:42 -0700 (PDT)
-Received: (nullmailer pid 163550 invoked by uid 1000);
-        Fri, 21 May 2021 18:29:41 -0000
-Date:   Fri, 21 May 2021 13:29:41 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krishna Manikandan <mkrishn@codeaurora.org>
-Cc:     khsieh@codeaurora.org, swboyd@chromium.org, vinod.koul@linaro.org,
-        tanmay@codeaurora.org, abhinavk@codeaurora.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arm-msm@vger.kernel.org, robh+dt@kernel.org, sean@poorly.run,
-        kalyan_t@codeaurora.org, bjorn.andersson@linaro.org,
-        dianders@chromium.org, freedreno@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v17 3/4] dt-bindings: msm: dsi: add yaml schemas for DSI
- PHY bindings
-Message-ID: <20210521182941.GA163205@robh.at.kernel.org>
-References: <1621592844-6414-1-git-send-email-mkrishn@codeaurora.org>
- <1621592844-6414-3-git-send-email-mkrishn@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zVAGOFSF6YX4fzp5t4usqdETybMxUdDVT7cktnfAI1E=;
+        b=E5WqRll2Iv6qD8m6Yi1pQMMoCktwqwHddLhv9dFxzXaNutzgUwbmrnq3533ZUFLZRN
+         5QuHZZmbVWHc/A0qUfdfiSrCcIPI0AP4EstC7WZrUlDrUCMzjdYvoZXUfrEYv/rV39+W
+         kGO3Rxk3Fnhny/ENIze7l+aYGmlR/8VM1zi2kPdN8VETjjq06DZSEzpaKLd+d1Ig/F1e
+         BHa0Srzp2CwhDi8yyS71jun935WktewOkIM7z4JQh+BASqnk3//j1k5wmqNgk9bcUdJH
+         LI1TBmavOAjInhCQ8T7nYNg3ejk7lVLH1IslCndEAvWrQsPHFIrwxsefqwAnEzKWLF5y
+         4NuA==
+X-Gm-Message-State: AOAM532hO1xelLoyg5TlIlm+bl4TMbcDmHJ8M8Kab1vo65MKkTImp4Zq
+        iSLZdO0s/ZlW6riqJnUSGCjKtyJd+7Ycz5AFSPzcBw==
+X-Google-Smtp-Source: ABdhPJxPEsRfQ6FKB4a762tbEjDfInR7vR27LkIDpB2h/IuUK9HNfdPNBZuSfVevzINESEOT1xkCavG5rFa7uB1TvuI=
+X-Received: by 2002:a05:6a00:2308:b029:28e:d370:d435 with SMTP id
+ h8-20020a056a002308b029028ed370d435mr11538983pfh.31.1621621791961; Fri, 21
+ May 2021 11:29:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1621592844-6414-3-git-send-email-mkrishn@codeaurora.org>
+References: <2977129b-c568-8ce5-9a85-31473096719f@linux.intel.com> <20210521143941.2528475-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <20210521143941.2528475-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Fri, 21 May 2021 11:29:42 -0700
+Message-ID: <CAPcyv4gYjkL6kO0ZY+a_ehMz__yyr_VgMwfZOkQranqfuA4n7Q@mail.gmail.com>
+Subject: Re: [RFC v2-fix-v2 1/1] x86/boot: Add a trampoline for APs booting in
+ 64-bit mode
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 15:57:23 +0530, Krishna Manikandan wrote:
-> Add YAML schema for the device tree bindings for DSI PHY.
-> 
-> Signed-off-by: Krishna Manikandan <mkrishn@codeaurora.org>
-> 
-> Changes in v1:
->    - Merge dsi-phy.yaml and dsi-phy-10nm.yaml (Stephen Boyd)
->    - Remove qcom,dsi-phy-regulator-ldo-mode (Stephen Boyd)
->    - Add clock cells properly (Stephen Boyd)
->    - Remove unnecessary decription from clock names (Stephen Boyd)
->    - Add pin names for the supply entries for 10nm phy which is
->      used in sc7180 and sdm845 (Stephen Boyd)
->    - Remove unused header files from examples (Stephen Boyd)
->    - Drop labels for display nodes and correct node name (Stephen Boyd)
-> 
-> Changes in v2:
->    - Drop maxItems for clock (Stephen Boyd)
->    - Add vdds supply pin information for sdm845 (Stephen Boyd)
->    - Add examples for 14nm, 20nm and 28nm phy yaml files (Stephen Boyd)
->    - Keep child nodes directly under soc node (Stephen Boyd)
-> 
-> Changes in v3:
->    - Use a separate yaml file to describe the common properties
->      for all the dsi phy versions (Stephen Boyd)
->    - Remove soc from examples (Stephen Boyd)
->    - Add description for register property
-> 
-> Changes in v4:
->    - Modify the title for all the phy versions (Stephen Boyd)
->    - Drop description for all the phy versions (Stephen Boyd)
->    - Modify the description for register property (Stephen Boyd)
-> 
-> Changes in v5:
->    - Remove unused properties from common dsi phy file
->    - Add clock-cells and phy-cells to required property
->      list (Stephen Boyd)
-> 
-> Changes in v6:
->    - Add proper compatible string in example
+On Fri, May 21, 2021 at 7:40 AM Kuppuswamy Sathyanarayanan
+<sathyanarayanan.kuppuswamy@linux.intel.com> wrote:
+>
+> From: Sean Christopherson <sean.j.christopherson@intel.com>
+>
+> Add a trampoline for booting APs in 64-bit mode via a software handoff
+> with BIOS, and use the new trampoline for the ACPI MP wake protocol used
+> by TDX. You can find MADT MP wake protocol details in ACPI specification
+> r6.4, sec 5.2.12.19.
+>
+> Extend the real mode IDT pointer by four bytes to support LIDT in 64-bit
+> mode.  For the GDT pointer, create a new entry as the existing storage
+> for the pointer occupies the zero entry in the GDT itself.
+>
+> Reported-by: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+> Reviewed-by: Andi Kleen <ak@linux.intel.com>
+> Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
 > ---
->  .../bindings/display/msm/dsi-phy-10nm.yaml         | 68 +++++++++++++++++++++
->  .../bindings/display/msm/dsi-phy-14nm.yaml         | 66 ++++++++++++++++++++
->  .../bindings/display/msm/dsi-phy-20nm.yaml         | 71 ++++++++++++++++++++++
->  .../bindings/display/msm/dsi-phy-28nm.yaml         | 68 +++++++++++++++++++++
->  .../bindings/display/msm/dsi-phy-common.yaml       | 40 ++++++++++++
->  5 files changed, 313 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-10nm.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-14nm.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-20nm.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-28nm.yaml
->  create mode 100644 Documentation/devicetree/bindings/display/msm/dsi-phy-common.yaml
-> 
+>
+> Changes since RFC v2-fix:
+>  * Passed rmh as argument to get_trampoline_start_ip().
+>  * Added a comment line for get_trampoline_start_ip().
+>  * Moved X86_CR0_NE change from pa_trampoline_compat() to patch
+>    "x86/boot: Avoid #VE during boot for TDX platforms".
+>  * Fixed comments for tr_idt as per Dan's comments.
+>  * Moved TRAMPOLINE_32BIT_CODE_SIZE change to "x86/boot: Avoid #VE
+>    during boot for TDX platforms" patch.
 
+Thanks, looks good, no more comments from me:
 
-Please add Acked-by/Reviewed-by tags when posting new versions. However,
-there's no need to repost patches *only* to add the tags. The upstream
-maintainer will do that for acks received on the version they apply.
-
-If a tag was not added on purpose, please state why and what changed.
-
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
