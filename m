@@ -2,218 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD3C38C6A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33E638C69E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:36:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbhEUMjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:39:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbhEUMj2 (ORCPT
+        id S233784AbhEUMhw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 08:37:52 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:36030 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229912AbhEUMht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:39:28 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23827C061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:38:04 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id m11so29484794lfg.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:38:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZXva6/Yqd6IA9/jgqhzQ7W+jI1PpNOShUWjkaZh4eNg=;
-        b=UO7OnFKW+cPB2rAq5pwSBGynYvW9d+KTX4VcKj+eDu4Ewh8UKm6/64i3qCm28ZzArB
-         lG7M1a2COavXBwDHvV2rJmXzg2os/APTEPYFB2bzNvUHwdgz5nepaLqGQIq6VLbEa5gZ
-         c1FQQHh6DFIbPbAwqA6UFiLvh0ty4mq4UT8lCMSp1n6il/CPP9vQQHphhDC70O6KTu/f
-         j+3nx0Hfw+kgYFppUvHbmWFhNgwwgYKAjTO87HbW7gkcb6PqCWaqtpAZ89FK+HmGr4w5
-         8lZvS6Wg45qQgoxhV4lfTXYDhnCYyuAG4Fc3dLH9t4r5bESskiMYt/BQ6C3+h1MITP7M
-         WirA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZXva6/Yqd6IA9/jgqhzQ7W+jI1PpNOShUWjkaZh4eNg=;
-        b=Ri9b7jqHpO00TKAR3SS1SfC2DJI2xZJwjFrEHkvTn0ftk8f1dIsZIQ7CsoiLMAmoJE
-         EGpwLtluYwUMWVGM0YQOIPB3wKlM8Yo8ErMK+cISgHn8b4luhYQmjSPmEn/hJx2JatiQ
-         dnJZtvBa482p5GX0wZRdAZvbubuZjMwIN05W4IoN6hUWrZdvR9X/ykPui2dxDpIwQHFX
-         mMtvYQx6JxXlTxQbrjTYO/FnO3rAAxwxxvER/Kae85xY3mruiC1ZrWJplvNu3XYqVlDv
-         VItJ4QA/ErUWbKYDp4Ql03QjbkHjE72QNVibxKOXhbX5+KlKLqvWiFJBC/LZvC3mTo1t
-         2MCw==
-X-Gm-Message-State: AOAM531cQlyjyP+anYsm32d1xmNFLQ8Q4NyPE/r9PFHB9Q4VPCfMjsQc
-        OUNdNgJLAYNJswN/9+eQrTIFvossuxK9EkcyEe+MCQ==
-X-Google-Smtp-Source: ABdhPJxgGC1b8+jhKTozMjwnLX1ipgmvs6YDDUByMXhF8iJxQvNESI0oivilElV9+bRWCZC+i32bfb3EgGLZajom8Jg=
-X-Received: by 2002:a19:e017:: with SMTP id x23mr2067772lfg.254.1621600682459;
- Fri, 21 May 2021 05:38:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210513074027.543926-1-srikar@linux.vnet.ibm.com> <20210513074027.543926-7-srikar@linux.vnet.ibm.com>
-In-Reply-To: <20210513074027.543926-7-srikar@linux.vnet.ibm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 21 May 2021 14:37:51 +0200
-Message-ID: <CAKfTPtB05dxcXPX_hZOFXHYaW98sdcykxVYnWdNdMOBHqLMBow@mail.gmail.com>
-Subject: Re: [PATCH v3 6/8] sched/idle: Move busy_cpu accounting to idle callback
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Valentin Schneider <valentin.schneider@arm.com>,
+        Fri, 21 May 2021 08:37:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=changhuaixin@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0UZcK7pL_1621600581;
+Received: from 30.240.99.2(mailfrom:changhuaixin@linux.alibaba.com fp:SMTPD_---0UZcK7pL_1621600581)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 21 May 2021 20:36:22 +0800
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH v5 1/3] sched/fair: Introduce the burstable CFS controller
+From:   changhuaixin <changhuaixin@linux.alibaba.com>
+In-Reply-To: <CAFpoUr3nUEWYZjAj+cJp_FL7csOMMS-LE73sb-jjfRNY2fEBDA@mail.gmail.com>
+Date:   Fri, 21 May 2021 20:38:00 +0800
+Cc:     changhuaixin <changhuaixin@linux.alibaba.com>,
+        Benjamin Segall <bsegall@google.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        dtcccc@linux.alibaba.com, Juri Lelli <juri.lelli@redhat.com>,
+        khlebnikov@yandex-team.ru,
+        open list <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        pauld@redhead.com, Peter Zijlstra <peterz@infradead.org>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Shanpei Chen <shanpeic@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        xiyou.wangcong@gmail.com
+Content-Transfer-Encoding: 8BIT
+Message-Id: <E6F418FE-5C39-49FA-A4FF-66929EF4AD58@linux.alibaba.com>
+References: <20210520123419.8039-1-changhuaixin@linux.alibaba.com>
+ <20210520123419.8039-2-changhuaixin@linux.alibaba.com>
+ <CAFpoUr2mNO87XFAyHF=HA3f6KC8EkuGrwQQe54q4kmF1WgfG7w@mail.gmail.com>
+ <447D741B-F430-4502-BCA6-C2A12118A2D2@linux.alibaba.com>
+ <CAFpoUr3nUEWYZjAj+cJp_FL7csOMMS-LE73sb-jjfRNY2fEBDA@mail.gmail.com>
+To:     Odin Ugedal <odin@uged.al>
+X-Mailer: Apple Mail (2.3445.104.11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 13 May 2021 at 09:41, Srikar Dronamraju
-<srikar@linux.vnet.ibm.com> wrote:
->
-> Currently we account nr_busy_cpus in no_hz idle functions.
-> There is no reason why nr_busy_cpus should updated be in NO_HZ_COMMON
-> configs only. Also scheduler can mark a CPU as non-busy as soon as an
-> idle class task starts to run. Scheduler can then mark a CPU as busy
-> as soon as its woken up from idle or a new task is placed on it's
-> runqueue.
->
-> Cc: LKML <linux-kernel@vger.kernel.org>
-> Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> Cc: Parth Shah <parth@linux.ibm.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Valentin Schneider <valentin.schneider@arm.com>
-> Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> Cc: Rik van Riel <riel@surriel.com>
-> Cc: Aubrey Li <aubrey.li@linux.intel.com>
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
->  kernel/sched/fair.c     |  6 ++++--
->  kernel/sched/idle.c     | 29 +++++++++++++++++++++++++++--
->  kernel/sched/sched.h    |  1 +
->  kernel/sched/topology.c |  2 ++
->  4 files changed, 34 insertions(+), 4 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 0dfe01de22d6..8f86359efdbd 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -10410,7 +10410,10 @@ static void set_cpu_sd_state_busy(int cpu)
->                 goto unlock;
->         sd->nohz_idle = 0;
->
-> -       atomic_inc(&sd->shared->nr_busy_cpus);
-> +       if (sd && per_cpu(is_idle, cpu)) {
-> +               atomic_add_unless(&sd->shared->nr_busy_cpus, 1, per_cpu(sd_llc_size, cpu));
-> +               per_cpu(is_idle, cpu) = 0;
-> +       }
->  unlock:
->         rcu_read_unlock();
->  }
-> @@ -10440,7 +10443,6 @@ static void set_cpu_sd_state_idle(int cpu)
->                 goto unlock;
->         sd->nohz_idle = 1;
->
-> -       atomic_dec(&sd->shared->nr_busy_cpus);
->  unlock:
->         rcu_read_unlock();
->  }
-> diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-> index a9f5a8ace59e..c13105fe06b3 100644
-> --- a/kernel/sched/idle.c
-> +++ b/kernel/sched/idle.c
-> @@ -431,12 +431,25 @@ static void check_preempt_curr_idle(struct rq *rq, struct task_struct *p, int fl
->
->  static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
->  {
-> -#ifdef CONFIG_SCHED_SMT
-> +#ifdef CONFIG_SMP
-> +       struct sched_domain_shared *sds;
->         int cpu = rq->cpu;
->
-> +#ifdef CONFIG_SCHED_SMT
->         if (static_branch_likely(&sched_smt_present))
->                 set_core_busy(cpu);
->  #endif
-> +
-> +       rcu_read_lock();
-> +       sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
-> +       if (sds) {
-> +               if (per_cpu(is_idle, cpu)) {
-> +                       atomic_inc(&sds->nr_busy_cpus);
-> +                       per_cpu(is_idle, cpu) = 0;
-> +               }
-> +       }
-> +       rcu_read_unlock();
-> +#endif
->  }
->
->  static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
-> @@ -448,9 +461,21 @@ static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool fir
->  struct task_struct *pick_next_task_idle(struct rq *rq)
->  {
->         struct task_struct *next = rq->idle;
-> +#ifdef CONFIG_SMP
-> +       struct sched_domain_shared *sds;
-> +       int cpu = rq->cpu;
->
-> -       set_next_task_idle(rq, next, true);
-> +       rcu_read_lock();
-> +       sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
-> +       if (sds) {
-> +               atomic_add_unless(&sds->nr_busy_cpus, -1, 0);
-> +               per_cpu(is_idle, cpu) = 1;
-> +       }
 
-One reason to update nr_busy_cpus only during tick is and not at each
-and every single sleep/wakeup to limit the number of atomic_inc/dec in
-case of storm of short running tasks. Because at the end , you waste
-more time trying to accurately follow the current state of the CPU
-than doing work
 
->
-> +       rcu_read_unlock();
-> +#endif
-> +
-> +       set_next_task_idle(rq, next, true);
->         return next;
->  }
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 98c3cfbc5d26..b66c4dad5fd2 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -1496,6 +1496,7 @@ DECLARE_PER_CPU(int, sd_llc_id);
->  #ifdef CONFIG_SCHED_SMT
->  DECLARE_PER_CPU(int, smt_id);
->  #endif
-> +DECLARE_PER_CPU(int, is_idle);
->  DECLARE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_numa);
->  DECLARE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-> index 232fb261dfc2..730252937712 100644
-> --- a/kernel/sched/topology.c
-> +++ b/kernel/sched/topology.c
-> @@ -647,6 +647,7 @@ DEFINE_PER_CPU(int, sd_llc_id);
->  #ifdef CONFIG_SCHED_SMT
->  DEFINE_PER_CPU(int, smt_id);
->  #endif
-> +DEFINE_PER_CPU(int, is_idle);
->  DEFINE_PER_CPU(struct sched_domain_shared __rcu *, sd_llc_shared);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_numa);
->  DEFINE_PER_CPU(struct sched_domain __rcu *, sd_asym_packing);
-> @@ -673,6 +674,7 @@ static void update_top_cache_domain(int cpu)
->  #ifdef CONFIG_SCHED_SMT
->         per_cpu(smt_id, cpu) = cpumask_first(cpu_smt_mask(cpu));
->  #endif
-> +       per_cpu(is_idle, cpu) = 1;
->         rcu_assign_pointer(per_cpu(sd_llc_shared, cpu), sds);
->
->         sd = lowest_flag_domain(cpu, SD_NUMA);
-> --
-> 2.18.2
->
+> On May 21, 2021, at 5:38 PM, Odin Ugedal <odin@uged.al> wrote:
+> 
+> Hi,
+> 
+>> Yeah, it is a well tuned workload and configuration. I did this because for benchmarks
+>> like schbench, workloads are generated in a fixed pattern without burst. So I set schbench
+>> params carefully to generate burst during each 100ms periods, to show burst works. Longer
+>> period or higher quota helps indeed, in which case more workloads can be used to generate
+>> tail latency then.
+> 
+> Yeah, that makes sense. When it comes to fairness (you are talking
+> about generating tail
+> latency), I think configuration of cpu shares/weight between cgroups
+> is more relevant.
+> 
+> How much more tail latency will a cgroup be able to "create" when
+> doubling the period?
+> 
+
+Indeed, fairness is another factor relevant to tail latency. However, real workloads benefit from burst
+feature, too. For java workloads with equal fairness between cgroups, a huge drop of tail latency from
+500ms to 27ms is seen after enabling burst feature. I shouldn't delete this info in the msg.
+
+I guess tail latency from schbench is small here, because schbench is simple and only measures wakeup
+latency. For workloads measuring round trip time, the effect of getting throttled is more obvious.
+
+> 
+>> In my view, burst is like the cfsb way of token bucket. For the present cfsb, bucket capacity
+>> is strictly limited to quota. And that is changed into quota + burst now. And it shall be used when
+>> tasks get throttled and CPU is under utilized for the whole system.
+> 
+> Well, it is as strict as we can make it, depending on how one looks at it. We
+> cannot guarantee anything more strict than the length of a jiffy or
+> kernel.sched_cfs_bandwidth_slice_us (simplified ofc.), especially since we allow
+> runtime from one period to be used in another. I think there is a
+> "big" distinction between
+> runtime transferred from the cfs_bw to cfs_rq's in a period compared
+> to the actual runtime used.
+> 
+>> Default value of kernel.sched_cfs_bandwidth_slice_us(5ms) and CONFIG_HZ(1000) is used.
+> 
+> You should mention that in the msg then, since it is highly relevant
+> to the results. Can you try to tweak
+
+Sorry for causing trouble reproducing this. I'll add these info.
+
+> kernel.sched_cfs_bandwidth_slice_us to something like 1ms, and see
+> what the result will be?
+> 
+
+After using 1ms kernel.sched_cfs_bandwidth_slice_us I see 99.0th and 99.5th latency drop, and 99.9th
+latency remains at several ms. I guess I can't tell it from some small spikes now. 
+
+# 1ms kernel.sched_cfs_bandwidth_slice_us
+echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+echo 600000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+#echo 400000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+cat /sys/fs/cgroup/cpu/test/cpu.stat | grep nr_throttled
+
+./schbench -m 1 -t 30 -r 10 -c 10000 -R 500
+
+Latency percentiles (usec)
+	50.0000th: 8
+	75.0000th: 8
+	90.0000th: 9
+	95.0000th: 10
+	*99.0000th: 13
+	99.5000th: 17
+	99.9000th: 6408
+	min=0, max=7576
+rps: 497.44 p95 (usec) 10 p99 (usec) 13 p95/cputime 0.10% p99/cputime 0.13%
+
+
+> For such a workload and high cfs_bw_slice, a smaller CONFIG_HZ might
+> also be beneficial (although
+> there are many things to consider when talking about that, and a lot
+> of people know more about that than me).
+> 
+>> The following case might be used to prevent getting throttled from many threads and high bandwidth
+>> slice:
+>> 
+>> mkdir /sys/fs/cgroup/cpu/test
+>> echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+>> echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+>> echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+>> 
+>> ./schbench -m 1 -t 3 -r 20 -c 80000 -R 20
+>> 
+>> On my machine, two workers work for 80ms and sleep for 120ms in each round. The average utilization is
+>> around 80%. This will work on a two-core system. It is recommended to  try it multiple times as getting
+>> throttled doesn't necessarily cause tail latency for schbench.
+> 
+> When I run this, I get the following results without cfs bandwidth enabled.
+> 
+> $ time ./schbench -m 1 -t 3 -r 20 -c 80000 -R 20
+> Latency percentiles (usec) runtime 20 (s) (398 total samples)
+>        50.0th: 22 (201 samples)
+>        75.0th: 50 (158 samples)
+>        90.0th: 50 (0 samples)
+>        95.0th: 51 (38 samples)
+>        *99.0th: 51 (0 samples)
+>        99.5th: 51 (0 samples)
+>        99.9th: 52 (1 samples)
+>        min=5, max=52
+> rps: 19900000.00 p95 (usec) 51 p99 (usec) 51 p95/cputime 0.06% p99/cputime 0.06%
+> ./schbench -m 1 -t 3 -r 20 -c 80000 -R 20  31.85s user 0.00s system
+> 159% cpu 20.021 total
+> 
+> In this case, I see 80% load on two cores, ending at a total of 160%. If setting
+> period: 100ms and quota: 100ms (aka. 1 cpu), throttling is what
+> you would expect, or?. In this case, burst wouldn't matter?
+> 
+
+Sorry for my mistake. The -R option should be 10 instead of 20. And the case should be:
+
+# 1ms kernel.sched_cfs_bandwidth_slice_us
+mkdir /sys/fs/cgroup/cpu/test
+echo $$ > /sys/fs/cgroup/cpu/test/cgroup.procs
+echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_quota_us
+echo 100000 > /sys/fs/cgroup/cpu/test/cpu.cfs_burst_us
+
+./schbench -m 1 -t 3 -r 20 -c 80000 -R 10
+
+The average CPU usage is at 80%. I run this for 10 times, and got long tail latency for 6 times and got throttled
+for 8 times.
+
+Tail latencies are showed below, and it wasn't the worst case.
+
+Latency percentiles (usec)
+	50.0000th: 19872
+	75.0000th: 21344
+	90.0000th: 22176
+	95.0000th: 22496
+	*99.0000th: 22752
+	99.5000th: 22752
+	99.9000th: 22752
+	min=0, max=22727
+rps: 9.90 p95 (usec) 22496 p99 (usec) 22752 p95/cputime 28.12% p99/cputime 28.44%
+
+
+Sometimes the measured period of schbench is not throttled and thus no tail latency is seen. Sometimes tasks do
+not get throttled because the the offset of schbench worker start from period start matters too. In this case, these
+two CPUs work for 80ms and sleeps for 120ms, If the 80ms burst period for 2 workers is cut into two cfsb periods,
+they might not get throttled.
+
+I'll use this case in the commit log.
+
+> 
+> Thanks
+> Odin
+
