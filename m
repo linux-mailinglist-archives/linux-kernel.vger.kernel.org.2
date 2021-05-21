@@ -2,69 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7205B38C014
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C63E38C016
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234374AbhEUGyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:54:44 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:4713 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234290AbhEUGyh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 02:54:37 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FmcgQ33Nbz16QGQ;
-        Fri, 21 May 2021 14:50:26 +0800 (CST)
-Received: from dggeme703-chm.china.huawei.com (10.1.199.99) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 14:53:13 +0800
-Received: from [10.174.176.110] (10.174.176.110) by
- dggeme703-chm.china.huawei.com (10.1.199.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 21 May 2021 14:53:13 +0800
-Subject: Re: linux-next: build warning after merge of the akpm-current tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "Linux Next Mailing List" <linux-next@vger.kernel.org>
-References: <20210521153956.7c3e98dc@canb.auug.org.au>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <f8106f9a-6832-e724-7edd-c758d6477e0a@huawei.com>
-Date:   Fri, 21 May 2021 14:53:13 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S234444AbhEUGy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:54:58 -0400
+Received: from mx1.emlix.com ([136.243.223.33]:52748 "EHLO mx1.emlix.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234422AbhEUGyt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 02:54:49 -0400
+Received: from mailer.emlix.com (p5098be52.dip0.t-ipconnect.de [80.152.190.82])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.emlix.com (Postfix) with ESMTPS id 6BAB06051C;
+        Fri, 21 May 2021 08:53:25 +0200 (CEST)
+From:   Rolf Eike Beer <eb@emlix.com>
+To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/vt-d: Fix sysfs leak in alloc_domain()
+Date:   Fri, 21 May 2021 08:53:22 +0200
+Message-ID: <1889881.5hqWi3GpDC@devpool47>
+Organization: emlix GmbH
+In-Reply-To: <b13c4073-5976-b4e0-4dc7-4e07e68cbb5f@linux.intel.com>
+References: <1716403.SmlLz2RZUD@devpool47> <17411490.HIIP88n32C@mobilepool36.emlix.com> <b13c4073-5976-b4e0-4dc7-4e07e68cbb5f@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210521153956.7c3e98dc@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.110]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggeme703-chm.china.huawei.com (10.1.199.99)
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="nextPart3163522.BJEOxDOq7s"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/21 13:39, Stephen Rothwell wrote:
-> Hi all,
-> 
-> After merging the akpm-current tree, today's linux-next build (powerpc
-> ppc64_defconfig) produced this warning:
-> 
-> mm/swapfile.c:1039:22: warning: 'scan_swap_map' defined but not used [-Wunused-function]
->  1039 | static unsigned long scan_swap_map(struct swap_info_struct *si,
->       |                      ^~~~~~~~~~~~~
-> 
-> Introduced by commit
-> 
->   c9ea6b99df3c ("mm/swapfile: move get_swap_page_of_type() under CONFIG_HIBERNATION")
-> 
-> # CONFIG_HIBERNATION is not set
+--nextPart3163522.BJEOxDOq7s
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="UTF-8"; protected-headers="v1"
+From: Rolf Eike Beer <eb@emlix.com>
+To: Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>, Lu Baolu <baolu.lu@linux.intel.com>
+Cc: baolu.lu@linux.intel.com, David Woodhouse <dwmw2@infradead.org>, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iommu/vt-d: Fix sysfs leak in alloc_domain()
+Date: Fri, 21 May 2021 08:53:22 +0200
+Message-ID: <1889881.5hqWi3GpDC@devpool47>
+Organization: emlix GmbH
+In-Reply-To: <b13c4073-5976-b4e0-4dc7-4e07e68cbb5f@linux.intel.com>
+References: <1716403.SmlLz2RZUD@devpool47> <17411490.HIIP88n32C@mobilepool36.emlix.com> <b13c4073-5976-b4e0-4dc7-4e07e68cbb5f@linux.intel.com>
 
-It seems that scan_swap_map is only used by get_swap_page_of_type(). I should have been more careful
-and move it under CONFIG_HIBERNATION too. I will send a patch to fix this. Many thanks!
+Am Donnerstag, 22. April 2021, 07:34:17 CEST schrieb Lu Baolu:
+> Hi Rolf,
+>=20
+> On 4/22/21 1:39 PM, Rolf Eike Beer wrote:
+> > iommu_device_sysfs_add() is called before, so is has to be cleaned on
+> > subsequent errors.
+> >=20
+> > Fixes: 39ab9555c2411 ("iommu: Add sysfs bindings for struct iommu_devic=
+e")
+> > Cc: stable@vger.kernel.org # 4.11.x
+> > Signed-off-by: Rolf Eike Beer <eb@emlix.com>
+>=20
+> Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
 
-> 
+Ping. Who is going to pick this up, please?
+
+Eike
+=2D-=20
+Rolf Eike Beer, emlix GmbH, http://www.emlix.com
+=46on +49 551 30664-0, Fax +49 551 30664-11
+Gothaer Platz 3, 37083 G=C3=B6ttingen, Germany
+Sitz der Gesellschaft: G=C3=B6ttingen, Amtsgericht G=C3=B6ttingen HR B 3160
+Gesch=C3=A4ftsf=C3=BChrung: Heike Jordan, Dr. Uwe Kracke =E2=80=93 Ust-IdNr=
+=2E: DE 205 198 055
+
+emlix - smart embedded open source
+
+--nextPart3163522.BJEOxDOq7s
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iLMEAAEIAB0WIQQ/Uctzh31xzAxFCLur5FH7Xu2t/AUCYKdY4gAKCRCr5FH7Xu2t
+/ACxBADM0v8DMoBMsSIwqGZQTN5UG8+C8zbDs8rpd6pngku/cGNYaHVKaiq9oG41
+hXUJEJJVYru+33WKfYb6yLgDogvf7qclfBwqK3Wz180G2nxCqfZ9yAxz4VCexuvY
+bYUpOruM3oSwnt+j5WDIBANdct//q1fNc9BDPJgROZ7fws16Dg==
+=OzhT
+-----END PGP SIGNATURE-----
+
+--nextPart3163522.BJEOxDOq7s--
+
+
 
