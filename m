@@ -2,82 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289EF38C610
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B9F038C614
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:56:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233423AbhEUL5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:57:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43450 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhEUL5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:57:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4E31E6100C;
-        Fri, 21 May 2021 11:55:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621598159;
-        bh=jDXUzd+uAeWo7BvYRyqav70ZgmYfajJqRkfkwy5cpeA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nCneHFmzpWzHHPhdQCWU2otza53d0DVBL1eQsIJ6BOshmh3zeVCm8pIj9N5TsfHHN
-         HFv+Ko1XCgMix3iSYhngh+CG3k/WgNryqr1kXepdGMYqt6x/sZrxKobawkEjh4rdeR
-         XFTcFHEo675jXm0XHx82xfXywzACbn+bP0lpnfGs2UHw3FMm2AX661pd08jCa36fa/
-         Qm7lDjvbSSGTzbaqCBYEgR53ZxrSTlIhRo12spWO6fVsCSjOnjlsWSSAMXr+Xm2XEb
-         v2Rdk6gaMl5ttKDwHw+cAwm54jdIo3lZi8WDDyPtmJTcGA7CCas9dDjryRix3dtLWc
-         AUwJWoWAr1BlQ==
-Date:   Fri, 21 May 2021 17:25:51 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Jarvis Jiang <jarvis.w.jiang@gmail.com>
-Cc:     hemantk@codeaurora.org, loic.poulain@linaro.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        cchen50@lenovo.com, mpearson@lenovo.com
-Subject: Re: [PATCH v2] bus: mhi: pci_generic: T99W175: update channel name
- from AT to DUN
-Message-ID: <20210521115551.GA70095@thinkpad>
-References: <20210429014226.21017-1-jarvis.w.jiang@gmail.com>
+        id S233890AbhEUL5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:57:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233431AbhEUL5f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:57:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B40EC061574;
+        Fri, 21 May 2021 04:56:12 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621598170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mkWCZPQm4Sq8eRx/19smgC/LUP5WutmsllFmC78x3iM=;
+        b=jrrijcDW62qctMPrxCPXE+I3Q90yWYLVqGQ/yxRh12V/HvAA4nCM4b766r4kA8aSn4+W6E
+        SnRcFBlQvE0mrX89gDciuHuQz771KRrNl1rzuPHyZ7IOQOKeKFvJjJI/wOkLb6sDJpvn9q
+        TgadlGc0X/rM2/PgucKpLTCyxxYD915Z+IIh5R86eu4bzWFOfnGAlLAdiRl+7RS8wzUa4O
+        zUy3nLU2rk9dFpcvjfjfPfe15jnqoj9aLPNzfzFFf4JT5BYRKOaHYUjUsIyJwEPstKdLu1
+        8o9h1bEaNR5IEyG46taJYm8nVwLh9LGpPGvwj9eMvzQn3aSouG7k+mhy6HNnPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621598170;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mkWCZPQm4Sq8eRx/19smgC/LUP5WutmsllFmC78x3iM=;
+        b=pzOgjIPEze+IzdbjPO3qovTvTCQJdEkxS1LKiSfgOooS/j3Pkf4u1ZVW+rw51h6LKK/SxF
+        /aR/hPOxq6scYiBg==
+To:     Nitesh Lal <nilal@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
+        "frederic\@kernel.org" <frederic@kernel.org>,
+        "juri.lelli\@redhat.com" <juri.lelli@redhat.com>,
+        Alex Belits <abelits@marvell.com>,
+        "linux-api\@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "bhelgaas\@google.com" <bhelgaas@google.com>,
+        "linux-pci\@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "rostedt\@goodmis.org" <rostedt@goodmis.org>,
+        "peterz\@infradead.org" <peterz@infradead.org>,
+        "davem\@davemloft.net" <davem@davemloft.net>,
+        "akpm\@linux-foundation.org" <akpm@linux-foundation.org>,
+        "sfr\@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "stephen\@networkplumber.org" <stephen@networkplumber.org>,
+        "rppt\@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
+        "jinyuqi\@huawei.com" <jinyuqi@huawei.com>,
+        "zhangshaokun\@hisilicon.com" <zhangshaokun@hisilicon.com>,
+        netdev@vger.kernel.org, chris.friesen@windriver.com,
+        Marc Zyngier <maz@kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>, pjwaskiewicz@gmail.com
+Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when setting the hint
+In-Reply-To: <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+References: <20210504092340.00006c61@intel.com> <87pmxpdr32.ffs@nanos.tec.linutronix.de> <CAFki+Lkjn2VCBcLSAfQZ2PEkx-TR0Ts_jPnK9b-5ne3PUX37TQ@mail.gmail.com> <87im3gewlu.ffs@nanos.tec.linutronix.de> <CAFki+L=gp10W1ygv7zdsee=BUGpx9yPAckKr7pyo=tkFJPciEg@mail.gmail.com> <CAFki+L=eQoMq+mWhw_jVT-biyuDXpxbXY5nO+F6HvCtpbG9V2w@mail.gmail.com> <CAFki+LkB1sk3mOv4dd1D-SoPWHOs28ZwN-PqL_6xBk=Qkm40Lw@mail.gmail.com>
+Date:   Fri, 21 May 2021 13:56:10 +0200
+Message-ID: <87zgwo9u79.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429014226.21017-1-jarvis.w.jiang@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 06:42:26PM -0700, Jarvis Jiang wrote:
-> According to MHI v1.1 specification, change the channel name of T99W175
-> from "AT" to "DUN" (Dial-up networking) for both channel 32 and 33,
-> so that the channels can be bound to the Qcom WWAN control driver, and
-> device node such as /dev/wwan0p3AT will be generated, which is very useful
-> for debugging modem
-> 
-> Fixes: aac426562f56 ("bus: mhi: pci_generic: Introduce Foxconn T99W175 support")
-> Signed-off-by: Jarvis Jiang <jarvis.w.jiang@gmail.com>
+Nitesh,
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Thu, May 20 2021 at 20:03, Nitesh Lal wrote:
+> On Thu, May 20, 2021 at 5:57 PM Nitesh Lal <nilal@redhat.com> wrote:
+>> I think here to ensure that we are not breaking any of the drivers we have
+>> to first analyze all the existing drivers and understand how they are using
+>> this API.
+>> AFAIK there are three possible scenarios:
+>>
+>> - A driver use this API to spread the IRQs
+>>   + For this case we should be safe considering the spreading is naturally
+>>     done from the IRQ subsystem itself.
+>
+> Forgot to mention another thing in the above case is to determine whether
+> it is true for all architectures or not as Thomas mentioned.
+
+Yes.
+
+>>
+>> - A driver use this API to actually set the hint
+>>   + These drivers should have no functional impact because of this revert
+
+Correct.
+
+
+>> - Driver use this API to force a certain affinity mask
+>>   + In this case we have to replace the API with the irq_force_affinity()
+
+irq_set_affinity() or irq_set_affinity_and_hint()
+
+>> I can start looking into the individual drivers, however, testing them will
+>> be a challenge.
+
+The only way to do that is to have the core infrastructure added and
+then send patches changing it in the way you think. The relevant
+maintainers/developers should be able to tell you when your analysis
+went south. :)
+
+Been there, done that. It's just lots of work :)
 
 Thanks,
-Mani
 
-> ---
-> 
-> v2: Add: Fixes: aac426562f56
-> 
->  drivers/bus/mhi/pci_generic.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/bus/mhi/pci_generic.c b/drivers/bus/mhi/pci_generic.c
-> index 7c810f02a2ef..8c7f6576e421 100644
-> --- a/drivers/bus/mhi/pci_generic.c
-> +++ b/drivers/bus/mhi/pci_generic.c
-> @@ -311,8 +311,8 @@ static const struct mhi_channel_config mhi_foxconn_sdx55_channels[] = {
->  	MHI_CHANNEL_CONFIG_DL(5, "DIAG", 32, 1),
->  	MHI_CHANNEL_CONFIG_UL(12, "MBIM", 32, 0),
->  	MHI_CHANNEL_CONFIG_DL(13, "MBIM", 32, 0),
-> -	MHI_CHANNEL_CONFIG_UL(32, "AT", 32, 0),
-> -	MHI_CHANNEL_CONFIG_DL(33, "AT", 32, 0),
-> +	MHI_CHANNEL_CONFIG_UL(32, "DUN", 32, 0),
-> +	MHI_CHANNEL_CONFIG_DL(33, "DUN", 32, 0),
->  	MHI_CHANNEL_CONFIG_HW_UL(100, "IP_HW0_MBIM", 128, 2),
->  	MHI_CHANNEL_CONFIG_HW_DL(101, "IP_HW0_MBIM", 128, 3),
->  };
-> -- 
-> 2.25.1
-> 
+        tglx
