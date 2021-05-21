@@ -2,105 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF4D38C006
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:50:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA21D38BFFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 08:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234327AbhEUGvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 02:51:35 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:15238 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234171AbhEUGv3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 02:51:29 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14L6XpL6067209;
-        Fri, 21 May 2021 02:49:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=B6fKIfzATlOj+vGB437dzLALXkiJGp1xiTO+3WNacfU=;
- b=MNUt86aEsC4cu81ZKH9Ob3kyzQk+XdYVeKdOQBa1EJNIKfzaaPRao8PKVQNDW+nn/Ad7
- 5KsVoPpYWd6fteeZr1hMV5XRIPg918dGwwq+zIUmq6rZ+rrMUQlndIw8e7VD/lBZ7aQP
- WUmgEJMMzR8kON9zGA1xeQTdCcC4WabDIYuuHez0VzsGaYoKPctSZmQ4XEJVOOjzPjZt
- 8YH0EW1y0hyjXPtb/V8pqDTHcrdIogMVf/mgC24N5vZZIozxKiavEn9JdfC+LJrtXhGM
- Lfgw0j/+yctODj5Qw9RWRWXiwUth47HbnwWax6wD4fSB6eylPM10+eFm10FM3ATkRDDa ew== 
-Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38p4bfcr6u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 02:49:34 -0400
-Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
-        by ppma06fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14L6mPcs022242;
-        Fri, 21 May 2021 06:49:31 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma06fra.de.ibm.com with ESMTP id 38j5jh1nrg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 21 May 2021 06:49:31 +0000
-Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14L6nSH134013520
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 May 2021 06:49:28 GMT
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C1C1C4203F;
-        Fri, 21 May 2021 06:49:28 +0000 (GMT)
-Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CCF8442049;
-        Fri, 21 May 2021 06:49:25 +0000 (GMT)
-Received: from naverao1-tp.in.ibm.com (unknown [9.85.72.15])
-        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 21 May 2021 06:49:25 +0000 (GMT)
-From:   "Naveen N. Rao" <naveen.n.rao@linux.vnet.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Suchanek <msuchanek@suse.de>,
-        Torsten Duwe <duwe@suse.de>
-Cc:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>
-Subject: [RFC PATCH 6/6] powerpc/stacktrace: Include ftraced function in arch_stack_walk()
-Date:   Fri, 21 May 2021 12:18:41 +0530
-Message-Id: <62004f1fa97ab48ca53f08addea531a25886f5f7.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
-References: <cover.1621577151.git.naveen.n.rao@linux.vnet.ibm.com>
+        id S233462AbhEUGuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 02:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32882 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231627AbhEUGuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 02:50:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 082B660724;
+        Fri, 21 May 2021 06:48:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621579739;
+        bh=wdYmfwdm4nzmPrxFS2YNbnS85Aq+b2coK+5qodudhVE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I8k5NsQjBtZEB1VUmQrF9eBLUNFT+5AhYaJBK9tXorNi1FFT/CSZDXcaYFCT4SfVW
+         lSs9KoWtwF2oFXL1Nmqq8vy/3B0mOLhGdmj2YuVNEXX87ofG2B/bbroESp82R7yBxa
+         1k0fI7JTRdl7WZjke/bfPQ5axrfBEF/sWKsVD4wQ=
+Date:   Fri, 21 May 2021 08:48:56 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     aviral14112001 <shiv14112001@gmail.com>
+Cc:     viro@zeniv.linux.org.uk, shuah@kernal.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] This commit fixes the following checkpatch.pl errors and
+ warnings : >>ERROR: switch and case should be at the same indent + switch
+ (whence) { +           case 1: [...] +         case 0: [...] + default:
+Message-ID: <YKdX2FEsuyBkmqki@kroah.com>
+References: <20210521054857.7784-1-shiv14112001@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: deIiirdD9J-DWVX9ALFn90A0q2jR26fV
-X-Proofpoint-GUID: deIiirdD9J-DWVX9ALFn90A0q2jR26fV
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-21_03:2021-05-20,2021-05-21 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 phishscore=0 bulkscore=0 spamscore=0 suspectscore=0
- mlxscore=0 clxscore=1015 lowpriorityscore=0 priorityscore=1501
- impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104190000 definitions=main-2105210043
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521054857.7784-1-shiv14112001@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With -mprofile-kernel and ppc32, the function tracer is invoked before a
-function sets up its own stackframe. This results in the traced function
-not appearing in stack traces. Fix this by checking for ftrace entry and
-including the traced function in the stack trace.
+On Fri, May 21, 2021 at 11:18:57AM +0530, aviral14112001 wrote:
+> >>ERROR: code indent should use tabs where possible
+> +                              void (*callback)(struct dentry *))$
+> 
+> >>WARNING: Prefer [subsystem eg: netdev]_warn([subsystem]dev, ... then dev_warn(dev, ... then pr_warn(...  to printk(KERN_WARNING ...
+> +			printk(KERN_WARNING "%s: %s passed in a files array"
+> 
+> >>WARNING: break quoted strings at a space character
+> +			printk(KERN_WARNING "%s: %s passed in a files array"
+> +				"with an index of 1!\n", __func__,
+> 
+> >>WARNING: Symbolic permissions 'S_IRUSR | S_IWUSR' are not preferred. Consider using octal permissions '0600'.
+> +	root->i_mode = S_IFDIR | S_IRUSR | S_IWUSR;
+> 
+> >>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+> +			loff_t pos, unsigned len, unsigned flags,
+> 
+> >>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+> +			loff_t pos, unsigned len, unsigned flags,
+> 
+> >>WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+> +		unsigned from = pos & (PAGE_SIZE - 1);
+> 
+> >>WARNING: Block comments use a trailing */ on a separate line
+> + * to set the attribute specific access operations. */
+> 
+> >>WARNING: Symbolic permissions 'S_IRUGO | S_IXUGO' are not preferred. Consider using octal permissions '0555'.
+> +	inode->i_mode = S_IFDIR | S_IRUGO | S_IXUGO;
+> 
+> >>Several other warnings (WARNING: Missing a blank line after declarations)
+> 
+> Signed-off-by: aviral14112001 <shiv14112001@gmail.com>
+> ---
+>  fs/libfs.c | 66 ++++++++++++++++++++++++++++++------------------------
+>  1 file changed, 37 insertions(+), 29 deletions(-)
+> 
 
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
----
- arch/powerpc/kernel/stacktrace.c | 4 ++++
- 1 file changed, 4 insertions(+)
+Hi,
 
-diff --git a/arch/powerpc/kernel/stacktrace.c b/arch/powerpc/kernel/stacktrace.c
-index 1e1be297c5d6c7..f884c5d21fa7e7 100644
---- a/arch/powerpc/kernel/stacktrace.c
-+++ b/arch/powerpc/kernel/stacktrace.c
-@@ -51,6 +51,10 @@ void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
- 		if (!consume_entry(cookie, ip))
- 			return;
- 
-+		ip = ftrace_get_traced_func_if_no_stackframe(ip, stack);
-+		if (ip && !consume_entry(cookie, ip))
-+			return;
-+
- 		sp = newsp;
- 	}
- }
--- 
-2.30.2
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
+You are receiving this message because of the following common error(s)
+as indicated below:
+
+- Your patch did many different things all at once, making it difficult
+  to review.  All Linux kernel patches need to only do one thing at a
+  time.  If you need to do multiple things (such as clean up all coding
+  style issues in a file/driver), do it in a sequence of patches, each
+  one doing only one thing.  This will make it easier to review the
+  patches to ensure that they are correct, and to help alleviate any
+  merge issues that larger patches can cause.
+
+- You did not specify a description of why the patch is needed, or
+  possibly, any description at all, in the email body.  Please read the
+  section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what is needed in order to
+  properly describe the change.
+
+- You did not write a descriptive Subject: for the patch, allowing Greg,
+  and everyone else, to know what this patch is all about.  Please read
+  the section entitled "The canonical patch format" in the kernel file,
+  Documentation/SubmittingPatches for what a proper Subject: line should
+  look like.
+
+- It looks like you did not use your "real" name for the patch on either
+  the Signed-off-by: line, or the From: line (both of which have to
+  match).  Please read the kernel file, Documentation/SubmittingPatches
+  for how to do this correctly.
+
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
