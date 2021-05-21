@@ -2,133 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9878538C05C
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:07:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B78E38C0A9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:23:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbhEUHI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:08:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54392 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235365AbhEUHIu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:08:50 -0400
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5874AC06138F
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:04:52 -0700 (PDT)
-Received: by mail-qt1-x82c.google.com with SMTP id y12so14607572qtx.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 00:04:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AEw/2V7/xpmVmNpjjOkVlxPAcJgRBwQ9KZP9S0+LhGs=;
-        b=vgb3uAFmlPGVXAd91EJa6J4LHy8LHu+U29axDVp5UZhMh+fe91loAj1CTq+Gdm3t9H
-         HDxcGhiah+7YPM/Hk6PLL4W0/2u1/z0X5YNxOVspAv2Ku8vnZPWkQti+J9JjowrHG7bI
-         z46AGqk0o6qyNmV3pBM2jC81hIDUfUkrkQXCDBc/ci7c8Fqt3LcLGF/q25GEFtJVbDQg
-         3TDJUYCgV+ROCX6L2zmMWVjPqOGLgLDwjeMTsS2XWhjM5OwAL2QoEzl17X1Kk5AzWcYs
-         8wXTqDa+d6CARDy0yZ8IJ7ZvbYrcC9aYEzH9LO7cWosbxY/dBTZeQz1MxNs7qKVEc5J7
-         TAKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AEw/2V7/xpmVmNpjjOkVlxPAcJgRBwQ9KZP9S0+LhGs=;
-        b=XWrKb5MhE8pZOOZs6Ga1rLubvuzNbXprSIs+g9GnusqewDsCxWMKpc9NUw5THyUzQe
-         Cjsp0qoltRBVNWKhzcCbQqXEMBrbGYtKkzOFIFqOs2WnTG4hx08BIG9W9bzxUmyTlw3i
-         sm5bozFuiw4mDFycRSLg01OzUEQ7tYelXSuo8ltzmCo+D4gMXnpJI9fSvS/YLviZZgw9
-         QmM3jlQB8KvO4PMMnkRwcABZs1QmwMA21ZgMeV/TquQVpyIJIjOyKQnTW5vvLSm6qPUI
-         /PMxWY9JLpGVxZ2hB6ewoQ60HVQlFdDh/UnnT4ghshAz4EL0pEvtAJCM7OaoI3MDKZcU
-         eg8g==
-X-Gm-Message-State: AOAM530ufwP06WjMfYvuvuC312wyle4drnEmKhqrx11rFiWJHS6IIIOy
-        rj7PdjjCkWrmfbdrqRJluFdqGeSiGcyxZu5BwuWVuw==
-X-Google-Smtp-Source: ABdhPJxBl69YJ2DivfUpEV1speNJDfx8ufFZ4oirpKc3gjTnIcoQhKPkIj8PsdvtwiF9BnwCBN/zC96sHLv1rhA0bxc=
-X-Received: by 2002:ac8:4e21:: with SMTP id d1mr9657232qtw.290.1621580691240;
- Fri, 21 May 2021 00:04:51 -0700 (PDT)
+        id S235718AbhEUHYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:24:45 -0400
+Received: from vps-vb.mhejs.net ([37.28.154.113]:47932 "EHLO vps-vb.mhejs.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234882AbhEUHYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:24:41 -0400
+Received: from MUA
+        by vps-vb.mhejs.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94.2)
+        (envelope-from <mail@maciej.szmigiero.name>)
+        id 1ljzDq-000569-AA; Fri, 21 May 2021 09:05:26 +0200
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Igor Mammedov <imammedo@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1621191549.git.maciej.szmigiero@oracle.com>
+ <4a4867419344338e1419436af1e1b0b8f2405517.1621191551.git.maciej.szmigiero@oracle.com>
+ <YKWRyvyyO5UAHv4U@google.com>
+From:   "Maciej S. Szmigiero" <mail@maciej.szmigiero.name>
+Subject: Re: [PATCH v3 3/8] KVM: Resolve memslot ID via a hash table instead
+ of via a static array
+Message-ID: <c7ba42ee-dc70-a86c-aeb2-d410c136a5ec@maciej.szmigiero.name>
+Date:   Fri, 21 May 2021 09:05:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <0000000000003687bd05c2b2401d@google.com> <CACT4Y+YJDGFN4q-aTPritnjjHEXiFovOm9eO6Ay4xC1YOa5z3w@mail.gmail.com>
- <c545268c-fe62-883c-4c46-974b3bb3cea1@infradead.org> <CACT4Y+aEtYPAdrU7KkE303yDw__QiG7m1tWVJewV8C_Mt9=1qg@mail.gmail.com>
- <208cd812-214f-ef2f-26ec-cc7a73953885@i-love.sakura.ne.jp>
-In-Reply-To: <208cd812-214f-ef2f-26ec-cc7a73953885@i-love.sakura.ne.jp>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 21 May 2021 09:04:39 +0200
-Message-ID: <CACT4Y+Y8KmaoEj0L8g=wX4owS38mjNLVMMLsjyoN8DU9n=FrrQ@mail.gmail.com>
-Subject: Re: [syzbot] BUG: MAX_LOCKDEP_KEYS too low! (2)
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        David Miller <davem@davemloft.net>,
-        syzbot <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        WireGuard mailing list <wireguard@lists.zx2c4.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YKWRyvyyO5UAHv4U@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 7:02 AM Tetsuo Handa
-<penguin-kernel@i-love.sakura.ne.jp> wrote:
->
-> On 2021/05/20 5:09, Dmitry Vyukov wrote:
-> > On Wed, May 19, 2021 at 9:58 PM Randy Dunlap <rdunlap@infradead.org> wrote:
-> >>
-> >> On 5/19/21 12:48 PM, Dmitry Vyukov wrote:
-> >>> On Wed, May 19, 2021 at 7:35 PM syzbot
-> >>> <syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com> wrote:
-> >>>>
-> >>>> Hello,
-> >>>>
-> >>>> syzbot found the following issue on:
-> >>>>
-> >>>> HEAD commit:    b81ac784 net: cdc_eem: fix URL to CDC EEM 1.0 spec
-> >>>> git tree:       net
-> >>>> console output: https://syzkaller.appspot.com/x/log.txt?x=15a257c3d00000
-> >>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=5b86a12e0d1933b5
-> >>>> dashboard link: https://syzkaller.appspot.com/bug?extid=a70a6358abd2c3f9550f
-> >>>>
-> >>>> Unfortunately, I don't have any reproducer for this issue yet.
-> >>>>
-> >>>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >>>> Reported-by: syzbot+a70a6358abd2c3f9550f@syzkaller.appspotmail.com
-> >>>>
-> >>>> BUG: MAX_LOCKDEP_KEYS too low!
-> >>>
-> >>
-> >> include/linux/lockdep.h
-> >>
-> >> #define MAX_LOCKDEP_KEYS_BITS           13
-> >> #define MAX_LOCKDEP_KEYS                (1UL << MAX_LOCKDEP_KEYS_BITS)
-> >
-> > Ouch, so it's not configurable yet :(
->
-> I didn't try to make this value configurable, for
->
-> > Unless, of course, we identify the offender that produced thousands of
-> > lock classes in the log and fix it.
->
-> number of currently active locks should decrease over time.
-> If this message is printed, increasing this value unlikely helps.
->
-> We have https://lkml.kernel.org/r/c099ad52-0c2c-b886-bae2-c64bd8626452@ozlabs.ru
-> which seems to be unresolved.
->
-> Regarding this report, cleanup of bonding device is too slow to catch up to
-> creation of bonding device?
->
-> We might need to throttle creation of BPF, bonding etc. which involve WQ operation for clean up?
+On 20.05.2021 00:31, Sean Christopherson wrote:
+> On Sun, May 16, 2021, Maciej S. Szmigiero wrote:
+>> @@ -356,6 +357,7 @@ static inline int kvm_vcpu_exiting_guest_mode(struct kvm_vcpu *vcpu)
+>>   #define KVM_MEM_MAX_NR_PAGES ((1UL << 31) - 1)
+>>   
+>>   struct kvm_memory_slot {
+>> +	struct hlist_node id_node;
+>>   	gfn_t base_gfn;
+>>   	unsigned long npages;
+>>   	unsigned long *dirty_bitmap;
+>> @@ -458,7 +460,7 @@ static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
+>>   struct kvm_memslots {
+>>   	u64 generation;
+>>   	/* The mapping table from slot id to the index in memslots[]. */
+>> -	short id_to_index[KVM_MEM_SLOTS_NUM];
+>> +	DECLARE_HASHTABLE(id_hash, 7);
+> 
+> Is there any specific motivation for using 7 bits?
 
-I see, thanks for digging into it.
+At the time this code was written "id_to_index" was 512 entries * 2 bytes =
+1024 bytes in size and I didn't want to unnecessarily make
+struct kvm_memslots bigger so I have tried using a hashtable array of the
+same size (128 bucket-heads * 8 bytes).
 
-Unbounded asynchronous queueing is always a recipe for disaster... I
-assume such issues can affect production as well, if some program
-creates namespaces/devices in a loop. So I think ideally such things
-are throttled/restricted in the kernel, e.g. new namespaces/devices
-are not created if some threshold is reached.
+I have done a few performance measurements then and I remember there was
+only a small performance difference in comparison to using a larger
+hashtable (for 509 memslots), so it seemed like a good compromise.
 
-Potentially syzkaller could throttle creation of new
-namespaces/devices if we find a good and reliable way to monitor
-backlog. Something like the length of a particular workqueue. It may
-also help with OOMs. But so far I haven't found it.
+The KVM selftest framework patch actually uses a 9-bit hashtable so the
+509 original memslots have chance to be stored without hash collisions.
+
+Another option would be to use a dynamically-resizable hashtable but this
+would make the code significantly more complex and possibly introduce new
+performance corner cases (like a workload that forces the hashtable grow
+and shrink repeatably).
+
+>>   	atomic_t lru_slot;
+>>   	int used_slots;
+>>   	struct kvm_memory_slot memslots[];
+> 
+> ...
+> 
+>> @@ -1097,14 +1095,16 @@ static int kvm_alloc_dirty_bitmap(struct kvm_memory_slot *memslot)
+>>   /*
+>>    * Delete a memslot by decrementing the number of used slots and shifting all
+>>    * other entries in the array forward one spot.
+>> + * @memslot is a detached dummy struct with just .id and .as_id filled.
+>>    */
+>>   static inline void kvm_memslot_delete(struct kvm_memslots *slots,
+>>   				      struct kvm_memory_slot *memslot)
+>>   {
+>>   	struct kvm_memory_slot *mslots = slots->memslots;
+>> +	struct kvm_memory_slot *dmemslot = id_to_memslot(slots, memslot->id);
+> 
+> I vote to call these local vars "old", or something along those lines.  dmemslot
+> isn't too bad, but mmemslot in the helpers below is far too similar to memslot,
+> and using the wrong will cause nasty explosions.
+
+Will rename to "oldslot" then.
+
+(..)
+>> @@ -1135,31 +1136,41 @@ static inline int kvm_memslot_insert_back(struct kvm_memslots *slots)
+>>    * itself is not preserved in the array, i.e. not swapped at this time, only
+>>    * its new index into the array is tracked.  Returns the changed memslot's
+>>    * current index into the memslots array.
+>> + * The memslot at the returned index will not be in @slots->id_hash by then.
+>> + * @memslot is a detached struct with desired final data of the changed slot.
+>>    */
+>>   static inline int kvm_memslot_move_backward(struct kvm_memslots *slots,
+>>   					    struct kvm_memory_slot *memslot)
+>>   {
+>>   	struct kvm_memory_slot *mslots = slots->memslots;
+>> +	struct kvm_memory_slot *mmemslot = id_to_memslot(slots, memslot->id);
+>>   	int i;
+>>   
+>> -	if (WARN_ON_ONCE(slots->id_to_index[memslot->id] == -1) ||
+>> +	if (WARN_ON_ONCE(!mmemslot) ||
+>>   	    WARN_ON_ONCE(!slots->used_slots))
+>>   		return -1;
+>>   
+>> +	/*
+>> +	 * update_memslots() will unconditionally overwrite and re-add the
+>> +	 * target memslot so it has to be removed here firs
+>> +	 */
+> 
+> It would be helpful to explain "why" this is necessary.  Something like:
+> 
+> 	/*
+> 	 * The memslot is being moved, delete its previous hash entry; its new
+> 	 * entry will be added by updated_memslots().  The old entry cannot be
+> 	 * kept even though its id is unchanged, because the old entry points at
+> 	 * the memslot in the old instance of memslots.
+> 	 */
+
+Well, this isn't technically true, since kvm_dup_memslots() reinits
+the hashtable of the copied memslots array and re-adds all the existing
+memslots there.
+
+The reasons this memslot is getting removed from the hashtable are that:
+a) The loop below will (possibly) overwrite it with data of the next
+memslot, or a similar loop in kvm_memslot_move_forward() will overwrite
+it with data of the previous memslot,
+
+b) update_memslots() will overwrite it with data of the target memslot.
+
+The comment above only refers to the case b), so I will update it to
+also cover the case a).
+
+(..)
+>> @@ -1247,12 +1266,16 @@ static void update_memslots(struct kvm_memslots *slots,
+>>   			i = kvm_memslot_move_backward(slots, memslot);
+>>   		i = kvm_memslot_move_forward(slots, memslot, i);
+>>   
+>> +		if (i < 0)
+>> +			return;
+> 
+> Hmm, this is essentially a "fix" to existing code, it should be in a separate
+> patch.  And since kvm_memslot_move_forward() can theoretically hit this even if
+> kvm_memslot_move_backward() doesn't return -1, i.e. doesn't WARN, what about
+> doing WARN_ON_ONCE() here and dropping the WARNs in kvm_memslot_move_backward()?
+> It'll be slightly less developer friendly, but anyone that has the unfortunate
+> pleasure of breaking and debugging this code is already in for a world of pain.
+
+Will do.
+
+>> +
+>>   		/*
+>>   		 * Copy the memslot to its new position in memslots and update
+>>   		 * its index accordingly.
+>>   		 */
+>>   		slots->memslots[i] = *memslot;
+>> -		slots->id_to_index[memslot->id] = i;
+>> +		hash_add(slots->id_hash, &slots->memslots[i].id_node,
+>> +			 memslot->id);
+>>   	}
+>>   }
+>>   
+>> @@ -1316,6 +1339,7 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
+>>   {
+>>   	struct kvm_memslots *slots;
+>>   	size_t old_size, new_size;
+>> +	struct kvm_memory_slot *memslot;
+>>   
+>>   	old_size = sizeof(struct kvm_memslots) +
+>>   		   (sizeof(struct kvm_memory_slot) * old->used_slots);
+>> @@ -1326,8 +1350,14 @@ static struct kvm_memslots *kvm_dup_memslots(struct kvm_memslots *old,
+>>   		new_size = old_size;
+>>   
+>>   	slots = kvzalloc(new_size, GFP_KERNEL_ACCOUNT);
+>> -	if (likely(slots))
+>> -		memcpy(slots, old, old_size);
+>> +	if (unlikely(!slots))
+>> +		return NULL;
+>> +
+>> +	memcpy(slots, old, old_size);
+>> +
+>> +	hash_init(slots->id_hash);
+>> +	kvm_for_each_memslot(memslot, slots)
+>> +		hash_add(slots->id_hash, &memslot->id_node, memslot->id);
+> 
+> What's the perf penalty if the number of memslots gets large?  I ask because the
+> lazy rmap allocation is adding multiple calls to kvm_dup_memslots().
+
+I would expect the "move inactive" benchmark to be closest to measuring
+the performance of just a memslot array copy operation but the results
+suggest that the performance stays within ~10% window from 10 to 509
+memslots on the old code (it then climbs 13x for 32k case).
+
+That suggests that something else is dominating this benchmark for these
+memslot counts (probably zapping of shadow pages).
+
+At the same time, the tree-based memslots implementation is clearly
+faster in this benchmark, even for smaller memslot counts, so apparently
+copying of the memslot array has some performance impact, too.
+
+Measuring just kvm_dup_memslots() performance would probably be done
+best by benchmarking KVM_MR_FLAGS_ONLY operation - will try to add this
+operation to my set of benchmarks and see how it performs with different
+memslot counts.
+
+Thanks,
+Maciej
