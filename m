@@ -2,127 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B206D38C5D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:40:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60D6938C5E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:41:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234858AbhEULle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:41:34 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:59368 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234836AbhEULlU (ORCPT
+        id S234928AbhEULnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:43:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232078AbhEULm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:41:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621597197; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=1RUBO5gobty3p8p9uWkHS44TdwUBkEs0GqFUhu2ijkw=; b=bOizWZe67WHViNLheZWWJjPmPolLwzL2dKj7M8wSEqBa01UbZ68GiZtKrVOw24abIb2saQEo
- uH+jif9KglpNyUmH/lxq3eang211xjYRyl/T7ZxPesGZjvLO94e1UAbmXQ55kwg2XN9HVHSU
- xqdp8N9Cc7gu/QjgzRZpj/vELCs=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 60a79c0b7b5af81b5c2a9950 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 21 May 2021 11:39:55
- GMT
-Sender: faiyazm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B2543C433F1; Fri, 21 May 2021 11:39:55 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.0.105] (unknown [49.204.180.246])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: faiyazm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C8790C433D3;
-        Fri, 21 May 2021 11:39:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C8790C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
-Subject: Re: [PATCH v6] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-To:     Vlastimil Babka <vbabka@suse.cz>, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, glittao@gmail.com, greg@kroah.com
-Cc:     vinmenon@codeaurora.org
-References: <1621341949-26762-1-git-send-email-faiyazm@codeaurora.org>
- <a8247d42-01d3-6d9c-678f-382ea1e02945@suse.cz>
-From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
-Message-ID: <a86f72b3-76ff-b767-71bd-044d70fab064@codeaurora.org>
-Date:   Fri, 21 May 2021 17:09:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 21 May 2021 07:42:58 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3469AC061574;
+        Fri, 21 May 2021 04:41:33 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id p20so23576266ljj.8;
+        Fri, 21 May 2021 04:41:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=wFYeACD6ntHDr3ZzL7zrrnF7+KzQ9eLPKf1tdFUUddQ=;
+        b=C19rWBqLdiJcQCPCyqFA0u37icaVwV4D09Rt8zjZm5Hxl+j78AQ/TO1W0R01yYFuqr
+         EKzIgdDPIkW2YGGY8ow+B91Ne2XTmXgnuMeK2Kel7XbaBTDt5BpFWF/PpyuSyIJBM0GK
+         vUf4fh8ZyIjNn2CbfXQ8WDNGZNH+KGtbYyiIck6MzNQf2jSqpjOeZqOfv6jvOvxioOv1
+         QzCVTJAMxOAalZ2kwdzofV709K/FHkJpMZPXNA1xjiJ7MKE5ZKuGfvbjybHvhgN8ymy9
+         v2XdB5ZHlExKxkErQwEDWvAEE8zzrbBaJvcB9y7KakQDKkYPUvIkU2dugfm1ltdjFYBr
+         ZgDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=wFYeACD6ntHDr3ZzL7zrrnF7+KzQ9eLPKf1tdFUUddQ=;
+        b=K9AEmsWvEkQu40kDvHHWFpMJtkfipHk9ZzRMwnaGshCovWmRwDVMd1c8056jePZSQh
+         W5VLJ94MYt0dBoa9Skmj4gzM6qGVoNp1lZ4Xhka+JSN+8KtNHVA6MGWbwi/a2XOT7dOi
+         jxbmFzqP2uFfCKer+YiwIE0iSHYWvUtyAsQO+T9sPVKwlqxV7cz9bAYY7kaDP5PL44L8
+         EGS7Kry8tteBsM6t0tPJUT+omyApXqW6HFVh9LoS1+pQnXZg+uSBHKST3nqU4PSxRlKy
+         CreuRMHB/uT/o0XMrZtjrBuEhGC+mv9RPcoDWAMyxqc5d1jsk16O/bNQK2yjswV196I9
+         Q2Xg==
+X-Gm-Message-State: AOAM530kzJdxhmu9xAymuABfFOr+63sFxsbGbaKd6BXWUljaLeztDBR8
+        V6Fdj/5achIaXgP+3/Yot9s=
+X-Google-Smtp-Source: ABdhPJykWgciebUg4UHyYyvCEuObukTkXyH+IRrTgfovQF4Kf899lKrwftO2wF8cWlzIIMGgSQJYVA==
+X-Received: by 2002:a2e:a594:: with SMTP id m20mr6911414ljp.114.1621597291530;
+        Fri, 21 May 2021 04:41:31 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.229.140])
+        by smtp.gmail.com with ESMTPSA id z41sm597991lfu.88.2021.05.21.04.41.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 04:41:31 -0700 (PDT)
+Date:   Fri, 21 May 2021 14:41:28 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Aviral Gupta <shiv14112001@gmail.com>
+Cc:     viro@zeniv.linux.org.uk, shuah@kernal.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] This commit fixes the error generated due to the wrong
+ indentation which does not follow the codding style norms set by
+ Linux-kernel and space- bar is used in place of tab to give space which
+ causes a visual error for some compilers
+Message-ID: <20210521144128.052e3c48@gmail.com>
+In-Reply-To: <20210521105654.4046-1-shiv14112001@gmail.com>
+References: <20210521105654.4046-1-shiv14112001@gmail.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <a8247d42-01d3-6d9c-678f-382ea1e02945@suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 21 May 2021 16:26:54 +0530
+Aviral Gupta <shiv14112001@gmail.com> wrote:
+
+> ERROR: switch and case should be at the same indent
+> +	switch (whence) {
+> +		case 1:
+> [...]
+> +		case 0:
+> [...]
+> +		default:
+> ERROR: code indent should use tabs where possible
+> +                              void (*callback)(struct dentry *))$
+> 
+> Signed-off-by: Aviral Gupta <shiv14112001@gmail.com>
+> ---
+>  fs/libfs.c | 20 ++++++++++----------
+>  1 file changed, 10 insertions(+), 10 deletions(-)
+> 
+
+Hi, Aviral!
+
+Always check your patches with ./scripts/checpatch.pl. It will warn You
+if your patch has common errors (ex: too long subject line like yours). 
+
+I think, this link might be helpful
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html.
+This document contains canonical patch format and other useful
+info about "how to send patches".
+
+Goog luck! 
 
 
-On 5/21/2021 4:43 PM, Vlastimil Babka wrote:
-> On 5/18/21 2:45 PM, Faiyaz Mohammed wrote:
->> alloc_calls and free_calls implementation in sysfs have two issues,
->> one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
->> to "one value per file" rule.
->>
->> To overcome this issues, move the alloc_calls and free_calls implemeation
->> to debugfs.
->>
->> Rename the alloc_calls/free_calls to alloc_traces/free_traces,
->> to be inline with what it does.
->>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->> Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
-> 
-> 
->> @@ -5817,6 +5769,249 @@ static int __init slab_sysfs_init(void)
->>  __initcall(slab_sysfs_init);
->>  #endif /* CONFIG_SYSFS */
->>  
->> +#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
->> +static int debugfs_slab_alias(struct kmem_cache *s, const char *name)
->> +{
->> +	struct saved_alias *al;
->> +	struct dentry *slab_cache_dir;
->> +
->> +	if (slab_state == FULL) {
->> +		/*
->> +		 * If we have a leftover link then remove it.
->> +		 */
->> +		slab_cache_dir = debugfs_lookup(s->name, slab_debugfs_root);
->> +		debugfs_remove(slab_cache_dir);
->> +		debugfs_create_symlink(name, slab_debugfs_root, NULL);
-> 
-> v6 got stuck on boot for me, unlike v5, seems like here you should return 0?
-> That helped
-> 
-oh, it worked me without return, but I think yes, have to return from
-here once the symlink is created like sysfs_slab_alias do. I will update
-in next patch version.
-
->> +	}
->> +
->> +	al = kmalloc(sizeof(struct saved_alias), GFP_KERNEL);
->> +	if (!al)
->> +		return -ENOMEM;
->> +
->> +	al->s = s;
->> +	al->name = name;
->> +	al->next = alias_list;
->> +	alias_list = al;
->> +	return 0;
->> +}
->> +
-
-Thanks and regards,
-Mohammed Faiyaz
+With regards,
+Pavel Skripkin
