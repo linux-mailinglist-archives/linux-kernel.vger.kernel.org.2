@@ -2,88 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58DB238C603
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:52:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2856238C605
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:52:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232256AbhEULxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:53:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:45496 "EHLO foss.arm.com"
+        id S232815AbhEULyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:54:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229540AbhEULxh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:53:37 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 599081424;
-        Fri, 21 May 2021 04:52:14 -0700 (PDT)
-Received: from [10.57.73.64] (unknown [10.57.73.64])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7176F3F719;
-        Fri, 21 May 2021 04:52:12 -0700 (PDT)
-Subject: Re: [PATCH v5 2/4] dt-bindings: iommu: rockchip: Add compatible for
- v2
-To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
-        heiko@sntech.de, xxm@rock-chips.com
-Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@collabora.com, Rob Herring <robh@kernel.org>
-References: <20210521083637.3221304-1-benjamin.gaignard@collabora.com>
- <20210521083637.3221304-3-benjamin.gaignard@collabora.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <40954168-ba5a-d152-2a24-441d5331f4ec@arm.com>
-Date:   Fri, 21 May 2021 12:52:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S233136AbhEULyJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 07:54:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C95AD613D0;
+        Fri, 21 May 2021 11:52:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1621597965;
+        bh=W4B3B9in/QqiNCeeJuu5Xijiq25S/MfrfNhYB4WI5/Q=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DAqtKr8oHFuAJJWu4Xrhpx42n5lw7Et1VuaADhV1tefAxb82gu1MUBSdYeA5qB7Sr
+         fv3iEO5yx7PpAfKrFZtTtL8lSnbWW+HGbWPvYqKXZB2VWK36Ja0qj3TireV5Tnw3Dk
+         9mJB09M0Qac2CwjoW6vjDIxmIHFevmRy8dTjxQMs=
+Date:   Fri, 21 May 2021 13:52:42 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Evgeny Novikov <novikov@ispras.ru>
+Cc:     Johan Hovold <johan@kernel.org>, Nikolay Kyx <knv418@gmail.com>,
+        Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Abheek Dhawan <adawesomeguy222@gmail.com>,
+        Lee Gibson <leegib@gmail.com>, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, ldv-project@linuxtesting.org
+Subject: Re: [PATCH] staging: fwserial: Fix potential NULL pointer
+ dereferences
+Message-ID: <YKefCpAnVWLCDVtg@kroah.com>
+References: <20210521114339.8469-1-novikov@ispras.ru>
 MIME-Version: 1.0
-In-Reply-To: <20210521083637.3221304-3-benjamin.gaignard@collabora.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521114339.8469-1-novikov@ispras.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-21 09:36, Benjamin Gaignard wrote:
-> Add compatible for the second version of IOMMU hardware block.
-> RK356x IOMMU can also be link to a power domain.
+On Fri, May 21, 2021 at 02:43:39PM +0300, Evgeny Novikov wrote:
+> If fwtty_install() will be invoked with such tty->index that will be
+> not less than MAX_TOTAL_PORTS then fwtty_port_get() will return NULL and
+> fwtty_install() will either assign it to tty->driver_data or dereference
+> in fwtty_port_put() (if tty_standard_install() will fail). The similar
+> situation is with fwloop_install(). The patch fixes both cases.
+
+But how can those cases ever happen?
+
+> Found by Linux Driver Verification project (linuxtesting.org).
 > 
-> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Evgeny Novikov <novikov@ispras.ru>
 > ---
->   .../devicetree/bindings/iommu/rockchip,iommu.yaml          | 7 ++++++-
->   1 file changed, 6 insertions(+), 1 deletion(-)
+>  drivers/staging/fwserial/fwserial.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> index 099fc2578b54..d2e28a9e3545 100644
-> --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
-> @@ -19,7 +19,9 @@ description: |+
->   
->   properties:
->     compatible:
-> -    const: rockchip,iommu
-> +    enum:
-> +      - rockchip,iommu
-> +      - rockchip,rk3568-iommu
->   
->     reg:
->       items:
-> @@ -48,6 +50,9 @@ properties:
->     "#iommu-cells":
->       const: 0
->   
-> +  power-domains:
-> +    maxItems: 1
+> diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
+> index 1ee6382cafc4..d0810896511e 100644
+> --- a/drivers/staging/fwserial/fwserial.c
+> +++ b/drivers/staging/fwserial/fwserial.c
+> @@ -1069,6 +1069,9 @@ static int fwtty_install(struct tty_driver *driver, struct tty_struct *tty)
+>  	struct fwtty_port *port = fwtty_port_get(tty->index);
+>  	int err;
+>  
+> +	if (!port)
+> +		return -ENODEV;
+
+there's already a valid tty pointer here, so the index can not be "too
+big".
+
+> +
+>  	err = tty_standard_install(driver, tty);
+>  	if (!err)
+>  		tty->driver_data = port;
+> @@ -1082,6 +1085,9 @@ static int fwloop_install(struct tty_driver *driver, struct tty_struct *tty)
+>  	struct fwtty_port *port = fwtty_port_get(table_idx(tty->index));
+>  	int err;
+>  
+> +	if (!port)
+> +		return -ENODEV;
 > +
 
-Nit: power domains are already present on various IOMMU nodes since 
-RK3288 - it feels like strictly this should be in patch #1 to fix the 
-existing binding as part of the conversion, but on the other hand I 
-can't really imagine anyone caring *that* much about dtscheck bisecting 
-cleanly :)
+Same here, how can this ever happen?
 
-Robin.
+thanks,
 
->     rockchip,disable-mmu-reset:
->       $ref: /schemas/types.yaml#/definitions/flag
->       description: |
-> 
+greg k-h
