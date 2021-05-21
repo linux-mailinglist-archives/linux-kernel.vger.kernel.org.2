@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3924838CCED
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:07:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C755B38CCF2
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:08:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238518AbhEUSJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:09:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57890 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231223AbhEUSJL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:09:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B383C613CB;
-        Fri, 21 May 2021 18:07:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621620466;
-        bh=rnrZncwe75g1z0VWYMaoSY/Ys80pRAv4pgoQnaiKhm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XzrgcYbHkFmnbCvPaLrBI2PRoY2fX70XzGoenu3UPSAMrOnk+LRj72ETVP7xExJiU
-         fsg0EeQMpf2qIMSJObY3k+sp8VDPI9tHlkmDXPr7sI0tXfvJYpBQzqXtz78UN959W6
-         2RB8kWp+r+NQSsV2e5yYYPAoNSaAcUfNpIIwTXTc=
-Date:   Fri, 21 May 2021 20:07:44 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] USB: trancevibrator: fix control-request direction
-Message-ID: <YKf28CaRalCTsXfO@kroah.com>
-References: <20210521133109.17396-1-johan@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521133109.17396-1-johan@kernel.org>
+        id S238574AbhEUSJl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:09:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231365AbhEUSJj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:09:39 -0400
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A77B4C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:08:16 -0700 (PDT)
+Received: by mail-pl1-x635.google.com with SMTP id 69so11403547plc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:08:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5U6SWI6tKwJQxiyyyLqjT1i8tYx3isO7hjR5W5+1Jeo=;
+        b=vtTnyRah2kvhTAvKkgyp5rIri/BGQNchS7lXj3oCYhV5McFBbxGTr4EjYc6mvyOinn
+         3AfMgA6VhS3u8947Z/3CuaEcMpm7wash5s4UhzpQ/gq2UOH/pXd1P8HP6LXs2AX2ghZ7
+         WTvvt1/yfLL8GYTjA6616yKQHybiIg2wPemKZer7/tMyrMrTs7n6j06sv5XO10p5HCbh
+         yLcC8WefzjiIY7amtnohfd+oXEAboa4fIZAxuILISPaizFwPRbUSghFsEjTIIQvrWCKL
+         mLont745Oggstxjw6092u9UjqC0L3W/ZSGD2MiRRew69QhYXK6txzd/ZBpU4jI6Eu+y6
+         cfSQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=5U6SWI6tKwJQxiyyyLqjT1i8tYx3isO7hjR5W5+1Jeo=;
+        b=K8zywtF/Yp5lH3nZ37jBQ642iM3/xB5MWaR3YqW2H06HBRhjPbjXWp8Xy1MIszHAqT
+         8pS/xx4ZbEPf4oHW9t32q2sGZfXU7R4hMDv8Ludx+4douoOPHWGe8sKYAsDQIfnxFDDF
+         nAGj+oXk7hPR5/spmk2q1D8YzDskoWIKyBYYcyga1MMZ1XoyzZlHSLNUMZHBDdh7GOdE
+         FvohVPeqwpGmPD83hnfaoWagxR+21/Wa8pleutZoXkgdQrXDJCIYaBM13b5rHDHOD8Vc
+         IvPy+eyMmeUemzLOgjBeWsr6H4KUXA0AaGQnTdz9Uy/aP6W/cyfyJLWKGS/Nk0Rvhdbj
+         oS7Q==
+X-Gm-Message-State: AOAM530Dqy4tbDEqXESqwuXqaOfqXbCLCSGmNqZlYXYbZHjv2jYZhR6b
+        AzqEYsEFJlHcgjwPzugxBzqcNQ==
+X-Google-Smtp-Source: ABdhPJwLEJQWqh67UT0dt8OTf7ZYOzZievMqQ6z7E3S6USV227nLPVyaUv+fvSjbWzdxhAnKUIgAHA==
+X-Received: by 2002:a17:902:f543:b029:f3:bfca:21b4 with SMTP id h3-20020a170902f543b02900f3bfca21b4mr13333335plf.6.1621620495939;
+        Fri, 21 May 2021 11:08:15 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id r11sm4812600pgl.34.2021.05.21.11.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 11:08:15 -0700 (PDT)
+Date:   Fri, 21 May 2021 11:08:15 -0700 (PDT)
+X-Google-Original-Date: Fri, 21 May 2021 11:08:12 PDT (-0700)
+Subject:     Re: [PATCH v18 00/18] KVM RISC-V Support
+In-Reply-To: <YKfyR5jUu3HMvYg5@kroah.com>
+CC:     pbonzini@redhat.com, anup@brainfault.org,
+        Anup Patel <Anup.Patel@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, corbet@lwn.net, graf@amazon.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        Alistair Francis <Alistair.Francis@wdc.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-staging@lists.linux.dev
+From:   Palmer Dabbelt <palmerdabbelt@google.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Message-ID: <mhng-122345f7-47d9-4509-8ae6-ce1da912fc00@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 03:31:09PM +0200, Johan Hovold wrote:
-> The direction of the pipe argument must match the request-type direction
-> bit or control requests may fail depending on the host-controller-driver
-> implementation.
-> 
-> Fix the set-speed request which erroneously used USB_DIR_IN and update
-> the default timeout argument to match (same value).
-> 
-> Fixes: 5638e4d92e77 ("USB: add PlayStation 2 Trance Vibrator driver")
-> Cc: stable@vger.kernel.org      # 2.6.19
-> Signed-off-by: Johan Hovold <johan@kernel.org>
-> ---
->  drivers/usb/misc/trancevibrator.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/usb/misc/trancevibrator.c b/drivers/usb/misc/trancevibrator.c
-> index a3dfc77578ea..26baba3ab7d7 100644
-> --- a/drivers/usb/misc/trancevibrator.c
-> +++ b/drivers/usb/misc/trancevibrator.c
-> @@ -61,9 +61,9 @@ static ssize_t speed_store(struct device *dev, struct device_attribute *attr,
->  	/* Set speed */
->  	retval = usb_control_msg(tv->udev, usb_sndctrlpipe(tv->udev, 0),
->  				 0x01, /* vendor request: set speed */
-> -				 USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_OTHER,
-> +				 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_OTHER,
->  				 tv->speed, /* speed value */
-> -				 0, NULL, 0, USB_CTRL_GET_TIMEOUT);
-> +				 0, NULL, 0, USB_CTRL_SET_TIMEOUT);
->  	if (retval) {
->  		tv->speed = old;
->  		dev_dbg(&tv->udev->dev, "retval = %d\n", retval);
-> -- 
-> 2.26.3
-> 
+On Fri, 21 May 2021 10:47:51 PDT (-0700), Greg KH wrote:
+> On Fri, May 21, 2021 at 07:21:12PM +0200, Paolo Bonzini wrote:
+>> On 21/05/21 19:13, Palmer Dabbelt wrote:
+>> > >
+>> >
+>> > I don't view this code as being in a state where it can be
+>> > maintained, at least to the standards we generally set within the
+>> > kernel.  The ISA extension in question is still subject to change, it
+>> > says so right at the top of the H extension <https://github.com/riscv/riscv-isa-manual/blob/master/src/hypervisor.tex#L4>
+>> >
+>> >   {\bf Warning! This draft specification may change before being
+>> > accepted as standard by the RISC-V Foundation.}
+>>
+>> To give a complete picture, the last three relevant changes have been in
+>> August 2019, November 2019 and May 2020.  It seems pretty frozen to me.
+>>
+>> In any case, I think it's clear from the experience with Android that
+>> the acceptance policy cannot succeed.  The only thing that such a policy
+>> guarantees, is that vendors will use more out-of-tree code.  Keeping a
+>> fully-developed feature out-of-tree for years is not how Linux is run.
+>>
+>> > I'm not sure where exactly the line for real hardware is, but for
+>> > something like this it would at least involve some chip that is
+>> > widely availiable and needs the H extension to be useful
+>>
+>> Anup said that "quite a few people have already implemented RISC-V
+>> H-extension in hardware as well and KVM RISC-V works on real HW as well".
+>> Those people would benefit from having KVM in the Linus tree.
+>
+> Great, but is this really true?  If so, what hardware has this?  I have
+> a new RISC-V device right here next to me, what would I need to do to
+> see if this is supported in it or not?
 
-Thanks for searching the whole tree for these mistakes, nice work!
+You can probe the misa register, it should have the H bit set if it 
+supports the H extension.
 
-greg k-h
+> If this isn't in any hardware that anyone outside of
+> internal-to-company-prototypes, then let's wait until it really is in a
+> device that people can test this code on.
+>
+> What's the rush to get this merged now if no one can use it?
+>
+> thanks,
+>
+> greg k-h
