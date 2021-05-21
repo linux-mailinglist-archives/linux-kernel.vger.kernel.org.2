@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C11438BB21
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:59:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A913238BB23
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:59:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235795AbhEUBAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:00:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56878 "EHLO
+        id S235811AbhEUBBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235596AbhEUBAb (ORCPT
+        with ESMTP id S235596AbhEUBA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:00:31 -0400
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F1AC061574;
-        Thu, 20 May 2021 17:59:08 -0700 (PDT)
-Received: by mail-wm1-x32a.google.com with SMTP id f19-20020a05600c1553b02901794fafcfefso5785933wmg.2;
-        Thu, 20 May 2021 17:59:08 -0700 (PDT)
+        Thu, 20 May 2021 21:00:59 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBA8C061574;
+        Thu, 20 May 2021 17:59:34 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id c20so18237618qkm.3;
+        Thu, 20 May 2021 17:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=81twvJtD4IdoBkhuE/rquKU5rdFlaCgjOtn16ICABe8=;
-        b=k8c0yx+hPiXp4RpSnCuJIQ0kDx9K5lKjNiQIZnPacZ9XwlVTOseeZqrX/86a+ZfT6C
-         cGZOSQpl7AjaGEvDJHV17uAUprUsH670W6k6XWMHrb6AmjBGKsTbaOizTK4L7fubxPfG
-         eb8+fpNh95QaL1721lcFE7FJvyR7bw4ujmvCr6GTSah7HtGNw8WQEKrk2yGDaCkoFjJz
-         ZM3/axh2ZNth1ibS8meC2axCtMiWBBHkLgNitpI5FdCUBJtEWw7WaZUlyfThq3UGkQgP
-         N7Ihwf9+0Hk7EJC01COYXNx1faSUDbidylqgTtPw5vS8g5rTaSmGa4heWTvFyH4izOSW
-         +ryQ==
+        d=jms.id.au; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w/0aFTfAprVVOTOCs/KR4CC/94aej7JpddKXuVpnZ6g=;
+        b=gEX1PhKjxUNcZhruCsw9euBMfZTaMTfSw09jtMO0vu65Hc39DgRYS0mBz+THLpaHuq
+         m2O3HM0FkvpWu3fxirPKwP8W7nlDVG4cby1czMlBnx223XJ2jPnX6uRCcJt+X/Pqyy0o
+         QWVmm7/6JmyUE5O1hu6A9N6/tWL2ym3WiFaHI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=81twvJtD4IdoBkhuE/rquKU5rdFlaCgjOtn16ICABe8=;
-        b=S/sS4piBTsvBCRI5INChzauMMijEqBIiAt/holXZjaifZQbotI1BFYP5DSU9xrcUvZ
-         f08mQO0/+PXZ/P595i5wUj401lDVkx1ImC9yPbqnJbu1pwxEeyr/Y2O5Z176Vu19lMxc
-         QqUCafULcFHnOtMWvNlOqSYeY+G0Fm54bAsUGwjwZJlNGc0Td6gdic7n9BHh7tTtpurL
-         FLJ6GaeUeSSuRvbjqfMiyEuMPD/CG07OkWMVZK7GLU5KAgxDQhrLa3X07qXlDyFRageW
-         5xFUIvEwTjt8hKQFHsuaerxQtNd/8AZJPY4+L6+eN5exUdBk2kmwoNiVC3LFtR6ptqet
-         pzzA==
-X-Gm-Message-State: AOAM530n2tAF/5Stq9DGQ76ymY2QJ3GDQTSgKa+tYtFzgJk3HW1Wr7Dr
-        PiLG/1VeLokQGKWLGj/mEbE=
-X-Google-Smtp-Source: ABdhPJzWzmTs5nBvHSB1jgReCMUyK4MWcPlVurAyiqEDO2p1iccOK2DvcrwaVNLlyvTT2p2BWetC3A==
-X-Received: by 2002:a05:600c:4f0f:: with SMTP id l15mr6253608wmq.143.1621558747505;
-        Thu, 20 May 2021 17:59:07 -0700 (PDT)
-Received: from [192.168.8.197] ([85.255.236.182])
-        by smtp.gmail.com with ESMTPSA id i1sm4225081wmb.46.2021.05.20.17.59.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 17:59:07 -0700 (PDT)
-Subject: Re: [RFC v2 00/23] io_uring BPF requests
-To:     Song Liu <songliubraving@fb.com>
-Cc:     "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>, Martin Lau <kafai@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Horst Schirmeier <horst.schirmeier@tu-dortmund.de>,
-        "Franz-B . Tuneke" <franz-bernhard.tuneke@tu-dortmund.de>,
-        Christian Dietrich <stettberger@dokucode.de>
-References: <cover.1621424513.git.asml.silence@gmail.com>
- <0A3E3601-76CC-4196-8246-CCAEB8C8AED3@fb.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Message-ID: <a83f147b-ea9d-e693-a2e9-c6ce16659749@gmail.com>
-Date:   Fri, 21 May 2021 01:58:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w/0aFTfAprVVOTOCs/KR4CC/94aej7JpddKXuVpnZ6g=;
+        b=YxfVZ4dcWwJQmHj0tL6OoOjFsxNGWH9jls8I3Dw2ujIwnFgSGguZ0uR038lQBMY0HX
+         0GNhBt8lhMu9kJPWX9jgs+FIhrpSWkYSfLumoEwl908nF0nTw/mzHbFPF/8MgvWfXvO1
+         WpG8fRolgWUvqu6eNrh3P6VSBRx1Lc7Lij1gnFX6i3mZU9NeujTJj8HDS6LxvkptGnAC
+         lOqJZ3dtMyYmF5X09sGyleJvKyoRl77Xujxz2gco/n+jE2U3zj1wxgQVOAE9zf82X/gM
+         FTUzRU4hGGNQYxCmhPjPkBn+SHPrpqp/+398+GNcKJXmyOJk8Q9LiXxu1XgbqSDN1rRu
+         Duvw==
+X-Gm-Message-State: AOAM532w8NO4NhGPud8GYH+/S/pCoXdOXG6stWuCiW4enuqpPc4apo9i
+        lZlYua0wh/+T2+Yc/XBvXlIzMo2FI+0jBxxiUQ0=
+X-Google-Smtp-Source: ABdhPJyOg85pbVP5qfGdda8bH9eLGYzaTgxUlVuD+D9zPYeernDU9rP22PyLTRyI8fLkxDMPzeS683iOIZwwY1pD25s=
+X-Received: by 2002:a05:620a:704:: with SMTP id 4mr7822674qkc.66.1621558773301;
+ Thu, 20 May 2021 17:59:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0A3E3601-76CC-4196-8246-CCAEB8C8AED3@fb.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210520093949.511471-1-andrew@aj.id.au>
+In-Reply-To: <20210520093949.511471-1-andrew@aj.id.au>
+From:   Joel Stanley <joel@jms.id.au>
+Date:   Fri, 21 May 2021 00:59:20 +0000
+Message-ID: <CACPK8XeBeQjYe8LeivFt69bf8-ipccwHnigpq9jZ8B5wTKJ7Vw@mail.gmail.com>
+Subject: Re: [PATCH v2] Documentation: checkpatch: Tweak BIT() macro include
+To:     Andrew Jeffery <andrew@aj.id.au>
+Cc:     linux-doc@vger.kernel.org, dwaipayanray1@gmail.com,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Joe Perches <joe@perches.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 1:35 AM, Song Liu wrote:
->> On May 19, 2021, at 7:13 AM, Pavel Begunkov <asml.silence@gmail.com> wrote:
->> The main problem solved is feeding completion information of other
->> requests in a form of CQEs back into BPF. I decided to wire up support
->> for multiple completion queues (aka CQs) and give BPF programs access to
->> them, so leaving userspace in control over synchronisation that should
->> be much more flexible that the link-based approach.
->>
->> For instance, there can be a separate CQ for each BPF program, so no
->> extra sync is needed, and communication can be done by submitting a
->> request targeting a neighboring CQ or submitting a CQE there directly
->> (see test3 below). CQ is choosen by sqe->cq_idx, so everyone can
->> cross-fire if willing.
->>
-> 
-> [...]
-> 
->>  bpf: add IOURING program type
->>  io_uring: implement bpf prog registration
->>  io_uring: add support for bpf requests
->>  io_uring: enable BPF to submit SQEs
->>  io_uring: enable bpf to submit CQEs
->>  io_uring: enable bpf to reap CQEs
->>  libbpf: support io_uring
->>  io_uring: pass user_data to bpf executor
->>  bpf: Add bpf_copy_to_user() helper
->>  io_uring: wire bpf copy to user
->>  io_uring: don't wait on CQ exclusively
->>  io_uring: enable bpf reqs to wait for CQs
-> 
-> Besides the a few comments, these BPF related patches look sane to me. 
-> Please consider add some selftests (tools/testing/selftests/bpf). 
+On Thu, 20 May 2021 at 17:14, Andrew Jeffery <andrew@aj.id.au> wrote:
+>
+> While include/linux/bitops.h brings in the BIT() macro, it was moved to
+> include/linux/bits.h in commit 8bd9cb51daac ("locking/atomics, asm-generic:
+> Move some macros from <linux/bitops.h> to a new <linux/bits.h> file").
+>
+> Since that commit BIT() has moved again into include/vdso/bits.h via
+> commit 3945ff37d2f4 ("linux/bits.h: Extract common header for vDSO").
+>
+> I think the move to the vDSO header can be considered an implementation
+> detail, so for now update the checkpatch documentation to recommend use
+> of include/linux/bits.h.
+>
+> Cc: Jiri Slaby <jirislaby@kernel.org>
+> Acked-by: Jiri Slaby <jirislaby@kernel.org>
+> Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 
-The comments are noted. Thanks Song
+Reviewed-by: Joel Stanley <joel@jms.id.au>
 
--- 
-Pavel Begunkov
+...just a little bit
