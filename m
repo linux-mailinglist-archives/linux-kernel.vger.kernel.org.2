@@ -2,107 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E298838C7D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:24:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2105938C7D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:24:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234944AbhEUNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:25:37 -0400
-Received: from mail-vs1-f50.google.com ([209.85.217.50]:46024 "EHLO
-        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234657AbhEUNYy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:24:54 -0400
-Received: by mail-vs1-f50.google.com with SMTP id f15so9033319vsq.12;
-        Fri, 21 May 2021 06:23:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=grIWK1QsxhsT24m56y7dhwhwHdiiBHd2e5BfJpcsSPI=;
-        b=k45erVBBT7qTZs/LcbqG01Lvxi02BfDHzFONquS6MDhwGdkkdOqkUf/phfb/fS1uEv
-         g76/swaATDdmhKWJ/tALs6Can72HmIjIj22Dr4ZATEq0Qr1pPdQYj4vKqAgZYUdW6ySf
-         02eWaPLuYj0BWTMwjKeNz3vbt6TsZMx7ErIkNDtvEkJfR9oFN0S/W0rmAlg+RRP1i7m9
-         eXHIAdS1LSIT2RPbHui82RD0pRAQxweWcAsyO/4THwKWr+OOifev7ZS2NjqxSqtNou8q
-         gkW+FMbUNwej/KOBPL8G6cESUqGwIB08beU6kdLKDe/rAdu+nhIRKBikmQlvbdlr8D9o
-         4DeA==
-X-Gm-Message-State: AOAM532tHa9111Wm9hPcTYtXJbcVGt/tBvcHOcsdOZzEOQcv5wFxj5sy
-        bcLhGXHBfVVVYNwcR8ecCTb1sL37DHG3d7K3dQY=
-X-Google-Smtp-Source: ABdhPJxBz9P3itL9q4Dm0t/3ZTUmjAZ2WzGgZ7+CLj/+M1Zl6paCj+9B3gNd/O1PwMglY3/y9Eh/jrBhhgY/hOQMJ1I=
-X-Received: by 2002:a05:6102:392:: with SMTP id m18mr10421630vsq.40.1621603409698;
- Fri, 21 May 2021 06:23:29 -0700 (PDT)
+        id S235125AbhEUNZr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:25:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234381AbhEUNZ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:25:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF2E6613EC;
+        Fri, 21 May 2021 13:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621603443;
+        bh=H+w4vX7tF2iIyenYBI6epVpEEI7LBi6bD5GR38apUE0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=c/09CVsC3ymPZE2zRl7EjB2JhUbhtnnSz0bH9/rM+E1ZqHsFhv3v9rPGHWBn1lYGb
+         NBKf/UV00ynYGjaJ6HEsEVqsUVVTP8GuirVCbIBEh3b9Q93/j7kSFh8qg8O5+Idkwc
+         wQnj9z2i7Pwk8PqYMap4Zr8fnenhQjA/l6P3QCY5bQ/f811qZkKJTlj1wER0G7c6J9
+         55iec6CeQKFTyF+aZzDZgRudVrVGKlEiviXXPmXVwO8iN2UoCOil+UpxbfOtb5zMxT
+         b9cYWM0te5W7Cllt4Mk055vYYqNe8wWRs0GILnVZzUiHR/8GWl/7G8eEH9ijEQC+Sc
+         I1FG3Bhii7NJw==
+Date:   Fri, 21 May 2021 18:53:59 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Rob Clark <robdclark@gmail.com>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC PATCH 02/13] dt-bindings: msm/dsi: Document Display Stream
+ Compression (DSC) parameters
+Message-ID: <YKe0b0hGN86E67iW@vkoul-mobl.Dlink>
+References: <20210521124946.3617862-1-vkoul@kernel.org>
+ <20210521124946.3617862-3-vkoul@kernel.org>
+ <CAL_JsqJqPwkzxVgAfS9VgEXcY=ZH5LOaaxzoPDBzuDxOZ_OLjw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20210514192218.13022-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20210514192218.13022-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 21 May 2021 15:23:17 +0200
-Message-ID: <CAMuHMdXdATYWRGL9PMkR_Fj-m-E5GUuPbHq0hZ_Mh=ceedF=RA@mail.gmail.com>
-Subject: Re: [PATCH 02/16] dt-bindings: arm: renesas: Document Renesas
- RZ/G2{L,LC} SoC variants
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJqPwkzxVgAfS9VgEXcY=ZH5LOaaxzoPDBzuDxOZ_OLjw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hii Prabhakar,
+On 21-05-21, 08:18, Rob Herring wrote:
+> On Fri, May 21, 2021 at 7:50 AM Vinod Koul <vkoul@kernel.org> wrote:
+> >
+> > DSC enables streams to be compressed before we send to panel. This
+> > requires DSC enabled encoder and a panel to be present. So we add this
+> > information in board DTS and find if DSC can be enabled and the
+> > parameters required to configure DSC are added to binding document along
+> > with example
+> >
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > ---
+> >  .../devicetree/bindings/display/msm/dsi.txt       | 15 +++++++++++++++
+> >  1 file changed, 15 insertions(+)
+> 
+> This is getting converted to schema. Hopefully, v17 will be it. Sigh.
 
-On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Add device tree bindings documentation for Renesas RZ/G2{L,LC}
-> SoC variants.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+I will update these on top, whenever that one gets merged... Any comments
+on the parameters added here?
 
-> --- a/Documentation/devicetree/bindings/arm/renesas.yaml
-> +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
-> @@ -308,6 +308,15 @@ properties:
->                - renesas,r9a07g043u11 # Single Cortex-A55 RZ/G2UL
->            - const: renesas,r9a07g043
->
-> +      - description: RZ/G2{L,LC} (R9A07G044)
-> +        items:
-> +          - enum:
-> +              - renesas,r9a07g044c1 # Single Cortex-A55 RZ/G2LC
-> +              - renesas,r9a07g044c2 # Dual Cortex-A55 RZ/G2LC
-> +              - renesas,r9a07g044l1 # Single Cortex-A55 RZ/G2L
-> +              - renesas,r9a07g044l2 # Dual Cortex-A55 RZ/G2L
-
-Given the LSI DEVID is the same for all four, and presumably they're
-thus the same die with different packaging, do we need these four
-compatible values?
-
-> +          - const: renesas,r9a07g044
-> +
->  additionalProperties: true
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+-- 
+~Vinod
