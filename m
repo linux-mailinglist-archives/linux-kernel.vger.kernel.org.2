@@ -2,81 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3224638C85A
+	by mail.lfdr.de (Postfix) with ESMTP id 7F25F38C85B
 	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236160AbhEUNjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:39:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49084 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236214AbhEUNjP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 218C3610CB;
-        Fri, 21 May 2021 13:37:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621604272;
-        bh=Iyc54z2GL+y1O/CEr+PlPVkGPRLHa2YqH4M20ibrNpo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=s6SEzprvCGMKKMNV6Q8mk1MmEvbc0U5Dy4KNagStbTUmpirTUiuXaYeWlXOL2hIe/
-         +1gJImR5q0D7msX4YN+/IXgkMCe8ke3dHBraCC1omlrE9UwcVsc/TKojXUtM9YChNg
-         8QekZeLdXWNuEaPit5s9efY89T6TLbL2QXVCZ4hDFnvSXxvadVT0gtkAOOtRxSenkP
-         xrNzKMxszjeoZxGRrSrOCzRUeepn5S4Fbg5Mc2F3yB4Sa7ORv7jxFMFT97T03DVgpC
-         0UFX0yragJgGvh5ZxDr3rG4l8RxSim7uvdvpI5k3DREYAZavJC1ObN4bWQPXw5qqI9
-         /D9eJStattLgw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lk5Ld-0004ig-5f; Fri, 21 May 2021 15:37:53 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Takashi Iwai <tiwai@suse.com>
-Cc:     Jaroslav Kysela <perex@perex.cz>, "Geoffrey D. Bennett" <g@b4.vu>,
-        alsa-devel@alsa-project.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Johan Hovold <johan@kernel.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] ALSA: usb-audio: fix control-request direction
-Date:   Fri, 21 May 2021 15:37:42 +0200
-Message-Id: <20210521133742.18098-1-johan@kernel.org>
-X-Mailer: git-send-email 2.26.3
+        id S236214AbhEUNjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:39:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236279AbhEUNjW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:39:22 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1CB4C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:59 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id g11so14235486ilq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:37:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=enWZHbTX+1ralsrB94tU0j8mRNIc2ViVpX6p57Tm5zE=;
+        b=q8LFiLJgz4erZaFk6fj4JM/AmedcsEm3aD+Osbe6jj0ySryG5lhha91+zewIWEJt3d
+         UM0xdVW/ax/BEOt22B871ZJjSoA7uVKzGl+K0LYup0myRmKy0OTLtyGatHZrvhopvcYr
+         x7pzJmuc5eQ2oBeQnp7JAt84/JjAYYqjGiUjzcy6SMN6bSaVxVca3VN8lSgEH/iOEp6o
+         IbWODivDaA1mXl6UczSvfR2+HqwUxnkO/LXvjlSVCFJtq9pkPXLLnYMFSobb75QcAqFW
+         /DGPOMj7yTGq8rlfo7gGKMaNQvAPX3IHlSl7C4qgLqf54lMlSxIveOOZHKHbrJow9wv8
+         sZ6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=enWZHbTX+1ralsrB94tU0j8mRNIc2ViVpX6p57Tm5zE=;
+        b=UIu0cchltttAwl6zxsOCHh5z8p8/3crTRxYW23/KntEQWu/FlSsnPyrC1b8+la6V4G
+         hN7HjPiEpMiv1KNXYFW+1r5/wXJR3JT8Xtzf7wuX1OWIWSJq2btx+D7tBdxQlN9IdXA+
+         2s1VoKnzi50zEXSkkyM0MLytxXRZhmsouE5qe0iua6TaiHdnjp3SN+cWHu9/d0Se1RZW
+         YRn7291YE4YpnCjDKAhoPjXaCW/7gE5YwIKfocwz/bsd6lo/KA0sa92Q/AkpkaFLf8lT
+         TNYblRgkljRpKcPssZuSubX0NLp0kTEX2Qi6qj3mECXQm9dWqWgCl9vDEfzweWeMiJVj
+         3gOg==
+X-Gm-Message-State: AOAM530kGh8gJt3mnG3hoR1EHE/Gs0o2dVhkrBRlsQKJZU7fH6RHgOzD
+        YvVLsKUmadsJcHABcBNtFcXlxtFsvG5PruZ+gCqXxg==
+X-Google-Smtp-Source: ABdhPJzQgYOhfJwS+6mJoi9CYzpcQz7dqQ+cPJ0vJ+ySWWNPgClzxGdsXTiVO2tXclv8vakUGfjzP783wYoVtgk2NGU=
+X-Received: by 2002:a92:520e:: with SMTP id g14mr12213261ilb.218.1621604279076;
+ Fri, 21 May 2021 06:37:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-8-acourbot@chromium.org>
+In-Reply-To: <20210519143011.1175546-8-acourbot@chromium.org>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Fri, 21 May 2021 21:37:48 +0800
+Message-ID: <CA+Px+wVj45oozC01RKcnvwLLWdSmFtoOC9rrLAbCVCmrYWKBdA@mail.gmail.com>
+Subject: Re: [PATCH v5 07/14] media: mtk-vcodec: vdec: handle firmware version field
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The direction of the pipe argument must match the request-type direction
-bit or control requests may fail depending on the host-controller-driver
-implementation.
+On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
+<acourbot@chromium.org> wrote:
+> Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
 
-Fix the UAC2_CS_CUR request which erroneously used usb_sndctrlpipe().
-
-Fixes: 93db51d06b32 ("ALSA: usb-audio: Check valid altsetting at parsing rates for UAC2/3")
-Cc: stable@vger.kernel.org      # 5.10
-Signed-off-by: Johan Hovold <johan@kernel.org>
----
-
-There's a related bug in sound/usb/mixer_scarlett_gen2.c, which
-Geoffrey reported and said he was preparing a patch for here:
-
-	https://lore.kernel.org/r/20210520180819.GA95348@m.b4.vu
-
-Johan
-
-
- sound/usb/format.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/usb/format.c b/sound/usb/format.c
-index e6ff317a6785..2287f8c65315 100644
---- a/sound/usb/format.c
-+++ b/sound/usb/format.c
-@@ -436,7 +436,7 @@ static bool check_valid_altsetting_v2v3(struct snd_usb_audio *chip, int iface,
- 	if (snd_BUG_ON(altsetting >= 64 - 8))
- 		return false;
- 
--	err = snd_usb_ctl_msg(dev, usb_sndctrlpipe(dev, 0), UAC2_CS_CUR,
-+	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0), UAC2_CS_CUR,
- 			      USB_TYPE_CLASS | USB_RECIP_INTERFACE | USB_DIR_IN,
- 			      UAC2_AS_VAL_ALT_SETTINGS << 8,
- 			      iface, &raw_data, sizeof(raw_data));
--- 
-2.26.3
-
+Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
