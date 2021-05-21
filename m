@@ -2,469 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB26738CF73
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:57:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE26738CF70
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 22:57:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229801AbhEUU7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 16:59:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44990 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229681AbhEUU7C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 16:59:02 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53A54C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:57:39 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id x18so11495613pfi.9
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 13:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kkPdjm35hDZxcrkK9GJ+jftqINU4WgEPUSzkOsfGeVE=;
-        b=PvLCEIT5kZnZ1X1+moFDE18ipumIZcvdEqbTlzqtAUn+JdBjaJhxbOCV21+MDieqwo
-         czmP3YUa5ZNnBk/+VysRzu34vFK/JXHaqcS+zRZTAkk/ZGQsDCezIBH0tlAjoPQmIIPD
-         N1NRoe0mjK63AQqA1HNs4MckMmDbBMKVNiZR3ro3BVN8h5dRA0pu4MFHzSujTYwQPhx5
-         rirn9j2qwKC8oREOwVu0MkxvTsD93mZv2zckGXbxMp7EItJwhc1ao2xISyepyC5P4xw0
-         WAQ5ZHQtOlokD53E6UTkcb8nCGGXwjDCU6GBe6J0lvIXenWeqQeEch3YhjNOsanpXbiN
-         CNqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kkPdjm35hDZxcrkK9GJ+jftqINU4WgEPUSzkOsfGeVE=;
-        b=Rp6dexZojQMR3Hqw5u4P6A6v9XmbK/lltKY7sZD+HSVQJrjbYs/ph+ArZ4fiFCy/ek
-         9izg0h8XFOg6RNWvOW3Uxkff3NRvjXFIL/51c16EAPPHCLCQ9T2GpWOp1hAksPWkJKwB
-         U6Dba4f8/L1ak9FRnmn9andG4z7hOQ6UP2ZM4P4imHLxLZEKcT7PIOgPKbde+3iI0gp/
-         +2K/yH6zxdEGsczXSwxrIBmpcWFHJFLdCnc1EDCds/AiP/FRcYfiAgd5qE6xa0AcZAsA
-         Rfbkm/zHx9iF7LI49FyGvklKBwLMZL3Zv0K6PbTibJQrZG9bUg36WD4E56UtA/7L2EMa
-         sBoA==
-X-Gm-Message-State: AOAM533f/5rLk+YVooG6Wp+8h8ZSxhFdl6aGxwl5jt42TW4oxUPQEalV
-        OasQqHy0kOUV6bynhGSJwQsBZ0jZVbTtrOEaFH6D+Q==
-X-Google-Smtp-Source: ABdhPJwRfx5r/R/iPGbnRRaSZSdn3+n2js532Xgebo45zkuDDoYmHiBMk+2wKNRwIbb3GJ/wTSZI/eOMGRkcLDaIxk4=
-X-Received: by 2002:a05:6a00:224c:b029:28e:6004:d0a5 with SMTP id
- i12-20020a056a00224cb029028e6004d0a5mr12133806pfu.1.1621630658450; Fri, 21
- May 2021 13:57:38 -0700 (PDT)
+        id S229643AbhEUU7A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 16:59:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59704 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229457AbhEUU6z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 16:58:55 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 052EA613EC;
+        Fri, 21 May 2021 20:57:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621630652;
+        bh=qqA/7MwrbV3/4dwT/MGseHW0sYgG3QSvsuZtq6OX9lg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=p3ednAxjiY+FmqzbvsWeOV4fBKaWUkndkKkdH/JXTqUzE7i0jdLQO+FGNtrHanCD6
+         lSUScYWMdgUeiRCrdmm4BEdpV/nGxn5gCySATXJrk+jHRhl+8yrW2BCHjQL67CxwTg
+         UOltmWeP7dvreEPLwv57ydfcMSft1RYpGSDdeusOCggSy78RAKcmqyilocLrLh013J
+         4Dwbto1RImQx39tEdANVxLriEE/0wGtZlTSwhu2iWPux20dS6wvBtRgS/VmK1JWpLt
+         l6TdnXpcTCpdeiYztHxeJjtE++1etqHMOMS3wUFCbkGr2n+wd0qSpuJLE867G6gIgB
+         vfzNErQ0zIvnA==
+Date:   Fri, 21 May 2021 15:57:30 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Rajat Jain <rajatja@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-usb@vger.kernel.org, Oliver Neukum <oneukum@suse.com>,
+        David Laight <David.Laight@aculab.com>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        rajatxjain@gmail.com, jsbarnes@google.com, dtor@google.com
+Subject: Re: [PATCH v4 2/2] PCI: Add sysfs "removable" attribute
+Message-ID: <20210521205730.GA444958@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210507213110.155492-1-brendanhiggins@google.com>
- <20210507213110.155492-4-brendanhiggins@google.com> <CABVgOSmEe32_kT9TR0-H8biuWGc1Rexne86DgLxths+GUHHgig@mail.gmail.com>
- <CABVgOS=W-UhLJ5siu2u=Nus6g2zMEHM6c9ck2DHbHr0e5uCqSQ@mail.gmail.com>
- <CAFd5g46kOy=JtNSX6nhMO6TdHK7sAZfvD=UqLpFDXPVFw4M4fA@mail.gmail.com> <CABVgOSkXYHs=xfg_sKsm8RzKB2JdnCatE2AViCh8DJ4po+C=3Q@mail.gmail.com>
-In-Reply-To: <CABVgOSkXYHs=xfg_sKsm8RzKB2JdnCatE2AViCh8DJ4po+C=3Q@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 21 May 2021 13:57:25 -0700
-Message-ID: <CAFd5g45Vj59kMihhCVdY0AHcxWXsMVpSuy8po7staSOWzyX2xw@mail.gmail.com>
-Subject: Re: [PATCH v1 3/4] kunit: tool: add support for QEMU
-To:     David Gow <davidgow@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210513232701.411773-2-rajatja@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 8:53 PM David Gow <davidgow@google.com> wrote:
+On Thu, May 13, 2021 at 04:27:01PM -0700, Rajat Jain wrote:
+> A PCI device is "external_facing" if it's a Root Port with the ACPI
+> "ExternalFacingPort" property or if it has the DT "external-facing"
+> property.  We consider everything downstream from such a device to
+> be removable by user.
+> 
+> We're mainly concerned with consumer platforms with user accessible
+> Thunderbolt ports that are vulnerable to DMA attacks, and we expect those
+> ports to be identified by firmware as "ExternalFacingPort". Devices in
+> traditional hotplug slots can technically be removed, but the expectation
+> is that unless the port is marked with "ExternalFacingPort", such devices
+> are less accessible to user / may not be removed by end user, and thus not
+> exposed as "removable" to userspace.
 >
-> On Wed, May 19, 2021 at 4:43 AM Brendan Higgins
-> <brendanhiggins@google.com> wrote:
-> >
-> > On Mon, May 17, 2021 at 8:01 PM David Gow <davidgow@google.com> wrote:
-> > >
-> > > On Sat, May 15, 2021 at 3:59 PM David Gow <davidgow@google.com> wrote:
-> > > >
-> > > > On Sat, May 8, 2021 at 5:31 AM Brendan Higgins
-> > > > <brendanhiggins@google.com> wrote:
-> > > > >
-> > > > > Add basic support to run QEMU via kunit_tool. Add support for i386,
-> > > > > x86_64, arm, arm64, and a bunch more.
-> > > > >
-> > > > > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
-> > > > > Tested-by: David Gow <davidgow@google.com>
-> > > > > ---
-> > > > >
-> > > > > Changes since last revision:
-> > > > >
-> > > > > - A number of minor obvious issues pointed out by David and Daniel.
-> > > > > - Added facility for merging Kconfigs at Daniel's suggestion.
-> > > > > - Broke out qemu_configs each into their own config file which is loaded
-> > > > >   dynamically - mostly at David's suggestion.
-> > > > >
-> > > > > ---
-> > > >
-> > > > This seems pretty good to me. I only have one real complaint --
-> > > > qemu_configs needing to be in a subdirectory of ./tools/testing/kunit
-> > > > -- but am able to tolerate that (even if I'd prefer not to have it) if
-> > > > it's documented properly.
-> > > >
-> > > > Otherwise, save for a couple of minor nitpicks, this seems good to go.
-> > > >
-> > > > Reviewed-by: David Gow <davidgow@google.com>
-> > > >
-> > > >
-> > >
-> > > One thing I forgot to mention is that I'm not 100% sure about the
-> > > Kconfig fragments being embedded in the qemu_configs. I still kind-of
-> > > prefer the idea of them being in separate config files. While I don't
-> >
-> > I don't feel strongly either way, but I don't have a good idea on how
-> > to implement your idea well. How about we leave it for now, and if you
-> > decide you really want to do something about it, you can do it?
-> >
-> > > think this is necessarily a blocker, I did just realise that, by
-> > > default, kunit.py run --arch=<non-UM-arch> will pull its default
-> > > .kunitconfig from arch/um/configs/kunit_defconfig, which definitely
-> > > feels awkward when UML is not otherwise involved.
-> >
-> > Hmmm...this file is identical to
-> > tools/testing/kunit/configs/all_tests.config. Maybe we should just use
-> > that instead?
-> >
->
-> That sounds like a better plan. It looks like all_tests.config isn't
-> used anywhere, anyway. I might rename it and replace the
-> arch/um/.../kunit_defconfig version in another patch, then.
->
-> > > Some further thoughts below (which range a bit from "practical
-> > > suggestion" to "overcomplicated ponderings", so don't feel the
-> > > pressure to take all of them).
-> > >
-> > > (...snip...)
-> > >
-> > > > > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > > > > index e22ade9d91ad5..2bd196fd69e5c 100644
-> > > > > --- a/tools/testing/kunit/kunit_kernel.py
-> > > > > +++ b/tools/testing/kunit/kunit_kernel.py
-> > > > > @@ -6,23 +6,31 @@
-> > > > >  # Author: Felix Guo <felixguoxiuping@gmail.com>
-> > > > >  # Author: Brendan Higgins <brendanhiggins@google.com>
-> > > > >
-> > > > > +from __future__ import annotations
-> > > > > +import importlib.util
-> > > > >  import logging
-> > > > >  import subprocess
-> > > > >  import os
-> > > > >  import shutil
-> > > > >  import signal
-> > > > >  from typing import Iterator
-> > > > > +from typing import Optional
-> > > > >
-> > > > >  from contextlib import ExitStack
-> > > > >
-> > > > > +from collections import namedtuple
-> > > > > +
-> > > > >  import kunit_config
-> > > > >  import kunit_parser
-> > > > > +import qemu_config
-> > > > >
-> > > > >  KCONFIG_PATH = '.config'
-> > > > >  KUNITCONFIG_PATH = '.kunitconfig'
-> > > > >  DEFAULT_KUNITCONFIG_PATH = 'arch/um/configs/kunit_defconfig'
-> > >
-> > > This being in arch/um doesn't seem great if its being used for non-UML
-> > > builds. Is it worth either:
-> > > (a) moving this somewhere else (e.g., tools/testing/kunit/configs as
-> > > with the BROKEN_ALLCONFIG_PATH beflow), or
-> >
-> > How about we use: tools/testing/kunit/configs/all_tests.config ? The
-> > file is identical.
->
-> Yeah: I'm not thrilled with the name all_tests.config, but since it
-> doesn't appear to be being used anywhere, I might just rename it in
-> another patch.
->
-> > > (b) giving each architecture its own kunit_defconfig, possibly in
-> > > place of the qemuconfig member of QemuArchParams
-> > >
-> > > I'm leaning towards (b), which solves two different sources of
-> > > ugliness in one go, though it would appear to have the downside that
-> > > the default .kunitconfig could end up being architecture specific,
-> > > which isn't great.
-> >
-> > Yeah, I am not a fan of trying to solve that problem in this patchset.
-> > This is sounding more and more like what should be follow-on work to
-> > me.
->
-> Yeah, I'm not sure exactly what that should look like yet, anyway.
->
-> Let's keep things as they are in this patch. I'll put a follow-up
-> patch to use all_tests.config rather than the arch/um one (possibly as
-> part of my "default to ALL_TESTS" patchset), and if we think of
-> something better that is more architecture specific, we'll do that.
->
-> > > > >  BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
-> > > > >  OUTFILE_PATH = 'test.log'
-> > > > > +ABS_TOOL_PATH = os.path.abspath(os.path.dirname(__file__))
-> > > > > +QEMU_CONFIGS_DIR = os.path.join(ABS_TOOL_PATH, 'qemu_configs')
-> > > > >
-> > >
-> > > (...snip...)
-> > >
-> > > > > diff --git a/tools/testing/kunit/qemu_config.py b/tools/testing/kunit/qemu_config.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..aff1fe0442dbc
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_config.py
-> > > > > @@ -0,0 +1,17 @@
-> > > > > +# SPDX-License-Identifier: GPL-2.0
-> > > > > +#
-> > > > > +# Collection of configs for building non-UML kernels and running them on QEMU.
-> > > > > +#
-> > > > > +# Copyright (C) 2021, Google LLC.
-> > > > > +# Author: Brendan Higgins <brendanhiggins@google.com>
-> > > > > +
-> > > > > +from collections import namedtuple
-> > > > > +
-> > > > > +
-> > > > > +QemuArchParams = namedtuple('QemuArchParams', ['linux_arch',
-> > > > > +                                              'qemuconfig',
-> > >
-> > > As mentioned, I'm not thrilled about keeping the Kconfig inline here,
-> > > and would kind-of prefer it to be in another file. I could live with
-> > > it if I have to, though. Regardless, 'qemuconfig' is not a
-> >
-> > It will be fixed in the next revision.
-> >
-> > > super-descriptive name, particularly as it's not clear if this is
-> > > configuring QEMU (no, that's extra_qemu_params'), or configuring the
-> > > kernel for QEMU compatibility.
-> >
-> > Any suggestions on a better name? qemu_build_config_path? These
-> > configs contain configs for configuring, building, and running kernels
-> > on QEMU.
->
-> I don't think we need "qemu" in the name, as this is already part of
-> the QemuArchParams struct, and isn't a qemu config, but a kernel one.
->
-> Something along the lines of "kernel_config" (or just "kconfig") maybe?
+> This can be used to implement userspace policies tailored for
+> user removable devices. Eg usage:
+> https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2591812
+> https://chromium-review.googlesource.com/c/chromiumos/platform2/+/2795038
+> (code uses such an attribute to remove external PCI devices or disable
+> features on them as needed by the policy desired)
+> 
+> Signed-off-by: Rajat Jain <rajatja@google.com>
 
-Doh, I got lost at some point and in my last email I thought you were
-talking about the name QemuArchParams, not the qemuconfig field within
-that struct. Looking back it is entirely clear to me that that is what
-you were talking about, but for some reason I had a brainfart in my
-last response. So yes, your suggestion sounds very reasonable. Will
-fix.
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-> > > > > +                                              'qemu_arch',
-> > > > > +                                              'kernel_path',
-> > > > > +                                              'kernel_command_line',
-> > > > > +                                              'extra_qemu_params'])
-> > > > > +
-> > > >
-> > > > Nit: newline at end of file.
-> > > >
-> > > >
-> > > >
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/alpha.py b/tools/testing/kunit/qemu_configs/alpha.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..2cc64f848ca2c
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/alpha.py
-> > > > > @@ -0,0 +1,10 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='alpha',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_SERIAL_8250=y
-> > > > > +CONFIG_SERIAL_8250_CONSOLE=y''',
-> > >
-> > > If these were in a separate file, they could be shared across alpha,
-> > > i386, x86_64, etc. Of course, that wouldn't gel well with putting them
-> > > in arch/.../config. If there were some way of listing multiple files,
-> > > it could form part of the config for several more architectures,
-> > > though that's probably overcomplicating things.
-> >
-> > Yeah, like I said, I have sympathy for what you are saying here, but
-> > it really feels like something that can and should be addressed in
-> > follow on patches. We could totally address this issue later by
-> > expanding this field to take either a string containing a Kconfig, or
-> > a path to an external Kconfig; if we do so, it won't cause any
-> > migration issues in the future.
-> >
->
-> Yeah: I think we can solve this if it actually becomes a problem. No
-> need to change anything here.
->
-> > > > > +                          qemu_arch='alpha',
-> > > > > +                          kernel_path='arch/alpha/boot/vmlinux',
-> > > > > +                          kernel_command_line='console=ttyS0',
-> > > > > +                          extra_qemu_params=[''])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/arm.py b/tools/testing/kunit/qemu_configs/arm.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..29a043b0531a0
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/arm.py
-> > > > > @@ -0,0 +1,13 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='arm',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_ARCH_VIRT=y
-> > > > > +CONFIG_SERIAL_AMBA_PL010=y
-> > > > > +CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
-> > > > > +CONFIG_SERIAL_AMBA_PL011=y
-> > > > > +CONFIG_SERIAL_AMBA_PL011_CONSOLE=y''',
-> > >
-> > > Similarly, if in a separate file and there were some multiple-file
-> > > mechanism, these could mostly be shared between arm & arm64 (ARCH_VIRT
-> > > being the only problem). Again, probably overcomplicating it at this
-> > > point though.
-> >
-> > Right.
-> >
-> > > > > +                          qemu_arch='arm',
-> > > > > +                          kernel_path='arch/arm/boot/zImage',
-> > > > > +                          kernel_command_line='console=ttyAMA0',
-> > > > > +                          extra_qemu_params=['-machine virt'])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/arm64.py b/tools/testing/kunit/qemu_configs/arm64.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..1ba200bc99f0f
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/arm64.py
-> > > > > @@ -0,0 +1,12 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='arm64',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_SERIAL_AMBA_PL010=y
-> > > > > +CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
-> > > > > +CONFIG_SERIAL_AMBA_PL011=y
-> > > > > +CONFIG_SERIAL_AMBA_PL011_CONSOLE=y''',
-> > > > > +                          qemu_arch='aarch64',
-> > > > > +                          kernel_path='arch/arm64/boot/Image.gz',
-> > > > > +                          kernel_command_line='console=ttyAMA0',
-> > > > > +                          extra_qemu_params=['-machine virt', '-cpu cortex-a57'])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/i386.py b/tools/testing/kunit/qemu_configs/i386.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..3998af306468e
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/i386.py
-> > > > > @@ -0,0 +1,10 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='i386',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_SERIAL_8250=y
-> > > > > +CONFIG_SERIAL_8250_CONSOLE=y''',
-> > > > > +                          qemu_arch='x86_64',
-> > > > > +                          kernel_path='arch/x86/boot/bzImage',
-> > > > > +                          kernel_command_line='console=ttyS0',
-> > > > > +                          extra_qemu_params=[''])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/powerpc.py b/tools/testing/kunit/qemu_configs/powerpc.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..46292ce9e368e
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/powerpc.py
-> > > > > @@ -0,0 +1,12 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='powerpc',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_PPC64=y
-> > > > > +CONFIG_SERIAL_8250=y
-> > > > > +CONFIG_SERIAL_8250_CONSOLE=y
-> > > > > +CONFIG_HVC_CONSOLE=y''',
-> > > > > +                          qemu_arch='ppc64',
-> > > > > +                          kernel_path='vmlinux',
-> > > > > +                          kernel_command_line='console=ttyS0',
-> > > > > +                          extra_qemu_params=['-M pseries', '-cpu power8'])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/riscv.py b/tools/testing/kunit/qemu_configs/riscv.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..de8c62d465723
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/riscv.py
-> > > > > @@ -0,0 +1,31 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +import os
-> > > > > +import os.path
-> > > > > +import sys
-> > > > > +
-> > > > > +GITHUB_OPENSBI_URL = 'https://github.com/qemu/qemu/raw/master/pc-bios/opensbi-riscv64-generic-fw_dynamic.bin'
-> > > > > +OPENSBI_FILE = os.path.basename(GITHUB_OPENSBI_URL)
-> > > > > +
-> > > > > +if not os.path.isfile(OPENSBI_FILE):
-> > > > > +       print('\n\nOpenSBI file is not in the current working directory.\n'
-> > > > > +             'Would you like me to download it for you from:\n' + GITHUB_OPENSBI_URL + ' ?\n')
-> > > > > +       response = input('yes/[no]: ')
-> > > > > +       if response.strip() == 'yes':
-> > > > > +               os.system('wget ' + GITHUB_OPENSBI_URL)
-> > > > > +       else:
-> > > > > +               sys.exit()
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='riscv',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_SOC_VIRT=y
-> > > > > +CONFIG_SERIAL_8250=y
-> > > > > +CONFIG_SERIAL_8250_CONSOLE=y
-> > > > > +CONFIG_SERIAL_OF_PLATFORM=y
-> > > > > +CONFIG_SERIAL_EARLYCON_RISCV_SBI=y''',
-> > > > > +                          qemu_arch='riscv64',
-> > > > > +                          kernel_path='arch/riscv/boot/Image',
-> > > > > +                          kernel_command_line='console=ttyS0',
-> > > > > +                          extra_qemu_params=[
-> > > > > +                                          '-machine virt',
-> > > > > +                                          '-cpu rv64',
-> > > > > +                                          '-bios opensbi-riscv64-generic-fw_dynamic.bin'])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/s390.py b/tools/testing/kunit/qemu_configs/s390.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..04c90332f1098
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/s390.py
-> > > > > @@ -0,0 +1,14 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='s390',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_EXPERT=y
-> > > > > +CONFIG_TUNE_ZEC12=y
-> > > > > +CONFIG_NUMA=y
-> > > > > +CONFIG_MODULES=y''',
-> > > > > +                          qemu_arch='s390x',
-> > > > > +                          kernel_path='arch/s390/boot/bzImage',
-> > > > > +                          kernel_command_line='console=ttyS0',
-> > > > > +                          extra_qemu_params=[
-> > > > > +                                          '-machine s390-ccw-virtio',
-> > > > > +                                          '-cpu qemu',])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/sparc.py b/tools/testing/kunit/qemu_configs/sparc.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..f26b5f27cc5a1
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/sparc.py
-> > > > > @@ -0,0 +1,10 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='sparc',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_SERIAL_8250=y
-> > > > > +CONFIG_SERIAL_8250_CONSOLE=y''',
-> > > > > +                          qemu_arch='sparc',
-> > > > > +                          kernel_path='arch/sparc/boot/zImage',
-> > > > > +                          kernel_command_line='console=ttyS0 mem=256M',
-> > > > > +                          extra_qemu_params=['-m 256'])
-> > > > > diff --git a/tools/testing/kunit/qemu_configs/x86_64.py b/tools/testing/kunit/qemu_configs/x86_64.py
-> > > > > new file mode 100644
-> > > > > index 0000000000000..bd5ab733b92ac
-> > > > > --- /dev/null
-> > > > > +++ b/tools/testing/kunit/qemu_configs/x86_64.py
-> > > > > @@ -0,0 +1,10 @@
-> > > > > +from ..qemu_config import QemuArchParams
-> > > > > +
-> > > > > +QEMU_ARCH = QemuArchParams(linux_arch='x86_64',
-> > > > > +                          qemuconfig='''
-> > > > > +CONFIG_SERIAL_8250=y
-> > > > > +CONFIG_SERIAL_8250_CONSOLE=y''',
-> > > > > +                          qemu_arch='x86_64',
-> > > > > +                          kernel_path='arch/x86/boot/bzImage',
-> > > > > +                          kernel_command_line='console=ttyS0',
-> > > > > +                          extra_qemu_params=[''])
-> > > > > --
-> > > > > 2.31.1.607.g51e8a6a459-goog
-> > > > >
+Greg, feel free to merge both these via your tree.
+
+> ---
+> v4: - code comments, commit log updates
+>     - Make "removable" attribute show up only under devices that are
+>       really removable.
+> v3: - commit log updated
+>     - Rename set_pci_dev_removable() -> pci_set_removable()
+>     - Call it after applying early PCI quirks.
+> v2: Add documentation
+> 
+>  .../ABI/testing/sysfs-devices-removable       |  3 ++-
+>  drivers/pci/probe.c                           | 22 +++++++++++++++++++
+>  2 files changed, 24 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-removable b/Documentation/ABI/testing/sysfs-devices-removable
+> index acf7766e800b..bda6c320c8d3 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-removable
+> +++ b/Documentation/ABI/testing/sysfs-devices-removable
+> @@ -14,4 +14,5 @@ Description:
+>  
+>  		Currently this is only supported by USB (which infers the
+>  		information from a combination of hub descriptor bits and
+> -		platform-specific data such as ACPI).
+> +		platform-specific data such as ACPI) and PCI (which gets this
+> +		from ACPI / device tree).
+> diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+> index 3a62d09b8869..812e0d7fd7a7 100644
+> --- a/drivers/pci/probe.c
+> +++ b/drivers/pci/probe.c
+> @@ -1575,6 +1575,26 @@ static void set_pcie_untrusted(struct pci_dev *dev)
+>  		dev->untrusted = true;
+>  }
+>  
+> +static void pci_set_removable(struct pci_dev *dev)
+> +{
+> +	struct pci_dev *parent = pci_upstream_bridge(dev);
+> +
+> +	/*
+> +	 * We (only) consider everything downstream from an external_facing
+> +	 * device to be removable by the user. We're mainly concerned with
+> +	 * consumer platforms with user accessible thunderbolt ports that are
+> +	 * vulnerable to DMA attacks, and we expect those ports to be marked by
+> +	 * the firmware as external_facing. Devices in traditional hotplug
+> +	 * slots can technically be removed, but the expectation is that unless
+> +	 * the port is marked with external_facing, such devices are less
+> +	 * accessible to user / may not be removed by end user, and thus not
+> +	 * exposed as "removable" to userspace.
+> +	 */
+> +	if (parent &&
+> +	    (parent->external_facing || dev_is_removable(&parent->dev)))
+> +		dev_set_removable(&dev->dev, DEVICE_REMOVABLE);
+> +}
+> +
+>  /**
+>   * pci_ext_cfg_is_aliased - Is ext config space just an alias of std config?
+>   * @dev: PCI device
+> @@ -1822,6 +1842,8 @@ int pci_setup_device(struct pci_dev *dev)
+>  	/* Early fixups, before probing the BARs */
+>  	pci_fixup_device(pci_fixup_early, dev);
+>  
+> +	pci_set_removable(dev);
+> +
+>  	pci_info(dev, "[%04x:%04x] type %02x class %#08x\n",
+>  		 dev->vendor, dev->device, dev->hdr_type, dev->class);
+>  
+> -- 
+> 2.31.1.751.gd2f1c929bd-goog
+> 
