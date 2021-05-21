@@ -2,93 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77EA638C9CE
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DE0038C9E7
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 17:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237332AbhEUPLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 11:11:14 -0400
-Received: from mx0b-001ae601.pphosted.com ([67.231.152.168]:38778 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230420AbhEUPLM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 11:11:12 -0400
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LF6weW004704;
-        Fri, 21 May 2021 10:09:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=PODMain02222019;
- bh=vb3caAt/tKr79nkmDUGEd2unVM3Vh/hFlp4bXuoFTXo=;
- b=NACigRTXcoFNMy5gvvel/FK2kHfv2VsCyXohh12TaHxXFtC8z2LLCL4IwIEmlG5dLykv
- +NrwgP6QjmAtPPDlW5is0TIrdj6DcJjZ5eqYxeYiqvaWqYW5x2MFAP466dF71j7T84zC
- UEUonuQdEDxOJGqqCEyxiKzcy+l3eXA36JOYk+zcv761HYam2sfvmixbkYVu0/W3WS5D
- ippFR0SZItfCITc5GeRuSgkKOWI4wKiZQ7J8Bzde0wmykumx7rC9XqdP8IBOS1wjG0lp
- lrZaL03Fsw/srHyMGBcLm3mybiMO+fIAdexA5w2c4Ruy1/gTwVMtuTq7STWAy6JoKBYG BA== 
-Received: from ediex02.ad.cirrus.com ([87.246.76.36])
-        by mx0b-001ae601.pphosted.com with ESMTP id 38p6errkag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 21 May 2021 10:09:37 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 21 May
- 2021 16:09:35 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 21 May 2021 16:09:35 +0100
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 9A1BB11D6;
-        Fri, 21 May 2021 15:09:35 +0000 (UTC)
-Date:   Fri, 21 May 2021 15:09:35 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-CC:     Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH] mfd: arizona: Allow building arizona MFD-core as module
-Message-ID: <20210521150935.GL64205@ediswmail.ad.cirrus.com>
-References: <20210521135023.192688-1-hdegoede@redhat.com>
+        id S233743AbhEUPSZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 11:18:25 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18969 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230420AbhEUPSX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 11:18:23 -0400
+IronPort-SDR: iHBLMnWL4lgjH4Gpg7SFLOJ/IqgoGKi/EhflCj5yV33bfh1rMji45Deg6NNu0+UkfShSYMWVaY
+ AwK2NhVwesBw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="265412629"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="265412629"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 08:14:48 -0700
+IronPort-SDR: oEtiD6YgMkzm2w8WU4o39RGvQMeb9lpDhES1B0lI2E1vV3WproXwAnk2lNRncoEqhfl2s/yQDE
+ 0V5W4T1urDSw==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="441115153"
+Received: from orxpovpvmu02.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.181.51])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 08:14:47 -0700
+Subject: Re: [PATCH v4 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up
+ support
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Andi Kleen <ak@linux.intel.com>
+References: <CAJZ5v0hFfVCm25wUCetOm4YdZKwt5h2jknN9ad1nnpxuR16KkQ@mail.gmail.com>
+ <20210513213732.418398-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <YKfHiu/a/V/0DS3V@hirez.programming.kicks-ass.net>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <e4dc31d5-d897-50fa-34e7-f5c033d5f5db@linux.intel.com>
+Date:   Fri, 21 May 2021 08:14:45 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210521135023.192688-1-hdegoede@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: _ZjdkWqRT1n5vZnloVNu9f9e3IUvFRPt
-X-Proofpoint-ORIG-GUID: _ZjdkWqRT1n5vZnloVNu9f9e3IUvFRPt
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 priorityscore=1501
- spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=874 clxscore=1015
- bulkscore=0 suspectscore=0 malwarescore=0 lowpriorityscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105210083
+In-Reply-To: <YKfHiu/a/V/0DS3V@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 03:50:23PM +0200, Hans de Goede wrote:
-> There is no reason why the arizona core,irq and codec model specific
-> regmap bits cannot be build as a module. All they do is export symbols
-> which are used by the arizona-spi/i2c and arizona-codec modules, which
-> themselves can be built as module.
-> 
-> Change the Kconfig and Makefile arizona bits so that the arizona MFD-core
-> can be built as a module.
-> 
-> This is especially useful on x86 platforms with a WM5102 codec, this
-> allows the arizona MFD driver necessary for the WM5102 codec to be
-> enabled in generic distro-kernels without growing the base kernel-image
-> size.
-> 
-> Note this also adds an explicit "depends on MFD_ARIZONA" to all the
-> arizona codec Kconfig options. The codec drivers use functions from mfd
-> arizona-core. These new depends are necessary to disallow the codec
-> drivers being builtin when the arizona-core is build as a module,
-> otherwise we end up with missing symbol errors when building vmlinuz.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks,
-Charles
+On 5/21/21 7:45 AM, Peter Zijlstra wrote:
+> On Thu, May 13, 2021 at 02:37:32PM -0700, Kuppuswamy Sathyanarayanan wrote:
+>> +static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
+>> +{
+>> +	u8 timeout = 0xFF;
+>> +
+>> +	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
+>> +	if (physids_empty(apic_id_wakemap))
+>> +		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
+>> +						sizeof(*acpi_mp_wake_mailbox),
+>> +						MEMREMAP_WB);
+> 
+> { } for being multi-line
+
+Yes. I will fix it.
+
+> 
+>> +	/*
+>> +	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
+>> +	 * mailbox-based wakeup mechanism cannot be used more than once
+>> +	 * for the same CPU, so skip sending wake commands to already
+>> +	 * awake CPU.
+>> +	 */
+>> +	if (physid_isset(apicid, apic_id_wakemap)) {
+>> +		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
+>> +		       apicid);
+>> +		return -EINVAL;
+>> +	}
+>> +
+>> +
+>> +	/*
+>> +	 * Mailbox memory is shared between firmware and OS. Firmware will
+>> +	 * listen on mailbox command address, and once it receives the wakeup
+>> +	 * command, CPU associated with the given apicid will be booted. So,
+>> +	 * the value of apic_id and wakeup_vector has to be set before updating
+>> +	 * the wakeup command. So use WRITE_ONCE to let the compiler know about
+>> +	 * it and preserve the order of writes.
+>> +	 */
+>> +	WRITE_ONCE(acpi_mp_wake_mailbox->apic_id, apicid);
+>> +	WRITE_ONCE(acpi_mp_wake_mailbox->wakeup_vector, start_ip);
+>> +	WRITE_ONCE(acpi_mp_wake_mailbox->command, ACPI_MP_WAKE_COMMAND_WAKEUP);
+> 
+> Do those want to be smp_store_release(), in addition to being a volatile
+> write, those also include compiler barriers to make sure the compiler
+> doesn't lift stuff around.
+
+I think we can use smp_store_release(). Let me test and add it in next
+version.
+
+> 
+>> +
+>> +	/*
+>> +	 * After writing wakeup command, wait for maximum timeout of 0xFF
+>> +	 * for firmware to reset the command address back zero to indicate
+>> +	 * the successful reception of command.
+>> +	 * NOTE: 255 as timeout value is decided based on our experiments.
+>> +	 *
+>> +	 * XXX: Change the timeout once ACPI specification comes up with
+>> +	 *      standard maximum timeout value.
+>> +	 */
+>> +	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
+>> +		cpu_relax();
+> 
+> What's the unit of the timeout? The mailbox reads, the PAUSE
+> instruction?
+
+Read mailbox memory, timeout dec and then pause. Its more like busy wait loop.
+
+And timeout count is decided based on our experiments. Once spec defines a
+standard, we can modify it.
+
+> 
+>> +
+>> +	if (timeout) {
+>> +		/*
+>> +		 * If the CPU wakeup process is successful, store the
+>> +		 * status in apic_id_wakemap to prevent re-wakeup
+>> +		 * requests.
+>> +		 */
+>> +		physid_set(apicid, apic_id_wakemap);
+>> +		return 0;
+>> +	}
+>> +
+>> +	/* If timed out (timeout == 0), return error */
+>> +	return -EIO;
+>> +}
+>> +
+>>   #endif				/*CONFIG_X86_LOCAL_APIC */
+
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
