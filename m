@@ -2,102 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D31238CE62
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9538C38CE6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:57:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233470AbhEUTvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:51:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52201 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233595AbhEUTvt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:51:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621626626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GPfnJGzP4OqGD0+wu1euBp+ahcfCCZpRemrfs0fPKWg=;
-        b=P9gm/jvbiXwqPVL0AGUTkMgHmzzaV/rdDm04AJUAnxWsCvhRoxzJwxaR/M0gQYKpLNqtCE
-        4CPsF+x4My8RwRG3oT0lXjItm1kqIoEC1PGrGWhmymOqWuIW20lNMZ39gN4aWR8LLOC/jC
-        yu1R0CwOwjpsKN7ulSnYP7CGRLKKN/w=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-469-xklsL5kYOZmZfwjhXKNQCw-1; Fri, 21 May 2021 15:50:24 -0400
-X-MC-Unique: xklsL5kYOZmZfwjhXKNQCw-1
-Received: by mail-oi1-f198.google.com with SMTP id p5-20020acabf050000b02901eed1481b82so4196533oif.20
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:50:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=GPfnJGzP4OqGD0+wu1euBp+ahcfCCZpRemrfs0fPKWg=;
-        b=sBHox5UVM3QdbCzCWZb3+x5bnxdMA+btqpyh8bHIIBiGF7lGNFyOjAt6hWd839X5/M
-         IKBTN5hjUtQLsJD4pIZWw3r2If2Lvi2c9p5o2O4aH7XBnlIbnlOF40BDv2/Z6sbbbJtX
-         wM8//vVHNhiK9CeV98mfLnvZiV4Wltbf5X+O/DLhzgIquH8TpGwDYTCdBFENzPSMUt3S
-         lcX6DaRZmpYrukdGY+Q2tJSA9otILLmwKWEe9+8i3TSif3iBPl/Iho/4wpZud1Ob0ijY
-         GOflEEUzVA2IY9orLXQRvrHEzZTyrUUHFPiC+xP9ghBbtRK1/oJI2JqIEckTYlmU8EqI
-         Xjag==
-X-Gm-Message-State: AOAM531Yw5E0TLgnmMc4UDO/G+HmOHJ0l+zNMTNuSfGNeJlbOaM56q1C
-        ipu5nll9AQ/DMnuwWuNaYssgzhcp+c5qEXPHtnxyNzhJfZobB5ka/tvANkpw9wnbhO366tBaxzh
-        QgsDYz4Hb5w0IuAxltgfHS931
-X-Received: by 2002:a9d:69c2:: with SMTP id v2mr9675691oto.186.1621626623967;
-        Fri, 21 May 2021 12:50:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrhDz8hYcbq+CC3R6HOECEW0ZHmOtKTJgEQEzXiMKV0b8sWqr7I+euvwLLW/m5M5RWdTM3Rg==
-X-Received: by 2002:a9d:69c2:: with SMTP id v2mr9675685oto.186.1621626623820;
-        Fri, 21 May 2021 12:50:23 -0700 (PDT)
-Received: from localhost.localdomain.com (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id w4sm1549740otl.21.2021.05.21.12.50.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 12:50:23 -0700 (PDT)
-From:   trix@redhat.com
-To:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, kuba@kernel.org, jeffrey.t.kirsher@intel.com,
-        sasha.neftin@intel.com
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH] igc: change default return of igc_read_phy_reg()
-Date:   Fri, 21 May 2021 12:50:19 -0700
-Message-Id: <20210521195019.2078661-1-trix@redhat.com>
-X-Mailer: git-send-email 2.26.3
+        id S231803AbhEUT6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:58:49 -0400
+Received: from mga05.intel.com ([192.55.52.43]:45724 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229539AbhEUT6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:58:45 -0400
+IronPort-SDR: NtVTZ2MRFCt3rRSwDY+6ndqYmoYekIG/YpJ+dL95K9g5zl8PG8XzZWnVL3j3/7/jLFKr+JFOgx
+ JoYt6iV6cwcA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="287103265"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="287103265"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 12:57:22 -0700
+IronPort-SDR: XejAXBwJ5QqkG3tyPUTzaK3tQuEh1jvG9AxkoP8Pqx4rnRyZlKTz4sCsIcIGbA2I1bBiaEitEn
+ 3erk34Z+JGIw==
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="441215658"
+Received: from orxpovpvmu02.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.213.181.51])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 12:57:21 -0700
+Subject: Re: [RFC v2-fix 1/1] x86/traps: Add #VE support for TDX guest
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>
+Cc:     Tony Luck <tony.luck@intel.com>, Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+References: <afd85e8f-ab26-aa3b-e4e9-a0b3bfd472c8@intel.com>
+ <20210518000957.257869-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <3573599f-56bc-f21e-7a7e-0d441ab9d68e@linux.intel.com>
+ <867d1271-ff97-40b0-16a5-ccf875c0ad7b@intel.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <23effbe3-b008-8351-4cb4-34bc37c45605@linux.intel.com>
+Date:   Fri, 21 May 2021 12:57:19 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <867d1271-ff97-40b0-16a5-ccf875c0ad7b@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
 
-Static analysis reports this problem
 
-igc_main.c:4944:20: warning: The left operand of '&'
-  is a garbage value
-    if (!(phy_data & SR_1000T_REMOTE_RX_STATUS) &&
-          ~~~~~~~~ ^
+On 5/21/21 12:15 PM, Dave Hansen wrote:
+> On 5/21/21 11:45 AM, Kuppuswamy, Sathyanarayanan wrote:
+>> You have any other comments on this patch? If not, can you reply with your
+>> Reviewed-by tag?
+> 
+> Sathya, I've been rather busy with your own patches and your colleagues
+> TDX patches.  I've clearly communicated to you which patches I plan to
+> provide a review for.  I'll get to them, although not quite at the speed
+> you would like.
+> 
 
-pyy_data is set by the call to igc_read_phy_reg() only if
-there is a read_reg() op, else it is unset and a 0 is
-returned.  Change the return to -EOPNOTSUPP.
+My impression so far is, for TDX patch submissions, you usually reply to
+the patch submission/comments in 1-2 days (sorry if this assumption is
+incorrect). Since I did not see any major objections for this patch, I
+was just checking with you to understand if this patch review is pending
+due to something missing from my end. My intention was not to rush you,
+but just to understand if it needs some work from my end.
 
-Fixes: 208983f099d9 ("igc: Add watchdog")
-Signed-off-by: Tom Rix <trix@redhat.com>
----
- drivers/net/ethernet/intel/igc/igc.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Sorry if the reminder emails trouble you. Since we are aiming for v5.14
+merge window, I am trying to avoid any delays from my end.
 
-diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-index b6d3277c6f520..71100ee7afbee 100644
---- a/drivers/net/ethernet/intel/igc/igc.h
-+++ b/drivers/net/ethernet/intel/igc/igc.h
-@@ -577,7 +577,7 @@ static inline s32 igc_read_phy_reg(struct igc_hw *hw, u32 offset, u16 *data)
- 	if (hw->phy.ops.read_reg)
- 		return hw->phy.ops.read_reg(hw, offset, data);
- 
--	return 0;
-+	return -EOPNOTSUPP;
- }
- 
- void igc_reinit_locked(struct igc_adapter *);
+> If you would like to get a quicker review, I'd highly suggest you go
+> find some of your TDX colleagues' code that needs its quality improved
+> and help by providing them reviews.  Reviews are a two-way street, not
+> just a service provided by maintainers to contributors.
+> 
+> You could also make good use of your time by going back over all of the
+> review comments I've made up to this point and doing a pass over your
+> work to ensure that I don't have to continue to repeat myself and waste
+> review efforts.
+
+I have considered your comments and fixed the common issues reported by
+you in this patch-set. But when addressing recent comments and while
+updating the commit log, some of these issues got introduced again. I will
+try to avoid them in future.
+
+
+
 -- 
-2.26.3
-
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
