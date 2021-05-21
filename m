@@ -2,113 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E51538C58B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B663D38C58D
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 13:20:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234532AbhEULUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 07:20:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54930 "EHLO
+        id S234578AbhEULVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 07:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232447AbhEULU3 (ORCPT
+        with ESMTP id S231135AbhEULVa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 07:20:29 -0400
-Received: from mail-il1-x12e.google.com (mail-il1-x12e.google.com [IPv6:2607:f8b0:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A9CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:19:06 -0700 (PDT)
-Received: by mail-il1-x12e.google.com with SMTP id e10so16272381ilu.11
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 04:19:06 -0700 (PDT)
+        Fri, 21 May 2021 07:21:30 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F149C061574;
+        Fri, 21 May 2021 04:20:06 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id q15so13952123pgg.12;
+        Fri, 21 May 2021 04:20:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MTX0Qm7AhkbA+fOvtExalJbmxjADAm11mbIn/fnNRss=;
-        b=dO9akwikK1L7MlwcbXdnTRLps4QJgB1xha1wQPogUygScSXJaW5du/XlzXm1MqgnIJ
-         46PcP23fGM3LplYjIe7s6XbMZMdSQI6+E7YfV+PbBFA5+YU4yPfRqISwKlBas/90OXtR
-         ei3QPH09z3illmcMTrv/HD/jbcCnyBjGUFbYs=
+        bh=0IfFZW3XDMadLNY3MLRNLu8CWZ0fRKcfHiK2HF4n6II=;
+        b=cuX/pMf/TfRY5jXrbtMY6sRZQU1YF5AqJRryqp9ImAd9ME3VSkmy6xjW3STSABikMI
+         KaT0e49wTS6TqfHFvkDU5b/pqL6uDCC2JCjLZhdRLlV6p503eba0vus/l9A6d4wASGEc
+         HLABRXWpuf4ch/J1a9s+hbdgwS1o38yujk/eV/Zend8I4dCRw1NS2Oe2Bpf0AMIeFXbd
+         uaugNROBoy0ikLwas46KVd96HwZ4r8j43anjbMDxz0kyRb0rlv9vbOibOGtf9OoleWle
+         sB3x87bfwb9dYqwAVWJuCnJc+vGY0l2cU11wnC+mGk1b/W0YxaRmdD33pQXMpd7Bs103
+         PfFg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MTX0Qm7AhkbA+fOvtExalJbmxjADAm11mbIn/fnNRss=;
-        b=VyR6x6opovWDaoJHrnRVnd4ACcA09g4acEHv8pYbN/17Xg8AveidwPVkSgP9yPqroN
-         CiwMsXBBdSJJCIwO7JcRX4+K7u/Jr1HWxPfXxK3sWV2z7tIng5lz9kylkR58nWtbQuco
-         Hjcol80LKt9raMf7omylSM9eOl67Pkgg+A9I4KMVLIzb0VIaaplszQzi8ymWNCk2jpwb
-         i73ZkF1VpW8SwvP1xP8Jn5JrsTBsFXj4NLbf5YHZ1fMmU8vuthLdClMzrTmrIQR0d8qE
-         mqHM+Nr8AZHREtyo7IMqM6EBOVqXTF4jsi8xVBEu1M6O0jjEGgLihjRrZu4w2UDta/e/
-         7zzg==
-X-Gm-Message-State: AOAM533dxVHRhXkh1dT/HaZUKk7QSpzIRbe5gVePeyrPAcymR+38TxLY
-        q26o27A0GrSSnE76VImSeaoSCNE5dQHngRAlJBVBI/wj0fE=
-X-Google-Smtp-Source: ABdhPJw5ytoDllcHq6I92P84Wr865tY27OzpDBbzLRRAvV5Um8VzMHHupjvRWHZIdegH+u1OfTN4J0qXz8eb1UQbH4M=
-X-Received: by 2002:a05:6e02:1d82:: with SMTP id h2mr9616080ila.78.1621595945554;
- Fri, 21 May 2021 04:19:05 -0700 (PDT)
+        bh=0IfFZW3XDMadLNY3MLRNLu8CWZ0fRKcfHiK2HF4n6II=;
+        b=eKIQnu/xbBmUoXt5vtFyPKs6sLgzARKk4KtoVKpIDitSxbqCuF+DEcTi+kFbXgNJdw
+         dwsNyH5ara5QWUjJ3mWCd9kOARStP8leWJNVcB/zxEqIpmgqdPCuyctoZDGbCk0ikYaJ
+         TVzOfgxouCKxetEm0D6JXDEnsAIkLrHVND0UgDeuVtRivLecLIDHHgq10dorxSWIn8am
+         4Xws1sBhnwQPE2KTcpkPKZU80gpbAuD+bzYmg27B0+PM6JtB1b6fGCABriBFKjbUzHsj
+         5BwAWWD1wSjyf8TYxA71FKPOqSGdgQK7YtzrAW5nT/UUTm3W0XGn8ly6jdHRIk8gnYQ9
+         fv2g==
+X-Gm-Message-State: AOAM531O0d7ArLEveQPGzhjO5cd0cuE1wN0pknqc6rUSA+WhPdHeH3hA
+        Cv5zvU2kvgq4UbN9uDFGRQYFUnD4OPQRKcD7Xtc=
+X-Google-Smtp-Source: ABdhPJxsgvEGgiJjzzvGasTMF74DBKT73SOPAMMu/rbdDiH/eZygX1O8t5oja4b9vvphcE8fbwelCK1ykkJVYutw3aY=
+X-Received: by 2002:a63:cd11:: with SMTP id i17mr9415037pgg.74.1621596006002;
+ Fri, 21 May 2021 04:20:06 -0700 (PDT)
 MIME-Version: 1.0
-References: <alpine.LSU.2.11.2105201954180.6100@eggly.anvils> <YKdm69K8k/ztd6BM@hirez.programming.kicks-ass.net>
-In-Reply-To: <YKdm69K8k/ztd6BM@hirez.programming.kicks-ass.net>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 21 May 2021 07:18:54 -0400
-Message-ID: <CAEXW_YRjuGJtCao+=TcKhLgFidmW_xJLWUyBcXUeK9x6Ao6oPw@mail.gmail.com>
-Subject: Re: config SCHED_CORE
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <cover.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+ <6e319c22b41747e3911c7a5cad877134cabc9231.1621577204.git.matti.vaittinen@fi.rohmeurope.com>
+ <CAHp75VcZwYdA5R=peC+8jHVT6UDsAT9msSs=W6C7rgfyjGPtXA@mail.gmail.com> <8c048bda0ace591d7e91c07ed9155338@walle.cc>
+In-Reply-To: <8c048bda0ace591d7e91c07ed9155338@walle.cc>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 21 May 2021 14:19:49 +0300
+Message-ID: <CAHp75VdbomvbAY42Bje7F8qjWfgeSnU8i2ULJRXpYKA+oTmwrg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/3] gpio: regmap: Support few IC specific operations
+To:     Michael Walle <michael@walle.cc>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Matti Vaittinen <mazziesaccount@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-power <linux-power@fi.rohmeurope.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 3:53 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Fri, May 21, 2021 at 1:19 PM Michael Walle <michael@walle.cc> wrote:
 >
-> On Thu, May 20, 2021 at 08:06:07PM -0700, Hugh Dickins wrote:
-> > Hi Peter,
+> Am 2021-05-21 12:09, schrieb Andy Shevchenko:
+> > On Fri, May 21, 2021 at 12:53 PM Matti Vaittinen
+> > <matti.vaittinen@fi.rohmeurope.com> wrote:
+> >> Changelog v2: (based on suggestions by Michael Walle)
+> >>   - drop gpio_regmap_set_drvdata()
 > >
-> > make oldconfig gave me no help at all on how to decide whether to choose
-> > SCHED_CORE Y or n, beyond it recommending Y.  Maybe you'll delete that
-> > option later, or maybe removing the prompt string would silence it.
+> > But why do we have gpio_regmap_get_drvdata() and why is it different
+> > now to the new member handling?
 >
-> Ah, you're quite right. I never seem to have gotten around to actually
-> writing anything useful there :/ Similarly the documentation for all
-> this seems to have gone missing too.
+> Eg. the reg_mask_xlate() callback is just passed a "struct
+> gpio_regmap*".
+> If someone needs to access private data there, gpio_regmap_get_drvdata()
+> is used. At least that was its intention.
 >
-> Joel, could I ask you to refresh the document to match the current state
-> of things and repost? I still whole hartedly despise this RST crud, it
-> makes it so hard to read / modify the files.
+> Thus I was also suggesting to use "struct gpio_regmap*" in the newer
+> callbacks.
 >
-> ( I think the latest version is here:
->   https://lkml.kernel.org/r/20210324214020.34142-8-joel@joelfernandes.org
-> )
->
-> Anyway, how is something like the below, Joel can add a reference to the
-> document once it's there.
+> I don't get what you mean by "different to the new member handling"?
 
-Sure thing, Peter! I will work on it and post a patch.
+Currently we have a symmetrical API that is getter and setter against
+a certain field.
+Now this change drops the setter and introduces some other field somewhere else.
+Sounds to me:
+ - either this has to be split into two changes with explanation of
+what's going on
+ - or something odd is happening here which I do not understand.
 
-- Joel
-
-
->
-> ---
->  kernel/Kconfig.preempt | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-> index ea1e3331c0ba..3c4566cd20ef 100644
-> --- a/kernel/Kconfig.preempt
-> +++ b/kernel/Kconfig.preempt
-> @@ -104,4 +104,16 @@ config SCHED_CORE
->         bool "Core Scheduling for SMT"
->         default y
->         depends on SCHED_SMT
-> -
-> +       help
-> +         This option enables Core scheduling, a means of coordinated task
-> +         selection across SMT siblings with the express purpose of creating a
-> +         Core wide privilidge boundary. When enabled -- see prctl(PR_SCHED_CORE)
-> +         -- task selection will ensure all SMT siblings will execute a task
-> +         from the same 'core group', forcing idle when no matching task is found.
-> +
-> +         This provides means of mitigation against a number of SMT side-channels;
-> +         but is, on its own, insufficient to mitigate all known side-channels.
-> +         Notable: the MDS class of attacks require more.
-> +
-> +         Default enabled for anything that has SCHED_SMT, when unused there should
-> +         be no impact on performance.
+-- 
+With Best Regards,
+Andy Shevchenko
