@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72C1B38CCD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 19:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAED38CCD4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:00:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237779AbhEUSBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:01:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33002 "EHLO
+        id S237863AbhEUSB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232931AbhEUSBI (ORCPT
+        with ESMTP id S232931AbhEUSBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:01:08 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551D4C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:59:45 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so7758984pjb.2
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 10:59:45 -0700 (PDT)
+        Fri, 21 May 2021 14:01:54 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D728C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:00:31 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id q6so11373729pjj.2
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:00:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WvnbS4IVZhECF51z6O+EfBBe87ZTqf6cbpg5WnJxJSc=;
-        b=dRa+q4djh2zWgsZsG80B8J00y/BYlEh4KnODAALlDl6ALDWnGO2ZWZvDRGfrs948mW
-         IdQF3TyoEgErcIHsHN/PQIcBxYgYdxfvYktPTaZJ6arZDaRW7Wxqid4ZxuyunuxU39Kk
-         rsYiltUpO/o400ktq/z/L2SyyiawsfLpXN4xg=
+        bh=QpyrD8xtWegQ70CKj1TMQvQr17fFrcAg/CYc9kAmlmM=;
+        b=bjnZBcBdYL4RJJbMHruNAiEwiPPKYkJQlmZJsUcwkZM0AvUVcpMzp/Npe5+oal3zEA
+         FvyCLBxG9fSeJlxo4TmGhqsiW53+oqd+wifJrfzsf0w/tthlQdcKU2ii8iQ/NrKpgH5H
+         yjfSiU9U1eyyvIui0bs7o9syKo8+2jCwLMVf0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=WvnbS4IVZhECF51z6O+EfBBe87ZTqf6cbpg5WnJxJSc=;
-        b=EhNmbdTTY8XsyyJhu6SYEGghIqKcUJ8Tm5bPeZWZcfHiHEecEHRz5IkhkfFwIuVApF
-         irw93uwCJUQqZGoQl4vPwxgBAB3S7XE9gly/rGuaWu0K9J+Uypw3KBl/rUQjflR56x/W
-         AETYRGfhdlK5gZK1LSWX20u+2lOdTbOWpqtsCmTiMwMJ2rPYRKGvOVM9vBdvCip4RryQ
-         SCtIl8Em7dFX1bPru6Djy4U8+d1lCrjRatjo6NUD50TfOZsDKBlTJG1+UHDzoAmpous2
-         nkZZK8MPPoB68bp+rsYf9L2Jfwwy0WwVXqsAc/rdNunUgY7cUvIC7AAI4ZJO7c+wNLhK
-         YgVA==
-X-Gm-Message-State: AOAM530tg12ZlZny0BHjJX7a05HKedL/jjT9o0rIlY6KvMR1iQbzpiiD
-        O6Hhk3Khg5elaptAaZmG7zYaDg==
-X-Google-Smtp-Source: ABdhPJzBxhmutnAM94ho9VxOqH7WslOekEyezmP+aJAEVSUnTsp8WNLP0bzekNRAJeF64PcP78udBg==
-X-Received: by 2002:a17:90a:9d88:: with SMTP id k8mr12209792pjp.64.1621619984833;
-        Fri, 21 May 2021 10:59:44 -0700 (PDT)
+        bh=QpyrD8xtWegQ70CKj1TMQvQr17fFrcAg/CYc9kAmlmM=;
+        b=WPN5Jlbntl2+RCc+cf19YXvhHB9X791YK3mqwZvhTO9ZVErOYpOaVInivKQMnlABUp
+         sXfI8cemOboIA9CpN3mbzh55H84Y4bbn/IHsxijONKlesTejWSr0xGXJJq1R+1A7uFsc
+         yQUFKZ2NSkUXRC+IqmDwB3iBXpvsZXyqj7L5Z0F1MFOLA7snmxmJC+YLomrq5wlYFsar
+         iCiM/cxWJLZ+M9b1aDkUSlF0XL9CmUD5apKU+CrAhy2ZRR/X7v86ANjIyKEVxcNk2XVZ
+         H5OYwGnmbsD2f++BNP4ljpb2dWM0OUl3oUlI7/mvHW1r6YnoZ3M8M8JfOnfJbNqG1dbw
+         5l8A==
+X-Gm-Message-State: AOAM53241j2Vzc38ciUN9GHIhHLBbtyUSfKSDJ56zGEWVUIDH+Z52aCz
+        LNhn9lzxxJfeWMN1cDr7Ou0AiQ==
+X-Google-Smtp-Source: ABdhPJySrSZW1V4jNIje8xED8Y5/t3xBJ2xEluqb2lgox45/sQLsIibL5asP1sSgeZz+827FgdTeLw==
+X-Received: by 2002:a17:902:d204:b029:f0:b65d:a14d with SMTP id t4-20020a170902d204b02900f0b65da14dmr13206217ply.25.1621620031178;
+        Fri, 21 May 2021 11:00:31 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s5sm206280pjo.10.2021.05.21.10.59.43
+        by smtp.gmail.com with ESMTPSA id hk15sm8570881pjb.53.2021.05.21.11.00.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 10:59:44 -0700 (PDT)
+        Fri, 21 May 2021 11:00:30 -0700 (PDT)
 From:   Kees Cook <keescook@chromium.org>
-To:     x86@kernel.org, Sami Tolvanen <samitolvanen@google.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+To:     Marco Elver <elver@google.com>
 Cc:     Kees Cook <keescook@chromium.org>,
-        clang-built-linux@googlegroups.com,
-        Anthony Ruhier <aruhier@mailbox.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH] x86: Fix location of '-plugin-opt=' flags
-Date:   Fri, 21 May 2021 10:59:10 -0700
-Message-Id: <162161994470.2028902.331062863146834934.b4-ty@chromium.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        linux-kernel@vger.kernel.org, ojeda@kernel.org,
+        akpm@linux-foundation.org, joe@perches.com, johan@kernel.org,
+        masahiroy@kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, samitolvanen@google.com
+Subject: Re: [PATCH] init: verify that function is initcall_t at compile-time
+Date:   Fri, 21 May 2021 10:59:51 -0700
+Message-Id: <162161998941.2029023.3745497110832316703.b4-ty@chromium.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210518190106.60935-1-nathan@kernel.org>
-References: <20210518190106.60935-1-nathan@kernel.org>
+In-Reply-To: <20210521072610.2880286-1-elver@google.com>
+References: <20210521072610.2880286-1-elver@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -69,24 +66,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 18 May 2021 12:01:06 -0700, Nathan Chancellor wrote:
-> Commit b33fff07e3e3 ("x86, build: allow LTO to be selected") added a
-> couple of '-plugin-opt=' flags to KBUILD_LDFLAGS because the code model
-> and stack alignment are not stored in LLVM bitcode. However, these flags
-> were added to KBUILD_LDFLAGS prior to the emulation flag assignment,
-> which uses ':=', so they were overwritten and never added to $(LD)
-> invocations. The absence of these flags caused misalignment issues in
-> the AMDGPU driver when compiling with CONFIG_LTO_CLANG, resulting in
-> general protection faults.
+On Fri, 21 May 2021 09:26:10 +0200, Marco Elver wrote:
+> In the spirit of making it hard to misuse an interface, add a
+> compile-time assertion in the CONFIG_HAVE_ARCH_PREL32_RELOCATIONS case
+> to verify the initcall function matches initcall_t, because the inline
+> asm bypasses any type-checking the compiler would otherwise do. This
+> will help developers catch incorrect API use in all configurations.
 > 
-> [...]
+> A recent example of this is:
+> https://lkml.kernel.org/r/20210514140015.2944744-1-arnd@kernel.org
 
-(I've slightly adjusted the title.)
+Since this touches on CFI, I've taken this patch.
 
 Applied to for-next/clang/features, thanks!
 
-[1/1] x86: lto: Fix location of '-plugin-opt=' flags
-      https://git.kernel.org/kees/c/5d6c8592ee5f
+[1/1] init: verify that function is initcall_t at compile-time
+      https://git.kernel.org/kees/c/72a12a91a634
 
 -- 
 Kees Cook
