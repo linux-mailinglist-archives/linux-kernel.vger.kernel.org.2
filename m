@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1C5938BCD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 05:03:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06DF38BCD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 05:06:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238807AbhEUDE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 23:04:57 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3637 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238785AbhEUDE4 (ORCPT
+        id S238824AbhEUDHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 23:07:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238273AbhEUDHn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 23:04:56 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FmWZy32CnzmWcc;
-        Fri, 21 May 2021 11:01:14 +0800 (CST)
-Received: from dggpemm500009.china.huawei.com (7.185.36.225) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 11:03:31 +0800
-Received: from huawei.com (10.174.185.226) by dggpemm500009.china.huawei.com
- (7.185.36.225) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
- 2021 11:03:30 +0800
-From:   Wang Xingang <wangxingang5@huawei.com>
-To:     <robh@kernel.org>, <will@kernel.org>, <joro@8bytes.org>,
-        <helgaas@kernel.org>
-CC:     <robh+dt@kernel.org>, <gregkh@linuxfoundation.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>,
-        <wangxingang5@huawei.com>
-Subject: [PATCH v4] iommu/of: Fix pci_request_acs() before enumerating PCI devices
-Date:   Fri, 21 May 2021 03:03:24 +0000
-Message-ID: <1621566204-37456-1-git-send-email-wangxingang5@huawei.com>
-X-Mailer: git-send-email 2.6.4.windows.1
+        Thu, 20 May 2021 23:07:43 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6DFC061574
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 20:06:19 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id v4so14405090qtp.1
+        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 20:06:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=LpMq9CF8MzjnTjzeP8/EpsuR654S/kSJPWNCceaUKB4=;
+        b=CFbXOs4TKYij7Z0rI07MdXIn9+e/f1E/PDWQ7U+ELffftBYVvoK2xJlHWKdUA5t4s+
+         43H7KYO1a5Swtfb7BQXH7dhRIb01a2hm2Exwf2K2P1FcITyISrR6CVJ2j/jI+n+AryF2
+         PnL+Y1Vj2yY/aTnRyS3pIJDMidZPzgzttxRwwZ0Ny3QMQbD4cUaPwnEy4Jsgf1U+M/P6
+         NCP+cdjX968v6w3nF4MEGS1XJsC/vK7FL0ijgvB4mlYnqgxXyBiGjOtLa0QlnB0vPROc
+         A2RXJTmKAv27io6vUknGp6oohdSROk3sU4xcJdM8oqc3ycWneuEpOJz/nss2FGM2Pl4Q
+         vtPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=LpMq9CF8MzjnTjzeP8/EpsuR654S/kSJPWNCceaUKB4=;
+        b=cifqfMQQzBAWrN7JEpjec7ZE3LQa1ZH4jKRw89EpEDvR7KnmwOpCH1nj9JvHws6Rlk
+         NM8oEpK0EWANroOUnxAfKLB0KzBSGLMgEhLvIK5LmR/Zp+kPYGSEPM7WxT/nHVGlSCgP
+         J59ujaUCKkyfuW38pgeto8HWoeDjBlLntAYANpOWuoJEssE2xECr1vzc7UKE+z6Mfnga
+         zWS6M5piXX91Lo8KKe2HZmZ7Qu6qF0hzmghRT9ypKZwk6BtUVJzi12CQ6hQ1ObPQjsa3
+         0Iv1jqkKzgJ5uUVzGKowwRCdEn+RZSLQ9bIcS0pzrYoakFZnc0/KHw6RsHQBiHMGJa6h
+         bkzQ==
+X-Gm-Message-State: AOAM532BT34BjjHqlUL95j10MsVM6ty5S1orndF4vVhwt5RG0wY7L68q
+        pXe1CJkMFUtxKWkXkvUQRsyd1KoYpOk3mA==
+X-Google-Smtp-Source: ABdhPJy4LZ4qRYQ/EzgKEbtLx93esZ0DF/s/yXu22TbdR8k4/hOrATFKivqVvbvYOan9DYnJRExvCA==
+X-Received: by 2002:ac8:647:: with SMTP id e7mr8986868qth.156.1621566378701;
+        Thu, 20 May 2021 20:06:18 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id e12sm3740660qtj.81.2021.05.20.20.06.17
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Thu, 20 May 2021 20:06:18 -0700 (PDT)
+Date:   Thu, 20 May 2021 20:06:07 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     linux-kernel@vger.kernel.org
+Subject: config SCHED_CORE
+Message-ID: <alpine.LSU.2.11.2105201954180.6100@eggly.anvils>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.185.226]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500009.china.huawei.com (7.185.36.225)
-X-CFilter-Loop: Reflected
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xingang Wang <wangxingang5@huawei.com>
+Hi Peter,
 
-When booting with devicetree, the pci_request_acs() is called after the
-enumeration and initialization of PCI devices, thus the ACS is not
-enabled. And ACS should be enabled when IOMMU is detected for the
-PCI host bridge, so add check for IOMMU before probe of PCI host and call
-pci_request_acs() to make sure ACS will be enabled when enumerating PCI
-devices.
+make oldconfig gave me no help at all on how to decide whether to choose
+SCHED_CORE Y or n, beyond it recommending Y.  Maybe you'll delete that
+option later, or maybe removing the prompt string would silence it.
 
-Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
-configuring IOMMU linkage")
-Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
----
- drivers/iommu/of_iommu.c | 1 -
- drivers/pci/of.c         | 8 +++++++-
- 2 files changed, 7 insertions(+), 2 deletions(-)
+I decided that I probably need kernel/sched/core.o, so chose Y :)
 
-diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-index a9d2df001149..54a14da242cc 100644
---- a/drivers/iommu/of_iommu.c
-+++ b/drivers/iommu/of_iommu.c
-@@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
- 			.np = master_np,
- 		};
- 
--		pci_request_acs();
- 		err = pci_for_each_dma_alias(to_pci_dev(dev),
- 					     of_pci_iommu_init, &info);
- 	} else {
-diff --git a/drivers/pci/of.c b/drivers/pci/of.c
-index da5b414d585a..2313c3f848b0 100644
---- a/drivers/pci/of.c
-+++ b/drivers/pci/of.c
-@@ -581,9 +581,15 @@ static int pci_parse_request_of_pci_ranges(struct device *dev,
- 
- int devm_of_pci_bridge_init(struct device *dev, struct pci_host_bridge *bridge)
- {
--	if (!dev->of_node)
-+	struct device_node *node = dev->of_node;
-+
-+	if (!node)
- 		return 0;
- 
-+	/* Detect IOMMU and make sure ACS will be enabled */
-+	if (of_property_read_bool(node, "iommu-map"))
-+		pci_request_acs();
-+
- 	bridge->swizzle_irq = pci_common_swizzle;
- 	bridge->map_irq = of_irq_parse_and_map_pci;
- 
--- 
-2.19.1
-
+Hugh
