@@ -2,74 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3214D38BBC3
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:40:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F7B038BBC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:41:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237444AbhEUBl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:41:56 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:36677 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237319AbhEUBly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:41:54 -0400
-Received: by mail-ot1-f50.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso16649393otn.3;
-        Thu, 20 May 2021 18:40:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0BIMIr+vPahmBauXRfzt2P0Ds58ZfqNsm2Ee2f6z5uE=;
-        b=L12BMOwLqKhAvBPNRjosE9SifHaNwafJ8p14eH9EqQ+vjXa5V22N61TCyDcEP6a0Wb
-         INGB+gZcGwGXQhzG2Go+W9SOly7AQ/fhKrUiiKyBOaKt/JmtmDZqWPjSg2/F9GuXqOc0
-         QZTvK/Sbuwbl3LGxw3UCdcCfcnHrE57pP44Iup+it6RtcqJJ0mw5avtZ9phclgt+7HPK
-         o0VEE5B1DIX6kc2dbru2fimwbduGpeAP4Zo9WjMAgqK0SClaPGRtw0ZsStcnTj7dyq3s
-         Pqw1+mHvmZ35Wz2788uvVeY84d7iQzjSXhnLWJbLRy4cI+ZUJiN+rFKHb5l5e/bQacmb
-         CJgA==
-X-Gm-Message-State: AOAM531E/xN49OEQd3gybQsXx/FuQy1yDYL8aXT8if85XL9bp0PZDdds
-        tOQiHopKAE3Cor+OBk+Ujg==
-X-Google-Smtp-Source: ABdhPJxNlR4PrBb+IozGsfyNMDszEoRAZvLptKfs818Bvw2pDWjPOw0VdaTzTKxTP2dLdHeFJSTf6w==
-X-Received: by 2002:a05:6830:10c9:: with SMTP id z9mr6253358oto.275.1621561230643;
-        Thu, 20 May 2021 18:40:30 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id v19sm1015441otk.22.2021.05.20.18.40.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 May 2021 18:40:30 -0700 (PDT)
-Received: (nullmailer pid 2462099 invoked by uid 1000);
-        Fri, 21 May 2021 01:40:28 -0000
-Date:   Thu, 20 May 2021 20:40:28 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Andre Przywara <andre.przywara@arm.com>
-Cc:     devicetree@vger.kernel.org, Samuel Holland <samuel@sholland.org>,
-        linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-sunxi@googlegroups.com, linux-usb@vger.kernel.org,
-        Icenowy Zheng <icenowy@aosc.io>, linux-sunxi@lists.linux.dev,
-        Ondrej Jirman <megous@megous.com>
-Subject: Re: [PATCH v6 09/17] dt-bindings: usb: sunxi-musb: Add H616
- compatible string
-Message-ID: <20210521014028.GA2462070@robh.at.kernel.org>
-References: <20210519104152.21119-1-andre.przywara@arm.com>
- <20210519104152.21119-10-andre.przywara@arm.com>
+        id S237466AbhEUBm6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:42:58 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:50324 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237319AbhEUBm6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 21:42:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Transfer-Encoding:Content-Disposition:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:From:
+        Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Content-Disposition:
+        In-Reply-To:References; bh=2Yn65lC6i8sVFKx/L3YcV+OJEK8N8S01XvjA4gZKG9k=; b=Jq
+        MxsDpMvE9ovz9VXmULsHaETNwdpkQerXaWWy8gt9vlvW9iKdYWZcut+UAuzhE9+5rI4juYAM/hG9O
+        CkUibh+GVmjwEpT435S/dp1w/L4B4vTeQJfnSMED+Jdfcpu1MKWSuxBipZ3XyWCtNq+PxafJ810xM
+        zgGCNLQJ5/ivKlw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1ljuAP-005CO2-6x; Fri, 21 May 2021 03:41:33 +0200
+Date:   Fri, 21 May 2021 03:41:33 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 mvebu + mvebu/dt64 1/2] firmware: turris-mox-rwtm: add
+ marvell,armada-3700-rwtm-firmware compatible string
+Message-ID: <YKcPzahkHYwgMLS6@lunn.ch>
+References: <20210308153703.23097-1-kabel@kernel.org>
+ <20210520113844.32319-1-pali@kernel.org>
+ <20210520113844.32319-2-pali@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210519104152.21119-10-andre.przywara@arm.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520113844.32319-2-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 19 May 2021 11:41:44 +0100, Andre Przywara wrote:
-> The H616 MUSB peripheral is compatible to the H3 one (8 endpoints).
+On Thu, May 20, 2021 at 01:38:43PM +0200, Pali Rohár wrote:
+> Add more generic compatible string 'marvell,armada-3700-rwtm-firmware' for
+> this driver, since it can also be used on other Armada 3720 devices.
 > 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  .../devicetree/bindings/usb/allwinner,sun4i-a10-musb.yaml      | 3 +++
->  1 file changed, 3 insertions(+)
+> Current compatible string 'cznic,turris-mox-rwtm' is kept for backward
+> compatibility.
 > 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver")
 
-Acked-by: Rob Herring <robh@kernel.org>
+Since this is intended for the next merge window, it is clearly not a
+fix. Please drop the fixes tag.
+
+Otherwise:
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
