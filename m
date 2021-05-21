@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A662038C8DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7947838C8DD
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:01:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236441AbhEUODN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:03:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54146 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232587AbhEUODM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:03:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0574600CC;
-        Fri, 21 May 2021 14:01:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621605709;
-        bh=4NU3L/wRMJdaIM1lpW4/qgGxrymlw6Y10w9dSIEXwHg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=k0aXQLcppBc724fUuHCe8op2TXc4CanDDbbLvjvCE5wNC9UWY6gV2O96k4/vExpQ6
-         dBWxwqNxS2vznmWLyuIaTROH/FOqw/hGNAwA7AZy+LvODPk578qrIAS7/Bw4V2gunk
-         eH1767xBA0VL5/aOcLBwFOnQO53LrvzF5uK0gbR4KSmQU/UlgsoT39Ttp15YD9B33K
-         e7oUmMYn8ALCmu3DsrJwklZTSbtrkQkW7VP0/p6LMsyQVFsV0fJwZhq4pFMIMXeGeh
-         cTYn8v+22Qpb7vx2u9ZPd2sU2neE26jgzlJeAUKVoscCwpeOKEXLio40mFRYQaYKsH
-         PQeuHh2aaYIwg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 94CF75C033C; Fri, 21 May 2021 07:01:49 -0700 (PDT)
-Date:   Fri, 21 May 2021 07:01:49 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
-Message-ID: <20210521140149.GV4441@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210516102716.689596-1-senozhatsky@chromium.org>
- <YKdU0U0aHKm2x3Y7@google.com>
+        id S236450AbhEUODR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:03:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232587AbhEUODP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 10:03:15 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 699F5C061574;
+        Fri, 21 May 2021 07:01:52 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 70D1164E8; Fri, 21 May 2021 10:01:51 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 70D1164E8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1621605711;
+        bh=1/Aa6tGcfRlx1OajDMLRZKjRRqKDyYsBIASgiY6i/2I=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kjYVCNhysLus+gq0rnhEaruEwamgFiZFg8oh/9YNwgrc4UVjVaL4oL0jC32K+MtZ1
+         lFnIzDgXLnvLlY/2JnAyeKR/gEKko3hmVjIIi/Hc1ZRMqT+gem4kblLR8XvI3R7fnl
+         BsZqx41AauV+b0LlIWpUfs9eWGliB8fLprM72wXU=
+Date:   Fri, 21 May 2021 10:01:51 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     "Kornievskaia, Olga" <Olga.Kornievskaia@netapp.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the nfsd tree
+Message-ID: <20210521140151.GB30314@fieldses.org>
+References: <20210521080416.45f06cb8@canb.auug.org.au>
+ <20210521135051.GA30314@fieldses.org>
+ <EC2C4D09-8C52-4DDE-B21F-311219237DE4@netapp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YKdU0U0aHKm2x3Y7@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <EC2C4D09-8C52-4DDE-B21F-311219237DE4@netapp.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 03:36:01PM +0900, Sergey Senozhatsky wrote:
-> On (21/05/16 19:27), Sergey Senozhatsky wrote:
-> >  kernel/rcu/tree_stall.h | 18 ++++++++++++++++++
-> >  1 file changed, 18 insertions(+)
-> > 
-> > diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> > index 59b95cc5cbdf..cb233c79f0bc 100644
-> > --- a/kernel/rcu/tree_stall.h
-> > +++ b/kernel/rcu/tree_stall.h
-> > @@ -7,6 +7,8 @@
-> >   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
-> >   */
-> >  
-> > +#include <asm/kvm_para.h>
-> > +
+On Fri, May 21, 2021 at 01:55:03PM +0000, Kornievskaia, Olga wrote:
 > 
-> D'oh, why did I do this...
 > 
-> Paul, I've a trivial fixup. How do you want to handle it?
-
-I dropped your earlier patch due to the warning and also because it
-looked like you might have a different approach.
-
-So please just send the fixed-up patch and I will pull it in and see
-how it does.
-
-							Thanx, Paul
-
-> ---
+> ﻿On 5/21/21, 9:51 AM, "J. Bruce Fields" <bfields@fieldses.org> wrote:
 > 
-> diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-> index cd815b19740a..b9b52f91e5b8 100644
-> --- a/kernel/rcu/tree_stall.h
-> +++ b/kernel/rcu/tree_stall.h
-> @@ -7,7 +7,7 @@
->   * Author: Paul E. McKenney <paulmck@linux.ibm.com>
->   */
->  
-> -#include <asm/kvm_para.h>
-> +#include <linux/kvm_para.h>
->  
->  //////////////////////////////////////////////////////////////////////////////
->  //
+>     NetApp Security WARNING: This is an external email. Do not click links or open attachments unless you recognize the sender and know the content is safe.
+> 
+> 
+> 
+> 
+>     On Fri, May 21, 2021 at 08:04:16AM +1000, Stephen Rothwell wrote:
+>     > Hi all,
+>     >
+>     > Commit
+>     >
+>     >   ff78b9442926 ("NFSD add vfs_fsync after async copy is done")
+>     >
+>     > is missing a Signed-off-by from its author.
+> 
+>     Olga, can I add
+> 
+>             Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+> 
+>     ?
+> 
+> [olga] But the post/patch contains that?
+
+Whoops, you're right.
+
+> I don’t understand. Even attached file has it. I think what trips
+> these system is that I use gmail to submit patches but signed-off-by
+> is from my netapp email. Unfortunately, I have no way of submitting
+> them from netapp. So the patch is correct the automated system is
+> let's say is "too strict"?
+
+I'm using "git am -s" and that's not picking up your Signed-off-by line
+for some reason.  Looking at the mail....
+
+Oh, I see, your mail looked in part like:
+
+  However, in order to save the client doing a COMMIT as a separate
+  rpc, the server can reply back with NFS_FILE_SYNC copy. This patch
+  proposed to add vfs_fsync() call at the end of the async copy.
+  
+  --- v2: moved the committed argument into the nfsd4_copy structure
+  
+  Signed-off-by: Olga Kornievskaia <kolga@netapp.com>
+  ---
+   fs/nfsd/nfs4proc.c | 14 +++++++++++++-
+    fs/nfsd/xdr4.h     |  1 +
+     2 files changed, 14 insertions(+), 1 deletion(-)
+
+But git uses "---" to mark the end of the changelog.  That allows you to
+include the diffstat, or any other notes that you want included in the
+mail but not in the final changelog.
+
+That "v2:" note is probably also something that belongs in the mail but
+not the changelog, so in future if you just move that kind of thing to
+after the Signed-off-by line, git-am will do the right thing.
+
+--b.
