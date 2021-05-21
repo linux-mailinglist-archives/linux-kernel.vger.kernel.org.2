@@ -2,144 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BD5C38C8E4
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E3338C8E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:04:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236525AbhEUOE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:04:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbhEUOE6 (ORCPT
+        id S236555AbhEUOFx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:05:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32627 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232587AbhEUOFw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:04:58 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E6BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:03:34 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id x8so21191021wrq.9
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:03:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=arista.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=UoyqHaleZ/HFc6OQ6KjZU11ia4r7rg8JChlt0tQ6+mg=;
-        b=BJGrsJGpeh5I/S47Z0uWOZDKwjvrKqPYSPGE/OZ8eTPqeIBqKROQqDaTpHJp90ic+v
-         8Wf9tbcLfEL0SMQilFVquAGy4NBnM6tVaVlLhKh8+DSyqEWcc6Auu9e0jOZu/V23gavW
-         yqDvnBSkhFEEBVRSGFOqGOXM+FQuy9e9C1YSJ8vqdieaerTPRsSF4AK3u8lAH+M9CuLH
-         qlSmOroEXkTl2im8E/DCEcP/+h1tNnULM4KFn65NRySKRzxCMBJvHFVGQLkaWj6ap7/k
-         ohYl1zJ01y99Yp8g/EjDsXg5274tizqVwIDVECJL5M8KIBUKnqat5bHDoiWVuP5SHgcH
-         JTfA==
+        Fri, 21 May 2021 10:05:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621605865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0FWGnS1xTBJJ2Fo3anpEGnC99ELWCmAqg/0rfir/TOM=;
+        b=S0WjffjOEhgRFANVKlMKrnN+y0GZ4FN4QZZeY92/YjzgqVKFf/b1L2OCHm0d93cJPolVZ+
+        XwcoKuwhPw7IgYH2dRoSxL/X4RRL///iFkbiM6+7NxBHpRxsYnMb1nRjDYG88EzE1i8qPj
+        z4KFsmzxG9iFXv3dyrw5S2HECSHJB2k=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-449-fEnEI5kjNqaz701bFFLNnw-1; Fri, 21 May 2021 10:04:23 -0400
+X-MC-Unique: fEnEI5kjNqaz701bFFLNnw-1
+Received: by mail-ed1-f71.google.com with SMTP id da10-20020a056402176ab029038f0fea1f51so3192388edb.13
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 07:04:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=UoyqHaleZ/HFc6OQ6KjZU11ia4r7rg8JChlt0tQ6+mg=;
-        b=iZ566hsxPO1MU6tGeDKO2Ttq1ftvpGAvbDDLybJmhY3WxI8wWEYAQxY+n7Zep+kUbn
-         vbb2r+x9h/GQeT4jh7cDBCWVH5ZomC2nzLyj4iJ40TMq2SaupTUV0tQ1CJJ7jGUw6BhS
-         En1xXObUz/1BtMkkX2cNqTqtrEuwVdnSuFpTUfDoNH5K6dYxaXyw+8dL+Pw2bArFzQm6
-         75na3cARdW9SIe8STzJVhyxSOLHZv/NsqwF4uUfmi5lx418C0ubOEjYCkuys6EyPXnHo
-         20zt5BggO3DIkhyXvP/EsQvXQP5obhD2FWdJav47WyzsO/wTkMRaeYFu8bNVUlt1eP0W
-         Jh1w==
-X-Gm-Message-State: AOAM530uCuf6agSnWTf5QEPdXdbEFUttO0cF1Z9p4oxI1gsq4gmehgzh
-        vBfpkB9BHcTveQeZhvNjb06RWaNHnkygQ6SHB4A=
-X-Google-Smtp-Source: ABdhPJwfOpUTxsj1ejd+Yicuss9jPZTxqvoXrHVbTANTP8/3HBxYPyKeFeLiuHEOAyxBqmctlGuOSg==
-X-Received: by 2002:a5d:4e0b:: with SMTP id p11mr9630626wrt.220.1621605813231;
-        Fri, 21 May 2021 07:03:33 -0700 (PDT)
-Received: from snaipe-arista.aristanetworks.com ([159.134.255.34])
-        by smtp.gmail.com with ESMTPSA id r2sm2369042wrv.39.2021.05.21.07.03.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0FWGnS1xTBJJ2Fo3anpEGnC99ELWCmAqg/0rfir/TOM=;
+        b=F4Lt1onQadAdqK3mkPkw8SByQF2D5jWlyNSxH70jYdMIj1Li7MQnQ8lHUQXFVtW+ua
+         CBYCvoHyRk+XUuSc0DQtE7i6DFzXANJ/lXRJaL5mH8c5pGWBLBjEdzIazQ8ol5Gm40zo
+         AwLw3o3oef1psbV8ea6ca+GuhQmrDA9mSpjoyWd/DKuilucB4NRv1l1WcIs352UvVcpn
+         XB51jDrA7zgXfKZ6E7+E0Ptnq8PyFEXzSvnNdWifGKaJZyEa/dWDt9qkjBFxQTfglKSj
+         65YUxRe96EIpdmM3aZD13ZRMCH6Pzi/zIKVSuh+dXfSO8RmQwJ4ys+/AL1dRf6ix61Hr
+         PS9A==
+X-Gm-Message-State: AOAM532RNbkAFiukm0BymOLHrsUk8gi9BnxPSumuxeUUTX0h0V7wrPGk
+        wN9SxmkpKRZJm+nbzoEd0HRMbt84ddfe+BOS73iyZWo2Gc1gerCwM7SjBasaui4iZ2f89S3qH/z
+        ItDDfkLYYuMwqvvVS0lEewog+
+X-Received: by 2002:a17:906:7c4b:: with SMTP id g11mr10460873ejp.461.1621605862067;
+        Fri, 21 May 2021 07:04:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxXqTbrJ0iKwqv77esCIvIhfq1WCbIdlw3aMc1GDJjhdYtzXix6uBQJwXOo+Ew6v5VsCgDyRg==
+X-Received: by 2002:a17:906:7c4b:: with SMTP id g11mr10460834ejp.461.1621605861789;
+        Fri, 21 May 2021 07:04:21 -0700 (PDT)
+Received: from localhost.localdomain ([151.29.18.58])
+        by smtp.gmail.com with ESMTPSA id qo19sm3569598ejb.7.2021.05.21.07.04.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 07:03:32 -0700 (PDT)
-From:   Snaipe <snaipe@arista.com>
-To:     christian.brauner@ubuntu.com
-Cc:     dwalsh@redhat.com, ebiederm@xmission.com, gscrivan@redhat.com,
-        linux-kernel@vger.kernel.org, serge@hallyn.com,
-        Snaipe <snaipe@arista.com>
-Subject: Re: [RFC PATCH 1/3] setgroups: new mode 'shadow' for /proc/PID/setgroups
-Date:   Fri, 21 May 2021 16:03:22 +0200
-Message-Id: <20210521140322.3745998-1-snaipe@arista.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210517143321.en2jy2gaxrhdhvub@wittgenstein>
-References: <20210517143321.en2jy2gaxrhdhvub@wittgenstein>
+        Fri, 21 May 2021 07:04:21 -0700 (PDT)
+Date:   Fri, 21 May 2021 16:04:18 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Quentin Perret <qperret@google.com>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
+Subject: Re: [PATCH v6 13/21] sched: Admit forcefully-affined tasks into
+ SCHED_DEADLINE
+Message-ID: <YKe94oTVSbywMw2r@localhost.localdomain>
+References: <20210520101640.GA10065@willie-the-truck>
+ <YKY7FvFeRlXVjcaA@google.com>
+ <f9d1a138-3150-d404-7cd5-ddf72e93837b@redhat.com>
+ <20210520180138.GA10523@willie-the-truck>
+ <YKdEX9uaQXy8g/S/@localhost.localdomain>
+ <YKdsOBCjASzFSzLm@google.com>
+ <YKdxxDfu81W28n1A@localhost.localdomain>
+ <20210521103724.GA11680@willie-the-truck>
+ <3620bad5-2a27-0f9e-f1f0-70036997d33c@arm.com>
+ <YKevSSLHjdRvrJ2i@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKevSSLHjdRvrJ2i@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Christian Brauner <christian.brauner@ubuntu.com> writes:
-> On Mon, May 17, 2021 at 03:30:16PM +0200, Giuseppe Scrivano wrote:
-> > "Serge E. Hallyn" <serge@hallyn.com> writes:
-> > > If userns u1 unshares u2 with shadow set, then when u2 unshares
-> > > u3, should u3 get the same shadowed set that u2 has, or should it
-> > > get all of u2's groups as u3's initial shadow set?
-> > 
-> > good question.  Thinking more of it, I think a reasonable interface is
-> > to expect a child userns to inherit the same shadow groups as its parent
-> > userns.  If "shadow" is written again to the /proc/PID/setgroups file
-> > then it grows shadow groups set to include the ones the userns had at
-> > creation time (which includes the parent shadow groups).  What do you
-> > think of it?  I'll play more with this idea and see if it works.
+On 21/05/21 13:02, Quentin Perret wrote:
+
+...
+
+> So I think Will has a point since, IIRC, the root domains get rebuilt
+> during hotplug. So you can imagine a case with a single root domain, but
+> CPUs 4-7 are offline. In this case, sched_setattr() will happily promote
+> a task to DL as long as its affinity mask is a superset of the rd span,
+> but things may get ugly when CPUs are plugged back in later on.
 > 
-> So when I initially looked at that proposal I was neither "yay" or "nay"
-> since it seemed useful to people and it looked somewhat straightforward
-> to implement.
+> This looks like an existing bug though. I just tried the following on a
+> system with 4 CPUs:
 > 
-> But I do have concerns now after seeing this. The whole
-> /proc/<pid>/setgroups API is terrible in the first place and causes even
-> more special-casing in container runtimes then there already is. But it
-> fixes a security issue so ok we'll live with it.
+>     // Create a task affined to CPU [0-2]
+>     > while true; do echo "Hi" > /dev/null; done &
+>     [1] 560
+>     > mypid=$!
+>     > taskset -p 7 $mypid
+>     pid 560's current affinity mask: f
+>     pid 560's new affinity mask: 7
 > 
-> But I'm not happy about extending its format to include more options. I
-> really don't want the precedent of adding magic keywords into this file.
+>     // Try to move it DL, this should fail because of the affinity
+>     > chrt -d -T 5000000 -P 16666666 -p 0 $mypid
+>     chrt: failed to set pid 560's policy: Operation not permitted
 > 
-> Which brings me to my second concern. I think starting to magically
-> inherit group ids isn't a great idea. It's got a lot of potential for
-> confusion.
-
-To be fair, we already magically inherit group ids -- that's what not calling
-setgroups after entering the userns and setting up the {u,g}id maps does.
-The new shadow mode does not really cause inheritance, but it does provide
-a way for userspace programs to keep these unmapped groups around after
-a setgroups, which is currently impossible, and quite sad for the reasons
-I outlined in my other email[1].
-
-> The point Serge here made makes this pretty obvious imho. I don't think
-> introducing the complexities of magic group inheritance is something we
-> should do.
+>     // Offline CPU 3, so the rd now covers CPUs 0-2 only
+>     > echo 0 > /sys/devices/system/cpu/cpu3/online
+>     [  400.843830] CPU3: shutdown
+>     [  400.844100] psci: CPU3 killed (polled 0 ms)
 > 
-> Alternative proposal, can we solve this in userspace instead?
+>     // Try to admit the task again, which now succeeds
+>     > chrt -d -T 5000000 -P 16666666 -p 0 $mypid
 > 
-> As has been pointed out there is a solution to this problem already
-> which is to explicitly map those groups through, i.e. punch holes for
-> the groups to be inherited.
+>     // Plug CPU3 back online
+>     > echo 1 > /sys/devices/system/cpu/cpu3/online
+>     [  408.819337] Detected PIPT I-cache on CPU3
+>     [  408.819642] GICv3: CPU3: found redistributor 3 region 0:0x0000000008100000
+>     [  408.820165] CPU3: Booted secondary processor 0x0000000003 [0x410fd083]
+> 
+> I don't see any easy way to fix this w/o iterating over all deadline
+> tasks in the rd when hotplugging a CPU back on, and blocking the hotplug
+> operation if it'll cause affinity issues. Urgh.
+> 
 
-I don't think it really addresses the problem. If you explicitly map these
-groups through, then it's still trivial for userspace programs to simply
-drop them after the gid map is written. It just solves the problem of
-having control over your additional groups in the userns, which, it turns
-out, is already configurable by the system administrator via /etc/subgid:
+Yeah this looks like a plain existing bug, joy. :)
 
-    host$ id
-    uid=1000(snaipe) gid=1000(snaipe) groupes=1000(snaipe),998(wheel)
+We fixed a few around AC lately, but I guess work wasn't complete.
 
-    host$ cat /etc/subgid
-    user:1000000:1100000
-    user:998:1
+Thanks,
+Juri
 
-    host$ unshare -fU --map-user=0 sh
-    ns# echo $$
-    3720498
-
-    host$ newgidmap 3725680 0 1000 1 1 1000000 1100000 1100001 998 1
-
-    ns# id
-    uid=0(root) gid=0(root) groupes=0(root),65534(nobody),1100001
-
-This is only fine if we're not interested in supporting both negative-
-access permission bits and ACLs. It also means application writers and
-system administrators cannot force unprivileged users to stay in their
-groups even after giving them control of their own user namespace.
-
-[1]: https://lore.kernel.org/lkml/20210510160233.2266000-1-snaipe@arista.com/
-
--- 
-Snaipe
