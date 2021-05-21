@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F12A238C083
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F8EC38C085
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 09:14:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235623AbhEUHPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 03:15:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46622 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235573AbhEUHO5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 03:14:57 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1621581214; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7kAah6wOBUe6gBpHNLknbqTS8+LRlcH2a6NUBifyQNg=;
-        b=HkgaFmLY+DiT7fqavNxSq58K8HL+lnUzxpJeCcxb7m8VALI4OvzM6eWhSw51LZpzWLDeGt
-        sNsxZzfQgs8jc3pAoW4LF/eigI5IPvv0topUHdmMCSMFDtyhia0kmAO9HfUKdZqoZMgp6S
-        pnEOT6yuqBcE9MlUrhjrBdqyG34+4rI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 00ACBAC36;
-        Fri, 21 May 2021 07:13:33 +0000 (UTC)
-Message-ID: <832ccdcd6b199f45b64fc10a70b9b7962071badd.camel@suse.com>
-Subject: Re: [PATCH] Move VMEnter and VMExit tracepoints closer to the
- actual event
-From:   Dario Faggioli <dfaggioli@suse.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Stefano De Venuto <stefano.devenuto99@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, x86@kernel.org,
-        hpa@zytor.com, kvm@vger.kernel.org, rostedt@goodmis.org,
-        y.karadz@gmail.com
-Date:   Fri, 21 May 2021 09:13:31 +0200
-In-Reply-To: <875yzddg5n.ffs@nanos.tec.linutronix.de>
-References: <20210519182303.2790-1-stefano.devenuto99@gmail.com>
-         <875yzddg5n.ffs@nanos.tec.linutronix.de>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Ps9gwJ7uHHce6z6Gcj4m"
-User-Agent: Evolution 3.40.1 (by Flathub.org) 
+        id S232405AbhEUHPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 03:15:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235573AbhEUHPp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 03:15:45 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244E6C061574;
+        Fri, 21 May 2021 00:14:23 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id 69so10483348plc.5;
+        Fri, 21 May 2021 00:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=NcpK2RBsw9d+FH1vYWla/yzVtY9sK4vFCY/nN/lCEUk=;
+        b=BbG8e49EmvkU9/W6Vjados9MvBZOEQMN4XIz7aoZCBc+/xyx9PUiWv4alVvhNJA+ux
+         hjru1+tORR9bPY8SIB/y1t07AcnWHONQCXmCKMTBnbZp6Bm600JlV6ak2t3TEiI4Qf33
+         nG9KJxBhhpc0ANcDE4YbDjNf/q9KZ4J9xey6d99qfrLA4mm7lM07aWTMW5X4M1dKTY+j
+         fPdhtuBG6fPduhuilhDgS43U0TOHKXepmci/DB4+AnPOQgQlPwkqlxl+QvuIYn4/EwAL
+         sQKylUInYX6fDo0nvA1CoFOrFoEvNYWdO3x3EGs+ZV2Z2mCWuXjcNuKNS32r9tTd75hz
+         pCnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language:content-transfer-encoding;
+        bh=NcpK2RBsw9d+FH1vYWla/yzVtY9sK4vFCY/nN/lCEUk=;
+        b=p1v1ILyQ4HCa2Ulk7cp0RCOXHBumGMlj9F8SKHvG5iYMv+AAP6TQvfel3dvbhf5411
+         F3d3Ji1zEmbNU5rFrSz3x0jcMiRvf02psuH6vcE38uQE+xg2MKALwESL6Ih7Boh4Vo71
+         snV8bSyXNx4G+0BKCDb3UAYLf1hAMXyaEdxuUnSsgN2fGdizTHTyFAWKKjxR3uSvauCd
+         wFIK3UgmEuVicPhf6UFx/Msft230HRfXoq0GRxrlw5QWUSAkuff52esuuehsHsth/GwF
+         JUWlPvxHMZSlh9ldG/YvzOYwiyMsJuwzH4O/YhKRGnXW6WFGpNWuirBaNTqsivo1ytpt
+         ETKw==
+X-Gm-Message-State: AOAM530Wq/vGlKdSRJ/bli7V2EyWDqFdlaOTjX45ZTZLdtCwuu7TLa9J
+        4hHeodlS4Le5iEIOpIQ0n6Y=
+X-Google-Smtp-Source: ABdhPJxQfXPVT4M42wfQqT0W0WKmSS4en3OQpdAKQf8a2WaMotmoNbXAdQ2Gdg/c1HZsregc3GcmCw==
+X-Received: by 2002:a17:902:d101:b029:f4:b38a:a10a with SMTP id w1-20020a170902d101b02900f4b38aa10amr10614188plw.46.1621581262713;
+        Fri, 21 May 2021 00:14:22 -0700 (PDT)
+Received: from [192.168.11.2] (KD106167171201.ppp-bb.dion.ne.jp. [106.167.171.201])
+        by smtp.gmail.com with ESMTPSA id f17sm3636528pgm.37.2021.05.21.00.14.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 21 May 2021 00:14:22 -0700 (PDT)
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Akira Yokosawa <akiyks@gmail.com>
+From:   Akira Yokosawa <akiyks@gmail.com>
+Subject: [PATCH] docs: sphinx-pre-install: Reword warning on installing cjk
+ font
+Message-ID: <c5652bb4-0bb0-9efa-2b80-a79793a8efa8@gmail.com>
+Date:   Fri, 21 May 2021 16:14:19 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Installing a ckj font as recommended by the warning message causes
+generated latex code to have:
 
---=-Ps9gwJ7uHHce6z6Gcj4m
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+	% This is needed for translations
+	\usepackage{xeCJK}
+	\setCJKmainfont{Noto Sans CJK SC}
 
-Hi Thomas,=20
+in its preamble even for an English document.
 
-And thanks a lot for the review!
+The package "xeCJK" changes wide characters' appearance including
+apostrophe (single quote) and double quotes, and it changes line-break
+behavior with regard to the boundary of narrow and wide characters.
 
-On Thu, 2021-05-20 at 09:21 +0200, Thomas Gleixner wrote:
-> On Wed, May 19 2021 at 20:23, Stefano De Venuto wrote:
-> > diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> > index 05eca131eaf2..c77d4866e239 100644
-> > --- a/arch/x86/kvm/svm/svm.c
-> > +++ b/arch/x86/kvm/svm/svm.c
-> > @@ -3707,6 +3705,8 @@ static noinstr void
-> > svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
-> > =C2=A0
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0kvm_guest_enter_irqoff(=
-);
-> > =C2=A0
-> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0trace_kvm_entry(vcpu);
->=20
-> No. This violates the noinstr rules and will make objtool complain on
-> a
-> full validation run.
->=20
-Ok, I see, sorry for not noticing it.
+This greatly degrades readability of English PDFs typeset by xelatex.
 
-Well, in this specific case --considering others' reviews-- it seems
-that the tracepoints will be moved to somewhere else anyway, but we'll
-make sure to run all the proper validation steps next time.
+As a band-aid help, reword the message and let the user at least be
+aware of the degradation.
 
-Thanks again and Regards
---=20
-Dario Faggioli, Ph.D
-http://about.me/dario.faggioli
-Virtualization Software Engineer
-SUSE Labs, SUSE https://www.suse.com/
--------------------------------------------------------------------
-<<This happens because _I_ choose it to happen!>> (Raistlin Majere)
+Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
+---
+Hello,
 
---=-Ps9gwJ7uHHce6z6Gcj4m
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+I'm a newcomer to kernel-doc who started trying sphinx this week.
+I have both sphinx 2.4.4 and 1.7.9 installed.
+For pdfdocs, I use 2.4.4.
 
------BEGIN PGP SIGNATURE-----
+"make htmldocs" was fairly easy, but I struggled a while to get
+PDFs as I expected.
 
-iQIzBAABCAAdFiEES5ssOj3Vhr0WPnOLFkJ4iaW4c+4FAmCnXZsACgkQFkJ4iaW4
-c+69DA/+KRP2R8sKIOrew4DW30xOJLfRdrUsRiL6M4bQ/eUuw3ZGOgHADzN9GnhL
-cIu8stZAKIxrSWcjpXrdELiIv/TFUJ1m5uH1Z7oi4ovku9E1AQDlV57iFCv61oTy
-3use73BZyttv2pCSlUGjOz8bcmzxNkn5mBA3I69aMJQIygMcpEybwGG2Z+b5VzQW
-cBI8a7YoE3dM7TN8lyluevg5Mry9DTRXKSb06dX/uGTX5vhwTHQEOJe2FCnqhyVG
-GMTQjMOI9lIxrOdb68g4jAi+LeNTzVOimU7KSTDROLSkz2gLNST2/Jhc04rxmdbe
-4IojvuzDDdgp9gWI+x3OOuRVSt/tlm7x80Mp/H2HalbeKh8VQLp9w+DUWO3/nbrt
-8ASIC60HJSwFgBBz+g/0wypOpBOV2RH4AqdmuKyTWvSwJ8ifiezE6N0L6d4LmfWW
-t4SInT+8BZU45D05xdkrv29hSIyjlCEL2W8naCO+vwVvTn/Pj5LjP9vOiklrSXEs
-YclrK3y0Iu6fokYqWrkWCHXh/vLQLwvafk2lw5wXIKRhH0AVxm1PtbmW43gwpZru
-iyabmiP2Oi3gVZsXA5wqWBR5guFGFSJT7cdzYn1Mh+0C5n+KJtqswhAo+r/wmgh9
-8n8//T+zKdxj5tf8ZzkD2dPkqOvjyg4KvhdrVX43nS2n4a69qzc=
-=PjA0
------END PGP SIGNATURE-----
+The culprit turned out to be the "xeCJK" package mentioned above
+in the change log.  It appears in all the generated latex files
+due to the "Noto Sans CJK" font I have installed seeing the warning
+message from sphinx-pre-install.
 
---=-Ps9gwJ7uHHce6z6Gcj4m--
+By uninstalling the font, I can now build the PDF as I expect.
+
+The reworded message is just a band-aid help.
+
+In the long term, I see that rst2pdf tool is your hope to avoid
+LaTeX altogether.  But it would be nice if you can enable xeCJK only
+for the translations document.  Can sphinx permit such language
+choice per subdirectory (or hopefully per .rst file)?
+
+        Thanks, Akira
+--
+ scripts/sphinx-pre-install | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/scripts/sphinx-pre-install b/scripts/sphinx-pre-install
+index fe92020d67e3..b3c7da2b8ad2 100755
+--- a/scripts/sphinx-pre-install
++++ b/scripts/sphinx-pre-install
+@@ -101,7 +101,12 @@ sub check_missing(%)
+ 		}
+ 
+ 		if ($is_optional) {
+-			print "Warning: better to also install \"$prog\".\n";
++			if ($prog =~ /cjk/ ) {
++				print "Warning: For translations PDF, better to install \"$prog\".\n";
++				print "However, doing so will *degrade* English PDF typesetting.\n";
++			} else {
++				print "Warning: better to also install \"$prog\".\n";
++			}
+ 		} else {
+ 			print "ERROR: please install \"$prog\", otherwise, build won't work.\n";
+ 		}
+-- 
+2.17.1
 
