@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C9738C4F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD89438C4F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhEUKcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:32:23 -0400
-Received: from outbound-smtp21.blacknight.com ([81.17.249.41]:40134 "EHLO
-        outbound-smtp21.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234537AbhEUKab (ORCPT
+        id S232128AbhEUKcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 06:32:36 -0400
+Received: from outbound-smtp20.blacknight.com ([46.22.139.247]:49371 "EHLO
+        outbound-smtp20.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230225AbhEUKam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:30:31 -0400
+        Fri, 21 May 2021 06:30:42 -0400
 Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp21.blacknight.com (Postfix) with ESMTPS id 374CBCCAEC
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:29:07 +0100 (IST)
-Received: (qmail 23211 invoked from network); 21 May 2021 10:29:07 -0000
+        by outbound-smtp20.blacknight.com (Postfix) with ESMTPS id 5DF661C3C0C
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 11:29:17 +0100 (IST)
+Received: (qmail 23575 invoked from network); 21 May 2021 10:29:17 -0000
 Received: from unknown (HELO stampy.112glenside.lan) (mgorman@techsingularity.net@[84.203.23.168])
-  by 81.17.254.9 with ESMTPA; 21 May 2021 10:29:07 -0000
+  by 81.17.254.9 with ESMTPA; 21 May 2021 10:29:17 -0000
 From:   Mel Gorman <mgorman@techsingularity.net>
 To:     Linux-MM <linux-mm@kvack.org>
 Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
@@ -27,9 +27,9 @@ Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
         Nicholas Piggin <npiggin@gmail.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Mel Gorman <mgorman@techsingularity.net>
-Subject: [PATCH 3/6] mm/page_alloc: Adjust pcp->high after CPU hotplug events
-Date:   Fri, 21 May 2021 11:28:23 +0100
-Message-Id: <20210521102826.28552-4-mgorman@techsingularity.net>
+Subject: [PATCH 4/6] mm/page_alloc: Scale the number of pages that are batch freed
+Date:   Fri, 21 May 2021 11:28:24 +0100
+Message-Id: <20210521102826.28552-5-mgorman@techsingularity.net>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210521102826.28552-1-mgorman@techsingularity.net>
 References: <20210521102826.28552-1-mgorman@techsingularity.net>
@@ -39,186 +39,116 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PCP high watermark is based on the number of online CPUs so the
-watermarks must be adjusted during CPU hotplug. At the time of
-hot-remove, the number of online CPUs is already adjusted but during
-hot-add, a delta needs to be applied to update PCP to the correct
-value. After this patch is applied, the high watermarks are adjusted
-correctly.
+When a task is freeing a large number of order-0 pages, it may acquire
+the zone->lock multiple times freeing pages in batches. This may
+unnecessarily contend on the zone lock when freeing very large number
+of pages. This patch adapts the size of the batch based on the recent
+pattern to scale the batch size for subsequent frees.
 
-  # grep high: /proc/zoneinfo  | tail -1
-              high:  649
-  # echo 0 > /sys/devices/system/cpu/cpu4/online
-  # grep high: /proc/zoneinfo  | tail -1
-              high:  664
-  # echo 1 > /sys/devices/system/cpu/cpu4/online
-  # grep high: /proc/zoneinfo  | tail -1
-              high:  649
+As the machines I used were not large enough to test this are not large
+enough to illustrate a problem, a debugging patch shows patterns like
+the following (slightly editted for clarity)
+
+Baseline vanilla kernel
+  time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
+  time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
+  time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
+  time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
+  time-unmap-14426   [...] free_pcppages_bulk: free   63 count  378 high  378
+
+With patches
+  time-unmap-7724    [...] free_pcppages_bulk: free  126 count  814 high  814
+  time-unmap-7724    [...] free_pcppages_bulk: free  252 count  814 high  814
+  time-unmap-7724    [...] free_pcppages_bulk: free  504 count  814 high  814
+  time-unmap-7724    [...] free_pcppages_bulk: free  751 count  814 high  814
+  time-unmap-7724    [...] free_pcppages_bulk: free  751 count  814 high  814
 
 Signed-off-by: Mel Gorman <mgorman@techsingularity.net>
 ---
- include/linux/cpuhotplug.h |  2 +-
- mm/internal.h              |  2 +-
- mm/memory_hotplug.c        |  4 ++--
- mm/page_alloc.c            | 35 +++++++++++++++++++++++++----------
- 4 files changed, 29 insertions(+), 14 deletions(-)
+ include/linux/mmzone.h |  3 ++-
+ mm/page_alloc.c        | 30 ++++++++++++++++++++++++++++--
+ 2 files changed, 30 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-index 4a62b3980642..47e13582d9fc 100644
---- a/include/linux/cpuhotplug.h
-+++ b/include/linux/cpuhotplug.h
-@@ -54,7 +54,7 @@ enum cpuhp_state {
- 	CPUHP_MM_MEMCQ_DEAD,
- 	CPUHP_PERCPU_CNT_DEAD,
- 	CPUHP_RADIX_DEAD,
--	CPUHP_PAGE_ALLOC_DEAD,
-+	CPUHP_PAGE_ALLOC,
- 	CPUHP_NET_DEV_DEAD,
- 	CPUHP_PCI_XGENE_DEAD,
- 	CPUHP_IOMMU_IOVA_DEAD,
-diff --git a/mm/internal.h b/mm/internal.h
-index 54bd0dc2c23c..651250e59ef5 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -221,7 +221,7 @@ extern int user_min_free_kbytes;
- extern void free_unref_page(struct page *page);
- extern void free_unref_page_list(struct list_head *list);
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index b449151745d7..92182e0299b2 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -343,8 +343,9 @@ struct per_cpu_pages {
+ 	int count;		/* number of pages in the list */
+ 	int high;		/* high watermark, emptying needed */
+ 	int batch;		/* chunk size for buddy add/remove */
++	short free_factor;	/* batch scaling factor during free */
+ #ifdef CONFIG_NUMA
+-	int expire;		/* When 0, remote pagesets are drained */
++	short expire;		/* When 0, remote pagesets are drained */
+ #endif
  
--extern void zone_pcp_update(struct zone *zone);
-+extern void zone_pcp_update(struct zone *zone, int cpu_online);
- extern void zone_pcp_reset(struct zone *zone);
- extern void zone_pcp_disable(struct zone *zone);
- extern void zone_pcp_enable(struct zone *zone);
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 70620d0dd923..bebb3cead810 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -961,7 +961,7 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages, struct zone *z
- 	node_states_set_node(nid, &arg);
- 	if (need_zonelists_rebuild)
- 		build_all_zonelists(NULL);
--	zone_pcp_update(zone);
-+	zone_pcp_update(zone, 0);
- 
- 	/* Basic onlining is complete, allow allocation of onlined pages. */
- 	undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
-@@ -1835,7 +1835,7 @@ int __ref offline_pages(unsigned long start_pfn, unsigned long nr_pages)
- 		zone_pcp_reset(zone);
- 		build_all_zonelists(NULL);
- 	} else
--		zone_pcp_update(zone);
-+		zone_pcp_update(zone, 0);
- 
- 	node_states_clear_node(node, &arg);
- 	if (arg.status_change_nid >= 0) {
+ 	/* Lists of pages, one per migrate type stored on the pcp-lists */
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index bf5cdc466e6c..2761b03b3a44 100644
+index 2761b03b3a44..c3da6401f138 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -6628,7 +6628,7 @@ static int zone_batchsize(struct zone *zone)
- #endif
+@@ -3267,18 +3267,42 @@ static bool free_unref_page_prepare(struct page *page, unsigned long pfn)
+ 	return true;
  }
  
--static int zone_highsize(struct zone *zone)
-+static int zone_highsize(struct zone *zone, int cpu_online)
++static int nr_pcp_free(struct per_cpu_pages *pcp, int high, int batch)
++{
++	int min_nr_free, max_nr_free;
++
++	/* Check for PCP disabled or boot pageset */
++	if (unlikely(high < batch))
++		return 1;
++
++	min_nr_free = batch;
++	max_nr_free = high - batch;
++
++	batch <<= pcp->free_factor;
++	if (batch < max_nr_free)
++		pcp->free_factor++;
++	batch = clamp(batch, min_nr_free, max_nr_free);
++
++	return batch;
++}
++
+ static void free_unref_page_commit(struct page *page, unsigned long pfn,
+ 				   int migratetype)
  {
- #ifdef CONFIG_MMU
- 	int high;
-@@ -6640,7 +6640,7 @@ static int zone_highsize(struct zone *zone)
- 	 * CPUs local to a zone. Note that early in boot that CPUs may
- 	 * not be online yet.
- 	 */
--	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone))));
-+	nr_local_cpus = max(1U, cpumask_weight(cpumask_of_node(zone_to_nid(zone)))) + cpu_online;
- 	high = low_wmark_pages(zone) / nr_local_cpus;
+ 	struct zone *zone = page_zone(page);
+ 	struct per_cpu_pages *pcp;
++	int high;
  
- 	return high;
-@@ -6708,12 +6708,12 @@ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long h
-  * Calculate and set new high and batch values for all per-cpu pagesets of a
-  * zone based on the zone's size.
-  */
--static void zone_set_pageset_high_and_batch(struct zone *zone)
-+static void zone_set_pageset_high_and_batch(struct zone *zone, int cpu_online)
- {
- 	int new_high, new_batch;
- 
- 	new_batch = max(1, zone_batchsize(zone));
--	new_high = zone_highsize(zone);
-+	new_high = zone_highsize(zone, cpu_online);
- 
- 	if (zone->pageset_high == new_high &&
- 	    zone->pageset_batch == new_batch)
-@@ -6743,7 +6743,7 @@ void __meminit setup_zone_pageset(struct zone *zone)
- 		per_cpu_pages_init(pcp, pzstats);
- 	}
- 
--	zone_set_pageset_high_and_batch(zone);
-+	zone_set_pageset_high_and_batch(zone, 0);
+ 	__count_vm_event(PGFREE);
+ 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
+ 	list_add(&page->lru, &pcp->lists[migratetype]);
+ 	pcp->count++;
+-	if (pcp->count >= READ_ONCE(pcp->high))
+-		free_pcppages_bulk(zone, READ_ONCE(pcp->batch), pcp);
++	high = READ_ONCE(pcp->high);
++	if (pcp->count >= high) {
++		int batch = READ_ONCE(pcp->batch);
++
++		free_pcppages_bulk(zone, nr_pcp_free(pcp, high, batch), pcp);
++	}
  }
  
  /*
-@@ -8001,6 +8001,7 @@ void __init set_dma_reserve(unsigned long new_dma_reserve)
+@@ -3531,6 +3555,7 @@ static struct page *rmqueue_pcplist(struct zone *preferred_zone,
  
- static int page_alloc_cpu_dead(unsigned int cpu)
- {
-+	struct zone *zone;
- 
- 	lru_add_drain_cpu(cpu);
- 	drain_pages(cpu);
-@@ -8021,6 +8022,19 @@ static int page_alloc_cpu_dead(unsigned int cpu)
- 	 * race with what we are doing.
+ 	local_lock_irqsave(&pagesets.lock, flags);
+ 	pcp = this_cpu_ptr(zone->per_cpu_pageset);
++	pcp->free_factor >>= 1;
+ 	list = &pcp->lists[migratetype];
+ 	page = __rmqueue_pcplist(zone,  migratetype, alloc_flags, pcp, list);
+ 	local_unlock_irqrestore(&pagesets.lock, flags);
+@@ -6690,6 +6715,7 @@ static void per_cpu_pages_init(struct per_cpu_pages *pcp, struct per_cpu_zonesta
  	 */
- 	cpu_vm_stats_fold(cpu);
-+
-+	for_each_populated_zone(zone)
-+		zone_pcp_update(zone, 0);
-+
-+	return 0;
-+}
-+
-+static int page_alloc_cpu_online(unsigned int cpu)
-+{
-+	struct zone *zone;
-+
-+	for_each_populated_zone(zone)
-+		zone_pcp_update(zone, 1);
- 	return 0;
+ 	pcp->high = BOOT_PAGESET_HIGH;
+ 	pcp->batch = BOOT_PAGESET_BATCH;
++	pcp->free_factor = 0;
  }
  
-@@ -8046,8 +8060,9 @@ void __init page_alloc_init(void)
- 		hashdist = 0;
- #endif
- 
--	ret = cpuhp_setup_state_nocalls(CPUHP_PAGE_ALLOC_DEAD,
--					"mm/page_alloc:dead", NULL,
-+	ret = cpuhp_setup_state_nocalls(CPUHP_PAGE_ALLOC,
-+					"mm/page_alloc:pcp",
-+					page_alloc_cpu_online,
- 					page_alloc_cpu_dead);
- 	WARN_ON(ret < 0);
- }
-@@ -8185,7 +8200,7 @@ static void __setup_per_zone_wmarks(void)
- 		 * The watermark size have changed so update the pcpu batch
- 		 * and high limits or the limits may be inappropriate.
- 		 */
--		zone_set_pageset_high_and_batch(zone);
-+		zone_set_pageset_high_and_batch(zone, 0);
- 
- 		spin_unlock_irqrestore(&zone->lock, flags);
- 	}
-@@ -9007,10 +9022,10 @@ EXPORT_SYMBOL(free_contig_range);
-  * The zone indicated has a new number of managed_pages; batch sizes and percpu
-  * page high values need to be recalculated.
-  */
--void __meminit zone_pcp_update(struct zone *zone)
-+void zone_pcp_update(struct zone *zone, int cpu_online)
- {
- 	mutex_lock(&pcp_batch_high_lock);
--	zone_set_pageset_high_and_batch(zone);
-+	zone_set_pageset_high_and_batch(zone, cpu_online);
- 	mutex_unlock(&pcp_batch_high_lock);
- }
- 
+ static void __zone_set_pageset_high_and_batch(struct zone *zone, unsigned long high,
 -- 
 2.26.2
 
