@@ -2,61 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA2AF38C64B
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:11:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011E638C648
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 14:11:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233189AbhEUMNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 08:13:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
+        id S232523AbhEUMNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 08:13:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230325AbhEUMM6 (ORCPT
+        with ESMTP id S230269AbhEUMM5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 08:12:58 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333DDC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:11:31 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id x7so1241403wrt.12
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:11:31 -0700 (PDT)
+        Fri, 21 May 2021 08:12:57 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39442C061763
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:11:32 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id n2so20935262wrm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 05:11:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ml9aXgYWsxmLMe303aemuEkZuwFy+qH+s0r1NMT4fd0=;
-        b=G/y47iLV9zx1VyEIaxEgrqDGsn62RsNLQqEpjLroeGdYnN6Qtn3rQH+gX5cZBdaEpv
-         wPar/LUQLrM+8TGApiAaIbFAPgBWFuggukQMtECP5+bahU5Di8h4R+lSr5Tiko2/rpuR
-         GcvuDNhfGEmZeY/JzKn8m+flnUdGinGHX3ihLFXqpPArO74ezylDdv3b1vrs4M4gl63S
-         RynlKm2daNsDvVtfX0ln0DkYJXI/cx/SHvZVJnTOUUhvYs5HK5yUBZyCwHxQKnV0URxL
-         7cx15SnBT3Oog83WwenE29Z4icoTrgklovwy91BbMslPQH27KfpWnAZwlzNsydJXa9zs
-         aAyg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=i3PtvIn3e83BJKazxoRmqSdndVRiSDgFlBve83mzSb0=;
+        b=lWo0CnDeza1lg1y/wl0wstJvMhHfAumf114y9xzRjwZTnbUeMXVE0HNqg24Uerkn/j
+         jG2Cx8StiDpVjcp2++hDyzfPQ9XoAGSPQP1npC720ODVBqWDMR9FxsRc1vI1PbBC5p9i
+         CIYLPCk1UZ3oGnnLmUSVAdWoUA1Xui6x/MY/Rd1HZzrH/F3RSoAGAIif4tNRyXDzRXv7
+         cOjqCOum6LSTCJ4y0GDGCv97FqImIFPn1taGtcelrXNxuojOn2JTWXrh07dDN1xADLGq
+         VqC5EQYKkSqWeJ0VC6LG6j0NuYeIYYpET3cXlffeE5D7wVLHs0aazL4EdrKfzAI6LdyS
+         V+Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ml9aXgYWsxmLMe303aemuEkZuwFy+qH+s0r1NMT4fd0=;
-        b=aw8q4nZDoE+7YPlykUgyzGuqIuETZJpnpt/h10rN0GOGMXXFxhtwq3yVsfMaYK58Un
-         g8bAhrSJlsfs3Ns5zIU2IbPGtjsjiEhk1pkMzAxVkN3mfSMnRMrg9RJohMZ4eqX8OYII
-         onz3b36eXjyN51OCO4MrpSqOnow6i1gOa9en2N6sw8oJkikTlLA7AP353sO6gZHlGV9w
-         kb+4H+HW3Z0Bgc9CAd5lCVFTKuvHy3g59nv4+Yo+hZ/ANy6/5h9lVMRbe+BME4t6dN/d
-         +DXR2rvHlGJJNQySZkcztIEIgzoB1XatEy/SoV7bfhOZSdQT4zsie1/IMvsWpjc55nNo
-         GF0g==
-X-Gm-Message-State: AOAM5332/yKlOu2wcUUrpCajNSavYUEMU9oCFiWwTqJY9PULPXqk4WCh
-        pT84yxReBPzqlUT6ny788ko=
-X-Google-Smtp-Source: ABdhPJyARzQ5c2zgj9Ij37sb3vRqmocu60KNmQ5m0huB27J8Uo/pGQO62NjtYRLFuHqtdGD698zp8Q==
-X-Received: by 2002:a5d:648e:: with SMTP id o14mr9037494wri.27.1621599089846;
-        Fri, 21 May 2021 05:11:29 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=i3PtvIn3e83BJKazxoRmqSdndVRiSDgFlBve83mzSb0=;
+        b=SLY97lhgMjRAUwV4FDAk6IaxaZMgkc14tjx0ChP1ThzOLs/LZMviUUxH+5lrdDnwiv
+         G/U/X9w/mPCRDIUFrOCrYMSpqNCQQ0LIfbpClpJ52ysEiWQp5x9cDBRIWZ9z5ERIfWG7
+         f4Ekv9VO0RzXQhtBeIXe6swo7aotUTFHmEkYBWrTL9N53ACGfn5/IlEk3q38fJ6D+Wio
+         dD7XMWzXwo98V1Ow/qDAPYzVLWcI1JAYqG5pAVJeq3tVs4f9VZqeRvDFm+ZiJfOL0SSB
+         ZAV/3bGQydzRWpwRToMjv2jUIYj2ePHCsUKnXkNmumFjV/N4HC7DZg16NCrFBMggeFTN
+         L6Gw==
+X-Gm-Message-State: AOAM533UtBMACSGvw4GVUzL5IjQEvLaozn/tJoSSfmN2dZGaCBLjaELR
+        u+TCgm0HNiG6rVEGA+oDnl8=
+X-Google-Smtp-Source: ABdhPJwrgnwHqggWQ/pppvxseMU9ZskSzS2UEsOWZW6JmOTj/pMlpOtg3UuT78DMFju3VNdIhAveMA==
+X-Received: by 2002:adf:f10c:: with SMTP id r12mr9416310wro.26.1621599090895;
+        Fri, 21 May 2021 05:11:30 -0700 (PDT)
 Received: from oliver-Z170M-D3H.cuni.cz ([2001:718:1e03:5128:e010:8b67:85b8:dc89])
-        by smtp.gmail.com with ESMTPSA id c64sm3339401wma.15.2021.05.21.05.11.28
+        by smtp.gmail.com with ESMTPSA id c64sm3339401wma.15.2021.05.21.05.11.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 05:11:29 -0700 (PDT)
+        Fri, 21 May 2021 05:11:30 -0700 (PDT)
 From:   glittao@gmail.com
 To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz
 Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         faiyazm@codeaurora.org, Oliver Glitta <glittao@gmail.com>
-Subject: [RFC 1/3] mm/slub: aggregate objects in cache by stack trace
-Date:   Fri, 21 May 2021 14:11:25 +0200
-Message-Id: <20210521121127.24653-1-glittao@gmail.com>
+Subject: [RFC 2/3] mm/slub: sort objects in cache by frequency of stack trace
+Date:   Fri, 21 May 2021 14:11:26 +0200
+Message-Id: <20210521121127.24653-2-glittao@gmail.com>
 X-Mailer: git-send-email 2.31.1.272.g89b43f80a5
+In-Reply-To: <20210521121127.24653-1-glittao@gmail.com>
+References: <20210521121127.24653-1-glittao@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -65,99 +67,57 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Oliver Glitta <glittao@gmail.com>
 
-Aggregate objects in slub cache by stack trace in addition to caller
-address during alloc_calls and free_calls implementation
-in debugfs. Add stack trace to output.
-
-Add all_objects implementation to debugfs to print information
-about all objects.
+Sort objects in slub cache by the frequency of stack trace used
+in object location in alloc_calls and free_calls implementation
+in debugfs. Most frequently used stack traces will be the first.
 
 Signed-off-by: Oliver Glitta <glittao@gmail.com>
 ---
-Based on next-20210518 and
-https://lore.kernel.org/r/1621341949-26762-1-git-send-email-faiyazm@codeaurora.org/
-
- mm/slub.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ mm/slub.c | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
 diff --git a/mm/slub.c b/mm/slub.c
-index e9b84eddc50d..d5ed6ed7d68b 100644
+index d5ed6ed7d68b..247983d647cd 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -4770,6 +4770,7 @@ EXPORT_SYMBOL(validate_slab_cache);
-  */
-
- struct location {
-+	depot_stack_handle_t handle;
- 	unsigned long count;
- 	unsigned long addr;
- 	long long sum_time;
-@@ -4822,9 +4823,15 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
- {
- 	long start, end, pos;
- 	struct location *l;
--	unsigned long caddr;
-+	unsigned long caddr, chandle;
- 	unsigned long age = jiffies - track->when;
-+	depot_stack_handle_t handle;
-
-+#ifdef CONFIG_STACKDEPOT
-+	handle = READ_ONCE(track->handle);
-+#else
-+	handle = 0;
-+#endif
- 	start = -1;
- 	end = t->count;
-
-@@ -4839,7 +4846,8 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
- 			break;
-
- 		caddr = t->loc[pos].addr;
--		if (track->addr == caddr) {
-+		chandle = t->loc[pos].handle;
-+		if ((track->addr == caddr) && (handle == chandle)) {
-
- 			l = &t->loc[pos];
- 			l->count++;
-@@ -4864,6 +4872,8 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
-
- 		if (track->addr < caddr)
- 			end = pos;
-+		else if (track->addr == caddr && handle < chandle)
-+			end = pos;
- 		else
- 			start = pos;
- 	}
-@@ -4886,6 +4896,7 @@ static int add_location(struct loc_track *t, struct kmem_cache *s,
- 	l->max_time = age;
- 	l->min_pid = track->pid;
- 	l->max_pid = track->pid;
-+	l->handle = handle;
- 	cpumask_clear(to_cpumask(l->cpus));
- 	cpumask_set_cpu(track->cpu, to_cpumask(l->cpus));
- 	nodes_clear(l->nodes);
-@@ -5837,6 +5848,21 @@ static int slab_debugfs_show(struct seq_file *seq, void *v)
- 			seq_printf(seq, " nodes=%*pbl",
- 				 nodemask_pr_args(&l->nodes));
-
-+#ifdef CONFIG_STACKDEPOT
-+		{
-+			depot_stack_handle_t handle;
-+			unsigned long *entries;
-+			unsigned int nr_entries, j;
+@@ -37,6 +37,7 @@
+ #include <linux/memcontrol.h>
+ #include <linux/random.h>
+ #include <kunit/test.h>
++#include <linux/sort.h>
+ 
+ #include <linux/debugfs.h>
+ #include <trace/events/kmem.h>
+@@ -5893,6 +5894,17 @@ static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
+ 	return NULL;
+ }
+ 
++static int cmp_loc_by_count(const void *a, const void *b, const void *data)
++{
++	struct location *loc1 = (struct location *)a;
++	struct location *loc2 = (struct location *)b;
 +
-+			handle = READ_ONCE(l->handle);
-+			if (handle) {
-+				nr_entries = stack_depot_fetch(handle, &entries);
-+				seq_puts(seq, "\n");
-+				for (j = 0; j < nr_entries; j++)
-+					seq_printf(seq, "\t%pS\n", (void *)entries[j]);
-+			}
-+		}
-+#endif
- 		seq_puts(seq, "\n");
++	if (loc1->count > loc2->count)
++		return -1;
++	else
++		return 1;
++}
++
+ static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
+ {
+ 	struct kmem_cache_node *n;
+@@ -5944,6 +5956,11 @@ static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
+ 				process_slab(&t, s, page, alloc);
+ 			spin_unlock_irqrestore(&n->list_lock, flags);
+ 		}
++
++		/* Sort locations by count */
++		sort_r(t.loc, t.count, sizeof(struct location),
++				cmp_loc_by_count, NULL, NULL);
++
  	}
-
---
+ 
+ 	if (*ppos < t.count) {
+-- 
 2.31.1.272.g89b43f80a5
 
