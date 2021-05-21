@@ -2,99 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A5D838C458
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B61D338C45E
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 12:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233393AbhEUKH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 06:07:27 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5654 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231995AbhEUKHN (ORCPT
+        id S233920AbhEUKIW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 21 May 2021 06:08:22 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:23308 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233631AbhEUKIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 06:07:13 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fmhxd4Yf2z16QhZ;
-        Fri, 21 May 2021 18:03:01 +0800 (CST)
-Received: from dggpeml500012.china.huawei.com (7.185.36.15) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 21 May 2021 18:05:48 +0800
-Received: from huawei.com (10.67.165.24) by dggpeml500012.china.huawei.com
- (7.185.36.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 21 May
- 2021 18:05:48 +0800
-From:   Kai Ye <yekai13@huawei.com>
-To:     <herbert@gondor.apana.org.au>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wangzhou1@hisilicon.com>, <yekai13@huawei.com>
-Subject: [PATCH v2 2/2] crypto: hisilicon/qm - fix the process of VF's list adding
-Date:   Fri, 21 May 2021 18:02:44 +0800
-Message-ID: <1621591364-46526-3-git-send-email-yekai13@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621591364-46526-1-git-send-email-yekai13@huawei.com>
-References: <1621591364-46526-1-git-send-email-yekai13@huawei.com>
+        Fri, 21 May 2021 06:08:02 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-321-nzPTwh8TNoKqhAUNAmkdWg-1; Fri, 21 May 2021 06:06:33 -0400
+X-MC-Unique: nzPTwh8TNoKqhAUNAmkdWg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 703E56D241;
+        Fri, 21 May 2021 10:06:32 +0000 (UTC)
+Received: from bahia.lan (ovpn-112-49.ams2.redhat.com [10.36.112.49])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CFCBB1964B;
+        Fri, 21 May 2021 10:06:17 +0000 (UTC)
+Date:   Fri, 21 May 2021 12:06:16 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        virtio-fs-list <virtio-fs@redhat.com>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Max Reitz <mreitz@redhat.com>, Vivek Goyal <vgoyal@redhat.com>
+Subject: Re: [PATCH v4 4/5] virtiofs: Skip submounts in sget_fc()
+Message-ID: <20210521120616.49d52565@bahia.lan>
+In-Reply-To: <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
+References: <20210520154654.1791183-1-groug@kaod.org>
+        <20210520154654.1791183-5-groug@kaod.org>
+        <CAJfpegugQM-ChaGiLyfPkbFr9c=_BiOBQkJTeEz5yN0ujO_O4A@mail.gmail.com>
+        <20210521103921.153a243d@bahia.lan>
+        <CAJfpegsNBCX+2k4S_yqdTS15TTu=pbiRgw6SbvdVYoUSmGboGA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500012.china.huawei.com (7.185.36.15)
-X-CFilter-Loop: Reflected
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If Kunpeng 920 enabled the sva mode, the "qm alg register" process will
-return directly. So the list of VF wasn't added to QM list.
+On Fri, 21 May 2021 10:50:34 +0200
+Miklos Szeredi <miklos@szeredi.hu> wrote:
 
-Signed-off-by: Kai Ye <yekai13@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+> On Fri, 21 May 2021 at 10:39, Greg Kurz <groug@kaod.org> wrote:
+> >
+> > On Fri, 21 May 2021 10:26:27 +0200
+> > Miklos Szeredi <miklos@szeredi.hu> wrote:
+> >
+> > > On Thu, 20 May 2021 at 17:47, Greg Kurz <groug@kaod.org> wrote:
+> > > >
+> > > > All submounts share the same virtio-fs device instance as the root
+> > > > mount. If the same virtiofs filesystem is mounted again, sget_fc()
+> > > > is likely to pick up any of these submounts and reuse it instead of
+> > > > the root mount.
+> > > >
+> > > > On the server side:
+> > > >
+> > > > # mkdir ${some_dir}
+> > > > # mkdir ${some_dir}/mnt1
+> > > > # mount -t tmpfs none ${some_dir}/mnt1
+> > > > # touch ${some_dir}/mnt1/THIS_IS_MNT1
+> > > > # mkdir ${some_dir}/mnt2
+> > > > # mount -t tmpfs none ${some_dir}/mnt2
+> > > > # touch ${some_dir}/mnt2/THIS_IS_MNT2
+> > > >
+> > > > On the client side:
+> > > >
+> > > > # mkdir /mnt/virtiofs1
+> > > > # mount -t virtiofs myfs /mnt/virtiofs1
+> > > > # ls /mnt/virtiofs1
+> > > > mnt1 mnt2
+> > > > # grep virtiofs /proc/mounts
+> > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > >
+> > > > And now remount it again:
+> > > >
+> > > > # mount -t virtiofs myfs /mnt/virtiofs2
+> > > > # grep virtiofs /proc/mounts
+> > > > myfs /mnt/virtiofs1 virtiofs rw,seclabel,relatime 0 0
+> > > > none on /mnt/mnt1 type virtiofs (rw,relatime,seclabel)
+> > > > none on /mnt/mnt2 type virtiofs (rw,relatime,seclabel)
+> > > > myfs /mnt/virtiofs2 virtiofs rw,seclabel,relatime 0 0
+> > > > # ls /mnt/virtiofs2
+> > > > THIS_IS_MNT2
+> > > >
+> > > > Submount mnt2 was picked-up instead of the root mount.
+> > >
+> >
+> > > Why is this a problem?
+> > >
+> >
+> > It seems very weird to mount the same filesystem again
+> > and to end up in one of its submounts. We should have:
+> >
+> > # ls /mnt/virtiofs2
+> > mnt1 mnt2
+> 
+> Okay, sorry, I understand the problem.  The solution is wrong,
+> however: the position of the submount on that list is no indication
+> that it's the right one (it's possible that the root sb will go away
+> and only a sub-sb will remain).
+> 
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index deb104e..c671f94 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -4256,17 +4256,17 @@ int hisi_qm_alg_register(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
- 	int flag = 0;
- 	int ret = 0;
- 
--	if (qm->ver <= QM_HW_V2 && qm->use_sva) {
--		dev_info(dev, "HW V2 not both use uacce sva mode and hardware crypto algs.\n");
--		return 0;
--	}
--
- 	mutex_lock(&qm_list->lock);
- 	if (list_empty(&qm_list->list))
- 		flag = 1;
- 	list_add_tail(&qm->list, &qm_list->list);
- 	mutex_unlock(&qm_list->lock);
- 
-+	if (qm->ver <= QM_HW_V2 && qm->use_sva) {
-+		dev_info(dev, "HW V2 not both use uacce sva mode and hardware crypto algs.\n");
-+		return 0;
-+	}
-+
- 	if (flag) {
- 		ret = qm_list->register_to_crypto(qm);
- 		if (ret) {
-@@ -4291,13 +4291,13 @@ EXPORT_SYMBOL_GPL(hisi_qm_alg_register);
-  */
- void hisi_qm_alg_unregister(struct hisi_qm *qm, struct hisi_qm_list *qm_list)
- {
--	if (qm->ver <= QM_HW_V2 && qm->use_sva)
--		return;
--
- 	mutex_lock(&qm_list->lock);
- 	list_del(&qm->list);
- 	mutex_unlock(&qm_list->lock);
- 
-+	if (qm->ver <= QM_HW_V2 && qm->use_sva)
-+		return;
-+
- 	if (list_empty(&qm_list->list))
- 		qm_list->unregister_from_crypto(qm);
- }
--- 
-2.8.1
+Ah... I had myself convinced this could not happen, i.e. you can't
+unmount a parent sb with a sub-sb still mounted.
+
+How can this happen ?
+
+> Even just setting a flag in the root, indicating that it's the root
+> isn't fully going to solve the problem.
+> 
+> Here's issue in full:
+> 
+> case 1:  no connection for "myfs" exists
+>     - need to create fuse_conn, sb
+> 
+> case 2: connection for "myfs" exists but only sb for submount
+
+How would we know this sb isn't a root sb ?
+
+>     - only create sb for root, reuse fuse_conn
+> 
+> case 3: connection for "myfs" as well as root sb exists
+>    - reuse sb
+> 
+> I'll think about how to fix this properly, it's probably going to be
+> rather more involved...
+> 
+
+Sure. BTW I'm wondering why we never reuse sbs for submounts ?
+
+> Thanks,
+> Miklos
 
