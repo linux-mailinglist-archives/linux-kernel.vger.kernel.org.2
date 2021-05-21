@@ -2,130 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0369D38BBFD
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE9638BC00
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:52:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237841AbhEUBw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 21:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40398 "EHLO
+        id S237854AbhEUBxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:53:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237820AbhEUBw0 (ORCPT
+        with ESMTP id S237578AbhEUBxX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:52:26 -0400
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C43AC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 18:51:04 -0700 (PDT)
-Received: by mail-qt1-x831.google.com with SMTP id g8so6788035qtp.4
-        for <linux-kernel@vger.kernel.org>; Thu, 20 May 2021 18:51:04 -0700 (PDT)
+        Thu, 20 May 2021 21:53:23 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FEE9C061574;
+        Thu, 20 May 2021 18:52:01 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id s20so10123296plr.13;
+        Thu, 20 May 2021 18:52:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dSie+npZSkADJ7V+ho8kAal6Ij8W1UB//HsiRO+ZSP8=;
-        b=vOzl2Ya9ahmcJE4NCzJ9YVIp8x1hqcye6X09xrg0Q1XTV8b4ot9MTBFjizfbo6YeDj
-         3BSH9eXImPHo7gQFFgYi0Cutw9EYhBYjHozC2AHE3WsVNHNUEAZsA7JD0YFhOrFoYtfU
-         wwcr3xsE0+cWHCX1/nu5s+J2WYyF4QSBCL5S+ku0iP+NQKS8kv4S5NxdpORp8bVpGWqJ
-         Vi9Gr4A3WPJmaYF1XbwkeRpe/253gnG6PCoMlCGKv8R9XiuAHLogdMdU/JLbor/Cky8t
-         AyiIlY6KH2wcXnJIL9J7lUtcAP3E3+o1d/j3GLyWwYmoi0+KyGemqz3Knz4MS4Oizu+6
-         7+ug==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TeR6dx8Rqr3ByExvzXzaPr3AoEZSg27P4QPA34TUl50=;
+        b=MGywRptRl4M03Loj0uWb0Q68foEF2W7FLLb6e2Y3yaSpAS41cQJOIlc+Yodwrt14+B
+         o5A8zY9VfTUFffOgbb7ZCroEftruHMd3VvG0Xksws27jXojgM5CKt9ZQ5MknLgvgetlm
+         Qozs9MN+rdGEoiOix5e5xIOU3ppyzW4RuIi+A7iMMzjkpBE9NtZLzOaIAVmamQr4RsCW
+         ft1FDBQy++SQwvzxEx/ipWcZ+SL7sMpanfO1ViUsK6G98HM469/Z48/lA6lPpBAdNbQw
+         bFaHu86UWSMGHMRuqp5UMqyqmk9RU9qLDXzaT4bnkhcZHGFh/CR3h1Z0NlgRXQu4zGzX
+         CrCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dSie+npZSkADJ7V+ho8kAal6Ij8W1UB//HsiRO+ZSP8=;
-        b=ka6imclHfVZIAj+7N1aWHWA2MmhLxF0dFSx1fzbW5drKg5vySHUAgTtfeNytFsH2eb
-         UoGgrGGYRDPznaXJm2V+SpzBJEqfmM8LxWS43/X1F+iBPgCUCbIyRav3bSSxdeOzPLiv
-         c04Z8wFkblYsj22x0+ld9536I30WoRhdtE1s9SJg1qJyiil3NuqzMU1mlHbhCwgUjntB
-         RE5iNnfI04ePpq/bt460V1WnQ6XVWqCwsTp0QVHK0SHXgn6SvTBCqVxmWZe+avu55dT+
-         ncEwIQ1wT0oNguyYUOJ/Qv9wMWQf9QMhj1ZSJstOpEmeNLuiv6PgHw8RyNUZwYPRQpJu
-         +lSA==
-X-Gm-Message-State: AOAM530pdTtm0fXb+C2N8DtOJKH02WyewWc6lZ/QNVjaNMBOZ2e76TBX
-        p3sMouE+rCEOBqQVET1CK5YtIg==
-X-Google-Smtp-Source: ABdhPJyfQ8Ksqhw/qYqkxD1Xtxi9JLGZRyD0jjn0+B2XiJN1JfRDZtttRX3iVIqVj3VCjoxF3jfjFQ==
-X-Received: by 2002:ac8:7d56:: with SMTP id h22mr8701787qtb.151.1621561863530;
-        Thu, 20 May 2021 18:51:03 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id h23sm3678998qka.22.2021.05.20.18.51.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 May 2021 18:51:03 -0700 (PDT)
-Subject: Re: [PATCH v3 15/17] crypto: qce: Convert the device found dev_dbg()
- to dev_info()
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>,
-        linux-arm-msm@vger.kernel.org
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-References: <20210519143700.27392-1-bhupesh.sharma@linaro.org>
- <20210519143700.27392-16-bhupesh.sharma@linaro.org>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <731b0382-9e77-2a3a-cc83-4f1c63e9f8ce@linaro.org>
-Date:   Thu, 20 May 2021 21:50:59 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TeR6dx8Rqr3ByExvzXzaPr3AoEZSg27P4QPA34TUl50=;
+        b=IUecRMNJnYtLlUTaCneIIz/sTzUtvFoIWR2jeBnotvFHJHDFHULTtTJP6w9mlRnxi5
+         gYhJge+6ayR7EQSTSL/eGGf/XL7PUrP8QBQeP/VLab7TPfiCcy/2W8YkNx8umhx+/WTo
+         mpNW9Etrf8DNa+kZXaq2uOVxt+jjtpevOhrzgDsZhpTbXXdV1gd0jFn55RweIqhHZX1e
+         lZ462EsVpdR60GUYYmj62e9aUjyLO+sdAA5aJMt66G9Ni/lOyvK8Ru0MX6i3Dig4voeq
+         9JGojU5dSL3ypwuIcCVkUpTCvhCHcKr8vFxLWdASzPJxxiGC0qpmDSMwY7puZfHDznIo
+         7gYA==
+X-Gm-Message-State: AOAM530ccbGZ8jV6J+YEDRPZnLGN4dhfVqY7yJ+c0zaAUnaNCDj9c1ZF
+        QmRopnCSa6dwTRSbufihr0MCU95VIvaINJ9G
+X-Google-Smtp-Source: ABdhPJyIynOYYSDS+EbUq2ewNtwe4ZXjkjDPNl8WBvxs05rpGvv+SWNeotnMz6g0roHINjQ+ss8nrg==
+X-Received: by 2002:a17:90a:4404:: with SMTP id s4mr8354235pjg.218.1621561921013;
+        Thu, 20 May 2021 18:52:01 -0700 (PDT)
+Received: from taoren-ubuntu-R90MNF91 (c-73-252-146-110.hsd1.ca.comcast.net. [73.252.146.110])
+        by smtp.gmail.com with ESMTPSA id u6sm2538958pjy.51.2021.05.20.18.51.59
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 20 May 2021 18:52:00 -0700 (PDT)
+Date:   Thu, 20 May 2021 18:51:53 -0700
+From:   Tao Ren <rentao.bupt@gmail.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, Tao Ren <taoren@fb.com>,
+        Amithash Prasad <amithash@fb.com>
+Subject: Re: [PATCH] watchdog: aspeed: fix hardware timeout calculation
+Message-ID: <20210521015153.GA19153@taoren-ubuntu-R90MNF91>
+References: <20210417034249.5978-1-rentao.bupt@gmail.com>
+ <20210417042048.GA109800@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <20210519143700.27392-16-bhupesh.sharma@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417042048.GA109800@roeck-us.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wim,
+
+Not sure if I looked at the wrong repository/branch, and looks like the
+patch is not included. Do you have any further suggestions? Or should I
+send out v2 in case it's missed?
 
 
-On 5/19/21 10:36 AM, Bhupesh Sharma wrote:
-> QCE crypto driver is right now too silent even if the probe() is ok
-> and a valid crypto IP version is found.
+Thanks,
+
+Tao
+
+On Fri, Apr 16, 2021 at 09:20:48PM -0700, Guenter Roeck wrote:
+> On Fri, Apr 16, 2021 at 08:42:49PM -0700, rentao.bupt@gmail.com wrote:
+> > From: Tao Ren <rentao.bupt@gmail.com>
+> > 
+> > Fix hardware timeout calculation in aspeed_wdt_set_timeout function to
+> > ensure the reload value does not exceed the hardware limit.
+> > 
+> > Fixes: efa859f7d786 ("watchdog: Add Aspeed watchdog driver")
+> > Reported-by: Amithash Prasad <amithash@fb.com>
+> > Signed-off-by: Tao Ren <rentao.bupt@gmail.com>
 > 
-> Convert the dev_dbg() message to a dev_info() instead.
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 > 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
-> Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
-
-Reviewed-by: Thara Gopinath <thara.gopinath@linaro.org>
-
-Warm Regards
-Thara
-> ---
->   drivers/crypto/qce/core.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/crypto/qce/core.c b/drivers/crypto/qce/core.c
-> index aecb2cdd79e5..8b3e2b4580c2 100644
-> --- a/drivers/crypto/qce/core.c
-> +++ b/drivers/crypto/qce/core.c
-> @@ -179,7 +179,7 @@ static int qce_check_version(struct qce_device *qce)
->   	 */
->   	qce->pipe_pair_id = qce->dma.rxchan->chan_id >> 1;
->   
-> -	dev_dbg(qce->dev, "Crypto device found, version %d.%d.%d\n",
-> +	dev_info(qce->dev, "Crypto device found, version %d.%d.%d\n",
->   		major, minor, step);
->   
->   	return 0;
-> 
-
-
+> > ---
+> >  drivers/watchdog/aspeed_wdt.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> > index 7e00960651fa..507fd815d767 100644
+> > --- a/drivers/watchdog/aspeed_wdt.c
+> > +++ b/drivers/watchdog/aspeed_wdt.c
+> > @@ -147,7 +147,7 @@ static int aspeed_wdt_set_timeout(struct watchdog_device *wdd,
+> >  
+> >  	wdd->timeout = timeout;
+> >  
+> > -	actual = min(timeout, wdd->max_hw_heartbeat_ms * 1000);
+> > +	actual = min(timeout, wdd->max_hw_heartbeat_ms / 1000);
+> >  
+> >  	writel(actual * WDT_RATE_1MHZ, wdt->base + WDT_RELOAD_VALUE);
+> >  	writel(WDT_RESTART_MAGIC, wdt->base + WDT_RESTART);
+> > -- 
+> > 2.17.1
+> > 
