@@ -2,77 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DBE038C862
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C10638C866
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 15:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236329AbhEUNkD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 09:40:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236157AbhEUNjq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 09:39:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 962636109F;
-        Fri, 21 May 2021 13:38:17 +0000 (UTC)
-Date:   Fri, 21 May 2021 19:08:12 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH v4 3/6] bus: mhi: Add MMIO region length to controller
- structure
-Message-ID: <20210521133812.GK70095@thinkpad>
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
- <1620330705-40192-4-git-send-email-bbhatt@codeaurora.org>
+        id S236052AbhEUNkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 09:40:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236261AbhEUNjy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 09:39:54 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE2EFC061344
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:25 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id k132so6546778iof.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 06:38:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P8K4c4I3E0ScqatNpdtAdPPA1ppP33415CwioITRQ28=;
+        b=WvVKiwzhtpchBrgwnrtu/VPArYkX35BZT0jVz2d3peS1iXg6p8KiiuIH8jzggDnNbr
+         yVrse6NVTrPmjE13XP0shAgyR6vrOPr4U+8BCzEgDpoetP1EvMdhiy01IkSobFcBO+tl
+         Mk2kr2gTuf9ODLYRqzppYHHEJGi6vKBENrmpg5YimFUu0StPEtOSKjdBlrr3PyXpgM63
+         x+f5H8Wbimx1f1jScGC0mXwSoguiTIz0BHscM9OXDPR6I7deEJDecbuSxOy5nisEi9On
+         gpn+r1UM7x/iX6z/r4bi1rMgMW3VtAEiVPGX6Ru1XTV/RByNIDbbQ887CRW3fpP7AOXd
+         4sUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P8K4c4I3E0ScqatNpdtAdPPA1ppP33415CwioITRQ28=;
+        b=l98zNpHbI0xPa1mmcYfF7j0CpoXGLwrBOXoB8JyU/RXadvRiGa7kNGnDv9DOJwYiS4
+         rsotuMXMAN/g86fP/D29kGjwGpgVidQq+SZ8EIrMG5ulWPomxrScjH1z4ehYq0UJVBar
+         4w1eR9V4FY9HOgREyDDNZMAVOTGvQNBLYjheNbcz0Ap7uhEc1ywrEK1CH23qMo9+IZ/y
+         c7/Eg7VFmQDSJTJYrg3hZbV6Rfz/JcmU8DEqVoiEcQ5EBsMTJIZFHBrCGrsQMHgbvQ0n
+         rD8dJLMYLoVjh/juuJ/zeF6gcv/KWpTD0h9D4ktsHZEuukhphAW7Rzydflek1W1BC6/v
+         v4Sw==
+X-Gm-Message-State: AOAM533OR5Yuh9ZorEWK4/+191UeXRHF221dnIZnjMkX9mXFb1/klw8L
+        gFFD9oOudniA462U3RyfHPQXaP0Zx5AgXgey6fF41g==
+X-Google-Smtp-Source: ABdhPJwGS5p1CUtc8MeJkM1M+YPLMW1IaLUnAfAAaV6/8vNhpyIeddCaWTRXOChcNDmTYv0D6x0Fsq6hZZ3HcEF0JCc=
+X-Received: by 2002:a05:6638:3010:: with SMTP id r16mr4601269jak.126.1621604304927;
+ Fri, 21 May 2021 06:38:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620330705-40192-4-git-send-email-bbhatt@codeaurora.org>
+References: <20210519143011.1175546-1-acourbot@chromium.org> <20210519143011.1175546-12-acourbot@chromium.org>
+In-Reply-To: <20210519143011.1175546-12-acourbot@chromium.org>
+From:   Tzung-Bi Shih <tzungbi@google.com>
+Date:   Fri, 21 May 2021 21:38:13 +0800
+Message-ID: <CA+Px+wXXtsmG2q4aJ4Em1pzFcA-mA6CuATfXKevNyEOuBq+zYw@mail.gmail.com>
+Subject: Re: [PATCH v5 11/14] media: mtk-vcodec: vdec: support stateless H.264 decoding
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Tiffany Lin <tiffany.lin@mediatek.com>,
+        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Dafna Hirschfeld <dafna.hirschfeld@collabora.com>,
+        Yunfei Dong <yunfei.dong@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 12:51:42PM -0700, Bhaumik Bhatt wrote:
-> Make controller driver specify the MMIO register region length
-> for range checking of BHI or BHIe space. This can help validate
-> that offsets are in acceptable memory region or not and avoid any
-> boot-up issues due to BHI or BHIe memory accesses.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+On Wed, May 19, 2021 at 10:31 PM Alexandre Courbot
+<acourbot@chromium.org> wrote:
+> +#include "../vdec_drv_if.h"
+> +#include "../mtk_vcodec_util.h"
+> +#include "../mtk_vcodec_dec.h"
+> +#include "../mtk_vcodec_intr.h"
+> +#include "../vdec_vpu_if.h"
+> +#include "../vdec_drv_base.h"
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Would be good practice to sort them.
 
-Thanks,
-Mani
+> +static int allocate_predication_buf(struct vdec_h264_slice_inst *inst)
+> +{
+> +       int err = 0;
 
-> ---
->  include/linux/mhi.h | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 944aa3a..9c347f5 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -303,6 +303,7 @@ struct mhi_controller_config {
->   * @rddm_size: RAM dump size that host should allocate for debugging purpose
->   * @sbl_size: SBL image size downloaded through BHIe (optional)
->   * @seg_len: BHIe vector size (optional)
-> + * @reg_len: Length of the MHI MMIO region (required)
->   * @fbc_image: Points to firmware image buffer
->   * @rddm_image: Points to RAM dump buffer
->   * @mhi_chan: Points to the channel configuration table
-> @@ -386,6 +387,7 @@ struct mhi_controller {
->  	size_t rddm_size;
->  	size_t sbl_size;
->  	size_t seg_len;
-> +	size_t reg_len;
->  	struct image_info *fbc_image;
->  	struct image_info *rddm_image;
->  	struct mhi_chan *mhi_chan;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+No need to initialize.  It will be overridden soon.
+
+> +static void free_predication_buf(struct vdec_h264_slice_inst *inst)
+> +{
+> +       struct mtk_vcodec_mem *mem = NULL;
+> +
+> +       mtk_vcodec_debug_enter(inst);
+> +
+> +       inst->vsi_ctx.pred_buf_dma = 0;
+> +       mem = &inst->pred_buf;
+
+Is it possible to inline to the variable declaration?  Or mem no need
+to initialize.
+
+> +static int alloc_mv_buf(struct vdec_h264_slice_inst *inst,
+> +       struct vdec_pic_info *pic)
+> +{
+> +       int i;
+> +       int err;
+> +       struct mtk_vcodec_mem *mem = NULL;
+
+No need to initialize.  It will be overridden soon.
+
+> +static void free_mv_buf(struct vdec_h264_slice_inst *inst)
+> +{
+> +       int i;
+> +       struct mtk_vcodec_mem *mem = NULL;
+
+No need to initialize.  It will be overridden soon.
+
+> +static int vdec_h264_slice_init(struct mtk_vcodec_ctx *ctx)
+> +{
+> +       struct vdec_h264_slice_inst *inst = NULL;
+
+No need to initialize.  It will be overridden soon.
+
+> +static void vdec_h264_slice_deinit(void *h_vdec)
+> +{
+> +       struct vdec_h264_slice_inst *inst =
+> +               (struct vdec_h264_slice_inst *)h_vdec;
+
+No need to cast from void *.
+
+> +static int vdec_h264_slice_decode(void *h_vdec, struct mtk_vcodec_mem *bs,
+> +                                 struct vdec_fb *fb, bool *res_chg)
+> +{
+> +       struct vdec_h264_slice_inst *inst =
+> +               (struct vdec_h264_slice_inst *)h_vdec;
+
+No need to cast from void *.
+
+> +       const struct v4l2_ctrl_h264_decode_params *dec_params =
+> +               get_ctrl_ptr(inst->ctx, V4L2_CID_STATELESS_H264_DECODE_PARAMS);
+> +       struct vdec_vpu_inst *vpu = &inst->vpu;
+> +       uint32_t data[2];
+> +       uint64_t y_fb_dma;
+> +       uint64_t c_fb_dma;
+> +       int err;
+> +
+> +       /* bs NULL means flush decoder */
+> +       if (bs == NULL)
+
+To neat, !bs.
+
+> +static int vdec_h264_slice_get_param(void *h_vdec,
+> +                              enum vdec_get_param_type type, void *out)
+> +{
+> +       struct vdec_h264_slice_inst *inst =
+> +               (struct vdec_h264_slice_inst *)h_vdec;
+
+No need to cast from void *.
