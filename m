@@ -2,73 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED1638CE45
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0057738CE4B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 21:40:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238977AbhEUTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 15:39:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236093AbhEUTjU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 15:39:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FC75613D9;
-        Fri, 21 May 2021 19:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621625877;
-        bh=Z7AwKY8a9Z/8SOx1OF9wRiTfwdjR8gm/ECjyKI5FeBw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bcLKoN3etXX7BXtvVppBipjLwjZFKixl0Z6aHEJhTIGlc1LWM2fwDK8QmTpTg75LM
-         OQ5m7PmDfK1BmsAufPd2JMIpqeEFj66hI9e/RKcL4Xo5sHt1r9+w5e5RAi0Dl2WY5C
-         kOwRG3TPiR3IPlbba2Iptfj3OGrzKuU2GGKcsNr9O1pd7Y7qWGn22QGgmsb26KF0IT
-         Wb/+4F3q1oB/bAZBCOLoGLYIf9xONBDdokhwr5xsXWCR2igIT0RHLBMe2OTJk6dsdA
-         kyIx6kMIDc56fEH1GXgjw8nOg1sGXIsoDLKwXW53sIUQZG2/FIK6ZqsDj7GF6NBTtA
-         YEUu6K8w3pr+Q==
-From:   Mark Brown <broonie@kernel.org>
-To:     Axel Lin <axel.lin@ingics.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Cristian Marussi <cristian.marussi@arm.com>
-Subject: Re: [PATCH] regulator: scmi: Fix off-by-one for linear regulators .n_voltages setting
-Date:   Fri, 21 May 2021 20:37:52 +0100
-Message-Id: <162162581493.40928.528434927857483440.b4-ty@kernel.org>
+        id S239168AbhEUTmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 15:42:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238723AbhEUTmG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 15:42:06 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D71E5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 12:40:42 -0700 (PDT)
+Received: from mwalle01.fritz.box (ip4d17858c.dynamic.kabel-deutschland.de [77.23.133.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 16EEA22173;
+        Fri, 21 May 2021 21:40:39 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1621626039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ch0oeM7u6L9lGRpSIbUwFd8++Tm676K1qFj/hRHd8Zw=;
+        b=GdHyknkAzN+F6JjT5oN/3C4A0H85WBXUV8F9YpDJUjhU2mgAKEUrp2KUrBVcywbZbNTHO7
+        WGsqmgmxrfgCZl9XP8piX9pkaT8C9Ou8JcH6mBZeceAyeoAv28uFcvR0q7oOY1V1KvlAdR
+        7VzeuS+8e5Isq6r0GQ2bCX/0pT28hwg=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Pratyush Yadav <p.yadav@ti.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH v4 0/4] mtd: spi-nor: otp: 4 byte mode fix and erase support
+Date:   Fri, 21 May 2021 21:40:30 +0200
+Message-Id: <20210521194034.15249-1-michael@walle.cc>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210521073020.1944981-1-axel.lin@ingics.com>
-References: <20210521073020.1944981-1-axel.lin@ingics.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 15:30:20 +0800, Axel Lin wrote:
-> For linear regulators, the .n_voltages is (max_uv - min_uv) / uv_step + 1.
+This series is the follow up on the single patch
+mtd: spi-nor: implement OTP erase for Winbond and similar flashes
 
-Applied to
+Pratyush Yadav discovered a likely problem with bigger flashes, the address
+to access the security registers is either 3 or 4 byte (at least for
+winbond flashes).
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+Changes since v3:
+ - new patch to check for read-only OTP regions before writing
+ - clarify term "security register"
+ - don't combine lock and erase functions anymore. there are now
+   more difference than similarities.
 
-Thanks!
+Changes since v2:
+ - fix 3/4 byte mode access
+ - use spi_nor_erase_sector() by swapping the nor->erase_opcode
+ - use more consistent wording regarding the security registers
 
-[1/1] regulator: scmi: Fix off-by-one for linear regulators .n_voltages setting
-      commit: 36cb555fae0875d5416e8514a84a427bec6e4cda
+Changes since v1:
+- fixed kernel doc
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+Michael Walle (4):
+  mtd: spi-nor: otp: fix access to security registers in 4 byte mode
+  mtd: spi-nor: otp: use more consistent wording
+  mtd: spi-nor: otp: return -EROFS if region is read-only
+  mtd: spi-nor: otp: implement erase for Winbond and similar flashes
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+ drivers/mtd/spi-nor/core.c    |   2 +-
+ drivers/mtd/spi-nor/core.h    |   4 +
+ drivers/mtd/spi-nor/otp.c     | 147 +++++++++++++++++++++++++++++++---
+ drivers/mtd/spi-nor/winbond.c |   1 +
+ 4 files changed, 143 insertions(+), 11 deletions(-)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+-- 
+2.20.1
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
