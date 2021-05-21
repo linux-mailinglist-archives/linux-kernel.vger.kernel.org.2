@@ -2,71 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C65C438BBF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2EF38BBF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 03:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237747AbhEUBvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S237778AbhEUBve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 21:51:34 -0400
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:39648 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237755AbhEUBvc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 20 May 2021 21:51:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235589AbhEUBvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 21:51:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFE916135C;
-        Fri, 21 May 2021 01:50:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621561808;
-        bh=S7/3ff93Mj7sM1z6GZwcsvA1idQokUB7jGPPhwZLJBA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=G/KXauU52TYA4HxENirxJuGXo8MgQI8QIF+C1PL0s+rd2Fh7xiVeMixAlwk9503oP
-         2ytvSAkJdBOadITWFLN1EBi970UCgynkB1MSQUg612WbCglj+W1NiLaC84QLEON1aa
-         U6dNKPWnZR262YAdgjAPDwA83swrSQfL5rZlRC2PxmE0H2tXIAMfzXI5V2GeluD6xY
-         PGffkHS0WIosbGC5uOKWbcrTmk05pL/Z2EKKY478fnjdneN5NuqEV6sxZPmLUPSw8p
-         Ald7xKougASVjGmwtWNhpocfbD1G3eXBRVr7eZeMZF+/ebE5kUtCLOztUVKH/Womx+
-         f8epUhwLbed4g==
-Received: by mail-ed1-f44.google.com with SMTP id r11so21487956edt.13;
+Received: by mail-ot1-f54.google.com with SMTP id d25-20020a0568300459b02902f886f7dd43so16664446otc.6;
+        Thu, 20 May 2021 18:50:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vZu2oAAxpPszth+cdRs9YhSMHNjRhOXxb6YW8VoRug4=;
+        b=jJRiFz8yBI8dhh3meo44u4n0mywDgw5Ah7dP7g789RCZwNStXUVpYGnFhNxyg8b3J5
+         gNgP6wktZGWLIPaFFuWpaHE0zgyK7pLnmtj30GmEvMMCt+7nEu0G4q1xKiTjtvqHN3Gn
+         5ifwJIkLnK/grAVBt1A2U1UFHen02bBvizmppN9XQ6aMR0dbWXVtOfF97cqSJctfmJVX
+         LNOP9aujzu1l7qgA7wc9JZOCf5knNacHEHrJXBcW40vTOhp7C1eEhKtEJKJyN9qUxCEY
+         umV4RrOajs4SZUraEFF3FKYPU20JaZ01w9nn4G8Gc+o5DbmE6E2jfOBPTzW6c7QqXe7J
+         8rHA==
+X-Gm-Message-State: AOAM532vHkgYXqxIuWBSfbR0kp4i7Z8eB6QWvQg5kgqXPC1MQxxiVdEN
+        PfgKGP83EyS8/M11Laz/xg==
+X-Google-Smtp-Source: ABdhPJx3UWsDTpRkWnxh8VgBc2KRjPGHgHRS1pKtUlFQSUh/thlOVZUpiOfXySl4QlVq4E/6EKqTPA==
+X-Received: by 2002:a9d:3ee:: with SMTP id f101mr6156037otf.343.1621561808976;
         Thu, 20 May 2021 18:50:08 -0700 (PDT)
-X-Gm-Message-State: AOAM532Cx9eQZPGT+K+5YYiboneRY+eGENlu+S2qWf41GQm0VAAE9vPk
-        dqGvQsHUNLKOwd6uIWj4P2Dazi/nx9QMd76d5w==
-X-Google-Smtp-Source: ABdhPJyKCSeOAVSGMjIYxJSecYUm/pYxze27Ok54E4R02URqRmpRfqNw7bo+yG8CEi2WwQh8Saw5JM/Y2gnTWv0YUPs=
-X-Received: by 2002:aa7:cd83:: with SMTP id x3mr7909049edv.373.1621561807474;
- Thu, 20 May 2021 18:50:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210519161847.3747352-1-fparent@baylibre.com> <20210521014815.GA2476751@robh.at.kernel.org>
-In-Reply-To: <20210521014815.GA2476751@robh.at.kernel.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Thu, 20 May 2021 20:49:56 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+HWxQwFuKM==g-PBROxGN_xoWCc060U0pDpsDdfWJWPg@mail.gmail.com>
-Message-ID: <CAL_Jsq+HWxQwFuKM==g-PBROxGN_xoWCc060U0pDpsDdfWJWPg@mail.gmail.com>
-Subject: Re: [PATCH 1/3] dt-bindings: arm: mediatek: mmsys: convert to YAML format
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id i18sm905395oot.48.2021.05.20.18.50.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 May 2021 18:50:07 -0700 (PDT)
+Received: (nullmailer pid 2480084 invoked by uid 1000);
+        Fri, 21 May 2021 01:50:06 -0000
+Date:   Thu, 20 May 2021 20:50:06 -0500
+From:   Rob Herring <robh@kernel.org>
 To:     Fabien Parent <fparent@baylibre.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, mkorpershoek@baylibre.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH 2/3] dt-bindings: arm: mediatek: mmsys: add MT8365 SoC
+ binding
+Message-ID: <20210521015006.GA2479999@robh.at.kernel.org>
+References: <20210519161847.3747352-1-fparent@baylibre.com>
+ <20210519161847.3747352-2-fparent@baylibre.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210519161847.3747352-2-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 8:48 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, 19 May 2021 18:18:44 +0200, Fabien Parent wrote:
-> > Convert the mmsys bindings to the YAML format.
-> >
-> > Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> > ---
-> >  .../bindings/arm/mediatek/mediatek,mmsys.txt  | 31 ----------
-> >  .../bindings/arm/mediatek/mediatek,mmsys.yaml | 57 +++++++++++++++++++
-> >  2 files changed, 57 insertions(+), 31 deletions(-)
-> >  delete mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.txt
-> >  create mode 100644 Documentation/devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml
-> >
->
-> Applied, thanks!
-
-Actually, should go with patch 3. So dropped and:
+On Wed, 19 May 2021 18:18:45 +0200, Fabien Parent wrote:
+> Add the MMSYS binding documentation for the MT8365 SoC.
+> 
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.yaml         | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
