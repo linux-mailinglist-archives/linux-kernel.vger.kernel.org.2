@@ -2,133 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD6A38BC76
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:37:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E47838BC77
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 04:38:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238406AbhEUCjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 22:39:01 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:57187 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231681AbhEUCi7 (ORCPT
+        id S238515AbhEUCkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 22:40:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:4434 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231681AbhEUCkG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 22:38:59 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 1764C58094A;
-        Thu, 20 May 2021 22:37:37 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 20 May 2021 22:37:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sholland.org; h=
-        to:cc:references:from:subject:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=D
-        e6xzMF2FgeEmdaTMR3eSkk8CwPQCVbY4en6vEtoeyA=; b=GyCY0HdhhuUpmr374
-        VfMZMmReizfI2KIX6FBCHJUH+YNxdm7gVtajBS6b+3I/d7LICeo2mdVdWAmpfHr0
-        BIPLtTuWlYy9EWTwSTg6uHS+N17fgQT+tytiqJgGgQ/r1GLeF4ukLiMP+hWXEkB/
-        pLmD34ipjZtePC3G5uVNISWrlDKUUEPTtOA/ZkloP3hfk5z/aqiBnErOSgtXTkYT
-        JDH17LxNyOquZcXhQmV7JjBweDC8nKCE+Zj2DdCZ0sXmooHNtjOuNo1u4cYGiSjF
-        s2Jp1Er5XkkRTl9Y64fXEmqoLT2sD9zN3iKyrx/PdVGTDc/52Y2KxHKWg/uFc7M0
-        sVG6w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=De6xzMF2FgeEmdaTMR3eSkk8CwPQCVbY4en6vEtoe
-        yA=; b=R/B7VL5XgmRVFvF0Jw4g+3tfflkqISOf6/2rXzXrS/nd2FDTYx/LOLnRK
-        lBWgJgwe3/DKj/PVws7Scj3+x31ofpDJGkvqgCNIvojKdZrdJsP9EaxbJ4GWaZ6q
-        msAj6NCs0b8y8kgy6KaG1skjuZRyEB2LKb6QzP1FeyxDwyoJSPVNIfxhPCnhgw/B
-        gWTPfny4NfCltqwvPTBKUK/bCGmrtj4PEKKByQZa+2nhr9vMvEhUUBx5CvffXgNw
-        fR7VtfDF8MJebK0qRXgBFPaGWTo7kJHPR7iFxifIsuLA066o70mwKhweo0GS9u4z
-        3MuFHSKGl2qZB4nAKWsPlgb11KAgw==
-X-ME-Sender: <xms:7xynYFU_IU-YS9abw3wxkTkrYZgXGTRwnHXE3gQ6yK-RXcc35qUjqQ>
-    <xme:7xynYFlxYPA_AMIKChNAn6I3cn5GZGkPEFELW2wua3X5OeWFDR6kv4zy3G3lqXH_G
-    lRd9DS7y3na5p7YFA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejvddgheejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepvfhfhffukffffgggjggtgfesthekredttdefjeenucfhrhhomhepufgrmhhu
-    vghlucfjohhllhgrnhguuceoshgrmhhuvghlsehshhholhhlrghnugdrohhrgheqnecugg
-    ftrfgrthhtvghrnhepvddttdejieduudfgffevteekffegffeguddtgfefkeduvedukeff
-    hedtfeevuedvnecukfhppeejtddrudefhedrudegkedrudehudenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehsrghmuhgvlhesshhhohhllhgr
-    nhgurdhorhhg
-X-ME-Proxy: <xmx:7xynYBaRUqI3D8YrkCIHs8AoiUMdjhvH6ciBF5I4HtCmDnjFbj0u2g>
-    <xmx:7xynYIX2rGRypVm2udaXepLfm5Z_TT6razf4LIhJggqtApUkLCAJsA>
-    <xmx:7xynYPk4ABhXgKMwzixt8SqRm4yqHz3HXtiIru0Eesq-4aXbcOqx3A>
-    <xmx:8RynYC8r69Q4k1_jputi0x3LS84eIketYJpntW8loxTEydbCNM15EQ>
-Received: from [70.135.148.151] (70-135-148-151.lightspeed.stlsmo.sbcglobal.net [70.135.148.151])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu, 20 May 2021 22:37:34 -0400 (EDT)
-To:     Andre Przywara <andre.przywara@arm.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc:     Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
-        Ondrej Jirman <megous@megous.com>,
-        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-rtc@vger.kernel.org
-References: <20210519104152.21119-1-andre.przywara@arm.com>
- <20210519104152.21119-4-andre.przywara@arm.com>
-From:   Samuel Holland <samuel@sholland.org>
-Subject: Re: [PATCH v6 03/17] dt-bindings: rtc: sun6i: Add H616 compatible
- string
-Message-ID: <99a2069b-99e9-9b47-12a6-aae01c7f59dc@sholland.org>
-Date:   Thu, 20 May 2021 21:37:34 -0500
-User-Agent: Mozilla/5.0 (X11; Linux ppc64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 20 May 2021 22:40:06 -0400
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14L2XbPC158260;
+        Thu, 20 May 2021 22:38:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=VV0qQE/UIutKW1sfmy/vjU7zx+44sTLjM4YLHXYmmB8=;
+ b=nwiXlLSycnHdsXo0RBmbvobyEiUdEc0SqQwJFcVjF2Vv/p2Vb7Uv6KHcbQE+A5V8MQhu
+ 0wdWLTLxKYs3NFY24to+tbTqREyKPSHrBnHx4/3EiTna5v05G4AoDKedDKzkeqyNR2u+
+ 3hX99pg2aTb+rUPwlU3/2YUXShOZD5D4GBV8dyRR5tHIHuJRm6xtXesf956TCIfJKsTM
+ blqIglLkKkOknC2OETrvIfg+IFiDXRo4GA4PHs7gIk74fiHB9b17m//DwL822OXQusrx
+ ZsUFqcccUK5Nwper2ySJ3SrxpfnyqvGaG+f0wTs4yOxzG4fzBsrAfuMfdBIeilQfrgTX Ow== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38p0w5m1up-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 20 May 2021 22:38:11 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14L2YcKb016200;
+        Fri, 21 May 2021 02:38:09 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 38j5x8awjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 02:38:08 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14L2bbJb16056596
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 May 2021 02:37:37 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9E2CAE05F;
+        Fri, 21 May 2021 02:38:05 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 20A80AE051;
+        Fri, 21 May 2021 02:38:03 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Fri, 21 May 2021 02:38:02 +0000 (GMT)
+Date:   Fri, 21 May 2021 08:08:02 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linuxppc-dev@lists.ozlabs.org,
+        Nathan Lynch <nathanl@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Scott Cheloha <cheloha@linux.ibm.com>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Geetika Moolchandani <Geetika.Moolchandani1@ibm.com>
+Subject: Re: [PATCH 1/3] sched/topology: Allow archs to populate distance map
+Message-ID: <20210521023802.GE2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210520154427.1041031-1-srikar@linux.vnet.ibm.com>
+ <20210520154427.1041031-2-srikar@linux.vnet.ibm.com>
+ <YKaw33d71FpHjGnR@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210519104152.21119-4-andre.przywara@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <YKaw33d71FpHjGnR@hirez.programming.kicks-ass.net>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: tjmodyBbfyTl1_NqPVbfKfiukiHP2bQD
+X-Proofpoint-GUID: tjmodyBbfyTl1_NqPVbfKfiukiHP2bQD
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-20_07:2021-05-20,2021-05-20 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 adultscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 mlxlogscore=999
+ suspectscore=0 clxscore=1015 malwarescore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105210017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andre,
+* Peter Zijlstra <peterz@infradead.org> [2021-05-20 20:56:31]:
 
-On 5/19/21 5:41 AM, Andre Przywara wrote:
-> Add the obvious compatible name to the existing RTC binding.
-> The actual RTC part of the device uses a different day/month/year
-> storage scheme, so it's not compatible with the previous devices.
+> On Thu, May 20, 2021 at 09:14:25PM +0530, Srikar Dronamraju wrote:
+> > Currently scheduler populates the distance map by looking at distance
+> > of each node from all other nodes. This should work for most
+> > architectures and platforms.
+> > 
+> > However there are some architectures like POWER that may not expose
+> > the distance of nodes that are not yet onlined because those resources
+> > are not yet allocated to the OS instance. Such architectures have
+> > other means to provide valid distance data for the current platform.
+> > 
+> > For example distance info from numactl from a fully populated 8 node
+> > system at boot may look like this.
+> > 
+> > node distances:
+> > node   0   1   2   3   4   5   6   7
+> >   0:  10  20  40  40  40  40  40  40
+> >   1:  20  10  40  40  40  40  40  40
+> >   2:  40  40  10  20  40  40  40  40
+> >   3:  40  40  20  10  40  40  40  40
+> >   4:  40  40  40  40  10  20  40  40
+> >   5:  40  40  40  40  20  10  40  40
+> >   6:  40  40  40  40  40  40  10  20
+> >   7:  40  40  40  40  40  40  20  10
+> > 
+> > However the same system when only two nodes are online at boot, then the
+> > numa topology will look like
+> > node distances:
+> > node   0   1
+> >   0:  10  20
+> >   1:  20  10
+> > 
+> > It may be implementation dependent on what node_distance(0,3) where
+> > node 0 is online and node 3 is offline. In POWER case, it returns
+> > LOCAL_DISTANCE(10). Here at boot the scheduler would assume that the max
+> > distance between nodes is 20. However that would not be true.
+> > 
+> > When Nodes are onlined and CPUs from those nodes are hotplugged,
+> > the max node distance would be 40.
+> > 
+> > To handle such scenarios, let scheduler allow architectures to populate
+> > the distance map. Architectures that like to populate the distance map
+> > can overload arch_populate_distance_map().
 > 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> ---
->  .../devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml     | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> Why? Why can't your node_distance() DTRT? The arch interface is
+> nr_node_ids and node_distance(), I don't see why we need something new
+> and then replace one special use of it.
 > 
-> diff --git a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> index b1b0ee769b71..178c955f88bf 100644
-> --- a/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> +++ b/Documentation/devicetree/bindings/rtc/allwinner,sun6i-a31-rtc.yaml
-> @@ -26,6 +26,7 @@ properties:
->            - const: allwinner,sun50i-a64-rtc
->            - const: allwinner,sun8i-h3-rtc
->        - const: allwinner,sun50i-h6-rtc
-> +      - const: allwinner,sun50i-h616-rtc
->  
->    reg:
->      maxItems: 1
-> @@ -97,7 +98,9 @@ allOf:
->        properties:
->          compatible:
->            contains:
-> -            const: allwinner,sun50i-h6-rtc
-> +            enum:
-> +              - allwinner,sun50i-h6-rtc
-> +              - allwinner,sun50i-h616-rtc
->  
->      then:
->        properties:
-> 
+> By virtue of you being able to actually implement this new hook, you
+> supposedly can actually do node_distance() right too.
 
-This binding is missing a clock reference for the pll-periph0-2x input
-to the 32kHz clock fanout.
+Since for an offline node, arch interface code doesn't have the info.
+As far as I know/understand, in POWER, unless there is an active memory or
+CPU that's getting onlined, arch can't fetch the correct node distance.
 
-It is also missing a clock reference to the RTC register gate (and that
-clock is in turn missing from the r_ccu driver).
+Taking the above example: node 3 is offline, then node_distance of (3,X)
+where X is anything other than 3, is not reliable. The moment node 3 is
+onlined, the node distance is reliable.
 
-Regards,
-Samuel
+This problem will not happen even on POWER if all the nodes have either
+memory or CPUs active at the time of boot.
+
+-- 
+Thanks and Regards
+Srikar Dronamraju
