@@ -2,244 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7866038CB5E
+	by mail.lfdr.de (Postfix) with ESMTP id 2DF9438CB5D
 	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237851AbhEUQ41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:56:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:51586 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237831AbhEUQ4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S237875AbhEUQ4V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:56:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237802AbhEUQ4T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 May 2021 12:56:19 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C7B901515;
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 802D0C0613ED;
         Fri, 21 May 2021 09:54:55 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (e120877-lin.cambridge.arm.com [10.1.194.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 75DA63F73D;
-        Fri, 21 May 2021 09:54:54 -0700 (PDT)
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     peterz@infradead.org, rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        vincent.guittot@linaro.org, qperret@google.com
-Cc:     linux-kernel@vger.kernel.org, ionela.voinescu@arm.com,
-        lukasz.luba@arm.com, dietmar.eggemann@arm.com,
-        Vincent Donnefort <vincent.donnefort@arm.com>
-Subject: [PATCH v2 3/3] PM / EM: Skip inefficient OPPs
-Date:   Fri, 21 May 2021 17:54:24 +0100
-Message-Id: <1621616064-340235-4-git-send-email-vincent.donnefort@arm.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
-References: <1621616064-340235-1-git-send-email-vincent.donnefort@arm.com>
+Received: by mail-yb1-xb35.google.com with SMTP id y2so28316233ybq.13;
+        Fri, 21 May 2021 09:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qNDhTrL0N439MhCKg5eDpr3/xHuRHa7DwSQYNtIdcTc=;
+        b=WwdqXcgkSphVGeoYQlwRAjESqehVHk0iWq4Hwnz7H3YB9/GZzb75+r6bEGjrTtxd5y
+         fHmyW12pXz0H0J38qTEh5DVLXJPLPjxK7eDSM9BSM/OY4QcSiLfMjiMHaT8lNCn9ZCZQ
+         LdUfN3LPQNTCCWG0bUIgoGtxLdjnPnrEqhEYdr48aKDzNm6AbjeP1Ya/VyfGoy8E3Omd
+         ZSZKpZdII0x+uSWvYiBBMxnLf01qzYYioqVEYlr74q2OBgKNneIBb8R+VNjvFO9C+kju
+         zeo/+/BCxzlIOzUH0ieeLtpcVMdtxif1ksyL6v+I2C9YXsr7IR+clK/KvLMcBUT2cpjk
+         SVFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qNDhTrL0N439MhCKg5eDpr3/xHuRHa7DwSQYNtIdcTc=;
+        b=Xy4LDMgY/52pL3FI4tEYmBqGo7K73h1SnvVZQ9dx5xol4bZEjBmetFGJi0uBVRQLh1
+         stb5pxwdU4EMSNpsboszkKAATKP6GkM1/n0JLVANUZcg264eDGXbLUd9vTHFhxSXs+vN
+         nyyn/kVUc6AVQgIzKYik9cGrsfW077x3YKfWptf49kBPSzUTAIxiy+QpdDUdkqKAkZN1
+         1ZsGCoUJKDWvDVqK65xm5u8k2teJVvQFmAsvB0r9N9zs8sphkqC6YrtXdRJQK3RNuZr4
+         HfuYoFG0NodwP1eNvn0rt7OPnmFsd9+JYwY4cRVRI2p7Hp03xuIcaXaKw0hwoCfOBtD+
+         tg+A==
+X-Gm-Message-State: AOAM530s3q1GTtG/SxJ4tDj4LJoXcfPM+C3EluxKlXEfdHyB2N1Mfpz6
+        DqcZXYGHIncyFwNMWCOOs/4GMJQ9mXxE/O76dnUKa2iu5JkA6Q==
+X-Google-Smtp-Source: ABdhPJxONwR6QDdA9LeS1LweNBya46DuCsYhueVEKoLegPrTeGkUQu8Juviv7rZjLX7+D4hzR13IAdqfWFpN2ysDQ3A=
+X-Received: by 2002:a25:358a:: with SMTP id c132mr16256369yba.179.1621616093932;
+ Fri, 21 May 2021 09:54:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210514192218.13022-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20210514192218.13022-2-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdU40pLb3LvEghkT0pryLtHdXj+U1R7Y7L6-_6euVohyUw@mail.gmail.com>
+In-Reply-To: <CAMuHMdU40pLb3LvEghkT0pryLtHdXj+U1R7Y7L6-_6euVohyUw@mail.gmail.com>
+From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Date:   Fri, 21 May 2021 17:54:28 +0100
+Message-ID: <CA+V-a8tFsAO2yYqURT1gYS14_Eax1VqJ1YbgcnfZADtOMLXFMA@mail.gmail.com>
+Subject: Re: [PATCH 01/16] dt-bindings: arm: renesas: Document Renesas RZ/G2UL SoC
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some SoCs, such as the sd855 have OPPs within the same performance domain,
-whose cost is higher than others with a higher frequency. Even though
-those OPPs are interesting from a cooling perspective, it makes no sense
-to use them when the device can run at full capacity. Those OPPs handicap
-the performance domain, when choosing the most energy-efficient CPU and
-are wasting energy. They are inefficient.
+Hi Geert,
 
-Hence, add support for such OPPs to the Energy Model. The table can now
-be read skipping inefficient performance states (and by extension,
-inefficient OPPs).
+Thank you for the review.
 
-Currently, the efficient table is used in two paths. Schedutil, and
-find_energy_efficient_cpu(). We have to modify both paths in the same
-patch so they stay synchronized. The thermal framework still relies on
-the full table.
+On Fri, May 21, 2021 at 2:23 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> Hi Prabhakar,
+>
+> On Fri, May 14, 2021 at 9:23 PM Lad Prabhakar
+> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> > Add device tree bindings documentation for Renesas RZ/G2UL SoC.
+> >
+> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+> > Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+>
+> Thanks for your patch!
+>
+> > --- a/Documentation/devicetree/bindings/arm/renesas.yaml
+> > +++ b/Documentation/devicetree/bindings/arm/renesas.yaml
+> > @@ -302,6 +302,12 @@ properties:
+> >                - renesas,rzn1d400-db # RZN1D-DB (RZ/N1D Demo Board for the RZ/N1D 400 pins package)
+> >            - const: renesas,r9a06g032
+> >
+> > +      - description: RZ/G2UL (R9A07G043)
+> > +        items:
+> > +          - enum:
+> > +              - renesas,r9a07g043u11 # Single Cortex-A55 RZ/G2UL
+>
+> Is there any specific reason you're including the final "1", unlike the
+> RZ/G2{L,LC} binding?
+>
+To be consistent with the RZ/G2L family of SoC's "1" is appended to
+the compatible string.
 
-Signed-off-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> As RZ/G2UL is always single-core, perhaps this compatible value can be
+> dropped?
+>
+Do agree with you.
 
-diff --git a/include/linux/energy_model.h b/include/linux/energy_model.h
-index 9be7bde..daaeccf 100644
---- a/include/linux/energy_model.h
-+++ b/include/linux/energy_model.h
-@@ -17,13 +17,25 @@
-  *		device). It can be a total power: static and dynamic.
-  * @cost:	The cost coefficient associated with this level, used during
-  *		energy calculation. Equal to: power * max_frequency / frequency
-+ * @flags:	see "em_perf_state flags" description below.
-  */
- struct em_perf_state {
- 	unsigned long frequency;
- 	unsigned long power;
- 	unsigned long cost;
-+	unsigned long flags;
- };
- 
-+/*
-+ * em_perf_state flags:
-+ *
-+ * EM_PERF_STATE_INEFFICIENT: The performance state is inefficient. There is
-+ * in this em_perf_domain, another performance state with a higher frequency
-+ * but a lower or equal power cost. Such inefficient states are ignored when
-+ * using em_pd_get_efficient_*() functions.
-+ */
-+#define EM_PERF_STATE_INEFFICIENT BIT(0)
-+
- /**
-  * em_perf_domain - Performance domain
-  * @table:		List of performance states, in ascending order
-@@ -52,8 +64,12 @@ struct em_perf_domain {
-  *
-  *  EM_PERF_DOMAIN_MILLIWATTS: The power values are in milli-Watts or some
-  *  other scale.
-+ *
-+ *  EM_PERF_DOMAIN_INEFFICIENCIES: This perf domain contains inefficient perf
-+ *  states.
-  */
- #define EM_PERF_DOMAIN_MILLIWATTS BIT(0)
-+#define EM_PERF_DOMAIN_INEFFICIENCIES BIT(1)
- 
- #define em_span_cpus(em) (to_cpumask((em)->cpus))
- 
-@@ -93,6 +109,58 @@ int em_dev_register_perf_domain(struct device *dev, unsigned int nr_states,
- void em_dev_unregister_perf_domain(struct device *dev);
- 
- /**
-+ * em_pd_get_efficient_state() - Get an efficient performance state from the EM
-+ * @pd   : Performance domain for which we want an efficient frequency
-+ * @freq : Frequency to map with the EM
-+ *
-+ * It is called from the scheduler code quite frequently and as a consequence
-+ * doesn't implement any check.
-+ *
-+ * Return: An efficient performance state, high enough to meet @freq
-+ * requirement.
-+ */
-+static inline
-+struct em_perf_state *em_pd_get_efficient_state(struct em_perf_domain *pd,
-+						unsigned long freq)
-+{
-+	struct em_perf_state *ps;
-+	int i;
-+
-+	for (i = 0; i < pd->nr_perf_states; i++) {
-+		ps = &pd->table[i];
-+		if (ps->flags & EM_PERF_STATE_INEFFICIENT)
-+			continue;
-+		if (ps->frequency >= freq)
-+			break;
-+	}
-+
-+	return ps;
-+}
-+
-+/**
-+ * em_pd_get_efficient_freq() - Get the efficient frequency from the EM
-+ * @pd	 : Performance domain for which we want an efficient frequency
-+ * @freq : Frequency to map with the EM
-+ *
-+ * This function will return @freq if no inefficiencies have been found for
-+ * that @pd. This is to avoid a useless table walk.
-+ *
-+ * Return: An efficient frequency, high enough to meet @freq requirement.
-+ */
-+static inline unsigned long em_pd_get_efficient_freq(struct em_perf_domain *pd,
-+						     unsigned long freq)
-+{
-+	struct em_perf_state *ps;
-+
-+	if (!pd || !(pd->flags & EM_PERF_DOMAIN_INEFFICIENCIES))
-+		return freq;
-+
-+	ps = em_pd_get_efficient_state(pd, freq);
-+
-+	return ps->frequency;
-+}
-+
-+/**
-  * em_cpu_energy() - Estimates the energy consumed by the CPUs of a
- 		performance domain
-  * @pd		: performance domain for which energy has to be estimated
-@@ -111,7 +179,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- {
- 	unsigned long freq, scale_cpu;
- 	struct em_perf_state *ps;
--	int i, cpu;
-+	int cpu;
- 
- 	if (!sum_util)
- 		return 0;
-@@ -130,11 +198,7 @@ static inline unsigned long em_cpu_energy(struct em_perf_domain *pd,
- 	 * Find the lowest performance state of the Energy Model above the
- 	 * requested frequency.
- 	 */
--	for (i = 0; i < pd->nr_perf_states; i++) {
--		ps = &pd->table[i];
--		if (ps->frequency >= freq)
--			break;
--	}
-+	ps = em_pd_get_efficient_state(pd, freq);
- 
- 	/*
- 	 * The capacity of a CPU in the domain at the performance state (ps)
-@@ -224,6 +288,12 @@ static inline int em_pd_nr_perf_states(struct em_perf_domain *pd)
- {
- 	return 0;
- }
-+
-+static inline unsigned long
-+em_pd_get_efficient_freq(struct em_perf_domain *pd, unsigned long freq)
-+{
-+	return freq;
-+}
- #endif
- 
- #endif
-diff --git a/kernel/power/energy_model.c b/kernel/power/energy_model.c
-index 638581c..af8d54f 100644
---- a/kernel/power/energy_model.c
-+++ b/kernel/power/energy_model.c
-@@ -2,7 +2,7 @@
- /*
-  * Energy Model of devices
-  *
-- * Copyright (c) 2018-2020, Arm ltd.
-+ * Copyright (c) 2018-2021, Arm ltd.
-  * Written by: Quentin Perret, Arm ltd.
-  * Improvements provided by: Lukasz Luba, Arm ltd.
-  */
-@@ -42,6 +42,7 @@ static void em_debug_create_ps(struct em_perf_state *ps, struct dentry *pd)
- 	debugfs_create_ulong("frequency", 0444, d, &ps->frequency);
- 	debugfs_create_ulong("power", 0444, d, &ps->power);
- 	debugfs_create_ulong("cost", 0444, d, &ps->cost);
-+	debugfs_create_ulong("inefficient", 0444, d, &ps->flags);
- }
- 
- static int em_debug_cpus_show(struct seq_file *s, void *unused)
-@@ -161,6 +162,8 @@ static int em_create_perf_table(struct device *dev, struct em_perf_domain *pd,
- 		table[i].cost = div64_u64(fmax * table[i].power,
- 					  table[i].frequency);
- 		if (table[i].cost >= prev_cost) {
-+			table[i].flags = EM_PERF_STATE_INEFFICIENT;
-+			pd->flags |= EM_PERF_DOMAIN_INEFFICIENCIES;
- 			dev_dbg(dev, "EM: OPP:%lu is inefficient\n",
- 				table[i].frequency);
- 		} else {
-diff --git a/kernel/sched/cpufreq_schedutil.c b/kernel/sched/cpufreq_schedutil.c
-index 4f09afd..5a91a2b 100644
---- a/kernel/sched/cpufreq_schedutil.c
-+++ b/kernel/sched/cpufreq_schedutil.c
-@@ -10,6 +10,7 @@
- 
- #include "sched.h"
- 
-+#include <linux/energy_model.h>
- #include <linux/sched/cpufreq.h>
- #include <trace/events/power.h>
- 
-@@ -153,6 +154,9 @@ static unsigned int get_next_freq(struct sugov_policy *sg_policy,
- 
- 	freq = map_util_freq(util, freq, max);
- 
-+	/* Avoid inefficient performance states */
-+	freq = em_pd_get_efficient_freq(em_cpu_get(policy->cpu), freq);
-+
- 	if (freq == sg_policy->cached_raw_freq && !sg_policy->need_freq_update)
- 		return sg_policy->next_freq;
- 
--- 
-2.7.4
+> > +          - const: renesas,r9a07g043
+> > +
+> >  additionalProperties: true
+>
+> For now, there are no users of this binding?
+> I assume you're posting it already, as RZ/G2UL is pin-compatible with RZ/G2LC,
+> and thus can be used interchangeably on the G2L SOM?
+> However, the DTS board part in this series is for RZ/G2L, not RZ/GLC?
+>
+Intention here is to start with RZ/G2L SoC first  so that the core
+changes (pinctrl/CPG) hit upstream and for the rest of the SoC's it
+will be followed up.
 
+Cheers,
+Prabhakar
+
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> i.e. will queue in renesas-devel for v5.14, after the above have been
+> resolved.
+>
+> Gr{oetje,eeting}s,
+>
+>                         Geert
+>
+>
+> --
+> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+>
+> In personal conversations with technical people, I call myself a hacker. But
+> when I'm talking to journalists I just say "programmer" or something like that.
+>                                 -- Linus Torvalds
