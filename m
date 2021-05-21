@@ -2,91 +2,361 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6481838C968
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:45:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE2038C96C
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236861AbhEUOqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:46:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44338 "EHLO mail.kernel.org"
+        id S236952AbhEUOqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:46:49 -0400
+Received: from foss.arm.com ([217.140.110.172]:48950 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236887AbhEUOpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:45:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BC2C3610A8;
-        Fri, 21 May 2021 14:43:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621608227;
-        bh=6bQ7KdTLoxbGFwugW8N1T6l3fRz6GxN5ATVum7FMqmk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AStz2MvbxCP8H/fJhVPa6+Mw38O/iRHjAdZk9I96XIAcrPFrQwqVNSwgG/Q91QThD
-         znS37xhZ5YMMCQSX6K6l7JfCySEdZwef0QAfUX/aBM/PyOHtDrV3jVc/FtJEnrok3U
-         rsH4Bx3btfQjqyrrGC3HnGAamv1GE3CNvRCM6A1ydxamVjNFUFlbzEyHGy/634I1xZ
-         bruH6jiz/7tPrgPYhV16SfErqcoPsgfTYbtj+t/BJ3uEDTouUz6TqP+C+PIAblGXdG
-         PS4Fw4l/HcSae6+GWXlw+gq/JrdXY96yHOcJEyEzFYS1bOJRyL7B4JMmaerDUHtKiX
-         iMxInP3+9/J0g==
-Date:   Fri, 21 May 2021 15:43:42 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Mika =?iso-8859-1?Q?Penttil=E4?= <mika.penttila@nextfour.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Lorenzo Colitti <lorenzo@google.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>, kernel-team@android.com
-Subject: Re: [PATCH 3/5] tick/broadcast: Prefer per-cpu oneshot wakeup timers
- to broadcast
-Message-ID: <20210521144342.GA12124@willie-the-truck>
-References: <20210520184705.10845-1-will@kernel.org>
- <20210520184705.10845-4-will@kernel.org>
- <a269c869-b966-75d5-5fe1-6ed6921c1b83@nextfour.com>
- <20210521112503.GA11850@willie-the-truck>
- <87tumw9oy4.ffs@nanos.tec.linutronix.de>
+        id S236881AbhEUOqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 10:46:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DE4C011B3;
+        Fri, 21 May 2021 07:44:49 -0700 (PDT)
+Received: from [10.57.73.64] (unknown [10.57.73.64])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 15AB43F73B;
+        Fri, 21 May 2021 07:44:47 -0700 (PDT)
+Subject: Re: [PATCH v5 3/4] iommu: rockchip: Add internal ops to handle
+ variants
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, xxm@rock-chips.com
+Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+References: <20210521083637.3221304-1-benjamin.gaignard@collabora.com>
+ <20210521083637.3221304-4-benjamin.gaignard@collabora.com>
+ <e709c99c-02c4-69e1-0ae1-f12da9b2f915@arm.com>
+ <bd01aa12-0c0f-5aa4-a0fb-e81cf51786df@collabora.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <cb328712-faf6-cf35-2e55-4edd5e7f7057@arm.com>
+Date:   Fri, 21 May 2021 15:44:40 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <bd01aa12-0c0f-5aa4-a0fb-e81cf51786df@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87tumw9oy4.ffs@nanos.tec.linutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 03:49:39PM +0200, Thomas Gleixner wrote:
-> On Fri, May 21 2021 at 12:25, Will Deacon wrote:
-> > On Fri, May 21, 2021 at 05:25:41AM +0300, Mika Penttil� wrote:
-> >> On 20.5.2021 21.47, Will Deacon wrote:
-> >> >   /*
-> >> >    * Conditionally install/replace broadcast device
-> >> >    */
-> >> > -void tick_install_broadcast_device(struct clock_event_device *dev)
-> >> > +void tick_install_broadcast_device(struct clock_event_device *dev, int cpu)
-> >> >   {
-> >> >   	struct clock_event_device *cur = tick_broadcast_device.evtdev;
-> >> > +	if (tick_set_oneshot_wakeup_device(dev, cpu))
-> >> > +		return;
-> >> > +
-> >> >   	if (!tick_check_broadcast_device(cur, dev))
-> >> >   		return;
-> >> 
-> >> Does this disable hpet registering as a global broadcast device on x86 ? I
-> >> think it starts with cpumask = cpu0 so it qualifies for a percpu wakeup
-> >> timer.
-> >
-> > Well spotted, I think you're probably right. I'll try to reproduce on my
-> > laptop to confirm, but I hadn't noticed the tricks played with the cpumask
-> > on x86.
-> >
-> > I'll probably need to rework things so that we install the broadcast timer
-> > first, but prefer global devices.
+On 2021-05-21 14:38, Benjamin Gaignard wrote:
 > 
-> HPET has cpumask(0) but does not have CLOCK_EVT_FEAT_PERCPU set. The
-> feature flag is a clear indicator for per cpu.
+> Le 21/05/2021 à 14:58, Robin Murphy a écrit :
+>> On 2021-05-21 09:36, Benjamin Gaignard wrote:
+>>> Add internal ops to be able to handle incoming variant v2.
+>>> The goal is to keep the overall structure of the framework but
+>>> to allow to add the evolution of this hardware block.
+>>>
+>>> The ops are global for a SoC because iommu domains are not
+>>> attached to a specific devices if they are for a virtuel device like
+>>> drm. Use a global variable shouldn't be since SoC usually doesn't
+>>> embedded different versions of the iommu hardware block.
+>>> If that happen one day a WARN_ON will be displayed at probe time.
+>>
+>> IMO it would be a grievous error if such a "virtual device" ever gets 
+>> near the IOMMU API, so personally I wouldn't use that as a 
+>> justification for anything :)
+>>
+>> FWIW you should be OK to handle things on a per-instance basis, it 
+>> just means you have to defer some of the domain setup to .attach_dev 
+>> time, like various other drivers do. That said, there's nothing wrong 
+>> with the global if we do expect instances to be consistent across any 
+>> given Rockchip SoC (and my gut feeling is that we probably should).
+> 
+> I have tried that solution first but drm device appear to but such 
+> "virtual device" so I had to use the global.
 
-Thanks, that makes the logic much neater because that feature already causes
-the device to be rejected as the broadcast so there's no need to worry about
-considering a device for both broadcast and a local wakeup.
+Hmm, the "rockchip,display-subsystem" node is not associated with an 
+IOMMU, and shouldn't even be passed to the DMA API either, because it's 
+not a real piece of DMA capable hardware. Whatever the DRM stack is 
+doing above, it should only be the actual VOP devices that we see down 
+here. If not, that's indicative of something being wrong elsewhere. Like 
+I say though, I think it's fine to use global ops simply on the 
+expectation that that's how the new SOCs are going to be.
 
-I'll post a v2 on Monday once I've tested it on my laptop (which is throwing
-ext4 errors at the moment...)
+In fact this reminds me, I think I started writing a patch somewhere to 
+clean up the virtual device mess for rockchip-drm (IIRC I could see no 
+reason why we can't just allocate the DRM device from the VOP driver, 
+similar to what exynos-drm does). Maybe I should dig that up again...
 
-Will
+> I send a v6 to fix your others remarks.
+
+I guess I'll wait for v7 now then, since I got sidetracked before 
+sending my review of patch #4 (heck, I've just spent the last half hour 
+doing something else in the middle of writing this!) ;)
+
+Cheers,
+Robin.
+
+> 
+> Thanks for your advice.
+> 
+> Benjamin
+> 
+>>
+>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>>> ---
+>>> version 5:
+>>>   - Use of_device_get_match_data()
+>>>   - Add internal ops inside the driver
+>>>
+>>>   drivers/iommu/rockchip-iommu.c | 69 ++++++++++++++++++++++++----------
+>>>   1 file changed, 50 insertions(+), 19 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/rockchip-iommu.c 
+>>> b/drivers/iommu/rockchip-iommu.c
+>>> index 7a2932772fdf..e7b9bcf174b1 100644
+>>> --- a/drivers/iommu/rockchip-iommu.c
+>>> +++ b/drivers/iommu/rockchip-iommu.c
+>>> @@ -19,6 +19,7 @@
+>>>   #include <linux/iopoll.h>
+>>>   #include <linux/list.h>
+>>>   #include <linux/mm.h>
+>>> +#include <linux/module.h>
+>>
+>> This seems to be an unrelated and unnecessary change.
+>>
+>>>   #include <linux/init.h>
+>>>   #include <linux/of.h>
+>>>   #include <linux/of_iommu.h>
+>>> @@ -96,6 +97,14 @@ static const char * const rk_iommu_clocks[] = {
+>>>       "aclk", "iface",
+>>>   };
+>>>   +struct rk_iommu_ops {
+>>> +    phys_addr_t (*pt_address)(u32 dte);
+>>> +    u32 (*mk_dtentries)(dma_addr_t pt_dma);
+>>> +    u32 (*mk_ptentries)(phys_addr_t page, int prot);
+>>> +    phys_addr_t (*dte_addr_phys)(phys_addr_t addr);
+>>> +    u32 pt_address_mask;
+>>> +};
+>>> +
+>>>   struct rk_iommu {
+>>>       struct device *dev;
+>>>       void __iomem **bases;
+>>> @@ -116,6 +125,7 @@ struct rk_iommudata {
+>>>   };
+>>>     static struct device *dma_dev;
+>>> +static const struct rk_iommu_ops *rk_ops;
+>>>     static inline void rk_table_flush(struct rk_iommu_domain *dom, 
+>>> dma_addr_t dma,
+>>>                     unsigned int count)
+>>> @@ -215,11 +225,6 @@ static inline u32 rk_mk_dte(dma_addr_t pt_dma)
+>>>   #define RK_PTE_PAGE_READABLE      BIT(1)
+>>>   #define RK_PTE_PAGE_VALID         BIT(0)
+>>>   -static inline phys_addr_t rk_pte_page_address(u32 pte)
+>>> -{
+>>> -    return (phys_addr_t)pte & RK_PTE_PAGE_ADDRESS_MASK;
+>>> -}
+>>> -
+>>>   static inline bool rk_pte_is_page_valid(u32 pte)
+>>>   {
+>>>       return pte & RK_PTE_PAGE_VALID;
+>>> @@ -451,7 +456,7 @@ static int rk_iommu_force_reset(struct rk_iommu 
+>>> *iommu)
+>>>           rk_iommu_write(iommu->bases[i], RK_MMU_DTE_ADDR, 
+>>> DTE_ADDR_DUMMY);
+>>>             dte_addr = rk_iommu_read(iommu->bases[i], RK_MMU_DTE_ADDR);
+>>> -        if (dte_addr != (DTE_ADDR_DUMMY & RK_DTE_PT_ADDRESS_MASK)) {
+>>> +        if (dte_addr != (DTE_ADDR_DUMMY & rk_ops->pt_address_mask)) {
+>>
+>> Nit: might it make more sense to do something like:
+>>
+>>         dte_addr = rk_ops->pt_address(... DTE_ADDR_DUMMY);
+>>         rk_iommu_write(... dte_addr)
+>>         if (rk_iommu_read(...) != dte_addr)
+>>
+>> so that you don't need to bother defining ->pt_address_mask for just 
+>> this one sanity-check?
+>>
+>>>               dev_err(iommu->dev, "Error during raw reset. 
+>>> MMU_DTE_ADDR is not functioning\n");
+>>>               return -EFAULT;
+>>>           }
+>>> @@ -470,6 +475,11 @@ static int rk_iommu_force_reset(struct rk_iommu 
+>>> *iommu)
+>>>       return 0;
+>>>   }
+>>>   +static inline phys_addr_t rk_dte_addr_phys(phys_addr_t addr)
+>>
+>> The argument type here should be u32, since it's a DTE, not a physical 
+>> address...
+>>
+>>> +{
+>>> +    return addr;
+>>> +}
+>>> +
+>>>   static void log_iova(struct rk_iommu *iommu, int index, dma_addr_t 
+>>> iova)
+>>>   {
+>>>       void __iomem *base = iommu->bases[index];
+>>> @@ -489,7 +499,7 @@ static void log_iova(struct rk_iommu *iommu, int 
+>>> index, dma_addr_t iova)
+>>>       page_offset = rk_iova_page_offset(iova);
+>>>         mmu_dte_addr = rk_iommu_read(base, RK_MMU_DTE_ADDR);
+>>> -    mmu_dte_addr_phys = (phys_addr_t)mmu_dte_addr;
+>>> +    mmu_dte_addr_phys = 
+>>> rk_ops->dte_addr_phys((phys_addr_t)mmu_dte_addr);
+>>
+>> ...and the cast here should not be here, since it *is* the conversion 
+>> that the called function is supposed to be performing.
+>>
+>>>       dte_addr_phys = mmu_dte_addr_phys + (4 * dte_index);
+>>>       dte_addr = phys_to_virt(dte_addr_phys);
+>>> @@ -498,14 +508,14 @@ static void log_iova(struct rk_iommu *iommu, 
+>>> int index, dma_addr_t iova)
+>>>       if (!rk_dte_is_pt_valid(dte))
+>>>           goto print_it;
+>>>   -    pte_addr_phys = rk_dte_pt_address(dte) + (pte_index * 4);
+>>> +    pte_addr_phys = rk_ops->pt_address(dte) + (pte_index * 4);
+>>>       pte_addr = phys_to_virt(pte_addr_phys);
+>>>       pte = *pte_addr;
+>>>         if (!rk_pte_is_page_valid(pte))
+>>>           goto print_it;
+>>>   -    page_addr_phys = rk_pte_page_address(pte) + page_offset;
+>>> +    page_addr_phys = rk_ops->pt_address(pte) + page_offset;
+>>>       page_flags = pte & RK_PTE_PAGE_FLAGS_MASK;
+>>>     print_it:
+>>> @@ -601,13 +611,13 @@ static phys_addr_t rk_iommu_iova_to_phys(struct 
+>>> iommu_domain *domain,
+>>>       if (!rk_dte_is_pt_valid(dte))
+>>>           goto out;
+>>>   -    pt_phys = rk_dte_pt_address(dte);
+>>> +    pt_phys = rk_ops->pt_address(dte);
+>>>       page_table = (u32 *)phys_to_virt(pt_phys);
+>>>       pte = page_table[rk_iova_pte_index(iova)];
+>>>       if (!rk_pte_is_page_valid(pte))
+>>>           goto out;
+>>>   -    phys = rk_pte_page_address(pte) + rk_iova_page_offset(iova);
+>>> +    phys = rk_ops->pt_address(pte) + rk_iova_page_offset(iova);
+>>>   out:
+>>>       spin_unlock_irqrestore(&rk_domain->dt_lock, flags);
+>>>   @@ -679,14 +689,14 @@ static u32 *rk_dte_get_page_table(struct 
+>>> rk_iommu_domain *rk_domain,
+>>>           return ERR_PTR(-ENOMEM);
+>>>       }
+>>>   -    dte = rk_mk_dte(pt_dma);
+>>> +    dte = rk_ops->mk_dtentries(pt_dma);
+>>>       *dte_addr = dte;
+>>>         rk_table_flush(rk_domain, pt_dma, NUM_PT_ENTRIES);
+>>>       rk_table_flush(rk_domain,
+>>>                  rk_domain->dt_dma + dte_index * sizeof(u32), 1);
+>>>   done:
+>>> -    pt_phys = rk_dte_pt_address(dte);
+>>> +    pt_phys = rk_ops->pt_address(dte);
+>>>       return (u32 *)phys_to_virt(pt_phys);
+>>>   }
+>>>   @@ -728,7 +738,7 @@ static int rk_iommu_map_iova(struct 
+>>> rk_iommu_domain *rk_domain, u32 *pte_addr,
+>>>           if (rk_pte_is_page_valid(pte))
+>>>               goto unwind;
+>>>   -        pte_addr[pte_count] = rk_mk_pte(paddr, prot);
+>>> +        pte_addr[pte_count] = rk_ops->mk_ptentries(paddr, prot);
+>>>             paddr += SPAGE_SIZE;
+>>>       }
+>>> @@ -750,7 +760,7 @@ static int rk_iommu_map_iova(struct 
+>>> rk_iommu_domain *rk_domain, u32 *pte_addr,
+>>>                   pte_count * SPAGE_SIZE);
+>>>         iova += pte_count * SPAGE_SIZE;
+>>> -    page_phys = rk_pte_page_address(pte_addr[pte_count]);
+>>> +    page_phys = rk_ops->pt_address(pte_addr[pte_count]);
+>>>       pr_err("iova: %pad already mapped to %pa cannot remap to phys: 
+>>> %pa prot: %#x\n",
+>>>              &iova, &page_phys, &paddr, prot);
+>>>   @@ -785,7 +795,8 @@ static int rk_iommu_map(struct iommu_domain 
+>>> *domain, unsigned long _iova,
+>>>       dte_index = rk_domain->dt[rk_iova_dte_index(iova)];
+>>>       pte_index = rk_iova_pte_index(iova);
+>>>       pte_addr = &page_table[pte_index];
+>>> -    pte_dma = rk_dte_pt_address(dte_index) + pte_index * sizeof(u32);
+>>> +
+>>> +    pte_dma = rk_ops->pt_address(dte_index) + pte_index * sizeof(u32);
+>>>       ret = rk_iommu_map_iova(rk_domain, pte_addr, pte_dma, iova,
+>>>                   paddr, size, prot);
+>>>   @@ -821,7 +832,7 @@ static size_t rk_iommu_unmap(struct 
+>>> iommu_domain *domain, unsigned long _iova,
+>>>           return 0;
+>>>       }
+>>>   -    pt_phys = rk_dte_pt_address(dte);
+>>> +    pt_phys = rk_ops->pt_address(dte);
+>>>       pte_addr = (u32 *)phys_to_virt(pt_phys) + rk_iova_pte_index(iova);
+>>>       pte_dma = pt_phys + rk_iova_pte_index(iova) * sizeof(u32);
+>>>       unmap_size = rk_iommu_unmap_iova(rk_domain, pte_addr, pte_dma, 
+>>> size);
+>>> @@ -1037,7 +1048,7 @@ static void rk_iommu_domain_free(struct 
+>>> iommu_domain *domain)
+>>>       for (i = 0; i < NUM_DT_ENTRIES; i++) {
+>>>           u32 dte = rk_domain->dt[i];
+>>>           if (rk_dte_is_pt_valid(dte)) {
+>>> -            phys_addr_t pt_phys = rk_dte_pt_address(dte);
+>>> +            phys_addr_t pt_phys = rk_ops->pt_address(dte);
+>>>               u32 *page_table = phys_to_virt(pt_phys);
+>>>               dma_unmap_single(dma_dev, pt_phys,
+>>>                        SPAGE_SIZE, DMA_TO_DEVICE);
+>>> @@ -1138,6 +1149,15 @@ static int rk_iommu_probe(struct 
+>>> platform_device *pdev)
+>>>       iommu->dev = dev;
+>>>       iommu->num_mmu = 0;
+>>>   +    if (!rk_ops)
+>>> +        rk_ops = of_device_get_match_data(dev);
+>>> +
+>>> +    /*
+>>> +     * That should not happen unless different versions of the
+>>> +     * hardware block are embedded the same SoC
+>>> +     */
+>>> +    WARN_ON(rk_ops != of_device_get_match_data(dev));
+>>
+>> Nit: calling of_device_get_match_data() twice seems rather untidy - 
+>> how about something like:
+>>
+>>     ops = of_device_get_match_data(dev);
+>>     if (!rk_ops)
+>>         rk_ops = ops;
+>>     else if (WARN_ON(rk_ops != ops))
+>>         return -EINVAL;
+>>
+>> Either way I think it would be good to treat unexpected inconsistentcy 
+>> as an actual error, rather than second-guessing the DT and carrying on 
+>> under the assumption the device is something other than it claimed to be.
+>>
+>>> +
+>>>       iommu->bases = devm_kcalloc(dev, num_res, sizeof(*iommu->bases),
+>>>                       GFP_KERNEL);
+>>>       if (!iommu->bases)
+>>> @@ -1277,10 +1297,21 @@ static const struct dev_pm_ops 
+>>> rk_iommu_pm_ops = {
+>>>                   pm_runtime_force_resume)
+>>>   };
+>>>   +static struct rk_iommu_ops iommu_data_ops_v1 = {
+>>> +    .pt_address = &rk_dte_pt_address,
+>>> +    .mk_dtentries = &rk_mk_dte,
+>>> +    .mk_ptentries = &rk_mk_pte,
+>>> +    .dte_addr_phys = &rk_dte_addr_phys,
+>>> +    .pt_address_mask = RK_DTE_PT_ADDRESS_MASK,
+>>> +};
+>>> +
+>>>   static const struct of_device_id rk_iommu_dt_ids[] = {
+>>> -    { .compatible = "rockchip,iommu" },
+>>> +    {    .compatible = "rockchip,iommu",
+>>> +        .data = &iommu_data_ops_v1,
+>>> +    },
+>>>       { /* sentinel */ }
+>>>   };
+>>> +MODULE_DEVICE_TABLE(of, rk_iommu_dt_ids);
+>>
+>> As before, unrelated and unnecessary since this driver is still bool 
+>> in the Kconfig. If you do want to support modular builds you'll also 
+>> need to ensure rk_iommu_ops.owner is set, but do it all as a separate 
+>> patch please.
+>>
+>> Thanks,
+>> Robin.
+>>
+>>>     static struct platform_driver rk_iommu_driver = {
+>>>       .probe = rk_iommu_probe,
+>>>
+>>
