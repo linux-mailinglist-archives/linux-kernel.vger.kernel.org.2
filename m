@@ -2,238 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C390D38BAC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:19:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E6438BAC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 02:26:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234988AbhEUAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 20 May 2021 20:20:54 -0400
-Received: from mga06.intel.com ([134.134.136.31]:53515 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234612AbhEUAUx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 20 May 2021 20:20:53 -0400
-IronPort-SDR: QqV+58HlbPc6BNDKDAjO3NTLrWSV1Zn3cVWVOMn3I7QrsLSS9tdCo6ktVRQPDQmErNTsPPuHl3
- pM9n/AjtnVoQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9990"; a="262590889"
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="262590889"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2021 17:19:30 -0700
-IronPort-SDR: C905/yuGUlD1R0k+mBjEsSzRmVTbyHcoGp4pjW3IoJgxO19ompNzRbTKdpFxdDbdaM2jLYQDoE
- J3irdkqdTasQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,313,1613462400"; 
-   d="scan'208";a="543826126"
-Received: from lkp-server02.sh.intel.com (HELO 1b329be5b008) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 20 May 2021 17:19:29 -0700
-Received: from kbuild by 1b329be5b008 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ljssy-0000rr-QX; Fri, 21 May 2021 00:19:28 +0000
-Date:   Fri, 21 May 2021 08:19:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 76fe8dec9bca0a1144de28d70e6a6c1a0dcd892e
-Message-ID: <60a6fc89.ISuNnUcYoLNIga5J%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S235071AbhEUA2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 20 May 2021 20:28:12 -0400
+Received: from smtp-fw-80006.amazon.com ([99.78.197.217]:58936 "EHLO
+        smtp-fw-80006.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233155AbhEUA2L (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 20 May 2021 20:28:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
+  s=amazon201209; t=1621556810; x=1653092810;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=eewKL0o5ab93XycvawAMNkIQzYy/iR4dXsH93kuwGOI=;
+  b=aygKZbxzkzJcJcqF+NOQgP5zmavDVmHJMaDQPBziPp/FjnwAqFlo9baq
+   enHaj+q5bjWqgJpenevR5iUVTSDAbfT+Ijbu7A50+0g7A00vbRKbcYh0K
+   1YcfX2y1GlUq/lzsYXRFX84TbsK9WEf4FflbEaLBe+QJQK4kBIGx18csn
+   0=;
+X-IronPort-AV: E=Sophos;i="5.82,313,1613433600"; 
+   d="scan'208";a="2476173"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-80006.pdx80.corp.amazon.com with ESMTP; 21 May 2021 00:26:49 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2a-6e2fc477.us-west-2.amazon.com (Postfix) with ESMTPS id DAB13A1757;
+        Fri, 21 May 2021 00:26:48 +0000 (UTC)
+Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 21 May 2021 00:26:48 +0000
+Received: from 88665a182662.ant.amazon.com (10.43.162.239) by
+ EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.18; Fri, 21 May 2021 00:26:43 +0000
+From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
+To:     <kafai@fb.com>
+CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
+        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+Subject: Re: [PATCH v6 bpf-next 03/11] tcp: Keep TCP_CLOSE sockets in the reuseport group.
+Date:   Fri, 21 May 2021 09:26:39 +0900
+Message-ID: <20210521002639.20533-1-kuniyu@amazon.co.jp>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210520233906.c7yphwjrstqmhfk6@kafai-mbp.dhcp.thefacebook.com>
+References: <20210520233906.c7yphwjrstqmhfk6@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.43.162.239]
+X-ClientProxiedBy: EX13D05UWB004.ant.amazon.com (10.43.161.208) To
+ EX13D04ANC001.ant.amazon.com (10.43.157.89)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 76fe8dec9bca0a1144de28d70e6a6c1a0dcd892e  Merge branch 'x86/urgent'
+From:   Martin KaFai Lau <kafai@fb.com>
+Date:   Thu, 20 May 2021 16:39:06 -0700
+> On Fri, May 21, 2021 at 07:54:48AM +0900, Kuniyuki Iwashima wrote:
+> > From:   Martin KaFai Lau <kafai@fb.com>
+> > Date:   Thu, 20 May 2021 14:22:01 -0700
+> > > On Thu, May 20, 2021 at 05:51:17PM +0900, Kuniyuki Iwashima wrote:
+> > > > From:   Martin KaFai Lau <kafai@fb.com>
+> > > > Date:   Wed, 19 May 2021 23:26:48 -0700
+> > > > > On Mon, May 17, 2021 at 09:22:50AM +0900, Kuniyuki Iwashima wrote:
+> > > > > 
+> > > > > > +static int reuseport_resurrect(struct sock *sk, struct sock_reuseport *old_reuse,
+> > > > > > +			       struct sock_reuseport *reuse, bool bind_inany)
+> > > > > > +{
+> > > > > > +	if (old_reuse == reuse) {
+> > > > > > +		/* If sk was in the same reuseport group, just pop sk out of
+> > > > > > +		 * the closed section and push sk into the listening section.
+> > > > > > +		 */
+> > > > > > +		__reuseport_detach_closed_sock(sk, old_reuse);
+> > > > > > +		__reuseport_add_sock(sk, old_reuse);
+> > > > > > +		return 0;
+> > > > > > +	}
+> > > > > > +
+> > > > > > +	if (!reuse) {
+> > > > > > +		/* In bind()/listen() path, we cannot carry over the eBPF prog
+> > > > > > +		 * for the shutdown()ed socket. In setsockopt() path, we should
+> > > > > > +		 * not change the eBPF prog of listening sockets by attaching a
+> > > > > > +		 * prog to the shutdown()ed socket. Thus, we will allocate a new
+> > > > > > +		 * reuseport group and detach sk from the old group.
+> > > > > > +		 */
+> > > > > For the reuseport_attach_prog() path, I think it needs to consider
+> > > > > the reuse->num_closed_socks != 0 case also and that should belong
+> > > > > to the resurrect case.  For example, when
+> > > > > sk_unhashed(sk) but sk->sk_reuseport == 0.
+> > > > 
+> > > > In the path, reuseport_resurrect() is called from reuseport_alloc() only
+> > > > if reuse->num_closed_socks != 0.
+> > > > 
+> > > > 
+> > > > > @@ -92,6 +117,14 @@ int reuseport_alloc(struct sock *sk, bool bind_inany)
+> > > > >  	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
+> > > > >  					  lockdep_is_held(&reuseport_lock));
+> > > > >  	if (reuse) {
+> > > > > +		if (reuse->num_closed_socks) {
+> > > > 
+> > > > But, should this be
+> > > > 
+> > > > 	if (sk->sk_state == TCP_CLOSE && reuse->num_closed_socks)
+> > > > 
+> > > > because we need not allocate a new group when we attach a bpf prog to
+> > > > listeners?
+> > > The reuseport_alloc() is fine as is.  No need to change.
+> > 
+> > I missed sk_unhashed(sk) prevents calling reuseport_alloc()
+> > if sk_state == TCP_LISTEN. I'll keep it as is.
+> > 
+> > 
+> > > 
+> > > I should have copied reuseport_attach_prog() in the last reply and
+> > > commented there instead.
+> > > 
+> > > I meant reuseport_attach_prog() needs a change.  In reuseport_attach_prog(),
+> > > iiuc, currently passing the "else if (!rcu_access_pointer(sk->sk_reuseport_cb))"
+> > > check implies the sk was (and still is) hashed with sk_reuseport enabled
+> > > because the current behavior would have set sk_reuseport_cb to NULL during
+> > > unhash but it is no longer true now.  For example, this will break:
+> > > 
+> > > 1. shutdown(lsk); /* lsk was bound with sk_reuseport enabled */
+> > > 2. setsockopt(lsk, ..., SO_REUSEPORT, &zero, ...); /* disable sk_reuseport */
+> > > 3. setsockopt(lsk, ..., SO_ATTACH_REUSEPORT_EBPF, &prog_fd, ...);
+> > >    ^---- /* This will work now because sk_reuseport_cb is not NULL.
+> > >           * However, it shouldn't be allowed.
+> > > 	  */
+> > 
+> > Thank you for explanation, I understood the case.
+> > 
+> > Exactly, I've confirmed that the case succeeded in the setsockopt() and I
+> > could change the active listeners' prog via a shutdowned socket.
+> > 
+> > 
+> > > 
+> > > I am thinking something like this (uncompiled code):
+> > > 
+> > > int reuseport_attach_prog(struct sock *sk, struct bpf_prog *prog)
+> > > {
+> > > 	struct sock_reuseport *reuse;
+> > > 	struct bpf_prog *old_prog;
+> > > 
+> > > 	if (sk_unhashed(sk)) {
+> > > 		int err;
+> > > 
+> > > 		if (!sk->sk_reuseport)
+> > > 			return -EINVAL;
+> > > 
+> > > 		err = reuseport_alloc(sk, false);
+> > > 		if (err)
+> > > 			return err;
+> > > 	} else if (!rcu_access_pointer(sk->sk_reuseport_cb)) {
+> > > 		/* The socket wasn't bound with SO_REUSEPORT */
+> > > 		return -EINVAL;
+> > > 	}
+> > > 
+> > > 	/* ... */
+> > > }
+> > > 
+> > > WDYT?
+> > 
+> > I tested this change worked fine. I think this change should be added in
+> > reuseport_detach_prog() also.
+> > 
+> > ---8<---
+> > int reuseport_detach_prog(struct sock *sk)
+> > {
+> >         struct sock_reuseport *reuse;
+> >         struct bpf_prog *old_prog;
+> > 
+> >         if (!rcu_access_pointer(sk->sk_reuseport_cb))
+> > 		return sk->sk_reuseport ? -ENOENT : -EINVAL;
+> > ---8<---
+> Right, a quick thought is something like this for detach:
+> 
+> 	spin_lock_bh(&reuseport_lock);
+> 	reuse = rcu_dereference_protected(sk->sk_reuseport_cb,
+> 					  lockdep_is_held(&reuseport_lock));
 
-elapsed time: 722m
+Is this necessary because reuseport_grow() can detach sk?
 
-configs tested: 176
-configs skipped: 2
+        if (!reuse) {
+                spin_unlock_bh(&reuseport_lock);
+                return -ENOENT;
+        }
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Then we can remove rcu_access_pointer() check and move sk_reuseport check
+here.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                     mpc5200_defconfig
-openrisc                         alldefconfig
-powerpc                      walnut_defconfig
-mips                      malta_kvm_defconfig
-mips                           mtx1_defconfig
-sh                         microdev_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc834x_itx_defconfig
-arm                           sunxi_defconfig
-mips                         tb0219_defconfig
-powerpc                       ebony_defconfig
-mips                      pistachio_defconfig
-microblaze                      mmu_defconfig
-mips                      maltasmvp_defconfig
-openrisc                    or1ksim_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                           ci20_defconfig
-arc                        nsimosci_defconfig
-arm                         shannon_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                      pasemi_defconfig
-powerpc                     powernv_defconfig
-mips                        qi_lb60_defconfig
-arm                          badge4_defconfig
-openrisc                  or1klitex_defconfig
-arc                     haps_hs_smp_defconfig
-arm                        mvebu_v5_defconfig
-arm                     am200epdkit_defconfig
-mips                          rb532_defconfig
-sh                           se7343_defconfig
-sh                         ap325rxa_defconfig
-arm                         socfpga_defconfig
-powerpc                 mpc8272_ads_defconfig
-arm                           sama5_defconfig
-m68k                       bvme6000_defconfig
-xtensa                    xip_kc705_defconfig
-mips                           jazz_defconfig
-h8300                            alldefconfig
-mips                   sb1250_swarm_defconfig
-mips                         tb0287_defconfig
-arm                         hackkit_defconfig
-powerpc                     ep8248e_defconfig
-arm                    vt8500_v6_v7_defconfig
-arm                       aspeed_g4_defconfig
-m68k                         amcore_defconfig
-arc                          axs103_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                      pcm030_defconfig
-m68k                       m5475evb_defconfig
-powerpc                 mpc832x_rdb_defconfig
-powerpc                    mvme5100_defconfig
-xtensa                         virt_defconfig
-m68k                       m5275evb_defconfig
-sh                   rts7751r2dplus_defconfig
-powerpc                     pq2fads_defconfig
-sparc                       sparc64_defconfig
-powerpc                      ppc6xx_defconfig
-arm                         s5pv210_defconfig
-powerpc                 mpc8315_rdb_defconfig
-arc                                 defconfig
-sh                            hp6xx_defconfig
-sh                           se7721_defconfig
-sh                           se7206_defconfig
-sh                          r7780mp_defconfig
-mips                  cavium_octeon_defconfig
-arm                        mini2440_defconfig
-powerpc                     tqm8548_defconfig
-um                            kunit_defconfig
-arm                            zeus_defconfig
-arm                       aspeed_g5_defconfig
-parisc                generic-64bit_defconfig
-arm                           viper_defconfig
-powerpc                 mpc836x_rdk_defconfig
-mips                        jmr3927_defconfig
-arc                        nsim_700_defconfig
-xtensa                  audio_kc705_defconfig
-arm                       omap2plus_defconfig
-powerpc               mpc834x_itxgp_defconfig
-arm                         palmz72_defconfig
-arm                             ezx_defconfig
-arm                  colibri_pxa270_defconfig
-ia64                                defconfig
-um                             i386_defconfig
-x86_64                              defconfig
-nios2                         3c120_defconfig
-arm                         lubbock_defconfig
-arm                          iop32x_defconfig
-arm                         orion5x_defconfig
-powerpc                      obs600_defconfig
-arm                        keystone_defconfig
-s390                       zfcpdump_defconfig
-powerpc                        warp_defconfig
-mips                            gpr_defconfig
-um                                  defconfig
-arc                          axs101_defconfig
-sh                          kfr2r09_defconfig
-powerpc                 mpc8313_rdb_defconfig
-arm                        mvebu_v7_defconfig
-powerpc                     stx_gp3_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210520
-x86_64               randconfig-a006-20210520
-x86_64               randconfig-a005-20210520
-x86_64               randconfig-a003-20210520
-x86_64               randconfig-a004-20210520
-x86_64               randconfig-a002-20210520
-i386                 randconfig-a001-20210520
-i386                 randconfig-a005-20210520
-i386                 randconfig-a002-20210520
-i386                 randconfig-a006-20210520
-i386                 randconfig-a004-20210520
-i386                 randconfig-a003-20210520
-i386                 randconfig-a016-20210520
-i386                 randconfig-a011-20210520
-i386                 randconfig-a015-20210520
-i386                 randconfig-a012-20210520
-i386                 randconfig-a014-20210520
-i386                 randconfig-a013-20210520
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-b001-20210520
-x86_64               randconfig-a013-20210520
-x86_64               randconfig-a014-20210520
-x86_64               randconfig-a012-20210520
-x86_64               randconfig-a016-20210520
-x86_64               randconfig-a015-20210520
-x86_64               randconfig-a011-20210520
+> 	if (sk_unhashed(sk) && reuse->num_closed_socks) {
+> 		spin_unlock_bh(&reuseport_lock);
+> 		return -ENOENT;
+> 	}
+> 
+> Although checking with reuseport_sock_index() will also work,
+> the above probably is simpler and faster?
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Yes, if sk is unhashed and has sk_reuseport_cb, it stays in the closed
+section of socks[] and num_closed_socks is larger than 0.
+
+
+> 
+> > 
+> > 
+> > Another option is to add the check in sock_setsockopt():
+> > SO_ATTACH_REUSEPORT_[CE]BPF, SO_DETACH_REUSEPORT_BPF.
+> > 
+> > Which do you think is better ?
+> I think it is better to have this sock_reuseport specific bits
+> staying in sock_reuseport.c.
+
+Exactly, I'll keep the change in sock_reuseport.c
