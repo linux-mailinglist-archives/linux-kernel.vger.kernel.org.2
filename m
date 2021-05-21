@@ -2,117 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE77B38C903
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E57138C90B
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:18:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236620AbhEUOPh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:15:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhEUOPe (ORCPT
+        id S235057AbhEUOTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:19:42 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:59660 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229813AbhEUOTk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 10:15:34 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD775C061574;
-        Fri, 21 May 2021 07:14:10 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id lz27so30687757ejb.11;
-        Fri, 21 May 2021 07:14:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
-        b=oXrPFbj/F4QzgIwh7EPXBwVXmfNwLpxjxJ8zrD47PK9mL/aHImNzJakNOsj+lGlnC5
-         3uvms4VIUXbLD2/aJUKzTO+6SmVuoulZAZfLa5N1xjjxPcy2sK/uf4S+IRe3qhJILdlu
-         YjTA1/odtMmIxzvxB9P/5iRtIkrEfCTJP7Yuz8XL1rTjNriUSXwPmNGuKgYhxUrFe3DN
-         nIyLv/kpqyTzM0FaOgwdKS3byWirSTBnkxmy4pygSkYHlI38+MkO/2rRx/G6pamrlRxq
-         lCKtZE0xXNXtE4WWdgtADhO4iPu+fJZnfuWDcaDBxMC8jKiVRdHDKjKhEk+dcNUfPZBs
-         V+Tg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nqRwQlClWrSCEOn0RjHe1V2/QBqk87xD6ByHv3kJbQY=;
-        b=oAKyS2WabClHUe3hBWwHdBKsPOG+yp/g1Ko/Tfi9jv5sMhBq6tAYHsOTgx2fRQkyHb
-         iSN6viIw4whQ5U3L2tz0aS77CqW+ktyq72ps7pjqG6wyVZvfscc+up+VUl5Q1AMcqzh6
-         avUFJ0mfBW3p63x5kat3RbNzu0wpmFvoOMhdKxkKfh4N7S3I+HoA0OFsSFCeojbWMLOo
-         1Y2qLoqUHrkUWh9X3D0PtbkJ4df3mWnS0RA8b2OEqUgfsh3vd39TksT6Ezc0QQ/XqbEn
-         Kb031jub8m3Fc+VBpl7yG+qSTz8KPg7t1swD99WHbJcyPzdKXVNrjhlHA9aRdyZD9IVV
-         Y/WQ==
-X-Gm-Message-State: AOAM531Gn+DzwpkO2dxKedVMAKhw9rx6zDjytyokGlkf+j0XsuWNTVzb
-        76sV4wyQGKjx/Gg/HtwT4SY=
-X-Google-Smtp-Source: ABdhPJxlz9dC5l2beVI0RR8Y4plsZ6zJ1KUqmT/4uqPHe135qkehopOjM9gv55t4tHtyvNX8lBqRuQ==
-X-Received: by 2002:a17:906:c9cf:: with SMTP id hk15mr10403984ejb.445.1621606449227;
-        Fri, 21 May 2021 07:14:09 -0700 (PDT)
-Received: from skbuf ([188.26.52.84])
-        by smtp.gmail.com with ESMTPSA id gu16sm3610416ejb.88.2021.05.21.07.14.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 07:14:08 -0700 (PDT)
-Date:   Fri, 21 May 2021 17:14:06 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     davem@davemloft.net, kuba@kernel.org, a.fatoum@pengutronix.de,
-        vladimir.oltean@nxp.com, ast@kernel.org, daniel@iogearbox.net,
-        andriin@fb.com, edumazet@google.com, weiwan@google.com,
-        cong.wang@bytedance.com, ap420073@gmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxarm@openeuler.org, mkl@pengutronix.de,
-        linux-can@vger.kernel.org, jhs@mojatatu.com,
-        xiyou.wangcong@gmail.com, jiri@resnulli.us, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, bpf@vger.kernel.org,
-        jonas.bonn@netrounds.com, pabeni@redhat.com, mzhivich@akamai.com,
-        johunt@akamai.com, albcamus@gmail.com, kehuan.feng@gmail.com,
-        atenart@kernel.org, alexander.duyck@gmail.com, hdanton@sina.com,
-        jgross@suse.com, JKosina@suse.com, mkubecek@suse.cz,
-        bjorn@kernel.org, alobakin@pm.me
-Subject: Re: [Linuxarm] [PATCH RFC v4 0/3] Some optimization for lockless
- qdisc
-Message-ID: <20210521141406.mmxv4ikfp4zfkcwo@skbuf>
-References: <1621502873-62720-1-git-send-email-linyunsheng@huawei.com>
- <829cc4c1-46cc-c96c-47ba-438ae3534b94@huawei.com>
- <20210520134652.2sw6gzfdzsqeedzz@skbuf>
+        Fri, 21 May 2021 10:19:40 -0400
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14LE2Inb024640;
+        Fri, 21 May 2021 16:18:08 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
+ cc : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=selector1; bh=UfQOTLbkM5w8D/KIYvHVMy2nA0UDWziGT2f0VY3jfnw=;
+ b=1PrZPjnbmfD9UoaN/jBRS2dPS1WLfEbMmPFiNsX2qW5sb5UnJuHtxa3insDI25ZQqsa6
+ o4ls9W74zw8jNslTFjaDy4aAB+t5k59P9vb0hGxDHhAIJgnlA8wLe5iDU0MJsI0Q7W8W
+ p5PRX/lseHfQZPxXbKAoyOkRdN2fWzvCmzywlhZseH2+MKoUn0o9KQOfkEhgGPIwvVZB
+ qbeX/ghSA2JyWPtgRkajzsjxwXkA6tagvTYRb0z5K/dtNjyXMffxouFMMNQIyD4SqByN
+ rfJGBynx2DA1uOfI/n28aQNf7rsrBt9ouU1FmBFQP3LDeeCKR1nBLjlQ4TPxDvsEBHGp lA== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38p3c53ehb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 21 May 2021 16:18:08 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E621810002A;
+        Fri, 21 May 2021 16:18:05 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D964C226787;
+        Fri, 21 May 2021 16:18:05 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.44) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 21 May
+ 2021 16:18:05 +0200
+Date:   Fri, 21 May 2021 16:17:57 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Lee Jones <lee.jones@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <maxime.coquelin@st.com>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>
+Subject: Re: [PATCH 13/16] i2c: busses: i2c-st: Fix copy/paste function
+ misnaming issues
+Message-ID: <20210521141757.GA17641@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Lee Jones <lee.jones@linaro.org>,
+        linux-kernel@vger.kernel.org,
+        Patrice Chotard <patrice.chotard@foss.st.com>,
+        Maxime Coquelin <maxime.coquelin@st.com>,
+        linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org
+References: <20210520190105.3772683-1-lee.jones@linaro.org>
+ <20210520190105.3772683-14-lee.jones@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20210520134652.2sw6gzfdzsqeedzz@skbuf>
+In-Reply-To: <20210520190105.3772683-14-lee.jones@linaro.org>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.44]
+X-ClientProxiedBy: SFHDAG1NODE1.st.com (10.75.127.1) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-21_05:2021-05-20,2021-05-21 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 04:46:52PM +0300, Vladimir Oltean wrote:
-> Hi Yunsheng,
-> 
-> On Thu, May 20, 2021 at 05:45:14PM +0800, Yunsheng Lin wrote:
-> > On 2021/5/20 17:27, Yunsheng Lin wrote:
-> > > Patch 1: remove unnecessary seqcount operation.
-> > > Patch 2: implement TCQ_F_CAN_BYPASS.
-> > > Patch 3: remove qdisc->empty.
-> > > 
-> > > RFC v4: Use STATE_MISSED and STATE_DRAINING to indicate non-empty
-> > >         qdisc, and add patch 1 and 3.
-> > 
-> > @Vladimir, Ahmad
-> > It would be good to run your testcase to see if there are any
-> > out of order for this version, because this version has used
-> > STATE_MISSED and STATE_DRAINING to indicate non-empty qdisc,
-> > thanks.
-> > 
-> > It is based on newest net branch with qdisc stuck patchset.
-> > 
-> > Some performance data as below:
-> > 
-> > pktgen + dummy netdev:
-> >  threads  without+this_patch   with+this_patch      delta
-> >     1       2.60Mpps            3.18Mpps             +22%
-> >     2       3.84Mpps            5.72Mpps             +48%
-> >     4       5.52Mpps            5.52Mpps             +0.0%
-> >     8       2.77Mpps            2.81Mpps             +1.4%
-> >    16       2.24Mpps            2.29Mpps             +2.2%
-> > 
-> > IP forward testing: 1.05Mpps increases to 1.15Mpps
-> 
-> I will start the regression test with the flexcan driver on LS1028A and
-> let you know tomorrow or so if there is any TX reordering issue.
+Thanks for the fix. I was about to propose it ;)
 
-14 million CAN frames later, I did not observe any TX reordering at all.
+On Thu, May 20, 2021 at 08:01:02PM +0100, Lee Jones wrote:
+> Fixes the following W=1 kernel build warning(s):
+> 
+>  drivers/i2c/busses/i2c-st.c:531: warning: expecting prototype for st_i2c_handle_write(). Prototype was for st_i2c_handle_read() instead
+>  drivers/i2c/busses/i2c-st.c:566: warning: expecting prototype for st_i2c_isr(). Prototype was for st_i2c_isr_thread() instead
+> 
+> Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+> Cc: Maxime Coquelin <maxime.coquelin@st.com>
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-i2c@vger.kernel.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/i2c/busses/i2c-st.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/i2c/busses/i2c-st.c b/drivers/i2c/busses/i2c-st.c
+> index faa81a95551fe..30089b38044b5 100644
+> --- a/drivers/i2c/busses/i2c-st.c
+> +++ b/drivers/i2c/busses/i2c-st.c
+> @@ -524,7 +524,7 @@ static void st_i2c_handle_write(struct st_i2c_dev *i2c_dev)
+>  }
+>  
+>  /**
+> - * st_i2c_handle_write() - Handle FIFO enmpty interrupt in case of read
+> + * st_i2c_handle_read() - Handle FIFO enmpty interrupt in case of read
+
+Could you also fix the typo enmpty -> empty at the same time ?
+
+>   * @i2c_dev: Controller's private data
+>   */
+>  static void st_i2c_handle_read(struct st_i2c_dev *i2c_dev)
+> @@ -558,7 +558,7 @@ static void st_i2c_handle_read(struct st_i2c_dev *i2c_dev)
+>  }
+>  
+>  /**
+> - * st_i2c_isr() - Interrupt routine
+> + * st_i2c_isr_thread() - Interrupt routine
+>   * @irq: interrupt number
+>   * @data: Controller's private data
+>   */
+> -- 
+> 2.31.1
+> 
+
+Regards,
+Alain
