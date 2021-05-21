@@ -2,86 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C64D38CAE2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D5438CAE4
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 18:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233726AbhEUQWJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 12:22:09 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33934 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230267AbhEUQWH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 12:22:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621614043; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=0jku9GTWoW2j4X3kuE24CEPxpjUZoyrELhmnmA6WIRM=;
-        b=scjoFZhQZOqwY7sQY14JVQERLQBiMsK0kCCiGWKiJttOhvO/OQxVNvL4uwOX8bp+CKqz9y
-        8JaI2kf/FBenZkKbrJiUithygyIER063lsg/dBEMEc1hKvhl8ZlcS2Dc3KxOtsGWH05aUC
-        zxSH0PiYv5cn4zSwbXpWYKh+7PA5TN8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621614043;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type;
-        bh=0jku9GTWoW2j4X3kuE24CEPxpjUZoyrELhmnmA6WIRM=;
-        b=Cb/Xe+DuudH9GdoksCM+G2Xj+HmhTE8s9kWt8imNLJhlk4vrDY76mWzrICfPArvovzbNcl
-        T+PLZwyQePX3lxCg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 063F4ABD0;
-        Fri, 21 May 2021 16:20:43 +0000 (UTC)
-Date:   Fri, 21 May 2021 18:20:41 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     netdev@vger.kernel.org
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: BTF: build failure on 32bit on linux-next
-Message-ID: <20210521162041.GH8544@kitsune.suse.cz>
+        id S232943AbhEUQWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 12:22:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230267AbhEUQWe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 12:22:34 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 319AEC061574;
+        Fri, 21 May 2021 09:21:11 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id w7so11237928lji.6;
+        Fri, 21 May 2021 09:21:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=FfxeiWh7K2Up9BlsshUmWOPtaWQbPNOMBgiG3QZnOEY=;
+        b=JJPQWdoK/Gu5nqBGahiXXO4eTxnSFYKY1v2QxGwafx9+kn/uDwHbSVrVhyESpjVEVG
+         jccgiUD2EWt12WSKkYUcRK9yPXT/dxDr4fv7ALXBXXmL8l8tQNpBvarD1wzsas+N3Ln6
+         XW11eymrwsACem7JBGrVp3IRsoDWBoOVoDPZKhb5GGMZqdLZbRpanISueUBWawl3CCGT
+         Q/nJr1tcECUi4lvdsr0LrtsaiLBqxbsrYglg0YZkP7quI1JgQMV7SXZarxmx6oMROIuh
+         K5umpHZl++qebBV3eqI4p3jYrlOWIOPAATVxtHs3uKrXl7bNBRQnn3kn8yETZp+Qq9fD
+         Ms8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=FfxeiWh7K2Up9BlsshUmWOPtaWQbPNOMBgiG3QZnOEY=;
+        b=c3xEZP0us9pjKBsNhgf4b8AYM9auedHNP6jslwvhCiCkm4BSWe9m8J6O5n6gqY1E9y
+         +1at5E3SU99+ij01zGZv1WhscaI9GHXfoeoQZweZ1hqDljKqB70Ag0R48MDaD/iGeAa3
+         3de3D6PAt+8MOgYzt98xTwlYagON71xAKvRTJQxVJXJzWuZpqCrrjH63KCkmskFNvjsW
+         ncjIzW9Zn3tI0idfs7Qlei5ZKWviWi4Q03h4+jPJKAPBeVoXTDD/kFJCdEayTbv/4pBl
+         mqshEzQ9x7pq1VscSCJlHj9fcLIx7VWj1R07Yr4/y0vQOZRU4685sOb28IDLodHEbNSY
+         +LuA==
+X-Gm-Message-State: AOAM532Q3S2u1w3f1en+L98L7+nKthnFUK5Gc+NCp9pmNSeJmR8nG1Wa
+        f5Ys3QnzjfZVYsRHjiMU+QpMZwfNSwJPeoDfg09JkPbatq2PmA==
+X-Google-Smtp-Source: ABdhPJxwYXRBfrWP2laq8eo6GCiwH34rZeVkxzlnQ19dcWk+qqpVdBbU9pkmTL3DpWp5saOpsw9QHYTQt99e3h0Gsvw=
+X-Received: by 2002:a2e:9e57:: with SMTP id g23mr7392226ljk.148.1621614069367;
+ Fri, 21 May 2021 09:21:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From:   Steve French <smfrench@gmail.com>
+Date:   Fri, 21 May 2021 11:20:58 -0500
+Message-ID: <CAH2r5msWo7Z=Z5HPzxgaBzjuDKAL5hQ0cZfJd23k-JhnpzvDpg@mail.gmail.com>
+Subject: [GIT PULL] SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        CIFS <linux-cifs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Please pull the following changes since commit
+d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
 
-looks like the TODO prints added in 67234743736a6 are not 32bit clean.
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
 
-Do you plan to implement this functionality or should they be fixed?
+are available in the Git repository at:
 
-Thanks
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc3-smb3
 
-Michal
+for you to fetch changes up to 9687c85dfbf84a6a37522626b4d5c5191a695e6c:
 
-diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-index 69cd1a835ebd..70a26af8d01f 100644
---- a/tools/lib/bpf/libbpf.c
-+++ b/tools/lib/bpf/libbpf.c
-@@ -4565,7 +4565,7 @@ static int init_map_slots(struct bpf_object *obj, struct bpf_map *map)
- 		targ_map = map->init_slots[i];
- 		fd = bpf_map__fd(targ_map);
- 		if (obj->gen_loader) {
--			pr_warn("// TODO map_update_elem: idx %ld key %d value==map_idx %ld\n",
-+			pr_warn("// TODO map_update_elem: idx %td key %d value==map_idx %td\n",
- 				map - obj->maps, i, targ_map - obj->maps);
- 			return -ENOTSUP;
- 		} else {
-@@ -6189,7 +6189,7 @@ static int bpf_core_apply_relo(struct bpf_program *prog,
- 		return -EINVAL;
- 
- 	if (prog->obj->gen_loader) {
--		pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind %d\n",
-+		pr_warn("// TODO core_relo: prog %td insn[%d] %s %s kind %d\n",
- 			prog - prog->obj->programs, relo->insn_off / 8,
- 			local_name, spec_str, relo->kind);
- 		return -ENOTSUP;
+  Fix KASAN identified use-after-free issue. (2021-05-20 12:20:42 -0500)
+
+----------------------------------------------------------------
+7 SMB3 fixes:
+- one for stable (for copychunk)
+- three others fix problems found in testing handle leases
+- a fix for SMB3 compounding found during review and testing to the
+kernel server
+- two trivial cleanups
+
+A few additional important patches are still in testing and are
+not included in this pull request (e.g. a fix for some problems with variable
+length strings in dynamic tracing, a problem with getting newer types of
+decryption and session keys needed for debugging, a problem that was pointed
+out at the recent test event, and some multichannel related reconnect fixes)
+----------------------------------------------------------------
+Jiapeng Chong (1):
+      cifs: Fix inconsistent indenting
+
+Rohith Surabattula (3):
+      Fix kernel oops when CONFIG_DEBUG_ATOMIC_SLEEP is enabled.
+      Defer close only when lease is enabled.
+      Fix KASAN identified use-after-free issue.
+
+Ronnie Sahlberg (1):
+      cifs: fix memory leak in smb2_copychunk_range
+
+Steve French (1):
+      SMB3: incorrect file id in requests compounded with open
+
+wenhuizhang (1):
+      cifs: remove deadstore in cifs_close_all_deferred_files()
+
+ fs/cifs/cifsfs.c     |  2 +-
+ fs/cifs/cifsglob.h   |  4 ++--
+ fs/cifs/file.c       | 46 +++++++++++++++++++++++++---------------------
+ fs/cifs/fs_context.c |  2 +-
+ fs/cifs/misc.c       | 23 +++++++++++++++++++----
+ fs/cifs/smb2ops.c    |  4 ++++
+ fs/cifs/smb2pdu.c    |  6 +++---
+ 7 files changed, 55 insertions(+), 32 deletions(-)
+
+
+-- 
+Thanks,
+
+Steve
