@@ -2,78 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DCD938C8E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:02:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C32FC38C8E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 16:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236514AbhEUOD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 10:03:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232170AbhEUODv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236540AbhEUOD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 10:03:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54324 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236317AbhEUODv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 21 May 2021 10:03:51 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98299C061574;
-        Fri, 21 May 2021 07:02:25 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id s20so11020689plr.13;
-        Fri, 21 May 2021 07:02:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DWPn98eC44k+PyyPgCpWoFhVf53fNK+DheW9P08B0H0=;
-        b=iUz/5i2acChphR26zt2ip+uqw31c9cj1M7DMK6S0VvYrEd6tpfGYgq8eRQbcX1C4XL
-         Qv6C9UqOYoDj+ElbWvUhOjU56bbfCVphozbFiwFTWPoSOUecYWBcLNfRJtcD4zfjWS9C
-         vkDKYqjD9slIiEw1irxgN1dZc4/OIaTNq7s3jJUoVcI9EvUmgaWN5DRayihIomNKXoUT
-         NtN5919kgfuSugbjTA0SnJnTHE0Z6l4niwHSY8olJCWhPjc8FEkuZRCgwicgWivNUTji
-         +I4AJ4JPRDv1HXh2hZ5BwW7nNwDbFgzsgkBXj9sdthRaU6LDfutlM9Efv3GX01YFK7hm
-         FKvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DWPn98eC44k+PyyPgCpWoFhVf53fNK+DheW9P08B0H0=;
-        b=Jp0srJUoAcTbM4FnpVlOA/wM+YNB+6khwx3AoJxF+v6/n0s/H5cdad7QZQWWybjG6P
-         USDDVVtukh5FyU+wR4SVla71XqW2Uu6btlGEBdY7vsrccjQgSvNO0OLgYm1ADwjBBSRD
-         HyObMDzq6bAMZNJKbs99lwhNgSGZNnLjYay0w3cbU9ZoSW6oVTY1BfWzA8n9An/iXPvq
-         5iF/n4SkrF3Wxxr6vQMPA8HLPD0hRk0dlEPAhnRcLUnrTN/zOvCStgwi4u9ka6YtEUwy
-         iEv8+rBA7oNzB6RhhvPQp1txcDeMZ8cep8dbaLZMEZyZ5nXu3ZrBferHU5hbytuRXNe6
-         oe0g==
-X-Gm-Message-State: AOAM5320/VeGQeV9rCTFFEq+YJ1ORrVq2kPZXJP5bvtv7VKgRHVpNRqc
-        GaKnNDExNgEoH2TpGGk9o1S5eJfsgLzr8+taDCMM8YD9C84=
-X-Google-Smtp-Source: ABdhPJxP9kJ9+yXHBekW5UQ68mGCeDaRL1L/0XQzUQZe65vGaDWcaJufUgT5JT9lhiID/vnaGIoek8eqosjwHNvgksI=
-X-Received: by 2002:a17:90a:af8b:: with SMTP id w11mr10967680pjq.228.1621605745017;
- Fri, 21 May 2021 07:02:25 -0700 (PDT)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 065406128A;
+        Fri, 21 May 2021 14:02:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621605748;
+        bh=kA9T6I0KtR2vRJObdHAp/gezZexd82kCO/U5xHAWBJ4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=HjDs66JCeJSYu0hRBPCQZdEwxtqI6kNlCUohGGayjzdkty0sYZGGQwaMdkRqqnKjJ
+         y4RYjJM4vIopEUNcvvD+/3JnFHORbExiAI35Iu4xIpaOIRfZ2bLKVG0RtB7JiRZ5Tk
+         SNfzlJzzMEzkf/hzlNYchw31InKCdFFMih76tSYfgtMRXkLJAlkj2sjoxVsYLHkTK8
+         l+HfALw+dGl2YPtbOneLDtlMId8NJHObS3ND4a2jLT35LLDoCAMSKS/jOuq34+G/I1
+         5CxZIYYnlVoON1xDUjUb4MoXe8coXCGeV5KcRVEguaMfKy/A4bRhvN7tLPiW600n1Y
+         zq46YGPnGX5xw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+        id C71775C033C; Fri, 21 May 2021 07:02:27 -0700 (PDT)
+Date:   Fri, 21 May 2021 07:02:27 -0700
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Suleiman Souhlal <suleiman@google.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rcu/tree: consider time a VM was suspended
+Message-ID: <20210521140227.GW4441@paulmck-ThinkPad-P17-Gen-1>
+Reply-To: paulmck@kernel.org
+References: <20210516102716.689596-1-senozhatsky@chromium.org>
+ <20210517162312.GG4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKMbQQ0qBAixXC5p@google.com>
+ <20210518231514.GS4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKX/H0EwRRLM+cAa@google.com>
+ <20210520145318.GJ4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKbhg30Q6YlerCoz@google.com>
+ <20210521001443.GR4441@paulmck-ThinkPad-P17-Gen-1>
+ <YKdWV2lznaxUKBM5@google.com>
 MIME-Version: 1.0
-References: <20210521135516.64727-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20210521135516.64727-1-andriy.shevchenko@linux.intel.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 21 May 2021 17:02:08 +0300
-Message-ID: <CAHp75VcS5UBeJ9eq3dv_8EHwfjdBSBbC4kdmuKyrxCPj+gQ5hA@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] platform/x86: Add PWM platform data for Merrifield
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        linux-pwm@vger.kernel.org, Mark Gross <mgross@linux.intel.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKdWV2lznaxUKBM5@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 4:55 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> PWM is not functional since it requires pins to be muxed and configured
-> properly. Add pinctrl mapping to platform initialization code. The pins will
-> be configured properly whenever PWM driver is probed successfully.
+On Fri, May 21, 2021 at 03:42:31PM +0900, Sergey Senozhatsky wrote:
+> On (21/05/20 17:14), Paul E. McKenney wrote:
+> > > On a side note.
+> > > 
+> > > I wish we didn't have to put kvm_check_and_clear_guest_paused() all
+> > > over the place.
+> > > 
+> > > We do load jiffies at the start of check_cpu_stall(). So, in theory,
+> > > we can just use that captured jiffies (which can become obsolete but
+> > > so will grace period timestamps) value and never read current system
+> > > jiffies because they can jump way forward. IOW
+> > > 
+> > > 	jn = j + 3 * rcu_jiffies_till_stall_check() + 3;
+> > > 
+> > > instead of
+> > > 
+> > > 	jn = jiffies + 3 * rcu_jiffies_till_stall_check() + 3;
+> > > 
+> > > Then we probably can remove kvm_check_and_clear_guest_paused().
+> > > 
+> > > But that "don't load current jiffies" is rather fragile.
+> > > 
+> > > kvm_check_and_clear_guest_paused() is not pretty, but at least it's
+> > > explicit.
+> > 
+> > If this works for you, I am very much in favor!
+> 
+> Oh, no. Sorry for the noise. This is racy and won't work.
 
-Sorry guys for the noise, this has been mistakenly out here.
-Nothing really for upstream.
+I had been hoping!  ;-)
 
--- 
-With Best Regards,
-Andy Shevchenko
+							Thanx, Paul
