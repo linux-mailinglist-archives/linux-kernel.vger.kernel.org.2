@@ -2,163 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1D3038CD75
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BBAB38CD77
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 20:30:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234822AbhEUSby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 14:31:54 -0400
-Received: from mga05.intel.com ([192.55.52.43]:39036 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229762AbhEUSbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 14:31:53 -0400
-IronPort-SDR: FDPv9F+qYq4BT20lLRpM1dXDoccaLABOvihrWYJurvzrKFeOxdQuU8wfTK6DF7E7m6GvYaEe7S
- gft5qvoMIsnw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="287087255"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="287087255"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 11:30:28 -0700
-IronPort-SDR: 2/ibAWiIBOcZjx8ReYRPPf0JUqh04zOHN9CUMSnVNuzNXkKiN1uPl7pS1Sxyv3CUBlmP+Nm8E5
- RFY1LzbMhBLA==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="613342975"
-Received: from pburton-mobl.amr.corp.intel.com (HELO [10.209.36.169]) ([10.209.36.169])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 11:30:27 -0700
-Subject: Re: [RFC v2-fix-v2 1/1] x86/boot: Avoid #VE during boot for TDX
- platforms
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Raj Ashok <ashok.raj@intel.com>, linux-kernel@vger.kernel.org,
-        Sean Christopherson <sean.j.christopherson@intel.com>
-References: <b1aafcbb-c5db-efa5-0343-014585e73191@intel.com>
- <20210521143524.2527690-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <f33c63b2-7b41-4c99-abd6-b47a8e7a4e26@intel.com>
- <YKf5hObmGXNgx0vS@google.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <9a23d1c3-a443-6142-52b4-7594123030fb@intel.com>
-Date:   Fri, 21 May 2021 11:30:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235007AbhEUSb7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 14:31:59 -0400
+Received: from mail-bn8nam08on2071.outbound.protection.outlook.com ([40.107.100.71]:63360
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234895AbhEUSb5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 14:31:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UXx/mAxHNs6e9vhLNsUyud43TtLE6iCO1xKaVQ9Djc5JgC3qsRbmFi4hR1/YgcwtBHrEcN2VVtkUeVU0UAUa5qAHLmRDYxmLkSFaUtiE5s0D1DRtf+AeupWDQtWu4g49IgpZbGWtt2llQEgnLbLr2b7XgoaRBBHWpMzrZ18QqFXdy9QIqHXMNZOWhvP9URZc824hvv5yZ8Q6h2q9bbX5FAQr7XgaZimxbb3fFidS/wRNrnvNiVFVzBh4pDrppz27322/0jLfNXA83aSZkprEFZpaImM2muYgJfU1QusZPGMLno5+5gb2UB5wXDv9Rbte+Zu4dDbhCGsIrt5ExtK23A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1ra5PAuaEYT3SZjERc0yt2ufY0HBTmHAbpdHvob8ezg=;
+ b=PT7FV/pSaEumcD3ppIrjmm3PYXFvhHTwsxjPjihbAQg7ryDG9sanLdbPBERZod1snNLVvqUInp6Fp0KFhG6dOSUj2fJOm5DFire3xTpTWzkRW9FeV174ws1kmn6zhwOOItmvXnyhb25p+nuinPJTvQZ+0E0TOa6x+5bEqUQDHyeZGLlr4erKXUOtXGMbEDMqWmlFquWPBaPCsVD2pEw1gWHUxl21IAZa4qzwdHZuBf/TuEmuFOlSPEXT3YkZsVO75SbzReFoHN4tL50yZ7QzipX5EmV9CY5oSbstdqI0xv1IFv4PWSh8HjQuoX/mkwmN5cmupGt6FQIfxjvRNFKhYQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1ra5PAuaEYT3SZjERc0yt2ufY0HBTmHAbpdHvob8ezg=;
+ b=ZefDY6MO6f6rtQkKl+y58jEsUhLIHnuNexsn7YFmD3O85slxw89VJ+S7xORIQ4B3Qu+EcDa2/donfR2uJbKdyqz4T0Y60RnGojBy5IPBX47kslN5vtBhSTXdqfuRgWYE3MkNfTI3UEA+MfBetH9U2m3JZrbxj/buUefzkPYBLaPl9+1NlNssDKEAoBBKZwNlqTo4WykgSciFTGjPEJ0Um01Wz4l1Zfwj9jB+8EpdZZi99qwzSOTdvcOl9DK7yybJ1AiILEv/+7t80m6mZhWQNxesaJdkE3CSp7AiO+vU4CKjkKuRIuFFOHMI+GP9JZsU95i8mYJ2pq0XXSIz6KE2/g==
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL0PR12MB5521.namprd12.prod.outlook.com (2603:10b6:208:1c7::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Fri, 21 May
+ 2021 18:30:33 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4150.025; Fri, 21 May 2021
+ 18:30:33 +0000
+Date:   Fri, 21 May 2021 15:30:31 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, cohuck@redhat.com,
+        pasic@linux.vnet.ibm.com, jjherne@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com
+Subject: Re: [PATCH v3 2/2] s390/vfio-ap: control access to PQAP(AQIC)
+ interception handler
+Message-ID: <20210521183031.GC1002214@nvidia.com>
+References: <20210519153921.804887-1-akrowiak@linux.ibm.com>
+ <20210519153921.804887-3-akrowiak@linux.ibm.com>
+ <20210519161610.GO1002214@nvidia.com>
+ <8c93c29a-e223-ac9a-5b54-7329587084c9@linux.ibm.com>
+ <20210519232202.GV1002214@nvidia.com>
+ <07dfdf17-f56e-6dd1-8011-eacfbe741e9e@linux.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <07dfdf17-f56e-6dd1-8011-eacfbe741e9e@linux.ibm.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YTXPR0101CA0030.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::43) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-In-Reply-To: <YKf5hObmGXNgx0vS@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YTXPR0101CA0030.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00::43) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.30 via Frontend Transport; Fri, 21 May 2021 18:30:33 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lk9up-00CZWw-F8; Fri, 21 May 2021 15:30:31 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: bc73a69e-8c3f-4a44-f675-08d91c8684e2
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5521:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB5521F9514CF24836B5341381C2299@BL0PR12MB5521.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nMoB5lY0kc9D9zcz12afkaNERVnaQ26qvxQ5+3BfiakxyDk9G5jtnN3ScSHpUvZRaHMpHHFlE8pJd499hcOstSdQy4uE7VxWSMaIm+f6cT8+DZorjDQvJKhSjh81Kqnz+pdEjgkbU1tcq+QiL3L079qDKW+x6HSAlpe7R7R9uwtcjtd5bpcCp16WI7FpZHE7EVye9y/72HsFLxNdNg/nI2nBM6elRgX4sxnpOjUS/NeMotMEGNDjrCeJOb/lyYkCDEWiGDGWpAMxX4HvZKYNHp9cH+2ii7OYj2uuPV63ZwACQq+Unxn2oH9d55ggMRBQUJLr26k6t2vv+Mr3cfk6IZFLCo+olo4fjZRpGI+v50EafgPFEaAQRk/WLaQ2Nrs+ODddfu3ghosmP6YTt3NBGrFzihAhUAa0cuJ1/T3xckWf0pNZWIz0bPp+RV1RCTiYq3jZ9YTMx6EYo/LIFxGzypR5yO7Ei0POy2aOst15GTW1c/08mkc0TCoIhjKdCvkF+uB2tG+BoP5Cdn1wxjM9CNYD4EgKmofKxNsW6BlC7uWl0DTpOwiR6+oXIKJd1c3fSQOiPdEjFfGRzRnRvTdDOxukRcPPJXhfKM9HiCPhMy8=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(136003)(396003)(346002)(39860400002)(1076003)(26005)(9746002)(9786002)(2906002)(2616005)(4326008)(8936002)(426003)(186003)(33656002)(38100700002)(66476007)(478600001)(66946007)(83380400001)(36756003)(107886003)(66556008)(86362001)(5660300002)(8676002)(316002)(6916009);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Wd7Pj7xF6LauSK0CtIxEWcUtSZMxnspBL0vCiCbHJiwJWXBMB3GR57Xa79FA?=
+ =?us-ascii?Q?w22CDvSbQc5l7In/h7NU5aklRM2k9nUNdsLwH0nim8c6dGiztVnTLpxIPkDI?=
+ =?us-ascii?Q?g1AeZRtU3D6vpAvMoT2CYDaR1tFtGQdRtsajTH80rOfrfk/j1xOev0PonnAk?=
+ =?us-ascii?Q?bsjHof7jHo5bUsK4l8vnV0GYGEczUpcrZgM+fiPrQX2np6xFzwaFPuqmHu25?=
+ =?us-ascii?Q?wfqX48b6V6t02cvkbrCYlnJJBAjb2W1krQ+S9yol6b4YCgCVzJ8NpInEwqyt?=
+ =?us-ascii?Q?ruyKVVCnnw3cfwf1Buy/hpbHAqBXTjWrroZh7BaAAeTeA8uiXOa4E/IQl5y0?=
+ =?us-ascii?Q?GBfvwd5GFswdlUvwl6f8eXDTVlMxKcC+JS5S9CJSwOnk6eRoJUJf3u60Nku5?=
+ =?us-ascii?Q?d9PQcadU9BQ4tNv16B+X2pZkx7sCQ+Ssa6es4ShUJDsjVaUOLudjGd661rp2?=
+ =?us-ascii?Q?wzuKtK3WkwpcWhBzrkfoJZfvYtmxT+VOVGt2AVWUmsyDih5oT+zhdK5Nxr2m?=
+ =?us-ascii?Q?68Aiklz9LGZ/hXuRU4n7EWDAQVvzuG/chda0Zn2EpB0npAZLozaFWJQ73isC?=
+ =?us-ascii?Q?ImKocx9E+WlX7G5P8FQN2mSPVSOTA1vvpesj/Khyo/9zv10WO3aMZXpbl+7E?=
+ =?us-ascii?Q?1O4KG+5OEE/xFcK5t9/KGIWibq/TG0fPNyWQSVnXshG9OLIz1E5FG8Dg1waO?=
+ =?us-ascii?Q?Enhtu+fAxFdEAQcXnV7q+m5Yw6xxa7EosvwfD6fHoVq87ugxXAwiAcs5HJgj?=
+ =?us-ascii?Q?a4E8OhMWrK3kFdcMOqobh6zezFcar0qA+Xte2c6cmCfDkz8OwssxUhNEP2Jv?=
+ =?us-ascii?Q?PhII8YwCxValuUZhAtyuCUjeSKWa0CbFl58x5UYGmZMwWNlTfoNHV6G2NjJO?=
+ =?us-ascii?Q?wCa6ev4QUByxTTQNCGlbQokq701vKbfmHoMvuf/GSMr/9+2PKTZWJTrh0qey?=
+ =?us-ascii?Q?tkwKuMIhmcfTjydZ9pg9mZyFUsHfRPEVmnKsL2oMcYpJJpeyDL0Hcg6QaVWX?=
+ =?us-ascii?Q?trTn80bLxyd1Qu6sBPZ4DZ2edz8fBlkaAvUmFnHzh8T2uL76k6/Lyr9CFOjH?=
+ =?us-ascii?Q?v+DeH5mwh5lT1qzAdE9QPsyrnP6nt1N1MVypCNktjUe30veswj7rFSKX138F?=
+ =?us-ascii?Q?GFiDSq3Tp9aTLgpmbNYM163m3D9W++WmU1jAQpjTGYCc9YdkVuFrBoQt1V/G?=
+ =?us-ascii?Q?Z0JlgtPjnPeE7URtf3LhBTsBCCxPsosIEyIJ3iU47bbBa286+XC8plUalkfZ?=
+ =?us-ascii?Q?rvvno1hMo6kgB/rsoxJ8XLfecwGlZMnxT9KzcQ+J37y+3lr/LQhZzJHyOPWy?=
+ =?us-ascii?Q?l74wblBLUvDiCQjZI1FI9J1G?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bc73a69e-8c3f-4a44-f675-08d91c8684e2
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 May 2021 18:30:33.2100
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i9uNW8VbQIP48Gq1K7ZRKtRecPXshZVcxp5lxAtApTHbFlaW6CrtFMeXx9dphi37
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5521
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 11:18 AM, Sean Christopherson wrote:
-> On Fri, May 21, 2021, Dave Hansen wrote:
->>> +	/*
->>> +	 * Preserve current value of EFER for comparison and to skip
->>> +	 * EFER writes if no change was made (for TDX guest)
->>> +	 */
->>> +	movl    %eax, %edx
->>>  	btsl	$_EFER_SCE, %eax	/* Enable System Call */
->>>  	btl	$20,%edi		/* No Execute supported? */
->>>  	jnc     1f
->>>  	btsl	$_EFER_NX, %eax
->>>  	btsq	$_PAGE_BIT_NX,early_pmd_flags(%rip)
->>> -1:	wrmsr				/* Make changes effective */
->>>  
->>> +	/* Avoid writing EFER if no change was made (for TDX guest) */
->>> +1:	cmpl	%edx, %eax
->>> +	je	1f
->>> +	xor	%edx, %edx
->>> +	wrmsr				/* Make changes effective */
->>> +1:
->>
->> Just curious, but what if this goes wrong?  Say the TDX firmware didn't
->> set up EFER correctly and this code does the WRMSR.
+On Fri, May 21, 2021 at 02:24:33PM -0400, Tony Krowiak wrote:
 > 
-> By firmware, do you mean TDX-module, or guest firmware?  EFER is read-only in a
-> TDX guest, i.e. the guest firmware can't change it either.
-
-I guess I was assuming that the trusted BIOS was going to do the setup
-of EFER before it hands control over to the kernel.  So, I *meant* the BIOS.
-
-But, I see from below that it's probably the TDX-module that's
-responsible for this behavior.
-
->> What ends up happening?  Do we get anything out on the console, or is it
->> essentially undebuggable?
+> > The simple solution in sketch is just this:
 > 
-> Assuming "firmware" means TDX-module, if TDX-Module botches EFER (and only EFER)
-> then odds are very, very good that the guest will never get to the kernel as it
-> will have died long before in guest BIOS.
-> 
-> If the bug is such that EFER is correct in hardware, but RDMSR returns the wrong
-> value (due to MSR interception), IIRC this will triple fault and so nothing will
-> get logged.  But, the odds of that type of bug being hit in production are
-> practically zero because the EFER setup is very static, i.e. any such bug should
-> be hit during qualification of the VMM+TDX-Module.
-> 
-> In any case, even if a bug escapes, the shutdown is relatively easy to debug even
-> without logs because the failure will cleary point at the WRMSR (that info can be
-> had by running a debug TD or a debug TDX-Module).  By TDX standards, debugging
-> shutdowns on a specific instruction is downright trivial :-).
+> The code below results in a lockdep WARN_ON for the
+> reasons documented in my comments interspersed in
+> the code.
 
-That sounds sane to me.  It would be nice to get this into the
-changelog.  Perhaps:
+Sure, to be expected for a 2 min effort, but you seem to have solved
+it by trivially putting things in the right locking order?
 
-	This theoretically makes guest boot more fragile.  If, for
-	instance, EER was set up incorrectly and a WRMSR was performed,
-	the resulting (unhandled) #VE would triple fault.  However, this
-	is likely to trip up the guest BIOS long before control reaches
-	the kernel.  In any case, these kinds of problems are unlikely
-	to occur in production environments, and developers have good
-	debug tools to fix them quickly.
+> After trying several different permutations using RCU and
+> an rw_semaphore, I came to the conclusion that setting and
+> clearing the hook pointer while the mdev fd is being open
+> and closed or when the mdev is being removed unnecessarily
+> complicates things. There is no good reason to set/clear the
+> function pointer at this time, nor is there any compelling
+> reason to store the function pointer in a satellite structure
+> of the kvm struct. Since the hook function's lifespan coincides
+> with the lifespan of the vfio_ap module, why not store it
+> when the module is loaded and clear it when the module is
+> unloaded? 
 
-That would put my mind at ease a bit.
+Well, the hook function isn't really the problem..
+
+> Access to the function pointer can be controlled by a lock
+> that is independent of the matrix_dev->lock, thus avoiding
+> potential lock dependencies. Access to the mdev is controlled by
+> the matrix_dev lock, so if the mdev is retrieved from the
+> matrix_dev->mdev_list in the hook function, then we are assured
+> that the mdev will never be accessed after it is freed; problem solved.
+
+This just transforms the problem into needing to hold a lock around
+mdev_list while accessing a member of the mdev_list
+
+Is it simpler?
+
+Jason
