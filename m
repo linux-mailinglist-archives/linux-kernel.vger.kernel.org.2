@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7A7F38CF90
-	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:01:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF6C38CF91
+	for <lists+linux-kernel@lfdr.de>; Fri, 21 May 2021 23:01:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229792AbhEUVCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 17:02:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45874 "EHLO
+        id S230025AbhEUVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 17:02:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229625AbhEUVCj (ORCPT
+        with ESMTP id S229632AbhEUVCk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 17:02:39 -0400
+        Fri, 21 May 2021 17:02:40 -0400
 Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC7EC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:01:15 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id cu11-20020a17090afa8bb029015d5d5d2175so7984355pjb.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:01:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD56C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:01:16 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id ne24-20020a17090b3758b029015f2dafecb0so6660722pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 14:01:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aFKQWgvv/ZjeD7qEYhd0tK/1myw1mlPKy3VEp4LyRTQ=;
-        b=XkFVDI7cTA/rvl2loxxjVQXOylrtUEj01BxcdLhC+fMn8kQQY2z94kujwhG2jROs+I
-         qxStg5pXFxXPB292lbCpdnygE5sOff6igeyUgaFmBfSpHwgYh/vw11Wj0p9KBujwNgnA
-         oIDxTtVrQJNN4F3xZ++zih4yqDuvTXxEnT1Pk=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qcucsln58OsrXcIsnyUyuUI/EGMDXBHA3sqXqZbY5oQ=;
+        b=aV1t1CAkEUTf2hFhPL0C02ioDHWC3FjKXeMwGRamT26ZTjEZBzNqGTmZYDvrtA3HhS
+         B2WWNw8sfATpuLnGwIlevkc8TkGaLuYHs0MAhP4CUy6CPuW23GqjJcR8w5m00Z9QeBoB
+         bOVSeIcNZHPV0LfiH+KC/xKFS9oJiKDdeAbrs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aFKQWgvv/ZjeD7qEYhd0tK/1myw1mlPKy3VEp4LyRTQ=;
-        b=kLsJyUwuZaC4TdAKX/f8NTrWgttHV3fnhqWHFth0/1YoMLFawK9c+JfanamtStaKAe
-         5fmgHS091wCPihRNyApRgQgjQ7xnEolugF/a2xhPxOh5jFxymcXIrb2b389BteYhMWfd
-         T6ArJ2wxK0jZhxICIfCQE23LZwQXLPB7pobLlip2rgGRjJnnQqYRT4hgG6n3IyUOZkxL
-         V+fPhmxU+L6206NjpTCQbmeMubzPktdBZQVmIVk7jWjmr8ZEXcKX9QSOMgTppKLmAU/3
-         SWqFYg79gn8JtbrRKh10dNE1ovEZ5H4v5hxiJZOjhZqjQWPAJ71Hykbd/TP45vsq+uDK
-         LyOw==
-X-Gm-Message-State: AOAM531cwvp0cfABVDOzLTcxk6HmCe0lghGlK26ILyCyjv4mjP9PXBcf
-        uJGWYZRnO0xPdgRylCebZtQ/jQ==
-X-Google-Smtp-Source: ABdhPJx7MHEPo/jvOnAkibp5h9E7i2EaxlTt20C2REG1j2QmVWx9wPjsN+qM6uufy6UR2tGIjPPgRw==
-X-Received: by 2002:a17:90a:d14f:: with SMTP id t15mr13209534pjw.160.1621630874693;
-        Fri, 21 May 2021 14:01:14 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qcucsln58OsrXcIsnyUyuUI/EGMDXBHA3sqXqZbY5oQ=;
+        b=Vf9b7PH/b3fDpZNezXfWAg3Rf34kVF2lwE0yQjRCsT7TE9dBxHYfyMbb6HxsBF+5T3
+         lVcZkBl2/wHiSwUMXXrNRedy2lzsTfXyojhya0iWBBxBjRQ3qjb2bIEUzkYcPug1bSvI
+         F8/+I0wbR1tt21hE5ORb4zqywNjxOOz9VjYhd93cKY4cD7i+RgNQo0en0CW3BncXYL85
+         P+HAOCKHMe7iawsXMp+eIZUF+/bjb4rvr6x4TJXrau3yOuFvXNYtr2E1BUYf0L9Uae4d
+         uxK8ry4knvhoPSnDVOBXjrVccPtvG4r4zN8EG4GLnnEazjr7R4mZHll3GBsAmTN99nAM
+         Lccw==
+X-Gm-Message-State: AOAM531b42t7vB5e3MLJx8f+0/EVO2JwZRJbWFd9t14HS9d0gxnCKdUk
+        6FlQ60Gaw3vtIAxHyVThm7XgxA==
+X-Google-Smtp-Source: ABdhPJzjiR9OmDU991lLjA+2s0PA+vhVMkD1DNqpi/iUqDxkAh+P7lJrs9JUFen9Q5TsbtHn3chUQg==
+X-Received: by 2002:a17:902:b412:b029:ef:1737:ed with SMTP id x18-20020a170902b412b02900ef173700edmr14322796plr.43.1621630875766;
+        Fri, 21 May 2021 14:01:15 -0700 (PDT)
 Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:10e9:a6cd:727f:561e])
-        by smtp.gmail.com with ESMTPSA id o6sm5202532pfb.126.2021.05.21.14.01.13
+        by smtp.gmail.com with ESMTPSA id o6sm5202532pfb.126.2021.05.21.14.01.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 14:01:14 -0700 (PDT)
+        Fri, 21 May 2021 14:01:15 -0700 (PDT)
 From:   Douglas Anderson <dianders@chromium.org>
 To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
@@ -52,61 +52,45 @@ Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
         Joe Perches <joe@perches.com>,
         Douglas Anderson <dianders@chromium.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] nvmem: core: constify nvmem_cell_read_variable_common() return value
-Date:   Fri, 21 May 2021 14:00:57 -0700
-Message-Id: <20210521140031.1.Ibaca694aedfaff823feefa06b29ae746c641dd1a@changeid>
+Subject: [PATCH 2/2] nvmem: qfprom: Improve the comment about regulator setting
+Date:   Fri, 21 May 2021 14:00:58 -0700
+Message-Id: <20210521140031.2.Iaa641db08ce7c571860dcce13e4ce056008b711e@changeid>
 X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+In-Reply-To: <20210521140031.1.Ibaca694aedfaff823feefa06b29ae746c641dd1a@changeid>
+References: <20210521140031.1.Ibaca694aedfaff823feefa06b29ae746c641dd1a@changeid>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The caller doesn't modify the memory pointed to by the pointer so it
-can be const.
+In review feedback Joe Perches found the existing comment
+confusing. Let's use something based on the wording proposed by Joe.
 
-Suggested-by: Stephen Boyd <swboyd@chromium.org>
+Suggested-by: Joe Perches <joe@perches.com>
 Signed-off-by: Douglas Anderson <dianders@chromium.org>
 ---
 
- drivers/nvmem/core.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/nvmem/qfprom.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/nvmem/core.c b/drivers/nvmem/core.c
-index f9c9c9859919..4868aa876e1b 100644
---- a/drivers/nvmem/core.c
-+++ b/drivers/nvmem/core.c
-@@ -1609,9 +1609,9 @@ int nvmem_cell_read_u64(struct device *dev, const char *cell_id, u64 *val)
- }
- EXPORT_SYMBOL_GPL(nvmem_cell_read_u64);
+diff --git a/drivers/nvmem/qfprom.c b/drivers/nvmem/qfprom.c
+index 1ba666bcb900..81fbad5e939d 100644
+--- a/drivers/nvmem/qfprom.c
++++ b/drivers/nvmem/qfprom.c
+@@ -196,9 +196,9 @@ static int qfprom_enable_fuse_blowing(const struct qfprom_priv *priv,
+ 	}
  
--static void *nvmem_cell_read_variable_common(struct device *dev,
--					     const char *cell_id,
--					     size_t max_len, size_t *len)
-+static const void *nvmem_cell_read_variable_common(struct device *dev,
-+						   const char *cell_id,
-+						   size_t max_len, size_t *len)
- {
- 	struct nvmem_cell *cell;
- 	int nbits;
-@@ -1655,7 +1655,7 @@ int nvmem_cell_read_variable_le_u32(struct device *dev, const char *cell_id,
- 				    u32 *val)
- {
- 	size_t len;
--	u8 *buf;
-+	const u8 *buf;
- 	int i;
- 
- 	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
-@@ -1686,7 +1686,7 @@ int nvmem_cell_read_variable_le_u64(struct device *dev, const char *cell_id,
- 				    u64 *val)
- {
- 	size_t len;
--	u8 *buf;
-+	const u8 *buf;
- 	int i;
- 
- 	buf = nvmem_cell_read_variable_common(dev, cell_id, sizeof(*val), &len);
+ 	/*
+-	 * Hardware requires a min voltage for fuse blowing; this may be
+-	 * a rail shared do don't specify a max--regulator constraints
+-	 * will handle.
++	 * Hardware requires a minimum voltage for fuse blowing.
++	 * This may be a shared rail so don't specify a maximum.
++	 * Regulator constraints will cap to the actual maximum.
+ 	 */
+ 	ret = regulator_set_voltage(priv->vcc, qfprom_blow_uV, INT_MAX);
+ 	if (ret) {
 -- 
 2.31.1.818.g46aad6cb9e-goog
 
