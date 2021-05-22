@@ -2,529 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A2E38D3DD
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:09:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36ACD38D3DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229922AbhEVGLI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 02:11:08 -0400
-Received: from alt-proxy16.mail.unifiedlayer.com ([70.40.197.35]:57970 "EHLO
-        gproxy9-pub.mail.unifiedlayer.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229757AbhEVGLG (ORCPT
+        id S229907AbhEVGVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 02:21:42 -0400
+Received: from alln-iport-3.cisco.com ([173.37.142.90]:61893 "EHLO
+        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhEVGVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 02:11:06 -0400
-Received: from cmgw10.mail.unifiedlayer.com (unknown [10.0.90.125])
-        by gproxy9.mail.unifiedlayer.com (Postfix) with ESMTP id CA4C38033B60
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 06:09:39 +0000 (UTC)
-Received: from md-in-79.webhostbox.net ([43.225.55.182])
-        by cmsmtp with ESMTP
-        id kKpNl7FO3FplVkKpOlpmfG; Sat, 22 May 2021 06:09:39 +0000
-X-Authority-Reason: nr=8
-X-Authority-Analysis: v=2.4 cv=HeXR8gI8 c=1 sm=1 tr=0 ts=60a8a023
- a=LfuyaZh/8e9VOkaVZk0aRw==:117 a=LfuyaZh/8e9VOkaVZk0aRw==:17
- a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19 a=5FLXtPjwQuUA:10:nop_rcvd_month_year
- a=oz0wMknONp8A:10:endurance_base64_authed_username_1 a=vU9dKmh3AAAA:8
- a=NcCfH-bgAAAA:8 a=lhsWNlwdHoQvLuVuHl0A:9 a=rsP06fVo5MYu2ilr0aT5:22
- a=nZLUJm6UEJn402BoZzOq:22 a=pHzHmUro8NiASowvMSCR:22 a=Ew2E2A-JSTLzCXPT_086:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=linumiz.com
-        ; s=default; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=90AR0797E0/Clk7baYNcbp4x6YlwIUz57wOfzVEO53k=; b=QlY2f3vVq6JDV3BXXpgyKoemtf
-        oBRye94heP+jEYvKwW8vepxA1szSjT4WR6xJj4oHkNLWivPmWpJz03fCuc/vleyo/RxUqEicNARMg
-        T0xXcj3Fi7MdgytT2hmI+T/fuJivicAcnUrHk/5HyFSaaZWLdYkzI0+k6ZaLphkS1eKLH3sFOfXKs
-        ZcU0vQ4nhgwmPCQCN7Nun7NQntzrdAJfL30Jpv38R8aZLMleWXcKg5ZaLWILnOW3N8PGyZBOIjdsO
-        Glo//X9A/SapyNrADTR49HQ6LS7IexKVOFIzpm2IzmC4s8mm+78JDIKB2xs+1qBSJoScwKxiEEwgC
-        xx7zGS8A==;
-Received: from [117.202.188.17] (port=44202 helo=localhost.localdomain)
-        by md-in-79.webhostbox.net with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <navin@linumiz.com>)
-        id 1lkKpM-003BKv-FR; Sat, 22 May 2021 06:09:36 +0000
-From:   Navin Sankar Velliangiri <navin@linumiz.com>
-Cc:     Navin Sankar Velliangiri <navin@linumiz.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6] hwmon: Add sht4x Temperature and Humidity Sensor Driver
-Date:   Sat, 22 May 2021 11:39:13 +0530
-Message-Id: <20210522060917.41256-1-navin@linumiz.com>
-X-Mailer: git-send-email 2.31.1
+        Sat, 22 May 2021 02:21:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=5250; q=dns/txt; s=iport;
+  t=1621664418; x=1622874018;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=f7KkmiD67k482FiyPYG2FhcNqhM3Qxwr6ZxK5dM0wIc=;
+  b=F5XNvAA88VSwfBs4nXw5MTLoIdXig6hoaixGWYPpspCFCotxrCOixCRm
+   HnAsglPLZHcXiif7lTkQdbowo7wgPK5YTC/PFBT5+CkZVN1xfu+NLM2NV
+   74kxSxKcDHHLU5AgIGHO3UovFcj9cgd93rYUREGUvyd89rRlA3RzP0RWz
+   8=;
+X-IPAS-Result: =?us-ascii?q?A0AABAC0oahg/4ENJK1agmCCK3dWATkxljebK4F8CwEBA?=
+ =?us-ascii?q?Q0BAS0UBAEBhk8CJTQJDgIEAQEBAQMCAwEBAQEFAQEFAQEBAgEGBHEThWgNh?=
+ =?us-ascii?q?nILAXRfMhKCcQGDB6g+gXkzgQGITIFEgTqIdnaDeCccgUlEgRWDYGmJVASCJ?=
+ =?us-ascii?q?xkHAYENAYFLgRmRNI16nFWDIZ1HEymDW4sZlleGa45PoAuEDQIEBgUCFoFUO?=
+ =?us-ascii?q?4FZMxoIGxWDJAlHGQ6OKxaDNYsWIQMvAjYCBgoBAQMJiT4BAQ?=
+IronPort-Data: A9a23:9krKuawcJqzIrmv9sj56t+cvxyrEfRIJ4+MujC+fZmUNrF6WrkUGz
+ DROCzrQPviOZWfzeIokYY60/UxV78LXxt82QFdq/1hgHilAwSbn6Xt1DatR0we6dJCroJdPt
+ p1GAjX4wUNdokb0/n9BCJC5xZVH/fzOFuCU5NLsYHgrHFc5En550HqPpsZg6mJWqYnha++yk
+ YuaT/33YDdJDBYtbwr4Q4rawP9elKyaVAEw5zTSVtgX1LPqrET5ObpETU2Hw9QUdaEPdgKyb
+ 76rILhUZQo19T91Yj+uuu6TnkHn3tc+MCDW4ke6VZROjTB7pDAI0qQXCMA9VkV9gja5wohU0
+ +5k4MnYpQcBZsUgmcwUVx1eVip5J6ADqfnMIGO0toqYyEiun3nEmqo1Shpoe9RDvL8tUAmi9
+ tRAQNwJRhyRju2x2q+6YuJtnc8kasLsOevzv1k/lW2JUal/Hs6rr6Pi9/Rq4R02vcx3MNXMP
+ 5Q2aCo+NijJWkgaUrsQINdk9AuyvVH7cjtFuBeWqLAx7mz70gN8yv7uPcDTd9jMQt9a9m6dp
+ 2TJ+EzjDx0aPcDZwj2AmlqugevUlAvhVY4SHaH+/flv6HWawmEDARsaWEH9uvm4kU69WtR3L
+ 00S5zporK4u+UjtRd74NzW+qXuErwMaVPJTHvc85QXLzbDbiy6QDW0JZj1MctorsIkxXzNC/
+ keEg97zFxRutrOPQH6Q/7vSqim9UQAQJHUBIzUZUQ8M5dXLqZs2yBnIS75e/LWdh9nxH3T7x
+ CqH6Xl4jLQIhslN3KK+lbzavw+RSlHyZlZdzm3qsqiNt2uVuKbNi1SU1GXm
+IronPort-HdrOrdr: A9a23:7XIpiK9xkLn1S5q0chJuk+DNI+orL9Y04lQ7vn2ZLiYlEPBw+P
+ rBoB1273LJYVUqKRIdcK67WZVoKEm0nfUe3WB7B9iftWfd1FdAVLsD0WMnqAeQfxEXMYVmpM
+ JdT5Q=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.82,319,1613433600"; 
+   d="scan'208";a="704847176"
+Received: from alln-core-9.cisco.com ([173.36.13.129])
+  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 22 May 2021 06:20:17 +0000
+Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
+        by alln-core-9.cisco.com (8.15.2/8.15.2) with ESMTPS id 14M6KHPe028323
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Sat, 22 May 2021 06:20:17 GMT
+Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
+        id D3EF5CC1251; Fri, 21 May 2021 23:20:16 -0700 (PDT)
+From:   Denys Zagorui <dzagorui@cisco.com>
+To:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org
+Subject: [PATCH v7 1/3] perf report: compile tips.txt in perf binary
+Date:   Fri, 21 May 2021 23:20:14 -0700
+Message-Id: <20210522062016.84677-1-dzagorui@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - md-in-79.webhostbox.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - linumiz.com
-X-BWhitelist: no
-X-Source-IP: 117.202.188.17
-X-Source-L: No
-X-Exim-ID: 1lkKpM-003BKv-FR
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: (localhost.localdomain) [117.202.188.17]:44202
-X-Source-Auth: linumcmc
-X-Email-Count: 1
-X-Source-Cap: bGludW1jbWM7aG9zdGdhdG9yO21kLWluLTc5LndlYmhvc3Rib3gubmV0
-X-Local-Domain: yes
-To:     unlisted-recipients:; (no To-header on input)
+X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
+X-Outbound-Node: alln-core-9.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds a hwmon driver for the SHT4x Temperature and
-Humidity sensor.
+It seems there is some need to have an ability to invoke perf from
+build directory without installation
+(84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
+DOCDIR definition contains an absolute path to kernel source directory.
+It is build machine related info and it makes perf binary unreproducible.
 
-Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+This can be avoided by compiling tips.txt in perf directly.
 
-Changes in v2:
-
-* Removed unused macro SHT4X_MIN_POLL_INTERVAL
-* Replaced time_after instead of ktime_after
-* Used goto statements for error handling
-* Hardcoded the interval_time instead of clamp_val().
-
-Changes in v3:
-
-* Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
-  return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL
-* Changed the data type of update_interval and last_updated to long.
-
-Changes in v4:
-
-* "update_interval" is long but msecs_to_jiffies() accepts only unsigned int.
-  clamp_val() api is used to assign the update_interval stays within UINT_MAX.
-
-Changes in v5:
-
-* Added error handling when master unable to send the data.
-
-Changes in v6:
-
-* clamp_val() alone is used to set the update interval. since the update
-  interval is a continuous setting.
+Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
 ---
- Documentation/hwmon/index.rst |   1 +
- Documentation/hwmon/sht4x.rst |  45 +++++
- drivers/hwmon/Kconfig         |  11 ++
- drivers/hwmon/Makefile        |   1 +
- drivers/hwmon/sht4x.c         | 305 ++++++++++++++++++++++++++++++++++
- 5 files changed, 363 insertions(+)
- create mode 100644 Documentation/hwmon/sht4x.rst
- create mode 100644 drivers/hwmon/sht4x.c
+ tools/perf/Build               |  2 +-
+ tools/perf/Documentation/Build |  9 +++++++++
+ tools/perf/builtin-report.c    | 34 +++++++++++++++++++++++++---------
+ tools/perf/util/util.c         | 28 ----------------------------
+ tools/perf/util/util.h         |  2 --
+ 5 files changed, 35 insertions(+), 40 deletions(-)
+ create mode 100644 tools/perf/Documentation/Build
 
-diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-index 9ed60fa84cbe..b6fcae40258c 100644
---- a/Documentation/hwmon/index.rst
-+++ b/Documentation/hwmon/index.rst
-@@ -164,6 +164,7 @@ Hardware Monitoring Kernel Drivers
-    sht15
-    sht21
-    sht3x
-+   sht4x
-    shtc1
-    sis5595
-    sl28cpld
-diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
-new file mode 100644
-index 000000000000..3b37abcd4a46
---- /dev/null
-+++ b/Documentation/hwmon/sht4x.rst
-@@ -0,0 +1,45 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Kernel driver sht4x
-+===================
-+
-+Supported Chips:
-+
-+  * Sensirion SHT4X
-+
-+    Prefix: 'sht4x'
-+
-+    Addresses scanned: None
-+
-+    Datasheet:
-+
-+      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
-+
-+Author: Navin Sankar Velliangiri <navin@linumiz.com>
-+
-+
-+Description
-+-----------
-+
-+This driver implements support for the Sensirion SHT4x chip, a humidity
-+and temperature sensor. Temperature is measured in degree celsius, relative
-+humidity is expressed as a percentage. In sysfs interface, all values are
-+scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
-+
-+Usage Notes
-+-----------
-+
-+The device communicates with the I2C protocol. Sensors can have the I2C
-+address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
-+to instantiate the device.
-+
-+Sysfs entries
-+-------------
-+
-+=============== ============================================
-+temp1_input     Measured temperature in millidegrees Celcius
-+humidity1_input Measured humidity in %H
-+update_interval The minimum interval for polling the sensor,
-+                in milliseconds. Writable. Must be at least
-+                2000.
-+============== =============================================
-diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-index 87624902ea80..e3675377bc5d 100644
---- a/drivers/hwmon/Kconfig
-+++ b/drivers/hwmon/Kconfig
-@@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
- 	  This driver can also be built as a module. If so, the module
- 	  will be called sht3x.
+diff --git a/tools/perf/Build b/tools/perf/Build
+index db61dbe2b543..3a2e768d7576 100644
+--- a/tools/perf/Build
++++ b/tools/perf/Build
+@@ -45,12 +45,12 @@ CFLAGS_perf.o              += -DPERF_HTML_PATH="BUILD_STR($(htmldir_SQ))"	\
+ 			      -DPREFIX="BUILD_STR($(prefix_SQ))"
+ CFLAGS_builtin-trace.o	   += -DSTRACE_GROUPS_DIR="BUILD_STR($(STRACE_GROUPS_DIR_SQ))"
+ CFLAGS_builtin-report.o	   += -DTIPDIR="BUILD_STR($(tipdir_SQ))"
+-CFLAGS_builtin-report.o	   += -DDOCDIR="BUILD_STR($(srcdir_SQ)/Documentation)"
  
-+config SENSORS_SHT4x
-+	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
-+	depends on I2C
-+	select CRC8
-+	help
-+	  If you say yes here you get support for the Sensiron SHT40, SHT41 and
-+	  SHT45 humidity and temperature sensors.
-+
-+	  This driver can also be built as a module. If so, the module
-+	  will be called sht4x.
-+
- config SENSORS_SHTC1
- 	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
- 	depends on I2C
-diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-index 59e78bc212cf..d712c61c1f5e 100644
---- a/drivers/hwmon/Makefile
-+++ b/drivers/hwmon/Makefile
-@@ -171,6 +171,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
- obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
- obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
- obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
-+obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
- obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
- obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
- obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
-diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+ perf-y += util/
+ perf-y += arch/
+ perf-y += ui/
+ perf-y += scripts/
+ perf-$(CONFIG_TRACE) += trace/beauty/
++perf-y += Documentation/
+ 
+ gtk-y += ui/gtk/
+diff --git a/tools/perf/Documentation/Build b/tools/perf/Documentation/Build
 new file mode 100644
-index 000000000000..39e1b4a123fa
+index 000000000000..83e16764caa4
 --- /dev/null
-+++ b/drivers/hwmon/sht4x.c
-@@ -0,0 +1,305 @@
-+// SPDX-License-Identifier: GPL-2.0-only
++++ b/tools/perf/Documentation/Build
+@@ -0,0 +1,9 @@
++perf-y += tips.o
 +
-+/*
-+ * Copyright (c) Linumiz 2021
-+ *
-+ * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
-+ *
-+ * Author: Navin Sankar Velliangiri <navin@linumiz.com>
-+ */
++quiet_cmd_ld_tips = LD       $@
++      cmd_ld_tips = $(LD) -r -b binary -o $@ $<
 +
-+#include <linux/crc8.h>
-+#include <linux/delay.h>
-+#include <linux/hwmon.h>
-+#include <linux/i2c.h>
-+#include <linux/jiffies.h>
-+#include <linux/module.h>
++$(OUTPUT)Documentation/tips.o: Documentation/tips.txt FORCE
++	$(call rule_mkdir)
++	$(call if_changed,ld_tips)
 +
-+/*
-+ * Poll intervals (in milliseconds)
-+ */
-+#define SHT4X_MIN_POLL_INTERVAL	2000
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 36f9ccfeb38a..4f2c7ee8fea1 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -47,7 +47,6 @@
+ #include "util/time-utils.h"
+ #include "util/auxtrace.h"
+ #include "util/units.h"
+-#include "util/util.h" // perf_tip()
+ #include "ui/ui.h"
+ #include "ui/progress.h"
+ #include "util/block-info.h"
+@@ -109,6 +108,9 @@ struct report {
+ 	int			nr_block_reports;
+ };
+ 
++extern char _binary_Documentation_tips_txt_start[];
++extern char _binary_Documentation_tips_txt_end[];
 +
-+/*
-+ * I2C command delays (in microseconds)
-+ */
-+#define SHT4X_MEAS_DELAY	1000
-+#define SHT4X_DELAY_EXTRA	10000
-+
-+/*
-+ * Command Bytes
-+ */
-+#define SHT4X_CMD_MEASURE_HPM	0b11111101
-+#define SHT4X_CMD_RESET		0b10010100
-+
-+#define SHT4X_CMD_LEN		1
-+#define SHT4X_CRC8_LEN		1
-+#define SHT4X_WORD_LEN		2
-+#define SHT4X_RESPONSE_LENGTH	6
-+#define SHT4X_CRC8_POLYNOMIAL	0x31
-+#define SHT4X_CRC8_INIT		0xff
-+#define SHT4X_MIN_TEMPERATURE	-45000
-+#define SHT4X_MAX_TEMPERATURE	125000
-+#define SHT4X_MIN_HUMIDITY	0
-+#define SHT4X_MAX_HUMIDITY	100000
-+
-+DECLARE_CRC8_TABLE(sht4x_crc8_table);
-+
-+/**
-+ * struct sht4x_data - All the data required to operate an SHT4X chip
-+ * @client: the i2c client associated with the SHT4X
-+ * @lock: a mutex that is used to prevent parallel access to the i2c client
-+ * @update_interval: the minimum poll interval
-+ * @last_updated: the previous time that the SHT4X was polled
-+ * @temperature: the latest temperature value received from the SHT4X
-+ * @humidity: the latest humidity value received from the SHT4X
-+ */
-+struct sht4x_data {
-+	struct i2c_client	*client;
-+	struct mutex		lock;	/* atomic read data updates */
-+	bool			valid;	/* validity of fields below */
-+	long			update_interval;	/* in milli-seconds */
-+	long			last_updated;	/* in jiffies */
-+	s32			temperature;
-+	s32			humidity;
-+};
-+
-+/**
-+ * sht4x_read_values() - read and parse the raw data from the SHT4X
-+ * @sht4x_data: the struct sht4x_data to use for the lock
-+ * Return: 0 if succesfull, 1 if not
-+ */
-+static int sht4x_read_values(struct sht4x_data *data)
+ static int report__config(const char *var, const char *value, void *cb)
+ {
+ 	struct report *rep = cb;
+@@ -614,19 +616,33 @@ static int report__gtk_browse_hists(struct report *rep, const char *help)
+ 	return hist_browser(rep->session->evlist, help, NULL, rep->min_percent);
+ }
+ 
++static const char *perf_tip(void)
 +{
-+	int ret;
-+	u16 t_ticks, rh_ticks;
-+	unsigned long next_update;
-+	struct i2c_client *client = data->client;
-+	u8 crc, raw_data[SHT4X_RESPONSE_LENGTH],
-+	cmd[] = {SHT4X_CMD_MEASURE_HPM};
++	char *start = _binary_Documentation_tips_txt_start;
++	char *tok, *tmp, *prev;
++	int pick, size;
 +
-+	mutex_lock(&data->lock);
-+	next_update = data->last_updated +
-+		      msecs_to_jiffies(data->update_interval);
-+	if (!data->valid || time_after(jiffies, next_update)) {
-+		ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-+		if (ret < 0)
-+			goto unlock;
++	size = _binary_Documentation_tips_txt_end - start;
++	pick = random() % size;
 +
-+		usleep_range(SHT4X_MEAS_DELAY,
-+			     SHT4X_MEAS_DELAY + SHT4X_DELAY_EXTRA);
++	_binary_Documentation_tips_txt_start[size - 1] = 0;
 +
-+		ret = i2c_master_recv(client, raw_data, SHT4X_RESPONSE_LENGTH);
-+		if (ret != SHT4X_RESPONSE_LENGTH) {
-+			if (ret >= 0)
-+				ret = -ENODATA;
-+
-+			goto unlock;
-+		}
-+
-+		t_ticks = raw_data[0] << 8 | raw_data[1];
-+		rh_ticks = raw_data[3] << 8 | raw_data[4];
-+
-+		crc = crc8(sht4x_crc8_table, &raw_data[0], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-+		if (crc != raw_data[2]) {
-+			dev_err(&client->dev, "data integrity check failed\n");
-+			ret = -EIO;
-+			goto unlock;
-+		}
-+
-+		crc = crc8(sht4x_crc8_table, &raw_data[3], SHT4X_WORD_LEN, CRC8_INIT_VALUE);
-+		if (crc != raw_data[5]) {
-+			dev_err(&client->dev, "data integrity check failed\n");
-+			ret = -EIO;
-+			goto unlock;
-+		}
-+
-+		data->temperature = ((21875 * (int32_t)t_ticks) >> 13) - 45000;
-+		data->humidity = ((15625 * (int32_t)rh_ticks) >> 13) - 6000;
-+		data->last_updated = jiffies;
-+		data->valid = true;
++	for (tok = strtok_r(start, "\n", &tmp); tok;
++	     tok = strtok_r(NULL, "\n", &tmp)) {
++		if (pick < (tok - start))
++			return prev;
++		prev = tok;
 +	}
 +
-+unlock:
-+	mutex_unlock(&data->lock);
-+	return ret;
++	return prev;
 +}
 +
-+static ssize_t sht4x_interval_write(struct sht4x_data *data,
-+				    long val)
-+{
-+
-+	data->update_interval = clamp_val(val, SHT4X_MIN_POLL_INTERVAL,
-+					  UINT_MAX);
-+
-+	return 0;
-+}
-+
-+/**
-+ * sht4x_interval_read() - read the minimum poll interval
-+ *			   in milliseconds
-+ */
-+static size_t sht4x_interval_read(struct sht4x_data *data,
-+				  long *val)
-+{
-+	*val = data->update_interval;
-+	return 0;
-+}
-+
-+/**
-+ * sht4x_temperature1_read() - read the temperature in millidegrees
-+ */
-+static int sht4x_temperature1_read(struct sht4x_data *data, long *val)
-+{
-+	int ret;
-+
-+	ret = sht4x_read_values(data);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = data->temperature;
-+
-+	return 0;
-+}
-+
-+/**
-+ * sht4x_humidity1_read() - read a relative humidity in millipercent
-+ */
-+static int sht4x_humidity1_read(struct sht4x_data *data, long *val)
-+{
-+	int ret;
-+
-+	ret = sht4x_read_values(data);
-+	if (ret < 0)
-+		return ret;
-+
-+	*val = data->humidity;
-+
-+	return 0;
-+}
-+
-+static umode_t sht4x_hwmon_visible(const void *data,
-+				   enum hwmon_sensor_types type,
-+				   u32 attr, int channel)
-+{
-+	switch (type) {
-+	case hwmon_temp:
-+	case hwmon_humidity:
-+		return 0444;
-+	case hwmon_chip:
-+		return 0644;
-+	default:
-+		return 0;
-+	}
-+}
-+
-+static int sht4x_hwmon_read(struct device *dev, enum hwmon_sensor_types type,
-+			    u32 attr, int channel, long *val)
-+{
-+	struct sht4x_data *data = dev_get_drvdata(dev);
-+
-+	switch (type) {
-+	case hwmon_temp:
-+		return sht4x_temperature1_read(data, val);
-+	case hwmon_humidity:
-+		return sht4x_humidity1_read(data, val);
-+	case hwmon_chip:
-+		return sht4x_interval_read(data, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static int sht4x_hwmon_write(struct device *dev, enum hwmon_sensor_types type,
-+			     u32 attr, int channel, long val)
-+{
-+	struct sht4x_data *data = dev_get_drvdata(dev);
-+
-+	switch (type) {
-+	case hwmon_chip:
-+		return sht4x_interval_write(data, val);
-+	default:
-+		return -EOPNOTSUPP;
-+	}
-+}
-+
-+static const struct hwmon_channel_info *sht4x_info[] = {
-+	HWMON_CHANNEL_INFO(chip, HWMON_C_UPDATE_INTERVAL),
-+	HWMON_CHANNEL_INFO(temp, HWMON_T_INPUT),
-+	HWMON_CHANNEL_INFO(humidity, HWMON_H_INPUT),
-+	NULL,
-+};
-+
-+static const struct hwmon_ops sht4x_hwmon_ops = {
-+	.is_visible = sht4x_hwmon_visible,
-+	.read = sht4x_hwmon_read,
-+	.write = sht4x_hwmon_write,
-+};
-+
-+static const struct hwmon_chip_info sht4x_chip_info = {
-+	.ops = &sht4x_hwmon_ops,
-+	.info = sht4x_info,
-+};
-+
-+static int sht4x_probe(struct i2c_client *client,
-+		       const struct i2c_device_id *sht4x_id)
-+{
-+	struct device *device = &client->dev;
-+	struct device *hwmon_dev;
-+	struct sht4x_data *data;
-+	u8 cmd[] = {SHT4X_CMD_RESET};
-+	int ret;
-+
-+	/*
-+	 * we require full i2c support since the sht4x uses multi-byte read and
-+	 * writes as well as multi-byte commands which are not supported by
-+	 * the smbus protocol
-+	 */
-+	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C))
-+		return -EOPNOTSUPP;
-+
-+	data = devm_kzalloc(device, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->update_interval = SHT4X_MIN_POLL_INTERVAL;
-+	data->client = client;
-+
-+	mutex_init(&data->lock);
-+
-+	crc8_populate_msb(sht4x_crc8_table, SHT4X_CRC8_POLYNOMIAL);
-+
-+	ret = i2c_master_send(client, cmd, SHT4X_CMD_LEN);
-+	if (ret < 0)
-+		return ret;
-+	if (ret != SHT4X_CMD_LEN)
-+		return -EIO;
-+
-+	hwmon_dev = devm_hwmon_device_register_with_info(device,
-+							 client->name,
-+							 data,
-+							 &sht4x_chip_info,
-+							 NULL);
-+
-+	return PTR_ERR_OR_ZERO(hwmon_dev);
-+}
-+
-+static const struct i2c_device_id sht4x_id[] = {
-+	{ "sht4x", 0 },
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(i2c, sht4x_id);
-+
-+static struct i2c_driver sht4x_driver = {
-+	.driver = {
-+		.name = "sht4x",
-+	},
-+	.probe		= sht4x_probe,
-+	.id_table	= sht4x_id,
-+};
-+
-+module_i2c_driver(sht4x_driver);
-+
-+MODULE_AUTHOR("Navin Sankar Velliangiri <navin@linumiz.com>");
-+MODULE_DESCRIPTION("Sensirion SHT4x humidity and temperature sensor driver");
-+MODULE_LICENSE("GPL v2");
+ static int report__browse_hists(struct report *rep)
+ {
+ 	int ret;
+ 	struct perf_session *session = rep->session;
+ 	struct evlist *evlist = session->evlist;
+-	const char *help = perf_tip(system_path(TIPDIR));
+-
+-	if (help == NULL) {
+-		/* fallback for people who don't install perf ;-) */
+-		help = perf_tip(DOCDIR);
+-		if (help == NULL)
+-			help = "Cannot load tips.txt file, please install perf!";
+-	}
++	const char *help = perf_tip();
+ 
+ 	switch (use_browser) {
+ 	case 1:
+diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+index 37a9492edb3e..3bba74e431ed 100644
+--- a/tools/perf/util/util.c
++++ b/tools/perf/util/util.c
+@@ -379,34 +379,6 @@ fetch_kernel_version(unsigned int *puint, char *str,
+ 	return 0;
+ }
+ 
+-const char *perf_tip(const char *dirpath)
+-{
+-	struct strlist *tips;
+-	struct str_node *node;
+-	char *tip = NULL;
+-	struct strlist_config conf = {
+-		.dirname = dirpath,
+-		.file_only = true,
+-	};
+-
+-	tips = strlist__new("tips.txt", &conf);
+-	if (tips == NULL)
+-		return errno == ENOENT ? NULL :
+-			"Tip: check path of tips.txt or get more memory! ;-p";
+-
+-	if (strlist__nr_entries(tips) == 0)
+-		goto out;
+-
+-	node = strlist__entry(tips, random() % strlist__nr_entries(tips));
+-	if (asprintf(&tip, "Tip: %s", node->s) < 0)
+-		tip = (char *)"Tip: get more memory! ;-)";
+-
+-out:
+-	strlist__delete(tips);
+-
+-	return tip;
+-}
+-
+ char *perf_exe(char *buf, int len)
+ {
+ 	int n = readlink("/proc/self/exe", buf, len);
+diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+index ad737052e597..80b194ee6c7d 100644
+--- a/tools/perf/util/util.h
++++ b/tools/perf/util/util.h
+@@ -39,8 +39,6 @@ int fetch_kernel_version(unsigned int *puint,
+ #define KVER_FMT	"%d.%d.%d"
+ #define KVER_PARAM(x)	KVER_VERSION(x), KVER_PATCHLEVEL(x), KVER_SUBLEVEL(x)
+ 
+-const char *perf_tip(const char *dirpath);
+-
+ #ifndef HAVE_SCHED_GETCPU_SUPPORT
+ int sched_getcpu(void);
+ #endif
 -- 
-2.31.1
+2.26.2.Cisco
 
