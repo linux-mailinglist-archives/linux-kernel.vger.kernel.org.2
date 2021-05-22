@@ -2,170 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 752FB38D74A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 21:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8484D38D749
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 21:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhEVTri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 15:47:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33400 "EHLO
+        id S231419AbhEVTqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 15:46:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231364AbhEVToC (ORCPT
+        with ESMTP id S231310AbhEVToA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 15:44:02 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5E5C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 12:41:33 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id t9so4205937ply.6
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 12:41:33 -0700 (PDT)
+        Sat, 22 May 2021 15:44:00 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09028C0613ED;
+        Sat, 22 May 2021 12:42:26 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id c17so17522443pfn.6;
+        Sat, 22 May 2021 12:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SFKpmD5a58yAK0KX7PZrq6XiX162OZLnkIzoJqpkFsw=;
-        b=A/6spznnPg8LSJl1adzNGiDbP6PsR9UtVSJLHhg+rzzqecRdM9ToFCvsmKeUmSnhDp
-         ozgCQ32wH4Rx6CvC23I5J5VJtyxgZr7MVN5bz2ZP0AmXqTddWiUrA26WNzS7owGWL2fC
-         o0lw1n8SNPeGjNAxBTUR2+V0+mkOi3YuHY7Kyv5Q6Pd6qTOAkP+f99UhYxBVjnnJcxJh
-         NmfzXms9svvF/3KFxF49WTQ2e09yKzGJnfsiZ8Q5+1VqALD/e5T0/DzGsMZp+Cr+GDUv
-         Ufy66Prpwtcba5Un53lBSRO4wk0uHTaatXGx5p1czvRLC9kt9rS9x/Oz3/+sTA2cAIQR
-         MZVg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w2LkGXw1co1uLC2e7opfK/LAoCn1kUKAliH5vlwy4Ck=;
+        b=RRkxrcjr4PIDq5GFjgvVpv5LdWrp0PU6jzKd82xY2y1shGFHBpR3Q2MQxq392Yde6I
+         ICg+m8r21Uo+cLr2eECC6D9vPfuRgtu/o1wtfmNmjMNUo4LF/3nWyn/VrysTroCKMDeC
+         M7V/vf8S+Kb0aIRU5664ryPVAVnxwO1NXCo9/wL//rUXEJvcC8anui5oliLTgs4arEHZ
+         +jKN/bH3GpcH6T1EKOTGbqqGjMssp4BUrrn6Y/lOtGj9k027KBS0kzMEbAolCqCnZQc6
+         le+WTDdskIlGXX124Csy/crHyRq/vllw1ecRZkHmyfewvznFLnDmbJk4RxmiDnEw2F1V
+         WxXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SFKpmD5a58yAK0KX7PZrq6XiX162OZLnkIzoJqpkFsw=;
-        b=lLrEFI2HIgvrxneZRtMGptPtLqylCFeMy+Xv/7i9ip7rferFyvDgD8R0er53CQ6O0w
-         HUwaqTM52xY6ewzGtc/ZIicQVXx5WRg/txzipN3IcIIXSbIIggFQQPxx5MDAWE95rfmE
-         gWuKo3YF+5GFhC9syzG7ZPSFdrxUyTvJ7IXDDm551ApB0DCMiUGdR8gGTLNhmcUz/mM/
-         3F3SIIjR2buqSb3ThHH0AKuOlTFQdlc/TUJxX72KroPzLovNE/gjsy7P3c8zp1SQ6lcc
-         VvY6TkKEjL+jSy0MVXoY5PWweqbpZtXlwwcnHWSrHHBgLOF2LjZ2yHF0pV+RIosKH1Y8
-         1lhg==
-X-Gm-Message-State: AOAM532AGu7kzTqS0Hrk+dJ5uA01SFSKdNb053bGdXopzgu6LvEF1CcH
-        BuZ9kn8t4MWI96vxw6jcKFP2hmUPAFM+HqATNMySzA==
-X-Google-Smtp-Source: ABdhPJyLyvSmE/jiPGphlisECKYEs6RoJ/qavgE71eSKDSMNQxkYZiGy4nVoDHjFCzjJQuOGZcnk6aMfrms8zJe2dW4=
-X-Received: by 2002:a17:90b:4b0f:: with SMTP id lx15mr16376461pjb.184.1621712492667;
- Sat, 22 May 2021 12:41:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210521233952.236434-1-mike.kravetz@oracle.com>
-In-Reply-To: <20210521233952.236434-1-mike.kravetz@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sat, 22 May 2021 12:41:21 -0700
-Message-ID: <CAHS8izMVBZ2W+4ug6mKtU3B0QhcLz7SyPePxOgqAD8Ou3xx52Q@mail.gmail.com>
-Subject: Re: [PATCH] userfaultfd: hugetlbfs: fix new flag usage in error path
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w2LkGXw1co1uLC2e7opfK/LAoCn1kUKAliH5vlwy4Ck=;
+        b=UPtq6p6q8cTH42/vYP3F1X2kS3oNGqBrdZqJuG19ul/H9StF6sa2HIruHVoHVNbtj3
+         dYBfTBaAjLkj45DY8h1jAvQ4ITmas3Cf7QdjOV6DwTgKm8GN7bxbXSBK98rSL3sP/eRx
+         e+VXJTWtOODkO7WWybjMP5Qd9VD1k800jXGA/pK7cvblUDCN4mDKKBx1uFUX+UOaKpjy
+         aWXEU8abNXsFN5q8ZjkF7VPk9mAS3EjVY7jUhjl4u6f2pMLefT7wSd7h9gHqb0FsoY+C
+         enQs7l5gEFwzJyXCYnxp1OrkyIL3TJ/LsQQ6HIjf4x9XPZ732HgY7lBbFOLjp3uZJDL4
+         r8tg==
+X-Gm-Message-State: AOAM533GtkLVyLV6ukYNX8kRaLNYuG4ciMtb/O0biBXchjtUmk/YWZAy
+        ZyvXl0Vs3N+vc/3O50hcl24=
+X-Google-Smtp-Source: ABdhPJyKAj8Hcx+DP4nKVV1/FfWaVGT++MZzcpUUfKcx7wZZFX8CScbpGJsfsW1r7jyndTYcfEvJ5w==
+X-Received: by 2002:a63:5c01:: with SMTP id q1mr5527630pgb.447.1621712545430;
+        Sat, 22 May 2021 12:42:25 -0700 (PDT)
+Received: from Journey.localdomain ([223.226.180.251])
+        by smtp.gmail.com with ESMTPSA id 21sm6939398pfh.103.2021.05.22.12.42.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 12:42:25 -0700 (PDT)
+Date:   Sun, 23 May 2021 01:12:18 +0530
+From:   Hritik Vijay <hritikxx8@gmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Networking <netdev@vger.kernel.org>,
         open list <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Jiri Olsa <jolsa@kernel.org>
+Subject: Re: BPF: failed module verification on linux-next
+Message-ID: <YKlemjCagqtru8i0@Journey.localdomain>
+References: <20210519141936.GV8544@kitsune.suse.cz>
+ <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 4:40 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> In commit d6995da31122 ("hugetlb: use page.private for hugetlb specific
-> page flags") the use of PagePrivate to indicate a reservation count
-> should be restored at free time was changed to the hugetlb specific flag
-> HPageRestoreReserve.  Changes to a userfaultfd error path as well as a
-> VM_BUG_ON() in remove_inode_hugepages() were overlooked.
->
-> Users could see incorrect hugetlb reserve counts if they experience an
-> error with a UFFDIO_COPY operation.  Specifically, this would be the
-> result of an unlikely copy_huge_page_from_user error.  There is not an
-> increased chance of hitting the VM_BUG_ON.
->
-> Fixes: d6995da31122 ("hugetlb: use page.private for hugetlb specific page flags")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
-> ---
->  fs/hugetlbfs/inode.c |  2 +-
->  mm/userfaultfd.c     | 28 ++++++++++++++--------------
->  2 files changed, 15 insertions(+), 15 deletions(-)
->
+On Thu, May 20, 2021 at 10:31:18PM -0700, Andrii Nakryiko wrote:
+> It took me a while to reliably bisect this, but it clearly points to
+> this commit:
+> 
+> e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock")
+> 
+> One commit before it, 676535512684 ("mm/page_alloc: split per cpu page
+> lists and zone stats -fix"), works just fine.
 
-Reviewed-by: Mina Almasry <almasry.mina@google.com>
+Thank you for pointing this out. I'm facing the same issue.
+I've posted my logs in the following thread
+https://lore.kernel.org/linux-next/52f77a79-5042-eca7-f80e-657ac1c515de@infradead.org/T/#t
 
-I'm guessing this may interact with my patch in review "[PATCH v3] mm,
-hugetlb: fix resv_huge_pages underflow on UFFDIO_COPY". I'll rebase my
-patch and re-test.
-
-> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-> index 9d9e0097c1d3..55efd3dd04f6 100644
-> --- a/fs/hugetlbfs/inode.c
-> +++ b/fs/hugetlbfs/inode.c
-> @@ -529,7 +529,7 @@ static void remove_inode_hugepages(struct inode *inode, loff_t lstart,
->                          * the subpool and global reserve usage count can need
->                          * to be adjusted.
->                          */
-> -                       VM_BUG_ON(PagePrivate(page));
-> +                       VM_BUG_ON(HPageRestoreReserve(page));
->                         remove_huge_page(page);
->                         freed++;
->                         if (!truncate_op) {
-> diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
-> index 5508f7d9e2dc..9ce5a3793ad4 100644
-> --- a/mm/userfaultfd.c
-> +++ b/mm/userfaultfd.c
-> @@ -432,38 +432,38 @@ static __always_inline ssize_t __mcopy_atomic_hugetlb(struct mm_struct *dst_mm,
->                  * If a reservation for the page existed in the reservation
->                  * map of a private mapping, the map was modified to indicate
->                  * the reservation was consumed when the page was allocated.
-> -                * We clear the PagePrivate flag now so that the global
-> +                * We clear the HPageRestoreReserve flag now so that the global
->                  * reserve count will not be incremented in free_huge_page.
->                  * The reservation map will still indicate the reservation
->                  * was consumed and possibly prevent later page allocation.
->                  * This is better than leaking a global reservation.  If no
-> -                * reservation existed, it is still safe to clear PagePrivate
-> -                * as no adjustments to reservation counts were made during
-> -                * allocation.
-> +                * reservation existed, it is still safe to clear
-> +                * HPageRestoreReserve as no adjustments to reservation counts
-> +                * were made during allocation.
->                  *
->                  * The reservation map for shared mappings indicates which
->                  * pages have reservations.  When a huge page is allocated
->                  * for an address with a reservation, no change is made to
-> -                * the reserve map.  In this case PagePrivate will be set
-> -                * to indicate that the global reservation count should be
-> +                * the reserve map.  In this case HPageRestoreReserve will be
-> +                * set to indicate that the global reservation count should be
->                  * incremented when the page is freed.  This is the desired
->                  * behavior.  However, when a huge page is allocated for an
->                  * address without a reservation a reservation entry is added
-> -                * to the reservation map, and PagePrivate will not be set.
-> -                * When the page is freed, the global reserve count will NOT
-> -                * be incremented and it will appear as though we have leaked
-> -                * reserved page.  In this case, set PagePrivate so that the
-> -                * global reserve count will be incremented to match the
-> -                * reservation map entry which was created.
-> +                * to the reservation map, and HPageRestoreReserve will not be
-> +                * set. When the page is freed, the global reserve count will
-> +                * NOT be incremented and it will appear as though we have
-> +                * leaked reserved page.  In this case, set HPageRestoreReserve
-> +                * so that the global reserve count will be incremented to
-> +                * match the reservation map entry which was created.
->                  *
->                  * Note that vm_alloc_shared is based on the flags of the vma
->                  * for which the page was originally allocated.  dst_vma could
->                  * be different or NULL on error.
->                  */
->                 if (vm_alloc_shared)
-> -                       SetPagePrivate(page);
-> +                       SetHPageRestoreReserve(page);
->                 else
-> -                       ClearPagePrivate(page);
-> +                       ClearHPageRestoreReserve(page);
->                 put_page(page);
->         }
->         BUG_ON(copied < 0);
-> --
-> 2.31.1
->
+Hrtk
