@@ -2,124 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74D3B38D45D
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 10:07:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0015438D461
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 10:16:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230132AbhEVIIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 04:08:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36166 "EHLO mail.kernel.org"
+        id S230125AbhEVISF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 04:18:05 -0400
+Received: from m12-11.163.com ([220.181.12.11]:36631 "EHLO m12-11.163.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230000AbhEVII3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 04:08:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C858D61163;
-        Sat, 22 May 2021 08:07:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621670824;
-        bh=e9h3YH6hGEUUkxs9Amz7GAdN45jwweq7ph0QM0vrHII=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vu2u7oxUNchdMCeACgQW37z9BPHA3nkeY+krpkH7p590u+MuNlbEI77wRCGrvsPnB
-         FrC06yq7YNqQ0IXzZYUrgrs9Yp+7GzjGBEVH0SlwaJ6Zkgar3WG+NMtgZbOOHrlKlj
-         gLIbNTaw8Xr2FwxRBZRwqDMgPNTdhVsJRStUaVUjy/x4RYEqPAbR1l/HFv/6BaryiX
-         VJEPm/LMKg3bQA+YMpky1/6xynYb7cQQiEFpxdNF7gHRCULbWNYqQuflNpcN6sTyfc
-         lHEKA3eM7zYQRIlvSQ5wQWFfwIngBctT4+AzASjRsDWh7+5g7gyjknq5gKvqXY/EuT
-         hwmjIgpzKHrwA==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lkMf2-0007wn-PB; Sat, 22 May 2021 10:07:05 +0200
-Date:   Sat, 22 May 2021 10:07:04 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Hayes Wang <hayeswang@realtek.com>, kuba@kernel.org,
-        davem@davemloft.net, netdev@vger.kernel.org, nic_swsd@realtek.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-Subject: Re: [PATCH net v2] r8152: check the informaton of the device
-Message-ID: <YKi7qEWobOLRyoU8@hovoldconsulting.com>
-References: <1394712342-15778-363-Taiwan-albertk@realtek.com>
- <1394712342-15778-364-Taiwan-albertk@realtek.com>
- <YKizqoNIVFo+weI9@kroah.com>
+        id S230023AbhEVISE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 04:18:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=yd77f
+        JH2fazqyJ9eYIv2XjR4NuHR4oI4o20vbbTg550=; b=hssqV5m6/WZbT/eSIqbgM
+        jP3j4mxPIwREYV4f0UU0BrDhYUIqWi0AaUAUOJAZG3xVcVVyqRubj/4nGF08Pna7
+        Hrdw0KMUhtwudC/9sk/sVGUzm0OPrQP1pBH/5erOeOOq+wVoTPrU2ifhevNMljt8
+        LhTnTe0Kl5Pzpn9d/33P7A=
+Received: from localhost.localdomain (unknown [36.170.35.140])
+        by smtp7 (Coremail) with SMTP id C8CowADHwJjZvahgjuVNdw--.26228S2;
+        Sat, 22 May 2021 16:16:26 +0800 (CST)
+From:   Hailong Liu <liuhailongg6@163.com>
+To:     sterlingteng@gmail.com, Alex Shi <alexs@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, siyanteng@loongson.cn,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hailong Liu <liu.hailong6@zte.com.cn>
+Subject: [PATCH v3] docs/zh_CN: Add zh_CN/admin-guide/lockup-watchdogs.rst
+Date:   Sat, 22 May 2021 16:15:39 +0800
+Message-Id: <20210522081539.119205-1-liuhailongg6@163.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YKizqoNIVFo+weI9@kroah.com>
+Content-Type: text/plain; charset=y
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowADHwJjZvahgjuVNdw--.26228S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUgg_TUUUUU
+X-Originating-IP: [36.170.35.140]
+X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/1tbi8B+aYFuob5GBxgABse
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 09:32:58AM +0200, Greg Kroah-Hartman wrote:
-> On Sat, May 22, 2021 at 01:24:54PM +0800, Hayes Wang wrote:
-> > Verify some fields of the USB descriptor to make sure the driver
-> > could be used by the device.
-> > 
-> > Besides, remove the check of endpoint number in rtl8152_probe().
-> > It has been done in rtl_check_vendor_ok().
-> > 
-> > BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
-> > Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-> > Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
-> > Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-> > ---
-> > v2:
-> > Use usb_find_common_endpoints() and usb_endpoint_num() to replace original
-> > code.
-> 
-> Much better, just some tiny grammer changes below:
-> 
-> > 
-> > remove the check of endpoint number in rtl8152_probe(). It has been done
-> > in rtl_check_vendor_ok().
-> > 
-> >  drivers/net/usb/r8152.c | 44 ++++++++++++++++++++++++++++++++++++-----
-> >  1 file changed, 39 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-> > index 136ea06540ff..6e5230d6c721 100644
-> > --- a/drivers/net/usb/r8152.c
-> > +++ b/drivers/net/usb/r8152.c
-> > @@ -8107,6 +8107,39 @@ static void r8156b_init(struct r8152 *tp)
-> >  	tp->coalesce = 15000;	/* 15 us */
-> >  }
-> >  
-> > +static bool rtl_check_vendor_ok(struct usb_interface *intf)
-> > +{
-> > +	struct usb_host_interface *alt = intf->cur_altsetting;
-> > +	struct usb_endpoint_descriptor *in, *out, *intr;
-> > +
-> > +	if (alt->desc.bNumEndpoints < 3) {
-> > +		dev_err(&intf->dev, "Unexpected bNumEndpoints %d\n", alt->desc.bNumEndpoints);
-> > +		return false;
-> > +	}
+From: Hailong Liu <liu.hailong6@zte.com.cn>
 
-This check is now redundant and can be removed.
+Add translation zh_CN/admin-guide/lockup-watchdogs.rst and link it to
+zh_CN/admin-guide/index.rst while clean its todo entry.
 
-> > +
-> > +	if (usb_find_common_endpoints(alt, &in, &out, &intr, NULL) < 0) {
-> > +		dev_err(&intf->dev, "Miss Endpoints\n");
-> 
-> "Miss" feels ackward, how about "Invalid number of endpoints"?
+Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+---
+ .../translations/zh_CN/admin-guide/index.rst  |  2 +-
+ .../zh_CN/admin-guide/lockup-watchdogs.rst    | 66 +++++++++++++++++++
+ 2 files changed, 67 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
 
-The helper also checks the type and direction so perhaps something like
-"expected endpoints not found" (or just "missing endpoints") which is
-more precise.
+diff --git a/Documentation/translations/zh_CN/admin-guide/index.rst b/Documentation/translations/zh_CN/admin-guide/index.rst
+index be835ec8e632..460034cbc2ab 100644
+--- a/Documentation/translations/zh_CN/admin-guide/index.rst
++++ b/Documentation/translations/zh_CN/admin-guide/index.rst
+@@ -65,6 +65,7 @@ Todolist:
+ 
+    clearing-warn-once
+    cpu-load
++   lockup-watchdogs
+    unicode
+ 
+ Todolist:
+@@ -100,7 +101,6 @@ Todolist:
+    laptops/index
+    lcd-panel-cgram
+    ldm
+-   lockup-watchdogs
+    LSM/index
+    md
+    media/index
+diff --git a/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst b/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
+new file mode 100644
+index 000000000000..55ed3f4af442
+--- /dev/null
++++ b/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
+@@ -0,0 +1,66 @@
++.. include:: ../disclaimer-zh_CN.rst
++
++:Original: Documentation/admin-guide/lockup-watchdogs.rst
++:Translator: Hailong Liu <liu.hailong6@zte.com.cn>
++
++.. _cn_lockup-watchdogs:
++
++
++=================================================
++Softlockup与hardlockup检测机制(又名:nmi_watchdog)
++=================================================
++
++Linux中内核实现了一种用以检测系统发生softlockup和hardlockup的看门狗机制。
++
++Softlockup是一种会引发系统在内核态中一直循环超过20秒（详见下面“实现”小节）导致
++其他任务没有机会得到运行的BUG。一旦检测到'softlockup'发生，默认情况下系统会打
++印当前堆栈跟踪信息并进入锁定状态。也可配置使其在检测到'softlockup'后进入panic
++状态；通过sysctl命令设置“kernel.softlockup_panic”、使用内核启动参数
++“softlockup_panic”（详见Documentation/admin-guide/kernel-parameters.rst）以及使
++能内核编译选项“BOOTPARAM_SOFTLOCKUP_PANIC”都可实现这种配置。
++
++而'hardlockup'是一种会引发系统在内核态一直循环超过10秒钟（详见"实现"小节）导致其
++他中断没有机会运行的缺陷。与'softlockup'情况类似，除了使用sysctl命令设置
++'hardlockup_panic'、使能内核选项“BOOTPARAM_HARDLOCKUP_PANIC”以及使用内核参数
++"nmi_watchdog"(详见:”Documentation/admin-guide/kernel-parameters.rst“)外，一旦检
++测到'hardlockup'默认情况下系统打印当前堆栈跟踪信息，然后进入锁定状态。
++
++这个panic选项也可以与panic_timeout结合使用（这个panic_timeout是通过稍具迷惑性的
++sysctl命令"kernel.panic"来设置），使系统在panic指定时间后自动重启。
++
++实现
++====
++
++Softlockup和hardlockup分别建立在hrtimer(高精度定时器)和perf两个子系统上而实现。
++这也就意味着理论上任何架构只要实现了这两个子系统就支持这两种检测机制。
++
++Hrtimer用于周期性产生中断并唤醒watchdog线程；NMI perf事件则以”watchdog_thresh“
++(编译时默认初始化为10秒，也可通过”watchdog_thresh“这个sysctl接口来进行配置修改)
++为间隔周期产生以检测 hardlockups。如果一个CPU在这个时间段内没有检测到hrtimer中
++断发生，'hardlockup 检测器'(即NMI perf事件处理函数)将会视系统配置而选择产生内核
++警告或者直接panic。
++
++而watchdog线程本质上是一个高优先级内核线程，每调度一次就对时间戳进行一次更新。
++如果时间戳在2*watchdog_thresh(这个是softlockup的触发门限)这段时间都未更新,那么
++"softlocup 检测器"(内部hrtimer定时器回调函数)会将相关的调试信息打印到系统日志中，
++然后如果系统配置了进入panic流程则进入panic，否则内核继续执行。
++
++Hrtimer定时器的周期是2*watchdog_thresh/5，也就是说在hardlockup被触发前hrtimer有
++2~3次机会产生时钟中断。
++
++如上所述,内核相当于为系统管理员提供了一个可调节hrtimer定时器和perf事件周期长度
++的调节旋钮。如何通过这个旋钮为特定使用场景配置一个合理的周期值要对lockups检测的
++响应速度和lockups检测开销这二者之间进行权衡。
++
++默认情况下所有在线cpu上都会运行一个watchdog线程。不过在内核配置了”NO_HZ_FULL“的
++情况下watchdog线程默认只会运行在管家(housekeeping)cpu上，而”nohz_full“启动参数指
++定的cpu上则不会有watchdog线程运行。试想，如果我们允许watchdog线程在”nohz_full“指
++定的cpu上运行，这些cpu上必须得运行时钟定时器来激发watchdog线程调度；这样一来就会
++使”nohz_full“保护用户程序免受内核干扰的功能失效。当然，副作用就是”nohz_full“指定
++的cpu即使在内核产生了lockup问题我们也无法检测到。不过，至少我们可以允许watchdog
++线程在管家(non-tickless)核上继续运行以便我们能继续正常的监测这些cpus上的lockups
++事件。
++
++不论哪种情况都可以通过sysctl命令kernel.watchdog_cpumask来对没有运行watchdog线程
++的cpu集合进行调节。对于nohz_full而言,如果nohz_full cpu上有异常挂住的情况，通过
++这种方式打开这些cpu上的watchdog进行调试可能会有所作用。
+-- 
+2.17.1
 
-> > +		return false;
-> > +	}
-> > +
-> > +	if (usb_endpoint_num(in) != 1) {
-> > +		dev_err(&intf->dev, "Invalid Rx Endpoint\n");
-> 
-> "Invalid number of Rx endpoints"
-
-Here it is the endpoint number (address) that is being checked so
-"number of" would be wrong.
-
-That said, perhaps none of these checks are even needed a bit depending
-on how the driver is implemented. That is, if it hardcodes the endpoint
-addresses or uses the result from usb_find_common_endpoints() above
-(which I realise now that it does not so these checks are probably still
-needed).
-
-> > +		return false;
-> > +	}
-
-Johan
