@@ -2,150 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A700A38D2C7
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 03:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C71038D2CA
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 03:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbhEVBXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 21:23:49 -0400
-Received: from m12-17.163.com ([220.181.12.17]:33170 "EHLO m12-17.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230349AbhEVBXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 21:23:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=5Y59T
-        oN56fzgmzV8/P3q7NkwDo0bO3vzNFUmbc22xkA=; b=ezfGlM2LNbsLFPIe4dL5x
-        TMKbaAveXBsyaC+M2e5NrGkUcPwKOxHBSVqzLw9U1ThYbzxinYsBmG6z7xrt3K09
-        HFNWZWnWQI8BFDxk0VScnA9lhNN3d0TvRcbZITxt2x1t64B34zHrlGWBNvrX0mjr
-        tJY6CtjIrePCfOJkyRS18E=
-Received: from localhost.localdomain (unknown [36.170.35.140])
-        by smtp13 (Coremail) with SMTP id EcCowADXxn7FXKhgszh02g--.57047S2;
-        Sat, 22 May 2021 09:22:14 +0800 (CST)
-From:   Hailong Liu <liuhailongg6@163.com>
-To:     sterlingteng@gmail.com, Alex Shi <alexs@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, siyanteng@loongson.cn,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH v2] docs/zh_CN: Add zh_CN/admin-guide/lockup-watchdogs.rst
-Date:   Sat, 22 May 2021 09:21:50 +0800
-Message-Id: <20210522012150.117072-1-liuhailongg6@163.com>
-X-Mailer: git-send-email 2.17.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=y
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EcCowADXxn7FXKhgszh02g--.57047S2
-X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxUgj-eDUUUU
-X-Originating-IP: [36.170.35.140]
-X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/1tbiPQaaYFSIkhn23gAAs+
+        id S230461AbhEVB2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 21:28:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230431AbhEVB2C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 21:28:02 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B74FC06138B
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 18:26:31 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id i14-20020a0cf10e0000b02901eeced6480dso17534242qvl.4
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 18:26:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=gS3/FjH30criEdlZq0ZHdAnAGJSA0ILT1HmCoVmE9Yc=;
+        b=aV10v99JMPHFg1NGBvCWnUWFb+H8K8fj4R2z1KjHTliOlyuuNv7N+E++NFeU+qFtZp
+         3+FqCv1he5VC08dsXqqBEoOp6dlq+Jim+eqm8bBhg3Wa39Dqo7D3c93BffdlaEcWXif9
+         gKyWuMLV4UfrKS62gts+QsiUfFhgZSM0wvBZ1vwWmHDaOkAIzh5gikMRUosZD8liZYjE
+         BLZ4d9v3A4E2C1pTRMRgb2VRbAyQMKVD/JqJSvxrxPWl8UN18mHMBEgV8ftxpiAmIuWT
+         dmxDu6tCcGafJAMnYk82Zo6sopbp3ZB6XTbx9MrZ3STv27IcXF//ymaHhlTkLron6P5f
+         L8Ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=gS3/FjH30criEdlZq0ZHdAnAGJSA0ILT1HmCoVmE9Yc=;
+        b=F7xSQfKvwA0Rd0mKbst+sx4ftFrPBejRNDimLSsYqRWnAfZ15KiFqfnKZrq+3E56Dy
+         Y4EgyIlzJ7ZUEpGr6gV49zUkZ1SXAmetQfpE0e7bpm/DtPBigD0hBc0GgjU5f/k03bFi
+         FFn8p3d0mKrkbz392Y+jbstEPufm5Ee5hRyS/2I9r87ZKctKrkIMd5h1wgeYxBbQmmsC
+         W/jpsBDaPwKwGuLnDxo0+TNj0kIjAawCIt/O8STi8qAOY6of2cr68YGfV3XLPY/74Euc
+         K1kb1fR7wsbdpqmQMwYmdH0lhVyDUMDVnxz2+bjcbi2SLFOzT5kZAEpavNkePyYRVylB
+         1N1A==
+X-Gm-Message-State: AOAM532dVOgvjiortkuWlwK95tBAMWFTivtVN4AQ56YZKs7rSSY+voSC
+        IF0z3hMjrDwKLXuRDLoDk5QKia3EIHBk9Z5SPto=
+X-Google-Smtp-Source: ABdhPJyCEvd+l3Rqhyp51TSzPr9jAnAvnyIGE5YRxodQwxa5AYSuBGV7+leKsEDF2cfme0a7brTTz1HcQqAGnDK+DBI=
+X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:e55d:7de8:da36:30e8])
+ (user=ndesaulniers job=sendgmr) by 2002:a0c:f64e:: with SMTP id
+ s14mr16600523qvm.56.1621646790253; Fri, 21 May 2021 18:26:30 -0700 (PDT)
+Date:   Fri, 21 May 2021 18:26:24 -0700
+In-Reply-To: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com>
+Message-Id: <20210522012626.2811297-1-ndesaulniers@google.com>
+Mime-Version: 1.0
+References: <CAK7LNAS_LpZnweujqVwZ1kL0eDYR726k35U_yx1djqNE0bk6Rw@mail.gmail.com>
+X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
+Subject: [PATCH v2] Makefile: fix GDB warning with CONFIG_RELR
+From:   Nick Desaulniers <ndesaulniers@google.com>
+To:     Will Deacon <will@kernel.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Lee Jones <lee.jones@linaro.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Elliot Berman <eberman@quicinc.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
+GDB produces the following warning when debugging kernels built with
+CONFIG_RELR:
 
-Add translation zh_CN/admin-guide/lockup-watchdogs.rst and link it to
-zh_CN/admin-guide/index.rst while clean its todo entry.
+BFD: /android0/linux-next/vmlinux: unknown type [0x13] section `.relr.dyn'
 
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
+when loading a kernel built with CONFIG_RELR into GDB. It can also
+prevent debugging symbols using such relocations.
+
+Peter sugguests:
+  [That flag] means that lld will use dynamic tags and section type
+  numbers in the OS-specific range rather than the generic range. The
+  kernel itself doesn't care about these numbers; it determines the
+  location of the RELR section using symbols defined by a linker script.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1057
+Suggested-by: Peter Collingbourne <pcc@google.com>
+Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 ---
- .../translations/zh_CN/admin-guide/index.rst  |  2 +-
- .../zh_CN/admin-guide/lockup-watchdogs.rst    | 66 +++++++++++++++++++
- 2 files changed, 67 insertions(+), 1 deletion(-)
- create mode 100644 Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
+Changes V1 -> V2:
+* rebase
+* pick up Nathan's reviewed by tag.
 
-diff --git a/Documentation/translations/zh_CN/admin-guide/index.rst b/Documentation/translations/zh_CN/admin-guide/index.rst
-index be835ec8e632..460034cbc2ab 100644
---- a/Documentation/translations/zh_CN/admin-guide/index.rst
-+++ b/Documentation/translations/zh_CN/admin-guide/index.rst
-@@ -65,6 +65,7 @@ Todolist:
+ Makefile                      | 2 +-
+ scripts/tools-support-relr.sh | 3 ++-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 0ed7e061c8e9..2dbb56f831d4 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1031,7 +1031,7 @@ LDFLAGS_vmlinux	+= $(call ld-option, -X,)
+ endif
  
-    clearing-warn-once
-    cpu-load
-+   lockup-watchdogs
-    unicode
+ ifeq ($(CONFIG_RELR),y)
+-LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr
++LDFLAGS_vmlinux	+= --pack-dyn-relocs=relr --use-android-relr-tags
+ endif
  
- Todolist:
-@@ -100,7 +101,6 @@ Todolist:
-    laptops/index
-    lcd-panel-cgram
-    ldm
--   lockup-watchdogs
-    LSM/index
-    md
-    media/index
-diff --git a/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst b/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
-new file mode 100644
-index 000000000000..8474d325c534
---- /dev/null
-+++ b/Documentation/translations/zh_CN/admin-guide/lockup-watchdogs.rst
-@@ -0,0 +1,66 @@
-+.. include:: ../disclaimer-zh_CN.rst
-+
-+:Original: :doc:`../../../admin-guide/lockup-watchdogs`
-+
-+:译者:
-+
-+ 刘海龙 Hailong Liu <liu.hailong6@zte.com.cn>
-+
-+=================================================
-+Softlockup与hardlockup检测机制(又名:nmi_watchdog)
-+=================================================
-+
-+Linux中内核实现了一种用以检测系统发生softlockup和hardlockup的看门狗机制。
-+
-+Softlockup是一种会引发系统在内核态中一直循环超过20秒（详见下面“实现”小节）导致
-+其他任务没有机会得到运行的BUG。一旦检测到'softlockup'发生，默认情况下系统会打
-+印当前堆栈跟踪信息并进入锁定状态。也可配置使其在检测到'softlockup'后进入panic
-+状态；通过sysctl命令设置“kernel.softlockup_panic”、使用内核启动参数
-+“softlockup_panic”（详见Documentation/admin-guide/kernel-parameters.rst）以及使
-+能内核编译选项“BOOTPARAM_SOFTLOCKUP_PANIC”都可实现这种配置。
-+
-+而'hardlockup'是一种会引发系统在内核态一直循环超过10秒钟（详见"实现"小节）导致其
-+他中断没有机会运行的缺陷。与'softlockup'情况类似，除了使用sysctl命令设置
-+'hardlockup_panic'、使能内核选项“BOOTPARAM_HARDLOCKUP_PANIC”以及使用内核参数
-+"nmi_watchdog"(详见:”Documentation/admin-guide/kernel-parameters.rst“)外，一旦检
-+测到'hardlockup'默认情况下系统打印当前堆栈跟踪信息，然后进入锁定状态。
-+
-+这个panic选项也可以与panic_timeout结合使用（这个panic_timeout是通过稍具迷惑性的
-+sysctl命令"kernel.panic"来设置），使系统在panic指定时间后自动重启。
-+
-+实现
-+====
-+
-+Softlockup和hardlockup分别建立在hrtimer(高精度定时器)和perf两个子系统上而实现。
-+这也就意味着理论上任何架构只要实现了这两个子系统就支持这两种检测机制。
-+
-+Hrtimer用于周期性产生中断并唤醒watchdog线程；NMI perf事件则以”watchdog_thresh“
-+(编译时默认初始化为10秒，也可通过”watchdog_thresh“这个sysctl接口来进行配置修改)
-+为间隔周期产生以检测 hardlockups。如果一个CPU在这个时间段内没有检测到hrtimer中
-+断发生，'hardlockup 检测器'(即NMI perf事件处理函数)将会视系统配置而选择产生内核
-+警告或者直接panic。
-+
-+而watchdog线程本质上是一个高优先级内核线程，每调度一次就对时间戳进行一次更新。
-+如果时间戳在2*watchdog_thresh(这个是softlockup的触发门限)这段时间都未更新,那么
-+"softlocup 检测器"(内部hrtimer定时器回调函数)会将相关的调试信息打印到系统日志中，
-+然后如果系统配置了进入panic流程则进入panic，否则内核继续执行。
-+
-+Hrtimer定时器的周期是2*watchdog_thresh/5，也就是说在hardlockup被触发前hrtimer有
-+2~3次机会产生时钟中断。
-+
-+如上所述,内核相当于为系统管理员提供了一个可调节hrtimer定时器和perf事件周期长度
-+的调节旋钮。如何通过这个旋钮为特定使用场景配置一个合理的周期值要对lockups检测的
-+响应速度和lockups检测开销这二者之间进行权衡。
-+
-+默认情况下所有在线cpu上都会运行一个watchdog线程。不过在内核配置了”NO_HZ_FULL“的
-+情况下watchdog线程默认只会运行在管家(housekeeping)cpu上，而”nohz_full“启动参数指
-+定的cpu上则不会有watchdog线程运行。试想，如果我们允许watchdog线程在”nohz_full“指
-+定的cpu上运行，这些cpu上必须得运行时钟定时器来激发watchdog线程调度；这样一来就会
-+使”nohz_full“保护用户程序免受内核干扰的功能失效。当然，副作用就是”nohz_full“指定
-+的cpu即使在内核产生了lockup问题我们也无法检测到。不过，至少我们可以允许watchdog
-+线程在管家(non-tickless)核上继续运行以便我们能继续正常的监测这些cpus上的lockups
-+事件。
-+
-+不论哪种情况都可以通过sysctl命令kernel.watchdog_cpumask来对没有运行watchdog线程
-+的cpu集合进行调节。对于nohz_full而言,如果nohz_full cpu上有异常挂住的情况，通过
-+这种方式打开这些cpu上的watchdog进行调试可能会有所作用。
+ # We never want expected sections to be placed heuristically by the
+diff --git a/scripts/tools-support-relr.sh b/scripts/tools-support-relr.sh
+index 45e8aa360b45..cb55878bd5b8 100755
+--- a/scripts/tools-support-relr.sh
++++ b/scripts/tools-support-relr.sh
+@@ -7,7 +7,8 @@ trap "rm -f $tmp_file.o $tmp_file $tmp_file.bin" EXIT
+ cat << "END" | $CC -c -x c - -o $tmp_file.o >/dev/null 2>&1
+ void *p = &p;
+ END
+-$LD $tmp_file.o -shared -Bsymbolic --pack-dyn-relocs=relr -o $tmp_file
++$LD $tmp_file.o -shared -Bsymbolic --pack-dyn-relocs=relr \
++  --use-android-relr-tags -o $tmp_file
+ 
+ # Despite printing an error message, GNU nm still exits with exit code 0 if it
+ # sees a relr section. So we need to check that nothing is printed to stderr.
+
+base-commit: 45af60e7ced07ae3def41368c3d260dbf496fbce
 -- 
-2.17.1
-
+2.31.1.818.g46aad6cb9e-goog
 
