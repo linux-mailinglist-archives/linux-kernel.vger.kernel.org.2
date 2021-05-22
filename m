@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3743C38D285
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:22:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D0F038D299
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:36:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231208AbhEVAYJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 20:24:09 -0400
-Received: from mga09.intel.com ([134.134.136.24]:27120 "EHLO mga09.intel.com"
+        id S230288AbhEVAhq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 20:37:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231249AbhEVAXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 20:23:21 -0400
-IronPort-SDR: a7SWcpXHx8XgFp3XCAELEXspmXEjkKNZLzmiDELMc7EZjE7ILFDr1jR6muv+TsusbBxDkb57Xf
- xjGdKOV+7/Qw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="201634436"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="201634436"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 17:21:11 -0700
-IronPort-SDR: QF/V6SSZ5KjbpoMVOKNr3+Vz2atm7msoUr2SSTfKs6IoniD3wJ4wKkOVcO11Wpf6eoE5uEaDJ8
- Lm6WE2bQNDBg==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="476324236"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 May 2021 17:21:10 -0700
-Subject: [PATCH v6 20/20] vfio: mdev: idxd: setup request interrupt
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     alex.williamson@redhat.com, kwankhede@nvidia.com,
-        tglx@linutronix.de, vkoul@kernel.org, jgg@mellanox.com
-Cc:     megha.dey@intel.com, jacob.jun.pan@intel.com, ashok.raj@intel.com,
-        yi.l.liu@intel.com, baolu.lu@intel.com, kevin.tian@intel.com,
-        sanjay.k.kumar@intel.com, tony.luck@intel.com,
-        dan.j.williams@intel.com, eric.auger@redhat.com,
-        pbonzini@redhat.com, dmaengine@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Date:   Fri, 21 May 2021 17:21:10 -0700
-Message-ID: <162164287046.261970.257439178688866229.stgit@djiang5-desk3.ch.intel.com>
-In-Reply-To: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
-References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/0.23-29-ga622f1
+        id S230190AbhEVAhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 20:37:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4302613FE;
+        Sat, 22 May 2021 00:36:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621643781;
+        bh=HaoAEb5QnxGwVYmtRURFgpSmH16cCBITcqMVRG2/0Gg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=MPqbJhBH3RstH9EWKnNxymskz2Pl/C3W0gZMrlE5YCNKDUTrUUl6zCvDVB5k5XAYV
+         Y9reX8ayEACS9y0c/FUtyyh/u4B9uR1QqFmPsWzjNryQn+mrf9sJS0gsybWWjctN+6
+         8t3HtRVEAhAQbtaZt0m0Y2ipK9Ky6/a///tbh5LM0ggxxkxKSCYeUmhmxi04t5zUHH
+         3VoiVihlCbU5yRaTI00Hz9NhwohX5X6bXsnRYyv2VKYnPnCyVijAyx6eVeIE/4yuTU
+         2Obo3xiF4iJYCtUfU9lO4WLwiZEypzFDL6/ggllWhgtf/ABAN9PNqOCTmfMo2TyWaN
+         ElcxbVijfWhjQ==
+Received: by mail-lj1-f181.google.com with SMTP id a4so11172626ljd.5;
+        Fri, 21 May 2021 17:36:21 -0700 (PDT)
+X-Gm-Message-State: AOAM531IcwAKxtBqO6a+axvmrMG2S4Yc70gwzOzv2Xv5C2a94MNuoN6/
+        YOhv2OuSMBzXPTZRaFEyt7Qsigd8qojaq22Dd7Y=
+X-Google-Smtp-Source: ABdhPJw+FdoqB7wdUwCy62OFrQ1DY0Cf6ne6oubJWNeuhIRENTiVKgOFAcEA/5SJUwdF8GiK/Z3FCxIVMCSO7UivrSQ=
+X-Received: by 2002:a05:651c:502:: with SMTP id o2mr8602037ljp.105.1621643779980;
+ Fri, 21 May 2021 17:36:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <1621400656-25678-1-git-send-email-guoren@kernel.org>
+ <20210519052048.GA24853@lst.de> <CAJF2gTR5838=Uwc5P6Xs=G7vk80k0yqWcSsNe0OFcwc9sDBBHg@mail.gmail.com>
+ <20210519060617.GA28397@lst.de> <20210519065431.GB3076809@x1> <CAAhSdy3C1owsbY_9gkxkhWfCXnL_noow7F4t=5+j7q+AJO3pZQ@mail.gmail.com>
+In-Reply-To: <CAAhSdy3C1owsbY_9gkxkhWfCXnL_noow7F4t=5+j7q+AJO3pZQ@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 22 May 2021 08:36:08 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTTBAKTBY5AF9jd8tfT-33Y+McyFis_xk_aMvZZpLsvVxw@mail.gmail.com>
+Message-ID: <CAJF2gTTBAKTBY5AF9jd8tfT-33Y+McyFis_xk_aMvZZpLsvVxw@mail.gmail.com>
+Subject: Re: [PATCH RFC 0/3] riscv: Add DMA_COHERENT support
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Drew Fustini <drew@beagleboard.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>, wefu@redhat.com,
+        =?UTF-8?B?V2VpIFd1ICjlkLTkvJ8p?= <lazyparser@gmail.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add request interrupt support for idxd-mdev driver to support requesting
-release of device.
+On Wed, May 19, 2021 at 3:15 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Wed, May 19, 2021 at 12:24 PM Drew Fustini <drew@beagleboard.org> wrote:
+> >
+> > On Wed, May 19, 2021 at 08:06:17AM +0200, Christoph Hellwig wrote:
+> > > On Wed, May 19, 2021 at 02:05:00PM +0800, Guo Ren wrote:
+> > > > Since the existing RISC-V ISA cannot solve this problem, it is better
+> > > > to provide some configuration for the SOC vendor to customize.
+> > >
+> > > We've been talking about this problem for close to five years.  So no,
+> > > if you don't manage to get the feature into the ISA it can't be
+> > > supported.
+> >
+> > Isn't it a good goal for Linux to support the capabilities present in
+> > the SoC that a currently being fab'd?
+> >
+> > I believe the CMO group only started last year [1] so the RV64GC SoCs
+> > that are going into mass production this year would not have had the
+> > opporuntiy of utilizing any RISC-V ISA extension for handling cache
+> > management.
+>
+> The current Linux RISC-V policy is to only accept patches for frozen or
+> ratified ISA specs.
+> (Refer, Documentation/riscv/patch-acceptance.rst)
+>
+> This means even if emulate CMO instructions in OpenSBI, the Linux
+> patches won't be taken by Palmer because CMO specification is
+> still in draft stage.
+Before CMO specification release, could we use a sbi_ecall to solve
+the current problem? This is not against the specification, when CMO
+is ready we could let users choose to use the new CMO in Linux.
 
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
- drivers/vfio/mdev/idxd/mdev.c |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+From a tech view, CMO trap emulation is the same as sbi_ecall.
 
-diff --git a/drivers/vfio/mdev/idxd/mdev.c b/drivers/vfio/mdev/idxd/mdev.c
-index 25d1ac67b0c9..6bf2ec43656c 100644
---- a/drivers/vfio/mdev/idxd/mdev.c
-+++ b/drivers/vfio/mdev/idxd/mdev.c
-@@ -52,6 +52,8 @@ static int idxd_vdcm_get_irq_count(struct vfio_device *vdev, int type)
- {
- 	if (type == VFIO_PCI_MSIX_IRQ_INDEX)
- 		return VIDXD_MAX_MSIX_VECS;
-+	else if (type == VFIO_PCI_REQ_IRQ_INDEX)
-+		return 1;
- 
- 	return 0;
- }
-@@ -486,6 +488,12 @@ static int idxd_vdcm_set_irqs(struct vdcm_idxd *vidxd, uint32_t flags,
- 			return mdev_set_msix_trigger(mdev, index, start, count, flags, data);
- 		}
- 		break;
-+	case VFIO_PCI_REQ_IRQ_INDEX:
-+		switch (flags & VFIO_IRQ_SET_ACTION_TYPE_MASK) {
-+		case VFIO_IRQ_SET_ACTION_TRIGGER:
-+			return vfio_mdev_set_req_trigger(mdev, index, start, count, flags, data);
-+		}
-+		break;
- 	}
- 
- 	return -ENOTTY;
-@@ -678,6 +686,7 @@ static long idxd_vdcm_ioctl(struct vfio_device *vdev, unsigned int cmd, unsigned
- 
- 		switch (info.index) {
- 		case VFIO_PCI_MSIX_IRQ_INDEX:
-+		case VFIO_PCI_REQ_IRQ_INDEX:
- 			info.flags |= VFIO_IRQ_INFO_NORESIZE;
- 			break;
- 		default:
-@@ -750,6 +759,7 @@ static const struct vfio_device_ops idxd_mdev_ops = {
- 	.write = idxd_vdcm_write,
- 	.mmap = idxd_vdcm_mmap,
- 	.ioctl = idxd_vdcm_ioctl,
-+	.request = vfio_mdev_request,
- };
- 
- static ssize_t name_show(struct mdev_type *mtype, struct mdev_type_attribute *attr, char *buf)
+>
+> Also, we all know how much time it takes for RISCV international
+> to freeze some spec. Judging by that we are looking at another
+> 3-4 years at minimum.
+>
+> Regards,
+> Anup
 
 
+
+-- 
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
