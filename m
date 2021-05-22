@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C84EE38D5F1
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 15:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A726338D5F3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 15:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231201AbhEVNL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 09:11:56 -0400
-Received: from mail-am6eur05on2087.outbound.protection.outlook.com ([40.107.22.87]:11590
+        id S231248AbhEVNMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 09:12:00 -0400
+Received: from mail-am6eur05on2078.outbound.protection.outlook.com ([40.107.22.78]:41441
         "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231191AbhEVNLv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 09:11:51 -0400
+        id S231175AbhEVNL6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 09:11:58 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YWj+8J7L+Mi9Tsz+OJmNl4m5BAhKCz5WJl1ARdbzTHyyvGRAAybswtic+2nT4Pu1IHFXQFPMQ+WrEt8GSxZPd+hOliQC2dB9KCwsrDnO0mbKk1PurbLw/Q+V05FVCXEXENcII6nhFRt02OFIa5ZERQ59HOOr2toXOQxDHN5xKIdRlE0JyfMHQdP1+hHNGK28dKWk9q9KynVLExi1aY6N1oKb1kXHhnUix0/TG00pRhKfONbIttaHyDJFcW3HPfHai9G2h/OTq30YCD/AmPnatOtKGg3og9rTc2dDf5iVXQQ86wYq0Fxp0l0+u0szWiBswtxl0cAVASHdRDABwEyyWg==
+ b=LQRNnCT5GbR7wvoudEj6RpXUlxlzC0T0uHNxgR7/qW/LSLDO4saR9HR82FR7lc7u1ayH1ZmG9o2bTd6BYiDhgj4FsyH6xHxgJX2/e5OyCdwQqeocaI3FWDovxiAwDs4Po6pXpnTNxz9XoNhnQh0olCR1KYY1BXOwQvm287Apf3fGdFySs8RjOkz2QOlUFk4IqkeRB85H647CBkM6HxbOAJ1yCqd9yN2pHEE/eqvJ9M+NY17huQO8xxVLC/v852Ah1VTgnYw9ADbDXVOJ8dFO247EUCH9VHQ+r5Rg6+xlOJh8/UsLBu6esnEUVzL330BylU80grUgjyyg1hHdVHBmcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0aB9k0PrMCYDScMBixgBT3+fJPleWCeHpDcOqnFBs8Q=;
- b=coDMGa46dVpkH1NclrBIt8sOAU8pyGelISIlyE+tI1W3WwtznLWpXR5Odp4WeL3nP7c9KWCjxe1qpGmDzV/cJ+CeO5uVQLFy4z87gox2T133ZjSX7aY/6TMxJacg8rh0ODGz48/uMcdFj9SGHpd+BFEO5aYny8nDJSBLpo3NqdL+I6MJWdSDBrHZyLesz/oAK1MSI5P5D4Wn5bLT4OZEMQNxMJnB5WvPcwteu46sjLgdh5Bjp7NzsGQqDjlWS34NKx24+33o5fdPkfPELHSXuALr4lRdxLIxvil589RmXpSQg0lSU6ADprUsx8rpbUNwCJ6BEoO92u1tlU+lAKhpFA==
+ bh=5qwaDupzmhqcQqkEIrmxTz/W4DsI6Ku2iN63KCcphUI=;
+ b=eWivciaWh/WMKEjtkMjqAh0SEwOGn2al4/qBYZ+YRuBCP5FnJH6vz2s2zF7ZiKqba6M/VsmGmY6KOjPPy6j14WCxiIWaG1EV4wyeAT1YWiANYdIFFXbnNxfOGpq3cjADqoXVTn0RU0c8ldi62cskUlGsolq4RjBoVBZRvxAiyZ7zgU3iBr9psfSaIphnhY2h3qfHE1A9MJyo2BSaPCS13PrkGlcfNUbcnbsJuPBqc9bKHHVp4SGWHBM59i/q6vWIj56meY4BADeZHPbKgPNq8PQ7MeRpCHVGpC4wTplMwRaOCXl4qsDKvUdXM9CX2AXvTlQpqhcwqdSCtbZ58AHKTQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0aB9k0PrMCYDScMBixgBT3+fJPleWCeHpDcOqnFBs8Q=;
- b=ZD8x7nSCRXVK+tHXeKiHE2ncIIzZFsdfTnsomqO5ShMzV+acY72jBcMBtLvh+oRpx8FlegDCYa5exCuNdigdxxW29cfRbnVCaJ5PCmxN0KnO7f5BDHlUNex4eOXCTfAAOKIjNo8Grfcx5TIBLZ14a57b6ClWaqmAmKfFopMRDpU=
+ bh=5qwaDupzmhqcQqkEIrmxTz/W4DsI6Ku2iN63KCcphUI=;
+ b=UB9BgjZ5XMbYSAXo4ZD8UcBGW8fSZgrB6N0GNC6KO5XEYQ/GynoiiMcODckYUKq0ptC8JpWSrLFCJi1FNT9Yvwbvt7y3tgjLPqDND/0tYG5TjOyh233tIoYw76wU1/3KxPDl0lpyDe2/MUnIEJgNHO7fsBUAhPsjw2N7Xz10zz0=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB8PR04MB5658.eurprd04.prod.outlook.com (2603:10a6:10:b2::32) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Sat, 22 May
- 2021 13:10:24 +0000
+ 2021 13:10:30 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4150.027; Sat, 22 May 2021
- 13:10:24 +0000
+ 13:10:30 +0000
 From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
 Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -46,10 +46,10 @@ Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, ping.bai@nxp.com,
         frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
-        Peng Fan <peng.fan@nxp.com>, Rob Herring <robh@kernel.org>
-Subject: [PATCH V6 2/4] Documentation: bindings: clk: Add bindings for i.MX BLK_CTL
-Date:   Sat, 22 May 2021 21:42:47 +0800
-Message-Id: <20210522134249.15322-3-peng.fan@oss.nxp.com>
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V6 3/4] soc: imx: Add generic blk-ctl driver
+Date:   Sat, 22 May 2021 21:42:48 +0800
+Message-Id: <20210522134249.15322-4-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210522134249.15322-1-peng.fan@oss.nxp.com>
 References: <20210522134249.15322-1-peng.fan@oss.nxp.com>
@@ -60,51 +60,51 @@ X-ClientProxiedBy: SG2PR04CA0155.apcprd04.prod.outlook.com (2603:1096:4::17)
  To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR04CA0155.apcprd04.prod.outlook.com (2603:1096:4::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Sat, 22 May 2021 13:10:18 +0000
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR04CA0155.apcprd04.prod.outlook.com (2603:1096:4::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Sat, 22 May 2021 13:10:24 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 510ea44f-1763-4375-7326-08d91d22f5e1
+X-MS-Office365-Filtering-Correlation-Id: 8657a16d-e049-48c7-ede4-08d91d22f987
 X-MS-TrafficTypeDiagnostic: DB8PR04MB5658:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB5658769D4A391187E44A159BC9289@DB8PR04MB5658.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Microsoft-Antispam-PRVS: <DB8PR04MB56587828A2651BB108248FA4C9289@DB8PR04MB5658.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:632;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BzAZgGVLPayoLYqsh6uInoPWT1aR2UGKn67azRjqtftfVk4csrvL6Y895MbSWFp1uSjmTYW+HY+y+RJdrn8BNufa2urZSAxx+XJTAaL1HbVKkoDDo3pCVMx/FMvVhHQufO2L2ggIbufmV4YtL1zbyDtEK97mw4q15PdCaAMuKo9Yj5SFBtBm9MtIzK5T3vRduA76hglAcSb2hY2VjecuayqFHAaqqNvblBrPHscm55Ol0yiwrXdhLSDPHRHHCvZ9ug/xIRb+JxCtjWz44wRal/lYVw5LjM/IGZq5kNiHoVtSfUVrkeZG6Ng4PMIzcAmkOkS5+OqsJpCfmwhEBn01zaHgi4znwZvmbgKfY/qAenFHiEJKtQ/h7BZ5Pz67HyX7x43EeG8Ib26VP1gvucTMClYHtdcB8jk/lVDZ8pRayzOLp4YnHq7EH1d7iJkkC083Np3jNn5I1VSxhkOQ9ylw3zlQVsOuI5f5w1Kis7ZdXEa7tZRuxkFxR87TB+rAMVoJKqHhdhTre0FNNbl847C91eXhhPilMvQxQAGmuZfYadcyFPn/iFyvL4wC2s/PpHpIA23W1MQOiVBikk+EJbJkDULYmlyH5lM7xXYrFNVXKa31k8rn3OQ1u2rapBy09N3L78NhEVZpN29yCQL1S8VnGXvHdXHE6EVORgN3SgE2V00DzAVk2sTcGcwxPY1IEJ7sKwS2ONiJRXEV7knP4K6EZ0A0QqNBivH7IQh4vNccdyrC6Ew1Av2cVrvDfeGm5tMhbeiak7LbmWes6IOzzPG8Tg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(396003)(39860400002)(136003)(6506007)(66946007)(16526019)(66476007)(66556008)(186003)(4326008)(8936002)(26005)(52116002)(966005)(6512007)(38350700002)(38100700002)(83380400001)(5660300002)(478600001)(1076003)(8676002)(956004)(2616005)(54906003)(316002)(86362001)(2906002)(6486002)(6666004)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oQhoahm4MXLxDJiyzIXojcMpvOQe9HcsocPonkNJSDDyMmwewP4Y8DbiPV2t?=
- =?us-ascii?Q?YT9Ra7ucPLpi1k+YcsATC2vK8f+WnqcZIytHHbMPWU4VTpUeVr4cEM+f+x53?=
- =?us-ascii?Q?qGBL2DC2ddYTGyIYC3pYWAQFx0O5sQjWRRweHkiRprnM16/pJVUIPw2WLuaA?=
- =?us-ascii?Q?iIOF9q1MGS2CpR4OTY14T2W75wzpbtqi3OIbBzv5l3c2KAsd/GWXpJbqWrjg?=
- =?us-ascii?Q?Igf2slBADaof0WXDNeHO9QO15GGWtcqi66oUZdKQySvB6+KVTBo6DKrVobxR?=
- =?us-ascii?Q?N+e06ygPGTrfdfs+EzU4THFjZ5kJzGkx2A5RB51dpN/G0+BXNl+1W1GMrVwM?=
- =?us-ascii?Q?GyjlbvKELpRkcnMovo6alIdzeceCVNY+7tnmumoxHf4w/kcdZKjvAC5sFm5n?=
- =?us-ascii?Q?KHInIYcsCShCDxicfrtaaTV/JRzEWey6Z+zGMHIXKrxVV54b7bQayPPTOTCd?=
- =?us-ascii?Q?sQJZrhY+FbqR5TSVEdKvg8NassaazYRtxAme74ssMFEmtzj0xA2Bhsi/6VyH?=
- =?us-ascii?Q?ZRc1KBYCvODVntIjqNjLM6A0KaPkvH7HWYn+zwYG6LOh28jpMoOZK4y3mZAI?=
- =?us-ascii?Q?lCTne/FlM/6s1Ba/VoOyiJFZkr3Wo1k41yOTIGBd8LXdL2y4r7ayZxB//xC8?=
- =?us-ascii?Q?jXYpk+f9P8CpuWDR3LXjtDbFRXSV+S99GrmjdFF5NandHKE+PSSsSHh6QtZm?=
- =?us-ascii?Q?muMhCuR2SqceKqvTeUu2utfRFnthb3SlgcMhcK5Iu3UQ5Cb0NKiheIRyhL4I?=
- =?us-ascii?Q?DvEOxideBFxp4Wr8liQkiP36Ad+QUYmRJtzxCY6/wHyY9zKMHOkScxHEDxcF?=
- =?us-ascii?Q?25v7LHZYgdSt4q/j84Xuy3ZiShiJeR1B508h2Jia6p/+iD2tsZD1aR+zm4OX?=
- =?us-ascii?Q?iSiwK0wmCnmHOltQA24dZx48vYP7IKfm7OKIwUp+mn9RvQyKIQzU2ZjbtZuz?=
- =?us-ascii?Q?n8rpBS6VWSnjRfTE5HF8toUhLv9CUhXi48R7RfdZUC/lcXnD3GTMBz/elYxQ?=
- =?us-ascii?Q?vZ6OWUOvTfVxki466OoZQh2uteTs0t6SE2FE5htKXr5cBrC7xjLeqmOwdwCa?=
- =?us-ascii?Q?4/kIhA++YwaVlYEn8lzKu0eAn4DxaB0aBTrA2Y7+2gEmz24hcp3OdVhIZGmw?=
- =?us-ascii?Q?SLurXnliM+SfA3IVBP0L7q/bGTHF7BU10fVTaN3Cprnw/33sHD8KhgMFei1X?=
- =?us-ascii?Q?u/4uHCR16+rhOk0Yv+oDil7V07VluCuCYK2775qrb9ZMijywRMV5aB6N07w3?=
- =?us-ascii?Q?7ereF9W6imvEGLiV0SK3VGE+h5HHqKTFW+HyUoBbUvJrvz2jEKXJg4NoEOoo?=
- =?us-ascii?Q?JR8v3nQjIcoOEDtGryuPBDZN?=
+X-Microsoft-Antispam-Message-Info: JAismw68TwvayAhWDK4vh3sKZNZ1Mtd3W7SPjkzmbl8oRxm72kyEJjSKF+/UxJnP+xHhhkWzNU81NMqj3ZZ7tmAH8AlDsEEoQm2vbGT4gx7eGk9DHLOnXz2nfTL06oh2dasiwSCFIDitN4RPoOSkhijKr3L0AMiu8CyoUMyBJ35DT2e8Nb/9eszwkRsVfLKszWbs+DYaOqTgBM6+uS5/IuMFPEzG9tsYahm59AmfObyO75ZNzN/hf1yqq0+PipzqRpoT6rUGAqiqo2AVzfPnfOjITH9b8dAXpdEfm3MzBHtwve6xEsarZ+wDMB/HsIOBwu06CdfYemMlMZNE5VdDEKJLHaKYR5BQW7f1BJUMc2oPRqskGy9vs2QwGUCotkEybxRI3a3kxQwID6B9atfb798zwPSIJ2Z9ZcdMPK9zvMCRTR2TOSCHtZgQMZp4OjepUkhZTstMNJHU1a9r+OT7FIEHISg4JCNJnb1gk7YPU6KLqUzZzjePjNcXSPqRumHgdsLnBT52sokzpf1Hq4TNdr+Okw5JpM7RS+NLQzCIOP+KvIRrTUk4y0fwPMavglFFdPqPkK0j82PwSDR8zDlDvWS2awXU19MtLCMD75KaKdbJ8Epshj2bs2AED3BwZKcGHZvB9kbbAN+052tsTiAVXzwNuwWou01oUbURgAhsIqtRz61UI0jQQcjSEO1/hjCX
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(396003)(39860400002)(136003)(6506007)(66946007)(16526019)(66476007)(66556008)(186003)(4326008)(8936002)(26005)(52116002)(30864003)(6512007)(38350700002)(38100700002)(83380400001)(5660300002)(478600001)(1076003)(8676002)(956004)(2616005)(316002)(86362001)(2906002)(6486002)(6666004)(7416002)(41533002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7DJGqU1+tmNdHlGzzYDxXTvHFlh6hyUZq/NOKnmkTngERZ4FnCM+ySvNBDQA?=
+ =?us-ascii?Q?kiqIVFMFJTwx2bbGwDEc2jTeH7/QgbCzL4r2Fynp7B/ouz3wAjLSZLOerCng?=
+ =?us-ascii?Q?vRDvtzE5QDjrZ5S92Kfk6BYSE72sr9E48E1r4AZftunZhFKU1PyhtwnVb/8E?=
+ =?us-ascii?Q?yO+0nQLK7AOCVskUkdcsUwsiYUTT8qIU+LrggREXsbuKd32ZzjED825xC84H?=
+ =?us-ascii?Q?ZzGhlbI46qUKv6Dr9efV4LBnsKOxNVLYJI4vXzymZ7lVnCFG+mvnqMqjT2iH?=
+ =?us-ascii?Q?otbldjzdjzFCP19yXTtREgTQyngqyykQO9zPMajG6jElI1ge4ivPFpzyGpF1?=
+ =?us-ascii?Q?P4HE/CRpX8igHQCMQjH6STA+i6KCyiVNIpKOKPi84q7ELCrHAeS3cCtCrEpD?=
+ =?us-ascii?Q?1mcjeKNXBmXIqWuFELPXWtO2wY3CvV4l/6IcLmYFyiDWQBPJZvMR6e27/KZd?=
+ =?us-ascii?Q?nkQ/Tx7cPr/qixWm5jXe8dcGXaaStIfFYRLeeIu3V48Ubx5hPy0hIIlTU7w1?=
+ =?us-ascii?Q?KCokAi2Kn9UiOFxkSspq6Bvrj/XHtC1RLH14N02fTBuQEwyAtJxsJtgK4eX1?=
+ =?us-ascii?Q?qV4xmbfOTY2kvnrdtlI5Uv3puMWHusuZpW0DRz8ku2WFEP8A6KTww8y/mcgq?=
+ =?us-ascii?Q?4nxEgEL5oERvhZPzpEUEPEpl4TFDW0Kwbi0aH+7z7zEGATwh18lqdn78KBE4?=
+ =?us-ascii?Q?7QAKOMgaP5mbynm/kEt9Gxkq3TavobV5Q4VEOsCyf7UOvpupKl0aW27A3Cv3?=
+ =?us-ascii?Q?hbNlotPm9ek93/a/44X9AWjhdkfvZBqCoLz5yb31uv1QpD7+witA/YcPUspF?=
+ =?us-ascii?Q?wfwxzuBAV0TLCQIbhiMhoxZMf6Lz5SfNPGDG415dNkdHFHhK8DuRH/rzrem3?=
+ =?us-ascii?Q?RE/PeJSM0AfBmkgu9Jw+/FTC4G/D9h1/fn59QBmEykU/DTdqWAwF/ClSKXRY?=
+ =?us-ascii?Q?yFyoq4VSue8cneJaNmr/So8NwWPyS2Wb2ewC+KZFgxoLmw6QXw8G/+7T227K?=
+ =?us-ascii?Q?1EAyEwEDyllnpwH+FxWXniQ23xENxY3B4UJXUhS6KZGWTuz6nRYOfXBCH3cO?=
+ =?us-ascii?Q?qJArhyAI/FkAwYQaQ9TB+yK2gwWGfEnsvgEQV+/lPGy/GC85HbSYEMoDI6+S?=
+ =?us-ascii?Q?SBiELo/5jRnjWnSB2QELqqWL9DeqUStdmewpRG0IMyFwWTGJwaRa+vXQpqnt?=
+ =?us-ascii?Q?zboos5ojpOuc/ltMHkDWjpXH/4m38qJN0pYxyb7k7/B/HYfa+xCo3VNPAdnS?=
+ =?us-ascii?Q?VaoGoJNtZCxH1+iKP5964S0EF7aueAHzQqqdiGfcb+TRJ29LSJo046Z4iLcR?=
+ =?us-ascii?Q?fpDeln098YyusYZl1oFSv7Hn?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 510ea44f-1763-4375-7326-08d91d22f5e1
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8657a16d-e049-48c7-ede4-08d91d22f987
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2021 13:10:24.3671
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2021 13:10:30.4963
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ERzITLCYegPXKmt5qodDyKaoOuAirqA8RaEr+E6wH1ZeBTtz2z/ZHlU4L4Uigkm9hy191CcT0v78lmSENqMSXQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: oTH4zo4W47BlsTBdIP8KqTmvEX/LAQOvNNvbfZDRrB5oDSyy16E9CLi7p67fV1zkIFvhD7PuZkHV9K5asLLskQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5658
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -112,101 +112,466 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peng Fan <peng.fan@nxp.com>
 
-Document the i.MX BLK_CTL with its devicetree properties.
+The i.MX8MM introduces an IP named BLK_CTL and usually is comprised of
+some GPRs.
 
-Each BLK CTL have different power domain inputs and they have different
-names, so we are not able to list all the power domain names for each
-BLK CTL here.
+The GPRs has some clock bits and reset bits, but here we take it
+as virtual PDs, because of the clock and power domain A/B lock issue
+when taking it as a clock controller.
 
-For example:
-i.MX8MM dispmix BLK CTL, it has
-	power-domains = <&pgc_dispmix>, <&pgc_mipi>;
-	power-domain-names = "dispmix", "mipi";
+For some bits, it might be good to also make it as a reset controller,
+but to i.MX8MM, we not add that support for now.
 
-vpumix BLK CTL, it has
-	power-domains = <&vpumix_pd>, <&vpu_g1_pd>, <&vpu_g2_pd>,
-			<&vpu_h1_pd>;
-	power-domain-names = "vpumix", "g1", "g2", "h1";
-
-Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- .../bindings/soc/imx/fsl,imx-blk-ctl.yaml     | 66 +++++++++++++++++++
- 1 file changed, 66 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+ drivers/soc/imx/Makefile  |   2 +-
+ drivers/soc/imx/blk-ctl.c | 334 ++++++++++++++++++++++++++++++++++++++
+ drivers/soc/imx/blk-ctl.h |  85 ++++++++++
+ 3 files changed, 420 insertions(+), 1 deletion(-)
+ create mode 100644 drivers/soc/imx/blk-ctl.c
+ create mode 100644 drivers/soc/imx/blk-ctl.h
 
-diff --git a/Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml b/Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
+index 078dc918f4f3..d3d2b49a386c 100644
+--- a/drivers/soc/imx/Makefile
++++ b/drivers/soc/imx/Makefile
+@@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
+ endif
+ obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+ obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
+-obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o
++obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
+diff --git a/drivers/soc/imx/blk-ctl.c b/drivers/soc/imx/blk-ctl.c
 new file mode 100644
-index 000000000000..a66f11acc6b4
+index 000000000000..8e286b8ef1b3
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
-@@ -0,0 +1,66 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/soc/imx/fsl,imx-blk-ctl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/drivers/soc/imx/blk-ctl.c
+@@ -0,0 +1,334 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright 2021 NXP.
++ */
 +
-+title: NXP i.MX BLK_CTL
++#include <linux/clk.h>
++#include <linux/completion.h>
++#include <linux/err.h>
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/mutex.h>
++#include <linux/of.h>
++#include <linux/of_address.h>
++#include <linux/of_device.h>
++#include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
++#include <linux/regmap.h>
++#include <linux/slab.h>
++#include <linux/string.h>
++#include <linux/types.h>
++#include <linux/pm_domain.h>
++#include <linux/reset-controller.h>
 +
-+maintainers:
-+  - Peng Fan <peng.fan@nxp.com>
++#include "blk-ctl.h"
 +
-+description:
-+  i.MX BLK_CTL is a conglomerate of different GPRs that are
-+  dedicated to a specific subsystem. It usually contains
-+  clocks and resets amongst other things. Here we take the clocks
-+  and resets as virtual PDs, the reason we could not take it as
-+  clock provider is there is A/B lock issue between power domain
-+  and clock.
++static inline struct imx_blk_ctl_domain *to_imx_blk_ctl_pd(struct generic_pm_domain *genpd)
++{
++	return container_of(genpd, struct imx_blk_ctl_domain, genpd);
++}
 +
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - fsl,imx8mm-dispmix-blk-ctl
-+          - fsl,imx8mm-vpumix-blk-ctl
-+      - const: syscon
++static int imx_blk_ctl_enable_hsk(struct device *dev)
++{
++	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
++	const struct imx_blk_ctl_hw *hw = blk_ctl->dev_data->hw_hsk;
++	struct regmap *regmap = blk_ctl->regmap;
++	int ret;
 +
-+  reg:
-+    maxItems: 1
++	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
++		ret = regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask, hw->rst_mask);
++		if (ret)
++			return ret;
++	}
 +
-+  "#power-domain-cells":
-+    const: 1
++	ret = regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
 +
-+  power-domains:
-+    minItems: 1
-+    maxItems: 32
++	/* Wait for handshake */
++	udelay(5);
 +
-+  power-domain-names:
-+    minItems: 1
-+    maxItems: 32
++	return ret;
++}
 +
-+  clocks:
-+    minItems: 1
-+    maxItems: 32
++int imx_blk_ctl_power_on(struct generic_pm_domain *domain)
++{
++	struct imx_blk_ctl_domain *pd = to_imx_blk_ctl_pd(domain);
++	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
++	struct regmap *regmap = blk_ctl->regmap;
++	const struct imx_blk_ctl_hw *hw = &blk_ctl->dev_data->pds[pd->id];
++	int ret;
 +
-+required:
-+  - compatible
-+  - reg
-+  - power-domains
-+  - power-domain-names
++	mutex_lock(&blk_ctl->lock);
 +
-+additionalProperties: false
++	ret = clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
++	if (ret) {
++		mutex_unlock(&blk_ctl->lock);
++		return ret;
++	}
 +
-+examples:
-+  - |
-+    #include <dt-bindings/clock/imx8mm-clock.h>
++	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
++		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
++		if (ret)
++			dev_err(blk_ctl->dev, "Hankshake failed when power on\n");
 +
-+    dispmix_blk_ctl: blk-ctl@32e28000 {
-+      compatible = "fsl,imx8mm-dispmix-blk-ctl", "syscon";
-+      reg = <0x32e28000 0x100>;
-+      #power-domain-cells = <1>;
-+      power-domains = <&pgc_dispmix>, <&pgc_mipi>;
-+      power-domain-names = "dispmix", "mipi";
-+      clocks = <&clk IMX8MM_CLK_DISP_ROOT>, <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
-+               <&clk IMX8MM_CLK_DISP_APB_ROOT>;
-+    };
++		goto disable_clk;
++	}
++
++	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
++		ret = regmap_clear_bits(regmap, hw->rst_offset, hw->rst_mask);
++		if (ret)
++			goto disable_clk;
++	}
++
++	/* Wait for reset propagate */
++	udelay(5);
++
++	if (hw->flags & IMX_BLK_CTL_PD_RESET) {
++		ret = regmap_update_bits(regmap, hw->rst_offset, hw->rst_mask, hw->rst_mask);
++		if (ret)
++			goto disable_clk;
++	}
++
++	ret = regmap_update_bits(regmap, hw->offset, hw->mask, hw->mask);
++	if (ret)
++		goto disable_clk;
++
++disable_clk:
++	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
++
++	mutex_unlock(&blk_ctl->lock);
++
++	return ret;
++}
++
++int imx_blk_ctl_power_off(struct generic_pm_domain *domain)
++{
++	struct imx_blk_ctl_domain *pd = to_imx_blk_ctl_pd(domain);
++	struct imx_blk_ctl *blk_ctl = pd->blk_ctl;
++	struct regmap *regmap = blk_ctl->regmap;
++	const struct imx_blk_ctl_hw *hw = &blk_ctl->dev_data->pds[pd->id];
++	int ret;
++
++	mutex_lock(&blk_ctl->lock);
++
++	ret = clk_bulk_prepare_enable(blk_ctl->num_clks, blk_ctl->clks);
++	if (ret) {
++		mutex_unlock(&blk_ctl->lock);
++		return ret;
++	}
++
++	if (!(hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)) {
++		ret = regmap_clear_bits(regmap, hw->offset, hw->mask);
++		if (ret)
++			goto hsk_fail;
++
++		if (hw->flags & IMX_BLK_CTL_PD_RESET) {
++			ret = regmap_clear_bits(regmap, hw->rst_offset, hw->rst_mask);
++			if (ret)
++				goto hsk_fail;
++		}
++	}
++
++	if (hw->flags & IMX_BLK_CTL_PD_HANDSHAKE) {
++		ret = imx_blk_ctl_enable_hsk(blk_ctl->dev);
++		if (ret)
++			dev_err(blk_ctl->dev, "Hankshake failed when power off\n");
++	}
++
++hsk_fail:
++	clk_bulk_disable_unprepare(blk_ctl->num_clks, blk_ctl->clks);
++
++	mutex_unlock(&blk_ctl->lock);
++
++	return ret;
++}
++
++static int imx_blk_ctl_probe(struct platform_device *pdev)
++{
++	struct imx_blk_ctl_domain *domain = pdev->dev.platform_data;
++	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
++	struct generic_pm_domain *parent_genpd;
++	struct device *dev = &pdev->dev;
++	struct device *active_pd;
++	int ret;
++
++	pdev->dev.of_node = blk_ctl->dev->of_node;
++	if (domain->hw->active_pd_name) {
++		active_pd = dev_pm_domain_attach_by_name(dev, domain->hw->active_pd_name);
++		if (IS_ERR_OR_NULL(active_pd)) {
++			ret = PTR_ERR(active_pd) ? : -ENODATA;
++			pdev->dev.of_node = NULL;
++			return ret;
++		}
++		domain->active_pd = active_pd;
++	} else {
++		if (!blk_ctl->bus_domain) {
++			pdev->dev.of_node = NULL;
++			return -EPROBE_DEFER;
++		}
++	}
++
++	if (domain->hw->active_pd_name)
++		parent_genpd = pd_to_genpd(active_pd->pm_domain);
++	else
++		parent_genpd = blk_ctl->bus_domain;
++
++	if (pm_genpd_add_subdomain(parent_genpd, &domain->genpd)) {
++		pr_warn("failed to add subdomain: %s\n", domain->genpd.name);
++	} else {
++		mutex_lock(&blk_ctl->lock);
++		domain->hooked = true;
++		mutex_unlock(&blk_ctl->lock);
++	}
++
++	return 0;
++}
++
++static int imx_blk_ctl_remove(struct platform_device *pdev)
++{
++	struct imx_blk_ctl_domain *domain = pdev->dev.platform_data;
++	struct imx_blk_ctl *blk_ctl = domain->blk_ctl;
++	struct generic_pm_domain *parent_genpd;
++	struct device *active_pd;
++
++	pdev->dev.of_node = blk_ctl->dev->of_node;
++	if (domain->hw->active_pd_name)
++		parent_genpd = pd_to_genpd(active_pd->pm_domain);
++	else
++		parent_genpd = blk_ctl->bus_domain;
++
++	pm_genpd_remove_subdomain(parent_genpd, &domain->genpd);
++
++	mutex_lock(&blk_ctl->lock);
++	domain->hooked = false;
++	mutex_unlock(&blk_ctl->lock);
++
++	if (domain->hw->active_pd_name)
++		dev_pm_domain_detach(domain->active_pd, false);
++
++	return 0;
++}
++
++static const struct platform_device_id imx_blk_ctl_id[] = {
++	{ "imx-vpumix-blk-ctl", },
++	{ "imx-dispmix-blk-ctl", },
++	{ },
++};
++
++static struct platform_driver imx_blk_ctl_driver = {
++	.driver = {
++		.name = "imx-blk-ctl",
++	},
++	.probe    = imx_blk_ctl_probe,
++	.remove   = imx_blk_ctl_remove,
++	.id_table = imx_blk_ctl_id,
++};
++builtin_platform_driver(imx_blk_ctl_driver)
++
++static struct generic_pm_domain *imx_blk_ctl_genpd_xlate(struct of_phandle_args *genpdspec,
++							 void *data)
++{
++	struct genpd_onecell_data *genpd_data = data;
++	unsigned int idx = genpdspec->args[0];
++	struct imx_blk_ctl_domain *domain;
++	struct generic_pm_domain *genpd = ERR_PTR(-EPROBE_DEFER);
++
++	if (genpdspec->args_count != 1)
++		return ERR_PTR(-EINVAL);
++
++	if (idx >= genpd_data->num_domains) {
++		pr_err("%s: invalid domain index %u\n", __func__, idx);
++		return ERR_PTR(-EINVAL);
++	}
++
++	if (!genpd_data->domains[idx])
++		return ERR_PTR(-ENOENT);
++
++	domain = to_imx_blk_ctl_pd(genpd_data->domains[idx]);
++	mutex_lock(&domain->blk_ctl->lock);
++	if (domain->hooked)
++		genpd = genpd_data->domains[idx];
++	mutex_unlock(&domain->blk_ctl->lock);
++
++	return genpd;
++}
++
++int imx_blk_ctl_register(struct device *dev)
++{
++	struct imx_blk_ctl *blk_ctl = dev_get_drvdata(dev);
++	const struct imx_blk_ctl_dev_data *dev_data = blk_ctl->dev_data;
++	int num = dev_data->pds_num;
++	struct imx_blk_ctl_domain *domain;
++	struct generic_pm_domain *genpd;
++	struct platform_device *pd_pdev;
++	int domain_index;
++	int i, ret;
++
++	blk_ctl->onecell_data.num_domains = num;
++	blk_ctl->onecell_data.xlate = imx_blk_ctl_genpd_xlate;
++	blk_ctl->onecell_data.domains = devm_kcalloc(dev, num, sizeof(struct generic_pm_domain *),
++						     GFP_KERNEL);
++	if (!blk_ctl->onecell_data.domains)
++		return -ENOMEM;
++
++	for (i = 0; i < num; i++) {
++		domain_index = dev_data->pds[i].id;
++		if (domain_index >= num) {
++			dev_warn(dev, "Domain index %d is out of bounds\n", domain_index);
++			continue;
++		}
++
++		domain = devm_kzalloc(dev, sizeof(struct imx_blk_ctl_domain), GFP_KERNEL);
++		if (!domain)
++			goto error;
++
++		pd_pdev = platform_device_alloc(dev_data->name, domain_index);
++		if (!pd_pdev) {
++			dev_err(dev, "Failed to allocate platform device\n");
++			goto error;
++		}
++
++		pd_pdev->dev.platform_data = domain;
++
++		domain->blk_ctl = blk_ctl;
++		domain->hw = &dev_data->pds[i];
++		domain->id = domain_index;
++		domain->genpd.name = dev_data->pds[i].name;
++		domain->genpd.power_off = imx_blk_ctl_power_off;
++		domain->genpd.power_on = imx_blk_ctl_power_on;
++		domain->dev = &pd_pdev->dev;
++		domain->hooked = false;
++
++		ret = pm_genpd_init(&domain->genpd, NULL, true);
++		pd_pdev->dev.parent = dev;
++
++		if (domain->hw->flags & IMX_BLK_CTL_PD_HANDSHAKE)
++			blk_ctl->bus_domain = &domain->genpd;
++
++		ret = platform_device_add(pd_pdev);
++		if (ret) {
++			platform_device_put(pd_pdev);
++			goto error;
++		}
++		blk_ctl->onecell_data.domains[i] = &domain->genpd;
++	}
++
++	return of_genpd_add_provider_onecell(dev->of_node, &blk_ctl->onecell_data);
++
++error:
++	for (; i >= 0; i--) {
++		genpd = blk_ctl->onecell_data.domains[i];
++		if (!genpd)
++			continue;
++		domain = to_imx_blk_ctl_pd(genpd);
++		if (domain->dev)
++			platform_device_put(to_platform_device(domain->dev));
++	}
++	return ret;
++}
++EXPORT_SYMBOL_GPL(imx_blk_ctl_register);
++
++const struct dev_pm_ops imx_blk_ctl_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
++			   pm_runtime_force_resume)
++};
++EXPORT_SYMBOL_GPL(imx_blk_ctl_pm_ops);
+diff --git a/drivers/soc/imx/blk-ctl.h b/drivers/soc/imx/blk-ctl.h
+new file mode 100644
+index 000000000000..6780d00ec8c5
+--- /dev/null
++++ b/drivers/soc/imx/blk-ctl.h
+@@ -0,0 +1,85 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __SOC_IMX_BLK_CTL_H
++#define __SOC_IMX_BLK_CTL_H
++
++enum imx_blk_ctl_pd_type {
++	BLK_CTL_PD,
++};
++
++struct imx_blk_ctl_hw {
++	int type;
++	char *name;
++	char *active_pd_name;
++	u32 offset;
++	u32 mask;
++	u32 flags;
++	u32 id;
++	u32 rst_offset;
++	u32 rst_mask;
++	u32 errata;
++};
++
++struct imx_blk_ctl_domain {
++	struct generic_pm_domain genpd;
++	struct device *active_pd;
++	struct imx_blk_ctl *blk_ctl;
++	struct imx_blk_ctl_hw *hw;
++	struct device *dev;
++	bool hooked;
++	u32 id;
++};
++
++struct imx_blk_ctl_dev_data {
++	struct regmap_config config;
++	struct imx_blk_ctl_hw *pds;
++	struct imx_blk_ctl_hw *hw_hsk;
++	u32 pds_num;
++	u32 max_num;
++	char *name;
++};
++
++struct imx_blk_ctl {
++	struct device *dev;
++	struct regmap *regmap;
++	struct genpd_onecell_data onecell_data;
++	const struct imx_blk_ctl_dev_data *dev_data;
++	struct clk_bulk_data *clks;
++	u32 num_clks;
++	struct generic_pm_domain *bus_domain;
++
++	struct mutex lock;
++};
++
++#define IMX_BLK_CTL(_type, _name, _active_pd, _id, _offset, _mask, _rst_offset, _rst_mask,	\
++		    _flags, _errata)								\
++	{											\
++		.type = _type,									\
++		.name = _name,									\
++		.active_pd_name = _active_pd,							\
++		.id = _id,									\
++		.offset = _offset,								\
++		.mask = _mask,									\
++		.flags = _flags,								\
++		.rst_offset = _rst_offset,							\
++		.rst_mask = _rst_mask,								\
++		.errata = _errata,								\
++	}
++
++#define IMX_BLK_CTL_PD(_name, _active_pd, _id, _offset, _mask, _rst_offset, _rst_mask, _flags)	\
++	IMX_BLK_CTL(BLK_CTL_PD, _name, _active_pd, _id, _offset, _mask, _rst_offset,		\
++		    _rst_mask, _flags, 0)
++
++#define IMX_BLK_CTL_PD_ERRATA(_name, _active_pd, _id, _offset, _mask, _rst_offset, _rst_mask,	\
++			      _flags, _errata)							\
++	IMX_BLK_CTL(BLK_CTL_PD, _name, _active_pd, _id, _offset, _mask, _rst_offset,		\
++		    _rst_mask, _flags, _errata)
++
++int imx_blk_ctl_register(struct device *dev);
++
++#define IMX_BLK_CTL_PD_HANDSHAKE	BIT(0)
++#define IMX_BLK_CTL_PD_RESET		BIT(1)
++#define IMX_BLK_CTL_PD_BUS		BIT(2)
++
++const extern struct dev_pm_ops imx_blk_ctl_pm_ops;
++
++#endif
 -- 
 2.30.0
 
