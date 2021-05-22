@@ -2,122 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A03038D2A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FB338D2A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbhEVAnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 20:43:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38838 "EHLO
+        id S230414AbhEVAqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 20:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230265AbhEVAnC (ORCPT
+        with ESMTP id S230407AbhEVAqF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 20:43:02 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBCD5C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 17:41:37 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id f2-20020a1709031042b02900ef82a95ef4so11349437plc.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 17:41:37 -0700 (PDT)
+        Fri, 21 May 2021 20:46:05 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E3E5C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 17:44:36 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id lg14so32892715ejb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 17:44:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=ozC5usJqVL5eCwVY7kOtsxenQ+7Cwr3eUkEjwwPVo1c=;
-        b=lKd/YLfRlAqmAomXF4Ctcz2jryVPoSa9W12eBj/HYPTnS61IzqgQssSl0S+WU4AhCH
-         e1v0scqSad4KFzN09V3MMswCVhLamfcC8HrJsopsWLujE28emOtDVqtRQ1dgvrMbCZVP
-         oBKLawc1WGYGVMKAa89bOB07LFFqO0O7I7gP1gjzANqbVKaT8cU4T2uj1mIrirx5u2Sk
-         Vc/lNFr9COTtFVYq1hWqCx1VF5lLlf303q717Q5qm5GAF0Y/KsB4g2g6UC3pYJp8mt0r
-         TCVCUUgg4VFkXYYq4yOY/lywEy+KbJ5kyhC2HmhI9AJbwCpZ22PtX8IsBD6++zBrYTPX
-         Gx1A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xKufOdTA0IDQaVHCUEydAsDz+LCNGA7EJicC4zXyjAE=;
+        b=JGk3UHtAI5QxjcGp02y0zo7b3sQDTM7jAlpgJjP1D2OeeSYCxi0EVBfN3+4gXl8Br+
+         /HHrmyYUpszbjxoqfZQG4cz+Pl+pVo5byMq1CfBKnU+vJu5MvnKruhojl/mnUlSnIVrz
+         IH5buevJO4hUrUdSMqtOX0LnoaDBpOYhUMD8btClUPiiloiAbswcuO2f5DcUNBN6I2Z6
+         weSOznICMFbkkGwjEwVNacB8JLvj1JHBzP0nNLql56UU/dNRhWIN/CiNgYzA98S4ChOH
+         JzuBi1+VDKwrXc2cENYFaj1MEnzpptC9dyom4psYlXnJ3zQBrwMdR2al8hGVXS+6pjiY
+         RhSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=ozC5usJqVL5eCwVY7kOtsxenQ+7Cwr3eUkEjwwPVo1c=;
-        b=QsWC7hCzJuhesG2px8TjriduPJ3xgltfcyoduRvRZOdev8Z4yGj83+kA6aDWSumds/
-         YhrZPRoSm1Ck1j0ny1tsfsI961yO7obH9zSKVtPifrd9HKQ28sr102a5ghtYsy+urOlz
-         F5S00ICrYbO09+hq98X7nVVGyGSpsv+N0k7JN/Rwfw9cWRAcvzPcZd+MrUoKilrnVGZI
-         76KHB2uYZIDYSWY7hfkXZYkMxZwHBdS/hcpYJzBRRbzv1bSgxxXgz7bllrlX7dzlLO8c
-         R6x+RqOJU7UDjTSNQ7Y8wiAKq/f84BtrSywKuy+yaGuOU1/AMCfiP/KhCvn6ETu0AWQn
-         d3HQ==
-X-Gm-Message-State: AOAM533liHt8/3ryPsZ0lUgXVuElfNMqTQv+1/QKFwCdpScWHSrJZO93
-        ne1GJtPqb3Fww90dgRfTes7x3b66ruQ=
-X-Google-Smtp-Source: ABdhPJzt80Ve0mGo9634BvBPrzyJI6mYke2STWtWfN2NkfJ5wbsvcmDfeuVGh7hFxJ4VsSvSSPx87+HNBcg=
-X-Received: from drosen.c.googlers.com ([fda3:e722:ac3:10:24:72f4:c0a8:4e6f])
- (user=drosen job=sendgmr) by 2002:a63:7e13:: with SMTP id z19mr1429012pgc.184.1621644097067;
- Fri, 21 May 2021 17:41:37 -0700 (PDT)
-Date:   Sat, 22 May 2021 00:41:32 +0000
-Message-Id: <20210522004132.2142563-1-drosen@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH] ext4: Fix no-key deletion for encrypt+casefold
-From:   Daniel Rosenberg <drosen@google.com>
-To:     "Theodore Y . Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        kernel-team@android.com, Daniel Rosenberg <drosen@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xKufOdTA0IDQaVHCUEydAsDz+LCNGA7EJicC4zXyjAE=;
+        b=K70QLbDxGFahJ2S9lJuYqIjZ1CQ3cwLmNDlUn5Y5WEO4TFxzw9Sj7Jw2fMV5zGStYj
+         vycwqVahINmW4RswfS3ErqVB54ht3B4VfAAvKXoT4GW34Fi9+yjzrDytNtPKU0DdimvN
+         +aF9jhptiAE7FEjRZbgh4iK4wDFVlNXZpedU+pNYzRABIlAkzBY+O/T4t3WXg55aInXu
+         7dkRvcFHcym8OlLqxTvrJWXl0dp0KPYlyr5Fua+Z2aQ/nI+fOjXxSp+nZ7WAVsPAZtpP
+         xt2dETEtmktGnwqgMMrGNnQKNjJ8FGJcVMmP8A2UmOHeIbCMfvUobbCc/RtscV23Cc3F
+         taiA==
+X-Gm-Message-State: AOAM5313AayjIPDzQMJxD3jvRf+w12kva0CHtA/VOCdPyZDhbEiaFQy2
+        sA6BzwMKKAGPck/DJce86C1TB64g53Is7x4heqE=
+X-Google-Smtp-Source: ABdhPJySxFmmty9MypAq5rhbBvS1a6T3Pao+pMUqtLUfiDd6sRCF8pDdVx0MRZi4xButyiCbgl2gGtrUrQpwXq7sDfA=
+X-Received: by 2002:a17:907:1002:: with SMTP id ox2mr12370999ejb.337.1621644275147;
+ Fri, 21 May 2021 17:44:35 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210521162519.677074-1-mudongliangabcd@gmail.com> <YKfnjYAsNzbfJh1d@kroah.com>
+In-Reply-To: <YKfnjYAsNzbfJh1d@kroah.com>
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Sat, 22 May 2021 08:43:25 +0800
+Message-ID: <CAD-N9QWiu=6QefJaWzfUS3ep-8so+KBv-=S0LQs+EqO3tf8Cew@mail.gmail.com>
+Subject: Re: [PATCH v2] staging: rtl8712: Fix memory leak in r8712_init_recv_priv
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+        rkovhaev@gmail.com, straube.linux@gmail.com,
+        linux-staging@lists.linux.dev,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 471fbbea7ff7 ("ext4: handle casefolding with encryption") is
-missing a few checks for the encryption key which are needed to
-support deleting enrypted casefolded files when the key is not
-present.
+On Sat, May 22, 2021 at 1:02 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, May 22, 2021 at 12:25:19AM +0800, Dongliang Mu wrote:
+> > r871xu_dev_remove failed to call r8712_free_drv_sw() and free the
+> > resource (e.g., struct urb) due to the failure of firmware loading.
+> >
+> > Fix this by invoking r8712_free_drv_sw at the failure site.
+> >
+> > Reported-by: syzbot+1c46f3771695bccbdb3a@syzkaller.appspotmail.com
+> > Fixes: b4383c971bc5 ("staging: rtl8712: handle firmware load failure")
+> > Signed-off-by: Dongliang Mu <mudongliangabcd@gmail.com>
+> > ---
+> > v1->v2: fix the initialization of pnetdev
+> >
+> >  drivers/staging/rtl8712/usb_intf.c | 9 +++++++--
+> >  1 file changed, 7 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/staging/rtl8712/usb_intf.c b/drivers/staging/rtl8712/usb_intf.c
+> > index dc21e7743349..57e773464e18 100644
+> > --- a/drivers/staging/rtl8712/usb_intf.c
+> > +++ b/drivers/staging/rtl8712/usb_intf.c
+> > @@ -593,13 +593,14 @@ static void r871xu_dev_remove(struct usb_interface *pusb_intf)
+> >       struct usb_device *udev = interface_to_usbdev(pusb_intf);
+> >
+> >       if (pnetdev) {
+> > +             struct net_device *newpnetdev = NULL;
+> >               struct _adapter *padapter = netdev_priv(pnetdev);
+> >
+> >               /* never exit with a firmware callback pending */
+> >               wait_for_completion(&padapter->rtl8712_fw_ready);
+> > -             pnetdev = usb_get_intfdata(pusb_intf);
+> > +             newpnetdev = usb_get_intfdata(pusb_intf);
+>
+> Please learn a bit more C knowledge before messing around in the kernel
+> tree.  Between the mistake in this chunk you added, and the mistake in
+> the previous submission, I think you need more experience here as there
+> are some things you still need to learn.
 
-Note from ebiggers:
-(These checks for the encryption key are still racy since they happen
-too late, but apparently they worked well enough...)
+I am a kernel newbie in developing patches for Linux kernel. Sorry for
+my naive mistakes. I will learn more and then submit some "good"
+patches.
 
-This bug made it impossible to delete encrypted+casefolded directories
-without the encryption key, due to errors like:
+BTW, I think I have pointed out the underlying bug here, you guys can
+fix it yourself.
 
-    W         : EXT4-fs warning (device vdc): __ext4fs_dirhash:270: inode #49202: comm Binder:378_4: Siphash requires key
-
-Repro steps in kvm-xfstests test appliance:
-      mkfs.ext4 -F -E encoding=utf8 -O encrypt /dev/vdc
-      mount /vdc
-      mkdir /vdc/dir
-      chattr +F /vdc/dir
-      keyid=$(head -c 64 /dev/zero | xfs_io -c add_enckey /vdc | awk '{print $NF}')
-      xfs_io -c "set_encpolicy $keyid" /vdc/dir
-      for i in `seq 1 100`; do
-          mkdir /vdc/dir/$i
-      done
-      xfs_io -c "rm_enckey $keyid" /vdc
-      rm -rf /vdc/dir # fails with the bug
-
-Fixes: 471fbbea7ff7 ("ext4: handle casefolding with encryption")
-Signed-off-by: Daniel Rosenberg <drosen@google.com>
----
- fs/ext4/namei.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index afb9d05a99ba..a4af26d4459a 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1376,7 +1376,8 @@ int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
- 	struct dx_hash_info *hinfo = &name->hinfo;
- 	int len;
- 
--	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding) {
-+	if (!IS_CASEFOLDED(dir) || !dir->i_sb->s_encoding ||
-+	    (IS_ENCRYPTED(dir) && !fscrypt_has_encryption_key(dir))) {
- 		cf_name->name = NULL;
- 		return 0;
- 	}
-@@ -1427,7 +1428,8 @@ static bool ext4_match(struct inode *parent,
- #endif
- 
- #ifdef CONFIG_UNICODE
--	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent)) {
-+	if (parent->i_sb->s_encoding && IS_CASEFOLDED(parent) &&
-+	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
- 		if (fname->cf_name.name) {
- 			struct qstr cf = {.name = fname->cf_name.name,
- 					  .len = fname->cf_name.len};
--- 
-2.31.1.818.g46aad6cb9e-goog
-
+>
+> Best of luck!
+>
+> greg k-h
