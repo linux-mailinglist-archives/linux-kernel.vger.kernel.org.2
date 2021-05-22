@@ -2,191 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F204B38D3D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 07:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87AE238D3D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 07:34:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbhEVF0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 01:26:52 -0400
-Received: from rtits2.realtek.com ([211.75.126.72]:55169 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbhEVF0v (ORCPT
+        id S229926AbhEVFgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 01:36:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229638AbhEVFgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 01:26:51 -0400
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 14M5PES60021626, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36502.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.71/5.88) with ESMTPS id 14M5PES60021626
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Sat, 22 May 2021 13:25:14 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXH36502.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sat, 22 May 2021 13:25:13 +0800
-Received: from fc32.localdomain (172.21.177.102) by RTEXMBS04.realtek.com.tw
- (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Sat, 22 May
- 2021 13:25:12 +0800
-From:   Hayes Wang <hayeswang@realtek.com>
-To:     <kuba@kernel.org>, <davem@davemloft.net>
-CC:     <netdev@vger.kernel.org>, <nic_swsd@realtek.com>,
-        <linux-kernel@vger.kernel.org>, <linux-usb@vger.kernel.org>,
-        Hayes Wang <hayeswang@realtek.com>,
-        <syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com>
-Subject: [PATCH net v2] r8152: check the informaton of the device
-Date:   Sat, 22 May 2021 13:24:54 +0800
-Message-ID: <1394712342-15778-364-Taiwan-albertk@realtek.com>
-X-Mailer: Microsoft Office Outlook 11
-In-Reply-To: <1394712342-15778-363-Taiwan-albertk@realtek.com>
-References: <1394712342-15778-363-Taiwan-albertk@realtek.com>
+        Sat, 22 May 2021 01:36:02 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2350C061574
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 22:34:37 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id x18so12171342pfi.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 22:34:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TgOIq8VQUiDYqV2oMi59dexKwHlFeeaw85QP4XFGgRc=;
+        b=MCY5AqSIip8PhtjxQZv7h/SHPr82k8l1oyfAhvjpAmCkLpBx46eyAn4KmwjXg2ZjCw
+         OatljgGfJF+rpMIwlVnH0aMjkR1Q9+tRpUgWpnflDEzf8+X1BaUKMqA7RHApRt0z9cXJ
+         6/zMMSMe69VcHdVoYPq3kgxicCBqwvoOwbtOeeuxdlcvcHGAUnx+k3NCqtkuueaa9/jS
+         faFIWALpZm9hMzeX4UfqT1BIJjzWcf8PiiF9cmYVaIAHkXsUJlG2J5O//8rhfiYpoRHE
+         cAgT6wZxitJ+t953efZKS05DelxzlQQCowHVLTUlLuhjeoxM1mCjwovWC2kdoVDsZsUC
+         eD0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TgOIq8VQUiDYqV2oMi59dexKwHlFeeaw85QP4XFGgRc=;
+        b=nsHzgiYJExAcwsPHTFCcJaFeL+sjoPNN7te2X/otACJIJMfayqczW+qtbUFfEtq5Ck
+         Mc3eWHiCCekOoFEvYch7eUIz/LRcbcAsnyCE/xjpfBwdcQQ3I8hOItSZJ/fTwHVR4cMD
+         MFEfvYBHxbUY0Z3eEL7uhT3LyG6+oNccOojaIBfafI7JlMc6mvyugjOLXg3q6WhwrS3k
+         pUw/z+lG+tMAt7i4+OhOXcqXn1pSQ9aRtBhKnEQKA3YDRejJZIP1S3SU4aPZGkz9nElk
+         hghfyaIZ1ayEHs1eeCPRhm9pUrkDPb5bBU9GzDo6Je03Y4ak3QydVqjrrqto4metzE6O
+         uO0g==
+X-Gm-Message-State: AOAM533xhNiZn2h/ySnu5HrAGg+Tf8VZAwBzk+vm2tE+QUx0GVHF9t20
+        tHe16IfIMoeRIwAsaUHP1OI=
+X-Google-Smtp-Source: ABdhPJwW8ppPaLRjqYdBnCxQ/XpGGbWLECoAm0jnlNMRh+X8UVub3UKkGlSZ1SWmhNa6g18HOf0UBw==
+X-Received: by 2002:a63:df53:: with SMTP id h19mr2482048pgj.20.1621661676962;
+        Fri, 21 May 2021 22:34:36 -0700 (PDT)
+Received: from phi-nguyen-z390.lan ([118.200.63.8])
+        by smtp.gmail.com with ESMTPSA id i29sm6146520pgn.72.2021.05.21.22.34.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 May 2021 22:34:36 -0700 (PDT)
+From:   Nguyen Dinh Phi <phind.uet@gmail.com>
+To:     nsaenz@kernel.org, gregkh@linuxfoundation.org,
+        stefan.wahren@i2se.com, arnd@arndb.de, dan.carpenter@oracle.com,
+        phil@raspberrypi.com, amarjargal16@gmail.com
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH] staging: vchiq_arm: Using copy_from_user() to copy data from userspace address
+Date:   Sat, 22 May 2021 13:34:29 +0800
+Message-Id: <20210522053429.82710-1-phind.uet@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.21.177.102]
-X-ClientProxiedBy: RTEXMBS02.realtek.com.tw (172.21.6.95) To
- RTEXMBS04.realtek.com.tw (172.21.6.97)
-X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: trusted connection
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/22/2021 05:13:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: =?big5?B?Q2xlYW4sIGJhc2VzOiAyMDIxLzUvMjEgpFWkyCAxMDo0NjowMA==?=
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-ServerInfo: RTEXH36502.realtek.com.tw, 9
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-KSE-AntiSpam-Outbound-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.20, Database issued on: 05/22/2021 05:11:31
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 10
-X-KSE-AntiSpam-Info: Lua profiles 163845 [May 22 2021]
-X-KSE-AntiSpam-Info: Version: 5.9.20.0
-X-KSE-AntiSpam-Info: Envelope from: hayeswang@realtek.com
-X-KSE-AntiSpam-Info: LuaCore: 446 446 0309aa129ce7cd9d810f87a68320917ac2eba541
-X-KSE-AntiSpam-Info: {Headers: Prob_stat_susp_url_only, url2}
-X-KSE-AntiSpam-Info: {Tracking_one_url, url3}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: realtek.com:7.1.1;127.0.0.199:7.1.2;syzkaller.appspot.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 10
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 05/22/2021 05:13:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verify some fields of the USB descriptor to make sure the driver
-could be used by the device.
+This commit to fix the following sparse warning:
+incorrect type in assignment (different address spaces)
+expected void *[assigned] userdata
+got void [noderef] __user *userdata
 
-Besides, remove the check of endpoint number in rtl8152_probe().
-It has been done in rtl_check_vendor_ok().
-
-BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
-Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
-Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+Signed-off-by: Nguyen Dinh Phi <phind.uet@gmail.com>
 ---
-v2:
-Use usb_find_common_endpoints() and usb_endpoint_num() to replace original
-code.
+ .../staging/vc04_services/interface/vchiq_arm/vchiq_arm.c    | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-remove the check of endpoint number in rtl8152_probe(). It has been done
-in rtl_check_vendor_ok().
-
- drivers/net/usb/r8152.c | 44 ++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 39 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-index 136ea06540ff..6e5230d6c721 100644
---- a/drivers/net/usb/r8152.c
-+++ b/drivers/net/usb/r8152.c
-@@ -8107,6 +8107,39 @@ static void r8156b_init(struct r8152 *tp)
- 	tp->coalesce = 15000;	/* 15 us */
- }
- 
-+static bool rtl_check_vendor_ok(struct usb_interface *intf)
-+{
-+	struct usb_host_interface *alt = intf->cur_altsetting;
-+	struct usb_endpoint_descriptor *in, *out, *intr;
-+
-+	if (alt->desc.bNumEndpoints < 3) {
-+		dev_err(&intf->dev, "Unexpected bNumEndpoints %d\n", alt->desc.bNumEndpoints);
-+		return false;
-+	}
-+
-+	if (usb_find_common_endpoints(alt, &in, &out, &intr, NULL) < 0) {
-+		dev_err(&intf->dev, "Miss Endpoints\n");
-+		return false;
-+	}
-+
-+	if (usb_endpoint_num(in) != 1) {
-+		dev_err(&intf->dev, "Invalid Rx Endpoint\n");
-+		return false;
-+	}
-+
-+	if (usb_endpoint_num(out) != 2) {
-+		dev_err(&intf->dev, "Invalid Tx Endpoint\n");
-+		return false;
-+	}
-+
-+	if (usb_endpoint_num(intr) != 3) {
-+		dev_err(&intf->dev, "Invalid interrupt Endpoint\n");
-+		return false;
-+	}
-+
-+	return true;
-+}
-+
- static bool rtl_vendor_mode(struct usb_interface *intf)
- {
- 	struct usb_host_interface *alt = intf->cur_altsetting;
-@@ -8115,12 +8148,15 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
- 	int i, num_configs;
- 
- 	if (alt->desc.bInterfaceClass == USB_CLASS_VENDOR_SPEC)
--		return true;
-+		return rtl_check_vendor_ok(intf);
- 
- 	/* The vendor mode is not always config #1, so to find it out. */
- 	udev = interface_to_usbdev(intf);
- 	c = udev->config;
- 	num_configs = udev->descriptor.bNumConfigurations;
-+	if (num_configs < 2)
-+		return false;
-+
- 	for (i = 0; i < num_configs; (i++, c++)) {
- 		struct usb_interface_descriptor	*desc = NULL;
- 
-@@ -8135,7 +8171,8 @@ static bool rtl_vendor_mode(struct usb_interface *intf)
- 		}
+diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+index afbf01b7364c..2a4fc599f977 100644
+--- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
++++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+@@ -960,7 +960,10 @@ static int vchiq_irq_queue_bulk_tx_rx(struct vchiq_instance *instance,
+ 			current->pid);
+ 		userdata = &waiter->bulk_waiter;
+ 	} else {
+-		userdata = args->userdata;
++		if (copy_from_user(userdata, args->userdata, sizeof(args->userdata))) {
++			ret = -EFAULT;
++			goto out;
++		}
  	}
  
--	WARN_ON_ONCE(i == num_configs);
-+	if (i == num_configs)
-+		dev_err(&intf->dev, "Unexpected Device\n");
- 
- 	return false;
- }
-@@ -9381,9 +9418,6 @@ static int rtl8152_probe(struct usb_interface *intf,
- 	if (!rtl_vendor_mode(intf))
- 		return -ENODEV;
- 
--	if (intf->cur_altsetting->desc.bNumEndpoints < 3)
--		return -ENODEV;
--
- 	usb_reset_device(udev);
- 	netdev = alloc_etherdev(sizeof(struct r8152));
- 	if (!netdev) {
+ 	status = vchiq_bulk_transfer(args->handle, NULL, args->data, args->size,
 -- 
-2.26.3
+2.25.1
 
