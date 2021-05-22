@@ -2,133 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05ADC38D3FA
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:44:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA9C38D401
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:45:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229963AbhEVGqI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 02:46:08 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:54837 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbhEVGqG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 02:46:06 -0400
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 14M6iLtp031410;
-        Sat, 22 May 2021 15:44:21 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 14M6iLtp031410
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621665861;
-        bh=KL7zuh1Gfzyq0RAJTL4tgQIixkVQ64nFtd1KDMiifbo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ecKNuXw4gr+yNvjRDRMVbqe47neyjbGsw5UKylL57qBjwR9eQEltGGP5tOqS8aNEL
-         QRh6dbjaiOdvgf6sa4UpLatEmaN9sgIsB165IfG4SKT4t7rcfOF/Ap/78XD0eoLNR0
-         RUD0wgM0EQy9xO/vSRpTI+KIkKttssKByF8oiQExGO3pKb3LW9bN9ubkCpezWP668A
-         8Lxhy8YOcFjIqFanm61ySw6n1brA11YoQhoXlm56bf8GZcWL53IRtIBKh0B+GmwXnj
-         JwkNcjNaJ6OYJULkvuykoGMbPi9HAM5cEZ9yPif5u/fzZPVJnj75NjpdUv+IpbS9u2
-         jjcNrpKzdXGAQ==
-X-Nifty-SrcIP: [209.85.210.180]
-Received: by mail-pf1-f180.google.com with SMTP id y15so5164155pfn.13;
-        Fri, 21 May 2021 23:44:21 -0700 (PDT)
-X-Gm-Message-State: AOAM530uTOWg7aLREKk0FokwrM2q1ihhqIBJWAdnooC6vHqGGVFzBkx8
-        eYAy2Jsykeh4cUDvBDJWDrBjHo5YwfpbRqSNxmQ=
-X-Google-Smtp-Source: ABdhPJziDO7e1jsgAEMoRGRm55w54OoNa5+8ms60lVBANczpWOUhmNjZuscl3z8e6ErAdDqFsOeu0XaoOtmPzmj2gv0=
-X-Received: by 2002:a63:a547:: with SMTP id r7mr2729407pgu.7.1621665860653;
- Fri, 21 May 2021 23:44:20 -0700 (PDT)
+        id S230092AbhEVGrD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 02:47:03 -0400
+Received: from mout.gmx.net ([212.227.17.20]:50251 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230023AbhEVGrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 02:47:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1621665887;
+        bh=VAC/sk0xnp5/8Dxu21k60Pq40+L7HSTTvV7xE1S71qk=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
+        b=kxLjaGcf/HX23OftpEm+6sritLglo0AJ45GakM1jc1YboXyCPIE1zu2pBrBBoE5NT
+         1fqsiJO7EyU12F51Xv/D9sskzu26JWVAA9tWdgotTu26ImpzXgRKwLCop5d8MfRtCJ
+         Y811fxZ7pPkEgrwMdW+Mbz/14xgqSjDdJpbqxS8g=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ubuntu ([83.52.228.41]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MKKYx-1m1jdI0WBb-00Llfl; Sat, 22
+ May 2021 08:44:47 +0200
+Date:   Sat, 22 May 2021 08:44:42 +0200
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, Shuah Khan <shuah@kernel.org>
+Cc:     John Wood <john.wood@gmx.com>, Andi Kleen <ak@linux.intel.com>,
+        valdis.kletnieks@vt.edu,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v7 7/7] MAINTAINERS: Add a new entry for the Brute LSM
+Message-ID: <20210522064442.GC3094@ubuntu>
+References: <20210521172414.69456-1-john.wood@gmx.com>
 MIME-Version: 1.0
-References: <20210513151800.1059435-1-dmitry.baryshkov@linaro.org> <CAL_JsqLtaJ43Y5ySEK5OraScigEO_OD3TMoy6DYFREK7kh=uFg@mail.gmail.com>
-In-Reply-To: <CAL_JsqLtaJ43Y5ySEK5OraScigEO_OD3TMoy6DYFREK7kh=uFg@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 22 May 2021 15:43:43 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATPUPxyW2Jaxm5WKdW1wMGsvtbsRryf9=H784wmZ+Xe6g@mail.gmail.com>
-Message-ID: <CAK7LNATPUPxyW2Jaxm5WKdW1wMGsvtbsRryf9=H784wmZ+Xe6g@mail.gmail.com>
-Subject: Re: [PATCH] kbuild: allow checking single device tree file
-To:     Rob Herring <robh@kernel.org>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521172414.69456-1-john.wood@gmx.com>
+X-Provags-ID: V03:K1:EaW59w+taFdVkQq3IT0Sp5BLroZB2cj3eMLYXxy5NmqL+Du6Lr5
+ 6xRDEefEotMQ+jKUXkh9C8PDTCFycM9VbtpMNWx+Y8QLFTqh/ZJxJHoLi7fmxSynxmsUFUz
+ U2r5cjPhEsbNU3BBT1GbxkVQrplQ507I/eJS0e/VEmxEI3Ebz0+q9+XhdYefGrTy0g8cRqb
+ /lxZtdJNXzBAYnDEaMuAQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K2xzrztLlUg=:SBYCa464E05P8CoolV05rm
+ 8Z2ezmGEBvuhJMCbP3aBr6cxqcW24SVY3SrHLHeNd1Q5fC8aIXobpIPyObN1KU/ktvwPdktXq
+ iQYkH7TuTBiCC7A0whAvncUWF3v0LqV05ZY+5NG/Osi2n8LAz+TeVoFwHq9dmbFOfST0O7s7e
+ CuSIq/e3NfpJ4gF7Gu8cqLH0khzq0gJrqgAcd+bWkTWpI2sWTTQs47Y7NmMLbNdME7GHyyR9G
+ Le1edo0tflCFSsED9K46WOLZVWRsI74/rofb6gkylK+EYeYRsUkprRnWyP2FEVwWlD07ngO6L
+ rqUQYoCx9J5JY6taF/9kN8Lvh5IrdmtAD+yyZqeHFKHWRC+7zttQ67mYyImVYV2vZGdxRV8sj
+ bDnHZNVjlhqkF3m16kz5KsMiHTUpmCBDVMOhdo0Bt+dB5xz0/aqwgnrXCQBQJ/AZGm5j3Zwl6
+ 9kLs1E/g217N8gNquDP4r9olHDXnMpE4inalw1r6skqQQFQ+NLPMWI0gfigZ7nOAd8aZl0253
+ n2Vp4czU+Vy5ivpKegDqXu41WqWLzksURF7wmewbVY0mwJlOZytlS6nXSGwDp97yOYW9YPYJ3
+ 8uumpuAwf8sifNRrVvh6urC5dejg40Vl9Hdmg238yJ6VByT/j4eO1rvQq/pU4T+B/47OhXZ8n
+ TT+G8QXVz/o6/UR7ugbTs4KAy1stOEyKBKf7oQmslajuA4lNgUzjVoSREb0FBmXtQGK4JvX84
+ xYUrR0Fm2zEMRftgYnAToF0EjO4qOEUSeiNFMeamiCPuJoXRXw6vf79M1iW288zmn+lR2ACTy
+ ZvuCWTCMU/ztR2OqQ+xY0S39ZDUp03FoDmr3JbUXywwb/TBVgqPreIHh/z6OG13ALuc6HiUd7
+ Q1yrT/d6G4fYZ3O0/3Wog/bTEXLPXLubviY3+LMVDpGtBaY6TxyEE4bf4YJkHbNdn2Pb9Q2s3
+ 8DsCwU7hNZ8P0NBDWWNDXGz3NbEvF8JQNXM/oD2WpQaRakLNc6fZQfSXvIpP3YrzZ9eolifbL
+ ddvSRUJhUXN0RnMcYU/FtnYRSE7NIglWujtGi3Usbv0DH9MRpecxwAR+5FRvC8nnwtMr1Qhut
+ e6Djays4Mgl/qDBsPX/CXwQfWpiwyr6WhNO
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 10:43 PM Rob Herring <robh@kernel.org> wrote:
->
-> On Thu, May 13, 2021 at 10:18 AM Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > Add support for testing single device tree file by running
-> > 'make tree.dt.yaml', e.g. 'make ARCH=arm64 qcom/qrb5165-rb5.dt.yaml'.
-> > This looks useful for checking idividual changes to dts files.
->
-> typo
->
-> I'd rather not expose .*.dt.yaml as I want to make checking not
-> optional and I have some plans of integrating the schema checks into
-> dtc which would eliminate .dt.yaml files. Instead, I think %.dtb
-> targets should run the checks always.
->
-> >
-> > Cc: Rob Herring <robh@kernel.org>
-> > Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-> > ---
-> >  Makefile | 4 ++++
-> >  1 file changed, 4 insertions(+)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index 53d09c414635..b36a3d48eb68 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -1383,6 +1383,10 @@ ifneq ($(dtstree),)
-> >  %.dtbo: include/config/kernel.release scripts_dtc
-> >         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> >
-> > +%.dt.yaml: include/config/kernel.release scripts_dtc
-> > +       $(Q)$(MAKE) $(build)=Documentation/devicetree/bindings Documentation/devicetree/bindings/processed-schema.json
->
-> I don't think we should expose this detail (processed-schema.json) to
-> the top-level makefile. This will be built if 'dt_binding_check' is a
-> dependency with CHECK_DTBS=y set.
->
-> > +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@ CHECK_DTBS=y
->
-> CHECK_DTBS here doesn't work. It has to be exported.
->
-> So here's my modified patch (%.dtbo should probably be included too,
-> but I'm not yet sure how well the schema checks will work on them):
->
-> 8<---------------------------------------------------------
-> diff --git a/Makefile b/Makefile
-> index 53d09c414635..a1e246956d65 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -1377,12 +1377,18 @@ endif
->
->  ifneq ($(dtstree),)
->
-> -%.dtb: include/config/kernel.release scripts_dtc
-> +%.dtb: %.dt.yaml
->         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
->
->  %.dtbo: include/config/kernel.release scripts_dtc
->         $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
->
-> +ifneq ($(filter %.dtb, $(MAKECMDGOALS)),)
-> +export CHECK_DTBS=y
-> +endif
-> +%.dt.yaml: dt_binding_check include/config/kernel.release scripts_dtc
-> +       $(Q)$(MAKE) $(build)=$(dtstree) $(dtstree)/$@
-> +
+In order to maintain the code for the Brute LSM add a new entry to the
+maintainers list.
 
-I do not understand how this will work.
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ MAINTAINERS | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-'make foo.dtb' will also create foo.dt.yaml
-(that is, schema check is always run) ?
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 008fcad7ac00..102eb3d7dcd6 100644
+=2D-- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -3847,6 +3847,13 @@ L:	netdev@vger.kernel.org
+ S:	Supported
+ F:	drivers/net/ethernet/brocade/bna/
 
++BRUTE SECURITY MODULE
++M:	John Wood <john.wood@gmx.com>
++S:	Maintained
++F:	Documentation/admin-guide/LSM/Brute.rst
++F:	security/brute/
++F:	tools/testing/selftests/brute/
++
+ BSG (block layer generic sg v4 driver)
+ M:	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
+ L:	linux-scsi@vger.kernel.org
+=2D-
+2.25.1
 
-
-
--- 
-Best Regards
-Masahiro Yamada
