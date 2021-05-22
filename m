@@ -2,82 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1097A38D7D6
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 01:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A35238D7DA
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 01:56:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231465AbhEVXwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 19:52:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhEVXwk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 19:52:40 -0400
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 286EDC06174A
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 16:51:15 -0700 (PDT)
-Received: by mail-ed1-x52f.google.com with SMTP id b17so27671305ede.0
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 16:51:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oDYOCCf0w8h4trbY4PGM+YEr9dD9IiV0gScwVLCiGbY=;
-        b=sh2wWvHDR9RjP0eqozl0HjnUgLSzS4G8MXsvMGTcS0yR7NZ91JPf+yJBouE1C/i8c5
-         W8jkLF0Sxl5mBz5OIlWmSlgKKUhsYRF8uLTQMJ8Uurs/R9hZ3ZqqIia4aKMTfJrsZxCv
-         IBt9TQGANbV1pCVR0liXlWqnUSq0rqu12SjqFNgyRgvA7VQ3Aad9Jx2QF3MQYBUdE53h
-         SnddjqpKaJLL7ciqGxGiFqJxruwcF1fsE07aV/VpyHs8o9KNPEFP4GH08zySaQfVvcVk
-         wPebyxLIpaGIyWIOujE8knbgQzbjd4A2yVD5BA/cqQjtmN58zLCqGCeiiCEVeGYnK+Bu
-         CEyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oDYOCCf0w8h4trbY4PGM+YEr9dD9IiV0gScwVLCiGbY=;
-        b=UO0nlmz/HBymxMwtEbehxuW9QaXT2KQWSYeP4FyyV5EVWUENsDp6T1E8W/BNl+VeY1
-         gfxzE4fxuRNC2HPGJWf58HaYDkZ81lYNyXQ2S/EkEd91yj9mJtX9Ltpa00a7V6dLUL+T
-         s3dhZxVJzhZHuIGfe2hNSA3x1yq2DiKTgp23nEnjWqp6W2jAC+2zNopub35qIZ1P4boJ
-         0aO9sGenyP9TqIS9Ur+tiOPVXRuCFj2X9jHwb5/8oJShkws4WuaV4y9kLyTs1cdzXJGi
-         S6GQZ54EhFn12zfYeAXPLyG5kc2iiK83DWepUaqVwj37c6LdNk/210OkeG+YC1f3W6k2
-         yfjw==
-X-Gm-Message-State: AOAM530eq7oG2tEAKAoQrJfT7oyf76NdpAEemTV3C56qiLa+98NiK1NJ
-        EzkTr0Rke38/kGvspKIWaopsa8QkcwnGflMFBcy8
-X-Google-Smtp-Source: ABdhPJym0f9zc3m+Iz9yqvvA8ZEDJcESzh33Fs5+ndzZSW0RbmVqYtnJbpkuVWYIWYsfgCQeq0NCNSulA6wlBF9Ln8Y=
-X-Received: by 2002:a50:f689:: with SMTP id d9mr18289418edn.197.1621727473341;
- Sat, 22 May 2021 16:51:13 -0700 (PDT)
+        id S231478AbhEVX5Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 19:57:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42482 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231440AbhEVX5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 19:57:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2198B61182
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:55:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621727758;
+        bh=6dXbeile7lzsbpeK/x/mWQ+Zr2cMohG3GFCCGvZUMNM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=t2dtZYHN4jh0HJtjGL9PAqNUzbTubKtHgUnjKOMeNKvll0rGjq+uk2A0wZbdmyj9y
+         WqvTgKrk4NdcBHxcDIBhCvSarLpFmGF7RzbXCzugFR9Kx8Acgy+lNd10nsb48I6vSQ
+         IzQwSmcLXwu1AqyAk27BtDGeWtrEsFicsPp+vWObkdVLtqQQkrXwvYWPd94VOjQkfi
+         EIQls3REdhYS3+NRof0yu4Lc4XO8M6CLAwnQefbysKWpD51ecrNKoOe2SM28jKFKb5
+         IYnn571R5veecTo1tC2uSpVOUTLwmLfKDEw/8eL1ntnFmorFUswG6wLpWCVTg1A+SM
+         nfr3XqBQoZHhA==
+Received: by mail-ej1-f46.google.com with SMTP id lz27so36013383ejb.11
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 16:55:58 -0700 (PDT)
+X-Gm-Message-State: AOAM532UVnKfag8GYXJnAbH9fC0BG2B33b2XFMmJGCOGF7g/6UCOeG1p
+        XK657ex1+r1XaKtTEwCUxXC/I07ZC4Vrf01bGhvZIA==
+X-Google-Smtp-Source: ABdhPJxJkfTVZX1D7O/qi5DCkclvDa1gfvKJMw3NcfhZGA89F9ozJOuPevIQdleeWUC5lmn1dO2QP7wG/n5rEjVIIns=
+X-Received: by 2002:a17:906:c010:: with SMTP id e16mr16823348ejz.214.1621727756732;
+ Sat, 22 May 2021 16:55:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210111081821.3041587-1-morbo@google.com> <20210407211704.367039-1-morbo@google.com>
- <202105191422.2E6748C4E0@keescook>
-In-Reply-To: <202105191422.2E6748C4E0@keescook>
-From:   Bill Wendling <morbo@google.com>
-Date:   Sat, 22 May 2021 16:51:02 -0700
-Message-ID: <CAGG=3QWJD3wDr=Eji-rMcD49Mi-SyP1Tn6B63qJFyi492YafNg@mail.gmail.com>
-Subject: Re: [PATCH v9] pgo: add clang's Profile Guided Optimization infrastructure
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Fangrui Song <maskray@google.com>
+References: <20210415044258.GA6318@zn.tnic> <20210419191539.GH9093@zn.tnic>
+ <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <874kf11yoz.ffs@nanos.tec.linutronix.de> <CAJvTdKkYp+zP_9tna6YsrOz2_nmEUDLJaL_i-SNog0m2T9wZ=Q@mail.gmail.com>
+ <87k0ntazyn.ffs@nanos.tec.linutronix.de> <37833625-3e6b-5d93-cc4d-26164d06a0c6@intel.com>
+ <CAJvTdKmqzO4P9k3jqRA=dR+B7yV72hZCiyC8HGQxDKZBnXgzZQ@mail.gmail.com>
+ <9c8138eb-3956-e897-ed4e-426bf6663c11@intel.com> <87pmxk87th.fsf@oldenburg.str.redhat.com>
+ <939ec057-3851-d8fb-7b45-993fa07c4cb5@intel.com> <87r1i06ow2.fsf@oldenburg.str.redhat.com>
+ <263a58a9-26d5-4e55-b3e1-3718baf1b81d@www.fastmail.com> <87k0nraonu.ffs@nanos.tec.linutronix.de>
+ <CAJvTdK=A64DQXjYkZgPebWb-V_p_HAM+jTZRLTyi1qrP9kucMg@mail.gmail.com>
+ <878s47aeni.ffs@nanos.tec.linutronix.de> <CAJvTdK=Ws1QvBvdx50OSmAi0vBX49KZZHUoiMFbhUUEPmjGmBw@mail.gmail.com>
+ <877djr5jc3.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <877djr5jc3.fsf@oldenburg.str.redhat.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Sat, 22 May 2021 16:55:45 -0700
+X-Gmail-Original-Message-ID: <CALCETrX+g+G4m4ZDe+DME+EdG0ZROGP+EPvQrX5=RcMFOZBiRA@mail.gmail.com>
+Message-ID: <CALCETrX+g+G4m4ZDe+DME+EdG0ZROGP+EPvQrX5=RcMFOZBiRA@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Len Brown <lenb@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dave Hansen via Libc-alpha <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Kyle Huey <me@kylehuey.com>, Borislav Petkov <bp@alien8.de>,
+        Keno Fischer <keno@juliacomputing.com>,
+        Arjan van de Ven <arjan@linux.intel.com>,
+        Willy Tarreau <w@1wt.eu>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 19, 2021 at 2:37 PM Kees Cook <keescook@chromium.org> wrote:
+> On May 22, 2021, at 12:17 AM, Florian Weimer <fweimer@redhat.com> wrote:
 >
-> I've added this to patch to my -next tree now:
+> =EF=BB=BF* Len Brown:
 >
-> https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=for-next/clang/pgo&id=e1af496cbe9b4517428601a4e44fee3602dd3c15
+>> A. per-task.  If we do it this way, then we will likely wind up
+>> mandating a GET at the start of every routine in every library that
+>> touches AMX, and potentially also a PUT.  This is because the library
+>> has no idea what thread called it.  The plus is that this will address
+>> the "used once and sits on a buffer for the rest of the process
+>> lifetime' scenario.  The minus is that high performance users will be
+>> executing thousands of unnecessary system calls that have zero value.
 >
-> Thanks!
-> Kees Cook
+> We could revive the KTLS proposal (userspace donates memory for use by
+> the kernel & vDSO), and the thread could reserve (on-stack) buffer space
+> for kernel use for the duration of the AMX computation.  There would be
+> a pointer to that space in the KTLS area, set upon entry of the AMX
+> region, and cleared upon exit.  It's not extremely cheap (unbounded
+> alloca has a stack probing loop nowadays).  But no system call is
+> required.
+>
 
-Thank you!
+Making this work well would be very nasty. The memory *must* be
+available at context switch out time, which means it would need to be
+pinned at context switch in time, which is not great.
 
--bw
+But also Intel, in its infinite wisdom, decided to mix =E2=80=9Csupervisor=
+=E2=80=9D
+states in which the state that user space is permitted to directly
+access. Putting the supervisor state on the stack would be
+problematic.
