@@ -2,124 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4208338D4AF
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:06:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D8CE38D4B0
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:09:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230153AbhEVJHk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 05:07:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41022 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230095AbhEVJHj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 05:07:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621674373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I5euWpHsqD5uqHgzmIm2FOxnorONDCOCw3Mlq8gYpiY=;
-        b=ejjSrACZUNBYhvghBmwFzAOEY1olueGD54jTRHL67GSamBjkM6o11Kskv5NH5TpqLu6saf
-        9RJ7mYP7u18vM4rzk+nGZZyH3IW1KF0q/twoRZtKgcWujpu6ftXHJIYcEaX4v5THOHNTp7
-        cRHVialjBpsuMmxRzMjvRpoRqnI9DGQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621674373;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=I5euWpHsqD5uqHgzmIm2FOxnorONDCOCw3Mlq8gYpiY=;
-        b=AiZZ50PjgBYr9ZwmXJi8BAGJVJYVaX99mF58KSLz73iPGnCpNk+72D7xDLpGvbma8h85l6
-        2Qhty2DssxtMYaAA==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1866AC86;
-        Sat, 22 May 2021 09:06:13 +0000 (UTC)
-Date:   Sat, 22 May 2021 11:06:06 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     James Feeney <james@nurealm.net>
-Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: linux 5.12 - fails to boot - soft lockup - CPU#0 stuck for 23s!
- - RIP smp_call_function_single
-Message-ID: <YKjJfu4kRDflQS5e@zn.tnic>
-References: <8a9599b2-f4fe-af9b-90f5-af39c315ec2f@nurealm.net>
- <YKIqDdFNaXYd39wz@zn.tnic>
- <1876afbe-a167-2be5-3690-846700eeb76c@nurealm.net>
- <YKTygvN0QNlExEQP@zn.tnic>
- <984ee4ab-6e6b-cb0e-a4f1-ce2951994b1d@nurealm.net>
- <YKWAt1zLM2vfv4Sp@zn.tnic>
- <e7701de5-35f3-da9d-7339-df2de6d8b3cf@nurealm.net>
- <YKYqABhSTTUG8cgV@zn.tnic>
- <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net>
+        id S230095AbhEVJKW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 05:10:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36186 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230113AbhEVJKV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 05:10:21 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67239C0613ED
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:08:56 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id r5so33200217lfr.5
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:08:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Sjhn9KsqMSp1BoKveCdWGhZPcyNCbVQ54hN/N+Flmz8=;
+        b=Sp0qZmPnH8CTgJ33JEdEZblBCd762zWSPeMta+JqnDSwHTZwla5JVt+t3WoM1BWw4a
+         s9zPlv5ZbbBGPCLnFv48+SbcNwbAMU5v7QftrPcvTSRA8zH3YC8XRur+zaowkQiOIxDm
+         blfo/xTPCgGjfYTfe2tsRVTMbb6u2Evs0eiT7U9MsU87tY9TgO+8LGqf5s1nMaVANKH4
+         +9OYVp0EOS293bLowRM0pqFr1c2DDiVTQtXQoCSH37ZAcZnPDeuQRqNoP9+Nmd5mGq5F
+         6GqjUPW2qVwRvMIcZu/i3p1FfVGUI7qJUq5ejvbvsCb3lfhEcc54hXW2/xQWJ+9x8Ubc
+         WdFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Sjhn9KsqMSp1BoKveCdWGhZPcyNCbVQ54hN/N+Flmz8=;
+        b=VKDF//Dre8CSU/Yba35C2joZoS49SMjkkeZxxwbHPmDp2K0Yjn+fgzbXDZXsPX7rFU
+         LyQx2xseTKqVz1kbcBzRse/YVLxv9Q1A56useWPZZExQ0Ev9i9bkI0u5zuI+80NuKfkO
+         KZ7uDqTEp2YvXnT+nLUH/ooZU2dfjI0YIJbB35wut1QDQFyHrJmCbdNOXQfTPKaZfc7u
+         mmAPQIzj9XTX74vAK8JRuEPZAllicVpHx8BQ8Sa3D+luYIw3IE0xIAryFIuEWYiHJX2J
+         b6zUJp92IcBqb7+i5CDETAw7Pp7ftP9D33r8iuE8p3Dt2AUIfWMKM8uxM18BqEyanSE/
+         xUrw==
+X-Gm-Message-State: AOAM531KvEoHaxkwT89+3JtQBtOzN3zARjf9sZSyoFLevkWdMtmnELtz
+        1ywT0Gt8+y19Ccj7NC+xXGU5Gj/2zbpCsSM1EfOZlg==
+X-Google-Smtp-Source: ABdhPJxtrujQjxgEQxMgSJcfpFacOYFoG42OqCexmsfy+Er336j/5/HgPfJblbT/bkMk+PuNS27xV+SMGqj60TM1/Fg=
+X-Received: by 2002:ac2:5459:: with SMTP id d25mr4999478lfn.560.1621674534622;
+ Sat, 22 May 2021 02:08:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net>
+References: <20210521124859.101012-1-zong.li@sifive.com> <b4088995-605e-85ca-2f07-47d2654ac2c8@gmail.com>
+In-Reply-To: <b4088995-605e-85ca-2f07-47d2654ac2c8@gmail.com>
+From:   Zong Li <zong.li@sifive.com>
+Date:   Sat, 22 May 2021 17:08:44 +0800
+Message-ID: <CANXhq0rQqeGO_LM233bB8Kg5XD_Q7xrtOhVrYeuCxXj29N3+Rg@mail.gmail.com>
+Subject: Re: [PATCH] net: macb: ensure the device is available before
+ accessing GEMGXL control registers
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     nicolas.ferre@microchip.com, claudiu.beznea@microchip.com,
+        davem@davemloft.net, kuba@kernel.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andreas Schwab <schwab@linux-m68k.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        geert@linux-m68k.org, Yixun Lan <yixun.lan@gmail.com>,
+        netdev@vger.kernel.org,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 04:11:22PM -0600, James Feeney wrote:
-> Of note, *none* of these 10 boot events generated the "soft lockup"
-> Stack Trace events. Also of note, even though boot number 4 is a full
-> boot, there is a 73 second mystery delay. The delay occurs right after
-> adding swap, and just before "Bluetooth: BNEP". Boot 4 has other unique
-> characteristics, mentioned below.
+On Sat, May 22, 2021 at 12:51 AM Florian Fainelli <f.fainelli@gmail.com> wrote:
 >
-> $ grep lvtth dmesglog.5.12.lvtthmr.*
-> dmesglog.5.12.lvtthmr.1:[    1.246282] intel_init_thermal: CPU0, lvtthmr_init: 0x10200
-> dmesglog.5.12.lvtthmr.1:[    0.933178] intel_init_thermal: CPU1, lvtthmr_init: 0x10000
+>
+>
+> On 5/21/2021 5:48 AM, Zong Li wrote:
+> > If runtime power menagement is enabled, the gigabit ethernet PLL would
+> > be disabled after macb_probe(). During this period of time, the system
+> > would hang up if we try to access GEMGXL control registers.
+> >
+> > We can't put runtime_pm_get/runtime_pm_put/ there due to the issue of
+> > sleep inside atomic section (7fa2955ff70ce453 ("sh_eth: Fix sleeping
+> > function called from invalid context"). Add the similar flag to ensure
+> > the device is available before accessing GEMGXL device.
+> >
+> > Signed-off-by: Zong Li <zong.li@sifive.com>
+> > ---
+> >  drivers/net/ethernet/cadence/macb.h      | 2 ++
+> >  drivers/net/ethernet/cadence/macb_main.c | 7 +++++++
+> >  2 files changed, 9 insertions(+)
+> >
+> > diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
+> > index d8d87213697c..acf5242ce715 100644
+> > --- a/drivers/net/ethernet/cadence/macb.h
+> > +++ b/drivers/net/ethernet/cadence/macb.h
+> > @@ -1309,6 +1309,8 @@ struct macb {
+> >
+> >       u32     rx_intr_mask;
+> >
+> > +     unsigned int is_opened;
+> > +
+> >       struct macb_pm_data pm_data;
+> >       const struct macb_usrio_config *usrio;
+> >  };
+> > diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+> > index 6bc7d41d519b..e079ed10ad91 100644
+> > --- a/drivers/net/ethernet/cadence/macb_main.c
+> > +++ b/drivers/net/ethernet/cadence/macb_main.c
+> > @@ -2781,6 +2781,8 @@ static int macb_open(struct net_device *dev)
+> >       if (bp->ptp_info)
+> >               bp->ptp_info->ptp_init(dev);
+> >
+> > +     bp->is_opened = 1;
+> > +
+> >       return 0;
+> >
+> >  reset_hw:
+> > @@ -2818,6 +2820,8 @@ static int macb_close(struct net_device *dev)
+> >       if (bp->ptp_info)
+> >               bp->ptp_info->ptp_remove(dev);
+> >
+> > +     bp->is_opened = 0;
+> > +
+> >       pm_runtime_put(&bp->pdev->dev);
+> >
+> >       return 0;
+> > @@ -2867,6 +2871,9 @@ static struct net_device_stats *gem_get_stats(struct macb *bp)
+> >       struct gem_stats *hwstat = &bp->hw_stats.gem;
+> >       struct net_device_stats *nstat = &bp->dev->stats;
+> >
+> > +     if (!bp->is_opened)
+> > +             return nstat;
+>
+> The canonical way to do this check is to use netif_running(), and not
+> open code a boolean tracking whether a network device is opened or not.
 
-Aaaha, ok, your thermal interrupt is an SMI. No wonder with HP. So this
-is becoming weirder by the minute...
+Yes, I have tried this and it worked. Let me change it in the next version.
 
-Ok, let's look at what it does at init time. Please remove the previous
-diff, apply the below one on 5.12, make sure you have
-
-CONFIG_X86_THERMAL_VECTOR=y
-
-in the .config, boot with the aforementioned cmdline params, catch dmesg
-and send it again.
-
-Thx.
-
----
-diff --git a/drivers/thermal/intel/therm_throt.c b/drivers/thermal/intel/therm_throt.c
-index f8e882592ba5..853d4d4b4270 100644
---- a/drivers/thermal/intel/therm_throt.c
-+++ b/drivers/thermal/intel/therm_throt.c
-@@ -625,7 +625,7 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
- {
- 	unsigned int cpu = smp_processor_id();
- 	int tm2 = 0;
--	u32 l, h;
-+	u32 l, h, tmp = -1;
- 
- 	if (!intel_thermal_supported(c))
- 		return;
-@@ -652,13 +652,17 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
- 	 * BIOS has programmed on AP based on BSP's info we saved since BIOS
- 	 * is always setting the same value for all threads/cores.
- 	 */
--	if ((h & APIC_DM_FIXED_MASK) != APIC_DM_FIXED)
-+	if ((h & APIC_DM_FIXED_MASK) != APIC_DM_FIXED) {
- 		apic_write(APIC_LVTTHMR, lvtthmr_init);
-+		tmp = apic_read(APIC_LVTTHMR);
-+	}
- 
-+	pr_info("%s: CPU%d, lvtthmr_init: 0x%x, read: 0x%x, misc_enable (low): 0x%x\n",
-+		__func__, cpu, lvtthmr_init, tmp, l);
- 
- 	if ((l & MSR_IA32_MISC_ENABLE_TM1) && (h & APIC_DM_SMI)) {
- 		if (system_state == SYSTEM_BOOTING)
--			pr_debug("CPU%d: Thermal monitoring handled by SMI\n", cpu);
-+			pr_info("CPU%d: Thermal monitoring handled by SMI\n", cpu);
- 		return;
- 	}
- 
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+> --
+> Florian
