@@ -2,143 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC48438D355
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 06:08:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FA4238D357
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 06:09:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229830AbhEVEJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 00:09:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55754 "EHLO
+        id S230100AbhEVELJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 00:11:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229703AbhEVEJt (ORCPT
+        with ESMTP id S229703AbhEVELH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 00:09:49 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77F1BC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 21:08:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c12so4775427pfl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 21:08:24 -0700 (PDT)
+        Sat, 22 May 2021 00:11:07 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A11EC061574;
+        Fri, 21 May 2021 21:09:43 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id c15so26309905ljr.7;
+        Fri, 21 May 2021 21:09:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PT2dBZq34aO6mGS8gktu3A3htZwyT9GEl0OpNV4QlJI=;
-        b=vJK+wvpemTweS0bWXL9997x85UqqpLXUfzTKMoOUhQrPjASrsPz83w/8uTiDIXUBSO
-         2d0WQ8/wGz1m3jsAT2K4BtWL8lbqefWQlTrIaCyLbVqTEIZ1qLVbNAQ1SXL1ON8iwzPU
-         +W4xw5U7sy7GdvUrwc/0Lw3wV37/9nnCIJ7dhKHR2qREOj0CzsAQkyyhRUg6TNzAvlMk
-         z+bJLFAPVJo3dpytx9sjRKeulRtZek19ALBj9iwCOnIkJaIZpDydmM9RIf8Hocv7QkKb
-         E65Dhj/XdpvCPXX/NNUUkuiuAoATUVfSWsuaqctefsooauVa4fmQJgxiJDD0ljt7YsFa
-         xwbw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aLOuqGqh0D2QtMz4/yH626A1Y6TwhCHhHfCW13F0hpY=;
+        b=TdVjW03GGajLvDnC3aJxo6/yw9VbX/SuOin8GrejPw2HoVj3iH+paAbEbwdVCMFqqB
+         cujb/ikBSjxz3JzvZRI9qi0lDgHZJtAhW5mUS6xdMhChRPPTf77I3m17K+bC7DV0UeTd
+         CM6abmEVFptwqtthv/o/ZySiQdvRbDegxV6QbdmIggtPk719raQYoJT7os2Py3PJZomd
+         nvlCoeJSDnPL4utI1B0zXxGPJiWyYkDfytrG1l3ZaJe8VKqAXxijdOeI482es20Egl0j
+         cNa8ii/51PKMtdNsyRBk+sg+Keiyqyi+m/ZaQpbv8ubDl6LeFAX8oIkZu3sI1OInCar5
+         abRg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PT2dBZq34aO6mGS8gktu3A3htZwyT9GEl0OpNV4QlJI=;
-        b=SGkEDHYL+SSjlgO+qQBtxCnyj8O42zxb7qrjGKv56MtXKd8ITbEndvH3syYZ9a5n2/
-         uBxWabq5EeXrAMS3uesK5YSndf3+cV8r+jLMnznE6moF0T8E7Q00D6TkMMNm4GCZ03KF
-         Ixo8cy0Sx87BCNl9K6gQHXihzdFDcM7UKPsHiftLCLMFNKmHRD+MKOwXlLaqf9Ew1FtL
-         pZNwyIfVpmPdf5Tw07An4ijpbAYeyVs7jo+OLBjsB4dh0hQ3L1YGGHCDj3jo8Ciy4F5k
-         Qh9w8kWpBXy6iUYlPjlwZUe53n+PfcTuhZfjeZZYjJdUgOC5zrAVbT5xlJPyK2vbIaN0
-         rCgA==
-X-Gm-Message-State: AOAM5337P3eBtPbFPjFdWavvoDWRSRkW8r2+Jn5aY/rmD4TYDCZmaPKP
-        Zks0IMkiRYCsL6P7yzGY83Q+Yw==
-X-Google-Smtp-Source: ABdhPJxewj6srqb07e75LOeczL90sjwwn66FYu4/EZ5/xMC/HRqZYxIvDOoO3VkTs7VK6FghALN+SA==
-X-Received: by 2002:a65:644d:: with SMTP id s13mr2109879pgv.362.1621656503807;
-        Fri, 21 May 2021 21:08:23 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id t7sm5131477pju.4.2021.05.21.21.08.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 May 2021 21:08:23 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Laxman Dewangan <ldewangan@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: max8973: Convert to use regulator_set_ramp_delay_regmap
-Date:   Sat, 22 May 2021 12:08:14 +0800
-Message-Id: <20210522040814.2042397-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aLOuqGqh0D2QtMz4/yH626A1Y6TwhCHhHfCW13F0hpY=;
+        b=jNRvJi6ZCxVpOk2tY8siSqBAqWDnHK0wrD7oz2T1DpGDzkiybrvEIdS4DjpKusyfC6
+         LM9whuHwcxwkJ2T4pKkxsrFAeKCrQNHVf+oNIwxDGvuhNNJ1n+t2sJ75V0tvCvbWsaye
+         ZrR4IGQVGlJkxIElZuADBUS3qvEUAYAtvsNHLqT2e79BUnN7obr0ePXcKgJazvELZU50
+         qb/xdSSzwQh6Ku43JS5YnEyyVOIL05gvvMY02ZJEv7y0Q/lKmtozOpMNqbGZ93V2OQG4
+         emMfXVrNyFTw1XJj6RSiymOZvD451dyhU8Ws5aKWnktAsenqQdChqg9VXB9v+/uCR1Ms
+         TILg==
+X-Gm-Message-State: AOAM5331NOzQEZJaOCYAGH4pPFBGPQEAQ7ZSuX1lvnFRoQekMmINc3fQ
+        +E6lR+AQY+B+Ky5du1iP82cMswtH2x+0BvO5Ps0=
+X-Google-Smtp-Source: ABdhPJwNewxybtjOUqNzOwEzaxNU038wpkYdjyTNx8VWYnj/FzACTLtUd2ZFMPCSzBw1uW9MGltRTcyZDTJpquPkvAA=
+X-Received: by 2002:a2e:99cd:: with SMTP id l13mr9070096ljj.89.1621656581890;
+ Fri, 21 May 2021 21:09:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210520154244.20209-1-dong.menglong@zte.com.cn>
+ <20210520214111.GV4332@42.do-not-panic.com> <CADxym3axowrQWz3OgimK4iGqP-RbO8U=HPODEhJRrcXUAsWXew@mail.gmail.com>
+ <20210521155020.GW4332@42.do-not-panic.com>
+In-Reply-To: <20210521155020.GW4332@42.do-not-panic.com>
+From:   Menglong Dong <menglong8.dong@gmail.com>
+Date:   Sat, 22 May 2021 12:09:30 +0800
+Message-ID: <CADxym3Z7bdEJECEejPqg-15ycghgX3ZEmOGWYwxZ1_HPWLU1NA@mail.gmail.com>
+Subject: Re: [PATCH RESEND] init/initramfs.c: make initramfs support pivot_root
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Jan Kara <jack@suse.cz>, Jens Axboe <axboe@kernel.dk>,
+        hare@suse.de, gregkh@linuxfoundation.org, tj@kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>, song@kernel.org,
+        NeilBrown <neilb@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        wangkefeng.wang@huawei.com, f.fainelli@gmail.com, arnd@arndb.de,
+        Barret Rhoden <brho@google.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        mhiramat@kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>, vbabka@suse.cz,
+        Alexander Potapenko <glider@google.com>, pmladek@suse.com,
+        Chris Down <chris@chrisdown.name>, ebiederm@xmission.com,
+        jojing64@gmail.com, LKML <linux-kernel@vger.kernel.org>,
+        palmerdabbelt@google.com, linux-fsdevel@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use regulator_set_ramp_delay_regmap instead of open-coded.
+On Fri, May 21, 2021 at 11:50 PM Luis Chamberlain <mcgrof@kernel.org> wrote:
+>
+> > That's a solution, but I don't think it is feasible. Users may create many
+> > containers, and you can't make docker create all the containers first
+> > and create network namespace later, as you don't know if there are any
+> > containers to create later.
+>
+> It doesn't seem impossible, but worth noting why inside the commit log
+> this was not a preferred option.
+>
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/max8973-regulator.c | 37 +++++++--------------------
- 1 file changed, 9 insertions(+), 28 deletions(-)
+In fact, the network namespace is just a case for the problem that the
+'mount leak' caused. And this kind modification is not friendly to
+current docker users, it makes great changes to the usage of docker.
 
-diff --git a/drivers/regulator/max8973-regulator.c b/drivers/regulator/max8973-regulator.c
-index 9aee1444181d..8da8f9b6c4fd 100644
---- a/drivers/regulator/max8973-regulator.c
-+++ b/drivers/regulator/max8973-regulator.c
-@@ -265,33 +265,6 @@ static unsigned int max8973_dcdc_get_mode(struct regulator_dev *rdev)
- 		REGULATOR_MODE_FAST : REGULATOR_MODE_NORMAL;
- }
- 
--static int max8973_set_ramp_delay(struct regulator_dev *rdev,
--		int ramp_delay)
--{
--	struct max8973_chip *max = rdev_get_drvdata(rdev);
--	unsigned int control;
--	int ret;
--
--	/* Set ramp delay */
--	if (ramp_delay <= 12000)
--		control = MAX8973_RAMP_12mV_PER_US;
--	else if (ramp_delay <= 25000)
--		control = MAX8973_RAMP_25mV_PER_US;
--	else if (ramp_delay <= 50000)
--		control = MAX8973_RAMP_50mV_PER_US;
--	else if (ramp_delay <= 200000)
--		control = MAX8973_RAMP_200mV_PER_US;
--	else
--		return -EINVAL;
--
--	ret = regmap_update_bits(max->regmap, MAX8973_CONTROL1,
--			MAX8973_RAMP_MASK, control);
--	if (ret < 0)
--		dev_err(max->dev, "register %d update failed, %d",
--				MAX8973_CONTROL1, ret);
--	return ret;
--}
--
- static int max8973_set_current_limit(struct regulator_dev *rdev,
- 		int min_ua, int max_ua)
- {
-@@ -341,6 +314,10 @@ static int max8973_get_current_limit(struct regulator_dev *rdev)
- 	return 9000000;
- }
- 
-+static const unsigned int max8973_buck_ramp_table[] = {
-+	12000, 25000, 50000, 200000
-+};
-+
- static const struct regulator_ops max8973_dcdc_ops = {
- 	.get_voltage_sel	= max8973_dcdc_get_voltage_sel,
- 	.set_voltage_sel	= max8973_dcdc_set_voltage_sel,
-@@ -348,7 +325,7 @@ static const struct regulator_ops max8973_dcdc_ops = {
- 	.set_mode		= max8973_dcdc_set_mode,
- 	.get_mode		= max8973_dcdc_get_mode,
- 	.set_voltage_time_sel	= regulator_set_voltage_time_sel,
--	.set_ramp_delay		= max8973_set_ramp_delay,
-+	.set_ramp_delay		= regulator_set_ramp_delay_regmap,
- };
- 
- static int max8973_init_dcdc(struct max8973_chip *max,
-@@ -694,6 +671,10 @@ static int max8973_probe(struct i2c_client *client,
- 	max->desc.min_uV = MAX8973_MIN_VOLATGE;
- 	max->desc.uV_step = MAX8973_VOLATGE_STEP;
- 	max->desc.n_voltages = MAX8973_BUCK_N_VOLTAGE;
-+	max->desc.ramp_reg = MAX8973_CONTROL1;
-+	max->desc.ramp_mask = MAX8973_RAMP_MASK;
-+	max->desc.ramp_delay_table = max8973_buck_ramp_table;
-+	max->desc.n_ramp_values = ARRAY_SIZE(max8973_buck_ramp_table);
- 
- 	max->dvs_gpio = (pdata->dvs_gpio) ? pdata->dvs_gpio : -EINVAL;
- 	max->enable_external_control = pdata->enable_ext_control;
--- 
-2.25.1
+>
+> We still have:
+>
+> start_kernel() --> vfs_caches_init() --> mnt_init() -->
+>
+> mnt_init()
+> {
+>         ...
+>         shmem_init();
+>         init_rootfs();
+>         init_mount_tree();
+> }
+>
+> You've now modified init_rootfs() to essentially just set the new user_root,
+> and that's it. But we stil call init_mount_tree() even if we did set the
+> rootfs to use tmpfs.
 
+The variate of 'is_tmpfs' is only used in 'rootfs_init_fs_context'. I used
+ramfs_init_fs_context directly for rootfs, so it is not needed any more
+and I just removed it in init_rootfs().
+
+The initialization of 'user_root' in init_rootfs() is used in:
+do_populate_rootfs -> mount_user_root, which set the file system(
+ramfs or tmpfs) of the second mount.
+
+Seems it's not suitable to place it in init_rootfs()......
+
+
+> > In do_populate_ro
+> > tmpfs, and that's the real rootfs for initramfs. And I call this root
+> > as 'user_root',
+> > because it is created for user space.
+> >
+> > int __init mount_user_root(void)
+> > {
+> >        return do_mount_root(user_root->dev_name,
+> >                             user_root->fs_name,
+> >                             root_mountflags,
+> >                             root_mount_data);
+> >  }
+> >
+> > In other words, I moved the realization of 'rootfs_fs_type' here to
+> > do_populate_rootfs(), and fixed this 'rootfs_fs_type' with
+> > ramfs_init_fs_context, as it is a fake root now.
+>
+> do_populate_rootfs() is called from populate_rootfs() and that in turn
+> is a:
+>
+> rootfs_initcall(populate_rootfs);
+>
+> In fact the latest changes have made this to schedule asynchronously as
+> well. And so indeed, init_mount_tree() always kicks off first. So its
+> still unclear to me why the first mount now always has a fs context of
+> ramfs_init_fs_context, even if we did not care for a ramdisk.
+>
+> Are you suggesting it can be arbitrary now?
+
+With the existence of the new user_root, the first mount is not directly used
+any more, so the filesystem type of it doesn't  matter.
+
+So it makes no sense to make the file system of the first mount selectable.
+To simplify the code here, I make it ramfs_init_fs_context directly. In fact,
+it's fine to make it shmen_init_fs_context here too.
+
+> > Now, the rootfs that user space used is separated with the init_task,
+> > and that's exactly what a block root file system does.
+>
+> The secondary effort is a bit clearer, its the earlier part that is not
+> so clear yet to me at least.
+>
+> Regardless, to help make the changes easier to review, I wonder if it
+> makes sense to split up your work into a few patches. First do what you
+> have done for init_rootfs() and the structure you added to replace the
+> is_tmpfs bool, and let initialization use it and the context. And then
+> as a second patch introduce the second mount effort.
+
+I thinks it is a good idea. I will reorganize the code and split it into several
+patches.
+
+Thanks!
+Menglong Dong
