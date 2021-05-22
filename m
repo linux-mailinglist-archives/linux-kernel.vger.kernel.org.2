@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6404D38D5A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 13:31:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4DCD38D5A6
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 13:32:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhEVLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 07:32:26 -0400
-Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:30058 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230393AbhEVLcY (ORCPT
+        id S230508AbhEVLdk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 07:33:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230358AbhEVLdi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 07:32:24 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d44 with ME
-        id 7nWx2500821Fzsu03nWxNf; Sat, 22 May 2021 13:30:57 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 22 May 2021 13:30:57 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH v2 5/5] misc/pvpanic: Make 'pvpanic_probe()' resource
- managed
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mihai Carabas <mihai.carabas@oracle.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        pizhenwei@bytedance.com, Paolo Bonzini <pbonzini@redhat.com>,
-        bobo.shaobowang@huawei.com, linqiheng@huawei.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>
-References: <cover.1621665058.git.christophe.jaillet@wanadoo.fr>
- <9212cdc8c1e5c187a2f1129a6190085c2a10d28a.1621665058.git.christophe.jaillet@wanadoo.fr>
- <CAHp75VdhgEEeOoJZNXu9RMR0QppDv7HZ-_Lmy4PC=ptXHaz_Lw@mail.gmail.com>
- <CAHp75Vct5cHgSDU4oQ8ScEoKviiZZgYCKN62AEy0MS=V4oGTiQ@mail.gmail.com>
- <1217b537-57ea-dcf2-06d8-5b5bd7bcbd5f@wanadoo.fr>
- <CAHp75VfQHEU9C41Jrv-a4Vw9OHBtmOStrBMNtPCh-74mj1k9dA@mail.gmail.com>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <0a3baf12-0255-70a6-bbb5-a96902516cf3@wanadoo.fr>
-Date:   Sat, 22 May 2021 13:30:57 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Sat, 22 May 2021 07:33:38 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27509C061574;
+        Sat, 22 May 2021 04:32:13 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id a7so3610328plh.3;
+        Sat, 22 May 2021 04:32:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1kOHHb+Y1mDpGXTDWCoDuGyBc8YqEz2A5xaJqIhlchQ=;
+        b=gAzPsBMXEQuxRpMyvG3kICmHXTgzm6Ob0J2tx3Yt4keonOI3K1g5XKYsZsmFLo39h3
+         JyUxdKwMfYZ6fCb3TPiN/WtxHPsAp4B5DmmN6ubQpARdvZN/X6DaguYrPsJFxCOnuVAA
+         DoZa1rQei9VDfoUfM6UodhdUWb4VDuwV3z+IoNXUipzIqLUcCpg8mbJ/YAOKHJNcoOJ8
+         b172jM28j77307jsjTqJ1ocGIHjVAcDivKi7yX7y9Idz6MybRvL4SThVK4TiSbSFhTlU
+         zdcaLjqQWq+v8cTDEOH+F2hvsChJuFuEj5b6qPkqw/qLEe4dytXojL3qsEyyloS7BkiB
+         1XKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1kOHHb+Y1mDpGXTDWCoDuGyBc8YqEz2A5xaJqIhlchQ=;
+        b=gSvaGmi2sX//T4KsRD04gsogY5OO2w8B/5Jx7I+qOuXlOo1J/bMT/UQWLgx3KVcg8R
+         b5zXfwYdTMjywNkW1WvSuRULWKaveCHmuBI5GQUd8LiSq896mEeBylZ/ceeAFmjZQRzS
+         dWS4ZvbBDC+8uTJGL2k5UsxUrN4ndNlFVPUCbwUwGsaX7uNB5syn3eY0ZsqmisgDVeDc
+         XLTbakkbuXDpp5Ytlri4may6NJF5rvPSvoMMDnVZ0dBYA7CHKdH1LS2ugUs+5buj0JzX
+         T7hc5wgAlhcMq7jl1rQIooPHt8RJcFIiqiJCuHtr/PTpKew1NcA9s1NpsMMBck8ixQlc
+         pOFQ==
+X-Gm-Message-State: AOAM532KiraoOknWHlYLmJA8i/Y97IpTKGb/K1b9sHsMOv/Pes2o+rNP
+        qu4vcrXKEce8fPGUPoGVGKw=
+X-Google-Smtp-Source: ABdhPJyy9kDrw5mMb3hWHBO3hq5vNdGZTAIBlBJyZ7co9ngyDEULlX+CctHNvUTmKzQisYwQbVt0Cw==
+X-Received: by 2002:a17:902:d903:b029:ef:abd0:d8fa with SMTP id c3-20020a170902d903b02900efabd0d8famr16587186plz.49.1621683132609;
+        Sat, 22 May 2021 04:32:12 -0700 (PDT)
+Received: from localhost ([178.236.46.205])
+        by smtp.gmail.com with ESMTPSA id e7sm7020330pfl.171.2021.05.22.04.32.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 04:32:11 -0700 (PDT)
+From:   menglong8.dong@gmail.com
+X-Google-Original-From: dong.menglong@zte.com.cn
+To:     mcgrof@kernel.org
+Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
+        samitolvanen@google.com, johan@kernel.org, ojeda@kernel.org,
+        jeyu@kernel.org, joe@perches.com, dong.menglong@zte.com.cn,
+        masahiroy@kernel.org, jack@suse.cz, axboe@kernel.dk, hare@suse.de,
+        gregkh@linuxfoundation.org, tj@kernel.org, song@kernel.org,
+        neilb@suse.de, akpm@linux-foundation.org, brho@google.com,
+        f.fainelli@gmail.com, wangkefeng.wang@huawei.com, arnd@arndb.de,
+        linux@rasmusvillemoes.dk, mhiramat@kernel.org, rostedt@goodmis.org,
+        vbabka@suse.cz, glider@google.com, pmladek@suse.com,
+        ebiederm@xmission.com, jojing64@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] init/initramfs.c: make initramfs support pivot_root
+Date:   Sat, 22 May 2021 19:31:52 +0800
+Message-Id: <20210522113155.244796-1-dong.menglong@zte.com.cn>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VfQHEU9C41Jrv-a4Vw9OHBtmOStrBMNtPCh-74mj1k9dA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 22/05/2021 à 13:06, Andy Shevchenko a écrit :
-> On Sat, May 22, 2021 at 1:57 PM Christophe JAILLET
-> <christophe.jaillet@wanadoo.fr> wrote:
->> Le 22/05/2021 à 12:09, Andy Shevchenko a écrit :
-> 
-> ...
-> 
->> I'll send a v3, but my turn to nitpick now:
->>
->>      Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->>      Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>
->> Which one, should I use?
->> I guess the later.
-> 
-> Both. They have different meanings.
-> 
+From: Menglong Dong <dong.menglong@zte.com.cn>
 
-I was meaning gmail.com or intel.com
+As Luis Chamberlain suggested, I split the patch:
+[init/initramfs.c: make initramfs support pivot_root]
+(https://lore.kernel.org/linux-fsdevel/20210520154244.20209-1-dong.menglong@zte.com.cn/)
+into three.
 
-CJ
+The goal of the series patches is to make pivot_root() support initramfs.
+
+In the first patch, I introduce the function ramdisk_exec_exist(), which
+is used to check the exist of 'ramdisk_execute_command' in relative path
+mode.
+
+In the second patch, I create a second mount, which is called
+'user root', and make it become the root. Therefore, the root has a
+parent mount, and it can be umounted or pivot_root.
+
+Before change root, I have to check the exist of ramdisk_execute_command,
+because 'user root' should be umounted if ramdisk_execute_command not
+exist. 'user root' is mounted on '/root', and cpio is unpacked to it. So
+I have to use relative path to do this check, as 'user root' is not the
+root yet.
+
+Maybe I can do the check after change root, but it seems complex to
+change root back to '/'. What's weird is that I try to move 'user root'
+from '/root' to '/', but the absolute path lookup seems never follow the
+mount. That's why I introduced ramdisk_exec_exist.
+
+In the third patch, I fix rootfs_fs_type with ramfs, as it is not used
+directly any more, and it make no sense to switch it between ramfs and
+tmpfs, just fix it with ramfs to simplify the code.
+
+
+
+Menglong Dong (3):
+  init/main.c: introduce function ramdisk_exec_exist()
+  init/do_cmounts.c: introduce 'user_root' for initramfs
+  init/do_mounts.c: fix rootfs_fs_type with ramfs
+
+ fs/namespace.c       |  2 --
+ include/linux/init.h |  1 -
+ init/do_mounts.c     | 82 +++++++++++++++++++++++++++++++++++++-------
+ init/do_mounts.h     |  7 +++-
+ init/initramfs.c     | 10 ++++++
+ init/main.c          | 17 ++++++++-
+ 6 files changed, 101 insertions(+), 18 deletions(-)
+
+-- 
+2.31.1
+
