@@ -2,124 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E202938D68C
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 18:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD4E738D695
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 19:18:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhEVQ5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 12:57:38 -0400
-Received: from m32-153.88.com ([43.250.32.153]:52936 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231274AbhEVQ5g (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 12:57:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=Date:From:To; bh=tNJiZ6hCcVUW/Tbb+hubaKAFFdy6kfjlvBb5j
-        oKGuB4=; b=dL9l1E/ECCHilCsBqq8SEHXrf86b2GTaGqbkajFT1c8WoGP7W1v+g
-        lqSbM5M4LVHkTzEJvY9+c2xcjWTtnVRWzBKXQWRrDVjp5hpI+8RKcZBOWYbcUdLC
-        eOGQ/1+sfnu+FQSXOBOXCUB7etcwJX16KMMiRPaHG/RufFX0mRqfFs=
-Received: from bobwxc.top (unknown [120.238.248.9])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCn9limN6lgXERCAA--.33551S2;
-        Sun, 23 May 2021 00:56:08 +0800 (CST)
-Date:   Sun, 23 May 2021 00:56:06 +0800
-From:   "Wu X.C." <bobwxc@email.cn>
-To:     Akira Yokosawa <akiyks@gmail.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        id S231336AbhEVRQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 13:16:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhEVRQ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 13:16:59 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15820C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 10:15:34 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id v13so12540739ple.9
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 10:15:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bumDb/hx+SGF/3ZOf+oQUyiA5GdTYW0dGDsrfTfTKto=;
+        b=HKiQ2q/Oa7xiiKcVMCa7AvIAt9lPn/A6g7V2Uq/Vg8hrn7R+rfYNUlohVddpscTyNU
+         V5Au+cNL/SvvHTwX72CFR2LU0A+VngyqTuIFSn7Y+0ahorvakRAkEjVNOzlWkXTn9JBq
+         oQEJcXE14jwDfLPV1UJ0DwfWZ4w2PbhO05S14kNDYimegwyn70HLU2T7bH4XG21OcyEU
+         I8M/ckYHnu43cawhO5emUvxWmVTHEibrRDe/Q7Utbb3nIjGEJjAmEpCvXoksAAdRiSKN
+         Olw7goXxW60jbAaZA0PIljJGGpvwZ/2JZgDfYGVv5amow52CQFURrSZ1kNGNIocWKZKb
+         Sk3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=bumDb/hx+SGF/3ZOf+oQUyiA5GdTYW0dGDsrfTfTKto=;
+        b=WlCddk5hOAPXHIJfwpMHNS7F9H7o66SV/H/NO5Wt2Klg+mcrKfjiH5GUONB23/2rxH
+         MQMAJsFtcYyW5OjAfXiUi19McwN19URz4p5LZQd/iTs5LMkRpBc5L5RZhdfOIet4oIA/
+         0knQkbHCu3Z/W7sVtuCLsWExMZF6pRFU74+fklUVaiTF9hKpjN7ohAoVCWw0Eut3DT9b
+         GZFiaH6oAEa0l8G/Jz/KVGDJr8A3mfOBCpLFTMZZtV2q1wXRx5H/fwxoiKHI+v8yrFGN
+         YRQZAY0I9t0rERj1VHhz6mTt9M5OH/m2DlaNe2oR54DeRyJw12Sf7FCLJfxBEFClA7kf
+         viqg==
+X-Gm-Message-State: AOAM531JfQGkXCHYezqRfhASwU2f4JKzKhucsaNNk58THuZFLfLYnjLd
+        VsmWxGBaGLe3VQTBxcrMkJ1/Eg==
+X-Google-Smtp-Source: ABdhPJznFfwkyGma5JO+7bDUDKAIsuGWCzbs9XnmRYVhhpZpD8vBb1vKiyEXpx8qRGUM50oIFQHTLw==
+X-Received: by 2002:a17:902:b406:b029:ec:fbf2:4114 with SMTP id x6-20020a170902b406b02900ecfbf24114mr17994784plr.32.1621703733350;
+        Sat, 22 May 2021 10:15:33 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id r11sm7203513pgl.34.2021.05.22.10.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 10:15:32 -0700 (PDT)
+Date:   Sat, 22 May 2021 10:15:32 -0700 (PDT)
+X-Google-Original-Date: Sat, 22 May 2021 10:15:28 PDT (-0700)
+Subject:     Re: [PATCH] riscv: code patching only works on !XIP_KERNEL
+In-Reply-To: <CAM4kBBJqF=AxTu50PF=EshLSyqn0=yeC2dwf4JJj_Grsi_Tccg@mail.gmail.com>
+CC:     jszhang3@mail.ustc.edu.cn,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, linux-riscv@lists.infradead.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] docs: Activate xeCJK only in CJK chapters
-Message-ID: <20210522165606.GA25494@bobwxc.top>
-References: <2061da0a-6ab1-35f3-99c1-dbc415444f37@gmail.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Kj7319i9nmIyA2yE"
-Content-Disposition: inline
-In-Reply-To: <2061da0a-6ab1-35f3-99c1-dbc415444f37@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-CM-TRANSID: GiKnCgCn9limN6lgXERCAA--.33551S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7GF4kWw4kCw45Jr1xWF15urg_yoW8Jr47pF
-        WxG3ZrAFWDt34UJrs7Cw4xur1Sya1fJw4Fkry2y3sYvF909a4xtr1Iya90ga4Du3WrG3ZI
-        vw4jvw4UWFZ8Cr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUg2b7Iv0xC_Zr1lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-        cIk0rVWrJVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjx
-        v20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2
-        z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r1j6r4UM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21le4C267I2x7xF54xIwI1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
-        6x8ErcxFaVAv8VWxJr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82
-        IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8
-        JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1V
-        AFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xII
-        jxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4
-        A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI
-        43ZEXa7IUU3rc3UUUUU==
-X-Originating-IP: [120.238.248.9]
-X-CM-SenderInfo: pere453f6hztlloou0/
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     vitaly.wool@konsulko.com
+Message-ID: <mhng-1c10179a-d96b-4cf1-860a-03f0313ac980@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 10 May 2021 11:19:30 PDT (-0700), vitaly.wool@konsulko.com wrote:
+> On Mon, May 10, 2021 at 6:35 PM Jisheng Zhang <jszhang3@mail.ustc.edu.cn> wrote:
+>>
+>> From: Jisheng Zhang <jszhang@kernel.org>
+>>
+>> Some features which need code patching such as KPROBES, DYNAMIC_FTRACE
+>> KGDB can only work on !XIP_KERNEL. Add dependencies for these features
+>> that rely on code patching.
+>
+> Since we can define extra RW sections to place some tiny code bits in
+> RAM, I would suggest that you hold back this patch for a while.
+> I am not going to support the idea of e. g. compiling KGDB support
+> into a XIP kernel, but disabling the whole HAVE_ARCH_JUMP_LABEL is
+> hardly the way to go.
 
---Kj7319i9nmIyA2yE
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do you have any updates on this?  The SOC_SIFIVE disable thread floated 
+back to the top of my inbox and I didn't see anything there.  I'd prefer 
+to avoid chasing around Kconfig disables for a bunch of stuff that we're 
+just going to fix soon, but if this is going to be a big change then 
+it's likely for next cycle anyway so in that case I'll start picking up 
+these compile disable patches.
 
-On Sat, May 22, 2021 at 04:28:55PM +0900, Akira Yokosawa wrote:
-> Activating xeCJK in English or Italian-translation documents
-> results in sub-optimal typesetting with wide-looking apostrophes
-> and quotation marks.
->=20
-> The xeCJK package provides macros for enabling and disabling its
-> effect in the middle of a document, namely \makexeCJKactive and
-> \makexeCJKinactive.
->=20
-> So the goal of this change is to activate xeCJK in the relevant
-> chapters in translations.
->=20
-> To do this:
->=20
->     o Define custom macros in the preamble depending on the
->       availability of the "Noto Sans CJK" font so that those
->       macros can be embedded in translations.tex after the fact.
->       By default, xeCJK is inactive.
->=20
->     o Add a script retouch-translations.sh to embed the on/off
->       macros in translations.tex where necessary.
->       The patterns in the script are ad-hoc by nature, and will
->       need updates when the chapter organization changes.
->=20
->     o Invoke the script at the final step of target "latexdocs".
->=20
->=20
-> Signed-off-by: Akira Yokosawa <akiyks@gmail.com>
-> ---
+Not trying to rush any thing here, just don't want to have a bunch of 
+broken configs.
 
-Hi Akira,
-
-Test this patch with Noto Sans SC font, worked well.
-=E2=80=9C=E2=80=9D use right font in western language docs now.
-
-Tested-by: Wu XiangCheng <bobwxc@email.cn>
-
-Thanks,
-Wu X.C.
-
-
---Kj7319i9nmIyA2yE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmCpN6IACgkQtlsoEiKC
-sIX51wv+LhidirgRV7Z1DY6PhPpg119USK/wghNNiU7FSW1qctrr9VQAJpwEsKbX
-RxWlTwRLVXUb5lpfi1t+CshRncAC54HBVrGj9OUTsMfpKlUvnrsvWUyAqHdUh+8x
-XhEJ9PRHr6IIg7E5yYjZBdhjrTYR/XbQctIfxfysxrBtj75bfmzJblodPySFeF3Z
-BqTFkxLccy9WjBPOM03eQpNOckxa3WMAmMQVNnPJBrPhG+CirPCID2rYs/EqppKU
-BokEmCl+D36Q1KqPK+uN8cXYflgouwkxpbC1GBdoubml4QzNoTt6rPI4qKnJYy2Q
-K+oNBV9Po5y4u3ak+tOEP1HyDTvcQCqqghF/gufcUZvrTKz575IcMJPVV0eGIWKc
-TSTOZ+D17/6PsOI+Yq2M0IMFq2qiXAovyuP1IbCYwMxiYlF5RWogBDs3No11dL8A
-k5ehCn8jhDP5cw14bRkBeDzqQt+ibNWMTO4K32aeGe/NkhuFAxQ8UtgJtA9b2Vuy
-rsU9uyb3
-=AlNl
------END PGP SIGNATURE-----
-
---Kj7319i9nmIyA2yE--
-
+>
+> Best regards,
+>    Vitaly
+>
+>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>> ---
+>> Hi,
+>>
+>> Currently, the RISCV_ERRATA_ALTERNATIVE also only works on !XIP_KERNEL
+>> but from the maillist it seem there's effort to make the co-exist, so
+>> I drop RISCV_ERRATA_ALTERNATIVE dependency on !XIP_KERNEL.
+>>
+>> Thanks
+>>
+>>  arch/riscv/Kconfig | 18 +++++++++---------
+>>  1 file changed, 9 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+>> index a8ad8eb76120..61320b94ef97 100644
+>> --- a/arch/riscv/Kconfig
+>> +++ b/arch/riscv/Kconfig
+>> @@ -60,11 +60,11 @@ config RISCV
+>>         select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+>>         select HANDLE_DOMAIN_IRQ
+>>         select HAVE_ARCH_AUDITSYSCALL
+>> -       select HAVE_ARCH_JUMP_LABEL
+>> -       select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>> +       select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+>> +       select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+>>         select HAVE_ARCH_KASAN if MMU && 64BIT
+>>         select HAVE_ARCH_KASAN_VMALLOC if MMU && 64BIT
+>> -       select HAVE_ARCH_KGDB
+>> +       select HAVE_ARCH_KGDB if !XIP_KERNEL
+>>         select HAVE_ARCH_KGDB_QXFER_PKT
+>>         select HAVE_ARCH_MMAP_RND_BITS if MMU
+>>         select HAVE_ARCH_SECCOMP_FILTER
+>> @@ -79,9 +79,9 @@ config RISCV
+>>         select HAVE_GCC_PLUGINS
+>>         select HAVE_GENERIC_VDSO if MMU && 64BIT
+>>         select HAVE_IRQ_TIME_ACCOUNTING
+>> -       select HAVE_KPROBES
+>> -       select HAVE_KPROBES_ON_FTRACE
+>> -       select HAVE_KRETPROBES
+>> +       select HAVE_KPROBES if !XIP_KERNEL
+>> +       select HAVE_KPROBES_ON_FTRACE if !XIP_KERNEL
+>> +       select HAVE_KRETPROBES if !XIP_KERNEL
+>>         select HAVE_PCI
+>>         select HAVE_PERF_EVENTS
+>>         select HAVE_PERF_REGS
+>> @@ -230,11 +230,11 @@ config ARCH_RV64I
+>>         bool "RV64I"
+>>         select 64BIT
+>>         select ARCH_SUPPORTS_INT128 if CC_HAS_INT128 && GCC_VERSION >= 50000
+>> -       select HAVE_DYNAMIC_FTRACE if MMU && $(cc-option,-fpatchable-function-entry=8)
+>> +       select HAVE_DYNAMIC_FTRACE if !XIP_KERNEL && MMU && $(cc-option,-fpatchable-function-entry=8)
+>>         select HAVE_DYNAMIC_FTRACE_WITH_REGS if HAVE_DYNAMIC_FTRACE
+>> -       select HAVE_FTRACE_MCOUNT_RECORD
+>> +       select HAVE_FTRACE_MCOUNT_RECORD if !XIP_KERNEL
+>>         select HAVE_FUNCTION_GRAPH_TRACER
+>> -       select HAVE_FUNCTION_TRACER
+>> +       select HAVE_FUNCTION_TRACER if !XIP_KERNEL
+>>         select SWIOTLB if MMU
+>>
+>>  endchoice
+>> --
+>> 2.31.0
+>>
+>>
+>>
+>> _______________________________________________
+>> linux-riscv mailing list
+>> linux-riscv@lists.infradead.org
+>> http://lists.infradead.org/mailman/listinfo/linux-riscv
