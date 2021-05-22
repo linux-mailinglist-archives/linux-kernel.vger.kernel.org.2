@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70B5D38D5BA
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 13:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3EA838D5C3
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 14:09:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231128AbhEVL72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 07:59:28 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4586 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230358AbhEVL70 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 07:59:26 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FnMNc0DSTzsT5n;
-        Sat, 22 May 2021 19:55:12 +0800 (CST)
-Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 22 May 2021 19:58:00 +0800
-Received: from huawei.com (10.175.103.91) by dggpeml500017.china.huawei.com
- (7.185.36.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Sat, 22 May
- 2021 19:58:00 +0800
-From:   Yang Yingliang <yangyingliang@huawei.com>
-To:     <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-CC:     <davem@davemloft.net>, <kuba@kernel.org>, <andrew@aj.id.au>,
-        <gwshan@linux.vnet.ibm.com>
-Subject: [PATCH -next] net: ftgmac100: add missing error return code in ftgmac100_probe()
-Date:   Sat, 22 May 2021 20:02:46 +0800
-Message-ID: <20210522120246.1125535-1-yangyingliang@huawei.com>
-X-Mailer: git-send-email 2.25.1
+        id S230480AbhEVMLH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 08:11:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230360AbhEVMLG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 08:11:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7A73C61132;
+        Sat, 22 May 2021 12:09:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621685381;
+        bh=9T2kqkYRlBFg6M+r87a0QKtYHZee+OSyZCnhm0RwhGc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=nmgbmj+vh/ZbFFsNqC0MYt5yDbsp4syhZCa1TykgmUDEMYPLOctzLoSSzNJEkmFoV
+         WDL9XptsD8N0lsrE1Afbz0pfKppPcXQAf6Bte+e8NYpKzpKFsdnnkSZUsGdQyYF7YK
+         dup7VyMk6kDSgldNsHMxOEAocyh4HwNAH9QqQAREj0wrE9aqhgQlIMMnp74JZDGLEx
+         tFGEjFfQPWJZ6M2WJRREbA+F3WdmmRrYNSQdb3teQ9vIWpOMHHezfqOCJs7L+oAGlj
+         NLUuWnM211fVvaA2wOaxwNFLQNQoU6Zt/dF4JjFhaKluG4xfj8tmwgXhybUfAyDgfB
+         7zvUEMXmm2RKA==
+Received: by mail-ot1-f49.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so20539894otp.4;
+        Sat, 22 May 2021 05:09:41 -0700 (PDT)
+X-Gm-Message-State: AOAM5303CyeEM19NAueyAs9bPlmvbDk5Lz0RfuDRU48OaGbLHY7tbmr1
+        wAOAsnFpDrsa7onNEqt4/YRlz5urhlNPiKQ/9QQ=
+X-Google-Smtp-Source: ABdhPJzuh0wK2buuGxkzuTx4IPfRmkUDwRgK2S+Q8boHOQBaDpcj40nLkeUsrnh0wLU5YjRaPIjHWPPk5bIHOm9Lxds=
+X-Received: by 2002:a9d:69c5:: with SMTP id v5mr12105901oto.108.1621685380892;
+ Sat, 22 May 2021 05:09:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.103.91]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500017.china.huawei.com (7.185.36.243)
-X-CFilter-Loop: Reflected
+References: <20210515081404.6334-1-pmenzel@molgen.mpg.de>
+In-Reply-To: <20210515081404.6334-1-pmenzel@molgen.mpg.de>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sat, 22 May 2021 14:09:29 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGCGysZCk59yMjsKWX5PcENvJnyv0nV12kGYObtjE3x3w@mail.gmail.com>
+Message-ID: <CAMj1kXGCGysZCk59yMjsKWX5PcENvJnyv0nV12kGYObtjE3x3w@mail.gmail.com>
+Subject: Re: [PATCH] x86/efi: Log 32/64-bit mismatch with kernel as an error
+To:     Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        platform-driver-x86@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The variables will be free on path err_phy_connect, it should
-return error code, or it will cause double free when calling
-ftgmac100_remove().
+On Sat, 15 May 2021 at 10:14, Paul Menzel <pmenzel@molgen.mpg.de> wrote:
+>
+> Log the message
+>
+>     No EFI runtime due to 32/64-bit mismatch with kernel
+>
+> as an error condition, as several things like efivarfs won=E2=80=99t work
+> without the EFI runtime.
+>
+> Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+> ---
+>  arch/x86/platform/efi/efi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
+> index 8a26e705cb06..147c30a81f15 100644
+> --- a/arch/x86/platform/efi/efi.c
+> +++ b/arch/x86/platform/efi/efi.c
+> @@ -468,7 +468,7 @@ void __init efi_init(void)
+>          */
+>
+>         if (!efi_runtime_supported())
+> -               pr_info("No EFI runtime due to 32/64-bit mismatch with ke=
+rnel\n");
+> +               pr_err("No EFI runtime due to 32/64-bit mismatch with ker=
+nel\n");
+>
+>         if (!efi_runtime_supported() || efi_runtime_disabled()) {
+>                 efi_memmap_unmap();
+> --
+> 2.31.1
+>
 
-Fixes: bd466c3fb5a4 ("net/faraday: Support NCSI mode")
-Fixes: 39bfab8844a0 ("net: ftgmac100: Add support for DT phy-handle property")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
----
- drivers/net/ethernet/faraday/ftgmac100.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-index 04421aec2dfd..11dbbfd38770 100644
---- a/drivers/net/ethernet/faraday/ftgmac100.c
-+++ b/drivers/net/ethernet/faraday/ftgmac100.c
-@@ -1830,14 +1830,17 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 	if (np && of_get_property(np, "use-ncsi", NULL)) {
- 		if (!IS_ENABLED(CONFIG_NET_NCSI)) {
- 			dev_err(&pdev->dev, "NCSI stack not enabled\n");
-+			err = -EINVAL;
- 			goto err_phy_connect;
- 		}
- 
- 		dev_info(&pdev->dev, "Using NCSI interface\n");
- 		priv->use_ncsi = true;
- 		priv->ndev = ncsi_register_dev(netdev, ftgmac100_ncsi_handler);
--		if (!priv->ndev)
-+		if (!priv->ndev) {
-+			err = -EINVAL;
- 			goto err_phy_connect;
-+		}
- 	} else if (np && of_get_property(np, "phy-handle", NULL)) {
- 		struct phy_device *phy;
- 
-@@ -1856,6 +1859,7 @@ static int ftgmac100_probe(struct platform_device *pdev)
- 					     &ftgmac100_adjust_link);
- 		if (!phy) {
- 			dev_err(&pdev->dev, "Failed to connect to phy\n");
-+			err = -EINVAL;
- 			goto err_phy_connect;
- 		}
- 
--- 
-2.25.1
-
+Queued up now, thanks.
