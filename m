@@ -2,198 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24C8738D446
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 09:48:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02D6338D45B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 10:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230109AbhEVHuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 03:50:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34626 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229990AbhEVHuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 03:50:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 28F3B611ED;
-        Sat, 22 May 2021 07:48:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621669716;
-        bh=ItPVf32V/JWLFVBmSIyXUA7rG+RBAb+2CJPBKMiVZxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iEm6eeg5BkcM1lgPpCd68Ryv1MiH0N6mNy45DPSn+JHHkXJi3DZLeWvF5zXAWrmaU
-         zpsF5frtYhW31/tAODKZrIMx7oLj4raJwSlhIhYX/AnyF03n6R8XvQcgVnjvnRYEKD
-         Ya1EmiP88mP8eDKMv4Nlt25L/1kXpPFFCcajRaPo=
-Date:   Sat, 22 May 2021 09:48:34 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Luis Chamberlain <mcgrof@kernel.org>
-Cc:     Minchan Kim <minchan@kernel.org>, Hannes Reinecke <hare@suse.de>,
-        Douglas Gilbert <dgilbert@interlog.com>, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
-        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
-        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
-        peterz@infradead.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
-Message-ID: <YKi3UpQm0HUxJi87@kroah.com>
-References: <20210423011108.11988-1-mcgrof@kernel.org>
- <YKVwZVcbZBNXUpKm@google.com>
- <20210519202023.GU4332@42.do-not-panic.com>
- <YKgRsCzwp2O2mYcp@kroah.com>
- <20210521201618.GX4332@42.do-not-panic.com>
- <YKgbzO0AkYN4J7Ye@kroah.com>
- <20210521210817.GY4332@42.do-not-panic.com>
+        id S230101AbhEVIDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 04:03:51 -0400
+Received: from m32-153.88.com ([43.250.32.153]:33783 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230000AbhEVIDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 04:03:50 -0400
+X-Greylist: delayed 18355 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 May 2021 04:03:49 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=hmNgrgPBhr7LhurXuqhMudBbTKWzo/FsN2E5v
+        l3sG/U=; b=MTVhAQI0tophUwrlDGiLkM6EMntqPCiAykvvHTFtlRR2uvoL2L/H3
+        GA6fILesPpbwz78g2KHR0J8ZGKae8T8jth7GOGjDRB+7lndxqounwRwDa2V6EJ7d
+        zLyHtrStooSQoRxAExNZU0uTAzgzjmqp2MWHpV+fFV49pdI0O1xDx8=
+Received: from localhost.localdomain (unknown [113.251.13.109])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDXJViIuqhg13hBAA--.9385S2;
+        Sat, 22 May 2021 16:02:17 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     alexs@kernel.org, corbet@lwn.net, siyanteng@loongson.cn,
+        bobwxc@email.cn, jaixun.yang@flygoat.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hu Haowen <src.res@email.cn>
+Subject: [PATCH] docs/zh_CN: Add Chinese translations for new contents
+Date:   Sat, 22 May 2021 16:02:14 +0800
+Message-Id: <20210522080214.88050-1-src.res@email.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521210817.GY4332@42.do-not-panic.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GiKnCgDXJViIuqhg13hBAA--.9385S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1rZr4kKw1fKr15Xw1kKrg_yoW8AF4fp3
+        Wa9r9rKanrCrnFvrn7KryUZF15CFWxua4UJ3s7ZF95ZF1rAryvyFsrKryrWr95Wry8ta4r
+        tFsxtryDXrWjywUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgE1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Jr0_Jr4l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
+        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkE
+        bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67
+        AK6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC
+        6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
+        C2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_
+        JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
+        WUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
+        CTnIWIevJa73UjIFyTuYvjfUxZjjDUUUU
+X-Originating-IP: [113.251.13.109]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 09:08:17PM +0000, Luis Chamberlain wrote:
-> On Fri, May 21, 2021 at 10:45:00PM +0200, Greg Kroah-Hartman wrote:
-> > On Fri, May 21, 2021 at 08:16:18PM +0000, Luis Chamberlain wrote:
-> > > On Fri, May 21, 2021 at 10:01:52PM +0200, Greg Kroah-Hartman wrote:
-> > > > On Wed, May 19, 2021 at 08:20:23PM +0000, Luis Chamberlain wrote:
-> > > > > Greg,
-> > > > > 
-> > > > > your feedback would be appreciated here.
-> > > > 
-> > > > Appreciated where?  This is a zram patchset, what do I need to mess with
-> > > > it for?
-> > > 
-> > > This patchset has 2 issues which I noted in the last series that are
-> > > generic, and could best be dealt with on sysfs, and suggested
-> > > how this could actually be dealt with on sysfs / kernfs.
-> > > 
-> > > > > Greg, can you comment on technical levels why a general core fix is not
-> > > > > desirable upstream for those two issues?
-> > > > 
-> > > > What issues exactly?
-> > > 
-> > > When I suggested the generic way to fix this your main argument against
-> > > a generic solution was that we don't support module removal. Given that
-> > > argument did not seem to hold any water it begs the question if you
-> > > still would rather not see this fixed in sysfs / kernfs.
-> > > 
-> > > If you however are more open to it now, I can instead take that work, and
-> > > send a proper patch for review.
-> > 
-> > I looked at the last patch here and I really do not see the issue.
-> > 
-> > In order for the module to be removed, zram_exit() has to return, right?
-> 
-> Yes, but the race is for when a module removal is ongoing, in other
-> words, it has not yet completed, and at the same time we race touching
-> sysfs files.
-> 
-> > So how can a show/store function in zram_drv.c be called after
-> > destroy_devices() returns?
-> 
-> The issue can come up if we have something poke at the sysfs files *while* a
-> removal is happening.
+A document updated in commit 1c31f0b67cfa6d4cd41d ("module: add printk
+formats to add module build ID to stacktraces"), hence add Chinese
+translations for it.
 
-And have you seen this in the real world?  I keep asking this as module
-removal is not an automated process so what triggers this?
+Signed-off-by: Hu Haowen <src.res@email.cn>
+---
+ .../translations/zh_CN/core-api/printk-formats.rst       | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> > The changelog text in patch 4/4 is odd, destroy_devices() shouldn't be
-> > racing with anything as devices have reference counts in order to
-> > protect this type of thing from happening, right?
-> 
-> The race is beyond the scope of the driver in that the sysfs file can be
-> poked at while a removal is ongoing. After that consider the possible
-> races that can happen.
-> 
-> > How can a store
-> > function be called when a device is somehow removed from memory at the
-> > same time?  Don't we properly incremement/decrement the device
-> > structure's reference count?  If not, wouldn't that be the simplest
-> > solution here?
-> 
-> In this case the proper refcounting has to be down on the type of
-> device, and so bdgrab(dev_to_bdev(dev)), because otherwise the pointer
-> for the zram device is just not valid, so we can't do sanity checks
-> on the sysfs calls for the zram device as the pointer can be invalid.
-> To validate the pointer we must do refcounting below a layer. In this
-> case for a disk.
-> 
-> And so genericaly this would be:
-> 
-> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> index 4a8bf8cda52b..7c897e3f4135 100644
-> --- a/drivers/base/core.c
-> +++ b/drivers/base/core.c
-> @@ -29,6 +29,7 @@
->  #include <linux/sched/mm.h>
->  #include <linux/sysfs.h>
->  #include <linux/dma-map-ops.h> /* for dma_default_coherent */
-> +#include <linux/blkdev.h>
->  
->  #include "base.h"
->  #include "power/power.h"
-> @@ -1988,11 +1989,20 @@ static inline int device_is_not_partition(struct device *dev)
->  {
->  	return !(dev->type == &part_type);
->  }
-> +static inline bool device_is_disk(struct device *dev)
-> +{
-> +	return (dev->type == &disk_type);
-> +}
->  #else
->  static inline int device_is_not_partition(struct device *dev)
->  {
->  	return 1;
->  }
-> +
-> +static inline bool device_is_disk(struct device *dev)
-> +{
-> +	return false;
-> +}
->  #endif
->  
->  static int
-> @@ -2037,6 +2047,19 @@ const char *dev_driver_string(const struct device *dev)
->  }
->  EXPORT_SYMBOL(dev_driver_string);
->  
-> +static int dev_type_get(struct device *dev)
-> +{
-> +	if (device_is_disk(dev))
-> +		return !!bdgrab(dev_to_bdev(dev));
-> +	return 1;
-> +}
+diff --git a/Documentation/translations/zh_CN/core-api/printk-formats.rst b/Documentation/translations/zh_CN/core-api/printk-formats.rst
+index 624a090e6ee5..116abc046bfe 100644
+--- a/Documentation/translations/zh_CN/core-api/printk-formats.rst
++++ b/Documentation/translations/zh_CN/core-api/printk-formats.rst
+@@ -122,6 +122,15 @@ seq_printf()，而不是printk()）由用户空间进程读取，使用下面描
+ ``B`` 占位符的结果是带有偏移量的符号名，在打印堆栈回溯时应该使用。占位符将考虑编译器优化
+ 的影响，当使用尾部调用并使用noreturn GCC属性标记时，可能会发生这种优化。
+ 
++如果占位符是在一个模块之中，可在占位符末尾添加 ``b`` 以在符号名后打印模块名称和可选构建ID。
++
++::
++        %pS     versatile_init+0x0/0x110 [module_name]
++        %pSb    versatile_init+0x0/0x110 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
++        %pSRb   versatile_init+0x9/0x110 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
++                (with __builtin_extract_return_addr() translation)
++        %pBb    prev_fn_of_versatile_init+0x88/0x88 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
++
+ 来自BPF / tracing追踪的探查指针
+ ----------------------------------
+ 
+-- 
+2.25.1
 
-Why do you feel that block devices are somehow more "special" here?
-
-They are not, either this is "broken" for everyone, or it works for
-everyone, don't special-case one tiny class of devices for unknown
-reasons.
-
-Your change causes another problem, if a sysfs file has show/store
-happening, the reference count will always be bumped and so the module
-would NOT be able to be freed.  That looks like a lovely DoS that any
-user could cause, right?
-
-In sleeping on this the "correct" solution is to grab the bus lock (or
-ktype lock) for the device during show/store so that the "delete device"
-process can not race with it.  Also let's make sure that the kref of the
-kobject is being properly bumped during show/store as well, I don't
-think that's happening which isn't a good thing no matter what
-(different type of bug).
-
-If that lock addition ends up showing up in benchmarks, then we can
-always move it to rcu.
-
-So in conclusion, the "correct" thing here seems to be two independant
-things:
-	- make sure the reference count of the kobject is properly
-	  incremented during show/store callbacks
-	- grab the kobject's type/bus/whatever lock during show/store so
-	  that it can not race with deleting the device.
-
-No bus/type should be special cased here, block devices are not special
-by any means.
-
-And don't mess with module reference counts, that way lies madness.  We
-want to lock data, not code :)
-
-thanks,
-
-greg k-h
