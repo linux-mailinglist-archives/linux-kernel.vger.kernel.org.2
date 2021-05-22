@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C5838D414
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:54:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3FC538D416
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:55:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230090AbhEVG4U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 02:56:20 -0400
-Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:50322 "EHLO
+        id S230104AbhEVG4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 02:56:32 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:38783 "EHLO
         smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S230001AbhEVG4T (ORCPT
+        with ESMTP id S230001AbhEVG43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 02:56:19 -0400
+        Sat, 22 May 2021 02:56:29 -0400
 Received: from localhost.localdomain ([86.243.172.93])
         by mwinf5d71 with ME
-        id 7iut2500C21Fzsu03iutd4; Sat, 22 May 2021 08:54:54 +0200
+        id 7iv42500921Fzsu03iv4dv; Sat, 22 May 2021 08:55:04 +0200
 X-ME-Helo: localhost.localdomain
 X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sat, 22 May 2021 08:54:54 +0200
+X-ME-Date: Sat, 22 May 2021 08:55:04 +0200
 X-ME-IP: 86.243.172.93
 From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org,
@@ -26,9 +26,9 @@ To:     arnd@arndb.de, gregkh@linuxfoundation.org,
         bobo.shaobowang@huawei.com, linqiheng@huawei.com
 Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
         Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH v2 2/5] misc/pvpanic-pci: Use GFP_KERNEL instead of GFP_ATOMIC
-Date:   Sat, 22 May 2021 08:54:52 +0200
-Message-Id: <5ea4fb9802f7b780cc3e5ae768561a0372a39ebb.1621665058.git.christophe.jaillet@wanadoo.fr>
+Subject: [PATCH v2 3/5] misc/pvpanic-mmio: Fix error handling in 'pvpanic_mmio_probe()'
+Date:   Sat, 22 May 2021 08:55:03 +0200
+Message-Id: <2a5dab18f10db783b27e0579ba66cc38d610734a.1621665058.git.christophe.jaillet@wanadoo.fr>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <cover.1621665058.git.christophe.jaillet@wanadoo.fr>
 References: <cover.1621665058.git.christophe.jaillet@wanadoo.fr>
@@ -38,29 +38,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to use GFP_ATOMIC in a probe function. Use GFP_KERNEL
-instead.
+There is no error handling path in the probe function.
+Switch to managed resource so that errors in the probe are handled easily
+and simplify the remove function accordingly.
 
+Fixes: b3c0f8774668 ("misc/pvpanic: probe multiple instances")
 Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
-v2: add -pci in the description of the commit
+v2: add -mmio in the description of the commit
 ---
- drivers/misc/pvpanic/pvpanic-pci.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/misc/pvpanic/pvpanic-mmio.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/misc/pvpanic/pvpanic-pci.c b/drivers/misc/pvpanic/pvpanic-pci.c
-index 046ce4ecc195..3d7f9efb3dd4 100644
---- a/drivers/misc/pvpanic/pvpanic-pci.c
-+++ b/drivers/misc/pvpanic/pvpanic-pci.c
-@@ -86,7 +86,7 @@ static int pvpanic_pci_probe(struct pci_dev *pdev,
- 	if (!base)
- 		return -ENOMEM;
+diff --git a/drivers/misc/pvpanic/pvpanic-mmio.c b/drivers/misc/pvpanic/pvpanic-mmio.c
+index 4c0841776087..69b31f7adf4f 100644
+--- a/drivers/misc/pvpanic/pvpanic-mmio.c
++++ b/drivers/misc/pvpanic/pvpanic-mmio.c
+@@ -93,7 +93,7 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
  
--	pi = devm_kmalloc(&pdev->dev, sizeof(*pi), GFP_ATOMIC);
-+	pi = devm_kmalloc(&pdev->dev, sizeof(*pi), GFP_KERNEL);
+-	pi = kmalloc(sizeof(*pi), GFP_ATOMIC);
++	pi = devm_kmalloc(dev, sizeof(*pi), GFP_ATOMIC);
  	if (!pi)
  		return -ENOMEM;
  
+@@ -114,7 +114,6 @@ static int pvpanic_mmio_remove(struct platform_device *pdev)
+ 	struct pvpanic_instance *pi = dev_get_drvdata(&pdev->dev);
+ 
+ 	pvpanic_remove(pi);
+-	kfree(pi);
+ 
+ 	return 0;
+ }
 -- 
 2.30.2
 
