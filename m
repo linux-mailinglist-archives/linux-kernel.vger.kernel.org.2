@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B3BE38D514
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 12:23:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F9C738D516
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 12:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230347AbhEVKZB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 06:25:01 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:4584 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbhEVKZA (ORCPT
+        id S230361AbhEVK00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 06:26:26 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:5736 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230164AbhEVK0Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 06:25:00 -0400
-Received: from dggems703-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FnKHd4vySzsRvj;
-        Sat, 22 May 2021 18:20:45 +0800 (CST)
+        Sat, 22 May 2021 06:26:25 -0400
+Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FnKJQ40FKzqTsv;
+        Sat, 22 May 2021 18:21:26 +0800 (CST)
 Received: from dggpeml500008.china.huawei.com (7.185.36.147) by
- dggems703-chm.china.huawei.com (10.3.19.180) with Microsoft SMTP Server
+ dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 22 May 2021 18:23:34 +0800
+ 15.1.2176.2; Sat, 22 May 2021 18:24:59 +0800
 Received: from localhost.localdomain (10.67.165.24) by
  dggpeml500008.china.huawei.com (7.185.36.147) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Sat, 22 May 2021 18:23:33 +0800
+ 15.1.2176.2; Sat, 22 May 2021 18:24:58 +0800
 From:   Hao Fang <fanghao11@huawei.com>
 To:     <xuwei5@hisilicon.com>, <robh+dt@kernel.org>
 CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
         <prime.zeng@hisilicon.com>, <fanghao11@huawei.com>
-Subject: [PATCH] arm64: dts: hisilicon: use the correct HiSilicon copyright
-Date:   Sat, 22 May 2021 18:20:32 +0800
-Message-ID: <1621678832-14924-1-git-send-email-fanghao11@huawei.com>
+Subject: [PATCH] ARM: dts: hisilicon: use the correct HiSilicon copyright
+Date:   Sat, 22 May 2021 18:21:57 +0800
+Message-ID: <1621678917-15089-1-git-send-email-fanghao11@huawei.com>
 X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
 Content-Type: text/plain
 X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
  dggpeml500008.china.huawei.com (7.185.36.147)
 X-CFilter-Loop: Reflected
 Precedence: bulk
@@ -47,218 +47,113 @@ https://www.hisilicon.com/en.
 
 Signed-off-by: Hao Fang <fanghao11@huawei.com>
 ---
- arch/arm64/boot/dts/hisilicon/hi3660-coresight.dtsi | 2 +-
- arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts   | 2 +-
- arch/arm64/boot/dts/hisilicon/hi3660.dtsi           | 2 +-
- arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts   | 2 +-
- arch/arm64/boot/dts/hisilicon/hi3670.dtsi           | 2 +-
- arch/arm64/boot/dts/hisilicon/hi6220-coresight.dtsi | 2 +-
- arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts      | 2 +-
- arch/arm64/boot/dts/hisilicon/hi6220.dtsi           | 2 +-
- arch/arm64/boot/dts/hisilicon/hip05-d02.dts         | 2 +-
- arch/arm64/boot/dts/hisilicon/hip05.dtsi            | 2 +-
- arch/arm64/boot/dts/hisilicon/hip06-d03.dts         | 2 +-
- arch/arm64/boot/dts/hisilicon/hip06.dtsi            | 2 +-
- arch/arm64/boot/dts/hisilicon/hip07-d05.dts         | 2 +-
- arch/arm64/boot/dts/hisilicon/hip07.dtsi            | 2 +-
- include/dt-bindings/pinctrl/hisi.h                  | 2 +-
- 15 files changed, 15 insertions(+), 15 deletions(-)
+ arch/arm/boot/dts/hi3620.dtsi        | 4 ++--
+ arch/arm/boot/dts/hip01-ca9x2.dts    | 4 ++--
+ arch/arm/boot/dts/hip01.dtsi         | 4 ++--
+ arch/arm/boot/dts/hip04.dtsi         | 4 ++--
+ arch/arm/boot/dts/hisi-x5hd2-dkb.dts | 2 +-
+ arch/arm/boot/dts/hisi-x5hd2.dtsi    | 2 +-
+ arch/arm/boot/dts/sd5203.dts         | 2 +-
+ 7 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-coresight.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660-coresight.dtsi
-index d607f2f..79a55a0f 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660-coresight.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-coresight.dtsi
-@@ -3,7 +3,7 @@
+diff --git a/arch/arm/boot/dts/hi3620.dtsi b/arch/arm/boot/dts/hi3620.dtsi
+index 905900b..cf48ec1 100644
+--- a/arch/arm/boot/dts/hi3620.dtsi
++++ b/arch/arm/boot/dts/hi3620.dtsi
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  /*
-  * dtsi for Hisilicon Hi3660 Coresight
+- * Hisilicon Ltd. Hi3620 SoC
++ * HiSilicon Ltd. Hi3620 SoC
   *
-- * Copyright (C) 2016-2018 Hisilicon Ltd.
-+ * Copyright (C) 2016-2018 HiSilicon Ltd.
+- * Copyright (C) 2012-2013 Hisilicon Ltd.
++ * Copyright (C) 2012-2013 HiSilicon Ltd.
+  * Copyright (C) 2012-2013 Linaro Ltd.
   *
-  * Author: Wanglai Shi <shiwanglai@hisilicon.com>
-  *
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-index 963300e..f68580d 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660-hikey960.dts
-@@ -2,7 +2,7 @@
+  * Author: Haojian Zhuang <haojian.zhuang@linaro.org>
+diff --git a/arch/arm/boot/dts/hip01-ca9x2.dts b/arch/arm/boot/dts/hip01-ca9x2.dts
+index 0314763..f3faf24 100644
+--- a/arch/arm/boot/dts/hip01-ca9x2.dts
++++ b/arch/arm/boot/dts/hip01-ca9x2.dts
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  /*
-  * dts file for Hisilicon HiKey960 Development Board
+- * Hisilicon Ltd. HiP01 SoC
++ * HiSilicon Ltd. HiP01 SoC
   *
-- * Copyright (C) 2016, Hisilicon Ltd.
-+ * Copyright (C) 2016, HiSilicon Ltd.
+- * Copyright (C) 2014 Hisilicon Ltd.
++ * Copyright (C) 2014 HiSilicon Ltd.
+  * Copyright (C) 2014 Huawei Ltd.
   *
-  */
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-index cab89dc..f1ec87c 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3660.dtsi
-@@ -2,7 +2,7 @@
+  * Author: Wang Long <long.wanglong@huawei.com>
+diff --git a/arch/arm/boot/dts/hip01.dtsi b/arch/arm/boot/dts/hip01.dtsi
+index 2a79636..e17f36b 100644
+--- a/arch/arm/boot/dts/hip01.dtsi
++++ b/arch/arm/boot/dts/hip01.dtsi
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  /*
-  * dts file for Hisilicon Hi3660 SoC
+- * Hisilicon Ltd. HiP01 SoC
++ * HiSilicon Ltd. HiP01 SoC
   *
-- * Copyright (C) 2016, Hisilicon Ltd.
-+ * Copyright (C) 2016, HiSilicon Ltd.
-  */
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-index 7f9f988..d8abf44 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670-hikey970.dts
-@@ -2,7 +2,7 @@
+- * Copyright (c) 2014 Hisilicon Ltd.
++ * Copyright (c) 2014 HiSilicon Ltd.
+  * Copyright (c) 2014 Huawei Ltd.
+  *
+  * Author: Wang Long <long.wanglong@huawei.com>
+diff --git a/arch/arm/boot/dts/hip04.dtsi b/arch/arm/boot/dts/hip04.dtsi
+index bccf5ba..2424cc5 100644
+--- a/arch/arm/boot/dts/hip04.dtsi
++++ b/arch/arm/boot/dts/hip04.dtsi
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  /*
-  * dts file for Hisilicon HiKey970 Development Board
+- * Hisilicon Ltd. HiP04 SoC
++ * HiSilicon Ltd. HiP04 SoC
   *
-- * Copyright (C) 2016, Hisilicon Ltd.
-+ * Copyright (C) 2016, HiSilicon Ltd.
-  * Copyright (C) 2018, Linaro Ltd.
+- * Copyright (C) 2013-2014 Hisilicon Ltd.
++ * Copyright (C) 2013-2014 HiSilicon Ltd.
+  * Copyright (C) 2013-2014 Linaro Ltd.
   *
-  */
-diff --git a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-index 8830795..20698cf 100644
---- a/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi3670.dtsi
-@@ -2,7 +2,7 @@
- /*
-  * dts file for Hisilicon Hi3670 SoC
-  *
-- * Copyright (C) 2016, Hisilicon Ltd.
-+ * Copyright (C) 2016, HiSilicon Ltd.
-  * Copyright (C) 2018, Linaro Ltd.
-  */
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi6220-coresight.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220-coresight.dtsi
-index 7b3010f..3f387f4 100644
---- a/arch/arm64/boot/dts/hisilicon/hi6220-coresight.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi6220-coresight.dtsi
-@@ -2,7 +2,7 @@
- /*
-  * dtsi file for Hisilicon Hi6220 coresight
-  *
-- * Copyright (C) 2017 Hisilicon Ltd.
-+ * Copyright (C) 2017 HiSilicon Ltd.
-  *
-  * Author: Pengcheng Li <lipengcheng8@huawei.com>
-  *         Leo Yan <leo.yan@linaro.org>
-diff --git a/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts b/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
-index 91d0867..3df2afb 100644
---- a/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hi6220-hikey.dts
-@@ -2,7 +2,7 @@
- /*
-  * dts file for Hisilicon HiKey Development Board
-  *
-- * Copyright (C) 2015, Hisilicon Ltd.
-+ * Copyright (C) 2015, HiSilicon Ltd.
-  *
-  */
- 
-diff --git a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-index d426c6c..dde9371 100644
---- a/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hi6220.dtsi
-@@ -2,7 +2,7 @@
- /*
-  * dts file for Hisilicon Hi6220 SoC
-  *
-- * Copyright (C) 2015, Hisilicon Ltd.
-+ * Copyright (C) 2015, HiSilicon Ltd.
-  */
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/arch/arm64/boot/dts/hisilicon/hip05-d02.dts b/arch/arm64/boot/dts/hisilicon/hip05-d02.dts
-index 369b69b..40f3e00 100644
---- a/arch/arm64/boot/dts/hisilicon/hip05-d02.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hip05-d02.dts
-@@ -2,7 +2,7 @@
- /**
-  * dts file for Hisilicon D02 Development Board
-  *
-- * Copyright (C) 2014,2015 Hisilicon Ltd.
-+ * Copyright (C) 2014,2015 HiSilicon Ltd.
-  */
- 
- /dts-v1/;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip05.dtsi b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
-index 4aed8d4..7b2abd1 100644
---- a/arch/arm64/boot/dts/hisilicon/hip05.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip05.dtsi
-@@ -2,7 +2,7 @@
- /**
-  * dts file for Hisilicon D02 Development Board
-  *
-- * Copyright (C) 2014,2015 Hisilicon Ltd.
-+ * Copyright (C) 2014,2015 HiSilicon Ltd.
-  */
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/arch/arm64/boot/dts/hisilicon/hip06-d03.dts b/arch/arm64/boot/dts/hisilicon/hip06-d03.dts
-index 9f4a930..35af5d3 100644
---- a/arch/arm64/boot/dts/hisilicon/hip06-d03.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hip06-d03.dts
-@@ -2,7 +2,7 @@
- /**
-  * dts file for Hisilicon D03 Development Board
-  *
-- * Copyright (C) 2016 Hisilicon Ltd.
-+ * Copyright (C) 2016 HiSilicon Ltd.
-  */
- 
- /dts-v1/;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip06.dtsi b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-index 7deca5f..70d7732 100644
---- a/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip06.dtsi
-@@ -2,7 +2,7 @@
- /**
-  * dts file for Hisilicon D03 Development Board
-  *
-- * Copyright (C) 2016 Hisilicon Ltd.
-+ * Copyright (C) 2016 HiSilicon Ltd.
-  */
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/arch/arm64/boot/dts/hisilicon/hip07-d05.dts b/arch/arm64/boot/dts/hisilicon/hip07-d05.dts
-index 81a2312..c3df678 100644
---- a/arch/arm64/boot/dts/hisilicon/hip07-d05.dts
-+++ b/arch/arm64/boot/dts/hisilicon/hip07-d05.dts
-@@ -2,7 +2,7 @@
- /**
-  * dts file for Hisilicon D05 Development Board
-  *
-- * Copyright (C) 2016 Hisilicon Ltd.
-+ * Copyright (C) 2016 HiSilicon Ltd.
-  */
- 
- /dts-v1/;
-diff --git a/arch/arm64/boot/dts/hisilicon/hip07.dtsi b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-index 2172d80..6baf6a6 100644
---- a/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-+++ b/arch/arm64/boot/dts/hisilicon/hip07.dtsi
-@@ -2,7 +2,7 @@
- /**
-  * dts file for Hisilicon D05 Development Board
-  *
-- * Copyright (C) 2016 Hisilicon Ltd.
-+ * Copyright (C) 2016 HiSilicon Ltd.
-  */
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-diff --git a/include/dt-bindings/pinctrl/hisi.h b/include/dt-bindings/pinctrl/hisi.h
-index 0359bfd..93064c7 100644
---- a/include/dt-bindings/pinctrl/hisi.h
-+++ b/include/dt-bindings/pinctrl/hisi.h
+  * Author: Haojian Zhuang <haojian.zhuang@linaro.org>
+diff --git a/arch/arm/boot/dts/hisi-x5hd2-dkb.dts b/arch/arm/boot/dts/hisi-x5hd2-dkb.dts
+index 22b122d..7758c19 100644
+--- a/arch/arm/boot/dts/hisi-x5hd2-dkb.dts
++++ b/arch/arm/boot/dts/hisi-x5hd2-dkb.dts
 @@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
  /*
-  * This header provides constants for hisilicon pinctrl bindings.
+  * Copyright (c) 2013-2014 Linaro Ltd.
+- * Copyright (c) 2013-2014 Hisilicon Limited.
++ * Copyright (c) 2013-2014 HiSilicon Limited.
+  */
+ 
+ /dts-v1/;
+diff --git a/arch/arm/boot/dts/hisi-x5hd2.dtsi b/arch/arm/boot/dts/hisi-x5hd2.dtsi
+index 9721138..dc991ba 100644
+--- a/arch/arm/boot/dts/hisi-x5hd2.dtsi
++++ b/arch/arm/boot/dts/hisi-x5hd2.dtsi
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+  * Copyright (c) 2013-2014 Linaro Ltd.
+- * Copyright (c) 2013-2014 Hisilicon Limited.
++ * Copyright (c) 2013-2014 HiSilicon Limited.
+  */
+ 
+ #include <dt-bindings/clock/hix5hd2-clock.h>
+diff --git a/arch/arm/boot/dts/sd5203.dts b/arch/arm/boot/dts/sd5203.dts
+index 3cc9a23..a61a078 100644
+--- a/arch/arm/boot/dts/sd5203.dts
++++ b/arch/arm/boot/dts/sd5203.dts
+@@ -1,6 +1,6 @@
+ // SPDX-License-Identifier: GPL-2.0-only
+ /*
+- * Copyright (c) 2020 Hisilicon Limited.
++ * Copyright (c) 2020 HiSilicon Limited.
   *
-- * Copyright (c) 2015 Hisilicon Limited.
-+ * Copyright (c) 2015 HiSilicon Limited.
-  * Copyright (c) 2015 Linaro Limited.
-  *
-  * This program is free software; you can redistribute it and/or modify
+  * DTS file for Hisilicon SD5203 Board
+  */
 -- 
 2.8.1
 
