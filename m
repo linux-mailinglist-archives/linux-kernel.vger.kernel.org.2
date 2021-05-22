@@ -2,217 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 318D238D4FF
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 12:01:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD0E38D501
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 12:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230247AbhEVKC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 06:02:56 -0400
-Received: from mga01.intel.com ([192.55.52.88]:18621 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230137AbhEVKCx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 06:02:53 -0400
-IronPort-SDR: 4dAulKrUH6rX3uSOGw5brNJg+oCvD5fNLfzCG/X4DUUl10Ag/Ccttqq2/uzLN4bgrmWrlrjdso
- nUp3L3+1rj4g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="222772866"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="222772866"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2021 03:01:28 -0700
-IronPort-SDR: NB4t7Wu6cZf4+jTrqGQVPoBwSoGkqiXuaIhHl2I+Dp6GINKSB93MIv76pl3C8NanTcgBFY6dCr
- MpjzemIjoHng==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="474942251"
-Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
-  by orsmga001.jf.intel.com with ESMTP; 22 May 2021 03:01:26 -0700
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH V2] perf script: Find script file relative to exec path
-Date:   Sat, 22 May 2021 13:01:51 +0300
-Message-Id: <20210522100151.670-1-adrian.hunter@intel.com>
-X-Mailer: git-send-email 2.17.1
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+        id S230290AbhEVKEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 06:04:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhEVKEn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 06:04:43 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30E9C061574;
+        Sat, 22 May 2021 03:03:18 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id t9so3793334ply.6;
+        Sat, 22 May 2021 03:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7Vw6OT/X2I8phVFQgo2JGHgLRH7v5/W/41Zd3gPR0WQ=;
+        b=Pz4E5zKBRzuWTe0v+MdVzRRpDRPcbVMk+3kD+V1hThCV8TW1okkHlLRS+hduCbZ/+C
+         Odz7NHUddIw7+d+g7lvfaaq734Omovm2pYn6WqLva/xnD4oGEqayQWzE734gSQxadmoW
+         kmOG70dYY+iOuZg0sd0w5nYZPxA9+L9WYh0VKBvSkoxR1scwcpqqsDpaFrRDbbaTutIu
+         v6MA6nLt2UWSNldwzGJXYFRoMyxwl3B8w+nu1x+zYoyanAsXAdcPt80S65oo+GA/HQ0o
+         c/fBuX1Q6tRY/9Hj45HrtyvufmaKlRuv69SpEz/hJZL1PmBwWw7TwC5wP65v4/ugap0j
+         c+Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7Vw6OT/X2I8phVFQgo2JGHgLRH7v5/W/41Zd3gPR0WQ=;
+        b=hgiQUNnMtBec5Tmc2MPN8p3yWDUomVYR9hWmWvJARYS6PYtvOz+rQtYeWr33TSTNWL
+         FQWTOzjNRat3HbNKeIY+bbaz+L0C8/ko3u6CtwwjH64foY1t1h0thtzdXse+1q9aSD9S
+         +kH5qVbasa7RykiOINhyQXVg/cGRTS/E8pDyn4iDS5B12oRVYI8O/aPR2TJZm5vOLANv
+         wJVWLGyLDwbPIxp2/u3nGWuppM6ek6OaPoM3Olmru4cvl1clfgYjT1uHPm8EoqMTGiN/
+         GJqLENaX1MGt28ccgFrDh5ChwNoJFgJ/cniWgGGshqoK6ZQwde/P1Ohpbas3W2AG5DMg
+         Ijww==
+X-Gm-Message-State: AOAM532AGWtyuxyzddWvVULGVQXPv2v3VhEQPskFx2WfiNhqhikJMXqa
+        unUfX2vn9gB5RLXFeoOBnmbT+Upyi73s3w4ycT4=
+X-Google-Smtp-Source: ABdhPJyIb/W1BamR0UOY29I7lyEAu4FI6g2E1KSYBxoSZlhdJpgAjaNtx8Id232/4Cl3Zgm38oDAvZ+oOwx47MkD/a8=
+X-Received: by 2002:a17:90b:1091:: with SMTP id gj17mr13869023pjb.129.1621677798237;
+ Sat, 22 May 2021 03:03:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1621665058.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <cover.1621665058.git.christophe.jaillet@wanadoo.fr>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 22 May 2021 13:03:01 +0300
+Message-ID: <CAHp75VfhKM9z_yMzux8F07tmukxZpJOCZXtFDEZenCjrU26_Sg@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] misc/pvpanic: Fix some errro handling path and
+ simplify code
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        pizhenwei@bytedance.com, Paolo Bonzini <pbonzini@redhat.com>,
+        bobo.shaobowang@huawei.com, linqiheng@huawei.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow perf script to find a script in the exec path.
+On Sat, May 22, 2021 at 9:54 AM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> This serie was previously sent in 2 parts, one for -pci.c and one for
+> -mmio.c.
+> Execpt the patch 5/5 which is new, the 4 first patches are the same as the
+> ones previously posted. Only the description has been slighly updated.
+>
+> Pacth 5/5 is a proposal to simplify code and turn 'pvpanic_probe()' into a
+> fully resource managed version.
+> This way callers don't need to do some clean-up on error in the
+> probe and on remove.
+>
+>
+> "Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>" was only
+> added on patch 1 and 3. I was unsure if his Reviewed-by was also related to
+> the s/GFP_ATOMIC/GFP_KERNEL/ of patch 2 et 4.
 
-Example:
+To be sure, always send a series with a cover letter :-)
+Yes, 2 and 4 were also included.
 
-Before:
+> Christophe JAILLET (5):
+>   misc/pvpanic-pci: Fix error handling in 'pvpanic_pci_probe()'
+>   misc/pvpanic-pci: Use GFP_KERNEL instead of GFP_ATOMIC
+>   misc/pvpanic-mmio: Fix error handling in 'pvpanic_mmio_probe()'
+>   misc/pvpanic-mmio: Use GFP_KERNEL instead of GFP_ATOMIC
+>   misc/pvpanic: Make 'pvpanic_probe()' resource managed
+>
+>  drivers/misc/pvpanic/pvpanic-mmio.c | 17 ++--------------
+>  drivers/misc/pvpanic/pvpanic-pci.c  | 22 ++++-----------------
+>  drivers/misc/pvpanic/pvpanic.c      | 30 ++++++++++++++---------------
+>  drivers/misc/pvpanic/pvpanic.h      |  3 +--
+>  4 files changed, 22 insertions(+), 50 deletions(-)
+>
+> --
+> 2.30.2
+>
 
- $ perf record -a -e intel_pt/branch=0/ sleep 0.1
- [ perf record: Woken up 1 times to write data ]
- [ perf record: Captured and wrote 0.954 MB perf.data ]
- $ perf script intel-pt-events.py 2>&1 | head -3
-   Error: Couldn't find script `intel-pt-events.py'
-   See perf script -l for available scripts.
- $ perf script -s intel-pt-events.py 2>&1 | head -3
- Can't open python script "intel-pt-events.py": No such file or directory
- $ perf script ~/libexec/perf-core/scripts/python/intel-pt-events.py 2>&1 | head -3
-   Error: Couldn't find script `/home/ahunter/libexec/perf-core/scripts/python/intel-pt-events.py'
-   See perf script -l for available scripts.
- $
 
-After:
-
- $ perf script intel-pt-events.py 2>&1 | head -3
- Intel PT Power Events and PTWRITE
-            perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
-            perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
- $ perf script -s intel-pt-events.py 2>&1 | head -3
- Intel PT Power Events and PTWRITE
-            perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
-            perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
- $ perf script ~/libexec/perf-core/scripts/python/intel-pt-events.py 2>&1 | head -3
- Intel PT Power Events and PTWRITE
-            perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
-            perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
- $
-
-Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
----
- tools/perf/builtin-script.c                   | 43 ++++++++++++++++++-
- .../util/scripting-engines/trace-event-perl.c |  1 +
- .../scripting-engines/trace-event-python.c    |  1 +
- tools/perf/util/trace-event-scripting.c       |  2 +
- tools/perf/util/trace-event.h                 |  1 +
- 5 files changed, 46 insertions(+), 2 deletions(-)
-
-diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-index 1280cbfad4db..2a062466c69f 100644
---- a/tools/perf/builtin-script.c
-+++ b/tools/perf/builtin-script.c
-@@ -2665,6 +2665,37 @@ static void list_available_languages(void)
- 	fprintf(stderr, "\n");
- }
- 
-+/* Find script file relative to current directory or exec path */
-+static char *find_script(const char *script)
-+{
-+	char path[PATH_MAX];
-+
-+	if (!scripting_ops) {
-+		const char *ext = strrchr(script, '.');
-+
-+		if (!ext)
-+			return NULL;
-+
-+		scripting_ops = script_spec__lookup(++ext);
-+		if (!scripting_ops)
-+			return NULL;
-+	}
-+
-+	if (access(script, R_OK)) {
-+		char *exec_path = get_argv_exec_path();
-+
-+		if (!exec_path)
-+			return NULL;
-+		snprintf(path, sizeof(path), "%s/scripts/%s/%s",
-+			 exec_path, scripting_ops->dirname, script);
-+		free(exec_path);
-+		script = path;
-+		if (access(script, R_OK))
-+			return NULL;
-+	}
-+	return strdup(script);
-+}
-+
- static int parse_scriptname(const struct option *opt __maybe_unused,
- 			    const char *str, int unset __maybe_unused)
- {
-@@ -2706,7 +2737,9 @@ static int parse_scriptname(const struct option *opt __maybe_unused,
- 		}
- 	}
- 
--	script_name = strdup(script);
-+	script_name = find_script(script);
-+	if (!script_name)
-+		script_name = strdup(script);
- 
- 	return 0;
- }
-@@ -3718,6 +3751,12 @@ int cmd_script(int argc, const char **argv)
- 		rep_script_path = get_script_path(argv[0], REPORT_SUFFIX);
- 
- 		if (!rec_script_path && !rep_script_path) {
-+			script_name = find_script(argv[0]);
-+			if (script_name) {
-+				argc -= 1;
-+				argv += 1;
-+				goto script_found;
-+			}
- 			usage_with_options_msg(script_usage, options,
- 				"Couldn't find script `%s'\n\n See perf"
- 				" script -l for available scripts.\n", argv[0]);
-@@ -3810,7 +3849,7 @@ int cmd_script(int argc, const char **argv)
- 		free(__argv);
- 		exit(-1);
- 	}
--
-+script_found:
- 	if (rec_script_path)
- 		script_path = rec_script_path;
- 	if (rep_script_path)
-diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
-index 0e608a5ef599..865d310968fb 100644
---- a/tools/perf/util/scripting-engines/trace-event-perl.c
-+++ b/tools/perf/util/scripting-engines/trace-event-perl.c
-@@ -750,6 +750,7 @@ sub print_backtrace\n\
- 
- struct scripting_ops perl_scripting_ops = {
- 	.name = "Perl",
-+	.dirname = "perl",
- 	.start_script = perl_start_script,
- 	.flush_script = perl_flush_script,
- 	.stop_script = perl_stop_script,
-diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-index 4e4aa4c97ac5..db8f24341406 100644
---- a/tools/perf/util/scripting-engines/trace-event-python.c
-+++ b/tools/perf/util/scripting-engines/trace-event-python.c
-@@ -1876,6 +1876,7 @@ static int python_generate_script(struct tep_handle *pevent, const char *outfile
- 
- struct scripting_ops python_scripting_ops = {
- 	.name			= "Python",
-+	.dirname		= "python",
- 	.start_script		= python_start_script,
- 	.flush_script		= python_flush_script,
- 	.stop_script		= python_stop_script,
-diff --git a/tools/perf/util/trace-event-scripting.c b/tools/perf/util/trace-event-scripting.c
-index 714581b0de65..721f38c0d5cf 100644
---- a/tools/perf/util/trace-event-scripting.c
-+++ b/tools/perf/util/trace-event-scripting.c
-@@ -63,6 +63,7 @@ static int python_generate_script_unsupported(struct tep_handle *pevent
- 
- struct scripting_ops python_scripting_unsupported_ops = {
- 	.name = "Python",
-+	.dirname = "python",
- 	.start_script = python_start_script_unsupported,
- 	.flush_script = flush_script_unsupported,
- 	.stop_script = stop_script_unsupported,
-@@ -126,6 +127,7 @@ static int perl_generate_script_unsupported(struct tep_handle *pevent
- 
- struct scripting_ops perl_scripting_unsupported_ops = {
- 	.name = "Perl",
-+	.dirname = "perf",
- 	.start_script = perl_start_script_unsupported,
- 	.flush_script = flush_script_unsupported,
- 	.stop_script = stop_script_unsupported,
-diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
-index 72fdf2a3577c..39fb39ed6612 100644
---- a/tools/perf/util/trace-event.h
-+++ b/tools/perf/util/trace-event.h
-@@ -71,6 +71,7 @@ struct perf_stat_config;
- 
- struct scripting_ops {
- 	const char *name;
-+	const char *dirname; /* For script path .../scripts/<dirname>/... */
- 	int (*start_script) (const char *script, int argc, const char **argv);
- 	int (*flush_script) (void);
- 	int (*stop_script) (void);
 -- 
-2.17.1
-
+With Best Regards,
+Andy Shevchenko
