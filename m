@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6151B38D626
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 16:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAD4C38D62A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 16:17:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhEVOSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 10:18:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47216 "EHLO
+        id S231228AbhEVOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 10:19:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230489AbhEVOSV (ORCPT
+        with ESMTP id S230489AbhEVOTJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 10:18:21 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01606C061574;
-        Sat, 22 May 2021 07:16:55 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id q7so32569921lfr.6;
-        Sat, 22 May 2021 07:16:55 -0700 (PDT)
+        Sat, 22 May 2021 10:19:09 -0400
+Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3628C061574;
+        Sat, 22 May 2021 07:17:43 -0700 (PDT)
+Received: by mail-vs1-xe2e.google.com with SMTP id n1so10427904vsr.10;
+        Sat, 22 May 2021 07:17:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=fH6pRt4HIVRgmGCmNbHBz0wD2RZsVq0fQhpWNY78NSs=;
-        b=ourtQDkogRIT7YryMxBVsoTOxpkReIvvLDFHn2m56TTRELvKpj0PZnXgXCcoqsmiLk
-         yKhJboZ1AjQ0s+YJpqtgwzJQamNb6GXEX5SZx39usBBLaEleXVVUKikMyb7WcNueeUT7
-         llbyYGnY3+yd3tXUzEhZbZNvx/UjPWHD0EP6dysiUBmDl1Ihg0Ap/o/kBG9oeqHVEKQ2
-         kdIbn/Xlaj53Ar8IyjWf+Z2zD+UlzfV+30Zd4f/O07G/oHzrs9w/kncQ9FFTgRpiHLUs
-         Gj870cVQdoXDCK7Xs0CeueMnpTqq2E8+cBM1uXHqMzHZ/WakPyzacWygViElxPQ/KBCS
-         nk7A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=xSWtMOuMI8vQMB1oMZWkSTJ4xXWh7+CmKEGeISezsYQ=;
+        b=M9WMdO0l7xJvZTrvqFEAttagrcId4kIInnxYyLNkn0Fx4CBajAOWYWfkpTXVMvE9Um
+         xnjRoZ2dhH4CJMeifnOOpqc6/hlbGoxXPNvWAeKeMzN9FISYRtiHv3RL/lrfOk5ri+SI
+         Of/qUL9+eEg3MXFjYqJRiAHv1ukhB1rtI9HEOO1u54SIRlY7fPNK050ZNxvjVnGalJ0O
+         fUsnyoJGZEyFrVm+pwpPZY7xmhu2kVVymH0qh8YBDxdkFAxuU5a1eCeCh1iDbDOO1C0A
+         o3HbLN60t4DiQOD5dlx/K8pmXEv4lOm5IxnyobNRH53RoAHs+Cf0h0vC2LBQcSZ+t+ce
+         vRXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fH6pRt4HIVRgmGCmNbHBz0wD2RZsVq0fQhpWNY78NSs=;
-        b=ApFqhhNRi2cj5D6kNfs6KdBpZGjvugwrTcj4oZk37tE+bzvWjhUhWw69WFG81rs1GI
-         7F81XKaTLe6qKp8PD/TiXUeEruwxuDlWCLmjEl8RIfrsHxoVYr3OokiV5Li1Oor+PhiN
-         RfozZ+1DMsIKSC40RhVgcHuQsK+nWNjT7uYJlylwXBMJilKDFz2gJptX4U03DFH8hIyP
-         To5+Uf9K6MM1aOjmbZ9qndJNwzliyENTl/wJhIwwcAseuglTEARTRXvjlB7gOAG7Q+Lp
-         lqTLnhbSRPKgaMXkCveSK3jlbjDbPmvulyl5DUcTfQNO905eX0OSgCsQuY70U1a9Z4HJ
-         wxXg==
-X-Gm-Message-State: AOAM533yQukMBUTOK9Fu776b1KqIFESsfeKE71UlNJjtc705vgGqK7hW
-        3vciuvoTLXSH97D4EQ1CtuIiXuYJaag=
-X-Google-Smtp-Source: ABdhPJwLtfKyAV8wG+bybU7/iQ5v+ivaYOBPbhjRjLfZmJ6Fxwjigll/Rd/JFA0z3QSslOdHNdPaTA==
-X-Received: by 2002:a19:c107:: with SMTP id r7mr5326241lff.247.1621693013355;
-        Sat, 22 May 2021 07:16:53 -0700 (PDT)
-Received: from [192.168.2.145] (109-252-193-83.dynamic.spd-mgts.ru. [109.252.193.83])
-        by smtp.googlemail.com with ESMTPSA id w5sm932721lfk.2.2021.05.22.07.16.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 May 2021 07:16:52 -0700 (PDT)
-Subject: Re: [PATCH -next] staging: media: tegra-vde: add missing error return
- code in tegra_vde_probe()
-To:     Yang Yingliang <yangyingliang@huawei.com>,
-        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-tegra@vger.kernel.org, linux-media@vger.kernel.org,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-References: <20210522031911.129361-1-yangyingliang@huawei.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <bc08636a-8f0f-772c-7df0-ec6459cc205d@gmail.com>
-Date:   Sat, 22 May 2021 17:16:52 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=xSWtMOuMI8vQMB1oMZWkSTJ4xXWh7+CmKEGeISezsYQ=;
+        b=kua5FGnxwC/XGcHRZEaDkKNG1VpXnGD+jMIYeUJtLKA4Z6DbXbGPyOp4SyqpgnwQWj
+         OMffW1Fy5zXXC3YLkqIhV7dQbFuVs6uj9tCAwE8fxyaCgOQMxdkZTE2TiT8sCHlariIA
+         kXWW8peXL4Bm82e4WyUleibKS+dgONQU0K8rBg3OxPuIcJodGxlG7xcSOvPuuS2MbQ9y
+         eajmIYUqLmvA6jtN7pt0fYu4ibeCAzccjFLlZXp5ACs6yNjB40Oq+rHVNGaB8ctR+40M
+         Wi/satgsK4+I0xKPdvRrlvo9Ao8C0zagdtErRaM41HtlMtmxx1k9dMfRqYIKXMXhSUeX
+         vQFg==
+X-Gm-Message-State: AOAM530sAYKz89Ej4E5ZM5DmeBD9lzf69QtRxgIBK2jYzpglt9uLI/wd
+        laRYfMF2cJR48gjMGgg4ZgCg/VSEVit2li0yJUU=
+X-Google-Smtp-Source: ABdhPJwWlsEn16IFgSd49ZQ6IoHaYRJBkGbYV8eEYt61GVVRAcx0AVj7DpHHblOmWqy3B3Rw/JRLlhtWz4/AL+4SYA4=
+X-Received: by 2002:a05:6102:828:: with SMTP id k8mr15574282vsb.52.1621693062972;
+ Sat, 22 May 2021 07:17:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210522031911.129361-1-yangyingliang@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20210521020051.196434-1-hyc.lee@gmail.com> <87o8d4qxyi.fsf@suse.com>
+In-Reply-To: <87o8d4qxyi.fsf@suse.com>
+From:   Hyunchul Lee <hyc.lee@gmail.com>
+Date:   Sat, 22 May 2021 23:17:31 +0900
+Message-ID: <CANFS6bb4AsWjkGCo+pKni_QSCF8M6vFvNiLs--K+2v=zOJ5T_A@mail.gmail.com>
+Subject: Re: [PATCH v2] cifs: decoding negTokenInit with generic ASN1 decoder
+To:     =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>
+Cc:     Steve French <sfrench@samba.org>,
+        David Howells <dhowells@redhat.com>, kernel-team@lge.com,
+        Namjae Jeon <linkinjeon@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-cifs <linux-cifs@vger.kernel.org>,
+        samba-technical@lists.samba.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-22.05.2021 06:19, Yang Yingliang пишет:
-> Add missing return error code when pm_runtime_resume_and_get() failed.
-> 
-> Fixes: dc8276b78917 ("staging: media: tegra-vde: use pm_runtime_resume_and_get()")
-> Reported-by: Hulk Robot <hulkci@huawei.com>
-> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
-> ---
->  drivers/staging/media/tegra-vde/vde.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/tegra-vde/vde.c b/drivers/staging/media/tegra-vde/vde.c
-> index e025b69776f2..ed4c1250b303 100644
-> --- a/drivers/staging/media/tegra-vde/vde.c
-> +++ b/drivers/staging/media/tegra-vde/vde.c
-> @@ -1071,7 +1071,8 @@ static int tegra_vde_probe(struct platform_device *pdev)
->  	 * power-cycle it in order to put hardware into a predictable lower
->  	 * power state.
->  	 */
-> -	if (pm_runtime_resume_and_get(dev) < 0)
-> +	err = pm_runtime_resume_and_get(dev);
-> +	if (err)
->  		goto err_pm_runtime;
->  
->  	pm_runtime_put(dev);
-> 
+Hi Aur=C3=A9lien,
 
-Hello Yang,
+2021=EB=85=84 5=EC=9B=94 21=EC=9D=BC (=EA=B8=88) =EC=98=A4=ED=9B=84 5:43, A=
+ur=C3=A9lien Aptel <aaptel@suse.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> Hi Hyunchul,
+>
+> The existence of multiple ASN1 decoder has been a regular complaint,
+> this looks nice. Have you tested it against any servers?
+>
 
-Thank you for the patch. The problem was already reported by Dan
-Carpenter to the original patch, apparently Mauro missed it.
+Yes, I have tested this patch against Windows 10, Samba 4.11.6, and cifsd.
+If you have trouble,  you need to rebuild the kernel due to rebuilding
+the OID registry.
 
-Reviewed-by: Dmitry Osipenko <digetx@gmail.com>
+> I think we need to make sure it works with Windows Server (including
+> increased ones with the increased security flag, Steve do you remember
+> the name of that flag?) and Samba at least.
+>
+
+If you let me know the option, I will try.
+
+> There is the SDC EMEA plugfest coming up, might be a good time to try it
+> out against other vendors as well.
+>
+
+Yes, but I am not gonna to attend the plugfest because of personal reasons.
+Is there any other way to test this against other vendors?
+
+Thanks,
+Hyunchul
+
+> Cheers,
+> --
+> Aur=C3=A9lien Aptel / SUSE Labs Samba Team
+> GPG: 1839 CB5F 9F5B FB9B AA97  8C99 03C8 A49B 521B D5D3
+> SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 N=C3=BCrnberg,=
+ DE
+> GF: Felix Imend=C3=B6rffer, Mary Higgins, Sri Rasiah HRB 247165 (AG M=C3=
+=BCnchen)
+>
