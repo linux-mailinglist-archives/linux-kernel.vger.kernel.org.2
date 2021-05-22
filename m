@@ -2,87 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02D6338D45B
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 10:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74D3B38D45D
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 10:07:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230101AbhEVIDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 04:03:51 -0400
-Received: from m32-153.88.com ([43.250.32.153]:33783 "EHLO email.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230000AbhEVIDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 04:03:50 -0400
-X-Greylist: delayed 18355 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 May 2021 04:03:49 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
-        s=dkim; h=From:To:Date; bh=hmNgrgPBhr7LhurXuqhMudBbTKWzo/FsN2E5v
-        l3sG/U=; b=MTVhAQI0tophUwrlDGiLkM6EMntqPCiAykvvHTFtlRR2uvoL2L/H3
-        GA6fILesPpbwz78g2KHR0J8ZGKae8T8jth7GOGjDRB+7lndxqounwRwDa2V6EJ7d
-        zLyHtrStooSQoRxAExNZU0uTAzgzjmqp2MWHpV+fFV49pdI0O1xDx8=
-Received: from localhost.localdomain (unknown [113.251.13.109])
-        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgDXJViIuqhg13hBAA--.9385S2;
-        Sat, 22 May 2021 16:02:17 +0800 (CST)
-From:   Hu Haowen <src.res@email.cn>
-To:     alexs@kernel.org, corbet@lwn.net, siyanteng@loongson.cn,
-        bobwxc@email.cn, jaixun.yang@flygoat.com
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hu Haowen <src.res@email.cn>
-Subject: [PATCH] docs/zh_CN: Add Chinese translations for new contents
-Date:   Sat, 22 May 2021 16:02:14 +0800
-Message-Id: <20210522080214.88050-1-src.res@email.cn>
-X-Mailer: git-send-email 2.25.1
+        id S230132AbhEVIIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 04:08:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230000AbhEVII3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 04:08:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C858D61163;
+        Sat, 22 May 2021 08:07:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621670824;
+        bh=e9h3YH6hGEUUkxs9Amz7GAdN45jwweq7ph0QM0vrHII=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Vu2u7oxUNchdMCeACgQW37z9BPHA3nkeY+krpkH7p590u+MuNlbEI77wRCGrvsPnB
+         FrC06yq7YNqQ0IXzZYUrgrs9Yp+7GzjGBEVH0SlwaJ6Zkgar3WG+NMtgZbOOHrlKlj
+         gLIbNTaw8Xr2FwxRBZRwqDMgPNTdhVsJRStUaVUjy/x4RYEqPAbR1l/HFv/6BaryiX
+         VJEPm/LMKg3bQA+YMpky1/6xynYb7cQQiEFpxdNF7gHRCULbWNYqQuflNpcN6sTyfc
+         lHEKA3eM7zYQRIlvSQ5wQWFfwIngBctT4+AzASjRsDWh7+5g7gyjknq5gKvqXY/EuT
+         hwmjIgpzKHrwA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan@kernel.org>)
+        id 1lkMf2-0007wn-PB; Sat, 22 May 2021 10:07:05 +0200
+Date:   Sat, 22 May 2021 10:07:04 +0200
+From:   Johan Hovold <johan@kernel.org>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Hayes Wang <hayeswang@realtek.com>, kuba@kernel.org,
+        davem@davemloft.net, netdev@vger.kernel.org, nic_swsd@realtek.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
+Subject: Re: [PATCH net v2] r8152: check the informaton of the device
+Message-ID: <YKi7qEWobOLRyoU8@hovoldconsulting.com>
+References: <1394712342-15778-363-Taiwan-albertk@realtek.com>
+ <1394712342-15778-364-Taiwan-albertk@realtek.com>
+ <YKizqoNIVFo+weI9@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: GiKnCgDXJViIuqhg13hBAA--.9385S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1rZr4kKw1fKr15Xw1kKrg_yoW8AF4fp3
-        Wa9r9rKanrCrnFvrn7KryUZF15CFWxua4UJ3s7ZF95ZF1rAryvyFsrKryrWr95Wry8ta4r
-        tFsxtryDXrWjywUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUgE1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Jr0_Jr4l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4UJr1UMcvjeVCFs4IE7xkE
-        bVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67
-        AK6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC
-        6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
-        C2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_
-        JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
-        WUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIY
-        CTnIWIevJa73UjIFyTuYvjfUxZjjDUUUU
-X-Originating-IP: [113.251.13.109]
-X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YKizqoNIVFo+weI9@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-A document updated in commit 1c31f0b67cfa6d4cd41d ("module: add printk
-formats to add module build ID to stacktraces"), hence add Chinese
-translations for it.
+On Sat, May 22, 2021 at 09:32:58AM +0200, Greg Kroah-Hartman wrote:
+> On Sat, May 22, 2021 at 01:24:54PM +0800, Hayes Wang wrote:
+> > Verify some fields of the USB descriptor to make sure the driver
+> > could be used by the device.
+> > 
+> > Besides, remove the check of endpoint number in rtl8152_probe().
+> > It has been done in rtl_check_vendor_ok().
+> > 
+> > BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
+> > Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
+> > Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
+> > Signed-off-by: Hayes Wang <hayeswang@realtek.com>
+> > ---
+> > v2:
+> > Use usb_find_common_endpoints() and usb_endpoint_num() to replace original
+> > code.
+> 
+> Much better, just some tiny grammer changes below:
+> 
+> > 
+> > remove the check of endpoint number in rtl8152_probe(). It has been done
+> > in rtl_check_vendor_ok().
+> > 
+> >  drivers/net/usb/r8152.c | 44 ++++++++++++++++++++++++++++++++++++-----
+> >  1 file changed, 39 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+> > index 136ea06540ff..6e5230d6c721 100644
+> > --- a/drivers/net/usb/r8152.c
+> > +++ b/drivers/net/usb/r8152.c
+> > @@ -8107,6 +8107,39 @@ static void r8156b_init(struct r8152 *tp)
+> >  	tp->coalesce = 15000;	/* 15 us */
+> >  }
+> >  
+> > +static bool rtl_check_vendor_ok(struct usb_interface *intf)
+> > +{
+> > +	struct usb_host_interface *alt = intf->cur_altsetting;
+> > +	struct usb_endpoint_descriptor *in, *out, *intr;
+> > +
+> > +	if (alt->desc.bNumEndpoints < 3) {
+> > +		dev_err(&intf->dev, "Unexpected bNumEndpoints %d\n", alt->desc.bNumEndpoints);
+> > +		return false;
+> > +	}
 
-Signed-off-by: Hu Haowen <src.res@email.cn>
----
- .../translations/zh_CN/core-api/printk-formats.rst       | 9 +++++++++
- 1 file changed, 9 insertions(+)
+This check is now redundant and can be removed.
 
-diff --git a/Documentation/translations/zh_CN/core-api/printk-formats.rst b/Documentation/translations/zh_CN/core-api/printk-formats.rst
-index 624a090e6ee5..116abc046bfe 100644
---- a/Documentation/translations/zh_CN/core-api/printk-formats.rst
-+++ b/Documentation/translations/zh_CN/core-api/printk-formats.rst
-@@ -122,6 +122,15 @@ seq_printf()，而不是printk()）由用户空间进程读取，使用下面描
- ``B`` 占位符的结果是带有偏移量的符号名，在打印堆栈回溯时应该使用。占位符将考虑编译器优化
- 的影响，当使用尾部调用并使用noreturn GCC属性标记时，可能会发生这种优化。
- 
-+如果占位符是在一个模块之中，可在占位符末尾添加 ``b`` 以在符号名后打印模块名称和可选构建ID。
-+
-+::
-+        %pS     versatile_init+0x0/0x110 [module_name]
-+        %pSb    versatile_init+0x0/0x110 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
-+        %pSRb   versatile_init+0x9/0x110 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
-+                (with __builtin_extract_return_addr() translation)
-+        %pBb    prev_fn_of_versatile_init+0x88/0x88 [module_name ed5019fdf5e53be37cb1ba7899292d7e143b259e]
-+
- 来自BPF / tracing追踪的探查指针
- ----------------------------------
- 
--- 
-2.25.1
+> > +
+> > +	if (usb_find_common_endpoints(alt, &in, &out, &intr, NULL) < 0) {
+> > +		dev_err(&intf->dev, "Miss Endpoints\n");
+> 
+> "Miss" feels ackward, how about "Invalid number of endpoints"?
 
+The helper also checks the type and direction so perhaps something like
+"expected endpoints not found" (or just "missing endpoints") which is
+more precise.
+
+> > +		return false;
+> > +	}
+> > +
+> > +	if (usb_endpoint_num(in) != 1) {
+> > +		dev_err(&intf->dev, "Invalid Rx Endpoint\n");
+> 
+> "Invalid number of Rx endpoints"
+
+Here it is the endpoint number (address) that is being checked so
+"number of" would be wrong.
+
+That said, perhaps none of these checks are even needed a bit depending
+on how the driver is implemented. That is, if it hardcodes the endpoint
+addresses or uses the result from usb_find_common_endpoints() above
+(which I realise now that it does not so these checks are probably still
+needed).
+
+> > +		return false;
+> > +	}
+
+Johan
