@@ -2,116 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 841B238D436
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 09:33:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 24C8738D446
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 09:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbhEVHe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 03:34:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33644 "EHLO mail.kernel.org"
+        id S230109AbhEVHuD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 03:50:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34626 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229979AbhEVHeZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 03:34:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9564E611AD;
-        Sat, 22 May 2021 07:33:00 +0000 (UTC)
+        id S229990AbhEVHuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 03:50:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 28F3B611ED;
+        Sat, 22 May 2021 07:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621668781;
-        bh=pMNNxW8vCFw1cZVrNSj8D7OeX7/L/+sT0vTQph+ZiLs=;
+        s=korg; t=1621669716;
+        bh=ItPVf32V/JWLFVBmSIyXUA7rG+RBAb+2CJPBKMiVZxs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Lqs3AhMCG8hydm+sx5nHR4mCKxgscvDr1LDWkz28dgne9h8B2IvXha9gskQhex1Gc
-         x4un2MLaschALmF8V6114H5ghecEE8I8ycCtnfaSwrKyFot79fwrykra52NpaoQS0N
-         GOmWUE/yT5mjoOqPbAVku6jgTJLe87xbjZRw+ItQ=
-Date:   Sat, 22 May 2021 09:32:58 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Hayes Wang <hayeswang@realtek.com>
-Cc:     kuba@kernel.org, davem@davemloft.net, netdev@vger.kernel.org,
-        nic_swsd@realtek.com, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-Subject: Re: [PATCH net v2] r8152: check the informaton of the device
-Message-ID: <YKizqoNIVFo+weI9@kroah.com>
-References: <1394712342-15778-363-Taiwan-albertk@realtek.com>
- <1394712342-15778-364-Taiwan-albertk@realtek.com>
+        b=iEm6eeg5BkcM1lgPpCd68Ryv1MiH0N6mNy45DPSn+JHHkXJi3DZLeWvF5zXAWrmaU
+         zpsF5frtYhW31/tAODKZrIMx7oLj4raJwSlhIhYX/AnyF03n6R8XvQcgVnjvnRYEKD
+         Ya1EmiP88mP8eDKMv4Nlt25L/1kXpPFFCcajRaPo=
+Date:   Sat, 22 May 2021 09:48:34 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Luis Chamberlain <mcgrof@kernel.org>
+Cc:     Minchan Kim <minchan@kernel.org>, Hannes Reinecke <hare@suse.de>,
+        Douglas Gilbert <dgilbert@interlog.com>, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com, axboe@kernel.dk,
+        mbenes@suse.com, jpoimboe@redhat.com, tglx@linutronix.de,
+        keescook@chromium.org, jikos@kernel.org, rostedt@goodmis.org,
+        peterz@infradead.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 0/4] zram: fix few sysfs races
+Message-ID: <YKi3UpQm0HUxJi87@kroah.com>
+References: <20210423011108.11988-1-mcgrof@kernel.org>
+ <YKVwZVcbZBNXUpKm@google.com>
+ <20210519202023.GU4332@42.do-not-panic.com>
+ <YKgRsCzwp2O2mYcp@kroah.com>
+ <20210521201618.GX4332@42.do-not-panic.com>
+ <YKgbzO0AkYN4J7Ye@kroah.com>
+ <20210521210817.GY4332@42.do-not-panic.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1394712342-15778-364-Taiwan-albertk@realtek.com>
+In-Reply-To: <20210521210817.GY4332@42.do-not-panic.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 01:24:54PM +0800, Hayes Wang wrote:
-> Verify some fields of the USB descriptor to make sure the driver
-> could be used by the device.
+On Fri, May 21, 2021 at 09:08:17PM +0000, Luis Chamberlain wrote:
+> On Fri, May 21, 2021 at 10:45:00PM +0200, Greg Kroah-Hartman wrote:
+> > On Fri, May 21, 2021 at 08:16:18PM +0000, Luis Chamberlain wrote:
+> > > On Fri, May 21, 2021 at 10:01:52PM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, May 19, 2021 at 08:20:23PM +0000, Luis Chamberlain wrote:
+> > > > > Greg,
+> > > > > 
+> > > > > your feedback would be appreciated here.
+> > > > 
+> > > > Appreciated where?  This is a zram patchset, what do I need to mess with
+> > > > it for?
+> > > 
+> > > This patchset has 2 issues which I noted in the last series that are
+> > > generic, and could best be dealt with on sysfs, and suggested
+> > > how this could actually be dealt with on sysfs / kernfs.
+> > > 
+> > > > > Greg, can you comment on technical levels why a general core fix is not
+> > > > > desirable upstream for those two issues?
+> > > > 
+> > > > What issues exactly?
+> > > 
+> > > When I suggested the generic way to fix this your main argument against
+> > > a generic solution was that we don't support module removal. Given that
+> > > argument did not seem to hold any water it begs the question if you
+> > > still would rather not see this fixed in sysfs / kernfs.
+> > > 
+> > > If you however are more open to it now, I can instead take that work, and
+> > > send a proper patch for review.
+> > 
+> > I looked at the last patch here and I really do not see the issue.
+> > 
+> > In order for the module to be removed, zram_exit() has to return, right?
 > 
-> Besides, remove the check of endpoint number in rtl8152_probe().
-> It has been done in rtl_check_vendor_ok().
+> Yes, but the race is for when a module removal is ongoing, in other
+> words, it has not yet completed, and at the same time we race touching
+> sysfs files.
 > 
-> BugLink: https://syzkaller.appspot.com/bug?id=912c9c373656996801b4de61f1e3cb326fe940aa
-> Reported-by: syzbot+95afd23673f5dd295c57@syzkaller.appspotmail.com
-> Fixes: c2198943e33b ("r8152: search the configuration of vendor mode")
-> Signed-off-by: Hayes Wang <hayeswang@realtek.com>
-> ---
-> v2:
-> Use usb_find_common_endpoints() and usb_endpoint_num() to replace original
-> code.
+> > So how can a show/store function in zram_drv.c be called after
+> > destroy_devices() returns?
+> 
+> The issue can come up if we have something poke at the sysfs files *while* a
+> removal is happening.
 
-Much better, just some tiny grammer changes below:
+And have you seen this in the real world?  I keep asking this as module
+removal is not an automated process so what triggers this?
 
+> > The changelog text in patch 4/4 is odd, destroy_devices() shouldn't be
+> > racing with anything as devices have reference counts in order to
+> > protect this type of thing from happening, right?
 > 
-> remove the check of endpoint number in rtl8152_probe(). It has been done
-> in rtl_check_vendor_ok().
+> The race is beyond the scope of the driver in that the sysfs file can be
+> poked at while a removal is ongoing. After that consider the possible
+> races that can happen.
 > 
->  drivers/net/usb/r8152.c | 44 ++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 39 insertions(+), 5 deletions(-)
+> > How can a store
+> > function be called when a device is somehow removed from memory at the
+> > same time?  Don't we properly incremement/decrement the device
+> > structure's reference count?  If not, wouldn't that be the simplest
+> > solution here?
 > 
-> diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
-> index 136ea06540ff..6e5230d6c721 100644
-> --- a/drivers/net/usb/r8152.c
-> +++ b/drivers/net/usb/r8152.c
-> @@ -8107,6 +8107,39 @@ static void r8156b_init(struct r8152 *tp)
->  	tp->coalesce = 15000;	/* 15 us */
->  }
+> In this case the proper refcounting has to be down on the type of
+> device, and so bdgrab(dev_to_bdev(dev)), because otherwise the pointer
+> for the zram device is just not valid, so we can't do sanity checks
+> on the sysfs calls for the zram device as the pointer can be invalid.
+> To validate the pointer we must do refcounting below a layer. In this
+> case for a disk.
+> 
+> And so genericaly this would be:
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 4a8bf8cda52b..7c897e3f4135 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -29,6 +29,7 @@
+>  #include <linux/sched/mm.h>
+>  #include <linux/sysfs.h>
+>  #include <linux/dma-map-ops.h> /* for dma_default_coherent */
+> +#include <linux/blkdev.h>
 >  
-> +static bool rtl_check_vendor_ok(struct usb_interface *intf)
+>  #include "base.h"
+>  #include "power/power.h"
+> @@ -1988,11 +1989,20 @@ static inline int device_is_not_partition(struct device *dev)
+>  {
+>  	return !(dev->type == &part_type);
+>  }
+> +static inline bool device_is_disk(struct device *dev)
 > +{
-> +	struct usb_host_interface *alt = intf->cur_altsetting;
-> +	struct usb_endpoint_descriptor *in, *out, *intr;
+> +	return (dev->type == &disk_type);
+> +}
+>  #else
+>  static inline int device_is_not_partition(struct device *dev)
+>  {
+>  	return 1;
+>  }
 > +
-> +	if (alt->desc.bNumEndpoints < 3) {
-> +		dev_err(&intf->dev, "Unexpected bNumEndpoints %d\n", alt->desc.bNumEndpoints);
-> +		return false;
-> +	}
-> +
-> +	if (usb_find_common_endpoints(alt, &in, &out, &intr, NULL) < 0) {
-> +		dev_err(&intf->dev, "Miss Endpoints\n");
+> +static inline bool device_is_disk(struct device *dev)
+> +{
+> +	return false;
+> +}
+>  #endif
+>  
+>  static int
+> @@ -2037,6 +2047,19 @@ const char *dev_driver_string(const struct device *dev)
+>  }
+>  EXPORT_SYMBOL(dev_driver_string);
+>  
+> +static int dev_type_get(struct device *dev)
+> +{
+> +	if (device_is_disk(dev))
+> +		return !!bdgrab(dev_to_bdev(dev));
+> +	return 1;
+> +}
 
-"Miss" feels ackward, how about "Invalid number of endpoints"?
+Why do you feel that block devices are somehow more "special" here?
 
-> +		return false;
-> +	}
-> +
-> +	if (usb_endpoint_num(in) != 1) {
-> +		dev_err(&intf->dev, "Invalid Rx Endpoint\n");
+They are not, either this is "broken" for everyone, or it works for
+everyone, don't special-case one tiny class of devices for unknown
+reasons.
 
-"Invalid number of Rx endpoints"
+Your change causes another problem, if a sysfs file has show/store
+happening, the reference count will always be bumped and so the module
+would NOT be able to be freed.  That looks like a lovely DoS that any
+user could cause, right?
 
-> +		return false;
-> +	}
-> +
-> +	if (usb_endpoint_num(out) != 2) {
-> +		dev_err(&intf->dev, "Invalid Tx Endpoint\n");
+In sleeping on this the "correct" solution is to grab the bus lock (or
+ktype lock) for the device during show/store so that the "delete device"
+process can not race with it.  Also let's make sure that the kref of the
+kobject is being properly bumped during show/store as well, I don't
+think that's happening which isn't a good thing no matter what
+(different type of bug).
 
-"Invalid number of RX endpoints"
+If that lock addition ends up showing up in benchmarks, then we can
+always move it to rcu.
 
-> +		return false;
-> +	}
-> +
-> +	if (usb_endpoint_num(intr) != 3) {
-> +		dev_err(&intf->dev, "Invalid interrupt Endpoint\n");
+So in conclusion, the "correct" thing here seems to be two independant
+things:
+	- make sure the reference count of the kobject is properly
+	  incremented during show/store callbacks
+	- grab the kobject's type/bus/whatever lock during show/store so
+	  that it can not race with deleting the device.
 
-"Invalid number of interrupt endpoints"
+No bus/type should be special cased here, block devices are not special
+by any means.
 
-But really, this doesn't matter, all is good if you don't want to change
-this :)
+And don't mess with module reference counts, that way lies madness.  We
+want to lock data, not code :)
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+thanks,
+
+greg k-h
