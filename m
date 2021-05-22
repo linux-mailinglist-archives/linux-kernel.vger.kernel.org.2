@@ -2,101 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBDA938D428
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 09:21:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4638038D42B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 09:26:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhEVHW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 03:22:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41112 "EHLO
+        id S230048AbhEVH1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 03:27:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229951AbhEVHW6 (ORCPT
+        with ESMTP id S229914AbhEVH1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 03:22:58 -0400
-Received: from mout-u-107.mailbox.org (mout-u-107.mailbox.org [IPv6:2001:67c:2050:1::465:107])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A86BC061574;
-        Sat, 22 May 2021 00:21:31 -0700 (PDT)
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-u-107.mailbox.org (Postfix) with ESMTPS id 4FnFJn12krzQk1P;
-        Sat, 22 May 2021 09:21:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by spamfilter01.heinlein-hosting.de (spamfilter01.heinlein-hosting.de [80.241.56.115]) (amavisd-new, port 10030)
-        with ESMTP id ZH0Aaqzj-JRA; Sat, 22 May 2021 09:21:26 +0200 (CEST)
-Subject: Re: [PATCH 1/4] DMA: ALTERA_MSGDMA depends on HAS_IOMEM
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        Sinan Kaya <okaya@codeaurora.org>,
-        Green Wan <green.wan@sifive.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Tejas Upadhyay <tejasu@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        kernel test robot <lkp@intel.com>
-References: <20210522021313.16405-1-rdunlap@infradead.org>
- <20210522021313.16405-2-rdunlap@infradead.org>
-From:   Stefan Roese <sr@denx.de>
-Message-ID: <4fde705b-6d57-ba73-e7d6-63beb690117e@denx.de>
-Date:   Sat, 22 May 2021 09:21:24 +0200
+        Sat, 22 May 2021 03:27:39 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE34C061574;
+        Sat, 22 May 2021 00:26:15 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id z130so12251646wmg.2;
+        Sat, 22 May 2021 00:26:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Oye/WdclhJDwP8mPkPCr9y4H1Z7zAK3xEJR1qvBeaso=;
+        b=GDjzLdq47HCYuvEWQ4b6OsetImXmuisYOOQ/Cs2rqsaU5xIMzazg2ZyVBwVtTwtfAc
+         TY9bP0852THvyYYutJ6qFm3gMjrUSVc87+YlBbo2Ev63mhbk7tnS4QfU1QvM3roGOSjF
+         v6wxwxgH3o7gAah1WiDaXISCEqUFjNPfc9GHvHkdg6TKZB9lbg7QiOlyugIg3ZJFVDv/
+         MVPgSrdfhuw+XDjQHV9xlL4bOqWmnM+1/w+e6/1r3+0YPuTPZfaj8+cURvmNIjcwM193
+         LAyuN5P2YjXc1TR6UUyBwk/M7GJ7oOUDlLXDNLvzU1BwvuSchXJoDEL+OAn/Ipn910e4
+         ZnJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Oye/WdclhJDwP8mPkPCr9y4H1Z7zAK3xEJR1qvBeaso=;
+        b=Xvl3L8RaLowmfdeRGpvNjv30ZTSbg1hu+b5oYMXVylLsvWZQmMpvGVK5JiZ/v5ROay
+         ymgc9L54MmFPkz7l9VKSS/NJV25n3zohGg6liDnBCXFGXyRbjaXY382Ifa7TdafAi42c
+         JdhbU1QlVpq++FFHveVWG39f0lrSD3Jeuf8GzMqil6aLNqHTX9OmCQrTi44ZgGbEs5OO
+         4lXJeynF+H59kXYgzxO8uD6Q0Zf43iDLd/k0YLRZXg9FElLkMIrXEJtxgzARegI7ybBq
+         TF5viK3CsKtnaHMZ3x2yvi5mrQ13DIEITBpcg3HfFWXeAUyJkWOBZBsDv4M073iKky2+
+         dstQ==
+X-Gm-Message-State: AOAM533pT/PcPG9yib3ydYsNOBoLOtFt8U8XD2m/CTfwHGoolDBZKHEV
+        4/kYFH1trsW17ziPdH1BfBs=
+X-Google-Smtp-Source: ABdhPJzewLyrbdH2kx6GO+S9lB4qsB4HBQ/ZQpVFtt7r3rnL9WrC1zhP3+rIYl4JM/D/IIEo7ShgJw==
+X-Received: by 2002:a1c:49c6:: with SMTP id w189mr11727864wma.108.1621668373488;
+        Sat, 22 May 2021 00:26:13 -0700 (PDT)
+Received: from kista.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
+        by smtp.gmail.com with ESMTPSA id k205sm1781849wmf.13.2021.05.22.00.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 00:26:12 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Andre Przywara <andre.przywara@arm.com>
+Cc:     Rob Herring <robh@kernel.org>, Icenowy Zheng <icenowy@aosc.io>,
+        Samuel Holland <samuel@sholland.org>,
+        Ondrej Jirman <megous@megous.com>,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@googlegroups.com,
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH v6 04/17] rtc: sun6i: Add support for linear day storage
+Date:   Sat, 22 May 2021 09:26:11 +0200
+Message-ID: <5920087.Glgd6ahW17@kista>
+In-Reply-To: <20210519104152.21119-5-andre.przywara@arm.com>
+References: <20210519104152.21119-1-andre.przywara@arm.com> <20210519104152.21119-5-andre.przywara@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210522021313.16405-2-rdunlap@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: de-DE
-Content-Transfer-Encoding: 8bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -6.42 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 0573E17FF
-X-Rspamd-UID: f6adc0
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.05.21 04:13, Randy Dunlap wrote:
-> When CONFIG_HAS_IOMEM is not set/enabled, certain iomap() family
-> functions [including ioremap(), devm_ioremap(), etc.] are not
-> available.
-> Drivers that use these functions should depend on HAS_IOMEM so that
-> they do not cause build errors.
+Hi Andre!
+
+Dne sreda, 19. maj 2021 ob 12:41:39 CEST je Andre Przywara napisal(a):
+> Newer versions of the Allwinner RTC, as for instance found in the H616
+> SoC, no longer store a broken-down day/month/year representation in the
+> RTC_DAY_REG, but just a linear day number.
+> The user manual does not give any indication about the expected epoch
+> time of this day count, but the BSP kernel uses the UNIX epoch, which
+> allows easy support due to existing conversion functions in the kernel.
 > 
-> Repairs this build error:
-> s390-linux-ld: drivers/dma/altera-msgdma.o: in function `request_and_map':
-> altera-msgdma.c:(.text+0x14b0): undefined reference to `devm_ioremap'
+> Allow tagging a compatible string with a flag, and use that to mark
+> those new RTCs. Then convert between a UNIX day number (converted into
+> seconds) and the broken-down day representation using mktime64() and
+> time64_to_tm() in the set_time/get_time functions.
 > 
-> Fixes: a85c6f1b2921 ("dmaengine: Add driver for Altera / Intel mSGDMA IP core")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Stefan Roese <sr@denx.de>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-
-Reviewed-by: Stefan Roese <sr@denx.de>
-
-Thanks,
-Stefan
-
-> ---
->   drivers/dma/Kconfig |    1 +
->   1 file changed, 1 insertion(+)
+> That enables support for the RTC in those new chips.
 > 
-> --- linux-next-20210521.orig/drivers/dma/Kconfig
-> +++ linux-next-20210521/drivers/dma/Kconfig
-> @@ -59,6 +59,7 @@ config DMA_OF
->   #devices
->   config ALTERA_MSGDMA
->   	tristate "Altera / Intel mSGDMA Engine"
-> +	depends on HAS_IOMEM
->   	select DMA_ENGINE
->   	help
->   	  Enable support for Altera / Intel mSGDMA controller.
-> 
+> Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+
+Change ^ to Signed-of-by. After that, you can add:
+Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
+
+Best regards,
+Jernej
 
 
-Viele Grüße,
-Stefan
-
--- 
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-51 Fax: (+49)-8142-66989-80 Email: sr@denx.de
