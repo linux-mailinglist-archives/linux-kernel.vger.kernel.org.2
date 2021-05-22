@@ -2,132 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0B2938D326
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:52:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 515AE38D32C
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:57:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231263AbhEVCxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 22:53:50 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:52139 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231161AbhEVCxr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 22:53:47 -0400
-Received: by mail-il1-f197.google.com with SMTP id z3-20020a92cb830000b02901bb45557893so23071277ilo.18
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:52:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Jue70gMD2bnrTWLoEZmyt/cAfGpA7FRemzX39phiOi0=;
-        b=LiiKdtGNmCqOf9MUkJq3L74OdsIOPz1s91CcZ6Cx6oa8puG3q9QYerosEEfdyS/0MN
-         njv65Eo6Js3VxBkhoF4+t7urnehZAK1yLTVUd9pum9lOQiYs+L11vRIhvdMOgmttfj7G
-         QG6NSWzqhENAU/ZTBDCaIBX7IlmfQEER/Rwv28ebq1M1dkB0IJ8GppsgJ5SUrL4GFoJY
-         Uae1L9j8E5ZQxpZLtdnQLiWQ/iWlPYglKwWueAKBb6iyIgrkm5uKFD5tpxlKmLB3Zd4u
-         ue81Msz0R74wD0JN5wvnQAB1fQ/t6ZTjZKXruXrBD2VMgk9cMex6aRYMz6KPmYMbgI/2
-         A7Vw==
-X-Gm-Message-State: AOAM5306VZyNJ56RNRC4lCX1q+bBmKOt8Sajv+uegT19/QTSDOObo3Sv
-        lwgU5gbh84LxyX3ftVv+kvVzpUORkT1U70YhKkkPenMuW44R
-X-Google-Smtp-Source: ABdhPJxXd6oKyJwV7S5eO4/SQ1t0AMNCPK5ACa6aOpobA7MmBIMnkQlC9EE9J40eZg6IUMH5y2mWX2zk3AMpjdFrrNbN2GulgmrS
+        id S231273AbhEVC7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 22:59:18 -0400
+Received: from m34-101.88.com ([104.250.34.101]:40990 "EHLO 88.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230527AbhEVC7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 22:59:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=From:To:Date; bh=vJkq7wa9Z6jij7BO6V7KBAE4fXZ75ffcsEThU
+        MYmmcI=; b=IqUSSEAJCzv5AveJBwa2mHsaQ3zv8g75Rh94PfdxMSbu/bl6AXIMy
+        fiFbERQ3mwTebgNyGMTRRI6hq3Enyf6QYI4zij/D1NYFvOupIDwd8wNwAyk9AzSa
+        QLEQIfGp9wPCilNiuYjMTKyKwIbUr0LO2GqqebwcbDoQVsmC8oJbG0=
+Received: from localhost.localdomain (unknown [113.251.14.223])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgCH1ljYcqhg2f9AAA--.18786S2;
+        Sat, 22 May 2021 10:56:25 +0800 (CST)
+From:   Hu Haowen <src.res@email.cn>
+To:     alexs@kernel.org, corbet@lwn.net, bobwxc@email.cn,
+        maskray@google.com, bernard@vivo.com
+Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hu Haowen <src.res@email.cn>
+Subject: [PATCH v2 1/2] docs/zh_CN: update a translation in zh_CN/dev-tools/gcov
+Date:   Sat, 22 May 2021 10:55:44 +0800
+Message-Id: <20210522025545.57275-1-src.res@email.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Received: by 2002:a6b:d20e:: with SMTP id q14mr2483179iob.200.1621651942011;
- Fri, 21 May 2021 19:52:22 -0700 (PDT)
-Date:   Fri, 21 May 2021 19:52:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f3fc9305c2e24311@google.com>
-Subject: [syzbot] WARNING in x86_emulate_instruction
-From:   syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>
-To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
-        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
-        kan.liang@linux.intel.com, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
-        mingo@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
-        seanjc@google.com, steve.wahl@hpe.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GiKnCgCH1ljYcqhg2f9AAA--.18786S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruw4Dtr13Xw1ruFyfXF4fZrb_yoWftrc_Gw
+        1kWF4vyFy3Jry2gr4rAF1kJr1fZF4rKw18Arn0ya98Jw15G39rGa4DX3s5ZFW3WF43urW3
+        CrZ7ZrZ3trn2yjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb5xFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWUJVWUGwA2ocxC64kI
+        II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7
+        xvwVC0I7IYx2IY6xkF7I0E14v26r1j6r4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2
+        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWxJr1UJwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxAIw28IcxkI7V
+        AKI48JMxAIw28IcVCjz48v1sIEY20_Cr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2Iq
+        xVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r
+        1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY
+        6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
+        AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuY
+        vjfUsvtCUUUUU
+X-Originating-IP: [113.251.14.223]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The original file has added some words in commit c797997a244cd2c58908
+("Documentation: dev-tools: Add Testing Overview"), hence update the
+Chinese translation of them.
 
-syzbot found the following issue on:
-
-HEAD commit:    8ac91e6c Merge tag 'for-5.13-rc2-tag' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16a80fc7d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dddb87edd6431081
-dashboard link: https://syzkaller.appspot.com/bug?extid=71271244f206d17f6441
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d1f89bd00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
-
-The issue was bisected to:
-
-commit 9a7832ce3d920426a36cdd78eda4b3568d4d09e3
-Author: Steve Wahl <steve.wahl@hpe.com>
-Date:   Fri Jan 8 15:35:49 2021 +0000
-
-    perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152bf9b3d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=172bf9b3d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=132bf9b3d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
-Fixes: 9a7832ce3d92 ("perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info")
-
-L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 8431 at arch/x86/kvm/x86.c:7620 x86_emulate_instruction+0x9e8/0x1460 arch/x86/kvm/x86.c:7620
-Modules linked in:
-CPU: 0 PID: 8431 Comm: syz-executor681 Not tainted 5.13.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:x86_emulate_instruction+0x9e8/0x1460 arch/x86/kvm/x86.c:7620
-Code: c0 74 07 7f 05 e8 a8 48 a9 00 41 0f b6 5c 24 30 bf 06 00 00 00 89 de e8 56 4d 64 00 80 fb 06 0f 85 06 05 00 00 e8 98 46 64 00 <0f> 0b e8 91 46 64 00 48 89 ef e8 89 48 fe ff c7 44 24 1c 01 00 00
-RSP: 0018:ffffc90002057930 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000000000
-RDX: ffff88802caad4c0 RSI: ffffffff81108cc8 RDI: 0000000000000003
-RBP: ffff88802eb08000 R08: 0000000000000000 R09: 0000000000000006
-R10: ffffffff81108cba R11: 0000000000000006 R12: ffff88802bd48000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000040
-FS:  00000000012e3300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000000000000 CR3: 000000001459c000 CR4: 00000000001526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- kvm_mmu_page_fault+0x2eb/0x1890 arch/x86/kvm/mmu/mmu.c:5103
- handle_ept_violation+0x29c/0x6f0 arch/x86/kvm/vmx/vmx.c:5402
- __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6106 [inline]
- vmx_handle_exit+0x336/0x1800 arch/x86/kvm/vmx/vmx.c:6123
- vcpu_enter_guest+0x235e/0x47e0 arch/x86/kvm/x86.c:9425
- vcpu_run arch/x86/kvm/x86.c:9491 [inline]
- kvm_arch_vcpu_ioctl_run+0x47d/0x1990 arch/x86/kvm/x86.c:9719
- kvm_vcpu_ioctl+0x467/0xd10 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3458
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x440da9
-Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe2af5d538 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 0000000000440da9
-RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
-RBP: 00000000004048a0 R08: 0000000000400488 R09: 0000000000400488
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000404930
-R13: 0000000000000000 R14: 00000000004ae018 R15: 0000000000400488
-
-
+Signed-off-by: Hu Haowen <src.res@email.cn>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ Documentation/translations/zh_CN/dev-tools/index.rst | 3 +++
+ 1 file changed, 3 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
+index fd73c479917b..7ba02fc392a6 100644
+--- a/Documentation/translations/zh_CN/dev-tools/index.rst
++++ b/Documentation/translations/zh_CN/dev-tools/index.rst
+@@ -11,6 +11,9 @@
+ 目前这些文档已经整理在一起，不需要再花费额外的精力。
+ 欢迎任何补丁。
+ 
++有关测试专用工具的简要概述，参见
++Documentation/dev-tools/testing-overview.rst
++
+ .. class:: toc-title
+ 
+ 	   目录
+-- 
+2.25.1
+
