@@ -2,120 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B5638D2F5
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:15:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2DF438D2F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230521AbhEVCQ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 22:16:57 -0400
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:53565 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230474AbhEVCQ4 (ORCPT
+        id S230518AbhEVCWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 22:22:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhEVCWV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 22:16:56 -0400
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 14M2F3hC003882
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 11:15:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 14M2F3hC003882
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621649704;
-        bh=4Aw2OFXnuy6gv0xA0xiEWBCj1w+CAdcrvr+rK0CQxAU=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=hcs3gVJHqV15kNLpKFAsLCH7QL+PmsapWiEA6j3cl/rkwB3WQUELL1TmyKj1EUsEr
-         vnea+nz/u1rp9AObm95hm6Br2EIL7b3NpcWy/KHJlYNdwUlwiYeTuv65AEsVQX83Gh
-         2yvkMUs1PrRtHryhWegIHixFltPuWU+5pS8ppEULY+SjdNyYtdEkbavJKBRXZWnyRm
-         kS36F33U24hBHB1eNRXkqk0D9AZFWGPrJCHaDj6N2lOBZ80i5AQ3uIXkUNL/KzNnhJ
-         wJybHr9zyzSJEY10r9ZhkjNoJVhWMzQCfhT7QHzVeX/eChXstDqL6e02c8yuBtJqPG
-         hjswYnaUl/mJA==
-X-Nifty-SrcIP: [209.85.216.53]
-Received: by mail-pj1-f53.google.com with SMTP id b9-20020a17090a9909b029015cf9effaeaso8258847pjp.5
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:15:03 -0700 (PDT)
-X-Gm-Message-State: AOAM533iefGstY6s/2oRHm45uY0co5kNZMUWX3WSbBhGcHievZRFfUZb
-        AWSRyleVIbPQx+Epxhf+ETvH0ZliqAvsMSBDVqw=
-X-Google-Smtp-Source: ABdhPJx26DBPGeVIGoCze3uS6lPlnA+tE/VShWtF2MtgS47JF2uO7kSTv/2uYmN86Yc5x60aewf0auZb7mXFWRdCrGw=
-X-Received: by 2002:a17:903:228a:b029:f7:9f7e:aa2c with SMTP id
- b10-20020a170903228ab02900f79f7eaa2cmr4551199plh.71.1621649703021; Fri, 21
- May 2021 19:15:03 -0700 (PDT)
+        Fri, 21 May 2021 22:22:21 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96301C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:20:57 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id lg14so33078636ejb.9
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AyDr1y/RwJoeqN22oXWBSWyEDma390VYzmRzYEs5lCg=;
+        b=Lu0qQ1XZTBH8t2J0p/fhFAVkq1MZg33JOTinmTXfMebyUQuijZLlB7BQUQZVjoVGRo
+         XNYXlp28jxndHy0kaHyUg3Vzxr5hqkCVLAKplIgebwyICZVy8ihRZvgsbGtM4IFFjSqs
+         8Y/VMARbkoFcTZGMawK9goky0n6N6Z4SuEyeTL7+siu08yC8KFIUu01+i41cSADjo4Y2
+         97pn98cLGkH6MeGG18rMtvAkBFnKsZkeOWo2RFL5F7wA7dk+fXMhsg91ZM4h7jPYzBz2
+         WAVTR7tyLovlaWKbeY0kOGKUZjieOWcesDr1wVGBmBrCfWt5GTIUvaPOwSSZcRnd3HoS
+         INYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AyDr1y/RwJoeqN22oXWBSWyEDma390VYzmRzYEs5lCg=;
+        b=oN4GjkwILp2HpH5y68GGe2OV0VQ1nFO+ThNJ0GCEXpqC4HxsmiuOwRfMovzBIDNiFa
+         qcUyTNNwpn1bI/sewxbUyekJwDeaey0V7Vn4CPufELARtPK21Ol+zPVSv5Lxxnb9j6zE
+         ykg5SJDmu0gQkEwFUlC62xfir5/IuuBbQvvOi4CTWQdrcsZebGmtWcUwtwReGpJYX4Zw
+         eoz8rliVEPjC1+EJms5fNwip4opC852SxfzlLPzjuccg8g9fBeaWewNvlDKN1ev2eKPO
+         EydIZgQTKb7oO5QPNOROob7+Glj6kMpDcEDbhaO5lp3L7EfvhcMN2F6OhgH2urYLjxXQ
+         +Rfw==
+X-Gm-Message-State: AOAM5316EfIU4B7CfM/GpYTneqrOuORGu4KD5TSFjuzzLq7VaJHgiGYR
+        D3kHklaWSG3ilXF0vObcoxcLaGIVJ0RP7jfdhlEZ
+X-Google-Smtp-Source: ABdhPJxtWsmcVYWOokYryWNIlC9jPQ5n8GMH6qfVU5ht4UMydIgEcs4bWq07Vr1o3LSIKBusJxMLXzOZ+aChS3mtfes=
+X-Received: by 2002:a17:907:1749:: with SMTP id lf9mr13320714ejc.178.1621650055910;
+ Fri, 21 May 2021 19:20:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210430015627.65738-1-masahiroy@kernel.org> <162162208791.14477.6963689219198766644.git-patchwork-notify@kernel.org>
-In-Reply-To: <162162208791.14477.6963689219198766644.git-patchwork-notify@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 22 May 2021 11:14:24 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAST-2CDycoAsKEmVw-56um7HHs07smaWemsOsL8eo+F6w@mail.gmail.com>
-Message-ID: <CAK7LNAST-2CDycoAsKEmVw-56um7HHs07smaWemsOsL8eo+F6w@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: replace LANG=C with LC_ALL=C
-To:     patchwork-bot+linux-kselftest@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210513200807.15910-1-casey@schaufler-ca.com>
+ <20210513200807.15910-23-casey@schaufler-ca.com> <CAHC9VhSdFVuZvThMsqWT-L9wcHevA-0yAX+kxqXN0iMmqRc10g@mail.gmail.com>
+ <d753115f-6cbd-0886-473c-b10485cb7c52@schaufler-ca.com>
+In-Reply-To: <d753115f-6cbd-0886-473c-b10485cb7c52@schaufler-ca.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 21 May 2021 22:20:44 -0400
+Message-ID: <CAHC9VhR9OPbNCLaKpCEt9mES8yWXpNoTBrgnKW2ER+vEkuNQwQ@mail.gmail.com>
+Subject: Re: [PATCH v26 22/25] Audit: Add new record for multiple process LSM attributes
+To:     Casey Schaufler <casey@schaufler-ca.com>
+Cc:     casey.schaufler@intel.com, James Morris <jmorris@namei.org>,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        linux-audit@redhat.com, keescook@chromium.org,
+        john.johansen@canonical.com, penguin-kernel@i-love.sakura.ne.jp,
+        Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 3:34 AM
-<patchwork-bot+linux-kselftest@kernel.org> wrote:
->
-> Hello:
->
-> This patch was applied to shuah/linux-kselftest.git (refs/heads/next):
->
-> On Fri, 30 Apr 2021 10:56:27 +0900 you wrote:
-> > LANG gives a weak default to each LC_* in case it is not explicitly
-> > defined. LC_ALL, if set, overrides all other LC_* variables.
+On Fri, May 21, 2021 at 6:05 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> On 5/21/2021 1:19 PM, Paul Moore wrote:
+> > On Thu, May 13, 2021 at 4:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> >> Create a new audit record type to contain the subject information
+> >> when there are multiple security modules that require such data.
+> >> This record is linked with the same timestamp and serial number
+> >> using the audit_alloc_local() mechanism.
+> > The record is linked with the other associated records into a single
+> > event, it doesn't matter if it gets the timestamp/serial from
+> > audit_alloc_local() or an existing audit event, e.g. ongoing syscall.
 > >
-> >   LANG  <  LC_CTYPE, LC_COLLATE, LC_MONETARY, LC_NUMERIC, ...  <  LC_ALL
-> >
-> > This is why documentation such as [1] suggests to set LC_ALL in build
-> > scripts to get the deterministic result.
-> >
-> > [...]
+> >> The record is produced only in cases where there is more than one
+> >> security module with a process "context".
+> >> In cases where this record is produced the subj= fields of
+> >> other records in the audit event will be set to "subj=?".
+> >>
+> >> An example of the MAC_TASK_CONTEXTS (1420) record is:
+> >>
+> >>         type=UNKNOWN[1420]
+> >>         msg=audit(1600880931.832:113)
+> >>         subj_apparmor==unconfined
+> > It should be just a single "=" in the line above.
 >
-> Here is the summary with links:
->   - [v2] kbuild: replace LANG=C with LC_ALL=C
->     https://git.kernel.org/shuah/linux-kselftest/c/77a88274dc1a
+> AppArmor provides the 2nd "=" as part of the subject context.
+> What's here is correct. I won't argue that it won't case confusion
+> or worse.
+
+Oh, wow, okay.  That needs to change at some point but I agree it's
+out of scope for this patchset.  In the meantime I might suggest using
+something other than AppArmor as an example here.
+
+> >>         subj_smack=_
+> >>
+> >> There will be a subj_$LSM= entry for each security module
+> >> LSM that supports the secid_to_secctx and secctx_to_secid
+> >> hooks. The BPF security module implements secid/secctx
+> >> translation hooks, so it has to be considered to provide a
+> >> secctx even though it may not actually do so.
+> >>
+> >> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> >> To: paul@paul-moore.com
+> >> To: linux-audit@redhat.com
+> >> To: rgb@redhat.com
+> >> Cc: netdev@vger.kernel.org
+> >> ---
+> >>  drivers/android/binder.c                |  2 +-
+> >>  include/linux/audit.h                   | 24 ++++++++
+> >>  include/linux/security.h                | 16 ++++-
+> >>  include/net/netlabel.h                  |  3 +-
+> >>  include/net/scm.h                       |  2 +-
+> >>  include/net/xfrm.h                      | 13 +++-
+> >>  include/uapi/linux/audit.h              |  1 +
+> >>  kernel/audit.c                          | 80 ++++++++++++++++++-------
+> >>  kernel/audit.h                          |  3 +
+> >>  kernel/auditfilter.c                    |  6 +-
+> >>  kernel/auditsc.c                        | 75 ++++++++++++++++++++---
+> >>  net/ipv4/ip_sockglue.c                  |  2 +-
+> >>  net/netfilter/nf_conntrack_netlink.c    |  4 +-
+> >>  net/netfilter/nf_conntrack_standalone.c |  2 +-
+> >>  net/netfilter/nfnetlink_queue.c         |  2 +-
+> >>  net/netlabel/netlabel_domainhash.c      |  4 +-
+> >>  net/netlabel/netlabel_unlabeled.c       | 24 ++++----
+> >>  net/netlabel/netlabel_user.c            | 20 ++++---
+> >>  net/netlabel/netlabel_user.h            |  6 +-
+> >>  net/xfrm/xfrm_policy.c                  | 10 ++--
+> >>  net/xfrm/xfrm_state.c                   | 20 ++++---
+> >>  security/integrity/ima/ima_api.c        |  7 ++-
+> >>  security/integrity/integrity_audit.c    |  6 +-
+> >>  security/security.c                     | 46 +++++++++-----
+> >>  security/smack/smackfs.c                |  3 +-
+> >>  25 files changed, 274 insertions(+), 107 deletions(-)
+> > ...
+> >
+> >> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> >> index 97cd7471e572..229cd71fbf09 100644
+> >> --- a/include/linux/audit.h
+> >> +++ b/include/linux/audit.h
+> >> @@ -386,6 +395,19 @@ static inline void audit_ptrace(struct task_struct *t)
+> >>                 __audit_ptrace(t);
+> >>  }
+> >>
+> >> +static inline struct audit_context *audit_alloc_for_lsm(gfp_t gfp)
+> >> +{
+> >> +       struct audit_context *context = audit_context();
+> >> +
+> >> +       if (context)
+> >> +               return context;
+> >> +
+> >> +       if (lsm_multiple_contexts())
+> >> +               return audit_alloc_local(gfp);
+> >> +
+> >> +       return NULL;
+> >> +}
+> > See my other comments, but this seems wrong at face value.  The
+> > additional LSM record should happen as part of the existing audit log
+> > functions.
 >
-> You are awesome, thank you!
-> --
+> I'm good with that. But if you defer calling audit_alloc_local()
+> until you know you need it you may be in a place where you can't
+> associate the new context with the event. I think. I will have
+> another go at it.
 
+I can't think of a case where you would ever not know if you need to
+allocate a local context at the start.  If you are unsure, get in
+touch and we can work it out.
 
-Huh?
+> > I think I was distracted with the local context issue and I've lost
+> > track of the details here, perhaps it's best to fix the local context
+> > issue first (that should be a big change to this patch) and then we
+> > can take another look.
+>
+> I really need to move forward. I'll give allocation of local contexts
+> as necessary in audit_log_task_context() another shot.
 
-This patch exists in Linus' tree.
+I appreciate the desire to move forward, and while I can't speak for
+everyone, I'll do my best to work with you to find a good solution.
+If you get stuck or aren't sure you know how to reach me :)
 
-Why is this going to the kselftest tree
-in the first place?
+As a start, I might suggest looking at some of the recent audit
+container ID patchsets from Richard; while they have had some issues,
+they should serve as a basic example of what we mean when we talk
+about "local contexts" and how they should be used.
 
-
-
-commit 77a88274dc1a2cf3a775161d9a3242bc798ee680
-Author: Masahiro Yamada <masahiroy@kernel.org>
-Date:   Fri Apr 30 10:56:27 2021 +0900
-
-    kbuild: replace LANG=C with LC_ALL=C
-
-    LANG gives a weak default to each LC_* in case it is not explicitly
-    defined. LC_ALL, if set, overrides all other LC_* variables.
-
-      LANG  <  LC_CTYPE, LC_COLLATE, LC_MONETARY, LC_NUMERIC, ...  <  LC_ALL
-
-    This is why documentation such as [1] suggests to set LC_ALL in build
-    scripts to get the deterministic result.
-
-    LANG=C is not strong enough to override LC_* that may be set by end
-    users.
-
-    [1]: https://reproducible-builds.org/docs/locales/
-
-    Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-    Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-    Reviewed-by: Matthias Maennich <maennich@google.com>
-    Acked-by: Matthieu Baerts <matthieu.baerts@tessares.net> (mptcp)
-    Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-
-
-
-
-
---
-Best Regards
-Masahiro Yamada
+-- 
+paul moore
+www.paul-moore.com
