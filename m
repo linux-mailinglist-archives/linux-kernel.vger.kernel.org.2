@@ -2,34 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E49038D794
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 23:51:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF32C38D79A
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 00:09:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231450AbhEVVwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 17:52:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49004 "EHLO mail.kernel.org"
+        id S231442AbhEVWK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 18:10:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59700 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231398AbhEVVwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 17:52:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 264A461182;
-        Sat, 22 May 2021 21:51:28 +0000 (UTC)
+        id S231408AbhEVWK0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 18:10:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA2A661182;
+        Sat, 22 May 2021 22:09:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1621720288;
-        bh=MVoSzpLlxUOzEdfjJRbdh/pcPsg3zH2/R6Cg3GE2BqU=;
+        s=korg; t=1621721341;
+        bh=fQ0aMPh12hl+5c7WBOSl31XItRi0ATmMKJSFriH63vw=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CcrQTUD0iNMh9uqRCYKDE3rUcTM6gdwgpdj0aPPsJX5zsB+H9npnftceHCABUfmec
-         geoDKMNzS4q3cdVXp/AzyXolxjKj2qszjSrYABv78/ntE/cks2ym33kSHOFxOiT0iJ
-         tcyLrtWMudPgkorkc26P1h2ZgbhvOYRU91AszD/0=
-Date:   Sat, 22 May 2021 14:51:27 -0700
+        b=wOkXc1V/JbPb5GHrwUa9gxLporsN9D101phMZvDCVmuEtJ7Zh/TA2TcRzzdfyK1n4
+         9+6FMbLyjX5EUIGa2Fip8UkowFZE+y5P7L8kpIyCE2qkUMtYu3z5ZGh21mffn0Vu6n
+         TfmrafZ6jBwSPw0npvfmELrgDPUXGuU2TNjvwujc=
+Date:   Sat, 22 May 2021 15:09:00 -0700
 From:   Andrew Morton <akpm@linux-foundation.org>
-To:     chenguanyou <chenguanyou9338@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, keescook@chromium.org,
-        mhocko@suse.com, lukas.bulwahn@gmail.com, vbabka@suse.cz,
-        gpiccoli@canonical.com, chenguanyou <chenguanyou@xiaomi.com>
-Subject: Re: [PATCH] hungtask: add filter kthread/check comm
-Message-Id: <20210522145127.5f56751f164df8af2d3f39fa@linux-foundation.org>
-In-Reply-To: <20210521132544.19816-1-chenguanyou@xiaomi.com>
-References: <20210521132544.19816-1-chenguanyou@xiaomi.com>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+Cc:     linux-mm@kvack.org, Tony Luck <tony.luck@intel.com>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Jue Wang <juew@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 1/3] mm/memory-failure: Use a mutex to avoid
+ memory_failure() races
+Message-Id: <20210522150900.39d6832a03c5f772911c5b6d@linux-foundation.org>
+In-Reply-To: <20210521030156.2612074-2-nao.horiguchi@gmail.com>
+References: <20210521030156.2612074-1-nao.horiguchi@gmail.com>
+        <20210521030156.2612074-2-nao.horiguchi@gmail.com>
 X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -38,19 +45,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 21:25:44 +0800 chenguanyou <chenguanyou9338@gmail.com> wrote:
+On Fri, 21 May 2021 12:01:54 +0900 Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
 
-> Some kernel threads are always in D state, when we enable hung_task,
-> it will misjudge, we should skip these to narrow the scope.
+> There can be races when multiple CPUs consume poison from the same
+> page. The first into memory_failure() atomically sets the HWPoison
+> page flag and begins hunting for tasks that map this page. Eventually
+> it invalidates those mappings and may send a SIGBUS to the affected
+> tasks.
 > 
-> exp mtk mobilephone:
-> root            435   435      2       0      0 mtk_lpm_monitor_thread 0 D LPM-0
-> root            436   436      2       0      0 mtk_lpm_monitor_thread 0 D LPM-1
-> root            437   437      2       0      0 mtk_lpm_monitor_thread 0 D LPM-2
-> root            438   438      2       0      0 mtk_lpm_monitor_thread 0 D LPM-3
-> root            439   439      2       0      0 mtk_lpm_monitor_thread 0 D LPM-4
-> root            440   440      2       0      0 mtk_lpm_monitor_thread 0 D LPM-5
-> root            441   441      2       0      0 mtk_lpm_monitor_thread 0 D LPM-6
-> root            442   442      2       0      0 mtk_lpm_monitor_thread 0 D LPM-7
+> But while all that work is going on, other CPUs see a "success"
+> return code from memory_failure() and so they believe the error
+> has been handled and continue executing.
+> 
+> Fix by wrapping most of the internal parts of memory_failure() in
+> a mutex.
 
-Maybe convert these threads to use TASK_IDLE?
+We can reduce the scope of that mutex, which helps readability at least.
+
+--- a/mm/memory-failure.c~mm-memory-failure-use-a-mutex-to-avoid-memory_failure-races-fix
++++ a/mm/memory-failure.c
+@@ -1397,8 +1397,6 @@ out:
+ 	return rc;
+ }
+ 
+-static DEFINE_MUTEX(mf_mutex);
+-
+ /**
+  * memory_failure - Handle memory failure of a page.
+  * @pfn: Page Number of the corrupted page
+@@ -1425,6 +1423,7 @@ int memory_failure(unsigned long pfn, in
+ 	int res = 0;
+ 	unsigned long page_flags;
+ 	bool retry = true;
++	static DEFINE_MUTEX(mf_mutex);
+ 
+ 	if (!sysctl_memory_failure_recovery)
+ 		panic("Memory failure on page %lx", pfn);
+_
+
