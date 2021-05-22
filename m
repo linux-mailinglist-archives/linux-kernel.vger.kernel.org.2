@@ -2,553 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D792A38D718
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 21:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7D7C38D731
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 21:15:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231371AbhEVTEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 15:04:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53160 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231311AbhEVTEM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 15:04:12 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7ED97C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 12:02:47 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id v14so14222513pgi.6
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 12:02:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xOlKwtjCtS++s6e11zFZMOh7YXJTPgJc/dmwcNnmIpM=;
-        b=K5cmTf1C7iX6ZntldI3/ljJG9sEOtoEbdrgpyFJeUcU9GAs/qJ/zNMk7I6Gashp6Ab
-         N8eUBvUiuDCo33NsxjlYfcoZ5Fl6OghQUyvtq15ZrH4/iMJK/31CCjZHF/jrEUY57qWp
-         QjFubMWzeK5eg/qkEeq5Fs2HzMdJM2y4o1IG7XcmMNBS8feVuBcP/9knSB6JI1ThQD1k
-         NJXS2nP8sVxMMnI+ogW5aMmgDs4lqsqLJm9M0O7a2WXjoGKD0ldvkOW+Q40GJfUEfZbg
-         VtkGKMXLo8/8ZXPzP2q9jorXnDOYYFdrkItlDGVOskOU5ngxD78xltGHshZuAsT93x4k
-         CiWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=xOlKwtjCtS++s6e11zFZMOh7YXJTPgJc/dmwcNnmIpM=;
-        b=aaNviVJlgkLdS70wvyhOZ7G0EY3ULuroKbPlxpXwq2dscpK0D+tdXZq/th5SUKCtdg
-         tefklsOv0P1Rku0jTI7DihHgkpBenyM4msFRRHFpGnhF21g+/5+xuDKnOQIbc7xFr71V
-         w4h2HquzkEJlLc0QStk3uGVMZ2knAskgImo/5cOdtK/ct+z6fgmH2A3tnZiunJB1uw9K
-         65KQyr4NOZWIqAaEDruaVjncJ6rbW6ag5r2JoMxvpXlZLOqJs6BBH/kG12UdC2e7US5p
-         iWDEGBhqbDLWFa4p0lmlFbgjZWK/ox//CXov3FPD6cw1wAGppn7CROGezZp/u95ijpNv
-         ZIMA==
-X-Gm-Message-State: AOAM530+QGB9dQ49araQQFzURkbVHVZ8lwmKr6M9u5DOPxJHojZfG/Lx
-        id6pBhqxfn34eUyffm0kmox4nRMjQOpYWnoc
-X-Google-Smtp-Source: ABdhPJzzXeNr5rhgKntFIdpPZoOT+s7aIc6xonJYgTlgrLYVz59uRmHmOwdO/BW5QGC14cATSJSAtw==
-X-Received: by 2002:a63:1626:: with SMTP id w38mr5421852pgl.420.1621710166570;
-        Sat, 22 May 2021 12:02:46 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id k21sm7230668pgb.56.2021.05.22.12.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 May 2021 12:02:45 -0700 (PDT)
-Date:   Sat, 22 May 2021 12:02:45 -0700 (PDT)
-X-Google-Original-Date: Sat, 22 May 2021 12:02:43 PDT (-0700)
-Subject:     Re: [PATCH 28/33] locking/atomic: riscv: move to ARCH_ATOMIC
-In-Reply-To: <20210510093753.40683-29-mark.rutland@arm.com>
-CC:     linux-kernel@vger.kernel.org, will@kernel.org,
-        boqun.feng@gmail.com, peterz@infradead.org, aou@eecs.berkeley.edu,
-        Arnd Bergmann <arnd@arndb.de>, bcain@codeaurora.org,
-        benh@kernel.crashing.org, chris@zankel.net, dalias@libc.org,
-        davem@davemloft.net, deanbo422@gmail.com, deller@gmx.de,
-        geert@linux-m68k.org, green.hu@gmail.com, guoren@kernel.org,
-        ink@jurassic.park.msu.ru, James.Bottomley@HansenPartnership.com,
-        jcmvbkbc@gmail.com, jonas@southpole.se, ley.foon.tan@intel.com,
-        linux@armlinux.org.uk, mark.rutland@arm.com, mattst88@gmail.com,
-        monstr@monstr.eu, mpe@ellerman.id.au, nickhu@andestech.com,
-        paulus@samba.org, Paul Walmsley <paul.walmsley@sifive.com>,
-        rth@twiddle.net, shorne@gmail.com,
-        stefan.kristiansson@saunalahti.fi, tsbogend@alpha.franken.de,
-        vgupta@synopsys.com, ysato@users.sourceforge.jp
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     mark.rutland@arm.com
-Message-ID: <mhng-4414d6c5-89dd-476a-b08c-ce34d0467781@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        id S231473AbhEVTQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 15:16:12 -0400
+Received: from skyrme.org ([37.221.197.251]:54398 "EHLO skyrme.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231465AbhEVTQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 15:16:07 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 May 2021 15:16:07 EDT
+Received: (qmail 25056 invoked by uid 0); 22 May 2021 19:07:59 -0000
+Received: from unknown (HELO basil.scara.com) (schirmer@unknown)
+  by unknown with ESMTPA; 22 May 2021 19:07:59 -0000
+Received: (qmail 28964 invoked by uid 500); 22 May 2021 19:07:59 -0000
+Date:   Sat, 22 May 2021 19:07:59 +0000
+From:   Oskar Schirmer <oskar@scara.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Trent Piepho <tpiepho@gmail.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Yiyuan guo <yguoaz@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "andy@kernel.org" <andy@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: A divide by zero bug in lib/math/rational.c (with triggering
+ input)
+Message-ID: <20210522190759.GA9755@basil.scara.com>
+References: <CAM7=BFoktwgy=T0GK6Mpmp2gYToCUs=CrM29MRWw8O7TPypQ8w@mail.gmail.com>
+ <CAHp75Vf8kQ73w0R9ieDNjDVkxM-V83QRN9mc6BjRZA8xHpPNAA@mail.gmail.com>
+ <CAHp75Vft8pnA+m0C=Ok7nRyjERAd2uJJ4q6HcN460j0Hir6Kaw@mail.gmail.com>
+ <CAM7=BFoH7Q+YHvPFnHM4j72ORHQp4gTjHFjnfeLsV2-30ZLNYw@mail.gmail.com>
+ <CA+7tXigG7QVYOtkuFrqciHfuxE4+c0JM9z8r0e9rooTjjz5PYA@mail.gmail.com>
+ <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com>
+Organisation: www.embedded-group.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 10 May 2021 02:37:48 PDT (-0700), mark.rutland@arm.com wrote:
-> We'd like all architectures to convert to ARCH_ATOMIC, as once all
-> architectures are converted it will be possible to make significant
-> cleanups to the atomics headers, and this will make it much easier to
-> generically enable atomic functionality (e.g. debug logic in the
-> instrumented wrappers).
->
-> As a step towards that, this patch migrates riscv to ARCH_ATOMIC. The
-> arch code provides arch_{atomic,atomic64,xchg,cmpxchg}*(), and common
-> code wraps these with optional instrumentation to provide the regular
-> functions.
->
-> Signed-off-by: Mark Rutland <mark.rutland@arm.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Will Deacon <will@kernel.org>
-> ---
->  arch/riscv/Kconfig               |   1 +
->  arch/riscv/include/asm/atomic.h  | 128 +++++++++++++++++++--------------------
->  arch/riscv/include/asm/cmpxchg.h |  34 +++++------
->  3 files changed, 82 insertions(+), 81 deletions(-)
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index a8ad8eb76120..c59b9f4a9d62 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -12,6 +12,7 @@ config 32BIT
->
->  config RISCV
->  	def_bool y
-> +	select ARCH_ATOMIC
->  	select ARCH_CLOCKSOURCE_INIT
->  	select ARCH_SUPPORTS_ATOMIC_RMW
->  	select ARCH_SUPPORTS_DEBUG_PAGEALLOC if MMU
-> diff --git a/arch/riscv/include/asm/atomic.h b/arch/riscv/include/asm/atomic.h
-> index 400a8c8b6de7..ac9bdf4fc404 100644
-> --- a/arch/riscv/include/asm/atomic.h
-> +++ b/arch/riscv/include/asm/atomic.h
-> @@ -25,22 +25,22 @@
->  #define __atomic_release_fence()					\
->  	__asm__ __volatile__(RISCV_RELEASE_BARRIER "" ::: "memory");
->
-> -static __always_inline int atomic_read(const atomic_t *v)
-> +static __always_inline int arch_atomic_read(const atomic_t *v)
->  {
->  	return READ_ONCE(v->counter);
->  }
-> -static __always_inline void atomic_set(atomic_t *v, int i)
-> +static __always_inline void arch_atomic_set(atomic_t *v, int i)
->  {
->  	WRITE_ONCE(v->counter, i);
->  }
->
->  #ifndef CONFIG_GENERIC_ATOMIC64
->  #define ATOMIC64_INIT(i) { (i) }
-> -static __always_inline s64 atomic64_read(const atomic64_t *v)
-> +static __always_inline s64 arch_atomic64_read(const atomic64_t *v)
->  {
->  	return READ_ONCE(v->counter);
->  }
-> -static __always_inline void atomic64_set(atomic64_t *v, s64 i)
-> +static __always_inline void arch_atomic64_set(atomic64_t *v, s64 i)
->  {
->  	WRITE_ONCE(v->counter, i);
->  }
-> @@ -53,7 +53,7 @@ static __always_inline void atomic64_set(atomic64_t *v, s64 i)
->   */
->  #define ATOMIC_OP(op, asm_op, I, asm_type, c_type, prefix)		\
->  static __always_inline							\
-> -void atomic##prefix##_##op(c_type i, atomic##prefix##_t *v)		\
-> +void arch_atomic##prefix##_##op(c_type i, atomic##prefix##_t *v)	\
->  {									\
->  	__asm__ __volatile__ (						\
->  		"	amo" #asm_op "." #asm_type " zero, %1, %0"	\
-> @@ -87,7 +87,7 @@ ATOMIC_OPS(xor, xor,  i)
->   */
->  #define ATOMIC_FETCH_OP(op, asm_op, I, asm_type, c_type, prefix)	\
->  static __always_inline							\
-> -c_type atomic##prefix##_fetch_##op##_relaxed(c_type i,			\
-> +c_type arch_atomic##prefix##_fetch_##op##_relaxed(c_type i,		\
->  					     atomic##prefix##_t *v)	\
->  {									\
->  	register c_type ret;						\
-> @@ -99,7 +99,7 @@ c_type atomic##prefix##_fetch_##op##_relaxed(c_type i,			\
->  	return ret;							\
->  }									\
->  static __always_inline							\
-> -c_type atomic##prefix##_fetch_##op(c_type i, atomic##prefix##_t *v)	\
-> +c_type arch_atomic##prefix##_fetch_##op(c_type i, atomic##prefix##_t *v)	\
->  {									\
->  	register c_type ret;						\
->  	__asm__ __volatile__ (						\
-> @@ -112,15 +112,15 @@ c_type atomic##prefix##_fetch_##op(c_type i, atomic##prefix##_t *v)	\
->
->  #define ATOMIC_OP_RETURN(op, asm_op, c_op, I, asm_type, c_type, prefix)	\
->  static __always_inline							\
-> -c_type atomic##prefix##_##op##_return_relaxed(c_type i,			\
-> +c_type arch_atomic##prefix##_##op##_return_relaxed(c_type i,		\
->  					      atomic##prefix##_t *v)	\
->  {									\
-> -        return atomic##prefix##_fetch_##op##_relaxed(i, v) c_op I;	\
-> +        return arch_atomic##prefix##_fetch_##op##_relaxed(i, v) c_op I;	\
->  }									\
->  static __always_inline							\
-> -c_type atomic##prefix##_##op##_return(c_type i, atomic##prefix##_t *v)	\
-> +c_type arch_atomic##prefix##_##op##_return(c_type i, atomic##prefix##_t *v)	\
->  {									\
-> -        return atomic##prefix##_fetch_##op(i, v) c_op I;		\
-> +        return arch_atomic##prefix##_fetch_##op(i, v) c_op I;		\
->  }
->
->  #ifdef CONFIG_GENERIC_ATOMIC64
-> @@ -138,26 +138,26 @@ c_type atomic##prefix##_##op##_return(c_type i, atomic##prefix##_t *v)	\
->  ATOMIC_OPS(add, add, +,  i)
->  ATOMIC_OPS(sub, add, +, -i)
->
-> -#define atomic_add_return_relaxed	atomic_add_return_relaxed
-> -#define atomic_sub_return_relaxed	atomic_sub_return_relaxed
-> -#define atomic_add_return		atomic_add_return
-> -#define atomic_sub_return		atomic_sub_return
-> +#define arch_atomic_add_return_relaxed	arch_atomic_add_return_relaxed
-> +#define arch_atomic_sub_return_relaxed	arch_atomic_sub_return_relaxed
-> +#define arch_atomic_add_return		arch_atomic_add_return
-> +#define arch_atomic_sub_return		arch_atomic_sub_return
->
-> -#define atomic_fetch_add_relaxed	atomic_fetch_add_relaxed
-> -#define atomic_fetch_sub_relaxed	atomic_fetch_sub_relaxed
-> -#define atomic_fetch_add		atomic_fetch_add
-> -#define atomic_fetch_sub		atomic_fetch_sub
-> +#define arch_atomic_fetch_add_relaxed	arch_atomic_fetch_add_relaxed
-> +#define arch_atomic_fetch_sub_relaxed	arch_atomic_fetch_sub_relaxed
-> +#define arch_atomic_fetch_add		arch_atomic_fetch_add
-> +#define arch_atomic_fetch_sub		arch_atomic_fetch_sub
->
->  #ifndef CONFIG_GENERIC_ATOMIC64
-> -#define atomic64_add_return_relaxed	atomic64_add_return_relaxed
-> -#define atomic64_sub_return_relaxed	atomic64_sub_return_relaxed
-> -#define atomic64_add_return		atomic64_add_return
-> -#define atomic64_sub_return		atomic64_sub_return
-> -
-> -#define atomic64_fetch_add_relaxed	atomic64_fetch_add_relaxed
-> -#define atomic64_fetch_sub_relaxed	atomic64_fetch_sub_relaxed
-> -#define atomic64_fetch_add		atomic64_fetch_add
-> -#define atomic64_fetch_sub		atomic64_fetch_sub
-> +#define arch_atomic64_add_return_relaxed	arch_atomic64_add_return_relaxed
-> +#define arch_atomic64_sub_return_relaxed	arch_atomic64_sub_return_relaxed
-> +#define arch_atomic64_add_return		arch_atomic64_add_return
-> +#define arch_atomic64_sub_return		arch_atomic64_sub_return
-> +
-> +#define arch_atomic64_fetch_add_relaxed	arch_atomic64_fetch_add_relaxed
-> +#define arch_atomic64_fetch_sub_relaxed	arch_atomic64_fetch_sub_relaxed
-> +#define arch_atomic64_fetch_add		arch_atomic64_fetch_add
-> +#define arch_atomic64_fetch_sub		arch_atomic64_fetch_sub
->  #endif
->
->  #undef ATOMIC_OPS
-> @@ -175,20 +175,20 @@ ATOMIC_OPS(and, and, i)
->  ATOMIC_OPS( or,  or, i)
->  ATOMIC_OPS(xor, xor, i)
->
-> -#define atomic_fetch_and_relaxed	atomic_fetch_and_relaxed
-> -#define atomic_fetch_or_relaxed		atomic_fetch_or_relaxed
-> -#define atomic_fetch_xor_relaxed	atomic_fetch_xor_relaxed
-> -#define atomic_fetch_and		atomic_fetch_and
-> -#define atomic_fetch_or			atomic_fetch_or
-> -#define atomic_fetch_xor		atomic_fetch_xor
-> +#define arch_atomic_fetch_and_relaxed	arch_atomic_fetch_and_relaxed
-> +#define arch_atomic_fetch_or_relaxed	arch_atomic_fetch_or_relaxed
-> +#define arch_atomic_fetch_xor_relaxed	arch_atomic_fetch_xor_relaxed
-> +#define arch_atomic_fetch_and		arch_atomic_fetch_and
-> +#define arch_atomic_fetch_or		arch_atomic_fetch_or
-> +#define arch_atomic_fetch_xor		arch_atomic_fetch_xor
->
->  #ifndef CONFIG_GENERIC_ATOMIC64
-> -#define atomic64_fetch_and_relaxed	atomic64_fetch_and_relaxed
-> -#define atomic64_fetch_or_relaxed	atomic64_fetch_or_relaxed
-> -#define atomic64_fetch_xor_relaxed	atomic64_fetch_xor_relaxed
-> -#define atomic64_fetch_and		atomic64_fetch_and
-> -#define atomic64_fetch_or		atomic64_fetch_or
-> -#define atomic64_fetch_xor		atomic64_fetch_xor
-> +#define arch_atomic64_fetch_and_relaxed	arch_atomic64_fetch_and_relaxed
-> +#define arch_atomic64_fetch_or_relaxed	arch_atomic64_fetch_or_relaxed
-> +#define arch_atomic64_fetch_xor_relaxed	arch_atomic64_fetch_xor_relaxed
-> +#define arch_atomic64_fetch_and		arch_atomic64_fetch_and
-> +#define arch_atomic64_fetch_or		arch_atomic64_fetch_or
-> +#define arch_atomic64_fetch_xor		arch_atomic64_fetch_xor
->  #endif
->
->  #undef ATOMIC_OPS
-> @@ -197,7 +197,7 @@ ATOMIC_OPS(xor, xor, i)
->  #undef ATOMIC_OP_RETURN
->
->  /* This is required to provide a full barrier on success. */
-> -static __always_inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
-> +static __always_inline int arch_atomic_fetch_add_unless(atomic_t *v, int a, int u)
->  {
->         int prev, rc;
->
-> @@ -214,10 +214,10 @@ static __always_inline int atomic_fetch_add_unless(atomic_t *v, int a, int u)
->  		: "memory");
->  	return prev;
->  }
-> -#define atomic_fetch_add_unless atomic_fetch_add_unless
-> +#define arch_atomic_fetch_add_unless arch_atomic_fetch_add_unless
->
->  #ifndef CONFIG_GENERIC_ATOMIC64
-> -static __always_inline s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
-> +static __always_inline s64 arch_atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u)
->  {
->         s64 prev;
->         long rc;
-> @@ -235,7 +235,7 @@ static __always_inline s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u
->  		: "memory");
->  	return prev;
->  }
-> -#define atomic64_fetch_add_unless atomic64_fetch_add_unless
-> +#define arch_atomic64_fetch_add_unless arch_atomic64_fetch_add_unless
->  #endif
->
->  /*
-> @@ -244,45 +244,45 @@ static __always_inline s64 atomic64_fetch_add_unless(atomic64_t *v, s64 a, s64 u
->   */
->  #define ATOMIC_OP(c_t, prefix, size)					\
->  static __always_inline							\
-> -c_t atomic##prefix##_xchg_relaxed(atomic##prefix##_t *v, c_t n)		\
-> +c_t arch_atomic##prefix##_xchg_relaxed(atomic##prefix##_t *v, c_t n)	\
->  {									\
->  	return __xchg_relaxed(&(v->counter), n, size);			\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_xchg_acquire(atomic##prefix##_t *v, c_t n)		\
-> +c_t arch_atomic##prefix##_xchg_acquire(atomic##prefix##_t *v, c_t n)	\
->  {									\
->  	return __xchg_acquire(&(v->counter), n, size);			\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_xchg_release(atomic##prefix##_t *v, c_t n)		\
-> +c_t arch_atomic##prefix##_xchg_release(atomic##prefix##_t *v, c_t n)	\
->  {									\
->  	return __xchg_release(&(v->counter), n, size);			\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_xchg(atomic##prefix##_t *v, c_t n)			\
-> +c_t arch_atomic##prefix##_xchg(atomic##prefix##_t *v, c_t n)		\
->  {									\
->  	return __xchg(&(v->counter), n, size);				\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_cmpxchg_relaxed(atomic##prefix##_t *v,		\
-> +c_t arch_atomic##prefix##_cmpxchg_relaxed(atomic##prefix##_t *v,	\
->  				     c_t o, c_t n)			\
->  {									\
->  	return __cmpxchg_relaxed(&(v->counter), o, n, size);		\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_cmpxchg_acquire(atomic##prefix##_t *v,		\
-> +c_t arch_atomic##prefix##_cmpxchg_acquire(atomic##prefix##_t *v,	\
->  				     c_t o, c_t n)			\
->  {									\
->  	return __cmpxchg_acquire(&(v->counter), o, n, size);		\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_cmpxchg_release(atomic##prefix##_t *v,		\
-> +c_t arch_atomic##prefix##_cmpxchg_release(atomic##prefix##_t *v,	\
->  				     c_t o, c_t n)			\
->  {									\
->  	return __cmpxchg_release(&(v->counter), o, n, size);		\
->  }									\
->  static __always_inline							\
-> -c_t atomic##prefix##_cmpxchg(atomic##prefix##_t *v, c_t o, c_t n)	\
-> +c_t arch_atomic##prefix##_cmpxchg(atomic##prefix##_t *v, c_t o, c_t n)	\
->  {									\
->  	return __cmpxchg(&(v->counter), o, n, size);			\
->  }
-> @@ -298,19 +298,19 @@ c_t atomic##prefix##_cmpxchg(atomic##prefix##_t *v, c_t o, c_t n)	\
->
->  ATOMIC_OPS()
->
-> -#define atomic_xchg_relaxed atomic_xchg_relaxed
-> -#define atomic_xchg_acquire atomic_xchg_acquire
-> -#define atomic_xchg_release atomic_xchg_release
-> -#define atomic_xchg atomic_xchg
-> -#define atomic_cmpxchg_relaxed atomic_cmpxchg_relaxed
-> -#define atomic_cmpxchg_acquire atomic_cmpxchg_acquire
-> -#define atomic_cmpxchg_release atomic_cmpxchg_release
-> -#define atomic_cmpxchg atomic_cmpxchg
-> +#define arch_atomic_xchg_relaxed	arch_atomic_xchg_relaxed
-> +#define arch_atomic_xchg_acquire	arch_atomic_xchg_acquire
-> +#define arch_atomic_xchg_release	arch_atomic_xchg_release
-> +#define arch_atomic_xchg		arch_atomic_xchg
-> +#define arch_atomic_cmpxchg_relaxed	arch_atomic_cmpxchg_relaxed
-> +#define arch_atomic_cmpxchg_acquire	arch_atomic_cmpxchg_acquire
-> +#define arch_atomic_cmpxchg_release	arch_atomic_cmpxchg_release
-> +#define arch_atomic_cmpxchg		arch_atomic_cmpxchg
->
->  #undef ATOMIC_OPS
->  #undef ATOMIC_OP
->
-> -static __always_inline int atomic_sub_if_positive(atomic_t *v, int offset)
-> +static __always_inline int arch_atomic_sub_if_positive(atomic_t *v, int offset)
->  {
->         int prev, rc;
->
-> @@ -328,10 +328,10 @@ static __always_inline int atomic_sub_if_positive(atomic_t *v, int offset)
->  	return prev - offset;
->  }
->
-> -#define atomic_dec_if_positive(v)	atomic_sub_if_positive(v, 1)
-> +#define arch_atomic_dec_if_positive(v)	arch_atomic_sub_if_positive(v, 1)
->
->  #ifndef CONFIG_GENERIC_ATOMIC64
-> -static __always_inline s64 atomic64_sub_if_positive(atomic64_t *v, s64 offset)
-> +static __always_inline s64 arch_atomic64_sub_if_positive(atomic64_t *v, s64 offset)
->  {
->         s64 prev;
->         long rc;
-> @@ -350,7 +350,7 @@ static __always_inline s64 atomic64_sub_if_positive(atomic64_t *v, s64 offset)
->  	return prev - offset;
->  }
->
-> -#define atomic64_dec_if_positive(v)	atomic64_sub_if_positive(v, 1)
-> +#define arch_atomic64_dec_if_positive(v)	arch_atomic64_sub_if_positive(v, 1)
->  #endif
->
->  #endif /* _ASM_RISCV_ATOMIC_H */
-> diff --git a/arch/riscv/include/asm/cmpxchg.h b/arch/riscv/include/asm/cmpxchg.h
-> index 262e5bbb2776..36dc962f6343 100644
-> --- a/arch/riscv/include/asm/cmpxchg.h
-> +++ b/arch/riscv/include/asm/cmpxchg.h
-> @@ -37,7 +37,7 @@
->  	__ret;								\
->  })
->
-> -#define xchg_relaxed(ptr, x)						\
-> +#define arch_xchg_relaxed(ptr, x)					\
->  ({									\
->  	__typeof__(*(ptr)) _x_ = (x);					\
->  	(__typeof__(*(ptr))) __xchg_relaxed((ptr),			\
-> @@ -72,7 +72,7 @@
->  	__ret;								\
->  })
->
-> -#define xchg_acquire(ptr, x)						\
-> +#define arch_xchg_acquire(ptr, x)					\
->  ({									\
->  	__typeof__(*(ptr)) _x_ = (x);					\
->  	(__typeof__(*(ptr))) __xchg_acquire((ptr),			\
-> @@ -107,7 +107,7 @@
->  	__ret;								\
->  })
->
-> -#define xchg_release(ptr, x)						\
-> +#define arch_xchg_release(ptr, x)					\
->  ({									\
->  	__typeof__(*(ptr)) _x_ = (x);					\
->  	(__typeof__(*(ptr))) __xchg_release((ptr),			\
-> @@ -140,7 +140,7 @@
->  	__ret;								\
->  })
->
-> -#define xchg(ptr, x)							\
-> +#define arch_xchg(ptr, x)						\
->  ({									\
->  	__typeof__(*(ptr)) _x_ = (x);					\
->  	(__typeof__(*(ptr))) __xchg((ptr), _x_, sizeof(*(ptr)));	\
-> @@ -149,13 +149,13 @@
->  #define xchg32(ptr, x)							\
->  ({									\
->  	BUILD_BUG_ON(sizeof(*(ptr)) != 4);				\
-> -	xchg((ptr), (x));						\
-> +	arch_xchg((ptr), (x));						\
->  })
->
->  #define xchg64(ptr, x)							\
->  ({									\
->  	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
-> -	xchg((ptr), (x));						\
-> +	arch_xchg((ptr), (x));						\
->  })
->
->  /*
-> @@ -199,7 +199,7 @@
->  	__ret;								\
->  })
->
-> -#define cmpxchg_relaxed(ptr, o, n)					\
-> +#define arch_cmpxchg_relaxed(ptr, o, n)					\
->  ({									\
->  	__typeof__(*(ptr)) _o_ = (o);					\
->  	__typeof__(*(ptr)) _n_ = (n);					\
-> @@ -245,7 +245,7 @@
->  	__ret;								\
->  })
->
-> -#define cmpxchg_acquire(ptr, o, n)					\
-> +#define arch_cmpxchg_acquire(ptr, o, n)					\
->  ({									\
->  	__typeof__(*(ptr)) _o_ = (o);					\
->  	__typeof__(*(ptr)) _n_ = (n);					\
-> @@ -291,7 +291,7 @@
->  	__ret;								\
->  })
->
-> -#define cmpxchg_release(ptr, o, n)					\
-> +#define arch_cmpxchg_release(ptr, o, n)					\
->  ({									\
->  	__typeof__(*(ptr)) _o_ = (o);					\
->  	__typeof__(*(ptr)) _n_ = (n);					\
-> @@ -337,7 +337,7 @@
->  	__ret;								\
->  })
->
-> -#define cmpxchg(ptr, o, n)						\
-> +#define arch_cmpxchg(ptr, o, n)						\
->  ({									\
->  	__typeof__(*(ptr)) _o_ = (o);					\
->  	__typeof__(*(ptr)) _n_ = (n);					\
-> @@ -345,31 +345,31 @@
->  				       _o_, _n_, sizeof(*(ptr)));	\
->  })
->
-> -#define cmpxchg_local(ptr, o, n)					\
-> +#define arch_cmpxchg_local(ptr, o, n)					\
->  	(__cmpxchg_relaxed((ptr), (o), (n), sizeof(*(ptr))))
->
->  #define cmpxchg32(ptr, o, n)						\
->  ({									\
->  	BUILD_BUG_ON(sizeof(*(ptr)) != 4);				\
-> -	cmpxchg((ptr), (o), (n));					\
-> +	arch_cmpxchg((ptr), (o), (n));					\
->  })
->
->  #define cmpxchg32_local(ptr, o, n)					\
->  ({									\
->  	BUILD_BUG_ON(sizeof(*(ptr)) != 4);				\
-> -	cmpxchg_relaxed((ptr), (o), (n))				\
-> +	arch_cmpxchg_relaxed((ptr), (o), (n))				\
->  })
->
-> -#define cmpxchg64(ptr, o, n)						\
-> +#define arch_cmpxchg64(ptr, o, n)					\
->  ({									\
->  	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
-> -	cmpxchg((ptr), (o), (n));					\
-> +	arch_cmpxchg((ptr), (o), (n));					\
->  })
->
-> -#define cmpxchg64_local(ptr, o, n)					\
-> +#define arch_cmpxchg64_local(ptr, o, n)					\
->  ({									\
->  	BUILD_BUG_ON(sizeof(*(ptr)) != 8);				\
-> -	cmpxchg_relaxed((ptr), (o), (n));				\
-> +	arch_cmpxchg_relaxed((ptr), (o), (n));				\
->  })
->
->  #endif /* _ASM_RISCV_CMPXCHG_H */
+On Fri, May 21, 2021 at 12:53:27 +0300, Andy Shevchenko wrote:
+> +Cc: Daniel (here is a real case for test cases!)
+> 
+> On Fri, May 21, 2021 at 12:20 PM Trent Piepho <tpiepho@gmail.com> wrote:
+> > On Fri, May 21, 2021 at 12:55 AM Yiyuan guo <yguoaz@gmail.com> wrote:
+> > >
+> > > Thanks for your timely response.
+> > >
+> > > I am not familiar with the theorem. But any input satisfying the
+> > > condition below will
+> > > trigger a divide by zero at the first loop iteration:
+> > >
+> > > (given_numerator / given_denominator > max_numerator) || (1 +
+> > > given_numerator / given_denominator > max_denominator)
+> >
+> > I think the error can only occur when the loop exits on the 1st
+> > iteration, when d1 is still zero.  In this case the prior convergent,
+> > n1/d1 = 1/0, does not really exist as this is the 1st iteration.  The
+> > actual series of convergents generated will never have zero terms,
+> > because we stop at zero, so there will never be zero from the prior
+> > iteration as we would have stopped there.
+> 
+> This is my conclusion as well, but you beat me to it.
+> And below is exactly my understanding of what's going on.
+> 
+> > I think the prior version of the code, which did not consider
+> > semi-convergents, would have determined the 1st convergent, 314/1,
+> > exceeded the bounds and would return the prior one, 1/0, without
+> > generating an exception but also not a correct answer, since 1/0 isn't
+> > really part of the series, it's just an initial value to make the math
+> > that generates the series work (d2 = a * d1 + d0).
+> >
+> > With semi-convergents, this can actually get the correct answer.  The
+> > best semi-convergent term is correctly found, (max_numerator - n0) /
+> > n1 = 255.  Using this would return 255/1, which is in this case the
+> > best answer.
+> >
+> > But the "is semi-convergent better than prior convergent" test does
+> > not consider what I think is a special case of there being no prior
+> > convergent.  In this case it should always select the semi-convergent.
+> >
+> > I think this handles it:
+> >
+> >                 if ((n2 > max_numerator) || (d2 > max_denominator)) {
+> >                        unsigned long t = (max_numerator - n0) / n1;
+> >                        if (!d1 || (t = min(t, max_denominator - d0) / d1)) ||
+> >                            2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
+> >                                n1 = n0 + t * n1;
+> >                                d1 = d0 + t * d1;
+> >                        }
+> >                        break;
+> >                }
 
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Sorry, it does not. E.g. with the given fraction of 31/1000
+and the registers restricted to 8 and 5 bits respectively, the
+proposed fixed function would still divide by zero, because
+n1 == 0. If it was for the division by d1, the test for !d1
+will cut the expression for the conditional short, as intended,
+but as the branch then uses t, the evaluation for t = ... / d1
+will still be performed.
 
-Sorry this took a bit, I had this put on the slow queue because I 
-thought it would conflict with Guo's patch set but from reading the rest 
-of that thread it appears this is just supersedes which makes things 
-much simpler.
+Moreover, for a fraction of 33/1000, both the original and
+the latest version would produce 1/30, which is off by some
+1.01%, but the proposed fixed version would result in 1/31,
+which is worse: 2.24% off.
 
-I'm assuming this would be for 5.14, and you'd be merging it along with 
-the prep work?  I don't think we have anything else in the works that 
-would require atomic changes for 5.14 yet so that seems OK for now, but 
-it'd be nice to have some shared tag I could pull in both so I can test 
-this and in case we have more to put on top of it.  I'm fine waiting 
-until something comes up if that's a headache on your end, though.
+We are not talking about a science math library, but only
+about a helper function for kernel use, and as results with
+somewhat less than perfect approximation only occur in cases,
+where hardware limitations do not allow the precise result,
+I think the original function was not so bad. And the code it
+produced was much shorter than the latest version, although
+this might not be an argument in times, where a simple OS
+kernel is beyond the 40MB.
 
-Thanks for the cleanup!
+Admitted, the original version had the flaw of offering bogus
+fractions for input beyond the saturation limits, and this
+case sure should be handled. And the function is called "best",
+so Trents approach to look for better results is sure valid.
+
+Nonetheless, I'ld favour going back to the original Euclidian,
+and maybe add a test for the saturation cases to avoid the
+caller running into trouble, even though given the use case
+the caller will probably run into trouble with this fixed,
+when the registers simply cannot hold a good approximation.
+So maybe the function should return a boolean to indicate.
+
+best regards,
+  Oskar
+
+
+
+> > Above !d1 is the special case.  I don't like that, but I'm not seeing
+> > a way to think about the problect that doesn't involve one.
+> 
+> Let me think about it.
+> 
+> > > I think such a condition is rather complex and may not be enforced by
+> > > all callers of this function.
+> > >
+> > > On Fri, May 21, 2021 at 3:42 PM Andy Shevchenko
+> > > <andy.shevchenko@gmail.com> wrote:
+> > > > On Friday, May 21, 2021, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> > > >> On Friday, May 21, 2021, Yiyuan guo <yguoaz@gmail.com> wrote:
+> > > >>>
+> > > >>> In the file lib/math/rational.c, the function
+> > > >>> rational_best_approximation has the following
+> > > >>> code:
+> > > >>>
+> > > >>> void rational_best_approximation(
+> > > >>>     unsigned long given_numerator, unsigned long given_denominator,
+> > > >>>     unsigned long max_numerator, unsigned long max_denominator,
+> > > >>>     unsigned long *best_numerator, unsigned long *best_denominator) {
+> > > >>>    ...
+> > > >>>    if ((n2 > max_numerator) || (d2 > max_denominator)) {
+> > > >>>             unsigned long t = min((max_numerator - n0) / n1,
+> > > >>>                           (max_denominator - d0) / d1);
+> > > >>>    ...
+> > > >>> }
+> > > >>>
+> > > >>> d1 may be equal to zero when performing the division, leading to a
+> > > >>> divide by zero problem.
+> > > >>>
+> > > >>> One input  to trigger the divide by zero bug is:
+> > > >>> rational_best_approximation(31415, 100, (1 << 8) - 1, (1 << 5) - 1, &n, &d)
+> > > >>
+> > > >> Have you read a theorem about this? TL;DR; as far as I can see the input data is not suitable for this function.
+> > > >
+> > > > I think we may add the proper check and saturate the output which in your case should be (255,1).
+> 
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
