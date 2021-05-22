@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0EEE38D59A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 13:26:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6404D38D5A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 13:31:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230408AbhEVL16 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 07:27:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbhEVL1x (ORCPT
+        id S230486AbhEVLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 07:32:26 -0400
+Received: from smtp09.smtpout.orange.fr ([80.12.242.131]:30058 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230393AbhEVLcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 07:27:53 -0400
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 103CDC061574;
-        Sat, 22 May 2021 04:26:26 -0700 (PDT)
-Received: by mail-pj1-x102b.google.com with SMTP id q6so12296269pjj.2;
-        Sat, 22 May 2021 04:26:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8kh6iJCxppwsBbpPOa+gb5iEakg7K3WV07g7y012eVI=;
-        b=QN9RdDCl/yL9Bhr+K7e6V5VOzBbLcjJULkIhY+7UtQFxPiDcqcGUIDLN3zx9iEAS8j
-         JAfWRIDGp6vDUilN+6B2XpYXroWBGwi13Xj9ahIw0WkqchVkzzfaO9XXAQ0etoGax7nf
-         VWEJk87pR72jNJTQ6TSXkDfyly0KEv0QBq6isS2loi3JUPrtgGhIQA2XDhm/MNGMHjvG
-         fGn+BSHAyGRCovQDtV1tB0IiXeB0mSCtU1zkiiABe660Gxxk2U8EFDPIP/PFXWNz1dj8
-         rQxOk7sFjuDSzXyf3v5tcCY24+NUqSzmMT6bN6RxcxaHN7j5nyRcmVPwueMRabQsNQ3V
-         CHbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8kh6iJCxppwsBbpPOa+gb5iEakg7K3WV07g7y012eVI=;
-        b=p1uXYaZEuc8mSNL35cmCkJunwByIavqBnptiF+kOXXhgj3CuzY1YTvhX+K22EmeBQb
-         3VumRAZB8p+Koi4/Gdtpt9i/IYNf7gvOui3eS4UzoFwN4u/ineZaC0XOUddlFHbujIgu
-         L5sDglAoB4yz8bBYCqpg6yQdYpgvjTwhTPc3hGS3ENKo9MImxlkRQMWvlFCBCL4VYiqc
-         Ap8hFdWOHXcQtD1iwGL9TFMNGz4aTdy39mS2Tdf1LKL5dDMPAD2xfj/EoHgeGlD69Vz3
-         7i1Ya7NznS/ITM5kSlSsC54NhdislgnrBk73AKOMd2Bm5gMBhQLK9opDQ6+F8Dh3a2pn
-         qDmg==
-X-Gm-Message-State: AOAM5301JeXqRFrxEvSjxkDI9aTuM0z7QiXVgoTGtM93KQIAAGptXfRv
-        y1wGDpT0p4AnqtStiuC0ARJ2hQMjz2eKcg==
-X-Google-Smtp-Source: ABdhPJym71RIY1/mswIr0hXTkGC0Mmfmk+uWlyOjsnF+G20vsMcWooVOUlvDZUj5N1SgF7irx5V8/Q==
-X-Received: by 2002:a17:903:1c3:b029:f1:ecf4:f971 with SMTP id e3-20020a17090301c3b02900f1ecf4f971mr16849834plh.6.1621682785266;
-        Sat, 22 May 2021 04:26:25 -0700 (PDT)
-Received: from ?IPv6:2405:201:600d:a93f:d9c2:4477:9177:8c76? ([2405:201:600d:a93f:d9c2:4477:9177:8c76])
-        by smtp.gmail.com with ESMTPSA id t14sm6046050pfg.168.2021.05.22.04.26.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 May 2021 04:26:24 -0700 (PDT)
-Subject: Re: [PATCH] Phonet: fix kernel-doc syntax in file headers
-To:     =?UTF-8?Q?R=c3=a9mi_Denis-Courmont?= <remi@remlab.net>
-Cc:     courmisch@gmail.com, lukas.bulwahn@gmail.com,
-        rdunlap@infradead.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210520182159.31462-1-yashsri421@gmail.com>
- <52313028.m8L9TnScQ9@philogene>
-From:   Aditya Srivastava <yashsri421@gmail.com>
-Message-ID: <2970b6b6-1450-8eec-a9e9-45629af9417f@gmail.com>
-Date:   Sat, 22 May 2021 16:56:19 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Sat, 22 May 2021 07:32:24 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d44 with ME
+        id 7nWx2500821Fzsu03nWxNf; Sat, 22 May 2021 13:30:57 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 22 May 2021 13:30:57 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH v2 5/5] misc/pvpanic: Make 'pvpanic_probe()' resource
+ managed
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        pizhenwei@bytedance.com, Paolo Bonzini <pbonzini@redhat.com>,
+        bobo.shaobowang@huawei.com, linqiheng@huawei.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-janitors <kernel-janitors@vger.kernel.org>
+References: <cover.1621665058.git.christophe.jaillet@wanadoo.fr>
+ <9212cdc8c1e5c187a2f1129a6190085c2a10d28a.1621665058.git.christophe.jaillet@wanadoo.fr>
+ <CAHp75VdhgEEeOoJZNXu9RMR0QppDv7HZ-_Lmy4PC=ptXHaz_Lw@mail.gmail.com>
+ <CAHp75Vct5cHgSDU4oQ8ScEoKviiZZgYCKN62AEy0MS=V4oGTiQ@mail.gmail.com>
+ <1217b537-57ea-dcf2-06d8-5b5bd7bcbd5f@wanadoo.fr>
+ <CAHp75VfQHEU9C41Jrv-a4Vw9OHBtmOStrBMNtPCh-74mj1k9dA@mail.gmail.com>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <0a3baf12-0255-70a6-bbb5-a96902516cf3@wanadoo.fr>
+Date:   Sat, 22 May 2021 13:30:57 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.2
 MIME-Version: 1.0
-In-Reply-To: <52313028.m8L9TnScQ9@philogene>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <CAHp75VfQHEU9C41Jrv-a4Vw9OHBtmOStrBMNtPCh-74mj1k9dA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/5/21 2:57 pm, Rémi Denis-Courmont wrote:
-> Le jeudi 20 mai 2021, 21:21:59 EEST Aditya Srivastava a écrit :
->> The opening comment mark '/**' is used for highlighting the beginning of
->> kernel-doc comments.
->> The header for include/*/linux/phonet.h files follows this syntax, but
->> the content inside does not comply with kernel-doc.
->>
->> This line was probably not meant for kernel-doc parsing, but is parsed
->> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
->> causes unexpected warning from kernel-doc.
->> For e.g., running scripts/kernel-doc -none include/linux/phonet.h emits:
->> warning: This comment starts with '/**', but isn't a kernel-doc comment.
->> Refer Documentation/doc-guide/kernel-doc.rst * file phonet.h
->>
->> Provide a simple fix by replacing this occurrence with general comment
->> format, i.e. '/*', to prevent kernel-doc from parsing it.
->>
->> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Le 22/05/2021 à 13:06, Andy Shevchenko a écrit :
+> On Sat, May 22, 2021 at 1:57 PM Christophe JAILLET
+> <christophe.jaillet@wanadoo.fr> wrote:
+>> Le 22/05/2021 à 12:09, Andy Shevchenko a écrit :
 > 
-> You could just as well remove the stray "file XX" lines but OK.
+> ...
 > 
-> Acked-by: Rémi Denis-Courmont <courmisch@gmail.com.>
+>> I'll send a v3, but my turn to nitpick now:
+>>
+>>      Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+>>      Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>
+>> Which one, should I use?
+>> I guess the later.
+> 
+> Both. They have different meanings.
 > 
 
+I was meaning gmail.com or intel.com
 
-Hi Remi and Randy
-Thanks for reviewing :)
-I'll be sending a v2 with removed filenames
-
-Thanks
-Aditya
+CJ
