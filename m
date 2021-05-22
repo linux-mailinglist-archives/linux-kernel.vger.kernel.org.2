@@ -2,99 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07C8738D2FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96E5B38D308
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:26:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhEVCY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 22:24:59 -0400
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:50521 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbhEVCY4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 22:24:56 -0400
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 14M2Mtv0010761
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 11:22:56 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 14M2Mtv0010761
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621650176;
-        bh=EPGned69FKUpkJI4QLd6tg1KYZSxfDCHyOxPCM5QqnU=;
-        h=References:In-Reply-To:From:Date:Subject:To:From;
-        b=BXLeU/SEtBR404q86CpeXocPi7voKf4PhMclP5ED+UAHz+CDvjAaaRRN6jv27QS3f
-         byhRfKEii7fjP/oW8Ay7KXTKYLZAjf2wDfYjyDM5O7xPLRDZoU/AChNZpx/Ay/N7mX
-         +68gMEt+vE7N4+PvAA5bInkBICc4uck+DhDwByJnbFwLl9LExh5/fG2+GrpXUkVGWV
-         LQdCQWrhpN93mSAmMMbwfYn7KevbYzomnKpQBw8bSQinbA50wYPWd0Y8dpV7Tf9MDm
-         4bU/WlHswuZ2XIwmBHRENDneNhSCozbTh14BXi/eYJQ6POqbpLbMqDdx/4cfJbKede
-         BeyUt0ZYIuwQw==
-X-Nifty-SrcIP: [209.85.210.175]
-Received: by mail-pf1-f175.google.com with SMTP id c12so4652571pfl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:22:56 -0700 (PDT)
-X-Gm-Message-State: AOAM533p3EpmIXqNepMrVlV6TCEunyPJPA8vTmrZA0mxUJ6IW/EZYjto
-        w+5vc9iOShLeHqfu2Ggl+dpy0eFJKwJiI+vu2dU=
-X-Google-Smtp-Source: ABdhPJw1Lm3WCTCLlBMpOL19Gi7VpiN6h+rTGq0BEb+eMQuBveC618Vv/WDLZU4oohnVjDO+fwduXxzz4XsGRCH6CKA=
-X-Received: by 2002:a62:ab14:0:b029:2db:b3d9:1709 with SMTP id
- p20-20020a62ab140000b02902dbb3d91709mr12881875pff.80.1621650175519; Fri, 21
- May 2021 19:22:55 -0700 (PDT)
+        id S231177AbhEVC1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 22:27:31 -0400
+Received: from m12-13.163.com ([220.181.12.13]:39682 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230488AbhEVC12 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 22:27:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=nJfcI
+        ngGMlUeh4q6+oHuKptoGEAVFgUthaduyrLhVCI=; b=jqfEMpPl8UeSs901kJ4mG
+        c10XVjzm2lVZgdw1EGTqMeXA/BngHrsc8jr++mdP/LX6Na7YSwGKn5JMD/ZQU18U
+        OHBrfotVBnvUR/bATVY4qPZ/vMqFgQonVUVm2agld7orMbZhJAdgzL4UjWp6FUom
+        diGgrGc64KtFSmh4T3rjRE=
+Received: from carlis.localdomain (unknown [120.229.64.135])
+        by smtp9 (Coremail) with SMTP id DcCowADnZUYBa6hgC+XyBw--.13087S2;
+        Sat, 22 May 2021 10:22:58 +0800 (CST)
+From:   Xuezhi Zhang <llyz108@163.com>
+To:     thierry.reding@gmail.com, sam@ravnborg.org, airlied@linux.ie,
+        daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Xuezhi Zhang <zhangxuezhi1@yulong.com>
+Subject: [PATCH] drm/panel: panel-dsi-cm: convert sysfs snprintf to sysfs_emit
+Date:   Sat, 22 May 2021 02:22:45 +0000
+Message-Id: <20210522022245.37151-1-llyz108@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210430015627.65738-1-masahiroy@kernel.org> <162162208791.14477.6963689219198766644.git-patchwork-notify@kernel.org>
- <CAK7LNAST-2CDycoAsKEmVw-56um7HHs07smaWemsOsL8eo+F6w@mail.gmail.com>
-In-Reply-To: <CAK7LNAST-2CDycoAsKEmVw-56um7HHs07smaWemsOsL8eo+F6w@mail.gmail.com>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 22 May 2021 11:22:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATWFLTKYBg6OOc5JQeb5mZXjUXqo0GNU3vAqVrwfcqDew@mail.gmail.com>
-Message-ID: <CAK7LNATWFLTKYBg6OOc5JQeb5mZXjUXqo0GNU3vAqVrwfcqDew@mail.gmail.com>
-Subject: Re: [PATCH v2] kbuild: replace LANG=C with LC_ALL=C
-To:     patchwork-bot+linux-kselftest@kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: DcCowADnZUYBa6hgC+XyBw--.13087S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWrZrW3ZrWfKF4xJr4UGr1kAFb_yoW8Jr47pF
+        47G347ZrW8JFyqyFWrCFZ2va4rZ3Z2qFWxKa4kGanxuF4UAF48AF9rAFW7Kr15Jr1xG34a
+        gF4DKrW5uay8Ar7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jVMKZUUUUU=
+X-Originating-IP: [120.229.64.135]
+X-CM-SenderInfo: xoo16iiqy6il2tof0z/1tbi6weahVXlwKGOvwABsS
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 11:14 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> On Sat, May 22, 2021 at 3:34 AM
-> <patchwork-bot+linux-kselftest@kernel.org> wrote:
-> >
-> > Hello:
-> >
-> > This patch was applied to shuah/linux-kselftest.git (refs/heads/next):
-> >
-> > On Fri, 30 Apr 2021 10:56:27 +0900 you wrote:
-> > > LANG gives a weak default to each LC_* in case it is not explicitly
-> > > defined. LC_ALL, if set, overrides all other LC_* variables.
-> > >
-> > >   LANG  <  LC_CTYPE, LC_COLLATE, LC_MONETARY, LC_NUMERIC, ...  <  LC_ALL
-> > >
-> > > This is why documentation such as [1] suggests to set LC_ALL in build
-> > > scripts to get the deterministic result.
-> > >
-> > > [...]
-> >
-> > Here is the summary with links:
-> >   - [v2] kbuild: replace LANG=C with LC_ALL=C
-> >     https://git.kernel.org/shuah/linux-kselftest/c/77a88274dc1a
-> >
-> > You are awesome, thank you!
-> > --
->
->
-> Huh?
->
-> This patch exists in Linus' tree.
->
-> Why is this going to the kselftest tree
-> in the first place?
+From: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+
+Fix the following coccicheck warnings:
+drivers/gpu/drm//panel/panel-dsi-cm.c:271:8-16:
+WARNING: use scnprintf or sprintf
+drivers/gpu/drm//panel/panel-dsi-cm.c:251:8-16:
+WARNING: use scnprintf or sprintf
+
+Signed-off-by: Xuezhi Zhang <zhangxuezhi1@yulong.com>
+---
+ drivers/gpu/drm/panel/panel-dsi-cm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/gpu/drm/panel/panel-dsi-cm.c b/drivers/gpu/drm/panel/panel-dsi-cm.c
+index 5fbfb71ca3d9..a8efb06cca64 100644
+--- a/drivers/gpu/drm/panel/panel-dsi-cm.c
++++ b/drivers/gpu/drm/panel/panel-dsi-cm.c
+@@ -248,7 +248,7 @@ static ssize_t num_dsi_errors_show(struct device *dev,
+ 	if (r)
+ 		return r;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", errors);
++	return sysfs_emit(buf, "%d\n", errors);
+ }
+ 
+ static ssize_t hw_revision_show(struct device *dev,
+@@ -268,7 +268,7 @@ static ssize_t hw_revision_show(struct device *dev,
+ 	if (r)
+ 		return r;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%02x.%02x.%02x\n", id1, id2, id3);
++	return sysfs_emit(buf, "%02x.%02x.%02x\n", id1, id2, id3);
+ }
+ 
+ static DEVICE_ATTR_RO(num_dsi_errors);
+-- 
+2.25.1
 
 
-Sorry, I misunderstood it.
-
-I think this notification was unneeded
-because the commit was not actually
-applied to kselftest tree.
-
-
---
-Best Regards
-Masahiro Yamada
