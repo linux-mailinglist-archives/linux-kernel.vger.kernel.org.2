@@ -2,227 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 602B838D4F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86D5338D4F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:54:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbhEVJx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 05:53:59 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43503 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230117AbhEVJx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 05:53:58 -0400
-IronPort-SDR: ujKMOKicmuz+4KCLAkojX89shEgjjSfeOlg/UxguQwKSs1jiLYLmxnR6PDUSmSYAZarNFqrFFq
- i6gFczap++WA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="201363983"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="201363983"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2021 02:52:34 -0700
-IronPort-SDR: XmsY8mSsvDcElh7uG26ybnRbzW6z6O0NsRRR2eOlh4MxTIwLsQZuKvJVfcgaHF6tuO9iXMgrXk
- 75tlsxLIpSZA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="412917039"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga002.jf.intel.com with ESMTP; 22 May 2021 02:52:32 -0700
-Subject: Re: [PATCH] perf script: Find script file relative to exec path
-From:   Adrian Hunter <adrian.hunter@intel.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     linux-kernel@vger.kernel.org
-References: <20210522095030.30770-1-adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <bd6a2ffa-c053-f2f3-3e9f-f77aee2689b0@intel.com>
-Date:   Sat, 22 May 2021 12:52:58 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S230271AbhEVJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 05:55:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhEVJz2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 05:55:28 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE4DC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:54:03 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id j10so33270498lfb.12
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:54:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=bfWyF31hJH+wgEKubDcqwaB5BlxSWqmKk9imIroF8b8=;
+        b=tjvFoBxKeLqRq74ayQlzbShKiTjL0Tq7+kMFJvS8EpHRTgH6eZIke4UAz598WdEyrT
+         hUTT/Cwu0NxTqCif+gkhq2hfgl7k7yIcsaTNBJ3OfQLCGto6FVz1TvqRLQKzeGDO347E
+         Uq/vI/Es6BRfDBxwQqEn1wmCNq945hJaR5IjOt46Bvr3h44+oaqh/Wrjyq5FqQc1Lp4u
+         nJSiZ+tM4rTtl0t/f2u/bJubMfnUOM56YoqLRwBlGAug3E+DCSUHnQTXRLrIGzC5nI7l
+         Xgtyw0W9gwK1iTrido0OU+WcxKtO7gzbVamvK5J2GCR/MbbYRz5LmLgZyPMAyIh3CX7i
+         tHQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=bfWyF31hJH+wgEKubDcqwaB5BlxSWqmKk9imIroF8b8=;
+        b=rHEhUh3Uj4WfFd2s7Z4BT1YtuRf+PAQy/Ff3RKkVQI+6MTuq0VD9hBnzyMN5eb+ztb
+         F3MCqsLNddh8EpnhMa0rjS5LiKeBnprIsX7/gVnGAAJrUJXJ4PXkX+KNyWKDH15wzi2W
+         pabCTBgBCcgNXta3+dTHIZ5xZnB1+hRglpmbTBMLnx5moCvWK4pxUtZybeuToDatXOQD
+         psUYAd7XKzaIxLRXyM8EhM7ZNLmGMXedEDcdsvkJvUZmFWCOGYUQi6rTgcNlAk9Wp/NY
+         3OL71AG9qnCbyhSAmNAaCinT8forXfPwZ7PxrUEYLVat7jbk62xeM1hM/nMX1nWTX0bi
+         4g7w==
+X-Gm-Message-State: AOAM532ZW890SeTX0ADRMskcxKppMW+i8LMWcDgEx9OjMnGvFAQMuFmi
+        85ISl1cwBcazS9TB4tWqoIZMBW09iPlWXeyS+WQ=
+X-Google-Smtp-Source: ABdhPJwejiklUSQS9/gQeigUWX87eUrR9hsG8jWBVsPbiJ5AaKWlkV9Kell42nfTmQYa907B4IDDyBvc3eva4qZg6j4=
+X-Received: by 2002:a05:6512:3208:: with SMTP id d8mr4812020lfe.361.1621677241445;
+ Sat, 22 May 2021 02:54:01 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210522095030.30770-1-adrian.hunter@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a05:651c:215:0:0:0:0 with HTTP; Sat, 22 May 2021 02:54:01
+ -0700 (PDT)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <brichardjohnson02@gmail.com>
+Date:   Sat, 22 May 2021 11:54:01 +0200
+Message-ID: <CAOZWaH8sd41ut-HVmSh--yN0F+ZNJGB0KJ-LiHQxxtRBX2jn6w@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/05/21 12:50 pm, Adrian Hunter wrote:
-> Allow perf script to find a script in the exec path.
-> 
-> Example:
-> 
-> Before:
-> 
->  $ perf record -a -e intel_pt/branch=0/ sleep 0.1
->  [ perf record: Woken up 1 times to write data ]
->  [ perf record: Captured and wrote 0.954 MB perf.data ]
->  $ perf script intel-pt-events.py 2>&1 | head -3
->    Error: Couldn't find script `intel-pt-events.py'
->    See perf script -l for available scripts.
->  $ perf script -s intel-pt-events.py 2>&1 | head -3
->  Can't open python script "intel-pt-events.py": No such file or directory
->  $ perf script ~/libexec/perf-core/scripts/python/intel-pt-events.py 2>&1 | head -3
->    Error: Couldn't find script `/home/ahunter/libexec/perf-core/scripts/python/intel-pt-events.py'
->    See perf script -l for available scripts.
->  $
-> 
-> After:
-> 
->  $ perf script intel-pt-events.py 2>&1 | head -3
->  Intel PT Power Events and PTWRITE
->             perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
->             perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
->  $ perf script -s intel-pt-events.py 2>&1 | head -3
->  Intel PT Power Events and PTWRITE
->             perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
->             perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
->  $ perf script ~/libexec/perf-core/scripts/python/intel-pt-events.py 2>&1 | head -3
->  Intel PT Power Events and PTWRITE
->             perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
->             perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
->  $
-> 
-> Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
-> ---
->  tools/perf/builtin-script.c                   | 42 ++++++++++++++++++-
->  .../util/scripting-engines/trace-event-perl.c |  1 +
->  .../scripting-engines/trace-event-python.c    |  1 +
->  tools/perf/util/trace-event-scripting.c       |  2 +
->  tools/perf/util/trace-event.h                 |  1 +
->  5 files changed, 45 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
-> index 1280cbfad4db..ec5ea36eaa4e 100644
-> --- a/tools/perf/builtin-script.c
-> +++ b/tools/perf/builtin-script.c
-> @@ -2665,6 +2665,36 @@ static void list_available_languages(void)
->  	fprintf(stderr, "\n");
->  }
->  
-> +/* Find script file relative to current directory or exec path */
-> +static char *find_script(const char *script)
-> +{
-> +	if (!scripting_ops) {
-> +		const char *ext = strrchr(script, '.');
-> +
-> +		if (!ext)
-> +			return NULL;
-> +
-> +		scripting_ops = script_spec__lookup(++ext);
-> +		if (!scripting_ops)
-> +			return NULL;
-> +	}
-> +
-> +	if (access(script, R_OK)) {
-> +		char *exec_path = get_argv_exec_path();
-> +		char path[PATH_MAX];
+Hallo
 
-'path' should be declared in the outer scope.  I'll send V2
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
-> +
-> +		if (!exec_path)
-> +			return NULL;
-> +	        snprintf(path, sizeof(path), "%s/scripts/%s/%s",
-> +			 exec_path, scripting_ops->dirname, script);
-> +		free(exec_path);
-> +		script = path;
-> +		if (access(script, R_OK))
-> +			return NULL;
-> +	}
-> +	return strdup(script);
-> +}
-> +
->  static int parse_scriptname(const struct option *opt __maybe_unused,
->  			    const char *str, int unset __maybe_unused)
->  {
-> @@ -2706,7 +2736,9 @@ static int parse_scriptname(const struct option *opt __maybe_unused,
->  		}
->  	}
->  
-> -	script_name = strdup(script);
-> +	script_name = find_script(script);
-> +	if (!script_name)
-> +		script_name = strdup(script);
->  
->  	return 0;
->  }
-> @@ -3718,6 +3750,12 @@ int cmd_script(int argc, const char **argv)
->  		rep_script_path = get_script_path(argv[0], REPORT_SUFFIX);
->  
->  		if (!rec_script_path && !rep_script_path) {
-> +			script_name = find_script(argv[0]);
-> +			if (script_name) {
-> +				argc -= 1;
-> +				argv += 1;
-> +				goto script_found;
-> +			}
->  			usage_with_options_msg(script_usage, options,
->  				"Couldn't find script `%s'\n\n See perf"
->  				" script -l for available scripts.\n", argv[0]);
-> @@ -3810,7 +3848,7 @@ int cmd_script(int argc, const char **argv)
->  		free(__argv);
->  		exit(-1);
->  	}
-> -
-> +script_found:
->  	if (rec_script_path)
->  		script_path = rec_script_path;
->  	if (rep_script_path)
-> diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
-> index 0e608a5ef599..865d310968fb 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-perl.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-perl.c
-> @@ -750,6 +750,7 @@ sub print_backtrace\n\
->  
->  struct scripting_ops perl_scripting_ops = {
->  	.name = "Perl",
-> +	.dirname = "perl",
->  	.start_script = perl_start_script,
->  	.flush_script = perl_flush_script,
->  	.stop_script = perl_stop_script,
-> diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
-> index 4e4aa4c97ac5..db8f24341406 100644
-> --- a/tools/perf/util/scripting-engines/trace-event-python.c
-> +++ b/tools/perf/util/scripting-engines/trace-event-python.c
-> @@ -1876,6 +1876,7 @@ static int python_generate_script(struct tep_handle *pevent, const char *outfile
->  
->  struct scripting_ops python_scripting_ops = {
->  	.name			= "Python",
-> +	.dirname		= "python",
->  	.start_script		= python_start_script,
->  	.flush_script		= python_flush_script,
->  	.stop_script		= python_stop_script,
-> diff --git a/tools/perf/util/trace-event-scripting.c b/tools/perf/util/trace-event-scripting.c
-> index 714581b0de65..721f38c0d5cf 100644
-> --- a/tools/perf/util/trace-event-scripting.c
-> +++ b/tools/perf/util/trace-event-scripting.c
-> @@ -63,6 +63,7 @@ static int python_generate_script_unsupported(struct tep_handle *pevent
->  
->  struct scripting_ops python_scripting_unsupported_ops = {
->  	.name = "Python",
-> +	.dirname = "python",
->  	.start_script = python_start_script_unsupported,
->  	.flush_script = flush_script_unsupported,
->  	.stop_script = stop_script_unsupported,
-> @@ -126,6 +127,7 @@ static int perl_generate_script_unsupported(struct tep_handle *pevent
->  
->  struct scripting_ops perl_scripting_unsupported_ops = {
->  	.name = "Perl",
-> +	.dirname = "perf",
->  	.start_script = perl_start_script_unsupported,
->  	.flush_script = flush_script_unsupported,
->  	.stop_script = stop_script_unsupported,
-> diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
-> index 72fdf2a3577c..39fb39ed6612 100644
-> --- a/tools/perf/util/trace-event.h
-> +++ b/tools/perf/util/trace-event.h
-> @@ -71,6 +71,7 @@ struct perf_stat_config;
->  
->  struct scripting_ops {
->  	const char *name;
-> +	const char *dirname; /* For script path .../scripts/<dirname>/... */
->  	int (*start_script) (const char *script, int argc, const char **argv);
->  	int (*flush_script) (void);
->  	int (*stop_script) (void);
-> 
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
+50% dies tun
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7031@gmail.com
 
+Vielen Dank im Voraus,
+Mr. George Mike,
