@@ -2,241 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36ACD38D3DF
+	by mail.lfdr.de (Postfix) with ESMTP id 7F38938D3E0
 	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:20:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229907AbhEVGVm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 02:21:42 -0400
-Received: from alln-iport-3.cisco.com ([173.37.142.90]:61893 "EHLO
-        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229639AbhEVGVm (ORCPT
+        id S229982AbhEVGVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 02:21:46 -0400
+Received: from alln-iport-2.cisco.com ([173.37.142.89]:56353 "EHLO
+        alln-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229639AbhEVGVp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 02:21:42 -0400
+        Sat, 22 May 2021 02:21:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=5250; q=dns/txt; s=iport;
-  t=1621664418; x=1622874018;
-  h=from:to:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=f7KkmiD67k482FiyPYG2FhcNqhM3Qxwr6ZxK5dM0wIc=;
-  b=F5XNvAA88VSwfBs4nXw5MTLoIdXig6hoaixGWYPpspCFCotxrCOixCRm
-   HnAsglPLZHcXiif7lTkQdbowo7wgPK5YTC/PFBT5+CkZVN1xfu+NLM2NV
-   74kxSxKcDHHLU5AgIGHO3UovFcj9cgd93rYUREGUvyd89rRlA3RzP0RWz
-   8=;
-X-IPAS-Result: =?us-ascii?q?A0AABAC0oahg/4ENJK1agmCCK3dWATkxljebK4F8CwEBA?=
- =?us-ascii?q?Q0BAS0UBAEBhk8CJTQJDgIEAQEBAQMCAwEBAQEFAQEFAQEBAgEGBHEThWgNh?=
- =?us-ascii?q?nILAXRfMhKCcQGDB6g+gXkzgQGITIFEgTqIdnaDeCccgUlEgRWDYGmJVASCJ?=
- =?us-ascii?q?xkHAYENAYFLgRmRNI16nFWDIZ1HEymDW4sZlleGa45PoAuEDQIEBgUCFoFUO?=
- =?us-ascii?q?4FZMxoIGxWDJAlHGQ6OKxaDNYsWIQMvAjYCBgoBAQMJiT4BAQ?=
-IronPort-Data: A9a23:9krKuawcJqzIrmv9sj56t+cvxyrEfRIJ4+MujC+fZmUNrF6WrkUGz
- DROCzrQPviOZWfzeIokYY60/UxV78LXxt82QFdq/1hgHilAwSbn6Xt1DatR0we6dJCroJdPt
- p1GAjX4wUNdokb0/n9BCJC5xZVH/fzOFuCU5NLsYHgrHFc5En550HqPpsZg6mJWqYnha++yk
- YuaT/33YDdJDBYtbwr4Q4rawP9elKyaVAEw5zTSVtgX1LPqrET5ObpETU2Hw9QUdaEPdgKyb
- 76rILhUZQo19T91Yj+uuu6TnkHn3tc+MCDW4ke6VZROjTB7pDAI0qQXCMA9VkV9gja5wohU0
- +5k4MnYpQcBZsUgmcwUVx1eVip5J6ADqfnMIGO0toqYyEiun3nEmqo1Shpoe9RDvL8tUAmi9
- tRAQNwJRhyRju2x2q+6YuJtnc8kasLsOevzv1k/lW2JUal/Hs6rr6Pi9/Rq4R02vcx3MNXMP
- 5Q2aCo+NijJWkgaUrsQINdk9AuyvVH7cjtFuBeWqLAx7mz70gN8yv7uPcDTd9jMQt9a9m6dp
- 2TJ+EzjDx0aPcDZwj2AmlqugevUlAvhVY4SHaH+/flv6HWawmEDARsaWEH9uvm4kU69WtR3L
- 00S5zporK4u+UjtRd74NzW+qXuErwMaVPJTHvc85QXLzbDbiy6QDW0JZj1MctorsIkxXzNC/
- keEg97zFxRutrOPQH6Q/7vSqim9UQAQJHUBIzUZUQ8M5dXLqZs2yBnIS75e/LWdh9nxH3T7x
- CqH6Xl4jLQIhslN3KK+lbzavw+RSlHyZlZdzm3qsqiNt2uVuKbNi1SU1GXm
-IronPort-HdrOrdr: A9a23:7XIpiK9xkLn1S5q0chJuk+DNI+orL9Y04lQ7vn2ZLiYlEPBw+P
- rBoB1273LJYVUqKRIdcK67WZVoKEm0nfUe3WB7B9iftWfd1FdAVLsD0WMnqAeQfxEXMYVmpM
- JdT5Q=
+  d=cisco.com; i=@cisco.com; l=2404; q=dns/txt; s=iport;
+  t=1621664421; x=1622874021;
+  h=from:to:subject:date:message-id:in-reply-to:references:
+   mime-version:content-transfer-encoding;
+  bh=jA6VOyUz8HqvmDa574sYJssvKl47NA09np1hsczVkwQ=;
+  b=hfgMfnzvk++mK9z3qvXLSn6mEDMnOLkZ1VGQbNcomXrzk1JGSTZpPJUz
+   9kMzL8e0aZMFYXGIIfl2NLVhL7QXfs10UIoOvCef+t9e3btY+u5crB6Fc
+   uYuQIHsjd7ZYv/Ib6xR4HmVUb9SiPdkpoxMfgx8XndamfaZS6t4oY0Uzu
+   o=;
+X-IPAS-Result: =?us-ascii?q?A0AiAQAroqhgl4oNJK1agmCDIlYBOTGxYoF8CwEBAQ0BA?=
+ =?us-ascii?q?S0UBAEBhE8CgX4CJTQJDgIEAQEBAQMCAwEBAQEFAQEFAQEBAgEGBBQBAQEBA?=
+ =?us-ascii?q?QEBAWiFaA2GRQYyAVYeMywrBxKCcQGDB6g+giyBAYhMgUSBOoh2doN4JxyBS?=
+ =?us-ascii?q?USBFYNgij0EgkeBDxOTX44gnFWDIYoKkz0TKYUdoC6VOqALhA0CBAYFAhaBV?=
+ =?us-ascii?q?DmBWzMaCBsVgyQJRxkOjjiDPocKhAwhAy8CNgIGCgEBAwmJPgEB?=
+IronPort-Data: A9a23:XFz8nqqmF2e5GkOz57ClxHGW1vteBmLIZRIvgKrLsJaIsI4StFCzt
+ garIBnXOv6KZzb0Ktwkad/g8EsCv8PXyd4wSlM9/ytmRi9Go+PIVI+TRqvS04x+DSFioGZPt
+ Zh2hgzodZhsJpPkS5TE3oHJ9RGQ74nQLlbHILOCanoZqTNMEn970Eo+wbdh2+aEvPDga++zk
+ YKqyyHgEAfNNw5cagr4PIra9XuDFNyr0N8plgRWicJj5TcypFFJZH4rHpxdGlOjKmVi8kFWc
+ M6YpF2x1juxEx7AkbpJmJ6jGqEBaua60QRjFhO6VoD66iWuqBDe3Y48avY3eWFoqwm2oNt90
+ c1q78GgdQoQa/ikdOQ1C3G0Egl3OalAvbTAO3X67IqYzlbNdD3nxPAG4EMeZNJDvL0pRzgVs
+ 6VDeFjhbTjb7w6y6L6pQ+ZrnNkiBMLqJ4gY/HpnyFk1CN55G8uaGv2QuoUwMDEY25ANQcTFN
+ ssgeAVgfk/jSAYWNlgSB8dr9AuvriCvL2IHwL6PnoIz4m7O3Ely3aLrPd79ZNOHX4NWk1yeq
+ 2aA+H72ajkfNdqQzhKf/36sj/OJliT+MKoQE7mj/9ZwjVGTz3BVAxoTPXOypfSpg0iyVsgZM
+ EwV4SotrK4a8E2tU8m7XhukrXrCtRkZM/JWGug6+RyLxYLX7hyfC2xCSSROAPQvv8o7bT8nz
+ FmEm5XuHzMHmKWYVX+H5J+Vqz2oMCQYJGNEYjULJSMA6sPg5psukhbGSNpLGbSwyNbyHFnNL
+ yuipSw6gfAYitQGkvj99lHciDXqrZ/MJuIo2unJdmX74ihpQrGFW7OX4lTC9dEacZalQ2DU6
+ RDohPOiAPAy4YClzXLXGbhdQun2up5pIxWH2gY+RclJGyCFvi/9I9wNvFmSMW80aq45lSnVj
+ Fg/UO+7zLZXOHasBUOcS93sU5xwpUQM+CiMaxw5RtNKZp40fwid8WQzDaJx44wPuBV3+U3cE
+ c7GGSpJMZr8Ifg/pNZRb7xAuYLHPghkmQvuqWnTlnxLK4ZygUJ5r59bbjNiichntcu5TPn9q
+ L6zyuPTkUwECb2iCsUp2dBNcjjm0kTX9biv+5AIKYZv0yJNGXoqDLfq0Kg9dol+95m5Zc+Zo
+ y7nBB4w9bYLvlWaeVTiQi0yM9vHAMcgxU/XyARxZD5ELVB4Ot3xhEreHrNqFYQaGBtLna8sE
+ 6ZdI53eahmNIxyekwkggVDGhNQKXHyWacimZkJJvBBXk0ZcejH0
+IronPort-HdrOrdr: A9a23:odP8LKPi63cZj8BcTsCjsMiBIKoaSvp037BN7TEUdfU7SKKlfq
+ yV8cjzkCWE6wr5O0tQ/OxoRpPgfZq0z/cciuMs1PWZLWvbUQCTQ72Kg7GP/9SZIU3DHio379
+ YHT0C4Y+eAamRHsQ==
 X-IronPort-Anti-Spam-Filtered: true
 X-IronPort-AV: E=Sophos;i="5.82,319,1613433600"; 
-   d="scan'208";a="704847176"
-Received: from alln-core-9.cisco.com ([173.36.13.129])
-  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 22 May 2021 06:20:17 +0000
+   d="scan'208";a="723110272"
+Received: from alln-core-5.cisco.com ([173.36.13.138])
+  by alln-iport-2.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 22 May 2021 06:20:17 +0000
 Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
-        by alln-core-9.cisco.com (8.15.2/8.15.2) with ESMTPS id 14M6KHPe028323
+        by alln-core-5.cisco.com (8.15.2/8.15.2) with ESMTPS id 14M6KHFP013759
         (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
         Sat, 22 May 2021 06:20:17 GMT
 Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
-        id D3EF5CC1251; Fri, 21 May 2021 23:20:16 -0700 (PDT)
+        id D6A80CC1253; Fri, 21 May 2021 23:20:16 -0700 (PDT)
 From:   Denys Zagorui <dzagorui@cisco.com>
 To:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
         peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
         mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
         namhyung@kernel.org
-Subject: [PATCH v7 1/3] perf report: compile tips.txt in perf binary
-Date:   Fri, 21 May 2021 23:20:14 -0700
-Message-Id: <20210522062016.84677-1-dzagorui@cisco.com>
+Subject: [PATCH v7 2/3] perf tests: avoid storing an absolute path in perf binary
+Date:   Fri, 21 May 2021 23:20:15 -0700
+Message-Id: <20210522062016.84677-2-dzagorui@cisco.com>
 X-Mailer: git-send-email 2.26.2.Cisco
+In-Reply-To: <20210522062016.84677-1-dzagorui@cisco.com>
+References: <20210522062016.84677-1-dzagorui@cisco.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
-X-Outbound-Node: alln-core-9.cisco.com
+X-Outbound-Node: alln-core-5.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems there is some need to have an ability to invoke perf from
-build directory without installation
-(84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
-DOCDIR definition contains an absolute path to kernel source directory.
-It is build machine related info and it makes perf binary unreproducible.
-
-This can be avoided by compiling tips.txt in perf directly.
+python binding test uses PYTHONPATH definition to find python/perf.so
+library. This definition is an absolute path that makes perf binary
+unreproducible. This path can be found during runtime execution.
 
 Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
 ---
- tools/perf/Build               |  2 +-
- tools/perf/Documentation/Build |  9 +++++++++
- tools/perf/builtin-report.c    | 34 +++++++++++++++++++++++++---------
- tools/perf/util/util.c         | 28 ----------------------------
- tools/perf/util/util.h         |  2 --
- 5 files changed, 35 insertions(+), 40 deletions(-)
- create mode 100644 tools/perf/Documentation/Build
+ tools/perf/tests/Build        |  2 +-
+ tools/perf/tests/python-use.c | 32 ++++++++++++++++++++++++++++++--
+ 2 files changed, 31 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/Build b/tools/perf/Build
-index db61dbe2b543..3a2e768d7576 100644
---- a/tools/perf/Build
-+++ b/tools/perf/Build
-@@ -45,12 +45,12 @@ CFLAGS_perf.o              += -DPERF_HTML_PATH="BUILD_STR($(htmldir_SQ))"	\
- 			      -DPREFIX="BUILD_STR($(prefix_SQ))"
- CFLAGS_builtin-trace.o	   += -DSTRACE_GROUPS_DIR="BUILD_STR($(STRACE_GROUPS_DIR_SQ))"
- CFLAGS_builtin-report.o	   += -DTIPDIR="BUILD_STR($(tipdir_SQ))"
--CFLAGS_builtin-report.o	   += -DDOCDIR="BUILD_STR($(srcdir_SQ)/Documentation)"
+diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
+index 650aec19d490..a20098dcdbc4 100644
+--- a/tools/perf/tests/Build
++++ b/tools/perf/tests/Build
+@@ -98,5 +98,5 @@ perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
+ endif
  
- perf-y += util/
- perf-y += arch/
- perf-y += ui/
- perf-y += scripts/
- perf-$(CONFIG_TRACE) += trace/beauty/
-+perf-y += Documentation/
+ CFLAGS_attr.o         += -DBINDIR="BUILD_STR($(bindir_SQ))" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
+-CFLAGS_python-use.o   += -DPYTHONPATH="BUILD_STR($(OUTPUT)python)" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
++CFLAGS_python-use.o   += -DPYTHON="BUILD_STR($(PYTHON_WORD))"
+ CFLAGS_dwarf-unwind.o += -fno-optimize-sibling-calls
+diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-use.c
+index 98c6d474aa6f..e196faf1140d 100644
+--- a/tools/perf/tests/python-use.c
++++ b/tools/perf/tests/python-use.c
+@@ -8,18 +8,46 @@
+ #include <linux/compiler.h>
+ #include "tests.h"
+ #include "util/debug.h"
++#include "util/util.h"
++#include <sys/stat.h>
++#include <limits.h>
++#include <libgen.h>
  
- gtk-y += ui/gtk/
-diff --git a/tools/perf/Documentation/Build b/tools/perf/Documentation/Build
-new file mode 100644
-index 000000000000..83e16764caa4
---- /dev/null
-+++ b/tools/perf/Documentation/Build
-@@ -0,0 +1,9 @@
-+perf-y += tips.o
-+
-+quiet_cmd_ld_tips = LD       $@
-+      cmd_ld_tips = $(LD) -r -b binary -o $@ $<
-+
-+$(OUTPUT)Documentation/tips.o: Documentation/tips.txt FORCE
-+	$(call rule_mkdir)
-+	$(call if_changed,ld_tips)
-+
-diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
-index 36f9ccfeb38a..4f2c7ee8fea1 100644
---- a/tools/perf/builtin-report.c
-+++ b/tools/perf/builtin-report.c
-@@ -47,7 +47,6 @@
- #include "util/time-utils.h"
- #include "util/auxtrace.h"
- #include "util/units.h"
--#include "util/util.h" // perf_tip()
- #include "ui/ui.h"
- #include "ui/progress.h"
- #include "util/block-info.h"
-@@ -109,6 +108,9 @@ struct report {
- 	int			nr_block_reports;
- };
- 
-+extern char _binary_Documentation_tips_txt_start[];
-+extern char _binary_Documentation_tips_txt_end[];
-+
- static int report__config(const char *var, const char *value, void *cb)
+ int test__python_use(struct test *test __maybe_unused, int subtest __maybe_unused)
  {
- 	struct report *rep = cb;
-@@ -614,19 +616,33 @@ static int report__gtk_browse_hists(struct report *rep, const char *help)
- 	return hist_browser(rep->session->evlist, help, NULL, rep->min_percent);
- }
+ 	char *cmd;
+ 	int ret;
++	char *exec_path;
++	char *buf;
++	char *pythonpath = NULL;
++	struct stat sb;
  
-+static const char *perf_tip(void)
-+{
-+	char *start = _binary_Documentation_tips_txt_start;
-+	char *tok, *tmp, *prev;
-+	int pick, size;
+-	if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); import perf\" | %s %s",
+-		     PYTHONPATH, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
++	buf = malloc(PATH_MAX);
++	if (buf == NULL)
+ 		return -1;
+ 
++	perf_exe(buf, PATH_MAX);
++	exec_path = dirname(buf);
 +
-+	size = _binary_Documentation_tips_txt_end - start;
-+	pick = random() % size;
-+
-+	_binary_Documentation_tips_txt_start[size - 1] = 0;
-+
-+	for (tok = strtok_r(start, "\n", &tmp); tok;
-+	     tok = strtok_r(NULL, "\n", &tmp)) {
-+		if (pick < (tok - start))
-+			return prev;
-+		prev = tok;
++	if (asprintf(&pythonpath, "%s/python", exec_path) < 0) {
++		ret = -1;
++		goto out;
 +	}
 +
-+	return prev;
-+}
++	if (stat(pythonpath, &sb) || !S_ISDIR(sb.st_mode))
++		pythonpath[0] = 0;
 +
- static int report__browse_hists(struct report *rep)
- {
- 	int ret;
- 	struct perf_session *session = rep->session;
- 	struct evlist *evlist = session->evlist;
--	const char *help = perf_tip(system_path(TIPDIR));
--
--	if (help == NULL) {
--		/* fallback for people who don't install perf ;-) */
--		help = perf_tip(DOCDIR);
--		if (help == NULL)
--			help = "Cannot load tips.txt file, please install perf!";
--	}
-+	const char *help = perf_tip();
- 
- 	switch (use_browser) {
- 	case 1:
-diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-index 37a9492edb3e..3bba74e431ed 100644
---- a/tools/perf/util/util.c
-+++ b/tools/perf/util/util.c
-@@ -379,34 +379,6 @@ fetch_kernel_version(unsigned int *puint, char *str,
- 	return 0;
++	if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); import perf\" | %s %s",
++		     pythonpath, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0) {
++		ret = -1;
++		goto out;
++	}
++
+ 	pr_debug("python usage test: \"%s\"\n", cmd);
+ 	ret = system(cmd) ? -1 : 0;
+ 	free(cmd);
++out:
++	free(buf);
++	free(pythonpath);
+ 	return ret;
  }
- 
--const char *perf_tip(const char *dirpath)
--{
--	struct strlist *tips;
--	struct str_node *node;
--	char *tip = NULL;
--	struct strlist_config conf = {
--		.dirname = dirpath,
--		.file_only = true,
--	};
--
--	tips = strlist__new("tips.txt", &conf);
--	if (tips == NULL)
--		return errno == ENOENT ? NULL :
--			"Tip: check path of tips.txt or get more memory! ;-p";
--
--	if (strlist__nr_entries(tips) == 0)
--		goto out;
--
--	node = strlist__entry(tips, random() % strlist__nr_entries(tips));
--	if (asprintf(&tip, "Tip: %s", node->s) < 0)
--		tip = (char *)"Tip: get more memory! ;-)";
--
--out:
--	strlist__delete(tips);
--
--	return tip;
--}
--
- char *perf_exe(char *buf, int len)
- {
- 	int n = readlink("/proc/self/exe", buf, len);
-diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-index ad737052e597..80b194ee6c7d 100644
---- a/tools/perf/util/util.h
-+++ b/tools/perf/util/util.h
-@@ -39,8 +39,6 @@ int fetch_kernel_version(unsigned int *puint,
- #define KVER_FMT	"%d.%d.%d"
- #define KVER_PARAM(x)	KVER_VERSION(x), KVER_PATCHLEVEL(x), KVER_SUBLEVEL(x)
- 
--const char *perf_tip(const char *dirpath);
--
- #ifndef HAVE_SCHED_GETCPU_SUPPORT
- int sched_getcpu(void);
- #endif
 -- 
 2.26.2.Cisco
 
