@@ -2,560 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11E638D6C1
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 20:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3275838D6C7
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 20:06:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231218AbhEVSDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 14:03:11 -0400
-Received: from smtp70.iad3a.emailsrvr.com ([173.203.187.70]:51182 "EHLO
-        smtp70.iad3a.emailsrvr.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229903AbhEVSDK (ORCPT
+        id S231337AbhEVSHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 14:07:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230497AbhEVSHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 14:03:10 -0400
-X-Greylist: delayed 424 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 May 2021 14:03:10 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mev.co.uk;
-        s=20190130-41we5z8j; t=1621706080;
-        bh=Ic+pr+ITitDRuLJkzWASnjr8noDwbPtoqLF51O1S1Bw=;
-        h=Subject:To:From:Date:From;
-        b=LwNi+Qzb6kVTrCOVL6S4BkzWp5pRCJQE0T00I5ZETMq8qq0nNWHmtvfR+sXEYZ2+8
-         xHztnALFawoiltEmANNvi69PUFEOnvsPZmHfrYLlehM44pDViQ7dfJlrMFufCr57Kn
-         TsfYacdfFt7qEwZj6DJQ1OGuStr4CETc7Im7I6mo=
-X-Auth-ID: abbotti@mev.co.uk
-Received: by smtp9.relay.iad3a.emailsrvr.com (Authenticated sender: abbotti-AT-mev.co.uk) with ESMTPSA id E176A435A;
-        Sat, 22 May 2021 13:54:39 -0400 (EDT)
-Subject: Re: [PATCH v2] comedi: Make ni_mio_common a standalone module
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <uwe@kleine-koenig.org>,
-        H Hartley Sweeten <hsweeten@visionengravers.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-References: <20210522115345.821578-1-uwe@kleine-koenig.org>
-From:   Ian Abbott <abbotti@mev.co.uk>
-Message-ID: <6a09f2b6-afda-a901-abe6-1b45d51988e8@mev.co.uk>
-Date:   Sat, 22 May 2021 18:54:38 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sat, 22 May 2021 14:07:41 -0400
+Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD647C061574;
+        Sat, 22 May 2021 11:06:16 -0700 (PDT)
+Received: by mail-wm1-x32a.google.com with SMTP id f6-20020a1c1f060000b0290175ca89f698so9114704wmf.5;
+        Sat, 22 May 2021 11:06:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PdFjx680hDLKYhZTSS1Guwd8pcDuscxe0HRr3gILf8o=;
+        b=A39KiAyYjelaEcQ79m/x3fciVw/rhCbwPQdbdMQ2FfuuVDJVLSs6LLhVYv/1SVsP57
+         UgUk4yrhf9Vpd2k0j0lgdyqJYvTdQFBow4xqv+wKc2wlkw1MgniZm5gSZv/Buekr79IA
+         oV1oJZboQEk87pn1vEBEXdi4r917R4FqtznvzIVNODAk9Slp+YrL8gjJ6EZ5OdrHAARa
+         Q1ZASIYneTQFE/gML4pqq01HCXsMPfzl37VpuLzTx+kjBbCM9tNP0BbFj9YF8x/3Wvrh
+         wGaObo9zEcXXAgXZ35fvvL1amWzUP/zlWQsVvGoUAL53znJx+5YM+ONBufLzTMtZ5fBC
+         SIvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PdFjx680hDLKYhZTSS1Guwd8pcDuscxe0HRr3gILf8o=;
+        b=lVGg6+KXwRIiEFi/LzgOtnd9K7wa1GsCim39xbpBFo1W7RX1WaPag2R2HNr0hXjJTa
+         IaJ4B6PrGJ36O7HYrFg8ltBzh6HYuAm5K6fbok+PdTSIgBpsdcWVa+laJSSeglWxbd/+
+         EjCtdwohi6hfp1qN+obTqZLzz14qTyNzmM02zo6xIi2JSidP3B0f6Za+R2DVfjHqVAXd
+         Q6LvTVDIRaOqYI5W1jb9ZVaMwtb7URXIS1ybP3oyFv7MKJZiSbmeMxRbtmssBaw536XE
+         GsB/4gvYEnc21HIMurgz/4CR0W9qlHiNl8P4s862lKgQ+O3Mf2DPdWiPdRsYJk0gQYkJ
+         IIOQ==
+X-Gm-Message-State: AOAM530rAYST+DLohK79jsT3tgTG/1pyzffCQ8Cy4zr68HWm0iwGU9FU
+        C8fDUBlAyB/kyALiRpIgy0U=
+X-Google-Smtp-Source: ABdhPJyo+3t36ZZ6jzAGBJ97JSOBr88XANmvxxgDzk+n74H2zGGxXbJZysJSwhTApWGuaR91GSL/yQ==
+X-Received: by 2002:a05:600c:4f48:: with SMTP id m8mr13935940wmq.169.1621706775244;
+        Sat, 22 May 2021 11:06:15 -0700 (PDT)
+Received: from localhost.localdomain ([94.73.38.147])
+        by smtp.gmail.com with ESMTPSA id v12sm5913217wrv.76.2021.05.22.11.06.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 11:06:14 -0700 (PDT)
+From:   =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+To:     jikos@kernel.org
+Cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Jos=C3=A9=20Exp=C3=B3sito?= <jose.exposito89@gmail.com>
+Subject: [PATCH v2 1/5] HID: magicmouse: register power supply
+Date:   Sat, 22 May 2021 20:06:07 +0200
+Message-Id: <20210522180611.314300-1-jose.exposito89@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210522115345.821578-1-uwe@kleine-koenig.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Classification-ID: 1673a5fb-7c54-4f79-ab74-4c721333d31d-1-1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/05/2021 12:53, Uwe Kleine-König wrote:
-> This allows to get rid of the ugly
-> 
-> 	#include "ni_mio_common.c"
-> 
-> in three modules.
-> 
-> For an amd64 allmodconfig this changed the size for the following object
-> files:
->                                         |  before |  after
-> drivers/comedi/drivers/ni_atmio.o      |  323944 |  20832
-> drivers/comedi/drivers/ni_mio_cs.o     |  318376 |  15000
-> drivers/comedi/drivers/ni_mio_common.o |       - | 325048
-> drivers/comedi/drivers/ni_pcimio.o     |  389344 |  48216
-> ---------------------------------------+---------+-------
->   sum                                   | 1031664 | 409096
-> 
-> So this results in a considerable decrease in binary size of more than
-> 600 KiB.
-> 
-> Signed-off-by: Uwe Kleine-König <uwe@kleine-koenig.org>
-> ---
-> Hello,
-> 
-> changes compared to (implicit) v1 can be seen below. I now make use of a
-> module name space COMEDI_NI as suggested by Greg and moved the
-> declaration for range_ni_E_ao_ext to a more sensible place. The numbers
-> got a tad worse because of the module name space, but the order is still
-> the same.
-> 
-> Best regards
-> Uwe
-> 
-> Range-diff against v1:
-> 1:  79b9c40b8aa1 ! 1:  37d109ed616a comedi: Make ni_mio_common a standalone module
->      @@ Commit message
->           For an amd64 allmodconfig this changed the size for the following object
->           files:
->                                                  |  before |  after
->      -    drivers/comedi/drivers/ni_atmio.o      |  323944 |  20752
->      -    drivers/comedi/drivers/ni_mio_cs.o     |  318376 |  14920
->      -    drivers/comedi/drivers/ni_mio_common.o |       - | 324872
->      -    drivers/comedi/drivers/ni_pcimio.o     |  389344 |  48168
->      +    drivers/comedi/drivers/ni_atmio.o      |  323944 |  20832
->      +    drivers/comedi/drivers/ni_mio_cs.o     |  318376 |  15000
->      +    drivers/comedi/drivers/ni_mio_common.o |       - | 325048
->      +    drivers/comedi/drivers/ni_pcimio.o     |  389344 |  48216
->           ---------------------------------------+---------+-------
->      -     sum                                   | 1031664 | 408712
->      +     sum                                   | 1031664 | 409096
->       
->           So this results in a considerable decrease in binary size of more than
->           600 KiB.
->      @@ drivers/comedi/drivers/ni_mio.h (new)
->       +extern int ni_E_init(struct comedi_device *dev,
->       +		     unsigned int interrupt_pin, unsigned int irq_polarity);
->       +extern void mio_common_detach(struct comedi_device *dev);
->      ++
->      ++extern const struct comedi_lrange range_ni_E_ao_ext;
->      ++
->      ++MODULE_IMPORT_NS(COMEDI_NI);
->       
->        ## drivers/comedi/drivers/ni_mio_common.c ##
->       @@
->      +  * fully tested as yet. Terry Barnaby, BEAM Ltd.
->         */
->        
->      ++#define DEFAULT_SYMBOL_NAMESPACE COMEDI_NI
->      ++
->        #include <linux/interrupt.h>
->       +#include <linux/module.h>
->        #include <linux/sched.h>
->      @@ drivers/comedi/drivers/ni_stc.h: struct ni_private {
->        };
->        
->       -static const struct comedi_lrange range_ni_E_ao_ext;
->      -+extern const struct comedi_lrange range_ni_E_ao_ext;
->      -
->      +-
->        #endif /* _COMEDI_NI_STC_H */
-> 
->   drivers/comedi/Kconfig                 |  6 +++
->   drivers/comedi/drivers/Makefile        |  1 +
->   drivers/comedi/drivers/ni_atmio.c      |  6 +--
->   drivers/comedi/drivers/ni_mio.h        | 37 +++++++++++++++
->   drivers/comedi/drivers/ni_mio_common.c | 65 +++++++++++++-------------
->   drivers/comedi/drivers/ni_mio_cs.c     |  6 +--
->   drivers/comedi/drivers/ni_pcimio.c     |  3 +-
->   drivers/comedi/drivers/ni_stc.h        |  2 -
->   8 files changed, 81 insertions(+), 45 deletions(-)
->   create mode 100644 drivers/comedi/drivers/ni_mio.h
-> 
-> diff --git a/drivers/comedi/Kconfig b/drivers/comedi/Kconfig
-> index 3cb61fa2c5c3..8137b94001ea 100644
-> --- a/drivers/comedi/Kconfig
-> +++ b/drivers/comedi/Kconfig
-> @@ -473,9 +473,13 @@ config COMEDI_NI_AT_AO
->   	  To compile this driver as a module, choose M here: the module will be
->   	  called ni_at_ao.
->   
-> +config COMEDI_NI_MIO
-> +	tristate
-> +
->   config COMEDI_NI_ATMIO
->   	tristate "NI AT-MIO E series ISA-PNP card support"
->   	select COMEDI_8255
-> +	select COMEDI_NI_MIO
->   	select COMEDI_NI_TIO
->   	help
->   	  Enable support for National Instruments AT-MIO E series cards
-> @@ -1053,6 +1057,7 @@ config COMEDI_NI_PCIDIO
->   config COMEDI_NI_PCIMIO
->   	tristate "NI PCI-MIO-E series and M series support"
->   	depends on HAS_DMA
-> +	select COMEDI_NI_MIO
->   	select COMEDI_NI_TIOCMD
->   	select COMEDI_8255
->   	help
-> @@ -1160,6 +1165,7 @@ config COMEDI_NI_LABPC_CS
->   
->   config COMEDI_NI_MIO_CS
->   	tristate "NI DAQCard E series PCMCIA support"
-> +	select COMEDI_NI_MIO
->   	select COMEDI_NI_TIO
->   	select COMEDI_8255
->   	help
-> diff --git a/drivers/comedi/drivers/Makefile b/drivers/comedi/drivers/Makefile
-> index b24ac00cab73..725ad62f4c99 100644
-> --- a/drivers/comedi/drivers/Makefile
-> +++ b/drivers/comedi/drivers/Makefile
-> @@ -49,6 +49,7 @@ obj-$(CONFIG_COMEDI_MPC624)		+= mpc624.o
->   obj-$(CONFIG_COMEDI_ADQ12B)		+= adq12b.o
->   obj-$(CONFIG_COMEDI_NI_AT_A2150)	+= ni_at_a2150.o
->   obj-$(CONFIG_COMEDI_NI_AT_AO)		+= ni_at_ao.o
-> +obj-$(CONFIG_COMEDI_NI_MIO)		+= ni_mio_common.o
->   obj-$(CONFIG_COMEDI_NI_ATMIO)		+= ni_atmio.o
->   obj-$(CONFIG_COMEDI_NI_ATMIO16D)	+= ni_atmio16d.o
->   obj-$(CONFIG_COMEDI_NI_LABPC_ISA)	+= ni_labpc.o
-> diff --git a/drivers/comedi/drivers/ni_atmio.c b/drivers/comedi/drivers/ni_atmio.c
-> index 56c78da475e7..d2c211788109 100644
-> --- a/drivers/comedi/drivers/ni_atmio.c
-> +++ b/drivers/comedi/drivers/ni_atmio.c
-> @@ -44,8 +44,7 @@
->    */
->   
->   /*
-> - * The real guts of the driver is in ni_mio_common.c, which is included
-> - * both here and in ni_pcimio.c
-> + * The real guts of the driver is in ni_mio_common.c.
->    *
->    * Interrupt support added by Truxton Fulton <trux@truxton.com>
->    *
-> @@ -78,6 +77,7 @@
->   #include <linux/isapnp.h>
->   
->   #include "ni_stc.h"
-> +#include "ni_mio.h"
->   #include "8255.h"
->   
->   /* AT specific setup */
-> @@ -205,8 +205,6 @@ static const int ni_irqpin[] = {
->   	-1, -1, -1, 0, 1, 2, -1, 3, -1, -1, 4, 5, 6, -1, -1, 7
->   };
->   
-> -#include "ni_mio_common.c"
-> -
->   static const struct pnp_device_id device_ids[] = {
->   	{.id = "NIC1900", .driver_data = 0},
->   	{.id = "NIC2400", .driver_data = 0},
-> diff --git a/drivers/comedi/drivers/ni_mio.h b/drivers/comedi/drivers/ni_mio.h
-> new file mode 100644
-> index 000000000000..c9f20ade9dcc
-> --- /dev/null
-> +++ b/drivers/comedi/drivers/ni_mio.h
-> @@ -0,0 +1,37 @@
-> +#include <linux/interrupt.h>
-> +
-> +#define NI_GPCT_SUBDEV(x)	(NI_GPCT0_SUBDEV + (x))
-> +
-> +enum ni_common_subdevices {
-> +	NI_AI_SUBDEV,
-> +	NI_AO_SUBDEV,
-> +	NI_DIO_SUBDEV,
-> +	NI_8255_DIO_SUBDEV,
-> +	NI_UNUSED_SUBDEV,
-> +	NI_CALIBRATION_SUBDEV,
-> +	NI_EEPROM_SUBDEV,
-> +	NI_PFI_DIO_SUBDEV,
-> +	NI_CS5529_CALIBRATION_SUBDEV,
-> +	NI_SERIAL_SUBDEV,
-> +	NI_RTSI_SUBDEV,
-> +	NI_GPCT0_SUBDEV,
-> +	NI_GPCT1_SUBDEV,
-> +	NI_FREQ_OUT_SUBDEV,
-> +	NI_NUM_SUBDEVICES
-> +};
-> +
-> +extern void ni_writel(struct comedi_device *dev, unsigned int data, int reg);
-> +extern void ni_writew(struct comedi_device *dev, unsigned int data, int reg);
-> +extern void ni_writeb(struct comedi_device *dev, unsigned int data, int reg);
-> +extern unsigned int ni_readb(struct comedi_device *dev, int reg);
-> +extern void ni_stc_writew(struct comedi_device *dev, unsigned int data, int reg);
-> +extern int ni_read_eeprom(struct comedi_device *dev, int addr);
-> +extern irqreturn_t ni_E_interrupt(int irq, void *d);
-> +extern int ni_alloc_private(struct comedi_device *dev);
-> +extern int ni_E_init(struct comedi_device *dev,
-> +		     unsigned int interrupt_pin, unsigned int irq_polarity);
-> +extern void mio_common_detach(struct comedi_device *dev);
-> +
-> +extern const struct comedi_lrange range_ni_E_ao_ext;
-> +
-> +MODULE_IMPORT_NS(COMEDI_NI);
-> diff --git a/drivers/comedi/drivers/ni_mio_common.c b/drivers/comedi/drivers/ni_mio_common.c
-> index 4f80a4991f95..af480d03296c 100644
-> --- a/drivers/comedi/drivers/ni_mio_common.c
-> +++ b/drivers/comedi/drivers/ni_mio_common.c
-> @@ -40,12 +40,19 @@
->    * fully tested as yet. Terry Barnaby, BEAM Ltd.
->    */
->   
-> +#define DEFAULT_SYMBOL_NAMESPACE COMEDI_NI
-> +
->   #include <linux/interrupt.h>
-> +#include <linux/module.h>
->   #include <linux/sched.h>
->   #include <linux/delay.h>
->   #include "8255.h"
->   #include "mite.h"
->   
-> +#include "ni_stc.h"
-> +#include "ni_mio.h"
-> +#include "../comedidev.h"
-> +
->   /* A timeout count */
->   #define NI_TIMEOUT 1000
->   
-> @@ -160,7 +167,7 @@ static const struct comedi_lrange range_ni_M_ai_628x = {
->   	}
->   };
->   
-> -static const struct comedi_lrange range_ni_E_ao_ext = {
-> +const struct comedi_lrange range_ni_E_ao_ext = {
->   	4, {
->   		BIP_RANGE(10),
->   		UNI_RANGE(10),
-> @@ -168,6 +175,7 @@ static const struct comedi_lrange range_ni_E_ao_ext = {
->   		RANGE_ext(0, 1)
->   	}
->   };
-> +EXPORT_SYMBOL_GPL(range_ni_E_ao_ext);
->   
->   static const struct comedi_lrange *const ni_range_lkup[] = {
->   	[ai_gain_16] = &range_ni_E_ai,
-> @@ -187,26 +195,6 @@ enum aimodes {
->   	AIMODE_SAMPLE = 3,
->   };
->   
-> -enum ni_common_subdevices {
-> -	NI_AI_SUBDEV,
-> -	NI_AO_SUBDEV,
-> -	NI_DIO_SUBDEV,
-> -	NI_8255_DIO_SUBDEV,
-> -	NI_UNUSED_SUBDEV,
-> -	NI_CALIBRATION_SUBDEV,
-> -	NI_EEPROM_SUBDEV,
-> -	NI_PFI_DIO_SUBDEV,
-> -	NI_CS5529_CALIBRATION_SUBDEV,
-> -	NI_SERIAL_SUBDEV,
-> -	NI_RTSI_SUBDEV,
-> -	NI_GPCT0_SUBDEV,
-> -	NI_GPCT1_SUBDEV,
-> -	NI_FREQ_OUT_SUBDEV,
-> -	NI_NUM_SUBDEVICES
-> -};
-> -
-> -#define NI_GPCT_SUBDEV(x)	(NI_GPCT0_SUBDEV + (x))
-> -
->   enum timebase_nanoseconds {
->   	TIMEBASE_1_NS = 50,
->   	TIMEBASE_2_NS = 10000
-> @@ -219,29 +207,32 @@ enum timebase_nanoseconds {
->   
->   static const int num_adc_stages_611x = 3;
->   
-> -static void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
-> +void ni_writel(struct comedi_device *dev, unsigned int data, int reg)
->   {
->   	if (dev->mmio)
->   		writel(data, dev->mmio + reg);
->   	else
->   		outl(data, dev->iobase + reg);
->   }
-> +EXPORT_SYMBOL_GPL(ni_writel);
->   
-> -static void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
-> +void ni_writew(struct comedi_device *dev, unsigned int data, int reg)
->   {
->   	if (dev->mmio)
->   		writew(data, dev->mmio + reg);
->   	else
->   		outw(data, dev->iobase + reg);
->   }
-> +EXPORT_SYMBOL_GPL(ni_writew);
->   
-> -static void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
-> +void ni_writeb(struct comedi_device *dev, unsigned int data, int reg)
->   {
->   	if (dev->mmio)
->   		writeb(data, dev->mmio + reg);
->   	else
->   		outb(data, dev->iobase + reg);
->   }
-> +EXPORT_SYMBOL_GPL(ni_writeb);
->   
->   static unsigned int ni_readl(struct comedi_device *dev, int reg)
->   {
-> @@ -259,13 +250,14 @@ static unsigned int ni_readw(struct comedi_device *dev, int reg)
->   	return inw(dev->iobase + reg);
->   }
->   
-> -static unsigned int ni_readb(struct comedi_device *dev, int reg)
-> +unsigned int ni_readb(struct comedi_device *dev, int reg)
->   {
->   	if (dev->mmio)
->   		return readb(dev->mmio + reg);
->   
->   	return inb(dev->iobase + reg);
->   }
-> +EXPORT_SYMBOL_GPL(ni_readb);
->   
->   /*
->    * We automatically take advantage of STC registers that can be
-> @@ -435,8 +427,7 @@ static unsigned int m_series_stc_read(struct comedi_device *dev,
->   	}
->   }
->   
-> -static void ni_stc_writew(struct comedi_device *dev,
-> -			  unsigned int data, int reg)
-> +void ni_stc_writew(struct comedi_device *dev, unsigned int data, int reg)
->   {
->   	struct ni_private *devpriv = dev->private;
->   	unsigned long flags;
-> @@ -454,6 +445,7 @@ static void ni_stc_writew(struct comedi_device *dev,
->   		spin_unlock_irqrestore(&devpriv->window_lock, flags);
->   	}
->   }
-> +EXPORT_SYMBOL_GPL(ni_stc_writew);
->   
->   static void ni_stc_writel(struct comedi_device *dev,
->   			  unsigned int data, int reg)
-> @@ -4482,7 +4474,7 @@ static void caldac_setup(struct comedi_device *dev, struct comedi_subdevice *s)
->   	}
->   }
->   
-> -static int ni_read_eeprom(struct comedi_device *dev, int addr)
-> +int ni_read_eeprom(struct comedi_device *dev, int addr)
->   {
->   	unsigned int cmd = NI_E_SERIAL_CMD_EEPROM_CS;
->   	int bit;
-> @@ -4511,6 +4503,7 @@ static int ni_read_eeprom(struct comedi_device *dev, int addr)
->   
->   	return bitstring;
->   }
-> +EXPORT_SYMBOL_GPL(ni_read_eeprom);
->   
->   static int ni_eeprom_insn_read(struct comedi_device *dev,
->   			       struct comedi_subdevice *s,
-> @@ -5885,7 +5878,7 @@ static int ni_gpct_cancel(struct comedi_device *dev, struct comedi_subdevice *s)
->   }
->   #endif
->   
-> -static irqreturn_t ni_E_interrupt(int irq, void *d)
-> +irqreturn_t ni_E_interrupt(int irq, void *d)
->   {
->   	struct comedi_device *dev = d;
->   	struct comedi_subdevice *s_ai = dev->read_subdev;
-> @@ -5941,8 +5934,9 @@ static irqreturn_t ni_E_interrupt(int irq, void *d)
->   	spin_unlock_irqrestore(&dev->spinlock, flags);
->   	return IRQ_HANDLED;
->   }
-> +EXPORT_SYMBOL_GPL(ni_E_interrupt);
->   
-> -static int ni_alloc_private(struct comedi_device *dev)
-> +int ni_alloc_private(struct comedi_device *dev)
->   {
->   	struct ni_private *devpriv;
->   
-> @@ -5956,6 +5950,7 @@ static int ni_alloc_private(struct comedi_device *dev)
->   
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(ni_alloc_private);
->   
->   static unsigned int _ni_get_valid_routes(struct comedi_device *dev,
->   					 unsigned int n_pairs,
-> @@ -5967,8 +5962,8 @@ static unsigned int _ni_get_valid_routes(struct comedi_device *dev,
->   				   pair_data);
->   }
->   
-> -static int ni_E_init(struct comedi_device *dev,
-> -		     unsigned int interrupt_pin, unsigned int irq_polarity)
-> +int ni_E_init(struct comedi_device *dev,
-> +	      unsigned int interrupt_pin, unsigned int irq_polarity)
->   {
->   	const struct ni_board_struct *board = dev->board_ptr;
->   	struct ni_private *devpriv = dev->private;
-> @@ -6331,11 +6326,15 @@ static int ni_E_init(struct comedi_device *dev,
->   
->   	return 0;
->   }
-> +EXPORT_SYMBOL_GPL(ni_E_init);
->   
-> -static void mio_common_detach(struct comedi_device *dev)
-> +void mio_common_detach(struct comedi_device *dev)
->   {
->   	struct ni_private *devpriv = dev->private;
->   
->   	if (devpriv)
->   		ni_gpct_device_destroy(devpriv->counter_dev);
->   }
-> +EXPORT_SYMBOL_GPL(mio_common_detach);
-> +
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/comedi/drivers/ni_mio_cs.c b/drivers/comedi/drivers/ni_mio_cs.c
-> index 4f37b4e58f09..9f11efde28f9 100644
-> --- a/drivers/comedi/drivers/ni_mio_cs.c
-> +++ b/drivers/comedi/drivers/ni_mio_cs.c
-> @@ -19,8 +19,7 @@
->    */
->   
->   /*
-> - * The real guts of the driver is in ni_mio_common.c, which is
-> - * included by all the E series drivers.
-> + * The real guts of the driver is in ni_mio_common.c
->    *
->    * References for specifications:
->    *	341080a.pdf  DAQCard E Series Register Level Programmer Manual
-> @@ -31,6 +30,7 @@
->   
->   #include "../comedi_pcmcia.h"
->   #include "ni_stc.h"
-> +#include "ni_mio.h"
->   #include "8255.h"
->   
->   /*
-> @@ -112,8 +112,6 @@ static const struct ni_board_struct ni_boards[] = {
->   #endif
->   };
->   
-> -#include "ni_mio_common.c"
-> -
->   static const void *ni_getboardtype(struct comedi_device *dev,
->   				   struct pcmcia_device *link)
->   {
-> diff --git a/drivers/comedi/drivers/ni_pcimio.c b/drivers/comedi/drivers/ni_pcimio.c
-> index 6c813a490ba5..f74114e883be 100644
-> --- a/drivers/comedi/drivers/ni_pcimio.c
-> +++ b/drivers/comedi/drivers/ni_pcimio.c
-> @@ -100,6 +100,7 @@
->   #include <asm/byteorder.h>
->   
->   #include "ni_stc.h"
-> +#include "ni_mio.h"
->   #include "mite.h"
->   
->   #define PCIDMA
-> @@ -1142,8 +1143,6 @@ static const struct ni_board_struct ni_boards[] = {
->   	},
->   };
->   
-> -#include "ni_mio_common.c"
-> -
->   static int pcimio_ai_change(struct comedi_device *dev,
->   			    struct comedi_subdevice *s)
->   {
-> diff --git a/drivers/comedi/drivers/ni_stc.h b/drivers/comedi/drivers/ni_stc.h
-> index fbc0b753a0f5..7837e4683c6d 100644
-> --- a/drivers/comedi/drivers/ni_stc.h
-> +++ b/drivers/comedi/drivers/ni_stc.h
-> @@ -1137,6 +1137,4 @@ struct ni_private {
->   	u8 rgout0_usage;
->   };
->   
-> -static const struct comedi_lrange range_ni_E_ao_ext;
-> -
->   #endif /* _COMEDI_NI_STC_H */
-> 
-> base-commit: 6efb943b8616ec53a5e444193dccf1af9ad627b5
-> 
+Unlike the Apple Magic Mouse 1 and the Apple Magic Trackpad 1, the
+second generation of the devices don't report their battery status
+automatically.
 
-NAK.
+This patchset adds support for reporting the battery capacity and
+charging status for the Apple Magic Mouse 2 and Apple Magic Trackpad
+2 both over bluetooth and USB.
 
-It's not as simple as that.  "ni_mio_common.c" contains condional code 
-that depends on whether the PCIDMA macro is defined or not before it is 
-included.  "ni_pcimio.c" defines the PCIDMA macro but "ni_atmio.c" and 
-"ni_mio_cs.c" do not.
+This patch:
 
-The "ni_pcimio" module depends on the "mite" and "ni_tiocmd" modules and 
-most of the code that depends on those is in the PCIDMA parts of 
-"ni_mio_common.c".
+Register the required power supply structs for the Apple Magic Mouse 2
+and the Apple Magic Trackpad 2 to be able to report battery capacity
+and status in future patches.
 
-The "ni_atmio" and "ni_mio_cs" modules do not depend on the "mite" and 
-"ni_tiocmd" modules, and should not compile any of the PCMDMA parts of 
-"ni_mio_common.c" that depends on it.
+Signed-off-by: José Expósito <jose.exposito89@gmail.com>
 
-So you see, there are really two versions of the "ni_mio_common.c" code 
-currently, but this "ni_mio_common" module you have added only has one 
-version of the code, and that version of the code is broken for "ni_pcimio".
+---
 
+v2: Add depends on USB_HID to Kconfig
+---
+ drivers/hid/hid-magicmouse.c | 90 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 90 insertions(+)
+
+diff --git a/drivers/hid/hid-magicmouse.c b/drivers/hid/hid-magicmouse.c
+index 2bb473d8c424..0f766bce4537 100644
+--- a/drivers/hid/hid-magicmouse.c
++++ b/drivers/hid/hid-magicmouse.c
+@@ -112,6 +112,9 @@ MODULE_PARM_DESC(report_undeciphered, "Report undeciphered multi-touch state fie
+  * @scroll_jiffies: Time of last scroll motion.
+  * @touches: Most recent data for a touch, indexed by tracking ID.
+  * @tracking_ids: Mapping of current touch input data to @touches.
++ * @battery: Required data to report the battery status of the Apple Magic
++ * Mouse 2 and Apple Magic Trackpad 2. Battery is reported automatically on the
++ * first generation of the devices.
+  */
+ struct magicmouse_sc {
+ 	struct input_dev *input;
+@@ -132,8 +135,89 @@ struct magicmouse_sc {
+ 
+ 	struct hid_device *hdev;
+ 	struct delayed_work work;
++
++	struct {
++		struct power_supply *ps;
++		struct power_supply_desc ps_desc;
++	} battery;
++};
++
++static enum power_supply_property magicmouse_ps_props[] = {
++	POWER_SUPPLY_PROP_PRESENT,
++	POWER_SUPPLY_PROP_SCOPE,
+ };
+ 
++static bool magicmouse_can_report_battery(struct magicmouse_sc *msc)
++{
++	return (msc->input->id.product == USB_DEVICE_ID_APPLE_MAGICTRACKPAD2) ||
++	       (msc->input->id.product == USB_DEVICE_ID_APPLE_MAGICMOUSE2);
++}
++
++static int magicmouse_battery_get_property(struct power_supply *psy,
++					   enum power_supply_property psp,
++					   union power_supply_propval *val)
++{
++	struct magicmouse_sc *msc = power_supply_get_drvdata(psy);
++	int ret = 0;
++
++	if (!magicmouse_can_report_battery(msc))
++		return -EINVAL;
++
++	switch (psp) {
++	case POWER_SUPPLY_PROP_PRESENT:
++		val->intval = 1;
++		break;
++	case POWER_SUPPLY_PROP_SCOPE:
++		val->intval = POWER_SUPPLY_SCOPE_DEVICE;
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++
++static int magicmouse_battery_probe(struct hid_device *hdev)
++{
++	struct magicmouse_sc *msc = hid_get_drvdata(hdev);
++	struct power_supply *ps = NULL;
++	struct power_supply_config ps_cfg = { .drv_data = msc };
++	int ret;
++
++	if (!magicmouse_can_report_battery(msc))
++		return 0;
++
++	msc->battery.ps_desc.type = POWER_SUPPLY_TYPE_BATTERY;
++	msc->battery.ps_desc.properties = magicmouse_ps_props;
++	msc->battery.ps_desc.num_properties = ARRAY_SIZE(magicmouse_ps_props);
++	msc->battery.ps_desc.get_property = magicmouse_battery_get_property;
++	msc->battery.ps_desc.name = kasprintf(GFP_KERNEL, "magic_trackpad_2_%s",
++					      msc->input->uniq);
++	if (!msc->battery.ps_desc.name) {
++		hid_err(hdev, "unable to register ps_desc name, ENOMEM\n");
++		return -ENOMEM;
++	}
++
++	ps = devm_power_supply_register(&hdev->dev, &msc->battery.ps_desc,
++					&ps_cfg);
++	if (IS_ERR(ps)) {
++		ret = PTR_ERR(ps);
++		hid_err(hdev, "unable to register battery device: %d\n", ret);
++		return ret;
++	}
++
++	msc->battery.ps = ps;
++
++	ret = power_supply_powers(msc->battery.ps, &hdev->dev);
++	if (ret) {
++		hid_err(hdev, "unable to activate battery device: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
+ static int magicmouse_firm_touch(struct magicmouse_sc *msc)
+ {
+ 	int touch = -1;
+@@ -726,6 +810,12 @@ static int magicmouse_probe(struct hid_device *hdev,
+ 		goto err_stop_hw;
+ 	}
+ 
++	ret = magicmouse_battery_probe(hdev);
++	if (ret) {
++		hid_err(hdev, "battery not registered\n");
++		goto err_stop_hw;
++	}
++
+ 	if (id->product == USB_DEVICE_ID_APPLE_MAGICMOUSE)
+ 		report = hid_register_report(hdev, HID_INPUT_REPORT,
+ 			MOUSE_REPORT_ID, 0);
 -- 
--=( Ian Abbott <abbotti@mev.co.uk> || MEV Ltd. is a company  )=-
--=( registered in England & Wales.  Regd. number: 02862268.  )=-
--=( Regd. addr.: S11 & 12 Building 67, Europa Business Park, )=-
--=( Bird Hall Lane, STOCKPORT, SK3 0XA, UK. || www.mev.co.uk )=-
+2.25.1
+
