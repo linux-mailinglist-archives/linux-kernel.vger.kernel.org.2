@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2E538D768
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 22:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FC0738D76B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 22:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231411AbhEVUjY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 16:39:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
+        id S231430AbhEVUkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 16:40:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231351AbhEVUjW (ORCPT
+        with ESMTP id S231361AbhEVUk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 16:39:22 -0400
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B8FC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 13:37:57 -0700 (PDT)
-Received: by mail-lf1-x131.google.com with SMTP id r5so34800287lfr.5
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 13:37:57 -0700 (PDT)
+        Sat, 22 May 2021 16:40:29 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C64ADC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 13:39:02 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id s25so28240353ljo.11
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 13:39:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=J59CjCkaqpNL4HQikRqliZKwZsb8+i7GpR8GPIB50BM=;
-        b=qUxpiGVK6C9Q41ELKUChIMxUakbFQOQLOG2OK6ijQab1YzDD+br42k9ZiFEHmHR+uZ
-         zSxWAQg20vhhyfgZ6hAo7CltCHCr4Up7i3bADubgn1Fy+ZhjJVQo/W75OHRudR5M04xY
-         59Lrbo+PvLPXu15sQkftihdwTS+II+s3OUv8hjJmoXcplhGI+Sswhggng2GZMtCKDmEN
-         n9a9RsUqygVmi8C3DP5bKKiQV6UFy0Io2frR2QRnNzvxIOxpi9CZutPdbwESbuNT63ux
-         jWuCDJBtcQuUEzJVsE0xH+gx5nLvhpeeg92zlW3D6WfEcwk8fRoo0dbVGxHf5BKfoy8i
-         LuuQ==
+        bh=ahnE6dhfkBaa/nV64xFhkX0jenewCBSGFU3sB02LBms=;
+        b=vNlzu/2o3XIiUwKFufYqk8fs2zxcT5JsMoh5ECjYIAMO+FBtVle8+K+fv/DkelMKSz
+         lKZqlXpSjKNHMHYLjKs9C3MaqR0vqmelCasl2/2dFP8XYebwdWX9WGsdkuxaJLC4rDtw
+         JrIn+/j4IidwvNTIxsHFcyDloHEfZHrSFv4II1Nq5j9huyAKgkNaaE8iSVxIIpNE0gf2
+         S3XT06o7zgSYdCFZJMrQ5FjHr6AhlzpTFgMgiM++zDRUVF2Yf3PQrGZbjU2ZBKGurzSi
+         0SCFLJkwq5r8zn3vvy3Yq+Ib0qwoumYl1Bw2ebx1+Ps4j+1RaS3cKUb0vT4WSeWKIiKw
+         tqCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:reply-to:from:date:message-id
          :subject:to;
-        bh=J59CjCkaqpNL4HQikRqliZKwZsb8+i7GpR8GPIB50BM=;
-        b=TAKt4FBnMJXmvYfc24nweyQKhmVyYL0QZHI1TEPnPIc0G5/khu10APieMREFR7nWTt
-         ZC0di0CChwWS8hBvu+vLXQj1X+O6S247x28uh3EhVEEkSOGYyLzYCVDOpcwHijfQkwAB
-         Q6R2Nu4xzU036413luXc4YO6nKUVCxTXpIp9tYldENhwWdxNZ4Q82+hXX0+bQhpshzlh
-         a1zVwQM9kHgkxRb8Llhdw05PPR7D7iC8uLfn2jPY4MizXid0ybx7IPaLBQTixNYrQo8a
-         2iIWLxiYl+5cZUz9HE00n1mlk2R6HuCvNvEldtp9cY44oE8rWPZtTBxk29r1owg2QChb
-         JqyA==
-X-Gm-Message-State: AOAM531VPhE7ZnyKXDvARFYWnph5iB9CUJmQDqwzowbRhrE5PZ9See6A
-        Fpve97LKmnJBQU+PiLGY4aclOSRMaD5Bgg5R/vQ=
-X-Google-Smtp-Source: ABdhPJwCtiFaC9dKhX+rXkjAPiLX9rJPhrTTENgsw2r5LTuPCAkrAPZzfOKXlgsmwsVAw66cQwMFGYQphPI1YDtOutM=
-X-Received: by 2002:a05:6512:3b10:: with SMTP id f16mr6060577lfv.393.1621715875624;
- Sat, 22 May 2021 13:37:55 -0700 (PDT)
+        bh=ahnE6dhfkBaa/nV64xFhkX0jenewCBSGFU3sB02LBms=;
+        b=nBdsNYPhE/04lfsry3eeN/4pXS4GHfuxynwPz0W247AY8N6pz2ikdDB1A8RsCub6k8
+         CRHPma2kZ190ijo0T6uUPotrXk/vHp1Gm92W0PB/pe99wIsANUM+qHa9viXUy34dWDog
+         zdcbZc1MzSWNxyUhMIn6gIAyjmWn9E352INFowTVgYjRc0S1QWdMwAI1HY4Y0XyL8qBz
+         nxclf8JMUX9HXgZpS8PpFXBt2UBkU0/+K63o8uglwR0XGwCcjbSCgCUkOEhRflN0yF3D
+         Sryd9YiA1yMxrnUXQMKK0VSzKbnmd2hElGfvYKSeAXpgFdem+97oWoyJLa2GUXOPtKsv
+         6N8g==
+X-Gm-Message-State: AOAM53120LQ4z/VYfrGLy5F9jWpDnXAcVScjSDJwKdkWMMAABlVrOEqi
+        5XVOs490aaWG4y2gtDvE4G2gki37pZTyb4mX9b8=
+X-Google-Smtp-Source: ABdhPJwWKs8hbuwaH0rZeiMWF8gj/b+6iPzBFyMBAqbTqhOgdykVZjC+b8ipx0Lb7mfDpuVFhzjwpeH9Pqa9HGLKAmY=
+X-Received: by 2002:a2e:97ca:: with SMTP id m10mr11262723ljj.205.1621715940856;
+ Sat, 22 May 2021 13:39:00 -0700 (PDT)
 MIME-Version: 1.0
-Received: by 2002:ac2:5a4a:0:0:0:0:0 with HTTP; Sat, 22 May 2021 13:37:54
+Received: by 2002:ac2:5a4a:0:0:0:0:0 with HTTP; Sat, 22 May 2021 13:39:00
  -0700 (PDT)
 Reply-To: vanselschoemancorporate@gmail.com
 From:   john mark <johnmarkee1999@gmail.com>
-Date:   Sat, 22 May 2021 13:37:54 -0700
-Message-ID: <CA+BiiPKEmCwD8=6g5+jFK-shaG3rgda5xh0_ocxuW4X54E=hHw@mail.gmail.com>
+Date:   Sat, 22 May 2021 13:39:00 -0700
+Message-ID: <CA+BiiP+OSPvYm7Ecw0JLN+YKPMWGr8t1AL5ETywp7Kk4-UKX0Q@mail.gmail.com>
 Subject: FROM MRS. GRACE MUGABE
 To:     undisclosed-recipients:;
-Content-Type: multipart/mixed; boundary="000000000000b198c605c2f12693"
+Content-Type: multipart/mixed; boundary="00000000000094ea0d05c2f12ade"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000b198c605c2f12693
+--00000000000094ea0d05c2f12ade
 Content-Type: text/plain; charset="UTF-8"
 
 FIND ATTACHED COPY OF MY PRESENTATION
@@ -67,7 +67,7 @@ GRACE MUGABE
 HARARE
 ZIMBABWE
 
---000000000000b198c605c2f12693
+--00000000000094ea0d05c2f12ade
 Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document; 
 	name="GRACE MUGABE.docx"
 Content-Disposition: attachment; filename="GRACE MUGABE.docx"
@@ -309,4 +309,4 @@ AAAAAAAAHykAAHdvcmQvbnVtYmVyaW5nLnhtbFBLAQItABQABgAIAAAAIQAzlxvIBAIAACcHAAAS
 AAAAAAAAAAAAAAAAACYsAAB3b3JkL2ZvbnRUYWJsZS54bWxQSwECLQAUAAYACAAAACEAhPwRGHgB
 AADJAgAAEAAAAAAAAAAAAAAAAABaLgAAZG9jUHJvcHMvYXBwLnhtbFBLBQYAAAAADAAMAAEDAAAI
 MQAAAAA=
---000000000000b198c605c2f12693--
+--00000000000094ea0d05c2f12ade--
