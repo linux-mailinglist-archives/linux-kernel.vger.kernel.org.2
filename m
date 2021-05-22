@@ -2,158 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD0B38D4DF
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B7938D4E9
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:50:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbhEVJlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 05:41:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49524 "EHLO mail.kernel.org"
+        id S230174AbhEVJvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 05:51:32 -0400
+Received: from mga07.intel.com ([134.134.136.100]:18597 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230040AbhEVJlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 05:41:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C5986121E;
-        Sat, 22 May 2021 09:39:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621676381;
-        bh=tfF9+YhDr2xfNe6gGZFpVXgjcYb+3uxCebRm62G0ghs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=1oiYVz4HZ0MOm2t/lINFcnX81UythZV9nMTunqZ8DChaRYlZkGN/RuHqO70xXRw82
-         WXawUYtIDQ3wPNSn3w7ILEQYhg7gTU0lkFISQ9GTarK+S+A3IFS5+1p69JOEUU/Q3W
-         4PImVMg1SsCay7yXPQYXk/q1+iwgm/GMG/IrdZRU=
-Date:   Sat, 22 May 2021 11:39:39 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/37] 5.4.121-rc1 review
-Message-ID: <YKjRWydp1bRV3SjP@kroah.com>
-References: <20210520092052.265851579@linuxfoundation.org>
- <0a9f8458-60a4-e87a-04cb-ed2840d15bbf@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0a9f8458-60a4-e87a-04cb-ed2840d15bbf@gmail.com>
+        id S230117AbhEVJvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 05:51:31 -0400
+IronPort-SDR: 9iU9jwjcXIn/dNJIcLmFvSW2HvPFEVsCW1e854gAx96LQWlnj/mcU5Ilu5rWmJJzMM4O/SZr1F
+ EZrMhqhA8EXg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9991"; a="265549448"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="265549448"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2021 02:50:06 -0700
+IronPort-SDR: 19vq5TZ6d0nzG+bACoN8CW4RYBgcz+b2oC/n61MXxv7Rb2yn5RPjLHRRNB+cKxJddKoaf0CQGQ
+ kO24Dgm6kj0Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="474940543"
+Received: from ahunter-desktop.fi.intel.com ([10.237.72.174])
+  by orsmga001.jf.intel.com with ESMTP; 22 May 2021 02:50:05 -0700
+From:   Adrian Hunter <adrian.hunter@intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH] perf script: Find script file relative to exec path
+Date:   Sat, 22 May 2021 12:50:30 +0300
+Message-Id: <20210522095030.30770-1-adrian.hunter@intel.com>
+X-Mailer: git-send-email 2.17.1
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki, Business Identity Code: 0357606 - 4, Domiciled in Helsinki
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 09:39:26PM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 5/20/2021 2:22 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.121 release.
-> > There are 37 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Sat, 22 May 2021 09:20:38 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.121-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> 
-> 
-> Was not able to bisect yet since the nightly tests were running but one
-> of our boards caught the following running an ARM 32-bit kernel. The
-> same board did not reproduce that warning a second time around, I will
-> keep an eye on it. Other than that, everything went well.
-> 
-> There are no change to RCU, scheduler or kthreads but we do make SMC
-> calls for SCMI (power management) so my guess would be that "ARM:
-> 9075/1: kernel: Fix interrupted SMC calls" would trigger that. We have
-> 15 other boards that run the same configuration but did not catch that.
-> 
-> # sleep 5
-> [   16.864190] bcmgenet 47d580000.ethernet eth0: Link is Up - 1Gbps/Full
-> - flow control off
-> [   17.568981] ------------[ cut here ]------------
-> [   17.573669] WARNING: CPU: 0 PID: 10 at kernel/kthread.c:75
-> kthread_is_per_cpu+0x4c/0x50
-> [   17.581669] Modules linked in:
-> [   17.584726] CPU: 0 PID: 10 Comm: rcu_sched Not tainted
-> 5.4.121-1.1pre-g5cdf7521a963 #2
-> [   17.592638] Hardware name: Broadcom STB (Flattened Device Tree)
-> [   17.598553] Backtrace:
-> [   17.601014] [<c0bf79f0>] (dump_backtrace) from [<c0bf7c90>]
-> (show_stack+0x20/0x24)
-> [   17.608581]  r7:0000004b r6:600b0093 r5:00000000 r4:c20a99d0
-> [   17.614244] [<c0bf7c70>] (show_stack) from [<c0c04f48>]
-> (dump_stack+0x9c/0xb0)
-> [   17.621477] [<c0c04eac>] (dump_stack) from [<c0224b58>]
-> (__warn+0xe0/0x108)
-> [   17.628432]  r7:0000004b r6:00000009 r5:c0248f64 r4:c0f429cc
-> [   17.634087] [<c0224a78>] (__warn) from [<c0bf83b8>]
-> (warn_slowpath_fmt+0x70/0xc0)
-> [   17.641564]  r7:0000004b r6:c0f429cc r5:c2004c88 r4:00000000
-> [   17.647219] [<c0bf834c>] (warn_slowpath_fmt) from [<c0248f64>]
-> (kthread_is_per_cpu+0x4c/0x50)
-> [   17.655739]  r9:00000000 r8:ceff4200 r7:ceff4200 r6:d05dca5c
-> r5:d05dc480 r4:ceff4200
-> [   17.663485] [<c0248f18>] (kthread_is_per_cpu) from [<c0259a34>]
-> (can_migrate_task+0x1ec/0x24c)
-> [   17.672091]  r5:d05dc480 r4:ced25d14
-> [   17.675661] [<c0259848>] (can_migrate_task) from [<c025e820>]
-> (load_balance+0x394/0xa64)
-> [   17.683747]  r10:d05dc480 r9:00000000 r8:d05dca5c r7:ceff4200
-> r6:d05dca5c r5:d05dc480
-> [   17.691571]  r4:ceff4298 r3:00000200
-> [   17.695140] [<c025e48c>] (load_balance) from [<c025fa60>]
-> (newidle_balance+0x214/0x508)
-> [   17.703140]  r10:d05a3b50 r9:17309672 r8:00000000 r7:c2004cf8
-> r6:fffbb4a9 r5:d05a3480
-> [   17.710963]  r4:cee6d100
-> [   17.713491] [<c025f84c>] (newidle_balance) from [<c025fdc0>]
-> (pick_next_task_fair+0x30/0x338)
-> [   17.722011]  r10:c0e02774 r9:ced25e54 r8:d059c440 r7:c1f3f480
-> r6:ced03600 r5:ced25e54
-> [   17.729834]  r4:d05a3480
-> [   17.732364] [<c025fd90>] (pick_next_task_fair) from [<c0c08e20>]
-> (__schedule+0x120/0x5f8)
-> [   17.740537]  r7:c1f3f480 r6:c0e027d4 r5:ced03600 r4:d05a3480
-> [   17.746190] [<c0c08d00>] (__schedule) from [<c0c09350>]
-> (schedule+0x58/0xd4)
-> [   17.753233]  r10:fffbb0c1 r9:d059c440 r8:d059c440 r7:ced25eac
-> r6:c2003d00 r5:ced03600
-> [   17.761057]  r4:ffffe000
-> [   17.763586] [<c0c092f8>] (schedule) from [<c0c0d77c>]
-> (schedule_timeout+0x194/0x3a0)
-> [   17.771323]  r5:c2004c88 r4:fffbb0c4
-> [   17.774901] [<c0c0d5e8>] (schedule_timeout) from [<c0297de4>]
-> (rcu_gp_kthread+0x650/0x1300)
-> [   17.783247]  r10:c2015900 r9:c2015c64 r8:00000005 r7:c2003d00
-> r6:c2015a40 r5:00000000
-> [   17.791071]  r4:00000003
-> [   17.793598] [<c0297794>] (rcu_gp_kthread) from [<c0248890>]
-> (kthread+0x170/0x174)
-> [   17.801075]  r7:ced24000
-> [   17.803606] [<c0248720>] (kthread) from [<c02010d8>]
-> (ret_from_fork+0x14/0x3c)
-> [   17.810823] Exception stack(0xced25fb0 to 0xced25ff8)
-> [   17.815868] 5fa0:                                     00000000
-> 00000000 00000000 00000000
-> [   17.824042] 5fc0: 00000000 00000000 00000000 00000000 00000000
-> 00000000 00000000 00000000
-> [   17.832214] 5fe0: 00000000 00000000 00000000 00000000 00000013 00000000
-> [   17.838822]  r10:00000000 r9:00000000 r8:00000000 r7:00000000
-> r6:00000000 r5:c0248720
-> [   17.846646]  r4:cece8980
-> [   17.849171] ---[ end trace ccac79dc167b02d7 ]---
-> # ping -c 2 192.168.1.254
-> PING 192.168.1.254 (192.168.1.254): 56 data bytes
-> 64 bytes from 192.168.1.254: seq=0 ttl=64 time=0.636 ms
-> 64 bytes from 192.168.1.254: seq=1 ttl=64 time=0.310 ms
+Allow perf script to find a script in the exec path.
 
-Odd.  Let me know if you can bisect this down to an offending commit.
+Example:
 
-thanks,
+Before:
 
-greg k-h
+ $ perf record -a -e intel_pt/branch=0/ sleep 0.1
+ [ perf record: Woken up 1 times to write data ]
+ [ perf record: Captured and wrote 0.954 MB perf.data ]
+ $ perf script intel-pt-events.py 2>&1 | head -3
+   Error: Couldn't find script `intel-pt-events.py'
+   See perf script -l for available scripts.
+ $ perf script -s intel-pt-events.py 2>&1 | head -3
+ Can't open python script "intel-pt-events.py": No such file or directory
+ $ perf script ~/libexec/perf-core/scripts/python/intel-pt-events.py 2>&1 | head -3
+   Error: Couldn't find script `/home/ahunter/libexec/perf-core/scripts/python/intel-pt-events.py'
+   See perf script -l for available scripts.
+ $
+
+After:
+
+ $ perf script intel-pt-events.py 2>&1 | head -3
+ Intel PT Power Events and PTWRITE
+            perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
+            perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
+ $ perf script -s intel-pt-events.py 2>&1 | head -3
+ Intel PT Power Events and PTWRITE
+            perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
+            perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
+ $ perf script ~/libexec/perf-core/scripts/python/intel-pt-events.py 2>&1 | head -3
+ Intel PT Power Events and PTWRITE
+            perf  8123/8123  [000]       551.230753986     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
+            perf  8123/8123  [001]       551.230808216     cbr:  42  freq: 4219 MHz  (156%)                0 [unknown] ([unknown])
+ $
+
+Signed-off-by: Adrian Hunter <adrian.hunter@intel.com>
+---
+ tools/perf/builtin-script.c                   | 42 ++++++++++++++++++-
+ .../util/scripting-engines/trace-event-perl.c |  1 +
+ .../scripting-engines/trace-event-python.c    |  1 +
+ tools/perf/util/trace-event-scripting.c       |  2 +
+ tools/perf/util/trace-event.h                 |  1 +
+ 5 files changed, 45 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/builtin-script.c b/tools/perf/builtin-script.c
+index 1280cbfad4db..ec5ea36eaa4e 100644
+--- a/tools/perf/builtin-script.c
++++ b/tools/perf/builtin-script.c
+@@ -2665,6 +2665,36 @@ static void list_available_languages(void)
+ 	fprintf(stderr, "\n");
+ }
+ 
++/* Find script file relative to current directory or exec path */
++static char *find_script(const char *script)
++{
++	if (!scripting_ops) {
++		const char *ext = strrchr(script, '.');
++
++		if (!ext)
++			return NULL;
++
++		scripting_ops = script_spec__lookup(++ext);
++		if (!scripting_ops)
++			return NULL;
++	}
++
++	if (access(script, R_OK)) {
++		char *exec_path = get_argv_exec_path();
++		char path[PATH_MAX];
++
++		if (!exec_path)
++			return NULL;
++	        snprintf(path, sizeof(path), "%s/scripts/%s/%s",
++			 exec_path, scripting_ops->dirname, script);
++		free(exec_path);
++		script = path;
++		if (access(script, R_OK))
++			return NULL;
++	}
++	return strdup(script);
++}
++
+ static int parse_scriptname(const struct option *opt __maybe_unused,
+ 			    const char *str, int unset __maybe_unused)
+ {
+@@ -2706,7 +2736,9 @@ static int parse_scriptname(const struct option *opt __maybe_unused,
+ 		}
+ 	}
+ 
+-	script_name = strdup(script);
++	script_name = find_script(script);
++	if (!script_name)
++		script_name = strdup(script);
+ 
+ 	return 0;
+ }
+@@ -3718,6 +3750,12 @@ int cmd_script(int argc, const char **argv)
+ 		rep_script_path = get_script_path(argv[0], REPORT_SUFFIX);
+ 
+ 		if (!rec_script_path && !rep_script_path) {
++			script_name = find_script(argv[0]);
++			if (script_name) {
++				argc -= 1;
++				argv += 1;
++				goto script_found;
++			}
+ 			usage_with_options_msg(script_usage, options,
+ 				"Couldn't find script `%s'\n\n See perf"
+ 				" script -l for available scripts.\n", argv[0]);
+@@ -3810,7 +3848,7 @@ int cmd_script(int argc, const char **argv)
+ 		free(__argv);
+ 		exit(-1);
+ 	}
+-
++script_found:
+ 	if (rec_script_path)
+ 		script_path = rec_script_path;
+ 	if (rep_script_path)
+diff --git a/tools/perf/util/scripting-engines/trace-event-perl.c b/tools/perf/util/scripting-engines/trace-event-perl.c
+index 0e608a5ef599..865d310968fb 100644
+--- a/tools/perf/util/scripting-engines/trace-event-perl.c
++++ b/tools/perf/util/scripting-engines/trace-event-perl.c
+@@ -750,6 +750,7 @@ sub print_backtrace\n\
+ 
+ struct scripting_ops perl_scripting_ops = {
+ 	.name = "Perl",
++	.dirname = "perl",
+ 	.start_script = perl_start_script,
+ 	.flush_script = perl_flush_script,
+ 	.stop_script = perl_stop_script,
+diff --git a/tools/perf/util/scripting-engines/trace-event-python.c b/tools/perf/util/scripting-engines/trace-event-python.c
+index 4e4aa4c97ac5..db8f24341406 100644
+--- a/tools/perf/util/scripting-engines/trace-event-python.c
++++ b/tools/perf/util/scripting-engines/trace-event-python.c
+@@ -1876,6 +1876,7 @@ static int python_generate_script(struct tep_handle *pevent, const char *outfile
+ 
+ struct scripting_ops python_scripting_ops = {
+ 	.name			= "Python",
++	.dirname		= "python",
+ 	.start_script		= python_start_script,
+ 	.flush_script		= python_flush_script,
+ 	.stop_script		= python_stop_script,
+diff --git a/tools/perf/util/trace-event-scripting.c b/tools/perf/util/trace-event-scripting.c
+index 714581b0de65..721f38c0d5cf 100644
+--- a/tools/perf/util/trace-event-scripting.c
++++ b/tools/perf/util/trace-event-scripting.c
+@@ -63,6 +63,7 @@ static int python_generate_script_unsupported(struct tep_handle *pevent
+ 
+ struct scripting_ops python_scripting_unsupported_ops = {
+ 	.name = "Python",
++	.dirname = "python",
+ 	.start_script = python_start_script_unsupported,
+ 	.flush_script = flush_script_unsupported,
+ 	.stop_script = stop_script_unsupported,
+@@ -126,6 +127,7 @@ static int perl_generate_script_unsupported(struct tep_handle *pevent
+ 
+ struct scripting_ops perl_scripting_unsupported_ops = {
+ 	.name = "Perl",
++	.dirname = "perf",
+ 	.start_script = perl_start_script_unsupported,
+ 	.flush_script = flush_script_unsupported,
+ 	.stop_script = stop_script_unsupported,
+diff --git a/tools/perf/util/trace-event.h b/tools/perf/util/trace-event.h
+index 72fdf2a3577c..39fb39ed6612 100644
+--- a/tools/perf/util/trace-event.h
++++ b/tools/perf/util/trace-event.h
+@@ -71,6 +71,7 @@ struct perf_stat_config;
+ 
+ struct scripting_ops {
+ 	const char *name;
++	const char *dirname; /* For script path .../scripts/<dirname>/... */
+ 	int (*start_script) (const char *script, int argc, const char **argv);
+ 	int (*flush_script) (void);
+ 	int (*stop_script) (void);
+-- 
+2.17.1
+
