@@ -2,35 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED6438D3C4
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 07:08:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD0AC38D3C6
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 07:10:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231253AbhEVFJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 01:09:31 -0400
-Received: from muru.com ([72.249.23.125]:58772 "EHLO muru.com"
+        id S231320AbhEVFLf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 01:11:35 -0400
+Received: from muru.com ([72.249.23.125]:58804 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229914AbhEVFJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 01:09:31 -0400
+        id S229914AbhEVFLe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 01:11:34 -0400
 Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 374DC80C0;
-        Sat, 22 May 2021 05:08:09 +0000 (UTC)
+        by muru.com (Postfix) with ESMTP id B65E780C0;
+        Sat, 22 May 2021 05:10:13 +0000 (UTC)
 From:   Tony Lindgren <tony@atomide.com>
-To:     linux-omap@vger.kernel.org
-Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
-        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     linux-kernel@vger.kernel.org,
         Carl Philipp Klemm <philipp@uvos.xyz>,
         Ivan Jelincic <parazyd@dyne.org>,
         Merlijn Wajer <merlijn@wizzup.org>,
         Pavel Machek <pavel@ucw.cz>,
         Sebastian Reichel <sre@kernel.org>,
         "Sicelo A . Mhlongo" <absicsz@gmail.com>
-Subject: [PATCH] bus: ti-sysc: Fix flakey idling of uarts and stop using swsup_sidle_act
-Date:   Sat, 22 May 2021 08:07:59 +0300
-Message-Id: <20210522050759.52815-1-tony@atomide.com>
+Subject: [PATCH] mfd: cpcap: Fix cpcap dmamask not set warnings
+Date:   Sat, 22 May 2021 08:10:01 +0300
+Message-Id: <20210522051001.53060-1-tony@atomide.com>
 X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -38,23 +33,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Looks like the swsup_sidle_act quirk handling is unreliable for serial
-ports. The serial ports just eventually stop idling until woken up and
-re-idled again. As the serial port not idling blocks any deeper SoC idle
-states, it's adds an annoying random flakeyness for power management.
+We have started to get a bunch of pointless dmamask not set warnings
+that makes the output of dmesg -l err,warn hard to read with many
+extra warnings:
 
-Let's just switch to swsup_sidle quirk instead like we already do for
-omap3 uarts. This means we manually idle the port instead of trying to
-use the hardware autoidle features when not in use.
+cpcap-regulator cpcap-regulator.0: DMA mask not set
+cpcap_adc cpcap_adc.0: DMA mask not set
+cpcap_battery cpcap_battery.0: DMA mask not set
+cpcap-charger cpcap-charger.0: DMA mask not set
+cpcap-pwrbutton cpcap-pwrbutton.0: DMA mask not set
+cpcap-led cpcap-led.0: DMA mask not set
+cpcap-led cpcap-led.1: DMA mask not set
+cpcap-led cpcap-led.2: DMA mask not set
+cpcap-led cpcap-led.3: DMA mask not set
+cpcap-led cpcap-led.4: DMA mask not set
+cpcap-rtc cpcap-rtc.0: DMA mask not set
+cpcap-usb-phy cpcap-usb-phy.0: DMA mask not set
 
-For more details on why the serial ports have been using swsup_idle_act,
-see commit 66dde54e978a ("ARM: OMAP2+: hwmod-data: UART IP needs software
-control to manage sidle modes"). It seems that the swsup_idle_act quirk
-handling is not enough though, and for example the TI Android kernel
-changed to using swsup_sidle with commit 77c34c84e1e0 ("OMAP4: HWMOD:
-UART1: disable smart-idle.").
+This seems to have started with commit 4d8bde883bfb ("OF: Don't set
+default coherent DMA mask"). We have the parent SPI controller use
+DMA, while CPCAP driver and it's children do not. For audio, the
+DMA is handled over I2S bus with the McBSP driver.
 
-Fixes: b4a9a7a38917 ("bus: ti-sysc: Handle swsup idle mode quirks")
 Cc: Carl Philipp Klemm <philipp@uvos.xyz>
 Cc: Ivan Jelincic <parazyd@dyne.org>
 Cc: Merlijn Wajer <merlijn@wizzup.org>
@@ -63,23 +63,22 @@ Cc: Sebastian Reichel <sre@kernel.org>
 Cc: Sicelo A. Mhlongo <absicsz@gmail.com>
 Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- drivers/bus/ti-sysc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/mfd/motorola-cpcap.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
---- a/drivers/bus/ti-sysc.c
-+++ b/drivers/bus/ti-sysc.c
-@@ -1466,9 +1466,9 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
- 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 	/* Uarts on omap4 and later */
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x50411e03, 0xffff00ff,
--		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
- 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
--		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
-+		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+diff --git a/drivers/mfd/motorola-cpcap.c b/drivers/mfd/motorola-cpcap.c
+--- a/drivers/mfd/motorola-cpcap.c
++++ b/drivers/mfd/motorola-cpcap.c
+@@ -327,6 +327,10 @@ static int cpcap_probe(struct spi_device *spi)
+ 	if (ret)
+ 		return ret;
  
- 	/* Quirks that need to be set based on the module address */
- 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
++	/* Parent SPI controller uses DMA, CPCAP and child devices do not */
++	spi->dev.coherent_dma_mask = 0;
++	spi->dev.dma_mask = &spi->dev.coherent_dma_mask;
++
+ 	return devm_mfd_add_devices(&spi->dev, 0, cpcap_mfd_devices,
+ 				    ARRAY_SIZE(cpcap_mfd_devices), NULL, 0, NULL);
+ }
 -- 
 2.31.1
