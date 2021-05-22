@@ -2,259 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5BE38D40C
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D31938D40A
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:52:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230021AbhEVGxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 02:53:49 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3651 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229781AbhEVGxq (ORCPT
+        id S229952AbhEVGx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 02:53:27 -0400
+Received: from smtp13.smtpout.orange.fr ([80.12.242.135]:51319 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229781AbhEVGx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 02:53:46 -0400
-Received: from dggems705-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FnDcT75JvzmXNH;
-        Sat, 22 May 2021 14:50:01 +0800 (CST)
-Received: from dggeme768-chm.china.huawei.com (10.3.19.114) by
- dggems705-chm.china.huawei.com (10.3.19.182) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sat, 22 May 2021 14:52:19 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggeme768-chm.china.huawei.com (10.3.19.114) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Sat, 22 May 2021 14:52:19 +0800
-From:   Weili Qian <qianweili@huawei.com>
-To:     <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-CC:     <linux-kernel@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
-        <xuzaibo@huawei.com>, <wangzhou1@hisilicon.com>,
-        <liulongfang@huawei.com>
-Subject: [PATCH] crypto: hisilicon/qm - add MSI detection steps on Kunpeng930
-Date:   Sat, 22 May 2021 14:49:21 +0800
-Message-ID: <1621666161-51143-1-git-send-email-qianweili@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Sat, 22 May 2021 02:53:26 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d71 with ME
+        id 7irs2500C21Fzsu03irsPk; Sat, 22 May 2021 08:52:01 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 22 May 2021 08:52:01 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        mihai.carabas@oracle.com, andriy.shevchenko@linux.intel.com,
+        pizhenwei@bytedance.com, pbonzini@redhat.com,
+        bobo.shaobowang@huawei.com, linqiheng@huawei.com
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 0/4] clk: mvebu: Fix some error handling paths + do some clean-up
+Date:   Sat, 22 May 2021 08:51:51 +0200
+Message-Id: <cover.1619157996.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggeme768-chm.china.huawei.com (10.3.19.114)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Compared with Kunpeng920, Kunpeng930 adds MSI configuration steps to wait
-for the interrupt to be emptied. In order to be compatible with the
-kunpeng920 driver, 'set_msi' callback is added in 'hisi_qm_hw_ops' to
-configure hardware register. Call 'set_msi' to disable or enable MSI
-during reset.
+This serie fixes some (unlikely) error handlings paths.
 
-Signed-off-by: Weili Qian <qianweili@huawei.com>
----
- drivers/crypto/hisilicon/qm.c | 124 ++++++++++++++++++++++++++++++++++--------
- 1 file changed, 100 insertions(+), 24 deletions(-)
+The 4th patch is completely speculative. When I compile-tested the changes,
+I had to remove this line in order for it to compile.
+As it works fine (at least for me) without it, I wonder if it is needed at all.
 
-diff --git a/drivers/crypto/hisilicon/qm.c b/drivers/crypto/hisilicon/qm.c
-index 8f7ea50..c67cb51 100644
---- a/drivers/crypto/hisilicon/qm.c
-+++ b/drivers/crypto/hisilicon/qm.c
-@@ -161,6 +161,9 @@
- #define QM_PEH_VENDOR_ID		0x1000d8
- #define ACC_VENDOR_ID_VALUE		0x5a5a
- #define QM_PEH_DFX_INFO0		0x1000fc
-+#define QM_PEH_DFX_INFO1		0x100100
-+#define QM_PEH_DFX_MASK			(BIT(0) | BIT(2))
-+#define QM_PEH_MSI_FINISH_MASK		GENMASK(19, 16)
- #define ACC_PEH_SRIOV_CTRL_VF_MSE_SHIFT	3
- #define ACC_PEH_MSI_DISABLE		GENMASK(31, 0)
- #define ACC_MASTER_GLOBAL_CTRL_SHUTDOWN	0x1
-@@ -171,6 +174,7 @@
- #define QM_RAS_NFE_MBIT_DISABLE		~QM_ECC_MBIT
- #define ACC_AM_ROB_ECC_INT_STS		0x300104
- #define ACC_ROB_ECC_ERR_MULTPL		BIT(1)
-+#define QM_MSI_CAP_ENABLE		BIT(16)
- 
- #define QM_DFX_MB_CNT_VF		0x104010
- #define QM_DFX_DB_CNT_VF		0x104020
-@@ -352,6 +356,7 @@ struct hisi_qm_hw_ops {
- 	void (*hw_error_uninit)(struct hisi_qm *qm);
- 	enum acc_err_result (*hw_error_handle)(struct hisi_qm *qm);
- 	int (*stop_qp)(struct hisi_qp *qp);
-+	int (*set_msi)(struct hisi_qm *qm, bool set);
- };
- 
- struct qm_dfx_item {
-@@ -1776,10 +1781,98 @@ static int qm_stop_qp(struct hisi_qp *qp)
- 	return qm_mb(qp->qm, QM_MB_CMD_STOP_QP, 0, qp->qp_id, 0);
- }
- 
-+static int qm_set_msi(struct hisi_qm *qm, bool set)
-+{
-+	struct pci_dev *pdev = qm->pdev;
-+
-+	if (set) {
-+		pci_write_config_dword(pdev, pdev->msi_cap + PCI_MSI_MASK_64,
-+				       0);
-+	} else {
-+		pci_write_config_dword(pdev, pdev->msi_cap + PCI_MSI_MASK_64,
-+				       ACC_PEH_MSI_DISABLE);
-+		if (qm->err_status.is_qm_ecc_mbit ||
-+		    qm->err_status.is_dev_ecc_mbit)
-+			return 0;
-+
-+		mdelay(1);
-+		if (readl(qm->io_base + QM_PEH_DFX_INFO0))
-+			return -EFAULT;
-+	}
-+
-+	return 0;
-+}
-+
-+static void qm_wait_msi_finish(struct hisi_qm *qm)
-+{
-+	struct pci_dev *pdev = qm->pdev;
-+	u32 cmd = ~0;
-+	int cnt = 0;
-+	u32 val;
-+	int ret;
-+
-+	while (true) {
-+		pci_read_config_dword(pdev, pdev->msi_cap +
-+				      PCI_MSI_PENDING_64, &cmd);
-+		if (!cmd)
-+			break;
-+
-+		if (++cnt > MAX_WAIT_COUNTS) {
-+			pci_warn(pdev, "failed to empty MSI PENDING!\n");
-+			break;
-+		}
-+
-+		udelay(1);
-+	}
-+
-+	ret = readl_relaxed_poll_timeout(qm->io_base + QM_PEH_DFX_INFO0,
-+					 val, !(val & QM_PEH_DFX_MASK),
-+					 POLL_PERIOD, POLL_TIMEOUT);
-+	if (ret)
-+		pci_warn(pdev, "failed to empty PEH MSI!\n");
-+
-+	ret = readl_relaxed_poll_timeout(qm->io_base + QM_PEH_DFX_INFO1,
-+					 val, !(val & QM_PEH_MSI_FINISH_MASK),
-+					 POLL_PERIOD, POLL_TIMEOUT);
-+	if (ret)
-+		pci_warn(pdev, "failed to finish MSI operation!\n");
-+}
-+
-+static int qm_set_msi_v3(struct hisi_qm *qm, bool set)
-+{
-+	struct pci_dev *pdev = qm->pdev;
-+	int ret = -ETIMEDOUT;
-+	u32 cmd, i;
-+
-+	pci_read_config_dword(pdev, pdev->msi_cap, &cmd);
-+	if (set)
-+		cmd |= QM_MSI_CAP_ENABLE;
-+	else
-+		cmd &= ~QM_MSI_CAP_ENABLE;
-+
-+	pci_write_config_dword(pdev, pdev->msi_cap, cmd);
-+	if (set) {
-+		for (i = 0; i < MAX_WAIT_COUNTS; i++) {
-+			pci_read_config_dword(pdev, pdev->msi_cap, &cmd);
-+			if (cmd & QM_MSI_CAP_ENABLE)
-+				return 0;
-+
-+			udelay(1);
-+		}
-+	} else {
-+		udelay(WAIT_PERIOD_US_MIN);
-+		qm_wait_msi_finish(qm);
-+		ret = 0;
-+	}
-+
-+	return ret;
-+}
-+
- static const struct hisi_qm_hw_ops qm_hw_ops_v1 = {
- 	.qm_db = qm_db_v1,
- 	.get_irq_num = qm_get_irq_num_v1,
- 	.hw_error_init = qm_hw_error_init_v1,
-+	.set_msi = qm_set_msi,
- };
- 
- static const struct hisi_qm_hw_ops qm_hw_ops_v2 = {
-@@ -1789,6 +1882,7 @@ static const struct hisi_qm_hw_ops qm_hw_ops_v2 = {
- 	.hw_error_init = qm_hw_error_init_v2,
- 	.hw_error_uninit = qm_hw_error_uninit_v2,
- 	.hw_error_handle = qm_hw_error_handle_v2,
-+	.set_msi = qm_set_msi,
- };
- 
- static const struct hisi_qm_hw_ops qm_hw_ops_v3 = {
-@@ -1799,6 +1893,7 @@ static const struct hisi_qm_hw_ops qm_hw_ops_v3 = {
- 	.hw_error_uninit = qm_hw_error_uninit_v3,
- 	.hw_error_handle = qm_hw_error_handle_v2,
- 	.stop_qp = qm_stop_qp,
-+	.set_msi = qm_set_msi_v3,
- };
- 
- static void *qm_get_avail_sqe(struct hisi_qp *qp)
-@@ -3586,6 +3681,9 @@ static int qm_check_req_recv(struct hisi_qm *qm)
- 	int ret;
- 	u32 val;
- 
-+	if (qm->ver >= QM_HW_V3)
-+		return 0;
-+
- 	writel(ACC_VENDOR_ID_VALUE, qm->io_base + QM_PEH_VENDOR_ID);
- 	ret = readl_relaxed_poll_timeout(qm->io_base + QM_PEH_VENDOR_ID, val,
- 					 (val == ACC_VENDOR_ID_VALUE),
-@@ -3656,28 +3754,6 @@ static int qm_set_vf_mse(struct hisi_qm *qm, bool set)
- 	return -ETIMEDOUT;
- }
- 
--static int qm_set_msi(struct hisi_qm *qm, bool set)
--{
--	struct pci_dev *pdev = qm->pdev;
--
--	if (set) {
--		pci_write_config_dword(pdev, pdev->msi_cap + PCI_MSI_MASK_64,
--				       0);
--	} else {
--		pci_write_config_dword(pdev, pdev->msi_cap + PCI_MSI_MASK_64,
--				       ACC_PEH_MSI_DISABLE);
--		if (qm->err_status.is_qm_ecc_mbit ||
--		    qm->err_status.is_dev_ecc_mbit)
--			return 0;
--
--		mdelay(1);
--		if (readl(qm->io_base + QM_PEH_DFX_INFO0))
--			return -EFAULT;
--	}
--
--	return 0;
--}
--
- static int qm_vf_reset_prepare(struct hisi_qm *qm,
- 			       enum qm_stop_reason stop_reason)
- {
-@@ -3800,7 +3876,7 @@ static int qm_soft_reset(struct hisi_qm *qm)
- 		}
- 	}
- 
--	ret = qm_set_msi(qm, false);
-+	ret = qm->ops->set_msi(qm, false);
- 	if (ret) {
- 		pci_err(pdev, "Fails to disable PEH MSI bit.\n");
- 		return ret;
-@@ -3941,7 +4017,7 @@ static int qm_controller_reset_done(struct hisi_qm *qm)
- 	struct pci_dev *pdev = qm->pdev;
- 	int ret;
- 
--	ret = qm_set_msi(qm, true);
-+	ret = qm->ops->set_msi(qm, true);
- 	if (ret) {
- 		pci_err(pdev, "Fails to enable PEH MSI bit!\n");
- 		return ret;
+
+Also, I wonder if the drivers in drivers/clk/mvebu are used by anyone.
+In order to compile-test the changes, I also had to change the 'bool' in Kconfig
+by 'bool "blah"'. Without this change, it was not possible to set
+CONFIG_MVEBU_CLK_CPU required by Makefile.
+
+I don't know if I did something wrong, if it is an issue only on my environment
+or if something got broken at some time in the build chain but it looks
+spurious.
+
+If I'm right and that these drivers never compile and no-one noticed it,
+maybe removing them is better than fixing some unlikely issues and style.
+If these drivers should stay, Kconfig may need some love from someone.
+
+Christophe JAILLET (4):
+  clk: mvebu: Fix a memory leak in an error handling path
+  clk: mvebu: Fix a another memory leak in an error handling path
+  clk: mvebu: Fix a checkpatch warning
+  clk: mvebu: Remove an unneeded include
+
+ drivers/clk/mvebu/clk-cpu.c | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
 -- 
-2.8.1
+2.27.0
 
