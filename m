@@ -2,157 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF54C38D5DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 14:43:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC6C738D5DF
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 14:59:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbhEVMo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 08:44:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230244AbhEVMo1 (ORCPT
+        id S230514AbhEVNAo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 09:00:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26471 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230466AbhEVNAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 08:44:27 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90B0EC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 05:43:01 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id u7so3787036plq.4
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 05:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pixYQfkTFmONXDkh4NYVdpiElfn+YnUC5KBlg4AmP5s=;
-        b=rYuISGJlX3D8QBAh7xjO1blyJUVi7nmlps7NSo2xFGEKCHRmZQmqIN5nJLK+3/Bf1B
-         pxgClNznsKKQkbdkqK5rKMRoPFtWet1PEEQ5Lsa3K0oqBWYHqIsjAynXhXSwoUcPxyl1
-         3RFTVRsrWu3UONF/arltSg1cIsMrIKnW3/Z3mkvLtpIRtOYNXugkz0p/3mpWwdylarXM
-         1bL4rwqE7RFES2areprLOd4h/Lu56IFxXHZaQ19b2/0+nicBOQhCkITdD3G+YsGXcNbX
-         B6pZXPNoNTtGbuMKPOsG+c4rbUHWVkKdH3yNxcYUNMeTbYJaiwartQYCvaqs5/k9fqCg
-         +/xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pixYQfkTFmONXDkh4NYVdpiElfn+YnUC5KBlg4AmP5s=;
-        b=F+8XLsTseBtEn1b0Q0Ku6CDWgQleCjN2m70guw8picK/+rVLuzbUrum9yK1EgzZpvc
-         vx14+JHmrCOJixYDK1ttKbrM3KbeEl050G3y8tvziy5INm4fsLYhF/RKJFuUeDyFncY5
-         mkaQ9gjHfOKBvSQ1edqFxPm1byhdcaz1EDnHWuKxCJurhc+LdqMZBBXbcCXYG+6f1yR7
-         GAnrNDbSUzWKaXExP3+viAWqAWk+X1EvyGtW8xrlMQCyOK7EfgEk0H6QpWc+mEfpL7QY
-         XQ4HxwDFU4/uxyS0Uelv6Kv2SKDYeciox1vPSsIwhnMOKe28rIW/c4l2J8cVI8LYsISS
-         xndA==
-X-Gm-Message-State: AOAM5320xLunqDMhxBrwxshN8v6FiMY+HuiHxUcuOAsTQau0uA6q5sN7
-        iw6qy6yc7toUnbMA5BkN9iKA9g==
-X-Google-Smtp-Source: ABdhPJwlXIBSuVnqU12oC3T2pit6qeRrBtpmbjEyXkihLgulGu2EuvMKWD9HbYiLpP8lbcxQ29K9Xg==
-X-Received: by 2002:a17:902:8ecc:b029:ef:6471:dc08 with SMTP id x12-20020a1709028eccb02900ef6471dc08mr16820524plo.5.1621687380762;
-        Sat, 22 May 2021 05:43:00 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id v11sm7047706pgs.6.2021.05.22.05.42.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 May 2021 05:43:00 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: bd70528: Convert to use regulator_set_ramp_delay_regmap
-Date:   Sat, 22 May 2021 20:42:50 +0800
-Message-Id: <20210522124250.2121076-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 22 May 2021 09:00:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621688357;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=0jihgK6nUGSssaLZQS5Ili6PzS5KwAtgGpBMxwFQ9h0=;
+        b=KJ/QuEiBwHHOgVSNcmssBvhJqDVjsaKs9fxodzw14X4/cP4h6Xi0QpODH12R1o3xk0J+Fn
+        BWltlYc1ZWum+e8i2Djq+Ny6WkFlVe5+ZmosiFEB5+9wC7LzBmPsQiPHEhS2wpbmGxwehv
+        IgZImuO8DWrW5mIRaaHq4/U6QXxvEHI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-215-zvytTB6vPqu5PNUiXhMBTg-1; Sat, 22 May 2021 08:59:13 -0400
+X-MC-Unique: zvytTB6vPqu5PNUiXhMBTg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0882C107ACC7;
+        Sat, 22 May 2021 12:59:11 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.3.128.57])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A66A719D9D;
+        Sat, 22 May 2021 12:59:02 +0000 (UTC)
+Date:   Sat, 22 May 2021 08:58:59 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     Casey Schaufler <casey@schaufler-ca.com>,
+        john.johansen@canonical.com, selinux@vger.kernel.org,
+        netdev@vger.kernel.org, James Morris <jmorris@namei.org>,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-audit@redhat.com,
+        casey.schaufler@intel.com, Stephen Smalley <sds@tycho.nsa.gov>
+Subject: Re: [PATCH v26 22/25] Audit: Add new record for multiple process LSM
+ attributes
+Message-ID: <20210522125859.GF447005@madcap2.tricolour.ca>
+References: <20210513200807.15910-1-casey@schaufler-ca.com>
+ <20210513200807.15910-23-casey@schaufler-ca.com>
+ <CAHC9VhSdFVuZvThMsqWT-L9wcHevA-0yAX+kxqXN0iMmqRc10g@mail.gmail.com>
+ <d753115f-6cbd-0886-473c-b10485cb7c52@schaufler-ca.com>
+ <CAHC9VhR9OPbNCLaKpCEt9mES8yWXpNoTBrgnKW2ER+vEkuNQwQ@mail.gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHC9VhR9OPbNCLaKpCEt9mES8yWXpNoTBrgnKW2ER+vEkuNQwQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use regulator_set_ramp_delay_regmap instead of open-coded.
+On 2021-05-21 22:20, Paul Moore wrote:
+> On Fri, May 21, 2021 at 6:05 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> > On 5/21/2021 1:19 PM, Paul Moore wrote:
+> > > On Thu, May 13, 2021 at 4:32 PM Casey Schaufler <casey@schaufler-ca.com> wrote:
+> > >> Create a new audit record type to contain the subject information
+> > >> when there are multiple security modules that require such data.
+> > >> This record is linked with the same timestamp and serial number
+> > >> using the audit_alloc_local() mechanism.
+> > > The record is linked with the other associated records into a single
+> > > event, it doesn't matter if it gets the timestamp/serial from
+> > > audit_alloc_local() or an existing audit event, e.g. ongoing syscall.
+> > >
+> > >> The record is produced only in cases where there is more than one
+> > >> security module with a process "context".
+> > >> In cases where this record is produced the subj= fields of
+> > >> other records in the audit event will be set to "subj=?".
+> > >>
+> > >> An example of the MAC_TASK_CONTEXTS (1420) record is:
+> > >>
+> > >>         type=UNKNOWN[1420]
+> > >>         msg=audit(1600880931.832:113)
+> > >>         subj_apparmor==unconfined
+> > > It should be just a single "=" in the line above.
+> >
+> > AppArmor provides the 2nd "=" as part of the subject context.
+> > What's here is correct. I won't argue that it won't case confusion
+> > or worse.
+> 
+> Oh, wow, okay.  That needs to change at some point but I agree it's
+> out of scope for this patchset.  In the meantime I might suggest using
+> something other than AppArmor as an example here.
 
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/bd70528-regulator.c | 37 ++++++++++++---------------
- 1 file changed, 16 insertions(+), 21 deletions(-)
+Similar but not identical situation to:
+	BUG: INTEGRITY_POLICY_RULE violates audit message format · Issue #113 · linux-audit/audit-kernel
+	https://github.com/linux-audit/audit-kernel/issues/113
 
-diff --git a/drivers/regulator/bd70528-regulator.c b/drivers/regulator/bd70528-regulator.c
-index 1f5f9482b209..e6fec70fabfa 100644
---- a/drivers/regulator/bd70528-regulator.c
-+++ b/drivers/regulator/bd70528-regulator.c
-@@ -16,10 +16,6 @@
- #include <linux/regulator/of_regulator.h>
- #include <linux/slab.h>
- 
--#define BUCK_RAMPRATE_250MV 0
--#define BUCK_RAMPRATE_125MV 1
--#define BUCK_RAMP_MAX 250
--
- static const struct linear_range bd70528_buck1_volts[] = {
- 	REGULATOR_LINEAR_RANGE(1200000, 0x00, 0x1, 600000),
- 	REGULATOR_LINEAR_RANGE(2750000, 0x2, 0xf, 50000),
-@@ -47,22 +43,9 @@ static const unsigned int led_volts[] = {
- 	20000, 30000
- };
- 
--static int bd70528_set_ramp_delay(struct regulator_dev *rdev, int ramp_delay)
--{
--	if (ramp_delay > 0 && ramp_delay <= BUCK_RAMP_MAX) {
--		unsigned int ramp_value = BUCK_RAMPRATE_250MV;
--
--		if (ramp_delay <= 125)
--			ramp_value = BUCK_RAMPRATE_125MV;
--
--		return regmap_update_bits(rdev->regmap, rdev->desc->vsel_reg,
--				  BD70528_MASK_BUCK_RAMP,
--				  ramp_value << BD70528_SIFT_BUCK_RAMP);
--	}
--	dev_err(&rdev->dev, "%s: ramp_delay: %d not supported\n",
--		rdev->desc->name, ramp_delay);
--	return -EINVAL;
--}
-+static const unsigned int bd70528_buck_ramp_table[] = {
-+	250, 125
-+};
- 
- static int bd70528_led_set_voltage_sel(struct regulator_dev *rdev,
- 				       unsigned int sel)
-@@ -90,7 +73,7 @@ static const struct regulator_ops bd70528_buck_ops = {
- 	.set_voltage_sel = regulator_set_voltage_sel_regmap,
- 	.get_voltage_sel = regulator_get_voltage_sel_regmap,
- 	.set_voltage_time_sel = regulator_set_voltage_time_sel,
--	.set_ramp_delay = bd70528_set_ramp_delay,
-+	.set_ramp_delay = regulator_set_ramp_delay_regmap,
- };
- 
- static const struct regulator_ops bd70528_ldo_ops = {
-@@ -127,6 +110,10 @@ static const struct regulator_desc bd70528_desc[] = {
- 		.enable_mask = BD70528_MASK_RUN_EN,
- 		.vsel_reg = BD70528_REG_BUCK1_VOLT,
- 		.vsel_mask = BD70528_MASK_BUCK_VOLT,
-+		.ramp_reg = BD70528_REG_BUCK1_VOLT,
-+		.ramp_mask = BD70528_MASK_BUCK_RAMP,
-+		.ramp_delay_table = bd70528_buck_ramp_table,
-+		.n_ramp_values = ARRAY_SIZE(bd70528_buck_ramp_table),
- 		.owner = THIS_MODULE,
- 	},
- 	{
-@@ -143,6 +130,10 @@ static const struct regulator_desc bd70528_desc[] = {
- 		.enable_mask = BD70528_MASK_RUN_EN,
- 		.vsel_reg = BD70528_REG_BUCK2_VOLT,
- 		.vsel_mask = BD70528_MASK_BUCK_VOLT,
-+		.ramp_reg = BD70528_REG_BUCK2_VOLT,
-+		.ramp_mask = BD70528_MASK_BUCK_RAMP,
-+		.ramp_delay_table = bd70528_buck_ramp_table,
-+		.n_ramp_values = ARRAY_SIZE(bd70528_buck_ramp_table),
- 		.owner = THIS_MODULE,
- 	},
- 	{
-@@ -159,6 +150,10 @@ static const struct regulator_desc bd70528_desc[] = {
- 		.enable_mask = BD70528_MASK_RUN_EN,
- 		.vsel_reg = BD70528_REG_BUCK3_VOLT,
- 		.vsel_mask = BD70528_MASK_BUCK_VOLT,
-+		.ramp_reg = BD70528_REG_BUCK3_VOLT,
-+		.ramp_mask = BD70528_MASK_BUCK_RAMP,
-+		.ramp_delay_table = bd70528_buck_ramp_table,
-+		.n_ramp_values = ARRAY_SIZE(bd70528_buck_ramp_table),
- 		.owner = THIS_MODULE,
- 	},
- 	{
--- 
-2.25.1
+> > >>         subj_smack=_
+> > >>
+> > >> There will be a subj_$LSM= entry for each security module
+> > >> LSM that supports the secid_to_secctx and secctx_to_secid
+> > >> hooks. The BPF security module implements secid/secctx
+> > >> translation hooks, so it has to be considered to provide a
+> > >> secctx even though it may not actually do so.
+> > >>
+> > >> Signed-off-by: Casey Schaufler <casey@schaufler-ca.com>
+> > >> To: paul@paul-moore.com
+> > >> To: linux-audit@redhat.com
+> > >> To: rgb@redhat.com
+> > >> Cc: netdev@vger.kernel.org
+> > >> ---
+> > >>  drivers/android/binder.c                |  2 +-
+> > >>  include/linux/audit.h                   | 24 ++++++++
+> > >>  include/linux/security.h                | 16 ++++-
+> > >>  include/net/netlabel.h                  |  3 +-
+> > >>  include/net/scm.h                       |  2 +-
+> > >>  include/net/xfrm.h                      | 13 +++-
+> > >>  include/uapi/linux/audit.h              |  1 +
+> > >>  kernel/audit.c                          | 80 ++++++++++++++++++-------
+> > >>  kernel/audit.h                          |  3 +
+> > >>  kernel/auditfilter.c                    |  6 +-
+> > >>  kernel/auditsc.c                        | 75 ++++++++++++++++++++---
+> > >>  net/ipv4/ip_sockglue.c                  |  2 +-
+> > >>  net/netfilter/nf_conntrack_netlink.c    |  4 +-
+> > >>  net/netfilter/nf_conntrack_standalone.c |  2 +-
+> > >>  net/netfilter/nfnetlink_queue.c         |  2 +-
+> > >>  net/netlabel/netlabel_domainhash.c      |  4 +-
+> > >>  net/netlabel/netlabel_unlabeled.c       | 24 ++++----
+> > >>  net/netlabel/netlabel_user.c            | 20 ++++---
+> > >>  net/netlabel/netlabel_user.h            |  6 +-
+> > >>  net/xfrm/xfrm_policy.c                  | 10 ++--
+> > >>  net/xfrm/xfrm_state.c                   | 20 ++++---
+> > >>  security/integrity/ima/ima_api.c        |  7 ++-
+> > >>  security/integrity/integrity_audit.c    |  6 +-
+> > >>  security/security.c                     | 46 +++++++++-----
+> > >>  security/smack/smackfs.c                |  3 +-
+> > >>  25 files changed, 274 insertions(+), 107 deletions(-)
+> > > ...
+> > >
+> > >> diff --git a/include/linux/audit.h b/include/linux/audit.h
+> > >> index 97cd7471e572..229cd71fbf09 100644
+> > >> --- a/include/linux/audit.h
+> > >> +++ b/include/linux/audit.h
+> > >> @@ -386,6 +395,19 @@ static inline void audit_ptrace(struct task_struct *t)
+> > >>                 __audit_ptrace(t);
+> > >>  }
+> > >>
+> > >> +static inline struct audit_context *audit_alloc_for_lsm(gfp_t gfp)
+> > >> +{
+> > >> +       struct audit_context *context = audit_context();
+> > >> +
+> > >> +       if (context)
+> > >> +               return context;
+> > >> +
+> > >> +       if (lsm_multiple_contexts())
+> > >> +               return audit_alloc_local(gfp);
+> > >> +
+> > >> +       return NULL;
+> > >> +}
+> > > See my other comments, but this seems wrong at face value.  The
+> > > additional LSM record should happen as part of the existing audit log
+> > > functions.
+> >
+> > I'm good with that. But if you defer calling audit_alloc_local()
+> > until you know you need it you may be in a place where you can't
+> > associate the new context with the event. I think. I will have
+> > another go at it.
+> 
+> I can't think of a case where you would ever not know if you need to
+> allocate a local context at the start.  If you are unsure, get in
+> touch and we can work it out.
+> 
+> > > I think I was distracted with the local context issue and I've lost
+> > > track of the details here, perhaps it's best to fix the local context
+> > > issue first (that should be a big change to this patch) and then we
+> > > can take another look.
+> >
+> > I really need to move forward. I'll give allocation of local contexts
+> > as necessary in audit_log_task_context() another shot.
+> 
+> I appreciate the desire to move forward, and while I can't speak for
+> everyone, I'll do my best to work with you to find a good solution.
+> If you get stuck or aren't sure you know how to reach me :)
+> 
+> As a start, I might suggest looking at some of the recent audit
+> container ID patchsets from Richard; while they have had some issues,
+> they should serve as a basic example of what we mean when we talk
+> about "local contexts" and how they should be used.
+> 
+> -- 
+> paul moore
+> www.paul-moore.com
+> 
+> --
+> Linux-audit mailing list
+> Linux-audit@redhat.com
+> https://listman.redhat.com/mailman/listinfo/linux-audit
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
