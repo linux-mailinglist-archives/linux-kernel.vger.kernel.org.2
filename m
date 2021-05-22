@@ -2,256 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA91A38D612
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 15:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 598E338D616
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 15:57:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhEVNnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 09:43:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230472AbhEVNnA (ORCPT
+        id S231357AbhEVN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 09:59:10 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:51824 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231325AbhEVN6z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 09:43:00 -0400
-Received: from mail-oo1-xc34.google.com (mail-oo1-xc34.google.com [IPv6:2607:f8b0:4864:20::c34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41A55C061574;
-        Sat, 22 May 2021 06:41:35 -0700 (PDT)
-Received: by mail-oo1-xc34.google.com with SMTP id i8-20020a4aa1080000b0290201edd785e7so5237706ool.1;
-        Sat, 22 May 2021 06:41:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:to:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=6q8b1N4MxU8JhrPvdZs1GsjYLUNjhqrng5So4JodxJc=;
-        b=s4J31AQDxIfkUDrXCTiZJClwfIXFmxjXh5NWzVM2vm+vsZBywqa30tWoKTY7I9swID
-         qGT21w/c/JbuW/OikBh+vOh/Db5csjuLSg1upgu5cZ57Q6/5xb1EHuFhZu8NyM3BqAcg
-         poZCHmtoOgDxdPWrVhF7LNn0NoOZTZJPnYVlgACWKtivuKAVuZTabYTjwp8VGDiaV2YQ
-         OoTRh++SZK8PQ0awpNcMEv6ix2vSTvmieDuHIHB3qX9vDnsURIDuApoenVe34U36jVdg
-         ViYGZHJ3qQHJDrnVuuouQHNbTw2xmZSwzO30X7LmlSQaByXmdPk1tGiEyQ1zZUpjolOL
-         C4wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:to:references:from:subject:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=6q8b1N4MxU8JhrPvdZs1GsjYLUNjhqrng5So4JodxJc=;
-        b=pw7zO24WlmUBe1Qrm+6GhGvIBdGPcmwCYawIFyXBxDsaYROccJ8lD2xOeAIOXBOnKL
-         7slpWFsaMf/EhtairYP8idrzze/w/miBEy+kvB6Qf8sQgf79l9woXDEae9mK34xQsw0O
-         fL5x8oS/1Yw0i0tJMKpaADChSG9hx26zgKt7AAcMhMUOhJ4QpWjovlJ3IBqttx21zx3e
-         HlCRPGVvr5DYsjjaFCAerCC+Av8vucs+bdAYDAnhkDSKiS4GQVVObBReCz6YtKh7S4M5
-         oxEuRheqhCaRDhyaecYquYPYWFiX2CbXd1n8m8rNLH+QQ7QA6rielnFFMRMyBpfq+U0V
-         MNNg==
-X-Gm-Message-State: AOAM533fEl4LzUndncyzLHLHg74qKIqI8S4vCUckqKxQ/O+iJDraSGTp
-        W07TuDGxBATe73Y3hcQjrW+PuMhz+tE=
-X-Google-Smtp-Source: ABdhPJyjpHx6voET46fAH6m5fZRnU7WXKwfKKro8RpIUVCcIKyM3F7kGLQIbUWhv/XrdF1jBJC+HZA==
-X-Received: by 2002:a4a:dd99:: with SMTP id h25mr3364272oov.63.1621690893825;
-        Sat, 22 May 2021 06:41:33 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h59sm1860042otb.29.2021.05.22.06.41.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 May 2021 06:41:33 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-To:     Erik Rosen <erik.rosen@metormote.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210522105528.87629-1-erik.rosen@metormote.com>
- <20210522105528.87629-4-erik.rosen@metormote.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v2 3/6] hwmon: (pmbus/pim4328) Add support for reading
- direct format coefficients
-Message-ID: <24ff79b6-29f5-6921-7418-9ba93bcf7193@roeck-us.net>
-Date:   Sat, 22 May 2021 06:41:31 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <20210522105528.87629-4-erik.rosen@metormote.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Sat, 22 May 2021 09:58:55 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id c4a205f5;
+        Sat, 22 May 2021 15:57:27 +0200 (CEST)
+Date:   Sat, 22 May 2021 15:57:27 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Robin Murphy <robin.murphy@arm.com>, sven@svenpeter.dev
+Cc:     devicetree@vger.kernel.org, maz@kernel.org, arnd@arndb.de,
+        kettenis@openbsd.org, marcan@marcan.st, bhelgaas@google.com,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+In-Reply-To: <be890747-5f6d-8a7d-3e20-db58463028b1@arm.com> (message from
+        Robin Murphy on Tue, 18 May 2021 15:10:01 +0100)
+Subject: Re: [PATCH 1/2] dt-bindings: pci: Add DT bindings for apple,pcie
+References: <20210516211851.74921-1-mark.kettenis@xs4all.nl>
+ <20210516211851.74921-2-mark.kettenis@xs4all.nl> <be890747-5f6d-8a7d-3e20-db58463028b1@arm.com>
+Message-ID: <5612ef8f8dd80e4d@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/22/21 3:55 AM, Erik Rosen wrote:
-> Add support for reading and decoding direct format coefficients to
-> the PMBus core driver. If the new flag PMBUS_USE_COEFFICIENTS_CMD
-> is set, the driver will use the COEFFICIENTS register together with
-> the information in the pmbus_sensor_attr structs to initialize
-> relevant coefficients for the direct mode format.
+> From: Robin Murphy <robin.murphy@arm.com>
+> Date: Tue, 18 May 2021 15:10:01 +0100
+
+Hi Robin,
+
+> On 2021-05-16 22:18, Mark Kettenis wrote:
+> > From: Mark Kettenis <kettenis@openbsd.org>
+> > 
+> > The Apple PCIe host controller is a PCIe host controller with
+> > multiple root ports present in Apple ARM SoC platforms, including
+> > various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > 
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+> > ---
+> >   .../devicetree/bindings/pci/apple,pcie.yaml   | 150 ++++++++++++++++++
+> >   MAINTAINERS                                   |   1 +
+> >   2 files changed, 151 insertions(+)
+> >   create mode 100644 Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > 
+> > diff --git a/Documentation/devicetree/bindings/pci/apple,pcie.yaml b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > new file mode 100644
+> > index 000000000000..af3c9f64e380
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> > @@ -0,0 +1,150 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/apple,pcie.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Apple PCIe host controller
+> > +
+> > +maintainers:
+> > +  - Mark Kettenis <kettenis@openbsd.org>
+> > +
+> > +description: |
+> > +  The Apple PCIe host controller is a PCIe host controller with
+> > +  multiple root ports present in Apple ARM SoC platforms, including
+> > +  various iPhone and iPad devices and the "Apple Silicon" Macs.
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pcie
+> > +      - const: apple,pcie
+> > +
+> > +  reg:
+> > +    minItems: 4
+> > +    maxItems: 6
+> > +
+> > +  reg-names:
+> > +    minItems: 4
+> > +    maxItems: 7
+> > +    items:
+> > +      - const: ecam
+> > +      - const: rc
+> > +      - const: phy
+> > +      - const: port0
+> > +      - const: port1
+> > +      - const: port2
+> > +
+> > +  ranges:
+> > +    minItems: 2
+> > +    maxItems: 2
+> > +
+> > +  interrupts:
+> > +    minItems: 3
+> > +    maxItems: 3
+> > +
+> > +  msi-ranges:
+> > +    description:
+> > +      A list of pairs <intid span>, where "intid" is the first
+> > +      interrupt number that can be used as an MSI, and "span" the size
+> > +      of that range.
+> > +    $ref: /schemas/types.yaml#/definitions/uint32-matrix
+> > +    items:
+> > +      minItems: 2
+> > +      maxItems: 2
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - reg-names
+> > +  - bus-range
+> > +  - interrupts
+> > +  - msi-controller
+> > +  - msi-parent
+> > +  - msi-ranges
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/apple-aic.h>
+> > +    #include <dt-bindings/pinctrl/apple.h>
+> > +
+> > +    soc {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      pcie0: pcie@690000000 {
+> > +        compatible = "apple,t8103-pcie", "apple,pcie";
+> > +        device_type = "pci";
+> > +
+> > +        reg = <0x6 0x90000000 0x0 0x1000000>,
+> > +              <0x6 0x80000000 0x0 0x4000>,
+> > +              <0x6 0x8c000000 0x0 0x4000>,
+> > +              <0x6 0x81000000 0x0 0x8000>,
+> > +              <0x6 0x82000000 0x0 0x8000>,
+> > +              <0x6 0x83000000 0x0 0x8000>;
+> > +        reg-names = "ecam", "rc", "phy", "port0", "port1", "port2";
+> > +
+> > +        interrupt-parent = <&aic>;
+> > +        interrupts = <AIC_IRQ 695 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 698 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 701 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        msi-controller;
+> > +        msi-parent = <&pcie0>;
+> > +        msi-ranges = <704 32>;
+> > +
+> > +        iommu-map = <0x0 &dart0 0x8000 0x100>,
+> > +                    <0x100 &dart0 0x100 0x100>,
+> > +                    <0x200 &dart1 0x200 0x100>,
+> > +                    <0x300 &dart2 0x300 0x100>;
+> > +        iommu-map-mask = <0xff00>;
 > 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
-> ---
->   drivers/hwmon/pmbus/pmbus_core.c | 93 ++++++++++++++++++++++++++++++++
->   include/linux/pmbus.h            |  8 +++
->   2 files changed, 101 insertions(+)
+> This doesn't quite add up - if the mask is ignoring the bottom 8 bits, 
+> then each of those map entries is describing one single ID mapping, not 256.
 > 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index 460cbfd716e4..03c169bf5633 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -2177,6 +2177,38 @@ static int pmbus_find_attributes(struct i2c_client *client,
->   	return ret;
->   }
->   
-> +static int pmbus_init_coefficients(struct i2c_client *client,
-> +				   struct pmbus_data *data, int page,
-
-This seems wrong. Coefficients are not maintained per page but per class,
-and (re-)reading them for each supported page doesn't really add value or
-even make sense.
-
-> +				   enum pmbus_sensor_classes sensor_class,
-> +				   const struct pmbus_sensor_attr *attrs,
-> +				   int nattrs)
-> +{
-> +	int i, status;
-> +
-> +	for (i = 0; i < nattrs; i++) {
-> +		if (attrs->class == sensor_class &&
-> +		    (attrs->func & data->info->func[page])) {
-> +			status = pmbus_read_coefficients(client,
-> +							 (struct pmbus_driver_info *)data->info,
-> +							 sensor_class,
-> +							 attrs->reg);
-> +			if (status < 0) {
-> +				dev_err(&client->dev,
-> +					"Failed to read coefficients for register: %x\n",
-> +					attrs->reg);
-> +				return status;
-> +			}
-> +			return 0;
-> +		}
-> +		attrs++;
-> +	}
-> +
-> +	dev_err(&client->dev, "No coefficients found for register: %x\n",
-> +		attrs->reg);
-> +
-
-attrs points beyond the array size here, so attrs->reg does not point
-to a valid array element. The problem would also not be the register
-this happens to point to, but the class (ie the chip does not support
-a sensor of the requested class).
-
-Not sure if this should trigger a message or error in the first place.
-It won't matter since the chip will never need those coefficients.
-If anything, this would be a misconfiguration (the driver should
-not set direct format for this sensor class), and the return value
-should be -EINVAL.
-
-Either case, I wonder if this can be handled with less complex code,
-ie without having to check data->info->func[] for all pages. How
-about just walking through attrs and try all class matches until
-one is found that works (ie not return on error but keep trying) ?
-
-> +	return -ENODEV;
-> +}
-> +
->   /*
->    * Identify chip parameters.
->    * This function is called for all chips.
-> @@ -2185,6 +2217,7 @@ static int pmbus_identify_common(struct i2c_client *client,
->   				 struct pmbus_data *data, int page)
->   {
->   	int vout_mode = -1;
-> +	int ret;
->   
->   	if (pmbus_check_byte_register(client, page, PMBUS_VOUT_MODE))
->   		vout_mode = _pmbus_read_byte_data(client, page,
-> @@ -2214,6 +2247,66 @@ static int pmbus_identify_common(struct i2c_client *client,
->   		}
->   	}
->   
-> +	if (data->flags & PMBUS_USE_COEFFICIENTS_CMD) {
-
-I think there should be a separate function to handle that,
-to be called only once, not once per page.
-
-> +		if (!i2c_check_functionality(client->adapter,
-> +					     I2C_FUNC_SMBUS_BLOCK_PROC_CALL))
-> +			return -ENODEV;
-> +
-> +		if (data->info->format[PSC_VOLTAGE_IN] == direct) {
-> +			ret = pmbus_init_coefficients(client, data, page,
-> +						      PSC_VOLTAGE_IN,
-> +						      voltage_attributes,
-> +						      ARRAY_SIZE(voltage_attributes));
-> +			if (ret)
-> +				return ret;
-> +		}
-
-It might be useful to have a little structure with {class, attribute list pointer,
-attribute list size} and walk through that in a loop instead of repeating essentially
-the same code multiple times.
-
-> +
-> +		if (data->info->format[PSC_VOLTAGE_OUT] == direct) {
-> +			ret = pmbus_init_coefficients(client, data, page,
-> +						      PSC_VOLTAGE_OUT,
-> +						      voltage_attributes,
-> +						      ARRAY_SIZE(voltage_attributes));
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		if (data->info->format[PSC_CURRENT_IN] == direct) {
-> +			ret = pmbus_init_coefficients(client, data, page,
-> +						      PSC_CURRENT_IN,
-> +						      current_attributes,
-> +						      ARRAY_SIZE(current_attributes));
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		if (data->info->format[PSC_CURRENT_OUT] == direct) {
-> +			ret = pmbus_init_coefficients(client, data, page,
-> +						      PSC_CURRENT_OUT,
-> +						      current_attributes,
-> +						      ARRAY_SIZE(current_attributes));
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		if (data->info->format[PSC_POWER] == direct) {
-> +			ret = pmbus_init_coefficients(client, data, page,
-> +						      PSC_POWER,
-> +						      power_attributes,
-> +						      ARRAY_SIZE(power_attributes));
-> +			if (ret)
-> +				return ret;
-> +		}
-> +
-> +		if (data->info->format[PSC_TEMPERATURE] == direct) {
-> +			ret = pmbus_init_coefficients(client, data, page,
-> +						      PSC_TEMPERATURE,
-> +						      temp_attributes,
-> +						      ARRAY_SIZE(temp_attributes));
-> +			if (ret)
-> +				return ret;
-> +		}
-> +	}
-> +
->   	pmbus_clear_fault_page(client, page);
->   	return 0;
->   }
-> diff --git a/include/linux/pmbus.h b/include/linux/pmbus.h
-> index f720470b1bab..7fdc282dab5a 100644
-> --- a/include/linux/pmbus.h
-> +++ b/include/linux/pmbus.h
-> @@ -52,6 +52,14 @@
->    */
->   #define PMBUS_NO_WRITE_PROTECT			BIT(4)
->   
-> +/*
-> + * PMBUS_USE_COEFFICIENTS_CMD
-> + *
-> + * When this flag is set the PMBus core driver will use the COEFFICIENTS
-> + * register to initialize the coefficients for the direct mode format.
-> + */
-> +#define PMBUS_USE_COEFFICIENTS_CMD		BIT(5)
-> +
->   struct pmbus_platform_data {
->   	u32 flags;		/* Device specific flags */
->   
+> > +        bus-range = <0 7>;
 > 
+> Given that the iommu-map only covers buses 0-3, what happens to traffic 
+> from buses 4-7?
 
+Yes, that probably needs a little bit of thought.
+
+The hardware is somewhat "interesting".  The PCIe host bridge has (up
+to) three ports.  Each port is associated with its own IOMMU/DART.
+Each port provides mapping logic that maps the RID to an SID.  There
+are 16 mapping registers for the PCIe host bridge that connects the
+onboard devices and 64 mapping registers for the PCIe host bridges
+that are asociated with the Thunderbolt ports.
+
+If no mappings are enabled, it seems that all RIDs get mapped to SID
+0.  The Apple firmware doesn't enable any mappings and my U-Boot code
+doesn't change it either.
+
+The Corellium folks in their port chose a 1:1 mapping from bus number
+to SID and that is what the example above came from.  Both my U-Boot
+driver and my OpenBSD actually ignore the SID and install the same
+IOMMU translation table for all the SIDs.  That's probably good enough
+for U-Boot as long as we don't enable the Thunderbolt ports.  But for
+the OS itself a bit more control is certainly desirable.
+
+Would it be reasonable to allow the device tree some flexibility in
+specifying the desired iommu mapping and let the OS PCIe host bride
+driver program the RID to SID mappings to match what's specified in
+the "iommu-map" and "iommu-map-mask" properties?
+
+Or is it better to just pick a mapping scheme like Corellium did and
+make that part of the DT binding?
+
+Thanks,
+
+Mark
+
+> > +        #address-cells = <3>;
+> > +        #size-cells = <2>;
+> > +        ranges = <0x43000000 0x6 0xa0000000 0x6 0xa0000000 0x0 0x20000000>,
+> > +                 <0x02000000 0x0 0xc0000000 0x6 0xc0000000 0x0 0x40000000>;
+> > +
+> > +        clocks = <&pcie_core_clk>, <&pcie_aux_clk>, <&pcie_ref_clk>;
+> > +        pinctrl-0 = <&pcie_pins>;
+> > +        pinctrl-names = "default";
+> > +
+> > +        pci@0,0 {
+> > +          device_type = "pci";
+> > +          reg = <0x0 0x0 0x0 0x0 0x0>;
+> > +          reset-gpios = <&pinctrl_ap 152 0>;
+> > +          max-link-speed = <2>;
+> > +
+> > +          #address-cells = <3>;
+> > +          #size-cells = <2>;
+> > +          ranges;
+> > +        };
+> > +
+> > +        pci@1,0 {
+> > +          device_type = "pci";
+> > +          reg = <0x800 0x0 0x0 0x0 0x0>;
+> > +          reset-gpios = <&pinctrl_ap 153 0>;
+> > +          max-link-speed = <2>;
+> > +
+> > +          #address-cells = <3>;
+> > +          #size-cells = <2>;
+> > +          ranges;
+> > +        };
+> > +
+> > +        pci@2,0 {
+> > +          device_type = "pci";
+> > +          reg = <0x1000 0x0 0x0 0x0 0x0>;
+> > +          reset-gpios = <&pinctrl_ap 33 0>;
+> > +          max-link-speed = <1>;
+> > +
+> > +          #address-cells = <3>;
+> > +          #size-cells = <2>;
+> > +          ranges;
+> > +        };
+> > +      };
+> > +    };
+> > diff --git a/MAINTAINERS b/MAINTAINERS
+> > index 7327c9b778f1..789d79315485 100644
+> > --- a/MAINTAINERS
+> > +++ b/MAINTAINERS
+> > @@ -1654,6 +1654,7 @@ C:	irc://chat.freenode.net/asahi-dev
+> >   T:	git https://github.com/AsahiLinux/linux.git
+> >   F:	Documentation/devicetree/bindings/arm/apple.yaml
+> >   F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+> > +F:	Documentation/devicetree/bindings/pci/apple,pcie.yaml
+> >   F:	Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+> >   F:	arch/arm64/boot/dts/apple/
+> >   F:	drivers/irqchip/irq-apple-aic.c
+> > 
+> 
