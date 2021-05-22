@@ -2,66 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D024A38D7A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 00:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E50CB38D7B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 00:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbhEVWiq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 18:38:46 -0400
-Received: from kvm5.telegraphics.com.au ([98.124.60.144]:47670 "EHLO
-        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231433AbhEVWip (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 18:38:45 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 43FA62ABE7;
-        Sat, 22 May 2021 18:37:16 -0400 (EDT)
-Date:   Sun, 23 May 2021 08:37:15 +1000 (AEST)
-From:   Finn Thain <fthain@telegraphics.com.au>
-To:     Hui Tang <tanghui20@huawei.com>
-cc:     jejb@linux.ibm.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 11/24] scsi: sun3_scsi: remove leading spaces before
- tabs
-In-Reply-To: <1621672648-39955-12-git-send-email-tanghui20@huawei.com>
-Message-ID: <4bd6db59-414-221f-a8bc-49645511d56b@nippy.intranet>
-References: <1621672648-39955-1-git-send-email-tanghui20@huawei.com> <1621672648-39955-12-git-send-email-tanghui20@huawei.com>
+        id S231461AbhEVWsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 18:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231433AbhEVWse (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 18:48:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 60B0361104;
+        Sat, 22 May 2021 22:47:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621723628;
+        bh=VxC2ycSrQeCQwrVvwr4Gc77sJyskQYWaWT/e2vNs3fo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fQFLsE8tKt3mIpZ1sh3UktAAf0XY6z1EGIW7LMLGhUaay+f09SHuvVe25pz8mrVU4
+         DdnmsPWnm8FbyiV3vlj7fe6GVMsuw14gMouiUXS133b+btuTS0u27k+s/C6pCB7s5l
+         us0SMdO1JqY1Tn9eUdYyZsJ55dU4n3T1vOz2x4bLdnPyT6mOIFJCKKVdvOA0EmIpjf
+         yHpD8B4XwOKdIhbQWl2uqBwejlVBm0nZDMlKmBFKIVbmXoSahd4LhT/ghcJBJ5sAn3
+         7XPdbhtR6FxY5MW/2t8VZOaYop8X1dbe80hWcGr15gH2qjEg5TQzMAZExzlirWuMqA
+         Tw3oFbND1yizA==
+Date:   Sun, 23 May 2021 01:47:06 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Yu-cheng Yu <yu-cheng.yu@intel.com>
+Cc:     x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-api@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Subject: Re: [PATCH v27 10/10] x86/vdso: Add ENDBR to __vdso_sgx_enter_enclave
+Message-ID: <YKmJ6goXX9rxKnJA@kernel.org>
+References: <20210521221531.30168-1-yu-cheng.yu@intel.com>
+ <20210521221531.30168-11-yu-cheng.yu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521221531.30168-11-yu-cheng.yu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Sat, 22 May 2021, Hui Tang wrote:
-
-> There are a few leading spaces before tabs and remove it by running
-> the following commard:
+On Fri, May 21, 2021 at 03:15:31PM -0700, Yu-cheng Yu wrote:
+> ENDBR is a special new instruction for the Indirect Branch Tracking (IBT)
+> component of CET.  IBT prevents attacks by ensuring that (most) indirect
+> branches and function calls may only land at ENDBR instructions.  Branches
+> that don't follow the rules will result in control flow (#CF) exceptions.
 > 
->     $ find . -name '*.[ch]' | xargs sed -r -i 's/^[ ]+\t/\t/'
+> ENDBR is a noop when IBT is unsupported or disabled.  Most ENDBR
+> instructions are inserted automatically by the compiler, but branch
+> targets written in assembly must have ENDBR added manually.
 > 
+> Add ENDBR to __vdso_sgx_enter_enclave() branch targets.
+> 
+> Signed-off-by: Yu-cheng Yu <yu-cheng.yu@intel.com>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Cc: Andy Lutomirski <luto@kernel.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: Jarkko Sakkinen <jarkko@kernel.org>
+> Cc: Peter Zijlstra <peterz@infradead.org>
 
-Acked-by: Finn Thain <fthain@telegraphics.com.au>
 
-Is there a reason why your regexp is anchored? I thought spaces before any 
-tab would be undesirable.
+Acked-by: Jarkko Sakkinen <jarkko@kernel.org>
 
-> Cc: Finn Thain <fthain@telegraphics.com.au>
-> Signed-off-by: Hui Tang <tanghui20@huawei.com>
 > ---
->  drivers/scsi/sun3_scsi.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/x86/entry/vdso/vsgx.S | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/scsi/sun3_scsi.c b/drivers/scsi/sun3_scsi.c
-> index 2e3fbc2..6125ed3 100644
-> --- a/drivers/scsi/sun3_scsi.c
-> +++ b/drivers/scsi/sun3_scsi.c
-> @@ -304,7 +304,7 @@ static int sun3scsi_dma_setup(struct NCR5380_hostdata *hostdata,
->  	sun3_udc_write(UDC_INT_ENABLE, UDC_CSR);
->  #endif
->  	
-> -       	return count;
-> +	return count;
+> diff --git a/arch/x86/entry/vdso/vsgx.S b/arch/x86/entry/vdso/vsgx.S
+> index 99dafac992e2..c7cb85d57b3f 100644
+> --- a/arch/x86/entry/vdso/vsgx.S
+> +++ b/arch/x86/entry/vdso/vsgx.S
+> @@ -4,6 +4,7 @@
+>  #include <asm/export.h>
+>  #include <asm/errno.h>
+>  #include <asm/enclu.h>
+> +#include <asm/vdso.h>
 >  
->  }
+>  #include "extable.h"
 >  
+> @@ -27,6 +28,7 @@
+>  SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>  	/* Prolog */
+>  	.cfi_startproc
+> +	ENDBR64
+>  	push	%rbp
+>  	.cfi_adjust_cfa_offset	8
+>  	.cfi_rel_offset		%rbp, 0
+> @@ -62,6 +64,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>  .Lasync_exit_pointer:
+>  .Lenclu_eenter_eresume:
+>  	enclu
+> +	ENDBR64
+>  
+>  	/* EEXIT jumps here unless the enclave is doing something fancy. */
+>  	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
+> @@ -91,6 +94,7 @@ SYM_FUNC_START(__vdso_sgx_enter_enclave)
+>  	jmp	.Lout
+>  
+>  .Lhandle_exception:
+> +	ENDBR64
+>  	mov	SGX_ENCLAVE_OFFSET_OF_RUN(%rbp), %rbx
+>  
+>  	/* Set the exception info. */
+> -- 
+> 2.21.0
 > 
+> 
+
+/Jarkko
