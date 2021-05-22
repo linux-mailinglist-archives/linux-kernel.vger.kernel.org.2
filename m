@@ -2,159 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 860CD38D324
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:51:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0B2938D326
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 04:52:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231260AbhEVCwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 22:52:40 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:39654 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230527AbhEVCwi (ORCPT
+        id S231263AbhEVCxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 22:53:50 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:52139 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231161AbhEVCxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 22:52:38 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14M2lBGN060489;
-        Sat, 22 May 2021 02:50:55 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=ZMpEBqfY4uyZyslMqzk4oeE1GOdhgf0uBnX8WQX+qcI=;
- b=gzBD0tiO3YWK5sS9Vmel4orL3PjVBu300xLbT2QWHr9HY/dryQZoVlUuVNioH1M4F95A
- WzAtEMby3c3OGIh0xDcHDTZ7QIQU0/8qTrv6J7oU08ZH25+Lfw1W28TBVSWg9AEWRkPk
- ebh8WLa7tCO/CHJcwBnXkLfjdO1hc3lTzici8zBekdQ590mIxe+Fu4QAa72upuPCsryK
- G1iastda4lf6SU3ctstmVbbONBGBkSyPhtCq1TIu6TxDdlWvxEwxp8Ch543AqHue8qe9
- TzEjdgeXkkgzCDTAi6DX0QOnY28oGypETU0X+iqwUTkQKS0sfdVBrVsDrMSbiiM76Va0 1g== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 38j6xnrytb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 May 2021 02:50:54 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14M2niq2004861;
-        Sat, 22 May 2021 02:50:54 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2048.outbound.protection.outlook.com [104.47.66.48])
-        by userp3020.oracle.com with ESMTP id 38ps9j07q4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 May 2021 02:50:54 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=m3zvJ9+V5+5w1uZ5pi5ch3/cZmTxx0+2Vn2PQs4i0Th7JOdVKKJFkJSYQg+iVxtNyeVrAnBwFutQVbtmddTjXDL9V0QUWxPE41jJorOyhi4jTse9sVs3RMlsCXzdQYGR5G3pEuPZs+4V+JKeWgfu1L7MV8kPHoY33ieZ/d0GfW2Q/P8Od0S1ZUg+Zxl9yg7de96vLzzfSr08yuoNDJsK6pE0Up8mocfLz8BMWTzWQperH2+v8C8aC+JYMNPvQT0SYhozTdkQsKRoWSleeyrchaGlsq+tcKxafPRMZndQQ+f1z7BPI5/Lz3UWAE+j2RZKj0oxdcxs4j1GvsKIWdhNJQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZMpEBqfY4uyZyslMqzk4oeE1GOdhgf0uBnX8WQX+qcI=;
- b=nFeHgh7o+f5NYZahPlbjU6hZcfkn2sp5u1z/VkjV6xNFU+8aHOLmV0Yy1sJ2v00JxBGbx1GxsmpqXpcOZdXXQUeDbUYaYzwJaQolBNdu5OTK0c0dSYGX3BE3ppzIw3u9jcliW3xJCl/eTomzqNtvf26Rtn8vfu96s1K8q6xexKxoA29XWvVooWPwQuKLD7Ylc5wW9J8coAg4MWfWpwAgdCRClPDx3UEgJ1RYNdM4OcXweWT8wA2y0+NA/cmyb2vEUt4hLc7XHvVQyCfqXSZ4LyZTospR4VuI0M+leDmfYtizZ7v5hu8DZaL1rJrT67rpNp325/8MoPYZtXui/N58kw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZMpEBqfY4uyZyslMqzk4oeE1GOdhgf0uBnX8WQX+qcI=;
- b=mOgK+/gHO+HDr/NN4e0G55TipdHMBfs6innTw9QGeWuq/n2H//g08RYoTfrXNVKN8HjZRCTdw4bBBBdKJ4vFGE+kSLKbgOmdh6/KzajnqhGTnIEJEsxvVKnomCEfV4npKW6rP9FBXZ8nRLRfLKTJY8RkGDPYSnXvmDZ7QuZ0StE=
-Authentication-Results: canonical.com; dkim=none (message not signed)
- header.d=none;canonical.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4501.namprd10.prod.outlook.com (2603:10b6:510:43::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Sat, 22 May
- 2021 02:50:51 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::4c61:9532:4af0:8796%7]) with mapi id 15.20.4150.023; Sat, 22 May 2021
- 02:50:51 +0000
-To:     Colin King <colin.king@canonical.com>
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: ufs: ufs-exynos: make a const array static, makes
- object smaller
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq17djr1ny6.fsf@ca-mkp.ca.oracle.com>
-References: <20210505190104.70112-1-colin.king@canonical.com>
-Date:   Fri, 21 May 2021 22:50:48 -0400
-In-Reply-To: <20210505190104.70112-1-colin.king@canonical.com> (Colin King's
-        message of "Wed, 5 May 2021 20:01:04 +0100")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: BYAPR02CA0025.namprd02.prod.outlook.com
- (2603:10b6:a02:ee::38) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Fri, 21 May 2021 22:53:47 -0400
+Received: by mail-il1-f197.google.com with SMTP id z3-20020a92cb830000b02901bb45557893so23071277ilo.18
+        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 19:52:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Jue70gMD2bnrTWLoEZmyt/cAfGpA7FRemzX39phiOi0=;
+        b=LiiKdtGNmCqOf9MUkJq3L74OdsIOPz1s91CcZ6Cx6oa8puG3q9QYerosEEfdyS/0MN
+         njv65Eo6Js3VxBkhoF4+t7urnehZAK1yLTVUd9pum9lOQiYs+L11vRIhvdMOgmttfj7G
+         QG6NSWzqhENAU/ZTBDCaIBX7IlmfQEER/Rwv28ebq1M1dkB0IJ8GppsgJ5SUrL4GFoJY
+         Uae1L9j8E5ZQxpZLtdnQLiWQ/iWlPYglKwWueAKBb6iyIgrkm5uKFD5tpxlKmLB3Zd4u
+         ue81Msz0R74wD0JN5wvnQAB1fQ/t6ZTjZKXruXrBD2VMgk9cMex6aRYMz6KPmYMbgI/2
+         A7Vw==
+X-Gm-Message-State: AOAM5306VZyNJ56RNRC4lCX1q+bBmKOt8Sajv+uegT19/QTSDOObo3Sv
+        lwgU5gbh84LxyX3ftVv+kvVzpUORkT1U70YhKkkPenMuW44R
+X-Google-Smtp-Source: ABdhPJxXd6oKyJwV7S5eO4/SQ1t0AMNCPK5ACa6aOpobA7MmBIMnkQlC9EE9J40eZg6IUMH5y2mWX2zk3AMpjdFrrNbN2GulgmrS
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR02CA0025.namprd02.prod.outlook.com (2603:10b6:a02:ee::38) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Sat, 22 May 2021 02:50:50 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 28f09781-f6c8-446a-b244-08d91ccc68e6
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4501:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4501A415880613F2AF2FEAA38E289@PH0PR10MB4501.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3968;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: eCmVERBlw61/N1K3+5J0OmlXg3g2gFK2i3UV9WtAnFFxTCDxY16aBXw2R8huaHfV3JTfG6Z5rYBVy9oi80p7kS6/2MidqZeRlEKBTuX8s1VFt/Jb/LHS/kWqy6J+3rkEthMpYZF1yjCLksi5MX05MXWbn5vRcz0qYq5CD/M08RzD05l/zpR0PQ1QRvbTNK1An5/d3ff0Sbj6pAj0ddUZMC+lFvbHFTuJaH6m0szfS9PbEeKwu6V7vOCcBUMqdIZEV9HVnD+Kd/Tk7m1EIUJ8fCFOiEbcymuXytfXZq34/mTN6F/B2AIrt37uCn9bJetii+oUF7VeyKlipZ9ez3/CP+mU/X+2MJXR4YnDJ7nGLxZ34JUPvnc6LozF+wB3HNLxZE/B4wPVU9IKzwOxp57tyNPXRxiAQ93QB1FoNhLJhfhvrDhbTDH7H+tcwdwgFK3HIwSqZmbjsj6P1elH8uhhOiIg5CxGyWyOF2RTb2rBPdCPPcT/mEI9uf6WsJdj97HkLKZOtUJrQQ9w5LYqKTQ6LXdc+d4qZEfF7TbHzpE3iNa7Ur/E7B8Rb0tBb93ZKTWhw4raiPjcuGFBG1Fh4zg+jBuTWEFrYddyEM0YW9wAKRlH/1a6PyYZUVmRNwrDeMDxfj+57rOo+fYCvLF3i5GiIWW1mP8mf19xWwH11dyCpoA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(346002)(376002)(39860400002)(136003)(8936002)(8676002)(2906002)(55016002)(6916009)(26005)(54906003)(186003)(66946007)(66476007)(7416002)(66556008)(316002)(7696005)(52116002)(38100700002)(16526019)(38350700002)(36916002)(956004)(86362001)(478600001)(558084003)(5660300002)(4326008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?SZBiWrsakXoGXvHj6LNJ474mQvthrd9ruw84j+DNtyLx5RHq68tVUlscM9gG?=
- =?us-ascii?Q?yoG4aymYFiE0N+5Yax08Zq0eR0madaXUc7nz39CEvE5pMk6OgzrA9fDNLM+U?=
- =?us-ascii?Q?rrivc8u1yDYtovkT9ivJ56xyfTgupHSgvvnHzxFMTLF8/flz8SbUqCf9CfO3?=
- =?us-ascii?Q?SMje5/qMb8v1X0E7jmfsnGSiifWiXSh1X/GMjMF7vZa52YcXsiCHdoKVQZLb?=
- =?us-ascii?Q?VZthBdcn71oWS3r/hwTAoWCQqcjd63l/nGPsn56VjHjHMyiycFTpeJ23rQpp?=
- =?us-ascii?Q?41dMTLM0evL4PfGyniNjtKQSn6JkZirR0/Kco8pYNG9nSVY9aF8KS2B5wIx+?=
- =?us-ascii?Q?qUrtU4JcQIjd3TRz2jq1d4AUiW9FgBEbczSZ63hvCC3KV2tfa3t8c+/DxhvR?=
- =?us-ascii?Q?7HrkqNMbjLT0ByrqrM7ZgxSloEZzsZJdLxJf40Ptdoh8tbtg30JgmCCbUYP6?=
- =?us-ascii?Q?LAs3ZV1CJ17GuBLIaQZltDGDbp+GQx/Irs6HPjICLKjPWwBgZ7xuKM34KJfl?=
- =?us-ascii?Q?F3DYKS24sRoaEvaSjsvU7/3r2KE3PIAfIEiHBoiiCHoDDntjEUXJVLDA2qGN?=
- =?us-ascii?Q?v29mR98I0Fyu0HfZn/D6QROF4TFnSSmfFv567qTzF0kexa8MCBkB4eT9UAcx?=
- =?us-ascii?Q?b8ose4RDSykJPlztiEEnnaO+TR4aX0LH41Kn93b0ly/rEL85C/HBmRCEzpHD?=
- =?us-ascii?Q?giNX5absRwlTMp6kTIHeWsX9zV+6kVbmJcnTehJgxbnmHTHW0rJybN5EcFnU?=
- =?us-ascii?Q?E64Wy6A411Jk6THMh70KborG5MqX8+q57t/VncP0YHoJH+v/ZUdFMtq/1xqD?=
- =?us-ascii?Q?fBEbw0EoNay9By0i4s1RRrghEJN6hCOYL9nLpTQyPwAEQJy9woSSuQPe6DR7?=
- =?us-ascii?Q?XGgSVLnbTQHTk4YWD2g1J2VbFcaszWruFdQdiiE2dIcCVMrVy3yyroLTMCWn?=
- =?us-ascii?Q?OFwqjsmVMj32cIx2OCaHGiO0sJEsROeC+WJPAjj0j9DqLG+CtsvOPoDBr7Jz?=
- =?us-ascii?Q?/955ii15hN7B4Z5o47bo/6V0NMOp79wQDwnQR2phS904RVCuW8LQzam2+RdJ?=
- =?us-ascii?Q?Qj715ecbMLMWqTXmp1kC3/PejUDyohMBoCY1q92H+B20WgiNc6SEWirM4Bhf?=
- =?us-ascii?Q?Wulm3lGHlOXkA4ZlyOkW7+jDoZMgbAVLxsBsVtNv7jVPhBB2ucMtwCTQYZTF?=
- =?us-ascii?Q?cW5pmtKpXbeCP2xwMfT8SI7aWXmdwedK04LUVti+apFiKlVWyC1WwUehLMVf?=
- =?us-ascii?Q?gG3edEKFcbojC7C8ZfKexhB7OPFEtRbrgkNZQQNh2GNogDtSOcLKhrSDHsXa?=
- =?us-ascii?Q?/0B1uPMqnApMLsM1zVE6qw17?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 28f09781-f6c8-446a-b244-08d91ccc68e6
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2021 02:50:50.9437
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AgfteyJWe9dq4PqETQECaxp0rQXU/bi7/RCM901aIczKI2nXyNkO/Z5SD2dDinlZndX+o/LBtiI81q+ayiEHprgh3kR7BPdgKEfCb+MDBYQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4501
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9991 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- suspectscore=0 phishscore=0 spamscore=0 mlxlogscore=999 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105220016
-X-Proofpoint-GUID: Xc1QG9ClUCU-pgUNtB88y_bi4z-2lNkr
-X-Proofpoint-ORIG-GUID: Xc1QG9ClUCU-pgUNtB88y_bi4z-2lNkr
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9991 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxscore=0
- mlxlogscore=999 adultscore=0 malwarescore=0 priorityscore=1501
- phishscore=0 suspectscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105220015
+X-Received: by 2002:a6b:d20e:: with SMTP id q14mr2483179iob.200.1621651942011;
+ Fri, 21 May 2021 19:52:22 -0700 (PDT)
+Date:   Fri, 21 May 2021 19:52:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3fc9305c2e24311@google.com>
+Subject: [syzbot] WARNING in x86_emulate_instruction
+From:   syzbot <syzbot+71271244f206d17f6441@syzkaller.appspotmail.com>
+To:     bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
+        jarkko@kernel.org, jmattson@google.com, joro@8bytes.org,
+        kan.liang@linux.intel.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-sgx@vger.kernel.org,
+        mingo@redhat.com, pbonzini@redhat.com, peterz@infradead.org,
+        seanjc@google.com, steve.wahl@hpe.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        vkuznets@redhat.com, wanpengli@tencent.com, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-Colin,
+syzbot found the following issue on:
 
-> Don't populate the const array granularity_tbl on the stack but instead it
-> static. Makes the object code smaller by 190 bytes:
+HEAD commit:    8ac91e6c Merge tag 'for-5.13-rc2-tag' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16a80fc7d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=dddb87edd6431081
+dashboard link: https://syzkaller.appspot.com/bug?extid=71271244f206d17f6441
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12d1f89bd00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
 
-Applied to 5.14/scsi-staging, thanks!
+The issue was bisected to:
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+commit 9a7832ce3d920426a36cdd78eda4b3568d4d09e3
+Author: Steve Wahl <steve.wahl@hpe.com>
+Date:   Fri Jan 8 15:35:49 2021 +0000
+
+    perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=152bf9b3d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=172bf9b3d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=132bf9b3d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
+Fixes: 9a7832ce3d92 ("perf/x86/intel/uncore: With > 8 nodes, get pci bus die id from NUMA info")
+
+L1TF CPU bug present and SMT on, data leak possible. See CVE-2018-3646 and https://www.kernel.org/doc/html/latest/admin-guide/hw-vuln/l1tf.html for details.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 8431 at arch/x86/kvm/x86.c:7620 x86_emulate_instruction+0x9e8/0x1460 arch/x86/kvm/x86.c:7620
+Modules linked in:
+CPU: 0 PID: 8431 Comm: syz-executor681 Not tainted 5.13.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:x86_emulate_instruction+0x9e8/0x1460 arch/x86/kvm/x86.c:7620
+Code: c0 74 07 7f 05 e8 a8 48 a9 00 41 0f b6 5c 24 30 bf 06 00 00 00 89 de e8 56 4d 64 00 80 fb 06 0f 85 06 05 00 00 e8 98 46 64 00 <0f> 0b e8 91 46 64 00 48 89 ef e8 89 48 fe ff c7 44 24 1c 01 00 00
+RSP: 0018:ffffc90002057930 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000006 RCX: 0000000000000000
+RDX: ffff88802caad4c0 RSI: ffffffff81108cc8 RDI: 0000000000000003
+RBP: ffff88802eb08000 R08: 0000000000000000 R09: 0000000000000006
+R10: ffffffff81108cba R11: 0000000000000006 R12: ffff88802bd48000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000040
+FS:  00000000012e3300(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000000000000 CR3: 000000001459c000 CR4: 00000000001526f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ kvm_mmu_page_fault+0x2eb/0x1890 arch/x86/kvm/mmu/mmu.c:5103
+ handle_ept_violation+0x29c/0x6f0 arch/x86/kvm/vmx/vmx.c:5402
+ __vmx_handle_exit arch/x86/kvm/vmx/vmx.c:6106 [inline]
+ vmx_handle_exit+0x336/0x1800 arch/x86/kvm/vmx/vmx.c:6123
+ vcpu_enter_guest+0x235e/0x47e0 arch/x86/kvm/x86.c:9425
+ vcpu_run arch/x86/kvm/x86.c:9491 [inline]
+ kvm_arch_vcpu_ioctl_run+0x47d/0x1990 arch/x86/kvm/x86.c:9719
+ kvm_vcpu_ioctl+0x467/0xd10 arch/x86/kvm/../../../virt/kvm/kvm_main.c:3458
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x440da9
+Code: 28 c3 e8 2a 14 00 00 66 2e 0f 1f 84 00 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe2af5d538 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000400488 RCX: 0000000000440da9
+RDX: 0000000000000000 RSI: 000000000000ae80 RDI: 0000000000000005
+RBP: 00000000004048a0 R08: 0000000000400488 R09: 0000000000400488
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000404930
+R13: 0000000000000000 R14: 00000000004ae018 R15: 0000000000400488
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
