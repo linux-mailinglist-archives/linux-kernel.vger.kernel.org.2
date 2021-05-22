@@ -2,90 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2C6538D2A2
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:44:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8313238D2A8
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:46:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230400AbhEVAqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 20:46:04 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:42303 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230190AbhEVApz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 20:45:55 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1621644271; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=v70XeN85MmH6JrlfKKi2igLz2OW8mPpsFWoQ9lHM85k=; b=o688NxTrCglCD/Sp8OtT/vu6ste81mA2br10GRJYP0kp2gUA9kedRv1zDHAdaCScLHi3gVJb
- Jw7+hGVhWmXEHs2ZUHYUhmF38BC5sT55zWR9RXHS1+CuXnDcPlWgM/2SJEjgbTQWZh15q6yF
- QEyeH3spoNg5ia31xzQd3v1ICOY=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 60a853eab15734c8f966ad1e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 22 May 2021 00:44:26
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3F757C433D3; Sat, 22 May 2021 00:44:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F96BC433D3;
-        Sat, 22 May 2021 00:44:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2F96BC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH] usb: gadget: f_fs: Ensure io_completion_wq is idle during unbind
-Date:   Fri, 21 May 2021 17:44:21 -0700
-Message-Id: <1621644261-1236-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S230428AbhEVAsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 20:48:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230307AbhEVAsD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 20:48:03 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68073C061574;
+        Fri, 21 May 2021 17:46:39 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id y2so29775761ybq.13;
+        Fri, 21 May 2021 17:46:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=RdygxSbSqsWz9BfeMNSc2FteZY17xkWEnp8K+VZHat0=;
+        b=Z7+ykzF+PSO7JYR0DUvVodmmpJz6jm5VoUJ0RbLpsMBuATAk+jZ0bjJIR7Pc2Ka7jb
+         xeJsQ5F3KHD04JO5Ts9MWuyhHOIWSE+z1fJSP3nAXXkhH7n/UUPz2vQb78MBApyglo2O
+         iqSxg+lVbFU8ryxbQEdHdod1DpEHwZ3hlUujZ3V9nsJx0UYAnAxfdKtlcyo/yhK22wjl
+         hFKr1+MATzRbJK714vVw7BMlqL0gh2AnHtHFUxKB1kl0ZiK8o5t1JOH0Zo8ZorbSHDi1
+         Y6gut9Mt+Lk8+xQT/Z2bC3Vj1ZlQbAGEHXS/cYtYO9lScf3DIye3fAHGIU6e+QYFGbFh
+         3gLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=RdygxSbSqsWz9BfeMNSc2FteZY17xkWEnp8K+VZHat0=;
+        b=lquVT5asxXzcb7H6RWs2wONH2483PQhfr17wlEbo2NeAEfS7ycn8z5quK7hivy34ik
+         FJfX8C4DHmccXzDI051kLHjp1TN/37KDv7aV0CMahbf3DkPF1vVcDEQHtIS8TkUaw8fD
+         KpLFAHko+ZAyfioCaGMlaS0Q36lgmEodMJqGbbcBeQ6oXWIPjvr0hxBtoV+2O7CnFNKM
+         38nuIjGrmbRiAVGpPhNdp+2Mp/oed9y5/yas3zlExzFtDeLI1R7+3jCMNT9mvNdJx2+b
+         ZinlmzRq8ikGevOaC5lsgglg5DaGggX1QYOQ3RWqubz/yzogBg+gHox6R18mf5r3630+
+         5cTw==
+X-Gm-Message-State: AOAM533SaE/sUmUZh0DtRYGwiP+3WocvvGCRJNj43EcX1CF7xOvGtR2m
+        nSc9a0fK75LlsXD/vd6zlq9sSY1rV44zbDo/dfY=
+X-Google-Smtp-Source: ABdhPJzYYiVgQn2patbTAzQcchSjTQQ9r/3Qwi7eKoSsVjBQmDo3PdW6guUSdJPUpu5nEfJKa6lboM+iefQrSMUpwM8=
+X-Received: by 2002:a5b:f05:: with SMTP id x5mr18321502ybr.425.1621644398645;
+ Fri, 21 May 2021 17:46:38 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210521162041.GH8544@kitsune.suse.cz>
+In-Reply-To: <20210521162041.GH8544@kitsune.suse.cz>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 21 May 2021 17:46:27 -0700
+Message-ID: <CAEf4BzbgJPgVmdS32nnzd8mBj3L=mib7D8JyP09Gq4bGdYpTyg@mail.gmail.com>
+Subject: Re: BTF: build failure on 32bit on linux-next
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     Networking <netdev@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During unbind, ffs_func_eps_disable() will be executed, resulting in
-completion callbacks for any pending USB requests.  When using AIO,
-irrespective of the completion status, io_data work is queued to
-io_completion_wq to evaluate and handle the completed requests.  Since
-work runs asynchronously to the unbind() routine, there can be a
-scenario where the work runs after the USB gadget has been fully
-removed, resulting in accessing of a resource which has been already
-freed. (i.e. usb_ep_free_request() accessing the USB ep structure)
+On Fri, May 21, 2021 at 9:20 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
+ote:
+>
+> Hello,
+>
+> looks like the TODO prints added in 67234743736a6 are not 32bit clean.
+>
+> Do you plan to implement this functionality or should they be fixed?
 
-Explicitly drain the io_completion_wq, instead of relying on the
-destroy_workqueue() (in ffs_data_put()) to make sure no pending
-completion work items are running.
+They should be fixed regardless. Can you please re-submit as a proper
+patch to bpf@vger.kernel.org with [PATCH bpf-next] subj prefix?
 
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/usb/gadget/function/f_fs.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
-index bf10919..d4844af 100644
---- a/drivers/usb/gadget/function/f_fs.c
-+++ b/drivers/usb/gadget/function/f_fs.c
-@@ -3567,6 +3567,9 @@ static void ffs_func_unbind(struct usb_configuration *c,
- 		ffs->func = NULL;
- 	}
- 
-+	/* Drain any pending AIO completions */
-+	drain_workqueue(ffs->io_completion_wq);
-+
- 	if (!--opts->refcnt)
- 		functionfs_unbind(ffs);
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+>
+> Thanks
+>
+> Michal
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 69cd1a835ebd..70a26af8d01f 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -4565,7 +4565,7 @@ static int init_map_slots(struct bpf_object *obj, s=
+truct bpf_map *map)
+>                 targ_map =3D map->init_slots[i];
+>                 fd =3D bpf_map__fd(targ_map);
+>                 if (obj->gen_loader) {
+> -                       pr_warn("// TODO map_update_elem: idx %ld key %d =
+value=3D=3Dmap_idx %ld\n",
+> +                       pr_warn("// TODO map_update_elem: idx %td key %d =
+value=3D=3Dmap_idx %td\n",
+>                                 map - obj->maps, i, targ_map - obj->maps)=
+;
+>                         return -ENOTSUP;
+>                 } else {
+> @@ -6189,7 +6189,7 @@ static int bpf_core_apply_relo(struct bpf_program *=
+prog,
+>                 return -EINVAL;
+>
+>         if (prog->obj->gen_loader) {
+> -               pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind =
+%d\n",
+> +               pr_warn("// TODO core_relo: prog %td insn[%d] %s %s kind =
+%d\n",
+>                         prog - prog->obj->programs, relo->insn_off / 8,
+>                         local_name, spec_str, relo->kind);
+>                 return -ENOTSUP;
