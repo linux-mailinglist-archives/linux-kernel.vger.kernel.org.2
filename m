@@ -2,179 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7D7C38D731
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 21:15:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 340CA38D73D
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 21:32:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhEVTQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 15:16:12 -0400
-Received: from skyrme.org ([37.221.197.251]:54398 "EHLO skyrme.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231465AbhEVTQH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 15:16:07 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 May 2021 15:16:07 EDT
-Received: (qmail 25056 invoked by uid 0); 22 May 2021 19:07:59 -0000
-Received: from unknown (HELO basil.scara.com) (schirmer@unknown)
-  by unknown with ESMTPA; 22 May 2021 19:07:59 -0000
-Received: (qmail 28964 invoked by uid 500); 22 May 2021 19:07:59 -0000
-Date:   Sat, 22 May 2021 19:07:59 +0000
-From:   Oskar Schirmer <oskar@scara.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Trent Piepho <tpiepho@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Yiyuan guo <yguoaz@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: A divide by zero bug in lib/math/rational.c (with triggering
- input)
-Message-ID: <20210522190759.GA9755@basil.scara.com>
-References: <CAM7=BFoktwgy=T0GK6Mpmp2gYToCUs=CrM29MRWw8O7TPypQ8w@mail.gmail.com>
- <CAHp75Vf8kQ73w0R9ieDNjDVkxM-V83QRN9mc6BjRZA8xHpPNAA@mail.gmail.com>
- <CAHp75Vft8pnA+m0C=Ok7nRyjERAd2uJJ4q6HcN460j0Hir6Kaw@mail.gmail.com>
- <CAM7=BFoH7Q+YHvPFnHM4j72ORHQp4gTjHFjnfeLsV2-30ZLNYw@mail.gmail.com>
- <CA+7tXigG7QVYOtkuFrqciHfuxE4+c0JM9z8r0e9rooTjjz5PYA@mail.gmail.com>
- <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com>
-Organisation: www.embedded-group.de
+        id S231377AbhEVTdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 15:33:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231310AbhEVTdb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 15:33:31 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F798C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 12:32:06 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id f22so9136283pfn.0
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 12:32:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id;
+        bh=etKYDS5uAQ5qqnzu2k3mx2BQc5MVAc3RoI6hB7aUSKk=;
+        b=ENtMtbXJvHpIe6sUlXwwIF/UuDDqjmxl4xHwoBSIxvz8H+WtuQqYeSUnAVHoRRLR51
+         aZo+SZMeFygvoEeqeAVBI15qFcicW4qVx7rDbe9bV+EQaHukCvMNnuGnN6ZwfTh6RuOI
+         7BJyL0MzbMOlTYPpIhbC7LEvntX6HXL1VOcEIfgB/QSh9NKYi5ETMftlt0hO2rqo1AMm
+         w/K8ZtqtrhhQU3q6vHch/Aigk8QOnHBOHm4Bd/Rt2syl3J0voTMnNuDsAUsxKo4zcvB3
+         XmSQaHIqOoJw6tAvOsHgxsrmUDcFj4ThsB4aLKZSFJgsAXAlLtNRhJwLN01HRIOD37s/
+         GWIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id;
+        bh=etKYDS5uAQ5qqnzu2k3mx2BQc5MVAc3RoI6hB7aUSKk=;
+        b=j9cb4kGVIeA9CEpQVsZJiz0oP2VJSXm/JIU0tyYYOOhooyB8+qOB8MSvbz+NPyqQ1V
+         ZcvLUccgl/f5YR6ScaRw+soAGG48RS+r4kGWjyPlY9BGpi0gE1YXbO0YMEk6bVJG1SPt
+         ga/hm6ri8gXq4FCV7So4nHKZidZv3o1Y8su6dzxcyyBxzuE5zQdqAd8e9t9+q3luCZ5N
+         OWE1f95AAmcFodERGQ1iKtXToq0bzymnNib0iDuFbY5DjZjmmVHqnp5N6gExpJHduDTK
+         J361OzUBpMjodk8a3MYhd4bdtRtPCwt7L4tKwR4Ns0ds3g+GA2p2ziJAlgG6DZthB3N4
+         DQWg==
+X-Gm-Message-State: AOAM530MaPjP0N3VtFLMRul/pzD9uq8zkP35PrIk0T5Avf0dJJmeXUz7
+        rgjTHmvyaQ7H2TN1B5+JCO6YJQ==
+X-Google-Smtp-Source: ABdhPJxT2VRDTaqQDATEmQAvfGBKRdVYoqTMZXQ0n27UEKf7Co7J0c9f9cgqRHBs0EGTLm/r++s3xQ==
+X-Received: by 2002:a63:d40d:: with SMTP id a13mr5503703pgh.382.1621711925684;
+        Sat, 22 May 2021 12:32:05 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id f2sm7517956pgl.67.2021.05.22.12.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 12:32:05 -0700 (PDT)
+Date:   Sat, 22 May 2021 12:32:05 -0700 (PDT)
+X-Google-Original-Date: Sat, 22 May 2021 12:31:58 PDT (-0700)
+Subject:     Re: [PATCH] RISC-V: Don't check text_mutex during stop_machine
+In-Reply-To: <20210506092550.6c2206b3@gandalf.local.home>
+CC:     linux-riscv@lists.infradead.org, mingo@redhat.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, mhiramat@kernel.org, zong.li@sifive.com,
+        guoren@linux.alibaba.com, Atish Patra <Atish.Patra@wdc.com>,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        changbin.du@gmail.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     rostedt@goodmis.org
+Message-ID: <mhng-edd9e8bd-e585-4b6b-8e40-797215bfdf75@palmerdabbelt-glaptop>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 12:53:27 +0300, Andy Shevchenko wrote:
-> +Cc: Daniel (here is a real case for test cases!)
-> 
-> On Fri, May 21, 2021 at 12:20 PM Trent Piepho <tpiepho@gmail.com> wrote:
-> > On Fri, May 21, 2021 at 12:55 AM Yiyuan guo <yguoaz@gmail.com> wrote:
-> > >
-> > > Thanks for your timely response.
-> > >
-> > > I am not familiar with the theorem. But any input satisfying the
-> > > condition below will
-> > > trigger a divide by zero at the first loop iteration:
-> > >
-> > > (given_numerator / given_denominator > max_numerator) || (1 +
-> > > given_numerator / given_denominator > max_denominator)
-> >
-> > I think the error can only occur when the loop exits on the 1st
-> > iteration, when d1 is still zero.  In this case the prior convergent,
-> > n1/d1 = 1/0, does not really exist as this is the 1st iteration.  The
-> > actual series of convergents generated will never have zero terms,
-> > because we stop at zero, so there will never be zero from the prior
-> > iteration as we would have stopped there.
-> 
-> This is my conclusion as well, but you beat me to it.
-> And below is exactly my understanding of what's going on.
-> 
-> > I think the prior version of the code, which did not consider
-> > semi-convergents, would have determined the 1st convergent, 314/1,
-> > exceeded the bounds and would return the prior one, 1/0, without
-> > generating an exception but also not a correct answer, since 1/0 isn't
-> > really part of the series, it's just an initial value to make the math
-> > that generates the series work (d2 = a * d1 + d0).
-> >
-> > With semi-convergents, this can actually get the correct answer.  The
-> > best semi-convergent term is correctly found, (max_numerator - n0) /
-> > n1 = 255.  Using this would return 255/1, which is in this case the
-> > best answer.
-> >
-> > But the "is semi-convergent better than prior convergent" test does
-> > not consider what I think is a special case of there being no prior
-> > convergent.  In this case it should always select the semi-convergent.
-> >
-> > I think this handles it:
-> >
-> >                 if ((n2 > max_numerator) || (d2 > max_denominator)) {
-> >                        unsigned long t = (max_numerator - n0) / n1;
-> >                        if (!d1 || (t = min(t, max_denominator - d0) / d1)) ||
-> >                            2u * t > a || (2u * t == a && d0 * dp > d1 * d)) {
-> >                                n1 = n0 + t * n1;
-> >                                d1 = d0 + t * d1;
-> >                        }
-> >                        break;
-> >                }
+On Thu, 06 May 2021 06:25:50 PDT (-0700), rostedt@goodmis.org wrote:
+> On Thu,  6 May 2021 00:10:41 -0700
+> Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+>> ---
+>> In theory we should be able to avoid using stop_machine() with some
+>> clever code sequences, but that's too big of a change to be considered a
+>> fix.  I also can't find the text I thought was in the ISA manual about
+>> the allowed behaviors for concurrent modification of the instruction
+>> stream, so I might have just mis-remembered that.
+>> ---
+>
+> I wonder if you could at least use break points, as some other archs do,
+> and what x86 does.
+>
+> If you have this make believe machine code:
+>
+> 	00 00 00 00		nop
+>
+> And you want to turn it into a call.
+>
+> 	aa 12 34 56		bl ftrace_caller
+>
+> And if your architecture has a way to inject a break point on live code.
+> Let's call this FF for the break point code.
+>
+> You can inject that first:
+>
+> 	FF 00 00 00
 
-Sorry, it does not. E.g. with the given fraction of 31/1000
-and the registers restricted to 8 and 5 bits respectively, the
-proposed fixed function would still divide by zero, because
-n1 == 0. If it was for the division by d1, the test for !d1
-will cut the expression for the conditional short, as intended,
-but as the branch then uses t, the evaluation for t = ... / d1
-will still be performed.
+That would rely on this "concurrent writes to the instruction stream 
+don't tear" property that I thought we'd put in the ISA but I can't 
+actually find in the text of the document.  That said, I hadn't actually 
+thought about replacing single bytes in the instruction stream.  In 
+theory we don't have anything that guartees those won't tear, but I'm 
+not sure how any reasonable implementation would go about manifesting 
+those so it might be an easy retrofit to the ISA.
 
-Moreover, for a fraction of 33/1000, both the original and
-the latest version would produce 1/30, which is off by some
-1.01%, but the proposed fixed version would result in 1/31,
-which is worse: 2.24% off.
+I ran through our breakpoint encodings and don't think those help, but 
+we do have 0x00000013 as a NOP (addi x0, x0, 0) which is one byte away 
+from 0x00000000 (which is defined to be an invalid instruction on all 
+RISC-V systems).  There's really no difference between how a breakpoint 
+traps and how an illegal instruction traps on RISC-V, so we should be 
+able to use that to construct some sort of sequence.
 
-We are not talking about a science math library, but only
-about a helper function for kernel use, and as results with
-somewhat less than perfect approximation only occur in cases,
-where hardware limitations do not allow the precise result,
-I think the original function was not so bad. And the code it
-produced was much shorter than the latest version, although
-this might not be an argument in times, where a simple OS
-kernel is beyond the 40MB.
+So we can start with
 
-Admitted, the original version had the flaw of offering bogus
-fractions for input beyond the saturation limits, and this
-case sure should be handled. And the function is called "best",
-so Trents approach to look for better results is sure valid.
+    nop
+    nop
+    nop
+    nop
+    nop
 
-Nonetheless, I'ld favour going back to the original Euclidian,
-and maybe add a test for the saturation cases to avoid the
-caller running into trouble, even though given the use case
-the caller will probably run into trouble with this fixed,
-when the registers simply cannot hold a good approximation.
-So maybe the function should return a boolean to indicate.
+then do a single-byte write to turn it into
 
-best regards,
-  Oskar
+    unimp
+    nop
+    nop
+    nop
+    nop
 
+we can then IPI to all the harts in order to get them on the same page 
+about that trap, which we can then skip over.  We'll need some way to 
+differentiate this from accidental executions of unimp, but we can just 
+build up a table somewhere (it wasn't immediately clear how x86 does 
+this).  Then we have no ordering restrictions on converting the rest of 
+the stub into what's necessary to trace a function, which should look 
+the same as what we have now
 
+    unimp
+    save ra, ...(sp)
+    auipc ra, ...
+    jalr ra, ...
+    load ra, ...(sp)
 
-> > Above !d1 is the special case.  I don't like that, but I'm not seeing
-> > a way to think about the problect that doesn't involve one.
-> 
-> Let me think about it.
-> 
-> > > I think such a condition is rather complex and may not be enforced by
-> > > all callers of this function.
-> > >
-> > > On Fri, May 21, 2021 at 3:42 PM Andy Shevchenko
-> > > <andy.shevchenko@gmail.com> wrote:
-> > > > On Friday, May 21, 2021, Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
-> > > >> On Friday, May 21, 2021, Yiyuan guo <yguoaz@gmail.com> wrote:
-> > > >>>
-> > > >>> In the file lib/math/rational.c, the function
-> > > >>> rational_best_approximation has the following
-> > > >>> code:
-> > > >>>
-> > > >>> void rational_best_approximation(
-> > > >>>     unsigned long given_numerator, unsigned long given_denominator,
-> > > >>>     unsigned long max_numerator, unsigned long max_denominator,
-> > > >>>     unsigned long *best_numerator, unsigned long *best_denominator) {
-> > > >>>    ...
-> > > >>>    if ((n2 > max_numerator) || (d2 > max_denominator)) {
-> > > >>>             unsigned long t = min((max_numerator - n0) / n1,
-> > > >>>                           (max_denominator - d0) / d1);
-> > > >>>    ...
-> > > >>> }
-> > > >>>
-> > > >>> d1 may be equal to zero when performing the division, leading to a
-> > > >>> divide by zero problem.
-> > > >>>
-> > > >>> One input  to trigger the divide by zero bug is:
-> > > >>> rational_best_approximation(31415, 100, (1 << 8) - 1, (1 << 5) - 1, &n, &d)
-> > > >>
-> > > >> Have you read a theorem about this? TL;DR; as far as I can see the input data is not suitable for this function.
-> > > >
-> > > > I think we may add the proper check and saturate the output which in your case should be (255,1).
-> 
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+At which point we can IPI everywhere to sync the instructions stream 
+again, before we turn off the trap
+
+    nop
+    save ra, ...(sp)
+    auipc ra, ...
+    jalr ra, ...
+    load ra, ...(sp)
+
+> sync all CPUs where now all callers will hit this and jump to the break
+> point handler, which simply does:
+>
+> 	ip = ip + 4;
+> 	return;
+>
+> and returns back to the instruction after this nop/call.
+
+There'll be some slight headaches there because the length of the all-0 
+unimplemented instruction depends on which extensions are supported, but 
+we can detect ILEN at runtime so that shouldn't be a showstopper.
+
+> Change the rest of the instruction.
+>
+> 	FF 12 34 56
+>
+> sync all CPUs so that they all see this new instruction, but are still
+> triggering the break point.
+>
+> Then finally remove the break point.
+>
+> 	aa 12 34 56
+>
+> And you just switched from the nop to the call without using stop machine.
+
+OK, ya I think that all should work.  We're still depending on this 
+"single byte writes to the instruction stream don't tear" guarantee, but 
+I think that's a bit pedantic.  I'll open a question on the ISA spec 
+just to be sure one I can link here.
+
+I'm probably not going to have the time to do this for a bit because I'm 
+buried in this non-coherent stuff, but if someone wants to take a shot 
+at it I'd be happy to take a look.
+
+Thanks for pointing this out, this should get is away from 
+stop_machine() way sooner than waiting for a multi-byte modification 
+sequence would!
