@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 627B738D61C
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 16:07:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6134138D61F
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 16:09:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231175AbhEVOJS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 10:09:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46990 "EHLO mail.kernel.org"
+        id S231185AbhEVOK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 10:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230301AbhEVOJR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 10:09:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4897461163;
-        Sat, 22 May 2021 14:07:51 +0000 (UTC)
+        id S230301AbhEVOKy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 10:10:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEDA61163;
+        Sat, 22 May 2021 14:09:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621692473;
-        bh=Dj7btGZhjC8HmA/lmm1kAa2DNki43ozhToKBO4EfoZQ=;
+        s=k20201202; t=1621692569;
+        bh=H0NXL9VOUdnIRHNYjjNeRU1s79hTUbPEH9qJUyRf7SA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hIRMIHM0l/izLQ4oRZRhkP6TlV7N9BJa6m7wODYLWAEMoSd4gzmCSoDKQgPfRFzeE
-         a9yjokiZ8XmaCwn9GzGJaysi7gkSb6Yl+aJwEO76ZCrzH8b+SNohsxAxawRQWGIbJm
-         kTeN77ZF3SewcyB7uLVpVCyKgRuIY6SxlYwAN5mXnb7wPk+u7QmHavC71usdM5zQUw
-         w1ZW3gffksKRHdlFwMCL6OhCXa0jPR1kEK5fbBt1E4AONKw6GkjJ+relpr6gALcnpG
-         jcyAf0ihp3LotmWKK6E5Qrc9F/RGqs9qVO+N6nBn72MhA9pX26r6mAuByntF1XsOsM
-         mxLxmhuj+IuQA==
-Date:   Sat, 22 May 2021 22:07:47 +0800
+        b=Nk2Imh1r18FHGN9BWcFwhtVsl+06J1fR7VFMuRorGiCpTSo//Wlw4nq1j1YXNj26+
+         FOIn2hXB3zHBK7asimlslgQNdlB/blNfKS+VX4lKs77w28+jP6ITSlfdVVngPiy2gD
+         dksOiF4hX75dEOzw95l7QgLgIJppiWxB9MqCy/NqBWSulrbinznB58gu21y9cnZzNH
+         YafVpkcRMW7yf7EzviK/XhEhF4rqpGBoD0JBRI5a3pIVM4mpz2S/GEv6mr9wu0mrCV
+         LDDQ7kB+uheW6jXT4GbzqB/wkpsUlrq+6KE84s9ONqjKj9u4zH0/prrLarvnAPXZmQ
+         dpNCgzwUWbWeA==
+Date:   Sat, 22 May 2021 22:09:17 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
 To:     Shengjiu Wang <shengjiu.wang@nxp.com>
 Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
@@ -31,7 +31,7 @@ Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
         linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         shengjiu.wang@gmail.com
 Subject: Re: [PATCH] ARM: dts: imx6ul: Switch to fsl-asoc-card sound card
-Message-ID: <20210522140747.GD8194@dragon>
+Message-ID: <20210522140917.GE8194@dragon>
 References: <1619664739-12589-1-git-send-email-shengjiu.wang@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -54,4 +54,6 @@ On Thu, Apr 29, 2021 at 10:52:19AM +0800, Shengjiu Wang wrote:
 > 
 > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
 
-Applied, thanks.
+Changed subject prefix to "ARM: dts: imx6ul-14x14-evk: " when applying.
+
+Shawn
