@@ -2,118 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8313238D2A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AAB038D2B1
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 02:54:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhEVAsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 21 May 2021 20:48:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbhEVAsD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 21 May 2021 20:48:03 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68073C061574;
-        Fri, 21 May 2021 17:46:39 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id y2so29775761ybq.13;
-        Fri, 21 May 2021 17:46:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RdygxSbSqsWz9BfeMNSc2FteZY17xkWEnp8K+VZHat0=;
-        b=Z7+ykzF+PSO7JYR0DUvVodmmpJz6jm5VoUJ0RbLpsMBuATAk+jZ0bjJIR7Pc2Ka7jb
-         xeJsQ5F3KHD04JO5Ts9MWuyhHOIWSE+z1fJSP3nAXXkhH7n/UUPz2vQb78MBApyglo2O
-         iqSxg+lVbFU8ryxbQEdHdod1DpEHwZ3hlUujZ3V9nsJx0UYAnAxfdKtlcyo/yhK22wjl
-         hFKr1+MATzRbJK714vVw7BMlqL0gh2AnHtHFUxKB1kl0ZiK8o5t1JOH0Zo8ZorbSHDi1
-         Y6gut9Mt+Lk8+xQT/Z2bC3Vj1ZlQbAGEHXS/cYtYO9lScf3DIye3fAHGIU6e+QYFGbFh
-         3gLQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RdygxSbSqsWz9BfeMNSc2FteZY17xkWEnp8K+VZHat0=;
-        b=lquVT5asxXzcb7H6RWs2wONH2483PQhfr17wlEbo2NeAEfS7ycn8z5quK7hivy34ik
-         FJfX8C4DHmccXzDI051kLHjp1TN/37KDv7aV0CMahbf3DkPF1vVcDEQHtIS8TkUaw8fD
-         KpLFAHko+ZAyfioCaGMlaS0Q36lgmEodMJqGbbcBeQ6oXWIPjvr0hxBtoV+2O7CnFNKM
-         38nuIjGrmbRiAVGpPhNdp+2Mp/oed9y5/yas3zlExzFtDeLI1R7+3jCMNT9mvNdJx2+b
-         ZinlmzRq8ikGevOaC5lsgglg5DaGggX1QYOQ3RWqubz/yzogBg+gHox6R18mf5r3630+
-         5cTw==
-X-Gm-Message-State: AOAM533SaE/sUmUZh0DtRYGwiP+3WocvvGCRJNj43EcX1CF7xOvGtR2m
-        nSc9a0fK75LlsXD/vd6zlq9sSY1rV44zbDo/dfY=
-X-Google-Smtp-Source: ABdhPJzYYiVgQn2patbTAzQcchSjTQQ9r/3Qwi7eKoSsVjBQmDo3PdW6guUSdJPUpu5nEfJKa6lboM+iefQrSMUpwM8=
-X-Received: by 2002:a5b:f05:: with SMTP id x5mr18321502ybr.425.1621644398645;
- Fri, 21 May 2021 17:46:38 -0700 (PDT)
+        id S230377AbhEVA4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 21 May 2021 20:56:00 -0400
+Received: from [43.250.32.171] ([43.250.32.171]:35694 "EHLO email.cn"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230280AbhEVAz6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 21 May 2021 20:55:58 -0400
+X-Greylist: delayed 32311 seconds by postgrey-1.27 at vger.kernel.org; Fri, 21 May 2021 20:55:57 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=To:From:Date; bh=QNzULVlqtCRAzUYUP/TQwy/HPpivKZoYM/ZmN
+        /vc5w0=; b=mZZbTbrAXbLhoAg+nHNGkFas9xyNjiwAXK9+HoEz9NfIh8cv3ft7l
+        TdI0UatznSnZ3/p34Cq0SuYiGN9f1HKLdnnJw32AkCrs69Mr4RfvMe6/ripSA1HQ
+        TPvMnc6x+sp7Zl78gJ2cWnHyTjb2MZGkfSbMu2muiDMLN6IVnv+piI=
+Received: from [0.0.0.0] (unknown [113.251.14.223])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgDHjkFCVqhgSK43AA--.21755S3;
+        Sat, 22 May 2021 08:54:29 +0800 (CST)
+Subject: Re: [PATCH] docs/zh_CN: update a translation in zh_CN/dev-tools/gcov
+To:     "Wu X.C." <bobwxc@email.cn>
+Cc:     alexs@kernel.org, corbet@lwn.net, bernard@vivo.com,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210521155551.29176-1-src.res@email.cn>
+ <20210521165319.GA18245@bobwxc.top>
+From:   Hu Haowen <src.res@email.cn>
+Message-ID: <fd635b2a-1551-26df-a32c-86b97df5d328@email.cn>
+Date:   Sat, 22 May 2021 08:54:25 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210521162041.GH8544@kitsune.suse.cz>
-In-Reply-To: <20210521162041.GH8544@kitsune.suse.cz>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Fri, 21 May 2021 17:46:27 -0700
-Message-ID: <CAEf4BzbgJPgVmdS32nnzd8mBj3L=mib7D8JyP09Gq4bGdYpTyg@mail.gmail.com>
-Subject: Re: BTF: build failure on 32bit on linux-next
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Networking <netdev@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210521165319.GA18245@bobwxc.top>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-CM-TRANSID: LCKnCgDHjkFCVqhgSK43AA--.21755S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFy5CF4DXr1UGryUGF1Utrb_yoW8XFyxpr
+        WkKFWxK3Z2vF1UC3yxWF4Utr18uFyxuw4UGF18twnagrsxZrZ5KrZxtr90gFyfuFWfZFWr
+        ZF4FvFyF9w1jka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyj1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Jr0_Jr4l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2
+        z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
+        8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWxJr1UJwAm72CE4IkC6x0Yz7v_
+        Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4
+        CEbIxvr21l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCF
+        s4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWU
+        JVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUv
+        cSsGvfC2KfnxnUUI43ZEXa7VU0mhF7UUUUU==
+X-Originating-IP: [113.251.14.223]
+X-CM-SenderInfo: hvufh21hv6vzxdlohubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 9:20 AM Michal Such=C3=A1nek <msuchanek@suse.de> wr=
-ote:
->
-> Hello,
->
-> looks like the TODO prints added in 67234743736a6 are not 32bit clean.
->
-> Do you plan to implement this functionality or should they be fixed?
 
-They should be fixed regardless. Can you please re-submit as a proper
-patch to bpf@vger.kernel.org with [PATCH bpf-next] subj prefix?
+On 2021/5/22 上午12:53, Wu X.C. wrote:
+> On Fri, May 21, 2021 at 11:55:51PM +0800, Hu Haowen wrote:
+>> The original file has added some words in commit c797997a244cd2c58908
+>> ("Documentation: dev-tools: Add Testing Overview"), hence update the
+>> Chinese translation of them.
+>>
+>> Signed-off-by: Hu Haowen <src.res@email.cn>
+>> ---
+>>   Documentation/translations/zh_CN/dev-tools/index.rst | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Documentation/translations/zh_CN/dev-tools/index.rst
+>> index fd73c479917b..7ba02fc392a6 100644
+>> --- a/Documentation/translations/zh_CN/dev-tools/index.rst
+>> +++ b/Documentation/translations/zh_CN/dev-tools/index.rst
+>> @@ -11,6 +11,9 @@
+>>   目前这些文档已经整理在一起，不需要再花费额外的精力。
+>>   欢迎任何补丁。
+>>   
+>> +有关测试专用工具的简要概述，参见
+>> +Documentation/dev-tools/testing-overview.rst
+>> +
+>>   .. class:: toc-title
+>>   
+>>   	   目录
+>> -- 
+>> 2.25.1
+Currently working on testing-overview.rst. This will be done soon but
+still require some time. After the translation I'll send you another
+patch on testing-overview.rst with v2.
 
+Thanks,
+Hu Haowen
+> Looks not bad.
+> Are you already working on translating testing-overview.rst?
+> If not, please also add todo entry of testing-overview.rst with v2.
 >
-> Thanks
+> Acked-by: Wu XiangCheng <bobwxc@email.cn>
 >
-> Michal
+> Thanks,
+> Wu X.C.
 >
-> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
-> index 69cd1a835ebd..70a26af8d01f 100644
-> --- a/tools/lib/bpf/libbpf.c
-> +++ b/tools/lib/bpf/libbpf.c
-> @@ -4565,7 +4565,7 @@ static int init_map_slots(struct bpf_object *obj, s=
-truct bpf_map *map)
->                 targ_map =3D map->init_slots[i];
->                 fd =3D bpf_map__fd(targ_map);
->                 if (obj->gen_loader) {
-> -                       pr_warn("// TODO map_update_elem: idx %ld key %d =
-value=3D=3Dmap_idx %ld\n",
-> +                       pr_warn("// TODO map_update_elem: idx %td key %d =
-value=3D=3Dmap_idx %td\n",
->                                 map - obj->maps, i, targ_map - obj->maps)=
-;
->                         return -ENOTSUP;
->                 } else {
-> @@ -6189,7 +6189,7 @@ static int bpf_core_apply_relo(struct bpf_program *=
-prog,
->                 return -EINVAL;
->
->         if (prog->obj->gen_loader) {
-> -               pr_warn("// TODO core_relo: prog %ld insn[%d] %s %s kind =
-%d\n",
-> +               pr_warn("// TODO core_relo: prog %td insn[%d] %s %s kind =
-%d\n",
->                         prog - prog->obj->programs, relo->insn_off / 8,
->                         local_name, spec_str, relo->kind);
->                 return -ENOTSUP;
+
