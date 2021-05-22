@@ -2,50 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19D0A38D3FD
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FB8F38D402
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 08:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230014AbhEVGq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 02:46:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42126 "EHLO mx2.suse.de"
+        id S230041AbhEVGrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 02:47:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42334 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229689AbhEVGq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 02:46:58 -0400
+        id S229865AbhEVGrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 02:47:35 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621665933; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1621665970; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=stNMbmkfr0H4CTD2K3KTiK4y5A/GN2rVn4bUsldoZ4c=;
-        b=QDYzRUelPV6yLoPdmLyrdsVyYAOAd57fVYU3rKX9lyCzcDZ0HYWNCmaGklBiADgs2xzqo1
-        57H2nb8a8lu7ZPb0Otcwjdk9NMviR892T8IUJ25IfbXF9HtuzzBKtRGSFzOmDBghyh+MlI
-        wvMdIiRrc5amtV+j+bj6sN8qmcfAEec=
+        bh=FULl3P8JCyjhywEm+0IlA2mLO7qIH/qoOOWGx3cEAxI=;
+        b=0cxQXuvgIphEUCeYdrUSi0+ighlyaQmryPCwseIjl7fEoFHYACODxXUJ45VAqsfjZEM1V6
+        Zae9zqxXXiQjbmhAoe/XVM/6tLwjqvHTzrcijkmC0bWyyTuYjUrg3TBESuhvHU39PsQFru
+        9Qr+FC3J9A4tYMy9TXDGt0oZ5pnhscA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621665933;
+        s=susede2_ed25519; t=1621665970;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=stNMbmkfr0H4CTD2K3KTiK4y5A/GN2rVn4bUsldoZ4c=;
-        b=eJQJNScSiAtI7hyaN5vliE9YnjF8RIC+wg9VLkVURHz0TPNfUXfrt8Eg3PNi4T++uqeA6c
-        WMz2/+FtpcY4EIDA==
+        bh=FULl3P8JCyjhywEm+0IlA2mLO7qIH/qoOOWGx3cEAxI=;
+        b=pdeqCAi/SrJ99WNcb2cDqasmESDhuwX3wIGtsNA+2Dmig2ORlZg5cbTkwCqe0d9FGHDP49
+        pjXkaJh+aKz7bbAQ==
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E85F4AAFD;
-        Sat, 22 May 2021 06:45:32 +0000 (UTC)
-Date:   Sat, 22 May 2021 08:45:32 +0200
-Message-ID: <s5him3bfer7.wl-tiwai@suse.de>
+        by mx2.suse.de (Postfix) with ESMTP id 75C55AB6D;
+        Sat, 22 May 2021 06:46:10 +0000 (UTC)
+Date:   Sat, 22 May 2021 08:46:10 +0200
+Message-ID: <s5hh7ivfeq5.wl-tiwai@suse.de>
 From:   Takashi Iwai <tiwai@suse.de>
-To:     Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc:     Colin King <colin.king@canonical.com>,
-        Clemens Ladisch <clemens@ladisch.de>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] ALSA: firewire-lib: Fix uninitialized variable err issue
-In-Reply-To: <20210521222146.GA10202@workstation>
-References: <20210520083424.6685-1-colin.king@canonical.com>
-        <s5hh7ixh9qn.wl-tiwai@suse.de>
-        <20210520130409.GA170303@workstation>
-        <20210521222146.GA10202@workstation>
+To:     trix@redhat.com
+Cc:     perex@perex.cz, tiwai@suse.com, gustavoars@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ALSA: usb-audio: initialize the cur variable
+In-Reply-To: <20210521194603.2077623-1-trix@redhat.com>
+References: <20210521194603.2077623-1-trix@redhat.com>
 User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
  FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
  (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
@@ -55,124 +49,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 May 2021 00:21:46 +0200,
-Takashi Sakamoto wrote:
+On Fri, 21 May 2021 21:46:03 +0200,
+trix@redhat.com wrote:
 > 
-> Hi,
+> From: Tom Rix <trix@redhat.com>
 > 
-> On Thu, May 20, 2021 at 10:04:09PM +0900, Takashi Sakamoto wrote:
-> > Hi,
-> > 
-> > On Thu, May 20, 2021 at 02:26:24PM +0200, Takashi Iwai wrote:
-> > > On Thu, 20 May 2021 10:34:24 +0200,
-> > > Colin King wrote:
-> > > > 
-> > > > From: Colin Ian King <colin.king@canonical.com>
-> > > > 
-> > > > Currently in the case where the payload_length is less than the
-> > > > cip_header_size the error return variable err is not being set
-> > > > and function parse_ir_ctx_header can return an uninitialized
-> > > > error return value. Fix this by setting err to zero.
-> > > > 
-> > > > Addresses-Coverity: ("Uninitialized scalar variable")
-> > > > Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
-> > > > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> > > 
-> > > Just a bikeshed, IMO, it'd be more proper to initialize err at the
-> > > beginning than setting 0 at every branch, e.g.
-> > > 
-> > > --- a/sound/firewire/amdtp-stream.c
-> > > +++ b/sound/firewire/amdtp-stream.c
-> > > @@ -652,7 +652,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> > >  	unsigned int payload_length;
-> > >  	const __be32 *cip_header;
-> > >  	unsigned int cip_header_size;
-> > > -	int err;
-> > > +	int err = 0;
-> > >  
-> > >  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
-> > >  
-> > > @@ -683,7 +683,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> > >  		}
-> > >  	} else {
-> > >  		cip_header = NULL;
-> > > -		err = 0;
-> > >  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
-> > >  		*syt = 0;
-> > 
-> > Thanks for the patches.
-> > 
-> > The error check is just done for the case to process CIP header, thus we
-> > can put the auto variable into the branch.
-> > 
-> > ======== 8< --------
-> > From 3fcca0062297e937c665f1c8e3a117e1187f4115 Mon Sep 17 00:00:00 2001
-> > From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> > Date: Thu, 20 May 2021 21:59:50 +0900
-> > Subject: [PATCH] ALSA: firewire-lib: Fix uninitialized variable err issue
-> > 
-> > The check of error is just done for the case that CIP header is available.
-> > 
-> > This commit moves auto variable into the branch to process CIP header.
-> > 
-> > Addresses-Coverity: ("Uninitialized scalar variable")
-> > Fixes: c09010eeb373 ("ALSA: firewire-lib: handle the case that empty isochronous packet payload for CIP")
-> > Suggested-by: Colin Ian King <colin.king@canonical.com>
-> > Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> > ---
-> >  sound/firewire/amdtp-stream.c | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-> > index 37c8de8a..11ae4e88 100644
-> > --- a/sound/firewire/amdtp-stream.c
-> > +++ b/sound/firewire/amdtp-stream.c
-> > @@ -748,7 +748,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> >  	unsigned int payload_length;
-> >  	const __be32 *cip_header;
-> >  	unsigned int cip_header_size;
-> > -	int err;
-> >  
-> >  	payload_length = be32_to_cpu(ctx_header[0]) >> ISO_DATA_LENGTH_SHIFT;
-> >  
-> > @@ -766,6 +765,8 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> >  
-> >  	if (cip_header_size > 0) {
-> >  		if (payload_length >= cip_header_size) {
-> > +			int err;
-> > +
-> >  			cip_header = ctx_header + IR_CTX_HEADER_DEFAULT_QUADLETS;
-> >  			err = check_cip_header(s, cip_header, payload_length - cip_header_size,
-> >  					       data_blocks, data_block_counter, syt);
-> > @@ -779,7 +780,6 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> >  		}
-> >  	} else {
-> >  		cip_header = NULL;
-> > -		err = 0;
-> >  		*data_blocks = payload_length / sizeof(__be32) / s->data_block_quadlets;
-> >  		*syt = 0;
-> >  
-> > @@ -790,7 +790,7 @@ static int parse_ir_ctx_header(struct amdtp_stream *s, unsigned int cycle,
-> >  	trace_amdtp_packet(s, cycle, cip_header, payload_length, *data_blocks,
-> >  			   *data_block_counter, packet_index, index);
-> >  
-> > -	return err;
-> > +	return 0;
-> >  }
-> >  
-> >  // In CYCLE_TIMER register of IEEE 1394, 7 bits are used to represent second. On
-> > -- 
-> > 2.27.0
-> > ======== 8< --------
+> Static analysis reports this problem
+> clock.c:338:10: warning: The right operand of '=='
+>   is a garbage value
+>     if (i == cur)
+>           ^  ~~~
 > 
-> Thanks for applying the patch but the commit in your tree includes
-> duplicated From/Data/Subject lines and causes failure of git-am for the
-> patch simply generated by git-am. Is it possible for you to modify
-> history of your for-next branch with enough correction?
+> In __uac_clock_find_source() the goto find_others skips over
+> setting of the 'cur' variable.  Since the pin loop variable
+> starts with 1, it is safe to initialize cur to 0.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-My bad, now corrected.
+Thanks for the patch, but this has been already fixed in for-next
+branch.
 
-
-thanks,
 
 Takashi
