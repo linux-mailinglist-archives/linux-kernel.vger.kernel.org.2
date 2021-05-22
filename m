@@ -2,94 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A9438D63A
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 16:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DCDBC38D643
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 17:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231220AbhEVO6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 10:58:42 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:39510 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231145AbhEVO6l (ORCPT
+        id S231247AbhEVPLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 11:11:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231152AbhEVPLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 10:58:41 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14MEX19x123816;
-        Sat, 22 May 2021 10:57:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : content-transfer-encoding : mime-version; s=pp1;
- bh=Nd18HI0pDzwIu/x3CbgiB9cUq25K9reOraWIGcdZ4Kk=;
- b=fpbCCgxQ6F07EULFpeVQsLG3SBWvXkDNTFlnh0UB4gHUMSaRCZ34nRnKVt6YFfyD3jc+
- LRd9rVRVbZBckUF06K8X0+ScNMvL01iAqHsxV0966QF7lVNnn4ptQpcNa2Pi4ACpQjJD
- opduWgmWJx3WdTW79IwBWLHnrE19ZbeSTScj/IpJZeSDsVlUMOu/ot6+Gfya+pzwezRh
- 3ipdmino5vHezrTTdD6AHWpzgkn7OsMtctTj+Sad7IxPdQsN4ORTiwvaMDQNsgN9v4+A
- HmTjL9QstWXVNsWXW9VoAbujsWt9wL5vuy6tgbSDhJkmgahpAFpaxL1IjSvMLeOeQlxx Pg== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38q0g33ehu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 22 May 2021 10:57:02 -0400
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14MEutNZ031756;
-        Sat, 22 May 2021 14:57:01 GMT
-Received: from b03cxnp08026.gho.boulder.ibm.com (b03cxnp08026.gho.boulder.ibm.com [9.17.130.18])
-        by ppma04dal.us.ibm.com with ESMTP id 38psk8bjt7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 22 May 2021 14:57:01 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp08026.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14MEv0x924117724
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 22 May 2021 14:57:00 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 438BD7805E;
-        Sat, 22 May 2021 14:57:00 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9943578063;
-        Sat, 22 May 2021 14:56:58 +0000 (GMT)
-Received: from jarvis.int.hansenpartnership.com (unknown [9.80.208.94])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Sat, 22 May 2021 14:56:58 +0000 (GMT)
-Message-ID: <02ff5bb3aa4894cd8ef2b0ca9d66f4c6ba34278b.camel@linux.ibm.com>
-Subject: Re: [PATCH] scsi: hisi_sas: Use the correct HiSilicon copyright
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Hao Fang <fanghao11@huawei.com>, martin.petersen@oracle.com,
-        john.garry@huawei.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        prime.zeng@hisilicon.com
-Date:   Sat, 22 May 2021 07:56:57 -0700
-In-Reply-To: <1621679075-15404-1-git-send-email-fanghao11@huawei.com>
-References: <1621679075-15404-1-git-send-email-fanghao11@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 8rZTdpdQsPsrYPlbTW8NdaciO1oiWpfL
-X-Proofpoint-ORIG-GUID: 8rZTdpdQsPsrYPlbTW8NdaciO1oiWpfL
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Sat, 22 May 2021 11:11:17 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8AFC061574;
+        Sat, 22 May 2021 08:09:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=GH2mOBNX+XONeUL9wOPO8w6Hzq2geF/gsdvnEgGHARM=; b=o5QiuCeOylxsThRB1fFFONEBmd
+        iseDMDCLETC5yuMhVcyMlEGS9GgTDYIDwCrzfsVF0ACYBV04jmz4YsLf90/94OFy9iVg3woixW318
+        K1HX9VYV3pavqhVdPW4psXdCZM5keZFvhAF+q+7VtSVmKxf5VSwyXXb2JOyno3U0GxFU9mQtwAv4r
+        Am+R6q6Ykbsq+lgcq9q1EyS97r9wZ1sAdBrM1XWOfvD1kMjAd+dUOljKICg1O5ZtzwpErn9J0zFjH
+        rptEH0qGhRGnufMxhb9f9TP9ySbH/Y+hDl78OY0c/doCtWiDbgoQrwMlWHBTycrohrGjI/FKMMx4y
+        xFRxdLUA==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lkTGA-0008Zi-If; Sat, 22 May 2021 15:09:50 +0000
+Subject: Re: [PATCH] USB: gadget: udc: fix kernel-doc syntax in file headers
+To:     Aditya Srivastava <yashsri421@gmail.com>, balbi@kernel.org
+Cc:     lukas.bulwahn@gmail.com, gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210522115227.9977-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <4869ba22-58e0-e101-c0df-51816abd0da9@infradead.org>
+Date:   Sat, 22 May 2021 08:09:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-22_08:2021-05-20,2021-05-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 adultscore=0 mlxscore=0 impostorscore=0 suspectscore=0
- phishscore=0 malwarescore=0 bulkscore=0 mlxlogscore=662 clxscore=1011
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105220106
+In-Reply-To: <20210522115227.9977-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-05-22 at 18:24 +0800, Hao Fang wrote:
-> s/Hisilicon/HiSilicon/.
-> It should use capital S, according to the official website
-> https://www.hisilicon.com/en.
+On 5/22/21 4:52 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for drivers/usb/gadget/udc/trace files follows this syntax, but
+> the content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc.
+> For e.g., running scripts/kernel-doc -none drivers/usb/gadget/udc/trace.h
+> emits:
+> warning: expecting prototype for udc.c(). Prototype was for TRACE_SYSTEM() instead
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-You can't do this.  The strict terms of the GPL require us to preserve
-intact all notices referring to copyright and licences.  If hisilicon
-truly did make a mistake when they added their original copyright
-notices, *they* may submit a patch to correct it, but you can't correct
-it for them without their permission just because you think they got it
-wrong.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-James
+Thanks.
 
+> ---
+>  drivers/usb/gadget/udc/trace.c | 2 +-
+>  drivers/usb/gadget/udc/trace.h | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/udc/trace.c b/drivers/usb/gadget/udc/trace.c
+> index 7430624c0bd7..19e837de2a20 100644
+> --- a/drivers/usb/gadget/udc/trace.c
+> +++ b/drivers/usb/gadget/udc/trace.c
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -/**
+> +/*
+>   * trace.c - USB Gadget Framework Trace Support
+>   *
+>   * Copyright (C) 2016 Intel Corporation
+> diff --git a/drivers/usb/gadget/udc/trace.h b/drivers/usb/gadget/udc/trace.h
+> index 2d1f68b5ea76..98584f6b6c66 100644
+> --- a/drivers/usb/gadget/udc/trace.h
+> +++ b/drivers/usb/gadget/udc/trace.h
+> @@ -1,5 +1,5 @@
+>  // SPDX-License-Identifier: GPL-2.0
+> -/**
+> +/*
+>   * udc.c - Core UDC Framework
+>   *
+>   * Copyright (C) 2016 Intel Corporation
+> 
+
+
+-- 
+~Randy
 
