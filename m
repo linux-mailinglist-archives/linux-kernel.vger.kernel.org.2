@@ -2,78 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86D5338D4F6
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B87038D4FC
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 11:57:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbhEVJz3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 05:55:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230168AbhEVJz2 (ORCPT
+        id S230309AbhEVJ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 05:58:44 -0400
+Received: from mail-il1-f198.google.com ([209.85.166.198]:36848 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230168AbhEVJ6n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 05:55:28 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FE4DC061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:54:03 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id j10so33270498lfb.12
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=bfWyF31hJH+wgEKubDcqwaB5BlxSWqmKk9imIroF8b8=;
-        b=tjvFoBxKeLqRq74ayQlzbShKiTjL0Tq7+kMFJvS8EpHRTgH6eZIke4UAz598WdEyrT
-         hUTT/Cwu0NxTqCif+gkhq2hfgl7k7yIcsaTNBJ3OfQLCGto6FVz1TvqRLQKzeGDO347E
-         Uq/vI/Es6BRfDBxwQqEn1wmCNq945hJaR5IjOt46Bvr3h44+oaqh/Wrjyq5FqQc1Lp4u
-         nJSiZ+tM4rTtl0t/f2u/bJubMfnUOM56YoqLRwBlGAug3E+DCSUHnQTXRLrIGzC5nI7l
-         Xgtyw0W9gwK1iTrido0OU+WcxKtO7gzbVamvK5J2GCR/MbbYRz5LmLgZyPMAyIh3CX7i
-         tHQQ==
+        Sat, 22 May 2021 05:58:43 -0400
+Received: by mail-il1-f198.google.com with SMTP id w10-20020a056e021c8ab02901bb7c1adfa1so21489368ill.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 02:57:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=bfWyF31hJH+wgEKubDcqwaB5BlxSWqmKk9imIroF8b8=;
-        b=rHEhUh3Uj4WfFd2s7Z4BT1YtuRf+PAQy/Ff3RKkVQI+6MTuq0VD9hBnzyMN5eb+ztb
-         F3MCqsLNddh8EpnhMa0rjS5LiKeBnprIsX7/gVnGAAJrUJXJ4PXkX+KNyWKDH15wzi2W
-         pabCTBgBCcgNXta3+dTHIZ5xZnB1+hRglpmbTBMLnx5moCvWK4pxUtZybeuToDatXOQD
-         psUYAd7XKzaIxLRXyM8EhM7ZNLmGMXedEDcdsvkJvUZmFWCOGYUQi6rTgcNlAk9Wp/NY
-         3OL71AG9qnCbyhSAmNAaCinT8forXfPwZ7PxrUEYLVat7jbk62xeM1hM/nMX1nWTX0bi
-         4g7w==
-X-Gm-Message-State: AOAM532ZW890SeTX0ADRMskcxKppMW+i8LMWcDgEx9OjMnGvFAQMuFmi
-        85ISl1cwBcazS9TB4tWqoIZMBW09iPlWXeyS+WQ=
-X-Google-Smtp-Source: ABdhPJwejiklUSQS9/gQeigUWX87eUrR9hsG8jWBVsPbiJ5AaKWlkV9Kell42nfTmQYa907B4IDDyBvc3eva4qZg6j4=
-X-Received: by 2002:a05:6512:3208:: with SMTP id d8mr4812020lfe.361.1621677241445;
- Sat, 22 May 2021 02:54:01 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=ywMXOuHA2a+EPDo5pSK8Z3W8CzmLp58Zct4OoCAHv4c=;
+        b=aTQ20p4uUB7ymbse7lEmERinVz+L4/q+4yCb5BWSqpz7j46h4J54HySB/WGyHSSrv8
+         txy3wFV50TQmjkgNpsmUvjZWqb2lSlzk731R65/rManfuNwuTp7Wv2Wi6oGOg1ZxM09p
+         YKE6TwG2VBkM+/ZS0k7EH2VmjkX9CGBYeFV/YhCIIsiztw6Y5HPrTpDvnI7YAsray4cD
+         SNcktmUJJAND1hTY5V8/Osg09byu1jwS11Ay2vjx2zqAkdk7uX6QctFzWsQdxjZTjTxt
+         Vgq3wfNOPgnhZrin47iHWpf2Jg3f5lz3IwDqVsGTPDsbsZaWJUi9gydEtG2p8W4gpwft
+         14oQ==
+X-Gm-Message-State: AOAM533IhgDLNXzfDyjVHaNsy0MdUlIVa4ukFv15kT+fi2TC3l78JlDS
+        3uPJoT/Ne/VyrzbzlLRnmhPSMeTb0udnoPwr+V14xL+KCN+Z
+X-Google-Smtp-Source: ABdhPJzA9cpGrW4+bWYFku+YXWEuUYsHm4977G1mRrPaNzWezoiTk+rXJ8gTunbfIuQVfkQ7og3ltZHXtl6KM7VqoRVyy8Ao96E9
 MIME-Version: 1.0
-Received: by 2002:a05:651c:215:0:0:0:0 with HTTP; Sat, 22 May 2021 02:54:01
- -0700 (PDT)
-Reply-To: georgemike7031@gmail.com
-From:   george mike <brichardjohnson02@gmail.com>
-Date:   Sat, 22 May 2021 11:54:01 +0200
-Message-ID: <CAOZWaH8sd41ut-HVmSh--yN0F+ZNJGB0KJ-LiHQxxtRBX2jn6w@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
+X-Received: by 2002:a6b:690c:: with SMTP id e12mr4267497ioc.69.1621677439036;
+ Sat, 22 May 2021 02:57:19 -0700 (PDT)
+Date:   Sat, 22 May 2021 02:57:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1b1fc05c2e8333c@google.com>
+Subject: [syzbot] KMSAN: uninit-value in ieee802154_rx
+From:   syzbot <syzbot+2789bd545fa0d4a22f07@syzkaller.appspotmail.com>
+To:     alex.aring@gmail.com, davem@davemloft.net, glider@google.com,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-wpan@vger.kernel.org, netdev@vger.kernel.org,
+        stefan@datenfreihafen.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hallo
+Hello,
 
-Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
-Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
+syzbot found the following issue on:
 
-Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
-einem Autounfall ums Leben gekommen ist
-und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, w=C3=A4hrend
-50% dies tun
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: georgemike7031@gmail.com
+HEAD commit:    bdefec9a minor fix
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=11cee1d7d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6842a91012889c
+dashboard link: https://syzkaller.appspot.com/bug?extid=2789bd545fa0d4a22f07
+compiler:       Debian clang version 11.0.1-2
+userspace arch: i386
 
-Vielen Dank im Voraus,
-Mr. George Mike,
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+2789bd545fa0d4a22f07@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in ieee802154_subif_frame net/mac802154/rx.c:67 [inline]
+BUG: KMSAN: uninit-value in __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
+BUG: KMSAN: uninit-value in ieee802154_rx+0x19c4/0x20e0 net/mac802154/rx.c:284
+CPU: 0 PID: 6808 Comm: syz-executor.3 Not tainted 5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ ieee802154_subif_frame net/mac802154/rx.c:67 [inline]
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
+ ieee802154_rx+0x19c4/0x20e0 net/mac802154/rx.c:284
+ ieee802154_tasklet_handler+0x193/0x2e0 net/mac802154/main.c:35
+ tasklet_action_common+0x3de/0x640 kernel/softirq.c:557
+ tasklet_action+0x30/0x40 kernel/softirq.c:577
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ do_softirq+0x123/0x1c0 kernel/softirq.c:248
+ </IRQ>
+ __local_bh_enable_ip+0xa1/0xb0 kernel/softirq.c:198
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
+ __dev_queue_xmit+0x3b4a/0x4600 net/core/dev.c:4221
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ dgram_sendmsg+0x1142/0x15d0 net/ieee802154/socket.c:682
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f5e549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55585fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000500
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ kmsan_memcpy_memmove_metadata+0x25e/0x2d0 mm/kmsan/kmsan.c:226
+ kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
+ __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
+ ieee802154_parse_frame_start net/mac802154/rx.c:156 [inline]
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:198 [inline]
+ ieee802154_rx+0xd92/0x20e0 net/mac802154/rx.c:284
+ ieee802154_tasklet_handler+0x193/0x2e0 net/mac802154/main.c:35
+ tasklet_action_common+0x3de/0x640 kernel/softirq.c:557
+ tasklet_action+0x30/0x40 kernel/softirq.c:577
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+
+Local variable ----hdr.i@ieee802154_rx created at:
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:196 [inline]
+ ieee802154_rx+0xb3d/0x20e0 net/mac802154/rx.c:284
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:196 [inline]
+ ieee802154_rx+0xb3d/0x20e0 net/mac802154/rx.c:284
+=====================================================
+=====================================================
+BUG: KMSAN: uninit-value in ieee802154_subif_frame net/mac802154/rx.c:69 [inline]
+BUG: KMSAN: uninit-value in __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
+BUG: KMSAN: uninit-value in ieee802154_rx+0x1a9f/0x20e0 net/mac802154/rx.c:284
+CPU: 0 PID: 6808 Comm: syz-executor.3 Tainted: G    B             5.12.0-rc6-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ <IRQ>
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x24c/0x2e0 lib/dump_stack.c:120
+ kmsan_report+0xfb/0x1e0 mm/kmsan/kmsan_report.c:118
+ __msan_warning+0x5c/0xa0 mm/kmsan/kmsan_instr.c:197
+ ieee802154_subif_frame net/mac802154/rx.c:69 [inline]
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:212 [inline]
+ ieee802154_rx+0x1a9f/0x20e0 net/mac802154/rx.c:284
+ ieee802154_tasklet_handler+0x193/0x2e0 net/mac802154/main.c:35
+ tasklet_action_common+0x3de/0x640 kernel/softirq.c:557
+ tasklet_action+0x30/0x40 kernel/softirq.c:577
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+ do_softirq+0x123/0x1c0 kernel/softirq.c:248
+ </IRQ>
+ __local_bh_enable_ip+0xa1/0xb0 kernel/softirq.c:198
+ local_bh_enable+0x36/0x40 include/linux/bottom_half.h:32
+ rcu_read_unlock_bh include/linux/rcupdate.h:745 [inline]
+ __dev_queue_xmit+0x3b4a/0x4600 net/core/dev.c:4221
+ dev_queue_xmit+0x4b/0x60 net/core/dev.c:4227
+ dgram_sendmsg+0x1142/0x15d0 net/ieee802154/socket.c:682
+ ieee802154_sock_sendmsg+0xec/0x130 net/ieee802154/socket.c:97
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg net/socket.c:674 [inline]
+ ____sys_sendmsg+0xcfc/0x12f0 net/socket.c:2350
+ ___sys_sendmsg net/socket.c:2404 [inline]
+ __sys_sendmsg+0x714/0x830 net/socket.c:2433
+ __compat_sys_sendmsg net/compat.c:347 [inline]
+ __do_compat_sys_sendmsg net/compat.c:354 [inline]
+ __se_compat_sys_sendmsg+0xa7/0xc0 net/compat.c:351
+ __ia32_compat_sys_sendmsg+0x4a/0x70 net/compat.c:351
+ do_syscall_32_irqs_on arch/x86/entry/common.c:79 [inline]
+ __do_fast_syscall_32+0x127/0x180 arch/x86/entry/common.c:142
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:167
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:210
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
+RIP: 0023:0xf7f5e549
+Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f55585fc EFLAGS: 00000296 ORIG_RAX: 0000000000000172
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000020000500
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+
+Uninit was stored to memory at:
+ kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+ kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+ kmsan_memcpy_memmove_metadata+0x25e/0x2d0 mm/kmsan/kmsan.c:226
+ kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
+ __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
+ ieee802154_parse_frame_start net/mac802154/rx.c:156 [inline]
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:198 [inline]
+ ieee802154_rx+0xd92/0x20e0 net/mac802154/rx.c:284
+ ieee802154_tasklet_handler+0x193/0x2e0 net/mac802154/main.c:35
+ tasklet_action_common+0x3de/0x640 kernel/softirq.c:557
+ tasklet_action+0x30/0x40 kernel/softirq.c:577
+ __do_softirq+0x1b9/0x715 kernel/softirq.c:345
+
+Local variable ----hdr.i@ieee802154_rx created at:
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:196 [inline]
+ ieee802154_rx+0xb3d/0x20e0 net/mac802154/rx.c:284
+ __ieee802154_rx_handle_packet net/mac802154/rx.c:196 [inline]
+ ieee802154_rx+0xb3d/0x20e0 net/mac802154/rx.c:284
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
