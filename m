@@ -2,179 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83F9D38D67C
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 18:29:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAA438D682
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 18:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbhEVQab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 12:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231251AbhEVQa2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 12:30:28 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A693C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 09:29:03 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id t193so16746264pgb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 09:29:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/RjwXMDGGnLqgaP+DWL1fFHxiRPZNOvS4B48swsRTno=;
-        b=Yk9YcEOZYVBiMRvYaE90Pi5hY2g5vjGYFM9Km5zSuBd29JjSD/9m8S/v/cbSAYPoyM
-         tFJw6tdHtPpuwXlqpyaIxqdtgSnYd4eCgQU3HYrElZ1OVlJB12QrOtTuzbv8+AbDg5KG
-         4/aZJo0CGytDRppLMQiIQrCULMZZz//pPyXGMtFgF8exX04PQz1puII95xXz7ciFKZck
-         Y2Fx9iyzlR/qD8qpuR0fB9LAWFyCVE3GTs/PCvtNAJ4AhD0bXyR3l3j62CNWmBxW2C7c
-         olhL8+pc2BaEDqu6b13sbjdPuzCDcKN4Vk6++PDRsTwRbkqp38r2rGu4kf8aRyhUPyHh
-         k91g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=/RjwXMDGGnLqgaP+DWL1fFHxiRPZNOvS4B48swsRTno=;
-        b=L8bTZJ7oZCOhPZIdiu8BcMKLLXI/bfLNRaCEKplZCnSay1nnbuwVlmrXy8NZN6++/R
-         7sZnV7CwS821muJcR1+rG8AKg2evzoWV/NfXmpK5Kl7Kl75BXMf9YIHjbLW7u4vcboVq
-         +Lo1Kl/aFY0fH/DZOAEpoEsx8046pvf3j3kvM9B+ATDrOQa+U0qiSLadowq5l1+t8YCw
-         UMcRVfNuHZ9MfKc2P/Bw9LMvgk229RBYe9WGbh4Hc0w95IUL1ywBhV/4HFqkakgiNC/q
-         qjaLHMJntvLWqvpfZ6ZKStSV3MY6GXraSyRFWVaE8/58pC7jjnFS5AVhEY6JBK9J2Npb
-         zG9Q==
-X-Gm-Message-State: AOAM530PlB8ydeOuGokknPJKwZpVirsmfweWnaqaoWp2VZ35s6EISvit
-        ou16S+Q8ybfC7Pd3e2L87GjT8A==
-X-Google-Smtp-Source: ABdhPJx/Pj3xp/rwchxS8fQtYfwR9q2R8JILzlEMehK9apXsKpjwxWvONYFepuAKalp9Wo590QIVcA==
-X-Received: by 2002:a63:e642:: with SMTP id p2mr4752588pgj.316.1621700941978;
-        Sat, 22 May 2021 09:29:01 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id 204sm6844905pfy.56.2021.05.22.09.29.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 May 2021 09:29:01 -0700 (PDT)
-Date:   Sat, 22 May 2021 09:29:01 -0700 (PDT)
-X-Google-Original-Date: Sat, 22 May 2021 09:28:58 PDT (-0700)
-Subject:     Re: [RFC PATCH] riscv: stacktrace: fix the riscv stacktrace when CONFIG_FRAME_POINTER enabled
-In-Reply-To: <20210429070348.2167483-1-chenhuang5@huawei.com>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        wangkefeng.wang@huawei.com, 0x7f454c46@gmail.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        chenhuang5@huawei.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     chenhuang5@huawei.com
-Message-ID: <mhng-75c14e1e-a23c-404b-a1f6-235e53bdb6f3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        id S231321AbhEVQpm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 12:45:42 -0400
+Received: from mail-bn8nam11on2075.outbound.protection.outlook.com ([40.107.236.75]:34528
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231299AbhEVQpj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 12:45:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XndiCgAUsUBSsnPzAHq43FP26A4ozdDi4SVBoYptkqtLjbGuVg9pStvSNEdbL4te4LDfFaAZ4tdCrX3aMQ7t3K6rhPthv3YySfu+vV0AD0De+z0TZ8H0kSngWMNuEtEMJkXAC6IZea08boU5f9FsP2CJXG/nSF4JFhXTtf/nrNYbSaIntE/xhKULDiq1TDskyBOOU3R/vvHJzEk/tEvOolMM98sW3rSvRTZiAu3luj3U4TCro3nWeGipKaexJteGPRzFpgnQwlDhMmgQL7SK2gFl59uDKZmyMa1J/C/mmbdwrv+5YchyUiQHL9nTcEEj36OBKo2mRygLDdVj89NPRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=boFbrmeMMrEjdn11+jSzXZrzQcrbqpzGV3mI1dXQVI4=;
+ b=nDMgDpXCaRGoQEZ0/A/mkIpfHP99VU1MRq+ZPXn8Jezsf8Njsvmad+tQ+O6EUvPSVAa3mopYQXaEWAf0fpFm60iZ2l1zTj8h1SMtgajOEyk5f7XixHVLvkP5MVhz+jzFhlvtlitTpkvkjcp6fTg77yDuTt/TY/W3rZZmimgoWNzwKiZE/Nm3lZMee7ymUVuUBa6HzD1Cegd09qcj1odWSLuC7n4LzHSPoTZpuwc9zYiNhQv1osFP9YOx2wmokMn8WE+rYzxT5ypZQAJzj7f1vn7YsRAA+78XXCuoXjbFyIA0bo9arl4v2rkbrgbQpmrD/jCS9yO7h2hYyMZNwWW6pg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=boFbrmeMMrEjdn11+jSzXZrzQcrbqpzGV3mI1dXQVI4=;
+ b=NHXF2gVlQFhs3s1UdN19/x5RhA1qgKKnMOoh0roFfPLrnbjvVOdYjJmSL7Ht9sGqM1CXf2yJIgww87YtZ0n/dc29TM6GwY2jXNJVhMT0vCLvsejZMl7ihbQyerLeECr7/o0bH7WR3utb4iVaGggKci48p8PFBII1xo+g/ofNiAs=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB2828.namprd12.prod.outlook.com (2603:10b6:5:77::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4150.27; Sat, 22 May 2021 16:44:11 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4150.026; Sat, 22 May
+ 2021 16:44:11 +0000
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>
+Subject: [PATCH] KVM: SVM: Assume a 64-bit hypercall for guests with protected state
+Date:   Sat, 22 May 2021 11:43:58 -0500
+Message-Id: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.31.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SA9P223CA0018.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:806:26::23) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from tlendack-t1.amd.com (165.204.77.1) by SA9P223CA0018.NAMP223.PROD.OUTLOOK.COM (2603:10b6:806:26::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Sat, 22 May 2021 16:44:10 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b4fe34ac-51dc-4576-9988-08d91d40d365
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2828:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB282811AB102083CD10026CA6EC289@DM6PR12MB2828.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: FoKZVu8fxmjYoPHEKNXjH674wr83y/IKjYx3i+fF1jTtx420L2Eg1OSOtlg5rNRCU7mctE9Do0KwgUVhrnN5E2J6XPiqvLfIq/lBxrtChFuogYcU3WWvbDFn1zjny+9u1X0J9TI/cDT5X/5wVgGbWEAwJUHybaMMKqqacONV6ms75qWsyXnFJA1UBhthbcRqBZdVOL9cFdjFvTxkGlIocnPy3JDjCN13C6EiibXwdfuwRI4MzCt4okuA5iriwVRtijxD2ZxEZ4JBC5ea7jJgMTGrBhqQhY/KNJJHGFJ44RoUixCY++AN7B0UQfD6Y2Hd8fJQ+ZSwq8e1jKztYqm1XpSIzPCWYyEHjevnQuMdMeydEf4WVN7y/BGaC7/wTIg6RA+YitBEZydKpcqhVXVihp+kZ5zDV2Bv6sC8d2aTvXn5R/h7Pkqe1sjyUD0aPwxf2VMGmy5GCUizjXef0Q29zPVNK1LLdzKztsb94oGGKJ/HXxiPEG2P3udbH86QZrN9Mim8AanosLz71enAL071hiJbBe12vsFUk9ScE++mQpXS8lanoyq+6SjGtWgL1nZJDEsEMG8goGdPCTwqqBUKuJ8CyAqTn2W8IW6K7coNJ6/KMJvh8qr7X8OWzAzv+1aX5HoOllnMxsObTWBp5n+WslKHwAbsvt1gBQKn2HSjUUM=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(39860400002)(366004)(8676002)(38100700002)(38350700002)(86362001)(2616005)(956004)(8936002)(66556008)(66946007)(186003)(36756003)(7416002)(7696005)(52116002)(66476007)(16526019)(4326008)(6486002)(316002)(54906003)(478600001)(5660300002)(6666004)(2906002)(83380400001)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?wv/9zHw3tB8YfnPvD0FoppnSRezia95Q2yQFH+B5wmaBB7OqFUvaIJQUdDtN?=
+ =?us-ascii?Q?UEuuVyEBHHbnltaHkgJ5tL7elOseZcCHdcR5OnUk8l/kIbwRMOrD8KVLV4p6?=
+ =?us-ascii?Q?STxVssDRPHp2hKdWZIMnc5tQQFOkw34MXBZEjQexbbq53WveL/iyF5Y5MKCy?=
+ =?us-ascii?Q?J0RyQOKxk9OfgJ8oM0mNKDYzdFuZWZVWNn2uUZ2jGAQKPGq4z9adR4LFoB9R?=
+ =?us-ascii?Q?O/dHztycPU0o6vgNXuFJHnp5CArxKmrc4ja6ZMpXkuwb6u+r4rD7Xe+dpn9a?=
+ =?us-ascii?Q?CS6edQNIlAM0oSeuTCw93wsuiEGdwxiPrlZxfUcyRbtRHNAkHt7U2F/4YtOR?=
+ =?us-ascii?Q?ve0HKB4CQkn4HHVRHGCKh/X/QGF8AbKHH4Nnxt8FDD0x1OXZRevXDbwGFNob?=
+ =?us-ascii?Q?sALo89odEjO/X5/wvafKp7haecRBokPML+k1uGajhyUyDTW5g7CEj1nuPUi2?=
+ =?us-ascii?Q?XDiaR6z0Id7qK07V9XPbi4thbZKOKbxKt6arTvtataa3wOd/y2/tNaGJkkh5?=
+ =?us-ascii?Q?1teMcVirrVfrM9ENDnUyYialuWE5qE6i1rtXrLPkiBas72pFh0iUXE+u+asB?=
+ =?us-ascii?Q?DXxMwyX16oehH0Ik13kf9DUDegv+dKOb7VlhbIwuEjoG2em44QRhT96JwuUj?=
+ =?us-ascii?Q?ROcBfQ2QDSpRZjMrpbtu2PtDxmKlZ7EG+zG6VJzFTpnUcVcKUC02p2r9X5Nh?=
+ =?us-ascii?Q?u+9IbGWtO0Sy6R+daVm72aJUh78kynFKpLen68v8J7Y84R5CHyFrLRDgfNld?=
+ =?us-ascii?Q?fpBgUzXph4NkZwly4KdyavOwIQgY1Hi8kC1EgtdnampBiP9eOI2U4p/QMcCD?=
+ =?us-ascii?Q?O2Z2GZBg2zFYlM0RiqUr1qIHGdDcfp9wbZDpXkuX7sN5cNSJTcUCaSWTxcN0?=
+ =?us-ascii?Q?7YT7HJt7menxbd0J/sC2P4yqW8rF7K0zDYadPjEF3V//H/NTJumB42Gw+JJI?=
+ =?us-ascii?Q?Df8BRTG2Tv8Ldx5q2ieSGsJfOfJ2MtJECKCmdnbzBZyRYvBx00JRzgMME1y4?=
+ =?us-ascii?Q?rgYFiUHv3hQ8BldONq3aoCWTOzsran/+xUhS4GS7M0JZXP5IUGPDmiZW/olE?=
+ =?us-ascii?Q?Ay7h/tBb1HH9Yua+RCWGhcE5BPM8JvYa+NKXP+T3Z+aZ2XwQo3S7QP6wbcUR?=
+ =?us-ascii?Q?sUYOI31lU0W7ySNaOCNO94h+BFeOaJ/RF/eeWZuOr2TJaOfu/d6mktivemPV?=
+ =?us-ascii?Q?HaLEmDTgz9Obw56uM9uNj7DUipSPsE3WKRKVmbw8xbfb2QAoJQUnp7NWr40k?=
+ =?us-ascii?Q?feccZqsHrEmI4YM2AyvmE8UNFVQTViqS4k4mUzERZkHHFILJDU/RPFmXe3sE?=
+ =?us-ascii?Q?QMeXnDzQO33z/GChKXMS5Uug?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4fe34ac-51dc-4576-9988-08d91d40d365
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2021 16:44:11.3358
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nuylqWyV+Fvf02RUTeWYSLoh/p6jNPSraB/MJOuEVycGQgxNhgNjIU7tBb7GCooAfIVOgKky97FQuDh5D0U8JA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2828
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 00:03:48 PDT (-0700), chenhuang5@huawei.com wrote:
-> As [1] and [2] said, the arch_stack_walk should not to trace itself, or it will
-> leave the trace unexpectedly when called. The example is when we do "cat
-> /sys/kernel/debug/page_owner", all pages' stack is the same.
->
-> arch_stack_walk+0x18/0x20
-> stack_trace_save+0x40/0x60
-> register_dummy_stack+0x24/0x5e
-> init_page_owner+0x2e
->
-> So we use __builtin_frame_address(1) as the first frame to be walked. And mark
-> the arch_stack_walk() noinline.
->
-> We found that pr_cont will affact pages' stack whose task state is RUNNING when
-> testing "echo t > /proc/sysrq-trigger". So move the place of pr_cont and mark
-> the function dump_backtrace() noinline.
->
-> Also we move the case when task == NULL into else branch, and test for it in
-> "echo c > /proc/sysrq-trigger".
->
-> [1] https://lore.kernel.org/lkml/20210319184106.5688-1-mark.rutland@arm.com/
-> [2] https://lore.kernel.org/lkml/20210317142050.57712-1-chenjun102@huawei.com/
->
-> Signed-off-by: Chen Huang <chenhuang5@huawei.com>
-> ---
-> In this way, some crash will loss the print info "Call trace:", likes that:
-> # echo BUG > /sys/kernel/debug/provoke-crash/DIRECT
-> [   61.774690] lkdtm: Performing direct entry BUG
-> [   61.775350] ------------[ cut here ]------------
-> [   61.775611] kernel BUG at drivers/misc/lkdtm/bugs.c:76!
-> [   61.776073] Kernel BUG [#1]
-> [   61.776319] Modules linked in:
-> [   61.776696] CPU: 3 PID: 1 Comm: sh Not tainted 5.11.0-rc6-next-20210208-00013-gb16da2c3b9aa #132
-> [   61.777185] Hardware name: riscv-virtio,qemu (DT)
-> [   61.777594] epc : lkdtm_BUG+0x6/0x8
-> [   61.777916]  ra : lkdtm_do_action+0x14/0x1c
-> [   61.778212] epc : ffffffe00048a7e8 ra : ffffffe0006d71a8 sp : ffffffe07fedbd90
-> [   61.778646]  gp : ffffffe0012e4208 tp : ffffffe07fed0000 t0 : ffffffe0012f2097
-> [   61.779115]  t1 : ffffffe0012f2088 t2 : 0000000000000000 s0 : ffffffe07fedbda0
-> [   61.779588]  s1 : 0000000000000010 a0 : ffffffe000c7fbb8 a1 : ffffffe001284d28
-> [   61.780017]  a2 : 0000000000000010 a3 : 0000000000000000 a4 : c10724222fbe9200
-> [   61.780473]  a5 : ffffffe00048a7e2 a6 : c0000000ffffefff a7 : 0000000000000064
-> [   61.780932]  s2 : ffffffe000c7fbc8 s3 : ffffffe000d9e3f8 s4 : ffffffe081969000
-> [   61.781405]  s5 : 000000000000004b s6 : 0000000000000004 s7 : ffffffe07fedbe80
-> [   61.781872]  s8 : 0000003ffff987e4 s9 : 0000002ab0b7ac50 s10: 0000002ab0bacb90
-> [   61.782336]  s11: 0000000000000000 t3 : 000000000000006c t4 : ffffffffffffffff
-> [   61.782794]  t5 : 0000000000000037 t6 : ffffffe07fedbae8
-> [   61.783158] status: 0000000000000120 badaddr: 0000000000000000 cause: 0000000000000003
-> [   61.783680] [<ffffffe00048a7e8>] lkdtm_BUG+0x6/0x8
-> [   61.784149] [<ffffffe0006d71a8>] lkdtm_do_action+0x14/0x1c
-> [   61.784516] [<ffffffe00048a5ee>] direct_entry+0xc0/0x10a
-> [   61.784849] [<ffffffe0002498ce>] full_proxy_write+0x42/0x6a
-> [   61.785209] [<ffffffe000114b7c>] vfs_write+0x7e/0x218
-> [   61.785562] [<ffffffe000114e84>] ksys_write+0x98/0xc0
-> [   61.785904] [<ffffffe000114eba>] sys_write+0xe/0x16
-> [   61.786275] [<ffffffe000003466>] ret_from_syscall+0x0/0x2
-> [   61.787175] ---[ end trace 6919e7283b64f492 ]---
-> [   61.787707] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
-> [   61.788270] SMP: stopping secondary CPUs
-> [   61.788934] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b ]---
->
->  arch/riscv/kernel/stacktrace.c | 14 +++++++-------
->  1 file changed, 7 insertions(+), 7 deletions(-)
->
-> diff --git a/arch/riscv/kernel/stacktrace.c b/arch/riscv/kernel/stacktrace.c
-> index 2b3e0cb90d78..bde85fc53357 100644
-> --- a/arch/riscv/kernel/stacktrace.c
-> +++ b/arch/riscv/kernel/stacktrace.c
-> @@ -27,10 +27,10 @@ void notrace walk_stackframe(struct task_struct *task, struct pt_regs *regs,
->  		fp = frame_pointer(regs);
->  		sp = user_stack_pointer(regs);
->  		pc = instruction_pointer(regs);
-> -	} else if (task == NULL || task == current) {
-> -		fp = (unsigned long)__builtin_frame_address(0);
-> -		sp = sp_in_global;
-> -		pc = (unsigned long)walk_stackframe;
-> +	} else if (task == current) {
-> +		fp = (unsigned long)__builtin_frame_address(1);
-> +		sp = (unsigned long)__builtin_frame_address(0);
-> +		pc = (unsigned long)__builtin_return_address(0);
->  	} else {
->  		/* task blocked in __switch_to */
->  		fp = task->thread.s[0];
-> @@ -106,15 +106,15 @@ static bool print_trace_address(void *arg, unsigned long pc)
->  	return true;
->  }
->
-> -void dump_backtrace(struct pt_regs *regs, struct task_struct *task,
-> +noinline void dump_backtrace(struct pt_regs *regs, struct task_struct *task,
->  		    const char *loglvl)
->  {
-> -	pr_cont("%sCall Trace:\n", loglvl);
->  	walk_stackframe(task, regs, print_trace_address, (void *)loglvl);
->  }
->
->  void show_stack(struct task_struct *task, unsigned long *sp, const char *loglvl)
->  {
-> +	pr_cont("%sCall Trace:\n", loglvl);
->  	dump_backtrace(NULL, task, loglvl);
->  }
->
-> @@ -139,7 +139,7 @@ unsigned long get_wchan(struct task_struct *task)
->
->  #ifdef CONFIG_STACKTRACE
->
-> -void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
-> +noinline void arch_stack_walk(stack_trace_consume_fn consume_entry, void *cookie,
->  		     struct task_struct *task, struct pt_regs *regs)
->  {
->  	walk_stackframe(task, regs, consume_entry, cookie);
+When processing a hypercall for a guest with protected state, currently
+SEV-ES guests, the guest CS segment register can't be checked to
+determine if the guest is in 64-bit mode. For an SEV-ES guest, it is
+expected that communication between the guest and the hypervisor is
+performed to shared memory using the GHCB. In order to use the GHCB, the
+guest must have been in long mode, otherwise writes by the guest to the
+GHCB would be encrypted and not be able to be comprehended by the
+hypervisor. Given that, assume that the guest is in 64-bit mode when
+processing a hypercall from a guest with protected state.
 
-Thanks, this is on fixes.
+Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
+Reported-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+---
+ arch/x86/kvm/x86.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 9b6bca616929..e715c69bb882 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8403,7 +8403,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+ 
+ 	trace_kvm_hypercall(nr, a0, a1, a2, a3);
+ 
+-	op_64_bit = is_64_bit_mode(vcpu);
++	/*
++	 * If running with protected guest state, the CS register is not
++	 * accessible. The hypercall register values will have had to been
++	 * provided in 64-bit mode, so assume the guest is in 64-bit.
++	 */
++	op_64_bit = is_64_bit_mode(vcpu) || vcpu->arch.guest_state_protected;
+ 	if (!op_64_bit) {
+ 		nr &= 0xFFFFFFFF;
+ 		a0 &= 0xFFFFFFFF;
+-- 
+2.31.0
+
