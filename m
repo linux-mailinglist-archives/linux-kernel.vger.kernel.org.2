@@ -2,111 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B750D38D660
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 17:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0C238D66B
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 18:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbhEVPiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 11:38:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36216 "EHLO
+        id S231284AbhEVQAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 12:00:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbhEVPiP (ORCPT
+        with ESMTP id S231250AbhEVQAR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 11:38:15 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8A42C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 08:36:49 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1lkTgB-0002II-Aj; Sat, 22 May 2021 17:36:44 +0200
-Received: from pengutronix.de (unknown [IPv6:2a03:f580:87bc:d400:99ad:3825:19a7:30b2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id DCFFE6296AD;
-        Sat, 22 May 2021 15:36:37 +0000 (UTC)
-Date:   Sat, 22 May 2021 17:36:36 +0200
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Francois Gervais <fgervais@distech-controls.com>,
-        linux-rtc@vger.kernel.org,
-        Michael McCormick <michael.mccormick@enatel.net>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] rtc: pcf85063: fallback to parent of_node
-Message-ID: <20210522153636.ymyyq4vtzz2dq5k2@pengutronix.de>
-References: <20210310211026.27299-1-fgervais@distech-controls.com>
- <161861118020.865088.6364463756780633947.b4-ty@bootlin.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="pzbk4hzqlwyu5qjc"
-Content-Disposition: inline
-In-Reply-To: <161861118020.865088.6364463756780633947.b4-ty@bootlin.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Sat, 22 May 2021 12:00:17 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C53E0C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 08:58:51 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id ot16so10572390pjb.3
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 08:58:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YC0AUzrulbfXTPGUc6+Eo3yjtdbpbQr1DON/2cAmC8k=;
+        b=1ZCdw+5jYXoni4Z20fd02wMjFgDKuQCeYYsbZZlGNgrYaRso7G25McVG5/j9Ndp2qo
+         Lho+FiPX1jtz5f9pPWo60WCw+rqoDJ6QbZVZven1A94SEOUQMb/7CFtHD0swUVfA/92F
+         20gSHXAxKWkl5jON7/R1ufJPwir5GZcNWfbJkbdZ86POZIs9+ozjV6dY+pQuYPRU4/h6
+         dN7hwg44G1JYfxQBeJp+KfW0HtJlb1TNmQChe9iylgPUbokhBuQzO5oYQz8Oo5/5YUMb
+         fcyJNkG9v4o+La6OM/y3QIcsh9XPLWWP00zC/HTQXD350unyXbpCVE422Di5OkqhHJ7c
+         heGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=YC0AUzrulbfXTPGUc6+Eo3yjtdbpbQr1DON/2cAmC8k=;
+        b=YDr5uqnlchRWBgKEwA0A5zjQ24/qEcnMp4sJ2N3sp5MaAwXa+clbY5InjkvcnsUfaB
+         rDMfI66Et6Pc8KlKw188rQcv1JR02JbG43e0P9AADNqRUKdJQf7+jrJ+2020Xb9wxINJ
+         1Jd7M6DIob2NqPzeH/T0A1Y+I6dYUmdqqPhDMLK3OUjQ5mcJuR7+ZRLCz7gOVbv1WLzT
+         8/6EBDVV74hyQRVfYcJho4x3dDvs1rcf0np6SakniJIxmRAVFbVhb6xEOLUPU8jwI0+U
+         wN3lEZGGZu3K16DgAtzWOJUiJwXoTaZ9Gq1dF8gbi67OnL4BMtPoGrfg1etV4TSKK8GW
+         2//g==
+X-Gm-Message-State: AOAM531ZK9qy0TGzb8FAJoH2QClJLZAbJCd7F/vtdmXGqJ9rF0BkX2R2
+        m6cEuls2ph8N1mV9F75+u5/rbw==
+X-Google-Smtp-Source: ABdhPJzfD3lIGj2z7tMu9To9+LZC4m6Mitb2IPcsL/WvC7j2QUJD7RgGKOvA5D1D4ItV67bS5B5CWA==
+X-Received: by 2002:a17:90a:aa14:: with SMTP id k20mr16800134pjq.88.1621699131009;
+        Sat, 22 May 2021 08:58:51 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id n69sm636105pfd.132.2021.05.22.08.58.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 08:58:50 -0700 (PDT)
+Date:   Sat, 22 May 2021 08:58:50 -0700 (PDT)
+X-Google-Original-Date: Sat, 22 May 2021 08:58:47 PDT (-0700)
+Subject:     Re: [RFT PATCH] riscv: mremap speedup - enable HAVE_MOVE_PUD and HAVE_MOVE_PMD
+In-Reply-To: <20210417003539.5bceabc2@xhacker>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     jszhang3@mail.ustc.edu.cn
+Message-ID: <mhng-5de139d5-ac6e-4f73-9d63-721790b30c26@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 16 Apr 2021 09:37:22 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
+>
+> HAVE_MOVE_PUD enables remapping pages at the PUD level if both the source
+> and destination addresses are PUD-aligned.
+> HAVE_MOVE_PMD does similar speedup on the PMD level.
+>
+> With HAVE_MOVE_PUD enabled, there is about a 143x improvement on qemu
+> With HAVE_MOVE_PMD enabled, there is about a 5x improvement on qemu
+>
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+> Hi all,
+>
+> After reading the risc-v privileged spec, I think it's safe to support
+> the HAVE_MOVE_PUD and HAVE_MOVE_PMD optimization on riscv. The patch passed
+> the mremap_test on QEMU. However this can't be tested on real HW due to lack
+> of HW boards, this is the reason why I mark this patch as RFT. I hope I can
+> buy a sipeed Allwiner D1 SoC powered SBC soon, at least I can test
+> HAVE_MOVE_PMD. Helping me to test on real HW is appreciated!
+>
+> Thanks
+>
+>  arch/riscv/Kconfig               |  2 ++
+>  arch/riscv/include/asm/pgtable.h | 12 ++++++++++++
+>  2 files changed, 14 insertions(+)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index e8074d248457..37660de68b00 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -80,6 +80,8 @@ config RISCV
+>  	select HAVE_KPROBES
+>  	select HAVE_KPROBES_ON_FTRACE
+>  	select HAVE_KRETPROBES
+> +	select HAVE_MOVE_PMD
+> +	select HAVE_MOVE_PUD
+>  	select HAVE_PCI
+>  	select HAVE_PERF_EVENTS
+>  	select HAVE_PERF_REGS
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index ebf817c1bdf4..287733b95d10 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -360,6 +360,18 @@ static inline void set_pte_at(struct mm_struct *mm,
+>  	set_pte(ptep, pteval);
+>  }
+>
+> +static inline void set_pmd_at(struct mm_struct *mm, unsigned long addr,
+> +			      pmd_t *pmdp, pmd_t pmd)
+> +{
+> +	set_pmd(pmdp, pmd);
+> +}
+> +
+> +static inline void set_pud_at(struct mm_struct *mm, unsigned long addr,
+> +			      pud_t *pudp, pud_t pud)
+> +{
+> +	set_pud(pudp, pud);
+> +}
+> +
+>  static inline void pte_clear(struct mm_struct *mm,
+>  	unsigned long addr, pte_t *ptep)
+>  {
 
---pzbk4hzqlwyu5qjc
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Greg,
-
-On 17.04.2021 00:16:40, Alexandre Belloni wrote:
-> On Wed, 10 Mar 2021 16:10:26 -0500, Francois Gervais wrote:
-> > The rtc device node is always or at the very least can possibly be NULL.
-> >=20
-> > Since v5.12-rc1-dontuse/3c9ea42802a1fbf7ef29660ff8c6e526c58114f6 this
-> > will lead to a NULL pointer dereference.
-> >=20
-> > To fix this we fallback to using the parent node which is the i2c client
-> > node as set by devm_rtc_allocate_device().
-> >=20
-> > [...]
->=20
-> Applied, thanks!
->=20
-> [1/1] rtc: pcf85063: fallback to parent of_node
->       commit: 03531606ef4cda25b629f500d1ffb6173b805c05
->=20
-> I made the fallback unconditionnal because this should have been that way=
- from
-> the beginning as you point out.
-
-can you queue this for stable, as it causes a NULL Pointer deref with
-(at least) v5.12.
-
-Thanks,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
---pzbk4hzqlwyu5qjc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAmCpJQAACgkQqclaivrt
-76k/iQf/QcxlRhflnlSiP8ESURfSgR8O5+8RvqZAMRJwn9Bl5DOCgwjmD+GjEaC0
-HJGRgPs7k7K9sDq9UrwViBsvaaLK2FbSL9HcNjIdOB/NYOKj/XNv2PepyCq57vEZ
-dv829GdChEtxsqsJYwDbEDyAhXSF2B1GksCllxuEx+Wv79vYoOvlueVGbshJSYMS
-U5pZCDNV5CLNbb3I7pNEZDOIh6CshU1MYSHqgnQonVBMY8AM9Wamsl5ZIIHkUP1h
-ctLcXwpIwQK3fa3SB2dgXDxeipl24BXhfwMkUwxdFNV6YzzpXbNpbM+RmtvCfAaX
-/4kfTwMtRO5dCk4eT+uz+N+WFt6/4w==
-=3mQB
------END PGP SIGNATURE-----
-
---pzbk4hzqlwyu5qjc--
+Thanks, this is on for-next.
