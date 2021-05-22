@@ -2,87 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D13038D3BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 06:43:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED6438D3C4
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 07:08:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231443AbhEVEoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 00:44:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231432AbhEVEod (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 00:44:33 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1F5CC061574
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 21:43:07 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d4-20020a25b5c40000b02904f8e3c8c6c9so29678321ybg.14
-        for <linux-kernel@vger.kernel.org>; Fri, 21 May 2021 21:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=FnOGMJtD7cbEyy2Hy6sns1JCmndfXO6yiUDfaAjqzB0=;
-        b=ADkfaLwLMeQPABqX2ozJZ9PjZEXzbps2XxGnipqgoThErDT4mSQdF2Y7dK8ZGQKOOP
-         UxGdojTeD+ApoU/qddgk1qp9sNlJ2Pf381yXrmS5xX8EjiGk3mLcLHVQFdp9YzqbnhdC
-         zHJpBmo3t7QW4gaM4rlplznC4dL3d6gDFCcJ7Mm7qtoZt+TYZxSq8ofqxXA0TioAUH1Z
-         dBCe/6N10nODNBeOeygM2WozT5ho9N2z11MmZ56g8wdJDXh+Nlc4A3AZE90M0YH216FD
-         nPu/oNWJVieOUjg0xr9lG/diEfSohbrx5Cuv7CF69eHDoO3EwvI2XgtByoDXFCogx5Qg
-         Lesw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=FnOGMJtD7cbEyy2Hy6sns1JCmndfXO6yiUDfaAjqzB0=;
-        b=TtWkSEUEnFB4Dz/AsSDKBiBt9l8cqQZSarjwsxSkhL12/wT/VmI1/L0QtErkA8uNeF
-         8yfNC2dGX2IDlg4O1/hUBmfft/HK6/JF/2O9cVgn9puFxwsFMtTS7J+g0FzIlJXFOyIW
-         GC9cmxkSrUa5zNyH0wUh6rujXgZwLE56gdlDfkmMo9zM5pNzvOxTFtf4teDV5oBeD98i
-         TacNNqGPog4Lak5+OrQAEWozE/XwCRmW83unVoXEcpd7keMqeHc/o0mHFWNprRd54SZG
-         4jGWkuZ5+i9dxJ11tWrjrzbK2wXLh4unu4Upe8E05Km5li3qa5z84zOj/bL8oPTmPkno
-         333A==
-X-Gm-Message-State: AOAM5325MLmST45+h9Jb733iYPkbbVbXDPIggBzTvdZhYZ41fpyBt/Ey
-        dFNaNwL1Z7ZN5suqUtajKeKqPZgFjsTKGg==
-X-Google-Smtp-Source: ABdhPJzAkjOSmFaPqRL3IZnEfCtLjZzs3AQwT9S9n4+22xgVOSZ1s/nU9+bDyEuHewd2lUfMvZ/oNLN+g7GDcA==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:74c:35f3:92d:b18a])
- (user=davidgow job=sendgmr) by 2002:a25:a345:: with SMTP id
- d63mr20237748ybi.169.1621658587180; Fri, 21 May 2021 21:43:07 -0700 (PDT)
-Date:   Fri, 21 May 2021 21:42:41 -0700
-In-Reply-To: <20210522044241.2763088-1-davidgow@google.com>
-Message-Id: <20210522044241.2763088-3-davidgow@google.com>
-Mime-Version: 1.0
-References: <20210522044241.2763088-1-davidgow@google.com>
-X-Mailer: git-send-email 2.31.1.818.g46aad6cb9e-goog
-Subject: [PATCH v2 3/3] kunit: Remove the unused all_tests.config
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     David Gow <davidgow@google.com>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231253AbhEVFJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 01:09:31 -0400
+Received: from muru.com ([72.249.23.125]:58772 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229914AbhEVFJb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 01:09:31 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 374DC80C0;
+        Sat, 22 May 2021 05:08:09 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Ivan Jelincic <parazyd@dyne.org>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Sebastian Reichel <sre@kernel.org>,
+        "Sicelo A . Mhlongo" <absicsz@gmail.com>
+Subject: [PATCH] bus: ti-sysc: Fix flakey idling of uarts and stop using swsup_sidle_act
+Date:   Sat, 22 May 2021 08:07:59 +0300
+Message-Id: <20210522050759.52815-1-tony@atomide.com>
+X-Mailer: git-send-email 2.31.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This isn't used anywhere. While it's possible that people were manually
-referencing it, the new default config (in default.config in the same
-path) provides equivalent functionality.
+Looks like the swsup_sidle_act quirk handling is unreliable for serial
+ports. The serial ports just eventually stop idling until woken up and
+re-idled again. As the serial port not idling blocks any deeper SoC idle
+states, it's adds an annoying random flakeyness for power management.
 
-Signed-off-by: David Gow <davidgow@google.com>
+Let's just switch to swsup_sidle quirk instead like we already do for
+omap3 uarts. This means we manually idle the port instead of trying to
+use the hardware autoidle features when not in use.
+
+For more details on why the serial ports have been using swsup_idle_act,
+see commit 66dde54e978a ("ARM: OMAP2+: hwmod-data: UART IP needs software
+control to manage sidle modes"). It seems that the swsup_idle_act quirk
+handling is not enough though, and for example the TI Android kernel
+changed to using swsup_sidle with commit 77c34c84e1e0 ("OMAP4: HWMOD:
+UART1: disable smart-idle.").
+
+Fixes: b4a9a7a38917 ("bus: ti-sysc: Handle swsup idle mode quirks")
+Cc: Carl Philipp Klemm <philipp@uvos.xyz>
+Cc: Ivan Jelincic <parazyd@dyne.org>
+Cc: Merlijn Wajer <merlijn@wizzup.org>
+Cc: Pavel Machek <pavel@ucw.cz>
+Cc: Sebastian Reichel <sre@kernel.org>
+Cc: Sicelo A. Mhlongo <absicsz@gmail.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
 ---
- tools/testing/kunit/configs/all_tests.config | 3 ---
- 1 file changed, 3 deletions(-)
- delete mode 100644 tools/testing/kunit/configs/all_tests.config
+ drivers/bus/ti-sysc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/kunit/configs/all_tests.config b/tools/testing/kunit/configs/all_tests.config
-deleted file mode 100644
-index 9235b7d42d38..000000000000
---- a/tools/testing/kunit/configs/all_tests.config
-+++ /dev/null
-@@ -1,3 +0,0 @@
--CONFIG_KUNIT=y
--CONFIG_KUNIT_TEST=y
--CONFIG_KUNIT_EXAMPLE_TEST=y
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1466,9 +1466,9 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 	/* Uarts on omap4 and later */
+ 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x50411e03, 0xffff00ff,
+-		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 	SYSC_QUIRK("uart", 0, 0x50, 0x54, 0x58, 0x47422e03, 0xffffffff,
+-		   SYSC_QUIRK_SWSUP_SIDLE_ACT | SYSC_QUIRK_LEGACY_IDLE),
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_LEGACY_IDLE),
+ 
+ 	/* Quirks that need to be set based on the module address */
+ 	SYSC_QUIRK("mcpdm", 0x40132000, 0, 0x10, -ENODEV, 0x50000800, 0xffffffff,
 -- 
-2.31.1.818.g46aad6cb9e-goog
-
+2.31.1
