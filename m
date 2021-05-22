@@ -2,113 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B5438D5FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 15:19:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46BC038D5ED
+	for <lists+linux-kernel@lfdr.de>; Sat, 22 May 2021 15:10:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231133AbhEVNUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 09:20:30 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:38218 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230466AbhEVNU3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 09:20:29 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-186-YyNY5b8DMRiUupCLn4Pc3Q-1; Sat, 22 May 2021 14:19:01 +0100
-X-MC-Unique: YyNY5b8DMRiUupCLn4Pc3Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 22 May 2021 14:19:00 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sat, 22 May 2021 14:19:00 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     "'H. Peter Anvin'" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Borislav Petkov" <bp@alien8.de>
-CC:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 6/6] x86/syscall: use int everywhere for system call
- numbers
-Thread-Topic: [PATCH v4 6/6] x86/syscall: use int everywhere for system call
- numbers
-Thread-Index: AQHXTolzOOJ56hwIbUKIzI134bBX1arvaoRw
-Date:   Sat, 22 May 2021 13:19:00 +0000
-Message-ID: <39d875e0212240c9869c0419efd75bfa@AcuMS.aculab.com>
-References: <20210518191303.4135296-1-hpa@zytor.com>
- <20210518191303.4135296-7-hpa@zytor.com>
- <87zgwpbxby.ffs@nanos.tec.linutronix.de>
- <e43577cf-ab35-1de2-818a-ccc2e2fb99b8@zytor.com>
-In-Reply-To: <e43577cf-ab35-1de2-818a-ccc2e2fb99b8@zytor.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S230523AbhEVNLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 09:11:41 -0400
+Received: from mail-am6eur05on2070.outbound.protection.outlook.com ([40.107.22.70]:42840
+        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230431AbhEVNLj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 09:11:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Gs2XehsloHjU4zBW8o2nkQjA06mDY4plwsTbQD1GsUqe18lWgk8H7D8U8I/9UEbOrlFPx8UvP+Uzx4ukPEgCNIJUBWOmx7/8f1wW584pMpF3smSzaJUvcysuo7wGzI/LzLmTYwiSWIwOWiyMYgM66+YeQ4nL7WwKgeoahmBMPKoiA+u+Oa8iiHiEFU/YAJLBEpoNcpYfGEzlQcUxgQgE8IxEuwdgaPhuxEKZgaU7Uu4nbh1AfHVFF1remcO0J2mXJ53yAnRCCGfOX/Fo03a9xQGKYyVt+GuEIy358xT9hVUacRFDa8tEy13jHGhdCxnoYZ7yL45tQ1qj7IHwx0YrnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jVHMHqU0j7JGm+11Xwe3k+sWb0k+qgzeEjQ88KVeG6M=;
+ b=Zj/p9Eqyb3zKTV/HKSOptqw2jsQXLlRKYtVq6M8prWR0Fdga9QpIYy1cvrGWc7JmEhgmhoV6bSg/FS5bxzPPRKzeZfOlMQjd2Q7tzaFP1gaBNoL7So9gve6C0oRbS55F8kK7oQ5Kwu+22vNOyPnU9d2Ti8f9TySrcCSKG7J3nr2psHF2MLSxPckhjc9yW4iwj/wxwP1cYDJR1aSw5tRTkFg3jR+wqIpajejlVrWAhTgxylw+3w9ETwi+nBslw0TJS6/L3b0XOo+xqQhY7qcezTPSvh8wXEzoGnPfG9pei0SCgcd+2x8MKDvUwcghUL9aPmNHOJAQway3kFQBPnskzg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jVHMHqU0j7JGm+11Xwe3k+sWb0k+qgzeEjQ88KVeG6M=;
+ b=JDAn4iRP6z3tT0DL4PMkkiOIZDPaBr8yr5GsAv3o0M6W5O+piFbx0BS4QUNb8Ai03oXUfdrMOk0E+nzF1+au/H20AE7aVuAcJ3L0J/V4hgybGufpULrZ1WsNSTbtOaAYx5qqhwOaAP1h96MNoCfGhwQsfBGrn+nMmRmw2DpeA4M=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB5658.eurprd04.prod.outlook.com (2603:10a6:10:b2::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27; Sat, 22 May
+ 2021 13:10:09 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4150.027; Sat, 22 May 2021
+ 13:10:09 +0000
+From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
+        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
+        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V6 0/4] soc: imx: add i.MX BLK-CTL support
+Date:   Sat, 22 May 2021 21:42:45 +0800
+Message-Id: <20210522134249.15322-1-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.30.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR04CA0155.apcprd04.prod.outlook.com (2603:1096:4::17)
+ To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SG2PR04CA0155.apcprd04.prod.outlook.com (2603:1096:4::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Sat, 22 May 2021 13:10:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d56c4a6f-3e1a-43a6-744d-08d91d22ecf9
+X-MS-TrafficTypeDiagnostic: DB8PR04MB5658:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB5658939635EF0D3B0A2E5AD4C9289@DB8PR04MB5658.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qJa4j2ct8pL8jTiYPv82MhIvDGJtP7Jh7Cgkjx98dnotLX7H0BbyVnFe3Ah2kgiTjQsn2SCRV2skcYK64XURy9zHPdyDX+hPmtMKZRGx8LRQZTNd0S7Y79MEAw9AG83byjM9ZMYUVx/7BoHvegZAYkvvV4kcXy3I/kVMxIC7NrkdtjJcH/oKz51soAKLapNMMUTLsjj8jI12gIwx963WP5c6N4iB6R/NRuMgNXtNYer40QOlFGFw23K1/H6Ylypxy9NQPW9Jic2WE5gxvzIqYI1h2J7aSsDMfwmZZWQa4hGuWj0p5vCXsqB3F0Z1txJDKTB0lG3EOihGV4qMuwz9iV/Hbtg33ClkPHH9Muc3737MAFnR75M4gtkHEj4N96FEEonSkONDM0bjhHECGUi6V7/ijxD4ji5zoA8sJG6pPvkwTLJEo1GwXBJ/kKmhGxgbpeC2cCSDj+Wcx6ckj2e9zqEGWnaopAo3zHTBzcOfeqkqWgZLQJ84it95HrbpA7lZorKancPttQGlu9aQtwjFZaDpH1ygS0cK/QOEF+SqJZ8zftYYB7xL119QoDNkCeSD1/g3HCwEEyzqmS1Pvw97ZD7hs4tGTCxC2AflRHpr8QK2phIrNSGgFJNJ3UHVpkA1UCKsmjXzsc4KNDtxU5WFsUQJPogrBPUHwpBgEK429erNt0wuR6W0Y263tL2zdCiBxnDHcze5UNi12Fxs5pQi2RtqHEt09uMRAIQqx026h+GduYgbJ4SsoieI+T9QnpLUifK7WsufFGCcpnKKKSPpdw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(396003)(39860400002)(136003)(6506007)(66946007)(16526019)(66476007)(66556008)(186003)(4326008)(8936002)(26005)(52116002)(966005)(6512007)(38350700002)(38100700002)(83380400001)(5660300002)(478600001)(1076003)(8676002)(956004)(2616005)(316002)(86362001)(2906002)(6486002)(6666004)(7416002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?sSClVNdScsDOhi9ZlCZijI1eOuEsM24K+vvWe/Ih6N1MRZ1/fqf6VdTpKYZn?=
+ =?us-ascii?Q?pNeeeklQsI0JKZb2W54vyJs5Dh1946xR1N7WquTt/jR8bFA99/dUI7po6p4J?=
+ =?us-ascii?Q?yesxNlkNbKjqGd076S2WlRklvIuL/V2WHZMRvuPBr0WJ6NKFBHEG8KPOtvsL?=
+ =?us-ascii?Q?/O7XB53FW9P5BznM6JvS58Y5cm40EVrRdY2YGZVAqYXW0hMdzacDV0eYpdjC?=
+ =?us-ascii?Q?a3q2/jk3hKJ26Z3FZNNJluYZcoQYZSPJl6Hg91soOzSzYwuJv3RLXn5lBH5h?=
+ =?us-ascii?Q?ayXrXjWns74yoKET9iHaKcm2Vw4rdphmwmyyVTU+nLVlm+9jFCrDST7qYygQ?=
+ =?us-ascii?Q?NVhSxKmwJJoJix5K+b6Rr48/Uem7I70wb7IgIAJjJ5hcd8uCOthS1t/t4Ubj?=
+ =?us-ascii?Q?Lac/pI37Q1g+A8jnHrVU5xJkETsLJn/2Klc5SL55UyoX1Ihsts7b3GhTz3ut?=
+ =?us-ascii?Q?eM74g4o5Tx8LiC59sEsXqBHZ7UasNYl5Oe7prbmYgJtWMZbk4O3IoGNFCPr3?=
+ =?us-ascii?Q?38x2n94kYTDs7YM/L8i0tY5kWM8184bu6C+mA0P3X20bHDVvuUi+zITSyATO?=
+ =?us-ascii?Q?EadKzMR9gbbwc62Ut6HaOa3CLITQWZT25VBF3Itz2ZJWeZqelm1mwi7y/x+3?=
+ =?us-ascii?Q?l7v2SNelaWU50HBIXgmCKPvtvxCXeCx2qpA5eh0G5HNY1DeA9HkPsL4HM4Hq?=
+ =?us-ascii?Q?O8lDe9TiuaKtC1wlXC9oi8swu61SfZAGK0AHuhn5/3UP9Wa/hGOWZ7Ajcf4G?=
+ =?us-ascii?Q?7mfTlsLmwaukhAFb2fCOUV+PzCY1B3czXfqPQ3CqR9Y9xD6tAf0fgLnZOydJ?=
+ =?us-ascii?Q?1S+xrBjYc4uCVyD5E1lzr/ZKt+5xqZ2q2bUGfoCWGQw8XxYku5aly0zzUPDH?=
+ =?us-ascii?Q?dNAWbrpiIbi5At6+7v2Ulh+LHEcSKL+Cz0B/Mc6ed4n38oRRO6Q5ltiNovsj?=
+ =?us-ascii?Q?wjXG+Vpir0sz8WVvPNPf3RD+tSJ9pHRaEiAgdF696A+7bt5MNc38h4IAV0hl?=
+ =?us-ascii?Q?WSD/p4VLdn9CniRyUkVinDzj7AmRVQLOO2+TSoJ2R5h84K5Sz6HPfa1CPw38?=
+ =?us-ascii?Q?rmg3K97afHjb4DdVRv45ralRSF0eOqNr4Sn4otlciZSPS7CAVjYCgYSDdhVF?=
+ =?us-ascii?Q?dFR3HKSn5bqx3hcfCb7wVxaewHafzvaaGZ3s3nUEKcrj7rllfS97janv26q3?=
+ =?us-ascii?Q?qXVCbw95LCPDumhCl1O4OggO6joz5p0EsG8NAPKsT4cXIxohmP2CyVlNX7bZ?=
+ =?us-ascii?Q?Do8lApNXsyRalN4S73Afch6/qHmC+6xQH5wPa50ysc56uG/iOiXvj9GLYVrt?=
+ =?us-ascii?Q?dqaXRcfEnZ5TUwY1FUXe6FVt?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d56c4a6f-3e1a-43a6-744d-08d91d22ecf9
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 May 2021 13:10:09.5908
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: y+zoahcXjGjFz8/uZh6ZTRqKKFOY1cObAwrmyveFM1KXJuVwncApwZd+HD9T8kcc3rFCXvB38orpAYeRgueyVg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5658
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSC4gUGV0ZXIgQW52aW4NCj4gU2VudDogMjEgTWF5IDIwMjEgMjI6MzcNCj4gDQo+IE9u
-IDUvMjAvMjEgMTo1MyBBTSwgVGhvbWFzIEdsZWl4bmVyIHdyb3RlOg0KPiA+IE9uIFR1ZSwgTWF5
-IDE4IDIwMjEgYXQgMTI6MTMsIEguIFBldGVyIEFudmluIHdyb3RlOg0KPiA+PiArc3RhdGljIF9f
-YWx3YXlzX2lubGluZSBib29sIGRvX3N5c2NhbGxfeDY0KHN0cnVjdCBwdF9yZWdzICpyZWdzLCBp
-bnQgbnIpDQo+ID4+ICt7DQo+ID4+ICsJLyoNCj4gPj4gKwkgKiBDb252ZXJ0IG5lZ2F0aXZlIG51
-bWJlcnMgdG8gdmVyeSBoaWdoIGFuZCB0aHVzIG91dCBvZiByYW5nZQ0KPiA+PiArCSAqIG51bWJl
-cnMgZm9yIGNvbXBhcmlzb25zLiBVc2UgdW5zaWduZWQgbG9uZyB0byBzbGlnaHRseQ0KPiA+PiAr
-CSAqIGltcHJvdmUgdGhlIGFycmF5X2luZGV4X25vc3BlYygpIGdlbmVyYXRlZCBjb2RlLg0KPiA+
-DQo+ID4gSG93IGlzIHRoYXQgYWN0dWFsbHkgaW1wcm92aW5nIHRoZSBnZW5lcmF0ZWQgY29kZT8N
-Cj4gPg0KPiA+IHVuc2lnbmVkIGxvbmc6DQo+ID4NCj4gPiAgIDEwNDoJNDggODEgZmEgYmYgMDEg
-MDAgMDAgCWNtcCAgICAkMHgxYmYsJXJkeA0KPiA+ICAgMTBiOgk0OCAxOSBjMCAgICAgICAgICAg
-ICAJc2JiICAgICVyYXgsJXJheA0KPiA+ICAgMTBlOgk0OCAyMSBjMiAgICAgICAgICAgICAJYW5k
-ICAgICVyYXgsJXJkeA0KPiA+ICAgMTExOgk0OCA4OSBkZiAgICAgICAgICAgICAJbW92ICAgICVy
-YngsJXJkaQ0KPiA+ICAgMTE0Ogk0OCA4YiAwNCBkNSAwMCAwMCAwMCAJbW92ICAgIDB4MCgsJXJk
-eCw4KSwlcmF4DQo+ID4gICAxMWI6CTAwDQo+ID4gICAxMWM6CWU4IDAwIDAwIDAwIDAwICAgICAg
-IAljYWxscSAgMTIxIDxkb19zeXNjYWxsXzY0KzB4NDE+DQo+ID4NCj4gPiB1bnNpZ25lZCBpbnQ6
-DQo+ID4NCj4gPiAgICBmMToJNDggODEgZmEgYmYgMDEgMDAgMDAgCWNtcCAgICAkMHgxYmYsJXJk
-eA0KPiA+ICAgIGY4Ogk0OCAxOSBkMiAgICAgICAgICAgICAJc2JiICAgICVyZHgsJXJkeA0KPiA+
-ICAgIGZiOgkyMSBkMCAgICAgICAgICAgICAgICAJYW5kICAgICVlZHgsJWVheA0KPiA+ICAgIGZk
-Ogk0OCA4OSBkZiAgICAgICAgICAgICAJbW92ICAgICVyYngsJXJkaQ0KPiA+ICAgMTAwOgk0OCA4
-YiAwNCBjNSAwMCAwMCAwMCAJbW92ICAgIDB4MCgsJXJheCw4KSwlcmF4DQo+ID4gICAxMDc6CTAw
-DQo+ID4gICAxMDg6CWU4IDAwIDAwIDAwIDAwICAgICAgIAljYWxscSAgMTBkIDxkb19zeXNjYWxs
-XzY0KzB4M2Q+DQo+ID4NCj4gPiBUZXh0IHNpemUgaW5jcmVhc2VzIHdpdGggdGhhdCB1bnNpZ25l
-ZCBsb25nIGNhc3QuDQo+ID4NCj4gPiBJIG11c3QgYmUgbWlzc2luZyBzb21ldGhpbmcuDQo+ID4N
-Cj4gDQo+ICJ1bnNpZ25lZCBsb25nIiBnYXZlIHNsaWdodGx5IGJldHRlciBjb2RlIHRoYW4gImlu
-dCIsIGJ1dCBhcyB5b3UNCj4gY29ycmVjdGx5IHBvaW50IG91dCBoZXJlLCAidW5zaWduZWQgaW50
-IiBpcyBldmVuIGJldHRlci4NCg0KSW5kZXhpbmcgYXJyYXlzIHdpdGggJ2ludCcgYWxtb3N0IGFs
-d2F5cyBlbmRzIHVwIGdlbmVyYXRpbmcNCmFuIGV4dHJhIGluc3RydWN0aW9uIHRvIHNpZ24tZXh0
-ZW5kIHRoZSAzMmJpdCB2YWx1ZSB0byA2NGJpdHMuDQpUaGlzIGxlbmd0aGVucyB0aGUgcmVnaXN0
-ZXIgZGVwZW5kZW5jeSBjaGFpbiBhcyBpcyBsaWtlbHkgdG8NCmFkZCBhIGNsb2NrLg0KDQpPVE9I
-IHVzaW5nICd1bnNpZ25lZCBpbnQnIGNhbiBzYXZlIGEgJ3JlZycgcHJlZml4IChhcyBoZXJlKQ0K
-bWFyZ2luYWxseSByZWR1Y2luZyB0aGUgY2FjaGUgZm9vdHByaW50Lg0KVGhhdCBtaWdodCBzcGVl
-ZCBpdCB1cCwgYnV0IG1heSBzbG93IGl0IGRvd24hDQpSYXRoZXIgZGVwZW5kcyBvbiB0aGUgZXhh
-Y3QgYWxpZ25tZW50IG9mIGluc3RydWN0aW9ucw0KcmVsYXRpdmUgdG8gKG9uIEludGVsIGNwdSkg
-dGhlIDE2LWJ5dGUgZmV0Y2gvZGVjb2RlIGJsb2Nrcy4NCg0KTG9va2luZyBhdCB0aGUgYWJvdmUg
-Y29kZSwgb3V0IG9mIHJhbmdlIHZhbHVlcyBnZXQgbWFza2VkDQp0byB6ZXJvIHRvIGVuc3VyZSB0
-aGF0IHNwZWN1bGF0aXZlIGV4ZWN1dGlvbiBkb2Vzbid0IGV4cG9zZQ0KYW55dGhpbmcuDQpJZiB0
-aGUgc3lzY2FsbCBudW1iZXIgaXMgb2Zmc2V0IGJ5IG9uZSBiZWZvcmUgbWFza2luZw0KYSB6ZXJv
-IHdpbGwgb25seSBiZSBnZW5lcmF0ZWQgZm9yIGludmFsaWQgdmFsdWVzOg0KDQpodHRwczovL2dv
-ZGJvbHQub3JnL3ovYXY4Mzlic3hmDQoNCmJvb2wgZG9fc3lzY2FsbF94NjQoc3RydWN0IHB0X3Jl
-Z3MgKnJlZ3MsIGludCBucikNCnsNCgl1bnNpZ25lZCBsb25nIHVuciA9IG5yICsgMTsNCg0KCXVu
-ciA9IGFycmF5X2luZGV4X25vc3BlYyh1bnIsIE5SX3N5c2NhbGxzICsgMSk7DQoJaWYgKCF1bnIp
-DQoJCXJldHVybiBmYWxzZTsNCglyZWdzLT5heCA9IHN5c19jYWxsX3RhYmxlW3VuciAtIDFdKHJl
-Z3MpOw0KCXJldHVybiB0cnVlOw0KfQ0KDQpUaGlzIHNwZWVkcyB1cCB0aGUgbmF0aXZlIHN5c3Rl
-bSBjYWxscyB3aXRoIGEgc2xpZ2h0IHNsb3cgZG93bg0Kb2YgdGhlIGNvbXBhdCBvbmVzLg0KDQpJ
-biBwcmluY2lwbGUgc3lzX2NhbGxfdGFibGVbXSBjb3VsZCBiZSBvZmZzZXQgYnkgb25lLg0KU28g
-dGhhdCBpbnZhbGlkIG51bWJlcnMgZ28gdGhyb3VnaCBzeXNfY2FsbF90YWJsZVswXS4NCllvdSB3
-b3VsZG4ndCB3YW50IHRvIGRvIHRoaXMgaWYgYSBzZWNvbmQgdGFibGUgZm9sbG93cy4NCg0KSSdt
-IGFsc28gc2VlaW5nIGJldHRlciBjb2RlIGZvciAndW5zaWduZWQgbG9uZycuDQpQcm9iYWJseSBi
-ZWNhdXNlIGFycmF5X2luZGV4X21hc2tfbm9zcGVjKCkgaXMgZGVmaW5lZCBmb3IgbG9uZy4NCg0K
-CURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBN
-b3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAx
-Mzk3Mzg2IChXYWxlcykNCg==
+From: Peng Fan <peng.fan@nxp.com>
+
+V6:
+ Thanks for Adam's report on V5.
+ Resolve the error message dump, it is the child device reuse
+ the parent device node and matches the parent driver.
+ Filled the remove function for child device.
+ A diff dts file for upstream:
+ https://gist.github.com/MrVan/d73888d8273c43ea4a3b28fa668ca1d0
+
+V5:
+ Rework the blk-ctl driver to let sub-PGC use blk-ctl as parent power
+ domain to fix the potential handshake issue.
+ I still keep R-b/A-b tag for Patch 1,2,4, since very minor changes
+ I only drop R-b tag for Patch 3, since it has big change.
+ An example, the pgc_mipi not take pgc_dispmix as parent:
+
+	pgc_dispmix: power-domain@10 {
+		#power-domain-cells = <0>;
+		reg = <IMX8MM_POWER_DOMAIN_DISPMIX>;
+		clocks = <&clk IMX8MM_CLK_DISP_ROOT>,
+			 <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
+			 <&clk IMX8MM_CLK_DISP_APB_ROOT>;
+	};
+
+	pgc_mipi: power-domain@11 {
+		#power-domain-cells = <0>;
+		reg = <IMX8MM_POWER_DOMAIN_MIPI>;
+		power-domains = <&dispmix_blk_ctl IMX8MM_BLK_CTL_PD_DISPMIX_BUS>;
+	};
+
+	dispmix_blk_ctl: clock-controller@32e28000 {
+		compatible = "fsl,imx8mm-dispmix-blk-ctl", "syscon";
+		reg = <0x32e28000 0x100>;
+		#power-domain-cells = <1>;
+		power-domains = <&pgc_dispmix>, <&pgc_mipi>;
+		power-domain-names = "dispmix", "mipi";
+		clocks = <&clk IMX8MM_CLK_DISP_ROOT>, <&clk IMX8MM_CLK_DISP_AXI_ROOT>,
+			 <&clk IMX8MM_CLK_DISP_APB_ROOT>;
+	};
+
+V4:
+ Add R-b tag
+ Typo fix
+ Update the power domain macro names Per Abel and Frieder
+
+V3:
+ Add explaination for not listing items in patch 2 commit log Per Rob.
+ Addressed comments from Lucas and Frieder on patch [3,4].
+ A few comments from Jacky was ignored, because following gpcv2
+ coding style.
+
+V2:
+ Fix yaml check failure.
+
+Previously there is an effort from Abel that take BLK-CTL as clock
+provider, but it turns out that there is A/B lock issue and we are
+not able resolve that.
+
+Per discuss with Lucas and Jacky, we made an agreement that take BLK-CTL
+as a power domain provider and use GPC's domain as parent, the consumer
+node take BLK-CTL as power domain input.
+
+This patchset has been tested on i.MX8MM EVK board, but one hack
+is not included in the patchset is that the DISPMIX BLK-CTL
+MIPI_M/S_RESET not implemented. Per Lucas, we will finally have a MIPI
+DPHY driver, so fine to leave it.
+
+Thanks for Lucas's suggestion, Frieder Schrempf for collecting
+all the patches, Abel's previous BLK-CTL work, Jacky Bai on help
+debug issues.
+
+
+Peng Fan (4):
+  dt-bindings: power: Add defines for i.MX8MM BLK-CTL power domains
+  Documentation: bindings: clk: Add bindings for i.MX BLK_CTL
+  soc: imx: Add generic blk-ctl driver
+  soc: imx: Add blk-ctl driver for i.MX8MM
+
+ .../bindings/soc/imx/fsl,imx-blk-ctl.yaml     |  66 ++++
+ drivers/soc/imx/Makefile                      |   2 +-
+ drivers/soc/imx/blk-ctl-imx8mm.c              | 139 ++++++++
+ drivers/soc/imx/blk-ctl.c                     | 334 ++++++++++++++++++
+ drivers/soc/imx/blk-ctl.h                     |  85 +++++
+ include/dt-bindings/power/imx8mm-power.h      |  13 +
+ 6 files changed, 638 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/devicetree/bindings/soc/imx/fsl,imx-blk-ctl.yaml
+ create mode 100644 drivers/soc/imx/blk-ctl-imx8mm.c
+ create mode 100644 drivers/soc/imx/blk-ctl.c
+ create mode 100644 drivers/soc/imx/blk-ctl.h
+
+-- 
+2.30.0
 
