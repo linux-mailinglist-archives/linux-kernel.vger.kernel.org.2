@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B34A838DAD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 12:05:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0508038DAD7
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 12:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231717AbhEWKGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 06:06:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhEWKGQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 06:06:16 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48B5FC061574;
-        Sun, 23 May 2021 03:04:50 -0700 (PDT)
-Date:   Sun, 23 May 2021 10:04:48 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621764288;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0tUYQHmDvtABAiPtAtlsPGT0mUUsqJITvqkUPcfWZA0=;
-        b=PzQChSycs7AmstTmxqpvvpOWnNBzYT2nuiCaFqqCpFORb68VdE3V6yZqT6Bv9qmZF696bz
-        glwUxKa2qGWLkORPrQoQ2SaLa5tYCUR9hjnAAaujfXpD43k9HcWGKAEr+CAiy473SARezy
-        1Nao6lGXrBXqKrthpgh2Sye3AIDrec+pNMb24v6v0Uo6wfQ7djXNW1GLkb39EmeEfUW3Xh
-        HXBdKqImh20agbcd9nDlNwjI1ff1uz2mLFb5WPTLYsoB0wkjXnOlnvGvJR3A/ltRMI7NNF
-        k4sIhYRAq0xJs6sIHZ7QSF0nFmEZQpeO4SZvANfrtaAWLT4j9m+gnEE3odtAZw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621764288;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=0tUYQHmDvtABAiPtAtlsPGT0mUUsqJITvqkUPcfWZA0=;
-        b=aTKJURR8XExKm2A2qiaBXBtKGdJm5dlZdkj3CwUzNJkfiC1lYRZP1V5U4iqSpmMoG+mvt1
-        H7MgVKFap6PzsWAQ==
-From:   "tip-bot2 for Heikki Krogerus" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/core] efi/apple-properties: Handle device properties with
- software node API
-Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S231704AbhEWKOK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 06:14:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44740 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231666AbhEWKOJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 06:14:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621764762; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sYYsOVd9TGiZAPCmlUwxN6ygnZdvnBlAiVSZ0cLl6l8=;
+        b=Z2iityQNB5vdczG5dAQGUsqtZ/Rt+YNpJoJsGzxFvs/fMHin8Y/4QdaHqC4RIJi1YR0gZ9
+        GAXgefX3VvkkRC27KHBYQab3KphSIGFnPF0faQul4Zbu694hdHGu5kNsckhwye8HS/bAHX
+        Yz3NYZCb2IbRadvkXQ6UrRQMHGNVI4g=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621764762;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=sYYsOVd9TGiZAPCmlUwxN6ygnZdvnBlAiVSZ0cLl6l8=;
+        b=UNJmQ0q0o3qGfog6y1LrFaNnRYx2d5NgzZdgxLXEvvZnqf68CMfNY4OIZy6uQnffxdiB+U
+        h+JH6ORjsRbqr7AA==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A8F0EACFD;
+        Sun, 23 May 2021 10:12:42 +0000 (UTC)
+Date:   Sun, 23 May 2021 12:12:35 +0200
+From:   Borislav Petkov <bp@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] x86/urgent for v5.13-rc3
+Message-ID: <YKoqk6WplkzaAitt@zn.tnic>
 MIME-Version: 1.0
-Message-ID: <162176428803.29796.1147855161001088880.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/core branch of tip:
+Hi Linus,
 
-Commit-ID:     55fc610c8cdae353737dbc2d59febd3c1a697095
-Gitweb:        https://git.kernel.org/tip/55fc610c8cdae353737dbc2d59febd3c1a697095
-Author:        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-AuthorDate:    Thu, 04 Mar 2021 11:28:37 +03:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Sat, 22 May 2021 14:06:59 +02:00
+please pull a couple of x86/urgent fixes which accumulated recently.
 
-efi/apple-properties: Handle device properties with software node API
+Thx.
 
-The old device property API is going to be removed.
-Replacing the device_add_properties() call with the software
-node API equivalent, device_create_managed_software_node().
-
-Signed-off-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Acked-by: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/apple-properties.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/firmware/efi/apple-properties.c b/drivers/firmware/efi/apple-properties.c
-index e192648..4c3201e 100644
---- a/drivers/firmware/efi/apple-properties.c
-+++ b/drivers/firmware/efi/apple-properties.c
-@@ -157,7 +157,7 @@ static int __init unmarshal_devices(struct properties_header *properties)
- 		if (!entry[0].name)
- 			goto skip_device;
- 
--		ret = device_add_properties(dev, entry); /* makes deep copy */
-+		ret = device_create_managed_software_node(dev, entry, NULL);
- 		if (ret)
- 			dev_err(dev, "error %d assigning properties\n", ret);
- 
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
+
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_urgent_for_v5.13_rc3
+
+for you to fetch changes up to 4954f5b8ef0baf70fe978d1a99a5f70e4dd5c877:
+
+  x86/sev-es: Use __put_user()/__get_user() for data accesses (2021-05-19 18:45:37 +0200)
+
+----------------------------------------------------------------
+- Fix how SEV handles MMIO accesses by forwarding potential page faults instead
+of killing the machine and by using the accessors with the exact functionality
+needed when accessing memory.
+
+- Fix a confusion with Clang LTO compiler switches passed to the it
+
+- Handle the case gracefully when VMGEXIT has been executed in userspace
+
+----------------------------------------------------------------
+Joerg Roedel (3):
+      x86/sev-es: Don't return NULL from sev_es_get_ghcb()
+      x86/sev-es: Forward page-faults which happen during emulation
+      x86/sev-es: Use __put_user()/__get_user() for data accesses
+
+Nathan Chancellor (1):
+      x86/build: Fix location of '-plugin-opt=' flags
+
+Tom Lendacky (2):
+      x86/sev-es: Move sev_es_put_ghcb() in prep for follow on patch
+      x86/sev-es: Invalidate the GHCB after completing VMGEXIT
+
+ arch/x86/Makefile            |  12 ++--
+ arch/x86/kernel/sev-shared.c |   1 +
+ arch/x86/kernel/sev.c        | 136 +++++++++++++++++++++++++++----------------
+ 3 files changed, 92 insertions(+), 57 deletions(-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
