@@ -2,195 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 894EC38DAA1
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 457CD38DAB6
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:30:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231675AbhEWJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:13:06 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:59995 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231599AbhEWJNF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 05:13:05 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 947355C00DE;
-        Sun, 23 May 2021 05:11:38 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sun, 23 May 2021 05:11:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-         h=date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=/NSpBw0YS595+mTt3f/1xCuzoZ8
-        5jIUURDT5+uIWRI8=; b=1OZduIs9AU6EGXGEMqq7B5mu7Yne/TjCfr77XKuqHPu
-        0CDDziv9AWb2olVyqmkb+oNzp5F4HOlYELRWv4MlqecbqKwf8kEjlylrCcLETU3o
-        oHFCrNN+WcCEfz+fkDG5WPy3hk1VMAIuDBumdzXAkl3L8WlARm8axFYbs+ul4vn4
-        YUMm6K1okwtJd41Z+jA/Cjiyf6Ar680TFX1PjY4jvzG1JpQyJn6XAV7+9DCOqACj
-        4Sf+GHBbkz/LmnDiQtXc2tvcB5BGvGWUTaUMk21B+/lwvR7HARQP68kHxX658i1v
-        UGtx762tpqJ4CLoEhU37lwGj7k5GQOcbjOMUNOXkytg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/NSpBw
-        0YS595+mTt3f/1xCuzoZ85jIUURDT5+uIWRI8=; b=Y3UTSR3HIuAXfWNniSMFnE
-        ya0aPpfZWrqLPXw/7MlKD2q9O4mCR9SjGQwQFGaAiVRlL2GsgshcEnnbrSPI7k7G
-        WeWX+FneA0wSya6qSY3sy4fpTw1itCqE0FG0mMK2GusEGcuZLl+iXXTLA5kUcuk7
-        Oa8Ik7/XqBBiFRdbhPg1/4DsPWi4eaDQb8b+2heN5LjJ5GrSyVOlg36OATZnsj8j
-        Owque13kQxMDP7yhQSlfRSqv8UtIpLAsaaAhHyB5meHuaNXk/LIMI9uscPe8wty6
-        8dI1dem3iRYdrgqSnK2ACX5P9hF6S06oR+vsAxyPpb/bnLAtW5UohMcaWGHd0aew
-        ==
-X-ME-Sender: <xms:SRyqYIQnH_R4-xlgXQctbcxuLdje10wgE--DTxny30Wk-ZGOMl78gA>
-    <xme:SRyqYFyHahyx3nDTTl69Q0I4Yv0CKOHsjpqjLQpp3jFYYSRXjEAw3M0SqnOd7ut9w
-    tSE98VC9Tk1CsYUIgc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejiedgudegudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
-    ertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
-    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeelhfeuge
-    dvjefgjefgudekfedutedvtddutdeuieevtddtgeetjeekvdefgeefhfenucfkphepudeg
-    rdefrdeihedrudejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
-X-ME-Proxy: <xmx:SRyqYF2iKFcYcCQ8lpO5_xf7k0WrKtfk0ClrBGERSr-bUEzX7zgLEQ>
-    <xmx:SRyqYMAbzDb7N1dQ8ZRHQHUTCUINglpIImDtHZAyKb0nZJ6RYWSb3w>
-    <xmx:SRyqYBgVGgeTv7N0i6Fl81wuQwlUaINFrDsLJlj8BB62q25GjpqJjw>
-    <xmx:ShyqYEutuc64ic6_xcGXTk2TyhVPR7biOIkq3vdgPJtVnFegLUzGRg>
-Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Sun, 23 May 2021 05:11:36 -0400 (EDT)
-Date:   Sun, 23 May 2021 18:11:33 +0900
-From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To:     YueHaibing <yuehaibing@huawei.com>
-Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] ALSA: control_led - use DEVICE_ATTR_*() macro
-Message-ID: <20210523091133.GA220048@workstation>
-Mail-Followup-To: YueHaibing <yuehaibing@huawei.com>, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-References: <20210523071109.28940-1-yuehaibing@huawei.com>
+        id S231685AbhEWJcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 05:32:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231658AbhEWJcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 05:32:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C6561151;
+        Sun, 23 May 2021 09:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621762231;
+        bh=Ek7SYvfllGWZGSWDSHP+3ZRuuazWRLNL0F0GgxvDRMc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oSeUOLM5644vUF+6LchLVgrPjHLA8abBOgmA3v3PjcM0ZYSrsMldWVbU3lKFhkJbp
+         worAHAeDsir6xbLe2U10d6ToBF6qGrnmOFetS8XZD0ytzG58CgBbVei0MWZMSYVMtR
+         kDyI2lgsIwnzYaq1AwL1o9iAcfvTUXcOqky55FPwIWvq9SVoAt+skuNF4vGEwHgpDj
+         HvR6XJrXJJsI6pWyz9jEK//RQEpW5FgpKYgMja9ZgSN4GK3kOXBhkPCHwDTqQBOMk3
+         Xl9VQ4nblPLUWOdCNd2CXTWhndM7DONs0zRiFsUuJs05gz+zaLex4Z+05YCiJzT7qC
+         pfF3W0FFtIT4Q==
+Date:   Sun, 23 May 2021 11:30:26 +0200
+From:   Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     Sean Young <sean@mess.org>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: Re: linux-next: Fixes tag needs some work in the v4l-dvb-next tree
+Message-ID: <20210523113026.4a3a7f4f@coco.lan>
+In-Reply-To: <20210523083636.GA15522@gofer.mess.org>
+References: <20210523124953.7a5108b4@canb.auug.org.au>
+        <20210523083636.GA15522@gofer.mess.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210523071109.28940-1-yuehaibing@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 03:11:09PM +0800, YueHaibing wrote:
-> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-> which makes the code a bit shorter and easier to read.
+Em Sun, 23 May 2021 09:36:36 +0100
+Sean Young <sean@mess.org> escreveu:
+
+> Hi Mauro,
 > 
-> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-> ---
->  sound/core/control_led.c | 34 +++++++++++++++++++---------------
->  1 file changed, 19 insertions(+), 15 deletions(-)
- 
-The usage of common macro is better way for safe than own way as long as
-achieving the same function. This looks good to me.
+> On Sun, May 23, 2021 at 12:49:53PM +1000, Stephen Rothwell wrote:
+> > Hi all,
+> > 
+> > In commit
+> > 
+> >   7c8a36e1fb30 ("media: rc: i2c: Fix an error message")
+> > 
+> > Fixes tag
+> > 
+> >   Fixes: acaa34bf06e9 ('media: rc: implement zilog transmitter")
+> > 
+> > has these problem(s):
+> > 
+> >   - Subject has leading but no trailing quotes
+> >   - Subject does not match target commit subject
+> >     Just use
+> > 	git log -1 --format='Fixes: %h ("%s")'  
+> 
+> Now that we have media-staging, can the commit message be ammended?
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+If the patch didn't reach media_tree, yes, but this patch can't
+be fixed anymore, as it is too old:
 
-> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
-> index 25f57c14f294..a5e751f26d46 100644
-> --- a/sound/core/control_led.c
-> +++ b/sound/core/control_led.c
-> @@ -375,7 +375,7 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
->   * sysfs
->   */
->  
-> -static ssize_t show_mode(struct device *dev,
-> +static ssize_t mode_show(struct device *dev,
->  			 struct device_attribute *attr, char *buf)
->  {
->  	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
-> @@ -390,7 +390,8 @@ static ssize_t show_mode(struct device *dev,
->  	return sprintf(buf, "%s\n", str);
->  }
->  
-> -static ssize_t store_mode(struct device *dev, struct device_attribute *attr,
-> +static ssize_t mode_store(struct device *dev,
-> +			  struct device_attribute *attr,
->  			  const char *buf, size_t count)
->  {
->  	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
-> @@ -419,7 +420,7 @@ static ssize_t store_mode(struct device *dev, struct device_attribute *attr,
->  	return count;
->  }
->  
-> -static ssize_t show_brightness(struct device *dev,
-> +static ssize_t brightness_show(struct device *dev,
->  			       struct device_attribute *attr, char *buf)
->  {
->  	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
-> @@ -427,8 +428,8 @@ static ssize_t show_brightness(struct device *dev,
->  	return sprintf(buf, "%u\n", ledtrig_audio_get(led->trigger_type));
->  }
->  
-> -static DEVICE_ATTR(mode, 0644, show_mode, store_mode);
-> -static DEVICE_ATTR(brightness, 0444, show_brightness, NULL);
-> +static DEVICE_ATTR_RW(mode);
-> +static DEVICE_ATTR_RO(brightness);
->  
->  static struct attribute *snd_ctl_led_dev_attrs[] = {
->  	&dev_attr_mode.attr,
-> @@ -562,22 +563,25 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
->  	return count;
->  }
->  
-> -static ssize_t parse_attach(struct device *dev, struct device_attribute *attr,
-> +static ssize_t attach_store(struct device *dev,
-> +			    struct device_attribute *attr,
->  			    const char *buf, size_t count)
->  {
->  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
->  	return set_led_id(led_card, buf, count, true);
->  }
->  
-> -static ssize_t parse_detach(struct device *dev, struct device_attribute *attr,
-> +static ssize_t detach_store(struct device *dev,
-> +			    struct device_attribute *attr,
->  			    const char *buf, size_t count)
->  {
->  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
->  	return set_led_id(led_card, buf, count, false);
->  }
->  
-> -static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
-> -			 const char *buf, size_t count)
-> +static ssize_t reset_store(struct device *dev,
-> +			   struct device_attribute *attr,
-> +			   const char *buf, size_t count)
->  {
->  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
->  	int err;
-> @@ -590,8 +594,8 @@ static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
->  	return count;
->  }
->  
-> -static ssize_t ctl_list(struct device *dev,
-> -			struct device_attribute *attr, char *buf)
-> +static ssize_t list_show(struct device *dev,
-> +			 struct device_attribute *attr, char *buf)
->  {
->  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
->  	struct snd_card *card;
-> @@ -624,10 +628,10 @@ static ssize_t ctl_list(struct device *dev,
->  	return buf2 - buf;
->  }
->  
-> -static DEVICE_ATTR(attach, 0200, NULL, parse_attach);
-> -static DEVICE_ATTR(detach, 0200, NULL, parse_detach);
-> -static DEVICE_ATTR(reset, 0200, NULL, ctl_reset);
-> -static DEVICE_ATTR(list, 0444, ctl_list, NULL);
-> +static DEVICE_ATTR_WO(attach);
-> +static DEVICE_ATTR_WO(detach);
-> +static DEVICE_ATTR_WO(reset);
-> +static DEVICE_ATTR_RO(list);
->  
->  static struct attribute *snd_ctl_led_card_attrs[] = {
->  	&dev_attr_attach.attr,
-> -- 
-> 2.17.1
- 
+	commit acaa34bf06e963f0b9481a3c16bfd6867e2369a0
+	Author:     Sean Young <sean@mess.org>
+	AuthorDate: Sat Oct 21 08:16:47 2017 -0400
+	Commit:     Mauro Carvalho Chehab <mchehab@kernel.org>
+	CommitDate: Thu Dec 14 09:58:20 2017 -0500
 
-Regards
+	    media: rc: implement zilog transmitter
 
-Takashi Sakamoto
+We need to double-check why linux-next is detecting it as a new one.
+
+-
+
+Linux-next should be pulling media work from those tree branches:
+
+- v4l-dvb-fixes/fixes, e. g.:
+	git://linuxtv.org/media_tree.git fixes
+- v4l-dvb/master, e. g.:
+	git://linuxtv.org/media_tree.git master
+- v4l-dvb-next/master, e. g.:
+	git://linuxtv.org/mchehab/media-next.git master
+
+In the past, I was using media-next (a.k.a. v4l-dvb-next at linux-next
+nomenclature) to solve some special cases like when I need to deal with
+patches that depends on other trees, or when I want to submit a separate
+PR for some patches.
+
+-
+
+After the last merge window, I modified my workflow in order to:
+
+1. be able of correcting problems on media patches, if pointed after
+   being merged at linux-next;
+2. keep picking patches during the merge window.
+
+The change is simple: I'm now pushing non-fixes stuff initially at
+media-next master branch. Outside the merge window, the contents of 
+this branch is identical to the contents of the media stage tree:
+
+	git://linuxtv.org/media_stage.git
+
+But I'll freeze changes there at the end of -rc6.
+
+A couple of days after media-stage is merged at linux-next
+(via media-next/linux-next tree), if no issues, I merge the
+patches back at media_tree.
+
+If something gets wrong in the mean time, I simply rebase
+media-stage, fixing the issue again and push it back to the
+media-next/linux-next tree.
+
+-
+
+Now, I can't understand why this specific patch had a trouble
+detected today, as it was this patch is already upstream:
+
+	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=acaa34bf06e9
+
+Apparently since 4.15-rc1:
+
+	$ git describe acaa34bf06e9
+	v4.15-rc1-204-gacaa34bf06e9
+
+Thanks,
+Mauro
