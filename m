@@ -2,72 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB0B38DA7E
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:26:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 976CE38DA82
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:27:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhEWI1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 04:27:37 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5522 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbhEWI1e (ORCPT
+        id S231706AbhEWI2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 04:28:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231616AbhEWI21 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 04:27:34 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fntdd06mWzkY6B;
-        Sun, 23 May 2021 16:23:17 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 16:26:06 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 16:26:05 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <luciano.coelho@intel.com>, <kvalo@codeaurora.org>,
-        <davem@davemloft.net>, <kuba@kernel.org>,
-        <gregory.greenman@intel.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH] iwlwifi: mvm: rfi: Use kmemdup() in iwl_rfi_get_freq_table()
-Date:   Sun, 23 May 2021 16:25:44 +0800
-Message-ID: <20210523082544.44068-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sun, 23 May 2021 04:28:27 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE75C061574;
+        Sun, 23 May 2021 01:27:00 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z17so25232179wrq.7;
+        Sun, 23 May 2021 01:27:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:references:from:subject:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=VnRgGyjPltivJLPVgRyKlZ0TLQYMwBTajDy9FGMry3Q=;
+        b=jB68xjHz9ASO/c4S33JI/f0mBUkkVz4exO8LO4tMg8fQ6T0A8P98Lj4xt02Nq9JeHf
+         l23O7emZlX3hEmNU+wPv6I1OklZczIn/MxuBOonIOhpf9tqztsHkWzEXkZw7bm2gNhQO
+         ZwX7bzqSmE8WJb8D7rTtubDG1RdyZRbSMReL3zUJlFjuvveF1hZTipKjzrWjFBHZHi21
+         Xnei5IaENl4ai0SNEQXzvPAEHsxAva5hYsLgSkLaJ0K5cXpzPoBW/hQANh97e1ME8qEP
+         HaKpW26BixIAo6cK0ThJrMMEpieqzkiMwSqwe/rzdOVxAloRN97HSfesV7WQV2JN18Rf
+         XmHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VnRgGyjPltivJLPVgRyKlZ0TLQYMwBTajDy9FGMry3Q=;
+        b=BP15GUWyY7zjqhKwIX3ikqmukt/qwnQ41fB+g6PAp9eVLI0F8sLHZCGc9QCfk3nsNC
+         8fG+lRYG1D7Y8SulxZXgZPhni+6vgvS43jqfr6j6gCp4K/d1urUnskhxY/3Ms/YBBi1K
+         w8omLIJVPgvj/3tgI0p41ngHbEib3xCEdv9DNvMsEgqvxvVwy89OunmIM6RAyOQp0YXL
+         +R8Na5nQfmMUh7fdV33wcyNrMZ+YZVgdTKXAuz5L4frZFfwdItaSHAbcp8HDLmhpzy20
+         7A1QQymHvnjNFdwyPpW/uN/YNUEwjoPm5XrpQjwQ0SXZs0oGPcF2U6hr579dTdlUeXmY
+         xlNw==
+X-Gm-Message-State: AOAM531/1j3CL9M6JzEZcGzYTO5vUjvn/kB4F7bGgdBqP0xlrf0ITIlt
+        okEp8UOzM4sRvQQ+hSjSYQbzT8HJBGuRPPqA
+X-Google-Smtp-Source: ABdhPJwpt/s1AZpN5Nsv8eGLZIHeDYfX0Q0/Vi13Emn/+cumSafRkq3wMqGUi8r0cLlndaNOY+7bmg==
+X-Received: by 2002:a5d:6587:: with SMTP id q7mr2374437wru.99.1621758419296;
+        Sun, 23 May 2021 01:26:59 -0700 (PDT)
+Received: from [192.168.8.197] ([185.69.145.65])
+        by smtp.gmail.com with ESMTPSA id b8sm8080533wrx.15.2021.05.23.01.26.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 May 2021 01:26:58 -0700 (PDT)
+To:     Olivier Langlois <olivier@trillion01.com>,
+        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <60a9e208.1c69fb81.1f879.b57bSMTPIN_ADDED_MISSING@mx.google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Subject: Re: [PATCH] io_uring: Delay io_wq creation to avoid unnecessary
+ creation
+Message-ID: <870d55a1-97a2-6fa2-24c1-3ac214b19bb4@gmail.com>
+Date:   Sun, 23 May 2021 09:26:51 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+In-Reply-To: <60a9e208.1c69fb81.1f879.b57bSMTPIN_ADDED_MISSING@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Issue identified with Coccinelle.
+On 5/22/21 9:16 PM, Olivier Langlois wrote:
+> Create the io_wq when we know that it is needed because the task
+> will submit sqes.
+> 
+> This eliminates a lot iou-mgr threads creation and memory allocation
+> in those 2 scenarios:
+> 
+> - A thread actually calling io_uring_enter() to submit sqes is not
+>   the same thread that has created the io_uring instance
+>   with io_uring_setup()
+> - Every use cases where no sqe submission is performed (most SQPOLL setup)
+> 
+> The benefits is less memory allocation and less context switching of
+> io-mgr threads that will never have anything useful to do and the only cost
+> is an extra condition evaluation in io_uring_enter().
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/wireless/intel/iwlwifi/mvm/rfi.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+1) there is no more io-mgr (5.13)
 
-diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-index 0b818067067c..2225c4f5b71e 100644
---- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-+++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
-@@ -107,12 +107,10 @@ struct iwl_rfi_freq_table_resp_cmd *iwl_rfi_get_freq_table(struct iwl_mvm *mvm)
- 	if (WARN_ON_ONCE(iwl_rx_packet_payload_len(cmd.resp_pkt) != resp_size))
- 		return ERR_PTR(-EIO);
- 
--	resp = kzalloc(resp_size, GFP_KERNEL);
-+	resp = kmemdup(cmd.resp_pkt->data, resp_size, GFP_KERNEL);
- 	if (!resp)
- 		return ERR_PTR(-ENOMEM);
- 
--	memcpy(resp, cmd.resp_pkt->data, resp_size);
--
- 	iwl_free_resp(&cmd);
- 	return resp;
- }
+2) you move that from what is considered slow path into a hotter
+place, that is not fine.
+
+So I wouldn't care about it
+
+> 
+> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
+> ---
+>  fs/io_uring.c | 27 +++++++++++++++++++--------
+>  1 file changed, 19 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/io_uring.c b/fs/io_uring.c
+> index 5f82954004f6..a01ae25d7c60 100644
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -7881,6 +7881,18 @@ static struct io_wq *io_init_wq_offload(struct io_ring_ctx *ctx,
+>  	return io_wq_create(concurrency, &data);
+>  }
+>  
+> +static int io_uring_alloc_wq_offload(struct io_uring_task *tctx,
+> +				     struct io_ring_ctx *ctx)
+> +{
+> +	int ret = 0;
+> +
+> +	tctx->io_wq = io_init_wq_offload(ctx);
+> +	if (IS_ERR(tctx->io_wq))
+
+will be disastrous if you don't clear tctx->io_wq
+
+> +		ret = PTR_ERR(tctx->io_wq);
+> +
+> +	return ret;
+> +}
+> +
+
 -- 
-2.17.1
-
+Pavel Begunkov
