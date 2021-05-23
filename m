@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F87C38D90C
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 06:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B38EC38D910
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 07:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231567AbhEWE6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 00:58:42 -0400
-Received: from conssluserg-04.nifty.com ([210.131.2.83]:39497 "EHLO
-        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbhEWE6l (ORCPT
+        id S231597AbhEWFJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 01:09:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231540AbhEWFJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 00:58:41 -0400
-Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174]) (authenticated)
-        by conssluserg-04.nifty.com with ESMTP id 14N4usLE007853;
-        Sun, 23 May 2021 13:56:55 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 14N4usLE007853
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621745815;
-        bh=IASU2u89nPn2zPq6/24cQQZTdqsTxV/4XCDISiD7udE=;
-        h=From:Date:Subject:To:Cc:From;
-        b=IvKJox/Nyxnp/Qi6qSCQ7IwHskJWZgGw1OdFlyOBSbN2yz2y/TSYJyjhfFPOa+FS8
-         5TEZaL1eOB2NoWC1SQ+asv7VJnH+nkIfkR3NsPkjLuQ/uX8/BCrKB0tLgaPdnA0Fxg
-         xaXJvA/mgmx56eqqWFtGoO30hD1bMqW5WUeZ6YbEb/EcnX+kW3FfAGSavMlygBeA8s
-         4oEZmdaL6IAWQgNdByccw47pShDeKb1l11cfRJ6umJjXxPx2fYcpGgaUlrM06fuQkz
-         UhHSTKqHnkhmv6p9g/mQnQb3BrRXdLRPr/M+WmLD18m2wRUfPzKIjdFKj5ytgAheFb
-         uOWsQtv7Dq3yg==
-X-Nifty-SrcIP: [209.85.215.174]
-Received: by mail-pg1-f174.google.com with SMTP id j12so17602877pgh.7;
-        Sat, 22 May 2021 21:56:55 -0700 (PDT)
-X-Gm-Message-State: AOAM5300NxSBy2HFUmNKsKFpFqbXTD6295PBUldJaLteQBtAB7V9yF3S
-        5yNkv1lT84Sz4BCrWkb39qyGQ45ZR4v432ZUXtw=
-X-Google-Smtp-Source: ABdhPJwrPEVAHEZjrKKE8UFFyeC6HbS8hrdTXqkHJRD8OTA2/FdPREagD1/CH5cYRYz42bf2PiB5ajf2EXdXKFlBki0=
-X-Received: by 2002:a62:ab14:0:b029:2db:b3d9:1709 with SMTP id
- p20-20020a62ab140000b02902dbb3d91709mr17830604pff.80.1621745814487; Sat, 22
- May 2021 21:56:54 -0700 (PDT)
-MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sun, 23 May 2021 13:56:18 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ-fcQGRFEAeQazDdi+Aq3+4FLDpuFotmMaSx0L9qAk5g@mail.gmail.com>
-Message-ID: <CAK7LNAQ-fcQGRFEAeQazDdi+Aq3+4FLDpuFotmMaSx0L9qAk5g@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.13-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Sun, 23 May 2021 01:09:00 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06577C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 22:07:33 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso9291464pjb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 22:07:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/qQb/S90UvV48ljwdF8CQVkKM31YJ8ZeoSQFCFOdl1E=;
+        b=xP1BfJ+e3CzmSr2vcUbbyXe9+W51bcA+tK4/3BOZeqmwK/UAZCCHyLoW6pVENv5roY
+         Tr5nMJnzEcFbfo3N6VUFOgxzKID/JdrYmrROZdtKkQurXDDtGPV9kzQdkZ1uZicfcWSu
+         yq3/NCvA4i1bvCINw6pV0v/U42ciJc3prkFWf+H26AJDWt+cnM7ZlOuWAhLLebRnR+FH
+         e6h9BmqUmuADtHeZdW+IVGWVdAxQRb0c2EC/61iHx+p+x4MuRf1XcxNu/hJynjrycYW2
+         5NUdMDLdIonN8K/gxLMAZbArscJRjDkPkBvKHFZ5yCqpTpEp687vPB1EMt6UxOKOJRT4
+         HHPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=/qQb/S90UvV48ljwdF8CQVkKM31YJ8ZeoSQFCFOdl1E=;
+        b=ETIKtZ+ceRiZekjy3IbgvzqPluSyfye2PiWEHuuLWow3SXWzKkq7ODU+5qWoDalb3m
+         alcBuV9b7cFcPi7UheV7xghqnIu+lE8xzL81HLMGFWgR9sUX0DfjslQGXP0mKFAVyKPN
+         2FhruaSH/y0+fthPIe0/Duyo6tLXm0o+olWtP2S8orZvwhlUrcx8UCaoBtHHSUR+yKuB
+         3n4xrL4iDUr5cbcnysEJLBc+bOMOr+xmA1Mgxn7PQx0fGZgqD+MRrOD/+q5B7jXPzRaJ
+         7I6SPwB3Rta72tvgH/adUpNIlOt6mpKGrBo6CUfk9uiDGpVXPzu6z77riXmAXLJ92FSp
+         5gPQ==
+X-Gm-Message-State: AOAM532nG6nqwDeyn+i/Ji2HU561QkZJFN+CC5yXOiPgcwNqfeNKQjbj
+        wy8VKW5Mc4ScJ5wXHFNXSoFJfA==
+X-Google-Smtp-Source: ABdhPJz+l01Gd3b4YWhwwE8NeWEK5m1FbOTtB9an0SIO4Hfo/rEryj2K8uMHFhPBGJGHU0W8pnEsyQ==
+X-Received: by 2002:a17:90a:f98c:: with SMTP id cq12mr18755231pjb.235.1621746452821;
+        Sat, 22 May 2021 22:07:32 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id 4sm8365995pgn.31.2021.05.22.22.07.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 22 May 2021 22:07:32 -0700 (PDT)
+Date:   Sat, 22 May 2021 22:07:32 -0700 (PDT)
+X-Google-Original-Date: Sat, 22 May 2021 22:05:04 PDT (-0700)
+Subject:     Re: [PATCH] riscv: kprobes: Fix build error when MMU=n
+In-Reply-To: <20210508234347.0b40b94a@xhacker>
+CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     jszhang3@mail.ustc.edu.cn
+Message-ID: <mhng-6c70b6b6-7828-403a-93f9-5814edb3e201@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+On Sat, 08 May 2021 08:43:47 PDT (-0700), jszhang3@mail.ustc.edu.cn wrote:
+> From: Jisheng Zhang <jszhang@kernel.org>
+>
+> lkp reported a randconfig failure:
+>
+> arch/riscv/kernel/probes/kprobes.c:90:22: error: use of undeclared identifier 'PAGE_KERNEL_READ_EXEC'
+>
+> We implemented the alloc_insn_page() to allocate PAGE_KERNEL_READ_EXEC
+> page for kprobes insn page for STRICT_MODULE_RWX. But if MMU=n, we
+> should fall back to the generic weak alloc_insn_page() by generic
+> kprobe subsystem.
+>
+> Fixes: cdd1b2bd358f ("riscv: kprobes: Implement alloc_insn_page()")
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  arch/riscv/kernel/probes/kprobes.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/arch/riscv/kernel/probes/kprobes.c b/arch/riscv/kernel/probes/kprobes.c
+> index 10b965c34536..15cc65ac7ca6 100644
+> --- a/arch/riscv/kernel/probes/kprobes.c
+> +++ b/arch/riscv/kernel/probes/kprobes.c
+> @@ -84,6 +84,7 @@ int __kprobes arch_prepare_kprobe(struct kprobe *p)
+>  	return 0;
+>  }
+>
+> +#ifdef CONFIG_MMU
+>  void *alloc_insn_page(void)
+>  {
+>  	return  __vmalloc_node_range(PAGE_SIZE, 1, VMALLOC_START, VMALLOC_END,
+> @@ -91,6 +92,7 @@ void *alloc_insn_page(void)
+>  				     VM_FLUSH_RESET_PERMS, NUMA_NO_NODE,
+>  				     __builtin_return_address(0));
+>  }
+> +#endif
+>
+>  /* install breakpoint in text */
+>  void __kprobes arch_arm_kprobe(struct kprobe *p)
 
-Please pull some Kbuild fixes.
-Thanks.
-
-
-The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc=
-:
-
-  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.13
-
-for you to fetch changes up to c93db682cfb213501881072a9200a48ce1dc3c3f:
-
-  kbuild: dummy-tools: adjust to stricter stackprotector check
-(2021-05-17 12:10:03 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.13
-
- - Fix short log indentation for tools builds
-
- - Fix dummy-tools to adjust to the latest stackprotector check
-
-----------------------------------------------------------------
-Jonathan Neusch=C3=A4fer (1):
-      scripts/jobserver-exec: Fix a typo ("envirnoment")
-
-Kees Cook (1):
-      tools build: Fix quiet cmd indentation
-
-Michal Kubecek (1):
-      kbuild: dummy-tools: adjust to stricter stackprotector check
-
- scripts/dummy-tools/gcc        |  6 +++++-
- scripts/jobserver-exec         |  2 +-
- tools/build/Makefile.build     | 22 +++++++++++-----------
- tools/scripts/Makefile.include | 30 +++++++++++++++---------------
- 4 files changed, 32 insertions(+), 28 deletions(-)
-
-
---=20
-Best Regards
-Masahiro Yamada
+Thanks, this is on fixes.
