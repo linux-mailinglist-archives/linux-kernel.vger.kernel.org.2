@@ -2,87 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1B8D38DAD8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 12:16:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D311638DADB
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 12:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231712AbhEWKSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 06:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54240 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231666AbhEWKSI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 06:18:08 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80FD3C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 03:16:42 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id d16so18411301pfn.12
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 03:16:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=31DBJJ1z58vC5ZTZzHfaaU4CsnbQ5Khf5YVhuvkNOlw=;
-        b=KJPgCwMvecNuHKeDYgSNhOR65AMTHaBxZm6XCRaybnfTLim4Wr4uccBaqwh7KzpNjr
-         6iCf6co+DXPndnfCWeIjvvWOSpsccWXOQ4Q3kflTaGgHvsr1lkJmTNztnwHIku2BLT7r
-         q4W3k+QjouudAn7IFo07mJWmlszydPlJkIhTmtW5JDp/A95wll92BILji8ps9wsFbnqe
-         V1py+TGIRM/hsuHu9n/Ud6hQp4DXT155JhSTl+b4hFnXxLfcb20vrdqH1Kz/C8zcTWXM
-         hwYkv7Cw9vJVPnKVeMULGRzuvy5I+GZZ0P/myyIVXEcA5tmMuX5uwfg/wivjbyfmiWUA
-         EpIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=31DBJJ1z58vC5ZTZzHfaaU4CsnbQ5Khf5YVhuvkNOlw=;
-        b=HORaE8eZ5IJJVMbppRkpYY5sid5rfwAhXAH73lLyStKO/z+/ILZNVLB/KTc5F1cuLp
-         EkW3W2v8ZP9ySI5T6KlHIpsP+hDEyKbR//oGYcjLyaTDwK515w2F8c0FwjAChJQ12oqB
-         Eag8tGVWJOG2t8M/6XhHhIbsw25P+10/LQckDxOfWv4bRyndyINqZsukVTS3eZiECnSC
-         fIgQUvR8rxKPgAu2Ne3QCqFogBAF3bjvzj8gJwvCTlqSLe100xG+2j4zXdW2jXApM5Ml
-         6XbeSIDeefyxCF2S+KI+5ZeSnOvczyOxY0/qocBLCokxFaanNsS0EhCuYlDZVAK5/5aH
-         3kbA==
-X-Gm-Message-State: AOAM532ESNuXU9cChoseZuTgSbPUT0J1uSbchPUkLW/iKCwn3G8/H7x7
-        hyR7/YeZssGJMxDWM9Hsteg=
-X-Google-Smtp-Source: ABdhPJzDAjQ057vD+ZMvxZDKeV/o4Nh427ZrMFPO0Ge/zO6FevJgYqyueq1Xi6uEts4nmY150BcQgQ==
-X-Received: by 2002:a05:6a00:706:b029:217:9e8d:f9cc with SMTP id 6-20020a056a000706b02902179e8df9ccmr19385684pfl.1.1621765001930;
-        Sun, 23 May 2021 03:16:41 -0700 (PDT)
-Received: from localhost ([52.175.62.71])
-        by smtp.gmail.com with ESMTPSA id v2sm683145pfn.179.2021.05.23.03.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 03:16:41 -0700 (PDT)
-From:   Qiujun Huang <hqjagain@gmail.com>
-To:     peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        jolsa@redhat.com, namhyung@kernel.org, linux-kernel@vger.kernel.org
-Cc:     Qiujun Huang <hqjagain@gmail.com>
-Subject: [PATCH] uprobes: Update __uprobe_register() kernel-doc comment
-Date:   Sun, 23 May 2021 10:16:35 +0000
-Message-Id: <20210523101635.142108-1-hqjagain@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S231721AbhEWKVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 06:21:50 -0400
+Received: from mail-eopbgr60080.outbound.protection.outlook.com ([40.107.6.80]:54404
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231666AbhEWKVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 06:21:45 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TuglYU27UnEoRrSXBKzZq+Zn3TgSLYcC7J/APJNMllrw8S8Y2HQaZ5oNlKZwOVx4IdnoXsDmNCiS1YiqE85s+mfEEMbRORKiVuJS63OX19RZ5C+k1cEZW/WMt0Ap7wOnLRVG+YRmRypopVTa3S7XK0Y3UAUrirGkkT7eUU3CHrlh9l5ohoffhzJ5xtdeyLtY6XANkAGx3PZqlEd/KHNxg7xQv4qOTK8V/qD1LdrO9+ZlN9ky5fL3rZASE0lcd5Ie7AehuWQwLCP2PqWW90K/JVE54bt6tnhBrTiriq9o27tP26ySTjhygjBiPbinXqz+SQc5t4dAg+BsWaXiOePniA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=osSKSHNryS1NU8gzYVYYXS0qKxwLNz8tvKjtxAqeErk=;
+ b=HD6+6H2iMD2l3bOIQEAtAK5uOE52HcURmIUP1fv/TdP8PmrLcJs2L1HoQ5xlRxY+PK7nqWJMBJvj1sMQ1OExBP/imEGshxD8b8lYa25DGi2JMrus6/njKMqyW5s4gEuObqXbfjZc7dyuNQf6Mdxk39EBuoQ7LMbFp7kcq6K3t6LbjbVf2Q3GjwFw26aA+7qKnBTcF1bZ6gEziRRMaNZLn1ahRpbLNYE3sVUKmOAkUUvnNbXVW/nS9px10kwEjAhdmRXdhhLVlfE8JJbfPiWOV5VmADdD8ONND7LuOAGjqJCGi4pTCv0F6Y58kg7QPp7F2z/+NF8R0Oo8guxmeKxMIQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=osSKSHNryS1NU8gzYVYYXS0qKxwLNz8tvKjtxAqeErk=;
+ b=CIubixYUn+eCsuQsM3z0DCEkF54TWLVtGmNICKUoE6kgrdpCV8JnXEI3CuN+njlM2l6N617AFndEXPkR93bvfAfSGTqbhWG8de5+gHG58CX+VzTIFUvqvKo7kVWMugwfan8G+v6ERv1XbEN4t/2cTYt39OEAStfcwcXcDXmrrx4=
+Authentication-Results: davemloft.net; dkim=none (message not signed)
+ header.d=none;davemloft.net; dmarc=none action=none header.from=nxp.com;
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com (2603:10a6:10:fa::15)
+ by DB8PR04MB5788.eurprd04.prod.outlook.com (2603:10a6:10:b1::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Sun, 23 May
+ 2021 10:20:17 +0000
+Received: from DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf]) by DB8PR04MB6795.eurprd04.prod.outlook.com
+ ([fe80::3400:b139:f681:c8cf%9]) with mapi id 15.20.4150.027; Sun, 23 May 2021
+ 10:20:17 +0000
+From:   Joakim Zhang <qiangqing.zhang@nxp.com>
+To:     davem@davemloft.net, kuba@kernel.org, frieder.schrempf@kontron.de
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [RFC net-next 0/2] net: fec: fix TX bandwidth fluctuations
+Date:   Sun, 23 May 2021 18:20:17 +0800
+Message-Id: <20210523102019.29440-1-qiangqing.zhang@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR02CA0053.apcprd02.prod.outlook.com
+ (2603:1096:4:54::17) To DB8PR04MB6795.eurprd04.prod.outlook.com
+ (2603:10a6:10:fa::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.71) by SG2PR02CA0053.apcprd02.prod.outlook.com (2603:1096:4:54::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend Transport; Sun, 23 May 2021 10:20:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: e496c662-5fae-417d-390a-08d91dd45c21
+X-MS-TrafficTypeDiagnostic: DB8PR04MB5788:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB578813A7F366DDDB67BD536DE6279@DB8PR04MB5788.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2449;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Woa6y5KfyEV9cwU8TngVlOwsQXHXFVYLjoyfb+9+9yb3Isrtub6M014Jh4XKEjdJ4MS97AKw3+asUN7IHq+obdwSKywlbJdfU3PFo40VIt085+iuwLuQr0KU83R8jGlJLsJy4kIpIbnZa3o3MxIsUTYKDilNu9kAlwEVer25zgN7FazGJ7UWNVQykLuD56YUzkwKdFJwa12zrfBVAI+ksYlwzHjn0xbP5Of9W9geK/SO/8jfbByTKc3/luiTBTAOYlp1VYnKk32CpPVenlPbt0gnwrDe3g61h6qzd8nKgh/lt1gg4BW3CrOJEahSbh8U2IVuwLgBbJpuJceWNm6ROXrO9rzNI3rTVg0akv7SPl1GI6B91+kD3dk3o494LGLtmQLGq1YhO6pAfvimaUr4ycA6VGq1ufJBw1mOu5BcAGbxVObUk6dtg4LR2sgPP1Ok8lE43/GbokFqwugMMQAE8/bdiHleGHKucR9AzeE8QJaL4org1a+w3F6RPAYvU0uXYjYCXCv93gTCUwiJC5fDlZyhNxr6gVKW5GehRaut6YFeiAIhDz/ylvdy7pwj2VDzcs0rfWZlYvN9FBMB4JtDb4/wFC5fOuwfz+UYSfgmfOIWD9A72PtroIdqxsSbSdQhYUlo9sqczsbH7bw0+r7Tt0ylSUhmK2sBP9ZB69lPodCf6qmQ80x3By5GJLJoBSHm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR04MB6795.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(376002)(136003)(366004)(346002)(52116002)(8676002)(83380400001)(478600001)(316002)(86362001)(6486002)(66946007)(38100700002)(38350700002)(4326008)(66476007)(6512007)(16526019)(186003)(4744005)(2616005)(36756003)(2906002)(6506007)(66556008)(8936002)(26005)(1076003)(956004)(5660300002)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?r/6UnhiE1vo6VnC+Zx/3xfd54ZKIoASbEcHYup7ORASlihMZBLhU+EXVrMSF?=
+ =?us-ascii?Q?bHXQOwFD/4cS1Hhh5ObfNmGDYLMzqDz8gzZ0GtwMK3Hcy2NN2v2wgc0DZ0MV?=
+ =?us-ascii?Q?ArYk/zO2fAXEI9Ab6/ObuEn//mOhUQq8iQ8LyV7ZJFuT/xJNv7EQ/ut4pT+2?=
+ =?us-ascii?Q?i2ZlkwicFmAhlRZzVnadlGJrh/khGlRQfUP6udBYv5EHYKSBbrYgxZymTvcD?=
+ =?us-ascii?Q?CR98dDrmqYUhhcDI0/tCfA2ACffIIo2UzM+tqH/7ms8cZ6pRlOIyOCGwN4ts?=
+ =?us-ascii?Q?Uv8h/l3o2GEwg589I2VpU/dM6cJC2ETte74wguAuC0KJlxblGrYLj26Hs3JC?=
+ =?us-ascii?Q?O5z1jehYm9eEn8xyxUrmXuEiRRc3wg59+0E2NBdsh1ZtvIIoYmN5ZmI/cdFT?=
+ =?us-ascii?Q?dk+27pUU/by5CjPMmkYB8SrIyZE93dMIDfi979NXMm6l+BI7g30mhxsV2pRo?=
+ =?us-ascii?Q?4CJnahLrAkqEOB9v66IjVORPSRzvLqs2mQ1TBnlIXAGfC79GucFhkF7C+Q3k?=
+ =?us-ascii?Q?iUCKtb7AQLku7pPOpjm8LIcsofoidNxzqlhcDYW9oZBEinmcWsVyoNlz7742?=
+ =?us-ascii?Q?XMSvj5mfAZPWj2QMbbH6xEMc5GWAH9/kxWxVyCXT/fdR2t1lKnyrGO6l4IXg?=
+ =?us-ascii?Q?CRa7c70ZIe02QV1nhLkgmt3+vCeOFkE6ypljc5fQ8s9mr14ZD/Y8yDyOpq5A?=
+ =?us-ascii?Q?6IsPA4qlfxOxf/D2R801xFDTh4TlvQ68iM4wMga39KzgY9dzUxwDn/m+MNwD?=
+ =?us-ascii?Q?XKs4sipm7JKMf8NmAPjMQypeINLeRDgDBNmWawnB3osoOPdo+yKNLW/RlioW?=
+ =?us-ascii?Q?8SQ791IuZ2bq3wErzAY7hXZlWkGyTl2xneT7VxWICjiVbW2qtfwQCXv/wSP1?=
+ =?us-ascii?Q?6vd12I7SBcSFs5xViOtHl5BlY59MgFQkGBTeZV28r8x6QFPJMzCzjmum9asI?=
+ =?us-ascii?Q?hPvfMgKNcuYYiz8EhF+6zKaAA7zru9nqyhuT+pjubR2iNbEo43Az6Np2xfAc?=
+ =?us-ascii?Q?NTF1yZwqOhqREp4gObPbbwlU0f066U/fYEl5CQDyAJ35BuzDV3tt0Tu7/JA9?=
+ =?us-ascii?Q?MVrALofJzggeSdtYpU7YcjQtN4h/DgBZIEgC/rivo6/0hxkaMJp5W8Re1JlM?=
+ =?us-ascii?Q?G0mVLzYfEtEDOekxgr3/DCUA+lOJ2rcF5XWE7w5cKbAmOtGEm8FIbJstPh42?=
+ =?us-ascii?Q?adBwxFkGPfEQZwcYl1/D79I7uZ/0o1Rr6vpzI3g7jE8pVGDvONVqTJlRUEEL?=
+ =?us-ascii?Q?Kl3PVyJTTXmrHJDMy7LcbVvF25OzfxFV3pLjC86+r2TnMpMbHAIRf9xmrpna?=
+ =?us-ascii?Q?BNKtRewfJbcjRpgbTGKmwUEv?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e496c662-5fae-417d-390a-08d91dd45c21
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR04MB6795.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2021 10:20:16.9223
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: oOx75b/2DMYaSkD6Vqj1zJ8u+CxPKFZihrSeLtmqlUgpw2P8YtGkZTsFROqWdVuFT4x1zuCIWWnqI6adLwHK/g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB5788
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 1cc33161a83d ("uprobes: Support SDT markers having reference
-count (semaphore)") added the parameter @ref_ctr_offset.
+This patch set intends to fix TX bandwidth fluctuations, this is a RFC,
+any feedback would be appreciated.
 
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
----
- kernel/events/uprobes.c | 1 +
- 1 file changed, 1 insertion(+)
+Fugang Duan (1):
+  net: fec: add ndo_select_queue to fix TX bandwidth fluctuations
 
-diff --git a/kernel/events/uprobes.c b/kernel/events/uprobes.c
-index 6addc9780319..3f02850d903e 100644
---- a/kernel/events/uprobes.c
-+++ b/kernel/events/uprobes.c
-@@ -1123,6 +1123,7 @@ EXPORT_SYMBOL_GPL(uprobe_unregister);
-  * __uprobe_register - register a probe
-  * @inode: the file in which the probe has to be placed.
-  * @offset: offset from the start of the file.
-+ * @ref_ctr_offset: reference counter offset from the start of the file.
-  * @uc: information on howto handle the probe..
-  *
-  * Apart from the access refcount, __uprobe_register() takes a creation
+Joakim Zhang (1):
+  net: fec: add FEC_QUIRK_HAS_MULTI_QUEUES represents i.MX6SX ENET IP
+
+ drivers/net/ethernet/freescale/fec.h      |  5 +++
+ drivers/net/ethernet/freescale/fec_main.c | 43 ++++++++++++++++++++---
+ 2 files changed, 43 insertions(+), 5 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
