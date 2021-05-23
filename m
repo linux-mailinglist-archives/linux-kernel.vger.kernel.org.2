@@ -2,70 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CA8038DD44
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 23:26:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE10038DD4B
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 23:28:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231981AbhEWV1a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 17:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58880 "EHLO
+        id S231994AbhEWVaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 17:30:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231956AbhEWV10 (ORCPT
+        with ESMTP id S231972AbhEWVaU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 17:27:26 -0400
-Received: from relay07.th.seeweb.it (relay07.th.seeweb.it [IPv6:2001:4b7a:2000:18::168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A2F9C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 14:26:00 -0700 (PDT)
-Received: from TimeMachine.localdomain (bband-dyn255.178-41-232.t-com.sk [178.41.232.255])
-        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 50B0F3E8D8;
-        Sun, 23 May 2021 23:25:58 +0200 (CEST)
-From:   Martin Botka <martin.botka@somainline.org>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        konrad.dybcio@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org,
-        Martin Botka <martin.botka@somainline.org>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jordan@cosmicpenguin.net>,
-        Rob Clark <robdclark@chromium.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V2] iommu: arm-smmu-qcom: Add sm6125 compatible
-Date:   Sun, 23 May 2021 23:25:33 +0200
-Message-Id: <20210523212535.740979-1-martin.botka@somainline.org>
-X-Mailer: git-send-email 2.31.1
+        Sun, 23 May 2021 17:30:20 -0400
+Received: from polaris.svanheule.net (polaris.svanheule.net [IPv6:2a00:c98:2060:a004:1::200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DC68C061756
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 14:28:51 -0700 (PDT)
+Received: from [IPv6:2a02:a03f:eafb:ee01:bd37:7535:eb00:6fa] (unknown [IPv6:2a02:a03f:eafb:ee01:bd37:7535:eb00:6fa])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 48C21202A02;
+        Sun, 23 May 2021 23:28:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621805329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=n4ZTw0oX1Qb/PM15yNceteoKKKcaxzCq0OAqV4YPumc=;
+        b=rNFczBjN2pCjDaiplutlYK2uaqFaPPedayWFP/qwU3DBKX+jBscixIDMnPTTtshdWyBU6x
+        jcipXmMgfmv35DldYStUeHTo+0N6s0ZAEsgPrx166JW0as3e0ENc/fXyaciFcHCwKAOCDY
+        YDhdV+zcFksTmEbge1CVM0+ByLhPutzM5dmOkuRoRdKQY8d0N/+DAcwRWRlIOI2pmmAF0Y
+        9KsDYtV/x6rgZtkNGZbcUz2iDu0Pj/H3yxD62Yjv5TDN2VraOHHlOMYw+iOgvcSPgpaVSA
+        29r80oxkCrX/GZwfkTTlFhBZnCE7qb3Fl6HWhpLLa+6G1th2n8tsmlzqtQfFpg==
+Message-ID: <7b5235057380d5997d8f91e70bc8782137c726e1.camel@svanheule.net>
+Subject: Re: [PATCH v2 5/7] mfd: Add RTL8231 core device
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Date:   Sun, 23 May 2021 23:28:48 +0200
+In-Reply-To: <CAHp75Vc5a4PsHsJ2sNsRNT7BaBJ=Kxb+KKM7x7jWeRdOS8WfnQ@mail.gmail.com>
+References: <cover.1621279162.git.sander@svanheule.net>
+         <f1ca940216c0accfc804afee2dbe46d260d890ae.1621279162.git.sander@svanheule.net>
+         <CAHp75Vc5a4PsHsJ2sNsRNT7BaBJ=Kxb+KKM7x7jWeRdOS8WfnQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add compatible for SM6125 SoC
+Hi Andy,
 
-Signed-off-by: Martin Botka <martin.botka@somainline.org>
----
-Changes in V2:
-Add commit description
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 1 +
- 1 file changed, 1 insertion(+)
+I've implemented the minor remarks (redundant assignments, if/else code
+structure...). Some extra details below.
 
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 98b3a1c2a181..7455bcc92f43 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -333,6 +333,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
- 	{ .compatible = "qcom,sc8180x-smmu-500" },
- 	{ .compatible = "qcom,sdm630-smmu-v2" },
- 	{ .compatible = "qcom,sdm845-smmu-500" },
-+	{ .compatible = "qcom,sm6125-smmu-500" },
- 	{ .compatible = "qcom,sm8150-smmu-500" },
- 	{ .compatible = "qcom,sm8250-smmu-500" },
- 	{ .compatible = "qcom,sm8350-smmu-500" },
--- 
-2.31.1
+On Tue, 2021-05-18 at 00:18 +0300, Andy Shevchenko wrote:
+> On Mon, May 17, 2021 at 10:28 PM Sander Vanheule <sander@svanheule.net> wrote:
+> > 
+> > The RTL8231 is implemented as an MDIO device, and provides a regmap
+> > interface for register access by the core and child devices.
+> > 
+> > The chip can also be a device on an SMI bus, an I2C-like bus by Realtek.
+> > Since kernel support for SMI is limited, and no real-world SMI
+> > implementations have been encountered for this device, this is currently
+> > unimplemented. The use of the regmap interface should make any future
+> > support relatively straightforward.
+> > 
+> > After reset, all pins are muxed to GPIO inputs before the pin drivers
+> > are enabled. This is done to prevent accidental system resets, when a
+> > pin is connected to the parent SoC's reset line.
+> 
+> > [missing MDIO_BUS dependency, provided via REGMAP_MDIO]
+> > Reported-by: kernel test robot <lkp@intel.com>
+> 
+> What is the culprit? Shouldn't this have a Fixes tag?
+
+But it doesn't actually fix an issue created by an existing commit, just
+something that was wrong in the first version of the patch.  This patch is not
+dedicated to fixing that single issue though, it's just a part of it. Hence the
+note above the Reported-by tag.
+
+> > 
+> > +       mdiodev->reset_gpio = gpiod_get_optional(dev, "reset",
+> > GPIOD_OUT_LOW);
+> > +       device_property_read_u32(dev, "reset-assert-delay", &mdiodev-
+> > >reset_assert_delay);
+> > +       device_property_read_u32(dev, "reset-deassert-delay", &mdiodev-
+> > >reset_deassert_delay);
+> > +
+> > +       err = rtl8231_init(dev, map);
+> > +       if (err)
+> 
+> Resource leakage.
+
+Replaced gpiod_get_optional by devm_gpiod_get_optional.
+
+> 
+> > +               return err;
+> > +
+> > +       /* LED_START enables power to output pins, and starts the LED engine
+> > */
+> > +       regmap_field_write(led_start, 1);
+> 
+> > +       return devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, rtl8231_cells,
+> > +               ARRAY_SIZE(rtl8231_cells), NULL, 0, NULL);
+> 
+> Ditto.
+> 
+> > +}
+> 
+> ...
+> 
+> > +#ifdef CONFIG_PM
+> 
+> Replace this with __maybe_unused attribute.
+
+Done. I've also used a few extra macros from PM header to clean this part up a
+bit more.
+
+
+
+Best,
+Sander
 
