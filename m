@@ -2,140 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C55438DCD7
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 22:30:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4A8938DCEA
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 22:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231968AbhEWUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 16:32:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231933AbhEWUcD (ORCPT
+        id S231983AbhEWUk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 16:40:29 -0400
+Received: from relay01.th.seeweb.it ([5.144.164.162]:50069 "EHLO
+        relay01.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232031AbhEWUk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 16:32:03 -0400
-Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F255C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 13:30:36 -0700 (PDT)
-Received: by mail-qk1-x72a.google.com with SMTP id h20so9670333qko.11
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 13:30:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=KZOdzKpdCtx3J5Gdt5i125p00DG3gg5/FCu81JRadSM=;
-        b=ZpkzlRp9fR8BmOo7PQQYa0rtdoJxcSKqQZ6aY+UTojxFQ2hkUCXe3DhTKZOAGgF6wl
-         PZcrArPr1WA/kpgkk5VMtVIGcHQD4AhSUW4FwDm+r2ZdyYwQaldksO1ylsZ6cG6nLb0E
-         OQ4Jxv720k2K2hsjKehnPw6BOmfCzl8/9uqsFWAMcaV2QPsEc2CTvzG7ESoONZF7DYEA
-         u4toE725mdKSzhwnd5NZtI7HJ1mqNiujILSiUe+9uSEN81LQ6ZcPJy2bJ+IUgmt/4oKk
-         ktJWp9bMmsXSW2G5ZK1iKj+zoVnCnALFUCvMpp1/Xl1/EC5jFdoDrr357TvlB4qXynu9
-         Neow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=KZOdzKpdCtx3J5Gdt5i125p00DG3gg5/FCu81JRadSM=;
-        b=DZ7/ZyqZ5DJx0bjo3qwd+8fM63Lu/rIjbDHcpgpCDiC47expydYo5WHFjhu1glXdFB
-         uNNoNMy0hoj+qJllZJjRfXl2GDy+CUjlpdd2441tJOrTcjYlDNoHazkQLI5V8MndPJ8D
-         K+6hsbZd8b2mNahzBOuq5Pl6LMPGBC1Wv+Vi1oU965khV7Hh6xUCcLszfVeVCYhb3gXE
-         3Sod2cJcfhn0VhUZ7fjGEnB5qL1zHd+SsvNv9+hT3QnAMAF64m7JE5FDwKfRhg5spj9V
-         PjvEEiRV5pN3SAkSTbeb9zHCuKPruCmQ4cZWCFMIWyirtdXLDyGY4JTTjh83buNlfIuv
-         Yksg==
-X-Gm-Message-State: AOAM533fV0Doehpd8mkpGB+YD4LmLEeq0vuwknUP6MrdWQlAbUUz2fzM
-        bZEzRAH07kM1++0gBnNC7N0vXg==
-X-Google-Smtp-Source: ABdhPJy8dX5Bcn1EEtnagXs/TxB+Mq7MohucQW4+wTbkV3a0W9CV8bHRrAGTneqdz22FTFP4/F8EKw==
-X-Received: by 2002:a37:a9d1:: with SMTP id s200mr24592539qke.64.1621801834776;
-        Sun, 23 May 2021 13:30:34 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id 42sm8779883qtf.37.2021.05.23.13.30.33
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sun, 23 May 2021 13:30:34 -0700 (PDT)
-Date:   Sun, 23 May 2021 13:30:22 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Peter Zijlstra <peterz@infradead.org>
-cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Hugh Dickins <hughd@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: config SCHED_CORE
-In-Reply-To: <YKo1AOIIsZectSQt@hirez.programming.kicks-ass.net>
-Message-ID: <alpine.LSU.2.11.2105231252070.29171@eggly.anvils>
-References: <alpine.LSU.2.11.2105201954180.6100@eggly.anvils> <YKdm69K8k/ztd6BM@hirez.programming.kicks-ass.net> <CAEXW_YRxOqQCF2FgXAjL3xkZhRD4rdFuxvyPd-ESXYQQ78cyfQ@mail.gmail.com> <YKo1AOIIsZectSQt@hirez.programming.kicks-ass.net>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        Sun, 23 May 2021 16:40:27 -0400
+Received: from TimeMachine.localdomain (bband-dyn255.178-41-232.t-com.sk [178.41.232.255])
+        by m-r1.th.seeweb.it (Postfix) with ESMTPA id 2B9421F6AF;
+        Sun, 23 May 2021 22:32:09 +0200 (CEST)
+From:   Martin Botka <martin.botka@somainline.org>
+Cc:     ~postmarketos/upstreaming@lists.sr.ht,
+        konrad.dybcio@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org,
+        Martin Botka <martin.botka@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 01/2] dt-bindings: clk: qcom: gcc-sm6125: Document SM6125 GCC driver
+Date:   Sun, 23 May 2021 22:31:59 +0200
+Message-Id: <20210523203202.691900-1-martin.botka@somainline.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 23 May 2021, Peter Zijlstra wrote:
-> On Fri, May 21, 2021 at 07:57:35AM -0400, Joel Fernandes wrote:
-> > On Fri, May 21, 2021 at 3:53 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > +       help
-> > > +         This option enables Core scheduling, a means of coordinated task
-> > > +         selection across SMT siblings with the express purpose of creating a
-> > > +         Core wide privilidge boundary. When enabled -- see prctl(PR_SCHED_CORE)
-> > > +         -- task selection will ensure all SMT siblings will execute a task
-> > > +         from the same 'core group', forcing idle when no matching task is found.
-> > > +
-> > > +         This provides means of mitigation against a number of SMT side-channels;
-> > > +         but is, on its own, insufficient to mitigate all known side-channels.
-> > > +         Notable: the MDS class of attacks require more.
-> > > +
-> > > +         Default enabled for anything that has SCHED_SMT, when unused there should
-> > > +         be no impact on performance.
-> > 
-> > This description sort of makes it sound like security is the only
-> > usecase. Perhaps we can also add here that core-scheduling can help
-> > performance of workloads where hyperthreading is undesired, such as
-> > when VM providers don't want to share hyperthreads.
-> 
-> Something like so then?
+Signed-off-by: Martin Botka <martin.botka@somainline.org>
+---
+ .../bindings/clock/qcom,gcc-sm6125.yaml       | 72 +++++++++++++++++++
+ 1 file changed, 72 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
 
-Much more helpful, thanks. And I agree that you have to keep it fairly
-brief here: I think you've struck the right balance.  Some nits below.
+diff --git a/Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml b/Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
+new file mode 100644
+index 000000000000..f7198370a1b9
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/qcom,gcc-sm6125.yaml
+@@ -0,0 +1,72 @@
++# SPDX-License-Identifier: GPL-2.0-only
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/qcom,gcc-sm6125.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm Global Clock & Reset Controller Binding for SM6125
++
++maintainers:
++  - Konrad Dybcio <konrad.dybcio@somainline.org>
++
++description: |
++  Qualcomm global clock control module which supports the clocks, resets and
++  power domains on SM6125.
++
++  See also:
++  - dt-bindings/clock/qcom,gcc-sm6125.h
++
++properties:
++  compatible:
++    const: qcom,gcc-sm6125
++
++  clocks:
++    items:
++      - description: Board XO source
++      - description: Sleep clock source
++
++  clock-names:
++    items:
++      - const: bi_tcxo
++      - const: sleep_clk
++
++  '#clock-cells':
++    const: 1
++
++  '#reset-cells':
++    const: 1
++
++  '#power-domain-cells':
++    const: 1
++
++  reg:
++    maxItems: 1
++
++  protected-clocks:
++    description:
++      Protected clock specifier list as per common clock binding.
++
++required:
++  - compatible
++  - clocks
++  - clock-names
++  - reg
++  - '#clock-cells'
++  - '#reset-cells'
++  - '#power-domain-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,rpmh.h>
++    clock-controller@1400000 {
++    compatible = "qcom,gcc-sm6125";
++      reg = <0x01400000 0x1f0000>;
++      #clock-cells = <1>;
++      #reset-cells = <1>;
++      #power-domain-cells = <1>;
++      clock-names = "bi_tcxo", "sleep_clk";
++      clocks = <&rpmcc RPM_SMD_XO_CLK_SRC>, <&sleep_clk>;
++    };
++...
+-- 
+2.31.1
 
-> 
-> ---
->  kernel/Kconfig.preempt | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
-> 
-> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
-> index ea1e3331c0ba..cd497fecfd43 100644
-> --- a/kernel/Kconfig.preempt
-> +++ b/kernel/Kconfig.preempt
-> @@ -104,4 +104,18 @@ config SCHED_CORE
->  	bool "Core Scheduling for SMT"
->  	default y
->  	depends on SCHED_SMT
-> +	help
-> +	  This option enables Core scheduling, a means of coordinated task
-
-Maybe s/scheduling/Scheduling/ to match the title?
-
-I think I got the picture once I reached the end, but was confused here
-by the stages of enablement.  s/This option enables/This option permits/
-would be clearer, I think.
-
-
-> +	  selection across SMT siblings. When enabled -- see
-> +	  prctl(PR_SCHED_CORE) -- task selection will ensure all SMT siblings
-
-s/will ensure/ensures that/ (it felt like too many "will"s before)
-
-> +	  will execute a task from the same 'core group', forcing idle when no
-> +	  matching task is found.
-> +
-> +	  Use of this feature includes:
-> +	   - mitigation of some (not all) SMT side channels;
-> +	   - limiting SMT interference to improve determinism and/or performance.
-> +
-> +	  Default enabled for anything that has SCHED_SMT, when unused there
-
-"SCHED_CORE is default enabled when SCHED_SMT is enabled - when unused there"
-would be better.
-
-> +	  should be no impact on performance.
-> +
-
-Thanks,
-Hugh
