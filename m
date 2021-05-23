@@ -2,102 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA61238DBB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 17:55:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 585EE38DBBB
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 17:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhEWP4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 11:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43300 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbhEWP4i (ORCPT
+        id S231840AbhEWP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 11:59:45 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30235 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231789AbhEWP7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 11:56:38 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C58EDC061574;
-        Sun, 23 May 2021 08:55:10 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id g6-20020a17090adac6b029015d1a9a6f1aso9096110pjx.1;
-        Sun, 23 May 2021 08:55:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=t+5MkSu3mBujA43uLcDMuoMOmhHFHE8pqCUwk/bfBbw=;
-        b=pkjEnWmAi03pTeN80ISyMF+PIXn5yZCMmRgnQlFlGSgYrGv9ap+xVRgNgqlKeIGUiA
-         yhIlS7CqZ2RX0Tjxs9tKM2SWJ/VgMobRDo8mlrHl3XdBraGztQ3wWohsTMCy8o8csugB
-         mcRisMGsUadeMhs6+s2o16YK/XOA9/dF11Q7goP4MlBVgXVFhXGZ/oMIJrrTkPI0k3AZ
-         Us5SfCs5QaBODuzVKdW4//edxj7MSW0gLUBXTUQo4sIDfEBMilhJ88aGHoN6ZXVk88rI
-         XpUMkPQTaITuKv5OjjBCGWgjRlydlIBv6LEKugL13HYpuV5ffC7tOBHTrwx3Vf3CSmg7
-         +03w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=t+5MkSu3mBujA43uLcDMuoMOmhHFHE8pqCUwk/bfBbw=;
-        b=FJo0v2ieTrXbqkiVFkjOt+cRgdHSG1b12x8mRXqHhLCA3nVf+17KNgSYHVH3sgEPPw
-         vOY+pVEG/Y1KBKxHfAxeTKjWDcjDTouDczqZtYEhCEiZkwGMTeoSystUUOT/mhYQgDn7
-         qkzf+aHrr/wa+r5pBHtC3gwJ3+jmlB5OJqikN0Aa1rOf93kdNwFqNbHRIoNNzkzCOFu2
-         h0OyiiK2PnLv4d7sPMjYxzSuNMCqYsLzIxxgkuCapDxMTH/PxcHcRmMCiPYQC0teLpom
-         zSqjTi5bx8bmWSEULUZRC9RPNkljVYmnlcOtb49ZOklJcun1sOWtLeky2G5FXISJwVZE
-         XZ/w==
-X-Gm-Message-State: AOAM530AbdY8djqN24nLep5aM94DLnC+DveFkxJkoeJFkAgpPz4x8MSu
-        PlbH8h2Ow3m0rZHlY1qA/RLb5x/68+P41Q==
-X-Google-Smtp-Source: ABdhPJxofMG7N5YCl9euGVoi329vElZrUp4omztwpNnFw2mVD8csoQUj2tvn9D3c/f6KJtdi3tx96w==
-X-Received: by 2002:a17:902:c9c3:b029:f6:3f15:e8d8 with SMTP id q3-20020a170902c9c3b02900f63f15e8d8mr17668705pld.71.1621785310347;
-        Sun, 23 May 2021 08:55:10 -0700 (PDT)
-Received: from [192.168.1.67] (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
-        by smtp.gmail.com with ESMTPSA id o7sm9949609pgs.45.2021.05.23.08.55.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 May 2021 08:55:09 -0700 (PDT)
-Subject: Re: [PATCH net v2] net: dsa: mt7530: fix VLAN traffic leaks
-To:     DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Frank Wunderlich <frank-w@public-files.de>
-References: <20210523144809.655056-1-dqfext@gmail.com>
- <20210523145154.655325-1-dqfext@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <385fe766-0886-e96d-3e2b-fc2c346685a6@gmail.com>
-Date:   Sun, 23 May 2021 08:55:07 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.10.2
+        Sun, 23 May 2021 11:59:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621785497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KwQGgcSmB7dG/47GYIT4VaAOEmDWh3RBmeIzEPIXRbU=;
+        b=aC4dEqPj0x7Dv9ailkuT95kZkLFHnH/3n3auKSDQGrPppz67qXSTYQr3WBAlPPcJa64YKj
+        Jfxq2jdm8CfmxeEh4tf2y5tHgTH6NNwGiMIxOSfWFWTJ3xiXJS6T441UX5eIo5dSS61sTv
+        YtPCWFdF+kj+DgNDE6yiwrHa9FhD6xc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-293-uI7KKo-9OsOViaBlYXoOFA-1; Sun, 23 May 2021 11:58:15 -0400
+X-MC-Unique: uI7KKo-9OsOViaBlYXoOFA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C8BD501E0;
+        Sun, 23 May 2021 15:58:13 +0000 (UTC)
+Received: from krava (unknown [10.40.192.56])
+        by smtp.corp.redhat.com (Postfix) with SMTP id D97D910074E0;
+        Sun, 23 May 2021 15:58:11 +0000 (UTC)
+Date:   Sun, 23 May 2021 17:58:10 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Denys Zagorui <dzagorui@cisco.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, namhyung@kernel.org
+Subject: Re: [PATCH v6 2/3] perf tests: avoid storing an absolute path in
+ perf binary
+Message-ID: <YKp7km95KCUhykig@krava>
+References: <20210521172753.55399-1-dzagorui@cisco.com>
+ <20210521172753.55399-2-dzagorui@cisco.com>
 MIME-Version: 1.0
-In-Reply-To: <20210523145154.655325-1-dqfext@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210521172753.55399-2-dzagorui@cisco.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 21, 2021 at 10:27:52AM -0700, Denys Zagorui wrote:
 
+SNIP
 
-On 5/23/2021 7:51 AM, DENG Qingfang wrote:
-> PCR_MATRIX field was set to all 1's when VLAN filtering is enabled, but
-> was not reset when it is disabled, which may cause traffic leaks:
-> 
-> 	ip link add br0 type bridge vlan_filtering 1
-> 	ip link add br1 type bridge vlan_filtering 1
-> 	ip link set swp0 master br0
-> 	ip link set swp1 master br1
-> 	ip link set br0 type bridge vlan_filtering 0
-> 	ip link set br1 type bridge vlan_filtering 0
-> 	# traffic in br0 and br1 will start leaking to each other
-> 
-> As port_bridge_{add,del} have set up PCR_MATRIX properly, remove the
-> PCR_MATRIX write from mt7530_port_set_vlan_aware.
-> 
-> Fixes: 83163f7dca56 ("net: dsa: mediatek: add VLAN support for MT7530")
-> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+>  	free(cmd);
+> +out:
+> +	free(pythonpath);
+>  	return ret;
+>  }
+> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+> index 3bba74e431ed..53f3dbf02f58 100644
+> --- a/tools/perf/util/util.c
+> +++ b/tools/perf/util/util.c
+> @@ -22,6 +22,7 @@
+>  #include "cap.h"
+>  #include "strlist.h"
+>  #include "string2.h"
+> +#include <libgen.h>
+>  
+>  /*
+>   * XXX We need to find a better place for these things...
+> @@ -388,3 +389,14 @@ char *perf_exe(char *buf, int len)
+>  	}
+>  	return strcpy(buf, "perf");
+>  }
+> +
+> +char *perf_exe_path(void)
+> +{
+> +	char buf[PATH_MAX];
+> +	char *dname;
+> +
+> +	perf_exe(buf, PATH_MAX);
+> +	dname = dirname(buf);
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+I think this is equally bad.. once you get out of perf_exe_path,
+dname might be screwed
+
+> +
+> +	return dname;
+
+just return strdup(dname) in here?
+
+jirka
+
