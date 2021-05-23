@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DE038DA27
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:18:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F5938DA39
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:21:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231660AbhEWIUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 04:20:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40204 "EHLO mail.kernel.org"
+        id S231698AbhEWIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 04:22:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhEWIUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 04:20:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AB4961168;
-        Sun, 23 May 2021 08:18:47 +0000 (UTC)
+        id S231599AbhEWIWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 04:22:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF82C61263;
+        Sun, 23 May 2021 08:21:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621757928;
-        bh=U0YAvZaLR8WDB/++plZoqCKo3gtUlnYXHKAqLTt8gr8=;
+        s=korg; t=1621758074;
+        bh=MICF+Uu1HkhetRxQCscJNaBrHSc35hE+tXwnn6k6VUE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oPc0pz0dEPacRLTt9eTBIWButqRYE/XQ+Jy1WcfgbyZgnRYks466piY9L5/bR52ca
-         9aXd7M4YiLY3Kqs8xRoBZOX/3BZugaXSjcXKvDS1gWuHbJgppKflry2/6cqDsLRqEU
-         Ji7yLOOTjyrg4dX+q2G94vmxfyVBi5Q22MQ+UtEs=
-Date:   Sun, 23 May 2021 10:18:44 +0200
+        b=BxQGlTsr5rBXr9k0Gh1xiDMJaKVu8hEpBcU8BD75BH1RlSMLE5q/MOipnZP80e3S3
+         ZA3H/dO78sbvmjI/DZxaUPTPHLc5yrVGjiyxI3dIh1NlDue3adN5ruhgORXE+qYoSD
+         iXLMxUIrvdCuVo+I9ACpjjz7Qd9cuVeSacORuac8=
+Date:   Sun, 23 May 2021 10:21:10 +0200
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH 1/1] MAINTAINERS: TTY LAYER: add some
- ./include/linux/ header files
-Message-ID: <YKoP5BHxXnww8d6k@kroah.com>
-References: <20210518052117.14819-1-lukas.bulwahn@gmail.com>
- <20210518052117.14819-2-lukas.bulwahn@gmail.com>
- <69da627e-91c5-66f0-c0c9-75fbaaba6782@kernel.org>
- <CAKXUXMw21Up0WhSX0V=h5oYcw-ocLT0Bv=tUaekA1beoo6u+aA@mail.gmail.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Francois Gervais <fgervais@distech-controls.com>,
+        linux-rtc@vger.kernel.org,
+        Michael McCormick <michael.mccormick@enatel.net>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] rtc: pcf85063: fallback to parent of_node
+Message-ID: <YKoQds5N0dP2Gjg5@kroah.com>
+References: <20210310211026.27299-1-fgervais@distech-controls.com>
+ <161861118020.865088.6364463756780633947.b4-ty@bootlin.com>
+ <20210522153636.ymyyq4vtzz2dq5k2@pengutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKXUXMw21Up0WhSX0V=h5oYcw-ocLT0Bv=tUaekA1beoo6u+aA@mail.gmail.com>
+In-Reply-To: <20210522153636.ymyyq4vtzz2dq5k2@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 09:05:48AM +0200, Lukas Bulwahn wrote:
-> On Tue, May 18, 2021 at 7:37 AM Jiri Slaby <jirislaby@kernel.org> wrote:
-> >
-> > On 18. 05. 21, 7:21, Lukas Bulwahn wrote:
-> > > An early prototypical automated code analysis of headers and the
-> > > existing MAINTAINERS sections identified some header files in
-> > > ./include/linux/ to be probably included into the TTY LAYER section.
-> > >
-> > > I further checked those suggestions by this analysis and identified a
-> > > subset of files that I am rather certain to belong to the TTY LAYER.
-> > >
-> > > Add these ./include/linux/ header files to TTY LAYER in MAINTAINERS.
-> > >
-> > > The patterns include/linux/tty*.h and include/linux/vt_*.h currently cover:
-> > >
-> > >    include/linux/tty.h
-> > >    include/linux/tty_driver.h
-> > >    include/linux/tty_flip.h
-> > >    include/linux/tty_ldisc.h
-> > >
-> > >    include/linux/vt_buffer.h
-> > >    include/linux/vt_kern.h
-> >
-> > Yes, that looks good.
-> >
-> > Can you extend the tool to include/uapi too?
-> >
-> > For example this is missing too:
-> > include/uapi/linux/tty*.h
-> >
-> > It expands to:
-> > include/uapi/linux/tty_flags.h
-> > include/uapi/linux/tty.h
-> >
+On Sat, May 22, 2021 at 05:36:36PM +0200, Marc Kleine-Budde wrote:
+> Hello Greg,
 > 
-> Jiri,
+> On 17.04.2021 00:16:40, Alexandre Belloni wrote:
+> > On Wed, 10 Mar 2021 16:10:26 -0500, Francois Gervais wrote:
+> > > The rtc device node is always or at the very least can possibly be NULL.
+> > > 
+> > > Since v5.12-rc1-dontuse/3c9ea42802a1fbf7ef29660ff8c6e526c58114f6 this
+> > > will lead to a NULL pointer dereference.
+> > > 
+> > > To fix this we fallback to using the parent node which is the i2c client
+> > > node as set by devm_rtc_allocate_device().
+> > > 
+> > > [...]
+> > 
+> > Applied, thanks!
+> > 
+> > [1/1] rtc: pcf85063: fallback to parent of_node
+> >       commit: 03531606ef4cda25b629f500d1ffb6173b805c05
+> > 
+> > I made the fallback unconditionnal because this should have been that way from
+> > the beginning as you point out.
 > 
-> Greg already picked this patch up; so I will keep this patch as-is and move on.
+> can you queue this for stable, as it causes a NULL Pointer deref with
+> (at least) v5.12.
 
-This patch was fine as-is, but sending an additional patch with that
-information added would be most welcome.  No need for your tool to
-create it, you can do it by hand :)
+After it hits Linus's tree, let stable@vger.kernel.org know the id and
+we will glad to add it to the stable trees.
 
 thanks,
 
