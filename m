@@ -2,142 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A43538DC21
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08D1138DC28
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:23:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231955AbhEWROL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 13:14:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
+        id S231912AbhEWRYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:24:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231888AbhEWROJ (ORCPT
+        with ESMTP id S231893AbhEWRYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 13:14:09 -0400
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10568C061574;
-        Sun, 23 May 2021 10:12:42 -0700 (PDT)
-Received: by mail-qk1-x731.google.com with SMTP id v8so24935334qkv.1;
-        Sun, 23 May 2021 10:12:42 -0700 (PDT)
+        Sun, 23 May 2021 13:24:36 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4520C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 10:23:08 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id x15so24905965oic.13
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 10:23:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=NI6VGTgdO7QUPT8Xbl98mX1OA2u/yEB+lofSkIV6DFs=;
-        b=Cv08fynHoQ3MdJJet/pK3X9cTxSniHt3KnvtbV43MHXpC8EgI7CB3ZmkQvDpeU+ldV
-         AXOpIRVo9PUUPrhvkMkeyxlsh5BOWuSlIqbDhXA2XDHSkRn1UZLjpZWNow/c0qPzbeYu
-         y5+5rLV9wslYZjJqRw87WlIG5v3AIYUXZuJbtgzmRUaw4rN3t6l44+o1eEVrhtCIS53w
-         KxLyliwMZP1fltrBWLtvagEwSpnEx0Qa+uuBw9AG8VvSlskxvRLE2ZKrwYhuicVDloOU
-         C/GFSfMFEfp/iNrpP5r7d29LimWwzj5Lp9aITO7UNutfDtwHS4attXoTHhcmMnM/BWVX
-         i7jw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2FoVSFWcUZWXRm7AD51E3dANi05UrgXiAjik3mpf5no=;
+        b=RMSTz6qKC8La6YP28LsKEFerKiMRPKEO36aLvbKYOKBoTx2ndWptJB/hb5lmiWiOn1
+         P7eLVaFFNfbJ96Yn12cdngBg5O7L+KKD9SOM9hWFZL4mzEtE9KSM1Ff2EsBfu4rT9s3z
+         DUBxRuOE30by1mVJGwW1wTlq2bD28Q8PakzOk2U/jjJRkzzHWq4+6YMxKNElVvb1sUcR
+         F36hLz+pS7Hryd1Blv55Q/+V94hkfHNJiDlrP0IZzoBRpi+jNJwTNu7X2KJOQnaIfhFK
+         x/2KYVE/esYY6BOI+vTxogfb/X2t6D2VKHId7hPBIePEhk8PXg7xDFZu8JghGwF0tbEj
+         o9pQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NI6VGTgdO7QUPT8Xbl98mX1OA2u/yEB+lofSkIV6DFs=;
-        b=CeoWQY2o4gFF80XDqdSMlIl7KHILG9ipISdGD2WozsnvvJkAEm3pdmNZepYwzsMEdM
-         JezrzlLw6yDkHeJcLb1JMBnZVB2mhHgJZ+Bngq01uUG926QXmhxxCCvCYC/yHfLjd970
-         hAXFlItGDwNtSzqE1dvL0xE6/gJaRvvpIBdR/6lmhNL+JIKu3Z2+4bWZR55jBxQ5Ihp0
-         sloRKHlHEi4o+FVNN1KUB/o+MZJ25Uniejrv5ue5ffK8zVyvwazFmygd1IIDxsyA3Vjt
-         lawtAe4/sYvBJGf4q/ID39co1tdN/EZNCKuEDpFYGrcZsgE7dYKi1FyUI5sbfD2e5pav
-         2vvQ==
-X-Gm-Message-State: AOAM531EoPNcPZ6luUOgncRlWdORmEzUdyr1kYAITLyeVYGJn43UAw0j
-        Z8R4LDomyKuHvyjPKEWjFxI=
-X-Google-Smtp-Source: ABdhPJzMy+yWRIRNkHTk1RCYZRyY0+b9LlR7tq95R7QTH1YZgdH9euujbyRqArU714Yh2EL+jvrcKg==
-X-Received: by 2002:a37:aa4c:: with SMTP id t73mr26395487qke.79.1621789961284;
-        Sun, 23 May 2021 10:12:41 -0700 (PDT)
-Received: from smtp.gmail.com ([2804:14c:73:9a01::1003])
-        by smtp.gmail.com with ESMTPSA id n18sm9115529qkh.13.2021.05.23.10.12.39
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=2FoVSFWcUZWXRm7AD51E3dANi05UrgXiAjik3mpf5no=;
+        b=UnyCIGMOzgOhA0iytYXo5cZ/NvSXu/nfcG3PZWcQPaRjzqAC/kMWwkascOnca6izt2
+         cLglET6XPRFor+mUtf07ug4ih2rYlN3JSv87hwwLvpN7je9UT0trl7FcG6Dd48M0l+0P
+         MWFXAmvdlCVakJHPpgvhNHHzCkZmCPE+DL3O3iTgWg20xDy6tAhpGFkOLuKM8nnYqid1
+         xWZCHl8TqlZGekJDbbqDvStUVzX9dweY086T4DYMtXHxjfP/Ncbhk2+Aa4aKbVmcKugM
+         cD8ZsbkXlzzM+jkEyDrgu0jHcPp1iSLYVfI5SbBIovu9iwijVdLQjgP2fF+YXBM8FecF
+         vCiA==
+X-Gm-Message-State: AOAM532zZJR6vE8B5ODvYjbRCcFg7Po1Ll8UquzmuEWqDjuEX/M7b4mk
+        /GT/HOPDDVSQQ7HXOVPhMCjjXeM8+Qg=
+X-Google-Smtp-Source: ABdhPJwY480IlovPkjrgDpcAhRCpN2rSslgx5zzbp8togNhSlzBUSV60ajsWIZCURBGgHgy33kopPA==
+X-Received: by 2002:a05:6808:98f:: with SMTP id a15mr8551245oic.29.1621790588083;
+        Sun, 23 May 2021 10:23:08 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v9sm2627421otn.44.2021.05.23.10.23.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 10:12:40 -0700 (PDT)
-Date:   Sun, 23 May 2021 14:12:37 -0300
-From:   Lucas Stankus <lucas.p.stankus@gmail.com>
-To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
-        gregkh@linuxfoundation.org
-Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] staging: iio: cdc: ad7746: extract capac setup to own
- function
-Message-ID: <b637a5ecde4e5f9f927a5b104332378d4721c91d.1621786036.git.lucas.p.stankus@gmail.com>
-References: <cover.1621786036.git.lucas.p.stankus@gmail.com>
+        Sun, 23 May 2021 10:23:07 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Zhenyu Wang <zhenyuw@linux.intel.com>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gvt-dev@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v2] drm/i915/gem: Use list_entry to access list members
+Date:   Sun, 23 May 2021 10:23:04 -0700
+Message-Id: <20210523172304.3033229-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1621786036.git.lucas.p.stankus@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor the capac register write logic to own function.
+Use list_entry() instead of container_of() to access list members.
+Also drop unnecessary and misleading NULL checks on the result of
+list_entry().
 
-Also fixes the following checkpatch warning:
-CHECK: Alignment should match open parenthesis
-
-Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/staging/iio/cdc/ad7746.c | 36 ++++++++++++++++----------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+v2: Checkpatch fixes:
+    - Fix alignment
+    - Replace comparison against NULL with !
 
-diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-index 367a5990ae35..4221312f0a32 100644
---- a/drivers/staging/iio/cdc/ad7746.c
-+++ b/drivers/staging/iio/cdc/ad7746.c
-@@ -209,6 +209,19 @@ static const unsigned char ad7746_cap_filter_rate_table[][2] = {
- 	{16, 62 + 1}, {13, 77 + 1}, {11, 92 + 1}, {9, 110 + 1},
- };
+ drivers/gpu/drm/i915/gvt/dmabuf.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/gvt/dmabuf.c b/drivers/gpu/drm/i915/gvt/dmabuf.c
+index d4f883f35b95..e3f488681484 100644
+--- a/drivers/gpu/drm/i915/gvt/dmabuf.c
++++ b/drivers/gpu/drm/i915/gvt/dmabuf.c
+@@ -148,8 +148,7 @@ static void dmabuf_gem_object_free(struct kref *kref)
  
-+static int ad7746_set_capdac(struct ad7746_chip_info *chip, int channel)
-+{
-+	int ret = i2c_smbus_write_byte_data(chip->client,
-+					    AD7746_REG_CAPDACA,
-+					    chip->capdac[channel][0]);
-+	if (ret < 0)
-+		return ret;
-+
-+	return i2c_smbus_write_byte_data(chip->client,
-+					  AD7746_REG_CAPDACB,
-+					  chip->capdac[channel][1]);
-+}
-+
- static int ad7746_select_channel(struct iio_dev *indio_dev,
- 				 struct iio_chan_spec const *chan)
- {
-@@ -224,17 +237,11 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
- 			AD7746_CONF_CAPFS_SHIFT;
- 		delay = ad7746_cap_filter_rate_table[idx][1];
+ 	if (vgpu && vgpu->active && !list_empty(&vgpu->dmabuf_obj_list_head)) {
+ 		list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
+-			dmabuf_obj = container_of(pos,
+-					struct intel_vgpu_dmabuf_obj, list);
++			dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+ 			if (dmabuf_obj == obj) {
+ 				list_del(pos);
+ 				intel_gvt_hypervisor_put_vfio_device(vgpu);
+@@ -357,10 +356,8 @@ pick_dmabuf_by_info(struct intel_vgpu *vgpu,
+ 	struct intel_vgpu_dmabuf_obj *ret = NULL;
  
-+		ret = ad7746_set_capdac(chip, chan->channel);
-+		if (ret < 0)
-+			return ret;
-+
- 		if (chip->capdac_set != chan->channel) {
--			ret = i2c_smbus_write_byte_data(chip->client,
--				AD7746_REG_CAPDACA,
--				chip->capdac[chan->channel][0]);
--			if (ret < 0)
--				return ret;
--			ret = i2c_smbus_write_byte_data(chip->client,
--				AD7746_REG_CAPDACB,
--				chip->capdac[chan->channel][1]);
--			if (ret < 0)
--				return ret;
+ 	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
+-		dmabuf_obj = container_of(pos, struct intel_vgpu_dmabuf_obj,
+-						list);
+-		if ((dmabuf_obj == NULL) ||
+-		    (dmabuf_obj->info == NULL))
++		dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
++		if (!dmabuf_obj->info)
+ 			continue;
  
- 			chip->capdac_set = chan->channel;
- 		}
-@@ -478,14 +485,7 @@ static int ad7746_write_raw(struct iio_dev *indio_dev,
- 		chip->capdac[chan->channel][chan->differential] = val > 0 ?
- 			AD7746_CAPDAC_DACP(val) | AD7746_CAPDAC_DACEN : 0;
+ 		fb_info = (struct intel_vgpu_fb_info *)dmabuf_obj->info;
+@@ -387,11 +384,7 @@ pick_dmabuf_by_num(struct intel_vgpu *vgpu, u32 id)
+ 	struct intel_vgpu_dmabuf_obj *ret = NULL;
  
--		ret = i2c_smbus_write_byte_data(chip->client,
--						AD7746_REG_CAPDACA,
--						chip->capdac[chan->channel][0]);
--		if (ret < 0)
--			goto out;
--		ret = i2c_smbus_write_byte_data(chip->client,
--						AD7746_REG_CAPDACB,
--						chip->capdac[chan->channel][1]);
-+		ret = ad7746_set_capdac(chip, chan->channel);
- 		if (ret < 0)
- 			goto out;
+ 	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
+-		dmabuf_obj = container_of(pos, struct intel_vgpu_dmabuf_obj,
+-						list);
+-		if (!dmabuf_obj)
+-			continue;
+-
++		dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+ 		if (dmabuf_obj->dmabuf_id == id) {
+ 			ret = dmabuf_obj;
+ 			break;
+@@ -600,8 +593,7 @@ void intel_vgpu_dmabuf_cleanup(struct intel_vgpu *vgpu)
  
+ 	mutex_lock(&vgpu->dmabuf_lock);
+ 	list_for_each_safe(pos, n, &vgpu->dmabuf_obj_list_head) {
+-		dmabuf_obj = container_of(pos, struct intel_vgpu_dmabuf_obj,
+-						list);
++		dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
+ 		dmabuf_obj->vgpu = NULL;
+ 
+ 		idr_remove(&vgpu->object_idr, dmabuf_obj->dmabuf_id);
 -- 
-2.31.1
+2.25.1
 
