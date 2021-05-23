@@ -2,90 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F56D38D85D
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 04:50:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 430DB38D861
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 04:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbhEWCv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 22:51:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41736 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231511AbhEWCvZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 22:51:25 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEEE9C061574;
-        Sat, 22 May 2021 19:49:59 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FnlDy3J0tz9sSn;
-        Sun, 23 May 2021 12:49:54 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621738196;
-        bh=VJHU8czcH4/8+jhkb3TP1Kqu6v8pvk4s6xXcHof8N38=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W/9ZacOZqUboD8SsVa4N7870lqdkQNLXp/dXJdVM2rIy6+ihDcZMkisnRZgBvIM+c
-         b9wpVvwrt81Un2270yTab+hmwtRqmP91wRGAUnpSBlc6G5I9riKQHPijvsdwQWBAom
-         c04bXVwjMYTfD9jPMcCgETJkgVLQTl28pfoxlQK8/39u+jL9WqLObaMGD8ap25Ow45
-         94wYKXNgxEHcHd9nYx8iX/Rm7krcwpD8o/LFoLa7p8pSbuUBHKpv+vgPxeqWdxT8E4
-         ebLIRmjtdfPLjZynlRWs1SIhumjobPv8FAbP5xbuFeUhkIw5EacP+g0qaHdj1VsSy6
-         DQdsekUbl6mwQ==
-Date:   Sun, 23 May 2021 12:49:53 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Sean Young <sean@mess.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the v4l-dvb-next tree
-Message-ID: <20210523124953.7a5108b4@canb.auug.org.au>
+        id S231558AbhEWDAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 23:00:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231516AbhEWDAq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 23:00:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47907611C1;
+        Sun, 23 May 2021 02:59:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621738760;
+        bh=ladddHdgU4ilqNmFJ5nGJWq1vJbpf1bZ8MS3j/XpGc0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=a5TvZp7T++Su2xE+je/D/RJknC3tdKiRywMWzkbyky9/eWb0IaCGLDVp8uXOo+0SE
+         exR1JKSkTtUGa7yCgy90740Tw/diAsxSouJ5ielOYPZEK96XXlELbzZBfJzH5IlRa/
+         W6/NOmBb1J1YI8mOyK8jTv0GMumOVicgWQFUSG49fgZVjv94zj0OD5c1SqARAYiZ0W
+         gGpi7cQSNGj9YbZl4hQN9RhYqAzU0IHrLfTzZZiuPXde5XfHWaowMu/UjGdWXibQAO
+         pLpXCdCckh81lPpWMnpbDPByjLM3S1D3e5cEGNqCEna7rqFj8UC2oKabeqVnyJLtMS
+         0DSisAbcCh1vA==
+Date:   Sun, 23 May 2021 10:59:13 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
+Cc:     robh+dt@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com, p.zabel@pengutronix.de,
+        l.stach@pengutronix.de, krzk@kernel.org, agx@sigxcpu.org,
+        marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com,
+        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com
+Subject: Re: [PATCH V3 02/13] soc: imx: gpcv2: move domain mapping to domain
+ driver probe
+Message-ID: <20210523025912.GP8194@dragon>
+References: <20210510040045.13225-1-peng.fan@oss.nxp.com>
+ <20210510040045.13225-3-peng.fan@oss.nxp.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/5.ATFdsf3X69/qLqfLjRzjI";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210510040045.13225-3-peng.fan@oss.nxp.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/5.ATFdsf3X69/qLqfLjRzjI
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 10, 2021 at 12:00:34PM +0800, Peng Fan (OSS) wrote:
+> From: Lucas Stach <l.stach@pengutronix.de>
+> 
+> As long as the power domain driver is active we want power control
+> over the domain (which is what the mapping bit requests), so there
+> is no point in whacking it for every power control action, simply
+> set the bit in driver probe and clear it when the driver is removed.
+> 
+> Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+> Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 
-Hi all,
+You forgot your SoB.  I fixed it up and applied the series.
 
-In commit
-
-  7c8a36e1fb30 ("media: rc: i2c: Fix an error message")
-
-Fixes tag
-
-  Fixes: acaa34bf06e9 ('media: rc: implement zilog transmitter")
-
-has these problem(s):
-
-  - Subject has leading but no trailing quotes
-  - Subject does not match target commit subject
-    Just use
-	git log -1 --format=3D'Fixes: %h ("%s")'
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/5.ATFdsf3X69/qLqfLjRzjI
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCpwtEACgkQAVBC80lX
-0GxbuAf+PHzWHqT11OcwjUqpw0/Zn4RB7NozJvKzTpxEQL8/8nHB0e2cK8/9kVhD
-o1Geeojtjhz8GcjtyyQAcsMr11p3TtmWQSKk0vPu9ugyhzybTDJvUx4hbz42RGnb
-JnwG1GGP6pke3ZA2d8WLw6ssnX3EynUS22jOQCgRIkfv9pu2cM0ncc0a6+RgVgVM
-q9VXGVFQtyDrLhMw57I/Dck8iqiTTJGZ/UgBAnYq21Mbk+ymDNfgnxE4POoHfdBO
-K4bhf9UlGhU7Jx60QU+DLDPyihlIGvlZ0i6yK/tG4eC8UFCGgteLe9ym67Yxy+Vq
-I0nauTUITn12RHSvU4TpBn8zUrveig==
-=OvyO
------END PGP SIGNATURE-----
-
---Sig_/5.ATFdsf3X69/qLqfLjRzjI--
+Shawn
