@@ -2,98 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 585EE38DBBB
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 17:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D5438DBBF
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 17:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231840AbhEWP7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 11:59:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30235 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231789AbhEWP7o (ORCPT
+        id S231890AbhEWQAR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 12:00:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231856AbhEWQAP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 11:59:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621785497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KwQGgcSmB7dG/47GYIT4VaAOEmDWh3RBmeIzEPIXRbU=;
-        b=aC4dEqPj0x7Dv9ailkuT95kZkLFHnH/3n3auKSDQGrPppz67qXSTYQr3WBAlPPcJa64YKj
-        Jfxq2jdm8CfmxeEh4tf2y5tHgTH6NNwGiMIxOSfWFWTJ3xiXJS6T441UX5eIo5dSS61sTv
-        YtPCWFdF+kj+DgNDE6yiwrHa9FhD6xc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-293-uI7KKo-9OsOViaBlYXoOFA-1; Sun, 23 May 2021 11:58:15 -0400
-X-MC-Unique: uI7KKo-9OsOViaBlYXoOFA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C8BD501E0;
-        Sun, 23 May 2021 15:58:13 +0000 (UTC)
-Received: from krava (unknown [10.40.192.56])
-        by smtp.corp.redhat.com (Postfix) with SMTP id D97D910074E0;
-        Sun, 23 May 2021 15:58:11 +0000 (UTC)
-Date:   Sun, 23 May 2021 17:58:10 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Denys Zagorui <dzagorui@cisco.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org
-Subject: Re: [PATCH v6 2/3] perf tests: avoid storing an absolute path in
- perf binary
-Message-ID: <YKp7km95KCUhykig@krava>
-References: <20210521172753.55399-1-dzagorui@cisco.com>
- <20210521172753.55399-2-dzagorui@cisco.com>
+        Sun, 23 May 2021 12:00:15 -0400
+Received: from mail-qt1-x82f.google.com (mail-qt1-x82f.google.com [IPv6:2607:f8b0:4864:20::82f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A645BC061574;
+        Sun, 23 May 2021 08:58:47 -0700 (PDT)
+Received: by mail-qt1-x82f.google.com with SMTP id f8so18976011qth.6;
+        Sun, 23 May 2021 08:58:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DRIzGMm1llvtiop65Q5Xv1q5ORI+sSk6YJftRyqqFv8=;
+        b=aeqilIN9R5UM9SvHX02AjsWuR5zTkegVQjw7ZlKgItSVQ2SC9L0bMLL3QLYAkcNXQm
+         1lVbLkBcJe3tBUUvcSv1rzF34fr9GVs+JuuwaFk1XQ5YHxFwwey1agcR3TuarKmpVPvj
+         pVAcrYvJrz5xKAKaSyW4I6YtweljtJ9sWLB7m1FcEu5ozywManVdn8FLye1SVS3dsFLA
+         QFNjIiBamjR1uJ1gDobsGQxDi/efO7C6thdif51vKdz8txWzo/n51rZxmMstdryQskv4
+         +S3etFOlciXfC1Cbg++BKxhxqcpCDMmDGdCjZcwnWlW+qzDyvHfySLT5kGWTmBPqUhdE
+         p84A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DRIzGMm1llvtiop65Q5Xv1q5ORI+sSk6YJftRyqqFv8=;
+        b=MxWA2+qH2RhfmGhK7NLm3+mWdmKf5DMMHN/akci5GUpts5CF2lYElmDGFjXoPVR12c
+         xYdjLsqrZVN8ENqmMWdzkAKbB8sWr2rXqwgDQoFFpNP+4OIUkftpP9is8K78g7vdWSR4
+         xTJaqMZCyRBeennCiFYeDS2KYiTGiRuPD07WbYfrKI0MOYVxCm2wL2gsHqEzLIjtJV3E
+         EiMvZP2SnhBnyZMT7A3rLPReVnXUHhxtKWV+5WlK4ztxnBPkeWoWzSfuLyVXn9K4+Vdb
+         ESa+g2FvSamHGedffp9sESPh1OvapLpghIDeb4IR1sFUdLAcFuoo5p2txTwHzt/QZG1g
+         6yKA==
+X-Gm-Message-State: AOAM532UM7oIX9TqRk61ut2DoyFu3UF4AjqWU6j/zIJNKoiSKGlIgfEJ
+        Aq/9HPL8RO0doNvMV6R6B7X7BohEPUPD2g==
+X-Google-Smtp-Source: ABdhPJwzH/O+GlwCXh714AY2EnfeJf11r6A4I0aAZu2ccBmivjG3Dp0DuCGC4BPLzsV+nCh+viUxyQ==
+X-Received: by 2002:ac8:68d:: with SMTP id f13mr21936681qth.300.1621785526432;
+        Sun, 23 May 2021 08:58:46 -0700 (PDT)
+Received: from localhost.localdomain (99-44-17-11.lightspeed.irvnca.sbcglobal.net. [99.44.17.11])
+        by smtp.gmail.com with ESMTPSA id s123sm9125602qkf.1.2021.05.23.08.58.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 08:58:45 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     netdev@vger.kernel.org
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH net-next] net: r6040: Allow restarting auto-negotiation
+Date:   Sun, 23 May 2021 08:58:42 -0700
+Message-Id: <20210523155843.11395-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521172753.55399-2-dzagorui@cisco.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 10:27:52AM -0700, Denys Zagorui wrote:
+Use phy_ethtool_nway_reset() since the driver makes use of the PHY
+library.
 
-SNIP
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+ drivers/net/ethernet/rdc/r6040.c | 1 +
+ 1 file changed, 1 insertion(+)
 
->  	free(cmd);
-> +out:
-> +	free(pythonpath);
->  	return ret;
->  }
-> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-> index 3bba74e431ed..53f3dbf02f58 100644
-> --- a/tools/perf/util/util.c
-> +++ b/tools/perf/util/util.c
-> @@ -22,6 +22,7 @@
->  #include "cap.h"
->  #include "strlist.h"
->  #include "string2.h"
-> +#include <libgen.h>
->  
->  /*
->   * XXX We need to find a better place for these things...
-> @@ -388,3 +389,14 @@ char *perf_exe(char *buf, int len)
->  	}
->  	return strcpy(buf, "perf");
->  }
-> +
-> +char *perf_exe_path(void)
-> +{
-> +	char buf[PATH_MAX];
-> +	char *dname;
-> +
-> +	perf_exe(buf, PATH_MAX);
-> +	dname = dirname(buf);
-
-I think this is equally bad.. once you get out of perf_exe_path,
-dname might be screwed
-
-> +
-> +	return dname;
-
-just return strdup(dname) in here?
-
-jirka
+diff --git a/drivers/net/ethernet/rdc/r6040.c b/drivers/net/ethernet/rdc/r6040.c
+index 80fee3a9b603..dd9286f520b6 100644
+--- a/drivers/net/ethernet/rdc/r6040.c
++++ b/drivers/net/ethernet/rdc/r6040.c
+@@ -972,6 +972,7 @@ static const struct ethtool_ops netdev_ethtool_ops = {
+ 	.get_ts_info		= ethtool_op_get_ts_info,
+ 	.get_link_ksettings     = phy_ethtool_get_link_ksettings,
+ 	.set_link_ksettings     = phy_ethtool_set_link_ksettings,
++	.nway_reset		= phy_ethtool_nway_reset,
+ 	.get_regs_len		= r6040_get_regs_len,
+ 	.get_regs		= r6040_get_regs,
+ };
+-- 
+2.25.1
 
