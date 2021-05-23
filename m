@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30A0038DCB8
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:39:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE4638DCBE
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbhEWTkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 15:40:55 -0400
-Received: from mga11.intel.com ([192.55.52.93]:32000 "EHLO mga11.intel.com"
+        id S232227AbhEWTlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 15:41:10 -0400
+Received: from mga11.intel.com ([192.55.52.93]:31998 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232002AbhEWTj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232006AbhEWTj6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 May 2021 15:39:58 -0400
-IronPort-SDR: 03jaEIoJwxFsz+5d7GFC8cl4wMViHAsZG3wZCsCjjd6/U+d2ev0kxzwuhsOa4lwCaX1BV3/c2p
- 9eElUdPmZ6CQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="198740688"
+IronPort-SDR: t/Uxl2kb5V3j8mARRg5AF203HJ9OVvDylA4HR8rSsW67VW+jQzocUWqHRlZDW/Z+Oy+cJFhS/A
+ gQCx1zT56+yA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="198740689"
 X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="198740688"
+   d="scan'208";a="198740689"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
   by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 12:38:30 -0700
-IronPort-SDR: gdaFYesCiXuhSHARjLHPrjWPQ4SKnYxedOUGqBoDhH3KMOjs1IoWTekLYsIoRi7aXEGgP5dNJA
- DGygdcfyox4A==
+IronPort-SDR: y/Y13UC9snkfI4YD6le/3bUd/TRxSyJPoBxfKppiHKAf1EQdR//AjGSbIMkzvmNq6EE0oLMUUW
+ avT5RlAgFKuA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="407467146"
+   d="scan'208";a="407467150"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by fmsmga007.fm.intel.com with ESMTP; 23 May 2021 12:38:29 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -30,10 +30,10 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
         x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
-        chang.seok.bae@intel.com, linux-kselftest@vger.kernel.org
-Subject: [PATCH v5 26/28] selftest/x86/amx: Test case for AMX state copy optimization in signal delivery
-Date:   Sun, 23 May 2021 12:32:57 -0700
-Message-Id: <20210523193259.26200-27-chang.seok.bae@intel.com>
+        chang.seok.bae@intel.com
+Subject: [PATCH v5 27/28] x86/insn/amx: Add TILERELEASE instruction to the opcode map
+Date:   Sun, 23 May 2021 12:32:58 -0700
+Message-Id: <20210523193259.26200-28-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210523193259.26200-1-chang.seok.bae@intel.com>
 References: <20210523193259.26200-1-chang.seok.bae@intel.com>
@@ -41,178 +41,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a test case to verify that unused states are excluded, by leaving a
-known pattern on the signal stack and verifying that it is still intact
-after taking a subsequent signal.
+Include the opcode of TILERELEASE that returns all the AMX state to
+INIT-state.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
 Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
-Cc: linux-kselftest@vger.kernel.org
 ---
 Changes from v4:
-* Separated out as a new patch.
-* Improved the test routine by explicitly checking sigframe write.
+* Added as a new patch as preparatory to use the instruction in the kernel.
 ---
- tools/testing/selftests/x86/amx.c | 137 ++++++++++++++++++++++++++++++
- 1 file changed, 137 insertions(+)
+ arch/x86/lib/x86-opcode-map.txt       | 8 +++++++-
+ tools/arch/x86/lib/x86-opcode-map.txt | 8 +++++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/x86/amx.c b/tools/testing/selftests/x86/amx.c
-index 7d177c03cdcf..c5a5582e2b6f 100644
---- a/tools/testing/selftests/x86/amx.c
-+++ b/tools/testing/selftests/x86/amx.c
-@@ -562,6 +562,142 @@ static void test_ptrace(void)
- 	test_tile_write();
- }
+diff --git a/arch/x86/lib/x86-opcode-map.txt b/arch/x86/lib/x86-opcode-map.txt
+index ec31f5b60323..dbc5078ccafe 100644
+--- a/arch/x86/lib/x86-opcode-map.txt
++++ b/arch/x86/lib/x86-opcode-map.txt
+@@ -690,7 +690,9 @@ AVXcode: 2
+ 45: vpsrlvd/q Vx,Hx,Wx (66),(v)
+ 46: vpsravd Vx,Hx,Wx (66),(v) | vpsravd/q Vx,Hx,Wx (66),(evo)
+ 47: vpsllvd/q Vx,Hx,Wx (66),(v)
+-# Skip 0x48-0x4b
++# Skip 0x48
++49: Grp22 (1A)
++# Skip 0x4a-0x4b
+ 4c: vrcp14ps/d Vpd,Wpd (66),(ev)
+ 4d: vrcp14ss/d Vsd,Hpd,Wsd (66),(ev)
+ 4e: vrsqrt14ps/d Vpd,Wpd (66),(ev)
+@@ -1082,6 +1084,10 @@ GrpTable: Grp21
+ 7: ENDBR64 (F3),(010),(11B) | ENDBR32 (F3),(011),(11B)
+ EndTable
  
-+/* Signal handling test */
++GrpTable: Grp22
++0: TILERELEASE (!F3),(v1),(11B)
++EndTable
 +
-+static bool init_tiledata_state_before_signal;
-+static bool load_tiledata_at_first;
-+static bool sigalarmed, sigused;
-+
-+#define SIGFRAME_TILEDATA_SIGNATURE	0xFF
-+
-+static void handle_sigusr1(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	void *xsave = ((ucontext_t *)ctx_void)->uc_mcontext.fpregs;
-+
-+	memset(xsave + xsave_xtiledata_offset, SIGFRAME_TILEDATA_SIGNATURE, xsave_xtiledata_size);
-+
-+	sigused = true;
-+}
-+
-+static void handle_sigalrm(int sig, siginfo_t *info, void *ctx_void)
-+{
-+	void *xsave = ((ucontext_t *)ctx_void)->uc_mcontext.fpregs;
-+	char d = SIGFRAME_TILEDATA_SIGNATURE;
-+	bool written = false;
-+	int i;
-+
-+	for (i = 0; i < xsave_xtiledata_size; i++) {
-+		written = memcmp(xsave + xsave_xtiledata_offset + i, &d, 1);
-+		if (written)
-+			break;
-+	}
-+
-+	if (__xgetbv(1) & XFEATURE_MASK_XTILEDATA)
-+		err(1, "tile data state at signal delivery");
-+
-+	if (init_tiledata_state_before_signal && written) {
-+		errs++;
-+		printf("[FAIL]\tTile data was %swritten on sigframe.\n", !written ? "not " : "");
-+	}
-+
-+	set_xstatebv(xsave_buffer, XFEATURE_MASK_XTILEDATA);
-+	set_tiledata(xsave_buffer + xsave_xtiledata_offset);
-+	xrstor(xsave_buffer, -1, -1);
-+	sigalarmed = true;
-+}
-+
-+static void test_signal_handling(void)
-+{
-+	pid_t child;
-+
-+	sigalarmed = false;
-+	sigused = false;
-+
-+	child = fork();
-+	if (child < 0) {
-+		err(1, "fork");
-+	} else if (child > 0) {
-+		do {
-+			int status;
-+
-+			wait(&status);
-+			if (WIFSTOPPED(status))
-+				kill(child, SIGCONT);
-+			else if (WIFEXITED(status) && !WEXITSTATUS(status))
-+				break;
-+			else
-+				err(1, "signal test child");
-+		} while (1);
-+		return;
-+	}
-+
-+	printf("\tBefore signal, load tile data -- %s, re-initialized -- %s:\n",
-+	       load_tiledata_at_first ? "yes" : "no",
-+	       init_tiledata_state_before_signal ? "yes" : "no");
-+
-+	syscall(SYS_arch_prctl, ARCH_GET_XSTATE, XFEATURE_MASK_XTILE);
-+
-+	raise(SIGUSR1);
-+	if (!sigused)
-+		err(1, "SIGUSR1");
-+
-+	if (load_tiledata_at_first) {
-+		set_xstatebv(xsave_buffer, XFEATURE_MASK_XTILEDATA);
-+		set_tiledata(xsave_buffer + xsave_xtiledata_offset);
-+		xrstor(xsave_buffer, -1, -1);
-+		memcpy(tiledata, xsave_buffer + xsave_xtiledata_offset, xsave_xtiledata_size);
-+	}
-+
-+	if (init_tiledata_state_before_signal) {
-+		set_xstatebv(xsave_buffer, 0);
-+		xrstor(xsave_buffer, -1, -1);
-+		memset(tiledata, 0, xsave_xtiledata_size);
-+	}
-+
-+	raise(SIGALRM);
-+	if (!sigalarmed)
-+		err(1, "SIGALRM");
-+
-+	__xsave(xsave_buffer, XFEATURE_MASK_XTILEDATA, 0);
-+	if (memcmp(tiledata, xsave_buffer + xsave_xtiledata_offset, xsave_xtiledata_size)) {
-+		errs++;
-+		printf("[FAIL]\tTile data was not restored at sigreturn\n");
-+	}
-+
-+	if (errs)
-+		nerrs++;
-+	else
-+		printf("[OK]\tTile data was %swritten on sigframe and restored at sigreturn\n",
-+		       init_tiledata_state_before_signal ? "not " : "");
-+	_exit(0);
-+}
-+
-+static void test_signal(void)
-+{
-+	printf("[RUN]\tCheck tile data state in signal path:\n");
-+
-+	sethandler(SIGALRM, handle_sigalrm, 0);
-+	sethandler(SIGUSR1, handle_sigusr1, 0);
-+
-+	load_tiledata_at_first = false;
-+	init_tiledata_state_before_signal = true;
-+	errs = 0;
-+	test_signal_handling();
-+
-+	load_tiledata_at_first = true;
-+	init_tiledata_state_before_signal = false;
-+	errs = 0;
-+	test_signal_handling();
-+
-+	load_tiledata_at_first = true;
-+	init_tiledata_state_before_signal = true;
-+	errs = 0;
-+	test_signal_handling();
-+
-+	clearhandler(SIGALRM);
-+	clearhandler(SIGUSR1);
-+}
-+
- int main(void)
- {
- 	/* Check hardware availability at first */
-@@ -592,6 +728,7 @@ int main(void)
- 	test_fork();
- 	test_context_switch();
- 	test_ptrace();
-+	test_signal();
+ # AMD's Prefetch Group
+ GrpTable: GrpP
+ 0: PREFETCH
+diff --git a/tools/arch/x86/lib/x86-opcode-map.txt b/tools/arch/x86/lib/x86-opcode-map.txt
+index ec31f5b60323..dbc5078ccafe 100644
+--- a/tools/arch/x86/lib/x86-opcode-map.txt
++++ b/tools/arch/x86/lib/x86-opcode-map.txt
+@@ -690,7 +690,9 @@ AVXcode: 2
+ 45: vpsrlvd/q Vx,Hx,Wx (66),(v)
+ 46: vpsravd Vx,Hx,Wx (66),(v) | vpsravd/q Vx,Hx,Wx (66),(evo)
+ 47: vpsllvd/q Vx,Hx,Wx (66),(v)
+-# Skip 0x48-0x4b
++# Skip 0x48
++49: Grp22 (1A)
++# Skip 0x4a-0x4b
+ 4c: vrcp14ps/d Vpd,Wpd (66),(ev)
+ 4d: vrcp14ss/d Vsd,Hpd,Wsd (66),(ev)
+ 4e: vrsqrt14ps/d Vpd,Wpd (66),(ev)
+@@ -1082,6 +1084,10 @@ GrpTable: Grp21
+ 7: ENDBR64 (F3),(010),(11B) | ENDBR32 (F3),(011),(11B)
+ EndTable
  
- 	clearhandler(SIGSEGV);
- 
++GrpTable: Grp22
++0: TILERELEASE (!F3),(v1),(11B)
++EndTable
++
+ # AMD's Prefetch Group
+ GrpTable: GrpP
+ 0: PREFETCH
 -- 
 2.17.1
 
