@@ -2,262 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1186538DD65
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 00:01:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C5A38DD6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 00:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232031AbhEWWDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 18:03:21 -0400
-Received: from mga06.intel.com ([134.134.136.31]:63749 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231979AbhEWWDU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 18:03:20 -0400
-IronPort-SDR: kWXkKXQhLi51yXpMrvAAgiGpo/0VjAW9ufSRBXuhaJPen7NTSb6SPFVy0iXSs/vsGpZlkoOFE/
- o+gy0qhAmXCw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="263032196"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="263032196"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 15:01:52 -0700
-IronPort-SDR: rq+JCdJNCx6Ydcq0BWzqnism1+LMkfpH3FxgFa3t0Rj6QLdUc2h8X4Q9y0/SYhjvcEp79oWVZq
- 1RuAV2BwQaMg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="475527007"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 23 May 2021 15:01:51 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lkwAQ-0000z1-DW; Sun, 23 May 2021 22:01:50 +0000
-Date:   Mon, 24 May 2021 06:01:01 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:efi/urgent] BUILD SUCCESS
- e169fba4f464760dd9734c9e39e1c2e88e374f32
-Message-ID: <60aad09d.1vaysj62e+o3V7HT%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232009AbhEWWXC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 18:23:02 -0400
+Received: from polaris.svanheule.net ([84.16.241.116]:44406 "EHLO
+        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231979AbhEWWXB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 18:23:01 -0400
+Received: from [IPv6:2a02:a03f:eafb:ee01:bd37:7535:eb00:6fa] (unknown [IPv6:2a02:a03f:eafb:ee01:bd37:7535:eb00:6fa])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sander@svanheule.net)
+        by polaris.svanheule.net (Postfix) with ESMTPSA id 08A33202A44;
+        Mon, 24 May 2021 00:21:33 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
+        s=mail1707; t=1621808493;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jBeGHDP0Tz5eoqu47A7M4vJJjH5RoK+PyK940cMviYU=;
+        b=IUDJSVE1BeBfPkWGNB/a/KeGc0ZKZoSeTrKZ782c9nTSun9G+D/R/rqpTQqcZ25m2+qbCF
+        GBW4ptVnHawMdA80G6vXGXiCL6tk4CfTKE/p2rYA5wHke+2UCUiiQbS3NinC6ZnO29lWUU
+        k/srPeIaRJQn04OwlA5FfcptgMgwLdp2ZJOZPZBMHaq8SwRVFnhuV9pJWab2jUIArYN6uu
+        EhDByWCunGJ0wI9jbAQcjm6UcsMGdM2qfgfTsfV6MzJRE8af/wcmWH3BkktZV7rpqH7FED
+        S/UxVKqVVTVMWHIZj6HaWEm3CK0nWuXg43ECZNj++1m/DBb5tjb1NzVcOfabog==
+Message-ID: <7536875f01b0420acb88de1ea3a48c31fdb26962.camel@svanheule.net>
+Subject: Re: [PATCH v2 2/7] gpio: regmap: Add configurable dir/value order
+From:   Sander Vanheule <sander@svanheule.net>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 24 May 2021 00:21:29 +0200
+In-Reply-To: <YKMbF3Ow8IrBBlXW@lunn.ch>
+References: <cover.1621279162.git.sander@svanheule.net>
+         <d5f294489d31a80b69169f358da89bb7f70d1328.1621279162.git.sander@svanheule.net>
+         <YKMbF3Ow8IrBBlXW@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi/urgent
-branch HEAD: e169fba4f464760dd9734c9e39e1c2e88e374f32  Merge tag 'efi-urgent-for-v5.13-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/urgent
+Hi Adrew,
 
-elapsed time: 723m
+On Tue, 2021-05-18 at 03:40 +0200, Andrew Lunn wrote:
+> On Mon, May 17, 2021 at 09:28:04PM +0200, Sander Vanheule wrote:
+> > GPIO chips may not support setting the output value when a pin is
+> > configured as an input
+> 
+> Could you describe what happens with the hardware you are playing
+> with. Not being able to do this means you will get glitches when
+> enabling the output so you should not use these GPIOs with bit banging
+> busses like i2c.
 
-configs tested: 200
-configs skipped: 2
+As I reported earlier, using value-before-direction breaks the GPIO driven LEDs
+on one of my devices.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+I've tried to use another device to test if I could reproduce this. Using the
+gpioset and gpioget utilities, I can't seem to reproduce this however. Whether I
+enable the (new) quirk or not, doesn't seem to make any difference.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                               j2_defconfig
-arm                            pleb_defconfig
-arm                         lubbock_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7619_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      mgcoge_defconfig
-ia64                        generic_defconfig
-arm                         s5pv210_defconfig
-arm                          pxa168_defconfig
-powerpc                  iss476-smp_defconfig
-h8300                            allyesconfig
-powerpc                      chrp32_defconfig
-arm                         hackkit_defconfig
-openrisc                            defconfig
-openrisc                 simple_smp_defconfig
-arm                     davinci_all_defconfig
-arm                        keystone_defconfig
-powerpc                     tqm8548_defconfig
-ia64                             alldefconfig
-sh                           se7780_defconfig
-powerpc                     tqm8541_defconfig
-xtensa                         virt_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                            lart_defconfig
-sh                         microdev_defconfig
-mips                       capcella_defconfig
-arm                          lpd270_defconfig
-nds32                            alldefconfig
-powerpc                     pq2fads_defconfig
-mips                           jazz_defconfig
-arm                      pxa255-idp_defconfig
-riscv                               defconfig
-sh                   rts7751r2dplus_defconfig
-arc                          axs101_defconfig
-riscv                    nommu_k210_defconfig
-arm                           stm32_defconfig
-powerpc                       ppc64_defconfig
-arm                           h5000_defconfig
-sh                              ul2_defconfig
-nios2                         3c120_defconfig
-mips                     loongson2k_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                          urquell_defconfig
-sparc64                             defconfig
-mips                          rb532_defconfig
-mips                           ip27_defconfig
-sh                          kfr2r09_defconfig
-mips                malta_qemu_32r6_defconfig
-arm64                            alldefconfig
-sh                                  defconfig
-m68k                       m5475evb_defconfig
-arm                        spear6xx_defconfig
-um                             i386_defconfig
-xtensa                              defconfig
-sh                        edosk7705_defconfig
-sh                          landisk_defconfig
-arm                      footbridge_defconfig
-xtensa                       common_defconfig
-arm                          collie_defconfig
-sh                          rsk7201_defconfig
-m68k                            mac_defconfig
-powerpc                          allmodconfig
-m68k                        m5272c3_defconfig
-powerpc                         ps3_defconfig
-m68k                            q40_defconfig
-mips                      bmips_stb_defconfig
-ia64                         bigsur_defconfig
-sh                           se7206_defconfig
-mips                          rm200_defconfig
-arm                        oxnas_v6_defconfig
-arm                       cns3420vb_defconfig
-m68k                          sun3x_defconfig
-arm                           viper_defconfig
-mips                         rt305x_defconfig
-powerpc                     powernv_defconfig
-sh                          r7780mp_defconfig
-i386                                defconfig
-sh                        sh7757lcr_defconfig
-arc                         haps_hs_defconfig
-mips                     loongson1c_defconfig
-sh                   sh7770_generic_defconfig
-mips                        vocore2_defconfig
-arm                         nhk8815_defconfig
-powerpc                      pasemi_defconfig
-powerpc                      obs600_defconfig
-mips                 decstation_r4k_defconfig
-arc                     haps_hs_smp_defconfig
-x86_64                           alldefconfig
-arm                         vf610m4_defconfig
-h8300                               defconfig
-powerpc                     akebono_defconfig
-riscv                          rv32_defconfig
-h8300                     edosk2674_defconfig
-powerpc                      pcm030_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                          atari_defconfig
-powerpc                      katmai_defconfig
-sh                     sh7710voipgw_defconfig
-mips                           gcw0_defconfig
-sh                        sh7763rdp_defconfig
-powerpc                     stx_gp3_defconfig
-sh                     magicpanelr2_defconfig
-sh                          rsk7203_defconfig
-ia64                          tiger_defconfig
-mips                          ath25_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210524
-x86_64               randconfig-a001-20210524
-x86_64               randconfig-a006-20210524
-x86_64               randconfig-a003-20210524
-x86_64               randconfig-a004-20210524
-x86_64               randconfig-a002-20210524
-i386                 randconfig-a001-20210523
-i386                 randconfig-a005-20210523
-i386                 randconfig-a002-20210523
-i386                 randconfig-a003-20210523
-i386                 randconfig-a004-20210523
-i386                 randconfig-a006-20210523
-i386                 randconfig-a001-20210524
-i386                 randconfig-a002-20210524
-i386                 randconfig-a005-20210524
-i386                 randconfig-a006-20210524
-i386                 randconfig-a004-20210524
-i386                 randconfig-a003-20210524
-x86_64               randconfig-a013-20210523
-x86_64               randconfig-a014-20210523
-x86_64               randconfig-a012-20210523
-x86_64               randconfig-a016-20210523
-x86_64               randconfig-a015-20210523
-x86_64               randconfig-a011-20210523
-i386                 randconfig-a016-20210523
-i386                 randconfig-a011-20210523
-i386                 randconfig-a015-20210523
-i386                 randconfig-a012-20210523
-i386                 randconfig-a014-20210523
-i386                 randconfig-a013-20210523
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+The documentation we have on this chip is quite scarce, so I'm unaware of
+different chip revisions, or how I would distinguish between revisions. As far
+as I can see, Realtek's code (present in the GPL archives we got from some
+vendors) set the pin direction before setting the value.
 
-clang tested configs:
-x86_64               randconfig-b001-20210523
-x86_64               randconfig-b001-20210524
-x86_64               randconfig-a006-20210523
-x86_64               randconfig-a001-20210523
-x86_64               randconfig-a005-20210523
-x86_64               randconfig-a003-20210523
-x86_64               randconfig-a004-20210523
-x86_64               randconfig-a002-20210523
-x86_64               randconfig-a013-20210524
-x86_64               randconfig-a012-20210524
-x86_64               randconfig-a014-20210524
-x86_64               randconfig-a016-20210524
-x86_64               randconfig-a015-20210524
-x86_64               randconfig-a011-20210524
+For now, I've made the implementation so that the quirk is always applied. Like
+the behaviour that is implicit in the origal code. If prefered, I could also
+supply a separate devicetree compatible or extra devictree flag.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Regarding bit banged I2C, glitches may not actually be an issue. If a pull-up
+resistor is used for HIGH values, and an open drain for LOW values, the GPIO pin
+doesn't actually have to change value, only direction (IN for HIGH, OUT for
+LOW). A configuration like this would perhaps glitch once on the initial OUT-LOW
+configuration. Like I mentioned, bit banged I2C is frequently used in ethernet
+switches with these chips to talk to SFP modules.
+
+
+Best,
+Sander
+
