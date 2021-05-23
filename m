@@ -2,134 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08D1138DC28
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E1D38DC2C
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231912AbhEWRYi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 13:24:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhEWRYg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 13:24:36 -0400
-Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4520C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 10:23:08 -0700 (PDT)
-Received: by mail-oi1-x236.google.com with SMTP id x15so24905965oic.13
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 10:23:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=2FoVSFWcUZWXRm7AD51E3dANi05UrgXiAjik3mpf5no=;
-        b=RMSTz6qKC8La6YP28LsKEFerKiMRPKEO36aLvbKYOKBoTx2ndWptJB/hb5lmiWiOn1
-         P7eLVaFFNfbJ96Yn12cdngBg5O7L+KKD9SOM9hWFZL4mzEtE9KSM1Ff2EsBfu4rT9s3z
-         DUBxRuOE30by1mVJGwW1wTlq2bD28Q8PakzOk2U/jjJRkzzHWq4+6YMxKNElVvb1sUcR
-         F36hLz+pS7Hryd1Blv55Q/+V94hkfHNJiDlrP0IZzoBRpi+jNJwTNu7X2KJOQnaIfhFK
-         x/2KYVE/esYY6BOI+vTxogfb/X2t6D2VKHId7hPBIePEhk8PXg7xDFZu8JghGwF0tbEj
-         o9pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=2FoVSFWcUZWXRm7AD51E3dANi05UrgXiAjik3mpf5no=;
-        b=UnyCIGMOzgOhA0iytYXo5cZ/NvSXu/nfcG3PZWcQPaRjzqAC/kMWwkascOnca6izt2
-         cLglET6XPRFor+mUtf07ug4ih2rYlN3JSv87hwwLvpN7je9UT0trl7FcG6Dd48M0l+0P
-         MWFXAmvdlCVakJHPpgvhNHHzCkZmCPE+DL3O3iTgWg20xDy6tAhpGFkOLuKM8nnYqid1
-         xWZCHl8TqlZGekJDbbqDvStUVzX9dweY086T4DYMtXHxjfP/Ncbhk2+Aa4aKbVmcKugM
-         cD8ZsbkXlzzM+jkEyDrgu0jHcPp1iSLYVfI5SbBIovu9iwijVdLQjgP2fF+YXBM8FecF
-         vCiA==
-X-Gm-Message-State: AOAM532zZJR6vE8B5ODvYjbRCcFg7Po1Ll8UquzmuEWqDjuEX/M7b4mk
-        /GT/HOPDDVSQQ7HXOVPhMCjjXeM8+Qg=
-X-Google-Smtp-Source: ABdhPJwY480IlovPkjrgDpcAhRCpN2rSslgx5zzbp8togNhSlzBUSV60ajsWIZCURBGgHgy33kopPA==
-X-Received: by 2002:a05:6808:98f:: with SMTP id a15mr8551245oic.29.1621790588083;
-        Sun, 23 May 2021 10:23:08 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id v9sm2627421otn.44.2021.05.23.10.23.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 10:23:07 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Zhenyu Wang <zhenyuw@linux.intel.com>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gvt-dev@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2] drm/i915/gem: Use list_entry to access list members
-Date:   Sun, 23 May 2021 10:23:04 -0700
-Message-Id: <20210523172304.3033229-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        id S231937AbhEWRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:25:44 -0400
+Received: from mx3.wp.pl ([212.77.101.10]:56353 "EHLO mx3.wp.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231893AbhEWRZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 13:25:42 -0400
+Received: (wp-smtpd smtp.wp.pl 10112 invoked from network); 23 May 2021 19:24:11 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1621790651; bh=RJx2/dYy5rKglmcq3ciiPxaS8A88JNvbT9Qw3cpTdfE=;
+          h=From:To:Cc:Subject;
+          b=kgKsPUNyxgfo0Hd4BCd+NaD2NjTr+tVSkyiWAsmtOIos99w7wD5OGCMlnTnCzM/m3
+           +FhC/rOpJea3ojj2z+FSD6B/Hyyz3Qm4iAavpncpunf58ROxwhiyjIWLpR7GofIFTH
+           VFaeG/GqrC3WR83WpluO4QWg7VbdWjrRx7TWLPwI=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <linus.walleij@linaro.org>; 23 May 2021 19:24:11 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, john@phrozen.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH v2] dt-bindings: gpio: stp: convert to json-schema
+Date:   Sun, 23 May 2021 19:24:05 +0200
+Message-Id: <20210523172405.660171-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: 4296720f8b63bf972cc73ea2edb1742d
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [IXME]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use list_entry() instead of container_of() to access list members.
-Also drop unnecessary and misleading NULL checks on the result of
-list_entry().
+Convert the Lantiq STP Device Tree binding documentation to json-schema.
+Add the missing pinctrl property to the example. Add missing lantiq,phy3
+and lantiq,phy4 bindings for xRX300 and xRX330 SoCs.
 
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
-v2: Checkpatch fixes:
-    - Fix alignment
-    - Replace comparison against NULL with !
+Changes since v1:
+ - Rename note to gpio.
+ - Drop default pinctrl from this binding.
+ - Convert lantiq,phyX to patternProperties.
+---
+ .../bindings/gpio/gpio-stp-xway.txt           |  42 --------
+ .../bindings/gpio/gpio-stp-xway.yaml          | 101 ++++++++++++++++++
+ 2 files changed, 101 insertions(+), 42 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
 
- drivers/gpu/drm/i915/gvt/dmabuf.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/gvt/dmabuf.c b/drivers/gpu/drm/i915/gvt/dmabuf.c
-index d4f883f35b95..e3f488681484 100644
---- a/drivers/gpu/drm/i915/gvt/dmabuf.c
-+++ b/drivers/gpu/drm/i915/gvt/dmabuf.c
-@@ -148,8 +148,7 @@ static void dmabuf_gem_object_free(struct kref *kref)
- 
- 	if (vgpu && vgpu->active && !list_empty(&vgpu->dmabuf_obj_list_head)) {
- 		list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
--			dmabuf_obj = container_of(pos,
--					struct intel_vgpu_dmabuf_obj, list);
-+			dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
- 			if (dmabuf_obj == obj) {
- 				list_del(pos);
- 				intel_gvt_hypervisor_put_vfio_device(vgpu);
-@@ -357,10 +356,8 @@ pick_dmabuf_by_info(struct intel_vgpu *vgpu,
- 	struct intel_vgpu_dmabuf_obj *ret = NULL;
- 
- 	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
--		dmabuf_obj = container_of(pos, struct intel_vgpu_dmabuf_obj,
--						list);
--		if ((dmabuf_obj == NULL) ||
--		    (dmabuf_obj->info == NULL))
-+		dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
-+		if (!dmabuf_obj->info)
- 			continue;
- 
- 		fb_info = (struct intel_vgpu_fb_info *)dmabuf_obj->info;
-@@ -387,11 +384,7 @@ pick_dmabuf_by_num(struct intel_vgpu *vgpu, u32 id)
- 	struct intel_vgpu_dmabuf_obj *ret = NULL;
- 
- 	list_for_each(pos, &vgpu->dmabuf_obj_list_head) {
--		dmabuf_obj = container_of(pos, struct intel_vgpu_dmabuf_obj,
--						list);
--		if (!dmabuf_obj)
--			continue;
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
+deleted file mode 100644
+index 78458adbf4b7..000000000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
++++ /dev/null
+@@ -1,42 +0,0 @@
+-Lantiq SoC Serial To Parallel (STP) GPIO controller
 -
-+		dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
- 		if (dmabuf_obj->dmabuf_id == id) {
- 			ret = dmabuf_obj;
- 			break;
-@@ -600,8 +593,7 @@ void intel_vgpu_dmabuf_cleanup(struct intel_vgpu *vgpu)
- 
- 	mutex_lock(&vgpu->dmabuf_lock);
- 	list_for_each_safe(pos, n, &vgpu->dmabuf_obj_list_head) {
--		dmabuf_obj = container_of(pos, struct intel_vgpu_dmabuf_obj,
--						list);
-+		dmabuf_obj = list_entry(pos, struct intel_vgpu_dmabuf_obj, list);
- 		dmabuf_obj->vgpu = NULL;
- 
- 		idr_remove(&vgpu->object_idr, dmabuf_obj->dmabuf_id);
+-The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
+-peripheral controller used to drive external shift register cascades. At most
+-3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
+-to drive the 2 LSBs of the cascade automatically.
+-
+-
+-Required properties:
+-- compatible : Should be "lantiq,gpio-stp-xway"
+-- reg : Address and length of the register set for the device
+-- #gpio-cells : Should be two.  The first cell is the pin number and
+-  the second cell is used to specify optional parameters (currently
+-  unused).
+-- gpio-controller : Marks the device node as a gpio controller.
+-
+-Optional properties:
+-- lantiq,shadow : The default value that we shall assume as already set on the
+-  shift register cascade.
+-- lantiq,groups : Set the 3 bit mask to select which of the 3 groups are enabled
+-  in the shift register cascade.
+-- lantiq,dsl : The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
+-  property can enable this feature.
+-- lantiq,phy1 : The gphy1 core can control 3 bits of the gpio cascade.
+-- lantiq,phy2 : The gphy2 core can control 3 bits of the gpio cascade.
+-- lantiq,rising : use rising instead of falling edge for the shift register
+-
+-Example:
+-
+-gpio1: stp@e100bb0 {
+-	compatible = "lantiq,gpio-stp-xway";
+-	reg = <0xE100BB0 0x40>;
+-	#gpio-cells = <2>;
+-	gpio-controller;
+-
+-	lantiq,shadow = <0xffff>;
+-	lantiq,groups = <0x7>;
+-	lantiq,dsl = <0x3>;
+-	lantiq,phy1 = <0x7>;
+-	lantiq,phy2 = <0x7>;
+-	/* lantiq,rising; */
+-};
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+new file mode 100644
+index 000000000000..999bd06e6b1c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+@@ -0,0 +1,101 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-stp-xway.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lantiq SoC Serial To Parallel (STP) GPIO controller
++
++description: |
++  The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
++  peripheral controller used to drive external shift register cascades. At most
++  3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
++  and Ethernet PHYs to drive some bytes of the cascade automatically.
++
++maintainers:
++  - John Crispin <john@phrozen.org>
++
++properties:
++  $nodename:
++    pattern: "^gpio@[0-9a-f]+$"
++
++  compatible:
++    const: lantiq,gpio-stp-xway
++
++  reg:
++    description:
++      Address and length of the register set for the device.
++    maxItems: 1
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    description:
++      The first cell is the pin number and the second cell is used to specify
++      consumer flags.
++    const: 2
++
++  lantiq,shadow:
++    description:
++      The default value that we shall assume as already set on the
++      shift register cascade.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x000000
++    maximum: 0xffffff
++
++  lantiq,groups:
++    description:
++      Set the 3 bit mask to select which of the 3 groups are enabled
++      in the shift register cascade.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,dsl:
++    description:
++      The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
++      property can enable this feature.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x3
++
++patternProperties:
++  "lantiq,phy[1-4]":
++    description:
++      The gphy core can control 3 bits of the gpio cascade. On xRX200 family there
++      are available gphy[0-1]. On xRX300 gphy[0-2], on xRX330 gphy[0-3].
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,rising:
++    description:
++      Use rising instead of falling edge for the shift register.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - gpio-controller
++  - "#gpio-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio@e100bb0 {
++        compatible = "lantiq,gpio-stp-xway";
++        reg = <0xE100BB0 0x40>;
++        #gpio-cells = <2>;
++        gpio-controller;
++
++        pinctrl-0 = <&stp_pins>;
++        pinctrl-names = "default";
++
++        lantiq,shadow = <0xffffff>;
++        lantiq,groups = <0x7>;
++        lantiq,dsl = <0x3>;
++        lantiq,phy1 = <0x7>;
++        lantiq,phy2 = <0x7>;
++    };
++...
 -- 
-2.25.1
+2.30.2
 
