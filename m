@@ -2,75 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F5938DA39
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:21:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB0B38DA7E
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:26:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231698AbhEWIWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 04:22:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40868 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231599AbhEWIWk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 04:22:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DF82C61263;
-        Sun, 23 May 2021 08:21:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621758074;
-        bh=MICF+Uu1HkhetRxQCscJNaBrHSc35hE+tXwnn6k6VUE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BxQGlTsr5rBXr9k0Gh1xiDMJaKVu8hEpBcU8BD75BH1RlSMLE5q/MOipnZP80e3S3
-         ZA3H/dO78sbvmjI/DZxaUPTPHLc5yrVGjiyxI3dIh1NlDue3adN5ruhgORXE+qYoSD
-         iXLMxUIrvdCuVo+I9ACpjjz7Qd9cuVeSacORuac8=
-Date:   Sun, 23 May 2021 10:21:10 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Francois Gervais <fgervais@distech-controls.com>,
-        linux-rtc@vger.kernel.org,
-        Michael McCormick <michael.mccormick@enatel.net>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] rtc: pcf85063: fallback to parent of_node
-Message-ID: <YKoQds5N0dP2Gjg5@kroah.com>
-References: <20210310211026.27299-1-fgervais@distech-controls.com>
- <161861118020.865088.6364463756780633947.b4-ty@bootlin.com>
- <20210522153636.ymyyq4vtzz2dq5k2@pengutronix.de>
+        id S231726AbhEWI1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 04:27:37 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5522 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231706AbhEWI1e (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 04:27:34 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fntdd06mWzkY6B;
+        Sun, 23 May 2021 16:23:17 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sun, 23 May 2021 16:26:06 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
+ May 2021 16:26:05 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <luciano.coelho@intel.com>, <kvalo@codeaurora.org>,
+        <davem@davemloft.net>, <kuba@kernel.org>,
+        <gregory.greenman@intel.com>
+CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH] iwlwifi: mvm: rfi: Use kmemdup() in iwl_rfi_get_freq_table()
+Date:   Sun, 23 May 2021 16:25:44 +0800
+Message-ID: <20210523082544.44068-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210522153636.ymyyq4vtzz2dq5k2@pengutronix.de>
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 05:36:36PM +0200, Marc Kleine-Budde wrote:
-> Hello Greg,
-> 
-> On 17.04.2021 00:16:40, Alexandre Belloni wrote:
-> > On Wed, 10 Mar 2021 16:10:26 -0500, Francois Gervais wrote:
-> > > The rtc device node is always or at the very least can possibly be NULL.
-> > > 
-> > > Since v5.12-rc1-dontuse/3c9ea42802a1fbf7ef29660ff8c6e526c58114f6 this
-> > > will lead to a NULL pointer dereference.
-> > > 
-> > > To fix this we fallback to using the parent node which is the i2c client
-> > > node as set by devm_rtc_allocate_device().
-> > > 
-> > > [...]
-> > 
-> > Applied, thanks!
-> > 
-> > [1/1] rtc: pcf85063: fallback to parent of_node
-> >       commit: 03531606ef4cda25b629f500d1ffb6173b805c05
-> > 
-> > I made the fallback unconditionnal because this should have been that way from
-> > the beginning as you point out.
-> 
-> can you queue this for stable, as it causes a NULL Pointer deref with
-> (at least) v5.12.
+Issue identified with Coccinelle.
 
-After it hits Linus's tree, let stable@vger.kernel.org know the id and
-we will glad to add it to the stable trees.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ drivers/net/wireless/intel/iwlwifi/mvm/rfi.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-thanks,
+diff --git a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+index 0b818067067c..2225c4f5b71e 100644
+--- a/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
++++ b/drivers/net/wireless/intel/iwlwifi/mvm/rfi.c
+@@ -107,12 +107,10 @@ struct iwl_rfi_freq_table_resp_cmd *iwl_rfi_get_freq_table(struct iwl_mvm *mvm)
+ 	if (WARN_ON_ONCE(iwl_rx_packet_payload_len(cmd.resp_pkt) != resp_size))
+ 		return ERR_PTR(-EIO);
+ 
+-	resp = kzalloc(resp_size, GFP_KERNEL);
++	resp = kmemdup(cmd.resp_pkt->data, resp_size, GFP_KERNEL);
+ 	if (!resp)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	memcpy(resp, cmd.resp_pkt->data, resp_size);
+-
+ 	iwl_free_resp(&cmd);
+ 	return resp;
+ }
+-- 
+2.17.1
 
-greg k-h
