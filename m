@@ -2,88 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B859138D859
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 04:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DA138D85B
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 04:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231610AbhEWCkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 22:40:14 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60637 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231516AbhEWCkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 22:40:12 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fnl014z4Wz9sSn;
-        Sun, 23 May 2021 12:38:40 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1621737523;
-        bh=lH9AwdckluTJpRQiVDB7RMXCjnC/3+oXvLjYv6y4e8E=;
-        h=Date:From:To:Cc:Subject:From;
-        b=bSzDzM0UFtSLPnHea68W0ws0+TgrwnRgisMYUnd6wY7HF30ZquDNJP1fb0wt8MvW/
-         cWOh48A0cSXmDae8cL8QaJPvTMRtv8/1b/d4ZTFDCn0/U9My+bu7GcgFQ5xfJssNwq
-         Tc/6+3jFaNhGP5Z2X7c8RXzd7yqTebnmLeiuwQSi7t0VA5gqVY/PJOKJYnEVgNZhWU
-         qeGyF0yhSNkAwA40YSoH7set2SiSNLlbFtkzxfZShBdM5OD49r5X8bvnsypVYpJ17p
-         e0c7H44lCy+Ry0Jv/MevYI+chhVLVbcA7InhxOtvDpohfJ5m7firDe6FRt0h761FRy
-         U7RUne+BMTeFA==
-Date:   Sun, 23 May 2021 12:38:40 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        NetFilter <netfilter-devel@vger.kernel.org>
-Cc:     Florian Westphal <fw@strlen.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the netfilter tree
-Message-ID: <20210523123840.101ddea5@canb.auug.org.au>
+        id S231539AbhEWCrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 22:47:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231495AbhEWCrQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 22:47:16 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73775C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 19:45:49 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id e17so7361534pfl.5
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 19:45:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kQdUw3i+6qH8wFbd5nMBYnK83/wdZDOwLJNKJGHXsj0=;
+        b=fpn18oPM6RIf1AMR5ZWpyJeeBER/NanNQyNlOf2w2iYmrZ9lXJIfGKSMn7faSEN5RU
+         TO3xTaOKh93kuhFdibL2zBFdoyOVuqoGO0dhkwNZnl01OyLsT2hHTDa37h085TF1R5TC
+         MY3B5lYIYJ9EUYsnF9Yx5o9j6cCL2MlZwbg9MSAoQwoRXcVj50gBfctZu1JMaw077d21
+         5rdrMrpypQvf4r/8Vy24MQY6MELqXuWwls+ZPiKM4DVS0vX1qKCR2dOt9aVmJBPr6FIp
+         5EVZUFcXeSaFnuHqZbTBGnpwyThYQAgvZtQjTHw9ALEw/e1OmJTGp++InaN8WGVIM+F0
+         4DDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kQdUw3i+6qH8wFbd5nMBYnK83/wdZDOwLJNKJGHXsj0=;
+        b=HJVEaB6gax8/+MsyJ6AMY8G19fANdJof0afmMIzgA9woZlg/hRPfSRnwgdKK2saQ+a
+         GlyV3B0ATVasoclgJNswIY7lwPu6LxQKqCaQvx26XiTAQK0ZZYW5LQ3s5tWv5jrjREgL
+         R0L+ExPqFHW2R/bJn8tMiFVbCdzXKgAEb3EBlPSCYYLbG1Bh3+hJYxiY7sr2CKMj3c/v
+         4r0ZsyY72TSGUfhvrLi+SX62vJ7d2UBVO5DVcuzG28priiq30t7UCv9k0ifwGCjBGRcZ
+         IR+ZWxVL1EzbaU/NWzUZ+gqpphzBT5g822OL8ZxUS0xZIheuIQJINVE4UK57dEX8PW4z
+         g6LA==
+X-Gm-Message-State: AOAM531IbBAQjq0rkT9rZUov07hCX/6nhxFH91+KJjcx6zWOLPdLNGUa
+        h2Fc8B2+jL2BVROB+Kjwb5/V++jJWdBqlKRp71h+MA==
+X-Google-Smtp-Source: ABdhPJwgBkyP397O0+9s9cKSsRDOY4ZvePTqlUHuWy+35wC/4F3ltLJqeZ04WYbdApqDYJMFSzshuEx6Zi0uoohw04o=
+X-Received: by 2002:a05:6a00:2493:b029:2c4:b6dd:d389 with SMTP id
+ c19-20020a056a002493b02902c4b6ddd389mr17975096pfv.2.1621737948711; Sat, 22
+ May 2021 19:45:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/FbsIMk5veJMUKTjyQFK=9Dq";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20210521233952.236434-1-mike.kravetz@oracle.com>
+In-Reply-To: <20210521233952.236434-1-mike.kravetz@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sun, 23 May 2021 10:45:11 +0800
+Message-ID: <CAMZfGtVnGMu9SU8U+aXp6YKz0p1pBxcYy4OMpNftpkxTbJBM8w@mail.gmail.com>
+Subject: Re: [External] [PATCH] userfaultfd: hugetlbfs: fix new flag usage in
+ error path
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux- stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/FbsIMk5veJMUKTjyQFK=9Dq
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sat, May 22, 2021 at 7:40 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> In commit d6995da31122 ("hugetlb: use page.private for hugetlb specific
+> page flags") the use of PagePrivate to indicate a reservation count
+> should be restored at free time was changed to the hugetlb specific flag
+> HPageRestoreReserve.  Changes to a userfaultfd error path as well as a
+> VM_BUG_ON() in remove_inode_hugepages() were overlooked.
+>
+> Users could see incorrect hugetlb reserve counts if they experience an
+> error with a UFFDIO_COPY operation.  Specifically, this would be the
+> result of an unlikely copy_huge_page_from_user error.  There is not an
+> increased chance of hitting the VM_BUG_ON.
+>
+> Fixes: d6995da31122 ("hugetlb: use page.private for hugetlb specific page flags")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-Hi all,
+Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-In commit
-
-  22cbdbcfb61a ("netfilter: conntrack: unregister ipv4 sockopts on error un=
-wind")
-
-Fixes tag
-
-  Fixes: a0ae2562c6c ("netfilter: conntrack: remove l3proto abstraction")
-
-has these problem(s):
-
-  - SHA1 should be at least 12 digits long
-
-This is probably not worth rebasing for, but can be avoided in the
-future by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
-just making sure it is not set (or set to "auto").
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/FbsIMk5veJMUKTjyQFK=9Dq
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCpwDAACgkQAVBC80lX
-0GxMSwgAnDSz7sMT/9vItSvg3gP3XFRbR5MIOrpR+F1o8HUrTVw8Rz6rFgOC7Eq+
-SL+jiiHhB8AW8kJLJzu5knUttr6SsW7N/sS+y4jRGhEsKANBjbZmfaDBtCGoUroT
-5jqSoQ6EP/8wjWneXxl/OzWCw0KjOCLUeP+ZcFKM3eM7Sj1jauyGRxgigkWkaAR0
-+4kuomfEdYEhT/SZ/NhhXmXJFhbMNETaW6Wbd56yS4RNWqHqfUjETNyztTOM+ERw
-E+Q40I8TWNk7QHDkJe9bYChWpnZDUaGlOzKEofHQUHEcCA7KlWIEcQSWbYYcFWwt
-OxXkMiT9J7pUP/FE0d4ZJFx9/iS0dw==
-=0yE/
------END PGP SIGNATURE-----
-
---Sig_/FbsIMk5veJMUKTjyQFK=9Dq--
+Thanks Mike.
