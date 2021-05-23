@@ -2,59 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 076DA38DBF0
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 18:35:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B50538DC0F
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:05:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231897AbhEWQg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 12:36:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231800AbhEWQgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 12:36:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 52F93610A8;
-        Sun, 23 May 2021 16:34:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621787699;
-        bh=XCLn7tlTwPUIArwGSHEZRytG+THpySx4T+YOOQ1zLLI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=OoMYjACMRp1L5kNoPu3zcrqyLangi2D+QAC+eo1bCo5KK2pCxS+Wt44hF0VKYKCD7
-         zbzG5yOrnNjlTrU1kh5rKFEBMkKc8AeEAxt6RQo8ZhpLqu675MK6qYPm2pAnFxiG17
-         qZjtGol5knidQyGq0eQdjCf+W4bwf5CTqTr+MBpl3mLMaH5D8iY8H0t+M3LivE0twc
-         delvqqF4z0XCx3HsbA2GKOTOkobZrp+E1L07iXNKwIK5ScNDhUY2SIlplpd+F2vm53
-         IZZl0h0wS8Fcer1eG7O44eQDdY30+i1IUwlTVz4aEOXN66ddT5WiP7WuJyJQZzmY3g
-         uoKES0SrTMFrA==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 4677C60A71;
-        Sun, 23 May 2021 16:34:59 +0000 (UTC)
-Subject: Re: [GIT pull] locking/urgent for v5.13-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <162177682445.10917.1808156686282700079.tglx@nanos>
-References: <162177682324.10917.7221704858691713254.tglx@nanos> <162177682445.10917.1808156686282700079.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <162177682445.10917.1808156686282700079.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-05-23
-X-PR-Tracked-Commit-Id: 3a010c493271f04578b133de977e0e5dd2848cea
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0898678c742ee913691d7f4a1606309825eee33b
-Message-Id: <162178769928.22288.15550485422158563542.pr-tracker-bot@kernel.org>
-Date:   Sun, 23 May 2021 16:34:59 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        id S231952AbhEWRG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:06:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231904AbhEWRG2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 13:06:28 -0400
+X-Greylist: delayed 1760 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 23 May 2021 10:05:01 PDT
+Received: from srv1.deutnet.info (srv1.deutnet.info [IPv6:2a01:4f8:c2c:6846::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A6A0C061574;
+        Sun, 23 May 2021 10:05:01 -0700 (PDT)
+Received: from agriveaux by srv1.deutnet.info with local (Exim 4.92)
+        (envelope-from <agriveaux@deutnet.info>)
+        id 1lkr4k-0000Rx-6R; Sun, 23 May 2021 18:35:38 +0200
+From:   Alexandre GRIVEAUX <agriveaux@deutnet.info>
+To:     johan@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexandre GRIVEAUX <agriveaux@deutnet.info>
+Subject: [PATCH RESEND 1/2] USB: serial: omninet: Adding Zyxel Omni 56K Plus
+Date:   Sun, 23 May 2021 18:35:21 +0200
+Message-Id: <20210523163522.1690-1-agriveaux@deutnet.info>
+X-Mailer: git-send-email 2.20.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 23 May 2021 13:33:44 -0000:
+Adding Zyxel Omni 56K Plus modem, this modem include:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2021-05-23
+USB chip:
+NetChip
+NET2888
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0898678c742ee913691d7f4a1606309825eee33b
+Main chip:
+901041A
+F721501APGF
 
-Thank you!
+Another modem using the same chips is the Zyxel Omni 56K DUO/NEO,
+could be added with the right USB ID.
 
+Signed-off-by: Alexandre GRIVEAUX <agriveaux@deutnet.info>
+---
+ drivers/usb/serial/omninet.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/drivers/usb/serial/omninet.c b/drivers/usb/serial/omninet.c
+index 83c62f920c50..8be91f5a4dd7 100644
+--- a/drivers/usb/serial/omninet.c
++++ b/drivers/usb/serial/omninet.c
+@@ -26,6 +26,7 @@
+ 
+ #define ZYXEL_VENDOR_ID		0x0586
+ #define ZYXEL_OMNINET_ID	0x1000
++#define ZYXEL_OMNI_56K_PLUS_ID	0x1500
+ /* This one seems to be a re-branded ZyXEL device */
+ #define BT_IGNITIONPRO_ID	0x2000
+ 
+@@ -41,6 +42,7 @@ static void omninet_port_remove(struct usb_serial_port *port);
+ static const struct usb_device_id id_table[] = {
+ 	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNINET_ID) },
+ 	{ USB_DEVICE(ZYXEL_VENDOR_ID, BT_IGNITIONPRO_ID) },
++	{ USB_DEVICE(ZYXEL_VENDOR_ID, ZYXEL_OMNI_56K_PLUS_ID) },
+ 	{ }						/* Terminating entry */
+ };
+ MODULE_DEVICE_TABLE(usb, id_table);
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.20.1
+
