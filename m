@@ -2,134 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 457CD38DAB6
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:30:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241A938DAB9
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231685AbhEWJcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:32:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231658AbhEWJcD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 05:32:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6C6561151;
-        Sun, 23 May 2021 09:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621762231;
-        bh=Ek7SYvfllGWZGSWDSHP+3ZRuuazWRLNL0F0GgxvDRMc=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=oSeUOLM5644vUF+6LchLVgrPjHLA8abBOgmA3v3PjcM0ZYSrsMldWVbU3lKFhkJbp
-         worAHAeDsir6xbLe2U10d6ToBF6qGrnmOFetS8XZD0ytzG58CgBbVei0MWZMSYVMtR
-         kDyI2lgsIwnzYaq1AwL1o9iAcfvTUXcOqky55FPwIWvq9SVoAt+skuNF4vGEwHgpDj
-         HvR6XJrXJJsI6pWyz9jEK//RQEpW5FgpKYgMja9ZgSN4GK3kOXBhkPCHwDTqQBOMk3
-         Xl9VQ4nblPLUWOdCNd2CXTWhndM7DONs0zRiFsUuJs05gz+zaLex4Z+05YCiJzT7qC
-         pfF3W0FFtIT4Q==
-Date:   Sun, 23 May 2021 11:30:26 +0200
-From:   Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     Sean Young <sean@mess.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: Re: linux-next: Fixes tag needs some work in the v4l-dvb-next tree
-Message-ID: <20210523113026.4a3a7f4f@coco.lan>
-In-Reply-To: <20210523083636.GA15522@gofer.mess.org>
-References: <20210523124953.7a5108b4@canb.auug.org.au>
-        <20210523083636.GA15522@gofer.mess.org>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S231695AbhEWJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 05:42:54 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47106 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231658AbhEWJmx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 05:42:53 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14N9Xv5J148295;
+        Sun, 23 May 2021 05:40:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=ociFyizVsM28GJMvNG8DMaVsQoWuT8RJpNowjEhIi/A=;
+ b=K4dL4tad0pExKFz47Pi+fXjgDsK+xN+KiMKNKZYQWhG9zSr6NX7weICFKnsFj+kaYt3L
+ cjHzQNqOLPBh4O5YalR0aEGcYPBsQ2+KNPLZCrkNoKCVqQSnA8hLNO+/VSxLj/xGqsYl
+ JJ0stIYgIr5tbyBB4Y7RhF+PbEGBQXrQ7gUXd+QU7aslg2tCTyqOEi3oOpil0DhnmLch
+ NYFxHZYHrbAHloOQarB104S5iBPlJ32O65w4DgL/Xy1S7HXuoWBMeIV4iZEMITaLeoOe
+ /IvC50J8+V8BcsPNljCGDyZXLS60N3yUhuBOWXyEFOZ+LDo8yQq5FaJ92JUjdo6+ORIK 6w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38qjjdt1vv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 May 2021 05:40:50 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14N9XtbO148186;
+        Sun, 23 May 2021 05:40:50 -0400
+Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38qjjdt1vg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 May 2021 05:40:49 -0400
+Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
+        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14N9RHK1014616;
+        Sun, 23 May 2021 09:40:47 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma02fra.de.ibm.com with ESMTP id 38psk886e7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 23 May 2021 09:40:47 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14N9eG5M27394388
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 23 May 2021 09:40:16 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3049AA405B;
+        Sun, 23 May 2021 09:40:45 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8820AA4054;
+        Sun, 23 May 2021 09:40:44 +0000 (GMT)
+Received: from [9.145.68.41] (unknown [9.145.68.41])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 23 May 2021 09:40:44 +0000 (GMT)
+Subject: Re: [PATCH] rculist: unify documentation about missing
+ list_empty_rcu()
+To:     paulmck@kernel.org
+Cc:     Josh Triplett <josh@joshtriplett.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210521100829.257385-1-jwi@linux.ibm.com>
+ <20210521175652.GC4441@paulmck-ThinkPad-P17-Gen-1>
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+Message-ID: <65f39db3-41ec-dc7a-0600-082439735556@linux.ibm.com>
+Date:   Sun, 23 May 2021 12:40:44 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20210521175652.GC4441@paulmck-ThinkPad-P17-Gen-1>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PJbQW_UKfbcYwrwzdjm9YwtFxDsoDmjv
+X-Proofpoint-ORIG-GUID: K0wzkeLPKojKPCB2E9q8h2zUiuIwmpm-
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-22_08:2021-05-20,2021-05-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 bulkscore=0 priorityscore=1501
+ suspectscore=0 impostorscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104190000 definitions=main-2105230070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Sun, 23 May 2021 09:36:36 +0100
-Sean Young <sean@mess.org> escreveu:
-
-> Hi Mauro,
+On 21.05.21 20:56, Paul E. McKenney wrote:
+> On Fri, May 21, 2021 at 12:08:29PM +0200, Julian Wiedmann wrote:
+>> We have two separate sections that talk about why list_empty_rcu()
+>> is not needed, consolidate them.
+>>
+>> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
 > 
-> On Sun, May 23, 2021 at 12:49:53PM +1000, Stephen Rothwell wrote:
-> > Hi all,
-> > 
-> > In commit
-> > 
-> >   7c8a36e1fb30 ("media: rc: i2c: Fix an error message")
-> > 
-> > Fixes tag
-> > 
-> >   Fixes: acaa34bf06e9 ('media: rc: implement zilog transmitter")
-> > 
-> > has these problem(s):
-> > 
-> >   - Subject has leading but no trailing quotes
-> >   - Subject does not match target commit subject
-> >     Just use
-> > 	git log -1 --format='Fixes: %h ("%s")'  
+> Good catch, thank you!  As usual, I could not resist the urge to further
+> wordsmith, resulting in the following.  Please let me know if I messed
+> anything up.
 > 
-> Now that we have media-staging, can the commit message be ammended?
+> 							Thanx, Paul
+> 
 
-If the patch didn't reach media_tree, yes, but this patch can't
-be fixed anymore, as it is too old:
+I expected no different ;). LGTM, and clearly emphasizing that one shall
+not mix list_empty() with list_first_entry_rcu() is a nice improvement.
 
-	commit acaa34bf06e963f0b9481a3c16bfd6867e2369a0
-	Author:     Sean Young <sean@mess.org>
-	AuthorDate: Sat Oct 21 08:16:47 2017 -0400
-	Commit:     Mauro Carvalho Chehab <mchehab@kernel.org>
-	CommitDate: Thu Dec 14 09:58:20 2017 -0500
 
-	    media: rc: implement zilog transmitter
+> ------------------------------------------------------------------------
+> 
+> commit 6e9da58a4b391035e1ce77b8d867cdcdc73521b2
+> Author: Julian Wiedmann <jwi@linux.ibm.com>
+> Date:   Fri May 21 12:08:29 2021 +0200
+> 
+>     rculist: Unify documentation about missing list_empty_rcu()
+>     
+>     We have two separate sections that talk about why list_empty_rcu()
+>     is not needed, so this commit consolidates them.
+>     
+>     Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
+>     [ paulmck: The usual wordsmithing. ]
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
+> index f8633d37e358..d29740be4833 100644
+> --- a/include/linux/rculist.h
+> +++ b/include/linux/rculist.h
+> @@ -10,15 +10,6 @@
+>  #include <linux/list.h>
+>  #include <linux/rcupdate.h>
+>  
+> -/*
+> - * Why is there no list_empty_rcu()?  Because list_empty() serves this
+> - * purpose.  The list_empty() function fetches the RCU-protected pointer
+> - * and compares it to the address of the list head, but neither dereferences
+> - * this pointer itself nor provides this pointer to the caller.  Therefore,
+> - * it is not necessary to use rcu_dereference(), so that list_empty() can
+> - * be used anywhere you would want to use a list_empty_rcu().
+> - */
+> -
+>  /*
+>   * INIT_LIST_HEAD_RCU - Initialize a list_head visible to RCU readers
+>   * @list: list to be initialized
+> @@ -318,21 +309,29 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
+>  /*
+>   * Where are list_empty_rcu() and list_first_entry_rcu()?
+>   *
+> - * Implementing those functions following their counterparts list_empty() and
+> - * list_first_entry() is not advisable because they lead to subtle race
+> - * conditions as the following snippet shows:
+> + * They do not exist because they would lead to subtle race conditions:
+>   *
+>   * if (!list_empty_rcu(mylist)) {
+>   *	struct foo *bar = list_first_entry_rcu(mylist, struct foo, list_member);
+>   *	do_something(bar);
+>   * }
+>   *
+> - * The list may not be empty when list_empty_rcu checks it, but it may be when
+> - * list_first_entry_rcu rereads the ->next pointer.
+> - *
+> - * Rereading the ->next pointer is not a problem for list_empty() and
+> - * list_first_entry() because they would be protected by a lock that blocks
+> - * writers.
+> + * The list might be non-empty when list_empty_rcu() checks it, but it
+> + * might have become empty by the time that list_first_entry_rcu() rereads
+> + * the ->next pointer, which would result in a SEGV.
+> + *
+> + * When not using RCU, it is OK for list_first_entry() to re-read that
+> + * pointer because both functions should be protected by some lock that
+> + * blocks writers.
+> + *
+> + * When using RCU, list_empty() uses READ_ONCE() to fetch the
+> + * RCU-protected ->next pointer and then compares it to the address of the
+> + * list head.  However, it neither dereferences this pointer nor provides
+> + * this pointer to its caller.  Thus, READ_ONCE() suffices (that is,
+> + * rcu_dereference() is not needed), which means that list_empty() can be
+> + * used anywhere you would want to use list_empty_rcu().  Just don't
+> + * expect anything useful to happen if you do a subsequent lockless
+> + * call to list_first_entry_rcu()!!!
+>   *
+>   * See list_first_or_null_rcu for an alternative.
+>   */
+> 
 
-We need to double-check why linux-next is detecting it as a new one.
-
--
-
-Linux-next should be pulling media work from those tree branches:
-
-- v4l-dvb-fixes/fixes, e. g.:
-	git://linuxtv.org/media_tree.git fixes
-- v4l-dvb/master, e. g.:
-	git://linuxtv.org/media_tree.git master
-- v4l-dvb-next/master, e. g.:
-	git://linuxtv.org/mchehab/media-next.git master
-
-In the past, I was using media-next (a.k.a. v4l-dvb-next at linux-next
-nomenclature) to solve some special cases like when I need to deal with
-patches that depends on other trees, or when I want to submit a separate
-PR for some patches.
-
--
-
-After the last merge window, I modified my workflow in order to:
-
-1. be able of correcting problems on media patches, if pointed after
-   being merged at linux-next;
-2. keep picking patches during the merge window.
-
-The change is simple: I'm now pushing non-fixes stuff initially at
-media-next master branch. Outside the merge window, the contents of 
-this branch is identical to the contents of the media stage tree:
-
-	git://linuxtv.org/media_stage.git
-
-But I'll freeze changes there at the end of -rc6.
-
-A couple of days after media-stage is merged at linux-next
-(via media-next/linux-next tree), if no issues, I merge the
-patches back at media_tree.
-
-If something gets wrong in the mean time, I simply rebase
-media-stage, fixing the issue again and push it back to the
-media-next/linux-next tree.
-
--
-
-Now, I can't understand why this specific patch had a trouble
-detected today, as it was this patch is already upstream:
-
-	https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=acaa34bf06e9
-
-Apparently since 4.15-rc1:
-
-	$ git describe acaa34bf06e9
-	v4.15-rc1-204-gacaa34bf06e9
-
-Thanks,
-Mauro
