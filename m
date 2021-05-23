@@ -2,173 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3441F38DC12
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:05:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E191F38DC18
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:12:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhEWRGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 13:06:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47676 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231828AbhEWRGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 13:06:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621789521; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AQY8MaNXdB9lrK0EVRcQv50/fTdkdlIzkK11aCclTwY=;
-        b=YrqnMcRoll/K3arytPngpzidGJggy3zhK0c+U7OTwpD42tEOSORkxiiXR4227rg1/MQXnr
-        6xPSUFjaTIh+GiagoWoIgTG7jivpSvI4LfpaJ/7oc+uWuHLRuTNZSGO77VRTlVGJ7m7U7O
-        iDZNGMUGvmp032152cRLOiQ4ZNcEY2M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621789521;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=AQY8MaNXdB9lrK0EVRcQv50/fTdkdlIzkK11aCclTwY=;
-        b=cv17nhrvfMl/ZUFhf8i+qV4+BMSEjs/9lb9OmDUiDV+JaTGNpw4yWnkeGdTwHvkUKN/IzA
-        BfRv3a5qv3dXufAw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EE885AAFD;
-        Sun, 23 May 2021 17:05:20 +0000 (UTC)
-Date:   Sun, 23 May 2021 19:05:14 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     James Feeney <james@nurealm.net>
-Cc:     linux-smp@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: linux 5.12 - fails to boot - soft lockup - CPU#0 stuck for 23s!
- - RIP smp_call_function_single
-Message-ID: <YKqLSqIM7Gi5x+IA@zn.tnic>
-References: <YKIqDdFNaXYd39wz@zn.tnic>
- <1876afbe-a167-2be5-3690-846700eeb76c@nurealm.net>
- <YKTygvN0QNlExEQP@zn.tnic>
- <984ee4ab-6e6b-cb0e-a4f1-ce2951994b1d@nurealm.net>
- <YKWAt1zLM2vfv4Sp@zn.tnic>
- <e7701de5-35f3-da9d-7339-df2de6d8b3cf@nurealm.net>
- <YKYqABhSTTUG8cgV@zn.tnic>
- <a264eaef-1c94-77e1-dfbf-e436a41588be@nurealm.net>
- <YKjJfu4kRDflQS5e@zn.tnic>
- <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net>
+        id S231905AbhEWRNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:13:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59984 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231828AbhEWRNJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 13:13:09 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DA1C061574;
+        Sun, 23 May 2021 10:11:40 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id w9so13016145qvi.13;
+        Sun, 23 May 2021 10:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=iwxLYsfnHOmvUnEFzHOLUjQtowCkQzZpZ02r9YeM+9E=;
+        b=UTiwRr5o5hHzc6dxrDpEuYbJUd/Wxb7c3vNSqseoDKZkAprP0EsinNkPcvEqH/MtRf
+         VZ0W4kk/h95ARtaM2DQ+f5Octj0jMZpOh4tfXdbCYNr0AfuCdBMW4eQMPUaGaoJaTVdx
+         wuc4TfMTa+CaK82dcKDNctlqL6rCCQfSCCd7HI+sbgr8XvwooRBlEohWrf4OirSDYcgF
+         PAs+hGT4LWyX390+W97wSGKcOCEJXJjGu6sbrPLdcUPv/1E2nSAgSle3Q1QFhIplWDd/
+         e3E2t2LOUyDauctz8X1umaVVUMo+uaUq3FCM9omM+A1oKlECyu9nRVbvWia/epgJ9t1C
+         tpxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=iwxLYsfnHOmvUnEFzHOLUjQtowCkQzZpZ02r9YeM+9E=;
+        b=EuURJoIUkX5guPMQMFxV4ZQdDSAjs+MAkxSq1PsaR6GAM8bWkoKZ6xzEv5GLbrXIE6
+         lrHOC5uiym+5O/Ctzr3j/4/hiSPy6RMX2CjjFt6NakOdbn7uNClE7gJEaMUNsUnLNWBe
+         6JSb+mynECnyXNOI9YiLTVE38ogLitgFkXS8PUG87SziG1uwCvIuIJ9qrFasrWJ+NF9f
+         89XNY7mqCjEXTaNFUcYKrXv7w6rJS+9llh+76fxKsPTFs1mq6lRT3iZbnjrJwsXQvaJr
+         LybBw7oAipMhjg2y4oELkffJvYLPO6+xrQ7WFi5F4XDr65I4HL39Y6EOnXPzR0pFz20A
+         7kSQ==
+X-Gm-Message-State: AOAM532kTB8IwRharrYw3iuB1H3oISd8vtJMaOu2HJyzO8eHmggoQBd1
+        k3qeGUugn/fPHHwqV88hYMqWauGCUJki1Q3B
+X-Google-Smtp-Source: ABdhPJwAFPIdD87GUgQWCYNEK3Jp1a2Sl2yqNg4wK/kFXmXytCbX+euuNO7ZGj2PbhUYMaW4DrUCiw==
+X-Received: by 2002:ad4:57c4:: with SMTP id y4mr25740110qvx.33.1621789900059;
+        Sun, 23 May 2021 10:11:40 -0700 (PDT)
+Received: from smtp.gmail.com ([2804:14c:73:9a01::1003])
+        by smtp.gmail.com with ESMTPSA id k125sm9221718qkf.53.2021.05.23.10.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 10:11:39 -0700 (PDT)
+Date:   Sun, 23 May 2021 14:11:35 -0300
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/3] staging: iio: cdc: ad7746: initial effort to move out
+ of staging
+Message-ID: <cover.1621786036.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <373464e3-b8a0-0fe0-b890-41df0eecf090@nurealm.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 05:28:42PM -0600, James Feeney wrote:
-> Out of curiosity, I added "pr_info("%s : mcheck_intel_therm_init()
-> use to run here", __func__);" to __init mcheck_init() in
-> arch/x86/kernel/cpu/mce/core.c, just to see *when* it *would have*
-> run, compared to when it is running now.
+Tidy up driver code by removing vague comments, simplifying probe
+return, and extracting capdac register write to a separate function.
 
-Yes, this is probably the only timing-sensitive difference this patch of
-mine introduces. So who knows what's in that LVT APIC register earlier
-and *maybe* reading it later might give us different values.
+These small patches are a starting point for improving the ad7746 driver,
+hopefully to a point where it's possible to get it out of staging. I'm
+looking up to feedback on what could be improved to accomplish that.
 
-So do the same game again pls, but this time apply the patch below. It
-is practically a revert of my patch and with it, your box should *not*
-freeze anymore *if* my patch really is the culprit.
+changelog v1 -> v2:
+- Dropped num_channels fixup patch (applied from previous series).
+- Split general code style patch into several atomic ones.
+- New patch to catch capdac write boilerplate into a single function.
 
-Thx.
+Lucas Stankus (3):
+  staging: iio: cdc: ad7746: remove ordinary comments
+  staging: iio: cdc: ad7746: clean up probe return
+  staging: iio: cdc: ad7746: extract capac setup to own function
 
----
-diff --git a/arch/x86/include/asm/mce.h b/arch/x86/include/asm/mce.h
-index ddfb3cad8dff..5ac8b827bc12 100644
---- a/arch/x86/include/asm/mce.h
-+++ b/arch/x86/include/asm/mce.h
-@@ -296,6 +296,12 @@ struct cper_sec_mem_err;
- extern void apei_mce_report_mem_error(int corrected,
- 				      struct cper_sec_mem_err *mem_err);
- 
-+#ifdef CONFIG_X86_THERMAL_VECTOR
-+extern void mcheck_intel_therm_init(void);
-+#else
-+static inline void mcheck_intel_therm_init(void) { }
-+#endif
-+
- /*
-  * Enumerate new IP types and HWID values in AMD processors which support
-  * Scalable MCA.
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index bf7fe87a7e88..ded20b8612fe 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -2190,6 +2190,7 @@ __setup("mce", mcheck_enable);
- 
- int __init mcheck_init(void)
- {
-+	mcheck_intel_therm_init();
- 	mce_register_decode_chain(&early_nb);
- 	mce_register_decode_chain(&mce_uc_nb);
- 	mce_register_decode_chain(&mce_default_nb);
-diff --git a/drivers/thermal/intel/therm_throt.c b/drivers/thermal/intel/therm_throt.c
-index f8e882592ba5..0ebd2386839f 100644
---- a/drivers/thermal/intel/therm_throt.c
-+++ b/drivers/thermal/intel/therm_throt.c
-@@ -621,19 +621,30 @@ bool x86_thermal_enabled(void)
- 	return atomic_read(&therm_throt_en);
- }
- 
-+void __init mcheck_intel_therm_init(void)
-+{
-+	/*
-+	 * This function is only called on boot CPU. Save the init thermal
-+	 * LVT value on BSP and use that value to restore APs' thermal LVT
-+	 * entry BIOS programmed later
-+	 */
-+	if (intel_thermal_supported(&boot_cpu_data)) {
-+		lvtthmr_init = apic_read(APIC_LVTTHMR);
-+	pr_info("%s: lvtthmr_init: 0x%x\n", __func__, lvtthmr_init);
-+	} else {
-+		pr_info("%s: !intel_thermal_supported\n", __func__);
-+	}
-+}
-+
- void intel_init_thermal(struct cpuinfo_x86 *c)
- {
- 	unsigned int cpu = smp_processor_id();
- 	int tm2 = 0;
--	u32 l, h;
-+	u32 l, h, tmp = -1;
- 
- 	if (!intel_thermal_supported(c))
- 		return;
- 
--	/* On the BSP? */
--	if (c == &boot_cpu_data)
--		lvtthmr_init = apic_read(APIC_LVTTHMR);
--
- 	/*
- 	 * First check if its enabled already, in which case there might
- 	 * be some SMM goo which handles it, so we can't even put a handler
-@@ -652,13 +663,17 @@ void intel_init_thermal(struct cpuinfo_x86 *c)
- 	 * BIOS has programmed on AP based on BSP's info we saved since BIOS
- 	 * is always setting the same value for all threads/cores.
- 	 */
--	if ((h & APIC_DM_FIXED_MASK) != APIC_DM_FIXED)
-+	if ((h & APIC_DM_FIXED_MASK) != APIC_DM_FIXED) {
- 		apic_write(APIC_LVTTHMR, lvtthmr_init);
-+		tmp = apic_read(APIC_LVTTHMR);
-+	}
- 
-+	pr_info("%s: CPU%d, lvtthmr_init: 0x%x, read: 0x%x, misc_enable (low): 0x%x\n",
-+		__func__, cpu, lvtthmr_init, tmp, l);
- 
- 	if ((l & MSR_IA32_MISC_ENABLE_TM1) && (h & APIC_DM_SMI)) {
- 		if (system_state == SYSTEM_BOOTING)
--			pr_debug("CPU%d: Thermal monitoring handled by SMI\n", cpu);
-+			pr_info("CPU%d: Thermal monitoring handled by SMI\n", cpu);
- 		return;
- 	}
- 
+ drivers/staging/iio/cdc/ad7746.c | 58 +++++++++++++-------------------
+ 1 file changed, 23 insertions(+), 35 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.31.1
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
