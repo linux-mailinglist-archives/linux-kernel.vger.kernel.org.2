@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4470438DE40
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:56:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E35BA38DE4C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232095AbhEWX6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 19:58:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35414 "EHLO
+        id S232082AbhEWX6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 19:58:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231982AbhEWX6C (ORCPT
+        with ESMTP id S232086AbhEWX6E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 19:58:02 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE392C06138A;
-        Sun, 23 May 2021 16:56:34 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id v5so31181407ljg.12;
-        Sun, 23 May 2021 16:56:34 -0700 (PDT)
+        Sun, 23 May 2021 19:58:04 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB92C06138B;
+        Sun, 23 May 2021 16:56:35 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id t17so14502723ljd.9;
+        Sun, 23 May 2021 16:56:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=XcXraiNoRPU0G8oGIVhPyNHE4YAr90zRs8GgZNjViE0=;
-        b=qq7JN01neQFC1nt1RjhBXkkYdgb4M6Fkr5RK4eftNKgiX2uBFK4m0JQgi6+Dt68+ks
-         f2/PZ1Wklem3LRx9B0h7lD6ODGuXTuPrMK48GtmQwxXcbIdG8Mq3wKIrMVtY5r5gTH7+
-         oARR27AZL/lyvH8lgg6mRrbQ3gtkWgJ7HQLs5a0S9DOsfp6T4wSdrp44a220ftmVJ11Y
-         nbGwN6kljms3UGPxXOXkdW7kxw8hlZFIzUywkEGGQVvcKkVs/uQEmY3UWo76Sdg2kgWj
-         Kqvcy0LwG4jw9T4cDSGt0TjhUaDE0A2WcSvZ+Ikz7CrnkpsuflydX25BL16qmkW6rYQA
-         TXJQ==
+        bh=AqIoL8w6UW8nZZQW4Ci4myc0ad3mcz0KynC5WY0Sz8A=;
+        b=CdwiSwwGxruJPsrcExQZXd+thphvqthJtvltwu8MjAEeiP34K5ntFdrxNpRTVBEWgc
+         KEC8dcdF4l3TuMG7TOMtWJV6ttPR4hD+0xBO3ER9G9dbQsqaULwlw8krwb3KRfZH3fWn
+         1GkEdtTlzQAPXnntzONcv3COzlApbQ6/g9pFJ6EmhrdLPJyP9JCpD3tIAxfOzvNV+iIa
+         cnPUNIhDtPgjjHni6Z9D9AZT189MU3UblxBFEYnf5ptbzuzaf3EjEym1t5x4mSu/B2AU
+         nD25VhBKX2LFHtafrIKpud2oFAMtcpXMrnMFfyKgMlNBih0gMwTaNY6XIidv1WR9JuGp
+         79iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=XcXraiNoRPU0G8oGIVhPyNHE4YAr90zRs8GgZNjViE0=;
-        b=FzYbqY0LnGguVSWcNshSodKecdbwZHvJqC9ykrOE5k7MTCiKA8/7Bnrjkc9qu67nHo
-         nFdw3uygpZZTlQxUU2ql7WtZZaSIl/sLxI0VWPAegfsxv9CKYHJod9gNmcnEn4evICBt
-         zEDTewBMWfemGCu1Eb+z9OnCOEilPmcU1fOmUWdz1SVXWD4TS7FHAi8exqedks7YGWdy
-         nKy3aj4TdUR+/eYwUVPOBX7TwsF4hzYsEzIkfiVqIN75WN9v+ytI3FOxQ2NJpfXG5TZ5
-         tEzxP87icxO38Vvfb/sblHO3WDahc0MzNlVBiVdXOaMpwMEAQo7lzJvMvAl9rpCB8EU4
-         qwUA==
-X-Gm-Message-State: AOAM531+nxPtxxITtStM5yruMGG4TTCQOsQKyLxKYI4GUVXiDIksjz6i
-        mr7lDF39wyfb+KbGgcDmCMY=
-X-Google-Smtp-Source: ABdhPJyGEtTfR/XlS0JbwxpHNSb/95KFeP7p5VWXUtSjIHC+KvqddbHIkOaAxluzNUbkM2dsWIP4zg==
-X-Received: by 2002:a2e:a78c:: with SMTP id c12mr14735696ljf.421.1621814193058;
+        bh=AqIoL8w6UW8nZZQW4Ci4myc0ad3mcz0KynC5WY0Sz8A=;
+        b=Z00MoDZFD20D2LXRhhMHeNI/yTxUcsBcLF4W/IvbC+unBANhZ/q+NCmwgBIBZ2naf1
+         eJt3p8ZUm8Luq1yTxlp0ulJIh/AuryqwR/YCo4ne3zuxOrBUg3Ddfy1ULI+KoRTmBoJD
+         bGmCf2eWUFZe4zmDNGOwiX2x+TpSW53zjqucenA9DAVDQh/HMKlag67PQLrEHFKjubnx
+         EjbxJDLTmiBLZJVRxMq8qji6aSiSWpa2CYZYDdUNiSc7V0eFUu7HH5uqR0wvnO5xX83m
+         pJX4HQXEHiBCWcLYPusOA7Y+wDNgGAxUNtPTCRqE1nlE3DJVgRKOSY6rD85H+nVSHm5p
+         xmmQ==
+X-Gm-Message-State: AOAM532v6x28OHgoC12eiwC7W2DTxtLBX963tbLECCnDJPjkXSI8LEIx
+        l4s7H5CVIAJ80eybDDVBZaqb2onpfhI=
+X-Google-Smtp-Source: ABdhPJzvXCYRUvjdpvm97UZ/DwBEkwCqXYw7tSvJBy8GMv2Qxgp2uFDwc3ZHwmcDjtAK6cKsb9hZ6g==
+X-Received: by 2002:a2e:b44f:: with SMTP id o15mr15180872ljm.497.1621814193846;
         Sun, 23 May 2021 16:56:33 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
-        by smtp.gmail.com with ESMTPSA id h4sm1092987lfv.247.2021.05.23.16.56.32
+        by smtp.gmail.com with ESMTPSA id h4sm1092987lfv.247.2021.05.23.16.56.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 16:56:32 -0700 (PDT)
+        Sun, 23 May 2021 16:56:33 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -63,9 +63,9 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v2 2/7] thermal: thermal_of: Stop zone device before unregistering it
-Date:   Mon, 24 May 2021 02:56:15 +0300
-Message-Id: <20210523235620.31538-3-digetx@gmail.com>
+Subject: [PATCH v2 3/7] thermal/core: Export thermal_cooling_device_stats_update()
+Date:   Mon, 24 May 2021 02:56:16 +0300
+Message-Id: <20210523235620.31538-4-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210523235620.31538-1-digetx@gmail.com>
 References: <20210523235620.31538-1-digetx@gmail.com>
@@ -75,31 +75,31 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Zone device is enabled after thermal_zone_of_sensor_register() completion,
-but it's not disabled before senors if unregistered, leaving temperature
-polling active. This results in accessing a disabled zone device and
-produces a warning about this problem. Stop zone device before
-unregistering it in order to fix this "use-after-free" problem.
+NVIDIA Tegra30 thermal sensor driver has a hardware-controlled CPU cooling
+feature that halves CPU frequency once a specified trip point is breached.
+In order to account the hardware state transitions, which are reported by
+interrupt, the sensor driver needs to report the cooling state transition
+and this is done by thermal_cooling_device_stats_update(). The sensor
+driver could be compiled as a loadable driver module, but this API
+function isn't exported, hence export it.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- drivers/thermal/thermal_of.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/thermal/thermal_sysfs.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-index 5b76f9a1280d..6379f26a335f 100644
---- a/drivers/thermal/thermal_of.c
-+++ b/drivers/thermal/thermal_of.c
-@@ -559,6 +559,9 @@ void thermal_zone_of_sensor_unregister(struct device *dev,
- 	if (!tz)
- 		return;
+diff --git a/drivers/thermal/thermal_sysfs.c b/drivers/thermal/thermal_sysfs.c
+index 1c4aac8464a7..ab373280f853 100644
+--- a/drivers/thermal/thermal_sysfs.c
++++ b/drivers/thermal/thermal_sysfs.c
+@@ -690,6 +690,7 @@ void thermal_cooling_device_stats_update(struct thermal_cooling_device *cdev,
+ unlock:
+ 	spin_unlock(&stats->lock);
+ }
++EXPORT_SYMBOL_GPL(thermal_cooling_device_stats_update);
  
-+	/* stop temperature polling */
-+	thermal_zone_device_disable(tzd);
-+
- 	mutex_lock(&tzd->lock);
- 	tzd->ops->get_temp = NULL;
- 	tzd->ops->get_trend = NULL;
+ static ssize_t total_trans_show(struct device *dev,
+ 				struct device_attribute *attr, char *buf)
 -- 
 2.30.2
 
