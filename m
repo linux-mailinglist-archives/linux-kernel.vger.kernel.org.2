@@ -2,175 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EF138DB52
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 15:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01B2838DB57
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 16:01:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhEWNsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 09:48:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43258 "EHLO
+        id S231783AbhEWODI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 10:03:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231784AbhEWNrp (ORCPT
+        with ESMTP id S231761AbhEWODH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 09:47:45 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278ABC06138A;
-        Sun, 23 May 2021 06:46:17 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id n2so25820527wrm.0;
-        Sun, 23 May 2021 06:46:17 -0700 (PDT)
+        Sun, 23 May 2021 10:03:07 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FFCC061574;
+        Sun, 23 May 2021 07:01:39 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so22737614oto.0;
+        Sun, 23 May 2021 07:01:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Fc3G6exJieu9OL4lvjd+2d/FQ/AgmvBVDDkwAj8ehdk=;
-        b=U4H3Fgky50WtLxLLaUenJD9ELdNCml1iPrd9Ef2y7ncNA250IzIQ/Oh+wYcSvNnCpL
-         gLY6rZpLXTyrIvT5jS0KpwkM5McN2uQkpNu2ZHI/Qp/mH1Dp4/Cgwbnhi+GmiGSh/yj5
-         iK1iCaLK4IdvXYaR2bRwIMu4PVudImb08vmBjaRl23e1LImhttSXj2MkgJa/kfxsEhdo
-         TBMAk90ayJ4trPUAylNCoyblo9W0ScZv1Yd1zf8Hc8YzciMyRgQMwayKV03xP2S1W2b0
-         VsHJoSsD1HzQm73KXUeV5Vgr/sJg5I0Ly9kHMJXSBedvkBRSk9Z9+SGhYCZM7uzLX1ap
-         gtWA==
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=85o3ARCeqv2WoUzy+YD0a4MS1G1Bt9v4SZegPWpN42Q=;
+        b=e9nT41xKFA1VVvio8EXZYbERREMUAKZGf2lciPVimf3O7vMMnogP6i61r7syPsGiGT
+         cCYjhPCJny6k7Zff6kY7JR3oK42LXDMMlgd8/7RNUdWu8aPqO9ZNnbWrmIuaEfZoXC+O
+         qh+9WqbOpeC3VZ1zLZfwyhB4GtLLwlJ8ERDjhTu8XkzXeFQjSk26fmCs2gV9gRolDE9x
+         BFcL3ZFeEWaYrC8rddA5WQ2qNq1dNSSI2yDWyvT+mA7sQyYJdrdLCuI3EB6fBLyQBPkA
+         SA5XCeEhkDoK4o7STv8zZVDSlNx9P5tHR9mwkSbrgfD4RNtYQnB/4u4SM0rS20P9hKPn
+         5Bpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Fc3G6exJieu9OL4lvjd+2d/FQ/AgmvBVDDkwAj8ehdk=;
-        b=ZzK1pqoYddGIr0pYYG0W7kMJdTAtMTFjMkseXNFCK2lKGQnATzVDUkvKIpT/yjuFG1
-         YZ6IF+vGM8dQs9F49cr8LeYHCEseahbft2Xks2tHD7J4yX84wfzKZjtfG+ZoGCqZ9acL
-         O16fRS1/oL7nkuhQadkSsOW4RhNff6KvOSKf8duNra4mIWbXKif8Px6OmvcOVLnNaiQI
-         ksmoMJceExjgoyXTzRq935j+pt78xUD0ZZvaLO4AOr4YRA6zen5AGLV9hrQ+UU5U4gds
-         mR58hM7T3MF33Whe1j6+IW3pNonMU8cG+kt2xfceuEZYEMTDJYIyDsq6cT6kdD3V3GFl
-         61kg==
-X-Gm-Message-State: AOAM532wi9XJWXhm4t4du6QWIBHFjM/rA9Nb+ULcWtMqNdsuqOPGW4Ey
-        4+V4mGlcTkmrHxLzbiBskEM=
-X-Google-Smtp-Source: ABdhPJyn3eRbyc9jx8EeAu8Lf/hMfcd9sctBYbJoh+P9HAU90yp5Y/d8BOUrt5S5cKixS18nG+E4Uw==
-X-Received: by 2002:a5d:62d0:: with SMTP id o16mr18579057wrv.164.1621777575779;
-        Sun, 23 May 2021 06:46:15 -0700 (PDT)
-Received: from xws.localdomain ([37.58.58.229])
-        by smtp.gmail.com with ESMTPSA id z188sm5112414wme.38.2021.05.23.06.46.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 06:46:15 -0700 (PDT)
-From:   Maximilian Luz <luzmaximilian@gmail.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Mark Gross <mgross@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>
-Subject: [PATCH 3/3] platform/surface: aggregator_registry: Consolidate node groups for 5th- and 6th-gen devices
-Date:   Sun, 23 May 2021 15:45:28 +0200
-Message-Id: <20210523134528.798887-4-luzmaximilian@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210523134528.798887-1-luzmaximilian@gmail.com>
-References: <20210523134528.798887-1-luzmaximilian@gmail.com>
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=85o3ARCeqv2WoUzy+YD0a4MS1G1Bt9v4SZegPWpN42Q=;
+        b=BqiNLtWssNTPI1YFBZq5g+/7dM/WBNNa9nSCfiHDNF9keElsu6htTqtHEzmNEFXgnp
+         ezdwKVb+PzBZNSgoW0Zyc6BTIs+z41dT9Ce+ZeYbRyPmG38IbXCIvZzRpG0Wo2+p24ve
+         qOmvxg8zWvElDdNAe4pdprxTVycu7lPRZSwASy6pjidXQP2slrBsdw5OkUL7npBuOYJl
+         3CtBNncN09RLSNIHcP1uF4WIzJicdMO8NmUHQbyaVv9jb0ocSzZhO6/mrBuwzAVxcuDF
+         QoDxeRq1mWWcoNC/4niLZd9eg2zBZ+/I4Vp3/88xnKpv9f49/9Uff/5xOoDjzKG1G6Hj
+         EaLQ==
+X-Gm-Message-State: AOAM5335nGjohC0iQ6CMVAktytGxtw+VwwaiwNEJlRF2Tky+UfO0mZH4
+        qUjIKvVxRnoYoTvTY04s8gnKbIt8IyY=
+X-Google-Smtp-Source: ABdhPJxsnAQt+C9UddHKLBRD/OpEde33r956A2yxo0CyLzV4QBxpF2ZS6QOwZ3APLDo7DL82nOjkWw==
+X-Received: by 2002:a9d:600d:: with SMTP id h13mr14912988otj.259.1621778498053;
+        Sun, 23 May 2021 07:01:38 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p1sm2567620otk.58.2021.05.23.07.01.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 May 2021 07:01:37 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v6] hwmon: Add sht4x Temperature and Humidity Sensor
+ Driver
+To:     Navin Sankar Velliangiri <navin@linumiz.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210522060917.41256-1-navin@linumiz.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <0fdb63a8-f353-cbcb-b97b-b54ab2da9d7f@roeck-us.net>
+Date:   Sun, 23 May 2021 07:01:35 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210522060917.41256-1-navin@linumiz.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-5th- and 6th-generation Surface devices have all SAM clients defined in
-ACPI, except for the platform profile/performance mode which his handled
-via the WSID (Windows Surface Integration Device). Thus, the node groups
-for those devices are the same and we can just use a single one instead
-of re-defining the same one over and over again.
+On 5/21/21 11:09 PM, Navin Sankar Velliangiri wrote:
+> This patch adds a hwmon driver for the SHT4x Temperature and
+> Humidity sensor.
+> 
+> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
+> 
+> Changes in v2:
+> 
+> * Removed unused macro SHT4X_MIN_POLL_INTERVAL
+> * Replaced time_after instead of ktime_after
+> * Used goto statements for error handling
+> * Hardcoded the interval_time instead of clamp_val().
+> 
+> Changes in v3:
+> 
+> * Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
+>    return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL
+> * Changed the data type of update_interval and last_updated to long.
+> 
+> Changes in v4:
+> 
+> * "update_interval" is long but msecs_to_jiffies() accepts only unsigned int.
+>    clamp_val() api is used to assign the update_interval stays within UINT_MAX.
+> 
+> Changes in v5:
+> 
+> * Added error handling when master unable to send the data.
+> 
+> Changes in v6:
+> 
+> * clamp_val() alone is used to set the update interval. since the update
+>    interval is a continuous setting.
+> ---
+>   Documentation/hwmon/index.rst |   1 +
+>   Documentation/hwmon/sht4x.rst |  45 +++++
+>   drivers/hwmon/Kconfig         |  11 ++
+>   drivers/hwmon/Makefile        |   1 +
+>   drivers/hwmon/sht4x.c         | 305 ++++++++++++++++++++++++++++++++++
+>   5 files changed, 363 insertions(+)
+>   create mode 100644 Documentation/hwmon/sht4x.rst
+>   create mode 100644 drivers/hwmon/sht4x.c
+> 
+> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
+> index 9ed60fa84cbe..b6fcae40258c 100644
+> --- a/Documentation/hwmon/index.rst
+> +++ b/Documentation/hwmon/index.rst
+> @@ -164,6 +164,7 @@ Hardware Monitoring Kernel Drivers
+>      sht15
+>      sht21
+>      sht3x
+> +   sht4x
+>      shtc1
+>      sis5595
+>      sl28cpld
+> diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
+> new file mode 100644
+> index 000000000000..3b37abcd4a46
+> --- /dev/null
+> +++ b/Documentation/hwmon/sht4x.rst
+> @@ -0,0 +1,45 @@
+> +.. SPDX-License-Identifier: GPL-2.0
+> +
+> +Kernel driver sht4x
+> +===================
+> +
+> +Supported Chips:
+> +
+> +  * Sensirion SHT4X
+> +
+> +    Prefix: 'sht4x'
+> +
+> +    Addresses scanned: None
+> +
+> +    Datasheet:
+> +
+> +      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
+> +
+> +Author: Navin Sankar Velliangiri <navin@linumiz.com>
+> +
+> +
+> +Description
+> +-----------
+> +
+> +This driver implements support for the Sensirion SHT4x chip, a humidity
+> +and temperature sensor. Temperature is measured in degree celsius, relative
+> +humidity is expressed as a percentage. In sysfs interface, all values are
+> +scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
+> +
+> +Usage Notes
+> +-----------
+> +
+> +The device communicates with the I2C protocol. Sensors can have the I2C
+> +address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
+> +to instantiate the device.
+> +
+> +Sysfs entries
+> +-------------
+> +
+> +=============== ============================================
+> +temp1_input     Measured temperature in millidegrees Celcius
+> +humidity1_input Measured humidity in %H
+> +update_interval The minimum interval for polling the sensor,
+> +                in milliseconds. Writable. Must be at least
+> +                2000.
+> +============== =============================================
+> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
+> index 87624902ea80..e3675377bc5d 100644
+> --- a/drivers/hwmon/Kconfig
+> +++ b/drivers/hwmon/Kconfig
+> @@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
+>   	  This driver can also be built as a module. If so, the module
+>   	  will be called sht3x.
+>   
+> +config SENSORS_SHT4x
+> +	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
+> +	depends on I2C
+> +	select CRC8
+> +	help
+> +	  If you say yes here you get support for the Sensiron SHT40, SHT41 and
+> +	  SHT45 humidity and temperature sensors.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called sht4x.
+> +
+>   config SENSORS_SHTC1
+>   	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
+>   	depends on I2C
+> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
+> index 59e78bc212cf..d712c61c1f5e 100644
+> --- a/drivers/hwmon/Makefile
+> +++ b/drivers/hwmon/Makefile
+> @@ -171,6 +171,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
+>   obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
+>   obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
+>   obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
+> +obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
+>   obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
+>   obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
+>   obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
+> diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
+> new file mode 100644
+> index 000000000000..39e1b4a123fa
+> --- /dev/null
+> +++ b/drivers/hwmon/sht4x.c
+> @@ -0,0 +1,305 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +
+> +/*
+> + * Copyright (c) Linumiz 2021
+> + *
+> + * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
+> + *
+> + * Author: Navin Sankar Velliangiri <navin@linumiz.com>
+> + */
+> +
+> +#include <linux/crc8.h>
+> +#include <linux/delay.h>
+> +#include <linux/hwmon.h>
+> +#include <linux/i2c.h>
+> +#include <linux/jiffies.h>
+> +#include <linux/module.h>
+> +
+> +/*
+> + * Poll intervals (in milliseconds)
+> + */
+> +#define SHT4X_MIN_POLL_INTERVAL	2000
+> +
+> +/*
+> + * I2C command delays (in microseconds)
+> + */
+> +#define SHT4X_MEAS_DELAY	1000
+> +#define SHT4X_DELAY_EXTRA	10000
+> +
+> +/*
+> + * Command Bytes
+> + */
+> +#define SHT4X_CMD_MEASURE_HPM	0b11111101
+> +#define SHT4X_CMD_RESET		0b10010100
+> +
+> +#define SHT4X_CMD_LEN		1
+> +#define SHT4X_CRC8_LEN		1
+> +#define SHT4X_WORD_LEN		2
+> +#define SHT4X_RESPONSE_LENGTH	6
+> +#define SHT4X_CRC8_POLYNOMIAL	0x31
+> +#define SHT4X_CRC8_INIT		0xff
+> +#define SHT4X_MIN_TEMPERATURE	-45000
+> +#define SHT4X_MAX_TEMPERATURE	125000
+> +#define SHT4X_MIN_HUMIDITY	0
+> +#define SHT4X_MAX_HUMIDITY	100000
+> +
+> +DECLARE_CRC8_TABLE(sht4x_crc8_table);
+> +
+> +/**
+> + * struct sht4x_data - All the data required to operate an SHT4X chip
+> + * @client: the i2c client associated with the SHT4X
+> + * @lock: a mutex that is used to prevent parallel access to the i2c client
+> + * @update_interval: the minimum poll interval
+> + * @last_updated: the previous time that the SHT4X was polled
+> + * @temperature: the latest temperature value received from the SHT4X
+> + * @humidity: the latest humidity value received from the SHT4X
+> + */
+> +struct sht4x_data {
+> +	struct i2c_client	*client;
+> +	struct mutex		lock;	/* atomic read data updates */
+> +	bool			valid;	/* validity of fields below */
+> +	long			update_interval;	/* in milli-seconds */
+> +	long			last_updated;	/* in jiffies */
+> +	s32			temperature;
+> +	s32			humidity;
+> +};
+> +
+> +/**
+> + * sht4x_read_values() - read and parse the raw data from the SHT4X
+> + * @sht4x_data: the struct sht4x_data to use for the lock
+> + * Return: 0 if succesfull, 1 if not
+> + */
+> +static int sht4x_read_values(struct sht4x_data *data)
+> +{
+> +	int ret;
 
-Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
----
- .../surface/surface_aggregator_registry.c     | 47 +++++--------------
- 1 file changed, 12 insertions(+), 35 deletions(-)
+Ah yes, the value of ret will be uninitialized, and the function will return
+a random value if data->valid is false or if two measurements follow each other.
 
-diff --git a/drivers/platform/surface/surface_aggregator_registry.c b/drivers/platform/surface/surface_aggregator_registry.c
-index ef83461fa536..4428c4330229 100644
---- a/drivers/platform/surface/surface_aggregator_registry.c
-+++ b/drivers/platform/surface/surface_aggregator_registry.c
-@@ -119,8 +119,13 @@ static const struct software_node ssam_node_hid_base_iid6 = {
- 	.parent = &ssam_node_hub_base,
- };
- 
--/* Devices for Surface Book 2. */
--static const struct software_node *ssam_node_group_sb2[] = {
-+/*
-+ * Devices for 5th- and 6th-generations models:
-+ * - Surface Book 2,
-+ * - Surface Laptop 1 and 2,
-+ * - Surface Pro 5 and 6.
-+ */
-+static const struct software_node *ssam_node_group_gen5[] = {
- 	&ssam_node_root,
- 	&ssam_node_tmp_pprof,
- 	NULL,
-@@ -142,20 +147,6 @@ static const struct software_node *ssam_node_group_sb3[] = {
- 	NULL,
- };
- 
--/* Devices for Surface Laptop 1. */
--static const struct software_node *ssam_node_group_sl1[] = {
--	&ssam_node_root,
--	&ssam_node_tmp_pprof,
--	NULL,
--};
--
--/* Devices for Surface Laptop 2. */
--static const struct software_node *ssam_node_group_sl2[] = {
--	&ssam_node_root,
--	&ssam_node_tmp_pprof,
--	NULL,
--};
--
- /* Devices for Surface Laptop 3 and 4. */
- static const struct software_node *ssam_node_group_sl3[] = {
- 	&ssam_node_root,
-@@ -177,20 +168,6 @@ static const struct software_node *ssam_node_group_slg1[] = {
- 	NULL,
- };
- 
--/* Devices for Surface Pro 5. */
--static const struct software_node *ssam_node_group_sp5[] = {
--	&ssam_node_root,
--	&ssam_node_tmp_pprof,
--	NULL,
--};
--
--/* Devices for Surface Pro 6. */
--static const struct software_node *ssam_node_group_sp6[] = {
--	&ssam_node_root,
--	&ssam_node_tmp_pprof,
--	NULL,
--};
--
- /* Devices for Surface Pro 7 and Surface Pro 7+. */
- static const struct software_node *ssam_node_group_sp7[] = {
- 	&ssam_node_root,
-@@ -495,10 +472,10 @@ static struct ssam_device_driver ssam_base_hub_driver = {
- 
- static const struct acpi_device_id ssam_platform_hub_match[] = {
- 	/* Surface Pro 4, 5, and 6 (OMBR < 0x10) */
--	{ "MSHW0081", (unsigned long)ssam_node_group_sp5 },
-+	{ "MSHW0081", (unsigned long)ssam_node_group_gen5 },
- 
- 	/* Surface Pro 6 (OMBR >= 0x10) */
--	{ "MSHW0111", (unsigned long)ssam_node_group_sp6 },
-+	{ "MSHW0111", (unsigned long)ssam_node_group_gen5 },
- 
- 	/* Surface Pro 7 */
- 	{ "MSHW0116", (unsigned long)ssam_node_group_sp7 },
-@@ -507,16 +484,16 @@ static const struct acpi_device_id ssam_platform_hub_match[] = {
- 	{ "MSHW0119", (unsigned long)ssam_node_group_sp7 },
- 
- 	/* Surface Book 2 */
--	{ "MSHW0107", (unsigned long)ssam_node_group_sb2 },
-+	{ "MSHW0107", (unsigned long)ssam_node_group_gen5 },
- 
- 	/* Surface Book 3 */
- 	{ "MSHW0117", (unsigned long)ssam_node_group_sb3 },
- 
- 	/* Surface Laptop 1 */
--	{ "MSHW0086", (unsigned long)ssam_node_group_sl1 },
-+	{ "MSHW0086", (unsigned long)ssam_node_group_gen5 },
- 
- 	/* Surface Laptop 2 */
--	{ "MSHW0112", (unsigned long)ssam_node_group_sl2 },
-+	{ "MSHW0112", (unsigned long)ssam_node_group_gen5 },
- 
- 	/* Surface Laptop 3 (13", Intel) */
- 	{ "MSHW0114", (unsigned long)ssam_node_group_sl3 },
--- 
-2.31.1
+Please fix and resubmit. The driver looks good otherwise.
 
+Guenter
