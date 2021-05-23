@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5845F38DB49
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 15:43:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF43938DB4E
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 15:46:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231777AbhEWNol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 09:44:41 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:49090 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231758AbhEWNoj (ORCPT
+        id S231785AbhEWNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 09:47:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231743AbhEWNrk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 09:44:39 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94D4D2A8;
-        Sun, 23 May 2021 15:43:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1621777391;
-        bh=e9WKWb2u3+bpo7AIMrf2X78HJQYY6mY097rfyST6qt0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=EtkwcOFMp67WVI6LFBd3yW+lKPIAfwhrC4MSKjlEWMLHuUx8hawBg3tsvh3JqcEzw
-         C0xtWWaNK9ZcPH5e68CEvhKn+rbY9uNF+cJO2m0URx2RClftIwICJ+aUPQPLTdhvxF
-         EZLU3wd3MJ1oGFfyt9iZJ6i3e1C/11c000aVkZzA=
-Date:   Sun, 23 May 2021 16:43:08 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] OF: of_address: clean up OF stub functions
-Message-ID: <YKpb7CBAGqpmFS7P@pendragon.ideasonboard.com>
-References: <20210523022807.5193-1-rdunlap@infradead.org>
+        Sun, 23 May 2021 09:47:40 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4887C061574;
+        Sun, 23 May 2021 06:46:12 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id z17so25718154wrq.7;
+        Sun, 23 May 2021 06:46:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aun+rjUfXuSI5MaBYHc3vJ7DzLorNuomgEpIPMJQ/PY=;
+        b=cDuhkep3sFM8l3q3bm1DzU0eYUy7uiW38PPhw1Kq15hH9e6zqOZ0KDnIx3Rzh4wQXk
+         6+gVKVkv+iNhyuT66Ufsb3EgcfXAu46dOUMO5Cl1iAh97RhGPTFmfslORw2OgCzv+hAn
+         ovBtaTfbkPcJPH/NmYDSNaUo1QnE6Xvjf3k4dz4hCpt7E1GBXESInf7fdeXyn5UfMLYr
+         OX1CgqatJkOoRe80HSCCYeHpe/3iPbTqdhhvDbgwLy7UiQT8A0CeKOv6aj+jT3/m+I4D
+         lxgyQ/RhmDEEUDlv1UjiP7pzt5IOTjw/mDzmV0qvAheS8RgR3EPiTi7qk9lkwPU+FyFf
+         nF1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aun+rjUfXuSI5MaBYHc3vJ7DzLorNuomgEpIPMJQ/PY=;
+        b=qNMuYBcHd6ZrdZnafDZoqSWwbi+IVHSvnJ8PF2rPOXxpgZ+mZDqTYX5QEkrngauCwP
+         mJf1sp0n3tuczygR+jylOu1u7DxWCbXZEEScYYFJmqIL3vzS2HKwPQGdU1wGlMccody6
+         ABnLGh8vq9F84yL+/+1p2aktnV0We5UWermhGVuSztEbHq62kfvEYCXG+/2DIMFmQqWh
+         66ijIKovDyO1rrktVmK4NWucAbiphQVL9+sW39VILnSnsoxuBV/2whtdhOh9Wbxyx3ET
+         6w6BNwvsnUnCPO38YC9mhSkOYyu020v20YiKpIeEJcTHYeK4vScFlPZNdDkO9BqxWbnh
+         AvqA==
+X-Gm-Message-State: AOAM5338shSXpvfRvlg2NEqQ8sKmeI5Nt2kIk57MqlM5SqiWt+IlZZkM
+        t4rnb+ocXkHZsfLlth9HN/I=
+X-Google-Smtp-Source: ABdhPJwdsxIAaX+kAs7qJ7RIe1HMUMo1jdYmhpeqlvruP0jvuemD7jGok6l7WUV92Zw9Ohr+T/wJmQ==
+X-Received: by 2002:a5d:598d:: with SMTP id n13mr18097767wri.38.1621777571533;
+        Sun, 23 May 2021 06:46:11 -0700 (PDT)
+Received: from xws.localdomain ([37.58.58.229])
+        by smtp.gmail.com with ESMTPSA id z188sm5112414wme.38.2021.05.23.06.46.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 06:46:11 -0700 (PDT)
+From:   Maximilian Luz <luzmaximilian@gmail.com>
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Mark Gross <mgross@linux.intel.com>,
+        platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maximilian Luz <luzmaximilian@gmail.com>
+Subject: [PATCH 0/3] platform/surface: aggregator_registry: Support for Surface Laptop 4 and cleanup
+Date:   Sun, 23 May 2021 15:45:25 +0200
+Message-Id: <20210523134528.798887-1-luzmaximilian@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210523022807.5193-1-rdunlap@infradead.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
+Hi,
 
-Thank you for the patch.
+this series adds support for the 13" Intel and 15" AMD versions of the
+Surface Laptop 4 and does some small cleanup regarding duplicate node
+groups in the registry.
 
-On Sat, May 22, 2021 at 07:28:07PM -0700, Randy Dunlap wrote:
-> Adjust <linux/of_address.h> so that stubs are present when
-> CONFIG_OF is not set *or* OF is set but OF_ADDRESS is not set.
-> 
-> This eliminates 2 build errors on arch/s390/ when HAS_IOMEM
-> is not set (so OF_ADDRESS is not set).
-> I.e., it provides a stub for of_iomap() when one was previously
-> not provided as well as removing some duplicate stubs.
-> 
-> s390-linux-ld: drivers/irqchip/irq-al-fic.o: in function `al_fic_init_dt':
-> irq-al-fic.c:(.init.text+0x7a): undefined reference to `of_iomap'
-> s390-linux-ld: drivers/clocksource/timer-of.o: in function `timer_of_init':
-> timer-of.c:(.init.text+0xa4): undefined reference to `of_iomap'
-> 
-> Tested with many randconfig builds, but there could still be some
-> hidden problem here.
-> 
-> Fixes: 4acf4b9cd453 ("of: move of_address_to_resource and of_iomap declarations from sparc")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: devicetree@vger.kernel.org
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
->  include/linux/of_address.h |    6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
-> 
-> --- linux-next-20210521.orig/include/linux/of_address.h
-> +++ linux-next-20210521/include/linux/of_address.h
-> @@ -106,11 +106,7 @@ static inline bool of_dma_is_coherent(st
->  }
->  #endif /* CONFIG_OF_ADDRESS */
->  
-> -#ifdef CONFIG_OF
-> -extern int of_address_to_resource(struct device_node *dev, int index,
-> -				  struct resource *r);
-> -void __iomem *of_iomap(struct device_node *node, int index);
-> -#else
-> +#if defined(CONFIG_OF) && !defined(CONFIG_OF_ADDRESS) || !defined(CONFIG_OF)
+Unfortunately I haven't heard anything of the 15" Intel version and 13"
+AMD version yet.
 
-Parentheses would help making the precedence order clear.
+Hans, can you apply patches 1 and 2 as fixes for v5.13? That way we'd
+have decent support for the SL4 (at least the aforementioned versions)
+in v5.13.
 
-On sparc, CONFIG_OF is set, CONFIG_OF_ADDRESS isn't, and
-of_address_to_resource() is provided by arch code. You'll stub it out
-here, which doesn't seem correct to me.
+Thanks,
+Max
 
->  static inline int of_address_to_resource(struct device_node *dev, int index,
->  					 struct resource *r)
->  {
+Maximilian Luz (3):
+  platform/surface: aggregator_registry: Update comments for 15" AMD
+    Surface Laptop 4
+  platform/surface: aggregator_registry: Add support for 13" Intel
+    Surface Laptop 4
+  platform/surface: aggregator_registry: Consolidate node groups for
+    5th- and 6th-gen devices
+
+ .../surface/surface_aggregator_registry.c     | 54 ++++++-------------
+ 1 file changed, 17 insertions(+), 37 deletions(-)
 
 -- 
-Regards,
+2.31.1
 
-Laurent Pinchart
