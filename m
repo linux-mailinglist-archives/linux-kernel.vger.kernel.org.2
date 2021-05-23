@@ -2,407 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47E9838DD8F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 00:34:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E880038DD92
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 00:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232182AbhEWWgQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 18:36:16 -0400
-Received: from polaris.svanheule.net ([84.16.241.116]:44876 "EHLO
-        polaris.svanheule.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232125AbhEWWgH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 18:36:07 -0400
-Received: from terra.local.svanheule.net (unknown [IPv6:2a02:a03f:eafb:ee01:bd37:7535:eb00:6fa])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sander@svanheule.net)
-        by polaris.svanheule.net (Postfix) with ESMTPSA id B8CBC202A5A;
-        Mon, 24 May 2021 00:34:38 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svanheule.net;
-        s=mail1707; t=1621809279;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=raI0z/GbTTtORXRTdmtYTUROcqFo03qJcayedUYn3dY=;
-        b=ndQzisWagpCQk26Q8U755ZcjJ08GBeb+6WKw53sPkAtLetpSIkU9L7NfyC3Qwypz50/ukL
-        xqU6gNyPQ76S5SBocT+6HI5iIyoJtYd0+O15FKFlPv4Y5j440XASPyQaejBjs+dz5YDTbP
-        n063bLlRErQfraEK4uP+wXcMV2vEJW7xqqn3HfUcKC4rRkCRqDIPpPUIFd/GLLFxQoF+rl
-        Bs+QvSRq0MMWCrAt/qGsl6PusgeaSK3NdMrCXJu1nfBCqG9e4/7A0/Gw7pm+3GZopggJST
-        UFTM3VMDIfBQk8Zk8/Wfe+68EOog3xrnUMtG83SVN6DrZLo/Lp3S6BKibPc2cw==
-From:   Sander Vanheule <sander@svanheule.net>
-To:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Sander Vanheule <sander@svanheule.net>
-Subject: [PATCH v3 6/6] leds: Add support for RTL8231 LED scan matrix
-Date:   Mon, 24 May 2021 00:34:04 +0200
-Message-Id: <213ab7580a1d3229d32f7aac67bf4e828612153a.1621809029.git.sander@svanheule.net>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1621809029.git.sander@svanheule.net>
-References: <cover.1621809029.git.sander@svanheule.net>
+        id S232038AbhEWWjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 18:39:43 -0400
+Received: from mail-dm6nam10on2084.outbound.protection.outlook.com ([40.107.93.84]:15552
+        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231979AbhEWWjm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 18:39:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C0zpKAJB+azVqtG7NhZyVH2Do+TrAckHJKLkBHI65/L39tPs3i8z3WC2a9U4BZbV/cEEIbPV5Co4pa866lssWsfawiuitYHhBwg0NgNkIoN3Mmaa6d+KBUnSP3nLUZG5MFq8UIacuWDHdZQY2hf30PdhA2WxFPGh+uB4Q25shPaMuuMXIU7oVjRQnkwf7AvdBIindCE9MnpVpOtShhxEUB59Ic4fP+Vu0ItTLfko0FUrB+rPwXYQNLejI0zpbILhZ4qssN6YfUO3VOh8f8RbX1dp/YiIcIjXubL+7cepompFxLtSHQqrbHRHULIdY03RwGNkHSjZCaB+pPMr+sFxeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hGjLrR1oU5RJAp81664VRQ3qIGr2BAEBIF7QTWtm9s4=;
+ b=Anhhu8qe9TnE5wacbqyIMoBjYUDR4ePl58ykZkNy2AUILkBRqVg7kwnQ/ZeUKtwx0ptJLoBzGxvtnWc1IchWKWhRWgdOeFQ3nL3okQYPeOeIKCPV/AejNkK65a4fKmXMTMCxg50LegjP+3u6w72qP9y8k3BFTuSNWXSdPTnEdqsPDNIpM2TTWun50nJK76aSQwpWNCXV4rwaCqFC8/s5ZlzFBnO06Ja8KwWoUlEqI9U4CutipEjBDS3WK3hf294WsS7fX22W8vqGi8iUFT/vhJkfzhqHajdpbUDe0qa41LUuRFvX2rzApKTfZgw8KmA99e6mrZloytxMCxp9jk6TAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hGjLrR1oU5RJAp81664VRQ3qIGr2BAEBIF7QTWtm9s4=;
+ b=J3HemywCys8quBLNr6vvZ5k+iZF1uzxrDixh2dkDWlVLubkq5sDNLPibItUPagTKLDGTrb7/YZXsmBXMqTPDrBTA3Wgex/I9Cv2hlCsN3QiLFcJaQntoKYl2Lpeu9MLtbZoxAerjQnFTxFcA30p63tATd+1nsvI3OVtvxY4Uvs1OOyBaLrkukGRsxaMZaasVNWh4T97AswIoU+Br/tRRYUDS8n25RgmwIaXkNa5RrRALno71gd+Wq1LFQbAzkwvXfhLQF6paYpw1UyNUvVjqMKByVMbunj5pLwvIDi6tSypQrvPiw7J4Y2CrJ9rM6f9OHISYmClF40N47ec50fzUqQ==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5318.namprd12.prod.outlook.com (2603:10b6:208:31d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23; Sun, 23 May
+ 2021 22:38:13 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4150.027; Sun, 23 May 2021
+ 22:38:13 +0000
+Date:   Sun, 23 May 2021 19:38:10 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
+        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 19/20] vfio: mdev: Add device request interface
+Message-ID: <20210523223810.GE1002214@nvidia.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <162164286322.261970.2647654897518928545.stgit@djiang5-desk3.ch.intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162164286322.261970.2647654897518928545.stgit@djiang5-desk3.ch.intel.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YT1PR01CA0039.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::8) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YT1PR01CA0039.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::8) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Sun, 23 May 2021 22:38:13 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lkwja-00DTik-VP; Sun, 23 May 2021 19:38:10 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ff337c33-e647-466d-4aca-08d91e3b7316
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5318:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB5318E78371A00A34B9C66669C2279@BL1PR12MB5318.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1923;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: JnJ/IbLAm88Cw0cgWiSszGFcJK6Z79c0r4LcUAkMb4jpxODblGG54Fb/iSgIEzK8D0GeTuCzVWefuvwXi3jZkIn3Ly9uzYPSjUOQvk3aZpZzHHegx09YVJ91hNF/he3aC01vBUHykqTOXsECMsT8QjYy0POjPTHid5hlJyOPOa8K1rxweSx1QdvwREdtYAFFTHu6YC7s1xiTmD+fVKO60S/5H2s9I20nbIKNAsmZEsLVOqgw+qBBghDDDnVCEb1tmkf2TdJizvgKS73JZ2Y5yHdYZj60pjv8MpBP8dffH3LFp3svUCfvFSSiOcNtX96JvzjpF4KLi6ocamxlBKTQs8NTKO/VY4pBxDaVBh0RoEHOMmZUeSxwmRxluBVcIUgLbcqNxhtKsS/vKpbBoq1IQ4a8MRYptbcXpoiwDwL5Zwk/B1xSznMKbt9whK1AT/tQH21QuFKroTPiG1LUKX4vNJ1GZKahIwqqY6sP/UChltT688OU0xoKfI5RjO48By3z90tkPjTCWZhmd+zPkbiEioDTZseS1bpwfYG7ECG7tbqdXUWLBwrFNpvHoJwNldIXRLY3aHKCLtHdL2NERycgKw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(396003)(136003)(346002)(478600001)(4326008)(2906002)(86362001)(7416002)(5660300002)(66476007)(66556008)(186003)(33656002)(316002)(66946007)(83380400001)(1076003)(38100700002)(2616005)(9786002)(8676002)(426003)(36756003)(9746002)(6916009)(8936002)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?I6IQewYVbrvE7u1M2KuEUusypGO3HWGxvXtqSoJF0wp5epQ3MpOGBmQzh5Yh?=
+ =?us-ascii?Q?qWs9pQYQ8MMs1Q/zgkMPa51B7Qz56s++nKKiVJuRVyW4rcBPV/tOUxseTMZk?=
+ =?us-ascii?Q?lFeFUOVGrBfQdEB/pnZJ7WbPsI0T9D/8qlGX3eLk6ibYVv1ZjSCUi7QmEnyF?=
+ =?us-ascii?Q?+4Wxyh+3qfPNLha8KV5f0BD6NRqgpn3iKRRw9gmdHHVMv0TsOeKLN7/fUi+h?=
+ =?us-ascii?Q?+Xuai9kZ3G0F9XH76zENtAuH5kugzGdWycP/tY3FdB6Y6XJiPOodlJbDPdq7?=
+ =?us-ascii?Q?qM5a8LN0SNlnPdWGsIhAXOfZeeaagdtGky8jxdBT+n3HFFMyikkXwewXEW7T?=
+ =?us-ascii?Q?SyEbe4o+nndpD3z1WEGfb7OShzuo7e+Bx+vwV3EfACtp5lm8b3kd699Y09Ol?=
+ =?us-ascii?Q?QiDqgqhTkO19yurTC5Cr9X4SZMi36++hdihfx/c9W+CwCfTMxdFQspE+P9jI?=
+ =?us-ascii?Q?Ex6MHY5g8AEpcM5o2oBsBuOjXtV0y5PjXBXUBLkbnS/QnysQ0V0JVmWcBJWH?=
+ =?us-ascii?Q?iddV6kfAw4RNSi9xXJ6+3/3+D5PFHKNHy2JWFnNS0ZyR6senKzsPnk+9IhZA?=
+ =?us-ascii?Q?TsvdE846sblKIqDIIazZfJi0IwwAGvmSS4IxBw7egS+O95BcoIOzhgKUMCKJ?=
+ =?us-ascii?Q?WMvA0ozu7PIMEFP/hIrC9XGnedCJbR4MvRh14Zp6Wwd05oSMFrmPIg5JLkhM?=
+ =?us-ascii?Q?T3z4g5vU/MgZEzLWXKsn6NOkKx72WtSTObp277sfWDpqW61uhs409PCzL1mI?=
+ =?us-ascii?Q?NfDFDpX44WOrc5KSAoqbeqhleJJlZc7PgP8VCE7S4FxZ66EvUnXlFB19pmUa?=
+ =?us-ascii?Q?7GxW5JGFI9AdqQCz4qdD7AIfRowTkaYa1yBw61F8iAW6ZSggJqgfNB4+EMDI?=
+ =?us-ascii?Q?2oT/YGWe1Toq0VnnCLyteeqkdxZN6d2ccFvduE+6lNTMXQbIWcRgSD6Eq6zl?=
+ =?us-ascii?Q?NPZyXE6z72n6qxY+vpScVAan/1Mjo+n5tRrdIAl6/mQjbIYTCNSYtPr2gJvV?=
+ =?us-ascii?Q?DKkF7yzkDf1C/HSOg0JecFRqjcVYZC0HtnwLZofkfMZdJ0d/b9hFlkgxAVs3?=
+ =?us-ascii?Q?H6BOtIN+Mzv/QFRqx1R6qcVd6XSmXsJhjDctyqVH9xZuEbXHWfnbC62pO9MD?=
+ =?us-ascii?Q?h/ioR8I7Y475k4cM1/qVwUMCNeGwcATYk+C+BJmabPWeyaeu2kPA2T20MqiF?=
+ =?us-ascii?Q?TKQsDHtUHjGWgtJrNUnkXqVD/uFu3RNepnhuSbVjwnC1sv3/AzCocbRAklkB?=
+ =?us-ascii?Q?eqouJbsau/8v7LTQ8H7KOG58Ho4prlL9S2HjBQeNEhJOEsmIfUJFdiGrvZav?=
+ =?us-ascii?Q?hZC7Aq3zR3m5bKMk1f3r7woR?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ff337c33-e647-466d-4aca-08d91e3b7316
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2021 22:38:13.5347
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: PwQnlGxQw8o20QAerU6yuIO7qZYEhAWPFC5SwTl6+XTCU9+czsCJhrB96qXaiRlt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5318
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both single and bi-color scanning modes are supported. The driver will
-verify that the addresses are valid for the current mode, before
-registering the LEDs. LEDs can be turned on, off, or toggled at one of
-six predefined rates from 40ms to 1280ms.
+On Fri, May 21, 2021 at 05:21:03PM -0700, Dave Jiang wrote:
+> Similar to commit 6140a8f56238 ("vfio-pci: Add device request interface").
+> Add request interface for mdev to allow userspace to opt in to receive
+> a device request notification, indicating that the device should be
+> released.
+> 
+> Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+> ---
+>  drivers/vfio/mdev/mdev_irqs.c |   23 +++++++++++++++++++++++
+>  include/linux/mdev.h          |   15 +++++++++++++++
+>  2 files changed, 38 insertions(+)
 
-Implements a platform device for use as a child device with RTL8231 MFD,
-and uses the parent regmap to access the required registers.
+Please don't add new things to mdev, put the req_trigger in the vdcm_idxd
+struct vfio_device class.
 
-Signed-off-by: Sander Vanheule <sander@svanheule.net>
----
- drivers/leds/Kconfig        |  10 ++
- drivers/leds/Makefile       |   1 +
- drivers/leds/leds-rtl8231.c | 291 ++++++++++++++++++++++++++++++++++++
- 3 files changed, 302 insertions(+)
- create mode 100644 drivers/leds/leds-rtl8231.c
-
-diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
-index 49d99cb084db..be723b6e9644 100644
---- a/drivers/leds/Kconfig
-+++ b/drivers/leds/Kconfig
-@@ -593,6 +593,16 @@ config LEDS_REGULATOR
- 	help
- 	  This option enables support for regulator driven LEDs.
  
-+config LEDS_RTL8231
-+	tristate "RTL8231 LED matrix support"
-+	depends on LEDS_CLASS
-+	depends on MFD_RTL8231
-+	default MFD_RTL8231
-+	help
-+	  This options enables support for using the LED scanning matrix output
-+	  of the RTL8231 GPIO and LED expander chip.
-+	  When built as a module, this module will be named leds-rtl8231.
-+
- config LEDS_BD2802
- 	tristate "LED driver for BD2802 RGB LED"
- 	depends on LEDS_CLASS
-diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
-index 7e604d3028c8..ce0f44a87dee 100644
---- a/drivers/leds/Makefile
-+++ b/drivers/leds/Makefile
-@@ -80,6 +80,7 @@ obj-$(CONFIG_LEDS_PM8058)		+= leds-pm8058.o
- obj-$(CONFIG_LEDS_POWERNV)		+= leds-powernv.o
- obj-$(CONFIG_LEDS_PWM)			+= leds-pwm.o
- obj-$(CONFIG_LEDS_REGULATOR)		+= leds-regulator.o
-+obj-$(CONFIG_LEDS_RTL8231)		+= leds-rtl8231.o
- obj-$(CONFIG_LEDS_S3C24XX)		+= leds-s3c24xx.o
- obj-$(CONFIG_LEDS_SC27XX_BLTC)		+= leds-sc27xx-bltc.o
- obj-$(CONFIG_LEDS_SGM3140)		+= leds-sgm3140.o
-diff --git a/drivers/leds/leds-rtl8231.c b/drivers/leds/leds-rtl8231.c
-new file mode 100644
-index 000000000000..4f3333a61a84
---- /dev/null
-+++ b/drivers/leds/leds-rtl8231.c
-@@ -0,0 +1,291 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <linux/device.h>
-+#include <linux/leds.h>
-+#include <linux/mod_devicetable.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/regmap.h>
-+
-+#include <linux/mfd/rtl8231.h>
-+
-+/**
-+ * struct led_toggle_rate - description of an LED blinking mode
-+ * @interval_ms:	LED toggle rate in milliseconds
-+ * @mode:		Register field value used to activate this mode
-+ *
-+ * For LED hardware accelerated blinking, with equal on and off delay.
-+ * Both delays are given by @interval, so the interval at which the LED blinks
-+ * (i.e. turn on and off once) is double this value.
-+ */
-+struct led_toggle_rate {
-+	u16 interval_ms;
-+	u8 mode;
-+};
-+
-+/**
-+ * struct led_modes - description of all LED modes
-+ * @toggle_rates:	Array of led_toggle_rate values, sorted by ascending interval
-+ * @num_toggle_rates:	Number of elements in @led_toggle_rate
-+ * @off:		Register field value to turn LED off
-+ * @on:			Register field value to turn LED on
-+ */
-+struct led_modes {
-+	const struct led_toggle_rate *toggle_rates;
-+	unsigned int num_toggle_rates;
-+	u8 off;
-+	u8 on;
-+};
-+
-+struct rtl8231_led {
-+	struct led_classdev led;
-+	const struct led_modes *modes;
-+	struct regmap_field *reg_field;
-+};
-+#define to_rtl8231_led(_cdev) container_of(_cdev, struct rtl8231_led, led)
-+
-+#define RTL8231_NUM_LEDS	3
-+#define RTL8231_LED_PER_REG	5
-+#define RTL8231_BITS_PER_LED	3
-+
-+static const unsigned int rtl8231_led_port_counts_single[RTL8231_NUM_LEDS] = {32, 32, 24};
-+static const unsigned int rtl8231_led_port_counts_bicolor[RTL8231_NUM_LEDS] = {24, 24, 24};
-+
-+static const unsigned int rtl8231_led_base[RTL8231_NUM_LEDS] = {
-+	RTL8231_REG_LED0_BASE,
-+	RTL8231_REG_LED1_BASE,
-+	RTL8231_REG_LED2_BASE,
-+};
-+
-+static const struct led_toggle_rate rtl8231_toggle_rates[] = {
-+	{  40, 1},
-+	{  80, 2},
-+	{ 160, 3},
-+	{ 320, 4},
-+	{ 640, 5},
-+	{1280, 6},
-+};
-+
-+static const struct led_modes rtl8231_led_modes = {
-+	.off = 0,
-+	.on = 7,
-+	.num_toggle_rates = ARRAY_SIZE(rtl8231_toggle_rates),
-+	.toggle_rates = rtl8231_toggle_rates,
-+};
-+
-+static void rtl8231_led_brightness_set(struct led_classdev *led_cdev,
-+	enum led_brightness brightness)
-+{
-+	struct rtl8231_led *pled = to_rtl8231_led(led_cdev);
-+
-+	if (brightness)
-+		regmap_field_write(pled->reg_field, pled->modes->on);
-+	else
-+		regmap_field_write(pled->reg_field, pled->modes->off);
-+}
-+
-+static enum led_brightness rtl8231_led_brightness_get(struct led_classdev *led_cdev)
-+{
-+	struct rtl8231_led *pled = to_rtl8231_led(led_cdev);
-+	u32 current_mode = pled->modes->off;
-+
-+	regmap_field_read(pled->reg_field, &current_mode);
-+
-+	if (current_mode == pled->modes->off)
-+		return LED_OFF;
-+	else
-+		return LED_ON;
-+}
-+
-+static unsigned int rtl8231_led_current_interval(struct rtl8231_led *pled)
-+{
-+	unsigned int mode;
-+	unsigned int i;
-+
-+	if (regmap_field_read(pled->reg_field, &mode))
-+		return 0;
-+
-+	for (i = 0; i < pled->modes->num_toggle_rates; i++)
-+		if (mode == pled->modes->toggle_rates[i].mode)
-+			return pled->modes->toggle_rates[i].interval_ms;
-+
-+	return 0;
-+}
-+
-+static int rtl8231_led_blink_set(struct led_classdev *led_cdev, unsigned long *delay_on,
-+	unsigned long *delay_off)
-+{
-+	struct rtl8231_led *pled = to_rtl8231_led(led_cdev);
-+	const struct led_toggle_rate *rates = pled->modes->toggle_rates;
-+	unsigned int num_rates = pled->modes->num_toggle_rates;
-+	unsigned int interval_ms;
-+	unsigned int i;
-+	int err;
-+
-+	if (*delay_on == 0 && *delay_off == 0) {
-+		interval_ms = 500;
-+	} else {
-+		/*
-+		 * If the current mode is blinking, choose the delay that (likely) changed.
-+		 * Otherwise, choose the interval that would have the same total delay.
-+		 */
-+		interval_ms = rtl8231_led_current_interval(pled);
-+		if (interval_ms > 0 && interval_ms == *delay_off)
-+			interval_ms = *delay_on;
-+		else if (interval_ms > 0 && interval_ms == *delay_on)
-+			interval_ms = *delay_off;
-+		else
-+			interval_ms = (*delay_on + *delay_off) / 2;
-+	}
-+
-+	/* Find clamped toggle interval */
-+	for (i = 0; i < (num_rates - 1); i++)
-+		if (interval_ms > rates[i].interval_ms)
-+			break;
-+
-+	interval_ms = rates[i].interval_ms;
-+
-+	err = regmap_field_write(pled->reg_field, rates[i].mode);
-+	if (err)
-+		return err;
-+
-+	*delay_on = interval_ms;
-+	*delay_off = interval_ms;
-+
-+	return 0;
-+}
-+
-+static int rtl8231_led_read_address(struct fwnode_handle *fwnode, unsigned int *addr_port,
-+	unsigned int *addr_led)
-+{
-+	u32 addr[2];
-+	int ret;
-+
-+	ret = fwnode_property_count_u32(fwnode, "reg");
-+	if (ret < 0)
-+		return ret;
-+	if (ret != 2)
-+		return -ENODEV;
-+
-+	ret = fwnode_property_read_u32_array(fwnode, "reg", addr, ARRAY_SIZE(addr));
-+	if (ret)
-+		return ret;
-+
-+	*addr_port = addr[0];
-+	*addr_led = addr[1];
-+
-+	return 0;
-+}
-+
-+static struct reg_field rtl8231_led_get_field(unsigned int port_index, unsigned int led_index)
-+{
-+	unsigned int offset, shift;
-+	struct reg_field field;
-+
-+	offset = port_index / RTL8231_LED_PER_REG;
-+	shift = (port_index % RTL8231_LED_PER_REG) * RTL8231_BITS_PER_LED;
-+
-+	field.reg = rtl8231_led_base[led_index] + offset;
-+	field.lsb = shift;
-+	field.msb = shift + RTL8231_BITS_PER_LED - 1;
-+
-+	return field;
-+}
-+
-+static int rtl8231_led_probe_single(struct device *dev, struct regmap *map,
-+	const unsigned int *port_counts, struct fwnode_handle *fwnode)
-+{
-+	struct led_init_data init_data = {};
-+	struct rtl8231_led *pled;
-+	unsigned int port_index;
-+	unsigned int led_index;
-+	struct reg_field field;
-+	int err;
-+
-+	pled = devm_kzalloc(dev, sizeof(*pled), GFP_KERNEL);
-+	if (!pled)
-+		return -ENOMEM;
-+
-+	err = rtl8231_led_read_address(fwnode, &port_index, &led_index);
-+	if (err) {
-+		dev_err(dev, "LED address invalid\n");
-+		return err;
-+	}
-+
-+	if (led_index >= RTL8231_NUM_LEDS || port_index >= port_counts[led_index]) {
-+		dev_err(dev, "LED address (%d.%d) invalid\n", port_index, led_index);
-+		return -ENODEV;
-+	}
-+
-+	field = rtl8231_led_get_field(port_index, led_index);
-+	pled->reg_field = devm_regmap_field_alloc(dev, map, field);
-+	if (IS_ERR(pled->reg_field))
-+		return PTR_ERR(pled->reg_field);
-+
-+	pled->modes = &rtl8231_led_modes;
-+
-+	pled->led.max_brightness = 1;
-+	pled->led.brightness_get = rtl8231_led_brightness_get;
-+	pled->led.brightness_set = rtl8231_led_brightness_set;
-+	pled->led.blink_set = rtl8231_led_blink_set;
-+
-+	init_data.fwnode = fwnode;
-+
-+	return devm_led_classdev_register_ext(dev, &pled->led, &init_data);
-+}
-+
-+static int rtl8231_led_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const unsigned int *port_counts;
-+	struct fwnode_handle *child;
-+	struct regmap *map;
-+	int err;
-+
-+	map = dev_get_regmap(dev->parent, NULL);
-+	if (!map)
-+		return -ENODEV;
-+	if (IS_ERR(map))
-+		return PTR_ERR(map);
-+
-+	if (device_property_match_string(dev, "realtek,led-scan-mode", "single-color") >= 0) {
-+		port_counts = rtl8231_led_port_counts_single;
-+		regmap_update_bits(map, RTL8231_REG_FUNC0,
-+			RTL8231_FUNC0_SCAN_MODE, RTL8231_FUNC0_SCAN_SINGLE);
-+	} else if (device_property_match_string(dev, "realtek,led-scan-mode", "bi-color") >= 0) {
-+		port_counts = rtl8231_led_port_counts_bicolor;
-+		regmap_update_bits(map, RTL8231_REG_FUNC0,
-+			RTL8231_FUNC0_SCAN_MODE, RTL8231_FUNC0_SCAN_BICOLOR);
-+	} else {
-+		dev_err(dev, "scan mode missing or invalid\n");
-+		return -EINVAL;
-+	}
-+
-+	fwnode_for_each_available_child_node(dev->fwnode, child) {
-+		err = rtl8231_led_probe_single(dev, map, port_counts, child);
-+		if (err)
-+			dev_warn(dev, "failed to register LED %pfwP\n", child);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_rtl8231_led_match[] = {
-+	{ .compatible = "realtek,rtl8231-leds" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, of_rtl8231_led_match);
-+
-+static struct platform_driver rtl8231_led_driver = {
-+	.driver = {
-+		.name = "rtl8231-leds",
-+		.of_match_table = of_rtl8231_led_match,
-+	},
-+	.probe = rtl8231_led_probe,
-+};
-+module_platform_driver(rtl8231_led_driver);
-+
-+MODULE_AUTHOR("Sander Vanheule <sander@svanheule.net>");
-+MODULE_DESCRIPTION("Realtek RTL8231 LED support");
-+MODULE_LICENSE("GPL v2");
--- 
-2.31.1
+> diff --git a/drivers/vfio/mdev/mdev_irqs.c b/drivers/vfio/mdev/mdev_irqs.c
+> index ed2d11a7c729..11b1f8df020c 100644
+> --- a/drivers/vfio/mdev/mdev_irqs.c
+> +++ b/drivers/vfio/mdev/mdev_irqs.c
 
+and similarly this shouldn't be called mdev_irqs and the code in here
+should have nothign to do with mdevs. Providing the special IRQ
+emulation stuff is just generic vfio_device functionality with no
+linkage to mdev.
+
+> @@ -316,3 +316,26 @@ void mdev_irqs_free(struct mdev_device *mdev)
+>  	memset(&mdev->mdev_irq, 0, sizeof(mdev->mdev_irq));
+>  }
+>  EXPORT_SYMBOL_GPL(mdev_irqs_free);
+> +
+> +void vfio_mdev_request(struct vfio_device *vdev, unsigned int count)
+> +{
+> +	struct device *dev = vdev->dev;
+> +	struct mdev_device *mdev = to_mdev_device(dev);
+
+Yuk, don't do stuff like that, if it needs a mdev then pass in a mdev.
+
+Jason
