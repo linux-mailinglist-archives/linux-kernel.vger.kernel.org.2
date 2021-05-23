@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34D8538DE47
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A999038DE4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:56:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232156AbhEWX6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 19:58:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S232183AbhEWX6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 19:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhEWX6C (ORCPT
+        with ESMTP id S232037AbhEWX6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 May 2021 19:58:02 -0400
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58EA8C061574;
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4BA5C061756;
         Sun, 23 May 2021 16:56:33 -0700 (PDT)
-Received: by mail-lj1-x22f.google.com with SMTP id w15so31199260ljo.10;
+Received: by mail-lj1-x235.google.com with SMTP id v5so31181359ljg.12;
         Sun, 23 May 2021 16:56:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WzJLvDAWH/PwIk8Vq+fBiDvMEBtw82x4t9gNcqY6QO4=;
-        b=Y/HFi4/9BIcCFoI35jfyA2sm1lZu0/qF1vAG2lVBwxBCeI3vOtV43u/NMpbaGqrzEo
-         DvDoSAvZ7JjGAXkpHK8bewdKj/P9BFY3OavVrDuZS3y0UR+bG5YAF0HiAU0eV427RPw6
-         7sUIbT8nartBLp6hAtTrJsFOPyHL5Ygn01SHcbWNmtlnlF5DfmwoqyqDPAgR0TSjbHWb
-         Xf2nfSMtHxTFCsAB1LSqOQ1JM5fm0bTcLbalL90WKRvx7geFN+EnK8iInxdVAN3Tqlxx
-         LIwPC6UWEfbaqn4kxtlZX3RfJsgKvCJ6xWLL1dz3Cv6oMWrSZqCM+9xd3yGNB3sqU/YV
-         KJrA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=MpvhPzX1ymg5vSIOj/R3c0XtSN9hCFreWZQ1rMcnPsI=;
+        b=QyWkmTzxYCt90Z8KdFxCKVvjljk2oYwWSLjmMgJ9SimCxxdmWmY6YP5Fo2t9PEs3xl
+         y0OXXKFsYObWXYkSpeSOIxdmlisEdcvx8eVnBxHaesYi2sAnYZyG1uYp5q5Urs82v8kk
+         F5xHe8qLUdhW6QHNi696dZu24ll+lxwR2w3nNj8gEbLLpQoLGWDKRm2qjU2DH5vM18K9
+         OeH3vnszSjk6qB+nY6Y7fzStME2ts2BaxxRPpfrMUByd0/EedQLSV0jMLVX/fs52bf3r
+         Tah+5TUDZ0paoZTqI42BDOBr/dKfOMj1M3SX8vsKQaPRuWnnhbCjwoQE5mHeqtTqeeWh
+         lxlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WzJLvDAWH/PwIk8Vq+fBiDvMEBtw82x4t9gNcqY6QO4=;
-        b=OTiUJ2OCWx1ZCSZTv/+uWBHvk9tC0jjckD7i5ogSuj9tEj8Y6yu2ImEQYsDxeIRFhw
-         C9/vGTg/aadi4sEkrXU5V45g3NFgoKdKdg/nEGsB5CBJVc9UcEnjo9CxqU/O3r5oTMjR
-         ApD66dgrPR24ZIcBioyVxV7N/b1xl4Wgp6DooIBfRJ+hp/YGnEDpUqwtN6V1XfiW0YrY
-         7IC7SCkSTBRBk8yQcnOekfi2awouSXUgCH4BJ6aVPKFDV8+imUZs/BWipLZbMdLJyKgE
-         FYxPN+M24S9cnFMGH4zu/blCwUC6itheLGMdmXmwC54MVml5z0pLkPXGwiGJW0f/gxh+
-         ubqg==
-X-Gm-Message-State: AOAM532UeuBrXb2OLw0A1TO+h0ZEkGPxUJ1D409Rlg00CCba09fY2hSN
-        SWfm2lEmzmORIZMTnnLj09A=
-X-Google-Smtp-Source: ABdhPJzMcuk4OcI5KUgFWj/cSleIH1yRR056EWtob7rYKFy/m0bGNL86u6ab+p/EYt7WfTTnZxvFsg==
-X-Received: by 2002:a2e:a40a:: with SMTP id p10mr12504531ljn.145.1621814191509;
-        Sun, 23 May 2021 16:56:31 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=MpvhPzX1ymg5vSIOj/R3c0XtSN9hCFreWZQ1rMcnPsI=;
+        b=au1d9bjJmLBn5ymPBM3QPJGFKioad0TRxREmhH9WWrW2AmIQREtvHSloh6qPobXqlF
+         wP558mjDUpWCUWSadoiAUbPeOzUZi57vnwkYNZ6kWs8CLACTS+LJ+/Mswx20QOd5qNWN
+         CdJT8UJYFEG8q0aStiku56AUoUrdvH5agf5y7EhVzoAXmEefVzzp7dQd5uXKzGj7h3iO
+         0GIu/APotxp+0To0u4gqXjlFmTSJ8Gj9Tk9xLDkOM4idnxMH749OB35jCSLQA43B0KT6
+         QrBHk777yxltGvi2OyupLk0sU1MLmm0S9XUBO+YdE2keBZXwrMdtRG685HUk7rRfnbRD
+         llZw==
+X-Gm-Message-State: AOAM533Pz2Lx9/hKY2+DeZ6ri0UrDOBDn0AGNfm8tF7GGK2W0ei2MymZ
+        UjDQkk8SMuq5GDeMorFSjbY=
+X-Google-Smtp-Source: ABdhPJzD0kOaSu31tu2RIX4r32z9rtPujOvi7Q/nkRexmgRdTsqYkZmJNq36lQE3+XcOdsZ5+9FIMA==
+X-Received: by 2002:a05:651c:14c:: with SMTP id c12mr9009930ljd.72.1621814192271;
+        Sun, 23 May 2021 16:56:32 -0700 (PDT)
 Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
-        by smtp.gmail.com with ESMTPSA id h4sm1092987lfv.247.2021.05.23.16.56.30
+        by smtp.gmail.com with ESMTPSA id h4sm1092987lfv.247.2021.05.23.16.56.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 16:56:31 -0700 (PDT)
+        Sun, 23 May 2021 16:56:32 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -63,59 +63,115 @@ To:     Thierry Reding <thierry.reding@gmail.com>,
         Peter Geis <pgwipeout@gmail.com>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-tegra@vger.kernel.org
-Subject: [PATCH v2 0/7] Add driver for NVIDIA Tegra30 SoC Thermal sensor
-Date:   Mon, 24 May 2021 02:56:13 +0300
-Message-Id: <20210523235620.31538-1-digetx@gmail.com>
+Subject: [PATCH v2 1/7] dt-bindings: thermal: Add binding for Tegra30 thermal sensor
+Date:   Mon, 24 May 2021 02:56:14 +0300
+Message-Id: <20210523235620.31538-2-digetx@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210523235620.31538-1-digetx@gmail.com>
+References: <20210523235620.31538-1-digetx@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+All NVIDIA Tegra30 SoCs have on-chip sensors which monitor temperature
+and voltage of the SoC. Sensors also controls CPU x2 freq throttle and
+emits emergency shutdown signal. TSENSOR has has two separate channels
+for each sensor placed in a different parts of the SoC. Add binding for
+the sensor hardware.
 
-This series adds support for the thermal sensor that is found on NVIDIA
-Tegra30 SoC. Sensor monitors temperature and voltage of the SoC, it also
-emits signals to the power management and clock controllers that are
-performing the emergency shut down and the CPU frequency throttling
-when a pre-programmed temperature levels are reached.
-
-Please note that this series is made on top of ACMTON patches! [1].
-Otherwise tegra30.dtsi will fail to compile.
-
-[1] https://patchwork.ozlabs.org/project/linux-tegra/list/?series=243115
-
-Changelog:
-
-v2: - Made a very minor improvement to one error message, it now prints
-      number of channel at which error occurred.
-
-    - Added r-b from Rob Herring to the binding.
-
-Dmitry Osipenko (7):
-  dt-bindings: thermal: Add binding for Tegra30 thermal sensor
-  thermal: thermal_of: Stop zone device before unregistering it
-  thermal/core: Export thermal_cooling_device_stats_update()
-  thermal/drivers/tegra: Add driver for Tegra30 thermal sensor
-  ARM: tegra_defconfig: Enable CONFIG_TEGRA30_TSENSOR
-  ARM: multi_v7_defconfig: Enable CONFIG_TEGRA30_TSENSOR
-  ARM: tegra: Add SoC thermal sensor to Tegra30 device-trees
-
- .../thermal/nvidia,tegra30-tsensor.yaml       |  78 ++
- arch/arm/boot/dts/tegra30-ouya.dts            |  16 +
- arch/arm/boot/dts/tegra30.dtsi                |  93 ++-
- arch/arm/configs/multi_v7_defconfig           |   1 +
- arch/arm/configs/tegra_defconfig              |   1 +
- drivers/thermal/tegra/Kconfig                 |   7 +
- drivers/thermal/tegra/Makefile                |   1 +
- drivers/thermal/tegra/tegra30-tsensor.c       | 736 ++++++++++++++++++
- drivers/thermal/thermal_of.c                  |   3 +
- drivers/thermal/thermal_sysfs.c               |   1 +
- 10 files changed, 933 insertions(+), 4 deletions(-)
+Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+---
+ .../thermal/nvidia,tegra30-tsensor.yaml       | 78 +++++++++++++++++++
+ 1 file changed, 78 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml
- create mode 100644 drivers/thermal/tegra/tegra30-tsensor.c
 
+diff --git a/Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml b/Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml
+new file mode 100644
+index 000000000000..6182090d313c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/thermal/nvidia,tegra30-tsensor.yaml
+@@ -0,0 +1,78 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/thermal/nvidia,tegra30-tsensor.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NVIDIA Tegra30 Thermal Sensor
++
++maintainers:
++  - Dmitry Osipenko <digetx@gmail.com>
++  - Jon Hunter <jonathanh@nvidia.com>
++  - Thierry Reding <thierry.reding@gmail.com>
++
++description: |
++  TSENSOR provides thermal and voltage sensors which monitor temperature
++  and voltage of the chip. Sensors are placed across the die to gauge the
++  temperature of the whole chip. The TSENSOR module:
++
++    Generates an interrupt to SW to lower temperature via DVFS on reaching
++    a certain thermal/voltage threshold.
++
++    Generates a signal to the CAR to reduce CPU frequency by half on reaching
++    a certain thermal/voltage threshold.
++
++    Generates a signal to the PMC when the temperature reaches dangerously high
++    levels to reset the chip and sets a flag in the PMC.
++
++  TSENSOR has two channels which monitor two different spots of the SoC.
++
++properties:
++  compatible:
++    const: nvidia,tegra30-tsensor
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  resets:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  "#thermal-sensor-cells":
++    const: 1
++
++  "#cooling-cells":
++    const: 2
++
++  assigned-clock-parents: true
++  assigned-clock-rates: true
++  assigned-clocks: true
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - resets
++  - interrupts
++  - "#thermal-sensor-cells"
++  - "#cooling-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    thermal-sensor@70014000 {
++      compatible = "nvidia,tegra30-tsensor";
++      reg = <0x70014000 0x500>;
++      interrupts = <0 102 4>;
++      clocks = <&clk 100>;
++      resets = <&rst 100>;
++
++      #thermal-sensor-cells = <1>;
++      #cooling-cells = <2>;
++    };
 -- 
 2.30.2
 
