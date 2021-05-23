@@ -2,217 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3E1D38DC2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2433738DC2D
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbhEWRZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 13:25:44 -0400
-Received: from mx3.wp.pl ([212.77.101.10]:56353 "EHLO mx3.wp.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231893AbhEWRZm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 13:25:42 -0400
-Received: (wp-smtpd smtp.wp.pl 10112 invoked from network); 23 May 2021 19:24:11 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1621790651; bh=RJx2/dYy5rKglmcq3ciiPxaS8A88JNvbT9Qw3cpTdfE=;
-          h=From:To:Cc:Subject;
-          b=kgKsPUNyxgfo0Hd4BCd+NaD2NjTr+tVSkyiWAsmtOIos99w7wD5OGCMlnTnCzM/m3
-           +FhC/rOpJea3ojj2z+FSD6B/Hyyz3Qm4iAavpncpunf58ROxwhiyjIWLpR7GofIFTH
-           VFaeG/GqrC3WR83WpluO4QWg7VbdWjrRx7TWLPwI=
-Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
-          (envelope-sender <olek2@wp.pl>)
-          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <linus.walleij@linaro.org>; 23 May 2021 19:24:11 +0200
-From:   Aleksander Jan Bajkowski <olek2@wp.pl>
-To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, john@phrozen.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
-Subject: [PATCH v2] dt-bindings: gpio: stp: convert to json-schema
-Date:   Sun, 23 May 2021 19:24:05 +0200
-Message-Id: <20210523172405.660171-1-olek2@wp.pl>
-X-Mailer: git-send-email 2.30.2
+        id S231889AbhEWR2p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:28:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35136 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231831AbhEWR2o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 13:28:44 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BB2C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 10:27:16 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id f18so7897952ejq.10
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 10:27:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Ikx3Ey9eOOYgtxMhcsC4m4OpTqa4FgIx6H9D0TqkdY=;
+        b=AEoDORobWuTNWflTFSIYDu2EfSJB0iclnL5RlmGaMrRD2WqJFzP7yByNk1sCZgHunM
+         c4oohLU9mXf365+baLadGsme7aO0M5REZeSB3yFCQqs19aohcPNknNxfF/JhjtcTmVMw
+         QVi8EG8GpI9eNdTv+poloyQuZU2QqsdbPgKh0Mcms+0kfeLtHKuzdhb1tENAsugvp5SN
+         OWAjhhcCdAc/IqCZ6otK/OZpoQxq78gFpqliFQptmtLZAtayYnXYtNopwQn1aeNJwPIv
+         KMZohZd2rCA8l5N88Im3zlAuQiX2VyIvmZThDmKRzJ2utt8RKPirpkp1hDM/+U7E3SNY
+         ze4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2Ikx3Ey9eOOYgtxMhcsC4m4OpTqa4FgIx6H9D0TqkdY=;
+        b=HxIPea1t5xQPKdQstpeLYHP7GLKExvp9wA9/lGiDbdM12Xj/55SjsOcoHFPMjxo8Qw
+         MBz5Fr45SY++LS8mYrYCJngWlJyt25P3LVzc62HVsWd4fflFhdx9UJrsNFjYy0YUxirG
+         NAf5TThdYaNyK3/aHNVRu6EII3MNpK1MpU6yv1dzRDtNGDnUHDFXNfeimS9drdc6p38D
+         1lkNv1CtqL30cOUYyhhIn4b1aRLg7UWTgYgYjBCyd9LKhyb2BOY/TA6wBBuphA8OOBTQ
+         gUXyKtfJjRoWp0/+F7kE1O2OXw7kYCFuuxbTCFC/sn/0/UcYtf+mxoDTXqMy9Wuavs33
+         dwUQ==
+X-Gm-Message-State: AOAM533/gz1dD0rPyKV18nsuzDtcPgeznUKh6B8s1PMuVE5Nkz/nE88f
+        cPxduTMksJU5M+yPyauyET8=
+X-Google-Smtp-Source: ABdhPJyru8rs7+K4wve5Rz1o0cgb6xcJdRhpMnKGHlQegwjz+Pqd8ruOrMFZnZlSAlb10Fk2ZzgP0w==
+X-Received: by 2002:a17:907:1b02:: with SMTP id mp2mr19053359ejc.196.1621790834735;
+        Sun, 23 May 2021 10:27:14 -0700 (PDT)
+Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
+        by smtp.gmail.com with ESMTPSA id q18sm7904186edd.3.2021.05.23.10.27.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 10:27:14 -0700 (PDT)
+From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Subject: [PATCH] staging: hikey9xx: Remove defined but unused macros
+Date:   Sun, 23 May 2021 19:27:09 +0200
+Message-Id: <20210523172709.19181-1-fmdefrancesco@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-DKIM-Status: good (id: wp.pl)                                      
-X-WP-MailID: 4296720f8b63bf972cc73ea2edb1742d
-X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [IXME]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert the Lantiq STP Device Tree binding documentation to json-schema.
-Add the missing pinctrl property to the example. Add missing lantiq,phy3
-and lantiq,phy4 bindings for xRX300 and xRX330 SoCs.
+Removed defined but unused macros. Issue detected by GCC running with
+-Wunused-macro warning option set.
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
 ---
-Changes since v1:
- - Rename note to gpio.
- - Drop default pinctrl from this binding.
- - Convert lantiq,phyX to patternProperties.
----
- .../bindings/gpio/gpio-stp-xway.txt           |  42 --------
- .../bindings/gpio/gpio-stp-xway.yaml          | 101 ++++++++++++++++++
- 2 files changed, 101 insertions(+), 42 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+ drivers/staging/hikey9xx/hisi-spmi-controller.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
-deleted file mode 100644
-index 78458adbf4b7..000000000000
---- a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
-+++ /dev/null
-@@ -1,42 +0,0 @@
--Lantiq SoC Serial To Parallel (STP) GPIO controller
+diff --git a/drivers/staging/hikey9xx/hisi-spmi-controller.c b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+index 0d42bc65f39b..b64594e2a84b 100644
+--- a/drivers/staging/hikey9xx/hisi-spmi-controller.c
++++ b/drivers/staging/hikey9xx/hisi-spmi-controller.c
+@@ -21,16 +21,10 @@
+ #define SPMI_APB_SPMI_CMD_BASE_ADDR			0x0100
+ 
+ #define SPMI_APB_SPMI_WDATA0_BASE_ADDR			0x0104
+-#define SPMI_APB_SPMI_WDATA1_BASE_ADDR			0x0108
+-#define SPMI_APB_SPMI_WDATA2_BASE_ADDR			0x010c
+-#define SPMI_APB_SPMI_WDATA3_BASE_ADDR			0x0110
+ 
+ #define SPMI_APB_SPMI_STATUS_BASE_ADDR			0x0200
+ 
+ #define SPMI_APB_SPMI_RDATA0_BASE_ADDR			0x0204
+-#define SPMI_APB_SPMI_RDATA1_BASE_ADDR			0x0208
+-#define SPMI_APB_SPMI_RDATA2_BASE_ADDR			0x020c
+-#define SPMI_APB_SPMI_RDATA3_BASE_ADDR			0x0210
+ 
+ #define SPMI_PER_DATAREG_BYTE				4
+ /*
+@@ -64,9 +58,6 @@ enum spmi_controller_cmd_op_code {
+ #define SPMI_APB_TRANS_DONE			BIT(0)
+ #define SPMI_APB_TRANS_FAIL			BIT(2)
+ 
+-/* Command register fields */
+-#define SPMI_CONTROLLER_CMD_MAX_BYTE_COUNT	16
 -
--The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
--peripheral controller used to drive external shift register cascades. At most
--3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
--to drive the 2 LSBs of the cascade automatically.
--
--
--Required properties:
--- compatible : Should be "lantiq,gpio-stp-xway"
--- reg : Address and length of the register set for the device
--- #gpio-cells : Should be two.  The first cell is the pin number and
--  the second cell is used to specify optional parameters (currently
--  unused).
--- gpio-controller : Marks the device node as a gpio controller.
--
--Optional properties:
--- lantiq,shadow : The default value that we shall assume as already set on the
--  shift register cascade.
--- lantiq,groups : Set the 3 bit mask to select which of the 3 groups are enabled
--  in the shift register cascade.
--- lantiq,dsl : The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
--  property can enable this feature.
--- lantiq,phy1 : The gphy1 core can control 3 bits of the gpio cascade.
--- lantiq,phy2 : The gphy2 core can control 3 bits of the gpio cascade.
--- lantiq,rising : use rising instead of falling edge for the shift register
--
--Example:
--
--gpio1: stp@e100bb0 {
--	compatible = "lantiq,gpio-stp-xway";
--	reg = <0xE100BB0 0x40>;
--	#gpio-cells = <2>;
--	gpio-controller;
--
--	lantiq,shadow = <0xffff>;
--	lantiq,groups = <0x7>;
--	lantiq,dsl = <0x3>;
--	lantiq,phy1 = <0x7>;
--	lantiq,phy2 = <0x7>;
--	/* lantiq,rising; */
--};
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
-new file mode 100644
-index 000000000000..999bd06e6b1c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
-@@ -0,0 +1,101 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/gpio/gpio-stp-xway.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Lantiq SoC Serial To Parallel (STP) GPIO controller
-+
-+description: |
-+  The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
-+  peripheral controller used to drive external shift register cascades. At most
-+  3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
-+  and Ethernet PHYs to drive some bytes of the cascade automatically.
-+
-+maintainers:
-+  - John Crispin <john@phrozen.org>
-+
-+properties:
-+  $nodename:
-+    pattern: "^gpio@[0-9a-f]+$"
-+
-+  compatible:
-+    const: lantiq,gpio-stp-xway
-+
-+  reg:
-+    description:
-+      Address and length of the register set for the device.
-+    maxItems: 1
-+
-+  gpio-controller: true
-+
-+  "#gpio-cells":
-+    description:
-+      The first cell is the pin number and the second cell is used to specify
-+      consumer flags.
-+    const: 2
-+
-+  lantiq,shadow:
-+    description:
-+      The default value that we shall assume as already set on the
-+      shift register cascade.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0x000000
-+    maximum: 0xffffff
-+
-+  lantiq,groups:
-+    description:
-+      Set the 3 bit mask to select which of the 3 groups are enabled
-+      in the shift register cascade.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0x0
-+    maximum: 0x7
-+
-+  lantiq,dsl:
-+    description:
-+      The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
-+      property can enable this feature.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0x0
-+    maximum: 0x3
-+
-+patternProperties:
-+  "lantiq,phy[1-4]":
-+    description:
-+      The gphy core can control 3 bits of the gpio cascade. On xRX200 family there
-+      are available gphy[0-1]. On xRX300 gphy[0-2], on xRX330 gphy[0-3].
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    minimum: 0x0
-+    maximum: 0x7
-+
-+  lantiq,rising:
-+    description:
-+      Use rising instead of falling edge for the shift register.
-+    type: boolean
-+
-+required:
-+  - compatible
-+  - reg
-+  - gpio-controller
-+  - "#gpio-cells"
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    gpio@e100bb0 {
-+        compatible = "lantiq,gpio-stp-xway";
-+        reg = <0xE100BB0 0x40>;
-+        #gpio-cells = <2>;
-+        gpio-controller;
-+
-+        pinctrl-0 = <&stp_pins>;
-+        pinctrl-names = "default";
-+
-+        lantiq,shadow = <0xffffff>;
-+        lantiq,groups = <0x7>;
-+        lantiq,dsl = <0x3>;
-+        lantiq,phy1 = <0x7>;
-+        lantiq,phy2 = <0x7>;
-+    };
-+...
+ /* Maximum number of support PMIC peripherals */
+ #define SPMI_CONTROLLER_TIMEOUT_US		1000
+ #define SPMI_CONTROLLER_MAX_TRANS_BYTES		16
 -- 
-2.30.2
+2.31.1
 
