@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4CB338D964
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 09:06:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8A038D966
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 09:11:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231623AbhEWHH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 03:07:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
+        id S231621AbhEWHM1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 03:12:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhEWHH0 (ORCPT
+        with ESMTP id S231559AbhEWHM0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 03:07:26 -0400
-Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7809C061574;
-        Sun, 23 May 2021 00:06:00 -0700 (PDT)
-Received: by mail-yb1-xb31.google.com with SMTP id b13so32127941ybk.4;
-        Sun, 23 May 2021 00:06:00 -0700 (PDT)
+        Sun, 23 May 2021 03:12:26 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762B5C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 00:10:59 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id e22so2006419pgv.10
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 00:10:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JJ5WTjC0WyPsVTwdflI4inh3P5TZgEqktVKMaXkm0+4=;
-        b=XfbRWKZ83w1iYHQb/7Q6VC4Sm8CjCl/EbdECqi4PiSpCXcaVNmNx+NKKaih+Nv442A
-         0XXFcaq8XeKCb/Ql0Pa79WFp/+IBWiE01/aOd2kmZQwOeAyOOjwV7gg8jFPLnZ5RVDuQ
-         xVLM26jpsB4mBtmX2ot+Kyg3VKxvUMwuVYKCjseXUzqmY3X6x/a5+CCAiqOlDx+1FUsJ
-         s/8EeoK1fBy+S772FsRBM3QA3qJqpHihyg6KuA+FWoe79F9qt/gvQ6uvKKBOAiPJORlj
-         oA0yq7bgLpnaEgZPsyghQOvnPHhUTzP/qWnPz5vpxUjEPy3L50RxoI7wxMhaKZgnPIu2
-         1cKg==
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=di0v/Su4ogaC/7RSbDqrJ5oBV8Ra49+j+a8H+EJD/r0=;
+        b=MvhEY+q1EqVVsJNMos9LpXff3Ngf9M8X2S/1QNnZnbSeStQE2fD/pzDZ5msfQSgvnb
+         eITaqJQUqC9DjH//uCyH9GG2l7ECPNHzkBzYydtdhyV8WBp+EWmzNpSmslEFa13UbKfW
+         Y6+8KolpZ2FxOjKRQTJ6y5CiYSfVlE6YnOghifFD8td357sNaCDejiSUVx2UeT0Bl2D8
+         m3ivFnzeSiznA886mI77yd9KF1ihCujdTms6N5xy7QIsm7w4tQhoIIhcHcfeajPeEMha
+         tCJifZJ5vgQTLacbnX5L8M27mPFVooIpKDdxU+ATZDgmlIpqvix/E2TQJWzmwQwMF2lc
+         YXMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JJ5WTjC0WyPsVTwdflI4inh3P5TZgEqktVKMaXkm0+4=;
-        b=UVVkxPkA3rEyv2OBPO1OGwyNvMWp8Ec7WrBfdPF2XkgUPTuOlMXWUs3UdlPqVVOO0I
-         Bf7q3Q7ibVaKCodPhFYysetNR4MaS+dKDbCmpEkR7QbnUOE5G7bvuY8mQK5KJLxVNc/Y
-         4DRnf88LBxCewQ8o0i9cTk9tD+WbJXx4yyQshcddGkUXYzqhLhdr+cHSeGht/GygyjzY
-         eDOEgWOx9mDT7fre7kZUfFN0Wjrz7MEclV+ieJv5H2aP4tI8o/vjDJyUcHE5GRDcP9Nv
-         M34YNt1ppEBUXZd20ypjqAbTA0hgi4luWpuMiZO8cJWtlGQHqYHpiVuaI1nEBIqvlPEV
-         bqTA==
-X-Gm-Message-State: AOAM532i0J69yMbGMN9I+bYXgy0LFrB3Sru3uoLJshh73PcWO0yZ5+0d
-        LmumCSLzXZSoeLtu+li8I+lRz5dNd4gFKpjr1PxlUBpOb6I=
-X-Google-Smtp-Source: ABdhPJy8qNErGH7nLxNMW7tCxFmbqj0Gw6sLxEeWq6AbALM0JRYgNwvGePaVDxKETnbyLvPHNvNsqwFd/m0LV2kutjU=
-X-Received: by 2002:a25:850b:: with SMTP id w11mr25666807ybk.518.1621753559766;
- Sun, 23 May 2021 00:05:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=di0v/Su4ogaC/7RSbDqrJ5oBV8Ra49+j+a8H+EJD/r0=;
+        b=VVwT+jZ+BPxT/UQNxFD+Lrpq4vJ2kjVUR0KcG+wl16NWu2w9zmZUHRq1W5BWNl5Izb
+         PqqNE3Asfv/HWPud2TczhJ3JL6D2J8IieIlrncR3ige+Zsj57viJeeO7d3cGD0pRjwpR
+         mcIT+CjAWQqWuTHNnQsdlKQs0yBzjHYiHFZiHNiJX7YvKPOgbs9YvYmHZDR00nX0cnG7
+         YC7hYQtrgY3YlDq4m3H7wuBnzBfD8Ad/0XrCTGvHrd5h5TPoix4InyFwQ9KnbHo2g8I4
+         C+wGAnZe8ACzUp9uUA/0OFcmf+Dc/oUPUBFqruGHWafPGr/fv6Q7+uNZ85uBRIIpbrMB
+         EYgA==
+X-Gm-Message-State: AOAM533Ye4BNbJZ5tasl4OeLYywwNq2hRlF/GuU27myfP3d4Sad83qal
+        bnew+/Fh5ebFPQp6glCVTggK0Q==
+X-Google-Smtp-Source: ABdhPJw1WBxLaIbmlYnkHvsDYWNb4L37ghlz6gCS0BecfJPz3AMCIFPON7+3UJ3UQKjarl2H+ATNsg==
+X-Received: by 2002:a05:6a00:2308:b029:28e:d370:d435 with SMTP id h8-20020a056a002308b029028ed370d435mr18610442pfh.31.1621753858695;
+        Sun, 23 May 2021 00:10:58 -0700 (PDT)
+Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
+        by smtp.gmail.com with ESMTPSA id f80sm7841504pfa.160.2021.05.23.00.10.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 00:10:58 -0700 (PDT)
+From:   Axel Lin <axel.lin@ingics.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
+        Axel Lin <axel.lin@ingics.com>
+Subject: [PATCH 1/2] regulator: bd70528: Fix off-by-one for buck123 .n_voltages setting
+Date:   Sun, 23 May 2021 15:10:44 +0800
+Message-Id: <20210523071045.2168904-1-axel.lin@ingics.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210518052117.14819-1-lukas.bulwahn@gmail.com>
- <20210518052117.14819-2-lukas.bulwahn@gmail.com> <69da627e-91c5-66f0-c0c9-75fbaaba6782@kernel.org>
-In-Reply-To: <69da627e-91c5-66f0-c0c9-75fbaaba6782@kernel.org>
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sun, 23 May 2021 09:05:48 +0200
-Message-ID: <CAKXUXMw21Up0WhSX0V=h5oYcw-ocLT0Bv=tUaekA1beoo6u+aA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/1] MAINTAINERS: TTY LAYER: add some ./include/linux/
- header files
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 18, 2021 at 7:37 AM Jiri Slaby <jirislaby@kernel.org> wrote:
->
-> On 18. 05. 21, 7:21, Lukas Bulwahn wrote:
-> > An early prototypical automated code analysis of headers and the
-> > existing MAINTAINERS sections identified some header files in
-> > ./include/linux/ to be probably included into the TTY LAYER section.
-> >
-> > I further checked those suggestions by this analysis and identified a
-> > subset of files that I am rather certain to belong to the TTY LAYER.
-> >
-> > Add these ./include/linux/ header files to TTY LAYER in MAINTAINERS.
-> >
-> > The patterns include/linux/tty*.h and include/linux/vt_*.h currently cover:
-> >
-> >    include/linux/tty.h
-> >    include/linux/tty_driver.h
-> >    include/linux/tty_flip.h
-> >    include/linux/tty_ldisc.h
-> >
-> >    include/linux/vt_buffer.h
-> >    include/linux/vt_kern.h
->
-> Yes, that looks good.
->
-> Can you extend the tool to include/uapi too?
->
-> For example this is missing too:
-> include/uapi/linux/tty*.h
->
-> It expands to:
-> include/uapi/linux/tty_flags.h
-> include/uapi/linux/tty.h
->
+The valid selectors for bd70528 bucks are 0 ~ 0xf, so the .n_voltages
+should be 16 (0x10). Use 0x10 to make it consistent with BD70528_LDO_VOLTS.
+Also remove redundant defines for BD70528_BUCK_VOLTS.
 
-Jiri,
+Signed-off-by: Axel Lin <axel.lin@ingics.com>
+---
+I think this fix does not need "Fixes" tag because in original code the
+.n_voltage is greater than correct one. The latest selector is not valid
+in the linear range setting anyway.
+ include/linux/mfd/rohm-bd70528.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Greg already picked this patch up; so I will keep this patch as-is and move on.
+diff --git a/include/linux/mfd/rohm-bd70528.h b/include/linux/mfd/rohm-bd70528.h
+index a57af878fd0c..4a5966475a35 100644
+--- a/include/linux/mfd/rohm-bd70528.h
++++ b/include/linux/mfd/rohm-bd70528.h
+@@ -26,9 +26,7 @@ struct bd70528_data {
+ 	struct mutex rtc_timer_lock;
+ };
+ 
+-#define BD70528_BUCK_VOLTS 17
+-#define BD70528_BUCK_VOLTS 17
+-#define BD70528_BUCK_VOLTS 17
++#define BD70528_BUCK_VOLTS 0x10
+ #define BD70528_LDO_VOLTS 0x20
+ 
+ #define BD70528_REG_BUCK1_EN	0x0F
+-- 
+2.25.1
 
-But I agree:
-I am still tuning my script and that still needs a bit of work, so I
-will still need some time until the next patches will follow.
-Once I am happy with the script and I go back to manual checking,
-review and adjustment of its output, I will follow your suggestion,
-and prioritize to check that all additions for ./include/linux and
-./include/uapi/linux are complete.
-However, I will probably not come back to the TTY LAYER for a while
-(until I can fully automate those patches with high confidence). The
-patch for the next subsystem will probably be MEMORY MANAGEMENT or so,
-depending if the manual checks and reviews show that the patches are
-sufficiently good for that second try. I will come back to TTY LAYER,
-once my method can assign all files in ./include sufficiently well to
-its corresponding MAINTAINERS section; that will then be probably part
-of a larger patch series for all MAINTAINERS sections and not just to
-check the method for one or two sections.
-
-Lukas
