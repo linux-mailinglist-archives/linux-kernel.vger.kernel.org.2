@@ -2,111 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F066D38D88F
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 05:36:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A33C638D891
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 05:38:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbhEWDhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 23:37:37 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5667 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231528AbhEWDhd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 23:37:33 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FnmC01Zmqz1BQ9W;
-        Sun, 23 May 2021 11:33:16 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 11:36:05 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 11:36:04 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <kvalo@codeaurora.org>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <yuehaibing@huawei.com>
-CC:     <linux-wireless@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] wlcore: use DEVICE_ATTR_<RW|RO> macro
-Date:   Sun, 23 May 2021 11:35:38 +0800
-Message-ID: <20210523033538.25568-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        id S231569AbhEWDju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 23:39:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45166 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231528AbhEWDjt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 23:39:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 356C16115C;
+        Sun, 23 May 2021 03:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621741104;
+        bh=b6jp1x2ZGWuy2CC16vguZJqSjntrUqQvRjIQyUE4VKQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tJmo/mnZVvALMDSi6xGXjKTggphRJK+lxaWvwtC7hi4g9pVfGXoeLVPcJTuSWr40G
+         fWjnKJOVypkmcB3DVddORIl5y/MtqgUO7iBgq1/U/bnMi+mjkL2uhWot097FPBbWDS
+         AoNw3mVSOXDGnScpDUINhYQLXb/VZygvkwd5doyEOiNLLQBTTmd7sO/wvNMEMJUenV
+         ZRLSl70mXtxckBZ2SWxiDBq7ynDQ/eWNe2P9JB7KmyLvL39LZ7hFooqLJOoAxEMQ52
+         VAMdaLui76JawpXTdCsg7xDm+jI6rqjWfreTdiRMkwQc2pl8Nf9Wb5k8C3//b/IZ2L
+         jUUwIGuLICrgQ==
+Date:   Sun, 23 May 2021 11:38:18 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Zou Wei <zou_wei@huawei.com>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, iuliana.prodan@nxp.com, Anson.Huang@nxp.com,
+        peng.fan@nxp.com, alice.guo@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] soc: imx8m: add missing MODULE_DEVICE_TABLE
+Message-ID: <20210523033818.GT8194@dragon>
+References: <1620790885-15892-1-git-send-email-zou_wei@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620790885-15892-1-git-send-email-zou_wei@huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_<RW|RO> helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Wed, May 12, 2021 at 11:41:25AM +0800, Zou Wei wrote:
+> This patch adds missing MODULE_DEVICE_TABLE definition which generates
+> correct modalias for automatic loading of this driver when it is built
+> as an external module.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/wireless/ti/wlcore/sysfs.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
+I do not see it supports module build right now.
 
-diff --git a/drivers/net/wireless/ti/wlcore/sysfs.c b/drivers/net/wireless/ti/wlcore/sysfs.c
-index 5cf0379b88b6..35b535c125b6 100644
---- a/drivers/net/wireless/ti/wlcore/sysfs.c
-+++ b/drivers/net/wireless/ti/wlcore/sysfs.c
-@@ -12,9 +12,9 @@
- #include "debug.h"
- #include "sysfs.h"
- 
--static ssize_t wl1271_sysfs_show_bt_coex_state(struct device *dev,
--					       struct device_attribute *attr,
--					       char *buf)
-+static ssize_t bt_coex_state_show(struct device *dev,
-+				  struct device_attribute *attr,
-+				  char *buf)
- {
- 	struct wl1271 *wl = dev_get_drvdata(dev);
- 	ssize_t len;
-@@ -30,9 +30,9 @@ static ssize_t wl1271_sysfs_show_bt_coex_state(struct device *dev,
- 
- }
- 
--static ssize_t wl1271_sysfs_store_bt_coex_state(struct device *dev,
--						struct device_attribute *attr,
--						const char *buf, size_t count)
-+static ssize_t bt_coex_state_store(struct device *dev,
-+				   struct device_attribute *attr,
-+				   const char *buf, size_t count)
- {
- 	struct wl1271 *wl = dev_get_drvdata(dev);
- 	unsigned long res;
-@@ -71,13 +71,11 @@ static ssize_t wl1271_sysfs_store_bt_coex_state(struct device *dev,
- 	return count;
- }
- 
--static DEVICE_ATTR(bt_coex_state, 0644,
--		   wl1271_sysfs_show_bt_coex_state,
--		   wl1271_sysfs_store_bt_coex_state);
-+static DEVICE_ATTR_RW(bt_coex_state);
- 
--static ssize_t wl1271_sysfs_show_hw_pg_ver(struct device *dev,
--					   struct device_attribute *attr,
--					   char *buf)
-+static ssize_t hw_pg_ver_show(struct device *dev,
-+			      struct device_attribute *attr,
-+			      char *buf)
- {
- 	struct wl1271 *wl = dev_get_drvdata(dev);
- 	ssize_t len;
-@@ -94,7 +92,7 @@ static ssize_t wl1271_sysfs_show_hw_pg_ver(struct device *dev,
- 	return len;
- }
- 
--static DEVICE_ATTR(hw_pg_ver, 0444, wl1271_sysfs_show_hw_pg_ver, NULL);
-+static DEVICE_ATTR_RO(hw_pg_ver);
- 
- static ssize_t wl1271_sysfs_read_fwlog(struct file *filp, struct kobject *kobj,
- 				       struct bin_attribute *bin_attr,
--- 
-2.17.1
+Shawn
 
+> 
+> Reported-by: Hulk Robot <hulkci@huawei.com>
+> Signed-off-by: Zou Wei <zou_wei@huawei.com>
+> ---
+>  drivers/soc/imx/soc-imx8m.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/soc/imx/soc-imx8m.c b/drivers/soc/imx/soc-imx8m.c
+> index 071e144..8debf62 100644
+> --- a/drivers/soc/imx/soc-imx8m.c
+> +++ b/drivers/soc/imx/soc-imx8m.c
+> @@ -186,6 +186,7 @@ static __maybe_unused const struct of_device_id imx8_soc_match[] = {
+>  	{ .compatible = "fsl,imx8mp-soc", .data = &imx8mp_soc_data, },
+>  	{ }
+>  };
+> +MODULE_DEVICE_TABLE(of, imx8_soc_match);
+>  
+>  #define imx8_revision(soc_rev) \
+>  	soc_rev ? \
+> -- 
+> 2.6.2
+> 
