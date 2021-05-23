@@ -2,49 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16E4638DAC1
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAF738DAC2
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:47:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231710AbhEWJse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:48:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47770 "EHLO
+        id S231722AbhEWJsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 05:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231674AbhEWJsb (ORCPT
+        with ESMTP id S231676AbhEWJsb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 23 May 2021 05:48:31 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14698C06138A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B841C06138B;
         Sun, 23 May 2021 02:47:04 -0700 (PDT)
-Date:   Sun, 23 May 2021 09:46:59 -0000
+Date:   Sun, 23 May 2021 09:47:00 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020; t=1621763220;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5l6DHTvNEG2WQ1DrD3q2BnubrCyPAWGfUQegH/DVx4k=;
-        b=xNHO/qhtO5lSEAn77/JoRSimrFsDIXmgEqAGrVxM8w6+3SkvlQ/FNqOUSmvX9NodAK3oLP
-        +LZyc1AUZ1V6u3OTbxeRqbCE1N5Z8+7bfRlmWkuCEgUZhtvfg2DRWo7LXwtdgPxBIUjh4Z
-        laLTy6K4JXxvxgOMCfnuVTrElQmlg0dvTa4AZIt7qDjwnnxe0N3aODanSXaACLuNtZWd0T
-        LTkTEJo93VUVJoOYqzujZdsp4e9MGnQVWqonlJsVB4uTZB1WqEVjspMJFfrHAnGH6XLyop
-        Fe40CU8JPejOJci0gnmVV0gWEexoPmL40cISd4+SXYB40hHuSX4+XzkKpKUAaA==
+        bh=OrMoC7sW/3+bp0JQNPtsjzixWG8rfSzES+l9f/ugFwk=;
+        b=P7HjwSNk9K+bLJb0aSMsn02f0K91kyxTBcAdAkOsR9Ijsw822kVnOg6Sn0Iv9+2komayZM
+        y6i/UAe6qqNWVzgmVRo33HJnmY0Iiy/IRnn/YF1nAYT2gZWqVM5bhZAwV/RoF/32ezu2Ns
+        LU325MKEyXduV87h2ww1fY7VQDY7MbjiBrNFyVgFjWuvo5RwzUBdhJVonA6JlB+4Jar6vC
+        O5b54ZmS/Ta8KtAfm66HlEANyCf2XAZUw/0rdv9pGCjjn4Ljm827bMt5zSjr+YLRjI9tIN
+        HdYF2g5wDglShg+gidR/NsdcT9fnBDvfiGtUC6yplJ8PEFPWli/398wsEZL0zg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
         s=2020e; t=1621763220;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=5l6DHTvNEG2WQ1DrD3q2BnubrCyPAWGfUQegH/DVx4k=;
-        b=Fa5OpEWWqRvUq3264s6sFikgiiwIHYZTaCrbmQ3WrqRhH+eboUlc69bDScAnMykRD9+Zy2
-        8539ntHDDLNAX3Cg==
-From:   "tip-bot2 for Dan Carpenter" <tip-bot2@linutronix.de>
+        bh=OrMoC7sW/3+bp0JQNPtsjzixWG8rfSzES+l9f/ugFwk=;
+        b=uCXEYq49IgZw7aPk/NfalGhbQ+JaTleSwCLRFqm7zFIReTQj04/AjpWBPbW6TDBorPlut/
+        0DjvxxCM23TjrXCA==
+From:   "tip-bot2 for Heiner Kallweit" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi/libstub: prevent read overflow in find_file_option()
-Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+Subject: [tip: efi/urgent] efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to
+ be cleared
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
         Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Message-ID: <162176321972.29796.1850532373551038912.tip-bot2@tip-bot2>
+Message-ID: <162176322031.29796.11878288049256642429.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -55,37 +56,40 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the efi/urgent branch of tip:
 
-Commit-ID:     c4039b29fe9637e1135912813f830994af4c867f
-Gitweb:        https://git.kernel.org/tip/c4039b29fe9637e1135912813f830994af4c867f
-Author:        Dan Carpenter <dan.carpenter@oracle.com>
-AuthorDate:    Fri, 23 Apr 2021 14:48:31 +03:00
+Commit-ID:     45add3cc99feaaf57d4b6f01d52d532c16a1caee
+Gitweb:        https://git.kernel.org/tip/45add3cc99feaaf57d4b6f01d52d532c16a1caee
+Author:        Heiner Kallweit <hkallweit1@gmail.com>
+AuthorDate:    Fri, 30 Apr 2021 16:22:51 +02:00
 Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Sat, 22 May 2021 14:05:32 +02:00
+CommitterDate: Sat, 22 May 2021 14:05:13 +02:00
 
-efi/libstub: prevent read overflow in find_file_option()
+efi: Allow EFI_MEMORY_XP and EFI_MEMORY_RO both to be cleared
 
-If the buffer has slashes up to the end then this will read past the end
-of the array.  I don't anticipate that this is an issue for many people
-in real life, but it's the right thing to do and it makes static
-checkers happy.
+UEFI spec 2.9, p.108, table 4-1 lists the scenario that both attributes
+are cleared with the description "No memory access protection is
+possible for Entry". So we can have valid entries where both attributes
+are cleared, so remove the check.
 
-Fixes: 7a88a6227dc7 ("efi/libstub: Fix path separator regression")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+Fixes: 10f0d2f577053 ("efi: Implement generic support for the Memory Attributes table")
 Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 ---
- drivers/firmware/efi/libstub/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/firmware/efi/memattr.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/drivers/firmware/efi/libstub/file.c b/drivers/firmware/efi/libstub/file.c
-index 4e81c60..dd95f33 100644
---- a/drivers/firmware/efi/libstub/file.c
-+++ b/drivers/firmware/efi/libstub/file.c
-@@ -103,7 +103,7 @@ static int find_file_option(const efi_char16_t *cmdline, int cmdline_len,
- 		return 0;
+diff --git a/drivers/firmware/efi/memattr.c b/drivers/firmware/efi/memattr.c
+index 5737cb0..0a9aba5 100644
+--- a/drivers/firmware/efi/memattr.c
++++ b/drivers/firmware/efi/memattr.c
+@@ -67,11 +67,6 @@ static bool entry_is_valid(const efi_memory_desc_t *in, efi_memory_desc_t *out)
+ 		return false;
+ 	}
  
- 	/* Skip any leading slashes */
--	while (cmdline[i] == L'/' || cmdline[i] == L'\\')
-+	while (i < cmdline_len && (cmdline[i] == L'/' || cmdline[i] == L'\\'))
- 		i++;
- 
- 	while (--result_len > 0 && i < cmdline_len) {
+-	if (!(in->attribute & (EFI_MEMORY_RO | EFI_MEMORY_XP))) {
+-		pr_warn("Entry attributes invalid: RO and XP bits both cleared\n");
+-		return false;
+-	}
+-
+ 	if (PAGE_SIZE > EFI_PAGE_SIZE &&
+ 	    (!PAGE_ALIGNED(in->phys_addr) ||
+ 	     !PAGE_ALIGNED(in->num_pages << EFI_PAGE_SHIFT))) {
