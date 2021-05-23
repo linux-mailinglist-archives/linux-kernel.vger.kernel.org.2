@@ -2,171 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E262838DC87
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E03738DC8A
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:08:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhEWTHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 15:07:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35062 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231857AbhEWTG6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 15:06:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621796731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TfDEjh8Edc8n6G25yB0/E5uyLkJQwAyMS7nv835M3R8=;
-        b=d7ct/PH63zW4M6GXjtRrg1w5hE8JAdO4NeG5D8Q2U6UoRkWkgeD5DZwBAeS/jDqffD+8/Z
-        s44/AIKJCtzAGnd4zpXnUpGGLDL314BeRlndwEtAduk6V0woNB5qTDX+Pm4CEh+ImeW5LP
-        7v5IFSuXkLvu2YFcJqPl5lUEeOMwjwc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621796731;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TfDEjh8Edc8n6G25yB0/E5uyLkJQwAyMS7nv835M3R8=;
-        b=fg3R0Gth6AmN0baZQ+4denqZZ8mt5zhCn7k3cZWn53s3E7AMK82n+ZEscx+18KPtLZbS/W
-        OS+8vJ1dx9+Z7qAg==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 14FF8AC4B;
-        Sun, 23 May 2021 19:05:31 +0000 (UTC)
-Subject: Re: [PATCH v5 0/3] Add option to mmap GEM buffers cached
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mips@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
-        list@opendingux.net
-References: <20210523170415.90410-1-paul@crapouillou.net>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <452b2228-2415-69d7-9212-51707daf8616@suse.de>
-Date:   Sun, 23 May 2021 21:05:30 +0200
+        id S231959AbhEWTJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 15:09:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231883AbhEWTJx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 15:09:53 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F5CDC061574;
+        Sun, 23 May 2021 12:08:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=8NGYLBlDOGsWIrhJUgnxsEikIDKkWEL5Boe61bDYQYA=; b=XryCjJRgSq0j6VoBhYDhGXgCuG
+        QETXkQm6JJ5bNxB0P2nqkZlPTl2SI20G9S/zFq5QLSa0MbgY8GpsuZx+YXtD+o8jp841T5myO8Wxw
+        NysIGVIUk179R7dLUqQYRd1XywsByJmXmlFCZTnXx5dsPwr16C91XVAhgS90AWOrKED+hWptb3KHg
+        zsCtdzc2yQYoq4T2ddfMZwwoPka/zMh/+uSj9MzvtqxDumg3JoiaHcrtuWA9sQpzxQHJHLAKAglTQ
+        v3RLucw2NsQRE5vByDGemntlkEyMydNyCACqGGzKZYYYtM8MnJNX7pVAuP9I9MV/Q2O/Numneq0JF
+        TTyVydgw==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lktSV-000Xny-S9; Sun, 23 May 2021 19:08:19 +0000
+Subject: Re: [PATCH 4/4] DMA: XILINX_ZYNQMP_DPDMA depends on HAS_IOMEM
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     linux-kernel@vger.kernel.org, Stefan Roese <sr@denx.de>,
+        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
+        Sinan Kaya <okaya@codeaurora.org>,
+        Green Wan <green.wan@sifive.com>,
+        Hyun Kwon <hyun.kwon@xilinx.com>,
+        Tejas Upadhyay <tejasu@xilinx.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        kernel test robot <lkp@intel.com>
+References: <20210522021313.16405-1-rdunlap@infradead.org>
+ <20210522021313.16405-5-rdunlap@infradead.org>
+ <YKmfs68Cq4osBaQ0@pendragon.ideasonboard.com>
+ <5cb3b313-cd96-d687-2916-0d4af8e5e675@infradead.org>
+ <YKqkmbZHPdbH2XtS@pendragon.ideasonboard.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <93da0e86-dbef-432d-20db-c2eda03f0071@infradead.org>
+Date:   Sun, 23 May 2021 12:08:18 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210523170415.90410-1-paul@crapouillou.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="tO3yJqMMNdhBkipXAOrrBGhEvUSorR1WW"
+In-Reply-To: <YKqkmbZHPdbH2XtS@pendragon.ideasonboard.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tO3yJqMMNdhBkipXAOrrBGhEvUSorR1WW
-Content-Type: multipart/mixed; boundary="vqRHPQ5m214gQNy0qa5LGHU5IM9KUWj6w";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Paul Cercueil <paul@crapouillou.net>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>
-Cc: linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-mips@vger.kernel.org, Christoph Hellwig <hch@infradead.org>,
- list@opendingux.net
-Message-ID: <452b2228-2415-69d7-9212-51707daf8616@suse.de>
-Subject: Re: [PATCH v5 0/3] Add option to mmap GEM buffers cached
-References: <20210523170415.90410-1-paul@crapouillou.net>
-In-Reply-To: <20210523170415.90410-1-paul@crapouillou.net>
+On 5/23/21 11:53 AM, Laurent Pinchart wrote:
+> Hi Randy,
+> 
+> On Sat, May 22, 2021 at 06:07:01PM -0700, Randy Dunlap wrote:
+>> On 5/22/21 5:20 PM, Laurent Pinchart wrote:
+>>> On Fri, May 21, 2021 at 07:13:13PM -0700, Randy Dunlap wrote:
+>>>> When CONFIG_HAS_IOMEM is not set/enabled, most iomap() family
+>>>> functions [including ioremap(), devm_ioremap(), etc.] are not
+>>>> available.
+>>>> Drivers that use these functions should depend on HAS_IOMEM so that
+>>>> they do not cause build errors.
+>>>>
+>>>> Cures this build error:
+>>>> s390-linux-ld: drivers/dma/xilinx/xilinx_dpdma.o: in function `xilinx_dpdma_probe':
+>>>> xilinx_dpdma.c:(.text+0x336a): undefined reference to `devm_platform_ioremap_resource'
+>>>
+>>> I've previously posted
+>>> https://lore.kernel.org/dmaengine/20210520152420.23986-2-laurent.pinchart@ideasonboard.com/T/#u
+>>> which fixes the same issue (plus an additional one).
+>>
+>> Hi Laurent,
+>>
+>> I didn't add a dependency on OF because OF header files _mostly_
+>> have stubs so that they work when  OF is enabled or disabled.
+>>
+>> I did find a problem in <linux/of_address.h> where it could end up
+>> without having a stub. I will post a patch for that soon.
+>> I'm currently doing lots of randconfig builds on it.
+> 
+> I'm fine with eithe approach, but the patch you've posted to address the
+> of_address.h issue has an issue itself.
 
---vqRHPQ5m214gQNy0qa5LGHU5IM9KUWj6w
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+I'm also fine with either patch.
+I'm reworking the of_address.h patch now.
 
-Hi
+Thanks.
 
-Am 23.05.21 um 19:04 schrieb Paul Cercueil:
-> V5 of my patchset which adds the option for having GEM buffers backed b=
-y
-> non-coherent memory.
->=20
-> Changes from V4:
->=20
-> - [2/3]:
->      - Rename to drm_fb_cma_sync_non_coherent
->      - Invert loops for better cache locality
->      - Only sync BOs that have the non-coherent flag
->      - Properly sort includes
->      - Move to drm_fb_cma_helper.c to avoid circular dependency
-
-I'm pretty sure it's still not the right place. That would be something=20
-like drm_gem_cma_atomic_helper.c, but creating a new file just for a=20
-single function doesn't make sense.
-
->=20
-> - [3/3]:
->      - Fix drm_atomic_get_new_plane_state() used to retrieve the old
->        state
->      - Use custom drm_gem_fb_create()
-
-It's often a better choice to express such differences via different=20
-data structures (i.e., different instances of drm_mode_config_funcs) but =
-
-it's not a big deal either.
-
-Please go ahaed and merge if no one objects. All patches:
-
-Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
-
-Best regards
-Thomas
-
->      - Only check damage clips and sync DMA buffers if non-coherent
->        buffers are used
->=20
-> Cheers,
-> -Paul
->=20
-> Paul Cercueil (3):
->    drm: Add support for GEM buffers backed by non-coherent memory
->    drm: Add and export function drm_fb_cma_sync_non_coherent
->    drm/ingenic: Add option to alloc cached GEM buffers
->=20
->   drivers/gpu/drm/drm_fb_cma_helper.c       | 46 ++++++++++++++++++
->   drivers/gpu/drm/drm_gem_cma_helper.c      | 38 +++++++++++----
->   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 59 +++++++++++++++++++++-=
--
->   drivers/gpu/drm/ingenic/ingenic-drm.h     |  1 +
->   drivers/gpu/drm/ingenic/ingenic-ipu.c     | 21 ++++++--
->   include/drm/drm_fb_cma_helper.h           |  4 ++
->   include/drm/drm_gem_cma_helper.h          |  3 ++
->   7 files changed, 156 insertions(+), 16 deletions(-)
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+> If Vinod would prefer merging this patch instead of mine,
+> 
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> 
+>>>> Fixes: 7cbb0c63de3fc ("dmaengine: xilinx: dpdma: Add the Xilinx DisplayPort DMA engine driver")
+>>>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>>>> Reported-by: kernel test robot <lkp@intel.com>
+>>>> Cc: Vinod Koul <vkoul@kernel.org>
+>>>> CC: dmaengine@vger.kernel.org
+>>>> Cc: Hyun Kwon <hyun.kwon@xilinx.com>
+>>>> Cc: Tejas Upadhyay <tejasu@xilinx.com>
+>>>> Cc: Michal Simek <michal.simek@xilinx.com>
+>>>> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+>>>> ---
+>>>>  drivers/dma/Kconfig |    1 +
+>>>>  1 file changed, 1 insertion(+)
+>>>>
+>>>> --- linux-next-20210521.orig/drivers/dma/Kconfig
+>>>> +++ linux-next-20210521/drivers/dma/Kconfig
+>>>> @@ -702,6 +702,7 @@ config XILINX_ZYNQMP_DMA
+>>>>  
+>>>>  config XILINX_ZYNQMP_DPDMA
+>>>>  	tristate "Xilinx DPDMA Engine"
+>>>> +	depends on HAS_IOMEM
+>>>>  	select DMA_ENGINE
+>>>>  	select DMA_VIRTUAL_CHANNELS
+>>>>  	help
+> 
 
 
---vqRHPQ5m214gQNy0qa5LGHU5IM9KUWj6w--
+-- 
+~Randy
 
---tO3yJqMMNdhBkipXAOrrBGhEvUSorR1WW
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCqp3oFAwAAAAAACgkQlh/E3EQov+Ck
-ghAAiNKiPgu9BgY9V6Xd0rmmP3VM2BO5tWKZREZjhikSApcXWRnXdKVxHb8QQZ9kbpmPSSvHzwG8
-4NMCBBHQC79hYjSm6hvtkGCQ51Tl45WIUn6ohHQA3/FqgG9BlvLo8Z8/nezcis07SLl3k7Fb8Jmu
-lKGb9yYeIMW7LlRZLyaTi9Q9FWLx6ccp5ZP8HU/RFYzkT3L1riUOyktzRWNdoj0z1ryyVpJEGkiX
-LvhtjK4zkak/45nSEYxlZ0kuBOxmRCGY2Fv3mPQiCslW4HEEqp0bbdGN8NzN0VPRNZtoMZXQoX1u
-x2cGWo7LmdJsXJ3H4DMv615XZJEeha2aC06oXJedKsmBh69DT6t867hJexbftT28/HwvA0Yf7kQl
-DmubAtoHPWOmhJ0kaih/M2659vqcGkRDkLlvkXivg3Q5BU66AV9Nt04JcsMoqCKe1L4IsgP8BDRx
-A5qFhqFkcGAsDwwJ5o6aTItYTtDZ+xpYwxXIV41bGF2CteIFQqCWSscFL7pv5AhuakG4WHBNqWw5
-fWRDvGP9HbbpD4hUu3LLFwLb0kLsPiawf65digva9F22SxQqqXiRT+wK9qz4vdxwOwZDT5NaPk8e
-B/uji0tn30ok4JI8b46v5wS/04hkcxJIVIZgOglonQCtThC8dm18YMu7jXERuAn4ie7fj2AYgmrV
-T2s=
-=IEz2
------END PGP SIGNATURE-----
-
---tO3yJqMMNdhBkipXAOrrBGhEvUSorR1WW--
