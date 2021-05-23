@@ -2,298 +2,462 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01B2838DB57
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 16:01:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B00E38DB60
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 16:10:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231783AbhEWODI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 10:03:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231761AbhEWODH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 10:03:07 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2FFCC061574;
-        Sun, 23 May 2021 07:01:39 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so22737614oto.0;
-        Sun, 23 May 2021 07:01:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=85o3ARCeqv2WoUzy+YD0a4MS1G1Bt9v4SZegPWpN42Q=;
-        b=e9nT41xKFA1VVvio8EXZYbERREMUAKZGf2lciPVimf3O7vMMnogP6i61r7syPsGiGT
-         cCYjhPCJny6k7Zff6kY7JR3oK42LXDMMlgd8/7RNUdWu8aPqO9ZNnbWrmIuaEfZoXC+O
-         qh+9WqbOpeC3VZ1zLZfwyhB4GtLLwlJ8ERDjhTu8XkzXeFQjSk26fmCs2gV9gRolDE9x
-         BFcL3ZFeEWaYrC8rddA5WQ2qNq1dNSSI2yDWyvT+mA7sQyYJdrdLCuI3EB6fBLyQBPkA
-         SA5XCeEhkDoK4o7STv8zZVDSlNx9P5tHR9mwkSbrgfD4RNtYQnB/4u4SM0rS20P9hKPn
-         5Bpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=85o3ARCeqv2WoUzy+YD0a4MS1G1Bt9v4SZegPWpN42Q=;
-        b=BqiNLtWssNTPI1YFBZq5g+/7dM/WBNNa9nSCfiHDNF9keElsu6htTqtHEzmNEFXgnp
-         ezdwKVb+PzBZNSgoW0Zyc6BTIs+z41dT9Ce+ZeYbRyPmG38IbXCIvZzRpG0Wo2+p24ve
-         qOmvxg8zWvElDdNAe4pdprxTVycu7lPRZSwASy6pjidXQP2slrBsdw5OkUL7npBuOYJl
-         3CtBNncN09RLSNIHcP1uF4WIzJicdMO8NmUHQbyaVv9jb0ocSzZhO6/mrBuwzAVxcuDF
-         QoDxeRq1mWWcoNC/4niLZd9eg2zBZ+/I4Vp3/88xnKpv9f49/9Uff/5xOoDjzKG1G6Hj
-         EaLQ==
-X-Gm-Message-State: AOAM5335nGjohC0iQ6CMVAktytGxtw+VwwaiwNEJlRF2Tky+UfO0mZH4
-        qUjIKvVxRnoYoTvTY04s8gnKbIt8IyY=
-X-Google-Smtp-Source: ABdhPJxsnAQt+C9UddHKLBRD/OpEde33r956A2yxo0CyLzV4QBxpF2ZS6QOwZ3APLDo7DL82nOjkWw==
-X-Received: by 2002:a9d:600d:: with SMTP id h13mr14912988otj.259.1621778498053;
-        Sun, 23 May 2021 07:01:38 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p1sm2567620otk.58.2021.05.23.07.01.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 May 2021 07:01:37 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH v6] hwmon: Add sht4x Temperature and Humidity Sensor
- Driver
-To:     Navin Sankar Velliangiri <navin@linumiz.com>
-Cc:     Jean Delvare <jdelvare@suse.com>, Jonathan Corbet <corbet@lwn.net>,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        id S231784AbhEWOMP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 10:12:15 -0400
+Received: from m34-101.88.com ([104.250.34.101]:39502 "EHLO 88.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231758AbhEWOMN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 10:12:13 -0400
+X-Greylist: delayed 358 seconds by postgrey-1.27 at vger.kernel.org; Sun, 23 May 2021 10:12:13 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=1lzoVpsz8WTbR4DwlJUkizT+GTw/Dryvo7aIJ
+        nwcWeA=; b=RP2S6OyTQJ6vaJ9hXcGM08Jc6RmIMynLhF0/67nERgTYUY6DhOpL+
+        K3c0KtHsezRWWIDP8hokjK9FVoqLOaHCcKqEYzrTxMp32yGMIcHiXVI95LcD3sHw
+        XuRLg8UoLI2tYsX6Q0HzQen7MTBsGU1Rq3FDy4ob34lyWdB/wqCU1A=
+Received: from bobwxc.top (unknown [120.238.248.9])
+        by v_coremail2-frontend-1 (Coremail) with SMTP id LCKnCgAHz0G3YKpgx4w6AA--.6856S2;
+        Sun, 23 May 2021 22:03:39 +0800 (CST)
+Date:   Sun, 23 May 2021 22:03:34 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Hu Haowen <src.res@email.cn>
+Cc:     alexs@kernel.org, corbet@lwn.net, bobwxc@email.cn,
+        maskray@google.com, bernard@vivo.com, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210522060917.41256-1-navin@linumiz.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <0fdb63a8-f353-cbcb-b97b-b54ab2da9d7f@roeck-us.net>
-Date:   Sun, 23 May 2021 07:01:35 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+Subject: Re: [PATCH v2 2/3] docs/zh_CN: create new translations for
+ zh_CN/dev-tools/testing-overview
+Message-ID: <20210523140332.GA1097@bobwxc.top>
 MIME-Version: 1.0
-In-Reply-To: <20210522060917.41256-1-navin@linumiz.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
+Content-Disposition: inline
+In-Reply-To: <20210522031314.57982-2-src.res@email.cn>
+X-today: DDL
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: LCKnCgAHz0G3YKpgx4w6AA--.6856S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gr17KFy3JF1fXw1xCryfJFb_yoWfWFWrpF
+        WvgryxKa1UuryUA348Ga4UXr18KF1kua13KF18Ja4Sqrn5AFZakrZFgFyqq3y3Wry8ZF98
+        AF4rKFyj9wnFyFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUgK1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l8cAvFVAK
+        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4
+        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l
+        84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
+        ASzI0EjI02j7AqF2xKxwAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E74AGY7Cv6cx26F4U
+        Jr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I64
+        8v4I1l42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE
+        7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+        8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWU
+        CwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r
+        1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBI
+        daVFxhVjvjDU0xZFpf9x0Jj-VyxUUUUU=
+X-Originating-IP: [120.238.248.9]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/21 11:09 PM, Navin Sankar Velliangiri wrote:
-> This patch adds a hwmon driver for the SHT4x Temperature and
-> Humidity sensor.
-> 
-> Signed-off-by: Navin Sankar Velliangiri <navin@linumiz.com>
-> 
-> Changes in v2:
-> 
-> * Removed unused macro SHT4X_MIN_POLL_INTERVAL
-> * Replaced time_after instead of ktime_after
-> * Used goto statements for error handling
-> * Hardcoded the interval_time instead of clamp_val().
-> 
-> Changes in v3:
-> 
-> * Accept the poll interval if it is greater than SHT4X_MIN_POLL_INTERVAL and
->    return -EINVAL for negative values & less than SHT4X_MIN_POLL_INTERVAL
-> * Changed the data type of update_interval and last_updated to long.
-> 
-> Changes in v4:
-> 
-> * "update_interval" is long but msecs_to_jiffies() accepts only unsigned int.
->    clamp_val() api is used to assign the update_interval stays within UINT_MAX.
-> 
-> Changes in v5:
-> 
-> * Added error handling when master unable to send the data.
-> 
-> Changes in v6:
-> 
-> * clamp_val() alone is used to set the update interval. since the update
->    interval is a continuous setting.
+
+--0F1p//8PRICkK4MW
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+> Create new translations for dev-tools/testing-overview.rst and link it
+> to dev-tools/index.rst with TODOList modifications.
+>=20
+> Signed-off-by: Hu Haowen <src.res@email.cn>
 > ---
->   Documentation/hwmon/index.rst |   1 +
->   Documentation/hwmon/sht4x.rst |  45 +++++
->   drivers/hwmon/Kconfig         |  11 ++
->   drivers/hwmon/Makefile        |   1 +
->   drivers/hwmon/sht4x.c         | 305 ++++++++++++++++++++++++++++++++++
->   5 files changed, 363 insertions(+)
->   create mode 100644 Documentation/hwmon/sht4x.rst
->   create mode 100644 drivers/hwmon/sht4x.c
-> 
-> diff --git a/Documentation/hwmon/index.rst b/Documentation/hwmon/index.rst
-> index 9ed60fa84cbe..b6fcae40258c 100644
-> --- a/Documentation/hwmon/index.rst
-> +++ b/Documentation/hwmon/index.rst
-> @@ -164,6 +164,7 @@ Hardware Monitoring Kernel Drivers
->      sht15
->      sht21
->      sht3x
-> +   sht4x
->      shtc1
->      sis5595
->      sl28cpld
-> diff --git a/Documentation/hwmon/sht4x.rst b/Documentation/hwmon/sht4x.rst
+>  .../translations/zh_CN/dev-tools/index.rst    |  2 +
+>  .../zh_CN/dev-tools/testing-overview.rst      | 99 +++++++++++++++++++
+>  2 files changed, 101 insertions(+)
+>  create mode 100644 Documentation/translations/zh_CN/dev-tools/testing-ov=
+erview.rst
+>=20
+> diff --git a/Documentation/translations/zh_CN/dev-tools/index.rst b/Docum=
+entation/translations/zh_CN/dev-tools/index.rst
+> index 7ba02fc392a6..b6b6d3b09acc 100644
+> --- a/Documentation/translations/zh_CN/dev-tools/index.rst
+> +++ b/Documentation/translations/zh_CN/dev-tools/index.rst
+> @@ -22,6 +22,7 @@ Documentation/dev-tools/testing-overview.rst
+>     :maxdepth: 2
+> =20
+>     gcov
+> +   testing-overview
+> =20
+>  Todolist:
+> =20
+> @@ -32,6 +33,7 @@ Todolist:
+>   - ubsan
+>   - kmemleak
+>   - kcsan
+> + - kfence
+>   - gdb-kernel-debugging
+>   - kgdb
+>   - kselftest
+> diff --git a/Documentation/translations/zh_CN/dev-tools/testing-overview.=
+rst b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
 > new file mode 100644
-> index 000000000000..3b37abcd4a46
+> index 000000000000..6e2046ac53ff
 > --- /dev/null
-> +++ b/Documentation/hwmon/sht4x.rst
-> @@ -0,0 +1,45 @@
+> +++ b/Documentation/translations/zh_CN/dev-tools/testing-overview.rst
+> @@ -0,0 +1,12 @@
 > +.. SPDX-License-Identifier: GPL-2.0
 > +
-> +Kernel driver sht4x
-> +===================
+> +.. include:: ../disclaimer-zh_CN.rst
 > +
-> +Supported Chips:
+> +:Original: Documentation/dev-tools/testing-overview.rst
+> +:Translator: =E8=83=A1=E7=9A=93=E6=96=87 Hu Haowen <src.res@email.cn>
 > +
-> +  * Sensirion SHT4X
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +=E5=86=85=E6=A0=B8=E6=B5=8B=E8=AF=95=E6=8C=87=E5=8D=97
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 > +
-> +    Prefix: 'sht4x'
-> +
-> +    Addresses scanned: None
-> +
-> +    Datasheet:
-> +
-> +      English: https://www.sensirion.com/fileadmin/user_upload/customers/sensirion/Dokumente/2_Humidity_Sensors/Datasheets/Sensirion_Humidity_Sensors_SHT4x_Datasheet.pdf
-> +
-> +Author: Navin Sankar Velliangiri <navin@linumiz.com>
-> +
-> +
-> +Description
-> +-----------
-> +
-> +This driver implements support for the Sensirion SHT4x chip, a humidity
-> +and temperature sensor. Temperature is measured in degree celsius, relative
-> +humidity is expressed as a percentage. In sysfs interface, all values are
-> +scaled by 1000, i.e. the value for 31.5 degrees celsius is 31500.
-> +
-> +Usage Notes
-> +-----------
-> +
-> +The device communicates with the I2C protocol. Sensors can have the I2C
-> +address 0x44. See Documentation/i2c/instantiating-devices.rst for methods
-> +to instantiate the device.
-> +
-> +Sysfs entries
-> +-------------
-> +
-> +=============== ============================================
-> +temp1_input     Measured temperature in millidegrees Celcius
-> +humidity1_input Measured humidity in %H
-> +update_interval The minimum interval for polling the sensor,
-> +                in milliseconds. Writable. Must be at least
-> +                2000.
-> +============== =============================================
-> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
-> index 87624902ea80..e3675377bc5d 100644
-> --- a/drivers/hwmon/Kconfig
-> +++ b/drivers/hwmon/Kconfig
-> @@ -1583,6 +1583,17 @@ config SENSORS_SHT3x
->   	  This driver can also be built as a module. If so, the module
->   	  will be called sht3x.
->   
-> +config SENSORS_SHT4x
-> +	tristate "Sensiron humidity and temperature sensors. SHT4x and compat."
-> +	depends on I2C
-> +	select CRC8
-> +	help
-> +	  If you say yes here you get support for the Sensiron SHT40, SHT41 and
-> +	  SHT45 humidity and temperature sensors.
-> +
-> +	  This driver can also be built as a module. If so, the module
-> +	  will be called sht4x.
-> +
->   config SENSORS_SHTC1
->   	tristate "Sensiron humidity and temperature sensors. SHTC1 and compat."
->   	depends on I2C
-> diff --git a/drivers/hwmon/Makefile b/drivers/hwmon/Makefile
-> index 59e78bc212cf..d712c61c1f5e 100644
-> --- a/drivers/hwmon/Makefile
-> +++ b/drivers/hwmon/Makefile
-> @@ -171,6 +171,7 @@ obj-$(CONFIG_SENSORS_SL28CPLD)	+= sl28cpld-hwmon.o
->   obj-$(CONFIG_SENSORS_SHT15)	+= sht15.o
->   obj-$(CONFIG_SENSORS_SHT21)	+= sht21.o
->   obj-$(CONFIG_SENSORS_SHT3x)	+= sht3x.o
-> +obj-$(CONFIG_SENSORS_SHT4x)	+= sht4x.o
->   obj-$(CONFIG_SENSORS_SHTC1)	+= shtc1.o
->   obj-$(CONFIG_SENSORS_SIS5595)	+= sis5595.o
->   obj-$(CONFIG_SENSORS_SMM665)	+= smm665.o
-> diff --git a/drivers/hwmon/sht4x.c b/drivers/hwmon/sht4x.c
-> new file mode 100644
-> index 000000000000..39e1b4a123fa
-> --- /dev/null
-> +++ b/drivers/hwmon/sht4x.c
-> @@ -0,0 +1,305 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +
-> +/*
-> + * Copyright (c) Linumiz 2021
-> + *
-> + * sht4x.c - Linux hwmon driver for SHT4x Temperature and Humidity sensor
-> + *
-> + * Author: Navin Sankar Velliangiri <navin@linumiz.com>
-> + */
-> +
-> +#include <linux/crc8.h>
-> +#include <linux/delay.h>
-> +#include <linux/hwmon.h>
-> +#include <linux/i2c.h>
-> +#include <linux/jiffies.h>
-> +#include <linux/module.h>
-> +
-> +/*
-> + * Poll intervals (in milliseconds)
-> + */
-> +#define SHT4X_MIN_POLL_INTERVAL	2000
-> +
-> +/*
-> + * I2C command delays (in microseconds)
-> + */
-> +#define SHT4X_MEAS_DELAY	1000
-> +#define SHT4X_DELAY_EXTRA	10000
-> +
-> +/*
-> + * Command Bytes
-> + */
-> +#define SHT4X_CMD_MEASURE_HPM	0b11111101
-> +#define SHT4X_CMD_RESET		0b10010100
-> +
-> +#define SHT4X_CMD_LEN		1
-> +#define SHT4X_CRC8_LEN		1
-> +#define SHT4X_WORD_LEN		2
-> +#define SHT4X_RESPONSE_LENGTH	6
-> +#define SHT4X_CRC8_POLYNOMIAL	0x31
-> +#define SHT4X_CRC8_INIT		0xff
-> +#define SHT4X_MIN_TEMPERATURE	-45000
-> +#define SHT4X_MAX_TEMPERATURE	125000
-> +#define SHT4X_MIN_HUMIDITY	0
-> +#define SHT4X_MAX_HUMIDITY	100000
-> +
-> +DECLARE_CRC8_TABLE(sht4x_crc8_table);
-> +
-> +/**
-> + * struct sht4x_data - All the data required to operate an SHT4X chip
-> + * @client: the i2c client associated with the SHT4X
-> + * @lock: a mutex that is used to prevent parallel access to the i2c client
-> + * @update_interval: the minimum poll interval
-> + * @last_updated: the previous time that the SHT4X was polled
-> + * @temperature: the latest temperature value received from the SHT4X
-> + * @humidity: the latest humidity value received from the SHT4X
-> + */
-> +struct sht4x_data {
-> +	struct i2c_client	*client;
-> +	struct mutex		lock;	/* atomic read data updates */
-> +	bool			valid;	/* validity of fields below */
-> +	long			update_interval;	/* in milli-seconds */
-> +	long			last_updated;	/* in jiffies */
-> +	s32			temperature;
-> +	s32			humidity;
-> +};
-> +
-> +/**
-> + * sht4x_read_values() - read and parse the raw data from the SHT4X
-> + * @sht4x_data: the struct sht4x_data to use for the lock
-> + * Return: 0 if succesfull, 1 if not
-> + */
-> +static int sht4x_read_values(struct sht4x_data *data)
-> +{
-> +	int ret;
+> +=E6=9C=89=E8=AE=B8=E5=A4=9A=E4=B8=8D=E5=90=8C=E7=9A=84=E5=B7=A5=E5=85=B7=
+=E5=8F=AF=E4=BB=A5=E7=94=A8=E4=BA=8E=E6=B5=8B=E8=AF=95Linux=E5=86=85=E6=A0=
+=B8=EF=BC=8C=E5=9B=A0=E6=AD=A4=E7=9F=A5=E9=81=93=E4=BB=80=E4=B9=88=E6=97=B6=
+=E5=80=99=E4=BD=BF=E7=94=A8=E5=AE=83=E4=BB=AC=E5=8F=AF=E8=83=BD
 
-Ah yes, the value of ret will be uninitialized, and the function will return
-a random value if data->valid is false or if two measurements follow each other.
+s/=E7=9F=A5=E9=81=93/=E4=BA=86=E8=A7=A3/
 
-Please fix and resubmit. The driver looks good otherwise.
+> +=E5=BE=88=E5=9B=B0=E9=9A=BE=E3=80=82=E8=AF=A5=E6=96=87=E6=A1=A3=E6=8F=90=
+=E4=BE=9B=E4=BA=86=E5=AE=83=E4=BB=AC=E4=B9=8B=E9=97=B4=E5=8C=BA=E5=88=AB=E7=
+=9A=84=E4=B8=80=E4=B8=AA=E7=B2=97=E7=95=A5=E6=A6=82=E8=A7=88=EF=BC=8C=E5=B9=
+=B6=E9=98=90=E9=87=8A=E4=BA=86=E5=AE=83=E4=BB=AC=E6=80=8E=E6=A0=B7=E7=B3=85
 
-Guenter
+maybe
+=E6=9C=AC=E6=96=87=E6=A1=A3=E7=B2=97=E7=95=A5=E6=A6=82=E8=BF=B0=E4=BA=86=E5=
+=AE=83=E4=BB=AC=E4=B9=8B=E9=97=B4=E7=9A=84=E5=8C=BA=E5=88=AB
+
+=E6=98=AF=E6=80=8E=E6=A0=B7
+
+> +=E5=90=88=E5=9C=A8=E4=B8=80=E8=B5=B7=E7=9A=84=E3=80=82
+> +
+> +=E7=BC=96=E5=86=99=E5=92=8C=E8=BF=90=E8=A1=8C=E6=B5=8B=E8=AF=95
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +=E5=A4=A7=E5=A4=9A=E6=95=B0=E5=86=85=E6=A0=B8=E6=B5=8B=E8=AF=95=E9=83=BD=
+=E6=98=AF=E7=94=A8kselftest=E6=88=96KUnit=E6=A1=86=E6=9E=B6=E4=B9=8B=E4=B8=
+=80=E7=BC=96=E5=86=99=E7=9A=84=E3=80=82=E5=AE=83=E4=BB=AC=E9=83=BD=E8=AE=A9=
+=E8=BF=90=E8=A1=8C=E6=B5=8B=E8=AF=95
+>=20
+> =E9=83=BD=E6=8F=90=E4=BE=9B=E4=BA=86=E8=AE=A9=E8=BF=90=E8=A1=8C=E6=B5=8B=
+=E8=AF=95=E6=9B=B4=E7=AE=80=E5=8D=95=E7=9A=84=E7=9A=84=E5=9F=BA=E7=A1=80=E8=
+=AE=BE=E6=96=BD=EF=BC=8C
+>=20
+> +=E6=9B=B4=E5=8A=A0=E7=AE=80=E5=8C=96=EF=BC=8C=E5=B9=B6=E4=B8=BA=E7=BC=96=
+=E5=86=99=E6=96=B0=E6=B5=8B=E8=AF=95=E6=8F=90=E4=BE=9B=E5=B8=AE=E5=8A=A9=E3=
+=80=82
+> +
+> +=E5=A6=82=E6=9E=9C=E4=BD=A0=E6=83=B3=E9=AA=8C=E8=AF=81=E5=86=85=E6=A0=B8=
+=E7=9A=84=E8=A1=8C=E4=B8=BA=E2=80=94=E2=80=94=E5=B0=A4=E5=85=B6=E6=98=AF=E5=
+=86=85=E6=A0=B8=E7=9A=84=E7=89=B9=E5=AE=9A=E9=83=A8=E5=88=86=E2=80=94=E2=80=
+=94=E9=82=A3=E4=BD=A0=E5=B0=B1=E8=A6=81=E4=BD=BF=E7=94=A8kUnit=E6=88=96
+> +kselftest=E3=80=82
+> +
+> +KUnit=E5=92=8Ckselftest=E7=9A=84=E5=8C=BA=E5=88=AB
+> +----------------------
+> +
+> +KUnit=EF=BC=88Documentation/zh_CN/dev-tools/kunit/index.rst=EF=BC=89=E6=
+=98=AF=E7=94=A8=E4=BA=8E=E2=80=9C=E7=99=BD=E7=AE=B1=E2=80=9D=E6=B5=8B
+
+Seems we don't have this translation yet, so plese use the link point to En=
+ version.
+So as followed paths.
+
+> +=E8=AF=95=E7=9A=84=E4=B8=80=E4=B8=AA=E5=AE=8C=E6=95=B4=E7=9A=84=E5=86=85=
+=E6=A0=B8=E5=86=85=E9=83=A8=E7=B3=BB=E7=BB=9F=EF=BC=9A=E5=9B=A0=E4=B8=BA=E6=
+=B5=8B=E8=AF=95=E4=BB=A3=E7=A0=81=E6=98=AF=E5=86=85=E6=A0=B8=E7=9A=84=E4=B8=
+=80=E9=83=A8=E5=88=86=EF=BC=8C=E6=89=80=E4=BB=A5=E5=AE=83=E8=83=BD=E5=A4=9F=
+=E8=AE=BF
+> +=E9=97=AE=E7=94=A8=E6=88=B7=E7=A9=BA=E9=97=B4=E4=B8=8D=E8=83=BD=E8=AE=BF=
+=E9=97=AE=E5=88=B0=E7=9A=84=E5=86=85=E9=83=A8=E7=BB=93=E6=9E=84=E5=92=8C=E5=
+=8A=9F=E8=83=BD=E3=80=82
+> +
+> +=E5=9B=A0=E6=AD=A4=EF=BC=8CKUnit=E6=B5=8B=E8=AF=95=E6=9C=80=E5=A5=BD=E4=
+=B8=8D=E8=A6=81=E5=86=99=E5=BE=97=E5=A4=AA=E5=B0=8F=EF=BC=8C=E4=B9=9F=E4=B8=
+=8D=E8=A6=81=E6=9C=89=E5=86=85=E6=A0=B8=E4=B8=AD=E6=9C=AC=E8=BA=AB=E5=8C=85=
+=E5=90=AB=E7=9A=84=E9=83=A8=E5=88=86=EF=BC=8C=E4=BB=A5=E4=BE=BF
+
+seems a translation mistake?
+
+against small, self-contained parts of the Kernel
+=E6=9C=80=E5=A5=BD=E9=92=88=E5=AF=B9=E5=86=85=E6=A0=B8=E4=B8=AD=E8=BE=83=E5=
+=B0=8F=E7=9A=84=E3=80=81=E8=87=AA=E5=8C=85=E5=90=AB=E7=9A=84=E9=83=A8=E5=88=
+=86=EF=BC=8C
+
+> +=E8=83=BD=E5=A4=9F=E7=8B=AC=E7=AB=8B=E5=9C=B0=E6=B5=8B=E8=AF=95=E3=80=82=
+=E2=80=98=E5=8D=95=E5=85=83=E2=80=99=E6=B5=8B=E8=AF=95=E7=9A=84=E6=A6=82=E5=
+=BF=B5=E4=BA=A6=E6=98=AF=E5=A6=82=E6=AD=A4=E3=80=82
+
+=E2=80=98=E2=80=99 -> =E2=80=9C=E2=80=9D would be better
+
+> +
+> +=E6=AF=94=E5=A6=82=EF=BC=8C=E4=B8=80=E4=B8=AAKUnit=E6=B5=8B=E8=AF=95=E5=
+=8F=AF=E8=83=BD=E6=B5=8B=E8=AF=95=E4=B8=80=E4=B8=AA=E5=8D=95=E7=8B=AC=E7=9A=
+=84=E5=86=85=E6=A0=B8=E5=8A=9F=E8=83=BD=EF=BC=88=E7=94=9A=E8=87=B3=E9=80=9A=
+=E8=BF=87=E4=B8=80=E4=B8=AA=E5=87=BD=E6=95=B0=E6=B5=8B=E8=AF=95
+> +=E4=B8=80=E4=B8=AA=E5=8D=95=E4=B8=80=E7=9A=84=E4=BB=A3=E7=A0=81=E8=B7=AF=
+=E5=BE=84=EF=BC=89=EF=BC=8C=E8=80=8C=E4=B8=8D=E6=98=AF=E6=95=B4=E4=B8=AA=E5=
+=9C=B0=E6=B5=8B=E8=AF=95=E4=B8=80=E4=B8=AA=E7=89=B9=E6=80=A7=E3=80=82
+
+missed a sentence
+       , such as an error handling case
+
+> +
+> +=E8=BF=99=E4=B9=9F=E4=BD=BF=E5=BE=97KUnit=E6=B5=8B=E8=AF=95=E6=9E=84=E5=
+=BB=BA=E5=92=8C=E8=BF=90=E8=A1=8C=E9=9D=9E=E5=B8=B8=E5=9C=B0=E5=BF=AB=EF=BC=
+=8C=E4=BB=8E=E8=80=8C=E8=83=BD=E5=A4=9F=E4=BD=9C=E4=B8=BA=E5=BC=80=E5=8F=91=
+=E6=B5=81=E7=A8=8B=E7=9A=84=E4=B8=80=E9=83=A8=E5=88=86=E8=A2=AB
+
+=E7=9A=84=E6=B5=8B=E8=AF=95=E6=9E=84=E5=BB=BA=E5=92=8C=E8=BF=90=E8=A1=8C=E9=
+=9D=9E=E5=B8=B8=E5=BF=AB
+
+> +=E9=A2=91=E7=B9=81=E5=9C=B0=E8=BF=90=E8=A1=8C=E3=80=82
+> +
+> +=E6=9C=89=E5=85=B3=E6=9B=B4=E8=AF=A6=E7=BB=86=E7=9A=84=E4=BB=8B=E7=BB=8D=
+=EF=BC=8C=E8=AF=B7=E5=8F=82=E9=98=85KUnit=E6=B5=8B=E8=AF=95=E4=BB=A3=E7=A0=
+=81=E9=A3=8E=E6=A0=BC=E6=8C=87=E5=8D=97
+> +Documentation/translations/zh_CN/dev-tools/kunit/style.rst
+
+^path
+
+> +
+> +kselftest=EF=BC=88Documentation/translations/zh_CN/dev-tools/kselftest.r=
+st=EF=BC=89=EF=BC=8C
+
+^path
+
+> +=E5=8F=A6=E4=B8=80=E6=96=B9=E9=9D=A2=EF=BC=8C=E5=A4=A7=E9=87=8F=E5=9C=B0=
+=E5=9C=A8=E7=94=A8=E6=88=B7=E7=A9=BA=E9=97=B4=E8=A2=AB=E5=AE=9E=E7=8E=B0=EF=
+=BC=8C=E5=B9=B6=E4=B8=94=E6=B5=8B=E8=AF=95=E9=80=9A=E5=B8=B8=E6=98=AF=E7=94=
+=A8=E6=88=B7=E7=A9=BA=E9=97=B4=E7=9A=84=E8=84=9A=E6=9C=AC=E6=88=96=E7=A8=8B=
+=E5=BA=8F=E3=80=82
+
+=E7=9B=B8=E5=AF=B9=E6=9D=A5=E8=AF=B4=EF=BC=8C=E5=A4=A7=E9=87=8F=E7=94=A8=E4=
+=BA=8E=E7=94=A8=E6=88=B7=E7=A9=BA=E9=97=B4=EF=BC=8C=E5=B9=B6=E4=B8=94=E9=80=
+=9A=E5=B8=B8=E6=B5=8B=E8=AF=95=E7=94=A8=E6=88=B7=E7=A9=BA=E9=97=B4=E7=9A=84=
+=E8=84=9A=E6=9C=AC=E6=88=96=E7=A8=8B=E5=BA=8F=E3=80=82
+
+> +
+> +=E8=BF=99=E4=BD=BF=E5=BE=97=E7=BC=96=E5=86=99=E5=A4=8D=E6=9D=82=E7=9A=84=
+=E6=B5=8B=E8=AF=95=EF=BC=8C=E6=88=96=E8=80=85=E9=9C=80=E8=A6=81=E6=93=8D=E4=
+=BD=9C=E6=9B=B4=E5=A4=9A=E5=85=A8=E5=B1=80=E7=B3=BB=E7=BB=9F=E7=8A=B6=E6=80=
+=81=E7=9A=84=E6=B5=8B=E8=AF=95=E6=9B=B4=E5=8A=A0=E5=AE=B9=E6=98=93=EF=BC=88=
+=E8=AF=B8
+> +=E5=A6=82=E7=94=9F=E6=88=90=E8=BF=9B=E7=A8=8B=E4=B9=8B=E7=B1=BB=EF=BC=89=
+=E3=80=82=E7=84=B6=E8=80=8C=EF=BC=8C=E4=BB=8Ekselftest=E7=9B=B4=E6=8E=A5=E8=
+=B0=83=E7=94=A8=E5=86=85=E6=A0=B8=E5=87=BD=E6=95=B0=E6=98=AF=E4=B8=8D=E8=A1=
+=8C=E7=9A=84=E3=80=82=E8=BF=99=E4=B9=9F=E5=B0=B1
+> +=E6=84=8F=E5=91=B3=E7=9D=80=E5=8F=AA=E6=9C=89=E9=80=9A=E8=BF=87=E6=9F=90=
+=E7=A7=8D=E6=96=B9=E5=BC=8F=EF=BC=88=E5=A6=82=E7=B3=BB=E7=BB=9F=E8=B0=83=E7=
+=94=A8=E3=80=81=E9=A9=B1=E5=8A=A8=E8=AE=BE=E5=A4=87=E3=80=81=E6=96=87=E4=BB=
+=B6=E7=B3=BB=E7=BB=9F=E7=AD=89=EF=BC=89=E5=AF=BC=E5=87=BA=E5=88=B0=E4=BA=86=
+=E7=94=A8
+> +=E6=88=B7=E7=A9=BA=E9=97=B4=E7=9A=84=E5=86=85=E6=A0=B8=E5=8A=9F=E8=83=BD=
+=E6=89=8D=E8=83=BD=E4=BD=BF=E7=94=A8kselftest=E6=9D=A5=E6=B5=8B=E8=AF=95=E3=
+=80=82=E4=B8=BA=E6=AD=A4=EF=BC=8C=E6=9C=89=E4=BA=9B=E6=B5=8B=E8=AF=95=E5=8C=
+=85=E5=90=AB=E4=BA=86=E4=B8=80=E4=B8=AA=E4=BC=B4
+> +=E7=94=9F=E7=9A=84=E5=86=85=E6=A0=B8=E6=A8=A1=E5=9D=97=E7=94=A8=E4=BA=8E=
+=E5=AF=BC=E5=87=BA=E6=9B=B4=E5=A4=9A=E7=9A=84=E4=BF=A1=E6=81=AF=E5=92=8C=E5=
+=8A=9F=E8=83=BD=E3=80=82=E4=B8=8D=E8=BF=87=EF=BC=8C=E5=AF=B9=E4=BA=8E=E5=9F=
+=BA=E6=9C=AC=E4=B8=8A=E6=88=96=E8=80=85=E5=AE=8C=E5=85=A8=E5=9C=A8=E5=86=85=
+=E6=A0=B8
+> +=E4=B8=AD=E8=BF=90=E8=A1=8C=E7=9A=84=E6=B5=8B=E8=AF=95=EF=BC=8CKUnit=E5=
+=8F=AF=E8=83=BD=E6=98=AF=E6=9B=B4=E4=BD=B3=E5=B7=A5=E5=85=B7=E3=80=82
+> +
+
+missed a paragraph
+
+       kselftest is therefore suited well to tests of whole features, as th=
+ese will
+       expose an interface to userspace, which can be tested, but not imple=
+mentation
+       details. This aligns well with 'system' or 'end-to-end' testing.
+
+
+> +=E6=AF=94=E5=A6=82=EF=BC=8C=E4=B8=80=E4=B8=AA=E6=96=B0=E7=9A=84=E7=B3=BB=
+=E7=BB=9F=E8=B0=83=E7=94=A8=E5=BA=94=E8=AF=A5=E4=BC=B4=E9=9A=8F=E6=9C=89=E6=
+=96=B0=E7=9A=84kselftest=E6=B5=8B=E8=AF=95=E3=80=82
+> +
+> +=E4=BB=A3=E7=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E5=B7=A5=E5=85=B7
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +Linux=E5=86=85=E6=A0=B8=E6=94=AF=E6=8C=81=E4=B8=8D=E5=90=8C=E4=BB=A3=E7=
+=A0=81=E4=B9=8B=E9=97=B4=E7=9A=84=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E9=87=
+=8F=E5=B7=A5=E5=85=B7=E3=80=82=E8=BF=99=E8=83=BD=E8=A2=AB=E7=94=A8=E6=9D=A5=
+=E9=AA=8C=E8=AF=81=E4=B8=80=E4=B8=AA=E6=B5=8B=E8=AF=95=E6=98=AF
+
+=E6=94=AF=E6=8C=81=E4=B8=A4=E7=A7=8D=E4=B8=8D=E5=90=8C=E7=9A=84=E4=BB=A3=E7=
+=A0=81=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E8=AF=95=E5=B7=A5=E5=85=B7=E3=80=
+=82
+
+=E5=AE=83=E4=BB=AC=E5=8F=AF=E4=BB=A5=E7=94=A8=E6=9D=A5=E9=AA=8C=E8=AF=81=E4=
+=B8=80=E9=A1=B9=E6=B5=8B=E8=AF=95=E6=89=A7=E8=A1=8C=E7=9A=84=E7=A1=AE=E5=88=
+=87=E5=87=BD=E6=95=B0=E6=88=96=E4=BB=A3=E7=A0=81=E8=A1=8C=E3=80=82
+
+> +=E6=89=A7=E8=A1=8C=E7=9A=84=E7=89=B9=E5=AE=9A=E7=9A=84=E5=87=BD=E6=95=B0=
+=E6=88=96=E8=80=85=E7=89=B9=E5=AE=9A=E8=A1=8C=E7=9A=84=E4=BB=A3=E7=A0=81=E3=
+=80=82=E8=BF=99=E6=9C=89=E5=8A=A9=E4=BA=8E=E5=86=B3=E5=AE=9A=E5=86=85=E6=A0=
+=B8=E8=A2=AB=E6=B5=8B=E8=AF=95=E4=BA=86=E5=A4=9A=E5=B0=91=EF=BC=8C=E6=88=96
+> +=E7=94=A8=E6=9D=A5=E6=9F=A5=E6=89=BE=E5=90=88=E9=80=82=E7=9A=84=E6=B5=8B=
+=E8=AF=95=E4=B8=AD=E6=B2=A1=E6=9C=89=E8=A6=86=E7=9B=96=E5=88=B0=E7=9A=84=E6=
+=9E=81=E7=AB=AF=E6=83=85=E5=86=B5=E3=80=82
+> +
+> +:doc:`gcov` =E6=98=AFGCC=E7=9A=84=E8=A6=86=E7=9B=96=E7=8E=87=E6=B5=8B=E8=
+=AF=95=E5=B7=A5=E5=85=B7=EF=BC=8C=E8=83=BD=E7=94=A8=E4=BA=8E=E8=8E=B7=E5=8F=
+=96=E5=86=85=E6=A0=B8=E7=9A=84=E5=85=A8=E5=B1=80=E6=88=96=E6=AF=8F=E4=B8=AA=
+=E6=A8=A1=E5=9D=97=E7=9A=84
+> +=E8=A6=86=E7=9B=96=E7=8E=87=E3=80=82=E4=B8=8EKCOV=E4=B8=8D=E5=90=8C=E7=
+=9A=84=E6=98=AF=EF=BC=8C=E8=BF=99=E4=B8=AA=E5=B7=A5=E5=85=B7=E4=B8=8D=E8=AE=
+=B0=E5=BD=95=E6=AF=8F=E4=B8=AA=E4=BB=BB=E5=8A=A1=E7=9A=84=E8=A6=86=E7=9B=96=
+=E7=8E=87=E3=80=82=E8=A6=86=E7=9B=96=E7=8E=87=E6=95=B0=E6=8D=AE=E5=8F=AF
+> +=E4=BB=A5=E9=80=9A=E8=BF=87debugfs=E8=AF=BB=E5=8F=96=EF=BC=8C=E5=B9=B6=
+=E9=80=9A=E8=BF=87=E5=B8=B8=E8=A7=84=E7=9A=84gcov=E5=B7=A5=E5=85=B7=E8=BF=
+=9B=E8=A1=8C=E8=A7=A3=E9=87=8A=E3=80=82
+> +
+> +:doc:`kcov` =E6=98=AF=E8=83=BD=E5=A4=9F=E6=9E=84=E5=BB=BA=E5=9C=A8=E5=86=
+=85=E6=A0=B8=E4=B9=8B=E4=B8=AD=EF=BC=8C=E7=94=A8=E4=BA=8E=E5=9C=A8=E6=AF=8F=
+=E4=B8=AA=E4=BB=BB=E5=8A=A1=E7=9A=84=E5=B1=82=E9=9D=A2=E6=8D=95=E6=8D=89=E8=
+=A6=86=E7=9B=96=E7=8E=87=E7=9A=84=E4=B8=80
+> +=E4=B8=AA=E5=8A=9F=E8=83=BD=E3=80=82=E5=9B=A0=E6=AD=A4=EF=BC=8C=E5=AF=B9=
+=E4=BA=8E=E4=BB=A3=E7=A0=81=E6=89=A7=E8=A1=8C=E4=BD=8D=E7=BD=AE=E4=BF=A1=E6=
+=81=AF=E7=9A=84=E5=85=B6=E5=AE=83=E6=83=85=E5=86=B5=EF=BC=8C=E5=AE=83=E6=98=
+=AF=E9=9D=9E=E5=B8=B8=E6=9C=89=E7=94=A8=E7=9A=84=EF=BC=8C=E6=AF=94=E5=A6=82=
+=E5=9C=A8
+
+=E5=9B=A0=E6=AD=A4=EF=BC=8C=E5=AE=83=E5=AF=B9=E4=BA=8E=E6=A8=A1=E7=B3=8A=E6=
+=B5=8B=E8=AF=95=E5=92=8C=E5=85=B3=E4=BA=8E=E4=BB=A3=E7=A0=81=E6=89=A7=E8=A1=
+=8C=E6=9C=9F=E9=97=B4=E4=BF=A1=E6=81=AF=E7=9A=84=E5=85=B6=E5=AE=83=E6=83=85=
+=E5=86=B5=E9=9D=9E=E5=B8=B8=E6=9C=89=E7=94=A8=E3=80=82
+
+> +=E4=B8=80=E4=B8=AA=E5=8D=95=E4=B8=80=E7=B3=BB=E7=BB=9F=E8=B0=83=E7=94=A8=
+=E9=87=8C=E4=BD=BF=E7=94=A8=E5=AE=83=E5=B0=B1=E5=BE=88=E6=9C=89=E7=94=A8=E3=
+=80=82
+> +
+> +=E5=8A=A8=E6=80=81=E5=88=86=E6=9E=90=E5=B7=A5=E5=85=B7
+> +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> +
+> +=E5=86=85=E6=A0=B8=E4=B9=9F=E6=94=AF=E6=8C=81=E8=AE=B8=E5=A4=9A=E5=8A=A8=
+=E6=80=81=E5=88=86=E6=9E=90=E5=B7=A5=E5=85=B7=EF=BC=8C=E7=94=A8=E4=BB=A5=E6=
+=A3=80=E6=B5=8B=E6=AD=A3=E5=9C=A8=E8=BF=90=E8=A1=8C=E7=9A=84=E5=86=85=E6=A0=
+=B8=E4=B8=AD=E5=87=BA=E7=8E=B0=E7=9A=84=E5=A4=9A=E7=A7=8D=E7=B1=BB=E5=9E=8B=
+=E7=9A=84
+> +=E9=97=AE=E9=A2=98=E3=80=82=E8=BF=99=E4=BA=9B=E5=B7=A5=E5=85=B7=E5=B0=A4=
+=E5=85=B6=E7=94=A8=E4=BA=8E=E4=B8=8D=E5=90=8C=E7=B1=BB=E5=9E=8B=E7=9A=84=E6=
+=BC=8F=E6=B4=9E=EF=BC=8C=E6=AF=94=E5=A6=82=E9=9D=9E=E6=B3=95=E5=86=85=E5=AD=
+=98=E8=AE=BF=E9=97=AE=EF=BC=8C=E8=AF=B8=E5=A6=82=E6=95=B0=E6=8D=AE=E7=AB=9E=
+=E4=BA=89
+
+=E8=BF=99=E4=BA=9B=E5=B7=A5=E5=85=B7=E9=80=9A=E5=B8=B8=E6=AF=8F=E4=B8=AA=E5=
+=8E=BB=E5=AF=BB=E6=89=BE=E4=B8=80=E7=B1=BB=E4=B8=8D=E5=90=8C=E7=9A=84=E7=BC=
+=BA=E9=99=B7=EF=BC=8C=E6=AF=94=E5=A6=82=E9=9D=9E=E6=B3=95=E5=86=85=E5=AD=98=
+=E8=AE=BF=E9=97=AE=EF=BC=8C=E6=95=B0=E6=8D=AE=E7=AB=9E=E4=BA=89=E7=AD=89=E5=
+=B9=B6=E5=8F=91=E9=97=AE=E9=A2=98=EF=BC=8C
+=E6=88=96=E6=95=B4=E5=9E=8B=E6=BA=A2=E5=87=BA=E7=AD=89=E5=85=B6=E4=BB=96=E6=
+=9C=AA=E5=AE=9A=E4=B9=89=E8=A1=8C=E4=B8=BA=E3=80=82
+
+> +=E7=9A=84=E5=B9=B6=E5=8F=91=E9=97=AE=E9=A2=98=EF=BC=8C=E6=88=96=E8=80=85=
+=E6=95=B4=E5=9E=8B=E6=BA=A2=E5=87=BA=E7=9A=84=E5=85=B6=E5=AE=83=E6=9C=AA=E5=
+=AE=9A=E4=B9=89=E7=9A=84=E8=A1=8C=E4=B8=BA=E3=80=82
+> +
+> +=E4=B8=80=E4=BA=9B=E5=B7=A5=E5=85=B7=E5=A6=82=E4=B8=8B=EF=BC=9A
+
+=E5=A6=82=E4=B8=8B=E6=89=80=E7=A4=BA
+
+> +
+> +* kmemleak=E6=A3=80=E6=B5=8B=E5=8F=AF=E8=83=BD=E7=9A=84=E5=86=85=E5=AD=
+=98=E6=B3=84=E6=BC=8F=E3=80=82=E5=8F=82=E9=98=85
+> +  Documentation/dev-tools/kmemleak.rst
+> +* KASAN=E6=A3=80=E6=B5=8B=E9=9D=9E=E6=B3=95=E5=86=85=E5=AD=98=E8=AE=BF=
+=E9=97=AE=EF=BC=8C=E5=A6=82=E6=95=B0=E7=BB=84=E8=B6=8A=E7=95=8C=E5=92=8C=E9=
+=87=8A=E6=94=BE=E5=86=85=E5=AD=98=E5=90=8E=E5=86=8D=E4=BD=BF=E7=94=A8=E7=9A=
+=84=E9=94=99=E8=AF=AF=E3=80=82=E5=8F=82=E9=98=85
+
+=E9=87=8A=E6=94=BE=E5=90=8E=E9=87=8D=E7=94=A8=EF=BC=88UAF=EF=BC=89
+
+> +  Documentation/dev-tools/kasan.rst
+> +* UBSAN=E6=A3=80=E6=B5=8BC=E6=A0=87=E5=87=86=E4=B8=AD=E6=9C=AA=E5=AE=9A=
+=E4=B9=89=E7=9A=84=E8=A1=8C=E4=B8=BA=EF=BC=8C=E5=A6=82=E6=95=B4=E5=9E=8B=E6=
+=BA=A2=E5=87=BA=E3=80=82=E5=8F=82=E9=98=85
+> +  Documentation/dev-tools/ubsan.rst
+> +* KCSAN=E6=A3=80=E6=B5=8B=E6=95=B0=E6=8D=AE=E7=AB=9E=E4=BA=89=E3=80=82=
+=E5=8F=82=E9=98=85 Documentation/dev-tools/kcsan.rst
+> +* KFENCE=E6=98=AF=E4=B8=80=E4=B8=AA=E4=BD=8E=E5=BC=80=E9=94=80=E7=9A=84=
+=E5=86=85=E5=AD=98=E9=97=AE=E9=A2=98=E6=A3=80=E6=B5=8B=E5=99=A8=EF=BC=8C=E6=
+=AF=94KASAN=E6=9B=B4=E5=BF=AB=E8=80=8C=E8=83=BD=E8=A2=AB=E7=94=A8=E4=BA=8E=
+=E6=89=B9=E9=87=8F=E6=9E=84=E5=BB=BA=E3=80=82
+
+=E8=80=8C -> =E4=B8=94
+
+> +  =E5=8F=82=E9=98=85 Documentation/dev-tools/kfence.rst
+> +* lockdep=E6=98=AF=E4=B8=80=E4=B8=AA=E9=94=81=E5=AE=9A=E6=AD=A3=E7=A1=AE=
+=E6=80=A7=E6=A3=80=E6=B5=8B=E5=99=A8=E3=80=82=E5=8F=82=E9=98=85
+> +  Documentation/locking/lockdep-design.rst
+> +* =E9=99=A4=E6=AD=A4=E4=BB=A5=E5=A4=96=EF=BC=8C=E5=9C=A8=E5=86=85=E6=A0=
+=B8=E4=B8=AD=E8=BF=98=E6=9C=89=E4=B8=80=E4=BA=9B=E5=85=B6=E5=AE=83=E7=9A=84=
+=E8=B0=83=E8=AF=95=E5=B7=A5=E5=85=B7=EF=BC=8C=E5=A4=A7=E5=A4=9A=E6=95=B0=E8=
+=83=BD=E5=9C=A8
+> +  lib/Kconfig.debug =E4=B8=AD=E6=89=BE=E5=88=B0=E3=80=82
+> +
+> +=E8=BF=99=E4=BA=9B=E5=B7=A5=E5=85=B7=E5=80=BE=E5=90=91=E4=BA=8E=E5=AF=B9=
+=E5=86=85=E6=A0=B8=E8=BF=9B=E8=A1=8C=E6=95=B4=E4=BD=93=E6=B5=8B=E8=AF=95=EF=
+=BC=8C=E5=B9=B6=E4=B8=94=E4=B8=8D=E5=83=8Fkselftest=E5=92=8CKUnit=E4=B8=80=
+=E6=A0=B7=E2=80=9C=E4=BC=A0=E9=80=92=E2=80=9D=E3=80=82
+> +=E5=AE=83=E4=BB=AC=E8=83=BD=E4=B8=8Ekselftest=E5=92=8CKUnit=E7=BB=93=E5=
+=90=88=E8=B5=B7=E6=9D=A5=EF=BC=8C=E9=80=9A=E8=BF=87=E6=BF=80=E6=B4=BB=E8=BF=
+=99=E4=BA=9B=E5=B7=A5=E5=85=B7=E5=9C=A8=E4=B8=80=E4=B8=AA=E5=86=85=E6=A0=B8=
+=E4=B8=8A=E8=BF=90=E8=A1=8C=E6=B5=8B
+> +=E8=AF=95=EF=BC=9A=E4=B9=8B=E5=90=8E=E4=BD=A0=E5=B0=B1=E8=83=BD=E7=A1=AE=
+=E4=BF=9D=E8=BF=99=E4=BA=9B=E9=94=99=E8=AF=AF=E5=9C=A8=E6=B5=8B=E8=AF=95=E8=
+=BF=87=E7=A8=8B=E4=B8=AD=E9=83=BD=E4=B8=8D=E4=BC=9A=E5=8F=91=E7=94=9F=E4=BA=
+=86=E3=80=82
+
+=E5=AE=83=E4=BB=AC=E5=8F=AF=E4=BB=A5=E9=80=9A=E8=BF=87=E5=9C=A8=E5=90=AF=E7=
+=94=A8=E8=BF=99=E4=BA=9B=E5=B7=A5=E5=85=B7=E6=97=B6=E8=BF=90=E8=A1=8C=E5=86=
+=85=E6=A0=B8=E6=B5=8B=E8=AF=95=E4=BB=A5=E4=B8=8Ekselftest=E6=88=96KUnit=E7=
+=BB=93=E5=90=88=E8=B5=B7=E6=9D=A5=EF=BC=9A
+
+> +
+> +=E4=B8=80=E4=BA=9B=E5=B7=A5=E5=85=B7=E4=B8=8EKUnit=E5=92=8Ckselftest=E9=
+=9B=86=E6=88=90=EF=BC=8C=E5=B9=B6=E4=B8=94=E5=BD=93=E9=97=AE=E9=A2=98=E8=A2=
+=AB=E6=A3=80=E6=B5=8B=E6=97=B6=E6=B5=8B=E8=AF=95=E4=BC=9A=E8=87=AA=E5=8A=A8=
+=E5=A4=B1=E8=B4=A5=E3=80=82
+
+=E5=B9=B6=E4=B8=94=E5=9C=A8=E6=A3=80=E6=B5=8B=E5=88=B0=E9=97=AE=E9=A2=98=E6=
+=97=B6=E4=BC=9A=E8=87=AA=E5=8A=A8=E6=89=93=E6=96=AD=E6=B5=8B=E8=AF=95=E3=80=
+=82
+
+> +
+> --=20
+> 2.25.1
+
+And please re-arrange your patches in appropriate thread and remember to ch=
+ange
+version each time when you send them, or may let Corbet confused.
+
+Thanks,
+        Wu X.C.
+
+
+--0F1p//8PRICkK4MW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQGzBAABCgAdFiEERbo3U5kJpaCtFl1PtlsoEiKCsIUFAmCqYK4ACgkQtlsoEiKC
+sIW/zAv+Laf4wmAJUEh6dL4GWHhpbEG3KjV3agKeRq/uhIWvYCkNWOIc9rznxWyk
+4bwk4v2RRrkA8oatGW8Q+I/ErDmXG8P3ZY/xtIP5UoqrnPk1rNl0OoQ/QF26yzS5
+vrFQ5f/98AES+LZuV0Nmja0/qtGL5ch4rEchS4S/z9DDjzau4pkBJKs1+D7q0Qee
+YgrtVPD1+cOSZSIttjQr6xHAWzLceNhr79M1N5CtuSgqeKlNLr0nLhhF6GRgRFjY
+UVAzw+GfSDK0xCgBkJ9KtCVQogJ8TRUvMTi+Z+kRJYjOnE8CrHKDXq1Sc70klvFb
+5wC/gnfuG/O6jxvF5zWVXoyPiQlrVHd5rBezGfYVCeCI61KYIYzwfk52axRBcDGn
+GODTBB1jJpBs9MTdNAfByUSiwcwCbFsC0+Ui6VhSIod8MVc3iV7BEmR6/hntD8Su
+JYudnHz6yjjuiLajx0OUzWfdhotpEhNcm/1CDqJG2tkf7gfFYklGRXB0NeUdGYLJ
+dtT2CzOb
+=1JWn
+-----END PGP SIGNATURE-----
+
+--0F1p//8PRICkK4MW--
+
