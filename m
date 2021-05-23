@@ -2,90 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB3638D956
+	by mail.lfdr.de (Postfix) with ESMTP id BA0E638D957
 	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 08:53:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhEWGxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 02:53:34 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5520 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231644AbhEWGxd (ORCPT
+        id S231688AbhEWGxg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 02:53:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37976 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231644AbhEWGxf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 02:53:33 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FnrY41PqDzkY2V;
-        Sun, 23 May 2021 14:49:12 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 14:52:01 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 14:52:00 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <miklos@szeredi.hu>
-CC:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH -next] cuse: use DEVICE_ATTR_*() macros
-Date:   Sun, 23 May 2021 14:51:52 +0800
-Message-ID: <20210523065152.29632-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sun, 23 May 2021 02:53:35 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F105C06138A
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id 76so24084772qkn.13
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:52:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
+        b=vP9JMOrheZhsSQxdzHTPpsVLOx93NAsnpxVjx7qWDjqiPOA5sPxeKgqLRpH/YuB3hr
+         1qe60N79JPZxkEv0X6phzI4CifdnGlE+t6Nva9C3zQZovpMGOkVp5lmoGr777iNT03W0
+         v5F8fmk7Xq+CA6TOZstNVcgk9PqWhgYDqQBQfDPEEDpbdsZDINL7kkzeDTqoBYqnH6zs
+         sIYXQ+TeL+b7KMd+a72+xHzcSrboJGUiVE8RzEzhdLf1wC2DqY0uTNbNPFHzgYorXpOY
+         9raAazXFrPu6VKjQ1jxhlUBJEICMCHM7VJIPNiT7EKV+xi5+Qpw3AmZTtIcTUB3thFmP
+         lBAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3B98/YjFTPMLJUh0/1KRBVA8/76frlg1v110acGzMEg=;
+        b=mJIkouUhQEiILnVIJoHmX6iEIYOHWEIKj28RecgN02HpAdLQLHtMHmX1U8xarBlxqW
+         yLrArNqwnbTwGWZg55+TIyXzhikyN9JAtp4OV5EVV13jV74Nda9yR65kdBPuR1hLQ71z
+         2p4//cO5w+7Tg/bNYcpMCjG7VVtTkHWfdti9SCy2F/RNJNrh2H0Rs1SDlGMk2QujkSyk
+         D0JzEy4KIBP++/bCOYddjTspiIO88TR6xRbw5HT/msLRsmfDkhsoIped9ztxDMqC3ooD
+         GDWYQtLBLyDmpt+6BjvA2f5J9v22QAUsHZ3deybXfvZacAr2uIuPY+rWZtu3HZyIVt3m
+         7zKw==
+X-Gm-Message-State: AOAM532xakthqsxgea59ljDJe2ZeAjhwr3mJf9S++pVlUT5K3kjr8kJ0
+        RDCYv2ye0pc8vBGSnJlEHz1mlNSp8XlGJsVV7Wtdbw==
+X-Google-Smtp-Source: ABdhPJybtfNNH0p75laysKYjeecXDAfkDnX74lkQEOtFjdMIaaxxvonlEZuLerS023UXGnaoGTPnypA/Te66B8HZiWU=
+X-Received: by 2002:a37:4694:: with SMTP id t142mr22939783qka.265.1621752727959;
+ Sat, 22 May 2021 23:52:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+References: <000000000000f034fc05c2da6617@google.com>
+In-Reply-To: <000000000000f034fc05c2da6617@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Sun, 23 May 2021 08:51:56 +0200
+Message-ID: <CACT4Y+ZGkye_MnNr92qQameXVEHNc1QkpmNrG3W8Yd1Xg_hfhw@mail.gmail.com>
+Subject: Re: [syzbot] KASAN: use-after-free Read in check_all_holdout_tasks_trace
+To:     syzbot <syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com>,
+        rcu@vger.kernel.org, "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, bpf <bpf@vger.kernel.org>,
+        Christian Brauner <christian@brauner.io>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Martin KaFai Lau <kafai@fb.com>,
+        KP Singh <kpsingh@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Song Liu <songliubraving@fb.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        Yonghong Song <yhs@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Fri, May 21, 2021 at 7:29 PM syzbot
+<syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    f18ba26d libbpf: Add selftests for TC-BPF management API
+> git tree:       bpf-next
+> console output: https://syzkaller.appspot.com/x/log.txt?x=17f50d1ed00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=8ff54addde0afb5d
+> dashboard link: https://syzkaller.appspot.com/bug?extid=7b2b13f4943374609532
+>
+> Unfortunately, I don't have any reproducer for this issue yet.
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+7b2b13f4943374609532@syzkaller.appspotmail.com
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- fs/fuse/cuse.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+This looks rcu-related. +rcu mailing list
 
-diff --git a/fs/fuse/cuse.c b/fs/fuse/cuse.c
-index c7d882a9fe33..0df886224afe 100644
---- a/fs/fuse/cuse.c
-+++ b/fs/fuse/cuse.c
-@@ -574,25 +574,25 @@ static struct file_operations cuse_channel_fops; /* initialized during init */
-  * CUSE exports the same set of attributes to sysfs as fusectl.
-  */
- 
--static ssize_t cuse_class_waiting_show(struct device *dev,
--				       struct device_attribute *attr, char *buf)
-+static ssize_t waiting_show(struct device *dev,
-+			    struct device_attribute *attr, char *buf)
- {
- 	struct cuse_conn *cc = dev_get_drvdata(dev);
- 
- 	return sprintf(buf, "%d\n", atomic_read(&cc->fc.num_waiting));
- }
--static DEVICE_ATTR(waiting, 0400, cuse_class_waiting_show, NULL);
-+static DEVICE_ATTR_ADMIN_RO(waiting);
- 
--static ssize_t cuse_class_abort_store(struct device *dev,
--				      struct device_attribute *attr,
--				      const char *buf, size_t count)
-+static ssize_t abort_store(struct device *dev,
-+			   struct device_attribute *attr,
-+			   const char *buf, size_t count)
- {
- 	struct cuse_conn *cc = dev_get_drvdata(dev);
- 
- 	fuse_abort_conn(&cc->fc);
- 	return count;
- }
--static DEVICE_ATTR(abort, 0200, NULL, cuse_class_abort_store);
-+static DEVICE_ATTR_WO(abort);
- 
- static struct attribute *cuse_class_dev_attrs[] = {
- 	&dev_attr_waiting.attr,
--- 
-2.17.1
-
+> ==================================================================
+> BUG: KASAN: use-after-free in check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+> Read of size 1 at addr ffff88802767a05c by task rcu_tasks_trace/12
+>
+> CPU: 0 PID: 12 Comm: rcu_tasks_trace Not tainted 5.12.0-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:79 [inline]
+>  dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+>  print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:233
+>  __kasan_report mm/kasan/report.c:419 [inline]
+>  kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:436
+>  check_all_holdout_tasks_trace+0x302/0x420 kernel/rcu/tasks.h:1084
+>  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+>  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>
+> Allocated by task 8477:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track mm/kasan/common.c:46 [inline]
+>  set_alloc_info mm/kasan/common.c:428 [inline]
+>  __kasan_slab_alloc+0x84/0xa0 mm/kasan/common.c:461
+>  kasan_slab_alloc include/linux/kasan.h:236 [inline]
+>  slab_post_alloc_hook mm/slab.h:524 [inline]
+>  slab_alloc_node mm/slub.c:2912 [inline]
+>  kmem_cache_alloc_node+0x269/0x3e0 mm/slub.c:2948
+>  alloc_task_struct_node kernel/fork.c:171 [inline]
+>  dup_task_struct kernel/fork.c:865 [inline]
+>  copy_process+0x5c8/0x7120 kernel/fork.c:1947
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+>  __do_sys_clone+0xc8/0x110 kernel/fork.c:2620
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Freed by task 12:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
+>  kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
+>  ____kasan_slab_free mm/kasan/common.c:360 [inline]
+>  ____kasan_slab_free mm/kasan/common.c:325 [inline]
+>  __kasan_slab_free+0xfb/0x130 mm/kasan/common.c:368
+>  kasan_slab_free include/linux/kasan.h:212 [inline]
+>  slab_free_hook mm/slub.c:1581 [inline]
+>  slab_free_freelist_hook+0xdf/0x240 mm/slub.c:1606
+>  slab_free mm/slub.c:3166 [inline]
+>  kmem_cache_free+0x8a/0x740 mm/slub.c:3182
+>  __put_task_struct+0x26f/0x400 kernel/fork.c:747
+>  trc_wait_for_one_reader kernel/rcu/tasks.h:935 [inline]
+>  check_all_holdout_tasks_trace+0x179/0x420 kernel/rcu/tasks.h:1081
+>  rcu_tasks_wait_gp+0x594/0xa60 kernel/rcu/tasks.h:358
+>  rcu_tasks_kthread+0x31c/0x6a0 kernel/rcu/tasks.h:224
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+>
+> Last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3038 [inline]
+>  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+>  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+>  release_task+0xca1/0x1690 kernel/exit.c:226
+>  wait_task_zombie kernel/exit.c:1108 [inline]
+>  wait_consider_task+0x2fb5/0x3b40 kernel/exit.c:1335
+>  do_wait_thread kernel/exit.c:1398 [inline]
+>  do_wait+0x724/0xd40 kernel/exit.c:1515
+>  kernel_wait4+0x14c/0x260 kernel/exit.c:1678
+>  __do_sys_wait4+0x13f/0x150 kernel/exit.c:1706
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> Second to last potentially related work creation:
+>  kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
+>  kasan_record_aux_stack+0xe5/0x110 mm/kasan/generic.c:345
+>  __call_rcu kernel/rcu/tree.c:3038 [inline]
+>  call_rcu+0xb1/0x750 kernel/rcu/tree.c:3113
+>  put_task_struct_rcu_user+0x7f/0xb0 kernel/exit.c:180
+>  context_switch kernel/sched/core.c:4342 [inline]
+>  __schedule+0x91e/0x23e0 kernel/sched/core.c:5147
+>  preempt_schedule_common+0x45/0xc0 kernel/sched/core.c:5307
+>  preempt_schedule_thunk+0x16/0x18 arch/x86/entry/thunk_64.S:35
+>  try_to_wake_up+0xa12/0x14b0 kernel/sched/core.c:3489
+>  wake_up_process kernel/sched/core.c:3552 [inline]
+>  wake_up_q+0x96/0x100 kernel/sched/core.c:597
+>  futex_wake+0x3e9/0x490 kernel/futex.c:1634
+>  do_futex+0x326/0x1780 kernel/futex.c:3738
+>  __do_sys_futex+0x2a2/0x470 kernel/futex.c:3796
+>  do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+>  entry_SYSCALL_64_after_hwframe+0x44/0xae
+>
+> The buggy address belongs to the object at ffff888027679c40
+>  which belongs to the cache task_struct of size 6976
+> The buggy address is located 1052 bytes inside of
+>  6976-byte region [ffff888027679c40, ffff88802767b780)
+> The buggy address belongs to the page:
+> page:ffffea00009d9e00 refcount:1 mapcount:0 mapping:0000000000000000 index:0xffff88802767b880 pfn:0x27678
+> head:ffffea00009d9e00 order:3 compound_mapcount:0 compound_pincount:0
+> flags: 0xfff00000010200(slab|head|node=0|zone=1|lastcpupid=0x7ff)
+> raw: 00fff00000010200 ffffea000071e208 ffffea0000950808 ffff888140005140
+> raw: ffff88802767b880 0000000000040003 00000001ffffffff 0000000000000000
+> page dumped because: kasan: bad access detected
+> page_owner tracks the page as allocated
+> page last allocated via order 3, migratetype Unmovable, gfp_mask 0xd20c0(__GFP_IO|__GFP_FS|__GFP_NOWARN|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 243, ts 14372676818, free_ts 0
+>  prep_new_page mm/page_alloc.c:2358 [inline]
+>  get_page_from_freelist+0x1033/0x2b60 mm/page_alloc.c:3994
+>  __alloc_pages+0x1b2/0x500 mm/page_alloc.c:5200
+>  alloc_pages+0x18c/0x2a0 mm/mempolicy.c:2272
+>  alloc_slab_page mm/slub.c:1644 [inline]
+>  allocate_slab+0x2c5/0x4c0 mm/slub.c:1784
+>  new_slab mm/slub.c:1847 [inline]
+>  new_slab_objects mm/slub.c:2593 [inline]
+>  ___slab_alloc+0x44c/0x7a0 mm/slub.c:2756
+>  __slab_alloc.constprop.0+0xa7/0xf0 mm/slub.c:2796
+>  slab_alloc_node mm/slub.c:2878 [inline]
+>  kmem_cache_alloc_node+0x12f/0x3e0 mm/slub.c:2948
+>  alloc_task_struct_node kernel/fork.c:171 [inline]
+>  dup_task_struct kernel/fork.c:865 [inline]
+>  copy_process+0x5c8/0x7120 kernel/fork.c:1947
+>  kernel_clone+0xe7/0xab0 kernel/fork.c:2503
+>  kernel_thread+0xb5/0xf0 kernel/fork.c:2555
+>  call_usermodehelper_exec_work kernel/umh.c:174 [inline]
+>  call_usermodehelper_exec_work+0xcc/0x180 kernel/umh.c:160
+>  process_one_work+0x98d/0x1600 kernel/workqueue.c:2275
+>  worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+>  kthread+0x3b1/0x4a0 kernel/kthread.c:313
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
+> page_owner free stack trace missing
+>
+> Memory state around the buggy address:
+>  ffff888027679f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff888027679f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> >ffff88802767a000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>                                                     ^
+>  ffff88802767a080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>  ffff88802767a100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ==================================================================
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> --
+> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/000000000000f034fc05c2da6617%40google.com.
