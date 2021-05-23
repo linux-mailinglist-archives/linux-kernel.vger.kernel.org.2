@@ -2,70 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0832738D9C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:01:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077F838D9FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhEWICY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 04:02:24 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3915 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231654AbhEWICS (ORCPT
+        id S231686AbhEWIMr convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 23 May 2021 04:12:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231599AbhEWIMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 04:02:18 -0400
-Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fnt48321tzCvy3;
-        Sun, 23 May 2021 15:57:44 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 16:00:34 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 16:00:33 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <leoyang.li@nxp.com>, <davem@davemloft.net>, <kuba@kernel.org>,
-        <rasmus.villemoes@prevas.dk>
-CC:     <netdev@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH net-next] ethernet: ucc_geth: Use kmemdup() rather than kmalloc+memcpy
-Date:   Sun, 23 May 2021 15:56:16 +0800
-Message-ID: <20210523075616.14792-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sun, 23 May 2021 04:12:34 -0400
+X-Greylist: delayed 81817 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sun, 23 May 2021 01:11:08 PDT
+Received: from ursule.remlab.net (vps-a2bccee9.vps.ovh.net [IPv6:2001:41d0:305:2100::8a0c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2FA08C061574;
+        Sun, 23 May 2021 01:11:08 -0700 (PDT)
+Received: from philogene.localnet (localhost [IPv6:::1])
+        by ursule.remlab.net (Postfix) with ESMTP id 14100C2C68;
+        Sun, 23 May 2021 11:11:07 +0300 (EEST)
+From:   =?ISO-8859-1?Q?R=E9mi?= Denis-Courmont <remi@remlab.net>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     courmisch@gmail.com, lukas.bulwahn@gmail.com,
+        rdunlap@infradead.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Phonet: fix kernel-doc syntax in file headers and remove file names
+Date:   Sun, 23 May 2021 11:11:06 +0300
+Message-ID: <1794881.Lfz63IBmft@philogene>
+Organization: Remlab Tmi
+In-Reply-To: <20210522113408.8766-1-yashsri421@gmail.com>
+References: <52313028.m8L9TnScQ9@philogene> <20210522113408.8766-1-yashsri421@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Issue identified with Coccinelle.
+Le samedi 22 mai 2021, 14:34:08 EEST Aditya Srivastava a écrit :
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> For e.g., the header for include/linux/phonet.h follows this syntax, but
+> the content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warning from kernel-doc:
+> warning: This comment starts with '/**', but isn't a kernel-doc comment.
+> Refer Documentation/doc-guide/kernel-doc.rst * file phonet.h
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Also remove the redundant file name from the comment headers.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/net/ethernet/freescale/ucc_geth.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Rémi Denis-Courmont <courmisch@gmail.com>
 
-diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
-index e0936510fa34..51206272cc25 100644
---- a/drivers/net/ethernet/freescale/ucc_geth.c
-+++ b/drivers/net/ethernet/freescale/ucc_geth.c
-@@ -3590,10 +3590,10 @@ static int ucc_geth_probe(struct platform_device* ofdev)
- 	if ((ucc_num < 0) || (ucc_num > 7))
- 		return -ENODEV;
- 
--	ug_info = kmalloc(sizeof(*ug_info), GFP_KERNEL);
-+	ug_info = kmemdup(&ugeth_primary_info, sizeof(*ug_info),
-+			  GFP_KERNEL);
- 	if (ug_info == NULL)
- 		return -ENOMEM;
--	memcpy(ug_info, &ugeth_primary_info, sizeof(*ug_info));
- 
- 	ug_info->uf_info.ucc_num = ucc_num;
- 
+> ---
+> Changes in v2:
+> - Remove file name information from comment headers as well, as suggested by
+> Randy and Remi
+> 
+>  include/linux/phonet.h      | 4 +---
+>  include/uapi/linux/phonet.h | 4 +---
+>  2 files changed, 2 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/phonet.h b/include/linux/phonet.h
+> index bc7d1e529efc..6117a0e462d3 100644
+> --- a/include/linux/phonet.h
+> +++ b/include/linux/phonet.h
+> @@ -1,7 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0-only */
+> -/**
+> - * file phonet.h
+> - *
+> +/*
+>   * Phonet sockets kernel interface
+>   *
+>   * Copyright (C) 2008 Nokia Corporation. All rights reserved.
+> diff --git a/include/uapi/linux/phonet.h b/include/uapi/linux/phonet.h
+> index a2f6b37a5937..e7e14b5e59c6 100644
+> --- a/include/uapi/linux/phonet.h
+> +++ b/include/uapi/linux/phonet.h
+> @@ -1,7 +1,5 @@
+>  /* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+> -/**
+> - * file phonet.h
+> - *
+> +/*
+>   * Phonet sockets kernel interface
+>   *
+>   * Copyright (C) 2008 Nokia Corporation. All rights reserved.
+
+
 -- 
-2.17.1
+Rémi Denis-Courmont
+
 
