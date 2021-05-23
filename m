@@ -2,188 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD86438D93E
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 08:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD8CC38D94B
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 08:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhEWGIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 02:08:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhEWGII (ORCPT
+        id S231608AbhEWGfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 02:35:07 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3657 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhEWGfG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 02:08:08 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD83C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:06:41 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso9329404pjb.5
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bbVkNXXuvs00kg1wmTW0NePOJ70agDM+7kVTDiM2Rwk=;
-        b=EKhN/IEEn8ucPc2kMoCtJMvTI7FFyrCH7TGPMxFYn8KnblpCdKYH3iZ24Bk5AA7g93
-         oMKKY7iFhGENTLKCrc1NfV6HbkIk2Ap7gaq5uxaX9xYO+bl69c87lAy8NlvRld+KqXjF
-         TF2Eg/S37ZvAV000stQ/oIgFg6b6yy/7YZp3VIe196TqEFTMm8ECF+B/Etl2FAdt0ZM1
-         vabwnNsF58zji8ADC99oTEbA/yxZY8HQwh7IdmOuDssyeutxJS0cWzk0uVt2lDE7/E7+
-         Cf3unbnsy1Bzq9GDTSMaInhhlEMuXmYUSK05kS2NR9WEUjU5bMApmaGjCgPPZHA957mm
-         fQdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bbVkNXXuvs00kg1wmTW0NePOJ70agDM+7kVTDiM2Rwk=;
-        b=Ih6uT5AbYIZPGRt2s8dQ4CAMxXQbVdKWtr7U1LaGdhcv3B0j5JlGFuN3clJsMYrbdP
-         cMKT947V5tDl//NsPHiA/WCePdi2Fd/pU4OYlrd+M14ddvDbdNTIKk7P2mQ0NoWsYe+J
-         WAHRNGjqPRPZ8am23vSIvaVszue/w20kH84vuBAX7iXNo6t+TB6Ila1Dk7FIKynjDorF
-         Ttv5RhDuAqxNFzXmXeRCn7UmKP+clPGS5xxm4qYeNdXbwgwi/BzAzaR9H/dL3nnBP6NZ
-         7cR7FdfKZFMgrNCkq0wFLTArnfN4WLmEelVzdNbXj1MeBYG+S/WaavHqht16s7T6PQmm
-         se9A==
-X-Gm-Message-State: AOAM5306eAQBYmess+YhhL1wzk2ConApJ57xUpqNxVCmQZmHxRVtOqaF
-        yMi0z2xbe3DU8/CDoIMOYuFcyA==
-X-Google-Smtp-Source: ABdhPJxh6WeuHEv6gwxD9/kjJ2L0haPbr+6jWPGSMs++xnAQGZrM7RPHx8y37vVl06rkgkzX4CpMBA==
-X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr8657357pjh.111.1621750001434;
-        Sat, 22 May 2021 23:06:41 -0700 (PDT)
-Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
-        by smtp.gmail.com with ESMTPSA id m191sm8367175pga.88.2021.05.22.23.06.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 22 May 2021 23:06:41 -0700 (PDT)
-Date:   Sun, 23 May 2021 14:06:34 +0800
-From:   Shawn Guo <shawn.guo@linaro.org>
-To:     Kalle Valo <kvalo@codeaurora.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        Arend van Spriel <aspriel@gmail.com>,
-        Franky Lin <franky.lin@broadcom.com>,
-        Hante Meuleman <hante.meuleman@broadcom.com>,
-        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
-        Wright Feng <wright.feng@infineon.com>,
-        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com
-Subject: Re: [PATCH v3] brcmfmac: support parse country code map from DT
-Message-ID: <20210523060633.GC29015@dragon>
-References: <20210417075428.2671-1-shawn.guo@linaro.org>
+        Sun, 23 May 2021 02:35:06 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fnr8R04hvzmWf6;
+        Sun, 23 May 2021 14:31:19 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sun, 23 May 2021 14:33:37 +0800
+Received: from [10.174.179.215] (10.174.179.215) by
+ dggema769-chm.china.huawei.com (10.1.198.211) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Sun, 23 May 2021 14:33:37 +0800
+Subject: Re: [PATCH -next] USB: gadget: f_fs: Use ERR_CAST instead of
+ ERR_PTR(PTR_ERR(...))
+To:     Greg KH <gregkh@linuxfoundation.org>
+CC:     <balbi@kernel.org>, <linux-usb@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20210519023032.19812-1-yuehaibing@huawei.com>
+ <YKeeHDy/VAhuoG6B@kroah.com>
+From:   YueHaibing <yuehaibing@huawei.com>
+Message-ID: <91b40f9e-9de2-0d16-7eb1-50e5a91fb077@huawei.com>
+Date:   Sun, 23 May 2021 14:33:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210417075428.2671-1-shawn.guo@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <YKeeHDy/VAhuoG6B@kroah.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Apr 17, 2021 at 03:54:28PM +0800, Shawn Guo wrote:
-> With any regulatory domain requests coming from either user space or
-> 802.11 IE (Information Element), the country is coded in ISO3166
-> standard.  It needs to be translated to firmware country code and
-> revision with the mapping info in settings->country_codes table.
-> Support populate country_codes table by parsing the mapping from DT.
+
+
+On 2021/5/21 19:48, Greg KH wrote:
+> On Wed, May 19, 2021 at 10:30:32AM +0800, YueHaibing wrote:
+>> A coccicheck run provided information like the following.
+>>
+>> ./drivers/usb/gadget/function/f_fs.c:3832:9-16:
+>>  WARNING: ERR_CAST can be used with data
+>>
+>> Use ERR_CAST to fix this.
+>>
+>> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+>> ---
+>>  drivers/usb/gadget/function/f_fs.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/usb/gadget/function/f_fs.c b/drivers/usb/gadget/function/f_fs.c
+>> index bf109191659a..61110ff52f49 100644
+>> --- a/drivers/usb/gadget/function/f_fs.c
+>> +++ b/drivers/usb/gadget/function/f_fs.c
+>> @@ -3829,7 +3829,7 @@ static char *ffs_prepare_buffer(const char __user *buf, size_t len)
+>>  
+>>  	data = memdup_user(buf, len);
+>>  	if (IS_ERR(data))
+>> -		return ERR_PTR(PTR_ERR(data));
+>> +		return ERR_CAST(data);
 > 
-> The BRCMF_BUSTYPE_SDIO bus_type check gets separated from general DT
-> validation, so that country code can be handled as general part rather
-> than SDIO bus specific one.
-> 
-> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
-> Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-> ---
-> Changes for v3:
->  - Add missing terminating '\n' in brcmf_dbg(INFO, ...) format string.
+> This should just be:
+> 		return PTR_ERR(data);
+> right?
 
-Hi Kalle,
+ffs_prepare_buffer() should return an ERR_PTR() encoded error code on failure,
 
-Any comments on this version?
+maybe there just do:
 
-Shawn
-
+		return data;
 
 > 
->  .../wireless/broadcom/brcm80211/brcmfmac/of.c | 57 ++++++++++++++++++-
->  1 file changed, 55 insertions(+), 2 deletions(-)
+> No need for 2 casts to happen here.
 > 
-> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> index a7554265f95f..2f7bc3a70c65 100644
-> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
-> @@ -12,12 +12,59 @@
->  #include "common.h"
->  #include "of.h"
->  
-> +static int brcmf_of_get_country_codes(struct device *dev,
-> +				      struct brcmf_mp_device *settings)
-> +{
-> +	struct device_node *np = dev->of_node;
-> +	struct brcmfmac_pd_cc_entry *cce;
-> +	struct brcmfmac_pd_cc *cc;
-> +	int count;
-> +	int i;
-> +
-> +	count = of_property_count_strings(np, "brcm,ccode-map");
-> +	if (count < 0) {
-> +		/* The property is optional, so return success if it doesn't
-> +		 * exist. Otherwise propagate the error code.
-> +		 */
-> +		return (count == -EINVAL) ? 0 : count;
-> +	}
-> +
-> +	cc = devm_kzalloc(dev, sizeof(*cc) + count * sizeof(*cce), GFP_KERNEL);
-> +	if (!cc)
-> +		return -ENOMEM;
-> +
-> +	cc->table_size = count;
-> +
-> +	for (i = 0; i < count; i++) {
-> +		const char *map;
-> +
-> +		cce = &cc->table[i];
-> +
-> +		if (of_property_read_string_index(np, "brcm,ccode-map",
-> +						  i, &map))
-> +			continue;
-> +
-> +		/* String format e.g. US-Q2-86 */
-> +		if (sscanf(map, "%2c-%2c-%d", cce->iso3166, cce->cc,
-> +			   &cce->rev) != 3)
-> +			brcmf_err("failed to read country map %s\n", map);
-> +		else
-> +			brcmf_dbg(INFO, "%s-%s-%d\n", cce->iso3166, cce->cc,
-> +				  cce->rev);
-> +	}
-> +
-> +	settings->country_codes = cc;
-> +
-> +	return 0;
-> +}
-> +
->  void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
->  		    struct brcmf_mp_device *settings)
->  {
->  	struct brcmfmac_sdio_pd *sdio = &settings->bus.sdio;
->  	struct device_node *root, *np = dev->of_node;
->  	int irq;
-> +	int err;
->  	u32 irqf;
->  	u32 val;
->  
-> @@ -43,8 +90,14 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
->  		of_node_put(root);
->  	}
->  
-> -	if (!np || bus_type != BRCMF_BUSTYPE_SDIO ||
-> -	    !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-> +	if (!np || !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
-> +		return;
-> +
-> +	err = brcmf_of_get_country_codes(dev, settings);
-> +	if (err)
-> +		brcmf_err("failed to get OF country code map (err=%d)\n", err);
-> +
-> +	if (bus_type != BRCMF_BUSTYPE_SDIO)
->  		return;
->  
->  	if (of_property_read_u32(np, "brcm,drive-strength", &val) == 0)
-> -- 
-> 2.17.1
+> thanks,
+> 
+> greg k-h
+> .
 > 
