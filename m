@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B263A38D81A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 03:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4636138D81B
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 03:52:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbhEWBsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 21:48:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56128 "EHLO
+        id S231529AbhEWBuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 21:50:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhEWBs3 (ORCPT
+        with ESMTP id S231494AbhEWBuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 21:48:29 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 198A9C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 18:47:03 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id q67so858269pfb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 18:47:03 -0700 (PDT)
+        Sat, 22 May 2021 21:50:50 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 953A6C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 18:49:23 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id v13so12853577ple.9
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 18:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
         h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
          :content-transfer-encoding;
-        bh=TvH3BDRJW0Vn39BXyOxIAFm2kF+cEjmUhZ/Z8uHEXT8=;
-        b=HVrZ3gq5Sb9v/bCn6lE6lyd9F+Eodkaeh+qSjDZGZjJ0+1xYFdcmVdBI8Aywc6wC62
-         42/Zc4sxpzjemTiZ1W5lQl/YFJDqwz7rIaCNkQPUTDUmiHGa5Cgk/UM9uBEHp4QpLip1
-         KnfbgPD0Xx4mqzsqcuh5vR/B5eK+a3ADMO69Jk7mAVhaEJ6olvbNdHN6kVO6nNBSYX91
-         mLqzypfvXfJwYVbATTNtQg3XM1dB0ez3cK2reha4bVEuD9YCjsi6PwODGvpg5voBs+J2
-         5ILmCSCo7FWCp5ZxYw9SGxGLVlxJTRv0RtSabnI/piUpqm89+dppN6To1yUFeEAG7Esx
-         FB/g==
+        bh=5UD89+Dq+ljLqV0JCbgY75yceYnvTgHB95RAXPbxXxI=;
+        b=b6EUSj0xnyYYIK0EOFytl+TDjBinqIRyjzK43QrQDG3sSjwazKflYZjiS3E0obNU98
+         kfWYuarxsnbuVMGIZO+JQBteFpdb/dmsDI5zMrJZU/VRkvsJmtJJfA9zQRew4QSIf5JP
+         cju+J9Qex53UYuizMPOtOZBdOJYIAlIXbCHRgKERjNYkZbqok7K+7O7Pe84NNFdeQdfT
+         ZwrH9Jal0cDXTXOK5FUWwjr9NXlW6qeKmiWEoP5WaHOg+aX4h260fr2OcTL/detvSOeF
+         0LFuZed8L3bd2f/vxx9TpGpb3GUpv4h3YT1B+x3UvkyDTLMgx6h82TTtjIvvm7bXY7gc
+         ar/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
          :mime-version:content-transfer-encoding;
-        bh=TvH3BDRJW0Vn39BXyOxIAFm2kF+cEjmUhZ/Z8uHEXT8=;
-        b=E32GfNYf4ExAibS/v2Pz9EN1g24O2s53YzqQ3SoJj9Hhwpq/TTrPDYvWEaTcVCGpFO
-         650xR4QaIbN+vP85dYea9gb+t26ZMrOt6LARfsI9+x7/bFZWQdYfn6OwNrm7ARXdTEBe
-         Y+vL1JN9a41p+GxzthPwh64m3Uht6+5btKEhu5BqYsLP8tCgteu7Vk2d0YUBCEMte+GX
-         +BccTGB/N0EMuiBNvqFrOikHj/o+xu1Ec9B4ph4FnQYLXgf5xBNkP/iOx6uTm1V606u4
-         6IOYGtoraX+A7KD8B6vsxwnggqTGFv7I4nfRNCHqkVyuN8TdLTbWEnVvkdZ5H7gtEfgX
-         3NKQ==
-X-Gm-Message-State: AOAM532sMWVX1xHIdICzfJYhHQ07tjkuBUHeF1MnWiDfZGcfPDjKt6aK
-        4Kk5ZbTB+32xWT+vfMfjWH3DTw==
-X-Google-Smtp-Source: ABdhPJwuz/9P0x7vVoM97qqgxJaqvVMARK/fIYARqLju083kVuUzBepVprPtibGhQwjifLDCodF1Hg==
-X-Received: by 2002:a62:ea10:0:b029:25a:9902:43f3 with SMTP id t16-20020a62ea100000b029025a990243f3mr17383546pfh.68.1621734422203;
-        Sat, 22 May 2021 18:47:02 -0700 (PDT)
+        bh=5UD89+Dq+ljLqV0JCbgY75yceYnvTgHB95RAXPbxXxI=;
+        b=JyJfNkeDKByqz6zBEdvjQrRMKzJr2JOja4cLgmDIPa/rs5M77VEW29XJZ3sbhRNsfe
+         koQbYGLzlmB8nDFpIjuObr+A6u6BBS2749Nb9Umd9huEHVAvu8Vic0V6YeQj/KiQS8m8
+         6nthmBnj2mDofFfINCFXaw6woA0wlyPn1OURBh/UJPpKLE+IShrpzYEi5lcjtNuxbadN
+         AQPTSgl4TzYyNzVbjvt3kiQFhk9vngxOG3myrut3ySJm7FEe+7WhJorPfiKTlOwSqtAC
+         0CIeqo3HTZhIe0ULRhbY2WLxNPiO8t0rEI2NEjb8dowq3czUjlH96PounUk+uPjh8MiJ
+         feGw==
+X-Gm-Message-State: AOAM5314u5A+nFFsxVVwnd4QD2wAASPFqzrAu2MKBeTWQ87x5j9J9GF9
+        /5X2VsWmy7WWdP+QR020nO4EI4tLU5boVg==
+X-Google-Smtp-Source: ABdhPJwGfyOm/VlzU7vuZKaUowyu3kbfiDqOMW///Qoo9drhzOrAjsaubgYqcC32MVp9nwEhCofhEA==
+X-Received: by 2002:a17:902:6b08:b029:f5:ece8:e96f with SMTP id o8-20020a1709026b08b02900f5ece8e96fmr16611799plk.34.1621734562274;
+        Sat, 22 May 2021 18:49:22 -0700 (PDT)
 Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id iq16sm6917933pjb.31.2021.05.22.18.47.01
+        by smtp.gmail.com with ESMTPSA id c11sm6626477pjr.32.2021.05.22.18.49.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 22 May 2021 18:47:01 -0700 (PDT)
-Date:   Sat, 22 May 2021 18:47:01 -0700 (PDT)
-X-Google-Original-Date: Sat, 22 May 2021 18:47:00 PDT (-0700)
-Subject:     Re: [PATCH] riscv: fix memmove and optimise memcpy when misalign
-In-Reply-To: <20210522232256.00003f08@garyguo.net>
+        Sat, 22 May 2021 18:49:21 -0700 (PDT)
+Date:   Sat, 22 May 2021 18:49:21 -0700 (PDT)
+X-Google-Original-Date: Sat, 22 May 2021 18:49:20 PDT (-0700)
+Subject:     Re: [RFC PATCH] riscv: add VMAP_STACK overflow detection
+In-Reply-To: <20210507092509.41346-1-tongtiangen@huawei.com>
 CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        nickhu@andestech.com, nylon7@andestech.com,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        tongtiangen@huawei.com
 From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     gary@garyguo.net
-Message-ID: <mhng-fdda10f7-fc83-4654-a0b2-e9c86b92c37e@palmerdabbelt-glaptop>
+To:     tongtiangen@huawei.com
+Message-ID: <mhng-6eadf458-2777-4b73-acd4-ff4339a32923@palmerdabbelt-glaptop>
 Mime-Version: 1.0 (MHng)
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
@@ -65,510 +65,288 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 May 2021 15:22:56 PDT (-0700), gary@garyguo.net wrote:
-> On Tue, 16 Feb 2021 22:55:51 +0000
-> Gary Guo <gary@garyguo.net> wrote:
+On Fri, 07 May 2021 02:25:09 PDT (-0700), tongtiangen@huawei.com wrote:
+> This patch adds stack overflow detection to riscv, usable when
+> CONFIG_VMAP_STACK=y.
 >
->> 04091d6 introduces an assembly version of memmove but
->> it does take misalignment into account (it checks if
->> length is a multiple of machine word size but pointers
->> need also be aligned). As a result it will generate
->> misaligned load/store for the majority of cases and causes
->> significant performance regression on hardware that traps
->> misaligned load/store and emulate them using firmware.
->>
->> The current behaviour of memcpy is that it checks if both
->> src and dest pointers are co-aligned (aka congruent
->> modular SZ_REG). If aligned, it will copy data word-by-word
->> after first aligning pointers to word boundary. If src
->> and dst are not co-aligned, however, byte-wise copy will
->> be performed.
->>
->> This patch fixes the memmove and optimises memcpy for
->> misaligned cases. It will first align destination pointer
->> to word-boundary regardless whether src and dest are
->> co-aligned or not. If they indeed are, then wordwise copy
->> is performed. If they are not co-aligned, then it will
->> load two adjacent words from src and use shifts to assemble
->> a full machine word. Some additional assembly level
->> micro-optimisation is also performed to ensure more
->> instructions can be compressed (e.g. prefer a0 to t6).
->>
->> In my testing this speeds up memcpy 4~5x when src and dest
->> are not co-aligned (which is quite common in networking),
->> and speeds up memmove 1000+x by avoiding trapping to firmware.
->>
->> Signed-off-by: Gary Guo <gary@garyguo.net>
->> ---
->>  arch/riscv/lib/memcpy.S  | 223
->> ++++++++++++++++++++++++--------------- arch/riscv/lib/memmove.S |
->> 176 ++++++++++++++++++++---------- 2 files changed, 257
->> insertions(+), 142 deletions(-)
->>
->> diff --git a/arch/riscv/lib/memcpy.S b/arch/riscv/lib/memcpy.S
->> index 51ab716253fa..00672c19ad9b 100644
->> --- a/arch/riscv/lib/memcpy.S
->> +++ b/arch/riscv/lib/memcpy.S
->> @@ -9,100 +9,151 @@
->>  /* void *memcpy(void *, const void *, size_t) */
->>  ENTRY(__memcpy)
->>  WEAK(memcpy)
->> -	move t6, a0  /* Preserve return value */
->> +	/* Save for return value */
->> +	mv	t6, a0
->>
->> -	/* Defer to byte-oriented copy for small sizes */
->> -	sltiu a3, a2, 128
->> -	bnez a3, 4f
->> -	/* Use word-oriented copy only if low-order bits match */
->> -	andi a3, t6, SZREG-1
->> -	andi a4, a1, SZREG-1
->> -	bne a3, a4, 4f
->> +	/*
->> +	 * Register allocation for code below:
->> +	 * a0 - start of uncopied dst
->> +	 * a1 - start of uncopied src
->> +	 * t0 - end of uncopied dst
->> +	 */
->> +	add	t0, a0, a2
->>
->> -	beqz a3, 2f  /* Skip if already aligned */
->>  	/*
->> -	 * Round to nearest double word-aligned address
->> -	 * greater than or equal to start address
->> +	 * Use bytewise copy if too small.
->> +	 *
->> +	 * This threshold must be at least 2*SZREG to ensure at
->> least one
->> +	 * wordwise copy is performed. It is chosen to be 16 because
->> it will
->> +	 * save at least 7 iterations of bytewise copy, which pays
->> off the
->> +	 * fixed overhead.
->>  	 */
->> -	andi a3, a1, ~(SZREG-1)
->> -	addi a3, a3, SZREG
->> -	/* Handle initial misalignment */
->> -	sub a4, a3, a1
->> +	li	a3, 16
->> +	bltu	a2, a3, .Lbyte_copy_tail
->> +
->> +	/*
->> +	 * Bytewise copy first to align a0 to word boundary.
->> +	 */
->> +	addi	a2, a0, SZREG-1
->> +	andi	a2, a2, ~(SZREG-1)
->> +	beq	a0, a2, 2f
->>  1:
->> -	lb a5, 0(a1)
->> -	addi a1, a1, 1
->> -	sb a5, 0(t6)
->> -	addi t6, t6, 1
->> -	bltu a1, a3, 1b
->> -	sub a2, a2, a4  /* Update count */
->> +	lb	a5, 0(a1)
->> +	addi	a1, a1, 1
->> +	sb	a5, 0(a0)
->> +	addi	a0, a0, 1
->> +	bne	a0, a2, 1b
->> +2:
->> +
->> +	/*
->> +	 * Now a0 is word-aligned. If a1 is also word aligned, we
->> could perform
->> +	 * aligned word-wise copy. Otherwise we need to perform
->> misaligned
->> +	 * word-wise copy.
->> +	 */
->> +	andi	a3, a1, SZREG-1
->> +	bnez	a3, .Lmisaligned_word_copy
->>
->> +	/* Unrolled wordwise copy */
->> +	addi	t0, t0, -(16*SZREG-1)
->> +	bgeu	a0, t0, 2f
->> +1:
->> +	REG_L	a2,        0(a1)
->> +	REG_L	a3,    SZREG(a1)
->> +	REG_L	a4,  2*SZREG(a1)
->> +	REG_L	a5,  3*SZREG(a1)
->> +	REG_L	a6,  4*SZREG(a1)
->> +	REG_L	a7,  5*SZREG(a1)
->> +	REG_L	t1,  6*SZREG(a1)
->> +	REG_L	t2,  7*SZREG(a1)
->> +	REG_L	t3,  8*SZREG(a1)
->> +	REG_L	t4,  9*SZREG(a1)
->> +	REG_L	t5, 10*SZREG(a1)
->> +	REG_S	a2,        0(a0)
->> +	REG_S	a3,    SZREG(a0)
->> +	REG_S	a4,  2*SZREG(a0)
->> +	REG_S	a5,  3*SZREG(a0)
->> +	REG_S	a6,  4*SZREG(a0)
->> +	REG_S	a7,  5*SZREG(a0)
->> +	REG_S	t1,  6*SZREG(a0)
->> +	REG_S	t2,  7*SZREG(a0)
->> +	REG_S	t3,  8*SZREG(a0)
->> +	REG_S	t4,  9*SZREG(a0)
->> +	REG_S	t5, 10*SZREG(a0)
->> +	REG_L	a2, 11*SZREG(a1)
->> +	REG_L	a3, 12*SZREG(a1)
->> +	REG_L	a4, 13*SZREG(a1)
->> +	REG_L	a5, 14*SZREG(a1)
->> +	REG_L	a6, 15*SZREG(a1)
->> +	addi	a1, a1, 16*SZREG
->> +	REG_S	a2, 11*SZREG(a0)
->> +	REG_S	a3, 12*SZREG(a0)
->> +	REG_S	a4, 13*SZREG(a0)
->> +	REG_S	a5, 14*SZREG(a0)
->> +	REG_S	a6, 15*SZREG(a0)
->> +	addi	a0, a0, 16*SZREG
->> +	bltu	a0, t0, 1b
->>  2:
->> -	andi a4, a2, ~((16*SZREG)-1)
->> -	beqz a4, 4f
->> -	add a3, a1, a4
->> -3:
->> -	REG_L a4,       0(a1)
->> -	REG_L a5,   SZREG(a1)
->> -	REG_L a6, 2*SZREG(a1)
->> -	REG_L a7, 3*SZREG(a1)
->> -	REG_L t0, 4*SZREG(a1)
->> -	REG_L t1, 5*SZREG(a1)
->> -	REG_L t2, 6*SZREG(a1)
->> -	REG_L t3, 7*SZREG(a1)
->> -	REG_L t4, 8*SZREG(a1)
->> -	REG_L t5, 9*SZREG(a1)
->> -	REG_S a4,       0(t6)
->> -	REG_S a5,   SZREG(t6)
->> -	REG_S a6, 2*SZREG(t6)
->> -	REG_S a7, 3*SZREG(t6)
->> -	REG_S t0, 4*SZREG(t6)
->> -	REG_S t1, 5*SZREG(t6)
->> -	REG_S t2, 6*SZREG(t6)
->> -	REG_S t3, 7*SZREG(t6)
->> -	REG_S t4, 8*SZREG(t6)
->> -	REG_S t5, 9*SZREG(t6)
->> -	REG_L a4, 10*SZREG(a1)
->> -	REG_L a5, 11*SZREG(a1)
->> -	REG_L a6, 12*SZREG(a1)
->> -	REG_L a7, 13*SZREG(a1)
->> -	REG_L t0, 14*SZREG(a1)
->> -	REG_L t1, 15*SZREG(a1)
->> -	addi a1, a1, 16*SZREG
->> -	REG_S a4, 10*SZREG(t6)
->> -	REG_S a5, 11*SZREG(t6)
->> -	REG_S a6, 12*SZREG(t6)
->> -	REG_S a7, 13*SZREG(t6)
->> -	REG_S t0, 14*SZREG(t6)
->> -	REG_S t1, 15*SZREG(t6)
->> -	addi t6, t6, 16*SZREG
->> -	bltu a1, a3, 3b
->> -	andi a2, a2, (16*SZREG)-1  /* Update count */
->> -
->> -4:
->> -	/* Handle trailing misalignment */
->> -	beqz a2, 6f
->> -	add a3, a1, a2
->> -
->> -	/* Use word-oriented copy if co-aligned to word boundary */
->> -	or a5, a1, t6
->> -	or a5, a5, a3
->> -	andi a5, a5, 3
->> -	bnez a5, 5f
->> -7:
->> -	lw a4, 0(a1)
->> -	addi a1, a1, 4
->> -	sw a4, 0(t6)
->> -	addi t6, t6, 4
->> -	bltu a1, a3, 7b
->> +	/* Post-loop increment by 16*SZREG-1 and pre-loop decrement
->> by SZREG-1 */
->> +	addi	t0, t0, 15*SZREG
->>
->> -	ret
->> +	/* Wordwise copy */
->> +	bgeu	a0, t0, 2f
->> +1:
->> +	REG_L	a5, 0(a1)
->> +	addi	a1, a1, SZREG
->> +	REG_S	a5, 0(a0)
->> +	addi	a0, a0, SZREG
->> +	bltu	a0, t0, 1b
->> +2:
->> +	addi	t0, t0, SZREG-1
->>
->> -5:
->> -	lb a4, 0(a1)
->> -	addi a1, a1, 1
->> -	sb a4, 0(t6)
->> -	addi t6, t6, 1
->> -	bltu a1, a3, 5b
->> -6:
->> +.Lbyte_copy_tail:
->> +	/*
->> +	 * Bytewise copy anything left.
->> +	 */
->> +	beq	a0, t0, 2f
->> +1:
->> +	lb	a5, 0(a1)
->> +	addi	a1, a1, 1
->> +	sb	a5, 0(a0)
->> +	addi	a0, a0, 1
->> +	bne	a0, t0, 1b
->> +2:
->> +
->> +	mv	a0, t6
->>  	ret
->> +
->> +.Lmisaligned_word_copy:
->> +	/*
->> +	 * Misaligned word-wise copy.
->> +	 * For misaligned copy we still perform word-wise copy, but
->> we need to
->> +	 * use the value fetched from the previous iteration and do
->> some shifts.
->> +	 * This is safe because we wouldn't access more words than
->> necessary.
->> +	 */
->> +
->> +	/* Calculate shifts */
->> +	slli	t3, a3, 3
->> +	sub	t4, x0, t3 /* negate is okay as shift will only
->> look at LSBs */ +
->> +	/* Load the initial value and align a1 */
->> +	andi	a1, a1, ~(SZREG-1)
->> +	REG_L	a5, 0(a1)
->> +
->> +	addi	t0, t0, -(SZREG-1)
->> +	/* At least one iteration will be executed here, no check */
->> +1:
->> +	srl	a4, a5, t3
->> +	REG_L	a5, SZREG(a1)
->> +	addi	a1, a1, SZREG
->> +	sll	a2, a5, t4
->> +	or	a2, a2, a4
->> +	REG_S	a2, 0(a0)
->> +	addi	a0, a0, SZREG
->> +	bltu	a0, t0, 1b
->> +
->> +	/* Update pointers to correct value */
->> +	addi	t0, t0, SZREG-1
->> +	add	a1, a1, a3
->> +
->> +	j	.Lbyte_copy_tail
->>  END(__memcpy)
->> diff --git a/arch/riscv/lib/memmove.S b/arch/riscv/lib/memmove.S
->> index 07d1d2152ba5..fbe6701dbe4a 100644
->> --- a/arch/riscv/lib/memmove.S
->> +++ b/arch/riscv/lib/memmove.S
->> @@ -5,60 +5,124 @@
->>
->>  ENTRY(__memmove)
->>  WEAK(memmove)
->> -        move    t0, a0
->> -        move    t1, a1
->> -
->> -        beq     a0, a1, exit_memcpy
->> -        beqz    a2, exit_memcpy
->> -        srli    t2, a2, 0x2
->> -
->> -        slt     t3, a0, a1
->> -        beqz    t3, do_reverse
->> -
->> -        andi    a2, a2, 0x3
->> -        li      t4, 1
->> -        beqz    t2, byte_copy
->> -
->> -word_copy:
->> -        lw      t3, 0(a1)
->> -        addi    t2, t2, -1
->> -        addi    a1, a1, 4
->> -        sw      t3, 0(a0)
->> -        addi    a0, a0, 4
->> -        bnez    t2, word_copy
->> -        beqz    a2, exit_memcpy
->> -        j       byte_copy
->> -
->> -do_reverse:
->> -        add     a0, a0, a2
->> -        add     a1, a1, a2
->> -        andi    a2, a2, 0x3
->> -        li      t4, -1
->> -        beqz    t2, reverse_byte_copy
->> -
->> -reverse_word_copy:
->> -        addi    a1, a1, -4
->> -        addi    t2, t2, -1
->> -        lw      t3, 0(a1)
->> -        addi    a0, a0, -4
->> -        sw      t3, 0(a0)
->> -        bnez    t2, reverse_word_copy
->> -        beqz    a2, exit_memcpy
->> -
->> -reverse_byte_copy:
->> -        addi    a0, a0, -1
->> -        addi    a1, a1, -1
->> -
->> -byte_copy:
->> -        lb      t3, 0(a1)
->> -        addi    a2, a2, -1
->> -        sb      t3, 0(a0)
->> -        add     a1, a1, t4
->> -        add     a0, a0, t4
->> -        bnez    a2, byte_copy
->> -
->> -exit_memcpy:
->> -        move a0, t0
->> -        move a1, t1
->> -        ret
->> +	/*
->> +	 * Here we determine if forward copy is possible. Forward
->> copy is
->> +	 * preferred to backward copy as it is more cache friendly.
->> +	 *
->> +	 * If a0 >= a1, t0 gives their distance, if t0 >= a2 then we
->> can
->> +	 *   copy forward.
->> +	 * If a0 < a1, we can always copy forward. This will make t0
->> negative,
->> +	 *   so a *unsigned* comparison will always have t0 >= a2.
->> +	 *
->> +	 * For forward copy we just delegate the task to memcpy.
->> +	 */
->> +	sub	t0, a0, a1
->> +	bltu	t0, a2, 1f
->> +	tail	__memcpy
->> +1:
->> +
->> +	/*
->> +	 * Register allocation for code below:
->> +	 * a0 - end of uncopied dst
->> +	 * a1 - end of uncopied src
->> +	 * t0 - start of uncopied dst
->> +	 */
->> +	mv	t0, a0
->> +	add	a0, a0, a2
->> +	add	a1, a1, a2
->> +
->> +	/*
->> +	 * Use bytewise copy if too small.
->> +	 *
->> +	 * This threshold must be at least 2*SZREG to ensure at
->> least one
->> +	 * wordwise copy is performed. It is chosen to be 16 because
->> it will
->> +	 * save at least 7 iterations of bytewise copy, which pays
->> off the
->> +	 * fixed overhead.
->> +	 */
->> +	li	a3, 16
->> +	bltu	a2, a3, .Lbyte_copy_tail
->> +
->> +	/*
->> +	 * Bytewise copy first to align t0 to word boundary.
->> +	 */
->> +	andi	a2, a0, ~(SZREG-1)
->> +	beq	a0, a2, 2f
->> +1:
->> +	addi	a1, a1, -1
->> +	lb	a5, 0(a1)
->> +	addi	a0, a0, -1
->> +	sb	a5, 0(a0)
->> +	bne	a0, a2, 1b
->> +2:
->> +
->> +	/*
->> +	 * Now a0 is word-aligned. If a1 is also word aligned, we
->> could perform
->> +	 * aligned word-wise copy. Otherwise we need to perform
->> misaligned
->> +	 * word-wise copy.
->> +	 */
->> +	andi	a3, a1, SZREG-1
->> +	bnez	a3, .Lmisaligned_word_copy
->> +
->> +	/* Wordwise copy */
->> +	addi	t0, t0, SZREG-1
->> +	bleu	a0, t0, 2f
->> +1:
->> +	addi	a1, a1, -SZREG
->> +	REG_L	a5, 0(a1)
->> +	addi	a0, a0, -SZREG
->> +	REG_S	a5, 0(a0)
->> +	bgtu	a0, t0, 1b
->> +2:
->> +	addi	t0, t0, -(SZREG-1)
->> +
->> +.Lbyte_copy_tail:
->> +	/*
->> +	 * Bytewise copy anything left.
->> +	 */
->> +	beq	a0, t0, 2f
->> +1:
->> +	addi	a1, a1, -1
->> +	lb	a5, 0(a1)
->> +	addi	a0, a0, -1
->> +	sb	a5, 0(a0)
->> +	bne	a0, t0, 1b
->> +2:
->> +
->> +	mv	a0, t0
->> +	ret
->> +
->> +.Lmisaligned_word_copy:
->> +	/*
->> +	 * Misaligned word-wise copy.
->> +	 * For misaligned copy we still perform word-wise copy, but
->> we need to
->> +	 * use the value fetched from the previous iteration and do
->> some shifts.
->> +	 * This is safe because we wouldn't access more words than
->> necessary.
->> +	 */
->> +
->> +	/* Calculate shifts */
->> +	slli	t3, a3, 3
->> +	sub	t4, x0, t3 /* negate is okay as shift will only
->> look at LSBs */ +
->> +	/* Load the initial value and align a1 */
->> +	andi	a1, a1, ~(SZREG-1)
->> +	REG_L	a5, 0(a1)
->> +
->> +	addi	t0, t0, SZREG-1
->> +	/* At least one iteration will be executed here, no check */
->> +1:
->> +	sll	a4, a5, t4
->> +	addi	a1, a1, -SZREG
->> +	REG_L	a5, 0(a1)
->> +	srl	a2, a5, t3
->> +	or	a2, a2, a4
->> +	addi	a0, a0, -SZREG
->> +	REG_S	a2, 0(a0)
->> +	bgtu	a0, t0, 1b
->> +
->> +	/* Update pointers to correct value */
->> +	addi	t0, t0, -(SZREG-1)
->> +	add	a1, a1, a3
->> +
->> +	j	.Lbyte_copy_tail
->> +
->>  END(__memmove)
+> Overflow is detected in kernel exception entry(kernel/entry.S), if the kernel
+> stack is overflow and been detected, the overflow handler is invoked on a
+> per-cpu overflow stack. This approach preserves GPRs and the original exception
+> information.
 >
-> ping. It's been 3 month since submission and I really would like to see
-> this applied or at least have some feedbacks.
+> The overflow detect is performed before any attempt is made to access the stack
+> and the principle of stack overflow detection: kernel stacks are aligned to
+> double their size, enabling overflow to be detected with a single bit test. For
+> example, a 16K stack is aligned to 32K, ensuring that bit 14 of the SP must be
+> zero. On an overflow (or underflow), this bit is flipped. Thus, overflow (of
+> less than the size of the stack) can be detected by testing whether this bit is
+> set.
 >
-> Link to the original patch in archive:
-> https://lore.kernel.org/linux-riscv/20210216225555.4976-1-gary@garyguo.net/
+> This gives us a useful error message on stack overflow, as can be trigger with
+> the LKDTM overflow test:
+>
+> [  388.053267] lkdtm: Performing direct entry EXHAUST_STACK
+> [  388.053663] lkdtm: Calling function with 1024 frame size to depth 32 ...
+> [  388.054016] lkdtm: loop 32/32 ...
+> [  388.054186] lkdtm: loop 31/32 ...
+> [  388.054491] lkdtm: loop 30/32 ...
+> [  388.054672] lkdtm: loop 29/32 ...
+> [  388.054859] lkdtm: loop 28/32 ...
+> [  388.055010] lkdtm: loop 27/32 ...
+> [  388.055163] lkdtm: loop 26/32 ...
+> [  388.055309] lkdtm: loop 25/32 ...
+> [  388.055481] lkdtm: loop 24/32 ...
+> [  388.055653] lkdtm: loop 23/32 ...
+> [  388.055837] lkdtm: loop 22/32 ...
+> [  388.056015] lkdtm: loop 21/32 ...
+> [  388.056188] lkdtm: loop 20/32 ...
+> [  388.058145] Insufficient stack space to handle exception!
+> [  388.058153] Task stack:     [0xffffffd014260000..0xffffffd014264000]
+> [  388.058160] Overflow stack: [0xffffffe1f8d2c220..0xffffffe1f8d2d220]
+> [  388.058168] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+> [  388.058175] Hardware name: riscv-virtio,qemu (DT)
+> [  388.058187] epc : number+0x32/0x2c0
+> [  388.058247]  ra : vsnprintf+0x2ae/0x3f0
+> [  388.058255] epc : ffffffe0002d38f6 ra : ffffffe0002d814e sp : ffffffd01425ffc0
+> [  388.058263]  gp : ffffffe0012e4010 tp : ffffffe08014da00 t0 : ffffffd0142606e8
+> [  388.058271]  t1 : 0000000000000000 t2 : 0000000000000000 s0 : ffffffd014260070
+> [  388.058303]  s1 : ffffffd014260158 a0 : ffffffd01426015e a1 : ffffffd014260158
+> [  388.058311]  a2 : 0000000000000013 a3 : ffff0a01ffffff10 a4 : ffffffe000c398e0
+> [  388.058319]  a5 : 511b02ec65f3e300 a6 : 0000000000a1749a a7 : 0000000000000000
+> [  388.058327]  s2 : ffffffff000000ff s3 : 00000000ffff0a01 s4 : ffffffe0012e50a8
+> [  388.058335]  s5 : 0000000000ffff0a s6 : ffffffe0012e50a8 s7 : ffffffe000da1cc0
+> [  388.058343]  s8 : ffffffffffffffff s9 : ffffffd0142602b0 s10: ffffffd0142602a8
+> [  388.058351]  s11: ffffffd01426015e t3 : 00000000000f0000 t4 : ffffffffffffffff
+> [  388.058359]  t5 : 000000000000002f t6 : ffffffd014260158
+> [  388.058366] status: 0000000000000100 badaddr: ffffffd01425fff8 cause: 000000000000000f
+> [  388.058374] Kernel panic - not syncing: Kernel stack overflow
+> [  388.058381] CPU: 0 PID: 89 Comm: bash Not tainted 5.12.0-rc8-dirty #90
+> [  388.058387] Hardware name: riscv-virtio,qemu (DT)
+> [  388.058393] Call Trace:
+> [  388.058400] [<ffffffe000004944>] walk_stackframe+0x0/0xce
+> [  388.058406] [<ffffffe0006f0b28>] dump_backtrace+0x38/0x46
+> [  388.058412] [<ffffffe0006f0b46>] show_stack+0x10/0x18
+> [  388.058418] [<ffffffe0006f3690>] dump_stack+0x74/0x8e
+> [  388.058424] [<ffffffe0006f0d52>] panic+0xfc/0x2b2
+> [  388.058430] [<ffffffe0006f0acc>] print_trace_address+0x0/0x24
+> [  388.058436] [<ffffffe0002d814e>] vsnprintf+0x2ae/0x3f0
+> [  388.058956] SMP: stopping secondary CPUs
+>
+> Signed-off-by: Tong Tiangen <tongtiangen@huawei.com>
+> ---
+>  arch/riscv/Kconfig                   |   1 +
+>  arch/riscv/include/asm/thread_info.h |  15 ++++
+>  arch/riscv/kernel/entry.S            | 108 +++++++++++++++++++++++++++
+>  arch/riscv/kernel/traps.c            |  35 +++++++++
+>  4 files changed, 159 insertions(+)
+>
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 4515a10c5d22..587f001e84f4 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -63,6 +63,7 @@ config RISCV
+>  	select HAVE_ARCH_MMAP_RND_BITS if MMU
+>  	select HAVE_ARCH_SECCOMP_FILTER
+>  	select HAVE_ARCH_TRACEHOOK
+> +	select HAVE_ARCH_VMAP_STACK
+>  	select HAVE_ASM_MODVERSIONS
+>  	select HAVE_CONTEXT_TRACKING
+>  	select HAVE_DEBUG_KMEMLEAK
+> diff --git a/arch/riscv/include/asm/thread_info.h b/arch/riscv/include/asm/thread_info.h
+> index 0e549a3089b3..60da0dcacf14 100644
+> --- a/arch/riscv/include/asm/thread_info.h
+> +++ b/arch/riscv/include/asm/thread_info.h
+> @@ -19,6 +19,21 @@
+>  #endif
+>  #define THREAD_SIZE		(PAGE_SIZE << THREAD_SIZE_ORDER)
+>
+> +/*
+> + * By aligning VMAP'd stacks to 2 * THREAD_SIZE, we can detect overflow by
+> + * checking sp & (1 << THREAD_SHIFT), which we can do cheaply in the entry
+> + * assembly.
+> + */
+> +#ifdef CONFIG_VMAP_STACK
+> +#define THREAD_ALIGN            (2 * THREAD_SIZE)
+> +#else
+> +#define THREAD_ALIGN            THREAD_SIZE
+> +#endif
+> +
+> +#define THREAD_SHIFT            (PAGE_SHIFT + THREAD_SIZE_ORDER)
+> +#define OVERFLOW_STACK_SIZE     SZ_4K
+> +#define SHADOW_OVERFLOW_STACK_SIZE (1024)
+> +
+>  #ifndef __ASSEMBLY__
+>
+>  #include <asm/processor.h>
+> diff --git a/arch/riscv/kernel/entry.S b/arch/riscv/kernel/entry.S
+> index 83095faa680e..deadf4000b86 100644
+> --- a/arch/riscv/kernel/entry.S
+> +++ b/arch/riscv/kernel/entry.S
+> @@ -29,6 +29,15 @@ ENTRY(handle_exception)
+>  _restore_kernel_tpsp:
+>  	csrr tp, CSR_SCRATCH
+>  	REG_S sp, TASK_TI_KERNEL_SP(tp)
+> +
+> +#ifdef CONFIG_VMAP_STACK
+> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+> +	srli sp, sp, THREAD_SHIFT
+> +	andi sp, sp, 0x1
+> +	bnez sp, handle_kernel_stack_overflow
+> +	REG_L sp, TASK_TI_KERNEL_SP(tp)
+> +#endif
+> +
+>  _save_context:
+>  	REG_S sp, TASK_TI_USER_SP(tp)
+>  	REG_L sp, TASK_TI_KERNEL_SP(tp)
+> @@ -375,6 +384,105 @@ handle_syscall_trace_exit:
+>  	call do_syscall_trace_exit
+>  	j ret_from_exception
+>
+> +#ifdef CONFIG_VMAP_STACK
+> +handle_kernel_stack_overflow:
+> +	la sp, shadow_stack
+> +	addi sp, sp, SHADOW_OVERFLOW_STACK_SIZE
+> +
+> +	//save caller register to shadow stack
+> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+> +	REG_S x1,  PT_RA(sp)
+> +	REG_S x5,  PT_T0(sp)
+> +	REG_S x6,  PT_T1(sp)
+> +	REG_S x7,  PT_T2(sp)
+> +	REG_S x10, PT_A0(sp)
+> +	REG_S x11, PT_A1(sp)
+> +	REG_S x12, PT_A2(sp)
+> +	REG_S x13, PT_A3(sp)
+> +	REG_S x14, PT_A4(sp)
+> +	REG_S x15, PT_A5(sp)
+> +	REG_S x16, PT_A6(sp)
+> +	REG_S x17, PT_A7(sp)
+> +	REG_S x28, PT_T3(sp)
+> +	REG_S x29, PT_T4(sp)
+> +	REG_S x30, PT_T5(sp)
+> +	REG_S x31, PT_T6(sp)
+> +
+> +	la ra, restore_caller_reg
+> +	tail get_overflow_stack
+> +
+> +restore_caller_reg:
+> +	//save per-cpu overflow stack
+> +	sd a0, -8(sp)
+> +	//restore caller register from shadow_stack
+> +	REG_L x1,  PT_RA(sp)
+> +	REG_L x5,  PT_T0(sp)
+> +	REG_L x6,  PT_T1(sp)
+> +	REG_L x7,  PT_T2(sp)
+> +	REG_L x10, PT_A0(sp)
+> +	REG_L x11, PT_A1(sp)
+> +	REG_L x12, PT_A2(sp)
+> +	REG_L x13, PT_A3(sp)
+> +	REG_L x14, PT_A4(sp)
+> +	REG_L x15, PT_A5(sp)
+> +	REG_L x16, PT_A6(sp)
+> +	REG_L x17, PT_A7(sp)
+> +	REG_L x28, PT_T3(sp)
+> +	REG_L x29, PT_T4(sp)
+> +	REG_L x30, PT_T5(sp)
+> +	REG_L x31, PT_T6(sp)
+> +
+> +	//load per-cpu overflow stack
+> +	ld sp, -8(sp)
+> +	addi sp, sp, -(PT_SIZE_ON_STACK)
+> +
+> +	//save context to overflow stack
+> +	REG_S x1,  PT_RA(sp)
+> +	REG_S x3,  PT_GP(sp)
+> +	REG_S x5,  PT_T0(sp)
+> +	REG_S x6,  PT_T1(sp)
+> +	REG_S x7,  PT_T2(sp)
+> +	REG_S x8,  PT_S0(sp)
+> +	REG_S x9,  PT_S1(sp)
+> +	REG_S x10, PT_A0(sp)
+> +	REG_S x11, PT_A1(sp)
+> +	REG_S x12, PT_A2(sp)
+> +	REG_S x13, PT_A3(sp)
+> +	REG_S x14, PT_A4(sp)
+> +	REG_S x15, PT_A5(sp)
+> +	REG_S x16, PT_A6(sp)
+> +	REG_S x17, PT_A7(sp)
+> +	REG_S x18, PT_S2(sp)
+> +	REG_S x19, PT_S3(sp)
+> +	REG_S x20, PT_S4(sp)
+> +	REG_S x21, PT_S5(sp)
+> +	REG_S x22, PT_S6(sp)
+> +	REG_S x23, PT_S7(sp)
+> +	REG_S x24, PT_S8(sp)
+> +	REG_S x25, PT_S9(sp)
+> +	REG_S x26, PT_S10(sp)
+> +	REG_S x27, PT_S11(sp)
+> +	REG_S x28, PT_T3(sp)
+> +	REG_S x29, PT_T4(sp)
+> +	REG_S x30, PT_T5(sp)
+> +	REG_S x31, PT_T6(sp)
+> +
+> +	REG_L s0, TASK_TI_KERNEL_SP(tp)
+> +	csrr s1, CSR_STATUS
+> +	csrr s2, CSR_EPC
+> +	csrr s3, CSR_TVAL
+> +	csrr s4, CSR_CAUSE
+> +	csrr s5, CSR_SCRATCH
+> +	REG_S s0, PT_SP(sp)
+> +	REG_S s1, PT_STATUS(sp)
+> +	REG_S s2, PT_EPC(sp)
+> +	REG_S s3, PT_BADADDR(sp)
+> +	REG_S s4, PT_CAUSE(sp)
+> +	REG_S s5, PT_TP(sp)
+> +	move a0, sp
+> +	tail handle_bad_stack
+> +#endif
+> +
+>  END(handle_exception)
+>
+>  ENTRY(ret_from_fork)
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index 1357abf79570..ff8033b9fdd6 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -200,3 +200,38 @@ int is_valid_bugaddr(unsigned long pc)
+>  void trap_init(void)
+>  {
+>  }
+> +
+> +#ifdef CONFIG_VMAP_STACK
+> +DEFINE_PER_CPU(unsigned long [OVERFLOW_STACK_SIZE/sizeof(long)], overflow_stack)
+> +		__aligned(16);
+> +/*
+> + * shadow stack, handled_ kernel_ stack_ overflow(in kernel/entry.S) is used
+> + * to get per-cpu overflow stack(get_overflow_stack).
+> + */
+> +long shadow_stack[SHADOW_OVERFLOW_STACK_SIZE/sizeof(long)];
+> +asmlinkage unsigned long get_overflow_stack(void)
+> +{
+> +	return (unsigned long)this_cpu_ptr(overflow_stack) +
+> +		OVERFLOW_STACK_SIZE;
+> +}
+> +
+> +asmlinkage void handle_bad_stack(struct pt_regs *regs)
+> +{
+> +	unsigned long tsk_stk = (unsigned long)current->stack;
+> +	unsigned long ovf_stk = (unsigned long)this_cpu_ptr(overflow_stack);
+> +
+> +	console_verbose();
+> +
+> +	pr_emerg("Insufficient stack space to handle exception!\n");
+> +	pr_emerg("Task stack:     [0x%016lx..0x%016lx]\n",
+> +			tsk_stk, tsk_stk + THREAD_SIZE);
+> +	pr_emerg("Overflow stack: [0x%016lx..0x%016lx]\n",
+> +			ovf_stk, ovf_stk + OVERFLOW_STACK_SIZE);
+> +
+> +	__show_regs(regs);
+> +	panic("Kernel stack overflow");
+> +
+> +	for (;;)
+> +		wait_for_interrupt();
+> +}
+> +#endif
 
-Sorry, I thought I replied to this one but it must have gotten lost 
-somewhere.
-
-IMO the right way to go here is to just move to C-based string routines, 
-at least until we get to the point where we're seriously optimizing for 
-specific processors.  We went with the C-based string rountines in glibc 
-as part of the upstreaming process and found only some small performance 
-differences when compared to the hand-written assembly, and they're way 
-easier to maintain.
-
-IIRC Linux only has trivial C string routines in lib, I think the best 
-way to go about that would be to higher performance versions in there.  
-That will allow other ports to use them.
+This LGTM.  It seems good enough to take, I'm not sure why this is an 
+RFC?
