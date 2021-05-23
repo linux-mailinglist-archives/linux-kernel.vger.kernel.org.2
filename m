@@ -2,125 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976CE38DA82
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83F4C38DA85
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 10:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231706AbhEWI2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 04:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231616AbhEWI21 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 04:28:27 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDE75C061574;
-        Sun, 23 May 2021 01:27:00 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id z17so25232179wrq.7;
-        Sun, 23 May 2021 01:27:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:references:from:subject:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=VnRgGyjPltivJLPVgRyKlZ0TLQYMwBTajDy9FGMry3Q=;
-        b=jB68xjHz9ASO/c4S33JI/f0mBUkkVz4exO8LO4tMg8fQ6T0A8P98Lj4xt02Nq9JeHf
-         l23O7emZlX3hEmNU+wPv6I1OklZczIn/MxuBOonIOhpf9tqztsHkWzEXkZw7bm2gNhQO
-         ZwX7bzqSmE8WJb8D7rTtubDG1RdyZRbSMReL3zUJlFjuvveF1hZTipKjzrWjFBHZHi21
-         Xnei5IaENl4ai0SNEQXzvPAEHsxAva5hYsLgSkLaJ0K5cXpzPoBW/hQANh97e1ME8qEP
-         HaKpW26BixIAo6cK0ThJrMMEpieqzkiMwSqwe/rzdOVxAloRN97HSfesV7WQV2JN18Rf
-         XmHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=VnRgGyjPltivJLPVgRyKlZ0TLQYMwBTajDy9FGMry3Q=;
-        b=BP15GUWyY7zjqhKwIX3ikqmukt/qwnQ41fB+g6PAp9eVLI0F8sLHZCGc9QCfk3nsNC
-         8fG+lRYG1D7Y8SulxZXgZPhni+6vgvS43jqfr6j6gCp4K/d1urUnskhxY/3Ms/YBBi1K
-         w8omLIJVPgvj/3tgI0p41ngHbEib3xCEdv9DNvMsEgqvxvVwy89OunmIM6RAyOQp0YXL
-         +R8Na5nQfmMUh7fdV33wcyNrMZ+YZVgdTKXAuz5L4frZFfwdItaSHAbcp8HDLmhpzy20
-         7A1QQymHvnjNFdwyPpW/uN/YNUEwjoPm5XrpQjwQ0SXZs0oGPcF2U6hr579dTdlUeXmY
-         xlNw==
-X-Gm-Message-State: AOAM531/1j3CL9M6JzEZcGzYTO5vUjvn/kB4F7bGgdBqP0xlrf0ITIlt
-        okEp8UOzM4sRvQQ+hSjSYQbzT8HJBGuRPPqA
-X-Google-Smtp-Source: ABdhPJwpt/s1AZpN5Nsv8eGLZIHeDYfX0Q0/Vi13Emn/+cumSafRkq3wMqGUi8r0cLlndaNOY+7bmg==
-X-Received: by 2002:a5d:6587:: with SMTP id q7mr2374437wru.99.1621758419296;
-        Sun, 23 May 2021 01:26:59 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.65])
-        by smtp.gmail.com with ESMTPSA id b8sm8080533wrx.15.2021.05.23.01.26.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 May 2021 01:26:58 -0700 (PDT)
-To:     Olivier Langlois <olivier@trillion01.com>,
-        Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org,
+        id S231663AbhEWIeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 04:34:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54252 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231600AbhEWId5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 04:33:57 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621758750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U59H/l6kOzXNcwBFT4+SCj3zz1deOAwXFfaCSRs3PV8=;
+        b=h51il5IaqS612ve+aHInTVXqwdzBSOXrZy5IhOiVjtE+9jhbMkgHeLsUSlPMc5Hwx1/5am
+        CSMor9Kq3ZQkFhK/NyxywBa0MZkWJ7tYtpkZEqef4tBRE1MMd0SHZxjPN7SQTO5Tt174PS
+        PXbeVoRnz6w68PQ5N2RqOf21DXOZS4M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621758750;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=U59H/l6kOzXNcwBFT4+SCj3zz1deOAwXFfaCSRs3PV8=;
+        b=8TlffLWw82CiUzFWs8jwldiRyaZIto2Pt5GUpHGuztNWX4+1H5R3zL/NSpUFeKhJhd/GAz
+        wKTSd8iJHy8p2OAg==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 375B6AC3A;
+        Sun, 23 May 2021 08:32:30 +0000 (UTC)
+Date:   Sun, 23 May 2021 10:32:28 +0200
+Message-ID: <s5hzgwletpf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     kernel test robot <lkp@intel.com>
+Cc:     "Geoffrey D. Bennett" <g@b4.vu>, kbuild-all@lists.01.org,
+        alsa-devel@alsa-project.org, Jaroslav Kysela <perex@perex.cz>,
+        Joe Perches <joe@perches.com>,
+        Alexander Tsoy <alexander@tsoy.me>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org
-References: <60a9e208.1c69fb81.1f879.b57bSMTPIN_ADDED_MISSING@mx.google.com>
-From:   Pavel Begunkov <asml.silence@gmail.com>
-Subject: Re: [PATCH] io_uring: Delay io_wq creation to avoid unnecessary
- creation
-Message-ID: <870d55a1-97a2-6fa2-24c1-3ac214b19bb4@gmail.com>
-Date:   Sun, 23 May 2021 09:26:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <60a9e208.1c69fb81.1f879.b57bSMTPIN_ADDED_MISSING@mx.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Subject: Re: [RFC PATCH sound] ALSA: usb-audio: scarlett2: snd_scarlett_gen2_controls_create() can be static
+In-Reply-To: <20210522180900.GA83915@f59a3af2f1d9>
+References: <202105230212.9rlkrDHb-lkp@intel.com>
+        <20210522180900.GA83915@f59a3af2f1d9>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/22/21 9:16 PM, Olivier Langlois wrote:
-> Create the io_wq when we know that it is needed because the task
-> will submit sqes.
+On Sat, 22 May 2021 20:09:00 +0200,
+kernel test robot wrote:
 > 
-> This eliminates a lot iou-mgr threads creation and memory allocation
-> in those 2 scenarios:
+> sound/usb/mixer_scarlett_gen2.c:2000:5: warning: symbol 'snd_scarlett_gen2_controls_create' was not declared. Should it be static?
 > 
-> - A thread actually calling io_uring_enter() to submit sqes is not
->   the same thread that has created the io_uring instance
->   with io_uring_setup()
-> - Every use cases where no sqe submission is performed (most SQPOLL setup)
-> 
-> The benefits is less memory allocation and less context switching of
-> io-mgr threads that will never have anything useful to do and the only cost
-> is an extra condition evaluation in io_uring_enter().
+> Fixes: 265d1a90e4fb ("ALSA: usb-audio: scarlett2: Improve driver startup messages")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: kernel test robot <lkp@intel.com>
 
-1) there is no more io-mgr (5.13)
+Applied now.  Thanks.
 
-2) you move that from what is considered slow path into a hotter
-place, that is not fine.
 
-So I wouldn't care about it
-
-> 
-> Signed-off-by: Olivier Langlois <olivier@trillion01.com>
-> ---
->  fs/io_uring.c | 27 +++++++++++++++++++--------
->  1 file changed, 19 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/io_uring.c b/fs/io_uring.c
-> index 5f82954004f6..a01ae25d7c60 100644
-> --- a/fs/io_uring.c
-> +++ b/fs/io_uring.c
-> @@ -7881,6 +7881,18 @@ static struct io_wq *io_init_wq_offload(struct io_ring_ctx *ctx,
->  	return io_wq_create(concurrency, &data);
->  }
->  
-> +static int io_uring_alloc_wq_offload(struct io_uring_task *tctx,
-> +				     struct io_ring_ctx *ctx)
-> +{
-> +	int ret = 0;
-> +
-> +	tctx->io_wq = io_init_wq_offload(ctx);
-> +	if (IS_ERR(tctx->io_wq))
-
-will be disastrous if you don't clear tctx->io_wq
-
-> +		ret = PTR_ERR(tctx->io_wq);
-> +
-> +	return ret;
-> +}
-> +
-
--- 
-Pavel Begunkov
+Takashi
