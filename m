@@ -2,110 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF8238D938
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 08:02:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD86438D93E
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 08:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhEWGEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 02:04:04 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:5669 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231540AbhEWGEC (ORCPT
+        id S231622AbhEWGIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 02:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56364 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231540AbhEWGII (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 02:04:02 -0400
-Received: from dggems702-chm.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FnqS11fWrz1BQJY;
-        Sun, 23 May 2021 13:59:45 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems702-chm.china.huawei.com (10.3.19.179) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 14:02:34 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 14:02:33 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <dougmill@linux.ibm.com>, <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        YueHaibing <yuehaibing@huawei.com>
-Subject: [PATCH v2 net-next] ehea: Use DEVICE_ATTR_*() macro
-Date:   Sun, 23 May 2021 14:02:23 +0800
-Message-ID: <20210523060223.41936-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sun, 23 May 2021 02:08:08 -0400
+Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD83C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:06:41 -0700 (PDT)
+Received: by mail-pj1-x102c.google.com with SMTP id pi6-20020a17090b1e46b029015cec51d7cdso9329404pjb.5
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 23:06:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bbVkNXXuvs00kg1wmTW0NePOJ70agDM+7kVTDiM2Rwk=;
+        b=EKhN/IEEn8ucPc2kMoCtJMvTI7FFyrCH7TGPMxFYn8KnblpCdKYH3iZ24Bk5AA7g93
+         oMKKY7iFhGENTLKCrc1NfV6HbkIk2Ap7gaq5uxaX9xYO+bl69c87lAy8NlvRld+KqXjF
+         TF2Eg/S37ZvAV000stQ/oIgFg6b6yy/7YZp3VIe196TqEFTMm8ECF+B/Etl2FAdt0ZM1
+         vabwnNsF58zji8ADC99oTEbA/yxZY8HQwh7IdmOuDssyeutxJS0cWzk0uVt2lDE7/E7+
+         Cf3unbnsy1Bzq9GDTSMaInhhlEMuXmYUSK05kS2NR9WEUjU5bMApmaGjCgPPZHA957mm
+         fQdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bbVkNXXuvs00kg1wmTW0NePOJ70agDM+7kVTDiM2Rwk=;
+        b=Ih6uT5AbYIZPGRt2s8dQ4CAMxXQbVdKWtr7U1LaGdhcv3B0j5JlGFuN3clJsMYrbdP
+         cMKT947V5tDl//NsPHiA/WCePdi2Fd/pU4OYlrd+M14ddvDbdNTIKk7P2mQ0NoWsYe+J
+         WAHRNGjqPRPZ8am23vSIvaVszue/w20kH84vuBAX7iXNo6t+TB6Ila1Dk7FIKynjDorF
+         Ttv5RhDuAqxNFzXmXeRCn7UmKP+clPGS5xxm4qYeNdXbwgwi/BzAzaR9H/dL3nnBP6NZ
+         7cR7FdfKZFMgrNCkq0wFLTArnfN4WLmEelVzdNbXj1MeBYG+S/WaavHqht16s7T6PQmm
+         se9A==
+X-Gm-Message-State: AOAM5306eAQBYmess+YhhL1wzk2ConApJ57xUpqNxVCmQZmHxRVtOqaF
+        yMi0z2xbe3DU8/CDoIMOYuFcyA==
+X-Google-Smtp-Source: ABdhPJxh6WeuHEv6gwxD9/kjJ2L0haPbr+6jWPGSMs++xnAQGZrM7RPHx8y37vVl06rkgkzX4CpMBA==
+X-Received: by 2002:a17:90a:5309:: with SMTP id x9mr8657357pjh.111.1621750001434;
+        Sat, 22 May 2021 23:06:41 -0700 (PDT)
+Received: from dragon (80.251.214.228.16clouds.com. [80.251.214.228])
+        by smtp.gmail.com with ESMTPSA id m191sm8367175pga.88.2021.05.22.23.06.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 22 May 2021 23:06:41 -0700 (PDT)
+Date:   Sun, 23 May 2021 14:06:34 +0800
+From:   Shawn Guo <shawn.guo@linaro.org>
+To:     Kalle Valo <kvalo@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Arend van Spriel <aspriel@gmail.com>,
+        Franky Lin <franky.lin@broadcom.com>,
+        Hante Meuleman <hante.meuleman@broadcom.com>,
+        Chi-hsien Lin <chi-hsien.lin@infineon.com>,
+        Wright Feng <wright.feng@infineon.com>,
+        Chung-hsien Hsu <chung-hsien.hsu@infineon.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com
+Subject: Re: [PATCH v3] brcmfmac: support parse country code map from DT
+Message-ID: <20210523060633.GC29015@dragon>
+References: <20210417075428.2671-1-shawn.guo@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210417075428.2671-1-shawn.guo@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Sat, Apr 17, 2021 at 03:54:28PM +0800, Shawn Guo wrote:
+> With any regulatory domain requests coming from either user space or
+> 802.11 IE (Information Element), the country is coded in ISO3166
+> standard.  It needs to be translated to firmware country code and
+> revision with the mapping info in settings->country_codes table.
+> Support populate country_codes table by parsing the mapping from DT.
+> 
+> The BRCMF_BUSTYPE_SDIO bus_type check gets separated from general DT
+> validation, so that country code can be handled as general part rather
+> than SDIO bus specific one.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
+> ---
+> Changes for v3:
+>  - Add missing terminating '\n' in brcmf_dbg(INFO, ...) format string.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
-v2: probe_port_show should be probe_port_store 
+Hi Kalle,
 
- drivers/net/ethernet/ibm/ehea/ehea_main.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+Any comments on this version?
 
-diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-index ea55314b209d..fb639f7644bc 100644
---- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
-+++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
-@@ -2867,14 +2867,14 @@ static int ehea_get_jumboframe_status(struct ehea_port *port, int *jumbo)
- 	return ret;
- }
- 
--static ssize_t ehea_show_port_id(struct device *dev,
--				 struct device_attribute *attr, char *buf)
-+static ssize_t log_port_id_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
- {
- 	struct ehea_port *port = container_of(dev, struct ehea_port, ofdev.dev);
- 	return sprintf(buf, "%d", port->logical_port_id);
- }
- 
--static DEVICE_ATTR(log_port_id, 0444, ehea_show_port_id, NULL);
-+static DEVICE_ATTR_RO(log_port_id);
- 
- static void logical_port_release(struct device *dev)
- {
-@@ -3113,7 +3113,7 @@ static struct device_node *ehea_get_eth_dn(struct ehea_adapter *adapter,
- 	return NULL;
- }
- 
--static ssize_t ehea_probe_port(struct device *dev,
-+static ssize_t probe_port_store(struct device *dev,
- 			       struct device_attribute *attr,
- 			       const char *buf, size_t count)
- {
-@@ -3168,9 +3168,9 @@ static ssize_t ehea_probe_port(struct device *dev,
- 	return (ssize_t) count;
- }
- 
--static ssize_t ehea_remove_port(struct device *dev,
--				struct device_attribute *attr,
--				const char *buf, size_t count)
-+static ssize_t remove_port_store(struct device *dev,
-+				 struct device_attribute *attr,
-+				 const char *buf, size_t count)
- {
- 	struct ehea_adapter *adapter = dev_get_drvdata(dev);
- 	struct ehea_port *port;
-@@ -3203,8 +3203,8 @@ static ssize_t ehea_remove_port(struct device *dev,
- 	return (ssize_t) count;
- }
- 
--static DEVICE_ATTR(probe_port, 0200, NULL, ehea_probe_port);
--static DEVICE_ATTR(remove_port, 0200, NULL, ehea_remove_port);
-+static DEVICE_ATTR_WO(probe_port);
-+static DEVICE_ATTR_WO(remove_port);
- 
- static int ehea_create_device_sysfs(struct platform_device *dev)
- {
--- 
-2.17.1
+Shawn
 
+
+> 
+>  .../wireless/broadcom/brcm80211/brcmfmac/of.c | 57 ++++++++++++++++++-
+>  1 file changed, 55 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> index a7554265f95f..2f7bc3a70c65 100644
+> --- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> +++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/of.c
+> @@ -12,12 +12,59 @@
+>  #include "common.h"
+>  #include "of.h"
+>  
+> +static int brcmf_of_get_country_codes(struct device *dev,
+> +				      struct brcmf_mp_device *settings)
+> +{
+> +	struct device_node *np = dev->of_node;
+> +	struct brcmfmac_pd_cc_entry *cce;
+> +	struct brcmfmac_pd_cc *cc;
+> +	int count;
+> +	int i;
+> +
+> +	count = of_property_count_strings(np, "brcm,ccode-map");
+> +	if (count < 0) {
+> +		/* The property is optional, so return success if it doesn't
+> +		 * exist. Otherwise propagate the error code.
+> +		 */
+> +		return (count == -EINVAL) ? 0 : count;
+> +	}
+> +
+> +	cc = devm_kzalloc(dev, sizeof(*cc) + count * sizeof(*cce), GFP_KERNEL);
+> +	if (!cc)
+> +		return -ENOMEM;
+> +
+> +	cc->table_size = count;
+> +
+> +	for (i = 0; i < count; i++) {
+> +		const char *map;
+> +
+> +		cce = &cc->table[i];
+> +
+> +		if (of_property_read_string_index(np, "brcm,ccode-map",
+> +						  i, &map))
+> +			continue;
+> +
+> +		/* String format e.g. US-Q2-86 */
+> +		if (sscanf(map, "%2c-%2c-%d", cce->iso3166, cce->cc,
+> +			   &cce->rev) != 3)
+> +			brcmf_err("failed to read country map %s\n", map);
+> +		else
+> +			brcmf_dbg(INFO, "%s-%s-%d\n", cce->iso3166, cce->cc,
+> +				  cce->rev);
+> +	}
+> +
+> +	settings->country_codes = cc;
+> +
+> +	return 0;
+> +}
+> +
+>  void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
+>  		    struct brcmf_mp_device *settings)
+>  {
+>  	struct brcmfmac_sdio_pd *sdio = &settings->bus.sdio;
+>  	struct device_node *root, *np = dev->of_node;
+>  	int irq;
+> +	int err;
+>  	u32 irqf;
+>  	u32 val;
+>  
+> @@ -43,8 +90,14 @@ void brcmf_of_probe(struct device *dev, enum brcmf_bus_type bus_type,
+>  		of_node_put(root);
+>  	}
+>  
+> -	if (!np || bus_type != BRCMF_BUSTYPE_SDIO ||
+> -	    !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
+> +	if (!np || !of_device_is_compatible(np, "brcm,bcm4329-fmac"))
+> +		return;
+> +
+> +	err = brcmf_of_get_country_codes(dev, settings);
+> +	if (err)
+> +		brcmf_err("failed to get OF country code map (err=%d)\n", err);
+> +
+> +	if (bus_type != BRCMF_BUSTYPE_SDIO)
+>  		return;
+>  
+>  	if (of_property_read_u32(np, "brcm,drive-strength", &val) == 0)
+> -- 
+> 2.17.1
+> 
