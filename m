@@ -2,74 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CEBD38DAA7
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 894EC38DAA1
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231690AbhEWJPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:15:15 -0400
-Received: from mx.ungleich.ch ([185.203.112.16]:33774 "EHLO smtp.ungleich.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231599AbhEWJPO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 05:15:14 -0400
-X-Greylist: delayed 573 seconds by postgrey-1.27 at vger.kernel.org; Sun, 23 May 2021 05:15:13 EDT
-Received: from nb3.localdomain (localhost [IPv6:::1])
-        by smtp.ungleich.ch (Postfix) with ESMTP id 295D120104;
-        Sun, 23 May 2021 11:04:14 +0200 (CEST)
-Received: by nb3.localdomain (Postfix, from userid 1000)
-        id 605F614C0444; Sun, 23 May 2021 11:04:40 +0200 (CEST)
-References: <20210523031428.164186-1-masahiroy@kernel.org>
- <20210523031428.164186-4-masahiroy@kernel.org>
-User-agent: mu4e 1.4.15; emacs 27.2
-From:   Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthias Maennich <maennich@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        id S231675AbhEWJNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 05:13:06 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:59995 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231599AbhEWJNF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 05:13:05 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 947355C00DE;
+        Sun, 23 May 2021 05:11:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Sun, 23 May 2021 05:11:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+         h=date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=/NSpBw0YS595+mTt3f/1xCuzoZ8
+        5jIUURDT5+uIWRI8=; b=1OZduIs9AU6EGXGEMqq7B5mu7Yne/TjCfr77XKuqHPu
+        0CDDziv9AWb2olVyqmkb+oNzp5F4HOlYELRWv4MlqecbqKwf8kEjlylrCcLETU3o
+        oHFCrNN+WcCEfz+fkDG5WPy3hk1VMAIuDBumdzXAkl3L8WlARm8axFYbs+ul4vn4
+        YUMm6K1okwtJd41Z+jA/Cjiyf6Ar680TFX1PjY4jvzG1JpQyJn6XAV7+9DCOqACj
+        4Sf+GHBbkz/LmnDiQtXc2tvcB5BGvGWUTaUMk21B+/lwvR7HARQP68kHxX658i1v
+        UGtx762tpqJ4CLoEhU37lwGj7k5GQOcbjOMUNOXkytg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=/NSpBw
+        0YS595+mTt3f/1xCuzoZ85jIUURDT5+uIWRI8=; b=Y3UTSR3HIuAXfWNniSMFnE
+        ya0aPpfZWrqLPXw/7MlKD2q9O4mCR9SjGQwQFGaAiVRlL2GsgshcEnnbrSPI7k7G
+        WeWX+FneA0wSya6qSY3sy4fpTw1itCqE0FG0mMK2GusEGcuZLl+iXXTLA5kUcuk7
+        Oa8Ik7/XqBBiFRdbhPg1/4DsPWi4eaDQb8b+2heN5LjJ5GrSyVOlg36OATZnsj8j
+        Owque13kQxMDP7yhQSlfRSqv8UtIpLAsaaAhHyB5meHuaNXk/LIMI9uscPe8wty6
+        8dI1dem3iRYdrgqSnK2ACX5P9hF6S06oR+vsAxyPpb/bnLAtW5UohMcaWGHd0aew
+        ==
+X-ME-Sender: <xms:SRyqYIQnH_R4-xlgXQctbcxuLdje10wgE--DTxny30Wk-ZGOMl78gA>
+    <xme:SRyqYFyHahyx3nDTTl69Q0I4Yv0CKOHsjpqjLQpp3jFYYSRXjEAw3M0SqnOd7ut9w
+    tSE98VC9Tk1CsYUIgc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejiedgudegudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhvffukfhfgggtuggjsehttd
+    ertddttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghk
+    rghshhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeelhfeuge
+    dvjefgjefgudekfedutedvtddutdeuieevtddtgeetjeekvdefgeefhfenucfkphepudeg
+    rdefrdeihedrudejheenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:SRyqYF2iKFcYcCQ8lpO5_xf7k0WrKtfk0ClrBGERSr-bUEzX7zgLEQ>
+    <xmx:SRyqYMAbzDb7N1dQ8ZRHQHUTCUINglpIImDtHZAyKb0nZJ6RYWSb3w>
+    <xmx:SRyqYBgVGgeTv7N0i6Fl81wuQwlUaINFrDsLJlj8BB62q25GjpqJjw>
+    <xmx:ShyqYEutuc64ic6_xcGXTk2TyhVPR7biOIkq3vdgPJtVnFegLUzGRg>
+Received: from workstation (ae065175.dynamic.ppp.asahi-net.or.jp [14.3.65.175])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Sun, 23 May 2021 05:11:36 -0400 (EDT)
+Date:   Sun, 23 May 2021 18:11:33 +0900
+From:   Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To:     YueHaibing <yuehaibing@huawei.com>
+Cc:     perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/5] scripts/setlocalversion: factor out 12-chars hash
- construction
-In-reply-to: <20210523031428.164186-4-masahiroy@kernel.org>
-Date:   Sun, 23 May 2021 11:04:40 +0200
-Message-ID: <87tumt6ct3.fsf@ungleich.ch>
+Subject: Re: [PATCH -next] ALSA: control_led - use DEVICE_ATTR_*() macro
+Message-ID: <20210523091133.GA220048@workstation>
+Mail-Followup-To: YueHaibing <yuehaibing@huawei.com>, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+References: <20210523071109.28940-1-yuehaibing@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210523071109.28940-1-yuehaibing@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, May 23, 2021 at 03:11:09PM +0800, YueHaibing wrote:
+> Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
+> which makes the code a bit shorter and easier to read.
+> 
+> Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+> ---
+>  sound/core/control_led.c | 34 +++++++++++++++++++---------------
+>  1 file changed, 19 insertions(+), 15 deletions(-)
+ 
+The usage of common macro is better way for safe than own way as long as
+achieving the same function. This looks good to me.
 
-Hey Masahiro,
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-Masahiro Yamada <masahiroy@kernel.org> writes:
-> -			if atag="$(git describe --abbrev=12 2>/dev/null)"; then
-> -				echo "$atag" | awk -F- '{printf("-%05d-%s", $(NF-1),substr($(NF),0,13))}'
-> -
-> -			# If we don't have a tag at all we print -g{commitish},
-> -			# again using exactly 12 hex chars.
-> -			else
-> -				head="$(echo $head | cut -c1-12)"
-> -				printf '%s%s' -g $head
-> +			if atag="$(git describe 2>/dev/null)"; then
-> +				echo "$atag" | awk -F- '{printf("-%05d", $(NF-1))}'
->  			fi
-> +
-> +			# Add -g and exactly 12 hex chars.
-> +			printf '%s%s' -g "$(echo $head | cut -c1-12)"
->  		fi
->
->  		# Check for uncommitted changes.
+> diff --git a/sound/core/control_led.c b/sound/core/control_led.c
+> index 25f57c14f294..a5e751f26d46 100644
+> --- a/sound/core/control_led.c
+> +++ b/sound/core/control_led.c
+> @@ -375,7 +375,7 @@ static void snd_ctl_led_disconnect(struct snd_card *card)
+>   * sysfs
+>   */
+>  
+> -static ssize_t show_mode(struct device *dev,
+> +static ssize_t mode_show(struct device *dev,
+>  			 struct device_attribute *attr, char *buf)
+>  {
+>  	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
+> @@ -390,7 +390,8 @@ static ssize_t show_mode(struct device *dev,
+>  	return sprintf(buf, "%s\n", str);
+>  }
+>  
+> -static ssize_t store_mode(struct device *dev, struct device_attribute *attr,
+> +static ssize_t mode_store(struct device *dev,
+> +			  struct device_attribute *attr,
+>  			  const char *buf, size_t count)
+>  {
+>  	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
+> @@ -419,7 +420,7 @@ static ssize_t store_mode(struct device *dev, struct device_attribute *attr,
+>  	return count;
+>  }
+>  
+> -static ssize_t show_brightness(struct device *dev,
+> +static ssize_t brightness_show(struct device *dev,
+>  			       struct device_attribute *attr, char *buf)
+>  {
+>  	struct snd_ctl_led *led = container_of(dev, struct snd_ctl_led, dev);
+> @@ -427,8 +428,8 @@ static ssize_t show_brightness(struct device *dev,
+>  	return sprintf(buf, "%u\n", ledtrig_audio_get(led->trigger_type));
+>  }
+>  
+> -static DEVICE_ATTR(mode, 0644, show_mode, store_mode);
+> -static DEVICE_ATTR(brightness, 0444, show_brightness, NULL);
+> +static DEVICE_ATTR_RW(mode);
+> +static DEVICE_ATTR_RO(brightness);
+>  
+>  static struct attribute *snd_ctl_led_dev_attrs[] = {
+>  	&dev_attr_mode.attr,
+> @@ -562,22 +563,25 @@ static ssize_t set_led_id(struct snd_ctl_led_card *led_card, const char *buf, si
+>  	return count;
+>  }
+>  
+> -static ssize_t parse_attach(struct device *dev, struct device_attribute *attr,
+> +static ssize_t attach_store(struct device *dev,
+> +			    struct device_attribute *attr,
+>  			    const char *buf, size_t count)
+>  {
+>  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
+>  	return set_led_id(led_card, buf, count, true);
+>  }
+>  
+> -static ssize_t parse_detach(struct device *dev, struct device_attribute *attr,
+> +static ssize_t detach_store(struct device *dev,
+> +			    struct device_attribute *attr,
+>  			    const char *buf, size_t count)
+>  {
+>  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
+>  	return set_led_id(led_card, buf, count, false);
+>  }
+>  
+> -static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
+> -			 const char *buf, size_t count)
+> +static ssize_t reset_store(struct device *dev,
+> +			   struct device_attribute *attr,
+> +			   const char *buf, size_t count)
+>  {
+>  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
+>  	int err;
+> @@ -590,8 +594,8 @@ static ssize_t ctl_reset(struct device *dev, struct device_attribute *attr,
+>  	return count;
+>  }
+>  
+> -static ssize_t ctl_list(struct device *dev,
+> -			struct device_attribute *attr, char *buf)
+> +static ssize_t list_show(struct device *dev,
+> +			 struct device_attribute *attr, char *buf)
+>  {
+>  	struct snd_ctl_led_card *led_card = container_of(dev, struct snd_ctl_led_card, dev);
+>  	struct snd_card *card;
+> @@ -624,10 +628,10 @@ static ssize_t ctl_list(struct device *dev,
+>  	return buf2 - buf;
+>  }
+>  
+> -static DEVICE_ATTR(attach, 0200, NULL, parse_attach);
+> -static DEVICE_ATTR(detach, 0200, NULL, parse_detach);
+> -static DEVICE_ATTR(reset, 0200, NULL, ctl_reset);
+> -static DEVICE_ATTR(list, 0444, ctl_list, NULL);
+> +static DEVICE_ATTR_WO(attach);
+> +static DEVICE_ATTR_WO(detach);
+> +static DEVICE_ATTR_WO(reset);
+> +static DEVICE_ATTR_RO(list);
+>  
+>  static struct attribute *snd_ctl_led_card_attrs[] = {
+>  	&dev_attr_attach.attr,
+> -- 
+> 2.17.1
+ 
 
-That was quite fun reviewing and wrapping my head around ~20y old code.
+Regards
 
-I had a very long mail prepared looking at all the corner cases, just to
-see they are actually handled before the actual change.
-
-Nicely simplified, for all 5 of them:
-
-Reviewed-by: Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>
-
---
-Sustainable and modern Infrastructures by ungleich.ch
+Takashi Sakamoto
