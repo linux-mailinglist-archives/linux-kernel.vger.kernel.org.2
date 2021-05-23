@@ -2,96 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C486238D7DE
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 02:05:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 858E938D7E0
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 02:06:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231477AbhEWAGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 20:06:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34210 "EHLO
+        id S231488AbhEWAIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 20:08:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231440AbhEWAGr (ORCPT
+        with ESMTP id S231447AbhEWAIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 20:06:47 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D723C061574
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 17:05:20 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id f18so5878036ejq.10
-        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 17:05:20 -0700 (PDT)
+        Sat, 22 May 2021 20:08:09 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AF9EC061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 17:06:43 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id 22so17406471pfv.11
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 17:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ivy3nqszZrnAQTpRgs8RLYL4mi7jLAex7afb3rEY1SQ=;
-        b=hl8pIV4DGQ7pBk1r9cmtUYmm1pYEbtLnN5Ac5BXtihF0NTCMncOmcVvX8IcnVnAMb8
-         cPsDij7iGH0XsJlAqf+O19iN2NX7yle88E3UHZ70FdyrvDUcVDB2mXdT0KuPcu2CfOmu
-         Y0VbWcSLqaNks7wtKQHIYVFw+exvz2pf7gCSvwlMCnpS5GU5fFi8eNLm2EJeso+Qk2Cm
-         q/L7VPpJfTAB1U5CDvtl7h15eVRm7jx4CeKN5A1KCCP7crrzbOLiP7TTeGFhFsyxrt/q
-         zBx4e7CfdfBcfWIE0ANmq1y8us3hvLeU8ljIjypvQZk54/cy9WvFBP1Td+iVUrzxLC3e
-         XuWg==
+        bh=cfYRF1b1oHr6saSKxaH7T1g69quhuErgPZcFY9YPsBg=;
+        b=rTcIVbsR4M8se90NJlGDq94mhnst/WOvRVsZjlbfzhUKglq3zLnaAB4D4AiPCXs/9v
+         RKg3sV8nttBn7Z780gznjBVCIi3rVzAmwVv/ImnbGVtmDh0kJlgR3ZDxpet0cdGAZwUg
+         YlLCYQeO02Ov0Pw1R3I9pLkB33x6NvrbCZRDbQHfkmh0rgCGPsg52DdAAF9eTkwpceoZ
+         S2AV8plMjF5KCqneeF8yLPZ6f5cZAKA9MQXgdo/Aiy5C7d1jAYoa/xtYKCva/PJwqKWe
+         kQ3N4mtaQRZlbPnGDaWxZl0CzO4hein1lpvMuPX9szWHY/o1yjdJ4meZeySvkpJqgOh7
+         JZAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ivy3nqszZrnAQTpRgs8RLYL4mi7jLAex7afb3rEY1SQ=;
-        b=QF/l4JhG6mrjpoERxzjMzjpUH1hKdYp4t9KEweg2ChnnqESvnmMZ/V+59MWJYcDWeC
-         +fcEe2+O/hL24FVwCOJK/QhNgefAE3FgkRrQ2qafn4CIL594KaxbTVsb9Lb3PlMMmGGN
-         QD9l7/gs61ad3maO/hmVdIHcx/ICESKu/9Of3ju+wbC8vhT2v2NFAk1VvKdCfDC7jnbq
-         3iFLnrjyBPS2IT+rNCESR57WYydz0uJ+KiJ02cgJJagWLy9z5B6wouVKODA6Wo6cxXuC
-         5mpfbeJUJpXbWq5owHIkAb3WL0rCrupk7Ka4cD0CVBWQbe2UiyWwNtxO0C6xZ9XUyxU4
-         FPuA==
-X-Gm-Message-State: AOAM5323NSQAatOjQHddoCRqK3H5IbrjDA4iBbhhfi0xQeSV4M7qoFxJ
-        0uWLlA/LUB7ZX1utbkTtDjQp6Yyvczlg5AGrcP0=
-X-Google-Smtp-Source: ABdhPJypXJUqkb9XMD3a0SvT52jIELP9jCPcQ4BAURc32XX0X1Pzk8mJQfNEAJ4outmI9yR8+mwfIS/QY1Wbba9mZDw=
-X-Received: by 2002:a17:906:5052:: with SMTP id e18mr16755490ejk.112.1621728318923;
- Sat, 22 May 2021 17:05:18 -0700 (PDT)
+        bh=cfYRF1b1oHr6saSKxaH7T1g69quhuErgPZcFY9YPsBg=;
+        b=J0P3nKPpWQ+RnA+MkzVAq3DitCR8+Mb2/Vq0UigdUkIRLkUtiVjPN93AucsGiFZ4Zz
+         /ULQSjZIF2guu6g8hbiBc436w/nl6+FmDHFlAgpl+UtucU8neqnxVEVc6MyUWOAJxoIt
+         zvnv5KMl1OakHQjQWDJG37AnpbbLTmopX3DExeY/CDpaj76XeY7CeYn/ygeQy+gF91jH
+         F1vuuUwLN728fn2V1b/iHA1jGbsHM7GT8KnWch1WyF4Abczek/6GUtJG9YOjEEn2hqQn
+         a0EMlM961ysiDaBgir1IOjRMwevhzzEWH/iV1LAZVDb5nQ/Fyi2+mVIpKE0gu3uR2Znz
+         ZlFQ==
+X-Gm-Message-State: AOAM5321EJRIZIzheoheYz82unArj6xSGaTprpLLASbMPKzYLiLX9w3l
+        daKPVmpcKd79v8liBw9q54lZseKaQFPP3ESMkLLylg==
+X-Google-Smtp-Source: ABdhPJzGIprSQBgbiCV18q2GPN/AbrX/k4spM7a2Q/WdAtNtFDWDBhNtnrK+cKNwFZ85JIvOm6ruXKGrKw+Eq5n/byg=
+X-Received: by 2002:aa7:868e:0:b029:2ca:ea6a:71a1 with SMTP id
+ d14-20020aa7868e0000b02902caea6a71a1mr17296934pfo.32.1621728403003; Sat, 22
+ May 2021 17:06:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <CAM7=BFoktwgy=T0GK6Mpmp2gYToCUs=CrM29MRWw8O7TPypQ8w@mail.gmail.com>
- <CAHp75Vf8kQ73w0R9ieDNjDVkxM-V83QRN9mc6BjRZA8xHpPNAA@mail.gmail.com>
- <CAHp75Vft8pnA+m0C=Ok7nRyjERAd2uJJ4q6HcN460j0Hir6Kaw@mail.gmail.com>
- <CAM7=BFoH7Q+YHvPFnHM4j72ORHQp4gTjHFjnfeLsV2-30ZLNYw@mail.gmail.com>
- <CA+7tXigG7QVYOtkuFrqciHfuxE4+c0JM9z8r0e9rooTjjz5PYA@mail.gmail.com> <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com>
-In-Reply-To: <CAHp75VdeSkQSHjwTFObj84TyOOW2dh9LW3Ci9L7=iDFTbEvRoA@mail.gmail.com>
-From:   Trent Piepho <tpiepho@gmail.com>
-Date:   Sat, 22 May 2021 17:05:08 -0700
-Message-ID: <CA+7tXijWgDGzWPOYhzX+bWn0cjOZ9y1-gWRG+0uobQ128=8vCg@mail.gmail.com>
-Subject: Re: A divide by zero bug in lib/math/rational.c (with triggering input)
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        Yiyuan guo <yguoaz@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "andy@kernel.org" <andy@kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "oskar@scara.com" <oskar@scara.com>
+References: <20210506073610.33867-1-phil@philpotter.co.uk> <yq1pmxj526p.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <yq1pmxj526p.fsf@ca-mkp.ca.oracle.com>
+From:   Phillip Potter <phil@philpotter.co.uk>
+Date:   Sun, 23 May 2021 01:06:32 +0100
+Message-ID: <CAA=Fs0ndZNqz-Tdhxxi6GFqyinAoS9v0syGrJf=uR768FcuuDA@mail.gmail.com>
+Subject: Re: [PATCH] scsi: sd: skip checks when media is present if
+ sd_read_capacity reports zero
+To:     "Martin K. Petersen" <martin.petersen@oracle.com>
+Cc:     jejb@linux.ibm.com, linux-scsi@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 2:53 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
-> >
-> > I think the error can only occur when the loop exits on the 1st
-> > iteration, when d1 is still zero.  In this case the prior convergent,
-> > n1/d1 = 1/0, does not really exist as this is the 1st iteration.  The
-> > actual series of convergents generated will never have zero terms,
-> > because we stop at zero, so there will never be zero from the prior
-> > iteration as we would have stopped there.
+On Fri, May 21, 2021 at 04:00:10PM -0400, Martin K. Petersen wrote:
 >
-> This is my conclusion as well, but you beat me to it.
-> And below is exactly my understanding of what's going on.
+> Hello Phillip!
+>
+> > In sd_revalidate_disk, if sdkp->media_present is set, then sdkp->capacity
+> > should not be zero. Therefore, jump to end of if block and skip remaining
+> > checks/calls. Fixes a KMSAN-found uninit-value bug reported by syzbot at:
+> > https://syzkaller.appspot.com/bug?id=197c8a3a2de61720a9b500ad485a7aba0065c6af
+>
+> The reported read of an uninitialized value is in scsi_mode_sense()
+> while inspecting a buffer returned from sending a MODE SENSE command to
+> the device. The buffer in question is memset() before executing the MODE
+> SENSE command. And we only look at the buffer contents if the MODE SENSE
+> operation was successful.
+>
+> As far as I can tell the only way to end up reading uninitialized data
+> is if the device successfully completes the command but fails to
+> transfer the data buffer.
+>
+> But maybe I'm missing something?
+>
+> --
+> Martin K. Petersen    Oracle Linux Engineering
 
-I came up with some more test cases, and there is another possibility,
-if the value is small. e.g.
+Dear Martin,
 
-rational_best_approximation(1,30, 1,10, ...)
-rational_best_approximation(1,19, 1,10, ...)
+Thank you for your feedback firstly, much appreciated.
 
-The former should be 0/1 and the latter 1/10.  These will divide by
-zero on the 2nd iteration.
+I may be misunderstanding this issue, but in my mind, if this issue is
+possible to
+trigger with a reproducer, then uninitialised data is being read? It
+occurred to me
+that a capacity of zero for a media which is present would make the following
+function calls/checks invalid, hence the motivation for my patch, as
+skipping all
+those checks with such a size prevents this bug.
 
-But I have a patch now that works.  It gets the closest answer in all
-cases, larger than max, less than min but closer to the min than to
-zero, and closest to zero.
+Another thing I noticed was that (unless I'm reading this wrong which
+is certainly
+possible) the buffer is never fully memset. It is allocated to be 512
+bytes in size
+(as SD_BUF_SIZE) and yet sd_do_mode_sense/scsi_mode_sense is never called
+with a len param of this size but in fact much lower. Perhaps you're
+right though and
+my patch is not required? Certainly many KMSAN bugs are probably in areas where
+logic is not affected by the uninitialised access.
 
-It ends up being zero additional arithmetic to do this.   All that is
-needed is a few additional branches in the termination condition.
+Regards,
+Phil
