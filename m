@@ -2,223 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711C138DAFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 13:02:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D6E538DB00
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 13:03:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231768AbhEWLEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 07:04:15 -0400
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:56981 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231743AbhEWLEN (ORCPT
+        id S231778AbhEWLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 07:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231697AbhEWLFH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 07:04:13 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d83 with ME
-        id 8B2m2500321Fzsu03B2mvL; Sun, 23 May 2021 13:02:46 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 23 May 2021 13:02:46 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     skashyap@marvell.com, jhasan@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, chad.dupuis@cavium.com,
-        arun.easi@cavium.com, nilesh.javali@cavium.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 3/3] scsi: qedf: Axe a few useless lines of code
-Date:   Sun, 23 May 2021 13:02:46 +0200
-Message-Id: <7b3469d65dad1a4a187533b0dab101c66e8f61d5.1621765056.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1621765056.git.christophe.jaillet@wanadoo.fr>
-References: <cover.1621765056.git.christophe.jaillet@wanadoo.fr>
+        Sun, 23 May 2021 07:05:07 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D561BC061574;
+        Sun, 23 May 2021 04:03:39 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id c17so18483611pfn.6;
+        Sun, 23 May 2021 04:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=9Lt/AIdW6HrrFuSEZPcebw6uiQe1k5wv4Yjw5eCiDSA=;
+        b=o/LXRFj1N137rMWJZVD04xNaZdyn41IClD0VDUOUfyQsz+n2l5tELF76mITpZvxrQt
+         WwMesJ1N1v5P/kYanMxK7+bIfL6O/mGDHM0ToKwxAL8PPsg9/Iw1sKvLXgkOp755v+yd
+         nr/nf3Y220oIMVy5roxxxrwLtIOxVX1W26ceshPhf9tshUGDF7bCl29gKWQeBqkbhfFa
+         are3vBf5KcB8GfN+6t5m1ko/LhjPpzf1AidfHmGgK0WduNVcnHQ68gor2O5++/fpsN2s
+         6HI5LRGTqsST6BNa2+N3F4s6Wd8I4GOm3cs4fxdDDjW6BZ3804rZb3tMeERJo2ol+y0f
+         0cag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version:content-transfer-encoding;
+        bh=9Lt/AIdW6HrrFuSEZPcebw6uiQe1k5wv4Yjw5eCiDSA=;
+        b=PZwAAANOOKokhnszWG+O7WSTEznvv4KpufD41JZdq5iVwnm4dzdQ6RxsDYe67SkfJY
+         OTwPtNrZ6Nl8wy8AUrZVcZHSwQeJbWmqO/BVrIV+AkzMHjQpiHJjhG9DfPK3FDKzSxk0
+         qv+fC6uWwiOTqg6PYmW1PcfQxcca9oW6+1GR87GiBmPG0c1OHy5li2fzb+IeN8A4s60W
+         gJ7RUwYFYkmYkWze+OZwxhdxOC0UZRbpXsh2O2V4g3jNEcj87TVW2Ne/dwYRHWL0xfQ2
+         jPMCLQ5wfq23blGexnvyNrjbFM45JJGqyxAWtBYJismex9hx0uR43eTdsWvhYclxdps8
+         NPvg==
+X-Gm-Message-State: AOAM530sivwLdkrwtQd9SW+9afkwFXXi+GSHqo7Sei0pHE21dd54GmWj
+        QHqNIzthTiD+DARqmdyETIM=
+X-Google-Smtp-Source: ABdhPJxsHyU5CpFgPLpX10jkw6h9MAsYtH8flePtQusfoht55zKY+VvtUG3rEeTURcuLbdbrXtM2+Q==
+X-Received: by 2002:a63:1210:: with SMTP id h16mr8084566pgl.189.1621767819261;
+        Sun, 23 May 2021 04:03:39 -0700 (PDT)
+Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
+        by smtp.gmail.com with ESMTPSA id w206sm8282820pfc.61.2021.05.23.04.03.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 04:03:38 -0700 (PDT)
+From:   Punit Agrawal <punitagrawal@gmail.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rockchip@lists.infradead.org,
+        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
+        heiko.stuebner@theobroma-systems.com, leobras.c@gmail.com,
+        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org
+Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
+ 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
+ memory addresses")
+References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
+        <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
+Date:   Sun, 23 May 2021 20:03:36 +0900
+In-Reply-To: <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com> (Robin Murphy's
+        message of "Wed, 19 May 2021 12:27:48 +0100")
+Message-ID: <87eedxbtkn.fsf@stealth>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Simplify a bit this file a remove a few lines of code:
-   - keep function parameters on the same line
-   - remove unneeded return at the end of a function that return void
-   - remove duplicated and useless empty lines
-   - remove unneeded {} when there is only one statement
-   - remove a few () around 'qedf->dbg_ctx' so that we can...
-   - ... merge a few messages that were split on 2 lines
+Robin Murphy <robin.murphy@arm.com> writes:
 
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-Many more clean-up could be done to improve readability in this file.
-The above few steps have the advantage to also reduce the number of LoC.
-Anyway, that's mostly a matter of taste.
----
- drivers/scsi/qedf/qedf_main.c | 44 +++++++++++------------------------
- 1 file changed, 14 insertions(+), 30 deletions(-)
+> [ +linux-pci for visibility ]
+>
+> On 2021-05-18 10:09, Alexandru Elisei wrote:
+>> After doing a git bisect I was able to trace the following error when bo=
+oting my
+>> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
+>> [..]
+>> [=C2=A0=C2=A0=C2=A0 0.305183] rockchip-pcie f8000000.pcie: host bridge /=
+pcie@f8000000 ranges:
+>> [=C2=A0=C2=A0=C2=A0 0.305248] rockchip-pcie f8000000.pcie:=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 MEM 0x00fa000000..0x00fbdfffff ->
+>> 0x00fa000000
+>> [=C2=A0=C2=A0=C2=A0 0.305285] rockchip-pcie f8000000.pcie:=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 IO 0x00fbe00000..0x00fbefffff ->
+>> 0x00fbe00000
+>> [=C2=A0=C2=A0=C2=A0 0.306201] rockchip-pcie f8000000.pcie: supply vpcie1=
+v8 not found, using dummy
+>> regulator
+>> [=C2=A0=C2=A0=C2=A0 0.306334] rockchip-pcie f8000000.pcie: supply vpcie0=
+v9 not found, using dummy
+>> regulator
+>> [=C2=A0=C2=A0=C2=A0 0.373705] rockchip-pcie f8000000.pcie: PCI host brid=
+ge to bus 0000:00
+>> [=C2=A0=C2=A0=C2=A0 0.373730] pci_bus 0000:00: root bus resource [bus 00=
+-1f]
+>> [=C2=A0=C2=A0=C2=A0 0.373751] pci_bus 0000:00: root bus resource [mem 0x=
+fa000000-0xfbdfffff 64bit]
+>> [=C2=A0=C2=A0=C2=A0 0.373777] pci_bus 0000:00: root bus resource [io=C2=
+=A0 0x0000-0xfffff] (bus
+>> address [0xfbe00000-0xfbefffff])
+>> [=C2=A0=C2=A0=C2=A0 0.373839] pci 0000:00:00.0: [1d87:0100] type 01 clas=
+s 0x060400
+>> [=C2=A0=C2=A0=C2=A0 0.373973] pci 0000:00:00.0: supports D1
+>> [=C2=A0=C2=A0=C2=A0 0.373992] pci 0000:00:00.0: PME# supported from D0 D=
+1 D3hot
+>> [=C2=A0=C2=A0=C2=A0 0.378518] pci 0000:00:00.0: bridge configuration inv=
+alid ([bus 00-00]),
+>> reconfiguring
+>> [=C2=A0=C2=A0=C2=A0 0.378765] pci 0000:01:00.0: [144d:a808] type 00 clas=
+s 0x010802
+>> [=C2=A0=C2=A0=C2=A0 0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x0000000=
+0-0x00003fff 64bit]
+>> [=C2=A0=C2=A0=C2=A0 0.379051] pci 0000:01:00.0: Max Payload Size set to =
+256 (was 128, max 256)
+>> [=C2=A0=C2=A0=C2=A0 0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCI=
+e bandwidth, limited by
+>> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 G=
+T/s PCIe
+>> x4 link)
+>> [=C2=A0=C2=A0=C2=A0 0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end=
+ is updated to 01
+>> [=C2=A0=C2=A0=C2=A0 0.393311] pci 0000:00:00.0: BAR 14: no space for [me=
+m size 0x00100000]
+>> [=C2=A0=C2=A0=C2=A0 0.393333] pci 0000:00:00.0: BAR 14: failed to assign=
+ [mem size 0x00100000]
+>> [=C2=A0=C2=A0=C2=A0 0.393356] pci 0000:01:00.0: BAR 0: no space for [mem=
+ size 0x00004000 64bit]
+>> [=C2=A0=C2=A0=C2=A0 0.393375] pci 0000:01:00.0: BAR 0: failed to assign =
+[mem size 0x00004000 64bit]
+>> [=C2=A0=C2=A0=C2=A0 0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
+>> [=C2=A0=C2=A0=C2=A0 0.393839] pcieport 0000:00:00.0: PME: Signaling with=
+ IRQ 78
+>> [=C2=A0=C2=A0=C2=A0 0.394165] pcieport 0000:00:00.0: AER: enabled with I=
+RQ 78
+>> [..]
+>> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
+>> resource flags for
+>> 64-bit memory addresses").
+>
+> FWFW, my hunch is that the host bridge advertising no 32-bit memory
+> resource, only only a single 64-bit non-prefetchable one (even though=20
+> it's entirely below 4GB) might be a bit weird and tripping something
+> up in the resource assignment code. It certainly seems like the thing
+> most directly related to the offending commit.
+>
+> I'd be tempted to try fiddling with that in the DT (i.e. changing
+> 0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see
+> if it makes any difference. Note that even if it helps, though, I
+> don't know whether that's the correct fix or just a bodge around a
+> corner-case bug somewhere in the resource code.
 
-diff --git a/drivers/scsi/qedf/qedf_main.c b/drivers/scsi/qedf/qedf_main.c
-index 3b80d4298f15..0fb5b89fa4a2 100644
---- a/drivers/scsi/qedf/qedf_main.c
-+++ b/drivers/scsi/qedf/qedf_main.c
-@@ -304,9 +304,7 @@ static void qedf_flogi_resp(struct fc_seq *seq, struct fc_frame *fp,
- 
- static struct fc_seq *qedf_elsct_send(struct fc_lport *lport, u32 did,
- 	struct fc_frame *fp, unsigned int op,
--	void (*resp)(struct fc_seq *,
--	struct fc_frame *,
--	void *),
-+	void (*resp)(struct fc_seq *, struct fc_frame *, void *),
- 	void *arg, u32 timeout)
- {
- 	struct qedf_ctx *qedf = lport_priv(lport);
-@@ -630,7 +628,6 @@ static void qedf_link_update(void *dev, struct qed_link_output *link)
- 	}
- }
- 
--
- static void qedf_dcbx_handler(void *dev, struct qed_dcbx_get *get, u32 mib_type)
- {
- 	struct qedf_ctx *qedf = (struct qedf_ctx *)dev;
-@@ -739,7 +736,6 @@ static int qedf_eh_abort(struct scsi_cmnd *sc_cmd)
- 		goto out;
- 	}
- 
--
- 	io_req = (struct qedf_ioreq *)sc_cmd->SCp.ptr;
- 	if (!io_req) {
- 		QEDF_ERR(&qedf->dbg_ctx,
-@@ -972,9 +968,8 @@ static int qedf_eh_host_reset(struct scsi_cmnd *sc_cmd)
- 
- static int qedf_slave_configure(struct scsi_device *sdev)
- {
--	if (qedf_queue_depth) {
-+	if (qedf_queue_depth)
- 		scsi_change_queue_depth(sdev, qedf_queue_depth);
--	}
- 
- 	return 0;
- }
-@@ -1181,7 +1176,6 @@ static int qedf_xmit(struct fc_lport *lport, struct fc_frame *fp)
- 		cp = NULL;
- 	}
- 
--
- 	/* adjust skb network/transport offsets to match mac/fcoe/port */
- 	skb_push(skb, elen + hlen);
- 	skb_reset_mac_header(skb);
-@@ -1899,7 +1893,6 @@ static int qedf_vport_create(struct fc_vport *vport, bool disabled)
- 	fc_disc_init(vn_port);
- 	fc_disc_config(vn_port, vn_port);
- 
--
- 	/* Allocate the exchange manager */
- 	shost = vport_to_shost(vport);
- 	n_port = shost_priv(shost);
-@@ -2000,8 +1993,7 @@ static void qedf_wait_for_vport_destroy(struct qedf_ctx *qedf)
- {
- 	struct fc_host_attrs *fc_host = shost_to_fc_host(qedf->lport->host);
- 
--	QEDF_INFO(&(qedf->dbg_ctx), QEDF_LOG_NPIV,
--	    "Entered.\n");
-+	QEDF_INFO(&(qedf->dbg_ctx), QEDF_LOG_NPIV, "Entered.\n");
- 	while (fc_host->npiv_vports_inuse > 0) {
- 		QEDF_INFO(&(qedf->dbg_ctx), QEDF_LOG_NPIV,
- 		    "Waiting for all vports to be reaped.\n");
-@@ -2289,7 +2281,6 @@ static bool qedf_process_completions(struct qedf_fastpath *fp)
- 	return true;
- }
- 
--
- /* MSI-X fastpath handler code */
- static irqreturn_t qedf_msix_handler(int irq, void *dev_id)
- {
-@@ -2623,7 +2614,6 @@ static void qedf_ll2_process_skb(struct work_struct *work)
- 	kfree_skb(skb);
- out:
- 	kfree(skb_work);
--	return;
- }
- 
- static int qedf_ll2_rx(void *cookie, struct sk_buff *skb,
-@@ -2746,8 +2736,7 @@ static int qedf_prepare_sb(struct qedf_ctx *qedf)
- 		GFP_KERNEL);
- 
- 	if (!qedf->fp_array) {
--		QEDF_ERR(&(qedf->dbg_ctx), "fastpath array allocation "
--			  "failed.\n");
-+		QEDF_ERR(&qedf->dbg_ctx, "fastpath array allocation failed.\n");
- 		return -ENOMEM;
- 	}
- 
-@@ -2768,9 +2757,8 @@ static int qedf_prepare_sb(struct qedf_ctx *qedf)
- 		}
- 		fp->sb_id = id;
- 		fp->qedf = qedf;
--		fp->cq_num_entries =
--		    qedf->global_queues[id]->cq_mem_size /
--		    sizeof(struct fcoe_cqe);
-+		fp->cq_num_entries = qedf->global_queues[id]->cq_mem_size /
-+				     sizeof(struct fcoe_cqe);
- 	}
- err:
- 	return 0;
-@@ -2815,7 +2803,6 @@ void qedf_process_cqe(struct qedf_ctx *qedf, struct fcoe_cqe *cqe)
- 		return;
- 	}
- 
--
- 	switch (comp_type) {
- 	case FCOE_GOOD_COMPLETION_CQE_TYPE:
- 		atomic_inc(&fcport->free_sqes);
-@@ -3154,8 +3141,7 @@ static int qedf_set_fcoe_pf_param(struct qedf_ctx *qedf)
- 
- 	rval = qedf_alloc_global_queues(qedf);
- 	if (rval) {
--		QEDF_ERR(&(qedf->dbg_ctx), "Global queue allocation "
--			  "failed.\n");
-+		QEDF_ERR(&qedf->dbg_ctx, "Global queue allocation failed.\n");
- 		return 1;
- 	}
- 
-@@ -3326,8 +3312,7 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
- 	QEDF_INFO(&(qedf->dbg_ctx), QEDF_LOG_INFO, "qedf->io_mempool=%p.\n",
- 	    qedf->io_mempool);
- 
--	sprintf(host_buf, "qedf_%u_link",
--	    qedf->lport->host->host_no);
-+	sprintf(host_buf, "qedf_%u_link", qedf->lport->host->host_no);
- 	qedf->link_update_wq = create_workqueue(host_buf);
- 	INIT_DELAYED_WORK(&qedf->link_update, qedf_handle_link_update);
- 	INIT_DELAYED_WORK(&qedf->link_recovery, qedf_link_recovery);
-@@ -3581,8 +3566,7 @@ static int __qedf_probe(struct pci_dev *pdev, int mode)
- 	qedf->timer_work_queue =
- 		create_workqueue(host_buf);
- 	if (!qedf->timer_work_queue) {
--		QEDF_ERR(&(qedf->dbg_ctx), "Failed to start timer "
--			  "workqueue.\n");
-+		QEDF_ERR(&qedf->dbg_ctx, "Failed to start timer workqueue.\n");
- 		rc = -ENOMEM;
- 		goto err7;
- 	}
-@@ -3826,13 +3810,13 @@ void qedf_schedule_hw_err_handler(void *dev, enum qed_hw_err_type err_type)
- {
- 	struct qedf_ctx *qedf = dev;
- 
--	QEDF_ERR(&(qedf->dbg_ctx),
--			"Hardware error handler scheduled, event=%d.\n",
--			err_type);
-+	QEDF_ERR(&qedf->dbg_ctx,
-+		 "Hardware error handler scheduled, event=%d.\n",
-+		 err_type);
- 
- 	if (test_bit(QEDF_IN_RECOVERY, &qedf->flags)) {
--		QEDF_ERR(&(qedf->dbg_ctx),
--				"Already in recovery, not scheduling board disable work.\n");
-+		QEDF_ERR(&qedf->dbg_ctx,
-+			 "Already in recovery, not scheduling board disable work.\n");
- 		return;
- 	}
- 
--- 
-2.30.2
+From digging into this further the failure seems to be due to a mismatch
+of flags when allocating resources in pci_bus_alloc_from_region() -
+
+    if ((res->flags ^ r->flags) & type_mask)
+            continue;
+
+Though I am also not sure why the failure is only being reported on
+RK3399 - does a single 64-bit window have anything to do with it?
+
+Also, I don't understand the motivation for the original commit. It is
+not clear what problem it is solving and the discussion thread seems to
+suggest that things work fine without it[0].
+
+[0] https://lore.kernel.org/linux-devicetree/CAL_JsqJXKVUFh9KrJjobn-jE-PFKN=
+0w-V_i3qkfBrpTah4g8Xw@mail.gmail.com/
+
+[...]
 
