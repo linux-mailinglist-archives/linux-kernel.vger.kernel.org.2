@@ -2,173 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6014238DC32
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:31:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7898438DC37
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231942AbhEWRch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 13:32:37 -0400
-Received: from first.geanix.com ([116.203.34.67]:42102 "EHLO first.geanix.com"
+        id S231901AbhEWRko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:40:44 -0400
+Received: from mx3.wp.pl ([212.77.101.10]:12179 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231852AbhEWRcg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 13:32:36 -0400
-Received: from [192.168.16.66] (unknown [185.233.254.173])
-        by first.geanix.com (Postfix) with ESMTPSA id B500A464730;
-        Sun, 23 May 2021 17:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=geanix.com; s=first;
-        t=1621791065; bh=ZCkIWffbhhMdbIhqJK+g931zNirJIa1Z9QiPSFtiFPY=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To;
-        b=Ik/KaQWHpQnhItRn4vNI0ok45iotk6FxWeO1G1pcVniF5hbv652P/PVTQbCaMBj55
-         YpbIOv5Obf0TvLmDKVojmxonrCv/JaKW6kgvkrmO5roN+U1kPtNdnqAtbz8cYPYm9J
-         bA8HSQ08NKDh0py7fzw78+DBH805rwo4WnA1VMxUZPOhkHkkrAUYaUOmTitsKrmCP+
-         uhziJogjwspUuQjuKd8qYPfpunNkNZNUxM6BZecpWaTueXbOkbcUQF9Vdj5p6KDW1Z
-         nShKvobeMRZFJon6UuC4F6ZP4m/lC+97tj17y1vEEG1dpLuLhKaXbvO1M55gtLgylY
-         cHZxt9O5ayMfg==
-Subject: Re: [RESEND]: Kernel 4.14: UBIFS+SQUASHFS: Device fails to boot after
- flashing rootfs volume
-To:     Pintu Agarwal <pintu.ping@gmail.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org
-References: <CAOuPNLjgpkBh9dnfNTdDcfk5HiL=HjjiB9o_=fjrm+0vP7Re2Q@mail.gmail.com>
- <CAOuPNLh_0Q9w96GKT-ogC0BBcEHgo=Hv3+c=JBcas2VgqDiyaw@mail.gmail.com>
- <CAOuPNLjmJ0YufFktJzjkyvdxwFTOpxVj5AW5gANAGSG=_yT=mQ@mail.gmail.com>
- <1762403920.6716767.1621029029246@webmail.123-reg.co.uk>
- <CAOuPNLhn90z9i6jt0-Vv4e9hjsxwYUT2Su-7SQrxy+N=HDe_xA@mail.gmail.com>
- <486335206.6969995.1621485014357@webmail.123-reg.co.uk>
- <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
-From:   Sean Nyekjaer <sean@geanix.com>
-Message-ID: <1339b24a-b5a5-5c73-7de0-9541455b66af@geanix.com>
-Date:   Sun, 23 May 2021 19:31:04 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231852AbhEWRkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 13:40:43 -0400
+Received: (wp-smtpd smtp.wp.pl 31298 invoked from network); 23 May 2021 19:39:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1621791554; bh=7wmUz3k8RukIl4+/pAGl0IQkKLcUdLrZ31fCJy0Ab3w=;
+          h=From:To:Cc:Subject;
+          b=BPrcf6H8wpI5F6ObS8czOeRLqHZfDuBBaTiK2131YFWiyOMTup2vCS80lohcglsKl
+           Ud6ci/bhTFhvUvAC6nRVLLi4glMwxVgeBW5NuDf5cQlyHlF/vZQ5y7ENflTTtR7duu
+           rmu5QSmzC1jUrEJXZWk9xWgUss6hYlo07bNI1VsU=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <linus.walleij@linaro.org>; 23 May 2021 19:39:14 +0200
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        robh+dt@kernel.org, john@phrozen.org, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Aleksander Jan Bajkowski <olek2@wp.pl>
+Subject: [PATCH v3] dt-bindings: gpio: stp: convert to json-schema
+Date:   Sun, 23 May 2021 19:39:10 +0200
+Message-Id: <20210523173910.661598-1-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-In-Reply-To: <CAOuPNLjBsm9YLtcb4SnqLYYaHPnscYq4captvCmsR7DthiWGsQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.1 required=4.0 tests=ALL_TRUSTED,BAYES_00,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        URIBL_BLOCKED autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on 93bd6fdb21b5
+Content-Transfer-Encoding: 8bit
+X-WP-DKIM-Status: good (id: wp.pl)                                      
+X-WP-MailID: e5217d7682c23998965cbfa6554822b8
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [wXMU]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/05/2021 18.44, Pintu Agarwal wrote:
-> On Thu, 20 May 2021 at 10:00, Phillip Lougher <phillip@squashfs.org.uk> wrote:
->>
-> 
->> Then run it on your Squashfs image
->>
->> % unsquashfs <your image>
->>
->> If the image is uncorrupted, it will unpack the image into
->> "squashfs-root".  If it is corrupted it will give error
->> messages.
->>
-> I have tried this and it seems with unsquashfs I am able to
-> successfully extract it to "squashfs-root" folder.
-> 
->> I have not used the MTD subsystem for more than 13 years, and so
->> this is best answered on linux-mtd.
-> 
-> Yes, I have already included the linux-mtd list here.
-> Maybe MTD folks can share their opinion as well....
-> That is the reason I have changed the subject as well.
-> 
->> You appear to be running busybox, and this has both support for
->> "dd" and the "md5sum" checksum program.
->>
->> So do this
->>
->> % dd if=<your character device> of=img bs=1 count=<image size>
->>
->> Where <image size> is the size of the Squashfs image reported
->> by "ls -l" or "stat".  You need to get the exact byte count
->> right, otherwise the resultant checksum won't be right.
->>
->> Then run md5sum on the extracted "img" file.
->>
->> % md5sum img
->>
->> This will produce a checksum.
->>
->> You can then compare that with the result of "md5sum" on your
->> original Squashfs image before flashing (produced on the host
->> or the target).
->>
->> If the checksums differ then it is corrupted.
->>
-> I have also tried that and it seems the checksum exactly matches.
-> $ md5sum system.squash
-> d301016207cc5782d1634259a5c597f9  ./system.squash
-> 
-> On the device:
-> /data/pintu # dd if=/dev/ubi0_0 of=squash_rootfs.img bs=1K count=48476
-> 48476+0 records in
-> 48476+0 records out
-> 49639424 bytes (47.3MB) copied, 26.406276 seconds, 1.8MB/s
-> [12001.375255] dd (2392) used greatest stack depth: 4208 bytes left
-> 
-> /data/pintu # md5sum squash_rootfs.img
-> d301016207cc5782d1634259a5c597f9  squash_rootfs.img
-> 
-> So, it seems there is no problem with either the original image
-> (unsquashfs) as well as the checksum.
-> 
-> Then what else could be the suspect/issue ?
-> If you have any further inputs please share your thoughts.
-> 
-> This is the kernel command line we are using:
-> [    0.000000] Kernel command line: ro rootwait
-> console=ttyMSM0,115200,n8 androidboot.hardware=qcom
-> msm_rtb.filter=0x237 androidboot.console=ttyMSM0
-> lpm_levels.sleep_disabled=1 firmware_class.path=/lib/firmware/updates
-> service_locator.enable=1 net.ifnames=0 rootfstype=squashfs
-> root=/dev/ubiblock0_0 ubi.mtd=30 ubi.block=0,0
-> 
-> These are few more points to be noted:
-> a) With squashfs we are getting below error:
-> [    4.603156] squashfs: SQUASHFS error: unable to read xattr id index table
-> [...]
-> [    4.980519] Kernel panic - not syncing: VFS: Unable to mount root
-> fs on unknown-block(254,0)
-> 
-> b) With ubifs (without squashfs) we are getting below error:
-> [    4.712458] UBIFS (ubi0:0): UBIFS: mounted UBI device 0, volume 0,
-> name "rootfs", R/O mode
-> [...]
-> UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node type (255 but expected 9)
-> UBIFS error (ubi0:0 pid 1): ubifs_read_node: bad node at LEB
-> 336:250560, LEB mapping status 1
-> Not a node, first 24 bytes:
-> 00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> ff ff ff ff
-> 
-> c) While flashing "usrfs" volume (ubi0_1) there is no issue and device
-> boots successfully.
-> 
-> d) This issue is happening only after flashing rootfs volume (ubi0_0)
-> and rebooting the device.
-> 
-> e) We are using "uefi" and fastboot mechanism to flash the volumes.
-Are you writing the squashfs into the ubi block device with uefi/fastboot?
-> 
-> f) Next I wanted to check the read-only UBI volume flashing mechanism
-> within the Kernel itself.
-> Is there a way to try a read-only "rootfs" (squashfs type) ubi volume
-> flashing mechanism from the Linux command prompt ?
-> Or, what are the other ways to verify UBI volume flashing in Linux ?
-> 
-> g) I wanted to root-cause, if there is any problem in our UBI flashing
-> logic, or there's something missing on the Linux/Kernel side (squashfs
-> or ubifs) or the way we configure the system.
-> 
-> Thanks,
-> Pintu
-> 
+Convert the Lantiq STP Device Tree binding documentation to json-schema.
+Add the missing pinctrl property to the example. Add missing lantiq,phy3
+and lantiq,phy4 bindings for xRX300 and xRX330 SoCs.
 
-Have you had it to work? Or is this a new project?
-If you had it to work, i would start bisecting...
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+Changes since v2:
+ - Changed phy numbering in description of pattern Properties. Numbering
+   should start with 1. 
+Changes since v1:
+ - Renamed node to gpio.
+ - Dropped default pinctrl from this binding.
+ - Converted lantiq,phyX to patternProperties.
+---
+ .../bindings/gpio/gpio-stp-xway.txt           |  42 --------
+ .../bindings/gpio/gpio-stp-xway.yaml          | 101 ++++++++++++++++++
+ 2 files changed, 101 insertions(+), 42 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
 
-/Sean
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
+deleted file mode 100644
+index 78458adbf4b7..000000000000
+--- a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.txt
++++ /dev/null
+@@ -1,42 +0,0 @@
+-Lantiq SoC Serial To Parallel (STP) GPIO controller
+-
+-The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
+-peripheral controller used to drive external shift register cascades. At most
+-3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
+-to drive the 2 LSBs of the cascade automatically.
+-
+-
+-Required properties:
+-- compatible : Should be "lantiq,gpio-stp-xway"
+-- reg : Address and length of the register set for the device
+-- #gpio-cells : Should be two.  The first cell is the pin number and
+-  the second cell is used to specify optional parameters (currently
+-  unused).
+-- gpio-controller : Marks the device node as a gpio controller.
+-
+-Optional properties:
+-- lantiq,shadow : The default value that we shall assume as already set on the
+-  shift register cascade.
+-- lantiq,groups : Set the 3 bit mask to select which of the 3 groups are enabled
+-  in the shift register cascade.
+-- lantiq,dsl : The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
+-  property can enable this feature.
+-- lantiq,phy1 : The gphy1 core can control 3 bits of the gpio cascade.
+-- lantiq,phy2 : The gphy2 core can control 3 bits of the gpio cascade.
+-- lantiq,rising : use rising instead of falling edge for the shift register
+-
+-Example:
+-
+-gpio1: stp@e100bb0 {
+-	compatible = "lantiq,gpio-stp-xway";
+-	reg = <0xE100BB0 0x40>;
+-	#gpio-cells = <2>;
+-	gpio-controller;
+-
+-	lantiq,shadow = <0xffff>;
+-	lantiq,groups = <0x7>;
+-	lantiq,dsl = <0x3>;
+-	lantiq,phy1 = <0x7>;
+-	lantiq,phy2 = <0x7>;
+-	/* lantiq,rising; */
+-};
+diff --git a/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+new file mode 100644
+index 000000000000..7d817d84c434
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/gpio-stp-xway.yaml
+@@ -0,0 +1,101 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/gpio-stp-xway.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lantiq SoC Serial To Parallel (STP) GPIO controller
++
++description: |
++  The Serial To Parallel (STP) is found on MIPS based Lantiq socs. It is a
++  peripheral controller used to drive external shift register cascades. At most
++  3 groups of 8 bits can be driven. The hardware is able to allow the DSL modem
++  and Ethernet PHYs to drive some bytes of the cascade automatically.
++
++maintainers:
++  - John Crispin <john@phrozen.org>
++
++properties:
++  $nodename:
++    pattern: "^gpio@[0-9a-f]+$"
++
++  compatible:
++    const: lantiq,gpio-stp-xway
++
++  reg:
++    description:
++      Address and length of the register set for the device.
++    maxItems: 1
++
++  gpio-controller: true
++
++  "#gpio-cells":
++    description:
++      The first cell is the pin number and the second cell is used to specify
++      consumer flags.
++    const: 2
++
++  lantiq,shadow:
++    description:
++      The default value that we shall assume as already set on the
++      shift register cascade.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x000000
++    maximum: 0xffffff
++
++  lantiq,groups:
++    description:
++      Set the 3 bit mask to select which of the 3 groups are enabled
++      in the shift register cascade.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,dsl:
++    description:
++      The dsl core can control the 2 LSBs of the gpio cascade. This 2 bit
++      property can enable this feature.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x3
++
++patternProperties:
++  "lantiq,phy[1-4]":
++    description:
++      The gphy core can control 3 bits of the gpio cascade. In the xRX200 family
++      phy[1-2] are available, in xRX330 phy[1-3] and in XRX330 phy[1-4].
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0x0
++    maximum: 0x7
++
++  lantiq,rising:
++    description:
++      Use rising instead of falling edge for the shift register.
++    type: boolean
++
++required:
++  - compatible
++  - reg
++  - gpio-controller
++  - "#gpio-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    gpio@e100bb0 {
++        compatible = "lantiq,gpio-stp-xway";
++        reg = <0xE100BB0 0x40>;
++        #gpio-cells = <2>;
++        gpio-controller;
++
++        pinctrl-0 = <&stp_pins>;
++        pinctrl-names = "default";
++
++        lantiq,shadow = <0xffffff>;
++        lantiq,groups = <0x7>;
++        lantiq,dsl = <0x3>;
++        lantiq,phy1 = <0x7>;
++        lantiq,phy2 = <0x7>;
++    };
++...
+-- 
+2.30.2
+
