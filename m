@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70AE438DCAA
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CC3E38DCA5
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232079AbhEWTkL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 15:40:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:31996 "EHLO mga11.intel.com"
+        id S232042AbhEWTkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 15:40:01 -0400
+Received: from mga18.intel.com ([134.134.136.126]:63960 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231980AbhEWTj4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 15:39:56 -0400
-IronPort-SDR: zOztyVlKyx7svHEIZ3PobD0rW5yveqR7QEfcs56rUW6PHOMCZqVagHORLF4PpWulTbZ1qAFmXf
- qnyvA5soBJRw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="198740680"
+        id S231932AbhEWTjz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 15:39:55 -0400
+IronPort-SDR: WiCYnF+PpRG2w0iSVYFpkpXjGDPve3302gEzhuqIlzcAajquyb+C8KNctogyk1okHnMkvnKEj0
+ RlNQmpwyZdyQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="189190139"
 X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="198740680"
+   d="scan'208";a="189190139"
 Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 12:38:28 -0700
-IronPort-SDR: uvbQPQU8gmgcXsAZoQs3W1WgoPyaLVnhYyw1o6WqkR2WPCH+lSOQTdN3s6+Wgq0smmKAyVNJLm
- VSItonVwn7QQ==
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 12:38:28 -0700
+IronPort-SDR: CRfdJP4uAotZ6enrdFjfz4FfRJTbjiZgKApS29CVYuQ5bZ6BvUBbg/g3FgotVJjpuJzrnuMpcl
+ 48YQQfo9p8KA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="407467086"
+   d="scan'208";a="407467089"
 Received: from chang-linux-3.sc.intel.com ([172.25.66.175])
   by fmsmga007.fm.intel.com with ESMTP; 23 May 2021 12:38:28 -0700
 From:   "Chang S. Bae" <chang.seok.bae@intel.com>
@@ -31,9 +31,9 @@ To:     bp@suse.de, luto@kernel.org, tglx@linutronix.de, mingo@kernel.org,
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org,
         chang.seok.bae@intel.com
-Subject: [PATCH v5 09/28] x86/fpu/xstate: Introduce helpers to manage the xstate buffer dynamically
-Date:   Sun, 23 May 2021 12:32:40 -0700
-Message-Id: <20210523193259.26200-10-chang.seok.bae@intel.com>
+Subject: [PATCH v5 10/28] x86/fpu/xstate: Define the scope of the initial xstate data
+Date:   Sun, 23 May 2021 12:32:41 -0700
+Message-Id: <20210523193259.26200-11-chang.seok.bae@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210523193259.26200-1-chang.seok.bae@intel.com>
 References: <20210523193259.26200-1-chang.seok.bae@intel.com>
@@ -41,20 +41,16 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The static xstate per-task buffer contains the extended register states --
-but it is not expandable at runtime. Introduce runtime methods and a new
-fpu struct field to support the expansion.
+init_fpstate is used to record the initial xstate value and covers all the
+states. But it is wasteful to cover large states all with trivial initial
+data.
 
-fpu->state_mask indicates which state components are reserved to be
-saved in the xstate buffer.
+Limit init_fpstate by clarifying its size and coverage, which are all but
+dynamic user states. The dynamic states are assumed to be large but having
+initial data with zeros.
 
-alloc_xstate_buffer() uses vmalloc(). If use of this mechanism grows to
-allocate buffers larger than 64KB, a more sophisticated allocation scheme
-that includes purpose-built reclaim capability might be justified.
-
-Introduce a new helper -- get_xstate_size() to calculate the buffer size.
-
-Also, use the new field and helper to initialize the buffer.
+Expand copy_xregs_to_kernel_booting() to receive a mask argument of which
+states to save.
 
 Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 Reviewed-by: Len Brown <len.brown@intel.com>
@@ -62,303 +58,104 @@ Cc: x86@kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
 Changes from v3:
-* Updated code comments. (Borislav Petkov)
-* Used vzalloc() instead of vmalloc() with memset(). (Borislav Petkov)
-* Removed the max size check for >64KB. (Borislav Petkov)
-* Removed the allocation size check in the helper. (Borislav Petkov)
-* Switched the function description in the kernel-doc style.
-* Used them for buffer initialization -- moved from the next patch.
+* Removed the helper functions. (Borislav Petkov)
+* Removed 'no functional change' in the changelog. (Borislav Petkov)
+* Updated the code comment.
+* Moved out the other initialization changes into the previous patch.
 
 Changes from v2:
-* Updated the changelog with task->fpu removed. (Borislav Petkov)
-* Replaced 'area' with 'buffer' in the comments and the changelog.
+* Updated the changelog for clarification.
 * Updated the code comments.
-
-Changes from v1:
-* Removed unneeded interrupt masking (Andy Lutomirski)
-* Added vmalloc() error tracing (Dave Hansen, PeterZ, and Andy Lutomirski)
 ---
- arch/x86/include/asm/fpu/types.h  |   7 ++
- arch/x86/include/asm/fpu/xstate.h |   4 +
- arch/x86/include/asm/trace/fpu.h  |   5 ++
- arch/x86/kernel/fpu/core.c        |  14 ++--
- arch/x86/kernel/fpu/xstate.c      | 125 ++++++++++++++++++++++++++++++
- 5 files changed, 148 insertions(+), 7 deletions(-)
+ arch/x86/include/asm/fpu/internal.h |  3 +--
+ arch/x86/kernel/fpu/core.c          | 13 ++++++++++---
+ arch/x86/kernel/fpu/xstate.c        | 11 +++++++++--
+ 3 files changed, 20 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/include/asm/fpu/types.h b/arch/x86/include/asm/fpu/types.h
-index dcd28a545377..6fc707c14350 100644
---- a/arch/x86/include/asm/fpu/types.h
-+++ b/arch/x86/include/asm/fpu/types.h
-@@ -336,6 +336,13 @@ struct fpu {
- 	 */
- 	unsigned long			avx512_timestamp;
- 
-+	/*
-+	 * @state_mask:
-+	 *
-+	 * The bitmap represents state components reserved to be saved in ->state.
-+	 */
-+	u64				state_mask;
-+
- 	/*
- 	 * @state:
- 	 *
-diff --git a/arch/x86/include/asm/fpu/xstate.h b/arch/x86/include/asm/fpu/xstate.h
-index 1fba2ca15874..cbb4795d2b45 100644
---- a/arch/x86/include/asm/fpu/xstate.h
-+++ b/arch/x86/include/asm/fpu/xstate.h
-@@ -112,6 +112,10 @@ extern unsigned int get_xstate_config(enum xstate_config cfg);
- void set_xstate_config(enum xstate_config cfg, unsigned int value);
- 
- void *get_xsave_addr(struct fpu *fpu, int xfeature_nr);
-+unsigned int get_xstate_size(u64 mask);
-+int alloc_xstate_buffer(struct fpu *fpu, u64 mask);
-+void free_xstate_buffer(struct fpu *fpu);
-+
- const void *get_xsave_field_ptr(int xfeature_nr);
- int using_compacted_format(void);
- int xfeature_size(int xfeature_nr);
-diff --git a/arch/x86/include/asm/trace/fpu.h b/arch/x86/include/asm/trace/fpu.h
-index ef82f4824ce7..b691c2db47c7 100644
---- a/arch/x86/include/asm/trace/fpu.h
-+++ b/arch/x86/include/asm/trace/fpu.h
-@@ -89,6 +89,11 @@ DEFINE_EVENT(x86_fpu, x86_fpu_xstate_check_failed,
- 	TP_ARGS(fpu)
- );
- 
-+DEFINE_EVENT(x86_fpu, x86_fpu_xstate_alloc_failed,
-+	TP_PROTO(struct fpu *fpu),
-+	TP_ARGS(fpu)
-+);
-+
- #undef TRACE_INCLUDE_PATH
- #define TRACE_INCLUDE_PATH asm/trace/
- #undef TRACE_INCLUDE_FILE
+diff --git a/arch/x86/include/asm/fpu/internal.h b/arch/x86/include/asm/fpu/internal.h
+index 46cb51ef4d17..e4afc1831e29 100644
+--- a/arch/x86/include/asm/fpu/internal.h
++++ b/arch/x86/include/asm/fpu/internal.h
+@@ -272,9 +272,8 @@ static inline void copy_fxregs_to_kernel(struct fpu *fpu)
+  * This function is called only during boot time when x86 caps are not set
+  * up and alternative can not be used yet.
+  */
+-static inline void copy_xregs_to_kernel_booting(struct xregs_state *xstate)
++static inline void copy_xregs_to_kernel_booting(struct xregs_state *xstate, u64 mask)
+ {
+-	u64 mask = xfeatures_mask_all;
+ 	u32 lmask = mask;
+ 	u32 hmask = mask >> 32;
+ 	int err;
 diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-index 44d41251b474..918930553290 100644
+index 918930553290..2584a2922fea 100644
 --- a/arch/x86/kernel/fpu/core.c
 +++ b/arch/x86/kernel/fpu/core.c
-@@ -210,9 +210,8 @@ void fpstate_init(struct fpu *fpu)
+@@ -21,7 +21,10 @@
  
- 	if (likely(fpu)) {
- 		state = fpu->state;
--		/* The dynamic user states are not prepared yet. */
--		mask = xfeatures_mask_all & ~xfeatures_mask_user_dynamic;
--		size = get_xstate_config(XSTATE_MIN_SIZE);
-+		mask = fpu->state_mask;
-+		size = get_xstate_size(fpu->state_mask);
+ /*
+  * Represents the initial FPU state. It's mostly (but not completely) zeroes,
+- * depending on the FPU hardware format:
++ * depending on the FPU hardware format.
++ *
++ * The dynamic user states are excluded as they are large but having initial
++ * values with zeros.
+  */
+ union fpregs_state init_fpstate __read_mostly;
+ 
+@@ -213,9 +216,13 @@ void fpstate_init(struct fpu *fpu)
+ 		mask = fpu->state_mask;
+ 		size = get_xstate_size(fpu->state_mask);
  	} else {
++		/*
++		 * init_fpstate excludes the dynamic user states as they are
++		 * large but having initial values with zeros.
++		 */
  		state = &init_fpstate;
- 		mask = xfeatures_mask_all;
-@@ -248,14 +247,15 @@ int fpu__copy(struct task_struct *dst, struct task_struct *src)
+-		mask = xfeatures_mask_all;
+-		size = get_xstate_config(XSTATE_MAX_SIZE);
++		mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
++		size = get_xstate_config(XSTATE_MIN_SIZE);
+ 	}
  
- 	WARN_ON_FPU(src_fpu != &current->thread.fpu);
- 
-+	/*
-+	 * The child does not inherit the dynamic states. Thus, use the buffer
-+	 * embedded in struct task_struct, which has the minimum size.
-+	 */
-+	dst_fpu->state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
- 	dst_fpu->state = &dst_fpu->__default_state;
--
- 	/*
- 	 * Don't let 'init optimized' areas of the XSAVE area
- 	 * leak into the child task:
--	 *
--	 * The child does not inherit the dynamic states. So,
--	 * the xstate buffer has the minimum size.
- 	 */
- 	memset(&dst_fpu->state->xsave, 0, get_xstate_config(XSTATE_MIN_SIZE));
- 
+ 	if (!static_cpu_has(X86_FEATURE_FPU)) {
 diff --git a/arch/x86/kernel/fpu/xstate.c b/arch/x86/kernel/fpu/xstate.c
-index c3c7c57616eb..0e3f93b03b3f 100644
+index 0e3f93b03b3f..773f594bd730 100644
 --- a/arch/x86/kernel/fpu/xstate.c
 +++ b/arch/x86/kernel/fpu/xstate.c
-@@ -10,6 +10,7 @@
- #include <linux/pkeys.h>
- #include <linux/seq_file.h>
- #include <linux/proc_fs.h>
-+#include <linux/vmalloc.h>
- 
- #include <asm/fpu/api.h>
- #include <asm/fpu/internal.h>
-@@ -19,6 +20,7 @@
- 
- #include <asm/tlbflush.h>
- #include <asm/cpufeature.h>
-+#include <asm/trace/fpu.h>
- 
- /*
-  * Although we spell it out in here, the Processor Trace
-@@ -71,6 +73,11 @@ static unsigned int xstate_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] =
- static unsigned int xstate_sizes[XFEATURE_MAX]   = { [ 0 ... XFEATURE_MAX - 1] = -1};
- static unsigned int xstate_comp_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
- static unsigned int xstate_supervisor_only_offsets[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = -1};
-+/*
-+ * True if the buffer of the corresponding XFEATURE is located on the next 64
-+ * byte boundary. Otherwise, it follows the preceding component immediately.
-+ */
-+static bool xstate_aligns[XFEATURE_MAX] = { [ 0 ... XFEATURE_MAX - 1] = false};
- 
- /**
-  * struct fpu_xstate_buffer_config - xstate per-task buffer configuration
-@@ -168,6 +175,58 @@ static bool xfeature_is_supervisor(int xfeature_nr)
- 	return ecx & 1;
- }
- 
-+/**
-+ * get_xstate_size() - calculate an xstate buffer size
-+ * @mask:	This bitmap tells which components reserved in the buffer.
-+ *
-+ * Available once those arrays for the offset, size, and alignment info are set up,
-+ * by setup_xstate_features().
-+ *
-+ * Returns:	The buffer size
-+ */
-+unsigned int get_xstate_size(u64 mask)
-+{
-+	unsigned int size;
-+	u64 xmask;
-+	int i, nr;
-+
-+	if (!mask)
-+		return 0;
-+
-+	/*
-+	 * The minimum buffer size excludes the dynamic user state. When a task
-+	 * uses the state, the buffer can grow up to the max size.
-+	 */
-+	if (mask == (xfeatures_mask_all & ~xfeatures_mask_user_dynamic))
-+		return get_xstate_config(XSTATE_MIN_SIZE);
-+	else if (mask == xfeatures_mask_all)
-+		return get_xstate_config(XSTATE_MAX_SIZE);
-+
-+	nr = fls64(mask) - 1;
-+
-+	if (!using_compacted_format())
-+		return xstate_offsets[nr] + xstate_sizes[nr];
-+
-+	xmask = BIT_ULL(nr + 1) - 1;
-+
-+	if (mask == (xmask & xfeatures_mask_all))
-+		return xstate_comp_offsets[nr] + xstate_sizes[nr];
-+
-+	/*
-+	 * With the given mask, no relevant size is found so far. So, calculate
-+	 * it by summing up each state size.
-+	 */
-+	for (size = FXSAVE_SIZE + XSAVE_HDR_SIZE, i = FIRST_EXTENDED_XFEATURE; i <= nr; i++) {
-+		if (!(mask & BIT_ULL(i)))
-+			continue;
-+
-+		if (xstate_aligns[i])
-+			size = ALIGN(size, 64);
-+		size += xstate_sizes[i];
-+	}
-+	return size;
-+}
-+
- /*
-  * When executing XSAVEOPT (or other optimized XSAVE instructions), if
-  * a processor implementation detects that an FPU state component is still
-@@ -308,10 +367,12 @@ static void __init setup_xstate_features(void)
- 	xstate_offsets[XFEATURE_FP]	= 0;
- 	xstate_sizes[XFEATURE_FP]	= offsetof(struct fxregs_state,
- 						   xmm_space);
-+	xstate_aligns[XFEATURE_FP]	= true;
- 
- 	xstate_offsets[XFEATURE_SSE]	= xstate_sizes[XFEATURE_FP];
- 	xstate_sizes[XFEATURE_SSE]	= sizeof_field(struct fxregs_state,
- 						       xmm_space);
-+	xstate_aligns[XFEATURE_SSE]	= true;
- 
- 	for (i = FIRST_EXTENDED_XFEATURE; i < XFEATURE_MAX; i++) {
- 		if (!xfeature_enabled(i))
-@@ -329,6 +390,7 @@ static void __init setup_xstate_features(void)
- 			continue;
- 
- 		xstate_offsets[i] = ebx;
-+		xstate_aligns[i] = (ecx & 2) ? true : false;
- 
- 		/*
- 		 * In our xstate size checks, we assume that the highest-numbered
-@@ -915,6 +977,9 @@ void __init fpu__init_system_xstate(void)
- 	if (err)
- 		goto out_disable;
- 
-+	/* Make sure init_task does not include the dynamic user states. */
-+	current->thread.fpu.state_mask = (xfeatures_mask_all & ~xfeatures_mask_user_dynamic);
-+
- 	/*
- 	 * Update info used for ptrace frames; use standard-format size and no
- 	 * supervisor xstates:
-@@ -1141,6 +1206,66 @@ static inline bool xfeatures_mxcsr_quirk(u64 xfeatures)
- 	return true;
- }
- 
-+void free_xstate_buffer(struct fpu *fpu)
-+{
-+	/* Free up only the dynamically-allocated memory. */
-+	if (fpu->state != &fpu->__default_state)
-+		vfree(fpu->state);
-+}
-+
-+/**
-+ * alloc_xstate_buffer() - allocate an xstate buffer with the size calculated based on @mask.
-+ *
-+ * @fpu:	A struct fpu * pointer
-+ * @mask:	The bitmap tells which components to be reserved in the new buffer.
-+ *
-+ * Use vmalloc() simply here. If the task with a vmalloc()-allocated buffer tends
-+ * to terminate quickly, vfree()-induced IPIs may be a concern. Caching may be
-+ * helpful for this. But the task with large state is likely to live longer.
-+ *
-+ * Also, this method does not shrink or reclaim the buffer.
-+ *
-+ * Returns 0 on success, -ENOMEM on allocation error.
-+ */
-+int alloc_xstate_buffer(struct fpu *fpu, u64 mask)
-+{
-+	union fpregs_state *state;
-+	unsigned int oldsz, newsz;
-+	u64 state_mask;
-+
-+	state_mask = fpu->state_mask | mask;
-+
-+	oldsz = get_xstate_size(fpu->state_mask);
-+	newsz = get_xstate_size(state_mask);
-+
-+	if (oldsz >= newsz)
-+		return 0;
-+
-+	state = vzalloc(newsz);
-+	if (!state) {
-+		/*
-+		 * When allocation requested from #NM, the error code may not be
-+		 * populated well. Then, this tracepoint is useful for providing
-+		 * the failure context.
-+		 */
-+		trace_x86_fpu_xstate_alloc_failed(fpu);
-+		return -ENOMEM;
-+	}
-+
-+	if (using_compacted_format())
-+		fpstate_init_xstate(&state->xsave, state_mask);
-+
-+	/*
-+	 * As long as the register state is intact, save the xstate in the new buffer
-+	 * at the next context copy/switch or potentially ptrace-driven xstate writing.
-+	 */
-+
-+	free_xstate_buffer(fpu);
-+	fpu->state = state;
-+	fpu->state_mask = state_mask;
-+	return 0;
-+}
-+
- static void fill_gap(struct membuf *to, unsigned *last, unsigned offset)
+@@ -552,6 +552,7 @@ static void __init print_xstate_offset_size(void)
+ static void __init setup_init_fpu_buf(void)
  {
- 	if (*last >= offset)
+ 	static int on_boot_cpu __initdata = 1;
++	u64 mask;
+ 
+ 	WARN_ON_FPU(!on_boot_cpu);
+ 	on_boot_cpu = 0;
+@@ -562,8 +563,14 @@ static void __init setup_init_fpu_buf(void)
+ 	setup_xstate_features();
+ 	print_xstate_features();
+ 
++	/*
++	 * Exclude the dynamic user states as they are large but having
++	 * initial values with zeros.
++	 */
++	mask = xfeatures_mask_all & ~xfeatures_mask_user_dynamic;
++
+ 	if (boot_cpu_has(X86_FEATURE_XSAVES))
+-		fpstate_init_xstate(&init_fpstate.xsave, xfeatures_mask_all);
++		fpstate_init_xstate(&init_fpstate.xsave, mask);
+ 
+ 	/*
+ 	 * Init all the features state with header.xfeatures being 0x0
+@@ -574,7 +581,7 @@ static void __init setup_init_fpu_buf(void)
+ 	 * Dump the init state again. This is to identify the init state
+ 	 * of any feature which is not represented by all zero's.
+ 	 */
+-	copy_xregs_to_kernel_booting(&init_fpstate.xsave);
++	copy_xregs_to_kernel_booting(&init_fpstate.xsave, mask);
+ }
+ 
+ static int xfeature_uncompacted_offset(int xfeature_nr)
 -- 
 2.17.1
 
