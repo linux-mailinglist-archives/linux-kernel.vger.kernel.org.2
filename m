@@ -2,119 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47BBE38DCCE
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 22:07:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C55438DCD7
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 22:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhEWUJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 16:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41658 "EHLO
+        id S231968AbhEWUcE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 16:32:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhEWUJO (ORCPT
+        with ESMTP id S231933AbhEWUcD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 16:09:14 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E533C061574;
-        Sun, 23 May 2021 13:07:46 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id n2so26429677wrm.0;
-        Sun, 23 May 2021 13:07:46 -0700 (PDT)
+        Sun, 23 May 2021 16:32:03 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F255C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 13:30:36 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id h20so9670333qko.11
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 13:30:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=tggQNXprZ2KXMcjjAudcZ47jW995L9WF7pjIIOpjVVo=;
-        b=gYzxcdGGsjSXGl3H4eyLnY/jFZHQqFtP44csh7My3pbTf+k8L0bIkRF89rL64E1TT8
-         YYbIF3Dg38u55WdN2r/4JauWsDN0wlV1THrFf1nVt9B5Lyp/zT0RiiSFIFL16Qpvi22B
-         VIiTrsMQFiqqXW0bfpQzp1aqpoWyPtKYsIRtMktAcjhbaNPEHwX+pQsvstqLaZqVPBFJ
-         ubWRlh+5JId3DhqPY/Ru+zq+/Wb971KmOq931y5OrTn45miCVW7JYE3OYl5ByKIvQ+dn
-         f34Fg82nus3l/J5oKKz2OwkqF7JZyYkjcZosUCLB6M5Ol9h40jF9hIvel6zOTLuewCgT
-         zAEQ==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=KZOdzKpdCtx3J5Gdt5i125p00DG3gg5/FCu81JRadSM=;
+        b=ZpkzlRp9fR8BmOo7PQQYa0rtdoJxcSKqQZ6aY+UTojxFQ2hkUCXe3DhTKZOAGgF6wl
+         PZcrArPr1WA/kpgkk5VMtVIGcHQD4AhSUW4FwDm+r2ZdyYwQaldksO1ylsZ6cG6nLb0E
+         OQ4Jxv720k2K2hsjKehnPw6BOmfCzl8/9uqsFWAMcaV2QPsEc2CTvzG7ESoONZF7DYEA
+         u4toE725mdKSzhwnd5NZtI7HJ1mqNiujILSiUe+9uSEN81LQ6ZcPJy2bJ+IUgmt/4oKk
+         ktJWp9bMmsXSW2G5ZK1iKj+zoVnCnALFUCvMpp1/Xl1/EC5jFdoDrr357TvlB4qXynu9
+         Neow==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tggQNXprZ2KXMcjjAudcZ47jW995L9WF7pjIIOpjVVo=;
-        b=Z5KNvJBJ4AKpJgYhZetJk4H8wBAYJp7/2jZDsaK9otdM1x8AKCCYqImKaK3N1yks7v
-         G+HgysQGClxvylwaHPZ5bDH1paJHQA8IDMrNIMwLD7cS166lbDUfb62L8eyf9QVW+mRv
-         oDBB8Fiev+UBdQnT67UDtfOjM5KAxcSuZX4cSoVNJ7mvECXq4EltP6I4MCSJQhKokQrr
-         aEKa7YlhRbuwLVD+TsWF4no9TOiTUY1m+0LvHSjSVL5o3PUlaYjnveCBSBrIZ2/M0Rwp
-         QUecYkRp8UMHFVbvRbLu3EeLnineGdfh7xLtw3Ph9PGyriMCtqx0vGxBKfVFmcZ5mSbZ
-         X3cg==
-X-Gm-Message-State: AOAM531AOq7wLMSn9Hdq2dFFFhUvoduLEQsrIWs+NtCInBGMqzN8eeED
-        b4/Goyv4Ajepop/lHTZwNB4=
-X-Google-Smtp-Source: ABdhPJwzyOyx7608ZpbnjUcBc/K1/AGGqdEBZd5IQAv6YBdI2hQSpPj5aRF8fSG9NdjVcV0rITRqdA==
-X-Received: by 2002:a05:6000:118c:: with SMTP id g12mr18727886wrx.320.1621800464833;
-        Sun, 23 May 2021 13:07:44 -0700 (PDT)
-Received: from [192.168.8.197] ([185.69.145.65])
-        by smtp.gmail.com with ESMTPSA id r17sm5889582wmh.25.2021.05.23.13.07.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 May 2021 13:07:44 -0700 (PDT)
-Subject: =?UTF-8?B?UmU6IOWbnuWkjTogW3N5emJvdF0gS0FTQU46IHVzZS1hZnRlci1mcmVl?=
- =?UTF-8?Q?_Read_in_io=5fworker=5fhandle=5fwork?=
-From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     "Zhang, Qiang" <Qiang.Zhang@windriver.com>,
-        syzbot <syzbot+6cb11ade52aa17095297@syzkaller.appspotmail.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>
-References: <0000000000008224bf05c2a8a78b@google.com>
- <DM6PR11MB42024E7A188486B8850905D6FF299@DM6PR11MB4202.namprd11.prod.outlook.com>
- <b6a339b4-e25c-1466-3db4-f96739365ca6@gmail.com>
-Message-ID: <7243f420-58c5-60e4-6c8f-c16a90766c0c@gmail.com>
-Date:   Sun, 23 May 2021 21:07:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=KZOdzKpdCtx3J5Gdt5i125p00DG3gg5/FCu81JRadSM=;
+        b=DZ7/ZyqZ5DJx0bjo3qwd+8fM63Lu/rIjbDHcpgpCDiC47expydYo5WHFjhu1glXdFB
+         uNNoNMy0hoj+qJllZJjRfXl2GDy+CUjlpdd2441tJOrTcjYlDNoHazkQLI5V8MndPJ8D
+         K+6hsbZd8b2mNahzBOuq5Pl6LMPGBC1Wv+Vi1oU965khV7Hh6xUCcLszfVeVCYhb3gXE
+         3Sod2cJcfhn0VhUZ7fjGEnB5qL1zHd+SsvNv9+hT3QnAMAF64m7JE5FDwKfRhg5spj9V
+         PjvEEiRV5pN3SAkSTbeb9zHCuKPruCmQ4cZWCFMIWyirtdXLDyGY4JTTjh83buNlfIuv
+         Yksg==
+X-Gm-Message-State: AOAM533fV0Doehpd8mkpGB+YD4LmLEeq0vuwknUP6MrdWQlAbUUz2fzM
+        bZEzRAH07kM1++0gBnNC7N0vXg==
+X-Google-Smtp-Source: ABdhPJy8dX5Bcn1EEtnagXs/TxB+Mq7MohucQW4+wTbkV3a0W9CV8bHRrAGTneqdz22FTFP4/F8EKw==
+X-Received: by 2002:a37:a9d1:: with SMTP id s200mr24592539qke.64.1621801834776;
+        Sun, 23 May 2021 13:30:34 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id 42sm8779883qtf.37.2021.05.23.13.30.33
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Sun, 23 May 2021 13:30:34 -0700 (PDT)
+Date:   Sun, 23 May 2021 13:30:22 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Peter Zijlstra <peterz@infradead.org>
+cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Hugh Dickins <hughd@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: config SCHED_CORE
+In-Reply-To: <YKo1AOIIsZectSQt@hirez.programming.kicks-ass.net>
+Message-ID: <alpine.LSU.2.11.2105231252070.29171@eggly.anvils>
+References: <alpine.LSU.2.11.2105201954180.6100@eggly.anvils> <YKdm69K8k/ztd6BM@hirez.programming.kicks-ass.net> <CAEXW_YRxOqQCF2FgXAjL3xkZhRD4rdFuxvyPd-ESXYQQ78cyfQ@mail.gmail.com> <YKo1AOIIsZectSQt@hirez.programming.kicks-ass.net>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <b6a339b4-e25c-1466-3db4-f96739365ca6@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/22/21 1:55 AM, Pavel Begunkov wrote:
-> On 5/21/21 9:45 AM, Zhang, Qiang wrote:
-> [...]
->> It looks like 
->> thread iou-wrk-28796 in io-wq(A)  access wqe in the wait queue(data->hash->wait),  but this wqe  has been free due to the destruction of another io-wq(B).
->>
->> Should we after wait for all iou-wrk thread exit in the io-wq，  remove wqe from the waiting queue (data->hash->wait).   prevent some one  wqe  belonging to this io-wq , may be still existing in the (data->hash->wait)queue before releasing. 
+On Sun, 23 May 2021, Peter Zijlstra wrote:
+> On Fri, May 21, 2021 at 07:57:35AM -0400, Joel Fernandes wrote:
+> > On Fri, May 21, 2021 at 3:53 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > +       help
+> > > +         This option enables Core scheduling, a means of coordinated task
+> > > +         selection across SMT siblings with the express purpose of creating a
+> > > +         Core wide privilidge boundary. When enabled -- see prctl(PR_SCHED_CORE)
+> > > +         -- task selection will ensure all SMT siblings will execute a task
+> > > +         from the same 'core group', forcing idle when no matching task is found.
+> > > +
+> > > +         This provides means of mitigation against a number of SMT side-channels;
+> > > +         but is, on its own, insufficient to mitigate all known side-channels.
+> > > +         Notable: the MDS class of attacks require more.
+> > > +
+> > > +         Default enabled for anything that has SCHED_SMT, when unused there should
+> > > +         be no impact on performance.
+> > 
+> > This description sort of makes it sound like security is the only
+> > usecase. Perhaps we can also add here that core-scheduling can help
+> > performance of workloads where hyperthreading is undesired, such as
+> > when VM providers don't want to share hyperthreads.
 > 
-> The guess looks reasonable, it's likely a problem.
-> Not sure about the diff, it seems racy but I need to
-> take a closer look to say for sure
+> Something like so then?
 
-It looks sensible, please send a patch
+Much more helpful, thanks. And I agree that you have to keep it fairly
+brief here: I think you've struck the right balance.  Some nits below.
 
-
->> look forward to your opinion.
->>
->> --- a/fs/io-wq.c
->> +++ b/fs/io-wq.c
->> @@ -1003,13 +1003,17 @@ static void io_wq_exit_workers(struct io_wq *wq)
->>                 struct io_wqe *wqe = wq->wqes[node];
->>  
->>                 io_wq_for_each_worker(wqe, io_wq_worker_wake, NULL);
->> -               spin_lock_irq(&wq->hash->wait.lock);
->> -               list_del_init(&wq->wqes[node]->wait.entry);
->> -               spin_unlock_irq(&wq->hash->wait.lock);
->>         }
->>         rcu_read_unlock();
->>         io_worker_ref_put(wq);
->>         wait_for_completion(&wq->worker_done);
->> +       for_each_node(node) {
->> +               struct io_wqe *wqe = wq->wqes[node];
->> +
->> +               spin_lock_irq(&wq->hash->wait.lock);
->> +               list_del_init(&wq->wqes[node]->wait.entry);
->> +               spin_unlock_irq(&wq->hash->wait.lock);
->> +       }
->>         put_task_struct(wq->task);
->>         wq->task = NULL;
->>  }
 > 
+> ---
+>  kernel/Kconfig.preempt | 14 ++++++++++++++
+>  1 file changed, 14 insertions(+)
+> 
+> diff --git a/kernel/Kconfig.preempt b/kernel/Kconfig.preempt
+> index ea1e3331c0ba..cd497fecfd43 100644
+> --- a/kernel/Kconfig.preempt
+> +++ b/kernel/Kconfig.preempt
+> @@ -104,4 +104,18 @@ config SCHED_CORE
+>  	bool "Core Scheduling for SMT"
+>  	default y
+>  	depends on SCHED_SMT
+> +	help
+> +	  This option enables Core scheduling, a means of coordinated task
 
--- 
-Pavel Begunkov
+Maybe s/scheduling/Scheduling/ to match the title?
+
+I think I got the picture once I reached the end, but was confused here
+by the stages of enablement.  s/This option enables/This option permits/
+would be clearer, I think.
+
+
+> +	  selection across SMT siblings. When enabled -- see
+> +	  prctl(PR_SCHED_CORE) -- task selection will ensure all SMT siblings
+
+s/will ensure/ensures that/ (it felt like too many "will"s before)
+
+> +	  will execute a task from the same 'core group', forcing idle when no
+> +	  matching task is found.
+> +
+> +	  Use of this feature includes:
+> +	   - mitigation of some (not all) SMT side channels;
+> +	   - limiting SMT interference to improve determinism and/or performance.
+> +
+> +	  Default enabled for anything that has SCHED_SMT, when unused there
+
+"SCHED_CORE is default enabled when SCHED_SMT is enabled - when unused there"
+would be better.
+
+> +	  should be no impact on performance.
+> +
+
+Thanks,
+Hugh
