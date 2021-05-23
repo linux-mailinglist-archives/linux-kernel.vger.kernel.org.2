@@ -2,180 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183CC38DDAB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:04:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA75838DDAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:10:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232049AbhEWXFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 19:05:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231976AbhEWXFs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 19:05:48 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72BD1C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 16:04:20 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id 6so18716681pgk.5
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 16:04:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=taHsl89uHxiOEQf2rPDtNJ/+Mn5yxhgIAL5Q1aLTII0=;
-        b=soHJxP46ycLj4iK/Y25UpjGSoaKN4lEqId1y1MWihWXLiiuqd7GvDvNJMC5+cl59aP
-         lttsFVhe6KGjwJHeylvxoMsiXFgkTgW9I8IeOJASjeCnBIpcCnRvXXpbFTiJ7SGuNifh
-         +7UzXiABj40GUCWl4AB0TNV2XnnIOhU08kTHpX5uuOeYIJp6Tg2gy3gIVo/qHr4eG6xR
-         B5fx6YmJH/ZvkKiefUEz7X7q9LUqreaCkJOSXxkHyXsrEbW1pJF9rG5lAL1W/tc1U9XE
-         IRWN7+VwslIrFNwvgwDLJzeS0cJjetx98JWSyi8bKlYQQySYc4Pi5QQflPkb2FVqDTM1
-         4V4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=taHsl89uHxiOEQf2rPDtNJ/+Mn5yxhgIAL5Q1aLTII0=;
-        b=njZAi/vmR50SFw51DNdnriAY72NaKkZaJw6BWnY8RdxjQdRAvH+Bo+4jiIxBeqqhbJ
-         2qtRWHl8xlegkgSFrkKK+4gcUX5YQnZuVLnRbYp2/2y68v9xc6fWwg5GVU0iUDBCibkj
-         Slh/ZvijGKR4s2o2uK69KYPKna9kcBtkKk42U8MwCl1bBjuwKJoaCtnzzWEPNdG88C1v
-         qiYNXh4BiJI8sIaFFkEYcFK6C7qcNjb9Th0e6EofiMB9LzKrYWUVFspOy0joAnUse8HX
-         5ssqqV7ZaU1B/LyVQpmRuOxlx9xu6C9H5e/TaWYM1Lz+qhz+kT+k8AVmvW7jh8RFe75G
-         KCdg==
-X-Gm-Message-State: AOAM531zix5Vo/Lwd4c5Fsx9g4nTDE1ptzjY7GQKRmH5Wg7C4ttByoks
-        5hhzAX1e1Ib8AzCA1VDgyRzx2vbRy6fjZq3dPXR4Iw==
-X-Google-Smtp-Source: ABdhPJwBKgqSdb6/4KY9SxdeUdhk0iD/XR4npedvl94iHjhuk0rcY++RqoKbHkRGpJiVdW3YZdIiv++VHTT0ljyfFVw=
-X-Received: by 2002:aa7:8a85:0:b029:2db:484c:de1a with SMTP id
- a5-20020aa78a850000b02902db484cde1amr21265286pfc.2.1621811059711; Sun, 23 May
- 2021 16:04:19 -0700 (PDT)
+        id S232026AbhEWXLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 19:11:25 -0400
+Received: from mga06.intel.com ([134.134.136.31]:55941 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231982AbhEWXLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 19:11:20 -0400
+IronPort-SDR: fvPRyz9/uvIPEe3HSbCxG2Hm0nbt/MqL6mzI5DWF4/r1atN40U5TK8GQt+Rrsr5cZ/kI2qMgdh
+ r7NuyOrN6rrw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="263037798"
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="263037798"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 16:09:52 -0700
+IronPort-SDR: dPvZZadPl6UIjw2WLGwy5uo5xsKsGQxWx9vAsFRogVrqlHhOWBpnuD34hngqnlmY2UzG4c1gCb
+ d690lLsmG3Tg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
+   d="scan'208";a="477964909"
+Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 23 May 2021 16:09:51 -0700
+Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lkxEE-000100-VD; Sun, 23 May 2021 23:09:50 +0000
+Date:   Mon, 24 May 2021 07:09:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:efi/core] BUILD SUCCESS
+ 267be9dbacf4485f7842a3755eef4bb68dc85fc9
+Message-ID: <60aae08d.lAZUwzI548C6Nu+b%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20210424004645.3950558-1-seanjc@google.com> <20210424004645.3950558-30-seanjc@google.com>
- <CAAeT=FzpUBXpzuCT3eD=3sRnV14OYLA+28Eo7YFioC+vc=xVsA@mail.gmail.com> <YKVt5XVIQMUCUIHd@google.com>
-In-Reply-To: <YKVt5XVIQMUCUIHd@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Sun, 23 May 2021 16:04:03 -0700
-Message-ID: <CAAeT=FwjdQ768k5fJ2pCHbUwsYMdMdOPH3hXA9qKA+f+2CEQEg@mail.gmail.com>
-Subject: Re: [PATCH 29/43] KVM: SVM: Tweak order of cr0/cr4/efer writes at RESET/INIT
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > AMD's APM Vol2 (Table 14-1 in Revision 3.37) says CR0 After INIT will b=
-e:
-> >
-> >    CD and NW are unchanged
-> >    Bit 4 (reserved) =3D 1
-> >    All others =3D 0
-> >
-> > (CR0 will be 0x60000010 after RESET)
-> >
-> > So, it looks the CR0 value that init_vmcb() sets could be
-> > different from what is indicated in the APM for INIT.
-> >
-> > BTW, Intel's SDM (April 2021 version) says CR0 for Power up/Reset/INIT
-> > will be 0x60000010 with the following note.
-> > -------------------------------------------------
-> > The CD and NW flags are unchanged,
-> > bit 4 is set to 1, all other bits are cleared.
-> > -------------------------------------------------
-> > The note is attached as '2' to all Power up/Reset/INIT cases
-> > looking at the SDM.  I would guess it is erroneous that
-> > the note is attached to Power up/Reset though.
->
-> Agreed.  I'll double check that CD and NW are preserved by hardware on IN=
-IT,
-> and will also ping Intel folks to fix the POWER-UP and RESET footnote.
->
-> Hah!  Reading through that section yet again, there's another SDM bug.  I=
-t
-> contradicts itself with respect to the TLBs after INIT.
->
->   9.1 INITIALIZATION OVERVIEW:
->     The major difference is that during an INIT, the internal caches, MSR=
-s,
->     MTRRs, and x87 FPU state are left unchanged (although, the TLBs and B=
-TB
->     are invalidated as with a hardware reset)
->
-> while Table 9-1 says:
->
->   Register                    Power up    Reset      INIT
->   Data and Code Cache, TLBs:  Invalid[6]  Invalid[6] Unchanged
->
-> I'm pretty sure that Intel CPUs are supposed to flush the TLB, i.e. Tabel=
- 9-1 is
-> wrong.  Back in my Intel validation days, I remember being involved in a =
-Core2
-> bug that manifested as a triple fault after INIT due to global TLB entrie=
-s not
-> being flushed.  Looks like that wasn't fixed:
->
-> https://www.intel.com/content/dam/support/us/en/documents/processors/mobi=
-le/celeron/sb/320121.pdf
->
->   AZ28. INIT Does Not Clear Global Entries in the TLB
->   Problem: INIT may not flush a TLB entry when:
->     =E2=80=A2 The processor is in protected mode with paging enabled and =
-the page global enable
->       flag is set (PGE bit of CR4 register)
->     =E2=80=A2 G bit for the page table entry is set
->     =E2=80=A2 TLB entry is present in TLB when INIT occurs
->     =E2=80=A2 Software may encounter unexpected page fault or incorrect a=
-ddress translation due
->       to a TLB entry erroneously left in TLB after INIT.
->
->   Workaround: Write to CR3, CR4 (setting bits PSE, PGE or PAE) or CR0 (se=
-tting
->               bits PG or PE) registers before writing to memory early in =
-BIOS
->               code to clear all the global entries from TLB.
->
->   Status: For the steppings affected, see the Summary Tables of Changes.
->
-> AMD's APM also appears to contradict itself, though that depends on one's
-> interpretation of "external intialization".  Like the SDM, its table stat=
-es that
-> the TLBs are not flushed on INIT:
->
->   Table 14-1. Initial Processor State
->
->   Processor Resource         Value after RESET      Value after INIT
->   Instruction and Data TLBs  Invalidated            Unchanged
->
-> but a blurb later on says:
->
->   5.5.3 TLB Management
->
->   Implicit Invalidations. The following operations cause the entire TLB t=
-o be
->   invalidated, including global pages:
->
->     =E2=80=A2 External initialization of the processor.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git efi/core
+branch HEAD: 267be9dbacf4485f7842a3755eef4bb68dc85fc9  Merge tag 'efi-next-for-v5.14' of git://git.kernel.org/pub/scm/linux/kernel/git/efi/efi into efi/core
 
-"Table 8-9. Simultaneous Interrupt Priorities" of AMD's APM has
-the words "External Processor Initialization (INIT)", which make
-me guess "the External initialization of the processor" in 5.5.3
-TLB Management means INIT.
+elapsed time: 724m
 
+configs tested: 188
+configs skipped: 2
 
-> All in all, that means KVM also has a bug in the form of a missing guest =
-TLB
-> flush on INIT, at least for VMX and probably for SVM.  I'll add a patch t=
-o flush
-> the guest TLBs on INIT irrespective of vendor.  Even if AMD CPUs don't fl=
-ush the
-> TLB, I see no reason to bank on all guests being paranoid enough to flush=
- the
-> TLB immediately after INIT.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Yes, I agree that would be better.
-Thank you so much for all the helpful information !
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+sh                               j2_defconfig
+arm                            pleb_defconfig
+arm                         lubbock_defconfig
+arm                        mvebu_v7_defconfig
+sh                           se7619_defconfig
+powerpc                      tqm8xx_defconfig
+powerpc                      mgcoge_defconfig
+ia64                        generic_defconfig
+arm                         s5pv210_defconfig
+arm                          pxa168_defconfig
+powerpc                  iss476-smp_defconfig
+h8300                            allyesconfig
+powerpc                      chrp32_defconfig
+arm                         hackkit_defconfig
+openrisc                            defconfig
+openrisc                 simple_smp_defconfig
+powerpc                     tqm8541_defconfig
+xtensa                         virt_defconfig
+powerpc                mpc7448_hpc2_defconfig
+arm                            lart_defconfig
+sh                         microdev_defconfig
+mips                       capcella_defconfig
+arm                          lpd270_defconfig
+powerpc                      ppc64e_defconfig
+riscv                    nommu_virt_defconfig
+sh                            shmin_defconfig
+xtensa                           alldefconfig
+mips                      loongson3_defconfig
+arm                         orion5x_defconfig
+arc                          axs101_defconfig
+riscv                    nommu_k210_defconfig
+arm                           stm32_defconfig
+powerpc                       ppc64_defconfig
+arm                           h5000_defconfig
+sh                              ul2_defconfig
+nios2                         3c120_defconfig
+mips                     loongson2k_defconfig
+arm                         at91_dt_defconfig
+powerpc                 mpc836x_mds_defconfig
+sh                          urquell_defconfig
+sparc64                             defconfig
+mips                          rb532_defconfig
+mips                           ip27_defconfig
+sh                          kfr2r09_defconfig
+mips                malta_qemu_32r6_defconfig
+arm64                            alldefconfig
+sh                                  defconfig
+m68k                       m5475evb_defconfig
+arm                        spear6xx_defconfig
+um                             i386_defconfig
+xtensa                              defconfig
+sh                        edosk7705_defconfig
+sh                          landisk_defconfig
+arm                      footbridge_defconfig
+xtensa                       common_defconfig
+arm                          collie_defconfig
+sh                          rsk7201_defconfig
+arm                      pxa255-idp_defconfig
+m68k                            mac_defconfig
+powerpc                          allmodconfig
+m68k                        m5272c3_defconfig
+sh                           se7206_defconfig
+mips                          rm200_defconfig
+arm                        oxnas_v6_defconfig
+arm                       cns3420vb_defconfig
+m68k                          sun3x_defconfig
+arm                           viper_defconfig
+powerpc                 mpc8560_ads_defconfig
+sh                           sh2007_defconfig
+um                            kunit_defconfig
+arc                         haps_hs_defconfig
+mips                     loongson1c_defconfig
+sh                   sh7770_generic_defconfig
+mips                        vocore2_defconfig
+arm                         nhk8815_defconfig
+powerpc                      pasemi_defconfig
+powerpc                      obs600_defconfig
+mips                 decstation_r4k_defconfig
+arc                     haps_hs_smp_defconfig
+x86_64                           alldefconfig
+arm                         vf610m4_defconfig
+h8300                               defconfig
+powerpc                     akebono_defconfig
+riscv                          rv32_defconfig
+sh                        sh7757lcr_defconfig
+h8300                     edosk2674_defconfig
+powerpc                      pcm030_defconfig
+powerpc                 mpc8540_ads_defconfig
+m68k                          atari_defconfig
+powerpc                      katmai_defconfig
+sh                     sh7710voipgw_defconfig
+sh                          rsk7203_defconfig
+ia64                          tiger_defconfig
+mips                          ath25_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a005-20210524
+x86_64               randconfig-a001-20210524
+x86_64               randconfig-a006-20210524
+x86_64               randconfig-a003-20210524
+x86_64               randconfig-a004-20210524
+x86_64               randconfig-a002-20210524
+i386                 randconfig-a001-20210523
+i386                 randconfig-a005-20210523
+i386                 randconfig-a002-20210523
+i386                 randconfig-a003-20210523
+i386                 randconfig-a004-20210523
+i386                 randconfig-a006-20210523
+i386                 randconfig-a001-20210524
+i386                 randconfig-a002-20210524
+i386                 randconfig-a005-20210524
+i386                 randconfig-a006-20210524
+i386                 randconfig-a004-20210524
+i386                 randconfig-a003-20210524
+x86_64               randconfig-a013-20210523
+x86_64               randconfig-a014-20210523
+x86_64               randconfig-a012-20210523
+x86_64               randconfig-a016-20210523
+x86_64               randconfig-a015-20210523
+x86_64               randconfig-a011-20210523
+i386                 randconfig-a016-20210523
+i386                 randconfig-a011-20210523
+i386                 randconfig-a015-20210523
+i386                 randconfig-a012-20210523
+i386                 randconfig-a014-20210523
+i386                 randconfig-a013-20210523
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                           allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-Regards,
-Reiji
+clang tested configs:
+x86_64               randconfig-b001-20210523
+x86_64               randconfig-b001-20210524
+x86_64               randconfig-a006-20210523
+x86_64               randconfig-a001-20210523
+x86_64               randconfig-a005-20210523
+x86_64               randconfig-a003-20210523
+x86_64               randconfig-a004-20210523
+x86_64               randconfig-a002-20210523
+x86_64               randconfig-a013-20210524
+x86_64               randconfig-a012-20210524
+x86_64               randconfig-a014-20210524
+x86_64               randconfig-a016-20210524
+x86_64               randconfig-a015-20210524
+x86_64               randconfig-a011-20210524
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
