@@ -2,185 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241A938DAB9
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17A0538DAC3
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231695AbhEWJmy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:42:54 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:47106 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231658AbhEWJmx (ORCPT
+        id S231739AbhEWJsj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 05:48:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231669AbhEWJsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 05:42:53 -0400
-Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14N9Xv5J148295;
-        Sun, 23 May 2021 05:40:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=ociFyizVsM28GJMvNG8DMaVsQoWuT8RJpNowjEhIi/A=;
- b=K4dL4tad0pExKFz47Pi+fXjgDsK+xN+KiMKNKZYQWhG9zSr6NX7weICFKnsFj+kaYt3L
- cjHzQNqOLPBh4O5YalR0aEGcYPBsQ2+KNPLZCrkNoKCVqQSnA8hLNO+/VSxLj/xGqsYl
- JJ0stIYgIr5tbyBB4Y7RhF+PbEGBQXrQ7gUXd+QU7aslg2tCTyqOEi3oOpil0DhnmLch
- NYFxHZYHrbAHloOQarB104S5iBPlJ32O65w4DgL/Xy1S7HXuoWBMeIV4iZEMITaLeoOe
- /IvC50J8+V8BcsPNljCGDyZXLS60N3yUhuBOWXyEFOZ+LDo8yQq5FaJ92JUjdo6+ORIK 6w== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38qjjdt1vv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 May 2021 05:40:50 -0400
-Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 14N9XtbO148186;
-        Sun, 23 May 2021 05:40:50 -0400
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38qjjdt1vg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 May 2021 05:40:49 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 14N9RHK1014616;
-        Sun, 23 May 2021 09:40:47 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma02fra.de.ibm.com with ESMTP id 38psk886e7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sun, 23 May 2021 09:40:47 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14N9eG5M27394388
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 23 May 2021 09:40:16 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 3049AA405B;
-        Sun, 23 May 2021 09:40:45 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8820AA4054;
-        Sun, 23 May 2021 09:40:44 +0000 (GMT)
-Received: from [9.145.68.41] (unknown [9.145.68.41])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Sun, 23 May 2021 09:40:44 +0000 (GMT)
-Subject: Re: [PATCH] rculist: unify documentation about missing
- list_empty_rcu()
-To:     paulmck@kernel.org
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Joel Fernandes <joel@joelfernandes.org>, rcu@vger.kernel.org,
+        Sun, 23 May 2021 05:48:30 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4C5C061574;
+        Sun, 23 May 2021 02:47:04 -0700 (PDT)
+Date:   Sun, 23 May 2021 09:46:59 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621763220;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=+dc9g6TaTC8U1WddrtiG0MD5xMD1aM3fwqtAmpRJOfo=;
+        b=ZNaMiI7v3hCHnxdph8Sr41lz9VL2J8Xbt2uHGaDIImQqQBQo0lvSh4qAOnR/s9PeVcUrPz
+        WLR/mln55xGm3h+ffG/F3GBCd21HTRUv/DrA+XqjAOeq5rulv7+KRDmZ6ATUrhociS0Lj1
+        Da/MWby2PAJV1L26twVPH7yU9m7Pvk4vaABblYzxqrSSYNnY8LxR5Sk2vKosPhXPyvPTGP
+        qN4tsPbqLnnIR0ZuDJNAZSZZ8htvUkT0kxkwNx2R7rMJ+JnIhZb3OBXx+VXuOMMxdzYweo
+        cjSTFRkJkpugdAz0iIiiKuUxv73YXBHi8t0mTAYDxwptFKsETQH79vy1LyY40A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621763220;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=+dc9g6TaTC8U1WddrtiG0MD5xMD1aM3fwqtAmpRJOfo=;
+        b=nYIliH5VAXw10xL2fC/wcQoYXx0pqoblZ2Euz1j40SqPTcWS+JaM8GwSHvxg16Dc8fgbwc
+        Ey8YjvJxho3uB5Cw==
+From:   "tip-bot2 for Rasmus Villemoes" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/urgent] efi: cper: fix snprintf() use in cper_dimm_err_location()
+Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210521100829.257385-1-jwi@linux.ibm.com>
- <20210521175652.GC4441@paulmck-ThinkPad-P17-Gen-1>
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-Message-ID: <65f39db3-41ec-dc7a-0600-082439735556@linux.ibm.com>
-Date:   Sun, 23 May 2021 12:40:44 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210521175652.GC4441@paulmck-ThinkPad-P17-Gen-1>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Message-ID: <162176321915.29796.5574808163989432788.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: PJbQW_UKfbcYwrwzdjm9YwtFxDsoDmjv
-X-Proofpoint-ORIG-GUID: K0wzkeLPKojKPCB2E9q8h2zUiuIwmpm-
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-22_08:2021-05-20,2021-05-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 phishscore=0 bulkscore=0 priorityscore=1501
- suspectscore=0 impostorscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105230070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.05.21 20:56, Paul E. McKenney wrote:
-> On Fri, May 21, 2021 at 12:08:29PM +0200, Julian Wiedmann wrote:
->> We have two separate sections that talk about why list_empty_rcu()
->> is not needed, consolidate them.
->>
->> Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
-> 
-> Good catch, thank you!  As usual, I could not resist the urge to further
-> wordsmith, resulting in the following.  Please let me know if I messed
-> anything up.
-> 
-> 							Thanx, Paul
-> 
+The following commit has been merged into the efi/urgent branch of tip:
 
-I expected no different ;). LGTM, and clearly emphasizing that one shall
-not mix list_empty() with list_first_entry_rcu() is a nice improvement.
+Commit-ID:     942859d969de7f6f7f2659a79237a758b42782da
+Gitweb:        https://git.kernel.org/tip/942859d969de7f6f7f2659a79237a758b42782da
+Author:        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+AuthorDate:    Wed, 21 Apr 2021 21:46:36 +02:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Sat, 22 May 2021 14:05:37 +02:00
 
+efi: cper: fix snprintf() use in cper_dimm_err_location()
 
-> ------------------------------------------------------------------------
-> 
-> commit 6e9da58a4b391035e1ce77b8d867cdcdc73521b2
-> Author: Julian Wiedmann <jwi@linux.ibm.com>
-> Date:   Fri May 21 12:08:29 2021 +0200
-> 
->     rculist: Unify documentation about missing list_empty_rcu()
->     
->     We have two separate sections that talk about why list_empty_rcu()
->     is not needed, so this commit consolidates them.
->     
->     Signed-off-by: Julian Wiedmann <jwi@linux.ibm.com>
->     [ paulmck: The usual wordsmithing. ]
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> diff --git a/include/linux/rculist.h b/include/linux/rculist.h
-> index f8633d37e358..d29740be4833 100644
-> --- a/include/linux/rculist.h
-> +++ b/include/linux/rculist.h
-> @@ -10,15 +10,6 @@
->  #include <linux/list.h>
->  #include <linux/rcupdate.h>
->  
-> -/*
-> - * Why is there no list_empty_rcu()?  Because list_empty() serves this
-> - * purpose.  The list_empty() function fetches the RCU-protected pointer
-> - * and compares it to the address of the list head, but neither dereferences
-> - * this pointer itself nor provides this pointer to the caller.  Therefore,
-> - * it is not necessary to use rcu_dereference(), so that list_empty() can
-> - * be used anywhere you would want to use a list_empty_rcu().
-> - */
-> -
->  /*
->   * INIT_LIST_HEAD_RCU - Initialize a list_head visible to RCU readers
->   * @list: list to be initialized
-> @@ -318,21 +309,29 @@ static inline void list_splice_tail_init_rcu(struct list_head *list,
->  /*
->   * Where are list_empty_rcu() and list_first_entry_rcu()?
->   *
-> - * Implementing those functions following their counterparts list_empty() and
-> - * list_first_entry() is not advisable because they lead to subtle race
-> - * conditions as the following snippet shows:
-> + * They do not exist because they would lead to subtle race conditions:
->   *
->   * if (!list_empty_rcu(mylist)) {
->   *	struct foo *bar = list_first_entry_rcu(mylist, struct foo, list_member);
->   *	do_something(bar);
->   * }
->   *
-> - * The list may not be empty when list_empty_rcu checks it, but it may be when
-> - * list_first_entry_rcu rereads the ->next pointer.
-> - *
-> - * Rereading the ->next pointer is not a problem for list_empty() and
-> - * list_first_entry() because they would be protected by a lock that blocks
-> - * writers.
-> + * The list might be non-empty when list_empty_rcu() checks it, but it
-> + * might have become empty by the time that list_first_entry_rcu() rereads
-> + * the ->next pointer, which would result in a SEGV.
-> + *
-> + * When not using RCU, it is OK for list_first_entry() to re-read that
-> + * pointer because both functions should be protected by some lock that
-> + * blocks writers.
-> + *
-> + * When using RCU, list_empty() uses READ_ONCE() to fetch the
-> + * RCU-protected ->next pointer and then compares it to the address of the
-> + * list head.  However, it neither dereferences this pointer nor provides
-> + * this pointer to its caller.  Thus, READ_ONCE() suffices (that is,
-> + * rcu_dereference() is not needed), which means that list_empty() can be
-> + * used anywhere you would want to use list_empty_rcu().  Just don't
-> + * expect anything useful to happen if you do a subsequent lockless
-> + * call to list_first_entry_rcu()!!!
->   *
->   * See list_first_or_null_rcu for an alternative.
->   */
-> 
+snprintf() should be given the full buffer size, not one less. And it
+guarantees nul-termination, so doing it manually afterwards is
+pointless.
 
+It's even potentially harmful (though probably not in practice because
+CPER_REC_LEN is 256), due to the "return how much would have been
+written had the buffer been big enough" semantics. I.e., if the bank
+and/or device strings are long enough that the "DIMM location ..."
+output gets truncated, writing to msg[n] is a buffer overflow.
+
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Fixes: 3760cd20402d4 ("CPER: Adjust code flow of some functions")
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ drivers/firmware/efi/cper.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/drivers/firmware/efi/cper.c b/drivers/firmware/efi/cper.c
+index e15d484..ea7ca74 100644
+--- a/drivers/firmware/efi/cper.c
++++ b/drivers/firmware/efi/cper.c
+@@ -276,8 +276,7 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
+ 	if (!msg || !(mem->validation_bits & CPER_MEM_VALID_MODULE_HANDLE))
+ 		return 0;
+ 
+-	n = 0;
+-	len = CPER_REC_LEN - 1;
++	len = CPER_REC_LEN;
+ 	dmi_memdev_name(mem->mem_dev_handle, &bank, &device);
+ 	if (bank && device)
+ 		n = snprintf(msg, len, "DIMM location: %s %s ", bank, device);
+@@ -286,7 +285,6 @@ static int cper_dimm_err_location(struct cper_mem_err_compact *mem, char *msg)
+ 			     "DIMM location: not present. DMI handle: 0x%.4x ",
+ 			     mem->mem_dev_handle);
+ 
+-	msg[n] = '\0';
+ 	return n;
+ }
+ 
