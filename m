@@ -2,83 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C50B38D877
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 05:16:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A67B38D86D
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 05:15:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231659AbhEWDRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 23:17:30 -0400
-Received: from conuserg-10.nifty.com ([210.131.2.77]:31528 "EHLO
-        conuserg-10.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhEWDR0 (ORCPT
+        id S231617AbhEWDQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 23:16:59 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3914 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231540AbhEWDQ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 23:17:26 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-10.nifty.com with ESMTP id 14N3EZer018750;
-        Sun, 23 May 2021 12:14:39 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-10.nifty.com 14N3EZer018750
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1621739679;
-        bh=9gXQt/5pTlSD9vvZYhBVMZM8dS16BCrwnst1ZaKNMV0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Mt416BDTDXVoAbak7mwWloUp/dXtt+nAFbqRq6eZKWgMTdaVFZuuGvr0eeXiRz1V6
-         iuhCwhyTm2NEql3GxH0og8I48grjp8v6MlczhIT6i3cOWO7E1B4otv5iF6qdsdtSPz
-         Y+UTyUhHAauiOtPXe52O2xGlirIST/u6Wmh+47eGyA0Car18qo+tXzoHXMwFUb9HUW
-         I16q46TUMyky+ekMjZ9GC3hBQDlvO2CusaBCUov4GSV3f1o0doXGDv2JJUxqKWpqtO
-         SbhF25CZ7pq7qLTD+mBlBm0LpA3Uh+y6Nj3V6f2u+UsVlyXuroF1ehhPqVwPIITSdH
-         MrOXTaNkujJMA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Nico Schottelius <nico-linuxsetlocalversion@schottelius.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] scripts/setlocalversion: simplify the short version part
-Date:   Sun, 23 May 2021 12:14:28 +0900
-Message-Id: <20210523031428.164186-5-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210523031428.164186-1-masahiroy@kernel.org>
-References: <20210523031428.164186-1-masahiroy@kernel.org>
+        Sat, 22 May 2021 23:16:57 -0400
+Received: from dggems701-chm.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FnllC7123zBvSl;
+        Sun, 23 May 2021 11:12:39 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems701-chm.china.huawei.com (10.3.19.178) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Sun, 23 May 2021 11:15:29 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
+ May 2021 11:15:29 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <dougmill@linux.ibm.com>, <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH net-next] ehea: Use DEVICE_ATTR_*() macro
+Date:   Sun, 23 May 2021 11:15:04 +0800
+Message-ID: <20210523031504.11732-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reduce the indentation.
+Use DEVICE_ATTR_*() helper instead of plain DEVICE_ATTR,
+which makes the code a bit shorter and easier to read.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
 ---
+ drivers/net/ethernet/ibm/ehea/ehea_main.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
- scripts/setlocalversion | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/scripts/setlocalversion b/scripts/setlocalversion
-index 62c0bcce1575..151f04971faa 100755
---- a/scripts/setlocalversion
-+++ b/scripts/setlocalversion
-@@ -131,15 +131,13 @@ res="${res}${CONFIG_LOCALVERSION}${LOCALVERSION}"
- if test "$CONFIG_LOCALVERSION_AUTO" = "y"; then
- 	# full scm version string
- 	res="$res$(scm_version)"
--else
-+elif [ -z "${LOCALVERSION}" ]; then
- 	# append a plus sign if the repository is not in a clean
- 	# annotated or signed tagged state (as git describe only
- 	# looks at signed or annotated tags - git tag -a/-s) and
- 	# LOCALVERSION= is not specified
--	if test "${LOCALVERSION+set}" != "set"; then
--		scm=$(scm_version --short)
--		res="$res${scm:++}"
--	fi
-+	scm=$(scm_version --short)
-+	res="$res${scm:++}"
- fi
+diff --git a/drivers/net/ethernet/ibm/ehea/ehea_main.c b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+index ea55314b209d..fb639f7644bc 100644
+--- a/drivers/net/ethernet/ibm/ehea/ehea_main.c
++++ b/drivers/net/ethernet/ibm/ehea/ehea_main.c
+@@ -2867,14 +2867,14 @@ static int ehea_get_jumboframe_status(struct ehea_port *port, int *jumbo)
+ 	return ret;
+ }
  
- echo "$res"
+-static ssize_t ehea_show_port_id(struct device *dev,
+-				 struct device_attribute *attr, char *buf)
++static ssize_t log_port_id_show(struct device *dev,
++				struct device_attribute *attr, char *buf)
+ {
+ 	struct ehea_port *port = container_of(dev, struct ehea_port, ofdev.dev);
+ 	return sprintf(buf, "%d", port->logical_port_id);
+ }
+ 
+-static DEVICE_ATTR(log_port_id, 0444, ehea_show_port_id, NULL);
++static DEVICE_ATTR_RO(log_port_id);
+ 
+ static void logical_port_release(struct device *dev)
+ {
+@@ -3113,7 +3113,7 @@ static struct device_node *ehea_get_eth_dn(struct ehea_adapter *adapter,
+ 	return NULL;
+ }
+ 
+-static ssize_t ehea_probe_port(struct device *dev,
++static ssize_t probe_port_show(struct device *dev,
+ 			       struct device_attribute *attr,
+ 			       const char *buf, size_t count)
+ {
+@@ -3168,9 +3168,9 @@ static ssize_t ehea_probe_port(struct device *dev,
+ 	return (ssize_t) count;
+ }
+ 
+-static ssize_t ehea_remove_port(struct device *dev,
+-				struct device_attribute *attr,
+-				const char *buf, size_t count)
++static ssize_t remove_port_store(struct device *dev,
++				 struct device_attribute *attr,
++				 const char *buf, size_t count)
+ {
+ 	struct ehea_adapter *adapter = dev_get_drvdata(dev);
+ 	struct ehea_port *port;
+@@ -3203,8 +3203,8 @@ static ssize_t ehea_remove_port(struct device *dev,
+ 	return (ssize_t) count;
+ }
+ 
+-static DEVICE_ATTR(probe_port, 0200, NULL, ehea_probe_port);
+-static DEVICE_ATTR(remove_port, 0200, NULL, ehea_remove_port);
++static DEVICE_ATTR_WO(probe_port);
++static DEVICE_ATTR_WO(remove_port);
+ 
+ static int ehea_create_device_sysfs(struct platform_device *dev)
+ {
 -- 
-2.27.0
+2.17.1
 
