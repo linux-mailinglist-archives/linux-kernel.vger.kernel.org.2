@@ -2,100 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6004138DD9C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 00:43:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474F638DDA0
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 00:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232056AbhEWWpD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 18:45:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47472 "EHLO
+        id S232034AbhEWWzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 18:55:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231979AbhEWWo7 (ORCPT
+        with ESMTP id S232003AbhEWWzo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 18:44:59 -0400
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DAE5C06138A;
-        Sun, 23 May 2021 15:43:19 -0700 (PDT)
-Received: by mail-lj1-x236.google.com with SMTP id 131so31078959ljj.3;
-        Sun, 23 May 2021 15:43:19 -0700 (PDT)
+        Sun, 23 May 2021 18:55:44 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9983EC061756
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 15:54:16 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id v19-20020a0568301413b0290304f00e3d88so23488041otp.4
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 15:54:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Vo7Y/USVXA7FdLoJDS1IuqZi56jT5xVRIvIbv9vjjrY=;
-        b=ZTKMDUMVQW5ZtcLbkAl+ABOU7znqhxlG9djSFAZ0yHR0pCSpmNuHutbnrikmRGblvV
-         t3xBUaG9SN2Ybds0kFeH36C9nf5dodX8I/EL/GIfQ/78Q3/Co1wjtaHub5u1gylOGMcw
-         xrIzyVSSqA4CQqBwRGxTKJGc3IDn/44clQfCwkh0cV3naHqY4i2nujT7FH5w/Et48EFV
-         rn3/49F52yrKIyV7oKpsy8C49OZ5adqK+2Pw0L0bHRvVL7t1HiaXWhLFTkc1ma5BTeEs
-         zjDU6/N3Y9zeH8xDxAQWv+euo7Ni+H4xahXKL5Hbm3144zmPBdxOeF79DnzszhwtI/W0
-         suVg==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to;
+        bh=1K/Zf6qVFEuzf3LeeUWAQu7y8CgaCqs3dPr1inenPpI=;
+        b=bYyk8FSfT1TV7UPs81TdtN0954QCJeCRzD7K0EVI+uGfyiPaYKGqlEg9VcNPFobDZT
+         K7yUNwmnlXYrwbHLyx7KXSi0kufc2cCzDekTyd3wgQMi6NT4/zuHNPGL/5EumWXT2Lnr
+         qtVK+3VcB4PdJWIvq5vjekqXuQzzkAXFQaoxQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Vo7Y/USVXA7FdLoJDS1IuqZi56jT5xVRIvIbv9vjjrY=;
-        b=sxG76Da3oDHh1AAcGX8zIrDmyZBCD8EVqtVIKjBfJERXVOAsUtumHwgvuZTUWJfFa6
-         QRBEplsMKi7yRNar97kKQGuK0HNh2IUTItzdrbtKktNvQ8a9DHqrCTi8vMfKdYA9F74P
-         aIfC3mj7pWWtAjrPT6IuIM/NUTcF1HxR/z32zc2XmirMeBd4xk9txNJI+EWLOgS6wOTM
-         OHTs040jY2jV9Sxke4/DKaQw2nTxBeePBdBMaxelFJxmyxVpWIhP8lOQ66OILbwIvknR
-         BmhWcafbXbNmFikI58Rf+0FNWjY+ND16y2YeLGzvxr68Px4ekyJKJHarPaOs7aolqbk+
-         er+g==
-X-Gm-Message-State: AOAM5319jJxLSnCudTrSIr9dMSCFo/vl8yR8+o66zJtGbLPhgxg027TZ
-        Vyl29IFUKHeSu/IbMJ6lRtZAOG8Rch8=
-X-Google-Smtp-Source: ABdhPJxd5j62YTvZHuQZFBYMGzWjQsayY8QrxGugVE8YwcafkvrcLv8bULqBUiTmPpWVpH43PcPV5w==
-X-Received: by 2002:a05:651c:232:: with SMTP id z18mr15167885ljn.489.1621809797465;
-        Sun, 23 May 2021 15:43:17 -0700 (PDT)
-Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
-        by smtp.gmail.com with ESMTPSA id m5sm1531622ljg.118.2021.05.23.15.43.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 15:43:17 -0700 (PDT)
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v1 2/2] regulator: max77620: Silence deferred probe error
-Date:   Mon, 24 May 2021 01:42:43 +0300
-Message-Id: <20210523224243.13219-3-digetx@gmail.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210523224243.13219-1-digetx@gmail.com>
-References: <20210523224243.13219-1-digetx@gmail.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to;
+        bh=1K/Zf6qVFEuzf3LeeUWAQu7y8CgaCqs3dPr1inenPpI=;
+        b=DlNpT326VE3BcVEAKe+vdVvRTCLuTecB8epTYKxhxBydpxBntsAHy4RS3xc4CyoOkR
+         bhAxp97nRaeBEl2u9NEUlK4vCfC+kc32FsLmuqkFGB9DvyZvvpHj2ma4iKD4Sb9pU0wy
+         R+lC2xCkeFtu3KWfhOCynVVoqOtCyPvraC6Na+PYAnsYhVQotuZhCbE4DPNQxcwDQbAA
+         cbYWhSNQChVK0/Si03A37tkmAFZhSyjnFkMxfkARBhcqjACgN3X3Bqwx5yCci2nlr1cU
+         Ee2R8O5JSYXbrB3omHNPCX6GGIq20YJDKNvPaeoyIlO++Cc2/j9nqYbSTGWnAH/aULul
+         8eJA==
+X-Gm-Message-State: AOAM532vnNxjtkJ7Z4RPkiGmFEz9y0VIDSagrJLJLvJNM+v+UshN/Y86
+        MqGTeFHq7wc2hfAyVn46Vih8MhLDAk1tYtFy509JLw==
+X-Google-Smtp-Source: ABdhPJwoYoaR/C8nMh9n9rgeiaHd67jqnTMUKs8Z677FXDRZSbmeYGkUrXidIn9y95tLonGCJVOJSVXEF+TuV6VuoiA=
+X-Received: by 2002:a05:6830:1f51:: with SMTP id u17mr3389243oth.25.1621810455819;
+ Sun, 23 May 2021 15:54:15 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Sun, 23 May 2021 15:54:15 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210520142432.29869-1-srivasam@codeaurora.org>
+References: <20210520142432.29869-1-srivasam@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Sun, 23 May 2021 15:54:15 -0700
+Message-ID: <CAE-0n50A18vru2bXQuQTq==J5bGQEzw4uUYv9qG7rNB5uk19jw@mail.gmail.com>
+Subject: Re: [PATCH v2] ASoC: qcom: lpass-cpu: Fix pop noise during audio
+ capture begin
+To:     Srinivasa Rao Mandadapu <srivasam@codeaurora.org>,
+        agross@kernel.org, alsa-devel@alsa-project.org,
+        bgoswami@codeaurora.org, bjorn.andersson@linaro.org,
+        broonie@kernel.org, devicetree@vger.kernel.org,
+        judyhsiao@chromium.org, lgirdwood@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        perex@perex.cz, plai@codeaurora.org, robh+dt@kernel.org,
+        rohitkr@codeaurora.org, srinivas.kandagatla@linaro.org,
+        tiwai@suse.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of previous changes to regulator core causes PMIC regulators to
-re-probe until supply regulator is registered. Silence noisy error
-message about the deferred probe.
+Quoting Srinivasa Rao Mandadapu (2021-05-20 07:24:32)
+> This patch fixes PoP noise of around 15ms observed during audio capture begin.
+> Enables BCLK and LRCLK in snd_soc_dai_ops prepare call for introducing some delay
+> before capture start and clock enable.
+>
+> Signed-off-by: Judy Hsiao <judyhsiao@chromium.org>
+> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
 
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
----
- drivers/regulator/max77620-regulator.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+The SoB chain is weird. If Judy is first then Judy should show up with a
 
-diff --git a/drivers/regulator/max77620-regulator.c b/drivers/regulator/max77620-regulator.c
-index 5c439c850d09..3cf8f085170a 100644
---- a/drivers/regulator/max77620-regulator.c
-+++ b/drivers/regulator/max77620-regulator.c
-@@ -846,12 +846,10 @@ static int max77620_regulator_probe(struct platform_device *pdev)
- 			return ret;
- 
- 		rdev = devm_regulator_register(dev, rdesc, &config);
--		if (IS_ERR(rdev)) {
--			ret = PTR_ERR(rdev);
--			dev_err(dev, "Regulator registration %s failed: %d\n",
--				rdesc->name, ret);
--			return ret;
--		}
-+		if (IS_ERR(rdev))
-+			return dev_err_probe(dev, PTR_ERR(rdev),
-+					     "Regulator registration %s failed\n",
-+					     rdesc->name);
- 	}
- 
- 	return 0;
--- 
-2.30.2
+From: Judy Hsiao <judyhsiao@chromium.org>
 
+initially. Otherwise, it's a Co-developed-by: tag that should be after
+the SoB line.
+
+> ---
+> Changes Since V1:
+>         -- Enableed BCLK and LRCLK in dai ops prepare API instead of startup API
+>         -- Added comments
+>
+>  sound/soc/qcom/lpass-cpu.c | 48 ++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 46 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/qcom/lpass-cpu.c b/sound/soc/qcom/lpass-cpu.c
+> index c62d2612e8f5..c5bb3f16d25f 100644
+> --- a/sound/soc/qcom/lpass-cpu.c
+> +++ b/sound/soc/qcom/lpass-cpu.c
+> @@ -93,9 +93,18 @@ static void lpass_cpu_daiops_shutdown(struct snd_pcm_substream *substream,
+>                 struct snd_soc_dai *dai)
+>  {
+>         struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> +       struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
+> +       unsigned int id = dai->driver->id;
+>
+>         clk_disable_unprepare(drvdata->mi2s_osr_clk[dai->driver->id]);
+> -       clk_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+> +       /* To ensure BCLK/LRCLK disabled even in device node validation.
+> +         Will not impact if disabled in trigger suspend */
+
+/*
+ * Can you use proper kernel doc multi-line notation please?
+ */
+
+And also, can we point to the function that is not impacted by "trigger
+suspend"? Is that lpass_cpu_daiops_trigger()?
+
+> +       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +               regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_DISABLE);
+> +       else
+> +               regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_DISABLE);
+> +
+> +       clk_disable_unprepare(drvdata->mi2s_bit_clk[dai->driver->id]);
+>  }
+>
+>  static int lpass_cpu_daiops_hw_params(struct snd_pcm_substream *substream,
+> @@ -275,6 +284,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>         case SNDRV_PCM_TRIGGER_START:
+>         case SNDRV_PCM_TRIGGER_RESUME:
+>         case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +               /* To ensure lpass BCLK/LRCLK is enabled during
+> +                       device resume. Will not impact if enabled in prepare */
+>                 if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>                         ret = regmap_fields_write(i2sctl->spken, id,
+>                                                  LPAIF_I2SCTL_SPKEN_ENABLE);
+> @@ -296,6 +307,8 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>         case SNDRV_PCM_TRIGGER_STOP:
+>         case SNDRV_PCM_TRIGGER_SUSPEND:
+>         case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+> +               /* To ensure lpass BCLK/LRCLK is disabled during
+> +                       device suspend */
+>                 if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>                         ret = regmap_fields_write(i2sctl->spken, id,
+>                                                  LPAIF_I2SCTL_SPKEN_DISABLE);
+> @@ -308,19 +321,50 @@ static int lpass_cpu_daiops_trigger(struct snd_pcm_substream *substream,
+>                                 ret);
+>
+>                 clk_disable(drvdata->mi2s_bit_clk[dai->driver->id]);
+> -
+> +               break;
+> +       default:
+
+It confuses me that we're adding 'default' now. Why? Is some define not
+handled already? Why not use that define instead of 'default' so it is
+explicit what is being handled? How is it even related to this patch?
+
+>                 break;
+>         }
+>
+>         return ret;
+>  }
+>
+> +static int lpass_cpu_daiops_prepare(struct snd_pcm_substream *substream,
+> +               struct snd_soc_dai *dai)
+> +{
+> +       struct lpass_data *drvdata = snd_soc_dai_get_drvdata(dai);
+> +       struct lpaif_i2sctl *i2sctl = drvdata->i2sctl;
+> +       unsigned int id = dai->driver->id;
+> +       int ret = -EINVAL;
+
+ret will be assigned in the else though? Why assign it and then reassign
+it?
+
+> +       /* To ensure lpass BCLK/LRCLK is enabled bit before
+> +          playback/capture data flow starts */
+> +       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +               ret = regmap_fields_write(i2sctl->spken, id, LPAIF_I2SCTL_SPKEN_ENABLE);
+> +       else
+> +               ret = regmap_fields_write(i2sctl->micen, id, LPAIF_I2SCTL_MICEN_ENABLE);
+> +
+> +       if (ret)
+> +               dev_err(dai->dev, "error writing to i2sctl reg: %d\n",
+> +              ret);
+
+Why do we keep trying here instead of returning an error?
+
+> +
+> +       ret = clk_enable(drvdata->mi2s_bit_clk[id]);
+> +
+> +       if (ret) {
+> +               dev_err(dai->dev, "error in enabling mi2s bit clk: %d\n", ret);
+> +               clk_disable(drvdata->mi2s_osr_clk[id]);
+> +               return ret;
+> +       }
+> +       return 0;
+
+Could be
+
+	return ret;
+
+
+> +}
+> +
+> +
+
+Nitpick: Why two newlines?
+
+>  const struct snd_soc_dai_ops asoc_qcom_lpass_cpu_dai_ops = {
+>         .set_sysclk     = lpass_cpu_daiops_set_sysclk,
+>         .startup        = lpass_cpu_daiops_startup,
+>         .shutdown       = lpass_cpu_daiops_shutdown,
+>         .hw_params      = lpass_cpu_daiops_hw_params,
+>         .trigger        = lpass_cpu_daiops_trigger,
+> +       .prepare        = lpass_cpu_daiops_prepare,
+>  };
