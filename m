@@ -2,175 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6E538DB00
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 13:03:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA32A38DB1D
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 14:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231778AbhEWLFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 07:05:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbhEWLFH (ORCPT
+        id S231770AbhEWMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 08:07:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35661 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231735AbhEWMHv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 07:05:07 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D561BC061574;
-        Sun, 23 May 2021 04:03:39 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id c17so18483611pfn.6;
-        Sun, 23 May 2021 04:03:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=9Lt/AIdW6HrrFuSEZPcebw6uiQe1k5wv4Yjw5eCiDSA=;
-        b=o/LXRFj1N137rMWJZVD04xNaZdyn41IClD0VDUOUfyQsz+n2l5tELF76mITpZvxrQt
-         WwMesJ1N1v5P/kYanMxK7+bIfL6O/mGDHM0ToKwxAL8PPsg9/Iw1sKvLXgkOp755v+yd
-         nr/nf3Y220oIMVy5roxxxrwLtIOxVX1W26ceshPhf9tshUGDF7bCl29gKWQeBqkbhfFa
-         are3vBf5KcB8GfN+6t5m1ko/LhjPpzf1AidfHmGgK0WduNVcnHQ68gor2O5++/fpsN2s
-         6HI5LRGTqsST6BNa2+N3F4s6Wd8I4GOm3cs4fxdDDjW6BZ3804rZb3tMeERJo2ol+y0f
-         0cag==
+        Sun, 23 May 2021 08:07:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621771584;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fbca4TGkvKevqvVIisn5OD+hcWFB2SZBVwQGKJH6JIE=;
+        b=I2bD1fysdgtryHgCgH6F4fh+8g7+Cci2Kvh/4fcH02VtTTc+6gv45tjwO4Xw4kRaEbZHRm
+        dToiFi3Ih+H+n3EeP7StOP9k9U1iOK7fYI4tQ48wOqgfiwRm7/uJs6RYNxI98Bh5LdHoE7
+        u1f5ED78nOQEnBNchvGoIkWBzkg7Zaw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-501-FrowVd-NOgCI692Z5TtWfQ-1; Sun, 23 May 2021 08:06:23 -0400
+X-MC-Unique: FrowVd-NOgCI692Z5TtWfQ-1
+Received: by mail-wr1-f69.google.com with SMTP id a9-20020adfc4490000b0290112095ca785so6258240wrg.14
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 05:06:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
-         :message-id:user-agent:mime-version:content-transfer-encoding;
-        bh=9Lt/AIdW6HrrFuSEZPcebw6uiQe1k5wv4Yjw5eCiDSA=;
-        b=PZwAAANOOKokhnszWG+O7WSTEznvv4KpufD41JZdq5iVwnm4dzdQ6RxsDYe67SkfJY
-         OTwPtNrZ6Nl8wy8AUrZVcZHSwQeJbWmqO/BVrIV+AkzMHjQpiHJjhG9DfPK3FDKzSxk0
-         qv+fC6uWwiOTqg6PYmW1PcfQxcca9oW6+1GR87GiBmPG0c1OHy5li2fzb+IeN8A4s60W
-         gJ7RUwYFYkmYkWze+OZwxhdxOC0UZRbpXsh2O2V4g3jNEcj87TVW2Ne/dwYRHWL0xfQ2
-         jPMCLQ5wfq23blGexnvyNrjbFM45JJGqyxAWtBYJismex9hx0uR43eTdsWvhYclxdps8
-         NPvg==
-X-Gm-Message-State: AOAM530sivwLdkrwtQd9SW+9afkwFXXi+GSHqo7Sei0pHE21dd54GmWj
-        QHqNIzthTiD+DARqmdyETIM=
-X-Google-Smtp-Source: ABdhPJxsHyU5CpFgPLpX10jkw6h9MAsYtH8flePtQusfoht55zKY+VvtUG3rEeTURcuLbdbrXtM2+Q==
-X-Received: by 2002:a63:1210:: with SMTP id h16mr8084566pgl.189.1621767819261;
-        Sun, 23 May 2021 04:03:39 -0700 (PDT)
-Received: from localhost (122x211x248x161.ap122.ftth.ucom.ne.jp. [122.211.248.161])
-        by smtp.gmail.com with ESMTPSA id w206sm8282820pfc.61.2021.05.23.04.03.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 04:03:38 -0700 (PDT)
-From:   Punit Agrawal <punitagrawal@gmail.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Alexandru Elisei <alexandru.elisei@arm.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-rockchip@lists.infradead.org,
-        arm-mail-list <linux-arm-kernel@lists.infradead.org>,
-        heiko.stuebner@theobroma-systems.com, leobras.c@gmail.com,
-        Rob Herring <robh@kernel.org>, linux-pci@vger.kernel.org
-Subject: Re: [BUG] rockpro64: PCI BAR reassignment broken by commit
- 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to resource flags for 64-bit
- memory addresses")
-References: <7a1e2ebc-f7d8-8431-d844-41a9c36a8911@arm.com>
-        <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com>
-Date:   Sun, 23 May 2021 20:03:36 +0900
-In-Reply-To: <01efd004-1c50-25ca-05e4-7e4ef96232e2@arm.com> (Robin Murphy's
-        message of "Wed, 19 May 2021 12:27:48 +0100")
-Message-ID: <87eedxbtkn.fsf@stealth>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=Fbca4TGkvKevqvVIisn5OD+hcWFB2SZBVwQGKJH6JIE=;
+        b=CLa95PNggbUItz7QgYbeSD9K6qtmznPjkzcCCkM/pMrQk7mqt5waFRQZ1aBkmnwNK0
+         tnteP5vuAcbak7YcvCUw06qf5d+quqRD9VeAkwIca8AfREWwbXcFdlV4CJit19ZDjAyM
+         I+SABW/bfC7u/WMcnT8sz5Ids06mzNLuJVBaie5rQYVy3kENz1rO6vygNhEsqEp+vofb
+         pGLWHFR/xMF14MxOSwYEdxb3zRStk8WxaLmExl4iC13MdxyyAkTKB1HcVhfebnIJQVI0
+         QqbTzIGuQ1BbcRXGg3Wj7fR1KWrys+d0xXdKYqIRUk9idPs+KnY7IF+IhjbNOXWrXemH
+         WchQ==
+X-Gm-Message-State: AOAM5323o+o3mdssMDxfok4DjH7m/4Nm9KTQzWZe7PdpJSbrkbJKoMdY
+        RTLzwZ4nx69dDSxMfCQnrIj0GgKyzvpqwbY3EVXHNiTkfp1dRxixiSoa27tQDAIDc9SywVQgKSa
+        /Pp60VS3JYWqLLdV5211Glt08
+X-Received: by 2002:adf:fd45:: with SMTP id h5mr17244446wrs.383.1621771581826;
+        Sun, 23 May 2021 05:06:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwskhrhxyG9geMrYT8Ze0ONFTcfoteIYZZXYoPRqaBcB2+JSavlAvgOYa6Yy9nkhIDVIQ9rgA==
+X-Received: by 2002:adf:fd45:: with SMTP id h5mr17244438wrs.383.1621771581629;
+        Sun, 23 May 2021 05:06:21 -0700 (PDT)
+Received: from ?IPv6:2003:d8:2f38:2400:62f4:c5fa:ba13:ac32? (p200300d82f38240062f4c5faba13ac32.dip0.t-ipconnect.de. [2003:d8:2f38:2400:62f4:c5fa:ba13:ac32])
+        by smtp.gmail.com with ESMTPSA id y137sm4851720wmc.11.2021.05.23.05.06.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 23 May 2021 05:06:21 -0700 (PDT)
+Subject: Re: [PATCH] mm: page_alloc: dump migrate-failed pages only at -EBUSY
+To:     Minchan Kim <minchan@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        John Dias <joaodias@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        linux-mm <linux-mm@kvack.org>
+References: <20210519213341.2620708-1-minchan@kernel.org>
+ <YKa2Wyo9xqIErpfa@google.com>
+ <CADFyXm6jY1nbBsQ4nVXqJksNZKi1rDBw5igFSOLsVzw5sra6Tw@mail.gmail.com>
+ <YKbLtsUY2xg9QrYz@google.com>
+ <4c7104bc-6950-9334-a066-c01b92577b57@redhat.com>
+ <YKfwXtx7v/tuJQxc@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <586bb64e-b139-bd99-e7cb-f8148db2949a@redhat.com>
+Date:   Sun, 23 May 2021 14:06:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YKfwXtx7v/tuJQxc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Robin Murphy <robin.murphy@arm.com> writes:
+On 21.05.21 19:39, Minchan Kim wrote:
+> On Fri, May 21, 2021 at 10:08:15AM +0200, David Hildenbrand wrote:
+>> On 20.05.21 22:51, Minchan Kim wrote:
+>>> On Thu, May 20, 2021 at 09:28:09PM +0200, David Hildenbrand wrote:
+>>>> Minchan Kim <minchan@kernel.org> schrieb am Do. 20. Mai 2021 um 21:20:
+>>>>
+>>>>> On Wed, May 19, 2021 at 02:33:41PM -0700, Minchan Kim wrote:
+>>>>>> alloc_contig_dump_pages aims for helping debugging page migration
+>>>>>> failure by page refcount mismatch or something else of page itself
+>>>>>> from migration handler function. However, in -ENOMEM case, there is
+>>>>>> nothing to get clue from page descriptor information so just
+>>>>>> dump pages only when -EBUSY happens.
+>>>>>>
+>>>>>> Signed-off-by: Minchan Kim <minchan@kernel.org>
+>>>>>> ---
+>>>>>>    mm/page_alloc.c | 3 ++-
+>>>>>>    1 file changed, 2 insertions(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>>> index 3100fcb08500..c0a2971dc755 100644
+>>>>>> --- a/mm/page_alloc.c
+>>>>>> +++ b/mm/page_alloc.c
+>>>>>> @@ -8760,7 +8760,8 @@ static int __alloc_contig_migrate_range(struct
+>>>>> compact_control *cc,
+>>>>>>
+>>>>>>         lru_cache_enable();
+>>>>>>         if (ret < 0) {
+>>>>>> -             alloc_contig_dump_pages(&cc->migratepages);
+>>>>>> +             if (ret == -EBUSY)
+>>>>>> +                     alloc_contig_dump_pages(&cc->migratepages);
+>>>>>>                 putback_movable_pages(&cc->migratepages);
+>>>>>>                 return ret;
+>>>>>>         }
+>>>>>> --
+>>>>>> 2.31.1.751.gd2f1c929bd-goog
+>>>>>>
+>>>>>
+>>>>> Resend with a little modifying description.
+>>>>>
+>>>>>   From c5a2fea291cf46079b87cc9ac9a25fc7f819d0fd Mon Sep 17 00:00:00 2001
+>>>>> From: Minchan Kim <minchan@kernel.org>
+>>>>> Date: Wed, 19 May 2021 14:22:18 -0700
+>>>>> Subject: [PATCH] mm: page_alloc: dump migrate-failed pages only at -EBUSY
+>>>>>
+>>>>> alloc_contig_dump_pages aims for helping debugging page migration
+>>>>> failure by elevated page refcount compared to expected_count.
+>>>>> (for the detail, please look at migrate_page_move_mapping)
+>>>>>
+>>>>> However, -ENOMEM is just the case that system is under memory
+>>>>> pressure state, not relevant with page refcount at all. Thus,
+>>>>> the dumping page list is not helpful for the debugging point of view.
+>>>>>
+>>>>
+>>>> what about -ENOMEM when migrating empty/free huge pages? I think there is
+>>>> value in having the pages dumped to identify something like that. And it
+>>>> doesn‘t require heavy memory pressure to fail allocating a huge page.
+>>>>
+>>>
+>>> -ENOMEM means there is no memory to alloate destination page.
+>>> How could it help dumping source pages in those case from dump_page
+>>> content point of view?
+>>
+>> You would spot a huge page in the source list (usually at first position)
+>> without any obvious migration blockers I assume?
+> 
+> It was not a huge page case.
+> 
+>>
+>> I'm wondering, did you actually run into this being suboptimal? If it's a
+>> real problem dumping too many stuff when running into -ENOMEM, fine with me.
+>> If it's a theoretical issue, I'd prefer to just keep it simple as is.
+> 
+> That's exactly what I encountered. With -ENOMEM, it dumped bunch of
+> pages on migratepages list. It was just useless with just consuming
+> logbuffer since there are nothing much to investigate with dumping
+> source pages.
+> 
 
-> [ +linux-pci for visibility ]
->
-> On 2021-05-18 10:09, Alexandru Elisei wrote:
->> After doing a git bisect I was able to trace the following error when bo=
-oting my
->> rockpro64 v2 (rk3399 SoC) with a PCIE NVME expansion card:
->> [..]
->> [=C2=A0=C2=A0=C2=A0 0.305183] rockchip-pcie f8000000.pcie: host bridge /=
-pcie@f8000000 ranges:
->> [=C2=A0=C2=A0=C2=A0 0.305248] rockchip-pcie f8000000.pcie:=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 MEM 0x00fa000000..0x00fbdfffff ->
->> 0x00fa000000
->> [=C2=A0=C2=A0=C2=A0 0.305285] rockchip-pcie f8000000.pcie:=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 IO 0x00fbe00000..0x00fbefffff ->
->> 0x00fbe00000
->> [=C2=A0=C2=A0=C2=A0 0.306201] rockchip-pcie f8000000.pcie: supply vpcie1=
-v8 not found, using dummy
->> regulator
->> [=C2=A0=C2=A0=C2=A0 0.306334] rockchip-pcie f8000000.pcie: supply vpcie0=
-v9 not found, using dummy
->> regulator
->> [=C2=A0=C2=A0=C2=A0 0.373705] rockchip-pcie f8000000.pcie: PCI host brid=
-ge to bus 0000:00
->> [=C2=A0=C2=A0=C2=A0 0.373730] pci_bus 0000:00: root bus resource [bus 00=
--1f]
->> [=C2=A0=C2=A0=C2=A0 0.373751] pci_bus 0000:00: root bus resource [mem 0x=
-fa000000-0xfbdfffff 64bit]
->> [=C2=A0=C2=A0=C2=A0 0.373777] pci_bus 0000:00: root bus resource [io=C2=
-=A0 0x0000-0xfffff] (bus
->> address [0xfbe00000-0xfbefffff])
->> [=C2=A0=C2=A0=C2=A0 0.373839] pci 0000:00:00.0: [1d87:0100] type 01 clas=
-s 0x060400
->> [=C2=A0=C2=A0=C2=A0 0.373973] pci 0000:00:00.0: supports D1
->> [=C2=A0=C2=A0=C2=A0 0.373992] pci 0000:00:00.0: PME# supported from D0 D=
-1 D3hot
->> [=C2=A0=C2=A0=C2=A0 0.378518] pci 0000:00:00.0: bridge configuration inv=
-alid ([bus 00-00]),
->> reconfiguring
->> [=C2=A0=C2=A0=C2=A0 0.378765] pci 0000:01:00.0: [144d:a808] type 00 clas=
-s 0x010802
->> [=C2=A0=C2=A0=C2=A0 0.378869] pci 0000:01:00.0: reg 0x10: [mem 0x0000000=
-0-0x00003fff 64bit]
->> [=C2=A0=C2=A0=C2=A0 0.379051] pci 0000:01:00.0: Max Payload Size set to =
-256 (was 128, max 256)
->> [=C2=A0=C2=A0=C2=A0 0.379661] pci 0000:01:00.0: 8.000 Gb/s available PCI=
-e bandwidth, limited by
->> 2.5 GT/s PCIe x4 link at 0000:00:00.0 (capable of 31.504 Gb/s with 8.0 G=
-T/s PCIe
->> x4 link)
->> [=C2=A0=C2=A0=C2=A0 0.393269] pci_bus 0000:01: busn_res: [bus 01-1f] end=
- is updated to 01
->> [=C2=A0=C2=A0=C2=A0 0.393311] pci 0000:00:00.0: BAR 14: no space for [me=
-m size 0x00100000]
->> [=C2=A0=C2=A0=C2=A0 0.393333] pci 0000:00:00.0: BAR 14: failed to assign=
- [mem size 0x00100000]
->> [=C2=A0=C2=A0=C2=A0 0.393356] pci 0000:01:00.0: BAR 0: no space for [mem=
- size 0x00004000 64bit]
->> [=C2=A0=C2=A0=C2=A0 0.393375] pci 0000:01:00.0: BAR 0: failed to assign =
-[mem size 0x00004000 64bit]
->> [=C2=A0=C2=A0=C2=A0 0.393397] pci 0000:00:00.0: PCI bridge to [bus 01]
->> [=C2=A0=C2=A0=C2=A0 0.393839] pcieport 0000:00:00.0: PME: Signaling with=
- IRQ 78
->> [=C2=A0=C2=A0=C2=A0 0.394165] pcieport 0000:00:00.0: AER: enabled with I=
-RQ 78
->> [..]
->> to the commit 9d57e61bf723 ("of/pci: Add IORESOURCE_MEM_64 to
->> resource flags for
->> 64-bit memory addresses").
->
-> FWFW, my hunch is that the host bridge advertising no 32-bit memory
-> resource, only only a single 64-bit non-prefetchable one (even though=20
-> it's entirely below 4GB) might be a bit weird and tripping something
-> up in the resource assignment code. It certainly seems like the thing
-> most directly related to the offending commit.
->
-> I'd be tempted to try fiddling with that in the DT (i.e. changing
-> 0x83000000 to 0x82000000 in the PCIe node's "ranges" property) to see
-> if it makes any difference. Note that even if it helps, though, I
-> don't know whether that's the correct fix or just a bodge around a
-> corner-case bug somewhere in the resource code.
+Fine with me, then
 
-From digging into this further the failure seems to be due to a mismatch
-of flags when allocating resources in pci_bus_alloc_from_region() -
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-    if ((res->flags ^ r->flags) & type_mask)
-            continue;
+Thanks!
 
-Though I am also not sure why the failure is only being reported on
-RK3399 - does a single 64-bit window have anything to do with it?
+-- 
+Thanks,
 
-Also, I don't understand the motivation for the original commit. It is
-not clear what problem it is solving and the discussion thread seems to
-suggest that things work fine without it[0].
-
-[0] https://lore.kernel.org/linux-devicetree/CAL_JsqJXKVUFh9KrJjobn-jE-PFKN=
-0w-V_i3qkfBrpTah4g8Xw@mail.gmail.com/
-
-[...]
+David / dhildenb
 
