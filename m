@@ -2,67 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C7C38DC70
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 20:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E2E538DC76
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 20:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231907AbhEWSeI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 14:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49242 "EHLO
+        id S231899AbhEWSiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 14:38:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhEWSeH (ORCPT
+        with ESMTP id S231829AbhEWSiA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 14:34:07 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AD8C061574
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 11:32:40 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id r7so12828998ybs.10
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 11:32:40 -0700 (PDT)
+        Sun, 23 May 2021 14:38:00 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E90C061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 11:36:34 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id r7so12837456ybs.10
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 11:36:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MrBKPkLd0GPEoJRc/y1IxZTBQ7SxwLafLOfLA+MVi4Y=;
-        b=kvlo+cd5IVnaI9LZz/ljNfjHmPfQ27rucW8tNNag0/3T7j8dWVifg7+g7Z440XXUJF
-         QHNmO0wZexx6WDanF/JoubAwMWgjMhtkExAjiDmqP9+es6WHmw+GZmTf48C/i9P/xt1F
-         tbNfnj/mj5qL0Jwyxw56IZrCeYUYiVGvLvzsBlYsi4r3EPIQ2Rci1x3lq9GKIZIREq5i
-         Ne7GBDS+kdDrBBF0SZT6mdVRZeZPxJMy9kJHuQGQA5J+01ueR3nfl/KJjwDOBFgIriRu
-         Y/tyhFnwW6vQ9gQ2X4jXoSG25/jwhngWYP9SJ7XDBcMzKzZ4eUnuE5921D0nZxNlUieO
-         lfHw==
+        bh=03XYmR5CIbTeND39uiNb/fz/ALEdrry0SrBAAirnu9o=;
+        b=mNTE0RFjqqmZCZFp4yf2PcAQKkogc085XMLdio/Z5rdaFwsG9/f70jSnAsEmdYp9UX
+         Mbmfh2w2Vklydh4m3frt4mDuu6kdw9A2dD5jY1MUvvsSc6aoX3lOWJ6149ZkVPSyYtsd
+         f+5kryFaHDTjPA4Mmm1coLG0pYe8FueRms2nwA0J+IYzeSb9v6cXjkOMHrkpGJMTrzGh
+         BYTX+uC13PXiOE8OXr2Ydt4S2UloPKkhZFysHwqC0qUAhabcOf1ABHDChbdVpT41qHOH
+         YVNpB/m8ZtUnartSI8XftXT311jqh/+GeUzzKgVrsxpWklqEEhXIjqoaiMAf+R4yq9D1
+         OMhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MrBKPkLd0GPEoJRc/y1IxZTBQ7SxwLafLOfLA+MVi4Y=;
-        b=nIAFzB1Gy/w6aPnT4dxz1nZTxqKUgE4gwFxvNb5oJRaZDrmc3a5mw5xVyBX37l+4sT
-         NGbXpPnxy9r7assLw+VWe3TRmQPV46U59uqgr7rXY8kWQRVicVoRZQWFTgX0Z+bfsTmI
-         JD41w6X75k3d1pLNrYmynyjTBJ/UudjJPb+0l/njTsi9wUDg/iFbgXNUpXW2o0HWkQnE
-         8/VAm8dkJx1MKA9dv9NuRFskpeenVVUWiDpJ0F12TQ9B1qr7tBTMgUShxlwzrRDydS0O
-         Tu5ywI/wc79YjLTKNujYw0IMbSr/HvqcRyMH9VxbpIq85a4K6TGRmqe8FOokZ8SE3QTw
-         owog==
-X-Gm-Message-State: AOAM530Re48MHOx5696D3JTmP7y+MrtgDrofrn1kSDuqIZ5V6lqIdtvJ
-        93oVYAvcXmDGqTCFPQ6E2qgII2p2Zoawu/4KVKZbSQ==
-X-Google-Smtp-Source: ABdhPJwfxcVy5z34lJ3D92Wj9E7WhnjA/FPIzlOHSj5VEVWxK2RhtuZ3DMVzLygHQT5xuZ1dagLFIKVb46J32Tn5wsc=
-X-Received: by 2002:a25:287:: with SMTP id 129mr29266156ybc.312.1621794759679;
- Sun, 23 May 2021 11:32:39 -0700 (PDT)
+        bh=03XYmR5CIbTeND39uiNb/fz/ALEdrry0SrBAAirnu9o=;
+        b=pby2bUC4pjgpIbGdtdXjdmiWgfKPH37pZ8BnCg/1FlOUuM4/QTsd5y5NVVLW3dSBSn
+         b5vUoKP8Zn+Gy2yyY6xw36o/Zat8WQBlLHCX3f328YcxFqmBy8Ysu4A4DtHb81vfHhYa
+         VSLskC5sa1EenGgHa39nwV3H4w5L8dwk8w98J27eKVmIqONUxAXoWe9Z0FPcamZUNBQy
+         D3/W8QS5Qd+NChHTTgQgepDXSmR/Qe6VYhNGPFikVl6A20FD4Q4hPD882OZHOXzYIkaL
+         lpuE/4XgZ05W+JSdH2CZpaa9XhMsAEWT0JJNiOgLny64t6fI9eaiivh0rOsBMuD93H0w
+         8pUg==
+X-Gm-Message-State: AOAM530OmOuumUMfGUfCIWaSuU35rVx8BBxavsj71/jS+EQo3S9XTAuw
+        WjLtFh5TA2HzN17SBCdCLm8w3ZjmPPwEtDm6kK46NA==
+X-Google-Smtp-Source: ABdhPJym5FPAFCyPy70aI0BZWqYKWDSIhgkZPrxRi5TAaOCTRZVLKdjlCCYI2vqEA8HQLW4jTf88D5N9GeWzFmC1DC4=
+X-Received: by 2002:a25:8804:: with SMTP id c4mr30091433ybl.469.1621794993362;
+ Sun, 23 May 2021 11:36:33 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521181355.9983-1-aardelean@deviqon.com>
-In-Reply-To: <20210521181355.9983-1-aardelean@deviqon.com>
+References: <20210515075905.12150-1-aardelean@deviqon.com> <20210515075905.12150-2-aardelean@deviqon.com>
+In-Reply-To: <20210515075905.12150-2-aardelean@deviqon.com>
 From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Sun, 23 May 2021 20:32:28 +0200
-Message-ID: <CAMpxmJUT_ynN=9aVZ7DMSo+X2D2A0gakuAHmxrucue3ty=dZsg@mail.gmail.com>
-Subject: Re: [PATCH] gpio: gpio-da9052: remove platform_set_drvdata() +
+Date:   Sun, 23 May 2021 20:36:22 +0200
+Message-ID: <CAMpxmJVpUx-wu2oJ0QMVDN16coh=Dd7H_Oi5NCrvBXC6xunr-w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] gpio: gpio-tegra186: remove platform_set_drvdata() +
  cleanup probe
 To:     Alexandru Ardelean <aardelean@deviqon.com>
 Cc:     linux-gpio <linux-gpio@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Support Opensource <support.opensource@diasemi.com>
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 8:14 PM Alexandru Ardelean
+On Sat, May 15, 2021 at 9:59 AM Alexandru Ardelean
 <aardelean@deviqon.com> wrote:
 >
 > The platform_set_drvdata() call is only useful if we need to retrieve back
@@ -71,46 +72,37 @@ On Fri, May 21, 2021 at 8:14 PM Alexandru Ardelean
 >
 > If this is removed, we can also just do a direct return on
 > devm_gpiochip_add_data(). We don't need to print that this call failed as
-> there are other ways to log/see this during probe
+> there are other ways to log/see this during probe.
 >
 > Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 > ---
->  drivers/gpio/gpio-da9052.c | 11 +----------
->  1 file changed, 1 insertion(+), 10 deletions(-)
+>  drivers/gpio/gpio-tegra186.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 >
-> diff --git a/drivers/gpio/gpio-da9052.c b/drivers/gpio/gpio-da9052.c
-> index 9aa59afdcbbf..559188d80c2b 100644
-> --- a/drivers/gpio/gpio-da9052.c
-> +++ b/drivers/gpio/gpio-da9052.c
-> @@ -196,7 +196,6 @@ static int da9052_gpio_probe(struct platform_device *pdev)
->  {
->         struct da9052_gpio *gpio;
->         struct da9052_pdata *pdata;
-> -       int ret;
+> diff --git a/drivers/gpio/gpio-tegra186.c b/drivers/gpio/gpio-tegra186.c
+> index 10d3597e9ac2..f54ae9d4254a 100644
+> --- a/drivers/gpio/gpio-tegra186.c
+> +++ b/drivers/gpio/gpio-tegra186.c
+> @@ -741,13 +741,7 @@ static int tegra186_gpio_probe(struct platform_device *pdev)
+>                 offset += port->pins;
+>         }
 >
->         gpio = devm_kzalloc(&pdev->dev, sizeof(*gpio), GFP_KERNEL);
->         if (!gpio)
-> @@ -209,15 +208,7 @@ static int da9052_gpio_probe(struct platform_device *pdev)
->         if (pdata && pdata->gpio_base)
->                 gpio->gp.base = pdata->gpio_base;
->
-> -       ret = devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
-> -       if (ret < 0) {
-> -               dev_err(&pdev->dev, "Could not register gpiochip, %d\n", ret);
-> -               return ret;
-> -       }
-> -
 > -       platform_set_drvdata(pdev, gpio);
 > -
+> -       err = devm_gpiochip_add_data(&pdev->dev, &gpio->gpio, gpio);
+> -       if (err < 0)
+> -               return err;
+> -
 > -       return 0;
-> +       return devm_gpiochip_add_data(&pdev->dev, &gpio->gp, gpio);
+> +       return devm_gpiochip_add_data(&pdev->dev, &gpio->gpio, gpio);
 >  }
 >
->  static struct platform_driver da9052_gpio_driver = {
+>  #define TEGRA186_MAIN_GPIO_PORT(_name, _bank, _port, _pins)    \
 > --
 > 2.31.1
 >
 
-Applied, thanks!
+Normally I'd wait for Thierry's Ack but this cleanup is pretty
+straightforward so I applied both patches.
 
 Bart
