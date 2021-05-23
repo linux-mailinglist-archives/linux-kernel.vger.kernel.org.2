@@ -2,219 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 143B838DAC5
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8169938DAD1
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 12:04:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231691AbhEWJvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:51:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39374 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231153AbhEWJvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 05:51:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1621763392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIkBSe5bph9TeB96LqkuFwERBu7Gp635Ew/KzvtXbaU=;
-        b=tQ0/9kKIarh5kyo6D+F0f6mqcP27dkm8nfshJQ9QFo1AW+DtPReToHHAjMNvWWJ9NXU+J2
-        bMvFpiw99KFK1XGfrHEfWBeP7Oc8S3MpL87BBvbQ4/msOHy7o2bEt5dW3oc7SDy9oJ6Z/5
-        iiqEp5E+ci9NnsFE7NPtsibHzH3uo54=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1621763392;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=UIkBSe5bph9TeB96LqkuFwERBu7Gp635Ew/KzvtXbaU=;
-        b=FuZNb3pzsQzsLewU+vwuREIPRKabNfN1bpz92qU2eqT5adfb+4f412q855JVZiPCdgSiu8
-        Q008Vm4FzmAVzpBQ==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17559ACB7;
-        Sun, 23 May 2021 09:49:52 +0000 (UTC)
-Subject: Re: [PATCH RESEND] drm/hisilicon/kirin: Use the correct HiSilicon
- copyright
-To:     Hao Fang <fanghao11@huawei.com>, airlied@linux.ie, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org
-Cc:     xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
-        kong.kongxinwei@hisilicon.com, prime.zeng@hisilicon.com,
-        tiantao6@hisilicon.com
-References: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <92a24e79-bb4d-ddc1-35eb-a04361fd15fa@suse.de>
-Date:   Sun, 23 May 2021 11:49:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231696AbhEWKGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 06:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231654AbhEWKGP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 06:06:15 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32189C061574;
+        Sun, 23 May 2021 03:04:49 -0700 (PDT)
+Date:   Sun, 23 May 2021 10:04:46 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1621764287;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=5W8D+7/wjpOiCIVH7rU73m1fRoEyqSiT2kiG/P9u3ZA=;
+        b=pzpmxSgeDJbBQ7ZZ4vXFxMPHksSEG72NSlJ5bkLKqyJF4zX/wPWbgU23KeeX1J0EAmallB
+        qR/p8tl0AjuhLuR/jpMYvsq0QZGVu7BHVcR4DsHI6HD80DXTHzoOE5iW9GFpf+Q9YmUYkI
+        9BK3iiRzBTDdcRq5RW5fvNlk5z0dv9MKpDTo2z3I9HsPSkKsUtKd8P0SE/rsrfAl5wxxnY
+        momF4grBRPzDK5YJZcfFSGBYJOqgv4AlzgUl7W415UACdxRkE/RyuenlZnLGCFYk8FMWys
+        aavidjMusGc4bPLk+u8I7f3QBD/DpeKTKcRucQpsoHrdKGmRyspLAvguGT2f4Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1621764287;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=5W8D+7/wjpOiCIVH7rU73m1fRoEyqSiT2kiG/P9u3ZA=;
+        b=BSsC3dUXb11W0wsg0opghVw/9PB6ltGs6zkNeo8i2VO8DdWqKemjuqh9q54qDLZKof01Tj
+        eTdG4WT7iWWOYaBw==
+From:   "tip-bot2 for Paul Menzel" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: efi/core] x86/efi: Log 32/64-bit mismatch with kernel as an error
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>,
+        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-In-Reply-To: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a"
+Message-ID: <162176428679.29796.2511069274477726490.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a
-Content-Type: multipart/mixed; boundary="8okMKDKnU3SQP2PrEaXJDQmfHJxR6qBXk";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Hao Fang <fanghao11@huawei.com>, airlied@linux.ie, daniel@ffwll.ch,
- dri-devel@lists.freedesktop.org
-Cc: xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
- kong.kongxinwei@hisilicon.com, prime.zeng@hisilicon.com,
- tiantao6@hisilicon.com
-Message-ID: <92a24e79-bb4d-ddc1-35eb-a04361fd15fa@suse.de>
-Subject: Re: [PATCH RESEND] drm/hisilicon/kirin: Use the correct HiSilicon
- copyright
-References: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
-In-Reply-To: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
+The following commit has been merged into the efi/core branch of tip:
 
---8okMKDKnU3SQP2PrEaXJDQmfHJxR6qBXk
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     bb11580f61b6c4ba5c35706abd927c8ac8c32852
+Gitweb:        https://git.kernel.org/tip/bb11580f61b6c4ba5c35706abd927c8ac8c=
+32852
+Author:        Paul Menzel <pmenzel@molgen.mpg.de>
+AuthorDate:    Sat, 15 May 2021 10:14:04 +02:00
+Committer:     Ard Biesheuvel <ardb@kernel.org>
+CommitterDate: Sat, 22 May 2021 14:09:07 +02:00
 
-Hi
+x86/efi: Log 32/64-bit mismatch with kernel as an error
 
-Am 22.05.21 um 12:15 schrieb Hao Fang:
-> s/Hisilicon/HiSilicon/.
-> It should use capital S, according to
-> https://www.hisilicon.com/en.
->=20
-> Signed-off-by: Hao Fang <fanghao11@huawei.com>
-> Acked-by: Tian Tao <tiantao6@hisilicon.com>
+Log the message
 
-It's been acked already. Tian can merge it for you.
+    No EFI runtime due to 32/64-bit mismatch with kernel
 
-Best regards
-Thomas
+as an error condition, as several things like efivarfs won=E2=80=99t work
+without the EFI runtime.
 
-> ---
->   drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c    | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h    | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c | 2 +-
->   drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h | 2 +-
->   6 files changed, 6 insertions(+), 6 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c b/drivers/gpu=
-/drm/hisilicon/kirin/dw_drm_dsi.c
-> index 00e87c2..9b565a0 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
-> @@ -3,7 +3,7 @@
->    * DesignWare MIPI DSI Host Controller v1.02 driver
->    *
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    *
->    * Author:
->    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h b/drivers/gpu=
-/drm/hisilicon/kirin/dw_dsi_reg.h
-> index 19e81ff..d79fc03 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h
-> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h
-> @@ -1,7 +1,7 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    */
->  =20
->   #ifndef __DW_DSI_REG_H__
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_ade_reg.h
-> index e2ac098..be9e789 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h
-> @@ -1,7 +1,7 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    */
->  =20
->   #ifndef __KIRIN_ADE_REG_H__
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-> index 6dcf9ec..1ab9462 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
-> @@ -3,7 +3,7 @@
->    * Hisilicon Hi6220 SoC ADE(Advanced Display Engine)'s crtc&plane dri=
-ver
->    *
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    *
->    * Author:
->    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-> index 4349da3..e590e19 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
-> @@ -3,7 +3,7 @@
->    * Hisilicon Kirin SoCs drm master driver
->    *
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    *
->    * Author:
->    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
-> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h b/drivers/=
-gpu/drm/hisilicon/kirin/kirin_drm_drv.h
-> index 386d137..db0dc7b 100644
-> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
-> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
-> @@ -1,7 +1,7 @@
->   /* SPDX-License-Identifier: GPL-2.0-only */
->   /*
->    * Copyright (c) 2016 Linaro Limited.
-> - * Copyright (c) 2014-2016 Hisilicon Limited.
-> + * Copyright (c) 2014-2016 HiSilicon Limited.
->    */
->  =20
->   #ifndef __KIRIN_DRM_DRV_H__
->=20
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+---
+ arch/x86/platform/efi/efi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---8okMKDKnU3SQP2PrEaXJDQmfHJxR6qBXk--
-
---dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCqJT4FAwAAAAAACgkQlh/E3EQov+Do
-gxAAxdP6bRkUA7AYMgZQCcGLxjxkgQeHrt7YtpZQau3StsYnfoW3y6/zc662d4QxdypIB50fy9xP
-CtQv16b2cj1LwndrOxv94rrwsOhmqkqfKVun616ls1O2SPrAVaW+R7LsqY+TE0WwxmEv8nJiJHbR
-ARNi48sfZ5hv7jGj0namPyD87oH53SS2DW/0fxUidHEGiNhZQt/VDFSDf5ppN8277woyoTFFFlNy
-fmD0PxEdXmTonFil38DzgkZZ2Ad6zhxm3K0fwwZk8uK5De3HtwqrFVnw8doDeo8W/16P7Tt2ll1P
-EIL0+zkMGostCzGoFNPJksz4zKbjJ/NIEi/sc9hkS5a16jZ+QSMO6YzUnkT2GZkE0Ui9OVHKeO3k
-SDojlb5z1BFfMHLBOg07LkzjYaXOX6lFTZeuuKWf2PcdBIu1vLxTO4mwoug/isTK63CATQz4PzoH
-i0l/Jtr8UiuqK+WeJwjrh58yUDfA39KammRZnjH0FVayod/+zuJb54XpplboaVKtasvOmHw/puuy
-zi4N3i/JAE8MK5tRC3G3YD6bUgUNUq6rZ9oZ861BkLGzBzF10m+AAcpNhsVO7cUBmuuWGjrPhTIW
-0c/xP/IZhzvPqAS+PuzTt9vdq2kTSPLpxAm1D3lV0poKLYK2vCh5k4ke7TOGes3tcoXWuvj7XHsC
-Jq0=
-=dKWa
------END PGP SIGNATURE-----
-
---dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a--
+diff --git a/arch/x86/platform/efi/efi.c b/arch/x86/platform/efi/efi.c
+index 8a26e70..147c30a 100644
+--- a/arch/x86/platform/efi/efi.c
++++ b/arch/x86/platform/efi/efi.c
+@@ -468,7 +468,7 @@ void __init efi_init(void)
+ 	 */
+=20
+ 	if (!efi_runtime_supported())
+-		pr_info("No EFI runtime due to 32/64-bit mismatch with kernel\n");
++		pr_err("No EFI runtime due to 32/64-bit mismatch with kernel\n");
+=20
+ 	if (!efi_runtime_supported() || efi_runtime_disabled()) {
+ 		efi_memmap_unmap();
