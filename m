@@ -2,99 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BBF638DBCB
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 18:04:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2031038DBD2
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 18:08:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231881AbhEWQF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 12:05:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
+        id S231871AbhEWQJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 12:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231800AbhEWQF0 (ORCPT
+        with ESMTP id S231800AbhEWQJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 12:05:26 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979B6C061574;
-        Sun, 23 May 2021 09:03:58 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id y7so11516374eda.2;
-        Sun, 23 May 2021 09:03:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gJkD6i4SEo6SHdZ7GGHPrHMiskGVfh8CdW3Nufpvn2I=;
-        b=CnI3Abzt5Xv9BhXQL8KS9PW5422NN27D1tSFTpWB4Knv/ZRbOmrQ1ShJYV9KlqeGHS
-         z7Fe4E7REfieJoL5gru+JIA1CUtP5Bhrn8Zp54hRj4apLyiRkK26gDNXlL/C4Im/NCpi
-         BNqOYkHoIJCH8en6v7t4x2mrcOGf8k+MSGL6fTt3478Dou+Zeuhynm0cDXoc0hG8pzPJ
-         Tb8FGtTw2RTOBQGnSkSFnS49eAApdPQYIv7HKTS4/xHBnSD+PMKBCm2mmOl+6fSAT7GA
-         ovFDq21Va8xrotyiZVPDxWiGC1wLh3V7uPvJxHRXlGrD0g+kfn69UrKiFhnQ5xAoqAKI
-         guCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gJkD6i4SEo6SHdZ7GGHPrHMiskGVfh8CdW3Nufpvn2I=;
-        b=A7jifdV87PDyktMdQ0u4Eyf3496V+UtGUucKRgDHCGbJSVj55uHWZQWGYAt1ezB4g9
-         w9/vOUFQOUuzNnEwasuM7B4g893Xg9fbgBU8DTZwG/Vw5bGV6/2JNMTMO3bht3EazepQ
-         OYc4yJDDV/VNn2NkJhiUA9j9avG/vOc0LkqHtItTiHlKwSGbdqI53iP4MCOq7xyLHMTN
-         kco7hwa4Lz7UqrfabaKaxiCHuiSQUqI0d78tKkvIgZRRdmc3PgHjtPAjeURZB9kVpkuC
-         IqlNdBRpY4bD3USn0eF11JxIAuKTpn9HPBLxx8W7xNowizeJL8BRoxT21lq/EaoIPr+W
-         YOSQ==
-X-Gm-Message-State: AOAM533wROP7SL8EbUmzJw1B3N8b7AdDp4YodvstOyd2PLQpPQg1q7Of
-        GUMVjyG7tYvf0ei86gunr2EZmsOhao88CkeXurU=
-X-Google-Smtp-Source: ABdhPJxFDpHabe9W6/7esigrOS2kY4rmQITdh3xVTXAkjKPgodavQcSx3o8iM0vUCzjfrFm/ao20QTXEe9xq6Na96dM=
-X-Received: by 2002:a50:9346:: with SMTP id n6mr21297997eda.365.1621785837181;
- Sun, 23 May 2021 09:03:57 -0700 (PDT)
+        Sun, 23 May 2021 12:09:24 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 282F1C061574;
+        Sun, 23 May 2021 09:07:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=YjMoxwr94CpOc6dJiHNAtzWBKsQW76MYcER0tgF7dRY=; b=L2/bywvmr7ZsZ1/cyT7PkdwupN
+        RGX3WtpVC2pg0i+Dq2HdrHNvkJGjMww5w/mRYeY/gy0uEzieVbO1govHtQsdcir4/Jyao0dx9Hpz+
+        tQ0EI5xejPMftoarc/gq7BpldSTZ6fRSapPYNSSvYeB0hnkQoF7csoPx8oMU9rFv8GRAEPIR8uuKl
+        9GYuuhcSPdhq8jWgoXftBTI3UPzd7XhvRAllRohxe3KQZJSlnioAIn5ayRm8i78dnuauRUyhvdRpi
+        hW2Sif7rQGvVp5/mxypsj8lUQ4G+y/1r/emgzQwfjMTE2HMSuEyx1tcI9o83+vNvGOpKNlLspY1VN
+        caGVyoJQ==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lkqdv-000UQ5-NX; Sun, 23 May 2021 16:07:55 +0000
+Subject: Re: [PATCH v2] samples: bpf: ix kernel-doc syntax in file header
+To:     Aditya Srivastava <yashsri421@gmail.com>, kafai@fb.com
+Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-doc@vger.kernel.org, dledford@redhat.com, jgg@ziepe.ca,
+        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-rdma@vger.kernel.org,
+        netdev@vger.kernel.org, bpf@vger.kernel.org
+References: <20210523150917.21748-1-yashsri421@gmail.com>
+ <20210523151408.22280-1-yashsri421@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <33cd99d5-8d4a-df36-8ab0-e68da879aa69@infradead.org>
+Date:   Sun, 23 May 2021 09:07:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <79df054046224bbb0716a8c5c2082650290eec86.1621616013.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <79df054046224bbb0716a8c5c2082650290eec86.1621616013.git.christophe.jaillet@wanadoo.fr>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Sun, 23 May 2021 18:03:46 +0200
-Message-ID: <CAFBinCCBo4fYoO=2NiWTEixPuJo2Q=J1o1+yfi4Oc32SLi=GAw@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: meson-g12a: Disable the regulator in the error
- handling path of the probe
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
-        jbrunet@baylibre.com, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210523151408.22280-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christophe,
+On 5/23/21 8:14 AM, Aditya Srivastava wrote:
+> The opening comment mark '/**' is used for highlighting the beginning of
+> kernel-doc comments.
+> The header for samples/bpf/ibumad_kern.c follows this syntax, but
+> the content inside does not comply with kernel-doc.
+> 
+> This line was probably not meant for kernel-doc parsing, but is parsed
+> due to the presence of kernel-doc like comment syntax(i.e, '/**'), which
+> causes unexpected warnings from kernel-doc:
+> warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+>  * ibumad BPF sample kernel side
+> 
+> Provide a simple fix by replacing this occurrence with general comment
+> format, i.e. '/*', to prevent kernel-doc from parsing it.
+> 
+> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
 
-On Fri, May 21, 2021 at 6:55 PM Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> If an error occurs after a successful 'regulator_enable()' call,
-> 'regulator_disable()' must be called.
->
-> Fix the error handling path of the probe accordingly.
->
-> The remove function doesn't need to be fixed, because the
-> 'regulator_disable()' call is already hidden in 'dwc3_meson_g12a_suspend()'
-> which is called via 'pm_runtime_set_suspended()' in the remove function.
->
-> Fixes: c99993376f72 ("usb: dwc3: Add Amlogic G12A DWC3 glue")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-for me this makes sense so:
-Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
+
+Thanks.
 
 > ---
-> Please review carefully.
->
-> I'm not that sure about:
->    The remove function doesn't need to be fixed, because the
->    'regulator_disable()' call is already hidden in 'dwc3_meson_g12a_suspend()'
->    which is called via 'pm_runtime_set_suspended()' in the remove function.
->
-> This is more a guess than anything else!
-I am not 100% sure about the suspend code-path, so I am hoping that
-someone else (for example Neil) can also review your patch
+> Changes in v2: Include changes for both, samples/bpf/ibumad_kern.c and samples/bpf/ibumad_user.c in the same patch
+> 
+>  samples/bpf/ibumad_kern.c | 2 +-
+>  samples/bpf/ibumad_user.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/samples/bpf/ibumad_kern.c b/samples/bpf/ibumad_kern.c
+> index 26dcd4dde946..9b193231024a 100644
+> --- a/samples/bpf/ibumad_kern.c
+> +++ b/samples/bpf/ibumad_kern.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>  
+> -/**
+> +/*
+>   * ibumad BPF sample kernel side
+>   *
+>   * This program is free software; you can redistribute it and/or
+> diff --git a/samples/bpf/ibumad_user.c b/samples/bpf/ibumad_user.c
+> index d83d8102f489..0746ca516097 100644
+> --- a/samples/bpf/ibumad_user.c
+> +++ b/samples/bpf/ibumad_user.c
+> @@ -1,6 +1,6 @@
+>  // SPDX-License-Identifier: GPL-2.0 OR Linux-OpenIB
+>  
+> -/**
+> +/*
+>   * ibumad BPF sample user side
+>   *
+>   * This program is free software; you can redistribute it and/or
+> 
 
 
-Best regards,
-Martin
+-- 
+~Randy
+
