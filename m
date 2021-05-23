@@ -2,87 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ABEC38D92A
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 07:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DCC538D931
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 07:58:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231609AbhEWFtB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 01:49:01 -0400
-Received: from mga01.intel.com ([192.55.52.88]:10302 "EHLO mga01.intel.com"
+        id S231586AbhEWGAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 02:00:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231386AbhEWFtA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 01:49:00 -0400
-IronPort-SDR: GFTovgJJH//BQ9PN30soE1sziNg98j/GadNBT6vtTB3aAM7memuoIaAUH6IeJHGxLeiZX5aHmE
- pf/JiogmxW2Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9992"; a="222871171"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="222871171"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2021 22:47:34 -0700
-IronPort-SDR: GC0ZpBmkqFP7xLRiZ1xXyEnpSGojc1KmPElF1Gpipdi4uaeMHrYJwfP5aZAhzlhT8JpsZjWunz
- hOVmrcSu7lEw==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="475298038"
-Received: from sneftin-mobl.ger.corp.intel.com (HELO [10.214.192.226]) ([10.214.192.226])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2021 22:47:30 -0700
-Subject: Re: [PATCH] igc: change default return of igc_read_phy_reg()
-To:     trix@redhat.com, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org
-Cc:     intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Neftin, Sasha" <sasha.neftin@intel.com>,
-        "Fuxbrumer, DvoraX" <dvorax.fuxbrumer@intel.com>
-References: <20210521195019.2078661-1-trix@redhat.com>
-From:   "Neftin, Sasha" <sasha.neftin@intel.com>
-Message-ID: <85d1b413-3ab3-6cee-4197-785b0c099340@intel.com>
-Date:   Sun, 23 May 2021 08:47:27 +0300
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210521195019.2078661-1-trix@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S231540AbhEWGAU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 02:00:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id C8732611CB;
+        Sun, 23 May 2021 05:58:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621749534;
+        bh=F7/BwE440Fb+fQTAzAkled22MFeqdsC6NxFazIAMFi8=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=fr8T1/e25nzjT5YFTmq5yH9Ff3DD0m+y4KPDOSigYPNVIyR2wl3S51G3Vzn9Zuk+e
+         gs9thAgfSQese/2CTwacpuxr0sgvrYBqgQlqWdJqqSXrqQ+iOXYKWWk8M1af54DXEY
+         iH8IMrlznuU5TAVIn/cvfmnDKn+uOm95Fxoj+ACUnAJHxxcsXND0Qse8JRFh8Tag8x
+         96/Ko4MUxxE/jJScmQNWvTywY5t5qIuyeTjol70LQRkENqtPCQZToj0YTfvL67575p
+         bpqdm1jdjfGlr/z6Hu8fTRYQ7FjJWg3gaS2dsGhtp+q97LkOsBRphZWdEN9Ao2gkNO
+         e8XrDgj1s2vig==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B424360A38;
+        Sun, 23 May 2021 05:58:54 +0000 (UTC)
+Subject: Re: [GIT PULL] Kbuild fixes for v5.13-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAK7LNAQ-fcQGRFEAeQazDdi+Aq3+4FLDpuFotmMaSx0L9qAk5g@mail.gmail.com>
+References: <CAK7LNAQ-fcQGRFEAeQazDdi+Aq3+4FLDpuFotmMaSx0L9qAk5g@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNAQ-fcQGRFEAeQazDdi+Aq3+4FLDpuFotmMaSx0L9qAk5g@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.13
+X-PR-Tracked-Commit-Id: c93db682cfb213501881072a9200a48ce1dc3c3f
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4d7620341eda38573a73ab63c33423534fa38eb9
+Message-Id: <162174953467.7972.15144212210961663476.pr-tracker-bot@kernel.org>
+Date:   Sun, 23 May 2021 05:58:54 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/21/2021 22:50, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Static analysis reports this problem
-> 
-> igc_main.c:4944:20: warning: The left operand of '&'
->    is a garbage value
->      if (!(phy_data & SR_1000T_REMOTE_RX_STATUS) &&
->            ~~~~~~~~ ^
-Tom, thanks for this patch. I believe the same static analysis problem 
-should be with the 'igb_read_phy_reg' method:
-https://elixir.bootlin.com/linux/v5.13-rc1/source/drivers/net/ethernet/intel/igb/igb.h#L769
-> 
-> pyy_data is set by the call to igc_read_phy_reg() only if
-%s/pyy_data/phy_data/gc (typo)
-> there is a read_reg() op, else it is unset and a 0 is
-> returned.  Change the return to -EOPNOTSUPP.
-> 
-> Fixes: 208983f099d9 ("igc: Add watchdog")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->   drivers/net/ethernet/intel/igc/igc.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/intel/igc/igc.h b/drivers/net/ethernet/intel/igc/igc.h
-> index b6d3277c6f520..71100ee7afbee 100644
-> --- a/drivers/net/ethernet/intel/igc/igc.h
-> +++ b/drivers/net/ethernet/intel/igc/igc.h
-> @@ -577,7 +577,7 @@ static inline s32 igc_read_phy_reg(struct igc_hw *hw, u32 offset, u16 *data)
->   	if (hw->phy.ops.read_reg)
->   		return hw->phy.ops.read_reg(hw, offset, data);
->   
-> -	return 0;
-> +	return -EOPNOTSUPP;
->   }
->   
->   void igc_reinit_locked(struct igc_adapter *);
-> 
-Thanks,
-Sasha
+The pull request you sent on Sun, 23 May 2021 13:56:18 +0900:
+
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-fixes-v5.13
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4d7620341eda38573a73ab63c33423534fa38eb9
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
