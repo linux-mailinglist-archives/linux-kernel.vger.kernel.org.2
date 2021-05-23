@@ -2,71 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBCA438DBC7
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 18:02:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BBF638DBCB
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 18:04:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhEWQEX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 12:04:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45038 "EHLO
+        id S231881AbhEWQF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 12:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231789AbhEWQEV (ORCPT
+        with ESMTP id S231800AbhEWQF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 12:04:21 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E522C061574;
-        Sun, 23 May 2021 09:02:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=nf4kv69q0wLNCQzLT6osph4X3WdmmTcIkLYbJDobBeY=; b=RQjkD0eMDPvV+noiV/KJDkAgLv
-        96D9XW1NlR3V7y9qDT0Z9N+Xyt3g1JEql87qb7VnraS4NjvKLL6NMnjpw7OTswyRnIN7hZSNAuGKD
-        bkc3tY58KA6z4+W+R+I+ErYVIGXvT32GwebXqG7nhYU/JtGIzkob4Cjv5qxkAuqcgBOCNgUHDoMe9
-        /9dAyvsrg3C0HB4UScBJBKwCOfOEgyuvO3GYsx6ZHuGShUGmu2GiKMXclMVF5pXSfU4a4LONxbsdV
-        wEbpr2N5dA0fX3X/pc8/tEuciILO7cnNQhQyInaB3mtk7qfP6YEaVvIROQGupVukJdCaxXP/Rp3s9
-        dWoHwDEg==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lkqZ3-000UIl-JQ; Sun, 23 May 2021 16:02:53 +0000
-Subject: Re: [PATCH] w1: ds2482: fix kernel-doc syntax in file
-To:     Aditya Srivastava <yashsri421@gmail.com>, zbr@ioremap.net
-Cc:     lukas.bulwahn@gmail.com, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-doc@vger.kernel.org
-References: <20210523150122.21160-1-yashsri421@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <a73d2d15-20a5-b6bf-9cf3-3a78c3608822@infradead.org>
-Date:   Sun, 23 May 2021 09:02:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Sun, 23 May 2021 12:05:26 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979B6C061574;
+        Sun, 23 May 2021 09:03:58 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id y7so11516374eda.2;
+        Sun, 23 May 2021 09:03:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gJkD6i4SEo6SHdZ7GGHPrHMiskGVfh8CdW3Nufpvn2I=;
+        b=CnI3Abzt5Xv9BhXQL8KS9PW5422NN27D1tSFTpWB4Knv/ZRbOmrQ1ShJYV9KlqeGHS
+         z7Fe4E7REfieJoL5gru+JIA1CUtP5Bhrn8Zp54hRj4apLyiRkK26gDNXlL/C4Im/NCpi
+         BNqOYkHoIJCH8en6v7t4x2mrcOGf8k+MSGL6fTt3478Dou+Zeuhynm0cDXoc0hG8pzPJ
+         Tb8FGtTw2RTOBQGnSkSFnS49eAApdPQYIv7HKTS4/xHBnSD+PMKBCm2mmOl+6fSAT7GA
+         ovFDq21Va8xrotyiZVPDxWiGC1wLh3V7uPvJxHRXlGrD0g+kfn69UrKiFhnQ5xAoqAKI
+         guCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gJkD6i4SEo6SHdZ7GGHPrHMiskGVfh8CdW3Nufpvn2I=;
+        b=A7jifdV87PDyktMdQ0u4Eyf3496V+UtGUucKRgDHCGbJSVj55uHWZQWGYAt1ezB4g9
+         w9/vOUFQOUuzNnEwasuM7B4g893Xg9fbgBU8DTZwG/Vw5bGV6/2JNMTMO3bht3EazepQ
+         OYc4yJDDV/VNn2NkJhiUA9j9avG/vOc0LkqHtItTiHlKwSGbdqI53iP4MCOq7xyLHMTN
+         kco7hwa4Lz7UqrfabaKaxiCHuiSQUqI0d78tKkvIgZRRdmc3PgHjtPAjeURZB9kVpkuC
+         IqlNdBRpY4bD3USn0eF11JxIAuKTpn9HPBLxx8W7xNowizeJL8BRoxT21lq/EaoIPr+W
+         YOSQ==
+X-Gm-Message-State: AOAM533wROP7SL8EbUmzJw1B3N8b7AdDp4YodvstOyd2PLQpPQg1q7Of
+        GUMVjyG7tYvf0ei86gunr2EZmsOhao88CkeXurU=
+X-Google-Smtp-Source: ABdhPJxFDpHabe9W6/7esigrOS2kY4rmQITdh3xVTXAkjKPgodavQcSx3o8iM0vUCzjfrFm/ao20QTXEe9xq6Na96dM=
+X-Received: by 2002:a50:9346:: with SMTP id n6mr21297997eda.365.1621785837181;
+ Sun, 23 May 2021 09:03:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210523150122.21160-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <79df054046224bbb0716a8c5c2082650290eec86.1621616013.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <79df054046224bbb0716a8c5c2082650290eec86.1621616013.git.christophe.jaillet@wanadoo.fr>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Sun, 23 May 2021 18:03:46 +0200
+Message-ID: <CAFBinCCBo4fYoO=2NiWTEixPuJo2Q=J1o1+yfi4Oc32SLi=GAw@mail.gmail.com>
+Subject: Re: [PATCH] usb: dwc3: meson-g12a: Disable the regulator in the error
+ handling path of the probe
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     balbi@kernel.org, gregkh@linuxfoundation.org,
+        Neil Armstrong <narmstrong@baylibre.com>, khilman@baylibre.com,
+        jbrunet@baylibre.com, linux-usb@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/23/21 8:01 AM, Aditya Srivastava wrote:
-> The opening comment mark '/**' is used for highlighting the beginning of
-> kernel-doc comments.
-> The comments for drivers/w1/masters/ds2482.c follows this syntax, but
-> the content inside does not comply with kernel-doc.
-> 
-> Similarly, the syntax for function and arguments declaration as well.
-> 
-> Fix all such occurrences appropriately.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+Hi Christophe,
+
+On Fri, May 21, 2021 at 6:55 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>
+> If an error occurs after a successful 'regulator_enable()' call,
+> 'regulator_disable()' must be called.
+>
+> Fix the error handling path of the probe accordingly.
+>
+> The remove function doesn't need to be fixed, because the
+> 'regulator_disable()' call is already hidden in 'dwc3_meson_g12a_suspend()'
+> which is called via 'pm_runtime_set_suspended()' in the remove function.
+>
+> Fixes: c99993376f72 ("usb: dwc3: Add Amlogic G12A DWC3 glue")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+for me this makes sense so:
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+
 > ---
->  drivers/w1/masters/ds2482.c | 94 ++++++++++++++++++-------------------
->  1 file changed, 47 insertions(+), 47 deletions(-)
+> Please review carefully.
+>
+> I'm not that sure about:
+>    The remove function doesn't need to be fixed, because the
+>    'regulator_disable()' call is already hidden in 'dwc3_meson_g12a_suspend()'
+>    which is called via 'pm_runtime_set_suspended()' in the remove function.
+>
+> This is more a guess than anything else!
+I am not 100% sure about the suspend code-path, so I am hoping that
+someone else (for example Neil) can also review your patch
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-Tested-by: Randy Dunlap <rdunlap@infradead.org>
 
-thanks.
--- 
-~Randy
-
+Best regards,
+Martin
