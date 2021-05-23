@@ -2,91 +2,219 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C8538DAC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 143B838DAC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 11:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231669AbhEWJsm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 05:48:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47774 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231679AbhEWJsb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 05:48:31 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21F59C06138C;
-        Sun, 23 May 2021 02:47:04 -0700 (PDT)
-Date:   Sun, 23 May 2021 09:47:00 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1621763221;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9bure5Qg1NJmOySkFDDQUoAasHVVdJwha0wlu56c/Cg=;
-        b=u7fZVB7fUyO0Q0F/awpvldBWwzGm81/qN9FSlNH1qE2rxCooEdv8k+rdv3fw1LAsYqoZWb
-        mGiBnPy2dtR3uoxxfknkEfjNKeaNzaFBKe5XS4opi0Q35Prk080I6dAYEyBDz10iscSRjh
-        XGmya3dmHRxAuTX8g70L6uvujEbHnlP2vciFMw521Wu9OZSdu57XM0ihaYWSU445yzk4ht
-        hMOkIKkRWfjjkGDC1HzrG/0t0u/NR7uc7l8HmD9pdBqxXkUszmGWHWLDMZhm7Ber/RKwxU
-        bSG0fmc1IzlFSwHTyVUzx4ROid9cblAZ39BKwHHbY4pQjdPCAcKoN8qY9k/fXw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1621763221;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
-        bh=9bure5Qg1NJmOySkFDDQUoAasHVVdJwha0wlu56c/Cg=;
-        b=EKI7WdZkQwNIdw4altL9MASrIbSIN5QOjL9N9HjDkSEn1+w5Tgykgq6cp4MasLCHqbROoM
-        iBfclPYLJKDErRCQ==
-From:   "tip-bot2 for Changbin Du" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: efi/urgent] efi/fdt: fix panic when no valid fdt found
-Cc:     Changbin Du <changbin.du@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
+        id S231691AbhEWJvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 05:51:19 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39374 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231153AbhEWJvT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 05:51:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1621763392; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UIkBSe5bph9TeB96LqkuFwERBu7Gp635Ew/KzvtXbaU=;
+        b=tQ0/9kKIarh5kyo6D+F0f6mqcP27dkm8nfshJQ9QFo1AW+DtPReToHHAjMNvWWJ9NXU+J2
+        bMvFpiw99KFK1XGfrHEfWBeP7Oc8S3MpL87BBvbQ4/msOHy7o2bEt5dW3oc7SDy9oJ6Z/5
+        iiqEp5E+ci9NnsFE7NPtsibHzH3uo54=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1621763392;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UIkBSe5bph9TeB96LqkuFwERBu7Gp635Ew/KzvtXbaU=;
+        b=FuZNb3pzsQzsLewU+vwuREIPRKabNfN1bpz92qU2eqT5adfb+4f412q855JVZiPCdgSiu8
+        Q008Vm4FzmAVzpBQ==
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17559ACB7;
+        Sun, 23 May 2021 09:49:52 +0000 (UTC)
+Subject: Re: [PATCH RESEND] drm/hisilicon/kirin: Use the correct HiSilicon
+ copyright
+To:     Hao Fang <fanghao11@huawei.com>, airlied@linux.ie, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org
+Cc:     xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
+        kong.kongxinwei@hisilicon.com, prime.zeng@hisilicon.com,
+        tiantao6@hisilicon.com
+References: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <92a24e79-bb4d-ddc1-35eb-a04361fd15fa@suse.de>
+Date:   Sun, 23 May 2021 11:49:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Message-ID: <162176322081.29796.16823399891747450104.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the efi/urgent branch of tip:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a
+Content-Type: multipart/mixed; boundary="8okMKDKnU3SQP2PrEaXJDQmfHJxR6qBXk";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Hao Fang <fanghao11@huawei.com>, airlied@linux.ie, daniel@ffwll.ch,
+ dri-devel@lists.freedesktop.org
+Cc: xinliang.liu@linaro.org, linux-kernel@vger.kernel.org,
+ kong.kongxinwei@hisilicon.com, prime.zeng@hisilicon.com,
+ tiantao6@hisilicon.com
+Message-ID: <92a24e79-bb4d-ddc1-35eb-a04361fd15fa@suse.de>
+Subject: Re: [PATCH RESEND] drm/hisilicon/kirin: Use the correct HiSilicon
+ copyright
+References: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
+In-Reply-To: <1621678529-14389-1-git-send-email-fanghao11@huawei.com>
 
-Commit-ID:     668a84c1bfb2b3fd5a10847825a854d63fac7baa
-Gitweb:        https://git.kernel.org/tip/668a84c1bfb2b3fd5a10847825a854d63fac7baa
-Author:        Changbin Du <changbin.du@gmail.com>
-AuthorDate:    Wed, 24 Mar 2021 22:54:35 +08:00
-Committer:     Ard Biesheuvel <ardb@kernel.org>
-CommitterDate: Sat, 22 May 2021 14:03:42 +02:00
+--8okMKDKnU3SQP2PrEaXJDQmfHJxR6qBXk
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-efi/fdt: fix panic when no valid fdt found
+Hi
 
-setup_arch() would invoke efi_init()->efi_get_fdt_params(). If no
-valid fdt found then initial_boot_params will be null. So we
-should stop further fdt processing here. I encountered this
-issue on risc-v.
+Am 22.05.21 um 12:15 schrieb Hao Fang:
+> s/Hisilicon/HiSilicon/.
+> It should use capital S, according to
+> https://www.hisilicon.com/en.
+>=20
+> Signed-off-by: Hao Fang <fanghao11@huawei.com>
+> Acked-by: Tian Tao <tiantao6@hisilicon.com>
 
-Signed-off-by: Changbin Du <changbin.du@gmail.com>
-Fixes: b91540d52a08b ("RISC-V: Add EFI runtime services")
-Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
----
- drivers/firmware/efi/fdtparams.c | 3 +++
- 1 file changed, 3 insertions(+)
+It's been acked already. Tian can merge it for you.
 
-diff --git a/drivers/firmware/efi/fdtparams.c b/drivers/firmware/efi/fdtparams.c
-index bb042ab..e901f85 100644
---- a/drivers/firmware/efi/fdtparams.c
-+++ b/drivers/firmware/efi/fdtparams.c
-@@ -98,6 +98,9 @@ u64 __init efi_get_fdt_params(struct efi_memory_map_data *mm)
- 	BUILD_BUG_ON(ARRAY_SIZE(target) != ARRAY_SIZE(name));
- 	BUILD_BUG_ON(ARRAY_SIZE(target) != ARRAY_SIZE(dt_params[0].params));
- 
-+	if (!fdt)
-+		return 0;
-+
- 	for (i = 0; i < ARRAY_SIZE(dt_params); i++) {
- 		node = fdt_path_offset(fdt, dt_params[i].path);
- 		if (node < 0)
+Best regards
+Thomas
+
+> ---
+>   drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c    | 2 +-
+>   drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h    | 2 +-
+>   drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h | 2 +-
+>   drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c | 2 +-
+>   drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c | 2 +-
+>   drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h | 2 +-
+>   6 files changed, 6 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c b/drivers/gpu=
+/drm/hisilicon/kirin/dw_drm_dsi.c
+> index 00e87c2..9b565a0 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_drm_dsi.c
+> @@ -3,7 +3,7 @@
+>    * DesignWare MIPI DSI Host Controller v1.02 driver
+>    *
+>    * Copyright (c) 2016 Linaro Limited.
+> - * Copyright (c) 2014-2016 Hisilicon Limited.
+> + * Copyright (c) 2014-2016 HiSilicon Limited.
+>    *
+>    * Author:
+>    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h b/drivers/gpu=
+/drm/hisilicon/kirin/dw_dsi_reg.h
+> index 19e81ff..d79fc03 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h
+> +++ b/drivers/gpu/drm/hisilicon/kirin/dw_dsi_reg.h
+> @@ -1,7 +1,7 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only */
+>   /*
+>    * Copyright (c) 2016 Linaro Limited.
+> - * Copyright (c) 2014-2016 Hisilicon Limited.
+> + * Copyright (c) 2014-2016 HiSilicon Limited.
+>    */
+>  =20
+>   #ifndef __DW_DSI_REG_H__
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h b/drivers/=
+gpu/drm/hisilicon/kirin/kirin_ade_reg.h
+> index e2ac098..be9e789 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_ade_reg.h
+> @@ -1,7 +1,7 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only */
+>   /*
+>    * Copyright (c) 2016 Linaro Limited.
+> - * Copyright (c) 2014-2016 Hisilicon Limited.
+> + * Copyright (c) 2014-2016 HiSilicon Limited.
+>    */
+>  =20
+>   #ifndef __KIRIN_ADE_REG_H__
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c b/drivers/=
+gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> index 6dcf9ec..1ab9462 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_ade.c
+> @@ -3,7 +3,7 @@
+>    * Hisilicon Hi6220 SoC ADE(Advanced Display Engine)'s crtc&plane dri=
+ver
+>    *
+>    * Copyright (c) 2016 Linaro Limited.
+> - * Copyright (c) 2014-2016 Hisilicon Limited.
+> + * Copyright (c) 2014-2016 HiSilicon Limited.
+>    *
+>    * Author:
+>    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c b/drivers/=
+gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> index 4349da3..e590e19 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.c
+> @@ -3,7 +3,7 @@
+>    * Hisilicon Kirin SoCs drm master driver
+>    *
+>    * Copyright (c) 2016 Linaro Limited.
+> - * Copyright (c) 2014-2016 Hisilicon Limited.
+> + * Copyright (c) 2014-2016 HiSilicon Limited.
+>    *
+>    * Author:
+>    *	Xinliang Liu <z.liuxinliang@hisilicon.com>
+> diff --git a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h b/drivers/=
+gpu/drm/hisilicon/kirin/kirin_drm_drv.h
+> index 386d137..db0dc7b 100644
+> --- a/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
+> +++ b/drivers/gpu/drm/hisilicon/kirin/kirin_drm_drv.h
+> @@ -1,7 +1,7 @@
+>   /* SPDX-License-Identifier: GPL-2.0-only */
+>   /*
+>    * Copyright (c) 2016 Linaro Limited.
+> - * Copyright (c) 2014-2016 Hisilicon Limited.
+> + * Copyright (c) 2014-2016 HiSilicon Limited.
+>    */
+>  =20
+>   #ifndef __KIRIN_DRM_DRV_H__
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
+
+
+--8okMKDKnU3SQP2PrEaXJDQmfHJxR6qBXk--
+
+--dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmCqJT4FAwAAAAAACgkQlh/E3EQov+Do
+gxAAxdP6bRkUA7AYMgZQCcGLxjxkgQeHrt7YtpZQau3StsYnfoW3y6/zc662d4QxdypIB50fy9xP
+CtQv16b2cj1LwndrOxv94rrwsOhmqkqfKVun616ls1O2SPrAVaW+R7LsqY+TE0WwxmEv8nJiJHbR
+ARNi48sfZ5hv7jGj0namPyD87oH53SS2DW/0fxUidHEGiNhZQt/VDFSDf5ppN8277woyoTFFFlNy
+fmD0PxEdXmTonFil38DzgkZZ2Ad6zhxm3K0fwwZk8uK5De3HtwqrFVnw8doDeo8W/16P7Tt2ll1P
+EIL0+zkMGostCzGoFNPJksz4zKbjJ/NIEi/sc9hkS5a16jZ+QSMO6YzUnkT2GZkE0Ui9OVHKeO3k
+SDojlb5z1BFfMHLBOg07LkzjYaXOX6lFTZeuuKWf2PcdBIu1vLxTO4mwoug/isTK63CATQz4PzoH
+i0l/Jtr8UiuqK+WeJwjrh58yUDfA39KammRZnjH0FVayod/+zuJb54XpplboaVKtasvOmHw/puuy
+zi4N3i/JAE8MK5tRC3G3YD6bUgUNUq6rZ9oZ861BkLGzBzF10m+AAcpNhsVO7cUBmuuWGjrPhTIW
+0c/xP/IZhzvPqAS+PuzTt9vdq2kTSPLpxAm1D3lV0poKLYK2vCh5k4ke7TOGes3tcoXWuvj7XHsC
+Jq0=
+=dKWa
+-----END PGP SIGNATURE-----
+
+--dF42GZ0s0x292XIJHo8iDI6mDxeJICt4a--
