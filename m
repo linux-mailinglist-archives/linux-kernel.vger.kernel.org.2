@@ -2,111 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD8C38DC81
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 20:53:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0680638DC84
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 21:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231917AbhEWSyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 14:54:47 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:51042 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231853AbhEWSyp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 14:54:45 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 07C1C2A8;
-        Sun, 23 May 2021 20:53:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1621795997;
-        bh=0MbZwRbBUjdf9JuXa/VR/8NC9VAmYtB+9nqLUnykiFM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mW9zZyM3nNCcVNRy7hbSX4jvSOeAe64ygruErCf+u5VEX2Vr5Igz8r8BaOXaf8iU+
-         Zwmu/tScyWB3yAhVxeDmOcfElnoiUJWqgt8M0tMswSZnWb0ripAxpIQtBo8zacJhNf
-         LUDL+GJVi3MjGoYKbW2ESFIarPSE0q1FGxyjKkIM=
-Date:   Sun, 23 May 2021 21:53:13 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, Stefan Roese <sr@denx.de>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        Sinan Kaya <okaya@codeaurora.org>,
-        Green Wan <green.wan@sifive.com>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Tejas Upadhyay <tejasu@xilinx.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH 4/4] DMA: XILINX_ZYNQMP_DPDMA depends on HAS_IOMEM
-Message-ID: <YKqkmbZHPdbH2XtS@pendragon.ideasonboard.com>
-References: <20210522021313.16405-1-rdunlap@infradead.org>
- <20210522021313.16405-5-rdunlap@infradead.org>
- <YKmfs68Cq4osBaQ0@pendragon.ideasonboard.com>
- <5cb3b313-cd96-d687-2916-0d4af8e5e675@infradead.org>
+        id S231929AbhEWTF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 15:05:27 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:59150 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231857AbhEWTF0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 15:05:26 -0400
+Received: from zn.tnic (p200300ec2f2b61005704d7abf9db126c.dip0.t-ipconnect.de [IPv6:2003:ec:2f2b:6100:5704:d7ab:f9db:126c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 87EBD1EC0246;
+        Sun, 23 May 2021 21:03:58 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1621796638;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Oq23oAI7RjigdklR/0NDVVuAn8CdBc+CrtvFbupT1xQ=;
+        b=lWoeZ4QLzRbGdKieGXDRvEx7JeDUQfOx1ieICAJwhoevO8r2x0tI9SQXscQA6xIDN1WOFt
+        yaXbIhBWyUxSgXc5xhsMlCxOYj6WqAaW5fSWuNkzMzB/i3KMpG/O2gDYRqV7YWa4dgbmyD
+        4Z3HV5jH9F0dZtwxXEXYey+dO63E9Pg=
+Date:   Sun, 23 May 2021 21:03:52 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Samuel Neves <sneves@dei.uc.pt>
+Cc:     x86@kernel.org, ak@linux.intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] x86/usercopy: speed up 64-bit __clear_user() with
+ stos{b,q}
+Message-ID: <YKqnGA4t9hEizb62@zn.tnic>
+References: <20210523180423.108087-1-sneves@dei.uc.pt>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5cb3b313-cd96-d687-2916-0d4af8e5e675@infradead.org>
+In-Reply-To: <20210523180423.108087-1-sneves@dei.uc.pt>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-
-On Sat, May 22, 2021 at 06:07:01PM -0700, Randy Dunlap wrote:
-> On 5/22/21 5:20 PM, Laurent Pinchart wrote:
-> > On Fri, May 21, 2021 at 07:13:13PM -0700, Randy Dunlap wrote:
-> >> When CONFIG_HAS_IOMEM is not set/enabled, most iomap() family
-> >> functions [including ioremap(), devm_ioremap(), etc.] are not
-> >> available.
-> >> Drivers that use these functions should depend on HAS_IOMEM so that
-> >> they do not cause build errors.
-> >>
-> >> Cures this build error:
-> >> s390-linux-ld: drivers/dma/xilinx/xilinx_dpdma.o: in function `xilinx_dpdma_probe':
-> >> xilinx_dpdma.c:(.text+0x336a): undefined reference to `devm_platform_ioremap_resource'
-> > 
-> > I've previously posted
-> > https://lore.kernel.org/dmaengine/20210520152420.23986-2-laurent.pinchart@ideasonboard.com/T/#u
-> > which fixes the same issue (plus an additional one).
+On Sun, May 23, 2021 at 07:04:23PM +0100, Samuel Neves wrote:
+> The current 64-bit implementation of __clear_user consists of a simple loop
+> writing an 8-byte register per iteration. On typical x86_64 chips, this will
+> result in a rate of ~8 bytes per cycle.
 > 
-> Hi Laurent,
+> On those same typical chips, much better is often possible, ranging from 16
+> to 32 to 64 bytes per cycle. Here we want to avoid bringing vector
+> instructions for this, but we can still achieve something close to those fill
+> rates using `rep stos{b,q}`. This is actually how it is already done in
+> usercopy_32.c.
 > 
-> I didn't add a dependency on OF because OF header files _mostly_
-> have stubs so that they work when  OF is enabled or disabled.
+> This patch does precisely this. But because `rep stosb` can be slower for
+> short fills, I've retained the old loop for sizes below 256 bytes.
+
+Oh yes, you wanna retain the old code for old machines.
+
+But instead of adding more unreadable asm, you can test the size and if
+it is > 256 or whatever we decide is the magic value, call a separate
+function which contains the ERMS alternative. Similar to how those
+different functions are done in arch/x86/lib/copy_user_64.S.
+
+> This is a somewhat arbitrary threshold; some documents say that `rep
+> stosb` should be faster after 128 bytes, whereas glibc puts the
+> threshold at 2048 bytes (but there it is competing against vector
+> instructions). My measurements on various (but not an exhaustive
+> variety of) machines suggest this is a reasonable threshold, but I
+> could be mistaken.
+
+Those measurements should be part of this commit message. Also, you
+wanna test on the currently widely used microarchitectures.
+
+> It should also be mentioned that the existent code contains a bug. In the loop
 > 
-> I did find a problem in <linux/of_address.h> where it could end up
-> without having a stub. I will post a patch for that soon.
-> I'm currently doing lots of randconfig builds on it.
+>     "0: movq $0,(%[dst])\n"
+>     "   addq   $8,%[dst]\n"
+>     "   decl %%ecx ; jnz   0b\n"
+> 
+> The `decl %%ecx` instruction truncates the register containing `size/8` to
+> 32 bits, which means that calling __clear_user on a buffer longer than 32 GiB
+> would leave part of it unzeroed.
 
-I'm fine with eithe approach, but the patch you've posted to address the
-of_address.h issue has an issue itself.
+That needs to be a separate pre-patch fixing only this.
 
-If Vinod would prefer merging this patch instead of mine,
+> This change is noticeable from userspace. That is in fact how I spotted it; in
+> a hashing benchmark that read from /dev/zero, around 10-15% of the CPU time
+> was spent in __clear_user. After this patch, on a Skylake CPU, these are the
+> before/after figures:
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+I'm guessing you got those 10-15% with perf profiles?
 
-> >> Fixes: 7cbb0c63de3fc ("dmaengine: xilinx: dpdma: Add the Xilinx DisplayPort DMA engine driver")
-> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Cc: Vinod Koul <vkoul@kernel.org>
-> >> CC: dmaengine@vger.kernel.org
-> >> Cc: Hyun Kwon <hyun.kwon@xilinx.com>
-> >> Cc: Tejas Upadhyay <tejasu@xilinx.com>
-> >> Cc: Michal Simek <michal.simek@xilinx.com>
-> >> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> >> ---
-> >>  drivers/dma/Kconfig |    1 +
-> >>  1 file changed, 1 insertion(+)
-> >>
-> >> --- linux-next-20210521.orig/drivers/dma/Kconfig
-> >> +++ linux-next-20210521/drivers/dma/Kconfig
-> >> @@ -702,6 +702,7 @@ config XILINX_ZYNQMP_DMA
-> >>  
-> >>  config XILINX_ZYNQMP_DPDMA
-> >>  	tristate "Xilinx DPDMA Engine"
-> >> +	depends on HAS_IOMEM
-> >>  	select DMA_ENGINE
-> >>  	select DMA_VIRTUAL_CHANNELS
-> >>  	help
+It is a lot more persuasive when you have a before/after perf profile in
+your commit message showing how __clear_user() disappears from the list
+of hot functions.
+
+> $ dd if=/dev/zero of=/dev/null bs=1024k status=progress
+> 94402248704 bytes (94 GB, 88 GiB) copied, 6 s, 15.7 GB/s
+> 
+> $ dd if=/dev/zero of=/dev/null bs=1024k status=progress
+> 446476320768 bytes (446 GB, 416 GiB) copied, 15 s, 29.8 GB/s
+
+As said, you wanna test a couple of currently widespread architectures
+and also use a proper benchmark (not dd) to make sure you're not
+introducing regressions.
+
+Thx.
 
 -- 
-Regards,
+Regards/Gruss,
+    Boris.
 
-Laurent Pinchart
+https://people.kernel.org/tglx/notes-about-netiquette
