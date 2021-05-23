@@ -2,164 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A176738D7F9
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 02:10:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE55538D7FA
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 02:14:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231530AbhEWALz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 22 May 2021 20:11:55 -0400
-Received: from mga14.intel.com ([192.55.52.115]:28068 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231480AbhEWALt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 22 May 2021 20:11:49 -0400
-IronPort-SDR: 1cctSmfo+uPI5RHyj0G2VGKoexsIHsycHf7/R2YACbXwkMEQy+EQSvA2dD0/Q6j278kHDgBaCH
- TnVVe8CW8m+A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9992"; a="201435481"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="201435481"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 May 2021 17:10:24 -0700
-IronPort-SDR: QIaswGwuTcOHcYoZ9Cq/wOLHonAAWbCdyqkhzOBINeteJkUdbVcqx/edBJtAiNqkofCLHoe6c0
- EUJ+T18977OQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="395847456"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga003.jf.intel.com with ESMTP; 22 May 2021 17:10:22 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lkbhG-0000aB-AU; Sun, 23 May 2021 00:10:22 +0000
-Date:   Sun, 23 May 2021 08:09:45 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:rcu/next] BUILD SUCCESS
- 16b0662a5c98a7346d6aa9fb663b28434dcf0531
-Message-ID: <60a99d49.5Qtz9ZLs2bNxhZ99%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S231480AbhEWAQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 22 May 2021 20:16:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231451AbhEWAP5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 22 May 2021 20:15:57 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49E76C061574
+        for <linux-kernel@vger.kernel.org>; Sat, 22 May 2021 17:14:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=V741LUjrxIOzNlc1/QB9NN5ze4klKIAsKSm42CLSt1w=; b=QV34yF9LW3G4q7J9C7j5KvUNsq
+        unKDtg6B0H5huimaFdLd7+C80Ufl6cCC0ULOcc4wklJZGyZZJ2MfhYKeMuWED6412fe3fdbUOPRcp
+        bSctkRCvcu08duzYeKyGPMezOGevb5pxKjtyURh8WFs7JH8fTGgM3sAkWWFb+9aGI7jjTvtMtFoHD
+        XEVd95HGDeFlW5Qjfx/6CJYjCg1PyasNsK+CASpbaqHUy04zxNGA1gbMlJg4bVpamLLVeYypPnqge
+        AS4FnAkaDXheZVdJa+3NdJEpFNopYLf+odMBx4HGNoTdjXQsM8egmLeAe48Pod0OraDXBywrFpfJb
+        aEoio8KA==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lkblE-000FpR-JV; Sun, 23 May 2021 00:14:28 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>
+Subject: [PATCH] regulator: bd71815: add select to fix build
+Date:   Sat, 22 May 2021 17:14:27 -0700
+Message-Id: <20210523001427.13500-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git rcu/next
-branch HEAD: 16b0662a5c98a7346d6aa9fb663b28434dcf0531  rcu: Start timing stall repetitions after warning complete
+Mend the Kconfig for REGULATOR_BD71815 to prevent build errors:
 
-elapsed time: 757m
+riscv32-linux-ld: drivers/regulator/bd71815-regulator.o: in function `.L0 ':
+regulator.c:289: undefined reference to `rohm_regulator_set_dvs_levels'
+riscv32-linux-ld: drivers/regulator/bd71815-regulator.c:370: undefined reference to `rohm_regulator_set_dvs_levels'
 
-configs tested: 102
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                          pxa3xx_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                          g5_defconfig
-xtensa                generic_kc705_defconfig
-ia64                          tiger_defconfig
-arm                             ezx_defconfig
-arm                         lpc32xx_defconfig
-powerpc                 mpc85xx_cds_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     pseries_defconfig
-arm                          pxa910_defconfig
-sh                        sh7757lcr_defconfig
-mips                malta_qemu_32r6_defconfig
-m68k                          sun3x_defconfig
-m68k                           sun3_defconfig
-arm                        neponset_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a001-20210522
-x86_64               randconfig-a006-20210522
-x86_64               randconfig-a005-20210522
-x86_64               randconfig-a003-20210522
-x86_64               randconfig-a004-20210522
-x86_64               randconfig-a002-20210522
-i386                 randconfig-a001-20210522
-i386                 randconfig-a005-20210522
-i386                 randconfig-a002-20210522
-i386                 randconfig-a004-20210522
-i386                 randconfig-a003-20210522
-i386                 randconfig-a006-20210522
-i386                 randconfig-a016-20210523
-i386                 randconfig-a011-20210523
-i386                 randconfig-a015-20210523
-i386                 randconfig-a012-20210523
-i386                 randconfig-a014-20210523
-i386                 randconfig-a013-20210523
-i386                 randconfig-a016-20210522
-i386                 randconfig-a011-20210522
-i386                 randconfig-a015-20210522
-i386                 randconfig-a012-20210522
-i386                 randconfig-a014-20210522
-i386                 randconfig-a013-20210522
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-b001-20210522
-x86_64               randconfig-a013-20210522
-x86_64               randconfig-a014-20210522
-x86_64               randconfig-a012-20210522
-x86_64               randconfig-a016-20210522
-x86_64               randconfig-a015-20210522
-x86_64               randconfig-a011-20210522
-
+Fixes: 1aad39001e85 ("regulator: Support ROHM BD71815 regulators")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ drivers/regulator/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- linux-next-20210521.orig/drivers/regulator/Kconfig
++++ linux-next-20210521/drivers/regulator/Kconfig
+@@ -207,6 +207,7 @@ config REGULATOR_BD70528
+ config REGULATOR_BD71815
+ 	tristate "ROHM BD71815 Power Regulator"
+ 	depends on MFD_ROHM_BD71828
++	select REGULATOR_ROHM
+ 	help
+ 	  This driver supports voltage regulators on ROHM BD71815 PMIC.
+ 	  This will enable support for the software controllable buck
