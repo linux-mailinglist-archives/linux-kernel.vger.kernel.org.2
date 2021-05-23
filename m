@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6070238D961
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 09:02:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CB338D964
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 09:06:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231639AbhEWHDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 03:03:55 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3658 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231555AbhEWHDy (ORCPT
+        id S231623AbhEWHH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 03:07:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231555AbhEWHH0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 03:03:54 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Fnrnh22sgzmYZJ;
-        Sun, 23 May 2021 15:00:08 +0800 (CST)
-Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Sun, 23 May 2021 15:02:26 +0800
-Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
- (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Sun, 23
- May 2021 15:02:26 +0800
-From:   YueHaibing <yuehaibing@huawei.com>
-To:     <boris.ostrovsky@oracle.com>, <jgross@suse.com>,
-        <sstabellini@kernel.org>, <yuehaibing@huawei.com>
-CC:     <xen-devel@lists.xenproject.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] xen/pcpu: Use DEVICE_ATTR_RW macro
-Date:   Sun, 23 May 2021 15:02:14 +0800
-Message-ID: <20210523070214.34948-1-yuehaibing@huawei.com>
-X-Mailer: git-send-email 2.10.2.windows.1
+        Sun, 23 May 2021 03:07:26 -0400
+Received: from mail-yb1-xb31.google.com (mail-yb1-xb31.google.com [IPv6:2607:f8b0:4864:20::b31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7809C061574;
+        Sun, 23 May 2021 00:06:00 -0700 (PDT)
+Received: by mail-yb1-xb31.google.com with SMTP id b13so32127941ybk.4;
+        Sun, 23 May 2021 00:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JJ5WTjC0WyPsVTwdflI4inh3P5TZgEqktVKMaXkm0+4=;
+        b=XfbRWKZ83w1iYHQb/7Q6VC4Sm8CjCl/EbdECqi4PiSpCXcaVNmNx+NKKaih+Nv442A
+         0XXFcaq8XeKCb/Ql0Pa79WFp/+IBWiE01/aOd2kmZQwOeAyOOjwV7gg8jFPLnZ5RVDuQ
+         xVLM26jpsB4mBtmX2ot+Kyg3VKxvUMwuVYKCjseXUzqmY3X6x/a5+CCAiqOlDx+1FUsJ
+         s/8EeoK1fBy+S772FsRBM3QA3qJqpHihyg6KuA+FWoe79F9qt/gvQ6uvKKBOAiPJORlj
+         oA0yq7bgLpnaEgZPsyghQOvnPHhUTzP/qWnPz5vpxUjEPy3L50RxoI7wxMhaKZgnPIu2
+         1cKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JJ5WTjC0WyPsVTwdflI4inh3P5TZgEqktVKMaXkm0+4=;
+        b=UVVkxPkA3rEyv2OBPO1OGwyNvMWp8Ec7WrBfdPF2XkgUPTuOlMXWUs3UdlPqVVOO0I
+         Bf7q3Q7ibVaKCodPhFYysetNR4MaS+dKDbCmpEkR7QbnUOE5G7bvuY8mQK5KJLxVNc/Y
+         4DRnf88LBxCewQ8o0i9cTk9tD+WbJXx4yyQshcddGkUXYzqhLhdr+cHSeGht/GygyjzY
+         eDOEgWOx9mDT7fre7kZUfFN0Wjrz7MEclV+ieJv5H2aP4tI8o/vjDJyUcHE5GRDcP9Nv
+         M34YNt1ppEBUXZd20ypjqAbTA0hgi4luWpuMiZO8cJWtlGQHqYHpiVuaI1nEBIqvlPEV
+         bqTA==
+X-Gm-Message-State: AOAM532i0J69yMbGMN9I+bYXgy0LFrB3Sru3uoLJshh73PcWO0yZ5+0d
+        LmumCSLzXZSoeLtu+li8I+lRz5dNd4gFKpjr1PxlUBpOb6I=
+X-Google-Smtp-Source: ABdhPJy8qNErGH7nLxNMW7tCxFmbqj0Gw6sLxEeWq6AbALM0JRYgNwvGePaVDxKETnbyLvPHNvNsqwFd/m0LV2kutjU=
+X-Received: by 2002:a25:850b:: with SMTP id w11mr25666807ybk.518.1621753559766;
+ Sun, 23 May 2021 00:05:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.179.215]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggema769-chm.china.huawei.com (10.1.198.211)
-X-CFilter-Loop: Reflected
+References: <20210518052117.14819-1-lukas.bulwahn@gmail.com>
+ <20210518052117.14819-2-lukas.bulwahn@gmail.com> <69da627e-91c5-66f0-c0c9-75fbaaba6782@kernel.org>
+In-Reply-To: <69da627e-91c5-66f0-c0c9-75fbaaba6782@kernel.org>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Sun, 23 May 2021 09:05:48 +0200
+Message-ID: <CAKXUXMw21Up0WhSX0V=h5oYcw-ocLT0Bv=tUaekA1beoo6u+aA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/1] MAINTAINERS: TTY LAYER: add some ./include/linux/
+ header files
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use DEVICE_ATTR_RW helper instead of plain DEVICE_ATTR,
-which makes the code a bit shorter and easier to read.
+On Tue, May 18, 2021 at 7:37 AM Jiri Slaby <jirislaby@kernel.org> wrote:
+>
+> On 18. 05. 21, 7:21, Lukas Bulwahn wrote:
+> > An early prototypical automated code analysis of headers and the
+> > existing MAINTAINERS sections identified some header files in
+> > ./include/linux/ to be probably included into the TTY LAYER section.
+> >
+> > I further checked those suggestions by this analysis and identified a
+> > subset of files that I am rather certain to belong to the TTY LAYER.
+> >
+> > Add these ./include/linux/ header files to TTY LAYER in MAINTAINERS.
+> >
+> > The patterns include/linux/tty*.h and include/linux/vt_*.h currently cover:
+> >
+> >    include/linux/tty.h
+> >    include/linux/tty_driver.h
+> >    include/linux/tty_flip.h
+> >    include/linux/tty_ldisc.h
+> >
+> >    include/linux/vt_buffer.h
+> >    include/linux/vt_kern.h
+>
+> Yes, that looks good.
+>
+> Can you extend the tool to include/uapi too?
+>
+> For example this is missing too:
+> include/uapi/linux/tty*.h
+>
+> It expands to:
+> include/uapi/linux/tty_flags.h
+> include/uapi/linux/tty.h
+>
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
----
- drivers/xen/pcpu.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Jiri,
 
-diff --git a/drivers/xen/pcpu.c b/drivers/xen/pcpu.c
-index 1bcdd5227771..47aa3a1ccaf5 100644
---- a/drivers/xen/pcpu.c
-+++ b/drivers/xen/pcpu.c
-@@ -92,7 +92,7 @@ static int xen_pcpu_up(uint32_t cpu_id)
- 	return HYPERVISOR_platform_op(&op);
- }
- 
--static ssize_t show_online(struct device *dev,
-+static ssize_t online_show(struct device *dev,
- 			   struct device_attribute *attr,
- 			   char *buf)
- {
-@@ -101,7 +101,7 @@ static ssize_t show_online(struct device *dev,
- 	return sprintf(buf, "%u\n", !!(cpu->flags & XEN_PCPU_FLAGS_ONLINE));
- }
- 
--static ssize_t __ref store_online(struct device *dev,
-+static ssize_t __ref online_store(struct device *dev,
- 				  struct device_attribute *attr,
- 				  const char *buf, size_t count)
- {
-@@ -130,7 +130,7 @@ static ssize_t __ref store_online(struct device *dev,
- 		ret = count;
- 	return ret;
- }
--static DEVICE_ATTR(online, S_IRUGO | S_IWUSR, show_online, store_online);
-+static DEVICE_ATTR_RW(online);
- 
- static struct attribute *pcpu_dev_attrs[] = {
- 	&dev_attr_online.attr,
--- 
-2.17.1
+Greg already picked this patch up; so I will keep this patch as-is and move on.
 
+But I agree:
+I am still tuning my script and that still needs a bit of work, so I
+will still need some time until the next patches will follow.
+Once I am happy with the script and I go back to manual checking,
+review and adjustment of its output, I will follow your suggestion,
+and prioritize to check that all additions for ./include/linux and
+./include/uapi/linux are complete.
+However, I will probably not come back to the TTY LAYER for a while
+(until I can fully automate those patches with high confidence). The
+patch for the next subsystem will probably be MEMORY MANAGEMENT or so,
+depending if the manual checks and reviews show that the patches are
+sufficiently good for that second try. I will come back to TTY LAYER,
+once my method can assign all files in ./include sufficiently well to
+its corresponding MAINTAINERS section; that will then be probably part
+of a larger patch series for all MAINTAINERS sections and not just to
+check the method for one or two sections.
+
+Lukas
