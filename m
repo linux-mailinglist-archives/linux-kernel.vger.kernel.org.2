@@ -2,250 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E01438DDAE
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F49A38DDB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:13:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232054AbhEWXLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 19:11:22 -0400
-Received: from mga12.intel.com ([192.55.52.136]:2585 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231980AbhEWXLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 19:11:20 -0400
-IronPort-SDR: 5/Mcnj40q7Y8qhPW8btGCLcuv5Ffc4g4KWaCPnVe607/fX8rGjfynwoEZesWXgsE5FahmcpneJ
- IHL/1D2Pdz+A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="181456656"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="181456656"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 16:09:52 -0700
-IronPort-SDR: +Kb++Tg+/mjZQxK5jJHwloA1fukmoT4kCCjny+t2IGrPj/mAaZBYAzqnXZXDT9T6bnFTlgYCQY
- rTMj6snp0JuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="475540459"
-Received: from lkp-server02.sh.intel.com (HELO 1ec8406c5392) ([10.239.97.151])
-  by orsmga001.jf.intel.com with ESMTP; 23 May 2021 16:09:51 -0700
-Received: from kbuild by 1ec8406c5392 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lkxEE-000102-Vd; Sun, 23 May 2021 23:09:50 +0000
-Date:   Mon, 24 May 2021 07:09:04 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 5bb6f82b078c92e1e1f19502e90d6e951d5e01c2
-Message-ID: <60aae090.o8ym5h2re1jeIfMB%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S232076AbhEWXPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 19:15:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231980AbhEWXPR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 19:15:17 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A92EC061574;
+        Sun, 23 May 2021 16:13:49 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id w7so17766816lji.6;
+        Sun, 23 May 2021 16:13:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9TDs1IAuMTt6gby5ta7NVUMJ5XPCBAna36AQ7KVr83o=;
+        b=lyrKSMXHrbOdnfD1gaEYeGAfa2LIOGMcOtHP+USmjM/zk0CRAJfZ2wcH3SwVPwLz8R
+         /i5F7C2o+x5JWZL8U242sJbwwiaJmiyWmXbf+fvYtZ3OydpbHr8dpIOXJ/811XMGyaXi
+         dg9CxqhX6o0pFm32CjAa7k57osEM9hYTdQdfA3mT4ecIXamq+qcN8N/B6HU1qw5SiUM/
+         JvesnZsb+N8sLjH0JmZnGAplu6FJngT32y0rjcU99RNkL+xmpK3it5j7x0XD4iNitlh9
+         pLGTKIdaLawBkALufqo1THA11G0SlPDc7GpNN9k6mY+VBl7QWZFelFl56lNLrdha0TzO
+         VjGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9TDs1IAuMTt6gby5ta7NVUMJ5XPCBAna36AQ7KVr83o=;
+        b=aYf8Ov2kecDzjF3CM3WIwHq4F228ig5B8XxqzY+9qWDGW7NyJ4NkayWHcE15hKKTaU
+         bVM1/gVl6PaqDltL4h+TQPv0k+mweRuNcOzggBwUNPoIL2CB0xV68AC06tjLYA98/hZS
+         SauTFGJeTygxYIagP5FfvrWzHsBv3jKBrjiGfd3iPhQudwyGbstYrMDGOjPw1txEz3OO
+         Wvn/YcJiMSo8RGKCOTPr3qQs/bqFbjvWN6TR+I2t6V2ofF25wLen6mvC/4d25JaYykO5
+         tliHf1pI0JUEzyLv8ICnxPV3wEM4PdG/zoeGjlIMrIlGI3cH4+3lnbgT4MipSBpyyltX
+         5zHA==
+X-Gm-Message-State: AOAM532HI6+BBN5BAY47L8biSl1IpO7+mC7Qzg8Twp/l6alqnZJyhPtj
+        apQ2pIvxDxqvqHNqIBk9L1A=
+X-Google-Smtp-Source: ABdhPJyIl0e0RtyHHomQK9YyIH1PJZ8hNKhrksCU8b/rx2eg8Sm5HzEg0cBbW8tHO22veni57ChuMw==
+X-Received: by 2002:a2e:850d:: with SMTP id j13mr14926426lji.19.1621811626771;
+        Sun, 23 May 2021 16:13:46 -0700 (PDT)
+Received: from localhost.localdomain (109-252-193-110.dynamic.spd-mgts.ru. [109.252.193.110])
+        by smtp.gmail.com with ESMTPSA id p7sm1268619lfr.184.2021.05.23.16.13.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 16:13:46 -0700 (PDT)
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>,
+        =?UTF-8?q?Nikola=20Milosavljevi=C4=87?= <mnidza@outlook.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Matt Merhar <mattmerhar@protonmail.com>,
+        Paul Fertser <fercerpav@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Mikko Perttunen <mperttunen@nvidia.com>
+Cc:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-clk@vger.kernel.org
+Subject: [PATCH v2 00/14] NVIDIA Tegra memory and power management changes for 5.14
+Date:   Mon, 24 May 2021 02:13:21 +0300
+Message-Id: <20210523231335.8238-1-digetx@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 5bb6f82b078c92e1e1f19502e90d6e951d5e01c2  Merge branch 'efi/core'
+This series:
 
-elapsed time: 724m
+  1. Adds CPU/core voltage bump before system is rebooted.
+  2. Adds new devm_tegra_core_dev_init_opp_table() helper and switches
+     Tegra memory drivers to use it.
+  3. Adds compile-testing support to the Tegra memory drivers.
+  4. Adds Tegra SoC core power domain support.
 
-configs tested: 188
-configs skipped: 2
+Changelog:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+v2: - Added more clk stubs that should fix build error reported by the
+      kernel bot to v1 for the T210 memory driver.
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-sh                               j2_defconfig
-arm                            pleb_defconfig
-arm                         lubbock_defconfig
-arm                        mvebu_v7_defconfig
-sh                           se7619_defconfig
-powerpc                      tqm8xx_defconfig
-powerpc                      mgcoge_defconfig
-ia64                        generic_defconfig
-arm                         s5pv210_defconfig
-arm                          pxa168_defconfig
-powerpc                  iss476-smp_defconfig
-h8300                            allyesconfig
-powerpc                      chrp32_defconfig
-arm                         hackkit_defconfig
-openrisc                            defconfig
-openrisc                 simple_smp_defconfig
-powerpc                     tqm8541_defconfig
-xtensa                         virt_defconfig
-powerpc                mpc7448_hpc2_defconfig
-arm                            lart_defconfig
-sh                         microdev_defconfig
-mips                       capcella_defconfig
-arm                          lpd270_defconfig
-powerpc                      ppc64e_defconfig
-riscv                    nommu_virt_defconfig
-sh                            shmin_defconfig
-xtensa                           alldefconfig
-mips                      loongson3_defconfig
-arm                         orion5x_defconfig
-arc                          axs101_defconfig
-riscv                    nommu_k210_defconfig
-arm                           stm32_defconfig
-powerpc                       ppc64_defconfig
-arm                           h5000_defconfig
-sh                              ul2_defconfig
-nios2                         3c120_defconfig
-mips                     loongson2k_defconfig
-arm                         at91_dt_defconfig
-powerpc                 mpc836x_mds_defconfig
-sh                          urquell_defconfig
-sparc64                             defconfig
-mips                          rb532_defconfig
-mips                           ip27_defconfig
-sh                          kfr2r09_defconfig
-mips                malta_qemu_32r6_defconfig
-arm64                            alldefconfig
-sh                                  defconfig
-m68k                       m5475evb_defconfig
-arm                        spear6xx_defconfig
-um                             i386_defconfig
-xtensa                              defconfig
-sh                        edosk7705_defconfig
-sh                          landisk_defconfig
-arm                      footbridge_defconfig
-xtensa                       common_defconfig
-arm                          collie_defconfig
-sh                          rsk7201_defconfig
-arm                      pxa255-idp_defconfig
-m68k                            mac_defconfig
-powerpc                          allmodconfig
-m68k                        m5272c3_defconfig
-sh                           se7206_defconfig
-mips                          rm200_defconfig
-arm                        oxnas_v6_defconfig
-arm                       cns3420vb_defconfig
-m68k                          sun3x_defconfig
-arm                           viper_defconfig
-powerpc                 mpc8560_ads_defconfig
-sh                           sh2007_defconfig
-um                            kunit_defconfig
-arc                         haps_hs_defconfig
-mips                     loongson1c_defconfig
-sh                   sh7770_generic_defconfig
-mips                        vocore2_defconfig
-arm                         nhk8815_defconfig
-powerpc                      pasemi_defconfig
-powerpc                      obs600_defconfig
-mips                 decstation_r4k_defconfig
-arc                     haps_hs_smp_defconfig
-x86_64                           alldefconfig
-arm                         vf610m4_defconfig
-h8300                               defconfig
-powerpc                     akebono_defconfig
-riscv                          rv32_defconfig
-sh                        sh7757lcr_defconfig
-h8300                     edosk2674_defconfig
-powerpc                      pcm030_defconfig
-powerpc                 mpc8540_ads_defconfig
-m68k                          atari_defconfig
-powerpc                      katmai_defconfig
-sh                     sh7710voipgw_defconfig
-sh                          rsk7203_defconfig
-ia64                          tiger_defconfig
-mips                          ath25_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a005-20210524
-x86_64               randconfig-a001-20210524
-x86_64               randconfig-a006-20210524
-x86_64               randconfig-a003-20210524
-x86_64               randconfig-a004-20210524
-x86_64               randconfig-a002-20210524
-i386                 randconfig-a001-20210523
-i386                 randconfig-a005-20210523
-i386                 randconfig-a002-20210523
-i386                 randconfig-a003-20210523
-i386                 randconfig-a004-20210523
-i386                 randconfig-a006-20210523
-i386                 randconfig-a001-20210524
-i386                 randconfig-a002-20210524
-i386                 randconfig-a005-20210524
-i386                 randconfig-a006-20210524
-i386                 randconfig-a004-20210524
-i386                 randconfig-a003-20210524
-x86_64               randconfig-a013-20210523
-x86_64               randconfig-a014-20210523
-x86_64               randconfig-a012-20210523
-x86_64               randconfig-a016-20210523
-x86_64               randconfig-a015-20210523
-x86_64               randconfig-a011-20210523
-i386                 randconfig-a016-20210523
-i386                 randconfig-a011-20210523
-i386                 randconfig-a015-20210523
-i386                 randconfig-a012-20210523
-i386                 randconfig-a014-20210523
-i386                 randconfig-a013-20210523
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                           allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+    - Added r-b from Krzysztof Kozlowski to the memory patches.
 
-clang tested configs:
-x86_64               randconfig-b001-20210523
-x86_64               randconfig-b001-20210524
-x86_64               randconfig-a006-20210523
-x86_64               randconfig-a001-20210523
-x86_64               randconfig-a005-20210523
-x86_64               randconfig-a003-20210523
-x86_64               randconfig-a004-20210523
-x86_64               randconfig-a002-20210523
-x86_64               randconfig-a013-20210524
-x86_64               randconfig-a012-20210524
-x86_64               randconfig-a014-20210524
-x86_64               randconfig-a016-20210524
-x86_64               randconfig-a015-20210524
-x86_64               randconfig-a011-20210524
+    - Added back voltage restore on detaching of coupled regulators to
+      the T20 regulator coupler which previously got missed by accident.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+    - Added new patch:
+
+        regulator: core: Detach coupled regulator before coupling count is dropped
+
+      It fixes skipped voltage balancing on detaching of regulators which I
+      happened to notice due to the recent regression of the MAX77620 driver
+      that made driver to re-probe and detach coupled regulators.
+
+v1: - Merged previous patches into this single series.
+
+    - Added ack from Rob Herring to the core domain DT binding patch.
+
+    - Implemented suggestions that were given by Krzysztof Kozlowski:
+
+        - Factored out soc_is_tegra() stub into standalone patch.
+        - Updated tags of the "Fix compilation warnings on 64bit platforms"
+          patch, added reported-by from lkp robot and removed suggested-by
+          from Nathan Chancellor.
+        - Switched to use use BIT() macro.
+
+    - Added r-b from Krzysztof Kozlowski to "Enable compile testing for
+      all drivers" patch.
+
+    - Added r-b from Nathan Chancellor.
+
+    - Dropped voltage floor/ceiling from devm_tegra_core_dev_init_opp_table()
+      since only memory drivers now need to initialize voltage vote and they
+      don't need floor/ceil. This was suggested by Viresh Kumar.
+
+Dmitry Osipenko (14):
+  regulator: core: Add regulator_sync_voltage_rdev()
+  regulator: core: Detach coupled regulator before coupling count is
+    dropped
+  soc/tegra: regulators: Bump voltages on system reboot
+  soc/tegra: Add stub for soc_is_tegra()
+  soc/tegra: Add devm_tegra_core_dev_init_opp_table()
+  soc/tegra: fuse: Add stubs needed for compile-testing
+  clk: tegra: Add stubs needed for compile-testing
+  memory: tegra: Fix compilation warnings on 64bit platforms
+  memory: tegra: Enable compile testing for all drivers
+  memory: tegra20-emc: Use devm_tegra_core_dev_init_opp_table()
+  memory: tegra30-emc: Use devm_tegra_core_dev_init_opp_table()
+  dt-bindings: soc: tegra-pmc: Document core power domain
+  soc/tegra: pmc: Add core power domain
+  soc/tegra: regulators: Support core domain state syncing
+
+ .../arm/tegra/nvidia,tegra20-pmc.yaml         |  35 +++++
+ drivers/memory/tegra/Kconfig                  |  16 +-
+ drivers/memory/tegra/tegra124-emc.c           |   4 +-
+ drivers/memory/tegra/tegra20-emc.c            |  48 +-----
+ drivers/memory/tegra/tegra30-emc.c            |  52 +------
+ drivers/regulator/core.c                      |  37 ++++-
+ drivers/soc/tegra/Kconfig                     |  14 ++
+ drivers/soc/tegra/common.c                    |  97 ++++++++++++
+ drivers/soc/tegra/pmc.c                       | 143 ++++++++++++++++++
+ drivers/soc/tegra/regulators-tegra20.c        |  97 +++++++++++-
+ drivers/soc/tegra/regulators-tegra30.c        |  96 +++++++++++-
+ include/linux/clk/tegra.h                     |  82 +++++++---
+ include/linux/regulator/driver.h              |   1 +
+ include/soc/tegra/common.h                    |  38 +++++
+ include/soc/tegra/fuse.h                      |  20 ++-
+ 15 files changed, 650 insertions(+), 130 deletions(-)
+
+-- 
+2.30.2
+
