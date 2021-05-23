@@ -2,81 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE6438DC1F
-	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A43538DC21
+	for <lists+linux-kernel@lfdr.de>; Sun, 23 May 2021 19:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbhEWROC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 13:14:02 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:32879 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231907AbhEWRN7 (ORCPT
+        id S231955AbhEWROL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 13:14:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231888AbhEWROJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 13:13:59 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-6-cLEc0GmiMieukhPjIpklkg-1; Sun, 23 May 2021 18:12:26 +0100
-X-MC-Unique: cLEc0GmiMieukhPjIpklkg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sun, 23 May 2021 18:12:24 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sun, 23 May 2021 18:12:24 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Palmer Dabbelt' <palmer@dabbelt.com>,
-        "gary@garyguo.net" <gary@garyguo.net>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "nickhu@andestech.com" <nickhu@andestech.com>,
-        "nylon7@andestech.com" <nylon7@andestech.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] riscv: fix memmove and optimise memcpy when misalign
-Thread-Topic: [PATCH] riscv: fix memmove and optimise memcpy when misalign
-Thread-Index: AQHXT3WL0lTofUR6TU66MVYMSFr0J6rxS6gA
-Date:   Sun, 23 May 2021 17:12:23 +0000
-Message-ID: <17637b10e71b41b89126cbb1b2fa61cf@AcuMS.aculab.com>
-References: <20210522232256.00003f08@garyguo.net>
- <mhng-fdda10f7-fc83-4654-a0b2-e9c86b92c37e@palmerdabbelt-glaptop>
-In-Reply-To: <mhng-fdda10f7-fc83-4654-a0b2-e9c86b92c37e@palmerdabbelt-glaptop>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 23 May 2021 13:14:09 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10568C061574;
+        Sun, 23 May 2021 10:12:42 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id v8so24935334qkv.1;
+        Sun, 23 May 2021 10:12:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NI6VGTgdO7QUPT8Xbl98mX1OA2u/yEB+lofSkIV6DFs=;
+        b=Cv08fynHoQ3MdJJet/pK3X9cTxSniHt3KnvtbV43MHXpC8EgI7CB3ZmkQvDpeU+ldV
+         AXOpIRVo9PUUPrhvkMkeyxlsh5BOWuSlIqbDhXA2XDHSkRn1UZLjpZWNow/c0qPzbeYu
+         y5+5rLV9wslYZjJqRw87WlIG5v3AIYUXZuJbtgzmRUaw4rN3t6l44+o1eEVrhtCIS53w
+         KxLyliwMZP1fltrBWLtvagEwSpnEx0Qa+uuBw9AG8VvSlskxvRLE2ZKrwYhuicVDloOU
+         C/GFSfMFEfp/iNrpP5r7d29LimWwzj5Lp9aITO7UNutfDtwHS4attXoTHhcmMnM/BWVX
+         i7jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NI6VGTgdO7QUPT8Xbl98mX1OA2u/yEB+lofSkIV6DFs=;
+        b=CeoWQY2o4gFF80XDqdSMlIl7KHILG9ipISdGD2WozsnvvJkAEm3pdmNZepYwzsMEdM
+         JezrzlLw6yDkHeJcLb1JMBnZVB2mhHgJZ+Bngq01uUG926QXmhxxCCvCYC/yHfLjd970
+         hAXFlItGDwNtSzqE1dvL0xE6/gJaRvvpIBdR/6lmhNL+JIKu3Z2+4bWZR55jBxQ5Ihp0
+         sloRKHlHEi4o+FVNN1KUB/o+MZJ25Uniejrv5ue5ffK8zVyvwazFmygd1IIDxsyA3Vjt
+         lawtAe4/sYvBJGf4q/ID39co1tdN/EZNCKuEDpFYGrcZsgE7dYKi1FyUI5sbfD2e5pav
+         2vvQ==
+X-Gm-Message-State: AOAM531EoPNcPZ6luUOgncRlWdORmEzUdyr1kYAITLyeVYGJn43UAw0j
+        Z8R4LDomyKuHvyjPKEWjFxI=
+X-Google-Smtp-Source: ABdhPJzMy+yWRIRNkHTk1RCYZRyY0+b9LlR7tq95R7QTH1YZgdH9euujbyRqArU714Yh2EL+jvrcKg==
+X-Received: by 2002:a37:aa4c:: with SMTP id t73mr26395487qke.79.1621789961284;
+        Sun, 23 May 2021 10:12:41 -0700 (PDT)
+Received: from smtp.gmail.com ([2804:14c:73:9a01::1003])
+        by smtp.gmail.com with ESMTPSA id n18sm9115529qkh.13.2021.05.23.10.12.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 23 May 2021 10:12:40 -0700 (PDT)
+Date:   Sun, 23 May 2021 14:12:37 -0300
+From:   Lucas Stankus <lucas.p.stankus@gmail.com>
+To:     lars@metafoo.de, Michael.Hennerich@analog.com, jic23@kernel.org,
+        gregkh@linuxfoundation.org
+Cc:     linux-iio@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 3/3] staging: iio: cdc: ad7746: extract capac setup to own
+ function
+Message-ID: <b637a5ecde4e5f9f927a5b104332378d4721c91d.1621786036.git.lucas.p.stankus@gmail.com>
+References: <cover.1621786036.git.lucas.p.stankus@gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1621786036.git.lucas.p.stankus@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogUGFsbWVyIERhYmJlbHQNCj4gU2VudDogMjMgTWF5IDIwMjEgMDI6NDcNCi4uLg0KPiBJ
-TU8gdGhlIHJpZ2h0IHdheSB0byBnbyBoZXJlIGlzIHRvIGp1c3QgbW92ZSB0byBDLWJhc2VkIHN0
-cmluZyByb3V0aW5lcywNCj4gYXQgbGVhc3QgdW50aWwgd2UgZ2V0IHRvIHRoZSBwb2ludCB3aGVy
-ZSB3ZSdyZSBzZXJpb3VzbHkgb3B0aW1pemluZyBmb3INCj4gc3BlY2lmaWMgcHJvY2Vzc29ycy4g
-IFdlIHdlbnQgd2l0aCB0aGUgQy1iYXNlZCBzdHJpbmcgcm91bnRpbmVzIGluIGdsaWJjDQo+IGFz
-IHBhcnQgb2YgdGhlIHVwc3RyZWFtaW5nIHByb2Nlc3MgYW5kIGZvdW5kIG9ubHkgc29tZSBzbWFs
-bCBwZXJmb3JtYW5jZQ0KPiBkaWZmZXJlbmNlcyB3aGVuIGNvbXBhcmVkIHRvIHRoZSBoYW5kLXdy
-aXR0ZW4gYXNzZW1ibHksIGFuZCB0aGV5J3JlIHdheQ0KPiBlYXNpZXIgdG8gbWFpbnRhaW4uDQo+
-IA0KPiBJSVJDIExpbnV4IG9ubHkgaGFzIHRyaXZpYWwgQyBzdHJpbmcgcm91dGluZXMgaW4gbGli
-LCBJIHRoaW5rIHRoZSBiZXN0DQo+IHdheSB0byBnbyBhYm91dCB0aGF0IHdvdWxkIGJlIHRvIGhp
-Z2hlciBwZXJmb3JtYW5jZSB2ZXJzaW9ucyBpbiB0aGVyZS4NCj4gVGhhdCB3aWxsIGFsbG93IG90
-aGVyIHBvcnRzIHRvIHVzZSB0aGVtLg0KDQpJIGNlcnRhaW5seSB3b25kZXIgaG93IG11Y2ggYmVu
-ZWZpdCB0aGVzZSBtYXNzaXZlbHkgdW5yb2xsZWQNCmxvb3BzIGhhdmUgb24gbW9kZXJuIHN1cGVy
-c2NhbGVyIHByb2Nlc3NvcnMgLSBlc3BlY2lhbGx5IHRob3NlDQp3aXRoIGFueSBmb3JtIG9mICdv
-dXQgb2Ygb3JkZXInIGV4ZWN1dGlvbi4NCg0KSXQgaXMgb2Z0ZW4gZWFzeSB0byB3cml0ZSBhc3Nl
-bWJsZXIgd2hlcmUgYWxsIHRoZSBsb29wDQpjb250cm9sIGluc3RydWN0aW9ucyBoYXBwZW4gaW4g
-cGFyYWxsZWwgd2l0aCB0aGUgbWVtb3J5DQphY2Nlc3NlcyAtIHdoaWNoIGNhbm5vdCBiZSBhdm9p
-ZGVkLg0KTG9vcCB1bnJvbGxpbmcgaXMgc28gMTk3MHMuDQoNClNvbWV0aW1lcyB5b3UgbmVlZCB0
-byB1bnJvbGwgb25jZS4NCkFuZCBtYXliZSBpbnRlcmxlYXZlIHRoZSBsb2FkcyBhbmQgc3RvcmVz
-Lg0KQnV0IGFmdGVyIHRoYXQgeW91IGNhbiBqdXN0IGJlIHRyYXNoaW5nIHRoZSBpLWNhY2hlLg0K
-DQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQs
-IE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86
-IDEzOTczODYgKFdhbGVzKQ0K
+Refactor the capac register write logic to own function.
+
+Also fixes the following checkpatch warning:
+CHECK: Alignment should match open parenthesis
+
+Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+---
+ drivers/staging/iio/cdc/ad7746.c | 36 ++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
+index 367a5990ae35..4221312f0a32 100644
+--- a/drivers/staging/iio/cdc/ad7746.c
++++ b/drivers/staging/iio/cdc/ad7746.c
+@@ -209,6 +209,19 @@ static const unsigned char ad7746_cap_filter_rate_table[][2] = {
+ 	{16, 62 + 1}, {13, 77 + 1}, {11, 92 + 1}, {9, 110 + 1},
+ };
+ 
++static int ad7746_set_capdac(struct ad7746_chip_info *chip, int channel)
++{
++	int ret = i2c_smbus_write_byte_data(chip->client,
++					    AD7746_REG_CAPDACA,
++					    chip->capdac[channel][0]);
++	if (ret < 0)
++		return ret;
++
++	return i2c_smbus_write_byte_data(chip->client,
++					  AD7746_REG_CAPDACB,
++					  chip->capdac[channel][1]);
++}
++
+ static int ad7746_select_channel(struct iio_dev *indio_dev,
+ 				 struct iio_chan_spec const *chan)
+ {
+@@ -224,17 +237,11 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
+ 			AD7746_CONF_CAPFS_SHIFT;
+ 		delay = ad7746_cap_filter_rate_table[idx][1];
+ 
++		ret = ad7746_set_capdac(chip, chan->channel);
++		if (ret < 0)
++			return ret;
++
+ 		if (chip->capdac_set != chan->channel) {
+-			ret = i2c_smbus_write_byte_data(chip->client,
+-				AD7746_REG_CAPDACA,
+-				chip->capdac[chan->channel][0]);
+-			if (ret < 0)
+-				return ret;
+-			ret = i2c_smbus_write_byte_data(chip->client,
+-				AD7746_REG_CAPDACB,
+-				chip->capdac[chan->channel][1]);
+-			if (ret < 0)
+-				return ret;
+ 
+ 			chip->capdac_set = chan->channel;
+ 		}
+@@ -478,14 +485,7 @@ static int ad7746_write_raw(struct iio_dev *indio_dev,
+ 		chip->capdac[chan->channel][chan->differential] = val > 0 ?
+ 			AD7746_CAPDAC_DACP(val) | AD7746_CAPDAC_DACEN : 0;
+ 
+-		ret = i2c_smbus_write_byte_data(chip->client,
+-						AD7746_REG_CAPDACA,
+-						chip->capdac[chan->channel][0]);
+-		if (ret < 0)
+-			goto out;
+-		ret = i2c_smbus_write_byte_data(chip->client,
+-						AD7746_REG_CAPDACB,
+-						chip->capdac[chan->channel][1]);
++		ret = ad7746_set_capdac(chip, chan->channel);
+ 		if (ret < 0)
+ 			goto out;
+ 
+-- 
+2.31.1
 
