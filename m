@@ -2,89 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F99038DE1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:45:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB98C38DE21
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 01:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232142AbhEWXrL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 19:47:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhEWXrK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 19:47:10 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45DE3C061574;
-        Sun, 23 May 2021 16:45:42 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id gb21-20020a17090b0615b029015d1a863a91so10227297pjb.2;
-        Sun, 23 May 2021 16:45:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=t4U27o4bN+E4edMVs81xaohi1atx5g6UX4jkDMnrxlg=;
-        b=csfKvXBA2uho4nzAG162Ei7MseLwv3OLikn4kqxVPH7wNOWg+J/s9XyMtEPBEkHAxv
-         rKw3RGeSXEUKNUoZHq0U90I8lu7A5vcP5ujYEWM98a7tLPZhugyq6pLsoSz9usZyHv58
-         0hVAE6osdbHdcH8UmAbfael/DNjQZP4Yq9PNtUWwICveMf7ymoYrwFS4eDmI8E2bvaDo
-         uxf383bL514xsaeixuB81AxyGCjcpv58OoWHRTvTjVxcDPeIhkMAV32pA/4b+tE8drUm
-         D5/xBiZg/8XUIEyVhU8/02y7yNw5wmSLnqKC5q7OC5eVEf9MlkZRWAWnXBuPGclzLB1c
-         HvQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=t4U27o4bN+E4edMVs81xaohi1atx5g6UX4jkDMnrxlg=;
-        b=JahEhr7W+RpfK2tf+RqCQnCAJtHrOvPQf7dWOFRNMVZm8WjfS+5r7l4In0Mzlwgl/6
-         JFbYt0QKpmYzW32neF+efPnF45yXo7lQr4nQCfa+sCugbSe1ZXmpQiXY33N5s8xYzuYL
-         lfukAI/oXvm7LMt79waevnlsHrfzwmTNjVYblZgItToTXwIcsBwqsPD99frFwF7EYrr+
-         isxcXejWfF3SJnmWL5uFd+bovenO6Z9qUfckuLBSgmw54e08TJ2D4WdAdy3px+fIGRQ6
-         OBbz0SLUgTOGASXoOiP+hbdMvqZv8EteWVz/Kdjq8YebggYSnwXAZ++0shbTJRiD+8M9
-         r/Jg==
-X-Gm-Message-State: AOAM53091raGrASyIcTmWAfJTHrTCHMuGTaM2i+9g5tEQTEopPobPDEY
-        7m4RbpAZiipOI2eVAfMd7NA=
-X-Google-Smtp-Source: ABdhPJyhwgIeLnBL7gK2ncjiVoho2lSly/lYt98V1CHuGo8Bw+ycH5+ysViFEMpms8K+m9um2wrAGA==
-X-Received: by 2002:a17:903:10a:b029:f4:109c:dc08 with SMTP id y10-20020a170903010ab02900f4109cdc08mr22278232plc.10.1621813541760;
-        Sun, 23 May 2021 16:45:41 -0700 (PDT)
-Received: from Journey.localdomain ([223.226.180.251])
-        by smtp.gmail.com with ESMTPSA id y26sm9817444pge.94.2021.05.23.16.45.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 May 2021 16:45:41 -0700 (PDT)
-Date:   Mon, 24 May 2021 05:15:34 +0530
-From:   Hritik Vijay <hritikxx8@gmail.com>
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Networking <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Jiri Olsa <jolsa@kernel.org>
-Subject: Re: BPF: failed module verification on linux-next
-Message-ID: <YKrpHqp0PlZDe5Q2@Journey.localdomain>
-References: <20210519141936.GV8544@kitsune.suse.cz>
- <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
-MIME-Version: 1.0
+        id S232151AbhEWXrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 19:47:40 -0400
+Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:36890
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231982AbhEWXrh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 19:47:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZaqhCb/ESIv0hOnct/fJpC9vheV0eO/NFJ4xOpt4qcoJ0dffj14zEzgAPYewCRP+pVq4CCwO7wMLszrdE9QZOfysNWspqqCvNUta7j/uRSc8pQZFih/0byfOgWo925ccMkDLQvJnCY+9k0Rs5zKvgPUSnqeNJU6hnFSigFHmwmgBBWG88Syb0otLVo714K1uzp1kmROtg2+ic5HWMmEpV/saYhEwphB9SjTZhbcDo3cyin/ww55GMoFzASAWsCAUMleEemh06KO/lEHHuTH5Mgrs0MkJwSndF/S+duajoPfAUWkuWElcONJz5dbMsw9ZdNNqwQ5VmGFhJbFLMBdxAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hmVjzy+htPOyEHSlJh5MQCeyjqJSLoIwCkZ5bqmu4OM=;
+ b=fKFMz2HWCZc+/cr5CNQvnvDaNZNEWwIV6MDnSGTJGxEZ95l/Gamzr6InGpfrcbK7q6DfHFa247QfKrWKTvPOO7A+DbpQSBh/N80B8PzAy7jI6bfg6qEdaTrd5RfAfWaIyaSfCKXMYPtwvf5nCqpoJBF3c8vvZpO5Ku6egFFnxIM7tODvRIgn3WE2Z48L/oi3TmQlWIWBL3IldGtKRtpVsovGGfm53R9aHhbb/W+ZMbvJJjLtu7s17PBIbeGIpxbYHb1L07W+kQ/QRS+Kj0GdKsKESNGOtMYbB8FIU8QKRvEtUePpWoqor+3emb7hh8SIpjNQvZnQa1WcCEP/EQZdhg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hmVjzy+htPOyEHSlJh5MQCeyjqJSLoIwCkZ5bqmu4OM=;
+ b=M8+QDcwhbbQ8MF4mhmEsPCvbmYt5ob2jowyCnnkphFzEJ27LHhXGFx7JHDgKI0q+s0dApXU9X6y/R4VaAys6XpTPnJMyXvkmtGw/Xqta8gIOjaEihYKS8dLBG+pc9qTiDh3ERK9K/nFEeDd8ahjLfdLQdkQvWKS0lpT9pq/W32yGyitpUkQlUxcV8YKUTesxPHyy11K4ChmoQRIGoJLMjoJQ4dgen0XPoM2u6BRpeC9Si++LMfd3kZ6FrkHtAIipv2AGYpUPkmH4tqHmwaawJvIrT7zSVHuJ+afRWtYNNgTDqmTQAZayqszZFulydDOsUO+5ea9XwgXsKoYfUv7nhg==
+Authentication-Results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com (2603:10b6:208:1cb::22)
+ by BL1PR12MB5287.namprd12.prod.outlook.com (2603:10b6:208:317::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.26; Sun, 23 May
+ 2021 23:46:08 +0000
+Received: from BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e]) by BL0PR12MB5506.namprd12.prod.outlook.com
+ ([fe80::3d51:a3b9:8611:684e%7]) with mapi id 15.20.4150.027; Sun, 23 May 2021
+ 23:46:08 +0000
+Date:   Sun, 23 May 2021 20:46:06 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     alex.williamson@redhat.com, kwankhede@nvidia.com,
+        tglx@linutronix.de, vkoul@kernel.org, megha.dey@intel.com,
+        jacob.jun.pan@intel.com, ashok.raj@intel.com, yi.l.liu@intel.com,
+        baolu.lu@intel.com, kevin.tian@intel.com, sanjay.k.kumar@intel.com,
+        tony.luck@intel.com, dan.j.williams@intel.com,
+        eric.auger@redhat.com, pbonzini@redhat.com,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v6 13/20] vfio/mdev: idxd: add mdev driver registration
+ and helper functions
+Message-ID: <20210523234606.GJ1002214@nvidia.com>
+References: <162164243591.261970.3439987543338120797.stgit@djiang5-desk3.ch.intel.com>
+ <162164282601.261970.10405911922092921185.stgit@djiang5-desk3.ch.intel.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEf4BzZuU2TYMapSy7s3=D8iYtVw_N+=hh2ZMGG9w6N0G1HvbA@mail.gmail.com>
+In-Reply-To: <162164282601.261970.10405911922092921185.stgit@djiang5-desk3.ch.intel.com>
+X-Originating-IP: [206.223.160.26]
+X-ClientProxiedBy: YTBPR01CA0017.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:14::30) To BL0PR12MB5506.namprd12.prod.outlook.com
+ (2603:10b6:208:1cb::22)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by YTBPR01CA0017.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:14::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.27 via Frontend Transport; Sun, 23 May 2021 23:46:08 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lkxnK-00DUxd-AR; Sun, 23 May 2021 20:46:06 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 56fc8848-7a5b-46eb-0c83-08d91e44f01f
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5287:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL1PR12MB52876E000137CE66B9B51C3CC2279@BL1PR12MB5287.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ghj2tlS7wXAjix5OrIie2vr6QAve+LGODm2+c4cdpkXfBJjiRgpzr5opnUxzFC6WNJ+b/ypEHpryAGzosjgLER+v2wYNZ3Qd5guzsedbkN2uuYnembjb7+rI1fXaGavCQu2/P04x47sRekKKVK2Dy0+A/EMTSPIzl+4fqw3LHdf1kRYGhsc8J71idXLbSeLIcL9OLMu+izwXlYRBlb3zyfEMcz4HoWgUpyGDAVXbI6sIjgzNgtnMWiPEeOtT/Jqc0kpY5Kazlzx+BfrFHuCYOSf/Hdobbj43uNsAXf7rGauHOZLLXjd/8OCJ0MfNqLQLh6Aph2GoOxjO/cPOT8eJzms8x6/vU01zFno8cr7BP1luZv8YrcipfIlp0thlv1JyPS8b+uE9zKD3So7YFZ12zMoNB3oeavLLT6qimbt3H380BHTZwnZYkx1wJKSPypBFPx2oczuu0D8iOdMDYNKQc0B8tHwjlpdXP1nKRGv4TFiYXi2ejvLf2kzlf2t6Upkir/1NZP6Nq6Vc68/pHCgOEfOiYbe7h+Sh4eaStu3OFJoOKvuXWSgIfdRrYBlMIb9I2STeWIld3Cf8Gi+olSQ1hVL+2TU5K4oVSCNwEfVBiVI=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR12MB5506.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(39860400002)(376002)(396003)(346002)(36756003)(83380400001)(316002)(478600001)(8676002)(8936002)(4326008)(33656002)(186003)(66946007)(2616005)(38100700002)(1076003)(26005)(86362001)(6916009)(9746002)(5660300002)(426003)(2906002)(66476007)(66556008)(7416002)(9786002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6ps8Wm8VJGfmOx8XcJQRErnLL2wB9erbiU/zyBsxpW31vuNjdTM3mK7qPcXf?=
+ =?us-ascii?Q?MEWk6CbVnb8MCsFm9eykkQ9HirEzqjLUwuw7lRWcOR5xUaBoofHXhPAl83lY?=
+ =?us-ascii?Q?jEXbNYm/M+/aE884H4G0HTMhDWdkdtldt/IwEzV/89hj3Dk5voiZyUOrFbOG?=
+ =?us-ascii?Q?HYtjUXq5+EYwxrDpyD7KIsca1D+5od1zhuYXGxEJOt5ftL5/BkqT6PHCtgHm?=
+ =?us-ascii?Q?VrzTv/SwoewBtUUpIiQDzWqHX7uZHLlyPMYSf3zsB2MJm9IpIOZROYUI35FK?=
+ =?us-ascii?Q?mosWqLQIoBBk5liCNBZcJ1NNjLhb6yTjOTde9YHfmwxXN/0TGQRY8AaZonn3?=
+ =?us-ascii?Q?bWUaIteSrgZyx4o1iGFKLI/JJmj/CC0x+M/n2v64wkDd7UXhVUZQR9WwT3g+?=
+ =?us-ascii?Q?8q59UBVsbnaeBIup/VDXWrQThc7jnigEJu2isDURsO8OIZ2Zgzudc/RPKFA8?=
+ =?us-ascii?Q?6mh3DrZppMjE4mCW/cwtZH+xCWLnxF1+C0KJ4FYadUjyHYRlcZKeMA58K0ru?=
+ =?us-ascii?Q?6jaath1pvHe21zAbhTXXqXtr4YEp3CbIbCy3UDIoWSb17OC8LmYSiDaaIII0?=
+ =?us-ascii?Q?PFvhpBgN9Rixzh/Cqn+zz8b+xRB9QkZMjy8bjdcypgXimLanrIhaJG9u2FDf?=
+ =?us-ascii?Q?rPPbupWpveefcyKc7uJCLS8DfIhDaGp1/qDSnRCRfSkpCY9i8KtmgWpdrna5?=
+ =?us-ascii?Q?OoiWWYJyoZlNKUekYtnI5jg91I/3/QErkgMGCvOol6ZmDja6wMadsvmclkre?=
+ =?us-ascii?Q?+bKS7KB+Ob3wM6V5oSRzq8kKmCW0GNMol98xrDqumO46n4zwYhDZ+IUSLyoN?=
+ =?us-ascii?Q?Z0wU3MBMiyZ7UkEMK4qyiB6h4LjPNQBpMASSq6GMKQGLTgI0Pt4J4eu+IBSe?=
+ =?us-ascii?Q?p75syYD538il9wy32WJ1JAquDMwT0DwEMvejwicoDqnYKJoh3363gJCy6qM/?=
+ =?us-ascii?Q?08NFPryQDFoJJ2N25e46ygf0hgNx4G+YA7Y1k4Bzkpndzzwu5G8nPURLZ25k?=
+ =?us-ascii?Q?gpWyjYbIbtWhLMQ9t1CuhL6mdd5fZkeI92SyefjGbiw4U9FI50EXRa74Adj6?=
+ =?us-ascii?Q?p0kc1M+QTuLC73GuerZX/nv3phdVxFfO06ID5FN6jcTpTJiE9gibkhZCF4ip?=
+ =?us-ascii?Q?VZGc55Fg1bpPGVDehNYtOFLLMCotK4wYEvokA+/bIaZLUuzE1vLVwGBQJxFf?=
+ =?us-ascii?Q?QHOiOcxXl0ivxCQFLeyPWHcSVO5c86qg9DYtppAJn5ldUzr5921t8v0M1a1g?=
+ =?us-ascii?Q?xyTkpNQVvONVuZ4mxUKjPbw2Ua5a+o9vbzUsrkm0tJV/uwtAJtrxivdApoFH?=
+ =?us-ascii?Q?fvJmj+Uyx9QTaRAy4OwcoT84?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56fc8848-7a5b-46eb-0c83-08d91e44f01f
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR12MB5506.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 May 2021 23:46:08.6574
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: saFvWAik6Fjfz+nBvSSJzRKWesxW6Q+EvVtbv2t68SMqlEc8X4qTq5RoKoOgowkI
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL1PR12MB5287
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:31:18PM -0700, Andrii Nakryiko wrote:
-> It took me a while to reliably bisect this, but it clearly points to
-> this commit:
-> 
-> e481fac7d80b ("mm/page_alloc: convert per-cpu list protection to local_lock")
-> 
-I tried compiling 5.13.0-rc1-next-20210514 and observed the same error.
-5.13.0-rc1-next-20210513 boots fine for me though.
-Could there be that there's something more to this ?
-I could try to recompile 5.13.0-rc1-next-20210514 but I'm pretty sure
-that it didn't boot.
+On Fri, May 21, 2021 at 05:20:26PM -0700, Dave Jiang wrote:
 
-Hrtk
+> +static int idxd_vdcm_probe(struct mdev_device *mdev)
+> +{
+> +	struct vdcm_idxd *vidxd;
+> +	struct vdcm_idxd_type *type;
+> +	struct device *dev, *parent;
+> +	struct idxd_device *idxd;
+> +	bool ims_map[VIDXD_MAX_MSIX_VECS];
+> +	int rc;
+> +
+> +	parent = mdev_parent_dev(mdev);
+> +	idxd = dev_get_drvdata(parent);
+> +	dev = &mdev->dev;
+> +	mdev_set_iommu_device(mdev, parent);
+> +	type = idxd_vdcm_get_type(mdev);
+
+This makes my head hurt. There is a kref guarding
+mdev_unregister_device() but probe reaches into the parent idxd
+device's drvdata? I'm skeptical any of this is locked right
+
+> +static void idxd_vdcm_remove(struct mdev_device *mdev)
+> +{
+> +	struct vdcm_idxd *vidxd = dev_get_drvdata(&mdev->dev);
+> +	struct idxd_wq *wq = vidxd->wq;
+> +
+> +	vfio_unregister_group_dev(&vidxd->vdev);
+> +	mdev_irqs_free(mdev);
+> +	mutex_lock(&wq->wq_lock);
+> +	idxd_wq_put(wq);
+> +	mutex_unlock(&wq->wq_lock);
+
+It is also really weird to see something called put that requires the
+caller to hold a mutex... Don't use refcount language for something
+tha tis not acting like any sort of refcount.
+
+> +static int idxd_vdcm_open(struct vfio_device *vdev)
+> +{
+> +	return 0;
+> +}
+> +
+> +static void idxd_vdcm_close(struct vfio_device *vdev)
+> +{
+> +	struct vdcm_idxd *vidxd = vdev_to_vidxd(vdev);
+> +
+> +	mutex_lock(&vidxd->dev_lock);
+> +	idxd_vdcm_set_irqs(vidxd, VFIO_IRQ_SET_DATA_NONE | VFIO_IRQ_SET_ACTION_TRIGGER,
+> +			   VFIO_PCI_MSIX_IRQ_INDEX, 0, 0, NULL);
+> +
+> +	/* Re-initialize the VIDXD to a pristine state for re-use */
+> +	vidxd_init(vidxd);
+> +	mutex_unlock(&vidxd->dev_lock);
+
+This is split up weird. open should be doing basic init stuff and
+close should just be doing the reset stuff..
+
+Jason
