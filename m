@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D29B438EF57
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:56:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C29838F074
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:02:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233714AbhEXP47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:56:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38624 "EHLO mail.kernel.org"
+        id S235943AbhEXQDY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:03:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39476 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234830AbhEXPuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:50:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 96D976148E;
-        Mon, 24 May 2021 15:38:01 +0000 (UTC)
+        id S235378AbhEXP4a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:56:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4060361407;
+        Mon, 24 May 2021 15:42:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870682;
-        bh=/1Yh/HBLKb6KqicjCCwW7ViIO/vqvPEuwUkgWk8PZ6A=;
+        s=korg; t=1621870972;
+        bh=h5m1Bw3ZqV1GlCUjR/qFL1tEOn3C05FJTooMv0LOidA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RlbziZOy5PMVq04J3FEVDC4xNUtlAbbfT+zj0A8vz9k1Xpi5lii+7GNf7DSwl38L4
-         SQlLrU6PtjB3EYuN0s7qSqqt5G1Zsf4I0z9hpZuaWGSzQzQHMwICYqMfB3fLEVg7JT
-         v817qrbwg9msrJOqrxeJyAKUukGgQNfgRmznKrws=
+        b=jY5cHz7n95+A/v9RWnIhRv7S+jAVDOriY9AMYa4k6WUu+nSydN2xYh2dQFK5BGJCl
+         WjokfpIGrHHvXt9to9L7Rrm/NMGZiFCQW7ytoXhw8gxGbyreOcHXlb6NBD81Itbctg
+         2NqirnaLSOkmM12eQPbrhzqZI6FA5w184GzXNydY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 26/71] Revert "ALSA: sb8: add a check for request_region"
+        stable@vger.kernel.org, Leon Romanovsky <leonro@nvidia.com>,
+        Zhu Yanjun <zyjzyj2000@gmail.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 015/127] RDMA/rxe: Return CQE error if invalid lkey was supplied
 Date:   Mon, 24 May 2021 17:25:32 +0200
-Message-Id: <20210524152327.310700972@linuxfoundation.org>
+Message-Id: <20210524152335.375154107@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,47 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Leon Romanovsky <leonro@nvidia.com>
 
-commit 94f88309f201821073f57ae6005caefa61bf7b7e upstream.
+[ Upstream commit dc07628bd2bbc1da768e265192c28ebd301f509d ]
 
-This reverts commit dcd0feac9bab901d5739de51b3f69840851f8919.
+RXE is missing update of WQE status in LOCAL_WRITE failures.  This caused
+the following kernel panic if someone sent an atomic operation with an
+explicitly wrong lkey.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+[leonro@vm ~]$ mkt test
+test_atomic_invalid_lkey (tests.test_atomic.AtomicTest) ...
+ WARNING: CPU: 5 PID: 263 at drivers/infiniband/sw/rxe/rxe_comp.c:740 rxe_completer+0x1a6d/0x2e30 [rdma_rxe]
+ Modules linked in: crc32_generic rdma_rxe ip6_udp_tunnel udp_tunnel rdma_ucm rdma_cm ib_umad ib_ipoib iw_cm ib_cm mlx5_ib ib_uverbs ib_core mlx5_core ptp pps_core
+ CPU: 5 PID: 263 Comm: python3 Not tainted 5.13.0-rc1+ #2936
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.13.0-0-gf21b5a4aeb02-prebuilt.qemu.org 04/01/2014
+ RIP: 0010:rxe_completer+0x1a6d/0x2e30 [rdma_rxe]
+ Code: 03 0f 8e 65 0e 00 00 3b 93 10 06 00 00 0f 84 82 0a 00 00 4c 89 ff 4c 89 44 24 38 e8 2d 74 a9 e1 4c 8b 44 24 38 e9 1c f5 ff ff <0f> 0b e9 0c e8 ff ff b8 05 00 00 00 41 bf 05 00 00 00 e9 ab e7 ff
+ RSP: 0018:ffff8880158af090 EFLAGS: 00010246
+ RAX: 0000000000000000 RBX: ffff888016a78000 RCX: ffffffffa0cf1652
+ RDX: 1ffff9200004b442 RSI: 0000000000000004 RDI: ffffc9000025a210
+ RBP: dffffc0000000000 R08: 00000000ffffffea R09: ffff88801617740b
+ R10: ffffed1002c2ee81 R11: 0000000000000007 R12: ffff88800f3b63e8
+ R13: ffff888016a78008 R14: ffffc9000025a180 R15: 000000000000000c
+ FS:  00007f88b622a740(0000) GS:ffff88806d540000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007f88b5a1fa10 CR3: 000000000d848004 CR4: 0000000000370ea0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  rxe_do_task+0x130/0x230 [rdma_rxe]
+  rxe_rcv+0xb11/0x1df0 [rdma_rxe]
+  rxe_loopback+0x157/0x1e0 [rdma_rxe]
+  rxe_responder+0x5532/0x7620 [rdma_rxe]
+  rxe_do_task+0x130/0x230 [rdma_rxe]
+  rxe_rcv+0x9c8/0x1df0 [rdma_rxe]
+  rxe_loopback+0x157/0x1e0 [rdma_rxe]
+  rxe_requester+0x1efd/0x58c0 [rdma_rxe]
+  rxe_do_task+0x130/0x230 [rdma_rxe]
+  rxe_post_send+0x998/0x1860 [rdma_rxe]
+  ib_uverbs_post_send+0xd5f/0x1220 [ib_uverbs]
+  ib_uverbs_write+0x847/0xc80 [ib_uverbs]
+  vfs_write+0x1c5/0x840
+  ksys_write+0x176/0x1d0
+  do_syscall_64+0x3f/0x80
+  entry_SYSCALL_64_after_hwframe+0x44/0xae
 
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit message for this change was incorrect as the code
-path can never result in a NULL dereference, alluding to the fact that
-whatever tool was used to "find this" is broken.  It's just an optional
-resource reservation, so removing this check is fine.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Acked-by: Takashi Iwai <tiwai@suse.de>
-Fixes: dcd0feac9bab ("ALSA: sb8: add a check for request_region")
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-35-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 8700e3e7c485 ("Soft RoCE driver")
+Link: https://lore.kernel.org/r/11e7b553f3a6f5371c6bb3f57c494bb52b88af99.1620711734.git.leonro@nvidia.com
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+Acked-by: Zhu Yanjun <zyjzyj2000@gmail.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/isa/sb/sb8.c |    4 ----
- 1 file changed, 4 deletions(-)
+ drivers/infiniband/sw/rxe/rxe_comp.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
 
---- a/sound/isa/sb/sb8.c
-+++ b/sound/isa/sb/sb8.c
-@@ -96,10 +96,6 @@ static int snd_sb8_probe(struct device *
+diff --git a/drivers/infiniband/sw/rxe/rxe_comp.c b/drivers/infiniband/sw/rxe/rxe_comp.c
+index a612b335baa0..06b556169867 100644
+--- a/drivers/infiniband/sw/rxe/rxe_comp.c
++++ b/drivers/infiniband/sw/rxe/rxe_comp.c
+@@ -346,13 +346,15 @@ static inline enum comp_state do_read(struct rxe_qp *qp,
+ 	ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
+ 			&wqe->dma, payload_addr(pkt),
+ 			payload_size(pkt), to_mr_obj, NULL);
+-	if (ret)
++	if (ret) {
++		wqe->status = IB_WC_LOC_PROT_ERR;
+ 		return COMPST_ERROR;
++	}
  
- 	/* block the 0x388 port to avoid PnP conflicts */
- 	acard->fm_res = request_region(0x388, 4, "SoundBlaster FM");
--	if (!acard->fm_res) {
--		err = -EBUSY;
--		goto _err;
--	}
+ 	if (wqe->dma.resid == 0 && (pkt->mask & RXE_END_MASK))
+ 		return COMPST_COMP_ACK;
+-	else
+-		return COMPST_UPDATE_COMP;
++
++	return COMPST_UPDATE_COMP;
+ }
  
- 	if (port[dev] != SNDRV_AUTO_PORT) {
- 		if ((err = snd_sbdsp_create(card, port[dev], irq[dev],
+ static inline enum comp_state do_atomic(struct rxe_qp *qp,
+@@ -366,10 +368,12 @@ static inline enum comp_state do_atomic(struct rxe_qp *qp,
+ 	ret = copy_data(qp->pd, IB_ACCESS_LOCAL_WRITE,
+ 			&wqe->dma, &atomic_orig,
+ 			sizeof(u64), to_mr_obj, NULL);
+-	if (ret)
++	if (ret) {
++		wqe->status = IB_WC_LOC_PROT_ERR;
+ 		return COMPST_ERROR;
+-	else
+-		return COMPST_COMP_ACK;
++	}
++
++	return COMPST_COMP_ACK;
+ }
+ 
+ static void make_send_cqe(struct rxe_qp *qp, struct rxe_send_wqe *wqe,
+-- 
+2.30.2
+
 
 
