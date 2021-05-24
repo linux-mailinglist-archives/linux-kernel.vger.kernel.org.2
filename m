@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16D9C38F43E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:21:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2DE838F43B
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:21:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233767AbhEXUVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:21:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47756 "EHLO mail.kernel.org"
+        id S233716AbhEXUVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:21:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233079AbhEXUVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233080AbhEXUVi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 16:21:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1047D6141A;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 573C6613CC;
         Mon, 24 May 2021 20:20:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621887610;
-        bh=E8TX+IzIzGjUSD9qVd+RzLohf3ZOA7PPDZRYaimXkY0=;
+        bh=aFNvwVCl18388W4vyCHy3OM3ttixeJflSKLh8hLBoEI=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=GuKsXZy6NHg7xyybAI8KX5OyeRiu0s8QAcBZjUoxyRMdghXKFu0knrErphNq/qjJb
-         uuhGPBEqr1PD5G4WxsnN1RaWuL7llEJ29JAOs1+cTeyc0HST4lF7VDEcgbzNbpLAXy
-         wuviShCVcdoaube8yQi4Gywm2cH+Iq7di5AKNZ8Ft2s6zH0LlupnSM+VhJBb5xIGS5
-         lx5/qpUNbtCcopApLIFE3t+ysVuPUg6EdKb6FtuXIn542mQNp7yYNemEhxgAu2IbJb
-         Kgq8OMeP7kExNU4Cru9HsO9g5aXSSdBgzhtmGSOIwX5/ttIlabaIE9Ag0t/pRHADzA
-         HF1TIZkJTWHGw==
+        b=G5lBL8CVtvEa6lggt7H74yq0fP4BW/0M1KRin3APz6Fqhm2M/BsdewRBt+11EbqOb
+         tOEm5tbsWo4xccwOKQQhkx0El/CbnJxD2iQNFu1qDTcJMwpHHIUs90WF1kqED5kREX
+         bZdttC1zzf+iqyLERtMm+QhddgwUHwXlAmxmFeojAF+X13dgDR5CBw2+GdTn8kmqMw
+         qSmCNv8xqHH+Uiw6VdU82/vtbKHByerJG8erJDY7Pi6zYGG8/kaPAmJU3feaHSCaGj
+         PzKTO3cBBL+fYyZpnEhSkCtWwgeHCH6JcQkHZ+q7exs5N1CnJg3a78kp0IIMoGAMaB
+         pAR9HV116Zc2A==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 00BAF60CD4;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 5204860BCF;
         Mon, 24 May 2021 20:20:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: hso: fix control-request directions
+Subject: Re: [PATCH] nfc: st-nci: remove unnecessary assignment and label
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162188760999.19394.15297874086454377579.git-patchwork-notify@kernel.org>
-Date:   Mon, 24 May 2021 20:20:09 +0000
-References: <20210524092511.4657-1-johan@kernel.org>
-In-Reply-To: <20210524092511.4657-1-johan@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     davem@davemloft.net, kuba@kernel.org, linux-usb@vger.kernel.org,
+Message-Id: <162188761033.19394.13688972604989504846.git-patchwork-notify@kernel.org>
+Date:   Mon, 24 May 2021 20:20:10 +0000
+References: <20210524021123.8860-1-samirweng1979@163.com>
+In-Reply-To: <20210524021123.8860-1-samirweng1979@163.com>
+To:     samirweng1979 <samirweng1979@163.com>
+Cc:     krzysztof.kozlowski@canonical.com, davem@davemloft.net,
+        alex.dewar90@gmail.com, linux-nfc@lists.01.org,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
+        wengjianfeng@yulong.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+This patch was applied to netdev/net-next.git (refs/heads/master):
 
-On Mon, 24 May 2021 11:25:11 +0200 you wrote:
-> The direction of the pipe argument must match the request-type direction
-> bit or control requests may fail depending on the host-controller-driver
-> implementation.
+On Mon, 24 May 2021 10:11:23 +0800 you wrote:
+> From: wengjianfeng <wengjianfeng@yulong.com>
 > 
-> Fix the tiocmset and rfkill requests which erroneously used
-> usb_rcvctrlpipe().
+> In function st_nci_hci_network_init, the variable r is assigned then
+> goto exit label, which just return r, so we use return to replace it.
+> and exit label only used once at here, so we remove exit label.
+> 
+> Signed-off-by: wengjianfeng <wengjianfeng@yulong.com>
 > 
 > [...]
 
 Here is the summary with links:
-  - [net] net: hso: fix control-request directions
-    https://git.kernel.org/netdev/net/c/1a6e9a9c68c1
+  - nfc: st-nci: remove unnecessary assignment and label
+    https://git.kernel.org/netdev/net-next/c/62f148d8dde6
 
 You are awesome, thank you!
 --
