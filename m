@@ -2,75 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D651738EC68
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:13:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59CAF38EB95
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235156AbhEXPOW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:14:22 -0400
-Received: from mga04.intel.com ([192.55.52.120]:36263 "EHLO mga04.intel.com"
+        id S234887AbhEXPFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:05:20 -0400
+Received: from verein.lst.de ([213.95.11.211]:54883 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234692AbhEXPEr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:04:47 -0400
-IronPort-SDR: 5GaZl3IRCSD9BjlpbAnqNfcRJb6c5XSHdkTDjnXSqpWREdG2+sOrwzbTWl1+fAxdZnVEY4TfYH
- tvEK4Au5Dirw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="200049944"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="200049944"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:56:19 -0700
-IronPort-SDR: HQ6WqNbhtXvhP13QcjUGJVtUg9fv4z9anlE0GEy7aWu9pU2VoEW5od0ZUTPOgO1AgyIRPvEnCn
- wWQf+q3EkgXQ==
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="478572306"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:56:16 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1llC05-00EM3E-Vr; Mon, 24 May 2021 17:56:13 +0300
-Date:   Mon, 24 May 2021 17:56:13 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Amireddy Mallikarjuna reddy 
-        <mallikarjunax.reddy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <marek.behun@nic.cz>,
-        Abanoub Sameh <abanoubsameh8@gmail.com>,
-        Dan Murphy <dmurphy@ti.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-leds@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 00/28] leds: cleanups and fwnode refcounting bug fixes
-Message-ID: <YKu+jUHTjwf+3J5g@smile.fi.intel.com>
-References: <20210510095045.3299382-1-andy.shevchenko@gmail.com>
- <YKIbgBd3q8c+Tgz0@smile.fi.intel.com>
+        id S233090AbhEXO62 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:58:28 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 9AC5068AFE; Mon, 24 May 2021 16:56:55 +0200 (CEST)
+Date:   Mon, 24 May 2021 16:56:54 +0200
+From:   Christoph Hellwig <hch@lst.de>
+To:     Stefan Hajnoczi <stefanha@redhat.com>
+Cc:     Yury Kamenev <damtev@yandex-team.ru>, mst@redhat.com,
+        jasowang@redhat.com, pbonzini@redhat.com, axboe@kernel.dk,
+        virtualization@lists.linux-foundation.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, Lauri Kasanen <cand@gmx.com>
+Subject: Re: [PATCH 1/1] virtio: disable partitions scanning for no
+ partitions block
+Message-ID: <20210524145654.GA2632@lst.de>
+References: <20210520133908.98891-1-damtev@yandex-team.ru> <20210520133908.98891-2-damtev@yandex-team.ru> <YKu4Qovv1KMplifY@stefanha-x1.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YKIbgBd3q8c+Tgz0@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <YKu4Qovv1KMplifY@stefanha-x1.localdomain>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 17, 2021 at 10:30:08AM +0300, Andy Shevchenko wrote:
-> On Mon, May 10, 2021 at 12:50:17PM +0300, Andy Shevchenko wrote:
-> > When analyzing the current state of affairs with fwnode reference counting
-> > I found that a lot of core doesn't take it right. Here is a bunch of
-> > corresponding fixes against LED drivers.
-> > 
-> > The series includes some cleanups and a few other fixes grouped by a driver.
-> > 
-> > First two patches are taking care of -ENOTSUPP error code too  prevent its
-> > appearance in the user space.
+On Mon, May 24, 2021 at 03:29:22PM +0100, Stefan Hajnoczi wrote:
+> GENHD_FL_NO_PART_SCAN is not used much in other drivers. This makes me
+> wonder if the same use case is addressed through other means with SCSI,
+> NVMe, etc devices. Maybe Christoph or Jens can weigh in on whether
+> adding a bit to disable partition scanning for a virtio-blk fits into
+> the big picture?
 > 
-> Pavel, any comments on this bug fix series?
+> Is your goal to avoid accidentally detecting partitions because it's
+> confusing when that happens?
 
-Pavel, we are at rc-3 already and this is kinda a big series that needs more
-time to be sit in Linux-next, unfortunately while I see your activities here
-and there, it is kept uncommented and unapplied. Can you shed a light what's
-going on here? Do I need something to be amended?
+I'm really confused what the use case is here.  GENHD_FL_NO_PART_SCAN
+has four users:
 
--- 
-With Best Regards,
-Andy Shevchenko
+ - the block core setting it for hidden devices, for which the concept
+   of paritions doesn't make sense.  Looking back this should have never
+   used GENHD_FL_NO_PART_SCAN, and instead the partition scanning code
+   should just check GENHD_FL_HIDDEN as well.
+ - mmc uses it for boot partitions and rpmb.  I'm not even sure how
+   these can be exposed as block devices as they don't require block
+   granularity access IIRC, but if the allow block layer access there
+   is no reason to ever set these flags.
+ - loop is a bit of a mess.  IIRC the story is that originally the
+   loop device did not support partitions, then in 2008 support for
+   partitions was added by partitioning the minor number space, and
+   then in 2011 support for partitions without that parameter was
+   added using a new flag in the loop device creation ioctl that uses
+   the extended dev_t space added since.  But even that might be
+   something we can handled without that flag without breaking the
+   userspace ABI
+ - m64card sets it for no good reason at all
 
-
+In other words: in a perfect would GENHD_FL_NO_PART_SCAN would not
+exist, and it certainly should not be added to a new driver, never
+mind a protocol.
