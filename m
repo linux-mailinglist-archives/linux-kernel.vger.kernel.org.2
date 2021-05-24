@@ -2,297 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77B838F624
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:15:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CFA38F627
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:19:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229969AbhEXXRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:17:21 -0400
-Received: from foss.arm.com ([217.140.110.172]:49064 "EHLO foss.arm.com"
+        id S229568AbhEXXVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:21:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:49106 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229922AbhEXXRP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:17:15 -0400
+        id S229503AbhEXXVR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 19:21:17 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C792F6D;
-        Mon, 24 May 2021 16:15:46 -0700 (PDT)
-Received: from e120937-lin.home (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 058A93F73D;
-        Mon, 24 May 2021 16:15:44 -0700 (PDT)
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, james.quinlan@broadcom.com,
-        Jonathan.Cameron@Huawei.com, f.fainelli@gmail.com,
-        etienne.carriere@linaro.org, vincent.guittot@linaro.org,
-        souvik.chakravarty@arm.com, cristian.marussi@arm.com
-Subject: [PATCH 4/4] firmware: arm_scmi: Introduce delegated xfers support
-Date:   Tue, 25 May 2021 00:15:03 +0100
-Message-Id: <20210524231503.34924-5-cristian.marussi@arm.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210524231503.34924-1-cristian.marussi@arm.com>
-References: <20210524231503.34924-1-cristian.marussi@arm.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A6B5A6D;
+        Mon, 24 May 2021 16:19:48 -0700 (PDT)
+Received: from e120325.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2D4943F73D;
+        Mon, 24 May 2021 16:19:47 -0700 (PDT)
+Date:   Tue, 25 May 2021 00:19:44 +0100
+From:   Beata Michalska <beata.michalska@arm.com>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        corbet@lwn.net, rdunlap@infradead.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] sched/topology: Rework CPU capacity asymmetry
+ detection
+Message-ID: <20210524231944.GB14880@e120325.cambridge.arm.com>
+References: <20210524101617.8965-1-beata.michalska@arm.com>
+ <20210524101617.8965-3-beata.michalska@arm.com>
+ <87fsyc6mfz.mognet@arm.com>
+ <20210524225508.GA14880@e120325.cambridge.arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210524225508.GA14880@e120325.cambridge.arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce optional support for delegated xfers allocation.
+On Mon, May 24, 2021 at 11:55:08PM +0100, Beata Michalska wrote:
+> On Mon, May 24, 2021 at 07:01:04PM +0100, Valentin Schneider wrote:
+> > Hi Beata,
+> > 
+> > On 24/05/21 11:16, Beata Michalska wrote:
+> > > Currently the CPU capacity asymmetry detection, performed through
+> > > asym_cpu_capacity_level, tries to identify the lowest topology level
+> > > at which the highest CPU capacity is being observed, not necessarily
+> > > finding the level at which all possible capacity values are visible
+> > > to all CPUs, which might be bit problematic for some possible/valid
+> > > asymmetric topologies i.e.:
+> > >
+> > > DIE      [                                ]
+> > > MC       [                       ][       ]
+> > >
+> > > CPU       [0] [1] [2] [3] [4] [5]  [6] [7]
+> > > Capacity  |.....| |.....| |.....|  |.....|
+> > >            L	     M       B        B
+> > >
+> > > Where:
+> > >  arch_scale_cpu_capacity(L) = 512
+> > >  arch_scale_cpu_capacity(M) = 871
+> > >  arch_scale_cpu_capacity(B) = 1024
+> > >
+> > > In this particular case, the asymmetric topology level will point
+> > > at MC, as all possible CPU masks for that level do cover the CPU
+> > > with the highest capacity. It will work just fine for the first
+> > > cluster, not so much for the second one though (consider the
+> > > find_energy_efficient_cpu which might end up attempting the energy
+> > > aware wake-up for a domain that does not see any asymmetry at all)
+> > >
+> > > Rework the way the capacity asymmetry levels are being detected,
+> > > allowing to point to the lowest topology level (for a given CPU), where
+> > > full set of available CPU capacities is visible to all CPUs within given
+> > > domain. As a result, the per-cpu sd_asym_cpucapacity might differ across
+> > > the domains. This will have an impact on EAS wake-up placement in a way
+> > > that it might see different rage of CPUs to be considered, depending on
+> > > the given current and target CPUs.
+> > >
+> > > Additionally, those levels, where any range of asymmetry (not
+> > > necessarily full) is being detected will get identified as well.
+> > > The selected asymmetric topology level will be denoted by
+> > > SD_ASYM_CPUCAPACITY_FULL sched domain flag whereas the 'sub-levels'
+> > > would receive the already used SD_ASYM_CPUCAPACITY flag. This allows
+> > > maintaining the current behaviour for asymmetric topologies, with
+> > > misfit migration operating correctly on lower levels, if applicable,
+> > > as any asymmetry is enough to trigger the misfit migration.
+> > > The logic there relies on the SD_ASYM_CPUCAPACITY flag and does not
+> > > relate to the full asymmetry level denoted by the sd_asym_cpucapacity
+> > > pointer.
+> > >
+> > > Detecting the CPU capacity asymmetry is being based on a set of
+> > > available CPU capacities for all possible CPUs. This data is being
+> > > generated upon init and updated once CPU topology changes are being
+> > > detected (through arch_update_cpu_topology). As such, any changes
+> > > to identified CPU capacities (like initializing cpufreq) need to be
+> > > explicitly advertised by corresponding archs to trigger rebuilding
+> > > the data.
+> > >
+> > > This patch also removes the additional -dflags- parameter used when
+> >   ^^^^^^^^^^^^^^^^^^^^^^^
+> > s/^/Also remove/
+> I would kind of ... disagree.
+> All the commit msg is constructed using passive structure, the suggestion
+> would actually break that. And it does 'sound' bit imperative but I guess
+> that is subjective. I'd rather stay with impersonal structure (which is
+> applied through out the whole patchset).
+> > 
+> > > building sched domains as the asymmetry flags are now being set
+> > > directly in sd_init.
+> > >
+> > 
+> > Few nits below, but beyond that:
+> > 
+> > Tested-by: Valentin Schneider <valentin.schneider@arm.com>
+> > Reviewed-by: Valentin Schneider <valentin.schneider@arm.com>
+> > 
+> Thanks a lot for the review and testing!
+> 
+> > > +static inline int
+> > > +asym_cpu_capacity_classify(struct sched_domain *sd,
+> > > +			   const struct cpumask *cpu_map)
+> > > +{
+> > > +	int sd_asym_flags = SD_ASYM_CPUCAPACITY | SD_ASYM_CPUCAPACITY_FULL;
+> > > +	struct asym_cap_data *entry;
+> > > +	int asym_cap_count = 0;
+> > > +
+> > > +	if (list_is_singular(&asym_cap_list))
+> > > +		goto leave;
+> > > +
+> > > +	list_for_each_entry(entry, &asym_cap_list, link) {
+> > > +		if (cpumask_intersects(sched_domain_span(sd), entry->cpu_mask)) {
+> > > +			++asym_cap_count;
+> > > +		} else {
+> > > +			/*
+> > > +			 * CPUs with given capacity might be offline
+> > > +			 * so make sure this is not the case
+> > > +			 */
+> > > +			if (cpumask_intersects(entry->cpu_mask, cpu_map)) {
+> > > +				sd_asym_flags &= ~SD_ASYM_CPUCAPACITY_FULL;
+> > > +				if (asym_cap_count > 1)
+> > > +					break;
+> > > +			}
+> > 
+> > Readability nit: That could be made into an else if ().
+> It could but then this way the -comment- gets more exposed.
+> But that might be my personal perception so I can change that.
+> > 
+> > 
+> > > +		}
+> > > +	}
+> > > +	WARN_ON_ONCE(!asym_cap_count);
+> > > +leave:
+> > > +	return asym_cap_count > 1 ? sd_asym_flags : 0;
+> > > +}
+> > > +
+> > 
+> > > +static void asym_cpu_capacity_scan(void)
+> > > +{
+> > > +	struct asym_cap_data *entry, *next;
+> > > +	int cpu;
+> > > +
+> > > +	list_for_each_entry(entry, &asym_cap_list, link)
+> > > +		cpumask_clear(entry->cpu_mask);
+> > > +
+> > > +	entry = list_first_entry_or_null(&asym_cap_list,
+> > > +					 struct asym_cap_data, link);
+> > > +
+> > > +	for_each_cpu_and(cpu, cpu_possible_mask,
+> > > +			 housekeeping_cpumask(HK_FLAG_DOMAIN)) {
+> > > +		unsigned long capacity = arch_scale_cpu_capacity(cpu);
+> > > +
+> > > +		if (!entry || capacity != entry->capacity)
+> > > +			entry = asym_cpu_capacity_get_data(capacity);
+> > > +		if (entry)
+> > > +			__cpumask_set_cpu(cpu, entry->cpu_mask);
+> > 
+> > That 'if' is only there in case the alloc within the helper failed, which
+> > is a bit of a shame.
+> > 
+> > You could pass the CPU to that helper function and have it set the right
+> > bit, or you could even forgo the capacity != entry->capacity check here and
+> > let the helper function do it all.
+> > 
+> > Yes, that means more asym_cap_list iterations, but that's
+> > O(nr_cpus * nr_caps); a topology rebuild is along the lines of
+> > O(nr_cpus² * nr_topology_levels), so not such a big deal comparatively.
+> > 
+> I could drop that check and make the helper function update the CPUs mask
+> (along with dropping the initial grabbing of the first entry)
+> +
+> switching to list_for_each_entry_reverse which would result in less
+> iterations for most (if not all) of the use cases.
+> 
+Ignore the 'reverse' idea - the items are already prepended so regular
+iteration should pick the last item added.
 
-An SCMI transport can optionally declare to support delegated xfers and
-then use a few helper functions exposed by the core SCMI transport layer to
-query the core for existing in-flight transfers matching a provided message
-header or alternatively and transparently obtain a brand new xfer to handle
-a freshly received notification message.
-In both cases the obtained xfer is uniquely mapped into a specific xfer
-through the means of the message header acting as key.
-
-In this way such a transport can properly store its own transport specific
-payload into the xfer uniquely associated to the message header before
-even calling into the core scmi_rx_callback() in the usual way, so that
-the transport specific message envelope structures can be freed early
-and there is no more need to keep track of their status till the core
-fully processes the xfer to completion or times out.
-
-The scmi_rx_callbak() does not need to be modified to carry additional
-transport-specific ancillary data related to such message envelopes since
-an unique natural association is established between the xfer and the
-related message header.
-
-Existing transports that do not need anything of the above will continue
-to work as before without any change.
-
-Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 ---
- drivers/firmware/arm_scmi/common.h |  14 +++
- drivers/firmware/arm_scmi/driver.c | 132 ++++++++++++++++++++++++++++-
- 2 files changed, 143 insertions(+), 3 deletions(-)
+BR
+B.
 
-diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-index aba8f1efdd2b..d89b3b3a8c05 100644
---- a/drivers/firmware/arm_scmi/common.h
-+++ b/drivers/firmware/arm_scmi/common.h
-@@ -80,6 +80,7 @@ struct scmi_msg_resp_prot_version {
-  * @status: Status of the transfer once it's complete
-  * @poll_completion: Indicate if the transfer needs to be polled for
-  *	completion or interrupt mode is used
-+ * @saved_hdr: A copy of the original msg_hdr
-  */
- struct scmi_msg_hdr {
- 	u8 id;
-@@ -88,6 +89,7 @@ struct scmi_msg_hdr {
- 	u16 seq;
- 	u32 status;
- 	bool poll_completion;
-+	u32 saved_hdr;
- };
- 
- /**
-@@ -154,6 +156,9 @@ struct scmi_msg {
-  * @rx: Receive message, the buffer should be pre-allocated to store
-  *	message. If request-ACK protocol is used, we can reuse the same
-  *	buffer for the rx path as we use for the tx path.
-+ * @rx_raw_len: A field which can be optionally used by a specific transport
-+ *		to save transport specific message length
-+ *		It is not used by the SCMI transport core
-  * @done: command message transmit completion event
-  * @async_done: pointer to delayed response message received event completion
-  * @users: A refcount to track the active users for this xfer
-@@ -165,6 +170,7 @@ struct scmi_xfer {
- 	struct scmi_msg_hdr hdr;
- 	struct scmi_msg tx;
- 	struct scmi_msg rx;
-+	size_t rx_raw_len;
- 	struct completion done;
- 	struct completion *async_done;
- 	refcount_t users;
-@@ -349,12 +355,16 @@ struct scmi_device *scmi_child_dev_find(struct device *parent,
-  * @max_msg: Maximum number of messages that can be pending
-  *	simultaneously in the system
-  * @max_msg_size: Maximum size of data per message that can be handled.
-+ * @support_xfers_delegation: A flag to indicate if the described transport
-+ *			      will handle delegated xfers, so the core can
-+ *			      derive proper related assumptions.
-  */
- struct scmi_desc {
- 	const struct scmi_transport_ops *ops;
- 	int max_rx_timeout_ms;
- 	int max_msg;
- 	int max_msg_size;
-+	bool support_xfers_delegation;
- };
- 
- extern const struct scmi_desc scmi_mailbox_desc;
-@@ -383,4 +393,8 @@ void scmi_notification_instance_data_set(const struct scmi_handle *handle,
- 					 void *priv);
- void *scmi_notification_instance_data_get(const struct scmi_handle *handle);
- 
-+int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
-+			  struct scmi_xfer **xfer);
-+void scmi_transfer_release(struct scmi_chan_info *cinfo,
-+			   struct scmi_xfer *xfer);
- #endif /* _SCMI_COMMON_H */
-diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-index ab975c74cab1..08f52f53e14c 100644
---- a/drivers/firmware/arm_scmi/driver.c
-+++ b/drivers/firmware/arm_scmi/driver.c
-@@ -433,6 +433,124 @@ scmi_xfer_lookup_unlocked(struct scmi_xfers_info *minfo, u16 xfer_id)
- 	return xfer ?: ERR_PTR(-EINVAL);
- }
- 
-+/**
-+ * scmi_xfer_acquire  -  Helper to lookup and acquire an xfer
-+ *
-+ * @minfo: Pointer to Tx/Rx Message management info based on channel type
-+ * @xfer_id: Token ID to lookup in @pending_xfers
-+ *
-+ * When a valid xfer is found for the provided @xfer_id, reference counting is
-+ * properly updated.
-+ *
-+ * Return: A valid @xfer on Success or error otherwise.
-+ */
-+static struct scmi_xfer *
-+scmi_xfer_acquire(struct scmi_xfers_info *minfo, u16 xfer_id)
-+{
-+	unsigned long flags;
-+	struct scmi_xfer *xfer;
-+
-+	spin_lock_irqsave(&minfo->xfer_lock, flags);
-+	xfer = scmi_xfer_lookup_unlocked(minfo, xfer_id);
-+	if (!IS_ERR(xfer))
-+		refcount_inc(&xfer->users);
-+	spin_unlock_irqrestore(&minfo->xfer_lock, flags);
-+
-+	return xfer;
-+}
-+
-+/**
-+ * scmi_transfer_acquire  -  Lookup for an existing xfer or freshly allocate a
-+ * new one depending on the type of the message
-+ *
-+ * @cinfo: A reference to the channel descriptor.
-+ * @msg_hdr: A pointer to the message header to lookup.
-+ * @xfer: A reference to the pre-existent or freshly allocated xfer
-+ *	  associated with the provided *msg_hdr.
-+ *
-+ * This function can be used by transports supporting delegated xfers to obtain
-+ * a valid @xfer associated with the provided @msg_hdr param.
-+ *
-+ * The nature of the resulting @xfer depends on the type of message specified in
-+ * @msg_hdr:
-+ *  - for responses and delayed responses a pre-existent/pre-allocated in-flight
-+ *    xfer descriptor will be returned (properly refcounted)
-+ *  - for notifications a brand new xfer will be allocated; in this case the
-+ *    provided message header sequence number will also be mangled to match
-+ *    the token in the freshly allocated xfer: this is needed to establish a
-+ *    link between the picked xfer and the msg_hdr that will be subsequently
-+ *    passed back via usual scmi_rx_callback().
-+ *
-+ * Return: 0 if a valid xfer is returned in @xfer, error otherwise.
-+ */
-+int scmi_transfer_acquire(struct scmi_chan_info *cinfo, u32 *msg_hdr,
-+			  struct scmi_xfer **xfer)
-+{
-+	u8 msg_type;
-+	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
-+
-+	if (!xfer || !msg_hdr || !info->desc->support_xfers_delegation)
-+		return -EINVAL;
-+
-+	msg_type = MSG_XTRACT_TYPE(*msg_hdr);
-+	switch (msg_type) {
-+	case MSG_TYPE_COMMAND:
-+	case MSG_TYPE_DELAYED_RESP:
-+		/* Grab an existing xfer for xfer_id */
-+		*xfer = scmi_xfer_acquire(&info->tx_minfo,
-+					  MSG_XTRACT_TOKEN(*msg_hdr));
-+		break;
-+	case MSG_TYPE_NOTIFICATION:
-+		/* Get a brand new RX xfer */
-+		*xfer = scmi_xfer_get(cinfo->handle, &info->rx_minfo);
-+		if (!IS_ERR(*xfer)) {
-+			/* Save original msg_hdr and fix sequence number */
-+			(*xfer)->hdr.saved_hdr = *msg_hdr;
-+			*msg_hdr &= ~MSG_TOKEN_ID_MASK;
-+			*msg_hdr |= FIELD_PREP(MSG_TOKEN_ID_MASK,
-+					       (*xfer)->hdr.seq);
-+		}
-+		break;
-+	default:
-+		*xfer = ERR_PTR(-EINVAL);
-+		break;
-+	}
-+
-+	if (IS_ERR(*xfer)) {
-+		dev_err(cinfo->dev,
-+			"Failed to acquire a valid xfer for hdr:0x%X\n",
-+			*msg_hdr);
-+		return PTR_ERR(*xfer);
-+	}
-+
-+	/* Fix xfer->hdr.type with actual msg_hdr carried type */
-+	unpack_scmi_header(*msg_hdr, &((*xfer)->hdr));
-+
-+	return 0;
-+}
-+
-+/**
-+ * scmi_transfer_release  - Release an previously acquired xfer
-+ *
-+ * @cinfo: A reference to the channel descriptor.
-+ * @xfer: A reference to the xfer to release.
-+ */
-+void scmi_transfer_release(struct scmi_chan_info *cinfo, struct scmi_xfer *xfer)
-+{
-+	struct scmi_info *info = handle_to_scmi_info(cinfo->handle);
-+	struct scmi_xfers_info *minfo;
-+
-+	if (!xfer || !info->desc->support_xfers_delegation)
-+		return;
-+
-+	if (xfer->hdr.type == MSG_TYPE_NOTIFICATION)
-+		minfo = &info->rx_minfo;
-+	else
-+		minfo = &info->tx_minfo;
-+
-+	__scmi_xfer_put(minfo, xfer);
-+}
-+
- static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- {
- 	struct scmi_xfer *xfer;
-@@ -442,7 +560,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- 	ktime_t ts;
- 
- 	ts = ktime_get_boottime();
--	xfer = scmi_xfer_get(cinfo->handle, minfo);
-+
-+	if (!info->desc->support_xfers_delegation)
-+		xfer = scmi_xfer_get(cinfo->handle, minfo);
-+	else
-+		xfer = scmi_xfer_acquire(minfo, MSG_XTRACT_TOKEN(msg_hdr));
- 	if (IS_ERR(xfer)) {
- 		dev_err(dev, "failed to get free message slot (%ld)\n",
- 			PTR_ERR(xfer));
-@@ -450,8 +572,11 @@ static void scmi_handle_notification(struct scmi_chan_info *cinfo, u32 msg_hdr)
- 		return;
- 	}
- 
--	unpack_scmi_header(msg_hdr, &xfer->hdr);
- 	scmi_dump_header_dbg(dev, &xfer->hdr);
-+
-+	if (!info->desc->support_xfers_delegation)
-+		unpack_scmi_header(msg_hdr, &xfer->hdr);
-+
- 	info->desc->ops->fetch_notification(cinfo, info->desc->max_msg_size,
- 					    xfer);
- 	scmi_notify(cinfo->handle, xfer->hdr.protocol_id,
-@@ -497,7 +622,8 @@ static void scmi_handle_response(struct scmi_chan_info *cinfo,
- 			xfer_id);
- 		info->desc->ops->clear_channel(cinfo);
- 		/* It was unexpected, so nobody will clear the xfer if not us */
--		__scmi_xfer_put(minfo, xfer);
-+		if (!info->desc->support_xfers_delegation) //XXX ??? Really
-+			__scmi_xfer_put(minfo, xfer);
- 		return;
- 	}
- 
--- 
-2.17.1
-
+> 
+> ---
+> BR
+> B
+> > > +	}
+> > > +
+> > > +	list_for_each_entry_safe(entry, next, &asym_cap_list, link) {
+> > > +		if (cpumask_empty(entry->cpu_mask)) {
+> > > +			list_del(&entry->link);
+> > > +			kfree(entry);
+> > > +		}
+> > > +	}
+> > > +}
+> > > +
