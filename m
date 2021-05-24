@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B811C38F605
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD9B38F60D
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 01:04:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229813AbhEXXES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 19:04:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35910 "EHLO
+        id S229772AbhEXXFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 19:05:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229772AbhEXXEQ (ORCPT
+        with ESMTP id S229540AbhEXXFt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 19:04:16 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6FCBC061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:02:47 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so12138739pjt.1
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:02:47 -0700 (PDT)
+        Mon, 24 May 2021 19:05:49 -0400
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FBA1C06138C
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:04:20 -0700 (PDT)
+Received: by mail-ej1-x632.google.com with SMTP id p24so43000856ejb.1
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 16:04:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=2K+WKJ3vpA7C2LrXa46ye/XLfQ+biwashr5kGLcnpCU=;
-        b=MELTgWmpzqD9lOsl7drJGEJRLciWdPOY36Fo4QCKRx2mCR3+YD3DlcWi7QMhlBWvZM
-         FPMT7PvnvfPkRqhY4/WoQ36vJ32BM01kAlw2NTtC2AgN5SDm5MMovCpvZkSL2BUpTYUN
-         YEXnzuoaj4AukVd0H8J1brlvpNMVbfwP9C9I5EyLltRF2PbPPwI70j2uuOOR9t5Srhr2
-         z1OCVv92coQxZONWM4Mkdounzx2VBE3k1v3fKVFXwEEfmqOtjnqh4WNdO4rO2DcE9NFX
-         hf41uFr02wzPWa9jEGnckWop3UO21C5qqzHXGBqMHyY+kHdvKuyg56T3bTuS4wOZF22m
-         f5jg==
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uHnwU/8zVxK9/bfw4gLk9ClQH8SbH6WwTZFdoRwbAtE=;
+        b=QQB024vhpmn4hq25e6Gkh0zhdrnh3KHdtxH6hg6RDKH7CnpR3mYJd6drz35kPPn+vq
+         h6264Me+UgyGvlpwu30FVPeTMz+AEc12Q0M+XUT2JohzSMatCOapVMLXEXEiejzFf7ti
+         ktfb2nZNhIlo275VOb2O2BOnbc3ySbclEou9yYwi6+PYR4gUlNFMkKIpexQj+R7biYK9
+         xXDP+mzIofYbIEFKZVe3ZXLMSxK2QP8MWFHo5cfoJS3ZJay5Rqyq5UdBp1+zLKULS08J
+         lwUq6hGqLZp80Ar+2xFbnq6NvtyQI7K0uQTTZPi/naCAAye6mC44N7eH6EQPj41saYzr
+         cNUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=2K+WKJ3vpA7C2LrXa46ye/XLfQ+biwashr5kGLcnpCU=;
-        b=MGLGFkIi93B4cyOennEOiNJxztBJ45DHd9CgVWtVGkra73rSCEugvLWI/WBjCHalOL
-         DWhNj1Rm0QRf/+RaPOqUrFFiTdPTVTgepZO8ZZcqELPc6h9UqcoHe3OZh4/yx8vblIO3
-         gHsvk4cSv1NpCK5pTvgtGU8Rkf+c6OG5JAulecNcnmozRDM6y//Uqt0rUjwygUuNsceb
-         1Jl58dADiprVNxGyhOMztcFWDUBrIiSOxy7xpLIPSIkoIW3sfoTNjLcYbc5BZuLEsjDg
-         GxeieVhGeyCta3hX+P+/vUamcyThIQNM3nrcSzZ+wpmkbfBZRmWQDBWHnxHxqYDKCWML
-         lUvg==
-X-Gm-Message-State: AOAM531mLaMnZADxF6Fci/M1/9cYSJIoKh/RaXH0nAfjX+MvMmrnEygP
-        xMUmwuBJsWbPbvaObvch42g=
-X-Google-Smtp-Source: ABdhPJw8R9sF5yLV2FIXby0UALzabV346p8ZMxuRP5PfCl5Km9s8E27RJCoRRRuaMtp76HWbPfW9kQ==
-X-Received: by 2002:a17:902:e851:b029:f5:372b:a70e with SMTP id t17-20020a170902e851b02900f5372ba70emr27444265plg.70.1621897367234;
-        Mon, 24 May 2021 16:02:47 -0700 (PDT)
-Received: from nhaiderx-mobl1.gar.corp.intel.com ([2409:4063:2309:9691:60bf:7a61:5dc3:9ca1])
-        by smtp.gmail.com with ESMTPSA id p23sm408970pja.12.2021.05.24.16.02.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 16:02:46 -0700 (PDT)
-From:   nizamhaider786@gmail.com
-To:     laforge@gnumonks.org
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        Nijam Haider <nizamhaider786@gmail.com>
-Subject: [PATCH v2 2/2] char: pcmcia: cm4040_cs: Fix failure handling
-Date:   Tue, 25 May 2021 04:32:35 +0530
-Message-Id: <20210524230235.571-2-nizamhaider786@gmail.com>
-X-Mailer: git-send-email 2.31.1.windows.1
-In-Reply-To: <20210524230235.571-1-nizamhaider786@gmail.com>
-References: <20210524230235.571-1-nizamhaider786@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uHnwU/8zVxK9/bfw4gLk9ClQH8SbH6WwTZFdoRwbAtE=;
+        b=mMIOpJC6xNX7oV8pUzhcU+lweLwfl+VxewwChfiHWpMOZi6wP6Q0NfNhG4HHbrFAdx
+         wWj/8Ww8C1IlNMW3khy/PYqGfcfzJtfzcSOZQ3drmbteLRm6w1JGXGNW8tXghyXIuhpZ
+         9o8JfTeazJZ2MIJuFwUlz75cGuIcumAA/HtI3Q8n0jZmLSXHKKsDSayrdslG7JF4Fo58
+         xvbK7pg9XymC2nJho6GzXd3mCiSdOieKHJRmfovOzYqtW+E7LL6pQv6meplvgA/EUxqw
+         /QeUXx6CGARveLDzCTn5+tRMGt7BGLi3uqD8pPN7sRvbM0kGEFPRxc4RqMzt72I1wZcV
+         Ybhw==
+X-Gm-Message-State: AOAM533aOhc61kTirIy83piDGKYcGAcleKfKki6wSR70XQmAJk1GmkH7
+        eUoBKroSL8JVaOU1fNQilx+gVy5Mihw4Z7Xh+XCe
+X-Google-Smtp-Source: ABdhPJzHdwSaxqdMgKRFDcoSWE+vBddUp/NzMoTBPda3nQNAVt0QAUQEdTUit8AXk9QB29Wy0DPtdDjKh5nmDnbZhoc=
+X-Received: by 2002:a17:907:10d8:: with SMTP id rv24mr25356059ejb.542.1621897458726;
+ Mon, 24 May 2021 16:04:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1621363275.git.rgb@redhat.com> <f5f1a4d8699613f8c02ce762807228c841c2e26f.1621363275.git.rgb@redhat.com>
+ <20210520075842.vnbwbw6yffkybk6z@wittgenstein>
+In-Reply-To: <20210520075842.vnbwbw6yffkybk6z@wittgenstein>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Mon, 24 May 2021 19:04:07 -0400
+Message-ID: <CAHC9VhTyAFou=_Xu7ZSZSY+19Yii=hQ1NW1LPisk49Ot9wg7rg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] audit: add support for the openat2 syscall
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Richard Guy Briggs <rgb@redhat.com>,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        Steve Grubb <sgrubb@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Eric Paris <eparis@redhat.com>, x86@kernel.org,
+        linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Arnd Bergmann <arnd@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nijam Haider <nizamhaider786@gmail.com>
+On Thu, May 20, 2021 at 3:58 AM Christian Brauner
+<christian.brauner@ubuntu.com> wrote:
+> On Wed, May 19, 2021 at 04:00:21PM -0400, Richard Guy Briggs wrote:
+> > The openat2(2) syscall was added in kernel v5.6 with commit fddb5d430ad9
+> > ("open: introduce openat2(2) syscall")
+> >
+> > Add the openat2(2) syscall to the audit syscall classifier.
+> >
+> > Link: https://github.com/linux-audit/audit-kernel/issues/67
+> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
+> > Link: https://lore.kernel.org/r/f5f1a4d8699613f8c02ce762807228c841c2e26f.1621363275.git.rgb@redhat.com
+> > ---
+> >  arch/alpha/kernel/audit.c           | 2 ++
+> >  arch/ia64/kernel/audit.c            | 2 ++
+> >  arch/parisc/kernel/audit.c          | 2 ++
+> >  arch/parisc/kernel/compat_audit.c   | 2 ++
+> >  arch/powerpc/kernel/audit.c         | 2 ++
+> >  arch/powerpc/kernel/compat_audit.c  | 2 ++
+> >  arch/s390/kernel/audit.c            | 2 ++
+> >  arch/s390/kernel/compat_audit.c     | 2 ++
+> >  arch/sparc/kernel/audit.c           | 2 ++
+> >  arch/sparc/kernel/compat_audit.c    | 2 ++
+> >  arch/x86/ia32/audit.c               | 2 ++
+> >  arch/x86/kernel/audit_64.c          | 2 ++
+> >  include/linux/auditsc_classmacros.h | 1 +
+> >  kernel/auditsc.c                    | 3 +++
+> >  lib/audit.c                         | 4 ++++
+> >  lib/compat_audit.c                  | 4 ++++
+> >  16 files changed, 36 insertions(+)
 
-Handled failure cases of device_create()
+...
 
-Signed-off-by: Nijam Haider <nizamhaider786@gmail.com>
----
-V1 -> V2: Added description and changelog
----
- drivers/char/pcmcia/cm4040_cs.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+> > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > index d775ea16505b..3f59ab209dfd 100644
+> > --- a/kernel/auditsc.c
+> > +++ b/kernel/auditsc.c
+> > @@ -76,6 +76,7 @@
+> >  #include <linux/fsnotify_backend.h>
+> >  #include <uapi/linux/limits.h>
+> >  #include <uapi/linux/netfilter/nf_tables.h>
+> > +#include <uapi/linux/openat2.h>
+> >
+> >  #include "audit.h"
+> >
+> > @@ -196,6 +197,8 @@ static int audit_match_perm(struct audit_context *ctx, int mask)
+> >               return ((mask & AUDIT_PERM_WRITE) && ctx->argv[0] == SYS_BIND);
+> >       case AUDITSC_EXECVE:
+> >               return mask & AUDIT_PERM_EXEC;
+> > +     case AUDITSC_OPENAT2:
+> > +             return mask & ACC_MODE((u32)((struct open_how *)ctx->argv[2])->flags);
+>
+> That's a lot of dereferncing, casting and masking all at once. Maybe a
+> small static inline helper would be good for the sake of legibility? Sm
+> like:
+>
+> static inline u32 audit_openat2_acc(struct open_how *how, int mask)
+> {
+>         u32 flags = how->flags;
+>         return mask & ACC_MODE(flags);
+> }
+>
+> but not sure. Just seems more legible to me.
+> Otherwise.
 
-diff --git a/drivers/char/pcmcia/cm4040_cs.c b/drivers/char/pcmcia/cm4040_cs.c
-index d5e43606339c..526198be91fa 100644
---- a/drivers/char/pcmcia/cm4040_cs.c
-+++ b/drivers/char/pcmcia/cm4040_cs.c
-@@ -558,6 +558,7 @@ static void reader_release(struct pcmcia_device *link)
- static int reader_probe(struct pcmcia_device *link)
- {
- 	struct reader_dev *dev;
-+	struct device *dev_ret;
- 	int i, ret;
- 
- 	for (i = 0; i < CM_MAX_DEV; i++) {
-@@ -593,8 +594,14 @@ static int reader_probe(struct pcmcia_device *link)
- 		return ret;
- 	}
- 
--	device_create(cmx_class, NULL, MKDEV(major, i), NULL, "cmx%d", i);
--
-+	dev_ret = device_create(cmx_class, NULL, MKDEV(major, i), NULL, "cmx%d", i);
-+	if (IS_ERR(dev_ret)) {
-+		dev_err(&link->dev, "device_create failed for %d\n", i);
-+		reader_release(link);
-+		dev_table[i] = NULL;
-+		kfree(dev);
-+		return -ENODEV;
-+	}
- 	return 0;
- }
- 
+I'm on the fence about this.  I understand Christian's concern, but I
+have a bit of hatred towards single caller functions like this.  Since
+this function isn't really high-touch, and I don't expect that to
+change in the near future, let's leave the casting mess as-is.
+
 -- 
-2.7.4
-
+paul moore
+www.paul-moore.com
