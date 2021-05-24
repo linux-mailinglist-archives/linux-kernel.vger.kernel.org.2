@@ -2,68 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A8F938DEE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BDD038DEE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 03:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232173AbhEXBeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 21:34:31 -0400
-Received: from mail-pg1-f175.google.com ([209.85.215.175]:43690 "EHLO
-        mail-pg1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbhEXBe3 (ORCPT
+        id S232186AbhEXBfP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 21:35:15 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5524 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232067AbhEXBfO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 21:34:29 -0400
-Received: by mail-pg1-f175.google.com with SMTP id e22so3174465pgv.10;
-        Sun, 23 May 2021 18:33:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=GLzR8V6SvDeIsyAstNkq2gTzI23jfFfIEag6VtEV2NE=;
-        b=tPjWM3wJM12ctM2TRAO2AJIzGopgWSHkfhblZR/aXs/uJ6jaKsUaTlGoa7au47mi5Q
-         qA8ys504mFOf1oafWuaXE504ms6YOi6uPghZFSaxtRmCdAbLZmmpX1c7KggiDG+3HPpn
-         ya2VLbLLUGXFa9XsrCw/UUoJYJxjNFjgf6XhErmuhVM0dAadE2rRRAPXAtHHYUJ9iRSu
-         rnn+1snKRXsLj0iiV1Dzcvh2WwaRgZdr+cf7Xh1YqVVEstK5Mv44fuwUa2f2XiTRQIzL
-         96ofhEi0I9Umnignat88YdPku1GZ2YEeo6pF+svggJ5PK8oQVvBqoc0BBuVG0kdb6OSh
-         tX/Q==
-X-Gm-Message-State: AOAM5310DsIoIlmQDeyb7PNvf05nUowH0TvOl91kMLKDMVQiEOgsEnZ1
-        wylXoS0DZIw5dYC9NXW3P6Cs6HHdR5U=
-X-Google-Smtp-Source: ABdhPJwY1rfRhWwwW7EJJpJ4CD3uMjSP1bGZxUrs+ZultUgkkfZg20r8kSEzyejfXEVvGn44tq5V8g==
-X-Received: by 2002:a63:3704:: with SMTP id e4mr10721891pga.125.1621819980580;
-        Sun, 23 May 2021 18:33:00 -0700 (PDT)
-Received: from [192.168.3.217] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id y190sm10168536pgd.24.2021.05.23.18.32.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 May 2021 18:33:00 -0700 (PDT)
-Subject: Re: [PATCH v1 3/3] scsi: ufs: Use UPIU query trace in devman_upiu_cmd
-To:     Bean Huo <huobean@gmail.com>, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, tomas.winkler@intel.com, cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210523211409.210304-1-huobean@gmail.com>
- <20210523211409.210304-4-huobean@gmail.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <74d9b6e5-489d-9267-1c6f-c59f9164136d@acm.org>
-Date:   Sun, 23 May 2021 18:32:58 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+        Sun, 23 May 2021 21:35:14 -0400
+Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FpKRN1nYPzkYQT;
+        Mon, 24 May 2021 09:30:56 +0800 (CST)
+Received: from dggpeml500017.china.huawei.com (7.185.36.243) by
+ dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 09:33:43 +0800
+Received: from [10.174.178.174] (10.174.178.174) by
+ dggpeml500017.china.huawei.com (7.185.36.243) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 09:33:42 +0800
+Subject: Re: [PATCH -next] ARM: imx: add missing clk_disable_unprepare() in
+ imx_mmdc_remove()
+To:     Shawn Guo <shawnguo@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-imx@nxp.com>
+References: <20210517111523.477889-1-yangyingliang@huawei.com>
+ <20210523051145.GW8194@dragon>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Message-ID: <ed677e7a-66aa-03f0-a2bd-c5f46bf06461@huawei.com>
+Date:   Mon, 24 May 2021 09:33:42 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20210523211409.210304-4-huobean@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210523051145.GW8194@dragon>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.174.178.174]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500017.china.huawei.com (7.185.36.243)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/23/21 2:14 PM, Bean Huo wrote:
-> +	ufshcd_add_query_upiu_trace(hba, err ? UFS_QUERY_ERR : UFS_QUERY_COMP,
-> +				    (struct utp_upiu_req *)lrbp->ucd_rsp_ptr);
 
-Why is there a cast in the above code from a response pointer to a
-request pointer type?
+On 2021/5/23 13:11, Shawn Guo wrote:
+> On Mon, May 17, 2021 at 07:15:23PM +0800, Yang Yingliang wrote:
+>> clock source is prepared and enabled by clk_prepare_enable()
+>> in probe function, but no disable or unprepare in remove.
+>>
+>> Fixes: 9454a0caff6a ("ARM: imx: add mmdc ipg clock operation for mmdc")
+>> Reported-by: Hulk Robot <hulkci@huawei.com>
+>> Signed-off-by: Yang Yingliang <yangyingliang@huawei.com>
+>> ---
+>>   arch/arm/mach-imx/mmdc.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/mach-imx/mmdc.c b/arch/arm/mach-imx/mmdc.c
+>> index 0dfd0ae7a63d..7d87fa8c70a9 100644
+>> --- a/arch/arm/mach-imx/mmdc.c
+>> +++ b/arch/arm/mach-imx/mmdc.c
+>> @@ -77,6 +77,7 @@ static const struct of_device_id imx_mmdc_dt_ids[] = {
+>>   	{ /* sentinel */ }
+>>   };
+>>   
+>> +struct clk *mmdc_ipg_clk;
+> Missing static.  But an even better change should be putting it into
+> struct mmdc_pmu, I guess.
+
+OK, I will send a v2 later.
 
 Thanks,
 
-Bart.
+Yang
+
+>
+> Shawn
+>
+>>   #ifdef CONFIG_PERF_EVENTS
+>>   
+>>   static enum cpuhp_state cpuhp_mmdc_state;
+>> @@ -463,6 +464,7 @@ static int imx_mmdc_remove(struct platform_device *pdev)
+>>   	cpuhp_state_remove_instance_nocalls(cpuhp_mmdc_state, &pmu_mmdc->node);
+>>   	perf_pmu_unregister(&pmu_mmdc->pmu);
+>>   	kfree(pmu_mmdc);
+>> +	clk_disable_unprepare(mmdc_ipg_clk);
+>>   	return 0;
+>>   }
+>>   
+>> @@ -536,7 +538,6 @@ static int imx_mmdc_probe(struct platform_device *pdev)
+>>   {
+>>   	struct device_node *np = pdev->dev.of_node;
+>>   	void __iomem *mmdc_base, *reg;
+>> -	struct clk *mmdc_ipg_clk;
+>>   	u32 val;
+>>   	int err;
+>>   
+>> -- 
+>> 2.25.1
+>>
+> .
