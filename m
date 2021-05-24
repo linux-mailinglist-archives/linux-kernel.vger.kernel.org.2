@@ -2,98 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8871838F51B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFA8F38F524
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233880AbhEXVr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:47:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232693AbhEXVr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 17:47:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80D7B6140F;
-        Mon, 24 May 2021 21:46:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621892788;
-        bh=pIqcwhnobnjNtorg38viD7Ev04FdWPKbGKaiT70sphw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sqlUf1coLr/eocDF0EyjRwzf6YJvk2jL0KLJC3/80LIoV1iV/SHgWo0LJElWlXM6p
-         VkYfo6o3495XQ0gUwyw4FeIYHKnKH06ZwUJvJH7wh56Ou/GmgW45m6EXuysQLL2jaR
-         5SLgBzFlcTuMfUSW7GFsCpCsr9GJJM5VBUQgPhhsRwFZQRBcB6Zg9Xce88IXlFtLtx
-         c5ivaG7kcgdQA9KAkhnTxFDg01DNFKOpPwuQXMQ1xT3+yejxO0JTIfyyE6fYhQFom/
-         rLs1KaAhZnJroH/ZPgGFxVwCDdZrAX7MU0Hfp9TEY6MWdJ/XQLVQ6Ef8vwN6OUEg+e
-         pw/HP7TqPYgfw==
-Date:   Mon, 24 May 2021 22:46:22 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 21/21] Documentation: arm64: describe asymmetric
- 32-bit support
-Message-ID: <20210524214622.GI15545@willie-the-truck>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-22-will@kernel.org>
- <20210521173721.untjfglvxja6v6ot@e107158-lin.cambridge.arm.com>
+        id S233881AbhEXVtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:49:24 -0400
+Received: from mail-pj1-f41.google.com ([209.85.216.41]:38460 "EHLO
+        mail-pj1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233353AbhEXVtX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 17:49:23 -0400
+Received: by mail-pj1-f41.google.com with SMTP id cu11-20020a17090afa8bb029015d5d5d2175so12028701pjb.3;
+        Mon, 24 May 2021 14:47:53 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZrqHjXQRC4M7qVgUSaWTrcOaZ1f9fw7G33qll6nxKv8=;
+        b=ThCRpB1vTjEbTL6AMIbSYUGrXyCho/AQAUdJgiZkzRyEvMIwjk2Ck/kkx/+3J0d8CZ
+         3UqyasmRqAU4ZCRLvKeaQDjmgR03PY3toc6yk/8fp16hrmrmMm/mDor6Zdv0l6o9JNr3
+         7yZY6WIaySv3w/vkgTmQT5haUWTSuvFREnBaknHtrMpbytCgrS4HxnYjf75H07AI1vO0
+         TkdI/n8lU7PedkukKuE/epfojRaONpsB55suIm+R64tMvqVPwWzM1AeI1W0abNYLLxhH
+         beqIZoIZFjtkHueup0DkMcNA+wkespjWHlyS8a2ooT/qSPrZDbj5Ek8nN3KdgnRLPZVp
+         jniQ==
+X-Gm-Message-State: AOAM533ZA6TNiwYIUI1BYx84My1ptsH3fnq4qvGf3NhVC5pgL3n9qTmx
+        +sjyQ2uE4U2tzbaakQoDltM=
+X-Google-Smtp-Source: ABdhPJy7c3nmY3mIYoQwpZ7K0jTIgE4TuQ8XojwxWbEhn/bMSrw/g1FIT8YUEUsDqk1/Mr798I4U5A==
+X-Received: by 2002:a17:90a:8a07:: with SMTP id w7mr26982435pjn.192.1621892873290;
+        Mon, 24 May 2021 14:47:53 -0700 (PDT)
+Received: from 42.do-not-panic.com (42.do-not-panic.com. [157.230.128.187])
+        by smtp.gmail.com with ESMTPSA id m1sm8545842pgd.78.2021.05.24.14.47.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 14:47:52 -0700 (PDT)
+Received: by 42.do-not-panic.com (Postfix, from userid 1000)
+        id 95210401AD; Mon, 24 May 2021 21:47:51 +0000 (UTC)
+Date:   Mon, 24 May 2021 21:47:51 +0000
+From:   Luis Chamberlain <mcgrof@kernel.org>
+To:     menglong8.dong@gmail.com
+Cc:     viro@zeniv.linux.org.uk, keescook@chromium.org,
+        samitolvanen@google.com, johan@kernel.org, ojeda@kernel.org,
+        jeyu@kernel.org, joe@perches.com, dong.menglong@zte.com.cn,
+        masahiroy@kernel.org, jack@suse.cz, axboe@kernel.dk, hare@suse.de,
+        gregkh@linuxfoundation.org, tj@kernel.org, song@kernel.org,
+        neilb@suse.de, akpm@linux-foundation.org, brho@google.com,
+        f.fainelli@gmail.com, wangkefeng.wang@huawei.com, arnd@arndb.de,
+        linux@rasmusvillemoes.dk, mhiramat@kernel.org, rostedt@goodmis.org,
+        vbabka@suse.cz, glider@google.com, pmladek@suse.com,
+        ebiederm@xmission.com, jojing64@gmail.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/3] init/do_mounts.c: fix rootfs_fs_type with ramfs
+Message-ID: <20210524214751.GZ4332@42.do-not-panic.com>
+References: <20210522113155.244796-1-dong.menglong@zte.com.cn>
+ <20210522113155.244796-4-dong.menglong@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521173721.untjfglvxja6v6ot@e107158-lin.cambridge.arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210522113155.244796-4-dong.menglong@zte.com.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 06:37:21PM +0100, Qais Yousef wrote:
-> On 05/18/21 10:47, Will Deacon wrote:
-> > Document support for running 32-bit tasks on asymmetric 32-bit systems
-> > and its impact on the user ABI when enabled.
-> > 
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  .../admin-guide/kernel-parameters.txt         |   3 +
-> >  Documentation/arm64/asymmetric-32bit.rst      | 149 ++++++++++++++++++
-> >  Documentation/arm64/index.rst                 |   1 +
-> >  3 files changed, 153 insertions(+)
-> >  create mode 100644 Documentation/arm64/asymmetric-32bit.rst
-> > 
+On Sat, May 22, 2021 at 07:31:55PM +0800, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> [...]
-> 
-> > +Cpusets
-> > +-------
-> > +
-> > +The affinity of a 32-bit task may include CPUs that are not explicitly
-> > +allowed by the cpuset to which it is attached. This can occur as a
-> > +result of the following two situations:
-> > +
-> > +  - A 64-bit task attached to a cpuset which allows only 64-bit CPUs
-> > +    executes a 32-bit program.
-> > +
-> > +  - All of the 32-bit-capable CPUs allowed by a cpuset containing a
-> > +    32-bit task are offlined.
-> > +
-> > +In both of these cases, the new affinity is calculated according to step
-> > +(2) of the process described in `execve(2)`_ and the cpuset hierarchy is
-> > +unchanged irrespective of the cgroup version.
-> 
-> nit: Should we call out that we're breaking cpuset-v1 behavior? Don't feel
-> strongly about it.
+> As for the existence of 'user root' which is introduced in previous
+> patch, 'rootfs_fs_type', which is used as the root of mount tree,
+> is not used directly any more. So it make no sense to switch it
+> between ramfs and tmpfs, just fix it with ramfs to simplify the
+> code.
+> diff --git a/init/do_mounts.c b/init/do_mounts.c
+> index 943cb58846fb..6d1253f75bb0 100644
+> --- a/init/do_mounts.c
+> +++ b/init/do_mounts.c
+> @@ -689,24 +689,8 @@ void __init init_user_rootfs(void)
+>  	}
+>  }
+>  
+> -static bool is_tmpfs;
+> -static int rootfs_init_fs_context(struct fs_context *fc)
+> -{
+> -	if (IS_ENABLED(CONFIG_TMPFS) && is_tmpfs)
+> -		return shmem_init_fs_context(fc);
+> -
+> -	return ramfs_init_fs_context(fc);
+> -}
+> -
+>  struct file_system_type rootfs_fs_type = {
 
-I think the text is pretty clear that the new behaviour documented here
-applies to cpuset-v1 and I wouldn't say we're breaking anything as we're not
-changing any of the existing behaviours.
+Then why not also just rename rootfs_fs_type to ram_rootfs_fs_type to
+make this even clearer now?
 
-Will
+>  	.name		= "rootfs",
+> -	.init_fs_context = rootfs_init_fs_context,
+> +	.init_fs_context = ramfs_init_fs_context,
+>  	.kill_sb	= kill_litter_super,
+>  };
+
+  Luis
