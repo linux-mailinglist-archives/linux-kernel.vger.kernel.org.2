@@ -2,300 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351D038F45A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:27:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1425438F461
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 22:29:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233490AbhEXU3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 16:29:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57534 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232676AbhEXU3G (ORCPT
+        id S233346AbhEXUa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 16:30:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46526 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232676AbhEXUaz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 16:29:06 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6EBC061574;
-        Mon, 24 May 2021 13:27:37 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id b15-20020a17090a550fb029015dad75163dso11869884pji.0;
-        Mon, 24 May 2021 13:27:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=YOLffSd93kh02GTMjTKHizOrglJPKYSVjdsNozWOQhM=;
-        b=Adp+KffXTXWNkZcw9zQlHHv+k1lCOuoE8LCoLR9s+xuP/FEyQHIJffudAT4ZIMunql
-         q8Q9pllpsnG7W8eSfGowVHIq0rhmiOieGHkYfflMomldnt6/1ACXGi5YPsLzJaKOp3kq
-         bxY+YFYMzGxrFGlzbCTYzTEJ03XsbGGfiZtQW5QGrCJiGfrXRsMePGmD0rqjXJWIwGh5
-         VDZfGN0YSPcsWfG2UK1TC4FOMwIz4ipiqbLIJ9EwvfCT4GYnFH9Jlz1n10i6UpX4xZN2
-         orWrm99zBuYWSbxFTi6d3Z90kwYU8rf22QYiE4tCBmYCCuuK9OM3LifMqzw4gWPEVGIf
-         Hkaw==
+        Mon, 24 May 2021 16:30:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621888167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aM5BlbcF5ShA/EMmaqQOt8kM02ccUq9Nt6SsMiIbryc=;
+        b=YngQRAK9dNw5rzZm4JKGZTdyAXhnVzgwpnodLfoyqTAdxcpguKEAiOBr0KsiIuoFMVf4G9
+        iAgHjHn3zgNZcRm8azBeUMQ2KD05ntPnc4iy8wHySsrCtmQavP7tfL/C6L3jTNagtbXmqh
+        5F7qcje8Xi7jHrfGNSqV5J5S99G/ow0=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-7Wt-MNYqPI2X_biv80N_ww-1; Mon, 24 May 2021 16:29:25 -0400
+X-MC-Unique: 7Wt-MNYqPI2X_biv80N_ww-1
+Received: by mail-qv1-f72.google.com with SMTP id a29-20020a0ca99d0000b02901ec0ad2c871so28593782qvb.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 13:29:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=YOLffSd93kh02GTMjTKHizOrglJPKYSVjdsNozWOQhM=;
-        b=DIxYidsr6KB0gXtoTR9ec2GQQKjVUBT/osaroT0kJjd+vYo/vUcyUAp3C6eWK7xNiU
-         mOpuGU0VABWhZs4qU8P/5JNnCU/RJmJy560OPaHE4XJVNFXzKybUqq11M3zaDYuEs5Y0
-         E97M1P7QrhuvU5/Xl2O1o325EIDoesQASog7Q7N3mzlE6oYjMVKwCCyO8IpzM3pynkw3
-         VRB/16gkQYYCz+WaLrtHBKHZUGXQYSdsDUXMMwkIh52e4MnJonSscjwvP+3Ld+YZiVLM
-         ywJz6H5ohE7J0MlViGmcClvoDVgcd6cQY1Q5x/32XfyNAZ9BfNSmq/4mWohRaSHJT3bt
-         iGtw==
-X-Gm-Message-State: AOAM533OVUorA+40QBLQEWiX5wIPEfwkJE7R/p3nZd09LkDLvlbqy1LL
-        Vy0ikX6TsKPAbufGxLcsEdvZobxmkh9WwA==
-X-Google-Smtp-Source: ABdhPJwZ9+OE9EzwcDACYwXeN1EYhcmt5XtNITTXAkRRnjB4zPkGkgjP3bMjI2uZBZXXnNtgqmQ87g==
-X-Received: by 2002:a17:90b:3692:: with SMTP id mj18mr27065279pjb.121.1621888057251;
-        Mon, 24 May 2021 13:27:37 -0700 (PDT)
-Received: from localhost ([103.248.31.164])
-        by smtp.gmail.com with ESMTPSA id ie5sm264285pjb.14.2021.05.24.13.27.36
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=aM5BlbcF5ShA/EMmaqQOt8kM02ccUq9Nt6SsMiIbryc=;
+        b=rPUCc4Q2/W1VxZ5LPnbb4kfDxxsNSwcxExLW8acaqpO69szV20MjFWWTQH3huLmmTI
+         23a9g19omGMmZzHmV6VLfEe3u97NLLV0SidOcbqj4ZQGod0jvdYQt8EY8q4HYcaRZBM0
+         QxscQtZix8dGxTVQZi54XN46zJklAOH++IaNDtkMxX5PYglAKNsRMIuuOCZ3BUKocsue
+         ph+seyau3mU977VuZLxbwwovyVdT3oI4DP+PKrxoCQNmeruea1U7ORoOSC1nGkalwxE0
+         a8/QEitJAuXV4zw7j52yaNmlTTlF+ao/GVjXoPbaKXaycAZzj9SblYboXLJntMRypS2W
+         LE+w==
+X-Gm-Message-State: AOAM532BLCfv2uHfpQjzDSUatlECkiRDuUJJMqu0N2Jd79bXpqRwrgd+
+        VIFF1iFnOkV7JTswkVKHY3tGluJ5oSj8jMhLahDBicF74uuJbnL4KqcPCxhpoTudz2x2FuxVePQ
+        cBZqC5Hi4VcEfabfIGs6PGPYs
+X-Received: by 2002:ac8:594a:: with SMTP id 10mr27755388qtz.293.1621888165117;
+        Mon, 24 May 2021 13:29:25 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydFmC/nU4sjsnnU0eNnpKjJNtYwE0t39aBuiF0Lqkl7LWb5yxJqiBw5WLqUzup4nSZcLwzPQ==
+X-Received: by 2002:ac8:594a:: with SMTP id 10mr27755365qtz.293.1621888164914;
+        Mon, 24 May 2021 13:29:24 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id p10sm11665950qkg.74.2021.05.24.13.29.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 13:27:36 -0700 (PDT)
-Date:   Tue, 25 May 2021 01:57:34 +0530
-From:   Amey Narkhede <ameynarkhede03@gmail.com>
-To:     Jonas =?utf-8?Q?Dre=C3=9Fler?= <verdre@v0yd.nl>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        Maximilian Luz <luzmaximilian@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Ganapathi Bhat <ganapathi017@gmail.com>,
-        Sharvari Harisangam <sharvari.harisangam@nxp.com>,
-        Xinming Hu <huxinming820@gmail.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [RFC PATCH 2/3] mwifiex: pcie: add reset_d3cold quirk for
- Surface gen4+ devices
-Message-ID: <20210524202734.sgvv4qtzonlqmj7p@archlinux>
-References: <20210522131827.67551-1-verdre@v0yd.nl>
- <20210522131827.67551-3-verdre@v0yd.nl>
- <20210522184416.mscbmay27jciy2hv@archlinux>
- <1a844abf-2259-ff4f-d49d-de95870345dc@mailbox.org>
+        Mon, 24 May 2021 13:29:24 -0700 (PDT)
+Message-ID: <b0e6b0957716c9bc65e22ed989a73f050522e375.camel@redhat.com>
+Subject: Re: [PATCH v7 08/10] drm/bridge: ti-sn65dsi86: Add support for the
+ DP AUX bus
+From:   Lyude Paul <lyude@redhat.com>
+To:     Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>
+Cc:     Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Thierry Reding <treding@nvidia.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Linus W <linus.walleij@linaro.org>,
+        dri-devel@lists.freedesktop.org, robdclark@chromium.org,
+        Steev Klimaszewski <steev@kali.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Robert Foss <robert.foss@linaro.org>,
+        linux-kernel@vger.kernel.org
+Date:   Mon, 24 May 2021 16:29:22 -0400
+In-Reply-To: <20210517130450.v7.8.Ib5fe0638da85800141ce141bb8e441c5f25438d4@changeid>
+References: <20210517200907.1459182-1-dianders@chromium.org>
+         <20210517130450.v7.8.Ib5fe0638da85800141ce141bb8e441c5f25438d4@changeid>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1a844abf-2259-ff4f-d49d-de95870345dc@mailbox.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/05/23 12:28PM, Jonas Dre�ler wrote:
-> On 5/22/21 8:44 PM, Amey Narkhede wrote:
-> > On 21/05/22 03:18PM, Jonas Dre�ler wrote:
-> > > From: Tsuchiya Yuto <kitakar@gmail.com>
-> > >
-> > > To reset mwifiex on Surface gen4+ (Pro 4 or later gen) devices, it
-> > > seems that putting the wifi device into D3cold is required according
-> > > to errata.inf file on Windows installation (Windows/INF/errata.inf).
-> > >
-> > > This patch adds a function that performs power-cycle (put into D3cold
-> > > then D0) and call the function at the end of reset_prepare().
-> > >
-> > > Note: Need to also reset the parent device (bridge) of wifi on SB1;
-> > > it might be because the bridge of wifi always reports it's in D3hot.
-> > > When I tried to reset only the wifi device (not touching parent), it gave
-> > > the following error and the reset failed:
-> > >
-> > >      acpi device:4b: Cannot transition to power state D0 for parent in D3hot
-> > >      mwifiex_pcie 0000:03:00.0: can't change power state from D3cold to D0 (config space inaccessible)
-> > >
-> > May I know how did you reset only the wifi device when you encountered
-> > this error?
->
-> Not exactly sure what you mean by that, the trick was to put the parent
-> bridge into D3cold and then into D0 before transitioning the card into
-> D0.
->
-If the parent bridge has multiple devices attached to it, this can
-have some side effects on other devices after the reset but as you
-mentioned below that parent bridge is only connected to wifi card it
-should be fine in that case.
+For 7 and 8:
 
-> That "Cannot transition to power state" warning is just the kernel
-> enforcing ACPI specs afaik, and that prevents us from putting the device
-> into ACPI state D0. This in turn means the device still has no power and
-> we can't set the PCI power state to D0, which is the second error.
->
-> >
-> > > Signed-off-by: Tsuchiya Yuto <kitakar@gmail.com>
-> > > Signed-off-by: Jonas Dre�ler <verdre@v0yd.nl>
-> > > ---
-> > >   drivers/net/wireless/marvell/mwifiex/pcie.c   |   7 +
-> > >   .../wireless/marvell/mwifiex/pcie_quirks.c    | 123 ++++++++++++++++++
-> > >   .../wireless/marvell/mwifiex/pcie_quirks.h    |   3 +
-> > >   3 files changed, 133 insertions(+)
-> > >
-> > > diff --git a/drivers/net/wireless/marvell/mwifiex/pcie.c b/drivers/net/wireless/marvell/mwifiex/pcie.c
-> > > index 02fdce926de5..d9acfea395ad 100644
-> > > --- a/drivers/net/wireless/marvell/mwifiex/pcie.c
-> > > +++ b/drivers/net/wireless/marvell/mwifiex/pcie.c
-> > > @@ -528,6 +528,13 @@ static void mwifiex_pcie_reset_prepare(struct pci_dev *pdev)
-> > >   	mwifiex_shutdown_sw(adapter);
-> > >   	clear_bit(MWIFIEX_IFACE_WORK_DEVICE_DUMP, &card->work_flags);
-> > >   	clear_bit(MWIFIEX_IFACE_WORK_CARD_RESET, &card->work_flags);
-> > > +
-> > > +	/* For Surface gen4+ devices, we need to put wifi into D3cold right
-> > > +	 * before performing FLR
-> > > +	 */
-> > > +	if (card->quirks & QUIRK_FW_RST_D3COLD)
-> > > +		mwifiex_pcie_reset_d3cold_quirk(pdev);
-> > > +
-> > >   	mwifiex_dbg(adapter, INFO, "%s, successful\n", __func__);
-> > >
-> > >   	card->pci_reset_ongoing = true;
-> > > diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> > > index 4064f99b36ba..b5f214fc1212 100644
-> > > --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> > > +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.c
-> > > @@ -15,6 +15,72 @@
-> > >
-> > >   /* quirk table based on DMI matching */
-> > >   static const struct dmi_system_id mwifiex_quirk_table[] = {
-> > > +	{
-> > > +		.ident = "Surface Pro 4",
-> > > +		.matches = {
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 4"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Pro 5",
-> > > +		.matches = {
-> > > +			/* match for SKU here due to generic product name "Surface Pro" */
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1796"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Pro 5 (LTE)",
-> > > +		.matches = {
-> > > +			/* match for SKU here due to generic product name "Surface Pro" */
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_SKU, "Surface_Pro_1807"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Pro 6",
-> > > +		.matches = {
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Pro 6"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Book 1",
-> > > +		.matches = {
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Book 2",
-> > > +		.matches = {
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Book 2"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Laptop 1",
-> > > +		.matches = {
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > > +	{
-> > > +		.ident = "Surface Laptop 2",
-> > > +		.matches = {
-> > > +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Microsoft Corporation"),
-> > > +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Surface Laptop 2"),
-> > > +		},
-> > > +		.driver_data = (void *)QUIRK_FW_RST_D3COLD,
-> > > +	},
-> > >   	{}
-> > >   };
-> > >
-> > > @@ -29,4 +95,61 @@ void mwifiex_initialize_quirks(struct pcie_service_card *card)
-> > >
-> > >   	if (!card->quirks)
-> > >   		dev_info(&pdev->dev, "no quirks enabled\n");
-> > > +	if (card->quirks & QUIRK_FW_RST_D3COLD)
-> > > +		dev_info(&pdev->dev, "quirk reset_d3cold enabled\n");
-> > > +}
-> > > +
-> > > +static void mwifiex_pcie_set_power_d3cold(struct pci_dev *pdev)
-> > > +{
-> > > +	dev_info(&pdev->dev, "putting into D3cold...\n");
-> > > +
-> > > +	pci_save_state(pdev);
-> > > +	if (pci_is_enabled(pdev))
-> > > +		pci_disable_device(pdev);
-> > > +	pci_set_power_state(pdev, PCI_D3cold);
-> > > +}
-> > pci_set_power_state with PCI_D3cold state calls
-> > pci_bus_set_current_state(dev->subordinate, PCI_D3cold).
-> > Maybe this was the reason for the earlier problem you had?
-> > Not 100% sure about this though CCing: Alex
->
-> Hmm, so we'd only have to put the bridge into D3cold and that takes care
-> of the device going to D3cold automatically?
->
-Yeah I think it should do it. Have you tried this?
-> >
-> > > +
-> > > +static int mwifiex_pcie_set_power_d0(struct pci_dev *pdev)
-> > > +{
-> > > +	int ret;
-> > > +
-> > > +	dev_info(&pdev->dev, "putting into D0...\n");
-> > > +
-> > > +	pci_set_power_state(pdev, PCI_D0);
-> > > +	ret = pci_enable_device(pdev);
-> > > +	if (ret) {
-> > > +		dev_err(&pdev->dev, "pci_enable_device failed\n");
-> > > +		return ret;
-> > > +	}
-> > > +	pci_restore_state(pdev);
-> > On the side note just save and restore is enough in this case?
-> > What would be the device <-> driver state after the reset as you
-> > are calling this on parent_pdev below so that affects other
-> > devices on bus?
->
-> Not sure we can do anything more than save and restore, can we? I don't
-> think it will affect other devices on the bus, the parent bridge is only
-> connected to the wifi card, nothing else.
->
-I was thinking of doing remove-reset-rescan but I think save-restore
-should be ok if there is a single device connected to the parent bridge.
+Reviewed-by: Lyude Paul <lyude@redhat.com>
 
-Thanks,
-Amey
-[...]
-> > > diff --git a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-> > > index 7a1fe3b3a61a..549093067813 100644
-> > > --- a/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-> > > +++ b/drivers/net/wireless/marvell/mwifiex/pcie_quirks.h
-> > > @@ -5,4 +5,7 @@
-> > >
-> > >   #include "pcie.h"
-> > >
-> > > +#define QUIRK_FW_RST_D3COLD	BIT(0)
-> > > +
-> > >   void mwifiex_initialize_quirks(struct pcie_service_card *card);
-> > > +int mwifiex_pcie_reset_d3cold_quirk(struct pci_dev *pdev);
-> > > --
-> > > 2.31.1
-> > >
->
-> Thanks for the review,
-> Jonas
+On Mon, 2021-05-17 at 13:09 -0700, Douglas Anderson wrote:
+> We want to provide our panel with access to the DP AUX channel. The
+> way to do this is to let our panel be a child of ours using the fancy
+> new DP AUX bus support.
+> 
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> Changes in v7:
+> - Patch to support for DP AUX bus on ti-sn65dsi86 new for v7.
+> 
+>  drivers/gpu/drm/bridge/Kconfig        |  1 +
+>  drivers/gpu/drm/bridge/ti-sn65dsi86.c | 13 +++++++++++--
+>  2 files changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+> index d25e900f07ef..294d0bdd4cbe 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -280,6 +280,7 @@ config DRM_TI_SN65DSI86
+>         select DRM_PANEL
+>         select DRM_MIPI_DSI
+>         select AUXILIARY_BUS
+> +       select DRM_DP_AUX_BUS
+>         help
+>           Texas Instruments SN65DSI86 DSI to eDP Bridge driver
+>  
+> diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> index 42a55d13864b..a59497f7e504 100644
+> --- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> +++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+> @@ -23,6 +23,7 @@
+>  #include <drm/drm_atomic.h>
+>  #include <drm/drm_atomic_helper.h>
+>  #include <drm/drm_bridge.h>
+> +#include <drm/drm_dp_aux_bus.h>
+>  #include <drm/drm_dp_helper.h>
+>  #include <drm/drm_mipi_dsi.h>
+>  #include <drm/drm_of.h>
+> @@ -1446,19 +1447,27 @@ static int ti_sn_aux_probe(struct auxiliary_device
+> *adev,
+>         pdata->aux.transfer = ti_sn_aux_transfer;
+>         drm_dp_aux_init(&pdata->aux);
+>  
+> +       ret = devm_of_dp_aux_populate_ep_devices(&pdata->aux);
+> +       if (ret)
+> +               goto err;
+> +
+>         /*
+>          * The eDP to MIPI bridge parts don't work until the AUX channel is
+>          * setup so we don't add it in the main driver probe, we add it now.
+>          */
+>         ret = ti_sn65dsi86_add_aux_device(pdata, &pdata->bridge_aux,
+> "bridge");
+>  
+> +       if (ret)
+> +               goto err;
+> +
+> +       return 0;
+> +err:
+>         /*
+>          * Clear of_node on any errors. Really this only matters if the
+> error
+>          * is -EPROBE_DEFER to avoid (again) keep pinctrl from claiming when
+>          * it tries the probe again, but it shouldn't hurt on any error.
+>          */
+> -       if (ret)
+> -               adev->dev.of_node = NULL;
+> +       adev->dev.of_node = NULL;
+>  
+>         return ret;
+>  }
+
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
