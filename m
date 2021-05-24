@@ -2,155 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14F7838EA8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1737838EADD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:57:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233946AbhEXO41 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:56:27 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:3932 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233967AbhEXOvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:51:54 -0400
-Received: from dggems704-chm.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fpg6R0XgwzBvt8;
-        Mon, 24 May 2021 22:47:27 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggems704-chm.china.huawei.com (10.3.19.181) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:17 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:17 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 04/10] net: wan: code indent use tabs where possible
-Date:   Mon, 24 May 2021 22:47:11 +0800
-Message-ID: <1621867637-2680-5-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
-References: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
+        id S233502AbhEXO62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:58:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233312AbhEXOxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:53:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CADE86141E;
+        Mon, 24 May 2021 14:48:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621867701;
+        bh=JGxQF6jyxJbtmUtr5HrXkRpIfgVUS4uzNnCe2ouXUZI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ayz7VTTXw7H/AbJGqjZXxfrAOfVpbn0RKyuANlW9z2FmuWvGlC5Smcf/9VPP2k1DD
+         qccJXlfs34SknEm2OaEGPg1L12x3YCQnW5s20V6NcOJQSZu0NvcxEzzq8ipYTeqLgJ
+         RNbjyMZYqxB5LnlrbHniXAmNBr2lWuluqqXF20ttWnT4rMtrrtLYuL8NKZIe9NGjeI
+         F0sP9WfL7ZHOL05svBQrw8CuYzhjDA0fgyALRQh9YbR16d1lkuVkTcpY+B6EUbdUQF
+         YP+3o/e/n5j0kv4CmxzTs72vZpXwxKCy+xK6dgad/el3gYu6KqEAD1deKNI61d8/yq
+         Ahu+dVi1D+8SQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Phillip Potter <phil@philpotter.co.uk>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 30/62] ASoC: rt5645: add error checking to rt5645_probe function
+Date:   Mon, 24 May 2021 10:47:11 -0400
+Message-Id: <20210524144744.2497894-30-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
+References: <20210524144744.2497894-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-Code indent should use tabs where possible.
+[ Upstream commit 5e70b8e22b64eed13d5bbebcb5911dae65bf8c6b ]
 
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+Check for return value from various snd_soc_dapm_* calls, as many of
+them can return errors and this should be handled. Also, reintroduce
+the allocation failure check for rt5645->eq_param as well. Make all
+areas where return values are checked lead to the end of the function
+in the case of an error. Finally, introduce a comment explaining how
+resources here are actually eventually cleaned up by the caller.
+
+Cc: Mark Brown <broonie@kernel.org>
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Link: https://lore.kernel.org/r/20210503115736.2104747-56-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/wanxl.c | 34 +++++++++++++++++-----------------
- 1 file changed, 17 insertions(+), 17 deletions(-)
+ sound/soc/codecs/rt5645.c | 48 +++++++++++++++++++++++++++++++--------
+ 1 file changed, 39 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/net/wan/wanxl.c b/drivers/net/wan/wanxl.c
-index 566c519c6f65..0bcb21ddcc62 100644
---- a/drivers/net/wan/wanxl.c
-+++ b/drivers/net/wan/wanxl.c
-@@ -54,7 +54,7 @@ struct port {
- 	struct net_device *dev;
- 	struct card *card;
- 	spinlock_t lock;	/* for wanxl_xmit */
--        int node;		/* physical port #0 - 3 */
-+	int node;		/* physical port #0 - 3 */
- 	unsigned int clock_type;
- 	int tx_in, tx_out;
- 	struct sk_buff *tx_skbs[TX_BUFFERS];
-@@ -153,7 +153,7 @@ static inline void wanxl_tx_intr(struct port *port)
- 	struct net_device *dev = port->dev;
- 
- 	while (1) {
--                desc_t *desc = &get_status(port)->tx_descs[port->tx_in];
-+		desc_t *desc = &get_status(port)->tx_descs[port->tx_in];
- 		struct sk_buff *skb = port->tx_skbs[port->tx_in];
- 
- 		switch (desc->stat) {
-@@ -171,12 +171,12 @@ static inline void wanxl_tx_intr(struct port *port)
- 			dev->stats.tx_packets++;
- 			dev->stats.tx_bytes += skb->len;
- 		}
--                desc->stat = PACKET_EMPTY; /* Free descriptor */
-+		desc->stat = PACKET_EMPTY; /* Free descriptor */
- 		dma_unmap_single(&port->card->pdev->dev, desc->address,
- 				 skb->len, DMA_TO_DEVICE);
- 		dev_consume_skb_irq(skb);
--                port->tx_in = (port->tx_in + 1) % TX_BUFFERS;
--        }
-+		port->tx_in = (port->tx_in + 1) % TX_BUFFERS;
-+	}
- }
- 
- /* Receive complete interrupt service */
-@@ -233,15 +233,15 @@ static inline void wanxl_rx_intr(struct card *card)
- static irqreturn_t wanxl_intr(int irq, void *dev_id)
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index ed4b59ba63f3..a5665e992ecb 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3376,30 +3376,44 @@ static int rt5645_probe(struct snd_soc_component *component)
  {
- 	struct card *card = dev_id;
--        int i;
--        u32 stat;
--        int handled = 0;
-+	int i;
-+	u32 stat;
-+	int handled = 0;
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	struct rt5645_priv *rt5645 = snd_soc_component_get_drvdata(component);
++	int ret = 0;
  
--        while((stat = readl(card->plx + PLX_DOORBELL_FROM_CARD)) != 0) {
--                handled = 1;
-+	while ((stat = readl(card->plx + PLX_DOORBELL_FROM_CARD)) != 0) {
-+		handled = 1;
- 		writel(stat, card->plx + PLX_DOORBELL_FROM_CARD);
+ 	rt5645->component = component;
  
--                for (i = 0; i < card->n_ports; i++) {
-+		for (i = 0; i < card->n_ports; i++) {
- 			if (stat & (1 << (DOORBELL_FROM_CARD_TX_0 + i)))
- 				wanxl_tx_intr(&card->ports[i]);
- 			if (stat & (1 << (DOORBELL_FROM_CARD_CABLE_0 + i)))
-@@ -249,9 +249,9 @@ static irqreturn_t wanxl_intr(int irq, void *dev_id)
+ 	switch (rt5645->codec_type) {
+ 	case CODEC_TYPE_RT5645:
+-		snd_soc_dapm_new_controls(dapm,
++		ret = snd_soc_dapm_new_controls(dapm,
+ 			rt5645_specific_dapm_widgets,
+ 			ARRAY_SIZE(rt5645_specific_dapm_widgets));
+-		snd_soc_dapm_add_routes(dapm,
++		if (ret < 0)
++			goto exit;
++
++		ret = snd_soc_dapm_add_routes(dapm,
+ 			rt5645_specific_dapm_routes,
+ 			ARRAY_SIZE(rt5645_specific_dapm_routes));
++		if (ret < 0)
++			goto exit;
++
+ 		if (rt5645->v_id < 3) {
+-			snd_soc_dapm_add_routes(dapm,
++			ret = snd_soc_dapm_add_routes(dapm,
+ 				rt5645_old_dapm_routes,
+ 				ARRAY_SIZE(rt5645_old_dapm_routes));
++			if (ret < 0)
++				goto exit;
  		}
- 		if (stat & (1 << DOORBELL_FROM_CARD_RX))
- 			wanxl_rx_intr(card);
--        }
-+	}
+ 		break;
+ 	case CODEC_TYPE_RT5650:
+-		snd_soc_dapm_new_controls(dapm,
++		ret = snd_soc_dapm_new_controls(dapm,
+ 			rt5650_specific_dapm_widgets,
+ 			ARRAY_SIZE(rt5650_specific_dapm_widgets));
+-		snd_soc_dapm_add_routes(dapm,
++		if (ret < 0)
++			goto exit;
++
++		ret = snd_soc_dapm_add_routes(dapm,
+ 			rt5650_specific_dapm_routes,
+ 			ARRAY_SIZE(rt5650_specific_dapm_routes));
++		if (ret < 0)
++			goto exit;
+ 		break;
+ 	}
  
--        return IRQ_RETVAL(handled);
-+	return IRQ_RETVAL(handled);
+@@ -3407,9 +3421,17 @@ static int rt5645_probe(struct snd_soc_component *component)
+ 
+ 	/* for JD function */
+ 	if (rt5645->pdata.jd_mode) {
+-		snd_soc_dapm_force_enable_pin(dapm, "JD Power");
+-		snd_soc_dapm_force_enable_pin(dapm, "LDO2");
+-		snd_soc_dapm_sync(dapm);
++		ret = snd_soc_dapm_force_enable_pin(dapm, "JD Power");
++		if (ret < 0)
++			goto exit;
++
++		ret = snd_soc_dapm_force_enable_pin(dapm, "LDO2");
++		if (ret < 0)
++			goto exit;
++
++		ret = snd_soc_dapm_sync(dapm);
++		if (ret < 0)
++			goto exit;
+ 	}
+ 
+ 	if (rt5645->pdata.long_name)
+@@ -3419,7 +3441,15 @@ static int rt5645_probe(struct snd_soc_component *component)
+ 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+ 		GFP_KERNEL);
+ 
+-	return 0;
++	if (!rt5645->eq_param)
++		ret = -ENOMEM;
++exit:
++	/*
++	 * If there was an error above, everything will be cleaned up by the
++	 * caller if we return an error here.  This will be done with a later
++	 * call to rt5645_remove().
++	 */
++	return ret;
  }
  
- static netdev_tx_t wanxl_xmit(struct sk_buff *skb, struct net_device *dev)
-@@ -259,11 +259,11 @@ static netdev_tx_t wanxl_xmit(struct sk_buff *skb, struct net_device *dev)
- 	struct port *port = dev_to_port(dev);
- 	desc_t *desc;
- 
--        spin_lock(&port->lock);
-+	spin_lock(&port->lock);
- 
- 	desc = &get_status(port)->tx_descs[port->tx_out];
--        if (desc->stat != PACKET_EMPTY) {
--                /* should never happen - previous xmit should stop queue */
-+	if (desc->stat != PACKET_EMPTY) {
-+		/* should never happen - previous xmit should stop queue */
- #ifdef DEBUG_PKT
-                 printk(KERN_DEBUG "%s: transmitter buffer full\n", dev->name);
- #endif
-@@ -366,7 +366,7 @@ static int wanxl_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
- 
- 	default:
- 		return hdlc_ioctl(dev, ifr, cmd);
--        }
-+	}
- }
- 
- static int wanxl_open(struct net_device *dev)
+ static void rt5645_remove(struct snd_soc_component *component)
 -- 
-2.8.1
+2.30.2
 
