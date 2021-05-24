@@ -2,33 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1538438F103
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B115D38F102
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237100AbhEXQI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:08:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46884 "EHLO mail.kernel.org"
+        id S237581AbhEXQIW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:08:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235263AbhEXQAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S234649AbhEXQAQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 12:00:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8953A61985;
-        Mon, 24 May 2021 15:46:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AEF2B6198D;
+        Mon, 24 May 2021 15:46:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871164;
-        bh=aQU06NP4TbAS94hxCLLE0B5GUPZTGRoMn+HDYln3HX0=;
+        s=korg; t=1621871166;
+        bh=i4wAM3elN/z5Vsa8a3mnqbLfx3fRITuI3zFmbTOua8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PLpGbIFyrq4dVLbBPN57qL2vnTTPWCl4BnxiXAhLaQ7cnlUkKPfNDTEsYmqkpGu08
-         zzRHKwy+09po29kqBpJhnoq17AsUVBA6B1tXunIgIKIhbQvwQF2PRCNUdwIsGJrwx/
-         KcyKDz6OA1QZtchzP9LY7rAMbGTY4m+G3e25u+ZI=
+        b=ExB38X0pB1792kKpLSm6teNWKbwekWnlJyobP1nYgkEjh1j28keGeMabYreqiuDvQ
+         bycq/tN4dYLvgjnXjd4FQzlVyC1WOHzJcj+nRurs+OsfcvOZHJhMvkoKsBTmOcU4OF
+         DBHtYllSmdp2CnUACHUfFvQ3I7EzDvBJ1RG9Y8+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Anthony Ruhier <aruhier@mailbox.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: [PATCH 5.12 068/127] x86/build: Fix location of -plugin-opt= flags
-Date:   Mon, 24 May 2021 17:26:25 +0200
-Message-Id: <20210524152337.153392028@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.12 069/127] x86/sev-es: Move sev_es_put_ghcb() in prep for follow on patch
+Date:   Mon, 24 May 2021 17:26:26 +0200
+Message-Id: <20210524152337.182851186@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
 References: <20210524152334.857620285@linuxfoundation.org>
@@ -40,72 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <nathan@kernel.org>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-commit 0024430e920f2900654ad83cd081cf52e02a3ef5 upstream.
+commit fea63d54f7a3e74f8ab489a8b82413a29849a594 upstream.
 
-Commit b33fff07e3e3 ("x86, build: allow LTO to be selected") added a
-couple of '-plugin-opt=' flags to KBUILD_LDFLAGS because the code model
-and stack alignment are not stored in LLVM bitcode.
+Move the location of sev_es_put_ghcb() in preparation for an update to it
+in a follow-on patch. This will better highlight the changes being made
+to the function.
 
-However, these flags were added to KBUILD_LDFLAGS prior to the
-emulation flag assignment, which uses ':=', so they were overwritten
-and never added to $(LD) invocations.
+No functional change.
 
-The absence of these flags caused misalignment issues in the
-AMDGPU driver when compiling with CONFIG_LTO_CLANG, resulting in
-general protection faults.
-
-Shuffle the assignment below the initial one so that the flags are
-properly passed along and all of the linker flags stay together.
-
-At the same time, avoid any future issues with clobbering flags by
-changing the emulation flag assignment to '+=' since KBUILD_LDFLAGS is
-already defined with ':=' in the main Makefile before being exported for
-modification here as a result of commit:
-
-  ce99d0bf312d ("kbuild: clear LDFLAGS in the top Makefile")
-
-Fixes: b33fff07e3e3 ("x86, build: allow LTO to be selected")
-Reported-by: Anthony Ruhier <aruhier@mailbox.org>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-Signed-off-by: Ingo Molnar <mingo@kernel.org>
-Tested-by: Anthony Ruhier <aruhier@mailbox.org>
+Fixes: 0786138c78e79 ("x86/sev-es: Add a Runtime #VC Exception Handler")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
 Cc: stable@vger.kernel.org
-Link: https://github.com/ClangBuiltLinux/linux/issues/1374
-Link: https://lore.kernel.org/r/20210518190106.60935-1-nathan@kernel.org
+Link: https://lkml.kernel.org/r/8c07662ec17d3d82e5c53841a1d9e766d3bdbab6.1621273353.git.thomas.lendacky@amd.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/Makefile |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/kernel/sev-es.c |   36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -170,11 +170,6 @@ ifeq ($(ACCUMULATE_OUTGOING_ARGS), 1)
- 	KBUILD_CFLAGS += $(call cc-option,-maccumulate-outgoing-args,)
- endif
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -209,24 +209,6 @@ static __always_inline struct ghcb *sev_
+ 	return ghcb;
+ }
  
--ifdef CONFIG_LTO_CLANG
--KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
--		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
--endif
+-static __always_inline void sev_es_put_ghcb(struct ghcb_state *state)
+-{
+-	struct sev_es_runtime_data *data;
+-	struct ghcb *ghcb;
 -
- # Workaround for a gcc prelease that unfortunately was shipped in a suse release
- KBUILD_CFLAGS += -Wno-sign-compare
- #
-@@ -194,7 +189,12 @@ ifdef CONFIG_RETPOLINE
-   endif
- endif
+-	data = this_cpu_read(runtime_data);
+-	ghcb = &data->ghcb_page;
+-
+-	if (state->ghcb) {
+-		/* Restore GHCB from Backup */
+-		*ghcb = *state->ghcb;
+-		data->backup_ghcb_active = false;
+-		state->ghcb = NULL;
+-	} else {
+-		data->ghcb_active = false;
+-	}
+-}
+-
+ /* Needed in vc_early_forward_exception */
+ void do_early_exception(struct pt_regs *regs, int trapnr);
  
--KBUILD_LDFLAGS := -m elf_$(UTS_MACHINE)
-+KBUILD_LDFLAGS += -m elf_$(UTS_MACHINE)
+@@ -434,6 +416,24 @@ static enum es_result vc_slow_virt_to_ph
+ /* Include code shared with pre-decompression boot stage */
+ #include "sev-es-shared.c"
+ 
++static __always_inline void sev_es_put_ghcb(struct ghcb_state *state)
++{
++	struct sev_es_runtime_data *data;
++	struct ghcb *ghcb;
 +
-+ifdef CONFIG_LTO_CLANG
-+KBUILD_LDFLAGS	+= -plugin-opt=-code-model=kernel \
-+		   -plugin-opt=-stack-alignment=$(if $(CONFIG_X86_32),4,8)
-+endif
- 
- ifdef CONFIG_X86_NEED_RELOCS
- LDFLAGS_vmlinux := --emit-relocs --discard-none
++	data = this_cpu_read(runtime_data);
++	ghcb = &data->ghcb_page;
++
++	if (state->ghcb) {
++		/* Restore GHCB from Backup */
++		*ghcb = *state->ghcb;
++		data->backup_ghcb_active = false;
++		state->ghcb = NULL;
++	} else {
++		data->ghcb_active = false;
++	}
++}
++
+ void noinstr __sev_es_nmi_complete(void)
+ {
+ 	struct ghcb_state state;
 
 
