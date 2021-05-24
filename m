@@ -2,104 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D8838EAB4
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:56:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69AA638EAE3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:57:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233595AbhEXO5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:57:17 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:3652 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233973AbhEXOvy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:51:54 -0400
-Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fpg5Z1pJ7zNykh;
-        Mon, 24 May 2021 22:46:42 +0800 (CST)
-Received: from dggemi759-chm.china.huawei.com (10.1.198.145) by
- dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:17 +0800
-Received: from localhost.localdomain (10.67.165.24) by
- dggemi759-chm.china.huawei.com (10.1.198.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Mon, 24 May 2021 22:50:17 +0800
-From:   Guangbin Huang <huangguangbin2@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <xie.he.0141@gmail.com>,
-        <ms@dev.tdt.de>, <willemb@google.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lipeng321@huawei.com>, <tanhuazhong@huawei.com>,
-        <huangguangbin2@huawei.com>
-Subject: [PATCH net-next 03/10] net: wan: add blank line after declarations
-Date:   Mon, 24 May 2021 22:47:10 +0800
-Message-ID: <1621867637-2680-4-git-send-email-huangguangbin2@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
-References: <1621867637-2680-1-git-send-email-huangguangbin2@huawei.com>
+        id S233801AbhEXO6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:58:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54518 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233424AbhEXOxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:53:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE18461417;
+        Mon, 24 May 2021 14:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621867700;
+        bh=zdzVrGMqttMdhPQhF12RX1N5/EkUjfF7p5L3C8GhpQU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=sNVIizg9Tafmm4ESWpLCW/uXbbDPoa3vxzZRJHty1tzvDUBdhtlAaoneaiA8bjO09
+         jU0bDvLyM7ShZ02zEEXBjRybuL2utX63BjiITtoq9yRIlzChpSkclxv4iwRW2gPOSj
+         3IqMItAMIop+ROsKB/c/95GmvMgEFvkTAma8EOxMUxEeTo5cXaG+IYFctiqss2J3HY
+         pW6Ix9ginbQkZqgeJsGh+NM8DjdW45NaBxTDnG07MVcJu1Zw2+UqHyaAhVL6crLqaw
+         v/jEa5Qv3eseZ+P9jtT8LVk0lJQofPn/bCktY83E2ZlGfovOetsJatx6mPzB/6/GM0
+         MVIId7fRnFS/g==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kangjie Lu <kjlu@umn.edu>, Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.10 29/62] Revert "ASoC: rt5645: fix a NULL pointer dereference"
+Date:   Mon, 24 May 2021 10:47:10 -0400
+Message-Id: <20210524144744.2497894-29-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210524144744.2497894-1-sashal@kernel.org>
+References: <20210524144744.2497894-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.165.24]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggemi759-chm.china.huawei.com (10.1.198.145)
-X-CFilter-Loop: Reflected
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Li <lipeng321@huawei.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-This patch fixes the checkpatch error about missing a blank line
-after declarations.
+[ Upstream commit 1e0ce84215dbfd6065872e5d3755352da34f198b ]
 
-Signed-off-by: Peng Li <lipeng321@huawei.com>
-Signed-off-by: Guangbin Huang <huangguangbin2@huawei.com>
+This reverts commit 51dd97d1df5fb9ac58b9b358e63e67b530f6ae21.
+
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
+
+Upon review, this commit was found to be incorrect for the reasons
+below, so it must be reverted.  It will be fixed up "correctly" in a
+later kernel change.
+
+Lots of things seem to be still allocated here and must be properly
+cleaned up if an error happens here.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Cc: Mark Brown <broonie@kernel.org>
+Link: https://lore.kernel.org/r/20210503115736.2104747-55-gregkh@linuxfoundation.org
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wan/wanxl.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/codecs/rt5645.c | 3 ---
+ 1 file changed, 3 deletions(-)
 
-diff --git a/drivers/net/wan/wanxl.c b/drivers/net/wan/wanxl.c
-index afca54cf3e82..566c519c6f65 100644
---- a/drivers/net/wan/wanxl.c
-+++ b/drivers/net/wan/wanxl.c
-@@ -93,6 +93,7 @@ static inline dma_addr_t pci_map_single_debug(struct pci_dev *pdev, void *ptr,
- 					      size_t size, int direction)
- {
- 	dma_addr_t addr = dma_map_single(&pdev->dev, ptr, size, direction);
-+
- 	if (addr + size > 0x100000000LL)
- 		pr_crit("%s: pci_map_single() returned memory at 0x%llx!\n",
- 			pci_name(pdev), (unsigned long long)addr);
-@@ -150,6 +151,7 @@ static inline void wanxl_cable_intr(struct port *port)
- static inline void wanxl_tx_intr(struct port *port)
- {
- 	struct net_device *dev = port->dev;
-+
- 	while (1) {
-                 desc_t *desc = &get_status(port)->tx_descs[port->tx_in];
- 		struct sk_buff *skb = port->tx_skbs[port->tx_in];
-@@ -181,6 +183,7 @@ static inline void wanxl_tx_intr(struct port *port)
- static inline void wanxl_rx_intr(struct card *card)
- {
- 	desc_t *desc;
-+
- 	while (desc = &card->status->rx_descs[card->rx_in],
- 	       desc->stat != PACKET_EMPTY) {
- 		if ((desc->stat & PACKET_PORT_MASK) > card->n_ports)
-@@ -662,6 +665,7 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 420003d062c7..ed4b59ba63f3 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3419,9 +3419,6 @@ static int rt5645_probe(struct snd_soc_component *component)
+ 		RT5645_HWEQ_NUM, sizeof(struct rt5645_eq_param_s),
+ 		GFP_KERNEL);
  
- 	for (i = 0; i < RX_QUEUE_LENGTH; i++) {
- 		struct sk_buff *skb = dev_alloc_skb(BUFFER_LENGTH);
-+
- 		card->rx_skbs[i] = skb;
- 		if (skb)
- 			card->status->rx_descs[i].address =
-@@ -729,6 +733,7 @@ static int wanxl_pci_init_one(struct pci_dev *pdev,
- 		hdlc_device *hdlc;
- 		struct port *port = &card->ports[i];
- 		struct net_device *dev = alloc_hdlcdev(port);
-+
- 		if (!dev) {
- 			pr_err("%s: unable to allocate memory\n",
- 			       pci_name(pdev));
+-	if (!rt5645->eq_param)
+-		return -ENOMEM;
+-
+ 	return 0;
+ }
+ 
 -- 
-2.8.1
+2.30.2
 
