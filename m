@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B7438EF31
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BE5D38EE88
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234764AbhEXP4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:56:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33978 "EHLO mail.kernel.org"
+        id S233116AbhEXPvY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:51:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33896 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234005AbhEXPsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:48:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A211261132;
-        Mon, 24 May 2021 15:37:35 +0000 (UTC)
+        id S234570AbhEXPoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:44:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7FA256144F;
+        Mon, 24 May 2021 15:35:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870656;
-        bh=SDTsVMM6n7bUbaJAOX0jaOO4raenHzv1Vs0yG3dZmhY=;
+        s=korg; t=1621870556;
+        bh=TNxXa//VQgKbqojkS+8vIrKVZ1my+B8M9BNV93vhruU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=u9D9rSOSXqKTe+dw6SYnV8zDnIeeAKcIfsqadWD/vts2rxKsnkOzhsf6hrhjtGM+g
-         NaNnT9uQj9hh1L9TFJJmtDHa1YspjSLf5uVPv0slT8XjGP00LmwWX77rJemHI0VPxv
-         Q9H8e5CGdTkGmwdYq7ZJZJKJJjsvfroZctsCAUPg=
+        b=R/+xddu3guULuNQ/A8XKPHzEN3XqcUw/18hANiIRntjZacnGwmR80LlSkW1QsjSZd
+         PiYaG5XTeKdGL82+xl599ML+VxXji5KWW2zhoXaMxEbYM4GU5GzfSsSfik5rPXqQfU
+         yaKCGBzpKr66fi8g4sA3m1rK0oBVeYM12IOkaE1E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        stable@vger.kernel.org, Anirudh Rayabharam <mail@anirudhrb.com>,
         "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH 5.4 45/71] Revert "net: stmicro: fix a missing check of clk_prepare"
+Subject: [PATCH 4.19 40/49] net: stmicro: handle clk_prepare() failure during init
 Date:   Mon, 24 May 2021 17:25:51 +0200
-Message-Id: <20210524152327.929608337@linuxfoundation.org>
+Message-Id: <20210524152325.664910387@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,46 +39,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Anirudh Rayabharam <mail@anirudhrb.com>
 
-commit bee1b0511844c8c79fccf1f2b13472393b6b91f7 upstream.
+commit 0c32a96d000f260b5ebfabb4145a86ae1cd71847 upstream.
 
-This reverts commit f86a3b83833e7cfe558ca4d70b64ebc48903efec.
+In case clk_prepare() fails, capture and propagate the error code up the
+stack. If regulator_enable() was called earlier, properly unwind it by
+calling regulator_disable().
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
-
-Upon review, this commit was found to be incorrect for the reasons
-below, so it must be reverted.  It will be fixed up "correctly" in a
-later kernel change.
-
-The original commit causes a memory leak when it is trying to claim it
-is properly handling errors.  Revert this change and fix it up properly
-in a follow-on commit.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 Cc: David S. Miller <davem@davemloft.net>
-Fixes: f86a3b83833e ("net: stmicro: fix a missing check of clk_prepare")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-21-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20210503115736.2104747-22-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
 --- a/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
 +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-sunxi.c
-@@ -50,9 +50,7 @@ static int sun7i_gmac_init(struct platfo
+@@ -39,7 +39,7 @@ struct sunxi_priv_data {
+ static int sun7i_gmac_init(struct platform_device *pdev, void *priv)
+ {
+ 	struct sunxi_priv_data *gmac = priv;
+-	int ret;
++	int ret = 0;
+ 
+ 	if (gmac->regulator) {
+ 		ret = regulator_enable(gmac->regulator);
+@@ -59,10 +59,12 @@ static int sun7i_gmac_init(struct platfo
  		gmac->clk_enabled = 1;
  	} else {
  		clk_set_rate(gmac->tx_clk, SUN7I_GMAC_MII_RATE);
--		ret = clk_prepare(gmac->tx_clk);
--		if (ret)
--			return ret;
-+		clk_prepare(gmac->tx_clk);
+-		clk_prepare(gmac->tx_clk);
++		ret = clk_prepare(gmac->tx_clk);
++		if (ret && gmac->regulator)
++			regulator_disable(gmac->regulator);
  	}
  
- 	return 0;
+-	return 0;
++	return ret;
+ }
+ 
+ static void sun7i_gmac_exit(struct platform_device *pdev, void *priv)
 
 
