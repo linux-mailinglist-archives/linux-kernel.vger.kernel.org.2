@@ -2,126 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8772E38E3F8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 253D338E3FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 12:24:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232626AbhEXK0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 06:26:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46612 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232422AbhEXK0M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 06:26:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 49374611CE;
-        Mon, 24 May 2021 10:24:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621851884;
-        bh=5wBiRHHSXJ69cFUjecB+aszzqhwYw/MhJXDMzSU3aiY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pK5GXFlN+YCuMLzRkryTFyUpVJAEwnP0vbi3xwjP6jH9zyZMvzC+0XT1/9n95bQrX
-         77LPElvDmRwpEyjQ+Vt2rM4mAftSlCmR3oAMqfvsLQcddtFOpEfI+5OzLlommq+unm
-         c1z9WKpYVrqqyRfaU1taNHEmXE5BpBfWetH1DWWfEW/q/4tSC9ActrMFlHWvRG91xV
-         Iqt+xObwQDaIb1/6PpcojSSUO5P/HgU3bRs4B/TiDYp2fpqk0zZEpP1wralYzG9VK/
-         2jMz7BaHTQs3BvgixAc5+Jfiil5oTbuXt0An5RS7g5NDy1QAwgsgxn7CU3wRk9FYs+
-         Fyx6wyS0qENIw==
-Received: by mail-oo1-f48.google.com with SMTP id o14-20020a4a384e0000b029020ec48a2358so4146751oof.13;
-        Mon, 24 May 2021 03:24:44 -0700 (PDT)
-X-Gm-Message-State: AOAM5305CscHqLDZLWklxsk/nRuxHxWqyccw+83WwnJVcMwnDKLYne6s
-        Dobmb6w1TN0g+WOFIXBWEcMUuanYVKFf1MRQN9s=
-X-Google-Smtp-Source: ABdhPJxuRHMn0Kx2Oweu4bILN4JMFbNf9fmAY08NovL1123TdXfK6IfWv4QLAq1YGWdjz8Wx+wrSdvtwgHP/dZgbZHc=
-X-Received: by 2002:a4a:b202:: with SMTP id d2mr17739259ooo.13.1621851883493;
- Mon, 24 May 2021 03:24:43 -0700 (PDT)
+        id S232598AbhEXK0V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 06:26:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232629AbhEXK0S (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 06:26:18 -0400
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B56C061574;
+        Mon, 24 May 2021 03:24:49 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id n6-20020a17090ac686b029015d2f7aeea8so10993630pjt.1;
+        Mon, 24 May 2021 03:24:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MEQuDKUSQKw0MZlz9rMkXgWLUEoc5fj6IhTPOzDj8iU=;
+        b=Qv4TPYvwJysNuGU2x2gZCJJZc/CsezboC7ejkinAqyTwUOPW2sQqSFyRm7Hg5oQmkZ
+         hHkbkbfd4OVdLDim98PFHsvRh46B4g67lkzIrqgNCTFjMfuHEFfrzd/sFinLOhnGhS8L
+         xFFinXINswnbZ5sMvCdGJ1I81XHwaYmhi9oRsrklreqbqE6nLbtgAG+LH/fbyXKx5+i6
+         N9a0sU0M0p8u8TnP4+otmeCJxhtED7Bp89OWdoYuxxEQtEq7134CVFOUSLR6W1iuacQt
+         w+0d3Jcg1hQPPB2OiofQYu6b++9NKmHO14Qj3DlKJ+rP2emse7HAu+6H2fkb8t/urcvZ
+         5qGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MEQuDKUSQKw0MZlz9rMkXgWLUEoc5fj6IhTPOzDj8iU=;
+        b=l0s2uTuhtVZV0khlBleRMLk0Pa5PVlLpvIMjDqtBzzM9BTojBt/esVT+71AVgg425e
+         J1SXZuptj+MlzSybG7OK3eBGlgko6xyt0FCtiIm4I5mFY1YYw+NfXB0Ziel1iQGIXrfs
+         Ka1jK9Dl6jt6vsSfRbkUIDhNkRyyUEPXPfQ8STcJJ8AHeBBWVg7jNPljzQHs1Co4u1qv
+         zylelW0cQ7EsvWQQ9uh1VGsPxH8Zr3oz6CN2W+SKM0237J2OW2lZuOyfJ90/R0LlM6oF
+         /hux8bzhHjeJeiAetTO8j5on0dmAaE0si9SHFV9gdFav8W2KT0rDvEYafHjSaJdsmeCs
+         H2sg==
+X-Gm-Message-State: AOAM5314KEfgTqemUt6MnMxZxAw8UkyhNJV2gu+maK0kEyOUMuX89k6W
+        Y1kQonIlxY5zScQnr2YQsVpWY86dW+T1laNqIfs=
+X-Google-Smtp-Source: ABdhPJx+rTrdBTgdPKGW3YRrFwFVcsETKQkPqTT0e3PgCx+XWECpiRV/lfsemIIjh58HUe7/Dq9qZgoi01trTtQ3tHQ=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr24585537pja.181.1621851889142;
+ Mon, 24 May 2021 03:24:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521192907.3040644-1-javierm@redhat.com>
-In-Reply-To: <20210521192907.3040644-1-javierm@redhat.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Mon, 24 May 2021 12:24:32 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXGrDm5yN5eRZJ0YAjCde=0Xw7hobC9Oz5CNovo0sWuM+g@mail.gmail.com>
-Message-ID: <CAMj1kXGrDm5yN5eRZJ0YAjCde=0Xw7hobC9Oz5CNovo0sWuM+g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] allow the sysfb support to be used in non-x86 arches
-To:     Javier Martinez Canillas <javierm@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-riscv@lists.infradead.org, x86@kernel.org
+References: <cover.1621809029.git.sander@svanheule.net> <213ab7580a1d3229d32f7aac67bf4e828612153a.1621809029.git.sander@svanheule.net>
+In-Reply-To: <213ab7580a1d3229d32f7aac67bf4e828612153a.1621809029.git.sander@svanheule.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 24 May 2021 13:24:33 +0300
+Message-ID: <CAHp75VdoSfO3Y9Lf+fcoG2=Rb+SBJKq+B0tG+gS7TaHUmN-iYg@mail.gmail.com>
+Subject: Re: [PATCH v3 6/6] leds: Add support for RTL8231 LED scan matrix
+To:     Sander Vanheule <sander@svanheule.net>
+Cc:     Pavel Machek <pavel@ucw.cz>, Rob Herring <robh+dt@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Mark Brown <broonie@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Javier,
+On Mon, May 24, 2021 at 1:34 AM Sander Vanheule <sander@svanheule.net> wrote:
+>
+> Both single and bi-color scanning modes are supported. The driver will
+> verify that the addresses are valid for the current mode, before
+> registering the LEDs. LEDs can be turned on, off, or toggled at one of
+> six predefined rates from 40ms to 1280ms.
+>
+> Implements a platform device for use as a child device with RTL8231 MFD,
+> and uses the parent regmap to access the required registers.
 
-On Fri, 21 May 2021 at 21:29, Javier Martinez Canillas
-<javierm@redhat.com> wrote:
->
-> The x86 architecture platform has a Generic System Framebuffers (sysfb)
-> support, that register a system frambuffer platform devices. It either
-> registers a "simple-framebuffer" for the simple{fb,drm} drivers or legacy
-> VGA/EFI FB devices for the vgafb/efifb drivers.
->
-> Besides this, the EFI initialization code used by other architectures such
-> as aarch64 and riscv, has similar logic but only register an EFI FB device.
->
-> The sysfb is generic enough to be reused by other architectures and can be
-> moved out of the arch/x86 directory to drivers/firmware, allowing the EFI
-> logic used by non-x86 architectures to be folded into sysfb as well.
->
-> Patch #1 in this series do the former while patch #2 the latter. This has
-> been tested on x86_64 and aarch64 machines using the efifb, simplefb and
-> simpledrm drivers. But more testing will be highly appreciated, to make
-> sure that no regressions are being introduced by these changes.
->
-> Since this touches both arch/{x86,arm,arm64,riscv} and drivers/firmware, I
-> don't know how it should be merged. But I didn't find a way to split these.
->
+...
 
-We could merge this via the EFI tree without too much risk of
-conflicts, I think.
+> +         This options enables support for using the LED scanning matrix output
 
-However, I'd like to see a better explanation of why this is an improvement.
-The diffstat does not show a huge net win, and it does not enable
-anything we didn't already have before, right?
+option
+
+> +         of the RTL8231 GPIO and LED expander chip.
+> +         When built as a module, this module will be named leds-rtl8231.
+
+...
+
+> +               interval_ms = 500;
+
+Does this deserve a #define?
+
+...
+
+> +       ret = fwnode_property_count_u32(fwnode, "reg");
+> +       if (ret < 0)
+> +               return ret;
+> +       if (ret != 2)
+> +               return -ENODEV;
+
+I would say -EINVAL, but -ENODEV is similarly okay.
+
+...
+
+> +       int err;
+
+ret or err? Be consistent across a single driver.
+
+...
+
+> +       int err;
+
+Ditto.
 
 
->
-> Javier Martinez Canillas (2):
->   drivers/firmware: move x86 Generic System Framebuffers support
->   drivers/firmware: consolidate EFI framebuffer setup for all arches
->
->  arch/arm/Kconfig                              |  1 +
->  arch/arm/include/asm/efi.h                    |  5 +-
->  arch/arm64/Kconfig                            |  1 +
->  arch/arm64/include/asm/efi.h                  |  5 +-
->  arch/riscv/Kconfig                            |  1 +
->  arch/riscv/include/asm/efi.h                  |  5 +-
->  arch/x86/Kconfig                              | 27 +-----
->  arch/x86/kernel/Makefile                      |  3 -
->  drivers/firmware/Kconfig                      | 30 +++++++
->  drivers/firmware/Makefile                     |  2 +
->  drivers/firmware/efi/Makefile                 |  2 +
->  drivers/firmware/efi/efi-init.c               | 90 -------------------
->  .../firmware/efi}/sysfb_efi.c                 | 79 +++++++++++++++-
->  {arch/x86/kernel => drivers/firmware}/sysfb.c | 42 +++++----
->  .../firmware}/sysfb_simplefb.c                | 31 ++++---
->  .../x86/include/asm => include/linux}/sysfb.h | 34 +++----
->  16 files changed, 182 insertions(+), 176 deletions(-)
->  rename {arch/x86/kernel => drivers/firmware/efi}/sysfb_efi.c (84%)
->  rename {arch/x86/kernel => drivers/firmware}/sysfb.c (70%)
->  rename {arch/x86/kernel => drivers/firmware}/sysfb_simplefb.c (82%)
->  rename {arch/x86/include/asm => include/linux}/sysfb.h (68%)
->
-> --
-> 2.31.1
->
+-- 
+With Best Regards,
+Andy Shevchenko
