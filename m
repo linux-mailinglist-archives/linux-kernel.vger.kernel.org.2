@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 879BC38F4E9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:30:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1515F38F4EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 23:30:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbhEXVbk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 17:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42548 "EHLO mail.kernel.org"
+        id S233998AbhEXVbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 17:31:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42568 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232911AbhEXVbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233859AbhEXVbi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 24 May 2021 17:31:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 2C7D5610CB;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 40F4F61411;
         Mon, 24 May 2021 21:30:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1621891810;
-        bh=lo6EILUQ1i18nWASD97hUQMB+qwDzeRWIWWlJTKTwMc=;
+        bh=ndaxLsaJgNKt8FeEudg8lqLUhJnV8xc2IzazzOki4b0=;
         h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=fn1HTy2g+AEVk1I+5as2OVYci8j/r8vauY+0u/dQUbqCp+Qpe/R0/6jmqDBF+31H1
-         esohNzr9biTCZtmRe/VXnrRkq+u+JvwJZjmozud0G/+GFoTJgA5F/UnBX7aK6iIU5N
-         OmQU6Jitx3G3BFm/k32on4D3HG3KvkwpNIEgp+1SmeCKmH1zSzwC6AVDx2oYiTdRwZ
-         MwGoMeLvvgbgnQ/XfVY9OIdGBFsVsZ5sJUI5OUZmXOTiQMwwMVulBmFxcaX+gsjyDM
-         a+z5fymmitOELxotwsmATyeB9LG9FzO39lRGHTediG1M6p/tmdM0++6C6znhL+NGz5
-         7aF3S1YTTHf7A==
+        b=aFrF3h0EDfFGD5jg9j0PQiswdkf/AWoAA+4szwOO9kGvsItmMQT3phpKmxraMeYrJ
+         1bkz+pQNY51CcfUWH/1yTmPVRsIuGEjgUFDwQ/VsOxpF+xERmSf6p4+VAhSBGUlc4m
+         W746JJnmYCn+7m/PXi1eLUGrWIeNB8QKhxMnvoR65BlvaVGJDl/yVFVu7W4JrooU7k
+         A1irx7+/OC0SNJKMywvVqJfwFpGfHJKBqFi2knMQCSTiDZKX87T6n3/CmR8YhMf919
+         mC90GgOlODnAoh5gv/qlJWGc0uQLE2nO2BhBJSnu8HaRdAMSK0AW8vmieZjO847G9w
+         Fapai3jUUpSdg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 20F6560A0B;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 3614B60BCF;
         Mon, 24 May 2021 21:30:10 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net] net: dsa: microchip: enable phy errata workaround on 9567
+Subject: Re: [PATCH] net: usb: fix memory leak in smsc75xx_bind
 From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <162189181013.16512.8256926089205340399.git-patchwork-notify@kernel.org>
+Message-Id: <162189181021.16512.10408929378825905994.git-patchwork-notify@kernel.org>
 Date:   Mon, 24 May 2021 21:30:10 +0000
-References: <20210524202953.70379-1-george.mccollister@gmail.com>
-In-Reply-To: <20210524202953.70379-1-george.mccollister@gmail.com>
-To:     George McCollister <george.mccollister@gmail.com>
-Cc:     netdev@vger.kernel.org, woojung.huh@microchip.com,
-        UNGLinuxDriver@microchip.com, andrew@lunn.ch,
-        vivien.didelot@gmail.com, f.fainelli@gmail.com, olteanv@gmail.com,
-        davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org
+References: <20210524200208.31621-1-paskripkin@gmail.com>
+In-Reply-To: <20210524200208.31621-1-paskripkin@gmail.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     steve.glendinning@shawell.net, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@kernel.vger.org,
+        syzbot+b558506ba8165425fee2@syzkaller.appspotmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -48,18 +48,22 @@ Hello:
 
 This patch was applied to netdev/net.git (refs/heads/master):
 
-On Mon, 24 May 2021 15:29:53 -0500 you wrote:
-> Also enable phy errata workaround on 9567 since has the same errata as
-> the 9477 according to the manufacture's documentation.
+On Mon, 24 May 2021 23:02:08 +0300 you wrote:
+> Syzbot reported memory leak in smsc75xx_bind().
+> The problem was is non-freed memory in case of
+> errors after memory allocation.
 > 
-> Signed-off-by: George McCollister <george.mccollister@gmail.com>
-> ---
->  drivers/net/dsa/microchip/ksz9477.c | 1 +
->  1 file changed, 1 insertion(+)
+> backtrace:
+>   [<ffffffff84245b62>] kmalloc include/linux/slab.h:556 [inline]
+>   [<ffffffff84245b62>] kzalloc include/linux/slab.h:686 [inline]
+>   [<ffffffff84245b62>] smsc75xx_bind+0x7a/0x334 drivers/net/usb/smsc75xx.c:1460
+>   [<ffffffff82b5b2e6>] usbnet_probe+0x3b6/0xc30 drivers/net/usb/usbnet.c:1728
+> 
+> [...]
 
 Here is the summary with links:
-  - [net] net: dsa: microchip: enable phy errata workaround on 9567
-    https://git.kernel.org/netdev/net/c/8c42a49738f1
+  - net: usb: fix memory leak in smsc75xx_bind
+    https://git.kernel.org/netdev/net/c/46a8b29c6306
 
 You are awesome, thank you!
 --
