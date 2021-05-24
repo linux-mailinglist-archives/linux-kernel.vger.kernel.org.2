@@ -2,89 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2C3238E6BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1238138E6C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232664AbhEXMjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:39:55 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:48583 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232515AbhEXMjx (ORCPT
+        id S232752AbhEXMlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232851AbhEXMlC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:39:53 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-136-zm-lfFzsPZO-pC4i18khew-1; Mon, 24 May 2021 13:38:22 +0100
-X-MC-Unique: zm-lfFzsPZO-pC4i18khew-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Mon, 24 May 2021 13:38:19 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Mon, 24 May 2021 13:38:19 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Steven Price' <steven.price@arm.com>,
-        Amanieu d'Antras <amanieu@gmail.com>
-CC:     Arnd Bergmann <arnd@kernel.org>,
-        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat
- syscalls
-Thread-Topic: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat
- syscalls
-Thread-Index: AQHXUI7V2V8LHoAybE2lBVUPxoeiSarykJcA
-Date:   Mon, 24 May 2021 12:38:19 +0000
-Message-ID: <f0d09966f7714c54aee1bb0260a6193d@AcuMS.aculab.com>
-References: <20210518090658.9519-1-amanieu@gmail.com>
- <20210518090658.9519-9-amanieu@gmail.com>
- <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
- <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com>
- <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
- <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
- <1c2bd27a-1c96-f154-ed18-f33630b109b1@arm.com>
- <CA+y5pbSbky2kS+O5j9bn57nROdYaYeHcd2R-46X1cc388PKOvg@mail.gmail.com>
- <419f410f-21b3-a4c6-3cd8-025007e9c31e@arm.com>
-In-Reply-To: <419f410f-21b3-a4c6-3cd8-025007e9c31e@arm.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+        Mon, 24 May 2021 08:41:02 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEFD3C061756;
+        Mon, 24 May 2021 05:39:32 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id t21so14577628plo.2;
+        Mon, 24 May 2021 05:39:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=WwZui2MaZsnR+vM9vgh9iCZJyd0Mb93BubAPUl4Tlxg=;
+        b=k22zGg/94SCIBf2K3/i5x1KCfj/1eRtgJBhL7jpAv/Yw5q7fvMsyfDH8zznBjB7pHE
+         HTjPUQLG7cPYgeOmf+lVYL7uRdKlrpXE8+HWEvEVVGEY54oJZKSEVw/8mK79bTWWpJ4D
+         EyVg6Kl24+LLtiDhFGv6CxtRjRDKb7OyqRMIFsWjM9YgL3+ReT8pWY/4Baf2Z6aSegv4
+         /N6twfmOME+cx383EbbZrMtWylg+sNnEc0QhFonZdPQaObNOMenF+uG9Qi+RLC5mvxUw
+         lwGK22pFl3m5C3fPEu0WJZJAdYU+MflykgZjw1eSpDWriIRkijvw8gXPDZKmv9nootoU
+         XfjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WwZui2MaZsnR+vM9vgh9iCZJyd0Mb93BubAPUl4Tlxg=;
+        b=jS+c/U1hL36zZkReZrs/FJ1zImP8stdMIizxDYaTSTIi9/gvfWR+P8aJRCu1wZUUGd
+         YbS9RNlW0bUgi6HJHp93ja4JorUilljmqZndcHNVU0onXMPpB4qV8F4dcOwdvWW+8UHy
+         7vlgMJQx9zLtRhwqfd2Z978LGHQNGO/qjaRc/k7qcCrH0adiHHt0KrUFyHpj5iy3USr2
+         yfYIvkoHWHCjk2VDDeLAeU5r2LLDP03yWboMllQphg2JeLx0mLGdJoFeLkbqPtpM92+l
+         q4hD+TS5w5RhZROtjm3txfgYfL/pafTHJx+mGE7e5sih576/FbEsnWr/f08DLl2FCxVg
+         hvsw==
+X-Gm-Message-State: AOAM533PSoZEC2TD3KLZ/yOoa6Gtxm2IjxXM76QOTXDa4io1UsXtsd3E
+        4kpve/ma2kOlGKYs+Bu3bnU=
+X-Google-Smtp-Source: ABdhPJzxHWx9lUBj5R0wGlHmcztVp2sGszwW7UJ+Qr12AETjdNJmGux1sBfwGPTlruttWGc6fNVumw==
+X-Received: by 2002:a17:902:222:b029:f5:c251:a6ad with SMTP id 31-20020a1709020222b02900f5c251a6admr23465803plc.84.1621859972436;
+        Mon, 24 May 2021 05:39:32 -0700 (PDT)
+Received: from sz-dl-056.autox.sz ([45.67.53.159])
+        by smtp.gmail.com with ESMTPSA id v3sm3413663pfb.203.2021.05.24.05.39.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 24 May 2021 05:39:32 -0700 (PDT)
+From:   Yejune Deng <yejune.deng@gmail.com>
+X-Google-Original-From: Yejune Deng <yejunedeng@gmail.com>
+To:     hca@linux.ibm.com, gor@linux.ibm.com, borntraeger@de.ibm.com,
+        tglx@linutronix.de, keescook@chromium.org
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Yejune Deng <yejunedeng@gmail.com>
+Subject: [PATCH] softirq/s390: Use the generic local_softirq_pending()
+Date:   Mon, 24 May 2021 20:39:17 +0800
+Message-Id: <1621859957-4880-1-git-send-email-yejunedeng@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogU3RldmVuIFByaWNlDQo+IFNlbnQ6IDI0IE1heSAyMDIxIDEyOjIxDQouLi4NCj4gU28g
-YSAiZ2VuZXJpYyIgd2F5IG9mIHJlcXVlc3RlZCB0aGUga2VybmVsIGxpbWl0IHRoZSBhZGRyZXNz
-IHNwYWNlIGZvcg0KPiBhbGxvY2F0aW9ucyB3b3VsZCBiZSBwb3RlbnRpYWxseSB1c2VmdWwgZm9y
-IG90aGVyIHB1cnBvc2VzLiBBZGRpbmcgYSBuZXcNCj4gc3lzY2FsbCBmb3IgdGhpcyBwdXJwb3Nl
-IHdvdWxkIGJlIHNlbnNpYmxlLiBXZSBhbHJlYWR5IGhhdmUgKGF0IGxlYXN0KQ0KPiB0d28gImhh
-Y2tzIiBpbiBtbWFwIGZvciBjb250cm9sbGluZyB0aGUgYWRkcmVzcyByYW5nZSB0aGF0IGNhbiBi
-ZSB1c2VkOg0KPiANCj4gICogTUFQXzMyQklUIC0geDg2IG9ubHksIGFuZCByZWFsbHkgIjMxIGJp
-dCINCj4gDQo+ICAqIFByb3ZpZGluZyBhIG1tYXAoKSBoaW50IHdpdGggdGhlIHRvcCBiaXRzIHNl
-dCB0byBvcHQtaW4gdG8gNTItYml0IFZBcy4NCj4gDQo+IEEgd2VsbCBkZWZpbmVkIG1lY2hhbmlz
-bSBmb3IgY29udHJvbGxpbmcgdGhlIHZhbGlkIFZBIHJhbmdlIGZvcg0KPiBhbGxvY2F0aW9ucyB3
-b3VsZCBiZSBtdWNoIGJldHRlciB0aGFuIGFkZGluZyBtb3JlIGhhY2tzIC0gYW5kIGJvbnVzDQo+
-IHBvaW50cyBpZiBpdCB3b3JrcyBmb3IgYWxsIHRoZSBkaWZmZXJlbnQgdHlwZXMgb2YgYWxsb2Nh
-dGlvbiB1bmxpa2UgdGhlDQo+IGFib3ZlLg0KDQpJJ2QgaGF2ZSB0aG91Z2h0IGEgJ01BUF9CRUxP
-VycgZmxhZyAoY2YgTUFQX0ZJWEVEKSB3b3VsZCBzdWZmaWNlLg0KSSdtIHNvcnQgb2Ygc3VycHJp
-c2VkIE1BUF8zMkJJVCB3YXNuJ3QgaW1wbGVtZW50ZWQgdGhhdCB3YXkuDQonbWFuIG1tYXAnIHNh
-eXMgTUFQXzMyQklUIHdhcyBhZGRlZCBmb3IgeDY0IHRocmVhZCBzdGFja3MgLSBJIHRob3VnaA0K
-dGhlIHJlcXVpcmVtZW50IGNhbiBmcm9tIDMyYml0IHdpbmUgKHdpbmRvd3MgaGFzIGEgMkcgdXNl
-ci9rZXJuZWwgYm91bmRhcnkpLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
-a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
-IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+Defined local_softirq_pending_ref macro and get rid of {local, set, or}
+_softirq_pending macros. use {local, set, or}_softirq_pending
+in <linux/interrupt.h> that rely on per-CPU mutators.
+
+Signed-off-by: Yejune Deng <yejunedeng@gmail.com>
+---
+ arch/s390/include/asm/hardirq.h | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/arch/s390/include/asm/hardirq.h b/arch/s390/include/asm/hardirq.h
+index 58668ff..ea643d6 100644
+--- a/arch/s390/include/asm/hardirq.h
++++ b/arch/s390/include/asm/hardirq.h
+@@ -13,9 +13,7 @@
+ 
+ #include <asm/lowcore.h>
+ 
+-#define local_softirq_pending() (S390_lowcore.softirq_pending)
+-#define set_softirq_pending(x) (S390_lowcore.softirq_pending = (x))
+-#define or_softirq_pending(x)  (S390_lowcore.softirq_pending |= (x))
++#define local_softirq_pending_ref  S390_lowcore.softirq_pending
+ 
+ #define __ARCH_IRQ_STAT
+ #define __ARCH_IRQ_EXIT_IRQS_DISABLED
+-- 
+2.7.4
 
