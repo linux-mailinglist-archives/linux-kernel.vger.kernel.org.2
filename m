@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED9FC38F097
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 507E238EE98
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:50:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236586AbhEXQEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40476 "EHLO mail.kernel.org"
+        id S234169AbhEXPwX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:52:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33952 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232548AbhEXP5z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:57:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B51C46195E;
-        Mon, 24 May 2021 15:43:48 +0000 (UTC)
+        id S234652AbhEXPo3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:44:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 679A96145A;
+        Mon, 24 May 2021 15:36:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871029;
-        bh=bChgj2DjxmvGeQFc/40vVgbfRS/th9c56r8IUMxtNjs=;
+        s=korg; t=1621870566;
+        bh=Wjlwndu3maWl4Pu3r737cwkled+6HVuNMWTYCHealns=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tmCivFImF8AKeJgjH0W4kJEPvWdBBwM01LIi417XuHvk8uLuOZsI+ne/s4f+Yde4d
-         IgjAaxRmDvOzrkXJBdecE1o1vac/uQ9fUJzIHg0cFET96KJLcDv9WBSDPrk8f+xAfD
-         wNCMKZy+4qoqVOI0wC5lgB7XFFbAZZsLNAmhtBAg=
+        b=A2kRPcIao1GK7fYBNoVGsIo7rb2iMCVsSJ31j5f3oM18DaxKWtaTYMP0D97ZOajqe
+         y/0gpdvqTU7gA5Zv52D8JhTmCNcIkmjAELzQCwjkBQRZUrKHkUzpVhHvQJ4aoPZeaJ
+         qjZYW0dXIx8G+dlYLC8/ITpC/j2MyCHWwSPuJM6c=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Aurelien Aptel <aaptel@suse.com>,
-        Ronnie Sahlberg <lsahlber@redhat.com>,
-        Steve French <stfrench@microsoft.com>
-Subject: [PATCH 5.12 039/127] cifs: fix memory leak in smb2_copychunk_range
+        stable@vger.kernel.org, Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Subject: [PATCH 4.19 45/49] video: hgafb: fix potential NULL pointer dereference
 Date:   Mon, 24 May 2021 17:25:56 +0200
-Message-Id: <20210524152336.172737530@linuxfoundation.org>
+Message-Id: <20210524152325.825916178@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,36 +40,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ronnie Sahlberg <lsahlber@redhat.com>
+From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
 
-commit d201d7631ca170b038e7f8921120d05eec70d7c5 upstream.
+commit dc13cac4862cc68ec74348a80b6942532b7735fa upstream.
 
-When using smb2_copychunk_range() for large ranges we will
-run through several iterations of a loop calling SMB2_ioctl()
-but never actually free the returned buffer except for the final
-iteration.
-This leads to memory leaks everytime a large copychunk is requested.
+The return of ioremap if not checked, and can lead to a NULL to be
+assigned to hga_vram. Potentially leading to a NULL pointer
+dereference.
 
-Fixes: 9bf0c9cd4314 ("CIFS: Fix SMB2/SMB3 Copy offload support (refcopy) for large files")
-Cc: <stable@vger.kernel.org>
-Reviewed-by: Aurelien Aptel <aaptel@suse.com>
-Signed-off-by: Ronnie Sahlberg <lsahlber@redhat.com>
-Signed-off-by: Steve French <stfrench@microsoft.com>
+The fix adds code to deal with this case in the error label and
+changes how the hgafb_probe handles the return of hga_card_detect.
+
+Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc: stable <stable@vger.kernel.org>
+Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+Link: https://lore.kernel.org/r/20210503115736.2104747-40-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- fs/cifs/smb2ops.c |    2 ++
- 1 file changed, 2 insertions(+)
+ drivers/video/fbdev/hgafb.c |   21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
---- a/fs/cifs/smb2ops.c
-+++ b/fs/cifs/smb2ops.c
-@@ -1822,6 +1822,8 @@ smb2_copychunk_range(const unsigned int
- 			cpu_to_le32(min_t(u32, len, tcon->max_bytes_chunk));
+--- a/drivers/video/fbdev/hgafb.c
++++ b/drivers/video/fbdev/hgafb.c
+@@ -285,6 +285,8 @@ static int hga_card_detect(void)
+ 	hga_vram_len  = 0x08000;
  
- 		/* Request server copy to target from src identified by key */
-+		kfree(retbuf);
-+		retbuf = NULL;
- 		rc = SMB2_ioctl(xid, tcon, trgtfile->fid.persistent_fid,
- 			trgtfile->fid.volatile_fid, FSCTL_SRV_COPYCHUNK_WRITE,
- 			true /* is_fsctl */, (char *)pcchunk,
+ 	hga_vram = ioremap(0xb0000, hga_vram_len);
++	if (!hga_vram)
++		return -ENOMEM;
+ 
+ 	if (request_region(0x3b0, 12, "hgafb"))
+ 		release_io_ports = 1;
+@@ -344,13 +346,18 @@ static int hga_card_detect(void)
+ 			hga_type_name = "Hercules";
+ 			break;
+ 	}
+-	return 1;
++	return 0;
+ error:
+ 	if (release_io_ports)
+ 		release_region(0x3b0, 12);
+ 	if (release_io_port)
+ 		release_region(0x3bf, 1);
+-	return 0;
++
++	iounmap(hga_vram);
++
++	pr_err("hgafb: HGA card not detected.\n");
++
++	return -EINVAL;
+ }
+ 
+ /**
+@@ -548,13 +555,11 @@ static struct fb_ops hgafb_ops = {
+ static int hgafb_probe(struct platform_device *pdev)
+ {
+ 	struct fb_info *info;
++	int ret;
+ 
+-	if (! hga_card_detect()) {
+-		printk(KERN_INFO "hgafb: HGA card not detected.\n");
+-		if (hga_vram)
+-			iounmap(hga_vram);
+-		return -EINVAL;
+-	}
++	ret = hga_card_detect();
++	if (!ret)
++		return ret;
+ 
+ 	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
+ 		hga_type_name, hga_vram_len/1024);
 
 
