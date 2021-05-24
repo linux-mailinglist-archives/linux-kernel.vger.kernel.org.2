@@ -2,114 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BEF38E852
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 181B738E85A
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232916AbhEXOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:11:52 -0400
-Received: from mga05.intel.com ([192.55.52.43]:35119 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232486AbhEXOLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:11:50 -0400
-IronPort-SDR: Qj7bcca4WaR1QZatSBo6qGxVe85X33NE0OdOmPJQboAWhCUhXncbWSzBpXPtZU18nC8cHbdfn8
- SOKQJdXxzRdQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="287510122"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="287510122"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:10:08 -0700
-IronPort-SDR: THk8ZG3W5IOtIS2hZpj80baotW9aZGpThZ2nCpv/69S4Vv0w/raHpN0c0TxNb2kKelW5lLmfWu
- WmfoKdXiAdFg==
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="478550065"
-Received: from caknoll-mobl.amr.corp.intel.com (HELO [10.209.100.8]) ([10.209.100.8])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:10:07 -0700
-Subject: Re: [PATCH v5 28/28] x86/fpu/amx: Clear the AMX state when
- appropriate
-To:     Andy Lutomirski <luto@kernel.org>,
-        "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
-        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org
-Cc:     len.brown@intel.com, jing2.liu@intel.com, ravi.v.shankar@intel.com,
-        linux-kernel@vger.kernel.org, "Chen, Tim C" <tim.c.chen@intel.com>
-References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-29-chang.seok.bae@intel.com>
- <1980c78b-d51b-c186-9179-f3c72692ad8a@kernel.org>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <ff72d7cd-e36d-06d8-d741-645a0504bf65@intel.com>
-Date:   Mon, 24 May 2021 07:10:07 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S232979AbhEXOMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:12:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232462AbhEXOMf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:12:35 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEADAC061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:07 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id s15so14303327vsi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=W8r4bo8gsbRyIPgF8KAG8I7WkdYWQ5gt/261UAryZL4=;
+        b=GHi0cPhU9oDBESG9+TM6G/GhZIln+GIfYOIA5QgOdKgxMj+qXbN+tu4hhblS2l7Ahg
+         xUEdLSduawNFUyCeAZ6svc02kUjmsQxvtZvNGn0ODrHrf2QctmZcu7s48QD9a1JLY0cS
+         eeam6EDEqAy5MWcA2qWqAS+QtUHSc2lDmH20/pmuuiuxa2rar1JFeo2QMXW4lCadDDiQ
+         MWYQY8zA98SgyO7NHS87gqlCnkuwjl8Vv5JZsCJzhzLWpIBH5/F4SD5VjnfW+BmsJRRY
+         m2hoLVFr2SDWn0lS0bTm1+eCxAz2yfo188dKAVl4CoHsPU6SFbzYqnETPRfLIKKNkYaE
+         p6MQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=W8r4bo8gsbRyIPgF8KAG8I7WkdYWQ5gt/261UAryZL4=;
+        b=X0Sewfvf9bMZHbwJWivL9PXOUeRpMzZW7b7qZEQlrdusktDNiv66HGcUGnFSL87oOD
+         vFTEGgLkTgCWxAnzJquKnrERMFQAI9vTaweZFnnuJ3gOf28rXHdgY8688FshMy324d2x
+         xWHPxmxemmp56+Di0JXwZKzb7mv/hV5m1MLX5WFHvVqsmK6yjjadVmNNRMYSbfPIB6ad
+         eZFk2iWClTJVomcD4L0RuwxQcPj5ajNJfIbW6kpUVUFvLAm3O2bp3xhvmdR4X3wXtqno
+         9tUSA3RjICtJFo35RXMj4CBbcwf/bkl+9q6A5W7kE+5cuLW9VAOA5zqOlEEu0aya31Tf
+         kRpg==
+X-Gm-Message-State: AOAM533jT6BXIpbCvTmXzJG5pDrVVL+ldUrbAITz/iCsZKNPTZ1U87K5
+        oWVBn4gtvzUj93zUPGGAGMvaEgKi3bhqBqS12H3Tqw==
+X-Google-Smtp-Source: ABdhPJy6WStver9UDbuFr/jJwakaTnngwpeiRYAPELp+UiVB+lu0JsfWTKagpKwQjL4zO3pUEfLg2cGGwN55/mZIlDs=
+X-Received: by 2002:a05:6102:7b4:: with SMTP id x20mr22283215vsg.48.1621865466910;
+ Mon, 24 May 2021 07:11:06 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1980c78b-d51b-c186-9179-f3c72692ad8a@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <CAPDyKFrFGo9gmG+EH2hS4oXPn5Jx9v8Pk8jKgvm9KW4Mdk+85A@mail.gmail.com>
+ <20210511163944.1233295-1-ztong0001@gmail.com>
+In-Reply-To: <20210511163944.1233295-1-ztong0001@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Mon, 24 May 2021 16:10:26 +0200
+Message-ID: <CAPDyKFr-_NUpAfZzwrtokRY5+yEw+iYMHoZR5QVd3dbjJV51Tg@mail.gmail.com>
+Subject: Re: [PATCH v2] memstick: rtsx_usb_ms: fix UAF
+To:     Tong Zhang <ztong0001@gmail.com>
+Cc:     Maxim Levitsky <maximlevitsky@gmail.com>,
+        Alex Dubov <oakad@yahoo.com>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/23/21 8:13 PM, Andy Lutomirski wrote:
->> +		/*
->> +		 * Since the current task's state is safely in the XSAVE buffer, TILERELEASE
->> +		 * the TILE registers to guarantee that dirty state will not interfere with the
->> +		 * hardware's ability to enter the core C6 idle state.
->> +		 */
->> +		if (fpu->state_mask & XFEATURE_MASK_XTILE_DATA)
->> +			tile_release();
->>  		return 1;
->>  	}
->>  
->>
-> This looks wrong -- you should also invalidate the state.  And doing it
-> in the save path seems inefficient.
-> 
-> Can we do this just when going idle?
+On Tue, 11 May 2021 at 18:40, Tong Zhang <ztong0001@gmail.com> wrote:
+>
+> This patch fixes the following issues:
+> 1. memstick_free_host() will free the host, so the use of ms_dev(host) after
+> it will be a problem. To fix this, move memstick_free_host() after when we
+> are done with ms_dev(host).
+> 2. In rtsx_usb_ms_drv_remove(), pm need to be disabled before we remove
+> and free host otherwise memstick_check will be called and UAF will
+> happen.
+>
+> [   11.351173] BUG: KASAN: use-after-free in rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+> [   11.357077]  rtsx_usb_ms_drv_remove+0x94/0x140 [rtsx_usb_ms]
+> [   11.357376]  platform_remove+0x2a/0x50
+> [   11.367531] Freed by task 298:
+> [   11.368537]  kfree+0xa4/0x2a0
+> [   11.368711]  device_release+0x51/0xe0
+> [   11.368905]  kobject_put+0xa2/0x120
+> [   11.369090]  rtsx_usb_ms_drv_remove+0x8c/0x140 [rtsx_usb_ms]
+> [   11.369386]  platform_remove+0x2a/0x50
+>
+> [   12.038408] BUG: KASAN: use-after-free in __mutex_lock.isra.0+0x3ec/0x7c0
+> [   12.045432]  mutex_lock+0xc9/0xd0
+> [   12.046080]  memstick_check+0x6a/0x578 [memstick]
+> [   12.046509]  process_one_work+0x46d/0x750
+> [   12.052107] Freed by task 297:
+> [   12.053115]  kfree+0xa4/0x2a0
+> [   12.053272]  device_release+0x51/0xe0
+> [   12.053463]  kobject_put+0xa2/0x120
+> [   12.053647]  rtsx_usb_ms_drv_remove+0xc4/0x140 [rtsx_usb_ms]
+> [   12.053939]  platform_remove+0x2a/0x50
+>
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> Co-Developed-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Chang, you might also want to talk with folks that do scheduler
-performance work (I've cc'd Tim).  I know we're always fighting to trim
-down the idle and wakeup paths.  There might be no other alternative,
-but unconditionally forcing an AMX XRSTOR on return from idle might be
-considered nasty.
+Applied for next, thanks!
+
+Kind regards
+Uffe
+
+
+> ---
+> v2: remove useless code in err_out label
+>
+>  drivers/memstick/host/rtsx_usb_ms.c | 10 ++++------
+>  1 file changed, 4 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/memstick/host/rtsx_usb_ms.c b/drivers/memstick/host/rtsx_usb_ms.c
+> index 102dbb8080da..29271ad4728a 100644
+> --- a/drivers/memstick/host/rtsx_usb_ms.c
+> +++ b/drivers/memstick/host/rtsx_usb_ms.c
+> @@ -799,9 +799,9 @@ static int rtsx_usb_ms_drv_probe(struct platform_device *pdev)
+>
+>         return 0;
+>  err_out:
+> -       memstick_free_host(msh);
+>         pm_runtime_disable(ms_dev(host));
+>         pm_runtime_put_noidle(ms_dev(host));
+> +       memstick_free_host(msh);
+>         return err;
+>  }
+>
+> @@ -828,9 +828,6 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+>         }
+>         mutex_unlock(&host->host_mutex);
+>
+> -       memstick_remove_host(msh);
+> -       memstick_free_host(msh);
+> -
+>         /* Balance possible unbalanced usage count
+>          * e.g. unconditional module removal
+>          */
+> @@ -838,10 +835,11 @@ static int rtsx_usb_ms_drv_remove(struct platform_device *pdev)
+>                 pm_runtime_put(ms_dev(host));
+>
+>         pm_runtime_disable(ms_dev(host));
+> -       platform_set_drvdata(pdev, NULL);
+> -
+> +       memstick_remove_host(msh);
+>         dev_dbg(ms_dev(host),
+>                 ": Realtek USB Memstick controller has been removed\n");
+> +       memstick_free_host(msh);
+> +       platform_set_drvdata(pdev, NULL);
+>
+>         return 0;
+>  }
+> --
+> 2.25.1
+>
