@@ -2,73 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F27938F5E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:52:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1386838F5E8
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:55:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229704AbhEXWyO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:54:14 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:34751 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229503AbhEXWyM (ORCPT
+        id S229565AbhEXW4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 18:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229503AbhEXW4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:54:12 -0400
-Received: by mail-ot1-f46.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso26811261ote.1;
-        Mon, 24 May 2021 15:52:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=P62xUqJ5CP78WJwgJVtNm8/Wb7e85Qi9HRBgUg+ou5o=;
-        b=FumNzdYT7SLyZGF6Jz08WKgiO8EmoyFwp5FnYjPUarJmwds+ovoc1NCsSZEtk+DJbq
-         qe2S21BV/XnbtG0Mp0mvYFaAUbpahzVMG0pVL+edSlKBauquZinKEkkZ+18JHM9NDq1o
-         mSMZHsOlwoEiKC+iPGyts0TKOSRr5j+JKl0oGEkKwskFYjyUtX0H278BDcXABYwf/sSe
-         T8MX5d8Yxi8KfQYQkiv9wHICGfCk06yMz7L2Cequge04jY0F9m642LnmrK6eyMb1GIXJ
-         GY/YXOGIUnGqWjnrC2D/dQ8E4BVeFJ6vyYYrpLgkmFLNaPtHBV+s0LIPMcODaeKsPn3G
-         J7tQ==
-X-Gm-Message-State: AOAM530kRamYBymZFQNacWKMuQPsCUCZykOxGXQJjNhUCzl2gY7mx5HQ
-        +8bETJhRB1/TkYM868LfAA==
-X-Google-Smtp-Source: ABdhPJxQzyud8LXXP3ohLaDtGNiEUzNllPix6rvYk5xlABI4dxlh8sO6GqbosKyCgmEm/A8mlrnXDg==
-X-Received: by 2002:a9d:7419:: with SMTP id n25mr20205706otk.1.1621896763681;
-        Mon, 24 May 2021 15:52:43 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id k21sm3304017otr.3.2021.05.24.15.52.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 15:52:43 -0700 (PDT)
-Received: (nullmailer pid 1322542 invoked by uid 1000);
-        Mon, 24 May 2021 22:52:42 -0000
-Date:   Mon, 24 May 2021 17:52:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Grygorii Strashko <grygorii.strashko@ti.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Tony Lindgren <tony@atomide.com>, devicetree@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>
-Subject: Re: [PATCH 5/5] dt-bindings: gpio: omap: Convert to json-schema
-Message-ID: <20210524225242.GA1319212@robh.at.kernel.org>
-References: <20210521223236.18324-1-grygorii.strashko@ti.com>
- <20210521223236.18324-6-grygorii.strashko@ti.com>
+        Mon, 24 May 2021 18:56:37 -0400
+Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA409C061574
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 15:55:08 -0700 (PDT)
+Received: from localhost.localdomain (83.6.165.117.neoplus.adsl.tpnet.pl [83.6.165.117])
+        by m-r2.th.seeweb.it (Postfix) with ESMTPA id 469B53EAE8;
+        Tue, 25 May 2021 00:55:04 +0200 (CEST)
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+To:     ~postmarketos/upstreaming@lists.sr.ht
+Cc:     martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, jamipkettunen@somainline.org,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] clk: qcom: smd-rpm: Switch to parent_data
+Date:   Tue, 25 May 2021 00:54:55 +0200
+Message-Id: <20210524225456.398817-1-konrad.dybcio@somainline.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521223236.18324-6-grygorii.strashko@ti.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 22, 2021 at 01:32:36AM +0300, Grygorii Strashko wrote:
-> Convert the OMAP GPIO Device Tree binding documentation to json-schema.
-> The GPIO hogs node names defined to end with a 'hog' suffix.
-> 
-> Signed-off-by: Grygorii Strashko <grygorii.strashko@ti.com>
-> ---
->  .../devicetree/bindings/gpio/gpio-omap.txt    |  45 --------
->  .../bindings/gpio/ti,omap-gpio.yaml           | 108 ++++++++++++++++++
->  2 files changed, 108 insertions(+), 45 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-omap.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/ti,omap-gpio.yaml
+Switch to parent_data and with that fix the longstanding issue where
+if there wasn't a clock precisely named "xo_board", rpmcc would not play
+along well. This started to show lately when "xo_board" was being changed to
+"xo-board" so as to align with DTS naming spec.
 
-Other than the indentation,
+Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+---
+ drivers/clk/qcom/clk-smd-rpm.c | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+diff --git a/drivers/clk/qcom/clk-smd-rpm.c b/drivers/clk/qcom/clk-smd-rpm.c
+index 0e1dfa89489e..9204aae1867e 100644
+--- a/drivers/clk/qcom/clk-smd-rpm.c
++++ b/drivers/clk/qcom/clk-smd-rpm.c
+@@ -39,7 +39,10 @@
+ 		.hw.init = &(struct clk_init_data){			      \
+ 			.ops = &clk_smd_rpm_ops,			      \
+ 			.name = #_name,					      \
+-			.parent_names = (const char *[]){ "xo_board" },       \
++			.parent_data =  &(const struct clk_parent_data){ \
++					.fw_name = "xo",		\
++					.name = "xo_board",		\
++			},						\
+ 			.num_parents = 1,				      \
+ 		},							      \
+ 	};								      \
+@@ -54,7 +57,10 @@
+ 		.hw.init = &(struct clk_init_data){			      \
+ 			.ops = &clk_smd_rpm_ops,			      \
+ 			.name = #_active,				      \
+-			.parent_names = (const char *[]){ "xo_board" },	      \
++			.parent_data =  &(const struct clk_parent_data){ \
++					.fw_name = "xo",		\
++					.name = "xo_board",		\
++			},						\
+ 			.num_parents = 1,				      \
+ 		},							      \
+ 	}
+@@ -73,7 +79,10 @@
+ 		.hw.init = &(struct clk_init_data){			      \
+ 			.ops = &clk_smd_rpm_branch_ops,			      \
+ 			.name = #_name,					      \
+-			.parent_names = (const char *[]){ "xo_board" },	      \
++			.parent_data =  &(const struct clk_parent_data){ \
++					.fw_name = "xo",		\
++					.name = "xo_board",		\
++			},						\
+ 			.num_parents = 1,				      \
+ 		},							      \
+ 	};								      \
+@@ -89,7 +98,10 @@
+ 		.hw.init = &(struct clk_init_data){			      \
+ 			.ops = &clk_smd_rpm_branch_ops,			      \
+ 			.name = #_active,				      \
+-			.parent_names = (const char *[]){ "xo_board" },	      \
++			.parent_data =  &(const struct clk_parent_data){ \
++					.fw_name = "xo",		\
++					.name = "xo_board",		\
++			},						\
+ 			.num_parents = 1,				      \
+ 		},							      \
+ 	}
+-- 
+2.31.1
+
