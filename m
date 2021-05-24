@@ -2,39 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF20938EEC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9843838ED40
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbhEXPzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33924 "EHLO mail.kernel.org"
+        id S233362AbhEXPfV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234150AbhEXPqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:46:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CB8D261462;
-        Mon, 24 May 2021 15:36:45 +0000 (UTC)
+        id S233461AbhEXPdd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:33:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6C2D061376;
+        Mon, 24 May 2021 15:31:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870606;
-        bh=h664bandLCDPC/1CjENMxaqeFK9FEWA1A3DHy39phvs=;
+        s=korg; t=1621870277;
+        bh=4A60Kp4Galht+txE64K/9ptp8sNYlq4knm/mek7Ml6E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=s5JXlooz4kJYPfgyj8Fpyx5F1BmX2pXpzSTTK+xqpitz2SZTy8WIsiwbFI/LR0cH+
-         R/ecfNSzPEWSn5SKpj8k2w59FF66dlMk15ixh5zTK3x+LFUikQwrYbrt2gsHJjQtQc
-         YuCHtO7JlPxM3z+tWjuEZI7gPgmm62bHR5IlJOGY=
+        b=qCxIzRdpjU8koc5nirz0DfjNgRYpHdi7U9euN+TKYjd3MGl3Ii1wDq64vQwyZ6Ude
+         3mBR0CiMuqJ5j3hm/T+4h2TalNHsCQyvXSKPrTQFJuhffXrFxQ8cAv3NeargL7Hqz2
+         wIGOWas021WkkZjv05K6kmS/qXsyIzcTexJGgvZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Zhu Yanjun <zyjzyj2000@gmail.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 05/71] RDMA/rxe: Clear all QP fields if creation failed
-Date:   Mon, 24 May 2021 17:25:11 +0200
-Message-Id: <20210524152326.632675412@linuxfoundation.org>
+        stable@vger.kernel.org, "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.4 29/31] vgacon: Record video mode changes with VT_RESIZEX
+Date:   Mon, 24 May 2021 17:25:12 +0200
+Message-Id: <20210524152323.863587615@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
+References: <20210524152322.919918360@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -43,117 +39,65 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leon Romanovsky <leonro@nvidia.com>
+From: Maciej W. Rozycki <macro@orcam.me.uk>
 
-[ Upstream commit 67f29896fdc83298eed5a6576ff8f9873f709228 ]
+commit d4d0ad57b3865795c4cde2fb5094c594c2e8f469 upstream.
 
-rxe_qp_do_cleanup() relies on valid pointer values in QP for the properly
-created ones, but in case rxe_qp_from_init() failed it was filled with
-garbage and caused tot the following error.
+Fix an issue with VGA console font size changes made after the initial
+video text mode has been changed with a user tool like `svgatextmode'
+calling the VT_RESIZEX ioctl.  As it stands in that case the original
+screen geometry continues being used to validate further VT resizing.
 
-  refcount_t: underflow; use-after-free.
-  WARNING: CPU: 1 PID: 12560 at lib/refcount.c:28 refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-  Modules linked in:
-  CPU: 1 PID: 12560 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
-  Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-  RIP: 0010:refcount_warn_saturate+0x1d1/0x1e0 lib/refcount.c:28
-  Code: e9 db fe ff ff 48 89 df e8 2c c2 ea fd e9 8a fe ff ff e8 72 6a a7 fd 48 c7 c7 e0 b2 c1 89 c6 05 dc 3a e6 09 01 e8 ee 74 fb 04 <0f> 0b e9 af fe ff ff 0f 1f 84 00 00 00 00 00 41 56 41 55 41 54 55
-  RSP: 0018:ffffc900097ceba8 EFLAGS: 00010286
-  RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-  RDX: 0000000000040000 RSI: ffffffff815bb075 RDI: fffff520012f9d67
-  RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-  R10: ffffffff815b4eae R11: 0000000000000000 R12: ffff8880322a4800
-  R13: ffff8880322a4940 R14: ffff888033044e00 R15: 0000000000000000
-  FS:  00007f6eb2be3700(0000) GS:ffff8880b9d00000(0000) knlGS:0000000000000000
-  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  CR2: 00007fdbe5d41000 CR3: 000000001d181000 CR4: 00000000001506e0
-  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  Call Trace:
-   __refcount_sub_and_test include/linux/refcount.h:283 [inline]
-   __refcount_dec_and_test include/linux/refcount.h:315 [inline]
-   refcount_dec_and_test include/linux/refcount.h:333 [inline]
-   kref_put include/linux/kref.h:64 [inline]
-   rxe_qp_do_cleanup+0x96f/0xaf0 drivers/infiniband/sw/rxe/rxe_qp.c:805
-   execute_in_process_context+0x37/0x150 kernel/workqueue.c:3327
-   rxe_elem_release+0x9f/0x180 drivers/infiniband/sw/rxe/rxe_pool.c:391
-   kref_put include/linux/kref.h:65 [inline]
-   rxe_create_qp+0x2cd/0x310 drivers/infiniband/sw/rxe/rxe_verbs.c:425
-   _ib_create_qp drivers/infiniband/core/core_priv.h:331 [inline]
-   ib_create_named_qp+0x2ad/0x1370 drivers/infiniband/core/verbs.c:1231
-   ib_create_qp include/rdma/ib_verbs.h:3644 [inline]
-   create_mad_qp+0x177/0x2d0 drivers/infiniband/core/mad.c:2920
-   ib_mad_port_open drivers/infiniband/core/mad.c:3001 [inline]
-   ib_mad_init_device+0xd6f/0x1400 drivers/infiniband/core/mad.c:3092
-   add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:717
-   enable_device_and_get+0x1cd/0x3b0 drivers/infiniband/core/device.c:1331
-   ib_register_device drivers/infiniband/core/device.c:1413 [inline]
-   ib_register_device+0x7c7/0xa50 drivers/infiniband/core/device.c:1365
-   rxe_register_device+0x3d5/0x4a0 drivers/infiniband/sw/rxe/rxe_verbs.c:1147
-   rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
-   rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:503
-   rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
-   rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
-   nldev_newlink+0x30e/0x550 drivers/infiniband/core/nldev.c:1555
-   rdma_nl_rcv_msg+0x36d/0x690 drivers/infiniband/core/netlink.c:195
-   rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
-   rdma_nl_rcv+0x2ee/0x430 drivers/infiniband/core/netlink.c:259
-   netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
-   netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
-   netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
-   sock_sendmsg_nosec net/socket.c:654 [inline]
-   sock_sendmsg+0xcf/0x120 net/socket.c:674
-   ____sys_sendmsg+0x6e8/0x810 net/socket.c:2350
-   ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
-   __sys_sendmsg+0xe5/0x1b0 net/socket.c:2433
-   do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+Consequently when the video adapter is firstly reprogrammed from the
+original say 80x25 text mode using a 9x16 character cell (720x400 pixel
+resolution) to say 80x37 text mode and the same character cell (720x592
+pixel resolution), and secondly the CRTC character cell updated to 9x8
+(by loading a suitable font with the KD_FONT_OP_SET request of the
+KDFONTOP ioctl), the VT geometry does not get further updated from 80x37
+and only upper half of the screen is used for the VT, with the lower
+half showing rubbish corresponding to whatever happens to be there in
+the video memory that maps to that part of the screen.  Of course the
+proportions change according to text mode geometries and font sizes
+chosen.
 
-Fixes: 8700e3e7c485 ("Soft RoCE driver")
-Link: https://lore.kernel.org/r/7bf8d548764d406dbbbaf4b574960ebfd5af8387.1620717918.git.leonro@nvidia.com
-Reported-by: syzbot+36a7f280de4e11c6f04e@syzkaller.appspotmail.com
-Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
-Reviewed-by: Zhu Yanjun <zyjzyj2000@gmail.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Address the problem then, by updating the text mode geometry defaults
+rather than checking against them whenever the VT is resized via a user
+ioctl.
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Fixes: e400b6ec4ede ("vt/vgacon: Check if screen resize request comes from userspace")
+Cc: stable@vger.kernel.org # v2.6.24+
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/infiniband/sw/rxe/rxe_qp.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ drivers/video/console/vgacon.c |   14 +++++++++++---
+ 1 file changed, 11 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/infiniband/sw/rxe/rxe_qp.c b/drivers/infiniband/sw/rxe/rxe_qp.c
-index f85273883794..d427a343c09f 100644
---- a/drivers/infiniband/sw/rxe/rxe_qp.c
-+++ b/drivers/infiniband/sw/rxe/rxe_qp.c
-@@ -260,6 +260,7 @@ static int rxe_qp_init_req(struct rxe_dev *rxe, struct rxe_qp *qp,
- 	if (err) {
- 		vfree(qp->sq.queue->buf);
- 		kfree(qp->sq.queue);
-+		qp->sq.queue = NULL;
- 		return err;
- 	}
+--- a/drivers/video/console/vgacon.c
++++ b/drivers/video/console/vgacon.c
+@@ -1179,12 +1179,20 @@ static int vgacon_resize(struct vc_data
+ 	if ((width << 1) * height > vga_vram_size)
+ 		return -EINVAL;
  
-@@ -313,6 +314,7 @@ static int rxe_qp_init_resp(struct rxe_dev *rxe, struct rxe_qp *qp,
- 		if (err) {
- 			vfree(qp->rq.queue->buf);
- 			kfree(qp->rq.queue);
-+			qp->rq.queue = NULL;
- 			return err;
- 		}
- 	}
-@@ -373,6 +375,11 @@ int rxe_qp_from_init(struct rxe_dev *rxe, struct rxe_qp *qp, struct rxe_pd *pd,
- err2:
- 	rxe_queue_cleanup(qp->sq.queue);
- err1:
-+	qp->pd = NULL;
-+	qp->rcq = NULL;
-+	qp->scq = NULL;
-+	qp->srq = NULL;
-+
- 	if (srq)
- 		rxe_drop_ref(srq);
- 	rxe_drop_ref(scq);
--- 
-2.30.2
-
++	if (user) {
++		/*
++		 * Ho ho!  Someone (svgatextmode, eh?) may have reprogrammed
++		 * the video mode!  Set the new defaults then and go away.
++		 */
++		screen_info.orig_video_cols = width;
++		screen_info.orig_video_lines = height;
++		vga_default_font_height = c->vc_font.height;
++		return 0;
++	}
+ 	if (width % 2 || width > screen_info.orig_video_cols ||
+ 	    height > (screen_info.orig_video_lines * vga_default_font_height)/
+ 	    c->vc_font.height)
+-		/* let svgatextmode tinker with video timings and
+-		   return success */
+-		return (user) ? 0 : -EINVAL;
++		return -EINVAL;
+ 
+ 	if (CON_IS_VISIBLE(c) && !vga_is_gfx) /* who knows */
+ 		vgacon_doresize(c, width, height);
 
 
