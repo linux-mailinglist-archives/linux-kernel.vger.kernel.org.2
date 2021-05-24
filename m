@@ -2,64 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D135D38E5C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:47:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9494938E5C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:48:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbhEXLtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:49:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232553AbhEXLtE (ORCPT
+        id S232641AbhEXLtd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:49:33 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:3927 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232476AbhEXLtc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:49:04 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A463C061574;
-        Mon, 24 May 2021 04:47:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=UEO6EAq0B/BZq9m5Zu1X6wIqhfXCfA6vaV6yeUoFwnk=; b=Or7cMQ7Nzl98SOGOLDHWQs5AkK
-        kd6QvgbIiLkHCNig8TZkoK4Qk6eNVlF8A1kPxiWTx3ZYBfDZPOecUnZcvWOhgRctNgCnWdwgB/Qkx
-        vLz/kHulVD5Q6nuLTMUhcHWhdHOikWBkftygJrUaInoHHfJgHwqdSvdqSKR/pHk8CGtAnPw9D02tj
-        DyDijYr5PtZjidf15hDW7+YrgdJ2t2IoCJ5Jbiw/8ca42BSrgNbBytwINWR8pyZ0gSJbhKsaUYEpa
-        XRN2E5K6gLTLC74ituBPeZOM9HNyHtpT5HLvKmUofGtlt98U4zea5TdBHH9bPhlQAy+2O52rgjPuk
-        bCEGnSFg==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1ll92Q-002KEc-QT; Mon, 24 May 2021 11:46:31 +0000
-Date:   Mon, 24 May 2021 12:46:26 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Joe Richey <joerichey94@gmail.com>
-Cc:     trivial@kernel.org, Joe Richey <joerichey@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Zhangfei Gao <zhangfei.gao@linaro.org>,
-        Zhou Wang <wangzhou1@hisilicon.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-accelerators@lists.ozlabs.org
-Subject: Re: [PATCH 0/6] Don't use BIT() macro in UAPI headers
-Message-ID: <YKuSEnfEbjpOOgLS@infradead.org>
-References: <20210520104343.317119-1-joerichey94@gmail.com>
+        Mon, 24 May 2021 07:49:32 -0400
+Received: from dggems706-chm.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fpb4573dczBvm6;
+        Mon, 24 May 2021 19:45:09 +0800 (CST)
+Received: from dggema769-chm.china.huawei.com (10.1.198.211) by
+ dggems706-chm.china.huawei.com (10.3.19.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
+ 15.1.2176.2; Mon, 24 May 2021 19:48:00 +0800
+Received: from localhost (10.174.179.215) by dggema769-chm.china.huawei.com
+ (10.1.198.211) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Mon, 24
+ May 2021 19:48:00 +0800
+From:   YueHaibing <yuehaibing@huawei.com>
+To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <perex@perex.cz>,
+        <tiwai@suse.com>
+CC:     <patches@opensource.cirrus.com>, <alsa-devel@alsa-project.org>,
+        <linux-kernel@vger.kernel.org>, YueHaibing <yuehaibing@huawei.com>
+Subject: [PATCH -next] ASoC: wm8962: Use DEVICE_ATTR_WO macro
+Date:   Mon, 24 May 2021 19:47:53 +0800
+Message-ID: <20210524114753.39544-1-yuehaibing@huawei.com>
+X-Mailer: git-send-email 2.10.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210520104343.317119-1-joerichey94@gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain
+X-Originating-IP: [10.174.179.215]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggema769-chm.china.huawei.com (10.1.198.211)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 20, 2021 at 03:43:37AM -0700, Joe Richey wrote:
-> This patch series changes all UAPI uses of BIT() to just be open-coded.
-> However, there really should be a check for this in checkpatch.pl
-> Currently, the script actually _encourages_ users to use the BIT macro
-> even if adding things to UAPI.
+Use DEVICE_ATTR_WO() helper instead of plain DEVICE_ATTR(),
+which makes the code a bit shorter and easier to read.
 
-Yes.  In fact it should warn about BIT() in general.  It is totally
-pointless obsfucation that doesn't even save any typing at all.
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+---
+ sound/soc/codecs/wm8962.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index 34080f497584..ba16bdf9e478 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -3219,9 +3219,8 @@ static int wm8962_beep_event(struct input_dev *dev, unsigned int type,
+ 	return 0;
+ }
+ 
+-static ssize_t wm8962_beep_set(struct device *dev,
+-			       struct device_attribute *attr,
+-			       const char *buf, size_t count)
++static ssize_t beep_store(struct device *dev, struct device_attribute *attr,
++			  const char *buf, size_t count)
+ {
+ 	struct wm8962_priv *wm8962 = dev_get_drvdata(dev);
+ 	long int time;
+@@ -3236,7 +3235,7 @@ static ssize_t wm8962_beep_set(struct device *dev,
+ 	return count;
+ }
+ 
+-static DEVICE_ATTR(beep, 0200, NULL, wm8962_beep_set);
++static DEVICE_ATTR_WO(beep);
+ 
+ static void wm8962_init_beep(struct snd_soc_component *component)
+ {
+-- 
+2.17.1
+
