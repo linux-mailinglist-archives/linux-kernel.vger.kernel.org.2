@@ -2,128 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABE0138E752
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:24:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1BE138E755
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232648AbhEXNZg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:25:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21507 "EHLO
+        id S232764AbhEXN0U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:26:20 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44892 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232426AbhEXNZc (ORCPT
+        by vger.kernel.org with ESMTP id S232426AbhEXN0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:25:32 -0400
+        Mon, 24 May 2021 09:26:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621862643;
+        s=mimecast20190719; t=1621862690;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=53eXAokxRIKiwyPhDqnz0iFPit9Pp7Ww3vTVyba+8os=;
-        b=IDMc3kLeoBSjbTv2aKa27oI6F1Y0KSRUhFY+mQgpmy9UZufKhO3rgHIZIN+++onxOL+VdX
-        Rwfp9S29KW9kvLTuG0Q5avWDXHaN8IdJ+68u7bTCpEukSzhUqP/HSN9HQJlsFqB1Dm8g6s
-        RvHf+J0alssqDpMfh52SaMrKM1OmBQQ=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-522-bjhjyH1uO7OC2fBGhnyXSQ-1; Mon, 24 May 2021 09:24:01 -0400
-X-MC-Unique: bjhjyH1uO7OC2fBGhnyXSQ-1
-Received: by mail-ej1-f70.google.com with SMTP id la2-20020a170906ad82b02903d4bcc8de3bso7552231ejb.4
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:24:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=53eXAokxRIKiwyPhDqnz0iFPit9Pp7Ww3vTVyba+8os=;
-        b=DEochWbDmvycoLf12g6aqYGT9xuE9RBsgjXkyGxQ7yZ+kxLqZVTsthxVJA0qUujNfx
-         74TKmOfvLnpYPaBpTJcjCyMqccMv0TY4sG82HMEQuJewNKdoUNNujx67uT8wVdgTi/DR
-         XE6pD56/WEwzlIRN8pb+JMqkK6o1djRfuP24TR+OrOgYN6XADcI5SltYimlDW8b11d1v
-         GFnFDLVUTUpv+iRGexs1m/HfJF5vdB6n2+oGSgT+KxFdyoVvPS9o0Zw6znuW9jvbuWfT
-         ABDrC7FYIXPc/YV4tecfIQg7kAqKwVfXuCoYB9zrYQj716OU8PgQp9s/QWtLUaiPbm8+
-         F9lw==
-X-Gm-Message-State: AOAM532PDzOWvyODvJGpQnbiQvVd2WkGHgUlDDGWT+DLlXhxBrniqcpR
-        ZjPDyhhZ4bvByyBHrpbSpp6YYQBfj1J2mqYXIQkXvgRwBQNYwAK1/HXoRV8EL4+GWPFVS/g/xW+
-        nCUkvCGwrdK2ox+hAQcYZ9NZC
-X-Received: by 2002:aa7:dd55:: with SMTP id o21mr3229150edw.295.1621862640567;
-        Mon, 24 May 2021 06:24:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz3DSY6d04QH71BkovxNb1XzNKKyowTagt62xq3s0x3gA/C7y9NGdwxhXHJLyJ1St7d71e/SA==
-X-Received: by 2002:aa7:dd55:: with SMTP id o21mr3229117edw.295.1621862640359;
-        Mon, 24 May 2021 06:24:00 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id s2sm9524965edu.89.2021.05.24.06.23.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:23:59 -0700 (PDT)
-Subject: Re: [PATCH v2 03/10] KVM: selftests: print a message when skipping
- KVM tests
-To:     Ben Gardon <bgardon@google.com>,
-        Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Aaron Lewis <aaronlewis@google.com>,
-        Alexander Graf <graf@amazon.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jacob Xu <jacobhxu@google.com>,
-        Makarand Sonare <makarandsonare@google.com>,
-        Oliver Upton <oupton@google.com>, Peter Xu <peterx@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Yanan Wang <wangyanan55@huawei.com>, kvm <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-References: <20210519200339.829146-1-axelrasmussen@google.com>
- <20210519200339.829146-4-axelrasmussen@google.com>
- <CANgfPd_WV+8bAHucE=81eFTEEPv5Q-2ZjQ_beKhZyQnt4PX57Q@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <12a7376b-7bda-8fe6-f3f4-628dbccc69a2@redhat.com>
-Date:   Mon, 24 May 2021 15:23:55 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        bh=4XLlEUkhiAcP2K4ZB+J18mgQ/icUCahgsIUqJqs8aT8=;
+        b=LvQD3UIEQraMlUaipeFIXB0KErsoODNUWeSb2zKfpRipQBoK46GayHY3pMryDPezQOvFfq
+        1tp9Khp3tXYvZ9KfuUD1zCZKEpxWELNrU5GZwx4qWMQW//cTQeu8gx2nxh7K98WgK4xkEc
+        2HITjwvTSriwVpziKwqFRN9d4Wd/yN8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-525-jomfIlbHN1CH-3P2nYiTDA-1; Mon, 24 May 2021 09:24:46 -0400
+X-MC-Unique: jomfIlbHN1CH-3P2nYiTDA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B747B100A241;
+        Mon, 24 May 2021 13:24:44 +0000 (UTC)
+Received: from localhost (ovpn-113-244.ams2.redhat.com [10.36.113.244])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D599E50233;
+        Mon, 24 May 2021 13:24:38 +0000 (UTC)
+Date:   Mon, 24 May 2021 14:24:37 +0100
+From:   Stefan Hajnoczi <stefanha@redhat.com>
+To:     Hannes Reinecke <hare@suse.de>
+Cc:     Dongli Zhang <dongli.zhang@oracle.com>,
+        virtualization@lists.linux-foundation.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, mst@redhat.com, jasowang@redhat.com,
+        pbonzini@redhat.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, joe.jin@oracle.com,
+        junxiao.bi@oracle.com, srinivas.eeda@oracle.com
+Subject: Re: [RFC] virtio_scsi: to poll and kick the virtqueue in timeout
+ handler
+Message-ID: <YKupFeOtc6Pr5KS2@stefanha-x1.localdomain>
+References: <20210523063843.1177-1-dongli.zhang@oracle.com>
+ <ac161748-15d2-2962-402e-23abca469623@suse.de>
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd_WV+8bAHucE=81eFTEEPv5Q-2ZjQ_beKhZyQnt4PX57Q@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="S/KzmU9AGl0WrRAq"
+Content-Disposition: inline
+In-Reply-To: <ac161748-15d2-2962-402e-23abca469623@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/21 23:49, Ben Gardon wrote:
-> On Wed, May 19, 2021 at 1:03 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
->>
->> Previously, if this check failed, we'd just exit quietly with no output.
->> This can be confusing, so print out a short message indicating why the
->> test is being skipped.
->>
->> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
-> 
-> Reviewed-by: Ben Gardon <bgardon@google.com>
-> 
->> ---
->>   tools/testing/selftests/kvm/lib/kvm_util.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
->> index f05ca919cccb..0d6ddee429b9 100644
->> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
->> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
->> @@ -53,8 +53,10 @@ int kvm_check_cap(long cap)
->>          int kvm_fd;
->>
->>          kvm_fd = open(KVM_DEV_PATH, O_RDONLY);
->> -       if (kvm_fd < 0)
->> +       if (kvm_fd < 0) {
->> +               print_skip("KVM not available, errno: %d", errno);
->>                  exit(KSFT_SKIP);
->> +       }
-> 
-> This is a wonderful change. I believe this will only be hit if KVM is
-> built as a module and that module has not yet been loaded, so this
-> message could also suggest that the user check if the KVM / KVM
-> arch/vendor specific module has been loaded.
 
-Let's make it
+--S/KzmU9AGl0WrRAq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-                 print_skip("%s not available, is KVM loaded? (errno: %d)",
-                            KVM_DEV_PATH, errno);
+On Sun, May 23, 2021 at 09:39:51AM +0200, Hannes Reinecke wrote:
+> On 5/23/21 8:38 AM, Dongli Zhang wrote:
+> > This RFC is to trigger the discussion about to poll and kick the
+> > virtqueue on purpose in virtio-scsi timeout handler.
+> >=20
+> > The virtio-scsi relies on the virtio vring shared between VM and host.
+> > The VM side produces requests to vring and kicks the virtqueue, while t=
+he
+> > host side produces responses to vring and interrupts the VM side.
+> >=20
+> > By default the virtio-scsi handler depends on the host timeout handler
+> > by BLK_EH_RESET_TIMER to give host a chance to perform EH.
+> >=20
+> > However, this is not helpful for the case that the responses are availa=
+ble
+> > on vring but the notification from host to VM is lost.
+> >=20
+> How can this happen?
+> If responses are lost the communication between VM and host is broken, and
+> we should rather reset the virtio rings themselves.
 
-Paolo
+I agree. In principle it's fine to poll the virtqueue at any time, but I
+don't understand the failure scenario here. It's not clear to me why the
+device-to-driver vq notification could be lost.
+
+Stefan
+
+--S/KzmU9AGl0WrRAq
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmCrqRUACgkQnKSrs4Gr
+c8ja+gf9GSHdRkmM60mxLZ82ONQ0mRq3/yKUUtqLg3POUVan4p1AT+T6YazetRxA
+1ux2OmVeDXzAfe9mawQXQLZ5ArlNGYGR+hfi30ECCfXGMkmdhJN42JO57bzYhyfM
+ezn5v4l8Dk6d6sdTwQbqaj0KJ8MGS3OqZ4Sd/zanTVlOEi3fuiY0NRYRRQG8xWkr
+TFB8ZqPqQvFfdtrjZQHufl9GaZr/pn3xP3bKNXwKWTGCO4zUsgNzddvjGjcAsDh8
+a9dX8ujl+N2xQYcp/EpWbeg3H8S/kyMv2834ZHaBH9FEG2K/Z25HfXTzInOSZiRs
+vyysHy57N24AFAeVx11lAKTqkkvxcQ==
+=8nHX
+-----END PGP SIGNATURE-----
+
+--S/KzmU9AGl0WrRAq--
 
