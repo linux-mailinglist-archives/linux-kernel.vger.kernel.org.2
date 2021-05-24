@@ -2,36 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E58F38ED2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C39138ED74
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233178AbhEXPek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:34:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50522 "EHLO mail.kernel.org"
+        id S233560AbhEXPiM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:38:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51440 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233274AbhEXPcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E187F613D0;
-        Mon, 24 May 2021 15:30:57 +0000 (UTC)
+        id S232797AbhEXPee (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:34:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 96559613AD;
+        Mon, 24 May 2021 15:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870258;
-        bh=PwZyXvvsQj6OH8etcpIiEPUTgcPTFwVs5Hi0HRYzK9o=;
+        s=korg; t=1621870325;
+        bh=iLjv2BpjEpxLxEfUWOFHpbFCb3/nWsauqU8ooJ9BEsU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kBkzR++1TuJHonhvi4tt6pgJwMPhr3RNASpEFcfAl5lzZ3+RyCtYoQHR0TxEpY/JO
-         yDwPjpugvNAmEGXwN75CE9ZoJUsqXrafYLqnQTpxAK/rYi7OWFd+gg+rzkwm5LurRQ
-         YrM4zktX562rH2rFRZNCWINd++lpFRXQcbEdZ9M8=
+        b=F4WMrfTTbKn8bParmgs/HguvdEOTQ/bGpHQdUfKOqjfTZyTK1WLpLve5rGqOXp8jW
+         XxsON4INHiovEi2XbsCNqUew+swD9K4O7yYiSmpcjLt5jGwwZRKrFY92/OOvnicIfU
+         FcgeOEl247k96ecxa4EokxcznTlPKWl0avNlrNYc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH 4.4 20/31] Revert "rtlwifi: fix a potential NULL pointer dereference"
-Date:   Mon, 24 May 2021 17:25:03 +0200
-Message-Id: <20210524152323.582040033@linuxfoundation.org>
+        Aditya Pakki <pakki001@umn.edu>,
+        Finn Thain <fthain@telegraphics.com.au>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH 4.9 19/36] Revert "video: imsttfb: fix potential NULL pointer dereferences"
+Date:   Mon, 24 May 2021 17:25:04 +0200
+Message-Id: <20210524152324.780323540@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-References: <20210524152322.919918360@linuxfoundation.org>
+In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
+References: <20210524152324.158146731@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,9 +44,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 68c5634c4a7278672a3bed00eb5646884257c413 upstream.
+commit ed04fe8a0e87d7b5ea17d47f4ac9ec962b24814a upstream.
 
-This reverts commit 765976285a8c8db3f0eb7f033829a899d0c2786e.
+This reverts commit 1d84353d205a953e2381044953b7fa31c8c9702d.
 
 Because of recent interactions with developers from @umn.edu, all
 commits from them have been recently re-reviewed to ensure if they were
@@ -54,37 +56,40 @@ Upon review, this commit was found to be incorrect for the reasons
 below, so it must be reverted.  It will be fixed up "correctly" in a
 later kernel change.
 
-This commit is not correct, it should not have used unlikely() and is
-not propagating the error properly to the calling function, so it should
-be reverted at this point in time.  Also, if the check failed, the
-work queue was still assumed to be allocated, so further accesses would
-have continued to fail, meaning this patch does nothing to solve the
-root issues at all.
+The original commit here, while technically correct, did not fully
+handle all of the reported issues that the commit stated it was fixing,
+so revert it until it can be "fixed" fully.
+
+Note, ioremap() probably will never fail for old hardware like this, and
+if anyone actually used this hardware (a PowerMac era PCI display card),
+they would not be using fbdev anymore.
 
 Cc: Kangjie Lu <kjlu@umn.edu>
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Bryan Brattlof <hello@bryanbrattlof.com>
-Fixes: 765976285a8c ("rtlwifi: fix a potential NULL pointer dereference")
+Cc: Aditya Pakki <pakki001@umn.edu>
+Cc: Finn Thain <fthain@telegraphics.com.au>
+Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Fixes: 1d84353d205a ("video: imsttfb: fix potential NULL pointer dereferences")
 Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-13-gregkh@linuxfoundation.org
+Link: https://lore.kernel.org/r/20210503115736.2104747-67-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/base.c |    5 -----
+ drivers/video/fbdev/imsttfb.c |    5 -----
  1 file changed, 5 deletions(-)
 
---- a/drivers/net/wireless/realtek/rtlwifi/base.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
-@@ -466,11 +466,6 @@ static void _rtl_init_deferred_work(stru
- 	/* <2> work queue */
- 	rtlpriv->works.hw = hw;
- 	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
--	if (unlikely(!rtlpriv->works.rtl_wq)) {
--		pr_err("Failed to allocate work queue\n");
--		return;
+--- a/drivers/video/fbdev/imsttfb.c
++++ b/drivers/video/fbdev/imsttfb.c
+@@ -1516,11 +1516,6 @@ static int imsttfb_probe(struct pci_dev
+ 	info->fix.smem_start = addr;
+ 	info->screen_base = (__u8 *)ioremap(addr, par->ramdac == IBM ?
+ 					    0x400000 : 0x800000);
+-	if (!info->screen_base) {
+-		release_mem_region(addr, size);
+-		framebuffer_release(info);
+-		return -ENOMEM;
 -	}
--
- 	INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
- 			  (void *)rtl_watchdog_wq_callback);
- 	INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
+ 	info->fix.mmio_start = addr + 0x800000;
+ 	par->dc_regs = ioremap(addr + 0x800000, 0x1000);
+ 	par->cmap_regs_phys = addr + 0x840000;
 
 
