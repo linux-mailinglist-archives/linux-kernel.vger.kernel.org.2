@@ -2,95 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1988D38F1B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FF7538ECDF
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:25:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233101AbhEXQrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:47:22 -0400
-Received: from 1.mo2.mail-out.ovh.net ([46.105.63.121]:53462 "EHLO
-        1.mo2.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232442AbhEXQrV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:47:21 -0400
-X-Greylist: delayed 5045 seconds by postgrey-1.27 at vger.kernel.org; Mon, 24 May 2021 12:47:20 EDT
-Received: from player797.ha.ovh.net (unknown [10.110.208.124])
-        by mo2.mail-out.ovh.net (Postfix) with ESMTP id EB6EA207E39
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 17:21:45 +0200 (CEST)
-Received: from mrtz.fr (lfbn-lyo-1-490-81.w2-7.abo.wanadoo.fr [2.7.79.81])
-        (Authenticated sender: harold@mrtz.fr)
-        by player797.ha.ovh.net (Postfix) with ESMTPSA id ECC801A5C91A4;
-        Mon, 24 May 2021 15:21:36 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-103G005c8330ba4-4892-4bbc-9840-5d478b1168bf,
-                    C140F9C3D5E2866CE6A0DF242C55A977A0D9EDE7) smtp.auth=harold@mrtz.fr
-X-OVh-ClientIp: 2.7.79.81
-From:   Harold Mertzweiller <harold@mrtz.fr>
-Cc:     Harold Mertzweiller <harold@mrtz.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Alex Dewar <alex.dewar90@gmail.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>,
-        Sean Behan <codebam@riseup.net>,
-        Colin Ian King <colin.king@canonical.com>,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH] staging: emxx_udc: fix alignment issues
-Date:   Mon, 24 May 2021 17:21:26 +0200
-Message-Id: <20210524152128.20519-1-harold@mrtz.fr>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 14161850503387417869
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -55
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledgkeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnehmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnegoteeftdduqddtudculdduhedmnecujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpefjrghrohhlugcuofgvrhhtiiifvghilhhlvghruceohhgrrhholhgusehmrhhtiidrfhhrqeenucggtffrrghtthgvrhhnpefhudekgefhheevleeugeehvedufeelieeggefgvdegheevheekvdfhgeduveevheenucfkpheptddrtddrtddrtddpvddrjedrjeelrdekudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejleejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhephhgrrhholhgusehmrhhtiidrfhhrpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-To:     unlisted-recipients:; (no To-header on input)
+        id S233265AbhEXP0b convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 24 May 2021 11:26:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233126AbhEXPXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:23:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7DEF5613DF;
+        Mon, 24 May 2021 15:21:44 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1llCOk-003Fit-CT; Mon, 24 May 2021 16:21:42 +0100
+Date:   Mon, 24 May 2021 16:21:41 +0100
+Message-ID: <87fsycw41m.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Andreas =?UTF-8?B?RsOkcmJlcg==?= <afaerber@suse.de>
+Cc:     linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>, devicetree@vger.kernel.org
+Subject: Re: [PATCH 3/9] arm64: dts: rockchip: Prepare Rockchip RK1808
+In-Reply-To: <7ef183f1-00f8-13c4-1fd3-eae9e0bbf74c@suse.de>
+References: <20210516230551.12469-1-afaerber@suse.de>
+        <20210516230551.12469-4-afaerber@suse.de>
+        <87h7j1vhq7.wl-maz@kernel.org>
+        <7ef183f1-00f8-13c4-1fd3-eae9e0bbf74c@suse.de>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: afaerber@suse.de, linux-rockchip@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, heiko@sntech.de, devicetree@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three function calls can now be properly formatted inside the 100
-characters limit.
+On Mon, 24 May 2021 14:32:41 +0100,
+Andreas Färber <afaerber@suse.de> wrote:
+> 
+> On 17.05.21 11:21, Marc Zyngier wrote:
+> > On Mon, 17 May 2021 00:05:45 +0100,
+> > Andreas Färber <afaerber@suse.de> wrote:
+> >>
+> >> Add an initial Device Tree for Rockchip RK1808 SoC.
+> >> Based on shipping TB-RK1808M0 DTB.
+> >>
+> >> Signed-off-by: Andreas Färber <afaerber@suse.de>
+> >> ---
+> >>  arch/arm64/boot/dts/rockchip/rk1808.dtsi | 203 +++++++++++++++++++++++
+> >>  1 file changed, 203 insertions(+)
+> >>  create mode 100644 arch/arm64/boot/dts/rockchip/rk1808.dtsi
+> >>
+> >> diff --git a/arch/arm64/boot/dts/rockchip/rk1808.dtsi b/arch/arm64/boot/dts/rockchip/rk1808.dtsi
+> >> new file mode 100644
+> >> index 000000000000..af2b51afda7d
+> >> --- /dev/null
+> >> +++ b/arch/arm64/boot/dts/rockchip/rk1808.dtsi
+> [...]
+> >> +		gic: interrupt-controller@ff100000 {
+> >> +			compatible = "arm,gic-v3";
+> >> +			reg = <0xff100000 0x10000>, /* GICD */
+> >> +			      <0xff140000 0xc0000>, /* GICR */
+> > 
+> > This is obviously wrong. You have two CPUs, and yet describe a range
+> > that spans 6. I guess this is a copy paste from rk3399 again?
+> 
+> Not on my part at least. As indicated, these numbers are what ships in
+> the DTB on the RK1808 card, as per dtc -I dtb -O dts. Could be a mistake
+> by Rockchip, of course.
+> 
+> Are you suggesting 0xc0000/6*2 = 0x40000 for two CPUs here?  Works
+> as bad as before - investigation still ongoing with latest next.
+> 
+> As for "obviously": The GICv3 YAML binding has no description for me to
+> validate those numbers: "GIC Redistributors (GICR), one range per
+> redistributor region" - says nothing about correlation to number of CPUs
+> or size per CPU, and the examples are not explaining either: 0x200000
+> has no number of CPUs associated, and by my calculation 0x800000 for 32
+> CPUs results in 0x40000 per CPU; but then again the examples also have
+> GICC etc. at diverging 0x2000 size.
 
-Signed-off-by: Harold Mertzweiller <harold@mrtz.fr>
----
- drivers/staging/emxx_udc/emxx_udc.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+The GICv3/v4 architecture spec does apply, and you should really have
+a look at what these sizes mean. What is the value of copy-pasting
+things without understanding it the first place?
 
-diff --git a/drivers/staging/emxx_udc/emxx_udc.c b/drivers/staging/emxx_udc/emxx_udc.c
-index ecc5c9da9027..b6abd3770e81 100644
---- a/drivers/staging/emxx_udc/emxx_udc.c
-+++ b/drivers/staging/emxx_udc/emxx_udc.c
-@@ -1073,9 +1073,8 @@ static int _nbu2ss_epn_in_pio(struct nbu2ss_udc *udc, struct nbu2ss_ep *ep,
- 		i_word_length = length / sizeof(u32);
- 		if (i_word_length > 0) {
- 			for (i = 0; i < i_word_length; i++) {
--				_nbu2ss_writel(
--					&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
--					p_buf_32->dw);
-+				_nbu2ss_writel(&preg->EP_REGS[ep->epnum - 1].EP_WRITE,
-+					       p_buf_32->dw);
- 
- 				p_buf_32++;
- 			}
-@@ -1225,8 +1224,7 @@ static void _nbu2ss_restert_transfer(struct nbu2ss_ep *ep)
- 		return;
- 
- 	if (ep->epnum > 0) {
--		length = _nbu2ss_readl(
--			&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
-+		length = _nbu2ss_readl(&ep->udc->p_regs->EP_REGS[ep->epnum - 1].EP_LEN_DCNT);
- 
- 		length &= EPN_LDATA;
- 		if (length < ep->ep.maxpacket)
-@@ -1462,8 +1460,7 @@ static void _nbu2ss_epn_set_stall(struct nbu2ss_udc *udc,
- 		for (limit_cnt = 0
- 			; limit_cnt < IN_DATA_EMPTY_COUNT
- 			; limit_cnt++) {
--			regdata = _nbu2ss_readl(
--				&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
-+			regdata = _nbu2ss_readl(&preg->EP_REGS[ep->epnum - 1].EP_STATUS);
- 
- 			if ((regdata & EPN_IN_DATA) == 0)
- 				break;
+> 
+> >> +			      <0xff300000 0x10000>, /* GICC */
+> >> +			      <0xff310000 0x10000>, /* GICH */
+> >> +			      <0xff320000 0x10000>; /* GICV */
+> >> +			interrupt-controller;
+> >> +			#interrupt-cells = <3>;
+> >> +			interrupts = <GIC_PPI 9 IRQ_TYPE_LEVEL_HIGH>;
+> >> +			#address-cells = <1>;
+> >> +			#size-cells = <1>;
+> >> +			ranges;
+> >> +
+> >> +			gic_its: msi-controller@ff120000 {
+> >> +				compatible = "arm,gic-v3-its";
+> >> +				reg = <0xff120000 0x20000>;
+> >> +				msi-controller;
+> >> +				#msi-cells = <1>;
+> >> +			};
+> > 
+> > What uses the ITS?
+> 
+> DT-wise seemingly only the __symbols__ table (named just "its" there, I
+> notice), so we could drop (or rename) the label if you prefer.
+
+No, I am asking *what* uses the ITS. Is it just dangling without any
+user? No PCI bus making use of it?
+
+	M.
+
 -- 
-2.20.1
-
+Without deviation from the norm, progress is not possible.
