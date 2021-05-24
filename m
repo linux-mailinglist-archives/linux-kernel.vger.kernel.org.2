@@ -2,94 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438B338F19E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:31:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F24B238F264
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 19:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233387AbhEXQdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:33:06 -0400
-Received: from mga12.intel.com ([192.55.52.136]:56102 "EHLO mga12.intel.com"
+        id S233586AbhEXRln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 13:41:43 -0400
+Received: from mga07.intel.com ([134.134.136.100]:53274 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232491AbhEXQdE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:33:04 -0400
-IronPort-SDR: 0FR48arFwoLIkTSV53z6WrU0eXyMv78fgy7BemWHjvRpMnl9WHikyTVh0Hc+VU/gVXyMXxCQdE
- bEetJFxGxYvg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="181611693"
+        id S233583AbhEXRlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 13:41:39 -0400
+IronPort-SDR: VikIWC0O64EJEU2JonyeakULWsI3Lfmd9u09y13hKrh9sIbadXz9IqQE2Jm0si2W5uG1abIBsm
+ FVHZPfoXHv9A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="265888579"
 X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="181611693"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 09:31:31 -0700
-IronPort-SDR: GH/5PujyThDo8fAsIM0BcShiq41mle/k5/Vpn6FzkVejE3D0EYzcZMaoUUhNMqykOKWbC5XvAJ
- 4stBkVRS8Osw==
+   d="scan'208";a="265888579"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 10:40:09 -0700
+IronPort-SDR: OlsffDRvw6Ck3jliqwWLI7pWWUS5/npJ8ygggjY68fmIX9s4ZMbLsUimSKdr2EGbtrN0r0dRIR
+ zyiRPgKH5g0w==
 X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="435338314"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.195.214]) ([10.212.195.214])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 09:31:30 -0700
-Subject: Re: [RFC PATCH 0/3] Allow access to confidential computing secret
- area
-To:     "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Dov Murik <dovmurik@linux.ibm.com>
-Cc:     Brijesh Singh <brijesh.singh@amd.com>, linux-efi@vger.kernel.org,
-        Tobin Feldman-Fitzthum <tobin@linux.ibm.com>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Jim Cadden <jcadden@ibm.com>,
-        James Bottomley <jejb@linux.ibm.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Laszlo Ersek <lersek@redhat.com>,
-        Ashish Kalra <ashish.kalra@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <20210513062634.2481118-1-dovmurik@linux.ibm.com>
- <2c8ae998-6dd0-bcb9-f735-e90da05ab9d9@amd.com> <YKZAUdbikp2Pt0XV@work-vm>
- <ccdf0059-7e39-7895-2733-412dbe4b13f1@linux.intel.com>
- <c316c49c-03db-22e3-0072-ebaf3c7f2ca2@amd.com>
- <45842efd-7b6b-496f-d161-e5786760078d@linux.intel.com>
- <YKuXI9TUBa3sjY3e@work-vm>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <81aa5e70-ab94-393c-92e1-fdac14708aff@linux.intel.com>
-Date:   Mon, 24 May 2021 09:31:29 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.2
+   d="scan'208";a="632710287"
+Received: from cagalind-mobl2.amr.corp.intel.com (HELO [10.213.163.143]) ([10.213.163.143])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 10:40:08 -0700
+Subject: Re: [PATCH] ASoC: Intel: boards: Select SND_SOC_HDAC_HDMI for
+ Soundwire machine driver
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>, broonie@kernel.org,
+        cezary.rojewski@intel.com, liam.r.girdwood@linux.intel.com,
+        yang.jie@linux.intel.com,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+References: <20210520163324.19046-1-rf@opensource.cirrus.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Message-ID: <9ed54875-fe77-f70f-9085-0f3b4c9d576e@linux.intel.com>
+Date:   Mon, 24 May 2021 11:32:06 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <YKuXI9TUBa3sjY3e@work-vm>
+In-Reply-To: <20210520163324.19046-1-rf@opensource.cirrus.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 5/24/2021 5:08 AM, Dr. David Alan Gilbert wrote:
-> * Andi K
-> Is there any way we could merge these two so that the TDX/SVKL would
-> look similar to SEV/ES to userspace?  If we needed some initrd glue here
-> for luks it would be great if we could have one piece of glue.
-> [I'm not sure if the numbering/naming of the secrets, and their format
-> are defined in the same way]
-Maybe. There might well be differences in the contents as you say. So 
-far SVKL doesn't really exist yet,  initially there will be the initrd 
-based agents. The agents definitely will need to know about TDX.
->
-> Do you think the ioctl is preferable to read+ftruncate/unlink ?
-> And if it was an ioctl, again could we get some standardisation here -
-> i.e.
-> maybe a /dev/confguest with a CONF_COMP_GET_KEY etc ?
 
-The advantage of the two ioctls is that they are very simple. Anything 
-with a file system would be a lot more complicated. For security related 
-code simplicity is a virtue.
+On 5/20/21 11:33 AM, Richard Fitzgerald wrote:
+> Add select of SND_SOC_HDAC_HDMI for SND_SOC_INTEL_SOUNDWIRE_SOF_MACH.
+> Without this the build results in missing references to
+> hdac_hdmi_jack_port_init and hdac_hdmi_jack_init.
 
-Also since it's a really simple read and clear model I don't expect the 
-value to be used widely, since it will be gone after boot anyways.
+Kai, can you comment on this one? There is nothing specific to HDMI in 
+this driver.
 
--andi
+all the machine driver entries are now protected with a
+	depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
+
+but some entries have the select SND_SOC_HDAC_HDMI, others don't.
+
+Something's inconsistent here, it's not limited to SoundWire I am afraid
 
 
-
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+> ---
+>   sound/soc/intel/boards/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
+> 
+> diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+> index eef5f4ac87c5..6a1639b14b67 100644
+> --- a/sound/soc/intel/boards/Kconfig
+> +++ b/sound/soc/intel/boards/Kconfig
+> @@ -601,6 +601,7 @@ config SND_SOC_INTEL_SOUNDWIRE_SOF_MACH
+>   	select SND_SOC_DMIC
+>   	select SND_SOC_INTEL_HDA_DSP_COMMON
+>   	select SND_SOC_INTEL_SOF_MAXIM_COMMON
+> +	select SND_SOC_HDAC_HDMI
+>   	help
+>   	  Add support for Intel SoundWire-based platforms connected to
+>   	  MAX98373, RT700, RT711, RT1308 and RT715
+> 
