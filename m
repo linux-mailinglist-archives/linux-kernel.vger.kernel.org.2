@@ -2,248 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0C538E0C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:02:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847EC38E0CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 08:06:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhEXGEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 02:04:20 -0400
-Received: from mga18.intel.com ([134.134.136.126]:3169 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229824AbhEXGES (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 02:04:18 -0400
-IronPort-SDR: MdgdGCjn0RAEiqBjFbmrP+N0l5MMMnp5hlpgsDUbzqOKT8nSO6D1Xs/sdErryuTrINuOTcS21V
- j+pnGaFL7hUw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="189245952"
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="189245952"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 23:02:49 -0700
-IronPort-SDR: A9Fivcv/5lpFq4bIKS5c3GKeL/6di7jdiUZRN9y2bj2BmypMXwznTXkOSYZsB7G75agY815OPS
- wfnGiXA/MBVA==
-X-IronPort-AV: E=Sophos;i="5.82,319,1613462400"; 
-   d="scan'208";a="441882334"
-Received: from eyoukerh-mobl.ger.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.2.69])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 May 2021 23:02:48 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     Rafael J Wysocki <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Len Brown <lenb@kernel.org>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v5 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up support
-Date:   Sun, 23 May 2021 23:02:21 -0700
-Message-Id: <20210524060221.519093-1-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <e4dc31d5-d897-50fa-34e7-f5c033d5f5db@linux.intel.com>
-References: <e4dc31d5-d897-50fa-34e7-f5c033d5f5db@linux.intel.com>
+        id S232261AbhEXGIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 02:08:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229733AbhEXGIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 02:08:13 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E153EC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 23:06:45 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id i7so22069027ejc.5
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 23:06:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ingics-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NFzZddPUGCZkHfUYYpFfWBQZHRe0lpFwnj50BECbHNo=;
+        b=FwdSmf24pC1VcVkdHknLZYs5/NnPsGG9XwrZyuiYLAXCQjkSZdD0foCmDYazjTOUAj
+         PrOSartWXBBorRbqercIGkYuQI/0OPCU1vvRs6p100jffudry9leVpQr4fTEgxiZLD+3
+         jlCWwpsTbt0LU01jbiPOWVWHEGMOZfoVd5BmXrLQrNulRsgKPHZLz5NvULiloeNPL8n4
+         6+uc+bhtQl75eetlJ4sxPhUXhFNXj7e0ti9Y2vLzpfdlS+iKeC+dFWhv4liWCHSwSq0m
+         8i74wK5cIymlwo1+njYYYhLTdVJnKkyhvVl/8xIveScmoj7IfK3fsvKpJZ/ceOEJ9Juq
+         gbRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NFzZddPUGCZkHfUYYpFfWBQZHRe0lpFwnj50BECbHNo=;
+        b=JnMzTKYvgo5PHeNcy58c2duC+t4ZU4xHUouPMqQI4jQ1tWypcDNQbJhZewd1al7/XQ
+         68LcffqS7UFzWkQB+ob+/HSLDPgd+IGfDAvm59ZBmigM+OGsyU3VoupyaPDUTUK1SN+h
+         QtM4p7h2fh6pvYr0DodcRkdjHTPz0ow2lTtbFVyK0xuGeiCbuPJvOUVDPhWdqWSHVSMI
+         JJIl7yW2nwdO2yxcuFnGjgy2gqOgsOYDSDJViSDTiYJvFN4Tpc6NRopXbfBuBKyELvhC
+         Ai6d2F+qwwSUIbF455gQgUO+xrreRYocPWTIEy0bXHCjQg9wb7WE8cifNYH7elzEp4ao
+         PgKg==
+X-Gm-Message-State: AOAM5333nT9iXSzw91/cmAPE80JquIMyCfnR5KlJfil/lSu1tiLgfNnr
+        xkIizJUTVK5eIGr/QuxsB+kDY4LKUsWZCVoAVf4wJw==
+X-Google-Smtp-Source: ABdhPJzVQwVVhvrSiDZSnTjiEr0J2zsMdE/QHHYo/6GL5pcI4A6he3jxemrFufD2HKwTRkTPlQXzJqFkr19UGrOw5Cg=
+X-Received: by 2002:a17:906:1c46:: with SMTP id l6mr21924376ejg.328.1621836404428;
+ Sun, 23 May 2021 23:06:44 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210523071045.2168904-1-axel.lin@ingics.com> <4189cb2094b4fe43e351eb1d80ca6c4cb1ac08ed.camel@fi.rohmeurope.com>
+In-Reply-To: <4189cb2094b4fe43e351eb1d80ca6c4cb1ac08ed.camel@fi.rohmeurope.com>
+From:   Axel Lin <axel.lin@ingics.com>
+Date:   Mon, 24 May 2021 14:06:08 +0800
+Message-ID: <CAFRkauA8npjbAwwyRKh-VmMkmK59hE=P6+iHQPMSw-buduagDQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] regulator: bd70528: Fix off-by-one for buck123
+ .n_voltages setting
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+Cc:     Mark Brown <broonie@kernel.org>, Lee Jones <lee.jones@linaro.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-power@fi.rohmeurope.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per ACPI specification r6.4, sec 5.2.12.19, a new sub
-structure – multiprocessor wake-up structure - is added to the
-ACPI Multiple APIC Description Table (MADT) to describe the
-information of the mailbox. If a platform firmware produces the
-multiprocessor wake-up structure, then OS may use this new
-mailbox-based mechanism to wake up the APs.
+Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com> =E6=96=BC 2021=E5=B9=B4=
+5=E6=9C=8824=E6=97=A5 =E9=80=B1=E4=B8=80 =E4=B8=8B=E5=8D=881:41=E5=AF=AB=E9=
+=81=93=EF=BC=9A
+>
+> Hi Axel,
+>
+> On Sun, 2021-05-23 at 15:10 +0800, Axel Lin wrote:
+> > The valid selectors for bd70528 bucks are 0 ~ 0xf, so the .n_voltages
+> > should be 16 (0x10). Use 0x10 to make it consistent with
+> > BD70528_LDO_VOLTS.
+> > Also remove redundant defines for BD70528_BUCK_VOLTS.
+> >
+> > Signed-off-by: Axel Lin <axel.lin@ingics.com>
+> > ---
+> > I think this fix does not need "Fixes" tag because in original code
+> > the
+> > .n_voltage is greater than correct one. The latest selector is not
+> > valid
+> > in the linear range setting anyway.
+> >  include/linux/mfd/rohm-bd70528.h | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> >
+> > diff --git a/include/linux/mfd/rohm-bd70528.h
+> > b/include/linux/mfd/rohm-bd70528.h
+> > index a57af878fd0c..4a5966475a35 100644
+> > --- a/include/linux/mfd/rohm-bd70528.h
+> > +++ b/include/linux/mfd/rohm-bd70528.h
+> > @@ -26,9 +26,7 @@ struct bd70528_data {
+> >       struct mutex rtc_timer_lock;
+> >  };
+> >
+> > -#define BD70528_BUCK_VOLTS 17
+> > -#define BD70528_BUCK_VOLTS 17
+> > -#define BD70528_BUCK_VOLTS 17
+> > +#define BD70528_BUCK_VOLTS 0x10
+>
+> Thank you for fixing this. There really is only 16 valid voltage
+> settings as you pointed out. Regarding changing the define to hex - I
+> would prefer seeing the amount in decimal as it is easier to
+> understand. (I do understand bit-patterns better when in HEX - but
+> "real world" values like voltages, currents or amounts are easier (for
+> me) to understand when in decimals)
 
-Add ACPI MADT wake table parsing support for x86 platform and if
-MADT wake table is present, update apic->wakeup_secondary_cpu with
-new API which uses MADT wake mailbox to wake-up CPU.
+Current code already uses hex-decimal (which is the reason I use
+hex-decimal for BD70528_BUCK_VOLTS):
+#define BD70528_LDO_VOLTS 0x20
 
-Co-developed-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
----
+So do you suggest to change BD70528_LDO_VOLTS to decimal as well?
 
-Changes since v4:
- * Used smp_store_release() in place of WRITE_ONCE().
- * Addressed some checkpatch warnings.
-
-Changes since v3:
- * Removed acpi_mp_wake_mailbox_init() and moved init code to
-   acpi_wakeup_cpu().
- * Removed redundant NULL pointer check for acpi_mp_wake_mailbox.
- * Added comments/debug prints as per Rafael's suggestion.
- * Removed MADT/SVKL ACPI patches from this patchset. It will be
-   merged via ACPICA submission.
-
- arch/x86/include/asm/apic.h |  3 ++
- arch/x86/kernel/acpi/boot.c | 96 +++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/apic/apic.c |  8 ++++
- 3 files changed, 107 insertions(+)
-
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 412b51e059c8..3e94e1f402ea 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -487,6 +487,9 @@ static inline unsigned int read_apic_id(void)
- 	return apic->get_apic_id(reg);
- }
- 
-+typedef int (*wakeup_cpu_handler)(int apicid, unsigned long start_eip);
-+extern void acpi_wake_cpu_handler_update(wakeup_cpu_handler handler);
-+
- extern int default_apic_id_valid(u32 apicid);
- extern int default_acpi_madt_oem_check(char *, char *);
- extern void default_setup_apic_routing(void);
-diff --git a/arch/x86/kernel/acpi/boot.c b/arch/x86/kernel/acpi/boot.c
-index 14cd3186dc77..c51134eb55d0 100644
---- a/arch/x86/kernel/acpi/boot.c
-+++ b/arch/x86/kernel/acpi/boot.c
-@@ -65,6 +65,10 @@ int acpi_fix_pin2_polarity __initdata;
- static u64 acpi_lapic_addr __initdata = APIC_DEFAULT_PHYS_BASE;
- #endif
- 
-+static struct acpi_madt_multiproc_wakeup_mailbox *acpi_mp_wake_mailbox;
-+static u64 acpi_mp_wake_mailbox_paddr;
-+static physid_mask_t apic_id_wakemap = PHYSID_MASK_NONE;
-+
- #ifdef CONFIG_X86_IO_APIC
- /*
-  * Locks related to IOAPIC hotplug
-@@ -329,6 +333,68 @@ acpi_parse_lapic_nmi(union acpi_subtable_headers * header, const unsigned long e
- 	return 0;
- }
- 
-+static int acpi_wakeup_cpu(int apicid, unsigned long start_ip)
-+{
-+	u8 timeout = 0xFF;
-+
-+	/* Remap mailbox memory only for the first call to acpi_wakeup_cpu() */
-+	if (physids_empty(apic_id_wakemap)) {
-+		acpi_mp_wake_mailbox = memremap(acpi_mp_wake_mailbox_paddr,
-+						sizeof(*acpi_mp_wake_mailbox),
-+						MEMREMAP_WB);
-+	}
-+
-+	/*
-+	 * According to the ACPI specification r6.4, sec 5.2.12.19, the
-+	 * mailbox-based wakeup mechanism cannot be used more than once
-+	 * for the same CPU, so skip sending wake commands to already
-+	 * awake CPU.
-+	 */
-+	if (physid_isset(apicid, apic_id_wakemap)) {
-+		pr_err("CPU already awake (APIC ID %x), skipping wakeup\n",
-+		       apicid);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Mailbox memory is shared between firmware and OS. Firmware will
-+	 * listen on mailbox command address, and once it receives the wakeup
-+	 * command, CPU associated with the given apicid will be booted. So,
-+	 * the value of apic_id and wakeup_vector has to be set before updating
-+	 * the wakeup command. So use smp_store_release to let the compiler know
-+	 * about it and preserve the order of writes.
-+	 */
-+	smp_store_release(&acpi_mp_wake_mailbox->apic_id, apicid);
-+	smp_store_release(&acpi_mp_wake_mailbox->wakeup_vector, start_ip);
-+	smp_store_release(&acpi_mp_wake_mailbox->command,
-+			  ACPI_MP_WAKE_COMMAND_WAKEUP);
-+
-+	/*
-+	 * After writing wakeup command, wait for maximum timeout of 0xFF
-+	 * for firmware to reset the command address back zero to indicate
-+	 * the successful reception of command.
-+	 * NOTE: 255 as timeout value is decided based on our experiments.
-+	 *
-+	 * XXX: Change the timeout once ACPI specification comes up with
-+	 *      standard maximum timeout value.
-+	 */
-+	while (READ_ONCE(acpi_mp_wake_mailbox->command) && timeout--)
-+		cpu_relax();
-+
-+	if (timeout) {
-+		/*
-+		 * If the CPU wakeup process is successful, store the
-+		 * status in apic_id_wakemap to prevent re-wakeup
-+		 * requests.
-+		 */
-+		physid_set(apicid, apic_id_wakemap);
-+		return 0;
-+	}
-+
-+	/* If timed out (timeout == 0), return error */
-+	return -EIO;
-+}
-+
- #endif				/*CONFIG_X86_LOCAL_APIC */
- 
- #ifdef CONFIG_X86_IO_APIC
-@@ -1086,6 +1152,30 @@ static int __init acpi_parse_madt_lapic_entries(void)
- 	}
- 	return 0;
- }
-+
-+static int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
-+				      const unsigned long end)
-+{
-+	struct acpi_madt_multiproc_wakeup *mp_wake;
-+
-+	if (acpi_mp_wake_mailbox)
-+		return -EINVAL;
-+
-+	if (!IS_ENABLED(CONFIG_SMP))
-+		return -ENODEV;
-+
-+	mp_wake = (struct acpi_madt_multiproc_wakeup *)header;
-+	if (BAD_MADT_ENTRY(mp_wake, end))
-+		return -EINVAL;
-+
-+	acpi_table_print_madt_entry(&header->common);
-+
-+	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
-+
-+	acpi_wake_cpu_handler_update(acpi_wakeup_cpu);
-+
-+	return 0;
-+}
- #endif				/* CONFIG_X86_LOCAL_APIC */
- 
- #ifdef	CONFIG_X86_IO_APIC
-@@ -1284,6 +1374,12 @@ static void __init acpi_process_madt(void)
- 
- 				smp_found_config = 1;
- 			}
-+
-+			/*
-+			 * Parse MADT MP Wake entry.
-+			 */
-+			acpi_table_parse_madt(ACPI_MADT_TYPE_MULTIPROC_WAKEUP,
-+					      acpi_parse_mp_wake, 1);
- 		}
- 		if (error == -EINVAL) {
- 			/*
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 4f26700f314d..f1b90a4b89e8 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2554,6 +2554,14 @@ u32 x86_msi_msg_get_destid(struct msi_msg *msg, bool extid)
- }
- EXPORT_SYMBOL_GPL(x86_msi_msg_get_destid);
- 
-+void __init acpi_wake_cpu_handler_update(wakeup_cpu_handler handler)
-+{
-+	struct apic **drv;
-+
-+	for (drv = __apicdrivers; drv < __apicdrivers_end; drv++)
-+		(*drv)->wakeup_secondary_cpu = handler;
-+}
-+
- /*
-  * Override the generic EOI implementation with an optimized version.
-  * Only called during early boot when only one CPU is active and with
--- 
-2.25.1
-
+Regards,
+Axel
