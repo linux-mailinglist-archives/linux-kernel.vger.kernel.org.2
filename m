@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BB8738E2E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B6BA38E2E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 11:03:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232447AbhEXJDm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 05:03:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42854 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232318AbhEXJDl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 05:03:41 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65478C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:02:14 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id s4so12746393plg.12
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 02:02:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :cc:to;
-        bh=iPvQM7Ju1ffWKIo+8yldAlBUkBMS+sJNZu1vYtZK95Y=;
-        b=yIcCS+Cbcf4SQbB2ozxN/mlL7P4irXdIn7392izp1/M0hZPWyJmx5Mnf6JwadtddWU
-         TCkMwGtLO+7KYH+JpjZjYgfdzdM8nRuV9dOaCvCOD4nO/LZjHdJ2SecQs69SNLfi65Y8
-         bqJdj5C9wc1QwY/z+pVa3ItifpQ/iGqZ0y5ISArHIo6ecofDch0FIOAdoV2ETbmFhCXL
-         7oqzcPtKdvDmjgYT4h/DHcjVNb4Rf1ViFcLzu52Jzm4/YXxT6r0sifDo2gEBf2pMjV2R
-         O6mWqBwOZn3K/laIlYa3NqHNuXXF1xkkW3TdrA53cAsbE+6SaWovnRNyfniUnk2Q65oB
-         dUxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:content-transfer-encoding:mime-version
-         :subject:message-id:date:cc:to;
-        bh=iPvQM7Ju1ffWKIo+8yldAlBUkBMS+sJNZu1vYtZK95Y=;
-        b=eew1hZLF8+7UuuGS3GxqB/dSrxbn0qWbTwohWzUxs9JzYptf3CIj0sx07qZgyQvGdr
-         V0IEUJ8BoxUN8hO+0EG98TWfrX7F9a0D7a7+qj1FzPfRYE6QLZCd2nXAcy/DOml6/twW
-         SAgcyIJg7MZ+IUl/CyRcdkRRwOWbvViEbBrL0xNVwXGu7dJlxKfeiC5m1mutWx7jY8cT
-         tGTtWVFaLMiGZOsJse/Q/PNubXkgKgTiZLSqQb96dBX3nw4pDgvDxdAUpfxMHGIdKj1U
-         eZG9LANNvx5acXBc9sDLLSgDA0oUnAHTV09El0ELKQlybUbDlQj6vqtxQMSLRRw4uhvV
-         a24A==
-X-Gm-Message-State: AOAM530b8qBnH49p6rTYMGgXXWDVAk3nKYJqhYq97h+0GHE6o0+IiGiV
-        /Zv5DZKKBELFUggpws/gXJaZ6Q==
-X-Google-Smtp-Source: ABdhPJxW3Ih0kl/t8C0f7Wph1i/gPeyb71D336JNHAC/M7n6qXeQx4sBV+IJSEb5+uqi9NQU7eRRDw==
-X-Received: by 2002:a17:903:1cd:b029:f0:c1c2:9e75 with SMTP id e13-20020a17090301cdb02900f0c1c29e75mr24517969plh.54.1621846933651;
-        Mon, 24 May 2021 02:02:13 -0700 (PDT)
-Received: from smtpclient.apple ([139.177.225.224])
-        by smtp.gmail.com with ESMTPSA id a65sm9098526pfb.177.2021.05.24.02.02.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 24 May 2021 02:02:13 -0700 (PDT)
-From:   Chunxin Zang <zangchunxin@bytedance.com>
-Content-Type: text/plain;
-        charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: =?utf-8?Q?Documentation/admin-guide/module-signing=2Erst=3A_Does_?=
- =?utf-8?Q?the_function_of_adding_a_key_to_=E2=80=98Builtin=5Ftrusted=5Fke?=
- =?utf-8?Q?y=E2=80=99_work=3F?=
-Message-Id: <49DB247F-F485-45D5-87F9-4FCB85CB7767@bytedance.com>
-Date:   Mon, 24 May 2021 17:02:07 +0800
-Cc:     keyrings@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-To:     dhowells@redhat.com, dwmw2@infradead.org, corbet@lwn.net
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        id S232469AbhEXJE7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 05:04:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56856 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232396AbhEXJE5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 05:04:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BA7260698;
+        Mon, 24 May 2021 09:03:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1621847010;
+        bh=43P7ifsnYFSE/3iQU2ti66SsUBNlX+NB7DvG2QknK8U=;
+        h=From:To:Cc:Subject:Date:From;
+        b=j/u+K278kPXY909NRb9AJJ7Ygalv7bb4uTcgJHlZ+EzmNxcs+aFenyAVp/wpkkOd9
+         bO0ljCTW6FxKo9DnYia/JBHjXjcz21LyAy31cQkGLZReW9jCQtgwx1wBXtjcsFKlTu
+         XL3soks19EUwsiJdbFTbZeBaHK/ZMtEjreAtVN41ErPkQaSBhYshZ9BADJIdkfZirW
+         whyrBcCzt6S3gafXHrB+pfrtWW0UwILoSv3Xgx5MVeoVzRglvPISoNc0ydteyUD7m0
+         ca7QyG3gED1dbhyjySuJOFjvgkSGVMUhNEAF2CfN9jAqbfOV5n7PjjxhO9DMgdKpwg
+         8bEycsH5zxMug==
+From:   Mark Brown <broonie@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: [GIT PULL] SPI fixes for v5.13-rc3
+Date:   Mon, 24 May 2021 10:03:14 +0100
+Message-Id: <20210524090329.9BA7260698@mail.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently, I am learning how to use module signature.
-But I got 'Permission denied' when I trying to add a=20
-public key to the 'builtin_trusted_keys' keyring.
+The following changes since commit d07f6ca923ea0927a1024dfccafc5b53b61cfecc:
 
-root@:~# cat /proc/keys
-3471e123 I------     1 perm 1f030000     0     0 asymmetri Build time =
-autogenerated kernel key: xxxx: X509.rsa xxxx []
-37e8db03 I------     1 perm 1f0b0000     0     0 keyring   =
-.builtin_trusted_keys: 1
-root@:~# keyctl padd asymmetric "" 0x37e8db03  < =
-./signing_key_test_sign.x509
-add_key: Permission denied
+  Linux 5.13-rc2 (2021-05-16 15:27:44 -0700)
 
-The reason is the 'builtin_trusted_keys'  keyring's perm was set=20
-'1f0b0000' by below operate when kernel starting.=20
+are available in the Git repository at:
 
-builtin_trusted_keys =3D
-                keyring_alloc(".builtin_trusted_keys",
-                              KUIDT_INIT(0), KGIDT_INIT(0), =
-current_cred(),
-                              ((KEY_POS_ALL & ~KEY_POS_SETATTR) |=20
-                              KEY_USR_VIEW | KEY_USR_READ | =
-KEY_USR_SEARCH),
-                              KEY_ALLOC_NOT_IN_QUOTA,
-                              NULL, NULL);
+  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.13-rc3
 
-And,  'add_key' interface pass the KEY_NEED_WRITE
-perm to lookup_user_key.=20
-So -EACCES returned in key_task_permission check.
+for you to fetch changes up to b4e46c9954ad55092502e1e8c44ceb9b6744bade:
 
-Is there something wrong in  module-signing.rst ?
-Or I missed some information about it.
+  spi: sc18is602: implement .max_{transfer,message}_size() for the controller (2021-05-21 13:13:33 +0100)
 
-Best wishes
-Chunxin=
+----------------------------------------------------------------
+spi: Fixes for v5.13
+
+There's some device specific fixes here but also an unusually large
+number of fixes for the core, including both fixes for breakage
+introduced on ACPI systems while fixing the long standing confusion
+about the polarity of GPIO chip selects specified through DT, and fixes
+for ordering issues on unregistration which have been exposed through
+the wider usage of devm_.
+
+----------------------------------------------------------------
+Alain Volmat (1):
+      MAINTAINERS: Add Alain Volmat as STM32 SPI maintainer
+
+Amit Kumar Mahapatra (1):
+      spi: spi-zynq-qspi: Fix kernel-doc warning
+
+Andy Shevchenko (2):
+      spi: Switch to signed types for *_native_cs SPI controller fields
+      spi: Assume GPIO CS active high in ACPI case
+
+Christophe JAILLET (1):
+      spi: spi-fsl-dspi: Fix a resource leak in an error handling path
+
+Chunyan Zhang (1):
+      spi: sprd: Add missing MODULE_DEVICE_TABLE
+
+Geert Uytterhoeven (1):
+      spi: altera: Make SPI_ALTERA_CORE invisible
+
+Karen Dombroski (1):
+      spi: spi-zynq-qspi: Fix stack violation bug
+
+Leilk Liu (1):
+      spi: take the SPI IO-mutex in the spi_set_cs_timing method
+
+Mark Brown (1):
+      Merge tag 'v5.13-rc2' into spi-5.13
+
+Michael Walle (1):
+      dt-bindings: spi: spi-mux: rename flash node
+
+Saravana Kannan (2):
+      spi: Fix spi device unregister flow
+      spi: Don't have controller clean up spi device before driver unbind
+
+Vladimir Oltean (2):
+      spi: sc18is602: don't consider the chip select byte in sc18is602_check_transfer
+      spi: sc18is602: implement .max_{transfer,message}_size() for the controller
+
+ Documentation/devicetree/bindings/spi/spi-mux.yaml |  2 +-
+ MAINTAINERS                                        |  6 +++
+ drivers/spi/Kconfig                                |  2 +-
+ drivers/spi/spi-fsl-dspi.c                         |  4 +-
+ drivers/spi/spi-sc18is602.c                        |  9 +++-
+ drivers/spi/spi-sprd.c                             |  1 +
+ drivers/spi/spi-zynq-qspi.c                        |  9 ++--
+ drivers/spi/spi.c                                  | 51 ++++++++++++++++------
+ include/linux/spi/spi.h                            |  4 +-
+ 9 files changed, 64 insertions(+), 24 deletions(-)
