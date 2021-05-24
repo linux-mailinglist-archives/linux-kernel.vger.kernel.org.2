@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ECAE38EDA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:38:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C28C238EDF8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:44:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbhEXPkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51512 "EHLO mail.kernel.org"
+        id S234446AbhEXPoR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:44:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232803AbhEXPgy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D96B361411;
-        Mon, 24 May 2021 15:32:56 +0000 (UTC)
+        id S233535AbhEXPkQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:40:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2ABD761437;
+        Mon, 24 May 2021 15:34:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870377;
-        bh=S1CN5MyHtZ9OSrpusCrkNbNf9yJ1kB5dvIQ0K/iCqlo=;
+        s=korg; t=1621870444;
+        bh=zCvAvct2Ojp/i7VFU458b/363KYlf4jd53mI2464BuE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bRw0wwKYsPgh2M/iVQ+SYHn3eX39zA5ebd7fJ/9lPo7YTmTi3bFfdmCSUBmQtyc7q
-         nmMi8rGfdNXt67b2TM5w8UZGjx7ncqHexMv50p08SZtehrchHirGWsfQx5KZL34L0H
-         gM97PjxKhbipYfuLcy1HJKL5Q2a1B8sSYRF4AZHc=
+        b=zFng4Lbjj1REubvsUsbGCpgCyh0e+s25XDvvvsWhMDpz8f0oZV+bMLEnElQoJYaw/
+         uv2ZfQpunMXr8Msu28pqeWzjHyOdlEYa99cMd20lRr6NHQ3wTOOGJGetN8hnal6jEP
+         vHnsmYAs/nFKH2ttXmD1wbJbegwxuGqjuFhN2XXM=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: [PATCH 4.9 29/36] net: rtlwifi: properly check for alloc_workqueue() failure
+        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>, Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.14 10/37] ALSA: hda/realtek: reset eapd coeff to default value for alc287
 Date:   Mon, 24 May 2021 17:25:14 +0200
-Message-Id: <20210524152325.101577356@linuxfoundation.org>
+Message-Id: <20210524152324.538660701@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
+References: <20210524152324.199089755@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,70 +39,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit 30b0e0ee9d02b97b68705c46b41444786effc40c upstream.
+commit 8822702f6e4c8917c83ba79e0ebf2c8c218910d4 upstream.
 
-If alloc_workqueue() fails, properly catch this and propagate the error
-to the calling functions, so that the devuce initialization will
-properly error out.
+Ubuntu users reported an audio bug on the Lenovo Yoga Slim 7 14IIL05,
+he installed dual OS (Windows + Linux), if he booted to the Linux
+from Windows, the Speaker can't work well, it has crackling noise,
+if he poweroff the machine first after Windows, the Speaker worked
+well.
 
-Cc: Kalle Valo <kvalo@codeaurora.org>
-Cc: Bryan Brattlof <hello@bryanbrattlof.com>
-Cc: stable <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20210503115736.2104747-14-gregkh@linuxfoundation.org
+Before rebooting or shutdown from Windows, the Windows changes the
+codec eapd coeff value, but the BIOS doesn't re-initialize its value,
+when booting into the Linux from Windows, the eapd coeff value is not
+correct. To fix it, set the codec default value to that coeff register
+in the alsa driver.
+
+BugLink: http://bugs.launchpad.net/bugs/1925057
+Suggested-by: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+Link: https://lore.kernel.org/r/20210507024452.8300-1-hui.wang@canonical.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/wireless/realtek/rtlwifi/base.c |   16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_realtek.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/net/wireless/realtek/rtlwifi/base.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/base.c
-@@ -454,9 +454,14 @@ static void _rtl_init_mac80211(struct ie
- 	}
- }
- 
--static void _rtl_init_deferred_work(struct ieee80211_hw *hw)
-+static int _rtl_init_deferred_work(struct ieee80211_hw *hw)
- {
- 	struct rtl_priv *rtlpriv = rtl_priv(hw);
-+	struct workqueue_struct *wq;
-+
-+	wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
-+	if (!wq)
-+		return -ENOMEM;
- 
- 	/* <1> timer */
- 	setup_timer(&rtlpriv->works.watchdog_timer,
-@@ -465,7 +470,8 @@ static void _rtl_init_deferred_work(stru
- 		    rtl_easy_concurrent_retrytimer_callback, (unsigned long)hw);
- 	/* <2> work queue */
- 	rtlpriv->works.hw = hw;
--	rtlpriv->works.rtl_wq = alloc_workqueue("%s", 0, 0, rtlpriv->cfg->name);
-+	rtlpriv->works.rtl_wq = wq;
-+
- 	INIT_DELAYED_WORK(&rtlpriv->works.watchdog_wq,
- 			  (void *)rtl_watchdog_wq_callback);
- 	INIT_DELAYED_WORK(&rtlpriv->works.ips_nic_off_wq,
-@@ -476,7 +482,7 @@ static void _rtl_init_deferred_work(stru
- 			  (void *)rtl_swlps_rfon_wq_callback);
- 	INIT_DELAYED_WORK(&rtlpriv->works.fwevt_wq,
- 			  (void *)rtl_fwevt_wq_callback);
--
-+	return 0;
- }
- 
- void rtl_deinit_deferred_work(struct ieee80211_hw *hw)
-@@ -568,9 +574,7 @@ int rtl_init_core(struct ieee80211_hw *h
- 	rtlmac->link_state = MAC80211_NOLINK;
- 
- 	/* <6> init deferred work */
--	_rtl_init_deferred_work(hw);
--
--	return 0;
-+	return _rtl_init_deferred_work(hw);
- }
- EXPORT_SYMBOL_GPL(rtl_init_core);
- 
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -341,7 +341,6 @@ static void alc_fill_eapd_coef(struct hd
+ 	case 0x10ec0282:
+ 	case 0x10ec0283:
+ 	case 0x10ec0286:
+-	case 0x10ec0287:
+ 	case 0x10ec0288:
+ 	case 0x10ec0285:
+ 	case 0x10ec0298:
+@@ -352,6 +351,10 @@ static void alc_fill_eapd_coef(struct hd
+ 	case 0x10ec0275:
+ 		alc_update_coef_idx(codec, 0xe, 0, 1<<0);
+ 		break;
++	case 0x10ec0287:
++		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
++		alc_write_coef_idx(codec, 0x8, 0x4ab7);
++		break;
+ 	case 0x10ec0293:
+ 		alc_update_coef_idx(codec, 0xa, 1<<13, 0);
+ 		break;
 
 
