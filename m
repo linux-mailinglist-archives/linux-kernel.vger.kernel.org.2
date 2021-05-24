@@ -2,167 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542DD38E020
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:19:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21AD138E024
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbhEXEVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 00:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36632 "EHLO
+        id S229975AbhEXE0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 00:26:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbhEXEVV (ORCPT
+        with ESMTP id S229510AbhEXEZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 00:21:21 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3207C061756
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:19:52 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id i5so19186907pgm.0
-        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:19:52 -0700 (PDT)
+        Mon, 24 May 2021 00:25:58 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECBCFC061574;
+        Sun, 23 May 2021 21:24:29 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id i9so38730779lfe.13;
+        Sun, 23 May 2021 21:24:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VhoBjgCWhQplTyNf0S4uLwlUehIGjiGoUzRkPKtR/6Q=;
-        b=MAoo5fAyF/GrLJ5OKTCFEVM43K37jtORBRosU/DhG4BD97JnhvllLnBbcmCGM8GD2Z
-         BYlBD+I3A0NxV9yjiKVNB99kXIJ30QPH+oth1+uqP83cSNZoKCODBmJpyy9vXCHdY/ZZ
-         7PnrxHgWr2z6nOmgfy1L6OaFgGqt0j+te4tVLQGwVtB8tWaJIZn5H3QSXVMRP4A4nAS2
-         J7Mfd6YcCeg/Vuu36jihfSk8VrKUZ6+Per+bZiV58ZV39sRYaI3f4aJj4RZACTMH/zRk
-         Z9z2TuhNh3KqjRMjyfmXenQSS+BPWfLiDtXxNyr5whc433OnF4/Vh/W+YU0yFECekZZI
-         UiNg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=L3ZOtOGlXp80QN3l22ADXZS6P4An6muJeQct/gjNKF0=;
+        b=bp0aOnXp1/GvnK33syXjEwoyYYHXGCQXU7YAsIH0ylHWxMO4tUBMwmrz7oL2pt9spI
+         xgIuQmGzbWa1IXgC1e5qXhnybLQu3aj5TQtHe6AIdT+ZdiCcvA0AoHwHspi5GY8j48ZX
+         qi000XDogmMjkMC9pta6TykOnEE4YObS26k4/9TaUqQHxm2tW+ZEcCoSg2wdwIkfVnB0
+         MIFuxQD4Q9/nazkm0FlEJWzZkpD6RWE4fuQPW74gCmf45XPuMMQ/pTaB4GjvFJSlHrY+
+         rlxJjC/FT643BWvoiMA39LRHL/PICtIxnPiaBIFNSX7p+qcIowX1FE23ZftdTNvGKxeK
+         iCsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VhoBjgCWhQplTyNf0S4uLwlUehIGjiGoUzRkPKtR/6Q=;
-        b=Hj/BnbDyG1HjtAZT1gqbUkwJBOs9RFaEH1zG+Ah0vdmpCtfmzz7a/yUiROG03sfayt
-         6adLM0kE3O5QFdWh+vDd7KkvnfD6ATpmKdWxXAGyfuKekPZi7cYDzIzopsMWqQvSNV9C
-         zLIEP/rMWUUOLjNMQVZqhNyvItvLE9isF5WAVwwOA+geUg23UTti1K7WbihOL+P3ywpa
-         MBYaH0N9UyhCZxHLskvqdiWnV62S2rfGXI9mBy02qR5/OeL7KkJs8hO9tTF6y/7KU9AB
-         mikyNfm8b/YH3XYxkW5W+kAPdKvNbSbG7RyPYjPg0rfqyuehCjiRjBQhGYdsTHz4UvW+
-         dxYA==
-X-Gm-Message-State: AOAM531WmgN9twZosLsHSzR17/Jp1wfcFL7OQwAn5NiEfxEMeNmU0zbz
-        tYRTIJk6qKLTtlEYGM1fjhFX
-X-Google-Smtp-Source: ABdhPJwILTR2X17ap7/axh/auKRgCdNmMBO732sxdK5mi7SP44BhLlZ3cI+YJESNg1aqdkG73cCtww==
-X-Received: by 2002:a63:585:: with SMTP id 127mr11381216pgf.322.1621829992100;
-        Sun, 23 May 2021 21:19:52 -0700 (PDT)
-Received: from work ([120.138.12.48])
-        by smtp.gmail.com with ESMTPSA id v12sm10164574pgi.44.2021.05.23.21.19.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 23 May 2021 21:19:51 -0700 (PDT)
-Date:   Mon, 24 May 2021 09:49:47 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Pavel Machek <pavel@denx.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Hemant Kumar <hemantk@codeaurora.org>, quic_jhugo@quicinc.com
-Subject: Re: [PATCH 5.10 002/299] bus: mhi: core: Clear configuration from
- channel context during reset
-Message-ID: <20210524041947.GB8823@work>
-References: <20210510102004.821838356@linuxfoundation.org>
- <20210510102004.900838842@linuxfoundation.org>
- <20210510205650.GA17966@amd>
- <20210511061623.GA8651@thinkpad>
- <64a8ebbdc9fc7de48b25b9e2bc896d47@codeaurora.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=L3ZOtOGlXp80QN3l22ADXZS6P4An6muJeQct/gjNKF0=;
+        b=IPaLuJu1gYSy8nQtu0ZPJVxcXzXJw3pJ2lQRSL/tDUcJSNz8yR9osHsgVgOHAjynEU
+         HQ2aZUVs0qgPOEYXJgy2LM4DUnK2tUGD0GTnQtD+UPXBMYcW+McVyvHmwWSyo6WXxNB3
+         V/DWxftmaWvv/y35WpVfJS+Oxd4GUZkk/2wtAYc1RoEkITH/w8gCItcKdHJXzg6sVWjx
+         aa8UW1B1QLGhdBh4djr86kNQFWSnTPMO1Kziqv4BlIJlR6mqUxyOrhzSseYV4AXUFVK9
+         RTQOc0BrSh7VEs5O/SUlFJ3pF8binjj28+rWavakH/ZnKq+FoHh8MnJs3Oln9c0PSe0C
+         5hlA==
+X-Gm-Message-State: AOAM532J3aEjrElcR2VI7rK07bW8LhIMk1nP/UQ4+wOk7cmKF5Ggoa/d
+        F0KhoULbmJkxJK7w5+UhzM1DweK3CTtYW+aeULY=
+X-Google-Smtp-Source: ABdhPJyrfnOvTqQAsP/HhkDZdfAoLS0S4HrhTf3GosM4lguP/DyOUx5y29vcgR/sh0XnSYk68nIOx2Gzu/dMjSB6PBw=
+X-Received: by 2002:a19:ccc:: with SMTP id 195mr9548751lfm.24.1621830267121;
+ Sun, 23 May 2021 21:24:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <64a8ebbdc9fc7de48b25b9e2bc896d47@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <1621578594-13237-1-git-send-email-sxwjean@me.com> <e0c0302f-e63f-7eba-872b-85e21b0b1622@redhat.com>
+In-Reply-To: <e0c0302f-e63f-7eba-872b-85e21b0b1622@redhat.com>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Mon, 24 May 2021 12:24:00 +0800
+Message-ID: <CAEVVKH9nwPmQo8L-eRsWST+gPaJ73MSHZfJ-mM8qWvPaiejdrA@mail.gmail.com>
+Subject: Re: [PATCH] docs: lockdep-design: correct the notation for writer
+To:     Waiman Long <llong@redhat.com>
+Cc:     Xiongwei Song <sxwjean@me.com>, peterz@infradead.org,
+        mingo@redhat.com, will@kernel.org, boqun.feng@gmail.com,
+        corbet@lwn.net,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 21, 2021 at 10:50:33AM -0700, Bhaumik Bhatt wrote:
-> On 2021-05-10 11:17 PM, Manivannan Sadhasivam wrote:
-> > Hi Pavel,
-> > 
-> > On Mon, May 10, 2021 at 10:56:50PM +0200, Pavel Machek wrote:
-> > > Hi!
-> > > 
-> > > > From: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> > > >
-> > > > commit 47705c08465931923e2f2b506986ca0bdf80380d upstream.
-> > > >
-> > > > When clearing up the channel context after client drivers are
-> > > > done using channels, the configuration is currently not being
-> > > > reset entirely. Ensure this is done to appropriately handle
-> > > > issues where clients unaware of the context state end up calling
-> > > > functions which expect a context.
-> > > 
-> > > > +++ b/drivers/bus/mhi/core/init.c
-> > > > @@ -544,6 +544,7 @@ void mhi_deinit_chan_ctxt(struct mhi_con
-> > > > +	u32 tmp;
-> > > > @@ -554,7 +555,19 @@ void mhi_deinit_chan_ctxt(struct mhi_con
-> > > ...
-> > > > +	tmp = chan_ctxt->chcfg;
-> > > > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
-> > > > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
-> > > > +	chan_ctxt->chcfg = tmp;
-> > > > +
-> > > > +	/* Update to all cores */
-> > > > +	smp_wmb();
-> > > >  }
-> > > 
-> > > This is really interesting code; author was careful to make sure chcfg
-> > > is updated atomically, but C compiler is free to undo that. Plus, this
-> > > will make all kinds of checkers angry.
-> > > 
-> > > Does the file need to use READ_ONCE and WRITE_ONCE?
-> > > 
-> > 
-> > Thanks for looking into this.
-> > 
-> > I agree that the order could be mangled between chcfg read & write and
-> > using READ_ONCE & WRITE_ONCE seems to be a good option.
-> > 
-> > Bhaumik, can you please submit a patch and tag stable?
-> > 
-> > Thanks,
-> > Mani
-> > 
-> > > Best regards,
-> > > 								Pavel
-> > > --
-> > > DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-> > > HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-> 
-> Hi Pavel/Mani,
-> 
-> Hemant and I went over this patch and we noticed this particular function is
-> already being called with the channel mutex lock held. This would take care
-> of
-> the atomicity and we also probably don't need the smp_wmb() barrier as the
-> mutex
-> unlock will implicitly take care of it.
-> 
+On Fri, May 21, 2021 at 11:17 PM Waiman Long <llong@redhat.com> wrote:
+>
+> On 5/21/21 2:29 AM, Xiongwei Song wrote:
+> > From: Xiongwei Song <sxwjean@gmail.com>
+> >
+> > The block condition matrix is using 'E' as the writer noation here, so it
+> > would be better to use 'E' as the reminder rather than 'W'.
+> >
+> > Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
+> > ---
+> >   Documentation/locking/lockdep-design.rst | 2 +-
+> >   1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
+> > index 9f3cfca..c3b923a 100644
+> > --- a/Documentation/locking/lockdep-design.rst
+> > +++ b/Documentation/locking/lockdep-design.rst
+> > @@ -462,7 +462,7 @@ Block condition matrix, Y means the row blocks the column, and N means otherwise
+> >       | R | Y | Y | N |
+> >       +---+---+---+---+
+> >
+> > -     (W: writers, r: non-recursive readers, R: recursive readers)
+> > +     (E: writers, r: non-recursive readers, R: recursive readers)
+> >
+> >
+> >   acquired recursively. Unlike non-recursive read locks, recursive read locks
+>
+> I would say it should be the other way around. Both W and E refer to the
+> same type of lockers. W emphasizes writer aspect of it and E for
+> exclusive. I think we should change the block condition matrix to use W
+> instead of E.
 
-okay
-
-> To the point of compiler re-ordering, we would need some help to understand
-> the
-> purpose of READ_ONCE()/WRITE_ONCE() for these dependent statements:
-> 
-> > +	tmp = chan_ctxt->chcfg;
-> > +	tmp &= ~CHAN_CTX_CHSTATE_MASK;
-> > +	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
-> > +	chan_ctxt->chcfg = tmp;
-> 
-> Since RMW operation means that the chan_ctxt->chcfg is copied to a local
-> variable (tmp) and the _same_ is being written back to chan_ctxt->chcfg, can
-> compiler reorder these dependent statements and cause a different result?
-> 
-
-Well, I agree that there is a minimal guarantee with modern day CPUs on
-not breaking the order of dependent memory accesses (like here tmp
-variable is the one which gets read and written) but we want to make
-sure that this won't break on future CPUs as well. So IMO using
-READ_ONCE and WRITE_ONCE adds extra level of safety.
+The doc uses 'E'  to describe dependency egdes too. Should we change them
+to 'W'? Personally,  both 'W' and 'E' are fine.
 
 Thanks,
-Mani
-
-> Thanks,
-> Bhaumik
-> ---
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+Xiongwei
+>
+> Cheers,
+> Longman
+>
