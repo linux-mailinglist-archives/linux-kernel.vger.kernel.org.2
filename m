@@ -2,41 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E111138DF95
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 05:09:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AEE38DFC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 05:13:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232231AbhEXDKn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 23 May 2021 23:10:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58210 "EHLO mail.kernel.org"
+        id S232200AbhEXDPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 23 May 2021 23:15:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232200AbhEXDKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 23 May 2021 23:10:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A411261151;
-        Mon, 24 May 2021 03:09:13 +0000 (UTC)
+        id S231896AbhEXDPG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 23 May 2021 23:15:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D19661159;
+        Mon, 24 May 2021 03:13:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621825754;
-        bh=ctT3Pp3VdMz2xN/P8yl3Ml87iHNwfU+tatN/MfiCkZQ=;
+        s=k20201202; t=1621826019;
+        bh=wKzkq3YoOloJxmhZRFM+gRxzm0ckJrSu6InMj1eT3wA=;
         h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=C8DdV/93M7Aj+fiKzZ8Eq2kaPm2guPytAEtVzdxNwUHVhvR1wHKmcgQHZ9mHWlTPr
-         pbLKDTO3D2tlHWr/nBbIcLmFleUwgfSRKmdNkd07dkpWaI9MG94PVK9vZuY7WqW9VI
-         9KW4lpjg16O9kfQnTEgN+7Uj9yics4Up3CQHm64rkFkzG/LVrDrgbUKjArt/2uw1Wl
-         P7Y2lzz6V77puhLiP4WYyc22CMMJzfXP7A2ujszWP/sCgzBPv/oeUyhqHikIi1PiJy
-         6X0eVOz4V+5mZKtOWlBXGnyHCYKSXpb17bRQVWKxO909bI7mYSDco+2M92ndNZXxji
-         c6/hMMElXftJw==
-Subject: Re: [PATCH v5 21/28] x86/fpu/amx: Initialize child's AMX state
+        b=KVkhItDy4hMHsFlTBKnGwz0fd01vrOxS+4HOZCD3XsR8hcfpEl13eeIMq39H1fwHk
+         Qia8lz8c3KT1B5a87DlO4i0CTCbz+51xsZJPhw6+OP6f5P5tYsKqnwnddX3d1QHm2X
+         xLAnuceiOxKoqpheD8YQgB4B8j3NyUHZ0EKP0hUGLRJUL5rzmYVf4Pmi+6x7zFNs3i
+         ZOuiLckfvX7ZOVoKzDIfVF+EbnLjUYWSWol/bNJeYhbntkCYWFMJZdfEria9D005zW
+         ZJWCdaGdmxtkO+Ugi4yjShTqkbzpk+8D/HxdxQ/SaV5sxUzTFpbq9+9RPdNz+ZVkg4
+         D2dtBksGCa4QA==
+Subject: Re: [PATCH v5 28/28] x86/fpu/amx: Clear the AMX state when
+ appropriate
 To:     "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
         tglx@linutronix.de, mingo@kernel.org, x86@kernel.org
 Cc:     len.brown@intel.com, dave.hansen@intel.com, jing2.liu@intel.com,
         ravi.v.shankar@intel.com, linux-kernel@vger.kernel.org
 References: <20210523193259.26200-1-chang.seok.bae@intel.com>
- <20210523193259.26200-22-chang.seok.bae@intel.com>
+ <20210523193259.26200-29-chang.seok.bae@intel.com>
 From:   Andy Lutomirski <luto@kernel.org>
-Message-ID: <8c8d91ae-5a3b-9523-725d-134840102df7@kernel.org>
-Date:   Sun, 23 May 2021 20:09:13 -0700
+Message-ID: <1980c78b-d51b-c186-9179-f3c72692ad8a@kernel.org>
+Date:   Sun, 23 May 2021 20:13:38 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <20210523193259.26200-22-chang.seok.bae@intel.com>
+In-Reply-To: <20210523193259.26200-29-chang.seok.bae@intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -45,7 +46,12 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 5/23/21 12:32 PM, Chang S. Bae wrote:
-> Assure that a forked child starts AMX registers in the INIT-state.
+> When AMX is enabled, and an AMX-task is saved, explicitly initialize the
+> AMX state after the XSAVE.
+> 
+> This assures that the kernel will only request idle states with clean AMX
+> state. In the case of the C6 idle state, this allows the hardware to get to
+> a deeper power saving condition.
 > 
 > Signed-off-by: Chang S. Bae <chang.seok.bae@intel.com>
 > Reviewed-by: Len Brown <len.brown@intel.com>
@@ -53,31 +59,53 @@ On 5/23/21 12:32 PM, Chang S. Bae wrote:
 > Cc: linux-kernel@vger.kernel.org
 > ---
 > Changes from v4:
-> * Added as a new patch. This was missing on previous versions.
+> * Added as a new patch. (Thomas Gleixner)
 > ---
->  arch/x86/kernel/fpu/core.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  arch/x86/include/asm/special_insns.h | 6 ++++++
+>  arch/x86/kernel/fpu/core.c           | 8 ++++++++
+>  2 files changed, 14 insertions(+)
 > 
+> diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+> index 2acd6cb62328..f0ed063035eb 100644
+> --- a/arch/x86/include/asm/special_insns.h
+> +++ b/arch/x86/include/asm/special_insns.h
+> @@ -306,6 +306,12 @@ static inline int enqcmds(void __iomem *dst, const void *src)
+>  	return 0;
+>  }
+>  
+> +static inline void tile_release(void)
+> +{
+> +	/* Instruction opcode for TILERELEASE; supported in binutils >= 2.36. */
+> +	asm volatile(".byte 0xc4, 0xe2, 0x78, 0x49, 0xc0");
+> +}
+> +
+>  #endif /* __KERNEL__ */
+>  
+>  #endif /* _ASM_X86_SPECIAL_INSNS_H */
 > diff --git a/arch/x86/kernel/fpu/core.c b/arch/x86/kernel/fpu/core.c
-> index 016c3adebec3..cccfeafe81e5 100644
+> index cccfeafe81e5..53a5869078b8 100644
 > --- a/arch/x86/kernel/fpu/core.c
 > +++ b/arch/x86/kernel/fpu/core.c
-> @@ -285,6 +285,10 @@ int fpu__copy(struct task_struct *dst, struct task_struct *src)
->  
->  	fpregs_unlock();
->  
-> +	/* AMX state is volatile, children do not inherit it. */
-> +	if (xfeatures_mask_all & XFEATURE_MASK_XTILE)
-> +		dst_fpu->state->xsave.header.xfeatures &= ~(XFEATURE_MASK_XTILE);
+> @@ -106,6 +106,14 @@ int copy_fpregs_to_fpstate(struct fpu *fpu)
+>  		 */
+>  		if (fpu->state->xsave.header.xfeatures & XFEATURE_MASK_AVX512)
+>  			fpu->avx512_timestamp = jiffies;
 > +
->  	set_tsk_thread_flag(dst, TIF_NEED_FPU_LOAD);
+> +		/*
+> +		 * Since the current task's state is safely in the XSAVE buffer, TILERELEASE
+> +		 * the TILE registers to guarantee that dirty state will not interfere with the
+> +		 * hardware's ability to enter the core C6 idle state.
+> +		 */
+> +		if (fpu->state_mask & XFEATURE_MASK_XTILE_DATA)
+> +			tile_release();
+>  		return 1;
+>  	}
 >  
->  	trace_x86_fpu_copy_src(src_fpu);
 > 
 
-If we're going to start having different states with different
-behaviors, let's make them real defines.
+This looks wrong -- you should also invalidate the state.  And doing it
+in the save path seems inefficient.
 
-#define XFEATURE_MASK_CLEARED_ON_CLONE ...
+Can we do this just when going idle?
 
 --Andy
