@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD33F38EE86
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1A0738F0A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232812AbhEXPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:51:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
+        id S237138AbhEXQFK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:05:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234555AbhEXPoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:44:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAFF961458;
-        Mon, 24 May 2021 15:35:51 +0000 (UTC)
+        id S234951AbhEXP6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:58:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 434B661454;
+        Mon, 24 May 2021 15:44:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870552;
-        bh=4ph7AhNTIjy12h3LtzFs5aVxmWVCpkURGY/4sV0p0gk=;
+        s=korg; t=1621871048;
+        bh=pzldK/ODVQn7pBn2K65hBAv2hXuUOjSPmxb6eH4ybLo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GX/WF4wS97Xfv2/GgNkal5mlsAenUCF3r82RkzWqZkg5oS2PdwCJ5LLWNTnSHyhqu
-         lcT99ge50ewOoAE+mVx6wbD4gzGwmPlrMQ08X43xZWG7oFlctjOLOVpXbG6RGzr9HS
-         98EMBP5BkkxcSlVmvVFNvuvrjuKaTAsnu3fv7cRg=
+        b=sp8sO38jhH1oI3/I0i5pfgEz1njgVVfUnI4vZqdd28l4O7/ZXxjS+Y/gisFAGr5Eo
+         kTkrItyWzwBdokK8RlNrnMgL0UDCztnIyPUv5zuC/k/OEm1ps9q0TQd47HjOICi6XZ
+         PpzbAON2UsnD7w9IH/7ckqqHs/4Y7ObMUINTim+g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 4.19 48/49] tty: vt: always invoke vc->vc_sw->con_resize callback
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 5.12 042/127] ALSA: dice: fix stream format for TC Electronic Konnekt Live at high sampling transfer frequency
 Date:   Mon, 24 May 2021 17:25:59 +0200
-Message-Id: <20210524152325.921616003@linuxfoundation.org>
+Message-Id: <20210524152336.271230961@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
-References: <20210524152324.382084875@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +39,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit ffb324e6f874121f7dce5bdae5e05d02baae7269 upstream.
+commit 4c6fe8c547e3c9e8c15dabdd23c569ee0df3adb1 upstream.
 
-syzbot is reporting OOB write at vga16fb_imageblit() [1], for
-resize_screen() from ioctl(VT_RESIZE) returns 0 without checking whether
-requested rows/columns fit the amount of memory reserved for the graphical
-screen if current mode is KD_GRAPHICS.
+At high sampling transfer frequency, TC Electronic Konnekt Live
+transfers/receives 6 audio data frames in multi bit linear audio data
+channel of data block in CIP payload. Current hard-coded stream format
+is wrong.
 
-----------
-  #include <sys/types.h>
-  #include <sys/stat.h>
-  #include <fcntl.h>
-  #include <sys/ioctl.h>
-  #include <linux/kd.h>
-  #include <linux/vt.h>
-
-  int main(int argc, char *argv[])
-  {
-        const int fd = open("/dev/char/4:1", O_RDWR);
-        struct vt_sizes vt = { 0x4100, 2 };
-
-        ioctl(fd, KDSETMODE, KD_GRAPHICS);
-        ioctl(fd, VT_RESIZE, &vt);
-        ioctl(fd, KDSETMODE, KD_TEXT);
-        return 0;
-  }
-----------
-
-Allow framebuffer drivers to return -EINVAL, by moving vc->vc_mode !=
-KD_GRAPHICS check from resize_screen() to fbcon_resize().
-
-Link: https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3 [1]
-Reported-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: <stable@vger.kernel.org>
+Fixes: f1f0f330b1d0 ("ALSA: dice: add parameters of stream formats for models produced by TC Electronic")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210518012612.37268-1-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/vt/vt.c              |    2 +-
- drivers/video/fbdev/core/fbcon.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ sound/firewire/dice/dice-tcelectronic.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1169,7 +1169,7 @@ static inline int resize_screen(struct v
- 	/* Resizes the resolution of the display adapater */
- 	int err = 0;
+--- a/sound/firewire/dice/dice-tcelectronic.c
++++ b/sound/firewire/dice/dice-tcelectronic.c
+@@ -38,8 +38,8 @@ static const struct dice_tc_spec konnekt
+ };
  
--	if (vc->vc_mode != KD_GRAPHICS && vc->vc_sw->con_resize)
-+	if (vc->vc_sw->con_resize)
- 		err = vc->vc_sw->con_resize(vc, width, height, user);
+ static const struct dice_tc_spec konnekt_live = {
+-	.tx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
+-	.rx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
++	.tx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
++	.rx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
+ 	.has_midi = true,
+ };
  
- 	return err;
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2025,7 +2025,7 @@ static int fbcon_resize(struct vc_data *
- 			return -EINVAL;
- 
- 		DPRINTK("resize now %ix%i\n", var.xres, var.yres);
--		if (con_is_visible(vc)) {
-+		if (con_is_visible(vc) && vc->vc_mode == KD_TEXT) {
- 			var.activate = FB_ACTIVATE_NOW |
- 				FB_ACTIVATE_FORCE;
- 			fb_set_var(info, &var);
 
 
