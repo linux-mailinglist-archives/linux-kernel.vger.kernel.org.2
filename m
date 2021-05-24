@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACE7638F08F
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C519E38F031
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236278AbhEXQEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40466 "EHLO mail.kernel.org"
+        id S234647AbhEXQBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41116 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234870AbhEXP5X (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:57:23 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6435D61951;
-        Mon, 24 May 2021 15:43:31 +0000 (UTC)
+        id S234318AbhEXPz2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A8DE613FC;
+        Mon, 24 May 2021 15:41:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871011;
-        bh=8UAYECxSB2/SyPk/IQ/Eo++kvlCJAddxyNSq/jyfuTw=;
+        s=korg; t=1621870907;
+        bh=i4wAM3elN/z5Vsa8a3mnqbLfx3fRITuI3zFmbTOua8g=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lf6tq+XHk4YE6YzK7ekcIa7ubs0vxubuev+MxGFqQIuFY/57VlgFsfeVVFYiUlZBk
-         eJDolvWwVT3rsxlrHoCKYdIXVgJc87g/foh7KcBefyRAPUg0FfxYu/FFZfwf9Y9b47
-         AV8IKMrf/vCquFJw/UJwsgI9KD8HtAw+EDTHLI2k=
+        b=DwyZvqo0Bq7Smx1Aza6kzsYWa+xR1ReWFlUKzuVQYdGfb3K0sME5mcIEBiMh3oMNL
+         kQQxnpUs/ajYjJdmBlfhlunRjMylgEhEcirFlgWsGuSKeKsys/2+jd7835oOCyCWg8
+         B8ZxqQtWZE+R8ZOfigpbMoAnK/loWxxCIr5XX9rw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Leo Yan <leo.yan@linaro.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.12 032/127] locking/lockdep: Correct calling tracepoints
-Date:   Mon, 24 May 2021 17:25:49 +0200
-Message-Id: <20210524152335.930163642@linuxfoundation.org>
+        stable@vger.kernel.org, Tom Lendacky <thomas.lendacky@amd.com>,
+        Borislav Petkov <bp@suse.de>
+Subject: [PATCH 5.10 055/104] x86/sev-es: Move sev_es_put_ghcb() in prep for follow on patch
+Date:   Mon, 24 May 2021 17:25:50 +0200
+Message-Id: <20210524152334.676899619@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,56 +39,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Leo Yan <leo.yan@linaro.org>
+From: Tom Lendacky <thomas.lendacky@amd.com>
 
-[ Upstream commit 89e70d5c583c55088faa2201d397ee30a15704aa ]
+commit fea63d54f7a3e74f8ab489a8b82413a29849a594 upstream.
 
-The commit eb1f00237aca ("lockdep,trace: Expose tracepoints") reverses
-tracepoints for lock_contended() and lock_acquired(), thus the ftrace
-log shows the wrong locking sequence that "acquired" event is prior to
-"contended" event:
+Move the location of sev_es_put_ghcb() in preparation for an update to it
+in a follow-on patch. This will better highlight the changes being made
+to the function.
 
-  <idle>-0       [001] d.s3 20803.501685: lock_acquire: 0000000008b91ab4 &sg_policy->update_lock
-  <idle>-0       [001] d.s3 20803.501686: lock_acquired: 0000000008b91ab4 &sg_policy->update_lock
-  <idle>-0       [001] d.s3 20803.501689: lock_contended: 0000000008b91ab4 &sg_policy->update_lock
-  <idle>-0       [001] d.s3 20803.501690: lock_release: 0000000008b91ab4 &sg_policy->update_lock
+No functional change.
 
-This patch fixes calling tracepoints for lock_contended() and
-lock_acquired().
-
-Fixes: eb1f00237aca ("lockdep,trace: Expose tracepoints")
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/20210512120937.90211-1-leo.yan@linaro.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 0786138c78e79 ("x86/sev-es: Add a Runtime #VC Exception Handler")
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Cc: stable@vger.kernel.org
+Link: https://lkml.kernel.org/r/8c07662ec17d3d82e5c53841a1d9e766d3bdbab6.1621273353.git.thomas.lendacky@amd.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/locking/lockdep.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/x86/kernel/sev-es.c |   36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-index f160f1c97ca1..f39c383c7180 100644
---- a/kernel/locking/lockdep.c
-+++ b/kernel/locking/lockdep.c
-@@ -5731,7 +5731,7 @@ void lock_contended(struct lockdep_map *lock, unsigned long ip)
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -209,24 +209,6 @@ static __always_inline struct ghcb *sev_
+ 	return ghcb;
+ }
+ 
+-static __always_inline void sev_es_put_ghcb(struct ghcb_state *state)
+-{
+-	struct sev_es_runtime_data *data;
+-	struct ghcb *ghcb;
+-
+-	data = this_cpu_read(runtime_data);
+-	ghcb = &data->ghcb_page;
+-
+-	if (state->ghcb) {
+-		/* Restore GHCB from Backup */
+-		*ghcb = *state->ghcb;
+-		data->backup_ghcb_active = false;
+-		state->ghcb = NULL;
+-	} else {
+-		data->ghcb_active = false;
+-	}
+-}
+-
+ /* Needed in vc_early_forward_exception */
+ void do_early_exception(struct pt_regs *regs, int trapnr);
+ 
+@@ -434,6 +416,24 @@ static enum es_result vc_slow_virt_to_ph
+ /* Include code shared with pre-decompression boot stage */
+ #include "sev-es-shared.c"
+ 
++static __always_inline void sev_es_put_ghcb(struct ghcb_state *state)
++{
++	struct sev_es_runtime_data *data;
++	struct ghcb *ghcb;
++
++	data = this_cpu_read(runtime_data);
++	ghcb = &data->ghcb_page;
++
++	if (state->ghcb) {
++		/* Restore GHCB from Backup */
++		*ghcb = *state->ghcb;
++		data->backup_ghcb_active = false;
++		state->ghcb = NULL;
++	} else {
++		data->ghcb_active = false;
++	}
++}
++
+ void noinstr __sev_es_nmi_complete(void)
  {
- 	unsigned long flags;
- 
--	trace_lock_acquired(lock, ip);
-+	trace_lock_contended(lock, ip);
- 
- 	if (unlikely(!lock_stat || !lockdep_enabled()))
- 		return;
-@@ -5749,7 +5749,7 @@ void lock_acquired(struct lockdep_map *lock, unsigned long ip)
- {
- 	unsigned long flags;
- 
--	trace_lock_contended(lock, ip);
-+	trace_lock_acquired(lock, ip);
- 
- 	if (unlikely(!lock_stat || !lockdep_enabled()))
- 		return;
--- 
-2.30.2
-
+ 	struct ghcb_state state;
 
 
