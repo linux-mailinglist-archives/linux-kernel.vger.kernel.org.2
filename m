@@ -2,70 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD2A38E7FB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C8E38E7FE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232907AbhEXNrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:47:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232409AbhEXNrf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:47:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBE1861090;
-        Mon, 24 May 2021 13:46:04 +0000 (UTC)
-Date:   Mon, 24 May 2021 14:46:02 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Quentin Perret <qperret@google.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, kernel-team@android.com
-Subject: Re: [PATCH v6 02/21] arm64: Allow mismatched 32-bit EL0 support
-Message-ID: <20210524134602.GA14645@arm.com>
-References: <20210518094725.7701-1-will@kernel.org>
- <20210518094725.7701-3-will@kernel.org>
- <20210521104155.GC6675@arm.com>
- <20210524120959.GB14913@willie-the-truck>
+        id S232937AbhEXNsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:48:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50888 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232462AbhEXNsQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 09:48:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621864008;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1zKaniUke1CTgDP/v1gmAVeJGY1+eRl2in4CVL6GC9M=;
+        b=g2Of2tua3aM77IpHtD6M3I2+EJYR9y7g2lB7a3wciWWYCdu0E9I+NvZoZPygjIi/IwlLE9
+        QxBw6XGFE3Xs/Z0r+ZGUVWZRrfxLZ63+vYCjpYt0eKU+HGvtPUaMd+81FF6B81ZzbdUSWT
+        BJr9KKccXkEdOHJ5K/l1pP6vLfuMvZ0=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-490-w_lJBKklP7G_Jczu-DNeHQ-1; Mon, 24 May 2021 09:46:46 -0400
+X-MC-Unique: w_lJBKklP7G_Jczu-DNeHQ-1
+Received: by mail-ej1-f71.google.com with SMTP id mp38-20020a1709071b26b02903df8ccd76fbso790349ejc.23
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:46:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=1zKaniUke1CTgDP/v1gmAVeJGY1+eRl2in4CVL6GC9M=;
+        b=SA4zxmCU1KzUfm4HboSX9arMicKuOuof4LF+JJTN1JZ3aV8VzbS0dLfTPEsCSo8TWD
+         /xl85pE60Iv2KhYnyGMMukKg57SnFWZdBkeCbiRP2QGnVc55RJhXtUgTPpdMjiVsQ83M
+         ViKAbDJJoPF9lt8t5+MJ5xn8bFYoGLsQ6ZKVpISwQD/RFhc8urxJ5KeyiBiSxvbhnlvm
+         TV/Vb3O5cSKjyMPDNsHvaG8wieVd++AwriWi6Rz3i0U5hnAs755TGey2vGXixGxAHoVe
+         1Kz48gVe3+2CbXY7N25puxFmgoF0OCF4L0u2cGjEkqg0lPrYX9uqyiU5u3H68KFUF0p+
+         lipQ==
+X-Gm-Message-State: AOAM5339pRjBlP9YhqJld+BLKfPiYlbgNWXcO5IfisyOMMyGXDsfC29T
+        setPSFEJsOHX8thcuw5lv3z/kRaITkVlwxLg6Rv0hLAhtgGw+a8IzwYH/rjLSoxGBk6DHAV9kXk
+        q32SzXH0kw2HGwhPx9fsTXJ7k
+X-Received: by 2002:a17:906:6a93:: with SMTP id p19mr23652399ejr.319.1621864005357;
+        Mon, 24 May 2021 06:46:45 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxL+MPEX0xHstZztgHZk1ZfQV9cHQqyq1YhQQZRhVxtKLp+Hm/Y1Lt2xqMCJwNwQrdOxuyViA==
+X-Received: by 2002:a17:906:6a93:: with SMTP id p19mr23652383ejr.319.1621864005203;
+        Mon, 24 May 2021 06:46:45 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id x10sm9233166edd.30.2021.05.24.06.46.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 06:46:44 -0700 (PDT)
+Subject: Re: [PATCH v4 1/5] KVM: exit halt polling on need_resched() for both
+ book3s and generic halt-polling
+To:     Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Ben Segall <bsegall@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        David Matlack <dmatlack@google.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f0247587-e90a-1695-1399-47a67c44d861@redhat.com>
+Date:   Mon, 24 May 2021 15:46:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210524120959.GB14913@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 24, 2021 at 01:09:59PM +0100, Will Deacon wrote:
-> On Fri, May 21, 2021 at 11:41:56AM +0100, Catalin Marinas wrote:
-> > On Tue, May 18, 2021 at 10:47:06AM +0100, Will Deacon wrote:
-> > > +static int enable_mismatched_32bit_el0(unsigned int cpu)
-> > > +{
-> > > +	struct cpuinfo_arm64 *info = &per_cpu(cpu_data, cpu);
-> > > +	bool cpu_32bit = id_aa64pfr0_32bit_el0(info->reg_id_aa64pfr0);
-> > > +
-> > > +	if (cpu_32bit) {
-> > > +		cpumask_set_cpu(cpu, cpu_32bit_el0_mask);
-> > > +		static_branch_enable_cpuslocked(&arm64_mismatched_32bit_el0);
-> > 
-> > It may be worth only calling static_branch_enable_cpuslocked() if not
-> > already set, in case you try this on a system with lots of CPUs.
+On 18/05/21 14:00, Wanpeng Li wrote:
+> From: Wanpeng Li <wanpengli@tencent.com>
 > 
-> static_key_enable_cpuslocked() already checks this early on, so I don't
-> think we need another check here (note that we're not calling stop_machine()
-> here _anyway_; the '_cpuslocked' suffix just says that we're already holding
-> cpu_hotplug_lock via the notifier).
+> Inspired by commit 262de4102c7bb8 (kvm: exit halt polling on need_resched()
+> as well), CFS_BANDWIDTH throttling will use resched_task() when there is just
+> one task to get the task to block. It was likely allowing VMs to overrun their
+> quota when halt polling. Due to PPC implements an arch specific halt polling
+> logic, we should add the need_resched() checking there as well. This
+> patch adds a helper function that to be shared between book3s and generic
+> halt-polling loop.
+> 
+> Reviewed-by: David Matlack <dmatlack@google.com>
+> Reviewed-by: Venkatesh Srinivas <venkateshs@chromium.org>
+> Cc: Ben Segall <bsegall@google.com>
+> Cc: Venkatesh Srinivas <venkateshs@chromium.org>
+> Cc: Jim Mattson <jmattson@google.com>
+> Cc: David Matlack <dmatlack@google.com>
+> Cc: Paul Mackerras <paulus@ozlabs.org>
+> Cc: Suraj Jitindar Singh <sjitindarsingh@gmail.com>
+> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> ---
+> v3 -> v4:
+>   * rename to kvm_vcpu_can_poll
+> v2 -> v3:
+>   * add a helper function
+> v1 -> v2:
+>   * update patch description
+> 
+>   arch/powerpc/kvm/book3s_hv.c | 2 +-
+>   include/linux/kvm_host.h     | 2 ++
+>   virt/kvm/kvm_main.c          | 8 ++++++--
+>   3 files changed, 9 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+> index 28a80d240b76..7360350e66ff 100644
+> --- a/arch/powerpc/kvm/book3s_hv.c
+> +++ b/arch/powerpc/kvm/book3s_hv.c
+> @@ -3936,7 +3936,7 @@ static void kvmppc_vcore_blocked(struct kvmppc_vcore *vc)
+>   				break;
+>   			}
+>   			cur = ktime_get();
+> -		} while (single_task_running() && ktime_before(cur, stop));
+> +		} while (kvm_vcpu_can_poll(cur, stop));
+>   
+>   		spin_lock(&vc->lock);
+>   		vc->vcore_state = VCORE_INACTIVE;
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index 2f34487e21f2..ba682f738a25 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -1583,4 +1583,6 @@ static inline void kvm_handle_signal_exit(struct kvm_vcpu *vcpu)
+>   /* Max number of entries allowed for each kvm dirty ring */
+>   #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+>   
+> +bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop);
+> +
+>   #endif
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 6b4feb92dc79..62522c12beba 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -2945,6 +2945,11 @@ update_halt_poll_stats(struct kvm_vcpu *vcpu, u64 poll_ns, bool waited)
+>   		vcpu->stat.halt_poll_success_ns += poll_ns;
+>   }
+>   
+> +bool kvm_vcpu_can_poll(ktime_t cur, ktime_t stop)
+> +{
+> +	return single_task_running() && !need_resched() && ktime_before(cur, stop);
+> +}
+> +
+>   /*
+>    * The vCPU has executed a HLT instruction with in-kernel mode enabled.
+>    */
+> @@ -2973,8 +2978,7 @@ void kvm_vcpu_block(struct kvm_vcpu *vcpu)
+>   				goto out;
+>   			}
+>   			poll_end = cur = ktime_get();
+> -		} while (single_task_running() && !need_resched() &&
+> -			 ktime_before(cur, stop));
+> +		} while (kvm_vcpu_can_poll(cur, stop));
+>   	}
+>   
+>   	prepare_to_rcuwait(&vcpu->wait);
+> 
 
-Ah, you are right, no need for an additional check.
+Queued all five, thanks.
 
--- 
-Catalin
+Paolo
+
