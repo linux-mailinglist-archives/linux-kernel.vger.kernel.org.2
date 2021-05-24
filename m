@@ -2,150 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD30B38E22A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:09:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8CDD38E22C
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 10:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232377AbhEXILI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 04:11:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59194 "EHLO
+        id S232378AbhEXIOy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 04:14:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232266AbhEXILH (ORCPT
+        with ESMTP id S232295AbhEXIOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 04:11:07 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 781B6C061574;
-        Mon, 24 May 2021 01:09:33 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id ml1-20020a17090b3601b029015f9b1ebce0so1485124pjb.5;
-        Mon, 24 May 2021 01:09:33 -0700 (PDT)
+        Mon, 24 May 2021 04:14:52 -0400
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B06C061756
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:13:23 -0700 (PDT)
+Received: by mail-wm1-x32d.google.com with SMTP id l11-20020a05600c4f0bb029017a7cd488f5so7859844wmq.0
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 01:13:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mnD4LZr5vh+XK9rOEnNIl7niFIb137sw/yseGObE7Qo=;
-        b=HOQOAvWtX5lC19tOGny/nwjg4Fbx5t7ovxswRTbeG/BljGJt23qiDkrBtUrrm0ej0R
-         njjEm+CWtj7BARm1yVyr4Lf6eYYaLeb9f1oVVERu9TFdSB9VfGq9PoqqUoVDYaHvNJde
-         OUavGU1jOowQA0gD/JneY8A9msxwytL1XhNU7JLyeCAMK3icf7wtsNhDWxGJM75weVIi
-         n0r10MV1LGI7BSU5UhJs3M7K5yluUHrWwgRvk5gwqhzg+Ubqsq8nJM8ybdCJN0TZLEvy
-         Q4LUGESNxq+rIs8AJq71lvFQvXBRmm99Z4OPUj1Y8s9ZQBY6kt859NLc8d+rHc/8Iwnt
-         KWLQ==
+        bh=hkoJ4XU3fJYIUXpsvaVz4eo9jPqdu/8/7QTK7vX9wJM=;
+        b=pL2oo52tUpRLBy49VIx5zFQfFs5QoWz6wCdaZlOZynpDEiny/Ix3dTTLDNMS3jTgP+
+         CAvTt0KKu+xM5jHc9zloqeIu+MILVF1fS0tLdulYu0KHAhGdkXyg/ezsgjuFDshU/ipv
+         Nc6vA/sFhFWX0CtXzfB8q/dBybiq/y3SCsxnogvRPd8VgF5hhq3CT56rtSKRNN3rsHZ9
+         6xA8OndA1FmuRj6PzaoOaJ9Kr0EEIbMfvHcy78eF3jAhKwg9eXN9h0Cs+EykFPkbD5cP
+         6mo1yQO1u3Iqh6grda/3LMtWRo+eGmxP449xoKZhaNwwtAnAhYQJrtAzarXyd2pmiP4f
+         /DfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mnD4LZr5vh+XK9rOEnNIl7niFIb137sw/yseGObE7Qo=;
-        b=Z3dN26eqC1FvDQoUiOWBYx1m+svBqcx8QdPPy/dkX7MYRqlrmMAGz98mOvgCvg31a6
-         9LKUNR72MwQBXzJxxt6a88ZASCsz9Dmilxr7tTGKSp2139kz7mdcokRHmc49q3wKx6PE
-         3b5Q3W8pAV334EEyd6V7PuZTMF6PlwvlynklAMdxveXi51NYJryzguQAtkqb97MjCWhc
-         v8n1kmo7buQh/9Bu3tfE3Bo4r2+pxcivyg2pRAtNEmOj679Pnl7f8rHw6apJNHc1a+B0
-         0H5zzZiFsL+OOoBAHNlC1C12WB0Ul5pNWeVdS3g94br8Q0UQyuOD0EaXKsDu5j9ITnyn
-         /aqA==
-X-Gm-Message-State: AOAM531YMX+ZPykDuJ4E3G/5B7OWS1TNiKD1hcgapxfTFr2l+9dG37zV
-        9lZ8bR+jazY0vAJnjCMuPAMq6m2ffXeERTe06jg=
-X-Google-Smtp-Source: ABdhPJzLIrL7B36432y+EKVC3r0wTFrpaP48sylTGFqBNMWAhj+uLC+MeuMNBGI/VK+cekzOtXJhnj/OTnTU0F90jEY=
-X-Received: by 2002:a17:902:e00e:b029:ef:5f1c:18a8 with SMTP id
- o14-20020a170902e00eb02900ef5f1c18a8mr24599956plo.38.1621843772829; Mon, 24
- May 2021 01:09:32 -0700 (PDT)
+        bh=hkoJ4XU3fJYIUXpsvaVz4eo9jPqdu/8/7QTK7vX9wJM=;
+        b=Y1H0fJaq8NEDduawnh2gOz3GmWgWw2KQJ5nn1/aj9OuD3hwgyDX7uXNX6cRvwtYhgl
+         kjx5YcAUhkqO7qzGxpAY7ST0Z4nAmGrUg0xaa3Btjxh1yRrWNumnIe6y4aG2qKucIiKO
+         1iTMgYt6bnPoCt+1hI6LGgZYtwaX87MdyRYKAg0AOA9pNQZx6VG9sN3worSKZ1Xx+Ih0
+         QQL0kIYkSbAhbpSGXZ/k+rCd6DLoISUm3YJ0+DW/8KZH0JxL6umS5FULLDxhan/UOVKb
+         1SlT1S6yJnDSNnBgzGEeZM4Fav+NJ/y6Jvkgz4Wyc9/S1X4mv+cQerZeOXIXcsQ5bJ56
+         uXhw==
+X-Gm-Message-State: AOAM531jNQv9/YX8RcxZ/CQfDtpBMcEwbzyHGBtyYnIGoyyhE1+D0rG9
+        gjWpVoGgffgizQnPP2MXi3OPjAMQW21pU0PMYt+5Nw==
+X-Google-Smtp-Source: ABdhPJyC2jCu7SFxxUWfosx6Xigmxy1B2+g0gPGzW98vy1plPs28wHz7rs4SviVoeR8UnTFwEAYZZhBVno/WhE+51kM=
+X-Received: by 2002:a1c:4e0b:: with SMTP id g11mr18341827wmh.3.1621844001916;
+ Mon, 24 May 2021 01:13:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1621786036.git.lucas.p.stankus@gmail.com> <b637a5ecde4e5f9f927a5b104332378d4721c91d.1621786036.git.lucas.p.stankus@gmail.com>
-In-Reply-To: <b637a5ecde4e5f9f927a5b104332378d4721c91d.1621786036.git.lucas.p.stankus@gmail.com>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Mon, 24 May 2021 11:09:21 +0300
-Message-ID: <CA+U=DsqD+g5LDP0Je5WAsrKheYog--OcXNRbLZNxVJ1J6u66XA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] staging: iio: cdc: ad7746: extract capac setup to
- own function
-To:     Lucas Stankus <lucas.p.stankus@gmail.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        "Hennerich, Michael" <Michael.Hennerich@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        linux-staging@lists.linux.dev, LKML <linux-kernel@vger.kernel.org>
+References: <1621839068-31738-1-git-send-email-guoren@kernel.org> <1621839068-31738-3-git-send-email-guoren@kernel.org>
+In-Reply-To: <1621839068-31738-3-git-send-email-guoren@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Mon, 24 May 2021 13:43:10 +0530
+Message-ID: <CAAhSdy16yXsuPRBv2Sn-OJwEhvs1UkdMUr1jqhB8qxXo+Mu7=w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] riscv: Use use_asid_allocator flush TLB
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Anup Patel <anup.patel@wdc.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, May 23, 2021 at 8:13 PM Lucas Stankus <lucas.p.stankus@gmail.com> wrote:
+On Mon, May 24, 2021 at 12:22 PM <guoren@kernel.org> wrote:
 >
-> Refactor the capac register write logic to own function.
-
-Minor typo 'capac' -> 'capdac'
-
-Other than that:
-
-Reviewed-by: Alexandru Ardelean <ardeleanalex@gmail.com>
-
+> From: Guo Ren <guoren@linux.alibaba.com>
 >
-> Also fixes the following checkpatch warning:
-> CHECK: Alignment should match open parenthesis
+> Use static_branch_unlikely(&use_asid_allocator) to keep the origin
+> tlb flush style, so it's no effect on the existing machine. Here
+> are the optimized functions:
+>  - flush_tlb_mm
+>  - flush_tlb_page
+>  - flush_tlb_range
 >
-> Signed-off-by: Lucas Stankus <lucas.p.stankus@gmail.com>
+> All above are based on the below new implement functions:
+>  - __sbi_tlb_flush_range_asid
+>  - local_flush_tlb_range_asid
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Cc: Anup Patel <anup.patel@wdc.com>
+> Cc: Palmer Dabbelt <palmerdabbelt@google.com>
 > ---
->  drivers/staging/iio/cdc/ad7746.c | 36 ++++++++++++++++----------------
->  1 file changed, 18 insertions(+), 18 deletions(-)
+>  arch/riscv/include/asm/mmu_context.h |  2 ++
+>  arch/riscv/include/asm/tlbflush.h    | 22 ++++++++++++++++++++
+>  arch/riscv/mm/context.c              |  2 +-
+>  arch/riscv/mm/tlbflush.c             | 40 +++++++++++++++++++++++++++++++++---
+>  4 files changed, 62 insertions(+), 4 deletions(-)
 >
-> diff --git a/drivers/staging/iio/cdc/ad7746.c b/drivers/staging/iio/cdc/ad7746.c
-> index 367a5990ae35..4221312f0a32 100644
-> --- a/drivers/staging/iio/cdc/ad7746.c
-> +++ b/drivers/staging/iio/cdc/ad7746.c
-> @@ -209,6 +209,19 @@ static const unsigned char ad7746_cap_filter_rate_table[][2] = {
->         {16, 62 + 1}, {13, 77 + 1}, {11, 92 + 1}, {9, 110 + 1},
->  };
+> diff --git a/arch/riscv/include/asm/mmu_context.h b/arch/riscv/include/asm/mmu_context.h
+> index b065941..7030837 100644
+> --- a/arch/riscv/include/asm/mmu_context.h
+> +++ b/arch/riscv/include/asm/mmu_context.h
+> @@ -33,6 +33,8 @@ static inline int init_new_context(struct task_struct *tsk,
+>         return 0;
+>  }
 >
-> +static int ad7746_set_capdac(struct ad7746_chip_info *chip, int channel)
-> +{
-> +       int ret = i2c_smbus_write_byte_data(chip->client,
-> +                                           AD7746_REG_CAPDACA,
-> +                                           chip->capdac[channel][0]);
-> +       if (ret < 0)
-> +               return ret;
+> +DECLARE_STATIC_KEY_FALSE(use_asid_allocator);
 > +
-> +       return i2c_smbus_write_byte_data(chip->client,
-> +                                         AD7746_REG_CAPDACB,
-> +                                         chip->capdac[channel][1]);
+>  #include <asm-generic/mmu_context.h>
+>
+>  #endif /* _ASM_RISCV_MMU_CONTEXT_H */
+> diff --git a/arch/riscv/include/asm/tlbflush.h b/arch/riscv/include/asm/tlbflush.h
+> index c84218a..9390319 100644
+> --- a/arch/riscv/include/asm/tlbflush.h
+> +++ b/arch/riscv/include/asm/tlbflush.h
+> @@ -8,6 +8,7 @@
+>  #define _ASM_RISCV_TLBFLUSH_H
+>
+>  #include <linux/mm_types.h>
+> +#include <asm/page.h>
+>  #include <asm/smp.h>
+>  #include <asm/errata_list.h>
+>
+> @@ -22,9 +23,30 @@ static inline void local_flush_tlb_page(unsigned long addr)
+>  {
+>         ALT_FLUSH_TLB_PAGE(__asm__ __volatile__ ("sfence.vma %0" : : "r" (addr) : "memory"));
+>  }
+> +
+> +static inline void local_flush_tlb_range_asid(unsigned long start, unsigned long size,
+> +                                             unsigned long asid)
+> +{
+> +       unsigned long page_add = PAGE_DOWN(start);
+> +       unsigned long page_end = PAGE_UP(start + size);
+
+Your PATCH2 is not correct because PAGE_UP(x) should in-fact
+return 0 when x == 0.
+
+In fact, if both "start" and "size" are zero then both page_add and
+page_end should be zero so that no "sfence.vma" is executed.
+
+If you want at least one TLB entry to be invalidated when size == 0
+then you can simply set "size = 1" when size is zero which will force
+one TLB invalidation.
+
+Please drop your PATCH2 and the rest of the things look good to me.
+
+Reviewed-by: Anup Patel <anup@brainfault.org>
+
+Regards,
+Anup
+
+> +
+> +       if (size == -1) {
+> +               __asm__ __volatile__ ("sfence.vma x0, %0" : : "r" (asid) : "memory");
+> +               return;
+> +       }
+> +
+> +       while(page_add < page_end) {
+> +               __asm__ __volatile__ ("sfence.vma %0, %1"
+> +                               :
+> +                               : "r" (page_add), "r" (asid)
+> +                               : "memory");
+> +               page_add += PAGE_SIZE;
+> +       }
+> +}
+>  #else /* CONFIG_MMU */
+>  #define local_flush_tlb_all()                  do { } while (0)
+>  #define local_flush_tlb_page(addr)             do { } while (0)
+> +#define local_flush_tlb_range_asid(addr)       do { } while (0)
+>  #endif /* CONFIG_MMU */
+>
+>  #if defined(CONFIG_SMP) && defined(CONFIG_MMU)
+> diff --git a/arch/riscv/mm/context.c b/arch/riscv/mm/context.c
+> index 68aa312..45c1b04 100644
+> --- a/arch/riscv/mm/context.c
+> +++ b/arch/riscv/mm/context.c
+> @@ -18,7 +18,7 @@
+>
+>  #ifdef CONFIG_MMU
+>
+> -static DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
+> +DEFINE_STATIC_KEY_FALSE(use_asid_allocator);
+>
+>  static unsigned long asid_bits;
+>  static unsigned long num_asids;
+> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
+> index 720b443..69588dc 100644
+> --- a/arch/riscv/mm/tlbflush.c
+> +++ b/arch/riscv/mm/tlbflush.c
+> @@ -4,6 +4,7 @@
+>  #include <linux/smp.h>
+>  #include <linux/sched.h>
+>  #include <asm/sbi.h>
+> +#include <asm/mmu_context.h>
+>
+>  void flush_tlb_all(void)
+>  {
+> @@ -39,18 +40,51 @@ static void __sbi_tlb_flush_range(struct cpumask *cmask, unsigned long start,
+>         put_cpu();
+>  }
+>
+> +static void __sbi_tlb_flush_range_asid(struct cpumask *cmask, unsigned long start,
+> +                                      unsigned long size, unsigned long asid)
+> +{
+> +       struct cpumask hmask;
+> +       unsigned int cpuid;
+> +
+> +       if (cpumask_empty(cmask))
+> +               return;
+> +
+> +       cpuid = get_cpu();
+> +
+> +       if (cpumask_any_but(cmask, cpuid) >= nr_cpu_ids) {
+> +               local_flush_tlb_range_asid(start, size, asid);
+> +       } else {
+> +               riscv_cpuid_to_hartid_mask(cmask, &hmask);
+> +               sbi_remote_sfence_vma_asid(cpumask_bits(&hmask), start, size, asid);
+> +       }
+> +
+> +       put_cpu();
 > +}
 > +
->  static int ad7746_select_channel(struct iio_dev *indio_dev,
->                                  struct iio_chan_spec const *chan)
+>  void flush_tlb_mm(struct mm_struct *mm)
 >  {
-> @@ -224,17 +237,11 @@ static int ad7746_select_channel(struct iio_dev *indio_dev,
->                         AD7746_CONF_CAPFS_SHIFT;
->                 delay = ad7746_cap_filter_rate_table[idx][1];
+> -       __sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
+> +       if (static_branch_unlikely(&use_asid_allocator))
+> +               __sbi_tlb_flush_range_asid(mm_cpumask(mm), 0, -1,
+> +                                          atomic_long_read(&mm->context.id));
+> +       else
+> +               __sbi_tlb_flush_range(mm_cpumask(mm), 0, -1);
+>  }
 >
-> +               ret = ad7746_set_capdac(chip, chan->channel);
-> +               if (ret < 0)
-> +                       return ret;
-> +
->                 if (chip->capdac_set != chan->channel) {
-> -                       ret = i2c_smbus_write_byte_data(chip->client,
-> -                               AD7746_REG_CAPDACA,
-> -                               chip->capdac[chan->channel][0]);
-> -                       if (ret < 0)
-> -                               return ret;
-> -                       ret = i2c_smbus_write_byte_data(chip->client,
-> -                               AD7746_REG_CAPDACB,
-> -                               chip->capdac[chan->channel][1]);
-> -                       if (ret < 0)
-> -                               return ret;
+>  void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)
+>  {
+> -       __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
+> +       if (static_branch_unlikely(&use_asid_allocator))
+> +               __sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE,
+> +                                          atomic_long_read(&vma->vm_mm->context.id));
+> +       else
+> +               __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), addr, PAGE_SIZE);
+>  }
 >
->                         chip->capdac_set = chan->channel;
->                 }
-> @@ -478,14 +485,7 @@ static int ad7746_write_raw(struct iio_dev *indio_dev,
->                 chip->capdac[chan->channel][chan->differential] = val > 0 ?
->                         AD7746_CAPDAC_DACP(val) | AD7746_CAPDAC_DACEN : 0;
->
-> -               ret = i2c_smbus_write_byte_data(chip->client,
-> -                                               AD7746_REG_CAPDACA,
-> -                                               chip->capdac[chan->channel][0]);
-> -               if (ret < 0)
-> -                       goto out;
-> -               ret = i2c_smbus_write_byte_data(chip->client,
-> -                                               AD7746_REG_CAPDACB,
-> -                                               chip->capdac[chan->channel][1]);
-> +               ret = ad7746_set_capdac(chip, chan->channel);
->                 if (ret < 0)
->                         goto out;
->
+>  void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
+>                      unsigned long end)
+>  {
+> -       __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
+> +       if (static_branch_unlikely(&use_asid_allocator))
+> +               __sbi_tlb_flush_range_asid(mm_cpumask(vma->vm_mm), start, end - start,
+> +                                          atomic_long_read(&vma->vm_mm->context.id));
+> +       else
+> +               __sbi_tlb_flush_range(mm_cpumask(vma->vm_mm), start, end - start);
+>  }
 > --
-> 2.31.1
+> 2.7.4
 >
