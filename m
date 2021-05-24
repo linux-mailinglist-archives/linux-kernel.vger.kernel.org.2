@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4F338F03E
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AAA638F0B8
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235792AbhEXQCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:02:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38928 "EHLO mail.kernel.org"
+        id S234735AbhEXQFr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:05:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45006 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235074AbhEXPzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:55:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E188B61447;
-        Mon, 24 May 2021 15:42:04 +0000 (UTC)
+        id S235840AbhEXP7P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:59:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ECF7F61452;
+        Mon, 24 May 2021 15:45:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870925;
-        bh=L/xPLGm/qLV+YqHAOHzZxxZtnGQFGf7t85dzR4tXEho=;
+        s=korg; t=1621871107;
+        bh=X1nSI36gVj+lwwu87lKIKivvc1Xlem4MisVkfCpIYWI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PZqwRw7WjTWeNQrq47jtvFzF0FGL87kFUtOjC3D4XygTSPC0wJE9cwS9nJG8UJic/
-         4wtWSZRgzHFtPVQ6K6/gKzzwtB/esvuHXlIKytaNeGKITbmBKGGfROvsbIZ1NAMq4I
-         +Cw06HUiD/SL9busbJ+iwwX2EaGpu47e2OIqnzqM=
+        b=mGIiuxXVmyRp8DMxzvpMcqwjNrjGi9JJkg2F/L5u66NepZKoX4V8XtABbSJ3Rm3eV
+         /w1cOcka7Jl9RTQDfHtZ+I+T+uAmTgi6CDmIikwVef2kdwsEWCPDjLEC2X8mA2SMsV
+         NgU0XBxEoOwOSj95mrXKQcmEdNBpVvHHsc7p9fjg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org,
-        syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH 5.10 098/104] tty: vt: always invoke vc->vc_sw->con_resize callback
-Date:   Mon, 24 May 2021 17:26:33 +0200
-Message-Id: <20210524152336.098232142@linuxfoundation.org>
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Yi Li <liyi@loongson.cn>, Huacai Chen <chenhuacai@loongson.cn>,
+        Alex Deucher <alexander.deucher@amd.com>
+Subject: [PATCH 5.12 077/127] drm/amdgpu: Fix GPU TLB update error when PAGE_SIZE > AMDGPU_PAGE_SIZE
+Date:   Mon, 24 May 2021 17:26:34 +0200
+Message-Id: <20210524152337.456766387@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
-References: <20210524152332.844251980@linuxfoundation.org>
+In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
+References: <20210524152334.857620285@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,71 +41,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+From: Yi Li <liyi@loongson.cn>
 
-commit ffb324e6f874121f7dce5bdae5e05d02baae7269 upstream.
+commit d53751568359e5b3ffb859b13cbd79dc77a571f1 upstream.
 
-syzbot is reporting OOB write at vga16fb_imageblit() [1], for
-resize_screen() from ioctl(VT_RESIZE) returns 0 without checking whether
-requested rows/columns fit the amount of memory reserved for the graphical
-screen if current mode is KD_GRAPHICS.
+When PAGE_SIZE is larger than AMDGPU_PAGE_SIZE, the number of GPU TLB
+entries which need to update in amdgpu_map_buffer() should be multiplied
+by AMDGPU_GPU_PAGES_IN_CPU_PAGE (PAGE_SIZE / AMDGPU_PAGE_SIZE).
 
-----------
-  #include <sys/types.h>
-  #include <sys/stat.h>
-  #include <fcntl.h>
-  #include <sys/ioctl.h>
-  #include <linux/kd.h>
-  #include <linux/vt.h>
-
-  int main(int argc, char *argv[])
-  {
-        const int fd = open("/dev/char/4:1", O_RDWR);
-        struct vt_sizes vt = { 0x4100, 2 };
-
-        ioctl(fd, KDSETMODE, KD_GRAPHICS);
-        ioctl(fd, VT_RESIZE, &vt);
-        ioctl(fd, KDSETMODE, KD_TEXT);
-        return 0;
-  }
-----------
-
-Allow framebuffer drivers to return -EINVAL, by moving vc->vc_mode !=
-KD_GRAPHICS check from resize_screen() to fbcon_resize().
-
-Link: https://syzkaller.appspot.com/bug?extid=1f29e126cf461c4de3b3 [1]
-Reported-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Tested-by: syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Reviewed-by: Christian König <christian.koenig@amd.com>
+Signed-off-by: Yi Li <liyi@loongson.cn>
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Cc: stable@vger.kernel.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/tty/vt/vt.c              |    2 +-
- drivers/video/fbdev/core/fbcon.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1172,7 +1172,7 @@ static inline int resize_screen(struct v
- 	/* Resizes the resolution of the display adapater */
- 	int err = 0;
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+@@ -267,7 +267,7 @@ static int amdgpu_ttm_map_buffer(struct
+ 	*addr += offset & ~PAGE_MASK;
  
--	if (vc->vc_mode != KD_GRAPHICS && vc->vc_sw->con_resize)
-+	if (vc->vc_sw->con_resize)
- 		err = vc->vc_sw->con_resize(vc, width, height, user);
+ 	num_dw = ALIGN(adev->mman.buffer_funcs->copy_num_dw, 8);
+-	num_bytes = num_pages * 8;
++	num_bytes = num_pages * 8 * AMDGPU_GPU_PAGES_IN_CPU_PAGE;
  
- 	return err;
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -2031,7 +2031,7 @@ static int fbcon_resize(struct vc_data *
- 			return -EINVAL;
- 
- 		DPRINTK("resize now %ix%i\n", var.xres, var.yres);
--		if (con_is_visible(vc)) {
-+		if (con_is_visible(vc) && vc->vc_mode == KD_TEXT) {
- 			var.activate = FB_ACTIVATE_NOW |
- 				FB_ACTIVATE_FORCE;
- 			fb_set_var(info, &var);
+ 	r = amdgpu_job_alloc_with_ib(adev, num_dw * 4 + num_bytes,
+ 				     AMDGPU_IB_POOL_DELAYED, &job);
 
 
