@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2A538E867
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A52E038E86E
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232905AbhEXONL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:13:11 -0400
+        id S233065AbhEXONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:13:23 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57006 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232921AbhEXOMz (ORCPT
+        with ESMTP id S233066AbhEXONK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:12:55 -0400
-Received: from mail-vs1-xe29.google.com (mail-vs1-xe29.google.com [IPv6:2607:f8b0:4864:20::e29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDD3C06138B
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:26 -0700 (PDT)
-Received: by mail-vs1-xe29.google.com with SMTP id o192so14283032vsd.7
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:26 -0700 (PDT)
+        Mon, 24 May 2021 10:13:10 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70060C061349
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:40 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id 131so33775182ljj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:11:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=g9YMGxXWO3gw0lQ0MfPopfjRGds3L9RPAtVucI8oBh8=;
-        b=QtGD1DYPGBFNv8H5o2auNhCqeNje2IV/YM/PBcelPMC5UV8XxqWGu7GXpfiJRCVnzq
-         WxLxargTpqSF2/NatjiW5zKmHYbem4i4ioFqno6XfOIxIzm+OGM5+Zf0cJNzGxwvxTki
-         BpJQq9zMpm4S2H7n2TS2i5waSARq92xas+rvm8tlQPoIEd60AFrMFb5wusacSxskhq4z
-         D0dBJmMkpsyDkqSSyzqaXv+XyNBDgmosENFi/ahz+3syNlrg26pX7mFUfYnQUZ+LeG/e
-         ZL0aS+Jb8aK5XJBbQh4/9sd9bPPWiuNmkweyF6GBz5+k6egoozwtSI/CQpTXHt4w6j/H
-         bI/w==
+        bh=PxFVfCbuSBreuDO3mJ9eqEuh3taUoOdaPE1ozDP14J0=;
+        b=yFb9lCsRcwNUEwCnHxdHHbAwBCHX9AFWkTVDra9cpGbysaCf4lD0N0v1KI9YmXnmkc
+         UL1b/E0rJbeMUg+cBLsm2sO/o1sP/fPhlhY0QUKcGymY5lUiWBGstJbfz/HRk3r0NvKp
+         7f/SL0rEv7h7X3Gr1DZPKANbWkyzBM5l4rZ3ps9LXF54Hqc4DNsuQQfmIjPRin/l1RJI
+         hK9+WeRKiu1a74CYuhPZV6QeUjd+VyLoEDUolO4nyT6nLBWDwLpxilJXFmttGANtgl14
+         3dfEu/zakO0G/T186pE5NfTFWsovOlnVfMlDnlfCJ/DPNbbYqi1CNsy4b+aMCsWCnW9M
+         FtCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=g9YMGxXWO3gw0lQ0MfPopfjRGds3L9RPAtVucI8oBh8=;
-        b=lwNfFLP7cAEpgwdPN5WyTU0qbSsH2Qrp3b0zRtq7GE1QSb0JhjlxEW3jmosTy+oPrc
-         5/qIShjaK6Z0iPSOhpLmChn5G+22/tHy+PGCeb0Ucy8RxwxtQK/L5YGcDz1vLO7I8JPa
-         mr7U6O49MtyO7tVCsVobJ+hKz6OS7kEMsedeGW3lwyFKuQZ3KROHTzaKOLXuLmIMo6x+
-         jp5+c5LNkgHmVVXFl9Al2l3QI8vlFRU81lOM0DCgvORrwbtrdSbbBW1RljBFeeHfZEeQ
-         hFbL/Yg2EByuL8gvhhplm3c/xapmwsd9VPIrTB6JTUJgk6UmUER/+wf5xd7PrS+g05Om
-         iVlg==
-X-Gm-Message-State: AOAM530IJEBxrCd6tp4jY2K7c4x3yy2oCFk+i1P6x5ScY057CI80KGVl
-        ltm013BZl57yBIwY9TUGTtYpg28013BYYcREIe0JOA==
-X-Google-Smtp-Source: ABdhPJxzzAJAoFVRENqAVs40gjeLmdQmf8w/SzQ1OZ0IRexZkd2N+MTwdqJ2gAjRYqb28BnHbaZTd8AXGltSe1mQUnU=
-X-Received: by 2002:a67:1087:: with SMTP id 129mr20527619vsq.42.1621865485296;
- Mon, 24 May 2021 07:11:25 -0700 (PDT)
+        bh=PxFVfCbuSBreuDO3mJ9eqEuh3taUoOdaPE1ozDP14J0=;
+        b=m7KZMVVFqy/1G5NXjpolcOVn7SYoMbaLwETLAHInqlVbYAs9w++D4oFKL38Zd7msgV
+         m8f72U94RAw0DbfeI2v3WvLgn7cDpnOiqd0ozoZtnkBjOeIPUZU5G38z52PkoBGcpoPK
+         HVZVh8ecFO7LoCc6/RKif27cO0O3ykYY00rkoq5DepFHewjCNglIXKibB7t1ploY19nE
+         apm1o7ytIooGxDP8sbrarGZ8goljt3ipEW/pQ6jcwyaJPn9Jt+koa32JgpOXngffSLvO
+         XVmc6e0fbtVzWcyzTxO4hpCsJ2kEuWKF0CAu+JBzjn2yMAi/H2uSfpSkITQFeMEaMFnS
+         bK4w==
+X-Gm-Message-State: AOAM533lPHx+f3g/ybpwHGcrUaGIezz1xbrKC/KTIg2tulJks+sSbe1P
+        QU5d9l9hSchSolDDl4jiBeKwC2T8lFWAKX5Tca5eFmZOiVKfnw==
+X-Google-Smtp-Source: ABdhPJxkYrdw0tkQ65uF7FdwPLjrWDJyTMHDLIz8rx7KUQwRWOSy8sPwddeleLL4Jr0PCmVZUsojIIK/8+iy0FNksL0=
+X-Received: by 2002:a05:651c:14c:: with SMTP id c12mr11360162ljd.72.1621865498847;
+ Mon, 24 May 2021 07:11:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210521034432.2321-1-zbestahu@gmail.com>
-In-Reply-To: <20210521034432.2321-1-zbestahu@gmail.com>
+References: <20210521133026.17296-1-johan@kernel.org>
+In-Reply-To: <20210521133026.17296-1-johan@kernel.org>
 From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 24 May 2021 16:10:47 +0200
-Message-ID: <CAPDyKFqPyyMizqFYfOcphXA3z3oJqod4x014T0D25Lm75uRHFg@mail.gmail.com>
-Subject: Re: [PATCH] mmc: cqhci: introduce get_trans_desc_offset()
-To:     Yue Hu <zbestahu@gmail.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Harjani Ritesh <riteshh@codeaurora.org>,
-        Asutosh Das <asutoshd@codeaurora.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
+Date:   Mon, 24 May 2021 16:11:00 +0200
+Message-ID: <CAPDyKFpw-ydfWXM0+Lz3KHq2X3f2S_47XA-43Rw4e6ZgOrobWw@mail.gmail.com>
+Subject: Re: [PATCH] mmc: vub3000: fix control-request direction
+To:     Johan Hovold <johan@kernel.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yue Hu <huyue2@yulong.com>, zbestahu@163.com
+        "# 4.0+" <stable@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 21 May 2021 at 05:44, Yue Hu <zbestahu@gmail.com> wrote:
+On Fri, 21 May 2021 at 15:30, Johan Hovold <johan@kernel.org> wrote:
 >
-> From: Yue Hu <huyue2@yulong.com>
+> The direction of the pipe argument must match the request-type direction
+> bit or control requests may fail depending on the host-controller-driver
+> implementation.
 >
-> The same calculation to get transfer descriptor offset is already used
-> at 3 different locations. Let's create a new helper to simplify code.
+> Fix the SET_ROM_WAIT_STATES request which erroneously used
+> usb_rcvctrlpipe().
 >
-> Signed-off-by: Yue Hu <huyue2@yulong.com>
+> Fixes: 88095e7b473a ("mmc: Add new VUB300 USB-to-SD/SDIO/MMC driver")
+> Cc: stable@vger.kernel.org      # 3.0
+> Signed-off-by: Johan Hovold <johan@kernel.org>
 
 Applied for next, thanks!
 
@@ -79,52 +81,22 @@ Uffe
 
 
 > ---
->  drivers/mmc/host/cqhci-core.c | 19 ++++++++++++-------
->  1 file changed, 12 insertions(+), 7 deletions(-)
+>  drivers/mmc/host/vub300.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/mmc/host/cqhci-core.c b/drivers/mmc/host/cqhci-core.c
-> index c237b6e..1128dd5 100644
-> --- a/drivers/mmc/host/cqhci-core.c
-> +++ b/drivers/mmc/host/cqhci-core.c
-> @@ -45,17 +45,23 @@ static inline u8 *get_link_desc(struct cqhci_host *cq_host, u8 tag)
->         return desc + cq_host->task_desc_len;
->  }
->
-> +static inline size_t get_trans_desc_offset(struct cqhci_host *cq_host, u8 tag)
-> +{
-> +       return cq_host->trans_desc_len * cq_host->mmc->max_segs * tag;
-> +}
-> +
->  static inline dma_addr_t get_trans_desc_dma(struct cqhci_host *cq_host, u8 tag)
->  {
-> -       return cq_host->trans_desc_dma_base +
-> -               (cq_host->mmc->max_segs * tag *
-> -                cq_host->trans_desc_len);
-> +       size_t offset = get_trans_desc_offset(cq_host, tag);
-> +
-> +       return cq_host->trans_desc_dma_base + offset;
->  }
->
->  static inline u8 *get_trans_desc(struct cqhci_host *cq_host, u8 tag)
->  {
-> -       return cq_host->trans_desc_base +
-> -               (cq_host->trans_desc_len * cq_host->mmc->max_segs * tag);
-> +       size_t offset = get_trans_desc_offset(cq_host, tag);
-> +
-> +       return cq_host->trans_desc_base + offset;
->  }
->
->  static void setup_trans_desc(struct cqhci_host *cq_host, u8 tag)
-> @@ -194,8 +200,7 @@ static int cqhci_host_alloc_tdl(struct cqhci_host *cq_host)
->
->         cq_host->desc_size = cq_host->slot_sz * cq_host->num_slots;
->
-> -       cq_host->data_size = cq_host->trans_desc_len * cq_host->mmc->max_segs *
-> -               cq_host->mmc->cqe_qdepth;
-> +       cq_host->data_size = get_trans_desc_offset(cq_host, cq_host->mmc->cqe_qdepth);
->
->         pr_debug("%s: cqhci: desc_size: %zu data_sz: %zu slot-sz: %d\n",
->                  mmc_hostname(cq_host->mmc), cq_host->desc_size, cq_host->data_size,
+> diff --git a/drivers/mmc/host/vub300.c b/drivers/mmc/host/vub300.c
+> index 739cf63ef6e2..4950d10d3a19 100644
+> --- a/drivers/mmc/host/vub300.c
+> +++ b/drivers/mmc/host/vub300.c
+> @@ -2279,7 +2279,7 @@ static int vub300_probe(struct usb_interface *interface,
+>         if (retval < 0)
+>                 goto error5;
+>         retval =
+> -               usb_control_msg(vub300->udev, usb_rcvctrlpipe(vub300->udev, 0),
+> +               usb_control_msg(vub300->udev, usb_sndctrlpipe(vub300->udev, 0),
+>                                 SET_ROM_WAIT_STATES,
+>                                 USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
+>                                 firmware_rom_wait_states, 0x0000, NULL, 0, HZ);
 > --
-> 1.9.1
+> 2.26.3
 >
