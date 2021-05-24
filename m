@@ -2,35 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE0E38ED22
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 215C538EFB4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:57:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhEXPeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:34:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50508 "EHLO mail.kernel.org"
+        id S235646AbhEXP7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:59:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233233AbhEXPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:32:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8BB3F613CB;
-        Mon, 24 May 2021 15:30:53 +0000 (UTC)
+        id S234270AbhEXPxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:53:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCEFE616ED;
+        Mon, 24 May 2021 15:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870254;
-        bh=15oc/WjcNzfjmfguWvMxeJ7cZRbaFID4/OV0DFsxLz0=;
+        s=korg; t=1621870762;
+        bh=M4ClGbD1NzJyWMQwlZFkBuYmcXpvY89/4jfmfBQpjGw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=svtKAvRZZ8pc3g7/alJ4JNkHN6uRvMozNYgUPTw3LfkrkLASEGUGZhfsI2HrBd76o
-         IzWdulPR1/AJBILmMlR8iNV26j0gQklP7zzpIw8ChmK9XtllV6LkqdRbTGUbkSIHYI
-         kXE6sqce9U3geTS9pFUFbbtRMbGfPBmQPYWZakZo=
+        b=pZOCiy3JXH3YtAGnKXGaNfnoafjbBLs2vgHoMILNB0giYWwQSAFQM2uU8e1jQvoMX
+         fJLX88+Wg3yRTNCbXEta9cLYk326bnpx2mMgla41nKG1ozBTsUTmQr9nC2c5J1Yfmd
+         +4UFN0K511wazCE4RSNz/S/LJeKcSE/T6vYH/BZg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 4.4 19/31] cdrom: gdrom: initialize global variable at init time
-Date:   Mon, 24 May 2021 17:25:02 +0200
-Message-Id: <20210524152323.549540750@linuxfoundation.org>
+        stable@vger.kernel.org, Can Guo <cang@codeaurora.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 008/104] scsi: ufs: core: Increase the usable queue depth
+Date:   Mon, 24 May 2021 17:25:03 +0200
+Message-Id: <20210524152333.116702685@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152322.919918360@linuxfoundation.org>
-References: <20210524152322.919918360@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,52 +46,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Bart Van Assche <bvanassche@acm.org>
 
-commit 9183f01b5e6e32eb3f17b5f3f8d5ad5ac9786c49 upstream.
+[ Upstream commit d0b2b70eb12e9ffaf95e11b16b230a4e015a536c ]
 
-As Peter points out, if we were to disconnect and then reconnect this
-driver from a device, the "global" state of the device would contain odd
-values and could cause problems.  Fix this up by just initializing the
-whole thing to 0 at probe() time.
+With the current implementation of the UFS driver active_queues is 1
+instead of 0 if all UFS request queues are idle. That causes
+hctx_may_queue() to divide the queue depth by 2 when queueing a request and
+hence reduces the usable queue depth.
 
-Ideally this would be a per-device variable, but given the age and the
-total lack of users of it, that would require a lot of s/./->/g changes
-for really no good reason.
+The shared tag set code in the block layer keeps track of the number of
+active request queues. blk_mq_tag_busy() is called before a request is
+queued onto a hwq and blk_mq_tag_idle() is called some time after the hwq
+became idle. blk_mq_tag_idle() is called from inside blk_mq_timeout_work().
+Hence, blk_mq_tag_idle() is only called if a timer is associated with each
+request that is submitted to a request queue that shares a tag set with
+another request queue.
 
-Reported-by: Peter Rosin <peda@axentia.se>
-Cc: Jens Axboe <axboe@kernel.dk>
-Reviewed-by: Peter Rosin <peda@axentia.se>
-Link: https://lore.kernel.org/r/YJP2j6AU82MqEY2M@kroah.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Adds a blk_mq_start_request() call in ufshcd_exec_dev_cmd(). This doubles
+the queue depth on my test setup from 16 to 32.
+
+In addition to increasing the usable queue depth, also fix the
+documentation of the 'timeout' parameter in the header above
+ufshcd_exec_dev_cmd().
+
+Link: https://lore.kernel.org/r/20210513164912.5683-1-bvanassche@acm.org
+Fixes: 7252a3603015 ("scsi: ufs: Avoid busy-waiting by eliminating tag conflicts")
+Cc: Can Guo <cang@codeaurora.org>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Avri Altman <avri.altman@wdc.com>
+Cc: Stanley Chu <stanley.chu@mediatek.com>
+Cc: Bean Huo <beanhuo@micron.com>
+Cc: Adrian Hunter <adrian.hunter@intel.com>
+Reviewed-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/cdrom/gdrom.c |    9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ drivers/scsi/ufs/ufshcd.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
---- a/drivers/cdrom/gdrom.c
-+++ b/drivers/cdrom/gdrom.c
-@@ -773,6 +773,13 @@ static int probe_gdrom_setupqueue(void)
- static int probe_gdrom(struct platform_device *devptr)
- {
- 	int err;
-+
-+	/*
-+	 * Ensure our "one" device is initialized properly in case of previous
-+	 * usages of it
-+	 */
-+	memset(&gd, 0, sizeof(gd));
-+
- 	/* Start the device */
- 	if (gdrom_execute_diagnostic() != 1) {
- 		pr_warning("ATA Probe for GDROM failed\n");
-@@ -867,7 +874,7 @@ static struct platform_driver gdrom_driv
- static int __init init_gdrom(void)
- {
- 	int rc;
--	gd.toc = NULL;
-+
- 	rc = platform_driver_register(&gdrom_driver);
- 	if (rc)
- 		return rc;
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 08d4d40c510e..854c96e63007 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -2768,7 +2768,7 @@ static int ufshcd_wait_for_dev_cmd(struct ufs_hba *hba,
+  * ufshcd_exec_dev_cmd - API for sending device management requests
+  * @hba: UFS hba
+  * @cmd_type: specifies the type (NOP, Query...)
+- * @timeout: time in seconds
++ * @timeout: timeout in milliseconds
+  *
+  * NOTE: Since there is only one available tag for device management commands,
+  * it is expected you hold the hba->dev_cmd.lock mutex.
+@@ -2798,6 +2798,9 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
+ 	}
+ 	tag = req->tag;
+ 	WARN_ON_ONCE(!ufshcd_valid_tag(hba, tag));
++	/* Set the timeout such that the SCSI error handler is not activated. */
++	req->timeout = msecs_to_jiffies(2 * timeout);
++	blk_mq_start_request(req);
+ 
+ 	init_completion(&wait);
+ 	lrbp = &hba->lrb[tag];
+-- 
+2.30.2
+
 
 
