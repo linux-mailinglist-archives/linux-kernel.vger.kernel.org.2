@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FA1F38EF1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D949738EF3F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235198AbhEXP4E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:56:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33886 "EHLO mail.kernel.org"
+        id S233521AbhEXP4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:56:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234073AbhEXPs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:48:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0AAE6140C;
-        Mon, 24 May 2021 15:37:22 +0000 (UTC)
+        id S234619AbhEXPtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:49:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76EA36141C;
+        Mon, 24 May 2021 15:37:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870643;
-        bh=r+qOUP8I1x0Uf3zaMaSpwtVegyi7cRYHHzO84PIlcko=;
+        s=korg; t=1621870666;
+        bh=yiU8zdIvYxIC9N2pYR+ykiaGI3Da4dRhuRNqlvARqOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GRkp8SRpPCkP+QA+VMJO1uMreQhk/OKAzv105Xm0r9oLgMAu+xiK4JTSM6WLCSuS0
-         9O28OXoYQ7jVI8GBGsEpk2SPZ+x3pf3wZcRusCwtvrW7AmkgEP/Wp1UkCkb7/tOGjC
-         686agVVyPOPQnFvydbj/5l/PkvOd09e8DWfeORVE=
+        b=aAAWoor8HxFAjsEFVs35xoFuW6n9mr59YnnG62ZkbuBaOR30vu3Gw3+6pDm6nOD6/
+         Sq3FmErYcptc3PIQ2g110gv84IimR5J0IYlFoFHhiE6bmzuCs9tw/37uaB7yxgrUHS
+         2uCvL4DivoDowzwvNPJHW6ZffqNkRBQU8AQUlXuw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        stable@vger.kernel.org,
+        syzbot+6bb23a5d5548b93c94aa@syzkaller.appspotmail.com,
         Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5.4 22/71] ALSA: firewire-lib: fix calculation for size of IR context payload
-Date:   Mon, 24 May 2021 17:25:28 +0200
-Message-Id: <20210524152327.185524929@linuxfoundation.org>
+Subject: [PATCH 5.4 23/71] ALSA: usb-audio: Validate MS endpoint descriptors
+Date:   Mon, 24 May 2021 17:25:29 +0200
+Message-Id: <20210524152327.216071018@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
 References: <20210524152326.447759938@linuxfoundation.org>
@@ -39,55 +40,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+From: Takashi Iwai <tiwai@suse.de>
 
-commit 1be4f21d9984fa9835fae5411a29465dc5aece6f upstream.
+commit e84749a78dc82bc545f12ce009e3dbcc2c5a8a91 upstream.
 
-The quadlets for CIP header is handled as a part of IR context header,
-thus it doesn't join in IR context payload. However current calculation
-includes the quadlets in IR context payload.
+snd_usbmidi_get_ms_info() may access beyond the border when a
+malformed descriptor is passed.  This patch adds the sanity checks of
+the given MS endpoint descriptors, and skips invalid ones.
 
+Reported-by: syzbot+6bb23a5d5548b93c94aa@syzkaller.appspotmail.com
 Cc: <stable@vger.kernel.org>
-Fixes: f11453c7cc01 ("ALSA: firewire-lib: use 16 bytes IR context header to separate CIP header")
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Link: https://lore.kernel.org/r/20210513125652.110249-5-o-takashi@sakamocchi.jp
+Link: https://lore.kernel.org/r/20210510150659.17710-1-tiwai@suse.de
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/firewire/amdtp-stream.c |   13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ sound/usb/midi.c |    4 ++++
+ 1 file changed, 4 insertions(+)
 
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -932,23 +932,22 @@ static int amdtp_stream_start(struct amd
- 		s->ctx_data.rx.last_syt_offset = TICKS_PER_CYCLE;
- 	}
- 
--	/* initialize packet buffer */
-+	// initialize packet buffer.
-+	max_ctx_payload_size = amdtp_stream_get_max_payload(s);
- 	if (s->direction == AMDTP_IN_STREAM) {
- 		dir = DMA_FROM_DEVICE;
- 		type = FW_ISO_CONTEXT_RECEIVE;
--		if (!(s->flags & CIP_NO_HEADER))
-+		if (!(s->flags & CIP_NO_HEADER)) {
-+			max_ctx_payload_size -= 8;
- 			ctx_header_size = IR_CTX_HEADER_SIZE_CIP;
--		else
-+		} else {
- 			ctx_header_size = IR_CTX_HEADER_SIZE_NO_CIP;
--
--		max_ctx_payload_size = amdtp_stream_get_max_payload(s) -
--				       ctx_header_size;
-+		}
- 	} else {
- 		dir = DMA_TO_DEVICE;
- 		type = FW_ISO_CONTEXT_TRANSMIT;
- 		ctx_header_size = 0;	// No effect for IT context.
- 
--		max_ctx_payload_size = amdtp_stream_get_max_payload(s);
- 		if (!(s->flags & CIP_NO_HEADER))
- 			max_ctx_payload_size -= IT_PKT_HEADER_SIZE_CIP;
- 	}
+--- a/sound/usb/midi.c
++++ b/sound/usb/midi.c
+@@ -1889,8 +1889,12 @@ static int snd_usbmidi_get_ms_info(struc
+ 		ms_ep = find_usb_ms_endpoint_descriptor(hostep);
+ 		if (!ms_ep)
+ 			continue;
++		if (ms_ep->bLength <= sizeof(*ms_ep))
++			continue;
+ 		if (ms_ep->bNumEmbMIDIJack > 0x10)
+ 			continue;
++		if (ms_ep->bLength < sizeof(*ms_ep) + ms_ep->bNumEmbMIDIJack)
++			continue;
+ 		if (usb_endpoint_dir_out(ep)) {
+ 			if (endpoints[epidx].out_ep) {
+ 				if (++epidx >= MIDI_MAX_ENDPOINTS) {
 
 
