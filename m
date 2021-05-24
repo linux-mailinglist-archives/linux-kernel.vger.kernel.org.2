@@ -2,133 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 034ED38E061
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:37:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877BF38E065
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 06:37:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231288AbhEXEiQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 00:38:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40326 "EHLO
+        id S232130AbhEXEjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 00:39:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40554 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhEXEiP (ORCPT
+        with ESMTP id S229530AbhEXEjO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 00:38:15 -0400
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7184C061574;
-        Sun, 23 May 2021 21:36:47 -0700 (PDT)
-Received: by mail-pl1-x635.google.com with SMTP id v13so13978728ple.9;
-        Sun, 23 May 2021 21:36:47 -0700 (PDT)
+        Mon, 24 May 2021 00:39:14 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3456CC061574
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:37:46 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id v13-20020a17090abb8db029015f9f7d7290so812753pjr.0
+        for <linux-kernel@vger.kernel.org>; Sun, 23 May 2021 21:37:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=CFKj4h8D3vKVsrArxInuoUkH3K47MAPJEo/4ElSezfw=;
-        b=suelYebOlkPxLUkUTCooa0nu2Vbc9auUsC0ZpGyRD7QqJCvRFdyVW/w4mVNVNPt5nh
-         INTH9AivNniMLt/7OeOVaz39skE253KoNrvaNG76w0EYBVCjpkU4b3boQdlKbiyIjjyc
-         4smb0q25DNDaEEnnkVCIa0YpeqNJdWaDsCAtj7LzS4OcffH5eeCvRddqgld/RcTUCUX0
-         nBbnO2919hAuvhh+fA295dm8AlTInxsN61FjykuQ04Oi92fGD6gQJMWXYvdZ/tKD+YRn
-         jpf18KTH6azSK+z3L52gIricwlxHYAqFIBTDWUByKkBs82Fqf4UCeg3Ftw4YR/sw2OnU
-         AwYA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MDE07gsiuD4M3r2LCEJykHaQUxtgYgyzLwjRG2xiWSo=;
+        b=cMlNRaFVHxk/Vg2m4FWR7arQ/ghKts+RBvLvpeQcGyy25qofos/zvz9gUv7jDeVjza
+         93RZUp5BiFbSqTrO+NUWRNsYj8cyBstCJBjhS3klDTdiKbCqN8gQYBgUNRJElP+C925B
+         ozyW+qN+zvi6L7UdnFuG8PIldHGPc/9jpIwBkA1t/2/3guTMpuunG+456UxWgZ7FDSuU
+         PKXM46qji8s89yr0dCU8ihrFl+w/q4zR6/zhs4tvktAHndJV9fX6fUWVzafwUBwIk7Pl
+         mkBAvXkgpVAt29Iz5EdNRiU+cSC3mZFHmUm6rQPX0IhZwaUVrnJ9CF9CJU0d8yU9TVjs
+         mBmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=CFKj4h8D3vKVsrArxInuoUkH3K47MAPJEo/4ElSezfw=;
-        b=Pk7vPBusOas1OOvrP9+LPx8HL2l+9l25fxDFUGsP615rNdfyZL4Rm5PopwVIiP2VAG
-         zN9tG2eT9zALg1aWSJxjqY1GyJ3RVE/FkVxxWptcxsWNHbyGvxq6B1HQQFycpm6n4lLg
-         mA8JYVdxdqjuMr6voZfXZQKiK9ZRZ+5xOIK7clLdjGT4VOTtqKYYHwY8QaNyfc75kKg5
-         oPGlGUIuk7ToW/+OrOyTgnFuULgrsWgMM9tG8z0oih6E3TzlaQtV/TV5MwrAxnf+dPoP
-         MHwOr4XhRh76BfmLy5nq82WZnsAiQ4EHElapXlctMKVwkixoftfSzaotCnqZ59YHPcsr
-         eKOw==
-X-Gm-Message-State: AOAM531XsG9Ivd/Q1ZhE6+IeWsl5LviN/SRn+10iWuHSskrBcQ63fh78
-        FAZYb1BypcynX2IoA7MS/hGosBTf9FA=
-X-Google-Smtp-Source: ABdhPJx78sbuuA0VTuQzKqWGNB/d5u4f4KcVr41uLsV7Gks8DRu+CWNOCDsLH9QN+BAsYtAqwTDJHA==
-X-Received: by 2002:a17:90a:9517:: with SMTP id t23mr22396886pjo.130.1621831007083;
-        Sun, 23 May 2021 21:36:47 -0700 (PDT)
-Received: from localhost.localdomain ([203.205.141.56])
-        by smtp.googlemail.com with ESMTPSA id cc2sm8884703pjb.39.2021.05.23.21.36.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 23 May 2021 21:36:46 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: X86: Fix warning caused by stale emulation context
-Date:   Sun, 23 May 2021 21:35:54 -0700
-Message-Id: <1621830954-31963-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MDE07gsiuD4M3r2LCEJykHaQUxtgYgyzLwjRG2xiWSo=;
+        b=ZJMr3v5JqbtQhSHFm4l9uQ0dB8nu03YgF4L4tYKvvrS4+46CShARgLdJTJ2UtAbgtn
+         WPfrDst+o7XrNC9eFA3vrQJur6lNOmRWkpTHyhIlJ4jYiTKhQmiwsox8VdrpFmz2V7PF
+         bwrj4h/+MbG0U8Cjw1UEUtW8Xj6uuGWqDMiB87gLjcIaF+1ufDd5aZk2Bo5PAqQKwK3y
+         D8+FfdkLJv9AvFQknSEnj+e4fJNd4SVXAIc8/+3j6G1+WXT9lohjX5GtJyVZ0+FnwxSr
+         bX/2KfaNqHb5YIkCD2LIYjowtoYK3hS4cBpWG3LxSA62XlikMGR0iK1+tPM453bSbnII
+         k/KA==
+X-Gm-Message-State: AOAM533Zg25mcVvn0i3s+Enbt3m8iZahwOCHuI8tzq+djNL0XRHcmfMU
+        oXyKB2iVVXIu66wqzlpWynPv
+X-Google-Smtp-Source: ABdhPJy9QPbKkRIFtXdAwMIebxG5sg01nmgnd6EX7GHXpAgjDNbW5i8bMBIDNwjkg/fabwwZYgm8qA==
+X-Received: by 2002:a17:90a:b38d:: with SMTP id e13mr22456179pjr.222.1621831065632;
+        Sun, 23 May 2021 21:37:45 -0700 (PDT)
+Received: from work ([120.138.12.48])
+        by smtp.gmail.com with ESMTPSA id v14sm9680578pfi.25.2021.05.23.21.37.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 23 May 2021 21:37:44 -0700 (PDT)
+Date:   Mon, 24 May 2021 10:07:40 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Baochen Qiang <bqiang@codeaurora.org>
+Cc:     hemantk@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, ath11k@lists.infradead.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2] bus: mhi: Wait for M2 state during system resume
+Message-ID: <20210524043740.GC8823@work>
+References: <20210524040312.14409-1-bqiang@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210524040312.14409-1-bqiang@codeaurora.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On Mon, May 24, 2021 at 12:03:12PM +0800, Baochen Qiang wrote:
+> During system resume, MHI host triggers M3->M0 transition and then waits
+> for target device to enter M0 state. Once done, the device queues a state
+> change event into ctrl event ring and notifies MHI host by raising an
+> interrupt, where a tasklet is scheduled to process this event. In most cases,
+> the tasklet is served timely and wait operation succeeds.
+> 
+> However, there are cases where CPU is busy and cannot serve this tasklet
+> for some time. Once delay goes long enough, the device moves itself to M1
+> state and also interrupts MHI host after inserting a new state change
+> event to ctrl ring. Later CPU finally has time to process the ring, however
+> there are two events in it now:
+> 	1. for M3->M0 event, which is processed first as queued first,
+> 	   tasklet handler updates device state to M0 and wakes up the task,
+> 	   i.e., the MHI host.
+> 	2. for M0->M1 event, which is processed later, tasklet handler
+> 	   triggers M1->M2 transition and updates device state to M2 directly,
+> 	   then wakes up the MHI host(if still sleeping on this wait queue).
+> Note that although MHI host has been woken up while processing the first
+> event, it may still has no chance to run before the second event is processed.
+> In other words, MHI host has to keep waiting till timeout cause the M0 state
+> has been missed.
+> 
+> kernel log here:
+> ...
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.911251] mhi 0000:06:00.0: Entered with PM state: M3, MHI state: M3
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917762] mhi 0000:06:00.0: State change event to state: M0
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4247.917767] mhi 0000:06:00.0: State change event to state: M1
+> Apr 15 01:45:14 test-NUC8i7HVK kernel: [ 4338.788231] mhi 0000:06:00.0: Did not enter M0 state, MHI state: M2, PM state: M2
+> ...
+> 
+> Fix this issue by simply adding M2 as a valid state for resume.
+> 
+> Tested-on: WCN6855 hw2.0 PCI WLAN.HSP.1.1-01720.1-QCAHSPSWPL_V1_V2_SILICONZ_LITE-1
+> 
+> Fixes: 0c6b20a1d720 ("bus: mhi: core: Add support for MHI suspend and resume")
+> Signed-off-by: Baochen Qiang <bqiang@codeaurora.org>
+> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-Reported by syzkaller:
+Applied to mhi-fixes!
 
-  WARNING: CPU: 7 PID: 10526 at /home/kernel/ssd/linux/arch/x86/kvm//x86.c:7621 x86_emulate_instruction+0x41b/0x510 [kvm]
-  RIP: 0010:x86_emulate_instruction+0x41b/0x510 [kvm]
-  Call Trace:
-   kvm_mmu_page_fault+0x126/0x8f0 [kvm]
-   vmx_handle_exit+0x11e/0x680 [kvm_intel]
-   vcpu_enter_guest+0xd95/0x1b40 [kvm]
-   kvm_arch_vcpu_ioctl_run+0x377/0x6a0 [kvm]
-   kvm_vcpu_ioctl+0x389/0x630 [kvm]
-   __x64_sys_ioctl+0x8e/0xd0
-   do_syscall_64+0x3c/0xb0
-   entry_SYSCALL_64_after_hwframe+0x44/0xae
+Thanks,
+Mani
 
-Commit 4a1e10d5b5d8c (KVM: x86: handle hardware breakpoints during emulation())
-adds hardware breakpoints check before emulation the instruction and parts of 
-emulation context initialization, actually we don't have EMULTYPE_NO_DECODE flag 
-here and the emulation context will not be reused. Commit c8848cee74ff (KVM: x86: 
-set ctxt->have_exception in x86_decode_insn()) triggers the warning because it 
-catches the stale emulation context has #UD, however, it is not during instruction 
-decoding which should result in EMULATION_FAILED. This patch fixes it by moving 
-the second part emulation context initialization before hardware breakpoints check.
-
-syzkaller source: https://syzkaller.appspot.com/x/repro.c?x=134683fdd00000
-
-Reported-by: syzbot+71271244f206d17f6441@syzkaller.appspotmail.com
-Fixes: 4a1e10d5b5d8 (KVM: x86: handle hardware breakpoints during emulation)
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/x86.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index bbc4e04..eca69f9 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -7552,6 +7552,13 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
- 
- 	init_emulate_ctxt(vcpu);
- 
-+	ctxt->interruptibility = 0;
-+	ctxt->have_exception = false;
-+	ctxt->exception.vector = -1;
-+	ctxt->perm_ok = false;
-+
-+	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
-+
- 	/*
- 	 * We will reenter on the same instruction since we do not set
- 	 * complete_userspace_io. This does not handle watchpoints yet,
-@@ -7561,13 +7568,6 @@ int x86_decode_emulated_instruction(struct kvm_vcpu *vcpu, int emulation_type,
- 	    kvm_vcpu_check_breakpoint(vcpu, &r))
- 		return r;
- 
--	ctxt->interruptibility = 0;
--	ctxt->have_exception = false;
--	ctxt->exception.vector = -1;
--	ctxt->perm_ok = false;
--
--	ctxt->ud = emulation_type & EMULTYPE_TRAP_UD;
--
- 	r = x86_decode_insn(ctxt, insn, insn_len);
- 
- 	trace_kvm_emulate_insn_start(vcpu);
--- 
-2.7.4
-
+> ---
+>  drivers/bus/mhi/core/pm.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
+> index e2e59a341fef..59b009a3ee9b 100644
+> --- a/drivers/bus/mhi/core/pm.c
+> +++ b/drivers/bus/mhi/core/pm.c
+> @@ -934,6 +934,7 @@ int mhi_pm_resume(struct mhi_controller *mhi_cntrl)
+>  
+>  	ret = wait_event_timeout(mhi_cntrl->state_event,
+>  				 mhi_cntrl->dev_state == MHI_STATE_M0 ||
+> +				 mhi_cntrl->dev_state == MHI_STATE_M2 ||
+>  				 MHI_PM_IN_ERROR_STATE(mhi_cntrl->pm_state),
+>  				 msecs_to_jiffies(mhi_cntrl->timeout_ms));
+>  
+> -- 
+> 2.25.1
+> 
