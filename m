@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8498738EDCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:41:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D4C38EE28
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhEXPmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:42:07 -0400
+        id S234055AbhEXPqO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:46:14 -0400
 Received: from mail.kernel.org ([198.145.29.99]:56260 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232974AbhEXPiV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:38:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C03361425;
-        Mon, 24 May 2021 15:33:24 +0000 (UTC)
+        id S233299AbhEXPmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:42:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C4AE61444;
+        Mon, 24 May 2021 15:34:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870405;
-        bh=jz5lJpbrtEPhliG6O76iXaB5fHjt4HN2bNwhoy5SiXE=;
+        s=korg; t=1621870492;
+        bh=6uPdLOtWDwPTg23SaBpdldN7cAfKsfp4eOLSq3ZdXgY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=im1bUHfV7FFETRZEtmANdXg+qz9bGVPmCkCMX9Yn8br4kI8bALJlHxO6joQdl1FW+
-         cn4DCVvhMrVio7pXMX3+UfvZAxszFNdRQ+hDvXvo0JeuVmc7AKLaxS9UC5ZYdf20BD
-         DuUx1NB5x29qn7KoatwVzCOc3v8jE9AAqivfWvRA=
+        b=a6RPEbMC2ADUdmYsW6143uNXWsYw4o4oQwk06DorxMAZnrbgi7o0eLYHqCoXwicQ/
+         VPQCjYIsC+l2bXEmV6KtX9PrkXCJlohL9H8M/wMPXABevL5kAaxKuazapaEfItwJ7o
+         l2w3/nY8WU3Vy6WY43XPtkfBbn0EkbsI9uEwv0Xc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH 4.14 19/37] Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
-Date:   Mon, 24 May 2021 17:25:23 +0200
-Message-Id: <20210524152324.833261636@linuxfoundation.org>
+        stable@vger.kernel.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+        Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 4.19 13/49] ALSA: dice: fix stream format at middle sampling rate for Alesis iO 26
+Date:   Mon, 24 May 2021 17:25:24 +0200
+Message-Id: <20210524152324.813467449@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.199089755@linuxfoundation.org>
-References: <20210524152324.199089755@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,58 +39,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-commit 99ae3417672a6d4a3bf68d4fc43d7c6ca074d477 upstream.
+commit 1b6604896e78969baffc1b6cc6bc175f95929ac4 upstream.
 
-This reverts commit 9aa3aa15f4c2f74f47afd6c5db4b420fadf3f315.
+Alesis iO 26 FireWire has two pairs of digital optical interface. It
+delivers PCM frames from the interfaces by second isochronous packet
+streaming. Although both of the interfaces are available at 44.1/48.0
+kHz, first one of them is only available at 88.2/96.0 kHz. It reduces
+the number of PCM samples to 4 in Multi Bit Linear Audio data channel
+of data blocks on the second isochronous packet streaming.
 
-Because of recent interactions with developers from @umn.edu, all
-commits from them have been recently re-reviewed to ensure if they were
-correct or not.
+This commit fixes hardcoded stream formats.
 
-Upon review, it was determined that this commit is not needed at all so
-just revert it.  Also, the call to lm80_init_client() was not properly
-handled, so if error handling is needed in the lm80_probe() function,
-then it should be done properly, not half-baked like the commit being
-reverted here did.
-
-Cc: Kangjie Lu <kjlu@umn.edu>
-Fixes: 9aa3aa15f4c2 ("hwmon: (lm80) fix a missing check of bus read in lm80 probe")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Guenter Roeck <linux@roeck-us.net>
-Link: https://lore.kernel.org/r/20210503115736.2104747-5-gregkh@linuxfoundation.org
+Cc: <stable@vger.kernel.org>
+Fixes: 28b208f600a3 ("ALSA: dice: add parameters of stream formats for models produced by Alesis")
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Link: https://lore.kernel.org/r/20210513125652.110249-2-o-takashi@sakamocchi.jp
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/hwmon/lm80.c |   11 ++---------
- 1 file changed, 2 insertions(+), 9 deletions(-)
+ sound/firewire/dice/dice-alesis.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- a/drivers/hwmon/lm80.c
-+++ b/drivers/hwmon/lm80.c
-@@ -630,7 +630,6 @@ static int lm80_probe(struct i2c_client
- 	struct device *dev = &client->dev;
- 	struct device *hwmon_dev;
- 	struct lm80_data *data;
--	int rv;
+--- a/sound/firewire/dice/dice-alesis.c
++++ b/sound/firewire/dice/dice-alesis.c
+@@ -16,7 +16,7 @@ alesis_io14_tx_pcm_chs[MAX_STREAMS][SND_
+ static const unsigned int
+ alesis_io26_tx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT] = {
+ 	{10, 10, 4},	/* Tx0 = Analog + S/PDIF. */
+-	{16, 8, 0},	/* Tx1 = ADAT1 + ADAT2. */
++	{16, 4, 0},	/* Tx1 = ADAT1 + ADAT2 (available at low rate). */
+ };
  
- 	data = devm_kzalloc(dev, sizeof(struct lm80_data), GFP_KERNEL);
- 	if (!data)
-@@ -643,14 +642,8 @@ static int lm80_probe(struct i2c_client
- 	lm80_init_client(client);
- 
- 	/* A few vars need to be filled upon startup */
--	rv = lm80_read_value(client, LM80_REG_FAN_MIN(1));
--	if (rv < 0)
--		return rv;
--	data->fan[f_min][0] = rv;
--	rv = lm80_read_value(client, LM80_REG_FAN_MIN(2));
--	if (rv < 0)
--		return rv;
--	data->fan[f_min][1] = rv;
-+	data->fan[f_min][0] = lm80_read_value(client, LM80_REG_FAN_MIN(1));
-+	data->fan[f_min][1] = lm80_read_value(client, LM80_REG_FAN_MIN(2));
- 
- 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
- 							   data, lm80_groups);
+ int snd_dice_detect_alesis_formats(struct snd_dice *dice)
 
 
