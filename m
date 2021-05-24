@@ -2,102 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3090038E6B9
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:37:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2C3238E6BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232530AbhEXMjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:39:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232371AbhEXMjV (ORCPT
+        id S232664AbhEXMjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:39:55 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:48583 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232515AbhEXMjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:39:21 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29F8C061574
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:37:52 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id e17so10136047pfl.5
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 05:37:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ingics-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r4dVLGHWu3In2mmlnxf97heOuU6nZM6itV2qQ+TUyo4=;
-        b=vwef9bUvnLU0oebljZhynCRmnyNDr1NElN7oXxz43eVPEzP5Ssyd21VDykwUpQ6641
-         PJ93QVLFVfCkAVCvhs+a337kkIOxE4wT2jXgDUtkxjcnKRCUe4LaIijW6cJrEXcXlMtU
-         ozkseNUylXYrVRXlk0nw+yv2j6NCUWL5mVXZ1+3l7nwGBvf04hNSZMDLUAy1YwhLnjwr
-         dZDUNRdl7zt2mYVyKEQa/ygEX0RwGauo/sxCAz4VaxqcX0cWeMjExvo5PwPPG2g2i9FG
-         hvgj4tGG3XFoNCl050KcFmjEPtpkke5kslUM6UCag3Mb0od1NhROrH8iLTwdk5zwJauw
-         UEAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=r4dVLGHWu3In2mmlnxf97heOuU6nZM6itV2qQ+TUyo4=;
-        b=rqyJi0pYCmCNyhY+Qsm/uUiXrVXif98AkpeG9lGKGweUs8bkInW59dMkQiHwHRazw7
-         HaT/RxOYQxwczsXuiaFEq+hXvxRRmNdDgdmSukNT0dwapsTavrh0umnD/2uSgPKEA0LR
-         OzNNbMcG88nAryMeq6Zm3aXa+U/Wl2W4H6QKl8+nybstd4mQ5lSKknbk+t5p+vJSvxSm
-         5EQbJtf2/bk+TTAZn4KwqB3HF9y3OEo8G8t/5TP6bnuvGMNc2uRkp7GOV+YikFLQ9zlm
-         7tCpCPAQtXDnPSbe2YsBAeQ+hL+E8aEREdAQ0Rlk3VFSE6fk2FJ9/ybyHL2VxNdWol9g
-         fuQQ==
-X-Gm-Message-State: AOAM5324BpW2alMLeK90vYgDt/YcSv/pP9JilXmRLDNT1mhuPD8pTYQ8
-        oFeMeJUc3bNcaCvlrtuLqKLseYRObkCJHB0R
-X-Google-Smtp-Source: ABdhPJxmH1MIMprnrunYaUYr0IaXdQOMax4tzuj/gM/XO4si6GFEOFVkKSvZwn/TB4Q53y39IBK19w==
-X-Received: by 2002:a63:79c5:: with SMTP id u188mr13347009pgc.198.1621859872034;
-        Mon, 24 May 2021 05:37:52 -0700 (PDT)
-Received: from localhost.localdomain (122-117-179-2.HINET-IP.hinet.net. [122.117.179.2])
-        by smtp.gmail.com with ESMTPSA id 35sm11215006pgq.91.2021.05.24.05.37.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 05:37:51 -0700 (PDT)
-From:   Axel Lin <axel.lin@ingics.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     ChiYuan Huang <cy_huang@richtek.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-kernel@vger.kernel.org, Axel Lin <axel.lin@ingics.com>
-Subject: [PATCH] regulator: rt4831: Add missing .owner field in regulator_desc
-Date:   Mon, 24 May 2021 20:37:35 +0800
-Message-Id: <20210524123735.2363676-1-axel.lin@ingics.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 24 May 2021 08:39:53 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-136-zm-lfFzsPZO-pC4i18khew-1; Mon, 24 May 2021 13:38:22 +0100
+X-MC-Unique: zm-lfFzsPZO-pC4i18khew-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Mon, 24 May 2021 13:38:19 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Mon, 24 May 2021 13:38:19 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Steven Price' <steven.price@arm.com>,
+        Amanieu d'Antras <amanieu@gmail.com>
+CC:     Arnd Bergmann <arnd@kernel.org>,
+        Ryan Houdek <Houdek.Ryan@fex-emu.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        "Linux ARM" <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: RE: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat
+ syscalls
+Thread-Topic: [RESEND PATCH v4 8/8] arm64: Allow 64-bit tasks to invoke compat
+ syscalls
+Thread-Index: AQHXUI7V2V8LHoAybE2lBVUPxoeiSarykJcA
+Date:   Mon, 24 May 2021 12:38:19 +0000
+Message-ID: <f0d09966f7714c54aee1bb0260a6193d@AcuMS.aculab.com>
+References: <20210518090658.9519-1-amanieu@gmail.com>
+ <20210518090658.9519-9-amanieu@gmail.com>
+ <CAK8P3a0=iSUBu5GnuWoxEjB0Hpd3iHeVwe2Njfj6x64hoJA5oA@mail.gmail.com>
+ <CA+y5pbRiXAF=gobC9sqJmvjVAmihA=O7xcSTkA1f8=QsnZzoEg@mail.gmail.com>
+ <14982d7d-bee1-6c25-8b18-123c29959f52@arm.com>
+ <CA+y5pbRwgpctUOBzzscT9XMN9LM2qraPNg6K6onFcpQaaFDYkQ@mail.gmail.com>
+ <1c2bd27a-1c96-f154-ed18-f33630b109b1@arm.com>
+ <CA+y5pbSbky2kS+O5j9bn57nROdYaYeHcd2R-46X1cc388PKOvg@mail.gmail.com>
+ <419f410f-21b3-a4c6-3cd8-025007e9c31e@arm.com>
+In-Reply-To: <419f410f-21b3-a4c6-3cd8-025007e9c31e@arm.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing .owner field in regulator_desc, which is used for refcounting.
-
-Signed-off-by: Axel Lin <axel.lin@ingics.com>
----
- drivers/regulator/rt4831-regulator.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/regulator/rt4831-regulator.c b/drivers/regulator/rt4831-regulator.c
-index e3aaac90d238..676b0419e48f 100644
---- a/drivers/regulator/rt4831-regulator.c
-+++ b/drivers/regulator/rt4831-regulator.c
-@@ -108,6 +108,7 @@ static const struct regulator_desc rt4831_regulator_descs[] = {
- 		.bypass_reg = RT4831_REG_DSVEN,
- 		.bypass_val_on = DSV_MODE_BYPASS,
- 		.bypass_val_off = DSV_MODE_NORMAL,
-+		.owner = THIS_MODULE,
- 	},
- 	{
- 		.name = "DSVP",
-@@ -125,6 +126,7 @@ static const struct regulator_desc rt4831_regulator_descs[] = {
- 		.enable_mask = RT4831_POSEN_MASK,
- 		.active_discharge_reg = RT4831_REG_DSVEN,
- 		.active_discharge_mask = RT4831_POSADEN_MASK,
-+		.owner = THIS_MODULE,
- 	},
- 	{
- 		.name = "DSVN",
-@@ -142,6 +144,7 @@ static const struct regulator_desc rt4831_regulator_descs[] = {
- 		.enable_mask = RT4831_NEGEN_MASK,
- 		.active_discharge_reg = RT4831_REG_DSVEN,
- 		.active_discharge_mask = RT4831_NEGADEN_MASK,
-+		.owner = THIS_MODULE,
- 	}
- };
- 
--- 
-2.25.1
+RnJvbTogU3RldmVuIFByaWNlDQo+IFNlbnQ6IDI0IE1heSAyMDIxIDEyOjIxDQouLi4NCj4gU28g
+YSAiZ2VuZXJpYyIgd2F5IG9mIHJlcXVlc3RlZCB0aGUga2VybmVsIGxpbWl0IHRoZSBhZGRyZXNz
+IHNwYWNlIGZvcg0KPiBhbGxvY2F0aW9ucyB3b3VsZCBiZSBwb3RlbnRpYWxseSB1c2VmdWwgZm9y
+IG90aGVyIHB1cnBvc2VzLiBBZGRpbmcgYSBuZXcNCj4gc3lzY2FsbCBmb3IgdGhpcyBwdXJwb3Nl
+IHdvdWxkIGJlIHNlbnNpYmxlLiBXZSBhbHJlYWR5IGhhdmUgKGF0IGxlYXN0KQ0KPiB0d28gImhh
+Y2tzIiBpbiBtbWFwIGZvciBjb250cm9sbGluZyB0aGUgYWRkcmVzcyByYW5nZSB0aGF0IGNhbiBi
+ZSB1c2VkOg0KPiANCj4gICogTUFQXzMyQklUIC0geDg2IG9ubHksIGFuZCByZWFsbHkgIjMxIGJp
+dCINCj4gDQo+ICAqIFByb3ZpZGluZyBhIG1tYXAoKSBoaW50IHdpdGggdGhlIHRvcCBiaXRzIHNl
+dCB0byBvcHQtaW4gdG8gNTItYml0IFZBcy4NCj4gDQo+IEEgd2VsbCBkZWZpbmVkIG1lY2hhbmlz
+bSBmb3IgY29udHJvbGxpbmcgdGhlIHZhbGlkIFZBIHJhbmdlIGZvcg0KPiBhbGxvY2F0aW9ucyB3
+b3VsZCBiZSBtdWNoIGJldHRlciB0aGFuIGFkZGluZyBtb3JlIGhhY2tzIC0gYW5kIGJvbnVzDQo+
+IHBvaW50cyBpZiBpdCB3b3JrcyBmb3IgYWxsIHRoZSBkaWZmZXJlbnQgdHlwZXMgb2YgYWxsb2Nh
+dGlvbiB1bmxpa2UgdGhlDQo+IGFib3ZlLg0KDQpJJ2QgaGF2ZSB0aG91Z2h0IGEgJ01BUF9CRUxP
+VycgZmxhZyAoY2YgTUFQX0ZJWEVEKSB3b3VsZCBzdWZmaWNlLg0KSSdtIHNvcnQgb2Ygc3VycHJp
+c2VkIE1BUF8zMkJJVCB3YXNuJ3QgaW1wbGVtZW50ZWQgdGhhdCB3YXkuDQonbWFuIG1tYXAnIHNh
+eXMgTUFQXzMyQklUIHdhcyBhZGRlZCBmb3IgeDY0IHRocmVhZCBzdGFja3MgLSBJIHRob3VnaA0K
+dGhlIHJlcXVpcmVtZW50IGNhbiBmcm9tIDMyYml0IHdpbmUgKHdpbmRvd3MgaGFzIGEgMkcgdXNl
+ci9rZXJuZWwgYm91bmRhcnkpLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExh
+a2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQs
+IFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
