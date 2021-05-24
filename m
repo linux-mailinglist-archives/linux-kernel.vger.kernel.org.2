@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E73738F104
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8597D38F01F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:59:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234563AbhEXQId (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 12:08:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41102 "EHLO mail.kernel.org"
+        id S235883AbhEXQBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234833AbhEXQA0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 12:00:26 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D9C066146D;
-        Mon, 24 May 2021 15:46:07 +0000 (UTC)
+        id S235486AbhEXPzJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:55:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B1736109F;
+        Mon, 24 May 2021 15:41:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621871168;
-        bh=XCt114qiNhLnTdPz6qVXnm6+12wngqJVV6L5zOEzmO0=;
+        s=korg; t=1621870894;
+        bh=fFISBQGlswKV4ngHO+piUv/DQV2UOjaGUS2vzv1mwvs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xP5dztCHvk3pIrIsE5nRy5HOROaJ3reNy8dqfqxKKnrL9oEvMRcatfKgxQgFCBZON
-         BnLSEsvBf/WKQmyk4tddcq1AwCThqsNmEI1OMecLPFaxokwev4fUbTFGVKeUKGSz/E
-         us6nLWHjNY+YNsJ9aX5D+oTRwV813OMa04ikuU1M=
+        b=1CEjtOkA40wWvmpBPA/8RcbxgWUv9QGSvcVXr3ai5z4/nQP6mm+/nlHcIx2sbkce5
+         T2afi73x0ehPH7Nt4FvDPN49cmfXAn5FwXPiezEtTSgRW65cFazMTM4F1eqvJTde4u
+         jp+ESFy1ebqwgrt/zkYwBduT4jLt6NoJOQUhXlGE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
-        =?UTF-8?q?Martin=20=C3=85gren?= <martin.agren@gmail.com>
-Subject: [PATCH 5.12 060/127] uio/uio_pci_generic: fix return value changed in refactoring
+        stable@vger.kernel.org, Peter Rosin <peda@axentia.se>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 5.10 082/104] cdrom: gdrom: initialize global variable at init time
 Date:   Mon, 24 May 2021 17:26:17 +0200
-Message-Id: <20210524152336.865935428@linuxfoundation.org>
+Message-Id: <20210524152335.572311639@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152334.857620285@linuxfoundation.org>
-References: <20210524152334.857620285@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,37 +39,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Martin Ågren <martin.agren@gmail.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 156ed0215ef365604f2382d5164c36d3a1cfd98f upstream.
+commit 9183f01b5e6e32eb3f17b5f3f8d5ad5ac9786c49 upstream.
 
-Commit ef84928cff58 ("uio/uio_pci_generic: use device-managed function
-equivalents") was able to simplify various error paths thanks to no
-longer having to clean up on the way out. Some error paths were dropped,
-others were simplified. In one of those simplifications, the return
-value was accidentally changed from -ENODEV to -ENOMEM. Restore the old
-return value.
+As Peter points out, if we were to disconnect and then reconnect this
+driver from a device, the "global" state of the device would contain odd
+values and could cause problems.  Fix this up by just initializing the
+whole thing to 0 at probe() time.
 
-Fixes: ef84928cff58 ("uio/uio_pci_generic: use device-managed function equivalents")
-Cc: stable <stable@vger.kernel.org>
-Acked-by: Michael S. Tsirkin <mst@redhat.com>
-Signed-off-by: Martin Ågren <martin.agren@gmail.com>
-Link: https://lore.kernel.org/r/20210422192240.1136373-1-martin.agren@gmail.com
+Ideally this would be a per-device variable, but given the age and the
+total lack of users of it, that would require a lot of s/./->/g changes
+for really no good reason.
+
+Reported-by: Peter Rosin <peda@axentia.se>
+Cc: Jens Axboe <axboe@kernel.dk>
+Reviewed-by: Peter Rosin <peda@axentia.se>
+Link: https://lore.kernel.org/r/YJP2j6AU82MqEY2M@kroah.com
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/uio/uio_pci_generic.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/cdrom/gdrom.c |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
---- a/drivers/uio/uio_pci_generic.c
-+++ b/drivers/uio/uio_pci_generic.c
-@@ -82,7 +82,7 @@ static int probe(struct pci_dev *pdev,
- 	}
- 
- 	if (pdev->irq && !pci_intx_mask_supported(pdev))
--		return -ENOMEM;
-+		return -ENODEV;
- 
- 	gdev = devm_kzalloc(&pdev->dev, sizeof(struct uio_pci_generic_dev), GFP_KERNEL);
- 	if (!gdev)
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -743,6 +743,13 @@ static const struct blk_mq_ops gdrom_mq_
+ static int probe_gdrom(struct platform_device *devptr)
+ {
+ 	int err;
++
++	/*
++	 * Ensure our "one" device is initialized properly in case of previous
++	 * usages of it
++	 */
++	memset(&gd, 0, sizeof(gd));
++
+ 	/* Start the device */
+ 	if (gdrom_execute_diagnostic() != 1) {
+ 		pr_warn("ATA Probe for GDROM failed\n");
+@@ -848,7 +855,7 @@ static struct platform_driver gdrom_driv
+ static int __init init_gdrom(void)
+ {
+ 	int rc;
+-	gd.toc = NULL;
++
+ 	rc = platform_driver_register(&gdrom_driver);
+ 	if (rc)
+ 		return rc;
 
 
