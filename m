@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D73F138E60C
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:00:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77C5838E60F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 14:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232898AbhEXMCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 08:02:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48416 "EHLO mail.kernel.org"
+        id S232939AbhEXMCQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 08:02:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48582 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232790AbhEXMBz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 08:01:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBD7761360;
-        Mon, 24 May 2021 12:00:26 +0000 (UTC)
+        id S232849AbhEXMB7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 08:01:59 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6B9936128B;
+        Mon, 24 May 2021 12:00:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621857627;
-        bh=t0YSFRPLDmCngvuQZkTNqXNtzWvSfCH7Pm0CGDz72aM=;
+        s=k20201202; t=1621857629;
+        bh=I/AnOl07xJ78/MlMBrSL4ZrBn/VkAl/y+yaLeCLFMGQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pexfz0N9d3wjVj4fgQSfledxyhOeG3qw3XRVUNCCAFzP7ckBkJcCT0gqVplb79Y8M
-         6jvEOawtirNAZ43xV39tIDYMEJkoLTg8Vowqqev9rq80toSBUY92YRowE3LtXz9+M/
-         ymaU9MxhSxqAEL3LPEMWTRMYBpzwO2akbaK/Xf4PkVu2zlVzQgJcxWemVAZkELTqXn
-         q7VMKM5aUjyk90NHP5YadcyCar2qgxEezC1YcOT2V+xViu3DJI5VTNSO3F3PV0enlj
-         li6KXUyVQktaKLaVgNMLNO76XPzYrUwgaDE6N4hhaD0DVFGZAm/N062QvdUU29Om0v
-         LsOnTwcAkb8yA==
+        b=QvkNw20K223eZiCt9lDwQbruNbPbC126q+a7an9hF/N2qZwgV03A5DoBemDvFntN7
+         TdavodDp4gl8ZZeysenWiG/rFwFVvZuiD2ucvjc9s6ghrFT5VKwyov2camHoQSvVBc
+         4qV11Ugwj87M5vlPKiQlzwEMploNia+14zLDjGHTrhTbfGouGcnim4w1pMzSoCWzlw
+         hncJuw39vN4rrMHTd1ZGv3jKeBApYZvB/qdMqFWa+RRXUCDxPNADAzjDpep5yww9Tr
+         oKg+dQJuMZmp7Pt9kY0la8pOAzWw5eEAzHzBs2hOTUzsgE/KxZSZd+3d7G72eB1JIc
+         KDyRHmbC7GRgQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
+To:     Stephan Gerhold <stephan@gerhold.net>
 Cc:     Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Lee Jones <lee.jones@linaro.org>,
+        ~postmarketos/upstreaming@lists.sr.ht,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        devicetree@vger.kernel.org,
+        Vincent Knecht <vincent.knecht@mailoo.org>,
+        phone-devel@vger.kernel.org, alsa-devel@alsa-project.org,
         Liam Girdwood <lgirdwood@gmail.com>
-Subject: Re: [PATCH] regulator: bd71815: add select to fix build
-Date:   Mon, 24 May 2021 12:59:55 +0100
-Message-Id: <162185754506.49496.1608353322431738492.b4-ty@kernel.org>
+Subject: Re: [PATCH RFC 1/2] ASoC: dt-bindings: codecs: Add bindings for nxp, tfa989x
+Date:   Mon, 24 May 2021 12:59:56 +0100
+Message-Id: <162185746496.49382.12917440362021007479.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210523001427.13500-1-rdunlap@infradead.org>
-References: <20210523001427.13500-1-rdunlap@infradead.org>
+In-Reply-To: <20210513104129.36583-1-stephan@gerhold.net>
+References: <20210513104129.36583-1-stephan@gerhold.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,21 +45,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 22 May 2021 17:14:27 -0700, Randy Dunlap wrote:
-> Mend the Kconfig for REGULATOR_BD71815 to prevent build errors:
+On Thu, 13 May 2021 12:41:28 +0200, Stephan Gerhold wrote:
+> NXP/Goodix TFA989X (TFA1) amplifiers are controlled via an I2C bus.
+> Add simple device tree bindings that describe how to set them up
+> in the device tree.
 > 
-> riscv32-linux-ld: drivers/regulator/bd71815-regulator.o: in function `.L0 ':
-> regulator.c:289: undefined reference to `rohm_regulator_set_dvs_levels'
-> riscv32-linux-ld: drivers/regulator/bd71815-regulator.c:370: undefined reference to `rohm_regulator_set_dvs_levels'
+> Right now only nxp,tfa9895 is supported but this will be extended
+> to at least nxp,tfa9897 in the near future.
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
 Thanks!
 
-[1/1] regulator: bd71815: add select to fix build
-      commit: 5ba3747dbc9ade2d22a8f5bff3c928cb41d35030
+[1/2] ASoC: dt-bindings: codecs: Add bindings for nxp, tfa989x
+      commit: 17ba36b704692a433d38cb230e99ec333ecd14a2
+[2/2] ASoC: codecs: Add driver for NXP/Goodix TFA989x (TFA1) amplifiers
+      commit: af00978a0a06bab60bd5adf54a65ea69d19ce35d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
