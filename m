@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC79738ECA5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 905CB38F033
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 18:00:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235309AbhEXPUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:20:50 -0400
-Received: from pv50p00im-hyfv10011601.me.com ([17.58.6.43]:54632 "EHLO
-        pv50p00im-hyfv10011601.me.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234487AbhEXPHx (ORCPT
+        id S234315AbhEXQBv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:01:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234328AbhEXPz3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:07:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-        t=1621868783; bh=wvA5ikLwZnEI3QS9n87SZab2KPDLJgG1LFxrfbcnH6Y=;
-        h=From:To:Subject:Date:Message-Id;
-        b=UycgsU+owGV4UizBJ0XMDKcFlf7nZ7LUJuMLTFdAF0liRX6EfyWw80Oh9NSSc8j9M
-         SFce8ssG+fR/4n6WD7dtaCzsjkjtraYMmCjBPwPK8hUILqLyZ6BIqwChwQBRjsbn6A
-         H5LwVCV/JG8iejiq4RsHIa/svVVMwWrny3NZ3mrhNOEwSO7FuAWIvcI9WIzCySKBXt
-         aKuVNWTbPTwcnI1utzL7mRM1K6aitAzVyu3dslTZ9aRDU480tPUrioNmlbuDt8iFiq
-         3YSvpf/X5g4DrJpb2NNvqeSh5LVNoAvxBxRRd4/1i4xsTsvPQRMrUGZjPm2C319gHC
-         eiy1OmRtDtdRA==
-Received: from pek-xsong2-d1.wrs.com (unknown [60.247.85.82])
-        by pv50p00im-hyfv10011601.me.com (Postfix) with ESMTPSA id 826BA3804F0;
-        Mon, 24 May 2021 15:06:20 +0000 (UTC)
-From:   Xiongwei Song <sxwjean@me.com>
-To:     peterz@infradead.org, mingo@redhat.com, will@kernel.org,
-        longman@redhat.com, boqun.feng@gmail.com, corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xiongwei Song <sxwjean@gmail.com>
-Subject: [PATCH] docs: lockdep-design: improve readability of the block matrix
-Date:   Mon, 24 May 2021 23:05:45 +0800
-Message-Id: <1621868745-23311-1-git-send-email-sxwjean@me.com>
-X-Mailer: git-send-email 2.7.4
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-24_08:2021-05-24,2021-05-24 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
- mlxlogscore=680 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-2009150000 definitions=main-2105240094
+        Mon, 24 May 2021 11:55:29 -0400
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEF5AC0611B4;
+        Mon, 24 May 2021 08:06:33 -0700 (PDT)
+Received: by mail-ed1-x534.google.com with SMTP id s6so32308035edu.10;
+        Mon, 24 May 2021 08:06:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=hYc9RqsGPOFH4b9ZCxZD1i1R6dOMPd4eh7fzqVzT0H8=;
+        b=IYggH2+zUrbdnBrdf/jTJBsFvsk4fNzJueTFJWS2wav+i4qdiNx+Cg0ds2JTrtFcJK
+         T0RtnoZxttQZp0nj6iOlzrT7rkaHfWvs5EQDRIMjbwVcQDab1kFlwtrzAhAUmNszUMXE
+         mlWELyPzvUT5Hwby3Mu+xJRDzQt2R3Dhpe3/qxCxniY/MO4vxeVuu8Gj2tgy9IDFoe9q
+         XuiY4wOt76aQ6kgEv9nz8fWdfq2lue434npLku5Ss7xpDFDkllkfdX9CZyAfQxQ+OtsS
+         TncgOK/EWbljBM15dTijeALKHyo5V+bt98Jx2zJXFkesK/GaSJ88AfBd+7rTvBLXdrG7
+         Hdxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=hYc9RqsGPOFH4b9ZCxZD1i1R6dOMPd4eh7fzqVzT0H8=;
+        b=GUj6USM/ECCiY4t7WeQxefutyqudkF6pIa0EBMdzw+VJEP1avOvoVnQiEjyYt0XA5q
+         s68uYuFw9MDTlUc5awaMfFYadouF+/H60X12ND1o/Pt85sGS1R3nWjhmilfsNWy+pktm
+         qyMFm6ciSwwj+K4l1EYDCrGw2BgXdMxLaamy1Pv4RZ1C7gd4TsWgdtwdhZw6fH/JhTT6
+         lJNZKeOobLfgtQcTZX5M4P0BuoqoKvvfjMrOUlsavzJv9nQ14MYQYrEFPUCDzB93Ul7e
+         dkbG+pLSSyn4UooX+u/CcjYxbNGBBCnaMFGci+aLfQodGWGr6eA1MS9idbKbE35iP2Xf
+         mDVw==
+X-Gm-Message-State: AOAM530LnHVRqjcwx+fW20km5ItWUUX8ZU9fypKZwnZ39p/XnupBGyOz
+        Iw1iTNE/zQ/+A/R77VBeDLyjWG5pYHBmzNgW/Xs=
+X-Google-Smtp-Source: ABdhPJxnql6m4jMoSsNIXd+822UQ+FgMCyWYYrxYDrZNdFQtMwci4jKmziipZTven+e/600RCUx8aswTUzA0OJJ9xKs=
+X-Received: by 2002:a05:6402:4256:: with SMTP id g22mr25643956edb.214.1621868792568;
+ Mon, 24 May 2021 08:06:32 -0700 (PDT)
+MIME-Version: 1.0
+From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
+Date:   Mon, 24 May 2021 23:06:11 +0800
+Message-ID: <CAD-N9QU7T0vb1YaZ_NJfySEGiUsQ1ix6ved6TJKSUBQ+HqO1eQ@mail.gmail.com>
+Subject: Is this a bug between dvb_usb_adapter_frontend_init and cinergyt2_frontend_attach?
+To:     mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongwei Song <sxwjean@gmail.com>
+Hi kernel developers,
 
-The block condition matrix is using 'E' as the writer notation, however,
-the writer reminder below the matrix is using 'W', to make them consistent
-and make the matrix more readable, we'd better to use 'W' to represent
-writer.
+I doubt there is a bug between dvb_usb_adapter_frontend_init [1] and
+cinergyt2_frontend_attach [2]. The following source code includes the
+critical part.
 
-Suggested-by: Waiman Long <llong@redhat.com>
-Suggested-by: Boqun Feng <boqun.feng@gmail.com>
-Signed-off-by: Xiongwei Song <sxwjean@gmail.com>
----
- Documentation/locking/lockdep-design.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+-----------------------------------------------------------------------------------------------------
+int dvb_usb_adapter_frontend_init(struct dvb_usb_adapter *adap)
+{
+        ......
+        /* register all given adapter frontends */
+        for (i = 0; i < adap->props.num_frontends; i++) {
+                ret = adap->props.fe[i].frontend_attach(adap);
+                if (ret || adap->fe_adap[i].fe == NULL) {
+                        return 0;
+                }
+        }
+        ......
+}
 
-diff --git a/Documentation/locking/lockdep-design.rst b/Documentation/locking/lockdep-design.rst
-index 9f3cfca..82f36ca 100644
---- a/Documentation/locking/lockdep-design.rst
-+++ b/Documentation/locking/lockdep-design.rst
-@@ -453,9 +453,9 @@ There are simply four block conditions:
- Block condition matrix, Y means the row blocks the column, and N means otherwise.
- 
- 	+---+---+---+---+
--	|   | E | r | R |
-+	|   | W | r | R |
- 	+---+---+---+---+
--	| E | Y | Y | Y |
-+	| W | Y | Y | Y |
- 	+---+---+---+---+
- 	| r | Y | Y | N |
- 	+---+---+---+---+
--- 
-2.7.4
+static int cinergyt2_frontend_attach(struct dvb_usb_adapter *adap)
+{
+        ......
+        adap->fe_adap[0].fe = cinergyt2_fe_attach(adap->dev);
+        ......
+        return ret;
+}
+-----------------------------------------------------------------------------------------------------
 
+In the dvb_usb_adapter_frontend_init, the function pointer -
+frontend_attach points to cinergyt2_frontend_attach. Then the parent
+function dvb_usb_adapter_frontend_init checks the return value and
+adap->fe_adap[i].fe to verify the execution of the child function.
+However, the child function - cinergyt2_frontend_attach passes the
+allocated dvb_frontend with adap->fe_adap[0].fe, but the check is
+performed on adap->fe_adap[i].fe. At the same time, the adap in both
+expressions should be the same data pointer.
+
+Please correct me if you have any opinions with the above statements.
+
+[1] dvb_usb_adapter_frontend_init:
+https://elixir.bootlin.com/linux/latest/source/drivers/media/usb/dvb-usb/dvb-usb-dvb.c#L276
+
+[2] cinergyt2_frontend_attach:
+https://elixir.bootlin.com/linux/latest/source/drivers/media/usb/dvb-usb/cinergyT2-core.c#L68
+
+--
+My best regards to you.
+
+     No System Is Safe!
+     Dongliang Mu
