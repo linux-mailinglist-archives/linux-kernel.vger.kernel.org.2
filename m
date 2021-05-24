@@ -2,82 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E822438F5B9
-	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B14F038F5BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 25 May 2021 00:42:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229595AbhEXWlu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 18:41:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
+        id S229625AbhEXWn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 18:43:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229539AbhEXWlt (ORCPT
+        with ESMTP id S229539AbhEXWn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 18:41:49 -0400
-X-Greylist: delayed 37745 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 24 May 2021 15:40:20 PDT
-Received: from mx3.securetransport.de (mx3.securetransport.de [IPv6:2a01:4f8:c0c:92be::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C9F2AC061574;
-        Mon, 24 May 2021 15:40:20 -0700 (PDT)
-Received: from mail.dh-electronics.com (business-24-134-97-169.pool2.vodafone-ip.de [24.134.97.169])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx3.securetransport.de (Postfix) with ESMTPSA id F244B5DDF7;
-        Tue, 25 May 2021 00:39:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dh-electronics.com;
-        s=dhelectronicscom; t=1621895942;
-        bh=xwD6Nrkylw4njEWCELAKyW9hzOGunu13drEcZOsC9Fw=;
-        h=From:To:CC:Subject:Date:From;
-        b=bw2WaAFqGziWDIFf2XbPvye7NJp1o/WHer8P6uHuEamrYNw18EbE1Fad/Y8qs4mTE
-         5tTPm7aGoGFh3YAGve8TGAtL8OaQ51P0PRyZMdY2Df/m3VgZ1MDL4DGfFn4c9JFHxY
-         H7Hk+5o8/fcaWKQOdPC6wB7C3Nx1lKlhFQ5afZBGtKLWO1eyN2aGZYmBVZ3jSXhL2X
-         vLCY0MUZHkHU+841FISOhFgSmF2z0K4DURlaKmP7CnyRWlAb1jkQdEWYeCS7KS7JsV
-         2DpLqor7t804RsJdEGjhpMR9YOAv3fXjsVYkNyr8k450muM4rm8MrwxSqRf5IFmwqs
-         ygo9bHncYnA0A==
-Received: from DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) by
- DHPWEX01.DH-ELECTRONICS.ORG (2001:470:76a7:2::30) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.858.12; Tue, 25 May 2021 00:38:49 +0200
-Received: from DHPWEX01.DH-ELECTRONICS.ORG ([fe80::6ced:fa7f:9a9c:e579]) by
- DHPWEX01.DH-ELECTRONICS.ORG ([fe80::6ced:fa7f:9a9c:e579%6]) with mapi id
- 15.02.0858.012; Tue, 25 May 2021 00:38:49 +0200
-From:   Christoph Niedermaier <cniedermaier@dh-electronics.com>
-To:     'Fabio Estevam' <festevam@gmail.com>
-CC:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        kernel <kernel@dh-electronics.com>
-Subject: RE: [PATCH] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02
- boards [Klartext]
-Thread-Topic: [PATCH] dt-bindings: arm: fsl: Add DHCOM PicoITX and DHCOM DRC02
- boards [Klartext]
-Thread-Index: AddQ7WhkHZZwXTrRQNCfV75QCGvecw==
-Date:   Mon, 24 May 2021 22:38:49 +0000
-Message-ID: <4964298a8d264dafaa807c43bab5d174@dh-electronics.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.64.2.18]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 24 May 2021 18:43:26 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CC9C061574;
+        Mon, 24 May 2021 15:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=KZXb/tLr9YFiA/T3KrJSdP6LyxwsCT3QXewBPoMTKsE=; b=g5bGXx5OXeTJgLIdaHL7wrYzDy
+        ug/SzbkUytOW/Wo6NIcbnStWecwnmqr0wzFJgh1JKVyg2CvdKXQMLVAr3ZSQpzCmP8U4B8N9iUNKG
+        kGqziSr/xYr+DVSVKoi1VGlmJEnjJhj7etjnNpoE4cNUfB47DRJjyy1JaEeWAHc91Qx2CZK8xJ5fa
+        1PJyhf6SEb8drQ9c0fHHbknMOabnz7HMJXtnWfB+F+zlctGQEvpgv+1kng5rwvSRvQco5a6yMdOpZ
+        rsAJ3mf28iuhTS72wpjoQ+CGKg9cP6eLb1ZMNtHw+pJeB28VL60CaJSCc/HdJCK71HKsTiUIPdNDg
+        ayQYdgHA==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1llJGi-002B2q-Cf; Mon, 24 May 2021 22:41:52 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Waiman Long <longman@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        linux-xtensa@linux-xtensa.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        linux-um@lists.infradead.org, Julian Braha <julianbraha@gmail.com>,
+        linux-arch@vger.kernel.org
+Subject: [PATCH v2] LOCKDEP: reduce LOCKDEP dependency list
+Date:   Mon, 24 May 2021 15:41:50 -0700
+Message-Id: <20210524224150.8009-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRmFiaW8gRXN0ZXZhbSA8ZmVzdGV2YW1AZ21haWwuY29tPg0KU2VudDogTW9uZGF5LCBN
-YXkgMjQsIDIwMjEgMzowMyBQTQ0KPiANCj4gSGkgQ2hyaXN0b3BoLA0KPg0KDQpIaSBGYWJpbywN
-Cg0KPiANCj4gT24gTW9uLCBNYXkgMjQsIDIwMjEgYXQgOToxNyBBTSBDaHJpc3RvcGggTmllZGVy
-bWFpZXINCj4gPGNuaWVkZXJtYWllckBkaC1lbGVjdHJvbmljcy5jb20+IHdyb3RlOg0KPiANCj4+
-ICsgICAgICAtIGRlc2NyaXB0aW9uOiBpLk1YNlMgREhDT00gRFJDMDIgQm9hcmQNCj4+ICsgICAg
-ICAgIGl0ZW1zOg0KPj4gKyAgICAgICAgICAtIGNvbnN0OiBkaCxpbXg2cy1kaGNvbS1kcmMwMg0K
-Pj4gKyAgICAgICAgICAtIGNvbnN0OiBkaCxpbXg2cy1kaGNvbS1zb20NCj4+ICsgICAgICAgICAg
-LSBjb25zdDogZnNsLGlteDZzDQo+IA0KPiBXZSBkb24ndCBoYXZlIGFuIGZzbCxpbXg2cyBjb21w
-YXRpYmxlIGZvciB0aGUgaS5NWDYgU29sbyB2YXJpYW50LiBXZQ0KPiBqdXN0IHVzZSBmc2wsaW14
-NmRsIGluc3RlYWQuDQoNCk15IHRob3VnaHQgd2FzIHRvIGJlIGZ1dHVyZSBwcm9vZi4gSWYgdGhl
-cmUgaXMgbm8gbWF0Y2ggd2l0aCB0aGUgU29sbyBub3csDQppdCB3aWxsIGZhbGwgYmFjayB0byB0
-aGUgaS5NWDYgRHVhbExpdGUuIFRoYXQgaXMgd2h5IEkgYWRkZWQgYm90aCBmc2wsaW14NnMNCmFu
-ZCBmc2wsaW14NmRsIGluIHRoaXMgb3JkZXIuDQoNClNob3VsZCBJIHJlbW92ZSB0aGUgbGluZSB3
-aXRoIGZzbCxpbXg2cz8NCg0KUmVnYXJkcw0KQ2hyaXN0b3BoDQo=
+Some arches (um, sparc64, riscv, xtensa) cause a Kconfig warning for
+LOCKDEP.
+These arch-es select LOCKDEP_SUPPORT but they are not listed as one
+of the arch-es that LOCKDEP depends on.
+
+Since (16) arch-es define the Kconfig symbol LOCKDEP_SUPPORT if they
+intend to have LOCKDEP support, replace the awkward list of
+arch-es that LOCKDEP depends on with the LOCKDEP_SUPPORT symbol.
+
+But wait. LOCKDEP_SUPPORT is included in LOCK_DEBUGGING_SUPPORT,
+which is already a dependency here, so LOCKDEP_SUPPORT is redundant
+and not needed.
+That leaves the FRAME_POINTER dependency, but it is part of an
+expression like this:
+	depends on (A && B) && (FRAME_POINTER || B')
+where B' is a dependency of B so if B is true then B' is true
+and the value of FRAME_POINTER does not matter.
+Thus we can also delete the FRAME_POINTER dependency.
+
+Fixes this kconfig warning: (for um, sparc64, riscv, xtensa)
+
+WARNING: unmet direct dependencies detected for LOCKDEP
+  Depends on [n]: DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y] && (FRAME_POINTER [=n] || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86)
+  Selected by [y]:
+  - PROVE_LOCKING [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+  - LOCK_STAT [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+  - DEBUG_LOCK_ALLOC [=y] && DEBUG_KERNEL [=y] && LOCK_DEBUGGING_SUPPORT [=y]
+
+Link to v1: https://lore.kernel.org/lkml/20210517034430.9569-1-rdunlap@infradead.org/
+
+Fixes: 7d37cb2c912d ("lib: fix kconfig dependency on ARCH_WANT_FRAME_POINTERS")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Waiman Long <longman@redhat.com>
+Cc: Boqun Feng <boqun.feng@gmail.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: linux-xtensa@linux-xtensa.org
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Jeff Dike <jdike@addtoit.com>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: linux-um@lists.infradead.org
+Cc: Julian Braha <julianbraha@gmail.com>
+Cc: linux-arch@vger.kernel.org
+---
+@Julian: please take a look. I'm a little concerned about the
+  FRAME_POINTER dependency going away when our 2 patches are combined.
+
+v2: drop depends on LOCKDEP_SUPPORT for LOCKDEP; the use of
+    LOCK_DEBUGGING_SUPPORT already covers that dependency;
+    drop FRAME_POINTER dependency (thanks to Waiman Long
+    for both of these suggestions)
+v2: add CC: to linux-arch
+
+ lib/Kconfig.debug |    1 -
+ 1 file changed, 1 deletion(-)
+
+--- linux-next-20210524.orig/lib/Kconfig.debug
++++ linux-next-20210524/lib/Kconfig.debug
+@@ -1383,7 +1383,6 @@ config LOCKDEP
+ 	bool
+ 	depends on DEBUG_KERNEL && LOCK_DEBUGGING_SUPPORT
+ 	select STACKTRACE
+-	depends on FRAME_POINTER || MIPS || PPC || S390 || MICROBLAZE || ARM || ARC || X86
+ 	select KALLSYMS
+ 	select KALLSYMS_ALL
+ 
