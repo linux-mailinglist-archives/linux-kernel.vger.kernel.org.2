@@ -2,116 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E45038E5DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45AD738E5E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:53:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232714AbhEXLy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:54:29 -0400
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:47907 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232110AbhEXLy1 (ORCPT
+        id S232742AbhEXLyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:54:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45558 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232591AbhEXLym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:54:27 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0A88E5819C9;
-        Mon, 24 May 2021 07:52:59 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 24 May 2021 07:52:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=ddz0tcBZgmkT/3hhpfbba4g3NSo
-        MMo+qdHQ5L1UgRU8=; b=vWx8W6fmH/naMYdG5IF03h95a7zlcw8npvdQr7+/mIs
-        5yN0tE7Y0DBge0dxEwz+I0PVp2AmOXdlW93ScrRXWTU3FiLWdtaviGzN2fZChutI
-        /X69WoiKM8+z/Oh8o9Nj+d9FsbwpfswHVKzUE52U4kxjV2HzaBs5SV8/N+QrMhNP
-        FW4ABjbNjpABEovuvOEv65dVjj/vcIgR5KgyVpKFQoEkqm18rdgEaL7jXBo6mh0h
-        Nn3Mf3t5o2Orl+1f9s3gzwXs8urZ5/S7dFxhKsRxD18iunNGqSEeo0Fr3LSr2TMA
-        oYeijGArOOSjcDKIRS9k4dTPRETyjtQjT0LYImzknDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ddz0tc
-        BZgmkT/3hhpfbba4g3NSoMMo+qdHQ5L1UgRU8=; b=S9v7N3gXwGyhvpQR2XWJJM
-        +N+h/WflGyGWMl1/EbHxRbgi5bii84c2+5RNZZrC/7ZPZTmArOKjGW7q5zaYuI94
-        rRnAW27S5W/UX+W2RYHKZbZJqHvZlPK7CAyWbd00u4WUpT6Qp7YkQTa4QJ8ODcGG
-        7/1kPQ3nJV536Z6yysCkgXpW5nyCPLPG7R3B63ItFkMD/yXgtQhSpQ4JuEKBagyv
-        0VaoRaKYarSLWo8q7+oA6Zg6BH2hrZHOiFGQrIlhjKJO8YXFy1Zci4cYKzzkHQ1o
-        HHJBd4yMYnFncrOHts3Qhl5iBVJQNGbeGYYNOCy9UNIqT+4vBxZ0YqKuIgyJUnqA
-        ==
-X-ME-Sender: <xms:mZOrYCjjEaSG__fIYfMms9Q1ZJDnPkB5e4PRkfL8OdMjBF2m7z-CRQ>
-    <xme:mZOrYDDEiU5XkJYFzmuyHlO76w3xY6gW8_uzqBYE7-TGiKKkL0yjSLIP9E9DAzMxF
-    2WuV_a-ySAKUL4D9E0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledggeeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:mZOrYKEAjKpP2rKOOiqk_UwpXU6lnldtrTPI_b4mkcex6nHNtgvp6A>
-    <xmx:mZOrYLRWfN2TentfjRPO3lkIr8tQwq8DZE580GScoTXfthjd1-Fzjw>
-    <xmx:mZOrYPxmCkZ9XBAKZq08jMhchuRYQQtz-jjOMlZzewytu3-l1zPJTQ>
-    <xmx:m5OrYELO6d68Zbop3zu1BsL1W3CZWpxePMV8xpjp6A31RL5dnunNSA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 07:52:57 -0400 (EDT)
-Date:   Mon, 24 May 2021 13:52:54 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Eric Anholt <eric@anholt.net>,
-        bcm-kernel-feedback-list@broadcom.com, Ray Jui <rjui@broadcom.com>,
-        devicetree@vger.kernel.org, Scott Branden <sbranden@broadcom.com>,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 0/4] drm/vc4: Add support for the BCM2711 VEC
-Message-ID: <20210524115254.ifjtledccze2ueos@gilmour>
-References: <20210520150344.273900-1-maxime@cerno.tech>
+        Mon, 24 May 2021 07:54:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621857194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zfCwhka2L7IMBYHuu50/MdZUm2+UjbEqYuiRuQJLXKE=;
+        b=Rn7bA1+jC/ZaZu7RlWmeAy9h+Q8YMLpXZU10BgrXm9qFAqp+W47fmQIdKekIREQaVMKbju
+        Y3zUbR/W7Qjuu3IetPPKJ3npHz+kqa+r3t/XtbEvmEVkBbVxyKmtaNvPDgqhAnG/4aSg51
+        bLoIxPQLNniNQf3itM/npGUR/zYp5nA=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-41-XDkCza2LONWW3gnQXCQSAg-1; Mon, 24 May 2021 07:53:13 -0400
+X-MC-Unique: XDkCza2LONWW3gnQXCQSAg-1
+Received: by mail-wr1-f71.google.com with SMTP id q15-20020adfc50f0000b0290111f48b865cso9511377wrf.4
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 04:53:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=zfCwhka2L7IMBYHuu50/MdZUm2+UjbEqYuiRuQJLXKE=;
+        b=bNEyKHgdCk9sThDKyoKdAKTCw4CAOO9rZphFeh4kEjzi0L3DAVF8MDf6e8Rvbsl9Fz
+         yyGSfWfAZRYyI+MVIXg01Omw04zvxJUQdSu1PHnsCObPmQ02VcAJgPxZQO/U/v26t6iP
+         hByRImn/2+JvIFxX6UBTusofcbUqKgYat0AFDJzx7+xIT9JnWyfd1EDBeGKlfU8Lr3CA
+         faDv3tPbdJ9EgoM+rq0ycBM9Iq6rEViIKeY21rx0KjVAl1RTsrPTZMVNEwv+fSneKDJA
+         +110WNbXrVWCOLsRPo1EUHGOoJmN+66g7UWv8pB1OiS3f8qAI1/T4Om3Wb5ayLhBx1/q
+         jVQQ==
+X-Gm-Message-State: AOAM530mQpjGRrTHXN1wdRnQuLobAblzT9yhESaWnYwXtT2qOUYf1NNe
+        V/xShuUjDIQoLm0LZlL1mPA0mfMRormTDrIhwgYeZAGFYQhAFIZjdzoty13Iqgd4yhpA893c4xP
+        dOUuZASPtpvy55KNc3MMY9s1h
+X-Received: by 2002:a5d:4fce:: with SMTP id h14mr21348345wrw.239.1621857192032;
+        Mon, 24 May 2021 04:53:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzj5hA+mPY/6z6A3gV4eFAIFa4rKF/d+NdxDU035q9t0Udwa9q9VgydrjfjXD6Zu3/m0314gw==
+X-Received: by 2002:a5d:4fce:: with SMTP id h14mr21348330wrw.239.1621857191811;
+        Mon, 24 May 2021 04:53:11 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p14sm11925985wrm.70.2021.05.24.04.53.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 04:53:11 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Ashish Kalra <Ashish.Kalra@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH] KVM: SVM: Assume a 64-bit hypercall for guests with
+ protected state
+In-Reply-To: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
+References: <d0904f0d049300267665bd4abf96c3d7e7aa4825.1621701837.git.thomas.lendacky@amd.com>
+Date:   Mon, 24 May 2021 13:53:08 +0200
+Message-ID: <87pmxg73h7.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ykg4l6l5w6w2sirq"
-Content-Disposition: inline
-In-Reply-To: <20210520150344.273900-1-maxime@cerno.tech>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Tom Lendacky <thomas.lendacky@amd.com> writes:
 
---ykg4l6l5w6w2sirq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> When processing a hypercall for a guest with protected state, currently
+> SEV-ES guests, the guest CS segment register can't be checked to
+> determine if the guest is in 64-bit mode. For an SEV-ES guest, it is
+> expected that communication between the guest and the hypervisor is
+> performed to shared memory using the GHCB. In order to use the GHCB, the
+> guest must have been in long mode, otherwise writes by the guest to the
+> GHCB would be encrypted and not be able to be comprehended by the
+> hypervisor. Given that, assume that the guest is in 64-bit mode when
+> processing a hypercall from a guest with protected state.
+>
+> Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
+> Reported-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+> ---
+>  arch/x86/kvm/x86.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 9b6bca616929..e715c69bb882 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -8403,7 +8403,12 @@ int kvm_emulate_hypercall(struct kvm_vcpu *vcpu)
+>  
+>  	trace_kvm_hypercall(nr, a0, a1, a2, a3);
+>  
+> -	op_64_bit = is_64_bit_mode(vcpu);
+> +	/*
+> +	 * If running with protected guest state, the CS register is not
+> +	 * accessible. The hypercall register values will have had to been
+> +	 * provided in 64-bit mode, so assume the guest is in 64-bit.
+> +	 */
+> +	op_64_bit = is_64_bit_mode(vcpu) || vcpu->arch.guest_state_protected;
+>  	if (!op_64_bit) {
+>  		nr &= 0xFFFFFFFF;
+>  		a0 &= 0xFFFFFFFF;
 
-On Thu, May 20, 2021 at 05:03:40PM +0200, Maxime Ripard wrote:
-> Hi,
->=20
-> The composite output in the BCM2711 is dealt using the VEC. While the ear=
-lier
-> SoCs were properly supported, it wasn't functional on the BCM2711. Add the
-> needed support from the RPi downstream kernel.
->=20
-> Maxime
+While this is might be a very theoretical question, what about other
+is_64_bit_mode() users? Namely, a very similar to the above check exists
+in kvm_hv_hypercall() and kvm_xen_hypercall().
 
-Applied patches 1-3 to drm-misc-next
+-- 
+Vitaly
 
-Maxime
-
---ykg4l6l5w6w2sirq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYKuTlgAKCRDj7w1vZxhR
-xWjLAQDLX/sHQD+jkjAd/Zn718/CwW+EIPefPc5zOy1TC0ktUwEAgPalmAbaIPW1
-5FiL1xD5zn2aBZ2Tqbon037NVt74sws=
-=0UQA
------END PGP SIGNATURE-----
-
---ykg4l6l5w6w2sirq--
