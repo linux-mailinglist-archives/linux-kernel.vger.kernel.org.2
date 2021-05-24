@@ -2,58 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB4338F2F2
+	by mail.lfdr.de (Postfix) with ESMTP id DCF3638F2F5
 	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 20:28:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233523AbhEXS33 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 14:29:29 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:47003 "EHLO
+        id S233744AbhEXS3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 14:29:31 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:41943 "EHLO
         new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232516AbhEXS31 (ORCPT
+        by vger.kernel.org with ESMTP id S233488AbhEXS33 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 14:29:27 -0400
+        Mon, 24 May 2021 14:29:29 -0400
 Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B0D1D581E71;
-        Mon, 24 May 2021 14:27:58 -0400 (EDT)
+        by mailnew.nyi.internal (Postfix) with ESMTP id 74F56581E72;
+        Mon, 24 May 2021 14:28:00 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Mon, 24 May 2021 14:27:58 -0400
+  by compute5.internal (MEProxy); Mon, 24 May 2021 14:28:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=svenpeter.dev;
-         h=from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=fm1; bh=TEx4O6ipWrArrkHEgj4N9wKNBP
-        467wEwYrYzP9bsXl4=; b=JGpKssTkczo2LEipwnIpKsb9b00UPb8fx4nR/pDIob
-        TefJxALlW0AWRbJF8gntLMZ+wASO1d/a23xW/HGZxJ9qGMo/UaXATyFuJNugAHm8
-        6h0gLc+9NaBoJGFUMWBLEhC3aVlHLWADuS+AG6HOX9efDb8AqgF4eOScC1flp2Se
-        J+SudZ8REsuESSJWD5OKtupUke0ys1/vg6tW8FGanYxQ/oz1IsW5fihyL1M349vL
-        Ec8fHmN16b6KLedkJEyOr4Z8fCKybUsImSumEqo0VZqxPHKiFPf+Mtf8HN65Ab/a
-        mSMNGqA1z4QODvh8f86Rz8tQdNJ8jVyPwOOKgc50L+ig==
+         h=from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding; s=fm1; bh=LwSKq/ex842eG
+        i/egnj5f1CpSQ34FFJ9YcYzjun5nOQ=; b=2MVTAWaPVPvNHvFg2rYWvao0Ur3wo
+        ATIE+7KWNKWNA+F+sKfMXbkH2tMQXSUDsvFrSPi39VDZ10GxwMk34ddLQ/G3vN88
+        LiXqwIA+pgD5WLNydG0z0ZNxz6LRIyzDiLytVNM3UvJt59hFZEueb+bc/Ln77Aby
+        isvHPE7idQ9WuJ8nNRdWroUo7gQtzstmdQ4w3rGusuhUSch+yIBlr85toK6KK0Iv
+        1j3sf3YvK1dFlsCdicBA+tKJc++tUHCFNsTncyZmT8obdrTLYPkouQm/HT68OmH6
+        WukCJPSEM7eGwz6bAOWH3z88KeKT14azDfkAukB20IvvbF8N+0faKwcww==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=TEx4O6ipWrArrkHEg
-        j4N9wKNBP467wEwYrYzP9bsXl4=; b=WTD7xNyH66Yh9X1b9Cil1pRWGo81M4aWV
-        Weqg+LRz8rHA+5LEt1NVvuI7wYf9wUbCS++RgjjQGwTqmFQOkzDe6BaBWgUiNTwE
-        M4BPjKMazaWjDFkfPwr91upisHFy6afeklh+ijU7Qz/xS705dj89EW58IO85mh++
-        g6TVmzyi4ROWJY9Tqq+QyP9Z7Dw+dqNpMoWWvT25/My4xrFCQ/nx3ECnraPL6Pmb
-        b+P9+HVuv5bb1HCCmyN8JaReRz2iVolrbgGi1v1eWtKEQQvs+QdRK8patKKST5vv
-        U0Lo3l/v2KccFuQ0E3MG9ONBbGXwV1+6Jp5GtYH9JFnoUY0nUyN3A==
-X-ME-Sender: <xms:LfCrYAFK4WeeTLy7mY23INcFpwE4MLHOjNaiEe_Zavt3Io7oYlth3Q>
-    <xme:LfCrYJWESwLW8mfIRukzZJ4PYcLflplKGemElamOZhWgGYNmNjPYBC41Jhils3tjh
-    Pon37VdNec-Rq_zkOU>
+        :in-reply-to:message-id:mime-version:references:subject:to
+        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+        fm2; bh=LwSKq/ex842eGi/egnj5f1CpSQ34FFJ9YcYzjun5nOQ=; b=jaETDRqV
+        GFXmd92DPk5LEAYmrFUMayOm2reliCekKQaKQLuhqeyIweALc5GnoTpTNiN4sAbD
+        N5h5U8gYbycPEZtk1Jy6QVKxnefdN0Jzm3hk5fF7A5XD0LRTD7n/DUmxXxNkbcHA
+        GMamD92SzXBIxRwFGwVytpCqsS+Fpa2eMFiS6cYvJ0Vu48J0RhpRITUW8HUO8HYD
+        bLeWBdvdPC3MOkvhW+kjtBbYuqxSGa2rmrmBYhOuGEKzOD2msUXr4JjriahsIPtr
+        ShaNZprd5lYyuXDY5KHRjfCoQ2He4sUOPjwuElzOmI0TeXxA1y96rJ2Hij238nWV
+        7OJ76bjjq2Ux+Q==
+X-ME-Sender: <xms:MPCrYLCiOzMS3mifBoAfqp4LgpHaR4a6sH5pivsOIhvMEiwbFvpCcw>
+    <xme:MPCrYBiBxEaphgT88uOyRgj-JSjzxQKd5wxRx9uhftw1ukU4XzRnwDt1lNgKZAMmy
+    Cp_tcLBvPHB-yvw8o4>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdejledguddvjecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomhepufhvvghnucfr
-    vghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtthgvrh
-    hnpeeugfelkedvtdejffefjeehveelfeevkefgudduhfeghfefgedtheevjeefffffgfen
-    ucfkphepudejiedrudelledrvdduuddruddvgeenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehsvhgvnhesshhvvghnphgvthgvrhdruggvvh
-X-ME-Proxy: <xmx:LfCrYKKpATqYV7Tul45AUl7Mx2Ii5M5O1GTvqvrPyRms2H-fFCULgA>
-    <xmx:LfCrYCEyWFMath51u7OA4q5IrQ_fYyrOt2yvK_Ym9rk5sgfMvZl23A>
-    <xmx:LfCrYGXCRsoCoRyMsnPceca2MBpxk0jVSAFvIQDH4KCBeh56J47bDQ>
-    <xmx:LvCrYKo-1pJTXCEjpYa405FXPDMWnYzHOhNH34GJ8qnnjpt2SyQmfA>
+    enucfjughrpefhvffufffkofgjfhgggfestdekredtredttdenucfhrhhomhepufhvvghn
+    ucfrvghtvghruceoshhvvghnsehsvhgvnhhpvghtvghrrdguvghvqeenucggtffrrghtth
+    gvrhhnpeefgefhgeelhefhtedvuddvudehffffgffftedugeeufeevtdegudfhjeeuieeu
+    hfenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgpdhgihhthhhusgdrtghomh
+    dpfhhrvggvnhhouggvrdhnvghtnecukfhppedujeeirdduleelrddvuddurdduvdegnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepshhvvghnse
+    hsvhgvnhhpvghtvghrrdguvghv
+X-ME-Proxy: <xmx:MPCrYGnfJncxUnDsTVKiTn5dKzViIo2bRfWmld3rNQLeaavAyE3EBA>
+    <xmx:MPCrYNzh9O8Si2VS01oLbfV9HySl-YkPWYt1XevQQqc39m_dCn48EQ>
+    <xmx:MPCrYASXQ2nGYns1INR2J7rRJTDI_wpodE_RGlMFzN-K7x0LY6iK4w>
+    <xmx:MPCrYDF04GEp6GuHoS4tyxsJ2gkewnMWbel1ywjzqVI4DiwjD1tZ_A>
 Received: from photon.s7r42.com (ip-176-199-211-124.hsi06.unitymediagroup.de [176.199.211.124])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Mon, 24 May 2021 14:27:54 -0400 (EDT)
+        Mon, 24 May 2021 14:27:58 -0400 (EDT)
 From:   Sven Peter <sven@svenpeter.dev>
 To:     devicetree@vger.kernel.org, linux-clk@vger.kernel.org
 Cc:     Sven Peter <sven@svenpeter.dev>,
@@ -64,88 +67,106 @@ Cc:     Sven Peter <sven@svenpeter.dev>,
         Stephen Boyd <sboyd@kernel.org>,
         Mark Kettenis <mark.kettenis@xs4all.nl>,
         Arnd Bergmann <arnd@kernel.org>
-Subject: [PATCH 0/3] Apple M1 clock gate driver
-Date:   Mon, 24 May 2021 20:27:42 +0200
-Message-Id: <20210524182745.22923-1-sven@svenpeter.dev>
+Subject: [PATCH 1/3] dt-bindings: clock: add DT bindings for apple,gate-clock
+Date:   Mon, 24 May 2021 20:27:43 +0200
+Message-Id: <20210524182745.22923-2-sven@svenpeter.dev>
 X-Mailer: git-send-email 2.30.1 (Apple Git-130)
+In-Reply-To: <20210524182745.22923-1-sven@svenpeter.dev>
+References: <20210524182745.22923-1-sven@svenpeter.dev>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+These gated clocks are found on Apple SoCs, such as the M1, and
+are required to enable access to MMIO regions of various peripherals.
 
-Hi,
-
-This series adds support for the clock gates present in Apple's SoCs such as
-the M1.
-
-These SoCs have various clock gates for their peripherals usually located in
-one or two MMIO regions. Each clock gate is a single 32 bit register which
-contains bits for the requested and the actual mode. The mode is represented by
-four bits. We however only care about "everything enabled" (0b1111) and
-"everything disabled" (0b000) for now. The other modes are probably different
-low-power states which don't even seem to be used by MacOS. The actual power
-management is located in a different region (and probably handled by a separate
-processor on the M1).
-
-Additionally, these clocks have a topology that is usually specified in Apple's
-Device Tree. As far as I can tell most Linux drivers seem to encode this topology
-directly in the source code though. Despite this, we would still like to encode
-the topology in the device tree itself:
-
-Apple seems to only change HW blocks when they have a very good reason and even
-then they seem to keep the changes minimal. This specific clock gate MMIO block
-has already been used in the Apple A7 released in 2013. The only differences
-since then are the available clocks (which can be identified by a simple offset)
-and their topology.
-
-It's likely that Apple will still use this block in future SoCs as well. By
-encoding the clock gate topology inside the device tree as well we can use a
-single driver and only need updates to the device tree once they are released.
-This might allow end users to already run their favorite distribution by just
-updating the bootloader with a new device tree instead of having to wait until
-the new topology is integrated into their distro kernel.
-
-Additionally, the driver itself can be kept very simple and not much code needs
-to be duplicated and then updated for each new SoC between various consumers of
-these device tree nodes (Linux, u-boot, and OpenBSD for now).
-
-
-This series therefore creates a single device tree node for each clock gate.
-This unfortunately maps a whole page out of which only a single register will
-be used for each node.
-
-The other alternative I considered was to create a syscon/simple-mfd node
-and have the clock nodes as children. The gates would then use a regmap which
-would only require a single entry in the pagetable for all clocks. I decided
-against this option since the clock gate MMIO region actually isn't a
-multi-function device.
-
-I'll also gladly implement other solutions - especially if there is a way to
-keep the clock toplogy inside the device tree without having to create a
-pagetable entry for every single clock node.
-
-Best,
-
-
-Sven
-
-Sven Peter (3):
-  dt-bindings: clock: add DT bindings for apple,gate-clock
-  clk: add support for gate clocks on Apple SoCs
-  arm64: apple: add uart gate clocks
-
- .../bindings/clock/apple,gate-clock.yaml      |  60 +++++++
- MAINTAINERS                                   |   2 +
- arch/arm64/boot/dts/apple/t8103.dtsi          |  36 ++++-
- drivers/clk/Kconfig                           |  12 ++
- drivers/clk/Makefile                          |   1 +
- drivers/clk/clk-apple-gate.c                  | 152 ++++++++++++++++++
- 6 files changed, 262 insertions(+), 1 deletion(-)
+Signed-off-by: Sven Peter <sven@svenpeter.dev>
+---
+ .../bindings/clock/apple,gate-clock.yaml      | 60 +++++++++++++++++++
+ MAINTAINERS                                   |  1 +
+ 2 files changed, 61 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/clock/apple,gate-clock.yaml
- create mode 100644 drivers/clk/clk-apple-gate.c
 
+diff --git a/Documentation/devicetree/bindings/clock/apple,gate-clock.yaml b/Documentation/devicetree/bindings/clock/apple,gate-clock.yaml
+new file mode 100644
+index 000000000000..3aae47c40b42
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/apple,gate-clock.yaml
+@@ -0,0 +1,60 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/apple,gate-clock.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Binding for Apple clock gates
++
++maintainers:
++  - Sven Peter <sven@svenpeter.dev>
++
++description: |
++  Apple SoC's such as the M1 contain various clock gates.
++  These clock gates do not have a frequency associated with them and are only
++  used to power on/off various peripherals. Generally, a clock gate needs to
++  be enabled before the respective MMIO region can be accessed.
++
++  Each clock gate is configured by a single 32bit MMIO register which contains
++  the actual and the target state. The state is encoded as four bits but
++  right now only "powered on" / 0b1111 and "powered off" / 0b0000 are used.
++
++
++properties:
++  compatible:
++    enum:
++      - apple,t8103-gate-clock
++      - apple,gate-clock
++
++  "#clock-cells":
++    const: 0
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    maxItems: 1
++
++  clock-output-names:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clock-output-names
++  - "#clock-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    clock@3b7001c0 {
++      compatible = "apple,t8103-gate-clock";
++      reg = <0x3b7001c0 0x4>;
++      #clock-cells = <0>;
++      clock-output-names = "sio_busif_clk";
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 008fcad7ac00..59c026ce4d73 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1654,6 +1654,7 @@ B:	https://github.com/AsahiLinux/linux/issues
+ C:	irc://chat.freenode.net/asahi-dev
+ T:	git https://github.com/AsahiLinux/linux.git
+ F:	Documentation/devicetree/bindings/arm/apple.yaml
++F:	Documentation/devicetree/bindings/clock/apple,gate-clock.yaml
+ F:	Documentation/devicetree/bindings/interrupt-controller/apple,aic.yaml
+ F:	arch/arm64/boot/dts/apple/
+ F:	drivers/irqchip/irq-apple-aic.c
 -- 
 2.25.1
 
