@@ -2,313 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97CD38E851
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:09:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94BEF38E852
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 16:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232909AbhEXOKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 10:10:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48542 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232946AbhEXOKk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 10:10:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621865351;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=12FwMZTRzbjpzB5CkuDibzmmFS/xQehJ1Wh5iST0PjI=;
-        b=hse7U/tIt3xBLRyAPscjWiV1vdmXt8NvXb3YLbFjttGQpHZxaNRTSZuZdeGQjZHNwZq0ob
-        4LmO94oW5f3a5ON93DyAiMJymR7/Lb9GHXsuvY153fScfFVy49RhxJW+XTSi+4pcSlMiTg
-        1b+1AauDitD/ew4NTGE7AQubSL7tWNM=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-X2GrSOpkMIibPbq7IuRhkw-1; Mon, 24 May 2021 10:09:10 -0400
-X-MC-Unique: X2GrSOpkMIibPbq7IuRhkw-1
-Received: by mail-wr1-f72.google.com with SMTP id u5-20020adf9e050000b029010df603f280so13119049wre.18
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 07:09:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=12FwMZTRzbjpzB5CkuDibzmmFS/xQehJ1Wh5iST0PjI=;
-        b=WGamqBUaHR0Y8hESu//xMncM3nBcBvunL1HIOCYxJA+0kCXDhKXDhZ91jHzJ0NlKhe
-         NAArnj48INjBDrHjJwR3m9TXgyTJ6syEzAkD1La8Brr29aeDaEk/5/vrlsH7j8aEs6tq
-         feb2PCnj4WI8Lu+rnQAsD+JZdrXT3fk8oVnxsufg6DlFPFOyA8nlz+43ctgPfr60lwuo
-         WfpvvpJRcY93AXmaVWoY2gVFVUNEylSCw9CMJBQAjEdMZ/GIDZpYfSMB/CKK9SCiQdUg
-         rd3b0ewvbh/ahxFB3RsGF9Y3oyUjo1HPZFWmndWUiWVjqNc2o0hp5PjWBjiclW2ZSoIi
-         csww==
-X-Gm-Message-State: AOAM530dKGs1w9qy97LenyaHNBMrwhQVNdr3E78sZMpm4eLB7H0JB67t
-        yFRPKjrftseRpEmTYCLqybg9EexTT1VtruIVyxFYiSapb32K+hzLFFHrJ5ok2Gpgttqx3DiwkYJ
-        LYGIckLEmF5go3Axuyn/kTASrHdOkbEti+z1wjyNcLyEk/RhyD+prVTqLCqKELRq/DSXA0Ja5Yj
-        yr
-X-Received: by 2002:a1c:f219:: with SMTP id s25mr20539175wmc.31.1621865348769;
-        Mon, 24 May 2021 07:09:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwRTQDbwe1r58jz3cAVOkl0hhzua5WT+mRkk4szq+pmofP6oSmBhq+OLKDfxx/xrUOmw6FnbA==
-X-Received: by 2002:a1c:f219:: with SMTP id s25mr20539144wmc.31.1621865348429;
-        Mon, 24 May 2021 07:09:08 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id e8sm12445959wrt.30.2021.05.24.07.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 07:09:07 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] KVM: nVMX: Introduce nested_evmcs_is_used()
-In-Reply-To: <115fcae7-0c88-4865-6494-bdf6fb672382@redhat.com>
-References: <20210517135054.1914802-1-vkuznets@redhat.com>
- <20210517135054.1914802-2-vkuznets@redhat.com>
- <115fcae7-0c88-4865-6494-bdf6fb672382@redhat.com>
-Date:   Mon, 24 May 2021 16:09:06 +0200
-Message-ID: <87r1hw8br1.fsf@vitty.brq.redhat.com>
+        id S232916AbhEXOLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 10:11:52 -0400
+Received: from mga05.intel.com ([192.55.52.43]:35119 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232486AbhEXOLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 10:11:50 -0400
+IronPort-SDR: Qj7bcca4WaR1QZatSBo6qGxVe85X33NE0OdOmPJQboAWhCUhXncbWSzBpXPtZU18nC8cHbdfn8
+ SOKQJdXxzRdQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="287510122"
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="287510122"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:10:08 -0700
+IronPort-SDR: THk8ZG3W5IOtIS2hZpj80baotW9aZGpThZ2nCpv/69S4Vv0w/raHpN0c0TxNb2kKelW5lLmfWu
+ WmfoKdXiAdFg==
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="478550065"
+Received: from caknoll-mobl.amr.corp.intel.com (HELO [10.209.100.8]) ([10.209.100.8])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 07:10:07 -0700
+Subject: Re: [PATCH v5 28/28] x86/fpu/amx: Clear the AMX state when
+ appropriate
+To:     Andy Lutomirski <luto@kernel.org>,
+        "Chang S. Bae" <chang.seok.bae@intel.com>, bp@suse.de,
+        tglx@linutronix.de, mingo@kernel.org, x86@kernel.org
+Cc:     len.brown@intel.com, jing2.liu@intel.com, ravi.v.shankar@intel.com,
+        linux-kernel@vger.kernel.org, "Chen, Tim C" <tim.c.chen@intel.com>
+References: <20210523193259.26200-1-chang.seok.bae@intel.com>
+ <20210523193259.26200-29-chang.seok.bae@intel.com>
+ <1980c78b-d51b-c186-9179-f3c72692ad8a@kernel.org>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <ff72d7cd-e36d-06d8-d741-645a0504bf65@intel.com>
+Date:   Mon, 24 May 2021 07:10:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <1980c78b-d51b-c186-9179-f3c72692ad8a@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+On 5/23/21 8:13 PM, Andy Lutomirski wrote:
+>> +		/*
+>> +		 * Since the current task's state is safely in the XSAVE buffer, TILERELEASE
+>> +		 * the TILE registers to guarantee that dirty state will not interfere with the
+>> +		 * hardware's ability to enter the core C6 idle state.
+>> +		 */
+>> +		if (fpu->state_mask & XFEATURE_MASK_XTILE_DATA)
+>> +			tile_release();
+>>  		return 1;
+>>  	}
+>>  
+>>
+> This looks wrong -- you should also invalidate the state.  And doing it
+> in the save path seems inefficient.
+> 
+> Can we do this just when going idle?
 
-> On 17/05/21 15:50, Vitaly Kuznetsov wrote:
->> Unlike regular set_current_vmptr(), nested_vmx_handle_enlightened_vmptrld()
->> can not be called directly from vmx_set_nested_state() as KVM may not have
->> all the information yet (e.g. HV_X64_MSR_VP_ASSIST_PAGE MSR may not be
->> restored yet). Enlightened VMCS is mapped later while getting nested state
->> pages. In the meantime, vmx->nested.hv_evmcs remains NULL and using it
->> for various checks is incorrect. In particular, if KVM_GET_NESTED_STATE is
->> called right after KVM_SET_NESTED_STATE, KVM_STATE_NESTED_EVMCS flag in the
->> resulting state will be unset (and such state will later fail to load).
->> 
->> Introduce nested_evmcs_is_used() and use 'is_guest_mode(vcpu) &&
->> vmx->nested.current_vmptr == -1ull' check to detect not-yet-mapped eVMCS
->> after restore.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->
-> Would it make sense to instead use hv_evmcs_ptr, making the unused
-> value -1 instead of 0?
-
-You mean we'll be using:
-
-"hv_evmcs_ptr == 0" meaning "no evmcs" (like now)
-"hv_evmcs_ptr == -1" meaing "evmcs not yet mapped" (and
-nested_evmcs_is_used() will check for both '0' and '-1')
-"hv_evmcs_ptr == anything else" - eVMCS mapped.
-
-Right?
-
->
-> I even had this untested patch already lying around as a cleanup I
-> never bothered to submit:
-
-...
-
->
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index a19cfcb625da..dd3e4ddaaf26 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -187,7 +187,7 @@ static int nested_vmx_fail(struct kvm_vcpu *vcpu, u32 vm_instruction_error)
->   	 * failValid writes the error number to the current VMCS, which
->   	 * can't be done if there isn't a current VMCS.
->   	 */
-> -	if (vmx->nested.current_vmptr == -1ull && !vmx->nested.hv_evmcs)
-> +	if (vmx->nested.current_vmptr == -1ull && vmx->nested.hv_evmcs_vmptr == -1)
-
-Or, if we decide to integrate this patch, it'll be:
-
-"hv_evmcs_ptr == -1" meaning "no evmcs" (what is '0' now)
-"hv_evmcs_ptr == 0" meaing "evmcs not yet mapped"
-
-I'm not against the idea, hope we won't forget that we have two 'special'
-values for 'hv_evmcs_vmptr' and not just one.
-
->   		return nested_vmx_failInvalid(vcpu);
->   
->   	return nested_vmx_failValid(vcpu, vm_instruction_error);
-> @@ -221,11 +221,11 @@ static inline void nested_release_evmcs(struct kvm_vcpu *vcpu)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   
-> -	if (!vmx->nested.hv_evmcs)
-> +	if (vmx->nested.hv_evmcs_vmptr == -1)
->   		return;
->   
->   	kvm_vcpu_unmap(vcpu, &vmx->nested.hv_evmcs_map, NULL, true);
-> -	vmx->nested.hv_evmcs_vmptr = 0;
-> +	vmx->nested.hv_evmcs_vmptr = -1;
->   	vmx->nested.hv_evmcs = NULL;
->   }
->   
-> @@ -1978,10 +1978,8 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
->   	if (!nested_enlightened_vmentry(vcpu, &evmcs_gpa))
->   		return EVMPTRLD_DISABLED;
->   
-> -	if (unlikely(!vmx->nested.hv_evmcs ||
-> -		     evmcs_gpa != vmx->nested.hv_evmcs_vmptr)) {
-> -		if (!vmx->nested.hv_evmcs)
-> -			vmx->nested.current_vmptr = -1ull;
-> +	if (unlikely(evmcs_gpa != vmx->nested.hv_evmcs_vmptr)) {
-> +		vmx->nested.current_vmptr = -1ull;
->   
->   		nested_release_evmcs(vcpu);
->   
-> @@ -2052,7 +2050,7 @@ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   
-> -	if (vmx->nested.hv_evmcs) {
-> +	if (vmx->nested.hv_evmcs_vmptr != -1) {
->   		copy_vmcs12_to_enlightened(vmx);
->   		/* All fields are clean */
->   		vmx->nested.hv_evmcs->hv_clean_fields |=
-> @@ -2204,7 +2202,7 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
->   	u32 exec_control;
->   	u64 guest_efer = nested_vmx_calc_efer(vmx, vmcs12);
->   
-> -	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs)
-> +	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs_vmptr != -1)
->   		prepare_vmcs02_early_rare(vmx, vmcs12);
->   
->   	/*
-> @@ -2487,9 +2485,8 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
->   			  enum vm_entry_failure_code *entry_failure_code)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> -	struct hv_enlightened_vmcs *hv_evmcs = vmx->nested.hv_evmcs;
->   
-> -	if (vmx->nested.dirty_vmcs12 || hv_evmcs) {
-> +	if (vmx->nested.dirty_vmcs12 || vmx->nested.hv_evmcs_vmptr != -1) {
->   		prepare_vmcs02_rare(vmx, vmcs12);
->   		vmx->nested.dirty_vmcs12 = false;
->   	}
-> @@ -3075,7 +3072,7 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
->   	 * L2 was running), map it here to make sure vmcs12 changes are
->   	 * properly reflected.
->   	 */
-> -	if (vmx->nested.enlightened_vmcs_enabled && !vmx->nested.hv_evmcs) {
-> +	if (vmx->nested.enlightened_vmcs_enabled && vmx->nested.hv_evmcs_vmptr == -1) {
->   		enum nested_evmptrld_status evmptrld_status =
->   			nested_vmx_handle_enlightened_vmptrld(vcpu, false);
->   
-> @@ -3419,7 +3416,7 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
->   
->   	load_vmcs12_host_state(vcpu, vmcs12);
->   	vmcs12->vm_exit_reason = exit_reason.full;
-> -	if (enable_shadow_vmcs || vmx->nested.hv_evmcs)
-> +	if (enable_shadow_vmcs || vmx->nested.hv_evmcs_vmptr != -1)
->   		vmx->nested.need_vmcs12_to_shadow_sync = true;
->   	return NVMX_VMENTRY_VMEXIT;
->   }
-> @@ -3449,7 +3446,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->   		return nested_vmx_failInvalid(vcpu);
->   	}
->   
-> -	if (CC(!vmx->nested.hv_evmcs && vmx->nested.current_vmptr == -1ull))
-> +	if (CC(vmx->nested.hv_evmcs_vmptr == -1 && vmx->nested.current_vmptr == -1ull))
->   		return nested_vmx_failInvalid(vcpu);
->   
->   	vmcs12 = get_vmcs12(vcpu);
-> @@ -3463,7 +3460,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
->   	if (CC(vmcs12->hdr.shadow_vmcs))
->   		return nested_vmx_failInvalid(vcpu);
->   
-> -	if (vmx->nested.hv_evmcs) {
-> +	if (vmx->nested.hv_evmcs_vmptr != -1) {
->   		copy_enlightened_to_vmcs12(vmx);
->   		/* Enlightened VMCS doesn't have launch state */
->   		vmcs12->launch_state = !launch;
-> @@ -4014,10 +4011,10 @@ static void sync_vmcs02_to_vmcs12(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12)
->   {
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   
-> -	if (vmx->nested.hv_evmcs)
-> +	if (vmx->nested.hv_evmcs_vmptr != -1)
->   		sync_vmcs02_to_vmcs12_rare(vcpu, vmcs12);
->   
-> -	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = !vmx->nested.hv_evmcs;
-> +	vmx->nested.need_sync_vmcs02_to_vmcs12_rare = (vmx->nested.hv_evmcs_vmptr == -1);
->   
->   	vmcs12->guest_cr0 = vmcs12_guest_cr0(vcpu, vmcs12);
->   	vmcs12->guest_cr4 = vmcs12_guest_cr4(vcpu, vmcs12);
-> @@ -4514,7 +4511,7 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
->   	}
->   
->   	if ((vm_exit_reason != -1) &&
-> -	    (enable_shadow_vmcs || vmx->nested.hv_evmcs))
-> +	    (enable_shadow_vmcs || vmx->nested.hv_evmcs_vmptr != -1))
->   		vmx->nested.need_vmcs12_to_shadow_sync = true;
->   
->   	/* in case we halted in L2 */
-> @@ -5210,7 +5207,7 @@ static int handle_vmptrld(struct kvm_vcpu *vcpu)
->   		return nested_vmx_fail(vcpu, VMXERR_VMPTRLD_VMXON_POINTER);
->   
->   	/* Forbid normal VMPTRLD if Enlightened version was used */
-> -	if (vmx->nested.hv_evmcs)
-> +	if (vmx->nested.hv_evmcs_vmptr != -1)
->   		return 1;
->   
->   	if (vmx->nested.current_vmptr != vmptr) {
-> @@ -5266,7 +5263,7 @@ static int handle_vmptrst(struct kvm_vcpu *vcpu)
->   	if (!nested_vmx_check_permission(vcpu))
->   		return 1;
->   
-> -	if (unlikely(to_vmx(vcpu)->nested.hv_evmcs))
-> +	if (unlikely(to_vmx(vcpu)->nested.hv_evmcs_vmptr != -1))
->   		return 1;
->   
->   	if (get_vmx_mem_address(vcpu, exit_qual, instr_info,
-> @@ -6038,7 +6035,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
->   		if (vmx_has_valid_vmcs12(vcpu)) {
->   			kvm_state.size += sizeof(user_vmx_nested_state->vmcs12);
->   
-> -			if (vmx->nested.hv_evmcs)
-> +			if (vmx->nested.hv_evmcs_vmptr != -1)
->   				kvm_state.flags |= KVM_STATE_NESTED_EVMCS;
->   
->   			if (is_guest_mode(vcpu) &&
-> @@ -6094,7 +6091,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
->   	} else  {
->   		copy_vmcs02_to_vmcs12_rare(vcpu, get_vmcs12(vcpu));
->   		if (!vmx->nested.need_vmcs12_to_shadow_sync) {
-> -			if (vmx->nested.hv_evmcs)
-> +			if (vmx->nested.hv_evmcs_vmptr != -1)
->   				copy_enlightened_to_vmcs12(vmx);
->   			else if (enable_shadow_vmcs)
->   				copy_shadow_to_vmcs12(vmx);
-> diff --git a/arch/x86/kvm/vmx/nested.h b/arch/x86/kvm/vmx/nested.h
-> index 184418baeb3c..55925be48973 100644
-> --- a/arch/x86/kvm/vmx/nested.h
-> +++ b/arch/x86/kvm/vmx/nested.h
-> @@ -63,7 +63,7 @@ static inline int vmx_has_valid_vmcs12(struct kvm_vcpu *vcpu)
->   	 * have vmcs12 if it is true.
->   	 */
->   	return is_guest_mode(vcpu) || vmx->nested.current_vmptr != -1ull ||
-> -		vmx->nested.hv_evmcs;
-> +		vmx->nested.hv_evmcs_vmptr != -1;
->   }
->   
->   static inline u16 nested_get_vpid02(struct kvm_vcpu *vcpu)
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index f2fd447eed45..33208aa4ac87 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6974,6 +6974,7 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
->   
->   	vmx->nested.posted_intr_nv = -1;
->   	vmx->nested.current_vmptr = -1ull;
-> +	vmx->nested.hv_evmcs_vmptr = -1;
->   
->   	vcpu->arch.microcode_version = 0x100000000ULL;
->   	vmx->msr_ia32_feature_control_valid_bits = FEAT_CTL_LOCKED;
->
-> Paolo
->
-
--- 
-Vitaly
-
+Chang, you might also want to talk with folks that do scheduler
+performance work (I've cc'd Tim).  I know we're always fighting to trim
+down the idle and wakeup paths.  There might be no other alternative,
+but unconditionally forcing an AMX XRSTOR on return from idle might be
+considered nasty.
