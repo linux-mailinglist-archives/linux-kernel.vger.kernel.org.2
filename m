@@ -2,119 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93BD338E1B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A6138E1C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 09:33:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232365AbhEXHcl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 03:32:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37906 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232254AbhEXHcb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 03:32:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4032160E0B;
-        Mon, 24 May 2021 07:31:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1621841464;
-        bh=cREJ80BL8BLuZgT+HaJzUef/mFV18kZDbQk7m7I+jPU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eJsdxDzaBy1arpXCQzikBLvfQrnAFDhoK+HcBFvtv3nagX2qfuPSnkbjdGF08OcO5
-         LxSa8cp+3d/TCLTvb+JZXBI3rDzi4/gYnY2M2X09TKGi3EyKitxSdi+jybFOSKXhU1
-         r4gxzWQwFu+KcVhrcT9a7e9culSTiL1jbHz4mJ/mDSIIpun9+9Xl7wfUAUO1vbu1vo
-         RFCDb9AzDRCvPsJ++HcipaCTdMfWSXzM+OsuD8E1jYFNlNhIiRpO3pRUZA+cg3O3Vl
-         eTNML0luuoMeL10sXJ53apRLzlM2Bs1y53gg0pd9ndu1bx+MLMP+f5FSmF2QT4ihQJ
-         BH3AMOgbVEa7A==
-Date:   Mon, 24 May 2021 13:00:59 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Rob Clark <robdclark@gmail.com>, linux-arm-msm@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        freedreno@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org
-Subject: Re: [RFC PATCH 02/13] dt-bindings: msm/dsi: Document Display Stream
- Compression (DSC) parameters
-Message-ID: <YKtWM+BYeIA+P+55@vkoul-mobl.Dlink>
-References: <20210521124946.3617862-1-vkoul@kernel.org>
- <20210521124946.3617862-3-vkoul@kernel.org>
- <20210521144237.GZ2484@yoga>
+        id S232388AbhEXHfT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 03:35:19 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:17854 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232266AbhEXHfS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 03:35:18 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 14O7KFQR005012;
+        Mon, 24 May 2021 15:20:15 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from slee-VirtualBox.localdomain (192.168.100.253) by
+ TWMBX02.aspeed.com (192.168.0.24) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 24 May 2021 15:33:09 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Rob Herring <robh+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+        "Andrew Jeffery" <andrew@aj.id.au>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>
+CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
+        <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>
+Subject: [PATCH v5 0/4] mmc: sdhci-of-aspeed: Support toggling SD bus signal
+Date:   Mon, 24 May 2021 15:32:52 +0800
+Message-ID: <20210524073308.9328-1-steven_lee@aspeedtech.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210521144237.GZ2484@yoga>
+Content-Type: text/plain
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 14O7KFQR005012
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-05-21, 09:42, Bjorn Andersson wrote:
-> On Fri 21 May 07:49 CDT 2021, Vinod Koul wrote:
-> 
-> > DSC enables streams to be compressed before we send to panel. This
-> > requires DSC enabled encoder and a panel to be present. So we add this
-> > information in board DTS and find if DSC can be enabled and the
-> > parameters required to configure DSC are added to binding document along
-> > with example
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > ---
-> >  .../devicetree/bindings/display/msm/dsi.txt       | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/display/msm/dsi.txt b/Documentation/devicetree/bindings/display/msm/dsi.txt
-> > index b9a64d3ff184..83d2fb92267e 100644
-> > --- a/Documentation/devicetree/bindings/display/msm/dsi.txt
-> > +++ b/Documentation/devicetree/bindings/display/msm/dsi.txt
-> > @@ -48,6 +48,13 @@ Optional properties:
-> >  - pinctrl-n: the "sleep" pinctrl state
-> >  - ports: contains DSI controller input and output ports as children, each
-> >    containing one endpoint subnode.
-> > +- qcom,mdss-dsc-enabled: Display Stream Compression (DSC) is enabled
-> > +- qcom,mdss-slice-height: DSC slice height in pixels
-> > +- qcom,mdss-slice-width: DSC slice width in pixels
-> > +- qcom,mdss-slice-per-pkt: DSC slices per packet
-> > +- qcom,mdss-bit-per-component: DSC bits per component
-> > +- qcom,mdss-bit-per-pixel: DSC bits per pixel
-> > +- qcom,mdss-block-prediction-enable: Block prediction mode of DSC enabled
-> >  
-> >    DSI Endpoint properties:
-> >    - remote-endpoint: For port@0, set to phandle of the connected panel/bridge's
-> > @@ -188,6 +195,14 @@ Example:
-> >  		qcom,master-dsi;
-> >  		qcom,sync-dual-dsi;
-> >  
-> > +		qcom,mdss-dsc-enabled;
-> 
-> To me the activation of DSC seems to be a property of the panel.
+AST2600-A2 EVB has the reference design for enabling SD bus
+power and toggling SD bus signal voltage between 3.3v and 1.8v by
+GPIO regulators.
+This patch series adds sdhci node and gpio regulators in a new dts file
+for AST2600-A2 EVB.
+The description of the reference design of AST2600-A2 EVB is added
+in the new dts file.
 
-I think there are three parts to the problem
-1. Panel needs to support it
-2. Host needs to support it
-3. Someone needs to decide to use when both the above conditions are
-met.
+This patch also include a helper for updating AST2600 sdhci capability
+registers.
 
-There are cases where above 1, 2 will be satisfied, but we might be okay
-without DSC too.. so how to decide when to do DSC :)
+Changes from v4:
+* Move sdhci node and gpio regulator from aspeed-ast2600-evb-a2.dts
+  to aspeed-ast2600-evb.dts. Now aspeed-ast2600-evb.dts only supports
+  A2(or newer) evbs.
+* Remove aspeed-ast2600-evb-a2.dts since sdhci nodes were moved to
+  aspeed-ast2600-evb.dts.
+* Add aspeed-ast2600-evb-a1.dts for A1 and A0 evbs.
 
-I feel it is more of a system property. And I also think that these
-parameters here are host configuration and not really for panel...
+Changes from v3:
+* Remove the example of gpio regulator from dt-bindings.
+* Add sdhci node and gpio regulators to a new dts file.
+* Move the comment of the reference design to the new
+  dts file.
+* Modify commit message of sdhci-of-aspeed.c.
+* Fix coding style issues of sdhci-of-aspeed.c.
+* Remove the implementation of eMMC resetc since it has no relevance to
+  the goal that this patch series want to achieve and it may needs further
+  discussion about the design of reset behavior.
 
-> 
-> > +		qcom,mdss-slice-height = <16>;
-> > +		qcom,mdss-slice-width = <540>;
-> > +		qcom,mdss-slice-per-pkt = <1>;
-> > +		qcom,mdss-bit-per-component = <8>;
-> > +		qcom,mdss-bit-per-pixel = <8>;
-> > +		qcom,mdss-block-prediction-enable;
-> 
-> Which of these properties relates to the DSC encoder and what needs to
-> be agreed with the sink? Can't we derive e.g. bpp from the information
-> we have from the attached panel already?
+Changes from v2:
+* Move the comment of the reference design from dt-bindings to device tree.
+* Add clk-phase binding for eMMC controller.
+* Reimplement aspeed_sdc_set_slot_capability().
+* Separate the implementation of eMMC reset to another patch file.
+* Fix yaml document error per the report of dt_binding_check and
+  dtbs_check.
 
-Let me go back and check on this a bit more
+Changes from v1:
+* Add the device tree example for AST2600 A2 EVB in dt-bindings
+  document
+* Add timing-phase for eMMC controller.
+* Remove power-gpio and power-switch-gpio from sdhci driver, they should
+  be handled by regulator.
+* Add a helper to update capability registers in the driver.
+* Sync sdhci settings from device tree to SoC capability registers.
+* Sync timing-phase from device tree to SoC Clock Phase Control
+  register
 
-Thanks
+Please help to review.
+
+Regards,
+Steven
+
+Steven Lee (4):
+  ARM: dts: aspeed: ast2600evb: Add sdhci node and gpio regulator for A2
+    evb.
+  ARM: dts: aspeed: ast2600evb: Add phase correction for emmc
+    controller.
+  ARM: dts: aspeed: ast2600evb: Add dts file for A1 and A0.
+  mmc: sdhci-of-aspeed: Configure the SDHCIs as specified by the
+    devicetree.
+
+ arch/arm/boot/dts/aspeed-ast2600-evb-a1.dts | 15 ++++
+ arch/arm/boot/dts/aspeed-ast2600-evb.dts    | 87 ++++++++++++++++++++-
+ drivers/mmc/host/sdhci-of-aspeed.c          | 48 ++++++++++++
+ 3 files changed, 149 insertions(+), 1 deletion(-)
+ create mode 100644 arch/arm/boot/dts/aspeed-ast2600-evb-a1.dts
+
 -- 
-~Vinod
+2.17.1
+
