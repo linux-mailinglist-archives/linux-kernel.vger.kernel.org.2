@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB6B38ED95
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:38:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C3D738EFE4
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234172AbhEXPjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:39:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50500 "EHLO mail.kernel.org"
+        id S235904AbhEXQAM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 12:00:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40474 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233874AbhEXPgV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:36:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E088B6140D;
-        Mon, 24 May 2021 15:32:32 +0000 (UTC)
+        id S234915AbhEXPyx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:54:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EECB661874;
+        Mon, 24 May 2021 15:39:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870353;
-        bh=Wjlwndu3maWl4Pu3r737cwkled+6HVuNMWTYCHealns=;
+        s=korg; t=1621870799;
+        bh=nGaEYsiHdWO6medE+YVFtwaqLwkV8sAbhGp30T/Y4r8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RXFyX0YBUyxMyS4hb9eVID7NzZHNjJX9mBrvHnq0qt3nInYSSvm5iqljfjEadNarz
-         pz5Xozw4p3m3AefHkg/ek2F1M1y+8pa6EJB7Ek5+YYlfsnDDOGx6aTJOJew4BvZo+B
-         jI421uaLCioDzmfCv+62kBud0Gd2F7W6PEhmcUA0=
+        b=hkwkkHLmfcRXFpiWSsh4Wq7tbGmznbV+vSF3QtH+2g1lPr4FBJRoWthzr/hYMwIAe
+         KdKTEL2MXfTPzILWHEGW8+35ZvA7Iakr051j7f22hetEMNCNjfuRBZcWse0IVqarAX
+         uZIwyPnJ++4KOGbF2tuWsGiG3P3ajY7EkB33uIhs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Ferenc Bakonyi <fero@drama.obuda.kando.hu>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Subject: [PATCH 4.9 32/36] video: hgafb: fix potential NULL pointer dereference
+        stable@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.10 022/104] RDMA/uverbs: Fix a NULL vs IS_ERR() bug
 Date:   Mon, 24 May 2021 17:25:17 +0200
-Message-Id: <20210524152325.193367564@linuxfoundation.org>
+Message-Id: <20210524152333.558739787@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152324.158146731@linuxfoundation.org>
-References: <20210524152324.158146731@linuxfoundation.org>
+In-Reply-To: <20210524152332.844251980@linuxfoundation.org>
+References: <20210524152332.844251980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,76 +41,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
 
-commit dc13cac4862cc68ec74348a80b6942532b7735fa upstream.
+[ Upstream commit 463a3f66473b58d71428a1c3ce69ea52c05440e5 ]
 
-The return of ioremap if not checked, and can lead to a NULL to be
-assigned to hga_vram. Potentially leading to a NULL pointer
-dereference.
+The uapi_get_object() function returns error pointers, it never returns
+NULL.
 
-The fix adds code to deal with this case in the error label and
-changes how the hgafb_probe handles the return of hga_card_detect.
-
-Cc: Ferenc Bakonyi <fero@drama.obuda.kando.hu>
-Cc: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
-Link: https://lore.kernel.org/r/20210503115736.2104747-40-gregkh@linuxfoundation.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Fixes: 149d3845f4a5 ("RDMA/uverbs: Add a method to introspect handles in a context")
+Link: https://lore.kernel.org/r/YJ6Got+U7lz+3n9a@mwanda
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/video/fbdev/hgafb.c |   21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
+ drivers/infiniband/core/uverbs_std_types_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/drivers/video/fbdev/hgafb.c
-+++ b/drivers/video/fbdev/hgafb.c
-@@ -285,6 +285,8 @@ static int hga_card_detect(void)
- 	hga_vram_len  = 0x08000;
+diff --git a/drivers/infiniband/core/uverbs_std_types_device.c b/drivers/infiniband/core/uverbs_std_types_device.c
+index a03021d94e11..049684880ae0 100644
+--- a/drivers/infiniband/core/uverbs_std_types_device.c
++++ b/drivers/infiniband/core/uverbs_std_types_device.c
+@@ -117,8 +117,8 @@ static int UVERBS_HANDLER(UVERBS_METHOD_INFO_HANDLES)(
+ 		return ret;
  
- 	hga_vram = ioremap(0xb0000, hga_vram_len);
-+	if (!hga_vram)
-+		return -ENOMEM;
- 
- 	if (request_region(0x3b0, 12, "hgafb"))
- 		release_io_ports = 1;
-@@ -344,13 +346,18 @@ static int hga_card_detect(void)
- 			hga_type_name = "Hercules";
- 			break;
- 	}
--	return 1;
-+	return 0;
- error:
- 	if (release_io_ports)
- 		release_region(0x3b0, 12);
- 	if (release_io_port)
- 		release_region(0x3bf, 1);
--	return 0;
-+
-+	iounmap(hga_vram);
-+
-+	pr_err("hgafb: HGA card not detected.\n");
-+
-+	return -EINVAL;
- }
- 
- /**
-@@ -548,13 +555,11 @@ static struct fb_ops hgafb_ops = {
- static int hgafb_probe(struct platform_device *pdev)
- {
- 	struct fb_info *info;
-+	int ret;
- 
--	if (! hga_card_detect()) {
--		printk(KERN_INFO "hgafb: HGA card not detected.\n");
--		if (hga_vram)
--			iounmap(hga_vram);
+ 	uapi_object = uapi_get_object(attrs->ufile->device->uapi, object_id);
+-	if (!uapi_object)
 -		return -EINVAL;
--	}
-+	ret = hga_card_detect();
-+	if (!ret)
-+		return ret;
++	if (IS_ERR(uapi_object))
++		return PTR_ERR(uapi_object);
  
- 	printk(KERN_INFO "hgafb: %s with %ldK of memory detected.\n",
- 		hga_type_name, hga_vram_len/1024);
+ 	handles = gather_objects_handle(attrs->ufile, uapi_object, attrs,
+ 					out_len, &total);
+-- 
+2.30.2
+
 
 
