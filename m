@@ -2,107 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A37C38E7E8
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:42:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B977E38E7EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:43:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232922AbhEXNoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:44:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51960 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232903AbhEXNoC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:44:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1621863754;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DUGrASOClCVVu+4hqHSu8VfIIMkQ9/UZu/ZQ1hqek/8=;
-        b=MhufEkbuLsU/q2UUxz3q0qfgNtYZS4QaH/huXqzjS1u0IGv60q9bQY18wS0bYYTj9IFugG
-        XFNz4xxQCBnDjI5s1joChw9aVO2bLgNd/8QD0stnt4hTnKCf8tk4mUpXVeayGeHfKivV71
-        IKuhkMRpKpE40dIBLMFPCE9lr4h9D+4=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-388-cSNDkjNnNH-thcDR-ePhpA-1; Mon, 24 May 2021 09:42:32 -0400
-X-MC-Unique: cSNDkjNnNH-thcDR-ePhpA-1
-Received: by mail-ed1-f71.google.com with SMTP id q18-20020a50cc920000b029038cf491864cso15566664edi.14
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:42:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DUGrASOClCVVu+4hqHSu8VfIIMkQ9/UZu/ZQ1hqek/8=;
-        b=p7GeztU/2Syj81rXmY57PEJhCWQ8IhZBnXMuj0zCmTw1WNlv6A5HMSyAtqtPvt5yRI
-         CgP/OA07h/1t3OxS5Boyv454aBeuuOhqrA0GsaDOSDEI58jN1F+aPwAHq7TOjMvxup3V
-         S3qRDq6YjiYvrD/D6SS2sZAlT2DHbvcRRDq+bYhqcQFMzZtoqF0+GxhzPKM4ln2J1L02
-         zsr38wx+e6lfjm9z4Sj1vt6E44yNU2/btaT64st5BXkMcuWErvSag+EuKe7mF4I17BrU
-         5r1D0e3R+X9sI25i05D0SKE2LcrJqspBDz7eepYPQlRo3epWJwljR4d2WFdWUswpq5UA
-         8FvQ==
-X-Gm-Message-State: AOAM531AR6CFFK4VfuVB3drCsZUU9MpShj45DJ/AZV7Eego7InRcxy4c
-        h8E5OZJ8DiJFQqxGYw7as9kPyAvn9Mz8Pnp+bkBuhUADA5XCr+tdrtEclkvmEZjlnE4yz6aIITZ
-        fUzFRUmIWdK79T+glO6iaH32k
-X-Received: by 2002:a17:906:d1d1:: with SMTP id bs17mr23600358ejb.492.1621863751795;
-        Mon, 24 May 2021 06:42:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzcWwMt0UzuQzlYcKpAU17jJOBCW8vfhS/ldYW7vG8tdP2J+BOzpNidMdWDqfxSu6zF1AB5Uw==
-X-Received: by 2002:a17:906:d1d1:: with SMTP id bs17mr23600344ejb.492.1621863751659;
-        Mon, 24 May 2021 06:42:31 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id q16sm7960408ejm.12.2021.05.24.06.42.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 May 2021 06:42:31 -0700 (PDT)
-Subject: Re: [PATCH v4 2/5] KVM: X86: Bail out of direct yield in case of
- under-committed scenarios
-To:     Wanpeng Li <kernellwp@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-References: <1621339235-11131-1-git-send-email-wanpengli@tencent.com>
- <1621339235-11131-2-git-send-email-wanpengli@tencent.com>
- <YKQTx381CGPp7uZY@google.com>
- <CANRm+Cy_D3cBBEYQ9ApKMNC6p0dpTBQYQXs+dv5vrFedVkOy2w@mail.gmail.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <889a0a43-0641-70ce-d2a5-ed71bd54e59c@redhat.com>
-Date:   Mon, 24 May 2021 15:42:30 +0200
+        id S232927AbhEXNo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:44:27 -0400
+Received: from mga01.intel.com ([192.55.52.88]:36583 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232932AbhEXNoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 09:44:24 -0400
+IronPort-SDR: skukgycBTupGEc/oqveYzsuQjtyyBVqsSWjo4uhgzphwilXB26cMfjraIx5jwE5QWgAWWZP5j4
+ grPDO0wOnWLA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="223091312"
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="223091312"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 06:42:55 -0700
+IronPort-SDR: xj6m4cZ3QJ+FiRUX9g95RzhYM4oMQdGx4xwaLc+q6WdoduiqsiRCXzpZBtJSGLOBCFOhzhNnHG
+ horj1olH75RA==
+X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
+   d="scan'208";a="614111067"
+Received: from bwheeler-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.57.42])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 06:42:55 -0700
+Subject: Re: [PATCH v5 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up
+ support
+To:     =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
+        Rafael J Wysocki <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Len Brown <lenb@kernel.org>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+References: <e4dc31d5-d897-50fa-34e7-f5c033d5f5db@linux.intel.com>
+ <20210524060221.519093-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <4295dab3-7675-9146-ac6e-244704ecfcca@nextfour.com>
+From:   "Kuppuswamy, Sathyanarayanan" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Message-ID: <0a663bde-c301-d326-2b19-ca52719a5855@linux.intel.com>
+Date:   Mon, 24 May 2021 06:42:53 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CANRm+Cy_D3cBBEYQ9ApKMNC6p0dpTBQYQXs+dv5vrFedVkOy2w@mail.gmail.com>
+In-Reply-To: <4295dab3-7675-9146-ac6e-244704ecfcca@nextfour.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/05/21 04:57, Wanpeng Li wrote:
-> Looks good. Hope Paolo can update the patch description when applying.:)
+
+
+On 5/23/21 11:40 PM, Mika Penttilä wrote:
 > 
-> "In case of under-committed scenarios, vCPU can get scheduling easily,
-> kvm_vcpu_yield_to add extra overhead, we can observe a lot of races
-> between vcpu->ready is true and yield fails due to p->state is
-> TASK_RUNNING. Let's bail out in such scenarios by checking the length
-> of current cpu runqueue, it can be treated as a hint of under-committed
-> instead of guaranteeing accuracy. 30%+ of directed-yield attempts can
-> avoid the expensive lookups in kvm_sched_yield() in an under-committed
-> scenario. "
-> 
+> So this isn't supporting suspend/resume if AP cannot started again?
 
-Here is what I used:
+Yes. You are correct. It can be used only once per AP. Please find the
+spec reference below.
 
-     In case of under-committed scenarios, vCPUs can be scheduled easily;
-     kvm_vcpu_yield_to adds extra overhead, and it is also common to see
-     when vcpu->ready is true but yield later failing due to p->state is
-     TASK_RUNNING.
-     
-     Let's bail out in such scenarios by checking the length of current cpu
-     runqueue, which can be treated as a hint of under-committed instead of
-     guarantee of accuracy. 30%+ of directed-yield attempts can now avoid
-     the expensive lookups in kvm_sched_yield() in an under-committed scenario.
+/*
+  * According to the ACPI specification r6.4, sec 5.2.12.19, the
+  * mailbox-based wakeup mechanism cannot be used more than once
+  * for the same CPU, so skip sending wake commands to already
+  * awake CPU.
+  */
 
-Paolo
-
+-- 
+Sathyanarayanan Kuppuswamy
+Linux Kernel Developer
