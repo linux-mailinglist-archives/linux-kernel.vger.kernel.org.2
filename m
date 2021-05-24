@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C2E738EEFB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:54:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58DD938EE43
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 17:46:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235045AbhEXPzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 11:55:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33674 "EHLO mail.kernel.org"
+        id S234594AbhEXPrt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 11:47:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233582AbhEXPrU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 11:47:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7800061417;
-        Mon, 24 May 2021 15:37:07 +0000 (UTC)
+        id S233165AbhEXPmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 11:42:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 70A236140A;
+        Mon, 24 May 2021 15:35:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1621870627;
-        bh=0/p0tc9WrNj0jr3ZyF9G/zdESfFGAEkfgCe3qd7ps5w=;
+        s=korg; t=1621870507;
+        bh=jz5lJpbrtEPhliG6O76iXaB5fHjt4HN2bNwhoy5SiXE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GZ2UKmFTtiM8RJtgOrm3UI0WkPaHfzqJbnRGHw8MmpmNOaQ65HKoAl1tpdgWZHHA9
-         XdYTkOGQ9cbNrk4qkxJL8rC7AtSv7GxqSe1pBeuV7vJ1VB0F+PGqCXLjqTAMEn+Qqy
-         O61TmgRRcAQYZLpE2KzDNcPA8aE7Xnlqq+wdxCn4=
+        b=MXmru4TFHA8Xn+XQ8rop02FgQOy9H/Nz/NOYLZltQ9IBtfZsp771ME9O9C1vA1m0y
+         U3lkPuO45F7WMi+wU2Rdqe67YBNd3LHcgsimYKMyXQsX/T5s3u9QITXpqtozk0yy+j
+         BY9Jm8kCrtOLJ2IDg+RSUfTiVIJ9F0BIiFotBNjI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH 5.4 33/71] uio_hv_generic: Fix a memory leak in error handling paths
+        stable@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH 4.19 28/49] Revert "hwmon: (lm80) fix a missing check of bus read in lm80 probe"
 Date:   Mon, 24 May 2021 17:25:39 +0200
-Message-Id: <20210524152327.538000879@linuxfoundation.org>
+Message-Id: <20210524152325.289902282@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210524152326.447759938@linuxfoundation.org>
-References: <20210524152326.447759938@linuxfoundation.org>
+In-Reply-To: <20210524152324.382084875@linuxfoundation.org>
+References: <20210524152324.382084875@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -39,50 +39,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-commit 3ee098f96b8b6c1a98f7f97915f8873164e6af9d upstream.
+commit 99ae3417672a6d4a3bf68d4fc43d7c6ca074d477 upstream.
 
-If 'vmbus_establish_gpadl()' fails, the (recv|send)_gpadl will not be
-updated and 'hv_uio_cleanup()' in the error handling path will not be
-able to free the corresponding buffer.
+This reverts commit 9aa3aa15f4c2f74f47afd6c5db4b420fadf3f315.
 
-In such a case, we need to free the buffer explicitly.
+Because of recent interactions with developers from @umn.edu, all
+commits from them have been recently re-reviewed to ensure if they were
+correct or not.
 
-Fixes: cdfa835c6e5e ("uio_hv_generic: defer opening vmbus until first use")
+Upon review, it was determined that this commit is not needed at all so
+just revert it.  Also, the call to lm80_init_client() was not properly
+handled, so if error handling is needed in the lm80_probe() function,
+then it should be done properly, not half-baked like the commit being
+reverted here did.
+
+Cc: Kangjie Lu <kjlu@umn.edu>
+Fixes: 9aa3aa15f4c2 ("hwmon: (lm80) fix a missing check of bus read in lm80 probe")
 Cc: stable <stable@vger.kernel.org>
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Link: https://lore.kernel.org/r/4fdaff557deef6f0475d02ba7922ddbaa1ab08a6.1620544055.git.christophe.jaillet@wanadoo.fr
+Acked-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/20210503115736.2104747-5-gregkh@linuxfoundation.org
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/uio/uio_hv_generic.c |    8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ drivers/hwmon/lm80.c |   11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
---- a/drivers/uio/uio_hv_generic.c
-+++ b/drivers/uio/uio_hv_generic.c
-@@ -296,8 +296,10 @@ hv_uio_probe(struct hv_device *dev,
+--- a/drivers/hwmon/lm80.c
++++ b/drivers/hwmon/lm80.c
+@@ -630,7 +630,6 @@ static int lm80_probe(struct i2c_client
+ 	struct device *dev = &client->dev;
+ 	struct device *hwmon_dev;
+ 	struct lm80_data *data;
+-	int rv;
  
- 	ret = vmbus_establish_gpadl(channel, pdata->recv_buf,
- 				    RECV_BUFFER_SIZE, &pdata->recv_gpadl);
--	if (ret)
-+	if (ret) {
-+		vfree(pdata->recv_buf);
- 		goto fail_close;
-+	}
+ 	data = devm_kzalloc(dev, sizeof(struct lm80_data), GFP_KERNEL);
+ 	if (!data)
+@@ -643,14 +642,8 @@ static int lm80_probe(struct i2c_client
+ 	lm80_init_client(client);
  
- 	/* put Global Physical Address Label in name */
- 	snprintf(pdata->recv_name, sizeof(pdata->recv_name),
-@@ -316,8 +318,10 @@ hv_uio_probe(struct hv_device *dev,
+ 	/* A few vars need to be filled upon startup */
+-	rv = lm80_read_value(client, LM80_REG_FAN_MIN(1));
+-	if (rv < 0)
+-		return rv;
+-	data->fan[f_min][0] = rv;
+-	rv = lm80_read_value(client, LM80_REG_FAN_MIN(2));
+-	if (rv < 0)
+-		return rv;
+-	data->fan[f_min][1] = rv;
++	data->fan[f_min][0] = lm80_read_value(client, LM80_REG_FAN_MIN(1));
++	data->fan[f_min][1] = lm80_read_value(client, LM80_REG_FAN_MIN(2));
  
- 	ret = vmbus_establish_gpadl(channel, pdata->send_buf,
- 				    SEND_BUFFER_SIZE, &pdata->send_gpadl);
--	if (ret)
-+	if (ret) {
-+		vfree(pdata->send_buf);
- 		goto fail_close;
-+	}
- 
- 	snprintf(pdata->send_name, sizeof(pdata->send_name),
- 		 "send:%u", pdata->send_gpadl);
+ 	hwmon_dev = devm_hwmon_device_register_with_groups(dev, client->name,
+ 							   data, lm80_groups);
 
 
