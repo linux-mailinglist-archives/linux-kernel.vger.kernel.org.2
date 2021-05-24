@@ -2,133 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3214C38E535
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7036838E538
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 13:15:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232728AbhEXLQy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 07:16:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232761AbhEXLQj (ORCPT
+        id S232784AbhEXLRC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 07:17:02 -0400
+Received: from alln-iport-6.cisco.com ([173.37.142.93]:14525 "EHLO
+        alln-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhEXLQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 07:16:39 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F023EC061756
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 04:15:06 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id s6so31400295edu.10
-        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 04:15:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0tZ8DtgbQqRdhtr+WgOdau3mUqR+b3/o6rYGN75PUbk=;
-        b=bP1ytHZRh1aqwGHMsWWBu109zLcjB5fYFD5flBvBv+H8zZDq62dvu2DcUK0RY8Yhek
-         pPXMdPI9KMxjk347pthwQV8TZA+xBcBWSI5O2SKDpCp53cFU60fpYh2W/YXbNNDfyrH1
-         /6DXo1EB3OvndIpmSK/R0yNHCZ67fV4uWFVe2hAz3b/bmubAJDs7xKNFoXV0Rt5SZL39
-         u3PKY2ne1dEyZY73Q595FqF2/EVpkCyowoIFg5UxolPZXCM41GzenLjZpMPK/l0FTzmN
-         jteTLwKp/XyOk+dEwHxOxww36DgGKCDEl0TU67v2Pvh3o6Pa2tZi6cZryv9wF7TlRiX+
-         aSLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0tZ8DtgbQqRdhtr+WgOdau3mUqR+b3/o6rYGN75PUbk=;
-        b=NDOPfw4cqoGpiPCRgowpZmJlVE+8Dc1iQE/bVBjc47NgginI0MCLrUvGlGaZjyvYD7
-         q//T5u9EON0f3F/igNRVsXoBQUjDliLrf8KKSXVeKFW8nT8rjAWgjSOZ3hflN2ns+xtW
-         9x4KqjXUnqXnHNNdqsPUCUzbqo1t0jbyxGR0nobjX3QoM90HFOuFqmHNECAOcJLYskds
-         AzzoHU/z6ConbSL7itjv1J0qC9br3IFuBFUHj9gfmwZWt0W9IrHJurjANXir+LeDUZs/
-         7Ql6B3UpqurzN+8zv3JgLStAwh1Obdkkf/2Di/mxDU2aOAqXw1CCYikIQZUsivSPftsk
-         lYVA==
-X-Gm-Message-State: AOAM532rXV36g9GZm7q2QG00HhEpaLLBuKE3Y4ZLO/NLwixIg5/aSh6G
-        KVL5rvPc73zlwOvPoNk1z7Y=
-X-Google-Smtp-Source: ABdhPJw0/EZf6cUybkvy0L9qZdLe0u9nLukYifaF27YaaqDlT2YzP/Mu+djtXFl/V140SAUUGQlNpg==
-X-Received: by 2002:a05:6402:1115:: with SMTP id u21mr25103788edv.383.1621854905629;
-        Mon, 24 May 2021 04:15:05 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id zb2sm7847075ejb.52.2021.05.24.04.15.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 May 2021 04:15:05 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-staging@lists.linux.dev
-Subject: Re: [PATCH] staging: rtl8723bs: core: rtw_mlme_ext.c: Remove set but unused variable
-Date:   Mon, 24 May 2021 13:15:03 +0200
-Message-ID: <2101445.5PPBstrGkB@linux.local>
-In-Reply-To: <20210524092552.GO1955@kadam>
-References: <20210523173042.19785-1-fmdefrancesco@gmail.com> <20210524092552.GO1955@kadam>
+        Mon, 24 May 2021 07:16:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=5250; q=dns/txt; s=iport;
+  t=1621854916; x=1623064516;
+  h=from:to:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=f7KkmiD67k482FiyPYG2FhcNqhM3Qxwr6ZxK5dM0wIc=;
+  b=XyHyDoGp6XEcJcUqTAuRdOzwLHM2c/a/VdhxtA0AMOPBwp67qacJLwxs
+   iirFyYAmuQgAKPvLfGN27GhBtFdB+oUPMif3fde0Za9cKPlibygaZ1awc
+   oq8zAl55iMFDYdD7f24bZqqQlc9hJn1bSzsLu8B9lFSf82T4PavdzZJhE
+   o=;
+X-IPAS-Result: =?us-ascii?q?A0AiAQA9iqtgl5tdJa1agmCDIlYBOTGWOJswgXwLAQEBD?=
+ =?us-ascii?q?QEBLRQEAQGGUAIlNAkOAgQBAQEBAwIDAQEBAQUBAQUBAQECAQYEFAEBAQEBA?=
+ =?us-ascii?q?QEBaIVoDYZyCwF0XzISgnEBgwenYoF5M4EBiDOBRIE6iHZ2g3gnHIFJRIEVg?=
+ =?us-ascii?q?2BpiVQEgicZBwGBDQGBS4EZkTaNfJxVgyGdSBQpg1uLGZZYhm2OUKAMhA0CB?=
+ =?us-ascii?q?AYFAhaBVDmBWzMaCBsVgyQJRxkOjisNCYM1ixchAy8CNgIGCgEBAwmJbgEB?=
+IronPort-Data: A9a23:Dbc3EqPSeC3LUWPvrR1xl8FynXyQoLVcMsEvi/4bfWQNrUpwhDZSn
+ DFLDWuEOveKZWT2LdlyaYnl9EIB6JHSytM2SHM5pCpnJ55oRWUpJjg4wmPYZX76whjrFRo/h
+ ykmh1qpwPkcFhcwnD/1WlTahSQ6hfvgqobUUraeY3gsH1M8EU/NtDo68wIHqt8w6TSGK1vlV
+ ePa+6Uz73f8hlaYmkpNg06ygEsHUMba4Vv0jXRiDRx/h2IyolFOZH4pyQ5dGFOjKmVcNrbSq
+ +8uV9hV9EuBl/smIovNfroW7iTmT5aKVTVihEa6VICZrVt/jysp/5pqd/ABV19Ysg2UjfpIn
+ YAlWZyYEW/FP4XWk+gbFhJfCSw7YetN+aTMJj60tsn7I0/uKiS3ha4xShBte9RFp46bAkkWn
+ RAcADwfZx+Enf+36Lm6UeJrwM8kKaEHOatA5io8nW2GUqpOrZbrGbz6tNFf5G4Koe8XFsTRW
+ elEawBkY0GVC/FIEg5HVM1h9AuyvVH7cjtFuBeWqLAx7mz70gN8yv7uPcDTd9jMQt9a9m6dp
+ 2TJ+EzjDx0aPcDZwj2AmlqugevUlAvhVY4SHaH+/flv6HWawmEDARsaWEH9uvm4kU69WtR3L
+ 00S5zporK4u+UjtRd74NzW+qXuErwMaVPJTHvc85QXLzbDbiy6QDW0JZj1MctorsIkxXzNC/
+ keEg97zFxRutrOPQH6Q/7vSqim9UQAQJHUBIzUZUQ8M5dXLqZs2yBnIS75e/LWdlNb5H3T7x
+ CqH6XR4jLQIhslN3KK+lbzav96yjqPmDTMc4R76YjPm5B5HfIGcX5G6w2GOuJ6sM72lokm9U
+ GkswpbEtb1eU8nSyERhU81WRuD1uK3t3Cn0xA8xQMF7p1xB7lb6JdgIiAySMnuFJSrtldXBW
+ k7YuQpL6IRUOhNGhocoPtrhUqzGIUUcfOkJu9jOZdZIJ5N2bgLCoEmChHJ8PUiwzSDAcolmZ
+ P93lPpA6l5BUsxaIMKeHbt17FPS7nlWKZnvqXXHI/KPj+P2iJm9F+5tDbdyRrpRAF6s+V+Mq
+ I8Pa6NmNT0CALWWjtbrHX47dABWcidT6WHegM1MfenLGRt9BGwkEJfsLUAJKtE7xf8M/tokC
+ kqVBx4DoHKi1CKvFOl/Qi06AF8Zdc0n/SxT0O1FFQvA5kXPlq7/vf9DKMNvJedPGS4K5accc
+ sTpsv6oWpxnIgkrMRxEBXUhhOSOrCiWuD8=
+IronPort-HdrOrdr: A9a23:uL652KC64vNRIIDlHem555DYdb4zR+YMi2TDsHoBKyC9Hfb3qy
+ nDppkmPHzP+VUssQ8b+OxoUZPoKRi3yXcf2+Ys1NmZMDUOwFHJEGmnhrGSpwEJ3EbFh4tg6Z
+ s=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.82,319,1613433600"; 
+   d="scan'208";a="743484774"
+Received: from rcdn-core-4.cisco.com ([173.37.93.155])
+  by alln-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 24 May 2021 11:15:14 +0000
+Received: from sjc-ads-9103.cisco.com (sjc-ads-9103.cisco.com [10.30.208.113])
+        by rcdn-core-4.cisco.com (8.15.2/8.15.2) with ESMTPS id 14OBFEIT002464
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Mon, 24 May 2021 11:15:14 GMT
+Received: by sjc-ads-9103.cisco.com (Postfix, from userid 487941)
+        id 2EFD8CC1251; Mon, 24 May 2021 04:15:14 -0700 (PDT)
+From:   Denys Zagorui <dzagorui@cisco.com>
+To:     jolsa@redhat.com, linux-kernel@vger.kernel.org,
+        peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        namhyung@kernel.org
+Subject: [PATCH v8 1/3] perf report: compile tips.txt in perf binary
+Date:   Mon, 24 May 2021 04:15:12 -0700
+Message-Id: <20210524111514.65713-1-dzagorui@cisco.com>
+X-Mailer: git-send-email 2.26.2.Cisco
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Outbound-SMTP-Client: 10.30.208.113, sjc-ads-9103.cisco.com
+X-Outbound-Node: rcdn-core-4.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, May 24, 2021 11:25:52 AM CEST Dan Carpenter wrote:
-> On Sun, May 23, 2021 at 07:30:42PM +0200, Fabio M. De Francesco wrote:
-> > Removed set but unused 'reason_code' variable. Issue detected by GCC
-> > running with the warning option -Wunused-but-set-variable. Removed its
-> > use as a storage of the return value of get_unaligned_le16(), which has
-> > been left as is because it has side effects on the argument it takes.
-> > 
-> > Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
-> > ---
-> > 
-> >  drivers/staging/rtl8723bs/core/rtw_mlme_ext.c | 5 ++---
-> >  1 file changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> > b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c index 
-9fc612fb736f..a13b3ec42bc9
-> > 100644
-> > --- a/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> > +++ b/drivers/staging/rtl8723bs/core/rtw_mlme_ext.c
-> > @@ -1721,7 +1721,7 @@ unsigned int OnAction_back(struct adapter *padapter, 
-union
-> > recv_frame *precv_fra> 
-> >  	struct recv_reorder_ctrl *preorder_ctrl;
-> >  	unsigned char 	*frame_body;
-> >  	unsigned char 	category, action;
-> > 
-> > -	unsigned short	tid, status, reason_code = 0;
-> > +	unsigned short	tid, status;
-> > 
-> >  	struct mlme_ext_priv *pmlmeext = &padapter->mlmeextpriv;
-> >  	struct mlme_ext_info *pmlmeinfo = &(pmlmeext->mlmext_info);
-> >  	u8 *pframe = precv_frame->u.hdr.rx_data;
-> > 
-> > @@ -1791,8 +1791,7 @@ unsigned int OnAction_back(struct adapter *padapter, 
-union
-> > recv_frame *precv_fra> 
-> >  				psta->htpriv.candidate_tid_bitmap 
-&=
-> >  				
-> >  					~BIT((frame_body[3] >> 
-4) & 0xf);
-> > 
-> > -				/* reason_code = frame_body[4] | 
-(frame_body[5] << 8); */
-> > -				reason_code = 
-get_unaligned_le16(&frame_body[4]);
-> > +				
-get_unaligned_le16(&frame_body[4]);
-> 
-> It doesn't have any side effects.  Just delete it too.
-> 
-It seems that I misinterpreted the semantics of get_unaligned_le16(). If I'm 
-not still wrong the above function uses the __swab16 macro, which returns 
-swapped bytes with _no_ side effects on the swapped variable.
+It seems there is some need to have an ability to invoke perf from
+build directory without installation
+(84cfac7f05e1: perf tools: Set and pass DOCDIR to builtin-report.c)
+DOCDIR definition contains an absolute path to kernel source directory.
+It is build machine related info and it makes perf binary unreproducible.
 
-I'm about to send a patch v2 with the deletion suggested by you.
+This can be avoided by compiling tips.txt in perf directly.
 
-Thanks,
+Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
+---
+ tools/perf/Build               |  2 +-
+ tools/perf/Documentation/Build |  9 +++++++++
+ tools/perf/builtin-report.c    | 34 +++++++++++++++++++++++++---------
+ tools/perf/util/util.c         | 28 ----------------------------
+ tools/perf/util/util.h         |  2 --
+ 5 files changed, 35 insertions(+), 40 deletions(-)
+ create mode 100644 tools/perf/Documentation/Build
 
-Fabio
->
-> regards,
-> dan carpenter
-
-
-
+diff --git a/tools/perf/Build b/tools/perf/Build
+index db61dbe2b543..3a2e768d7576 100644
+--- a/tools/perf/Build
++++ b/tools/perf/Build
+@@ -45,12 +45,12 @@ CFLAGS_perf.o              += -DPERF_HTML_PATH="BUILD_STR($(htmldir_SQ))"	\
+ 			      -DPREFIX="BUILD_STR($(prefix_SQ))"
+ CFLAGS_builtin-trace.o	   += -DSTRACE_GROUPS_DIR="BUILD_STR($(STRACE_GROUPS_DIR_SQ))"
+ CFLAGS_builtin-report.o	   += -DTIPDIR="BUILD_STR($(tipdir_SQ))"
+-CFLAGS_builtin-report.o	   += -DDOCDIR="BUILD_STR($(srcdir_SQ)/Documentation)"
+ 
+ perf-y += util/
+ perf-y += arch/
+ perf-y += ui/
+ perf-y += scripts/
+ perf-$(CONFIG_TRACE) += trace/beauty/
++perf-y += Documentation/
+ 
+ gtk-y += ui/gtk/
+diff --git a/tools/perf/Documentation/Build b/tools/perf/Documentation/Build
+new file mode 100644
+index 000000000000..83e16764caa4
+--- /dev/null
++++ b/tools/perf/Documentation/Build
+@@ -0,0 +1,9 @@
++perf-y += tips.o
++
++quiet_cmd_ld_tips = LD       $@
++      cmd_ld_tips = $(LD) -r -b binary -o $@ $<
++
++$(OUTPUT)Documentation/tips.o: Documentation/tips.txt FORCE
++	$(call rule_mkdir)
++	$(call if_changed,ld_tips)
++
+diff --git a/tools/perf/builtin-report.c b/tools/perf/builtin-report.c
+index 36f9ccfeb38a..4f2c7ee8fea1 100644
+--- a/tools/perf/builtin-report.c
++++ b/tools/perf/builtin-report.c
+@@ -47,7 +47,6 @@
+ #include "util/time-utils.h"
+ #include "util/auxtrace.h"
+ #include "util/units.h"
+-#include "util/util.h" // perf_tip()
+ #include "ui/ui.h"
+ #include "ui/progress.h"
+ #include "util/block-info.h"
+@@ -109,6 +108,9 @@ struct report {
+ 	int			nr_block_reports;
+ };
+ 
++extern char _binary_Documentation_tips_txt_start[];
++extern char _binary_Documentation_tips_txt_end[];
++
+ static int report__config(const char *var, const char *value, void *cb)
+ {
+ 	struct report *rep = cb;
+@@ -614,19 +616,33 @@ static int report__gtk_browse_hists(struct report *rep, const char *help)
+ 	return hist_browser(rep->session->evlist, help, NULL, rep->min_percent);
+ }
+ 
++static const char *perf_tip(void)
++{
++	char *start = _binary_Documentation_tips_txt_start;
++	char *tok, *tmp, *prev;
++	int pick, size;
++
++	size = _binary_Documentation_tips_txt_end - start;
++	pick = random() % size;
++
++	_binary_Documentation_tips_txt_start[size - 1] = 0;
++
++	for (tok = strtok_r(start, "\n", &tmp); tok;
++	     tok = strtok_r(NULL, "\n", &tmp)) {
++		if (pick < (tok - start))
++			return prev;
++		prev = tok;
++	}
++
++	return prev;
++}
++
+ static int report__browse_hists(struct report *rep)
+ {
+ 	int ret;
+ 	struct perf_session *session = rep->session;
+ 	struct evlist *evlist = session->evlist;
+-	const char *help = perf_tip(system_path(TIPDIR));
+-
+-	if (help == NULL) {
+-		/* fallback for people who don't install perf ;-) */
+-		help = perf_tip(DOCDIR);
+-		if (help == NULL)
+-			help = "Cannot load tips.txt file, please install perf!";
+-	}
++	const char *help = perf_tip();
+ 
+ 	switch (use_browser) {
+ 	case 1:
+diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
+index 37a9492edb3e..3bba74e431ed 100644
+--- a/tools/perf/util/util.c
++++ b/tools/perf/util/util.c
+@@ -379,34 +379,6 @@ fetch_kernel_version(unsigned int *puint, char *str,
+ 	return 0;
+ }
+ 
+-const char *perf_tip(const char *dirpath)
+-{
+-	struct strlist *tips;
+-	struct str_node *node;
+-	char *tip = NULL;
+-	struct strlist_config conf = {
+-		.dirname = dirpath,
+-		.file_only = true,
+-	};
+-
+-	tips = strlist__new("tips.txt", &conf);
+-	if (tips == NULL)
+-		return errno == ENOENT ? NULL :
+-			"Tip: check path of tips.txt or get more memory! ;-p";
+-
+-	if (strlist__nr_entries(tips) == 0)
+-		goto out;
+-
+-	node = strlist__entry(tips, random() % strlist__nr_entries(tips));
+-	if (asprintf(&tip, "Tip: %s", node->s) < 0)
+-		tip = (char *)"Tip: get more memory! ;-)";
+-
+-out:
+-	strlist__delete(tips);
+-
+-	return tip;
+-}
+-
+ char *perf_exe(char *buf, int len)
+ {
+ 	int n = readlink("/proc/self/exe", buf, len);
+diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
+index ad737052e597..80b194ee6c7d 100644
+--- a/tools/perf/util/util.h
++++ b/tools/perf/util/util.h
+@@ -39,8 +39,6 @@ int fetch_kernel_version(unsigned int *puint,
+ #define KVER_FMT	"%d.%d.%d"
+ #define KVER_PARAM(x)	KVER_VERSION(x), KVER_PATCHLEVEL(x), KVER_SUBLEVEL(x)
+ 
+-const char *perf_tip(const char *dirpath);
+-
+ #ifndef HAVE_SCHED_GETCPU_SUPPORT
+ int sched_getcpu(void);
+ #endif
+-- 
+2.26.2.Cisco
 
