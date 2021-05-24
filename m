@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B977E38E7EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:43:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3068D38E7EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbhEXNo1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:44:27 -0400
-Received: from mga01.intel.com ([192.55.52.88]:36583 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232932AbhEXNoY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:44:24 -0400
-IronPort-SDR: skukgycBTupGEc/oqveYzsuQjtyyBVqsSWjo4uhgzphwilXB26cMfjraIx5jwE5QWgAWWZP5j4
- grPDO0wOnWLA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9993"; a="223091312"
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="223091312"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 06:42:55 -0700
-IronPort-SDR: xj6m4cZ3QJ+FiRUX9g95RzhYM4oMQdGx4xwaLc+q6WdoduiqsiRCXzpZBtJSGLOBCFOhzhNnHG
- horj1olH75RA==
-X-IronPort-AV: E=Sophos;i="5.82,325,1613462400"; 
-   d="scan'208";a="614111067"
-Received: from bwheeler-mobl1.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.57.42])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 May 2021 06:42:55 -0700
-Subject: Re: [PATCH v5 1/1] x86/acpi, x86/boot: Add multiprocessor wake-up
- support
-To:     =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>,
-        Rafael J Wysocki <rjw@rjwysocki.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Len Brown <lenb@kernel.org>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Andi Kleen <ak@linux.intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-References: <e4dc31d5-d897-50fa-34e7-f5c033d5f5db@linux.intel.com>
- <20210524060221.519093-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <4295dab3-7675-9146-ac6e-244704ecfcca@nextfour.com>
-From:   "Kuppuswamy, Sathyanarayanan" 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Message-ID: <0a663bde-c301-d326-2b19-ca52719a5855@linux.intel.com>
-Date:   Mon, 24 May 2021 06:42:53 -0700
+        id S232868AbhEXNof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:44:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232953AbhEXNo3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 09:44:29 -0400
+Received: from mail-oi1-x236.google.com (mail-oi1-x236.google.com [IPv6:2607:f8b0:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02506C061756;
+        Mon, 24 May 2021 06:43:01 -0700 (PDT)
+Received: by mail-oi1-x236.google.com with SMTP id y76so17827362oia.6;
+        Mon, 24 May 2021 06:43:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=nF07paaoG3jGvPxI4nip343c9NWP2ELhNwJytuUtMbI=;
+        b=pp8vSGVbBXgNqo9c8hQQENnz8utSW1ro/pYR1mn3XfB/1hrgyvqQ/JeEe8w71D7E3u
+         laWYwAlw2G047diBzJhfMlCPkzi8XRpuHELXkwPNzBNxJuWZJFEROo968ZUSvZ0Gmiph
+         GS+PNA4LzAS8L2EoEaG+m9ttB0txWtoyZQ8MeIPsXd8DsvKqeREcP6ctyrL2D74XNkxv
+         TcKDB0Tp9D7wJzFBpPdl87Yg/f9rR/Ilw/rPKa4kaIXFc59jp7a1QJEJX3//GAMCTBQV
+         fV8jvC3gX3hRHvugeHLbH+jGH4QeYQ+ufMhD06nleYu43oOJeDNA0Rvng5iW3L+t11fS
+         q89g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=nF07paaoG3jGvPxI4nip343c9NWP2ELhNwJytuUtMbI=;
+        b=nHpGM4utOQlDjdh0UmK4gc6iEydO9tYPZBoXQ5x3rOf6koHxdaRHWIWaF0kYkftsPz
+         gc+sXruzzamCRqbWAIn4TQaQmHWZxMpjlCOzy6ofxPPZCNNDacBlbFevsAh8C5gzFNJO
+         EecvK7yp+Ge50Zv/mBx29FKaX2lKGTznnZVHXXzaMNRLST0H+zvDuyh2ZBHyre/QI0no
+         OmtyflwRFuBNF4UMfR9mq3b8VmEF2oZAP5OahH8N+/S6N/niIIS4Qvo9EpT5n5WBDszo
+         1RIwjYCR5K2IJ15pDSGCV8qIsK1Kc0KSffKm8lfNjoTlmDVFdvTgyJhfYY3T0QB9QNDN
+         emfQ==
+X-Gm-Message-State: AOAM530WEu8bBYNyF0fOYxcAcRrI3JOfrCtNkbi0vPSPhzViKWQhkoYm
+        gUM3a49lOBKyz3v5bRossSw=
+X-Google-Smtp-Source: ABdhPJw1qWZNHAl/oNtYKGXvY5CoCsK4IKNju8UmdZeSMgRQERXGZ/cO8E7q+Uwak7Z2w4dtmnIDUw==
+X-Received: by 2002:aca:bc8b:: with SMTP id m133mr10646488oif.10.1621863780404;
+        Mon, 24 May 2021 06:43:00 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c18sm3111268otm.1.2021.05.24.06.42.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 24 May 2021 06:42:59 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH v2 0/9] Intel Keem Bay WDT bug fixes
+To:     "andriy.shevchenko@linux.intel.com" 
+        <andriy.shevchenko@linux.intel.com>,
+        "Sanil, Shruthi" <shruthi.sanil@intel.com>
+Cc:     "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kris.pan@linux.intel.com" <kris.pan@linux.intel.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "Thokala, Srikanth" <srikanth.thokala@intel.com>,
+        "Raja Subramanian, Lakshmi Bai" 
+        <lakshmi.bai.raja.subramanian@intel.com>,
+        "Sangannavar, Mallikarjunappa" 
+        <mallikarjunappa.sangannavar@intel.com>
+References: <20210517174953.19404-1-shruthi.sanil@intel.com>
+ <BYAPR11MB312848D2D369C78BD2E969F0F1269@BYAPR11MB3128.namprd11.prod.outlook.com>
+ <YKuBppIuUHqkiMg4@smile.fi.intel.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <88c07283-981c-b998-59a1-315f94f10f3e@roeck-us.net>
+Date:   Mon, 24 May 2021 06:42:57 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <4295dab3-7675-9146-ac6e-244704ecfcca@nextfour.com>
+In-Reply-To: <YKuBppIuUHqkiMg4@smile.fi.intel.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/23/21 11:40 PM, Mika Penttilä wrote:
+On 5/24/21 3:36 AM, andriy.shevchenko@linux.intel.com wrote:
+> On Mon, May 24, 2021 at 06:06:35AM +0000, Sanil, Shruthi wrote:
+>> Hi Roeck,
+>>
+>> I have addressed your review comments in the v2 version of this patch series.
+>> Could you please review?
+>>
+>> If no comments, can I get an Acked-by tag?
+>> Thanks!
 > 
-> So this isn't supporting suspend/resume if AP cannot started again?
+> First of all, do not top post!
+> 
+>>> From: Sanil, Shruthi <shruthi.sanil@intel.com>
+>>> Sent: Monday, May 17, 2021 11:20 PM
+> 
+> AFAICS Guenter had reviewed (as you put his tags into commits). It means that
+> maintainer will pickup patches when they feel it's a good time.
+> 
 
-Yes. You are correct. It can be used only once per AP. Please find the
-spec reference below.
+Yes, and the patches are queued in my own watchdog-next branch.
+At this point we'll have to wait for the Wim to pick up the series.
 
-/*
-  * According to the ACPI specification r6.4, sec 5.2.12.19, the
-  * mailbox-based wakeup mechanism cannot be used more than once
-  * for the same CPU, so skip sending wake commands to already
-  * awake CPU.
-  */
-
--- 
-Sathyanarayanan Kuppuswamy
-Linux Kernel Developer
+Guenter
