@@ -2,120 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6CA38E712
-	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:03:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CCE238E71F
+	for <lists+linux-kernel@lfdr.de>; Mon, 24 May 2021 15:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232894AbhEXNFE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 24 May 2021 09:05:04 -0400
-Received: from mail-dm6nam11on2075.outbound.protection.outlook.com ([40.107.223.75]:27105
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232424AbhEXNEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 24 May 2021 09:04:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FJZvc+aSVXEtAde3N6ZeRkvwErp1ljoVnAq1iFNTodGKM6+BghuOSt6MGJ6Hwpn06FVP56C33eqHbr4+EGYX9FETjzogqyJpOOnH1Y2NBtwU5RV8bH0s22thOByY7opqb1invrR7LFpzQ0sryy9mmfr29ohe6MVoF88X2LVYdFzBag7Q9DTSNnSiIlEEjM4Wczgz1IbCCSx5rEIz89XCjGArXKA2c8evA6Jjz7R6wcBRMsqZ3dJIrYGIxT7iuE46UpXXkgU6TfGBdUDFQAiJex2OdApeWn4GHaJ07E5ktGJgBthEGPPC1wZF57si8C+KWu5XlTEd2+htjJ6VxbcxWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Snr/GxaJn/T/Hv0r5+prATGOclyfjGxhLwAOfjZukWE=;
- b=MfoN2nlzvs4LE2HNBgntz+Aly7h20lcvvZtTGWsBAUr+/PVtmrKPY4ruqq2aIgsRbmjOZeJ8aQ6vn1pMZXrN81K+f5YrgG9eiQMWseK1YXbDTYgGj3rc080a8ufl/lFJzrgDVbd8KL9vNeYTtFKj25pYW6NsZNzbx0utnKas5g6loDxYVHK7l2YnA+0uTVWQwrQ7yFCaenYo29yICF0tKjJ75ErVzs8+SpoEv8UVGS8EuYK/1bkjHaggPjRrytgJjNqq0FmttU94/krVplw5XMCKUVcWiHifPlVj+I2AozxYsNjnoPkif/OMKFX614RA/JjZ04r1NrIxH4qeSi0EmQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=us.ibm.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Snr/GxaJn/T/Hv0r5+prATGOclyfjGxhLwAOfjZukWE=;
- b=uoDlqhGDgq4kwVbE44Vh0FiPCp0CIB4s/dWLnnTSwCgPD3fy7cOEVv0scmzbFbbkgHqG80tWZ9MMzhUIrVKTEAROmkjlrJ3j+59biwk/cpEF+aYDWRA5mo+nYWVA2y/GfhD1CozhBC+TBxz/QbD6C4EQ/KQoqPcLdZDc/BX9rXEnztPjUaQBXqs6TI/ZsRtoAwt9mWgq99jHRdZ2BFSi4nAFLx1g8oQGPzmxJFTx7Tiozku2/g8pDPkcI8adXILlVYK4By/LSO/nS5crrc0GkLWyaPxOpE8kT6VAUwM99bv/hDn+P2wVSwq7jniIgLBA+wAy32g+stsYw3vdKbQKcw==
-Received: from DM5PR18CA0081.namprd18.prod.outlook.com (2603:10b6:3:3::19) by
- DM5PR12MB1356.namprd12.prod.outlook.com (2603:10b6:3:74::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4150.25; Mon, 24 May 2021 13:03:26 +0000
-Received: from DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
- (2603:10b6:3:3:cafe::87) by DM5PR18CA0081.outlook.office365.com
- (2603:10b6:3:3::19) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4150.23 via Frontend
- Transport; Mon, 24 May 2021 13:03:26 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; us.ibm.com; dkim=none (message not signed)
- header.d=none;us.ibm.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- DM6NAM11FT022.mail.protection.outlook.com (10.13.172.210) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4129.25 via Frontend Transport; Mon, 24 May 2021 13:03:25 +0000
-Received: from localhost (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 24 May
- 2021 13:03:24 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <linux-kselftest@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <shuah@kernel.org>, <akpm@linux-foundation.org>,
-        <jhubbard@nvidia.com>, <sandipan@linux.ibm.com>,
-        <linuxram@us.ibm.com>, <harish@linux.ibm.com>,
-        <dave.hansen@intel.com>, <rcampbell@nvidia.com>,
-        Alistair Popple <apopple@nvidia.com>
-Subject: [PATCH 2/2] kselftest/vm: Add test_hmm.sh to TEST_FILES
-Date:   Mon, 24 May 2021 23:03:08 +1000
-Message-ID: <20210524130308.16343-2-apopple@nvidia.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210524130308.16343-1-apopple@nvidia.com>
-References: <20210524130308.16343-1-apopple@nvidia.com>
+        id S232466AbhEXNJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 24 May 2021 09:09:26 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46966 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232401AbhEXNJW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 24 May 2021 09:09:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1621861674;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GFpr7xpqlW6Vj08Ml2AtSZzFh7rEP3/yndl6gqUkb8A=;
+        b=IY+LBjT3VKoV54sxqO8SRnWktj+pal7uItDY9vFGYliqfesFx2S20bYTZgPY6uk8Uwsf1+
+        pHxpiRS64jhCeUdcgbraprSBh6HMijEpO/8mra3+Upoph21zwSQ/7c51WXuc45MT9tAXwA
+        f5Ol3TEqw0G6cEHYaWTfDsAkqpibF34=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-506-d580W9bHNK6W1--cshTESg-1; Mon, 24 May 2021 09:07:52 -0400
+X-MC-Unique: d580W9bHNK6W1--cshTESg-1
+Received: by mail-wm1-f71.google.com with SMTP id g9-20020a1c39090000b029017545f2da89so3848736wma.8
+        for <linux-kernel@vger.kernel.org>; Mon, 24 May 2021 06:07:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=GFpr7xpqlW6Vj08Ml2AtSZzFh7rEP3/yndl6gqUkb8A=;
+        b=AqIITeUA8CbVnpLa/18APTYnV+RnJ1n4uPGldsUhXiX/Lf7e2cdTjie7pz+lxH7yYW
+         nZWy8QpwO9Bdith2++bk4EoP9j+dAW1tyP+8wh9N7GzvJFDD1l3h6rMp9mywvlB+rfYU
+         Hi2nAGa6wjZIiTxQNhSzSN6sP1FDMsnt37AMiBGM5Ve65jV4l3/VS0WHSLJ642sh4zF5
+         dXji/3bzE20oRsW+jo67hyir6DP4t1FAY0WlOr0XMpPG+R5RkWZga+K4XpruNcEthaUK
+         SY2TphUgdLMuQm8yStJQvxKfJo6drPhS4rblK9eD3rbSD7FghyrLwRQghWFGtfAtEAQU
+         tDRw==
+X-Gm-Message-State: AOAM531kPQYLjzyJHHDNLhzMoRvJY8DnVN07l3rYvjr8Jo42kQIDeBsH
+        QcmmMhco7KDf/sfq6CazZSB+y9sX/mZ9H1rRL2cLYn1RntEh7fKA/6whTKSk7GVNBMdE05bkvRd
+        WSSuhBO37yOCVrzlz4FuVkys+7BeLrubIg3GD9XjCTLk0mzgzMrSBNLMNbyIgRPO4pK+vdHvuec
+        lR
+X-Received: by 2002:a5d:6701:: with SMTP id o1mr22721394wru.390.1621861671478;
+        Mon, 24 May 2021 06:07:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiR36upgs9APJiWLdBravwbSYUku/sbb6wEKZBtV+gm8ln3jYbIHMOGn1qHgboPHAYeCFu8Q==
+X-Received: by 2002:a5d:6701:: with SMTP id o1mr22721364wru.390.1621861671241;
+        Mon, 24 May 2021 06:07:51 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p10sm11501879wrr.58.2021.05.24.06.07.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 May 2021 06:07:50 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 5/7] KVM: nVMX: Reset eVMCS clean fields data from
+ prepare_vmcs02()
+In-Reply-To: <2abf028db2a77c940d89618d66c4e6cbc3347bc4.camel@redhat.com>
+References: <20210517135054.1914802-1-vkuznets@redhat.com>
+ <20210517135054.1914802-6-vkuznets@redhat.com>
+ <2abf028db2a77c940d89618d66c4e6cbc3347bc4.camel@redhat.com>
+Date:   Mon, 24 May 2021 15:07:49 +0200
+Message-ID: <87wnro5lga.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1403233f-aa17-432b-a623-08d91eb4517c
-X-MS-TrafficTypeDiagnostic: DM5PR12MB1356:
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-X-Microsoft-Antispam-PRVS: <DM5PR12MB135661D0FF8296F628710B6BDF269@DM5PR12MB1356.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:813;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1xNW5q6+Q2zkaCotv72EOi+RzDcQWSYFFjoNYTD7k6MGIghP9zk5UYC7RLYZqrhMbFHXub+QjqpRuKZ7WUYHJYXvKrXGKxwDijBgo+8feiaaWuY3JK67QnHYjeDe3jYhv1kCIuOHBxo94zzJ7mmtHTSh4y2DIiJ6L5ZTWJGyufW1eyp5cU7JaK2XJGgf3QrJd3LH9RhC4mA7F5/do/M57mf/xC7EACnd4hpf3PdFTqdaJ/9SiSF/iXZ8JgP4a/oRa9VuKETpqI0piNP3rZBLH4r8dNOX4Wn1VuBc6Z1U6Y1udpIBm1r5HGb8oyYpEc+MiT9LO9RjlAMJHVEazXNMGqE+aejMN39S0XeKcTkiGr/3/HnzXhCIZDOYh8brkIK5imCQeBNiX03ZkYWoYavAG6zhYsvhPRGLP6ST65O0OMdbApFr8SYq4gENW03E+JxnQCLY2fVGzulGHsYwu/V+R+n6gClfG8RVTkMZ/tq91y2ePAGkt5hbaFHxA2n36V1MBsVQ/OY++LdIfhB5yz/Gqs19KEhJFur9R1IDqHdwbDUC7DjvN601lCepTHKTvAK1VfaIlN0SdemLji2iAqxdi8/7OcSU1Jg3Bo4ACUBJIHMsXQIYy82hz9eqQByykWBzv8zckt3MYZr5p0UdrQ/kY5M4w8QNweZcAN+7Exl/iyA=
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(346002)(136003)(36840700001)(46966006)(82740400003)(186003)(107886003)(356005)(83380400001)(478600001)(8676002)(36906005)(36756003)(70206006)(4326008)(316002)(26005)(47076005)(36860700001)(70586007)(1076003)(2616005)(7636003)(8936002)(16526019)(6666004)(5660300002)(426003)(2906002)(6916009)(336012)(4744005)(86362001)(54906003)(82310400003);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 May 2021 13:03:25.8626
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1403233f-aa17-432b-a623-08d91eb4517c
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM11FT022.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1356
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This ensures targets such as 'make install' copy test_hmm.sh into the
-target directoy.
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-Signed-off-by: Alistair Popple <apopple@nvidia.com>
----
- tools/testing/selftests/vm/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> On Mon, 2021-05-17 at 15:50 +0200, Vitaly Kuznetsov wrote:
+>> When nested state migration happens during L1's execution, it
+>> is incorrect to modify eVMCS as it is L1 who 'owns' it at the moment.
+>> At lease genuine Hyper-v seems to not be very happy when 'clean fields'
+>> data changes underneath it.
+>> 
+>> 'Clean fields' data is used in KVM twice: by copy_enlightened_to_vmcs12()
+>> and prepare_vmcs02_rare() so we can reset it from prepare_vmcs02() instead.
+>> 
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/vmx/nested.c | 14 ++++++++------
+>>  1 file changed, 8 insertions(+), 6 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index eb2d25a93356..3bfbf991bf45 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -2081,14 +2081,10 @@ void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
+>>  {
+>>  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+>>  
+>> -	if (vmx->nested.hv_evmcs) {
+>> +	if (vmx->nested.hv_evmcs)
+>>  		copy_vmcs12_to_enlightened(vmx);
+>> -		/* All fields are clean */
+>> -		vmx->nested.hv_evmcs->hv_clean_fields |=
+>> -			HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
+>> -	} else {
+>> +	else
+>>  		copy_vmcs12_to_shadow(vmx);
+>> -	}
+>>  
+>>  	vmx->nested.need_vmcs12_to_shadow_sync = false;
+>>  }
+>> @@ -2629,6 +2625,12 @@ static int prepare_vmcs02(struct kvm_vcpu *vcpu, struct vmcs12 *vmcs12,
+>>  
+>>  	kvm_rsp_write(vcpu, vmcs12->guest_rsp);
+>>  	kvm_rip_write(vcpu, vmcs12->guest_rip);
+>> +
+>> +	/* Mark all fields as clean so L1 hypervisor can set what's dirty */
+>> +	if (hv_evmcs)
+>> +		vmx->nested.hv_evmcs->hv_clean_fields |=
+>> +			HV_VMX_ENLIGHTENED_CLEAN_FIELD_ALL;
+>> +
+>>  	return 0;
+>>  }
+>> 
+>
+> Hi!
+>  
+> If we avoid calling copy_enlightened_to_vmcs12 from 
+> vmx_get_nested_state, then we don't need this patch, right?
+>  
 
-diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
-index 110751ce8701..202fc643de88 100644
---- a/tools/testing/selftests/vm/Makefile
-+++ b/tools/testing/selftests/vm/Makefile
-@@ -80,7 +80,7 @@ endif
- 
- TEST_PROGS := run_vmtests.sh
- 
--TEST_FILES := test_vmalloc.sh
-+TEST_FILES := test_vmalloc.sh test_hmm.sh
- 
- KSFT_KHDR_INSTALL := 1
- include ../lib.mk
+Right.
+
+> In addition to that I think that we need to research on why 
+> do we need to touch these clean bits, as from the spec, and
+> assuming that the clean bits should behave similar to how AMD
+> does it, clean bits should only be set by the L1 and never touched by
+> us.
+>  
+> We currently set clean bits in two places:
+>  
+> 1. nested_vmx_handle_enlightened_vmptrld with vmlaunch, where it seems
+> like it is a workaround for a case (as we discussed on IRC) where
+> L1 keeps more than one active evmcs on a same vcpu, and 'vmresume's
+> them. Since we don't support this and have to do full context switch
+> when we switch a vmcs, we reset the clean bits so that evmcs is loaded
+> fully.
+> Also we reset the clean bits when a evmcs is 'vmlaunched' which
+> is also something we need to check if needed, and if needed
+> we probably should document that this is because of a bug in Hyper-V,
+> as it really should initialize these bits in this case.
+>  
+> I think that we should just ignore the clean bits in those cases
+> instead of resetting them in the evmcs.
+>  
+>  
+> 2. In nested_sync_vmcs12_to_shadow which in practise is done only
+> on nested vmexits, when we updated the vmcs12 and need to update evmcs.
+> In this case you told me that Hyper-V has a bug that it expects
+> the clean bits to be cleaned by us and doesn't clean it on its own.
+> This makes sense although it is not documented in the Hyper-V spec,
+> and I would appreciate if we were to document this explicitly in the code.
+
+My memory is really foggy but I put 'hv_clean_fields' cleaning to KVM
+because I discovered that Hyper-V doesn't do that: with every exit we
+get more and more 'dirty' stuff which wasn't touched. It would probably
+make sense to repeat the experiment. I'll put this to my backlog, thanks
+for the feedback!
+
 -- 
-2.20.1
+Vitaly
 
